@@ -832,7 +832,7 @@ struct edog *edog;
 int after, udist, whappr;
 {
     register int omx, omy;
-    boolean in_masters_sight, dog_has_minvent;
+    boolean in_masters_sight, using_yell_position = FALSE, dog_has_minvent;
     register struct obj *obj;
     xchar otyp;
     int appr;
@@ -845,12 +845,33 @@ int after, udist, whappr;
     omy = mtmp->my;
 
     in_masters_sight = couldsee(omx, omy);
+  
     dog_has_minvent = (droppables(mtmp) != 0);
 
-    if (!edog || mtmp->mleashed || mtmp->mcomingtou) { /* he's not going anywhere... */
+    if (!edog || mtmp->mleashed || (mtmp->mcomingtou && in_masters_sight)) { /* he's not going anywhere... */
         gtyp = APPORT;
         gx = u.ux;
         gy = u.uy;
+        if (mtmp->mcomingtou && in_masters_sight)
+        {
+           mtmp->yell_x = 0;
+           mtmp->yell_y = 0;
+        }
+    }
+    else if (mtmp->mcomingtou)
+    {        
+        gtyp = APPORT;
+        if (mtmp->yell_x == 0 || mtmp->yell_y == 0)
+        {
+            gx = u.ux;
+            gy = u.uy;
+        }
+        else
+        {
+            gx = mtmp->yell_x;
+            gy = mtmp->yell_y;
+            using_yell_position = TRUE;
+        }
     }
     else
     {
@@ -952,7 +973,8 @@ int after, udist, whappr;
         appr = 0;
 
 #define FARAWAY (COLNO + 2) /* position outside screen */
-    if (gx == u.ux && gy == u.uy && !in_masters_sight) {
+
+    if (gx == u.ux && gy == u.uy && !in_masters_sight && !using_yell_position) {
         register coord *cp;
 
         cp = gettrack(omx, omy);
@@ -1357,7 +1379,7 @@ int after; /* this is extra fast monster movement */
         ny = poss[i].y;
         if (MON_AT(nx, ny) && !((info[i] & ALLOW_M) || ((info[i] & ALLOW_TM) && m_at(nx, ny) && is_tame(m_at(nx, ny))) || info[i] & ALLOW_MDISP))
             continue;
-        if (cursed_object_at(nx, ny))
+        if (!mtmp->mcomingtou && cursed_object_at(nx, ny))
             continue;
         uncursedcnt++;
     }
@@ -1378,7 +1400,7 @@ int after; /* this is extra fast monster movement */
             continue;
 
         /* if a guardian, try to stay close by choice */
-        if (!has_edog && (j = distu(nx, ny)) > 16 && j >= udist)
+        if ((!has_edog || mtmp->mcomingtou) && (j = distu(nx, ny)) > 16 && j >= udist)
             continue;
 
 		boolean monatres = MON_AT(nx, ny);
@@ -1484,7 +1506,7 @@ int after; /* this is extra fast monster movement */
             }
         /* didn't find something to eat; if we saw a cursed item and
            aren't being forced to walk on it, usually keep looking */
-        if (cursemsg[i] && !mtmp->mleashed && uncursedcnt > 0
+        if (cursemsg[i] && !mtmp->mleashed && !mtmp->mcomingtou && uncursedcnt > 0
             && rn2(13 * uncursedcnt))
             continue;
 
@@ -1492,7 +1514,7 @@ int after; /* this is extra fast monster movement */
         /* This causes unintended issues for pets trying to follow
            the hero. Thus, only run it if not leashed and >5 tiles
            away. */
-        if (!mtmp->mleashed && distmin(mtmp->mx, mtmp->my, u.ux, u.uy) > 5)
+        if (!mtmp->mleashed && !mtmp->mcomingtou && distmin(mtmp->mx, mtmp->my, u.ux, u.uy) > 5)
 		{
             k = has_edog ? uncursedcnt : cnt;
             for (j = 0; j < MTSZ && j < k - 1; j++)

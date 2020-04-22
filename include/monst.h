@@ -141,6 +141,7 @@ struct monst {
 	Bitfield(mwantstodrop, 1);
 
     short mcomingtou;
+    xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
 
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */

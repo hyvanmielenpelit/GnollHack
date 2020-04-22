@@ -1629,8 +1629,11 @@ update_monster_timouts()
             mtmp->mflee = 0;
 		if (mtmp->notalktimer > 0)
 			mtmp->notalktimer--;
-        if (mtmp->mcomingtou > 0)
-            mtmp->mcomingtou--;
+        if (mtmp->mcomingtou && !--mtmp->mcomingtou)
+        {
+            mtmp->yell_x = 0;
+            mtmp->yell_y = 0;
+        }
 
 
 		/* might need to update mon properties */
@@ -3005,6 +3008,8 @@ register struct monst *mtmp;
 			mtmp->mcarrying = 0;
 			mtmp->mwantstodrop = 1;
             mtmp->mcomingtou = 0;
+            mtmp->yell_x = 0;
+            mtmp->yell_y = 0;
             if (mtmp->mbasehpmax <= 0)
 				mtmp->mbasehpmax = 10;
 			update_mon_maxhp(mtmp);
@@ -3685,6 +3690,8 @@ struct monst *mtmp;
 			mtmp->mcarrying = 0;
 			mtmp->mwantstodrop = 1;
             mtmp->mcomingtou = 0;
+            mtmp->yell_x = 0;
+            mtmp->yell_y = 0;
             if (mtmp->mbasehpmax <= 0)
 				mtmp->mbasehpmax = 10;
 			update_mon_maxhp(mtmp);

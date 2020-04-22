@@ -7,6 +7,7 @@
 STATIC_DCL boolean FDECL(mon_is_gecko, (struct monst *));
 STATIC_DCL int FDECL(domonnoise, (struct monst *));
 STATIC_DCL boolean NDECL(speak_check);
+STATIC_DCL boolean NDECL(yell_check);
 STATIC_DCL boolean FDECL(m_speak_check, (struct monst*));
 STATIC_DCL boolean FDECL(m_general_talk_check, (struct monst*, char*));
 STATIC_DCL int NDECL(dochat);
@@ -15,7 +16,9 @@ STATIC_DCL int FDECL(do_chat_rumors, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_sit, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_givepaw, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_stay, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_standup, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_follow, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_unfollow, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_display_inventory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
@@ -1152,7 +1155,7 @@ doyell()
 {
 	int result = 0;
 
-	if (speak_check())
+	if (yell_check())
 	{
 		wake_nearby();
 		boolean petfound = FALSE;
@@ -1161,10 +1164,12 @@ doyell()
 			if (!DEADMONSTER(mtmp) && is_tame(mtmp) && !is_deaf(mtmp))
 			{
 				mtmp->mcomingtou = 100 + rnd(50);
+				mtmp->yell_x = u.ux;
+				mtmp->yell_y = u.uy;
 				petfound = TRUE;
 			}
 		}
-		You("yell loudly%s!", petfound ? " for your pets" : "");
+		You("yell loudly%s!", petfound ? " for your companions" : "");
 	}
 	return result;
 }
@@ -1206,6 +1211,32 @@ speak_check()
 	if (Deaf)
 	{
 		pline("How can you hold a conversation when you cannot hear?");
+		return 0;
+	}
+	return 1;
+}
+
+STATIC_OVL boolean
+yell_check()
+{
+	if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
+	{
+		pline("As %s, you cannot yell.", an(youmonst.data->mname));
+		return 0;
+	}
+	if (Strangled)
+	{
+		You_cant("yell.  You're choking!");
+		return 0;
+	}
+	if (Silenced)
+	{
+		You_cant("yell.  Your voice is gone!");
+		return 0;
+	}
+	if (Underwater)
+	{
+		You_cant("yell underwater.");
 		return 0;
 	}
 	return 1;
@@ -1530,12 +1561,30 @@ dochat()
 		if (mtmp->mstaying || !mtmp->mwantstomove)
 		{
 			if (is_animal(mtmp->data))
-				strcpy(available_chat_list[chatnum].name, "Command to follow");
+				strcpy(available_chat_list[chatnum].name, "Command to stop staying put");
 			else if (is_speaking_monster(mtmp->data))
 				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
 			else
 				strcpy(available_chat_list[chatnum].name, "Command to stop holding position");
 
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_standup;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+
+		if (!mtmp->mcomingtou)
+		{
+
+			strcpy(available_chat_list[chatnum].name, "Command to follow you");
 			available_chat_list[chatnum].function_ptr = &do_chat_pet_follow;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -1548,6 +1597,23 @@ dochat()
 
 			chatnum++;
 		}
+
+		if (mtmp->mcomingtou)
+		{
+			strcpy(available_chat_list[chatnum].name, "Command to stop following you");
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_unfollow;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
 
 
 		if (mtmp->minvent)
@@ -2385,15 +2451,15 @@ struct monst* mtmp;
 
 
 STATIC_OVL int
-do_chat_pet_follow(mtmp)
+do_chat_pet_standup(mtmp)
 struct monst* mtmp;
 {
 	if (mtmp->mtame > 0 && mtmp->mstaying)
 	{
 		if (is_steed(mtmp->data))
-			pline("%s seems ready to follow you.", Monnam(mtmp));
+			pline("%s stops staying put.", Monnam(mtmp));
 		else if is_animal(mtmp->data)
-			pline("%s stands up and seems ready to follow you!", Monnam(mtmp));
+			pline("%s stands up.", Monnam(mtmp));
 		else if (is_speaking_monster(mtmp->data))
 			pline("%s stops holding its position.", Monnam(mtmp));
 		else
@@ -2407,6 +2473,56 @@ struct monst* mtmp;
 
 	return 1;
 }
+
+STATIC_OVL int
+do_chat_pet_follow(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	if (speak_check())
+	{
+		short oldvalue = mtmp->mcomingtou;
+		mtmp->mcomingtou = 100 + rnd(50);
+		mtmp->yell_x = u.ux;
+		mtmp->yell_y = u.uy;
+
+		if (mtmp->mcomingtou > oldvalue)
+			pline("%s is now following you more closely.", Monnam(mtmp));
+		else
+			pline("%s %s.", Monnam(mtmp), has_head(mtmp->data) ? "nods" : "looks perplexed");
+
+		return 1;
+	}
+	return 0;
+}
+
+STATIC_OVL int
+do_chat_pet_unfollow(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	if (speak_check())
+	{
+		short oldvalue = mtmp->mcomingtou;
+		mtmp->mcomingtou = 0;
+		mtmp->yell_x = 0;
+		mtmp->yell_y = 0;
+
+		if (oldvalue > 0)
+			pline("%s stops following you.", Monnam(mtmp));
+		else
+			pline("%s looks perplexed.", Monnam(mtmp));
+
+		return 1;
+	}
+
+	return 0;
+}
+
 
 STATIC_OVL int
 do_chat_pet_display_inventory(mtmp)

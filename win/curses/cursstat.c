@@ -218,7 +218,7 @@ draw_status()
        statusbar. */
     if (horiz) {
         int ax = 0, ay = 0;
-        int cy = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+        int cy = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
 
         /* actual y (and x) */
         getmaxyx(win, ay, ax);
@@ -490,7 +490,7 @@ boolean border;
      *  trimming of hunger and encumbrance would be better overall.
      */
 
-    number_of_lines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+    number_of_lines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
     fieldorder = (number_of_lines >= 8) ? eightlineorder : (number_of_lines == 7) ? sevenlineorder : (number_of_lines == 6) ? sixlineorder : 
         (number_of_lines == 5) ? fivelineorder : (number_of_lines == 4) ? fourlineorder : 
         (number_of_lines != 3) ? twolineorder : threelineorder;

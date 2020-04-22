@@ -992,7 +992,7 @@ struct obj *otmp;
             if ((HDetect_monsters & TIMEOUT) >= 300L)
                 i = 1;
             else
-                i = rn1(40, 21);
+                i = rn1(50, 101);
             incr_itimeout(&HDetect_monsters, i);
             for (x = 1; x < COLNO; x++) {
                 for (y = 0; y < ROWNO; y++) {

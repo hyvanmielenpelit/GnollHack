@@ -5855,7 +5855,9 @@ char *buf;
 #endif
     } else if (!strcmp(optname,"statuslines")) {
         if (wc2_supported(optname))
-            Strcpy(buf, (iflags.wc2_statuslines < 3) ? "2" : (iflags.wc2_statuslines > 7) ? "8" : "3");
+        { 
+            Sprintf(buf, "%d", (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines);
+        }
         /* else default to "unknown" */
     } else if (!strcmp(optname, "suppress_alert")) {
         if (flags.suppress_alert == 0L)

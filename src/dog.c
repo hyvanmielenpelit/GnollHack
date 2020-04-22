@@ -665,6 +665,8 @@ boolean pets_only; /* true for ascension or final escape */
 			mtmp->mstaying = 0;
 			mtmp->mcarrying = 0;
             mtmp->mcomingtou = 0;
+            mtmp->yell_x = 0;
+            mtmp->yell_y = 0;
             mtmp->mcanmove = 1;
 			mtmp->mwantstomove = 1;
 			mtmp->mwantstodrop = 1;

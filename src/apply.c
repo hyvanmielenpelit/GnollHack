@@ -576,7 +576,20 @@ struct obj *obj;
                         body_part(NOSE));
         else if(obj)
             You(whistle_str, obj->cursed ? "shrill" : "high");
+
         wake_nearby();
+
+        /* It does bring your pets to you now! --JG*/
+        for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        {
+            if (!DEADMONSTER(mtmp) && is_tame(mtmp) && !is_deaf(mtmp))
+            {
+                mtmp->mcomingtou = 100 + rnd(50);
+                mtmp->yell_x = u.ux;
+                mtmp->yell_y = u.uy;
+            }
+        }
+
         if (obj->cursed)
             vault_summon_gd();
     }

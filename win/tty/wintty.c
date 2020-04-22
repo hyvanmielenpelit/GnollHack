@@ -391,7 +391,7 @@ char **argv UNUSED;
 
     /* options aren't processed yet so wc2_statuslines might be 0;
        make sure that it has a reasonable value during tty setup */
-    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
     /*
      *  Remember tty modes, to be restored on exit.
      *
@@ -3864,7 +3864,7 @@ tty_status_init()
 #ifdef STATUS_HILITES
     int i, num_rows;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
     fieldorder = (num_rows >= 8) ? eightlineorder : (num_rows == 7) ? sevenlineorder : 
         (num_rows == 6 ) ? sixlineorder : (num_rows == 5) ? fivelineorder : (num_rows == 4) ? fourlineorder :
         (num_rows != 3) ? twolineorder : threelineorder;
@@ -4087,7 +4087,7 @@ boolean force_update;
     int trycnt, fitting = -1, condsz, requirement;
     int rowsz[10], num_rows, condrow, otheroptions = 0;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
     condrow = num_rows - 1; /* always last row, 1 for 0..1 or 2 for 0..2 */
     cond_shrinklvl = 0;
     if (enc_shrinklvl > 0 && num_rows == 2)
@@ -4155,7 +4155,7 @@ int sz[3];
     if (!windowdata_init && !check_windowdata())
         return FALSE;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
 
     for (row = 0; row < num_rows; ++row) {
         sz[row] = 0;
@@ -4469,7 +4469,8 @@ render_status(VOID_ARGS)
         return;
     }
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
+
     for (row = 0; row < num_rows; ++row) {
         HUPSKIP();
         y = row;
