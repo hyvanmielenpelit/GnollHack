@@ -210,7 +210,9 @@ STATIC_DCL int NDECL(condition_size);
 STATIC_DCL int FDECL(make_things_fit, (BOOLEAN_P));
 STATIC_DCL void FDECL(shrink_enc, (int));
 STATIC_DCL void FDECL(shrink_dlvl, (int));
+STATIC_DCL void FDECL(print_rest_partyline, (char*, int*, int*));
 #endif
+
 
 /*
  * A string containing all the default commands -- to add to a list
@@ -4561,7 +4563,108 @@ render_status(VOID_ARGS)
                         x += (int) strlen(bar2);
                     }
                     tty_putstatusfield("]", x++, y);
-                } else {
+                } 
+                else if(idx == BL_PARTYSTATS && flags.partylinecolor)
+                {
+                     char printbuf[BUFSZ];
+                     strcpy(printbuf, text);
+                     char* bp = 0, *bp2 = 0, *bp3 = 0, *startbp = printbuf;
+                     do
+                     {
+                         bp = strstr(startbp, "HP:");
+                         if(bp)
+                             bp2 = strstr(bp + 1, "(");
+                         if (bp2)
+                             bp3 = strstr(bp2 + 1, ")");
+
+                         if (bp && bp2 && bp3)
+                         {
+                             char restbuf[BUFSZ];
+                             strcpy(restbuf, bp2);
+                             restbuf[1] = '\0'; /* Print just one character */
+                             *bp2 = '\0';
+
+                             *bp3 = '\0';
+                             char maxbuf[BUFSZ];
+                             strcpy(maxbuf, bp2 + 1);
+                             int hpmax = atoi(maxbuf);
+                             *bp3 = ')';
+
+                             char hpbuf[BUFSZ];
+                             strcpy(hpbuf, bp + 3);
+                             char hpbuf2[BUFSZ];
+                             strcpy(hpbuf2, bp);
+                             *bp = '\0';
+                             int hp = atoi(hpbuf);
+
+                             char startbuf[BUFSZ];
+                             strcpy(startbuf, startbp);
+
+                             print_rest_partyline(startbuf, &x, &y);
+                             //tty_putstatusfield(startbuf, x, y);
+                             //x += (int)strlen(startbuf);
+
+                             double ratio = (double)hp / max(1.0, (double)hpmax);
+                             coloridx = NO_COLOR;
+                             attrmask = 0;
+                             if (ratio <= 0.0)
+                             {
+                                 coloridx = CLR_BLACK;
+                             }
+                             else if (ratio <= 0.33)
+                             {
+                                 coloridx = CLR_ORANGE;
+                                 //attrmask = ATR_INVERSE;
+                             }
+                             else if (ratio <= 0.15)
+                             {
+                                 coloridx = CLR_ORANGE;
+                             }
+                             else if (ratio <= 0.66)
+                             {
+                                 coloridx = CLR_YELLOW;
+                             }
+                             else if (ratio < 1)
+                             {
+                                 coloridx = CLR_GREEN;
+                             }
+
+                             if(coloridx != NO_COLOR)
+                                 term_start_color(coloridx);
+
+                             if(attrmask)
+                                 Begin_Attr(attrmask);
+
+                             tty_putstatusfield(hpbuf2, x, y);
+                             x += (int)strlen(hpbuf2);
+
+                             if (coloridx != NO_COLOR)
+                                 term_end_color();
+
+                             if (attrmask)
+                                 End_Attr(attrmask);
+
+                             tty_putstatusfield(restbuf, x, y);
+                             x += (int)strlen(restbuf);
+
+                         }
+                         else
+                         {
+                             print_rest_partyline(startbp, &x, &y);
+                             //tty_putstatusfield(startbp, x, y);
+                             //x += (int)strlen(startbp);
+                         }
+
+                         if (bp && bp2)
+                             startbp = bp2 + 1;
+                         else
+                             bp = 0;
+                     } 
+                     while (bp);
+
+                }
+                else
+                {
                     /*
                      * +-----------------------------+
                      * | Everything else that is not |
@@ -4618,6 +4721,122 @@ render_status(VOID_ARGS)
         finalx[row][BEFORE] = finalx[row][NOW];
     }
     return;
+}
+
+STATIC_OVL
+void
+print_rest_partyline(restbuf, x_ptr, y_ptr)
+char* restbuf;
+int* x_ptr;
+int* y_ptr;
+{
+    const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf", 
+                                     "Blind", "Hallu", "Stoned", "Slime", "Sleep", 
+                                     "Paral", "Stun", "Slow", "Strgnl", "Suffoc" };
+    int status_colors[] = { CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW,
+                            CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, 
+                            CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE };
+    int status_attrmask[] = { ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
+                              ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE, 
+                              ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE };
+
+    int no_of_statuses = SIZE(status_strings);
+
+    char *bp = 0, *firstbp = 0, *secondbp = 0, *startbp = 0;
+
+    startbp = restbuf;
+    boolean breakdoloop = FALSE;
+    int selected_status = -1;
+
+    do
+    {
+        selected_status = -1;
+        breakdoloop = FALSE;
+        firstbp = 0;
+        for (int i = 0; i < no_of_statuses; i++)
+        {
+            bp = strstr(startbp, status_strings[i]);
+            if (bp && (bp < firstbp || firstbp == 0))
+            {
+                firstbp = bp;
+                selected_status = i;
+            }
+        }
+        if (firstbp)
+        {
+            secondbp = 0;
+            for (int i = 0; i < no_of_statuses; i++)
+            {
+                bp = strstr(firstbp + 1, status_strings[i]);
+                if (bp && (bp < secondbp || secondbp == 0))
+                {
+                    secondbp = bp;
+                }
+            }
+            char savechar = '\0';
+            if (!secondbp)
+            {
+                secondbp = firstbp + strlen(status_strings[selected_status]) + 1;
+                breakdoloop = TRUE;
+            }
+            if (secondbp > eos(firstbp) + 1)
+                secondbp = eos(firstbp) + 1;
+
+            savechar = *(secondbp - 1);
+            *(secondbp - 1) = '\0';
+
+            char savechar2 = *firstbp;
+            *firstbp = '\0';
+            tty_putstatusfield(startbp, *x_ptr, *y_ptr);
+            *x_ptr += (int)strlen(startbp);
+            *firstbp = savechar2;
+
+            int coloridx = NO_COLOR;
+            int attrmask = 0;
+
+            if (selected_status >= 0)
+            {
+                coloridx = status_colors[selected_status];
+                attrmask = status_attrmask[selected_status];
+            }
+
+            if (coloridx != NO_COLOR)
+                term_start_color(coloridx);
+
+            if (attrmask)
+                Begin_Attr(attrmask);
+
+            tty_putstatusfield(firstbp, *x_ptr, *y_ptr);
+            *x_ptr += (int)strlen(firstbp);
+
+            if (coloridx != NO_COLOR)
+                term_end_color();
+
+            if (attrmask)
+                End_Attr(attrmask);
+
+            *(secondbp - 1) = savechar;
+
+            if (secondbp - 1 < eos(firstbp) && breakdoloop)
+            {
+                tty_putstatusfield(secondbp - 1, *x_ptr, *y_ptr);
+                *x_ptr += (int)strlen(secondbp - 1);
+            }
+        }
+        else
+        {
+            tty_putstatusfield(startbp, *x_ptr, *y_ptr);
+            *x_ptr += (int)strlen(startbp);
+            breakdoloop = TRUE;
+        }
+
+        if (!breakdoloop && secondbp)
+            startbp = secondbp - 1;
+        else if (!secondbp)
+            breakdoloop = TRUE;
+
+    } while (firstbp && !breakdoloop);
+
 }
 
 #endif /* STATUS_HILITES */

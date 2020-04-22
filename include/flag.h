@@ -52,7 +52,10 @@ struct flag {
     boolean safe_dog;        /* give complete protection to the dog */
     boolean showexp;         /* show experience points */
 	boolean tellexp;		 /* tell experience points when received */
-	boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
+    boolean partylinecolor;	 /* use fixed partyline coloring */
+    boolean partydetails;	 /* print additional info like AC and MC for all party members */
+    boolean partymultiline;	 /* print each party member on its own line */
+    boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
 	boolean inventory_weights_last; /* inventory weights are shown after the name of the item rather first, as normal */
 	boolean classic_statue_symbol; /* statue is shown as rock */
 	boolean detailed_weights; /* use ounces and grams instead of lbs and kg */

@@ -198,6 +198,9 @@ static struct Bool_Opt {
 #else
     { "page_wait", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
+    { "partylinecolor", &flags.partylinecolor, TRUE, SET_IN_GAME },
+    { "partydetails", &flags.partydetails, FALSE, SET_IN_GAME },
+    { "partymultiline", &flags.partymultiline, FALSE, SET_IN_GAME },
     /* 3.6.2: move perm_invent from flags to iflags and out of save file */
     { "perm_invent", &iflags.perm_invent, FALSE, SET_IN_GAME },
     { "pickup_thrown", &flags.pickup_thrown, TRUE, SET_IN_GAME },

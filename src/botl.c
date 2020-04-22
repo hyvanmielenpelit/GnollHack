@@ -879,6 +879,17 @@ char* outbuf;
             strcat(outbuf, ": HP:");
             Sprintf(eos(outbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
 
+            if (flags.partydetails)
+            {
+                strcat(outbuf, " AC:");
+                Sprintf(eos(outbuf), "%d", find_mac(mtmp));
+
+                int mc = magic_negation(mtmp);
+                int mcpct = magic_negation_percentage(mc);
+                strcat(outbuf, " MC:");
+                Sprintf(eos(outbuf), "%d/%d%%", mc, mcpct);
+            }
+
             if (mtmp->mextra && EDOG(mtmp))
             {
                 if (EDOG(mtmp)->hungrytime + 500 <= monstermoves)
@@ -887,23 +898,11 @@ char* outbuf;
                     strcat(outbuf, " Hungry");
             }
 
-            if(mtmp->mprops[STUNNED])
-                strcat(outbuf, " Stunned");
-
-            if (mtmp->mprops[BLINDED])
-                strcat(outbuf, " Blind");
-
-            if (mtmp->mprops[CONFUSION])
-                strcat(outbuf, " Conf");
-
             if (mtmp->mprops[SICK])
                 strcat(outbuf, " TermIll");
 
             if (mtmp->mprops[FOOD_POISONED])
                 strcat(outbuf, " FoodPois");
-
-            if (mtmp->mprops[HALLUC])
-                strcat(outbuf, " Hallu");
 
             if (mtmp->mprops[STONED])
                 strcat(outbuf, " Stoned");
@@ -911,11 +910,26 @@ char* outbuf;
             if (mtmp->mprops[SLIMED])
                 strcat(outbuf, " Slime");
 
+            if (mtmp->mprops[HALLUC])
+                strcat(outbuf, " Hallu");
+
+            if(mtmp->mprops[STUNNED])
+                strcat(outbuf, " Stun");
+
+            if (mtmp->mprops[BLINDED])
+                strcat(outbuf, " Blind");
+
+            if (mtmp->mprops[CONFUSION])
+                strcat(outbuf, " Conf");
+
             if (mtmp->mprops[SLEEPING])
                 strcat(outbuf, " Sleep");
 
             if (mtmp->mprops[PARALYZED])
                 strcat(outbuf, " Paral");
+
+            if (mtmp->mspec_used)
+                strcat(outbuf, " SpecUnav");
 
             if (strlen(outbuf) >= MAXVALWIDTH)
                 break;
