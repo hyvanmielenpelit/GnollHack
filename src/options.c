@@ -429,7 +429,7 @@ static struct Comp_Opt {
       "2 or 3 lines for horizonal (bottom or top) status display",
       20, SET_IN_GAME
 #else
-      "2 or 3 lines for status display",
+      "2 to 8 lines for status display",
       20, SET_IN_FILE
 #endif
     }, /*WC2*/
@@ -3815,8 +3815,8 @@ boolean tinitial, tfrom_file;
         } else if (op) {
             itmp = atoi(op);
         }
-        if (itmp < 2 || itmp > 4) {
-            config_error_add("'%s' requires a value of 2 and 4", fullname);
+        if (itmp < 2 || itmp > 8) {
+            config_error_add("'%s' requires a value of 2 and 8", fullname);
             retval = FALSE;
         } else {
             iflags.wc2_statuslines = itmp;
@@ -5854,7 +5854,7 @@ char *buf;
 #endif
     } else if (!strcmp(optname,"statuslines")) {
         if (wc2_supported(optname))
-            Strcpy(buf, (iflags.wc2_statuslines < 3) ? "2" : (iflags.wc2_statuslines > 3) ? "4" : "3");
+            Strcpy(buf, (iflags.wc2_statuslines < 3) ? "2" : (iflags.wc2_statuslines > 7) ? "8" : "3");
         /* else default to "unknown" */
     } else if (!strcmp(optname, "suppress_alert")) {
         if (flags.suppress_alert == 0L)

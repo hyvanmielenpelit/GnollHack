@@ -746,7 +746,7 @@ boolean calc_costly;
 {
     static boolean costly = FALSE;
     const char *otypes = flags.pickup_types;
-    boolean pickit;
+    boolean pickit = FALSE;
 
     /* calculate 'costly' just once for a given autopickup operation */
     if (calc_costly)

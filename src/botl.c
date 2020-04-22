@@ -16,7 +16,7 @@ const char *const enc_stat[] = { "",         "Burdened",  "Stressed",
 STATIC_OVL NEARDATA int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
-STATIC_DCL void FDECL(compose_partystatline, (char*));
+STATIC_DCL void FDECL(compose_partystatline, (char*, char*, char*, char*, char*));
 
 char*
 get_strength_string(st)
@@ -585,7 +585,11 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("dungeon-level", "%s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
     INIT_BLSTAT("experience", "/%s", ANY_LONG, 20, BL_EXP),
     INIT_BLSTAT("condition", "%s", ANY_MASK32, 0, BL_CONDITION),
-    INIT_BLSTAT("partystats", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS)
+    INIT_BLSTAT("partystats", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS),
+    INIT_BLSTAT("partystats2", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS2),
+    INIT_BLSTAT("partystats3", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS3),
+    INIT_BLSTAT("partystats4", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS4),
+    INIT_BLSTAT("partystats5", "%s", ANY_STR, MAXVALWIDTH, BL_PARTYSTATS5)
 };
 
 #undef INIT_BLSTATP
@@ -830,10 +834,26 @@ bot_via_windowport()
 
     /* Partyline */
     char partybuf[BUFSIZ];
-    compose_partystatline(partybuf);
-    blstats[idx][BL_PARTYSTATS].a.a_int = 1;
+    char partybuf2[BUFSIZ];
+    char partybuf3[BUFSIZ];
+    char partybuf4[BUFSIZ];
+    char partybuf5[BUFSIZ];
+    compose_partystatline(partybuf, partybuf2, partybuf3, partybuf4, partybuf5);
+    blstats[idx][BL_PARTYSTATS].a.a_int = strcmp(partybuf, "") ? 1 : 0;
+    blstats[idx][BL_PARTYSTATS2].a.a_int = strcmp(partybuf2, "") ? 1 : 0;
+    blstats[idx][BL_PARTYSTATS3].a.a_int = strcmp(partybuf3, "") ? 1 : 0;
+    blstats[idx][BL_PARTYSTATS4].a.a_int = strcmp(partybuf4, "") ? 1 : 0;
+    blstats[idx][BL_PARTYSTATS5].a.a_int = strcmp(partybuf5, "") ? 1 : 0;
     Strcpy(blstats[idx][BL_PARTYSTATS].val, partybuf);
+    Strcpy(blstats[idx][BL_PARTYSTATS2].val, partybuf2);
+    Strcpy(blstats[idx][BL_PARTYSTATS3].val, partybuf3);
+    Strcpy(blstats[idx][BL_PARTYSTATS4].val, partybuf4);
+    Strcpy(blstats[idx][BL_PARTYSTATS5].val, partybuf5);
     valset[BL_PARTYSTATS] = TRUE;
+    valset[BL_PARTYSTATS2] = TRUE;
+    valset[BL_PARTYSTATS3] = TRUE;
+    valset[BL_PARTYSTATS4] = TRUE;
+    valset[BL_PARTYSTATS5] = TRUE;
 
 
     evaluate_and_notify_windowport(valset, idx);
@@ -841,97 +861,148 @@ bot_via_windowport()
 
 STATIC_OVL
 void
-compose_partystatline(outbuf)
+compose_partystatline(outbuf, outbuf2, outbuf3, outbuf4, outbuf5)
 char* outbuf;
+char* outbuf2;
+char* outbuf3;
+char* outbuf4;
+char* outbuf5;
 {
     strcpy(outbuf, "");
+    strcpy(outbuf2, "");
+    strcpy(outbuf3, "");
+    strcpy(outbuf4, "");
+    strcpy(outbuf5, "");
+
+    char* outbufs[5] = { outbuf, outbuf2, outbuf3, outbuf4, outbuf5 };
+    boolean first = TRUE;
+    int line_idx = 1;
+    int maxlines = min(5, max(0, iflags.wc2_statuslines - 3));
+    boolean first_in_line = TRUE;
+
+    if (maxlines == 0)
+        return;
 
     for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
     {
+        char* targetbuf = outbufs[line_idx-1];
+        char tempbuf[BUFSIZ];
+        strcpy(tempbuf, "");
+
         if (!DEADMONSTER(mtmp) && is_tame(mtmp))
         {
-            if (strcmp(outbuf, ""))
+            if (flags.partymultiline && !first)
             {
-                strcat(outbuf, "  ");
+                line_idx++;
+                if (line_idx > maxlines)
+                    break;
+                targetbuf = outbufs[line_idx - 1];
+                first_in_line = TRUE;
             }
+            else
+            {
+                if (strcmp(targetbuf, ""))
+                {
+                    strcat(targetbuf, "  ");
+                    first_in_line = FALSE;
+                }
+            }
+
+            first = FALSE;
+
+            if (!targetbuf)
+                break;
 
             if (UMNAME(mtmp))
             {
                 char umnbuf[BUFSIZ];
                 strcpy(umnbuf, UMNAME(mtmp));
                 umnbuf[16] = '\0'; /* Limit the length of the name */
-                strcat(outbuf, umnbuf);
+                strcat(tempbuf, umnbuf);
             }
             else if (MNAME(mtmp) && mtmp->u_know_mname)
             {
                 char mnbuf[BUFSIZ];
                 strcpy(mnbuf, MNAME(mtmp));
                 mnbuf[16] = '\0'; /* Limit the length of the name */
-                strcat(outbuf, mnbuf);
+                strcat(tempbuf, mnbuf);
             }
             else
             {
                 char buf[BUFSZ];
                 strcpy(buf, mtmp->data->mname);
                 *buf = highc(*buf);
-                strcat(outbuf, buf);
+                strcat(tempbuf, buf);
             }
-            strcat(outbuf, ": HP:");
-            Sprintf(eos(outbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
+            strcat(tempbuf, ": HP:");
+            Sprintf(eos(tempbuf), "%d(%d)", mtmp->mhp, mtmp->mhpmax);
+
+#define changepartyline() \
+            if (!flags.partymultiline && line_idx < maxlines && !first_in_line && strlen(tempbuf) + strlen(targetbuf) >= MAXVALWIDTH) \
+            { \
+                line_idx++;\
+                targetbuf = outbufs[line_idx - 1]; \
+                first_in_line = TRUE; \
+            }
 
             if (flags.partydetails)
             {
-                strcat(outbuf, " AC:");
-                Sprintf(eos(outbuf), "%d", find_mac(mtmp));
+                strcat(tempbuf, " AC:");
+                Sprintf(eos(tempbuf), "%d", find_mac(mtmp));
 
                 int mc = magic_negation(mtmp);
                 int mcpct = magic_negation_percentage(mc);
-                strcat(outbuf, " MC:");
-                Sprintf(eos(outbuf), "%d/%d%%", mc, mcpct);
+                strcat(tempbuf, " MC:");
+                Sprintf(eos(tempbuf), "%d/%d%%", mc, mcpct);
             }
 
             if (mtmp->mextra && EDOG(mtmp))
             {
                 if (EDOG(mtmp)->hungrytime + 500 <= monstermoves)
-                    strcat(outbuf, " Weak");
+                    strcat(tempbuf, " Weak");
                 else if (EDOG(mtmp)->hungrytime <= monstermoves)
-                    strcat(outbuf, " Hungry");
+                    strcat(tempbuf, " Hungry");
             }
+//            changepartyline();
+//            strcat(targetbuf, tempbuf);
 
             if (mtmp->mprops[SICK])
-                strcat(outbuf, " TermIll");
+                strcat(tempbuf, " TermIll");
 
             if (mtmp->mprops[FOOD_POISONED])
-                strcat(outbuf, " FoodPois");
+                strcat(tempbuf, " FoodPois");
 
             if (mtmp->mprops[STONED])
-                strcat(outbuf, " Stoned");
+                strcat(tempbuf, " Stoned");
 
             if (mtmp->mprops[SLIMED])
-                strcat(outbuf, " Slime");
+                strcat(tempbuf, " Slime");
 
             if (mtmp->mprops[HALLUC])
-                strcat(outbuf, " Hallu");
+                strcat(tempbuf, " Hallu");
 
             if(mtmp->mprops[STUNNED])
-                strcat(outbuf, " Stun");
+                strcat(tempbuf, " Stun");
 
             if (mtmp->mprops[BLINDED])
-                strcat(outbuf, " Blind");
+                strcat(tempbuf, " Blind");
 
             if (mtmp->mprops[CONFUSION])
-                strcat(outbuf, " Conf");
+                strcat(tempbuf, " Conf");
 
             if (mtmp->mprops[SLEEPING])
-                strcat(outbuf, " Sleep");
+                strcat(tempbuf, " Sleep");
 
             if (mtmp->mprops[PARALYZED])
-                strcat(outbuf, " Paral");
+                strcat(tempbuf, " Paral");
 
             if (mtmp->mspec_used)
-                strcat(outbuf, " SpecUnav");
+                strcat(tempbuf, " SpecUnav");
 
-            if (strlen(outbuf) >= MAXVALWIDTH)
+            changepartyline();
+            strcat(targetbuf, tempbuf);
+
+            if (!flags.partymultiline && line_idx == maxlines && strlen(outbuf) >= MAXVALWIDTH)
                 break;
         }
     }

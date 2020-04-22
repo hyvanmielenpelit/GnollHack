@@ -391,7 +391,7 @@ char **argv UNUSED;
 
     /* options aren't processed yet so wc2_statuslines might be 0;
        make sure that it has a reasonable value during tty setup */
-    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
+    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
     /*
      *  Remember tty modes, to be restored on exit.
      *
@@ -1457,7 +1457,7 @@ int type;
 #ifndef CLIPPING
             || (LI < 1 + ROWNO + 3)
 #endif
-            || iflags.wc2_statuslines > 4)
+            || iflags.wc2_statuslines > 8)
             iflags.wc2_statuslines = 2;
         newwin->offx = 0;
         rowoffset = ttyDisplay->rows - iflags.wc2_statuslines;
@@ -3760,6 +3760,70 @@ fourlineorder[4][MAX_PER_ROW] = {
   blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
 { BL_PARTYSTATS, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
   blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
+},
+fivelineorder[5][MAX_PER_ROW] = {
+{ BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_SCORE,
+  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
+  BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH,
+  blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS2, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
+},
+sixlineorder[6][MAX_PER_ROW] = {
+{ BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_SCORE,
+  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
+  BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH,
+  blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS2, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS3, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
+},
+sevenlineorder[7][MAX_PER_ROW] = {
+{ BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_SCORE,
+  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
+  BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH,
+  blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS2, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS3, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS4, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
+},
+eightlineorder[8][MAX_PER_ROW] = {
+{ BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, BL_SCORE,
+  BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_LEVELDESC, BL_HP, BL_HPMAX, BL_ENE, BL_ENEMAX,  //BL_GOLD, BL_ALIGN, 
+  BL_AC,  BL_MC_LVL, BL_MC_PCT, BL_XP, BL_EXP, BL_HD, BL_TIME, BL_FLUSH,
+  blPAD, blPAD, blPAD, blPAD, blPAD },
+{ BL_2WEP, BL_SKILL, BL_HUNGER, BL_CAP, BL_CONDITION, BL_FLUSH, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS2, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS3, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS4, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  },
+{ BL_PARTYSTATS5, BL_FLUSH, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD,
+  blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD, blPAD  }
 };
 static const enum statusfields (*fieldorder)[MAX_PER_ROW];
 
@@ -3800,8 +3864,10 @@ tty_status_init()
 #ifdef STATUS_HILITES
     int i, num_rows;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
-    fieldorder = (num_rows > 3) ? fourlineorder : (num_rows != 3) ? twolineorder : threelineorder;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
+    fieldorder = (num_rows >= 8) ? eightlineorder : (num_rows == 7) ? sevenlineorder : 
+        (num_rows == 6 ) ? sixlineorder : (num_rows == 5) ? fivelineorder : (num_rows == 4) ? fourlineorder :
+        (num_rows != 3) ? twolineorder : threelineorder;
 
     for (i = 0; i < MAXBLSTATS; ++i) {
         tty_status[NOW][i].idx = BL_FLUSH;
@@ -4021,7 +4087,7 @@ boolean force_update;
     int trycnt, fitting = -1, condsz, requirement;
     int rowsz[10], num_rows, condrow, otheroptions = 0;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
     condrow = num_rows - 1; /* always last row, 1 for 0..1 or 2 for 0..2 */
     cond_shrinklvl = 0;
     if (enc_shrinklvl > 0 && num_rows == 2)
@@ -4089,7 +4155,7 @@ int sz[3];
     if (!windowdata_init && !check_windowdata())
         return FALSE;
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
 
     for (row = 0; row < num_rows; ++row) {
         sz[row] = 0;
@@ -4403,7 +4469,7 @@ render_status(VOID_ARGS)
         return;
     }
 
-    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 3) ? 4 : 3;
+    num_rows = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : 3;
     for (row = 0; row < num_rows; ++row) {
         HUPSKIP();
         y = row;
@@ -4564,7 +4630,7 @@ render_status(VOID_ARGS)
                     }
                     tty_putstatusfield("]", x++, y);
                 } 
-                else if(idx == BL_PARTYSTATS && flags.partylinecolor)
+                else if((idx == BL_PARTYSTATS || idx == BL_PARTYSTATS2 || idx == BL_PARTYSTATS3 || idx == BL_PARTYSTATS4 || idx == BL_PARTYSTATS5) && flags.partylinecolor)
                 {
                      char printbuf[BUFSZ];
                      strcpy(printbuf, text);
@@ -4732,13 +4798,13 @@ int* y_ptr;
 {
     const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf", 
                                      "Blind", "Hallu", "Stoned", "Slime", "Sleep", 
-                                     "Paral", "Stun", "Slow", "Strgnl", "Suffoc" };
+                                     "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav" };
     int status_colors[] = { CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW,
                             CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, 
-                            CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE };
+                            CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW };
     int status_attrmask[] = { ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
                               ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE, 
-                              ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE };
+                              ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE };
 
     int no_of_statuses = SIZE(status_strings);
 
