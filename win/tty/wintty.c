@@ -391,7 +391,7 @@ char **argv UNUSED;
 
     /* options aren't processed yet so wc2_statuslines might be 0;
        make sure that it has a reasonable value during tty setup */
-    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines;
+    iflags.wc2_statuslines = (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines; /* Just an initialization */
     /*
      *  Remember tty modes, to be restored on exit.
      *
@@ -4790,6 +4790,10 @@ render_status(VOID_ARGS)
     return;
 }
 
+static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
+                                 "Blind", "Hallu", "Stoned", "Slime", "Sleep",
+                                 "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav" };
+
 STATIC_OVL
 void
 print_rest_partyline(restbuf, x_ptr, y_ptr)
@@ -4797,15 +4801,13 @@ char* restbuf;
 int* x_ptr;
 int* y_ptr;
 {
-    const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf", 
-                                     "Blind", "Hallu", "Stoned", "Slime", "Sleep", 
-                                     "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav" };
     int status_colors[] = { CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW,
-                            CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, 
+                            CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE,
                             CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW };
     int status_attrmask[] = { ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
-                              ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE, 
+                              ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
                               ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE };
+
 
     int no_of_statuses = SIZE(status_strings);
 

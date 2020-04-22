@@ -3104,6 +3104,143 @@ read_wizkit()
  */
 STATIC_OVL boolean
 parse_conf_file(fp, proc)
+FILE* fp;
+boolean FDECL((*proc), (char*));
+{
+    char inbuf[4 * BUFSZ];
+    boolean rv = TRUE; /* assume successful parse */
+    char* ep;
+    boolean skip = FALSE, morelines = FALSE;
+    char* buf = (char*)0;
+    size_t inbufsz = sizeof inbuf;
+
+    free_config_sections();
+
+    while (fgets(inbuf, (int)inbufsz, fp)) {
+        ep = index(inbuf, '\n');
+        if (skip) { /* in case previous line was too long */
+            if (ep)
+                skip = FALSE; /* found newline; next line is normal */
+        }
+        else {
+            if (!ep) {  /* newline missing */
+                if (strlen(inbuf) < (inbufsz - 2)) {
+                    /* likely the last line of file is just
+                       missing a newline; process it anyway  */
+                    ep = eos(inbuf);
+                }
+                else {
+                    config_error_add("Line too long, skipping");
+                    skip = TRUE; /* discard next fgets */
+                }
+            }
+            else {
+                *ep = '\0'; /* remove newline */
+            }
+            if (ep) {
+                char* tmpbuf = (char*)0;
+                int len;
+                boolean ignoreline = FALSE;
+                boolean oldline = FALSE;
+
+                /* line continuation (trailing '\') */
+                morelines = (--ep >= inbuf && *ep == '\\');
+                if (morelines)
+                    *ep = '\0';
+
+                /* trim off spaces at end of line */
+                while (--ep >= inbuf
+                    && (*ep == ' ' || *ep == '\t' || *ep == '\r'))
+                    *ep = '\0';
+
+                if (!config_error_nextline(inbuf)) {
+                    rv = FALSE;
+                    if (buf)
+                        free(buf), buf = (char*)0;
+                    break;
+                }
+
+                ep = inbuf;
+                while (*ep == ' ' || *ep == '\t') ep++;
+
+                /* lines beginning with '#' are comments. ignore empty lines. */
+                if (!*ep || *ep == '#')
+                    ignoreline = TRUE;
+
+                if (buf)
+                    oldline = TRUE;
+
+                /* merge now read line with previous ones, if necessary */
+                if (!ignoreline) {
+                    len = strlen(inbuf) + 1;
+                    if (buf)
+                        len += strlen(buf);
+                    tmpbuf = (char*)alloc(len);
+                    if (buf) {
+                        Sprintf(tmpbuf, "%s %s", buf, inbuf);
+                        free(buf);
+                    }
+                    else
+                        Strcpy(tmpbuf, inbuf);
+                    buf = tmpbuf;
+                }
+
+                if (morelines || (ignoreline && !oldline))
+                    continue;
+
+                if (handle_config_section(ep)) {
+                    free(buf);
+                    buf = (char*)0;
+                    continue;
+                }
+
+                /* from here onwards, we'll handle buf only */
+
+                if (match_varname(buf, "CHOOSE", 6)) {
+                    char* section;
+                    char* bufp = find_optparam(buf);
+                    if (!bufp) {
+                        config_error_add(
+                            "Format is CHOOSE=section1,section2,...");
+                        rv = FALSE;
+                        free(buf);
+                        buf = (char*)0;
+                        continue;
+                    }
+                    bufp++;
+                    if (config_section_chosen)
+                        free(config_section_chosen);
+                    section = choose_random_part(bufp, ',');
+                    if (section)
+                        config_section_chosen = dupstr(section);
+                    else {
+                        config_error_add("No config section to choose");
+                        rv = FALSE;
+                    }
+                    free(buf);
+                    buf = (char*)0;
+                    continue;
+                }
+
+                if (!proc(buf))
+                    rv = FALSE;
+
+                free(buf);
+                buf = (char*)0;
+            }
+        }
+    }
+
+    if (buf)
+        free(buf);
+
+    free_config_sections();
+    return rv;
+}
+
+#if 0
+STATIC_OVL boolean
+parse_conf_file(fp, proc)
 FILE *fp;
 boolean FDECL((*proc), (char *));
 {
@@ -3136,7 +3273,7 @@ boolean FDECL((*proc), (char *));
             }
             if (ep) {
                 char *tmpbuf = (char *) 0;
-                int len;
+                size_t len;
                 boolean ignoreline = FALSE;
                 boolean oldline = FALSE;
 
@@ -3169,7 +3306,7 @@ boolean FDECL((*proc), (char *));
 
                 /* merge now read line with previous ones, if necessary */
                 if (!ignoreline) {
-#if 0 
+/*
                     len = strlen(inbuf) + 1;
                     if (buf)
                         len += strlen(buf);
@@ -3180,10 +3317,13 @@ boolean FDECL((*proc), (char *));
                     } else
                         Strcpy(tmpbuf, inbuf);
                     buf = tmpbuf;
-#endif
-					len = (int)strlen(ep) + 1; /* +1: final '\0' */
+                    if (strlen(buf) >= sizeof inbuf)
+                        buf[sizeof inbuf - 1] = '\0';
+*/
+
+                    len = strlen(ep) + 1; /* +1: final '\0' */
 					if (buf)
-						len += (int)strlen(buf) + 1; /* +1: space */
+						len += strlen(buf) + 1; /* +1: space */
 					tmpbuf = (char*)alloc(len);
 					*tmpbuf = '\0';
 					if (buf) {
@@ -3247,6 +3387,7 @@ boolean FDECL((*proc), (char *));
     free_config_sections();
     return rv;
 }
+#endif
 
 extern struct symsetentry *symset_list;  /* options.c */
 extern struct symparse loadsyms[];       /* drawing.c */
