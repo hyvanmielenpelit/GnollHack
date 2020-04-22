@@ -42,7 +42,7 @@ static int FDECL(condcolor, (long, unsigned long *));
 #endif
 static int FDECL(condattr, (long, unsigned long *));
 static int FDECL(nhattr2curses, (int));
-static void FDECL(curses_print_rest_partyline, (char*, int*, int*));
+static void FDECL(curses_print_rest_partyline, (WINDOW*, boolean, char*, int*, int*));
 #endif /* STATUS_HILITES */
 
 /* width of a single line in vertical status orientation (one field per line;
@@ -585,7 +585,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines == 3 && *text == ' ')
+                    if (number_of_lines >= 3 && *text == ' ')
                         ++text;
                 }
 				break;
@@ -603,7 +603,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines == 3 && *text == ' ')
+                    if (number_of_lines >= 3 && *text == ' ')
                         ++text;
                 }
                 break;
@@ -612,7 +612,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines == 3 && *text == ' ')
+                    if (number_of_lines >= 3 && *text == ' ')
                         ++text;
                 }
                 break;
@@ -622,7 +622,7 @@ boolean border;
                 if(first_status_field == BL_FLUSH && *text)
                 {
                     first_status_field = fld;
-                    if (number_of_lines == 3 && *text == ' ')
+                    if (number_of_lines >= 3 && *text == ' ')
                     {
                         ++text;
                         char tmpbuf[BUFSZ];
@@ -735,7 +735,7 @@ boolean border;
                 ++text; /* for first field of line, discard leading space */
 
             /* Discard first space in three-line setup */
-            if (number_of_lines == 3 && first_status_field != BL_FLUSH && fld == first_status_field && *text == ' ')
+            if (number_of_lines >= 3 && first_status_field != BL_FLUSH && fld == first_status_field && *text == ' ')
                 ++text;     
 
             switch (fld) {
@@ -745,7 +745,7 @@ boolean border;
                     continue;
                 break;
             case BL_HUNGER:
-                if (number_of_lines == 3) {
+                if (number_of_lines >= 3) {
                     /* remember hunger's position */
                     getyx(win, conddummy, condstart);
                     /* if hunger won't be shown, figure out where cap
@@ -801,9 +801,12 @@ boolean border;
 #ifdef STATUS_HILITES
             else if ((fld == BL_PARTYSTATS || fld == BL_PARTYSTATS2 || fld == BL_PARTYSTATS3 || fld == BL_PARTYSTATS4 || fld == BL_PARTYSTATS5) && flags.partylinecolor)
             {
-                char printbuf[BUFSZ];
+                int printrow = fld - BL_PARTYSTATS + 3 + (border ? 1 : 0);
+                wmove(win, printrow, border ? 1 : 0);
+                getyx(win, y, x);
+                 char printbuf[BUFSZ];
                 strcpy(printbuf, text);
-                char* bp = 0, * bp2 = 0, * bp3 = 0, * startbp = printbuf;
+                char *bp = 0, *bp2 = 0, *bp3 = 0, *startbp = printbuf;
                 do
                 {
                     bp = strstr(startbp, "HP:");
@@ -835,7 +838,7 @@ boolean border;
                         char startbuf[BUFSZ];
                         strcpy(startbuf, startbp);
 
-                        curses_print_rest_partyline(startbuf, &x, &y);
+                        curses_print_rest_partyline(win, border, startbuf, &x, &y);
 
                         double ratio = (double)hp / max(1.0, (double)hpmax);
                         coloridx = NO_COLOR;
@@ -847,7 +850,6 @@ boolean border;
                         else if (ratio <= 0.33)
                         {
                             coloridx = CLR_ORANGE;
-                            //attrmask = ATR_INVERSE;
                         }
                         else if (ratio <= 0.15)
                         {
@@ -862,33 +864,33 @@ boolean border;
                             coloridx = CLR_GREEN;
                         }
 #ifdef TEXTCOLOR
-                        if (coloridx != NO_COLOR)
+                        if (coloridx != NO_COLOR && coloridx != CLR_MAX)
                             curses_toggle_color_attr(win, coloridx, NONE, ON);
 #endif
                         if (attrmask)
                             wattron(win, attrmask);
 
                         wmove(win, y, x);
+                        getyx(win, y, x);
                         waddstr(win, hpbuf2);
                         x += (int)strlen(hpbuf2);
 
 #ifdef TEXTCOLOR
-                        if (coloridx != NO_COLOR)
+                        if (coloridx != NO_COLOR && coloridx != CLR_MAX)
                             curses_toggle_color_attr(win, coloridx, NONE, OFF);
 #endif
                         if (attrmask)
                             wattroff(win, attrmask);
 
                         wmove(win, y, x);
+                        getyx(win, y, x);
                         waddstr(win, restbuf);
                         x += (int)strlen(restbuf);
 
                     }
                     else
                     {
-                        curses_print_rest_partyline(startbp, &x, &y);
-                        //tty_putstatusfield(startbp, x, y);
-                        //x += (int)strlen(startbp);
+                        curses_print_rest_partyline(win, border, startbp, &x, &y);
                     }
 
                     if (bp && bp2)
@@ -947,7 +949,7 @@ boolean border;
                         x = width - (border ? -1 : 0), /* (width-=2 above) */
                         y = j + (border ? 1 : 0);
                     /* cbuf[] was populated above; clen is its length */
-                    if (0 && number_of_lines == 3) 
+                    if (0 && number_of_lines >= 3) 
                     {
                         /*
                          * For 3-line status, align conditions with hunger
@@ -979,7 +981,7 @@ boolean border;
                     if (asis)
                         waddstr(win, cbuf);
                     else /* cond by cond if any cond specifies highlighting */
-                        curs_stat_conds(0, &x, &y, (char *) 0, (boolean *) 0, (number_of_lines == 3 && first_status_field == BL_CONDITION ? TRUE : FALSE));
+                        curs_stat_conds(0, &x, &y, (char *) 0, (boolean *) 0, (number_of_lines >= 3 && first_status_field == BL_CONDITION ? TRUE : FALSE));
                 } /* curses_condition_bits */
             } /* hitpointbar vs regular field vs conditions */
         } /* i (fld) */
@@ -988,24 +990,33 @@ boolean border;
     return;
 }
 
+
+static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
+                                    "Blind", "Hallu", "Stoned", "Slime", "Sleep",
+                                    "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav" };
+
 STATIC_OVL
 void
-curses_print_rest_partyline(restbuf, x_ptr, y_ptr)
+curses_print_rest_partyline(win, border, restbuf, x_ptr, y_ptr)
+WINDOW* win;
+boolean border;
 char* restbuf;
 int* x_ptr;
 int* y_ptr;
 {
-    const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
-                                     "Blind", "Hallu", "Stoned", "Slime", "Sleep",
-                                     "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav" };
-    int status_colors[] = { CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW,
-                            CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE,
-                            CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW };
-    int status_attrmask[] = { ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
-                              ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
-                              ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE };
+    int status_colors[] = { CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW,
+                            CLR_YELLOW, CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED,
+                            CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW };
+    int status_attrmask[] = { A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL,
+                              A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL,
+                              A_NORMAL, A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL };
 
     int no_of_statuses = SIZE(status_strings);
+
+    int height = 0, width = 0;
+    getmaxyx(win, height, width);
+    if (border)
+        height -= 2, width -= 2;
 
     char* bp = 0, * firstbp = 0, * secondbp = 0, * startbp = 0;
 
@@ -1052,7 +1063,8 @@ int* y_ptr;
 
             char savechar2 = *firstbp;
             *firstbp = '\0';
-            tty_putstatusfield(startbp, *x_ptr, *y_ptr);
+            wmove(win, *y_ptr, *x_ptr);
+            waddstr(win, startbp);
             *x_ptr += (int)strlen(startbp);
             *firstbp = savechar2;
 
