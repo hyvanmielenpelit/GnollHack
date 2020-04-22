@@ -431,6 +431,7 @@ struct instance_flags {
     boolean wc2_darkgray;    /* try to use dark-gray color for black glyphs */
     boolean wc2_hitpointbar;  /* show graphical bar representing hit points */
     boolean wc2_guicolor;       /* allow colours in gui (outside map) */
+    boolean wc2_autostatuslines;  /* automatically adjust the number of status lines */
     int wc_mouse_support;       /* allow mouse support */
     int wc2_term_cols;		/* terminal width, in characters */
     int wc2_term_rows;		/* terminal height, in characters */

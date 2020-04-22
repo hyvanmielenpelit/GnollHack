@@ -212,46 +212,91 @@ curses_create_main_windows()
         boolean msg_vertical = (message_orientation == ALIGN_LEFT
                                 || message_orientation == ALIGN_RIGHT);
 
-        /* Vertical windows have priority. Otherwise, priotity is:
-           status > inv > msg */
-        if (status_vertical)
-            set_window_position(&status_x, &status_y,
-                                &status_width, &status_height,
-                                status_orientation,
-                                &map_x, &map_y, &map_width, &map_height,
-                                border_space, 20, 26);
 
-        if (iflags.perm_invent) {
-            /* Take up all width unless msgbar is also vertical. */
-            int width = msg_vertical ? 25 : -25;
+        for(int pass = 0; pass <= (iflags.wc2_autostatuslines && !status_vertical && !msg_vertical ? 1 :0); pass++)
+        {
+            message_x = 0;
+            message_y = 0;
+            status_x = 0;
+            status_y = 0;
+            inv_x = 0;
+            inv_y = 0;
+            map_x = 0;
+            map_y = 0;
+            message_height = 0;
+            message_width = 0;
+            status_height = 0;
+            status_width = 0;
+            inv_height = 0;
+            inv_width = 0;
+            map_height = (term_rows - border_space);
+            map_width = (term_cols - border_space);
 
-            set_window_position(&inv_x, &inv_y, &inv_width, &inv_height,
-                                ALIGN_RIGHT, &map_x, &map_y,
-                                &map_width, &map_height,
-                                border_space, -1, width);
+            /* Vertical windows have priority. Otherwise, priotity is:
+            status > inv > msg */
+            if (status_vertical)
+                set_window_position(&status_x, &status_y,
+                                    &status_width, &status_height,
+                                    status_orientation,
+                                    &map_x, &map_y, &map_width, &map_height,
+                                    border_space, 20, 26);
+
+            if (iflags.perm_invent) {
+                /* Take up all width unless msgbar is also vertical. */
+                int width = msg_vertical ? 25 : -25;
+
+                set_window_position(&inv_x, &inv_y, &inv_width, &inv_height,
+                                    ALIGN_RIGHT, &map_x, &map_y,
+                                    &map_width, &map_height,
+                                    border_space, -1, width);
+            }
+
+            if (msg_vertical)
+                set_window_position(&message_x, &message_y,
+                                    &message_width, &message_height,
+                                    message_orientation,
+                                    &map_x, &map_y, &map_width, &map_height,
+                                    border_space, -1, -25);
+
+            /* Now draw horizontal windows */
+            if (!status_vertical)
+                set_window_position(&status_x, &status_y,
+                                    &status_width, &status_height,
+                                    status_orientation,
+                                    &map_x, &map_y, &map_width, &map_height,
+                                    border_space, statusheight, 0);
+
+            if (!msg_vertical)
+                set_window_position(&message_x, &message_y,
+                                    &message_width, &message_height,
+                                    message_orientation,
+                                    &map_x, &map_y, &map_width, &map_height,
+                                    border_space, -1, -25);
+
+            if(iflags.wc2_autostatuslines && !status_vertical && !msg_vertical && pass == 0)
+            {
+                /* Expand the status window */
+                if(message_height > status_height + 1)
+                {
+                    int rows_to_move = (message_height - status_height) / 2;
+                    int new_statuslines = status_height + rows_to_move;
+                    
+                    if(new_statuslines < statusheight)
+                        new_statuslines = statusheight;
+
+                    if(new_statuslines > 8)
+                        new_statuslines = 8;
+
+                    statusheight = new_statuslines;
+                    iflags.wc2_statuslines = statusheight;
+                }
+                else
+                {
+                    break;
+                }
+                
+            }   
         }
-
-        if (msg_vertical)
-            set_window_position(&message_x, &message_y,
-                                &message_width, &message_height,
-                                message_orientation,
-                                &map_x, &map_y, &map_width, &map_height,
-                                border_space, -1, -25);
-
-        /* Now draw horizontal windows */
-        if (!status_vertical)
-            set_window_position(&status_x, &status_y,
-                                &status_width, &status_height,
-                                status_orientation,
-                                &map_x, &map_y, &map_width, &map_height,
-                                border_space, statusheight, 0);
-
-        if (!msg_vertical)
-            set_window_position(&message_x, &message_y,
-                                &message_width, &message_height,
-                                message_orientation,
-                                &map_x, &map_y, &map_width, &map_height,
-                                border_space, -1, -25);
 
         if (map_width > COLNO)
             map_width = COLNO;
