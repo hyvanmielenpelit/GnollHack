@@ -798,6 +798,7 @@ boolean border;
                 curs_HPbar(text, 0);
 
             } 
+#ifdef STATUS_HILITES
             else if ((fld == BL_PARTYSTATS || fld == BL_PARTYSTATS2 || fld == BL_PARTYSTATS3 || fld == BL_PARTYSTATS4 || fld == BL_PARTYSTATS5) && flags.partylinecolor)
             {
                 char printbuf[BUFSZ];
@@ -860,10 +861,10 @@ boolean border;
                         {
                             coloridx = CLR_GREEN;
                         }
-
+#ifdef TEXTCOLOR
                         if (coloridx != NO_COLOR)
                             curses_toggle_color_attr(win, coloridx, NONE, ON);
-
+#endif
                         if (attrmask)
                             wattron(win, attrmask);
 
@@ -871,9 +872,10 @@ boolean border;
                         waddstr(win, hpbuf2);
                         x += (int)strlen(hpbuf2);
 
+#ifdef TEXTCOLOR
                         if (coloridx != NO_COLOR)
                             curses_toggle_color_attr(win, coloridx, NONE, OFF);
-
+#endif
                         if (attrmask)
                             wattroff(win, attrmask);
 
@@ -896,6 +898,7 @@ boolean border;
                 } while (bp);
 
             }
+#endif
             else if (fld != BL_CONDITION)
             {
                 /* regular field, including title if no hitpointbar */
