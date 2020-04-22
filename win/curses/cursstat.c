@@ -42,6 +42,7 @@ static int FDECL(condcolor, (long, unsigned long *));
 #endif
 static int FDECL(condattr, (long, unsigned long *));
 static int FDECL(nhattr2curses, (int));
+static void FDECL(curses_print_rest_partyline, (char*, int*, int*));
 #endif /* STATUS_HILITES */
 
 /* width of a single line in vertical status orientation (one field per line;
@@ -796,7 +797,107 @@ boolean border;
                    overall width is 32 because of the enclosing brackets */
                 curs_HPbar(text, 0);
 
-            } else if (fld != BL_CONDITION) {
+            } 
+            else if ((fld == BL_PARTYSTATS || fld == BL_PARTYSTATS2 || fld == BL_PARTYSTATS3 || fld == BL_PARTYSTATS4 || fld == BL_PARTYSTATS5) && flags.partylinecolor)
+            {
+                char printbuf[BUFSZ];
+                strcpy(printbuf, text);
+                char* bp = 0, * bp2 = 0, * bp3 = 0, * startbp = printbuf;
+                do
+                {
+                    bp = strstr(startbp, "HP:");
+                    if (bp)
+                        bp2 = strstr(bp + 1, "(");
+                    if (bp2)
+                        bp3 = strstr(bp2 + 1, ")");
+
+                    if (bp && bp2 && bp3)
+                    {
+                        char restbuf[BUFSZ];
+                        strcpy(restbuf, bp2);
+                        restbuf[1] = '\0'; /* Print just one character */
+                        *bp2 = '\0';
+
+                        *bp3 = '\0';
+                        char maxbuf[BUFSZ];
+                        strcpy(maxbuf, bp2 + 1);
+                        int hpmax = atoi(maxbuf);
+                        *bp3 = ')';
+
+                        char hpbuf[BUFSZ];
+                        strcpy(hpbuf, bp + 3);
+                        char hpbuf2[BUFSZ];
+                        strcpy(hpbuf2, bp);
+                        *bp = '\0';
+                        int hp = atoi(hpbuf);
+
+                        char startbuf[BUFSZ];
+                        strcpy(startbuf, startbp);
+
+                        curses_print_rest_partyline(startbuf, &x, &y);
+
+                        double ratio = (double)hp / max(1.0, (double)hpmax);
+                        coloridx = NO_COLOR;
+                        attrmask = 0;
+                        if (ratio <= 0.0)
+                        {
+                            coloridx = CLR_BLACK;
+                        }
+                        else if (ratio <= 0.33)
+                        {
+                            coloridx = CLR_ORANGE;
+                            //attrmask = ATR_INVERSE;
+                        }
+                        else if (ratio <= 0.15)
+                        {
+                            coloridx = CLR_ORANGE;
+                        }
+                        else if (ratio <= 0.66)
+                        {
+                            coloridx = CLR_YELLOW;
+                        }
+                        else if (ratio < 1)
+                        {
+                            coloridx = CLR_GREEN;
+                        }
+
+                        if (coloridx != NO_COLOR)
+                            curses_toggle_color_attr(win, coloridx, NONE, ON);
+
+                        if (attrmask)
+                            wattron(win, attrmask);
+
+                        wmove(win, y, x);
+                        waddstr(win, hpbuf2);
+                        x += (int)strlen(hpbuf2);
+
+                        if (coloridx != NO_COLOR)
+                            curses_toggle_color_attr(win, coloridx, NONE, OFF);
+
+                        if (attrmask)
+                            wattroff(win, attrmask);
+
+                        wmove(win, y, x);
+                        waddstr(win, restbuf);
+                        x += (int)strlen(restbuf);
+
+                    }
+                    else
+                    {
+                        curses_print_rest_partyline(startbp, &x, &y);
+                        //tty_putstatusfield(startbp, x, y);
+                        //x += (int)strlen(startbp);
+                    }
+
+                    if (bp && bp2)
+                        startbp = bp2 + 1;
+                    else
+                        bp = 0;
+                } while (bp);
+
+            }
+            else if (fld != BL_CONDITION)
+            {
                 /* regular field, including title if no hitpointbar */
 #ifdef STATUS_HILITES
                 coloridx = curses_status_colors[fld]; /* includes attribute */
@@ -882,6 +983,126 @@ boolean border;
         wclrtoeol(win); /* [superfluous? draw_status() calls werase()] */
     } /* j (line) */
     return;
+}
+
+STATIC_OVL
+void
+curses_print_rest_partyline(restbuf, x_ptr, y_ptr)
+char* restbuf;
+int* x_ptr;
+int* y_ptr;
+{
+    const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
+                                     "Blind", "Hallu", "Stoned", "Slime", "Sleep",
+                                     "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav" };
+    int status_colors[] = { CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW,
+                            CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE,
+                            CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW };
+    int status_attrmask[] = { ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
+                              ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
+                              ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE };
+
+    int no_of_statuses = SIZE(status_strings);
+
+    char* bp = 0, * firstbp = 0, * secondbp = 0, * startbp = 0;
+
+    startbp = restbuf;
+    boolean breakdoloop = FALSE;
+    int selected_status = -1;
+
+    do
+    {
+        selected_status = -1;
+        breakdoloop = FALSE;
+        firstbp = 0;
+        for (int i = 0; i < no_of_statuses; i++)
+        {
+            bp = strstr(startbp, status_strings[i]);
+            if (bp && (bp < firstbp || firstbp == 0))
+            {
+                firstbp = bp;
+                selected_status = i;
+            }
+        }
+        if (firstbp)
+        {
+            secondbp = 0;
+            for (int i = 0; i < no_of_statuses; i++)
+            {
+                bp = strstr(firstbp + 1, status_strings[i]);
+                if (bp && (bp < secondbp || secondbp == 0))
+                {
+                    secondbp = bp;
+                }
+            }
+            char savechar = '\0';
+            if (!secondbp)
+            {
+                secondbp = firstbp + strlen(status_strings[selected_status]) + 1;
+                breakdoloop = TRUE;
+            }
+            if (secondbp > eos(firstbp) + 1)
+                secondbp = eos(firstbp) + 1;
+
+            savechar = *(secondbp - 1);
+            *(secondbp - 1) = '\0';
+
+            char savechar2 = *firstbp;
+            *firstbp = '\0';
+            tty_putstatusfield(startbp, *x_ptr, *y_ptr);
+            *x_ptr += (int)strlen(startbp);
+            *firstbp = savechar2;
+
+            int coloridx = NO_COLOR;
+            int attrmask = 0;
+
+            if (selected_status >= 0)
+            {
+                coloridx = status_colors[selected_status];
+                attrmask = status_attrmask[selected_status];
+            }
+
+            if (coloridx != NO_COLOR)
+                curses_toggle_color_attr(win, coloridx, NONE, ON);
+
+            if (attrmask)
+                wattron(win, attrmask);
+
+            wmove(win, *y_ptr, *x_ptr);
+            waddstr(win, firstbp);
+
+            *x_ptr += (int)strlen(firstbp);
+
+            if (coloridx != NO_COLOR)
+                curses_toggle_color_attr(win, coloridx, NONE, OFF);
+
+            if (attrmask)
+                wattroff(win, attrmask);
+
+            *(secondbp - 1) = savechar;
+
+            if (secondbp - 1 < eos(firstbp) && breakdoloop)
+            {
+                wmove(win, *y_ptr, *x_ptr);
+                waddstr(win, secondbp - 1);
+                *x_ptr += (int)strlen(secondbp - 1);
+            }
+        }
+        else
+        {
+            wmove(win, *y_ptr, *x_ptr);
+            waddstr(win, startbp);
+            *x_ptr += (int)strlen(startbp);
+            breakdoloop = TRUE;
+        }
+
+        if (!breakdoloop && secondbp)
+            startbp = secondbp - 1;
+        else if (!secondbp)
+            breakdoloop = TRUE;
+
+    } while (firstbp && !breakdoloop);
+
 }
 
 /* vertical layout, to left or right of map */
