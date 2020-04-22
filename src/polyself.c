@@ -1495,8 +1495,7 @@ dosteedbreathe()
 
         buzz((int)(-(20 + typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
 
-        if (!rn2(3))
-            u.usteed->mspec_used = 10 + rn2(20);
+        u.usteed->mspec_used = 5 + rn2(10);
         if (typ == AD_SLEE && !Sleep_resistance)
             u.usteed->mspec_used += rnd(20);
 
