@@ -1433,7 +1433,10 @@ int charge_init_index;
 	case CHARGED_HORN_NORMAL:
 		charge = rn1(5, 4);
 		break;
-	case CHARGED_BAG_OF_TRICKS:
+    case CHARGED_UNICORN_HORN:
+        charge = 6 + rnd(3);
+        break;
+    case CHARGED_BAG_OF_TRICKS:
 		charge = rnd(20);
 		break;
 	case CHARGED_CRYSTAL_BALL:
@@ -1534,7 +1537,10 @@ int charge_init_index;
 	case CHARGED_HORN_NORMAL:
 		charge = 10;
 		break;
-	case CHARGED_BAG_OF_TRICKS:
+    case CHARGED_UNICORN_HORN:
+        charge = 9;
+        break;
+    case CHARGED_BAG_OF_TRICKS:
 		charge = 20;
 		break;
 	case CHARGED_CRYSTAL_BALL:

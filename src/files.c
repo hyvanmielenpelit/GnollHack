@@ -216,6 +216,7 @@ STATIC_DCL boolean FDECL(copy_bytes, (int, int));
 STATIC_DCL int FDECL(open_levelfile_exclusively, (const char *, int, int));
 #endif
 
+#define INBUF_SIZ 4 * BUFSIZ
 
 static char *config_section_chosen = (char *) 0;
 static char *config_section_current = (char *) 0;
@@ -2342,7 +2343,7 @@ char *origbuf;
 #ifdef SYSCF
     int n;
 #endif
-    char *bufp, buf[4 * BUFSIZ];
+    char *bufp, buf[INBUF_SIZ];
     uchar translate[MAXPCHARS];
     int len;
     boolean retval = TRUE;
@@ -2822,7 +2823,7 @@ struct _config_error_frame {
     boolean origline_shown;
     boolean fromfile;
     boolean secure;
-    char origline[4 * BUFSZ];
+    char origline[INBUF_SIZ];
     char source[BUFSZ];
     struct _config_error_frame *next;
 };
@@ -3060,8 +3061,8 @@ char *buf;
 {
     struct obj *otmp;
 
-	//if (strlen(buf) >= BUFSIZ * 4)
-	//	buf[BUFSIZ * 4 - 1] = '\0';
+	if (strlen(buf) >= INBUF_SIZ)
+		buf[INBUF_SIZ - 1] = '\0';
 
 	otmp = readobjnam(buf, (struct obj*) 0);
 
@@ -3103,150 +3104,12 @@ read_wizkit()
  *
  * Continued lines are merged together with one space in between.
  */
-#if 0
-STATIC_OVL boolean
-parse_conf_file(fp, proc)
-FILE* fp;
-boolean FDECL((*proc), (char*));
-{
-    char inbuf[4 * BUFSZ];
-    boolean rv = TRUE; /* assume successful parse */
-    char* ep;
-    boolean skip = FALSE, morelines = FALSE;
-    char* buf = (char*)0;
-    size_t inbufsz = sizeof inbuf;
-
-    free_config_sections();
-
-    while (fgets(inbuf, (int)inbufsz, fp)) {
-        ep = index(inbuf, '\n');
-        if (skip) { /* in case previous line was too long */
-            if (ep)
-                skip = FALSE; /* found newline; next line is normal */
-        }
-        else {
-            if (!ep) {  /* newline missing */
-                if (strlen(inbuf) < (inbufsz - 2)) {
-                    /* likely the last line of file is just
-                       missing a newline; process it anyway  */
-                    ep = eos(inbuf);
-                }
-                else {
-                    config_error_add("Line too long, skipping");
-                    skip = TRUE; /* discard next fgets */
-                }
-            }
-            else {
-                *ep = '\0'; /* remove newline */
-            }
-            if (ep) {
-                char* tmpbuf = (char*)0;
-                int len;
-                boolean ignoreline = FALSE;
-                boolean oldline = FALSE;
-
-                /* line continuation (trailing '\') */
-                morelines = (--ep >= inbuf && *ep == '\\');
-                if (morelines)
-                    *ep = '\0';
-
-                /* trim off spaces at end of line */
-                while (--ep >= inbuf
-                    && (*ep == ' ' || *ep == '\t' || *ep == '\r'))
-                    *ep = '\0';
-
-                if (!config_error_nextline(inbuf)) {
-                    rv = FALSE;
-                    if (buf)
-                        free(buf), buf = (char*)0;
-                    break;
-                }
-
-                ep = inbuf;
-                while (*ep == ' ' || *ep == '\t') ep++;
-
-                /* lines beginning with '#' are comments. ignore empty lines. */
-                if (!*ep || *ep == '#')
-                    ignoreline = TRUE;
-
-                if (buf)
-                    oldline = TRUE;
-
-                /* merge now read line with previous ones, if necessary */
-                if (!ignoreline) {
-                    len = strlen(inbuf) + 1;
-                    if (buf)
-                        len += strlen(buf);
-                    tmpbuf = (char*)alloc(len);
-                    if (buf) {
-                        Sprintf(tmpbuf, "%s %s", buf, inbuf);
-                        free(buf);
-                    }
-                    else
-                        Strcpy(tmpbuf, inbuf);
-                    buf = tmpbuf;
-                }
-
-                if (morelines || (ignoreline && !oldline))
-                    continue;
-
-                if (handle_config_section(ep)) {
-                    free(buf);
-                    buf = (char*)0;
-                    continue;
-                }
-
-                /* from here onwards, we'll handle buf only */
-
-                if (match_varname(buf, "CHOOSE", 6)) {
-                    char* section;
-                    char* bufp = find_optparam(buf);
-                    if (!bufp) {
-                        config_error_add(
-                            "Format is CHOOSE=section1,section2,...");
-                        rv = FALSE;
-                        free(buf);
-                        buf = (char*)0;
-                        continue;
-                    }
-                    bufp++;
-                    if (config_section_chosen)
-                        free(config_section_chosen);
-                    section = choose_random_part(bufp, ',');
-                    if (section)
-                        config_section_chosen = dupstr(section);
-                    else {
-                        config_error_add("No config section to choose");
-                        rv = FALSE;
-                    }
-                    free(buf);
-                    buf = (char*)0;
-                    continue;
-                }
-
-                if (!proc(buf))
-                    rv = FALSE;
-
-                free(buf);
-                buf = (char*)0;
-            }
-        }
-    }
-
-    if (buf)
-        free(buf);
-
-    free_config_sections();
-    return rv;
-}
-#endif
-
 STATIC_OVL boolean
 parse_conf_file(fp, proc)
 FILE *fp;
 boolean FDECL((*proc), (char *));
 {
-    char inbuf[4 * BUFSIZ];
+    char inbuf[INBUF_SIZ];
     boolean rv = TRUE; /* assume successful parse */
     char *ep;
     boolean skip = FALSE, morelines = FALSE;
@@ -3325,7 +3188,7 @@ boolean FDECL((*proc), (char *));
                     //len = strlen(ep) + 1; /* +1: final '\0' */
 					//if (buf)
 					//	len += strlen(buf) + 1; /* +1: space */
-                    char tmpbuf[4 * BUFSIZ]; // = (char*)alloc(sizeof inbuf);
+                    char tmpbuf[INBUF_SIZ]; // = (char*)alloc(sizeof inbuf);
 					*tmpbuf = '\0';
 					if (buf) {
 						Strcat(strcpy(tmpbuf, buf), " ");
@@ -3341,7 +3204,7 @@ boolean FDECL((*proc), (char *));
                 if (morelines || (ignoreline && !oldline))
                     continue;
 
-                if (handle_config_section(buf)) { //ep
+                if (buf && handle_config_section(buf)) { //ep
                     free(buf);
                     buf = (char *) 0;
                     continue;
@@ -3468,8 +3331,8 @@ int which_set;
     struct symparse *symp = (struct symparse *) 0;
     char *bufp, *commentp, *altp;
 
-	//if (strlen(buf) >= BUFSIZ * 4)
-	//	buf[BUFSIZ * 4 - 1] = '\0';
+	if (strlen(buf) >= INBUF_SIZ)
+		buf[INBUF_SIZ - 1] = '\0';
 
     /* convert each instance of whitespace (tabs, consecutive spaces)
        into a single space; leading and trailing spaces are stripped */

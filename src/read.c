@@ -619,12 +619,14 @@ boolean verbose;
 	{
         int rechrg = (int) obj->recharged;
 
+        /* Add recharging */
         if (objects[obj->otyp].oc_charged) 
 		{
             /* tools don't have a limit, but the counter used does */
             if (rechrg < 7) /* recharge_limit */
                 obj->recharged++;
         }
+
         switch (obj->otyp) {
         case BELL_OF_OPENING:
             if (is_cursed)
@@ -639,11 +641,13 @@ boolean verbose;
         case MAGIC_MARKER:
         case TINNING_KIT:
         case EXPENSIVE_CAMERA:
+        {
+            int lim = get_obj_max_charge(obj);
             if (is_cursed)
                 strip_charges(obj, verbose);
             else if (rechrg
-                     && obj->otyp
-                            == MAGIC_MARKER) { /* previously recharged */
+                && obj->otyp
+                == MAGIC_MARKER) { /* previously recharged */
                 obj->recharged = 1; /* override increment done above */
                 if (verbose)
                 {
@@ -653,34 +657,34 @@ boolean verbose;
                         pline1(nothing_happens);
                 }
             }
-            else if (is_blessed) 
+            else if (is_blessed)
             {
                 n = rn1(16, 15); /* 15..30 */
-                if (obj->charges + n <= 50)
-                    obj->charges = 50;
-                else if (obj->charges + n <= 75)
-                    obj->charges = 75;
-                else 
+                if (obj->charges + n <= (lim * 1) / 2)
+                    obj->charges = (lim * 1) / 2;
+                else if (obj->charges + n <= (lim * 3) / 4)
+                    obj->charges = (lim * 3) / 4;
+                else
                 {
-                    int chrg = (int) obj->charges;
-                    if ((chrg + n) > 127)
-                        obj->charges = 127;
+                    int chrg = (int)obj->charges;
+                    if ((chrg + n) > lim)
+                        obj->charges = lim;
                     else
                         obj->charges += n;
                 }
-                if(verbose)
+                if (verbose)
                     p_glow2(obj, NH_BLUE);
-            } 
+            }
             else
             {
                 n = rn1(11, 10); /* 10..20 */
-                if (obj->charges + n <= 50)
-                    obj->charges = 50;
+                if (obj->charges + n <= (lim * 1) / 2)
+                    obj->charges = (lim * 1) / 2;
                 else
                 {
-                    int chrg = (int) obj->charges;
-                    if ((chrg + n) > 127)
-                        obj->charges = 127;
+                    int chrg = (int)obj->charges;
+                    if ((chrg + n) > lim)
+                        obj->charges = lim;
                     else
                         obj->charges += n;
                 }
@@ -688,6 +692,7 @@ boolean verbose;
                     p_glow2(obj, NH_WHITE);
             }
             break;
+        }
 #if 0
 			/* Charging does not add oil anymore, just charges of charged objects */
         case OIL_LAMP:
@@ -715,42 +720,48 @@ boolean verbose;
             break;
 #endif
         case CRYSTAL_BALL:
-            if (is_cursed) 
+        {
+            int lim = get_obj_max_charge(obj);
+            if (is_cursed)
             {
                 strip_charges(obj, verbose);
             }
             else if (is_blessed)
             {
-                obj->charges = 6;
+                obj->charges = lim;
                 if (verbose)
                     p_glow2(obj, NH_BLUE);
             }
             else
             {
-                if (obj->charges < 5)
+                if (obj->charges < lim - 1)
                 {
                     obj->charges++;
                     if (verbose)
                         p_glow1(obj);
-                } else
+                }
+                else
                     pline1(nothing_happens);
             }
             break;
+        }
         case HORN_OF_PLENTY:
         case BAG_OF_TRICKS:
         case CAN_OF_GREASE:
+        {
+            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
-            } 
+            }
             else if (is_blessed)
             {
-                if (obj->charges <= 10)
+                if (obj->charges <= lim / 4)
                     obj->charges += rn1(10, 6);
                 else
                     obj->charges += rn1(5, 6);
-                if (obj->charges > 50)
-                    obj->charges = 50;
+                if (obj->charges > lim)
+                    obj->charges = lim;
                 if (verbose)
                     p_glow2(obj, NH_BLUE);
             }
@@ -763,34 +774,40 @@ boolean verbose;
                     p_glow1(obj);
             }
             break;
+        }
         case HOLY_SYMBOL:
+        {
+            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
             }
-            else if (is_blessed) 
+            else if (is_blessed)
             {
                 obj->charges += rn1(10, 10);
-                if (obj->charges > 30)
-                    obj->charges = 30;
-                if(verbose)
+                if (obj->charges > lim)
+                    obj->charges = lim;
+                if (verbose)
                     p_glow2(obj, NH_BLUE);
             }
-            else 
+            else
             {
                 obj->charges += rnd(5) + 4;
-                if (obj->charges > 30)
-                    obj->charges = 30;
+                if (obj->charges > lim)
+                    obj->charges = lim;
                 if (verbose)
                     p_glow1(obj);
             }
             break;
+        }
         case MAGIC_FLUTE:
         case MAGIC_HARP:
         case FROST_HORN:
         case FIRE_HORN:
 		case UNICORN_HORN:
 		case DRUM_OF_EARTHQUAKE:
+        {
+            int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
                 strip_charges(obj, verbose);
@@ -798,20 +815,21 @@ boolean verbose;
             else if (is_blessed)
             {
                 obj->charges += d(2, 4);
-                if (obj->charges > 20)
-                    obj->charges = 20;
+                if (obj->charges > lim)
+                    obj->charges = lim;
                 if (verbose)
                     p_glow2(obj, NH_BLUE);
             }
-            else 
+            else
             {
                 obj->charges += rnd(4);
-                if (obj->charges > 20)
-                    obj->charges = 20;
+                if (obj->charges > lim)
+                    obj->charges = lim;
                 if (verbose)
                     p_glow1(obj);
             }
             break;
+        }
         default:
             goto not_chargable;
             /*NOTREACHED*/
@@ -830,7 +848,6 @@ boolean verbose;
 			if (is_cursed) 
 			{
 				strip_charges(obj, verbose);
-				obj->recharged++;
 			}
 			else if (obj->recharged >= 6 || !rn2(max(2, 4 - obj->recharged)))
 			{
@@ -858,11 +875,9 @@ boolean verbose;
                     if (verbose)
                         p_glow1(obj);
 				}
-				obj->recharged++;
 			}
 			else
 			{
-				obj->recharged++;
 				goto not_chargable;
 			}
 			break;
@@ -870,11 +885,9 @@ boolean verbose;
         case RIN_SEVEN_CHARGES:
         case MACE_OF_THE_UNDERWORLD:
         case SWORD_OF_LUCKINESS:
-			if (obj->recharged >= 1)
+			if (obj->recharged > 1)
 			{
 				obj->charges = 0;
-                if(obj->recharged < 7)
-                    obj->recharged++;
                 if (verbose)
                     pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
 				break;
@@ -884,7 +897,6 @@ boolean verbose;
 			if (is_cursed)
 			{
 				strip_charges(obj, verbose);
-				obj->recharged++;
                 update_inventory();
                 break;
 			}
@@ -913,12 +925,10 @@ boolean verbose;
                     if (verbose)
                         p_glow1(obj);
 				}
-				obj->recharged++;
                 update_inventory();
             }
 			else
 			{
-				obj->recharged++;
 				goto not_chargable;
 			}
 
@@ -936,14 +946,12 @@ boolean verbose;
                 if (is_cursed)
                 {
                     strip_charges(obj, verbose);
-                    obj->recharged++;
                     update_inventory();
                     break;
                 }
 
                 if (obj->charges >= lim)
                 {
-                    obj->recharged++;
                     goto not_chargable;
                     break;
                 }
@@ -965,8 +973,6 @@ boolean verbose;
                     {
                         pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
                     }
-
-                    obj->recharged++;
                     update_inventory();
                 }
             }
