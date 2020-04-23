@@ -21,8 +21,6 @@ static const char all_count[] = { ALLOW_COUNT, ALL_CLASSES, 0 };
 STATIC_DCL boolean FDECL(learnscrolltyp, (SHORT_P));
 STATIC_DCL char *FDECL(erode_obj_text, (struct obj *, char *));
 STATIC_DCL char *FDECL(apron_text, (struct obj *, char *buf));
-STATIC_DCL void FDECL(p_glow1, (struct obj *));
-STATIC_DCL void FDECL(p_glow2, (struct obj *, const char *));
 STATIC_DCL void FDECL(forget_single_object, (int));
 #if 0 /* not used */
 STATIC_DCL void FDECL(forget_objclass, (int));
@@ -491,14 +489,14 @@ boolean verbose;
     }
 }
 
-STATIC_OVL void
+void
 p_glow1(otmp)
 register struct obj *otmp;
 {
     pline("%s briefly.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"));
 }
 
-STATIC_OVL void
+void
 p_glow2(otmp, color)
 register struct obj *otmp;
 register const char *color;
@@ -869,63 +867,60 @@ boolean verbose;
 			}
 			break;
         case RIN_THREE_CHARGES:
+        case RIN_SEVEN_CHARGES:
+        case MACE_OF_THE_UNDERWORLD:
         case SWORD_OF_LUCKINESS:
-            if (objects[obj->otyp].oc_charged == CHARGED_LUCK_BLADE || objects[obj->otyp].oc_charged == CHARGED_ALWAYS_3)
+			if (obj->recharged >= 1)
 			{
-				if (obj->recharged >= 1)
-				{
-					obj->charges = 0;
-                    if(obj->recharged < 7)
-                        obj->recharged++;
-                    if (verbose)
-                        pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
-					break;
-				}
+				obj->charges = 0;
+                if(obj->recharged < 7)
+                    obj->recharged++;
+                if (verbose)
+                    pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
+				break;
+			}
 
-				int lim = get_obj_max_charge(obj);
-				if (is_cursed)
-				{
-					strip_charges(obj, verbose);
-					obj->recharged++;
-                    update_inventory();
-                    break;
-				}
+			int lim = get_obj_max_charge(obj);
+			if (is_cursed)
+			{
+				strip_charges(obj, verbose);
+				obj->recharged++;
+                update_inventory();
+                break;
+			}
 
-				if (obj->charges > lim)
+			if (obj->charges > lim)
+			{
+				obj->charges = 0;
+                if (verbose)
+                    pline("The glow arounds %s suddenly dims.", yname(obj));
+                update_inventory();
+                break;
+			}
+			else if (obj->charges < lim)
+			{
+				if (is_blessed)
 				{
-					obj->charges = 0;
+					obj->charges = lim;
                     if (verbose)
-                        pline("The glow arounds %s suddenly dims.", yname(obj));
-                    update_inventory();
-                    break;
+                        p_glow2(obj, NH_BLUE);
 				}
 				else if (obj->charges < lim)
 				{
-					if (is_blessed)
-					{
+					obj->charges++;
+					if (obj->charges > lim)
 						obj->charges = lim;
-                        if (verbose)
-                            p_glow2(obj, NH_BLUE);
-					}
-					else if (obj->charges < lim)
-					{
-						obj->charges++;
-						if (obj->charges > lim)
-							obj->charges = lim;
-                        if (verbose)
-                            p_glow1(obj);
-					}
-					obj->recharged++;
-                    update_inventory();
-                }
-				else
-				{
-					obj->recharged++;
-					goto not_chargable;
+                    if (verbose)
+                        p_glow1(obj);
 				}
-			}
+				obj->recharged++;
+                update_inventory();
+            }
 			else
+			{
+				obj->recharged++;
 				goto not_chargable;
+			}
 
 			break;
         case GRAIL_OF_HEALING:

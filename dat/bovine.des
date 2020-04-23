@@ -42,7 +42,7 @@ CONTAINER:('(',"chest"),not_trapped,(06,08) {
     } ELSE {
       OBJECT:('(',"magic lamp")
     }
-    [50%]:OBJECT:('=',"conflict")
+    [50%]:OBJECT:('!',"full healing")
     [50%]:OBJECT:('!',"gain level")
     [50%]:OBJECT:('!',"gain ability")
 }

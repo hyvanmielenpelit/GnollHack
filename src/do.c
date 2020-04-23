@@ -2510,11 +2510,6 @@ register struct obj* obj;
 			char repowertext[BUFSIZ];
 			strcpy(repowertext, "");
 
-			if (artilist[obj->oartifact].repower_time > 0)
-			{
-				Sprintf(repowertext, " (repowers over %d round%s)", artilist[obj->oartifact].repower_time, plur(artilist[obj->oartifact].repower_time));
-			}
-
 			if (artilist[obj->oartifact].inv_prop > LAST_PROP)
 			{
 				const char* invprop = get_artifact_invoke_name(artilist[obj->oartifact].inv_prop);
@@ -2528,9 +2523,69 @@ register struct obj* obj;
 			}
 
 			powercnt++;
-			Sprintf(buf, " %2d - %s when invoked%s", powercnt, invoketext, repowertext);
+			Sprintf(buf, " %2d - %s when invoked", powercnt, invoketext);
 			txt = buf;
 			putstr(datawin, 0, txt);
+
+			if (artilist[obj->oartifact].repower_time > 0)
+			{
+				char plusbuf[BUFSIZ] = "";
+				if (artilist[obj->oartifact].inv_duration_plus != 0)
+					Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].inv_duration_plus >= 0 ? "+" : "", artilist[obj->oartifact].inv_duration_plus);
+
+				if (artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0)
+				{
+					Sprintf(buf, "      * Effect duration is %dd%d%s rounds", artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, plusbuf);
+				}
+				else
+					Sprintf(buf, "      * Effect duration is %s", plusbuf);
+
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+			if (artilist[obj->oartifact].inv_mana_cost > 0)
+			{
+				Sprintf(buf, "      * Mana cost is %d", artilist[obj->oartifact].inv_mana_cost);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+			if (artilist[obj->oartifact].aflags & AF_INVOKE_EXPENDS_CHARGE)
+			{
+				Sprintf(buf, "      * Expends one charge");
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+			if (artilist[obj->oartifact].aflags & AF_INVOKE_REQUIRES_WORN)
+			{
+				Sprintf(buf, "      * Has to be worn for invocation");
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+			if (artilist[obj->oartifact].aflags & AF_INVOKE_MAY_DRAIN_ENERGY)
+			{
+				Sprintf(buf, "      * May drain energy upon invocation");
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+			if (artilist[obj->oartifact].aflags & AF_INVOKE_MAY_DRAIN_LIFE)
+			{
+				Sprintf(buf, "      * May drain experience levels upon invocation");
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
+			if (artilist[obj->oartifact].repower_time > 0)
+			{
+				Sprintf(buf, "      * Repowers over %d round%s", artilist[obj->oartifact].repower_time, plur(artilist[obj->oartifact].repower_time));
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+
 		}
 
 
@@ -3414,7 +3469,7 @@ register struct obj *obj;
 	case RIN_LIFE_PROTECTION:
 		pline("A pillar of smoke arises from the sink.");
 		break;
-	case RIN_CONFLICT:
+	case RIN_SEVEN_CHARGES: /* Artifact version of ring of conflict */
         You_hear("loud noises coming from the drain.");
         break;
     case RIN_SUSTAIN_ABILITY: /* KMH */

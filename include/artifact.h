@@ -25,9 +25,9 @@
 #define AF_SHINES_MAGICAL_LIGHT				0x00004000UL  /* shines like Sunsword when wielded */
 #define AF_FLICKERS							0x00008000UL  /* flickers like Sting */
 #define AF_FLICKERS_WHEN_CARRIED			0x00010000UL  /* flickers also when just carried */
-/* free bit */
-/* free bit */
-/* free bit */
+#define AF_NAME_KNOWN_WHEN_PICKED_UP		0x00020000UL  /* Ditto */
+#define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x00040000UL  /* Ditto */
+#define AF_NAME_KNOWN_WHEN_INVOKED			0x00080000UL  /* Ditto */
 
 /* monster class flags and mask here */
 #define AF_DMONS							0x00100000UL  /* attack bonus on one monster type */
@@ -38,10 +38,10 @@
 #define AF_DBONUS							0x01F00000UL  /* attack bonus mask */
 
 #define AF_FAMOUS							0x02000000UL  /* Name is always known */
-#define AF_NAME_KNOWN_WHEN_PICKED_UP		0x04000000UL  /* Ditto */
-#define AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED	0x08000000UL  /* Ditto */
-#define AF_NAME_KNOWN_WHEN_INVOKED			0x10000000UL  /* Ditto */
-/* free bit */
+#define AF_INVOKE_REQUIRES_WORN				0x04000000UL  /* ditto */
+#define AF_INVOKE_EXPENDS_CHARGE			0x08000000UL  /* ditto */
+#define AF_INVOKE_MAY_DRAIN_ENERGY			0x10000000UL  /* ditto */
+#define AF_INVOKE_MAY_DRAIN_LIFE			0x20000000UL  /* ditto */
 #define AF_READABLE							0x40000000UL  /* readable even if base item is not */
 #define AF_NO_WISH							0x80000000UL  /* not wishable, not that for artifacts the base item's no wish does not apply */
 
@@ -97,6 +97,10 @@ struct artifact {
 	int worn_prop;		/* property conferred when wielded/worn */
 	int carried_prop;	/* property conferred when carried */
 	int inv_prop;       /* property obtained by invoking artifact */
+	int inv_duration_dice;
+	int inv_duration_diesize;
+	int inv_duration_plus;
+	int inv_mana_cost;
 	int repower_time;   /* artifact invoke cooldown, if any */
     aligntyp alignment; /* alignment of bequeathing gods */
     short role;         /* character role associated with */

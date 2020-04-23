@@ -817,19 +817,37 @@ register struct monst *mtmp;
         case PM_ORCUS:
 		{
 			//(void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
-			int weaptype = MACE_OF_DEATH;
+			int weaptype = MACE_OF_THE_UNDERWORLD;
 			int artifacttype = ART_WAND_OF_ORCUS;
 			otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
-			otmp = oname(otmp, artiname(artifacttype));
 
-			curse(otmp);
-			otmp->oerodeproof = TRUE;
-			spe2 = 2 + rnd(3);
-			otmp->enchantment = max(otmp->enchantment, spe2);
-			(void)mpickobj(mtmp, otmp);
+            if(otmp)
+    			otmp = oname(otmp, artiname(artifacttype));
 
+            if (otmp)
+            {
+                curse(otmp);
+                otmp->oerodeproof = TRUE;
+                spe2 = 2 + rnd(3);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                (void)mpickobj(mtmp, otmp);
+            }
 			break;
 		}
+        case PM_YACC:
+        {
+            int weaptype = RIN_SEVEN_CHARGES;
+            int artifacttype = ART_RING_OF_CONFLICT;
+            otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+
+            if(otmp)
+                otmp = oname(otmp, artiname(artifacttype));
+
+            if(otmp)
+                (void)mpickobj(mtmp, otmp);
+
+            break;
+        }       
         case PM_HORNED_DEVIL:
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;

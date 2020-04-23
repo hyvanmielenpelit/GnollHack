@@ -2285,6 +2285,8 @@ E boolean NDECL(create_particular);
 E int FDECL(maybe_tame, (struct monst*, struct obj*));
 E void FDECL(read_the_one_ring, (struct obj*));
 E void FDECL(strip_charges, (struct obj*, boolean));
+E void FDECL(p_glow1, (struct obj*));
+E void FDECL(p_glow2, (struct obj*, const char*));
 
 /* ### rect.c ### */
 

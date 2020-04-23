@@ -2349,11 +2349,14 @@ STATIC_OVL int
 arti_invoke(obj)
 struct obj *obj;
 {
+	if (!obj) {
+		impossible("arti_invoke without obj");
+		return 0;
+	}
+
     register const struct artifact *oart = get_artifact(obj);
-    if (!obj) {
-        impossible("arti_invoke without obj");
-        return 0;
-    }
+
+	/* No artifact or property */
     if (!oart || !oart->inv_prop)
 	{
         if (obj->otyp == CRYSTAL_BALL)
@@ -2363,46 +2366,69 @@ struct obj *obj;
         return 1;
     }
 
+	/* Check requirements */
+	if ((oart->aflags & AF_INVOKE_REQUIRES_WORN) && !is_worn_correctly(obj))
+	{
+		pline("Nothing happens.");
+		return 1;
+	}
+	else if ((oart->aflags & AF_INVOKE_EXPENDS_CHARGE) && obj->charges <= 0)
+	{
+		pline("Unfortunately, nothing happens.");
+		return 1;
+	}
+	else if (obj->repowerleft > 0)
+	{
+		/* the artifact is tired :-) */
+		You_feel("that %s %s ignoring you.", the(xname(obj)),
+			otense(obj, "are"));
+		/* and just got more so; patience is essential... */
+		if(obj->repowerleft < 9900) /* rule out unlimited addition */
+			obj->repowerleft += d(3, 10);
+		return 1;
+	}
+	else if (u.uen < artilist[obj->oartifact].inv_mana_cost)
+	{
+		pline("You do not have enough mana to invoke %s.", the(cxname(obj)));
+		return 0;
+	}
+
+
+	check_arti_name_discovery(obj);
+	
+	if (oart->aflags & AF_INVOKE_EXPENDS_CHARGE)
+	{
+		consume_obj_charge(obj, TRUE);
+	}
+
+	if (artilist[obj->oartifact].inv_mana_cost > 0)
+	{
+		u.uen -= artilist[obj->oartifact].inv_mana_cost;
+		context.botl = TRUE;
+	}
+
+	if(obj->repowerleft > 0) /* Override below if effect failed */
+		obj->repowerleft = artilist[obj->oartifact].repower_time;
+
+	int art_inv_dur_dice = artilist[obj->oartifact].inv_duration_dice;
+	int art_inv_dur_diesize = artilist[obj->oartifact].inv_duration_diesize;
+	int art_inv_dur_plus = artilist[obj->oartifact].inv_duration_plus;
+	boolean temporary_effect = ((art_inv_dur_dice > 0 && art_inv_dur_diesize > 0) || art_inv_dur_plus > 0);
+
     if (oart->inv_prop > LAST_PROP)
 	{
-        /* It's a special power, not "just" a property */
-        if (obj->repowerleft > 0) 
-		{
-            /* the artifact is tired :-) */
-            You_feel("that %s %s ignoring you.", the(xname(obj)),
-                     otense(obj, "are"));
-            /* and just got more so; patience is essential... */
-            obj->age += (long) d(3, 10);
-            return 1;
-        }
-
-		//obj->cooldownleft = rnz(100);
-        //obj->age = monstermoves + rnz(100);
-
         switch (oart->inv_prop) 
 		{
         case ARTINVOKE_TAMING:
 		{
-			check_arti_name_discovery(obj);
 			struct obj pseudo;
             pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
             pseudo.otyp = SCR_TAMING;
             (void) seffects(&pseudo);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-
-			/* Howling Flail may drain your life upon invocation */
-			if (!rn2(2))
-			{
-				pline("%s your life energy!", Tobjnam(obj, "draw"));
-				losexp("life drainage");
-			}
-
-			update_inventory();
 			break;
         }
         case ARTINVOKE_HEALING:
 		{
-			check_arti_name_discovery(obj);
 			int healamt = (u.uhpmax + 1 - u.uhp) / 2;
             long creamed = (long) u.ucreamed;
 
@@ -2427,13 +2453,10 @@ struct obj *obj;
             if (Blinded > creamed)
                 make_blinded(creamed, FALSE);
             context.botl = TRUE;
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			update_inventory();
 			break;
         }
         case ARTINVOKE_ENERGY_BOOST: 
 		{
-			check_arti_name_discovery(obj);
 			int epboost = (u.uenmax + 1 - u.uen) / 2;
 
             if (epboost > 120)
@@ -2446,26 +2469,18 @@ struct obj *obj;
                 You_feel("re-energized.");
             } else
                 goto nothing_special;
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			update_inventory();
 			break;
         }
         case ARTINVOKE_UNTRAP: 
 		{
-			check_arti_name_discovery(obj);
 			if (!untrap(TRUE)) {
-                //obj->age = 0; /* don't charge for changing their mind */
-                return 0;
+				obj->repowerleft = 0;
+				return 0;
             }
-			else
-				obj->repowerleft = artilist[obj->oartifact].repower_time;
-
-			update_inventory();
 			break;
         }
         case ARTINVOKE_CHARGE_OBJ:
 		{
-			check_arti_name_discovery(obj);
 			struct obj *otmp = getobj(recharge_type, "charge", 0, "");
             boolean b_effect;
 
@@ -2476,36 +2491,24 @@ struct obj *obj;
             b_effect = (obj->blessed && (oart->role == Role_switch
                                          || oart->role == NON_PM));
             recharge(otmp, b_effect ? 1 : obj->cursed ? -1 : 0, TRUE);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			update_inventory();
 			break;
         }
         case ARTINVOKE_LEVEL_TELEPORT:
-			check_arti_name_discovery(obj);
 			level_tele(2, FALSE);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			update_inventory();
 			break;
         case ARTINVOKE_CREATE_PORTAL:
 		{
-			check_arti_name_discovery(obj);
 			int portal_res = create_portal();
 			if (!portal_res)
 				goto nothing_special;
 
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			update_inventory();
 			break;
         }
         case ARTINVOKE_ENLIGHTENING:
-			check_arti_name_discovery(obj);
 			enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			update_inventory();
 			break;
         case ARTINVOKE_CREATE_AMMO:
 		{
-			check_arti_name_discovery(obj);
 			struct obj *otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
 
             if (!otmp)
@@ -2526,13 +2529,10 @@ struct obj *obj;
             otmp = hold_another_object(otmp, "Suddenly %s out.",
                                        aobjnam(otmp, "fall"), (char *) 0);
             nhUse(otmp);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			update_inventory();
 			break;
         }
 		case ARTINVOKE_WAND_OF_DEATH:
 		{
-			check_arti_name_discovery(obj);
 			struct obj pseudo = zeroobj;
 			pseudo.otyp = SPE_FINGER_OF_DEATH;
 			pseudo.quan = 20L; /* do not let useup get it */
@@ -2558,17 +2558,6 @@ struct obj *obj;
 			{
 				weffects(&pseudo);
 			}
-
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-
-			/* Wand of Orcus may drain your life upon invocation */
-			if (!rn2(2))
-			{
-				pline("%s your life energy!", Tobjnam(obj, "draw"));
-				losexp("life drainage");
-			}
-			update_inventory();
-			break;
 		}
 		case ARTINVOKE_BLESS_CONTENTS:
 		{
@@ -2612,44 +2601,15 @@ struct obj *obj;
 					obj->repowerleft = artilist[obj->oartifact].repower_time / 30;
 				}
 			}
-			update_inventory();
 			break;
 		}
 		case ARTINVOKE_WISHING:
 		{
-			if (!is_worn_correctly(obj))
-			{
-				pline("Nothing happens.");
-				break;
-			}
-			else if (obj->charges <= 0)
-			{
-				pline("Unfortunately, nothing happens.");
-				break;
-			}
-			check_arti_name_discovery(obj);
-			consume_obj_charge(obj, TRUE);
 			makewish();
-			update_inventory();
 			break;
 		}
 		case ARTINVOKE_DEMON_SUMMON:
 		{
-			if (!is_worn_correctly(obj))
-			{
-				pline("Nothing happens.");
-				break;
-			}
-			else if (u.uen < 50)
-			{
-				pline("You do not have enough mana to invoke %s.", the(cxname(obj)));
-				break;
-			}
-			check_arti_name_discovery(obj);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			u.uen -= 50;
-			context.botl = 1;
-
 			struct monst* mon = (struct monst*)0;
 			mon = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy, MM_NOCOUNTBIRTH);
 			if (mon)
@@ -2657,8 +2617,11 @@ struct obj *obj;
 				mon->issummoned = TRUE;
 				(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
 
-				mon->summonduration = d(6, 6) + 200;
-				begin_summontimer(mon);
+				if (temporary_effect)
+				{
+					mon->summonduration = d(art_inv_dur_dice, art_inv_dur_diesize) + art_inv_dur_plus;
+					begin_summontimer(mon);
+				}
 				mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
 
 				pline("%s appears in a puff of smoke!", Amonnam(mon));
@@ -2667,53 +2630,49 @@ struct obj *obj;
 			{
 				goto nothing_special;
 			}
-			update_inventory();
 			break;
 		}
 		case ARTINVOKE_RECHARGE_ITSELF:
 		{
-			check_arti_name_discovery(obj);
 			int old_recharged = obj->recharged;
 			int old_charges = obj->charges;
 			obj->recharged = 0;
 			obj->charges = get_obj_max_charge(obj);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-			if (obj->charges > old_charges)
+			if (obj->otyp == ART_HOLY_GRAIL)
 			{
-				pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
-			}
-			else if(obj->recharged != old_recharged)
-			{
-				pline("%s a bit more shiny.", Tobjnam(obj, "look"), OBJ_CONTENT_DESC(obj->otyp));
+				if (obj->charges > old_charges)
+				{
+					pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
+				}
+				else if (obj->recharged != old_recharged)
+				{
+					pline("%s a bit more shiny.", Tobjnam(obj, "look"), OBJ_CONTENT_DESC(obj->otyp));
+				}
+				else
+				{
+					goto nothing_special;
+				}
 			}
 			else
 			{
-				update_inventory();
-				goto nothing_special;
+				if (obj->charges > old_charges)
+				{
+					p_glow2(obj, NH_BLUE);
+				}
+				else if (obj->recharged != old_recharged)
+				{
+					p_glow1(obj);
+				}
+				else
+				{
+					goto nothing_special;
+				}
 			}
-			update_inventory();
 			break;
 		}
 		case ARTINVOKE_TIME_STOP:
 		{
-			if (obj->oclass == ARMOR_CLASS && !is_worn_correctly(obj))
-			{
-				You("must wear %s to invoke %s.", the(cxname(obj)),
-					(pair_of(obj) || obj->quan > 1) ? "them" : "it" 
-					);
-			}
-			else
-			{
-				check_arti_name_discovery(obj);
-				timestop();
-				obj->repowerleft = artilist[obj->oartifact].repower_time;
-				if (!rn2(2))
-				{
-					u.uen = 0;
-					pline("%s your energy!", Tobjnam(obj, "draw"));
-				}
-				update_inventory();
-			}
+			timestop();
 			break;
 		}
 
@@ -2721,68 +2680,79 @@ struct obj *obj;
     } 
 	else 
 	{
-        //long eprop = (u.uprops[oart->inv_prop].extrinsic ^= W_ARTIFACT_INVOKED),
-        //    iprop = u.uprops[oart->inv_prop].intrinsic;
-        boolean switch_on = (u.uprops[oart->inv_prop].extrinsic & W_ARTIFACT_INVOKED) == 0;
+		boolean switch_on = (u.uprops[oart->inv_prop].extrinsic & W_ARTIFACT_INVOKED) == 0;
+		boolean noeff = temporary_effect ? (u.uprops[oart->inv_prop].extrinsic || u.uprops[oart->inv_prop].intrinsic) : ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTIFACT_INVOKED) || u.uprops[oart->inv_prop].intrinsic);
 
-        if (switch_on && obj->repowerleft > 0) // obj->age > monstermoves)
+		if (temporary_effect)
 		{
-            /* the artifact is tired :-) */
-            u.uprops[oart->inv_prop].extrinsic ^= W_ARTIFACT_INVOKED;
-            You_feel("that %s %s ignoring you.", the(xname(obj)),
-                     otense(obj, "are"));
-            /* can't just keep repeatedly trying */
-            //obj->age += (long) d(3, 10);
-			obj->repowerleft += artilist[obj->oartifact].repower_time / 3;
-            return 1;
-        } else if (!switch_on) {
-            /* when turning off property, determine downtime */
-            /* arbitrary for now until we can tune this -dlc */
-            //obj->age = monstermoves + rnz(100);
-			obj->repowerleft = artilist[obj->oartifact].repower_time;
-        }
+			incr_itimeout(&u.uprops[oart->inv_prop].intrinsic, (art_inv_dur_dice >0 && art_inv_dur_diesize > 0 ? d(art_inv_dur_dice, art_inv_dur_diesize) : 0) + art_inv_dur_plus);
+		}
+		else
+		{
+			if (!switch_on)
+			{
+				obj->repowerleft = artilist[obj->oartifact].repower_time;
+			}
+			obj->invokeon = switch_on;
+		}
 
-		obj->invokeon = switch_on;
+		if (noeff)
+		{
+		nothing_special:
+			/* you had the property from some other source too */
+			if (carried(obj))
+				You_feel("a surge of power, but nothing seems to happen.");
+			return 1;
+		}
 
-
-        if ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTIFACT_INVOKED) || u.uprops[oart->inv_prop].intrinsic) {
- nothing_special:
-            /* you had the property from some other source too */
-            if (carried(obj))
-                You_feel("a surge of power, but nothing seems to happen.");
-            return 1;
-        }
-        switch (oart->inv_prop) {
-        case CONFLICT:
-            if (switch_on)
-                You_feel("like a rabble-rouser.");
-            else
-                You_feel("the tension decrease around you.");
-            break;
-        case LEVITATION:
+		/* effect happened, tell it here */
+		switch (oart->inv_prop) {
+		case CONFLICT:
+			if ((!temporary_effect && switch_on) || temporary_effect)
+				You_feel("like a rabble-rouser.");
+			else
+				You_feel("the tension decrease around you.");
+			break;
+		case LEVITATION:
 #if 0
-            if (switch_on) {
-                float_up();
-                spoteffects(FALSE);
-            } else
-                (void) float_down(I_SPECIAL | TIMEOUT, W_ARTIFACT_INVOKED);
+			if (switch_on) {
+				float_up();
+				spoteffects(FALSE);
+			}
+			else
+				(void)float_down(I_SPECIAL | TIMEOUT, W_ARTIFACT_INVOKED);
 #endif
 			break;
 		case INVISIBILITY:
 #if 0
-            if (Blocks_Invisibility || Blind)
-                goto nothing_special;
-            newsym(u.ux, u.uy);
-            if (switch_on)
-                Your("body takes on a %s transparency...",
-                     Hallucination ? "normal" : "strange");
-            else
-                Your("body seems to unfade...");
+			if (Blocks_Invisibility || Blind)
+				goto nothing_special;
+			newsym(u.ux, u.uy);
+			if (switch_on)
+				Your("body takes on a %s transparency...",
+					Hallucination ? "normal" : "strange");
+			else
+				Your("body seems to unfade...");
 #endif
 			break;
 		}
-    }
+	}
 
+	if ((oart->aflags & AF_INVOKE_MAY_DRAIN_ENERGY) && !rn2(2))
+	{
+		u.uen = 0;
+		pline("%s your energy!", Tobjnam(obj, "draw"));
+		context.botl = TRUE;
+	}
+
+	if ((oart->aflags & AF_INVOKE_MAY_DRAIN_LIFE) && !rn2(2))
+	{
+		pline("%s your life energy!", Tobjnam(obj, "draw"));
+		losexp("life drainage");
+		context.botl = TRUE;
+	}
+
+	update_inventory();
     return 1;
 }
 
