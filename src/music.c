@@ -582,7 +582,26 @@ struct obj *instr;
         }
         makeknown(instr->otyp);
         break;
-	case BRASS_HORN: /* Just make noise and wake nearby monsters */
+    case HORN_OF_CONFLICT:
+    {
+        consume_obj_charge(instr, TRUE);
+        You("produce a strange, vibrating sound.");
+        boolean had_conflict = Conflict;
+        wake_nearby();
+        int dur_dice = objects[instr->otyp].oc_spell_dur_dice;
+        int dur_diesize = objects[instr->otyp].oc_spell_dur_diesize;
+        int dur_plus = objects[instr->otyp].oc_spell_dur_plus;
+        incr_itimeout(&u.uprops[CONFLICT].intrinsic, (dur_dice > 0 && dur_diesize > 0 ? d(dur_dice, dur_diesize) : 0) + dur_plus);
+        if (Conflict && !had_conflict)
+            You_feel("like a rabble-rouser.");
+        else if(Conflict)
+            You_feel("the tension remains high around you.");
+        else
+            You_feel("the atmosphere is oddly relaxed around you.");
+
+        break;
+    }
+    case BRASS_HORN: /* Just make noise and wake nearby monsters */
 		You("produce a loud, deep sound.");
 		wake_nearby();
 		break;

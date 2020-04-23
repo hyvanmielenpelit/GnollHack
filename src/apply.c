@@ -4771,7 +4771,8 @@ doapply()
 		case TOOLED_HORN:
 		case FROST_HORN:
 		case FIRE_HORN:
-		case WOODEN_HARP:
+        case HORN_OF_CONFLICT:
+        case WOODEN_HARP:
 		case MAGIC_HARP:
 		case BUGLE:
 		case LEATHER_DRUM:
