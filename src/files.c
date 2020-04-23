@@ -3274,8 +3274,7 @@ boolean FDECL((*proc), (char *));
                 *ep = '\0'; /* remove newline */
             }
             if (ep) {
-                char *tmpbuf = (char *) 0;
-                size_t len;
+                //size_t len;
                 boolean ignoreline = FALSE;
                 boolean oldline = FALSE;
 
@@ -3323,16 +3322,18 @@ boolean FDECL((*proc), (char *));
                         buf[sizeof inbuf - 1] = '\0';
 */
 
-                    len = strlen(ep) + 1; /* +1: final '\0' */
-					if (buf)
-						len += strlen(buf) + 1; /* +1: space */
-					tmpbuf = (char*)alloc(len);
+                    //len = strlen(ep) + 1; /* +1: final '\0' */
+					//if (buf)
+					//	len += strlen(buf) + 1; /* +1: space */
+                    char tmpbuf[4 * BUFSIZ]; // = (char*)alloc(sizeof inbuf);
 					*tmpbuf = '\0';
 					if (buf) {
 						Strcat(strcpy(tmpbuf, buf), " ");
 						free(buf);
 					}
-					buf = strcat(tmpbuf, ep);
+                    buf = (char*)alloc(sizeof inbuf);
+                    strcpy(buf, strcat(tmpbuf, ep));
+                    //free(tmpbuf);
 					if (strlen(buf) >= sizeof inbuf)
 						buf[sizeof inbuf - 1] = '\0';
                 }

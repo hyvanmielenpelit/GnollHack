@@ -1855,7 +1855,10 @@ int c, a;
         return FALSE;
     } else {
         tmp->next = menu_colorings;
-        tmp->origstr = dupstr(str);
+        //tmp->origstr = dupstr(str);
+        tmp->origstr = (char*)alloc(BUFSIZ);
+        strncpy(tmp->origstr, str, BUFSIZ - 1);
+        tmp->origstr[BUFSIZ - 1] = '\0';
         tmp->color = c;
         tmp->attr = a;
         menu_colorings = tmp;
@@ -1870,7 +1873,7 @@ char *tmpstr; /* never Null but could be empty */
 {
     int c = NO_COLOR, a = ATR_NONE;
     char *tmps, *cs, *amp;
-    char str[BUFSZ];
+    char str[BUFSIZ];
 
     //Sprintf(str, "%s", tmpstr);
 	(void)strncpy(str, tmpstr, sizeof str - 1);
@@ -1939,7 +1942,8 @@ const char* str;
 	if (iflags.use_menu_color)
 		for (tmpmc = menu_colorings; tmpmc; tmpmc = tmpmc->next)
 		{
-			if (regex_match(str, tmpmc->match)) {
+			if (regex_match(str, tmpmc->match))
+            {
 				return indx;
 			}
 			indx++;
@@ -1971,8 +1975,12 @@ free_menu_coloring()
 
     for (tmp = menu_colorings; tmp; tmp = tmp2) {
         tmp2 = tmp->next;
-        regex_free(tmp->match);
-        free((genericptr_t) tmp->origstr);
+        if (tmp->match)
+            regex_free(tmp->match);
+        tmp->match = 0;
+        if(tmp->origstr)
+            free((genericptr_t) tmp->origstr);
+        tmp->origstr = 0;
         free((genericptr_t) tmp);
     }
 }
