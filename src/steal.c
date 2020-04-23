@@ -833,7 +833,7 @@ boolean is_mon_dead;
 			obfree(otmp, (struct obj*) 0); //Delete the item
 		}
 		else
-			mdrop_obj(mtmp, otmp, is_pet&& flags.verbose);
+			mdrop_obj(mtmp, otmp, is_pet && flags.verbose);
 	}
 
     if (show && cansee(omx, omy))

@@ -834,20 +834,7 @@ register struct monst *mtmp;
             }
 			break;
 		}
-        case PM_YACC:
-        {
-            int weaptype = RIN_SEVEN_CHARGES;
-            int artifacttype = ART_RING_OF_CONFLICT;
-            otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
-            if(otmp)
-                otmp = oname(otmp, artiname(artifacttype));
-
-            if(otmp)
-                (void)mpickobj(mtmp, otmp);
-
-            break;
-        }       
         case PM_HORNED_DEVIL:
             (void) mongets(mtmp, rn2(4) ? TRIDENT : BULLWHIP);
             break;
@@ -1458,7 +1445,60 @@ register struct monst *mtmp;
 			(void)mongets(mtmp, WAN_COLD);
 			(void)mongets(mtmp, WAN_FIRE);
 		}
-		break;
+        else if (ptr == &mons[PM_YACC])
+        {
+            /* Yacc is normally using an artifact ring as the nose ring */
+
+            int weaptype = NOSE_RING_OF_BULL_STRENGTH;
+            int artifacttype = 0;
+            boolean three_wishes_ok = TRUE;
+            boolean serpent_ring_ok = TRUE;
+            boolean conflict_ok = TRUE;
+            boolean one_ring_ok = TRUE;
+
+            if (exist_artifact(RIN_THREE_CHARGES, artiname(ART_RING_OF_THREE_WISHES)))
+                three_wishes_ok = FALSE;
+            if (exist_artifact(RIN_THE_SERPENT_GOD, artiname(ART_SERPENT_RING_OF_SET)))
+                serpent_ring_ok = FALSE;
+            if (exist_artifact(RIN_SEVEN_CHARGES, artiname(ART_RING_OF_CONFLICT)))
+                conflict_ok = FALSE;
+            if (exist_artifact(RIN_SUPREME_POWER, artiname(ART_ONE_RING)))
+                one_ring_ok = FALSE;
+
+
+            if (three_wishes_ok)
+            {
+                weaptype = RIN_THREE_CHARGES;
+                artifacttype = ART_RING_OF_THREE_WISHES;
+            }
+
+            if (serpent_ring_ok && (!three_wishes_ok || !rn2(2)))
+            {
+                weaptype = RIN_THE_SERPENT_GOD;
+                artifacttype = ART_SERPENT_RING_OF_SET;
+            }
+
+            if (conflict_ok && ((!three_wishes_ok && !serpent_ring_ok) || !rn2(1 + three_wishes_ok + serpent_ring_ok)))
+            {
+                weaptype = RIN_SEVEN_CHARGES;
+                artifacttype = ART_RING_OF_CONFLICT;
+            }
+
+            /* One Ring is rare with Yacc */
+            if (one_ring_ok && !three_wishes_ok && !serpent_ring_ok && !conflict_ok && !rn2(2))
+            {
+                weaptype = RIN_SUPREME_POWER;
+                artifacttype = ART_ONE_RING;
+            }
+            otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
+
+            if (otmp)
+                otmp = oname(otmp, artiname(artifacttype));
+
+            if (otmp)
+                (void)mpickobj(mtmp, otmp);
+        }       
+        break;
 	case S_ORC:
 		if (!rn2(2))
 			(void)mongetsgold(mtmp, ptr == &mons[PM_ORC_CAPTAIN] ? 20 + rn2(201) : ptr == &mons[PM_URUK_HAI] ? 10 + rn2(31) : 5 + rn2(16));
