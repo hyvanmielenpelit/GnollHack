@@ -3868,7 +3868,7 @@ eightlineorder[MAX_STATUS_LINES][MAX_PER_ROW] = {
 };
 static const enum statusfields (*fieldorder)[MAX_PER_ROW];
 
-static int finalx[3][2];    /* [rows][NOW or BEFORE] */
+static int finalx[MAX_STATUS_LINES][2];    /* [rows][NOW or BEFORE] */
 static boolean windowdata_init = FALSE;
 static int cond_shrinklvl = 0;
 static int enclev = 0, enc_shrinklvl = 0;
@@ -4050,6 +4050,11 @@ unsigned long *colormasks;
         if (*fmt == ' ' && (fldidx == fieldorder[0][0]
                             || fldidx == fieldorder[1][0]
                             || fldidx == fieldorder[2][0]
+                            || fldidx == fieldorder[3][0]
+                            || fldidx == fieldorder[4][0]
+                            || fldidx == fieldorder[5][0]
+                            || fldidx == fieldorder[6][0]
+                            || fldidx == fieldorder[7][0]
             ))
             ++fmt; /* skip leading space for first field on line */
         Sprintf(status_vals[fldidx], fmt, text);
@@ -4188,7 +4193,7 @@ boolean force_update;
 boolean
 check_fields(forcefields, sz)
 boolean forcefields;
-int sz[3];
+int sz[MAX_STATUS_LINES];
 {
     int c, i, row, col, num_rows, idx;
     boolean valid = TRUE, matchprev, update_right;
