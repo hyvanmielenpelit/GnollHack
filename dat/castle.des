@@ -141,7 +141,6 @@ OBJECT:('/',"wishing")
 }
 # Prevent monsters from eating it.  (@'s never eat objects)
 ENGRAVING:$place[0],burn,"Gilthoniel"
-OBJECT:('?',"scare monster"),$place[0],cursed
 # The treasure of the lord
 OBJECT:('(',"chest"),(37,08)
 # Traps
