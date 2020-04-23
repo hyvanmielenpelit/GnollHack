@@ -222,7 +222,7 @@ int x, y;
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
                || (ttmp
                    && (ttmp->ttyp == MAGIC_PORTAL
-                       || ttmp->ttyp == VIBRATING_SQUARE
+                       || ttmp->ttyp == VIBRATING_SQUARE || ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL || ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL
                        || (!Can_dig_down(&u.uz) && !levl[x][y].candig)))) {
         if (verbose)
             pline_The("%s here is too hard to %s.", surface(x, y), verb);
@@ -839,7 +839,7 @@ coord *cc;
     lev = &levl[dig_x][dig_y];
     nohole = (!Can_dig_down(&u.uz) && !lev->candig);
 
-    if ((ttmp && (ttmp->ttyp == MAGIC_PORTAL
+    if ((ttmp && (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL || ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL
                   || ttmp->ttyp == VIBRATING_SQUARE || nohole))
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR
             && (lev->wall_info & W_NONDIGGABLE) != 0)) {

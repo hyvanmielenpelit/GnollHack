@@ -239,7 +239,7 @@ boolean trapok;
 		/* allow teleportation onto vibrating square, it's not a real trap */
 		struct trap* trap = t_at(x, y);
 
-		if (trap && trap->ttyp != VIBRATING_SQUARE)
+		if (trap && trap->ttyp != VIBRATING_SQUARE && trap->ttyp != MODRON_OCTAHEDRAL_PORTAL && trap->ttyp != MODRON_TETRAHEDRAL_PORTAL)
 			return FALSE;
 	}
 	if (!goodpos(x, y, &youmonst, 0))

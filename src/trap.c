@@ -334,7 +334,7 @@ long flags;
     struct rm *lev = &levl[x][y];
 
     if ((ttmp = t_at(x, y)) != 0) {
-        if (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE)
+        if (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE || ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL || ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL)
             return (struct trap *) 0;
         oldplace = TRUE;
         if (u.utrap && x == u.ux && y == u.uy

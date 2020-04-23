@@ -2342,7 +2342,7 @@ char *origbuf;
 #ifdef SYSCF
     int n;
 #endif
-    char *bufp, buf[4 * BUFSZ];
+    char *bufp, buf[4 * BUFSIZ];
     uchar translate[MAXPCHARS];
     int len;
     boolean retval = TRUE;
@@ -3060,8 +3060,9 @@ char *buf;
 {
     struct obj *otmp;
 
-	if (strlen(buf) >= BUFSZ)
-		buf[BUFSZ - 1] = '\0';
+	//if (strlen(buf) >= BUFSIZ * 4)
+	//	buf[BUFSIZ * 4 - 1] = '\0';
+
 	otmp = readobjnam(buf, (struct obj*) 0);
 
     if (otmp) {
@@ -3102,6 +3103,7 @@ read_wizkit()
  *
  * Continued lines are merged together with one space in between.
  */
+#if 0
 STATIC_OVL boolean
 parse_conf_file(fp, proc)
 FILE* fp;
@@ -3237,14 +3239,14 @@ boolean FDECL((*proc), (char*));
     free_config_sections();
     return rv;
 }
+#endif
 
-#if 0
 STATIC_OVL boolean
 parse_conf_file(fp, proc)
 FILE *fp;
 boolean FDECL((*proc), (char *));
 {
-    char inbuf[4 * BUFSZ];
+    char inbuf[4 * BUFSIZ];
     boolean rv = TRUE; /* assume successful parse */
     char *ep;
     boolean skip = FALSE, morelines = FALSE;
@@ -3387,7 +3389,6 @@ boolean FDECL((*proc), (char *));
     free_config_sections();
     return rv;
 }
-#endif
 
 extern struct symsetentry *symset_list;  /* options.c */
 extern struct symparse loadsyms[];       /* drawing.c */
@@ -3466,8 +3467,8 @@ int which_set;
     struct symparse *symp = (struct symparse *) 0;
     char *bufp, *commentp, *altp;
 
-	if (strlen(buf) >= BUFSZ)
-		buf[BUFSZ - 1] = '\0';
+	//if (strlen(buf) >= BUFSIZ * 4)
+	//	buf[BUFSIZ * 4 - 1] = '\0';
 
     /* convert each instance of whitespace (tabs, consecutive spaces)
        into a single space; leading and trailing spaces are stripped */

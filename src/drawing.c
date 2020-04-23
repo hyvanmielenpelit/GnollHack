@@ -666,7 +666,6 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_anti_magic_trap, "S_anti_magic_trap" },
     { SYM_PCHAR, S_polymorph_trap, "S_polymorph_trap" },
     { SYM_PCHAR, S_vibrating_square, "S_vibrating_square" },
-	{ SYM_PCHAR, S_vibrating_square, "S_vibrating_square" },
 	{ SYM_PCHAR, S_octagonal_portal, "S_octagonal_portal" },
 	{ SYM_PCHAR, S_tetragonal_portal, "S_tetragonal_portal" },
 	{ SYM_PCHAR, S_vbeam, "S_vbeam" },

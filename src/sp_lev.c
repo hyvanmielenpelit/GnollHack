@@ -864,6 +864,8 @@ rndtrap()
         rtrap = rnd(TRAPNUM - 1);
         switch (rtrap) {
         case HOLE: /* no random holes on special levels */
+        case MODRON_TETRAHEDRAL_PORTAL:
+        case MODRON_OCTAHEDRAL_PORTAL:
         case VIBRATING_SQUARE:
         case MAGIC_PORTAL:
             rtrap = NO_TRAP;
@@ -4613,7 +4615,7 @@ ensure_way_out()
         selection_floodfill(ov, xdnladder, ydnladder, TRUE);
 
     while (ttmp) {
-        if ((ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE
+        if ((ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE || ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL || ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL
              || is_hole(ttmp->ttyp))
             && !selection_getpoint(ttmp->tx, ttmp->ty, ov))
             selection_floodfill(ov, ttmp->tx, ttmp->ty, TRUE);

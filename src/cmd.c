@@ -6318,7 +6318,7 @@ int x, y;
 
     if ((ttmp = t_at(x, y)) != 0 && ttmp->tseen) {
         add_herecmd_menuitem(win, doidtrap, "Examine trap"), ++K;
-        if (ttmp->ttyp != VIBRATING_SQUARE)
+        if (ttmp->ttyp != VIBRATING_SQUARE && ttmp->ttyp != MODRON_OCTAHEDRAL_PORTAL && ttmp->ttyp != MODRON_TETRAHEDRAL_PORTAL)
             add_herecmd_menuitem(win, dountrap, "Attempt to disarm trap"), ++K;
     }
 

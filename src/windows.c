@@ -943,7 +943,7 @@ unsigned long *colormasks UNUSED;
     enum statusfields idx1, idx2, *fieldlist;
     char *nb, *text = (char *) ptr;
 
-    static enum statusfields fieldorder[][18] = {
+    static enum statusfields gsu_fieldorder[][18] = {
         /* line one */
         { BL_TITLE, BL_STR, BL_DX, BL_CO, BL_IN, BL_WI, BL_CH, BL_GOLD, //BL_ALIGN,
           BL_SCORE, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH, BL_FLUSH,
@@ -1048,9 +1048,9 @@ unsigned long *colormasks UNUSED;
     *nb = '\0';
     /* BL_FLUSH is the only pseudo-index value we need to check for
        in the loop below because it is the only entry used to pad the
-       end of the fieldorder array. We could stop on any
+       end of the gsu_fieldorder array. We could stop on any
        negative (illegal) index, but this should be fine */
-    for (i = 0; (idx1 = fieldorder[0][i]) != BL_FLUSH; ++i) {
+    for (i = 0; (idx1 = gsu_fieldorder[0][i]) != BL_FLUSH; ++i) {
         if (status_activefields[idx1])
             Strcpy(nb = eos(nb), status_vals[idx1]);
     }
@@ -1063,7 +1063,7 @@ unsigned long *colormasks UNUSED;
        of [sub]sets of them to the width of the map; we have more control
        here but currently emulate that behavior */
     for (pass = 1; pass <= 4; pass++) {
-        fieldlist = fieldorder[pass];
+        fieldlist = gsu_fieldorder[pass];
         nb = newbot2;
         *nb = '\0';
         for (i = 0; (idx2 = fieldlist[i]) != BL_FLUSH; ++i) {

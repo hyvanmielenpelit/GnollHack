@@ -342,7 +342,7 @@ d_level *lev;
                It might still fail if there's a dungeon feature here. */
             struct trap *t = t_at(x, y);
 
-            if (t && t->ttyp != MAGIC_PORTAL && t->ttyp != VIBRATING_SQUARE)
+            if (t && t->ttyp != MAGIC_PORTAL && t->ttyp != VIBRATING_SQUARE && t->ttyp != MODRON_OCTAHEDRAL_PORTAL && t->ttyp != MODRON_TETRAHEDRAL_PORTAL)
                 deltrap(t);
             if (bad_location(x, y, nlx, nly, nhx, nhy))
                 return FALSE;
