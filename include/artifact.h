@@ -48,7 +48,11 @@
 
 /* wielded or carried special effects */
 #define SPFX_NONE				0x00000000UL  /* No special effects, just a bonus */
-#define SPFX_SEEK				0x00000010UL  /* Item helps you search for things */
+/* free bit */
+/* free bit */
+/* free bit */
+/* free bit */
+#define SPFX_ANTIMAGIC			0x00000010UL  /* Antimagic */
 #define SPFX_WARN_OF_MON		0x00000020UL  /* Item warns you of a specific monster type; also always flickers */
 #define SPFX_SEARCH				0x00000040UL  /* Helps searching */
 #define SPFX_HALRES				0x00000080UL  /* Blocks hallucinations */

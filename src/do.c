@@ -2435,7 +2435,30 @@ register struct obj* obj;
 			Sprintf(buf, " %2d - Artifact damage type is %s damage", powercnt, dmgttext);
 			txt = buf;
 			putstr(datawin, 0, txt);
+		}
 
+		if (artilist[obj->oartifact].tohit_dice != 0 || artilist[obj->oartifact].tohit_diesize != 0 || artilist[obj->oartifact].tohit_plus != 0)
+		{
+			char tohitbuf[BUFSIZ] = "";
+			char plusbuf[BUFSIZ] = "";
+			if (artilist[obj->oartifact].tohit_plus != 0)
+				Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].tohit_plus >= 0 ? "+" : "", artilist[obj->oartifact].tohit_plus);
+
+			if (artilist[obj->oartifact].tohit_dice > 0 && artilist[obj->oartifact].tohit_diesize > 0)
+			{
+				Sprintf(tohitbuf, "Artifact to-hit bonus is %dd%d%s", artilist[obj->oartifact].tohit_dice, artilist[obj->oartifact].tohit_diesize, plusbuf);
+			}
+			else
+				Sprintf(tohitbuf, "Artifact to-hit bonus is %s", plusbuf);
+
+			powercnt++;
+			Sprintf(buf, " %2d - %s", powercnt, tohitbuf);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
+		if (artilist[obj->oartifact].attk.damn != 0 || artilist[obj->oartifact].attk.damd != 0 || artilist[obj->oartifact].attk.damp != 0)
+		{
 			char dmgbuf[BUFSIZ] = "";
 			char plusbuf[BUFSIZ] = "";
 			if (artilist[obj->oartifact].attk.damp != 0)
@@ -2456,25 +2479,6 @@ register struct obj* obj;
 
 			powercnt++;
 			Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
-			txt = buf;
-			putstr(datawin, 0, txt);
-		}
-		if (artilist[obj->oartifact].tohit_dice != 0 || artilist[obj->oartifact].tohit_diesize != 0 || artilist[obj->oartifact].tohit_plus != 0)
-		{
-			char tohitbuf[BUFSIZ] = "";
-			char plusbuf[BUFSIZ] = "";
-			if (artilist[obj->oartifact].tohit_plus != 0)
-				Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].tohit_plus >= 0 ? "+" : "", artilist[obj->oartifact].tohit_plus);
-
-			if (artilist[obj->oartifact].tohit_dice > 0 && artilist[obj->oartifact].tohit_diesize > 0)
-			{
-				Sprintf(tohitbuf, "Artifact to-hit bonus is %dd%d%s", artilist[obj->oartifact].tohit_dice, artilist[obj->oartifact].tohit_diesize, plusbuf);
-			}
-			else
-				Sprintf(tohitbuf, "Artifact to-hit bonus is %s", plusbuf);
-
-			powercnt++;
-			Sprintf(buf, " %2d - %s", powercnt, tohitbuf);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -2527,19 +2531,31 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 
-			if (artilist[obj->oartifact].repower_time > 0)
+			if (artilist[obj->oartifact].inv_prop <= LAST_PROP /* switchable property */
+				||
+				((artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0) ||artilist[obj->oartifact].inv_duration_plus > 0)
+				)
 			{
-				char plusbuf[BUFSIZ] = "";
-				if (artilist[obj->oartifact].inv_duration_plus != 0)
-					Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].inv_duration_plus >= 0 ? "+" : "", artilist[obj->oartifact].inv_duration_plus);
-
-				if (artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0)
+				if (artilist[obj->oartifact].inv_prop <= LAST_PROP
+					&& artilist[obj->oartifact].inv_duration_dice == 0
+					&& artilist[obj->oartifact].inv_duration_diesize == 0 
+					&& artilist[obj->oartifact].inv_duration_plus == 0)
 				{
-					Sprintf(buf, "      * Effect duration is %dd%d%s rounds", artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, plusbuf);
+					strcpy(buf, "      * Effect is switchable on and off");
 				}
 				else
-					Sprintf(buf, "      * Effect duration is %s", plusbuf);
+				{
+					char plusbuf[BUFSIZ] = "";
+					if (artilist[obj->oartifact].inv_duration_plus != 0)
+						Sprintf(plusbuf, "%s%d", artilist[obj->oartifact].inv_duration_plus >= 0 ? "+" : "", artilist[obj->oartifact].inv_duration_plus);
 
+					if (artilist[obj->oartifact].inv_duration_dice > 0 && artilist[obj->oartifact].inv_duration_diesize > 0)
+					{
+						Sprintf(buf, "      * Effect duration is %dd%d%s rounds", artilist[obj->oartifact].inv_duration_dice, artilist[obj->oartifact].inv_duration_diesize, plusbuf);
+					}
+					else
+						Sprintf(buf, "      * Effect duration is %s", plusbuf);
+				}
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -2717,10 +2733,54 @@ register struct obj* obj;
 				specialeffect = artilist[obj->oartifact].cspfx;
 				strcpy(endbuf, "when carried");
 			}
-			if (specialeffect & SPFX_SEEK)
+			int propnum = 0;
+			for (int idx = 0; idx < 32; idx++)
+			{
+				unsigned long bit = 1;
+				if (idx > 0)
+					bit = bit << idx;
+				propnum = spfx_to_prop(bit);
+				if (propnum > 0 && (specialeffect & SPFX_WARN_OF_MON)
+					&& bit != SPFX_WARN_OF_MON
+					&& bit != SPFX_STR_25
+					&& bit != SPFX_DEX_25
+					&& bit != SPFX_CON_25
+					&& bit != SPFX_INT_25
+					&& bit != SPFX_WIS_25
+					&& bit != SPFX_CHA_25
+					)
+				{
+					const char* propname = get_property_name(propnum);
+					if (propname)
+					{
+						char propbuf[BUFSZ];
+						strcpy(propbuf, propname);
+						*propbuf = highc(*propbuf);
+						powercnt++;
+						Sprintf(buf, " %2d - %s %s", powercnt, propbuf, endbuf);
+						txt = buf;
+						putstr(datawin, 0, txt);
+					}
+				}
+			}
+			if (specialeffect & SPFX_WARN_OF_MON)
 			{
 				powercnt++;
-				Sprintf(buf, " %2d - Seeking %s", powercnt, endbuf);
+				Sprintf(buf, " %2d - Warning of the presence of %s %s", powercnt,
+					(context.warntype.obj & M2_ORC) ? "orcs"
+					: (context.warntype.obj & M2_ELF) ? "elves"
+					: (context.warntype.obj & M2_WERE) ? "lycanthropes"
+					: (context.warntype.obj & M2_GIANT) ? "giants"
+					: (context.warntype.obj & M2_ANGEL) ? "angels"
+					: (context.warntype.obj & M2_DEMON) ? "demons" : something, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+#if 0
+			if (specialeffect & SPFX_ANTIMAGIC)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Magic resistance %s", powercnt, endbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -2728,19 +2788,6 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Searching %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_WARN_OF_MON)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Warning of the presence of %s %s", powercnt,
-					(context.warntype.obj& M2_ORC) ? "orcs"
-					: (context.warntype.obj & M2_ELF) ? "elves"
-					: (context.warntype.obj & M2_WERE) ? "lycanthropes"
-					: (context.warntype.obj & M2_GIANT) ? "giants"
-					: (context.warntype.obj & M2_ANGEL) ? "angels"
-					: (context.warntype.obj & M2_DEMON) ? "demons" : something, endbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -2828,13 +2875,6 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-			if (specialeffect & SPFX_LUCK)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Confers luck %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
 			if (specialeffect & SPFX_XRAY)
 			{
 				powercnt++;
@@ -2860,6 +2900,14 @@ register struct obj* obj;
 			{
 				powercnt++;
 				Sprintf(buf, " %2d - Aggravates monsters %s", powercnt, endbuf);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+#endif
+			if (specialeffect & SPFX_LUCK)
+			{
+				powercnt++;
+				Sprintf(buf, " %2d - Confers luck %s", powercnt, endbuf);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}

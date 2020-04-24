@@ -1557,13 +1557,34 @@ weapon_here:
 
 	bp = strprepend(bp, prefix);
 
-	/* Mark if cooling down */
-    if (obj->repowerleft > 0 && obj->cooldownleft > 0)
-        Strcat(bp, " (repowering, cooling down)");
-    else if (obj->cooldownleft > 0)
-		Strcat(bp, " (cooling down)");
-    else if (obj->repowerleft > 0)
-        Strcat(bp, " (repowering)");
+	/* Mark if invoke, repower, cooling down */
+    if (obj->invokeon > 0 || obj->repowerleft > 0 || obj->cooldownleft > 0)
+    {
+        boolean addcomma = FALSE;
+        Strcat(bp, " (");
+        if (obj->invokeon > 0)
+        {
+            Strcat(bp, "invoke on");
+            addcomma = TRUE;
+        }
+        if (obj->repowerleft > 0)
+        {
+            if(addcomma)
+                Strcat(bp, ", ");
+
+            Strcat(bp, "repowering");
+            addcomma = TRUE;
+        }
+        if (obj->cooldownleft > 0)
+        {
+            if (addcomma)
+                Strcat(bp, ", ");
+
+            Strcat(bp, "cooling down");
+            addcomma = TRUE;
+        }
+        Strcat(bp, ")");
+    }
 
 	/* Mark if glowing when detected something */
 	if (obj->detectioncount > 0)

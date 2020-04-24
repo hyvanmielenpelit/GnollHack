@@ -2680,7 +2680,7 @@ struct obj *obj;
     } 
 	else 
 	{
-		boolean switch_on = (u.uprops[oart->inv_prop].extrinsic & W_ARTIFACT_INVOKED) == 0;
+		boolean switch_on = (obj->invokeon == FALSE); // (u.uprops[oart->inv_prop].extrinsic& W_ARTIFACT_INVOKED) == 0;
 		boolean noeff = temporary_effect ? (u.uprops[oart->inv_prop].extrinsic || u.uprops[oart->inv_prop].intrinsic) : ((u.uprops[oart->inv_prop].extrinsic & ~W_ARTIFACT_INVOKED) || u.uprops[oart->inv_prop].intrinsic);
 
 		if (temporary_effect)
@@ -2712,6 +2712,22 @@ struct obj *obj;
 				You_feel("like a rabble-rouser.");
 			else
 				You_feel("the tension decrease around you.");
+			break;
+		case DISPLACED:
+			if (obj->oartifact == ART_MAGIC_MIRROR_OF_MERLIN)
+			{
+				if ((!temporary_effect && switch_on) || temporary_effect)
+					pline("%s an illusionary image of yourself near you.", Tobjnam(obj, "project"));
+				else
+					Your("illusionary double disappears.");
+			}
+			else
+			{
+				if ((!temporary_effect && switch_on) || temporary_effect)
+					You_feel("your image becomes displaced.");
+				else
+					You_feel("your image is in its right place again.");
+			}
 			break;
 		case LEVITATION:
 #if 0
@@ -2977,7 +2993,7 @@ static const struct abil2spfx_tag {
 	int prop;
 	unsigned long spfx;
 } abil2spfx[] = {
-	/* SPFX_SEEK not here */
+	{ ANTIMAGIC, SPFX_ANTIMAGIC },
 	{ WARN_OF_MON, SPFX_WARN_OF_MON },
 	{ SEARCHING, SPFX_SEARCH },
 	{ HALLUC_RES, SPFX_HALRES },
