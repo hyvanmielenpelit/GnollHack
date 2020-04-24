@@ -1334,7 +1334,9 @@ int pm;
 			percent = 33;
 		else if (ptr == &mons[PM_FLOATING_EYE])
 			percent = 100;
-		else if (mdifficulty >= 3)
+        else if (is_mind_flayer(ptr))
+            percent = (ptr == &mons[PM_MASTER_MIND_FLAYER] ? 35 : 25);
+        else if (mdifficulty >= 3)
 		{
 			if (ptr->mlet == S_GIANT)
 				mdifficulty += 3;

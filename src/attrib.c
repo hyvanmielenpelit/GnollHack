@@ -1920,7 +1920,7 @@ struct monst* mon;
 		/* properties that monsters do not have */
 		u.uspellcastingbonus = 0;
 		u.uexperiencebonus = 0;
-		u.xray_range = XRay_vision ? 3 : -1;
+		u.xray_range = XRay_vision ? 6 : -1;
 
 		u.moreluck = 0;
 		u.luck_does_not_timeout = 0;
