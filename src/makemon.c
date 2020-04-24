@@ -1492,7 +1492,7 @@ register struct monst *mtmp;
             }
             otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 
-            if (otmp)
+            if (otmp && artifacttype > 0)
                 otmp = oname(otmp, artiname(artifacttype));
 
             if (otmp)
