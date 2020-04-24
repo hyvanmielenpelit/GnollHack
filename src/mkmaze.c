@@ -1094,6 +1094,10 @@ const char *s;
         inv_pos.x = x;
         inv_pos.y = y;
         maketrap(inv_pos.x, inv_pos.y, VIBRATING_SQUARE, NON_PM, TRAP_NO_FLAGS);
+
+        mazexy(&mm);
+        (void)makemon(&mons[PM_BAPHOMET], mm.x, mm.y, NO_MM_FLAGS);
+
 #undef INVPOS_X_MARGIN
 #undef INVPOS_Y_MARGIN
 #undef INVPOS_DISTANCE
