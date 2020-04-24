@@ -60,6 +60,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_orcus_level;
     d_level d_baalzebub_level; /* unused */
     d_level d_asmodeus_level;  /* unused */
+    d_level d_yeenoghu_level;  /* unused */
     d_level d_portal_level;    /* only in goto_level() [do.c] */
 	d_level d_sanctum_level;
     d_level d_earth_level;
@@ -94,6 +95,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define orcus_level             (dungeon_topology.d_orcus_level)
 #define baalzebub_level         (dungeon_topology.d_baalzebub_level)
 #define asmodeus_level          (dungeon_topology.d_asmodeus_level)
+#define yeenoghu_level          (dungeon_topology.d_asmodeus_level)
 #define portal_level            (dungeon_topology.d_portal_level)
 #define sanctum_level           (dungeon_topology.d_sanctum_level)
 #define earth_level             (dungeon_topology.d_earth_level)

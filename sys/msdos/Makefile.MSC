@@ -1055,6 +1055,7 @@ nhdat:	$(U)dlb_main.exe $(DAT)\data $(DAT)\oracles $(DAT)\options \
 	echo WIZARD1.LEV   >>dlb.lst
 	echo WIZARD2.LEV   >>dlb.lst
 	echo WIZARD3.LEV   >>dlb.lst
+	echo YEENOGHU.LEV  >>dlb.lst
 ! ELSE
 	@for %%N in (*.lev) do echo %%N >>dlb.lst
 ! ENDIF

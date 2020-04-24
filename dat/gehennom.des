@@ -635,6 +635,78 @@ MONSTER:'V',random
 MONSTER:'V',random
 MONSTER:'V',random
 #
+# The Yeenoghu Level
+#
+MAZE:"yeenoghu",random
+FLAGS: noteleport
+# First part
+GEOMETRY:center,center
+MAP
+---------------------
+|...|...|...|...|...|
+|...S...+...+...S...|
+|...|...|...|...|...|
+---------...---------
+|...................|
++...................|
+|...................|
+----+----...----+----
+|.......|...|.......|
+|.......|...|.......|
+---------------------
+ENDMAP
+STAIR:levregion(01,00,6,20),levregion(6,1,70,16),up
+BRANCH:levregion(01,00,6,20),levregion(6,1,70,16)
+TELEPORT_REGION:levregion(01,00,6,20),levregion(6,1,70,16)
+#
+STAIR:(10,06),down
+DOOR:locked,(00,06)
+DOOR:closed,(04,08)
+DOOR:closed,(16,08)
+DOOR:closed,(08,02)
+DOOR:closed,(12,02)
+
+# Non diggable walls
+NON_DIGGABLE:(00,00,20,11)
+MAZEWALK:(00,06),west
+# Entire main area
+REGION:(01,01,20,10),unlit,"ordinary"
+# The fellow in residence
+MONSTER:('&',"Yeenoghu"),(10,06)
+# Some random weapons and armor.
+OBJECT:'[',random
+OBJECT:'[',random
+OBJECT:')',random
+OBJECT:')',random
+OBJECT:'*',random
+OBJECT:'!',random
+OBJECT:'!',random
+OBJECT:'?',random
+OBJECT:'?',random
+OBJECT:'?',random
+# Some traps.
+TRAP:"fire", random
+TRAP:"fire", random
+TRAP:"sleep gas", random
+TRAP:"sleep gas", random
+TRAP:"magic", random
+TRAP:"magic", random
+# Random monsters.
+MONSTER:('G',"flind lord"),random
+MONSTER:('G',"flind lord"),random
+MONSTER:('G',"flind lord"),random
+MONSTER:('G',"flind lord"),random
+MONSTER:('G',"flind"),random
+MONSTER:('G',"flind"),random
+MONSTER:('G',"flind"),random
+MONSTER:('G',"flind"),random
+MONSTER:('z',"ghoul"),random
+MONSTER:('z',"ghoul"),random
+MONSTER:('z',"ghoul"),random
+MONSTER:('z',"ghoul"),random
+MONSTER:('z',"ghoul"),random
+MONSTER:('z',"ghoul"),random
+#
 # The Sanctum Level
 #
 MAZE:"sanctum", ' '

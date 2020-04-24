@@ -40,7 +40,7 @@ $	spec_files = "AIR.LEV,ASMODEUS.LEV,ASTRAL.LEV,BAALZ.LEV,BIGRM-%.LEV," -
 		   + "JUIBLEX.LEV,KNOX.LEV,MEDUSA-%.LEV,MINEFILL.LEV," -
 		   + "MINETN-%.LEV,MINEND-%.LEV,ORACLE.LEV,ORCUS.LEV," -
 		   + "SANCTUM.LEV,SOKO%-%.LEV,TOWER%.LEV,VALLEY.LEV," -
-		   + "WATER.LEV,WIZARD%.LEV"
+		   + "WATER.LEV,WIZARD%.LEV,YEENOGHU.LEV"
 $	spec_input = "bigroom.des castle.des endgame.des " -
 		   + "gehennom.des knox.des medusa.des mines.des " -
 		   + "oracle.des sokoban.des tower.des yendor.des"

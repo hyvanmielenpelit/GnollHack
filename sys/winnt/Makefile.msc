@@ -1331,6 +1331,7 @@ spotless: clean
 	if exist $(DAT)\valley.lev	 del $(DAT)\valley.lev
 	if exist $(DAT)\water.lev	 del $(DAT)\water.lev
 	if exist $(DAT)\wizard?.lev	 del $(DAT)\wizard?.lev
+	if exist $(DAT)\yeenoghu.lev	 del $(DAT)\yeenoghu.lev
 	if exist $(DAT)\dlb.lst		 del $(DAT)\dlb.lst
 	if exist $(DAT)\porthelp	 del $(DAT)\porthelp
 	if exist $(O)sp_lev.tag	         del $(O)sp_lev.tag

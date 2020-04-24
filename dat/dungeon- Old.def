@@ -62,6 +62,7 @@ LEVEL:		"wizard1" "none" @ (11, 6)
 CHAINLEVEL:	"wizard2" "X" "wizard1" + (1, 0)
 CHAINLEVEL:	"wizard3" "Y" "wizard1" + (2, 0)
 LEVEL:		"orcus" "O" @ (10, 6)
+LEVEL:		"yeenoghu" "Z" @ (7, 10)
 LEVEL:		"fakewiz1" "F" @ (-6,4)
 LEVEL:		"fakewiz2" "G" @ (-6,4)
 

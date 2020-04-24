@@ -112,6 +112,7 @@
     <Levfiles Include = "wizard1.lev"/>
     <Levfiles Include = "wizard2.lev"/>
     <Levfiles Include = "wizard3.lev"/>
+    <Levfiles Include = "yeenoghu.lev"/>
     <Levfiles Include = "arc-fila.lev"/>
     <Levfiles Include = "arc-filb.lev"/>
     <Levfiles Include = "arc-goal.lev"/>

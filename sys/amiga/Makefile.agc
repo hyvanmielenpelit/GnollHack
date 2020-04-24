@@ -300,7 +300,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)soko3-2.lev	$(SLIB)soko4-1.lev	$(SLIB)soko4-2.lev \
 	$(SLIB)tower1.lev	$(SLIB)tower2.lev	$(SLIB)tower3.lev \
 	$(SLIB)valley.lev	$(SLIB)water.lev	$(SLIB)wizard1.lev \
-	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev \
+	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev  $(SLIB)yeenoghu.lev \
 	$(XDFILES)
 
 INSTDUNGEONFILES= $(NETHACK)NetHack.cnf $(INSTDUNGEONFILES1)
