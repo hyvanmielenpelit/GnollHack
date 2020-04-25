@@ -745,9 +745,13 @@ LOOP [1d6] {
     }
 LOOP [3d4] {
           OBJECT: ('9', "bone"), random
+          OBJECT:('%',"corpse"),random,montype:random
     }
 LOOP [2d4] {
           OBJECT: ('9', "human skull"), random
+    }
+LOOP [1d4] {
+          OBJECT: ('9', "pinch of sulfurous ash"), random
     }
 
 #
@@ -956,6 +960,9 @@ LOOP [1d3] {
         } ELSE {
           OBJECT: ('%', "magic mushroom"), random
         }
+    }
+LOOP [1d4] {
+          OBJECT: ('9', "pinch of sulfurous ash"), random
     }
 
 #
