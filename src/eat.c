@@ -1327,9 +1327,6 @@ int pm;
 		int mdifficulty = ptr->difficulty;
 		int percent = 1;
 
-		if (ptr->mlet == S_FUNGUS)
-			mdifficulty += 5;
-
 		if (ptr->mlet == S_NYMPH)
 			percent = 10;
         else if (ptr->mlet == S_GIANT)
