@@ -35,6 +35,8 @@ int damage;
     int compat;
     const char *pfmt = 0;
     char *Monst_name = Monnam(mtmp);
+    boolean use_mhis = FALSE;
+    const char* Monst_his = mhis(mtmp);
 
     /* Note: if opposite gender, "seductively" */
     /* If same gender, "engagingly" for nymph, normal msg for others */
@@ -68,15 +70,27 @@ int damage;
 				pfmt = "%s tentacles suck you!";
 				Monst_name = s_suffix(Monst_name);
 				break;
-			case AT_EXPL:
+            case AT_TAIL:
+                use_mhis = TRUE;
+                pfmt = "%s lashes %s tail at you!";
+                break;
+            case AT_EXPL:
 			case AT_BOOM:
 				pfmt = "%s explodes!";
 				break;
-			default:
+            case AT_RAMS:
+                pfmt = "%s rams into you!";
+                break;
+            default:
 				pfmt = "%s hits!";
 			}
-			if (pfmt)
-				pline(pfmt, Monst_name);
+            if (pfmt)
+            {
+                if(use_mhis)
+                    pline(pfmt, Monst_name, Monst_his);
+                else
+                    pline(pfmt, Monst_name);
+            }
 			}
 		else
 		{
@@ -84,7 +98,10 @@ int damage;
 			case AT_BITE:
 				pfmt = "%s bites for %d damage!";
 				break;
-			case AT_KICK:
+            case AT_RAMS:
+                pfmt = "%s rams for %d damage!";
+                break;
+            case AT_KICK:
 				pfmt = "%s kicks for %d damage!";
 				break;
 			case AT_STNG:
@@ -96,7 +113,11 @@ int damage;
 			case AT_TUCH:
 				pfmt = "%s touches you for %d damage!";
 				break;
-			case AT_TENT:
+            case AT_TAIL:
+                use_mhis = TRUE;
+                pfmt = "%s lashes %s tail at you for %d damage!";
+                break;
+            case AT_TENT:
 				pfmt = "%s tentacles suck you for %d damage!";
 				Monst_name = s_suffix(Monst_name);
 				break;
@@ -107,9 +128,14 @@ int damage;
 			default:
 				pfmt = "%s hits for %d damage!";
 			}
-			if (pfmt)
-				pline(pfmt, Monst_name, damage);
+            if (pfmt)
+            {
+                if(use_mhis)
+                    pline(pfmt, Monst_name, Monst_his, damage);
+                else
+                    pline(pfmt, Monst_name, damage);
 
+            }
 		}
     }
 }
@@ -201,6 +227,8 @@ struct attack *mattk;
     if (is_blinded(mtmp) || (Invis && !has_see_invisible(mtmp))) {
         const char *swings = (mattk->aatyp == AT_BITE) ? "snaps"
                              : (mattk->aatyp == AT_KICK) ? "kicks"
+                             : (mattk->aatyp == AT_RAMS) ? "rams"
+                             : (mattk->aatyp == AT_TAIL) ? "lashes tail"
                                : (mattk->aatyp == AT_STNG
                                   || mattk->aatyp == AT_BUTT
                                   || nolimbs(mtmp->data)) ? "lunges"
@@ -217,7 +245,7 @@ struct attack *mattk;
                 pline("%s attacks a spot beside you.", Monst_name);
                 break;
             case 2:
-                pline("%s strikes at %s!", Monst_name,
+                pline("%s %s at %s!", Monst_name, mattk->aatyp == AT_RAMS ? "rams" : "strikes",
                       (levl[mtmp->mux][mtmp->muy].typ == WATER)
                         ? "empty water"
                         : "thin air");
@@ -234,11 +262,11 @@ struct attack *mattk;
                   (compat == 2) ? "engagingly" : "seductively",
                   Invis ? "invisible " : "");
         else
-            pline("%s strikes at your %sdisplaced image and misses you!",
+            pline("%s %s at your %sdisplaced image and misses you!",
                   /* Note:  if you're both invisible and displaced, only
                    * monsters which see invisible will attack your displaced
                    * image, since the displaced image is also invisible. */
-                  Monst_name, Invis ? "invisible " : "");
+                  Monst_name, mattk->aatyp == AT_RAMS ? "rams" : "strikes", Invis ? "invisible " : "");
 
     } else if (Underwater) {
         /* monsters may miss especially on water level where
@@ -674,9 +702,11 @@ register struct monst *mtmp;
         case AT_CLAW: /* "hand to hand" attacks */
         case AT_KICK:
         case AT_BITE:
+        case AT_RAMS:
         case AT_STNG:
         case AT_TUCH:
         case AT_BUTT:
+        case AT_TAIL:
         case AT_TENT:
             if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || !touch_petrifies(youmonst.data))) 
 			{
@@ -930,8 +960,7 @@ register struct monst *mtmp;
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
-							pline("%s summons some gnolls!", Monnam(mtmp));
-							(void)yeenoghu_gnoll_summon();
+							(void)yeenoghu_gnoll_summon(mtmp);
 							sum[i] = 1;
 						}
 						else
@@ -953,8 +982,7 @@ register struct monst *mtmp;
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
-							pline("%s summons some ghouls!", Monnam(mtmp));
-							(void)yeenoghu_ghoul_summon();
+							(void)yeenoghu_ghoul_summon(mtmp);
 							sum[i] = 1;
 						}
 						else if(!is_silenced(mtmp) && !Deaf)
@@ -1358,7 +1386,7 @@ struct monst *mon;
 			{
 				item_mc_bonus += objects[o->otyp].oc_attribute_bonus;
 				if (!(objects[o->otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-					item_mc_bonus += o->enchantment;
+					item_mc_bonus += o->enchantment / 3;
 			}
 		}
 
@@ -1384,21 +1412,21 @@ struct monst *mon;
 		if (Magical_barkskin)
 			mc += 7;
 		else if (Protection)
-			mc += 3;
+			mc += 1;
 
 		/* Divine protection */
-		mc += u.ublessed / 2;
+		mc += u.ublessed / 3;
 
 		/* Monk protection */
 		if(Role_if(PM_MONK) && !Upolyd && !uarm && !uarms && !uwep)
-			mc += u.ulevel / 4;
+			mc += u.ulevel / 6;
 	}
 	else
 	{
 		if (mon->mprops[MAGICAL_BARKSKIN] != 0)
 			mc += 7;
 		else if (mon->mprops[PROTECTION] != 0)
-			mc += 2;
+			mc += 1;
 	}
 
     return mc;
@@ -1508,6 +1536,7 @@ register struct obj* omonwep;
     int res;
 	boolean objectshatters = FALSE;
 	boolean isdisintegrated = FALSE;
+    boolean sharpness_effect = FALSE;
 	int critstrikeroll = rn2(100);
 
     if (!canspotmon(mtmp))
@@ -1569,7 +1598,7 @@ register struct obj* omonwep;
 	damage += adjust_damage(mtmp->mdaminc, mtmp, &youmonst, increase_damage_adtyp, FALSE);
 
 	//Get damage bonus in both cases if physical
-	if(mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
+	if(mattk->adtyp == AD_PHYS || mattk->adtyp == AD_SHRP || mattk->adtyp == AD_DRIN)
 	{
 		if(omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
 			damage += adjust_damage(m_str_dmg_bonus(mtmp), mtmp, &youmonst, mattk->adtyp, FALSE);
@@ -1577,7 +1606,12 @@ register struct obj* omonwep;
 			damage += adjust_damage(m_str_dmg_bonus(mtmp) / 2, mtmp, & youmonst, mattk->adtyp, FALSE);
 	}
 
-	//Let's add this even if a weapon is being used
+    if (mattk->adtyp == AD_SHRP && !rn2(10))
+    {
+        damage += adjust_damage((Upolyd ? u.mh : u.uhpmax) / 4, mtmp, &youmonst, mattk->adtyp, FALSE);
+        sharpness_effect = TRUE;
+    }
+    //Let's add this even if a weapon is being used
     if ((is_undead(mdat) || is_vampshifter(mtmp)) && midnight())
 	{
 		int basedmg = 0;
@@ -2016,6 +2050,11 @@ register struct obj* omonwep;
 				set_itimeout(&HFree_action, 20);
             }
         }
+        break;
+    case AD_SHRP:
+        hitmsg(mtmp, mattk, damagedealt);
+        if (sharpness_effect)
+            pline("%s strike cuts you deeply.", s_suffix(Monnam(mtmp)));
         break;
     case AD_DRLI:
 		hitmsg(mtmp, mattk, damagedealt);

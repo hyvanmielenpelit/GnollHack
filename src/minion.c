@@ -201,8 +201,11 @@ struct monst *mon;
 
 /* Yeenoghu summons gnolls */
 int
-yeenoghu_gnoll_summon()
+yeenoghu_gnoll_summon(summoner)
+struct monst* summoner;
 {
+	pline("%s summons some gnolls!", Monnam(summoner));
+
 	int dtype = NON_PM, cnt = 0, result = 0, census;
 	struct monst* mtmp = (struct monst*) 0;
 
@@ -297,8 +300,11 @@ yeenoghu_gnoll_summon()
 
 /* Yeenoghu summons ghouls */
 int
-yeenoghu_ghoul_summon()
+yeenoghu_ghoul_summon(summoner)
+struct monst* summoner;
 {
+	pline("%s summons some undead assistance!", Monnam(summoner));
+
 	int dtype = NON_PM, cnt = 0, result = 0, census;
 	struct monst* mtmp = (struct monst*) 0;
 
@@ -310,10 +316,13 @@ yeenoghu_ghoul_summon()
 
 	int canseemonnumber = 0;
 	struct monst* mtmp2 = (struct monst*) 0;
+	int ghoul_cnt = 0;
+	int ghast_cnt = 0;
+	int thoul_cnt = 0;
 
 	while (cnt > 0)
 	{
-		dtype = PM_GHOUL;
+		dtype = !rn2(8) ? PM_THOUL : !rn2(2) ? PM_GHOUL : PM_GHAST;
 
 		if (mvitals[dtype].mvflags & G_GONE)
 		{
@@ -321,10 +330,18 @@ yeenoghu_ghoul_summon()
 			break;
 		}
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, NO_MM_FLAGS);
 		if (mtmp) 
 		{
 			result++;
+
+			if (dtype = PM_GHOUL)
+				ghoul_cnt++;
+			else if (dtype = PM_GHAST)
+				ghoul_cnt++;
+			else
+				thoul_cnt++;
+
 			if (canseemon(mtmp))
 			{
 				canseemonnumber++;
@@ -347,7 +364,7 @@ yeenoghu_ghoul_summon()
 			if (canseemonnumber == 1 && mtmp2)
 				pline("%s crawls out of nowhere!", Amonnam(mtmp2));
 			else
-				pline("%s ghouls crawl out of nowhere!", numberword);
+				pline("%s %s crawl out of nowhere!", numberword, thoul_cnt > 0 ? (ghast_cnt == 0 && ghoul_cnt == 0 ? "thouls" : "ghoul-like undead") : ghast_cnt == 0 ? "ghouls" : ghoul_cnt == 0 ? "ghasts" : "ghouls and ghasts");
 		}
 	}
 

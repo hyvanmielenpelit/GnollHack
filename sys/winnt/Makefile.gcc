@@ -1279,11 +1279,14 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\quest.dat	   del $(W_DAT)\quest.dat
 	if exist $(W_DAT)\sanctum.lev	   del $(W_DAT)\sanctum.lev
 	if exist $(W_DAT)\soko?-?.lev	   del $(W_DAT)\soko?-?.lev
+	if exist $(W_DAT)\tarrasque.lev	   del $(W_DAT)\tarrasque.lev
 	if exist $(W_DAT)\tower?.lev	   del $(W_DAT)\tower?.lev
 	if exist $(W_DAT)\valley.lev	   del $(W_DAT)\valley.lev
 	if exist $(W_DAT)\water.lev	   del $(W_DAT)\water.lev
 	if exist $(W_DAT)\wizard?.lev	   del $(W_DAT)\wizard?.lev
 	if exist $(W_DAT)\yeenoghu.lev	   del $(W_DAT)\yeenoghu.lev
+	if exist $(W_DAT)\mainfill.lev	   del $(W_DAT)\mainfill.lev
+	if exist $(W_DAT)\hellfill.lev	   del $(W_DAT)\hellfill.lev
 	if exist $(W_DAT)\dlb.lst          del $(W_DAT)\dlb.lst
 	if exist $(W_DAT)\porthelp	   del $(W_DAT)\porthelp
 endif

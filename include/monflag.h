@@ -294,6 +294,8 @@
 #define MH_GNOME M2_GNOME
 
 /* for mons[].geno (constant during game) */
+#define G_YACC 0x4000     /* generated on hellish pastures regardless of other flags */
+#define G_MODRON 0x2000     /* generated on modron plane regardless of other flags */
 #define G_UNIQ 0x1000     /* generated only once */
 #define G_NOHELL 0x0800   /* not generated in "hell" */
 #define G_HELL 0x0400     /* generated only in "hell" */

@@ -704,8 +704,100 @@ MONSTER:('z',"ghoul"),random
 MONSTER:('z',"ghoul"),random
 MONSTER:('z',"ghoul"),random
 MONSTER:('z',"ghoul"),random
-MONSTER:('z',"ghoul"),random
-MONSTER:('z',"ghoul"),random
+MONSTER:('z',"ghast"),random
+MONSTER:('z',"ghast"),random
+MONSTER:('z',"ghast"),random
+MONSTER:('z',"ghast"),random
+MONSTER:('T',"thoul"),random
+MONSTER:('T',"thoul"),random
+
+
+MAZE: "tarrasque" , ' '
+INIT_MAP: mines, '.' , ' ' , true , true , random , true
+NOMAP
+#
+STAIR: random, up
+STAIR: random, down
+#
+OBJECT: '[', random
+OBJECT: '[', random
+OBJECT: '[', random
+OBJECT: ')', random
+OBJECT: ')', random
+OBJECT: ')', random
+OBJECT: '8', random
+OBJECT: '8', random
+OBJECT: '=', random
+OBJECT: '=', random
+OBJECT: '=', random
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: '(', random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+LOOP [1d6] {
+          OBJECT: ('%', "death cap"), random
+    }
+LOOP [3d4] {
+          OBJECT: ('9', "bone"), random
+    }
+LOOP [2d4] {
+          OBJECT: ('9', "human skull"), random
+    }
+
+#
+MONSTER: ('&', "Tarrasque"), random
+MONSTER: ('&', "balrog"), random
+MONSTER: ('&', "marilith"), random
+MONSTER: ('&', "nalfeshnee"), random
+MONSTER: ('&', "glabrezu"), random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: ('B', "hell bat"), random
+MONSTER: ('B', "hell bat"), random
+MONSTER: ('B', "hell bat"), random
+MONSTER: ('d', "hell hound"), random
+MONSTER: ('d', "hell hound"), random
+MONSTER: ('d', "hell hound"), random
+MONSTER: ('m', "chaos mimic"), random
+MONSTER: ('m', "chaos mimic"), random
+MONSTER: ('i', "manes"), random
+MONSTER: ('i', "manes"), random
+MONSTER: ('i', "manes"), random
+MONSTER: ('i', "manes"), random
+MONSTER: ('i', "manes"), random
+MONSTER: ('i', "manes"), random
+MONSTER: ('i', "manes"), random
+MONSTER: ('i', "manes"), random
+#
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+
 #
 # The Sanctum Level
 #
@@ -835,3 +927,155 @@ STAIR:(63,15),up
 # Teleporting to this level is allowed after the invocation creates its
 # entrance.  Force arrival in that case to be on rightmost third of level.
 TELEPORT_REGION:levregion(54,1,79,18),(0,0,0,0),down
+
+
+#	The "fill" level for the Gehennom.
+#
+#	This level is used to fill out any levels not occupied by
+#	specific levels as defined below.
+#
+MAZE: "hellfill" , ' '
+INIT_MAP: mines, '.' , ' ' , true , true , random , true
+NOMAP
+#
+STAIR: random, up
+STAIR: random, down
+#
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+LOOP [1d3] {
+        IF [75%] {
+          OBJECT: ('%', "death cap"), random
+        } ELSE {
+          OBJECT: ('%', "magic mushroom"), random
+        }
+    }
+
+#
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: '&', random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+#
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+TRAP: "fire", random
+
+
+#	The "fill" level for the main dungeon.
+#
+#	This level is used to fill out any levels not occupied by
+#	specific levels as defined below.
+#
+MAZE: "mainfill" , ' '
+INIT_MAP: mines, '.' , ' ' , true , true , random , true
+NOMAP
+#
+STAIR: random, up
+STAIR: random, down
+#
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+LOOP [1 + 1d2] {
+    IF [50%] {
+        IF [66%] {
+          IF [50%] {
+            OBJECT: ('%', "champignon"), random
+          } ELSE {
+            OBJECT: ('%', "chanterelle"), random
+          }
+        } ELSE {
+          IF [50%] {
+            OBJECT: ('%', "mana mushroom"), random
+          } ELSE {
+            OBJECT: ('%', "healing mushroom"), random
+          }
+        }
+    } ELSE {
+        IF [33%] {
+          IF [50%] {
+            OBJECT: ('%', "fly agaric"), random
+          } ELSE {
+            OBJECT: ('%', "panther cap"), random
+          }
+        } ELSE {
+          IF [40%] {
+            OBJECT: ('%', "death cap"), random
+          } ELSE {
+            OBJECT: ('%', "magic mushroom"), random
+          }
+        }
+      }
+    }
+
+[15%]: OBJECT: ('%', "penny bun"), random
+[10%]: OBJECT: ('%', "penny bun"), random
+
+#
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+
+#
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+

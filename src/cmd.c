@@ -3568,11 +3568,11 @@ int final;
 	if (Role_if(PM_MONK) && (u.ulevel / 2) >= 1 && !Upolyd && !uarm && !uarms && !uwep)
 	{
 		char protbuf[BUFSZ];
-		Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 4);
+		Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 6);
 		you_have(protbuf, "");
 	}
 	if (Protection)
-		you_have("magical protection (-3 to AC and +3 to MC)", from_what(PROTECTION));
+		you_have("magical protection (-3 to AC and +1 to MC)", from_what(PROTECTION));
 	if (Magical_shielding)
 		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
 	if (Magical_barkskin)
@@ -6318,7 +6318,10 @@ int x, y;
 
     if ((ttmp = t_at(x, y)) != 0 && ttmp->tseen) {
         add_herecmd_menuitem(win, doidtrap, "Examine trap"), ++K;
-        if (ttmp->ttyp != VIBRATING_SQUARE && ttmp->ttyp != MODRON_OCTAHEDRAL_PORTAL && ttmp->ttyp != MODRON_TETRAHEDRAL_PORTAL)
+        if (ttmp->ttyp != VIBRATING_SQUARE 
+            && ttmp->ttyp != MODRON_OCTAHEDRAL_PORTAL && ttmp->ttyp != MODRON_TETRAHEDRAL_PORTAL
+            && ttmp->ttyp != MODRON_CUBICAL_PORTAL && ttmp->ttyp != MODRON_DODECAHEDRAL_PORTAL
+            )
             add_herecmd_menuitem(win, dountrap, "Attempt to disarm trap"), ++K;
     }
 

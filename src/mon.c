@@ -2504,8 +2504,10 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     if ((ttmp->ttyp != RUST_TRAP
                          || mdat == &mons[PM_IRON_GOLEM])
                         && ttmp->ttyp != STATUE_TRAP
-                        && ttmp->ttyp != VIBRATING_SQUARE && ttmp->ttyp != MODRON_OCTAHEDRAL_PORTAL && ttmp->ttyp != MODRON_TETRAHEDRAL_PORTAL
-						&& ((!is_pit(ttmp->ttyp)) /* exclude/include pits for flyers/nonflyers */
+                        && ttmp->ttyp != VIBRATING_SQUARE
+                        && ttmp->ttyp != MODRON_OCTAHEDRAL_PORTAL && ttmp->ttyp != MODRON_TETRAHEDRAL_PORTAL
+                        && ttmp->ttyp != MODRON_CUBICAL_PORTAL && ttmp->ttyp != MODRON_DODECAHEDRAL_PORTAL
+                        && ((!is_pit(ttmp->ttyp)) /* exclude/include pits for flyers/nonflyers */
 							|| (!has_pitwalk(mdat) && !is_flyer(mdat) && !is_floater(mdat)
 								&& !is_clinger(mdat)) || Sokoban)
 						&& ((!is_hole(ttmp->ttyp)) /* exclude/include holes or flyers/nonflyers */

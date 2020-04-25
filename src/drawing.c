@@ -95,7 +95,7 @@ const struct class_sym def_monsyms[MAXMCLASSES] = {
     { DEF_GNOLL, "", "gnoll" },
     { DEF_GIANT, "", "giant humanoid" },
     { '\0', "", "invisible monster" },
-    { DEF_JABBERWOCK, "", "jabberwock" },
+    { DEF_JABBERWOCK, "", "jabberwock or juggernaut" },
     { DEF_KOP, "", "Keystone Kop" },
     { DEF_LICH, "", "lich" },
     { DEF_MODRON, "", "modron" },
@@ -212,7 +212,9 @@ const struct symdef defsyms[MAXPCHARS] = {
        { '~', "vibrating square", C(CLR_MAGENTA) },    /* "trap" */
 /*+1*/ { '^', "octahedral magic portal", C(CLR_CYAN) }, /* trap */
 /*+1*/ { '^', "tetrahedral magic portal", C(CLR_CYAN) }, /* trap */
-	   /* zap colors are changed by mapglyph() to match type of beam */
+/*+1*/ { '^', "cubical magic portal", C(CLR_CYAN) }, /* trap */
+/*+1*/ { '^', "dodecahedral magic portal", C(CLR_CYAN) }, /* trap */
+/* zap colors are changed by mapglyph() to match type of beam */
        { '|', "", C(CLR_GRAY) },                /* vbeam */
        { '-', "", C(CLR_GRAY) },                /* hbeam */
        { '\\', "", C(CLR_GRAY) },               /* lslant */
@@ -666,9 +668,11 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_anti_magic_trap, "S_anti_magic_trap" },
     { SYM_PCHAR, S_polymorph_trap, "S_polymorph_trap" },
     { SYM_PCHAR, S_vibrating_square, "S_vibrating_square" },
-	{ SYM_PCHAR, S_octagonal_portal, "S_octagonal_portal" },
-	{ SYM_PCHAR, S_tetragonal_portal, "S_tetragonal_portal" },
-	{ SYM_PCHAR, S_vbeam, "S_vbeam" },
+	{ SYM_PCHAR, S_octahedral_portal, "S_octahedral_portal" },
+	{ SYM_PCHAR, S_tetrahedral_portal, "S_tetrahedral_portal" },
+    { SYM_PCHAR, S_cubical_portal, "S_cubical_portal" },
+    { SYM_PCHAR, S_dodecahedral_portal, "S_dodecahedral_portal" },
+    { SYM_PCHAR, S_vbeam, "S_vbeam" },
     { SYM_PCHAR, S_hbeam, "S_hbeam" },
     { SYM_PCHAR, S_lslant, "S_lslant" },
     { SYM_PCHAR, S_rslant, "S_rslant" },

@@ -153,12 +153,17 @@ unsigned *ospecial;
             color = NO_COLOR;
         else
             zap_color((offset >> 2));
-    } else if ((offset = (glyph - GLYPH_EXPLODE_OFF)) >= 0) { /* explosion */
+    } 
+    else if ((offset = (glyph - GLYPH_EXPLODE_OFF)) >= 0)
+    { /* explosion */
         idx = ((offset % MAXEXPCHARS) + S_explode1) + SYM_OFF_P;
         explode_color(offset / MAXEXPCHARS);
-    } else if ((offset = (glyph - GLYPH_CMAP_OFF)) >= 0) { /* cmap */
+    }
+    else if ((offset = (glyph - GLYPH_CMAP_OFF)) >= 0)
+    { /* cmap */
         idx = offset + SYM_OFF_P;
-        if (has_rogue_color && iflags.use_color) {
+        if (has_rogue_color && iflags.use_color) 
+        {
             if (offset >= S_vwall && offset <= S_hcdoor)
                 color = CLR_BROWN;
             else if (offset >= S_arrow_trap && offset <= S_polymorph_trap)
@@ -173,18 +178,52 @@ unsigned *ospecial;
 #ifdef TEXTCOLOR
         /* provide a visible difference if normal and lit corridor
            use the same symbol */
-        } else if (iflags.use_color && offset == S_litcorr
-                   && showsyms[idx] == showsyms[S_corr + SYM_OFF_P]) {
+        } 
+        else if (iflags.use_color && offset == S_litcorr
+                   && showsyms[idx] == showsyms[S_corr + SYM_OFF_P])
+        {
             color = CLR_WHITE;
 #endif
         /* try to provide a visible difference between water and lava
            if they use the same symbol and color is disabled */
-        } else if (!iflags.use_color && offset == S_lava
+        } 
+        else if (!iflags.use_color && offset == S_lava
                    && (showsyms[idx] == showsyms[S_pool + SYM_OFF_P]
-                       || showsyms[idx] == showsyms[S_water + SYM_OFF_P])) {
+                       || showsyms[idx] == showsyms[S_water + SYM_OFF_P]))
+        {
             special |= MG_BW_LAVA;
-        } else {
+        } 
+        else
+        {
             cmap_color(offset);
+            if (iflags.use_color)
+            {
+                if (Inhell && !level.flags.is_maze_lev &&
+                    !Is_valley(&u.uz) && !Is_juiblex_level(&u.uz) && !Is_orcus_level(&u.uz) && !Is_sanctum(&u.uz) 
+                    && !In_V_tower(&u.uz) && !Is_modron_level(&u.uz) && !Is_bovine_level(&u.uz)
+                    )
+                {
+                    if (offset >= S_vwall && offset <= S_trwall)
+                    {
+                        color = CLR_ORANGE;
+                    }
+                    else if (offset == S_room || offset == S_litcorr)
+                    {
+                        color = CLR_YELLOW;
+                    }
+                    else if (offset == S_darkroom || offset == S_corr)
+                    {
+                        color = CLR_BROWN;
+                    }
+                }
+                else if (In_mines(&u.uz))
+                {
+                    if (offset >= S_vwall && offset <= S_trwall)
+                    {
+                        color = CLR_BROWN;
+                    }
+                }
+            }
         }
     } else if ((offset = (glyph - GLYPH_OBJ_OFF)) >= 0) { /* object */
         idx = objects[offset].oc_class + SYM_OFF_O;

@@ -93,20 +93,6 @@ NEARDATA struct objclass objects[] =
 		   PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE),
 
 	/* weapons ... */
-	#define WEAPON(name,desc,nmkn,mrg,mgc,bi,prob,multigen,wt,cost,\
-				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
-				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
-				power,power2,power3,pflags,typ,sub,skill,metal,color,\
-				flags,flags2,flags3,powconfermask,permittedtargets) \
-	    OBJECT(OBJ(name,desc, None, None),                                         \
-	           BITS(nmkn, mrg, 1, 0, mgc, ENCHTYPE_GENERAL, CHARGED_NOT_CHARGED, 0, 0, bi, 0, typ, sub, skill, metal),  \
-	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
-			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
-			   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
-			   wt, color, \
-			   0, 0, 0, 0, \
-			   powconfermask,permittedtargets, flags, flags2, flags3)
-
 #define CHARGEDWEAPON(name,desc,nmkn,mrg,mgc,charged,bi,prob,multigen,wt,cost,\
 				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
 				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
@@ -120,6 +106,17 @@ NEARDATA struct objclass objects[] =
 			   wt, color, \
 			   0, 0, 0, 0, \
 			   powconfermask,permittedtargets, flags, flags2, flags3)
+
+#define WEAPON(name,desc,nmkn,mrg,mgc,bi,prob,multigen,wt,cost,\
+				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
+				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
+				power,power2,power3,pflags,typ,sub,skill,metal,color,\
+				flags,flags2,flags3,powconfermask,permittedtargets) \
+        CHARGEDWEAPON(name,desc,nmkn,mrg,mgc,CHARGED_NOT_CHARGED,bi,prob,multigen,wt,cost,\
+				dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct, \
+				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
+				power,power2,power3,pflags,typ,sub,skill,metal,color,\
+				flags,flags2,flags3,powconfermask,permittedtargets)
 
 	#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,  hitbon,mcadj,  metal,sub,launcher_skill,skill,color,  flags,flags2,flags3, permittedtargets) \
 	    OBJECT(OBJ(name,desc, None, None),   \
@@ -1603,14 +1600,6 @@ WEAPONBOOTS("spiked silver boots", None,
 #undef WEAPONBOOTS
 
 /* rings ... */
-#define RING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
-    OBJECT(OBJ(name, desc, None, None),                                         \
-           BITS(0, 0, ench == ENCHTYPE_NO_ENCHANTMENT ? 0 : 1 , 0, mgc, ench, CHARGED_NOT_CHARGED, 0, 0, 0,                    \
-                HARDGEM(mohs), 0, 0, P_NONE, metal),                     \
-           power, power2, power3, pflags, RING_CLASS, prob, MULTIGEN_SINGLE, 0, 1, cost,  \
-		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
-		   15, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
 #define CHARGEDRING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,chargetype,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
     OBJECT(OBJ(name, desc, None, None),                                         \
            BITS(0, 0, ench == ENCHTYPE_NO_ENCHANTMENT && chargetype == CHARGED_NOT_CHARGED  ? 0 : 1 , 0, mgc, ench, chargetype, 0, 0, 0,                    \
@@ -1619,6 +1608,10 @@ WEAPONBOOTS("spiked silver boots", None,
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
 		   15, color, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3)
+
+#define RING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask) \
+     CHARGEDRING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,CHARGED_NOT_CHARGED,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,flags,flags2,flags3,powconfermask)
+
 RING("adornment", "wooden", /* STARTMARKER FOR SHUFFLED RINGS */
     30, ADORNED, 0, 0, P1_NONE, 100, 1, ENCHTYPE_RING_NORMAL, 2, 0, 0, BONUS_TO_CHA, 0, 0, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, PERMITTED_ALL),
 RING("gain strength", "granite",

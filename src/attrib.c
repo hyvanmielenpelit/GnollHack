@@ -33,9 +33,7 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   cav_abil[] = { { 7, FAST, "quick", "slow" },
-                 { 11, WARN_TROLL, "sensitive to trolls", "" },
-				 { 15, WARN_GIANT, "sensitive to giants", "" },
-				 { 19, WARN_DRAGON, "sensitive to dragons", "" },
+				 { 15, WARNING, "sensitive", "" },
 				 { 0, 0, 0, 0 } },
 
   hea_abil[] = { { 1, POISON_RES, "", "" },
@@ -2117,7 +2115,7 @@ struct monst* mon;
 						{
 							*mcbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*mcbonus_ptr += multiplier * applicable_enchantment;
+								*mcbonus_ptr += multiplier * applicable_enchantment / 3;
 						}
 						else if (i == A_MAX + 4 && is_you)
 						{

@@ -520,8 +520,8 @@ SPEC_LEVS = \
  juiblex.lev  knox.lev     medusa-1.lev medusa-2.lev minend-1.lev minend-2.lev \
  minend-3.lev minefill.lev minetn-1.lev minetn-2.lev minetn-3.lev minetn-4.lev \
  minetn-5.lev minetn-6.lev minetn-7.lev oracle.lev   orcus.lev    sanctum.lev \
- tower1.lev   tower2.lev   tower3.lev valley.lev   wizard1.lev  wizard2.lev \
- wizard3.lev  yeenoghu.lev astral.lev   air.lev earth.lev    fire.lev     water.lev \
+ tarrasque.lev tower1.lev   tower2.lev   tower3.lev valley.lev   wizard1.lev  wizard2.lev \
+ wizard3.lev  yeenoghu.lev mainfill.lev hellfill.lev astral.lev   air.lev earth.lev    fire.lev     water.lev \
  soko1-1.lev  soko1-2.lev  soko2-1.lev  soko2-2.lev  \
  soko3-1.lev  soko3-2.lev  soko4-1.lev  soko4-2.lev
 
@@ -1122,10 +1122,13 @@ dlb_yup : dlb
 	-$(RM) $(GAMEDIR)\oracle.lev
 	-$(RM) $(GAMEDIR)\orcus.lev
 	-$(RM) $(GAMEDIR)\sanctum.lev
+	-$(RM) $(GAMEDIR)\tarrasque.lev
 	-$(RM) $(GAMEDIR)\tower?.lev
 	-$(RM) $(GAMEDIR)\valley.lev
 	-$(RM) $(GAMEDIR)\wizard?.lev
 	-$(RM) $(GAMEDIR)\yeenoghu.lev
+	-$(RM) $(GAMEDIR)\mainfill.lev
+	-$(RM) $(GAMEDIR)\hellfill.lev
 	-$(RM) $(GAMEDIR)\astral.lev
 	-$(RM) $(GAMEDIR)\air.lev
 	-$(RM) $(GAMEDIR)\earth.lev
@@ -1359,15 +1362,21 @@ $(GAMEDIR)\valley.lev : $(DAT)\gehennom.des $(TEMP)\lev_comp.exe
 	$(CP) juiblex.lev $(GAMEDIR)
 	$(CP) orcus.lev $(GAMEDIR)
 	$(CP) sanctum.lev $(GAMEDIR)
+	$(CP) tarrasque.lev $(GAMEDIR)
 	$(CP) valley.lev $(GAMEDIR)
 	$(CP) yeenoghu.lev $(GAMEDIR)
+	$(CP) mainfill.lev $(GAMEDIR)
+	$(CP) hellfill.lev $(GAMEDIR)
 	$(RM) asmodeus.lev
 	$(RM) baalz.lev
 	$(RM) juiblex.lev
 	$(RM) orcus.lev
+	$(RM) tarrasque.lev
 	$(RM) sanctum.lev
 	$(RM) valley.lev
 	$(RM) yeenoghu.lev
+	$(RM) mainfill.lev
+	$(RM) hellfill.lev
 
 $(GAMEDIR)\wizard1.lev : $(DAT)\yendor.des $(TEMP)\lev_comp.exe
 	$(TEMP)\lev_comp $(DAT)\yendor.des

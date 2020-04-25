@@ -1532,8 +1532,12 @@ register struct obj* obj;
 							strcpy(buf2, "");
 							int stat = objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
-								stat += obj->enchantment;
-
+							{
+								if(k == 9) /* MC*/
+									stat += obj->enchantment / 3;
+								else
+									stat += obj->enchantment;
+							}
 							if(prop & SETS_FIXED_ATTRIBUTE)
 								stat = min((k == 0 ? STR19(25) : 25), max(1, stat));
 

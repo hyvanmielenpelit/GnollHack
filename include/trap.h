@@ -81,8 +81,10 @@ enum trap_types {
     VIBRATING_SQUARE = 23,
 	MODRON_OCTAHEDRAL_PORTAL = 24,
 	MODRON_TETRAHEDRAL_PORTAL = 25,
+    MODRON_CUBICAL_PORTAL = 26,
+    MODRON_DODECAHEDRAL_PORTAL = 27,
 
-    TRAPNUM      = 26
+    TRAPNUM      = 28
 };
 
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)

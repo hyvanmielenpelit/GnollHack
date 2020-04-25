@@ -740,16 +740,23 @@ makelevel()
         register s_level *slev = Is_special(&u.uz);
 
         /* check for special levels */
-        if (slev && !Is_rogue_level(&u.uz)) {
+        if (slev && !Is_rogue_level(&u.uz)) 
+        {
             makemaz(slev->proto);
             return;
-        } else if (dungeons[u.uz.dnum].proto[0]) {
+        }
+        else if (dungeons[u.uz.dnum].proto[0]) 
+        {
             makemaz("");
             return;
-        } else if (In_mines(&u.uz)) {
+        } 
+        else if (In_mines(&u.uz))
+        {
             makemaz("minefill");
             return;
-        } else if (In_quest(&u.uz)) {
+        } 
+        else if (In_quest(&u.uz))
+        {
             char fillname[9];
             s_level *loc_lev;
 
@@ -761,10 +768,18 @@ makelevel()
                    (u.uz.dlevel < loc_lev->dlevel.dlevel) ? "a" : "b");
             makemaz(fillname);
             return;
-        } else if (In_hell(&u.uz)
+        } 
+        else if (In_hell(&u.uz)
                    || (rn2(5) && u.uz.dnum == medusa_level.dnum
-                       && depth(&u.uz) > depth(&medusa_level))) {
-            makemaz("");
+                       && depth(&u.uz) > depth(&medusa_level))) 
+        {
+            if(Invocation_lev(&u.uz) || !rn2(3))
+                makemaz("");
+            else if (In_hell(&u.uz))
+                makemaz("hellfill");
+            else
+                makemaz("mainfill");
+
             return;
         }
     }
@@ -1526,7 +1541,9 @@ coord *tm;
             switch (kind) {
 			case MODRON_OCTAHEDRAL_PORTAL:
 			case MODRON_TETRAHEDRAL_PORTAL:
-			case MAGIC_PORTAL:
+            case MODRON_CUBICAL_PORTAL:
+            case MODRON_DODECAHEDRAL_PORTAL:
+            case MAGIC_PORTAL:
             case VIBRATING_SQUARE:
                 kind = NO_TRAP;
                 break;

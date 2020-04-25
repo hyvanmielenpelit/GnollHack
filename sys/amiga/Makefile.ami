@@ -508,6 +508,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)tower1.lev	$(SLIB)tower2.lev	$(SLIB)tower3.lev \
 	$(SLIB)valley.lev	$(SLIB)water.lev	$(SLIB)wizard1.lev \
 	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev  $(SLIB)yeenoghu.lev \
+	$(SLIB)tarrasque.lev $(SLIB)mainfill.lev $(SLIB)hellfill.lev \
 	$(XDFILES)
 
 INSTDUNGEONFILES= $(NETHACK)NetHack.cnf $(INSTDUNGEONFILES1)
@@ -1071,7 +1072,7 @@ $(SLIB)astral.lev:	$(DAT)endgame.des $(SBIN)lev_comp
 #none
 
 GEHENNOM1= $(SLIB)asmodeus.lev $(SLIB)baalz.lev $(SLIB)juiblex.lev \
-  $(SLIB)orcus.lev $(SLIB)sanctum.lev $(SLIB)yeenoghu.lev
+  $(SLIB)orcus.lev $(SLIB)sanctum.lev $(SLIB)yeenoghu.lev $(SLIB)tarrasque.lev $(SLIB)mainfill.lev $(SLIB)hellfill.lev
 $(GEHENNOM1):	$(SLIB)valley.lev
 
 $(SLIB)valley.lev:	$(DAT)gehennom.des $(SBIN)lev_comp

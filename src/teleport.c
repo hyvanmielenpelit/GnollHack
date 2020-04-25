@@ -239,7 +239,10 @@ boolean trapok;
 		/* allow teleportation onto vibrating square, it's not a real trap */
 		struct trap* trap = t_at(x, y);
 
-		if (trap && trap->ttyp != VIBRATING_SQUARE && trap->ttyp != MODRON_OCTAHEDRAL_PORTAL && trap->ttyp != MODRON_TETRAHEDRAL_PORTAL)
+		if (trap && trap->ttyp != VIBRATING_SQUARE
+            && trap->ttyp != MODRON_OCTAHEDRAL_PORTAL && trap->ttyp != MODRON_TETRAHEDRAL_PORTAL
+            && trap->ttyp != MODRON_CUBICAL_PORTAL && trap->ttyp != MODRON_DODECAHEDRAL_PORTAL
+            )
 			return FALSE;
 	}
 	if (!goodpos(x, y, &youmonst, 0))
@@ -554,49 +557,29 @@ int y;
 	if (!mtmp)
 		return FALSE;
 
-	struct obj* otmp = (struct obj*)0;
-	if (ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL)
-	{
-		if (mtmp == &youmonst)
-			otmp = carrying(MODRONITE_OCTAHEDRON);
-		else
-			otmp = m_carrying(mtmp, MODRONITE_OCTAHEDRON);
+    const char* portal_color = ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL ? "Blue" :
+        ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL ? "Violet" :
+        ttmp->ttyp == MODRON_CUBICAL_PORTAL ? "Purple" : "Yellow";
 
-		if (!otmp)
-		{
-			if (mtmp == &youmonst)
-				pline("Blue glimmer surrounds you for a while but nothing else happens.");
-			else if (canseemon(mtmp))
-				pline("Blue glimmer flashes around %s.", mon_nam(mtmp));
-			return FALSE;
-		}
-		else
-		{
-			/* Code to use usable items, if need be -- Now no items are used when accessing the portal */
-		}
-	}
-	else if (ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL)
-	{
-		if (mtmp == &youmonst)
-			otmp = carrying(MODRONITE_TETRAHEDRON);
-		else
-			otmp = m_carrying(mtmp, MODRONITE_TETRAHEDRON);
+    int portal_object = ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL ? MODRONITE_OCTAHEDRON :
+        ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL ? MODRONITE_TETRAHEDRON :
+        ttmp->ttyp == MODRON_CUBICAL_PORTAL ? MODRONITE_CUBE : MODRONITE_DODECAHEDRON;
 
-		if (!otmp)
-		{
-			if (mtmp == &youmonst)
-				pline("Violet glimmer surrounds you for a while but nothing else happens.");
-			else if (canseemon(mtmp))
-				pline("Violet glimmer flashes around %s.", mon_nam(mtmp));
-			return FALSE;
-		}
-		else
-		{
-			/* Code to use usable items, if need be -- Now no items are used when accessing the portal */
-		}
-	}
+    struct obj* otmp = (struct obj*)0;
+
+    if (mtmp == &youmonst)
+		otmp = carrying(portal_object);
 	else
-		return FALSE; //Not a modron portal
+		otmp = m_carrying(mtmp, portal_object);
+
+	if (!otmp)
+	{
+		if (mtmp == &youmonst)
+			pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
+		else if (canseemon(mtmp))
+			pline("%s glimmer flashes around %s.", portal_color), mon_nam(mtmp);
+		return FALSE;
+	}
 
 	if (!otmp) /* The modronite key must be selected */
 		return FALSE;
@@ -623,24 +606,31 @@ int y;
 	{
 		if (mtmp == &youmonst || mtmp == u.usteed)
 		{
-			pline("Blue light envelops %s!", yname(otmp));
+			pline("%s light envelops %s!", portal_color, yname(otmp));
 			pline("You feel your essence unsolidifying...");
 			pline("You reemerge at a new location!");
-			teleds(nux, nuy, TRUE);
+            teleds(nux, nuy, TRUE);
+            //pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
+            //useup(otmp);
 		}
 		else
 		{
+            char colorbuf[BUFSZ];
+            strcpy(colorbuf, portal_color);
+            *colorbuf = lowc(*colorbuf);
+
 			rloc_to(mtmp, nux, nuy);
-			pline("%s disappears in a flash of blue light.", Monnam(mtmp));
-		}
+			pline("%s disappears in a flash of %s light.", Monnam(mtmp), colorbuf);
+            //m_useup(mtmp, otmp);
+        }
 		return TRUE;
 	}
-	else
+    else
 	{
 		if (mtmp == &youmonst)
-			pline("Blue glimmer surrounds you for a while but nothing else happens.");
+			pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
 		else if (canseemon(mtmp))
-			pline("Blue glimmer flashes around %s.", mon_nam(mtmp));
+			pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
 		return FALSE;
 	}
 	return FALSE;

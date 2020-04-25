@@ -2882,7 +2882,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             paralyze_monst(mdef, 2 + rnd(8), FALSE);
         }
         break;
-    case AD_SLEE:
+	case AD_SHRP:
+		if (!rn2(10))
+		{
+			damage += adjust_damage(mdef->mhpmax / 4, &youmonst, mdef, mattk->adtyp, FALSE);
+		}
+		break;
+	case AD_SLEE:
         if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, rn1(3,8), mattk->mcadj, FALSE)) 
 		{
             if (!Blind)
@@ -3475,9 +3481,11 @@ register struct monst *mon;
 
 		case AT_KICK:
         case AT_BITE:
-        case AT_STNG:
+		case AT_RAMS:
+		case AT_STNG:
         case AT_BUTT:
-        case AT_TENT:
+		case AT_TAIL:
+		case AT_TENT:
         /*weaponless:*/
             tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
                                    &attknum, &armorpenalty);
@@ -3545,7 +3553,13 @@ register struct monst *mon;
                 case AT_BITE:
                     verb = "bite";
                     break;
-                case AT_STNG:
+				case AT_RAMS:
+					verb = "ram";
+					break;
+				case AT_TAIL:
+					verb = "tail-lash";
+					break;
+				case AT_STNG:
                     verb = "sting";
                     break;
                 default:
@@ -3890,7 +3904,7 @@ boolean wep_was_destroyed;
             if (aatyp == AT_KICK) {
                 if (!weapon)
                     break;
-            } else if (aatyp == AT_BITE || aatyp == AT_BUTT
+            } else if (aatyp == AT_BITE || aatyp == AT_RAMS || aatyp == AT_BUTT || aatyp == AT_TAIL
                        || (aatyp >= AT_STNG && aatyp < AT_WEAP)) {
                 break; /* no object involved */
             }

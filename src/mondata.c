@@ -636,8 +636,10 @@ register struct monst *mdef, *magr;
         switch (magr->data->mattk[i].aatyp) {
         case AT_CLAW:
         case AT_BITE:
+        case AT_RAMS:
         case AT_KICK:
         case AT_BUTT:
+        case AT_TAIL:
         case AT_TUCH:
         case AT_STNG:
         case AT_HUGS:

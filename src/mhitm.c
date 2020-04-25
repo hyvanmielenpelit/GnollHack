@@ -422,6 +422,8 @@ register struct monst *magr, *mdef;
         case AT_CLAW:
         case AT_KICK:
         case AT_BITE:
+        case AT_RAMS:
+        case AT_TAIL:
         case AT_STNG:
         case AT_TUCH:
         case AT_BUTT:
@@ -702,6 +704,12 @@ struct obj* omonwep;
                 break;
             case AT_TENT:
                 Sprintf(buf, "%s tentacles suck", s_suffix(magr_name));
+                break;
+            case AT_TAIL:
+                Sprintf(buf, "%s lashes %s tail at", magr_name, mhis(magr));
+                break;
+            case AT_RAMS:
+                Sprintf(buf, "%s rams into", magr_name);
                 break;
             case AT_HUGS:
                 if (magr != u.ustuck) {
@@ -1320,6 +1328,17 @@ register struct obj* omonwep;
                 pline("%s is frozen by %s.", buf, mon_nam(magr));
             }
             paralyze_monst(mdef, 2 + rnd(8), FALSE);
+        }
+        break;
+    case AD_SHRP:
+        if (!rn2(10))
+        {
+            if (vis && canspotmon(mdef) && !is_paralyzed(mdef))
+            {
+                Strcpy(buf, Monnam(mdef));
+                pline("%s is deeply wounded by %s.", buf, mon_nam(magr));
+            }
+            damage += adjust_damage(mdef->mhpmax / 4, magr, mdef, AD_PHYS, FALSE);
         }
         break;
     case AD_SLOW:
@@ -2163,6 +2182,8 @@ int aatyp;
         w_mask = (W_ARMC | W_ARMG); /* attacker needs both to be protected */
         break;
     case AT_BITE:
+    case AT_RAMS:
+    case AT_TAIL:
     case AT_STNG:
     case AT_ENGL:
     case AT_TENT:

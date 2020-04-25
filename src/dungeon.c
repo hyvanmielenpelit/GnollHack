@@ -711,6 +711,7 @@ struct level_map {
                   { "orcus", &orcus_level },
                   { "rogue", &rogue_level },
                   { "sanctum", &sanctum_level },
+                  { "tarrasque", &tarrasque_level },
                   { "valley", &valley_level },
                   { "water", &water_level },
                   { "wizard1", &wiz1_level },

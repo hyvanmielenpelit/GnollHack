@@ -1327,11 +1327,14 @@ spotless: clean
 	if exist $(DAT)\quest.dat	 del $(DAT)\quest.dat
 	if exist $(DAT)\sanctum.lev	 del $(DAT)\sanctum.lev
 	if exist $(DAT)\soko?-?.lev	 del $(DAT)\soko?-?.lev
+	if exist $(DAT)\tarrasque.lev	 del $(DAT)\tarrasque.lev
 	if exist $(DAT)\tower?.lev	 del $(DAT)\tower?.lev
 	if exist $(DAT)\valley.lev	 del $(DAT)\valley.lev
 	if exist $(DAT)\water.lev	 del $(DAT)\water.lev
 	if exist $(DAT)\wizard?.lev	 del $(DAT)\wizard?.lev
 	if exist $(DAT)\yeenoghu.lev	 del $(DAT)\yeenoghu.lev
+	if exist $(DAT)\mainfill.lev	 del $(DAT)\mainfill.lev
+	if exist $(DAT)\hellfill.lev	 del $(DAT)\hellfill.lev
 	if exist $(DAT)\dlb.lst		 del $(DAT)\dlb.lst
 	if exist $(DAT)\porthelp	 del $(DAT)\porthelp
 	if exist $(O)sp_lev.tag	         del $(O)sp_lev.tag

@@ -104,6 +104,7 @@
     <Levfiles Include = "soko3-2.lev"/>
     <Levfiles Include = "soko4-1.lev"/>
     <Levfiles Include = "soko4-2.lev"/>
+    <Levfiles Include = "tarrasque.lev"/>
     <Levfiles Include = "tower1.lev"/>
     <Levfiles Include = "tower2.lev"/>
     <Levfiles Include = "tower3.lev"/>
@@ -113,6 +114,8 @@
     <Levfiles Include = "wizard2.lev"/>
     <Levfiles Include = "wizard3.lev"/>
     <Levfiles Include = "yeenoghu.lev"/>
+    <Levfiles Include = "mainfill.lev"/>
+    <Levfiles Include = "hellfill.lev"/>
     <Levfiles Include = "arc-fila.lev"/>
     <Levfiles Include = "arc-filb.lev"/>
     <Levfiles Include = "arc-goal.lev"/>

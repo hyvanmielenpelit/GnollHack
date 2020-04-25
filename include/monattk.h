@@ -13,10 +13,12 @@
 #define AT_CLAW 1   /* claw (punch, hit, etc.) */
 #define AT_BITE 2   /* bite */
 #define AT_KICK 3   /* kick */
-#define AT_BUTT 4   /* head butt (ex. a unicorn) */
-#define AT_TUCH 5   /* touches */
-#define AT_STNG 6   /* sting */
-#define AT_HUGS 7   /* crushing bearhug */
+#define AT_RAMS 4   /* trample (e.g., juggernaut) */
+#define AT_TAIL 5   /* lashes tail (e.g., Tarrasque) */
+#define AT_BUTT 6   /* head butt (ex. a unicorn) */
+#define AT_TUCH 7   /* touches */
+#define AT_STNG 8   /* sting */
+#define AT_HUGS 9   /* crushing bearhug */
 #define AT_SPIT 10  /* spits substance - ranged */
 #define AT_ENGL 11  /* engulf (swallow or by a cloud) */
 #define AT_BREA 12  /* breath - ranged */
@@ -83,6 +85,7 @@
 #define AD_PSIO 44  /* psionic damage */
 #define AD_SHOC 45  /* system shock */
 #define AD_ADJU 46  /* hit point adjustment, e.g. due to size shrinkage */
+#define AD_SHRP 47  /* sharp as sword of sharpness */
 
 #define AD_RBGD 237 /* random breath weapon, gold dragon */
 #define AD_RBPD 238 /* random breath weapon, Bahamut */

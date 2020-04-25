@@ -334,7 +334,10 @@ long flags;
     struct rm *lev = &levl[x][y];
 
     if ((ttmp = t_at(x, y)) != 0) {
-        if (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE || ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL || ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL)
+        if (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE
+            || ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL || ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL
+            || ttmp->ttyp == MODRON_CUBICAL_PORTAL || ttmp->ttyp == MODRON_DODECAHEDRAL_PORTAL
+            )
             return (struct trap *) 0;
         oldplace = TRUE;
         if (u.utrap && x == u.ux && y == u.uy
@@ -976,7 +979,9 @@ unsigned trflags;
             return;
         }
 
-        if (!Fumbling && ttype != MAGIC_PORTAL && ttype != VIBRATING_SQUARE && ttype != MODRON_OCTAHEDRAL_PORTAL && ttype != MODRON_TETRAHEDRAL_PORTAL
+        if (!Fumbling && ttype != MAGIC_PORTAL && ttype != VIBRATING_SQUARE
+            && ttype != MODRON_OCTAHEDRAL_PORTAL && ttype != MODRON_TETRAHEDRAL_PORTAL
+            && ttype != MODRON_CUBICAL_PORTAL && ttype != MODRON_DODECAHEDRAL_PORTAL
             && ttype != ANTI_MAGIC && !forcebungle && !plunged
             && !conj_pit && !adj_pit
             && (!rn2(5) || (is_pit(ttype)
@@ -1611,7 +1616,17 @@ unsigned trflags;
 		(void)modronportaltele(trap, &youmonst, u.ux - 4, u.uy + 0);
 		break;
 
-	default:
+    case MODRON_CUBICAL_PORTAL:
+        feeltrap(trap);
+        (void)modronportaltele(trap, &youmonst, u.ux, u.uy + 4);
+        break;
+
+    case MODRON_DODECAHEDRAL_PORTAL:
+        feeltrap(trap);
+        (void)modronportaltele(trap, &youmonst, u.ux, u.uy - 4);
+        break;
+
+    default:
         feeltrap(trap);
         impossible("You hit a trap of type %u", trap->ttyp);
     }
@@ -2808,7 +2823,13 @@ register struct monst *mtmp;
 		case MODRON_TETRAHEDRAL_PORTAL:
 			modronportaltele(trap, mtmp, mtmp->mx - 4, mtmp->my);
 			break;
-		default:
+        case MODRON_CUBICAL_PORTAL:
+            modronportaltele(trap, mtmp, mtmp->mx, mtmp->my - 4);
+            break;
+        case MODRON_DODECAHEDRAL_PORTAL:
+            modronportaltele(trap, mtmp, mtmp->mx, mtmp->my + 4);
+            break;
+        default:
             impossible("Some monster encountered a strange trap of type %d.",
                        tt);
         }
@@ -4623,7 +4644,9 @@ struct trap* ttmp;
 				   "vibrating square",
 				   "octahedral magic portal",
 				   "tetrahedral magic portal",
-				   0 };
+                   "cubical magic portal",
+                   "dodecahedral magic portal",
+                   0 };
 
 /*
  * Find the type of a trap in the table, knowing its name.

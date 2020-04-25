@@ -301,6 +301,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)tower1.lev	$(SLIB)tower2.lev	$(SLIB)tower3.lev \
 	$(SLIB)valley.lev	$(SLIB)water.lev	$(SLIB)wizard1.lev \
 	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev  $(SLIB)yeenoghu.lev \
+	$(SLIB)tarrasque.lev $(SLIB)mainfill.lev $(SLIB)hellfill.lev \
 	$(XDFILES)
 
 INSTDUNGEONFILES= $(NETHACK)NetHack.cnf $(INSTDUNGEONFILES1)

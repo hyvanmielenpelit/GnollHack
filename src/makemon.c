@@ -1435,7 +1435,14 @@ register struct monst *mtmp;
 	case S_LEPRECHAUN:
 		mkmonmoney(mtmp, (long)d(level_difficulty(), 30));
 		break;
-	case S_DEMON:
+    case S_UNICORN:
+        if (is_domestic(mtmp->data) && !rn2(4))
+        {
+            (void)mongets(mtmp, SADDLE);
+            m_dowear(mtmp, TRUE);
+        }
+        break;
+    case S_DEMON:
 		/* moved here from m_initweap() because these don't
 		   have AT_WEAP so m_initweap() is not called for them */
 		if (ptr == &mons[PM_ICE_DEVIL] && !rn2(4)) {
@@ -2838,9 +2845,13 @@ int mndx, mvflagsmask, genomask;
 
     if (mvitals[mndx].mvflags & mvflagsmask)
         return FALSE;
-    if (ptr->geno & genomask)
-        return FALSE;
     if (is_placeholder(ptr))
+        return FALSE;
+    if ((ptr->geno & G_MODRON) && u.uz.dnum == modron_dnum)
+        return TRUE;
+    if ((ptr->geno & G_YACC) && u.uz.dnum == bovine_dnum)
+        return TRUE;
+    if (ptr->geno & genomask)
         return FALSE;
 #ifdef MAIL
     /* special levels might ask for random demon type; reject this one */

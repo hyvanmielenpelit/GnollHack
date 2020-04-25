@@ -174,7 +174,9 @@ static struct {
                    { "vibrating square", VIBRATING_SQUARE },
 				   { "octahedral portal", MODRON_OCTAHEDRAL_PORTAL },
 				   { "tetrahedral portal", MODRON_TETRAHEDRAL_PORTAL },
-				   { 0, 0 } };
+                   { "cubical portal", MODRON_CUBICAL_PORTAL },
+                   { "dodecahedral portal", MODRON_DODECAHEDRAL_PORTAL },
+                   { 0, 0 } };
 
 static struct {
     const char *name;
