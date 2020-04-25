@@ -1903,6 +1903,7 @@ struct obj *body;
 #define TROLL_REVIVE_CHANCE 37 /* 1/37 chance for 50 turns ~ 75% chance */
 #define PHOENIX_REVIVE_CHANCE 25
 #define GENERAL_REVIVE_CHANCE 40 /* 1/40 chance for 50 turns ~ 70% chance */
+#define UNIQUE_REVIVE_CHANCE 32 /* 1/32 chance for 50 turns ~ 65% chance */
 #define ROT_AGE (250L)         /* age when corpses rot away */
 
     /* lizards and lichen don't rot */
@@ -1920,7 +1921,8 @@ struct obj *body;
 
 	if (is_reviver(&mons[body->corpsenm]))
 	{
-		if (is_rider(&mons[body->corpsenm])) {
+		if (is_rider(&mons[body->corpsenm]))
+        {
 			/*
 			 * Riders always revive.  They have a 1/3 chance per turn
 			 * of reviving after 12 turns.  Always revive by 500.
@@ -1931,7 +1933,18 @@ struct obj *body;
 					break;
 
 		}
-		else if (body->corpsenm == PM_PHOENIX && !body->norevive)
+        else if (mons[body->corpsenm].geno & G_UNIQ)
+        {
+            /*
+             * Tarrasque and other unique monsters always revive.
+             */
+            action = REVIVE_MON;
+            for (when = 24L; when < 500L; when++)
+                if (!rn2(UNIQUE_REVIVE_CHANCE))
+                    break;
+
+        }
+        else if (body->corpsenm == PM_PHOENIX && !body->norevive)
 		{
 			/*
 			 * Phoenixes always revive.  They have a 1/4 chance per turn

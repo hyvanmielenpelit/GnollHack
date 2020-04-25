@@ -169,10 +169,10 @@ MONSTER:'Z',random
 MONSTER:'Z',random
 MONSTER:'Z',random
 MONSTER:'Z',random
-MONSTER:'M',random
-MONSTER:'M',random
-MONSTER:'M',random
-MONSTER:'M',random
+MONSTER:'z',random
+MONSTER:'z',random
+MONSTER:'z',random
+MONSTER:'z',random
 #
 # The Juiblex level
 #
@@ -700,6 +700,10 @@ MONSTER:('G',"flind"),random
 MONSTER:('G',"flind"),random
 MONSTER:('G',"flind"),random
 MONSTER:('G',"flind"),random
+MONSTER:('d',"shoosuva"),random
+MONSTER:('d',"shoosuva"),random
+MONSTER:('d',"shoosuva"),random
+MONSTER:('d',"shoosuva"),random
 MONSTER:('z',"ghoul"),random
 MONSTER:('z',"ghoul"),random
 MONSTER:('z',"ghoul"),random
@@ -764,7 +768,6 @@ MONSTER: '&', random
 MONSTER: '&', random
 MONSTER: '&', random
 MONSTER: '&', random
-MONSTER: ('B', "hell bat"), random
 MONSTER: ('B', "hell bat"), random
 MONSTER: ('B', "hell bat"), random
 MONSTER: ('d', "hell hound"), random

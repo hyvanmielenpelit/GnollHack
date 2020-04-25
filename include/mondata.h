@@ -305,17 +305,11 @@
 #define has_free_action(mon) \
 	has_innate_or_property(mon, FREE_ACTION)
 
-#define is_paralyzed(mon) \
-	(has_paralyzed(mon) && !has_free_action(mon) && !is_undead((mon)->data) && !is_vampshifter(mon))
-
 #define has_sleeping(mon) \
 	has_property(mon, SLEEPING)
 
 #define is_sleeping(mon) \
 	(has_sleeping(mon) || (mon)->msleeping)
-
-#define mon_can_move(mon) \
-	((mon)->mcanmove && !is_sleeping(mon) && !is_paralyzed(mon))
 
 
 /* stun and confusion */
@@ -524,17 +518,31 @@
 	(has_property(mon, BISECTION_RES))
 
 
+/* permonst resistances */
+#define pm_resists_disint(ptr) \
+    (has_innate(ptr, MR_DISINT) || noncorporeal(ptr))
+
+#define pm_resists_fire(ptr) \
+    (has_innate(ptr, MR_FIRE))
+
+#define pm_resists_cold(ptr) \
+    (has_innate(ptr, MR_COLD) || is_undead(ptr))
+
+#define pm_resists_elec(ptr) \
+    (has_innate(ptr, MR_ELEC))
+
 /* resistances at the time of acquisition */
 #define resists_fire(mon) \
-    (has_innate((mon)->data, MR_FIRE) || has_property(mon, FIRE_RES))
+    ( pm_resists_fire((mon)->data) || has_property(mon, FIRE_RES))
 #define resists_cold(mon) \
-    (has_innate((mon)->data, MR_COLD) || has_property(mon, COLD_RES) || is_undead((mon)->data) || is_vampshifter(mon))
+    (pm_resists_cold((mon)->data) || has_property(mon, COLD_RES) || is_vampshifter(mon))
+#define resists_elec(mon) \
+    (pm_resists_elec((mon)->data) || has_property(mon, SHOCK_RES))
+#define resists_disint(mon) \
+    (pm_resists_disint((mon)->data) || has_property(mon, DISINT_RES))
+
 #define resists_sleep(mon) \
     (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RES) || is_undead((mon)->data) || is_vampshifter(mon))
-#define resists_disint(mon) \
-    (has_innate((mon)->data, MR_DISINT) || has_property(mon, DISINT_RES) || noncorporeal((mon)->data))
-#define resists_elec(mon) \
-    (has_innate((mon)->data, MR_ELEC) || has_property(mon, SHOCK_RES))
 #define resists_death(mon) \
     (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RES) || is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_lycanthropy(mon) \
@@ -569,6 +577,13 @@
 /* other "resists" definitions */
 #define resists_bisection(mon) \
     (has_property(mon, BISECTION_RES) ||  noncorporeal((mon)->data) || amorphous((mon)->data))
+
+/* more on paralysis */
+#define is_paralyzed(mon) \
+	(has_paralyzed(mon) && !resists_paralysis(mon))
+
+#define mon_can_move(mon) \
+	((mon)->mcanmove && !is_sleeping(mon) && !is_paralyzed(mon))
 
 
 /* Conveyed propreties */

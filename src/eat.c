@@ -1331,46 +1331,18 @@ int pm;
 			mdifficulty += 5;
 
 		if (ptr->mlet == S_NYMPH)
-			percent = 33;
-		else if (ptr == &mons[PM_FLOATING_EYE])
+			percent = 10;
+        else if (ptr->mlet == S_GIANT)
+            percent = 25;
+        else if (ptr == &mons[PM_FLOATING_EYE])
 			percent = 100;
         else if (is_mind_flayer(ptr))
-            percent = (ptr == &mons[PM_MASTER_MIND_FLAYER] ? 35 : 25);
-        else if (mdifficulty >= 3)
-		{
-			if (ptr->mlet == S_GIANT)
-				mdifficulty += 3;
+            percent = (ptr == &mons[PM_MASTER_MIND_FLAYER] ? 15 : 10);
+        else /* chance is 10% for most of the time, and a bit less at early levels */
+			percent = min(10, max(1, mdifficulty / 2 - 1));
 
-			percent = min(100, percent + max(0, mdifficulty - 2) * 1);
-			percent = min(100, percent + max(0, mdifficulty - 4) * 1);
-			percent = min(100, percent + max(0, mdifficulty - 5) * 1);
-			percent = min(100, percent + max(0, mdifficulty - 6) * 1);
-			percent = min(100, percent + max(0, mdifficulty - 7) * 1);
-			percent = min(100, percent + max(0, mdifficulty - 8) * 1);
-			percent = min(100, percent + max(0, mdifficulty - 9) * 1);
-			percent = min(100, percent + max(0, mdifficulty - 10) * 2);
-			percent = min(100, percent + max(0, mdifficulty - 12) * 5);
-		}
-		/*
-		1 = 1
-		2 = 1
-		3 = 2
-		4 = 3
-		5 = 5
-		6 = 8
-		7 = 12
-		8 = 17
-		9 = 23
-		10 = 30
-		11 = 40
-		12 = 50
-		13 = 65
-		14 = 80
-		15 = 95
-		16 = 100
-		*/
-
-        if (conveys_STR && rn2(100) < percent) {
+        if (conveys_STR && rn2(100) < percent) 
+        {
             count = 1;
             tmp = -1; /* use -1 as fake prop index for STR */
             debugpline1("\"Intrinsic\" strength, %d", tmp);

@@ -2634,6 +2634,7 @@ rndmonst()
 
         return ptr;
     }
+
     if (rndmonst_state.choice_count < 0) { /* need to recalculate */
         int minmlev = 0, maxmlev = 0;
         boolean elemlevel;
@@ -2846,6 +2847,10 @@ int mndx, mvflagsmask, genomask;
     if (mvitals[mndx].mvflags & mvflagsmask)
         return FALSE;
     if (is_placeholder(ptr))
+        return FALSE;
+    if ((ptr->geno & G_MODRON) && (ptr->geno & G_NOGEN) && u.uz.dnum != modron_dnum)
+        return FALSE;
+    if ((ptr->geno & G_YACC) && (ptr->geno & G_NOGEN) && u.uz.dnum != bovine_dnum)
         return FALSE;
     if ((ptr->geno & G_MODRON) && u.uz.dnum == modron_dnum)
         return TRUE;

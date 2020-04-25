@@ -4201,9 +4201,8 @@ int spell;
 
 			//Disintegration resistant items, indestructible items, and fire-resistant items won't get destroyed
 			//Loadstone will not get destroyed, nor do containers or worn items, which can be cursed
-			if((objects[otmp->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT)
-				|| (objects[otmp->otyp].oc_flags & O1_FIRE_RESISTANT)
-				|| (objects[otmp->otyp].oc_flags & O1_LIGHTNING_RESISTANT)
+			if(oresist_disintegration(otmp)
+				|| oresist_fire(otmp)
 				|| is_obj_indestructible(otmp)
 				|| Is_container(otmp)
 				|| objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED

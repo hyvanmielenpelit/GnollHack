@@ -46,7 +46,7 @@ OBJECT: ')', (01,07)
 OBJECT: '[', (01,07)
 OBJECT:('9',"bone"),(01,07)
 OBJECT:('9',"bone"),(01,07)
-OBJECT:('9',"modronite ball"),(01,07)
+OBJECT:('9',"modronite sphere"),(01,07)
 OBJECT:('9',"human skull"),(01,07)
 
 [50%]: OBJECT:(')',"quarterstaff"),(04,11)

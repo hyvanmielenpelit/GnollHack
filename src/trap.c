@@ -3582,8 +3582,7 @@ xchar x, y;
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
         && objects[otyp].oc_oprop != FIRE_RES && objects[otyp].oc_oprop2 != FIRE_RES && objects[otyp].oc_oprop3 != FIRE_RES
 		&& !is_otyp_indestructible(otyp)
-		&& !(objects[otyp].oc_flags & O1_FIRE_RESISTANT)
-        && otyp != WAN_FIRE && otyp != FIRE_HORN
+		&& !oresist_fire(obj)
         /* assumes oerodeproof isn't overloaded for some other purpose on
            non-eroding items */
         && !obj->oerodeproof
@@ -5793,10 +5792,8 @@ lava_effects()
         for (obj = invent; obj; obj = obj->nobj)
             if ((is_organic(obj) || obj->oclass == POTION_CLASS)
                 && !obj->oerodeproof
-                && objects[obj->otyp].oc_oprop != FIRE_RES && objects[obj->otyp].oc_oprop2 != FIRE_RES && objects[obj->otyp].oc_oprop3 != FIRE_RES
-				&& !(objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT)
-                && obj->otyp != SCR_FIRE && obj->otyp != SPE_FIREBALL
-                && !obj_resists(obj, 0, 0)) /* for invocation items */
+				&& !oresist_fire(obj)
+                ) /* for invocation items */
                 obj->in_use = 1;
 
     /* Check whether we should burn away boots *first* so we know whether to

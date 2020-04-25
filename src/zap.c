@@ -7015,7 +7015,7 @@ boolean u_caused;
         if (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS
             || (obj->oclass == FOOD_CLASS
                 && obj->otyp == GLOB_OF_GREEN_SLIME)) {
-            if (objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT || obj_resists(obj, 2, 100))
+            if (oresist_fire(obj) || obj_resists(obj, 2, 100))
                 continue;
             scrquan = obj->quan; /* number present */
             delquan = 0L;        /* number to destroy */
@@ -8143,7 +8143,7 @@ boolean forcedestroy;
 
     switch (dmgtyp) {
     case AD_COLD:
-        if (osym == POTION_CLASS && obj->otyp != POT_OIL && !is_obj_indestructible(obj) && !(objects[obj->otyp].oc_flags & O1_COLD_RESISTANT))
+        if (osym == POTION_CLASS && obj->otyp != POT_OIL && !oresist_cold(obj))
 		{
             quan = obj->quan;
             dindx = 0;
@@ -8160,7 +8160,7 @@ boolean forcedestroy;
                 pline("%s glows a strange %s, but remains intact.",
                       The(xname(obj)), hcolor("dark red"));
         }
-		else if (is_obj_indestructible(obj) || (objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT))
+		else if (oresist_fire(obj))
 			skip++;
 
 		quan = obj->quan;
@@ -8193,9 +8193,11 @@ boolean forcedestroy;
     case AD_ELEC:
         xresist = (Shock_resistance && obj->oclass != RING_CLASS);
         quan = obj->quan;
-        switch (osym) {
+        switch (osym) 
+        {
         case RING_CLASS:
-            if (is_obj_indestructible(obj) || (objects[obj->otyp].oc_flags & O1_LIGHTNING_RESISTANT)) {
+            if (oresist_elec(obj))
+            {
                 skip++;
                 break;
             }
@@ -8203,7 +8205,8 @@ boolean forcedestroy;
             dmg = 0;
             break;
         case WAND_CLASS:
-            if (is_obj_indestructible(obj) || (objects[obj->otyp].oc_flags & O1_LIGHTNING_RESISTANT)) {
+            if (oresist_elec(obj)) 
+            {
                 skip++;
                 break;
             }
@@ -8394,7 +8397,7 @@ int osym, dmgtyp;
                 skip++;
             break;
         case AD_FIRE:
-            if (objects[obj->otyp].oc_flags & O1_FIRE_RESISTANT)
+            if (oresist_fire(obj))
                 skip++;
             if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
                 skip++;
