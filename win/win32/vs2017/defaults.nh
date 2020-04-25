@@ -17,7 +17,7 @@
 #
 # Use the IBM character set rather than just plain ascii characters
 # for tty window-port.
-OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:6
+OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:8
 
 # Here is a suggested symbol set from Michael Feir, 
 # for use by blind NetHack players
@@ -68,16 +68,16 @@ OPTIONS=menucolors
 #  Show all blessed items in green
 MENUCOLOR=" blessed " = green
 #  Show all holy water in green
-#MENUCOLOR=" holy water" = green
+MENUCOLOR=" holy water" = green
 #  Show all cursed items in red
 MENUCOLOR=" cursed " = red
 #  Show all unholy water in red
 MENUCOLOR=" unholy water" = red
 #  Show all cursed worn items in orange and underlined
-# MENUCOLOR=" cursed .* (being worn)" = orange&underline
+MENUCOLOR=" cursed .* (being worn)" = orange&underline
 #  Show all cooling down items in black
-MENUCOLOR="cooling down)" = black
-MENUCOLOR="repowering)" = magenta
+MENUCOLOR="cooling down" = black
+MENUCOLOR="repowering" = magenta
 #  Show all forgotten spells in black
 MENUCOLOR="(You cannot recall this spell)" = black
 #  Show all spells that do not have any components in black

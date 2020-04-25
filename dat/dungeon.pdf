@@ -21,20 +21,20 @@ DUNGEON:	"Gehennom" "G" (20, 5)
 DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
 ALIGNMENT:	noalign
-BRANCH:		"Vlad's Tower" @ (9, 5) up
+BRANCH:		"Vlad's Tower" @ (10, 5) up
 LEVEL:		"valley" "V" @ (1, 0)
 LEVEL:		"sanctum" "none" @ (-1, 0)
-BRANCH:		"Plane of the Modron" @ (2, 1) portal
+BRANCH:		"Plane of the Modron" @ (2, 2) portal
 BRANCH:		"Hellish Pastures" @ (8, 10) portal
-LEVEL:		"juiblex" "J" @ (4, 4)
+LEVEL:		"juiblex" "J" @ (5, 4)
 LEVEL:		"baalz" "B" @ (6, 4)
 LEVEL:		"asmodeus" "A" @ (2, 6)
 LEVEL:		"wizard1" "none" @ (11, 6)
 CHAINLEVEL:	"wizard2" "X" "wizard1" + (1, 0)
 CHAINLEVEL:	"wizard3" "Y" "wizard1" + (2, 0)
 LEVEL:		"orcus" "O" @ (10, 6)
-LEVEL:		"yeenoghu" "Z" @ (7, 10)
-LEVEL:		"tarrasque" "T" @ (12, 7)
+LEVEL:		"yeenoghu" "Z" @ (-12, 10)
+LEVEL:		"tarrasque" "T" @ (-9, 7)
 LEVEL:		"fakewiz1" "F" @ (-6,4)
 LEVEL:		"fakewiz2" "G" @ (-6,4)
 
