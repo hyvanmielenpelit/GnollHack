@@ -196,7 +196,7 @@ unsigned *ospecial;
         else
         {
             cmap_color(offset);
-            if (iflags.use_color)
+            if (iflags.use_color && !flags.classic_colors)
             {
                 if (Inhell && !level.flags.is_maze_lev &&
                     !Is_valley(&u.uz) && !Is_juiblex_level(&u.uz) && !Is_orcus_level(&u.uz) && !Is_sanctum(&u.uz) 

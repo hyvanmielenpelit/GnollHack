@@ -109,7 +109,8 @@ static struct Bool_Opt {
     { "checkspace", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
 	{ "classic_statue_symbol", &flags.classic_statue_symbol, FALSE, SET_IN_GAME },
-	{ "clicklook", &iflags.clicklook, FALSE, SET_IN_GAME },
+    { "classic_colors", &flags.classic_colors, FALSE, SET_IN_GAME },
+    { "clicklook", &iflags.clicklook, FALSE, SET_IN_GAME },
     { "cmdassist", &iflags.cmdassist, TRUE, SET_IN_GAME },
 #if defined(MICRO) || defined(WIN32) || defined(ANDROID) || defined(CURSES_GRAPHICS)
     { "color", &iflags.wc_color, TRUE, SET_IN_GAME }, /*WC*/
@@ -4155,7 +4156,7 @@ boolean tinitial, tfrom_file;
                     if (iflags.perm_invent)
                         need_redraw = TRUE;
                 }
-			} else if (boolopt[i].addr == &flags.classic_statue_symbol) {
+			} else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors) {
 					need_redraw = TRUE;
 			} else if (boolopt[i].addr == &flags.lit_corridor
                        || boolopt[i].addr == &flags.dark_room) {
