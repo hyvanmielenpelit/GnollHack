@@ -684,7 +684,7 @@ struct monst *mon;
 
 			if (!obj->nknown && (oart->aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP)))
 			{
-				pline("As you touch %s, you suddenly become aware that it is called %s!", the(cxname(obj)), bare_artifactname(obj));
+				pline("As you touch %s, you become aware that it is called %s!", the(cxname(obj)), bare_artifactname(obj));
 				obj->nknown = TRUE;
 			}
 		}
@@ -2407,13 +2407,14 @@ struct obj *obj;
 		context.botl = TRUE;
 	}
 
-	if(obj->repowerleft > 0) /* Override below if effect failed */
+	if(artilist[obj->oartifact].repower_time > 0) /* Override below if effect failed */
 		obj->repowerleft = artilist[obj->oartifact].repower_time;
 
 	int art_inv_dur_dice = artilist[obj->oartifact].inv_duration_dice;
 	int art_inv_dur_diesize = artilist[obj->oartifact].inv_duration_diesize;
 	int art_inv_dur_plus = artilist[obj->oartifact].inv_duration_plus;
 	boolean temporary_effect = ((art_inv_dur_dice > 0 && art_inv_dur_diesize > 0) || art_inv_dur_plus > 0);
+
 
     if (oart->inv_prop > LAST_PROP)
 	{
@@ -2638,7 +2639,7 @@ struct obj *obj;
 			int old_charges = obj->charges;
 			obj->recharged = 0;
 			obj->charges = get_obj_max_charge(obj);
-			if (obj->otyp == ART_HOLY_GRAIL)
+			if (obj->oartifact == ART_HOLY_GRAIL)
 			{
 				if (obj->charges > old_charges)
 				{
@@ -2779,7 +2780,7 @@ struct obj* obj;
 {
 	if (obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_INVOKED)))
 	{
-		pline("As you invoke %s, %syou suddenly become aware that %s named %s!", the(cxname(obj)),
+		pline("As you invoke %s, %syou become aware that %s named %s!", the(cxname(obj)),
 			obj->oartifact == ART_HOWLING_FLAIL ? "it lets loose a majestic howl and " : "",
 			(pair_of(obj) || obj->quan > 1) ? "they are" : "it is", bare_artifactname(obj));
 		obj->nknown = TRUE;

@@ -837,6 +837,19 @@ cure_sickness_here:
 						"better");
             }
 
+            if (otyp == GRAIL_OF_HEALING)
+            {
+                if (has_stoned(mtmp))
+                {
+                    (void)set_mon_property_b(mtmp, STONED, 0, canseemon(mtmp));
+                    if (canseemon(mtmp))
+                        pline("%s looks limber!", Monnam(mtmp));
+                }
+
+                if (has_slimed(mtmp))
+                    (void)set_mon_property_b(mtmp, SLIMED, 0, canseemon(mtmp));
+            }
+
             if (is_tame(mtmp) || is_peaceful(mtmp)) {
                 adjalign(Role_if(PM_HEALER) ? 1 : sgn(u.ualign.type));
             }
@@ -5091,12 +5104,22 @@ boolean ordinary;
 				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)), 
                 obj->otyp == GRAIL_OF_HEALING, 
                 obj->otyp == GRAIL_OF_HEALING);
+            
 			You_feel("%sbetter.", 
 				obj->otyp == SPE_GREATER_HEALING ? "vastly " : 
 				obj->otyp == SPE_GREATER_HEALING || obj->otyp == GRAIL_OF_HEALING ? "much, much " :
 				obj->otyp == SPE_EXTRA_HEALING || obj->otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much " :
 				"");
-		}
+
+            if (obj->otyp == GRAIL_OF_HEALING)
+            {
+                if (Stoned)
+                    fix_petrification();
+
+                if (Slimed)
+                    make_slimed(0L, (char*)0);
+            }
+        }
 		else
 			You_feel("no different than before.");
 		damage = 0;

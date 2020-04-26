@@ -113,7 +113,11 @@ struct obj* obj;
 
 		weffects(obj);
 	}
-	return 1;
+
+    if(obj->charges == 0)
+        pline("%s now empty.", Tobjnam(obj, "are"));
+    
+    return 1;
 }
 
 int
@@ -176,6 +180,10 @@ boolean drink_yourself;
 
         weffects(obj);
     }
+
+    if (obj->charges == 0)
+        pline("%s now empty.", Tobjnam(obj, "are"));
+
     return 1;
 }
 

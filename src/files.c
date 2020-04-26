@@ -2352,7 +2352,7 @@ char *origbuf;
 	while (*origbuf == ' ' || *origbuf == '\t') /* skip leading whitespace */
 		++origbuf;                   /* (caller probably already did this) */
 	(void)strncpy(buf, origbuf, sizeof buf - 1);
-	buf[sizeof buf - 1] = '\0'; /* strncpy not guaranteed to NUL terminate */
+	buf[sizeof buf - 1] = '\0'; /* strncpy not guaranteed to NULL terminate */
 
     /* convert any tab to space, condense consecutive spaces into one,
        remove leading and trailing spaces (exception: if there is nothing
