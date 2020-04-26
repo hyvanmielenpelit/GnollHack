@@ -1045,7 +1045,7 @@ const char *s;
     level.flags.is_maze_lev = TRUE;
     level.flags.corrmaze = !rn2(3);
 
-    if (!Invocation_lev(&u.uz) && rn2(2)) {
+    if (!Invocation_lev(&u.uz) && Inhell && rn2(2)) {
         int corrscale = rnd(4);
         create_maze(corrscale,rnd(4)-corrscale);
     } else {
@@ -1121,7 +1121,7 @@ const char *s;
         mazexy(&mm);
         (void) mksobj_at(BOULDER, mm.x, mm.y, TRUE, FALSE);
     }
-    for (x = rn2(3); x; x--) {
+    for (x = rnd(2); x; x--) {
         mazexy(&mm);
         (void) makemon(&mons[PM_MINOTAUR], mm.x, mm.y, NO_MM_FLAGS);
     }

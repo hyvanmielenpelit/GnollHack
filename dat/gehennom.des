@@ -634,6 +634,7 @@ MONSTER:'L',random
 MONSTER:'V',random
 MONSTER:'V',random
 MONSTER:'V',random
+
 #
 # The Yeenoghu Level
 #
@@ -715,7 +716,9 @@ MONSTER:('z',"ghast"),random
 MONSTER:('T',"thoul"),random
 MONSTER:('T',"thoul"),random
 
-
+#
+# The Tarrasque Level
+#
 MAZE: "tarrasque" , ' '
 INIT_MAP: mines, '.' , ' ' , true , true , random , true
 NOMAP

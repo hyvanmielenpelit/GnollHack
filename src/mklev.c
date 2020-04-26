@@ -769,9 +769,12 @@ makelevel()
             makemaz(fillname);
             return;
         } 
-        else if (In_hell(&u.uz)
-                   || (rn2(5) && u.uz.dnum == medusa_level.dnum
-                       && depth(&u.uz) > depth(&medusa_level))) 
+        else if (u.uz.dnum == medusa_level.dnum && depth(&u.uz) > depth(&medusa_level))
+        {
+            makemaz("");
+            return;
+        }
+        else if (In_hell(&u.uz))
         {
             if(Invocation_lev(&u.uz) || !rn2(3))
                 makemaz("");
