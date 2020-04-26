@@ -1873,7 +1873,7 @@ struct monst *mon;
     if (is_golem(ptr)) {
         /* draining usually won't be applicable for these critters */
         hp = golemhp(monsndx(ptr)) / (int) ptr->mlevel;
-//    } else if (ptr->mlevel > 49) {
+//    } else if (ptr->mlevel > MAX_MONSTER_LEVEL) {
         /* arbitrary; such monsters won't be involved in draining anyway */
 //        hp = 4 + rnd(4); /* 5..8 */
 //    } else if (ptr->mlet == S_DRAGON && monsndx(ptr) >= PM_GRAY_DRAGON) {
@@ -1923,7 +1923,7 @@ unsigned long mmflags;
 	if (is_rider(ptr)) {
         /* we want low HP, but a high mlevel so they can attack well */
         mon->mhpmax = mon->mhp = d(10, 8);
- //   } else if (ptr->mlevel > 49) {
+ //   } else if (ptr->mlevel > MAX_MONSTER_LEVEL) {
         /* "special" fixed hp monster
          * the hit points are encoded in the mlevel in a somewhat strange
          * way to fit in the 50..127 positive range of a signed character
@@ -3015,13 +3015,13 @@ register struct permonst *ptr;
          * every time he is killed
          */
         tmp = ptr->mlevel + mvitals[PM_WIZARD_OF_YENDOR].died;
-        if (tmp > 49)
-            tmp = 49;
+        if (tmp > MAX_MONSTER_LEVEL)
+            tmp = MAX_MONSTER_LEVEL;
         return tmp;
     }
 
-    if ((tmp = ptr->mlevel) > 49)
-        return 50; /* "special" demons/devils */
+    if ((tmp = ptr->mlevel) > MAX_MONSTER_LEVEL)
+        return MAX_MONSTER_LEVEL; /* "special" demons/devils */
     tmp2 = (level_difficulty() - tmp);
     if (tmp2 < 0)
         tmp--; /* if mlevel > u.uz decrement tmp */
@@ -3033,8 +3033,8 @@ register struct permonst *ptr;
         tmp += (tmp2 / 4); /* level as well */
 
     tmp2 = (3 * ((int) ptr->mlevel)) / 2; /* crude upper limit */
-    if (tmp2 > 49)
-        tmp2 = 49;                                      /* hard upper limit */
+    if (tmp2 > MAX_MONSTER_LEVEL)
+        tmp2 = MAX_MONSTER_LEVEL;  /* hard upper limit */
     return ((tmp > tmp2) ? tmp2 : (tmp > 0 ? tmp : 0)); /* 0 lower limit */
 }
 
@@ -3086,37 +3086,41 @@ struct monst *mtmp, *victim;
         /* number of hit points to gain; unlike for the player, we put
            the limit at the bottom of the next level rather than the top */
         max_increase = rnd((int) victim->m_lev + 1);
-        if (mtmp->mhpmax + max_increase > hp_threshold + 1)
-            max_increase = max((hp_threshold + 1) - mtmp->mhpmax, 0);
+        if (mtmp->mbasehpmax + max_increase > hp_threshold + 1)
+            max_increase = max((hp_threshold + 1) - mtmp->mbasehpmax, 0);
         cur_increase = (max_increase > 1) ? rn2(max_increase) : 0;
-    } else {
+    } 
+    else
+    {
         /* a gain level potion or wraith corpse; always go up a level
-           unless already at maximum (49 is hard upper limit except
+           unless already at maximum (MAX_MONSTER_LEVEL is hard upper limit except
            for demon lords, who start at 50 and can't go any higher) */
         max_increase = cur_increase = rnd(8);
         hp_threshold = 0; /* smaller than `mhpmax + max_increase' */
-        lev_limit = 50;   /* recalc below */
+        lev_limit = MAX_MONSTER_LEVEL;   /* recalc below */
     }
 
     mtmp->mbasehpmax += max_increase;
-	update_mon_maxhp(mtmp);
     mtmp->mhp += cur_increase;
-    if (mtmp->mhpmax <= hp_threshold)
+    update_mon_maxhp(mtmp);
+    if (mtmp->mbasehpmax <= hp_threshold)
         return ptr; /* doesn't gain a level */
 
     if (is_mplayer(ptr))
-        lev_limit = 30; /* same as player */
+        lev_limit = MAXULEV; /* same as player */
     else if (lev_limit < 5)
         lev_limit = 5; /* arbitrary */
-    else if (lev_limit > 49)
-        lev_limit = (ptr->mlevel > 49 ? 50 : 49);
+    else if (lev_limit > MAX_MONSTER_LEVEL)
+        lev_limit = MAX_MONSTER_LEVEL; //(ptr->mlevel > 49 ? 50 : 49);
 
-    if ((int) ++mtmp->m_lev >= mons[newtype].mlevel && newtype != oldtype) {
+    if ((int) ++mtmp->m_lev >= mons[newtype].mlevel && newtype != oldtype)
+    {
         ptr = &mons[newtype];
         /* new form might force gender change */
         fem = is_male(ptr) ? 0 : is_female(ptr) ? 1 : mtmp->female;
 
-        if (mvitals[newtype].mvflags & G_GENOD) { /* allow G_EXTINCT */
+        if (mvitals[newtype].mvflags & G_GENOD)
+        { /* allow G_EXTINCT */
             if (canspotmon(mtmp))
                 pline("As %s grows up into %s, %s %s!", mon_nam(mtmp),
                       an(ptr->mname), mhe(mtmp),
@@ -3124,7 +3128,9 @@ struct monst *mtmp, *victim;
             set_mon_data(mtmp, ptr); /* keep mvitals[] accurate */
             mondied(mtmp);
             return (struct permonst *) 0;
-        } else if (canspotmon(mtmp)) {
+        } 
+        else if (canspotmon(mtmp))
+        {
             char buf[BUFSZ];
 
             /* 3.6.1:
@@ -3152,10 +3158,11 @@ struct monst *mtmp, *victim;
     }
 
     /* sanity checks */
-    if ((int) mtmp->m_lev > lev_limit) {
+    if ((int) mtmp->m_lev > lev_limit) 
+    {
         mtmp->m_lev--; /* undo increment */
         /* HP might have been allowed to grow when it shouldn't */
-		if (mtmp->mhpmax == hp_threshold + 1)
+		if (mtmp->mbasehpmax == hp_threshold + 1)
 		{
 			mtmp->mbasehpmax--;
 			update_mon_maxhp(mtmp);

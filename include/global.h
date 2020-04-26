@@ -355,6 +355,7 @@ struct savefile_info {
 #define ALIGNWEIGHT 4 /* generation weight of alignment */
 
 #define MAXULEV 36 /* max character experience level */
+#define MAX_MONSTER_LEVEL 127 /* max m_lev for a monster, maximum value for a signed char */
 
 #define MAXMONNO 240 /* extinct monst after this number created (JG -- doubled) */
 #define MHPMAX 500   /* maximum monster hp (JG -- seems to apply only to worms...) */
