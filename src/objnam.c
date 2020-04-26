@@ -1155,8 +1155,8 @@ unsigned doname_flags;
 		&& objects[obj->otyp].oc_name_known == 0 && !known && obj->charges > 0)
 	{
         int lim = get_obj_max_charge(obj);
-        const char* fullness = obj->charges >= (int)(0.5 * (double)lim) ? "" :
-            obj->charges > 2 ? "some " :
+        const char* fullness = obj->charges > (int)(0.5 * (double)lim) ? "" :
+            obj->charges > 1 ? "some " :
             obj->charges > 0 ? "little " : "no ";
 		Sprintf(eos(bp), " containing %s%s", fullness, OBJ_CONTENT_DESC(obj->otyp));
 	}
