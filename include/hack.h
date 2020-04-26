@@ -599,6 +599,7 @@ static const char empty_string[] = "";
 
 #define BOW_TO_HIT_MELEE_PENALTY 30
 #define THROWN_WEAPON_TO_HIT_MELEE_PENALTY 30
+#define THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON 18
 
 /* Maximum number of status lines */
 #define MAX_STATUS_LINES 8
