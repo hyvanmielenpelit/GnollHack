@@ -675,6 +675,7 @@ register struct monst *mtmp;
             return 1;
     }
 
+#if 0
     /* Demonic Blackmail! */
     if (nearby && mdat->msound == MS_BRIBE && is_peaceful(mtmp) && !is_silenced(mtmp) && !is_tame(mtmp)
         && !u.uswallow)
@@ -704,6 +705,7 @@ register struct monst *mtmp;
 		else if (demon_talk(mtmp))
             return 1; /* you paid it off */
     }
+#endif
 
     /* the watch will look around and see if you are up to no good :-) */
     if (is_watch(mdat))

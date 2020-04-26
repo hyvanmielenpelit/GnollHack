@@ -268,31 +268,58 @@ int *attk_count, *role_roll_penalty;
 	int skill_level = P_SKILL_LEVEL(weaponskill);
 	double skill_multiplier = 1.0;
 
-	switch (skill_level)
+	if (weaponskill == P_MARTIAL_ARTS && !uarm && !uarms)
 	{
-	case P_ISRESTRICTED:
-	case P_UNSKILLED:
-		skill_multiplier = 0.25;
-		break;
-	case P_BASIC:
-		skill_multiplier = 0.5;
-		break;
-	case P_SKILLED:
-		skill_multiplier = 0.75;
-		break;
-	case P_EXPERT:
-	case P_MASTER:
-	case P_GRAND_MASTER:
-		skill_multiplier = 1.0;
-		break;
-	default:
-		break;
+		switch (skill_level)
+		{
+		case P_ISRESTRICTED:
+		case P_UNSKILLED:
+			skill_multiplier = 0.75;
+			break;
+		case P_BASIC:
+			skill_multiplier = 0.875;
+			break;
+		case P_SKILLED:
+			skill_multiplier = 1.0;
+			break;
+		case P_EXPERT:
+			skill_multiplier = 1.125;
+			break;
+		case P_MASTER:
+			skill_multiplier = 1.25;
+			break;
+		case P_GRAND_MASTER:
+			skill_multiplier = 1.375;
+			break;
+		default:
+			break;
+		}
 	}
-
+	else
+	{
+		switch (skill_level)
+		{
+		case P_ISRESTRICTED:
+		case P_UNSKILLED:
+			skill_multiplier = 0.334;
+			break;
+		case P_BASIC:
+			skill_multiplier = 0.5;
+			break;
+		case P_SKILLED:
+			skill_multiplier = (weaponskill == P_BARE_HANDED_COMBAT ? 0.625 : 0.75);
+			break;
+		case P_EXPERT:
+			skill_multiplier = (weaponskill == P_BARE_HANDED_COMBAT ? 0.75 : 1.0);
+			break;
+		default:
+			break;
+		}
+	}
     *role_roll_penalty = 0; /* default is `none' */
 
     tmp = 1 + Luck + u_strdex_to_hit_bonus() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc
-          + maybe_polyd(youmonst.data->mlevel, (int)(skill_multiplier * (double)u.ulevel));
+          + maybe_polyd(youmonst.data->mlevel, (int)(skill_multiplier * ((double)u.ulevel + 1.0)));
 
 	if (weapon && nonmelee_throwing_weapon(weapon))
 	{

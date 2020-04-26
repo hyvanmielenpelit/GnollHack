@@ -1774,6 +1774,7 @@ E int FDECL(thrwmm, (struct monst *, struct monst *));
 E int FDECL(spitmm, (struct monst *, struct attack *, struct monst *));
 E int FDECL(breamm, (struct monst *, struct attack *, struct monst *));
 E int FDECL(eyesmm, (struct monst*, struct attack*, struct monst*));
+E int FDECL(buzzmm, (struct monst*, struct attack*, struct monst*));
 E void FDECL(m_useupall, (struct monst *, struct obj *));
 E void FDECL(m_useup, (struct monst *, struct obj *));
 E void FDECL(m_throw, (struct monst *, int, int, int, int, int, struct obj *));
@@ -1782,6 +1783,7 @@ E void FDECL(hit_bars, (struct obj **, int, int, int, int,
 E boolean FDECL(hits_bars, (struct obj **, int, int, int, int, int, int));
 E const char* FDECL(get_eyestalk_ray_name, (int));
 E const char* FDECL(get_breath_weapon_name, (int));
+E void FDECL(set_m_ray_spell_stats, (struct monst*, struct attack*, struct monst*, int*, int*, int*, int*));
 
 /* ### muse.c ### */
 
@@ -3175,6 +3177,7 @@ E void NDECL(aggravate);
 E void NDECL(clonewiz);
 E int FDECL(pick_nasty, (int));
 E int FDECL(summon_nasties, (struct monst *));
+E int FDECL(summon_level_appropriate_monsters, (struct monst*));
 E void NDECL(resurrect);
 E void NDECL(intervene);
 E void NDECL(wizdead);

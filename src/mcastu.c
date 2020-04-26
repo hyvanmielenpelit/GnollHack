@@ -17,6 +17,7 @@ enum mcast_mage_spells {
     MGC_CURSE_ITEMS,
     MGC_AGGRAVATION,
     MGC_SUMMON_MONS,
+    MGC_SUMMON_NASTY,
     MGC_CLONE_WIZ,
     MGC_DEATH_TOUCH
 };
@@ -85,7 +86,7 @@ int spellval;
 {
     /* for 3.4.3 and earlier, val greater than 22 selected the default spell
      */
-    while (spellval > 10 && rn2(20))
+    while (spellval > 10 && rn2(21))
         spellval = rn2(spellval);
 
     switch (spellval) {
@@ -100,23 +101,25 @@ int spellval;
     case 20:
         return MGC_DEATH_TOUCH;
 #endif
+    case 20:
     case 19:
-    case 18:
         return MGC_CLONE_WIZ;
+    case 18:
     case 17:
+        return MGC_AGGRAVATION;
     case 16:
     case 15:
-        return MGC_SUMMON_MONS;
+        return MGC_SUMMON_NASTY;
     case 14:
     case 13:
-        return MGC_AGGRAVATION;
+        return MGC_DISAPPEAR;
     case 12:
     case 11:
-		return MGC_DISAPPEAR;
-	case 10:
+        return MGC_CURSE_ITEMS;
+    case 10:
     case 9:
-		return MGC_CURSE_ITEMS;
-	case 8:
+        return MGC_SUMMON_MONS;
+    case 8:
     case 7:
 		return MGC_DESTRY_ARMR;
 	case 6:
@@ -445,13 +448,41 @@ int spellnum;
     case MGC_SUMMON_MONS: {
         int count;
 
-        count = summon_nasties(mtmp); /* summon something nasty */
+        if (mtmp->iswiz)
+            count = summon_nasties(mtmp); /* summon something nasty */
+        else
+            count = summon_level_appropriate_monsters(mtmp); /* summon something appropriate */
 
         if (mtmp->iswiz)
             verbalize("Destroy the thief, my pet%s!", plur(count));
         else
         {
             const char *mappear =
+                (count == 1) ? "A monster appears" : "Monsters appear";
+
+            /* messages not quite right if plural monsters created but
+               only a single monster is seen */
+            if (Invisible && !has_see_invisible(mtmp)
+                && (mtmp->mux != u.ux || mtmp->muy != u.uy))
+                pline("%s around a spot near you!", mappear);
+            else if (Displaced && (mtmp->mux != u.ux || mtmp->muy != u.uy))
+                pline("%s around your displaced image!", mappear);
+            else
+                pline("%s from nowhere!", mappear);
+        }
+        damage = 0;
+        break;
+    }
+    case MGC_SUMMON_NASTY: {
+        int count;
+
+        count = summon_nasties(mtmp); /* summon something nasty */
+
+        if (mtmp->iswiz)
+            verbalize("Destroy the thief, my pet%s!", plur(count));
+        else
+        {
+            const char* mappear =
                 (count == 1) ? "A monster appears" : "Monsters appear";
 
             /* messages not quite right if plural monsters created but
@@ -936,8 +967,6 @@ int spellnum;
     return FALSE;
 }
 
-/* convert 1..10 to 0..9; add 10 for second group (spell casting) */
-#define ad_to_typ(k) (10 + (int) k - 1)
 
 /* monster uses spell (ranged) */
 int
@@ -948,28 +977,39 @@ register struct attack *mattk;
 	//Sanity check
 	if (!mtmp || !mattk)
 		return 0;
-	
-	/* don't print constant stream of curse messages for 'normal'
+
+	/* Do not waste magic on reflecting targets */
+    if (Reflecting && rn2(5))
+        return 0;
+
+    /* don't print constant stream of curse messages for 'normal'
        spellcasting monsters at range */
 
+    int adtyp = mattk->adtyp, damn = mattk->damn, damd = mattk->damd, damp = mattk->damp;
     if (mattk->adtyp > AD_STON)
-        return (0);
+        set_m_ray_spell_stats(mtmp, mattk, &youmonst, &adtyp, &damn, &damd, &damp);
 
-    if (is_cancelled(mtmp) || is_silenced(mtmp)) {
+    if (adtyp < AD_MAGM || adtyp > AD_STON)
+        return 0;
+
+    if (is_cancelled(mtmp) || is_silenced(mtmp)) 
+    {
         cursetxt(mtmp, FALSE);
         return (0);
     }
-    if (lined_up(mtmp, TRUE, mattk->adtyp, TRUE) && rn2(3))
+
+    if (!mtmp->mspec_used && lined_up(mtmp, TRUE, adtyp, TRUE) && rn2(3))
 	{
         nomul(0);
-        if (mattk->adtyp && (mattk->adtyp <= AD_STON))
+        if (adtyp && adtyp <= AD_STON)
 		{ /* no cf unsigned >0 */
             if (canseemon(mtmp))
                 pline("%s zaps you with a %s!", Monnam(mtmp),
-                      flash_types[ad_to_typ(mattk->adtyp)]);
-			buzz(-ad_to_typ(mattk->adtyp), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
-                 mtmp->my, sgn(tbx), sgn(tby));
-        } else
+                      flash_types[ad_to_typ(adtyp)]);
+			buzz(-ad_to_typ(adtyp), (struct obj*)0, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
+            mtmp->mspec_used = rnd(3);
+        }
+        else
             impossible("Monster spell %d cast", mattk->adtyp - 1);
     }
     return (1);

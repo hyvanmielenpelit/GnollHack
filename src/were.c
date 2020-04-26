@@ -186,8 +186,10 @@ char *genbuf;
             continue;
         }
         mtmp = makemon(&mons[typ], u.ux, u.uy, NO_MM_FLAGS);
-        if (mtmp) {
+        if (mtmp)
+        {
             total++;
+            mtmp->mprops[SUMMON_FORBIDDEN] = 30;
             if (canseemon(mtmp))
                 *visible += 1;
         }

@@ -919,7 +919,8 @@ register struct monst *mtmp;
 
 							Strcpy(genericwere, "creature");
 							numhelp = were_summon(mdat, FALSE, &numseen, genericwere);
-							if (youseeit) {
+							if (youseeit)
+                            {
 								pline("%s summons help!", Monnam(mtmp));
 								if (numhelp > 0) {
 									if (numseen == 0)

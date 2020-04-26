@@ -350,8 +350,7 @@ xchar x, y;
         struct attack *uattk;
         int sum, kickdieroll, armorpenalty, specialdmg,
             attknum = 0,
-            tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum,
-                                   &armorpenalty);
+            tmp = find_roll_to_hit(mon, AT_KICK, uarmf, &attknum, &armorpenalty);
 
         for (int i = 0; i < NATTK; i++)
 		{

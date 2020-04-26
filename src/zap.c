@@ -68,9 +68,9 @@ const char *const flash_types[] =       /* also used in buzzmu(mcastu.c) */
         "bolt of lightning", "", "", "death ray", "petrification ray",
 
         "magic missile", /* Spell equivalents must be 10-19 */
-        "bolt of fire", "cone of cold", "sleep ray", "disintegrate",
+        "bolt of fire", "cone of cold", "sleep ray", "disintegrate spell",
         "bolt of lightning", /* there is no spell, used for retribution */
-        "", "", "finger of death", "petrification ray",
+        "", "", "death ray", "petrification ray",
 
         "blast of missiles", /* Dragon breath equivalents 20-29*/
         "blast of fire", "blast of frost", "blast of sleep gas",

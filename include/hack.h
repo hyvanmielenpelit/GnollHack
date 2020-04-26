@@ -604,6 +604,9 @@ static const char empty_string[] = "";
 /* Maximum number of status lines */
 #define MAX_STATUS_LINES 8
 
+/* convert 1..10 to 0..9; add 10 for second group (spell casting) */
+#define ad_to_typ(k) (10 + (int) k - 1)
+
 #if defined(BSD) || defined(ULTRIX)
 #define readLenType int
 #else /* e.g. SYSV, __TURBOC__ */

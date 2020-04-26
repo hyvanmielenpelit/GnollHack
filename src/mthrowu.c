@@ -10,6 +10,8 @@ STATIC_DCL void FDECL(monshoot, (struct monst *, struct obj *, struct obj *));
 STATIC_DCL int FDECL(drop_throw, (struct obj *, BOOLEAN_P, int, int));
 STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *, BOOLEAN_P, int, BOOLEAN_P));
 
+extern const char* const flash_types[]; /* from zap.c */
+
 #define URETREATING(x, y) \
     (distmin(u.ux, u.uy, x, y) > distmin(u.ux0, u.uy0, x, y))
 
@@ -1283,6 +1285,217 @@ const char* get_breath_weapon_name(typ)
 	return breathwep[typ - 1];
 }
 
+/* monster casts a ray spell at monster (ranged) */
+int
+buzzmm(mtmp, mattk, mtarg)
+struct monst* mtmp, * mtarg;
+struct attack* mattk;
+{
+    if (!mtmp || !mattk)
+        return 0;
+        
+    /* Do not waste magic on reflecting targets */
+    if (is_reflecting(mtarg) && rn2(5))
+        return 0;
+
+    int adtyp = 0;
+    int damn = 0, damd = 0, damp = 0;
+
+    set_m_ray_spell_stats(mtmp, mattk, mtarg, &adtyp, &damn, &damd, &damp);
+
+    if (adtyp < AD_MAGM || adtyp > AD_STON)
+        return 0;
+
+    if (m_lined_up(mtarg, mtmp, TRUE, adtyp, TRUE))
+    {
+        if (is_cancelled(mtmp))
+        {
+            if (!Deaf) {
+                if (canseemon(mtmp))
+                    pline("%s curses at %s.", Monnam(mtmp), mon_nam(mtarg));
+                else
+                    You_hear("a curse.");
+            }
+            return 0;
+        }
+        if (!mtmp->mspec_used && rn2(3))
+        {
+            if ((adtyp >= AD_MAGM) && (adtyp <= AD_STON))
+            {
+                if (canseemon(mtmp))
+                    pline("%s zaps %s with a %s!", Monnam(mtmp), mon_nam(mtarg),
+                        flash_types[ad_to_typ(adtyp)]);
+
+                dobuzz((int)(-ad_to_typ(adtyp)), (struct obj*)0, damn, damd, damp,
+                    mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
+
+                nomul(0);
+
+                mtmp->mspec_used = rnd(3);
+
+                /* If this is a pet, it'll get hungry. Minions and
+                 * spell beings won't hunger */
+                if (mtmp->mtame && !mtmp->isminion)
+                {
+                    struct edog* dog = EDOG(mtmp);
+
+                    /* Hunger effects will catch up next move */
+                    if (dog->hungrytime >= 10)
+                        dog->hungrytime -= 10;
+                }
+            }
+            else impossible("Monster ray spell %d used", adtyp - 1);
+        }
+        else
+            return 0;
+    }
+    return 1;
+}
+
+void
+set_m_ray_spell_stats(mtmp, mattk, mtarg, typ, damn, damd, damp)
+struct monst* mtmp;
+struct attack* mattk;
+struct monst* mtarg;
+int *typ, *damn, *damd, *damp;
+{
+    /* Currently only arcane spell-casters */
+    if (mattk->adtyp != AD_SPEL)
+    {
+        *typ = 0;
+        return;
+    }
+
+
+    boolean is_target_you = (mtarg == &youmonst);
+    boolean spell_ok[10] = { 0 };
+
+    for (int i = AD_MAGM; i <= AD_STON; i++)
+    {
+        spell_ok[i - 1] = !is_immune(mtarg, i);
+
+    }
+
+    int ml = 0;
+    if (mattk->mcadj > 0)
+        ml = mattk->mcadj;
+    else
+        ml = mtmp->m_lev;
+
+    /* Do not use spells that potentially kills the caster */
+    spell_ok[AD_STON - 1] = FALSE;
+    spell_ok[AD_DISN - 1] = FALSE;
+
+    /* No spells for these */
+    spell_ok[AD_ACID - 1] = FALSE;
+    spell_ok[AD_DRST - 1] = FALSE;
+
+    if (ml <= 25 && mtmp->mnum != PM_ARCH_LICH)
+    {
+        spell_ok[AD_DRAY - 1] = FALSE;
+    }
+
+    if (ml <= 18 && mtmp->mnum != PM_ARCH_LICH && mtmp->mnum != PM_MASTER_LICH)
+    {
+        spell_ok[AD_COLD - 1] = FALSE;
+    }
+
+    if (mattk->adtyp != AD_SPEL)
+    {
+        spell_ok[AD_DISN - 1] = FALSE;
+        spell_ok[AD_STON - 1] = FALSE;
+    }
+
+    int sum = 0;
+    for (int i = 0; i < 10; i++)
+        sum += spell_ok[i];
+
+    /* Too weak if others are available */
+    if (ml < 20 && sum > 1 && spell_ok[AD_MAGM - 1])
+    {
+        spell_ok[AD_MAGM - 1] = FALSE;
+        sum--;
+    }
+
+    if (ml >= 20 && sum > 1 && spell_ok[AD_FIRE - 1])
+    {
+        spell_ok[AD_FIRE - 1] = FALSE;
+        sum--;
+    }
+
+    if (ml >= 20 && sum > 1 && spell_ok[AD_ELEC - 1])
+    {
+        spell_ok[AD_ELEC - 1] = FALSE;
+        sum--;
+    }
+
+    if (sum <= 0)
+    {
+        *typ = 0;
+        return;
+    }
+
+    int sel_spell = rnd(sum);
+    int sel_adtyp = 0;
+    do
+    {
+        sel_adtyp++;
+        
+        if (sel_adtyp > 10)
+            break;
+
+        if(spell_ok[sel_adtyp - 1] == TRUE)
+            sel_spell--;
+
+    } while (sel_spell > 0);
+
+    if (sel_adtyp <= 0 || sel_adtyp > 10)
+    {
+        *typ = 0;
+        return;
+    }
+
+    *typ = sel_adtyp;
+
+    switch (sel_adtyp)
+    {
+    case AD_MAGM:
+        *damn = ml >= 20 ? 16 : 2; /* larger damage is greater magic missile */
+        *damd = 6;
+        *damp = 0;
+        break;
+    case AD_FIRE:
+        *damn = 4;
+        *damd = 6;
+        *damp = 0;
+        break;
+    case AD_ELEC:
+        *damn = 6;
+        *damd = 6;
+        *damp = 0;
+        break;
+    case AD_COLD:
+        *damn = 12;
+        *damd = 6;
+        *damp = 0;
+        break;
+    case AD_DISN:
+    case AD_DRAY:
+    case AD_STON:
+        *damn = 1;
+        *damd = 255;
+        *damp = 0;
+        break;
+    case AD_SLEE:
+        *damn = 0;
+        *damd = 0;
+        *damp = 0;
+        break;
+    default:
+        break;
+    }
+
+}
 
 /* remove an entire item from a monster's inventory; destroy that item */
 void

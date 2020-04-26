@@ -671,6 +671,7 @@ struct monst *summoner;
             {
                 /* delay first use of spell or breath attack */
                 mtmp->mspec_used = rnd(4);
+                mtmp->mprops[SUMMON_FORBIDDEN] = 30;
                 count++;
 
 #if 0
@@ -680,6 +681,79 @@ struct monst *summoner;
                     break;
 #endif 
             }
+        }
+    }
+
+    if (count)
+        count = monster_census(FALSE) - census;
+    return count;
+}
+
+int
+summon_level_appropriate_monsters(summoner)
+struct monst* summoner;
+{
+    register struct monst* mtmp;
+    register int i;
+    coord bypos;
+    int count, census, summon_num;
+
+    if (!summoner || is_cancelled(summoner) || has_summon_forbidden(summoner))
+        return 0;
+
+    census = monster_census(FALSE);
+
+    count = 0;
+    if (summoner && !summoner->iswiz)
+    {
+        int ml = summoner->m_lev;
+        if (summoner == &youmonst)
+            ml = u.ulevel;
+        else
+        {
+            struct attack* mattk = attacktype_fordmg(summoner->data, AT_MAGC, AD_SPEL);
+            if (!mattk)
+                mattk = attacktype_fordmg(summoner->data, AT_MAGC, AD_CLRC);
+            if (mattk && mattk->mcadj > 0)
+                ml = mattk->mcadj;
+        }
+
+        if(ml < 8)
+            summon_num = 0;
+        else if (ml < 12)
+            summon_num = 1;
+        else if (ml < 16)
+            summon_num = rnd(2);
+        else if (ml < 20)
+            summon_num = 2;
+        else if (ml < 24)
+            summon_num = 1 + rnd(2);
+        else if (ml < 28)
+            summon_num = 1 + rnd(3);
+        else if (ml < 32)
+            summon_num = 2 + rnd(2);
+        else
+            summon_num = 2 + rnd(3);
+    }
+    else
+        summon_num = 2 + rnd(3);
+
+    /* if we don't have a casting monster, nasties appear around hero,
+        otherwise they'll appear around spot summoner thinks she's at */
+    bypos.x = u.ux;
+    bypos.y = u.uy;
+    for (i = 1; i <= summon_num; i++)
+    {
+        mtmp = makemon((struct permonst*) 0, bypos.x, bypos.y, NO_MM_FLAGS);
+
+        if (mtmp)
+        {
+            /* delay first use of spell or breath attack */
+            mtmp->mspec_used = rnd(4);
+            /* forbid summoning for a while */
+            mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+            mtmp->mpeaceful = 0;
+            count++;
         }
     }
 
