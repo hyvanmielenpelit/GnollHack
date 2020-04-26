@@ -453,7 +453,9 @@ int spellnum;
         else
             count = summon_level_appropriate_monsters(mtmp); /* summon something appropriate */
 
-        if (mtmp->iswiz)
+        if (count == 0)
+            cursetxt(mtmp, TRUE);
+        else if (mtmp->iswiz)
             verbalize("Destroy the thief, my pet%s!", plur(count));
         else
         {
@@ -478,7 +480,9 @@ int spellnum;
 
         count = summon_nasties(mtmp); /* summon something nasty */
 
-        if (mtmp->iswiz)
+        if (count == 0)
+            cursetxt(mtmp, TRUE);
+        else if (mtmp->iswiz)
             verbalize("Destroy the thief, my pet%s!", plur(count));
         else
         {
