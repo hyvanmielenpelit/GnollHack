@@ -2754,6 +2754,7 @@ int level_limit;
         impossible("rndmonst: bad `mndx' [#%d]", mndx);
         return (struct permonst *) 0;
     }
+
     return &mons[mndx];
 }
 
@@ -2892,6 +2893,8 @@ int mndx, mvflagsmask, genomask;
         return TRUE;
     if ((ptr->geno & G_YACC) && u.uz.dnum == bovine_dnum)
         return TRUE;
+    if ((ptr->geno & G_NOMINES) && In_mines(&u.uz))
+        return FALSE;
     if (ptr->geno & genomask)
         return FALSE;
 #ifdef MAIL
