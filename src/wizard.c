@@ -704,9 +704,10 @@ struct monst* summoner;
     census = monster_census(FALSE);
 
     count = 0;
+    int ml = 0;
     if (summoner && !summoner->iswiz)
     {
-        int ml = summoner->m_lev;
+        ml = summoner->m_lev;
         if (summoner == &youmonst)
             ml = u.ulevel;
         else
@@ -720,17 +721,17 @@ struct monst* summoner;
 
         if(ml < 8)
             summon_num = 0;
-        else if (ml < 12)
+        else if (ml < 14)
             summon_num = 1;
-        else if (ml < 16)
-            summon_num = rnd(2);
         else if (ml < 20)
+            summon_num = rnd(2);
+        else if (ml < 26)
             summon_num = 2;
-        else if (ml < 24)
-            summon_num = 1 + rnd(2);
-        else if (ml < 28)
-            summon_num = 1 + rnd(3);
         else if (ml < 32)
+            summon_num = 1 + rnd(2);
+        else if (ml < 38)
+            summon_num = 1 + rnd(3);
+        else if (ml < 44)
             summon_num = 2 + rnd(2);
         else
             summon_num = 2 + rnd(3);
@@ -744,7 +745,7 @@ struct monst* summoner;
     bypos.y = u.uy;
     for (i = 1; i <= summon_num; i++)
     {
-        mtmp = makemon((struct permonst*) 0, bypos.x, bypos.y, NO_MM_FLAGS);
+        mtmp = makemon_limited((struct permonst*) 0, bypos.x, bypos.y, NO_MM_FLAGS, max(1, ml - 1));
 
         if (mtmp)
         {

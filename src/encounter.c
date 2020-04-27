@@ -1362,6 +1362,8 @@ int selected_encounter, x, y;
 				continue;
 			if (!Inhell && mons[pmid].geno & G_HELL)
 				continue;
+			if (In_mines(&u.uz) && (mons[pmid].geno & G_NOMINES))
+				continue;
 		}
 		total_monster_experience += 1 + mons[pmid].difficulty * mons[pmid].difficulty;
 		total_monster_difficulty += mons[pmid].difficulty;
@@ -1391,6 +1393,8 @@ int selected_encounter, x, y;
 			if (Inhell && mons[pmid].geno & G_NOHELL)
 				continue;
 			if (!Inhell && mons[pmid].geno & G_HELL)
+				continue;
+			if (In_mines(&u.uz) && (mons[pmid].geno & G_NOMINES))
 				continue;
 		}
 

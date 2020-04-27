@@ -124,7 +124,8 @@ int x, y, n, mmflags;
 
     mm.x = x;
     mm.y = y;
-    while (cnt--) {
+    while (cnt--)
+    {
         if (peace_minded(mtmp->data))
             continue;
         /* Don't create groups of peaceful monsters since they'll get
@@ -132,9 +133,11 @@ int x, y, n, mmflags;
          * are peaceful and some are not, the result will just be a
          * smaller group.
          */
-        if (enexto(&mm, mm.x, mm.y, mtmp->data)) {
+        if (enexto(&mm, mm.x, mm.y, mtmp->data))
+        {
             mon = makemon(mtmp->data, mm.x, mm.y, (mmflags | MM_NOGRP));
-            if (mon) {
+            if (mon)
+            {
                 mon->mpeaceful = FALSE;
                 mon->mavenge = 0;
                 set_malign(mon);
@@ -2107,6 +2110,16 @@ coord *cc;
     return FALSE;
 }
 
+
+struct monst*
+makemon(ptr, x, y, mmflags)
+register struct permonst* ptr;
+register int x, y;
+unsigned long mmflags;
+{
+    return makemon_limited(ptr, x, y, mmflags, 0);
+}
+
 /*
  * called with [x,y] = coordinates;
  *      [0,0] means anyplace
@@ -2115,10 +2128,11 @@ coord *cc;
  *      In case we make a monster group, only return the one at [x,y].
  */
 struct monst *
-makemon(ptr, x, y, mmflags)
+makemon_limited(ptr, x, y, mmflags, level_limit)
 register struct permonst *ptr;
 register int x, y;
 unsigned long mmflags;
+int level_limit;
 {
     register struct monst *mtmp;
     int mndx, mcham, ct, mitem;
@@ -2129,7 +2143,8 @@ unsigned long mmflags;
     unsigned long gpflags = (mmflags & MM_IGNOREWATER) ? MM_IGNOREWATER : 0;
 
     /* if caller wants random location, do it here */
-    if (x == 0 && y == 0) {
+    if (x == 0 && y == 0) 
+    {
         coord cc;
         struct monst fakemon;
 
@@ -2182,8 +2197,10 @@ unsigned long mmflags;
         int tryct = 0; /* maybe there are no good choices */
         struct monst fakemon;
 
-        do {
-            if (!(ptr = rndmonst())) {
+        do
+        {
+            if (!(ptr = rndmonst_limited(level_limit))) 
+            {
                 debugpline0("Warning: no monster.");
                 return (struct monst *) 0; /* no more monsters! */
             }
@@ -2192,7 +2209,7 @@ unsigned long mmflags;
                  /* in Sokoban, don't accept a giant on first try;
                     after that, boulder carriers are fair game */
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
-					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER] || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN]))
+//					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER] || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN]))
                      || !goodpos(x, y, &fakemon, gpflags)));
         mndx = monsndx(ptr);
     }
@@ -2610,9 +2627,18 @@ static NEARDATA struct {
     char mchoices[SPECIAL_PM]; /* value range is 0..127 */
 } rndmonst_state = { -1, { 0 } };
 
+
 /* select a random monster type */
-struct permonst *
+struct permonst*
 rndmonst()
+{
+    return rndmonst_limited(0);
+}
+
+/* select a random monster type */
+struct permonst*
+rndmonst_limited(level_limit)
+int level_limit;
 {
     register struct permonst *ptr;
     register int mndx, ct;
@@ -2660,6 +2686,14 @@ rndmonst()
 			/* determine the level of the strongest monster to make. */
 			get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
 
+            if (level_limit > 0)
+            {
+                if (maxmlev > level_limit)
+                    maxmlev = level_limit;
+                if (minmlev > (int)((double)level_limit / 2.5))
+                    minmlev = (int)((double)level_limit / 2.5);
+            }
+
 			upper = Is_rogue_level(&u.uz);
 			elemlevel = In_endgame(&u.uz) && !Is_astralevel(&u.uz);
 
@@ -2680,7 +2714,9 @@ rndmonst()
 					continue;
 				if (Inhell && (ptr->geno & G_NOHELL))
 					continue;
-				ct = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
+                if (In_mines(&u.uz) && (ptr->geno & G_NOMINES))
+                    continue;
+                ct = (int) (ptr->geno & G_FREQ) + align_shift(ptr);
 				if (ct < 0 || ct > 127)
 				{
 					panic("rndmonst: bad count [#%d: %d]", mndx, ct);

@@ -487,7 +487,7 @@ struct obj *box;
     }
 }
 
-/* select a random, common monster type */
+/* select a random, common monster type, usually for a corpse */
 int
 rndmonnum()
 {
@@ -501,11 +501,13 @@ rndmonnum()
         return monsndx(ptr);
 
     /* Plan B: get any common monster */
-    excludeflags = G_UNIQ | G_NOGEN | (Inhell ? G_NOHELL : G_HELL);
+    excludeflags = G_UNIQ | G_NOGEN | (Inhell ? G_NOHELL : G_HELL) | (In_mines(&u.uz) ? G_NOMINES : 0);
     do {
         i = rn1(SPECIAL_PM - LOW_PM, LOW_PM);
         ptr = &mons[i];
-    } while ((ptr->geno & excludeflags) != 0);
+    } while ((ptr->geno & excludeflags &&
+        !((In_modron_level(&u.uz) && (ptr->geno & G_MODRON)) || (In_bovine_level(&u.uz)  && (ptr->geno & G_YACC)))
+        ) != 0);
 
     return i;
 }

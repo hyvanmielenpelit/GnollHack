@@ -86,7 +86,7 @@ int spellval;
 {
     /* for 3.4.3 and earlier, val greater than 22 selected the default spell
      */
-    while (spellval > 10 && rn2(21))
+    while (spellval > 14 && rn2(20))
         spellval = rn2(spellval);
 
     switch (spellval) {
@@ -101,16 +101,14 @@ int spellval;
     case 20:
         return MGC_DEATH_TOUCH;
 #endif
-    case 20:
-    case 19:
-        return MGC_CLONE_WIZ;
     case 18:
     case 17:
-        return MGC_AGGRAVATION;
+        return MGC_CLONE_WIZ;
     case 16:
     case 15:
         return MGC_SUMMON_NASTY;
     case 14:
+        return MGC_AGGRAVATION;
     case 13:
         return MGC_DISAPPEAR;
     case 12:
@@ -859,6 +857,7 @@ int spellnum;
         switch (spellnum) {
         case MGC_CLONE_WIZ:
         case MGC_SUMMON_MONS:
+        case MGC_SUMMON_NASTY:
         case MGC_AGGRAVATION:
         case MGC_DISAPPEAR:
         case MGC_HASTE_SELF:
@@ -900,7 +899,7 @@ int spellnum;
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
 
         if (is_peaceful(mtmp)
-            && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS
+            && (spellnum == MGC_AGGRAVATION || spellnum == MGC_SUMMON_MONS || spellnum == MGC_SUMMON_NASTY
                 || spellnum == MGC_CLONE_WIZ))
             return TRUE;
 
@@ -925,7 +924,7 @@ int spellnum;
             return TRUE;
 
         /* don't summon monsters if it doesn't think you're around */
-        if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS
+        if (!mcouldseeu && (spellnum == MGC_SUMMON_MONS || spellnum == MGC_SUMMON_NASTY
                             || (!mtmp->iswiz && spellnum == MGC_CLONE_WIZ)))
             return TRUE;
 
@@ -933,11 +932,20 @@ int spellnum;
             && spellnum == MGC_CLONE_WIZ)
             return TRUE;
 
-		if (mtmp->mnum != PM_HIGH_PRIEST && !((mtmp->data->geno & G_UNIQ) && (mtmp->data->mlet == S_DEMON))
-			&& spellnum == MGC_DEATH_TOUCH)
+        if ((!mtmp->iswiz || context.no_of_wizards > 1)
+            && spellnum == MGC_CLONE_WIZ)
+            return TRUE;
+
+        if ((Curse_resistance || Antimagic) && spellnum == MGC_CURSE_ITEMS)
 			return TRUE;
 
-		/* aggravation (global wakeup) when everyone is already active */
+        if (Antimagic && (spellnum == MGC_WEAKEN_YOU || spellnum == MGC_STUN_YOU || spellnum == MGC_DESTRY_ARMR))
+            return TRUE;
+
+        if (spellnum == MGC_DESTRY_ARMR && !uarm && !uarmu && !uarmc && !uarms && !uarmg && !uarmf && !uarmh && !uarmo && !uarmb)
+            return TRUE;
+
+        /* aggravation (global wakeup) when everyone is already active */
         if (spellnum == MGC_AGGRAVATION) 
 		{
             /* if nothing needs to be awakened then this spell is useless
