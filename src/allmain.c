@@ -664,6 +664,8 @@ maybe_create_ringwraith()
 }
 
 static boolean alternate_rot_text = FALSE;
+static boolean alternate_rot_text2 = FALSE;
+static boolean alternate_rot_text3 = FALSE;
 
 /* maybe recover some lost health (or lose some when an eel out of water) */
 STATIC_OVL void
@@ -694,28 +696,44 @@ regenerate_hp()
                 {
                     if (alternate_rot_text)
                     {
-                        if (!rn2(2))
-                            pline("Large patches of your skin are turning black!");
+                        if (alternate_rot_text2)
+                        {
+                            if(alternate_rot_text3)
+                                pline("Large patches of your skin are turning black!");
+                            else
+                                pline("Black patches of skin are appearing all over your body!");
+                        }
                         else
-                            Your("%s are turning black!", !rn2(2) ? makeplural(body_part(HAND)) : makeplural(body_part(FOOT)));
+                            Your("%s are turning black!", alternate_rot_text3 ? makeplural(body_part(HAND)) : makeplural(body_part(FOOT)));
+                        alternate_rot_text2 = !alternate_rot_text2;
                     }
                     else
                     {
-                        if (!rn2(2))
-                            pline("One of your %s feels loose!", !rn2(2) ? makeplural(body_part(FINGER)) : makeplural(body_part(TOE)));
+                        if (alternate_rot_text2)
+                        {
+                            pline("One of your %s feels loose!", alternate_rot_text3 ? makeplural(body_part(FINGER)) : makeplural(body_part(TOE)));
+                            alternate_rot_text3 = !alternate_rot_text3;
+                        }
                         else
-                            Your("%s feels loose!", body_part(NOSE));
+                            Your("%s feels loose!", alternate_rot_text3 ? body_part(NOSE) : body_part(HAIR));
                     }
+                    alternate_rot_text = !alternate_rot_text;
                 }
                 else
                 {
-                    if (!rn2(2))
-                        pline("One of your %s is turning black!", alternate_rot_text ? makeplural(body_part(FINGERTIP)) : makeplural(body_part(TOE)));
+                    if (alternate_rot_text)
+                    {
+                        pline("One of your %s is turning black!", alternate_rot_text2 ? makeplural(body_part(FINGERTIP)) : makeplural(body_part(TOE)));
+                        alternate_rot_text2 = !alternate_rot_text2;
+                    }
                     else
-                        pline("Black patches of skin are appearing on your %s!", alternate_rot_text ? body_part(FACE) : makeplural(body_part(FOOT)));
+                    {
+                        pline("Black patches of skin are appearing on your %s!", alternate_rot_text3 ? body_part(FACE) : makeplural(body_part(FOOT)));
+                        alternate_rot_text3 = !alternate_rot_text3;
+                    }
+                    alternate_rot_text = !alternate_rot_text;
                 }
             }
-            alternate_rot_text = !alternate_rot_text;
             nomul(0);
         }
         if (Regeneration)

@@ -1016,7 +1016,7 @@ register struct attack *mattk;
         if (adtyp && adtyp <= AD_STON)
 		{ /* no cf unsigned >0 */
             if (canseemon(mtmp))
-                pline("%s zaps you with a %s!", Monnam(mtmp),
+                pline("%s casts \'%s\' at you!", Monnam(mtmp),
                       flash_types[ad_to_typ(adtyp)]);
 			buzz(-ad_to_typ(adtyp), (struct obj*)0, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
             mtmp->mspec_used = rnd(3);

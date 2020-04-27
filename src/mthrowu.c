@@ -1323,7 +1323,7 @@ struct attack* mattk;
             if ((adtyp >= AD_MAGM) && (adtyp <= AD_STON))
             {
                 if (canseemon(mtmp))
-                    pline("%s zaps %s with a %s!", Monnam(mtmp), mon_nam(mtarg),
+                    pline("%s casts \'%s\' at %s!", Monnam(mtmp), mon_nam(mtarg),
                         flash_types[ad_to_typ(adtyp)]);
 
                 dobuzz((int)(-ad_to_typ(adtyp)), (struct obj*)0, damn, damd, damp,
@@ -1366,7 +1366,6 @@ int *typ, *damn, *damd, *damp;
         return;
     }
 
-
     boolean is_target_you = (mtarg == &youmonst);
     boolean spell_ok[10] = { 0 };
 
@@ -1382,6 +1381,21 @@ int *typ, *damn, *damd, *damp;
     else
         ml = mtmp->m_lev;
 
+    if (ml <= 2)
+    {
+        *typ = 0;
+        return;
+    }
+    else if (ml <= 6)
+    {
+        /* low level monsters can cast magic missile */
+        *typ = AD_MAGM;
+        *damn = 2;
+        *damd = 6;
+        *damp = 0;
+        return;
+    }
+
     /* Do not use spells that potentially kills the caster */
     spell_ok[AD_STON - 1] = FALSE;
     spell_ok[AD_DISN - 1] = FALSE;
@@ -1395,10 +1409,16 @@ int *typ, *damn, *damd, *damp;
         spell_ok[AD_DRAY - 1] = FALSE;
     }
 
-    if (ml <= 18 && mtmp->mnum != PM_ARCH_LICH && mtmp->mnum != PM_MASTER_LICH)
+    if (ml <= 15 && mtmp->mnum != PM_ARCH_LICH && mtmp->mnum != PM_MASTER_LICH)
     {
         spell_ok[AD_COLD - 1] = FALSE;
     }
+
+    if (ml <= 10)
+    {
+        spell_ok[AD_ELEC - 1] = FALSE;
+    }
+
 
     if (mattk->adtyp != AD_SPEL)
     {
@@ -1411,19 +1431,19 @@ int *typ, *damn, *damd, *damp;
         sum += spell_ok[i];
 
     /* Too weak if others are available */
-    if (ml < 20 && sum > 1 && spell_ok[AD_MAGM - 1])
+    if (ml >= 11 && ml < 20 && (sum - spell_ok[AD_SLEE - 1]) > 1 && spell_ok[AD_MAGM - 1])
     {
         spell_ok[AD_MAGM - 1] = FALSE;
         sum--;
     }
 
-    if (ml >= 20 && sum > 1 && spell_ok[AD_FIRE - 1])
+    if (ml >= 16 && (sum - spell_ok[AD_SLEE - 1]) > 1 && spell_ok[AD_FIRE - 1])
     {
         spell_ok[AD_FIRE - 1] = FALSE;
         sum--;
     }
 
-    if (ml >= 20 && sum > 1 && spell_ok[AD_ELEC - 1])
+    if (ml >= 20 && (sum - spell_ok[AD_SLEE - 1]) > 1 && spell_ok[AD_ELEC - 1])
     {
         spell_ok[AD_ELEC - 1] = FALSE;
         sum--;
