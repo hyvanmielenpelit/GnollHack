@@ -315,66 +315,73 @@ boolean createcorpse;
 	boolean additionalash = 0;
 	
 	/* Monsters that create death items with or without the corpse */
-	switch (mndx)
-	{
-	case PM_SKELETON:
-	case PM_SKELETON_WARRIOR:
-	case PM_SKELETON_LORD:
-	case PM_SKELETON_KING:
-		if (!rn2(2))
-		{
-			obj = mksobj_at(BONE, x, y, TRUE, FALSE);
-			obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
-			obj->owt = weight(obj);
-		}
-		if(!rn2(2))
-			obj = mksobj_at(HUMAN_SKULL, x, y, TRUE, FALSE);
-		break;
-	case PM_ETTIN_SKELETON:
-	case PM_GIANT_SKELETON:
-		if(!rn2(2))
-		{
-			obj = mksobj_at(BONE, x, y, TRUE, FALSE);
-			obj->quan = rnd(3);
-			obj->owt = weight(obj);
-		}
-		break;
-	case PM_ANCIENT_RED_DRAGON:
-		additionalash++;
-	case PM_RED_DRAGON:
-	case PM_HELL_BAT:
-    case PM_ELDER_FIRE_ELEMENTAL:
-    case PM_PHOENIX:
-		additionalash++;
-	case PM_PYROHYDRA:
-	case PM_RED_NAGA:
-	case PM_FIRE_VORTEX:
-	case PM_SALAMANDER:
-	case PM_FIRE_ELEMENTAL:
-	case PM_PYROLISK:
-	case PM_FIRE_GIANT:
-	case PM_HELL_HOUND:
-		additionalash++;
-	case PM_FIRE_ANT:
-	case PM_RED_NAGA_HATCHLING:
-	case PM_RED_DRAGON_HATCHLING:
-	case PM_RED_MOLD:
-	case PM_HELL_HOUND_PUP:
-		if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
-		{
-			obj = mksobj_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
-			if(additionalash > 1)
-				obj->quan = rnd(2+additionalash);
-			else
-				obj->quan = 1;
-			obj->owt = weight(obj);
-		}
-		break;
-	default:
-		break;
-	}
+    if (!is_tame(mtmp))
+    {
+        switch (mndx)
+        {
+        case PM_SKELETON:
+        case PM_SKELETON_WARRIOR:
+        case PM_SKELETON_LORD:
+        case PM_SKELETON_KING:
+            if (!rn2(2))
+            {
+                obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+                obj->quan = rnd(2 + (mndx == PM_SKELETON_LORD ? 1 : 0));
+                obj->owt = weight(obj);
+            }
+            if (!rn2(2))
+                obj = mksobj_at(HUMAN_SKULL, x, y, TRUE, FALSE);
+            break;
+        case PM_ETTIN_SKELETON:
+        case PM_GIANT_SKELETON:
+            if (!rn2(2))
+            {
+                obj = mksobj_at(BONE, x, y, TRUE, FALSE);
+                obj->quan = rnd(3);
+                obj->owt = weight(obj);
+            }
+            break;
+        case PM_ANCIENT_RED_DRAGON:
+            additionalash++;
+        case PM_RED_DRAGON:
+        case PM_HELL_BAT:
+        case PM_ELDER_FIRE_ELEMENTAL:
+        case PM_PHOENIX:
+            additionalash++;
+        case PM_PYROHYDRA:
+        case PM_RED_NAGA:
+        case PM_FIRE_VORTEX:
+        case PM_SALAMANDER:
+        case PM_FIRE_ELEMENTAL:
+        case PM_PYROLISK:
+        case PM_FIRE_GIANT:
+        case PM_HELL_HOUND:
+            additionalash++;
+        case PM_FIRE_ANT:
+        case PM_RED_NAGA_HATCHLING:
+        case PM_RED_DRAGON_HATCHLING:
+        case PM_RED_MOLD:
+        case PM_HELL_HOUND_PUP:
+            if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
+            {
+                obj = mksobj_at(PINCH_OF_SULFUROUS_ASH, x, y, TRUE, FALSE);
+                if (additionalash > 1)
+                    obj->quan = rnd(2 + additionalash);
+                else
+                    obj->quan = 1;
+                obj->owt = weight(obj);
+            }
+            break;
+        default:
+            break;
+        }
+    }
+
+    /* CHECK FOR CREATECORPSE */
 	if (!createcorpse)
 		return (struct obj*)0;
+
+    boolean istame = is_tame(mtmp);
 
 	/* Monsters that create death items only with the corpse */
 	switch (mndx) {
@@ -406,28 +413,31 @@ boolean createcorpse;
 	case PM_ANCIENT_YELLOW_DRAGON:
 		/* Make dragon scales.  This assumes that the order of the
 		   dragons is the same as the order of the scales. */
-		if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
-		{
-			oneinchance = mtmp->mrevived ? 50 : 5;
-			basemonsterindex = PM_GRAY_DRAGON_HATCHLING;
-		}
-		else if (mndx >= PM_GRAY_DRAGON && mndx <= PM_YELLOW_DRAGON)
-		{
-			oneinchance = mtmp->mrevived ? 20 : 2;
-			basemonsterindex = PM_GRAY_DRAGON;
-		}
-		else if (mndx >= PM_ANCIENT_GRAY_DRAGON && mndx <= PM_ANCIENT_YELLOW_DRAGON)
-		{
-			oneinchance = mtmp->mrevived ? 10 : 1;
-			basemonsterindex = PM_ANCIENT_GRAY_DRAGON;
-		}
+        if (!istame)
+        {
+            if (mndx >= PM_GRAY_DRAGON_HATCHLING && mndx <= PM_YELLOW_DRAGON_HATCHLING)
+            {
+                oneinchance = mtmp->mrevived ? 50 : 5;
+                basemonsterindex = PM_GRAY_DRAGON_HATCHLING;
+            }
+            else if (mndx >= PM_GRAY_DRAGON && mndx <= PM_YELLOW_DRAGON)
+            {
+                oneinchance = mtmp->mrevived ? 20 : 2;
+                basemonsterindex = PM_GRAY_DRAGON;
+            }
+            else if (mndx >= PM_ANCIENT_GRAY_DRAGON && mndx <= PM_ANCIENT_YELLOW_DRAGON)
+            {
+                oneinchance = mtmp->mrevived ? 10 : 1;
+                basemonsterindex = PM_ANCIENT_GRAY_DRAGON;
+            }
 
-		if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
-			num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
-			obj = mksobj_at(num, x, y, FALSE, FALSE);
-			obj->enchantment = 0;
-			obj->cursed = obj->blessed = FALSE;
-		}
+            if (oneinchance > 0 && basemonsterindex > 0 && (oneinchance == 1 || !rn2(oneinchance))) {
+                num = GRAY_DRAGON_SCALES + monsndx(mdat) - basemonsterindex;
+                obj = mksobj_at(num, x, y, FALSE, FALSE);
+                obj->enchantment = 0;
+                obj->cursed = obj->blessed = FALSE;
+            }
+        }
 		goto default_1;
 	case PM_WHITE_UNICORN:
 	case PM_GRAY_UNICORN:
@@ -437,14 +447,16 @@ boolean createcorpse;
 				pline("%s recently regrown horn crumbles to dust.",
 					s_suffix(Monnam(mtmp)));
 		}
-		else {
+		else if(!istame)
+        {
 			obj = mksobj_at(UNICORN_HORN, x, y, TRUE, FALSE);
 			if (obj && mtmp->mrevived)
 				obj->degraded_horn = 1;
 		}
 		goto default_1;
 	case PM_LONG_WORM:
-		(void)mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
+        if(!istame)
+    		(void)mksobj_at(WORM_TOOTH, x, y, TRUE, FALSE);
 		goto default_1;
 	case PM_CAVE_SPIDER:
 	case PM_GIANT_SPIDER:
@@ -467,7 +479,7 @@ boolean createcorpse;
 	case PM_COUATL:
 	case PM_ALEAX:
 	case PM_ARCHON:
-		if ((!mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
+		if ((!istame && !mtmp->mrevived && !rn2(2)) || (mtmp->mrevived && !rn2(10)))
 		{
 			obj = mksobj_at(FEATHER, x, y, TRUE, FALSE);
 			switch (mndx)
@@ -510,7 +522,7 @@ boolean createcorpse;
 	case PM_VAMPIRE_BAT:
 	case PM_GIANT_BAT:
 	case PM_HELL_BAT:
-		if (mndx == PM_BAT ? !rn2(3) : mndx == PM_GIANT_BAT ? !rn2(2) : 1)
+		if (!istame && (mndx == PM_BAT ? !rn2(3) : mndx == PM_GIANT_BAT ? !rn2(2) : 1))
 		{
 			obj = mksobj_at(CLUMP_OF_BAT_GUANO, x, y, TRUE, FALSE);
 			obj->quan = (mndx == PM_HELL_BAT ? rnd(4) : mndx == PM_VAMPIRE_BAT ? rnd(3) : mndx == PM_GIANT_BAT ? rnd(2) : 1);
@@ -535,7 +547,7 @@ boolean createcorpse;
 	case PM_RED_MOLD:
 	{
 		sporequan++;
-		if (!mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
+		if (!istame && !mtmp->mcloned && (!rn2(2) || mndx == PM_MUCILAGINOUS_CUBE))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
 			obj->quan = sporequan > 1 ? rnd(sporequan) : 1;
@@ -575,7 +587,7 @@ boolean createcorpse;
 		break;
 	case PM_IRON_GOLEM:
 	{
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			obj = mksobj_at(NUGGET_OF_IRON_ORE, x, y, FALSE, FALSE);
 			obj->quan = (long)(rnd(2));
@@ -605,7 +617,7 @@ boolean createcorpse;
 		break;
 	}
 	case PM_GLASS_GOLEM:
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			num = d(1, 6);
 			while (num--)
@@ -615,7 +627,7 @@ boolean createcorpse;
 		free_umname(mtmp);
 		break;
 	case PM_BONE_GOLEM:
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			obj = mksobj_at(BONE, x, y, FALSE, FALSE);
 			obj->quan = (long)(rnd(4));
@@ -625,7 +637,7 @@ boolean createcorpse;
 		free_umname(mtmp);
 		break;
 	case PM_SILVER_GOLEM:
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			obj = mksobj_at(NUGGET_OF_SILVER_ORE, x, y, FALSE, FALSE);
 			obj->quan = (long)(rnd(2));
@@ -635,7 +647,7 @@ boolean createcorpse;
 		free_umname(mtmp);
 		break;
 	case PM_CLAY_GOLEM:
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			obj = mksobj_at(CLAY_PEBBLE, x, y, FALSE, FALSE);
 			obj->quan = (long)(rnd(3));
@@ -650,7 +662,7 @@ boolean createcorpse;
 		obj =
 			mkcorpstat(STATUE, (struct monst *) 0, mdat, x, y, corpstatflags);
 		*/
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			obj = mksobj_at(STONE_PEBBLE, x, y, FALSE, FALSE);
 			obj->quan = (long)(rnd(5));
@@ -660,7 +672,7 @@ boolean createcorpse;
 		free_umname(mtmp);
 		break;
 	case PM_WOOD_GOLEM:
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
 			obj->quan = (long)(rnd(2));
@@ -671,7 +683,7 @@ boolean createcorpse;
 		break;
 	case PM_LEATHER_GOLEM:
 	{
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			int objid = LEATHER_ARMOR;
 			num = d(1, 3);
@@ -713,7 +725,7 @@ boolean createcorpse;
 	case PM_GOLD_GOLEM:
 	{
 		/* Good luck gives more coins */
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			obj = mkgold((long)(195 - rnl(101)), x, y);
 		}
@@ -722,7 +734,7 @@ boolean createcorpse;
 		break;
 	}
 	case PM_PAPER_GOLEM:
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			num = rnd(2);
 			while (num--)
@@ -732,7 +744,7 @@ boolean createcorpse;
 		free_umname(mtmp);
 		break;
 	case PM_GEMSTONE_GOLEM:
-		if (!rn2(2))
+		if (!istame && !rn2(2))
 		{
 			num = rnd(3);
 			while (num--)
@@ -745,12 +757,15 @@ boolean createcorpse;
 	   like dragons, relies on the order remaining consistent */
 	case PM_TREANT:
 	case PM_ELDER_TREANT:
-		obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-		if (obj)
-		{
-			obj->quan = rnd(mndx == PM_ELDER_TREANT ? 4 : 2);
-			obj->owt = weight(obj);
-		}
+        if (!istame)
+        {
+            obj = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+            if (obj)
+            {
+                obj->quan = rnd(mndx == PM_ELDER_TREANT ? 4 : 2);
+                obj->owt = weight(obj);
+            }
+        }
 		break;
 	case PM_GRAY_OOZE:
 	case PM_BROWN_PUDDING:
@@ -759,7 +774,7 @@ boolean createcorpse;
 		/* we have to do this here because most other places
 		   expect there to be an object coming back; not this one */
 		   /* first, make some powder */
-		if (!mtmp->mcloned && !rn2(3))
+		if (!istame && !mtmp->mcloned && !rn2(3))
 		{
 			obj = mksobj_at(HEAP_OF_SPORAL_POWDER, x, y, FALSE, FALSE);
 			obj->quan = rnd(3);
@@ -1458,7 +1473,8 @@ update_monster_timouts()
 					case SLIMED:
 					case SICK:
 					case FOOD_POISONED:
-					case STRANGLED:
+                    case MUMMY_ROT:
+                    case STRANGLED:
 					case AIRLESS_ENVIRONMENT:
 					case LAUGHING:
 					case FUMBLING:
@@ -1537,7 +1553,22 @@ update_monster_timouts()
 								You("have a peculiarly sad feeling for a moment, then it passes.");
 						}
 						break;
-					case STRANGLED:
+                    case MUMMY_ROT:
+                        if (!resists_sickness(mtmp))
+                        {
+                            if (canseemon(mtmp))
+                            {
+                                pline("%s dies of %s mummy rot!", Monnam(mtmp), mhis(mtmp));
+                            }
+                            mtmp->mhp = 0;
+                            mondied(mtmp);
+                            if (mtmp == u.ustuck)
+                                u.ustuck = 0;
+                            if (is_tame(mtmp) && !canspotmon(mtmp))
+                                You("have a peculiarly sad feeling for a moment, then it passes.");
+                        }
+                        break;					
+                    case STRANGLED:
 						if (!is_breathless(mtmp))
 						{
 							if (canseemon(mtmp))

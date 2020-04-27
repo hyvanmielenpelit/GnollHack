@@ -2829,7 +2829,8 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
 	{ BL_MASK_FEARFUL, "Fear" },
 	{ BL_MASK_SLEEPING, "Sleep" },
 	{ BL_MASK_CANCELLED, "Cancl" },
-	{ BL_MASK_SILENCED, "Silent" }
+	{ BL_MASK_SILENCED, "Silent" },
+    { BL_MASK_ROT, "Rot" }
 };
 
 

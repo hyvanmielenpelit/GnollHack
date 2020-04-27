@@ -14,6 +14,7 @@ STATIC_DCL int FDECL(passiveum, (struct permonst *, struct monst *,
 STATIC_DCL void FDECL(mayberem, (struct monst *, const char *,
                                  struct obj *, const char *));
 STATIC_DCL boolean FDECL(diseasemu, (struct permonst *));
+STATIC_DCL boolean FDECL(mummyrotmu, (struct permonst*));
 STATIC_DCL int FDECL(hitmu, (struct monst *, struct attack *, struct obj*));
 STATIC_DCL int FDECL(gulpmu, (struct monst *, struct attack *));
 STATIC_DCL int FDECL(explmu, (struct monst *, struct attack *, BOOLEAN_P));
@@ -356,7 +357,7 @@ struct attack *alt_attk_buf;
        from hitting with both of them on the same turn; if the first has
        already hit, switch to a stun attack for the second */
     if (indx > 0 && prev_result[indx - 1] > 0
-        && (attk->adtyp == AD_DISE || attk->adtyp == AD_PEST
+        && (attk->adtyp == AD_DISE || attk->adtyp == AD_ROTS || attk->adtyp == AD_PEST
             || attk->adtyp == AD_FAMN)
         && attk->adtyp == mptr->mattk[indx - 1].adtyp) {
         *alt_attk_buf = *attk;
@@ -1117,6 +1118,21 @@ struct permonst *mdat;
     }
 }
 
+STATIC_OVL boolean
+mummyrotmu(mdat)
+struct permonst* mdat;
+{
+    if (Sick_resistance) {
+        You_feel("a slight illness.");
+        return FALSE;
+    }
+    else
+    {
+        make_mummy_rotted(-1L, mdat->mname, TRUE);
+        return TRUE;
+    }
+}
+
 /* check whether slippery clothing protects from hug or wrap attack */
 STATIC_OVL boolean
 u_slip_free(mtmp, mattk)
@@ -1871,6 +1887,17 @@ register struct obj* omonwep;
 			(void)diseasemu(mdat);
 		}
 		break;
+    case AD_ROTS:
+        if (Sick_resistance)
+            damage = 0;
+
+        hitmsg(mtmp, mattk, damage == 0 ? 0 : damagedealt);
+
+        if (!mcsuccess)
+        {
+            (void)mummyrotmu(mdat);
+        }
+        break;
     case AD_FIRE:
 		hitmsg(mtmp, mattk, -1);
 		if (uncancelled) {
@@ -2456,7 +2483,9 @@ register struct obj* omonwep;
                 make_sick(0L, (char *) 0, FALSE);
 			if (FoodPoisoned)
 				make_food_poisoned(0L, (char*)0, FALSE);
-			context.botl = context.botlx = TRUE;
+            if (MummyRot)
+                make_mummy_rotted(0L, (char*)0, FALSE);
+            context.botl = context.botlx = TRUE;
 
             if (goaway)
 			{
@@ -3175,6 +3204,10 @@ struct attack *mattk;
     case AD_DISE:
         if (!diseasemu(mtmp->data))
 			damage = 0;
+        break;
+    case AD_ROTS:
+        if (!mummyrotmu(mtmp->data))
+            damage = 0;
         break;
     case AD_DREN:
         /* AC magic cancellation doesn't help when engulfed */

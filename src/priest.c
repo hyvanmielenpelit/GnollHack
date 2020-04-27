@@ -1118,11 +1118,17 @@ ustatusline()
         Strcat(info, ", dying from");
         if (FoodPoisoned)
             Strcat(info, " food poisoning");
+        if (FoodPoisoned)
+            Strcat(info, " food poisoning");
         if (Sick) {
             if (FoodPoisoned)
                 Strcat(info, " and");
             Strcat(info, " illness");
         }
+    }
+
+    if (MummyRot) {
+        Strcat(info, ", mummy rot");
     }
 
     if (Stoned)

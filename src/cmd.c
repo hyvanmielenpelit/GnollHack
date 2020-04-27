@@ -2010,7 +2010,8 @@ wiz_intrinsic(VOID_ARGS)
             switch (p) {
             case SICK:
 			case FOOD_POISONED:
-			case SLIMED:
+            case MUMMY_ROT:
+            case SLIMED:
             case STONED:
                 if (oldtimeout > 0L && newtimeout > oldtimeout)
                     newtimeout = oldtimeout;
@@ -2039,7 +2040,10 @@ wiz_intrinsic(VOID_ARGS)
 			case FOOD_POISONED:
 				make_food_poisoned(newtimeout, wizintrinsic, TRUE);
 				break;
-			case SLIMED:
+            case MUMMY_ROT:
+                make_mummy_rotted(newtimeout, wizintrinsic, TRUE);
+                break;
+            case SLIMED:
                 Sprintf(buf, fmt,
                         !Slimed ? "" : " still", "turning into slime");
                 make_slimed(newtimeout, buf);
@@ -2952,7 +2956,9 @@ int final;
         you_are("terminally sick from illness", "");
 	if (FoodPoisoned)
 		you_are("terminally sick from food poisoning", "");
-	if (Vomiting)
+    if (MummyRot)
+        you_are("sick from mummy rot", "");
+    if (Vomiting)
         you_are("nauseated", "");
     if (Stunned)
         you_are("stunned", "");

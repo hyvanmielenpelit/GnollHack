@@ -2980,7 +2980,7 @@ WAND("petrification", "adamantium", None, CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RA
 WAND("lightning",      "curved", None, CHARGED_1D15_15, 40, 175, 1, RAY, RAY_WND_LIGHTNING,		14, 0, 6, 6, 0, 0, 0, 0, S1_NONE, MAT_IRON, HI_METAL, O1_LIGHTNING_RESISTANT, O2_NONE, O3_NONE),
 WAND("death",	 "skull-headed", None, CHARGED_WAND_NORMAL_DIR, 5, 500, 1, RAY, RAY_WND_DEATH,			 8, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE),
 WAND("resurrection", 
-	               "ornamental", None, CHARGED_WAND_NORMAL_DIR, 5, 200, 1, IMMEDIATE, 0,					 6, 0, 0, 0, 0, 0, 0, 0, S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
+	               "ornamental", None, CHARGED_WAND_WISHING, 5, 200, 1, IMMEDIATE, 0,					 6, 0, 0, 0, 0, 0, 0, 0, S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
 WAND("evaporation",    "flimsy", None, CHARGED_WAND_NORMAL_DIR, 20, 150, 1, RAY, RAY_WND_EVAPORATION,		10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),
 /* extra descriptions, shuffled into use at start of new game */
 WAND(None,             "forked", None, CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE),

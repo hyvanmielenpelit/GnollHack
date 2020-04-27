@@ -162,6 +162,7 @@
 #define Vomiting u.uprops[VOMITING].intrinsic
 #define Glib u.uprops[GLIB].intrinsic
 #define Slimed u.uprops[SLIMED].intrinsic /* [Tom] */
+#define MummyRot u.uprops[MUMMY_ROT].intrinsic
 
 #define HHallucination u.uprops[HALLUC].intrinsic
 #define EHallucination u.uprops[HALLUC].extrinsic

@@ -206,7 +206,9 @@ do_statusline2()
         Strcpy(nb = eos(nb), " TermIll");
 	if (FoodPoisoned)
 		Strcpy(nb = eos(nb), " FoodPois");
-	if (u.uhs != NOT_HUNGRY)
+    if (MummyRot)
+        Strcpy(nb = eos(nb), " Rot");
+    if (u.uhs != NOT_HUNGRY)
         Sprintf(nb = eos(nb), " %s", hu_stat[u.uhs]);
     if ((cap = near_capacity()) > UNENCUMBERED)
         Sprintf(nb = eos(nb), " %s", enc_stat[cap]);
@@ -796,7 +798,9 @@ bot_via_windowport()
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_TERMILL;
 	if (FoodPoisoned)
         blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FOODPOIS;
-	if (Slowed)
+    if (MummyRot)
+        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_ROT;
+    if (Slowed)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLOWED;
 	if (Silenced)
 		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SILENCED;
@@ -971,6 +975,9 @@ char* outbuf5;
 
             if (mtmp->mprops[FOOD_POISONED])
                 strcat(tempbuf, " FoodPois");
+
+            if (mtmp->mprops[MUMMY_ROT])
+                strcat(tempbuf, " Rot");
 
             if (mtmp->mprops[STONED])
                 strcat(tempbuf, " Stoned");
@@ -2541,6 +2548,7 @@ const struct condmap valid_conditions[] = {
 	{ "sleep",    BL_MASK_SLEEPING },
 	{ "cancl",    BL_MASK_CANCELLED },
 	{ "silent",   BL_MASK_SILENCED },
+    { "rot",      BL_MASK_ROT },
 };
 
 #ifdef STATUS_HILITES
@@ -2554,9 +2562,9 @@ const struct condmap condition_aliases[] = {
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SUFFOC
                         | BL_MASK_LEV | BL_MASK_FLY | BL_MASK_RIDE | BL_MASK_SLOWED 
 						| BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 
-						| BL_MASK_CANCELLED | BL_MASK_SILENCED | BL_MASK_GRAB },
+						| BL_MASK_CANCELLED | BL_MASK_SILENCED | BL_MASK_GRAB | BL_MASK_ROT },
     { "major_troubles", BL_MASK_STONE | BL_MASK_SLIME | BL_MASK_STRNGL
-                        | BL_MASK_FOODPOIS | BL_MASK_TERMILL },
+                        | BL_MASK_FOODPOIS | BL_MASK_TERMILL | BL_MASK_ROT },
     { "minor_troubles", BL_MASK_BLIND | BL_MASK_DEAF | BL_MASK_STUN
                         | BL_MASK_CONF | BL_MASK_HALLU | BL_MASK_SLOWED 
 						| BL_MASK_PARALYZED | BL_MASK_FEARFUL | BL_MASK_SLEEPING 

@@ -324,6 +324,22 @@ boolean digest_meal;
 	int fixedhpperround = mon->mhpmax / roundstofull;
 	int fractional_hp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
 
+    if (is_mummy_rotted(mon))
+    {
+        if (has_regeneration(mon))
+        {
+            fixedhpperround = 0;
+            fractional_hp = 0;
+            return;
+        }
+        else
+        {
+            roundstofull = 900;
+            fixedhpperround = -mon->mhpmax / roundstofull;
+            fractional_hp = -(10000 * (mon->mhpmax % roundstofull)) / roundstofull;
+        }
+    }
+
 	if (mon->mhpmax > 0 && mon->mhp < mon->mhpmax)
 	{
 #if 0
@@ -337,9 +353,9 @@ boolean digest_meal;
 #endif
 		mon->mhp += fixedhpperround;
 		mon->mhp_fraction += fractional_hp;
-		if (mon->mhp_fraction >= 10000)
+		if (mon->mhp_fraction >= 10000 || mon->mhp_fraction < 0)
 		{
-			int added_hp = (mon->mhp_fraction / 10000);
+			int added_hp = (mon->mhp_fraction / 10000) + (mon->mhp_fraction < 0 ? -1 : 0);
 			mon->mhp += added_hp;
 			mon->mhp_fraction -= 10000 * added_hp;
 		}
@@ -351,11 +367,33 @@ boolean digest_meal;
 		}
 	}
 
+    if (DEADMONSTER(mon))
+    {
+        if (!resists_sickness(mon))
+        {
+            if (canseemon(mon))
+            {
+                pline("%s dies of %s mummy rot!", Monnam(mon), mhis(mon));
+            }
+            mon->mhp = 0;
+            mondied(mon);
+            if (mon == u.ustuck)
+                u.ustuck = 0;
+            if (is_tame(mon) && !canspotmon(mon))
+                You("have a peculiarly sad feeling for a moment, then it passes.");
+
+            return;
+        }
+    }
+
+
     if (mon->mspec_used)
         mon->mspec_used--;
 
-    if (digest_meal) {
-        if (mon->meating) {
+    if (digest_meal) 
+    {
+        if (mon->meating)
+        {
             mon->meating--;
             if (mon->meating <= 0)
                 finish_meating(mon);

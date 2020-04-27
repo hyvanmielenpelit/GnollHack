@@ -852,6 +852,7 @@ struct monst *mtmp;
         case AD_STON:
             return !(yours ? Stone_resistance : resists_ston(mtmp));
 		case AD_DISE:
+		case AD_ROTS:
 			return !(yours ? Sick_resistance : resists_sickness(mtmp));
 		case AD_PLYS:
 			return !(yours ? Free_action : resists_paralysis(mtmp));
@@ -903,6 +904,7 @@ int dmgtype;
 	case AD_STON:
 		return (yours ? Stone_resistance : resists_ston(mtmp));
 	case AD_DISE:
+	case AD_ROTS:
 		return (yours ? Sick_resistance : resists_sickness(mtmp));
 	case AD_PLYS:
 		return (yours ? Free_action : resists_paralysis(mtmp));
@@ -2435,7 +2437,7 @@ struct obj *obj;
 
             if (Upolyd)
                 healamt = (u.mhmax + 1 - u.mh) / 2;
-            if (healamt || Sick || FoodPoisoned || Slimed || Blinded > creamed)
+            if (healamt || Sick || FoodPoisoned || MummyRot || Slimed || Blinded > creamed)
                 You_feel("better.");
             else
                 goto nothing_special;
@@ -2449,6 +2451,8 @@ struct obj *obj;
                 make_sick(0L, (char *) 0, FALSE);
 			if (FoodPoisoned)
 				make_food_poisoned(0L, (char*)0, FALSE);
+			if (MummyRot)
+				make_mummy_rotted(0L, (char*)0, FALSE);
 			if (Slimed)
                 make_slimed(0L, (char *) 0);
             if (Blinded > creamed)

@@ -1960,6 +1960,21 @@ struct obj *otmp;
             return 1;
         }
     }
+    else if (has_mummy_rotted_corpse(&mons[mnum]) && rn2(5))
+    {
+        pline("Ecch - that must have been infected by mummy rot!");
+        if (Sick_resistance)
+        {
+            pline("It doesn't seem at all sickening, though...");
+        }
+        else
+        {
+            make_mummy_rotted(-1L, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
+
+            (void)touchfood(otmp);
+            return 1;
+        }
+    }
     else if (has_acidic_corpse(&mons[mnum]) && !Acid_resistance)
     {
 		tp++;
@@ -2694,7 +2709,9 @@ struct obj *otmp;
             make_sick(0L, (char *) 0, TRUE);
 		if (FoodPoisoned && !otmp->cursed)
 			make_food_poisoned(0L, (char*)0, TRUE);
-		if (Vomiting && !otmp->cursed)
+        if (MummyRot && !otmp->cursed)
+            make_mummy_rotted(0L, (char*)0, TRUE);
+        if (Vomiting && !otmp->cursed)
             make_vomiting(0L, TRUE);
         break;
     case EDIBLEFX_APPLE:
@@ -3908,7 +3925,8 @@ int threat;
     case SLIMED:
     case SICK:
 	case FOOD_POISONED:
-	case VOMITING:
+    case MUMMY_ROT:
+    case VOMITING:
         break;
     default:
         break;

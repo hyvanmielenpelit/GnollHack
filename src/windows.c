@@ -1000,7 +1000,9 @@ unsigned long *colormasks UNUSED;
                 Strcpy(nb = eos(nb), " FoodPois");
             if (cond & BL_MASK_TERMILL)
                 Strcpy(nb = eos(nb), " TermIll");
-			if (cond & BL_MASK_PARALYZED)
+            if (cond & BL_MASK_ROT)
+                Strcpy(nb = eos(nb), " Rot");
+            if (cond & BL_MASK_PARALYZED)
 				Strcpy(nb = eos(nb), " Paral");
 			if (cond & BL_MASK_FEARFUL)
 				Strcpy(nb = eos(nb), " Fear");

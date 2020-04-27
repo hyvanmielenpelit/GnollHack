@@ -1051,7 +1051,9 @@ struct obj *obj;
                 You(look_str, "peaked");
 			else if (FoodPoisoned)
 				You(look_str, "ill");
-			else if (u.uhs >= WEAK)
+            else if (MummyRot)
+                You(look_str, "unnaturally gaunt");
+            else if (u.uhs >= WEAK)
                 You(look_str, "undernourished");
             else
                 You("look as %s as ever.", uvisage);
@@ -2416,7 +2418,9 @@ struct obj *obj;
         prop_trouble(SICK);
 	if (TimedTrouble(FoodPoisoned))
 		prop_trouble(FOOD_POISONED);
-	if (TimedTrouble(Blinded) > (long) u.ucreamed
+    if (TimedTrouble(MummyRot))
+        prop_trouble(MUMMY_ROT);
+    if (TimedTrouble(Blinded) > (long) u.ucreamed
         && !(u.uswallow
              && attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_BLND)))
         prop_trouble(BLINDED);
@@ -2498,7 +2502,11 @@ struct obj *obj;
 			make_food_poisoned(0L, (char*)0, TRUE);
 			did_prop++;
 			break;
-		case prop2trbl(BLINDED):
+        case prop2trbl(MUMMY_ROT):
+            make_mummy_rotted(0L, (char*)0, TRUE);
+            did_prop++;
+            break;
+        case prop2trbl(BLINDED):
             make_blinded((long) u.ucreamed, TRUE);
             did_prop++;
             break;
@@ -4936,7 +4944,9 @@ boolean is_horn;
         unfixable_trbl++;
 	if (!is_horn || (FoodPoisoned & ~TIMEOUT))
 		unfixable_trbl++;
-	if (!is_horn || (HHallucination & ~TIMEOUT))
+    if (!is_horn || (MummyRot & ~TIMEOUT))
+        unfixable_trbl++;
+    if (!is_horn || (HHallucination & ~TIMEOUT))
         unfixable_trbl++;
     if (!is_horn || (Vomiting & ~TIMEOUT))
         unfixable_trbl++;

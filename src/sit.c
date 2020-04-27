@@ -215,7 +215,8 @@ dosit()
                 make_blinded(0L, TRUE);
                 make_sick(0L, (char *) 0, FALSE);
 				make_food_poisoned(0L, (char*)0, FALSE);
-				heal_legs(0);
+                make_mummy_rotted(0L, (char*)0, FALSE);
+                heal_legs(0);
                 context.botl = context.botlx = 1;
                 break;
             case 5:

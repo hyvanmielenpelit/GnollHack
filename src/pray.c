@@ -66,6 +66,7 @@ static int p_type; /* (-1)-3: (-1)=really naughty, 3=really good */
  * order to have the values be meaningful.
  */
 
+#define TROUBLE_MUMMY_ROT 17
 #define TROUBLE_FOOD_POISONED 16
 #define TROUBLE_CURSED_EYEGLASSES_OF_HALLUCINATION 15
 #define TROUBLE_STONED 14
@@ -206,7 +207,9 @@ in_trouble()
         return TROUBLE_SICK;
 	if (FoodPoisoned)
 		return TROUBLE_FOOD_POISONED;
-	if (u.uhs >= WEAK)
+    if (MummyRot)
+        return TROUBLE_MUMMY_ROT;
+    if (u.uhs >= WEAK)
         return TROUBLE_STARVING;
     if (region_danger())
         return TROUBLE_REGION;
@@ -426,7 +429,11 @@ int trouble;
 		You_feel("better.");
 		make_food_poisoned(0L, (char*)0, FALSE);
 		break;
-	case TROUBLE_REGION:
+    case TROUBLE_MUMMY_ROT:
+        You_feel("better.");
+        make_mummy_rotted(0L, (char*)0, FALSE);
+        break;
+    case TROUBLE_REGION:
         /* stinking cloud, with hero vulnerable to HP loss */
         region_safety();
         break;

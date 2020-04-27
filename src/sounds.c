@@ -39,6 +39,7 @@ STATIC_DCL int FDECL(do_chat_oracle_enlightenment, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_blesscurse, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_full_healing, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_normal_healing, (struct monst*));
+STATIC_DCL int FDECL(do_chat_priest_cure_sickness, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_priest_divination, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_payitems, (struct monst*));
@@ -1940,6 +1941,32 @@ dochat()
 
 		chatnum++;
 
+		strcpy(available_chat_list[chatnum].name, "Ask for curing sickness");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_cure_sickness;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Ask for full healing");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_full_healing;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
 		strcpy(available_chat_list[chatnum].name, "Ask for blessing or cursing an item");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_blesscurse;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -1986,6 +2013,19 @@ dochat()
 		/* Non-priest monster priests here */
 		strcpy(available_chat_list[chatnum].name, "Ask for healing");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Ask for curing sickness");
+		available_chat_list[chatnum].function_ptr = &do_chat_priest_cure_sickness;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
 		any = zeroany;
@@ -3683,6 +3723,51 @@ struct monst* mtmp;
 	return 1;
 }
 
+STATIC_OVL int
+do_chat_priest_cure_sickness(mtmp)
+struct monst* mtmp;
+{
+
+	long umoney = money_cnt(invent);
+	int u_pay, cure_sickness_cost = max(1, (int)(25 * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	char qbuf[QBUFSZ];
+
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to have your sickness cured?\" (%d %s)", cure_sickness_cost, currency((long)cure_sickness_cost));
+	switch (ynq(qbuf)) {
+	default:
+	case 'n':
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)cure_sickness_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = cure_sickness_cost;
+		break;
+	}
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	int otyp = SPE_CURE_SICKNESS;
+
+	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
+	pseudo->blessed = pseudo->cursed = 0;
+	pseudo->quan = 20L; /* do not let useup get it */
+	zapyourself(pseudo, TRUE);
+	obfree(pseudo, (struct obj*)0);
+	u.uconduct.gnostic++;
+
+	return 1;
+}
 
 STATIC_OVL int
 do_chat_priest_chat(mtmp)

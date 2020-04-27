@@ -1139,7 +1139,7 @@ exerper()
         if (HRegeneration)
             exercise(A_STR, TRUE);
 
-        if (Sick || FoodPoisoned || Vomiting)
+        if (Sick || FoodPoisoned || MummyRot || Vomiting)
             exercise(A_CON, FALSE);
         if (Confusion || Hallucination)
             exercise(A_WIS, FALSE);

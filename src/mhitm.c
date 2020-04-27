@@ -1665,7 +1665,13 @@ register struct obj* omonwep;
 				is_sick(mdef) ? max(1, (get_mon_property(mdef, SICK) + 1) / 3) : rn1(M_ACURR(mdef, A_CON), 20));
 		}
 		break;
-	default:
+    case AD_ROTS:
+        if (!resists_sickness(mdef) && !cancelled)
+        {
+            set_mon_property_verbosely(mdef, MUMMY_ROT, -1L);
+        }
+        break;
+    default:
 		damage = 0;
         break;
     }

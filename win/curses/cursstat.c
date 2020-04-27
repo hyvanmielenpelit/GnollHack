@@ -993,7 +993,7 @@ boolean border;
 
 static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
                                     "Blind", "Hallu", "Stoned", "Slime", "Sleep",
-                                    "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav" };
+                                    "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav", "Rot" };
 
 STATIC_OVL
 void
@@ -1006,10 +1006,10 @@ int* y_ptr;
 {
     int status_colors[] = { CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW,
                             CLR_YELLOW, CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED,
-                            CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW };
+                            CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW, CLR_RED };
     int status_attrmask[] = { A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL,
                               A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL,
-                              A_NORMAL, A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL };
+                              A_NORMAL, A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL, A_NORMAL };
 
     int no_of_statuses = SIZE(status_strings);
 
@@ -1885,6 +1885,7 @@ static const struct statcolor default_colors[] = {
     {"Hallu", CLR_BRIGHT_BLUE},
     {"Ill", CLR_BRIGHT_MAGENTA},
     {"FoodPois", CLR_BRIGHT_MAGENTA},
+    {"Rot", CLR_BRIGHT_MAGENTA},
     {"Slime", CLR_BRIGHT_MAGENTA},
     {NULL, NULL, NO_COLOR},
 };
@@ -2650,8 +2651,9 @@ curses_add_statuses(WINDOW *win, boolean align_right,
     statprob("Blind",    Blind);
     statprob("Stun",     Stunned);
     statprob("Hallu",    Hallucination);
-    statprob("Ill",      (u.usick_type & SICK_NONVOMITABLE));
-    statprob("FoodPois", (u.usick_type & SICK_VOMITABLE));
+    statprob("Ill",      Sick);
+    statprob("FoodPois", FoodPoisoned);
+    statprob("Rot",      MummyRot);
     statprob("Slime",    Slimed);
 
     /* Encumbrance */

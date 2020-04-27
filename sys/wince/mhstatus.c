@@ -261,12 +261,12 @@ FormatStatusString(char *text, int format)
     }
     if (Confusion)
         Sprintf(nb = eos(nb), "Conf");
-    if (Sick) {
-        if (u.usick_type & SICK_VOMITABLE)
-            Sprintf(nb = eos(nb), " FoodPois");
-        if (u.usick_type & SICK_NONVOMITABLE)
-            Sprintf(nb = eos(nb), " Ill");
-    }
+    if (Sick)
+        Sprintf(nb = eos(nb), " Ill");
+    if (FoodPoisoned)
+        Sprintf(nb = eos(nb), " FoodPois");
+    if (MummyRot)
+        Sprintf(nb = eos(nb), " Rot");
     if (Blind)
         Sprintf(nb = eos(nb), " Blind");
     if (Stunned)

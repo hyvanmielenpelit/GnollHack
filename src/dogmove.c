@@ -587,6 +587,10 @@ boolean verbose;
         {
             (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, canseemon(mtmp));
         }
+        if (is_mummy_rotted(mtmp) && !otmp->cursed)
+        {
+            (void)set_mon_property_b(mtmp, MUMMY_ROT, 0, canseemon(mtmp));
+        }
         if (has_vomiting(mtmp) && !otmp->cursed)
         {
             (void)set_mon_property_b(mtmp, VOMITING, 0, canseemon(mtmp));

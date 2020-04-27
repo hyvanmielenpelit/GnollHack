@@ -663,39 +663,99 @@ maybe_create_ringwraith()
     return ringwraith_appeared;
 }
 
+static boolean alternate_rot_text = FALSE;
+
 /* maybe recover some lost health (or lose some when an eel out of water) */
 STATIC_OVL void
 regenerate_hp()
 {
-	/* regenerate hp */
-	int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
-	int roundstofull = Regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
-	int fixedhpperround = relevant_hpmax / roundstofull;
-	int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
+    /* regenerate hp */
+    int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
+    int roundstofull = Regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
+    int fixedhpperround = relevant_hpmax / roundstofull;
+    int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
 
-	if (Upolyd)
+    /* Mummy rot messaging here */
+    if (MummyRot && !Sick_resistance)
+    {
+        if ((monstermoves % 25) == 0)
+        {
+            int relevant_hp = Upolyd ? u.mh : u.uhp;
+            if ((monstermoves % 50) != 0)
+            {
+                if (relevant_hp < 0.2 * relevant_hpmax)
+                    You("are feeling %s ill.", alternate_rot_text ? "morbidly" : "horribly");
+                else
+                    You_feel("%s feverish.", alternate_rot_text ? "badly" : "terribly");
+            }
+            else
+            {
+                if (relevant_hp < 0.2 * relevant_hpmax)
+                {
+                    if (alternate_rot_text)
+                    {
+                        if (!rn2(2))
+                            pline("Large patches of your skin are turning black!");
+                        else
+                            Your("%s are turning black!", !rn2(2) ? makeplural(body_part(HAND)) : makeplural(body_part(FOOT)));
+                    }
+                    else
+                    {
+                        if (!rn2(2))
+                            pline("One of your %s feels loose!", !rn2(2) ? makeplural(body_part(FINGER)) : makeplural(body_part(TOE)));
+                        else
+                            Your("%s feels loose!", body_part(NOSE));
+                    }
+                }
+                else
+                {
+                    if (!rn2(2))
+                        pline("One of your %s is turning black!", alternate_rot_text ? makeplural(body_part(FINGERTIP)) : makeplural(body_part(TOE)));
+                    else
+                        pline("Black patches of skin are appearing on your %s!", alternate_rot_text ? body_part(FACE) : makeplural(body_part(FOOT)));
+                }
+            }
+            alternate_rot_text = !alternate_rot_text;
+            nomul(0);
+        }
+        if (Regeneration)
+        {
+            fixedhpperround = 0;
+            fractional_hp = 0;
+            return;
+        }
+        else
+        {
+            roundstofull = 900;
+            fixedhpperround = -relevant_hpmax / roundstofull;
+            fractional_hp = -(10000 * (relevant_hpmax % roundstofull)) / roundstofull;
+        }
+    }
+
+    if (Upolyd)
 	{
 		if (u.mh < 1) { /* shouldn't happen... */
 			rehumanize();
 		}
-		else if (youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy) && !Is_waterlevel(&u.uz))
+        else if (youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy) && !Is_waterlevel(&u.uz))
 		{
 			/* eel out of water loses hp, similar to monster eels;
 			   as hp gets lower, rate of further loss slows down */
-			if (u.mh > 1 && !Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
+			if (!Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
 				u.mh--;
 		}
-		else if (relevant_hpmax > 0 && u.mh < relevant_hpmax)
+		else if (relevant_hpmax > 0 && u.mh < relevant_hpmax || MummyRot)
 		{
 			u.mh += fixedhpperround;
 			u.mh_fraction += fractional_hp;
-			if (u.mh_fraction >= 10000)
+			if (u.mh_fraction >= 10000 || u.mh_fraction < 0)
 			{
-				int added_hp = (u.mh_fraction / 10000);
+				int added_hp = (u.mh_fraction / 10000) + (u.mh_fraction < 0 ? -1 : 0);
 				u.mh += added_hp;
 				u.mh_fraction -= 10000 * added_hp;
 			}
-			if (u.mh >= relevant_hpmax)
+
+            if (u.mh >= relevant_hpmax)
 			{
 				u.mh = relevant_hpmax;
 				u.mh_fraction = 0;
@@ -707,27 +767,85 @@ regenerate_hp()
 	}
 	else
 	{
-			if (relevant_hpmax > 0 && u.uhp < relevant_hpmax)
+        if (relevant_hpmax > 0 && (u.uhp < relevant_hpmax || MummyRot))
+		{
+			u.uhp += fixedhpperround;
+			u.uhp_fraction += fractional_hp;
+			if (u.uhp_fraction >= 10000 || u.uhp_fraction < 0)
 			{
-				u.uhp += fixedhpperround;
-				u.uhp_fraction += fractional_hp;
-				if (u.uhp_fraction >= 10000)
-				{
-					int added_hp = (u.uhp_fraction / 10000);
-					u.uhp += added_hp;
-					u.uhp_fraction -= 10000 * added_hp;
-				}
-
-				if (u.uhp >= relevant_hpmax)
-				{
-					u.uhp = relevant_hpmax;
-					u.uhp_fraction = 0;
-				}
-				context.botl = TRUE;
-				if (u.uhp == relevant_hpmax)
-					interrupt_multi("You are in full health.");
+				int added_hp = (u.uhp_fraction / 10000) + (u.uhp_fraction < 0 ? -1 : 0);
+				u.uhp += added_hp;
+				u.uhp_fraction -= 10000 * added_hp;
 			}
+
+			if (u.uhp >= relevant_hpmax)
+			{
+				u.uhp = relevant_hpmax;
+				u.uhp_fraction = 0;
+			}
+			context.botl = TRUE;
+			if (u.uhp == relevant_hpmax)
+				interrupt_multi("You are in full health.");
+		}
 	}
+
+    if (Upolyd)
+    {
+        if (u.mh < 1) { /* shouldn't happen... */
+            rehumanize();
+        }
+    }
+    else
+    {
+        if (u.uhp <= 0)
+        {
+            if (MummyRot && !Sick_resistance)
+            {
+                You("die from your illness.");
+
+                struct kinfo* kptr = find_delayed_killer(MUMMY_ROT);
+                if (kptr && kptr->name[0])
+                {
+                    killer.format = kptr->format;
+                    Strcpy(killer.name, kptr->name);
+                }
+                else
+                {
+                    killer.format = KILLED_BY_AN;
+                    killer.name[0] = 0; /* take the default */
+                }
+                dealloc_killer(kptr);
+
+                int m_idx;
+                if ((m_idx = name_to_mon(killer.name)) >= LOW_PM)
+                {
+                    if (is_mname_proper_name(&mons[m_idx]))
+                    {
+                        killer.format = KILLED_BY;
+                    }
+                    else if (mons[m_idx].geno & G_UNIQ)
+                    {
+                        Strcpy(killer.name, the(killer.name));
+                        killer.format = KILLED_BY;
+                    }
+                }
+                done(POISONING);
+            }
+            else if(youmonst.data->mlet == S_EEL && !is_pool(u.ux, u.uy) && !Is_waterlevel(&u.uz))
+            {
+                killer.format = KILLED_BY;
+                Strcpy(killer.name, "drying");
+                done(DIED);
+            }
+            else
+            {
+                /* should not happen */
+                killer.format = KILLED_BY;
+                Strcpy(killer.name, "loss of hit points");
+                done(DIED);
+            }
+        }
+    }
 
 #if 0
 	int heal = 0;

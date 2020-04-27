@@ -148,7 +148,7 @@ boolean talk;
         /* was sick, now not */
 		if (talk)
 		{
-			if (FoodPoisoned)
+			if (FoodPoisoned || MummyRot)
 				You_feel("somewhat better.");
 			else
 				You_feel("cured.  What a relief!");
@@ -218,7 +218,7 @@ boolean talk;
 		/* was sick, now not */
 		if (talk)
 		{
-			if (Sick)
+			if (Sick || MummyRot)
 				You_feel("somewhat better.");
 			else
 				You_feel("cured.  What a relief!");
@@ -244,6 +244,80 @@ boolean talk;
 	}
 	else
 		dealloc_killer(kptr);
+}
+
+
+/* xtime = -1 makes it a permanent intrinsic */
+
+void
+make_mummy_rotted(xtime, cause, talk)
+long xtime;
+const char* cause; /* sickness cause */
+boolean talk;
+{
+    struct kinfo* kptr;
+    long old = MummyRot;
+
+#if 0   /* tell player even if hero is unconscious */
+    if (Unaware)
+        talk = FALSE;
+#endif
+
+    if (xtime != 0L)
+    {
+        if (Sick_resistance)
+            return;
+
+        if (!old)
+        {
+            /* newly sick */
+            You_feel("severely ill.");
+        }
+        else
+        {
+            /* already sick */
+            if (talk)
+                You_feel("even worse.");
+        }
+
+        if (xtime > 0L)
+            set_itimeout(&MummyRot, xtime);
+        else
+            MummyRot |= FROM_ACQUIRED;
+
+        context.botl = context.botlx = TRUE;
+    }
+    else if (old)
+    {
+        /* was sick, now not */
+        if (talk)
+        {
+            if (Sick || FoodPoisoned)
+                You_feel("somewhat better.");
+            else
+                You_feel("cured.  What a relief!");
+        }
+        MummyRot = 0L;
+        context.botl = context.botlx = TRUE;
+    }
+
+    kptr = find_delayed_killer(MUMMY_ROT);
+    if (MummyRot)
+    {
+        exercise(A_CON, FALSE);
+        /* setting delayed_killer used to be unconditional, but that's
+           not right when make_sick(0) is called to cure food poisoning
+           if hero was also fatally ill; this is only approximate */
+        if (xtime || !old || !kptr)
+        {
+            int kpfx = ((cause && !strcmp(cause, "#wizintrinsic"))
+                ? KILLED_BY : KILLED_BY_AN);
+
+            delayed_killer(MUMMY_ROT, kpfx, cause);
+        }
+    }
+    else
+        dealloc_killer(kptr);
 }
 
 
@@ -801,7 +875,8 @@ struct obj *otmp;
                 You_feel("full of awe.");
                 make_sick(0L, (char *) 0, TRUE);
 				make_food_poisoned(0L, (char*)0, TRUE);
-				exercise(A_WIS, TRUE);
+                make_mummy_rotted(0L, (char*)0, TRUE);
+                exercise(A_WIS, TRUE);
                 exercise(A_CON, TRUE);
                 if (u.ulycn >= LOW_PM)
                     you_unwere(TRUE); /* "Purified" */
@@ -1435,7 +1510,8 @@ register boolean curesick, cureblind, curehallucination, curestun, cureconfusion
         make_vomiting(0L, TRUE);
         make_sick(0L, (char *) 0, TRUE);
 		make_food_poisoned(0L, (char*)0, TRUE);
-	}
+        make_mummy_rotted(0L, (char*)0, TRUE);
+    }
 
 	if (curehallucination) 
 	{

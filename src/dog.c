@@ -896,6 +896,7 @@ register struct obj *obj;
                 || (has_acidic_corpse(fptr) && !resists_acid(mon))
                 || (has_poisonous_corpse(fptr) && !resists_poison(mon))
                 || (has_sickening_corpse(fptr) && !resists_sickness(mon))
+                || (has_mummy_rotted_corpse(fptr) && !resists_sickness(mon))
                 )
                 return POISON;
             /* turning into slime is preferable to starvation */

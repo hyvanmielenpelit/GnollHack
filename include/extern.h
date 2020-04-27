@@ -2150,6 +2150,7 @@ E void FDECL(make_confused, (long, BOOLEAN_P));
 E void FDECL(make_stunned, (long, BOOLEAN_P));
 E void FDECL(make_sick, (long, const char *, BOOLEAN_P));
 E void FDECL(make_food_poisoned, (long, const char*, BOOLEAN_P));
+E void FDECL(make_mummy_rotted, (long, const char*, BOOLEAN_P));
 E void FDECL(make_slimed, (long, const char *));
 E void FDECL(make_stoned, (long, const char *, int, const char *));
 E void FDECL(make_vomiting, (long, BOOLEAN_P));

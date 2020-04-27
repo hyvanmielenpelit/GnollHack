@@ -373,6 +373,13 @@
 #define has_vomiting(mon) \
 	has_property(mon, VOMITING)
 
+#define has_mummy_rot(mon) \
+	has_property(mon, MUMMY_ROT)
+
+#define is_mummy_rotted(mon) \
+	(has_mummy_rot(mon) && !has_sickness_resistance(mon) && !is_undead((mon)->data) && !is_demon((mon)->data) && !is_vampshifter(mon))
+
+
 /* charmed and tame */
 #define has_charmed(mon) \
 	has_property(mon, CHARMED)
@@ -618,6 +625,7 @@
 #define has_poisonous_corpse(ptr) (((ptr)->mconveys & MC_POISONOUS_CORPSE) != 0L)
 #define has_hallucinating_corpse(ptr) (((ptr)->mconveys & MC_HALLUCINATING_CORPSE) != 0L)
 #define has_sickening_corpse(ptr) (((ptr)->mconveys & MC_SICKENING_CORPSE) != 0L)
+#define has_mummy_rotted_corpse(ptr) (((ptr)->mconveys & MC_MUMMY_ROTTED_CORPSE) != 0L)
 
 #define is_armed(ptr) attacktype(ptr, AT_WEAP)
 

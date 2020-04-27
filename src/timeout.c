@@ -166,6 +166,7 @@ const struct propname {
     { DIVINE_INTELLECT, "having as high intelligence as a demigod", "intelligence equivalent of a demigod" },
     { DIVINE_WISDOM, "having as high wisdom as a demigod", "wisdom equivalent of a demigod" },
     { DIVINE_CHARISMA, "having as high charisma as a demigod", "charisma equivalent of a demigod" },
+    { MUMMY_ROT, "contracted with mummy rot", "mummy rot" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -741,7 +742,8 @@ nh_timeout()
 				break;
 			case SICK:
 			case FOOD_POISONED:
-				You("die from your illness.");
+            case MUMMY_ROT:
+                You("die from your illness.");
 				
 				if (kptr && kptr->name[0]) 
 				{

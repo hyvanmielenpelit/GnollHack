@@ -71,7 +71,7 @@
 #define AD_DRDX 30  /* drains dexterity (quasit) */
 #define AD_DRCO 31  /* drains constitution */
 #define AD_DRIN 32  /* drains intelligence (mind flayer) */
-#define AD_DISE 33  /* confers diseases */
+#define AD_DISE 33  /* confers terminal disease */
 #define AD_DCAY 34  /* decays organics (brown Pudding) */
 #define AD_SSEX 35  /* Succubus seduction (extended) */
 #define AD_HALU 36  /* causes hallucination */
@@ -86,6 +86,7 @@
 #define AD_SHOC 45  /* system shock */
 #define AD_ADJU 46  /* hit point adjustment, e.g. due to size shrinkage */
 #define AD_SHRP 47  /* sharp as sword of sharpness */
+#define AD_ROTS 48  /* confers mummy rot */
 
 #define AD_RBGD 237 /* random breath weapon, gold dragon */
 #define AD_RBPD 238 /* random breath weapon, Bahamut */
