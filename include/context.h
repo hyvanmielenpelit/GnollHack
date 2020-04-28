@@ -163,6 +163,7 @@ struct context_info
 	boolean robe_yielding_ac_bonus;
 	boolean robe_yielding_mc_bonus;
 	int oddideacnt;
+    int mummyrot_advancement;
 	boolean bootkickmsgdisplayed;
 	boolean glovehitmsgdisplayed;
 	struct dig_info digging;

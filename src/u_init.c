@@ -863,6 +863,10 @@ props_init()
 	context.properties[AIRLESS_ENVIRONMENT].recurring_constant = 6;
 	context.properties[AIRLESS_ENVIRONMENT].recurring_random = 0;
 
+	context.properties[MUMMY_ROT].recurring = TRUE;
+	context.properties[MUMMY_ROT].recurring_constant = 50;
+	context.properties[MUMMY_ROT].recurring_random = 50;
+
 }
 
 void

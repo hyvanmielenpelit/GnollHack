@@ -298,6 +298,7 @@ boolean talk;
                 You_feel("cured.  What a relief!");
         }
         MummyRot = 0L;
+        context.mummyrot_advancement = 0;
         context.botl = context.botlx = TRUE;
     }
 

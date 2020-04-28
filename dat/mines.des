@@ -1253,18 +1253,17 @@ TRAP:random,random
 # One-time annoyance factor
 TRAP:"level teleport",$place[0]
 TRAP:"level teleport",$place[1]
-MONSTER:'M',random
-MONSTER:'M',random
-MONSTER:'M',random
-MONSTER:'M',random
-MONSTER:'M',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
+MONSTER:'Z',random
 MONSTER:('Z',"ettin mummy"),random
 MONSTER:'V',random
-MONSTER:'Z',random
-MONSTER:'Z',random
-MONSTER:'Z',random
-MONSTER:'Z',random
-MONSTER:'Z',random
+MONSTER:'z',random
+MONSTER:'z',random
+MONSTER:'z',random
+MONSTER:'z',random
+MONSTER:'z',random
 MONSTER:'V',random
 MONSTER:'e',random
 MONSTER:'e',random

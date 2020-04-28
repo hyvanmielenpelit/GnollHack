@@ -2283,7 +2283,7 @@ boolean nextlevel;
             impossible(bad_skill, P_SKILL_LEVEL(type)); /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += -4;
+            bonus += -3;
             break;
         case P_BASIC:
             bonus += 0;
@@ -2417,13 +2417,13 @@ boolean nextlevel;
             bonus += -2;
             break;
         case P_BASIC:
-            bonus += 1;
+            bonus += 0;
             break;
         case P_SKILLED:
-            bonus += 4;
+            bonus += 3;
             break;
         case P_EXPERT:
-            bonus += 7;
+            bonus += 6;
             break;
         }
     } 

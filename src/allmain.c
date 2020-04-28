@@ -237,9 +237,9 @@ boolean resuming;
                         /* for the moment at least, you're in tiptop shape */
                         wtcap = UNENCUMBERED;
                     } 
-					else if (!Upolyd ? (u.uhp < u.uhpmax)
-                                       : (u.mh < u.mhmax
-                                          || youmonst.data->mlet == S_EEL)) 
+					else if ((!Upolyd ? (u.uhp < u.uhpmax)
+                                       : (u.mh < u.mhmax))
+                                          || youmonst.data->mlet == S_EEL || MummyRot) 
 					{
 						/* regenerate hit points */
 						regenerate_hp();
@@ -663,10 +663,6 @@ maybe_create_ringwraith()
     return ringwraith_appeared;
 }
 
-static boolean alternate_rot_text = FALSE;
-static boolean alternate_rot_text2 = FALSE;
-static boolean alternate_rot_text3 = FALSE;
-
 /* maybe recover some lost health (or lose some when an eel out of water) */
 STATIC_OVL void
 regenerate_hp()
@@ -676,66 +672,11 @@ regenerate_hp()
     int roundstofull = Regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
     int fixedhpperround = relevant_hpmax / roundstofull;
     int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
+    int added_hp = 0;
 
-    /* Mummy rot messaging here */
+    /* Mummy rot here */
     if (MummyRot && !Sick_resistance)
     {
-        if ((monstermoves % 25) == 0)
-        {
-            int relevant_hp = Upolyd ? u.mh : u.uhp;
-            if ((monstermoves % 50) != 0)
-            {
-                if (relevant_hp < 0.2 * relevant_hpmax)
-                    You("are feeling %s ill.", alternate_rot_text ? "morbidly" : "horribly");
-                else
-                    You_feel("%s feverish.", alternate_rot_text ? "badly" : "terribly");
-            }
-            else
-            {
-                if (relevant_hp < 0.2 * relevant_hpmax)
-                {
-                    if (alternate_rot_text)
-                    {
-                        if (alternate_rot_text2)
-                        {
-                            if(alternate_rot_text3)
-                                pline("Large patches of your skin are turning black!");
-                            else
-                                pline("Black patches of skin are appearing all over your body!");
-                        }
-                        else
-                            Your("%s are turning black!", alternate_rot_text3 ? makeplural(body_part(HAND)) : makeplural(body_part(FOOT)));
-                        alternate_rot_text2 = !alternate_rot_text2;
-                    }
-                    else
-                    {
-                        if (alternate_rot_text2)
-                        {
-                            pline("One of your %s feels loose!", alternate_rot_text3 ? makeplural(body_part(FINGER)) : makeplural(body_part(TOE)));
-                            alternate_rot_text3 = !alternate_rot_text3;
-                        }
-                        else
-                            Your("%s feels loose!", alternate_rot_text3 ? body_part(NOSE) : body_part(HAIR));
-                    }
-                    alternate_rot_text = !alternate_rot_text;
-                }
-                else
-                {
-                    if (alternate_rot_text)
-                    {
-                        pline("One of your %s is turning black!", alternate_rot_text2 ? makeplural(body_part(FINGERTIP)) : makeplural(body_part(TOE)));
-                        alternate_rot_text2 = !alternate_rot_text2;
-                    }
-                    else
-                    {
-                        pline("Black patches of skin are appearing on your %s!", alternate_rot_text3 ? body_part(FACE) : makeplural(body_part(FOOT)));
-                        alternate_rot_text3 = !alternate_rot_text3;
-                    }
-                    alternate_rot_text = !alternate_rot_text;
-                }
-            }
-            nomul(0);
-        }
         if (Regeneration)
         {
             fixedhpperround = 0;
@@ -748,6 +689,7 @@ regenerate_hp()
             fixedhpperround = -relevant_hpmax / roundstofull;
             fractional_hp = -(10000 * (relevant_hpmax % roundstofull)) / roundstofull;
         }
+
     }
 
     if (Upolyd)
@@ -768,7 +710,7 @@ regenerate_hp()
 			u.mh_fraction += fractional_hp;
 			if (u.mh_fraction >= 10000 || u.mh_fraction < 0)
 			{
-				int added_hp = (u.mh_fraction / 10000) + (u.mh_fraction < 0 ? -1 : 0);
+				added_hp = (u.mh_fraction / 10000) + (u.mh_fraction < 0 ? -1 : 0);
 				u.mh += added_hp;
 				u.mh_fraction -= 10000 * added_hp;
 			}
@@ -791,7 +733,7 @@ regenerate_hp()
 			u.uhp_fraction += fractional_hp;
 			if (u.uhp_fraction >= 10000 || u.uhp_fraction < 0)
 			{
-				int added_hp = (u.uhp_fraction / 10000) + (u.uhp_fraction < 0 ? -1 : 0);
+				added_hp = (u.uhp_fraction / 10000) + (u.uhp_fraction < 0 ? -1 : 0);
 				u.uhp += added_hp;
 				u.uhp_fraction -= 10000 * added_hp;
 			}
@@ -807,6 +749,11 @@ regenerate_hp()
 		}
 	}
 
+    if (MummyRot && !Sick_resistance && (Upolyd ? u.mh : u.uhp) <= 4 && added_hp <= -1)
+    {
+        You_feel("dessicated!");
+        nomul(0);
+    }
     if (Upolyd)
     {
         if (u.mh < 1) { /* shouldn't happen... */
@@ -932,6 +879,10 @@ regenerate_hp()
         interrupt_multi("You are in full health.");
 #endif
 }
+
+static boolean alternate_rot_text = FALSE;
+static boolean alternate_rot_text2 = FALSE;
+static boolean alternate_rot_text3 = FALSE;
 
 
 STATIC_OVL void

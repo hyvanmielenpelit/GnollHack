@@ -20,6 +20,7 @@ STATIC_DCL void FDECL(lantern_message, (struct obj *));
 STATIC_DCL void FDECL(cleanup_burn, (ANY_P *, long));
 STATIC_DCL void NDECL(sick_dialogue);
 STATIC_DCL void NDECL(food_poisoned_dialogue);
+STATIC_DCL void NDECL(mummy_rot_dialogue);
 
 
 /* used by wizard mode #timeout and #wizintrinsic; order by 'interest'
@@ -272,6 +273,100 @@ food_poisoned_dialogue()
 		set_itimeout(&HStun, max((HStun & TIMEOUT), i + 1));
 	}
 
+}
+
+static NEARDATA const char* const mummy_rot_texts[] = {
+    "Black patches of skin are appearing all over your body.",        /* 8 */
+    "Your stomach is hurting terribly.",    /* 7 */
+    "You are feeling extremely feverish.",          /* 6 */
+    "You are experiencing massive stomach pains.",       /* 5 */
+    "You feel your condition is becoming critical.",      /* 4 */
+    "You are feeling really deathly sick.", /* 3 */
+    "You feel you are at death's door.",        /* 2 */
+    "The food poisoning is fatal."			/* 1 */
+};
+
+STATIC_OVL void
+mummy_rot_dialogue()
+{
+    if (!is_living(youmonst.data) || Sick_resistance)
+        return;
+
+    register long i = context.mummyrot_advancement;
+
+    if (i < 20)
+    {
+        switch (i % 10)
+        {
+        case 0:
+            pline("%s patches of skin are appearing on your %s!", i >= 10 ? "More black" : "Black", body_part(FACE));
+            break;
+        case 1:
+            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGERTIP)));
+            break;
+        case 2:
+            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            break;
+        case 3:
+            pline("%s patches of your skin are turning black!", i >= 10 ? "Huge" : "Large");
+            break;
+        case 4:
+            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            break;
+        case 5:
+            pline("%s falls off!", i >= 10 ? "Large patches of your hair" : "One of your teeth");
+            break;
+        case 6:
+            Your("%s are turning %sblack!", makeplural(body_part(HAND)), i >= 10 ? "pitch " : "");
+            break;
+        case 7:
+            pline("%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            break;
+        case 8:
+            Your("%s are turning %sblack!", makeplural(body_part(FOOT)), i >= 10 ? "pitch " : "");
+            break;
+        case 9:
+            pline("%s of your %s feels loose!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        int sel_index = i - 20;
+        if (sel_index >= 4 * 6)
+            sel_index = !rn2(2) ? 0 : 3;
+
+        switch (sel_index % 6)
+        {
+        case 0:
+            pline("%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(FACE));
+            break;
+        case 1:
+            pline("%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(FINGER)));
+            break;
+        case 2:
+            pline("%s of your %s falls off!", sel_index >= 30 ? "Another one" : "One", makeplural(body_part(TOE)));
+            break;
+        case 3:
+            pline("%s of your %s falls off!", sel_index >= 30 ? "Further parts" : "A part", body_part(NOSE));
+            break;
+        case 4:
+            pline("Further patches of your hair falls off!");
+            break;
+        case 5:
+            pline("Another one of your teeth falls off!");
+            break;
+        default:
+            break;
+        }
+    }
+
+    if(context.mummyrot_advancement < 50)
+        context.mummyrot_advancement++;
+
+    nomul(0);
 }
 
 
@@ -666,7 +761,7 @@ nh_timeout()
 		sick_dialogue();
 	if (FoodPoisoned)
 		food_poisoned_dialogue();
-	if (HLevitation & TIMEOUT)
+    if (HLevitation & TIMEOUT)
         levitation_dialogue();
     if (HPasses_walls & TIMEOUT)
         phaze_dialogue();
@@ -742,34 +837,84 @@ nh_timeout()
 				break;
 			case SICK:
 			case FOOD_POISONED:
-            case MUMMY_ROT:
                 You("die from your illness.");
-				
-				if (kptr && kptr->name[0]) 
-				{
-					killer.format = kptr->format;
-					Strcpy(killer.name, kptr->name);
-				}
-				else 
-				{
-					killer.format = KILLED_BY_AN;
-					killer.name[0] = 0; /* take the default */
-				}
-				dealloc_killer(kptr);
 
-				if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) 
-				{
-					if (is_mname_proper_name(&mons[m_idx])) 
-					{
-						killer.format = KILLED_BY;
-					}
-					else if (mons[m_idx].geno & G_UNIQ) 
-					{
-						Strcpy(killer.name, the(killer.name));
-						killer.format = KILLED_BY;
-					}
-				}
-				done(POISONING);
+                if (kptr && kptr->name[0])
+                {
+                    killer.format = kptr->format;
+                    Strcpy(killer.name, kptr->name);
+                }
+                else
+                {
+                    killer.format = KILLED_BY_AN;
+                    killer.name[0] = 0; /* take the default */
+                }
+                dealloc_killer(kptr);
+
+                if ((m_idx = name_to_mon(killer.name)) >= LOW_PM)
+                {
+                    if (is_mname_proper_name(&mons[m_idx]))
+                    {
+                        killer.format = KILLED_BY;
+                    }
+                    else if (mons[m_idx].geno & G_UNIQ)
+                    {
+                        Strcpy(killer.name, the(killer.name));
+                        killer.format = KILLED_BY;
+                    }
+                }
+                done(POISONING);
+                break;
+            case MUMMY_ROT:
+                if (MummyRot)
+                    mummy_rot_dialogue();
+
+                if (ABASE(A_CON) <= ATTRMIN(A_CON) + 2)
+                    You_feel("dessicated.");
+                else
+                    You_feel("gangrenous.");
+
+                if (ABASE(A_CHA) > ATTRMIN(A_CHA))
+                {
+                    adjattrib(A_CHA, -1, TRUE);
+                }
+                if (ABASE(A_CON) > ATTRMIN(A_CON))
+                {
+                    adjattrib(A_CON, -1, TRUE);
+                }
+                else
+                {
+                    You("die from your illness.");
+				
+				    if (kptr && kptr->name[0]) 
+				    {
+					    killer.format = kptr->format;
+					    Strcpy(killer.name, kptr->name);
+				    }
+				    else 
+				    {
+					    killer.format = KILLED_BY_AN;
+					    killer.name[0] = 0; /* take the default */
+				    }
+				    dealloc_killer(kptr);
+
+				    if ((m_idx = name_to_mon(killer.name)) >= LOW_PM) 
+				    {
+					    if (is_mname_proper_name(&mons[m_idx])) 
+					    {
+						    killer.format = KILLED_BY;
+					    }
+					    else if (mons[m_idx].geno & G_UNIQ) 
+					    {
+						    Strcpy(killer.name, the(killer.name));
+						    killer.format = KILLED_BY;
+					    }
+				    }
+				    done(POISONING);
+                    /* Life saved */
+                    make_mummy_rotted(0L, (char*)0, FALSE);
+                }
+
 				break;
 			case FAST:
 				if (!Very_fast && !Fast)
