@@ -504,6 +504,7 @@ register struct obj* obj;
 	
 	boolean stats_known = object_stats_known(obj);
 	boolean uses_spell_flags = object_uses_spellbook_wand_flags_and_properties(obj);
+	double wep_avg_dmg = 0;
 
 	char buf[BUFSZ];
 	char buf2[BUFSZ];
@@ -939,6 +940,8 @@ register struct obj* obj;
 				Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
 				Strcat(buf, plusbuf);
 			}
+
+
 			if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
 				/* Damage - Doubled */
@@ -1014,6 +1017,8 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 
+		wep_avg_dmg += 0.5 * (objects[otyp].oc_wsdice * (1 + objects[otyp].oc_wsdam) / 2 + objects[otyp].oc_wsdmgplus + objects[otyp].oc_wldice * (1 + objects[otyp].oc_wldam) / 2 + objects[otyp].oc_wldmgplus);
+
 		/* Damage type - Main */
 		if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
 		{
@@ -1071,6 +1076,8 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 
+			wep_avg_dmg += objects[otyp].oc_wedice * (1 + objects[otyp].oc_wedam) / 2 + objects[otyp].oc_wedmgplus;
+
 			/* Damage type - Extra */
 			if (objects[otyp].oc_extra_damagetype != AD_PHYS)
 			{
@@ -1106,6 +1113,15 @@ register struct obj* obj;
 				objects[otyp].oc_fixed_damage_bonus >= 0 ? "+" : "", objects[otyp].oc_fixed_damage_bonus);
 			txt = buf;
 			putstr(datawin, 0, txt);
+
+			wep_avg_dmg += objects[otyp].oc_fixed_damage_bonus;
+		}
+		else
+		{
+			if(throwing_weapon(obj))
+				wep_avg_dmg += strength_damage_bonus(ACURR(A_STR)) / 2;
+			else
+				wep_avg_dmg += strength_damage_bonus(ACURR(A_STR));
 		}
 
 		if (objects[otyp].oc_hitbonus != 0)
@@ -1251,6 +1267,9 @@ register struct obj* obj;
 			int enchplus = obj->enchantment;
 			int tohitplus = is_launcher(obj) ? (enchplus + 1) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
 			int dmgplus = is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1) / 2 : enchplus;
+
+			wep_avg_dmg += (double)dmgplus;
+
 			if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
 				enchplus *= 2;
@@ -1306,6 +1325,7 @@ register struct obj* obj;
 			{
 				penalty = greatest_erosion(obj);
 				Sprintf(penaltybuf, "(%d to damage) ", -penalty);
+				wep_avg_dmg -= (double)penalty;
 			}
 
 			if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
@@ -1328,6 +1348,7 @@ register struct obj* obj;
 	if (obj->opoisoned)
 	{
 		Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
+		wep_avg_dmg -= 7.0;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -1338,6 +1359,12 @@ register struct obj* obj;
 			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "Electrified (+6d6 lightning damage)" :
 			obj->elemental_enchantment == DEATH_ENCHANTMENT ? "Deathly (kills on hit)" : "Unknown enchantment"
 		);
+
+		wep_avg_dmg += obj->elemental_enchantment == FIRE_ENCHANTMENT ? 14.0 :
+			obj->elemental_enchantment == COLD_ENCHANTMENT ? 42.0 :
+			obj->elemental_enchantment == LIGHTNING_ENCHANTMENT ? 21.0 :
+			obj->elemental_enchantment == DEATH_ENCHANTMENT ? 0.0 : 0.0;
+
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -2485,6 +2512,8 @@ register struct obj* obj;
 			else
 				Sprintf(dmgbuf, "Artifact damage bonus is %s", plusbuf);
 
+			wep_avg_dmg += artilist[obj->oartifact].attk.damn * (1 + artilist[obj->oartifact].attk.damd) / 2 + artilist[obj->oartifact].attk.damp;
+
 			powercnt++;
 			Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
 			txt = buf;
@@ -3041,6 +3070,67 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
+	}
+
+	/* Weapon statistics */
+	if (is_weapon(obj) && stats_known && obj->known)
+	{
+		int powercnt = 0;
+		Sprintf(buf, "Weapon statistics:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		int attknum = 1, armorpenalty = 0;
+		/* we use youmonst as a proxy */
+		/* You hit if rnd(20) < roll_to_hit */
+		youmonst.mcanmove = 1; /* to avoid getting penalty for paralyzis when using a proxy */
+		int roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
+		youmonst.mcanmove = 0;
+		int youmonstac = find_mac(&youmonst);
+		int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
+		int chance_to_hit_ac0 = chance_to_hit_youmonst - youmonstac * 5;
+		int diff_to_50_from_ac0 = 50 - chance_to_hit_ac0;
+		int ac_with_50_chance = diff_to_50_from_ac0 / 5;
+		int diff_to_5_from_ac0 = 5 - chance_to_hit_ac0;
+		int ac_with_5_chance = diff_to_5_from_ac0 / 5;
+		int diff_to_95_from_ac0 = 95 - chance_to_hit_ac0;
+		int ac_with_95_chance = diff_to_95_from_ac0 / 5;
+
+		powercnt++;
+		Sprintf(buf, " %2d - You have 50%% chance to hit AC %d", powercnt, ac_with_50_chance);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		powercnt++;
+		Sprintf(buf, " %2d - You have 5%% chance to hit AC %d", powercnt, ac_with_5_chance);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		powercnt++;
+		Sprintf(buf, " %2d - You have 95%% chance to hit AC %d", powercnt, ac_with_95_chance);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		int multistrike = 0, multistrikernd = 0;
+		get_multishot_stats(&youmonst, obj, obj, FALSE, &multistrike, &multistrikernd);
+		double average_multi_shot_times = (double)multistrike + ((double)multistrikernd) / 2.0;
+
+		powercnt++;
+		if (average_multi_shot_times == 1)
+			Sprintf(buf, " %2d - You strike once per round", powercnt);
+		else
+			Sprintf(buf, " %2d - You strike an average of %.1f time%s per round", powercnt, average_multi_shot_times, plur(average_multi_shot_times));
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		wep_avg_dmg += weapon_skill_dmg_bonus(obj, P_NONE, FALSE);
+		wep_avg_dmg *= average_multi_shot_times;
+
+		powercnt++;
+		Sprintf(buf, " %2d - Your basic average damage is %.1f per round", powercnt, wep_avg_dmg);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
 	}
 
 	display_nhwindow(datawin, FALSE);
