@@ -1249,12 +1249,16 @@ register struct obj* obj;
 		if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 		{
 			int enchplus = obj->enchantment;
+			int tohitplus = is_launcher(obj) ? (enchplus + 1) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
+			int dmgplus = is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1) / 2 : enchplus;
 			if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
 				enchplus *= 2;
 			}
-
-			Sprintf(bonusbuf, " (%s%d to hit and damage)", enchplus >= 0 ? "+" : "", enchplus);
+			if(tohitplus == dmgplus)
+				Sprintf(bonusbuf, " (%s%d to hit and damage)", tohitplus >= 0 ? "+" : "", tohitplus);
+			else
+				Sprintf(bonusbuf, " (%s%d to hit and %s%d to damage)", tohitplus >= 0 ? "+" : "", tohitplus, dmgplus >= 0 ? "+" : "", dmgplus);
 		}
 
 		if (affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC) && (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC)))
