@@ -1118,7 +1118,11 @@ register struct obj* obj;
 		}
 		else
 		{
-			if(throwing_weapon(obj))
+			if (is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+				wep_avg_dmg += objects[uwep->otyp].oc_fixed_damage_bonus;
+			else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
+				wep_avg_dmg += objects[uswapwep->otyp].oc_fixed_damage_bonus;
+			else if(throwing_weapon(obj))
 				wep_avg_dmg += strength_damage_bonus(ACURR(A_STR)) / 2;
 			else
 				wep_avg_dmg += strength_damage_bonus(ACURR(A_STR));
@@ -1348,7 +1352,7 @@ register struct obj* obj;
 	if (obj->opoisoned)
 	{
 		Sprintf(buf, "Poisoned status:        Poisoned (+2d6 poison damage)");
-		wep_avg_dmg -= 7.0;
+		wep_avg_dmg += 7.0;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -3073,7 +3077,7 @@ register struct obj* obj;
 	}
 
 	/* Weapon statistics */
-	if (is_weapon(obj) && stats_known && obj->known)
+	if (is_weapon(obj) && !is_launcher(obj) && stats_known && obj->known)
 	{
 		int powercnt = 0;
 		Sprintf(buf, "Weapon statistics:");
@@ -3085,6 +3089,7 @@ register struct obj* obj;
 		/* You hit if rnd(20) < roll_to_hit */
 		youmonst.mcanmove = 1; /* to avoid getting penalty for paralyzis when using a proxy */
 		int roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
+		/* This is not accurate for fired weapons since it does not account for launcher properly; also thrown weapons plusses are a bit inaccurate */
 		youmonst.mcanmove = 0;
 		int youmonstac = find_mac(&youmonst);
 		int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
@@ -3112,7 +3117,7 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 
 		int multistrike = 0, multistrikernd = 0;
-		get_multishot_stats(&youmonst, obj, obj, FALSE, &multistrike, &multistrikernd);
+		get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)), &multistrike, &multistrikernd);
 		double average_multi_shot_times = (double)multistrike + ((double)multistrikernd) / 2.0;
 
 		powercnt++;

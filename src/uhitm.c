@@ -321,41 +321,43 @@ int *attk_count, *role_roll_penalty;
     tmp = 1 + Luck + u_strdex_to_hit_bonus() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc
           + maybe_polyd(youmonst.data->mlevel, (int)(skill_multiplier * ((double)u.ulevel + 1.0)));
 
-	if (weapon && nonmelee_throwing_weapon(weapon))
+	if (mtmp != &youmonst)
 	{
-		pline("It is complicated to hit with %s in melee combat.", the(cxname(weapon)));
-		tmp -= THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON;
-	}
-
-    /* some actions should occur only once during multiple attacks */
-    if (!(*attk_count)++) 
-	{
-        /* knight's chivalry or samurai's giri */
-        check_caitiff(mtmp);
-    }
-
-    /* adjust vs. (and possibly modify) monster state */
-    if (is_stunned(mtmp))
-        tmp += 2;
-    if (is_fleeing(mtmp))
-        tmp += 2;
-
-    if (mtmp->msleeping) 
-	{
-        mtmp->msleeping = 0;
-        tmp += 2;
-    }
-
-    if (!mtmp->mcanmove)
-	{
-        tmp += 4;
-        if (!rn2(10))
+		if (weapon && nonmelee_throwing_weapon(weapon))
 		{
-            mtmp->mcanmove = 1;
-            mtmp->mfrozen = 0;
-        }
-    }
+			pline("It is complicated to hit with %s in melee combat.", the(cxname(weapon)));
+			tmp -= THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON;
+		}
 
+		/* some actions should occur only once during multiple attacks */
+		if (!(*attk_count)++)
+		{
+			/* knight's chivalry or samurai's giri */
+			check_caitiff(mtmp);
+		}
+
+		/* adjust vs. (and possibly modify) monster state */
+		if (is_stunned(mtmp))
+			tmp += 2;
+		if (is_fleeing(mtmp))
+			tmp += 2;
+
+		if (mtmp->msleeping)
+		{
+			mtmp->msleeping = 0;
+			tmp += 2;
+		}
+
+		if (!mtmp->mcanmove)
+		{
+			tmp += 4;
+			if (!rn2(10))
+			{
+				mtmp->mcanmove = 1;
+				mtmp->mfrozen = 0;
+			}
+		}
+	}
     /* role/race adjustments */
     if (Role_if(PM_MONK) && !Upolyd)
 	{
