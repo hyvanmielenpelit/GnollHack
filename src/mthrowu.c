@@ -877,7 +877,7 @@ struct obj *obj;         /* missile (or stack providing it) */
 				if (is_launcher(singleobj))
 					dam = d(1, 2);
 				else
-					dam = weapon_total_dmg_value(singleobj, &youmonst, mon);
+					dam = weapon_total_dmg_value(singleobj, &youmonst, mon, 1);
 
 				mindistance = distmin(u.ux, u.uy, mon->mx, mon->my);
                 hitv = 3 - mindistance;
