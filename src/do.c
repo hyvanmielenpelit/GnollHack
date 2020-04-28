@@ -3087,10 +3087,8 @@ register struct obj* obj;
 		int attknum = 1, armorpenalty = 0;
 		/* we use youmonst as a proxy */
 		/* You hit if rnd(20) < roll_to_hit */
-		youmonst.mcanmove = 1; /* to avoid getting penalty for paralyzis when using a proxy */
 		int roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
 		/* This is not accurate for fired weapons since it does not account for launcher properly; also thrown weapons plusses are a bit inaccurate */
-		youmonst.mcanmove = 0;
 		int youmonstac = find_mac(&youmonst);
 		int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
 		int chance_to_hit_ac0 = chance_to_hit_youmonst - youmonstac * 5;
