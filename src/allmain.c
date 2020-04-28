@@ -751,7 +751,7 @@ regenerate_hp()
 
     if (MummyRot && !Sick_resistance && (Upolyd ? u.mh : u.uhp) <= 4 && added_hp <= -1)
     {
-        You_feel("dessicated!");
+        You_feel("desiccated!");
         nomul(0);
     }
     if (Upolyd)

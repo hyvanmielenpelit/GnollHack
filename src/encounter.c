@@ -1157,24 +1157,56 @@ int max_attk_monsters;
 
 	long maxdifficulty = 0;
 	long mindifficulty = 0;
-	long totaldifficulty = 0;
-	long totalsquareddifficulty = 0;
+	long pointdifficulty = 0;
+	//double totaldifficulty = 0;
+	//double totalsquareddifficulty = 0;
+	double totalcubeddifficulty = 0;
+	double totalthreehalvespowerdifficulty = 0;
+	double totalpowdifficulty = 0;
+	double power = 1.0/3.0;
+	int monster_cnt = 0;
+	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
+	{
+		int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
+		if (pmid == NON_PM)
+			break;
+		monster_cnt++;
+	}
+	double applicable_max = min((double)monster_cnt, 8.0);
+	double applicable_attk_mon = min((double)max_attk_monsters, applicable_max);
+
+	if (applicable_attk_mon >= applicable_max)
+		power = 2.0 / 3.0;
+	else if (applicable_attk_mon <= 1.0 || applicable_max <= 1.0)
+		power = 1.0 / 3.0;
+	else
+		power = (1.0 + (((double)applicable_attk_mon - 1.0) / (applicable_max - 1.0)) * (2.0 - 1.0)) / 3.0;
+
+	if (power <= 0)
+		power = 1.0 / 3.0;
 
 	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
 	{
 		int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
 		if (pmid == NON_PM)
 			break;
-		int monster_difficulty = max(1, mons[pmid].difficulty); // Treat level 0 monsters as level 1
-		totaldifficulty += (long)monster_difficulty;
-		totalsquareddifficulty += (long)monster_difficulty * (long)monster_difficulty;
-
+		double monster_difficulty = (double)max(1, mons[pmid].difficulty); // Treat level 0 monsters as level 1
+		//totaldifficulty += (double)monster_difficulty;
+		//totalsquareddifficulty += (double)monster_difficulty * (double)monster_difficulty;
+		totalcubeddifficulty += pow(monster_difficulty, 3.0);
+		totalthreehalvespowerdifficulty += pow(monster_difficulty, 1.5);
+		totalpowdifficulty += pow(monster_difficulty, 1.0 / power);
 	}
 
-	maxdifficulty = totaldifficulty;
-	mindifficulty = (long)round(sqrt((double)totalsquareddifficulty));
+	maxdifficulty = (long)round(pow(totalthreehalvespowerdifficulty, 1.0 / 1.5));
+	mindifficulty = (long)round(pow(totalcubeddifficulty, 1.0 / 3.0));
 	if (maxdifficulty < mindifficulty)
 		maxdifficulty = mindifficulty;
+	pointdifficulty = (long)round(pow(totalpowdifficulty, power));
+	if (pointdifficulty < mindifficulty)
+		pointdifficulty = mindifficulty;
+	if (pointdifficulty > maxdifficulty)
+		pointdifficulty = maxdifficulty;
 
 	encounter_list[encounter_index].difficulty_max = (int)maxdifficulty;
 	encounter_list[encounter_index].difficulty_min = (int)mindifficulty;
@@ -1184,10 +1216,11 @@ int max_attk_monsters;
 	 * or at least in the order they are assumed to be killed in combet;
 	 * otherwise, they need to be sorted into descending order 
 	 */
-	int max_attacking_monsters = max_attk_monsters;
-	double combatvalue = 0;
-	double difficulty_point_estimate = 0;
+	//int max_attacking_monsters = max_attk_monsters;
+	//double combatvalue = 0;
+	//double difficulty_point_estimate = 0;
 
+#if 0
 	for (int i = 0; i < MAX_ENCOUNTER_MONSTERS; i++)
 	{
 		int pmid = encounter_list[encounter_index].encounter_monsters[i].permonstid;
@@ -1208,6 +1241,7 @@ int max_attk_monsters;
 		}
 		combatvalue += dptu * ehp;
 	}
+#endif
 
 #if 0
 	double sum = 0;
@@ -1229,10 +1263,16 @@ int max_attk_monsters;
 
 	combatvalue = sum * (double)totaldifficulty;
 #endif
+#if 0
+	if (max_attk_monsters >= 8)
+		difficulty_point_estimate = maxdifficulty;
+	else if (max_attk_monsters <= 1)
+		difficulty_point_estimate = mindifficulty;
+	else
+		difficulty_point_estimate = mindifficulty + (((double)max_attk_monsters - 1.0) / 7.0) * (maxdifficulty - mindifficulty); // round(sqrt(combatvalue));
+#endif
 
-	difficulty_point_estimate = round(sqrt(combatvalue));
-
-	encounter_list[encounter_index].difficulty_point_estimate[max_attk_monsters] = (int)difficulty_point_estimate;
+	encounter_list[encounter_index].difficulty_point_estimate[max_attk_monsters] = (int)pointdifficulty;
 }
 
 

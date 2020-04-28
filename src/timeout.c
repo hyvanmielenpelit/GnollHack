@@ -870,7 +870,7 @@ nh_timeout()
                     mummy_rot_dialogue();
 
                 if (ABASE(A_CON) <= ATTRMIN(A_CON) + 2)
-                    You_feel("dessicated.");
+                    You_feel("desiccated.");
                 else
                     You_feel("gangrenous.");
 
