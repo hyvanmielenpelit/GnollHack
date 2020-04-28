@@ -1445,7 +1445,7 @@ boolean hitsroof;
         return FALSE;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
-        int basedmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst);
+        int basedmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst, 1);
 		double damage = adjust_damage(basedmg, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
 
         if (obj->oartifact)
@@ -1927,7 +1927,7 @@ boolean mon_notices;
     default:
         if (obj->oclass == WEAPON_CLASS || is_weptool(obj)
             || obj->oclass == GEM_CLASS)
-            tmp += weapon_to_hit_value(obj, mon, (struct monst *)0);
+            tmp += weapon_to_hit_value(obj, mon, (struct monst *)0, 1);
         break;
     }
     return tmp;
@@ -2138,7 +2138,7 @@ boolean is_golf;
             } 
 			else if (uwep)
 			{
-				tmp += weapon_to_hit_value(uwep, mon, &youmonst);	//tmp += uwep->enchantment - greatest_erosion(uwep);
+				tmp += weapon_to_hit_value(uwep, mon, &youmonst, 2);	//tmp += uwep->enchantment - greatest_erosion(uwep);
                 tmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);

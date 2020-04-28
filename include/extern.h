@@ -3044,11 +3044,11 @@ E int FDECL(vms_get_saved_games, (const char *, char ***));
 
 E const char *FDECL(weapon_descr, (struct obj *));
 E int FDECL(weapon_range, (struct obj*, struct obj*));
-E int FDECL(basehitval, (struct obj*, struct monst*, struct monst*));
-E int FDECL(weapon_to_hit_value, (struct obj *, struct monst *, struct monst*));
-E int FDECL(weapon_dmg_value, (struct obj *, struct monst *, struct monst*));
+E int FDECL(basehitval, (struct obj*, struct monst*, struct monst*, int));
+E int FDECL(weapon_to_hit_value, (struct obj *, struct monst *, struct monst*, int));
+E int FDECL(weapon_dmg_value, (struct obj *, struct monst *, struct monst*, int));
 E int FDECL(weapon_extra_dmg_value, (struct obj*, struct monst*, struct monst*, int));
-E int FDECL(weapon_total_dmg_value, (struct obj*, struct monst*, struct monst*));
+E int FDECL(weapon_total_dmg_value, (struct obj*, struct monst*, struct monst*, int));
 E boolean FDECL(eligible_for_extra_damage, (struct obj*, struct monst*, struct monst*));
 E int FDECL(special_dmgval, (struct monst *, struct monst *, long, long *));
 E void FDECL(silver_sears, (struct monst *, struct monst *, long));

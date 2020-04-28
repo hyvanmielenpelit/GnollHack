@@ -6540,7 +6540,7 @@ int dx, dy;
         if (bhitpos.x == u.ux && bhitpos.y == u.uy) { /* ct == 9 */
             if (Fumbling || rn2(20) >= ACURR(A_DEX)) {
                 /* we hit ourselves */
-				int dmg = weapon_dmg_value(obj, &youmonst, (struct monst*)0);
+				int dmg = weapon_dmg_value(obj, &youmonst, (struct monst*)0, 1);
 				int extradmg = weapon_extra_dmg_value(obj, &youmonst, (struct monst*)0, dmg);
                 (void) thitu(10 + obj->enchantment, dmg + extradmg, &obj,
                              "boomerang");

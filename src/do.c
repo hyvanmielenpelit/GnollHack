@@ -3240,7 +3240,7 @@ const char *verb;
 						if (is_launcher(obj))
 							dmg = d(1, 2);
 						else
-							dmg = weapon_total_dmg_value(obj, mtmp, &youmonst);
+							dmg = weapon_total_dmg_value(obj, mtmp, &youmonst, 0);
 
                         deduct_monster_hp(mtmp, adjust_damage(dmg, (struct monst*)0, mtmp, objects[obj->otyp].oc_damagetype, FALSE));
                         if (DEADMONSTER(mtmp)) 

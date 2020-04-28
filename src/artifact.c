@@ -725,7 +725,7 @@ struct monst *mon;
 
 			touch_blasted = TRUE;
 			if (badappropriate)
-				dmg = weapon_total_dmg_value(obj, &youmonst, &youmonst);
+				dmg = weapon_total_dmg_value(obj, &youmonst, &youmonst, 0);
 			if(badclass || badalign)
 				dmg += d((Antimagic_or_resistance ? 2 : 4), (self_willed ? 10 : 4));
 			/* add half (maybe quarter) of the usual silver damage bonus */

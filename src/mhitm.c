@@ -409,7 +409,7 @@ register struct monst *magr, *mdef;
 			{
                 if (vis)
                     mswingsm(magr, mdef, otmp);
-                tmp += weapon_to_hit_value(otmp, mdef, magr);
+                tmp += weapon_to_hit_value(otmp, mdef, magr, 0);
 
 			}
 
@@ -1004,7 +1004,7 @@ register struct obj* omonwep;
 			damage += adjust_damage(d(1, 2), magr, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
 		else
 		{
-			int basedmg = weapon_dmg_value(mweapon, mdef, magr);
+			int basedmg = weapon_dmg_value(mweapon, mdef, magr, 0);
 			damage += adjust_damage(basedmg, magr, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
 			extratmp = weapon_extra_dmg_value(mweapon, mdef, magr, basedmg);
 			damage += extratmp;

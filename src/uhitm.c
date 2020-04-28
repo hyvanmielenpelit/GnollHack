@@ -383,17 +383,17 @@ int *attk_count, *role_roll_penalty;
     if (aatyp == AT_WEAP || aatyp == AT_CLAW)
 	{
         if (weapon)
-            tmp += weapon_to_hit_value(weapon, mtmp, &youmonst);
+            tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
 		else if(uarmg)
-			tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst);
+			tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst, 0);
 		tmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE);
     } 
 	else if (aatyp == AT_KICK && martial_bonus()) 
 	{
 		if (weapon)
-			tmp += weapon_to_hit_value(weapon, mtmp, &youmonst);
+			tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
 		else if (uarmf)
-			tmp += weapon_to_hit_value(uarmf, mtmp, &youmonst);
+			tmp += weapon_to_hit_value(uarmf, mtmp, &youmonst, 0);
 		tmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE);
     }
 
@@ -963,7 +963,7 @@ boolean* obj_destroyed;
 			{
 				/* gauntlets, no rings exposed */
 				damage_increase_adtyp = objects[uarmg->otyp].oc_damagetype;
-				int basedmg = weapon_dmg_value(uarmg, mon, &youmonst);
+				int basedmg = weapon_dmg_value(uarmg, mon, &youmonst, 0);
 				damage += adjust_damage(basedmg, &youmonst, mon, objects[uarmg->otyp].oc_damagetype, FALSE);
 				extratmp = weapon_extra_dmg_value(uarmg, mon, &youmonst, basedmg);
 				damage += adjust_damage(extratmp, &youmonst, mon, objects[uarmg->otyp].oc_extra_damagetype, FALSE);
@@ -1081,7 +1081,7 @@ boolean* obj_destroyed;
 				if (is_launcher(obj))
 					basedmg = d(1, 2);
 				else
-					basedmg = weapon_dmg_value(obj, mon, &youmonst);
+					basedmg = weapon_dmg_value(obj, mon, &youmonst, 0);
 
 				damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
 				damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
@@ -1249,7 +1249,7 @@ boolean* obj_destroyed;
 				case IRON_CHAIN:      /* 1d4+1 */
 				{
 					damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
-					int basedmg = weapon_dmg_value(obj, mon, &youmonst);
+					int basedmg = weapon_dmg_value(obj, mon, &youmonst, 0);
 					damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 					extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
 					damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE);
@@ -1466,7 +1466,7 @@ boolean* obj_destroyed;
 					{
 						Your("venom burns %s!", mon_nam(mon));
 						damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
-						int basedmg = weapon_dmg_value(obj, mon, &youmonst);
+						int basedmg = weapon_dmg_value(obj, mon, &youmonst, 1);
 						damage = adjust_damage(basedmg, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 						extratmp = weapon_extra_dmg_value(obj, mon, &youmonst, basedmg);
 						damage += adjust_damage(extratmp, &youmonst, mon, objects[obj->otyp].oc_extra_damagetype, FALSE);
@@ -1563,7 +1563,7 @@ boolean* obj_destroyed;
 			*/
 
 			//All bows get bow's enchantment bonus and damage
-			int basedmg = weapon_dmg_value(uwep, mon, &youmonst);
+			int basedmg = weapon_dmg_value(uwep, mon, &youmonst, 2);
 			damage += adjust_damage(basedmg, & youmonst, mon, objects[uwep->otyp].oc_damagetype, FALSE);
 			extratmp = weapon_extra_dmg_value(uwep, mon, &youmonst, basedmg);
 			damage += adjust_damage(extratmp, & youmonst, mon, objects[uwep->otyp].oc_extra_damagetype, FALSE);
@@ -2549,7 +2549,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 		if (is_launcher(mweapon))
 			basedmg = d(1, 2);
 		else
-			basedmg = weapon_dmg_value(mweapon, mdef, &youmonst);
+			basedmg = weapon_dmg_value(mweapon, mdef, &youmonst, 0);
 
 		damage += adjust_damage(basedmg, &youmonst, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
 		extratmp = weapon_extra_dmg_value(mweapon, mdef, &youmonst, basedmg);

@@ -344,7 +344,7 @@ dig(VOID_ARGS)
         } else if (ttmp && ttmp->ttyp == BEAR_TRAP && u.utrap) {
             if (rnl(7) > (Fumbling ? 1 : 4)) {
                 char kbuf[BUFSZ];
-                int dmg = is_launcher(wep) ? d(1, 2) : weapon_total_dmg_value(wep, &youmonst, &youmonst) + u_str_dmg_bonus();
+                int dmg = is_launcher(wep) ? d(1, 2) : weapon_total_dmg_value(wep, &youmonst, &youmonst, 0) + u_str_dmg_bonus();
 
                 if (dmg < 1)
                     dmg = 1;

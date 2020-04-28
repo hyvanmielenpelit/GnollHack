@@ -828,7 +828,7 @@ register struct monst *mtmp;
 
 					if (mon_currwep) 
 					{
-                        hittmp = weapon_to_hit_value(mon_currwep, &youmonst, mtmp);
+                        hittmp = weapon_to_hit_value(mon_currwep, &youmonst, mtmp, 0);
                         tmp += hittmp;
 
 						get_multishot_stats(mtmp, mon_currwep, mon_currwep, FALSE, &multistrike, &multistrikernd);
@@ -1594,7 +1594,7 @@ register struct obj* omonwep;
 			damage += d(1, 2);
 		else
 		{
-			int basedmg = weapon_dmg_value(mweapon, &youmonst, mtmp);
+			int basedmg = weapon_dmg_value(mweapon, &youmonst, mtmp, 0);
 			damage += adjust_damage(basedmg, mtmp, &youmonst, objects[mweapon->otyp].oc_damagetype, FALSE);
 			extradmg += weapon_extra_dmg_value(mweapon, &youmonst, mtmp, basedmg);
 			damage += extradmg;

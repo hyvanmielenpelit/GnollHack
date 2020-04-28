@@ -256,10 +256,11 @@ struct obj* launcher;
  *      weapon_to_hit_value returns an integer representing the "to hit" bonuses
  *      of "otmp" against the monster.
  */
-int basehitval(otmp, mon, mattacker)
+int basehitval(otmp, mon, mattacker, use_type)
 struct obj* otmp;
 struct monst* mon;
 struct monst* mattacker;
+int use_type;
 {
 	if (!otmp || !mon)
 		return 0;
@@ -268,15 +269,21 @@ struct monst* mattacker;
 	boolean Is_weapon = is_weapon(otmp);
 	boolean Is_worn_gauntlets = is_gloves(otmp) && (otmp->owornmask & W_ARMG);
 
+    int applicable_enchantment = otmp->enchantment;
+    if (use_type == 1)
+        applicable_enchantment = (applicable_enchantment + 0) / 2;
+    else if (use_type == 2)
+        applicable_enchantment = (applicable_enchantment + 1) / 2;
+
 	if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
 	{ 
 		if (Is_weapon || Is_worn_gauntlets)
-			tmp += abs(otmp->enchantment);
+			tmp += abs(applicable_enchantment);
 	}
 	else
 	{
 		if (Is_weapon || Is_worn_gauntlets)
-			tmp += otmp->enchantment;
+			tmp += applicable_enchantment;
 	}
 	tmp += objects[otmp->otyp].oc_hitbonus;
 
@@ -284,15 +291,16 @@ struct monst* mattacker;
 
 }
 int
-weapon_to_hit_value(otmp, mon, mattacker)
+weapon_to_hit_value(otmp, mon, mattacker, use_type)
 struct obj *otmp;
 struct monst *mon;
 struct monst* mattacker;
+int use_type;
 {
     int tmp = 0;
     struct permonst *ptr = mon->data;
 
-	tmp += basehitval(otmp, mon, mattacker);
+	tmp += basehitval(otmp, mon, mattacker, use_type);
 
     /* Put weapon vs. monster type "to hit" bonuses in below: */
 
@@ -351,10 +359,11 @@ struct monst* mattacker;
  *      of "otmp" against the monster.
  */
 int
-weapon_dmg_value(otmp, mon, mattacker)
+weapon_dmg_value(otmp, mon, mattacker, use_type)
 struct obj *otmp;
 struct monst *mon;
 struct monst* mattacker;
+int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
 {
 	if (!otmp || !mon)
 		return 0;
@@ -389,10 +398,16 @@ struct monst* mattacker;
 				tmp += objects[otyp].oc_wsdmgplus;
 			}
 
+            int applicable_enchantment = otmp->enchantment;
+            if (use_type == 1)
+                applicable_enchantment = (applicable_enchantment + 1) / 2;
+            else if(use_type == 2)
+                applicable_enchantment = (applicable_enchantment + 0) / 2;
+
 			if (mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
-				tmp += abs(otmp->enchantment);
+				tmp += abs(applicable_enchantment);
 			else
-				tmp += otmp->enchantment;
+				tmp += applicable_enchantment;
 		}
         /* negative enchantment mustn't produce negative damage */
         if (tmp < 0)
@@ -476,12 +491,13 @@ struct monst* mattacker;
 
 
 int
-weapon_total_dmg_value(otmp, mon, mattacker)
+weapon_total_dmg_value(otmp, mon, mattacker, use_type)
 struct obj* otmp;
 struct monst* mon;
 struct monst* mattacker;
+int use_type;
 {
-	int basedmg = weapon_dmg_value(otmp, mon, mattacker);
+	int basedmg = weapon_dmg_value(otmp, mon, mattacker, use_type);
 	int edmg = weapon_extra_dmg_value(otmp, mon, mattacker, basedmg);
 
 	return basedmg + edmg;

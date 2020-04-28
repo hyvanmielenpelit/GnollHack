@@ -781,7 +781,7 @@ struct obj *obj; /* only scatter this obj        */
                         hitvalu = 8 + stmp->obj->enchantment;
                         if (bigmonst(youmonst.data))
                             hitvalu++;
-                        hitu = thitu(hitvalu, weapon_total_dmg_value(stmp->obj, &youmonst, (struct monst*)0),
+                        hitu = thitu(hitvalu, weapon_total_dmg_value(stmp->obj, &youmonst, (struct monst*)0, 1),
                                      &stmp->obj, (char *) 0);
                         if (!stmp->obj)
                             stmp->stopped = TRUE;

@@ -94,7 +94,7 @@ boolean clumsy;
 	dmg += basedmg + strdmg;
 
 	if (uarmf)
-		dmg += weapon_dmg_value(uarmf, mon, &youmonst);
+		dmg += weapon_dmg_value(uarmf, mon, &youmonst, 0);
 	
 	dmg += weapon_skill_dmg_bonus(uarmf, P_MARTIAL_ARTS, FALSE);
 
