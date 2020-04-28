@@ -311,7 +311,7 @@ mummy_rot_dialogue()
             pline("%s patches of your skin are turning black!", i >= 10 ? "Huge" : "Large");
             break;
         case 4:
-            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(TOE)));
+            pline("%s of your %s is turning black!", i >= 10 ? "Another one" : "One", makeplural(body_part(FINGER)));
             break;
         case 5:
             pline("%s falls off!", i >= 10 ? "Large patches of your hair" : "One of your teeth");
