@@ -275,16 +275,6 @@ food_poisoned_dialogue()
 
 }
 
-static NEARDATA const char* const mummy_rot_texts[] = {
-    "Black patches of skin are appearing all over your body.",        /* 8 */
-    "Your stomach is hurting terribly.",    /* 7 */
-    "You are feeling extremely feverish.",          /* 6 */
-    "You are experiencing massive stomach pains.",       /* 5 */
-    "You feel your condition is becoming critical.",      /* 4 */
-    "You are feeling really deathly sick.", /* 3 */
-    "You feel you are at death's door.",        /* 2 */
-    "The food poisoning is fatal."			/* 1 */
-};
 
 STATIC_OVL void
 mummy_rot_dialogue()
