@@ -4,6 +4,7 @@
 
 #include "hack.h"
 #include <ctype.h>
+#include <math.h>
 
 /* NAMELISTS HERE */
 #define MAX_NAMELIST_NAMES 16
