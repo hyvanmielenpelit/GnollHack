@@ -3103,6 +3103,8 @@ register struct obj* obj;
 			roll_to_hit = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(&youmonst) + u.ubasehitinc + u.uhitinc
 				+ maybe_polyd(youmonst.data->mlevel, u.ulevel);
 
+			roll_to_hit += omon_adj(&youmonst, obj, FALSE);
+
 			struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
 			if (is_ammo(obj))
 			{

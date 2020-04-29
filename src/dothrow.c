@@ -1898,20 +1898,23 @@ boolean mon_notices;
 {
     int tmp = 0;
 
-    /* size of target affects the chance of hitting */
-    tmp += (mon->data->msize - MZ_MEDIUM); /* -2..+5 */
-    /* sleeping target is more likely to be hit */
-    if (mon->msleeping) {
-        tmp += 2;
-        if (mon_notices)
-            mon->msleeping = 0;
-    }
-    /* ditto for immobilized target */
-    if (!mon->mcanmove || !mon->data->mmove) {
-        tmp += 4;
-        if (mon_notices && mon->data->mmove && !rn2(10)) {
-            mon->mcanmove = 1;
-            mon->mfrozen = 0;
+    if(mon != &youmonst)
+    {
+        /* size of target affects the chance of hitting */
+        tmp += (mon->data->msize - MZ_MEDIUM); /* -2..+5 */
+        /* sleeping target is more likely to be hit */
+        if (mon->msleeping) {
+            tmp += 2;
+            if (mon_notices)
+                mon->msleeping = 0;
+        }
+        /* ditto for immobilized target */
+        if (!mon->mcanmove || !mon->data->mmove) {
+            tmp += 4;
+            if (mon_notices && mon->data->mmove && !rn2(10)) {
+                mon->mcanmove = 1;
+                mon->mfrozen = 0;
+            }
         }
     }
 
