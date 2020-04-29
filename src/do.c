@@ -3087,7 +3087,11 @@ register struct obj* obj;
 	}
 
 	/* Weapon statistics */
-	if (is_weapon(obj) && !is_launcher(obj) && stats_known && obj->known)
+	struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
+	if (is_weapon(obj) && !is_launcher(obj) && stats_known && obj->known 
+		&& (!ammo_and_launcher(obj, applicable_launcher) 
+			|| (ammo_and_launcher(obj, applicable_launcher) && object_stats_known(applicable_launcher) && applicable_launcher->known))
+		)
 	{
 		int powercnt = 0;
 		Sprintf(buf, "Weapon statistics:");
@@ -3105,7 +3109,6 @@ register struct obj* obj;
 
 			roll_to_hit += omon_adj(&youmonst, obj, FALSE);
 
-			struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
 			if (is_ammo(obj))
 			{
 				if (!ammo_and_launcher(obj, applicable_launcher))
@@ -3178,10 +3181,15 @@ register struct obj* obj;
 		double average_multi_shot_times = (double)multistrike + ((double)multistrikernd) / 2.0;
 
 		powercnt++;
-		if (average_multi_shot_times == 1)
-			Sprintf(buf, " %2d - You strike once per round", powercnt);
+		const char* applicable_verb = throwing_weapon(obj) ? "throw" : ammo_and_launcher(obj, applicable_launcher) ? "fire" : "strike";
+		if (average_multi_shot_times == 1 && multistrikernd == 0)
+			Sprintf(buf, " %2d - You %s once per round", powercnt, applicable_verb);
+		else if (average_multi_shot_times == 2 && multistrikernd == 0)
+			Sprintf(buf, " %2d - You %s twice per round", powercnt, applicable_verb);
+		else if (average_multi_shot_times == 3 && multistrikernd == 0)
+			Sprintf(buf, " %2d - You %s three per round", powercnt, applicable_verb);
 		else
-			Sprintf(buf, " %2d - You strike an average of %.1f time%s per round", powercnt, average_multi_shot_times, plur(average_multi_shot_times));
+			Sprintf(buf, " %2d - You %s an average of %.1f time%s per round", powercnt, applicable_verb, average_multi_shot_times, plur(average_multi_shot_times));
 		txt = buf;
 		putstr(datawin, 0, txt);
 
