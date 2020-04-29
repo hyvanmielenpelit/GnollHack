@@ -1017,7 +1017,7 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 
-		wep_avg_dmg += 0.5 * (objects[otyp].oc_wsdice * (1 + objects[otyp].oc_wsdam) / 2 + objects[otyp].oc_wsdmgplus + objects[otyp].oc_wldice * (1 + objects[otyp].oc_wldam) / 2 + objects[otyp].oc_wldmgplus);
+		wep_avg_dmg += 0.5 * ((double)objects[otyp].oc_wsdice * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus + objects[otyp].oc_wldice * (1.0 + (double)objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus);
 
 		/* Damage type - Main */
 		if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
@@ -1076,7 +1076,7 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 
-			wep_avg_dmg += objects[otyp].oc_wedice * (1 + objects[otyp].oc_wedam) / 2 + objects[otyp].oc_wedmgplus;
+			wep_avg_dmg += (double)objects[otyp].oc_wedice * (1.0 + (double)objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus;
 
 			/* Damage type - Extra */
 			if (objects[otyp].oc_extra_damagetype != AD_PHYS)
@@ -1114,18 +1114,18 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 
-			wep_avg_dmg += objects[otyp].oc_fixed_damage_bonus;
+			wep_avg_dmg += (double)objects[otyp].oc_fixed_damage_bonus;
 		}
 		else
 		{
 			if (is_ammo(obj) && uwep && is_launcher(uwep) && (objects[uwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
-				wep_avg_dmg += objects[uwep->otyp].oc_fixed_damage_bonus;
+				wep_avg_dmg += (double)objects[uwep->otyp].oc_fixed_damage_bonus;
 			else if (is_ammo(obj) && uswapwep && is_launcher(uswapwep) && (objects[uswapwep->otyp].oc_flags3 & O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH))
-				wep_avg_dmg += objects[uswapwep->otyp].oc_fixed_damage_bonus;
+				wep_avg_dmg += (double)objects[uswapwep->otyp].oc_fixed_damage_bonus;
 			else if(throwing_weapon(obj))
-				wep_avg_dmg += strength_damage_bonus(ACURR(A_STR)) / 2;
+				wep_avg_dmg += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
 			else
-				wep_avg_dmg += strength_damage_bonus(ACURR(A_STR));
+				wep_avg_dmg += (double)strength_damage_bonus(ACURR(A_STR));
 		}
 
 		if (objects[otyp].oc_hitbonus != 0)
@@ -2526,7 +2526,7 @@ register struct obj* obj;
 			else
 				Sprintf(dmgbuf, "Artifact damage bonus is %s", plusbuf);
 
-			wep_avg_dmg += artilist[obj->oartifact].attk.damn * (1 + artilist[obj->oartifact].attk.damd) / 2 + artilist[obj->oartifact].attk.damp;
+			wep_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
 
 			powercnt++;
 			Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
@@ -3127,7 +3127,7 @@ register struct obj* obj;
 					}
 
 					roll_to_hit += u.uarcherybonus;
-					wep_avg_dmg += u.uarcherybonus;
+					wep_avg_dmg += (double)u.uarcherybonus;
 
 				}
 			}
@@ -3183,7 +3183,7 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		wep_avg_dmg += weapon_skill_dmg_bonus(obj, P_NONE, FALSE);
+		wep_avg_dmg += (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE);
 		wep_avg_dmg *= average_multi_shot_times;
 
 		powercnt++;
