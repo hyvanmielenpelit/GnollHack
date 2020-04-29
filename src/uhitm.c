@@ -1570,10 +1570,8 @@ boolean* obj_destroyed;
 			extratmp = weapon_extra_dmg_value(uwep, mon, &youmonst, basedmg);
 			damage += adjust_damage(extratmp, & youmonst, mon, objects[uwep->otyp].oc_extra_damagetype, FALSE);
 
-			//Bracers give extra +2 damage, blessed even +3 + their bonus
-			if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
-				damage += adjust_damage((uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->enchantment,
-					&youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
+			if (u.uarcherybonus != 0)
+				damage += adjust_damage(u.uarcherybonus, &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
 
 		}
 		else if (thrown == HMON_THROWN && obj && !is_ammo(obj))

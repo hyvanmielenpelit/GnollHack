@@ -1562,10 +1562,14 @@ register struct obj* obj;
 					}
 					else if (j == 6)
 					{
-						for (int k = 0; k < 12; k++)
+						for (int k = 0; k < 13; k++)
 						{
 							strcpy(buf2, "");
 							int stat = objects[otyp].oc_attribute_bonus;
+
+							if (obj->cursed && (objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE))
+								stat = -stat;
+
 							if (objects[otyp].oc_enchantable && !(prop & IGNORE_ENCHANTMENT))
 							{
 								if(k == 9) /* MC*/
@@ -1573,7 +1577,7 @@ register struct obj* obj;
 								else
 									stat += obj->enchantment;
 							}
-							if(prop & SETS_FIXED_ATTRIBUTE)
+							if (prop & SETS_FIXED_ATTRIBUTE)
 								stat = min((k == 0 ? STR19(25) : 25), max(1, stat));
 
 							char raisebuf[BUFSZ];
@@ -1696,6 +1700,12 @@ register struct obj* obj;
 								powercnt++;
 
 								Sprintf(buf2, "%s %s%d%% %s to experience", grantbuf, stat >= 0 ? "+" : "", stat * 10, bonusbuf);
+							}
+							if (k == 12 && prop & BONUS_TO_ARCHERY)
+							{
+								powercnt++;
+
+								Sprintf(buf2, "%s %s%d %s to hit and damage of archery weapons", grantbuf, stat >= 0 ? "+" : "", stat, bonusbuf);
 							}
 
 							if (strcmp(buf2, "") != 0) // Something else than ""
@@ -3087,8 +3097,55 @@ register struct obj* obj;
 		int attknum = 1, armorpenalty = 0;
 		/* we use youmonst as a proxy */
 		/* You hit if rnd(20) < roll_to_hit */
-		int roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
+		int roll_to_hit = 0;
+		if (throwing_weapon(obj) || is_ammo(obj))
+		{
+			roll_to_hit = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(&youmonst) + u.ubasehitinc + u.uhitinc
+				+ maybe_polyd(youmonst.data->mlevel, u.ulevel);
+
+			struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
+			if (is_ammo(obj))
+			{
+				if (!ammo_and_launcher(obj, applicable_launcher))
+				{
+					roll_to_hit -= 4;
+				}
+				else if (applicable_launcher)
+				{
+					roll_to_hit += weapon_to_hit_value(applicable_launcher, &youmonst, &youmonst, 2);
+					roll_to_hit += weapon_skill_hit_bonus(applicable_launcher, P_NONE, FALSE);
+
+					if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI))
+						&& (!Upolyd || your_race(youmonst.data))
+						&& objects[applicable_launcher->otyp].oc_skill == P_BOW)
+					{
+						roll_to_hit++;
+						if (Race_if(PM_ELF) && applicable_launcher->otyp == ELVEN_LONG_BOW)
+							roll_to_hit++;
+						else if (Role_if(PM_SAMURAI) && applicable_launcher->otyp == YUMI)
+							roll_to_hit++;
+					}
+
+					roll_to_hit += u.uarcherybonus;
+					wep_avg_dmg += u.uarcherybonus;
+
+				}
+			}
+			else
+			{ 
+				if (throwing_weapon(obj)) /* meant to be thrown */
+					roll_to_hit += 2;
+
+				roll_to_hit += weapon_skill_hit_bonus(obj, P_NONE, FALSE);
+			}
+		}
+		else
+		{
+			roll_to_hit = find_roll_to_hit(&youmonst, AT_WEAP, obj, &attknum, &armorpenalty);
+		}
+
 		/* This is not accurate for fired weapons since it does not account for launcher properly; also thrown weapons plusses are a bit inaccurate */
+
 		int youmonstac = find_mac(&youmonst);
 		int chance_to_hit_youmonst = (roll_to_hit - 1) * 5;
 		int chance_to_hit_ac0 = chance_to_hit_youmonst - youmonstac * 5;

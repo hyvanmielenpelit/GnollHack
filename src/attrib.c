@@ -1918,6 +1918,7 @@ struct monst* mon;
 		/* properties that monsters do not have */
 		u.uspellcastingbonus = 0;
 		u.uexperiencebonus = 0;
+		u.uarcherybonus = 0;
 		u.xray_range = XRay_vision ? 6 : -1;
 
 		u.moreluck = 0;
@@ -2013,7 +2014,7 @@ struct monst* mon;
 				boolean cursed_plus_cursed_good = uitem->cursed && cursed_are_good;
 				int applicable_enchantment = (cursed_plus_cursed_good ? abs(uitem->enchantment) : uitem->enchantment);
 
-				for (int i = 0; i < A_MAX+6; i++)
+				for (int i = 0; i <= A_MAX + 6; i++)
 				{
 					int bit = 0;
 					switch (i)
@@ -2054,6 +2055,9 @@ struct monst* mon;
 					case A_MAX + 5:
 						bit = BONUS_TO_EXPERIENCE;
 						break;
+					case A_MAX + 6:
+						bit = BONUS_TO_ARCHERY;
+						break;
 					default:
 						bit = 0;
 						break;
@@ -2090,44 +2094,50 @@ struct monst* mon;
 							{
 								*abon_ptr[i] += multiplier * objects[otyp].oc_attribute_bonus;
 								if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-									*abon_ptr[i] += multiplier * applicable_enchantment;
+									*abon_ptr[i] += applicable_enchantment;
 							}
 						}
 						else if (i == A_MAX + 0)
 						{
 							*daminc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*daminc_ptr += multiplier * applicable_enchantment;
+								*daminc_ptr += applicable_enchantment;
 						}
 						else if (i == A_MAX + 1)
 						{
 							*hitinc_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*hitinc_ptr += multiplier * applicable_enchantment;
+								*hitinc_ptr += applicable_enchantment;
 						}
 						else if (i == A_MAX + 2)
 						{
 							*acbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*acbonus_ptr += multiplier * applicable_enchantment;
+								*acbonus_ptr += applicable_enchantment;
 						}
 						else if (i == A_MAX + 3)
 						{
 							*mcbonus_ptr += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								*mcbonus_ptr += multiplier * applicable_enchantment / 3;
+								*mcbonus_ptr += applicable_enchantment / 3;
 						}
 						else if (i == A_MAX + 4 && is_you)
 						{
 							u.uspellcastingbonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								u.uspellcastingbonus += multiplier * applicable_enchantment;
+								u.uspellcastingbonus += applicable_enchantment;
 						}
 						else if (i == A_MAX + 5 && is_you)
 						{
 							u.uexperiencebonus += multiplier * objects[otyp].oc_attribute_bonus;
 							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
-								u.uexperiencebonus += multiplier * applicable_enchantment;
+								u.uexperiencebonus += applicable_enchantment;
+						}
+						else if (i == A_MAX + 6 && is_you)
+						{
+							u.uarcherybonus += multiplier * objects[otyp].oc_attribute_bonus;
+							if (objects[otyp].oc_enchantable && !(objects[otyp].oc_bonus_attributes & IGNORE_ENCHANTMENT))
+								u.uarcherybonus += applicable_enchantment;
 						}
 					}
 				}

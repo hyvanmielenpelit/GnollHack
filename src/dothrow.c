@@ -2042,11 +2042,10 @@ boolean is_golf;
 		}
 	}
 
-	/* Bracers of archery */
-	if (hmode == HMON_THROWN && obj && uwep && ammo_and_launcher(obj, uwep))
+	/* Archery bonus */
+	if (hmode == HMON_THROWN && obj && uwep && ammo_and_launcher(obj, uwep) && u.uarcherybonus != 0)
 	{
-		if (uarmb && uarmb->otyp == BRACERS_OF_ARCHERY)
-			tmp += (uarmb->cursed ? -2 : 2) + (uarmb->blessed ? 1 : 0) + uarmb->enchantment;
+		tmp += u.uarcherybonus;
 	}
 
 	//Bonus from weapon_to_hit_value(obj) and other if monster is still etc.

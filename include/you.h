@@ -373,7 +373,8 @@ struct you {
 	schar umcbonus;
 	schar uspellcastingbonus;
 	schar uexperiencebonus;
-	schar uac;				 /* current armor class */
+    schar uarcherybonus;
+    schar uac;				 /* current armor class */
 	schar umc;				 /* current magic cancellation */
     int uhp, uhpmax, ubasehpmax;         /* hit points, aka health */
     int uen, uenmax, ubaseenmax;         /* magical energy - M. Stephenson */
