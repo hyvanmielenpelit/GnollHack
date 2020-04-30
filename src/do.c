@@ -3162,10 +3162,11 @@ register struct obj* obj;
 		int ac_with_95_chance = diff_to_95_from_ac0 / 5;
 
 		powercnt++;
-		Sprintf(buf, " %2d - You have 50%% chance to hit AC %d", powercnt, ac_with_50_chance);
+		Sprintf(buf, " %2d - You have 50%% chance to hit AC %d (5%% to AC %d and 95%% to AC %d)", powercnt, ac_with_50_chance, ac_with_5_chance, ac_with_95_chance);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
+#if 0
 		powercnt++;
 		Sprintf(buf, " %2d - You have 5%% chance to hit AC %d", powercnt, ac_with_5_chance);
 		txt = buf;
@@ -3175,6 +3176,7 @@ register struct obj* obj;
 		Sprintf(buf, " %2d - You have 95%% chance to hit AC %d", powercnt, ac_with_95_chance);
 		txt = buf;
 		putstr(datawin, 0, txt);
+#endif
 
 		int multistrike = 0, multistrikernd = 0;
 		get_multishot_stats(&youmonst, obj, uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj, (is_ammo(obj) || throwing_weapon(obj)), &multistrike, &multistrikernd);

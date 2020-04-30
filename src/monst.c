@@ -4386,9 +4386,9 @@ struct permonst _mons2[] = {
 
 	 /* Demon lords */
 	MON("Juiblex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", S_DEMON, 
-        LVL(50, 3, -7, 18, 65, -15), //STARTMARKER FOR DEMON LORDS
+        LVL(50, 6, -7, 18, 65, -15), //STARTMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0),
+        A(ATTK(AT_ENGL, AD_DISE, 5, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 4, 8, 0, 0),
 		ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 25), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 0, MS_GURGLE, MZ_LARGE, 0, 0), STATS(STR19(19), 13, 24, 15, 14, 4),
         MR_FIRE | MR_POISON | MR_ACID | MR_STONE | MR_SEE_INVISIBLE | MR_STUN,
@@ -4397,7 +4397,7 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_LORD | M2_MALE,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISION, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME,
-		30, CLR_BRIGHT_GREEN),
+		40, CLR_BRIGHT_GREEN),
     MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghoul, gnolls, and other demons", S_DEMON, 
         LVL(56, 18, -5, 17, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
