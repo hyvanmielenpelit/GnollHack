@@ -4386,9 +4386,9 @@ struct permonst _mons2[] = {
 
 	 /* Demon lords */
 	MON("Juiblex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", S_DEMON, 
-        LVL(50, 6, -7, 18, 65, -15), //STARTMARKER FOR DEMON LORDS
+        LVL(50, 15, -7, 18, 65, -15), //STARTMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-        A(ATTK(AT_ENGL, AD_DISE, 8, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 6, 6, 0, 0),
+        A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0),
 		ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 25), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 0, MS_GURGLE, MZ_LARGE, 0, 0), STATS(STR19(19), 13, 24, 15, 14, 4),
         MR_FIRE | MR_POISON | MR_ACID | MR_STONE | MR_SEE_INVISIBLE | MR_STUN,
