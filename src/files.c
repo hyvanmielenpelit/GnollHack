@@ -369,7 +369,9 @@ int buffnum UNUSED_if_not_PREFIXES_IN_USE;
         return basenam; /* XXX */
     }
     Strcpy(fqn_filename_buffer[buffnum], fqn_prefix[whichprefix]);
-    return strcat(fqn_filename_buffer[buffnum], basenam);
+    strcat(fqn_filename_buffer[buffnum], basenam);
+
+    return fqn_filename_buffer[buffnum];
 #endif
 }
 
@@ -2949,7 +2951,7 @@ int src;
 
     rv = parse_conf_file(fp, parse_config_line);
     (void) fclose(fp);
-
+    
     free_config_sections();
     /* turn off detection of duplicate configfile options */
     set_duplicate_opt_detection(0);
@@ -3113,30 +3115,43 @@ boolean FDECL((*proc), (char *));
     boolean rv = TRUE; /* assume successful parse */
     char *ep;
     boolean skip = FALSE, morelines = FALSE;
-    char *buf = (char *) 0;
+    char buf[INBUF_SIZ];
+    strcpy(buf, "");
     size_t inbufsz = sizeof inbuf;
 
     free_config_sections();
 
-    while (fgets(inbuf, (int) inbufsz, fp)) {
+    while (fgets(inbuf, (int) inbufsz, fp)) 
+    {
         ep = index(inbuf, '\n');
-        if (skip) { /* in case previous line was too long */
+        if (skip)
+        { /* in case previous line was too long */
             if (ep)
                 skip = FALSE; /* found newline; next line is normal */
-        } else {
-            if (!ep) {  /* newline missing */
-                if (strlen(inbuf) < (inbufsz - 2)) {
+        }
+        else 
+        {
+            if (!ep)
+            {  /* newline missing */
+                if (strlen(inbuf) < (inbufsz - 2))
+                {
                     /* likely the last line of file is just
                        missing a newline; process it anyway  */
                     ep = eos(inbuf);
-                } else {
+                } 
+                else 
+                {
                     config_error_add("Line too long, skipping");
                     skip = TRUE; /* discard next fgets */
                 }
-            } else {
+            } 
+            else
+            {
                 *ep = '\0'; /* remove newline */
             }
-            if (ep) {
+
+            if (ep) 
+            {
                 //size_t len;
                 boolean ignoreline = FALSE;
                 boolean oldline = FALSE;
@@ -3151,10 +3166,11 @@ boolean FDECL((*proc), (char *));
                        && (*ep == ' ' || *ep == '\t' || *ep == '\r'))
                     *ep = '\0';
 
-                if (!config_error_nextline(inbuf)) {
+                if (!config_error_nextline(inbuf)) 
+                {
                     rv = FALSE;
-                    if (buf)
-                        free(buf), buf = (char *) 0;
+                    if (strcmp(buf, ""))
+                        strcpy(buf, "");
                     break;
                 }
 
@@ -3165,11 +3181,12 @@ boolean FDECL((*proc), (char *));
                 if (!*ep || *ep == '#')
                     ignoreline = TRUE;
 
-                if (buf)
+                if (strcmp(buf, ""))
                     oldline = TRUE;
 
                 /* merge now read line with previous ones, if necessary */
-                if (!ignoreline) {
+                if (!ignoreline) 
+                {
 /*
                     len = strlen(inbuf) + 1;
                     if (buf)
@@ -3190,11 +3207,10 @@ boolean FDECL((*proc), (char *));
 					//	len += strlen(buf) + 1; /* +1: space */
                     char tmpbuf[INBUF_SIZ]; // = (char*)alloc(sizeof inbuf);
 					*tmpbuf = '\0';
-					if (buf) {
+					if (strcmp(buf, ""))
+                    {
 						Strcat(strcpy(tmpbuf, buf), " ");
-						free(buf);
 					}
-                    buf = (char*)alloc(sizeof inbuf);
                     strcpy(buf, strcat(tmpbuf, ep));
                     //free(tmpbuf);
 					if (strlen(buf) >= sizeof inbuf)
@@ -3204,51 +3220,52 @@ boolean FDECL((*proc), (char *));
                 if (morelines || (ignoreline && !oldline))
                     continue;
 
-                if (buf && handle_config_section(buf)) { //ep
-                    free(buf);
-                    buf = (char *) 0;
+                if (handle_config_section(buf)) 
+                { //ep
+                    strcpy(buf, "");
                     continue;
                 }
 
                 /* from here onwards, we'll handle buf only */
 
-                if (match_varname(buf, "CHOOSE", 6)) {
+                if (match_varname(buf, "CHOOSE", 6)) 
+                {
                     char *section;
                     char *bufp = find_optparam(buf);
-                    if (!bufp) {
+                    if (!bufp)
+                    {
                         config_error_add(
                                     "Format is CHOOSE=section1,section2,...");
                         rv = FALSE;
-                        free(buf);
-                        buf = (char *) 0;
+                        strcpy(buf, "");
                         continue;
                     }
                     bufp++;
+
                     if (config_section_chosen)
                         free(config_section_chosen), config_section_chosen = 0;
                     section = choose_random_part(bufp, ',');
-                    if (section) {
+
+                    if (section)
+                    {
                         config_section_chosen = dupstr(section);
-					} else {
+					} 
+                    else
+                    {
                         config_error_add("No config section to choose");
                         rv = FALSE;
                     }
-                    free(buf);
-                    buf = (char *) 0;
+                    strcpy(buf, "");
                     continue;
                 }
 
                 if (!proc(buf))
                     rv = FALSE;
 
-                free(buf);
-                buf = (char *) 0;
+                strcpy(buf, "");
             }
         }
     }
-
-    if (buf)
-        free(buf);
 
     free_config_sections();
     return rv;

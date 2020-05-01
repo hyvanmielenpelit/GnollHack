@@ -244,9 +244,11 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     }
 
     check_recordfile((char *) 0);
+
     iflags.windowtype_deferred = TRUE;
     initoptions();                  
-    if (!validate_prefix_locations(failbuf)) 
+
+    if (!validate_prefix_locations(failbuf))
 	{
         raw_printf("Some invalid directory locations were specified:\n\t%s\n",
                    failbuf);
@@ -254,9 +256,10 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     }
     if (!hackdir[0])
         Strcpy(hackdir, orgdir);
+
     process_options(argc, argv);
-    
-/*
+   
+    /*
  * It seems you really want to play.
  */
 
@@ -309,7 +312,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
     /* strip role,race,&c suffix; calls askname() if plname[] is empty
        or holds a generic user name like "player" or "games" */
 
-	/* ASKS THE NAME HERE IF NOT SET YET */
+    /* ASKS THE NAME HERE IF NOT SET YET */
     plnamesuffix();
 
 	set_playmode(); /* sets plname to "wizard" for wizard mode */
@@ -340,6 +343,7 @@ _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);*/
         (void)write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
         nhclose(fd);
     }
+
     /*
      *  Initialize the vision system.  This must be before mklev() on a
      *  new game or before a level restore on a saved game.
@@ -437,11 +441,11 @@ char *argv[];
         if (argcheck(argc, argv, ARG_DEBUG) == 1) {
             argc--;
             argv++;
-	}
-	if (argcheck(argc, argv, ARG_WINDOWS) == 1) {
-	    argc--;
-	    argv++;
-	}
+	    }
+	    if (argcheck(argc, argv, ARG_WINDOWS) == 1) {
+	        argc--;
+	        argv++;
+	    }
         if (argc > 1 && !strncmp(argv[1], "-d", 2) && argv[1][2] != 'e') {
             /* avoid matching "-dec" for DECgraphics; since the man page
              * says -d directory, hope nobody's using -desomething_else
@@ -577,6 +581,7 @@ char *argv[];
             gnollhack_exit(EXIT_SUCCESS);
         }
     }
+
 }
 
 STATIC_OVL void

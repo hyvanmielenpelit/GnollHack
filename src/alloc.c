@@ -162,7 +162,9 @@ char *
 dupstr(string)
 const char *string;
 {
-    return strcpy((char *) alloc(strlen(string) + 1), string);
+    char* cptr = (char*)alloc(strlen(string) + 1);
+    strcpy(cptr, string);
+    return cptr;
 }
 
 /*alloc.c*/

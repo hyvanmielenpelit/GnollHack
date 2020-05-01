@@ -5409,36 +5409,45 @@ boolean initial;
     int c, i, updated = 0;
     static boolean backed_dir_cmd = FALSE;
 
-    if (initial) {
+    if (initial)
+    {
         updated = 1;
         Cmd.num_pad = FALSE;
         Cmd.pcHack_compat = Cmd.phone_layout = Cmd.swap_yz = FALSE;
         for (i = 0; i < SIZE(spkeys_binds); i++)
             Cmd.spkeys[spkeys_binds[i].nhkf] = spkeys_binds[i].key;
         commands_init();
-    } else {
 
-        if (backed_dir_cmd) {
-            for (i = 0; i < 8; i++) {
+    }
+    else
+    {
+
+        if (backed_dir_cmd) 
+        {
+            for (i = 0; i < 8; i++)
+            {
                 Cmd.commands[(uchar) Cmd.dirchars[i]] = back_dir_cmd[i];
             }
         }
 
         /* basic num_pad */
         flagtemp = iflags.num_pad;
-        if (flagtemp != Cmd.num_pad) {
+        if (flagtemp != Cmd.num_pad)
+        {
             Cmd.num_pad = flagtemp;
             ++updated;
         }
         /* swap_yz mode (only applicable for !num_pad); intended for
            QWERTZ keyboard used in Central Europe, particularly Germany */
         flagtemp = (iflags.num_pad_mode & 1) ? !Cmd.num_pad : FALSE;
-        if (flagtemp != Cmd.swap_yz) {
+        if (flagtemp != Cmd.swap_yz)
+        {
             Cmd.swap_yz = flagtemp;
             ++updated;
             /* Cmd.swap_yz has been toggled;
                perform the swap (or reverse previous one) */
-            for (i = 0; i < SIZE(ylist); i++) {
+            for (i = 0; i < SIZE(ylist); i++)
+            {
                 c = ylist[i] & 0xff;
                 cmdtmp = Cmd.commands[c];              /* tmp = [y] */
                 Cmd.commands[c] = Cmd.commands[c + 1]; /* [y] = [z] */
@@ -5447,7 +5456,8 @@ boolean initial;
         }
         /* MSDOS compatibility mode (only applicable for num_pad) */
         flagtemp = (iflags.num_pad_mode & 1) ? Cmd.num_pad : FALSE;
-        if (flagtemp != Cmd.pcHack_compat) {
+        if (flagtemp != Cmd.pcHack_compat) 
+        {
             Cmd.pcHack_compat = flagtemp;
             ++updated;
             /* pcHack_compat has been toggled */
@@ -5460,7 +5470,8 @@ boolean initial;
         }
         /* phone keypad layout (only applicable for num_pad) */
         flagtemp = (iflags.num_pad_mode & 2) ? Cmd.num_pad : FALSE;
-        if (flagtemp != Cmd.phone_layout) {
+        if (flagtemp != Cmd.phone_layout) 
+        {
             Cmd.phone_layout = flagtemp;
             ++updated;
             /* phone_layout has been toggled */
@@ -5493,8 +5504,10 @@ boolean initial;
     Cmd.move_S = Cmd.dirchars[6];
     Cmd.move_SW = Cmd.dirchars[7];
 
-    if (!initial) {
-        for (i = 0; i < 8; i++) {
+    if (!initial)
+    {
+        for (i = 0; i < 8; i++)
+        {
             back_dir_cmd[i] =
                 (struct ext_func_tab *) Cmd.commands[(uchar) Cmd.dirchars[i]];
             Cmd.commands[(uchar) Cmd.dirchars[i]] = (struct ext_func_tab *) 0;

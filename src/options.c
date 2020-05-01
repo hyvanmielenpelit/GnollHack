@@ -702,6 +702,7 @@ initoptions()
 /* someday there may be other SYSCF alternatives besides text file */
 #ifdef SYSCF_FILE
     /* If SYSCF_FILE is specified, it _must_ exist... */
+
     assure_syscf_file();
     config_error_init(TRUE, SYSCF_FILE, FALSE);
 
@@ -710,7 +711,9 @@ initoptions()
         if (config_error_done())
             nh_terminate(EXIT_FAILURE);
     }
+
     config_error_done();
+
     /*
      * TODO [maybe]: parse the sysopt entries which are space-separated
      * lists of usernames into arrays with one name per element.
@@ -718,6 +721,7 @@ initoptions()
 #endif
 #endif /* SYSCF */
     initoptions_finish();
+
 }
 
 void
@@ -867,6 +871,7 @@ initoptions_init()
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
     nmcpy(pl_fruit, OBJ_NAME(objects[SLIME_MOLD]), PL_FSIZ);
+
 }
 
 void
@@ -877,8 +882,10 @@ initoptions_finish()
 
     if (!opts)
         opts = getenv("HACKOPTIONS");
-    if (opts) {
-        if (*opts == '/' || *opts == '\\' || *opts == '@') {
+    if (opts)
+    {
+        if (*opts == '/' || *opts == '\\' || *opts == '@')
+        {
             if (*opts == '@')
                 opts++; /* @filename */
             /* looks like a filename */
@@ -887,7 +894,9 @@ initoptions_finish()
                 read_config_file(opts, SET_IN_FILE);
                 config_error_done();
             }
-        } else {
+        }
+        else 
+        {
             config_error_init(TRUE, (char *) 0, FALSE);
             read_config_file((char *) 0, SET_IN_FILE);
             config_error_done();
@@ -898,9 +907,11 @@ initoptions_finish()
             (void) parseoptions(opts, TRUE, FALSE);
             config_error_done();
         }
-    } else
+    } 
+    else
 #endif /* !MAC */
-    /*else*/ {
+    /*else*/ 
+    {
         config_error_init(TRUE, (char *) 0, FALSE);
         read_config_file((char *) 0, SET_IN_FILE);
         config_error_done();
@@ -1847,14 +1858,19 @@ int c, a;
 
     if (!str)
         return FALSE;
+
     tmp = (struct menucoloring *) alloc(sizeof *tmp);
     tmp->match = regex_init();
-    if (!regex_compile(str, tmp->match)) {
+
+    if (!regex_compile(str, tmp->match)) 
+    {
         config_error_add("%s: %s", re_error, regex_error_desc(tmp->match));
         regex_free(tmp->match);
         free(tmp);
         return FALSE;
-    } else {
+    } 
+    else 
+    {
         tmp->next = menu_colorings;
         //tmp->origstr = dupstr(str);
         tmp->origstr = (char*)alloc(BUFSIZ);
