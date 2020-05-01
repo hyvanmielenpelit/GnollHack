@@ -3127,7 +3127,24 @@ struct obj* obj;
 					pline("Nothing much happens.");
 
 				break;
-			default:
+            case WAN_TELEPORTATION:
+                if(otmp->owornmask)
+                    remove_worn_item(otmp, TRUE);
+                if (otmp->otyp == LEASH && otmp->leashmon)
+                    o_unleash(otmp);
+                freeinv(otmp);
+                place_object(otmp, u.ux, u.uy);
+                char tbuf[BUFSIZ];
+                strcpy(tbuf, Tobjnam(otmp, "vanish"));
+                boolean stillexists = rloco(otmp);
+                pline("%s from your person%s.", tbuf, !stillexists ? "" :
+                    otmp->ox == u.ux && otmp->oy == u.uy ? " and then appears at your feet" : 
+                    cansee(otmp->ox, otmp->oy) && dist2(u.ux, u.uy, otmp->ox, otmp->oy) <= 9 ? " and then appears near you" : 
+                    cansee(otmp->ox, otmp->oy) ? " and then appears at a distance from you" :
+                    "");
+                res = 1;
+                break;
+            default:
 				pline("Nothing much happens.");
 				res = 0;
 				break;
