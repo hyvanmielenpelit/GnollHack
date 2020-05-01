@@ -161,7 +161,7 @@
     (is_demon(ptr) && !is_lord(ptr) && !is_prince(ptr))
 #define is_dlord(ptr) (is_demon(ptr) && is_lord(ptr))
 #define is_dprince(ptr) (is_demon(ptr) && is_prince(ptr))
-
+#define is_packmule(ptr) (((ptr)->mflags4 & M4_PACKMULE) != 0L)
 
 /* combinations */
 #define is_not_living(ptr) \

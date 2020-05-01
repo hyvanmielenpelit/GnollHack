@@ -23,6 +23,7 @@ STATIC_DCL int FDECL(do_chat_pet_display_inventory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dropitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_pickitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_giveitems, (struct monst*));
+STATIC_DCL int FDECL(do_chat_pet_takeitems, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dowear, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dotakeoff, (struct monst*));
 STATIC_DCL int FDECL(do_chat_pet_dowield_hth, (struct monst*));
@@ -1699,6 +1700,23 @@ dochat()
 			available_chat_list[chatnum].name, MENU_UNSELECTED);
 
 		chatnum++;
+
+		if (is_packmule(mtmp->data) && mtmp->minvent)
+		{
+			Sprintf(available_chat_list[chatnum].name, "Take items from %s", mon_nam(mtmp));
+			available_chat_list[chatnum].function_ptr = &do_chat_pet_takeitems;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+		}
 	}
 
 	if (is_tame(mtmp) && mtmp->minvent && is_peaceful(mtmp)) /*  && !mtmp->issummoned */
@@ -2722,12 +2740,17 @@ struct monst* mtmp;
 					otmp = splitobj(otmp, cnt);
 				}
 			}
+
 			/* Give here */
 			if(otmp)
 			{
 				if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
 				{
 					You("cannot give %s to %s. You are wearing it.", doname(otmp), mon_nam(mtmp));
+				}
+				else if (can_carry(mtmp, otmp) == 0)
+				{
+					pline("%s cannot carry %s.", Monnam(mtmp), yname(otmp));
 				}
 				else
 				{
@@ -3277,7 +3300,7 @@ struct monst* mtmp;
 
 	if (sellable_item_count <= 0)
 	{
-		pline("%s doesn't have anything to sell..", Monnam(mtmp));
+		pline("%s doesn't have anything to sell.", Monnam(mtmp));
 		destroy_nhwindow(win);
 		return 0;
 	}
@@ -3410,6 +3433,127 @@ struct monst* mtmp;
 
 }
 
+
+STATIC_OVL int
+do_chat_pet_takeitems(mtmp)
+struct monst* mtmp;
+{
+	int result = 0;
+	int item_count = 0;
+
+	menu_item* pick_list = (menu_item*)0;
+	winid win;
+	anything any;
+
+	any = zeroany;
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+
+
+	static char def_srt_order[MAXOCLASSES] = {
+	COIN_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
+	SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
+	WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
+	};
+
+	const char* classorder = flags.sortpack ? flags.inv_order : def_srt_order;
+	boolean classhasitems[MAXOCLASSES] = { 0 };
+
+	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+	{
+		if (otmp->oclass > ILLOBJ_CLASS)
+			classhasitems[otmp->oclass] = TRUE;
+	}
+
+	for (int i = 0; i < MAXOCLASSES; i++)
+	{
+		char oclass = classorder[i];
+		boolean madeheader = FALSE;
+
+		if (flags.sortpack && !classhasitems[oclass])
+			continue;
+
+		for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+		{
+			if ((!flags.sortpack || (flags.sortpack && otmp->oclass == oclass)) && otmp->owornmask == 0)
+			{
+				if (flags.sortpack && !madeheader)
+				{
+					madeheader = TRUE;
+					any = zeroany;
+
+					add_menu(win, NO_GLYPH, &any, 0, 0, iflags.menu_headings,
+						get_class_name(oclass), MENU_UNSELECTED);
+				}
+
+				any = zeroany;
+				char itembuf[BUFSIZ] = "";
+				Sprintf(itembuf, "%s", doname(otmp));
+
+				any.a_obj = otmp;
+				char let = 'a' + item_count;
+				char accel = def_oc_syms[(int)otmp->oclass].sym;
+
+				add_menu(win, NO_GLYPH, &any,
+					let, accel, ATR_NONE,
+					itembuf, MENU_UNSELECTED);
+
+				item_count++;
+
+			}
+		}
+		if (!flags.sortpack)
+			break;
+	}
+
+	/* Finish the menu */
+	end_menu(win, "What do you want to take?");
+
+	if (item_count <= 0)
+	{
+		pline("%s doesn't have any items.", Monnam(mtmp));
+		destroy_nhwindow(win);
+		return 0;
+	}
+
+	/* Now generate the menu */
+	int pick_count = 0;
+	int take_count = 0;
+	if ((pick_count = select_menu(win, PICK_ANY, &pick_list)) > 0)
+	{
+		for (int i = 0; i < pick_count; i++)
+		{
+			struct obj* item_to_take = pick_list[i].item.a_obj;
+			if (item_to_take)
+			{
+				if ((objects[item_to_take->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && item_to_take->cursed) 
+				{
+					You("%s not leave %s!", Tobjnam(item_to_take, "do"), mon_nam(mtmp));
+				}
+				else
+				{
+					You("took %s from %s.", doname(item_to_take), mon_nam(mtmp));
+					obj_extract_self(item_to_take);
+					hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
+						The(aobjnam(item_to_take, "slip")),
+						(const char*)0);
+					take_count++;
+				}
+			}
+		}
+
+		free((genericptr_t)pick_list);
+		destroy_nhwindow(win);
+
+		if (take_count > 0)
+			return 1;
+		else
+			return 0;
+	}
+	else
+		return 0;
+
+}
 
 /* Returns the price of an arbitrary item in the shop,
    0 if the item doesn't belong to a shopkeeper or hero is not in the shop. */

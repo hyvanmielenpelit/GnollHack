@@ -276,9 +276,10 @@
 #define M4_BEAR						0x00800000UL		/* a bear or bear-like monster */
 #define M4_BIRD						0x01000000UL		/* a bird */
 #define M4_PROPER_NAME	            0x02000000UL        /* monster name is a proper name */
-#define M4_MERC			            0x04000000UL         /* is a guard or soldier */
-#define M4_LORD			            0x08000000UL         /* is a lord to its kind */
-#define M4_PRINCE		            0x10000000UL       /* is an overlord to its kind */
+#define M4_MERC			            0x04000000UL        /* is a guard or soldier */
+#define M4_LORD			            0x08000000UL        /* is a lord to its kind */
+#define M4_PRINCE		            0x10000000UL        /* is an overlord to its kind */
+#define M4_PACKMULE		            0x20000000UL        /* carries items for the player */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */
