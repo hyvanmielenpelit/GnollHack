@@ -32,7 +32,7 @@ STATIC_DCL struct obj* FDECL(mk_obj_in_container_known, (struct obj*, int));
 static struct trobj Archeologist[] = {
     /* if adventure has a name...  idea from tan@uvm-gen */
     { BULLWHIP, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { LEATHER_JACKET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+    { LEATHER_JACKET, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ HAND_CROSSBOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
 	{ CROSSBOW_BOLT, 0, WEAPON_CLASS, 15, UNDEF_BLESS, 0 },
 	{ CROSSBOW_BOLT, 0, WEAPON_CLASS, 6, UNDEF_BLESS, LIGHTNING_ENCHANTMENT },
@@ -172,11 +172,11 @@ static struct trobj Samurai[] = {
 };
 static struct trobj Tourist[] = {
 #define T_DARTS 0
-	{ DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
-	{ GOLF_CLUB, 2, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ DART, 3, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
+	{ GOLF_CLUB, 3, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
     { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
-    { HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+    { HAWAIIAN_SHIRT, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
     { CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
@@ -187,11 +187,11 @@ static struct trobj Tourist[] = {
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj TouristFemale[] = {
-	{ DART, 2, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
-	{ GOLF_CLUB, 2, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ DART, 3, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
+	{ GOLF_CLUB, 3, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
 	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
 	{ SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
-	{ HAWAIIAN_SHIRT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
+	{ HAWAIIAN_SHIRT, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
 	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
 	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
