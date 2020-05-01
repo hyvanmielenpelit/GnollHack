@@ -218,8 +218,8 @@ STATIC_DCL int FDECL(open_levelfile_exclusively, (const char *, int, int));
 
 #define INBUF_SIZ 4 * BUFSIZ
 
-static char *config_section_chosen = (char *) 0;
-static char *config_section_current = (char *) 0;
+static char config_section_chosen[INBUF_SIZ]; // = (char*)0;
+static char config_section_current[INBUF_SIZ]; // = (char*)0;
 
 /*
  * fname_encode()
@@ -2274,6 +2274,9 @@ char sep;
 STATIC_OVL void
 free_config_sections()
 {
+    strcpy(config_section_chosen, "");
+    strcpy(config_section_current, "");
+#if 0
     if (config_section_chosen) {
         free(config_section_chosen);
         config_section_chosen = NULL;
@@ -2282,6 +2285,7 @@ free_config_sections()
         free(config_section_current);
         config_section_current = NULL;
     }
+#endif
 }
 
 STATIC_OVL boolean
@@ -2297,20 +2301,27 @@ STATIC_OVL boolean
 handle_config_section(buf)
 char *buf;
 {
-    if (is_config_section(buf)) {
+    if (is_config_section(buf)) 
+    {
         char *send;
-        if (config_section_current) {
-            free(config_section_current);
+#if 0
+        if (strcmp(config_section_current, ""))
+        {
+            strcpy(config_section_current, "");
+            //free(config_section_current);
         }
-        config_section_current = dupstr(&buf[1]);
+#endif
+        strcpy(config_section_current, &buf[1]);
+        //config_section_current = dupstr(&buf[1]);
         send = rindex(config_section_current, ']');
         *send = '\0';
         debugpline1("set config section: '%s'", config_section_current);
         return TRUE;
     }
 
-    if (config_section_current) {
-        if (!config_section_chosen)
+    if (strcmp(config_section_current, ""))
+    {
+        if (!strcmp(config_section_chosen, ""))
             return TRUE;
         if (strcmp(config_section_current, config_section_chosen))
             return TRUE;
@@ -2363,7 +2374,8 @@ char *origbuf;
 
     /* find the '=' or ':' */
     bufp = find_optparam(buf);
-    if (!bufp) {
+    if (!bufp)
+    {
         config_error_add("Not a config statement, missing '='");
         return FALSE;
     }
@@ -2376,7 +2388,8 @@ char *origbuf;
     /* some of these (at least LEVELS and SAVE) should now set the
      * appropriate fqn_prefix[] rather than specialized variables
      */
-    if (match_varname(buf, "OPTIONS", 4)) {
+    if (match_varname(buf, "OPTIONS", 4))
+    {
         /* hack: un-mungspaces to allow consecutive spaces in
            general options until we verify that this is unnecessary;
            '=' or ':' is guaranteed to be present */
@@ -2385,42 +2398,72 @@ char *origbuf;
 
         if (!parseoptions(bufp, TRUE, TRUE))
             retval = FALSE;
-    } else if (match_varname(buf, "AUTOPICKUP_EXCEPTION", 5)) {
+    } 
+    else if (match_varname(buf, "AUTOPICKUP_EXCEPTION", 5)) 
+    {
         add_autopickup_exception(bufp);
-    } else if (match_varname(buf, "BINDINGS", 4)) {
+    } 
+    else if (match_varname(buf, "BINDINGS", 4))
+    {
         if (!parsebindings(bufp))
             retval = FALSE;
-    } else if (match_varname(buf, "AUTOCOMPLETE", 5)) {
+    }
+    else if (match_varname(buf, "AUTOCOMPLETE", 5))
+    {
         parseautocomplete(bufp, TRUE);
-    } else if (match_varname(buf, "MSGTYPE", 7)) {
+    }
+    else if (match_varname(buf, "MSGTYPE", 7))
+    {
         if (!msgtype_parse_add(bufp))
             retval = FALSE;
 #ifdef NOCWD_ASSUMPTIONS
-    } else if (match_varname(buf, "HACKDIR", 4)) {
+    } 
+    else if (match_varname(buf, "HACKDIR", 4))
+    {
         adjust_prefix(bufp, HACKPREFIX);
-    } else if (match_varname(buf, "LEVELDIR", 4)
-               || match_varname(buf, "LEVELS", 4)) {
+    } 
+    else if (match_varname(buf, "LEVELDIR", 4)
+               || match_varname(buf, "LEVELS", 4))
+    {
         adjust_prefix(bufp, LEVELPREFIX);
-    } else if (match_varname(buf, "SAVEDIR", 4)) {
+    } 
+    else if (match_varname(buf, "SAVEDIR", 4))
+    {
         adjust_prefix(bufp, SAVEPREFIX);
-    } else if (match_varname(buf, "BONESDIR", 5)) {
+    } 
+    else if (match_varname(buf, "BONESDIR", 5)) 
+    {
         adjust_prefix(bufp, BONESPREFIX);
-    } else if (match_varname(buf, "DATADIR", 4)) {
+    } 
+    else if (match_varname(buf, "DATADIR", 4)) 
+    {
         adjust_prefix(bufp, DATAPREFIX);
-    } else if (match_varname(buf, "SCOREDIR", 4)) {
+    } 
+    else if (match_varname(buf, "SCOREDIR", 4))
+    {
         adjust_prefix(bufp, SCOREPREFIX);
-    } else if (match_varname(buf, "LOCKDIR", 4)) {
+    } 
+    else if (match_varname(buf, "LOCKDIR", 4))
+    {
         adjust_prefix(bufp, LOCKPREFIX);
-    } else if (match_varname(buf, "CONFIGDIR", 4)) {
+    } 
+    else if (match_varname(buf, "CONFIGDIR", 4)) 
+    {
         adjust_prefix(bufp, CONFIGPREFIX);
-    } else if (match_varname(buf, "TROUBLEDIR", 4)) {
+    } 
+    else if (match_varname(buf, "TROUBLEDIR", 4)) 
+    {
         adjust_prefix(bufp, TROUBLEPREFIX);
 #else /*NOCWD_ASSUMPTIONS*/
 #ifdef MICRO
-    } else if (match_varname(buf, "HACKDIR", 4)) {
+    } 
+    else if (match_varname(buf, "HACKDIR", 4)) 
+    {
         (void) strncpy(hackdir, bufp, PATHLEN - 1);
 #ifdef MFLOPPY
-    } else if (match_varname(buf, "RAMDISK", 3)) {
+    }
+    else if (match_varname(buf, "RAMDISK", 3)) 
+    {
 /* The following ifdef is NOT in the wrong
  * place.  For now, we accept and silently
  * ignore RAMDISK */
@@ -2432,23 +2475,28 @@ char *origbuf;
         ramdisk_specified = TRUE;
 #endif
 #endif
-    } else if (match_varname(buf, "LEVELS", 4)) {
+    } 
+    else if (match_varname(buf, "LEVELS", 4)) 
+    {
         if (strlen(bufp) >= PATHLEN)
             bufp[PATHLEN - 1] = '\0';
         Strcpy(permbones, bufp);
         if (!ramdisk_specified || !*levels)
             Strcpy(levels, bufp);
         ramdisk = (strcmp(permbones, levels) != 0);
-    } else if (match_varname(buf, "SAVE", 4)) {
+    } else if (match_varname(buf, "SAVE", 4)) 
+    {
 #ifdef MFLOPPY
         extern int saveprompt;
 #endif
         char *ptr;
 
-        if ((ptr = index(bufp, ';')) != 0) {
+        if ((ptr = index(bufp, ';')) != 0) 
+        {
             *ptr = '\0';
 #ifdef MFLOPPY
-            if (*(ptr + 1) == 'n' || *(ptr + 1) == 'N') {
+            if (*(ptr + 1) == 'n' || *(ptr + 1) == 'N') 
+            {
                 saveprompt = FALSE;
             }
 #endif
@@ -2463,23 +2511,34 @@ char *origbuf;
 #endif /* MICRO */
 #endif /*NOCWD_ASSUMPTIONS*/
 
-    } else if (match_varname(buf, "NAME", 4)) {
+    }
+    else if (match_varname(buf, "NAME", 4))
+    {
         (void) strncpy(plname, bufp, PL_NSIZ - 1);
-    } else if (match_varname(buf, "ROLE", 4)
-               || match_varname(buf, "CHARACTER", 4)) {
+    }
+    else if (match_varname(buf, "ROLE", 4)
+               || match_varname(buf, "CHARACTER", 4)) 
+    {
         if ((len = str2role(bufp)) >= 0)
             flags.initrole = len;
-    } else if (match_varname(buf, "DOGNAME", 3)) {
+    }
+    else if (match_varname(buf, "DOGNAME", 3)) 
+    {
         (void) strncpy(dogname, bufp, PL_PSIZ - 1);
-    } else if (match_varname(buf, "CATNAME", 3)) {
+    }
+    else if (match_varname(buf, "CATNAME", 3)) 
+    {
         (void) strncpy(catname, bufp, PL_PSIZ - 1);
 
 #ifdef SYSCF
-    } else if (src == SET_IN_SYS && match_varname(buf, "WIZARDS", 7)) {
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "WIZARDS", 7)) 
+    {
         if (sysopt.wizards)
             free((genericptr_t) sysopt.wizards);
         sysopt.wizards = dupstr(bufp);
-        if (strlen(sysopt.wizards) && strcmp(sysopt.wizards, "*")) {
+        if (strlen(sysopt.wizards) && strcmp(sysopt.wizards, "*")) 
+        {
             /* pre-format WIZARDS list now; it's displayed during a panic
                and since that panic might be due to running out of memory,
                we don't want to risk attempting to allocate any memory then */
@@ -2487,34 +2546,47 @@ char *origbuf;
                 free((genericptr_t) sysopt.fmtd_wizard_list);
             sysopt.fmtd_wizard_list = build_english_list(sysopt.wizards);
         }
-    } else if (src == SET_IN_SYS && match_varname(buf, "SHELLERS", 8)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "SHELLERS", 8)) 
+    {
         if (sysopt.shellers)
             free((genericptr_t) sysopt.shellers);
         sysopt.shellers = dupstr(bufp);
-    } else if (src == SET_IN_SYS && match_varname(buf, "EXPLORERS", 7)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "EXPLORERS", 7)) 
+    {
         if (sysopt.explorers)
             free((genericptr_t) sysopt.explorers);
         sysopt.explorers = dupstr(bufp);
-    } else if (src == SET_IN_SYS && match_varname(buf, "DEBUGFILES", 5)) {
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "DEBUGFILES", 5)) 
+    {
         /* if showdebug() has already been called (perhaps we've added
            some debugpline() calls to option processing) and has found
            a value for getenv("DEBUGFILES"), don't override that */
-        if (sysopt.env_dbgfl <= 0) {
+        if (sysopt.env_dbgfl <= 0) 
+        {
             if (sysopt.debugfiles)
                 free((genericptr_t) sysopt.debugfiles);
             sysopt.debugfiles = dupstr(bufp);
         }
-    } else if (src == SET_IN_SYS && match_varname(buf, "DUMPLOGFILE", 7)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "DUMPLOGFILE", 7))
+    {
 #ifdef DUMPLOG
         if (sysopt.dumplogfile)
             free((genericptr_t) sysopt.dumplogfile);
         sysopt.dumplogfile = dupstr(bufp);
 #endif
-    } else if (src == SET_IN_SYS && match_varname(buf, "GENERICUSERS", 12)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "GENERICUSERS", 12))
+    {
         if (sysopt.genericusers)
             free((genericptr_t) sysopt.genericusers);
         sysopt.genericusers = dupstr(bufp);
-    } else if (src == SET_IN_SYS && match_varname(buf, "BONES_POOLS", 10)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "BONES_POOLS", 10))
+    {
         /* max value of 10 guarantees (N % bones.pools) will be one digit
            so we don't lose control of the length of bones file names */
         n = atoi(bufp);
@@ -2522,71 +2594,99 @@ char *origbuf;
         /* note: right now bones_pools==0 is the same as bones_pools==1,
            but we could change that and make bones_pools==0 become an
            indicator to suppress bones usage altogether */
-    } else if (src == SET_IN_SYS && match_varname(buf, "SUPPORT", 7)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "SUPPORT", 7))
+    {
         if (sysopt.support)
             free((genericptr_t) sysopt.support);
         sysopt.support = dupstr(bufp);
-    } else if (src == SET_IN_SYS && match_varname(buf, "RECOVER", 7)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "RECOVER", 7))
+    {
         if (sysopt.recover)
             free((genericptr_t) sysopt.recover);
         sysopt.recover = dupstr(bufp);
-    } else if (src == SET_IN_SYS
-               && match_varname(buf, "CHECK_SAVE_UID", 14)) {
+    } 
+    else if (src == SET_IN_SYS
+               && match_varname(buf, "CHECK_SAVE_UID", 14)) 
+    {
         n = atoi(bufp);
         sysopt.check_save_uid = n;
-    } else if (src == SET_IN_SYS
-               && match_varname(buf, "CHECK_PLNAME", 12)) {
+    }
+    else if (src == SET_IN_SYS
+               && match_varname(buf, "CHECK_PLNAME", 12)) 
+    {
         n = atoi(bufp);
         sysopt.check_plname = n;
-    } else if (match_varname(buf, "SEDUCE", 6)) {
+    }
+    else if (match_varname(buf, "SEDUCE", 6)) 
+{
         n = !!atoi(bufp); /* XXX this could be tighter */
         /* allow anyone to turn it off, but only sysconf to turn it on*/
-        if (src != SET_IN_SYS && n != 0) {
+        if (src != SET_IN_SYS && n != 0)
+        {
             config_error_add("Illegal value in SEDUCE");
             return FALSE;
         }
         sysopt.seduce = n;
         sysopt_seduce_set(sysopt.seduce);
-    } else if (src == SET_IN_SYS && match_varname(buf, "MAXPLAYERS", 10)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "MAXPLAYERS", 10)) 
+    {
         n = atoi(bufp);
         /* XXX to get more than 25, need to rewrite all lock code */
-        if (n < 0 || n > 25) {
+        if (n < 0 || n > 25)
+        {
             config_error_add("Illegal value in MAXPLAYERS (maximum is 25).");
             return FALSE;
         }
         sysopt.maxplayers = n;
-    } else if (src == SET_IN_SYS && match_varname(buf, "PERSMAX", 7)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "PERSMAX", 7)) 
+    {
         n = atoi(bufp);
-        if (n < 1) {
+        if (n < 1)
+        {
             config_error_add("Illegal value in PERSMAX (minimum is 1).");
             return FALSE;
         }
         sysopt.persmax = n;
-    } else if (src == SET_IN_SYS && match_varname(buf, "PERS_IS_UID", 11)) {
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "PERS_IS_UID", 11)) 
+    {
         n = atoi(bufp);
-        if (n != 0 && n != 1) {
+        if (n != 0 && n != 1) 
+        {
             config_error_add("Illegal value in PERS_IS_UID (must be 0 or 1).");
             return FALSE;
         }
         sysopt.pers_is_uid = n;
-    } else if (src == SET_IN_SYS && match_varname(buf, "ENTRYMAX", 8)) {
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "ENTRYMAX", 8)) 
+{
         n = atoi(bufp);
-        if (n < 10) {
+        if (n < 10) 
+        {
             config_error_add("Illegal value in ENTRYMAX (minimum is 10).");
             return FALSE;
         }
         sysopt.entrymax = n;
-    } else if ((src == SET_IN_SYS) && match_varname(buf, "POINTSMIN", 9)) {
+    } 
+    else if ((src == SET_IN_SYS) && match_varname(buf, "POINTSMIN", 9)) 
+    {
         n = atoi(bufp);
-        if (n < 1) {
+        if (n < 1) 
+        {
             config_error_add("Illegal value in POINTSMIN (minimum is 1).");
             return FALSE;
         }
         sysopt.pointsmin = n;
     } else if (src == SET_IN_SYS
-               && match_varname(buf, "MAX_STATUENAME_RANK", 10)) {
+               && match_varname(buf, "MAX_STATUENAME_RANK", 10)) 
+    {
         n = atoi(bufp);
-        if (n < 1) {
+        if (n < 1)
+        {
             config_error_add(
                       "Illegal value in MAX_STATUENAME_RANK (minimum is 1).");
             return FALSE;
@@ -2594,8 +2694,10 @@ char *origbuf;
         sysopt.tt_oname_maxrank = n;
 
     /* SYSCF PANICTRACE options */
-    } else if (src == SET_IN_SYS
-               && match_varname(buf, "PANICTRACE_LIBC", 15)) {
+    } 
+    else if (src == SET_IN_SYS
+               && match_varname(buf, "PANICTRACE_LIBC", 15)) 
+    {
         n = atoi(bufp);
 #if defined(PANICTRACE) && defined(PANICTRACE_LIBC)
         if (n < 0 || n > 2) {
@@ -2604,17 +2706,22 @@ char *origbuf;
         }
 #endif
         sysopt.panictrace_libc = n;
-    } else if (src == SET_IN_SYS
-               && match_varname(buf, "PANICTRACE_GDB", 14)) {
+    }
+    else if (src == SET_IN_SYS
+               && match_varname(buf, "PANICTRACE_GDB", 14)) 
+    {
         n = atoi(bufp);
 #if defined(PANICTRACE)
-        if (n < 0 || n > 2) {
+        if (n < 0 || n > 2)
+        {
             config_error_add("Illegal value in PANICTRACE_GDB (not 0,1,2).");
             return FALSE;
         }
 #endif
         sysopt.panictrace_gdb = n;
-    } else if (src == SET_IN_SYS && match_varname(buf, "GDBPATH", 7)) {
+    }
+    else if (src == SET_IN_SYS && match_varname(buf, "GDBPATH", 7))
+    {
 #if defined(PANICTRACE) && !defined(VMS)
         if (!file_exists(bufp)) {
             config_error_add("File specified in GDBPATH does not exist.");
@@ -2624,7 +2731,9 @@ char *origbuf;
         if (sysopt.gdbpath)
             free((genericptr_t) sysopt.gdbpath);
         sysopt.gdbpath = dupstr(bufp);
-    } else if (src == SET_IN_SYS && match_varname(buf, "GREPPATH", 7)) {
+    } 
+    else if (src == SET_IN_SYS && match_varname(buf, "GREPPATH", 7))
+    {
 #if defined(PANICTRACE) && !defined(VMS)
         if (!file_exists(bufp)) {
             config_error_add("File specified in GREPPATH does not exist.");
@@ -2636,174 +2745,237 @@ char *origbuf;
         sysopt.greppath = dupstr(bufp);
 #endif /* SYSCF */
 
-    } else if (match_varname(buf, "BOULDER", 3)) {
+    } 
+    else if (match_varname(buf, "BOULDER", 3)) 
+    {
         (void) get_uchars(bufp, &iflags.bouldersym, TRUE, 1,
                           "BOULDER");
-    } else if (match_varname(buf, "MENUCOLOR", 9)) {
+    }
+    else if (match_varname(buf, "MENUCOLOR", 9))
+    {
         if (!add_menu_coloring(bufp))
             retval = FALSE;
-    } else if (match_varname(buf, "HILITE_STATUS", 6)) {
+    }
+    else if (match_varname(buf, "HILITE_STATUS", 6))
+    {
 #ifdef STATUS_HILITES
         if (!parse_status_hl1(bufp, TRUE))
             retval = FALSE;
 #endif
-    } else if (match_varname(buf, "WARNINGS", 5)) {
+    } 
+    else if (match_varname(buf, "WARNINGS", 5)) 
+    {
         (void) get_uchars(bufp, translate, FALSE, WARNCOUNT,
                           "WARNINGS");
         assign_warnings(translate);
-    } else if (match_varname(buf, "SYMBOLS", 4)) {
-        if (!parsesymbols(bufp)) {
+    }
+    else if (match_varname(buf, "SYMBOLS", 4)) 
+    {
+        if (!parsesymbols(bufp))
+        {
             config_error_add("Error in SYMBOLS definition '%s'", bufp);
             retval = FALSE;
         }
         switch_symbols(TRUE);
-    } else if (match_varname(buf, "WIZKIT", 6)) {
+    }
+    else if (match_varname(buf, "WIZKIT", 6)) 
+    {
         (void) strncpy(wizkit, bufp, WIZKIT_MAX - 1);
 #ifdef AMIGA
-    } else if (match_varname(buf, "FONT", 4)) {
+    } 
+    else if (match_varname(buf, "FONT", 4))
+    {
         char *t;
 
-        if (t = strchr(buf + 5, ':')) {
+        if (t = strchr(buf + 5, ':'))
+        {
             *t = 0;
             amii_set_text_font(buf + 5, atoi(t + 1));
             *t = ':';
         }
-    } else if (match_varname(buf, "PATH", 4)) {
+    }
+    else if (match_varname(buf, "PATH", 4))
+    {
         (void) strncpy(PATH, bufp, PATHLEN - 1);
-    } else if (match_varname(buf, "DEPTH", 5)) {
+    }
+    else if (match_varname(buf, "DEPTH", 5)) 
+    {
         extern int amii_numcolors;
         int val = atoi(bufp);
 
         amii_numcolors = 1L << min(DEPTH, val);
 #ifdef SYSFLAGS
-    } else if (match_varname(buf, "DRIPENS", 7)) {
+    } 
+    else if (match_varname(buf, "DRIPENS", 7))
+    {
         int i, val;
         char *t;
 
         for (i = 0, t = strtok(bufp, ",/"); t != (char *) 0;
-             i < 20 && (t = strtok((char *) 0, ",/")), ++i) {
+             i < 20 && (t = strtok((char *) 0, ",/")), ++i)
+        {
             sscanf(t, "%d", &val);
             sysflags.amii_dripens[i] = val;
         }
 #endif
-    } else if (match_varname(buf, "SCREENMODE", 10)) {
+    } 
+    else if (match_varname(buf, "SCREENMODE", 10)) 
+    {
         extern long amii_scrnmode;
 
         if (!stricmp(bufp, "req"))
             amii_scrnmode = 0xffffffff; /* Requester */
         else if (sscanf(bufp, "%x", &amii_scrnmode) != 1)
             amii_scrnmode = 0;
-    } else if (match_varname(buf, "MSGPENS", 7)) {
+    } 
+    else if (match_varname(buf, "MSGPENS", 7)) 
+    {
         extern int amii_msgAPen, amii_msgBPen;
         char *t = strtok(bufp, ",/");
 
-        if (t) {
+        if (t)
+        {
             sscanf(t, "%d", &amii_msgAPen);
             if (t = strtok((char *) 0, ",/"))
                 sscanf(t, "%d", &amii_msgBPen);
         }
-    } else if (match_varname(buf, "TEXTPENS", 8)) {
+    } 
+    else if (match_varname(buf, "TEXTPENS", 8)) 
+    {
         extern int amii_textAPen, amii_textBPen;
         char *t = strtok(bufp, ",/");
 
-        if (t) {
+        if (t) 
+        {
             sscanf(t, "%d", &amii_textAPen);
             if (t = strtok((char *) 0, ",/"))
                 sscanf(t, "%d", &amii_textBPen);
         }
-    } else if (match_varname(buf, "MENUPENS", 8)) {
+    } 
+    else if (match_varname(buf, "MENUPENS", 8))
+    {
         extern int amii_menuAPen, amii_menuBPen;
         char *t = strtok(bufp, ",/");
 
-        if (t) {
+        if (t) 
+        {
             sscanf(t, "%d", &amii_menuAPen);
             if (t = strtok((char *) 0, ",/"))
                 sscanf(t, "%d", &amii_menuBPen);
         }
-    } else if (match_varname(buf, "STATUSPENS", 10)) {
+    } 
+    else if (match_varname(buf, "STATUSPENS", 10)) 
+    {
         extern int amii_statAPen, amii_statBPen;
         char *t = strtok(bufp, ",/");
 
-        if (t) {
+        if (t) 
+        {
             sscanf(t, "%d", &amii_statAPen);
             if (t = strtok((char *) 0, ",/"))
                 sscanf(t, "%d", &amii_statBPen);
         }
-    } else if (match_varname(buf, "OTHERPENS", 9)) {
+    } 
+    else if (match_varname(buf, "OTHERPENS", 9)) 
+    {
         extern int amii_otherAPen, amii_otherBPen;
         char *t = strtok(bufp, ",/");
 
-        if (t) {
+        if (t)
+        {
             sscanf(t, "%d", &amii_otherAPen);
             if (t = strtok((char *) 0, ",/"))
                 sscanf(t, "%d", &amii_otherBPen);
         }
-    } else if (match_varname(buf, "PENS", 4)) {
+    }
+    else if (match_varname(buf, "PENS", 4)) 
+    {
         extern unsigned short amii_init_map[AMII_MAXCOLORS];
         int i;
         char *t;
 
         for (i = 0, t = strtok(bufp, ",/");
              i < AMII_MAXCOLORS && t != (char *) 0;
-             t = strtok((char *) 0, ",/"), ++i) {
+             t = strtok((char *) 0, ",/"), ++i) 
+        {
             sscanf(t, "%hx", &amii_init_map[i]);
         }
         amii_setpens(amii_numcolors = i);
-    } else if (match_varname(buf, "FGPENS", 6)) {
+    } 
+    else if (match_varname(buf, "FGPENS", 6)) 
+    {
         extern int foreg[AMII_MAXCOLORS];
         int i;
         char *t;
 
         for (i = 0, t = strtok(bufp, ",/");
              i < AMII_MAXCOLORS && t != (char *) 0;
-             t = strtok((char *) 0, ",/"), ++i) {
+             t = strtok((char *) 0, ",/"), ++i)
+        {
             sscanf(t, "%d", &foreg[i]);
         }
-    } else if (match_varname(buf, "BGPENS", 6)) {
+    }
+    else if (match_varname(buf, "BGPENS", 6))
+    {
         extern int backg[AMII_MAXCOLORS];
         int i;
         char *t;
 
         for (i = 0, t = strtok(bufp, ",/");
              i < AMII_MAXCOLORS && t != (char *) 0;
-             t = strtok((char *) 0, ",/"), ++i) {
+             t = strtok((char *) 0, ",/"), ++i) 
+        {
             sscanf(t, "%d", &backg[i]);
         }
 #endif /*AMIGA*/
 #ifdef USER_SOUNDS
-    } else if (match_varname(buf, "SOUNDDIR", 8)) {
+    } 
+    else if (match_varname(buf, "SOUNDDIR", 8)) 
+    {
         sounddir = dupstr(bufp);
-    } else if (match_varname(buf, "SOUND", 5)) {
+    }
+    else if (match_varname(buf, "SOUND", 5)) 
+    {
         add_sound_mapping(bufp);
 #endif
-    } else if (match_varname(buf, "QT_TILEWIDTH", 12)) {
+    } 
+    else if (match_varname(buf, "QT_TILEWIDTH", 12)) 
+    {
 #ifdef QT_GRAPHICS
         extern char *qt_tilewidth;
 
         if (qt_tilewidth == NULL)
             qt_tilewidth = dupstr(bufp);
 #endif
-    } else if (match_varname(buf, "QT_TILEHEIGHT", 13)) {
+    } 
+    else if (match_varname(buf, "QT_TILEHEIGHT", 13)) 
+    {
 #ifdef QT_GRAPHICS
         extern char *qt_tileheight;
 
         if (qt_tileheight == NULL)
             qt_tileheight = dupstr(bufp);
 #endif
-    } else if (match_varname(buf, "QT_FONTSIZE", 11)) {
+    }
+    else if (match_varname(buf, "QT_FONTSIZE", 11)) 
+    {
 #ifdef QT_GRAPHICS
         extern char *qt_fontsize;
 
         if (qt_fontsize == NULL)
             qt_fontsize = dupstr(bufp);
 #endif
-    } else if (match_varname(buf, "QT_COMPACT", 10)) {
+    }
+    else if (match_varname(buf, "QT_COMPACT", 10)) 
+    {
 #ifdef QT_GRAPHICS
         extern int qt_compact_mode;
 
         qt_compact_mode = atoi(bufp);
 #endif
-    } else {
+    } 
+    else 
+    {
         config_error_add("Unknown config statement");
         return FALSE;
     }
@@ -2871,10 +3043,12 @@ const char *line;
 
     ced->line_num++;
     ced->origline_shown = FALSE;
-    if (line && line[0]) {
+    if (line && line[0])
+    {
         (void) strncpy(ced->origline, line, sizeof (ced->origline) - 1);
         ced->origline[sizeof (ced->origline) - 1] = '\0';
-    } else
+    } 
+    else
         ced->origline[0] = '\0';
 
     return TRUE;
@@ -3242,13 +3416,14 @@ boolean FDECL((*proc), (char *));
                     }
                     bufp++;
 
-                    if (config_section_chosen)
-                        free(config_section_chosen), config_section_chosen = 0;
+                    if (strcmp(config_section_chosen, ""))
+                        strcpy(config_section_chosen, ""); // free(config_section_chosen), config_section_chosen = 0;
+
                     section = choose_random_part(bufp, ',');
 
                     if (section)
                     {
-                        config_section_chosen = dupstr(section);
+                        strcpy(config_section_chosen, section); // = dupstr(section);
 					} 
                     else
                     {

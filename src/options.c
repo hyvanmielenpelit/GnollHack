@@ -1861,7 +1861,7 @@ int c, a;
     if (!str)
         return FALSE;
 
-    tmp = (struct menucoloring *) alloc(sizeof *tmp);
+    tmp = (struct menucoloring *) alloc(sizeof (struct menucoloring));
     tmp->match = regex_init();
 
     if (!regex_compile(str, tmp->match)) 
@@ -1874,10 +1874,7 @@ int c, a;
     else 
     {
         tmp->next = menu_colorings;
-        //tmp->origstr = dupstr(str);
-        tmp->origstr = (char*)alloc(BUFSIZ);
-        strncpy(tmp->origstr, str, BUFSIZ - 1);
-        tmp->origstr[BUFSIZ - 1] = '\0';
+        tmp->origstr = dupstr(str);
         tmp->color = c;
         tmp->attr = a;
         menu_colorings = tmp;
@@ -1895,8 +1892,8 @@ char *tmpstr; /* never Null but could be empty */
     char str[BUFSIZ];
 
     //Sprintf(str, "%s", tmpstr);
-	(void)strncpy(str, tmpstr, sizeof str - 1);
-	str[sizeof str - 1] = '\0';
+	(void)strncpy(str, tmpstr, (sizeof str) - 1);
+	str[(sizeof str) - 1] = '\0';
 
     if ((cs = index(str, '=')) == 0) {
         config_error_add("Malformed MENUCOLOR");
