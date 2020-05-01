@@ -303,7 +303,7 @@ boolean allow_drag;
     u.ux0 = u.ux;
     u.uy0 = u.uy;
 
-    if (!hideunder(&youmonst) && youmonst.data->mlet == S_MIMIC) {
+    if (!hideunder(&youmonst) && is_mimic(youmonst.data)) {
         /* mimics stop being unnoticed */
         youmonst.m_ap_type = M_AP_NOTHING;
     }

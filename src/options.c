@@ -340,6 +340,8 @@ static struct Comp_Opt {
     { "gender", "your starting gender (male or female)", 8, DISP_IN_GAME },
     { "horsename", "the name of your (first) horse (e.g., horsename:Silver)",
       PL_PSIZ, DISP_IN_GAME },
+    { "luggagename", "the name of your (first) luggage (e.g., luggagename:Albert)",
+      PL_PSIZ, DISP_IN_GAME },
     { "map_mode", "map display mode under Windows", 20, DISP_IN_GAME }, /*WC*/
     { "menustyle", "user interface for object selection", MENUTYPELEN,
       SET_IN_GAME },
@@ -2336,15 +2338,32 @@ boolean tinitial, tfrom_file;
 			return FALSE;
 		}
 		else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
-			nmcpy(ramname, op, PL_PSIZ);
+			nmcpy(luggagename, op, PL_PSIZ);
 		}
 		else
 			return FALSE;
-		sanitize_name(ramname);
+		sanitize_name(luggagename);
 		return retval;
 	}
 
-	fullname = "mouse_support";
+    fullname = "luggagename";
+    if (match_optname(opts, fullname, 5, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
+            nmcpy(ramname, op, PL_PSIZ);
+        }
+        else
+            return FALSE;
+        sanitize_name(ramname);
+        return retval;
+    }
+
+    fullname = "mouse_support";
     if (match_optname(opts, fullname, 13, TRUE)) {
         boolean compat = (strlen(opts) <= 13);
 
@@ -5691,7 +5710,9 @@ char *buf;
         Sprintf(buf, "%s", horsename[0] ? horsename : none);
 	else if (!strcmp(optname, "ramname"))
 		Sprintf(buf, "%s", ramname[0] ? ramname : none);
-	else if (!strcmp(optname, "map_mode")) {
+    else if (!strcmp(optname, "luggagename"))
+        Sprintf(buf, "%s", luggagename[0] ? luggagename : none);
+    else if (!strcmp(optname, "map_mode")) {
         i = iflags.wc_map_mode;
         Sprintf(buf, "%s",
                 (i == MAP_MODE_TILES) ? "tiles"

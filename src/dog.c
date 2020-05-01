@@ -187,7 +187,9 @@ makedog()
         petname = horsename;
 	else if (pettype == PM_RAM)
 		petname = ramname;
-	else
+    else if (pettype == PM_SMALL_LUGGAGE)
+        petname = luggagename;
+    else
         petname = catname;
 
     /* default pet names */
@@ -848,7 +850,7 @@ register struct obj *obj;
             return POISON;
 
 		if ((obj->otyp == CORPSE || obj->otyp == EGG) &&
-			(polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && mons[obj->corpsenm].mlet == S_MIMIC)))
+			(polyfodder(obj) || obj->corpsenm == PM_GREEN_SLIME || (obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]))))
 			return POISON;
 
 		if (objects[obj->otyp].oc_edible_subtype > EDIBLETYPE_NORMAL)

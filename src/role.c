@@ -796,7 +796,7 @@ const struct Role roles[] = {
 	  { "Worse prices in shops below level 15", "", "", "", ""},
 	  PM_TOURIST,
       NON_PM,
-      NON_PM,
+      PM_SMALL_LUGGAGE,
       PM_TWOFLOWER,
       PM_GUIDE,
       PM_MASTER_OF_THIEVES,

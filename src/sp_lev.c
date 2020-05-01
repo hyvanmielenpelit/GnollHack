@@ -1708,7 +1708,7 @@ struct mkroom *croom;
          * shapechanger a non-monster shape, it just refuses to comply.
          */
         if (m->appear_as.str
-            && ((mtmp->data->mlet == S_MIMIC)
+            && ((is_mimic(mtmp->data))
                 /* shapechanger (chameleons, et al, and vampires) */
                 || (mtmp->cham >= LOW_PM && m->appear == M_AP_MONSTER))
             && !Protection_from_shape_changers) {
@@ -1779,7 +1779,7 @@ struct mkroom *croom;
                 if (mndx == NON_PM || (is_vampshifter(mtmp)
                                        && !validvamp(mtmp, &mndx, S_HUMAN))) {
                     impossible("create_monster: invalid %s (\"%s\")",
-                               (mtmp->data->mlet == S_MIMIC)
+                               (is_mimic(mtmp->data))
                                  ? "mimic appearance"
                                  : (mtmp->data == &mons[PM_WIZARD_OF_YENDOR])
                                      ? "Wizard appearance"
@@ -1791,7 +1791,7 @@ struct mkroom *croom;
                     /* explicitly forcing a mimic to appear as itself */
                     mtmp->m_ap_type = M_AP_NOTHING;
                     mtmp->mappearance = 0;
-                } else if (mtmp->data->mlet == S_MIMIC
+                } else if (is_mimic(mtmp->data)
                            || mtmp->data == &mons[PM_WIZARD_OF_YENDOR]) {
                     /* this is ordinarily only used for Wizard clones
                        and hasn't been exhaustively tested for mimics */

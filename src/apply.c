@@ -2604,7 +2604,7 @@ long timeout;
         Sprintf(monnambuf, "%s", an(m_monnam(mtmp)));
         and_vanish[0] = '\0';
         if ((is_invisible(mtmp) && !See_invisible)
-            || (mtmp->data->mlet == S_MIMIC
+            || (is_mimic(mtmp->data)
                 && M_AP_TYPE(mtmp) != M_AP_NOTHING))
             suppress_see = TRUE;
 
@@ -2612,8 +2612,7 @@ long timeout;
             if (hides_under(mtmp->data) && mshelter) {
                 Sprintf(and_vanish, " and %s under %s",
                         locomotion(mtmp->data, "crawl"), doname(mshelter));
-            } else if (mtmp->data->mlet == S_MIMIC
-                       || mtmp->data->mlet == S_EEL) {
+            } else if (is_mimic(mtmp->data) || mtmp->data->mlet == S_EEL) {
                 suppress_see = TRUE;
             } else
                 Strcpy(and_vanish, " and vanish");

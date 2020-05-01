@@ -758,7 +758,7 @@ struct attack *mattk;
 
     if (vis) 
 	{
-        if (mdef->data->mlet == S_MIMIC
+        if (is_mimic(mdef->data)
             && M_AP_TYPE(mdef) != M_AP_NOTHING)
             seemimic(mdef);
         Sprintf(buf, "%s gazes at", Monnam(magr));

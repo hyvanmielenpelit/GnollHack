@@ -4187,7 +4187,7 @@ restartcham()
             continue;
         if (!is_cancelled(mtmp))
             mtmp->cham = pm_to_cham(monsndx(mtmp->data));
-        if (mtmp->data->mlet == S_MIMIC && mtmp->msleeping
+        if (is_mimic(mtmp->data) && mtmp->msleeping
             && cansee(mtmp->mx, mtmp->my)) {
             set_mimic_sym(mtmp);
             newsym(mtmp->mx, mtmp->my);
@@ -4232,7 +4232,7 @@ register struct monst *mtmp;
         || (sensemon(mtmp) && distu(mtmp->mx, mtmp->my) <= 2))
         return FALSE;
 
-    if (mtmp->data->mlet == S_MIMIC) {
+    if (is_mimic(mtmp->data)) {
         set_mimic_sym(mtmp);
         return TRUE;
     } else if (levl[mtmp->mx][mtmp->my].typ == ROOM) {
@@ -4294,7 +4294,7 @@ struct monst *mon;
         if (is_hider(mon->data))
             (void) restrap(mon);
         /* try again if mimic missed its 1/3 chance to hide */
-        if (mon->data->mlet == S_MIMIC && !M_AP_TYPE(mon))
+        if (is_mimic(mon->data) && !M_AP_TYPE(mon))
             (void) restrap(mon);
         if (hider_under)
             (void) hideunder(mon);
@@ -4783,7 +4783,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         wormgone(mtmp);
         place_monster(mtmp, mtmp->mx, mtmp->my);
     }
-    if (M_AP_TYPE(mtmp) && mdat->mlet != S_MIMIC)
+    if (M_AP_TYPE(mtmp) && !is_mimic(mdat))
         seemimic(mtmp); /* revert to normal monster */
 
     /* (this code used to try to adjust the monster's health based on

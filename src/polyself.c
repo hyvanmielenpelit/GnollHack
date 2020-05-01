@@ -722,10 +722,10 @@ int mntmp;
 
     /* if stuck mimicking gold, stop immediately */
     if (multi < 0 && U_AP_TYPE == M_AP_OBJECT
-        && youmonst.data->mlet != S_MIMIC)
+        && !is_mimic(youmonst.data))
         unmul("");
     /* if becoming a non-mimic, stop mimicking anything */
-    if (mons[mntmp].mlet != S_MIMIC) {
+    if (!is_mimic(&mons[mntmp])) {
         /* as in polyman() */
         youmonst.m_ap_type = M_AP_NOTHING;
     }
@@ -1999,7 +1999,7 @@ doeyestalk()
 int
 dohide()
 {
-    boolean ismimic = youmonst.data->mlet == S_MIMIC,
+    boolean ismimic = is_mimic(youmonst.data),
             on_ceiling = is_clinger(youmonst.data) || Flying;
 
     /* can't hide while being held (or holding) or while trapped

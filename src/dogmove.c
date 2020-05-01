@@ -279,7 +279,7 @@ boolean devour;
 		edog->hungrytime = monstermoves;
 	nutrit = dog_nutrition(mtmp, obj);
 
-	deadmimic = (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && mons[obj->corpsenm].mlet == S_MIMIC);
+	deadmimic = (obj->otyp == CORPSE && obj->corpsenm >= LOW_PM && is_mimic(&mons[obj->corpsenm]));
     slimer = (obj->otyp == CORPSE && obj->corpsenm == PM_GREEN_SLIME);
     poly = polyfodder(obj);
     grow = mlevelgain(obj);

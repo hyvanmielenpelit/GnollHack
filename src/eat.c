@@ -1209,7 +1209,7 @@ int pm;
         /*FALLTHRU*/
     case PM_SMALL_MIMIC:
         tmp += 20;
-        if (youmonst.data->mlet != S_MIMIC && !Unchanging) {
+        if (!is_mimic(youmonst.data) && !Unchanging) {
             char buf[BUFSZ];
 
             u.uconduct.polyselfs++; /* you're changing form */

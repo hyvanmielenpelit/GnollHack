@@ -174,9 +174,9 @@
 #define M2_DEMON		0x00000100UL        /* is a demon */
 #define M2_MODRON		0x00000200UL		/* is a modron */
 #define M2_GNOME		0x00000400UL        /* is a gnome */
-#define M2_MERC			0x00000800UL         /* is a guard or soldier */
-#define M2_LORD			0x00001000UL         /* is a lord to its kind */
-#define M2_PRINCE		0x00002000UL       /* is an overlord to its kind */
+#define M2_MIMIC 		0x00008000UL        /* is a gnome */
+/* free bit */
+/* free bit */
 #define M2_MINION		0x00004000UL       /* is a minion of a deity */
 #define M2_GIANT		0x00008000UL        /* is a giant */
 #define M2_SHAPESHIFTER 0x00010000UL /* is a shapeshifting species */
@@ -276,6 +276,9 @@
 #define M4_BEAR						0x00800000UL		/* a bear or bear-like monster */
 #define M4_BIRD						0x01000000UL		/* a bird */
 #define M4_PROPER_NAME	            0x02000000UL        /* monster name is a proper name */
+#define M4_MERC			            0x04000000UL         /* is a guard or soldier */
+#define M4_LORD			            0x08000000UL         /* is a lord to its kind */
+#define M4_PRINCE		            0x10000000UL       /* is an overlord to its kind */
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

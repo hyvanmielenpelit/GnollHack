@@ -152,7 +152,7 @@ struct obj *otmp;
     int otyp = otmp->otyp;
     const char *zap_type_text = "spell";
     struct obj *obj;
-    boolean disguised_mimic = (mtmp->data->mlet == S_MIMIC
+    boolean disguised_mimic = (is_mimic(mtmp->data)
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 	int dmg = d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;

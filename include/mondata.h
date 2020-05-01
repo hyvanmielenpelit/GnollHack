@@ -77,7 +77,6 @@
 #define is_domestic(ptr) (((ptr)->mflags2 & M2_DOMESTIC) != 0L)
 #define is_demon(ptr) (((ptr)->mflags2 & M2_DEMON) != 0L)
 #define is_angel(ptr) (((ptr)->mflags2 & M2_ANGEL) != 0L)
-#define is_mercenary(ptr) (((ptr)->mflags2 & M2_MERC) != 0L)
 #define is_modron(ptr) (((ptr)->mflags2 & M2_MODRON) != 0L)
 #define is_male(ptr) (((ptr)->mflags2 & M2_MALE) != 0L)
 #define is_female(ptr) (((ptr)->mflags2 & M2_FEMALE) != 0L)
@@ -96,12 +95,6 @@
 #define cantweararm(ptr) (breakarm(ptr) || sliparm(ptr))
 #define throws_rocks(ptr) (((ptr)->mflags1 & M1_ROCKTHROW) != 0L)
 #define is_mname_proper_name(ptr) (((ptr)->mflags4 & M4_PROPER_NAME) != 0L)
-#define is_lord(ptr) (((ptr)->mflags2 & M2_LORD) != 0L)
-#define is_prince(ptr) (((ptr)->mflags2 & M2_PRINCE) != 0L)
-#define is_ndemon(ptr) \
-    (is_demon(ptr) && (((ptr)->mflags2 & (M2_LORD | M2_PRINCE)) == 0L))
-#define is_dlord(ptr) (is_demon(ptr) && is_lord(ptr))
-#define is_dprince(ptr) (is_demon(ptr) && is_prince(ptr))
 #define is_minion(ptr) (((ptr)->mflags2 & M2_MINION) != 0L)
 #define is_lminion(mon) \
     (is_minion((mon)->data) && mon_aligntyp(mon) == A_LAWFUL)
@@ -161,6 +154,13 @@
 #define is_watery(ptr) (((ptr)->mflags4 & M4_WATERY) != 0)
 #define is_always_faithful(ptr) (((ptr)->mflags4 & M4_FAITHFUL) != 0)
 #define is_bear(ptr) (((ptr)->mflags4 & M4_BEAR) != 0L)
+#define is_mercenary(ptr) (((ptr)->mflags4 & M4_MERC) != 0L)
+#define is_lord(ptr) (((ptr)->mflags4 & M4_LORD) != 0L)
+#define is_prince(ptr) (((ptr)->mflags4 & M4_PRINCE) != 0L)
+#define is_ndemon(ptr) \
+    (is_demon(ptr) && !is_lord(ptr) && !is_prince(ptr))
+#define is_dlord(ptr) (is_demon(ptr) && is_lord(ptr))
+#define is_dprince(ptr) (is_demon(ptr) && is_prince(ptr))
 
 
 /* combinations */
@@ -654,7 +654,7 @@
 #define touch_petrifies(ptr) (((ptr)->mflags1 & M1_TOUCH_PETRIFIES) != 0)
 #define flesh_petrifies(ptr) (touch_petrifies(ptr) || (ptr) == &mons[PM_MEDUSA])
 #define is_mind_flayer(ptr) (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
-#define is_mimic(ptr) ((ptr->mlet == S_MIMIC)
+#define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
 

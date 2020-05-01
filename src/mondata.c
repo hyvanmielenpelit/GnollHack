@@ -105,11 +105,9 @@ static NEARDATA struct mflag_description m2flag_descriptions[] = {
 	{ M2_GNOLL, "gnoll", "gnolls" },
 	{ M2_GNOME, "gnome", "gnomes" },
 	{ M2_HUMAN, "human", "human beings" },
-	{ M2_LORD, "lord", "lords" },
 	{ M2_MIND_FLAYER, "mind flayer", "mind flayers" },
 	{ M2_MODRON, "modron", "modrons" },
 	{ M2_ORC, "orc", "orcs" },
-	{ M2_PRINCE, "prince", "princes" },
 	{ M2_SHAPESHIFTER, "shapeshifter", "shapeshifters" },
 	{ M2_UNDEAD, "undead", "undead" },
 	{ M2_WERE, "lycanthrope", "lycanthropes" },
@@ -141,7 +139,9 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
     { M4_BEAR, "bear or bear-like monster", "bears or bear-like monsters" },
     { M4_BIRD, "bird or bird-like monster", "birds or bird-like monsters" },
     { M4_VORPAL_VULNERABILITY, "vorpal vulnerable", "monsters vulnerable to vorpal weapons" },
-	{ 0 , "", "" }
+    { M4_LORD, "lord", "lords" },
+    { M4_PRINCE, "prince", "princes" },
+    { 0 , "", "" }
 };
 
 
@@ -1105,7 +1105,9 @@ static const short grownups[][2] = {
     { PM_HORSE, PM_WARHORSE },
 	{ PM_RAM, PM_LARGE_RAM },
 	{ PM_LARGE_RAM, PM_WARRAM },
-	{ PM_KOBOLD, PM_LARGE_KOBOLD },
+    { PM_SMALL_LUGGAGE, PM_MEDIUM_LUGGAGE },
+    { PM_MEDIUM_LUGGAGE, PM_LARGE_LUGGAGE },
+    { PM_KOBOLD, PM_LARGE_KOBOLD },
     { PM_LARGE_KOBOLD, PM_KOBOLD_LORD },
     { PM_GNOME, PM_GNOME_LORD },
     { PM_GNOME_LORD, PM_GNOME_KING },

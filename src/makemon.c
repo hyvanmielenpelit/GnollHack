@@ -2324,7 +2324,8 @@ int level_limit;
 
     switch (ptr->mlet) {
     case S_MIMIC:
-        set_mimic_sym(mtmp);
+        if(is_mimic(ptr))
+            set_mimic_sym(mtmp);
         break;
     case S_SPIDER:
     case S_SNAKE:
