@@ -814,6 +814,7 @@ boolean silently;
 	boolean was_levitating = is_levitating(mtmp);
 	boolean was_flying = is_flying(mtmp);
 	boolean was_sick = is_sick(mtmp);
+	boolean was_mummy_rotted = is_mummy_rotted(mtmp);
 	boolean was_fearful = is_fearful(mtmp);
 	boolean was_fleeing = is_fleeing(mtmp);
 	boolean was_charmed = is_charmed(mtmp);
@@ -1109,9 +1110,19 @@ boolean silently;
 		else if (!is_sick(mtmp) && was_sick)
 		{
 			res = TRUE;
-			pline("%s is cured from its terminal illness.", Monnam(mtmp));
+			pline("%s is cured from %s terminal illness.", Monnam(mtmp), mhis(mtmp));
 		}
 
+		if (is_mummy_rotted(mtmp) && !was_mummy_rotted)
+		{
+			res = TRUE;
+			pline("%s looks severely ill!", Monnam(mtmp));
+		}
+		else if (!is_mummy_rotted(mtmp) && was_mummy_rotted)
+		{
+			res = TRUE;
+			pline("%s is cured from %s rot-causing illness.", Monnam(mtmp), mhis(mtmp));
+		}
 
 		/* Cancelled */
 		/* Half magic resistance */

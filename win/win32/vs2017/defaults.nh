@@ -255,6 +255,7 @@ OPTIONS=hilite_status:condition/suffoc/red&inverse
 OPTIONS=hilite_status:condition/strngl/red&inverse
 OPTIONS=hilite_status:condition/paral/red&inverse
 OPTIONS=hilite_status:condition/sleep/red&inverse
+OPTIONS=hilite_status:condition/rot/red
 
 # St, Dx, Co, In, Wi, Ch
 OPTIONS=hilite_status:characteristics/up/green/down/red

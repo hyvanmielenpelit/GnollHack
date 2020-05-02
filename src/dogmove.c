@@ -579,17 +579,17 @@ boolean verbose;
 		}
 		break;
 	case EDIBLEFX_CURE_SICKNESS:
-        if (is_sick(mtmp) && !otmp->cursed)
+        if (has_sick(mtmp) && !otmp->cursed)
         {
             (void)set_mon_property_b(mtmp, SICK, 0, canseemon(mtmp));
         }
-        if (is_food_poisoned(mtmp) && !otmp->cursed)
+        if (has_food_poisoned(mtmp) && !otmp->cursed)
         {
             (void)set_mon_property_b(mtmp, FOOD_POISONED, 0, canseemon(mtmp));
         }
-        if (is_mummy_rotted(mtmp) && !otmp->cursed)
+        if (has_mummy_rot(mtmp) && !otmp->cursed)
         {
-            (void)set_mon_property_b(mtmp, MUMMY_ROT, 0, canseemon(mtmp));
+            (void)set_mon_property_b(mtmp, MUMMY_ROT, -3, canseemon(mtmp));
         }
         if (has_vomiting(mtmp) && !otmp->cursed)
         {
