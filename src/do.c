@@ -2092,16 +2092,19 @@ register struct obj* obj;
 						if (idx > 0)
 							bit = bit << idx;
 
-						const char* flagname = get_mflag_description(bit, TRUE, flag_idx);
-						if (flagname && strcmp(flagname, ""))
+						if (objects[otyp].oc_target_permissions & bit)
 						{
-							char flagbuf[BUFSZ];
-							strcpy(flagbuf, flagname);
-							*flagbuf = highc(*flagbuf);
-							powercnt++;
-							Sprintf(buf, " %2d - %s %s", powercnt, flagbuf);
-							txt = buf;
-							putstr(datawin, 0, txt);
+							const char* flagname = get_mflag_description(bit, TRUE, flag_idx);
+							if (flagname && strcmp(flagname, ""))
+							{
+								char flagbuf[BUFSZ];
+								strcpy(flagbuf, flagname);
+								*flagbuf = highc(*flagbuf);
+								powercnt++;
+								Sprintf(buf, " %2d - %s", powercnt, flagbuf);
+								txt = buf;
+								putstr(datawin, 0, txt);
+							}
 						}
 					}
 				}
