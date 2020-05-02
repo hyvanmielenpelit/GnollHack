@@ -797,9 +797,12 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
+	boolean weapon_stats_shown = FALSE;
 
 	if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS))
 	{
+		weapon_stats_shown = TRUE;
+
 		char plusbuf[BUFSZ];
 		boolean maindiceprinted = FALSE;
 
@@ -1018,6 +1021,8 @@ register struct obj* obj;
 		}
 
 		wep_avg_dmg += 0.5 * ((double)objects[otyp].oc_wsdice * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus + objects[otyp].oc_wldice * (1.0 + (double)objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus);
+		if (wep_avg_dmg < 0)
+			wep_avg_dmg = 0;
 
 		/* Damage type - Main */
 		if (printmaindmgtype && objects[otyp].oc_damagetype != AD_PHYS)
@@ -1077,6 +1082,8 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 
 			wep_avg_dmg += (double)objects[otyp].oc_wedice * (1.0 + (double)objects[otyp].oc_wedam) / 2.0 + (double)objects[otyp].oc_wedmgplus;
+			if (wep_avg_dmg < 0)
+				wep_avg_dmg = 0;
 
 			/* Damage type - Extra */
 			if (objects[otyp].oc_extra_damagetype != AD_PHYS)
@@ -1092,7 +1099,15 @@ register struct obj* obj;
 				}
 			}
 		}
-
+		else
+		{
+			if (obj->oclass == POTION_CLASS)
+				wep_avg_dmg += 1;
+			else if (otyp == CORPSE)
+				wep_avg_dmg += (obj->corpsenm >= LOW_PM ? mons[obj->corpsenm].msize : 0) + 1;
+			else
+				wep_avg_dmg += 0;
+		}
 
 		/* Damage - Silver*/
 		if (objects[otyp].oc_material == MAT_SILVER)
@@ -1115,6 +1130,8 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 
 			wep_avg_dmg += (double)objects[otyp].oc_fixed_damage_bonus;
+			if (wep_avg_dmg < 0)
+				wep_avg_dmg = 0;
 		}
 		else
 		{
@@ -1126,6 +1143,9 @@ register struct obj* obj;
 				wep_avg_dmg += (double)((int)strength_damage_bonus(ACURR(A_STR)) / 2);
 			else
 				wep_avg_dmg += (double)strength_damage_bonus(ACURR(A_STR));
+
+			if (wep_avg_dmg < 0)
+				wep_avg_dmg = 0;
 		}
 
 		if (objects[otyp].oc_hitbonus != 0)
@@ -1138,6 +1158,11 @@ register struct obj* obj;
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
+	}
+	else
+	{
+		/* Otherwise get full melee strength damage bonus */
+		wep_avg_dmg += (double)strength_damage_bonus(ACURR(A_STR));
 	}
 
 	int mcadj = objects[otyp].oc_mc_adjustment + (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT) ? obj->enchantment : 0;
@@ -1273,6 +1298,8 @@ register struct obj* obj;
 			int dmgplus = is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1) / 2 : enchplus;
 
 			wep_avg_dmg += (double)dmgplus;
+			if (wep_avg_dmg < 0)
+				wep_avg_dmg = 0;
 
 			if (!uses_spell_flags && stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
 			{
@@ -1330,6 +1357,8 @@ register struct obj* obj;
 				penalty = greatest_erosion(obj);
 				Sprintf(penaltybuf, "(%d to damage) ", -penalty);
 				wep_avg_dmg -= (double)penalty;
+				if (wep_avg_dmg < 0)
+					wep_avg_dmg = 0;
 			}
 
 			if (obj->oclass == ARMOR_CLASS || (stats_known && (objects[obj->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED)))
@@ -2408,6 +2437,8 @@ register struct obj* obj;
 				Sprintf(dmgbuf, "Artifact damage bonus is %s", plusbuf);
 
 			wep_avg_dmg += (double)artilist[obj->oartifact].attk.damn * (1.0 + (double)artilist[obj->oartifact].attk.damd) / 2.0 + (double)artilist[obj->oartifact].attk.damp;
+			if (wep_avg_dmg < 0)
+				wep_avg_dmg = 0;
 
 			powercnt++;
 			Sprintf(buf, " %2d - %s", powercnt, dmgbuf);
@@ -2969,7 +3000,12 @@ register struct obj* obj;
 
 	/* Weapon statistics */
 	struct obj* applicable_launcher = uwep && is_launcher(uwep) ? uwep : uswapwep && is_launcher(uswapwep) ? uswapwep : obj;
-	if (is_weapon(obj) && !is_launcher(obj) && stats_known && obj->known 
+	if ((is_weapon(obj) 
+		|| (uwep && obj == uwep) || (uswapwep && obj == uswapwep) 
+		|| (u.twoweap && ((uarms && obj == uarms) || (uswapwep2 && obj == uswapwep2)))
+		|| weapon_stats_shown
+		)
+		&& !is_launcher(obj) && stats_known && obj->known
 		&& (!ammo_and_launcher(obj, applicable_launcher) 
 			|| (ammo_and_launcher(obj, applicable_launcher) && object_stats_known(applicable_launcher) && applicable_launcher->known))
 		)
@@ -3014,7 +3050,8 @@ register struct obj* obj;
 
 					roll_to_hit += u.uarcherybonus;
 					wep_avg_dmg += (double)u.uarcherybonus;
-
+					if (wep_avg_dmg < 0)
+						wep_avg_dmg = 0;
 				}
 			}
 			else
@@ -3072,6 +3109,8 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 
 		wep_avg_dmg += (double)weapon_skill_dmg_bonus(obj, P_NONE, FALSE);
+		if (wep_avg_dmg < 0)
+			wep_avg_dmg = 0;
 		wep_avg_dmg *= average_multi_shot_times;
 
 		powercnt++;
