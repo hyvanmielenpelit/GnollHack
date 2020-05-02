@@ -33,6 +33,7 @@ start: DECgraphics
 	S_vodoor: \xe1			# meta-a, solid block
 	S_hodoor: \xe1			# meta-a, solid block
 	S_bars: \xfb			# meta-{, small pi
+	S_treant: \xe7			# meta-g, plus-or-minus
 	S_tree: \xe7			# meta-g, plus-or-minus
 	S_room: \xfe			# meta-~, centered dot
 	S_upladder: \xf9		# meta-y, greater-than-or-equals
@@ -72,6 +73,7 @@ start: IBMgraphics
 	S_vodoor: \xfe			# meta-~, small centered square
 	S_hodoor: \xfe			# meta-~, small centered square
 	S_bars: \xf0			# equivalence symbol
+	S_treant: \xf1			# plus or minus symbol
 	S_tree: \xf1			# plus or minus symbol
 	S_room: \xfa			# meta-z, centered dot
 	S_corr: \xb0			# meta-0, light shading
@@ -156,6 +158,7 @@ start: MACgraphics
 	S_vcdoor: \xef
 	S_hcdoor: \xef
 	S_bars: \xf0			# equivalency symbol
+	S_treant: \xf1			# plus-or-minus
 	S_tree: \xf1			# plus-or-minus
 	S_corr: \xb0
 	S_grave: \xef			# same as open door
@@ -317,6 +320,7 @@ start: NHAccess
 	S_vcdoor: \043
 	S_hcdoor: \043
 	S_bars: \046
+	S_treant: \035
 	S_tree: \035
 	S_room: \035
 	S_corr: \060
@@ -450,10 +454,10 @@ start: Blank
         S_gem: \032
         S_ghost: \032
         S_giant: \032
+        S_gnoll: \032
         S_gnome: \032
         S_golem: \032
         S_grave: \032
-        S_gremlin: \032
         S_hbeam: \032
         S_hcdbridge: \032
         S_hcdoor: \032
@@ -537,6 +541,7 @@ start: Blank
         S_trap_door: \032
         S_trapper: \032
         S_trcorn: \032
+        S_treant: \032
         S_tree: \032
         S_troll: \032
         S_trwall: \032

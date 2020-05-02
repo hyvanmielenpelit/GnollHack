@@ -877,7 +877,7 @@ struct objclass {
 #define O3_PERMTTED_TARGET_NEUTRAL					0x02000000UL
 #define O3_PERMTTED_TARGET_CHAOTIC					0x04000000UL
 
-#define O3_TARGET_PERMISSION_IS_M1_FLAG				0x80000000UL /* Note: if no flag, then default is a monster symbol */
+#define O3_TARGET_PERMISSION_IS_M1_FLAG				0x08000000UL /* Note: if no flag, then default is a monster symbol */
 #define O3_TARGET_PERMISSION_IS_M2_FLAG				0x10000000UL
 #define O3_TARGET_PERMISSION_IS_M3_FLAG				0x20000000UL 
 #define O3_TARGET_PERMISSION_IS_M4_FLAG				0x40000000UL 

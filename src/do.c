@@ -2076,150 +2076,33 @@ register struct obj* obj;
 			/* Flags here */
 			if (objects[otyp].oc_target_permissions != ALL_TARGETS)
 			{
-				if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M1_FLAG)
+				if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG))
 				{
-					if (objects[otyp].oc_target_permissions & M1_AMORPHOUS)
+					int flag_idx = 1;
+					if(objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M2_FLAG))
+						flag_idx = 2;
+					else if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M3_FLAG))
+						flag_idx = 3;
+					else if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M4_FLAG))
+						flag_idx = 4;
+					
+					for (int idx = 0; idx < 32; idx++)
 					{
-						powercnt++;
-						Sprintf(buf, " %2d - Amorphous beings", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M1_AMPHIBIOUS)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Amphibious beings", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M1_HUMANOID)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Humanoids", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M1_ANIMAL)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Animals", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M1_STEED)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Steeds", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-				}
-				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M2_FLAG)
-				{
-					if (objects[otyp].oc_target_permissions & M2_DEMON)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Demons", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_ANGEL)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Angels", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_MIND_FLAYER)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Mind flayers", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_DWARF)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Dwarves", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_ELF)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Elves", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_GIANT)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Giants", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_GNOLL)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Gnolls", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_GNOME)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Gnomes", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_HUMAN)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Human beings", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_ORC)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Orcs", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_UNDEAD)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Undead", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M2_WERE)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Lycanthropes", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-				}
-				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M3_FLAG)
-				{
-					//Nothing here yet
-				}
-				else if (objects[otyp].oc_flags3 & O3_TARGET_PERMISSION_IS_M4_FLAG)
-				{
-					if (objects[otyp].oc_target_permissions & M4_STONY)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Monsters made of stone", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
-					}
-					if (objects[otyp].oc_target_permissions & M4_WOODEN)
-					{
-						powercnt++;
-						Sprintf(buf, " %2d - Monsters made of wood", powercnt);
-						txt = buf;
-						putstr(datawin, 0, txt);
+						unsigned long bit = 1;
+						if (idx > 0)
+							bit = bit << idx;
+
+						const char* flagname = get_mflag_description(bit, TRUE, flag_idx);
+						if (flagname && strcmp(flagname, ""))
+						{
+							char flagbuf[BUFSZ];
+							strcpy(flagbuf, flagname);
+							*flagbuf = highc(*flagbuf);
+							powercnt++;
+							Sprintf(buf, " %2d - %s %s", powercnt, flagbuf);
+							txt = buf;
+							putstr(datawin, 0, txt);
+						}
 					}
 				}
 				else if (objects[otyp].oc_target_permissions > 0 && objects[otyp].oc_target_permissions < MAXMCLASSES)
@@ -2265,9 +2148,6 @@ register struct obj* obj;
 
 
 		}
-
-
-
 
 		/* Item properties */
 		if (objects[otyp].oc_flags & ~(O1_THROWN_WEAPON_ONLY | O1_MELEE_AND_THROWN_WEAPON
