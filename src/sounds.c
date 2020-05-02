@@ -2742,13 +2742,15 @@ struct monst* mtmp;
 			}
 
 			/* Give here */
+			int carryamt = can_carry(mtmp, otmp);
+
 			if(otmp)
 			{
 				if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
 				{
 					You("cannot give %s to %s. You are wearing it.", doname(otmp), mon_nam(mtmp));
 				}
-				else if (can_carry(mtmp, otmp) == 0)
+				else if (carryamt == 0 || carryamt < otmp->quan)
 				{
 					pline("%s cannot carry %s.", Monnam(mtmp), yname(otmp));
 				}
