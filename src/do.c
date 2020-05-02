@@ -2148,8 +2148,6 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-
-
 		}
 
 		/* Item properties */
