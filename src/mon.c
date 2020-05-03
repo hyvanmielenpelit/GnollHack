@@ -2267,7 +2267,7 @@ struct obj *otmp;
                     glomper = TRUE;
                     break;
                 }
-        if (nohands(mtmp->data) && !is_telekinetic_operator(mtmp->data) && !glomper)
+        if (nohands(mtmp->data) && !is_packmule(mtmp->data) && !is_telekinetic_operator(mtmp->data) && !glomper)
             return 1;
     }
 
