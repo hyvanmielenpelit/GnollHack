@@ -268,7 +268,11 @@ int *attk_count, *role_roll_penalty;
 	int skill_level = P_SKILL_LEVEL(weaponskill);
 	double skill_multiplier = 1.0;
 
-	if (weaponskill == P_MARTIAL_ARTS && !uarm && !uarms)
+	if (Upolyd && aatyp != AT_WEAP && !weapon)
+	{
+		skill_multiplier = 1.0;
+	}
+	else if (weaponskill == P_MARTIAL_ARTS && !uarm && !uarms)
 	{
 		switch (skill_level)
 		{
@@ -295,7 +299,7 @@ int *attk_count, *role_roll_penalty;
 			break;
 		}
 	}
-	else
+	else if(weaponskill != P_NONE)
 	{
 		switch (skill_level)
 		{
@@ -1541,6 +1545,8 @@ boolean* obj_destroyed;
 				else if(P_SKILL_LEVEL(P_MARTIAL_ARTS) >= P_BASIC)
 					damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
 			}
+			else if(obj && objects[obj->otyp].oc_skill == P_NONE)
+				damage += adjust_damage(u_str_dmg_bonus() / 2, &youmonst, mon, AD_PHYS, FALSE);
 			else
 				damage += adjust_damage(u_str_dmg_bonus(), &youmonst, mon, AD_PHYS, FALSE);
 		}
