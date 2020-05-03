@@ -135,13 +135,13 @@ getlock()
 
     if (iflags.window_inited) {
 #ifdef SELF_RECOVER
-        c = yn("There are files from a game in progress under your name. "
+        c = yn_query("There are files from a game in progress under your name. "
                "Recover?");
 #else
         pline("There is already a game in progress under your name.");
         pline("You may be able to use \"recover %s\" to get it back.\n",
               tbuf);
-        c = yn("Do you want to destroy the old game?");
+        c = yn_query("Do you want to destroy the old game?");
 #endif
     } else {
 #if defined(MSDOS) && defined(NO_TERMS)

@@ -118,7 +118,7 @@ picklock(VOID_ARGS)
         /* unfortunately we don't have a 'tknown' flag to record
            "known to be trapped" so declining to disarm and then
            retrying lock manipulation will find it all over again */
-        if (yn("You find a trap!  Do you want to try to disarm it?") == 'y') {
+        if (yn_query("You find a trap!  Do you want to try to disarm it?") == 'y') {
             const char *what;
             boolean alreadyunlocked;
 
@@ -496,7 +496,7 @@ struct obj *pick;
             Sprintf(qbuf, "%s it?",
                     (door->doormask & D_LOCKED) ? "Unlock" : "Lock");
 
-            c = yn(qbuf);
+            c = yn_query(qbuf);
             if (c == 'n')
                 return 0;
 

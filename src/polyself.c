@@ -445,7 +445,7 @@ int psflags;
 
     if (Unchanging) 
     {
-        if (!wizard || (wizard && yn("You are unchanging. Force polymorph anyway?") != 'y'))
+        if (!wizard || (wizard && yn_query("You are unchanging. Force polymorph anyway?") != 'y'))
         {
             pline("You fail to transform!");
             return;
@@ -457,7 +457,7 @@ int psflags;
         && !isvamp) {
         if (rn2(20) > ACURR(A_CON)) 
         {
-            if (!wizard || (wizard && yn("You are about to shudder. Force polymorph instead?") != 'y'))
+            if (!wizard || (wizard && yn_query("You are about to shudder. Force polymorph instead?") != 'y'))
             {
                 You1(shudder_for_moment);
                 losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_SHOC, TRUE), "system shock", KILLED_BY_AN);
@@ -551,12 +551,12 @@ int psflags;
 					break;
 				else if (mons[mntmp].difficulty > max(5, u.ulevel * 2))
 				{
-					if(wizard && !forcecontrol && yn("Enforce polymorph control success?") == 'y')
+					if(wizard && !forcecontrol && yn_query("Enforce polymorph control success?") == 'y')
 					{
 						forcecontrol = TRUE;
 						break;
 					}
-					else if (yn("This form may be too difficult for your polymorph control. Continue?") == 'y')
+					else if (yn_query("This form may be too difficult for your polymorph control. Continue?") == 'y')
 						break;
 				}
 				else
@@ -646,7 +646,7 @@ int psflags;
             if (controllable_poly) 
 			{
                 Sprintf(buf, "Become %s?", an(mons[mntmp].mname));
-                if (yn(buf) != 'y')
+                if (yn_query(buf) != 'y')
                     return;
             }
         }
@@ -1808,7 +1808,7 @@ dogaze()
 						Sprintf(qbuf, "Really %s %s?",
 								(adtyp == AD_CONF) ? "confuse" : "gaze at",
 								mon_nam(mtmp));
-						if (yn(qbuf) != 'y')
+						if (yn_query(qbuf) != 'y')
 							break;
 					}
 					setmangry(mtmp, TRUE);

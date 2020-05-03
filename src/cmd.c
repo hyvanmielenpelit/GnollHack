@@ -1421,7 +1421,7 @@ wiz_panic(VOID_ARGS)
         u.uen = u.uenmax = 1000;
         return 0;
     }
-    if (yn("Do you want to call panic() and end your game?") == 'y')
+    if (yn_query("Do you want to call panic() and end your game?") == 'y')
         panic("Crash test.");
     return 0;
 }
@@ -3948,7 +3948,7 @@ doattributes(VOID_ARGS)
     int mode = BASICENLIGHTENMENT;
 
     /* show more--as if final disclosure--for wizard and explore modes */
-    if ((wizard && yn("Enforce magic enlightenment?") == 'y') || discover)
+    if ((wizard && yn_query("Enforce magic enlightenment?") == 'y') || discover)
         mode |= MAGICENLIGHTENMENT;
 
     enlightenment(mode, ENL_GAMEINPROGRESS);
@@ -7016,7 +7016,7 @@ const char *prompt;
             promptprefix = "\"Yes\" or \"No\": ";
         } while (ParanoidConfirm && strcmpi(ans, "no") && --trylimit);
     } else
-        confirmed_ok = (yn(prompt) == 'y');
+        confirmed_ok = (yn_query(prompt) == 'y');
 
     return confirmed_ok;
 }

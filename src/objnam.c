@@ -4344,7 +4344,7 @@ struct obj *no_wish;
 		|| (!isartifact && is_otyp_nowish(typ))
 		|| (isartifact && (artilist[get_artifact_id(typ, name)].aflags & AF_NO_WISH))
 		)
-		&& yn("That item is nonwishable. Force it anyway?") != 'y'))) {
+		&& yn_query("That item is nonwishable. Force it anyway?") != 'y'))) {
         switch (typ) {
         case AMULET_OF_YENDOR:
             typ = FAKE_AMULET_OF_YENDOR;

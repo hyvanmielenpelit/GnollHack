@@ -392,7 +392,7 @@ typedef struct sortloot_item Loot;
 #define TEST_TRAP 3 /* check if a future travel loc is a trap */
 
 /*** some utility macros ***/
-#define yn(query) yn_function(query, ynchars, 'n')
+#define yn_query(query) yn_function(query, ynchars, 'n')
 #define ynq(query) yn_function(query, ynqchars, 'q')
 #define ynaq(query) yn_function(query, ynaqchars, 'y')
 #define nyaq(query) yn_function(query, ynaqchars, 'n')

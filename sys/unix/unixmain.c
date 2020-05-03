@@ -302,7 +302,7 @@ attempt_restore:
             wd_message();
             if (discover || wizard) {
                 /* this seems like a candidate for paranoid_confirmation... */
-                if (yn("Do you want to keep the save file?") == 'n') {
+                if (yn_query("Do you want to keep the save file?") == 'n') {
                     (void) delete_savefile();
                 } else {
                     (void) chmod(fq_save, FCMASK); /* back to readable */

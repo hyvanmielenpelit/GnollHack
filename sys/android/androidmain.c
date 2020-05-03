@@ -187,7 +187,7 @@ int GnollHackMain(int argc, char** argv)
 
 		if(discover || wizard)
 		{
-			if(yn("Do you want to keep the save file?") == 'n')
+			if(yn_query("Do you want to keep the save file?") == 'n')
 			{
 				(void)delete_savefile();
 			}

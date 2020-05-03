@@ -493,11 +493,11 @@ boolean iscontrolled;
     if ((u.uhave.amulet || On_W_tower_level(&u.uz)) && !rn2(3)) 
 	{
         You_feel("disoriented for a moment.");
-        if (!wizard || yn("Override?") != 'y')
+        if (!wizard || yn_query("Override?") != 'y')
             return FALSE;
     }
 
-    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (iswizcmd || yn("Enforce teleport control?") == 'y')))
+    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (iswizcmd || yn_query("Enforce teleport control?") == 'y')))
 	{
         if (unconscious() && !iscontrolled && !iswizcmd)
 		{
@@ -532,7 +532,7 @@ boolean iscontrolled;
 	else if (scroll && scroll->blessed)
 	{
         /* (this used to be handled in seffects()) */
-        if (yn("Do you wish to teleport?") == 'n')
+        if (yn_query("Do you wish to teleport?") == 'n')
             return TRUE;
         result = TRUE;
     }
@@ -764,7 +764,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
         trap_once = trap->once; /* trap may get deleted, save this */
         if (trap->once) {
             pline("This is a vault teleport, usable once only.");
-            if (yn("Jump in?") == 'n') {
+            if (yn_query("Jump in?") == 'n') {
                 trap = 0;
             } else {
                 deltrap(trap);
@@ -886,7 +886,7 @@ boolean iscontrolled;
         You_feel("very disoriented for a moment.");
         return;
     }
-    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (teletype == 1 || yn("Enforce teleport control?") == 'y'))) 
+    if ((Teleport_control && !Stunned) || iscontrolled || (wizard && (teletype == 1 || yn_query("Enforce teleport control?") == 'y'))) 
 	{
         char qbuf[BUFSZ];
         int trycnt = 0;

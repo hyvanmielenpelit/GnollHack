@@ -184,7 +184,7 @@ doride()
     } 
     else if (getdir((char *) 0) && isok(u.ux + u.dx, u.uy + u.dy))
     {
-        if (wizard && yn("Force the mount to succeed?") == 'y')
+        if (wizard && yn_query("Force the mount to succeed?") == 'y')
             forcemount = TRUE;
         return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy), forcemount));
     }
@@ -234,7 +234,7 @@ boolean force;      /* Quietly force this animal */
     if (Wounded_legs)
     {
         Your("%s are in no shape for riding.", makeplural(body_part(LEG)));
-        if (force && wizard && yn("Heal your legs?") == 'y')
+        if (force && wizard && yn_query("Heal your legs?") == 'y')
             HWounded_legs = EWounded_legs = 0L;
         else
             return (FALSE);

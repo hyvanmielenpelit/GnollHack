@@ -666,7 +666,7 @@ dodrink()
 		char qbuf[BUFSZ];
 		Sprintf(qbuf, "Drink from the %s?", get_fountain_name(u.ux, u.uy));
 
-        if (yn(qbuf) == 'y') 
+        if (yn_query(qbuf) == 'y') 
 		{
             drinkfountain();
             return 1;
@@ -676,14 +676,14 @@ dodrink()
     if (IS_SINK(levl[u.ux][u.uy].typ)
         /* not as low as floor level but similar restrictions apply */
         && can_reach_floor(FALSE)) {
-        if (yn("Drink from the sink?") == 'y') {
+        if (yn_query("Drink from the sink?") == 'y') {
             drinksink();
             return 1;
         }
     }
     /* Or are you surrounded by water? */
     if (Underwater && !u.uswallow) {
-        if (yn("Drink the water around you?") == 'y') {
+        if (yn_query("Drink the water around you?") == 'y') {
             pline("Do you know what lives in this water?");
             return 1;
         }
@@ -746,7 +746,7 @@ dodrink()
 			Sprintf(qbuf, "This potion smells %s. Drink it?",
 				otmp->otyp == POT_SICKNESS ? "contaminated" : otmp->otyp == POT_POISON ? "like poison" : otmp->otyp == POT_URINE ? "like urine" : "foul");
 			
-			char qres = yn(qbuf);
+			char qres = yn_query(qbuf);
 
 			if (qres != 'y')
 				return 0;
@@ -2437,7 +2437,7 @@ dodip()
         Sprintf(qbuf, "%s%s into the %s?", Dip_, flags.verbose ? obuf : shortestname, get_fountain_name(u.ux, u.uy));
         
 		/* "Dip <the object> into the fountain?" */
-        if (yn(qbuf) == 'y') 
+        if (yn_query(qbuf) == 'y') 
 		{
             dipfountain(obj);
             return 1;
@@ -2448,7 +2448,7 @@ dodip()
 		Sprintf(qbuf, "Put %s into the sink and open tap?", flags.verbose ? obuf : shortestname);
 
 		/* "Dip <the object> into the sink?" */
-		if (yn(qbuf) == 'y')
+		if (yn_query(qbuf) == 'y')
 		{
 			if (Levitation && !Levitation_control)
 			{
@@ -2478,7 +2478,7 @@ dodip()
                 flags.verbose ? obuf : shortestname, pooltype);
 
         /* "Dip <the object> into the {pool, moat, &c}?" */
-        if (yn(qbuf) == 'y')
+        if (yn_query(qbuf) == 'y')
 		{
             if (Levitation && !Levitation_control) 
 			{

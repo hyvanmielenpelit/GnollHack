@@ -4276,7 +4276,7 @@ dodown()
 	{
         You("are standing at the gate to Gehennom.");
         pline("Unspeakable cruelty and harm lurk down there.");
-        if (yn("Are you sure you want to enter?") != 'y')
+        if (yn_query("Are you sure you want to enter?") != 'y')
             return 0;
         else
             pline("So be it.");
@@ -4300,7 +4300,7 @@ dodown()
 
             You("don't fit %s easily.", down_or_thru);
             Sprintf(qbuf, "Try to squeeze %s?", down_or_thru);
-            if (yn(qbuf) == 'y')
+            if (yn_query(qbuf) == 'y')
 			{
                 if (!rn2(3))
 				{
@@ -4375,7 +4375,7 @@ doup()
     if (ledger_no(&u.uz) == 1) {
         if (iflags.debug_fuzzer)
             return 0;
-        if (yn("Beware, there will be no return!  Still climb?") != 'y')
+        if (yn_query("Beware, there will be no return!  Still climb?") != 'y')
             return 0;
     }
     if (!next_to_u()) {

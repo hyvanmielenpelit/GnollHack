@@ -530,7 +530,7 @@ struct monst *oracl;
 			return 0;
 		Sprintf(qbuf, "\"Then dost thou desire a major one?\" (%d %s)",
 			major_cost, currency((long)major_cost));
-		if (yn(qbuf) != 'y')
+		if (yn_query(qbuf) != 'y')
 			return 0;
 		u_pay = (umoney < (long)major_cost) ? (int)umoney : major_cost;
 		oracleaction = 2;
@@ -620,7 +620,7 @@ struct monst* oracl;
 	case 'n':
 		Sprintf(qbuf, "\"Then dost thou desire an improved one?\" (%d %s)",
 			major_id_cost, currency((long)major_id_cost));
-		if (yn(qbuf) != 'y')
+		if (yn_query(qbuf) != 'y')
 			return 0;
 		if (umoney < (long)major_id_cost) {
 			You("don't have enough money for that!");
@@ -682,7 +682,7 @@ struct monst* oracl;
 
 	Sprintf(qbuf, "\"Dost thou desire to enlighten yourself?\" (%d %s)",
 		enl_cost, currency((long)enl_cost));
-	if (yn(qbuf) != 'y')
+	if (yn_query(qbuf) != 'y')
 		return 0;
 
 	if (umoney < (long)enl_cost) {

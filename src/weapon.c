@@ -1722,7 +1722,7 @@ enhance_weapon_skill()
     boolean speedy = FALSE;
 	boolean firstheader = TRUE;
 
-    if (wizard && yn("Advance skills without practice?") == 'y')
+    if (wizard && yn_query("Advance skills without practice?") == 'y')
         speedy = TRUE;
 
     do 

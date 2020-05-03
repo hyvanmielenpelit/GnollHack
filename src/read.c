@@ -382,7 +382,7 @@ doread()
            maintained illiterate conduct so far, and this mail
            scroll didn't come from bones, ask for confirmation */
         if (!u.uconduct.literate) {
-            if (!scroll->special_quality && yn(
+            if (!scroll->special_quality && yn_query(
              "Reading mail will violate \"illiterate\" conduct.  Read anyway?"
                                    ) != 'y')
                 return 0;
@@ -3429,7 +3429,7 @@ struct _create_particular_data *d;
 
             Sprintf(buf, "Creating %s instead; force %s?",
                     mons[d->which].mname, mons[firstchoice].mname);
-            if (yn(buf) == 'y')
+            if (yn_query(buf) == 'y')
                 d->which = firstchoice;
         }
         whichpm = &mons[d->which];

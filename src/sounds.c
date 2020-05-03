@@ -3336,7 +3336,7 @@ struct monst* mtmp;
 	{
 		boolean itemized = TRUE;
 		if (pick_count > 1)
-			itemized = (yn("Itemized billing?") == 'y');
+			itemized = (yn_query("Itemized billing?") == 'y');
 
 		for (int i = 0; i < pick_count; i++)
 		{
@@ -3737,7 +3737,7 @@ struct monst* mtmp;
 	case 'n':
 		Sprintf(qbuf, "\"Then would you like to curse one?\" (%d %s)",
 			curse_cost, currency((long)curse_cost));
-		if (yn(qbuf) != 'y')
+		if (yn_query(qbuf) != 'y')
 			return 0;
 		if (umoney < (long)curse_cost)
 		{

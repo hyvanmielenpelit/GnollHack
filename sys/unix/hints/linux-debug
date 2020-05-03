@@ -46,7 +46,7 @@ CFLAGS+=-DDUMPHTML
 
 LINK=$(CC)
 # Only needed for GLIBC stack trace:
-LFLAGS=-rdynamic -no-pie
+LFLAGS=-lm -rdynamic -no-pie
 
 WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
 WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)

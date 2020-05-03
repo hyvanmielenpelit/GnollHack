@@ -1006,7 +1006,7 @@ autokick()
 	if (u.utrap)
 		return;
 
-	if (yn("Kick it open?") == 'y')
+	if (yn_query("Kick it open?") == 'y')
 		dokick_indir(TRUE);
 }
 

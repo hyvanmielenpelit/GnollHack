@@ -110,8 +110,8 @@ Mac: update `mrecover'
 Mac: handle `-@' character name suffix for explicitly requesting random role
 msdos: suppress tiles on rogue level when restoring games that were saved there
 tty: support group accelerators for PICK_ONE menus
-tty: after <ctrl/P> at a yn() prompt, don't blindly accept the character
-	used to get back to the prompt as the yn() result [could trigger
+tty: after <ctrl/P> at a yn_query() prompt, don't blindly accept the character
+	used to get back to the prompt as the yn_query() result [could trigger
 	impossible("invalid sell response")]
 Unix+tty: guard against <curses.h> problems with delay_output,TRUE/FALSE macros
 X11: fix group accelerators and support them for PICK_ONE menus

@@ -388,7 +388,7 @@ struct obj *corpse;
     if (fd >= 0) {
         (void) nhclose(fd);
         if (wizard) {
-            if (yn("Bones file already exists.  Replace it?") == 'y') {
+            if (yn_query("Bones file already exists.  Replace it?") == 'y') {
                 if (delete_bonesfile(&u.uz))
                     goto make_bones;
                 else
@@ -630,7 +630,7 @@ getbones()
     } else {
         ok = TRUE;
         if (wizard) {
-            if (yn("Get bones?") == 'n') {
+            if (yn_query("Get bones?") == 'n') {
                 (void) nhclose(fd);
                 compress_bonesfile();
                 return 0;
@@ -692,7 +692,7 @@ getbones()
     u.uroleplay.numbones++;
 
     if (wizard) {
-        if (yn("Unlink bones?") == 'n') {
+        if (yn_query("Unlink bones?") == 'n') {
             compress_bonesfile();
             return ok;
         }

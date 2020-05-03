@@ -1595,7 +1595,7 @@ struct obj **optr;
 		char qbuf[BUFSIZ] = "";
 		Sprintf(qbuf, "%s only one?", obj->lamplit ? "Snuff out" : "Light");
 
-		if (obj->quan > 1L && yn(qbuf) == 'y') 
+		if (obj->quan > 1L && yn_query(qbuf) == 'y') 
 		{
 			objsplitted = TRUE;
 			if (!carried(obj))
@@ -1644,7 +1644,7 @@ struct obj **optr;
     if ((q = strstri(qbuf, " to\033")) != 0)
         Strcpy(q, " to ");
     /* last, format final "attach candles to candelabrum?" query */
-    if (yn(safe_qbuf(qbuf, qbuf, "?", otmp, yname, thesimpleoname, "it"))
+    if (yn_query(safe_qbuf(qbuf, qbuf, "?", otmp, yname, thesimpleoname, "it"))
         == 'n') {
         use_lamp(obj);
         return;
@@ -3434,7 +3434,7 @@ struct obj *otmp;
         Sprintf(buf, "Continue your attempt to set %s?",
                 the(defsyms[trap_to_defsym(what_trap(ttyp, rn2))]
                     .explanation));
-        if (yn(buf) == 'y') {
+        if (yn_query(buf) == 'y') {
             if (chance) {
                 switch (ttyp) {
                 case LANDMINE: /* set it off */

@@ -568,7 +568,7 @@ register struct obj *spellbook;
 			else
 				Sprintf(buf, "The runes in %s seem to be all over the place. Continue?", the(cxname(spellbook)));
 		}
-		if (yn(buf) != 'y')
+		if (yn_query(buf) != 'y')
 			return takeround; // Takes one round to read the header if not known in advance
 
 		if (perusetext)
@@ -677,7 +677,7 @@ register struct obj *spellbook;
 
 					Sprintf(qbuf, "This spellbook %s to comprehend. Continue?", descbuf);
 
-                    if (yn(qbuf) != 'y') 
+                    if (yn_query(qbuf) != 'y') 
 					{
                         spellbook->in_use = FALSE;
                         return 1;
