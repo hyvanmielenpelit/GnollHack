@@ -443,18 +443,27 @@ int psflags;
             iswere = (u.ulycn >= LOW_PM), isvamp = is_vampire(youmonst.data),
             controllable_poly = Polymorph_control && !(Stunned || Unaware);
 
-    if (Unchanging) {
-        pline("You fail to transform!");
-        return;
+    if (Unchanging) 
+    {
+        if (!wizard || (wizard && yn("You are unchanging. Force polymorph anyway?") != 'y'))
+        {
+            pline("You fail to transform!");
+            return;
+        }
     }
+
     /* being Stunned|Unaware doesn't negate this aspect of Poly_control */
     if (!Polymorph_control && !forcecontrol && !draconian && !bullheaded && !iswere
         && !isvamp) {
-        if (rn2(20) > ACURR(A_CON)) {
-            You1(shudder_for_moment);
-            losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_SHOC, TRUE), "system shock", KILLED_BY_AN);
-            exercise(A_CON, FALSE);
-            return;
+        if (rn2(20) > ACURR(A_CON)) 
+        {
+            if (!wizard || (wizard && yn("You are about to shudder. Force polymorph instead?") != 'y'))
+            {
+                You1(shudder_for_moment);
+                losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_SHOC, TRUE), "system shock", KILLED_BY_AN);
+                exercise(A_CON, FALSE);
+                return;
+            }
         }
     }
     old_light = emitted_light_range(youmonst.data);
@@ -463,13 +472,15 @@ int psflags;
     if (monsterpoly && isvamp)
         goto do_vampyr;
 
-    if (controllable_poly || forcecontrol) {
+    if (controllable_poly || forcecontrol) 
+    {
         tryct = 5;
         do {
             mntmp = NON_PM;
             getlin("Become what kind of monster? [type the name]", buf);
             (void) mungspaces(buf);
-            if (*buf == '\033') {
+            if (*buf == '\033')
+            {
                 /* user is cancelling controlled poly */
                 if (forcecontrol) { /* wizard mode #polyself */
                     pline1(Never_mind);
@@ -477,7 +488,8 @@ int psflags;
                 }
                 Strcpy(buf, "*"); /* resort to random */
             }
-            if (!strcmp(buf, "*") || !strcmp(buf, "random")) {
+            if (!strcmp(buf, "*") || !strcmp(buf, "random")) 
+            {
                 /* explicitly requesting random result */
                 tryct = 0; /* will skip thats_enough_tries */
                 continue;  /* end do-while(--tryct > 0) loop */
@@ -576,9 +588,11 @@ int psflags;
 		{
         do_merge:
             mntmp = armor_to_dragon(uarm->otyp);
-            if (!(mvitals[mntmp].mvflags & G_GENOD)) {
+            if (!(mvitals[mntmp].mvflags & G_GENOD))
+            {
                 /* allow G_EXTINCT */
-                if (is_dragon_scales(uarm)) {
+                if (is_dragon_scales(uarm))
+                {
                     /* dragon scales remain intact as uskin */
                     You("merge with your scaly armor.");
                 } else { /* dragon scale mail */
@@ -646,9 +660,11 @@ int psflags;
         goto made_change; /* maybe not, but this is right anyway */
     }
 
-    if (mntmp < LOW_PM) {
+    if (mntmp < LOW_PM)
+    {
         tryct = 200;
-        do {
+        do
+        {
             /* randomly pick an "ordinary" monster */
 			mntmp = monsndx(rndmonst()); //rn1(SPECIAL_PM - LOW_PM, LOW_PM);
             if (polyok(&mons[mntmp]) && !is_placeholder(&mons[mntmp]))
@@ -660,17 +676,22 @@ int psflags;
      * we deliberately chose something illegal to force newman().
      */
     sex_change_ok++;
-    if (!polyok(&mons[mntmp]) || (!forcecontrol && !rn2(5))
-        || your_race(&mons[mntmp])) {
+    if (!polyok(&mons[mntmp]) || (!wizard && ((!forcecontrol && !rn2(5))
+        || (your_race(&mons[mntmp]) && !is_undead(&mons[mntmp]))))
+        )
+    {
         newman();
-    } else {
+    }
+    else
+    {
         (void) polymon(mntmp);
     }
     sex_change_ok--; /* reset */
 
 made_change:
     new_light = emitted_light_range(youmonst.data);
-    if (old_light != new_light) {
+    if (old_light != new_light)
+    {
         if (old_light)
             del_light_source(LS_MONSTER, monst_to_any(&youmonst));
         if (new_light == 1)
