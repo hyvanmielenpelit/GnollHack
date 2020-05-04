@@ -16,7 +16,25 @@
 #define NOTELL 0
 #define ON 1
 #define OFF 0
-#define BOLT_LIM 8        /* from this distance ranged attacks will be made */
+
+/* Various ranges - BOLT_LIM has been split into these */
+#define TELEPATHY_RANGE 8
+#define FIND_RANGE 8
+#define OPEN_RANGE 8
+#define GAZE_RANGE 8
+#define M_SHOOT_RANGE 18
+#define M_SHOOT_CHANCE_RANGE 8
+#define M_GENERIC_RANGED_ATTACK_RANGE 8
+#define M_RAY_RANGE 8
+#define U_NOT_NEARBY_RANGE 8
+#define U_THREAT_RANGE 18
+#define NEARBY_CUTOFF_RANGE_CAN_SEE 9
+#define NEARBY_CUTOFF_RANGE_CANNOT_SEE 5
+#define EXPLOSION_SOUND_RADIUS 18
+#define UNDEAD_TURNING_BASE_DISTANCE 6
+#define SHOPKEEPER_NEARBY_CUTOFF_DISTANCE 4
+#define MAXIMUM_RECOIL_DISTANCE 6
+
 #define MAX_CARR_CAP 2000 /* so that boulders can be heavier */
 #define POLEARM_MIN_DISTANCE 4 /* squared distance */
 #define POLEARM_NORMAL_MAX_DISTANCE 8

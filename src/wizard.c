@@ -393,7 +393,7 @@ register struct monst *mtmp;
             }
         }
         /* if you're not around, cast healing spells */
-        if (distu(mtmp->mx, mtmp->my) > (BOLT_LIM * BOLT_LIM))
+        if (distu(mtmp->mx, mtmp->my) > (U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE))
             if (mtmp->mhp <= mtmp->mhpmax - 1) //8)
 			{
 				mtmp->mhp += 1; // rnd(8);

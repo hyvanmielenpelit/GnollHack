@@ -1659,9 +1659,9 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         if (Is_airlevel(&u.uz) || Levitation) {
             /* action, reaction... */
 			if(youmonst.data->cwt)
-	            urange = min(BOLT_LIM, range * obj->owt / youmonst.data->cwt);
+	            urange = min(MAXIMUM_RECOIL_DISTANCE, range * obj->owt / youmonst.data->cwt);
 			else
-				urange = min(BOLT_LIM, range * obj->owt / (16 * 2 * 80)); //about 160 lbs = about 80 kg
+				urange = min(MAXIMUM_RECOIL_DISTANCE, range * obj->owt / (16 * 2 * 80)); //about 160 lbs = about 80 kg
 
             if (urange < 1)
                 urange = 1;

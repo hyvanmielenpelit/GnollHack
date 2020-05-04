@@ -36,7 +36,7 @@
           /* OR 2b. hero is using a telepathy inducing */  \
           /*        object and in range                */  \
           || (Unblind_telepat                              \
-              && (distu(mon->mx, mon->my) <= (BOLT_LIM * BOLT_LIM)))))
+              && (distu(mon->mx, mon->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE)))))
 
 #define sensemon(mon) \
     (tp_sensemon(mon) || Detect_monsters || MATCH_WARN_OF_MON(mon))
@@ -127,7 +127,7 @@
 #define knowninvisible(mon)                                               \
     (is_invisible(mon)                                                        \
      && ((cansee(mon->mx, mon->my) && (See_invisible || Detect_monsters)) \
-         || (Telepat && distu(mon->mx, mon->my) <= (BOLT_LIM * BOLT_LIM))))
+         || (Telepat && distu(mon->mx, mon->my) <= (TELEPATHY_RANGE * TELEPATHY_RANGE))))
 
 /*
  * is_safepet(mon)

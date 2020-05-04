@@ -8,7 +8,7 @@
 STATIC_DCL int FDECL(monmulti, (struct monst *, struct obj *, struct obj *));
 STATIC_DCL void FDECL(monshoot, (struct monst *, struct obj *, struct obj *));
 STATIC_DCL int FDECL(drop_throw, (struct obj *, BOOLEAN_P, int, int));
-STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *, BOOLEAN_P, int, BOOLEAN_P));
+STATIC_DCL boolean FDECL(m_lined_up, (struct monst *, struct monst *, BOOLEAN_P, int, BOOLEAN_P, int));
 
 extern const char* const flash_types[]; /* from zap.c */
 
@@ -1107,9 +1107,9 @@ struct monst *mtmp, *mtarg;
 
     mwep = MON_WEP(mtmp); /* wielded weapon */
 
-    if (!ispole && m_lined_up(mtarg, mtmp, TRUE, AD_PHYS, FALSE))
+    if (!ispole && m_lined_up(mtarg, mtmp, TRUE, AD_PHYS, FALSE, M_SHOOT_RANGE))
 	{
-        int chance = max(BOLT_LIM - distmin(x, y, mtarg->mx, mtarg->my), 1);
+        int chance = max(M_SHOOT_CHANCE_RANGE - distmin(x, y, mtarg->mx, mtarg->my), 1);
 
         if (!is_fleeing(mtarg) || !rn2(chance))
 		{
@@ -1146,7 +1146,7 @@ struct attack *mattk;
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE)) {
+    if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE, M_GENERIC_RANGED_ATTACK_RANGE)) {
         switch (mattk->adtyp) {
         case AD_BLND:
         case AD_DRST:
@@ -1159,7 +1159,8 @@ struct attack *mattk;
             otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
-        if (!rn2(BOLT_LIM-distmin(mtmp->mx,mtmp->my,mtarg->mx,mtarg->my))) {
+        if (!rn2(max(1, M_SHOOT_CHANCE_RANGE - distmin(mtmp->mx,mtmp->my,mtarg->mx,mtarg->my))))
+        {
             if (canseemon(mtmp))
                 pline("%s spits venom!", Monnam(mtmp));
             target = mtarg;
@@ -1197,7 +1198,7 @@ struct attack  *mattk;
     /* if new breath types are added, change AD_ACID to max type */
     int typ = get_ray_adtyp(mattk->adtyp); // Does not include death ray
 
-    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE))
+    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
         if (is_cancelled(mtmp)) 
 		{
@@ -1252,7 +1253,7 @@ struct attack* mattk;
 
 	int typ = get_ray_adtyp(mattk->adtyp);
 
-	if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE))
+	if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
 		if (is_cancelled(mtmp) || is_blinded(mtmp))
 		{
@@ -1306,7 +1307,7 @@ struct attack* mattk;
     if (adtyp < AD_MAGM || adtyp > AD_STON)
         return 0;
 
-    if (m_lined_up(mtarg, mtmp, TRUE, adtyp, TRUE))
+    if (m_lined_up(mtarg, mtmp, TRUE, adtyp, TRUE, M_RAY_RANGE))
     {
         if (is_cancelled(mtmp))
         {
@@ -1627,9 +1628,9 @@ struct monst *mtmp;
      * going away, you are probably hurt or running.  Give
      * chase, but if you are getting too far away, throw.
      */
-    if (!lined_up(mtmp, TRUE, AD_PHYS, FALSE)
+    if (!lined_up(mtmp, TRUE, AD_PHYS, FALSE, M_SHOOT_RANGE)
         || (URETREATING(x, y)
-            && rn2(BOLT_LIM - distmin(x, y, mtmp->mux, mtmp->muy))))
+            && rn2(max(1, M_SHOOT_CHANCE_RANGE - distmin(x, y, mtmp->mux, mtmp->muy)))))
         return;
 
     mwep = MON_WEP(mtmp); /* wielded weapon */
@@ -1655,7 +1656,7 @@ struct attack *mattk;
                   s_suffix(mon_nam(mtmp)));
         return 0;
     }
-    if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE))
+    if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE, M_GENERIC_RANGED_ATTACK_RANGE))
 	{
         switch (mattk->adtyp) 
 		{
@@ -1670,8 +1671,8 @@ struct attack *mattk;
             otmp = mksobj(ACID_VENOM, TRUE, FALSE, FALSE);
             break;
         }
-        if (!rn2(BOLT_LIM
-                 - distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)))
+        if (!rn2(max(1, M_SHOOT_CHANCE_RANGE
+                 - distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy))))
 		{
             if (canseemon(mtmp))
                 pline("%s spits venom!", Monnam(mtmp));
@@ -1701,7 +1702,7 @@ struct attack *mattk;
 
 	int typ = get_ray_adtyp(mattk->adtyp);
 
-    if (lined_up(mtmp, TRUE, typ, TRUE))
+    if (lined_up(mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
         if (is_cancelled(mtmp) || is_blinded(mtmp))
 		{
@@ -1738,7 +1739,7 @@ struct attack* mattk;
 	/* if new breath types are added, change AD_ACID to max type */
 	int typ = get_ray_adtyp(mattk->adtyp); //NOTE: Does not include death ray
 
-	if (lined_up(mtmp, TRUE, typ, TRUE))
+	if (lined_up(mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
 		if (is_cancelled(mtmp)) 
 		{
@@ -1776,7 +1777,7 @@ You_hear("a cough.");
 
 
 boolean
-linedup(ax, ay, bx, by, boulderhandling, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect)
+linedup(ax, ay, bx, by, boulderhandling, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect, range)
 register xchar ax, ay, bx, by;
 int boulderhandling; /* 0=block, 1=ignore, 2=conditionally block */
 boolean block_if_hostile_monster;
@@ -1784,6 +1785,7 @@ boolean block_if_peaceful_monster;
 boolean block_if_tame_monster;
 int dmgtype;
 boolean attack_can_reflect;
+int range;
 {
 	int dx, dy, boulderspots;
 
@@ -1797,7 +1799,7 @@ boolean attack_can_reflect;
 		return FALSE;
 
 	if ((!tbx || !tby || abs(tbx) == abs(tby)) /* straight line or diagonal */
-		&& distmin(tbx, tby, 0, 0) < BOLT_LIM
+		&& distmin(tbx, tby, 0, 0) < range
 		)
 	{
 		boolean path_clear_base = (ax == u.ux && ay == u.uy) ? (boolean)couldsee(bx, by)
@@ -1879,11 +1881,12 @@ boolean attack_can_reflect;
 }
 
 STATIC_OVL boolean
-m_lined_up(mtarg, mtmp, can_hit_others, dmgtype, attack_can_reflect)
+m_lined_up(mtarg, mtmp, can_hit_others, dmgtype, attack_can_reflect, range)
 struct monst *mtarg, *mtmp;
 boolean can_hit_others;
 int dmgtype;
 boolean attack_can_reflect;
+int range;
 {
 
 	boolean block_if_hostile_monster = 0;
@@ -1898,17 +1901,18 @@ boolean attack_can_reflect;
 	}
 
 
-    return (linedup(mtarg->mx, mtarg->my, mtmp->mx, mtmp->my, 0, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect));
+    return (linedup(mtarg->mx, mtarg->my, mtmp->mx, mtmp->my, 0, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect, range));
 }
 
 
 /* is mtmp in position to use ranged attack? */
 boolean
-lined_up(mtmp, can_hit_others, dmgtype, attack_can_reflect)
+lined_up(mtmp, can_hit_others, dmgtype, attack_can_reflect, range)
 register struct monst *mtmp;
 boolean can_hit_others;
 int dmgtype;
 boolean attack_can_reflect;
+int range;
 {
     boolean ignore_boulders;
 
@@ -1932,7 +1936,7 @@ boolean attack_can_reflect;
     ignore_boulders = (throws_rocks(mtmp->data)
                        || m_carrying(mtmp, WAN_STRIKING));
     return linedup(mtmp->mux, mtmp->muy, mtmp->mx, mtmp->my,
-                   ignore_boulders ? 1 : 2, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect);
+                   ignore_boulders ? 1 : 2, block_if_hostile_monster, block_if_peaceful_monster, block_if_tame_monster, dmgtype, attack_can_reflect, range);
 }
 
 /* check if a monster is carrying a particular item */

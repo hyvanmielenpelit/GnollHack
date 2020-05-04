@@ -1294,8 +1294,8 @@ register struct obj* obj;
 		if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 		{
 			int enchplus = obj->enchantment;
-			int tohitplus = is_launcher(obj) ? (enchplus + 1) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
-			int dmgplus = is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1) / 2 : enchplus;
+			int tohitplus = is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
+			int dmgplus = is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
 
 			wep_avg_dmg += (double)dmgplus;
 			if (wep_avg_dmg < 0)

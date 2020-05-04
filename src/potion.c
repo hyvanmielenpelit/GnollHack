@@ -2602,7 +2602,7 @@ dodip()
                to 'amt' because that's not implemented] */
             obj->in_use = 1;
             pline("BOOM!  They explode!");
-            wake_nearto(u.ux, u.uy, (BOLT_LIM + 1) * (BOLT_LIM + 1));
+            wake_nearto(u.ux, u.uy, EXPLOSION_SOUND_RADIUS * EXPLOSION_SOUND_RADIUS);
             exercise(A_STR, FALSE);
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                 potionbreathe(obj);

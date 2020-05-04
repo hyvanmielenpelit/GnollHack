@@ -2366,7 +2366,7 @@ register struct monst *mtmp;
             } else {
                 /* same near/far threshold as mzapmsg() */
                 int range = couldsee(mtmp->mx, mtmp->my) /* 9 or 5 */
-                               ? (BOLT_LIM + 1) : (BOLT_LIM - 3);
+                               ? NEARBY_CUTOFF_RANGE_CAN_SEE : NEARBY_CUTOFF_RANGE_CANNOT_SEE;
 
                 You_hear("a %s squeak %s.", trapnote(trap, 1),
                          (distu(mtmp->mx, mtmp->my) <= range * range)

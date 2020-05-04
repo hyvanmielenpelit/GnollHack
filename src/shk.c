@@ -3686,7 +3686,7 @@ boolean catchup; /* restoring a level */
 
     if (once && *once) {
         boolean shk_closeby = (distu(shkp->mx, shkp->my)
-                               <= (BOLT_LIM / 2) * (BOLT_LIM / 2));
+                               <= SHOPKEEPER_NEARBY_CUTOFF_DISTANCE * SHOPKEEPER_NEARBY_CUTOFF_DISTANCE);
 
         /* this is suboptimal if we eventually give a "shk untraps"
            message for the only repair, but perhaps the shop repair

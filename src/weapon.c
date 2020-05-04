@@ -260,7 +260,7 @@ int basehitval(otmp, mon, mattacker, use_type)
 struct obj* otmp;
 struct monst* mon;
 struct monst* mattacker;
-int use_type;
+int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
 {
 	if (!otmp || !mon)
 		return 0;
@@ -273,7 +273,7 @@ int use_type;
     if (use_type == 1)
         applicable_enchantment = (applicable_enchantment + 0) / 2;
     else if (use_type == 2)
-        applicable_enchantment = (applicable_enchantment + 1) / 2;
+        applicable_enchantment = (applicable_enchantment + 1 * sgn(applicable_enchantment)) / 2;
 
 	if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
 	{ 
@@ -400,7 +400,7 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
 
             int applicable_enchantment = otmp->enchantment;
             if (use_type == 1)
-                applicable_enchantment = (applicable_enchantment + 1) / 2;
+                applicable_enchantment = (applicable_enchantment + 1 * sgn(applicable_enchantment)) / 2;
             else if(use_type == 2)
                 applicable_enchantment = (applicable_enchantment + 0) / 2;
 

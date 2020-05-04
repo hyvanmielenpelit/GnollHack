@@ -235,10 +235,10 @@ register struct monst *mtmp;
     /* check whether hero notices monster and stops current activity */
     if (occupation && !rd && !Confusion && (!is_peaceful(mtmp) || Hallucination)
         /* it's close enough to be a threat */
-        && distu(x, y) <= (BOLT_LIM + 1) * (BOLT_LIM + 1)
+        && distu(x, y) <= (M_SHOOT_RANGE + 1) * (M_SHOOT_RANGE + 1)
         /* and either couldn't see it before, or it was too far away */
         && (!already_saw_mon || !couldsee(x, y)
-            || distu(x, y) > (BOLT_LIM + 1) * (BOLT_LIM + 1))
+            || distu(x, y) > (M_SHOOT_RANGE + 1) * (M_SHOOT_RANGE + 1))
         /* can see it now, or sense it and would normally see it */
         && (canseemon(mtmp) || (sensemon(mtmp) && couldsee(x, y)))
         && mtmp->mcanmove && !noattacks(mtmp->data)
@@ -563,7 +563,7 @@ int *inrange, *nearby, *scared;
     boolean sawscary = FALSE, bravegremlin = (rn2(5) == 0);
 
     *inrange = (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)
-                <= (BOLT_LIM * BOLT_LIM));
+                <= (U_THREAT_RANGE * U_THREAT_RANGE));
     *nearby = *inrange && monnear(mtmp, mtmp->mux, mtmp->muy);
 
     /* Note: if your image is displaced, the monster sees the Elbereth
@@ -757,7 +757,7 @@ register struct monst *mtmp;
 
         if (canseemon(mtmp))
             pline("%s concentrates.", Monnam(mtmp));
-        if (distu(mtmp->mx, mtmp->my) > BOLT_LIM * BOLT_LIM)
+        if (distu(mtmp->mx, mtmp->my) > TELEPATHY_RANGE * TELEPATHY_RANGE)
 		{
             You("sense a faint wave of psychic energy.");
             goto toofar;
@@ -1230,9 +1230,8 @@ register int after;
 
     if ((!is_peaceful(mtmp) || !rn2(10)) && (!Is_rogue_level(&u.uz)))
 	{
-        boolean in_line = (lined_up(mtmp, FALSE, 0, FALSE)
-               && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy)
-                   <= (throws_rocks(youmonst.data) ? 20 : ACURRSTR / 2 + 1)));
+        int throwrange = throws_rocks(youmonst.data) ? 20 : ACURRSTR / 2 + 1;
+        boolean in_line = (lined_up(mtmp, FALSE, 0, FALSE, throwrange) && (distmin(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= throwrange));
 
         if (appr != 1 || !in_line) 
 		{

@@ -1798,7 +1798,7 @@ movemon()
              *  have died if it returns 1.
              */
             if (couldsee(mtmp->mx, mtmp->my)
-                && (distu(mtmp->mx, mtmp->my) <= BOLT_LIM * BOLT_LIM)
+                && (distu(mtmp->mx, mtmp->my) <= M_SHOOT_RANGE * M_SHOOT_RANGE)
                 && fightm(mtmp))
                 continue; /* mon might have died */
         }
@@ -4388,7 +4388,7 @@ int shiftflags;
             } else if (mon->data == &mons[PM_FOG_CLOUD]
                      && mon->mhp == mon->mhpmax && !rn2(4)
                      && (!canseemon(mon)
-                         || distu(mon->mx, mon->my) > BOLT_LIM * BOLT_LIM)) {
+                         || distu(mon->mx, mon->my) > U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE)) {
                 /* if a fog cloud, maybe change to wolf or vampire bat;
                    those are more likely to take damage--at least when
                    tame--and then switch back to vampire; they'll also
@@ -4402,7 +4402,7 @@ int shiftflags;
         } else {
             if (mon->mhp >= 9 * mon->mhpmax / 10 && !rn2(6)
                 && (!canseemon(mon)
-                    || distu(mon->mx, mon->my) > BOLT_LIM * BOLT_LIM))
+                    || distu(mon->mx, mon->my) > U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE))
                 dochng = TRUE; /* 'ptr' stays Null */
         }
     }

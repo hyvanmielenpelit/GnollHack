@@ -3523,7 +3523,7 @@ struct attack *mattk;
         break;
     case AD_BLND:
         if (canseemon(mtmp) && !resists_blnd(&youmonst) && !Flash_resistance
-            && distu(mtmp->mx, mtmp->my) <= BOLT_LIM * BOLT_LIM) 
+            && distu(mtmp->mx, mtmp->my) <= GAZE_RANGE * GAZE_RANGE)
 		{
             if (cancelled) 
 			{

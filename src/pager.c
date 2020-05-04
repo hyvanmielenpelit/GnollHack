@@ -1386,10 +1386,10 @@ boolean do_mons; /* True => monsters, False => objects */
     char lookbuf[BUFSZ], outbuf[BUFSZ];
 
     win = create_nhwindow(NHW_TEXT);
-    lo_y = nearby ? max(u.uy - BOLT_LIM, 0) : 0;
-    lo_x = nearby ? max(u.ux - BOLT_LIM, 1) : 1;
-    hi_y = nearby ? min(u.uy + BOLT_LIM, ROWNO - 1) : ROWNO - 1;
-    hi_x = nearby ? min(u.ux + BOLT_LIM, COLNO - 1) : COLNO - 1;
+    lo_y = nearby ? max(u.uy - NEARBY_CUTOFF_RANGE_CAN_SEE, 0) : 0;
+    lo_x = nearby ? max(u.ux - NEARBY_CUTOFF_RANGE_CAN_SEE, 1) : 1;
+    hi_y = nearby ? min(u.uy + NEARBY_CUTOFF_RANGE_CAN_SEE, ROWNO - 1) : ROWNO - 1;
+    hi_x = nearby ? min(u.ux + NEARBY_CUTOFF_RANGE_CAN_SEE, COLNO - 1) : COLNO - 1;
     for (y = lo_y; y <= hi_y; y++) {
         for (x = lo_x; x <= hi_x; x++) {
             lookbuf[0] = '\0';

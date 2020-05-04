@@ -1010,7 +1010,7 @@ register struct attack *mattk;
         return (0);
     }
 
-    if (!mtmp->mspec_used && lined_up(mtmp, TRUE, adtyp, TRUE) && rn2(3))
+    if (!mtmp->mspec_used && lined_up(mtmp, TRUE, adtyp, TRUE, M_RAY_RANGE) && rn2(3))
 	{
         nomul(0);
         if (adtyp && adtyp <= AD_STON)
