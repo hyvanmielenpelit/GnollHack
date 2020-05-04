@@ -1808,7 +1808,7 @@ NEARDATA struct permonst mons[] = {
         M2_MINION | M2_STALK | M2_NASTY | M2_COLLECT | M2_ANGEL,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
                 M4_BRAVE | M4_FEARLESS,
-		17, CLR_YELLOW),
+		16, CLR_YELLOW),
     MON("Angel", None, "angelic being that can project magic missiles", S_ANGEL, LVL(14, 10, -4, 15, 55, 12),
         (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0),
@@ -1821,7 +1821,7 @@ NEARDATA struct permonst mons[] = {
         M2_NOPOLY | M2_MINION | M2_STALK | M2_NASTY | M2_COLLECT | M2_ANGEL,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY,
         M4_BRAVE | M4_FEARLESS,
-        22, CLR_WHITE),
+        21, CLR_WHITE),
     MON("ki-rin", None, "flying angelic horse that casts spells", S_ANGEL, LVL(16, 18, -5, 17, 90, 15),
         (G_NOHELL | G_NOCORPSE | 1),
         A(ATTK(AT_KICK, AD_PHYS, 2, 4, 0, 0), ATTK(AT_KICK, AD_PHYS, 2, 4, 0, 0),
@@ -1847,7 +1847,7 @@ NEARDATA struct permonst mons[] = {
         M2_NOPOLY | M2_MINION | M2_STALK | M2_NASTY | M2_COLLECT | M2_MAGIC | M2_ANGEL,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY,
         M4_BRAVE | M4_FEARLESS | M4_LORD,
-		36, HI_LORD),
+		45, HI_LORD),
     /*
      * Bats and birds
      */
