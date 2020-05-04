@@ -1533,19 +1533,39 @@ find_mac(mon)
 register struct monst *mon;
 {
     register struct obj *obj;
-    int base = mon->data->ac;
-    long mwflags = mon->worn_item_flags;
-
-	//DEX bonus for monsters, reduce the number from AC; not add!
-	base -= dexterity_ac_bonus(m_acurr(mon, A_DEX));
-	base -= mon->macbonus;
+    int natural_ac_base = mon->data->ac;
+	int natural_ac = natural_ac_base;
+	int armor_bonus = 0;
+	int armor_ac = 10;
+	int mac = 0;
+	long mwflags = mon->worn_item_flags;
 
     for (obj = mon->minvent; obj; obj = obj->nobj) {
         if (obj->owornmask & mwflags)
-            base -= ARM_AC_BONUS(obj, mon->data);
+			armor_bonus += ARM_AC_BONUS(obj, mon->data);
         /* since ARM_AC_BONUS is positive, subtracting it increases AC */
     }
-    return base;
+
+	natural_ac -= armor_bonus / 3;
+	armor_ac -= (armor_bonus + ((10 - natural_ac_base) / 3));
+
+	if (natural_ac <= armor_ac)
+		mac = natural_ac;
+	else
+		mac = armor_ac;
+
+	//DEX bonus for monsters, reduce the number from AC; not add!
+	mac -= dexterity_ac_bonus(m_acurr(mon, A_DEX));
+	mac -= mon->macbonus;
+
+	if (mon->mprops[MAGICAL_STONESKIN])
+		mac -= 10;
+	else if (mon->mprops[MAGICAL_SHIELDING])
+		mac -= 4;
+	else if (mon->mprops[PROTECTION])
+		mac -= 3;
+
+    return mac;
 }
 
 

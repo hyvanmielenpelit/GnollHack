@@ -1893,8 +1893,12 @@ find_mc()
 void
 find_ac()
 {
-	int uac = mons[u.umonnum].ac; /* base armor class for current form */
-	int suit_ac_bonus = 0;
+    int uac = 0; /* base armor class for current form */
+    int uac_natural_base = mons[u.umonnum].ac; /* base armor class for current form */
+    int uac_natural = uac_natural_base; /* base armor class for current form */
+    int uac_armor_bonus = 0; /* AC bonus due to armor */
+    int uac_armor = 10; /* AC due to armor */
+    int suit_ac_bonus = 0;
 	int robe_ac_bonus = 0;
 	int combined_ac_bonus = 0;
 
@@ -1905,29 +1909,38 @@ find_ac()
 		robe_ac_bonus = ARM_AC_BONUS(uarmo, youmonst.data);
 
 	combined_ac_bonus = max(suit_ac_bonus, robe_ac_bonus);
-	uac -= combined_ac_bonus;
+    uac_armor_bonus += combined_ac_bonus;
 	context.suit_yielding_ac_bonus = (suit_ac_bonus == combined_ac_bonus);
 	context.robe_yielding_ac_bonus = (robe_ac_bonus == combined_ac_bonus);
 
 	if (uarmc)
-		uac -= ARM_AC_BONUS(uarmc, youmonst.data);
+        uac_armor_bonus += ARM_AC_BONUS(uarmc, youmonst.data);
 	if (uarmh)
-		uac -= ARM_AC_BONUS(uarmh, youmonst.data);
+        uac_armor_bonus += ARM_AC_BONUS(uarmh, youmonst.data);
 	if (uarmf)
-		uac -= ARM_AC_BONUS(uarmf, youmonst.data);
+        uac_armor_bonus += ARM_AC_BONUS(uarmf, youmonst.data);
 	if (uarms && (is_shield(uarms) || is_weapon(uarms)))
-		uac -= ARM_AC_BONUS(uarms, youmonst.data); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
+        uac_armor_bonus += ARM_AC_BONUS(uarms, youmonst.data); /* Only a shield and a wielded weapon can give AC; exclude wielded other armor types */
 	if (uarmg)
-		uac -= ARM_AC_BONUS(uarmg, youmonst.data);
+        uac_armor_bonus += ARM_AC_BONUS(uarmg, youmonst.data);
 	if (uarmu)
-		uac -= ARM_AC_BONUS(uarmu, youmonst.data);
+        uac_armor_bonus += ARM_AC_BONUS(uarmu, youmonst.data);
 	if (uarmb)
-		uac -= ARM_AC_BONUS(uarmb, youmonst.data);
+        uac_armor_bonus += ARM_AC_BONUS(uarmb, youmonst.data);
 
 	if (uwep && (is_shield(uwep) || is_weapon(uwep)))
-		uac -= ARM_AC_BONUS(uwep, youmonst.data); /* A wielded weapon can give AC, also a wielded shield (in right hand) */
+        uac_armor_bonus += ARM_AC_BONUS(uwep, youmonst.data); /* A wielded weapon can give AC, also a wielded shield (in right hand) */
 
+    uac_natural -= (uac_armor_bonus / 3);
+    uac_armor -= (uac_armor_bonus + ((10 - uac_natural_base) / 3));
 
+    /* Pick better */
+    if (uac_natural <= uac_armor)
+        uac = uac_natural;
+    else
+        uac = uac_armor;
+
+    //if(uac)
 	/* Kludge removed by JG -- Now in u.uacbonus */
 	/*
 	if (uleft && uleft->otyp == RIN_PROTECTION)

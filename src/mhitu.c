@@ -1356,7 +1356,14 @@ struct monst *mon;
 
     struct obj *o;
     long wearmask;
-    int mc = mons[mon->mnum].mc; /* base magic cancellation for current form */
+
+    int natural_mc_base = mons[mon->mnum].mc;
+    int natural_mc = natural_mc_base;
+    int armor_mc = 0;
+    int armor_mc_bonus = 0;
+
+    int mc = 0; /* base magic cancellation for current form */
+
 	boolean is_you = (mon == &youmonst);
 
 	int item_mc_bonus = 0;
@@ -1365,7 +1372,8 @@ struct monst *mon;
 	int robe_mc_bonus = 0;
 	int combined_mc_bonus = 0;
 
-	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) {
+	for (o = is_you ? invent : mon->minvent; o; o = o->nobj) 
+    {
         /* oc_magic_cancellation field is only applicable for armor (which must be worn), this should exclude spellbooks and wands, which use oc_oc2 for something else */
 		/* omit W_SWAPWEP+W_QUIVER; W_ARTIFACT_CARRIED+W_ARTIFACT_INVOKED handled by protects() */
 		wearmask = (W_ARMOR & ~W_ARMS) | W_ACCESSORY;
@@ -1412,17 +1420,26 @@ struct monst *mon;
 		else if (o->owornmask == W_ARMO)
 			robe_mc_bonus = item_mc_bonus;
 		else
-			mc += item_mc_bonus;
+            armor_mc_bonus += item_mc_bonus;
 	}
 
 	/* Finally, add greated of suit and robe MC bonus */
 	combined_mc_bonus = max(suit_mc_bonus, robe_mc_bonus);
-	mc += combined_mc_bonus;
+    armor_mc_bonus += combined_mc_bonus;
 	if (is_you)
 	{
 		context.suit_yielding_mc_bonus = (suit_mc_bonus == combined_mc_bonus);
 		context.robe_yielding_mc_bonus = (robe_mc_bonus == combined_mc_bonus);
 	}
+
+    natural_mc += armor_mc_bonus / 3;
+    armor_mc += armor_mc_bonus + natural_mc_base / 3;
+
+    /* Pick better of armor mc and natural mc */
+    if (natural_mc >= armor_mc)
+        mc = natural_mc;
+    else
+        mc = armor_mc;
 
 	if (is_you)
 	{

@@ -172,9 +172,9 @@
 #define	PM_SKELETON_WARRIOR	167
 #define	PM_SKELETON_LORD	168
 #define	PM_SKELETON_KING	169
-#define	PM_ALEAX	170
-#define	PM_ANGEL	171
-#define	PM_COUATL	172
+#define	PM_COUATL	170
+#define	PM_ALEAX	171
+#define	PM_ANGEL	172
 #define	PM_KI_RIN	173
 #define	PM_ARCHON	174
 #define	PM_BAT	175
