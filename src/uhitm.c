@@ -1715,12 +1715,12 @@ boolean* obj_destroyed;
 		{
 			if (Role_if(PM_SAMURAI))
 			{
-				You("dishonorably use a deathly weapon!");
+				You("dishonorably use a weapon imbued with death magic!");
 				adjalign(-sgn(u.ualign.type));
 			}
 			else if (u.ualign.type == A_LAWFUL && u.ualign.record > -10) 
 			{
-				You_feel("like an evil coward for using a deathly weapon.");
+				You_feel("like an evil coward for using a weapon imbued with death magic.");
 				adjalign(-1);
 			}
 		}

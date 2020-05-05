@@ -5048,7 +5048,7 @@ int arrowtype, quan; //ObjID and quantity
 			pline("%s no longer %s.", Yobjnam2(bag, "are"), bag->elemental_enchantment == FIRE_ENCHANTMENT ? "flaming" :
 				bag->elemental_enchantment == COLD_ENCHANTMENT ? "freezing" :
 				bag->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "electrified" :
-				bag->elemental_enchantment == DEATH_ENCHANTMENT ? "deathly" : "enchanted");
+				bag->elemental_enchantment == DEATH_ENCHANTMENT ? "mortific" : "enchanted");
 
             if (bag->where == OBJ_INVENT)
                 update_inventory();

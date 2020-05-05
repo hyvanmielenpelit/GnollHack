@@ -490,7 +490,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             else if (obj->elemental_enchantment == LIGHTNING_ENCHANTMENT)
                 Strcat(buf, "electrified ");
             else if (obj->elemental_enchantment == DEATH_ENCHANTMENT)
-                Strcat(buf, "deathly ");
+                Strcat(buf, "mortific ");
         }
 
         if (obj->oclass == MISCELLANEOUS_CLASS && (
@@ -1058,8 +1058,8 @@ unsigned doname_flags;
 		bp += 12;
 		isenchanted = obj->elemental_enchantment;
 	}
-	else if (!strncmp(bp, "deathly ", 8) && obj->elemental_enchantment == DEATH_ENCHANTMENT) {
-		bp += 8;
+	else if (!strncmp(bp, "mortific ", 9) && obj->elemental_enchantment == DEATH_ENCHANTMENT) {
+		bp += 9;
 		isenchanted = obj->elemental_enchantment;
 	}
 
@@ -1294,7 +1294,7 @@ weapon_here:
 				Strcat(prefix, "electrified ");
 				break;
 			case DEATH_ENCHANTMENT:
-				Strcat(prefix, "deathly ");
+				Strcat(prefix, "mortific ");
 				break;
 			default:
 				break;
@@ -1321,7 +1321,7 @@ weapon_here:
 				Strcat(prefix, "electrified ");
 				break;
 			case DEATH_ENCHANTMENT:
-				Strcat(prefix, "deathly ");
+				Strcat(prefix, "mortific ");
 				break;
 			default:
 				break;
@@ -3525,7 +3525,7 @@ struct obj *no_wish;
 		{
 			elemental_enchantment = LIGHTNING_ENCHANTMENT;
 		}
-		else if (!strncmpi(bp, "deathly ", l = 8))
+		else if (!strncmpi(bp, "mortific ", l = 9))
 		{
 			elemental_enchantment = DEATH_ENCHANTMENT;
 		}

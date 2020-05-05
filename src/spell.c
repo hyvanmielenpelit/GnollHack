@@ -4394,7 +4394,7 @@ struct materialcomponent* mc;
 	//Correct type of component
 	Sprintf(buf2, "%s%s%s",
 		(mc->flags & MATCOMP_BLESSED_REQUIRED ? "blessed " : mc->flags & MATCOMP_CURSED_REQUIRED ? "cursed " : (mc->flags & MATCOMP_NOT_CURSED ? "noncursed " : "")),
-		(mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "deathly " : ""),
+		(mc->flags & MATCOMP_DEATH_ENCHANTMENT_REQUIRED ? "mortific " : ""),
 		buf4);
 
 	//Indicate how many
