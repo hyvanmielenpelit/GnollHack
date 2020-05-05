@@ -3172,6 +3172,13 @@ register struct monst* mon;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
+	if (!is_neuter(ptr))
+	{
+		Sprintf(buf, "Gender:                 %s", mon->female ? "Female" : "Male");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	strcpy(buf2, get_monster_size_text(ptr->msize));
 	*buf2 = highc(*buf2);
 

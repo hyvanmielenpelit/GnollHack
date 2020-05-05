@@ -4421,7 +4421,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_MULTIWEAPON | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY | M3_CONSTRICTOR, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, 
 		20, CLR_RED),
-    MON("balrog", None, "massive flying demon of might with fire defense", S_DEMON, LVL(20, 5, -2, 14, 75, -14), (G_HELL | G_NOCORPSE | 1),
+    MON("balrog", None, "massive flying demon of might with fire defense", S_DEMON, LVL(20, 15, -2, 14, 75, -14), (G_HELL | G_NOCORPSE | 1),
         A(ATTK(AT_WEAP, AD_PHYS, 8, 4, 0, 0), ATTK(AT_WEAP, AD_PHYS, 4, 6, 0, 0), ATTK(AT_NONE, AD_FIRE, 6, 4, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(WT_HUMAN, 400, MS_SILENT, MZ_LARGE, 1, 1), STATS(STR19(22), 16, 24, 14, 12, 16), 
@@ -4431,7 +4431,7 @@ struct permonst _mons2[] = {
         M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_MULTIWEAPON | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_FLAMING | M4_LIKES_FIRE, 
-		24, CLR_RED),
+		35, CLR_RED),
 
 
 	/* Named demon lords & princes plus Arch-Devils.
