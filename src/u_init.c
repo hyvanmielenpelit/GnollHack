@@ -182,27 +182,18 @@ static struct trobj Tourist[] = {
 	{ WAN_TELEPORTATION, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
 	{ RIN_TELEPORT_CONTROL, UNDEF_SPE, RING_CLASS, 1, UNDEF_BLESS, 0 },
 	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
-	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ EXPENSIVE_WATCH, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
 	{ SUNGLASSES, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
 	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
+static struct trobj TouristMale[] = {
+	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
+	{ EXPENSIVE_WATCH, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0 }
+};
 static struct trobj TouristFemale[] = {
-	{ DART, 3, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
-	{ GOLF_CLUB, 3, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
-	{ SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
-	{ HAWAIIAN_SHIRT, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
-	{ WAN_TELEPORTATION, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
-	{ RIN_TELEPORT_CONTROL, UNDEF_SPE, RING_CLASS, 1, UNDEF_BLESS, 0 },
-	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
 	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0 },
 	{ GOLDEN_EARRINGS, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
-	{ SUNGLASSES, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
 	{ 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
@@ -1054,19 +1045,19 @@ u_init()
         break;
     }
     case PM_PRIEST:
-		if (!rn2(8))
-			ini_inv(PriestSilverMace);
-		else
-			ini_inv(PriestNormalMace);
-
-        ini_inv(Priest);
-
 		if (u.ualign.type == A_CHAOTIC)
 			ini_inv(PriestChaoticSummonSpell);
 		else if (u.ualign.type == A_LAWFUL)
 			ini_inv(PriestLawfulSummonSpell);
 		else
 			ini_inv(PriestNeutralSummonSpell);
+
+		if (!rn2(8))
+			ini_inv(PriestSilverMace);
+		else
+			ini_inv(PriestNormalMace);
+
+        ini_inv(Priest);
 
 		if (!rn2(10))
 			ini_inv(PriestSpikedSilverShield);
@@ -1125,15 +1116,20 @@ u_init()
         break;
     case PM_TOURIST:
 		u.umoney0 = 300 + rnd(700);
+		Tourist[T_DARTS].trquan = rn1(20, 21);
+		ini_inv(Tourist);
+
 		if (flags.female)
 		{
-			TouristFemale[T_DARTS].trquan = rn1(20, 21);
 			ini_inv(TouristFemale);
+			knows_object(EXPENSIVE_HANDBAG);
+			knows_object(GOLDEN_EARRINGS);
 		}
 		else
 		{
-			Tourist[T_DARTS].trquan = rn1(20, 21);
-			ini_inv(Tourist);
+			ini_inv(TouristMale);
+			knows_object(LEATHER_BAG);
+			knows_object(EXPENSIVE_WATCH);
 		}
 
 		if (!rn2(25))
@@ -1142,8 +1138,6 @@ u_init()
             ini_inv(Leash);
         else if (!rn2(25))
             ini_inv(Magicmarker);
-		knows_object(EXPENSIVE_HANDBAG);
-		knows_object(LEATHER_BAG);
 		break;
     case PM_VALKYRIE:
         ini_inv(Valkyrie);

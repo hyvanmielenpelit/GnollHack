@@ -334,10 +334,11 @@ register struct monst *mtmp;
 		}
 		break;
 	case S_GIANT:
-        if (mm == PM_MINOTAUR)
+        switch (mm)
         {
-        }
-        else if (mm = PM_HELL_BOVINE)
+        case PM_MINOTAUR:
+            break;
+        case PM_HELL_BOVINE:
         {
             int bovine_weapons[15] = { HALBERD, HALBERD, POLEARM_OF_REACH, 
                 HUGE_INFERNAL_BARDICHE, INFERNAL_ANCUS,
@@ -345,11 +346,26 @@ register struct monst *mtmp;
                 BILL_GUISARME, LUCERN_HAMMER, BEC_DE_CORBIN };
 
             (void)mongets(mtmp, bovine_weapons[rn2(SIZE(bovine_weapons))]);
+            break;
         }
-        else
+        case PM_STORM_GIANT:
         {
+            otmp = mksobj(JAVELIN, FALSE, FALSE, FALSE);
+            if (otmp) 
+            {
+                otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
+                otmp->enchantment = rn2(4);
+                otmp->quan = rnd(6);
+                otmp->cursed = 0;
+                otmp->owt = weight(otmp);
+                (void)mpickobj(mtmp, otmp);
+            }
+            break;
+        }
+        default:
             if (rn2(2))
                 (void)mongets(mtmp, (mm != PM_ETTIN) ? BOULDER : CLUB);
+            break;
         }
         break;
     case S_HUMAN:
