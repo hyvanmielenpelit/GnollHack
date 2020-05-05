@@ -2809,7 +2809,6 @@ static mswin_status_string _condition_strings[BL_MASK_BITS];
 static mswin_status_field _status_fields[MAXBLSTATS];
 
 static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
-    { BL_MASK_GRAB, "Grab" },
     { BL_MASK_STONE, "Stone" },
     { BL_MASK_SLIME, "Slime" },
     { BL_MASK_STRNGL, "Strngl" },
@@ -2830,6 +2829,7 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
 	{ BL_MASK_SLEEPING, "Sleep" },
 	{ BL_MASK_CANCELLED, "Cancl" },
 	{ BL_MASK_SILENCED, "Silent" },
+    { BL_MASK_GRAB, "Grab" },
     { BL_MASK_ROT, "Rot" }
 };
 
