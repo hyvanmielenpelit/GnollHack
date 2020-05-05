@@ -234,7 +234,7 @@
 #define display_self() \
     show_glyph(u.ux, u.uy,                                                  \
            maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)                 \
-                                ? hero_glyph                                \
+                                ? player_to_glyph() /*hero_glyph*/       \
                                 : (U_AP_TYPE == M_AP_FURNITURE)             \
                                   ? cmap_to_glyph(youmonst.mappearance)     \
                                   : (U_AP_TYPE == M_AP_OBJECT)              \
@@ -290,9 +290,14 @@
  *
  * statue       One for each monster.  Count: NUMMONS
  *
+ * artifact     One for each artifact.  Count: NROFARTIFACTS
+ *
+ * player       One for each type of player character.  Count: number of genders (2) x number of roles (13) x number of races (5) 
+ *
  * The following are offsets used to convert to and from a glyph.
  */
 #define NUM_ZAP 10 /* number of zap beam types */
+#define NUM_PLAYER_CHARACTERS 130
 
 #define GLYPH_MON_OFF     0
 #define GLYPH_PET_OFF     (NUMMONS + GLYPH_MON_OFF)
@@ -307,8 +312,9 @@
 #define GLYPH_SWALLOW_OFF ((NUM_ZAP << 2) + GLYPH_ZAP_OFF)
 #define GLYPH_WARNING_OFF ((NUMMONS << 3) + GLYPH_SWALLOW_OFF)
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
-#define GLYPH_ARTIFACT_OFF  (NUMMONS + GLYPH_STATUE_OFF)
-#define MAX_GLYPH         (NROFARTIFACTS + GLYPH_ARTIFACT_OFF)
+#define GLYPH_ARTIFACT_OFF (NUMMONS + GLYPH_STATUE_OFF)
+#define GLYPH_PLAYER_OFF  (NROFARTIFACTS + GLYPH_ARTIFACT_OFF)
+#define MAX_GLYPH         (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_OFF)
 
 #define NO_GLYPH          MAX_GLYPH
 #define GLYPH_INVISIBLE   GLYPH_INVIS_OFF
@@ -393,6 +399,10 @@
 #define glyph_is_invisible(glyph) ((glyph) == GLYPH_INVISIBLE)
 #define glyph_is_normal_object(glyph) \
     ((glyph) >= GLYPH_OBJ_OFF && (glyph) < (GLYPH_OBJ_OFF + NUM_OBJECTS))
+#define glyph_is_artifact(glyph) \
+    ((glyph) >= GLYPH_ARTIFACT_OFF && (glyph) < (GLYPH_ARTIFACT_OFF + NROFARTIFACTS))
+#define glyph_to_artifact(glyph) \
+    (glyph_is_artifact(glyph) ? ((glyph) - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
 #define glyph_is_object(glyph)                               \
     (glyph_is_normal_object(glyph) || glyph_is_statue(glyph) \
      || glyph_is_body(glyph) || glyph_is_artifact(glyph))
@@ -407,9 +417,14 @@
 #define glyph_is_warning(glyph)   \
     ((glyph) >= GLYPH_WARNING_OFF \
      && (glyph) < (GLYPH_WARNING_OFF + WARNCOUNT))
+#define glyph_is_player(glyph) \
+    ((glyph) >= GLYPH_PLAYER_OFF && (glyph) < (GLYPH_PLAYER_OFF + NUM_PLAYER_CHARACTERS))
+#define glyph_to_player(glyph) \
+    (glyph_is_player(glyph) ? ((glyph) - GLYPH_PLAYER_OFF) : NO_GLYPH)
 #define glyph_is_monster(glyph)                            \
     (glyph_is_normal_monster(glyph) || glyph_is_pet(glyph) \
-     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph))
+     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph) || glyph_is_player(glyph))
+
 
  /*
   * Change the given glyph into it's given type.  Note:
@@ -434,14 +449,10 @@
                            ? ((glyph) - GLYPH_RIDDEN_OFF)       \
                            : glyph_is_statue(glyph)             \
                                  ? ((glyph) - GLYPH_STATUE_OFF) \
-                                 : NO_GLYPH)
+                                   : glyph_is_player(glyph)     \
+                                         ? (u.umonnum)          \
+                                             : NO_GLYPH)
 
-
-
-#define glyph_is_artifact(glyph) \
-    ((glyph) >= GLYPH_ARTIFACT_OFF && (glyph) < (GLYPH_ARTIFACT_OFF + NROFARTIFACTS))
-#define glyph_to_artifact(glyph) \
-    (glyph_is_artifact(glyph) ? ((glyph) - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
 
 #define glyph_to_trap(glyph) \
     (glyph_is_trap(glyph) ? ((int) defsym_to_trap((glyph) - GLYPH_CMAP_OFF)) \

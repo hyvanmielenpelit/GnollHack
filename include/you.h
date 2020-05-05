@@ -113,7 +113,8 @@ struct Role {
     const char *filecode;           /* abbreviation for use in file names */
     const char *homebase; /* quest leader's location (from questpgr.c) */
     const char *intermed; /* quest intermediate goal (from questpgr.c) */
-	const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various role advantages and disadvantages */
+    short rolenum; /* increasing id number of the role */
+    const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various role advantages and disadvantages */
     /*** Indices of important monsters and objects ***/
     short malenum, /* index (PM_) as a male (botl.c) */
         femalenum, /* ...or as a female (NON_PM == same) */
@@ -183,6 +184,7 @@ struct Race {
     const char *coll;           /* collective ("humanity", "elvenkind") */
     const char *filecode;       /* code for filenames */
     struct RoleName individual; /* individual as a noun ("man", "elf") */
+    short racenum; /* increasing id number of the race */
 
 	const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various race advantages and disadvantages */
 

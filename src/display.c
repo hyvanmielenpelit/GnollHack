@@ -744,6 +744,7 @@ xchar x, y;
                         is_worm_tail(mon));
 }
 
+
 /*
  * newsym()
  *
@@ -1650,8 +1651,12 @@ int x, y, glyph;
          *  the definition.
          */
 
-		if (glyph >= GLYPH_ARTIFACT_OFF
-			&& glyph < MAX_GLYPH) { /* an artifact */
+        if (glyph >= GLYPH_PLAYER_OFF
+            && glyph < MAX_GLYPH) { /* a player character */
+            text = "player character";
+            offset = glyph - GLYPH_PLAYER_OFF;
+        } else if (glyph >= GLYPH_ARTIFACT_OFF
+			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact */
 			text = "artifact";
 			offset = glyph - GLYPH_ARTIFACT_OFF;
 		} else if (glyph >= GLYPH_STATUE_OFF

@@ -82,7 +82,20 @@ unsigned *ospecial;
      *  Warning:  For speed, this makes an assumption on the order of
      *            offsets.  The order is set in display.h.
      */
-	if ((offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0) { /* an artifact */
+    if ((offset = (glyph - GLYPH_PLAYER_OFF)) >= 0) 
+    {
+        int mnum = (Upolyd || !flags.showrace ? u.umonnum : (flags.female && urace.femalenum != NON_PM) ? urace.femalenum : urace.malenum);
+        idx = mons[mnum >= LOW_PM ? mnum : PM_HUMAN].mlet + SYM_OFF_M;
+        mon_color(mnum);
+#ifdef TEXTCOLOR
+        /* special case the hero for `showrace' option */
+        if (iflags.use_color && x == u.ux && y == u.uy
+            && flags.showrace && !Upolyd)
+            color = HI_DOMESTIC;
+#endif
+    }
+	else if ((offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0) 
+    { /* an artifact */
 		int objoffset = artilist[offset].otyp;				
 		if (artilist[offset].maskotyp != STRANGE_OBJECT)
 		{
@@ -95,8 +108,10 @@ unsigned *ospecial;
 
 		if (objoffset == BOULDER)
 			idx = SYM_BOULDER + SYM_OFF_X;
-		if (has_rogue_color && iflags.use_color) {
-			switch (objects[objoffset].oc_class) {
+		if (has_rogue_color && iflags.use_color)
+        {
+			switch (objects[objoffset].oc_class)
+            {
 			case COIN_CLASS:
 				color = CLR_YELLOW;
 				break;
@@ -117,7 +132,9 @@ unsigned *ospecial;
 		}
 		if (objoffset != BOULDER && is_objpile(x, y))
 			special |= MG_OBJPILE;
-	} else if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0) { /* a statue */
+	}
+    else if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0) 
+    { /* a statue */
 		if (flags.classic_statue_symbol)
 		{
 			idx = ROCK_CLASS + SYM_OFF_O;
@@ -133,20 +150,26 @@ unsigned *ospecial;
 		special |= MG_STATUE;
         if (is_objpile(x,y))
             special |= MG_OBJPILE;
-    } else if ((offset = (glyph - GLYPH_WARNING_OFF)) >= 0) { /* warn flash */
+    }
+    else if ((offset = (glyph - GLYPH_WARNING_OFF)) >= 0)
+    { /* warn flash */
         idx = offset + SYM_OFF_W;
         if (has_rogue_color)
             color = NO_COLOR;
         else
             warn_color(offset);
-    } else if ((offset = (glyph - GLYPH_SWALLOW_OFF)) >= 0) { /* swallow */
+    }
+    else if ((offset = (glyph - GLYPH_SWALLOW_OFF)) >= 0) 
+    { /* swallow */
         /* see swallow_to_glyph() in display.c */
         idx = (S_sw_tl + (offset & 0x7)) + SYM_OFF_P;
         if (has_rogue_color && iflags.use_color)
             color = NO_COLOR;
         else
             mon_color(offset >> 3);
-    } else if ((offset = (glyph - GLYPH_ZAP_OFF)) >= 0) { /* zap beam */
+    }
+    else if ((offset = (glyph - GLYPH_ZAP_OFF)) >= 0)
+    { /* zap beam */
         /* see zapdir_to_glyph() in display.c */
         idx = (S_vbeam + (offset & 0x3)) + SYM_OFF_P;
         if (has_rogue_color && iflags.use_color)
@@ -225,12 +248,16 @@ unsigned *ospecial;
                 }
             }
         }
-    } else if ((offset = (glyph - GLYPH_OBJ_OFF)) >= 0) { /* object */
+    } 
+    else if ((offset = (glyph - GLYPH_OBJ_OFF)) >= 0)
+    { /* object */
         idx = objects[offset].oc_class + SYM_OFF_O;
         if (offset == BOULDER)
             idx = SYM_BOULDER + SYM_OFF_X;
-        if (has_rogue_color && iflags.use_color) {
-            switch (objects[offset].oc_class) {
+        if (has_rogue_color && iflags.use_color) 
+        {
+            switch (objects[offset].oc_class)
+            {
             case COIN_CLASS:
                 color = CLR_YELLOW;
                 break;
@@ -241,11 +268,16 @@ unsigned *ospecial;
                 color = CLR_BRIGHT_BLUE;
                 break;
             }
-        } else
+        } 
+        else
             obj_color(offset);
+
         if (offset != BOULDER && is_objpile(x,y))
             special |= MG_OBJPILE;
-    } else if ((offset = (glyph - GLYPH_RIDDEN_OFF)) >= 0) { /* mon ridden */
+
+    }
+    else if ((offset = (glyph - GLYPH_RIDDEN_OFF)) >= 0)
+    { /* mon ridden */
         idx = mons[offset].mlet + SYM_OFF_M;
         if (has_rogue_color)
             /* This currently implies that the hero is here -- monsters */
@@ -255,7 +287,9 @@ unsigned *ospecial;
         else
             mon_color(offset);
         special |= MG_RIDDEN;
-    } else if ((offset = (glyph - GLYPH_BODY_OFF)) >= 0) { /* a corpse */
+    } 
+    else if ((offset = (glyph - GLYPH_BODY_OFF)) >= 0)
+    { /* a corpse */
         idx = objects[CORPSE].oc_class + SYM_OFF_O;
         if (has_rogue_color && iflags.use_color)
             color = CLR_RED;
@@ -264,7 +298,9 @@ unsigned *ospecial;
         special |= MG_CORPSE;
         if (is_objpile(x,y))
             special |= MG_OBJPILE;
-    } else if ((offset = (glyph - GLYPH_DETECT_OFF)) >= 0) { /* mon detect */
+    } 
+    else if ((offset = (glyph - GLYPH_DETECT_OFF)) >= 0) 
+    { /* mon detect */
         idx = mons[offset].mlet + SYM_OFF_M;
         if (has_rogue_color)
             color = NO_COLOR; /* no need to check iflags.use_color */
@@ -273,29 +309,38 @@ unsigned *ospecial;
         /* Disabled for now; anyone want to get reverse video to work? */
         /* is_reverse = TRUE; */
         special |= MG_DETECT;
-    } else if ((offset = (glyph - GLYPH_INVIS_OFF)) >= 0) { /* invisible */
+    } 
+    else if ((offset = (glyph - GLYPH_INVIS_OFF)) >= 0)
+    { /* invisible */
         idx = SYM_INVISIBLE + SYM_OFF_X;
         if (has_rogue_color)
             color = NO_COLOR; /* no need to check iflags.use_color */
         else
             invis_color(offset);
         special |= MG_INVIS;
-    } else if ((offset = (glyph - GLYPH_PET_OFF)) >= 0) { /* a pet */
+    } 
+    else if ((offset = (glyph - GLYPH_PET_OFF)) >= 0)
+    { /* a pet */
         idx = mons[offset].mlet + SYM_OFF_M;
         if (has_rogue_color)
             color = NO_COLOR; /* no need to check iflags.use_color */
         else
             pet_color(offset);
         special |= MG_PET;
-    } else { /* a monster */
+    } 
+    else 
+    { /* a monster */
         idx = mons[glyph].mlet + SYM_OFF_M;
-        if (has_rogue_color && iflags.use_color) {
+        if (has_rogue_color && iflags.use_color)
+        {
             if (x == u.ux && y == u.uy)
                 /* actually player should be yellow-on-gray if in corridor */
                 color = CLR_YELLOW;
             else
                 color = NO_COLOR;
-        } else {
+        }
+        else 
+        {
             mon_color(glyph);
 #ifdef TEXTCOLOR
             /* special case the hero for `showrace' option */

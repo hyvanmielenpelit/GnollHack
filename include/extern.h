@@ -2394,6 +2394,7 @@ E void FDECL(role_menu_extra, (int, winid, BOOLEAN_P));
 E void NDECL(role_init);
 E const char *FDECL(Hello, (struct monst *));
 E const char *NDECL(Goodbye);
+E int NDECL(player_to_glyph);
 
 /* ### rumors.c ### */
 

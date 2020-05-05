@@ -39,6 +39,7 @@ const struct Role roles[] = {
       "Arc",
       "the College of Archeology",
       "the Tomb of the Toltec Kings",
+      0,
 	  { "", "", "", "", ""},
       PM_ARCHEOLOGIST,
       NON_PM,
@@ -115,7 +116,8 @@ const struct Role roles[] = {
       "Bar",
       "the Camp of the Duali Tribe",
       "the Duali Oasis",
-	  { "", "", "", "", ""},
+      1,
+      { "", "", "", "", ""},
 	  PM_BARBARIAN,
       NON_PM,
       NON_PM,
@@ -189,7 +191,8 @@ const struct Role roles[] = {
       "Cav",
       "the Caves of the Ancestors",
       "the Dragon's Lair",
-	  { "Can practice cannibalism", "", "", "", ""},
+      2,
+      { "Can practice cannibalism", "", "", "", ""},
 	  PM_CAVEMAN,
       PM_CAVEWOMAN,
       PM_LITTLE_DOG,
@@ -263,7 +266,8 @@ const struct Role roles[] = {
       "Hea",
       "the Temple of Epidaurus",
       "the Temple of Coeus",
-	  { "", "", "", "", ""},
+      3,
+      { "", "", "", "", ""},
 	  PM_HEALER,
       NON_PM,
       NON_PM,
@@ -336,7 +340,8 @@ const struct Role roles[] = {
       "Kni",
       "Camelot Castle",
       "the Isle of Glass",
-	  { "Alignment penalty if attacks disadvantaged monsters", "", "", "", ""},
+      4,
+      { "Alignment penalty if attacks disadvantaged monsters", "", "", "", ""},
 	  PM_KNIGHT,
       NON_PM,
       PM_PONY,
@@ -409,7 +414,8 @@ const struct Role roles[] = {
       "Mon",
       "the Monastery of Chan-Sune",
       "the Monastery of the Earth-Lord",
-	  { "Vegetarianism", "-30 to-hit penalty when wearing a suit", "No staggering blow when wearing a shield or suit", "", ""},
+      5,
+      { "Vegetarianism", "-30 to-hit penalty when wearing a suit", "No staggering blow when wearing a shield or suit", "", ""},
 	  PM_MONK,
       NON_PM,
       NON_PM,
@@ -483,7 +489,8 @@ const struct Role roles[] = {
       "Pri",
       "the Great Temple",
       "the Temple of Nalzok",
-	  { "Sees the beatitude of all objects", "Can pray twice as often as normal", "", "", ""},
+      6,
+      { "Sees the beatitude of all objects", "Can pray twice as often as normal", "", "", ""},
 	  PM_PRIEST,
       PM_PRIESTESS,
       NON_PM,
@@ -559,7 +566,8 @@ const struct Role roles[] = {
       "Rog",
       "the Thieves' Guild Hall",
       "the Assassins' Guild Hall",
-	  { "Can backstab fleeing monsters", "", "", "", ""},
+      7,
+      { "Can backstab fleeing monsters", "", "", "", ""},
 	  PM_ROGUE,
       NON_PM,
       NON_PM,
@@ -646,7 +654,8 @@ const struct Role roles[] = {
       "Ran",
       "Orion's camp",
       "the cave of the wumpus",
-	  { "", "", "", "", ""},
+      8,
+      { "", "", "", "", ""},
 	  PM_RANGER,
       NON_PM,
       PM_LITTLE_DOG /* Orion & canis major */,
@@ -720,7 +729,8 @@ const struct Role roles[] = {
       "Sam",
       "the Castle of the Taro Clan",
       "the Shogun's Castle",
-	  { "Starts with a faithful dog", "", "", "", ""},
+      9,
+      { "Starts with a faithful dog", "", "", "", ""},
 	  PM_SAMURAI,
       NON_PM,
       PM_LITTLE_DOG,
@@ -793,7 +803,8 @@ const struct Role roles[] = {
       "Tou",
       "Ankh-Morpork",
       "the Thieves' Guild Hall",
-	  { "Worse prices in shops below level 15", "", "", "", ""},
+      10,
+      { "Worse prices in shops below level 15", "", "", "", ""},
 	  PM_TOURIST,
       NON_PM,
       PM_SMALL_LUGGAGE,
@@ -866,7 +877,8 @@ const struct Role roles[] = {
       "Val",
       "the Shrine of Destiny",
       "the cave of Surtur",
-	  { "", "", "", "", ""},
+      11,
+      { "", "", "", "", ""},
 	  PM_VALKYRIE,
       NON_PM,
       NON_PM /*PM_WINTER_WOLF_CUB*/,
@@ -940,7 +952,8 @@ const struct Role roles[] = {
       "Wiz",
       "the Lonely Tower",
       "the Tower of Darkness",
-	  { "", "", "", "", ""},
+      12,
+      { "", "", "", "", ""},
 	  PM_WIZARD,
       NON_PM,
       PM_KITTEN,
@@ -1014,6 +1027,7 @@ struct Role urole = {
       { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } },
     "L", "N", "C",
     "Xxx", "home", "locate",
+    0,
 	{ "", "", "", "", ""},
 	NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM,
     0, 0, 0, 0,
@@ -1072,6 +1086,7 @@ const struct Race races[] = {
         "humanity",
         "Hum",
         { "man", "woman" },
+        0,
 	    { "", "", "", "", ""},
 		PM_HUMAN,
         NON_PM,
@@ -1095,6 +1110,7 @@ const struct Race races[] = {
         "elvenkind",
         "Elf",
         { 0, 0 },
+        1,
 	    { "Increased nutrition from lembas wafer", "", "", "", ""},
 		PM_ELF,
         NON_PM,
@@ -1117,6 +1133,7 @@ const struct Race races[] = {
         "dwarvenkind",
         "Dwa",
         { 0, 0 },
+        2,
 	    { "Double digging speed", "Increased nutrition from cram ration", "", "", ""},
 		PM_DWARF,
         NON_PM,
@@ -1139,6 +1156,7 @@ const struct Race races[] = {
         "gnollkind",
         "Gnl",
         { 0, 0 },
+        3,
 		{ "Smells rotten food", "Smells underground roots", "Triple nutrition from tripe ration", "", ""},
 		PM_GNOLL,
         NON_PM,
@@ -1161,6 +1179,7 @@ const struct Race races[] = {
         "orcdom",
         "Orc",
         { 0, 0 },
+        4,
 		{ "Can practice cannibalism", "Reduced nutrition from lembas wafer", "", "", ""},
 		PM_ORC,
         NON_PM,
@@ -1190,6 +1209,7 @@ struct Race urace = {
     "something",
     "Xxx",
     { 0, 0 },
+    0,
 	{ "", "", "", "", ""},
 	NON_PM,
     NON_PM,
@@ -2642,5 +2662,21 @@ Goodbye()
         return "Goodbye";
     }
 }
+
+int
+player_to_glyph()
+{
+    int gidx = 0;
+    int number_of_roles = SIZE(roles) - 1;
+    int number_of_races = SIZE(races) - 1;
+    int number_of_genders = 2;
+
+    int player_role = urole.rolenum;
+    int player_race = urace.racenum;
+    boolean player_gender = flags.female;
+
+    return flags.female + number_of_genders * player_role + number_of_genders * number_of_roles * player_race + GLYPH_PLAYER_OFF;
+}
+
 
 /* role.c */
