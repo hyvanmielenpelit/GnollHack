@@ -292,12 +292,14 @@
  *
  * artifact     One for each artifact.  Count: NROFARTIFACTS
  *
- * player       One for each type of player character.  Count: number of genders (2) x number of roles (13) x number of races (5) 
+ * player       One for each type of player character.  Count: number of genders (2) x number of roles (13) x number of races (5) x alignment (3)
  *
  * The following are offsets used to convert to and from a glyph.
  */
 #define NUM_ZAP 10 /* number of zap beam types */
-#define NUM_PLAYER_CHARACTERS 130
+#define NUM_ROLES 13
+#define NUM_RACES 5
+#define NUM_PLAYER_CHARACTERS NUM_ROLES * NUM_RACES * 2 * 3
 
 #define GLYPH_MON_OFF     0
 #define GLYPH_PET_OFF     (NUMMONS + GLYPH_MON_OFF)

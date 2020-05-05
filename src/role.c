@@ -24,6 +24,7 @@
  *
  * God names use a leading underscore to flag goddesses.
  */
+
 const struct Role roles[] = {
     { { "Archeologist", 0 },
       { { "Digger", 0 },
@@ -952,7 +953,7 @@ const struct Role roles[] = {
       "Wiz",
       "the Lonely Tower",
       "the Tower of Darkness",
-      12,
+      NUM_ROLES - 1,
       { "", "", "", "", ""},
 	  PM_WIZARD,
       NON_PM,
@@ -1021,6 +1022,7 @@ const struct Role roles[] = {
 /* The player's role, created at runtime from initial
  * choices.  This may be munged in role_init().
  */
+
 struct Role urole = {
     { "Undefined", 0 },
     { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 },
@@ -1179,7 +1181,7 @@ const struct Race races[] = {
         "orcdom",
         "Orc",
         { 0, 0 },
-        4,
+        NUM_RACES - 1,
 		{ "Can practice cannibalism", "Reduced nutrition from lembas wafer", "", "", ""},
 		PM_ORC,
         NON_PM,
@@ -2667,15 +2669,20 @@ int
 player_to_glyph()
 {
     int gidx = 0;
-    int number_of_roles = SIZE(roles) - 1;
-    int number_of_races = SIZE(races) - 1;
+    int number_of_roles = NUM_ROLES;
+    int number_of_races = NUM_RACES;
     int number_of_genders = 2;
+    int number_of_alignments = 3;
 
     int player_role = urole.rolenum;
     int player_race = urace.racenum;
     boolean player_gender = flags.female;
+    int player_alignment = u.ualign.type + 1; /* 0...2 */
 
-    return flags.female + number_of_genders * player_role + number_of_genders * number_of_roles * player_race + GLYPH_PLAYER_OFF;
+    return flags.female + number_of_genders * player_role + 
+        number_of_genders * number_of_roles * player_alignment +
+        number_of_genders * number_of_roles * number_of_alignments * player_race +
+        GLYPH_PLAYER_OFF;
 }
 
 
