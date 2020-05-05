@@ -185,6 +185,8 @@ STATIC_PTR int NDECL(wiz_show_stats);
 STATIC_DCL boolean FDECL(accept_menu_prefix, (int NDECL((*))));
 STATIC_PTR int NDECL(wiz_rumor_check);
 STATIC_PTR int NDECL(doattributes);
+STATIC_PTR int NDECL(dopolyformstatistics);
+STATIC_DCL int FDECL(doviewpetstatistics, (struct monst*));
 STATIC_PTR int NDECL(docommandmenu);
 
 STATIC_DCL void FDECL(enlght_out, (const char *));
@@ -708,13 +710,16 @@ doability(VOID_ARGS)
 	start_menu(win);
 		
 
-#define MAXABILITYNUM 50
+#define MAXABILITYNUM 52
+#define MAXNAMELENGTH 80
 
 	struct available_ability 
 	{
 		int charnum;
-		char name[80];
+		char name[MAXNAMELENGTH];
 		int (*function_ptr)();
+        int (*function_mtmp_ptr)(struct monst*);
+        struct monst* target_mtmp;
 	};
 	struct available_ability available_ability_list[MAXABILITYNUM] = { { 0 } };
 	int abilitynum = 0;
@@ -752,6 +757,21 @@ doability(VOID_ARGS)
 
 	abilitynum++;
 
+    if (Upolyd)
+    {
+        strcpy(available_ability_list[abilitynum].name, "Polymorphed form");
+        available_ability_list[abilitynum].function_ptr = &dopolyformstatistics;
+        available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
+        any = zeroany;
+        any.a_char = available_ability_list[abilitynum].charnum;
+
+        add_menu(win, NO_GLYPH, &any,
+            any.a_char, 0, ATR_NONE,
+            available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+        abilitynum++;
+    }
 
 	/* SKILL-BASED ABILITIES */
 	any = zeroany;
@@ -1069,6 +1089,75 @@ doability(VOID_ARGS)
 
     }
 
+
+    /* Your pets' statistics */
+    int petcount = 0;
+
+    for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
+        if (!DEADMONSTER(mtmp) && is_tame(mtmp))
+        {
+            petcount++;
+        }
+    }
+
+    if (petcount > 0)
+    {
+        any = zeroany;
+        add_menu(win, NO_GLYPH, &any,
+            0, 0, iflags.menu_headings,
+            "View Companion Abilities            ", MENU_UNSELECTED);
+
+        int pet_index = 0;
+        for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        {
+            if (!DEADMONSTER(mtmp) && is_tame(mtmp))
+            {
+                pet_index++;
+                char namebuf[MAXNAMELENGTH];
+                if (UMNAME(mtmp))
+                {
+                    char umnbuf[BUFSIZ];
+                    strcpy(umnbuf, UMNAME(mtmp));
+                    umnbuf[16] = '\0'; /* Limit the length of the name */
+                    strcpy(namebuf, umnbuf);
+                }
+                else if (MNAME(mtmp) && mtmp->u_know_mname)
+                {
+                    char mnbuf[BUFSIZ];
+                    strcpy(mnbuf, MNAME(mtmp));
+                    mnbuf[16] = '\0'; /* Limit the length of the name */
+                    strcpy(namebuf, mnbuf);
+                }
+                else
+                {
+                    char buf[BUFSZ];
+                    strcpy(buf, mtmp->data->mname);
+                    *buf = highc(*buf);
+                    strncpy(namebuf, buf, MAXNAMELENGTH - 1);
+                    namebuf[MAXNAMELENGTH - 1] = '\0';
+                }
+
+                Sprintf(available_ability_list[abilitynum].name, "%s", namebuf);
+                available_ability_list[abilitynum].function_mtmp_ptr = &doviewpetstatistics;
+                available_ability_list[abilitynum].target_mtmp = mtmp;
+                available_ability_list[abilitynum].charnum = ('a' + abilitynum > 'z') ? ('A' + 'a' + abilitynum - ('z' + 1)) : ('a' + abilitynum);
+
+                any = zeroany;
+                any.a_char = available_ability_list[abilitynum].charnum;
+
+                add_menu(win, NO_GLYPH, &any,
+                    any.a_char, 0, ATR_NONE,
+                    available_ability_list[abilitynum].name, MENU_UNSELECTED);
+
+                abilitynum++;
+
+                if (abilitynum >= MAXABILITYNUM)
+                    break;
+            }
+        }
+    }
+
 	end_menu(win, "What do you want to do?");
 
 
@@ -1094,11 +1183,19 @@ doability(VOID_ARGS)
 	{
 		if (available_ability_list[j].charnum == i)
 		{
-			if(i != '\0')
-				res = (available_ability_list[j].function_ptr)();
+            if (i != '\0')
+            {
+                if(available_ability_list[j].function_mtmp_ptr && available_ability_list[j].target_mtmp)
+                    res = (available_ability_list[j].function_mtmp_ptr)(available_ability_list[j].target_mtmp);
+                else if(available_ability_list[j].function_ptr)
+                    res = (available_ability_list[j].function_ptr)();
+            }
 			break;
 		}
 	}
+
+#undef MAXNAMELENGTH
+#undef MAXABILITYNUM
 
 	return res;
 }
@@ -3940,6 +4037,20 @@ minimal_enlightenment()
     return (boolean) (n != -1);
 }
 #endif /*0*/
+
+
+STATIC_PTR int
+dopolyformstatistics(VOID_ARGS)
+{
+    return monsterdescription(&youmonst);
+}
+
+STATIC_PTR int
+doviewpetstatistics(struct monst* mon)
+{
+    return monsterdescription(mon);
+}
+
 
 /* ^X command */
 STATIC_PTR int

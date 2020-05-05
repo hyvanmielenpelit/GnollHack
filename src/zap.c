@@ -1018,399 +1018,247 @@ probe_monster(mtmp)
 struct monst *mtmp;
 {
     mstatusline(mtmp);
-    if (notonhead)
-        return; /* don't show minvent for long worm tail */
-
-	display_monster_intrinsics(mtmp);
-	display_monster_inventory(mtmp);
+    if (!notonhead)
+    {
+        monsterdescription(mtmp);
+        //display_monster_information(mtmp);
+        display_monster_inventory(mtmp);
+    }
 }
 
 
-void display_monster_intrinsics(mtmp)
+void display_monster_information(mtmp)
 struct monst* mtmp;
 {
-	if (!mtmp)
-		return;
+    if (!mtmp)
+        return;
 
-	winid datawin = WIN_ERR;
+    winid datawin = WIN_ERR;
 
-	datawin = create_nhwindow(NHW_MENU);
+    datawin = create_nhwindow(NHW_MENU);
 
-	char buf[BUFSZ];
-	const char* txt;
+    print_monster_intrinsics(datawin, mtmp);
+    print_monster_statistics(datawin, mtmp);
 
-	Sprintf(buf, "Current abilities:"); // , s_suffix(noit_Monnam(mtmp)));
-	txt = buf;
-	putstr(datawin, 0, txt);
+    display_nhwindow(datawin, FALSE);
+    destroy_nhwindow(datawin), datawin = WIN_ERR;
 
-	int abilcnt = 0;
+}
 
-	for (int i = 1; i <= LAST_PROP; i++)
-	{
-		boolean has_innate = FALSE;
-		boolean has_extrinsic = FALSE;
-		boolean has_instrinsic_acquired = FALSE;
-		boolean has_temporary = FALSE;
+void print_monster_intrinsics(datawin, mtmp)
+winid datawin;
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return;
 
-		unsigned long ibit = prop_to_innate(i);
+    if (datawin == WIN_ERR)
+        return;
 
-		if (mtmp->data->mresists & ibit)
-			has_innate = TRUE;
+    boolean is_you = (mtmp == &youmonst);
+    char buf[BUFSZ];
+    const char* txt;
 
-		if (mtmp->mprops[i] & M_EXTRINSIC)
-			has_extrinsic = TRUE;
+    Sprintf(buf, "%s abilities:", is_you ? "Innate" : "Current"); // , s_suffix(noit_Monnam(mtmp)));
+    txt = buf;
+    putstr(datawin, 0, txt);
 
-		if (mtmp->mprops[i] & M_INTRINSIC_ACQUIRED)
-			has_instrinsic_acquired = TRUE;
+    int abilcnt = 0;
 
-		if (mtmp->mprops[i] & M_TIMEOUT)
-			has_temporary = TRUE;
+    for (int i = 1; i <= LAST_PROP; i++)
+    {
+        boolean has_innate = FALSE;
+        boolean has_extrinsic = FALSE;
+        boolean has_instrinsic_acquired = FALSE;
+        boolean has_temporary = FALSE;
 
-		boolean has_property = has_innate || has_extrinsic || has_instrinsic_acquired || has_temporary;
+        unsigned long ibit = prop_to_innate(i);
 
-		if (has_property)
-		{
-			char endbuf[BUFSZ];
-			char endbuf2[BUFSZ];
-			strcpy(endbuf, "");
-			strcpy(endbuf2, "");
+        if (mtmp->data->mresists & ibit)
+            has_innate = TRUE;
 
-			if (0 && has_innate)
-			{
-				if (strcmp(endbuf, ""))
-					Strcat(endbuf, ", ");
+        if (mtmp->mprops[i] & M_EXTRINSIC)
+            has_extrinsic = TRUE;
 
-				Strcat(endbuf, "innate");
-			}
+        if (mtmp->mprops[i] & M_INTRINSIC_ACQUIRED)
+            has_instrinsic_acquired = TRUE;
 
-			if (has_extrinsic)
-			{
-				if(strcmp(endbuf, ""))
-					Strcat(endbuf, ", ");
+        if (mtmp->mprops[i] & M_TIMEOUT)
+            has_temporary = TRUE;
 
-				Strcat(endbuf, "extrinsic");
-			}
-			if (0 && has_instrinsic_acquired)
-			{
-				if (strcmp(endbuf, ""))
-					Strcat(endbuf, ", ");
+        boolean has_property = has_innate || has_extrinsic || has_instrinsic_acquired || has_temporary;
 
-				Strcat(endbuf, "acquired");
-			}
-			if (has_temporary)
-			{
-				if (strcmp(endbuf, ""))
-					Strcat(endbuf, ", ");
+        if (has_property)
+        {
+            char endbuf[BUFSZ];
+            char endbuf2[BUFSZ];
+            strcpy(endbuf, "");
+            strcpy(endbuf2, "");
 
-				Strcat(endbuf, "temporary");
-			}
+            if (0 && has_innate)
+            {
+                if (strcmp(endbuf, ""))
+                    Strcat(endbuf, ", ");
 
-			if (strcmp(endbuf, ""))
-			{
-				Sprintf(endbuf2, " (%s)", endbuf);
-			}
+                Strcat(endbuf, "innate");
+            }
 
-			char namebuf[BUFSZ] = "";
-			strcpy(namebuf, get_property_name(i));
-			*namebuf = highc(*namebuf);
+            if (has_extrinsic)
+            {
+                if (strcmp(endbuf, ""))
+                    Strcat(endbuf, ", ");
 
-			abilcnt++;
-			Sprintf(buf, " %2d - %s%s", abilcnt, namebuf, endbuf2);
-			txt = buf;
-			putstr(datawin, 0, txt);
-		}
-	}
+                Strcat(endbuf, "extrinsic");
+            }
+            if (0 && has_instrinsic_acquired)
+            {
+                if (strcmp(endbuf, ""))
+                    Strcat(endbuf, ", ");
 
-	if (resists_magicmissile(mtmp))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Magic missile resistance", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+                Strcat(endbuf, "acquired");
+            }
+            if (has_temporary)
+            {
+                if (strcmp(endbuf, ""))
+                    Strcat(endbuf, ", ");
 
-	if (!abilcnt)
-	{
-		strcpy(buf, " (None)");
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+                Strcat(endbuf, "temporary");
+            }
 
-	Sprintf(buf, "Classifications:");// , noit_mon_nam(mtmp));
-	txt = buf;
-	putstr(datawin, 0, txt);
+            if (strcmp(endbuf, ""))
+            {
+                Sprintf(endbuf2, " (%s)", endbuf);
+            }
 
-	abilcnt = 0;
+            char namebuf[BUFSZ] = "";
+            strcpy(namebuf, get_property_name(i));
+            *namebuf = highc(*namebuf);
 
-	for (int j = 1; j <= 4; j++)
-	{
-		for (int i = 0; i < 32; i++)
-		{
-			unsigned long bit = 0x00000001UL;
-			if (i > 0)
-				bit = bit << i;
+            abilcnt++;
+            Sprintf(buf, " %2d - %s%s", abilcnt, namebuf, endbuf2);
+            txt = buf;
+            putstr(datawin, 0, txt);
+        }
+    }
 
-			unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : mtmp->data->mflags4;
+    if (resists_magicmissile(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - Magic missile resistance", abilcnt);
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
 
-			if (flags & bit)
-			{
-				char descbuf[BUFSZ] = "";
-				strcpy(descbuf, get_mflag_description(bit, FALSE, j));
-				if (strcmp(descbuf, ""))
-				{
-					*descbuf = highc(*descbuf);
-					abilcnt++;
-					Sprintf(buf, " %2d - %s", abilcnt, descbuf);
-					txt = buf;
-					putstr(datawin, 0, txt);
-				}
-			}
-		}
-	}
+    if (!abilcnt)
+    {
+        strcpy(buf, " (None)");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
 
-#if 0
-	if (is_shapeshifter(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Shapeshifter", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+    Sprintf(buf, "Classifications:");// , noit_mon_nam(mtmp));
+    txt = buf;
+    putstr(datawin, 0, txt);
 
-	if (is_were(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Lycanthrope", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+    abilcnt = 0;
 
-	if (is_elf(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Elf", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+    for (int j = 1; j <= 4; j++)
+    {
+        for (int i = 0; i < 32; i++)
+        {
+            unsigned long bit = 0x00000001UL;
+            if (i > 0)
+                bit = bit << i;
 
-	if (is_dwarf(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Dwarf", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+            unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : mtmp->data->mflags4;
 
-	if (is_gnoll(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Gnoll", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_gnome(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Gnome", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_orc(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Orc", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_human(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Human", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_giant(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Giant", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_dragon(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Dragon", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (mindless(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Mindless", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (unsolid(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Unsolid", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (noncorporeal(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Noncorporeal", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_nonliving(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Nonliving", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (passes_walls(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Passes through walls", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (tunnels(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Burrows through walls", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_undead(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Undead", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_demon(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Demon", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_vampire(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Vampire", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_angel(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Angel", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_modron(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Modron", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_animal(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Animal", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_modron(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Modron", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_lord(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Lord", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (is_prince(mtmp->data))
-	{
-		abilcnt++;
-		Sprintf(buf, " %2d - Prince", abilcnt);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-#endif
-
-	/* Heads */
-	if (!(mtmp->data->heads == 1 && mtmp->heads_left == 1))
-	{
-		char headbuf[BUFSZ];
-		switch (mtmp->data->heads)
-		{
-		case 0:
-			strcpy(headbuf, "Headless");
-			break;
-		case 1:
-			strcpy(headbuf, "Single-headed");
-			break;
-		case 2:
-			strcpy(headbuf, "Two-headed");
-			break;
-		case 3:
-			strcpy(headbuf, "Three-headed");
-			break;
-		default:
-			Sprintf(headbuf, "%d-headed", mtmp->data->heads);
-			break;
-		}
-
-		if (mtmp->heads_left != mtmp->data->heads)
-			Sprintf(eos(headbuf), " (%d head%s left)", mtmp->heads_left, plur(mtmp->heads_left));
-
-		abilcnt++;
-		Sprintf(buf, " %2d - %s", abilcnt, headbuf);
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (!abilcnt)
-	{
-		strcpy(buf, " (None)");
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
+            if (flags & bit)
+            {
+                char descbuf[BUFSZ] = "";
+                strcpy(descbuf, get_mflag_description(bit, FALSE, j));
+                if (strcmp(descbuf, ""))
+                {
+                    *descbuf = highc(*descbuf);
+                    abilcnt++;
+                    Sprintf(buf, " %2d - %s", abilcnt, descbuf);
+                    txt = buf;
+                    putstr(datawin, 0, txt);
+                }
+            }
+        }
+    }
 
 
-	Sprintf(buf, "Attribute scores:");// , s_suffix(noit_Monnam(mtmp)));
+    /* Heads */
+    if (!(mtmp->data->heads == 1 && mtmp->heads_left == 1))
+    {
+        char headbuf[BUFSZ];
+        switch (mtmp->data->heads)
+        {
+        case 0:
+            strcpy(headbuf, "Headless");
+            break;
+        case 1:
+            strcpy(headbuf, "Single-headed");
+            break;
+        case 2:
+            strcpy(headbuf, "Two-headed");
+            break;
+        case 3:
+            strcpy(headbuf, "Three-headed");
+            break;
+        default:
+            Sprintf(headbuf, "%d-headed", mtmp->data->heads);
+            break;
+        }
+
+        if (mtmp->heads_left != mtmp->data->heads)
+            Sprintf(eos(headbuf), " (%d head%s left)", mtmp->heads_left, plur(mtmp->heads_left));
+
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, headbuf);
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (!abilcnt)
+    {
+        strcpy(buf, " (None)");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+}
+
+void print_monster_statistics(datawin, mtmp)
+winid datawin;
+struct monst* mtmp;
+{
+    if (!mtmp)
+        return;
+
+    if (datawin == WIN_ERR)
+        return;
+
+    char buf[BUFSZ];
+    const char* txt;
+
+
+    Sprintf(buf, "Base attribute scores:");
+    txt = buf;
+    putstr(datawin, 0, txt);
+
+    Sprintf(buf, " St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d",
+        get_strength_string(mtmp->data->str),
+        mtmp->data->dex,
+        mtmp->data->con,
+        mtmp->data->intl,
+        mtmp->data->wis,
+        mtmp->data->cha
+    );
+    txt = buf;
+    putstr(datawin, 0, txt);
+
+    Sprintf(buf, "Current attribute scores:");
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -1425,10 +1273,6 @@ struct monst* mtmp;
 
 	txt = buf;
 	putstr(datawin, 0, txt);
-
-	display_nhwindow(datawin, FALSE);
-	destroy_nhwindow(datawin), datawin = WIN_ERR;
-
 
 }
 

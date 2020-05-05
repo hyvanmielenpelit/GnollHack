@@ -240,6 +240,8 @@ E int NDECL(domonability);
 E int NDECL(doprev_message);
 E int NDECL(timed_occupation);
 E int NDECL(doattributes);
+E int NDECL(dopolyformstatistics);
+E int NDECL(doviewpetstatistics);
 E int NDECL(wiz_detect);
 E int NDECL(wiz_genesis);
 E int NDECL(wiz_identify);
@@ -436,6 +438,8 @@ E int NDECL(docharacterstatistics);
 E const char* FDECL(get_damage_type_text, (int));
 E const char* FDECL(get_defense_type_text, (int));
 E const char* FDECL(get_artifact_invoke_name, (int));
+E const char* FDECL(get_monster_size_text, (int));
+E const char* FDECL(get_attack_type_text, (int));
 E boolean FDECL(boulder_hits_pool, (struct obj *, int, int, BOOLEAN_P));
 E boolean FDECL(flooreffects, (struct obj *, int, int, const char *));
 E void FDECL(doaltarobj, (struct obj *));
@@ -466,6 +470,7 @@ E void FDECL(heal_legs, (int));
 E boolean NDECL(floorexamine);
 E int FDECL(itemdescription, (struct obj*));
 E void FDECL(printweight, (char*, int, boolean, boolean));
+E int FDECL(monsterdescription, (struct monst*));
 
 /* ### do_name.c ### */
 
@@ -3255,7 +3260,9 @@ E int FDECL(dowrite, (struct obj *));
 E void FDECL(learnwand, (struct obj *));
 E int FDECL(bhitm, (struct monst *, struct obj *));
 E void FDECL(probe_monster, (struct monst *));
-E void FDECL(display_monster_intrinsics, (struct monst*));
+E void FDECL(display_monster_information, (struct monst*));
+E void FDECL(print_monster_intrinsics, (winid win, struct monst*));
+E void FDECL(print_monster_statistics, (winid win, struct monst*));
 E void FDECL(display_monster_inventory, (struct monst*));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));

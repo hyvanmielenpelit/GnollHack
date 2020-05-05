@@ -2739,134 +2739,7 @@ register struct obj* obj;
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
-#if 0
-			if (specialeffect & SPFX_ANTIMAGIC)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Magic resistance %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_SEARCH)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Searching %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_ORC_WARNING)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Warning of the presence of orcs %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_ELF_WARNING)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Warning of the presence of elves %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_WARNING)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Warning %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_HALRES)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Hallucination resistance %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_ESP)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - ESP %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_STLTH)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Stealth %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_REGEN)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Regeneration %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_STLTH)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Mana regeneration %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_HSPDAM)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Half spell damage %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_HPHDAM)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Half physical damage %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Half physical damage against undead and demons %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_TCTRL)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Teleport control %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_XRAY)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - X-ray vision %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_REFLECT)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Reflection %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_PROTECT)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Protection %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-			if (specialeffect & SPFX_AGGRAVATE_MONSTER)
-			{
-				powercnt++;
-				Sprintf(buf, " %2d - Aggravates monsters %s", powercnt, endbuf);
-				txt = buf;
-				putstr(datawin, 0, txt);
-			}
-#endif
+
 			if (specialeffect & SPFX_LUCK)
 			{
 				powercnt++;
@@ -3126,18 +2999,37 @@ register struct obj* obj;
 	return 0;
 }
 
+
+
+
 static const char* damage_type_names[] = {
-	"physical", "magic", "fire", "cold", "",
-	"", "", "electrical", "", "",
-	"", "", "stunning", "", "",
-	"life draining",
+	"physical", "magic", "fire", "cold", "sleep",
+	"disintegrating", "electrical", "poisonous", "acidic", "deadly",
+	"petrifying", "blinding", "stunning", "slowing", "paralyzing",
+	"life draining", "mana draining", "leg-damaging", "", "sticky",
+	"steals gold", "steals item", "seduction", "teleportation", "rust-causing", 
+	"confusion", "digestion", "healing", "wraps",  "lycanthropy-infected",
+	"drains dexterity", "drains constitution", "drains intelligence", "infected with terminal illness", "decays organics",
+	"demonic seduction", "hallucination", "death-causing", "pestilence-infecting", "famine-causing",
+	"slime-contracting", "disenchanting", "corroding", "cancelling", "psionic", "system shock",
+	"hit point adjustment", "sharpness", "rot-infected",
+
+};
+
+static const char* damage_type_names_high[] = {
+	"fire or poison gas", "disintegration or cold", "ancient gold dragon", "clerical", "magic",
+	"random draconic", "demon", "controlled creatures", "gnolls", "ghouls",
+	"undead", "minotaurs", "random eye stalk", "random eye stalk", "bison",
+	"steals amulet", "curse",
 };
 
 
 const char* get_damage_type_text(damagetype)
 int damagetype;
 {
-	if (damagetype < 0 || damagetype >= SIZE(damage_type_names))
+	if (damagetype >= AD_RBGD && damagetype - AD_RBGD < SIZE(damage_type_names))
+		return damage_type_names_high[damagetype - AD_RBGD];
+	else if (damagetype < 0 || damagetype >= SIZE(damage_type_names))
 		return empty_string;
 
 	return damage_type_names[damagetype];
@@ -3173,6 +3065,235 @@ int specialpropindex;
 
 	return artifact_invoke_names[specialpropindex - ARTINVOKE_TAMING];
 }
+
+
+int
+monsterdescription(mon)
+register struct monst* mon;
+{
+	if (!mon)
+		return 0;
+
+	winid datawin = WIN_ERR;
+	datawin = create_nhwindow(NHW_MENU);
+
+	int mnum = mon->mnum;
+	struct permonst* ptr = mon->data;
+	boolean is_you = (mon == &youmonst);
+
+	char buf[BUFSZ];
+	char buf2[BUFSZ];
+	char buf3[BUFSZ];
+	const char* txt;
+	strcpy(buf, "");
+	strcpy(buf2, "");
+	strcpy(buf3, "");
+
+	/* Name */
+	strcpy(buf, ptr->mname);
+	*buf = highc(*buf);
+	if (ptr->mtitle && strcmp(ptr->mtitle, ""))
+	{
+		Sprintf(eos(buf), ", %s", ptr->mtitle);
+	}
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Description */
+	if (ptr->mdescription && strcmp(ptr->mdescription, ""))
+	{
+#if 0
+		/* One empty line here */
+		Sprintf(buf, "");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		Sprintf(buf, "Description:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+#endif
+		Sprintf(buf, ptr->mdescription);
+		*buf = highc(*buf);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	else
+	{
+		/* Type */
+		Sprintf(buf, "%s%s", ptr->geno & G_UNIQ ? "unique " : "", def_monsyms[ptr->mlet].name);
+		*buf = highc(*buf);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	Sprintf(buf, "");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	int relevant_hp = is_you ? (Upolyd ? u.mh : u.uhp) : mon->mhp;
+	int relevant_hpmax = is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mon->mhpmax;
+	int relevant_level = is_you ? u.ulevel : mon->m_lev;
+
+	strcpy(buf2, "");
+	if (relevant_level != ptr->mlevel)
+	{
+		Sprintf(buf2, " (level %d)", relevant_level);
+	}
+
+	Sprintf(buf, "Hit dice:               %d%s", ptr->mlevel, buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "Hit points:             %d (%d)", relevant_hp, relevant_hpmax);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "Move:                   %d\"", ptr->mmove);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "Armor class:            %d", ptr->ac);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "Magic cancellation:     %d", ptr->mc);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "Magic resistance:       %d%%", ptr->mr);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "Alignment:              %s", ptr->maligntyp > 0 ? "Lawful" : ptr->maligntyp < 0 ? "Chaotic" : "Neutral");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	strcpy(buf2, get_monster_size_text(ptr->msize));
+	*buf2 = highc(*buf2);
+
+	Sprintf(buf, "Size:                   %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	int number_of_attacks = 0;
+
+	for (int i = 0; i < NATTK; i++)
+	{
+		if (mon->data->mattk[i].aatyp == 0 && mon->data->mattk[i].adtyp == 0 && mon->data->mattk[i].damd == 0 && mon->data->mattk[i].damn == 0 && mon->data->mattk[i].damp == 0)
+			break;
+		else
+			number_of_attacks++;
+	}
+
+	Sprintf(buf, "Number of attacks:      %d", number_of_attacks);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	for (int i = 0; i < number_of_attacks; i++)
+	{
+		char attypebuf[BUFSZ];
+		char adtypebuf[BUFSZ];
+		char damagebuf[BUFSZ];
+		char specialbuf[BUFSZ];
+
+		strcpy(attypebuf, get_attack_type_text(mon->data->mattk[i].aatyp));
+		*attypebuf = highc(*attypebuf);
+
+		strcpy(adtypebuf, "");
+		const char* adtxt = get_damage_type_text(mon->data->mattk[i].adtyp);
+		if (adtxt && strcmp(adtxt, ""))
+		{
+			Sprintf(adtypebuf, ", %s", adtxt);
+		}
+
+		strcpy(damagebuf, "");
+		if ((mon->data->mattk[i].damn > 0 && mon->data->mattk[i].damd > 0) || mon->data->mattk[i].damp != 0)
+		{
+			boolean dpart = FALSE;
+			strcpy(damagebuf, " ");
+
+			if ((mon->data->mattk[i].damn > 0 && mon->data->mattk[i].damd > 0))
+			{
+				dpart = TRUE;
+				Sprintf(eos(damagebuf), "%dd%d", mon->data->mattk[i].damn, mon->data->mattk[i].damd);
+			}
+
+			if (dpart && mon->data->mattk[i].damp > 0)
+				Strcat(damagebuf, "+");
+
+			if(mon->data->mattk[i].damp != 0)
+				Sprintf(eos(damagebuf), "%d", mon->data->mattk[i].damp);
+		}
+		
+		strcpy(specialbuf, "");
+		if (mon->data->mattk[i].aatyp == AT_SMMN && mon->data->mattk[i].mcadj > 0)
+		{
+			Sprintf(specialbuf, " (success %d%%)", mon->data->mattk[i].mcadj);
+		}
+		else if (mon->data->mattk[i].aatyp == AT_MAGC && mon->data->mattk[i].mcadj > 0)
+		{
+			Sprintf(specialbuf, " (as %d level caster)", mon->data->mattk[i].mcadj);
+		}
+		else if (mon->data->mattk[i].mcadj != 0)
+		{
+			Sprintf(specialbuf, " (%s%d MC %s)", mon->data->mattk[i].mcadj > 0 ? "+" : "", mon->data->mattk[i].mcadj,
+				mon->data->mattk[i].mcadj <= 0 ? "penalty" : "bonus");
+		}
+
+		Sprintf(buf, " %2d - %s%s%s%s", i + 1, attypebuf, adtypebuf, damagebuf, specialbuf);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+	}
+
+	print_monster_statistics(datawin, mon);
+	print_monster_intrinsics(datawin, mon);
+
+	display_nhwindow(datawin, FALSE);
+	destroy_nhwindow(datawin), datawin = WIN_ERR;
+
+	return 0;
+}
+
+
+static const char* monster_size_names[] = {
+	"tiny", "small", "medium-sized", "large", "huge",
+	"gigantic", "gigantic", "gigantic",
+};
+
+const char* get_monster_size_text(monsize)
+int monsize;
+{
+	if (monsize < 0 || monsize >= SIZE(monster_size_names))
+		return empty_string;
+
+	return monster_size_names[monsize];
+}
+
+
+static const char* attack_type_names[] = {
+	"none", "claw", "bite", "kick", "ram",
+	"tail", "butt", "touch", "sting", "grab", "spit",
+	"engulf", "breath weapon", "explosion", "explosion",
+	"gaze", "tentacle", "eys stalk",
+};
+
+const char* get_attack_type_text(aatyp)
+int aatyp;
+{
+	if (aatyp == AT_SMMN)
+		return "summon";
+	else if (aatyp == AT_WEAP)
+		return "by weapon";
+	else if (aatyp == AT_WEAP)
+		return "spell casting";
+	else if (aatyp < 0 || aatyp >= SIZE(attack_type_names))
+		return empty_string;
+
+	return attack_type_names[aatyp];
+}
+
+
 
 /* Called when a boulder is dropped, thrown, or pushed.  If it ends up
  * in a pool, it either fills the pool up or sinks away.  In either case,
