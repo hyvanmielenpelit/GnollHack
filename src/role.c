@@ -2668,7 +2668,6 @@ Goodbye()
 int
 player_to_glyph()
 {
-    int gidx = 0;
     int number_of_roles = NUM_ROLES;
     int number_of_races = NUM_RACES;
     int number_of_genders = 2;
