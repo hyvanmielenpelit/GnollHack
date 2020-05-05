@@ -76,7 +76,7 @@ enum trap_types {
     WEB          = 18,
     STATUE_TRAP  = 19,
     MAGIC_TRAP   = 20,
-    ANTI_MAGIC   = 21,
+    ANTI_MAGIC_TRAP = 21,
     POLY_TRAP    = 22,
     VIBRATING_SQUARE = 23,
 	MODRON_OCTAHEDRAL_PORTAL = 24,

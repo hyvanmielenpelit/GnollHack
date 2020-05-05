@@ -982,7 +982,7 @@ unsigned trflags;
         if (!Fumbling && ttype != MAGIC_PORTAL && ttype != VIBRATING_SQUARE
             && ttype != MODRON_OCTAHEDRAL_PORTAL && ttype != MODRON_TETRAHEDRAL_PORTAL
             && ttype != MODRON_CUBICAL_PORTAL && ttype != MODRON_DODECAHEDRAL_PORTAL
-            && ttype != ANTI_MAGIC && !forcebungle && !plunged
+            && ttype != ANTI_MAGIC_TRAP && !forcebungle && !plunged
             && !conj_pit && !adj_pit
             && (!rn2(5) || (is_pit(ttype)
                             && is_clinger(youmonst.data))))
@@ -1470,7 +1470,7 @@ unsigned trflags;
         (void) steedintrap(trap, (struct obj *) 0);
         break;
 
-    case ANTI_MAGIC:
+    case ANTI_MAGIC_TRAP:
         seetrap(trap);
         /* hero without magic resistance loses spell energy,
            hero with magic resistance takes damage instead;
@@ -2676,7 +2676,7 @@ register struct monst *mtmp;
             if (!rn2(21))
                 goto mfiretrap;
             break;
-        case ANTI_MAGIC:
+        case ANTI_MAGIC_TRAP:
             /* similar to hero's case, more or less */
             if (!resists_magic(mtmp)) { /* lose spell energy */
                 if (!is_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
@@ -4195,7 +4195,7 @@ int skill_level;
 		case WEB:
 			probability = webmaker(youmonst.data) ? 50 : 1;
 			break;
-		case ANTI_MAGIC:
+		case ANTI_MAGIC_TRAP:
 		case POLY_TRAP:
 		case TELEP_TRAP:
 		case LEVEL_TELEP:
@@ -4222,7 +4222,7 @@ int skill_level;
 		case WEB:
 			probability = webmaker(youmonst.data) ? 100 : 3;
 			break;
-		case ANTI_MAGIC:
+		case ANTI_MAGIC_TRAP:
 		case POLY_TRAP:
 		case TELEP_TRAP:
 		case LEVEL_TELEP:
@@ -4248,7 +4248,7 @@ int skill_level;
 		case WEB:
 			probability = webmaker(youmonst.data) ? 200 : 10;
 			break;
-		case ANTI_MAGIC:
+		case ANTI_MAGIC_TRAP:
 		case POLY_TRAP:
 		case TELEP_TRAP:
 		case LEVEL_TELEP:
@@ -4274,7 +4274,7 @@ int skill_level;
 		case WEB:
 			probability = webmaker(youmonst.data) ? 400 : 33;
 			break;
-		case ANTI_MAGIC:
+		case ANTI_MAGIC_TRAP:
 		case POLY_TRAP:
 		case TELEP_TRAP:
 		case LEVEL_TELEP:
@@ -4543,7 +4543,7 @@ struct trap* ttmp;
 	case LEVEL_TELEP:
 		skillgained = 13;
 		break;
-	case ANTI_MAGIC:
+	case ANTI_MAGIC_TRAP:
 		skillgained = 12;
 		break;
 	case TELEP_TRAP:
@@ -4584,7 +4584,7 @@ struct trap* ttmp;
 	case LEVEL_TELEP:
 		genotyp = WAN_TELEPORTATION;
 		break;
-	case ANTI_MAGIC:
+	case ANTI_MAGIC_TRAP:
 		genotyp = POT_MAGIC_RESISTANCE;
 		break;
 	case TELEP_TRAP:
@@ -4973,7 +4973,7 @@ boolean force;
                     return disarm_shooting_trap(ttmp, ARROW);
 				case ROCKTRAP:
 				case ROLLING_BOULDER_TRAP:
-				case ANTI_MAGIC:
+				case ANTI_MAGIC_TRAP:
 				case POLY_TRAP:
 				case TELEP_TRAP:
 				case LEVEL_TELEP:
@@ -5644,7 +5644,7 @@ register struct trap *ttmp;
                  || is_hole(ttmp->ttyp)
                  || (ttmp->ttyp == TELEP_TRAP) || (ttmp->ttyp == LEVEL_TELEP)
                  || (ttmp->ttyp == WEB) || (ttmp->ttyp == MAGIC_TRAP)
-                 || (ttmp->ttyp == ANTI_MAGIC))) {
+                 || (ttmp->ttyp == ANTI_MAGIC_TRAP))) {
         register struct monst *mtmp;
 
         if (ttmp->tx == u.ux && ttmp->ty == u.uy) {

@@ -169,7 +169,7 @@ static struct {
                    { "web", WEB },
                    { "statue", STATUE_TRAP },
                    { "magic", MAGIC_TRAP },
-                   { "anti magic", ANTI_MAGIC },
+                   { "anti magic", ANTI_MAGIC_TRAP },
                    { "polymorph", POLY_TRAP },
                    { "vibrating square", VIBRATING_SQUARE },
 				   { "octahedral portal", MODRON_OCTAHEDRAL_PORTAL },

@@ -1674,7 +1674,7 @@ dospinweb()
         case SLP_GAS_TRAP:
         case RUST_TRAP:
         case MAGIC_TRAP:
-        case ANTI_MAGIC:
+        case ANTI_MAGIC_TRAP:
         case POLY_TRAP:
             You("have triggered a trap!");
             dotrap(ttmp, 0);

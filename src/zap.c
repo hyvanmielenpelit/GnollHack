@@ -1242,8 +1242,20 @@ struct monst* mtmp;
     char buf[BUFSZ];
     const char* txt;
 
+    boolean are_the_same = (
+        mtmp->data->str == M_ACURR(mtmp, A_STR) &&
+        mtmp->data->dex == M_ACURR(mtmp, A_DEX) &&
+        mtmp->data->con == M_ACURR(mtmp, A_CON) &&
+        mtmp->data->intl == M_ACURR(mtmp, A_INT) &&
+        mtmp->data->wis == M_ACURR(mtmp, A_WIS) &&
+        mtmp->data->cha == M_ACURR(mtmp, A_CHA)
+        );
 
-    Sprintf(buf, "Base attribute scores:");
+    if(are_the_same)
+        Sprintf(buf, "Attribute scores:");
+    else
+        Sprintf(buf, "Base attribute scores:");
+
     txt = buf;
     putstr(datawin, 0, txt);
 
@@ -1258,22 +1270,24 @@ struct monst* mtmp;
     txt = buf;
     putstr(datawin, 0, txt);
 
-    Sprintf(buf, "Current attribute scores:");
-	txt = buf;
-	putstr(datawin, 0, txt);
+    if (!are_the_same)
+    {
+        Sprintf(buf, "Current attribute scores:");
+        txt = buf;
+        putstr(datawin, 0, txt);
 
-	Sprintf(buf, " St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d", 
-		get_strength_string(M_ACURR(mtmp, A_STR)), 
-		M_ACURR(mtmp, A_DEX),
-		M_ACURR(mtmp, A_CON),
-		M_ACURR(mtmp, A_INT),
-		M_ACURR(mtmp, A_WIS),
-		M_ACURR(mtmp, A_CHA)
-		);
+        Sprintf(buf, " St:%s Dx:%d Co:%d In:%d Wi:%d Ch:%d",
+            get_strength_string(M_ACURR(mtmp, A_STR)),
+            M_ACURR(mtmp, A_DEX),
+            M_ACURR(mtmp, A_CON),
+            M_ACURR(mtmp, A_INT),
+            M_ACURR(mtmp, A_WIS),
+            M_ACURR(mtmp, A_CHA)
+        );
 
-	txt = buf;
-	putstr(datawin, 0, txt);
-
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
 }
 
 

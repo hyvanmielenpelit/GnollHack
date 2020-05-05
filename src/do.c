@@ -3090,7 +3090,7 @@ register struct monst* mon;
 	strcpy(buf3, "");
 
 	/* Name */
-	strcpy(buf, ptr->mname);
+	Sprintf(buf, "%s", ptr->mname);
 	*buf = highc(*buf);
 	if (ptr->mtitle && strcmp(ptr->mtitle, ""))
 	{
@@ -3102,26 +3102,16 @@ register struct monst* mon;
 	/* Description */
 	if (ptr->mdescription && strcmp(ptr->mdescription, ""))
 	{
-#if 0
-		/* One empty line here */
-		Sprintf(buf, "");
-		txt = buf;
-		putstr(datawin, 0, txt);
-
-		Sprintf(buf, "Description:");
-		txt = buf;
-		putstr(datawin, 0, txt);
-#endif
-		Sprintf(buf, ptr->mdescription);
-		*buf = highc(*buf);
+		Sprintf(buf, "Level %d %s", ptr->difficulty, ptr->mdescription);
+		//*buf = highc(*buf);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
 	else
 	{
 		/* Type */
-		Sprintf(buf, "%s%s", ptr->geno & G_UNIQ ? "unique " : "", def_monsyms[ptr->mlet].name);
-		*buf = highc(*buf);
+		Sprintf(buf, "Level %d %s%s", ptr->difficulty, ptr->geno& G_UNIQ ? "unique " : "", def_monsyms[ptr->mlet].explain);
+		//*buf = highc(*buf);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -3132,15 +3122,15 @@ register struct monst* mon;
 
 	int relevant_hp = is_you ? (Upolyd ? u.mh : u.uhp) : mon->mhp;
 	int relevant_hpmax = is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mon->mhpmax;
-	int relevant_level = is_you ? u.ulevel : mon->m_lev;
+	int relevant_level = is_you ? ptr->mlevel : mon->m_lev;
 
 	strcpy(buf2, "");
 	if (relevant_level != ptr->mlevel)
 	{
-		Sprintf(buf2, " (level %d)", relevant_level);
+		Sprintf(buf2, " (base %d)", ptr->mlevel);
 	}
 
-	Sprintf(buf, "Hit dice:               %d%s", ptr->mlevel, buf2);
+	Sprintf(buf, "Hit dice:               %d%s", relevant_level, buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -3152,11 +3142,25 @@ register struct monst* mon;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	Sprintf(buf, "Armor class:            %d", ptr->ac);
+	strcpy(buf2, "");
+	int ac = is_you ? u.uac : find_mac(mon);
+	if (ac != ptr->ac)
+	{
+		Sprintf(buf2, " (base %d)", ptr->ac);
+	}
+
+	Sprintf(buf, "Armor class:            %d%s", ac, buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	Sprintf(buf, "Magic cancellation:     %d", ptr->mc);
+	strcpy(buf2, "");
+	int mc = magic_negation(mon);
+	if (mc != ptr->mc)
+	{
+		Sprintf(buf2, " (base %d)", ptr->mc);
+	}
+
+	Sprintf(buf, "Magic cancellation:     %d%s", mc, buf2);
 	txt = buf;
 	putstr(datawin, 0, txt);
 
@@ -3282,7 +3286,7 @@ const char* get_attack_type_text(aatyp)
 int aatyp;
 {
 	if (aatyp == AT_SMMN)
-		return "summon";
+		return "summoning";
 	else if (aatyp == AT_WEAP)
 		return "by weapon";
 	else if (aatyp == AT_WEAP)
