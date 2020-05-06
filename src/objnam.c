@@ -1059,7 +1059,7 @@ unsigned doname_flags;
 		isenchanted = obj->elemental_enchantment;
 	}
 	else if (!strncmp(bp, "death-magical ", 14) && obj->elemental_enchantment == DEATH_ENCHANTMENT) {
-		bp += 9;
+		bp += 14;
 		isenchanted = obj->elemental_enchantment;
 	}
 
