@@ -3089,10 +3089,24 @@ register struct monst* mon;
 	strcpy(buf2, "");
 	strcpy(buf3, "");
 
+	const char* monster_name = x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE);
+	const char* monster_type_name = mon_monster_name(mon);
+	boolean contains_type_name = TRUE;
+
+	strcpy(buf2, "");
+	strcpy(buf3, "");
+	if (strcmp(monster_name, monster_type_name) && !strstr(monster_name, monster_type_name))
+	{
+		contains_type_name = FALSE;
+		strcpy(buf2, monster_type_name);
+		*buf2 = highc(*buf2);
+		Sprintf(buf3, " - %s", buf2);
+	}
+
 	/* Name */
-	Sprintf(buf, "%s", 
-		x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE)
-		   );
+	Sprintf(buf, "%s%s", 
+		x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE),
+		   !contains_type_name ? buf3 : "");
 	*buf = highc(*buf);
 	if (ptr->mtitle && strcmp(ptr->mtitle, ""))
 	{
