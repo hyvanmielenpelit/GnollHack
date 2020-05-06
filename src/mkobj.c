@@ -2609,7 +2609,7 @@ struct obj *otmp;
 {
     long age, retval = otmp->age;
 
-    if (otmp->otyp == CORPSE && otmp->on_ice) {
+    if (otmp->otyp == CORPSE && (otmp->speflags & SPEFLAGS_CORPSE_ON_ICE)) {
         /* Adjust the age; must be same as obj_timer_checks() for off ice*/
         age = monstermoves - otmp->age;
         retval += age * (ROT_ICE_ADJUSTMENT - 1) / ROT_ICE_ADJUSTMENT;
@@ -2644,7 +2644,7 @@ int force; /* 0 = no force so do checks, <0 = force off, >0 force on */
             long age;
 
             /* mark the corpse as being on ice */
-            otmp->on_ice = 1;
+            otmp->speflags |= SPEFLAGS_CORPSE_ON_ICE;
             debugpline3("%s is now on ice at <%d,%d>.", The(xname(otmp)), x,
                         y);
             /* Adjust the time remaining */
@@ -2660,7 +2660,7 @@ int force; /* 0 = no force so do checks, <0 = force off, >0 force on */
         }
 
     /* Check for corpses coming off ice */
-    } else if (force < 0 || (otmp->otyp == CORPSE && otmp->on_ice
+    } else if (force < 0 || (otmp->otyp == CORPSE && (otmp->speflags & SPEFLAGS_CORPSE_ON_ICE)
                              && !((on_floor || buried) && is_ice(x, y)))) {
         tleft = stop_timer(action, obj_to_any(otmp));
         if (tleft == 0L) {
@@ -2670,7 +2670,7 @@ int force; /* 0 = no force so do checks, <0 = force off, >0 force on */
         if (tleft != 0L) {
             long age;
 
-            otmp->on_ice = 0;
+            otmp->speflags &= ~SPEFLAGS_CORPSE_ON_ICE;
             debugpline3("%s is no longer on ice at <%d,%d>.",
                         The(xname(otmp)), x, y);
             /* Adjust the remaining time */

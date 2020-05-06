@@ -2876,7 +2876,9 @@ struct obj* obj;
 				{
 					wandknown = TRUE;
 					You("enchant %s with death magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 2 + bcsign(obj) * 1, DEATH_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 
+                        max(1, DEATH_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION),
+                        DEATH_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = DEATH_ENCHANTMENT;
 				}
@@ -2911,7 +2913,9 @@ struct obj* obj;
 				{
 					wandknown = TRUE;
 					You("enchant %s with cold magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 5 + bcsign(obj) * 3, COLD_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 
+                        max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION),
+                        COLD_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = COLD_ENCHANTMENT;
 				}
@@ -2977,7 +2981,9 @@ struct obj* obj;
 				{
 						wandknown = TRUE;
 						You("enchant %s with fire magic.", yname(otmp));
-						otmp = elemental_enchant_quan(otmp, 5 + bcsign(obj) * 3, FIRE_ENCHANTMENT);
+						otmp = elemental_enchant_quan(otmp, 
+                            max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION),
+                            FIRE_ENCHANTMENT);
 						prinv((char*)0, otmp, 0L);
 						//otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				}
@@ -3009,9 +3015,10 @@ struct obj* obj;
 				{
 					wandknown = TRUE;
 					You("enchant %s with lightning magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 5 + bcsign(obj) * 3, LIGHTNING_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, 
+                        max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(obj) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION), 
+                        LIGHTNING_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
-					//otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 				}
 				else if (otmp->oclass == RING_CLASS || otmp->oclass == WAND_CLASS)
 				{
@@ -3192,7 +3199,7 @@ int enchantmenttype;
 	if (is_elemental_enchantable(otmp))
 	{
 		if (enchantmenttype == DEATH_ENCHANTMENT && !is_death_enchantable(otmp))
-			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
+			otmp->elemental_enchantment = COLD_ENCHANTMENT;
 		else
 			otmp->elemental_enchantment = enchantmenttype;
 
@@ -5003,16 +5010,16 @@ int arrowtype, quan; //ObjID and quantity
 				otmp->elemental_enchantment = bag->elemental_enchantment;
 
 			if (otmp->elemental_enchantment == DEATH_ENCHANTMENT && quan > 1)
-				otmp->quan = min(quan, rnd(2));
+				otmp->quan = min(quan, max(1, DEATH_ENCHANTMENT_QUANTITY_NORMAL + bcsign(bag) * DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION));
 
-			if (otmp->elemental_enchantment == LIGHTNING_ENCHANTMENT && quan > 3)
-				otmp->quan = min(quan, 2 + d(1, 3));
+			if (otmp->elemental_enchantment == LIGHTNING_ENCHANTMENT && quan > 1)
+				otmp->quan = min(quan, max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(bag) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION));
 
-			if (otmp->elemental_enchantment == FIRE_ENCHANTMENT && quan > 3)
-				otmp->quan = min(quan, 2 + d(1, 3));
+			if (otmp->elemental_enchantment == FIRE_ENCHANTMENT && quan > 1)
+				otmp->quan = min(quan, max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(bag) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION));
 
-			if (otmp->elemental_enchantment == COLD_ENCHANTMENT && quan > 3)
-				otmp->quan = min(quan, 2 + d(1, 3));
+			if (otmp->elemental_enchantment == COLD_ENCHANTMENT && quan > 1)
+				otmp->quan = min(quan, max(1, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL + bcsign(bag) * ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION));
 
 			otmp->owt = weight(otmp);
 		}
@@ -5042,13 +5049,13 @@ int arrowtype, quan; //ObjID and quantity
 
 	if (bag->elemental_enchantment)
 	{
-		if (!rn2(3))
+		if (!rn2(ELEMENTAL_ENCHANTMENT_BAG_WEAR_OFF_ONE_PER_CHANCE))
 		{
 			bag->elemental_enchantment = 0;
 			pline("%s no longer %s.", Yobjnam2(bag, "are"), bag->elemental_enchantment == FIRE_ENCHANTMENT ? "flaming" :
 				bag->elemental_enchantment == COLD_ENCHANTMENT ? "freezing" :
 				bag->elemental_enchantment == LIGHTNING_ENCHANTMENT ? "electrified" :
-				bag->elemental_enchantment == DEATH_ENCHANTMENT ? "mortific" : "enchanted");
+				bag->elemental_enchantment == DEATH_ENCHANTMENT ? "death-magical" : "enchanted");
 
             if (bag->where == OBJ_INVENT)
                 update_inventory();

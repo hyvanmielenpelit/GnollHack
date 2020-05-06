@@ -60,6 +60,7 @@ struct obj {
 #define SPEFLAGS_STATUE_HISTORIC			0x00000004UL
 #define SPEFLAGS_STATUE_MALE				0x00000008UL
 #define SPEFLAGS_STATUE_FEMALE				0x00000010UL
+#define SPEFLAGS_CORPSE_ON_ICE				0x00000020UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
@@ -110,8 +111,13 @@ struct obj {
 #define LIGHTNING_ENCHANTMENT 3
 #define DEATH_ENCHANTMENT 4
 
+#define ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL 3 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
+#define ELEMENTAL_ENCHANTMENT_QUANTITY_BUC_VARIATION 2 
+#define DEATH_ENCHANTMENT_QUANTITY_NORMAL 1 /* How many stackable items are enchanted. Also 1/quan is wear-off chance for non-stackable items */
+#define DEATH_ENCHANTMENT_QUANTITY_BUC_VARIATION 1 
+#define ELEMENTAL_ENCHANTMENT_BAG_WEAR_OFF_ONE_PER_CHANCE 3
+
 	Bitfield(recharged, 3); /* number of times it's been recharged */
-#define on_ice recharged    /* corpse on ice */
     Bitfield(lamplit, 1);   /* a light-source -- can be lit */
     Bitfield(globby, 1);    /* combines with like types on adjacent squares */
     Bitfield(greased, 1);    /* covered with grease */

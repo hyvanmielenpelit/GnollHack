@@ -579,8 +579,8 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline_The("cold sears it!", mon_nam(mtmp));
 					damage += adjust_damage(d(12, 6), (struct monst*)0, mtmp, AD_COLD, FALSE);
 				}
-				if (!rn2(10))
-					otmp->elemental_enchantment = 0;
+                if(is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
+				    otmp->elemental_enchantment = 0;
 				break;
 			case FIRE_ENCHANTMENT:
 				if (resists_fire(mtmp)) 
@@ -597,9 +597,9 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline_The("fire burns it!");
 					damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_FIRE, FALSE);
 				}
-				if (!rn2(3))
-					otmp->elemental_enchantment = 0;
-				break;
+                if (is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
+                    otmp->elemental_enchantment = 0;
+                break;
 			case LIGHTNING_ENCHANTMENT:
 				if (resists_elec(mtmp)) 
 				{
@@ -616,8 +616,9 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
 					damage += adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_ELEC, FALSE);
 				}
-				otmp->elemental_enchantment = 0;
-				break;
+                if (is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
+                    otmp->elemental_enchantment = 0;
+                break;
 			case DEATH_ENCHANTMENT:
 				if (check_rider_death_absorption(mtmp, (const char*)0))
 				{
@@ -984,15 +985,15 @@ struct obj *obj;         /* missile (or stack providing it) */
 				switch (singleobj->elemental_enchantment)
 				{
 				case COLD_ENCHANTMENT:
-					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(5))
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
 						singleobj->elemental_enchantment = 0;
 					break;
 				case FIRE_ENCHANTMENT:
-					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(5))
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
 						singleobj->elemental_enchantment = 0;
 					break;
 				case LIGHTNING_ENCHANTMENT:
-					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(5))
+					if (is_ammo(singleobj) || throwing_weapon(singleobj) || objects[singleobj->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
 						singleobj->elemental_enchantment = 0;
 					break;
 				case DEATH_ENCHANTMENT:
