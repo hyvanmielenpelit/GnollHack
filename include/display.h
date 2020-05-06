@@ -255,17 +255,23 @@
  *
  * Glyphs are grouped for easy accessibility:
  *
- * monster      Represents all the wild (not tame) monsters.  Count: NUMMONS.
+ * monster      Represents all the wild (not tame) non-female monsters.  Count: NUMMONS.
  *
- * pet          Represents all of the tame monsters.  Count: NUMMONS
+ * pet          Represents all of the tame non-female monsters.  Count: NUMMONS
  *
  * invisible    Invisible monster placeholder.  Count: 1
  *
- * detect       Represents all detected monsters.  Count: NUMMONS
+ * detect       Represents all detected non-female monsters.  Count: NUMMONS
  *
  * corpse       One for each monster.  Count: NUMMONS
  *
  * ridden       Represents all monsters being ridden.  Count: NUMMONS
+ *
+ * female mon   Represents all the wild (not tame) female monsters.  Count: NUMMONS.
+ *
+ * female pet   Represents all of the tame female monsters.  Count: NUMMONS
+ *
+ * female det   Represents all detected female monsters.  Count: NUMMONS
  *
  * object       One for each object.  Count: NUM_OBJECTS
  *
