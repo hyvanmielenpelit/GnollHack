@@ -312,7 +312,7 @@ boolean resuming;
                         }
                     }
 
-					if (smells_buried_searchable(&mons[Upolyd ? u.umonnum : urace.malenum]) && multi >= 0)
+					if (smells_buried_searchable(&mons[Upolyd ? u.umonnum : urace.monsternum]) && multi >= 0)
 					{
 						int buriedsearchablefound = FALSE;
 						struct obj* otmp2;
@@ -1126,7 +1126,7 @@ welcome(new_game)
 boolean new_game; /* false => restoring an old game */
 {
     char buf[BUFSZ];
-    boolean currentgend = Upolyd ? u.mfemale : flags.female;
+    boolean currentgend = Upolyd ? u.mfemale : u.ufemale;
 
     /* skip "welcome back" if restoring a doomed character */
     if (!new_game && Upolyd && ugenocided()) {

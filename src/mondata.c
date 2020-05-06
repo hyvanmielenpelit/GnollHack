@@ -911,8 +911,12 @@ const char *in_str;
             { "baluchitheria", PM_BALUCHITHERIUM },
             { "lurkers above", PM_LURKER_ABOVE },
             { "cavemen", PM_CAVEMAN },
-            { "cavewomen", PM_CAVEWOMAN },
+            { "cavewomen", PM_CAVEMAN },
+            { "cavepersons", PM_CAVEMAN },
+            { "cavepeople", PM_CAVEMAN },
             { "watchmen", PM_WATCHMAN },
+            { "watchwomen", PM_WATCHMAN },
+            { "watchpersons", PM_WATCHMAN },
             { "djinn", PM_DJINNI },
             { "mumakil", PM_MUMAK },
             { "erinyes", PM_ERINYS },
@@ -1119,6 +1123,8 @@ static const short grownups[][2] = {
 	{ PM_GIANT_COCKATRICE, PM_GARGANTUAN_COCKATRICE },
 	{ PM_LITTLE_DOG, PM_DOG },
     { PM_DOG, PM_LARGE_DOG },
+    { PM_DIREWOLF_CUB, PM_DIREWOLF },
+    { PM_DIREWOLF, PM_LARGE_DIREWOLF },
     { PM_HELL_HOUND_PUP, PM_HELL_HOUND },
     { PM_WINTER_WOLF_CUB, PM_WINTER_WOLF },
     { PM_KITTEN, PM_HOUSECAT },
@@ -1270,7 +1276,7 @@ raceptr(mtmp)
 struct monst *mtmp;
 {
     if (mtmp == &youmonst && !Upolyd)
-        return &mons[urace.malenum];
+        return &mons[urace.monsternum];
     else
         return mtmp->data;
 }

@@ -872,7 +872,6 @@ u_init()
     register int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
 
-    flags.female = flags.initgend;
     flags.beginner = 1;
 
     /* zero u, including pointer values --
@@ -914,11 +913,10 @@ u_init()
     u.umortality = 0;
     u.ugrave_arise = NON_PM;
 
-    u.umonnum = u.umonster = (flags.female && urole.femalenum != NON_PM)
-                                 ? urole.femalenum
-                                 : urole.malenum;
-    u.ulycn = NON_PM;
+    u.umonnum = u.umonster = urole.monsternum;
+	u.ulycn = NON_PM;
     set_uasmon();
+	u.ufemale = flags.initgend;
 
 	u.carrying_capacity_level = UNENCUMBERED;
 
@@ -1119,7 +1117,7 @@ u_init()
 		Tourist[T_DARTS].trquan = rn1(20, 21);
 		ini_inv(Tourist);
 
-		if (flags.female)
+		if (u.ufemale)
 		{
 			ini_inv(TouristFemale);
 			knows_object(EXPENSIVE_HANDBAG);
@@ -1602,13 +1600,13 @@ register struct trobj *trop;
                 nocreate4 = otyp;
         }
 
-        if (urace.malenum != PM_HUMAN) {
+        if (urace.monsternum != PM_HUMAN) {
             /* substitute race-specific items; this used to be in
                the 'if (otyp != UNDEF_TYP) { }' block above, but then
                substitutions didn't occur for randomly generated items
                (particularly food) which have racial substitutes */
             for (i = 0; inv_subs[i].race_pm != NON_PM; ++i)
-				if (inv_subs[i].race_pm == urace.malenum
+				if (inv_subs[i].race_pm == urace.monsternum
 					&& otyp == inv_subs[i].item_otyp) {
 					debugpline3("ini_inv: substituting %s for %s%s",
 						OBJ_NAME(objects[inv_subs[i].subs_otyp]),

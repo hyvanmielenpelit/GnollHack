@@ -2323,8 +2323,15 @@ int level_limit;
 		mtmp->female = FALSE;
 	else if (mmflags & MM_FEMALE)
 		mtmp->female = TRUE;
-	else
-        mtmp->female = rn2(2); /* ignored for neuters */
+    else
+    {
+        unsigned long genderfrequence = (ptr->geno & G_GENDER_GEN_MASK);
+        boolean malerare = ((ptr->geno & G_GENDER_MALE_RARE) != 0);
+        int chancepower = genderfrequence != 0UL ? (int)(genderfrequence - G_GENDER_ONE_FOURTH + 1UL) : 0;
+        int oneinchance = 2 << chancepower; /* 2 to the power of chancepower */
+
+        mtmp->female = malerare ? rn2(max(2,oneinchance)) : !rn2(max(2, oneinchance)); /* ignored for neuters */
+    }
 
     if ((In_sokoban(&u.uz) && !mindless(ptr)) || (ptr->mflags3 & M3_KNOWS_PITS_AND_HOLES)) /* know about traps here */
         mtmp->mtrapseen = (1L << (PIT - 1)) | (1L << (HOLE - 1));
@@ -3113,8 +3120,6 @@ struct monst *mtmp, *victim;
        have both little and big forms */
     oldtype = monsndx(ptr);
     newtype = little_to_big(oldtype);
-    if (newtype == PM_PRIEST && mtmp->female)
-        newtype = PM_PRIESTESS;
 
     /* growth limits differ depending on method of advancement */
     if (victim)

@@ -64,7 +64,7 @@ pet_type()
 {
 	if (urole.petnum != NON_PM)
 	{
-		if (urole.petnum == PM_PONY && urace.malenum == PM_DWARF)
+		if (urole.petnum == PM_PONY && urace.monsternum == PM_DWARF)
 			return PM_RAM;
 		else
 			return  urole.petnum;
@@ -189,11 +189,14 @@ makedog()
 		petname = ramname;
     else if (pettype == PM_SMALL_LUGGAGE)
         petname = luggagename;
+    else if (pettype == PM_DIREWOLF_CUB)
+        petname = wolfname;
     else
         petname = catname;
 
     /* default pet names */
-    if (!*petname && pettype == PM_LITTLE_DOG) {
+    if (!*petname && pettype == PM_LITTLE_DOG)
+    {
         /* All of these names were for dogs. */
 		petname_female = rn2(2) ? "Fifi" : "Lassie";
 
@@ -221,6 +224,14 @@ makedog()
 				petname = "Sirius";			/* Orion's dog */
 		}
 	}
+    else if(!*petname && pettype == PM_DIREWOLF_CUB) 
+    {
+        if (Role_if(PM_VALKYRIE))
+        {
+            petname = "Ghost";		        /* Game of Thrones */
+            petname_female = "Nymeria";		/* Game of Thrones */
+        }
+    }
 
     mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_DIFFICULTY_HP_CHANGE);
 

@@ -433,7 +433,7 @@ gotobj:
                 if (Unaware)
                     unmul((char *) 0);
                 slowly = (armordelay >= 1 || multi < 0);
-                if (flags.female)
+                if (u.ufemale)
                     pline("%s charms you.  You gladly %s your %s.",
                           !seen ? "She" : Monnam(mtmp),
                           curssv ? "let her take"

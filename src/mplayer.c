@@ -182,7 +182,6 @@ register boolean special;
                 helm = STRANGE_OBJECT;
             break;
         case PM_CAVEMAN:
-        case PM_CAVEWOMAN:
             if (rn2(4))
                 weapon = MACE;
             else if (rn2(2))
@@ -214,7 +213,6 @@ register boolean special;
                 shield = STRANGE_OBJECT;
             break;
         case PM_PRIEST:
-        case PM_PRIESTESS:
             if (rn2(2))
                 weapon = MACE;
             if (rn2(2))
@@ -385,8 +383,7 @@ register struct monst *mtmp;
     if (is_peaceful(mtmp))
         return; /* will drop to humanoid talk */
 
-    pline("Talk? -- %s", (mtmp->data == &mons[urole.malenum]
-                          || mtmp->data == &mons[urole.femalenum])
+    pline("Talk? -- %s", (mtmp->data == &mons[urole.monsternum])
                              ? same_class_msg[rn2(3)]
                              : other_class_msg[rn2(3)]);
 }

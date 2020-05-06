@@ -630,7 +630,7 @@ struct obj* uitem;
 	if (orig_sex != poly_gender()) {
 		makeknown(uitem->otyp);
 		You("are suddenly very %s!",
-			flags.female ? "feminine" : "masculine");
+			u.ufemale ? "feminine" : "masculine");
 		context.botl = 1;
 	}
 	else

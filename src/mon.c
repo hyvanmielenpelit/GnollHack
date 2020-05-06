@@ -5220,7 +5220,6 @@ struct permonst *mdat;
             msg_given = TRUE;
             break;
         case PM_CAVEMAN:
-        case PM_CAVEWOMAN:
         case PM_BARBARIAN:
         case PM_NEANDERTHAL:
             You("smell body odor.");
@@ -5347,7 +5346,7 @@ struct monst* mon;
     if (!mon)
         return "";
 
-    boolean isfemale = (mon == &youmonst ? flags.female : mon->female);
+    boolean isfemale = (mon == &youmonst ? u.ufemale : mon->female);
     return pm_monster_name(mon->data, isfemale);
 
 }

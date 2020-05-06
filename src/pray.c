@@ -2205,7 +2205,7 @@ dosacrifice()
                 verbalize(
           "In return for thy service, I grant thee the gift of Immortality!");
                 You("ascend to the status of Demigod%s...",
-                    flags.female ? "dess" : "");
+                    u.ufemale ? "dess" : "");
                 done(ASCENDED);
             }
         }

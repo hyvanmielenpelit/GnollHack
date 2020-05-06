@@ -71,7 +71,7 @@ do_statusline1()
         char mbot[BUFSZ];
         int k = 0;
 
-        Strcpy(mbot, pm_monster_name(&mons[u.umonnum], flags.female));
+        Strcpy(mbot, pm_monster_name(&mons[u.umonnum], u.ufemale));
         while (mbot[k] != 0) {
             if ((k == 0 || (k > 0 && mbot[k - 1] == ' ')) && 'a' <= mbot[k]
                 && mbot[k] <= 'z')
@@ -335,7 +335,7 @@ boolean female;
 
     /* Find the role */
     for (role = roles; role->name.m; role++)
-        if (monnum == role->malenum || monnum == role->femalenum)
+        if (monnum == role->monsternum)
             break;
     if (!role->name.m)
         role = &urole;
@@ -359,7 +359,7 @@ boolean female;
 const char *
 rank()
 {
-    return rank_of(u.ulevel, Role_switch, flags.female);
+    return rank_of(u.ulevel, Role_switch, u.ufemale);
 }
 
 int
@@ -379,7 +379,7 @@ int *rank_indx, *title_length;
                     *rank_indx = j;
                 if (title_length)
                     *title_length = strlen(roles[i].rank[j].m);
-                return roles[i].malenum;
+                return roles[i].monsternum;
             }
             if (roles[i].rank[j].f
                 && !strncmpi(str, roles[i].rank[j].f,
@@ -388,8 +388,7 @@ int *rank_indx, *title_length;
                     *rank_indx = j;
                 if (title_length)
                     *title_length = strlen(roles[i].rank[j].f);
-                return (roles[i].femalenum != NON_PM) ? roles[i].femalenum
-                                                      : roles[i].malenum;
+                return roles[i].monsternum;
             }
         }
     return NON_PM;
@@ -647,7 +646,7 @@ bot_via_windowport()
      */
     Strcpy(nb = buf, plname);
     nb[0] = highc(nb[0]);
-    titl = !Upolyd ? rank() : pm_monster_name(&mons[u.umonnum], flags.female);
+    titl = !Upolyd ? rank() : pm_monster_name(&mons[u.umonnum], u.ufemale);
     i = (int) (strlen(buf) + sizeof " the " + strlen(titl) - sizeof "");
     /* if "Name the Rank/monster" is too long, we truncate the name
        but always keep at least 10 characters of it; when hitpintbar is
@@ -3650,12 +3649,12 @@ choose_value:
                 if (urole.rank[i].f) {
                     Sprintf(fbuf, "\"%s\"", urole.rank[i].f);
                     Sprintf(obuf, "%s or %s",
-                            flags.female ? fbuf : mbuf,
-                            flags.female ? mbuf : fbuf);
+                            u.ufemale ? fbuf : mbuf,
+                            u.ufemale ? mbuf : fbuf);
                 } else {
                     fbuf[0] = obuf[0] = '\0';
                 }
-                if (flags.female) {
+                if (u.ufemale) {
                     if (*fbuf)
                         rolelist[j++] = dupstr(fbuf);
                     rolelist[j++] = dupstr(mbuf);

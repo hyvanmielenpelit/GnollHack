@@ -299,18 +299,28 @@
 #define MH_GNOME M2_GNOME
 
 /* for mons[].geno (constant during game) */
-#define G_NOMINES 0x8000   /* not generated in Gnomish Mines */
-#define G_YACC 0x4000     /* generated on hellish pastures regardless of other flags */
-#define G_MODRON 0x2000     /* generated on modron plane regardless of other flags */
-#define G_UNIQ 0x1000     /* generated only once */
-#define G_NOHELL 0x0800   /* not generated in "hell" */
-#define G_HELL 0x0400     /* generated only in "hell" */
-#define G_NOGEN 0x0200    /* generated only specially */
-#define G_SGROUP 0x0080   /* appear in small groups normally */
-#define G_LGROUP 0x0040   /* appear in large groups normally */
-#define G_GENO 0x0020     /* can be genocided */
-#define G_NOCORPSE 0x0010 /* no corpse left ever */
-#define G_FREQ 0x0007     /* creation frequency mask */
+#define G_GENDER_MALE_RARE   0x80000000UL /* female more frequent */
+#define G_GENDER_ONE_256     0x70000000UL
+#define G_GENDER_ONE_128     0x60000000UL
+#define G_GENDER_ONE_64      0x50000000UL
+#define G_GENDER_ONE_32      0x40000000UL
+#define G_GENDER_ONE_16      0x30000000UL
+#define G_GENDER_ONE_EIGTH   0x20000000UL
+#define G_GENDER_ONE_FOURTH  0x10000000UL
+#define G_GENDER_GEN_MASK    0x70000000UL /* gender distribution mask, bits 0x10000000 - 0x40000000 give relative rarity: one in 2^(1 + number) is female or male */
+
+#define G_NOMINES   0x00008000UL     /* not generated in Gnomish Mines */
+#define G_YACC      0x00004000UL     /* generated on hellish pastures regardless of other flags */
+#define G_MODRON    0x00002000UL     /* generated on modron plane regardless of other flags */
+#define G_UNIQ      0x00001000UL     /* generated only once */
+#define G_NOHELL    0x00000800UL     /* not generated in "hell" */
+#define G_HELL      0x00000400UL     /* generated only in "hell" */
+#define G_NOGEN     0x00000200UL     /* generated only specially */
+#define G_SGROUP    0x00000080UL     /* appear in small groups normally */
+#define G_LGROUP    0x00000040UL     /* appear in large groups normally */
+#define G_GENO      0x00000020UL     /* can be genocided */
+#define G_NOCORPSE  0x00000010UL     /* no corpse left ever */
+#define G_FREQ      0x00000007UL     /* creation frequency mask */
 
 /* for mvitals[].mvflags (variant during game), along with G_NOCORPSE */
 #define G_KNOWN 0x0004 /* have been encountered */

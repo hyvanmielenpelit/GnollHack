@@ -65,7 +65,7 @@ docharacterstatistics()
 	putstr(datawin, 0, txt);
 
 	/* Level and Role */
-	strcpy(buf2, (flags.female && urole.name.f) ? urole.name.f : urole.name.m);
+	strcpy(buf2, (u.ufemale && urole.name.f) ? urole.name.f : urole.name.m);
 	*buf2 = highc(*buf2);
 	Sprintf(buf, "Level %d %s", u.ulevel, buf2);
 	txt = buf;
@@ -85,7 +85,7 @@ docharacterstatistics()
 		Sprintf(buf, "Race:              %s", buf2);
 
 	/* Gender */
-	if (Upolyd && u.mfemale != flags.female)
+	if (Upolyd && u.mfemale != u.ufemale)
 	{
 		Sprintf(buf, "Original gender:   %s", u.mfemale ? "Female" : "Male");
 		txt = buf;
@@ -97,7 +97,7 @@ docharacterstatistics()
 
 	if (Upolyd)
 	{
-		strcpy(buf2, pm_monster_name(&mons[u.umonnum], flags.female));
+		strcpy(buf2, pm_monster_name(&mons[u.umonnum], u.ufemale));
 		*buf2 = highc(*buf2);
 		Sprintf(buf, "Polymorphed into:  %s", buf2);
 		txt = buf;
@@ -105,8 +105,8 @@ docharacterstatistics()
 	}
 
 
-	strcpy(buf2, flags.female ? "Female" : "Male");
-	if (Upolyd && u.mfemale != flags.female)
+	strcpy(buf2, u.ufemale ? "Female" : "Male");
+	if (Upolyd && u.mfemale != u.ufemale)
 		Sprintf(buf, "Polymorph gender:  %s", buf2);
 	else
 		Sprintf(buf, "Gender:            %s", buf2);
@@ -309,7 +309,7 @@ docharacterstatistics()
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		const struct innate* intrinsic_ability = (i == 1 ? race_abil(urace.malenum) : role_abil(urole.malenum));
+		const struct innate* intrinsic_ability = (i == 1 ? race_abil(urace.monsternum) : role_abil(urole.monsternum));
 		int abil_count = 0;
 		int table_index = 0;
 		if (intrinsic_ability)

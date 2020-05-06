@@ -33,7 +33,6 @@ struct flag {
     boolean end_own; /* list all own scores */
     boolean explore; /* in exploration mode */
 #define discover flags.explore
-    boolean female;
     boolean friday13;        /* it's Friday the 13th */
     boolean help;            /* look in data file for info about stuff */
     boolean ignintr;         /* ignore interrupts */

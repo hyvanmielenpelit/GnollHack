@@ -84,7 +84,7 @@ unsigned *ospecial;
      */
     if ((offset = (glyph - GLYPH_PLAYER_OFF)) >= 0) 
     {
-        int mnum = (Upolyd || !flags.showrace ? u.umonnum : (flags.female && urace.femalenum != NON_PM) ? urace.femalenum : urace.malenum);
+        int mnum = (Upolyd || !flags.showrace ? u.umonnum : urace.monsternum);
         idx = mons[mnum >= LOW_PM ? mnum : PM_HUMAN].mlet + SYM_OFF_M;
         mon_color(mnum);
 #ifdef TEXTCOLOR

@@ -74,7 +74,7 @@ STATIC_DCL long NDECL(encodeconduct);
 STATIC_DCL long NDECL(encodeachieve);
 #endif
 STATIC_DCL void FDECL(free_ttlist, (struct toptenentry *));
-STATIC_DCL int FDECL(classmon, (char *, BOOLEAN_P));
+STATIC_DCL int FDECL(classmon, (char *));
 STATIC_DCL int FDECL(score_wanted, (BOOLEAN_P, int, struct toptenentry *, int,
                                     const char **, int));
 #ifdef NO_SCAN_BRACK
@@ -555,7 +555,7 @@ time_t when;
     t0->uid = uid;
     copynchars(t0->plrole, urole.filecode, ROLESZ);
     copynchars(t0->plrace, urace.filecode, ROLESZ);
-    copynchars(t0->plgend, genders[flags.female].filecode, ROLESZ);
+    copynchars(t0->plgend, genders[u.ufemale].filecode, ROLESZ);
     copynchars(t0->plalign, aligns[1 - u.ualign.type].filecode, ROLESZ);
     copynchars(t0->name, plname, NAMSZ);
     formatkiller(t0->death, sizeof t0->death, how, TRUE);
@@ -1154,19 +1154,16 @@ char **argv;
 }
 
 STATIC_OVL int
-classmon(plch, fem)
+classmon(plch)
 char *plch;
-boolean fem;
 {
     int i;
 
     /* Look for this role in the role table */
     for (i = 0; roles[i].name.m; i++)
         if (!strncmp(plch, roles[i].filecode, ROLESZ)) {
-            if (fem && roles[i].femalenum != NON_PM)
-                return roles[i].femalenum;
-            else if (roles[i].malenum != NON_PM)
-                return roles[i].malenum;
+            if (roles[i].monsternum != NON_PM)
+                return roles[i].monsternum;
             else
                 return PM_HUMAN;
         }
@@ -1235,7 +1232,7 @@ struct obj *otmp;
     if (!tt)
         return (struct obj *) 0;
 
-    set_corpsenm(otmp, classmon(tt->plrole, (tt->plgend[0] == 'F')));
+    set_corpsenm(otmp, classmon(tt->plrole)); // , (tt->plgend[0] == 'F')));
     otmp = oname(otmp, tt->name);
 
     return otmp;

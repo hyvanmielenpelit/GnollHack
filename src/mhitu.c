@@ -623,7 +623,7 @@ register struct monst *mtmp;
                                            : "disturbs you");
         else /* see note about m_monnam() above */
             pline("Wait, %s!  That %s is really %s named %s!", m_monnam(mtmp),
-                  mimic_obj_name(&youmonst), an(pm_monster_name(&mons[u.umonnum], flags.female)),
+                  mimic_obj_name(&youmonst), an(pm_monster_name(&mons[u.umonnum], u.ufemale)),
                   plname);
         if (multi < 0) { /* this should always be the case */
             char buf[BUFSZ];
@@ -2324,8 +2324,8 @@ register struct obj* omonwep;
             if (!Blind)
                 pline("%s tries to %s you, but you seem %s.",
                       Adjmonnam(mtmp, "plain"),
-                      flags.female ? "charm" : "seduce",
-                      flags.female ? "unaffected" : "uninterested");
+                      u.ufemale ? "charm" : "seduce",
+                      u.ufemale ? "unaffected" : "uninterested");
             if (rn2(3)) 
 			{
                 if (!tele_restrict(mtmp))
@@ -3913,7 +3913,7 @@ struct monst *mon;
     if (uarm || uarmc) {
         if (!Deaf)
             verbalize("You're such a %s; I wish...",
-                      flags.female ? "sweet lady" : "nice guy");
+                      u.ufemale ? "sweet lady" : "nice guy");
         else if (seewho)
             pline("%s appears to sigh.", Monnam(mon));
         /* else no regret message if can't see or hear seducer */

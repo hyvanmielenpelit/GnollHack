@@ -210,7 +210,7 @@ you_were()
     if (controllable_poly) {
         /* `+4' => skip "were" prefix to get name of beast */
         Sprintf(qbuf, "Do you want to change into %s?",
-                an(pm_monster_name(&mons[u.ulycn], flags.female) + 4));
+                an(pm_monster_name(&mons[u.ulycn], u.ufemale) + 4));
         if (!paranoid_query(ParanoidWerechange, qbuf))
             return;
     }

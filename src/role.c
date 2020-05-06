@@ -44,7 +44,6 @@ const struct Role roles[] = {
 	  { "", "", "", "", ""},
       PM_ARCHEOLOGIST,
       NON_PM,
-      NON_PM,
       PM_LORD_CARNARVON,
       PM_STUDENT,
       PM_MINION_OF_HUHETOTL,
@@ -121,7 +120,6 @@ const struct Role roles[] = {
       { "", "", "", "", ""},
 	  PM_BARBARIAN,
       NON_PM,
-      NON_PM,
       PM_PELIAS,
       PM_CHIEFTAIN,
       PM_THOTH_AMON,
@@ -195,7 +193,6 @@ const struct Role roles[] = {
       2,
       { "Can practice cannibalism", "", "", "", ""},
 	  PM_CAVEMAN,
-      PM_CAVEWOMAN,
       PM_LITTLE_DOG,
       PM_SHAMAN_KARNOV,
       PM_NEANDERTHAL,
@@ -271,7 +268,6 @@ const struct Role roles[] = {
       { "", "", "", "", ""},
 	  PM_HEALER,
       NON_PM,
-      NON_PM,
       PM_HIPPOCRATES,
       PM_ATTENDANT,
       PM_CYCLOPS,
@@ -344,7 +340,6 @@ const struct Role roles[] = {
       4,
       { "Alignment penalty if attacks disadvantaged monsters", "", "", "", ""},
 	  PM_KNIGHT,
-      NON_PM,
       PM_PONY,
       PM_KING_ARTHUR,
       PM_PAGE,
@@ -419,7 +414,6 @@ const struct Role roles[] = {
       { "Vegetarianism", "-30 to-hit penalty when wearing a suit", "No staggering blow when wearing a shield or suit", "", ""},
 	  PM_MONK,
       NON_PM,
-      NON_PM,
       PM_GRAND_MASTER,
       PM_ABBOT,
       PM_MASTER_KAEN,
@@ -493,7 +487,6 @@ const struct Role roles[] = {
       6,
       { "Sees the beatitude of all objects", "Can pray twice as often as normal", "", "", ""},
 	  PM_PRIEST,
-      PM_PRIESTESS,
       NON_PM,
       PM_ARCH_PRIEST,
       PM_ACOLYTE,
@@ -570,7 +563,6 @@ const struct Role roles[] = {
       7,
       { "Can backstab fleeing monsters", "", "", "", ""},
 	  PM_ROGUE,
-      NON_PM,
       NON_PM,
       PM_MASTER_OF_THIEVES,
       PM_THUG,
@@ -658,7 +650,6 @@ const struct Role roles[] = {
       8,
       { "", "", "", "", ""},
 	  PM_RANGER,
-      NON_PM,
       PM_LITTLE_DOG /* Orion & canis major */,
       PM_ORION,
       PM_HUNTER,
@@ -733,7 +724,6 @@ const struct Role roles[] = {
       9,
       { "Starts with a faithful dog", "", "", "", ""},
 	  PM_SAMURAI,
-      NON_PM,
       PM_LITTLE_DOG,
       PM_LORD_SATO,
       PM_ROSHI,
@@ -807,7 +797,6 @@ const struct Role roles[] = {
       10,
       { "Worse prices in shops below level 15", "", "", "", ""},
 	  PM_TOURIST,
-      NON_PM,
       PM_SMALL_LUGGAGE,
       PM_TWOFLOWER,
       PM_GUIDE,
@@ -881,8 +870,7 @@ const struct Role roles[] = {
       11,
       { "", "", "", "", ""},
 	  PM_VALKYRIE,
-      NON_PM,
-      NON_PM /*PM_WINTER_WOLF_CUB*/,
+      PM_DIREWOLF_CUB,
       PM_NORN,
       PM_WARRIOR,
       PM_LORD_SURTUR,
@@ -956,7 +944,6 @@ const struct Role roles[] = {
       NUM_ROLES - 1,
       { "", "", "", "", ""},
 	  PM_WIZARD,
-      NON_PM,
       PM_KITTEN,
       PM_NEFERET_THE_GREEN,
       PM_APPRENTICE,
@@ -1031,7 +1018,7 @@ struct Role urole = {
     "Xxx", "home", "locate",
     0,
 	{ "", "", "", "", ""},
-	NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM,
+	NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM,
     0, 0, 0, 0,
     /* Str Int Wis Dex Con Cha */
     { 7, 7, 7, 7, 7, 7 },
@@ -1091,7 +1078,6 @@ const struct Race races[] = {
         0,
 	    { "", "", "", "", ""},
 		PM_HUMAN,
-        NON_PM,
         PM_HUMAN_MUMMY,
         PM_HUMAN_ZOMBIE,
         MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
@@ -1115,7 +1101,6 @@ const struct Race races[] = {
         1,
 	    { "Increased nutrition from lembas wafer", "", "", "", ""},
 		PM_ELF,
-        NON_PM,
         PM_ELF_MUMMY,
         PM_ELF_ZOMBIE,
         MH_ELF | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
@@ -1138,7 +1123,6 @@ const struct Race races[] = {
         2,
 	    { "Double digging speed", "Increased nutrition from cram ration", "", "", ""},
 		PM_DWARF,
-        NON_PM,
         PM_DWARF_MUMMY,
         PM_DWARF_ZOMBIE,
         MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL,
@@ -1161,7 +1145,6 @@ const struct Race races[] = {
         3,
 		{ "Smells rotten food", "Smells underground roots", "Triple nutrition from tripe ration", "", ""},
 		PM_GNOLL,
-        NON_PM,
         PM_GNOLL_MUMMY,
         PM_GNOLL_ZOMBIE,
         MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL | ROLE_CHAOTIC,
@@ -1184,7 +1167,6 @@ const struct Race races[] = {
         NUM_RACES - 1,
 		{ "Can practice cannibalism", "Reduced nutrition from lembas wafer", "", "", ""},
 		PM_ORC,
-        NON_PM,
         PM_ORC_MUMMY,
         PM_ORC_ZOMBIE,
         MH_ORC | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
@@ -1214,7 +1196,6 @@ struct Race urace = {
     0,
 	{ "", "", "", "", ""},
 	NON_PM,
-    NON_PM,
     NON_PM,
     NON_PM,
     0,
@@ -2524,14 +2505,14 @@ role_init()
         flags.initrace = randrace(flags.initrole);
 
     /* Check for a valid gender.  If new game, check both initgend
-     * and female.  On restore, assume flags.female is correct. */
+     * and female.  On restore, assume u.ufemale is correct. */
     if (flags.pantheon == -1) { /* new game */
-        if (!validgend(flags.initrole, flags.initrace, flags.female))
-            flags.female = !flags.female;
+        if (!validgend(flags.initrole, flags.initrace, u.ufemale))
+            u.ufemale = !u.ufemale;
     }
     if (!validgend(flags.initrole, flags.initrace, flags.initgend))
         /* Note that there is no way to check for an unspecified gender. */
-        flags.initgend = flags.female;
+        flags.initgend = u.ufemale;
 
     /* Check for a valid alignment */
     if (!validalign(flags.initrole, flags.initrace, flags.initalign))
@@ -2602,7 +2583,7 @@ role_init()
  * needed--via intrinsic 'Infravision' which set_uasmon() manages.
  */
     /* Fix up infravision */
-    if (mons[urace.malenum].mflags3 & M3_INFRAVISION) {
+    if (mons[urace.monsternum].mflags3 & M3_INFRAVISION) {
         /* although an infravision intrinsic is possible, infravision
          * is purely a property of the physical race.  This means that we
          * must put the infravision flag in the player's current race
@@ -2612,9 +2593,7 @@ role_init()
          * but since infravision has no effect for NPCs anyway we can
          * ignore this.
          */
-        mons[urole.malenum].mflags3 |= M3_INFRAVISION;
-        if (urole.femalenum != NON_PM)
-            mons[urole.femalenum].mflags3 |= M3_INFRAVISION;
+        mons[urole.monsternum].mflags3 |= M3_INFRAVISION;
     }
 #endif /*0*/
 
@@ -2675,10 +2654,10 @@ player_to_glyph()
 
     int player_role = urole.rolenum;
     int player_race = urace.racenum;
-    boolean player_gender = flags.female;
+    boolean player_gender = u.ufemale;
     int player_alignment = u.ualign.type + 1; /* 0...2 */
 
-    return flags.female + number_of_genders * player_role + 
+    return u.ufemale + number_of_genders * player_role + 
         number_of_genders * number_of_roles * player_alignment +
         number_of_genders * number_of_roles * number_of_alignments * player_race +
         GLYPH_PLAYER_OFF;
@@ -2699,16 +2678,16 @@ glyph_to_player_mon(int glyph)
     if (flags.showrace)
     {
         if(race_idx >= 0 && race_idx < NUM_RACES)
-            return (isfemale && races[race_idx].femalenum != NON_PM) ? races[race_idx].femalenum : races[race_idx].malenum;
+            return races[race_idx].monsternum;
         else
-            return (isfemale && urace.femalenum != NON_PM) ? urace.femalenum : urace.malenum;
+            return urace.monsternum;
     }
     else
     {
         if (role_idx >= 0 && role_idx < NUM_ROLES)
-            return (isfemale && roles[role_idx].femalenum != NON_PM) ? roles[role_idx].femalenum : roles[role_idx].malenum;
+            return roles[role_idx].monsternum;
         else
-            return (isfemale && urole.femalenum != NON_PM) ? urole.femalenum : urole.malenum;
+            return urole.monsternum;
     }
 }
 /* role.c */

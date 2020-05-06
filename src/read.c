@@ -6,11 +6,10 @@
 #include "hack.h"
 
 #define Your_Own_Role(mndx)  \
-    ((mndx) == urole.malenum \
-     || (urole.femalenum != NON_PM && (mndx) == urole.femalenum))
+    ((mndx) == urole.monsternum)
+
 #define Your_Own_Race(mndx)  \
-    ((mndx) == urace.malenum \
-     || (urace.femalenum != NON_PM && (mndx) == urace.femalenum))
+    ((mndx) == urace.monsternum)
 
 boolean known;
 
@@ -2956,8 +2955,8 @@ do_class_genocide()
                     goodcnt++;
             }
         }
-        if (!goodcnt && class != mons[urole.malenum].mlet
-            && class != mons[urace.malenum].mlet) {
+        if (!goodcnt && class != mons[urole.monsternum].mlet
+            && class != mons[urace.monsternum].mlet) {
             if (gonecnt)
                 pline("All such monsters are already nonexistent.");
             else if (immunecnt || class == S_invisible)
@@ -3014,7 +3013,7 @@ do_class_genocide()
                     /* Self-genocide if it matches either your race
                        or role.  Assumption:  male and female forms
                        share same monster class. */
-                    if (i == urole.malenum || i == urace.malenum) {
+                    if (i == urole.monsternum || i == urace.monsternum) {
                         u.uhp = -1;
                         if (Upolyd) {
                             if (!feel_dead++)
@@ -3155,7 +3154,7 @@ int how;
         if (Upolyd)
             Strcpy(buf, youmonst.data->mname);
         else {
-            Strcpy(buf, (flags.female && urole.name.f) ? urole.name.f
+            Strcpy(buf, (u.ufemale && urole.name.f) ? urole.name.f
                                                        : urole.name.m);
             buf[0] = lowc(buf[0]);
         }
@@ -3170,17 +3169,8 @@ int how;
         pline("Wiped out %s%s.", which,
               (*which != 'a') ? buf : makeplural(buf));
 
-        if (killplayer) {
-            /* might need to wipe out dual role */
-            if (urole.femalenum != NON_PM && mndx == urole.malenum)
-                mvitals[urole.femalenum].mvflags |= (G_GENOD | G_NOCORPSE);
-            if (urole.femalenum != NON_PM && mndx == urole.femalenum)
-                mvitals[urole.malenum].mvflags |= (G_GENOD | G_NOCORPSE);
-            if (urace.femalenum != NON_PM && mndx == urace.malenum)
-                mvitals[urace.femalenum].mvflags |= (G_GENOD | G_NOCORPSE);
-            if (urace.femalenum != NON_PM && mndx == urace.femalenum)
-                mvitals[urace.malenum].mvflags |= (G_GENOD | G_NOCORPSE);
-
+        if (killplayer) 
+        {
             u.uhp = -1;
             if (how & PLAYER) {
                 killer.format = KILLED_BY;
@@ -3344,7 +3334,7 @@ struct _create_particular_data *d;
     char *tmpp;
 
     d->monclass = MAXMCLASSES;
-    d->which = urole.malenum; /* an arbitrary index into mons[] */
+    d->which = urole.monsternum; /* an arbitrary index into mons[] */
     d->fem = -1; /* gender not specified */
     d->randmonst = FALSE;
     d->maketame = d->makepeaceful = d->makehostile = FALSE;
@@ -3405,7 +3395,7 @@ struct _create_particular_data *d;
         d->monclass = MAXMCLASSES;
         return TRUE;
     } else if (d->monclass > 0) {
-        d->which = urole.malenum; /* reset from NON_PM */
+        d->which = urole.monsternum; /* reset from NON_PM */
         return TRUE;
     }
     return FALSE;

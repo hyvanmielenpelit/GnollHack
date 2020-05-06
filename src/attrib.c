@@ -824,8 +824,8 @@ struct obj* uitem;
 		if (objects[otyp].oc_power_permissions & PERMITTED_GENDER_MASK)
 		{
 			if (
-				   ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE) && (Upolyd ? u.mfemale : flags.female))
-				|| ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE) && !(Upolyd ? u.mfemale : flags.female))
+				   ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_FEMALE) && (Upolyd ? u.mfemale : u.ufemale))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_GENDER_MALE) && !(Upolyd ? u.mfemale : u.ufemale))
 				)
 			{
 				// Ok
@@ -959,11 +959,11 @@ struct obj* uitem;
 			if (
 				((objects[otyp].oc_power_permissions & PERMITTED_ROLE_ARCHEOLOGIST) && monsndx(monster->data) == PM_ARCHEOLOGIST)
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_BARBARIAN) && monsndx(monster->data) == PM_BARBARIAN)
-				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN) && (monsndx(monster->data) == PM_CAVEMAN || monsndx(monster->data) == PM_CAVEWOMAN))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_CAVEMAN) && (monsndx(monster->data) == PM_CAVEMAN))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_HEALER) && (monsndx(monster->data) == PM_HEALER || (monster->data->mflags3 & M3_HEALER)))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_KNIGHT) && (monsndx(monster->data) == PM_KNIGHT || (monster->data->mflags3 & M3_KNIGHT)))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_MONK) && (monsndx(monster->data) == PM_MONK || monsndx(monster->data) == PM_MASTER_KAEN))
-				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monsndx(monster->data) == PM_PRIEST || monsndx(monster->data) == PM_PRIESTESS || monster->ispriest || is_priest(monster->data)))
+				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_PRIEST) && (monsndx(monster->data) == PM_PRIEST || monster->ispriest || is_priest(monster->data)))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_TOURIST) && (monsndx(monster->data) == PM_TOURIST || monsndx(monster->data) == PM_TWOFLOWER))
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_VALKYRIE) && monsndx(monster->data) == PM_VALKYRIE)
 				|| ((objects[otyp].oc_power_permissions & PERMITTED_ROLE_WIZARD) && (monsndx(monster->data) == PM_WIZARD || (monster->data->mflags3 & M3_WIZARD)))

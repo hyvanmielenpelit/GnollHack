@@ -136,7 +136,7 @@ static struct Bool_Opt {
 #else
     { "fast_map", (boolean *) 0, TRUE, SET_IN_FILE },
 #endif
-    { "female", &flags.female, FALSE, DISP_IN_GAME },
+    { "female", &u.ufemale, FALSE, DISP_IN_GAME },
     { "fixinv", &flags.invlet_constant, TRUE, SET_IN_GAME },
 #if defined(SYSFLAGS) && defined(AMIFLUSH)
     { "flush", &sysflags.amiflush, FALSE, SET_IN_GAME },
@@ -478,6 +478,8 @@ static struct Comp_Opt {
 #ifdef WINCHAIN
     { "windowchain", "window processor to use", WINTYPELEN, SET_IN_SYS },
 #endif
+      { "wolfname", "the name of your (first) wolf (e.g., wolfname:Shadow)",
+        PL_PSIZ, DISP_IN_GAME },
 #ifdef BACKWARD_COMPAT
     { "DECgraphics", "load DECGraphics display symbols", 70, SET_IN_FILE },
     { "IBMgraphics", "load IBMGraphics display symbols", 70, SET_IN_FILE },
@@ -2150,22 +2152,22 @@ boolean tinitial, tfrom_file;
     if (match_optname(opts, "female", 3, FALSE)) {
         if (duplicate_opt_detection(opts, 0))
             complain_about_duplicate(opts, 0);
-        if (!initial && flags.female == negated) {
+        if (!initial && u.ufemale == negated) {
             config_error_add("That is not anatomically possible.");
             return FALSE;
         } else
-            flags.initgend = flags.female = !negated;
+            flags.initgend = u.ufemale = !negated;
         return retval;
     }
 
     if (match_optname(opts, "male", 4, FALSE)) {
         if (duplicate_opt_detection(opts, 0))
             complain_about_duplicate(opts, 0);
-        if (!initial && flags.female != negated) {
+        if (!initial && u.ufemale != negated) {
             config_error_add("That is not anatomically possible.");
             return FALSE;
         } else
-            flags.initgend = flags.female = negated;
+            flags.initgend = u.ufemale = negated;
         return retval;
     }
 
@@ -2231,7 +2233,7 @@ boolean tinitial, tfrom_file;
                 config_error_add("Unknown %s '%s'", fullname, op);
                 return FALSE;
             } else
-                flags.female = flags.initgend;
+                u.ufemale = flags.initgend;
         } else
             return FALSE;
         return retval;
@@ -2335,11 +2337,11 @@ boolean tinitial, tfrom_file;
 			return FALSE;
 		}
 		else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
-			nmcpy(luggagename, op, PL_PSIZ);
+			nmcpy(ramname, op, PL_PSIZ);
 		}
 		else
 			return FALSE;
-		sanitize_name(luggagename);
+		sanitize_name(ramname);
 		return retval;
 	}
 
@@ -2352,11 +2354,28 @@ boolean tinitial, tfrom_file;
             return FALSE;
         }
         else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
-            nmcpy(ramname, op, PL_PSIZ);
+            nmcpy(luggagename, op, PL_PSIZ);
         }
         else
             return FALSE;
-        sanitize_name(ramname);
+        sanitize_name(luggagename);
+        return retval;
+    }
+
+    fullname = "wolfname";
+    if (match_optname(opts, fullname, 5, TRUE)) {
+        if (duplicate)
+            complain_about_duplicate(opts, 1);
+        if (negated) {
+            bad_negation(fullname, FALSE);
+            return FALSE;
+        }
+        else if ((op = string_for_env_opt(fullname, opts, FALSE)) != 0) {
+            nmcpy(wolfname, op, PL_PSIZ);
+        }
+        else
+            return FALSE;
+        sanitize_name(wolfname);
         return retval;
     }
 
@@ -4618,7 +4637,7 @@ doset() /* changing options via menu by Per Liboriussen */
             if ((bool_p = boolopt[i].addr) != 0
                 && ((boolopt[i].optflags <= DISP_IN_GAME && pass == 0)
                     || (boolopt[i].optflags >= SET_IN_GAME && pass == 1))) {
-                if (bool_p == &flags.female)
+                if (bool_p == &u.ufemale)
                     continue; /* obsolete */
                 if (boolopt[i].optflags == SET_IN_WIZGAME && !wizard)
                     continue;
@@ -5710,6 +5729,8 @@ char *buf;
 		Sprintf(buf, "%s", ramname[0] ? ramname : none);
     else if (!strcmp(optname, "luggagename"))
         Sprintf(buf, "%s", luggagename[0] ? luggagename : none);
+    else if (!strcmp(optname, "wolfname"))
+        Sprintf(buf, "%s", wolfname[0] ? wolfname : none);
     else if (!strcmp(optname, "map_mode")) {
         i = iflags.wc_map_mode;
         Sprintf(buf, "%s",

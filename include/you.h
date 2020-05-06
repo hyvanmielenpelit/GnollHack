@@ -116,8 +116,7 @@ struct Role {
     short rolenum; /* increasing id number of the role */
     const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various role advantages and disadvantages */
     /*** Indices of important monsters and objects ***/
-    short malenum, /* index (PM_) as a male (botl.c) */
-        femalenum, /* ...or as a female (NON_PM == same) */
+    short monsternum, /* index (PM_) (botl.c) */
         petnum,    /* PM_ of preferred pet (NON_PM == random) */
         ldrnum,    /* PM_ of quest leader (questpgr.c) */
         guardnum,  /* PM_ of quest guardians (questpgr.c) */
@@ -168,8 +167,8 @@ struct Role {
 
 extern const struct Role roles[]; /* table of available roles */
 extern struct Role urole;
-#define Role_if(X) (urole.malenum == (X))
-#define Role_switch (urole.malenum)
+#define Role_if(X) (urole.monsternum == (X))
+#define Role_switch (urole.monsternum)
 
 /* used during initialization for race, gender, and alignment
    as well as for character class */
@@ -189,8 +188,7 @@ struct Race {
 	const char *trait_descriptions[MAX_TRAIT_DESCRIPTIONS]; /* Up to five descriptions of various race advantages and disadvantages */
 
     /*** Indices of important monsters and objects ***/
-    short malenum, /* PM_ as a male monster */
-        femalenum, /* ...or as a female (NON_PM == same) */
+    short monsternum, /* PM_ as monster */
         mummynum,  /* PM_ as a mummy */
         zombienum; /* PM_ as a zombie */
 
@@ -222,8 +220,8 @@ struct Race {
 
 extern const struct Race races[]; /* Table of available races */
 extern struct Race urace;
-#define Race_if(X) (urace.malenum == (X))
-#define Race_switch (urace.malenum)
+#define Race_if(X) (urace.monsternum == (X))
+#define Race_switch (urace.monsternum)
 
 /*** Unified structure specifying gender information ***/
 struct Gender {
@@ -239,9 +237,9 @@ struct Gender {
 
 extern const struct Gender genders[]; /* table of available genders */
 /* pronouns for the hero */
-#define uhe()      (genders[flags.female ? 1 : 0].he)
-#define uhim()     (genders[flags.female ? 1 : 0].him)
-#define uhis()     (genders[flags.female ? 1 : 0].his)
+#define uhe()      (genders[u.ufemale ? 1 : 0].he)
+#define uhim()     (genders[u.ufemale ? 1 : 0].him)
+#define uhis()     (genders[u.ufemale ? 1 : 0].his)
 /* corresponding pronouns for monsters; yields "it" when mtmp can't be seen */
 #define mhe(mtmp)  (genders[pronoun_gender(mtmp, FALSE)].he)
 #define mhim(mtmp) (genders[pronoun_gender(mtmp, FALSE)].him)
@@ -328,12 +326,13 @@ struct you {
 
     unsigned ucreamed;
     unsigned uswldtim;          /* time you have been swallowed */
+    boolean ufemale;            /* your current gender */
+    boolean mfemale;            /* saved human value of u.ufemale (your true gender before polymorph) */
 
     Bitfield(uswallow, 1);      /* true if swallowed */
     Bitfield(uinwater, 1);      /* if you're currently in water (only
                                    underwater possible currently) */
     Bitfield(uundetected, 1);   /* if you're a hiding monster/piercer */
-    Bitfield(mfemale, 1);       /* saved human value of flags.female */
     Bitfield(uinvulnerable, 1); /* you're invulnerable (praying) */
     Bitfield(uburied, 1);       /* you're buried */
     Bitfield(uedibility, 1);    /* blessed food detect; sense unsafe food */

@@ -1483,7 +1483,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 					else
 							pline("%s cuts off %s last head!", The(wepdesc), s_suffix(mon_nam(mdef)));
 
-					if (Hallucination && !flags.female)
+					if (Hallucination && !u.ufemale)
 						pline("Good job Henry, but that wasn't Anne.");
 					otmp->dknown = TRUE;
 					return 2;
@@ -1989,7 +1989,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 						pline(behead_msg[rn2(SIZE(behead_msg))], The(xname(otmp)),
 							mon_nam(mdef));
-						if (Hallucination && !flags.female)
+						if (Hallucination && !u.ufemale)
 							pline("Good job Henry, but that wasn't Anne.");
 						otmp->dknown = TRUE;
 						lethaldamage = TRUE;
