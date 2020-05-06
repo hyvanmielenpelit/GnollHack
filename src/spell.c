@@ -2131,7 +2131,7 @@ boolean atme;
 				if (is_elemental_enchantable(otmp) && is_death_enchantable(otmp))
 				{
 					You("enchant %s with death magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, rnd(2), DEATH_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, DEATH_ENCHANTMENT_QUANTITY_NORMAL, DEATH_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = DEATH_ENCHANTMENT;
 				}
@@ -2157,7 +2157,7 @@ boolean atme;
 				if (is_elemental_enchantable(otmp))
 				{
 					You("enchant %s with freezing magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 5, COLD_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, COLD_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = COLD_ENCHANTMENT;
 				}
@@ -2183,7 +2183,7 @@ boolean atme;
 				if (is_elemental_enchantable(otmp))
 				{
 					You("enchant %s with fire magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 5, FIRE_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, FIRE_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				}
@@ -2201,7 +2201,7 @@ boolean atme;
 				if (is_elemental_enchantable(otmp))
 				{
 					You("enchant %s with lightning magic.", yname(otmp));
-					otmp = elemental_enchant_quan(otmp, 5, LIGHTNING_ENCHANTMENT);
+					otmp = elemental_enchant_quan(otmp, ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL, LIGHTNING_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 				}
