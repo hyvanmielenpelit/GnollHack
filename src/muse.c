@@ -2202,7 +2202,7 @@ struct monst *mtmp;
 #ifdef CLIPPING
     cliparound(mtmp->mx, mtmp->my);
 #endif
-    show_glyph(mtmp->mx, mtmp->my, mon_to_glyph(mtmp, rn2));
+    show_glyph(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, rn2));
     display_self();
     You_feel("aggravated at %s.", noit_mon_nam(mtmp));
     display_nhwindow(WIN_MAP, TRUE);

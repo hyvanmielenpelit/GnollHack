@@ -452,14 +452,14 @@ int how;
 
     if (imitator) {
         char shape[BUFSZ];
-        const char *realnm = champtr->mname, *fakenm = mptr->mname;
+        const char *realnm = pm_monster_name(champtr, mtmp->female), *fakenm = pm_monster_name(mptr, mtmp->female);
         boolean alt = is_vampshifter(mtmp);
 
         if (mimicker) {
             /* realnm is already correct because champtr==mptr;
                set up fake mptr for is_mname_proper_name/the_unique_pm */
             mptr = &mons[mtmp->mappearance];
-            fakenm = mptr->mname;
+            fakenm = pm_monster_name(mptr, mtmp->female);
         } else if (alt && strstri(realnm, "vampire")
                    && !strcmp(fakenm, "vampire bat")) {
             /* special case: use "vampire in bat form" in preference
@@ -498,7 +498,7 @@ int how;
            it overrides the effect of Hallucination on priestname() */
         Strcat(buf, m_monnam(mtmp));
     } else {
-        Strcat(buf, mptr->mname);
+        Strcat(buf, pm_monster_name(mptr, mtmp->female));
         if (has_mname(mtmp))
             Sprintf(eos(buf), " called %s", MNAME(mtmp));
     }
@@ -1407,7 +1407,7 @@ int how;
              (u.ugrave_arise != PM_GREEN_SLIME)
                  ? "body rises from the dead"
                  : "revenant persists",
-             an(mons[u.ugrave_arise].mname));
+             an(pm_monster_name(&mons[u.ugrave_arise], flags.female)));
         display_nhwindow(WIN_MESSAGE, FALSE);
     }
 
@@ -1810,7 +1810,7 @@ const genericptr vptr2;
         } /* else both unique or neither unique */
         /*FALLTHRU*/
     case VANQ_ALPHA_MIX:
-        name1 = mons[indx1].mname, name2 = mons[indx2].mname;
+        name1 = pm_common_name(&mons[indx1]), name2 = pm_common_name(&mons[indx2]);
         res = strcmpi(name1, name2); /* caseblind alhpa, low to high */
         break;
     case VANQ_MCLS_HTOL:
@@ -1983,7 +1983,7 @@ boolean ask;
                 if (UniqCritterIndx(i)) {
                     Sprintf(buf, "%s%s",
                             !is_mname_proper_name(&mons[i]) ? "the " : "",
-                            mons[i].mname);
+                            pm_common_name(&mons[i]));
                     if (nkilled > 1) {
                         switch (nkilled) {
                         case 2:
@@ -2006,10 +2006,10 @@ boolean ask;
                     /* trolls or undead might have come back,
                        but we don't keep track of that */
                     if (nkilled == 1)
-                        Strcpy(buf, an(mons[i].mname));
+                        Strcpy(buf, an(pm_common_name(&mons[i])));
                     else
                         Sprintf(buf, "%3d %s", nkilled,
-                                makeplural(mons[i].mname));
+                                makeplural(pm_common_name(&mons[i])));
                 }
                 /* number of leading spaces to match 3 digit prefix */
                 pfx = !strncmpi(buf, "the ", 3) ? 0
@@ -2118,7 +2118,7 @@ boolean ask;
                 if (UniqCritterIndx(i))
                     continue;
                 if (mvitals[i].mvflags & G_GONE) {
-                    Sprintf(buf, " %s", makeplural(mons[i].mname));
+                    Sprintf(buf, " %s", makeplural(pm_common_name(&mons[i])));
                     /*
                      * "Extinct" is unfortunate terminology.  A species
                      * is marked extinct when its birth limit is reached,

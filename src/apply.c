@@ -407,7 +407,7 @@ int rx, ry, *resp;
                     humanoid(mptr) ? "person" : "creature");
             what = buf;
         } else {
-            what = mptr->mname;
+            what = corpse_monster_name(statue);
             if (!is_mname_proper_name(mptr))
                 what = The(what);
         }
@@ -525,7 +525,7 @@ register struct obj *obj;
                 what = simple_typename(mtmp->mappearance);
                 break;
             case M_AP_MONSTER: /* ignore Hallucination here */
-                what = mons[mtmp->mappearance].mname;
+                what = pm_monster_name(&mons[mtmp->mappearance], mtmp->female);
                 break;
             case M_AP_FURNITURE:
                 what = defsyms[mtmp->mappearance].explanation;
@@ -2297,12 +2297,12 @@ struct obj *obj;
 
         if (poly_when_stoned(youmonst.data))
             You("tin %s without wearing gloves.",
-                an(mons[corpse->corpsenm].mname));
+                an(corpse_monster_name(corpse)));
         else {
             pline("Tinning %s without wearing gloves is a fatal mistake...",
-                  an(mons[corpse->corpsenm].mname));
+                  an(corpse_monster_name(corpse)));
             Sprintf(kbuf, "trying to tin %s without gloves",
-                    an(mons[corpse->corpsenm].mname));
+                    an(corpse_monster_name(corpse)));
         }
         instapetrify(kbuf);
     }
@@ -3732,7 +3732,7 @@ struct obj *obj;
                         char kbuf[BUFSZ];
 
                         Sprintf(kbuf, "%s corpse",
-                                an(mons[otmp->corpsenm].mname));
+                                an(corpse_monster_name(otmp)));
                         pline("Snatching %s is a fatal mistake.", kbuf);
                         instapetrify(kbuf);
                     }

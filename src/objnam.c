@@ -1811,6 +1811,9 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
 {
     char *nambuf = nextobuf();
     int omndx = otmp->corpsenm;
+    struct monst* mtmp = get_mtraits(otmp, FALSE);
+    boolean isfemale = (mtmp && mtmp->female) || is_female(&mons[omndx]);
+
     boolean ignore_quan = (cxn_flags & CXN_SINGULAR) != 0,
             /* suppress "the" from "the unique monster corpse" */
         no_prefix = (cxn_flags & CXN_NO_PFX) != 0,
@@ -1824,18 +1827,29 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         glob = (otmp->otyp != CORPSE && otmp->globby);
     const char *mname;
 
-    if (glob) {
+    if (glob)
+    {
         mname = OBJ_NAME(objects[otmp->otyp]); /* "glob of <monster>" */
-    } else if (omndx == NON_PM) { /* paranoia */
+    }
+    else if (omndx == NON_PM)
+    { /* paranoia */
         mname = "thing";
         /* [Possible enhancement:  check whether corpse has monster traits
             attached in order to use priestname() for priests and minions.] */
-    } else if (omndx == PM_ALIGNED_PRIEST) {
+    } 
+    else if (omndx == PM_ALIGNED_PRIEST)
+    {
         /* avoid "aligned priest"; it just exposes internal details */
-        mname = "priest";
-    } else {
-        mname = mons[omndx].mname;
-        if (the_unique_pm(&mons[omndx]) || is_mname_proper_name(&mons[omndx])) {
+        if(isfemale)
+            mname = "priestess";
+        else
+            mname = "priest";
+    }
+    else
+    {
+        mname = pm_monster_name(&mons[omndx], isfemale);
+        if (the_unique_pm(&mons[omndx]) || is_mname_proper_name(&mons[omndx])) 
+        {
             mname = s_suffix(mname);
             possessive = TRUE;
             /* don't precede personal name like "Medusa" with an article */
@@ -1860,10 +1874,13 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
     if (the_prefix)
         Strcat(nambuf, "the ");
 
-    if (!adjective || !*adjective) {
+    if (!adjective || !*adjective)
+    {
         /* normal case:  newt corpse */
         Strcat(nambuf, mname);
-    } else {
+    } 
+    else 
+    {
         /* adjective positioning depends upon format of monster name */
         if (possessive) /* Medusa's cursed partly eaten corpse */
             Sprintf(eos(nambuf), "%s %s", mname, adjective);
@@ -2599,7 +2616,7 @@ static const char *const as_is[] = {
     "tuna",    "yaki",      "-hai",      "krill",     "manes",
     "moose",   "ninja",     "sheep",     "ronin",     "roshi",
     "shito",   "tengu",     "ki-rin",    "Nazgul",    "gunyoki",
-    "piranha", "samurai",   "shuriken", 0,
+    "piranha", "royalty",   "samurai",   "shuriken", 0,
     /* Note:  "fish" and "piranha" are collective plurals, suitable
        for "wiped out all <foo>".  For "3 <foo>", they should be
        "fishes" and "piranhas" instead.  We settle for collective

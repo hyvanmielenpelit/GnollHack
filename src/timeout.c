@@ -1839,7 +1839,7 @@ slip_or_trip()
         if (!uarmf && otmp->otyp == CORPSE
             && touch_petrifies(&mons[otmp->corpsenm]) && !Stone_resistance) {
             Sprintf(killer.name, "tripping over %s corpse",
-                    an(mons[otmp->corpsenm].mname));
+                    an(corpse_monster_name(otmp)));
             instapetrify(killer.name);
         }
     } else if (rn2(3) && is_ice(u.ux, u.uy)) {

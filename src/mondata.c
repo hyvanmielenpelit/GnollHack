@@ -926,30 +926,52 @@ const char *in_str;
                 return namep->pm_val;
     }
 
-    for (len = 0, i = LOW_PM; i < NUMMONS; i++) {
-        register int m_i_len = (int) strlen(mons[i].mname);
+    boolean found = FALSE;
+    for (int j = 1; j <= 3; j++)
+    {
+        for (len = 0, i = LOW_PM; i < NUMMONS; i++)
+        {
+            const char* relevant_name = (const char*)0;
+            if (j == 1)
+                relevant_name = mons[i].mname;
+            else if (j == 2)
+                relevant_name = mons[i].mfemalename;
+            else if (j == 3)
+                relevant_name = mons[i].mcommonname;
 
-        if (m_i_len > len && !strncmpi(mons[i].mname, str, m_i_len)) {
-            if (m_i_len == slen) {
-                mntmp = i;
-                break; /* exact match */
-            } else if (slen > m_i_len
-                       && (str[m_i_len] == ' '
-                           || !strcmpi(&str[m_i_len], "s")
-                           || !strncmpi(&str[m_i_len], "s ", 2)
-                           || !strcmpi(&str[m_i_len], "'")
-                           || !strncmpi(&str[m_i_len], "' ", 2)
-                           || !strcmpi(&str[m_i_len], "'s")
-                           || !strncmpi(&str[m_i_len], "'s ", 3)
-                           || !strcmpi(&str[m_i_len], "es")
-                           || !strncmpi(&str[m_i_len], "es ", 3))) {
-                mntmp = i;
-                len = m_i_len;
+            if (!relevant_name)
+                continue;
+
+            register int m_i_len = relevant_name ? (int)strlen(relevant_name) : 0;
+
+            if (m_i_len > len && !strncmpi(relevant_name, str, m_i_len)) {
+                if (m_i_len == slen) {
+                    mntmp = i;
+                    found = TRUE;
+                    break; /* exact match */
+                } else if (slen > m_i_len
+                           && (str[m_i_len] == ' '
+                               || !strcmpi(&str[m_i_len], "s")
+                               || !strncmpi(&str[m_i_len], "s ", 2)
+                               || !strcmpi(&str[m_i_len], "'")
+                               || !strncmpi(&str[m_i_len], "' ", 2)
+                               || !strcmpi(&str[m_i_len], "'s")
+                               || !strncmpi(&str[m_i_len], "'s ", 3)
+                               || !strcmpi(&str[m_i_len], "es")
+                               || !strncmpi(&str[m_i_len], "es ", 3))) {
+                    mntmp = i;
+                    len = m_i_len;
+                }
             }
         }
+
+        if (found)
+            break;
     }
+
     if (mntmp == NON_PM)
         mntmp = title_to_mon(str, (int *) 0, (int *) 0);
+    
     return mntmp;
 }
 

@@ -1796,7 +1796,7 @@ boolean called;
 {
     char *buf = nextmbuf();
     struct permonst *mdat = mtmp->data;
-    const char *pm_name = mdat->mname;
+    const char* pm_name = mon_monster_name(mtmp); // mdat->mname;
     boolean do_hallu, do_invis, do_it, do_saddle, do_name;
     boolean name_at_start = FALSE, has_adjectives = FALSE;
 	/* note: uname is always at end */
@@ -2193,7 +2193,7 @@ char *code;
     if (name >= SPECIAL_PM) {
         mname = bogusmon(buf, code);
     } else {
-        mname = strcpy(buf, mons[name].mname);
+        mname = strcpy(buf, pm_monster_name(&mons[name], !rn2(2)));
     }
     return mname;
 #undef BOGUSMONSIZE

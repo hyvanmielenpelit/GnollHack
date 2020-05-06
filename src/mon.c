@@ -3203,7 +3203,7 @@ boolean was_swallowed; /* digestion */
 				{
                     There("is an explosion in your %s!", body_part(STOMACH));
                     Sprintf(killer.name, "%s explosion",
-                            s_suffix(mdat->mname));
+                            s_suffix(mon_monster_name(mon)));
                     losehp(adjust_damage(tmp, mon, &youmonst, AD_PHYS, FALSE), killer.name, KILLED_BY_AN);
                 } 
 				else
@@ -3224,7 +3224,7 @@ boolean was_swallowed; /* digestion */
                 return FALSE;
             }
 
-            Sprintf(killer.name, "%s explosion", s_suffix(mdat->mname));
+            Sprintf(killer.name, "%s explosion", s_suffix(mon_monster_name(mon)));
             killer.format = KILLED_BY_AN;
             explode(mon->mx, mon->my, -1, tmp, 0, MON_EXPLODE, EXPL_NOXIOUS);
             killer.name[0] = '\0';
@@ -3692,7 +3692,7 @@ struct monst *mtmp;
         if (newcham(mtmp, &mons[PM_STONE_GOLEM], FALSE, FALSE))
 		{
             if (canseemon(mtmp))
-                pline("Now it's %s.", an(mtmp->data->mname));
+                pline("Now it's %s.", an(mon_monster_name(mtmp)));
         } 
 		else 
 		{
@@ -3999,7 +3999,7 @@ boolean via_attack;
             }
         }
         if (got_mad && !Hallucination) {
-            const char *who = q_guardian->mname;
+            const char *who = pm_common_name(q_guardian);
 
             if (got_mad > 1)
                 who = makeplural(who);
@@ -5326,5 +5326,104 @@ struct permonst *mdat;
     }
     return msg_given ? TRUE : FALSE;
 }
+
+const char* pm_monster_name(ptr, isfemale)
+struct permonst* ptr;
+boolean isfemale;
+{
+    if (!ptr)
+        return "";
+
+    if (isfemale && ptr->mfemalename && strcmp(ptr->mfemalename, ""))
+        return ptr->mfemalename;
+    else
+        return ptr->mname;
+
+}
+
+const char* mon_monster_name(mon)
+struct monst* mon;
+{
+    if (!mon)
+        return "";
+
+    boolean isfemale = (mon == &youmonst ? flags.female : mon->female);
+    return pm_monster_name(mon->data, isfemale);
+
+}
+
+const char* corpse_monster_name(corpse)
+struct obj* corpse;
+{
+    if (!corpse || !(corpse->otyp == CORPSE && corpse->otyp == STATUE && corpse->otyp == EGG))
+        return "";
+
+    struct monst* mtmp = get_mtraits(corpse, FALSE);
+
+    if (mtmp)
+    {
+        return mon_monster_name(mtmp);
+    }
+    else 
+    {
+        int cnm = corpse->corpsenm;
+        if (cnm >= LOW_PM)
+        {
+            struct permonst* mptr = &mons[cnm];
+            return pm_monster_name(mptr, is_female(mptr));
+        }
+        else
+            return "unspecified monster";
+    }
+}
+
+const char* pm_common_name(ptr)
+struct permonst* ptr;
+{
+    if (!ptr)
+        return "";
+
+    if (ptr->mcommonname && strcmp(ptr->mcommonname, ""))
+        return ptr->mcommonname;
+    else
+        return ptr->mname;
+
+}
+
+const char* mon_common_name(mon)
+struct monst* mon;
+{
+    if (!mon)
+        return "";
+
+    return pm_common_name(mon->data);
+
+}
+
+const char* corpse_common_name(corpse)
+struct obj* corpse;
+{
+    if (!corpse || !(corpse->otyp == CORPSE && corpse->otyp == STATUE && corpse->otyp == EGG))
+        return "";
+
+    struct monst* mtmp = get_mtraits(corpse, FALSE);
+
+    if (mtmp)
+    {
+        return mon_common_name(mtmp);
+    }
+    else
+    {
+        int cnm = corpse->corpsenm;
+        if (cnm >= LOW_PM)
+        {
+            struct permonst* mptr = &mons[cnm];
+            return pm_common_name(mptr);
+        }
+        else
+            return "unspecified monsters";
+    }
+}
+
 
 /*mon.c*/

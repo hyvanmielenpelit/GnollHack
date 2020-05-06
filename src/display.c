@@ -412,7 +412,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
                        (int) mon->m_ap_type);
             /*FALLTHRU*/
         case M_AP_NOTHING:
-            show_glyph(x, y, mon_to_glyph(mon, newsym_rn2));
+            show_glyph(x, y, any_mon_to_glyph(mon, newsym_rn2));
             break;
 
         case M_AP_FURNITURE: {
@@ -452,8 +452,8 @@ xchar worm_tail;            /* mon is actually a worm tail */
 
         case M_AP_MONSTER:
             show_glyph(x, y,
-                       monnum_to_glyph(what_mon((int) mon->mappearance,
-                                                rn2_on_display_rng)));
+                       any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng))
+            );
             break;
         }
     }
@@ -474,19 +474,19 @@ xchar worm_tail;            /* mon is actually a worm tail */
             if (worm_tail)
                 num = petnum_to_glyph(PM_LONG_WORM_TAIL);
             else
-                num = pet_to_glyph(mon, rn2_on_display_rng);
+                num = any_pet_to_glyph(mon, rn2_on_display_rng);
         } else if (sightflags == DETECTED) {
             if (worm_tail)
                 num = detected_monnum_to_glyph(
                              what_mon(PM_LONG_WORM_TAIL, rn2_on_display_rng));
             else
-                num = detected_mon_to_glyph(mon, rn2_on_display_rng);
+                num = any_detected_mon_to_glyph(mon, rn2_on_display_rng);
         } else {
             if (worm_tail)
                 num = monnum_to_glyph(
                              what_mon(PM_LONG_WORM_TAIL, rn2_on_display_rng));
             else
-                num = mon_to_glyph(mon, rn2_on_display_rng);
+                num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
         show_glyph(x, y, num);
     }
@@ -513,7 +513,7 @@ register struct monst *mon;
             rn2_on_display_rng(WARNCOUNT - 1) + 1 : warning_of(mon);
         glyph = warning_to_glyph(wl);
     } else if (MATCH_WARN_OF_MON(mon)) {
-        glyph = mon_to_glyph(mon, rn2_on_display_rng);
+        glyph = any_mon_to_glyph(mon, rn2_on_display_rng);
     } else {
         impossible("display_warning did not match warning type?");
         return;
@@ -1682,6 +1682,15 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_OBJ_OFF) { /* object */
             text = "object";
             offset = glyph - GLYPH_OBJ_OFF;
+        } else if (glyph >= GLYPH_FEMALE_DETECT_OFF) { /* female detected mon */
+            text = "female detected mon";
+            offset = glyph - GLYPH_FEMALE_DETECT_OFF;
+        } else if (glyph >= GLYPH_FEMALE_PET_OFF) { /* female pet */
+            text = "female pet";
+            offset = glyph - GLYPH_FEMALE_PET_OFF;
+        } else if (glyph >= GLYPH_FEMALE_MON_OFF) { /* female mon */
+            text = "female mon";
+            offset = glyph - GLYPH_FEMALE_MON_OFF;
         } else if (glyph >= GLYPH_RIDDEN_OFF) { /* ridden mon */
             text = "ridden mon";
             offset = glyph - GLYPH_RIDDEN_OFF;

@@ -276,6 +276,48 @@ unsigned *ospecial;
             special |= MG_OBJPILE;
 
     }
+    else if ((offset = (glyph - GLYPH_FEMALE_DETECT_OFF)) >= 0)
+    { /* female mon detect */
+        idx = mons[offset].mlet + SYM_OFF_M;
+        if (has_rogue_color)
+            color = NO_COLOR; /* no need to check iflags.use_color */
+        else
+            mon_color(offset);
+        /* Disabled for now; anyone want to get reverse video to work? */
+        /* is_reverse = TRUE; */
+        special |= MG_DETECT;
+    }
+    else if ((offset = (glyph - GLYPH_FEMALE_PET_OFF)) >= 0)
+    { /* a pet */
+        idx = mons[offset].mlet + SYM_OFF_M;
+        if (has_rogue_color)
+            color = NO_COLOR; /* no need to check iflags.use_color */
+        else
+            pet_color(offset);
+        special |= MG_PET;
+    }
+    else if ((offset = (glyph - GLYPH_FEMALE_MON_OFF)) >= 0)
+    { /* a female monster */
+        idx = mons[offset].mlet + SYM_OFF_M;
+        if (has_rogue_color && iflags.use_color)
+        {
+            if (x == u.ux && y == u.uy)
+                /* actually player should be yellow-on-gray if in corridor */
+                color = CLR_YELLOW;
+            else
+                color = NO_COLOR;
+        }
+        else
+        {
+            mon_color(offset);
+    #ifdef TEXTCOLOR
+            /* special case the hero for `showrace' option */
+            if (iflags.use_color && x == u.ux && y == u.uy
+                && flags.showrace && !Upolyd)
+                color = HI_DOMESTIC;
+    #endif
+        }
+    }
     else if ((offset = (glyph - GLYPH_RIDDEN_OFF)) >= 0)
     { /* mon ridden */
         idx = mons[offset].mlet + SYM_OFF_M;

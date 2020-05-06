@@ -13,8 +13,8 @@ STATIC_DCL int FDECL(passiveum, (struct permonst *, struct monst *,
                                  struct attack *));
 STATIC_DCL void FDECL(mayberem, (struct monst *, const char *,
                                  struct obj *, const char *));
-STATIC_DCL boolean FDECL(diseasemu, (struct permonst *));
-STATIC_DCL boolean FDECL(mummyrotmu, (struct permonst*));
+STATIC_DCL boolean FDECL(diseasemu, (struct monst *));
+STATIC_DCL boolean FDECL(mummyrotmu, (struct monst*));
 STATIC_DCL int FDECL(hitmu, (struct monst *, struct attack *, struct obj*));
 STATIC_DCL int FDECL(gulpmu, (struct monst *, struct attack *));
 STATIC_DCL int FDECL(explmu, (struct monst *, struct attack *, BOOLEAN_P));
@@ -576,11 +576,11 @@ register struct monst *mtmp;
                         || u.umonnum == PM_TRAPPER)
                         pline(
                              "Wait, %s!  There's a hidden %s named %s there!",
-                              m_monnam(mtmp), youmonst.data->mname, plname);
+                              m_monnam(mtmp), mon_monster_name(&youmonst), plname);
                     else
                         pline(
                           "Wait, %s!  There's a %s named %s hiding under %s!",
-                              m_monnam(mtmp), youmonst.data->mname, plname,
+                              m_monnam(mtmp), mon_monster_name(&youmonst), plname,
                               doname(level.objects[u.ux][u.uy]));
                     if (obj)
                         obj->speflags = save_speflags;
@@ -603,7 +603,7 @@ register struct monst *mtmp;
             pline("It gets stuck on you.");
         else /* see note about m_monnam() above */
             pline("Wait, %s!  That's a %s named %s!", m_monnam(mtmp),
-                  youmonst.data->mname, plname);
+                mon_monster_name(&youmonst), plname);
         if (sticky)
             u.ustuck = mtmp;
         youmonst.m_ap_type = M_AP_NOTHING;
@@ -623,13 +623,13 @@ register struct monst *mtmp;
                                            : "disturbs you");
         else /* see note about m_monnam() above */
             pline("Wait, %s!  That %s is really %s named %s!", m_monnam(mtmp),
-                  mimic_obj_name(&youmonst), an(mons[u.umonnum].mname),
+                  mimic_obj_name(&youmonst), an(pm_monster_name(&mons[u.umonnum], flags.female)),
                   plname);
         if (multi < 0) { /* this should always be the case */
             char buf[BUFSZ];
 
             Sprintf(buf, "You appear to be %s again.",
-                    Upolyd ? (const char *) an(youmonst.data->mname)
+                    Upolyd ? (const char *) an(mon_monster_name(&youmonst))
                            : (const char *) "yourself");
             unmul(buf); /* immediately stop mimicking */
         }
@@ -1104,8 +1104,8 @@ register struct monst *mtmp;
 }
 
 STATIC_OVL boolean
-diseasemu(mdat)
-struct permonst *mdat;
+diseasemu(mtmp)
+struct monst *mtmp;
 {
     if (Sick_resistance) {
         You_feel("a slight illness.");
@@ -1113,14 +1113,14 @@ struct permonst *mdat;
     } else
 	{
         make_sick(Sick ? Sick / 3L + 1L : (long) rn1(ACURR(A_CON), 20),
-                  mdat->mname, TRUE);
+                  mon_monster_name(mtmp), TRUE);
         return TRUE;
     }
 }
 
 STATIC_OVL boolean
-mummyrotmu(mdat)
-struct permonst* mdat;
+mummyrotmu(mtmp)
+struct monst* mtmp;
 {
     if (Sick_resistance) {
         You_feel("a slight illness.");
@@ -1128,7 +1128,7 @@ struct permonst* mdat;
     }
     else
     {
-        make_mummy_rotted(-1L, mdat->mname, TRUE);
+        make_mummy_rotted(-1L, mon_monster_name(mtmp), TRUE);
         return TRUE;
     }
 }
@@ -1775,7 +1775,7 @@ register struct obj* omonwep;
 				{
 					damage = 1;
 					pline("%s hits you with the %s corpse.", Monnam(mtmp),
-						mons[otmp->corpsenm].mname);
+						corpse_monster_name(otmp));
 					if (!Stoned)
 						goto do_stone;
 				}
@@ -1901,7 +1901,7 @@ register struct obj* omonwep;
 		//Must now bypass your MC -- Demogorgon has high penalties for saving throw
 		if (!mcsuccess)
 		{
-			(void)diseasemu(mdat);
+			(void)diseasemu(mtmp);
 		}
 		break;
     case AD_ROTS:
@@ -1912,7 +1912,7 @@ register struct obj* omonwep;
 
         if (!mcsuccess)
         {
-            (void)mummyrotmu(mdat);
+            (void)mummyrotmu(mtmp);
         }
         break;
     case AD_FIRE:
@@ -2031,7 +2031,7 @@ register struct obj* omonwep;
             Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
                     mpoisons_subj(mtmp, mattk));
 
-            poisoned(buf, ptmp, mdat->mname, mtmp->m_lev <= 8 ? 0 : 10, FALSE, mtmp->m_lev <= 2 ? 1 : mtmp->m_lev <= 5 ? 2 : 3);
+            poisoned(buf, ptmp, mon_monster_name(mtmp), mtmp->m_lev <= 8 ? 0 : 10, FALSE, mtmp->m_lev <= 2 ? 1 : mtmp->m_lev <= 5 ? 2 : 3);
         }
         break;
     case AD_DRIN:
@@ -2179,7 +2179,7 @@ register struct obj* omonwep;
                         && polymon(PM_STONE_GOLEM)))
 			{
                 int kformat = KILLED_BY_AN;
-                const char *kname = mtmp->data->mname;
+                const char *kname = mon_monster_name(mtmp);
 
                 if (mtmp->data->geno & G_UNIQ)
 				{
@@ -2242,7 +2242,7 @@ register struct obj* omonwep;
 					killer.format = KILLED_BY_AN;
                     Sprintf(killer.name, "%s by %s",
                             moat ? "moat" : "pool of water",
-                            an(mtmp->data->mname));
+                            an(mon_monster_name(mtmp)));
                     done(DROWNING);
 					*/
                 } 
@@ -2652,7 +2652,7 @@ register struct obj* omonwep;
 	}
     case AD_PEST:
         pline("%s reaches out, and you feel fever and chills. You lose %d hit points.", Monnam(mtmp), damagedealt);
-		(void) diseasemu(mdat); /* plus the normal damage */
+		(void) diseasemu(mtmp); /* plus the normal damage */
         break;
     case AD_FAMN:
         pline("%s reaches out, and your body shrivels. You lose %d hit points.", Monnam(mtmp), damagedealt);
@@ -2677,7 +2677,7 @@ register struct obj* omonwep;
 			hitmsg(mtmp, mattk, damagedealt);
 			You("don't feel very well.");
             make_slimed(10L, (char *) 0);
-            delayed_killer(SLIMED, KILLED_BY_AN, mtmp->data->mname);
+            delayed_killer(SLIMED, KILLED_BY_AN, mon_monster_name(mtmp));
 		}
 		else {
 			hitmsg(mtmp, mattk, damagedealt);
@@ -3219,11 +3219,11 @@ struct attack *mattk;
 			damage = 0;
         break;
     case AD_DISE:
-        if (!diseasemu(mtmp->data))
+        if (!diseasemu(mtmp))
 			damage = 0;
         break;
     case AD_ROTS:
-        if (!mummyrotmu(mtmp->data))
+        if (!mummyrotmu(mtmp))
             damage = 0;
         break;
     case AD_DREN:
@@ -3470,7 +3470,7 @@ struct attack *mattk;
                 break;
             You("turn to stone...");
             killer.format = KILLED_BY;
-            Strcpy(killer.name, mtmp->data->mname);
+            Strcpy(killer.name, mon_monster_name(mtmp));
             done(STONING);
         }
         break;
@@ -4240,7 +4240,7 @@ struct attack *mattk;
 				{
                     if (Blind)
                         pline("As a blind %s, you cannot defend yourself.",
-                              youmonst.data->mname);
+                              mon_monster_name(&youmonst));
                     else
 					{
                         if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))

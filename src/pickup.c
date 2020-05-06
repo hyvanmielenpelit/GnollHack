@@ -969,7 +969,7 @@ int show_weights;
         fake_hero_object = zeroobj;
         fake_hero_object.quan = 1L; /* not strictly necessary... */
         any.a_obj = &fake_hero_object;
-        add_menu(win, mon_to_glyph(&youmonst, rn2_on_display_rng), &any,
+        add_menu(win, any_mon_to_glyph(&youmonst, rn2_on_display_rng), &any,
                  /* fake inventory letter, no group accelerator */
                  CONTAINED_SYM, 0, ATR_NONE, an(self_lookat(buf)),
                  MENU_UNSELECTED);

@@ -44,6 +44,8 @@ struct permonst {
     const char *mname;          /* full name */
     const char* mtitle;         /* title or description of a unique monster with proper name, e.g., Prince of Demons or Ixoth, red dragon */
     const char* mdescription;   /* description */
+    const char* mfemalename;    /* female name, e.g. dwarf queen vs. dwarf king */
+    const char* mcommonname;    /* common name for males and females, e.g. dwarf royal */
     char mlet;                  /* symbol */
     schar mlevel,               /* base monster level */
         mmove,                  /* move speed */

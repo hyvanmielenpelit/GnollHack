@@ -234,13 +234,14 @@
 #define display_self() \
     show_glyph(u.ux, u.uy,                                                  \
            maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)                 \
-                                ? player_to_glyph() /*hero_glyph*/       \
+                                ? player_to_glyph() /*hero_glyph*/          \
                                 : (U_AP_TYPE == M_AP_FURNITURE)             \
                                   ? cmap_to_glyph(youmonst.mappearance)     \
                                   : (U_AP_TYPE == M_AP_OBJECT)              \
                                     ? objnum_to_glyph(youmonst.mappearance) \
                                     /* else U_AP_TYPE == M_AP_MONSTER */    \
-                                    : monnum_to_glyph(youmonst.mappearance)))
+                                    : any_monnum_to_glyph(flags.female, youmonst.mappearance) \
+                                 ))
 
 /*
  * A glyph is an abstraction that represents a _unique_ monster, object,
@@ -307,7 +308,10 @@
 #define GLYPH_DETECT_OFF  (1 + GLYPH_INVIS_OFF)
 #define GLYPH_BODY_OFF    (NUMMONS + GLYPH_DETECT_OFF)
 #define GLYPH_RIDDEN_OFF  (NUMMONS + GLYPH_BODY_OFF)
-#define GLYPH_OBJ_OFF     (NUMMONS + GLYPH_RIDDEN_OFF)
+#define GLYPH_FEMALE_MON_OFF  (NUMMONS + GLYPH_RIDDEN_OFF)
+#define GLYPH_FEMALE_PET_OFF  (NUMMONS + GLYPH_FEMALE_MON_OFF)
+#define GLYPH_FEMALE_DETECT_OFF (NUMMONS + GLYPH_FEMALE_PET_OFF)
+#define GLYPH_OBJ_OFF     (NUMMONS + GLYPH_FEMALE_DETECT_OFF)
 #define GLYPH_CMAP_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
 #define GLYPH_EXPLODE_OFF ((MAXPCHARS - MAXEXPCHARS) + GLYPH_CMAP_OFF)
 #define GLYPH_ZAP_OFF     ((MAXEXPCHARS * EXPL_MAX) + GLYPH_EXPLODE_OFF)
@@ -330,6 +334,19 @@
     ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_RIDDEN_OFF)
 #define pet_to_glyph(mon, rng)                                      \
     ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_PET_OFF)
+#define female_mon_to_glyph(mon, rng)                               \
+    ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_MON_OFF)
+#define female_pet_to_glyph(mon, rng)                                      \
+    ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_PET_OFF)
+#define female_detected_mon_to_glyph(mon, rng)                             \
+    ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DETECT_OFF)
+
+#define any_mon_to_glyph(mon, rng)                               \
+    (((mon) == &youmonst ? flags.female : (mon)->female) ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng) )
+#define any_pet_to_glyph(mon, rng)                               \
+    (((mon) == &youmonst ? flags.female : (mon)->female) ? female_pet_to_glyph(mon, rng) : pet_to_glyph(mon, rng) )
+#define any_detected_mon_to_glyph(mon, rng)                               \
+    (((mon) == &youmonst ? flags.female : (mon)->female) ? female_detected_mon_to_glyph(mon, rng) : detected_mon_to_glyph(mon, rng) )
 
 /* This has the unfortunate side effect of needing a global variable    */
 /* to store a result. 'otg_temp' is defined and declared in decl.{ch}.  */
@@ -370,15 +387,26 @@
 #define detected_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DETECT_OFF)
 #define ridden_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_RIDDEN_OFF)
 #define petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_PET_OFF)
+#define female_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_MON_OFF)
+#define female_petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_PET_OFF)
+#define female_detected_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DETECT_OFF)
+
+#define any_monnum_to_glyph(isfemale, mnum) (isfemale ? female_monnum_to_glyph(mnum) : monnum_to_glyph(mnum) )
+#define any_petnum_to_glyph(isfemale, mnum) (isfemale ? female_petnum_to_glyph(mnum) : petnum_to_glyph(mnum) )
+#define any_detected_monnum_to_glyph(isfemale, mnum) (isfemale ? female_detected_monnum_to_glyph(mnum) : detected_monnum_to_glyph(mnum) )
 
 /* The hero's glyph when seen as a monster.
  */
 #define hero_glyph                                                    \
-    monnum_to_glyph((Upolyd || !flags.showrace)                       \
+    flags.female ? \
+        female_monnum_to_glyph((Upolyd || !flags.showrace)                       \
                         ? u.umonnum                                   \
-                        : (flags.female && urace.femalenum != NON_PM) \
+                        : (urace.femalenum != NON_PM) \
                               ? urace.femalenum                       \
-                              : urace.malenum)
+                              : urace.malenum) : \
+        monnum_to_glyph((Upolyd || !flags.showrace)                       \
+                        ? u.umonnum                                   \
+                        : urace.malenum)
 
 /*
  * Return true if the given glyph is what we want.  Note that bodies are
@@ -394,6 +422,12 @@
 #define glyph_is_statue(glyph) \
     ((glyph) >= GLYPH_STATUE_OFF && (glyph) < (GLYPH_STATUE_OFF + NUMMONS))
 
+#define glyph_is_female_monster(glyph) \
+    ((glyph) >= GLYPH_FEMALE_MON_OFF && (glyph) < (GLYPH_FEMALE_MON_OFF + NUMMONS))
+#define glyph_is_female_pet(glyph) \
+    ((glyph) >= GLYPH_FEMALE_PET_OFF && (glyph) < (GLYPH_FEMALE_PET_OFF + NUMMONS))
+#define glyph_is_female_detected_monster(glyph) \
+    ((glyph) >= GLYPH_FEMALE_DETECT_OFF && (glyph) < (GLYPH_FEMALE_DETECT_OFF + NUMMONS))
 #define glyph_is_ridden_monster(glyph) \
     ((glyph) >= GLYPH_RIDDEN_OFF && (glyph) < (GLYPH_RIDDEN_OFF + NUMMONS))
 #define glyph_is_detected_monster(glyph) \
@@ -425,7 +459,9 @@
     (glyph_is_player(glyph) ? ((glyph) - GLYPH_PLAYER_OFF) : NO_GLYPH)
 #define glyph_is_monster(glyph)                            \
     (glyph_is_normal_monster(glyph) || glyph_is_pet(glyph) \
-     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph) || glyph_is_player(glyph))
+     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph) \
+     || glyph_is_female_monster(glyph) || glyph_is_female_detected_monster(glyph) \
+     || glyph_is_female_pet(glyph) || glyph_is_player(glyph))
 
 
  /*
@@ -449,10 +485,16 @@
                      ? ((glyph) - GLYPH_DETECT_OFF)             \
                      : glyph_is_ridden_monster(glyph)           \
                            ? ((glyph) - GLYPH_RIDDEN_OFF)       \
+                     : glyph_is_female_monster(glyph)           \
+                           ? ((glyph) - GLYPH_FEMALE_MON_OFF)   \
+                     : glyph_is_female_pet(glyph)  \
+                           ? ((glyph) - GLYPH_FEMALE_PET_OFF) \
+                     : glyph_is_female_detected_monster(glyph)  \
+                           ? ((glyph) - GLYPH_FEMALE_DETECT_OFF) \
                            : glyph_is_statue(glyph)             \
                                  ? ((glyph) - GLYPH_STATUE_OFF) \
                                    : glyph_is_player(glyph)     \
-                                         ? (u.umonnum)          \
+                                         ? (glyph_to_player_mon(glyph))                    \
                                              : NO_GLYPH)
 
 

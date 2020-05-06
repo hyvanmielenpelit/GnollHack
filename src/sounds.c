@@ -293,10 +293,6 @@ dosounds()
             if (DEADMONSTER(mtmp))
                 continue;
             if (is_mercenary(mtmp->data)
-#if 0 /* don't bother excluding these */
-                && !strstri(mtmp->data->mname, "watch")
-                && !strstri(mtmp->data->mname, "guard")
-#endif
                 && mon_in_room(mtmp, BARRACKS)
                 /* sleeping implies not-yet-disturbed (usually) */
                 && (is_sleeping(mtmp) || ++count > 5)) {
@@ -800,7 +796,7 @@ register struct monst *mtmp;
                     verbl_msg = verbuf;
                 } else if (vampindex == 1) {
                     Sprintf(verbuf, vampmsg[vampindex],
-                            Upolyd ? an(mons[u.umonnum].mname)
+                            Upolyd ? an(pm_monster_name(&mons[u.umonnum], flags.female))
                                    : an(racenoun));
                     verbl_msg = verbuf;
                 } else
@@ -1192,7 +1188,7 @@ speak_check()
 {
 	if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
 	{
-		pline("As %s, you cannot speak.", an(youmonst.data->mname));
+		pline("As %s, you cannot speak.", an(mon_monster_name(&youmonst)));
 		return 0;
 	}
 	if (Strangled)
@@ -1223,7 +1219,7 @@ yell_check()
 {
 	if (is_silent(youmonst.data) || !can_speak_language(youmonst.data))
 	{
-		pline("As %s, you cannot yell.", an(youmonst.data->mname));
+		pline("As %s, you cannot yell.", an(mon_monster_name(&youmonst)));
 		return 0;
 	}
 	if (Strangled)
@@ -2335,9 +2331,9 @@ struct monst* mtmp;
 		else
 		{
 			if (has_mname(mtmp))
-				Sprintf(ansbuf, "I am %s, a local %s.", MNAME(mtmp), mtmp->data->mname);
+				Sprintf(ansbuf, "I am %s, a local %s.", MNAME(mtmp), mon_monster_name(mtmp));
 			else
-				Sprintf(ansbuf, "I am a local %s.", mtmp->data->mname);
+				Sprintf(ansbuf, "I am a local %s.", mon_monster_name(mtmp));
 
 			mtmp->u_know_mname = 1;
 			verbalize(ansbuf);
@@ -2383,7 +2379,7 @@ struct monst* mtmp;
 		if(mtmp->data->mtitle && strcmp(mtmp->data->mtitle, "")) 
 			Sprintf(titlebuf, ", %s", mtmp->data->mtitle);
 
-		Sprintf(ansbuf, "I am %s%s.", mtmp->data->mname, titlebuf);
+		Sprintf(ansbuf, "I am %s%s.", mon_monster_name(mtmp), titlebuf);
 		verbalize(ansbuf);
 	}
 	else

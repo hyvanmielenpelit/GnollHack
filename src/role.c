@@ -2684,5 +2684,31 @@ player_to_glyph()
         GLYPH_PLAYER_OFF;
 }
 
+int
+glyph_to_player_mon(int glyph)
+{
+    int offset = glyph - GLYPH_PLAYER_OFF;
+    boolean isfemale = FALSE;
+    if (!(offset % 2))
+        isfemale = TRUE;
 
+    int role_idx = (offset % (2 * NUM_ROLES)) / 2;
+    //int alignment_idx = (offset % (2 * NUM_ROLES * 3)) / (2 * NUM_ROLES);
+    int race_idx = (offset % (2 * NUM_ROLES * 3 * NUM_RACES)) / (2 * NUM_ROLES * 3);
+
+    if (flags.showrace)
+    {
+        if(race_idx >= 0 && race_idx < NUM_RACES)
+            return (isfemale && races[race_idx].femalenum != NON_PM) ? races[race_idx].femalenum : races[race_idx].malenum;
+        else
+            return (isfemale && urace.femalenum != NON_PM) ? urace.femalenum : urace.malenum;
+    }
+    else
+    {
+        if (role_idx >= 0 && role_idx < NUM_ROLES)
+            return (isfemale && roles[role_idx].femalenum != NON_PM) ? roles[role_idx].femalenum : roles[role_idx].malenum;
+        else
+            return (isfemale && urole.femalenum != NON_PM) ? urole.femalenum : urole.malenum;
+    }
+}
 /* role.c */

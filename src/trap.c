@@ -2914,8 +2914,8 @@ const char *arg;
 
     if (uwep && uwep->otyp == CORPSE && touch_petrifies(&mons[uwep->corpsenm])
         && !Stone_resistance) {
-        pline("%s touch the %s corpse.", arg, mons[uwep->corpsenm].mname);
-        Sprintf(kbuf, "%s corpse", an(mons[uwep->corpsenm].mname));
+        pline("%s touch the %s corpse.", arg, corpse_monster_name(uwep));
+        Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uwep)));
         instapetrify(kbuf);
         /* life-saved; unwield the corpse if we can't handle it */
         if (!uarmg && !Stone_resistance)
@@ -2923,8 +2923,8 @@ const char *arg;
     }
     if (uarms && uarms->otyp == CORPSE
         && touch_petrifies(&mons[uarms->corpsenm]) && !Stone_resistance) {
-        pline("%s touch the %s corpse.", arg, mons[uarms->corpsenm].mname);
-        Sprintf(kbuf, "%s corpse", an(mons[uarms->corpsenm].mname));
+        pline("%s touch the %s corpse.", arg, corpse_monster_name(uarms));
+        Sprintf(kbuf, "%s corpse", an(corpse_monster_name(uarms)));
         instapetrify(kbuf);
         /* life-saved; unwield the corpse */
         if (!uarmg && !Stone_resistance)
@@ -4806,7 +4806,7 @@ struct trap *ttmp;
 
     /* is it a cockatrice?... */
     if (touch_petrifies(mtmp->data) && !uarmg && !Stone_resistance) {
-        You("grab the trapped %s using your bare %s.", mtmp->data->mname,
+        You("grab the trapped %s using your bare %s.", mon_monster_name(mtmp),
             makeplural(body_part(HAND)));
 
         if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM)) {
@@ -4815,7 +4815,7 @@ struct trap *ttmp;
             char kbuf[BUFSZ];
 
             Sprintf(kbuf, "trying to help %s out of a pit",
-                    an(mtmp->data->mname));
+                    an(mon_monster_name(mtmp)));
             instapetrify(kbuf);
             return 1;
         }

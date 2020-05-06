@@ -1625,7 +1625,12 @@ E void FDECL(m_detach, (struct monst*, struct permonst*, boolean));
 E int NDECL(randomtruegem);
 E int FDECL(randomreagent, (boolean, int));
 E int NDECL(randomore);
-
+E const char* FDECL(pm_monster_name, (struct permonst*, boolean));
+E const char* FDECL(mon_monster_name, (struct monst*));
+E const char* FDECL(corpse_monster_name, (struct obj*));
+E const char* FDECL(pm_common_name, (struct permonst*));
+E const char* FDECL(mon_common_name, (struct monst*));
+E const char* FDECL(corpse_common_name, (struct obj*));
 
 /* ### mondata.c ### */
 
@@ -2395,6 +2400,7 @@ E void NDECL(role_init);
 E const char *FDECL(Hello, (struct monst *));
 E const char *NDECL(Goodbye);
 E int NDECL(player_to_glyph);
+E int FDECL(glyph_to_player_mon, (int));
 
 /* ### rumors.c ### */
 

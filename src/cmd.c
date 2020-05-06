@@ -1132,7 +1132,7 @@ doability(VOID_ARGS)
                 else
                 {
                     char buf[BUFSZ];
-                    strcpy(buf, mtmp->data->mname);
+                    strcpy(buf, mon_monster_name(mtmp));
                     *buf = highc(*buf);
                     strncpy(namebuf, buf, MAXNAMELENGTH - 1);
                     namebuf[MAXNAMELENGTH - 1] = '\0';
@@ -2554,7 +2554,7 @@ int final;
         if (!is_male(uasmon) && !is_female(uasmon) && !is_neuter(uasmon))
             Sprintf(tmpbuf, "%s ", genders[flags.female ? 1 : 0].adj);
         Sprintf(buf, "%sin %s%s form", !final ? "currently " : "", tmpbuf,
-                uasmon->mname);
+                pm_monster_name(uasmon, flags.female));
         you_are(buf, "");
     }
 
@@ -3508,7 +3508,7 @@ int final;
     }
     if (Warn_of_mon && context.warntype.speciesidx >= LOW_PM) {
         Sprintf(buf, "aware of the presence of %s",
-                makeplural(mons[context.warntype.speciesidx].mname));
+                makeplural(pm_common_name(&mons[context.warntype.speciesidx])));
         you_are(buf, from_what(WARN_OF_MON));
     }
     if (Undead_warning)
@@ -3746,7 +3746,7 @@ int final;
         && !(final == ENL_GAMEOVERDEAD
              && u.umonnum == PM_GREEN_SLIME && !Unchanging)) {
         /* foreign shape (except were-form which is handled below) */
-        Sprintf(buf, "polymorphed into %s", an(youmonst.data->mname));
+        Sprintf(buf, "polymorphed into %s", an(pm_monster_name(youmonst.data, flags.female)));
         if (wizard)
             Sprintf(eos(buf), " (%d)", u.mtimedone);
         you_are(buf, "");
@@ -3755,7 +3755,7 @@ int final;
         you_can("lay eggs", "");
     if (u.ulycn >= LOW_PM) {
         /* "you are a werecreature [in beast form]" */
-        Strcpy(buf, an(mons[u.ulycn].mname));
+        Strcpy(buf, an(pm_monster_name(&mons[u.ulycn], flags.female)));
         if (u.umonnum == u.ulycn) {
             Strcat(buf, " in beast form");
             if (wizard)

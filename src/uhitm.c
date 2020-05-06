@@ -3111,7 +3111,7 @@ struct monst *mdef;
 {
     if (!Invisible) {
         map_location(u.ux, u.uy, TRUE);
-        tmp_at(DISP_ALWAYS, mon_to_glyph(&youmonst, rn2_on_display_rng));
+        tmp_at(DISP_ALWAYS, any_mon_to_glyph(&youmonst, rn2_on_display_rng));
         tmp_at(mdef->mx, mdef->my);
     }
     You("engulf %s!", mon_nam(mdef));
@@ -3186,7 +3186,7 @@ register struct attack *mattk;
         if (fatal_gulp && !is_rider(pd)) 
 		{ /* petrification */
             char kbuf[BUFSZ];
-            const char *mname = pd->mname;
+            const char *mname = mon_monster_name(mdef);
 
             if (!is_mname_proper_name(pd))
                 mname = an(mname);
@@ -3206,7 +3206,7 @@ register struct attack *mattk;
                     pline("Unfortunately, digesting any of it is fatal.");
                     end_engulf();
                     Sprintf(killer.name, "unwisely tried to eat %s",
-                            pd->mname);
+						mon_monster_name(mdef));
                     killer.format = NO_KILLER_PREFIX;
                     done(DIED);
                     return 0; /* lifesaved */
@@ -3264,7 +3264,7 @@ register struct attack *mattk;
                     if (pd == &mons[PM_GREEN_SLIME]) 
 					{
                         Sprintf(msgbuf, "%s isn't sitting well with you.",
-                                The(pd->mname));
+                                The(mon_monster_name(mdef)));
                         if (!Unchanging)
 						{
                             make_slimed(5L, (char *) 0);

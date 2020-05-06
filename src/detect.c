@@ -79,11 +79,11 @@ boolean showtail;
 {
     if (def_monsyms[(int) mtmp->data->mlet].sym == ' ')
         show_glyph(mtmp->mx, mtmp->my,
-                   detected_mon_to_glyph(mtmp, newsym_rn2));
+                   any_detected_mon_to_glyph(mtmp, newsym_rn2));
     else
         show_glyph(mtmp->mx, mtmp->my, is_tame(mtmp)
-                   ? pet_to_glyph(mtmp, newsym_rn2)
-                   : mon_to_glyph(mtmp, newsym_rn2));
+                   ? any_pet_to_glyph(mtmp, newsym_rn2)
+                   : any_mon_to_glyph(mtmp, newsym_rn2));
 
     if (showtail && mtmp->data == &mons[PM_LONG_WORM])
         detect_wsegs(mtmp, 0);
@@ -1874,7 +1874,7 @@ int default_glyph, which_subset;
            an object, replacing any object or trap at its spot) */
         glyph = !swallowed ? glyph_at(x, y) : levl_glyph;
         if (keep_mons && x == u.ux && y == u.uy && swallowed)
-            glyph = mon_to_glyph(u.ustuck, rn2_on_display_rng);
+            glyph = any_mon_to_glyph(u.ustuck, rn2_on_display_rng);
         else if (((glyph_is_monster(glyph)
                    || glyph_is_warning(glyph)) && !keep_mons)
                  || glyph_is_swallow(glyph))

@@ -86,7 +86,7 @@ char *outbuf;
     Sprintf(outbuf, "%s%s%s called %s",
             /* being blinded may hide invisibility from self */
             (Invis && (senseself() || !Blind)) ? "invisible " : "", race,
-            mons[u.umonnum].mname, plname);
+            pm_monster_name(&mons[u.umonnum], flags.female), plname);
     if (u.usteed)
         Sprintf(eos(outbuf), ", mounted on %s", y_monnam(u.usteed));
     if (u.uundetected || (Upolyd && U_AP_TYPE))
@@ -133,7 +133,7 @@ char *outbuf;
     } else if (M_AP_TYPE(mon) == M_AP_MONSTER) {
         if (altmon)
             Sprintf(outbuf, ", masquerading as %s",
-                    an(mons[mon->mappearance].mname));
+                    an(pm_monster_name(&mons[mon->mappearance], mon->female)));
     } else if (isyou ? u.uundetected : mon->mundetected) {
         Strcpy(outbuf, ", hiding");
         if (hides_under(mon->data)) {
@@ -377,12 +377,12 @@ int x, y;
                     unsigned long mW = (context.warntype.obj
                                         | context.warntype.polyd),
                                   m2 = mtmp->data->mflags2;
-                    const char *whom = ((mW & M2_HUMAN & m2) ? "human"
-                                        : (mW & M2_ELF & m2) ? "elf"
-                                          : (mW & M2_ORC & m2) ? "orc"
-                                          : (mW & M2_ANGEL & m2) ? "angel"
-                                            : (mW & M2_DEMON & m2) ? "demon"
-                                              : mtmp->data->mname);
+                    const char *whom = ((mW & M2_HUMAN & m2) ? "humans"
+                                        : (mW & M2_ELF & m2) ? "elves"
+                                          : (mW & M2_ORC & m2) ? "orcs"
+                                          : (mW & M2_ANGEL & m2) ? "angels"
+                                            : (mW & M2_DEMON & m2) ? "demons"
+                                              : mon_common_name(mtmp));
 
                     Sprintf(eos(monbuf), "warned of %s", makeplural(whom));
                 }
@@ -417,7 +417,7 @@ char *buf, *monbuf;
     glyph = glyph_at(x, y);
     if (u.ux == x && u.uy == y && canspotself()
         && !(iflags.save_uswallow &&
-             glyph == mon_to_glyph(u.ustuck, rn2_on_display_rng))
+             glyph == any_mon_to_glyph(u.ustuck, rn2_on_display_rng))
         && (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0))
 	{
         /* fill in buf[] */

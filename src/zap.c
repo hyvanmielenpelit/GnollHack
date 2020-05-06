@@ -362,7 +362,7 @@ struct obj *otmp;
 						break;
 					You("turn to stone...");
 					killer.format = KILLED_BY;
-					Strcpy(killer.name, mtmp->data->mname);
+					Strcpy(killer.name, mon_monster_name(mtmp));
 					done(STONING);
 				}
 			}

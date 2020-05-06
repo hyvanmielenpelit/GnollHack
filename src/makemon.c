@@ -1871,7 +1871,7 @@ boolean ghostly;
         && !(mvitals[mndx].mvflags & G_EXTINCT)) {
         if (wizard) {
             debugpline1("Automatically extinguished %s.",
-                        makeplural(mons[mndx].mname));
+                        makeplural(pm_common_name(&mons[mndx])));
         }
         mvitals[mndx].mvflags |= G_EXTINCT;
         reset_rndmonst(mndx);
@@ -3179,7 +3179,7 @@ struct monst *mtmp, *victim;
         { /* allow G_EXTINCT */
             if (canspotmon(mtmp))
                 pline("As %s grows up into %s, %s %s!", mon_nam(mtmp),
-                      an(ptr->mname), mhe(mtmp),
+                      an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
                       is_not_living(ptr) ? "expires" : "dies");
             set_mon_data(mtmp, ptr); /* keep mvitals[] accurate */
             mondied(mtmp);
@@ -3199,7 +3199,7 @@ struct monst *mtmp, *victim;
                            (can't happen with 3.6.0 mons[], but perhaps
                            slightly less sexist if prepared for it...) */
                       : (fem && !mtmp->female) ? "female " : "",
-                    ptr->mname);
+                    pm_monster_name(ptr, !!fem));
             pline("%s %s %s.", upstart(y_monnam(mtmp)),
                   (fem != mtmp->female) ? "changes into"
                                         : humanoid(ptr) ? "becomes"

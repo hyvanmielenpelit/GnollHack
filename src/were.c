@@ -121,7 +121,7 @@ register struct monst *mon;
 
     if (canseemon(mon) && !Hallucination)
         pline("%s changes into a %s.", Monnam(mon),
-              is_human(&mons[pm]) ? "human" : mons[pm].mname + 4);
+              is_human(&mons[pm]) ? "human" : pm_monster_name(&mons[pm], mon->female) + 4);
 
     set_mon_data(mon, &mons[pm]);
     if (!mon_can_move(mon)) 
@@ -210,7 +210,7 @@ you_were()
     if (controllable_poly) {
         /* `+4' => skip "were" prefix to get name of beast */
         Sprintf(qbuf, "Do you want to change into %s?",
-                an(mons[u.ulycn].mname + 4));
+                an(pm_monster_name(&mons[u.ulycn], flags.female) + 4));
         if (!paranoid_query(ParanoidWerechange, qbuf))
             return;
     }

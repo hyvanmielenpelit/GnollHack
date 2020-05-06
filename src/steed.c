@@ -77,7 +77,7 @@ struct obj *otmp;
 
         You("touch %s.", mon_nam(mtmp));
         if (!(poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))) {
-            Sprintf(kbuf, "attempting to saddle %s", an(mtmp->data->mname));
+            Sprintf(kbuf, "attempting to saddle %s", an(mon_monster_name(mtmp)));
             instapetrify(kbuf);
         }
     }
@@ -295,7 +295,7 @@ boolean force;      /* Quietly force this animal */
         char kbuf[BUFSZ];
 
         You("touch %s.", mon_nam(mtmp));
-        Sprintf(kbuf, "attempting to ride %s", an(mtmp->data->mname));
+        Sprintf(kbuf, "attempting to ride %s", an(mon_monster_name(mtmp)));
         instapetrify(kbuf);
     }
     if (!mtmp->mtame || mtmp->isminion)

@@ -97,7 +97,7 @@ docharacterstatistics()
 
 	if (Upolyd)
 	{
-		strcpy(buf2, mons[u.umonnum].mname);
+		strcpy(buf2, pm_monster_name(&mons[u.umonnum], flags.female));
 		*buf2 = highc(*buf2);
 		Sprintf(buf, "Polymorphed into:  %s", buf2);
 		txt = buf;
@@ -2372,7 +2372,7 @@ register struct obj* obj;
 		if (artilist[obj->oartifact].role > NON_PM)
 		{
 			powercnt++;
-			Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(mons[artilist[obj->oartifact].role].mname));
+			Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(pm_common_name(&mons[artilist[obj->oartifact].role])));
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -2380,7 +2380,7 @@ register struct obj* obj;
 		if (artilist[obj->oartifact].race > NON_PM)
 		{
 			powercnt++;
-			Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(mons[artilist[obj->oartifact].race].mname));
+			Sprintf(buf, " %2d - Artifact is associated with %s", powercnt, makeplural(pm_common_name(&mons[artilist[obj->oartifact].race])));
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
@@ -2803,7 +2803,7 @@ register struct obj* obj;
 			char endbuf[BUFSIZ] = "";
 			if ((artilist[obj->oartifact].aflags & AF_DMONS) && artilist[obj->oartifact].mtype < NUMMONS)
 			{
-				strcpy(endbuf, mons[artilist[obj->oartifact].mtype].mname);
+				strcpy(endbuf, pm_common_name(&mons[artilist[obj->oartifact].mtype]));
 			}
 			else if (artilist[obj->oartifact].aflags & AF_DFLAG1)
 			{
@@ -3090,7 +3090,7 @@ register struct monst* mon;
 	strcpy(buf3, "");
 
 	/* Name */
-	Sprintf(buf, "%s", ptr->mname);
+	Sprintf(buf, "%s", mon_monster_name(mon));
 	*buf = highc(*buf);
 	if (ptr->mtitle && strcmp(ptr->mtitle, ""))
 	{
@@ -5282,7 +5282,7 @@ int animateintomon; // monstid to be animated into
 		case OBJ_FLOOR:
 			if (cansee(mtmp->mx, mtmp->my))
 				pline("%s rises from the dead as %s!",
-					The(mons[oldcorpsenum].mname), an(mons[animateintomon].mname));
+					The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
 			break;
 
 		case OBJ_MINVENT: /* probably a nymph's */
@@ -5293,7 +5293,7 @@ int animateintomon; // monstid to be animated into
 						mon_nam(mcarry), an(cname));
 				else
 					pline("%s rises from the dead as %s!",
-						The(mons[oldcorpsenum].mname), an(mons[animateintomon].mname));
+						The(pm_monster_name(&mons[oldcorpsenum], mtmp->female)), an(pm_monster_name(&mons[animateintomon], mtmp->female)));
 			}
 			break;
 		case OBJ_CONTAINED: 
