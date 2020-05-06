@@ -2766,6 +2766,7 @@ struct monst* mtmp;
 						if (*u.ushops || otmp->unpaid)
 							check_shop_obj(otmp, mtmp->mx, mtmp->my, FALSE);
 
+						otmp->bypass = FALSE;
 						(void)mpickobj(mtmp, otmp);
 					}
 				}
@@ -3534,8 +3535,13 @@ struct monst* mtmp;
 				}
 				else
 				{
-					You("took %s from %s.", doname(item_to_take), mon_nam(mtmp));
+					if (item_to_take->quan > 1 && pick_list[i].count > 0 && pick_list[i].count < item_to_take->quan)
+						item_to_take = splitobj(item_to_take, pick_list[i].count);
+
 					obj_extract_self(item_to_take);
+
+					You("took %s from %s.", doname(item_to_take), mon_nam(mtmp));
+
 					hold_another_object(item_to_take, "Oops!  %s out of your grasp!",
 						The(aobjnam(item_to_take, "slip")),
 						(const char*)0);
