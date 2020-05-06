@@ -619,6 +619,29 @@ static const char empty_string[] = "";
 #define THROWN_WEAPON_TO_HIT_MELEE_PENALTY 30
 #define THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON 18
 
+
+/* Character maps for various dungeons */
+enum cmap_types {
+    CMAP_NORMAL = 0,
+    CMAP_GNOMISH_MINES = 1,
+    CMAP_GEHENNOM = 2,
+    CMAP_FORT_LUDIOUS = 3,
+    CMAP_UNDEAD_STYLE = 4,
+    CMAP_SWAMP_STYLE = 5,
+    CMAP_GEHENNOM_ALTERNATIVE = 6,
+    CMAP_MODRON = 7,
+    CMAP_BOVINE = 8,
+    CMAP_ARBOREAL = 9,
+    CMAP_CITISCAPE = 10,
+    CMAP_SEWERS = 11,
+    CMAP_MAZE = 12,
+    CMAP_TOWER = 13,
+    CMAP_CAVERNS = 14,
+    CMAP_EXTRA_1 = 15,
+    CMAP_TYPE_MAX = 16
+};
+
+
 /* Maximum number of status lines */
 #define MAX_STATUS_LINES 8
 

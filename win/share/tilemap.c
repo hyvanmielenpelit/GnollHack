@@ -333,13 +333,18 @@ init_tilemap()
     }
     lastobjtile = tilenum - 1;
 
-    for (i = 0; i < (MAXPCHARS - MAXEXPCHARS); i++) {
-        tilemap[GLYPH_CMAP_OFF + i] = tilenum;
-        tilenum++;
-        while (conditionals[condnum].sequence == OTH_GLYPH
-               && conditionals[condnum].predecessor == i) {
-            condnum++;
+    for(int j = 0; j < CMAP_TYPE_MAX; j++)
+    {
+        for (i = 0; i < (MAXPCHARS - MAXEXPCHARS); i++) {
+            tilemap[GLYPH_CMAP_OFF + i] = tilenum;
             tilenum++;
+#if 0
+            while (conditionals[condnum].sequence == OTH_GLYPH
+                   && conditionals[condnum].predecessor == i) {
+                condnum++;
+                tilenum++;
+            }
+#endif
         }
     }
 
@@ -397,6 +402,16 @@ init_tilemap()
     }
     laststatuetile = tilenum - 1;
 #endif
+
+    for (i = 0; i < NROFARTIFACTS; i++) {
+        tilemap[GLYPH_ARTIFACT_OFF + i] = tilenum;
+        tilenum++;
+    }
+
+    for (i = 0; i < 2 * NUM_ROLES * 3 * NUM_RACES; i++) {
+        tilemap[GLYPH_PLAYER_OFF + i] = tilenum;
+        tilenum++;
+    }
 }
 
 const char *prolog[] = { "", "void", "substitute_tiles(plev)",
