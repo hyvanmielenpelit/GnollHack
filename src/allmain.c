@@ -1063,7 +1063,7 @@ newgame()
 	strcpy(context.used_names, "|");
 
     for (i = LOW_PM; i < NUMMONS; i++)
-        mvitals[i].mvflags = mons[i].geno & G_NOCORPSE;
+        mvitals[i].mvflags = (uchar)(mons[i].geno & G_NOCORPSE);
 
     init_objects(); /* must be before u_init() */
 

@@ -1968,19 +1968,6 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for full healing");
-		available_chat_list[chatnum].function_ptr = &do_chat_priest_full_healing;
-		available_chat_list[chatnum].charnum = 'a' + chatnum;
-
-		any = zeroany;
-		any.a_char = available_chat_list[chatnum].charnum;
-
-		add_menu(win, NO_GLYPH, &any,
-			any.a_char, 0, ATR_NONE,
-			available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-		chatnum++;
-
 		strcpy(available_chat_list[chatnum].name, "Ask for blessing or cursing an item");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_blesscurse;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;

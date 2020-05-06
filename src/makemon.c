@@ -1856,24 +1856,24 @@ boolean ghostly;
 {
     boolean result;
     uchar lim = mbirth_limit(mndx);
-    boolean gone = (mvitals[mndx].mvflags & G_GONE) != 0; /* geno'd|extinct */
+    boolean gone = (mvitals[mndx].mvflags & (uchar)G_GONE) != 0; /* geno'd|extinct */
 
     result = (((int) mvitals[mndx].born < lim) && !gone) ? TRUE : FALSE;
 
     /* if it's unique, don't ever make it again */
     if ((mons[mndx].geno & G_UNIQ) && mndx != PM_HIGH_PRIEST)
-        mvitals[mndx].mvflags |= G_EXTINCT;
+        mvitals[mndx].mvflags |= (uchar)G_EXTINCT;
 
     if (mvitals[mndx].born < 255 && tally
         && (!ghostly || (ghostly && result)))
         mvitals[mndx].born++;
-    if ((int) mvitals[mndx].born >= lim && !(mons[mndx].geno & G_NOGEN)
-        && !(mvitals[mndx].mvflags & G_EXTINCT)) {
+    if ((int) mvitals[mndx].born >= lim && !(mons[mndx].geno & (uchar)G_NOGEN)
+        && !(mvitals[mndx].mvflags & (uchar)G_EXTINCT)) {
         if (wizard) {
             debugpline1("Automatically extinguished %s.",
                         makeplural(pm_common_name(&mons[mndx])));
         }
-        mvitals[mndx].mvflags |= G_EXTINCT;
+        mvitals[mndx].mvflags |= (uchar)G_EXTINCT;
         reset_rndmonst(mndx);
     }
     return result;
@@ -3009,7 +3009,7 @@ aligntyp atyp;
             if (num && toostrong(last, maxmlev)
                 && mons[last].difficulty > mons[last - 1].difficulty)
                 break;
-            if ((k = (mons[last].geno & G_FREQ)) > 0) {
+            if ((k = (int)(mons[last].geno & G_FREQ)) > 0) {
                 /* skew towards lower value monsters at lower exp. levels
                    (this used to be done in the next loop, but that didn't
                    work well when multiple species had the same level and
@@ -3054,13 +3054,13 @@ int class;
 
     for (last = first; last < SPECIAL_PM && mons[last].mlet == class; last++)
         if (mk_gen_ok(last, G_GENOD, (G_NOGEN | G_UNIQ)))
-            num += mons[last].geno & G_FREQ;
+            num += (int)(mons[last].geno & G_FREQ);
     if (!num)
         return NON_PM;
 
     for (num = rnd(num); num > 0; first++)
         if (mk_gen_ok(first, G_GENOD, (G_NOGEN | G_UNIQ)))
-            num -= mons[first].geno & G_FREQ;
+            num -= (int)(mons[first].geno & G_FREQ);
     first--; /* correct an off-by-one error */
 
     return first;

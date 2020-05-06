@@ -3090,7 +3090,9 @@ register struct monst* mon;
 	strcpy(buf3, "");
 
 	/* Name */
-	Sprintf(buf, "%s", mon_monster_name(mon));
+	Sprintf(buf, "%s", 
+		x_monnam(mon, ARTICLE_NONE, (char*)0, (has_mname(mon)) ? (SUPPRESS_SADDLE | SUPPRESS_IT) : SUPPRESS_IT, FALSE)
+		   );
 	*buf = highc(*buf);
 	if (ptr->mtitle && strcmp(ptr->mtitle, ""))
 	{
@@ -3110,7 +3112,7 @@ register struct monst* mon;
 	else
 	{
 		/* Type */
-		Sprintf(buf, "Level %d %s%s", ptr->difficulty, ptr->geno& G_UNIQ ? "unique " : "", def_monsyms[ptr->mlet].explain);
+		Sprintf(buf, "Level %d %s%s", ptr->difficulty, ptr->geno & G_UNIQ ? "unique " : "", def_monsyms[ptr->mlet].explain);
 		//*buf = highc(*buf);
 		txt = buf;
 		putstr(datawin, 0, txt);
@@ -3296,7 +3298,7 @@ int aatyp;
 		return "summoning";
 	else if (aatyp == AT_WEAP)
 		return "by weapon";
-	else if (aatyp == AT_WEAP)
+	else if (aatyp == AT_MAGC)
 		return "spell casting";
 	else if (aatyp < 0 || aatyp >= SIZE(attack_type_names))
 		return empty_string;

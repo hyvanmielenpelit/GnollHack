@@ -1876,11 +1876,11 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 		for (int i = LOW_PM; i < NUMMONS; i++)
 		{
 			char letbuf[BUFSZ] = "";
-			Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%d,",
+			Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%lu,",
 				mons[i].mname, 
 				(int)mons[i].mlevel, (int)mons[i].mmove, 
 				(int)mons[i].ac, (int)mons[i].mc, (int)mons[i].mr, 
-				(int)mons[i].maligntyp, (int)mons[i].geno);
+				(int)mons[i].maligntyp, mons[i].geno);
 			(void)write(fd, buf, strlen(buf));
 			for (int j = 0; j < NATTK; j++)
 			{
