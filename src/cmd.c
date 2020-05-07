@@ -1956,6 +1956,7 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 {
     if (wizard)
     {
+        struct tileset_definition* tsd = &default_tileset_definition;
 
         const char* fq_save = "tile_definition.csv";
         const char* tile_section_name;
@@ -2053,34 +2054,40 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
         tile_section_name = "monsters";
         for (int gender = 0; gender <= 1; gender++)
         {
-            if (gender == 1 && TILEDATA_NO_FEMALE_SEPARATELY)
-                continue;
-
-            const char* gender_name = (gender == 0 ? "nonfemale" : "female");
+            if (gender == 1)
+            {
+                if(tsd->female_tile_style == 0)
+                    continue;
+            }
+            const char* gender_name = (gender == 0 ? "base" : "female");
 
             for (int spset = 0; spset < 6; spset++)
             {
-                if (spset == 1 && TILEDATA_NO_PET_SEPARATELY)
+                if (spset == 1 && !tsd->has_pet_tiles)
                     continue;
-                if (spset == 2 && TILEDATA_NO_DETECT_SEPARATELY)
+                if (spset == 2 && !tsd->has_detect_tiles)
                     continue;
-                if (spset == 3 && TILEDATA_NO_BODY_SEPARATELY)
+                if (spset == 3 && !tsd->has_body_tiles)
                     continue;
-                if (spset == 4 && TILEDATA_NO_RIDDEN_SEPARATELY)
+                if (spset == 4 && !tsd->has_ridden_tiles)
                     continue;
-                if (spset == 5 && TILEDATA_NO_STATUE_SEPARATELY)
+                if (spset == 5 && !tsd->has_statue_tiles)
                     continue;
 
                 set_name = (spset == 0 ? "normal" : spset == 1 ? "pet" : spset == 2 ? "detect" : 
                     spset == 3 ? "body" : spset == 4 ? "ridden" : "statue");
                 for (int i = LOW_PM; i < NUMMONS; i++)
                 {
+                    if (gender == 1)
+                    {
+                        if (tsd->female_tile_style == 2 && !(mons[i].geno & G_FEMALE_TILE))
+                            continue;
+                    }
                     Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, gender_name, set_name, mons[i].mname);
                     (void)write(fd, buf, strlen(buf));
                 }
             }
         }
-
 
         /* Object tiles */
         tile_section_name = "objects";
@@ -2104,12 +2111,13 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 
         /* CMAP tiles */
         tile_section_name = "cmap";
-        for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
+        for (int cmap_idx = 0; cmap_idx < (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps)); cmap_idx++)
         {
-            set_name = cmap_type_names[cmap_idx];
+            char namebuf[BUFSZ];
+            Sprintf(namebuf, "cmap-%d", cmap_idx);
             for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
             {
-                Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, get_cmap_tilename(i));
+                Sprintf(buf, "%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i));
                 (void)write(fd, buf, strlen(buf));
             }
         }
@@ -2121,43 +2129,147 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
         {
             set_name = (misc_idx == 0 ? "invisible" : misc_idx == 1 ? "explode" : misc_idx == 2 ? "zap" :
                 misc_idx == 3 ? "swallow" : "warning");
-            int set_count = (misc_idx == 0 ? 1 : 
-                misc_idx == 1 ? GLYPH_ZAP_OFF - GLYPH_EXPLODE_OFF :
-                misc_idx == 2 ? GLYPH_SWALLOW_OFF - GLYPH_ZAP_OFF : 
-                misc_idx == 3 ? GLYPH_WARNING_OFF - GLYPH_SWALLOW_OFF : 
-                GLYPH_STATUE_OFF - GLYPH_WARNING_OFF);
-            for (int i = 0; i < set_count; i++)
+
+            if (misc_idx == 0)
             {
-                Sprintf(buf, "%s,%s,tile-%d\n", tile_section_name, set_name, i);
+                Sprintf(buf, "%s,%s,generic\n", tile_section_name, set_name);
                 (void)write(fd, buf, strlen(buf));
+            }
+            else if (misc_idx == 1)
+            {
+                if (tsd->has_all_explode_tiles == 0)
+                {
+                    for (int j = 0; j < MAXEXPCHARS; j++)
+                    {
+                        Sprintf(buf, "%s,%s,generic,tile-%d\n", tile_section_name, set_name, j);
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < EXPL_MAX; i++)
+                    {
+                        for (int j = 0; j < MAXEXPCHARS; j++)
+                        {
+                            Sprintf(buf, "%s,%s,type-%d,tile-%d\n", tile_section_name, set_name, i, j);
+                            (void)write(fd, buf, strlen(buf));
+                        }
+                    }
+                }
+            }
+            else if (misc_idx == 2)
+            {
+                if (tsd->has_all_zap_tiles == 0)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        Sprintf(buf, "%s,%s,generic,tile-%d\n", tile_section_name, set_name, j);
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < EXPL_MAX; i++)
+                    {
+                        for (int j = 0; j < 4; j++)
+                        {
+                            Sprintf(buf, "%s,%s,type-%d,tile-%d\n", tile_section_name, set_name, i, j);
+                            (void)write(fd, buf, strlen(buf));
+                        }
+                    }
+                }
+            }
+            else if (misc_idx == 3)
+            {
+                if (tsd->swallow_tile_style == 0)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        Sprintf(buf, "%s,%s,generic,tile-%d\n", tile_section_name, set_name, j);
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < NUMMONS; i++)
+                    {
+                        if (tsd->swallow_tile_style == 2)
+                        {
+                            if (!attacktype(&mons[i], AT_ENGL))
+                                continue;
+                        }
+
+                        for (int j = 0; j < 8; j++)
+                        {
+                            Sprintf(buf, "%s,%s,%s,tile-%d\n", tile_section_name, set_name, mons[i].mname, j);
+                            (void)write(fd, buf, strlen(buf));
+                        }
+                    }
+                }
+            }
+            else if (misc_idx == 4)
+            {
+                for (int i = 0; i < WARNCOUNT; i++)
+                {
+                    Sprintf(buf, "%s,%s,tile-%d\n", tile_section_name, set_name, i);
+                    (void)write(fd, buf, strlen(buf));
+                }
             }
         }
 
 
         /* Player tiles */
         tile_section_name = "player";
-        for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+        if (tsd->player_tile_style == 0)
         {
-            const char* role_name = roles[roleidx].name.m;
-            for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+            /* Use player monster icons, so nothing needed here */
+        }
+        else if (tsd->player_tile_style == 1)
+        {
+            Sprintf(buf, "%s,generic\n", tile_section_name);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (tsd->player_tile_style == 2)
+        {
+            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
             {
-                const char* race_name = races[raceidx].noun;
-                for (int gender = 0; gender <= 1; gender++)
+                const char* role_name = roles[roleidx].name.m;
+                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
                 {
-                    const char* gender_name = (gender == 0 ? "nonfemale" : "female");
-                    for (int alignment = -1; alignment <= 1; alignment++)
+                    const char* race_name = races[raceidx].noun;
+                    for (int gender = 0; gender <= 1; gender++)
                     {
-                        const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral": alignment == 1 ? "lawful" : "unspecified");
-                        for (int level = 0; level <= 0; level++)
+                        const char* gender_name = (gender == 0 ? "male" : "female");
+                        Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, role_name, race_name, gender_name);
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+            {
+                const char* role_name = roles[roleidx].name.m;
+                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+                {
+                    const char* race_name = races[raceidx].noun;
+                    for (int gender = 0; gender <= 1; gender++)
+                    {
+                        const char* gender_name = (gender == 0 ? "male" : "female");
+                        for (int alignment = -1; alignment <= 1; alignment++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%s,%d\n", tile_section_name, role_name, race_name, gender_name, align_name, level);
-                            (void)write(fd, buf, strlen(buf));
+                            const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified");
+                            for (int level = 0; level <= 0; level++)
+                            {
+                                Sprintf(buf, "%s,%s,%s,%s,%s,%d\n", tile_section_name, role_name, race_name, gender_name, align_name, level);
+                                (void)write(fd, buf, strlen(buf));
+                            }
                         }
                     }
                 }
             }
         }
-
         /* Finished */
         (void)close(fd);
         pline("Done writing %s.", fq_save);

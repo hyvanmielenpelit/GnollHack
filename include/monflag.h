@@ -309,6 +309,8 @@
 #define G_GENDER_ONE_FOURTH  0x10000000UL
 #define G_GENDER_GEN_MASK    0x70000000UL /* gender distribution mask, bits 0x10000000 - 0x40000000 give relative rarity: one in 2^(1 + number) is female or male */
 
+#define G_FEMALE_TILE  0x01000000UL     /* the monster has a separate female tile */
+
 #define G_NOMINES   0x00008000UL     /* not generated in Gnomish Mines */
 #define G_YACC      0x00004000UL     /* generated on hellish pastures regardless of other flags */
 #define G_MODRON    0x00002000UL     /* generated on modron plane regardless of other flags */
