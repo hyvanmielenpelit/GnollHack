@@ -691,6 +691,7 @@ E void FDECL(clear_symsetentry, (int, BOOLEAN_P));
 E void FDECL(update_l_symset, (struct symparse *, int));
 E void FDECL(update_r_symset, (struct symparse *, int));
 E boolean FDECL(cursed_object_at, (int, int));
+E const char* FDECL(get_cmap_tilename, (int));
 
 /* ### dungeon.c ### */
 

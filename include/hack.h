@@ -632,7 +632,7 @@ enum cmap_types {
     CMAP_MODRON = 7,
     CMAP_BOVINE = 8,
     CMAP_ARBOREAL = 9,
-    CMAP_CITISCAPE = 10,
+    CMAP_CITYSCAPE = 10,
     CMAP_SEWERS = 11,
     CMAP_MAZE = 12,
     CMAP_TOWER = 13,
@@ -641,6 +641,18 @@ enum cmap_types {
     CMAP_TYPE_MAX = 16
 };
 
+
+static const char* cmap_type_names[CMAP_TYPE_MAX] = {
+    "normal", "gnomish mines", "gehennom",  "ludious", "undead", "swamp", "gehennom alternative", "modron",
+    "bovine", "arboreal",      "cityscape", "sewers",  "maze",   "tower", "caverns",              "extra1"
+};
+
+#define TILEDATA_NO_PET_SEPARATELY              0
+#define TILEDATA_NO_DETECT_SEPARATELY           0
+#define TILEDATA_NO_FEMALE_SEPARATELY           0
+#define TILEDATA_NO_BODY_SEPARATELY             0
+#define TILEDATA_NO_RIDDEN_SEPARATELY           0
+#define TILEDATA_NO_STATUE_SEPARATELY           0
 
 /* Maximum number of status lines */
 #define MAX_STATUS_LINES 8

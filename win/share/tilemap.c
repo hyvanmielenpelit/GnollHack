@@ -563,6 +563,7 @@ struct {
 {S_bars,     "iron bars", "iron bars"},
 {S_tree,     "tree", "tree"},
 {S_room,     "room", "floor of a room"},
+{S_grass,    "grass", "grass"},
 {S_darkroom, "darkroom", "dark part of a room"},
 {S_corr,     "corridor", "corridor"},
 {S_litcorr,  "lit corridor", "lit corridor"},
@@ -658,5 +659,6 @@ const char *encountered, *expected;
     }
     return FALSE;
 }
+
 
 /*tilemap.c*/

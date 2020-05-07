@@ -162,6 +162,7 @@ STATIC_PTR int NDECL(wiz_intrinsic);
 STATIC_PTR int NDECL(wiz_show_wmodes);
 STATIC_DCL void NDECL(wiz_map_levltyp);
 STATIC_DCL int NDECL(wiz_save_monsters);
+STATIC_DCL int NDECL(wiz_save_tiledata);
 STATIC_DCL void NDECL(wiz_levltyp_legend);
 #if defined(__BORLANDC__) && !defined(_WIN32)
 extern void FDECL(show_borlandc_stats, (winid));
@@ -1946,6 +1947,286 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 	else
 		pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_monsters)));
 	return 0;
+}
+
+
+/* Save tile data */
+STATIC_PTR int
+wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
+{
+    if (wizard)
+    {
+        /* Tile order - Similar order to glyphs */
+        const char* fq_save = "tile_order.csv";
+        pline("Starting writing %s...", fq_save);
+        int fd;
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        char buf[BUFSIZ];
+        strcpy(buf, "");
+
+        strcpy(buf, "monster,nonfemale,normal\n");
+        (void)write(fd, buf, strlen(buf));
+        if (TILEDATA_NO_PET_SEPARATELY == 0)
+        {
+            strcpy(buf, "monster,nonfemale,pet\n");
+            (void)write(fd, buf, strlen(buf));
+        }
+        strcpy(buf, "misc,invisible\n");
+        if (TILEDATA_NO_DETECT_SEPARATELY == 0)
+        {
+            (void)write(fd, buf, strlen(buf));
+            strcpy(buf, "monster,nonfemale,detect\n");
+        }
+        (void)write(fd, buf, strlen(buf));
+        if (TILEDATA_NO_RIDDEN_SEPARATELY == 0)
+        {
+            strcpy(buf, "monster,nonfemale,ridden\n");
+            (void)write(fd, buf, strlen(buf));
+        }
+        if (TILEDATA_NO_FEMALE_SEPARATELY == 0)
+        {
+            strcpy(buf, "monster,female,normal\n");
+            (void)write(fd, buf, strlen(buf));
+            if (TILEDATA_NO_PET_SEPARATELY == 0)
+            {
+                strcpy(buf, "monster,female,pet\n");
+                (void)write(fd, buf, strlen(buf));
+            }
+            if (TILEDATA_NO_DETECT_SEPARATELY == 0)
+            {
+                strcpy(buf, "monster,female,detect\n");
+                (void)write(fd, buf, strlen(buf));
+            }
+        }
+        strcpy(buf, "object,normal\n");
+        (void)write(fd, buf, strlen(buf));
+
+        for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
+        {
+            const char* set_name = cmap_type_names[cmap_idx];
+            Sprintf(buf, "cmap,%s\n", set_name);
+            (void)write(fd, buf, strlen(buf));
+        }
+        strcpy(buf, "misc,explode\n");
+        (void)write(fd, buf, strlen(buf));
+        strcpy(buf, "misc,zap\n");
+        (void)write(fd, buf, strlen(buf));
+        strcpy(buf, "misc,swallow\n");
+        (void)write(fd, buf, strlen(buf));
+        strcpy(buf, "misc,warning\n");
+        (void)write(fd, buf, strlen(buf));
+        strcpy(buf, "monster,nonfemale,statue\n");
+        (void)write(fd, buf, strlen(buf));
+        strcpy(buf, "artifact,normal\n");
+        (void)write(fd, buf, strlen(buf));
+        strcpy(buf, "player\n");
+        (void)write(fd, buf, strlen(buf));
+
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+
+
+        /* Monster tiles */
+        fq_save = "monster_tiles.csv";
+        pline("Starting writing %s...", fq_save);
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        strcpy(buf, "");
+
+        for (int gender = 0; gender <= 1; gender++)
+        {
+            if (gender == 1 && TILEDATA_NO_FEMALE_SEPARATELY)
+                continue;
+
+            const char* gender_name = (gender == 0 ? "nonfemale" : "female");
+
+            for (int spset = 0; spset < 6; spset++)
+            {
+                if (spset == 1 && TILEDATA_NO_PET_SEPARATELY)
+                    continue;
+                if (spset == 2 && TILEDATA_NO_DETECT_SEPARATELY)
+                    continue;
+                if (gender == 1 && spset >= 3)
+                    continue;
+                if (spset == 3 && TILEDATA_NO_BODY_SEPARATELY)
+                    continue;
+                if (spset == 4 && TILEDATA_NO_RIDDEN_SEPARATELY)
+                    continue;
+                if (spset == 5 && TILEDATA_NO_STATUE_SEPARATELY)
+                    continue;
+
+                const char* set_name = (spset == 0 ? "normal" : spset == 1 ? "pet" : spset == 2 ? "detect" : 
+                    spset == 3 ? "body" : spset == 4 ? "ridden" : "statue");
+                for (int i = LOW_PM; i < NUMMONS; i++)
+                {
+                    Sprintf(buf, "%s,%s,%s\n", gender_name, set_name, mons[i].mname);
+                    (void)write(fd, buf, strlen(buf));
+                }
+            }
+        }
+
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+
+
+        /* Object tiles */
+        fq_save = "object_tiles.csv";
+        pline("Starting writing %s...", fq_save);
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        strcpy(buf, "");
+
+        const char* set_name = "normal";
+        for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
+        {
+            Sprintf(buf, "%s,%s\n", set_name, OBJ_NAME(objects[i]));
+            (void)write(fd, buf, strlen(buf));
+        }
+
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+
+
+        /* Artifact tiles */
+        fq_save = "artifact_tiles.csv";
+        pline("Starting writing %s...", fq_save);
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        strcpy(buf, "");
+
+        set_name = "normal";
+        for (int i = 1; i <= NROFARTIFACTS; i++)
+        {
+            Sprintf(buf, "%s,%s\n", set_name, artilist[i].name);
+            (void)write(fd, buf, strlen(buf));
+        }
+
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+
+
+        /* CMAP tiles */
+        fq_save = "cmap_tiles.csv";
+        pline("Starting writing %s...", fq_save);
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        strcpy(buf, "");
+        for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
+        {
+            const char* set_name = cmap_type_names[cmap_idx];
+            for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
+            {
+                Sprintf(buf, "%s,%s\n", set_name, get_cmap_tilename(i));
+                (void)write(fd, buf, strlen(buf));
+            }
+        }
+
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+
+
+        /* Miscellaneous tiles */
+        fq_save = "misc_tiles.csv";
+        pline("Starting writing %s...", fq_save);
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        strcpy(buf, "");
+        for (int misc_idx = 0; misc_idx < 5; misc_idx++)
+        {
+            const char* set_name = (misc_idx == 0 ? "invisible" : misc_idx == 1 ? "explode" : misc_idx == 2 ? "zap" :
+                misc_idx == 3 ? "swallow" : "warning");
+            int set_count = (misc_idx == 0 ? 1 : 
+                misc_idx == 1 ? GLYPH_ZAP_OFF - GLYPH_EXPLODE_OFF :
+                misc_idx == 2 ? GLYPH_SWALLOW_OFF - GLYPH_ZAP_OFF : 
+                misc_idx == 3 ? GLYPH_WARNING_OFF - GLYPH_SWALLOW_OFF : 
+                GLYPH_STATUE_OFF - GLYPH_WARNING_OFF);
+            for (int i = 0; i < set_count; i++)
+            {
+                Sprintf(buf, "%s,tile-%d\n", set_name, i);
+                (void)write(fd, buf, strlen(buf));
+            }
+        }
+
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+
+
+        /* Player tiles */
+        fq_save = "player_tiles.csv";
+        pline("Starting writing %s...", fq_save);
+
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        strcpy(buf, "");
+
+        for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+        {
+            const char* role_name = roles[roleidx].name.m;
+            for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+            {
+                const char* race_name = races[raceidx].noun;
+                for (int gender = 0; gender <= 1; gender++)
+                {
+                    const char* gender_name = (gender == 0 ? "nonfemale" : "female");
+                    for (int alignment = -1; alignment <= 1; alignment++)
+                    {
+                        const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral": alignment == 1 ? "lawful" : "unspecified");
+                        for (int level = 0; level <= 0; level++)
+                        {
+                            Sprintf(buf, "%s,%s,%s,%s,%d\n", role_name, race_name, gender_name, align_name, level);
+                            (void)write(fd, buf, strlen(buf));
+                        }
+                    }
+                }
+            }
+        }
+        (void)close(fd);
+        pline("Done writing %s.", fq_save);
+
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_tiledata)));
+    return 0;
 }
 
 
@@ -4596,6 +4877,8 @@ struct ext_func_tab extcmdlist[] = {
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizsaveenc", "save encounters into a file",
 			wiz_save_encounters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizsavetiledata", "save tile data into a number of files",
+            wiz_save_tiledata, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizcrown", "make the god crown you",
 			wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizrumorcheck", "verify rumor boundaries",

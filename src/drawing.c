@@ -561,6 +561,7 @@ boolean name_too;
     }
 }
 
+
 /*
  * If you are adding code somewhere to be able to recognize
  * particular types of symset "handling", define a
@@ -708,7 +709,7 @@ struct symparse loadsyms[] = {
     { SYM_OC, ARMOR_CLASS + SYM_OFF_O, "S_armour" },
     { SYM_OC, RING_CLASS + SYM_OFF_O, "S_ring" },
     { SYM_OC, AMULET_CLASS + SYM_OFF_O, "S_amulet" },
-	{ SYM_OC, MISCELLANEOUS_CLASS + SYM_OFF_O, "S_decoration" },
+	{ SYM_OC, MISCELLANEOUS_CLASS + SYM_OFF_O, "S_miscellaneous" },
 	{ SYM_OC, TOOL_CLASS + SYM_OFF_O, "S_tool" },
     { SYM_OC, FOOD_CLASS + SYM_OFF_O, "S_food" },
     { SYM_OC, POTION_CLASS + SYM_OFF_O, "S_potion" },
@@ -786,5 +787,23 @@ struct symparse loadsyms[] = {
     { SYM_OTH, SYM_INVISIBLE + SYM_OFF_X, "S_invisible" },
     { 0, 0, (const char *) 0 } /* fence post */
 };
+
+const char*
+get_cmap_tilename(idx)
+int idx;
+{
+    if (idx >= 0 && idx < MAXPCHARS)
+    {
+        for (int i = 0; loadsyms[i].range > 0; i++)
+        {
+            if (loadsyms[i].range == SYM_PCHAR && loadsyms[i].idx == idx)
+            {
+                return loadsyms[i].name;
+            }
+        }
+    }
+    return "unknown cmap";
+}
+
 
 /*drawing.c*/
