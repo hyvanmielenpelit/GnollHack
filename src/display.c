@@ -1655,12 +1655,24 @@ int x, y, glyph;
             && glyph < MAX_GLYPH) { /* a player character */
             text = "player character";
             offset = glyph - GLYPH_PLAYER_OFF;
+        } else if (glyph >= GLYPH_ARTIFACT_LEFT_HAND_OFF
+			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact held in left hand */
+			text = "artifact in left hand";
+			offset = glyph - GLYPH_ARTIFACT_LEFT_HAND_OFF;
+        } else if (glyph >= GLYPH_ARTIFACT_RIGHT_HAND_OFF
+			&& glyph < GLYPH_ARTIFACT_LEFT_HAND_OFF) { /* an artifact in right hand */
+			text = "artifact in right hand";
+			offset = glyph - GLYPH_ARTIFACT_RIGHT_HAND_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_OFF
-			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact */
+			&& glyph < GLYPH_ARTIFACT_RIGHT_HAND_OFF) { /* an artifact */
 			text = "artifact";
 			offset = glyph - GLYPH_ARTIFACT_OFF;
+		} else if (glyph >= GLYPH_FEMALE_STATUE_OFF
+			&& glyph < GLYPH_ARTIFACT_OFF) { /* a female statue */
+			text = "female statue";
+			offset = glyph - GLYPH_FEMALE_STATUE_OFF;
 		} else if (glyph >= GLYPH_STATUE_OFF
-			&& glyph < GLYPH_ARTIFACT_OFF) { /* a statue */
+			&& glyph < GLYPH_FEMALE_STATUE_OFF) { /* a statue */
 			text = "statue";
 			offset = glyph - GLYPH_STATUE_OFF;
 		} else if (glyph >= GLYPH_WARNING_OFF
@@ -1679,9 +1691,24 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_CMAP_OFF) { /* cmap */
             text = "cmap_index";
             offset = glyph - GLYPH_CMAP_OFF;
+        } else if (glyph >= GLYPH_OBJ_LEFT_HAND_OFF) { /* object in left hand */
+            text = "object in left hand";
+            offset = glyph - GLYPH_OBJ_LEFT_HAND_OFF;
+        } else if (glyph >= GLYPH_OBJ_RIGHT_HAND_OFF) { /* object in right hand */
+            text = "object in right hand";
+            offset = glyph - GLYPH_OBJ_RIGHT_HAND_OFF;
         } else if (glyph >= GLYPH_OBJ_OFF) { /* object */
             text = "object";
             offset = glyph - GLYPH_OBJ_OFF;
+        } else if (glyph >= GLYPH_INVIS_OFF) { /* invisible mon */
+            text = "invisible mon";
+            offset = glyph - GLYPH_INVIS_OFF;
+        } else if (glyph >= GLYPH_FEMALE_RIDDEN_OFF) { /* female ridden mon */
+            text = "female ridden mon";
+            offset = glyph - GLYPH_FEMALE_RIDDEN_OFF;
+        } else if (glyph >= GLYPH_FEMALE_BODY_OFF) { /* female corpse */
+            text = "female corpse";
+            offset = glyph - GLYPH_FEMALE_BODY_OFF;
         } else if (glyph >= GLYPH_FEMALE_DETECT_OFF) { /* female detected mon */
             text = "female detected mon";
             offset = glyph - GLYPH_FEMALE_DETECT_OFF;
@@ -1700,9 +1727,6 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_DETECT_OFF) { /* detected mon */
             text = "detected mon";
             offset = glyph - GLYPH_DETECT_OFF;
-        } else if (glyph >= GLYPH_INVIS_OFF) { /* invisible mon */
-            text = "invisible mon";
-            offset = glyph - GLYPH_INVIS_OFF;
         } else if (glyph >= GLYPH_PET_OFF) { /* a pet */
             text = "pet";
             offset = glyph - GLYPH_PET_OFF;
@@ -1746,7 +1770,7 @@ int x, y, glyph;
         }                              \
     }
 
-static gbuf_entry nul_gbuf = { 0, cmap_to_glyph(S_stone) };
+static gbuf_entry nul_gbuf = { 0, base_cmap_to_glyph(S_stone) };
 /*
  * Turn the 3rd screen into stone.
  */
@@ -2811,6 +2835,31 @@ struct rm *lev;
         idx = S_stone;
     }
     return idx;
+}
+
+int
+get_current_cmap_type_index()
+{
+    if (In_mines(&u.uz))
+        return CMAP_GNOMISH_MINES;
+    else if (Inhell && !level.flags.is_maze_lev &&
+        !Is_valley(&u.uz) && !Is_juiblex_level(&u.uz) && !Is_orcus_level(&u.uz) && !Is_sanctum(&u.uz)
+        && !In_V_tower(&u.uz) && !Is_modron_level(&u.uz) && !Is_bovine_level(&u.uz))
+        return CMAP_GEHENNOM;
+    else if (Is_knox(&u.uz))
+        return CMAP_FORT_LUDIOUS;
+    else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz))
+        return CMAP_UNDEAD_STYLE;
+    else if (Is_medusa_level(&u.uz) || Is_juiblex_level(&u.uz))
+        return CMAP_SWAMP_STYLE;
+    else if (Is_modron_level(&u.uz))
+        return CMAP_MODRON;
+    else if (Is_bovine_level(&u.uz))
+        return CMAP_BOVINE;
+    else if (In_V_tower(&u.uz))
+        return CMAP_TOWER;
+    else
+        return CMAP_NORMAL;
 }
 
 /*display.c*/

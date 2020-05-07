@@ -5369,7 +5369,14 @@ struct obj* corpse;
         if (cnm >= LOW_PM)
         {
             struct permonst* mptr = &mons[cnm];
-            return pm_monster_name(mptr, is_female(mptr));
+            boolean isfemale = is_female(mptr);
+
+            if (corpse->speflags & SPEFLAGS_FEMALE)
+                isfemale = TRUE;
+            else if (corpse->speflags & SPEFLAGS_MALE)
+                isfemale = FALSE;
+
+            return pm_monster_name(mptr, isfemale);
         }
         else
             return "unspecified monster";
@@ -5421,6 +5428,40 @@ struct obj* corpse;
         }
         else
             return "unspecified monsters";
+    }
+}
+
+boolean 
+is_female_corpse_or_statue(corpse)
+struct obj* corpse;
+{
+    if (!corpse || !(corpse->otyp == CORPSE && corpse->otyp == STATUE && corpse->otyp == EGG))
+        return FALSE;
+
+    struct monst* mtmp = get_mtraits(corpse, FALSE);
+
+    if (mtmp)
+    {
+        return mtmp->female;
+    }
+    else
+    {
+        if (corpse->speflags & SPEFLAGS_FEMALE)
+            return TRUE;
+        else if (corpse->speflags & SPEFLAGS_MALE)
+            return FALSE;
+
+        int cnm = corpse->corpsenm;
+        if (cnm >= LOW_PM)
+        {
+            struct permonst* mptr = &mons[cnm];
+            if (is_female(mptr))
+                return TRUE;
+            else
+                return FALSE;
+        }
+        else
+            return FALSE;
     }
 }
 

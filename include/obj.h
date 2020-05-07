@@ -55,11 +55,12 @@ struct obj {
 	short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
 	int special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
 	unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
-#define SPEFLAGS_SCHROEDINGERS_BOX			0x00000001UL
-#define SPEFLAGS_YOURS						0x00000002UL
-#define SPEFLAGS_STATUE_HISTORIC			0x00000004UL
-#define SPEFLAGS_STATUE_MALE				0x00000008UL
-#define SPEFLAGS_STATUE_FEMALE				0x00000010UL
+
+#define SPEFLAGS_YOURS						0x00000001UL
+#define SPEFLAGS_FEMALE				        0x00000002UL
+#define SPEFLAGS_MALE				        0x00000004UL
+#define SPEFLAGS_SCHROEDINGERS_BOX			0x00000008UL
+#define SPEFLAGS_STATUE_HISTORIC			0x00000010UL
 #define SPEFLAGS_CORPSE_ON_ICE				0x00000020UL
 
     char oclass;    /* object class */

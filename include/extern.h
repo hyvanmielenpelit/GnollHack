@@ -425,6 +425,7 @@ E void NDECL(set_wall_state);
 E void FDECL(unset_seenv, (struct rm *, int, int, int, int));
 E int FDECL(warning_of, (struct monst *));
 E int FDECL(artifact_to_obj, (int));
+E int NDECL(get_current_cmap_type_index);
 
 /* ### do.c ### */
 
@@ -1342,7 +1343,7 @@ E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, int));
 
 /* ### mapglyph.c ### */
 
-E int FDECL(mapglyph, (int, int *, int *, unsigned *, int, int));
+E int FDECL(mapglyph, (int, int *, int *, unsigned long*, int, int));
 E char *FDECL(encglyph, (int));
 E char *FDECL(decode_mixed, (char *, const char *));
 E void FDECL(genl_putmixed, (winid, int, const char *));
@@ -1632,6 +1633,7 @@ E const char* FDECL(corpse_monster_name, (struct obj*));
 E const char* FDECL(pm_common_name, (struct permonst*));
 E const char* FDECL(mon_common_name, (struct monst*));
 E const char* FDECL(corpse_common_name, (struct obj*));
+E boolean FDECL(is_female_corpse_or_statue, (struct obj*));
 
 /* ### mondata.c ### */
 

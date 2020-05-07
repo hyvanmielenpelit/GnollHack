@@ -250,11 +250,47 @@ enum screen_symbols {
 #define is_cmap_lava(i) ((i) == S_lava)
 
 
+/* Character maps for various dungeons */
+enum cmap_types {
+    CMAP_NORMAL = 0,
+    CMAP_GNOMISH_MINES = 1,
+    CMAP_GEHENNOM = 2,
+    CMAP_FORT_LUDIOUS = 3,
+    CMAP_UNDEAD_STYLE = 4,
+    CMAP_SWAMP_STYLE = 5,
+    CMAP_GEHENNOM_ALTERNATIVE = 6,
+    CMAP_MODRON = 7,
+    CMAP_BOVINE = 8,
+    CMAP_ARBOREAL = 9,
+    CMAP_CITYSCAPE = 10,
+    CMAP_SEWERS = 11,
+    CMAP_MAZE = 12,
+    CMAP_TOWER = 13,
+    CMAP_CAVERNS = 14,
+    CMAP_EXTRA_1 = 15,
+    CMAP_TYPE_MAX = 16
+};
+
+
+static const char* cmap_type_names[CMAP_TYPE_MAX] = {
+    "normal", "gnomish mines", "gehennom",  "ludious", "undead", "swamp", "gehennom alternative", "modron",
+    "bovine", "arboreal",      "cityscape", "sewers",  "maze",   "tower", "caverns",              "extra1"
+};
+
+
 struct symdef {
+    uchar sym;
+    const char* explanation;
+#ifdef TEXTCOLOR
+    uchar color;
+#endif
+};
+
+struct symdef_cmap {
     uchar sym;
     const char *explanation;
 #ifdef TEXTCOLOR
-    uchar color;
+    uchar color[CMAP_TYPE_MAX];
 #endif
 };
 
@@ -305,7 +341,7 @@ struct symsetentry {
 #define H_DEC     2
 #define H_CURS    3
 
-extern const struct symdef defsyms[MAXPCHARS]; /* defaults */
+extern const struct symdef_cmap defsyms[MAXPCHARS]; /* defaults */
 extern const struct symdef def_warnsyms[WARNCOUNT];
 extern int currentgraphics; /* from drawing.c */
 extern nhsym showsyms[];

@@ -1945,7 +1945,7 @@ dump_map()
         lastnonblank = -1; /* buf[] index rather than map's x */
         for (x = 1; x < COLNO; x++) {
             int ch, color;
-            unsigned special;
+            unsigned long special;
 
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
                                             default_glyph, subset);

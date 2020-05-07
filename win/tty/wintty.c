@@ -3403,7 +3403,7 @@ int bkglyph UNUSED;
     int ch;
     boolean reverse_on = FALSE;
     int color;
-    unsigned special;
+    unsigned long special;
 
     HUPSKIP();
 #ifdef CLIPPING

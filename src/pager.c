@@ -193,9 +193,25 @@ struct obj **obj_p;
         if (mtmp && has_mcorpsenm(mtmp)) /* mimic as corpse/statue */
             otmp->corpsenm = MCORPSENM(mtmp);
         else if (otmp->otyp == CORPSE && glyph_is_body(glyph))
+        {
             otmp->corpsenm = glyph - GLYPH_BODY_OFF;
+            otmp->speflags |= SPEFLAGS_MALE;
+        }
+        else if (otmp->otyp == CORPSE && glyph_is_female_body(glyph))
+        {
+            otmp->corpsenm = glyph - GLYPH_FEMALE_BODY_OFF;
+            otmp->speflags |= SPEFLAGS_FEMALE;
+        }
         else if (otmp->otyp == STATUE && glyph_is_statue(glyph))
+        {
             otmp->corpsenm = glyph - GLYPH_STATUE_OFF;
+            otmp->speflags |= SPEFLAGS_MALE;
+        }
+        else if (otmp->otyp == STATUE && glyph_is_female_statue(glyph))
+        {
+            otmp->corpsenm = glyph - GLYPH_FEMALE_STATUE_OFF;
+            otmp->speflags |= SPEFLAGS_FEMALE;
+        }
         if (otmp->otyp == LEASH)
             otmp->leashmon = 0;
         /* extra fields needed for shop price with doname() formatting */
@@ -873,7 +889,7 @@ struct permonst **for_supplement;
 
     if (looked) {
         int oc;
-        unsigned os;
+        unsigned long os;
 
         glyph = glyph_at(cc.x, cc.y);
         /* Convert glyph at selected position to a symbol for use below. */
@@ -970,7 +986,7 @@ struct permonst **for_supplement;
         for (i = 1; i < MAXOCLASSES; i++) {
             if (sym == (looked ? showsyms[i + SYM_OFF_O]
                                : def_oc_syms[i].sym)
-                || (looked && i == ROCK_CLASS && glyph_is_statue(glyph))) {
+                || (looked && i == ROCK_CLASS && glyph_is_any_statue(glyph))) {
                 need_to_look = TRUE;
                 if (looked && i == VENOM_CLASS) {
                     skipped_venom++;

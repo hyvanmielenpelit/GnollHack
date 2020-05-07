@@ -700,7 +700,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         size_t index;
         int col, row;
         int color;
-        unsigned special;
+        unsigned long special;
         int mgch;
 
         index = 0;
@@ -779,7 +779,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     int layer;
 #ifdef USE_PILEMARK
     int color;
-    unsigned special;
+    unsigned long special;
     int mgch;
 #endif
     layer = 0;
@@ -886,7 +886,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         char ch;
         WCHAR wch;
         int color;
-        unsigned special;
+        unsigned long special;
         int mgch;
         HBRUSH back_brush;
         COLORREF OldFg;
@@ -1200,7 +1200,7 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
 #ifdef TEXTCOLOR
 
 #define zap_color(n) *color = iflags.use_color ? zapcolors[n] : NO_COLOR
-#define cmap_color(n) *color = iflags.use_color ? defsyms[n].color : NO_COLOR
+#define cmap_color(n,cmap_idx) *color = iflags.use_color ? defsyms[n].color[cmap_idx] : NO_COLOR
 #define obj_color(n) \
     *color = iflags.use_color ? objects[n].oc_color : NO_COLOR
 #define mon_color(n) *color = iflags.use_color ? mons[n].mcolor : NO_COLOR
@@ -1211,7 +1211,7 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
 #else /* no text color */
 
 #define zap_color(n)
-#define cmap_color(n)
+#define cmap_color(n,cmap_idx)
 #define obj_color(n)
 #define mon_color(n)
 #define pet_color(c)
@@ -1231,11 +1231,25 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
         *ch = showsyms[(S_vbeam + (offset & 0x3)) + SYM_OFF_P];
         zap_color((offset >> 2));
     } else if ((offset = (g - GLYPH_CMAP_OFF)) >= 0) { /* cmap */
-        *ch = showsyms[offset + SYM_OFF_P];
-        cmap_color(offset);
+        int cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
+        int idx = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM + SYM_OFF_P;
+        *ch = showsyms[idx];
+        cmap_color(offset, cmap_type_idx);
+    } else if ((offset = (g - GLYPH_OBJ_LEFT_HAND_OFF)) >= 0) { /* object */
+        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
+        obj_color(offset);
+    } else if ((offset = (g - GLYPH_OBJ_RIGHT_HAND_OFF)) >= 0) { /* object */
+        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
+        obj_color(offset);
     } else if ((offset = (g - GLYPH_OBJ_OFF)) >= 0) { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
+    } else if ((offset = (g - GLYPH_FEMALE_BODY_OFF)) >= 0) { /* a corpse */
+        *ch = showsyms[(int) objects[CORPSE].oc_class + SYM_OFF_O];
+        mon_color(offset);
+    } else if ((offset = (g - GLYPH_FEMALE_PET_OFF)) >= 0) { /* a pet */
+        *ch = showsyms[(int) mons[offset].mlet + SYM_OFF_M];
+        pet_color(offset);
     } else if ((offset = (g - GLYPH_BODY_OFF)) >= 0) { /* a corpse */
         *ch = showsyms[(int) objects[CORPSE].oc_class + SYM_OFF_O];
         mon_color(offset);

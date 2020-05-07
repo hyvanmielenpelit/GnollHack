@@ -3814,7 +3814,7 @@ int min_range, max_range;
             if (glyph_is_monster(glyph)
                 || glyph_is_warning(glyph)
                 || glyph_is_invisible(glyph)
-                || (glyph_is_statue(glyph) && impaired)) {
+                || (glyph_is_any_statue(glyph) && impaired)) {
                 if (mpos.x)
                     return FALSE; /* more than one candidate location */
                 mpos.x = x, mpos.y = y;
@@ -4023,7 +4023,7 @@ struct obj *obj;
         pline("Too close!");
         return res;
     } else if (!cansee(cc.x, cc.y) && !glyph_is_monster(glyph)
-               && !glyph_is_invisible(glyph) && !glyph_is_statue(glyph)) {
+               && !glyph_is_invisible(glyph) && !glyph_is_any_statue(glyph)) {
         You(cant_see_spot);
         return res;
     } else if (!couldsee(cc.x, cc.y)) { /* Eyes of the Overworld */
@@ -4043,7 +4043,7 @@ struct obj *obj;
         check_caitiff(mtmp);
         notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
         (void) thitmonst(mtmp, uwep, FALSE);
-    } else if (glyph_is_statue(glyph) /* might be hallucinatory */
+    } else if (glyph_is_any_statue(glyph) /* might be hallucinatory */
                && sobj_at(STATUE, bhitpos.x, bhitpos.y)) {
         struct trap *t = t_at(bhitpos.x, bhitpos.y);
 

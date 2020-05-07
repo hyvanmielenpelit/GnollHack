@@ -658,10 +658,10 @@ int *fail_reason;
     }
 
     /* a non-montraits() statue might specify gender */
-    if (statue->speflags & SPEFLAGS_STATUE_MALE)
-        mon->female = FALSE;
-    else if (statue->speflags & SPEFLAGS_STATUE_FEMALE)
+    if (statue->speflags & SPEFLAGS_FEMALE)
         mon->female = TRUE;
+    else if (statue->speflags & SPEFLAGS_MALE)
+        mon->female = FALSE;
 
     /* if statue has been named, give same name to the monster */
 	/* //Applies only to nicknames, other stats are recovered from OMONST -- JG

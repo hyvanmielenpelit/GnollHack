@@ -1956,10 +1956,15 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 {
     if (wizard)
     {
-        /* Tile order - Similar order to glyphs */
-        const char* fq_save = "tile_order.csv";
-        pline("Starting writing %s...", fq_save);
+
+        const char* fq_save = "tile_definition.csv";
+        const char* tile_section_name;
+        const char* set_name;
         int fd;
+        char buf[BUFSIZ];
+        strcpy(buf, "");
+
+        pline("Starting writing %s...", fq_save);
         (void)remove(fq_save);
 
 #ifdef MAC
@@ -1967,7 +1972,19 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 #else
         fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
 #endif
-        char buf[BUFSIZ];
+
+
+#if 0
+        /* Tile order - Similar order to glyphs */
+        fq_save = "tile_order.csv";
+        pline("Starting writing %s...", fq_save);
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
         strcpy(buf, "");
 
         strcpy(buf, "monster,nonfemale,normal\n");
@@ -2030,20 +2047,10 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 
         (void)close(fd);
         pline("Done writing %s.", fq_save);
-
+#endif
 
         /* Monster tiles */
-        fq_save = "monster_tiles.csv";
-        pline("Starting writing %s...", fq_save);
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-        strcpy(buf, "");
-
+        tile_section_name = "monsters";
         for (int gender = 0; gender <= 1; gender++)
         {
             if (gender == 1 && TILEDATA_NO_FEMALE_SEPARATELY)
@@ -2057,8 +2064,6 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                     continue;
                 if (spset == 2 && TILEDATA_NO_DETECT_SEPARATELY)
                     continue;
-                if (gender == 1 && spset >= 3)
-                    continue;
                 if (spset == 3 && TILEDATA_NO_BODY_SEPARATELY)
                     continue;
                 if (spset == 4 && TILEDATA_NO_RIDDEN_SEPARATELY)
@@ -2066,109 +2071,55 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                 if (spset == 5 && TILEDATA_NO_STATUE_SEPARATELY)
                     continue;
 
-                const char* set_name = (spset == 0 ? "normal" : spset == 1 ? "pet" : spset == 2 ? "detect" : 
+                set_name = (spset == 0 ? "normal" : spset == 1 ? "pet" : spset == 2 ? "detect" : 
                     spset == 3 ? "body" : spset == 4 ? "ridden" : "statue");
                 for (int i = LOW_PM; i < NUMMONS; i++)
                 {
-                    Sprintf(buf, "%s,%s,%s\n", gender_name, set_name, mons[i].mname);
+                    Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, gender_name, set_name, mons[i].mname);
                     (void)write(fd, buf, strlen(buf));
                 }
             }
         }
 
-        (void)close(fd);
-        pline("Done writing %s.", fq_save);
-
 
         /* Object tiles */
-        fq_save = "object_tiles.csv";
-        pline("Starting writing %s...", fq_save);
-
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-        strcpy(buf, "");
-
-        const char* set_name = "normal";
+        tile_section_name = "objects";
+        set_name = "normal";
         for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
         {
-            Sprintf(buf, "%s,%s\n", set_name, OBJ_NAME(objects[i]));
+            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, OBJ_NAME(objects[i]));
             (void)write(fd, buf, strlen(buf));
         }
-
-        (void)close(fd);
-        pline("Done writing %s.", fq_save);
 
 
         /* Artifact tiles */
-        fq_save = "artifact_tiles.csv";
-        pline("Starting writing %s...", fq_save);
-
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-        strcpy(buf, "");
-
+        tile_section_name = "artifacts";
         set_name = "normal";
         for (int i = 1; i <= NROFARTIFACTS; i++)
         {
-            Sprintf(buf, "%s,%s\n", set_name, artilist[i].name);
+            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, artilist[i].name);
             (void)write(fd, buf, strlen(buf));
         }
 
-        (void)close(fd);
-        pline("Done writing %s.", fq_save);
-
 
         /* CMAP tiles */
-        fq_save = "cmap_tiles.csv";
-        pline("Starting writing %s...", fq_save);
-
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-        strcpy(buf, "");
+        tile_section_name = "cmap";
         for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
         {
-            const char* set_name = cmap_type_names[cmap_idx];
+            set_name = cmap_type_names[cmap_idx];
             for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
             {
-                Sprintf(buf, "%s,%s\n", set_name, get_cmap_tilename(i));
+                Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, get_cmap_tilename(i));
                 (void)write(fd, buf, strlen(buf));
             }
         }
 
-        (void)close(fd);
-        pline("Done writing %s.", fq_save);
-
 
         /* Miscellaneous tiles */
-        fq_save = "misc_tiles.csv";
-        pline("Starting writing %s...", fq_save);
-
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-        strcpy(buf, "");
+        tile_section_name = "misc";
         for (int misc_idx = 0; misc_idx < 5; misc_idx++)
         {
-            const char* set_name = (misc_idx == 0 ? "invisible" : misc_idx == 1 ? "explode" : misc_idx == 2 ? "zap" :
+            set_name = (misc_idx == 0 ? "invisible" : misc_idx == 1 ? "explode" : misc_idx == 2 ? "zap" :
                 misc_idx == 3 ? "swallow" : "warning");
             int set_count = (misc_idx == 0 ? 1 : 
                 misc_idx == 1 ? GLYPH_ZAP_OFF - GLYPH_EXPLODE_OFF :
@@ -2177,28 +2128,14 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                 GLYPH_STATUE_OFF - GLYPH_WARNING_OFF);
             for (int i = 0; i < set_count; i++)
             {
-                Sprintf(buf, "%s,tile-%d\n", set_name, i);
+                Sprintf(buf, "%s,%s,tile-%d\n", tile_section_name, set_name, i);
                 (void)write(fd, buf, strlen(buf));
             }
         }
 
-        (void)close(fd);
-        pline("Done writing %s.", fq_save);
-
 
         /* Player tiles */
-        fq_save = "player_tiles.csv";
-        pline("Starting writing %s...", fq_save);
-
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-        strcpy(buf, "");
-
+        tile_section_name = "player";
         for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
         {
             const char* role_name = roles[roleidx].name.m;
@@ -2213,13 +2150,15 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                         const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral": alignment == 1 ? "lawful" : "unspecified");
                         for (int level = 0; level <= 0; level++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%d\n", role_name, race_name, gender_name, align_name, level);
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%d\n", tile_section_name, role_name, race_name, gender_name, align_name, level);
                             (void)write(fd, buf, strlen(buf));
                         }
                     }
                 }
             }
         }
+
+        /* Finished */
         (void)close(fd);
         pline("Done writing %s.", fq_save);
 

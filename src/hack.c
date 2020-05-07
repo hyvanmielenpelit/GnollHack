@@ -1772,7 +1772,7 @@ domove_core()
             /* if a statue is displayed at the target location,
                player is attempting to attack it [and boulder
                handling below is suitable for handling that] */
-            if (glyph_is_statue(glyph)
+            if (glyph_is_any_statue(glyph)
                 || (Hallucination && glyph_is_monster(glyph)))
                 boulder = sobj_at(STATUE, x, y);
 

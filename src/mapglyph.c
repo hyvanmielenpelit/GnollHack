@@ -27,7 +27,7 @@ static const int explcolors[] = {
 };
 
 #define zap_color(n) color = iflags.use_color ? zapcolors[n] : NO_COLOR
-#define cmap_color(n) color = iflags.use_color ? defsyms[n].color : NO_COLOR
+#define cmap_color(n,cmap_idx) color = iflags.use_color ? defsyms[n].color[cmap_idx] : NO_COLOR
 #define obj_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
 #define artifact_color(n) color = iflags.use_color ? artilist[n].ocolor : NO_COLOR
 #define mon_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
@@ -40,7 +40,7 @@ static const int explcolors[] = {
 #else /* no text color */
 
 #define zap_color(n)
-#define cmap_color(n)
+#define cmap_color(n,cmap_idx)
 #define obj_color(n)
 #define mon_color(n)
 #define invis_color(n)
@@ -65,7 +65,7 @@ int
 mapglyph(glyph, ochar, ocolor, ospecial, x, y)
 int glyph, *ocolor, x, y;
 int *ochar;
-unsigned *ospecial;
+unsigned long *ospecial;
 {
     register int offset, idx;
     int color = NO_COLOR;
@@ -94,7 +94,9 @@ unsigned *ospecial;
             color = HI_DOMESTIC;
 #endif
     }
-	else if ((offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0) 
+	else if ((offset = (glyph - GLYPH_ARTIFACT_LEFT_HAND_OFF)) >= 0 
+        || (offset = (glyph - GLYPH_ARTIFACT_RIGHT_HAND_OFF)) >= 0
+        || (offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0)
     { /* an artifact */
 		int objoffset = artilist[offset].otyp;				
 		if (artilist[offset].maskotyp != STRANGE_OBJECT)
@@ -133,7 +135,25 @@ unsigned *ospecial;
 		if (objoffset != BOULDER && is_objpile(x, y))
 			special |= MG_OBJPILE;
 	}
-    else if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0) 
+    else if ((offset = (glyph - GLYPH_FEMALE_STATUE_OFF)) >= 0)
+    { /* a statue */
+        if (flags.classic_statue_symbol)
+        {
+            idx = ROCK_CLASS + SYM_OFF_O;
+        }
+        else
+        {
+            idx = mons[offset].mlet + SYM_OFF_M;
+        }
+        if (has_rogue_color)
+            color = CLR_RED;
+        else
+            obj_color(STATUE);
+        special |= MG_STATUE;
+        if (is_objpile(x, y))
+            special |= MG_OBJPILE;
+    }
+    else if ((offset = (glyph - GLYPH_STATUE_OFF)) >= 0)
     { /* a statue */
 		if (flags.classic_statue_symbol)
 		{
@@ -184,17 +204,19 @@ unsigned *ospecial;
     }
     else if ((offset = (glyph - GLYPH_CMAP_OFF)) >= 0)
     { /* cmap */
-        idx = offset + SYM_OFF_P;
+        int cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
+        int cmap_offset = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM;
+        idx = cmap_offset + SYM_OFF_P;
         if (has_rogue_color && iflags.use_color) 
         {
-            if (offset >= S_vwall && offset <= S_hcdoor)
+            if (cmap_offset >= S_vwall && cmap_offset <= S_hcdoor)
                 color = CLR_BROWN;
-            else if (offset >= S_arrow_trap && offset <= S_polymorph_trap)
+            else if (cmap_offset >= S_arrow_trap && cmap_offset <= S_polymorph_trap)
                 color = CLR_MAGENTA;
-            else if (offset == S_corr || offset == S_litcorr)
+            else if (cmap_offset == S_corr || cmap_offset == S_litcorr)
                 color = CLR_GRAY;
-            else if (offset >= S_room && offset <= S_water
-                     && offset != S_darkroom)
+            else if (cmap_offset >= S_room && cmap_offset <= S_water
+                     && cmap_offset != S_darkroom)
                 color = CLR_GREEN;
             else
                 color = NO_COLOR;
@@ -202,7 +224,7 @@ unsigned *ospecial;
         /* provide a visible difference if normal and lit corridor
            use the same symbol */
         } 
-        else if (iflags.use_color && offset == S_litcorr
+        else if (iflags.use_color && cmap_offset == S_litcorr
                    && showsyms[idx] == showsyms[S_corr + SYM_OFF_P])
         {
             color = CLR_WHITE;
@@ -210,7 +232,7 @@ unsigned *ospecial;
         /* try to provide a visible difference between water and lava
            if they use the same symbol and color is disabled */
         } 
-        else if (!iflags.use_color && offset == S_lava
+        else if (!iflags.use_color && cmap_offset == S_lava
                    && (showsyms[idx] == showsyms[S_pool + SYM_OFF_P]
                        || showsyms[idx] == showsyms[S_water + SYM_OFF_P]))
         {
@@ -218,7 +240,8 @@ unsigned *ospecial;
         } 
         else
         {
-            cmap_color(offset);
+            cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+#if 0
             if (iflags.use_color && !flags.classic_colors)
             {
                 if (Inhell && !level.flags.is_maze_lev &&
@@ -226,30 +249,34 @@ unsigned *ospecial;
                     && !In_V_tower(&u.uz) && !Is_modron_level(&u.uz) && !Is_bovine_level(&u.uz)
                     )
                 {
-                    if (offset >= S_vwall && offset <= S_trwall)
+                    if (cmap_offset >= S_vwall && cmap_offset <= S_trwall)
                     {
                         color = CLR_ORANGE;
                     }
-                    else if (offset == S_room || offset == S_litcorr)
+                    else if (cmap_offset == S_room || cmap_offset == S_litcorr)
                     {
                         color = CLR_YELLOW;
                     }
-                    else if (offset == S_darkroom || offset == S_corr)
+                    else if (cmap_offset == S_darkroom || cmap_offset == S_corr)
                     {
                         color = CLR_BROWN;
                     }
                 }
                 else if (In_mines(&u.uz))
                 {
-                    if (offset >= S_vwall && offset <= S_trwall)
+                    if (cmap_offset >= S_vwall && cmap_offset <= S_trwall)
                     {
-                        color = CLR_BROWN;
+                        //color = CLR_BROWN;
                     }
                 }
             }
+#endif
         }
     } 
-    else if ((offset = (glyph - GLYPH_OBJ_OFF)) >= 0)
+    else if ((offset = (glyph - GLYPH_OBJ_LEFT_HAND_OFF)) >= 0 
+               || (offset = (glyph - GLYPH_OBJ_RIGHT_HAND_OFF)) >= 0
+               || (offset = (glyph - GLYPH_OBJ_OFF)) >= 0
+               )
     { /* object */
         idx = objects[offset].oc_class + SYM_OFF_O;
         if (offset == BOULDER)
@@ -275,6 +302,38 @@ unsigned *ospecial;
         if (offset != BOULDER && is_objpile(x,y))
             special |= MG_OBJPILE;
 
+    }
+    else if ((offset = (glyph - GLYPH_INVIS_OFF)) >= 0)
+    { /* invisible */
+        idx = SYM_INVISIBLE + SYM_OFF_X;
+        if (has_rogue_color)
+            color = NO_COLOR; /* no need to check iflags.use_color */
+        else
+            invis_color(offset);
+        special |= MG_INVIS;
+    }
+    else if ((offset = (glyph - GLYPH_FEMALE_RIDDEN_OFF)) >= 0)
+    { /* mon ridden */
+        idx = mons[offset].mlet + SYM_OFF_M;
+        if (has_rogue_color)
+            /* This currently implies that the hero is here -- monsters */
+            /* don't ride (yet...).  Should we set it to yellow like in */
+            /* the monster case below?  There is no equivalent in rogue. */
+            color = NO_COLOR; /* no need to check iflags.use_color */
+        else
+            mon_color(offset);
+        special |= MG_RIDDEN;
+    }
+    else if ((offset = (glyph - GLYPH_FEMALE_BODY_OFF)) >= 0)
+    { /* a corpse */
+        idx = objects[CORPSE].oc_class + SYM_OFF_O;
+        if (has_rogue_color && iflags.use_color)
+            color = CLR_RED;
+        else
+            mon_color(offset);
+        special |= MG_CORPSE;
+        if (is_objpile(x, y))
+            special |= MG_OBJPILE;
     }
     else if ((offset = (glyph - GLYPH_FEMALE_DETECT_OFF)) >= 0)
     { /* female mon detect */
@@ -352,15 +411,6 @@ unsigned *ospecial;
         /* is_reverse = TRUE; */
         special |= MG_DETECT;
     } 
-    else if ((offset = (glyph - GLYPH_INVIS_OFF)) >= 0)
-    { /* invisible */
-        idx = SYM_INVISIBLE + SYM_OFF_X;
-        if (has_rogue_color)
-            color = NO_COLOR; /* no need to check iflags.use_color */
-        else
-            invis_color(offset);
-        special |= MG_INVIS;
-    } 
     else if ((offset = (glyph - GLYPH_PET_OFF)) >= 0)
     { /* a pet */
         idx = mons[offset].mlet + SYM_OFF_M;
@@ -434,7 +484,7 @@ const char *str;
     while (*str) {
         if (*str == '\\') {
             int rndchk, dcount, so, gv, ch = 0, oc = 0;
-            unsigned os = 0;
+            unsigned long os = 0;
             const char *dp, *save_str;
 
             save_str = str++;
