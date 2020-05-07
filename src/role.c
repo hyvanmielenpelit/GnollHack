@@ -2651,15 +2651,19 @@ player_to_glyph()
     int number_of_races = NUM_RACES;
     int number_of_genders = 2;
     int number_of_alignments = 3;
+    int number_of_glyph_levels = NUM_PLAYER_GLYPH_LEVELS;
 
     int player_role = urole.rolenum;
     int player_race = urace.racenum;
     boolean player_gender = u.ufemale;
     int player_alignment = u.ualign.type + 1; /* 0...2 */
+    int player_glyph_level = 0;
 
-    return u.ufemale + number_of_genders * player_role + 
-        number_of_genders * number_of_roles * player_alignment +
-        number_of_genders * number_of_roles * number_of_alignments * player_race +
+    return player_glyph_level +
+        number_of_glyph_levels * player_alignment +
+        number_of_glyph_levels * number_of_alignments * u.ufemale +
+        number_of_glyph_levels * number_of_alignments * number_of_genders * player_race +
+        number_of_glyph_levels * number_of_alignments * number_of_genders * number_of_races * player_role +
         GLYPH_PLAYER_OFF;
 }
 
@@ -2667,13 +2671,17 @@ int
 glyph_to_player_mon(int glyph)
 {
     int offset = glyph - GLYPH_PLAYER_OFF;
-    boolean isfemale = FALSE;
-    if (!(offset % 2))
-        isfemale = TRUE;
 
-    int role_idx = (offset % (2 * NUM_ROLES)) / 2;
-    //int alignment_idx = (offset % (2 * NUM_ROLES * 3)) / (2 * NUM_ROLES);
-    int race_idx = (offset % (2 * NUM_ROLES * 3 * NUM_RACES)) / (2 * NUM_ROLES * 3);
+    int glyph_level_idx = NUM_PLAYER_GLYPH_LEVELS > 1 ? (offset % NUM_PLAYER_GLYPH_LEVELS) : 0;
+    int alignment_idx = (offset % (3 * NUM_PLAYER_GLYPH_LEVELS)) / NUM_PLAYER_GLYPH_LEVELS;
+    int gender_idx = (offset % (2 * 3 * NUM_PLAYER_GLYPH_LEVELS)) / (3 * NUM_PLAYER_GLYPH_LEVELS);
+    int race_idx = (offset % (2 * 3 * NUM_PLAYER_GLYPH_LEVELS * NUM_RACES)) / (2 * 3 * NUM_PLAYER_GLYPH_LEVELS);
+    int role_idx = (offset % (2 * 3 * NUM_PLAYER_GLYPH_LEVELS * NUM_RACES * NUM_ROLES)) / (2 * 3 * NUM_PLAYER_GLYPH_LEVELS * NUM_RACES);
+
+    /* Some use for otherwise unused idx's */
+    glyph_level_idx = glyph_level_idx;
+    alignment_idx = alignment_idx;
+    gender_idx = gender_idx;
 
     if (flags.showrace)
     {
