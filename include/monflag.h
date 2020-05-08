@@ -166,15 +166,15 @@
 #define M2_NOPOLY		0x00000001UL       /* players mayn't poly into one */
 #define M2_UNDEAD		0x00000002UL       /* is walking dead */
 #define M2_WERE			0x00000004UL         /* is a lycanthrope */
-#define M2_HUMAN		0x00000008UL        /* is a human */
+#define M2_HUMAN		0x00000008UL        /* is a human */ /* THIS MUST START HERE BECAUSE OF MH_HUMAN */
 #define M2_ELF			0x00000010UL          /* is an elf */
 #define M2_DWARF		0x00000020UL        /* is a dwarf */
 #define M2_GNOLL		0x00000040UL        /* is a gnoll */
 #define M2_ORC			0x00000080UL          /* is an orc */
-#define M2_DEMON		0x00000100UL        /* is a demon */
-#define M2_MODRON		0x00000200UL		/* is a modron */
-#define M2_GNOME		0x00000400UL        /* is a gnome */
-#define M2_MIMIC 		0x00008000UL        /* is a gnome */
+#define M2_GNOME		0x00000100UL        /* is a gnome */
+#define M2_DEMON		0x00000200UL        /* is a demon */
+#define M2_MODRON		0x00000400UL		/* is a modron */
+#define M2_MIMIC 		0x00008000UL        /* is a mimic */
 /* free bit */
 /* free bit */
 #define M2_MINION		0x00004000UL       /* is a minion of a deity */

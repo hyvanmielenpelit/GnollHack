@@ -446,6 +446,10 @@ enum explosion_types {
     EXPL_MAX     = 7
 };
 
+static const char* explosion_type_names[EXPL_MAX] = {
+    "dark", "noxious", "muddy", "wet", "magical", "fiery", "frosty"
+};
+
 /* enlightenment control flags */
 #define BASICENLIGHTENMENT 1 /* show mundane stuff */
 #define MAGICENLIGHTENMENT 2 /* show intrinsics and such */
@@ -630,18 +634,24 @@ struct tileset_definition {
     uchar swallow_tile_style; /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
     boolean has_full_cmap_set; /* 0 = has only number_of_cmaps cmaps, 1 = has CMAP_TYPE_MAX cmaps */
     uchar number_of_cmaps; /* 0 = 1 = one set ... X = X sets */
-    uchar cmap_mapping[CMAP_TYPE_MAX]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps */
+    char* cmap_names[CMAP_TYPE_MAX]; /* names of the cmaps of this tileset */
+    uchar cmap_mapping[CMAP_TYPE_MAX]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps, e.g., 0 means that this tileset's cmap 0 is being used for GnollHack's internal cmap in question */
     boolean has_all_explode_tiles; /* 0 = one set of explode tiles, 1 = separate explode tile for each case  */
     boolean has_all_zap_tiles; /* 0 = one set of zap tiles, 1 = separate zap tile for each case  */
     uchar player_tile_style; /* 0 = use base role monster tile,
                               * 1 = one generic icon
-                              * 2 = separate player tile for each role/race/gender combination
-                              * 3 = separate player tile for each role/race/gender/alignment/level combination 
+                              * 2 = separate player tile for each role/race/gender/alignment/level combination
+                              * 3 = separate player tile for each role/race/gender/alignment/level combination for relevant cases only
                               */
 };
 
 static struct tileset_definition default_tileset_definition =
-{ 2, 0, 0, 0, 0, 0, 0, 2, 0, 1, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0, 2 };
+{ 
+    2, 0, 0, 0, 0, 0, 0, 2, 0, 1, 
+    {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    0, 0, 3 
+};
 
 
 /* Maximum number of status lines */

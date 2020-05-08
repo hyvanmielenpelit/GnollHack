@@ -494,1292 +494,826 @@ monsters,female,normal,ogre king
 monsters,female,normal,king wraith
 monsters,female,normal,nurse
 monsters,female,normal,elf-lord
-objects,normal,strange object
-objects,normal,arrow
-objects,normal,elven arrow
-objects,normal,orcish arrow
-objects,normal,silver arrow
-objects,normal,ya
-objects,normal,bone arrow
-objects,normal,crossbow bolt
-objects,normal,gnollish quarrel
-objects,normal,silver crossbow bolt
-objects,normal,bone quarrel
-objects,normal,leaden sling-bullet
-objects,normal,iron sling-bullet
-objects,normal,silver sling-bullet
-objects,normal,arrow of dragon slaying
-objects,normal,dart
-objects,normal,shuriken
-objects,normal,boomerang
-objects,normal,spear
-objects,normal,elven spear
-objects,normal,orcish spear
-objects,normal,dwarvish spear
-objects,normal,silver spear
-objects,normal,javelin
-objects,normal,javelin of returning
-objects,normal,trident
-objects,normal,silver fork
-objects,normal,dagger
-objects,normal,elven dagger
-objects,normal,elven runedagger
-objects,normal,orcish dagger
-objects,normal,ornamental orcish dagger
-objects,normal,bone dagger
-objects,normal,silver dagger
-objects,normal,Morgul blade
-objects,normal,main-gauche
-objects,normal,athame
-objects,normal,scalpel
-objects,normal,knife
-objects,normal,silver knife
-objects,normal,stiletto
-objects,normal,worm tooth
-objects,normal,crysknife
-objects,normal,axe
-objects,normal,dwarvish axe
-objects,normal,infernal axe
-objects,normal,throwing axe
-objects,normal,battle-axe
-objects,normal,battle-axe of cleaving
-objects,normal,short sword
-objects,normal,elven short sword
-objects,normal,orcish short sword
-objects,normal,dwarvish short sword
-objects,normal,scimitar
-objects,normal,silver saber
-objects,normal,saber of lycanthrope slaying
-objects,normal,broadsword
-objects,normal,elven broadsword
-objects,normal,long sword
-objects,normal,silver long sword
-objects,normal,sword of demon slaying
-objects,normal,sword of holy vengeance
-objects,normal,sword of unholy desecration
-objects,normal,sword of defense
-objects,normal,sword of sharpness
-objects,normal,vorpal sword
-objects,normal,sword of wounding
-objects,normal,sword of life stealing
-objects,normal,nine lives stealer
-objects,normal,sword of orc slaying
-objects,normal,sword of troll slaying
-objects,normal,sword of giant slaying
-objects,normal,sword of dragon slaying
-objects,normal,glass sword
-objects,normal,two-handed sword
-objects,normal,katana
-objects,normal,tsurugi
-objects,normal,runesword
-objects,normal,sword of luckiness
-objects,normal,partisan
-objects,normal,ranseur
-objects,normal,spetum
-objects,normal,glaive
-objects,normal,lance
-objects,normal,halberd
-objects,normal,bardiche
-objects,normal,huge infernal bardiche
-objects,normal,voulge
-objects,normal,dwarvish mattock
-objects,normal,fauchard
-objects,normal,guisarme
-objects,normal,bill-guisarme
-objects,normal,infernal ancus
-objects,normal,lucern hammer
-objects,normal,bec de corbin
-objects,normal,polearm of reach
-objects,normal,mace
-objects,normal,runed sceptre
-objects,normal,silver mace
-objects,normal,mace of disruption
-objects,normal,mace of death
-objects,normal,mace of the underworld
-objects,normal,morning star
-objects,normal,morning star of troll slaying
-objects,normal,war hammer
-objects,normal,heavy war hammer
-objects,normal,war hammer of ogre slaying
-objects,normal,war hammer of gnoll slaying
-objects,normal,club
-objects,normal,infernal jagged-toothed club
-objects,normal,rubber hose
-objects,normal,flindbar
-objects,normal,quarterstaff
-objects,normal,staff of the magi
-objects,normal,staff of fire
-objects,normal,staff of thunder and lightning
-objects,normal,staff of frost
-objects,normal,staff of life
-objects,normal,staff of withering
-objects,normal,aklys
-objects,normal,flail
-objects,normal,silver flail
-objects,normal,double-headed flail
-objects,normal,triple-headed flail
-objects,normal,triple-headed flail of life draining
-objects,normal,runed flail
-objects,normal,bullwhip
-objects,normal,black blade of disintegration
-objects,normal,bow
-objects,normal,short bow
-objects,normal,elven long bow
-objects,normal,orcish short bow
-objects,normal,long bow
-objects,normal,composite long bow
-objects,normal,composite short bow
-objects,normal,yumi
-objects,normal,sling
-objects,normal,crossbow
-objects,normal,hand crossbow
-objects,normal,heavy crossbow
-objects,normal,repeating crossbow
-objects,normal,repeating heavy crossbow
-objects,normal,elven leather helm
-objects,normal,cotton hood
-objects,normal,gnollish hood
-objects,normal,orcish helm
-objects,normal,dwarvish iron helm
-objects,normal,fedora
-objects,normal,tinfoil hat of mind shielding
-objects,normal,ducal crown
-objects,normal,crown of rulership
-objects,normal,cornuthaum
-objects,normal,dunce cap
-objects,normal,gnomish felt hat
-objects,normal,silk top hat
-objects,normal,dented pot
-objects,normal,helmet
-objects,normal,helm of brilliance
-objects,normal,helm of opposite alignment
-objects,normal,helm of telepathy
-objects,normal,gray dragon scale mail
-objects,normal,silver dragon scale mail
-objects,normal,red dragon scale mail
-objects,normal,white dragon scale mail
-objects,normal,orange dragon scale mail
-objects,normal,black dragon scale mail
-objects,normal,blue dragon scale mail
-objects,normal,green dragon scale mail
-objects,normal,yellow dragon scale mail
-objects,normal,gray dragon scales
-objects,normal,silver dragon scales
-objects,normal,red dragon scales
-objects,normal,white dragon scales
-objects,normal,orange dragon scales
-objects,normal,black dragon scales
-objects,normal,blue dragon scales
-objects,normal,green dragon scales
-objects,normal,yellow dragon scales
-objects,normal,adamantium full plate mail
-objects,normal,mithril full plate mail
-objects,normal,orichalcum full plate mail
-objects,normal,full plate mail
-objects,normal,field plate mail
-objects,normal,plate mail
-objects,normal,crystal plate mail
-objects,normal,bronze plate mail
-objects,normal,splint mail
-objects,normal,banded mail
-objects,normal,gnollish bone mail
-objects,normal,dwarvish mithril-coat
-objects,normal,elven mithril-coat
-objects,normal,chain mail
-objects,normal,orcish chain mail
-objects,normal,scale mail
-objects,normal,studded leather armor
-objects,normal,gnollish studded leather armor
-objects,normal,ring mail
-objects,normal,orcish ring mail
-objects,normal,leather armor
-objects,normal,gnollish leather armor
-objects,normal,leather jacket
-objects,normal,force field armor
-objects,normal,Hawaiian shirt
-objects,normal,shirt of uncontrollable laughter
-objects,normal,shirt of comeliness
-objects,normal,shirt of sound mindedness
-objects,normal,T-shirt
-objects,normal,elven cloak
-objects,normal,orcish cloak
-objects,normal,dwarvish cloak
-objects,normal,oilskin cloak
-objects,normal,alchemy smock
-objects,normal,leather cloak
-objects,normal,cloak of protection
-objects,normal,cloak of invisibility
-objects,normal,cloak of magic resistance
-objects,normal,cloak of integrity
-objects,normal,cloak of displacement
-objects,normal,robe
-objects,normal,robe of protection
-objects,normal,robe of magic resistance
-objects,normal,gown of the archbishops
-objects,normal,robe of powerlessness
-objects,normal,robe of eyes
-objects,normal,robe of the archmagi
-objects,normal,robe of splendor
-objects,normal,robe of starry wisdom
-objects,normal,bathrobe
-objects,normal,clerical gown
-objects,normal,tailored silk robe
-objects,normal,gnollish haircloth robe
-objects,normal,mummy wrapping
-objects,normal,leather bracers
-objects,normal,bracers of defense
-objects,normal,bracers of archery
-objects,normal,bracers of spell casting
-objects,normal,bracers of reflection
-objects,normal,bracers against magic missiles
-objects,normal,small shield
-objects,normal,elven shield
-objects,normal,Uruk-hai shield
-objects,normal,orcish shield
-objects,normal,large shield
-objects,normal,dwarvish roundshield
-objects,normal,shield of reflection
-objects,normal,spiked shield
-objects,normal,spiked silver shield
-objects,normal,leather gloves
-objects,normal,gauntlets of fumbling
-objects,normal,gloves of haste
-objects,normal,gloves of spell casting
-objects,normal,gauntlets of ogre power
-objects,normal,gauntlets of dexterity
-objects,normal,gauntlets of balance
-objects,normal,spiked gauntlets
-objects,normal,silver gauntlets
-objects,normal,spiked silver gauntlets
-objects,normal,low boots
-objects,normal,iron shoes
-objects,normal,leather sandals
-objects,normal,cotton slippers
-objects,normal,high boots
-objects,normal,speed boots
-objects,normal,water walking boots
-objects,normal,jumping boots
-objects,normal,elven boots
-objects,normal,kicking boots
-objects,normal,fumble boots
-objects,normal,levitation boots
-objects,normal,spiked boots
-objects,normal,silver shoes
-objects,normal,spiked silver boots
-objects,normal,adornment
-objects,normal,gain strength
-objects,normal,gain dexterity
-objects,normal,gain constitution
-objects,normal,gain intelligence
-objects,normal,gain wisdom
-objects,normal,power
-objects,normal,increase accuracy
-objects,normal,increase damage
-objects,normal,protection
-objects,normal,regeneration
-objects,normal,replenishment
-objects,normal,the serpent god
-objects,normal,wizardry
-objects,normal,fortitude
-objects,normal,searching
-objects,normal,stealth
-objects,normal,sustain ability
-objects,normal,levitation
-objects,normal,hunger
-objects,normal,aggravate monster
-objects,normal,warning
-objects,normal,poison resistance
-objects,normal,fire resistance
-objects,normal,cold resistance
-objects,normal,shock resistance
-objects,normal,life protection
-objects,normal,free action
-objects,normal,slow digestion
-objects,normal,teleportation
-objects,normal,teleport control
-objects,normal,polymorph
-objects,normal,polymorph control
-objects,normal,invisibility
-objects,normal,see invisible
-objects,normal,X-ray vision
-objects,normal,protection from shape changers
-objects,normal,supreme power
-objects,normal,three charges
-objects,normal,seven charges
-objects,normal,amulet of ESP
-objects,normal,amulet of life saving
-objects,normal,amulet of strangulation
-objects,normal,amulet of restful sleep
-objects,normal,amulet versus poison
-objects,normal,amulet versus life draining
-objects,normal,amulet versus death magic
-objects,normal,amulet versus petrification
-objects,normal,amulet of change
-objects,normal,amulet of unchanging
-objects,normal,amulet of reflection
-objects,normal,amulet of mana
-objects,normal,demon blood talisman
-objects,normal,periapt of vitality
-objects,normal,amulet of magical breathing
-objects,normal,amulet
-objects,normal,cheap plastic imitation of the Amulet of Yendor
-objects,normal,Amulet of Yendor
-objects,normal,brooch of shielding
-objects,normal,nose ring of bull strength
-objects,normal,nose ring of bullheadedness
-objects,normal,nose ring of cerebral safeguarding
-objects,normal,headband of intellect
-objects,normal,golden earrings
-objects,normal,ioun stone of protection
-objects,normal,ioun stone of spell mastery
-objects,normal,ioun stone of magic resistance
-objects,normal,ioun stone of strength
-objects,normal,ioun stone of dexterity
-objects,normal,ioun stone of constitution
-objects,normal,ioun stone of intelligence
-objects,normal,ioun stone of wisdom
-objects,normal,ioun stone of charisma
-objects,normal,ioun stone of experience
-objects,normal,ioun stone of awareness
-objects,normal,ioun stone of regeneration
-objects,normal,ioun stone of incessant hunger
-objects,normal,ioun stone of restful sleep
-objects,normal,ioun stone of sustenance
-objects,normal,wings of flying
-objects,normal,lenses
-objects,normal,eyeglasses of hallucination
-objects,normal,eyeglasses of awkwardness
-objects,normal,eyeglasses of see invisible
-objects,normal,sunglasses
-objects,normal,goggles of night
-objects,normal,goggles of eye protection
-objects,normal,expensive watch
-objects,normal,leather belt
-objects,normal,belt of change
-objects,normal,belt of dwarvenkind
-objects,normal,belt of fortitude
-objects,normal,belt of hill giant strength
-objects,normal,belt of stone giant strength
-objects,normal,belt of frost giant strength
-objects,normal,belt of fire giant strength
-objects,normal,belt of storm giant strength
-objects,normal,large box
-objects,normal,chest
-objects,normal,golden chest
-objects,normal,ice box
-objects,normal,bookshelf
-objects,normal,backpack
-objects,normal,leather bag
-objects,normal,sack
-objects,normal,oilskin sack
-objects,normal,bag of holding
-objects,normal,bag of wizardry
-objects,normal,bag of treasure hauling
-objects,normal,pouch of endless bolts
-objects,normal,bag of infinite sling bullets
-objects,normal,bag of tricks
-objects,normal,expensive handbag
-objects,normal,oriental silk sack
-objects,normal,quiver of infinite arrows
-objects,normal,skeleton key
-objects,normal,master key
-objects,normal,lock pick
-objects,normal,credit card
-objects,normal,tallow candle
-objects,normal,wax candle
-objects,normal,magic candle
-objects,normal,brass lantern
-objects,normal,oil lamp
-objects,normal,magic lamp
-objects,normal,expensive camera
-objects,normal,mirror
-objects,normal,magic mirror
-objects,normal,holy symbol
-objects,normal,crystal ball
-objects,normal,blindfold
-objects,normal,towel
-objects,normal,saddle
-objects,normal,leash
-objects,normal,stethoscope
-objects,normal,tinning kit
-objects,normal,tin opener
-objects,normal,can of grease
-objects,normal,figurine
-objects,normal,magic marker
-objects,normal,land mine
-objects,normal,beartrap
-objects,normal,tin whistle
-objects,normal,magic whistle
-objects,normal,wooden flute
-objects,normal,magic flute
-objects,normal,brass horn
-objects,normal,tooled horn
-objects,normal,frost horn
-objects,normal,fire horn
-objects,normal,horn of conflict
-objects,normal,horn of plenty
-objects,normal,wooden harp
-objects,normal,magic harp
-objects,normal,bell
-objects,normal,bugle
-objects,normal,leather drum
-objects,normal,drum of earthquake
-objects,normal,jar of healing salve
-objects,normal,jar of extra healing salve
-objects,normal,grail of healing
-objects,normal,pick-axe
-objects,normal,spade of colossal excavation
-objects,normal,saw of mighty cutting
-objects,normal,golf club
-objects,normal,grappling hook
-objects,normal,unicorn horn
-objects,normal,Candelabrum of Invocation
-objects,normal,Bell of Opening
-objects,normal,tripe ration
-objects,normal,corpse
-objects,normal,egg
-objects,normal,meatball
-objects,normal,meat stick
-objects,normal,huge chunk of meat
-objects,normal,meat ring
-objects,normal,glob of gray ooze
-objects,normal,glob of brown pudding
-objects,normal,glob of green slime
-objects,normal,glob of black pudding
-objects,normal,kelp frond
-objects,normal,eucalyptus leaf
-objects,normal,handful of nuts
-objects,normal,apple
-objects,normal,orange
-objects,normal,pear
-objects,normal,melon
-objects,normal,carrot
-objects,normal,handful of spinach leaves
-objects,normal,banana
-objects,normal,pomegranate
-objects,normal,avocado
-objects,normal,cloudberry
-objects,normal,fig
-objects,normal,dragon fruit
-objects,normal,phantomberry
-objects,normal,champignon
-objects,normal,penny bun
-objects,normal,chanterelle
-objects,normal,fly agaric
-objects,normal,death cap
-objects,normal,mana mushroom
-objects,normal,healing mushroom
-objects,normal,panther cap
-objects,normal,magic mushroom
-objects,normal,fruit
-objects,normal,lump of royal jelly
-objects,normal,cream pie
-objects,normal,candy bar
-objects,normal,fortune cookie
-objects,normal,pancake
-objects,normal,lembas wafer
-objects,normal,cram ration
-objects,normal,food ration
-objects,normal,K-ration
-objects,normal,C-ration
-objects,normal,tin
-objects,normal,gain ability
-objects,normal,restore ability
-objects,normal,confusion
-objects,normal,blindness
-objects,normal,paralysis
-objects,normal,speed
-objects,normal,levitation
-objects,normal,hallucination
-objects,normal,invisibility
-objects,normal,see invisible
-objects,normal,magic resistance
-objects,normal,healing
-objects,normal,extra healing
-objects,normal,greater healing
-objects,normal,full healing
-objects,normal,gain level
-objects,normal,enlightenment
-objects,normal,monster detection
-objects,normal,object detection
-objects,normal,gain energy
-objects,normal,greater energy
-objects,normal,full energy
-objects,normal,sleeping
-objects,normal,polymorph
-objects,normal,booze
-objects,normal,sickness
-objects,normal,fruit juice
-objects,normal,acid
-objects,normal,oil
-objects,normal,poison
-objects,normal,water
-objects,normal,dwarven stout
-objects,normal,urine
-objects,normal,enchant armor
-objects,normal,destroy armor
-objects,normal,protect armor
-objects,normal,confuse monster
-objects,normal,scare monster
-objects,normal,remove curse
-objects,normal,enchant weapon
-objects,normal,protect weapon
-objects,normal,enchant accessory
-objects,normal,create monster
-objects,normal,taming
-objects,normal,genocide
-objects,normal,light
-objects,normal,teleportation
-objects,normal,gold detection
-objects,normal,food detection
-objects,normal,identify
-objects,normal,magic mapping
-objects,normal,amnesia
-objects,normal,retraining
-objects,normal,fire
-objects,normal,earth
-objects,normal,punishment
-objects,normal,charging
-objects,normal,stinking cloud
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,blank paper
-objects,normal,dig
-objects,normal,knock
-objects,normal,wizard lock
-objects,normal,create paper golem
-objects,normal,create gold golem
-objects,normal,create stone golem
-objects,normal,create glass golem
-objects,normal,create gemstone golem
-objects,normal,create iron golem
-objects,normal,create silver golem
-objects,normal,polymorph
-objects,normal,lower water
-objects,normal,touch of petrification
-objects,normal,flesh to stone
-objects,normal,water breathing
-objects,normal,stone to flesh
-objects,normal,titan strength
-objects,normal,magic missile
-objects,normal,greater magic missile
-objects,normal,burning hands
-objects,normal,fire bolt
-objects,normal,magical implosion
-objects,normal,fireball
-objects,normal,fire storm
-objects,normal,meteor swarm
-objects,normal,cone of cold
-objects,normal,freezing touch
-objects,normal,ice storm
-objects,normal,force bolt
-objects,normal,magic arrow
-objects,normal,lightning bolt
-objects,normal,shocking touch
-objects,normal,thunderstorm
-objects,normal,magic storm
-objects,normal,disintegrate
-objects,normal,power word kill
-objects,normal,power word stun
-objects,normal,power word blind
-objects,normal,sphere of annihilation
-objects,normal,circle of magic
-objects,normal,circle of fire
-objects,normal,circle of lightning
-objects,normal,circle of frost
-objects,normal,globe of invulnerability
-objects,normal,anti-magic shell
-objects,normal,shield
-objects,normal,animate air
-objects,normal,animate earth
-objects,normal,animate fire
-objects,normal,animate water
-objects,normal,create monster
-objects,normal,create familiar
-objects,normal,summoning call
-objects,normal,great Yendorian summoning
-objects,normal,stinking cloud
-objects,normal,wish
-objects,normal,black blade of disaster
-objects,normal,mage armor
-objects,normal,call hierarch modron
-objects,normal,commune
-objects,normal,enlightenment
-objects,normal,remove curse
-objects,normal,bless
-objects,normal,curse
-objects,normal,resurrection
-objects,normal,prayer
-objects,normal,absolution
-objects,normal,protection from curses
-objects,normal,protection
-objects,normal,create clay golem
-objects,normal,create food
-objects,normal,create fruits
-objects,normal,create water
-objects,normal,congregate
-objects,normal,divine strength
-objects,normal,divine endurance
-objects,normal,celestial dove
-objects,normal,celestial eagle
-objects,normal,turn undead
-objects,normal,heavenly warrior
-objects,normal,negate undeath
-objects,normal,guardian angel
-objects,normal,banish demon
-objects,normal,holy word
-objects,normal,summon gold dragon
-objects,normal,obliterate
-objects,normal,divine intervention
-objects,normal,summon phoenix
-objects,normal,call Bahamut
-objects,normal,divine mount
-objects,normal,summon ancient gold dragon
-objects,normal,heavenly army
-objects,normal,stick to snake
-objects,normal,create wood golem
-objects,normal,stick to cobra
-objects,normal,stick to python
-objects,normal,stick to boa
-objects,normal,barkskin
-objects,normal,stoneskin
-objects,normal,faithful hound
-objects,normal,summon treant
-objects,normal,summon elder treant
-objects,normal,gaze of petrification
-objects,normal,light
-objects,normal,probe monster
-objects,normal,detect monsters
-objects,normal,detect food
-objects,normal,clairvoyance
-objects,normal,detect unseen
-objects,normal,detect treasure
-objects,normal,identify
-objects,normal,magic mapping
-objects,normal,telepathy
-objects,normal,detect traps
-objects,normal,minor consultation
-objects,normal,major consultation
-objects,normal,detect blessedness
-objects,normal,sleep
-objects,normal,mass sleep
-objects,normal,fear
-objects,normal,mass fear
-objects,normal,confuse monster
-objects,normal,charm monster
-objects,normal,sphere of charming
-objects,normal,mass charm
-objects,normal,dominate monster
-objects,normal,sphere of domination
-objects,normal,mass domination
-objects,normal,invisibility
-objects,normal,enchant armor
-objects,normal,enchant weapon
-objects,normal,protect armor
-objects,normal,protect weapon
-objects,normal,cold-enchant item
-objects,normal,fire-enchant item
-objects,normal,lightning-enchant item
-objects,normal,death-enchant item
-objects,normal,mirror image
-objects,normal,mass conflict
-objects,normal,cure sickness
-objects,normal,cure petrification
-objects,normal,cure blindness
-objects,normal,minor healing
-objects,normal,healing
-objects,normal,extra healing
-objects,normal,greater healing
-objects,normal,prodigious healing
-objects,normal,full healing
-objects,normal,restore ability
-objects,normal,slow monster
-objects,normal,mass slow
-objects,normal,hold monster
-objects,normal,mass hold
-objects,normal,haste self
-objects,normal,haste monster
-objects,normal,levitation
-objects,normal,teleport self
-objects,normal,teleport monster
-objects,normal,controlled teleport
-objects,normal,circle of teleportation
-objects,normal,level teleport
-objects,normal,controlled level teleport
-objects,normal,portal
-objects,normal,jumping
-objects,normal,water walking
-objects,normal,time stop
-objects,normal,reflection
-objects,normal,protection from fire
-objects,normal,protection from lightning
-objects,normal,protection from cold
-objects,normal,protection from acid
-objects,normal,protection from poison
-objects,normal,protection from life draining
-objects,normal,protection from death magic
-objects,normal,protection from disintegration
-objects,normal,protection from sickness
-objects,normal,protection from petrification
-objects,normal,protection from lycanthropy
-objects,normal,lower magic resistance
-objects,normal,diminish magic resistance
-objects,normal,abolish magic resistance
-objects,normal,negate magic resistance
-objects,normal,forbid summoning
-objects,normal,cancellation
-objects,normal,silence
-objects,normal,touch of death
-objects,normal,finger of death
-objects,normal,deathspell
-objects,normal,armageddon
-objects,normal,call ghoul
-objects,normal,raise minor zombie
-objects,normal,create minor mummy
-objects,normal,raise giant zombie
-objects,normal,create giant mummy
-objects,normal,create dracolich
-objects,normal,mass raise zombie
-objects,normal,mass create mummy
-objects,normal,mass create dracolich
-objects,normal,raise skeleton
-objects,normal,raise giant skeleton
-objects,normal,raise skeleton warrior
-objects,normal,raise skeleton lord
-objects,normal,raise skeleton king
-objects,normal,replenish undeath
-objects,normal,greater undeath replenishment
-objects,normal,summon demon
-objects,normal,call Demogorgon
-objects,normal,drain level
-objects,normal,blank paper
-objects,normal,novel
-objects,normal,Book of the Dead
-objects,normal,light
-objects,normal,secret door detection
-objects,normal,ore detection
-objects,normal,enlightenment
-objects,normal,create monster
-objects,normal,wishing
-objects,normal,identify
-objects,normal,nothing
-objects,normal,striking
-objects,normal,make invisible
-objects,normal,slow monster
-objects,normal,speed monster
-objects,normal,undead turning
-objects,normal,polymorph
-objects,normal,cancellation
-objects,normal,teleportation
-objects,normal,opening
-objects,normal,locking
-objects,normal,probing
-objects,normal,digging
-objects,normal,magic missile
-objects,normal,fire
-objects,normal,cold
-objects,normal,sleep
-objects,normal,disintegration
-objects,normal,petrification
-objects,normal,lightning
-objects,normal,death
-objects,normal,resurrection
-objects,normal,evaporation
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,(null)
-objects,normal,gold piece
-objects,normal,dilithium crystal
-objects,normal,diamond
-objects,normal,black pearl
-objects,normal,ruby
-objects,normal,jacinth
-objects,normal,sapphire
-objects,normal,black opal
-objects,normal,emerald
-objects,normal,turquoise
-objects,normal,citrine
-objects,normal,aquamarine
-objects,normal,amber
-objects,normal,topaz
-objects,normal,jet
-objects,normal,opal
-objects,normal,chrysoberyl
-objects,normal,garnet
-objects,normal,amethyst
-objects,normal,jasper
-objects,normal,fluorite
-objects,normal,pearl
-objects,normal,obsidian
-objects,normal,agate
-objects,normal,jade
-objects,normal,worthless piece of white glass
-objects,normal,worthless piece of blue glass
-objects,normal,worthless piece of red glass
-objects,normal,worthless piece of yellowish brown glass
-objects,normal,worthless piece of orange glass
-objects,normal,worthless piece of yellow glass
-objects,normal,worthless piece of black glass
-objects,normal,worthless piece of green glass
-objects,normal,worthless piece of violet glass
-objects,normal,luckstone
-objects,normal,loadstone
-objects,normal,jinxstone
-objects,normal,prayerstone
-objects,normal,touchstone
-objects,normal,flint
-objects,normal,rock
-objects,normal,stone pebble
-objects,normal,clay pebble
-objects,normal,nugget of iron ore
-objects,normal,nugget of copper ore
-objects,normal,nugget of silver ore
-objects,normal,nugget of gold ore
-objects,normal,nugget of platinum ore
-objects,normal,nugget of orichalcum ore
-objects,normal,nugget of adamantium ore
-objects,normal,nugget of mithril ore
-objects,normal,boulder
-objects,normal,statue
-objects,normal,heavy iron ball
-objects,normal,iron chain
-objects,normal,blinding venom
-objects,normal,acid venom
-objects,normal,thread of spider silk
-objects,normal,clump of bat guano
-objects,normal,ginseng root
-objects,normal,mandrake root
-objects,normal,heap of sporal powder
-objects,normal,sprig of wolfsbane
-objects,normal,clove of garlic
-objects,normal,bone
-objects,normal,human skull
-objects,normal,piece of wood
-objects,normal,pinch of sulfurous ash
-objects,normal,modronite sphere
-objects,normal,modronite monopole
-objects,normal,modronite tetrahedron
-objects,normal,modronite cube
-objects,normal,modronite octahedron
-objects,normal,modronite dodecahedron
-objects,normal,modronite icosahedron
-objects,normal,feather
-artifacts,normal,Excalibur
-artifacts,normal,Stormbringer
-artifacts,normal,Mjollnir
-artifacts,normal,Cleaver
-artifacts,normal,Grimtooth
-artifacts,normal,Orcrist
-artifacts,normal,Sting
-artifacts,normal,Magicbane
-artifacts,normal,Frost Brand
-artifacts,normal,Fire Brand
-artifacts,normal,Dragonbane
-artifacts,normal,Demonbane
-artifacts,normal,Werebane
-artifacts,normal,Grayswandir
-artifacts,normal,Giantslayer
-artifacts,normal,Ogresmasher
-artifacts,normal,Trollsbane
-artifacts,normal,Gnollbane
-artifacts,normal,Crossbow of the Gnoll Lords
-artifacts,normal,Howling Flail
-artifacts,normal,Luck Blade
-artifacts,normal,Wand of Orcus
-artifacts,normal,Rhongomyniad
-artifacts,normal,Vorpal Blade
-artifacts,normal,Snickersnee
-artifacts,normal,Sunsword
-artifacts,normal,The One Ring
-artifacts,normal,Ring of Three Wishes
-artifacts,normal,Serpent Ring of Set
-artifacts,normal,Ring of Conflict
-artifacts,normal,Gauntlets of Yin and Yang
-artifacts,normal,The Holy Grail
-artifacts,normal,The Orb of Detection
-artifacts,normal,The Heart of Ahriman
-artifacts,normal,The Sceptre of Might
-artifacts,normal,The Staff of Aesculapius
-artifacts,normal,The Magic Mirror of Merlin
-artifacts,normal,The Eyes of the Overworld
-artifacts,normal,The Mitre of Holiness
-artifacts,normal,The Longbow of Diana
-artifacts,normal,The Master Key of Thievery
-artifacts,normal,The Tsurugi of Muramasa
-artifacts,normal,The Platinum Yendorian Express Card
-artifacts,normal,The Orb of Fate
-artifacts,normal,The Eye of the Aethiopica
-artifacts,normal,The Ark of the Covenant
-cmap,cmap-0,S_stone
-cmap,cmap-0,S_vwall
-cmap,cmap-0,S_hwall
-cmap,cmap-0,S_tlcorn
-cmap,cmap-0,S_trcorn
-cmap,cmap-0,S_blcorn
-cmap,cmap-0,S_brcorn
-cmap,cmap-0,S_crwall
-cmap,cmap-0,S_tuwall
-cmap,cmap-0,S_tdwall
-cmap,cmap-0,S_tlwall
-cmap,cmap-0,S_trwall
-cmap,cmap-0,S_ndoor
-cmap,cmap-0,S_vodoor
-cmap,cmap-0,S_hodoor
-cmap,cmap-0,S_vcdoor
-cmap,cmap-0,S_hcdoor
-cmap,cmap-0,S_bars
-cmap,cmap-0,S_tree
-cmap,cmap-0,S_room
-cmap,cmap-0,S_grass
-cmap,cmap-0,S_darkroom
-cmap,cmap-0,S_corr
-cmap,cmap-0,S_litcorr
-cmap,cmap-0,S_upstair
-cmap,cmap-0,S_dnstair
-cmap,cmap-0,S_upladder
-cmap,cmap-0,S_dnladder
-cmap,cmap-0,S_altar
-cmap,cmap-0,S_grave
-cmap,cmap-0,S_throne
-cmap,cmap-0,S_sink
-cmap,cmap-0,S_fountain
-cmap,cmap-0,S_pool
-cmap,cmap-0,S_ice
-cmap,cmap-0,S_lava
-cmap,cmap-0,S_vodbridge
-cmap,cmap-0,S_hodbridge
-cmap,cmap-0,S_vcdbridge
-cmap,cmap-0,S_hcdbridge
-cmap,cmap-0,S_air
-cmap,cmap-0,S_cloud
-cmap,cmap-0,S_water
-cmap,cmap-0,S_arrow_trap
-cmap,cmap-0,S_dart_trap
-cmap,cmap-0,S_falling_rock_trap
-cmap,cmap-0,S_squeaky_board
-cmap,cmap-0,S_bear_trap
-cmap,cmap-0,S_land_mine
-cmap,cmap-0,S_rolling_boulder_trap
-cmap,cmap-0,S_sleeping_gas_trap
-cmap,cmap-0,S_rust_trap
-cmap,cmap-0,S_fire_trap
-cmap,cmap-0,S_pit
-cmap,cmap-0,S_spiked_pit
-cmap,cmap-0,S_hole
-cmap,cmap-0,S_trap_door
-cmap,cmap-0,S_teleportation_trap
-cmap,cmap-0,S_level_teleporter
-cmap,cmap-0,S_magic_portal
-cmap,cmap-0,S_web
-cmap,cmap-0,S_statue_trap
-cmap,cmap-0,S_magic_trap
-cmap,cmap-0,S_anti_magic_trap
-cmap,cmap-0,S_polymorph_trap
-cmap,cmap-0,S_vibrating_square
-cmap,cmap-0,S_octahedral_portal
-cmap,cmap-0,S_tetrahedral_portal
-cmap,cmap-0,S_cubical_portal
-cmap,cmap-0,S_dodecahedral_portal
-cmap,cmap-0,S_vbeam
-cmap,cmap-0,S_hbeam
-cmap,cmap-0,S_lslant
-cmap,cmap-0,S_rslant
-cmap,cmap-0,S_digbeam
-cmap,cmap-0,S_flashbeam
-cmap,cmap-0,S_boomleft
-cmap,cmap-0,S_boomright
-cmap,cmap-0,S_ss1
-cmap,cmap-0,S_ss2
-cmap,cmap-0,S_ss3
-cmap,cmap-0,S_ss4
-cmap,cmap-0,S_poisoncloud
-cmap,cmap-0,S_goodpos
-cmap,cmap-0,S_sw_tl
-cmap,cmap-0,S_sw_tc
-cmap,cmap-0,S_sw_tr
-cmap,cmap-0,S_sw_ml
-cmap,cmap-0,S_sw_mr
-cmap,cmap-0,S_sw_bl
-cmap,cmap-0,S_sw_bc
-cmap,cmap-0,S_sw_br
-misc,invisible,generic
-misc,explode,generic,tile-0
-misc,explode,generic,tile-1
-misc,explode,generic,tile-2
-misc,explode,generic,tile-3
-misc,explode,generic,tile-4
-misc,explode,generic,tile-5
-misc,explode,generic,tile-6
-misc,explode,generic,tile-7
-misc,explode,generic,tile-8
-misc,zap,generic,tile-0
-misc,zap,generic,tile-1
-misc,zap,generic,tile-2
-misc,zap,generic,tile-3
-misc,swallow,ochre jelly,tile-0
-misc,swallow,ochre jelly,tile-1
-misc,swallow,ochre jelly,tile-2
-misc,swallow,ochre jelly,tile-3
-misc,swallow,ochre jelly,tile-4
-misc,swallow,ochre jelly,tile-5
-misc,swallow,ochre jelly,tile-6
-misc,swallow,ochre jelly,tile-7
-misc,swallow,giant luggage,tile-0
-misc,swallow,giant luggage,tile-1
-misc,swallow,giant luggage,tile-2
-misc,swallow,giant luggage,tile-3
-misc,swallow,giant luggage,tile-4
-misc,swallow,giant luggage,tile-5
-misc,swallow,giant luggage,tile-6
-misc,swallow,giant luggage,tile-7
-misc,swallow,lurker above,tile-0
-misc,swallow,lurker above,tile-1
-misc,swallow,lurker above,tile-2
-misc,swallow,lurker above,tile-3
-misc,swallow,lurker above,tile-4
-misc,swallow,lurker above,tile-5
-misc,swallow,lurker above,tile-6
-misc,swallow,lurker above,tile-7
-misc,swallow,trapper,tile-0
-misc,swallow,trapper,tile-1
-misc,swallow,trapper,tile-2
-misc,swallow,trapper,tile-3
-misc,swallow,trapper,tile-4
-misc,swallow,trapper,tile-5
-misc,swallow,trapper,tile-6
-misc,swallow,trapper,tile-7
-misc,swallow,dust vortex,tile-0
-misc,swallow,dust vortex,tile-1
-misc,swallow,dust vortex,tile-2
-misc,swallow,dust vortex,tile-3
-misc,swallow,dust vortex,tile-4
-misc,swallow,dust vortex,tile-5
-misc,swallow,dust vortex,tile-6
-misc,swallow,dust vortex,tile-7
-misc,swallow,fog cloud,tile-0
-misc,swallow,fog cloud,tile-1
-misc,swallow,fog cloud,tile-2
-misc,swallow,fog cloud,tile-3
-misc,swallow,fog cloud,tile-4
-misc,swallow,fog cloud,tile-5
-misc,swallow,fog cloud,tile-6
-misc,swallow,fog cloud,tile-7
-misc,swallow,ice vortex,tile-0
-misc,swallow,ice vortex,tile-1
-misc,swallow,ice vortex,tile-2
-misc,swallow,ice vortex,tile-3
-misc,swallow,ice vortex,tile-4
-misc,swallow,ice vortex,tile-5
-misc,swallow,ice vortex,tile-6
-misc,swallow,ice vortex,tile-7
-misc,swallow,steam vortex,tile-0
-misc,swallow,steam vortex,tile-1
-misc,swallow,steam vortex,tile-2
-misc,swallow,steam vortex,tile-3
-misc,swallow,steam vortex,tile-4
-misc,swallow,steam vortex,tile-5
-misc,swallow,steam vortex,tile-6
-misc,swallow,steam vortex,tile-7
-misc,swallow,fire vortex,tile-0
-misc,swallow,fire vortex,tile-1
-misc,swallow,fire vortex,tile-2
-misc,swallow,fire vortex,tile-3
-misc,swallow,fire vortex,tile-4
-misc,swallow,fire vortex,tile-5
-misc,swallow,fire vortex,tile-6
-misc,swallow,fire vortex,tile-7
-misc,swallow,energy vortex,tile-0
-misc,swallow,energy vortex,tile-1
-misc,swallow,energy vortex,tile-2
-misc,swallow,energy vortex,tile-3
-misc,swallow,energy vortex,tile-4
-misc,swallow,energy vortex,tile-5
-misc,swallow,energy vortex,tile-6
-misc,swallow,energy vortex,tile-7
-misc,swallow,purple worm,tile-0
-misc,swallow,purple worm,tile-1
-misc,swallow,purple worm,tile-2
-misc,swallow,purple worm,tile-3
-misc,swallow,purple worm,tile-4
-misc,swallow,purple worm,tile-5
-misc,swallow,purple worm,tile-6
-misc,swallow,purple worm,tile-7
-misc,swallow,air elemental,tile-0
-misc,swallow,air elemental,tile-1
-misc,swallow,air elemental,tile-2
-misc,swallow,air elemental,tile-3
-misc,swallow,air elemental,tile-4
-misc,swallow,air elemental,tile-5
-misc,swallow,air elemental,tile-6
-misc,swallow,air elemental,tile-7
-misc,swallow,elder air elemental,tile-0
-misc,swallow,elder air elemental,tile-1
-misc,swallow,elder air elemental,tile-2
-misc,swallow,elder air elemental,tile-3
-misc,swallow,elder air elemental,tile-4
-misc,swallow,elder air elemental,tile-5
-misc,swallow,elder air elemental,tile-6
-misc,swallow,elder air elemental,tile-7
-misc,swallow,Juiblex,tile-0
-misc,swallow,Juiblex,tile-1
-misc,swallow,Juiblex,tile-2
-misc,swallow,Juiblex,tile-3
-misc,swallow,Juiblex,tile-4
-misc,swallow,Juiblex,tile-5
-misc,swallow,Juiblex,tile-6
-misc,swallow,Juiblex,tile-7
-misc,warning,tile-0
-misc,warning,tile-1
-misc,warning,tile-2
-misc,warning,tile-3
-misc,warning,tile-4
-misc,warning,tile-5
-misc,warning,tile-6
-player,Archeologist,human,male
-player,Archeologist,human,female
-player,Archeologist,elf,male
-player,Archeologist,elf,female
-player,Archeologist,dwarf,male
-player,Archeologist,dwarf,female
-player,Archeologist,gnoll,male
-player,Archeologist,gnoll,female
-player,Archeologist,orc,male
-player,Archeologist,orc,female
-player,Barbarian,human,male
-player,Barbarian,human,female
-player,Barbarian,elf,male
-player,Barbarian,elf,female
-player,Barbarian,dwarf,male
-player,Barbarian,dwarf,female
-player,Barbarian,gnoll,male
-player,Barbarian,gnoll,female
-player,Barbarian,orc,male
-player,Barbarian,orc,female
-player,Caveman,human,male
-player,Caveman,human,female
-player,Caveman,elf,male
-player,Caveman,elf,female
-player,Caveman,dwarf,male
-player,Caveman,dwarf,female
-player,Caveman,gnoll,male
-player,Caveman,gnoll,female
-player,Caveman,orc,male
-player,Caveman,orc,female
-player,Healer,human,male
-player,Healer,human,female
-player,Healer,elf,male
-player,Healer,elf,female
-player,Healer,dwarf,male
-player,Healer,dwarf,female
-player,Healer,gnoll,male
-player,Healer,gnoll,female
-player,Healer,orc,male
-player,Healer,orc,female
-player,Knight,human,male
-player,Knight,human,female
-player,Knight,elf,male
-player,Knight,elf,female
-player,Knight,dwarf,male
-player,Knight,dwarf,female
-player,Knight,gnoll,male
-player,Knight,gnoll,female
-player,Knight,orc,male
-player,Knight,orc,female
-player,Monk,human,male
-player,Monk,human,female
-player,Monk,elf,male
-player,Monk,elf,female
-player,Monk,dwarf,male
-player,Monk,dwarf,female
-player,Monk,gnoll,male
-player,Monk,gnoll,female
-player,Monk,orc,male
-player,Monk,orc,female
-player,Priest,human,male
-player,Priest,human,female
-player,Priest,elf,male
-player,Priest,elf,female
-player,Priest,dwarf,male
-player,Priest,dwarf,female
-player,Priest,gnoll,male
-player,Priest,gnoll,female
-player,Priest,orc,male
-player,Priest,orc,female
-player,Rogue,human,male
-player,Rogue,human,female
-player,Rogue,elf,male
-player,Rogue,elf,female
-player,Rogue,dwarf,male
-player,Rogue,dwarf,female
-player,Rogue,gnoll,male
-player,Rogue,gnoll,female
-player,Rogue,orc,male
-player,Rogue,orc,female
-player,Ranger,human,male
-player,Ranger,human,female
-player,Ranger,elf,male
-player,Ranger,elf,female
-player,Ranger,dwarf,male
-player,Ranger,dwarf,female
-player,Ranger,gnoll,male
-player,Ranger,gnoll,female
-player,Ranger,orc,male
-player,Ranger,orc,female
-player,Samurai,human,male
-player,Samurai,human,female
-player,Samurai,elf,male
-player,Samurai,elf,female
-player,Samurai,dwarf,male
-player,Samurai,dwarf,female
-player,Samurai,gnoll,male
-player,Samurai,gnoll,female
-player,Samurai,orc,male
-player,Samurai,orc,female
-player,Tourist,human,male
-player,Tourist,human,female
-player,Tourist,elf,male
-player,Tourist,elf,female
-player,Tourist,dwarf,male
-player,Tourist,dwarf,female
-player,Tourist,gnoll,male
-player,Tourist,gnoll,female
-player,Tourist,orc,male
-player,Tourist,orc,female
-player,Valkyrie,human,male
-player,Valkyrie,human,female
-player,Valkyrie,elf,male
-player,Valkyrie,elf,female
-player,Valkyrie,dwarf,male
-player,Valkyrie,dwarf,female
-player,Valkyrie,gnoll,male
-player,Valkyrie,gnoll,female
-player,Valkyrie,orc,male
-player,Valkyrie,orc,female
-player,Wizard,human,male
-player,Wizard,human,female
-player,Wizard,elf,male
-player,Wizard,elf,female
-player,Wizard,dwarf,male
-player,Wizard,dwarf,female
-player,Wizard,gnoll,male
-player,Wizard,gnoll,female
-player,Wizard,orc,male
-player,Wizard,orc,female
+objects,normal,illegal objects,strange object,no description
+objects,normal,weapons,arrow,no description
+objects,normal,weapons,elven arrow,runed arrow
+objects,normal,weapons,orcish arrow,crude arrow
+objects,normal,weapons,silver arrow,no description
+objects,normal,weapons,ya,bamboo arrow
+objects,normal,weapons,bone arrow,no description
+objects,normal,weapons,crossbow bolt,no description
+objects,normal,weapons,gnollish quarrel,crude crossbow bolt
+objects,normal,weapons,silver crossbow bolt,no description
+objects,normal,weapons,bone quarrel,no description
+objects,normal,weapons,leaden sling-bullet,no description
+objects,normal,weapons,iron sling-bullet,no description
+objects,normal,weapons,silver sling-bullet,no description
+objects,normal,weapons,arrow of dragon slaying,black arrow
+objects,normal,weapons,dart,no description
+objects,normal,weapons,shuriken,throwing star
+objects,normal,weapons,boomerang,no description
+objects,normal,weapons,spear,no description
+objects,normal,weapons,elven spear,runed spear
+objects,normal,weapons,orcish spear,crude spear
+objects,normal,weapons,dwarvish spear,stout spear
+objects,normal,weapons,silver spear,no description
+objects,normal,weapons,javelin,throwing spear
+objects,normal,weapons,javelin of returning,throwing spear
+objects,normal,weapons,trident,no description
+objects,normal,weapons,silver fork,no description
+objects,normal,weapons,dagger,no description
+objects,normal,weapons,elven dagger,runed dagger
+objects,normal,weapons,elven runedagger,runed dagger
+objects,normal,weapons,orcish dagger,crude dagger
+objects,normal,weapons,ornamental orcish dagger,crudely ornated dagger
+objects,normal,weapons,bone dagger,no description
+objects,normal,weapons,silver dagger,no description
+objects,normal,weapons,Morgul blade,black dagger
+objects,normal,weapons,main-gauche,no description
+objects,normal,weapons,athame,no description
+objects,normal,weapons,scalpel,no description
+objects,normal,weapons,knife,no description
+objects,normal,weapons,silver knife,no description
+objects,normal,weapons,stiletto,no description
+objects,normal,weapons,worm tooth,no description
+objects,normal,weapons,crysknife,no description
+objects,normal,weapons,axe,no description
+objects,normal,weapons,dwarvish axe,broad axe
+objects,normal,weapons,infernal axe,black axe
+objects,normal,weapons,throwing axe,no description
+objects,normal,weapons,battle-axe,double-headed axe
+objects,normal,weapons,battle-axe of cleaving,runed double-headed axe
+objects,normal,weapons,short sword,no description
+objects,normal,weapons,elven short sword,runed short sword
+objects,normal,weapons,orcish short sword,crude short sword
+objects,normal,weapons,dwarvish short sword,broad short sword
+objects,normal,weapons,scimitar,curved sword
+objects,normal,weapons,silver saber,no description
+objects,normal,weapons,saber of lycanthrope slaying,no description
+objects,normal,weapons,broadsword,no description
+objects,normal,weapons,elven broadsword,runed broadsword
+objects,normal,weapons,long sword,no description
+objects,normal,weapons,silver long sword,no description
+objects,normal,weapons,sword of demon slaying,shining long sword
+objects,normal,weapons,sword of holy vengeance,radiant long sword
+objects,normal,weapons,sword of unholy desecration,black long sword
+objects,normal,weapons,sword of defense,immaculate long sword
+objects,normal,weapons,sword of sharpness,exquisite long sword
+objects,normal,weapons,vorpal sword,silver-hilted long sword
+objects,normal,weapons,sword of wounding,ornamental long sword
+objects,normal,weapons,sword of life stealing,runed long sword
+objects,normal,weapons,nine lives stealer,gold-hilted long sword
+objects,normal,weapons,sword of orc slaying,mithril-hilted long sword
+objects,normal,weapons,sword of troll slaying,black-hilted long sword
+objects,normal,weapons,sword of giant slaying,ancient long sword
+objects,normal,weapons,sword of dragon slaying,decorated long sword
+objects,normal,weapons,glass sword,no description
+objects,normal,weapons,two-handed sword,no description
+objects,normal,weapons,katana,samurai sword
+objects,normal,weapons,tsurugi,long samurai sword
+objects,normal,weapons,runesword,runed broadsword
+objects,normal,weapons,sword of luckiness,bright broadsword
+objects,normal,weapons,partisan,vulgar polearm
+objects,normal,weapons,ranseur,hilted polearm
+objects,normal,weapons,spetum,forked polearm
+objects,normal,weapons,glaive,single-edged polearm
+objects,normal,weapons,lance,no description
+objects,normal,weapons,halberd,angled poleaxe
+objects,normal,weapons,bardiche,long poleaxe
+objects,normal,weapons,huge infernal bardiche,huge black poleaxe
+objects,normal,weapons,voulge,pole cleaver
+objects,normal,weapons,dwarvish mattock,broad pick
+objects,normal,weapons,fauchard,pole sickle
+objects,normal,weapons,guisarme,pruning hook
+objects,normal,weapons,bill-guisarme,hooked polearm
+objects,normal,weapons,infernal ancus,black ornamental hooked polearm
+objects,normal,weapons,lucern hammer,pronged polearm
+objects,normal,weapons,bec de corbin,beaked polearm
+objects,normal,weapons,polearm of reach,elongated polearm
+objects,normal,weapons,mace,no description
+objects,normal,weapons,runed sceptre,no description
+objects,normal,weapons,silver mace,no description
+objects,normal,weapons,mace of disruption,runed silver mace
+objects,normal,weapons,mace of death,skull-headed mace
+objects,normal,weapons,mace of the underworld,skull-headed obsidian mace
+objects,normal,weapons,morning star,no description
+objects,normal,weapons,morning star of troll slaying,mithril-spiked morning star
+objects,normal,weapons,war hammer,no description
+objects,normal,weapons,heavy war hammer,runed war hammer
+objects,normal,weapons,war hammer of ogre slaying,runed war hammer
+objects,normal,weapons,war hammer of gnoll slaying,runed war hammer
+objects,normal,weapons,club,no description
+objects,normal,weapons,infernal jagged-toothed club,black jagged-toothed club
+objects,normal,weapons,rubber hose,no description
+objects,normal,weapons,flindbar,iron staff
+objects,normal,weapons,quarterstaff,wooden staff
+objects,normal,weapons,staff of the magi,twisted staff
+objects,normal,weapons,staff of fire,forked staff
+objects,normal,weapons,staff of thunder and lightning,serpent-entwined staff
+objects,normal,weapons,staff of frost,blue-hued staff
+objects,normal,weapons,staff of life,ornamental staff
+objects,normal,weapons,staff of withering,runed staff
+objects,normal,weapons,aklys,thonged club
+objects,normal,weapons,flail,no description
+objects,normal,weapons,silver flail,no description
+objects,normal,weapons,double-headed flail,no description
+objects,normal,weapons,triple-headed flail,no description
+objects,normal,weapons,triple-headed flail of life draining,runed triple-headed flail
+objects,normal,weapons,runed flail,no description
+objects,normal,weapons,bullwhip,no description
+objects,normal,weapons,black blade of disintegration,sword-shaped planar rift
+objects,normal,weapons,bow,no description
+objects,normal,weapons,short bow,no description
+objects,normal,weapons,elven long bow,runed long bow
+objects,normal,weapons,orcish short bow,crude short bow
+objects,normal,weapons,long bow,no description
+objects,normal,weapons,composite long bow,no description
+objects,normal,weapons,composite short bow,no description
+objects,normal,weapons,yumi,oriental long bow
+objects,normal,weapons,sling,no description
+objects,normal,weapons,crossbow,no description
+objects,normal,weapons,hand crossbow,no description
+objects,normal,weapons,heavy crossbow,no description
+objects,normal,weapons,repeating crossbow,no description
+objects,normal,weapons,repeating heavy crossbow,no description
+objects,normal,armor,elven leather helm,leather hat
+objects,normal,armor,cotton hood,no description
+objects,normal,armor,gnollish hood,crude leather hood
+objects,normal,armor,orcish helm,iron skull cap
+objects,normal,armor,dwarvish iron helm,hard hat
+objects,normal,armor,fedora,no description
+objects,normal,armor,tinfoil hat of mind shielding,thin metal hat
+objects,normal,armor,ducal crown,golden crown
+objects,normal,armor,crown of rulership,ornamental crown
+objects,normal,armor,cornuthaum,white conical hat
+objects,normal,armor,dunce cap,blue conical hat
+objects,normal,armor,gnomish felt hat,red conical hat
+objects,normal,armor,silk top hat,cylindrical hat
+objects,normal,armor,dented pot,no description
+objects,normal,armor,helmet,visored helmet
+objects,normal,armor,helm of brilliance,crested helmet
+objects,normal,armor,helm of opposite alignment,etched helmet
+objects,normal,armor,helm of telepathy,plumed helmet
+objects,normal,armor,gray dragon scale mail,no description
+objects,normal,armor,silver dragon scale mail,no description
+objects,normal,armor,red dragon scale mail,no description
+objects,normal,armor,white dragon scale mail,no description
+objects,normal,armor,orange dragon scale mail,no description
+objects,normal,armor,black dragon scale mail,no description
+objects,normal,armor,blue dragon scale mail,no description
+objects,normal,armor,green dragon scale mail,no description
+objects,normal,armor,yellow dragon scale mail,no description
+objects,normal,armor,gray dragon scales,no description
+objects,normal,armor,silver dragon scales,no description
+objects,normal,armor,red dragon scales,no description
+objects,normal,armor,white dragon scales,no description
+objects,normal,armor,orange dragon scales,no description
+objects,normal,armor,black dragon scales,no description
+objects,normal,armor,blue dragon scales,no description
+objects,normal,armor,green dragon scales,no description
+objects,normal,armor,yellow dragon scales,no description
+objects,normal,armor,adamantium full plate mail,no description
+objects,normal,armor,mithril full plate mail,no description
+objects,normal,armor,orichalcum full plate mail,no description
+objects,normal,armor,full plate mail,no description
+objects,normal,armor,field plate mail,no description
+objects,normal,armor,plate mail,no description
+objects,normal,armor,crystal plate mail,no description
+objects,normal,armor,bronze plate mail,no description
+objects,normal,armor,splint mail,no description
+objects,normal,armor,banded mail,no description
+objects,normal,armor,gnollish bone mail,crude bone armor
+objects,normal,armor,dwarvish mithril-coat,no description
+objects,normal,armor,elven mithril-coat,no description
+objects,normal,armor,chain mail,no description
+objects,normal,armor,orcish chain mail,crude chain mail
+objects,normal,armor,scale mail,no description
+objects,normal,armor,studded leather armor,no description
+objects,normal,armor,gnollish studded leather armor,crude studded leather armor
+objects,normal,armor,ring mail,no description
+objects,normal,armor,orcish ring mail,crude ring mail
+objects,normal,armor,leather armor,no description
+objects,normal,armor,gnollish leather armor,crude leather armor
+objects,normal,armor,leather jacket,no description
+objects,normal,armor,force field armor,armor-shaped force field
+objects,normal,armor,Hawaiian shirt,no description
+objects,normal,armor,shirt of uncontrollable laughter,black T-shirt
+objects,normal,armor,shirt of comeliness,old T-shirt
+objects,normal,armor,shirt of sound mindedness,green T-shirt
+objects,normal,armor,T-shirt,funny T-shirt
+objects,normal,armor,elven cloak,faded pall
+objects,normal,armor,orcish cloak,coarse mantelet
+objects,normal,armor,dwarvish cloak,hooded cloak
+objects,normal,armor,oilskin cloak,slippery cloak
+objects,normal,armor,alchemy smock,apron
+objects,normal,armor,leather cloak,no description
+objects,normal,armor,cloak of protection,piece of cloth
+objects,normal,armor,cloak of invisibility,tattered cape
+objects,normal,armor,cloak of magic resistance,ornamental cope
+objects,normal,armor,cloak of integrity,opera cloak
+objects,normal,armor,cloak of displacement,hard woven cloak
+objects,normal,armor,robe,shining purple robe
+objects,normal,armor,robe of protection,shining blue robe
+objects,normal,armor,robe of magic resistance,shining black robe
+objects,normal,armor,gown of the archbishops,old robe
+objects,normal,armor,robe of powerlessness,shining green robe
+objects,normal,armor,robe of eyes,shining white robe
+objects,normal,armor,robe of the archmagi,golden ornamental robe
+objects,normal,armor,robe of splendor,shining purple robe
+objects,normal,armor,robe of starry wisdom,star-patterned robe
+objects,normal,armor,bathrobe,soft cotton robe
+objects,normal,armor,clerical gown,no description
+objects,normal,armor,tailored silk robe,fine robe
+objects,normal,armor,gnollish haircloth robe,crude robe
+objects,normal,armor,mummy wrapping,no description
+objects,normal,armor,leather bracers,shining bracers
+objects,normal,armor,bracers of defense,runed bracers
+objects,normal,armor,bracers of archery,ornamental bracers
+objects,normal,armor,bracers of spell casting,silver bracers
+objects,normal,armor,bracers of reflection,deerskin bracers
+objects,normal,armor,bracers against magic missiles,old bracers
+objects,normal,armor,small shield,no description
+objects,normal,armor,elven shield,blue and green shield
+objects,normal,armor,Uruk-hai shield,white-handed shield
+objects,normal,armor,orcish shield,red-eyed shield
+objects,normal,armor,large shield,no description
+objects,normal,armor,dwarvish roundshield,large round shield
+objects,normal,armor,shield of reflection,polished silver shield
+objects,normal,armor,spiked shield,no description
+objects,normal,armor,spiked silver shield,no description
+objects,normal,armor,leather gloves,old gloves
+objects,normal,armor,gauntlets of fumbling,brown gloves
+objects,normal,armor,gloves of haste,padded gloves
+objects,normal,armor,gloves of spell casting,fencing gloves
+objects,normal,armor,gauntlets of ogre power,riding gloves
+objects,normal,armor,gauntlets of dexterity,deerskin gloves
+objects,normal,armor,gauntlets of balance,runed gloves
+objects,normal,armor,spiked gauntlets,no description
+objects,normal,armor,silver gauntlets,no description
+objects,normal,armor,spiked silver gauntlets,no description
+objects,normal,armor,low boots,walking shoes
+objects,normal,armor,iron shoes,hard shoes
+objects,normal,armor,leather sandals,no description
+objects,normal,armor,cotton slippers,no description
+objects,normal,armor,high boots,jackboots
+objects,normal,armor,speed boots,riding boots
+objects,normal,armor,water walking boots,hiking boots
+objects,normal,armor,jumping boots,buckled boots
+objects,normal,armor,elven boots,jungle boots
+objects,normal,armor,kicking boots,snow boots
+objects,normal,armor,fumble boots,combat boots
+objects,normal,armor,levitation boots,mud boots
+objects,normal,armor,spiked boots,no description
+objects,normal,armor,silver shoes,no description
+objects,normal,armor,spiked silver boots,no description
+objects,normal,rings,adornment,opal
+objects,normal,rings,gain strength,black pearl
+objects,normal,rings,gain dexterity,agate
+objects,normal,rings,gain constitution,thin
+objects,normal,rings,gain intelligence,moonstone
+objects,normal,rings,gain wisdom,black onyx
+objects,normal,rings,power,platinum
+objects,normal,rings,increase accuracy,shiny
+objects,normal,rings,increase damage,wooden
+objects,normal,rings,protection,emerald
+objects,normal,rings,regeneration,crystal
+objects,normal,rings,replenishment,jade
+objects,normal,rings,the serpent god,copper
+objects,normal,rings,wizardry,pearl
+objects,normal,rings,fortitude,iron
+objects,normal,rings,searching,adamantium
+objects,normal,rings,stealth,sapphire
+objects,normal,rings,sustain ability,wire
+objects,normal,rings,levitation,tiger eye
+objects,normal,rings,hunger,steel
+objects,normal,rings,aggravate monster,clay
+objects,normal,rings,warning,immaculate
+objects,normal,rings,poison resistance,topaz
+objects,normal,rings,fire resistance,ivory
+objects,normal,rings,cold resistance,polished
+objects,normal,rings,shock resistance,black opal
+objects,normal,rings,life protection,serpent-headed
+objects,normal,rings,free action,diamond
+objects,normal,rings,slow digestion,engagement
+objects,normal,rings,teleportation,twisted
+objects,normal,rings,teleport control,coral
+objects,normal,rings,polymorph,silver
+objects,normal,rings,polymorph control,bronze
+objects,normal,rings,invisibility,runed
+objects,normal,rings,see invisible,granite
+objects,normal,rings,X-ray vision,gold
+objects,normal,rings,protection from shape changers,brass
+objects,normal,rings,supreme power,golden runed
+objects,normal,rings,three charges,ornate golden
+objects,normal,rings,seven charges,ornate silver
+objects,normal,amulets,amulet of ESP,tetrahedral
+objects,normal,amulets,amulet of life saving,icosahedral
+objects,normal,amulets,amulet of strangulation,hexagonal
+objects,normal,amulets,amulet of restful sleep,octagonal
+objects,normal,amulets,amulet versus poison,linear
+objects,normal,amulets,amulet versus life draining,cylindrical
+objects,normal,amulets,amulet versus death magic,convex
+objects,normal,amulets,amulet versus petrification,pyramidal
+objects,normal,amulets,amulet of change,dodecahedral
+objects,normal,amulets,amulet of unchanging,oval
+objects,normal,amulets,amulet of reflection,spherical
+objects,normal,amulets,amulet of mana,circular
+objects,normal,amulets,demon blood talisman,cubical
+objects,normal,amulets,periapt of vitality,concave
+objects,normal,amulets,amulet of magical breathing,triangular
+objects,normal,amulets,amulet,square
+objects,normal,amulets,cheap plastic imitation of the Amulet of Yendor,Amulet of Yendor
+objects,normal,amulets,Amulet of Yendor,Amulet of Yendor
+objects,normal,miscellaneous items,brooch of shielding,golden brooch
+objects,normal,miscellaneous items,nose ring of bull strength,golden nose ring
+objects,normal,miscellaneous items,nose ring of bullheadedness,silver nose ring
+objects,normal,miscellaneous items,nose ring of cerebral safeguarding,bronze nose ring
+objects,normal,miscellaneous items,headband of intellect,shining blue headband
+objects,normal,miscellaneous items,golden earrings,no description
+objects,normal,miscellaneous items,ioun stone of protection,bright blue ioun stone
+objects,normal,miscellaneous items,ioun stone of spell mastery,black ioun stone
+objects,normal,miscellaneous items,ioun stone of magic resistance,transparent ioun stone
+objects,normal,miscellaneous items,ioun stone of strength,yellow ioun stone
+objects,normal,miscellaneous items,ioun stone of dexterity,orange ioun stone
+objects,normal,miscellaneous items,ioun stone of constitution,pink ioun stone
+objects,normal,miscellaneous items,ioun stone of intelligence,green ioun stone
+objects,normal,miscellaneous items,ioun stone of wisdom,cyan ioun stone
+objects,normal,miscellaneous items,ioun stone of charisma,blue ioun stone
+objects,normal,miscellaneous items,ioun stone of experience,red ioun stone
+objects,normal,miscellaneous items,ioun stone of awareness,brown ioun stone
+objects,normal,miscellaneous items,ioun stone of regeneration,gray ioun stone
+objects,normal,miscellaneous items,ioun stone of incessant hunger,purple ioun stone
+objects,normal,miscellaneous items,ioun stone of restful sleep,white ioun stone
+objects,normal,miscellaneous items,ioun stone of sustenance,bright green ioun stone
+objects,normal,miscellaneous items,wings of flying,artificial wings
+objects,normal,miscellaneous items,lenses,gold-framed eyeglasses
+objects,normal,miscellaneous items,eyeglasses of hallucination,oval eyeglasses
+objects,normal,miscellaneous items,eyeglasses of awkwardness,square eyeglasses
+objects,normal,miscellaneous items,eyeglasses of see invisible,round eyeglasses
+objects,normal,miscellaneous items,sunglasses,shaded eyeglasses
+objects,normal,miscellaneous items,goggles of night,leather-framed goggles
+objects,normal,miscellaneous items,goggles of eye protection,transparent goggles
+objects,normal,miscellaneous items,expensive watch,no description
+objects,normal,miscellaneous items,leather belt,sturdy belt
+objects,normal,miscellaneous items,belt of change,heavy belt
+objects,normal,miscellaneous items,belt of dwarvenkind,old belt
+objects,normal,miscellaneous items,belt of fortitude,rudimentary belt
+objects,normal,miscellaneous items,belt of hill giant strength,decorative belt
+objects,normal,miscellaneous items,belt of stone giant strength,brown belt
+objects,normal,miscellaneous items,belt of frost giant strength,runed belt
+objects,normal,miscellaneous items,belt of fire giant strength,coarse belt
+objects,normal,miscellaneous items,belt of storm giant strength,ornamental belt
+objects,normal,tools,large box,no description
+objects,normal,tools,chest,no description
+objects,normal,tools,golden chest,no description
+objects,normal,tools,ice box,no description
+objects,normal,tools,bookshelf,no description
+objects,normal,tools,backpack,no description
+objects,normal,tools,leather bag,ornamental bag
+objects,normal,tools,sack,silvery bag
+objects,normal,tools,oilskin sack,runed bag
+objects,normal,tools,bag of holding,antiquated bag
+objects,normal,tools,bag of wizardry,old-fashioned bag
+objects,normal,tools,bag of treasure hauling,vintage bag
+objects,normal,tools,pouch of endless bolts,old bag
+objects,normal,tools,bag of infinite sling bullets,decorative bag
+objects,normal,tools,bag of tricks,brown bag
+objects,normal,tools,expensive handbag,gold-encrusted bag
+objects,normal,tools,oriental silk sack,silk-woven bag
+objects,normal,tools,quiver of infinite arrows,cylindrical bag
+objects,normal,tools,skeleton key,key
+objects,normal,tools,master key,key
+objects,normal,tools,lock pick,no description
+objects,normal,tools,credit card,no description
+objects,normal,tools,tallow candle,old-fashioned candle
+objects,normal,tools,wax candle,handcrafted candle
+objects,normal,tools,magic candle,twisted candle
+objects,normal,tools,brass lantern,no description
+objects,normal,tools,oil lamp,oriental brass lamp
+objects,normal,tools,magic lamp,antiquated brass lamp
+objects,normal,tools,expensive camera,no description
+objects,normal,tools,mirror,looking glass
+objects,normal,tools,magic mirror,looking glass
+objects,normal,tools,holy symbol,religious symbol
+objects,normal,tools,crystal ball,glass orb
+objects,normal,tools,blindfold,no description
+objects,normal,tools,towel,no description
+objects,normal,tools,saddle,no description
+objects,normal,tools,leash,no description
+objects,normal,tools,stethoscope,no description
+objects,normal,tools,tinning kit,no description
+objects,normal,tools,tin opener,no description
+objects,normal,tools,can of grease,metal can
+objects,normal,tools,figurine,no description
+objects,normal,tools,magic marker,no description
+objects,normal,tools,land mine,no description
+objects,normal,tools,beartrap,no description
+objects,normal,tools,tin whistle,old whistle
+objects,normal,tools,magic whistle,shiny whistle
+objects,normal,tools,wooden flute,oak flute
+objects,normal,tools,magic flute,blackwood flute
+objects,normal,tools,brass horn,no description
+objects,normal,tools,tooled horn,arched horn
+objects,normal,tools,frost horn,polished horn
+objects,normal,tools,fire horn,curved horn
+objects,normal,tools,horn of conflict,twisted horn
+objects,normal,tools,horn of plenty,spiral horn
+objects,normal,tools,wooden harp,runed harp
+objects,normal,tools,magic harp,ornamental harp
+objects,normal,tools,bell,no description
+objects,normal,tools,bugle,no description
+objects,normal,tools,leather drum,antiquated drum
+objects,normal,tools,drum of earthquake,old drum
+objects,normal,tools,jar of healing salve,crystal jar
+objects,normal,tools,jar of extra healing salve,glass jar
+objects,normal,tools,grail of healing,wooden grail
+objects,normal,tools,pick-axe,no description
+objects,normal,tools,spade of colossal excavation,large shovel
+objects,normal,tools,saw of mighty cutting,silvery saw
+objects,normal,tools,golf club,club-headed metal rod
+objects,normal,tools,grappling hook,iron hook
+objects,normal,tools,unicorn horn,no description
+objects,normal,tools,Candelabrum of Invocation,candelabrum
+objects,normal,tools,Bell of Opening,silver bell
+objects,normal,food,tripe ration,no description
+objects,normal,food,corpse,no description
+objects,normal,food,egg,no description
+objects,normal,food,meatball,no description
+objects,normal,food,meat stick,no description
+objects,normal,food,huge chunk of meat,no description
+objects,normal,food,meat ring,no description
+objects,normal,food,glob of gray ooze,gray glob
+objects,normal,food,glob of brown pudding,brown glob
+objects,normal,food,glob of green slime,green glob
+objects,normal,food,glob of black pudding,black glob
+objects,normal,food,kelp frond,no description
+objects,normal,food,eucalyptus leaf,no description
+objects,normal,food,handful of nuts,no description
+objects,normal,food,apple,no description
+objects,normal,food,orange,no description
+objects,normal,food,pear,no description
+objects,normal,food,melon,no description
+objects,normal,food,carrot,no description
+objects,normal,food,handful of spinach leaves,no description
+objects,normal,food,banana,no description
+objects,normal,food,pomegranate,no description
+objects,normal,food,avocado,no description
+objects,normal,food,cloudberry,no description
+objects,normal,food,fig,no description
+objects,normal,food,dragon fruit,no description
+objects,normal,food,phantomberry,no description
+objects,normal,food,champignon,golden mushroom
+objects,normal,food,penny bun,pale white mushroom
+objects,normal,food,chanterelle,black mushroom
+objects,normal,food,fly agaric,orange mushroom
+objects,normal,food,death cap,gray mushroom
+objects,normal,food,mana mushroom,violet mushroom
+objects,normal,food,healing mushroom,green mushroom
+objects,normal,food,panther cap,brown mushroom
+objects,normal,food,magic mushroom,red mushroom
+objects,normal,food,fruit,no description
+objects,normal,food,lump of royal jelly,no description
+objects,normal,food,cream pie,no description
+objects,normal,food,candy bar,no description
+objects,normal,food,fortune cookie,no description
+objects,normal,food,pancake,no description
+objects,normal,food,lembas wafer,no description
+objects,normal,food,cram ration,no description
+objects,normal,food,food ration,no description
+objects,normal,food,K-ration,no description
+objects,normal,food,C-ration,no description
+objects,normal,food,tin,no description
+objects,normal,potions,gain ability,ruby
+objects,normal,potions,restore ability,swirly
+objects,normal,potions,confusion,sapphire
+objects,normal,potions,blindness,brown
+objects,normal,potions,paralysis,dark green
+objects,normal,potions,speed,silvery
+objects,normal,potions,levitation,brilliant blue
+objects,normal,potions,hallucination,cyan
+objects,normal,potions,invisibility,emerald
+objects,normal,potions,see invisible,puce
+objects,normal,potions,magic resistance,cloudy
+objects,normal,potions,healing,magenta
+objects,normal,potions,extra healing,yellow
+objects,normal,potions,greater healing,purple-red
+objects,normal,potions,full healing,sky blue
+objects,normal,potions,gain level,murky
+objects,normal,potions,enlightenment,white
+objects,normal,potions,monster detection,greenish
+objects,normal,potions,object detection,fizzy
+objects,normal,potions,gain energy,orange
+objects,normal,potions,greater energy,golden
+objects,normal,potions,full energy,effervescent
+objects,normal,potions,sleeping,milky
+objects,normal,potions,polymorph,dark
+objects,normal,potions,booze,black
+objects,normal,potions,sickness,bubbly
+objects,normal,potions,fruit juice,smoky
+objects,normal,potions,acid,pink
+objects,normal,potions,oil,gray
+objects,normal,potions,poison,deep red
+objects,normal,potions,water,clear
+objects,normal,potions,dwarven stout,dark ruby
+objects,normal,potions,urine,pale yellow
+objects,normal,scrolls,enchant armor,HAPAX LEGOMENON
+objects,normal,scrolls,destroy armor,REX SAPH
+objects,normal,scrolls,protect armor,JUYED AWK YACC
+objects,normal,scrolls,confuse monster,MAPIRO MAHAMA DIROMAT
+objects,normal,scrolls,scare monster,VAS CORP BET MANI
+objects,normal,scrolls,remove curse,ZELGO MER
+objects,normal,scrolls,enchant weapon,ABRA KA DABRA
+objects,normal,scrolls,protect weapon,KERNOD WEL
+objects,normal,scrolls,enchant accessory,PRIRUTSENIE
+objects,normal,scrolls,create monster,NR 9
+objects,normal,scrolls,taming,PHOL ENDE WODAN
+objects,normal,scrolls,genocide,XOR OTA
+objects,normal,scrolls,light,DAIYEN FOOELS
+objects,normal,scrolls,teleportation,THARR
+objects,normal,scrolls,gold detection,KIRJE
+objects,normal,scrolls,food detection,DUAM XNAHT
+objects,normal,scrolls,identify,PRATYAVAYAH
+objects,normal,scrolls,magic mapping,LOREM IPSUM
+objects,normal,scrolls,amnesia,GNIK SISI VLE
+objects,normal,scrolls,retraining,EIRIS SAZUN IDISI
+objects,normal,scrolls,fire,ZLORFIK
+objects,normal,scrolls,earth,VERR YED HORRE
+objects,normal,scrolls,punishment,VE FORBRYDERNE
+objects,normal,scrolls,charging,GARVEN DEH
+objects,normal,scrolls,stinking cloud,ELAM EBOW
+objects,normal,scrolls,nameless-0,FOOBIE BLETCH
+objects,normal,scrolls,nameless-1,LEP GEX VEN ZEA
+objects,normal,scrolls,nameless-2,READ ME
+objects,normal,scrolls,nameless-3,NUGG YEBBEH
+objects,normal,scrolls,nameless-4,VENZAR BORGAVVE
+objects,normal,scrolls,nameless-5,TEMOV
+objects,normal,scrolls,nameless-6,HACKEM MUCHE
+objects,normal,scrolls,nameless-7,GHOTI
+objects,normal,scrolls,nameless-8,ASHPD SODALG
+objects,normal,scrolls,nameless-9,VEX DOL
+objects,normal,scrolls,nameless-10,ELBIB YLOH
+objects,normal,scrolls,nameless-11,KO BATE
+objects,normal,scrolls,nameless-12,ANDOVA BEGARIN
+objects,normal,scrolls,nameless-13,XIXAXA XOXAXA XUXAXA
+objects,normal,scrolls,nameless-14,ETAOIN SHRDLU
+objects,normal,scrolls,nameless-15,STRC PRST SKRZ KRK
+objects,normal,scrolls,nameless-16,VELOX NEB
+objects,normal,scrolls,nameless-17,FNORD
+objects,normal,scrolls,nameless-18,YUM YUM
+objects,normal,scrolls,nameless-19,ZEPH NI
+objects,normal,scrolls,blank paper,unlabeled
+objects,normal,spellbooks,dig,stupendous
+objects,normal,spellbooks,knock,copper-plated
+objects,normal,spellbooks,wizard lock,degraded
+objects,normal,spellbooks,create paper golem,cinereous
+objects,normal,spellbooks,create gold golem,garnet-studded
+objects,normal,spellbooks,create stone golem,flimsy
+objects,normal,spellbooks,create glass golem,sticky
+objects,normal,spellbooks,create gemstone golem,hardcover
+objects,normal,spellbooks,create iron golem,dove-patterned
+objects,normal,spellbooks,create silver golem,cerulean
+objects,normal,spellbooks,polymorph,incongruous
+objects,normal,spellbooks,lower water,indigo
+objects,normal,spellbooks,touch of petrification,yellow
+objects,normal,spellbooks,flesh to stone,jade-studded
+objects,normal,spellbooks,water breathing,crystalline
+objects,normal,spellbooks,stone to flesh,light brown
+objects,normal,spellbooks,titan strength,eldritch
+objects,normal,spellbooks,magic missile,ruby-studded
+objects,normal,spellbooks,greater magic missile,abnormal
+objects,normal,spellbooks,burning hands,cloth
+objects,normal,spellbooks,fire bolt,stone-studded
+objects,normal,spellbooks,magical implosion,iron-reinforced
+objects,normal,spellbooks,fireball,turquoise
+objects,normal,spellbooks,fire storm,magenta
+objects,normal,spellbooks,meteor swarm,octagonal-patterned
+objects,normal,spellbooks,cone of cold,gray
+objects,normal,spellbooks,freezing touch,fist-patterned
+objects,normal,spellbooks,ice storm,emerald-studded
+objects,normal,spellbooks,force bolt,hand-patterned
+objects,normal,spellbooks,magic arrow,dark gray
+objects,normal,spellbooks,lightning bolt,square-patterned
+objects,normal,spellbooks,shocking touch,pyramid-patterned
+objects,normal,spellbooks,thunderstorm,tree-patterned
+objects,normal,spellbooks,magic storm,leaf-patterned
+objects,normal,spellbooks,disintegrate,unnameable
+objects,normal,spellbooks,power word kill,glaucous
+objects,normal,spellbooks,power word stun,orange
+objects,normal,spellbooks,power word blind,odious
+objects,normal,spellbooks,sphere of annihilation,pink
+objects,normal,spellbooks,circle of magic,skull-patterned
+objects,normal,spellbooks,circle of fire,bone-patterned
+objects,normal,spellbooks,circle of lightning,dark brown
+objects,normal,spellbooks,circle of frost,diamond-studded
+objects,normal,spellbooks,globe of invulnerability,jet-studded
+objects,normal,spellbooks,anti-magic shell,dark blue
+objects,normal,spellbooks,shield,jade-studded
+objects,normal,spellbooks,animate air,bronze-plated
+objects,normal,spellbooks,animate earth,antediluvian
+objects,normal,spellbooks,animate fire,tan
+objects,normal,spellbooks,animate water,amorphous
+objects,normal,spellbooks,create monster,bird-patterned
+objects,normal,spellbooks,create familiar,incomplete
+objects,normal,spellbooks,summoning call,light gray
+objects,normal,spellbooks,great Yendorian summoning,runic
+objects,normal,spellbooks,stinking cloud,uneven
+objects,normal,spellbooks,wish,biblical
+objects,normal,spellbooks,black blade of disaster,wooden
+objects,normal,spellbooks,mage armor,obsidian-studded
+objects,normal,spellbooks,call hierarch modron,stained
+objects,normal,spellbooks,commune,byzantine
+objects,normal,spellbooks,enlightenment,smoky
+objects,normal,spellbooks,remove curse,ancient
+objects,normal,spellbooks,bless,aged
+objects,normal,spellbooks,curse,ebony
+objects,normal,spellbooks,resurrection,olive green
+objects,normal,spellbooks,prayer,multi-hued
+objects,normal,spellbooks,absolution,glowing blue
+objects,normal,spellbooks,protection from curses,repulsive
+objects,normal,spellbooks,protection,immaculate
+objects,normal,spellbooks,create clay golem,tree-patterned
+objects,normal,spellbooks,create food,thick
+objects,normal,spellbooks,create fruits,cyan
+objects,normal,spellbooks,create water,unclear
+objects,normal,spellbooks,congregate,dim
+objects,normal,spellbooks,divine strength,vellum
+objects,normal,spellbooks,divine endurance,deformed
+objects,normal,spellbooks,celestial dove,carmine
+objects,normal,spellbooks,celestial eagle,cross-patterned
+objects,normal,spellbooks,turn undead,platinum-plated
+objects,normal,spellbooks,heavenly warrior,decorated
+objects,normal,spellbooks,negate undeath,smelly
+objects,normal,spellbooks,guardian angel,peculiar
+objects,normal,spellbooks,banish demon,angelic
+objects,normal,spellbooks,holy word,agate-studded
+objects,normal,spellbooks,summon gold dragon,blue and white
+objects,normal,spellbooks,obliterate,adorned
+objects,normal,spellbooks,divine intervention,white
+objects,normal,spellbooks,summon phoenix,scratched
+objects,normal,spellbooks,call Bahamut,hand-patterned
+objects,normal,spellbooks,divine mount,ludicrous
+objects,normal,spellbooks,summon ancient gold dragon,topaz-studded
+objects,normal,spellbooks,heavenly army,parchment
+objects,normal,spellbooks,stick to snake,light red
+objects,normal,spellbooks,create wood golem,eagle-patterned
+objects,normal,spellbooks,stick to cobra,octopoid-patterned
+objects,normal,spellbooks,stick to python,silvery
+objects,normal,spellbooks,stick to boa,snake-patterned
+objects,normal,spellbooks,barkskin,blue-hued
+objects,normal,spellbooks,stoneskin,pitch black
+objects,normal,spellbooks,faithful hound,skeletal
+objects,normal,spellbooks,summon treant,gold-plated
+objects,normal,spellbooks,summon elder treant,insipid
+objects,normal,spellbooks,gaze of petrification,anomalous
+objects,normal,spellbooks,light,dusty
+objects,normal,spellbooks,probe monster,nonsensical
+objects,normal,spellbooks,detect monsters,orichalcum-plated
+objects,normal,spellbooks,detect food,spiritual
+objects,normal,spellbooks,clairvoyance,darkened
+objects,normal,spellbooks,detect unseen,strange
+objects,normal,spellbooks,detect treasure,navy blue
+objects,normal,spellbooks,identify,sacrilegious
+objects,normal,spellbooks,magic mapping,circle-patterned
+objects,normal,spellbooks,telepathy,leather bound
+objects,normal,spellbooks,detect traps,spherical
+objects,normal,spellbooks,minor consultation,jewel-encrusted
+objects,normal,spellbooks,major consultation,red
+objects,normal,spellbooks,detect blessedness,lunatic
+objects,normal,spellbooks,sleep,antiquarian
+objects,normal,spellbooks,mass sleep,wrinkled
+objects,normal,spellbooks,fear,sapphire-studded
+objects,normal,spellbooks,mass fear,dragon-patterned
+objects,normal,spellbooks,confuse monster,tenebrous
+objects,normal,spellbooks,charm monster,hideous
+objects,normal,spellbooks,sphere of charming,whistle-patterned
+objects,normal,spellbooks,mass charm,obtuse
+objects,normal,spellbooks,dominate monster,intimidating-looking
+objects,normal,spellbooks,sphere of domination,dark green
+objects,normal,spellbooks,mass domination,violet
+objects,normal,spellbooks,invisibility,eye-patterned
+objects,normal,spellbooks,enchant armor,heavy
+objects,normal,spellbooks,enchant weapon,morbid
+objects,normal,spellbooks,protect armor,arrow-patterned
+objects,normal,spellbooks,protect weapon,blasphemous
+objects,normal,spellbooks,cold-enchant item,fulvous
+objects,normal,spellbooks,fire-enchant item,eye-and-triangle-patterned
+objects,normal,spellbooks,lightning-enchant item,clay-covered
+objects,normal,spellbooks,death-enchant item,dark
+objects,normal,spellbooks,mirror image,purple
+objects,normal,spellbooks,mass conflict,ecclesiastical
+objects,normal,spellbooks,cure sickness,crimson
+objects,normal,spellbooks,cure petrification,scintillating
+objects,normal,spellbooks,cure blindness,unspeakable
+objects,normal,spellbooks,minor healing,silver-plated
+objects,normal,spellbooks,healing,plaid
+objects,normal,spellbooks,extra healing,baroque
+objects,normal,spellbooks,greater healing,adamantium-plated
+objects,normal,spellbooks,prodigious healing,oval-patterned
+objects,normal,spellbooks,full healing,bright-colored
+objects,normal,spellbooks,restore ability,obscure
+objects,normal,spellbooks,slow monster,gigantic
+objects,normal,spellbooks,mass slow,water-drop-patterned
+objects,normal,spellbooks,hold monster,human-patterned
+objects,normal,spellbooks,mass hold,dog-eared
+objects,normal,spellbooks,haste self,gold-circled
+objects,normal,spellbooks,haste monster,stick-patterned
+objects,normal,spellbooks,levitation,diabolical
+objects,normal,spellbooks,teleport self,shining
+objects,normal,spellbooks,teleport monster,unspeakable
+objects,normal,spellbooks,controlled teleport,illuminating
+objects,normal,spellbooks,circle of teleportation,feather-patterned
+objects,normal,spellbooks,level teleport,cadaverous
+objects,normal,spellbooks,controlled level teleport,ornamental
+objects,normal,spellbooks,portal,preposterous
+objects,normal,spellbooks,jumping,viridian
+objects,normal,spellbooks,water walking,squamous
+objects,normal,spellbooks,time stop,cloudy
+objects,normal,spellbooks,reflection,glittering
+objects,normal,spellbooks,protection from fire,canine-patterned
+objects,normal,spellbooks,protection from lightning,flame-patterned
+objects,normal,spellbooks,protection from cold,polished silver
+objects,normal,spellbooks,protection from acid,crystal-studded
+objects,normal,spellbooks,protection from poison,moist
+objects,normal,spellbooks,protection from life draining,wing-patterned
+objects,normal,spellbooks,protection from death magic,malevolent
+objects,normal,spellbooks,protection from disintegration,aberrant
+objects,normal,spellbooks,protection from sickness,velvet
+objects,normal,spellbooks,protection from petrification,titanic
+objects,normal,spellbooks,protection from lycanthropy,oval-patterned
+objects,normal,spellbooks,lower magic resistance,wave-patterned
+objects,normal,spellbooks,diminish magic resistance,mottled
+objects,normal,spellbooks,abolish magic resistance,mithril-plated
+objects,normal,spellbooks,negate magic resistance,light green
+objects,normal,spellbooks,forbid summoning,beige
+objects,normal,spellbooks,cancellation,pearl-studded
+objects,normal,spellbooks,silence,loathsome
+objects,normal,spellbooks,touch of death,blackened
+objects,normal,spellbooks,finger of death,white
+objects,normal,spellbooks,deathspell,light blue
+objects,normal,spellbooks,armageddon,convoluted
+objects,normal,spellbooks,call ghoul,glowing
+objects,normal,spellbooks,raise minor zombie,obnoxious
+objects,normal,spellbooks,create minor mummy,celestial
+objects,normal,spellbooks,raise giant zombie,ragged
+objects,normal,spellbooks,create giant mummy,horn-patterned
+objects,normal,spellbooks,create dracolich,thin
+objects,normal,spellbooks,mass raise zombie,radiating
+objects,normal,spellbooks,mass create mummy,striped
+objects,normal,spellbooks,mass create dracolich,shimmering
+objects,normal,spellbooks,raise skeleton,dull
+objects,normal,spellbooks,raise giant skeleton,glowing
+objects,normal,spellbooks,raise skeleton warrior,damaged
+objects,normal,spellbooks,raise skeleton lord,strange-looking
+objects,normal,spellbooks,raise skeleton king,terrifying
+objects,normal,spellbooks,replenish undeath,clay-studded
+objects,normal,spellbooks,greater undeath replenishment,inspiring
+objects,normal,spellbooks,summon demon,fractal-patterned
+objects,normal,spellbooks,call Demogorgon,leathery
+objects,normal,spellbooks,drain level,baleful
+objects,normal,spellbooks,blank paper,plain
+objects,normal,spellbooks,novel,paperback
+objects,normal,spellbooks,Book of the Dead,papyrus
+objects,normal,wands,light,hexagonal
+objects,normal,wands,secret door detection,aluminum
+objects,normal,wands,ore detection,pine
+objects,normal,wands,enlightenment,runed
+objects,normal,wands,create monster,tin
+objects,normal,wands,wishing,skull-headed
+objects,normal,wands,identify,glass
+objects,normal,wands,nothing,marble
+objects,normal,wands,striking,forked
+objects,normal,wands,make invisible,platinum
+objects,normal,wands,slow monster,jeweled
+objects,normal,wands,speed monster,orichalcum
+objects,normal,wands,undead turning,ornamental
+objects,normal,wands,polymorph,silver
+objects,normal,wands,cancellation,curved
+objects,normal,wands,teleportation,iridium
+objects,normal,wands,opening,mithril
+objects,normal,wands,locking,uranium
+objects,normal,wands,probing,spiked
+objects,normal,wands,digging,oak
+objects,normal,wands,magic missile,brass
+objects,normal,wands,fire,ebony
+objects,normal,wands,cold,short
+objects,normal,wands,sleep,flimsy
+objects,normal,wands,disintegration,copper
+objects,normal,wands,petrification,balsa
+objects,normal,wands,lightning,maple
+objects,normal,wands,death,crystal
+objects,normal,wands,resurrection,adamantium
+objects,normal,wands,evaporation,iron
+objects,normal,wands,nameless-20,zinc
+objects,normal,wands,nameless-21,steel
+objects,normal,wands,nameless-22,long
+objects,normal,coins,gold piece,no description
+objects,normal,rocks,worthless piece of white glass,white
+objects,normal,rocks,worthless piece of blue glass,blue
+objects,normal,rocks,worthless piece of red glass,red
+objects,normal,rocks,worthless piece of yellowish brown glass,yellowish brown
+objects,normal,rocks,worthless piece of orange glass,orange
+objects,normal,rocks,worthless piece of yellow glass,yellow
+objects,normal,rocks,worthless piece of black glass,black
+objects,normal,rocks,worthless piece of green glass,green
+objects,normal,rocks,worthless piece of violet glass,violet
+objects,normal,rocks,luckstone,gray

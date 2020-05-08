@@ -497,7 +497,7 @@ const struct Role roles[] = {
       S_WRAITH,
       ART_MITRE_OF_HOLINESS,
       MH_HUMAN | MH_ELF | MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
-          | ROLE_CHAOTIC,
+          | ROLE_CHAOTIC | ROLE_ALIGNMENT_TILES,
       /* Str Int Wis Dex Con Cha */
       { 7, 7, 10, 7, 7, 7 },
       { 15, 10, 30, 15, 20, 10 },
@@ -1228,7 +1228,7 @@ const struct Align aligns[] = {
 /* Filters */
 static struct {
     boolean roles[SIZE(roles)];
-    short mask;
+    unsigned long mask;
 } rfilter;
 
 STATIC_DCL int NDECL(randrole_filtered);
@@ -1511,7 +1511,7 @@ ok_role(rolenum, racenum, gendnum, alignnum)
 int rolenum, racenum, gendnum, alignnum;
 {
     int i;
-    short allow;
+    unsigned long allow;
 
     if (rolenum >= 0 && rolenum < SIZE(roles) - 1) {
         if (rfilter.roles[rolenum])
@@ -1579,7 +1579,7 @@ ok_race(rolenum, racenum, gendnum, alignnum)
 int rolenum, racenum, gendnum, alignnum;
 {
     int i;
-    short allow;
+    unsigned long allow;
 
     if (racenum >= 0 && racenum < SIZE(races) - 1) {
         if (rfilter.mask & races[racenum].selfmask)
@@ -1652,7 +1652,7 @@ int rolenum, racenum, gendnum;
 int alignnum UNUSED;
 {
     int i;
-    short allow;
+    unsigned long allow;
 
     if (gendnum >= 0 && gendnum < ROLE_GENDERS) {
         if (rfilter.mask & genders[gendnum].allow)
@@ -1721,7 +1721,7 @@ int gendnum UNUSED;
 int alignnum;
 {
     int i;
-    short allow;
+    unsigned long allow;
 
     if (alignnum >= 0 && alignnum < ROLE_ALIGNS) {
         if (rfilter.mask & aligns[alignnum].allow)
