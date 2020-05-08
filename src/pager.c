@@ -532,6 +532,11 @@ char *buf, *monbuf;
         switch (glyph_to_cmap(glyph))
 		{
         case S_altar:
+        case S_lawful_altar:
+        case S_neutral_altar:
+        case S_chaotic_altar:
+        case S_moloch_altar:
+        case S_high_altar:
             Sprintf(buf, "%s %saltar",
                     /* like endgame high priests, endgame high altars
                        are only recognizable when immediately adjacent */
@@ -1074,7 +1079,8 @@ struct permonst **for_supplement;
                     hit_trap = TRUE;
             }
 
-            if (i == S_altar || is_cmap_trap(i))
+            if (i == S_altar || i == S_lawful_altar || i == S_neutral_altar || i == S_chaotic_altar 
+                || i == S_moloch_altar || i == S_high_altar || is_cmap_trap(i))
                 need_to_look = TRUE;
         }
     }

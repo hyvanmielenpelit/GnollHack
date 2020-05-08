@@ -1177,9 +1177,9 @@ do_positionbar()
     }
     if (sstairs.sx
         && (glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].glyph)
-                == S_upstair
+                == S_branch_upstair
             || glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].glyph)
-                   == S_upladder)) {
+                   == S_extra_upstair)) {
         *p++ = '<';
         *p++ = sstairs.sx;
     }
@@ -1195,9 +1195,9 @@ do_positionbar()
     }
     if (sstairs.sx
         && (glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].glyph)
-                == S_dnstair
+                == S_branch_dnstair
             || glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].glyph)
-                   == S_dnladder)) {
+                   == S_extra_dnstair)) {
         *p++ = '>';
         *p++ = sstairs.sx;
     }

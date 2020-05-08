@@ -1940,8 +1940,13 @@ xchar x, y;
         idx = S_pool;
         break;
     case STAIRS:
-        idx = (ptr->ladder & LA_DOWN) ? S_dnstair : S_upstair;
+    {
+        boolean is_branch_staircase = (sstairs.sx  && x == sstairs.sx && y == sstairs.sy);
+        boolean is_extra_staircase = use_extra_special_staircase();
+        idx = (ptr->ladder & LA_DOWN) ? (is_branch_staircase ? (is_extra_staircase ? S_extra_dnstair : S_branch_dnstair) : S_dnstair) : 
+            (is_branch_staircase ? (is_extra_staircase ? S_extra_upstair : S_branch_upstair) : S_upstair);
         break;
+    }
     case LADDER:
         idx = (ptr->ladder & LA_DOWN) ? S_dnladder : S_upladder;
         break;
@@ -1952,8 +1957,17 @@ xchar x, y;
         idx = S_sink;
         break;
     case ALTAR:
-        idx = S_altar;
+    {
+        uchar alignment_mask = ptr->altarmask;
+        aligntyp alignment = Amask2align(alignment_mask);
+        idx = Is_astralevel(&u.uz) ? S_high_altar :
+            alignment == A_LAWFUL ? S_lawful_altar : 
+            alignment == A_NEUTRAL ? S_neutral_altar : 
+            alignment == A_CHAOTIC ? S_chaotic_altar :
+            alignment == A_NONE /*&& (Is_sanctum(&u.uz) || Is_valley(&u.uz))*/ ? S_moloch_altar : S_altar
+            ;
         break;
+    }
     case GRAVE:
         idx = S_grave;
         break;
@@ -2842,10 +2856,6 @@ get_current_cmap_type_index()
 {
     if (In_mines(&u.uz))
         return CMAP_GNOMISH_MINES;
-    else if (Inhell && !level.flags.is_maze_lev &&
-        !Is_valley(&u.uz) && !Is_juiblex_level(&u.uz) && !Is_orcus_level(&u.uz) && !Is_sanctum(&u.uz)
-        && !In_V_tower(&u.uz) && !Is_modron_level(&u.uz) && !Is_bovine_level(&u.uz))
-        return CMAP_GEHENNOM;
     else if (Is_knox(&u.uz))
         return CMAP_FORT_LUDIOUS;
     else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz))
@@ -2856,8 +2866,16 @@ get_current_cmap_type_index()
         return CMAP_MODRON;
     else if (Is_bovine_level(&u.uz))
         return CMAP_BOVINE;
-    else if (In_V_tower(&u.uz))
+    else if (In_V_tower(&u.uz) || On_W_tower_level(&u.uz))
         return CMAP_TOWER;
+    else if (Is_astralevel(&u.uz))
+        return CMAP_ASTRAL;
+    else if (level.flags.is_maze_lev)
+        return CMAP_MAZE;
+    else if (Is_sanctum(&u.uz))
+        return CMAP_NORMAL;
+    else if (Inhell)
+        return CMAP_GEHENNOM;
     else
         return CMAP_NORMAL;
 }

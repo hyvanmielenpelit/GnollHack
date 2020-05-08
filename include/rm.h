@@ -143,93 +143,102 @@ enum screen_symbols {
     S_dnstair   = 24+1,
     S_upladder  = 25+1,
     S_dnladder  = 26+1,
-    S_altar     = 27+1,
-    S_grave     = 28+1,
-    S_throne    = 29+1,
-    S_sink      = 30+1,
-    S_fountain  = 31+1,
-    S_pool      = 32+1,
-    S_ice       = 33+1,
-    S_lava      = 34+1,
-    S_vodbridge = 35+1,
-    S_hodbridge = 36+1,
-    S_vcdbridge = 37+1, /* closed drawbridge+1, vertical wall */
-    S_hcdbridge = 38+1, /* closed drawbridge+1, horizontal wall */
-    S_air       = 39+1,
-    S_cloud     = 40+1,
-    S_water     = 41+1,
+    S_branch_upstair = 27 + 1,
+    S_branch_dnstair = 28 + 1,
+    S_extra_upstair = 29 + 1,
+    S_extra_dnstair = 30 + 1,
+    S_altar     = 31+1,
+    S_lawful_altar = 32 + 1,
+    S_neutral_altar = 33 + 1,
+    S_chaotic_altar = 34 + 1,
+    S_moloch_altar = 35 + 1,
+    S_high_altar = 36 + 1,
+    S_grave     = 28+10,
+    S_throne    = 29+10,
+    S_sink      = 30+10,
+    S_fountain  = 31+10,
+    S_pool      = 32+10,
+    S_ice       = 33+10,
+    S_lava      = 34+10,
+    S_vodbridge = 35+10,
+    S_hodbridge = 36+10,
+    S_vcdbridge = 37+10, /* closed drawbridge+10, vertical wall */
+    S_hcdbridge = 38+10, /* closed drawbridge+10, horizontal wall */
+    S_air       = 39+10,
+    S_cloud     = 40+10,
+    S_water     = 41+10,
 
-/* end dungeon characters+1, begin traps */
+/* end dungeon characters+10, begin traps */
 
-    S_arrow_trap           = 42+1,
-    S_dart_trap            = 43+1,
-    S_falling_rock_trap    = 44+1,
-    S_squeaky_board        = 45+1,
-    S_bear_trap            = 46+1,
-    S_land_mine            = 47+1,
-    S_rolling_boulder_trap = 48+1,
-    S_sleeping_gas_trap    = 49+1,
-    S_rust_trap            = 50+1,
-    S_fire_trap            = 51+1,
-    S_pit                  = 52+1,
-    S_spiked_pit           = 53+1,
-    S_hole                 = 54+1,
-    S_trap_door            = 55+1,
-    S_teleportation_trap   = 56+1,
-    S_level_teleporter     = 57+1,
-    S_magic_portal         = 58+1,
-    S_web                  = 59+1,
-    S_statue_trap          = 60+1,
-    S_magic_trap           = 61+1,
-    S_anti_magic_trap      = 62+1,
-    S_polymorph_trap       = 63+1,
-    S_vibrating_square     = 64+1, /* for display rather than any trap effect */
-	S_octahedral_portal	   = 65+1,
-	S_tetrahedral_portal   = 66+1,
-    S_cubical_portal       = 67+1,
-    S_dodecahedral_portal  = 68+1,
+    S_arrow_trap           = 42+10,
+    S_dart_trap            = 43+10,
+    S_falling_rock_trap    = 44+10,
+    S_squeaky_board        = 45+10,
+    S_bear_trap            = 46+10,
+    S_land_mine            = 47+10,
+    S_rolling_boulder_trap = 48+10,
+    S_sleeping_gas_trap    = 49+10,
+    S_rust_trap            = 50+10,
+    S_fire_trap            = 51+10,
+    S_pit                  = 52+10,
+    S_spiked_pit           = 53+10,
+    S_hole                 = 54+10,
+    S_trap_door            = 55+10,
+    S_teleportation_trap   = 56+10,
+    S_level_teleporter     = 57+10,
+    S_magic_portal         = 58+10,
+    S_web                  = 59+10,
+    S_statue_trap          = 60+10,
+    S_magic_trap           = 61+10,
+    S_anti_magic_trap      = 62+10,
+    S_polymorph_trap       = 63+10,
+	S_octahedral_portal	   = 64+10,
+	S_tetrahedral_portal   = 65+10,
+    S_cubical_portal       = 66+10,
+    S_dodecahedral_portal  = 67+10,
+    S_vibrating_square     = 68+10, /* for display rather than any trap effect */
 
-/* end traps+1, begin special effects */
+/* end traps+10, begin special effects */
 
-    S_vbeam     = 65+5, /* The 4 zap beam symbols.  Do NOT separate. */
-    S_hbeam     = 66+5, /* To change order or add+5, see function      */
-    S_lslant    = 67+5, /* zapdir_to_glyph() in display.c.           */
-    S_rslant    = 68+5,
-    S_digbeam   = 69+5, /* dig beam symbol */
-    S_flashbeam = 70+5, /* camera flash symbol */
-    S_boomleft  = 71+5, /* thrown boomerang+5, open left+5, e.g ')'    */
-    S_boomright = 72+5, /* thrown boomerang+5, open right+5, e.g. '('  */
-    S_ss1       = 73+5, /* 4 magic shield ("resistance sparkle") glyphs */
-    S_ss2       = 74+5,
-    S_ss3       = 75+5,
-    S_ss4       = 76+5,
-    S_poisoncloud = 77+5,
-    S_goodpos   = 78+5, /* valid position for targeting via getpos() */
+    S_vbeam     = 65+14, /* The 4 zap beam symbols.  Do NOT separate. */
+    S_hbeam     = 66+14, /* To change order or add+14, see function      */
+    S_lslant    = 67+14, /* zapdir_to_glyph() in display.c.           */
+    S_rslant    = 68+14,
+    S_digbeam   = 69+14, /* dig beam symbol */
+    S_flashbeam = 70+14, /* camera flash symbol */
+    S_boomleft  = 71+14, /* thrown boomerang+14, open left+14, e.g ')'    */
+    S_boomright = 72+14, /* thrown boomerang+14, open right+14, e.g. '('  */
+    S_ss1       = 73+14, /* 4 magic shield ("resistance sparkle") glyphs */
+    S_ss2       = 74+14,
+    S_ss3       = 75+14,
+    S_ss4       = 76+14,
+    S_poisoncloud = 77+14,
+    S_goodpos   = 78+14, /* valid position for targeting via getpos() */
 
-/* The 8 swallow symbols.  Do NOT separate.  To change order or add+5, */
+/* The 8 swallow symbols.  Do NOT separate.  To change order or add+14, */
 /* see the function swallow_to_glyph() in display.c.                 */
-    S_sw_tl     = 79+5, /* swallow top left [1]             */
-    S_sw_tc     = 80+5, /* swallow top center [2]    Order: */
-    S_sw_tr     = 81+5, /* swallow top right [3]            */
-    S_sw_ml     = 82+5, /* swallow middle left [4]   1 2 3  */
-    S_sw_mr     = 83+5, /* swallow middle right [6]  4 5 6  */
-    S_sw_bl     = 84+5, /* swallow bottom left [7]   7 8 9  */
-    S_sw_bc     = 85+5, /* swallow bottom center [8]        */
-    S_sw_br     = 86+5, /* swallow bottom right [9]         */
+    S_sw_tl     = 79+14, /* swallow top left [1]             */
+    S_sw_tc     = 80+14, /* swallow top center [2]    Order: */
+    S_sw_tr     = 81+14, /* swallow top right [3]            */
+    S_sw_ml     = 82+14, /* swallow middle left [4]   1 2 3  */
+    S_sw_mr     = 83+14, /* swallow middle right [6]  4 5 6  */
+    S_sw_bl     = 84+14, /* swallow bottom left [7]   7 8 9  */
+    S_sw_bc     = 85+14, /* swallow bottom center [8]        */
+    S_sw_br     = 86+14, /* swallow bottom right [9]         */
 
-    S_explode1  = 87+5, /* explosion top left               */
-    S_explode2  = 88+5, /* explosion top center             */
-    S_explode3  = 89+5, /* explosion top right        Ex.   */
-    S_explode4  = 90+5, /* explosion middle left            */
-    S_explode5  = 91+5, /* explosion middle center    /-\   */
-    S_explode6  = 92+5, /* explosion middle right     |@|   */
-    S_explode7  = 93+5, /* explosion bottom left      \-/   */
-    S_explode8  = 94+5, /* explosion bottom center          */
-    S_explode9  = 95+5, /* explosion bottom right           */
+    S_explode1  = 87+14, /* explosion top left               */
+    S_explode2  = 88+14, /* explosion top center             */
+    S_explode3  = 89+14, /* explosion top right        Ex.   */
+    S_explode4  = 90+14, /* explosion middle left            */
+    S_explode5  = 91+14, /* explosion middle center    /-\   */
+    S_explode6  = 92+14, /* explosion middle right     |@|   */
+    S_explode7  = 93+14, /* explosion bottom left      \-/   */
+    S_explode8  = 94+14, /* explosion bottom center          */
+    S_explode9  = 95+14, /* explosion bottom right           */
 
 /* end effects */
 
-    MAXPCHARS   = 101  /* maximum number of mapped characters */
+    MAXPCHARS   = 110  /* maximum number of mapped characters */
 };
 
 #define MAXDCHARS (S_water - S_stone + 1) /* mapped dungeon characters */
@@ -267,14 +276,14 @@ enum cmap_types {
     CMAP_MAZE = 12,
     CMAP_TOWER = 13,
     CMAP_CAVERNS = 14,
-    CMAP_EXTRA_1 = 15,
+    CMAP_ASTRAL = 15,
     CMAP_TYPE_MAX = 16
 };
 
 
 static const char* cmap_type_names[CMAP_TYPE_MAX] = {
     "normal", "gnomish mines", "gehennom",  "ludious", "undead", "swamp", "gehennom alternative", "modron",
-    "bovine", "arboreal",      "cityscape", "sewers",  "maze",   "tower", "caverns",              "extra1"
+    "bovine", "arboreal",      "cityscape", "sewers",  "maze",   "tower", "caverns",              "astral"
 };
 
 

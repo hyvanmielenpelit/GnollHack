@@ -4264,12 +4264,27 @@ int x, y;
                 a_gname_at(x, y),
                 align_str(Amask2align(lev->altarmask & ~AM_SHRINE)));
         dfeature = altbuf;
-    } else if ((x == xupstair && y == yupstair)
-               || (x == sstairs.sx && y == sstairs.sy && sstairs.up))
+    }
+    else if ((x == xupstair && y == yupstair))
         cmap = S_upstair; /* "staircase up" */
-    else if ((x == xdnstair && y == ydnstair)
-             || (x == sstairs.sx && y == sstairs.sy && !sstairs.up))
+    else if ((x == xdnstair && y == ydnstair))
+    {
         cmap = S_dnstair; /* "staircase down" */
+    }
+    else if ((x == sstairs.sx && y == sstairs.sy && sstairs.up))
+    {
+        if (use_extra_special_staircase())
+            cmap = S_extra_upstair; /* "staircase up" */
+        else
+            cmap = S_branch_upstair; /* "staircase up" */
+    }
+    else if ((x == sstairs.sx && y == sstairs.sy && !sstairs.up))
+    {
+        if (use_extra_special_staircase())
+            cmap = S_extra_upstair; /* "staircase down" */
+        else
+            cmap = S_branch_dnstair; /* "staircase down" */
+    }
     else if (x == xupladder && y == yupladder)
         cmap = S_upladder; /* "ladder up" */
     else if (x == xdnladder && y == ydnladder)
@@ -4288,6 +4303,13 @@ int x, y;
     if (cmap >= 0)
         dfeature = defsyms[cmap].explanation;
     return dfeature;
+}
+
+boolean
+use_extra_special_staircase()
+{
+    return (depth(&u.uz) == dungeons[u.uz.dnum].depth_start
+        || depth(&u.uz) == dungeons[u.uz.dnum].depth_start + dungeons[u.uz.dnum].num_dunlevs - 1);
 }
 
 /* look at what is here; if there are many objects (pile_limit or more),

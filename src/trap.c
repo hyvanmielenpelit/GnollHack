@@ -4640,11 +4640,11 @@ struct trap* ttmp;
 				   "magic trap",
 				   "anti-magic trap",
 				   "polymorph trap",
-				   "vibrating square",
-				   "octahedral magic portal",
-				   "tetrahedral magic portal",
+                   "octahedral magic portal",
+                   "tetrahedral magic portal",
                    "cubical magic portal",
                    "dodecahedral magic portal",
+                   "vibrating square",
                    0 };
 
 /*

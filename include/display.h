@@ -558,7 +558,7 @@
     (glyph_is_trap(glyph) ? ((int) defsym_to_trap((glyph) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF)) \
                           : NO_GLYPH)
 #define glyph_to_cmap(glyph) \
-    (glyph_is_cmap(glyph) ? ((glyph) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF) : NO_GLYPH)
+    (glyph_is_cmap(glyph) ? (glyph < GLYPH_CMAP_OFF + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM ? (glyph) - GLYPH_CMAP_OFF : (glyph) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF) : NO_GLYPH)
 #define glyph_to_swallow(glyph) \
     (glyph_is_swallow(glyph) ? (((glyph) - GLYPH_SWALLOW_OFF) & 0x7) : 0)
 #define glyph_to_warning(glyph) \
