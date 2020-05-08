@@ -2103,12 +2103,15 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                 /* Jump over gems that all look the same, just take pieces of glass and luckstone */
                 if (objects[i].oc_class == GEM_CLASS)
                 {
-                    if (i <= LAST_GEM || (i > LUCKSTONE && OBJ_DESCR(objects[i]) && OBJ_DESCR(objects[LUCKSTONE]) && !strcmp(OBJ_DESCR(objects[i]), OBJ_DESCR(objects[LUCKSTONE]))) )
+                    if (i <= LAST_GEM || (i > LUCKSTONE 
+                        && obj_descr[objects[i].oc_name_idx].oc_descr && obj_descr[objects[LUCKSTONE].oc_name_idx].oc_descr 
+                        && !strcmp(obj_descr[objects[i].oc_name_idx].oc_descr, obj_descr[objects[LUCKSTONE].oc_name_idx].oc_descr))
+                        )
                         continue;
                 }
 
                 boolean nameless = !OBJ_NAME(objects[i]);
-                boolean no_description = !OBJ_DESCR(objects[i]);
+                boolean no_description = !obj_descr[objects[i].oc_name_idx].oc_descr;
                 char nameless_name[BUFSZ];
                 Sprintf(nameless_name, "nameless-%d", nameless_idx);
                 if (!OBJ_NAME(objects[i]))
@@ -2119,7 +2122,7 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                 const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
                 Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
                     nameless ? nameless_name : OBJ_NAME(objects[i]),
-                    no_description ? "no description" : OBJ_DESCR(objects[i])
+                    no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr
                 );
                 (void)write(fd, buf, strlen(buf));
             }
@@ -2135,7 +2138,16 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
             set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
             for (int i = 1; i <= NROFARTIFACTS; i++)
             {
-                Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, artilist[i].name);
+                int base_item = artilist[i].otyp;
+                boolean no_description = !artilist[i].desc;
+                boolean no_base_item_name = !OBJ_NAME(objects[base_item]);
+                boolean no_base_item_description = !obj_descr[objects[base_item].oc_name_idx].oc_descr;
+                Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, 
+                    artilist[i].name,
+                    no_description ? "no artifact description" : artilist[i].desc,
+                    no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
+                    no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr
+                );
                 (void)write(fd, buf, strlen(buf));
             }
         }
@@ -2172,21 +2184,16 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
             }
             else if (misc_idx == 1)
             {
+                const char* explosion_direction_name_array[MAXEXPCHARS] = {
+                     "top-left", "top-center", "top-right",
+                     "middle-right", "middle-center", "middle-left",
+                     "bottom-left", "bottom-center", "bottom-right" };
+
                 if (tsd->has_all_explode_tiles == 0)
                 {
                     for (int j = 0; j < MAXEXPCHARS; j++)
                     {
-                        const char* explosion_direction_name =
-                            (j == 0) ? "north-west" :
-                            (j == 1) ? "north" :
-                            (j == 2) ? "north-east" :
-                            (j == 3) ? "west" :
-                            (j == 4) ? "center" :
-                            (j == 5) ? "east" :
-                            (j == 6) ? "south-west" :
-                            (j == 7) ? "south" :
-                            (j == 8) ? "south-east" :
-                            "unknown-explosion";
+                        const char* explosion_direction_name = explosion_direction_name_array[j];
 
                         Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, explosion_direction_name);
                         (void)write(fd, buf, strlen(buf));
@@ -2199,18 +2206,7 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                         const char* explosion_name = explosion_type_names[i];
                         for (int j = 0; j < MAXEXPCHARS; j++)
                         {
-                            const char* explosion_direction_name =
-                                (j == 0) ? "north-west" :
-                                (j == 1) ? "north" :
-                                (j == 2) ? "north-east" :
-                                (j == 3) ? "west" :
-                                (j == 4) ? "center" :
-                                (j == 5) ? "east" :
-                                (j == 6) ? "south-west" :
-                                (j == 7) ? "south" :
-                                (j == 8) ? "south-east" :
-                                "unknown-explosion";
-
+                            const char* explosion_direction_name = explosion_direction_name_array[j];
                             Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, explosion_name, explosion_direction_name);
                             (void)write(fd, buf, strlen(buf));
                         }
@@ -2219,11 +2215,14 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
             }
             else if (misc_idx == 2)
             {
+                const char* zap_direction_name_array[4] = {
+                    "vertical", "horizontal", "diagonal-top-left-to-bottom-right", "diagonal-bottom-left-to-top-right" };
+
                 if (tsd->has_all_zap_tiles == 0)
                 {
                     for (int j = 0; j < 4; j++)
                     {
-                        const char* zap_direction_name = (j == 0) ? "vertical" : (j == 1) ? "horizontal" : (j == 2) ? "diagonal-north-east" : (j == 3) ? "diagonal-north-west" : "unknown-zap";
+                        const char* zap_direction_name = zap_direction_name_array[j];
                         Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, zap_direction_name);
                         (void)write(fd, buf, strlen(buf));
                     }
@@ -2240,7 +2239,7 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 
                         for (int j = 0; j < 4; j++)
                         {
-                            const char* zap_direction_name = (j == 0) ? "vertical" : (j == 1) ? "horizontal" : (j == 2) ? "diagonal-north-east" : (j == 3) ? "diagonal-north-west" : "unknown-zap";
+                            const char* zap_direction_name = zap_direction_name_array[j];
 
                             Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, zap_name, zap_direction_name);
                             (void)write(fd, buf, strlen(buf));
@@ -2250,21 +2249,16 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
             }
             else if (misc_idx == 3)
             {
+                const char* swallow_direction_name_array[8] = {
+                     "top-left", "top-center", "top-right",
+                     "middle-right", "middle-left",
+                     "bottom-left", "bottom-center", "bottom-right" };
+
                 if (tsd->swallow_tile_style == 0)
                 {
                     for (int j = 0; j < 8; j++)
                     {
-                        const char* swallow_direction_name =
-                            (j == 0) ? "north-west" :
-                            (j == 1) ? "north" :
-                            (j == 2) ? "north-east" :
-                            (j == 3) ? "west" :
-                            (j == 4) ? "east" :
-                            (j == 5) ? "south-west" :
-                            (j == 6) ? "south" :
-                            (j == 7) ? "south-east" :
-                            "unknown-explosion";
-
+                        const char* swallow_direction_name = swallow_direction_name_array[j];
                         Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, swallow_direction_name);
                         (void)write(fd, buf, strlen(buf));
                     }
@@ -2281,17 +2275,7 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 
                         for (int j = 0; j < 8; j++)
                         {
-                            const char* swallow_direction_name =
-                                (j == 0) ? "north-west" :
-                                (j == 1) ? "north" :
-                                (j == 2) ? "north-east" :
-                                (j == 3) ? "west" :
-                                (j == 4) ? "east" :
-                                (j == 5) ? "south-west" :
-                                (j == 6) ? "south" :
-                                (j == 7) ? "south-east" :
-                                "unknown-explosion";
-
+                            const char* swallow_direction_name = swallow_direction_name_array[j];
                             Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, mons[i].mname, swallow_direction_name);
                             (void)write(fd, buf, strlen(buf));
                         }
