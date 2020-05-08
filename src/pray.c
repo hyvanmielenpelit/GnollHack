@@ -2304,6 +2304,7 @@ dosacrifice()
                     levl[u.ux][u.uy].altarmask =
                         levl[u.ux][u.uy].altarmask
                         | (Align2amask(u.ualign.type));
+                    newsym(u.ux, u.uy);
                     if (!Blind)
                         pline_The("altar glows %s.",
                                   hcolor((u.ualign.type == A_LAWFUL)
