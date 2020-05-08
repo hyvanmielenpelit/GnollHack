@@ -2101,7 +2101,7 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
             for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
             {
                 boolean nameless = !OBJ_NAME(objects[i]);
-                //boolean no_description = !OBJ_DESCR(objects[i]);
+                boolean no_description = !OBJ_DESCR(objects[i]);
                 char nameless_name[BUFSZ];
                 Sprintf(nameless_name, "nameless-%d", nameless_idx);
                 if (!OBJ_NAME(objects[i]))
@@ -2110,10 +2110,9 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
                     nameless_idx++;
                 }
                 const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
-                Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
-                    nameless ? nameless_name : OBJ_NAME(objects[i]) 
-                //,
-                //    no_description ? "no description" : OBJ_DESCR(objects[i])
+                Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
+                    nameless ? nameless_name : OBJ_NAME(objects[i]),
+                    no_description ? "no description" : OBJ_DESCR(objects[i])
                 );
                 (void)write(fd, buf, strlen(buf));
             }
