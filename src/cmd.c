@@ -2091,23 +2091,48 @@ wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
 
         /* Object tiles */
         tile_section_name = "objects";
-        set_name = "normal";
-        for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
+        for (int j = 0; j <= 2; j++)
         {
-            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, OBJ_NAME(objects[i]));
-            (void)write(fd, buf, strlen(buf));
-        }
+            if (j > 0 && !tsd->has_right_and_left_hand_objects)
+                break;
 
+            int nameless_idx = 0;
+            set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
+            for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
+            {
+                boolean nameless = !OBJ_NAME(objects[i]);
+                //boolean no_description = !OBJ_DESCR(objects[i]);
+                char nameless_name[BUFSZ];
+                Sprintf(nameless_name, "nameless-%d", nameless_idx);
+                if (!OBJ_NAME(objects[i]))
+                {
+                    nameless = TRUE;
+                    nameless_idx++;
+                }
+                const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
+                Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
+                    nameless ? nameless_name : OBJ_NAME(objects[i]) 
+                //,
+                //    no_description ? "no description" : OBJ_DESCR(objects[i])
+                );
+                (void)write(fd, buf, strlen(buf));
+            }
+        }
 
         /* Artifact tiles */
         tile_section_name = "artifacts";
-        set_name = "normal";
-        for (int i = 1; i <= NROFARTIFACTS; i++)
+        for (int j = 0; j <= 2; j++)
         {
-            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, artilist[i].name);
-            (void)write(fd, buf, strlen(buf));
-        }
+            if (j > 0 && !tsd->has_right_and_left_hand_objects)
+                break;
 
+            set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
+            for (int i = 1; i <= NROFARTIFACTS; i++)
+            {
+                Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, artilist[i].name);
+                (void)write(fd, buf, strlen(buf));
+            }
+        }
 
         /* CMAP tiles */
         tile_section_name = "cmap";
