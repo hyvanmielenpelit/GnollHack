@@ -620,18 +620,18 @@ static const char empty_string[] = "";
 #define THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON 18
 
 struct tileset_definition {
-    uchar female_tile_style; /* 0 = use nonfemale monster, 1 = separate female tile for each monster, 2 = indicated monsters with G_FEMALE_TILE on in mons[].geno */
-    boolean has_pet_tiles; /* 0 = use basic monster, 1 = separate pet tile for each monster  */
-    boolean has_detect_tiles; /* 0 = use basic monster, 1 = separate detect tile for each monster  */
+    uchar female_tile_style; /* 0 = use base monster, 1 = separate female tile for each monster, 2 = indicated monsters with G_FEMALE_TILE on in mons[].geno */
+    boolean has_pet_tiles; /* 0 = use normal monster variation, 1 = separate pet tile for each monster  */
+    boolean has_detect_tiles; /* 0 = use normal monster variation, 1 = separate detect tile for each monster  */
     boolean has_body_tiles; /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster */
-    boolean has_ridden_tiles; /* 0 = use basic monster, 1 = separate ridden tile for each monster  */
+    boolean has_ridden_tiles; /* 0 = use normal monster variation, 1 = separate ridden tile for each monster  */
     boolean has_statue_tiles; /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
     uchar swallow_tile_style; /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
     boolean has_full_cmap_set; /* 0 = has only number_of_cmaps cmaps, 1 = has CMAP_TYPE_MAX cmaps */
     uchar number_of_cmaps; /* 0 = 1 = one set ... X = X sets */
     uchar cmap_mapping[CMAP_TYPE_MAX]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps */
-    boolean has_all_explode_tiles; /* 0 = one set of explode tiles), 1 = separate explode tile for each case  */
-    boolean has_all_zap_tiles; /* 0 = one set of zap tiles), 1 = separate zap tile for each case  */
+    boolean has_all_explode_tiles; /* 0 = one set of explode tiles, 1 = separate explode tile for each case  */
+    boolean has_all_zap_tiles; /* 0 = one set of zap tiles, 1 = separate zap tile for each case  */
     uchar player_tile_style; /* 0 = use base role monster tile,
                               * 1 = one generic icon
                               * 2 = separate player tile for each role/race/gender combination
