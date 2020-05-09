@@ -847,6 +847,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         && iflags.wc_hilite_pet) {
         /* apply pet mark transparently over
             pet image */
+#if 1
         HDC hdcPetMark;
         HBITMAP bmPetMarkOld;
 
@@ -861,6 +862,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             TILE_X, TILE_Y, TILE_BK_COLOR);
         SelectObject(hdcPetMark, bmPetMarkOld);
         DeleteDC(hdcPetMark);
+#endif
     }
 #ifdef USE_PILEMARK
     if ((glyph != NO_GLYPH) && (special & MG_OBJPILE)
