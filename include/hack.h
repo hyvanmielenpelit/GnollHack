@@ -630,12 +630,15 @@ struct tileset_definition {
     boolean has_body_tiles; /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster */
     boolean has_ridden_tiles; /* 0 = use normal monster variation, 1 = separate ridden tile for each monster  */
     boolean has_statue_tiles; /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
+   
     boolean has_right_and_left_hand_objects; /* 0 = no right and left objects, 1 = has right and left objects */
     uchar swallow_tile_style; /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
     boolean has_full_cmap_set; /* 0 = has only number_of_cmaps cmaps, 1 = has CMAP_TYPE_MAX cmaps */
     uchar number_of_cmaps; /* 0 = 1 = one set ... X = X sets */
+    
     char* cmap_names[CMAP_TYPE_MAX]; /* names of the cmaps of this tileset */
     uchar cmap_mapping[CMAP_TYPE_MAX]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps, e.g., 0 means that this tileset's cmap 0 is being used for GnollHack's internal cmap in question */
+    
     boolean has_all_explode_tiles; /* 0 = one set of explode tiles, 1 = separate explode tile for each case  */
     boolean has_all_zap_tiles; /* 0 = one set of zap tiles, 1 = separate zap tile for each case  */
     uchar player_tile_style; /* 0 = use base role monster tile,
@@ -647,7 +650,8 @@ struct tileset_definition {
 
 static struct tileset_definition default_tileset_definition =
 { 
-    2, 0, 0, 0, 0, 0, 0, 2, 0, 1, 
+    2, 0, 0, 0, 0, 1,
+    0, 2, 0, 1, 
     {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     0, 0, 3 
