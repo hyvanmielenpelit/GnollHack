@@ -240,16 +240,13 @@ int set, entry;
 #endif
 #endif
 
-short tilemap[MAX_GLYPH];
+int tilemap[MAX_GLYPH];
 
 #ifdef STATUES_LOOK_LIKE_MONSTERS
 int lastmontile, lastobjtile, lastothtile, laststatuetile;
 #else
 int lastmontile, lastobjtile, lastothtile;
 #endif
-
-/* Number of tiles for invisible monsters */
-#define NUM_INVIS_TILES 1
 
 /*
  * set up array to map glyph numbers to tile numbers
@@ -270,6 +267,8 @@ init_tilemap()
     for (i = 0; i < MAX_GLYPH; i++) {
         tilemap[i] = -1;
     }
+
+    //tilenum = process_tiledata(&default_tileset_definition, 1, (const char*)0, tilemap);
 
     corpsetile = NUMMONS + NUM_INVIS_TILES + CORPSE;
     swallowbase = NUMMONS + NUM_INVIS_TILES + NUM_OBJECTS + S_sw_tl;
@@ -414,6 +413,7 @@ init_tilemap()
         tilemap[GLYPH_PLAYER_OFF + i] = tilenum;
         tilenum++;
     }
+
 }
 
 const char *prolog[] = { "", "void", "substitute_tiles(plev)",
@@ -449,6 +449,7 @@ FILE *ofp;
     for (i = 0; i < SIZE(prolog); i++) {
         Fprintf(ofp, "%s\n", prolog[i]);
     }
+
     j = -1;
     span = -1;
     start = lastothtile + 1;

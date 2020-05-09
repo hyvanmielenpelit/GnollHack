@@ -234,7 +234,7 @@
 #define display_self() \
     show_glyph(u.ux, u.uy,                                                  \
            maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)                 \
-                                ? player_to_glyph() /*hero_glyph*/          \
+                                ? u_to_glyph() /*hero_glyph*/          \
                                 : (U_AP_TYPE == M_AP_FURNITURE)             \
                                   ? cmap_to_glyph(youmonst.mappearance)     \
                                   : (U_AP_TYPE == M_AP_OBJECT)              \
@@ -324,6 +324,7 @@
 #define NUM_PLAYER_GLYPH_LEVELS 1
 #define NUM_PLAYER_CHARACTERS NUM_ROLES * NUM_RACES * 2 * 3 * NUM_PLAYER_GLYPH_LEVELS
 #define CMAP_TYPE_CHAR_NUM (MAXPCHARS - MAXEXPCHARS)
+#define NUM_INVIS_TILES 1
 
 #define GLYPH_MON_OFF     0
 #define GLYPH_PET_OFF     (NUMMONS + GLYPH_MON_OFF)
@@ -336,7 +337,7 @@
 #define GLYPH_FEMALE_BODY_OFF    (NUMMONS + GLYPH_FEMALE_DETECT_OFF)
 #define GLYPH_FEMALE_RIDDEN_OFF  (NUMMONS + GLYPH_FEMALE_BODY_OFF)
 #define GLYPH_INVIS_OFF   (NUMMONS + GLYPH_FEMALE_RIDDEN_OFF)
-#define GLYPH_OBJ_OFF     (1 + GLYPH_INVIS_OFF)
+#define GLYPH_OBJ_OFF     (NUM_INVIS_TILES + GLYPH_INVIS_OFF)
 #define GLYPH_OBJ_RIGHT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
 #define GLYPH_OBJ_LEFT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_RIGHT_HAND_OFF)
 #define GLYPH_CMAP_OFF    (NUM_OBJECTS + GLYPH_OBJ_LEFT_HAND_OFF)
@@ -347,8 +348,8 @@
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
 #define GLYPH_FEMALE_STATUE_OFF (NUMMONS + GLYPH_STATUE_OFF)
 #define GLYPH_ARTIFACT_OFF (NUMMONS + GLYPH_FEMALE_STATUE_OFF)
-#define GLYPH_ARTIFACT_RIGHT_HAND_OFF (NUMMONS + GLYPH_ARTIFACT_OFF)
-#define GLYPH_ARTIFACT_LEFT_HAND_OFF (NUMMONS + GLYPH_ARTIFACT_RIGHT_HAND_OFF)
+#define GLYPH_ARTIFACT_RIGHT_HAND_OFF (NROFARTIFACTS + GLYPH_ARTIFACT_OFF)
+#define GLYPH_ARTIFACT_LEFT_HAND_OFF (NROFARTIFACTS + GLYPH_ARTIFACT_RIGHT_HAND_OFF)
 #define GLYPH_PLAYER_OFF  (NROFARTIFACTS + GLYPH_ARTIFACT_LEFT_HAND_OFF)
 #define MAX_GLYPH         (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_OFF)
 

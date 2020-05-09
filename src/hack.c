@@ -3321,4 +3321,5 @@ struct obj *otmp;
     return 0L;
 }
 
+
 /*hack.c*/

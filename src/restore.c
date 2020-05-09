@@ -13,6 +13,7 @@ extern int dotrow; /* shared with save */
 #endif
 
 #ifdef USE_TILES
+extern short glyph2tile[]; /* from tile.c */
 extern void FDECL(substitute_tiles, (d_level *)); /* from tile.c */
 #endif
 
@@ -584,6 +585,10 @@ unsigned int *stuckid, *steedid;
             return FALSE;
     }
 
+#ifdef USE_TILES
+    process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile);
+#endif
+
     *newgamecontext = context; /* copy statically init'd context */
     mread(fd, (genericptr_t) &context, sizeof (struct context_info));
     context.warntype.species = (context.warntype.speciesidx >= LOW_PM)
@@ -944,7 +949,7 @@ register int fd;
     if (Is_rogue_level(&u.uz))
         assign_graphics(ROGUESET);
 #ifdef USE_TILES
-    substitute_tiles(&u.uz);
+    //substitute_tiles(&u.uz);
 #endif
 #ifdef MFLOPPY
     gameDiskPrompt();

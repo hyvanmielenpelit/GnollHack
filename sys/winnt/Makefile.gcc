@@ -1146,7 +1146,7 @@ $(SRC)/tile.c: $(U)tilemap.exe
 	@$(U)tilemap
 
 $(U)tilemap.exe: $(O)tilemap.o
-	$(link) $(LFLAGSU) -o$@ $(O)tilemap.o
+	$(link) $(LFLAGSU) -o$@ $(O)tilemap.o $(O)tiledata.o
 
 $(O)tilemap.o: $(WSHR)/tilemap.c $(HACK_H)
 	$(cc) $(CFLAGSU) -o$@ $(WSHR)/tilemap.c

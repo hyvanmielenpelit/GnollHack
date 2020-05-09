@@ -45,9 +45,9 @@
 #define NHW_INVEN 33
 
 #ifndef TILE_X
-#define TILE_X 16
+#define TILE_X 64
 #endif
-#define TILE_Y 16
+#define TILE_Y 96
 
 #define TILES_PER_LINE 40
 

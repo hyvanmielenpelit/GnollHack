@@ -8,6 +8,10 @@
 #include "hack.h"
 #include <ctype.h>
 
+#ifdef USE_TILES
+extern short glyph2tile[]; /* from tile.c */
+#endif
+
 #ifndef NO_SIGNAL
 #include <signal.h>
 #endif
@@ -1061,6 +1065,10 @@ newgame()
     context.tribute.enabled = TRUE;   /* turn on 3.6 tributes    */
     context.tribute.tributesz = sizeof(struct tribute_info);
 	strcpy(context.used_names, "|");
+
+#ifdef USE_TILES
+    process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile);
+#endif
 
     for (i = LOW_PM; i < NUMMONS; i++)
         mvitals[i].mvflags = (uchar)(mons[i].geno & G_NOCORPSE);

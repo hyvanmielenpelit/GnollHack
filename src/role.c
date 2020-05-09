@@ -2645,7 +2645,20 @@ Goodbye()
 }
 
 int
-player_to_glyph()
+u_to_glyph()
+{
+    int player_role = urole.rolenum;
+    int player_race = urace.racenum;
+    int player_gender = (int)u.ufemale;
+    int player_alignment = u.ualign.type + 1; /* 0...2 */
+    int player_glyph_level = 0;
+
+    return player_to_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level);
+}
+
+int
+player_to_glyph(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     int number_of_roles = NUM_ROLES;
     int number_of_races = NUM_RACES;
@@ -2653,18 +2666,20 @@ player_to_glyph()
     int number_of_alignments = 3;
     int number_of_glyph_levels = NUM_PLAYER_GLYPH_LEVELS;
 
-    int player_role = urole.rolenum;
-    int player_race = urace.racenum;
-    boolean player_gender = u.ufemale;
-    int player_alignment = u.ualign.type + 1; /* 0...2 */
-    int player_glyph_level = 0;
+    int player_role = roleidx;
+    int player_race = raceidx;
+    int player_gender = genderidx;
+    int player_alignment = alignmentidx; /* 0...2 */
+    int player_glyph_level = levelidx;
 
-    return player_glyph_level +
+    int res = player_glyph_level +
         number_of_glyph_levels * player_alignment +
-        number_of_glyph_levels * number_of_alignments * u.ufemale +
+        number_of_glyph_levels * number_of_alignments * player_gender +
         number_of_glyph_levels * number_of_alignments * number_of_genders * player_race +
         number_of_glyph_levels * number_of_alignments * number_of_genders * number_of_races * player_role +
         GLYPH_PLAYER_OFF;
+
+    return res;
 }
 
 int

@@ -532,6 +532,7 @@ spotless: clean
 	if exist $(SRC)\video.c	   del $(SRC)\video.c
 	if exist $(SRC)\sound.c	   del $(SRC)\sound.c
 	if exist $(SRC)\tilemap.c  del $(SRC)\tilemap.c
+	if exist $(SRC)\tiledata.c  del $(SRC)\tiledata.c
 	if exist $(SRC)\gifread.c  del $(SRC)\gifread.c
 	if exist $(SRC)\ppmwrite.c del $(SRC)\ppmwrite.c
 	if exist $(SRC)\pcmain.c   del $(SRC)\pcmain.c

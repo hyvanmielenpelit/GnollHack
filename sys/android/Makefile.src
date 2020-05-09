@@ -328,7 +328,7 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c restore.c \
 	   rip.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c \
-	   sp_lev.c spell.c steal.c steed.c sys.c teleport.c timeout.c \
+	   sp_lev.c spell.c steal.c steed.c sys.c teleport.c tiledata.c timeout.c \
 	   topten.c track.c trap.c u_init.c \
 	   uhitm.c vault.c version.c vision.c weapon.c were.c wield.c \
 	   windows.c wizard.c worm.c worn.c write.c zap.c
@@ -392,7 +392,7 @@ HOBJ = $(FIRSTOBJ) allmain.o alloc.o apply.o artifact.o attrib.o ball.o \
 	quest.o questpgr.o read.o rect.o region.o restore.o rip.o rnd.o \
 	role.o rumors.o save.o shk.o shknam.o sit.o sounds.o sp_lev.o spell.o \
     sys.o \
-	steal.o steed.o teleport.o timeout.o topten.o track.o trap.o u_init.o \
+	steal.o steed.o teleport.o tiledata.o timeout.o topten.o track.o trap.o u_init.o \
 	uhitm.o vault.o vision.o vis_tab.o weapon.o were.o wield.o windows.o \
 	wizard.o worm.o worn.o write.o zap.o \
 	$(REGEXOBJ) $(RANDOBJ) $(SYSOBJ) $(WINOBJ) $(HINTOBJ) version.o

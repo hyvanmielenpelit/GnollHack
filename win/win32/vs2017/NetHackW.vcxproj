@@ -184,8 +184,9 @@
     <ClCompile Include="$(WinWin32Dir)mhtext.c" />
     <ClCompile Include="$(WinWin32Dir)mswproc.c" />
     <ClCompile Include="$(WinWin32Dir)winhack.c" />
-    <ClCompile Include="..\..\..\src\encounter.c" />
-    <ClCompile Include="..\..\..\src\matcomps.c" />
+    <ClCompile Include="$(SrcDir)encounter.c" />
+    <ClCompile Include="$(SrcDir)matcomps.c" />
+    <ClCompile Include="$(SrcDir)tiledata.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
@@ -218,6 +219,7 @@
     <Image Include="..\rip.bmp" />
     <Image Include="..\splash.bmp" />
     <Image Include="..\tiles.bmp" />
+    <Image Include="..\gnollhack64x96.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">

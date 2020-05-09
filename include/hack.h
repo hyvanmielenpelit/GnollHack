@@ -634,6 +634,7 @@ struct tileset_definition {
     boolean has_right_and_left_hand_objects; /* 0 = no right and left objects, 1 = has right and left objects */
     uchar swallow_tile_style; /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
     boolean has_full_cmap_set; /* 0 = has only number_of_cmaps cmaps, 1 = has CMAP_TYPE_MAX cmaps */
+    uchar nonzero_cmap_style; /* 0 = all cmaps have a full character set, 1 = cmap 0 has a full character set and cmaps 1...X-1 have only wall tiles */
     uchar number_of_cmaps; /* 0 = 1 = one set ... X = X sets */
     
     char* cmap_names[CMAP_TYPE_MAX]; /* names of the cmaps of this tileset */
@@ -651,7 +652,7 @@ struct tileset_definition {
 static struct tileset_definition default_tileset_definition =
 { 
     2, 0, 0, 0, 0, 1,
-    0, 2, 0, 1, 
+    0, 2, 0, 0, 1, 
     {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     0, 0, 3 

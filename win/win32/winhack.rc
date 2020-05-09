@@ -237,7 +237,7 @@ END
 // Bitmap
 //
 
-IDB_TILES               BITMAP                  "tiles.bmp"
+IDB_TILES               BITMAP                  "gnollhack64x96.bmp"
 
 IDB_MENU_SEL            BITMAP                  "mnsel.bmp"
 

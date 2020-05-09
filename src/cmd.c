@@ -163,6 +163,8 @@ STATIC_PTR int NDECL(wiz_show_wmodes);
 STATIC_DCL void NDECL(wiz_map_levltyp);
 STATIC_DCL int NDECL(wiz_save_monsters);
 STATIC_DCL int NDECL(wiz_save_tiledata);
+STATIC_DCL int NDECL(wiz_count_tiles);
+STATIC_DCL int NDECL(wiz_save_glyph2tiles);
 STATIC_DCL void NDECL(wiz_levltyp_legend);
 #if defined(__BORLANDC__) && !defined(_WIN32)
 extern void FDECL(show_borlandc_stats, (winid));
@@ -1952,422 +1954,145 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 
 /* Save tile data */
 STATIC_PTR int
-wiz_save_tiledata(VOID_ARGS) /* Save several csv files for tile data */
+wiz_save_tiledata(VOID_ARGS) /* Save a csv file for tile data */
 {
     if (wizard)
     {
         struct tileset_definition* tsd = &default_tileset_definition;
-
         const char* fq_save = "tile_definition.csv";
-        const char* tile_section_name;
-        const char* set_name;
-        int fd;
-        char buf[BUFSIZ];
-        strcpy(buf, "");
-
         pline("Starting writing %s...", fq_save);
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-
-
-#if 0
-        /* Tile order - Similar order to glyphs */
-        fq_save = "tile_order.csv";
-        pline("Starting writing %s...", fq_save);
-        (void)remove(fq_save);
-
-#ifdef MAC
-        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
-#else
-        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
-#endif
-        strcpy(buf, "");
-
-        strcpy(buf, "monster,nonfemale,normal\n");
-        (void)write(fd, buf, strlen(buf));
-        if (TILEDATA_NO_PET_SEPARATELY == 0)
-        {
-            strcpy(buf, "monster,nonfemale,pet\n");
-            (void)write(fd, buf, strlen(buf));
-        }
-        strcpy(buf, "misc,invisible\n");
-        if (TILEDATA_NO_DETECT_SEPARATELY == 0)
-        {
-            (void)write(fd, buf, strlen(buf));
-            strcpy(buf, "monster,nonfemale,detect\n");
-        }
-        (void)write(fd, buf, strlen(buf));
-        if (TILEDATA_NO_RIDDEN_SEPARATELY == 0)
-        {
-            strcpy(buf, "monster,nonfemale,ridden\n");
-            (void)write(fd, buf, strlen(buf));
-        }
-        if (TILEDATA_NO_FEMALE_SEPARATELY == 0)
-        {
-            strcpy(buf, "monster,female,normal\n");
-            (void)write(fd, buf, strlen(buf));
-            if (TILEDATA_NO_PET_SEPARATELY == 0)
-            {
-                strcpy(buf, "monster,female,pet\n");
-                (void)write(fd, buf, strlen(buf));
-            }
-            if (TILEDATA_NO_DETECT_SEPARATELY == 0)
-            {
-                strcpy(buf, "monster,female,detect\n");
-                (void)write(fd, buf, strlen(buf));
-            }
-        }
-        strcpy(buf, "object,normal\n");
-        (void)write(fd, buf, strlen(buf));
-
-        for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
-        {
-            const char* set_name = cmap_type_names[cmap_idx];
-            Sprintf(buf, "cmap,%s\n", set_name);
-            (void)write(fd, buf, strlen(buf));
-        }
-        strcpy(buf, "misc,explode\n");
-        (void)write(fd, buf, strlen(buf));
-        strcpy(buf, "misc,zap\n");
-        (void)write(fd, buf, strlen(buf));
-        strcpy(buf, "misc,swallow\n");
-        (void)write(fd, buf, strlen(buf));
-        strcpy(buf, "misc,warning\n");
-        (void)write(fd, buf, strlen(buf));
-        strcpy(buf, "monster,nonfemale,statue\n");
-        (void)write(fd, buf, strlen(buf));
-        strcpy(buf, "artifact,normal\n");
-        (void)write(fd, buf, strlen(buf));
-        strcpy(buf, "player\n");
-        (void)write(fd, buf, strlen(buf));
-
-        (void)close(fd);
-        pline("Done writing %s.", fq_save);
-#endif
-
-        /* Monster tiles */
-        tile_section_name = "monsters";
-        for (int gender = 0; gender <= 1; gender++)
-        {
-            if (gender == 1)
-            {
-                if(tsd->female_tile_style == 0)
-                    continue;
-            }
-            const char* gender_name = (gender == 0 ? "base" : "female");
-
-            for (int spset = 0; spset < 6; spset++)
-            {
-                if (spset == 1 && !tsd->has_pet_tiles)
-                    continue;
-                if (spset == 2 && !tsd->has_detect_tiles)
-                    continue;
-                if (spset == 3 && !tsd->has_body_tiles)
-                    continue;
-                if (spset == 4 && !tsd->has_ridden_tiles)
-                    continue;
-                if (spset == 5 && !tsd->has_statue_tiles)
-                    continue;
-
-                set_name = (spset == 0 ? "normal" : spset == 1 ? "pet" : spset == 2 ? "detect" : 
-                    spset == 3 ? "body" : spset == 4 ? "ridden" : "statue");
-                for (int i = LOW_PM; i < NUMMONS; i++)
-                {
-                    if (gender == 1)
-                    {
-                        if (tsd->female_tile_style == 2 && !(mons[i].geno & G_FEMALE_TILE))
-                            continue;
-                    }
-                    Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, gender_name, set_name, mons[i].mname);
-                    (void)write(fd, buf, strlen(buf));
-                }
-            }
-        }
-
-        /* Object tiles */
-        tile_section_name = "objects";
-        for (int j = 0; j <= 2; j++)
-        {
-            if (j > 0 && !tsd->has_right_and_left_hand_objects)
-                break;
-
-            int nameless_idx = 0;
-            set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
-            for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
-            {
-                /* Jump over gems that all look the same, just take pieces of glass and luckstone */
-                if (objects[i].oc_class == GEM_CLASS)
-                {
-                    if (i <= LAST_GEM || (i > LUCKSTONE 
-                        && obj_descr[objects[i].oc_name_idx].oc_descr && obj_descr[objects[LUCKSTONE].oc_name_idx].oc_descr 
-                        && !strcmp(obj_descr[objects[i].oc_name_idx].oc_descr, obj_descr[objects[LUCKSTONE].oc_name_idx].oc_descr))
-                        )
-                        continue;
-                }
-
-                boolean nameless = !OBJ_NAME(objects[i]);
-                boolean no_description = !obj_descr[objects[i].oc_name_idx].oc_descr;
-                char nameless_name[BUFSZ];
-                Sprintf(nameless_name, "nameless-%d", nameless_idx);
-                if (!OBJ_NAME(objects[i]))
-                {
-                    nameless = TRUE;
-                    nameless_idx++;
-                }
-                const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
-                Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
-                    nameless ? nameless_name : OBJ_NAME(objects[i]),
-                    no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr
-                );
-                (void)write(fd, buf, strlen(buf));
-            }
-        }
-
-        /* Artifact tiles */
-        tile_section_name = "artifacts";
-        for (int j = 0; j <= 2; j++)
-        {
-            if (j > 0 && !tsd->has_right_and_left_hand_objects)
-                break;
-
-            set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
-            for (int i = 1; i <= NROFARTIFACTS; i++)
-            {
-                int base_item = artilist[i].otyp;
-                boolean no_description = !artilist[i].desc;
-                boolean no_base_item_name = !OBJ_NAME(objects[base_item]);
-                boolean no_base_item_description = !obj_descr[objects[base_item].oc_name_idx].oc_descr;
-                Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, 
-                    artilist[i].name,
-                    no_description ? "no artifact description" : artilist[i].desc,
-                    no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
-                    no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr
-                );
-                (void)write(fd, buf, strlen(buf));
-            }
-        }
-
-        /* CMAP tiles */
-        tile_section_name = "cmap";
-        for (int cmap_idx = 0; cmap_idx < (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps)); cmap_idx++)
-        {
-            char namebuf[BUFSZ];
-            if(tsd->cmap_names[cmap_idx] && strcmp(tsd->cmap_names[cmap_idx], ""))
-                Sprintf(namebuf, "%s", tsd->cmap_names[cmap_idx]);
-            else
-                Sprintf(namebuf, "unnamed-cmap-%d", cmap_idx);
-
-            for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
-            {
-                Sprintf(buf, "%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i));
-                (void)write(fd, buf, strlen(buf));
-            }
-        }
-
-
-        /* Miscellaneous tiles */
-        tile_section_name = "misc";
-        for (int misc_idx = 0; misc_idx < 5; misc_idx++)
-        {
-            set_name = (misc_idx == 0 ? "invisible" : misc_idx == 1 ? "explode" : misc_idx == 2 ? "zap" :
-                misc_idx == 3 ? "swallow" : "warning");
-
-            if (misc_idx == 0)
-            {
-                Sprintf(buf, "%s,%s,generic\n", tile_section_name, set_name);
-                (void)write(fd, buf, strlen(buf));
-            }
-            else if (misc_idx == 1)
-            {
-                const char* explosion_direction_name_array[MAXEXPCHARS] = {
-                     "top-left", "top-center", "top-right",
-                     "middle-right", "middle-center", "middle-left",
-                     "bottom-left", "bottom-center", "bottom-right" };
-
-                if (tsd->has_all_explode_tiles == 0)
-                {
-                    for (int j = 0; j < MAXEXPCHARS; j++)
-                    {
-                        const char* explosion_direction_name = explosion_direction_name_array[j];
-
-                        Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, explosion_direction_name);
-                        (void)write(fd, buf, strlen(buf));
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < EXPL_MAX; i++)
-                    {
-                        const char* explosion_name = explosion_type_names[i];
-                        for (int j = 0; j < MAXEXPCHARS; j++)
-                        {
-                            const char* explosion_direction_name = explosion_direction_name_array[j];
-                            Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, explosion_name, explosion_direction_name);
-                            (void)write(fd, buf, strlen(buf));
-                        }
-                    }
-                }
-            }
-            else if (misc_idx == 2)
-            {
-                const char* zap_direction_name_array[4] = {
-                    "vertical", "horizontal", "diagonal-top-left-to-bottom-right", "diagonal-bottom-left-to-top-right" };
-
-                if (tsd->has_all_zap_tiles == 0)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        const char* zap_direction_name = zap_direction_name_array[j];
-                        Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, zap_direction_name);
-                        (void)write(fd, buf, strlen(buf));
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < NUM_ZAP; i++)
-                    {
-                        const char* zap_name_array[NUM_ZAP]= {
-                            "magic", "fire", "frost", "sleep", "disintegration",
-                            "lightning", "poison", "acid", "death",
-                            "petrification" };
-                        const char* zap_name = zap_name_array[i];
-
-                        for (int j = 0; j < 4; j++)
-                        {
-                            const char* zap_direction_name = zap_direction_name_array[j];
-
-                            Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, zap_name, zap_direction_name);
-                            (void)write(fd, buf, strlen(buf));
-                        }
-                    }
-                }
-            }
-            else if (misc_idx == 3)
-            {
-                const char* swallow_direction_name_array[8] = {
-                     "top-left", "top-center", "top-right",
-                     "middle-right", "middle-left",
-                     "bottom-left", "bottom-center", "bottom-right" };
-
-                if (tsd->swallow_tile_style == 0)
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        const char* swallow_direction_name = swallow_direction_name_array[j];
-                        Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, swallow_direction_name);
-                        (void)write(fd, buf, strlen(buf));
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < NUMMONS; i++)
-                    {
-                        if (tsd->swallow_tile_style == 2)
-                        {
-                            if (!attacktype(&mons[i], AT_ENGL))
-                                continue;
-                        }
-
-                        for (int j = 0; j < 8; j++)
-                        {
-                            const char* swallow_direction_name = swallow_direction_name_array[j];
-                            Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, mons[i].mname, swallow_direction_name);
-                            (void)write(fd, buf, strlen(buf));
-                        }
-                    }
-                }
-            }
-            else if (misc_idx == 4)
-            {
-                for (int i = 0; i < WARNCOUNT; i++)
-                {
-                    Sprintf(buf, "%s,%s,warn-level-%d\n", tile_section_name, set_name, i);
-                    (void)write(fd, buf, strlen(buf));
-                }
-            }
-        }
-
-
-        /* Player tiles */
-        tile_section_name = "player";
-        if (tsd->player_tile_style == 0)
-        {
-            /* Use player monster icons, so nothing needed here */
-        }
-        else if (tsd->player_tile_style == 1)
-        {
-            Sprintf(buf, "%s,generic\n", tile_section_name);
-            (void)write(fd, buf, strlen(buf));
-        }
-        else if (tsd->player_tile_style == 2)
-        {
-            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
-            {
-                const char* role_name = roles[roleidx].name.m;
-                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
-                {
-                    const char* race_name = races[raceidx].noun;
-                    for (int gender = 0; gender <= 1; gender++)
-                    {
-                        const char* gender_name = (gender == 0 ? "male" : "female");
-                        for (int alignment = -1; alignment <= 1; alignment++)
-                        {
-                            const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified");
-                            for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
-                            {
-                                Sprintf(buf, "%s,%s,%s,%s,%s,level-%d\n", tile_section_name, role_name, race_name, gender_name, align_name, level);
-                                (void)write(fd, buf, strlen(buf));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
-            {
-                const char* role_name = roles[roleidx].name.m;
-                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
-                {
-                    if (!validrace(roleidx, raceidx))
-                        continue;
-
-                    const char* race_name = races[raceidx].noun;
-                    for (int gender = 0; gender <= 1; gender++)
-                    {
-                        const char* gender_name = (gender == 0 ? "male" : "female");
-                        for (int alignment = -1; alignment <= 1; alignment++)
-                        {
-                            if (alignment > -1 && !(roles[roleidx].allow & ROLE_ALIGNMENT_TILES))
-                                continue;
-
-                            const char* align_name = (roles[roleidx].allow & ROLE_ALIGNMENT_TILES) ? (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified") : "any";
-                            for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
-                            {
-                                Sprintf(buf, "%s,%s,%s,%s,%s,level-%d\n", tile_section_name, role_name, race_name, gender_name, align_name, level);
-                                (void)write(fd, buf, strlen(buf));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        /* Finished */
-        (void)close(fd);
-        pline("Done writing %s.", fq_save);
-
+        int cnt = process_tiledata(tsd, 0, fq_save, (short*)0);
+        pline("Done writing %s. %d tiles written.", fq_save, cnt);
     }
     else
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_tiledata)));
     return 0;
 }
 
+/* Count tiles */
+STATIC_PTR int
+wiz_count_tiles(VOID_ARGS) /* Save a csv file for tile data */
+{
+    if (wizard)
+    {
+        struct tileset_definition* tsd = &default_tileset_definition;
+        int cnt = process_tiledata(tsd, 2, (const char*)0, (short*)0);
+        pline("There are %d tiles.", cnt);
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_count_tiles)));
+    return 0;
+}
+
+extern short glyph2tile[];
+
+STATIC_PTR int
+wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
+{
+    if (wizard)
+    {
+        struct tileset_definition* tsd = &default_tileset_definition;
+        const char* fq_save = "glyph2tile_out.csv";
+        int fd;
+        char buf[BUFSZ];
+        pline("Starting writing %s...", fq_save);
+        (void)remove(fq_save);
+
+#ifdef MAC
+        fd = macopen(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, TEXT_TYPE);
+#else
+        fd = open(fq_save, O_WRONLY | O_TEXT | O_CREAT | O_TRUNC, FCMASK);
+#endif
+        for (int i = 0; i < MAX_GLYPH; i++)
+        {
+            const char* header = "";
+            const char* special = "";
+            switch (i)
+            {
+            case GLYPH_MON_OFF:
+                header = "MON_OFF";
+                break;
+            case GLYPH_PET_OFF:
+                header = "MON_PET_OFF";
+                break;
+            case GLYPH_DETECT_OFF:
+                header = "MON_DETECT_OFF";
+                break;
+            case GLYPH_BODY_OFF:
+                header = "MON_BODY_OFF";
+                break;
+            case GLYPH_RIDDEN_OFF:
+                header = "MON_RIDDEN_OFF";
+                break;
+            case GLYPH_FEMALE_MON_OFF:
+                header = "FEMALE_MON_OFF";
+                break;
+            case GLYPH_FEMALE_PET_OFF:
+                header = "FEMALE_PET_MON_OFF";
+                break;
+            case GLYPH_FEMALE_DETECT_OFF:
+                header = "FEMALE_DETECT_MON_OFF";
+                break;
+            case GLYPH_FEMALE_BODY_OFF:
+                header = "FEMALE_BODY_MON_OFF";
+                break;
+            case GLYPH_FEMALE_RIDDEN_OFF:
+                header = "FEMALE_RIDDEN_MON_OFF";
+                break;
+            case GLYPH_INVIS_OFF:
+                header = "INVIS_OFF";
+                break;
+            case GLYPH_OBJ_OFF:
+                header = "OBJ_OFF";
+                break;
+            case GLYPH_CMAP_OFF:
+                header = "CMAP_OFF";
+                break;
+            case GLYPH_EXPLODE_OFF:
+                header = "EXPLODE_OFF";
+                break;
+            case GLYPH_ZAP_OFF:
+                header = "ZAP_OFF";
+                break;
+            case GLYPH_SWALLOW_OFF:
+                header = "SWALLOW_OFF";
+                break;
+            case GLYPH_WARNING_OFF:
+                header = "WARNING_OFF";
+                break;
+            case GLYPH_ARTIFACT_OFF:
+                header = "ARTIFACT_OFF";
+                break;
+            case GLYPH_STATUE_OFF:
+                header = "STATUE_OFF";
+                break;
+            case GLYPH_FEMALE_STATUE_OFF:
+                header = "FEMALE_STATUE_OFF";
+                break;
+            case GLYPH_PLAYER_OFF:
+                header = "PLAYER_OFF";
+                break;
+            }
+            if (strcmp(header, ""))
+            {
+                Sprintf(buf, "%s\n", header);
+                (void)write(fd, buf, strlen(buf));
+            }
+
+            if (i == u_to_glyph())
+                special = ",YOU";
+
+            Sprintf(buf, "glyph=%d,tile=%d%s\n", i, glyph2tile[i], special);
+            (void)write(fd, buf, strlen(buf));
+        }
+
+        (void)close(fd);
+        pline("Done writing %s. %d glyphs written.", fq_save, MAX_GLYPH);
+    }
+    else
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_glyph2tiles)));
+    return 0;
+}
 
 
 
@@ -5016,8 +4741,12 @@ struct ext_func_tab extcmdlist[] = {
             wiz_save_monsters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizsaveenc", "save encounters into a file",
 			wiz_save_encounters, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { '\0', "wizsavetiledata", "save tile data into a number of files",
+    { '\0', "wizsavetiledata", "save tile data into a file",
             wiz_save_tiledata, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizcounttiles", "count the number of tiles",
+            wiz_count_tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+    { '\0', "wizsaveglyph2tiles", "save glyph2tiles into a file",
+            wiz_save_glyph2tiles, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizcrown", "make the god crown you",
 			wiz_crown, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 	{ '\0', "wizrumorcheck", "verify rumor boundaries",
@@ -7581,5 +7310,8 @@ dosh_core(VOID_ARGS)
 #endif
     return 0;
 }
+
+
+
 
 /*cmd.c*/

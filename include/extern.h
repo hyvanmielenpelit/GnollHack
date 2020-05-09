@@ -290,8 +290,7 @@ E void NDECL(sanity_check);
 E char* FDECL(key2txt, (UCHAR_P, char *));
 E char FDECL(yn_function, (const char *, const char *, CHAR_P));
 E boolean FDECL(paranoid_query, (BOOLEAN_P, const char *));
-E boolean object_stats_known(struct obj*);
-
+E boolean FDECL(object_stats_known, (struct obj*));
 
 /* ### dbridge.c ### */
 
@@ -2403,7 +2402,8 @@ E void FDECL(role_menu_extra, (int, winid, BOOLEAN_P));
 E void NDECL(role_init);
 E const char *FDECL(Hello, (struct monst *));
 E const char *NDECL(Goodbye);
-E int NDECL(player_to_glyph);
+E int NDECL(u_to_glyph);
+E int FDECL(player_to_glyph, (int, int, int, int, int));
 E int FDECL(glyph_to_player_mon, (int));
 
 /* ### rumors.c ### */
@@ -2701,6 +2701,11 @@ E boolean FDECL(u_teleport_mon, (struct monst *, BOOLEAN_P));
 #ifdef USE_TILES
 E void FDECL(substitute_tiles, (d_level *));
 #endif
+
+
+/* ### tiledata.c ###*/
+E int FDECL(process_tiledata, (struct tileset_definition*, int, const char*, short*));
+
 
 /* ### timeout.c ### */
 

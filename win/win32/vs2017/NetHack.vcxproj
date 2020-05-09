@@ -188,8 +188,9 @@
     <ClCompile Condition="Exists('$(PDCURSES)')" Include="$(WinCursDir)cursmisc.c" />
     <ClCompile Condition="Exists('$(PDCURSES)')" Include="$(WinCursDir)cursstat.c" />
     <ClCompile Condition="Exists('$(PDCURSES)')" Include="$(WinCursDir)curswins.c" />
-    <ClCompile Include="..\..\..\src\encounter.c" />
-    <ClCompile Include="..\..\..\src\matcomps.c" />
+    <ClCompile Include="$(SrcDir)encounter.c" />
+    <ClCompile Include="$(SrcDir)matcomps.c" />
+    <ClCompile Include="$(SrcDir)tiledata.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)align.h" />
