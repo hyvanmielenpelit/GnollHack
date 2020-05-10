@@ -2505,14 +2505,14 @@ role_init()
         flags.initrace = randrace(flags.initrole);
 
     /* Check for a valid gender.  If new game, check both initgend
-     * and female.  On restore, assume u.ufemale is correct. */
+     * and female.  On restore, assume flags.female is correct. */
     if (flags.pantheon == -1) { /* new game */
-        if (!validgend(flags.initrole, flags.initrace, u.ufemale))
-            u.ufemale = !u.ufemale;
+        if (!validgend(flags.initrole, flags.initrace, flags.female))
+            flags.female = !flags.female;
     }
     if (!validgend(flags.initrole, flags.initrace, flags.initgend))
         /* Note that there is no way to check for an unspecified gender. */
-        flags.initgend = u.ufemale;
+        flags.initgend = flags.female;
 
     /* Check for a valid alignment */
     if (!validalign(flags.initrole, flags.initrace, flags.initalign))
@@ -2649,7 +2649,7 @@ u_to_glyph()
 {
     int player_role = urole.rolenum;
     int player_race = urace.racenum;
-    int player_gender = (int)u.ufemale;
+    int player_gender = (int)flags.female;
     int player_alignment = u.ualign.type + 1; /* 0...2 */
     int player_glyph_level = 0;
 

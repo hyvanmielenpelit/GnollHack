@@ -204,7 +204,7 @@ const char *fmt, *arg;
         u.acurr = u.macurr; /* restore old attribs */
         u.amax = u.mamax;
         u.umonnum = u.umonster;
-        u.ufemale = u.mfemale;
+        flags.female = u.mfemale;
     }
     set_uasmon();
 
@@ -276,11 +276,11 @@ change_sex()
     if (!already_polyd
         || (!is_male(youmonst.data) && !is_female(youmonst.data)
             && !is_neuter(youmonst.data)))
-        u.ufemale = !u.ufemale;
+        flags.female = !flags.female;
     if (already_polyd) /* poly'd: also change saved sex */
         u.mfemale = !u.mfemale;
     max_rank_sz(); /* [this appears to be superfluous] */
-    if ((already_polyd ? u.mfemale : u.ufemale) && urole.name.f)
+    if ((already_polyd ? u.mfemale : flags.female) && urole.name.f)
         Strcpy(pl_character, urole.name.f);
     else
         Strcpy(pl_character, urole.name.m);
@@ -288,7 +288,7 @@ change_sex()
     if (!already_polyd) {
         u.umonnum = u.umonster;
     } else if (u.umonnum == PM_SUCCUBUS || u.umonnum == PM_INCUBUS) {
-        u.ufemale = !u.ufemale;
+        flags.female = !flags.female;
         /* change monster type to match new sex */
         u.umonnum = (u.umonnum == PM_SUCCUBUS) ? PM_INCUBUS : PM_SUCCUBUS;
         set_uasmon();
@@ -403,7 +403,7 @@ newman()
     update_hunger_status(FALSE);
     polyman("feel like a new %s!",
             /* use saved gender we're about to revert to, not current */
-            ((Upolyd ? u.mfemale : u.ufemale) && urace.individual.f)
+            ((Upolyd ? u.mfemale : flags.female) && urace.individual.f)
                 ? urace.individual.f
                 : (urace.individual.m)
                    ? urace.individual.m
@@ -534,7 +534,7 @@ int psflags;
                        0 and trigger thats_enough_tries message */
                     ++tryct;
                 }
-                pm_name = pm_monster_name(&mons[mntmp], u.ufemale);
+                pm_name = pm_monster_name(&mons[mntmp], flags.female);
                 if (the_unique_pm(&mons[mntmp]))
                     pm_name = the(pm_name);
                 else if (!is_mname_proper_name(&mons[mntmp]))
@@ -641,7 +641,7 @@ int psflags;
                             : !rn2(4) ? PM_FOG_CLOUD : PM_VAMPIRE_BAT;
             if (controllable_poly) 
 			{
-                Sprintf(buf, "Become %s?", an(pm_monster_name(&mons[mntmp], u.ufemale)));
+                Sprintf(buf, "Become %s?", an(pm_monster_name(&mons[mntmp], flags.female)));
                 if (yn_query(buf) != 'y')
                     return;
             }
@@ -710,7 +710,7 @@ int mntmp;
     int mlvl;
 
     if (mvitals[mntmp].mvflags & G_GENOD) { /* allow G_EXTINCT */
-        You_feel("rather %s-ish.", pm_monster_name(&mons[mntmp], u.ufemale));
+        You_feel("rather %s-ish.", pm_monster_name(&mons[mntmp], flags.female));
         exercise(A_WIS, TRUE);
         return 0;
     }
@@ -727,14 +727,14 @@ int mntmp;
         /* Human to monster; save human stats */
         u.macurr = u.acurr;
         u.mamax = u.amax;
-        u.mfemale = u.ufemale;
+        u.mfemale = flags.female;
     } else {
         /* Monster to monster; restore human stats, to be
          * immediately changed to provide stats for the new monster
          */
         u.acurr = u.macurr;
         u.amax = u.mamax;
-        u.ufemale = u.mfemale;
+        flags.female = u.mfemale;
     }
 
     /* if stuck mimicking gold, stop immediately */
@@ -747,10 +747,10 @@ int mntmp;
         youmonst.m_ap_type = M_AP_NOTHING;
     }
     if (is_male(&mons[mntmp])) {
-        if (u.ufemale)
+        if (flags.female)
             dochange = TRUE;
     } else if (is_female(&mons[mntmp])) {
-        if (!u.ufemale)
+        if (!flags.female)
             dochange = TRUE;
     } else if (!is_neuter(&mons[mntmp]) && mntmp != u.ulycn) {
         if (sex_change_ok && !rn2(10))
@@ -759,11 +759,11 @@ int mntmp;
 
     Strcpy(buf, (u.umonnum != mntmp) ? "" : "new ");
     if (dochange) {
-        u.ufemale = !u.ufemale;
+        flags.female = !flags.female;
         Strcat(buf, (is_male(&mons[mntmp]) || is_female(&mons[mntmp]))
-                       ? "" : u.ufemale ? "female " : "male ");
+                       ? "" : flags.female ? "female " : "male ");
     }
-    Strcat(buf, pm_monster_name(&mons[mntmp], u.ufemale));
+    Strcat(buf, pm_monster_name(&mons[mntmp], flags.female));
     You("%s %s!", (u.umonnum != mntmp) ? "turn into" : "feel like", an(buf));
 
     if (Stoned && poly_when_stoned(&mons[mntmp])) {
@@ -930,7 +930,7 @@ int mntmp;
         if (is_vampire(youmonst.data))
             pline(use_thec, monsterc, "change shape");
 
-        if (lays_eggs(youmonst.data) && u.ufemale &&
+        if (lays_eggs(youmonst.data) && flags.female &&
             !(youmonst.data == &mons[PM_GIANT_EEL]
                 || youmonst.data == &mons[PM_ELECTRIC_EEL]))
             pline(use_thec, "sit",
@@ -2136,7 +2136,7 @@ dolayegg()
 {
 	struct obj* uegg;
 
-	if (!u.ufemale)
+	if (!flags.female)
 	{
 		pline("%s can't lay eggs!",
 			Hallucination
@@ -2412,11 +2412,11 @@ int
 poly_gender()
 {
     /* Returns gender of polymorphed player;
-     * 0/1=same meaning as u.ufemale, 2=none.
+     * 0/1=same meaning as flags.female, 2=none.
      */
     if (is_neuter(youmonst.data) || !humanoid(youmonst.data))
         return 2;
-    return u.ufemale;
+    return flags.female;
 }
 
 void

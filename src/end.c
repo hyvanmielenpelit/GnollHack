@@ -754,9 +754,9 @@ time_t when; /* date+time at end of game */
     /* character name and basic role info */
     Sprintf(pbuf, "%s, %s %s %s %s", plname,
             aligns[1 - u.ualign.type].adj,
-            genders[u.ufemale].adj,
+            genders[flags.female].adj,
             urace.adj,
-            (u.ufemale && urole.name.f) ? urole.name.f : urole.name.m);
+            (flags.female && urole.name.f) ? urole.name.f : urole.name.m);
     putstr(0, 0, pbuf);
     putstr(0, 0, "");
 
@@ -1405,7 +1405,7 @@ int how;
              (u.ugrave_arise != PM_GREEN_SLIME)
                  ? "body rises from the dead"
                  : "revenant persists",
-             an(pm_monster_name(&mons[u.ugrave_arise], u.ufemale)));
+             an(pm_monster_name(&mons[u.ugrave_arise], flags.female)));
         display_nhwindow(WIN_MESSAGE, FALSE);
     }
 
@@ -1466,10 +1466,10 @@ int how;
 
     Sprintf(pbuf, "%s %s the %s...", Goodbye(), plname,
             (how != ASCENDED)
-                ? (const char *) ((u.ufemale && urole.name.f)
+                ? (const char *) ((flags.female && urole.name.f)
                     ? urole.name.f
                     : urole.name.m)
-                : (const char *) (u.ufemale ? "Demigoddess" : "Demigod"));
+                : (const char *) (flags.female ? "Demigoddess" : "Demigod"));
     dump_forward_putstr(endwin, 0, pbuf, done_stopprint);
     //dump_forward_putstr(endwin, 0, "", done_stopprint);
 

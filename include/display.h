@@ -240,7 +240,7 @@
                                   : (U_AP_TYPE == M_AP_OBJECT)              \
                                     ? objnum_to_glyph(youmonst.mappearance) \
                                     /* else U_AP_TYPE == M_AP_MONSTER */    \
-                                    : any_monnum_to_glyph(u.ufemale, youmonst.mappearance) \
+                                    : any_monnum_to_glyph(flags.female, youmonst.mappearance) \
                                  ))
 
 /*
@@ -375,11 +375,11 @@
     ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_RIDDEN_OFF)
 
 #define any_mon_to_glyph(mon, rng)                               \
-    (((mon) == &youmonst ? u.ufemale : (mon)->female) ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng) )
+    (((mon) == &youmonst ? flags.female : (mon)->female) ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng) )
 #define any_pet_to_glyph(mon, rng)                               \
-    (((mon) == &youmonst ? u.ufemale : (mon)->female) ? female_pet_to_glyph(mon, rng) : pet_to_glyph(mon, rng) )
+    (((mon) == &youmonst ? flags.female : (mon)->female) ? female_pet_to_glyph(mon, rng) : pet_to_glyph(mon, rng) )
 #define any_detected_mon_to_glyph(mon, rng)                               \
-    (((mon) == &youmonst ? u.ufemale : (mon)->female) ? female_detected_mon_to_glyph(mon, rng) : detected_mon_to_glyph(mon, rng) )
+    (((mon) == &youmonst ? flags.female : (mon)->female) ? female_detected_mon_to_glyph(mon, rng) : detected_mon_to_glyph(mon, rng) )
 
 /* This has the unfortunate side effect of needing a global variable    */
 /* to store a result. 'otg_temp' is defined and declared in decl.{ch}.  */
@@ -444,7 +444,7 @@
 /* The hero's glyph when seen as a monster.
  */
 #define hero_glyph                                                    \
-    u.ufemale ? \
+    flags.female ? \
         female_monnum_to_glyph((Upolyd || !flags.showrace)                       \
                         ? u.umonnum                                   \
                         : urace.monsternum) : \

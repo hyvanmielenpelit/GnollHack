@@ -1700,7 +1700,7 @@ namefloorobj()
         char tmpbuf[BUFSZ];
 
         /* straight role name */
-        unames[0] = ((Upolyd ? u.mfemale : u.ufemale) && urole.name.f)
+        unames[0] = ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
                      ? urole.name.f
                      : urole.name.m;
         /* random rank title for hero's role
@@ -1708,7 +1708,7 @@ namefloorobj()
            note: the 30 is hardcoded in xlev_to_rank, so should be
            hardcoded here too */
         unames[1] = rank_of(rn2_on_display_rng(30) + 1,
-                            Role_switch, u.ufemale);
+                            Role_switch, flags.female);
         /* random fake monster */
         unames[2] = bogusmon(tmpbuf, (char *) 0);
         /* increased chance for fake monster */

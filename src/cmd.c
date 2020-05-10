@@ -1042,7 +1042,7 @@ doability(VOID_ARGS)
 			abilitynum++;
 		}
 
-		if (lays_eggs(youmonst.data) && u.ufemale)
+		if (lays_eggs(youmonst.data) && flags.female)
 		{
 			Sprintf(available_ability_list[abilitynum].name, "%s an egg", eggs_in_water(youmonst.data) ? "Spawn" : "Lay");
 			available_ability_list[abilitynum].function_ptr = &dolayegg;
@@ -2623,7 +2623,7 @@ int final; /* ENL_GAMEINPROGRESS:0, ENL_GAMEOVERALIVE, ENL_GAMEOVERDEAD */
     /* as in background_enlightenment, when poly'd we need to use the saved
        gender in u.mfemale rather than the current you-as-monster gender */
     Sprintf(buf, "%s the %s's attributes:", tmpbuf,
-            ((Upolyd ? u.mfemale : u.ufemale) && urole.name.f)
+            ((Upolyd ? u.mfemale : flags.female) && urole.name.f)
                 ? urole.name.f
                 : urole.name.m);
 
@@ -2676,9 +2676,9 @@ int final;
     int innategend, difgend, difalgn;
     char buf[BUFSZ], tmpbuf[BUFSZ];
 
-    /* note that if poly'd, we need to use u.mfemale instead of u.ufemale
+    /* note that if poly'd, we need to use u.mfemale instead of flags.female
        to access hero's saved gender-as-human/elf/&c rather than current one */
-    innategend = (Upolyd ? u.mfemale : u.ufemale) ? 1 : 0;
+    innategend = (Upolyd ? u.mfemale : flags.female) ? 1 : 0;
     role_titl = (innategend && urole.name.f) ? urole.name.f : urole.name.m;
     rank_titl = rank_of(u.ulevel, Role_switch, innategend);
 
@@ -2697,9 +2697,9 @@ int final;
         tmpbuf[0] = '\0';
         /* here we always use current gender, not saved role gender */
         if (!is_male(uasmon) && !is_female(uasmon) && !is_neuter(uasmon))
-            Sprintf(tmpbuf, "%s ", genders[u.ufemale ? 1 : 0].adj);
+            Sprintf(tmpbuf, "%s ", genders[flags.female ? 1 : 0].adj);
         Sprintf(buf, "%sin %s%s form", !final ? "currently " : "", tmpbuf,
-                pm_monster_name(uasmon, u.ufemale));
+                pm_monster_name(uasmon, flags.female));
         you_are(buf, "");
     }
 
@@ -3891,16 +3891,16 @@ int final;
         && !(final == ENL_GAMEOVERDEAD
              && u.umonnum == PM_GREEN_SLIME && !Unchanging)) {
         /* foreign shape (except were-form which is handled below) */
-        Sprintf(buf, "polymorphed into %s", an(pm_monster_name(youmonst.data, u.ufemale)));
+        Sprintf(buf, "polymorphed into %s", an(pm_monster_name(youmonst.data, flags.female)));
         if (wizard)
             Sprintf(eos(buf), " (%d)", u.mtimedone);
         you_are(buf, "");
     }
-    if (lays_eggs(youmonst.data) && u.ufemale) /* Upolyd */
+    if (lays_eggs(youmonst.data) && flags.female) /* Upolyd */
         you_can("lay eggs", "");
     if (u.ulycn >= LOW_PM) {
         /* "you are a werecreature [in beast form]" */
-        Strcpy(buf, an(pm_monster_name(&mons[u.ulycn], u.ufemale)));
+        Strcpy(buf, an(pm_monster_name(&mons[u.ulycn], flags.female)));
         if (u.umonnum == u.ulycn) {
             Strcat(buf, " in beast form");
             if (wizard)
@@ -4131,12 +4131,12 @@ minimal_enlightenment()
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, FALSE);
     } else {
         Sprintf(buf, fmtstr, "role",
-                (u.ufemale && urole.name.f) ? urole.name.f
+                (flags.female && urole.name.f) ? urole.name.f
                                                : urole.name.m);
         add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, FALSE);
     }
     /* don't want poly_gender() here; it forces `2' for non-humanoids */
-    genidx = is_neuter(youmonst.data) ? 2 : u.ufemale;
+    genidx = is_neuter(youmonst.data) ? 2 : flags.female;
     Sprintf(buf, fmtstr, "gender", genders[genidx].adj);
     add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, FALSE);
     if (Upolyd && (int) u.mfemale != genidx) {

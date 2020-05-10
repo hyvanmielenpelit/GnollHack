@@ -238,9 +238,9 @@ struct Gender {
 
 extern const struct Gender genders[]; /* table of available genders */
 /* pronouns for the hero */
-#define uhe()      (genders[u.ufemale ? 1 : 0].he)
-#define uhim()     (genders[u.ufemale ? 1 : 0].him)
-#define uhis()     (genders[u.ufemale ? 1 : 0].his)
+#define uhe()      (genders[flags.female ? 1 : 0].he)
+#define uhim()     (genders[flags.female ? 1 : 0].him)
+#define uhis()     (genders[flags.female ? 1 : 0].his)
 /* corresponding pronouns for monsters; yields "it" when mtmp can't be seen */
 #define mhe(mtmp)  (genders[pronoun_gender(mtmp, FALSE)].he)
 #define mhim(mtmp) (genders[pronoun_gender(mtmp, FALSE)].him)
@@ -327,8 +327,7 @@ struct you {
 
     unsigned ucreamed;
     unsigned uswldtim;          /* time you have been swallowed */
-    boolean ufemale;            /* your current gender */
-    boolean mfemale;            /* saved human value of u.ufemale (your true gender before polymorph) */
+    boolean mfemale;            /* saved human value of flags.female (your true gender before polymorph) */
 
     Bitfield(uswallow, 1);      /* true if swallowed */
     Bitfield(uinwater, 1);      /* if you're currently in water (only

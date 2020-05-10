@@ -3386,7 +3386,7 @@ domagictrap()
             if (on_level(&u.uz, &qstart_level))
                 You_feel(
                     "%slike the prodigal son.",
-                    (u.ufemale || (Upolyd && is_neuter(youmonst.data)))
+                    (flags.female || (Upolyd && is_neuter(youmonst.data)))
                         ? "oddly "
                         : "");
             else

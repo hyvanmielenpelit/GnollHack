@@ -3154,7 +3154,7 @@ int how;
         if (Upolyd)
             Strcpy(buf, youmonst.data->mname);
         else {
-            Strcpy(buf, (u.ufemale && urole.name.f) ? urole.name.f
+            Strcpy(buf, (flags.female && urole.name.f) ? urole.name.f
                                                        : urole.name.m);
             buf[0] = lowc(buf[0]);
         }

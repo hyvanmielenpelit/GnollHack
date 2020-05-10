@@ -483,7 +483,7 @@ struct obj *corpse;
         mtmp->mbasehpmax = u.ubasehpmax;
 		update_mon_maxhp(mtmp);
 		mtmp->mhp = mtmp->mhpmax;
-		mtmp->female = u.ufemale;
+		mtmp->female = flags.female;
 		mtmp->heads_left = mtmp->data->heads;
 		mtmp->msleeping = 1;
     }
@@ -530,7 +530,7 @@ struct obj *corpse;
 #else
 	Sprintf(newbones->who, "%s-%.3s-%.3s-%.3s-%.3s", plname, urole.filecode,
 #endif
-		urace.filecode, genders[u.ufemale].filecode,
+		urace.filecode, genders[flags.female].filecode,
             aligns[1 - u.ualign.type].filecode);
     formatkiller(newbones->how, sizeof newbones->how, how, TRUE);
     Strcpy(newbones->when, yyyymmddhhmmss(when));

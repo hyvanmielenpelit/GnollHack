@@ -2754,12 +2754,12 @@ char *buf;
 
     Strcat(buf, honored[rn2(SIZE(honored) - 1) + u.uevent.udemigod]);
     if (is_vampire(youmonst.data))
-        Strcat(buf, (u.ufemale) ? " dark lady" : " dark lord");
+        Strcat(buf, (flags.female) ? " dark lady" : " dark lord");
     else if (is_elf(youmonst.data))
-        Strcat(buf, (u.ufemale) ? " hiril" : " hir");
+        Strcat(buf, (flags.female) ? " hiril" : " hir");
     else
         Strcat(buf, !is_human(youmonst.data) ? " creature"
-                                             : (u.ufemale) ? " lady"
+                                             : (flags.female) ? " lady"
                                                               : " sir");
 }
 
@@ -3994,10 +3994,10 @@ register int fall;
                 if (u.utraptype == TT_PIT)
                     verbalize(
                         "Be careful, %s, or you might fall through the floor.",
-                        u.ufemale ? "madam" : "sir");
+                        flags.female ? "madam" : "sir");
                 else
                     verbalize("%s, do not damage the floor here!",
-                        u.ufemale ? "Madam" : "Sir");
+                        flags.female ? "Madam" : "Sir");
             }
         }
         if (Role_if(PM_KNIGHT)) {

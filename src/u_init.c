@@ -872,7 +872,8 @@ u_init()
     register int i;
     struct u_roleplay tmpuroleplay = u.uroleplay; /* set by rcfile options */
 
-    flags.beginner = 1;
+	flags.female = flags.initgend;
+	flags.beginner = 1;
 
     /* zero u, including pointer values --
      * necessary when aborting from a failed restore */
@@ -916,7 +917,7 @@ u_init()
     u.umonnum = u.umonster = urole.monsternum;
 	u.ulycn = NON_PM;
     set_uasmon();
-	u.ufemale = flags.initgend;
+	flags.female = flags.female;
 
 	u.carrying_capacity_level = UNENCUMBERED;
 
@@ -1117,7 +1118,7 @@ u_init()
 		Tourist[T_DARTS].trquan = rn1(20, 21);
 		ini_inv(Tourist);
 
-		if (u.ufemale)
+		if (flags.female)
 		{
 			ini_inv(TouristFemale);
 			knows_object(EXPENSIVE_HANDBAG);

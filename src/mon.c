@@ -5346,7 +5346,7 @@ struct monst* mon;
     if (!mon)
         return "";
 
-    boolean isfemale = (mon == &youmonst ? u.ufemale : mon->female);
+    boolean isfemale = (mon == &youmonst ? flags.female : mon->female);
     return pm_monster_name(mon->data, isfemale);
 
 }

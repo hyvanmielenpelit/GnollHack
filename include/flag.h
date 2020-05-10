@@ -32,6 +32,7 @@ struct flag {
 #define wizard flags.debug
     boolean end_own; /* list all own scores */
     boolean explore; /* in exploration mode */
+    boolean female;  /* initial selection */
 #define discover flags.explore
     boolean friday13;        /* it's Friday the 13th */
     boolean help;            /* look in data file for info about stuff */

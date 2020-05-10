@@ -136,7 +136,7 @@ static struct Bool_Opt {
 #else
     { "fast_map", (boolean *) 0, TRUE, SET_IN_FILE },
 #endif
-    { "female", &u.ufemale, FALSE, DISP_IN_GAME },
+    { "female", &flags.female, FALSE, DISP_IN_GAME },
     { "fixinv", &flags.invlet_constant, TRUE, SET_IN_GAME },
 #if defined(SYSFLAGS) && defined(AMIFLUSH)
     { "flush", &sysflags.amiflush, FALSE, SET_IN_GAME },
@@ -2152,22 +2152,22 @@ boolean tinitial, tfrom_file;
     if (match_optname(opts, "female", 3, FALSE)) {
         if (duplicate_opt_detection(opts, 0))
             complain_about_duplicate(opts, 0);
-        if (!initial && u.ufemale == negated) {
+        if (!initial && flags.female == negated) {
             config_error_add("That is not anatomically possible.");
             return FALSE;
         } else
-            flags.initgend = u.ufemale = !negated;
+            flags.initgend = flags.female = !negated;
         return retval;
     }
 
     if (match_optname(opts, "male", 4, FALSE)) {
         if (duplicate_opt_detection(opts, 0))
             complain_about_duplicate(opts, 0);
-        if (!initial && u.ufemale != negated) {
+        if (!initial && flags.female != negated) {
             config_error_add("That is not anatomically possible.");
             return FALSE;
         } else
-            flags.initgend = u.ufemale = negated;
+            flags.initgend = flags.female = negated;
         return retval;
     }
 
@@ -2233,7 +2233,7 @@ boolean tinitial, tfrom_file;
                 config_error_add("Unknown %s '%s'", fullname, op);
                 return FALSE;
             } else
-                u.ufemale = flags.initgend;
+                flags.female = flags.initgend;
         } else
             return FALSE;
         return retval;
@@ -4637,7 +4637,7 @@ doset() /* changing options via menu by Per Liboriussen */
             if ((bool_p = boolopt[i].addr) != 0
                 && ((boolopt[i].optflags <= DISP_IN_GAME && pass == 0)
                     || (boolopt[i].optflags >= SET_IN_GAME && pass == 1))) {
-                if (bool_p == &u.ufemale)
+                if (bool_p == &flags.female)
                     continue; /* obsolete */
                 if (boolopt[i].optflags == SET_IN_WIZGAME && !wizard)
                     continue;

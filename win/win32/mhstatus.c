@@ -204,7 +204,7 @@ StatusWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             msg_data->buffer[0] = '\0';
             size_t space_remaining = msg_data->max_size;
 
-            for (int line = 0; line < NHSW_LINES; line++) {
+            for (int line = 0; line < iflags.wc2_statuslines; line++) {
                 mswin_status_line *status_line = data->status_lines[line].lines;
                 for (int i = 0; i < status_line->status_strings.count; i++) {
                     mswin_status_string * status_string = status_line->status_strings.status_strings[i];
@@ -313,9 +313,9 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
         
         data->has_blink_fields = FALSE;
 
-        for (int line = 0; line < NHSW_LINES; line++) {
+        LONG cy = 0;
+        for (int line = 0; line < iflags.wc2_statuslines; line++) {
             LONG left = rt.left;
-            LONG cy = 0;
             int vlen;
 
             mswin_status_line * status_line = &data->status_lines->lines[line];
@@ -375,7 +375,7 @@ onWMPaint(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 nBg = status_bg_color;
 
-                if (status_string->space_in_front)
+                if (status_string->space_in_front && rt.left != left)
                     rt.left += fnt->width;
 
                 sz.cy = -1;
@@ -497,7 +497,7 @@ mswin_status_window_size(HWND hWnd, LPSIZE sz)
         TEXTMETRIC tm;
         GetTextMetrics(hdc, &tm);
 
-        rt.bottom = rt.top + text_sz.cy * NHSW_LINES;
+        rt.bottom = rt.top + text_sz.cy * iflags.wc2_statuslines;
 
         SelectObject(hdc, saveFont);
         ReleaseDC(hWnd, hdc);

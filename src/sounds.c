@@ -740,7 +740,7 @@ register struct monst *mtmp;
             (Upolyd && (u.umonnum == PM_WOLF || u.umonnum == PM_WINTER_WOLF
                         || u.umonnum == PM_WINTER_WOLF_CUB));
         const char *racenoun =
-            (u.ufemale && urace.individual.f)
+            (flags.female && urace.individual.f)
                 ? urace.individual.f
                 : (urace.individual.m) ? urace.individual.m : urace.noun;
 
@@ -763,7 +763,7 @@ register struct monst *mtmp;
         } else if (is_peaceful(mtmp)) {
             if (kindred && isnight) {
                 Sprintf(verbuf, "Good feeding %s!",
-                        u.ufemale ? "sister" : "brother");
+                        flags.female ? "sister" : "brother");
                 verbl_msg = verbuf;
             } else if (nightchild && isnight) {
                 Sprintf(verbuf, "How nice to hear you, child of the night!");
@@ -796,7 +796,7 @@ register struct monst *mtmp;
                     verbl_msg = verbuf;
                 } else if (vampindex == 1) {
                     Sprintf(verbuf, vampmsg[vampindex],
-                            Upolyd ? an(pm_monster_name(&mons[u.umonnum], u.ufemale))
+                            Upolyd ? an(pm_monster_name(&mons[u.umonnum], flags.female))
                                    : an(racenoun));
                     verbl_msg = verbuf;
                 } else
@@ -1035,7 +1035,7 @@ register struct monst *mtmp;
     } break;
     case MS_ARREST:
         if (is_peaceful(mtmp))
-            verbalize("Just the facts, %s.", u.ufemale ? "Ma'am" : "Sir");
+            verbalize("Just the facts, %s.", flags.female ? "Ma'am" : "Sir");
         else {
             static const char *const arrest_msg[3] = {
                 "Anything you say can be used against you.",

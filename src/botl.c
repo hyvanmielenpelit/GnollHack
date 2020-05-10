@@ -71,7 +71,7 @@ do_statusline1()
         char mbot[BUFSZ];
         int k = 0;
 
-        Strcpy(mbot, pm_monster_name(&mons[u.umonnum], u.ufemale));
+        Strcpy(mbot, pm_monster_name(&mons[u.umonnum], flags.female));
         while (mbot[k] != 0) {
             if ((k == 0 || (k > 0 && mbot[k - 1] == ' ')) && 'a' <= mbot[k]
                 && mbot[k] <= 'z')
@@ -359,7 +359,7 @@ boolean female;
 const char *
 rank()
 {
-    return rank_of(u.ulevel, Role_switch, u.ufemale);
+    return rank_of(u.ulevel, Role_switch, flags.female);
 }
 
 int
@@ -646,7 +646,7 @@ bot_via_windowport()
      */
     Strcpy(nb = buf, plname);
     nb[0] = highc(nb[0]);
-    titl = !Upolyd ? rank() : pm_monster_name(&mons[u.umonnum], u.ufemale);
+    titl = !Upolyd ? rank() : pm_monster_name(&mons[u.umonnum], flags.female);
     i = (int) (strlen(buf) + sizeof " the " + strlen(titl) - sizeof "");
     /* if "Name the Rank/monster" is too long, we truncate the name
        but always keep at least 10 characters of it; when hitpintbar is
@@ -3649,12 +3649,12 @@ choose_value:
                 if (urole.rank[i].f) {
                     Sprintf(fbuf, "\"%s\"", urole.rank[i].f);
                     Sprintf(obuf, "%s or %s",
-                            u.ufemale ? fbuf : mbuf,
-                            u.ufemale ? mbuf : fbuf);
+                            flags.female ? fbuf : mbuf,
+                            flags.female ? mbuf : fbuf);
                 } else {
                     fbuf[0] = obuf[0] = '\0';
                 }
-                if (u.ufemale) {
+                if (flags.female) {
                     if (*fbuf)
                         rolelist[j++] = dupstr(fbuf);
                     rolelist[j++] = dupstr(mbuf);

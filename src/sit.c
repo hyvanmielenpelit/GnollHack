@@ -238,7 +238,7 @@ dosit()
                 /* Magical voice not affected by deafness */
                 pline("A voice echoes:");
                 verbalize("Thy audience hath been summoned, %s!",
-                          u.ufemale ? "Dame" : "Sire");
+                          flags.female ? "Dame" : "Sire");
                 while (cnt--)
                     (void) makemon(courtmon(), u.ux, u.uy, NO_MM_FLAGS);
                 break;
@@ -247,7 +247,7 @@ dosit()
                 /* Magical voice not affected by deafness */
                 pline("A voice echoes:");
                 verbalize("By thine Imperious order, %s...",
-                          u.ufemale ? "Dame" : "Sire");
+                          flags.female ? "Dame" : "Sire");
                 do_genocide(5); /* REALLY|ONTHRONE, see do_genocide() */
                 break;
             case 9:

@@ -116,7 +116,7 @@ gnome_player_selection()
             for (n = 0, i = 0; roles[i].name.m; i++) {
                 if (ok_role(i, flags.initrace, flags.initgend,
                             flags.initalign)) {
-                    if (flags.initgend >= 0 && flags.female
+                    if (flags.initgend >= 0 && flags.ufemale
                         && roles[i].name.f)
                         choices[n] = roles[i].name.f;
                     else
