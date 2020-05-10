@@ -265,12 +265,12 @@ enum cmap_types {
     CMAP_GNOMISH_MINES = 1,
     CMAP_GEHENNOM = 2,
     CMAP_FORT_LUDIOUS = 3,
-    CMAP_UNDEAD_STYLE = 4,
+    CMAP_SOKOBAN = 4,
     CMAP_SWAMP_STYLE = 5,
     CMAP_GEHENNOM_ALTERNATIVE = 6,
     CMAP_MODRON = 7,
     CMAP_BOVINE = 8,
-    CMAP_ARBOREAL = 9,
+    CMAP_UNDEAD_STYLE = 9,
     CMAP_CITYSCAPE = 10,
     CMAP_SEWERS = 11,
     CMAP_MAZE = 12,
@@ -283,7 +283,7 @@ enum cmap_types {
 
 static const char* cmap_type_names[CMAP_TYPE_MAX] = {
     "normal", "gnomish mines", "gehennom",  "ludious", "undead", "swamp", "gehennom alternative", "modron",
-    "bovine", "arboreal",      "cityscape", "sewers",  "maze",   "tower", "caverns",              "astral"
+    "bovine", "sokoban",       "cityscape", "sewers",  "maze",   "tower", "caverns",              "astral"
 };
 
 

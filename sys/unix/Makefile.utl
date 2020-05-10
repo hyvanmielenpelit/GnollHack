@@ -393,7 +393,7 @@ tile2beos: tile2beos.o $(TEXT_IO)
 #tilemap: ../win/share/tilemap.c $(HACK_H)
 #	$(CC) $(CFLAGS) $(LFLAGS) -o tilemap ../win/share/tilemap.c $(LIBS)
 tilemap: tilemap.o
-	$(CC) $(LFLAGS) -o tilemap tilemap.o tiledata.o $(LIBS)
+	$(CC) $(LFLAGS) -o tilemap tilemap.o $(LIBS)
 ../src/tile.c: tilemap
 	./tilemap
 

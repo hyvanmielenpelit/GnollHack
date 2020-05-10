@@ -240,7 +240,8 @@ int set, entry;
 #endif
 #endif
 
-int tilemap[MAX_GLYPH];
+short tilemap[MAX_GLYPH];
+#define NUM_INVIS_TILES NUM_INVIS_GLYPHS
 
 #ifdef STATUES_LOOK_LIKE_MONSTERS
 int lastmontile, lastobjtile, lastothtile, laststatuetile;
@@ -261,7 +262,8 @@ int lastmontile, lastobjtile, lastothtile;
 void
 init_tilemap()
 {
-    int i, j, condnum, tilenum;
+    int i, j;
+    short condnum, tilenum;
     int corpsetile, swallowbase;
 
     for (i = 0; i < MAX_GLYPH; i++) {

@@ -1958,7 +1958,7 @@ xchar x, y;
         break;
     case ALTAR:
     {
-        uchar alignment_mask = ptr->altarmask;
+        aligntyp alignment_mask = (ptr->altarmask & ~AM_SHRINE);
         aligntyp alignment = Amask2align(alignment_mask);
         idx = Is_astralevel(&u.uz) ? S_high_altar :
             alignment == A_LAWFUL ? S_lawful_altar : 
@@ -2866,6 +2866,8 @@ get_current_cmap_type_index()
         return CMAP_MODRON;
     else if (Is_bovine_level(&u.uz))
         return CMAP_BOVINE;
+    else if (In_sokoban(&u.uz))
+        return CMAP_SOKOBAN;
     else if (In_V_tower(&u.uz) || On_W_tower_level(&u.uz))
         return CMAP_TOWER;
     else if (Is_astralevel(&u.uz))

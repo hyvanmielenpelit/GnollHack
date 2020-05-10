@@ -19,7 +19,7 @@ short* tilemaparray;
     const char* tile_section_name;
     const char* set_name;
     int fd;
-    int tile_count = 0;
+    short tile_count = 0;
     char buf[BUFSIZ];
     strcpy(buf, "");
 
@@ -292,7 +292,7 @@ short* tilemaparray;
 
         if (misc_idx == 0)
         {
-            if (NUM_INVIS_TILES == 1)
+            if (NUM_INVIS_GLYPHS == 1)
             {
                 if (process_style == 0)
                 {
@@ -307,7 +307,7 @@ short* tilemaparray;
             }
             else
             {
-                for (int i = 0; i < NUM_INVIS_TILES; i++)
+                for (int i = 0; i < NUM_INVIS_GLYPHS; i++)
                 {
                     if (process_style == 0)
                     {

@@ -294,12 +294,12 @@
  *
  * zap beam     A set of four (there are four directions) for each beam type.
  *              The beam type is shifted over 2 positions and the direction
- *              is stored in the lower 2 bits.  Count: NUM_ZAP << 2
+ *              is stored in the lower 2 bits.  Count: NUM_ZAP * 4
  *
  * swallow      A set of eight for each monster.  The eight positions rep-
  *              resent those surrounding the hero.  The monster number is
  *              shifted over 3 positions and the swallow position is stored
- *              in the lower three bits.  Count: NUMMONS << 3
+ *              in the lower three bits.  Count: NUMMONS * 8
  *
  * warning      A set of six representing the different warning levels.
  *
@@ -324,7 +324,7 @@
 #define NUM_PLAYER_GLYPH_LEVELS 1
 #define NUM_PLAYER_CHARACTERS NUM_ROLES * NUM_RACES * 2 * 3 * NUM_PLAYER_GLYPH_LEVELS
 #define CMAP_TYPE_CHAR_NUM (MAXPCHARS - MAXEXPCHARS)
-#define NUM_INVIS_TILES 1
+#define NUM_INVIS_GLYPHS 1
 
 #define GLYPH_MON_OFF     0
 #define GLYPH_PET_OFF     (NUMMONS + GLYPH_MON_OFF)
@@ -337,14 +337,14 @@
 #define GLYPH_FEMALE_BODY_OFF    (NUMMONS + GLYPH_FEMALE_DETECT_OFF)
 #define GLYPH_FEMALE_RIDDEN_OFF  (NUMMONS + GLYPH_FEMALE_BODY_OFF)
 #define GLYPH_INVIS_OFF   (NUMMONS + GLYPH_FEMALE_RIDDEN_OFF)
-#define GLYPH_OBJ_OFF     (NUM_INVIS_TILES + GLYPH_INVIS_OFF)
+#define GLYPH_OBJ_OFF     (NUM_INVIS_GLYPHS + GLYPH_INVIS_OFF)
 #define GLYPH_OBJ_RIGHT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
 #define GLYPH_OBJ_LEFT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_RIGHT_HAND_OFF)
 #define GLYPH_CMAP_OFF    (NUM_OBJECTS + GLYPH_OBJ_LEFT_HAND_OFF)
 #define GLYPH_EXPLODE_OFF (CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX + GLYPH_CMAP_OFF)
 #define GLYPH_ZAP_OFF     ((MAXEXPCHARS * EXPL_MAX) + GLYPH_EXPLODE_OFF)
-#define GLYPH_SWALLOW_OFF ((NUM_ZAP << 2) + GLYPH_ZAP_OFF)
-#define GLYPH_WARNING_OFF ((NUMMONS << 3) + GLYPH_SWALLOW_OFF)
+#define GLYPH_SWALLOW_OFF ((NUM_ZAP * 4) + GLYPH_ZAP_OFF)
+#define GLYPH_WARNING_OFF ((NUMMONS * 8) + GLYPH_SWALLOW_OFF)
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
 #define GLYPH_FEMALE_STATUE_OFF (NUMMONS + GLYPH_STATUE_OFF)
 #define GLYPH_ARTIFACT_OFF (NUMMONS + GLYPH_FEMALE_STATUE_OFF)
