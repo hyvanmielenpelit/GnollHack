@@ -334,7 +334,7 @@ struct obj *obj;
 
 /* list of valid menu classes for query_objlist() and allow_category callback
    (with room for all object classes, 'u'npaid, BUCX, and terminator) */
-static char valid_menu_classes[MAXOCLASSES + 1 + 4 + 1];
+static char valid_menu_classes[MAX_OBJECT_CLASSES + 1 + 4 + 1];
 static boolean class_filter, bucx_filter, shop_filter;
 
 /* check valid_menu_classes[] for an entry; also used by askchain() */
@@ -607,7 +607,7 @@ int what; /* should be a long */
         int ct = 0;
         long lcount;
         boolean all_of_a_type, selective, bycat;
-        char oclasses[MAXOCLASSES + 10]; /* +10: room for B,U,C,X plus slop */
+        char oclasses[MAX_OBJECT_CLASSES + 10]; /* +10: room for B,U,C,X plus slop */
         struct obj *obj, *obj2;
 
         oclasses[0] = '\0';   /* types to consider (empty for all) */
@@ -3054,7 +3054,7 @@ struct obj* other_container;
 {
     int FDECL((*actionfunc), (OBJ_P)), FDECL((*checkfunc), (OBJ_P));
     struct obj **objlist;
-    char selection[MAXOCLASSES + 10]; /* +10: room for B,U,C,X plus slop */
+    char selection[MAX_OBJECT_CLASSES + 10]; /* +10: room for B,U,C,X plus slop */
     const char *action;
     boolean one_by_one, allflag;
     int used = 0, menu_on_request = 0;

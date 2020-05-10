@@ -977,23 +977,23 @@ enum obj_class_types {
 	REAGENT_CLASS = 18,
 	MISCELLANEOUS_CLASS = 19,
 
-    MAXOCLASSES  = 20
+    MAX_OBJECT_CLASSES  = 20
 };
 
 
-#define VEGETARIAN_CLASS (MAXOCLASSES + 1)
+#define VEGETARIAN_CLASS (MAX_OBJECT_CLASSES + 1)
 
-#define ALLOW_COUNT (MAXOCLASSES + 1) /* Can be used in the object class    */
-#define ALL_CLASSES (MAXOCLASSES + 2) /* input to getobj().                 */
-#define ALLOW_NONE  (MAXOCLASSES + 3)
+#define ALLOW_COUNT (MAX_OBJECT_CLASSES + 1) /* Can be used in the object class    */
+#define ALL_CLASSES (MAX_OBJECT_CLASSES + 2) /* input to getobj().                 */
+#define ALLOW_NONE  (MAX_OBJECT_CLASSES + 3)
 
-#define BURNING_OIL (MAXOCLASSES + 1) /* Can be used as input to explode.   */
-#define MON_EXPLODE (MAXOCLASSES + 2) /* Exploding monster (e.g. gas spore) */
+#define BURNING_OIL (MAX_OBJECT_CLASSES + 1) /* Can be used as input to explode.   */
+#define MON_EXPLODE (MAX_OBJECT_CLASSES + 2) /* Exploding monster (e.g. gas spore) */
 
 #if 0 /* moved to decl.h so that makedefs.c won't see them */
 extern const struct class_sym
-        def_oc_syms[MAXOCLASSES];       /* default class symbols */
-extern uchar oc_syms[MAXOCLASSES];      /* current class symbols */
+        def_oc_syms[MAX_OBJECT_CLASSES];       /* default class symbols */
+extern uchar oc_syms[MAX_OBJECT_CLASSES];      /* current class symbols */
 #endif
 
 /* Default definitions of all object-symbols (must match classes above). */

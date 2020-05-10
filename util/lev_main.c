@@ -1190,15 +1190,15 @@ char c;
 
     SpinCursor(3);
     class = c ? def_char_to_monclass(c) : 0;
-    if (class == MAXMCLASSES)
+    if (class == MAX_MONSTER_CLASSES)
         return ERR;
 
-    for (i = LOW_PM; i < NUMMONS; i++)
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
         if (!class || class == mons[i].mlet)
             if (!strcmp(s, mons[i].mname))
                 return i;
     /* didn't find it; lets try case insensitive search */
-    for (i = LOW_PM; i < NUMMONS; i++)
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
         if (!class || class == mons[i].mlet)
             if (!case_insensitive_comp(s, mons[i].mname)) {
                 if (be_verbose)
@@ -1222,7 +1222,7 @@ char c; /* class */
 
     SpinCursor(3);
     class = (c > 0) ? def_char_to_objclass(c) : 0;
-    if (class == MAXOCLASSES)
+    if (class == MAX_OBJECT_CLASSES)
         return ERR;
 
     for (i = class ? bases[class] : 0; i < NUM_OBJECTS; i++) {
@@ -1268,7 +1268,7 @@ boolean
 check_monster_char(c)
 char c;
 {
-    return (def_char_to_monclass(c) != MAXMCLASSES);
+    return (def_char_to_monclass(c) != MAX_MONSTER_CLASSES);
 }
 
 /*
@@ -1278,7 +1278,7 @@ boolean
 check_object_char(c)
 char c;
 {
-    return (def_char_to_objclass(c) != MAXOCLASSES);
+    return (def_char_to_objclass(c) != MAX_OBJECT_CLASSES);
 }
 
 /*

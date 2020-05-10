@@ -29,7 +29,7 @@ E char SAVEP[];
 #define WINTYPELEN 16
 E char chosen_windowtype[WINTYPELEN];
 
-E NEARDATA int bases[MAXOCLASSES];
+E NEARDATA int bases[MAX_OBJECT_CLASSES];
 
 E NEARDATA int multi;
 E const char *multi_reason;
@@ -251,10 +251,10 @@ E NEARDATA struct spell spl_book[]; /* sized in decl.c */
 E const int zapcolors[];
 #endif
 
-E const struct class_sym def_oc_syms[MAXOCLASSES]; /* default class symbols */
-E uchar oc_syms[MAXOCLASSES];                      /* current class symbols */
-E const struct class_sym def_monsyms[MAXMCLASSES]; /* default class symbols */
-E uchar monsyms[MAXMCLASSES];                      /* current class symbols */
+E const struct class_sym def_oc_syms[MAX_OBJECT_CLASSES]; /* default class symbols */
+E uchar oc_syms[MAX_OBJECT_CLASSES];                      /* current class symbols */
+E const struct class_sym def_monsyms[MAX_MONSTER_CLASSES]; /* default class symbols */
+E uchar monsyms[MAX_MONSTER_CLASSES];                      /* current class symbols */
 
 #include "obj.h"
 E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
@@ -295,7 +295,7 @@ E NEARDATA struct mvitals {
     uchar born;
     uchar died;
     uchar mvflags;
-} mvitals[NUMMONS];
+} mvitals[NUM_MONSTERS];
 
 E NEARDATA long domove_attempting;
 E NEARDATA long domove_succeeded;

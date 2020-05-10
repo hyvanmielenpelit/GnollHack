@@ -436,6 +436,8 @@ int force;
                 case DOOR: /* Make the door collapse */
                     if (levl[x][y].doormask == D_NODOOR)
                         goto do_pit;
+                    if (levl[x][y].doormask == D_PORTCULLIS)
+                        break;
                     if (cansee(x, y))
                         pline_The("door collapses.");
                     if (*in_rooms(x, y, SHOPBASE))
@@ -763,7 +765,7 @@ struct obj *instr;
                                 u.uevent.uheard_tune =
                                     2; /* tune now fully known */
                                 if (levl[x][y].typ == DRAWBRIDGE_DOWN)
-                                    close_drawbridge(x, y);
+                                    maybe_close_drawbridge(x, y);
                                 else
                                     open_drawbridge(x, y);
                                 return 1;

@@ -153,7 +153,7 @@ int
 artifact_to_obj(artifactid)
 int artifactid;
 {
-	if (artifactid <= 0 || artifactid > NROFARTIFACTS || artifactid == NO_GLYPH)
+	if (artifactid <= 0 || artifactid > NUM_ARTIFACTS || artifactid == NO_GLYPH)
 		return STRANGE_OBJECT;
 	return (int)artilist[artifactid].otyp;
 
@@ -1921,9 +1921,11 @@ xchar x, y;
     case DOOR:
         if (ptr->doormask) {
             if (ptr->doormask & D_BROKEN)
-                idx = S_ndoor;
+                idx = (ptr->horizontal) ? S_hbdoor : S_vbdoor;
             else if (ptr->doormask & D_ISOPEN)
                 idx = (ptr->horizontal) ? S_hodoor : S_vodoor;
+            else if (ptr->doormask & D_PORTCULLIS)
+                idx = (ptr->horizontal) ? S_hoportcullis : S_voportcullis;
             else /* else is closed */
                 idx = (ptr->horizontal) ? S_hcdoor : S_vcdoor;
         } else
@@ -2041,7 +2043,7 @@ int loc;
         impossible("swallow_to_glyph: bad swallow location");
         loc = S_sw_br;
     }
-    return ((int) (what_mon(mnum, rn2_on_display_rng) << 3) |
+    return ((int) (what_mon(mnum, rn2_on_display_rng) * MAX_SWALLOW_CHARS) |
             (loc - S_sw_tl)) + GLYPH_SWALLOW_OFF;
 }
 
@@ -2066,9 +2068,9 @@ int beam_type;
         impossible("zapdir_to_glyph:  illegal beam type");
         beam_type = 0;
     }
-    dx = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
+    int zapdir_glyph_index = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
 
-    return ((int) ((beam_type << 2) | dx)) + GLYPH_ZAP_OFF;
+    return ((int) ((beam_type << 2) | zapdir_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
 /*

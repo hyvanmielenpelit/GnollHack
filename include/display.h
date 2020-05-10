@@ -161,7 +161,7 @@
  *
  * Respectively return a random monster, object, or trap number.
  */
-#define random_monster(rng) rng(NUMMONS)
+#define random_monster(rng) rng(NUM_MONSTERS)
 #define random_object(rng) (rng(NUM_OBJECTS - 1) + 1)
 #define random_trap(rng) (rng(TRAPNUM - 1) + 1)
 
@@ -255,25 +255,25 @@
  *
  * Glyphs are grouped for easy accessibility:
  *
- * monster      Represents all the wild (not tame) non-female monsters.  Count: NUMMONS.
+ * monster      Represents all the wild (not tame) non-female monsters.  Count: NUM_MONSTERS.
  *
- * pet          Represents all of the tame non-female monsters.  Count: NUMMONS
+ * pet          Represents all of the tame non-female monsters.  Count: NUM_MONSTERS
  *
- * detect       Represents all detected non-female monsters.  Count: NUMMONS
+ * detect       Represents all detected non-female monsters.  Count: NUM_MONSTERS
  *
- * corpse       One for each monster.  Count: NUMMONS
+ * corpse       One for each monster.  Count: NUM_MONSTERS
  *
- * ridden       Represents all monsters being ridden.  Count: NUMMONS
+ * ridden       Represents all monsters being ridden.  Count: NUM_MONSTERS
  *
- * female mon   Represents all the wild (not tame) female monsters.  Count: NUMMONS.
+ * female mon   Represents all the wild (not tame) female monsters.  Count: NUM_MONSTERS.
  *
- * female pet   Represents all of the tame female monsters.  Count: NUMMONS
+ * female pet   Represents all of the tame female monsters.  Count: NUM_MONSTERS
  *
- * female det   Represents all detected female monsters.  Count: NUMMONS
+ * female det   Represents all detected female monsters.  Count: NUM_MONSTERS
  *
- * female corpse  One for each female monster.  Count: NUMMONS
+ * female corpse  One for each female monster.  Count: NUM_MONSTERS
  *
- * female ridden  Represents all female monsters being ridden.  Count: NUMMONS
+ * female ridden  Represents all female monsters being ridden.  Count: NUM_MONSTERS
  *
  * invisible    Invisible monster placeholder.  Count: 1
  *
@@ -285,33 +285,33 @@
  *
  * cmap         One for each entry in the character map for each dungeon type. 
  *              The character map is the dungeon features and other miscellaneous things.
- *              Count: MAXPCHARS * CMAP_TYPE_MAX
+ *              Count: MAX_CMAPPED_CHARS * CMAP_TYPE_MAX
  *
  * explosions   A set of nine for each of the following seven explosion types:
  *                   dark, noxious, muddy, wet, magical, fiery, frosty.
  *              The nine positions represent those surrounding the hero.
- *              Count: MAXEXPCHARS * EXPL_MAX (EXPL_MAX is defined in hack.h)
+ *              Count: MAX_EXPLOSION_CHARS * EXPL_MAX (EXPL_MAX is defined in hack.h)
  *
  * zap beam     A set of four (there are four directions) for each beam type.
  *              The beam type is shifted over 2 positions and the direction
- *              is stored in the lower 2 bits.  Count: NUM_ZAP * 4
+ *              is stored in the lower 2 bits.  Count: NUM_ZAP * MAX_ZAP_CHARS
  *
  * swallow      A set of eight for each monster.  The eight positions rep-
  *              resent those surrounding the hero.  The monster number is
  *              shifted over 3 positions and the swallow position is stored
- *              in the lower three bits.  Count: NUMMONS * 8
+ *              in the lower three bits.  Count: NUM_MONSTERS * MAX_SWALLOW_CHARS
  *
  * warning      A set of six representing the different warning levels.
  *
- * statue       One for each monster.  Count: NUMMONS
+ * statue       One for each monster.  Count: NUM_MONSTERS
  *
- * female statue  One for each female monster.  Count: NUMMONS
+ * female statue  One for each female monster.  Count: NUM_MONSTERS
  *
- * artifact     One for each artifact.  Count: NROFARTIFACTS
+ * artifact     One for each artifact.  Count: NUM_ARTIFACTS
  *
- * artifact right hand  One for each artifact held in right hand.  Count: NROFARTIFACTS
+ * artifact right hand  One for each artifact held in right hand.  Count: NUM_ARTIFACTS
  *
- * artifact left hand   One for each artifact held in left hand.  Count: NROFARTIFACTS
+ * artifact left hand   One for each artifact held in left hand.  Count: NUM_ARTIFACTS
  *
  * player       One for each type of player character.  
  *              Count: number of genders (2) x number of roles (13) x number of races (5) x alignment (3) x player glyph levels (1)
@@ -323,34 +323,34 @@
 #define NUM_RACES 5
 #define NUM_PLAYER_GLYPH_LEVELS 1
 #define NUM_PLAYER_CHARACTERS NUM_ROLES * NUM_RACES * 2 * 3 * NUM_PLAYER_GLYPH_LEVELS
-#define CMAP_TYPE_CHAR_NUM (MAXPCHARS - MAXEXPCHARS)
+#define CMAP_TYPE_CHAR_NUM (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS - MAX_SWALLOW_CHARS)
 #define NUM_INVIS_GLYPHS 1
 
 #define GLYPH_MON_OFF     0
-#define GLYPH_PET_OFF     (NUMMONS + GLYPH_MON_OFF)
-#define GLYPH_DETECT_OFF  (NUMMONS + GLYPH_PET_OFF)
-#define GLYPH_BODY_OFF    (NUMMONS + GLYPH_DETECT_OFF)
-#define GLYPH_RIDDEN_OFF  (NUMMONS + GLYPH_BODY_OFF)
-#define GLYPH_FEMALE_MON_OFF  (NUMMONS + GLYPH_RIDDEN_OFF)
-#define GLYPH_FEMALE_PET_OFF  (NUMMONS + GLYPH_FEMALE_MON_OFF)
-#define GLYPH_FEMALE_DETECT_OFF (NUMMONS + GLYPH_FEMALE_PET_OFF)
-#define GLYPH_FEMALE_BODY_OFF    (NUMMONS + GLYPH_FEMALE_DETECT_OFF)
-#define GLYPH_FEMALE_RIDDEN_OFF  (NUMMONS + GLYPH_FEMALE_BODY_OFF)
-#define GLYPH_INVIS_OFF   (NUMMONS + GLYPH_FEMALE_RIDDEN_OFF)
+#define GLYPH_PET_OFF     (NUM_MONSTERS + GLYPH_MON_OFF)
+#define GLYPH_DETECT_OFF  (NUM_MONSTERS + GLYPH_PET_OFF)
+#define GLYPH_BODY_OFF    (NUM_MONSTERS + GLYPH_DETECT_OFF)
+#define GLYPH_RIDDEN_OFF  (NUM_MONSTERS + GLYPH_BODY_OFF)
+#define GLYPH_FEMALE_MON_OFF  (NUM_MONSTERS + GLYPH_RIDDEN_OFF)
+#define GLYPH_FEMALE_PET_OFF  (NUM_MONSTERS + GLYPH_FEMALE_MON_OFF)
+#define GLYPH_FEMALE_DETECT_OFF (NUM_MONSTERS + GLYPH_FEMALE_PET_OFF)
+#define GLYPH_FEMALE_BODY_OFF    (NUM_MONSTERS + GLYPH_FEMALE_DETECT_OFF)
+#define GLYPH_FEMALE_RIDDEN_OFF  (NUM_MONSTERS + GLYPH_FEMALE_BODY_OFF)
+#define GLYPH_INVIS_OFF   (NUM_MONSTERS + GLYPH_FEMALE_RIDDEN_OFF)
 #define GLYPH_OBJ_OFF     (NUM_INVIS_GLYPHS + GLYPH_INVIS_OFF)
 #define GLYPH_OBJ_RIGHT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
 #define GLYPH_OBJ_LEFT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_RIGHT_HAND_OFF)
 #define GLYPH_CMAP_OFF    (NUM_OBJECTS + GLYPH_OBJ_LEFT_HAND_OFF)
 #define GLYPH_EXPLODE_OFF (CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX + GLYPH_CMAP_OFF)
-#define GLYPH_ZAP_OFF     ((MAXEXPCHARS * EXPL_MAX) + GLYPH_EXPLODE_OFF)
-#define GLYPH_SWALLOW_OFF ((NUM_ZAP * 4) + GLYPH_ZAP_OFF)
-#define GLYPH_WARNING_OFF ((NUMMONS * 8) + GLYPH_SWALLOW_OFF)
+#define GLYPH_ZAP_OFF     ((MAX_EXPLOSION_CHARS * EXPL_MAX) + GLYPH_EXPLODE_OFF)
+#define GLYPH_SWALLOW_OFF ((NUM_ZAP * MAX_ZAP_CHARS) + GLYPH_ZAP_OFF)
+#define GLYPH_WARNING_OFF ((NUM_MONSTERS * MAX_SWALLOW_CHARS) + GLYPH_SWALLOW_OFF)
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
-#define GLYPH_FEMALE_STATUE_OFF (NUMMONS + GLYPH_STATUE_OFF)
-#define GLYPH_ARTIFACT_OFF (NUMMONS + GLYPH_FEMALE_STATUE_OFF)
-#define GLYPH_ARTIFACT_RIGHT_HAND_OFF (NROFARTIFACTS + GLYPH_ARTIFACT_OFF)
-#define GLYPH_ARTIFACT_LEFT_HAND_OFF (NROFARTIFACTS + GLYPH_ARTIFACT_RIGHT_HAND_OFF)
-#define GLYPH_PLAYER_OFF  (NROFARTIFACTS + GLYPH_ARTIFACT_LEFT_HAND_OFF)
+#define GLYPH_FEMALE_STATUE_OFF (NUM_MONSTERS + GLYPH_STATUE_OFF)
+#define GLYPH_ARTIFACT_OFF (NUM_MONSTERS + GLYPH_FEMALE_STATUE_OFF)
+#define GLYPH_ARTIFACT_RIGHT_HAND_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_OFF)
+#define GLYPH_ARTIFACT_LEFT_HAND_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_RIGHT_HAND_OFF)
+#define GLYPH_PLAYER_OFF  (NUM_ARTIFACTS + GLYPH_ARTIFACT_LEFT_HAND_OFF)
 #define MAX_GLYPH         (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_OFF)
 
 #define NO_GLYPH          MAX_GLYPH
@@ -417,7 +417,7 @@
 						            :  (int) (obj)->otyp + GLYPH_OBJ_OFF)
 
 #define explosion_to_glyph(expltype, idx) \
-    ((((expltype) * MAXEXPCHARS) + ((idx) - S_explode1)) + GLYPH_EXPLODE_OFF)
+    ((((expltype) * MAX_EXPLOSION_CHARS) + ((idx) - S_explode1)) + GLYPH_EXPLODE_OFF)
 
 #define trap_to_glyph(trap, rng)                                \
     cmap_to_glyph(trap_to_defsym(what_trap((trap)->ttyp, rng)))
@@ -457,30 +457,30 @@
  * considered objects.
  */
 #define glyph_is_normal_monster(glyph) \
-    ((glyph) >= GLYPH_MON_OFF && (glyph) < (GLYPH_MON_OFF + NUMMONS))
+    ((glyph) >= GLYPH_MON_OFF && (glyph) < (GLYPH_MON_OFF + NUM_MONSTERS))
 #define glyph_is_pet(glyph) \
-    ((glyph) >= GLYPH_PET_OFF && (glyph) < (GLYPH_PET_OFF + NUMMONS))
+    ((glyph) >= GLYPH_PET_OFF && (glyph) < (GLYPH_PET_OFF + NUM_MONSTERS))
 #define glyph_is_detected_monster(glyph) \
-    ((glyph) >= GLYPH_DETECT_OFF && (glyph) < (GLYPH_DETECT_OFF + NUMMONS))
+    ((glyph) >= GLYPH_DETECT_OFF && (glyph) < (GLYPH_DETECT_OFF + NUM_MONSTERS))
 #define glyph_is_body(glyph) \
-    ((glyph) >= GLYPH_BODY_OFF && (glyph) < (GLYPH_BODY_OFF + NUMMONS))
+    ((glyph) >= GLYPH_BODY_OFF && (glyph) < (GLYPH_BODY_OFF + NUM_MONSTERS))
 #define glyph_is_ridden_monster(glyph) \
-    ((glyph) >= GLYPH_RIDDEN_OFF && (glyph) < (GLYPH_RIDDEN_OFF + NUMMONS))
+    ((glyph) >= GLYPH_RIDDEN_OFF && (glyph) < (GLYPH_RIDDEN_OFF + NUM_MONSTERS))
 #define glyph_is_statue(glyph) \
-    ((glyph) >= GLYPH_STATUE_OFF && (glyph) < (GLYPH_STATUE_OFF + NUMMONS))
+    ((glyph) >= GLYPH_STATUE_OFF && (glyph) < (GLYPH_STATUE_OFF + NUM_MONSTERS))
 
 #define glyph_is_female_monster(glyph) \
-    ((glyph) >= GLYPH_FEMALE_MON_OFF && (glyph) < (GLYPH_FEMALE_MON_OFF + NUMMONS))
+    ((glyph) >= GLYPH_FEMALE_MON_OFF && (glyph) < (GLYPH_FEMALE_MON_OFF + NUM_MONSTERS))
 #define glyph_is_female_pet(glyph) \
-    ((glyph) >= GLYPH_FEMALE_PET_OFF && (glyph) < (GLYPH_FEMALE_PET_OFF + NUMMONS))
+    ((glyph) >= GLYPH_FEMALE_PET_OFF && (glyph) < (GLYPH_FEMALE_PET_OFF + NUM_MONSTERS))
 #define glyph_is_female_detected_monster(glyph) \
-    ((glyph) >= GLYPH_FEMALE_DETECT_OFF && (glyph) < (GLYPH_FEMALE_DETECT_OFF + NUMMONS))
+    ((glyph) >= GLYPH_FEMALE_DETECT_OFF && (glyph) < (GLYPH_FEMALE_DETECT_OFF + NUM_MONSTERS))
 #define glyph_is_female_body(glyph) \
-    ((glyph) >= GLYPH_FEMALE_BODY_OFF && (glyph) < (GLYPH_FEMALE_BODY_OFF + NUMMONS))
+    ((glyph) >= GLYPH_FEMALE_BODY_OFF && (glyph) < (GLYPH_FEMALE_BODY_OFF + NUM_MONSTERS))
 #define glyph_is_female_ridden_monster(glyph) \
-    ((glyph) >= GLYPH_FEMALE_RIDDEN_OFF && (glyph) < (GLYPH_FEMALE_RIDDEN_OFF + NUMMONS))
+    ((glyph) >= GLYPH_FEMALE_RIDDEN_OFF && (glyph) < (GLYPH_FEMALE_RIDDEN_OFF + NUM_MONSTERS))
 #define glyph_is_female_statue(glyph) \
-    ((glyph) >= GLYPH_FEMALE_STATUE_OFF && (glyph) < (GLYPH_FEMALE_STATUE_OFF + NUMMONS))
+    ((glyph) >= GLYPH_FEMALE_STATUE_OFF && (glyph) < (GLYPH_FEMALE_STATUE_OFF + NUM_MONSTERS))
 
 #define glyph_is_any_statue(glyph) \
     (glyph_is_statue(glyph) || glyph_is_female_statue(glyph))
@@ -492,7 +492,7 @@
 #define glyph_is_normal_object(glyph) \
     ((glyph) >= GLYPH_OBJ_OFF && (glyph) < (GLYPH_OBJ_OFF + NUM_OBJECTS))
 #define glyph_is_artifact(glyph) \
-    ((glyph) >= GLYPH_ARTIFACT_OFF && (glyph) < (GLYPH_ARTIFACT_OFF + NROFARTIFACTS))
+    ((glyph) >= GLYPH_ARTIFACT_OFF && (glyph) < (GLYPH_ARTIFACT_OFF + NUM_ARTIFACTS))
 #define glyph_to_artifact(glyph) \
     (glyph_is_artifact(glyph) ? ((glyph) - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
 #define glyph_is_object(glyph)                               \
@@ -505,7 +505,7 @@
     ((glyph) >= GLYPH_CMAP_OFF && (glyph) < (GLYPH_CMAP_OFF + CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX))
 #define glyph_is_swallow(glyph)   \
     ((glyph) >= GLYPH_SWALLOW_OFF \
-     && (glyph) < (GLYPH_SWALLOW_OFF + (NUMMONS << 3)))
+     && (glyph) < (GLYPH_SWALLOW_OFF + (NUM_MONSTERS * MAX_SWALLOW_CHARS)))
 #define glyph_is_warning(glyph)   \
     ((glyph) >= GLYPH_WARNING_OFF \
      && (glyph) < (GLYPH_WARNING_OFF + WARNCOUNT))

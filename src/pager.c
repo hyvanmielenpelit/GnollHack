@@ -960,7 +960,7 @@ struct permonst **for_supplement;
 
     /* Check for monsters */
     if (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0) {
-        for (i = 1; i < MAXMCLASSES; i++)
+        for (i = 1; i < MAX_MONSTER_CLASSES; i++)
         {
             if (sym == (looked ? showsyms[i + SYM_OFF_M] : def_monsyms[i].sym)
                 && def_monsyms[i].explain && *def_monsyms[i].explain)
@@ -991,7 +991,7 @@ struct permonst **for_supplement;
 
     /* Now check for objects */
     if (!iflags.terrainmode || (iflags.terrainmode & TER_OBJ) != 0) {
-        for (i = 1; i < MAXOCLASSES; i++) {
+        for (i = 1; i < MAX_OBJECT_CLASSES; i++) {
             if (sym == (looked ? showsyms[i + SYM_OFF_O]
                                : def_oc_syms[i].sym)
                 || (looked && i == ROCK_CLASS && glyph_is_any_statue(glyph))) {
@@ -1029,7 +1029,7 @@ struct permonst **for_supplement;
 
     /* Now check for graphics symbols */
     alt_i = (sym == (looked ? showsyms[0] : defsyms[0].sym)) ? 0 : (2 + 1);
-    for (hit_trap = FALSE, i = 0; i < MAXPCHARS; i++) {
+    for (hit_trap = FALSE, i = 0; i < MAX_CMAPPED_CHARS; i++) {
         /* when sym is the default background character, we process
            i == 0 three times: unexplored, stone, dark part of a room */
         if (alt_i < 2) {

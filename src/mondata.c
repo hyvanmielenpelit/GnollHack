@@ -790,7 +790,7 @@ struct permonst *ptr;
     register int i;
 
     i = (int) (ptr - &mons[0]);
-    if (i < LOW_PM || i >= NUMMONS) 
+    if (i < LOW_PM || i >= NUM_MONSTERS) 
 	{
         panic("monsndx - could not index monster (%s)",
               fmt_ptr((genericptr_t) ptr));
@@ -933,7 +933,7 @@ const char *in_str;
     boolean found = FALSE;
     for (int j = 1; j <= 3; j++)
     {
-        for (len = 0, i = LOW_PM; i < NUMMONS; i++)
+        for (len = 0, i = LOW_PM; i < NUM_MONSTERS; i++)
         {
             const char* relevant_name = (const char*)0;
             if (j == 1)
@@ -980,7 +980,7 @@ const char *in_str;
 }
 
 /* monster class from user input; used for genocide and controlled polymorph;
-   returns 0 rather than MAXMCLASSES if no match is found */
+   returns 0 rather than MAX_MONSTER_CLASSES if no match is found */
 int
 name_to_monclass(in_str, mndx_p)
 const char *in_str;
@@ -1031,7 +1031,7 @@ int *mndx_p;
             i = S_WORM;
             if (mndx_p)
                 *mndx_p = PM_LONG_WORM;
-        } else if (i == MAXMCLASSES) /* maybe 'I' */
+        } else if (i == MAX_MONSTER_CLASSES) /* maybe 'I' */
             i = (*in_str == DEF_INVISIBLE) ? S_invisible : 0;
         return i;
     } else {
@@ -1054,7 +1054,7 @@ int *mndx_p;
             }
         /* check monster class descriptions */
         len = (int) strlen(in_str);
-        for (i = 1; i < MAXMCLASSES; i++) {
+        for (i = 1; i < MAX_MONSTER_CLASSES; i++) {
             x = def_monsyms[i].explain;
             if ((p = strstri(x, in_str)) != 0 && (p == x || *(p - 1) == ' ')
                 && ((int) strlen(p) >= len

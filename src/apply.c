@@ -4559,7 +4559,7 @@ int
 dobreak()
 {
 	int res = 1;
-	char class_list[MAXOCLASSES + 2];
+	char class_list[MAX_OBJECT_CLASSES + 2];
 	strcpy(class_list, "");
 
 	//Cannot break when overloaded?
@@ -4607,7 +4607,7 @@ doapply()
 {
     struct obj *obj;
     register int res = 1;
-    char class_list[MAXOCLASSES + 2];
+    char class_list[MAX_OBJECT_CLASSES + 2];
 
     if (check_capacity((char *) 0))
         return 0;
@@ -5369,7 +5369,7 @@ struct obj* obj;
 		goto dumb;
 	}
 
-	if (maploc->doormask == D_ISOPEN || maploc->doormask == D_BROKEN || maploc->doormask == D_NODOOR) 
+	if (maploc->doormask == D_ISOPEN || maploc->doormask == D_BROKEN || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS)
 	{
 	dumb:
 		You("swing at empty space.");

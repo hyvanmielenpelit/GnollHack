@@ -142,7 +142,7 @@ int expltype;
         }
 	}
 
-	double damu = adjust_damage(dam, (struct monst*)0, &youmonst, adtyp, olet < MAXOCLASSES ? TRUE : FALSE);
+	double damu = adjust_damage(dam, (struct monst*)0, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? TRUE : FALSE);
 	if (olet == WAND_CLASS)
 	{
 		switch (Role_switch)

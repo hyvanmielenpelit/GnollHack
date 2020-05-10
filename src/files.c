@@ -2357,7 +2357,7 @@ char *origbuf;
     int n;
 #endif
     char *bufp, buf[INBUF_SIZ];
-    uchar translate[MAXPCHARS];
+    uchar translate[MAX_CMAPPED_CHARS];
     int len;
     boolean retval = TRUE;
     int src = iflags.parse_config_file_src;

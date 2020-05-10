@@ -3912,7 +3912,7 @@ struct obj *no_wish;
     }
 
     /* check for single character object class code ("/" for wand, &c) */
-    if (strlen(bp) == 1 && (i = def_char_to_objclass(*bp)) < MAXOCLASSES
+    if (strlen(bp) == 1 && (i = def_char_to_objclass(*bp)) < MAX_OBJECT_CLASSES
         && i > ILLOBJ_CLASS && (i != VENOM_CLASS || wizard)) {
         oclass = i;
         goto any;

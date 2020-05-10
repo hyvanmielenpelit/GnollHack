@@ -1921,7 +1921,7 @@ boolean ask;
     unsigned ntypes, ni;
     long total_killed = 0L;
     winid klwin;
-    short mindx[NUMMONS];
+    short mindx[NUM_MONSTERS];
     char c, buf[BUFSZ], buftoo[BUFSZ];
     boolean dumping; /* for DUMPLOG; doesn't need to be conditional */
 
@@ -1931,7 +1931,7 @@ boolean ask;
 
     /* get totals first */
     ntypes = 0;
-    for (i = LOW_PM; i < NUMMONS; i++) {
+    for (i = LOW_PM; i < NUM_MONSTERS; i++) {
         if ((nkilled = (int) mvitals[i].died) == 0)
             continue;
         mindx[ntypes++] = i;
@@ -2048,7 +2048,7 @@ num_genocides()
 {
     int i, n = 0;
 
-    for (i = LOW_PM; i < NUMMONS; ++i) {
+    for (i = LOW_PM; i < NUM_MONSTERS; ++i) {
         if (mvitals[i].mvflags & G_GENOD) {
             ++n;
             if (UniqCritterIndx(i))
@@ -2064,7 +2064,7 @@ num_extinct()
 {
     int i, n = 0;
 
-    for (i = LOW_PM; i < NUMMONS; ++i) {
+    for (i = LOW_PM; i < NUM_MONSTERS; ++i) {
         if (UniqCritterIndx(i))
             continue;
         if ((mvitals[i].mvflags & G_GONE) == G_EXTINCT)
@@ -2110,7 +2110,7 @@ boolean ask;
             if (!dumping)
                 putstr(klwin, 0, "");
 
-            for (i = LOW_PM; i < NUMMONS; i++) {
+            for (i = LOW_PM; i < NUM_MONSTERS; i++) {
                 /* uniques can't be genocided but can become extinct;
                    however, they're never reported as extinct, so skip them */
                 if (UniqCritterIndx(i))

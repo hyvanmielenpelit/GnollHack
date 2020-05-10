@@ -29,10 +29,12 @@ struct attack {
 
 #define NATTK 8
 
-/*	Weight of a human body
+/*	Weight of some bodies
  */
 
 #define WT_HUMAN 1450
+#define WT_ELF 800
+#define WT_DRAGON 4500
 
 #ifndef ALIGN_H
 #include "align.h"
@@ -88,7 +90,7 @@ extern NEARDATA struct permonst mons[]; /* the master list of monster types */
 #define NON_PM (-1)                  /* "not a monster" */
 #define LOW_PM (NON_PM + 1)          /* first monster in mons[] */
 #define SPECIAL_PM PM_LONG_WORM_TAIL /* [normal] < ~ < [special] */
-/* mons[SPECIAL_PM] through mons[NUMMONS-1], inclusive, are
+/* mons[SPECIAL_PM] through mons[NUM_MONSTERS-1], inclusive, are
    never generated randomly and cannot be polymorphed into */
 
 #endif /* PERMONST_H */

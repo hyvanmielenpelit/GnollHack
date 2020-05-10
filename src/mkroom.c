@@ -1585,7 +1585,11 @@ int sym;
     case S_vodoor: /* open door in vertical wall */
     case S_hodoor: /* open door in horizontal wall */
     case S_vcdoor: /* closed door in vertical wall */
-    case S_hcdoor:
+    case S_hcdoor: /* closed door in horizontal wall */
+    case S_vbdoor: /* broken door in vertical wall */
+    case S_hbdoor: /* broken door in horizontal wall */
+    case S_voportcullis: /* open portcullis in vertical wall */
+    case S_hoportcullis: /* open portcullis in horizontal wall */
         typ = DOOR;
         break;
     case S_bars:

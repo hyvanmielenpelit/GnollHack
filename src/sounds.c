@@ -3218,14 +3218,14 @@ struct monst* mtmp;
 	start_menu(win);
 
 	
-	static char def_srt_order[MAXOCLASSES] = {
+	static char def_srt_order[MAX_OBJECT_CLASSES] = {
 	COIN_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
 	SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
 	WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
 	};
 
 	const char* classorder = flags.sortpack ? flags.inv_order : def_srt_order;
-	boolean classhasitems[MAXOCLASSES] = { 0 };
+	boolean classhasitems[MAX_OBJECT_CLASSES] = { 0 };
 
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
@@ -3233,7 +3233,7 @@ struct monst* mtmp;
 			classhasitems[otmp->oclass] = TRUE;
 	}
 
-	for(int i = 0; i < MAXOCLASSES; i++)
+	for(int i = 0; i < MAX_OBJECT_CLASSES; i++)
 	{
 		char oclass = classorder[i];
 		boolean madeheader = FALSE;
@@ -3436,14 +3436,14 @@ struct monst* mtmp;
 	start_menu(win);
 
 
-	static char def_srt_order[MAXOCLASSES] = {
+	static char def_srt_order[MAX_OBJECT_CLASSES] = {
 	COIN_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
 	SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
 	WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
 	};
 
 	const char* classorder = flags.sortpack ? flags.inv_order : def_srt_order;
-	boolean classhasitems[MAXOCLASSES] = { 0 };
+	boolean classhasitems[MAX_OBJECT_CLASSES] = { 0 };
 
 	for (struct obj* otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
 	{
@@ -3451,7 +3451,7 @@ struct monst* mtmp;
 			classhasitems[otmp->oclass] = TRUE;
 	}
 
-	for (int i = 0; i < MAXOCLASSES; i++)
+	for (int i = 0; i < MAX_OBJECT_CLASSES; i++)
 	{
 		char oclass = classorder[i];
 		boolean madeheader = FALSE;

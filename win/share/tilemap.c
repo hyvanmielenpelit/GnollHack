@@ -117,7 +117,7 @@ int set, entry;
 
     condnum = tilenum = 0;
 
-    for (i = 0; i < NUMMONS; i++) {
+    for (i = 0; i < NUM_MONSTERS; i++) {
         if (set == MON_GLYPH && tilenum == entry)
             return mons[i].mname;
         tilenum++;
@@ -158,7 +158,7 @@ int set, entry;
     }
 
     tilenum = 0; /* set-relative number */
-    for (i = 0; i < (MAXPCHARS - MAXEXPCHARS); i++) {
+    for (i = 0; i < (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS); i++) {
         if (set == OTH_GLYPH && tilenum == entry) {
             if (*defsyms[i].explanation) {
                 return defsyms[i].explanation;
@@ -177,30 +177,30 @@ int set, entry;
         }
     }
     /* explosions */
-    tilenum = MAXPCHARS - MAXEXPCHARS;
+    tilenum = MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS;
     i = entry - tilenum;
-    if (i < (MAXEXPCHARS * EXPL_MAX)) {
+    if (i < (MAX_EXPLOSION_CHARS * EXPL_MAX)) {
         if (set == OTH_GLYPH) {
             static const char *explosion_types[] = {
                 /* hack.h */
                 "dark", "noxious", "muddy", "wet", "magical", "fiery",
                 "frosty"
             };
-            Sprintf(buf, "explosion %s %d", explosion_types[i / MAXEXPCHARS],
-                    i % MAXEXPCHARS);
+            Sprintf(buf, "explosion %s %d", explosion_types[i / MAX_EXPLOSION_CHARS],
+                    i % MAX_EXPLOSION_CHARS);
             return buf;
         }
     }
-    tilenum += (MAXEXPCHARS * EXPL_MAX);
+    tilenum += (MAX_EXPLOSION_CHARS * EXPL_MAX);
 
     i = entry - tilenum;
-    if (i < (NUM_ZAP << 2)) {
+    if (i < (MAX_ZAP_CHARS* NUM_ZAP)) {
         if (set == OTH_GLYPH) {
             Sprintf(buf, "zap %d %d", i / 4, i % 4);
             return buf;
         }
     }
-    tilenum += (NUM_ZAP << 2);
+    tilenum += (MAX_ZAP_CHARS * NUM_ZAP);
 
     i = entry - tilenum;
     if (i < WARNCOUNT) {
@@ -272,8 +272,8 @@ init_tilemap()
 
     //tilenum = process_tiledata(&default_tileset_definition, 1, (const char*)0, tilemap);
 
-    corpsetile = NUMMONS + NUM_INVIS_TILES + CORPSE;
-    swallowbase = NUMMONS + NUM_INVIS_TILES + NUM_OBJECTS + S_sw_tl;
+    corpsetile = NUM_MONSTERS + NUM_INVIS_TILES + CORPSE;
+    swallowbase = NUM_MONSTERS + NUM_INVIS_TILES + NUM_OBJECTS + S_sw_tl;
 
     /* add number compiled out */
     for (i = 0; conditionals[i].sequence; i++) {
@@ -295,7 +295,7 @@ init_tilemap()
     }
 
     condnum = tilenum = 0;
-    for (i = 0; i < NUMMONS; i++) {
+    for (i = 0; i < NUM_MONSTERS; i++) {
         tilemap[GLYPH_MON_OFF + i] = tilenum;
         tilemap[GLYPH_PET_OFF + i] = tilenum;
         tilemap[GLYPH_DETECT_OFF + i] = tilenum;
@@ -338,7 +338,7 @@ init_tilemap()
 
     for(int j = 0; j < CMAP_TYPE_MAX; j++)
     {
-        for (i = 0; i < (MAXPCHARS - MAXEXPCHARS); i++) {
+        for (i = 0; i < (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS); i++) {
             tilemap[GLYPH_CMAP_OFF + i] = tilenum;
             tilenum++;
 #if 0
@@ -351,21 +351,21 @@ init_tilemap()
         }
     }
 
-    for (i = 0; i < (MAXEXPCHARS * EXPL_MAX); i++) {
+    for (i = 0; i < (MAX_EXPLOSION_CHARS * EXPL_MAX); i++) {
         tilemap[GLYPH_EXPLODE_OFF + i] = tilenum;
         tilenum++;
         while (conditionals[condnum].sequence == OTH_GLYPH
-               && conditionals[condnum].predecessor == (i + MAXPCHARS)) {
+               && conditionals[condnum].predecessor == (i + MAX_CMAPPED_CHARS)) {
             condnum++;
             tilenum++;
         }
     }
 
-    for (i = 0; i < NUM_ZAP << 2; i++) {
+    for (i = 0; i < MAX_ZAP_CHARS * NUM_ZAP; i++) {
         tilemap[GLYPH_ZAP_OFF + i] = tilenum;
         tilenum++;
         while (conditionals[condnum].sequence == OTH_GLYPH
-               && conditionals[condnum].predecessor == (i + MAXEXPCHARS)) {
+               && conditionals[condnum].predecessor == (i + MAX_EXPLOSION_CHARS)) {
             condnum++;
             tilenum++;
         }
@@ -379,7 +379,7 @@ init_tilemap()
 #ifndef STATUES_LOOK_LIKE_MONSTERS
     /* statue patch: statues still use the same glyph as in vanilla */
 
-    for (i = 0; i < NUMMONS; i++) {
+    for (i = 0; i < NUM_MONSTERS; i++) {
         tilemap[GLYPH_STATUE_OFF + i] = tilemap[GLYPH_OBJ_OFF + STATUE];
     }
 #endif
@@ -394,7 +394,7 @@ init_tilemap()
 
     /* statue patch: statues look more like the monster */
     condnum = 0; /* doing monsters again, so reset */
-    for (i = 0; i < NUMMONS; i++) {
+    for (i = 0; i < NUM_MONSTERS; i++) {
         tilemap[GLYPH_STATUE_OFF + i] = tilenum;
         tilenum++;
         while (conditionals[condnum].sequence == MON_GLYPH
@@ -406,7 +406,7 @@ init_tilemap()
     laststatuetile = tilenum - 1;
 #endif
 
-    for (i = 0; i < NROFARTIFACTS; i++) {
+    for (i = 0; i < NUM_ARTIFACTS; i++) {
         tilemap[GLYPH_ARTIFACT_OFF + i] = tilenum;
         tilenum++;
     }
@@ -565,6 +565,10 @@ struct {
 {S_hodoor,   "horizontal open door", "open door"},
 {S_vcdoor,   "vertical closed door", "closed door"},
 {S_hcdoor,   "horizontal closed door", "closed door"},
+{S_vbdoor,   "vertical closed door", "closed door"},
+{S_hbdoor,   "horizontal closed door", "closed door"},
+{S_voportcullis,   "vertical open portcullis", "open portcullis"},
+{S_hoportcullis,   "horizontal open portcullis", "open portcullis"},
 {S_bars,     "iron bars", "iron bars"},
 {S_tree,     "tree", "tree"},
 {S_room,     "room", "floor of a room"},

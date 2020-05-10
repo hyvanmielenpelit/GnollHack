@@ -13,9 +13,6 @@
         0, 0, 0, 0, 0 \
     }
 
-#define WT_ELF 800
-#define WT_DRAGON 4500
-
 #ifdef C
 #undef C
 #endif

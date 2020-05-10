@@ -96,6 +96,9 @@ picklock(VOID_ARGS)
         case D_BROKEN:
             pline("This door is broken.");
             return ((xlock.usedtime = 0));
+        case D_PORTCULLIS:
+            You("cannot lock a portcullis.");
+            return ((xlock.usedtime = 0));
         }
     }
 
@@ -486,6 +489,9 @@ struct obj *pick;
         case D_BROKEN:
             pline("This door is broken.");
             return PICKLOCK_LEARNED_SOMETHING;
+        case D_PORTCULLIS:
+            pline("There is no lock on the portcullis.");
+            return PICKLOCK_LEARNED_SOMETHING;
         default:
             /* credit cards are only good for unlocking */
             if (picktyp == CREDIT_CARD && !(door->doormask & D_LOCKED)) {
@@ -689,6 +695,7 @@ int x, y;
         res = 1;
 
     door = &levl[cc.x][cc.y];
+    const char* door_name = (door && (door->doormask & D_PORTCULLIS)) ? "portcullis" : "door";
     portcullis = (is_drawbridge_wall(cc.x, cc.y) >= 0);
     if (Blind) {
         int oldglyph = door->glyph;
@@ -730,6 +737,9 @@ int x, y;
         case D_ISOPEN:
             mesg = " is already open";
             break;
+        case D_PORTCULLIS:
+            mesg = " is already open";
+            break;
         default:
             mesg = " is locked";
 #ifdef ANDROID
@@ -737,7 +747,7 @@ int x, y;
 #endif
 			break;
         }
-        pline("This door%s.", mesg);
+        pline("This %s%s.", door_name, mesg);
 #ifdef ANDROID
 		if (locked && flags.autokick) {
 			autokick();
@@ -747,15 +757,15 @@ int x, y;
     }
 
     if (verysmall(youmonst.data)) {
-        pline("You're too small to pull the door open.");
+        pline("You're too small to pull the %s open.", door_name);
         return res;
     }
 
     /* door is known to be CLOSED */
     if (rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
-        pline_The("door opens.");
+        pline_The("%s opens.", door_name);
         if (door->doormask & D_TRAPPED) {
-            b_trapped("door", FINGER);
+            b_trapped(door_name, FINGER);
             door->doormask = D_NODOOR;
             if (*in_rooms(cc.x, cc.y, SHOPBASE))
                 add_damage(cc.x, cc.y, SHOP_DOOR_COST);
@@ -765,7 +775,7 @@ int x, y;
         unblock_point(cc.x, cc.y); /* vision: new see through there */
     } else {
         exercise(A_STR, TRUE);
-        pline_The("door resists!");
+        pline_The("%s resists!", door_name);
     }
 
     return 1;
@@ -871,6 +881,9 @@ doclose()
 
     if (door->doormask == D_NODOOR) {
         pline("This doorway has no door.");
+        return res;
+    } else if (door->doormask == D_PORTCULLIS) {
+        pline("This portcullis can be closed only by lifting the drawbridge.");
         return res;
     } else if (obstructed(x, y, FALSE)) {
         return res;
@@ -987,6 +1000,9 @@ int x, y;
     switch (otmp->otyp) {
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
+        if (door->doormask & D_PORTCULLIS)
+            return FALSE;
+
         if (Is_rogue_level(&u.uz)) {
             boolean vis = cansee(x, y);
             /* Can't have real locking in Rogue, so just hide doorway */
@@ -1009,6 +1025,7 @@ int x, y;
         }
         if (obstructed(x, y, mysterywand))
             return FALSE;
+
         /* Don't allow doors to close over traps.  This is for pits */
         /* & trap doors, but is it ever OK for anything else? */
         if (t_at(x, y)) {
@@ -1031,6 +1048,10 @@ int x, y;
         case D_NODOOR:
             msg =
                "A cloud of dust springs up and assembles itself into a door!";
+            break;
+        case D_PORTCULLIS:
+            msg = "";
+            /* Not reached */
             break;
         default:
             res = FALSE;

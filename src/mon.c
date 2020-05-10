@@ -47,7 +47,7 @@ struct monst *mtmp;
 boolean chk_geno;
 const char *msg;
 {
-    if (mtmp->data < &mons[LOW_PM] || mtmp->data >= &mons[NUMMONS]) {
+    if (mtmp->data < &mons[LOW_PM] || mtmp->data >= &mons[NUM_MONSTERS]) {
         impossible("illegal mon data %s; mnum=%d (%s)",
                    fmt_ptr((genericptr_t) mtmp->data), mtmp->mnum, msg);
     } else {
@@ -240,7 +240,7 @@ int mndx, mode;
         mndx = mode ? PM_VALKYRIE : PM_HUMAN;
         break;
     default:
-        if (mndx >= LOW_PM && mndx < NUMMONS) {
+        if (mndx >= LOW_PM && mndx < NUM_MONSTERS) {
             struct permonst *ptr = &mons[mndx];
 
             if (is_human(ptr))

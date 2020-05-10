@@ -2958,7 +2958,7 @@ aligntyp atyp;
 	{
 		get_generated_monster_minmax_levels(i, &minmlev, &maxmlev, 0);
 	
-		if (class < 1 || class >= MAXMCLASSES) {
+		if (class < 1 || class >= MAX_MONSTER_CLASSES) {
 			impossible("mkclass called with bad class!");
 			return (struct permonst *) 0;
 		}
@@ -3487,7 +3487,7 @@ struct monst *mtmp;
 }
 
 static NEARDATA char syms[] = {
-    MAXOCLASSES,  MAXOCLASSES + 1, RING_CLASS,   WAND_CLASS,   WEAPON_CLASS,
+    MAX_OBJECT_CLASSES,  MAX_OBJECT_CLASSES + 1, RING_CLASS,   WAND_CLASS,   WEAPON_CLASS,
     FOOD_CLASS,   COIN_CLASS,      SCROLL_CLASS, POTION_CLASS, ARMOR_CLASS,
     AMULET_CLASS, TOOL_CLASS,      ROCK_CLASS,   GEM_CLASS,    SPBOOK_CLASS,  
 	REAGENT_CLASS, MISCELLANEOUS_CLASS,
@@ -3579,9 +3579,9 @@ register struct monst *mtmp;
     } else {
         s_sym = syms[rn2((int) sizeof(syms))];
  assign_sym:
-        if (s_sym == MAXOCLASSES || s_sym == MAXOCLASSES + 1) {
+        if (s_sym == MAX_OBJECT_CLASSES || s_sym == MAX_OBJECT_CLASSES + 1) {
             ap_type = M_AP_FURNITURE;
-            appear = (s_sym == MAXOCLASSES) ? S_upstair : S_dnstair;
+            appear = (s_sym == MAX_OBJECT_CLASSES) ? S_upstair : S_dnstair;
         } else {
             ap_type = M_AP_OBJECT;
             if (s_sym == S_MIMIC_DEF) {

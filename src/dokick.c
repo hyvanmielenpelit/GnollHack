@@ -1282,12 +1282,12 @@ dokick() {
                 if (maploc->doormask & D_TRAPPED) {
                     maploc->doormask = D_NODOOR;
                     b_trapped("door", FOOT);
-                } else if (maploc->doormask != D_NODOOR
+                } else if (maploc->doormask != D_NODOOR && maploc->doormask != D_PORTCULLIS
                            && !(maploc->doormask & D_LOCKED))
                     maploc->doormask = D_ISOPEN;
                 feel_newsym(x, y); /* we know it's gone */
                 if (maploc->doormask == D_ISOPEN
-                    || maploc->doormask == D_NODOOR)
+                    || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS)
                     unblock_point(x, y); /* vision */
                 return 1;
             } else
@@ -1539,7 +1539,7 @@ dokick() {
     }
 
     if (maploc->doormask == D_ISOPEN || maploc->doormask == D_BROKEN
-        || maploc->doormask == D_NODOOR) {
+        || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS) {
  dumb:
         exercise(A_DEX, FALSE);
         if (martial() || ACURR(A_DEX) >= 16 || rn2(3)) {

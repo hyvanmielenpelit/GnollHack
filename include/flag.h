@@ -125,8 +125,8 @@ struct flag {
 #define PARANOID_WERECHANGE 0x0100
     int pickup_burden; /* maximum burden before prompt */
     int pile_limit;    /* controls feedback when walking over objects */
-    char inv_order[MAXOCLASSES];
-    char pickup_types[MAXOCLASSES];
+    char inv_order[MAX_OBJECT_CLASSES];
+    char pickup_types[MAX_OBJECT_CLASSES];
 #define NUM_DISCLOSURE_OPTIONS 6 /* i,a,v,g,c,o (decl.c) */
 #define DISCLOSE_PROMPT_DEFAULT_YES 'y'
 #define DISCLOSE_PROMPT_DEFAULT_NO 'n'

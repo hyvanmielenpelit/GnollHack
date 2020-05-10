@@ -278,9 +278,9 @@ typedef struct sortloot_item Loot;
 
 /* Symbol offsets */
 #define SYM_OFF_P (0)
-#define SYM_OFF_O (SYM_OFF_P + MAXPCHARS)
-#define SYM_OFF_M (SYM_OFF_O + MAXOCLASSES)
-#define SYM_OFF_W (SYM_OFF_M + MAXMCLASSES)
+#define SYM_OFF_O (SYM_OFF_P + MAX_CMAPPED_CHARS)
+#define SYM_OFF_M (SYM_OFF_O + MAX_OBJECT_CLASSES)
+#define SYM_OFF_W (SYM_OFF_M + MAX_MONSTER_CLASSES)
 #define SYM_OFF_X (SYM_OFF_W + WARNCOUNT)
 #define SYM_MAX (SYM_OFF_X + MAXOTHER)
 

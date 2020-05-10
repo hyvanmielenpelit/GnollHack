@@ -5511,13 +5511,15 @@ struct obj *obj; /* wand or spell */
         if (((levl[x][y].typ == DRAWBRIDGE_DOWN)
                  ? (u.dz > 0)
                  : (is_drawbridge_wall(x, y) >= 0 && !is_db_wall(x, y)))
-            && find_drawbridge(&xx, &yy)) {
+            && find_drawbridge(&xx, &yy)) 
+        {
             if (!striking)
-                close_drawbridge(xx, yy);
+                maybe_close_drawbridge(xx, yy);
             else
                 destroy_drawbridge(xx, yy);
             disclose = TRUE;
-        } else if (striking && u.dz < 0 && rn2(3) && !Is_airlevel(&u.uz)
+        } 
+        else if (striking && u.dz < 0 && rn2(3) && !Is_airlevel(&u.uz)
                    && !Is_waterlevel(&u.uz) && !Underwater
                    && !Is_qstart(&u.uz)) {
             int dmg;
@@ -6017,6 +6019,7 @@ boolean stop_at_first_hit_object;
 		}
 	}
 	boolean beam_cleared_off = FALSE;
+    boolean drawbridge_hit = FALSE;
 
     while (range-- > 0)
 	{
@@ -6056,7 +6059,7 @@ boolean stop_at_first_hit_object;
             break;
         }
 
-        if (weapon == ZAPPED_WAND && find_drawbridge(&x, &y))
+        if (weapon == ZAPPED_WAND && !drawbridge_hit && find_drawbridge(&x, &y))
 		{
             boolean learn_it = FALSE;
 
@@ -6068,6 +6071,7 @@ boolean stop_at_first_hit_object;
                     if (cansee(x, y) || cansee(bhitpos.x, bhitpos.y))
                         learn_it = TRUE;
                     open_drawbridge(x, y);
+                    drawbridge_hit = TRUE;
                 }
                 break;
             case WAN_LOCKING:
@@ -6075,17 +6079,22 @@ boolean stop_at_first_hit_object;
                 if ((cansee(x, y) || cansee(bhitpos.x, bhitpos.y))
                     && levl[x][y].typ == DRAWBRIDGE_DOWN)
                     learn_it = TRUE;
-                close_drawbridge(x, y);
+                maybe_close_drawbridge(x, y);
+                drawbridge_hit = TRUE;
                 break;
             case WAN_STRIKING:
             case SPE_FORCE_BOLT:
-				if (typ != DRAWBRIDGE_UP)
+                if (typ != DRAWBRIDGE_UP)
+                {
                     destroy_drawbridge(x, y);
+                    drawbridge_hit = TRUE;
+                }
                 learn_it = TRUE;
                 break;
             }
             if (learn_it)
                 learnwand(obj);
+
         }
 
         mtmp = m_at(bhitpos.x, bhitpos.y);

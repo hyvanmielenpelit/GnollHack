@@ -1876,7 +1876,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 		(void)write(fd, buf, strlen(buf));
 
 
-		for (int i = LOW_PM; i < NUMMONS; i++)
+		for (int i = LOW_PM; i < NUM_MONSTERS; i++)
 		{
 			char letbuf[BUFSZ] = "";
 			Sprintf(buf, "%s,%d,%d,%d,%d,%d,%d,%lu,",
@@ -2929,7 +2929,7 @@ int final;
     }
 
     if (flags.pickup) {
-        char ocl[MAXOCLASSES + 1];
+        char ocl[MAX_OBJECT_CLASSES + 1];
 
         Strcpy(buf, "on");
         oc_to_str(flags.pickup_types, ocl);

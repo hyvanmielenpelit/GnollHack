@@ -491,6 +491,6 @@
 #define	PM_WARRIOR	486
 #define	PM_APPRENTICE	487
 
-#define	NUMMONS	488
+#define	NUM_MONSTERS	488
 
 #endif /* PM_H */

@@ -63,7 +63,7 @@ short* tilemaparray;
 
             set_name = (spset == 0 ? "normal" : spset == 1 ? "pet" : spset == 2 ? "detect" :
                 spset == 3 ? "body" : spset == 4 ? "ridden" : "statue");
-            for (int i = LOW_PM; i < NUMMONS; i++)
+            for (int i = LOW_PM; i < NUM_MONSTERS; i++)
             {
                 if (gender == 1)
                 {
@@ -173,7 +173,7 @@ short* tilemaparray;
                 {
                     for (int gender = 0; gender <= 1; gender++)
                     {
-                        for (int k = LOW_PM; k < NUMMONS; k++)
+                        for (int k = LOW_PM; k < NUM_MONSTERS; k++)
                         {
                             int glyph_offset2 = (gender == 0 ?(i == CORPSE ? GLYPH_BODY_OFF : GLYPH_STATUE_OFF) : (i == CORPSE ? GLYPH_FEMALE_BODY_OFF : GLYPH_FEMALE_STATUE_OFF));
                             tilemaparray[k + glyph_offset2] = tile_count;
@@ -193,7 +193,7 @@ short* tilemaparray;
             break;
 
         set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
-        for (int i = 1; i <= NROFARTIFACTS; i++)
+        for (int i = 1; i <= NUM_ARTIFACTS; i++)
         {
             int base_item = artilist[i].otyp;
             boolean no_description = !artilist[i].desc;
@@ -328,14 +328,14 @@ short* tilemaparray;
         }
         else if (misc_idx == 1)
         {
-            const char* explosion_direction_name_array[MAXEXPCHARS] = {
+            const char* explosion_direction_name_array[MAX_EXPLOSION_CHARS] = {
                     "top-left", "top-center", "top-right",
                     "middle-right", "middle-center", "middle-left",
                     "bottom-left", "bottom-center", "bottom-right" };
 
             if (tsd->has_all_explode_tiles == 0)
             {
-                for (int i = 0; i < MAXEXPCHARS; i++)
+                for (int i = 0; i < MAX_EXPLOSION_CHARS; i++)
                 {
                     const char* explosion_direction_name = explosion_direction_name_array[i];
 
@@ -348,7 +348,7 @@ short* tilemaparray;
                     {
                         for (int j = 0; j < EXPL_MAX; j++)
                         {
-                            int glyph_offset = GLYPH_EXPLODE_OFF + MAXEXPCHARS * j;
+                            int glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
@@ -360,7 +360,7 @@ short* tilemaparray;
                 for (int j = 0; j < EXPL_MAX; j++)
                 {
                     const char* explosion_name = explosion_type_names[j];
-                    for (int i = 0; i < MAXEXPCHARS; i++)
+                    for (int i = 0; i < MAX_EXPLOSION_CHARS; i++)
                     {
                         const char* explosion_direction_name = explosion_direction_name_array[i];
                         if (process_style == 0)
@@ -370,7 +370,7 @@ short* tilemaparray;
                         }
                         else if (process_style == 1)
                         {
-                            int glyph_offset = GLYPH_EXPLODE_OFF + MAXEXPCHARS * j;
+                            int glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                         tile_count++;
@@ -380,12 +380,12 @@ short* tilemaparray;
         }
         else if (misc_idx == 2)
         {
-            const char* zap_direction_name_array[4] = {
+            const char* zap_direction_name_array[MAX_ZAP_CHARS] = {
                 "vertical", "horizontal", "diagonal-top-left-to-bottom-right", "diagonal-bottom-left-to-top-right" };
 
             if (tsd->has_all_zap_tiles == 0)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < MAX_ZAP_CHARS; i++)
                 {
                     const char* zap_direction_name = zap_direction_name_array[i];
                     if (process_style == 0)
@@ -397,7 +397,7 @@ short* tilemaparray;
                     {
                         for (int j = 0; j < NUM_ZAP; j++)
                         {
-                            int glyph_offset = GLYPH_ZAP_OFF + 4 * j;
+                            int glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
@@ -414,7 +414,7 @@ short* tilemaparray;
                         "petrification" };
                     const char* zap_name = zap_name_array[j];
 
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < MAX_ZAP_CHARS; i++)
                     {
                         const char* zap_direction_name = zap_direction_name_array[i];
                         if (process_style == 0)
@@ -424,7 +424,7 @@ short* tilemaparray;
                         }
                         else if (process_style == 1)
                         {
-                            int glyph_offset = GLYPH_ZAP_OFF + 4 * j;
+                            int glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                         tile_count++;
@@ -434,14 +434,14 @@ short* tilemaparray;
         }
         else if (misc_idx == 3)
         {
-            const char* swallow_direction_name_array[8] = {
+            const char* swallow_direction_name_array[MAX_SWALLOW_CHARS] = {
                     "top-left", "top-center", "top-right",
                     "middle-right", "middle-left",
                     "bottom-left", "bottom-center", "bottom-right" };
 
             if (tsd->swallow_tile_style == 0)
             {
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < MAX_SWALLOW_CHARS; i++)
                 {
                     const char* swallow_direction_name = swallow_direction_name_array[i];
                     if (process_style == 0)
@@ -451,9 +451,9 @@ short* tilemaparray;
                     }
                     else if (process_style == 1)
                     {
-                        for (int j = 0; j < NUMMONS; j++)
+                        for (int j = 0; j < NUM_MONSTERS; j++)
                         {
-                            int glyph_offset = GLYPH_SWALLOW_OFF + 8 * j;
+                            int glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
@@ -463,7 +463,7 @@ short* tilemaparray;
             else
             {
                 boolean first_found = FALSE;
-                for (int j = 0; j < NUMMONS; j++)
+                for (int j = 0; j < NUM_MONSTERS; j++)
                 {
                     if (tsd->swallow_tile_style == 2)
                     {
@@ -471,7 +471,7 @@ short* tilemaparray;
                             continue;
                     }
 
-                    for (int i = 0; i < 8; i++)
+                    for (int i = 0; i < MAX_SWALLOW_CHARS; i++)
                     {
                         const char* swallow_direction_name = swallow_direction_name_array[i];
                         if (process_style == 0)
@@ -481,7 +481,7 @@ short* tilemaparray;
                         }
                         else if (process_style == 1)
                         {
-                            int glyph_offset = GLYPH_SWALLOW_OFF + 8 * j;
+                            int glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                         tile_count++;
@@ -491,12 +491,12 @@ short* tilemaparray;
                     if (tsd->swallow_tile_style == 2 && !first_found && process_style == 1)
                     {
                         first_found = TRUE;
-                        for (int k = 0; k < NUMMONS; k++)
+                        for (int k = 0; k < NUM_MONSTERS; k++)
                         {
-                            for (int m = 0; m < 8; m++)
+                            for (int m = 0; m < MAX_SWALLOW_CHARS; m++)
                             {
-                                int glyph_offset = GLYPH_SWALLOW_OFF + 8 * k;
-                                tilemaparray[m + glyph_offset] = tile_count - 8 + m;
+                                int glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * k;
+                                tilemaparray[m + glyph_offset] = tile_count - MAX_SWALLOW_CHARS + m;
                             }
                         }
                     }

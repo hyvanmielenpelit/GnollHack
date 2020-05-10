@@ -2137,7 +2137,7 @@ register struct obj* obj;
 						}
 					}
 				}
-				else if (objects[otyp].oc_target_permissions > 0 && objects[otyp].oc_target_permissions < MAXMCLASSES)
+				else if (objects[otyp].oc_target_permissions > 0 && objects[otyp].oc_target_permissions < MAX_MONSTER_CLASSES)
 				{
 					char monsymbuf[BUFSZ];
 					strcpy(monsymbuf, def_monsyms[objects[otyp].oc_target_permissions].explain);
@@ -2801,7 +2801,7 @@ register struct obj* obj;
 		if (artilist[obj->oartifact].mtype > 0)
 		{
 			char endbuf[BUFSIZ] = "";
-			if ((artilist[obj->oartifact].aflags & AF_DMONS) && artilist[obj->oartifact].mtype < NUMMONS)
+			if ((artilist[obj->oartifact].aflags & AF_DMONS) && artilist[obj->oartifact].mtype < NUM_MONSTERS)
 			{
 				strcpy(endbuf, pm_common_name(&mons[artilist[obj->oartifact].mtype]));
 			}
@@ -2856,7 +2856,7 @@ register struct obj* obj;
 
 				strcpy(endbuf, affectbuf);
 			}
-			else if (artilist[obj->oartifact].aflags & AF_DCLAS && artilist[obj->oartifact].mtype < MAXMCLASSES)
+			else if (artilist[obj->oartifact].aflags & AF_DCLAS && artilist[obj->oartifact].mtype < MAX_MONSTER_CLASSES)
 			{
 				strcpy(endbuf, def_monsyms[artilist[obj->oartifact].mtype].explain);
 			}
@@ -5253,7 +5253,7 @@ animate_corpse(corpse, animateintomon)
 struct obj* corpse;
 int animateintomon; // monstid to be animated into
 {
-	if (animateintomon < 0 || animateintomon >= NUMMONS || !corpse || corpse->corpsenm < 0 || corpse->corpsenm >= NUMMONS)
+	if (animateintomon < 0 || animateintomon >= NUM_MONSTERS || !corpse || corpse->corpsenm < 0 || corpse->corpsenm >= NUM_MONSTERS)
 		return FALSE;
 
 	struct monst* mtmp, * mcarry;

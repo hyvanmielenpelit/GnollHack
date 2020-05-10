@@ -42,9 +42,9 @@ STATIC_DCL void FDECL(check_arti_name_discovery, (struct obj*));
 STATIC_OVL int spec_dbon_applies = 0;
 
 /* flags including which artifacts have already been created */
-static boolean artiexist[1 + NROFARTIFACTS + 1];
+static boolean artiexist[1 + NUM_ARTIFACTS + 1];
 /* and a discovery list for them (no dummy first entry here) */
-STATIC_OVL xchar artidisco[NROFARTIFACTS];
+STATIC_OVL xchar artidisco[NUM_ARTIFACTS];
 
 STATIC_DCL void NDECL(hack_artifacts);
 STATIC_DCL boolean FDECL(artifact_attack_type, (int, struct obj *));
@@ -103,7 +103,7 @@ const char *
 artiname(artinum)
 int artinum;
 {
-    if (artinum <= 0 || artinum > NROFARTIFACTS)
+    if (artinum <= 0 || artinum > NUM_ARTIFACTS)
         return empty_string;
     return artilist[artinum].name;
 }
@@ -129,7 +129,7 @@ aligntyp alignment; /* target alignment, or A_NONE */
     boolean by_align = (alignment != A_NONE);
     short o_typ = (by_align || !otmp) ? 0 : otmp->otyp;
     boolean unique = !by_align && otmp && is_otyp_unique(o_typ);
-    short eligible[NROFARTIFACTS];
+    short eligible[NUM_ARTIFACTS];
 
     n = altn = 0;    /* no candidates found yet */
     eligible[0] = 0; /* lint suppression */
@@ -290,7 +290,7 @@ const char* name;
 {
 	if (otyp > 0 && *name)
 	{
-		for (int i = 1; i <= NROFARTIFACTS; i++)
+		for (int i = 1; i <= NUM_ARTIFACTS; i++)
 			if (artilist[i].otyp == otyp && !strcmp(artilist[i].name, name))
 			{
 				return i;
@@ -990,7 +990,7 @@ xchar m;
 
     /* look for this artifact in the discoveries list;
        if we hit an empty slot then it's not present, so add it */
-    for (i = 0; i < NROFARTIFACTS; i++)
+    for (i = 0; i < NUM_ARTIFACTS; i++)
         if (artidisco[i] == 0 || artidisco[i] == m) {
             artidisco[i] = m;
             return;
@@ -1009,7 +1009,7 @@ xchar m;
 
     /* look for this artifact in the discoveries list;
        if we hit an empty slot then it's undiscovered */
-    for (i = 0; i < NROFARTIFACTS; i++)
+    for (i = 0; i < NUM_ARTIFACTS; i++)
         if (artidisco[i] == m)
             return FALSE;
         else if (artidisco[i] == 0)
@@ -1025,7 +1025,7 @@ winid tmpwin; /* supplied by dodiscover() */
     int i, m, otyp;
     char buf[BUFSZ];
 
-    for (i = 0; i < NROFARTIFACTS; i++) {
+    for (i = 0; i < NUM_ARTIFACTS; i++) {
         if (artidisco[i] == 0)
             break; /* empty slot implies end of list */
         if (tmpwin == WIN_ERR)

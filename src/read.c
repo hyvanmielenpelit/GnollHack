@@ -2945,7 +2945,7 @@ do_class_genocide()
         if (class == 0 && (i = name_to_mon(buf)) != NON_PM)
             class = mons[i].mlet;
         immunecnt = gonecnt = goodcnt = 0;
-        for (i = LOW_PM; i < NUMMONS; i++) {
+        for (i = LOW_PM; i < NUM_MONSTERS; i++) {
             if (mons[i].mlet == class) {
                 if (!(mons[i].geno & G_GENO))
                     immunecnt++;
@@ -2980,7 +2980,7 @@ do_class_genocide()
             continue;
         }
 
-        for (i = LOW_PM; i < NUMMONS; i++) {
+        for (i = LOW_PM; i < NUM_MONSTERS; i++) {
             if (mons[i].mlet == class) {
                 char nam[BUFSZ];
 
@@ -3333,7 +3333,7 @@ struct _create_particular_data *d;
     char *bufp = str;
     char *tmpp;
 
-    d->monclass = MAXMCLASSES;
+    d->monclass = MAX_MONSTER_CLASSES;
     d->which = urole.monsternum; /* an arbitrary index into mons[] */
     d->fem = -1; /* gender not specified */
     d->randmonst = FALSE;
@@ -3384,15 +3384,15 @@ struct _create_particular_data *d;
     d->monclass = name_to_monclass(bufp, &d->which);
 
     if (d->which >= LOW_PM) {
-        d->monclass = MAXMCLASSES; /* matters below */
+        d->monclass = MAX_MONSTER_CLASSES; /* matters below */
         return TRUE;
     } else if (d->monclass == S_invisible) { /* not an actual monster class */
         d->which = PM_STALKER;
-        d->monclass = MAXMCLASSES;
+        d->monclass = MAX_MONSTER_CLASSES;
         return TRUE;
     } else if (d->monclass == S_WORM_TAIL) { /* empty monster class */
         d->which = PM_LONG_WORM;
-        d->monclass = MAXMCLASSES;
+        d->monclass = MAX_MONSTER_CLASSES;
         return TRUE;
     } else if (d->monclass > 0) {
         d->which = urole.monsternum; /* reset from NON_PM */
@@ -3425,14 +3425,14 @@ struct _create_particular_data *d;
         whichpm = &mons[d->which];
     }
     for (i = 0; i <= multi; i++) {
-        if (d->monclass != MAXMCLASSES)
+        if (d->monclass != MAX_MONSTER_CLASSES)
             whichpm = mkclass(d->monclass, 0);
         else if (d->randmonst)
             whichpm = rndmonst();
         mtmp = makemon(whichpm, u.ux, u.uy, NO_MM_FLAGS);
         if (!mtmp) {
             /* quit trying if creation failed and is going to repeat */
-            if (d->monclass == MAXMCLASSES && !d->randmonst)
+            if (d->monclass == MAX_MONSTER_CLASSES && !d->randmonst)
                 break;
             /* otherwise try again */
             continue;

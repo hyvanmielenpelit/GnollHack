@@ -5070,6 +5070,7 @@ boolean force;
 
     switch (levl[x][y].doormask) {
     case D_NODOOR:
+    case D_PORTCULLIS:
         You("%s no door there.", Blind ? "feel" : "see");
         return 0;
     case D_ISOPEN:

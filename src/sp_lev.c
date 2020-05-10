@@ -1641,7 +1641,7 @@ struct mkroom *croom;
     else
         class = 0;
 
-    if (class == MAXMCLASSES)
+    if (class == MAX_MONSTER_CLASSES)
         panic("create_monster: unknown monster class '%c'", m->class);
 
     amask = (m->align == AM_SPLEV_CO)
@@ -1722,10 +1722,10 @@ struct mkroom *croom;
                 break;
 
             case M_AP_FURNITURE:
-                for (i = 0; i < MAXPCHARS; i++)
+                for (i = 0; i < MAX_CMAPPED_CHARS; i++)
                     if (!strcmp(defsyms[i].explanation, m->appear_as.str))
                         break;
-                if (i == MAXPCHARS) {
+                if (i == MAX_CMAPPED_CHARS) {
                     impossible("create_monster: can't find feature \"%s\"",
                                m->appear_as.str);
                 } else {
@@ -1917,7 +1917,7 @@ struct mkroom *croom;
          */
         char oclass = (char) def_char_to_objclass(c);
 
-		if (oclass == MAXOCLASSES)
+		if (oclass == MAX_OBJECT_CLASSES)
 		{
 			panic("create_object:  unexpected object class '%c'", c);
 			return;
@@ -3274,13 +3274,13 @@ struct sp_coder *coder;
                 char monclass = SP_MONST_CLASS(OV_i(parm));
                 int monid = SP_MONST_PM(OV_i(parm));
 
-                if (monid >= LOW_PM && monid < NUMMONS) {
+                if (monid >= LOW_PM && monid < NUM_MONSTERS) {
                     tmpobj.corpsenm = monid;
                     break; /* we're done! */
                 } else {
                     struct permonst *pm = (struct permonst *) 0;
 
-                    if (def_char_to_monclass(monclass) != MAXMCLASSES) {
+                    if (def_char_to_monclass(monclass) != MAX_MONSTER_CLASSES) {
                         pm = mkclass(def_char_to_monclass(monclass), G_NOGEN);
                     } else {
                         pm = rndmonst();

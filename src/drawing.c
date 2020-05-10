@@ -34,7 +34,7 @@ const char invisexplain[] = "remembered, unseen, creature",
  *     name:    used in object_detect().
  *     explain: used in do_look().
  */
-const struct class_sym def_oc_syms[MAXOCLASSES] = {
+const struct class_sym def_oc_syms[MAX_OBJECT_CLASSES] = {
     { '\0', "", "" }, /* placeholder for the "random class" */
     { ILLOBJ_SYM, "illegal objects", "strange object" },
     { WEAPON_SYM, "weapons", "weapon" },
@@ -58,7 +58,7 @@ const struct class_sym def_oc_syms[MAXOCLASSES] = {
 };
 
 /* Default monster class symbols.  See monsym.h. */
-const struct class_sym def_monsyms[MAXMCLASSES] = {
+const struct class_sym def_monsyms[MAX_MONSTER_CLASSES] = {
     { '\0', "", "" },
     { DEF_ANT, "", "ant or other insect" },
     { DEF_BLOB, "", "blob" },
@@ -143,7 +143,7 @@ const struct symdef def_warnsyms[WARNCOUNT] = {
 /*
  *  Default screen symbols with explanations and colors.
  */
-const struct symdef_cmap defsyms[MAXPCHARS] = {
+const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
 /* 0*/ { ' ', "dark part of a room",    { C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*5*/ C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*10*/  C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR) } },  /* stone */
        { '|', "wall",                   { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BLUE),   /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_MAGENTA) } },                 /* vwall */
        { '-', "wall",                   { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BLUE),   /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_MAGENTA) } },                 /* hwall */
@@ -161,6 +161,10 @@ const struct symdef_cmap defsyms[MAXPCHARS] = {
        { '|', "open door",              { C(CLR_BROWN), C(CLR_BROWN), C(CLR_RED), C(CLR_BROWN), C(CLR_BROWN),   /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_WHITE) } },           /* hodoor */
        { '+', "closed door",            { C(CLR_BROWN), C(CLR_BROWN), C(CLR_RED), C(CLR_BROWN), C(CLR_BROWN),   /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_WHITE) } },         /* vcdoor */
        { '+', "closed door",            { C(CLR_BROWN), C(CLR_BROWN), C(CLR_RED), C(CLR_BROWN), C(CLR_BROWN),   /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_WHITE) } },         /* hcdoor */
+       { '.', "broken door",            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BLUE),   /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },              /* ndoor */
+       { '.', "broken door",            { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BLUE),   /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },              /* ndoor */
+       { '.', "open portcullis",        { C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN),   /*5*/ C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN),      /*10*/ C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN) } },              /* ndoor */
+       { '.', "open portcullis",        { C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN),   /*5*/ C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN),      /*10*/ C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN), C(CLR_CYAN) } },              /* ndoor */
        { '#', "iron bars",              { C(HI_METAL), C(HI_METAL), C(HI_METAL), C(HI_METAL), C(HI_METAL),      /*5*/ C(HI_METAL), C(HI_METAL), C(HI_METAL), C(HI_METAL), C(HI_METAL),      /*10*/C(HI_METAL), C(HI_METAL), C(HI_METAL), C(HI_METAL), C(HI_METAL), C(HI_METAL) } },            /* bars */
        { '#', "tree",                   { C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), /*5*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), /*10*/ C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN), C(CLR_GREEN) } },                /* tree */
        { '.', "floor of a room",        { C(CLR_GRAY), C(CLR_GRAY), C(CLR_YELLOW), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },      /* room */
@@ -261,7 +265,7 @@ const struct symdef_cmap defsyms[MAXPCHARS] = {
 };
 
 /* default rogue level symbols */
-static const uchar def_r_oc_syms[MAXOCLASSES] = {
+static const uchar def_r_oc_syms[MAX_OBJECT_CLASSES] = {
 /* 0*/ '\0', ILLOBJ_SYM, WEAPON_SYM, ']', /* armor */
        RING_SYM,
 /* 5*/ ',',                     /* amulet */
@@ -290,7 +294,7 @@ void NDECL((*cursesgraphics_mode_callback)) = 0;
 
 /*
  * Convert the given character to an object class.  If the character is not
- * recognized, then MAXOCLASSES is returned.  Used in detect.c, invent.c,
+ * recognized, then MAX_OBJECT_CLASSES is returned.  Used in detect.c, invent.c,
  * objnam.c, options.c, pickup.c, sp_lev.c, lev_main.c, and tilemap.c.
  */
 int
@@ -298,7 +302,7 @@ def_char_to_objclass(ch)
 char ch;
 {
     int i;
-    for (i = 1; i < MAXOCLASSES; i++)
+    for (i = 1; i < MAX_OBJECT_CLASSES; i++)
         if (ch == def_oc_syms[i].sym)
             break;
     return i;
@@ -306,7 +310,7 @@ char ch;
 
 /*
  * Convert a character into a monster class.  This returns the _first_
- * match made.  If there are are no matches, return MAXMCLASSES.
+ * match made.  If there are are no matches, return MAX_MONSTER_CLASSES.
  * Used in detect.c, options.c, read.c, sp_lev.c, and lev_main.c
  */
 int
@@ -314,7 +318,7 @@ def_char_to_monclass(ch)
 char ch;
 {
     int i;
-    for (i = 1; i < MAXMCLASSES; i++)
+    for (i = 1; i < MAX_MONSTER_CLASSES; i++)
         if (ch == def_monsyms[i].sym)
             break;
     return i;
@@ -391,11 +395,11 @@ init_showsyms()
 {
     register int i;
 
-    for (i = 0; i < MAXPCHARS; i++)
+    for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         showsyms[i + SYM_OFF_P] = defsyms[i].sym;
-    for (i = 0; i < MAXOCLASSES; i++)
+    for (i = 0; i < MAX_OBJECT_CLASSES; i++)
         showsyms[i + SYM_OFF_O] = def_oc_syms[i].sym;
-    for (i = 0; i < MAXMCLASSES; i++)
+    for (i = 0; i < MAX_MONSTER_CLASSES; i++)
         showsyms[i + SYM_OFF_M] = def_monsyms[i].sym;
     for (i = 0; i < WARNCOUNT; i++)
         showsyms[i + SYM_OFF_W] = def_warnsyms[i].sym;
@@ -415,11 +419,11 @@ init_l_symbols()
 {
     register int i;
 
-    for (i = 0; i < MAXPCHARS; i++)
+    for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         l_syms[i + SYM_OFF_P] = defsyms[i].sym;
-    for (i = 0; i < MAXOCLASSES; i++)
+    for (i = 0; i < MAX_OBJECT_CLASSES; i++)
         l_syms[i + SYM_OFF_O] = def_oc_syms[i].sym;
-    for (i = 0; i < MAXMCLASSES; i++)
+    for (i = 0; i < MAX_MONSTER_CLASSES; i++)
         l_syms[i + SYM_OFF_M] = def_monsyms[i].sym;
     for (i = 0; i < WARNCOUNT; i++)
         l_syms[i + SYM_OFF_W] = def_warnsyms[i].sym;
@@ -443,16 +447,16 @@ init_r_symbols()
     /* These are defaults that can get overwritten
        later by the roguesymbols option */
 
-    for (i = 0; i < MAXPCHARS; i++)
+    for (i = 0; i < MAX_CMAPPED_CHARS; i++)
         r_syms[i + SYM_OFF_P] = defsyms[i].sym;
-    r_syms[S_vodoor] = r_syms[S_hodoor] = r_syms[S_ndoor] = '+';
+    r_syms[S_vodoor] = r_syms[S_hodoor] = r_syms[S_ndoor] = r_syms[S_hbdoor] = r_syms[S_vbdoor] = r_syms[S_hoportcullis] = r_syms[S_voportcullis] = '+';
     r_syms[S_upstair] = r_syms[S_dnstair] = '%';
     r_syms[S_branch_upstair] = r_syms[S_branch_dnstair] = '%';
     r_syms[S_extra_upstair] = r_syms[S_extra_dnstair] = '%';
 
-    for (i = 0; i < MAXOCLASSES; i++)
+    for (i = 0; i < MAX_OBJECT_CLASSES; i++)
         r_syms[i + SYM_OFF_O] = def_r_oc_syms[i];
-    for (i = 0; i < MAXMCLASSES; i++)
+    for (i = 0; i < MAX_MONSTER_CLASSES; i++)
         r_syms[i + SYM_OFF_M] = def_monsyms[i].sym;
     for (i = 0; i < WARNCOUNT; i++)
         r_syms[i + SYM_OFF_W] = def_warnsyms[i].sym;
@@ -631,6 +635,10 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_hodoor, "S_hodoor" },
     { SYM_PCHAR, S_vcdoor, "S_vcdoor" },
     { SYM_PCHAR, S_hcdoor, "S_hcdoor" },
+    { SYM_PCHAR, S_vodoor, "S_vbdoor" },
+    { SYM_PCHAR, S_hodoor, "S_hbdoor" },
+    { SYM_PCHAR, S_vodoor, "S_voportcullis" },
+    { SYM_PCHAR, S_hodoor, "S_hoportcullis" },
     { SYM_PCHAR, S_bars, "S_bars" },
     { SYM_PCHAR, S_tree, "S_tree" },
     { SYM_PCHAR, S_room, "S_room" },
@@ -814,7 +822,7 @@ const char*
 get_cmap_tilename(idx)
 int idx;
 {
-    if (idx >= 0 && idx < MAXPCHARS)
+    if (idx >= 0 && idx < MAX_CMAPPED_CHARS)
     {
         for (int i = 0; loadsyms[i].range > 0; i++)
         {

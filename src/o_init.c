@@ -135,7 +135,7 @@ init_objects()
     /* bug fix to prevent "initialization error" abort on Intel Xenix.
      * reported by mikew@semike
      */
-    for (i = 0; i < MAXOCLASSES; i++)
+    for (i = 0; i < MAX_OBJECT_CLASSES; i++)
         bases[i] = 0;
     
     for (i = 0; i < NUM_OBJECTS; i++)
@@ -518,7 +518,7 @@ dodiscovered() /* free after Robert Viduya */
 {
     register int i, dis;
     int ct = 0;
-    char *s, oclass, prev_class, classes[MAXOCLASSES], buf[BUFSZ];
+    char *s, oclass, prev_class, classes[MAX_OBJECT_CLASSES], buf[BUFSZ];
     winid tmpwin;
 
     tmpwin = create_nhwindow(NHW_MENU);
@@ -594,8 +594,8 @@ doclassdisco()
         havent_discovered_any[] = "haven't discovered any %s yet.",
         unique_items[] = "unique items",
         artifact_items[] = "artifacts";
-    char *s, c, oclass, menulet, allclasses[MAXOCLASSES],
-        discosyms[2 + MAXOCLASSES + 1], buf[BUFSZ];
+    char *s, c, oclass, menulet, allclasses[MAX_OBJECT_CLASSES],
+        discosyms[2 + MAX_OBJECT_CLASSES + 1], buf[BUFSZ];
     int i, ct, dis, xtras;
     boolean traditional;
     winid tmpwin = WIN_ERR;

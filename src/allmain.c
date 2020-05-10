@@ -1068,7 +1068,7 @@ newgame()
     process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile);
 #endif
 
-    for (i = LOW_PM; i < NUMMONS; i++)
+    for (i = LOW_PM; i < NUM_MONSTERS; i++)
         mvitals[i].mvflags = (uchar)(mons[i].geno & G_NOCORPSE);
 
     init_objects(); /* must be before u_init() */

@@ -366,12 +366,17 @@ int x, y, gloc;
         return (glyph_is_cmap(glyph)
                 && (is_cmap_door(glyph_to_cmap(glyph))
                     || is_cmap_drawbridge(glyph_to_cmap(glyph))
-                    || glyph_to_cmap(glyph) == S_ndoor));
+                    || glyph_to_cmap(glyph) == S_ndoor
+                    ));
     case GLOC_EXPLORE:
         return (glyph_is_cmap(glyph)
                 && (is_cmap_door(glyph_to_cmap(glyph))
                     || is_cmap_drawbridge(glyph_to_cmap(glyph))
                     || glyph_to_cmap(glyph) == S_ndoor
+                    || glyph_to_cmap(glyph) == S_hbdoor
+                    || glyph_to_cmap(glyph) == S_vbdoor
+                    || glyph_to_cmap(glyph) == S_hoportcullis
+                    || glyph_to_cmap(glyph) == S_voportcullis
                     || glyph_to_cmap(glyph) == S_room
 					|| glyph_to_cmap(glyph) == S_grass
 					|| glyph_to_cmap(glyph) == S_darkroom
@@ -398,6 +403,10 @@ int x, y, gloc;
                      || glyph_to_cmap(glyph) == S_water
                      || glyph_to_cmap(glyph) == S_pool
                      || glyph_to_cmap(glyph) == S_ndoor
+                     || glyph_to_cmap(glyph) == S_hbdoor
+                     || glyph_to_cmap(glyph) == S_vbdoor
+                     || glyph_to_cmap(glyph) == S_hoportcullis
+                     || glyph_to_cmap(glyph) == S_voportcullis
                      || glyph_to_cmap(glyph) == S_room
 					 || glyph_to_cmap(glyph) == S_grass
 					 || glyph_to_cmap(glyph) == S_darkroom
@@ -878,11 +887,11 @@ const char *goal;
             goto nxtc;
         } else {
             if (!index(quitchars, c)) {
-                char matching[MAXPCHARS];
+                char matching[MAX_CMAPPED_CHARS];
                 int pass, lo_x, lo_y, hi_x, hi_y, k = 0;
 
                 (void) memset((genericptr_t) matching, 0, sizeof matching);
-                for (sidx = 1; sidx < MAXPCHARS; sidx++) { /* [0] left as 0 */
+                for (sidx = 1; sidx < MAX_CMAPPED_CHARS; sidx++) { /* [0] left as 0 */
                     if (IS_DOOR(sidx) || IS_WALL(sidx)
                         || sidx == SDOOR || sidx == SCORR
                         || glyph_to_cmap(k) == S_room

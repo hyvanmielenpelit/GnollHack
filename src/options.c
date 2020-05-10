@@ -315,9 +315,9 @@ static struct Comp_Opt {
     { "dogname", "the name of your (first) dog (e.g., dogname:Fang)", PL_PSIZ,
       DISP_IN_GAME },
     { "dungeon", "the symbols to use in drawing the dungeon map",
-      MAXDCHARS + 1, SET_IN_FILE },
+      MAX_DUNGEON_CHARS + 1, SET_IN_FILE },
     { "effects", "the symbols to use in drawing special effects",
-      MAXECHARS + 1, SET_IN_FILE },
+      MAX_EFFECT_CHARS + 1, SET_IN_FILE },
     { "font_map", "the font to use in the map window", 40,
       DISP_IN_GAME },                                              /*WC*/
     { "font_menu", "the font to use in menus", 40, DISP_IN_GAME }, /*WC*/
@@ -360,7 +360,7 @@ static struct Comp_Opt {
     { "menu_select_all", "select all items in a menu", 4, SET_IN_FILE },
     { "menu_select_page", "select all items on this page of a menu", 4,
       SET_IN_FILE },
-    { "monsters", "the symbols to use for monsters", MAXMCLASSES,
+    { "monsters", "the symbols to use for monsters", MAX_MONSTER_CLASSES,
       SET_IN_FILE },
     { "msghistory", "number of top line messages to save", 5, DISP_IN_GAME },
 #if defined(TTY_GRAPHICS) || defined(CURSES_GRAPHICS)
@@ -372,9 +372,9 @@ static struct Comp_Opt {
       DISP_IN_GAME },
     { "mouse_support", "game receives click info from mouse", 0, SET_IN_GAME },
     { "number_pad", "use the number pad for movement", 1, SET_IN_GAME },
-    { "objects", "the symbols to use for objects", MAXOCLASSES, SET_IN_FILE },
+    { "objects", "the symbols to use for objects", MAX_OBJECT_CLASSES, SET_IN_FILE },
     { "packorder", "the inventory order of the items in your pack",
-      MAXOCLASSES, SET_IN_GAME },
+      MAX_OBJECT_CLASSES, SET_IN_GAME },
 #ifdef CHANGE_COLOR
     { "palette",
 #ifndef WIN32
@@ -394,7 +394,7 @@ static struct Comp_Opt {
     { "pickup_burden", "maximum burden picked up before prompt", 20,
       SET_IN_GAME },
     { "pickup_types", "types of objects to pick up automatically",
-      MAXOCLASSES, SET_IN_GAME },
+      MAX_OBJECT_CLASSES, SET_IN_GAME },
     { "pile_limit", "threshold for \"there are many objects here\"", 24,
       SET_IN_GAME },
     { "playmode", "normal play, non-scoring explore mode, or debug mode", 8,
@@ -453,7 +453,7 @@ static struct Comp_Opt {
     { "tile_width", "width of tiles", 20, DISP_IN_GAME },   /*WC*/
     { "tile_height", "height of tiles", 20, DISP_IN_GAME }, /*WC*/
     { "tile_file", "name of tile file", 70, DISP_IN_GAME }, /*WC*/
-    { "traps", "the symbols to use in drawing traps", MAXTCHARS + 1,
+    { "traps", "the symbols to use in drawing traps", MAX_TRAP_CHARS + 1,
       SET_IN_FILE },
     { "vary_msgcount", "show more old messages at a time", 20,
       DISP_IN_GAME }, /*WC*/
@@ -512,7 +512,7 @@ extern char *shade[3];          /* in sys/msdos/video.c */
 extern char ttycolors[CLR_MAX]; /* in sys/msdos/video.c */
 #endif
 
-static char def_inv_order[MAXOCLASSES] = {
+static char def_inv_order[MAX_OBJECT_CLASSES] = {
     COIN_CLASS, AMULET_CLASS, WEAPON_CLASS, ARMOR_CLASS, FOOD_CLASS,
     SCROLL_CLASS, SPBOOK_CLASS, POTION_CLASS, RING_CLASS, MISCELLANEOUS_CLASS, WAND_CLASS,
     TOOL_CLASS, REAGENT_CLASS, GEM_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
@@ -1165,7 +1165,7 @@ char *op;
         boolean fail = FALSE;
         oc_sym = def_char_to_objclass(*sp);
         /* reject bad or duplicate entries */
-        if (oc_sym == MAXOCLASSES) { /* not an object class char */
+        if (oc_sym == MAX_OBJECT_CLASSES) { /* not an object class char */
             config_error_add("Not an object class '%c'", *sp);
             retval = 0;
             fail = TRUE;
@@ -1191,7 +1191,7 @@ char *op;
     for (sp = flags.inv_order; *sp; sp++)
         if (!index(buf, *sp))
             (void) strkitten(&buf[num++], *sp);
-    buf[MAXOCLASSES - 1] = '\0';
+    buf[MAX_OBJECT_CLASSES - 1] = '\0';
 
     Strcpy(flags.inv_order, buf);
     return retval;
@@ -2087,7 +2087,7 @@ char c;
         return TRUE;
     } else { /* reject default object class symbols */
         int j;
-        for (j = 1; j < MAXOCLASSES; j++)
+        for (j = 1; j < MAX_OBJECT_CLASSES; j++)
             if (c == def_oc_syms[j].sym) {
                 config_error_add("Menu command key '%s' is an object class",
                                  visctrl(c));
@@ -2895,7 +2895,7 @@ boolean tinitial, tfrom_file;
         escapes(opts, opts);
         /* note: dummy monclass #0 has symbol value '\0'; we allow that--
            attempting to set bouldersym to '^@'/'\0' will reset to default */
-        if (def_char_to_monclass(opts[0]) != MAXMCLASSES)
+        if (def_char_to_monclass(opts[0]) != MAX_MONSTER_CLASSES)
             clash = opts[0] ? 1 : 0;
         else if (opts[0] >= '1' && opts[0] < WARNCOUNT + '0')
             clash = 2;
@@ -3137,7 +3137,7 @@ boolean tinitial, tfrom_file;
     /* types of objects to pick up automatically */
     fullname = "pickup_types";
     if (match_optname(opts, fullname, 8, TRUE)) {
-        char ocl[MAXOCLASSES + 1], tbuf[MAXOCLASSES + 1],
+        char ocl[MAX_OBJECT_CLASSES + 1], tbuf[MAX_OBJECT_CLASSES + 1],
              qbuf[QBUFSZ], abuf[BUFSZ];
         int oc_sym;
         boolean badopt = FALSE, compat = (strlen(opts) <= 6), use_menu;
@@ -3196,7 +3196,7 @@ boolean tinitial, tfrom_file;
             while (*op) {
                 oc_sym = def_char_to_objclass(*op);
                 /* make sure all are valid obj symbols occurring once */
-                if (oc_sym != MAXOCLASSES
+                if (oc_sym != MAX_OBJECT_CLASSES
                     && !index(flags.pickup_types, oc_sym)) {
                     flags.pickup_types[num] = (char) oc_sym;
                     flags.pickup_types[++num] = '\0';
@@ -4356,7 +4356,7 @@ char *src, *dest;
     int i;
 
     while ((i = (int) *src++) != 0) {
-        if (i < 0 || i >= MAXOCLASSES)
+        if (i < 0 || i >= MAX_OBJECT_CLASSES)
             impossible("oc_to_str:  illegal object class %d", i);
         else
             *dest++ = def_oc_syms[i].sym;
@@ -5637,7 +5637,7 @@ char *buf;
     static const char none[] = "(none)", randomrole[] = "random",
                       to_be_done[] = "(to be done)",
                       defopt[] = "default", defbrief[] = "def";
-    char ocl[MAXOCLASSES + 1];
+    char ocl[MAX_OBJECT_CLASSES + 1];
     int i;
 
     buf[0] = '\0';
@@ -6018,7 +6018,7 @@ char *buf;
 int
 dotogglepickup()
 {
-    char buf[BUFSZ], ocl[MAXOCLASSES + 1];
+    char buf[BUFSZ], ocl[MAX_OBJECT_CLASSES + 1];
 
     flags.pickup = !flags.pickup;
     if (flags.pickup) {

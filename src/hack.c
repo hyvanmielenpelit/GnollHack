@@ -2969,7 +2969,7 @@ int x, y;
        we treat them as if their non-existant doors were actually present */
     if (Is_rogue_level(&u.uz))
         return FALSE;
-    return !(lev_p->doormask & ~(D_NODOOR | D_BROKEN));
+    return !(lev_p->doormask & ~(D_NODOOR | D_BROKEN | D_PORTCULLIS));
 }
 
 /* used by drown() to check whether hero can crawl from water to <x,y> */

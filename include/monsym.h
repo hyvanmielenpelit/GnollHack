@@ -76,7 +76,7 @@ enum mon_class_types {
     S_MIMIC_DEF  = 61, /* ] */
 
 
-    MAXMCLASSES  = 62  /* number of monster classes */
+    MAX_MONSTER_CLASSES  = 62  /* number of monster classes */
 };
 
 /*

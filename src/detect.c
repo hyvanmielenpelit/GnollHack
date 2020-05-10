@@ -150,7 +150,7 @@ int x, y;
     lev = &levl[x][y];
     if (!IS_DOOR(lev->typ))
         return FALSE;
-    if ((lev->doormask & (D_NODOOR | D_BROKEN | D_ISOPEN)) != 0
+    if ((lev->doormask & (D_NODOOR | D_BROKEN | D_ISOPEN | D_PORTCULLIS)) != 0
          && trapped_chest_at(ttyp, x, y))
         return FALSE;
     return TRUE;
@@ -591,7 +591,7 @@ int class;            /* an object class, 0 for all */
     register struct monst *mtmp;
     int sym, boulder = 0, ter_typ = TER_DETECT | TER_OBJ;
 
-    if (class < 0 || class >= MAXOCLASSES) {
+    if (class < 0 || class >= MAX_OBJECT_CLASSES) {
         impossible("object_detect:  illegal class %d", class);
         class = 0;
     }
@@ -1218,9 +1218,9 @@ struct obj **optr;
         if (ch == DEF_MIMIC_DEF)
             ch = DEF_MIMIC;
 
-        if ((class = def_char_to_objclass(ch)) != MAXOCLASSES)
+        if ((class = def_char_to_objclass(ch)) != MAX_OBJECT_CLASSES)
             ret = object_detect((struct obj *) 0, class);
-        else if ((class = def_char_to_monclass(ch)) != MAXMCLASSES)
+        else if ((class = def_char_to_monclass(ch)) != MAX_MONSTER_CLASSES)
             ret = monster_detect((struct obj *) 0, class);
         else if (iflags.bouldersym && (ch == iflags.bouldersym))
             ret = object_detect((struct obj *) 0, ROCK_CLASS);

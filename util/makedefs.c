@@ -1146,7 +1146,7 @@ make_version()
                                                );
     /*
      * Value used for object & monster sanity check.
-     *    (NROFARTIFACTS<<24) | (NUM_OBJECTS<<12) | (NUMMONS<<0)
+     *    (NUM_ARTIFACTS<<24) | (NUM_OBJECTS<<12) | (NUM_MONSTERS<<0)
      */
     for (i = 1; artifact_names[i]; i++)
         continue;
@@ -2342,7 +2342,7 @@ do_permonst()
                 *c = '_';
         Fprintf(ofp, "%s\t%d", nam, i);
     }
-    Fprintf(ofp, "\n\n#define\tNUMMONS\t%d\n", i);
+    Fprintf(ofp, "\n\n#define\tNUM_MONSTERS\t%d\n", i);
     Fprintf(ofp, "\n#endif /* PM_H */\n");
     Fclose(ofp);
     return;
@@ -2829,7 +2829,7 @@ do_objs()
         Fprintf(ofp, "#define\tART_%s\t%d\n", limit(objnam, 1), i);
     }
 
-    Fprintf(ofp, "#define\tNROFARTIFACTS\t%d\n", i - 1);
+    Fprintf(ofp, "#define\tNUM_ARTIFACTS\t%d\n", i - 1);
     Fprintf(ofp, "\n#endif /* ONAMES_H */\n");
     Fclose(ofp);
     if (sumerr)

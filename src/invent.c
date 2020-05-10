@@ -65,7 +65,7 @@ struct obj *obj;
        with sortloot instead of only when the 'sortpack' option isn't
        set; it is similar to sortpack's inv_order but items most
        likely to be picked up are moved to the front */
-    static char def_srt_order[MAXOCLASSES] = {
+    static char def_srt_order[MAX_OBJECT_CLASSES] = {
         COIN_CLASS, AMULET_CLASS, MISCELLANEOUS_CLASS, RING_CLASS, WAND_CLASS, POTION_CLASS,
         SCROLL_CLASS, SPBOOK_CLASS, GEM_CLASS, FOOD_CLASS, REAGENT_CLASS, TOOL_CLASS,
         WEAPON_CLASS, ARMOR_CLASS, ROCK_CLASS, BALL_CLASS, CHAIN_CLASS, 0,
@@ -2560,7 +2560,7 @@ int show_weights;
     boolean takeoff, ident, allflag, m_seen;
     int itemcount;
     int oletct, iletct, unpaid, oc_of_sym;
-    char sym, *ip, olets[MAXOCLASSES + 5], ilets[MAXOCLASSES + 10];
+    char sym, *ip, olets[MAX_OBJECT_CLASSES + 5], ilets[MAX_OBJECT_CLASSES + 10];
     char extra_removeables[5 + 1]; /* uwep,uswapwep,uquiver */
     char buf[BUFSZ] = DUMMY, qbuf[QBUFSZ];
 
@@ -2651,7 +2651,7 @@ int show_weights;
         if (sym == ' ')
             continue;
         oc_of_sym = def_char_to_objclass(sym);
-        if (takeoff && oc_of_sym != MAXOCLASSES) {
+        if (takeoff && oc_of_sym != MAX_OBJECT_CLASSES) {
             if (index(extra_removeables, oc_of_sym)) {
                 ; /* skip rest of takeoff checks */
             } else if (!index(removeables, oc_of_sym)) {
@@ -2693,7 +2693,7 @@ int show_weights;
             ckfn = ckvalidcat;
         } else if (sym == 'm') {
             m_seen = TRUE;
-        } else if (oc_of_sym == MAXOCLASSES) {
+        } else if (oc_of_sym == MAX_OBJECT_CLASSES) {
             You("don't have any %c's.", sym);
         } else if (oc_of_sym != VENOM_CLASS) { /* suppress venom */
             if (!index(olets, oc_of_sym)) {
@@ -4127,7 +4127,7 @@ dotypeinv()
         if (!xcnt)
             *extra_types++ = 'X';
         *extra_types = '\0'; /* for index() */
-        for (i = 0; i < MAXOCLASSES; i++)
+        for (i = 0; i < MAX_OBJECT_CLASSES; i++)
             if (!index(types, def_oc_syms[i].sym)) {
                 *extra_types++ = def_oc_syms[i].sym;
                 *extra_types = '\0';
@@ -4233,8 +4233,11 @@ int x, y;
             cmap = S_vodoor;
             break; /* "open door" */
         case D_BROKEN:
-            dfeature = "broken door";
-            break;
+            cmap = S_vbdoor;
+            break; /* "broken door" */
+        case D_PORTCULLIS:
+            cmap = S_voportcullis;
+            break; /* "open portcullis" */
         default:
             cmap = S_vcdoor;
             break; /* "closed door" */
@@ -4888,7 +4891,7 @@ boolean unpaid, showsym;
     const int invbuf_sympadding = 8; /* arbitrary */
     const char *class_name;
     const char *pos;
-    int oclass = (let >= 1 && let < MAXOCLASSES) ? let : 0;
+    int oclass = (let >= 1 && let < MAX_OBJECT_CLASSES) ? let : 0;
     size_t len;
 
     if (oclass)

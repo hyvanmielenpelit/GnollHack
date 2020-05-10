@@ -196,8 +196,8 @@ unsigned long *ospecial;
     } 
     else if ((offset = (glyph - GLYPH_EXPLODE_OFF)) >= 0)
     { /* explosion */
-        idx = ((offset % MAXEXPCHARS) + S_explode1) + SYM_OFF_P;
-        explode_color(offset / MAXEXPCHARS);
+        idx = ((offset % MAX_EXPLOSION_CHARS) + S_explode1) + SYM_OFF_P;
+        explode_color(offset / MAX_EXPLOSION_CHARS);
     }
     else if ((offset = (glyph - GLYPH_CMAP_OFF)) >= 0)
     { /* cmap */
@@ -210,7 +210,7 @@ unsigned long *ospecial;
 
         if (has_rogue_color && iflags.use_color) 
         {
-            if (cmap_offset >= S_vwall && cmap_offset <= S_hcdoor)
+            if (cmap_offset >= S_vwall && cmap_offset <= S_hoportcullis)
                 color = CLR_BROWN;
             else if (cmap_offset >= S_arrow_trap && cmap_offset <= S_polymorph_trap)
                 color = CLR_MAGENTA;

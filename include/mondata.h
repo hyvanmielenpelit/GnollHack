@@ -113,7 +113,7 @@
 #define infravision(ptr) (((ptr)->mflags3 & M3_INFRAVISION))
 #define infravisible(ptr) (((ptr)->mflags3 & M3_INFRAVISIBLE))
 #define is_displacer(ptr) (((ptr)->mflags3 & M3_DISPLACES) != 0L)
-#define noncorporeal(ptr) (((ptr)->mflags3 & M3_NONCORPOREAL) != 0L)   //((ptr)->mlet == S_GHOST)
+#define noncorporeal(ptr) (((ptr)->mflags3 & M3_NONCORPOREAL) != 0L) 
 #define is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L)
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)

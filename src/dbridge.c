@@ -267,7 +267,7 @@ boolean flag;
     if (flag) { /* We want the bridge open */
         levl[x][y].typ = DRAWBRIDGE_DOWN;
         levl[x2][y2].typ = DOOR;
-        levl[x2][y2].doormask = D_NODOOR;
+        levl[x2][y2].doormask = D_PORTCULLIS;
     } else {
         levl[x][y].typ = DRAWBRIDGE_UP;
         levl[x2][y2].typ = DBWALL;
@@ -762,6 +762,65 @@ struct entity *etmp;
 /* clear stale reason for death before returning */
 #define nokiller() (killer.name[0] = '\0', killer.format = 0)
 
+void
+maybe_close_drawbridge(x, y)
+int x, y;
+{
+    register struct rm* lev1;
+    int x2, y2;
+
+    lev1 = &levl[x][y];
+    if (lev1->typ != DRAWBRIDGE_DOWN)
+        return;
+    x2 = x;
+    y2 = y;
+    get_wall_for_db(&x2, &y2);
+
+    if (MON_AT(x, y))
+    {
+        struct monst* mtmp = m_at(x, y);
+        if (mtmp && !is_flying(mtmp) && !is_levitating(mtmp) && !noncorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->cwt >= WT_ELF)
+        {
+            if(cansee(x, y) || cansee(x2, y2))
+                pline("The drawbridge starts to rise, but the weight of %s keeps it down.",
+                    canseemon(mtmp) ? mon_nam(mtmp) : "something");
+            return;
+        }
+    }
+    else if (u.ux == x && u.uy == y)
+    {
+        if (!Flying && !Levitation && !noncorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->cwt >= WT_ELF)
+        {
+            pline("The drawbridge starts to rise, but your weight keeps it down.");
+            return;
+        }
+    }
+
+
+    if (MON_AT(x2, y2))
+    {
+        struct monst* mtmp = m_at(x2, y2);
+        if (mtmp && !noncorporeal(mtmp->data) && !passes_walls(mtmp->data) && mtmp->data->msize >= MZ_MEDIUM)
+        {
+            if (cansee(x, y) || cansee(x2, y2))
+                pline("The drawbridge starts to close, but it gets blocked by %s and falls back down.",
+                canseemon(mtmp) ? mon_nam(mtmp) : "something");
+            return;
+        }
+    }
+    else if (u.ux == x2 && u.uy == y2)
+    {
+        if (!noncorporeal(youmonst.data) && !passes_walls(youmonst.data) && youmonst.data->msize >= MZ_MEDIUM)
+        {
+            pline("The drawbridge starts to close, but it gets blocked by you and falls back down.");
+            return;
+        }
+    }
+
+    close_drawbridge(x, y);
+}
+
+
 /*
  * Close the drawbridge located at x,y
  */
@@ -849,7 +908,7 @@ int x, y;
     lev1->typ = DRAWBRIDGE_DOWN;
     lev2 = &levl[x2][y2];
     lev2->typ = DOOR;
-    lev2->doormask = D_NODOOR;
+    lev2->doormask = D_PORTCULLIS;
     set_entity(x, y, &(occupants[0]));
     set_entity(x2, y2, &(occupants[1]));
     do_entity(&(occupants[0]));          /* do set_entity after first */
@@ -926,7 +985,7 @@ int x, y;
     }
     wake_nearto(x, y, 500);
     lev2->typ = DOOR;
-    lev2->doormask = D_NODOOR;
+    lev2->doormask = D_PORTCULLIS;
     if ((t = t_at(x, y)) != 0)
         deltrap(t);
     if ((t = t_at(x2, y2)) != 0)

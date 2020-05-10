@@ -376,7 +376,7 @@ unsigned special; /* special feature: corpse, invis, detected, pet, ridden -
     int ry;
 
     /* If statue glyph, map to the generic statue */
-    if (GLYPH_STATUE_OFF <= glyphnum && glyphnum < GLYPH_STATUE_OFF + NUMMONS) {
+    if (GLYPH_STATUE_OFF <= glyphnum && glyphnum < GLYPH_STATUE_OFF + NUM_MONSTERS) {
         glyphnum = objnum_to_glyph(STATUE);
     }
 

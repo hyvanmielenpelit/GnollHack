@@ -19,7 +19,7 @@ char *catmore = 0; /* default pager */
 #endif
 char chosen_windowtype[WINTYPELEN];
 
-NEARDATA int bases[MAXOCLASSES] = DUMMY;
+NEARDATA int bases[MAX_OBJECT_CLASSES] = DUMMY;
 
 NEARDATA int multi = 0;
 const char *multi_reason = NULL;
@@ -233,7 +233,7 @@ NEARDATA struct monst *mydogs = (struct monst *) 0;
 /* monsters that are moving to another dungeon level */
 NEARDATA struct monst *migrating_mons = (struct monst *) 0;
 
-NEARDATA struct mvitals mvitals[NUMMONS];
+NEARDATA struct mvitals mvitals[NUM_MONSTERS];
 NEARDATA long domove_attempting = 0L;
 NEARDATA long domove_succeeded = 0L;
 
