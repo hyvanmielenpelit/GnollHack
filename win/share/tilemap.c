@@ -586,6 +586,7 @@ struct {
 {S_chaotic_altar,    "chaotic altar", "chaotic altar"},
 {S_moloch_altar,    "altar", "altar"},
 {S_high_altar,    "altar", "altar"},
+{S_extra_boulder,    "boulder", "boulder"},
 {S_grave,    "grave", "grave"},
 {S_throne,   "throne", "opulent throne"},
 {S_sink,     "sink", "sink"},

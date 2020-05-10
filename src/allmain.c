@@ -8,10 +8,6 @@
 #include "hack.h"
 #include <ctype.h>
 
-#ifdef USE_TILES
-extern short glyph2tile[]; /* from tile.c */
-#endif
-
 #ifndef NO_SIGNAL
 #include <signal.h>
 #endif
@@ -1046,7 +1042,9 @@ choose_game_difficulty()
 	destroy_nhwindow(menuwin);
 }
 
-
+#ifdef USE_TILES
+extern short glyph2tile[];
+#endif
 
 void
 newgame()

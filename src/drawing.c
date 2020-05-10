@@ -182,6 +182,7 @@ const struct symdef_cmap defsyms[MAXPCHARS] = {
 /*+1*/ { '_', "chaotic altar",          { C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*5*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*10*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK) } },                /* altar */
 /*+1*/ { '_', "altar of Moloch",        { C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED),           /*5*/ C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_GRAY),         /*10*/ C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED) } },                /* altar */
 /*+1*/ { '_', "high altar",             { C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), /*5*/ C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), /*10*/ C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA) } },                /* altar */
+/*+1*/ { '0', "boulder",                { C(CLR_GRAY), C(CLR_BROWN), C(CLR_RED), C(CLR_GRAY), C(CLR_GRAY),      /*5*/ C(CLR_WHITE), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },                /* altar */
        { '|', "grave",                  { C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), /*5*/ C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), /*10*/ C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE) } },               /* grave */
        { '\\', "opulent throne",        { C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD),           /*5*/C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD),            /*10*/ C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD) } },       /* throne */
 /*30*/ { '#', "sink",                   { C(CLR_GRAY), C(CLR_GRAY), C(CLR_RED), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },                 /* sink */
@@ -651,6 +652,7 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_chaotic_altar, "S_chaotic_altar" },
     { SYM_PCHAR, S_moloch_altar, "S_moloch_altar" },
     { SYM_PCHAR, S_high_altar, "S_high_altar" },
+    { SYM_PCHAR, S_extra_boulder, "S_extra_boulder" },
     { SYM_PCHAR, S_grave, "S_grave" },
     { SYM_PCHAR, S_throne, "S_throne" },
     { SYM_PCHAR, S_sink, "S_sink" },

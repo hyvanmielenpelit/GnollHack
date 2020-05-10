@@ -3420,7 +3420,9 @@ int bkglyph UNUSED;
     /* Move the cursor. */
     tty_curs(window, x, y);
 
+#ifdef USE_TILES
     print_vt_code3(AVTC_GLYPH_START, glyph2tile[glyph], special);
+#endif
 
 #ifndef NO_TERMS
     if (ul_hack && ch == '_') { /* non-destructive underscore */

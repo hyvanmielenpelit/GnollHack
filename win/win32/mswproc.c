@@ -2150,7 +2150,7 @@ initMapTiles(void)
     DWORD errcode;
     int tl_num;
     SIZE map_size;
-    extern int total_tiles_used;
+    int total_tiles_used = process_tiledata(&default_tileset_definition, 2, (const char*)0, (short*)0);
 
     /* no file - no tile */
     if (!(iflags.wc_tile_file && *iflags.wc_tile_file))

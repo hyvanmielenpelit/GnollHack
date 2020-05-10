@@ -147,7 +147,6 @@
     <ClCompile Include="$(SrcDir)steed.c" />
     <ClCompile Include="$(SrcDir)sys.c" />
     <ClCompile Include="$(SrcDir)teleport.c" />
-    <ClCompile Include="$(SrcDir)tile.c" />
     <ClCompile Include="$(SrcDir)timeout.c" />
     <ClCompile Include="$(SrcDir)topten.c" />
     <ClCompile Include="$(SrcDir)track.c" />

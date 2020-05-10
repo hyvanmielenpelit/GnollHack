@@ -6,6 +6,9 @@
 #include "artifact.h"
 #include "artilist.h"
 
+#ifdef USE_TILES
+short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
+#endif
 
 
 int
