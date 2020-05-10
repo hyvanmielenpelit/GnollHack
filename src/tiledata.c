@@ -247,7 +247,8 @@ short* tilemaparray;
             }
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i));
+                Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i),
+                    (defsyms[i].explanation && strcmp(defsyms[i].explanation, "")) ? defsyms[i].explanation : "no description");
                 (void)write(fd, buf, strlen(buf));
             }
             else if (process_style == 1)
