@@ -2332,6 +2332,9 @@ register struct obj *obj;
     } 
 	else if (Is_weight_changing_bag(current_container) && mbag_explodes(obj, current_container, 0)) 
 	{
+        int saved_otyp = obj->otyp;
+        int saved_oclass = obj->oclass;
+
         /* explicitly mention what item is triggering the explosion */
         pline("As you put %s inside, you are blasted by a magical explosion!",
               doname(obj));
@@ -2353,7 +2356,16 @@ register struct obj *obj;
                so that useupf() doesn't double bill */
             current_container->no_charge = save_no_charge.no_charge;
         }
-        delete_contents(current_container);
+
+        explode(u.ux, u.uy, RAY_MAGIC_MISSILE, d(2, 6), saved_otyp, saved_oclass, EXPL_MAGICAL);
+        /*delete_contents(current_container);*/
+        register struct obj* curr;
+        while ((curr = current_container->cobj) != 0) {
+            obj_extract_self(curr);
+            dropy(curr);
+            (void)scatter(curr->ox, curr->oy, 3, VIS_EFFECTS | MAY_HIT | MAY_DESTROY | MAY_FRACTURE, curr);
+        }
+
         if (!floor_container)
             useup(current_container);
         else if (obj_here(current_container, u.ux, u.uy))
