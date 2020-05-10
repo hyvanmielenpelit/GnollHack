@@ -217,14 +217,14 @@ WINCURSESOBJ = cursmain.o curswins.o cursmisc.o cursdial.o cursstat.o \
 WINX11SRC = ../win/X11/Window.c ../win/X11/dialogs.c ../win/X11/winX.c \
 	../win/X11/winmap.c  ../win/X11/winmenu.c ../win/X11/winmesg.c \
 	../win/X11/winmisc.c ../win/X11/winstat.c ../win/X11/wintext.c \
-	../win/X11/winval.c tile.c
+	../win/X11/winval.c
 WINX11OBJ = Window.o dialogs.o winX.o winmap.o winmenu.o winmesg.o \
-	winmisc.o winstat.o wintext.o winval.o tile.o
+	winmisc.o winstat.o wintext.o winval.o
 #
 # Files for a Qt port
 #
 WINQTSRC = ../win/Qt/qt_win.cpp ../win/Qt/qt_clust.cpp ../win/Qt/qttableview.cpp
-WINQTOBJ = qt_win.o qt_clust.o qttableview.o tile.o
+WINQTOBJ = qt_win.o qt_clust.o qttableview.o
 #
 # Files for a Qt 4 or 5 port
 #
@@ -240,7 +240,7 @@ WINQT4SRC = ../win/Qt4/qt4bind.cpp ../win/Qt4/qt4click.cpp \
 WINQT4OBJ = qt4bind.o qt4click.o qt4clust.o qt4delay.o qt4glyph.o qt4icon.o \
 	qt4inv.o qt4key.o qt4line.o qt4main.o qt4map.o qt4menu.o qt4msg.o \
 	qt4plsel.o qt4rip.o qt4set.o qt4stat.o qt4str.o qt4streq.o qt4svsel.o \
-	qt4win.o qt4xcmd.o qt4yndlg.o tile.o
+	qt4win.o qt4xcmd.o qt4yndlg.o
 #
 # Files for a Gnome port
 #
@@ -252,19 +252,19 @@ WINGNOMESRC = ../win/gnome/gnaskstr.c ../win/gnome/gnbind.c \
 	../win/gnome/gnworn.c
 WINGNOMEOBJ = gnaskstr.o gnbind.o gnglyph.o gnmain.o gnmap.o gnmenu.o \
 	gnmesg.o gnopts.o gnplayer.o gnsignal.o gnstatus.o gntext.o \
-	gnyesno.o gnworn.o tile.o
+	gnyesno.o gnworn.o
 #
 # Files for a Gem port
 WINGEMSRC = ../win/gem/wingem.c ../win/gem/wingem1.c ../win/gem/load_img.c \
-	../win/gem/gr_rect.c tile.c
-WINGEMOBJ = wingem.o wingem1.o load_img.o gr_rect.o tile.o
+	../win/gem/gr_rect.c
+WINGEMOBJ = wingem.o wingem1.o load_img.o gr_rect.o
 #
 # Files for a BeOS InterfaceKit port -- not ready for prime time
 WINBESRC =
 WINBEOBJ =
 #WINBESRC = ../win/BeOS/winbe.cpp ../win/BeOS/NHWindow.cpp \
-#	../win/BeOS/NHMenuWindow.cpp ../win/BeOS/NHMapWindow.cpp tile.c
-#WINBEOBJ = winbe.o NHWindow.o NHMenuWindow.o NHMapWindow.o tile.o
+#	../win/BeOS/NHMenuWindow.cpp ../win/BeOS/NHMapWindow.cpp
+#WINBEOBJ = winbe.o NHWindow.o NHMenuWindow.o NHMapWindow.o
 #
 #
 #WINSRC = $(WINTTYSRC)
@@ -652,8 +652,8 @@ $(MAKEDEFS): $(FIRSTOBJ) \
 vis_tab.c: ../include/vis_tab.h
 #	Created at build time for configurations which support tiles,
 #	but not by makedefs so not connected to the others.
-tile.c: ../win/share/tilemap.c $(HACK_H)
-	@( cd ../util ; $(MAKE) ../src/tile.c )
+#tile.c: ../win/share/tilemap.c $(HACK_H)
+#	@( cd ../util ; $(MAKE) ../src/tile.c )
 
 ../win/gnome/gn_rip.h: ../win/X11/rip.xpm
 	cp ../win/X11/rip.xpm ../win/gnome/gn_rip.h
@@ -694,7 +694,7 @@ clean:
 spotless: clean
 	-rm -f a.out core $(GAME) Sys*
 	-rm -f ../include/date.h ../include/onames.h ../include/pm.h
-	-rm -f ../include/vis_tab.h vis_tab.c tile.c *.moc
+	-rm -f ../include/vis_tab.h vis_tab.c *.moc
 	-rm -f ../win/gnome/gn_rip.h
 
 
@@ -828,7 +828,7 @@ wintext.o: ../win/X11/wintext.c $(HACK_H) ../include/winX.h ../include/xwindow.h
 	$(CC) $(CFLAGS) $(X11CFLAGS) -c -o $@ ../win/X11/wintext.c
 winval.o: ../win/X11/winval.c $(HACK_H) ../include/winX.h
 	$(CC) $(CFLAGS) $(X11CFLAGS) -c -o $@ ../win/X11/winval.c
-tile.o: tile.c $(HACK_H)
+#tile.o: tile.c $(HACK_H)
 gnaskstr.o: ../win/gnome/gnaskstr.c ../win/gnome/gnaskstr.h \
 		../win/gnome/gnmain.h
 	$(CC) $(CFLAGS) $(GNOMEINC) -c -o $@ ../win/gnome/gnaskstr.c
@@ -881,7 +881,7 @@ load_img.o: ../win/gem/load_img.c ../include/load_img.h
 	$(CC) $(CFLAGS) -c -o $@ ../win/gem/load_img.c
 gr_rect.o: ../win/gem/gr_rect.c ../include/gr_rect.h
 	$(CC) $(CFLAGS) -c -o $@ ../win/gem/gr_rect.c
-tile.o: tile.c $(HACK_H)
+#tile.o: tile.c $(HACK_H)
 cppregex.o: ../sys/share/cppregex.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ ../sys/share/cppregex.cpp
 qt_win.o: ../win/Qt/qt_win.cpp $(HACK_H) ../include/func_tab.h \

@@ -22,33 +22,33 @@ all:	$(VARDAT) spec_levs quest_levs dungeon
 ../util/lev_comp:
 	(cd ../util ; $(MAKE) lev_comp)
 
-../util/tile2x11:
-	(cd ../util ; $(MAKE) tile2x11)
+#../util/tile2x11:
+#	(cd ../util ; $(MAKE) tile2x11)
 
-../util/tile2beos:
-	(cd ../util ; $(MAKE) tile2beos)
+#../util/tile2beos:
+#	(cd ../util ; $(MAKE) tile2beos)
 
-../util/tile2bmp:
-	(cd ../util ; $(MAKE) tile2bmp)
+#../util/tile2bmp:
+#	(cd ../util ; $(MAKE) tile2bmp)
 
-x11tiles: ../util/tile2x11 ../win/share/monsters.txt ../win/share/objects.txt \
-				../win/share/other.txt \
-                                ../win/share/monsters.txt
-	../util/tile2x11 ../win/share/monsters.txt ../win/share/objects.txt \
-				../win/share/other.txt \
-                                -grayscale ../win/share/monsters.txt
+#x11tiles: ../util/tile2x11 ../win/share/monsters.txt ../win/share/objects.txt \
+#				../win/share/other.txt \
+#                                ../win/share/monsters.txt
+#	../util/tile2x11 ../win/share/monsters.txt ../win/share/objects.txt \
+#				../win/share/other.txt \
+#                                -grayscale ../win/share/monsters.txt
 
-beostiles: ../util/tile2beos ../win/share/monsters.txt \
-				../win/share/objects.txt \
-				../win/share/other.txt
-	../util/tile2beos ../win/share/monsters.txt \
-				../win/share/objects.txt \
-				../win/share/other.txt
+#beostiles: ../util/tile2beos ../win/share/monsters.txt \
+#				../win/share/objects.txt \
+#				../win/share/other.txt
+#	../util/tile2beos ../win/share/monsters.txt \
+#				../win/share/objects.txt \
+#				../win/share/other.txt
 
-nhtiles.bmp: ../util/tile2bmp ../win/share/monsters.txt \
-				../win/share/objects.txt \
-				../win/share/other.txt
-	../util/tile2bmp $@
+#nhtiles.bmp: ../util/tile2bmp ../win/share/monsters.txt \
+#				../win/share/objects.txt \
+#				../win/share/other.txt
+#	../util/tile2bmp $@
 
 GnollHack.ad: ../win/X11/GnollHack.ad
 # handle "#define foo bar" -lines
@@ -80,20 +80,20 @@ gnollhack.icns: ../win/Qt/nhicns.uu
 Info.plist: ../win/Qt/Info.pli
 	cp ../win/Qt/Info.pli Info.plist
 
-../util/tile2img.ttp:
-	(cd ../util ; $(MAKE) tile2img.ttp)
+#../util/tile2img.ttp:
+#	(cd ../util ; $(MAKE) tile2img.ttp)
 
-../util/xpm2img.ttp:
-	(cd ../util ; $(MAKE) xpm2img.ttp)
-nh16.img: ../util/tile2img.ttp ../win/share/monsters.txt \
-				../win/share/objects.txt ../win/share/other.txt
-	../util/tile2img.ttp nh16.img
+#../util/xpm2img.ttp:
+#	(cd ../util ; $(MAKE) xpm2img.ttp)
+#nh16.img: ../util/tile2img.ttp ../win/share/monsters.txt \
+#				../win/share/objects.txt ../win/share/other.txt
+#	../util/tile2img.ttp nh16.img
 
-rip.img: ../util/xpm2img.ttp
-	../util/xpm2img.ttp ../win/X11/rip.xpm rip.img
-title.img:
-	# cp ../win/gem/title.img title.img
-	$(UUDECODE) ../win/gem/title.uu
+#rip.img: ../util/xpm2img.ttp
+#	../util/xpm2img.ttp ../win/X11/rip.xpm rip.img
+#title.img:
+#	# cp ../win/gem/title.img title.img
+#	$(UUDECODE) ../win/gem/title.uu
 
 GEM_RSC.RSC:
 	# cp ../win/gem/GEM_RSC.RSC GEM_RSC.RSC
@@ -167,6 +167,6 @@ dungeon: dungeon.def ../util/makedefs ../util/dgn_comp
 
 spotless:
 	-rm -f spec_levs quest_levs *.lev $(VARDAT) dungeon dungeon.pdf
-	-rm -f nhdat x11tiles beostiles pet_mark.xbm pilemark.xbm rip.xpm mapbg.xpm
-	-rm -f rip.img GEM_RSC.RSC title.img nh16.img GnollHack.ad
-	-rm -f nhsplash.xpm nhtiles.bmp
+#	-rm -f nhdat x11tiles beostiles pet_mark.xbm pilemark.xbm rip.xpm mapbg.xpm
+#	-rm -f rip.img GEM_RSC.RSC title.img nh16.img GnollHack.ad
+#	-rm -f nhsplash.xpm nhtiles.bmp
