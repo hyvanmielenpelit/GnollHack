@@ -7903,20 +7903,31 @@ short exploding_wand_typ;
         }
     }
 
-    int x2 = x;
-    int y2 = y;
-    if (find_drawbridge(&x2, &y2) && levl[x2][y2].typ == DRAWBRIDGE_UP)
+    if (abstype == ZT_DISINTEGRATION)
     {
-        boolean createsplinters = FALSE;
-        const char* see_txt = 0, * sense_txt = 0, * hear_txt = 0;
-
-        switch (abstype) {
-        case ZT_DISINTEGRATION:
+        int x2 = x;
+        int y2 = y;
+    
+        if (levl[x][y].typ == TREE)
+        {
+            rangemod = -1000;
+            struct mkroom* r = which_room(x, y);
+            if (r && r->orig_rtype == GARDEN)
+                lev->typ = GRASS;
+            else
+                lev->typ = ROOM;
+            unblock_point(x, y); /* vision */
+            newsym(x, y);
+            if (cansee(x, y))
+                pline_The("tree disintegrates!");
+        }
+        else if (find_drawbridge(&x2, &y2) && levl[x2][y2].typ == DRAWBRIDGE_UP)
+        {
             rangemod = -1000;
             destroy_drawbridge(x2, y2, TRUE);
-            break;
         }
     }
+
     if (OBJ_AT(x, y) && abstype == ZT_FIRE)
         if (burn_floor_objects(x, y, FALSE, type > 0) && couldsee(x, y)) {
             newsym(x, y);
