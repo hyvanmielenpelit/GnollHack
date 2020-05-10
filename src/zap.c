@@ -5516,7 +5516,7 @@ struct obj *obj; /* wand or spell */
             if (!striking)
                 maybe_close_drawbridge(xx, yy);
             else
-                destroy_drawbridge(xx, yy);
+                destroy_drawbridge(xx, yy, FALSE);
             disclose = TRUE;
         } 
         else if (striking && u.dz < 0 && rn2(3) && !Is_airlevel(&u.uz)
@@ -6086,7 +6086,7 @@ boolean stop_at_first_hit_object;
             case SPE_FORCE_BOLT:
                 if (typ != DRAWBRIDGE_UP)
                 {
-                    destroy_drawbridge(x, y);
+                    destroy_drawbridge(x, y, FALSE);
                     drawbridge_hit = TRUE;
                 }
                 learn_it = TRUE;
@@ -7808,7 +7808,8 @@ short exploding_wand_typ;
     }
 
     /* regular door absorbs remaining zap range, possibly gets destroyed */
-    if (closed_door(x, y)) {
+    if (closed_door(x, y)) 
+    {
         int new_doormask = -1;
 		boolean createsplinters = FALSE;
         const char *see_txt = 0, *sense_txt = 0, *hear_txt = 0;
@@ -7902,6 +7903,20 @@ short exploding_wand_typ;
         }
     }
 
+    int x2 = x;
+    int y2 = y;
+    if (find_drawbridge(&x2, &y2) && levl[x2][y2].typ == DRAWBRIDGE_UP)
+    {
+        boolean createsplinters = FALSE;
+        const char* see_txt = 0, * sense_txt = 0, * hear_txt = 0;
+
+        switch (abstype) {
+        case ZT_DISINTEGRATION:
+            rangemod = -1000;
+            destroy_drawbridge(x2, y2, TRUE);
+            break;
+        }
+    }
     if (OBJ_AT(x, y) && abstype == ZT_FIRE)
         if (burn_floor_objects(x, y, FALSE, type > 0) && couldsee(x, y)) {
             newsym(x, y);

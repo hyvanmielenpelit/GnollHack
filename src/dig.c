@@ -630,7 +630,7 @@ int ttyp;
 
         /* if under the portcullis, the bridge is adjacent */
         (void) find_drawbridge(&bx, &by);
-        destroy_drawbridge(bx, by);
+        destroy_drawbridge(bx, by, FALSE);
         return;
     }
 
@@ -865,7 +865,7 @@ coord *cc;
             int x = dig_x, y = dig_y;
             /* if under the portcullis, the bridge is adjacent */
             (void) find_drawbridge(&x, &y);
-            destroy_drawbridge(x, y);
+            destroy_drawbridge(x, y, FALSE);
             return TRUE;
         }
 

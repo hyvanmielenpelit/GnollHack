@@ -307,7 +307,7 @@ E boolean FDECL(create_drawbridge, (int, int, int, BOOLEAN_P));
 E void FDECL(open_drawbridge, (int, int));
 E void FDECL(maybe_close_drawbridge, (int, int));
 E void FDECL(close_drawbridge, (int, int));
-E void FDECL(destroy_drawbridge, (int, int));
+E void FDECL(destroy_drawbridge, (int, int, boolean));
 
 /* ### decl.c ### */
 

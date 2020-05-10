@@ -1748,7 +1748,7 @@ struct trap *trap;
         dbx = x, dby = y;
         /* if under the portcullis, the bridge is adjacent */
         if (find_drawbridge(&dbx, &dby))
-            destroy_drawbridge(dbx, dby);
+            destroy_drawbridge(dbx, dby, FALSE);
         trap = t_at(x, y); /* expected to be null after destruction */
     }
     /* convert landmine into pit */

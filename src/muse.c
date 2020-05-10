@@ -1512,7 +1512,7 @@ struct obj *obj;                     /* 2nd arg to fhitm/fhito */
         if (find_drawbridge(&x, &y))
             switch (obj->otyp) {
             case WAN_STRIKING:
-                destroy_drawbridge(x, y);
+                destroy_drawbridge(x, y, FALSE);
             }
         if (bhitpos.x == u.ux && bhitpos.y == u.uy) {
             (*fhitm)(&youmonst, obj);

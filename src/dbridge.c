@@ -934,8 +934,9 @@ int x, y;
  * Let's destroy the drawbridge located at x,y
  */
 void
-destroy_drawbridge(x, y)
+destroy_drawbridge(x, y, is_disintegrated)
 int x, y;
+boolean is_disintegrated;
 {
     register struct rm *lev1, *lev2;
     struct trap *t;
@@ -956,18 +957,27 @@ int x, y;
         struct obj *otmp2;
         boolean lava = (lev1->drawbridgemask & DB_UNDER) == DB_LAVA;
 
-        if (lev1->typ == DRAWBRIDGE_UP) {
-            if (cansee(x2, y2))
-                pline_The("portcullis of the drawbridge falls into the %s!",
-                          lava ? hliquid("lava") : "moat");
-            else if (!Deaf)
-                You_hear("a loud *SPLASH*!");
-        } else {
-            if (cansee(x, y))
-                pline_The("drawbridge collapses into the %s!",
-                          lava ? hliquid("lava") : "moat");
-            else if (!Deaf)
-                You_hear("a loud *SPLASH*!");
+        if (is_disintegrated)
+        {
+            if (cansee(x, y) || cansee(x2, y2))
+                pline_The("drawbridge disintegrates!");
+        }
+        else
+        {
+            if (lev1->typ == DRAWBRIDGE_UP) {
+                if (cansee(x2, y2))
+                    pline_The("portcullis of the drawbridge falls into the %s!",
+                        lava ? hliquid("lava") : "moat");
+                else if (!Deaf)
+                    You_hear("a loud *SPLASH*!");
+            }
+            else {
+                if (cansee(x, y))
+                    pline_The("drawbridge collapses into the %s!",
+                        lava ? hliquid("lava") : "moat");
+                else if (!Deaf)
+                    You_hear("a loud *SPLASH*!");
+            }
         }
         lev1->typ = lava ? LAVAPOOL : MOAT;
         lev1->drawbridgemask = 0;
@@ -992,16 +1002,20 @@ int x, y;
         deltrap(t);
     del_engr_at(x, y);
     del_engr_at(x2, y2);
-    for (i = rn2(6); i > 0; --i) { /* scatter some debris */
-        /* doesn't matter if we happen to pick <x,y2> or <x2,y>;
-           since drawbridges are never placed diagonally, those
-           pairings will always match one of <x,y> or <x2,y2> */
-        otmp = mksobj_at(IRON_CHAIN, rn2(2) ? x : x2, rn2(2) ? y : y2, TRUE,
-                         FALSE);
-        /* a force of 5 here would yield a radius of 2 for
-           iron chain; anything less produces a radius of 1 */
-        (void) scatter(otmp->ox, otmp->oy, 1, MAY_HIT, otmp);
+    if (!is_disintegrated)
+    {
+        for (i = rn2(6); i > 0; --i) { /* scatter some debris */
+            /* doesn't matter if we happen to pick <x,y2> or <x2,y>;
+               since drawbridges are never placed diagonally, those
+               pairings will always match one of <x,y> or <x2,y2> */
+            otmp = mksobj_at(IRON_CHAIN, rn2(2) ? x : x2, rn2(2) ? y : y2, TRUE,
+                             FALSE);
+            /* a force of 5 here would yield a radius of 2 for
+               iron chain; anything less produces a radius of 1 */
+            (void) scatter(otmp->ox, otmp->oy, 1, MAY_HIT, otmp);
+        }
     }
+
     newsym(x, y);
     newsym(x2, y2);
     if (!does_block(x2, y2, lev2))
