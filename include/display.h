@@ -397,6 +397,12 @@
                    : (int) (obj)->corpsenm + GLYPH_FEMALE_STATUE_OFF)
 
 
+/* MRKR: Statues now have glyphs corresponding to the monster they    */
+/*       represent and look like monsters when you are hallucinating. */
+
+#define base_cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + GLYPH_CMAP_OFF)
+#define cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF)
+
 #define obj_to_glyph(obj, rng)                                          \
     (((obj)->otyp == STATUE)                                            \
          ? (is_female_corpse_or_statue(obj) ? female_statue_to_glyph(obj, rng) : statue_to_glyph(obj, rng) )                                   \
@@ -404,14 +410,12 @@
                ? random_obj_to_glyph(rng)                               \
                : ((obj)->otyp == CORPSE)                                \
                      ?  (is_female_corpse_or_statue(obj) ? (int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF  : (int) (obj)->corpsenm + GLYPH_BODY_OFF )         \
-                     : ((obj)->oartifact > 0) ? (int)(obj)->oartifact + GLYPH_ARTIFACT_OFF \
-						:  (int) (obj)->otyp + GLYPH_OBJ_OFF)
+                     : ((obj)->otyp == BOULDER) \
+                        ? cmap_to_glyph(S_extra_boulder) \
+                            : ((obj)->oartifact > 0) \
+                                ? (int)(obj)->oartifact + GLYPH_ARTIFACT_OFF \
+						            :  (int) (obj)->otyp + GLYPH_OBJ_OFF)
 
-/* MRKR: Statues now have glyphs corresponding to the monster they    */
-/*       represent and look like monsters when you are hallucinating. */
-
-#define base_cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + GLYPH_CMAP_OFF)
-#define cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF)
 #define explosion_to_glyph(expltype, idx) \
     ((((expltype) * MAXEXPCHARS) + ((idx) - S_explode1)) + GLYPH_EXPLODE_OFF)
 

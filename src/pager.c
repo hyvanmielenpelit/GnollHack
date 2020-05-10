@@ -580,8 +580,11 @@ char *buf, *monbuf;
             }
             /*FALLTHRU*/
         default:
-			strcpy(buf, defsyms[glyph_to_cmap(glyph)].explanation);
-			break;
+        {
+            int cmap = glyph_to_cmap(glyph);
+            strcpy(buf, defsyms[cmap].explanation);
+            break;
+        }
    }
 
 	char exbuf[BUFSIZ];

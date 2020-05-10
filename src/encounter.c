@@ -1371,7 +1371,7 @@ int selected_encounter, x, y;
 {
 	int max_attk_monsters = 2;
 	if (Is_bigroom(&u.uz))
-		max_attk_monsters = 5;
+		max_attk_monsters = 6;
 	else if (In_mines(&u.uz))
 		max_attk_monsters = 3;
 

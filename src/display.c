@@ -2872,8 +2872,6 @@ get_current_cmap_type_index()
         return CMAP_TOWER;
     else if (Is_astralevel(&u.uz))
         return CMAP_ASTRAL;
-    else if (level.flags.is_maze_lev)
-        return CMAP_MAZE;
     else if (Is_sanctum(&u.uz))
         return CMAP_NORMAL;
     else if (Inhell)

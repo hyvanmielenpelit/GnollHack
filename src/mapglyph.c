@@ -107,9 +107,6 @@ unsigned long *ospecial;
 		/* Select the right symbol */
 		idx = objects[objoffset].oc_class + SYM_OFF_O;
 
-
-		if (objoffset == BOULDER)
-			idx = SYM_BOULDER + SYM_OFF_X;
 		if (has_rogue_color && iflags.use_color)
         {
 			switch (objects[objoffset].oc_class)
@@ -207,6 +204,10 @@ unsigned long *ospecial;
         int cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
         int cmap_offset = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM;
         idx = cmap_offset + SYM_OFF_P;
+
+        if (cmap_offset == S_extra_boulder)
+            idx = SYM_BOULDER + SYM_OFF_X;
+
         if (has_rogue_color && iflags.use_color) 
         {
             if (cmap_offset >= S_vwall && cmap_offset <= S_hcdoor)
@@ -297,8 +298,12 @@ unsigned long *ospecial;
             }
         } 
         else
-            obj_color(offset);
-
+        {
+            if(offset == BOULDER)
+                cmap_color(S_extra_boulder, flags.classic_colors ? 0 : get_current_cmap_type_index());
+            else
+                obj_color(offset);
+        }
         if (offset != BOULDER && is_objpile(x,y))
             special |= MG_OBJPILE;
 
