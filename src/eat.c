@@ -2401,7 +2401,7 @@ struct obj *otmp;
             break;
         case RIN_PROTECTION:
             accessory_has_effect(otmp);
-            HProtection |= FROM_ACQUIRED;
+            HDivine_protection |= FROM_ACQUIRED;
 			u.ubaseacbonus = (schar)bounded_increase((int)u.ubaseacbonus, otmp->enchantment,
 				RIN_PROTECTION);
 			//u.ublessed = bounded_increase(u.ublessed, otmp->enchantment,

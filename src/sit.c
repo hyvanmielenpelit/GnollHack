@@ -491,8 +491,8 @@ attrcurse()
         /*FALLTHRU*/
     case 11:
         /* intrinsic protection is just disabled, not set back to 0 */
-        if (HProtection & INTRINSIC) {
-            HProtection &= ~INTRINSIC;
+        if (HDivine_protection & INTRINSIC) {
+            HDivine_protection &= ~INTRINSIC;
             You_feel("vulnerable.");
             break;
         }

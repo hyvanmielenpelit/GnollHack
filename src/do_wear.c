@@ -1960,7 +1960,7 @@ find_ac()
 		uac -= 10;
 	else if (Magical_shielding)
 		uac -= 4;
-	else if (Protection)
+	else if (Divine_protection)
 		uac -= 3;
 	
 	/* Divine protection */

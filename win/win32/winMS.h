@@ -20,7 +20,8 @@
 #endif
 #endif
 
-#undef Protection /* We have a global name space collision.  No source file
+//#undef Protection 
+                    /* We have a global name space collision.  No source file
                      using win32api.h should be using the Protection macro
                      from youprop.h.
                      A better fix would be to ensure we include all window

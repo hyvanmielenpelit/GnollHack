@@ -1273,7 +1273,7 @@ nh_timeout()
 					Your("neighborhood feels less quarrelsome than before.");
 				break;
 			case PROTECTION:
-				if (!Protection)
+				if (!Divine_protection)
 					You_feel("less protected than before.");
 				break;
 			case MAGICAL_SHIELDING:

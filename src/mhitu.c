@@ -1445,7 +1445,7 @@ struct monst *mon;
 	{
 		if (Magical_barkskin)
 			mc += 7;
-		else if (Protection)
+		else if (Divine_protection)
 			mc += 1;
 
 		/* Divine protection */

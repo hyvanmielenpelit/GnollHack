@@ -3819,7 +3819,7 @@ int final;
 		Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 6);
 		you_have(protbuf, "");
 	}
-	if (Protection)
+	if (Divine_protection)
 		you_have("magical protection (-3 to AC and +1 to MC)", from_what(PROTECTION));
 	if (Magical_shielding)
 		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));

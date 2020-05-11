@@ -15,6 +15,9 @@
 #include "mhmain.h"
 #include "mhmap.h"
 
+extern HBITMAP FDECL(loadPNG, (HINSTANCE, LPCSTR));
+extern HBITMAP FDECL(loadPNG_FromFile, (char*));
+
 #if !defined(SAFEPROCS)
 #error You must #define SAFEPROCS to build winhack.c
 #endif
@@ -131,9 +134,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         LoadAccelerators(hInstance, (LPCTSTR) IDC_NETHACKW);
     _GnollHack_app.hMainWnd = NULL;
     _GnollHack_app.hPopupWnd = NULL;
-    _GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES));
-
-	if (_GnollHack_app.bmpTiles == NULL)
+    _GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES)); //loadPNG(hInstance, MAKEINTRESOURCE(IDB_GNOLLHACK_TILES)); //loadPNG_FromFile("C:\\Users\\janne\\gnollhack64x96.png"); // 
+    if (_GnollHack_app.bmpTiles == NULL)
 	{
 		panic("cannot load tiles bitmap");
 		return 0;

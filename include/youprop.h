@@ -546,9 +546,9 @@
 #define EEnergy_regeneration u.uprops[ENERGY_REGENERATION].extrinsic
 #define Energy_regeneration (HEnergy_regeneration || EEnergy_regeneration)
 
-#define HProtection u.uprops[PROTECTION].intrinsic
-#define EProtection u.uprops[PROTECTION].extrinsic
-#define Protection (HProtection || EProtection)
+#define HDivine_protection u.uprops[PROTECTION].intrinsic
+#define EDivine_protection u.uprops[PROTECTION].extrinsic
+#define Divine_protection (HDivine_protection || EDivine_protection)
 
 #define HProtection_from_shape_changers \
     u.uprops[PROT_FROM_SHAPE_CHANGERS].intrinsic
