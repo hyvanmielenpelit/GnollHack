@@ -28,7 +28,7 @@ dat/dungeon
 dat/options
 dat/quest.dat
 include/date.h
-win/win32/gnollhack64x96.png
+*.bmp
 
 # User-specific files
 *.suo
