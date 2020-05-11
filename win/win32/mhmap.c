@@ -804,22 +804,24 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         layer++;
     }
 
+    int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
+    int multiplier = is_you_facing_right ? -1 : 1;
 
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
         ntile = glyph2tile[glyph];
-        t_x = TILEBMP_X(ntile);
+        t_x = TILEBMP_X(ntile) + (is_you_facing_right ? 1 : 0) * TILE_X;
         t_y = TILEBMP_Y(ntile);
 
         if (layer > 0) {
             (*GetNHApp()->lpfnTransparentBlt)(
                 data->backBufferDC, rect->left, rect->top,
                 data->xBackTile, data->yBackTile, data->tileDC, t_x,
-                t_y, GetNHApp()->mapTile_X,
+                t_y, multiplier * GetNHApp()->mapTile_X,
                 GetNHApp()->mapTile_Y, TILE_BK_COLOR);
         } else {
             StretchBlt(data->backBufferDC, rect->left, rect->top,
-                        data->xBackTile, data->yBackTile, data->tileDC,
-                        t_x, t_y, GetNHApp()->mapTile_X,
+                data->xBackTile, data->yBackTile, data->tileDC,
+                        t_x, t_y, multiplier * GetNHApp()->mapTile_X,
                         GetNHApp()->mapTile_Y, SRCCOPY);
         }
 

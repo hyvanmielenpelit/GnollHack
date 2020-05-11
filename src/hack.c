@@ -1536,7 +1536,13 @@ domove_core()
                 return;
             }
         }
-        if (!isok(x, y)) 
+
+        if (u.dx < 0)
+            u.facing_right = 0;
+        else if (u.dx > 0)
+            u.facing_right = 1;
+
+        if (!isok(x, y))
 		{
             nomul(0);
             return;
