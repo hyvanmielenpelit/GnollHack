@@ -3064,7 +3064,7 @@ GEM("worthless piece of violet glass", "violet",
  * that is currently everything between luckstones and flint
  * (inclusive).
  */
-ROCK("luckstone", "gray",	//Gray stone start marker
+ROCK("luckstone", "gray",	//Gray stone start marker, also must immediately follow pieces of glass for tiledata processing
 	NO_POWER, NO_POWER, NO_POWER, P1_CONFERS_LUCK | P1_LUCK_APPLIES_WHEN_CARRIED | P1_CURSED_ITEM_YIELDS_NEGATIVE,
 	0,  10,  10, 60, ENCHTYPE_NO_ENCHANTMENT, 1, 3, 0, 1, 3, 0, 1, 10, 7, MAT_MINERAL, CLR_GRAY,
 	O1_THROWN_WEAPON_ONLY, 

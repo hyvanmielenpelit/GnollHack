@@ -121,15 +121,82 @@ short* tilemaparray;
         if (j > 0 && !tsd->has_right_and_left_hand_objects)
             break;
 
+        boolean first_scroll_found = FALSE;
         int nameless_idx = 0;
         set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
         for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
         {
+            const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
             /* Jump over gems that all look the same, just take pieces of glass and luckstone */
             if (objects[i].oc_class == GEM_CLASS)
             {
                 if (i <= LAST_GEM || (i > LUCKSTONE && i <= FLINT))
                     continue;
+            }
+            else if (objects[i].oc_class == SCROLL_CLASS)
+            {
+                /* Special case for scrolls - they all look the same, except mail, so only two special cases */
+                if (first_scroll_found)
+                    continue;
+
+                first_scroll_found = TRUE;
+
+                /* First, generic scroll tile */
+                if (process_style == 0)
+                {
+                    Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "generic", "scroll"
+                    );
+                    (void)write(fd, buf, strlen(buf));
+                }
+                else if (process_style == 1)
+                {
+                    /* Add the tile to all scrolls */
+                    for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                    {
+                        if (objects[m].oc_class == SCROLL_CLASS)
+                        {
+                            if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                            {
+                                for (int k = 1; k <= 2; k++)
+                                {
+                                    int glyph_offset3 = (k == 0 ? GLYPH_OBJ_OFF : k == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
+                                    tilemaparray[m + glyph_offset3] = tile_count;
+                                }
+                            }
+                            int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
+                            tilemaparray[m + glyph_offset] = tile_count;
+                        }
+                    }
+                }
+                tile_count++;
+
+
+                /* Second, scroll of mail */
+                if (process_style == 0)
+                {
+                    Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "mail", "envelope"
+                    );
+                    (void)write(fd, buf, strlen(buf));
+                }
+                else if (process_style == 1)
+                {
+#ifdef MAIL
+                    /* Add the tile the scroll "mail" */
+                    if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                    {
+                        for (int k = 1; k <= 2; k++)
+                        {
+                            int glyph_offset3 = (k == 0 ? GLYPH_OBJ_OFF : k == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
+                            tilemaparray[SCR_MAIL + glyph_offset3] = tile_count;
+                        }
+                    }
+                    int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
+                    tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
+#endif
+                }
+                tile_count++;
+
+                continue;
             }
 
             boolean nameless = !OBJ_NAME(objects[i]);
@@ -141,7 +208,6 @@ short* tilemaparray;
                 nameless = TRUE;
                 nameless_idx++;
             }
-            const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
 
             if (process_style == 0)
             {
@@ -153,6 +219,11 @@ short* tilemaparray;
             }
             else if (process_style == 1)
             {
+                /* Write to the tile to the main glyph */
+                int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
+                tilemaparray[i + glyph_offset] = tile_count;
+
+                /* Write to the tile to the right and left hand glyphs if they do not have their own */
                 if (j == 0 && !tsd->has_right_and_left_hand_objects)
                 {
                     for (int k = 1; k <= 2; k++)
@@ -162,8 +233,29 @@ short* tilemaparray;
                     }
                 }
 
-                int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                tilemaparray[i + glyph_offset] = tile_count;
+                /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
+                if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
+                {
+                    for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                    {
+                        if (objects[m].oc_class == GEM_CLASS 
+                            && (i <= LAST_GEM || (i > LUCKSTONE && i <= FLINT)) 
+                            && objects[m].oc_color == objects[i].oc_color
+                            )
+                        {
+                            if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                            {
+                                for (int k = 1; k <= 2; k++)
+                                {
+                                    int glyph_offset3 = (k == 0 ? GLYPH_OBJ_OFF : k == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
+                                    tilemaparray[m + glyph_offset3] = tile_count;
+                                }
+                            }
+                            int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
+                            tilemaparray[m + glyph_offset] = tile_count;
+                        }
+                    }
+                }
 
                 /* Write generic corpse and statue tiles */
                 if (j == 0 &&
