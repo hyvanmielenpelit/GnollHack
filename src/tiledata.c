@@ -10,7 +10,6 @@
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
 #endif
 
-
 int
 process_tiledata(tsd, process_style, save_file_name, tilemaparray) /* Save tile data / read tile data / count tiles */
 struct tileset_definition* tsd;
