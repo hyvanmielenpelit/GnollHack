@@ -132,6 +132,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.hMainWnd = NULL;
     _GnollHack_app.hPopupWnd = NULL;
     _GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES));
+
 	if (_GnollHack_app.bmpTiles == NULL)
 	{
 		panic("cannot load tiles bitmap");

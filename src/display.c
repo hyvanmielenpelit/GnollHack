@@ -2104,11 +2104,15 @@ STATIC_OVL int
 get_bk_glyph(x, y)
 xchar x, y;
 {
-    int idx, bkglyph = NO_GLYPH;
+    int idx = S_room, bkglyph = NO_GLYPH;
     struct rm *lev = &levl[x][y];
 
     if (iflags.use_background_glyph && lev->seenv != 0
         && gbuf[y][x].glyph != cmap_to_glyph(S_stone)) {
+
+        idx = idx;
+        return back_to_glyph(x, y);
+#if 0
         switch (lev->typ) {
         case SCORR:
         case STONE:
@@ -2156,8 +2160,9 @@ xchar x, y;
                          ? DARKROOMSYM : S_stone;
         }
 
-        if (idx != S_room)
-            bkglyph = cmap_to_glyph(idx);
+        //if (idx != S_room)
+        bkglyph = cmap_to_glyph(idx);
+#endif
     }
     return bkglyph;
 }

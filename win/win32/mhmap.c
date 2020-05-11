@@ -804,19 +804,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         layer++;
     }
 
-    if (
-        glyph == PM_KITTEN + GLYPH_PET_OFF 
-        || glyph == PM_KITTEN + GLYPH_FEMALE_PET_OFF
-        || glyph == PM_LITTLE_DOG + GLYPH_PET_OFF
-        || glyph == PM_LITTLE_DOG + GLYPH_FEMALE_PET_OFF
-        || glyph == u_to_glyph()
-        )
-        glyph = glyph;
 
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
         ntile = glyph2tile[glyph];
-        if (ntile == 20 || ntile == 43 || ntile == 2200)
-            ntile = ntile;
         t_x = TILEBMP_X(ntile);
         t_y = TILEBMP_Y(ntile);
 

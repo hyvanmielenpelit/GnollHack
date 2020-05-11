@@ -79,6 +79,7 @@ typedef struct mswin_nhwindow_app {
 
     MSNHWinData windowlist[MAXWINDOWS];
 
+    HICON iconTiles;
     HBITMAP bmpTiles;
     HBITMAP bmpPetMark;
 #ifdef USE_PILEMARK

@@ -207,18 +207,26 @@
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
     <ClInclude Include="..\..\..\include\encounter.h" />
     <ClInclude Include="..\..\..\include\matcomps.h" />
+    <ClInclude Include="..\resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\bitmap1.bmp" />
+    <Image Include="..\gnollhack64x96-transparent.png" />
+    <Image Include="..\gnollhack64x96.png" />
     <Image Include="..\GnollHackNew.ico" />
+    <Image Include="..\icon1.ico" />
     <Image Include="..\mnsel.bmp" />
     <Image Include="..\mnselcnt.bmp" />
     <Image Include="..\mnunsel.bmp" />
+    <Image Include="..\petmark-new.bmp" />
     <Image Include="..\petmark.bmp" />
     <Image Include="..\pilemark.bmp" />
     <Image Include="..\rip.bmp" />
     <Image Include="..\splash.bmp" />
     <Image Include="..\tiles.bmp" />
     <Image Include="..\gnollhack64x96.bmp" />
+    <Image Include="gnollhack64x96-transparent.png" />
+    <Image Include="gnollhack64x96.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
