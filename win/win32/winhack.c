@@ -170,7 +170,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
     int total_tiles = process_tiledata(&default_tileset_definition, 2, (const char*)0, (short*)0);
-    int tiles_per_line = (int)ceil(sqrt((double)total_tiles));
+    int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
+    if (tiles_per_line % 3)
+        tiles_per_line += (3 - (tiles_per_line % 3));
+
     _GnollHack_app.mapTilesPerLine = tiles_per_line; // TILES_PER_LINE;
 
     _GnollHack_app.bNoHScroll = FALSE;

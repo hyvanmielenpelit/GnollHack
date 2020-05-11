@@ -982,6 +982,19 @@ monsters,female,normal,ogre king
 monsters,female,normal,king wraith
 monsters,female,normal,nurse
 monsters,female,normal,elf-lord
+monsters,female,normal,archeologist
+monsters,female,normal,barbarian
+monsters,female,normal,caveman
+monsters,female,normal,healer
+monsters,female,normal,knight
+monsters,female,normal,monk
+monsters,female,normal,priest
+monsters,female,normal,ranger
+monsters,female,normal,rogue
+monsters,female,normal,samurai
+monsters,female,normal,tourist
+monsters,female,normal,valkyrie
+monsters,female,normal,wizard
 monsters,female,statue,gnoll king
 monsters,female,statue,gnome king
 monsters,female,statue,dwarf king
@@ -990,6 +1003,19 @@ monsters,female,statue,ogre king
 monsters,female,statue,king wraith
 monsters,female,statue,nurse
 monsters,female,statue,elf-lord
+monsters,female,statue,archeologist
+monsters,female,statue,barbarian
+monsters,female,statue,caveman
+monsters,female,statue,healer
+monsters,female,statue,knight
+monsters,female,statue,monk
+monsters,female,statue,priest
+monsters,female,statue,ranger
+monsters,female,statue,rogue
+monsters,female,statue,samurai
+monsters,female,statue,tourist
+monsters,female,statue,valkyrie
+monsters,female,statue,wizard
 objects,normal,illegal objects,strange object,no description
 objects,normal,weapons,arrow,no description
 objects,normal,weapons,elven arrow,runed arrow
@@ -1512,52 +1538,8 @@ objects,normal,potions,poison,sapphire
 objects,normal,potions,water,clear
 objects,normal,potions,dwarven stout,dark ruby
 objects,normal,potions,urine,pale yellow
-objects,normal,scrolls,enchant armor,ZELGO MER
-objects,normal,scrolls,destroy armor,JUYED AWK YACC
-objects,normal,scrolls,protect armor,VEX DOL
-objects,normal,scrolls,confuse monster,NR 9
-objects,normal,scrolls,scare monster,XIXAXA XOXAXA XUXAXA
-objects,normal,scrolls,remove curse,PRATYAVAYAH
-objects,normal,scrolls,enchant weapon,DAIYEN FOOELS
-objects,normal,scrolls,protect weapon,ZEPH NI
-objects,normal,scrolls,enchant accessory,REX SAPH
-objects,normal,scrolls,create monster,LEP GEX VEN ZEA
-objects,normal,scrolls,taming,PRIRUTSENIE
-objects,normal,scrolls,genocide,ELBIB YLOH
-objects,normal,scrolls,light,VERR YED HORRE
-objects,normal,scrolls,teleportation,VENZAR BORGAVVE
-objects,normal,scrolls,gold detection,THARR
-objects,normal,scrolls,food detection,YUM YUM
-objects,normal,scrolls,identify,KERNOD WEL
-objects,normal,scrolls,magic mapping,ELAM EBOW
-objects,normal,scrolls,amnesia,DUAM XNAHT
-objects,normal,scrolls,retraining,NUGG YEBBEH
-objects,normal,scrolls,fire,ANDOVA BEGARIN
-objects,normal,scrolls,earth,KIRJE
-objects,normal,scrolls,punishment,VE FORBRYDERNE
-objects,normal,scrolls,charging,HACKEM MUCHE
-objects,normal,scrolls,stinking cloud,VELOX NEB
-objects,normal,scrolls,nameless-0,FOOBIE BLETCH
-objects,normal,scrolls,nameless-1,TEMOV
-objects,normal,scrolls,nameless-2,GARVEN DEH
-objects,normal,scrolls,nameless-3,READ ME
-objects,normal,scrolls,nameless-4,ETAOIN SHRDLU
-objects,normal,scrolls,nameless-5,LOREM IPSUM
-objects,normal,scrolls,nameless-6,FNORD
-objects,normal,scrolls,nameless-7,KO BATE
-objects,normal,scrolls,nameless-8,ABRA KA DABRA
-objects,normal,scrolls,nameless-9,ASHPD SODALG
-objects,normal,scrolls,nameless-10,ZLORFIK
-objects,normal,scrolls,nameless-11,GNIK SISI VLE
-objects,normal,scrolls,nameless-12,HAPAX LEGOMENON
-objects,normal,scrolls,nameless-13,EIRIS SAZUN IDISI
-objects,normal,scrolls,nameless-14,PHOL ENDE WODAN
-objects,normal,scrolls,nameless-15,GHOTI
-objects,normal,scrolls,nameless-16,MAPIRO MAHAMA DIROMAT
-objects,normal,scrolls,nameless-17,VAS CORP BET MANI
-objects,normal,scrolls,nameless-18,XOR OTA
-objects,normal,scrolls,nameless-19,STRC PRST SKRZ KRK
-objects,normal,scrolls,blank paper,unlabeled
+objects,normal,scrolls,generic,scroll
+objects,normal,scrolls,mail,envelope
 objects,normal,spellbooks,dig,parchment
 objects,normal,spellbooks,knock,pink
 objects,normal,spellbooks,wizard lock,dark green
@@ -1799,9 +1781,9 @@ objects,normal,wands,lightning,curved
 objects,normal,wands,death,skull-headed
 objects,normal,wands,resurrection,ornamental
 objects,normal,wands,evaporation,flimsy
-objects,normal,wands,nameless-20,forked
-objects,normal,wands,nameless-21,spiked
-objects,normal,wands,nameless-22,jeweled
+objects,normal,wands,nameless-0,forked
+objects,normal,wands,nameless-1,spiked
+objects,normal,wands,nameless-2,jeweled
 objects,normal,coins,gold piece,no description
 objects,normal,rocks,worthless piece of white glass,white
 objects,normal,rocks,worthless piece of blue glass,blue
@@ -1895,107 +1877,104 @@ artifacts,normal,The Platinum Yendorian Express Card,black credit card,credit ca
 artifacts,normal,The Orb of Fate,ornamental crystal ball,crystal ball,glass orb
 artifacts,normal,The Eye of the Aethiopica,eye-shaped amulet,amulet of ESP,circular
 artifacts,normal,The Ark of the Covenant,gold-covered wooden chest,golden chest,no base item description
-cmap,dungeon-normal,S_stone
-cmap,dungeon-normal,S_vwall
-cmap,dungeon-normal,S_hwall
-cmap,dungeon-normal,S_tlcorn
-cmap,dungeon-normal,S_trcorn
-cmap,dungeon-normal,S_blcorn
-cmap,dungeon-normal,S_brcorn
-cmap,dungeon-normal,S_crwall
-cmap,dungeon-normal,S_tuwall
-cmap,dungeon-normal,S_tdwall
-cmap,dungeon-normal,S_tlwall
-cmap,dungeon-normal,S_trwall
-cmap,dungeon-normal,S_ndoor
-cmap,dungeon-normal,S_vodoor
-cmap,dungeon-normal,S_hodoor
-cmap,dungeon-normal,S_vcdoor
-cmap,dungeon-normal,S_hcdoor
-cmap,dungeon-normal,S_bars
-cmap,dungeon-normal,S_tree
-cmap,dungeon-normal,S_room
-cmap,dungeon-normal,S_grass
-cmap,dungeon-normal,S_darkroom
-cmap,dungeon-normal,S_corr
-cmap,dungeon-normal,S_litcorr
-cmap,dungeon-normal,S_upstair
-cmap,dungeon-normal,S_dnstair
-cmap,dungeon-normal,S_upladder
-cmap,dungeon-normal,S_dnladder
-cmap,dungeon-normal,S_branch_upstair
-cmap,dungeon-normal,S_branch_dnstair
-cmap,dungeon-normal,S_extra_upstair
-cmap,dungeon-normal,S_extra_dnstair
-cmap,dungeon-normal,S_altar
-cmap,dungeon-normal,S_lawful_altar
-cmap,dungeon-normal,S_neutral_altar
-cmap,dungeon-normal,S_chaotic_altar
-cmap,dungeon-normal,S_moloch_altar
-cmap,dungeon-normal,S_high_altar
-cmap,dungeon-normal,S_grave
-cmap,dungeon-normal,S_throne
-cmap,dungeon-normal,S_sink
-cmap,dungeon-normal,S_fountain
-cmap,dungeon-normal,S_pool
-cmap,dungeon-normal,S_ice
-cmap,dungeon-normal,S_lava
-cmap,dungeon-normal,S_vodbridge
-cmap,dungeon-normal,S_hodbridge
-cmap,dungeon-normal,S_vcdbridge
-cmap,dungeon-normal,S_hcdbridge
-cmap,dungeon-normal,S_air
-cmap,dungeon-normal,S_cloud
-cmap,dungeon-normal,S_water
-cmap,dungeon-normal,S_arrow_trap
-cmap,dungeon-normal,S_dart_trap
-cmap,dungeon-normal,S_falling_rock_trap
-cmap,dungeon-normal,S_squeaky_board
-cmap,dungeon-normal,S_bear_trap
-cmap,dungeon-normal,S_land_mine
-cmap,dungeon-normal,S_rolling_boulder_trap
-cmap,dungeon-normal,S_sleeping_gas_trap
-cmap,dungeon-normal,S_rust_trap
-cmap,dungeon-normal,S_fire_trap
-cmap,dungeon-normal,S_pit
-cmap,dungeon-normal,S_spiked_pit
-cmap,dungeon-normal,S_hole
-cmap,dungeon-normal,S_trap_door
-cmap,dungeon-normal,S_teleportation_trap
-cmap,dungeon-normal,S_level_teleporter
-cmap,dungeon-normal,S_magic_portal
-cmap,dungeon-normal,S_web
-cmap,dungeon-normal,S_statue_trap
-cmap,dungeon-normal,S_magic_trap
-cmap,dungeon-normal,S_anti_magic_trap
-cmap,dungeon-normal,S_polymorph_trap
-cmap,dungeon-normal,S_octahedral_portal
-cmap,dungeon-normal,S_tetrahedral_portal
-cmap,dungeon-normal,S_cubical_portal
-cmap,dungeon-normal,S_dodecahedral_portal
-cmap,dungeon-normal,S_vibrating_square
-cmap,dungeon-normal,S_vbeam
-cmap,dungeon-normal,S_hbeam
-cmap,dungeon-normal,S_lslant
-cmap,dungeon-normal,S_rslant
-cmap,dungeon-normal,S_digbeam
-cmap,dungeon-normal,S_flashbeam
-cmap,dungeon-normal,S_boomleft
-cmap,dungeon-normal,S_boomright
-cmap,dungeon-normal,S_ss1
-cmap,dungeon-normal,S_ss2
-cmap,dungeon-normal,S_ss3
-cmap,dungeon-normal,S_ss4
-cmap,dungeon-normal,S_poisoncloud
-cmap,dungeon-normal,S_goodpos
-cmap,dungeon-normal,S_sw_tl
-cmap,dungeon-normal,S_sw_tc
-cmap,dungeon-normal,S_sw_tr
-cmap,dungeon-normal,S_sw_ml
-cmap,dungeon-normal,S_sw_mr
-cmap,dungeon-normal,S_sw_bl
-cmap,dungeon-normal,S_sw_bc
-cmap,dungeon-normal,S_sw_br
+cmap,dungeon-normal,S_stone,dark part of a room
+cmap,dungeon-normal,S_vwall,wall
+cmap,dungeon-normal,S_hwall,wall
+cmap,dungeon-normal,S_tlcorn,wall
+cmap,dungeon-normal,S_trcorn,wall
+cmap,dungeon-normal,S_blcorn,wall
+cmap,dungeon-normal,S_brcorn,wall
+cmap,dungeon-normal,S_crwall,wall
+cmap,dungeon-normal,S_tuwall,wall
+cmap,dungeon-normal,S_tdwall,wall
+cmap,dungeon-normal,S_tlwall,wall
+cmap,dungeon-normal,S_trwall,wall
+cmap,dungeon-normal,S_ndoor,doorway
+cmap,dungeon-normal,S_vodoor,open door
+cmap,dungeon-normal,S_hodoor,open door
+cmap,dungeon-normal,S_vcdoor,closed door
+cmap,dungeon-normal,S_hcdoor,closed door
+cmap,dungeon-normal,S_vbdoor,broken door
+cmap,dungeon-normal,S_hbdoor,broken door
+cmap,dungeon-normal,S_voportcullis,open portcullis
+cmap,dungeon-normal,S_hoportcullis,open portcullis
+cmap,dungeon-normal,S_bars,iron bars
+cmap,dungeon-normal,S_tree,tree
+cmap,dungeon-normal,S_room,floor of a room
+cmap,dungeon-normal,S_grass,grass
+cmap,dungeon-normal,S_darkroom,dark part of a room
+cmap,dungeon-normal,S_corr,corridor
+cmap,dungeon-normal,S_litcorr,lit corridor
+cmap,dungeon-normal,S_upstair,staircase up
+cmap,dungeon-normal,S_dnstair,staircase down
+cmap,dungeon-normal,S_upladder,ladder up
+cmap,dungeon-normal,S_dnladder,ladder down
+cmap,dungeon-normal,S_branch_upstair,staircase up
+cmap,dungeon-normal,S_branch_dnstair,staircase down
+cmap,dungeon-normal,S_extra_upstair,staircase up
+cmap,dungeon-normal,S_extra_dnstair,staircase down
+cmap,dungeon-normal,S_altar,altar
+cmap,dungeon-normal,S_lawful_altar,lawful altar
+cmap,dungeon-normal,S_neutral_altar,neutral altar
+cmap,dungeon-normal,S_chaotic_altar,chaotic altar
+cmap,dungeon-normal,S_moloch_altar,altar of Moloch
+cmap,dungeon-normal,S_high_altar,high altar
+cmap,dungeon-normal,S_extra_boulder,boulder
+cmap,dungeon-normal,S_grave,grave
+cmap,dungeon-normal,S_throne,opulent throne
+cmap,dungeon-normal,S_sink,sink
+cmap,dungeon-normal,S_fountain,fountain
+cmap,dungeon-normal,S_pool,water
+cmap,dungeon-normal,S_ice,ice
+cmap,dungeon-normal,S_lava,molten lava
+cmap,dungeon-normal,S_vodbridge,lowered drawbridge
+cmap,dungeon-normal,S_hodbridge,lowered drawbridge
+cmap,dungeon-normal,S_vcdbridge,raised drawbridge
+cmap,dungeon-normal,S_hcdbridge,raised drawbridge
+cmap,dungeon-normal,S_air,air
+cmap,dungeon-normal,S_cloud,cloud
+cmap,dungeon-normal,S_water,water
+cmap,dungeon-normal,S_arrow_trap,arrow trap
+cmap,dungeon-normal,S_dart_trap,dart trap
+cmap,dungeon-normal,S_falling_rock_trap,falling rock trap
+cmap,dungeon-normal,S_squeaky_board,squeaky board
+cmap,dungeon-normal,S_bear_trap,bear trap
+cmap,dungeon-normal,S_land_mine,land mine
+cmap,dungeon-normal,S_rolling_boulder_trap,rolling boulder trap
+cmap,dungeon-normal,S_sleeping_gas_trap,sleeping gas trap
+cmap,dungeon-normal,S_rust_trap,rust trap
+cmap,dungeon-normal,S_fire_trap,fire trap
+cmap,dungeon-normal,S_pit,pit
+cmap,dungeon-normal,S_spiked_pit,spiked pit
+cmap,dungeon-normal,S_hole,hole
+cmap,dungeon-normal,S_trap_door,trap door
+cmap,dungeon-normal,S_teleportation_trap,teleportation trap
+cmap,dungeon-normal,S_level_teleporter,level teleporter
+cmap,dungeon-normal,S_magic_portal,magic portal
+cmap,dungeon-normal,S_web,web
+cmap,dungeon-normal,S_statue_trap,statue trap
+cmap,dungeon-normal,S_magic_trap,magic trap
+cmap,dungeon-normal,S_anti_magic_trap,anti-magic field
+cmap,dungeon-normal,S_polymorph_trap,polymorph trap
+cmap,dungeon-normal,S_octahedral_portal,octahedral magic portal
+cmap,dungeon-normal,S_tetrahedral_portal,tetrahedral magic portal
+cmap,dungeon-normal,S_cubical_portal,cubical magic portal
+cmap,dungeon-normal,S_dodecahedral_portal,dodecahedral magic portal
+cmap,dungeon-normal,S_vibrating_square,vibrating square
+cmap,dungeon-normal,S_vbeam,no description
+cmap,dungeon-normal,S_hbeam,no description
+cmap,dungeon-normal,S_lslant,no description
+cmap,dungeon-normal,S_rslant,no description
+cmap,dungeon-normal,S_digbeam,no description
+cmap,dungeon-normal,S_flashbeam,no description
+cmap,dungeon-normal,S_boomleft,no description
+cmap,dungeon-normal,S_boomright,no description
+cmap,dungeon-normal,S_ss1,no description
+cmap,dungeon-normal,S_ss2,no description
+cmap,dungeon-normal,S_ss3,no description
+cmap,dungeon-normal,S_ss4,no description
+cmap,dungeon-normal,S_poisoncloud,poison cloud
+cmap,dungeon-normal,S_goodpos,valid position
 misc,invisible,generic
 misc,explode,generic,top-left
 misc,explode,generic,top-center

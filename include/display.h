@@ -413,7 +413,7 @@
                      : ((obj)->otyp == BOULDER) \
                         ? cmap_to_glyph(S_extra_boulder) \
                             : ((obj)->oartifact > 0) \
-                                ? (int)(obj)->oartifact + GLYPH_ARTIFACT_OFF \
+                                ? (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF \
 						            :  (int) (obj)->otyp + GLYPH_OBJ_OFF)
 
 #define explosion_to_glyph(expltype, idx) \
@@ -494,7 +494,7 @@
 #define glyph_is_artifact(glyph) \
     ((glyph) >= GLYPH_ARTIFACT_OFF && (glyph) < (GLYPH_ARTIFACT_OFF + NUM_ARTIFACTS))
 #define glyph_to_artifact(glyph) \
-    (glyph_is_artifact(glyph) ? ((glyph) - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
+    (glyph_is_artifact(glyph) ? ((glyph) + 1 - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
 #define glyph_is_object(glyph)                               \
     (glyph_is_normal_object(glyph) || glyph_is_statue(glyph)  || glyph_is_female_statue(glyph)\
      || glyph_is_body(glyph) || glyph_is_female_body(glyph) || glyph_is_artifact(glyph))

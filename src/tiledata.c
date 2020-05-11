@@ -239,7 +239,7 @@ short* tilemaparray;
                     for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
                     {
                         if (objects[m].oc_class == GEM_CLASS 
-                            && (i <= LAST_GEM || (i > LUCKSTONE && i <= FLINT)) 
+                            && (m <= LAST_GEM || (m > LUCKSTONE && m <= FLINT)) 
                             && objects[m].oc_color == objects[i].oc_color
                             )
                         {
@@ -308,12 +308,12 @@ short* tilemaparray;
                     for (int k = 1; k <= 2; k++)
                     {
                         int glyph_offset3 = (k == 0 ? GLYPH_ARTIFACT_OFF : k == 1 ? GLYPH_ARTIFACT_RIGHT_HAND_OFF : GLYPH_ARTIFACT_LEFT_HAND_OFF);
-                        tilemaparray[i + glyph_offset3] = tile_count;
+                        tilemaparray[i - 1 + glyph_offset3] = tile_count;
                     }
                 }
 
                 int glyph_offset = (j == 0 ? GLYPH_ARTIFACT_OFF : j == 1 ? GLYPH_ARTIFACT_RIGHT_HAND_OFF : GLYPH_ARTIFACT_LEFT_HAND_OFF);
-                tilemaparray[i + glyph_offset] = tile_count;
+                tilemaparray[i - 1 + glyph_offset] = tile_count;
             }
             tile_count++;
         }
