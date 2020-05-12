@@ -976,10 +976,10 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             && !IS_MAP_ASCII(iflags.wc_map_mode)) {
             lpmis->itemHeight =
                 max(lpmis->itemHeight,
-                    (UINT) max(tm.tmHeight, GetNHApp()->mapTile_Y) + 2);
+                    (UINT) max(tm.tmHeight, MENU_TILE_Y /*GetNHApp()->mapTile_Y*/) + 4);
         } else {
             lpmis->itemHeight =
-                max(lpmis->itemHeight, (UINT) max(tm.tmHeight, TILE_Y) + 2);
+                max(lpmis->itemHeight, (UINT) max(tm.tmHeight, MENU_TILE_Y) + 4);
         }
     }
 
