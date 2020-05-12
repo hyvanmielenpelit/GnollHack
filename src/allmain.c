@@ -522,7 +522,7 @@ boolean resuming;
 				ckmailstatus();
 #endif
 				rhack((char*)0);
-			}
+            }
 		}
 
         if (u.utotype)       /* change dungeon level */

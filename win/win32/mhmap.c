@@ -56,7 +56,7 @@ typedef struct mswin_GnollHack_map_window {
     double backScale;           /* scaling from source to back buffer */
     double frontScale;          /* scaling from back to front */
     double monitorScale;        /* from 96dpi to monitor dpi*/
-    
+
     boolean cursorOn;
     int yNoBlinkCursor;         /* non-blinking cursor height inback buffer
                                    in pixels */
@@ -301,7 +301,7 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
         if (bText) {
             data->frontScale = 1.0;
         } else {
-            data->frontScale = data->monitorScale;
+            data->frontScale = data->monitorScale * (1.0 + flags.screen_scale_adjustment);
         }
 
     }
@@ -536,6 +536,37 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_VSCROLL:
         onMSNH_VScroll(hWnd, wParam, lParam);
         break;
+
+    case WM_MOUSEWHEEL: 
+    {
+        if (LOWORD(wParam) == MK_CONTROL)
+        {
+            short wheeldistance = HIWORD(wParam);
+            if(wheeldistance < 0)
+                flags.screen_scale_adjustment -= 0.05;
+            else 
+                flags.screen_scale_adjustment += 0.05;
+
+            if (flags.screen_scale_adjustment < -0.75)
+                flags.screen_scale_adjustment = -0.75;
+            if (flags.screen_scale_adjustment > 1.0)
+                flags.screen_scale_adjustment = 1.0;
+
+            SIZE size;
+            if (data->bFitToScreenMode) {
+                size.cx = LOWORD(lParam);
+                size.cy = HIWORD(lParam);
+            }
+            else {
+                /* mapping factor is unchaged we just need to adjust scroll bars
+                 */
+                size.cx = data->xFrontTile * COLNO;
+                size.cy = data->yFrontTile * ROWNO;
+            }
+            mswin_map_stretch(hWnd, &size, TRUE);
+        }
+    }
+    break;
 
     case WM_SIZE: {
         RECT rt;

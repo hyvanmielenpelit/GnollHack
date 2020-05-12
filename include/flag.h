@@ -61,7 +61,8 @@ struct flag {
     boolean classic_colors; /* use normal coloring scheme */
     boolean detailed_weights; /* use ounces and grams instead of lbs and kg */
 	boolean show_weight_summary; /* show weight summary */
-	boolean showscore;       /* show score */
+    double screen_scale_adjustment; /* scale = 1.0 + screen_scale_adjustment */
+    boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:
      * 'sortloot' originally took a True/False value but was changed

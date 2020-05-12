@@ -50,7 +50,10 @@
 #endif
 #define TILE_Y 96
 
-#define TILES_PER_LINE 40
+#ifndef MENU_TILE_X
+#define MENU_TILE_X 16
+#endif
+#define MENU_TILE_Y 24
 
 /* tile background color */
 #define TILE_BK_COLOR RGB(71, 108, 108)

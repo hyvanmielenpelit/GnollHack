@@ -1419,6 +1419,7 @@ domove_core()
           ballx = 0, bally = 0;         /* ball&chain new positions */
     int bc_control = 0;                 /* control for ball&chain */
     boolean cause_delay = FALSE;        /* dragging ball will skip a move */
+    boolean facing_different = FALSE;
 
 	context.hide_melee_range_warning = FALSE;
 
@@ -1537,14 +1538,16 @@ domove_core()
             }
         }
 
+        boolean facing_before = u.facing_right;
         if (u.dx < 0)
             u.facing_right = 0;
         else if (u.dx > 0)
             u.facing_right = 1;
+        facing_different = (u.facing_right != facing_before);
 
         if (!isok(x, y))
 		{
-            nomul(0);
+            nomul_update_facing(facing_different);
             return;
         }
         if (((trap = t_at(x, y)) && trap->tseen)
@@ -1568,11 +1571,11 @@ domove_core()
                             hliquid(is_pool(x,y) ? "water" : "lava"));
                     }
                 }
-                nomul(0);
+                nomul_update_facing(facing_different);
                 context.move = 0;
                 return;
             } else
-                nomul(0);
+                nomul_update_facing(facing_different);
         }
 
 		if(levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
@@ -1614,8 +1617,8 @@ domove_core()
 					char ans = ynq(ynqbuf);
 					if (ans != 'y')
 					{
-						nomul(0);
-						return;
+                        nomul_update_facing(facing_different);
+                        return;
 					}
 				}
 			}
@@ -1630,8 +1633,8 @@ domove_core()
 				char ans = ynq(ynqbuf);
 				if (ans != 'y')
 				{
-					nomul(0);
-					return;
+                    nomul_update_facing(facing_different);
+                    return;
 				}
 			}
 		}
@@ -1676,7 +1679,7 @@ domove_core()
                     if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck))
                         goto pull_free;
                     You("cannot escape from %s!", mon_nam(u.ustuck));
-                    nomul(0);
+                    nomul_update_facing(facing_different);
                     return;
                 }
             }
@@ -1692,7 +1695,7 @@ domove_core()
                                       && M_AP_TYPE(mtmp) != M_AP_OBJECT)
                                      || Protection_from_shape_changers))
                                 || sensemon(mtmp))) {
-                nomul(0);
+                nomul_update_facing(facing_different);
                 context.move = 0;
                 return;
             }
@@ -1711,7 +1714,7 @@ domove_core()
            displace fails for some reason, attack() in uhitm.c
            will stop travel rather than domove */
         if (!is_safepet(mtmp) || context.forcefight)
-            nomul(0);
+            nomul_update_facing(facing_different);
         /* only attack if we know it's there */
         /* or if we used the 'F' command to fight blindly */
         /* or if it hides_under, in which case we call attack() to print
@@ -1829,7 +1832,7 @@ domove_core()
             !(boulder || solid) ? "" : !explo ? "harmlessly " : "futilely ",
             explo ? "explode at" : "attack", buf);
 
-        nomul(0);
+        nomul_update_facing(facing_different);
         if (explo) {
             wake_nearby();
             u.mh = -1; /* dead in the current form */
@@ -1840,7 +1843,7 @@ domove_core()
     (void) unmap_invisible(x, y);
     /* not attacking an animal, so we try to move */
     if ((u.dx || u.dy) && u.usteed && stucksteed(FALSE)) {
-        nomul(0);
+        nomul_update_facing(facing_different);
         return;
     }
 
@@ -1860,7 +1863,7 @@ domove_core()
     if (!test_move(u.ux, u.uy, x - u.ux, y - u.uy, DO_MOVE)) {
         if (!context.door_opened) {
             context.move = 0;
-            nomul(0);
+            nomul_update_facing(facing_different);
         }
         return;
     }
@@ -2011,7 +2014,7 @@ domove_core()
         if (context.run < 8)
             if (IS_DOOR(tmpr->typ) || IS_ROCK(tmpr->typ)
                 || IS_FURNITURE(tmpr->typ))
-                nomul(0);
+                nomul_update_facing(facing_different);
     }
 
     if (hides_under(youmonst.data) || youmonst.data->mlet == S_EEL
@@ -2069,6 +2072,17 @@ domove_core()
             }
         }
     }
+}
+
+void
+nomul_update_facing(update_facing)
+{
+    if (update_facing)
+    {
+        newsym(u.ux, u.uy);
+    }
+
+    nomul(0);
 }
 
 void

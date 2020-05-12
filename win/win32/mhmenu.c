@@ -1013,8 +1013,8 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     int color = NO_COLOR, attr;
     boolean menucolr = FALSE;
     double monitorScale = win10_monitor_scale(hWnd);
-    int tileXScaled = (int) (TILE_X * monitorScale);
-    int tileYScaled = (int) (TILE_Y * monitorScale);
+    int tileXScaled = (int) (MENU_TILE_X * monitorScale);
+    int tileYScaled = (int) (MENU_TILE_Y * monitorScale);
 
     UNREFERENCED_PARAMETER(wParam);
 

@@ -1018,6 +1018,7 @@ E boolean FDECL(crawl_destination, (int, int));
 E int NDECL(monster_nearby);
 E void FDECL(nomul, (int));
 E void FDECL(unmul, (const char *));
+E void FDECL(nomul_update_facing, (BOOLEAN_P));
 E void FDECL(losehp, (double, const char *, BOOLEAN_P));
 E int NDECL(weight_cap);
 E int NDECL(inv_weight);
