@@ -29,6 +29,7 @@ dat/options
 dat/quest.dat
 include/date.h
 *.bmp
+*.png
 
 # User-specific files
 *.suo

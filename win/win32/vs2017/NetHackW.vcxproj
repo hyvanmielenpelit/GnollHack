@@ -211,11 +211,9 @@
     <ClInclude Include="..\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\bitmap1.bmp" />
     <Image Include="..\gnollhack64x96-transparent.png" />
     <Image Include="..\gnollhack64x96.png" />
     <Image Include="..\GnollHackNew.ico" />
-    <Image Include="..\icon1.ico" />
     <Image Include="..\mnsel.bmp" />
     <Image Include="..\mnselcnt.bmp" />
     <Image Include="..\mnunsel.bmp" />
