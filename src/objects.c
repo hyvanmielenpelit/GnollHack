@@ -2633,7 +2633,7 @@ SPELL("absolution",		   "ecclesiastical", "some aeon-old prayer", "Absolves your
 SPELL("protection from curses", "cross-patterned", None, "Items of the caster cannot be cursed",
 	P_CLERIC_SPELL,			    5, 1,		   120, 5, 50, A_WIS, 0, 0, 100, 0, 1, NODIR, CURSE_RES, 0, 0, 0, 10, 6, 25, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("protection",       "dull", None, "Gives -3 bonus to AC and +3 to MC",
-	P_CLERIC_SPELL,			5, 3,		         0, 2, 15, A_WIS, 0, 0, 100, 0, 1, NODIR, PROTECTION, 0, 0, 0, 2, 10, 130, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
+	P_CLERIC_SPELL,			5, 3,		         0, 2, 15, A_WIS, 0, 0, 100, 0, 1, NODIR, DIVINE_PROTECTION, 0, 0, 0, 2, 10, 130, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("create clay golem", "clay-covered", None, "Creates a permanent clay golem",
 	P_CLERIC_SPELL,		 5,   4,	             0, 3, 20, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, O1_NONE, O2_NONE, O3_NONE),
 SPELL("create food", "smelly", None, "Creates a food ration",

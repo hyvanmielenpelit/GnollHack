@@ -2347,7 +2347,7 @@ int otyp;
 		case CONFLICT:
 			Your("neighborhood feels more quarrelsome than before.");
 			break;
-		case PROTECTION:
+		case DIVINE_PROTECTION:
 			You_feel("protected!");
 			break;
 		case MAGICAL_SHIELDING:

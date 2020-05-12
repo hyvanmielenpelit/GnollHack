@@ -1459,7 +1459,7 @@ struct monst *mon;
 	{
 		if (mon->mprops[MAGICAL_BARKSKIN] != 0)
 			mc += 7;
-		else if (mon->mprops[PROTECTION] != 0)
+		else if (mon->mprops[DIVINE_PROTECTION] != 0)
 			mc += 1;
 	}
 

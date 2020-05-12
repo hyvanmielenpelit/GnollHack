@@ -92,7 +92,7 @@ const struct propname {
 	{ HALF_PHYSICAL_DAMAGE, "receiving half physical damage", "half physical damage" },
 	{ REGENERATION, "regenerating", "regeneration" },
 	{ ENERGY_REGENERATION, "regenerating mana", "mana regeneration" },
-	{ PROTECTION, "extra protected", "extra protection" },
+	{ DIVINE_PROTECTION, "extra protected", "extra protection" },
 	{ PROT_FROM_SHAPE_CHANGERS, "protected from shape changers", "protection from shape changers" },
 	{ POLYMORPH_CONTROL, "controlling polymorphing", "polymorph control" },
 	{ UNCHANGING, "unchanging", "unchange" },
@@ -1272,7 +1272,7 @@ nh_timeout()
 				if (!Conflict)
 					Your("neighborhood feels less quarrelsome than before.");
 				break;
-			case PROTECTION:
+			case DIVINE_PROTECTION:
 				if (!Divine_protection)
 					You_feel("less protected than before.");
 				break;
@@ -1469,7 +1469,7 @@ nh_timeout()
 			case CONFLICT:
 				Your("neighborhood is starting to feel less quarrelsome than before.");
 				break;
-			case PROTECTION:
+			case DIVINE_PROTECTION:
 				You("are starting to feel less protected than before.");
 				break;
 			case MAGICAL_SHIELDING:

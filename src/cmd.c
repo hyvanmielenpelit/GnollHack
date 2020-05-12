@@ -3820,7 +3820,7 @@ int final;
 		you_have(protbuf, "");
 	}
 	if (Divine_protection)
-		you_have("magical protection (-3 to AC and +1 to MC)", from_what(PROTECTION));
+		you_have("magical protection (-3 to AC and +1 to MC)", from_what(DIVINE_PROTECTION));
 	if (Magical_shielding)
 		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
 	if (Magical_barkskin)

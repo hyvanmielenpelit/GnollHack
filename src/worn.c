@@ -1395,7 +1395,7 @@ boolean silently;
 				case ODD_IDEAS:
 				case LAUGHING:
 				case JUMPING:
-				case PROTECTION:
+				case DIVINE_PROTECTION:
 					break;
 				case BLOCKS_INVISIBILITY:
 					mon->invis_blkd = 1;
@@ -1562,7 +1562,7 @@ register struct monst *mon;
 		mac -= 10;
 	else if (mon->mprops[MAGICAL_SHIELDING])
 		mac -= 4;
-	else if (mon->mprops[PROTECTION])
+	else if (mon->mprops[DIVINE_PROTECTION])
 		mac -= 3;
 
     return mac;
