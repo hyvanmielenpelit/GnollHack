@@ -109,9 +109,10 @@ GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         SetFocus(ControlHWND);
         GetClientRect(hWnd, &ClientRect);
         GetWindowRect(ControlHWND, &ControlRect);
-        MoveWindow(ControlHWND, 0, 0, ClientRect.right - ClientRect.left,
+        MoveWindow(ControlHWND, 5, 2, ClientRect.right - ClientRect.left - 10,
                    ControlRect.bottom - ControlRect.top, TRUE);
-        ButtonOffset = ControlRect.bottom - ControlRect.top;
+
+        ButtonOffset = ControlRect.bottom - ControlRect.top + 10;
 
         /* Now get the OK and CANCEL buttons */
         ControlHWND = GetDlgItem(hWnd, IDOK);
@@ -126,6 +127,11 @@ GetlinDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                    Division * 2 + ControlRect.right - ControlRect.left,
                    ButtonOffset, ControlRect.right - ControlRect.left,
                    ControlRect.bottom - ControlRect.top, TRUE);
+
+        GetWindowRect(hWnd, &dlg_rt);
+        MoveWindow(hWnd,
+            dlg_rt.left, dlg_rt.top, dlg_rt.right - dlg_rt.left,
+            dlg_rt.bottom - dlg_rt.top - (ClientRect.bottom - ClientRect.top) + ButtonOffset + ControlRect.bottom - ControlRect.top + 10, TRUE);
 
         /* tell windows that we've set the focus */
         return FALSE;
