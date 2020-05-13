@@ -24,6 +24,7 @@ short* tilemaparray;
     short tile_count = 0;
     char buf[BUFSIZ];
     strcpy(buf, "");
+    int glyph_offset = 0;
 
     if (process_style == 0)
     {
@@ -113,16 +114,40 @@ short* tilemaparray;
         }
     }
 
+    const char* missile_direction_name_array[NUM_MISSILE_DIRS] = {
+            "top-left", "top-center", "top-right",
+            "middle-right",  "middle-left",
+            "bottom-left", "bottom-center", "bottom-right" };
+
     /* Object tiles */
     tile_section_name = "objects";
-    for (int j = 0; j <= 2; j++)
+    for (int j = 0; j <= 4; j++)
     {
-        if (j > 0 && !tsd->has_right_and_left_hand_objects)
-            break;
+        /* j == 0 -> Normal objs */
+        /* j == 1 -> Inventory objs */
+        /* j == 2 -> Lit objs */
+        /* j == 3 -> Lit inventory objs */
+        /* j == 4 -> Missile objs */
+
+        if (j == 1 && !tsd->inventory_tile_style)
+            continue;
+        if (j == 2 && !tsd->lit_tile_style)
+            continue;
+        if (j == 3 && (!tsd->lit_tile_style || !tsd->inventory_tile_style))
+            continue;
+        if (j == 4 && !tsd->missile_tile_style)
+            continue;
 
         boolean first_scroll_found = FALSE;
         int nameless_idx = 0;
-        set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
+        set_name = (j == 0 ? "normal" : j == 1 ? "inventory" : j == 2 ? "lit" : j == 3 ? "inventory lit" : "missile");
+        glyph_offset =
+            (j == 0 ? GLYPH_OBJ_OFF :
+                j == 1 ? GLYPH_OBJ_INVENTORY_OFF :
+                j == 2 ? GLYPH_OBJ_LIT_OFF :
+                j == 3 ? GLYPH_OBJ_INVENTORY_LIT_OFF :
+                GLYPH_OBJ_MISSILE_OFF);
+
         for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
         {
             const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
@@ -143,61 +168,177 @@ short* tilemaparray;
                 /* First, generic scroll tile */
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "generic", "scroll"
-                    );
-                    (void)write(fd, buf, strlen(buf));
+                    if (j == 4)
+                    {
+                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                        {
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "generic", "scroll", missile_direction_name_array[n]);
+                            (void)write(fd, buf, strlen(buf));
+                            tile_count++;
+                        }
+                    }
+                    else
+                    {
+                        Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "generic", "scroll");
+                        (void)write(fd, buf, strlen(buf));
+                        tile_count++;
+                    }
                 }
                 else if (process_style == 1)
                 {
-                    /* Add the tile to all scrolls */
-                    for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                    if (j == 4)
                     {
-                        if (objects[m].oc_class == SCROLL_CLASS)
+                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                         {
-                            if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                            /* Found scroll */
+                            tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                            
+                            /* Add the tile to all scrolls */
+                            for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
                             {
-                                for (int k = 1; k <= 2; k++)
+                                if (objects[m].oc_class == SCROLL_CLASS)
                                 {
-                                    int glyph_offset3 = (k == 0 ? GLYPH_OBJ_OFF : k == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                                    tilemaparray[m + glyph_offset3] = tile_count;
+                                    tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
                                 }
                             }
-                            int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                            tilemaparray[m + glyph_offset] = tile_count;
+                            tile_count++;
                         }
                     }
-                }
-                tile_count++;
+                    else
+                    {
+                        tilemaparray[i + glyph_offset] = tile_count;
 
+                        /* Add the tile to all scrolls */
+                        for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                        {
+                            if (objects[m].oc_class == SCROLL_CLASS)
+                            {
+                                /* Other scroll's main tile */
+                                tilemaparray[m + glyph_offset] = tile_count;
+
+                                /* Add others if they do not have their own */
+                                if (j == 0)
+                                {
+                                    if (tsd->inventory_tile_style == 0)
+                                    {
+                                        int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
+                                        tilemaparray[m + glyph_offset3] = tile_count;
+                                        if (tsd->lit_tile_style == 0)
+                                        {
+                                            int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                            tilemaparray[m + glyph_offset4] = tile_count;
+                                        }
+                                    }
+                                    if (tsd->lit_tile_style == 0)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
+                                        tilemaparray[m + glyph_offset4] = tile_count;
+                                    }
+                                    if (tsd->missile_tile_style == 0)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
+                                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                                        {
+                                            tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        tile_count++;
+                    }
+                }
+                else
+                {
+                    if (j == 4)
+                        tile_count += NUM_MISSILE_DIRS;
+                    else
+                        tile_count++;
+                }
 
                 /* Second, scroll of mail */
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "mail", "envelope"
-                    );
-                    (void)write(fd, buf, strlen(buf));
+                    if (j == 4)
+                    {
+                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                        {
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "mail", "envelope", missile_direction_name_array[n]);
+                            (void)write(fd, buf, strlen(buf));
+                            tile_count++;
+                        }
+                    }
+                    else
+                    {
+                        Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "mail", "envelope");
+                        (void)write(fd, buf, strlen(buf));
+                        tile_count++;
+                    }
                 }
                 else if (process_style == 1)
                 {
-#ifdef MAIL
                     /* Add the tile the scroll "mail" */
-                    if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                    if (j == 4)
                     {
-                        for (int k = 1; k <= 2; k++)
+                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                         {
-                            int glyph_offset3 = (k == 0 ? GLYPH_OBJ_OFF : k == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                            tilemaparray[SCR_MAIL + glyph_offset3] = tile_count;
+#ifdef MAIL
+                            tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+#endif
+                            tile_count++;
                         }
                     }
-                    int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                    tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
-#endif
-                }
-                tile_count++;
+                    else
+                    {
+#ifdef MAIL
+                        /* Main tile */
+                        tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
 
+                        /* Add to others, if they have not tiles of their own */
+                        if (j == 0)
+                        {
+                            if (tsd->inventory_tile_style == 0)
+                            {
+                                int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
+                                tilemaparray[SCR_MAIL + glyph_offset3] = tile_count;
+                                if (tsd->lit_tile_style == 0)
+                                {
+                                    int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                    tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                                }
+                            }
+                            if (tsd->lit_tile_style == 0)
+                            {
+                                int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
+                                tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                            }
+                            if (tsd->missile_tile_style == 0)
+                            {
+                                int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
+                                for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                                {
+                                    tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                }
+                            }
+                        }
+#endif
+                        tile_count++;
+                    }
+                }
+                else
+                {
+                    if (j == 4)
+                        tile_count += NUM_MISSILE_DIRS;
+                    else
+                        tile_count++;
+                }
+
+                /* Move to next item after having found the first scroll */
                 continue;
             }
 
+            /* Normal item case starts here */
             boolean nameless = !OBJ_NAME(objects[i]);
             boolean no_description = !obj_descr[objects[i].oc_name_idx].oc_descr;
             char nameless_name[BUFSZ];
@@ -210,80 +351,183 @@ short* tilemaparray;
 
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
-                    nameless ? nameless_name : OBJ_NAME(objects[i]),
-                    no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr
-                );
-                (void)write(fd, buf, strlen(buf));
+                if (j == 4)
+                {
+                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                    {
+                        Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
+                            nameless ? nameless_name : OBJ_NAME(objects[i]),
+                            no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr,
+                            missile_direction_name_array[n]);
+                        (void)write(fd, buf, strlen(buf));
+                        tile_count++;
+                    }
+                }
+                else
+                {
+                    Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
+                        nameless ? nameless_name : OBJ_NAME(objects[i]),
+                        no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr
+                    );
+                    (void)write(fd, buf, strlen(buf));
+                    tile_count++;
+                }
             }
             else if (process_style == 1)
             {
-                /* Write to the tile to the main glyph */
-                int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                tilemaparray[i + glyph_offset] = tile_count;
-
-                /* Write to the tile to the right and left hand glyphs if they do not have their own */
-                if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                if (j == 4)
                 {
-                    for (int k = 1; k <= 2; k++)
+                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                     {
-                        int glyph_offset3 = (k == 0 ? GLYPH_OBJ_OFF : k == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                        tilemaparray[i + glyph_offset3] = tile_count;
-                    }
-                }
+                        /* Write to the tile to the main glyph */
+                        tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
 
-                /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
-                if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
-                {
-                    for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
-                    {
-                        if (objects[m].oc_class == GEM_CLASS 
-                            && (m <= LAST_GEM || (m > LUCKSTONE && m <= FLINT)) 
-                            && objects[m].oc_color == objects[i].oc_color
-                            )
+                        /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
+                        if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
                         {
-                            if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                            for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
                             {
-                                for (int k = 1; k <= 2; k++)
+                                if (objects[m].oc_class == GEM_CLASS
+                                    && (m <= LAST_GEM || (m > LUCKSTONE && m <= FLINT))
+                                    && objects[m].oc_color == objects[i].oc_color
+                                    )
                                 {
-                                    int glyph_offset3 = (k == 0 ? GLYPH_OBJ_OFF : k == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                                    tilemaparray[m + glyph_offset3] = tile_count;
+                                    /* Write to the tile to the main glyph */
+                                    tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+
                                 }
                             }
-                            int glyph_offset = (j == 0 ? GLYPH_OBJ_OFF : j == 1 ? GLYPH_OBJ_RIGHT_HAND_OFF : GLYPH_OBJ_LEFT_HAND_OFF);
-                            tilemaparray[m + glyph_offset] = tile_count;
                         }
+                        tile_count++;
                     }
                 }
-
-                /* Write generic corpse and statue tiles */
-                if (j == 0 &&
-                    (!tsd->has_body_tiles && i == CORPSE)
-                    || (!tsd->has_statue_tiles && i == STATUE)
-                    )
+                else
                 {
-                    for (int gender = 0; gender <= 1; gender++)
+                    /* Write to the tile to the main glyph */
+                    tilemaparray[i + glyph_offset] = tile_count;
+
+                    /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
+                    if (j == 0)
                     {
-                        for (int k = LOW_PM; k < NUM_MONSTERS; k++)
+                        if (tsd->inventory_tile_style == 0)
                         {
-                            int glyph_offset2 = (gender == 0 ?(i == CORPSE ? GLYPH_BODY_OFF : GLYPH_STATUE_OFF) : (i == CORPSE ? GLYPH_FEMALE_BODY_OFF : GLYPH_FEMALE_STATUE_OFF));
-                            tilemaparray[k + glyph_offset2] = tile_count;
+                            int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
+                            tilemaparray[i + glyph_offset3] = tile_count;
+                            if (tsd->lit_tile_style == 0)
+                            {
+                                int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                tilemaparray[i + glyph_offset4] = tile_count;
+                            }
+                        }
+                        if (tsd->lit_tile_style == 0)
+                        {
+                            int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
+                            tilemaparray[i + glyph_offset4] = tile_count;
+                        }
+                        if (tsd->missile_tile_style == 0)
+                        {
+                            int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
+                            for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                            {
+                                tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                            }
                         }
                     }
+
+                    /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
+                    if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
+                    {
+                        for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                        {
+                            if (objects[m].oc_class == GEM_CLASS
+                                && (m <= LAST_GEM || (m > LUCKSTONE && m <= FLINT))
+                                && objects[m].oc_color == objects[i].oc_color
+                                )
+                            {
+                                /* Write to the tile to the main glyph */
+                                tilemaparray[m + glyph_offset] = tile_count;
+
+                                /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
+                                if (j == 0)
+                                {
+                                    if (tsd->inventory_tile_style == 0)
+                                    {
+                                        int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
+                                        tilemaparray[m + glyph_offset3] = tile_count;
+                                        if (tsd->lit_tile_style == 0)
+                                        {
+                                            int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                            tilemaparray[i + glyph_offset4] = tile_count;
+                                        }
+                                    }
+                                    if (tsd->lit_tile_style == 0)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
+                                        tilemaparray[m + glyph_offset4] = tile_count;
+                                    }
+                                    if (tsd->missile_tile_style == 0)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
+                                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                                        {
+                                            tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    /* Write generic corpse and statue tiles */
+                    if (j == 0 &&
+                        (!tsd->has_body_tiles && i == CORPSE)
+                        || (!tsd->has_statue_tiles && i == STATUE)
+                        )
+                    {
+                        for (int gender = 0; gender <= 1; gender++)
+                        {
+                            for (int k = LOW_PM; k < NUM_MONSTERS; k++)
+                            {
+                                int glyph_offset2 = (gender == 0 ? (i == CORPSE ? GLYPH_BODY_OFF : GLYPH_STATUE_OFF) : (i == CORPSE ? GLYPH_FEMALE_BODY_OFF : GLYPH_FEMALE_STATUE_OFF));
+                                tilemaparray[k + glyph_offset2] = tile_count;
+                            }
+                        }
+                    }
+
+
+                    tile_count++;
                 }
             }
-            tile_count++;
+            else
+            {
+                if (j == 4)
+                    tile_count += NUM_MISSILE_DIRS;
+                else
+                    tile_count++;
+            }
         }
     }
 
     /* Artifact tiles */
     tile_section_name = "artifacts";
-    for (int j = 0; j <= 2; j++)
+    for (int j = 0; j <= 4; j++)
     {
-        if (j > 0 && !tsd->has_right_and_left_hand_objects)
-            break;
+        if (j == 1 && !tsd->inventory_tile_style)
+            continue;
+        if (j == 2 && !tsd->lit_tile_style)
+            continue;
+        if (j == 3 && (!tsd->lit_tile_style || !tsd->inventory_tile_style))
+            continue;
+        if (j == 4 && !tsd->missile_tile_style)
+            continue;
 
-        set_name = (j == 0 ? "normal" : j == 1 ? "right-hand" : "left-hand");
+        set_name = (j == 0 ? "normal" : j == 1 ? "inventory" : j == 2 ? "lit" : j == 3 ? "inventory lit" : "missile");
+        glyph_offset = (j == 0 ? GLYPH_ARTIFACT_OFF : 
+            j == 1 ? GLYPH_ARTIFACT_INVENTORY_OFF :
+            j == 2 ? GLYPH_ARTIFACT_LIT_OFF :
+            j == 3 ? GLYPH_ARTIFACT_INVENTORY_LIT_OFF :
+            GLYPH_ARTIFACT_MISSILE_OFF);
+
         for (int i = 1; i <= NUM_ARTIFACTS; i++)
         {
             int base_item = artilist[i].otyp;
@@ -292,29 +536,83 @@ short* tilemaparray;
             boolean no_base_item_description = !obj_descr[objects[base_item].oc_name_idx].oc_descr;
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name,
-                    artilist[i].name,
-                    no_description ? "no artifact description" : artilist[i].desc,
-                    no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
-                    no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr
-                );
-                (void)write(fd, buf, strlen(buf));
+                if (j == 4)
+                {
+                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                    {
+                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name,
+                            artilist[i].name,
+                            no_description ? "no artifact description" : artilist[i].desc,
+                            no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
+                            no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr,
+                            missile_direction_name_array[n]
+                        );
+                        (void)write(fd, buf, strlen(buf));
+                        tile_count++;
+                    }
+                }
+                else
+                {
+                    Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name,
+                        artilist[i].name,
+                        no_description ? "no artifact description" : artilist[i].desc,
+                        no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
+                        no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr
+                    );
+                    (void)write(fd, buf, strlen(buf));
+                    tile_count++;
+
+                }
             }
             else if (process_style == 1)
             {
-                if (j == 0 && !tsd->has_right_and_left_hand_objects)
+                if (j == 4)
                 {
-                    for (int k = 1; k <= 2; k++)
+                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                     {
-                        int glyph_offset3 = (k == 0 ? GLYPH_ARTIFACT_OFF : k == 1 ? GLYPH_ARTIFACT_RIGHT_HAND_OFF : GLYPH_ARTIFACT_LEFT_HAND_OFF);
-                        tilemaparray[i - 1 + glyph_offset3] = tile_count;
+                        tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                        tile_count++;
                     }
                 }
-
-                int glyph_offset = (j == 0 ? GLYPH_ARTIFACT_OFF : j == 1 ? GLYPH_ARTIFACT_RIGHT_HAND_OFF : GLYPH_ARTIFACT_LEFT_HAND_OFF);
-                tilemaparray[i - 1 + glyph_offset] = tile_count;
+                else
+                {
+                    if (j == 0)
+                    {
+                        if (tsd->inventory_tile_style == 0)
+                        {
+                            int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
+                            tilemaparray[i + glyph_offset3] = tile_count;
+                            if (tsd->lit_tile_style == 0)
+                            {
+                                int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                tilemaparray[i + glyph_offset4] = tile_count;
+                            }
+                        }
+                        if (tsd->lit_tile_style == 0)
+                        {
+                            int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
+                            tilemaparray[i + glyph_offset4] = tile_count;
+                        }
+                        if (tsd->missile_tile_style == 0)
+                        {
+                            int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
+                            for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                            {
+                                tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                            }
+                        }
+                    }
+                    tilemaparray[i - 1 + glyph_offset] = tile_count;
+                    tile_count++;
+                }
             }
-            tile_count++;
+            else
+            {
+                if (j == 4)
+                        tile_count += NUM_MISSILE_DIRS;
+                else
+                    tile_count++;
+            }
         }
     }
 
@@ -346,7 +644,7 @@ short* tilemaparray;
             {
                 if (tsd->has_full_cmap_set)
                 {
-                    int glyph_offset = GLYPH_CMAP_OFF + cmap_idx * CMAP_TYPE_CHAR_NUM;
+                    glyph_offset = GLYPH_CMAP_OFF + cmap_idx * CMAP_TYPE_CHAR_NUM;
                     tilemaparray[i + glyph_offset] = tile_count;
                 }
                 else
@@ -357,7 +655,7 @@ short* tilemaparray;
                         /* Write this cmap_idx for all internal CMAPs it is used for */
                         if (tsd->cmap_mapping[k] == cmap_idx)
                         {
-                            int glyph_offset = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
+                            glyph_offset = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
@@ -411,7 +709,7 @@ short* tilemaparray;
                     }
                     else if (process_style == 1)
                     {
-                        int glyph_offset = GLYPH_INVIS_OFF;
+                        glyph_offset = GLYPH_INVIS_OFF;
                         tilemaparray[i + glyph_offset] = tile_count;
                     }
                     tile_count++;
@@ -440,7 +738,7 @@ short* tilemaparray;
                     {
                         for (int j = 0; j < EXPL_MAX; j++)
                         {
-                            int glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
+                            glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
@@ -462,7 +760,7 @@ short* tilemaparray;
                         }
                         else if (process_style == 1)
                         {
-                            int glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
+                            glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                         tile_count++;
@@ -489,7 +787,7 @@ short* tilemaparray;
                     {
                         for (int j = 0; j < NUM_ZAP; j++)
                         {
-                            int glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
+                            glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
@@ -516,7 +814,7 @@ short* tilemaparray;
                         }
                         else if (process_style == 1)
                         {
-                            int glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
+                            glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                         tile_count++;
@@ -545,7 +843,7 @@ short* tilemaparray;
                     {
                         for (int j = 0; j < NUM_MONSTERS; j++)
                         {
-                            int glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
+                            glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
@@ -573,7 +871,7 @@ short* tilemaparray;
                         }
                         else if (process_style == 1)
                         {
-                            int glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
+                            glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                         tile_count++;
@@ -587,7 +885,7 @@ short* tilemaparray;
                         {
                             for (int m = 0; m < MAX_SWALLOW_CHARS; m++)
                             {
-                                int glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * k;
+                                glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * k;
                                 tilemaparray[m + glyph_offset] = tile_count - MAX_SWALLOW_CHARS + m;
                             }
                         }
@@ -606,7 +904,7 @@ short* tilemaparray;
                 }
                 else if (process_style == 1)
                 {
-                    int glyph_offset = GLYPH_WARNING_OFF;
+                    glyph_offset = GLYPH_WARNING_OFF;
                     tilemaparray[i + glyph_offset] = tile_count;
                 }
                 tile_count++;

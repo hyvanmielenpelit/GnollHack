@@ -98,9 +98,12 @@ unsigned long *ospecial;
             color = HI_DOMESTIC;
 #endif
     }
-	else if ((offset = (glyph - GLYPH_ARTIFACT_LEFT_HAND_OFF)) >= 0 
-        || (offset = (glyph - GLYPH_ARTIFACT_RIGHT_HAND_OFF)) >= 0
-        || (offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0)
+	else if ((offset = (glyph - GLYPH_ARTIFACT_MISSILE_OFF)) >= 0 
+        || (offset = (glyph - GLYPH_ARTIFACT_INVENTORY_LIT_OFF)) >= 0
+        || (offset = (glyph - GLYPH_ARTIFACT_LIT_OFF)) >= 0
+        || (offset = (glyph - GLYPH_ARTIFACT_INVENTORY_OFF)) >= 0
+        || (offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0
+        )
     { /* an artifact */
 		int objoffset = artilist[offset].otyp;				
 		if (artilist[offset].maskotyp != STRANGE_OBJECT)
@@ -278,8 +281,10 @@ unsigned long *ospecial;
 #endif
         }
     } 
-    else if ((offset = (glyph - GLYPH_OBJ_LEFT_HAND_OFF)) >= 0 
-               || (offset = (glyph - GLYPH_OBJ_RIGHT_HAND_OFF)) >= 0
+    else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 
+               || (offset = (glyph - GLYPH_OBJ_INVENTORY_LIT_OFF)) >= 0
+               || (offset = (glyph - GLYPH_OBJ_LIT_OFF)) >= 0
+               || (offset = (glyph - GLYPH_OBJ_INVENTORY_OFF)) >= 0
                || (offset = (glyph - GLYPH_OBJ_OFF)) >= 0
                )
     { /* object */

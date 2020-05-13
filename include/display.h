@@ -325,6 +325,7 @@
 #define NUM_PLAYER_CHARACTERS NUM_ROLES * NUM_RACES * 2 * 3 * NUM_PLAYER_GLYPH_LEVELS
 #define CMAP_TYPE_CHAR_NUM (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS - MAX_SWALLOW_CHARS)
 #define NUM_INVIS_GLYPHS 1
+#define NUM_MISSILE_DIRS 8
 
 #define GLYPH_MON_OFF     0
 #define GLYPH_PET_OFF     (NUM_MONSTERS + GLYPH_MON_OFF)
@@ -338,9 +339,11 @@
 #define GLYPH_FEMALE_RIDDEN_OFF  (NUM_MONSTERS + GLYPH_FEMALE_BODY_OFF)
 #define GLYPH_INVIS_OFF   (NUM_MONSTERS + GLYPH_FEMALE_RIDDEN_OFF)
 #define GLYPH_OBJ_OFF     (NUM_INVIS_GLYPHS + GLYPH_INVIS_OFF)
-#define GLYPH_OBJ_RIGHT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
-#define GLYPH_OBJ_LEFT_HAND_OFF    (NUM_OBJECTS + GLYPH_OBJ_RIGHT_HAND_OFF)
-#define GLYPH_CMAP_OFF    (NUM_OBJECTS + GLYPH_OBJ_LEFT_HAND_OFF)
+#define GLYPH_OBJ_INVENTORY_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
+#define GLYPH_OBJ_LIT_OFF    (NUM_OBJECTS + GLYPH_OBJ_INVENTORY_OFF)
+#define GLYPH_OBJ_INVENTORY_LIT_OFF    (NUM_OBJECTS + GLYPH_OBJ_LIT_OFF)
+#define GLYPH_OBJ_MISSILE_OFF    (NUM_OBJECTS + GLYPH_OBJ_INVENTORY_LIT_OFF)
+#define GLYPH_CMAP_OFF    (NUM_OBJECTS * NUM_MISSILE_DIRS + GLYPH_OBJ_MISSILE_OFF)
 #define GLYPH_EXPLODE_OFF (CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX + GLYPH_CMAP_OFF)
 #define GLYPH_ZAP_OFF     ((MAX_EXPLOSION_CHARS * EXPL_MAX) + GLYPH_EXPLODE_OFF)
 #define GLYPH_SWALLOW_OFF ((NUM_ZAP * MAX_ZAP_CHARS) + GLYPH_ZAP_OFF)
@@ -348,9 +351,11 @@
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
 #define GLYPH_FEMALE_STATUE_OFF (NUM_MONSTERS + GLYPH_STATUE_OFF)
 #define GLYPH_ARTIFACT_OFF (NUM_MONSTERS + GLYPH_FEMALE_STATUE_OFF)
-#define GLYPH_ARTIFACT_RIGHT_HAND_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_OFF)
-#define GLYPH_ARTIFACT_LEFT_HAND_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_RIGHT_HAND_OFF)
-#define GLYPH_PLAYER_OFF  (NUM_ARTIFACTS + GLYPH_ARTIFACT_LEFT_HAND_OFF)
+#define GLYPH_ARTIFACT_INVENTORY_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_OFF)
+#define GLYPH_ARTIFACT_LIT_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_INVENTORY_OFF)
+#define GLYPH_ARTIFACT_INVENTORY_LIT_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_LIT_OFF)
+#define GLYPH_ARTIFACT_MISSILE_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_INVENTORY_LIT_OFF)
+#define GLYPH_PLAYER_OFF  (NUM_ARTIFACTS * NUM_MISSILE_DIRS + GLYPH_ARTIFACT_MISSILE_OFF)
 #define MAX_GLYPH         (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_OFF)
 
 #define NO_GLYPH          MAX_GLYPH
@@ -381,12 +386,23 @@
 #define any_detected_mon_to_glyph(mon, rng)                               \
     (((mon) == &youmonst ? flags.female : (mon)->female) ? female_detected_mon_to_glyph(mon, rng) : detected_mon_to_glyph(mon, rng) )
 
+#define is_obj_activated(obj) \
+  ((obj)->lamplit || (obj)->invokeon || (obj)->detectioncount > 0)
+
 /* This has the unfortunate side effect of needing a global variable    */
 /* to store a result. 'otg_temp' is defined and declared in decl.{ch}.  */
 #define random_obj_to_glyph(rng)                \
     ((otg_temp = random_object(rng)) == CORPSE  \
          ? random_monster(rng) + (!rn2(2) ? GLYPH_BODY_OFF : GLYPH_FEMALE_BODY_OFF) \
          : otg_temp + GLYPH_OBJ_OFF)
+
+#define random_obj_to_missile_glyph(dir_index, rng)                \
+    ((dir_index) < 0 || (dir_index) >= NUM_MISSILE_DIRS ? NO_GLYPH : \
+    ((otg_temp = random_object(rng)) == CORPSE  \
+         ? (((dir_index) == 2 || (dir_index) == 4 || (dir_index) == 7 ? -1 : 1) * (random_monster(rng) + (!rn2(2) ? GLYPH_BODY_OFF : GLYPH_FEMALE_BODY_OFF)))  \
+         : otg_temp == STATUE  \
+         ? (((dir_index) == 2 || (dir_index) == 4 || (dir_index) == 7 ? -1 : 1) * (random_monster(rng) + (!rn2(2) ? GLYPH_STATUE_OFF : GLYPH_FEMALE_STATUE_OFF))) \
+         : otg_temp * NUM_MISSILE_DIRS + (dir_index) + GLYPH_OBJ_MISSILE_OFF))
 
 #define statue_to_glyph(obj, rng)                              \
     (Hallucination ? (is_corpse_or_statue_facing_right(obj) ? -1 : 1) * (random_monster(rng) + GLYPH_MON_OFF)     \
@@ -413,8 +429,36 @@
                      : ((obj)->otyp == BOULDER) \
                         ? cmap_to_glyph(S_extra_boulder) \
                             : ((obj)->oartifact > 0) \
-                                ? (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF \
-						            :  (int) (obj)->otyp + GLYPH_OBJ_OFF)
+                                ? (is_obj_activated(obj) ? (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_LIT_OFF : (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF) \
+						            :  (is_obj_activated(obj) ? (int)(obj)->otyp + GLYPH_OBJ_LIT_OFF : (int)(obj)->otyp + GLYPH_OBJ_OFF))
+
+#define obj_to_inventory_glyph(obj, rng)                                          \
+    (((obj)->otyp == STATUE)                                            \
+         ? (is_female_corpse_or_statue(obj) ? female_statue_to_glyph(obj, rng) : statue_to_glyph(obj, rng) )                                   \
+         : Hallucination                                                \
+               ? random_obj_to_glyph(rng)                               \
+               : ((obj)->otyp == CORPSE)                                \
+                     ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
+                     : ((obj)->otyp == BOULDER) \
+                        ? cmap_to_glyph(S_extra_boulder) \
+                            : ((obj)->oartifact > 0) \
+                                ? (is_obj_activated(obj) ? (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_INVENTORY_LIT_OFF : (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_INVENTORY_OFF) \
+						            : (is_obj_activated(obj) ? (int)(obj)->otyp + GLYPH_OBJ_INVENTORY_LIT_OFF : (int)(obj)->otyp + GLYPH_OBJ_INVENTORY_OFF))
+
+#define obj_to_missile_glyph(obj, dir_index, rng)                                          \
+    ((dir_index) < 0 || (dir_index) >= NUM_MISSILE_DIRS ? NO_GLYPH \
+     : (((obj)->otyp == STATUE)                                            \
+         ? (is_female_corpse_or_statue(obj) ? female_statue_to_glyph(obj, rng) : statue_to_glyph(obj, rng) )                                   \
+         : Hallucination                                                \
+               ? random_obj_to_missile_glyph(dir_index, rng)                               \
+               : ((obj)->otyp == CORPSE)                                \
+                     ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
+                     : ((obj)->otyp == BOULDER) \
+                        ? cmap_to_glyph(S_extra_boulder) \
+                            : ((obj)->oartifact > 0) \
+                                ? ((int)((obj)->oartifact - 1) * NUM_MISSILE_DIRS + (dir_index) + GLYPH_ARTIFACT_MISSILE_OFF) \
+						            :  ((int)(obj)->otyp * NUM_MISSILE_DIRS + (dir_index) + GLYPH_OBJ_MISSILE_OFF)) )
+
 
 #define explosion_to_glyph(expltype, idx) \
     ((((expltype) * MAX_EXPLOSION_CHARS) + ((idx) - S_explode1)) + GLYPH_EXPLODE_OFF)

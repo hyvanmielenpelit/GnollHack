@@ -5998,15 +5998,15 @@ boolean stop_at_first_hit_object;
     } else if (weapon == THROWN_TETHERED_WEAPON && obj) {
             tethered_weapon = TRUE;
             weapon = THROWN_WEAPON;     /* simplify if's that follow below */
-            tmp_at(DISP_TETHER, obj_to_glyph(obj, rn2_on_display_rng));
+            tmp_at(DISP_TETHER, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng));
     } else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
-        tmp_at(DISP_FLASH, obj_to_glyph(obj, rn2_on_display_rng));
+        tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng));
 	else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
 	{
 		zapped_wand_obj_displayed = TRUE;
 		if (displayedobjtype > STRANGE_OBJECT)
 		{
-			tmp_at(DISP_FLASH, obj_to_glyph(&dispobj, rn2_on_display_rng));
+			tmp_at(DISP_FLASH, obj_to_missile_glyph(&dispobj, get_missile_index(ddx, ddy), rn2_on_display_rng));
 		}
 		else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
 		{

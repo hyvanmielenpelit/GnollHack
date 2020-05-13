@@ -703,6 +703,7 @@ struct objclass {
 	unsigned long oc_flags;			/* E.g. if indestructible or disintegration resistant */
 	unsigned long oc_flags2;		/* More flags */
 	unsigned long oc_flags3;		/* Even more flags */
+	unsigned long oc_flags4;		/* Even more flags */
 
 	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
 	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
@@ -884,6 +885,12 @@ struct objclass {
 
 #define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x80000000UL 
 
+
+/* Flags 4 */
+#define O4_NONE				0x00000000UL
+#define O4_INVENTORY_TILE	0x00000001UL
+#define O4_LIT_TILE			0x00000002UL
+#define O4_MISSILE_TILE		0x00000004UL
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */

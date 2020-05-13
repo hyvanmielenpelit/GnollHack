@@ -3403,7 +3403,7 @@ nextclass:
 
 			char applied_class_accelerator = wizid ? def_oc_syms[(int)otmp->oclass].sym : 0;
 
-			add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any, ilet,
+			add_menu(win, obj_to_inventory_glyph(otmp, rn2_on_display_rng), &any, ilet,
 				applied_class_accelerator,
                      ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_weight_last(otmp, loadstonecorrectly) : doname_with_weight_first(otmp, loadstonecorrectly)) : doname(otmp), MENU_UNSELECTED);
         }
@@ -3757,7 +3757,7 @@ char avoidlet;
                         classcount++;
                     }
                     any.a_char = ilet;
-                    add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng),
+                    add_menu(win, obj_to_inventory_glyph(otmp, rn2_on_display_rng),
                              &any, ilet, 0, ATR_NONE,
                              (flags.inventory_weights_last ? doname_with_weight_last(otmp, TRUE) : doname_with_weight_first(otmp, TRUE)), MENU_UNSELECTED);
                 }

@@ -850,10 +850,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     //int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
     int multiplier = flip_glyph ? -1 : 1;
 
+    if(signed_glyph == u_to_glyph())
+        signed_glyph = signed_glyph;
+
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
         ntile = glyph2tile[glyph];
         t_x = TILEBMP_X(ntile) + (flip_glyph ? 1 : 0) * TILE_X;
         t_y = TILEBMP_Y(ntile);
+
+        int t_per_l = GetNHApp()->mapTilesPerLine;
+        int tiley = GetNHApp()->mapTile_Y;
 
         if (layer > 0) {
             (*GetNHApp()->lpfnTransparentBlt)(
@@ -1283,10 +1289,16 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
         int idx = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM + SYM_OFF_P;
         *ch = showsyms[idx];
         cmap_color(offset, cmap_type_idx);
-    } else if ((offset = (g - GLYPH_OBJ_LEFT_HAND_OFF)) >= 0) { /* object */
+    } else if ((offset = (g - GLYPH_OBJ_MISSILE_OFF)) >= 0) { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
-    } else if ((offset = (g - GLYPH_OBJ_RIGHT_HAND_OFF)) >= 0) { /* object */
+    } else if ((offset = (g - GLYPH_OBJ_INVENTORY_LIT_OFF)) >= 0) { /* object */
+        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
+        obj_color(offset);
+    } else if ((offset = (g - GLYPH_OBJ_LIT_OFF)) >= 0) { /* object */
+        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
+        obj_color(offset);
+    } else if ((offset = (g - GLYPH_OBJ_INVENTORY_OFF)) >= 0) { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
     } else if ((offset = (g - GLYPH_OBJ_OFF)) >= 0) { /* object */

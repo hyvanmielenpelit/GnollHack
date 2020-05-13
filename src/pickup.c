@@ -945,7 +945,7 @@ int show_weights;
 				
 				char applied_group_accelerator = def_oc_syms[(int)objects[curr->otyp].oc_class].sym;
 
-				add_menu(win, obj_to_glyph(curr, rn2_on_display_rng), &any,
+				add_menu(win, obj_to_inventory_glyph(curr, rn2_on_display_rng), &any,
 					applied_invlet,
 					applied_group_accelerator,
                          ATR_NONE, show_weights > 0 ? (flags.inventory_weights_last ? doname_with_price_and_weight_last(curr, loadstonecorrectly) : doname_with_price_and_weight_first(curr, loadstonecorrectly)) : doname_with_price(curr), MENU_UNSELECTED);

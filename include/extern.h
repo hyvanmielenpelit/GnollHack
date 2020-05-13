@@ -426,6 +426,7 @@ E void FDECL(unset_seenv, (struct rm *, int, int, int, int));
 E int FDECL(warning_of, (struct monst *));
 E int FDECL(artifact_to_obj, (int));
 E int NDECL(get_current_cmap_type_index);
+E int FDECL(get_missile_index, (int, int));
 
 /* ### do.c ### */
 

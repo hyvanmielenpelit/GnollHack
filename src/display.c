@@ -1655,16 +1655,24 @@ int x, y, glyph;
             && glyph < MAX_GLYPH) { /* a player character */
             text = "player character";
             offset = glyph - GLYPH_PLAYER_OFF;
-        } else if (glyph >= GLYPH_ARTIFACT_LEFT_HAND_OFF
-			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact held in left hand */
-			text = "artifact in left hand";
-			offset = glyph - GLYPH_ARTIFACT_LEFT_HAND_OFF;
-        } else if (glyph >= GLYPH_ARTIFACT_RIGHT_HAND_OFF
-			&& glyph < GLYPH_ARTIFACT_LEFT_HAND_OFF) { /* an artifact in right hand */
-			text = "artifact in right hand";
-			offset = glyph - GLYPH_ARTIFACT_RIGHT_HAND_OFF;
+        } else if (glyph >= GLYPH_ARTIFACT_MISSILE_OFF
+			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact missile */
+			text = "artifact missile";
+			offset = glyph - GLYPH_ARTIFACT_MISSILE_OFF;
+        } else if (glyph >= GLYPH_ARTIFACT_INVENTORY_LIT_OFF
+			&& glyph < GLYPH_ARTIFACT_MISSILE_OFF) { /* an artifact lit in inventory */
+			text = "artifact lit in inventory";
+			offset = glyph - GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
+        } else if (glyph >= GLYPH_ARTIFACT_LIT_OFF
+			&& glyph < GLYPH_ARTIFACT_INVENTORY_LIT_OFF) { /* an artifact lit */
+			text = "artifact lit";
+			offset = glyph - GLYPH_ARTIFACT_LIT_OFF;
+        } else if (glyph >= GLYPH_ARTIFACT_INVENTORY_OFF
+			&& glyph < GLYPH_ARTIFACT_LIT_OFF) { /* an artifact in inventory */
+			text = "artifact in inventory";
+			offset = glyph - GLYPH_ARTIFACT_INVENTORY_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_OFF
-			&& glyph < GLYPH_ARTIFACT_RIGHT_HAND_OFF) { /* an artifact */
+			&& glyph < GLYPH_ARTIFACT_INVENTORY_OFF) { /* an artifact */
 			text = "artifact";
 			offset = glyph - GLYPH_ARTIFACT_OFF;
 		} else if (glyph >= GLYPH_FEMALE_STATUE_OFF
@@ -1691,12 +1699,18 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_CMAP_OFF) { /* cmap */
             text = "cmap_index";
             offset = glyph - GLYPH_CMAP_OFF;
-        } else if (glyph >= GLYPH_OBJ_LEFT_HAND_OFF) { /* object in left hand */
-            text = "object in left hand";
-            offset = glyph - GLYPH_OBJ_LEFT_HAND_OFF;
-        } else if (glyph >= GLYPH_OBJ_RIGHT_HAND_OFF) { /* object in right hand */
-            text = "object in right hand";
-            offset = glyph - GLYPH_OBJ_RIGHT_HAND_OFF;
+        } else if (glyph >= GLYPH_OBJ_MISSILE_OFF) { /* object in left hand */
+            text = "object missile";
+            offset = glyph - GLYPH_OBJ_MISSILE_OFF;
+        } else if (glyph >= GLYPH_OBJ_INVENTORY_LIT_OFF) { /* object in left hand */
+            text = "object lit in inventory";
+            offset = glyph - GLYPH_OBJ_INVENTORY_LIT_OFF;
+        } else if (glyph >= GLYPH_OBJ_LIT_OFF) { /* object in left hand */
+            text = "object lit";
+            offset = glyph - GLYPH_OBJ_LIT_OFF;
+        } else if (glyph >= GLYPH_OBJ_INVENTORY_OFF) { /* object in right hand */
+            text = "object in inventory";
+            offset = glyph - GLYPH_OBJ_INVENTORY_OFF;
         } else if (glyph >= GLYPH_OBJ_OFF) { /* object */
             text = "object";
             offset = glyph - GLYPH_OBJ_OFF;
@@ -2887,4 +2901,23 @@ get_current_cmap_type_index()
         return CMAP_NORMAL;
 }
 
+int
+get_missile_index(dx, dy)
+int dx, dy;
+{
+    if (!dx && !dy)
+        return 0; /* really invalid */
+
+    if (dy < 0)
+        return sgn(dx) + 1;
+    else if (dy == 0 && dx < 0)
+        return 3;
+    else if (dy == 0 && dx > 0)
+        return 4;
+    else if (dy > 0)
+        return sgn(dx) + 6;
+
+    /* Not reached */
+    return 0;
+}
 /*display.c*/
