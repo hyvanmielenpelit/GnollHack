@@ -45,6 +45,11 @@
 #define AF_READABLE							0x40000000UL  /* readable even if base item is not */
 #define AF_NO_WISH							0x80000000UL  /* not wishable, not that for artifacts the base item's no wish does not apply */
 
+#define AF2_NONE							0x00000000UL  
+#define AF2_INVENTORY_TILE					0x00000001UL  
+#define AF2_LIT_TILE						0x00000002UL  
+#define AF2_MISSILE_TILE					0x00000004UL  
+
 
 /* wielded or carried special effects */
 #define SPFX_NONE				0x00000000UL  /* No special effects, just a bonus */
@@ -88,12 +93,13 @@ struct artifact {
     short otyp;
 	short maskotyp;
 	const char *name;
-	const char* desc;	/* unidentified name */
-	const char* hit_desc;/* description used in artifact_hit: e.g., massive hammer, ice-cold blade, etc. */
-	unsigned long aflags;/* artifact flags */
-	unsigned long spfx;  /* special effect from wielding/wearing */
-    unsigned long cspfx; /* special effect just from carrying obj */
-    unsigned long mtype; /* monster type, symbol, or flag */
+	const char* desc;	   /* unidentified name */
+	const char* hit_desc;  /* description used in artifact_hit: e.g., massive hammer, ice-cold blade, etc. */
+	unsigned long aflags;  /* artifact flags */
+	unsigned long aflags2; /* artifact flags2 */
+	unsigned long spfx;    /* special effect from wielding/wearing */
+    unsigned long cspfx;   /* special effect just from carrying obj */
+    unsigned long mtype;   /* monster type, symbol, or flag */
 	int tohit_dice;
 	int tohit_diesize;
 	int tohit_plus;

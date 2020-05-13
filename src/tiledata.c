@@ -150,6 +150,31 @@ short* tilemaparray;
 
         for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
         {
+
+            if (j == 1)
+            {
+                if (tsd->inventory_tile_style == 2 && !(objects[i].oc_flags4 & O4_INVENTORY_TILE))
+                    continue;
+            }
+            else if (j == 2)
+            {
+                if (tsd->lit_tile_style == 2 && !(objects[i].oc_flags4 & O4_LIT_TILE))
+                    continue;
+            }
+            else if (j == 3)
+            {
+                if (tsd->inventory_tile_style == 2 && !(objects[i].oc_flags4 & O4_INVENTORY_TILE))
+                    continue;
+                if (tsd->lit_tile_style == 2 && !(objects[i].oc_flags4 & O4_LIT_TILE))
+                    continue;
+            }
+            else if (j == 4)
+            {
+                if (tsd->missile_tile_style == 2 && !(objects[i].oc_flags4 & O4_MISSILE_TILE))
+                    continue;
+            }
+
+
             const char* oclass_name = def_oc_syms[objects[i].oc_class].name;
             /* Jump over gems that all look the same, just take pieces of glass and luckstone */
             if (objects[i].oc_class == GEM_CLASS)
@@ -219,22 +244,22 @@ short* tilemaparray;
                                 /* Add others if they do not have their own */
                                 if (j == 0)
                                 {
-                                    if (tsd->inventory_tile_style == 0)
+                                    if (tsd->inventory_tile_style != 1)
                                     {
                                         int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                                         tilemaparray[m + glyph_offset3] = tile_count;
-                                        if (tsd->lit_tile_style == 0)
+                                        if (tsd->lit_tile_style != 1)
                                         {
                                             int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                             tilemaparray[m + glyph_offset4] = tile_count;
                                         }
                                     }
-                                    if (tsd->lit_tile_style == 0)
+                                    if (tsd->lit_tile_style != 1)
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
                                     }
-                                    if (tsd->missile_tile_style == 0)
+                                    if (tsd->missile_tile_style != 1)
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
@@ -298,22 +323,22 @@ short* tilemaparray;
                         /* Add to others, if they have not tiles of their own */
                         if (j == 0)
                         {
-                            if (tsd->inventory_tile_style == 0)
+                            if (tsd->inventory_tile_style != 1)
                             {
                                 int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                                 tilemaparray[SCR_MAIL + glyph_offset3] = tile_count;
-                                if (tsd->lit_tile_style == 0)
+                                if (tsd->lit_tile_style != 1)
                                 {
                                     int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                     tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
                                 }
                             }
-                            if (tsd->lit_tile_style == 0)
+                            if (tsd->lit_tile_style != 1)
                             {
                                 int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                                 tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
                             }
-                            if (tsd->missile_tile_style == 0)
+                            if (tsd->missile_tile_style != 1)
                             {
                                 int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
                                 for (int n = 0; n < NUM_MISSILE_DIRS; n++)
@@ -409,22 +434,22 @@ short* tilemaparray;
                     /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
                     if (j == 0)
                     {
-                        if (tsd->inventory_tile_style == 0)
+                        if (tsd->inventory_tile_style != 1)
                         {
                             int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                             tilemaparray[i + glyph_offset3] = tile_count;
-                            if (tsd->lit_tile_style == 0)
+                            if (tsd->lit_tile_style != 1)
                             {
                                 int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                 tilemaparray[i + glyph_offset4] = tile_count;
                             }
                         }
-                        if (tsd->lit_tile_style == 0)
+                        if (tsd->lit_tile_style != 1)
                         {
                             int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                             tilemaparray[i + glyph_offset4] = tile_count;
                         }
-                        if (tsd->missile_tile_style == 0)
+                        if (tsd->missile_tile_style != 1)
                         {
                             int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
@@ -450,22 +475,22 @@ short* tilemaparray;
                                 /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
                                 if (j == 0)
                                 {
-                                    if (tsd->inventory_tile_style == 0)
+                                    if (tsd->inventory_tile_style != 1)
                                     {
                                         int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                                         tilemaparray[m + glyph_offset3] = tile_count;
-                                        if (tsd->lit_tile_style == 0)
+                                        if (tsd->lit_tile_style != 1)
                                         {
                                             int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                             tilemaparray[i + glyph_offset4] = tile_count;
                                         }
                                     }
-                                    if (tsd->lit_tile_style == 0)
+                                    if (tsd->lit_tile_style != 1)
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
                                     }
-                                    if (tsd->missile_tile_style == 0)
+                                    if (tsd->missile_tile_style != 1)
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
@@ -530,6 +555,30 @@ short* tilemaparray;
 
         for (int i = 1; i <= NUM_ARTIFACTS; i++)
         {
+            if (j == 1)
+            {
+                if (tsd->inventory_tile_style == 2 && !(artilist[i].aflags2 & AF2_INVENTORY_TILE))
+                    continue;
+            }
+            else if (j == 2)
+            {
+                if (tsd->lit_tile_style == 2 && !(artilist[i].aflags2 & AF2_LIT_TILE))
+                    continue;
+            }
+            else if (j == 3)
+            {
+                if (tsd->inventory_tile_style == 2 && !(artilist[i].aflags2 & AF2_INVENTORY_TILE))
+                    continue;
+                if (tsd->lit_tile_style == 2 && !(artilist[i].aflags2 & AF2_LIT_TILE))
+                    continue;
+            }
+            else if (j == 4)
+            {
+                if (tsd->missile_tile_style == 2 && !(artilist[i].aflags2 & AF2_MISSILE_TILE))
+                    continue;
+            }
+
+
             int base_item = artilist[i].otyp;
             boolean no_description = !artilist[i].desc;
             boolean no_base_item_name = !OBJ_NAME(objects[base_item]);
