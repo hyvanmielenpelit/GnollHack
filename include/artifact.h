@@ -49,6 +49,7 @@
 #define AF2_INVENTORY_TILE					0x00000001UL  
 #define AF2_LIT_TILE						0x00000002UL  
 #define AF2_MISSILE_TILE					0x00000004UL  
+#define AF2_SINGLE_MISSILE_TILE				0x00000008UL  
 
 
 /* wielded or carried special effects */

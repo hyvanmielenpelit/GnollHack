@@ -56,7 +56,7 @@ short* tilemaparray;
                 continue;
             if (spset == 3 && !tsd->has_body_tiles)
                 continue;
-            if (spset == 4 && !tsd->has_ridden_tiles)
+            if (spset == 4 && !tsd->ridden_tile_style)
                 continue;
             if (spset == 5 && !tsd->has_statue_tiles)
                 continue;
@@ -68,6 +68,12 @@ short* tilemaparray;
                 if (gender == 1)
                 {
                     if (tsd->female_tile_style == 2 && !(mons[i].geno & G_FEMALE_TILE))
+                        continue;
+                }
+
+                if (spset == 4)
+                {
+                    if (tsd->ridden_tile_style == 2 && !(mons[i].mflags1 & M1_STEED))
                         continue;
                 }
 
@@ -92,7 +98,7 @@ short* tilemaparray;
                                 tilemaparray[i + GLYPH_PET_OFF] = tile_count;
                             if (!tsd->has_detect_tiles)
                                 tilemaparray[i + GLYPH_DETECT_OFF] = tile_count;
-                            if (!tsd->has_ridden_tiles)
+                            if (tsd->ridden_tile_style != 1)
                                 tilemaparray[i + GLYPH_RIDDEN_OFF] = tile_count;
                         }
                     }
@@ -105,7 +111,7 @@ short* tilemaparray;
                             tilemaparray[i + GLYPH_FEMALE_PET_OFF] = tile_count;
                         if (!tsd->has_detect_tiles)
                             tilemaparray[i + GLYPH_FEMALE_DETECT_OFF] = tile_count;
-                        if (!tsd->has_ridden_tiles)
+                        if (tsd->ridden_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_RIDDEN_OFF] = tile_count;
                     }
                 }
@@ -150,6 +156,7 @@ short* tilemaparray;
 
         for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
         {
+            int missile_tile_num = (objects[i].oc_flags4 & O4_SINGLE_MISSILE_TILE) ? 1 : NUM_MISSILE_DIRS;
 
             if (j == 1)
             {
@@ -195,9 +202,11 @@ short* tilemaparray;
                 {
                     if (j == 4)
                     {
-                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                        for (int n = 0; n < missile_tile_num; n++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "generic", "scroll", missile_direction_name_array[n]);
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, 
+                                "generic", "scroll", 
+                                missile_tile_num == 1 ? "generic" : missile_direction_name_array[n]);
                             (void)write(fd, buf, strlen(buf));
                             tile_count++;
                         }
@@ -226,8 +235,11 @@ short* tilemaparray;
                                     tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
                                 }
                             }
-                            tile_count++;
+                            if(missile_tile_num != 1)
+                                tile_count++;
                         }
+                        if (missile_tile_num == 1)
+                            tile_count++;
                     }
                     else
                     {
@@ -277,7 +289,7 @@ short* tilemaparray;
                 else
                 {
                     if (j == 4)
-                        tile_count += NUM_MISSILE_DIRS;
+                        tile_count += missile_tile_num;
                     else
                         tile_count++;
                 }
@@ -287,12 +299,17 @@ short* tilemaparray;
                 {
                     if (j == 4)
                     {
-                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                        for (int n = 0; n < missile_tile_num; n++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "mail", "envelope", missile_direction_name_array[n]);
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, 
+                                "mail", "envelope", 
+                                missile_tile_num == 1 ? "generic" : missile_direction_name_array[n]);
                             (void)write(fd, buf, strlen(buf));
-                            tile_count++;
+                            if(missile_tile_num != 1)
+                                tile_count++;
                         }
+                        if(missile_tile_num == 1)
+                            tile_count++;
                     }
                     else
                     {
@@ -311,8 +328,11 @@ short* tilemaparray;
 #ifdef MAIL
                             tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
 #endif
-                            tile_count++;
+                            if(missile_tile_num != 1)
+                                tile_count++;
                         }
+                        if (missile_tile_num == 1)
+                            tile_count++;
                     }
                     else
                     {
@@ -354,7 +374,7 @@ short* tilemaparray;
                 else
                 {
                     if (j == 4)
-                        tile_count += NUM_MISSILE_DIRS;
+                        tile_count += missile_tile_num;
                     else
                         tile_count++;
                 }
@@ -378,12 +398,12 @@ short* tilemaparray;
             {
                 if (j == 4)
                 {
-                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                    for (int n = 0; n < missile_tile_num; n++)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
                             nameless ? nameless_name : OBJ_NAME(objects[i]),
                             no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr,
-                            missile_direction_name_array[n]);
+                            missile_tile_num == 1 ? "generic" : missile_direction_name_array[n]);
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
                     }
@@ -423,8 +443,11 @@ short* tilemaparray;
                                 }
                             }
                         }
-                        tile_count++;
+                        if(missile_tile_num != 1)
+                            tile_count++;
                     }
+                    if (missile_tile_num == 1)
+                        tile_count++;
                 }
                 else
                 {
@@ -526,7 +549,7 @@ short* tilemaparray;
             else
             {
                 if (j == 4)
-                    tile_count += NUM_MISSILE_DIRS;
+                    tile_count += missile_tile_num;
                 else
                     tile_count++;
             }
@@ -555,6 +578,8 @@ short* tilemaparray;
 
         for (int i = 1; i <= NUM_ARTIFACTS; i++)
         {
+            int missile_tile_num = (artilist[i].aflags2 & AF2_SINGLE_MISSILE_TILE) ? 1 : NUM_MISSILE_DIRS;
+
             if (j == 1)
             {
                 if (tsd->inventory_tile_style == 2 && !(artilist[i].aflags2 & AF2_INVENTORY_TILE))
@@ -587,14 +612,14 @@ short* tilemaparray;
             {
                 if (j == 4)
                 {
-                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                    for (int n = 0; n < missile_tile_num; n++)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name,
                             artilist[i].name,
                             no_description ? "no artifact description" : artilist[i].desc,
                             no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
                             no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr,
-                            missile_direction_name_array[n]
+                            missile_tile_num == 1 ? "generic " : missile_direction_name_array[n]
                         );
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
@@ -620,8 +645,11 @@ short* tilemaparray;
                     for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                     {
                         tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                        tile_count++;
+                        if(missile_tile_num != 1)
+                            tile_count++;
                     }
+                    if (missile_tile_num == 1)
+                        tile_count++;
                 }
                 else
                 {
@@ -629,22 +657,22 @@ short* tilemaparray;
                     {
                         if (tsd->inventory_tile_style == 0)
                         {
-                            int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
+                            int glyph_offset3 = GLYPH_ARTIFACT_INVENTORY_OFF;
                             tilemaparray[i + glyph_offset3] = tile_count;
                             if (tsd->lit_tile_style == 0)
                             {
-                                int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                int glyph_offset4 = GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
                                 tilemaparray[i + glyph_offset4] = tile_count;
                             }
                         }
                         if (tsd->lit_tile_style == 0)
                         {
-                            int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
+                            int glyph_offset4 = GLYPH_ARTIFACT_LIT_OFF;
                             tilemaparray[i + glyph_offset4] = tile_count;
                         }
                         if (tsd->missile_tile_style == 0)
                         {
-                            int glyph_offset4 = GLYPH_OBJ_MISSILE_OFF;
+                            int glyph_offset4 = GLYPH_ARTIFACT_MISSILE_OFF;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
@@ -658,7 +686,7 @@ short* tilemaparray;
             else
             {
                 if (j == 4)
-                        tile_count += NUM_MISSILE_DIRS;
+                        tile_count += missile_tile_num;
                 else
                     tile_count++;
             }

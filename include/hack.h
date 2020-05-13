@@ -292,7 +292,7 @@ struct tileset_definition {
     boolean has_pet_tiles;       /* 0 = use normal monster variation, 1 = separate pet tile for each monster  */
     boolean has_detect_tiles;    /* 0 = use normal monster variation, 1 = separate detect tile for each monster  */
     boolean has_body_tiles;      /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster */
-    boolean has_ridden_tiles;    /* 0 = use normal monster variation, 1 = separate ridden tile for each monster  */
+    boolean ridden_tile_style;    /* 0 = use normal monster variation, 1 = separate ridden tile for each monster, 2 = monsters with M1_STEED have ridden tiles */
     boolean has_statue_tiles;    /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
 
     uchar inventory_tile_style;  /* 0 = no inventory tiles, 1 = has separate inventory tiles for all objects, 2 = has inventory tiles for each object marked with O4_INVENTORY_TILE  */
@@ -318,7 +318,7 @@ struct tileset_definition {
 
 static struct tileset_definition default_tileset_definition =
 {
-    2, 0, 0, 0, 0, 1,
+    2, 0, 0, 0, 2, 1,
     0, 2, 2, 
     2, 0, 0, 1,
     {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
