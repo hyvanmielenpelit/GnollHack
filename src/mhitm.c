@@ -327,16 +327,24 @@ register struct monst *magr, *mdef;
         return MM_MISS;
 
     /* Update facing */
+    boolean magr_facing_before = magr->facing_right;
+    //boolean mdef_facing_before = mdef->facing_right;
+
     if (magr->mx > mdef->mx)
     {
         magr->facing_right = FALSE;
-        mdef->facing_right = TRUE;
+        //mdef->facing_right = TRUE;
     }
     else if (magr->mx < mdef->mx)
     {
         magr->facing_right = TRUE;
-        mdef->facing_right = FALSE;
+        //mdef->facing_right = FALSE;
     }
+
+    if (magr_facing_before != magr->facing_right)
+        newsym(magr->mx, magr->my);
+    //if (mdef_facing_before != mdef->facing_right)
+    //    newsym(mdef->mx, mdef->my);
 
     /* Calculate the armour class differential. */
     tmp = find_mac(mdef) + magr->m_lev + magr->mhitinc;

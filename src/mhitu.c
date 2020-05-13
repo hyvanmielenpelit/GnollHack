@@ -484,6 +484,26 @@ register struct monst *mtmp;
         }
     }
 
+    /* Update facing */
+    boolean mtmp_facing_before = mtmp->facing_right;
+    //boolean u_facing_before = u.facing_right;
+
+    if (mtmp->mx > u.ux)
+    {
+        mtmp->facing_right = FALSE;
+        //u.facing_right = TRUE;
+    }
+    else if (mtmp->mx < u.ux)
+    {
+        mtmp->facing_right = TRUE;
+       // u.facing_right = FALSE;
+    }
+
+    if (mtmp_facing_before != mtmp->facing_right)
+        newsym(mtmp->mx, mtmp->my);
+    //if (u_facing_before != u.facing_right)
+    //    newsym(u.ux, u.uy);
+
     if (u.uundetected && !range2 && foundyou && !u.uswallow) {
         if (!canspotmon(mtmp))
             map_invisible(mtmp->mx, mtmp->my);
