@@ -389,12 +389,12 @@
          : otg_temp + GLYPH_OBJ_OFF)
 
 #define statue_to_glyph(obj, rng)                              \
-    (Hallucination ? (((obj)->speflags & SPEFLAGS_FACING_RIGHT) ? -1 : 1) * (random_monster(rng) + GLYPH_MON_OFF)     \
-                   : (((obj)->speflags & SPEFLAGS_FACING_RIGHT) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_STATUE_OFF))
+    (Hallucination ? (is_corpse_or_statue_facing_right(obj) ? -1 : 1) * (random_monster(rng) + GLYPH_MON_OFF)     \
+                   : (is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_STATUE_OFF))
 
 #define female_statue_to_glyph(obj, rng)                              \
-    (Hallucination ? (((obj)->speflags & SPEFLAGS_FACING_RIGHT) ? -1 : 1) * (random_monster(rng) + GLYPH_FEMALE_MON_OFF)    \
-                   : (((obj)->speflags & SPEFLAGS_FACING_RIGHT) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_STATUE_OFF))
+    (Hallucination ? (is_corpse_or_statue_facing_right(obj) ? -1 : 1) * (random_monster(rng) + GLYPH_FEMALE_MON_OFF)    \
+                   : (is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_STATUE_OFF))
 
 
 /* MRKR: Statues now have glyphs corresponding to the monster they    */
@@ -409,7 +409,7 @@
          : Hallucination                                                \
                ? random_obj_to_glyph(rng)                               \
                : ((obj)->otyp == CORPSE)                                \
-                     ?  (is_female_corpse_or_statue(obj) ? (int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF  : (int) (obj)->corpsenm + GLYPH_BODY_OFF )         \
+                     ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
                      : ((obj)->otyp == BOULDER) \
                         ? cmap_to_glyph(S_extra_boulder) \
                             : ((obj)->oartifact > 0) \

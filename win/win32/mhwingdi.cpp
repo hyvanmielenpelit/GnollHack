@@ -4,11 +4,11 @@
 
 //#include <stdafx.h>
 #include <windows.h>
-#include <objidl.h>
-#include <gdiplus.h>
+//#include <objidl.h>
+//#include <gdiplus.h>
 
-using namespace Gdiplus;
-#pragma comment (lib,"Gdiplus.lib")
+//using namespace Gdiplus;
+//#pragma comment (lib,"Gdiplus.lib")
 
 extern "C" {
 
@@ -20,12 +20,14 @@ extern "C" {
         mbstowcs_s(NULL, vOut, strlen(vIn) + 1, vIn, strlen(vIn));
 
         HBITMAP handle = (HBITMAP)0;
+#if 0
         Bitmap* pngBitmap = Bitmap::FromResource(hInstance, (const wchar_t*)lpBitmapName); // (const WCHAR*)MAKEINTRESOURCE(IDB_GNOLLHACK_TILES));
         if (!pngBitmap)
         {
             return handle;
         }
         pngBitmap->GetHBITMAP(0, &handle);
+#endif
         return handle;
     }
 
@@ -44,12 +46,14 @@ extern "C" {
         mbstowcs_s(NULL, vOut, strlen(vIn) + 1, vIn, strlen(vIn));
 
         HBITMAP handle = (HBITMAP)0;
+#if 0
         Bitmap* pngBitmap = Bitmap::FromFile(vOut, FALSE); // (const WCHAR*)MAKEINTRESOURCE(IDB_GNOLLHACK_TILES));
         if (!pngBitmap)
         {
             return handle;
         }
         pngBitmap->GetHBITMAP(0, &handle);
+#endif
         return handle;
     }
 

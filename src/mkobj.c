@@ -2335,7 +2335,7 @@ unsigned corpstatflags;
 {
     register struct obj *otmp;
     boolean init = ((corpstatflags & CORPSTAT_INIT) != 0);
-
+    
     if (objtype != CORPSE && objtype != STATUE)
         impossible("making corpstat type %d", objtype);
     if (x == 0 && y == 0) { /* special case - random placement */
@@ -2434,6 +2434,7 @@ struct monst *mtmp;
         mtmp2->nmon = (struct monst *) 0;
         mtmp2->data = (struct permonst *) 0;
         mtmp2->minvent = (struct obj *) 0;
+        mtmp2->facing_right = mtmp->facing_right;
         if (mtmp->mextra)
             copy_mextra(mtmp2, mtmp);
     }

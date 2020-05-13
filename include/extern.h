@@ -1637,6 +1637,7 @@ E const char* FDECL(pm_common_name, (struct permonst*));
 E const char* FDECL(mon_common_name, (struct monst*));
 E const char* FDECL(corpse_common_name, (struct obj*));
 E boolean FDECL(is_female_corpse_or_statue, (struct obj*));
+E boolean FDECL(is_corpse_or_statue_facing_right, (struct obj*));
 
 /* ### mondata.c ### */
 

@@ -807,8 +807,13 @@ boolean createcorpse;
             corpstatflags |= CORPSTAT_INIT;
             /* preserve the unique traits of some creatures */
 			/* always keep traits if there is mextra -- JG */
-            obj = mkcorpstat(CORPSE, (mtmp->mextra || KEEPTRAITS(mtmp)) ? mtmp : 0,
+            boolean is_keeping_traits = (mtmp->mextra || KEEPTRAITS(mtmp));
+            obj = mkcorpstat(CORPSE, is_keeping_traits ? mtmp : 0,
                              mdat, x, y, corpstatflags);
+
+            if (obj && !is_keeping_traits && mtmp->facing_right)
+                obj->speflags |= SPEFLAGS_FACING_RIGHT;
+
             if (burythem) 
 			{
                 boolean dealloc;
@@ -5354,7 +5359,7 @@ struct monst* mon;
 const char* corpse_monster_name(corpse)
 struct obj* corpse;
 {
-    if (!corpse || !(corpse->otyp == CORPSE && corpse->otyp == STATUE && corpse->otyp == EGG))
+    if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
         return "";
 
     struct monst* mtmp = get_mtraits(corpse, FALSE);
@@ -5435,7 +5440,7 @@ boolean
 is_female_corpse_or_statue(corpse)
 struct obj* corpse;
 {
-    if (!corpse || !(corpse->otyp == CORPSE && corpse->otyp == STATUE && corpse->otyp == EGG))
+    if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
         return FALSE;
 
     struct monst* mtmp = get_mtraits(corpse, FALSE);
@@ -5460,6 +5465,29 @@ struct obj* corpse;
             else
                 return FALSE;
         }
+        else
+            return FALSE;
+    }
+}
+
+
+boolean
+is_corpse_or_statue_facing_right(corpse)
+struct obj* corpse;
+{
+    if (!corpse || !(corpse->otyp == CORPSE || corpse->otyp == STATUE || corpse->otyp == EGG))
+        return FALSE;
+
+    struct monst* mtmp = get_mtraits(corpse, FALSE);
+
+    if (mtmp)
+    {
+        return mtmp->facing_right;
+    }
+    else
+    {
+        if (corpse->speflags & SPEFLAGS_FACING_RIGHT)
+            return TRUE;
         else
             return FALSE;
     }
