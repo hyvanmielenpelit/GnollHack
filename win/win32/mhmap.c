@@ -565,6 +565,18 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
             mswin_map_stretch(hWnd, &size, TRUE);
         }
+        else
+        {
+            short wheeldistance = HIWORD(wParam);
+            WORD scrollcommand = (WORD)0;
+            if(wheeldistance < 0)
+                scrollcommand = SB_LINEDOWN;
+            else
+                scrollcommand = SB_LINEUP;
+            WPARAM scroll_wparam = MAKEWPARAM(scrollcommand, 0);
+
+            onMSNH_VScroll(hWnd, scroll_wparam, (LPARAM)0);
+        }
     }
     break;
 
