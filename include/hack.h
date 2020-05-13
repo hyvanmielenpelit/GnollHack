@@ -125,6 +125,8 @@ enum dismount_types {
 #define MG_OBJPILE 0x40  /* more than one stack of objects */
 #define MG_BW_LAVA 0x80  /* 'black & white lava': highlight lava if it
                             can't be distringuished from water by color */
+#define MG_H_FLIP  0x00000100UL /* Flipped horizontally */
+
 
 /* sellobj_state() states */
 #define SELL_NORMAL (0)

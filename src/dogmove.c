@@ -1635,6 +1635,17 @@ newdogpos:
 			wasseen = canseemon(mtmp);
 			remove_monster(omx, omy);
 			place_monster(mtmp, nix, niy);
+
+            /* Update facing */
+            if (omx > nix)
+            {
+                mtmp->facing_right = FALSE;
+            }
+            else if (omx < nix)
+            {
+                mtmp->facing_right = TRUE;
+            }
+
 			if (cursemsg[chi] && (wasseen || canseemon(mtmp))) 
 			{
 				/* describe top item of pile, not necessarily cursed item itself;

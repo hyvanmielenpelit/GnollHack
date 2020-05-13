@@ -62,8 +62,8 @@ static const int explcolors[] = {
 
 /*ARGSUSED*/
 int
-mapglyph(glyph, ochar, ocolor, ospecial, x, y)
-int glyph, *ocolor, x, y;
+mapglyph(signed_glyph, ochar, ocolor, ospecial, x, y)
+int signed_glyph, *ocolor, x, y;
 int *ochar;
 unsigned long *ospecial;
 {
@@ -75,6 +75,10 @@ unsigned long *ospecial;
     boolean has_rogue_ibm_graphics = HAS_ROGUE_IBM_GRAPHICS;
     boolean has_rogue_color = (has_rogue_ibm_graphics
                                && symset[currentgraphics].nocolor == 0);
+
+    int glyph = abs(signed_glyph);
+    if(signed_glyph < 0)
+        special |= MG_H_FLIP;
 
     /*
      *  Map the glyph back to a character and color.

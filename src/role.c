@@ -2653,7 +2653,7 @@ u_to_glyph()
     int player_alignment = u.ualign.type + 1; /* 0...2 */
     int player_glyph_level = 0;
 
-    return player_to_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level);
+    return (u.facing_right ? -1 : 1) * player_to_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level);
 }
 
 int

@@ -164,7 +164,8 @@ struct monst {
 	Bitfield(u_know_mname, 1);                  /* you know the monster's name */
     short rumorsleft;                           /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
     Bitfield(told_rumor, 1);			        /* the monster had told the player at least one rumor */
-    int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
+    //int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
+    Bitfield(facing_right, 1);			        /* the monster is facing right */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

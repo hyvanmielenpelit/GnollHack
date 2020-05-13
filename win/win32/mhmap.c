@@ -553,16 +553,8 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 flags.screen_scale_adjustment = 1.0;
 
             SIZE size;
-            if (data->bFitToScreenMode) {
-                size.cx = LOWORD(lParam);
-                size.cy = HIWORD(lParam);
-            }
-            else {
-                /* mapping factor is unchaged we just need to adjust scroll bars
-                 */
-                size.cx = data->xFrontTile * COLNO;
-                size.cy = data->yFrontTile * ROWNO;
-            }
+            size.cx = data->xFrontTile * COLNO;
+            size.cy = data->yFrontTile * ROWNO;
             mswin_map_stretch(hWnd, &size, TRUE);
         }
         else
@@ -818,16 +810,24 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 {
     short ntile;
     int t_x, t_y;
-    int glyph, bkglyph;
+    int glyph, bkglyph, signed_glyph, signed_bkglyph;
     int layer;
 #ifdef USE_PILEMARK
     int color;
     unsigned long special;
     int mgch;
 #endif
+    boolean flip_glyph = FALSE;
+    boolean flip_bkglyph = FALSE;
     layer = 0;
-    glyph = data->map[i][j];
-    bkglyph = data->bkmap[i][j];
+    signed_glyph = data->map[i][j];
+    signed_bkglyph = data->bkmap[i][j];
+    glyph = abs(signed_glyph);
+    bkglyph = abs(signed_bkglyph);
+    if (signed_glyph < -1)
+        flip_glyph = TRUE;
+    if (signed_bkglyph < -1)
+        flip_bkglyph = TRUE;
 
     if (glyph == NO_GLYPH && bkglyph == NO_GLYPH) {
         HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
@@ -847,12 +847,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         layer++;
     }
 
-    int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
-    int multiplier = is_you_facing_right ? -1 : 1;
+    //int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
+    int multiplier = flip_glyph ? -1 : 1;
 
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
         ntile = glyph2tile[glyph];
-        t_x = TILEBMP_X(ntile) + (is_you_facing_right ? 1 : 0) * TILE_X;
+        t_x = TILEBMP_X(ntile) + (flip_glyph ? 1 : 0) * TILE_X;
         t_y = TILEBMP_Y(ntile);
 
         if (layer > 0) {
