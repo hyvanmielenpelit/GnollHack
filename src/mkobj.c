@@ -1283,6 +1283,19 @@ int mkobj_type;
             case STATUE:
                 /* possibly overridden by mkcorpstat() */
                 otmp->corpsenm = rndmonnum();
+
+                if(!rn2(2))
+                    otmp->speflags |= SPEFLAGS_FACING_RIGHT;
+                
+                if (randomize_monster_gender(&mons[otmp->corpsenm]))
+                {
+                    otmp->speflags |= SPEFLAGS_FEMALE;
+                }
+                else if (!is_neuter(&mons[otmp->corpsenm]))
+                {
+                    otmp->speflags |= SPEFLAGS_MALE;
+                }
+
                 if (!verysmall(&mons[otmp->corpsenm])
                     && rn2(level_difficulty() / 2 + 10) > 10)
                     (void) add_to_container(otmp, mkobj(SPBOOK_CLASS, FALSE, TRUE));

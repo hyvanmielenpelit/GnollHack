@@ -2327,12 +2327,7 @@ int level_limit;
 		mtmp->female = TRUE;
     else
     {
-        unsigned long genderfrequence = (ptr->geno & G_GENDER_GEN_MASK);
-        boolean malerare = ((ptr->geno & G_GENDER_MALE_RARE) != 0);
-        int chancepower = genderfrequence != 0UL ? (int)(genderfrequence - G_GENDER_ONE_FOURTH + 1UL) : 0;
-        int oneinchance = 2 << chancepower; /* 2 to the power of chancepower */
-
-        mtmp->female = malerare ? rn2(max(2,oneinchance)) : !rn2(max(2, oneinchance)); /* ignored for neuters */
+        mtmp->female = randomize_monster_gender(ptr);
     }
 
     if ((In_sokoban(&u.uz) && !mindless(ptr)) || (ptr->mflags3 & M3_KNOWS_PITS_AND_HOLES)) /* know about traps here */
@@ -2527,6 +2522,25 @@ int level_limit;
         newsym(mtmp->mx, mtmp->my); /* make sure the mon shows up */
 
     return mtmp;
+}
+
+boolean
+randomize_monster_gender(ptr)
+struct permonst* ptr;
+{
+    if (is_female(ptr))
+        return TRUE;
+    else if (is_male(ptr))
+        return FALSE;
+    else if (is_neuter(ptr))
+        return FALSE;
+
+    unsigned long genderfrequence = (ptr->geno & G_GENDER_GEN_MASK);
+    boolean malerare = ((ptr->geno & G_GENDER_MALE_RARE) != 0);
+    int chancepower = genderfrequence != 0UL ? (int)(genderfrequence - G_GENDER_ONE_FOURTH + 1UL) : 0;
+    int oneinchance = 2 << chancepower; /* 2 to the power of chancepower */
+
+    return malerare ? rn2(max(2, oneinchance)) : !rn2(max(2, oneinchance)); /* ignored for neuters */
 }
 
 int

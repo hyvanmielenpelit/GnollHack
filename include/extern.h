@@ -1342,6 +1342,7 @@ E boolean FDECL(propagate, (int, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(usmellmon, (struct permonst *));
 E boolean FDECL(wrong_elem_type, (struct permonst*));
 E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, int));
+E boolean FDECL(randomize_monster_gender, (struct permonst*));
 
 /* ### mapglyph.c ### */
 
