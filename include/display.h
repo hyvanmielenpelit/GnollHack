@@ -327,7 +327,7 @@
 #define NUM_INVIS_GLYPHS 1
 #define NUM_MISSILE_DIRS 8
 
-#define GLYPH_MON_OFF     0
+#define GLYPH_MON_OFF     (1) /* Changed to 1 so that mirror image of mon 0 maps to -1 */
 #define GLYPH_PET_OFF     (NUM_MONSTERS + GLYPH_MON_OFF)
 #define GLYPH_DETECT_OFF  (NUM_MONSTERS + GLYPH_PET_OFF)
 #define GLYPH_BODY_OFF    (NUM_MONSTERS + GLYPH_DETECT_OFF)
