@@ -184,17 +184,8 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
                                                { C(CLR_GRAY), C(CLR_YELLOW), C(CLR_RED), C(CLR_GRAY), C(CLR_BRIGHT_BLUE),     /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },       /* dnstair */
        { '<', "ladder up",           0, 0,     { C(CLR_BROWN), C(CLR_YELLOW), C(CLR_YELLOW), C(CLR_BROWN), C(CLR_BROWN), /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) } },           /* upladder */
        { '>', "ladder down",         0, 0,     { C(CLR_BROWN), C(CLR_YELLOW), C(CLR_YELLOW), C(CLR_BROWN), C(CLR_BROWN), /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) } },         /* dnladder */
-/*+1*/ { '<', "staircase up",        0, 0,     { C(CLR_BRIGHT_BLUE), C(CLR_WHITE), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BRIGHT_BLUE),   /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },         /* upstair */
-/*+1*/ { '>', "staircase down",      0, 0,     { C(CLR_YELLOW), C(CLR_WHITE), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BRIGHT_BLUE), /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },       /* dnstair */
-/*+1*/ { '<', "staircase up",        0, 0,     { C(CLR_WHITE), C(CLR_YELLOW), C(CLR_RED), C(CLR_GRAY), C(CLR_BRIGHT_BLUE),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },         /* upstair */
-/*+1*/ { '>', "staircase down",      0, 0,     { C(CLR_BLACK), C(CLR_YELLOW), C(CLR_RED), C(CLR_GRAY), C(CLR_BRIGHT_BLUE),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },       /* dnstair */
        { '_', "altar",               ALTAR_VARIATIONS, ALTAR_VARIATION_OFFSET,
                                                { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },                /* altar */
-/*+1*/ { '_', "lawful altar",        0, 0,     { C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), /*5*/ C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE),  /*10*/ C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE) } },                /* altar */
-/*+1*/ { '_', "neutral altar",       0, 0,     { C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },                /* altar */
-/*+1*/ { '_', "chaotic altar",       0, 0,     { C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*5*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*10*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK) } },                /* altar */
-/*+1*/ { '_', "altar of Moloch",     0, 0,     { C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED),           /*5*/ C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_GRAY),         /*10*/ C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED), C(CLR_RED) } },                /* altar */
-/*+1*/ { '_', "high altar",          0, 0,     { C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), /*5*/ C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), /*10*/ C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA), C(CLR_BRIGHT_MAGENTA) } },                /* altar */
 /*+1*/ { '0', "boulder",             0, 0,     { C(CLR_GRAY), C(CLR_BROWN), C(CLR_YELLOW), C(CLR_GRAY), C(CLR_BRIGHT_BLUE), /*5*/ C(CLR_WHITE), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },                /* altar */
        { '|', "grave",               0, 0,     { C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), /*5*/ C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), /*10*/ C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE), C(CLR_WHITE) } },               /* grave */
        { '\\', "opulent throne",     0, 0,     { C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD),           /*5*/C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD),            /*10*/ C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD), C(HI_GOLD) } },       /* throne */
@@ -513,8 +504,6 @@ init_r_symbols()
         r_syms[i + SYM_OFF_P] = defsyms[i].sym;
     r_syms[S_vodoor] = r_syms[S_hodoor] = r_syms[S_ndoor] = r_syms[S_hbdoor] = r_syms[S_vbdoor] = r_syms[S_hoportcullis] = r_syms[S_voportcullis] = '+';
     r_syms[S_upstair] = r_syms[S_dnstair] = '%';
-    r_syms[S_branch_upstair] = r_syms[S_branch_dnstair] = '%';
-    r_syms[S_extra_upstair] = r_syms[S_extra_dnstair] = '%';
 
     for (i = 0; i < MAX_OBJECT_CLASSES; i++)
         r_syms[i + SYM_OFF_O] = def_r_oc_syms[i];
@@ -712,16 +701,7 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_dnstair, "S_dnstair" },
     { SYM_PCHAR, S_upladder, "S_upladder" },
     { SYM_PCHAR, S_dnladder, "S_dnladder" },
-    { SYM_PCHAR, S_branch_upstair, "S_branch_upstair" },
-    { SYM_PCHAR, S_branch_dnstair, "S_branch_dnstair" },
-    { SYM_PCHAR, S_extra_upstair, "S_extra_upstair" },
-    { SYM_PCHAR, S_extra_dnstair, "S_extra_dnstair" },
     { SYM_PCHAR, S_altar, "S_altar" },
-    { SYM_PCHAR, S_lawful_altar, "S_lawful_altar" },
-    { SYM_PCHAR, S_neutral_altar, "S_neutral_altar" },
-    { SYM_PCHAR, S_chaotic_altar, "S_chaotic_altar" },
-    { SYM_PCHAR, S_moloch_altar, "S_moloch_altar" },
-    { SYM_PCHAR, S_high_altar, "S_high_altar" },
     { SYM_PCHAR, S_extra_boulder, "S_extra_boulder" },
     { SYM_PCHAR, S_grave, "S_grave" },
     { SYM_PCHAR, S_throne, "S_throne" },

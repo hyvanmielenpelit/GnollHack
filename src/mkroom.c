@@ -1607,10 +1607,6 @@ int sym;
         break;
     case S_upstair:
     case S_dnstair:
-    case S_branch_upstair:
-    case S_branch_dnstair:
-    case S_extra_upstair:
-    case S_extra_dnstair:
         typ = STAIRS;
         break;
     case S_upladder:
@@ -1618,11 +1614,6 @@ int sym;
         typ = LADDER;
         break;
     case S_altar:
-    case S_lawful_altar:
-    case S_neutral_altar:
-    case S_chaotic_altar:
-    case S_moloch_altar:
-    case S_high_altar:
         typ = ALTAR;
         break;
     case S_grave:

@@ -329,16 +329,7 @@ start: NHAccess
 	S_dnstair: \062
 	S_upladder: \095
 	S_dnladder: \092
-	S_branch_upstair: \060
-	S_branch_dnstair: \062
-	S_extra_upstair: \095
-	S_extra_dnstair: \092
 	S_altar: \035
-	S_lawful_altar: \035
-	S_neutral_altar: \035
-	S_chaotic_altar: \035
-	S_moloch_altar: \035
-	S_high_altar: \035
 	S_grave: \126
 	S_throne: \126
 	S_sink: \126
@@ -408,11 +399,6 @@ start: Blank
 	Description: Completely blank symbols
         S_air: \032
         S_altar: \032
-        S_lawful_altar: \032
-        S_neutral_altar: \032
-        S_chaotic_altar: \032
-        S_moloch_altar: \032
-        S_high_altar: \032
         S_amulet: \032
         S_angel: \032
         S_ant: \032
@@ -444,8 +430,6 @@ start: Blank
         S_digbeam: \032
         S_dnladder: \032
         S_dnstair: \032
-        S_extra_dnstair: \032
-        S_branch_dnstair: \032
         S_dog: \032
         S_dragon: \032
         S_eel: \032
@@ -566,8 +550,6 @@ start: Blank
         S_unicorn: \032
         S_upladder: \032
         S_upstair: \032
-        S_extra_upstair: \032
-        S_branch_upstair: \032
         S_vampire: \032
         S_vbeam: \032
         S_vcdbridge: \032

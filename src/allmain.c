@@ -1183,9 +1183,9 @@ do_positionbar()
     }
     if (sstairs.sx
         && (glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].glyph)
-                == S_branch_upstair
+                == S_upstair
             || glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].glyph)
-                   == S_extra_upstair)) {
+                   == S_upstair)) {
         *p++ = '<';
         *p++ = sstairs.sx;
     }

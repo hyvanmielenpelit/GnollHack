@@ -309,6 +309,9 @@ unsigned long *ospecial;
                || (offset = (glyph - GLYPH_OBJ_OFF)) >= 0
                )
     { /* object */
+        if (glyph - GLYPH_OBJ_MISSILE_OFF >= 0)
+            offset = offset / NUM_MISSILE_DIRS;
+
         idx = objects[offset].oc_class + SYM_OFF_O;
         if (offset == BOULDER)
             idx = SYM_BOULDER + SYM_OFF_X;
