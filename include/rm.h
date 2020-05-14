@@ -305,10 +305,41 @@ struct symdef {
 struct symdef_cmap {
     uchar sym;
     const char *explanation;
+    int variations;
+    int variation_offset;
 #ifdef TEXTCOLOR
     uchar color[CMAP_TYPE_MAX];
 #endif
 };
+
+struct symdef_cmap_variation {
+    const char* explanation;
+#ifdef TEXTCOLOR
+    uchar color[CMAP_TYPE_MAX];
+#endif
+};
+
+/* Variation definitions */
+#define HWALL_VARIATION_OFFSET (0)
+#define HWALL_VARIATIONS 5
+#define FLOOR_VARIATION_OFFSET (HWALL_VARIATIONS + HWALL_VARIATION_OFFSET)
+#define FLOOR_VARIATIONS 5
+#define DARK_FLOOR_VARIATION_OFFSET (FLOOR_VARIATIONS + FLOOR_VARIATION_OFFSET)
+#define DARK_FLOOR_VARIATIONS 5
+#define LIT_CORRIDOR_VARIATION_OFFSET (DARK_FLOOR_VARIATIONS + DARK_FLOOR_VARIATION_OFFSET)
+#define LIT_CORRIDOR_VARIATIONS 3
+#define DARK_CORRIDOR_VARIATION_OFFSET (LIT_CORRIDOR_VARIATIONS + LIT_CORRIDOR_VARIATION_OFFSET)
+#define DARK_CORRIDOR_VARIATIONS 3
+#define ALTAR_VARIATION_OFFSET (DARK_CORRIDOR_VARIATIONS + DARK_CORRIDOR_VARIATION_OFFSET)
+#define ALTAR_VARIATIONS 6
+#define STAIRCASE_UP_VARIATION_OFFSET (ALTAR_VARIATIONS + ALTAR_VARIATION_OFFSET)
+#define STAIRCASE_UP_VARIATIONS 3
+#define STAIRCASE_DOWN_VARIATION_OFFSET (STAIRCASE_UP_VARIATIONS + STAIRCASE_UP_VARIATION_OFFSET)
+#define STAIRCASE_DOWN_VARIATIONS 3
+#define FOUNTAIN_VARIATION_OFFSET (STAIRCASE_DOWN_VARIATIONS + STAIRCASE_DOWN_VARIATION_OFFSET)
+#define FOUNTAIN_VARIATIONS 7
+#define MAX_VARIATIONS (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
+#define is_wall_variation(idx) ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
 
 struct symparse {
     unsigned range;
@@ -358,6 +389,7 @@ struct symsetentry {
 #define H_CURS    3
 
 extern const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS]; /* defaults */
+extern const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS];
 extern const struct symdef def_warnsyms[WARNCOUNT];
 extern int currentgraphics; /* from drawing.c */
 extern nhsym showsyms[];

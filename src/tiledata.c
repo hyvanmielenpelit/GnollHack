@@ -655,38 +655,38 @@ short* tilemaparray;
                 {
                     if (j == 0)
                     {
-                        if (tsd->inventory_tile_style == 0)
+                        if (tsd->inventory_tile_style != 1)
                         {
                             int glyph_offset3 = GLYPH_ARTIFACT_INVENTORY_OFF;
-                            tilemaparray[i + glyph_offset3] = tile_count;
-                            if (tsd->lit_tile_style == 0)
+                            tilemaparray[(i - 1) + glyph_offset3] = tile_count;
+                            if (tsd->lit_tile_style != 1)
                             {
                                 int glyph_offset4 = GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
-                                tilemaparray[i + glyph_offset4] = tile_count;
+                                tilemaparray[(i - 1) + glyph_offset4] = tile_count;
                             }
                         }
-                        if (tsd->lit_tile_style == 0)
+                        if (tsd->lit_tile_style != 1)
                         {
                             int glyph_offset4 = GLYPH_ARTIFACT_LIT_OFF;
-                            tilemaparray[i + glyph_offset4] = tile_count;
+                            tilemaparray[(i - 1) + glyph_offset4] = tile_count;
                         }
-                        if (tsd->missile_tile_style == 0)
+                        if (tsd->missile_tile_style != 1)
                         {
                             int glyph_offset4 = GLYPH_ARTIFACT_MISSILE_OFF;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
-                                tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
                             }
                         }
                     }
-                    tilemaparray[i - 1 + glyph_offset] = tile_count;
+                    tilemaparray[(i - 1) + glyph_offset] = tile_count;
                     tile_count++;
                 }
             }
             else
             {
                 if (j == 4)
-                        tile_count += missile_tile_num;
+                    tile_count += missile_tile_num;
                 else
                     tile_count++;
             }
@@ -708,7 +708,7 @@ short* tilemaparray;
         {
             if (cmap_idx > 0)
             {
-                if (tsd->nonzero_cmap_style == 1 && (i < S_vwall || i > S_trwall))
+                if (tsd->other_cmaps_have_only_walls == 1 && (i < S_vwall || i > S_trwall))
                     continue;
             }
             if (process_style == 0)
@@ -723,6 +723,14 @@ short* tilemaparray;
                 {
                     glyph_offset = GLYPH_CMAP_OFF + cmap_idx * CMAP_TYPE_CHAR_NUM;
                     tilemaparray[i + glyph_offset] = tile_count;
+                    if (!tsd->has_variations && defsyms[i].variations > 0)
+                    {
+                        for (int m = 0; m < defsyms[i].variations; m++)
+                        {
+                            glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                            tilemaparray[m + defsyms[i].variation_offset+ glyph_offset] = tile_count;
+                        }
+                    }
                 }
                 else
                 {
@@ -734,23 +742,104 @@ short* tilemaparray;
                         {
                             glyph_offset = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
                             tilemaparray[i + glyph_offset] = tile_count;
+                            if (!tsd->has_variations && defsyms[i].variations > 0)
+                            {
+                                for (int m = 0; m < defsyms[i].variations; m++)
+                                {
+                                    glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                                    tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
+                                }
+                            }
                         }
                     }
                 }
 
-                if (tsd->nonzero_cmap_style == 1 && cmap_idx == 0 && num_cmaps > 1 && (i < S_vwall || i > S_trwall))
+                if (tsd->other_cmaps_have_only_walls == 1 && cmap_idx == 0 && num_cmaps > 1 && (i < S_vwall || i > S_trwall))
                 {
                     /* copy non-walls to all other cmaps */
                     for (int k = 1; k < num_cmaps; k++)
                     {
                         int glyph_offset2 = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
                         tilemaparray[i + glyph_offset2] = tile_count;
+                        if (!tsd->has_variations && defsyms[i].variations > 0)
+                        {
+                            for (int m = 0; m < defsyms[i].variations; m++)
+                            {
+                                glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                                tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
+                            }
+                        }
                     }
                 }
             }
             tile_count++;
         }
     }
+
+    if (tsd->has_variations)
+    {
+        /* CMAP variation tiles */
+        tile_section_name = "cmap-variations";
+        int num_cmaps = (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps));
+        for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
+        {
+            char namebuf[BUFSZ];
+            if (tsd->cmap_names[cmap_idx] && strcmp(tsd->cmap_names[cmap_idx], ""))
+                Sprintf(namebuf, "%s", tsd->cmap_names[cmap_idx]);
+            else
+                Sprintf(namebuf, "unnamed-cmap-%d", cmap_idx);
+
+            for (int i = 0; i < MAX_VARIATIONS; i++)
+            {
+                if (cmap_idx > 0)
+                {
+                    if (tsd->other_cmaps_have_only_walls == 1 && !is_wall_variation(i))
+                        continue;
+                }
+
+                if (process_style == 0)
+                {
+                    Sprintf(buf, "%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf,
+                        (defsym_variations[i].explanation && strcmp(defsym_variations[i].explanation, "")) ? defsym_variations[i].explanation : "no description");
+                    (void)write(fd, buf, strlen(buf));
+                }
+                else if (process_style == 1)
+                {
+                    if (tsd->has_full_cmap_set)
+                    {
+                        glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                        tilemaparray[i + glyph_offset] = tile_count;
+                    }
+                    else
+                    {
+                        /* Go through all internal cmaps */
+                        for (int k = 0; k < CMAP_TYPE_MAX; k++)
+                        {
+                            /* Write this cmap_idx for all internal CMAPs it is used for */
+                            if (tsd->cmap_mapping[k] == cmap_idx)
+                            {
+                                glyph_offset = GLYPH_CMAP_VARIATION_OFF + k * MAX_VARIATIONS;
+                                tilemaparray[i + glyph_offset] = tile_count;
+                            }
+                        }
+                    }
+
+                    if (tsd->other_cmaps_have_only_walls == 1 && cmap_idx == 0 && num_cmaps > 1 && !is_wall_variation(i))
+                    {
+                        /* copy non-walls to all other cmaps */
+                        for (int k = 1; k < num_cmaps; k++)
+                        {
+                            int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + k * MAX_VARIATIONS;
+                            tilemaparray[i + glyph_offset2] = tile_count;
+                        }
+                    }
+
+                }
+                tile_count++;
+            }
+        }
+    }
+
 
 
     /* Miscellaneous tiles */

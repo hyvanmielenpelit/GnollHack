@@ -486,6 +486,62 @@ monsters,base,normal,roshi
 monsters,base,normal,guide
 monsters,base,normal,warrior
 monsters,base,normal,apprentice
+monsters,base,ridden,rothe
+monsters,base,ridden,wumpus
+monsters,base,ridden,bison
+monsters,base,ridden,titanothere
+monsters,base,ridden,mumak
+monsters,base,ridden,baluchitherium
+monsters,base,ridden,gorgon
+monsters,base,ridden,mastodon
+monsters,base,ridden,ram
+monsters,base,ridden,pony
+monsters,base,ridden,pegasus
+monsters,base,ridden,horse
+monsters,base,ridden,large ram
+monsters,base,ridden,white unicorn
+monsters,base,ridden,gray unicorn
+monsters,base,ridden,black unicorn
+monsters,base,ridden,warhorse
+monsters,base,ridden,warram
+monsters,base,ridden,ki-rin
+monsters,base,ridden,plains centaur
+monsters,base,ridden,forest centaur
+monsters,base,ridden,mountain centaur
+monsters,base,ridden,gray dragon hatchling
+monsters,base,ridden,silver dragon hatchling
+monsters,base,ridden,red dragon hatchling
+monsters,base,ridden,white dragon hatchling
+monsters,base,ridden,orange dragon hatchling
+monsters,base,ridden,black dragon hatchling
+monsters,base,ridden,blue dragon hatchling
+monsters,base,ridden,green dragon hatchling
+monsters,base,ridden,yellow dragon hatchling
+monsters,base,ridden,gray dragon
+monsters,base,ridden,silver dragon
+monsters,base,ridden,red dragon
+monsters,base,ridden,white dragon
+monsters,base,ridden,orange dragon
+monsters,base,ridden,black dragon
+monsters,base,ridden,blue dragon
+monsters,base,ridden,green dragon
+monsters,base,ridden,yellow dragon
+monsters,base,ridden,ancient gray dragon
+monsters,base,ridden,ancient silver dragon
+monsters,base,ridden,ancient red dragon
+monsters,base,ridden,ancient white dragon
+monsters,base,ridden,ancient orange dragon
+monsters,base,ridden,ancient black dragon
+monsters,base,ridden,ancient blue dragon
+monsters,base,ridden,ancient green dragon
+monsters,base,ridden,ancient yellow dragon
+monsters,base,ridden,dracolich
+monsters,base,ridden,elder dracolich
+monsters,base,ridden,gold dragon
+monsters,base,ridden,ancient gold dragon
+monsters,base,ridden,Bahamut
+monsters,base,ridden,jabberwock
+monsters,base,ridden,Tiamat
 monsters,base,statue,giant ant
 monsters,base,statue,giant beetle
 monsters,base,statue,fire ant
@@ -1831,6 +1887,308 @@ objects,normal,reagents,modronite octahedron,alien eight-faced polyhedral object
 objects,normal,reagents,modronite dodecahedron,alien twelve-faced polyhedral object
 objects,normal,reagents,modronite icosahedron,alien twenty-faced polyhedral object
 objects,normal,reagents,feather,no description
+objects,lit,tools,tallow candle,old-fashioned candle
+objects,lit,tools,wax candle,twisted candle
+objects,lit,tools,magic candle,handcrafted candle
+objects,lit,tools,brass lantern,no description
+objects,lit,tools,oil lamp,antiquated brass lamp
+objects,lit,tools,magic lamp,oriental brass lamp
+objects,lit,tools,holy symbol,religious symbol
+objects,lit,tools,Candelabrum of Invocation,candelabrum
+objects,lit,rocks,luckstone,gray
+objects,missile,weapons,arrow,no description,top-left
+objects,missile,weapons,arrow,no description,top-center
+objects,missile,weapons,arrow,no description,top-right
+objects,missile,weapons,arrow,no description,middle-right
+objects,missile,weapons,arrow,no description,middle-left
+objects,missile,weapons,arrow,no description,bottom-left
+objects,missile,weapons,arrow,no description,bottom-center
+objects,missile,weapons,arrow,no description,bottom-right
+objects,missile,weapons,elven arrow,runed arrow,top-left
+objects,missile,weapons,elven arrow,runed arrow,top-center
+objects,missile,weapons,elven arrow,runed arrow,top-right
+objects,missile,weapons,elven arrow,runed arrow,middle-right
+objects,missile,weapons,elven arrow,runed arrow,middle-left
+objects,missile,weapons,elven arrow,runed arrow,bottom-left
+objects,missile,weapons,elven arrow,runed arrow,bottom-center
+objects,missile,weapons,elven arrow,runed arrow,bottom-right
+objects,missile,weapons,orcish arrow,crude arrow,top-left
+objects,missile,weapons,orcish arrow,crude arrow,top-center
+objects,missile,weapons,orcish arrow,crude arrow,top-right
+objects,missile,weapons,orcish arrow,crude arrow,middle-right
+objects,missile,weapons,orcish arrow,crude arrow,middle-left
+objects,missile,weapons,orcish arrow,crude arrow,bottom-left
+objects,missile,weapons,orcish arrow,crude arrow,bottom-center
+objects,missile,weapons,orcish arrow,crude arrow,bottom-right
+objects,missile,weapons,silver arrow,no description,top-left
+objects,missile,weapons,silver arrow,no description,top-center
+objects,missile,weapons,silver arrow,no description,top-right
+objects,missile,weapons,silver arrow,no description,middle-right
+objects,missile,weapons,silver arrow,no description,middle-left
+objects,missile,weapons,silver arrow,no description,bottom-left
+objects,missile,weapons,silver arrow,no description,bottom-center
+objects,missile,weapons,silver arrow,no description,bottom-right
+objects,missile,weapons,ya,bamboo arrow,top-left
+objects,missile,weapons,ya,bamboo arrow,top-center
+objects,missile,weapons,ya,bamboo arrow,top-right
+objects,missile,weapons,ya,bamboo arrow,middle-right
+objects,missile,weapons,ya,bamboo arrow,middle-left
+objects,missile,weapons,ya,bamboo arrow,bottom-left
+objects,missile,weapons,ya,bamboo arrow,bottom-center
+objects,missile,weapons,ya,bamboo arrow,bottom-right
+objects,missile,weapons,bone arrow,no description,top-left
+objects,missile,weapons,bone arrow,no description,top-center
+objects,missile,weapons,bone arrow,no description,top-right
+objects,missile,weapons,bone arrow,no description,middle-right
+objects,missile,weapons,bone arrow,no description,middle-left
+objects,missile,weapons,bone arrow,no description,bottom-left
+objects,missile,weapons,bone arrow,no description,bottom-center
+objects,missile,weapons,bone arrow,no description,bottom-right
+objects,missile,weapons,crossbow bolt,no description,top-left
+objects,missile,weapons,crossbow bolt,no description,top-center
+objects,missile,weapons,crossbow bolt,no description,top-right
+objects,missile,weapons,crossbow bolt,no description,middle-right
+objects,missile,weapons,crossbow bolt,no description,middle-left
+objects,missile,weapons,crossbow bolt,no description,bottom-left
+objects,missile,weapons,crossbow bolt,no description,bottom-center
+objects,missile,weapons,crossbow bolt,no description,bottom-right
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,top-left
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,top-center
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,top-right
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,middle-right
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,middle-left
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,bottom-left
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,bottom-center
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,bottom-right
+objects,missile,weapons,silver crossbow bolt,no description,top-left
+objects,missile,weapons,silver crossbow bolt,no description,top-center
+objects,missile,weapons,silver crossbow bolt,no description,top-right
+objects,missile,weapons,silver crossbow bolt,no description,middle-right
+objects,missile,weapons,silver crossbow bolt,no description,middle-left
+objects,missile,weapons,silver crossbow bolt,no description,bottom-left
+objects,missile,weapons,silver crossbow bolt,no description,bottom-center
+objects,missile,weapons,silver crossbow bolt,no description,bottom-right
+objects,missile,weapons,bone quarrel,no description,top-left
+objects,missile,weapons,bone quarrel,no description,top-center
+objects,missile,weapons,bone quarrel,no description,top-right
+objects,missile,weapons,bone quarrel,no description,middle-right
+objects,missile,weapons,bone quarrel,no description,middle-left
+objects,missile,weapons,bone quarrel,no description,bottom-left
+objects,missile,weapons,bone quarrel,no description,bottom-center
+objects,missile,weapons,bone quarrel,no description,bottom-right
+objects,missile,weapons,leaden sling-bullet,no description,top-left
+objects,missile,weapons,leaden sling-bullet,no description,top-center
+objects,missile,weapons,leaden sling-bullet,no description,top-right
+objects,missile,weapons,leaden sling-bullet,no description,middle-right
+objects,missile,weapons,leaden sling-bullet,no description,middle-left
+objects,missile,weapons,leaden sling-bullet,no description,bottom-left
+objects,missile,weapons,leaden sling-bullet,no description,bottom-center
+objects,missile,weapons,leaden sling-bullet,no description,bottom-right
+objects,missile,weapons,iron sling-bullet,no description,top-left
+objects,missile,weapons,iron sling-bullet,no description,top-center
+objects,missile,weapons,iron sling-bullet,no description,top-right
+objects,missile,weapons,iron sling-bullet,no description,middle-right
+objects,missile,weapons,iron sling-bullet,no description,middle-left
+objects,missile,weapons,iron sling-bullet,no description,bottom-left
+objects,missile,weapons,iron sling-bullet,no description,bottom-center
+objects,missile,weapons,iron sling-bullet,no description,bottom-right
+objects,missile,weapons,silver sling-bullet,no description,top-left
+objects,missile,weapons,silver sling-bullet,no description,top-center
+objects,missile,weapons,silver sling-bullet,no description,top-right
+objects,missile,weapons,silver sling-bullet,no description,middle-right
+objects,missile,weapons,silver sling-bullet,no description,middle-left
+objects,missile,weapons,silver sling-bullet,no description,bottom-left
+objects,missile,weapons,silver sling-bullet,no description,bottom-center
+objects,missile,weapons,silver sling-bullet,no description,bottom-right
+objects,missile,weapons,arrow of dragon slaying,black arrow,top-left
+objects,missile,weapons,arrow of dragon slaying,black arrow,top-center
+objects,missile,weapons,arrow of dragon slaying,black arrow,top-right
+objects,missile,weapons,arrow of dragon slaying,black arrow,middle-right
+objects,missile,weapons,arrow of dragon slaying,black arrow,middle-left
+objects,missile,weapons,arrow of dragon slaying,black arrow,bottom-left
+objects,missile,weapons,arrow of dragon slaying,black arrow,bottom-center
+objects,missile,weapons,arrow of dragon slaying,black arrow,bottom-right
+objects,missile,weapons,dart,no description,top-left
+objects,missile,weapons,dart,no description,top-center
+objects,missile,weapons,dart,no description,top-right
+objects,missile,weapons,dart,no description,middle-right
+objects,missile,weapons,dart,no description,middle-left
+objects,missile,weapons,dart,no description,bottom-left
+objects,missile,weapons,dart,no description,bottom-center
+objects,missile,weapons,dart,no description,bottom-right
+objects,missile,weapons,shuriken,throwing star,top-left
+objects,missile,weapons,shuriken,throwing star,top-center
+objects,missile,weapons,shuriken,throwing star,top-right
+objects,missile,weapons,shuriken,throwing star,middle-right
+objects,missile,weapons,shuriken,throwing star,middle-left
+objects,missile,weapons,shuriken,throwing star,bottom-left
+objects,missile,weapons,shuriken,throwing star,bottom-center
+objects,missile,weapons,shuriken,throwing star,bottom-right
+objects,missile,weapons,boomerang,no description,top-left
+objects,missile,weapons,boomerang,no description,top-center
+objects,missile,weapons,boomerang,no description,top-right
+objects,missile,weapons,boomerang,no description,middle-right
+objects,missile,weapons,boomerang,no description,middle-left
+objects,missile,weapons,boomerang,no description,bottom-left
+objects,missile,weapons,boomerang,no description,bottom-center
+objects,missile,weapons,boomerang,no description,bottom-right
+objects,missile,weapons,spear,no description,top-left
+objects,missile,weapons,spear,no description,top-center
+objects,missile,weapons,spear,no description,top-right
+objects,missile,weapons,spear,no description,middle-right
+objects,missile,weapons,spear,no description,middle-left
+objects,missile,weapons,spear,no description,bottom-left
+objects,missile,weapons,spear,no description,bottom-center
+objects,missile,weapons,spear,no description,bottom-right
+objects,missile,weapons,elven spear,runed spear,top-left
+objects,missile,weapons,elven spear,runed spear,top-center
+objects,missile,weapons,elven spear,runed spear,top-right
+objects,missile,weapons,elven spear,runed spear,middle-right
+objects,missile,weapons,elven spear,runed spear,middle-left
+objects,missile,weapons,elven spear,runed spear,bottom-left
+objects,missile,weapons,elven spear,runed spear,bottom-center
+objects,missile,weapons,elven spear,runed spear,bottom-right
+objects,missile,weapons,orcish spear,crude spear,top-left
+objects,missile,weapons,orcish spear,crude spear,top-center
+objects,missile,weapons,orcish spear,crude spear,top-right
+objects,missile,weapons,orcish spear,crude spear,middle-right
+objects,missile,weapons,orcish spear,crude spear,middle-left
+objects,missile,weapons,orcish spear,crude spear,bottom-left
+objects,missile,weapons,orcish spear,crude spear,bottom-center
+objects,missile,weapons,orcish spear,crude spear,bottom-right
+objects,missile,weapons,dwarvish spear,stout spear,top-left
+objects,missile,weapons,dwarvish spear,stout spear,top-center
+objects,missile,weapons,dwarvish spear,stout spear,top-right
+objects,missile,weapons,dwarvish spear,stout spear,middle-right
+objects,missile,weapons,dwarvish spear,stout spear,middle-left
+objects,missile,weapons,dwarvish spear,stout spear,bottom-left
+objects,missile,weapons,dwarvish spear,stout spear,bottom-center
+objects,missile,weapons,dwarvish spear,stout spear,bottom-right
+objects,missile,weapons,silver spear,no description,top-left
+objects,missile,weapons,silver spear,no description,top-center
+objects,missile,weapons,silver spear,no description,top-right
+objects,missile,weapons,silver spear,no description,middle-right
+objects,missile,weapons,silver spear,no description,middle-left
+objects,missile,weapons,silver spear,no description,bottom-left
+objects,missile,weapons,silver spear,no description,bottom-center
+objects,missile,weapons,silver spear,no description,bottom-right
+objects,missile,weapons,javelin,throwing spear,top-left
+objects,missile,weapons,javelin,throwing spear,top-center
+objects,missile,weapons,javelin,throwing spear,top-right
+objects,missile,weapons,javelin,throwing spear,middle-right
+objects,missile,weapons,javelin,throwing spear,middle-left
+objects,missile,weapons,javelin,throwing spear,bottom-left
+objects,missile,weapons,javelin,throwing spear,bottom-center
+objects,missile,weapons,javelin,throwing spear,bottom-right
+objects,missile,weapons,javelin of returning,throwing spear,top-left
+objects,missile,weapons,javelin of returning,throwing spear,top-center
+objects,missile,weapons,javelin of returning,throwing spear,top-right
+objects,missile,weapons,javelin of returning,throwing spear,middle-right
+objects,missile,weapons,javelin of returning,throwing spear,middle-left
+objects,missile,weapons,javelin of returning,throwing spear,bottom-left
+objects,missile,weapons,javelin of returning,throwing spear,bottom-center
+objects,missile,weapons,javelin of returning,throwing spear,bottom-right
+objects,missile,weapons,dagger,no description,top-left
+objects,missile,weapons,dagger,no description,top-center
+objects,missile,weapons,dagger,no description,top-right
+objects,missile,weapons,dagger,no description,middle-right
+objects,missile,weapons,dagger,no description,middle-left
+objects,missile,weapons,dagger,no description,bottom-left
+objects,missile,weapons,dagger,no description,bottom-center
+objects,missile,weapons,dagger,no description,bottom-right
+objects,missile,weapons,elven dagger,runed dagger,top-left
+objects,missile,weapons,elven dagger,runed dagger,top-center
+objects,missile,weapons,elven dagger,runed dagger,top-right
+objects,missile,weapons,elven dagger,runed dagger,middle-right
+objects,missile,weapons,elven dagger,runed dagger,middle-left
+objects,missile,weapons,elven dagger,runed dagger,bottom-left
+objects,missile,weapons,elven dagger,runed dagger,bottom-center
+objects,missile,weapons,elven dagger,runed dagger,bottom-right
+objects,missile,weapons,elven runedagger,runed dagger,top-left
+objects,missile,weapons,elven runedagger,runed dagger,top-center
+objects,missile,weapons,elven runedagger,runed dagger,top-right
+objects,missile,weapons,elven runedagger,runed dagger,middle-right
+objects,missile,weapons,elven runedagger,runed dagger,middle-left
+objects,missile,weapons,elven runedagger,runed dagger,bottom-left
+objects,missile,weapons,elven runedagger,runed dagger,bottom-center
+objects,missile,weapons,elven runedagger,runed dagger,bottom-right
+objects,missile,weapons,orcish dagger,crude dagger,top-left
+objects,missile,weapons,orcish dagger,crude dagger,top-center
+objects,missile,weapons,orcish dagger,crude dagger,top-right
+objects,missile,weapons,orcish dagger,crude dagger,middle-right
+objects,missile,weapons,orcish dagger,crude dagger,middle-left
+objects,missile,weapons,orcish dagger,crude dagger,bottom-left
+objects,missile,weapons,orcish dagger,crude dagger,bottom-center
+objects,missile,weapons,orcish dagger,crude dagger,bottom-right
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,top-left
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,top-center
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,top-right
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,middle-right
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,middle-left
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,bottom-left
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,bottom-center
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,bottom-right
+objects,missile,weapons,bone dagger,no description,top-left
+objects,missile,weapons,bone dagger,no description,top-center
+objects,missile,weapons,bone dagger,no description,top-right
+objects,missile,weapons,bone dagger,no description,middle-right
+objects,missile,weapons,bone dagger,no description,middle-left
+objects,missile,weapons,bone dagger,no description,bottom-left
+objects,missile,weapons,bone dagger,no description,bottom-center
+objects,missile,weapons,bone dagger,no description,bottom-right
+objects,missile,weapons,silver dagger,no description,top-left
+objects,missile,weapons,silver dagger,no description,top-center
+objects,missile,weapons,silver dagger,no description,top-right
+objects,missile,weapons,silver dagger,no description,middle-right
+objects,missile,weapons,silver dagger,no description,middle-left
+objects,missile,weapons,silver dagger,no description,bottom-left
+objects,missile,weapons,silver dagger,no description,bottom-center
+objects,missile,weapons,silver dagger,no description,bottom-right
+objects,missile,weapons,Morgul blade,black dagger,top-left
+objects,missile,weapons,Morgul blade,black dagger,top-center
+objects,missile,weapons,Morgul blade,black dagger,top-right
+objects,missile,weapons,Morgul blade,black dagger,middle-right
+objects,missile,weapons,Morgul blade,black dagger,middle-left
+objects,missile,weapons,Morgul blade,black dagger,bottom-left
+objects,missile,weapons,Morgul blade,black dagger,bottom-center
+objects,missile,weapons,Morgul blade,black dagger,bottom-right
+objects,missile,potions,gain ability,ruby,generic
+objects,missile,potions,restore ability,pink,generic
+objects,missile,potions,confusion,orange,generic
+objects,missile,potions,blindness,yellow,generic
+objects,missile,potions,paralysis,emerald,generic
+objects,missile,potions,speed,dark green,generic
+objects,missile,potions,levitation,cyan,generic
+objects,missile,potions,hallucination,sky blue,generic
+objects,missile,potions,invisibility,brilliant blue,generic
+objects,missile,potions,see invisible,magenta,generic
+objects,missile,potions,magic resistance,gray,generic
+objects,missile,potions,healing,purple-red,generic
+objects,missile,potions,extra healing,puce,generic
+objects,missile,potions,greater healing,deep red,generic
+objects,missile,potions,full healing,black,generic
+objects,missile,potions,gain level,milky,generic
+objects,missile,potions,enlightenment,swirly,generic
+objects,missile,potions,monster detection,bubbly,generic
+objects,missile,potions,object detection,smoky,generic
+objects,missile,potions,gain energy,cloudy,generic
+objects,missile,potions,greater energy,greenish,generic
+objects,missile,potions,full energy,silvery,generic
+objects,missile,potions,sleeping,effervescent,generic
+objects,missile,potions,polymorph,golden,generic
+objects,missile,potions,booze,brown,generic
+objects,missile,potions,sickness,fizzy,generic
+objects,missile,potions,fruit juice,dark,generic
+objects,missile,potions,acid,white,generic
+objects,missile,potions,oil,murky,generic
+objects,missile,potions,poison,sapphire,generic
+objects,missile,potions,water,clear,generic
+objects,missile,potions,dwarven stout,dark ruby,generic
+objects,missile,potions,urine,pale yellow,generic
+objects,missile,rocks,luckstone,gray,generic
+objects,missile,rocks,rock,no description,generic
+objects,missile,rocks,stone pebble,no description,generic
+objects,missile,rocks,clay pebble,no description,generic
 artifacts,normal,Excalibur,gold-hilted runed long sword,long sword,no base item description
 artifacts,normal,Stormbringer,black runesword,runesword,runed broadsword
 artifacts,normal,Mjollnir,shining runed war hammer,heavy war hammer,runed war hammer
@@ -1877,6 +2235,21 @@ artifacts,normal,The Platinum Yendorian Express Card,black credit card,credit ca
 artifacts,normal,The Orb of Fate,ornamental crystal ball,crystal ball,glass orb
 artifacts,normal,The Eye of the Aethiopica,eye-shaped amulet,amulet of ESP,circular
 artifacts,normal,The Ark of the Covenant,gold-covered wooden chest,golden chest,no base item description
+artifacts,lit,Orcrist,ornate runed broadsword,elven broadsword,runed broadsword
+artifacts,lit,Sting,ornate runed dagger,elven runedagger,runed dagger
+artifacts,lit,Dragonbane,mithril-hilted runed broadsword,sword of dragon slaying,ancient long sword
+artifacts,lit,Demonbane,runed silver long sword,sword of demon slaying,shining long sword
+artifacts,lit,Werebane,runed silver saber,saber of lycanthrope slaying,no base item description
+artifacts,lit,Sunsword,glowing runed long sword,long sword,no base item description
+artifacts,lit,The Heart of Ahriman,glowing red jewel,luckstone,gray
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-left
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-center
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-right
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,middle-right
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,middle-left
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,bottom-left
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,bottom-center
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,bottom-right
 cmap,dungeon-normal,S_stone,dark part of a room
 cmap,dungeon-normal,S_vwall,wall
 cmap,dungeon-normal,S_hwall,wall
@@ -1975,6 +2348,46 @@ cmap,dungeon-normal,S_ss3,no description
 cmap,dungeon-normal,S_ss4,no description
 cmap,dungeon-normal,S_poisoncloud,poison cloud
 cmap,dungeon-normal,S_goodpos,valid position
+cmap-variations,dungeon-normal,S_stone,hwall-variation-1
+cmap-variations,dungeon-normal,S_vwall,hwall-variation-2
+cmap-variations,dungeon-normal,S_hwall,hwall-variation-3
+cmap-variations,dungeon-normal,S_tlcorn,hwall-variation-4
+cmap-variations,dungeon-normal,S_trcorn,hwall-variation-5
+cmap-variations,dungeon-normal,S_blcorn,floor-variation-1
+cmap-variations,dungeon-normal,S_brcorn,floor-variation-2
+cmap-variations,dungeon-normal,S_crwall,floor-variation-3
+cmap-variations,dungeon-normal,S_tuwall,floor-variation-4
+cmap-variations,dungeon-normal,S_tdwall,floor-variation-5
+cmap-variations,dungeon-normal,S_tlwall,dark-room-variation-1
+cmap-variations,dungeon-normal,S_trwall,dark-room-variation-2
+cmap-variations,dungeon-normal,S_ndoor,dark-room-variation-3
+cmap-variations,dungeon-normal,S_vodoor,dark-room-variation-4
+cmap-variations,dungeon-normal,S_hodoor,dark-room-variation-5
+cmap-variations,dungeon-normal,S_vcdoor,lit corridor-variation-1
+cmap-variations,dungeon-normal,S_hcdoor,lit corridor-variation-2
+cmap-variations,dungeon-normal,S_vbdoor,lit corridor-variation-3
+cmap-variations,dungeon-normal,S_hbdoor,corridor-variation-1
+cmap-variations,dungeon-normal,S_voportcullis,corridor-variation-2
+cmap-variations,dungeon-normal,S_hoportcullis,corridor-variation-3
+cmap-variations,dungeon-normal,S_bars,basic altar
+cmap-variations,dungeon-normal,S_tree,lawful altar
+cmap-variations,dungeon-normal,S_room,neutral altar
+cmap-variations,dungeon-normal,S_grass,chaotic altar
+cmap-variations,dungeon-normal,S_darkroom,altar of Moloch
+cmap-variations,dungeon-normal,S_corr,high altar
+cmap-variations,dungeon-normal,S_litcorr,basic staircase up
+cmap-variations,dungeon-normal,S_upstair,branch staircase up
+cmap-variations,dungeon-normal,S_dnstair,special branch staircase up
+cmap-variations,dungeon-normal,S_upladder,basic staircase down
+cmap-variations,dungeon-normal,S_dnladder,branch staircase down
+cmap-variations,dungeon-normal,S_branch_upstair,special branch staircase down
+cmap-variations,dungeon-normal,S_branch_dnstair,basic fountain
+cmap-variations,dungeon-normal,S_extra_upstair,fountain of healing
+cmap-variations,dungeon-normal,S_extra_dnstair,fountain of mana
+cmap-variations,dungeon-normal,S_altar,fountain of power
+cmap-variations,dungeon-normal,S_lawful_altar,fountain of spring water
+cmap-variations,dungeon-normal,S_neutral_altar,fountain of poison
+cmap-variations,dungeon-normal,S_chaotic_altar,magic fountain
 misc,invisible,generic
 misc,explode,generic,top-left
 misc,explode,generic,top-center
