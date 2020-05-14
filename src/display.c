@@ -131,7 +131,10 @@ STATIC_DCL int FDECL(swallow_to_glyph, (int, int));
 STATIC_DCL void FDECL(display_warning, (struct monst *));
 
 STATIC_DCL int FDECL(check_pos, (int, int, int));
+STATIC_DCL int FDECL(get_object_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
+STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
+STATIC_DCL uchar FDECL(get_glyph_layer, (int));
 STATIC_DCL int FDECL(tether_glyph, (int, int));
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
@@ -1656,7 +1659,7 @@ int x, y, glyph;
             text = "player character";
             offset = glyph - GLYPH_PLAYER_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_MISSILE_OFF
-			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact missile */
+			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact as missile */
 			text = "artifact missile";
 			offset = glyph - GLYPH_ARTIFACT_MISSILE_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_INVENTORY_LIT_OFF
@@ -1696,19 +1699,22 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_EXPLODE_OFF) { /* explosion */
             text = "explosion";
             offset = glyph - GLYPH_EXPLODE_OFF;
+        } else if (glyph >= GLYPH_CMAP_VARIATION_OFF) { /* cmap variation */
+            text = "cmap variation";
+            offset = glyph - GLYPH_CMAP_VARIATION_OFF;
         } else if (glyph >= GLYPH_CMAP_OFF) { /* cmap */
             text = "cmap_index";
             offset = glyph - GLYPH_CMAP_OFF;
-        } else if (glyph >= GLYPH_OBJ_MISSILE_OFF) { /* object in left hand */
+        } else if (glyph >= GLYPH_OBJ_MISSILE_OFF) { /* object as missile */
             text = "object missile";
             offset = glyph - GLYPH_OBJ_MISSILE_OFF;
-        } else if (glyph >= GLYPH_OBJ_INVENTORY_LIT_OFF) { /* object in left hand */
+        } else if (glyph >= GLYPH_OBJ_INVENTORY_LIT_OFF) { /* object lit in inventory */
             text = "object lit in inventory";
             offset = glyph - GLYPH_OBJ_INVENTORY_LIT_OFF;
-        } else if (glyph >= GLYPH_OBJ_LIT_OFF) { /* object in left hand */
+        } else if (glyph >= GLYPH_OBJ_LIT_OFF) { /* object lit */
             text = "object lit";
             offset = glyph - GLYPH_OBJ_LIT_OFF;
-        } else if (glyph >= GLYPH_OBJ_INVENTORY_OFF) { /* object in right hand */
+        } else if (glyph >= GLYPH_OBJ_INVENTORY_OFF) { /* object in inventory */
             text = "object in inventory";
             offset = glyph - GLYPH_OBJ_INVENTORY_OFF;
         } else if (glyph >= GLYPH_OBJ_OFF) { /* object */
@@ -2240,6 +2246,133 @@ xchar x, y;
 #endif
     }
     return bkglyph;
+}
+
+/* floor for transparent backglyphs */
+STATIC_OVL int
+get_floor_layer_glyph(x, y)
+xchar x, y;
+{
+    int idx;
+    struct rm* ptr = &(levl[x][y]);
+    boolean is_variation = FALSE;
+
+    switch (ptr->typ) {
+    case SCORR:
+    case STONE:
+    case ROOM:
+    case GRASS:
+    case CORR:
+    case HWALL:
+    case VWALL:
+    case TLCORNER:
+    case TRCORNER:
+    case BLCORNER:
+    case BRCORNER:
+    case CROSSWALL:
+    case TUWALL:
+    case TDWALL:
+    case TLWALL:
+    case TRWALL:
+    case SDOOR:
+    case LAVAPOOL:
+    case ICE:
+    case AIR:
+    case CLOUD:
+    case WATER:
+    case DBWALL:
+    case DRAWBRIDGE_UP:
+    case MOAT:
+    case POOL:
+        return NO_GLYPH;
+    case DOOR:
+    case IRONBARS:
+        idx = S_room;
+        break;
+    case TREE:
+        idx = S_grass;
+        break;
+    case LADDER:
+    case STAIRS:
+    case FOUNTAIN:
+    case SINK:
+    case ALTAR:
+    case GRAVE:
+    case THRONE:
+        idx = S_room;
+        break;
+    case DRAWBRIDGE_DOWN:
+        switch (ptr->drawbridgemask & DB_UNDER) {
+        case DB_MOAT:
+            idx = S_pool;
+            break;
+        case DB_LAVA:
+            idx = S_lava;
+            break;
+        case DB_ICE:
+            idx = S_ice;
+            break;
+        case DB_FLOOR:
+            idx = S_room;
+            break;
+        default:
+            impossible("Strange db-under: %d",
+                ptr->drawbridgemask & DB_UNDER);
+            idx = S_room; /* something is better than nothing */
+            break;
+        }
+        break;
+    default:
+        impossible("back_to_glyph:  unknown level type [ = %d ]", ptr->typ);
+        idx = S_room;
+        break;
+    }
+
+    return cmap_to_glyph(idx);
+}
+
+/* object glyph for object layer for transparent backglyphs */
+STATIC_OVL int
+get_object_layer_glyph(x, y)
+xchar x, y;
+{
+    struct obj* otmp = level.objects[x][y];
+    if (otmp && cansee(x, y) && !u.uswallow)
+    {
+        return obj_to_glyph(otmp, rn2);
+    }
+    else
+        return NO_GLYPH;
+}
+
+#define FLOOR_LAYER 0
+#define CMAP_LAYER 1
+#define OBJECT_LAYER 2
+#define MONSTER_LAYER 3
+#define EFFECT_LAYER 4
+
+uchar
+get_glyph_layer(signed_glyph)
+int signed_glyph;
+{
+    int glyph = abs(signed_glyph);
+
+    if (glyph >= GLYPH_STATUE_OFF && glyph < GLYPH_PLAYER_OFF)
+        return OBJECT_LAYER; /* Statue or artifact */
+    else if (glyph >= GLYPH_BODY_OFF && glyph < GLYPH_RIDDEN_OFF)
+        return OBJECT_LAYER; /* Corpse */
+    else if (glyph >= GLYPH_FEMALE_BODY_OFF && glyph < GLYPH_FEMALE_RIDDEN_OFF)
+        return OBJECT_LAYER; /* Corpse */
+    else if (glyph >= GLYPH_MON_OFF && glyph < GLYPH_OBJ_OFF)
+        return MONSTER_LAYER; /* Monster */
+    else if (glyph >= GLYPH_WARNING_OFF && glyph < GLYPH_STATUE_OFF)
+        return MONSTER_LAYER; /* Warning */
+    else if (glyph >= GLYPH_PLAYER_OFF && glyph < MAX_GLYPH)
+        return MONSTER_LAYER; /* Player */
+    else if (glyph >= GLYPH_CMAP_OFF && glyph < GLYPH_EXPLODE_OFF)
+        return CMAP_LAYER; /* CMAP */
+
+    return EFFECT_LAYER;
 }
 
 /* ------------------------------------------------------------------------ */
