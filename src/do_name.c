@@ -240,8 +240,8 @@ const void *b;
 
 #define IS_UNEXPLORED_LOC(x,y) \
     (isok((x), (y))                                     \
-     && glyph_is_cmap(levl[(x)][(y)].glyph)             \
-     && glyph_to_cmap(levl[(x)][(y)].glyph) == S_stone  \
+     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].glyph)             \
+     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].glyph) == S_stone  \
      && !levl[(x)][(y)].seenv)
 
 static struct opvar *gloc_filter_map = (struct opvar *) 0;
@@ -258,7 +258,7 @@ int glyph;
 {
     int c;
 
-    if (!glyph_is_cmap(glyph))
+    if (!glyph_is_cmap_or_cmap_variation(glyph))
         return 0;
 
     c = glyph_to_cmap(glyph);
@@ -363,13 +363,13 @@ int x, y, gloc;
                 && glyph != objnum_to_glyph(BOULDER)
                 && glyph != objnum_to_glyph(ROCK));
     case GLOC_DOOR:
-        return (glyph_is_cmap(glyph)
+        return (glyph_is_cmap_or_cmap_variation(glyph)
                 && (is_cmap_door(glyph_to_cmap(glyph))
                     || is_cmap_drawbridge(glyph_to_cmap(glyph))
                     || glyph_to_cmap(glyph) == S_ndoor
                     ));
     case GLOC_EXPLORE:
-        return (glyph_is_cmap(glyph)
+        return (glyph_is_cmap_or_cmap_variation(glyph)
                 && (is_cmap_door(glyph_to_cmap(glyph))
                     || is_cmap_drawbridge(glyph_to_cmap(glyph))
                     || glyph_to_cmap(glyph) == S_ndoor
@@ -392,7 +392,7 @@ int x, y, gloc;
         /*FALLTHRU*/
     case GLOC_INTERESTING:
         return gather_locs_interesting(x,y, GLOC_DOOR)
-            || !(glyph_is_cmap(glyph)
+            || !(glyph_is_cmap_or_cmap_variation(glyph)
                  && (is_cmap_wall(glyph_to_cmap(glyph))
                      || glyph_to_cmap(glyph) == S_tree
                      || glyph_to_cmap(glyph) == S_bars
@@ -916,7 +916,7 @@ const char *goal;
                                 /* first, look at what is currently visible
                                    (might be monster) */
                                 k = glyph_at(tx, ty);
-                                if (glyph_is_cmap(k)
+                                if (glyph_is_cmap_or_cmap_variation(k)
                                     && matching[glyph_to_cmap(k)])
                                     goto foundc;
                                 /* next, try glyph that's remembered here
@@ -926,7 +926,7 @@ const char *goal;
                                        trap or object if not currently shown */
                                     && !iflags.terrainmode) {
                                     k = levl[tx][ty].glyph;
-                                    if (glyph_is_cmap(k)
+                                    if (glyph_is_cmap_or_cmap_variation(k)
                                         && matching[glyph_to_cmap(k)])
                                         goto foundc;
                                 }
@@ -934,7 +934,7 @@ const char *goal;
                                    we be using lastseentyp[][] instead?) */
                                 if (levl[tx][ty].seenv) {
                                     k = back_to_glyph(tx, ty);
-                                    if (glyph_is_cmap(k)
+                                    if (glyph_is_cmap_or_cmap_variation(k)
                                         && matching[glyph_to_cmap(k)])
                                         goto foundc;
                                 }

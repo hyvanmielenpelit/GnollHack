@@ -4276,17 +4276,11 @@ int x, y;
     }
     else if ((x == sstairs.sx && y == sstairs.sy && sstairs.up))
     {
-        if (use_extra_special_staircase())
-            cmap = S_extra_upstair; /* "staircase up" */
-        else
-            cmap = S_branch_upstair; /* "staircase up" */
+        cmap = S_upstair; /* "staircase up" */
     }
     else if ((x == sstairs.sx && y == sstairs.sy && !sstairs.up))
     {
-        if (use_extra_special_staircase())
-            cmap = S_extra_upstair; /* "staircase down" */
-        else
-            cmap = S_branch_dnstair; /* "staircase down" */
+        cmap = S_dnstair; /* "staircase down" */
     }
     else if (x == xupladder && y == yupladder)
         cmap = S_upladder; /* "ladder up" */

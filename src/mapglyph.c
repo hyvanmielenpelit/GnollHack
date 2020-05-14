@@ -27,7 +27,8 @@ static const int explcolors[] = {
 };
 
 #define zap_color(n) color = iflags.use_color ? zapcolors[n] : NO_COLOR
-#define cmap_color(n,cmap_idx) color = iflags.use_color ? defsyms[n].color[cmap_idx] : NO_COLOR
+#define cmap_color(n,cmap_type_index) color = iflags.use_color ? defsyms[n].color[cmap_type_index] : NO_COLOR
+#define cmap_variation_color(n,cmap_type_index) color = iflags.use_color ? defsym_variations[n].color[cmap_type_index] : NO_COLOR
 #define obj_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
 #define artifact_color(n) color = iflags.use_color ? artilist[n].ocolor : NO_COLOR
 #define mon_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
@@ -206,11 +207,28 @@ unsigned long *ospecial;
         idx = ((offset % MAX_EXPLOSION_CHARS) + S_explode1) + SYM_OFF_P;
         explode_color(offset / MAX_EXPLOSION_CHARS);
     }
-    else if ((offset = (glyph - GLYPH_CMAP_OFF)) >= 0)
+    else if ((offset = (glyph - GLYPH_CMAP_VARIATION_OFF)) >= 0 || (offset = (glyph - GLYPH_CMAP_OFF)) >= 0)
     { /* cmap */
-        int cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
-        int cmap_offset = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM;
-        idx = cmap_offset + SYM_OFF_P;
+        boolean is_variation = FALSE;
+        if ((glyph - GLYPH_CMAP_VARIATION_OFF) >= 0)
+            is_variation = TRUE;
+        int cmap_type_idx = 0;
+        int cmap_offset = 0;
+        int variation_index = 0;
+
+        if (is_variation)
+        {
+            cmap_type_idx = max(0, offset / MAX_VARIATIONS);
+            variation_index = max(0, offset - cmap_type_idx * MAX_VARIATIONS);
+            cmap_offset = defsym_variations[variation_index].base_screen_symbol;
+            idx = cmap_offset + SYM_OFF_P;
+        }
+        else
+        {
+            cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
+            cmap_offset = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM;
+            idx = cmap_offset + SYM_OFF_P;
+        }
 
         if (cmap_offset == S_extra_boulder)
             idx = SYM_BOULDER + SYM_OFF_X;
@@ -248,7 +266,10 @@ unsigned long *ospecial;
         } 
         else
         {
-            cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+            if (is_variation && !flags.classic_colors)
+                cmap_variation_color(variation_index, cmap_type_idx);
+            else
+                cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
 #if 0
             if (iflags.use_color && !flags.classic_colors)
             {

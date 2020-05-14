@@ -1903,6 +1903,7 @@ xchar x, y;
 {
     int idx;
     struct rm *ptr = &(levl[x][y]);
+    boolean is_variation = FALSE;
 
     switch (ptr->typ) {
     case SCORR:
@@ -1959,8 +1960,18 @@ xchar x, y;
     {
         boolean is_branch_staircase = (sstairs.sx  && x == sstairs.sx && y == sstairs.sy);
         boolean is_extra_staircase = use_extra_special_staircase();
-        idx = (ptr->ladder & LA_DOWN) ? (is_branch_staircase ? (is_extra_staircase ? S_extra_dnstair : S_branch_dnstair) : S_dnstair) : 
-            (is_branch_staircase ? (is_extra_staircase ? S_extra_upstair : S_branch_upstair) : S_upstair);
+        int var_idx = is_branch_staircase ? (is_extra_staircase ? 2 : 1) : 0;
+        int sym_idx = (ptr->ladder & LA_DOWN) ? S_dnstair : S_upstair;
+        if (var_idx == 0)
+        {
+            idx = sym_idx;
+        }
+        else
+        {
+            is_variation = TRUE;
+            int var_offset = defsyms[sym_idx].variation_offset;
+            idx = var_offset + var_idx - 1;
+        }
         break;
     }
     case LADDER:
@@ -1976,12 +1987,23 @@ xchar x, y;
     {
         aligntyp alignment_mask = (ptr->altarmask & ~AM_SHRINE);
         aligntyp alignment = Amask2align(alignment_mask);
-        idx = Is_astralevel(&u.uz) ? S_high_altar :
-            alignment == A_LAWFUL ? S_lawful_altar : 
-            alignment == A_NEUTRAL ? S_neutral_altar : 
-            alignment == A_CHAOTIC ? S_chaotic_altar :
-            alignment == A_NONE /*&& (Is_sanctum(&u.uz) || Is_valley(&u.uz))*/ ? S_moloch_altar : S_altar
+        int var_idx = Is_astralevel(&u.uz) ? 5 :
+            alignment == A_LAWFUL ? 1 :
+            alignment == A_NEUTRAL ? 2 :
+            alignment == A_CHAOTIC ? 3 :
+            alignment == A_NONE /*&& (Is_sanctum(&u.uz) || Is_valley(&u.uz))*/ ? 4 : 0
             ;
+        int sym_idx = S_altar;
+        if (var_idx == 0)
+        {
+            idx = sym_idx;
+        }
+        else
+        {
+            is_variation = TRUE;
+            int var_offset = defsyms[sym_idx].variation_offset;
+            idx = var_offset + var_idx - 1;
+        }
         break;
     }
     case GRAVE:
@@ -2038,7 +2060,10 @@ xchar x, y;
         break;
     }
 
-    return cmap_to_glyph(idx);
+    if(is_variation)
+        return cmap_variation_to_glyph(idx);
+    else
+        return cmap_to_glyph(idx);
 }
 
 /*

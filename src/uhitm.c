@@ -4180,7 +4180,7 @@ struct monst *mtmp;
     } else {
         int glyph = levl[u.ux + u.dx][u.uy + u.dy].glyph;
 
-        if (glyph_is_cmap(glyph) && (glyph_to_cmap(glyph) == S_hcdoor
+        if (glyph_is_cmap_or_cmap_variation(glyph) && (glyph_to_cmap(glyph) == S_hcdoor
                                      || glyph_to_cmap(glyph) == S_vcdoor))
             fmt = "The door actually was %s!";
         else if (glyph_is_object(glyph) && glyph_to_obj(glyph) == GOLD_PIECE)

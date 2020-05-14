@@ -418,7 +418,9 @@
 /*       represent and look like monsters when you are hallucinating. */
 
 #define base_cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + GLYPH_CMAP_OFF)
+#define base_cmap_variation_to_glyph(var_idx) ((int) (var_idx) + GLYPH_CMAP_VARIATION_OFF)
 #define cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF)
+#define cmap_variation_to_glyph(var_idx) ((int) (var_idx)+ get_current_cmap_type_index() * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF)
 
 #define obj_to_glyph(obj, rng)                                          \
     (((obj)->otyp == STATUE)                                            \
@@ -548,6 +550,10 @@
      && (((abs(glyph)) - GLYPH_CMAP_OFF) % CMAP_TYPE_CHAR_NUM) < trap_to_defsym(1) + TRAPNUM)
 #define glyph_is_cmap(glyph) \
     ((abs(glyph)) >= GLYPH_CMAP_OFF && (abs(glyph)) < (GLYPH_CMAP_OFF + CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX))
+#define glyph_is_cmap_variation(glyph) \
+    ((abs(glyph)) >= GLYPH_CMAP_VARIATION_OFF && (abs(glyph)) < (GLYPH_CMAP_VARIATION_OFF + MAX_VARIATIONS * CMAP_TYPE_MAX))
+#define glyph_is_cmap_or_cmap_variation(glyph) \
+    (glyph_is_cmap(glyph) || glyph_is_cmap_variation(glyph))
 #define glyph_is_swallow(glyph)   \
     ((abs(glyph)) >= GLYPH_SWALLOW_OFF \
      && (abs(glyph)) < (GLYPH_SWALLOW_OFF + (NUM_MONSTERS * MAX_SWALLOW_CHARS)))
@@ -607,8 +613,11 @@
 #define glyph_to_trap(glyph) \
     (glyph_is_trap(glyph) ? ((int) defsym_to_trap((abs(glyph)) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF)) \
                           : NO_GLYPH)
+
 #define glyph_to_cmap(glyph) \
-    (glyph_is_cmap(glyph) ? (abs(glyph) < GLYPH_CMAP_OFF + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM ? (abs(glyph)) - GLYPH_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF) : NO_GLYPH)
+    (glyph_is_cmap(glyph) ? (abs(glyph) < GLYPH_CMAP_OFF + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM ? (abs(glyph)) - GLYPH_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF) \
+      : glyph_is_cmap_variation(glyph) ? (defsym_variations[(abs(glyph) < GLYPH_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_CMAP_VARIATION_OFF)].base_screen_symbol) : NO_GLYPH)
+
 #define glyph_to_swallow(glyph) \
     (glyph_is_swallow(glyph) ? (((abs(glyph)) - GLYPH_SWALLOW_OFF) & 0x7) : 0)
 #define glyph_to_warning(glyph) \

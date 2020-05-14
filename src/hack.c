@@ -1224,7 +1224,7 @@ int x,y;
     int g = glyph_at(x,y);
     if (x == u.ux && y == u.uy)
         return TRUE;
-    if (isok(x,y) && glyph_is_cmap(g) && S_stone == glyph_to_cmap(g)
+    if (isok(x,y) && glyph_is_cmap_or_cmap_variation(g) && S_stone == glyph_to_cmap(g)
         && !levl[x][y].seenv)
         return FALSE;
     u.tx = x;
@@ -1820,7 +1820,7 @@ domove_core()
                (except for solid rock, where the glyph would otherwise
                yield ludicrous "dark part of a room") */
             Strcpy(buf, (levl[x][y].typ == STONE) ? "solid rock"
-                         : glyph_is_cmap(glyph)
+                         : glyph_is_cmap_or_cmap_variation(glyph)
                             ? the(defsyms[glyph_to_cmap(glyph)].explanation)
                             : (const char *) "an unknown obstacle");
             /* note: 'solid' is misleadingly named and catches pools

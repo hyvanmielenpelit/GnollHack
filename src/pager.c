@@ -524,7 +524,7 @@ char *buf, *monbuf;
 
         Strcpy(buf, def_warnsyms[warnindx].explanation);
     } 
-	else if (!glyph_is_cmap(glyph)) 
+	else if (!glyph_is_cmap_or_cmap_variation(glyph))
 	{
         Strcpy(buf, "unexplored area");
     } 
