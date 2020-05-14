@@ -176,6 +176,7 @@ struct context_info
     struct obj_split objsplit; /* track most recently split object stack */
     struct tribute_info tribute;
     struct novel_tracking novel;
+    uchar used_fountain_variation[6];
 };
 
 extern NEARDATA struct context_info context;

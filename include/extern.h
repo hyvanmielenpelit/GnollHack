@@ -983,7 +983,7 @@ E void FDECL(breaksink, (int, int));
 E void NDECL(drinksink);
 E const char* FDECL(fountain_type_text, (int));
 E const char* FDECL(get_fountain_name, (int, int));
-
+E void NDECL(init_fountains);
 
 /* ### hack.c ### */
 

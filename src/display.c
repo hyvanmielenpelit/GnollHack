@@ -1978,8 +1978,44 @@ xchar x, y;
         idx = (ptr->ladder & LA_DOWN) ? S_dnladder : S_upladder;
         break;
     case FOUNTAIN:
-        idx = S_fountain;
+    {
+        int ftyp = (levl[x][y].fountaintype & FOUNTAIN_TYPE_MASK);
+        idx = 0;
+        int base_idx = 0;
+        is_variation = TRUE;
+
+        switch (ftyp)
+        {
+        case FOUNTAIN_MAGIC:
+            base_idx = 5;
+            break;
+        case FOUNTAIN_HEALING:
+            base_idx = 0;
+            break;
+        case FOUNTAIN_MANA:
+            base_idx = 1;
+            break;
+        case FOUNTAIN_POWER:
+            base_idx = 2;
+            break;
+        case FOUNTAIN_WATER:
+            base_idx = 3;
+            break;
+        case FOUNTAIN_POISON:
+            base_idx = 4;
+            break;
+        default:
+            is_variation = FALSE;
+            idx = S_fountain;
+            break;
+        }
+
+        if (is_variation)
+        {
+            idx = context.used_fountain_variation[base_idx] + defsyms[S_fountain].variation_offset;
+        }
         break;
+    }
     case SINK:
         idx = S_sink;
         break;

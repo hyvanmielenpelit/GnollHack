@@ -612,8 +612,8 @@ struct rm {
 #define FOUNTAIN_HEALING 1
 #define FOUNTAIN_MANA 2
 #define FOUNTAIN_POWER 3
-#define FOUNTAIN_WATER 4
-#define FOUNTAIN_POISON 5
+#define FOUNTAIN_POISON 4 //Last shuffled fountain
+#define FOUNTAIN_WATER 5 //End marker
 #define FOUNTAIN_TYPE_MASK 15
 
 #define wall_info flags

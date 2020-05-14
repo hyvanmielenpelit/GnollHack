@@ -1226,4 +1226,24 @@ drinksink()
     }
 }
 
+void
+init_fountains()
+{
+	/*Initialize fountain variations */
+	for (int i = 0; i < FOUNTAIN_WATER; i++)
+	{
+		context.used_fountain_variation[i] = i;
+	}
+
+	/* Water always looks like water, so it is not shuffled */
+	for (int i = 0; i < FOUNTAIN_POISON - 1; i++)
+	{
+		int new_i = i + rn2(FOUNTAIN_POISON - i);
+		int saved_value = context.used_fountain_variation[i];
+		context.used_fountain_variation[i] = context.used_fountain_variation[new_i];
+		context.used_fountain_variation[new_i] = saved_value;
+	}
+
+}
+
 /*fountain.c*/

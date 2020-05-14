@@ -1064,6 +1064,8 @@ newgame()
     context.tribute.tributesz = sizeof(struct tribute_info);
 	strcpy(context.used_names, "|");
 
+    init_fountains();
+
 #ifdef USE_TILES
     process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile);
 #endif
