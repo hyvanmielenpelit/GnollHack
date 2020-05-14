@@ -13,6 +13,9 @@
 #include "prop.h"
 #endif // !PROP_H
 
+#ifndef FOUNTAIN_H
+#include "fountain.h"
+#endif // !FOUNTAIN_H
 
 #define CONTEXTVERBSZ 30
 
@@ -176,7 +179,7 @@ struct context_info
     struct obj_split objsplit; /* track most recently split object stack */
     struct tribute_info tribute;
     struct novel_tracking novel;
-    uchar used_fountain_variation[6];
+    uchar used_fountain_variation[MAX_FOUNTAINS];
 };
 
 extern NEARDATA struct context_info context;

@@ -205,6 +205,7 @@ typedef struct strbuf {
 
 #include "align.h"
 #include "dungeon.h"
+#include "fountain.h"
 #include "monsym.h"
 #include "mkroom.h"
 #include "objclass.h"

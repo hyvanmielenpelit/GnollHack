@@ -1986,40 +1986,8 @@ xchar x, y;
     case FOUNTAIN:
     {
         int ftyp = (levl[x][y].fountaintype & FOUNTAIN_TYPE_MASK);
-        idx = 0;
-        int base_idx = 0;
         is_variation = TRUE;
-
-        switch (ftyp)
-        {
-        case FOUNTAIN_MAGIC:
-            base_idx = 5;
-            break;
-        case FOUNTAIN_HEALING:
-            base_idx = 0;
-            break;
-        case FOUNTAIN_MANA:
-            base_idx = 1;
-            break;
-        case FOUNTAIN_POWER:
-            base_idx = 2;
-            break;
-        case FOUNTAIN_WATER:
-            base_idx = 3;
-            break;
-        case FOUNTAIN_POISON:
-            base_idx = 4;
-            break;
-        default:
-            is_variation = FALSE;
-            idx = S_fountain;
-            break;
-        }
-
-        if (is_variation)
-        {
-            idx = context.used_fountain_variation[base_idx] + defsyms[S_fountain].variation_offset;
-        }
+        idx = context.used_fountain_variation[ftyp] + defsyms[S_fountain].variation_offset;
         break;
     }
     case SINK:
@@ -2347,9 +2315,11 @@ xchar x, y;
 
 #define FLOOR_LAYER 0
 #define CMAP_LAYER 1
-#define OBJECT_LAYER 2
-#define MONSTER_LAYER 3
-#define EFFECT_LAYER 4
+#define DOODAD_LAYER 2
+#define OBJECT_LAYER 3
+#define MONSTER_LAYER 4
+#define EFFECT_LAYER 5
+
 
 uchar
 get_glyph_layer(signed_glyph)

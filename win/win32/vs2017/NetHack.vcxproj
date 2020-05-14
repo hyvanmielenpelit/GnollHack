@@ -257,6 +257,7 @@
     <ClInclude Include="$(WinCursDir)cursstat.h" />
     <ClInclude Include="$(WinCursDir)curswins.h" />
     <ClInclude Include="..\..\..\include\encounter.h" />
+    <ClInclude Include="..\..\..\include\fountain.h" />
     <ClInclude Include="..\..\..\include\matcomps.h" />
   </ItemGroup>
   <ItemGroup>
