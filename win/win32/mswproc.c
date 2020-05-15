@@ -116,6 +116,7 @@ struct window_procs mswin_procs = {
     mswin_status_init, mswin_status_finish, mswin_status_enablefield,
     mswin_status_update,
     genl_can_suspend_yes,
+    mswin_stretch_window,
 };
 
 /*
@@ -3152,6 +3153,20 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
         update_cmd_data.status_lines = &_status_lines;
         SendMessage(mswin_hwnd_from_winid(WIN_STATUS), WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_UPDATE_STATUS, (LPARAM)&update_cmd_data);
+    }
+}
+
+void
+mswin_stretch_window(void)
+{
+    if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
+        MSNHMsgClipAround data;
+
+        ZeroMemory(&data, sizeof(data));
+        data.x = GetNHApp()->mapTile_X;
+        data.y = GetNHApp()->mapTile_Y;
+        SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
+            (WPARAM)MSNH_MSG_STRETCH_MAP, (LPARAM)&data);
     }
 }
 

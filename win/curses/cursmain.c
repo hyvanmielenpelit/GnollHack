@@ -81,6 +81,7 @@ struct window_procs curses_procs = {
     genl_status_enablefield,
     curses_status_update,
     genl_can_suspend_yes,
+    genl_stretch_window,
 };
 
 /*

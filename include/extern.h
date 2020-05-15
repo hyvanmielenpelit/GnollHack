@@ -3170,6 +3170,7 @@ void NDECL(commit_windowchain);
 #endif
 E boolean NDECL(genl_can_suspend_no);
 E boolean NDECL(genl_can_suspend_yes);
+E void NDECL(genl_stretch_window);
 E char FDECL(genl_message_menu, (CHAR_P, int, const char *));
 E void FDECL(genl_preference_update, (const char *));
 E char *FDECL(genl_getmsghistory, (BOOLEAN_P));

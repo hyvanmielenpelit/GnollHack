@@ -139,6 +139,9 @@ STATIC_PTR int NDECL(dosh_core);
 STATIC_PTR int NDECL(doherecmdmenu);
 STATIC_PTR int NDECL(dotherecmdmenu);
 STATIC_PTR int NDECL(doprev_message);
+STATIC_PTR int NDECL(dozoomnormal);
+STATIC_PTR int NDECL(dozoomin);
+STATIC_PTR int NDECL(dozoomout);
 STATIC_PTR int NDECL(timed_occupation);
 STATIC_PTR int NDECL(doextcmd);
 STATIC_PTR int NDECL(dotravel);
@@ -4744,7 +4747,14 @@ struct ext_func_tab extcmdlist[] = {
             dospellmanage, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
     { '\0', "reorderspells", "sort and reorder known spells",
 			dovspell, AUTOCOMPLETE | IFBURIED | INSPELLMENU },
-
+#ifdef USE_TILES
+    { M('.'), "zoomnormal", "revert to normal zoom level",
+            dozoomnormal, IFBURIED | AUTOCOMPLETE },
+    { M('+'), "zoomin", "zoom map out",
+            dozoomin, IFBURIED | AUTOCOMPLETE },
+    { M('-'), "zoomout", "zoom map in",
+            dozoomout, IFBURIED | AUTOCOMPLETE },
+#endif
 
 #ifdef DEBUG
     { '\0', "wizbury", "bury objs under and around you",
@@ -4858,7 +4868,7 @@ commands_init()
 
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
-	(void) bind_key(M('1'), "handedness");
+    (void) bind_key(M('1'), "handedness");
 	(void) bind_key(M('2'), "twoweapon");
 
     /* wait_on_space */
@@ -7339,6 +7349,41 @@ dosh_core(VOID_ARGS)
 }
 
 
+/* Ctrl-'0' command */
+STATIC_PTR int
+dozoomnormal(VOID_ARGS)
+{
+    flags.screen_scale_adjustment = 0.0;
 
+    stretch_window();
+
+    return 0;
+}
+
+STATIC_PTR int
+dozoomin(VOID_ARGS)
+{
+    double scale_level = round(flags.screen_scale_adjustment / 0.25);
+    flags.screen_scale_adjustment = (scale_level + 1) * 0.25;
+    if(flags.screen_scale_adjustment > 1.0)
+        flags.screen_scale_adjustment = 1.0;
+    
+    stretch_window();
+
+    return 0;
+}
+
+STATIC_PTR int
+dozoomout(VOID_ARGS)
+{
+    double scale_level = round(flags.screen_scale_adjustment / 0.25);
+    flags.screen_scale_adjustment = (scale_level - 1) * 0.25;
+    if (flags.screen_scale_adjustment < -0.75)
+        flags.screen_scale_adjustment = -0.75;
+
+    stretch_window();
+
+    return 0;
+}
 
 /*cmd.c*/

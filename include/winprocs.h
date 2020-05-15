@@ -79,6 +79,7 @@ struct window_procs {
                (int, const char *, const char *, BOOLEAN_P));
     void FDECL((*win_status_update), (int, genericptr_t, int, int, int, unsigned long *));
     boolean NDECL((*win_can_suspend));
+    void NDECL((*win_stretch_window));
 };
 
 extern
@@ -160,6 +161,7 @@ extern
  */
 #define status_enablefield (*windowprocs.win_status_enablefield)
 #define status_update (*windowprocs.win_status_update)
+#define stretch_window (*windowprocs.win_stretch_window)
 
 /*
  * WINCAP

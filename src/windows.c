@@ -205,6 +205,12 @@ genl_can_suspend_yes(VOID_ARGS)
     return TRUE;
 }
 
+void
+genl_stretch_window(VOID_ARGS)
+{
+    return;
+}
+
 STATIC_OVL
 void
 def_raw_print(s)

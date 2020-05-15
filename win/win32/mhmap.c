@@ -763,7 +763,16 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 		nhassert(0); // unexpected
 		break;
 
-	} /* end switch(wParam) */
+    case MSNH_MSG_STRETCH_MAP:
+    {
+        PMSNHMsgClipAround msg_data = (PMSNHMsgClipAround)lParam;
+        SIZE size;
+        size.cx = msg_data->x * COLNO;
+        size.cy = msg_data->y * ROWNO;
+        mswin_map_stretch(hWnd, &size, TRUE);
+        break;
+    }
+    } /* end switch(wParam) */
 }
 
 /* on WM_CREATE */

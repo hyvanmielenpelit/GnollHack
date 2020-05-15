@@ -177,7 +177,7 @@ static const unsigned char
 #define KEYTABLE(x) \
     (STATEON(VK_SHIFT) ? KEYTABLE_SHIFT(x) : KEYTABLE_REGULAR(x))
 
-static const char *extendedlist = "acdefijlmnopqrstuvw?2";
+static const char *extendedlist = "acdefijlmnopqrstuvw?-+.,2";
 
 #define SCANLO 0x02
 static const char scanmap[] = {
@@ -386,7 +386,8 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             ZeroMemory(kbd_state, sizeof(kbd_state));
             (void)GetKeyboardState(kbd_state);
 
-            if (ToAscii((UINT) wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0)) {
+            if (((UINT)wParam >= '0' && (UINT)wParam <= 'Z' && 0) || ToAscii((UINT) wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0))
+ {
                 NHEVENT_KBD(c & 0xFF);
                 return 0;
             } else {
