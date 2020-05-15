@@ -194,7 +194,7 @@ void mswin_status_finish(void);
 void mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                               boolean enable);
 void mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks);
-void mswin_stretch_window();
+void mswin_stretch_window(void);
 
 /* helper function */
 HWND mswin_hwnd_from_winid(winid wid);
