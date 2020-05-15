@@ -177,7 +177,7 @@
 #define has_property(mon, propindex) \
 	((mon)->mprops[(propindex)] != 0)
 #define has_innate_or_property(mon, propindex)\
-	(has_innate((mon)->data, prop_to_innate(propindex)) || has_property(mon, propindex))
+	(has_property(mon, propindex) || has_innate((mon)->data, prop_to_innate(propindex)))
 
 
 /* innates */

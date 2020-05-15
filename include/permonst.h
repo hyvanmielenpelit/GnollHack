@@ -72,7 +72,7 @@ struct permonst {
 	unsigned long mresists;             /* resistances */
 	unsigned long mconveys;             /* conveyed by eating */
     unsigned long mflags1,      /* boolean bitflags */
-        mflags2, mflags3, mflags4;       /* more boolean bitflags */
+        mflags2, mflags3, mflags4, mflags5;       /* more boolean bitflags */
     int difficulty;		/* toughness (formerly from  makedefs -m) */
 #ifdef TEXTCOLOR
     uchar mcolor; /* color to use */

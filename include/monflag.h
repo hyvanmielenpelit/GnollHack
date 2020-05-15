@@ -281,6 +281,9 @@
 #define M4_PRINCE		            0x10000000UL        /* is an overlord to its kind */
 #define M4_PACKMULE		            0x20000000UL        /* carries items for the player */
 
+#define M5_NONE						0x00000000UL
+
+
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */
 #define MZ_MEDIUM 2        /* 4-7' */
