@@ -122,7 +122,7 @@ short* tilemaparray;
 
     const char* missile_direction_name_array[NUM_MISSILE_DIRS] = {
             "top-left", "top-center", "top-right",
-            "middle-right",  "middle-left",
+            "middle-left",  "middle-right",
             "bottom-left", "bottom-center", "bottom-right" };
 
     /* Object tiles */
@@ -886,7 +886,7 @@ short* tilemaparray;
         {
             const char* explosion_direction_name_array[MAX_EXPLOSION_CHARS] = {
                     "top-left", "top-center", "top-right",
-                    "middle-right", "middle-center", "middle-left",
+                    "middle-left", "middle-center", "middle-right",
                     "bottom-left", "bottom-center", "bottom-right" };
 
             if (tsd->has_all_explode_tiles == 0)
@@ -992,7 +992,7 @@ short* tilemaparray;
         {
             const char* swallow_direction_name_array[MAX_SWALLOW_CHARS] = {
                     "top-left", "top-center", "top-right",
-                    "middle-right", "middle-left",
+                    "middle-left", "middle-right",
                     "bottom-left", "bottom-center", "bottom-right" };
 
             if (tsd->swallow_tile_style == 0)

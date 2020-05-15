@@ -1329,7 +1329,7 @@ dochat()
         return 0;
     }
 
-	update_u_facing(TRUE);
+	update_u_facing(2);
 
     tx = u.ux + u.dx;
     ty = u.uy + u.dy;

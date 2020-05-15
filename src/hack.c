@@ -1538,11 +1538,11 @@ domove_core()
             }
         }
 
-        update_u_facing(FALSE);
+        update_u_facing(TRUE);
 
         if (!isok(x, y))
 		{
-            nomul_update_facing(facing_different);
+            nomul(0);
             return;
         }
         if (((trap = t_at(x, y)) && trap->tseen)
@@ -1566,11 +1566,11 @@ domove_core()
                             hliquid(is_pool(x,y) ? "water" : "lava"));
                     }
                 }
-                nomul_update_facing(facing_different);
+                nomul(0);
                 context.move = 0;
                 return;
             } else
-                nomul_update_facing(facing_different);
+                nomul(0);
         }
 
 		if(levl[x][y].seenv && !Stunned && !Confusion && !Hallucination && !m_at(x, y))
@@ -1612,7 +1612,7 @@ domove_core()
 					char ans = ynq(ynqbuf);
 					if (ans != 'y')
 					{
-                        nomul_update_facing(facing_different);
+                        nomul(0);
                         return;
 					}
 				}
@@ -1628,7 +1628,7 @@ domove_core()
 				char ans = ynq(ynqbuf);
 				if (ans != 'y')
 				{
-                    nomul_update_facing(facing_different);
+                    nomul(0);
                     return;
 				}
 			}
@@ -1674,7 +1674,7 @@ domove_core()
                     if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck))
                         goto pull_free;
                     You("cannot escape from %s!", mon_nam(u.ustuck));
-                    nomul_update_facing(facing_different);
+                    nomul(0);
                     return;
                 }
             }
@@ -1690,7 +1690,7 @@ domove_core()
                                       && M_AP_TYPE(mtmp) != M_AP_OBJECT)
                                      || Protection_from_shape_changers))
                                 || sensemon(mtmp))) {
-                nomul_update_facing(facing_different);
+                nomul(0);
                 context.move = 0;
                 return;
             }
@@ -1709,7 +1709,7 @@ domove_core()
            displace fails for some reason, attack() in uhitm.c
            will stop travel rather than domove */
         if (!is_safepet(mtmp) || context.forcefight)
-            nomul_update_facing(facing_different);
+            nomul(0);
         /* only attack if we know it's there */
         /* or if we used the 'F' command to fight blindly */
         /* or if it hides_under, in which case we call attack() to print
@@ -1827,7 +1827,7 @@ domove_core()
             !(boulder || solid) ? "" : !explo ? "harmlessly " : "futilely ",
             explo ? "explode at" : "attack", buf);
 
-        nomul_update_facing(facing_different);
+        nomul(0);
         if (explo) {
             wake_nearby();
             u.mh = -1; /* dead in the current form */
@@ -1838,7 +1838,7 @@ domove_core()
     (void) unmap_invisible(x, y);
     /* not attacking an animal, so we try to move */
     if ((u.dx || u.dy) && u.usteed && stucksteed(FALSE)) {
-        nomul_update_facing(facing_different);
+        nomul(0);
         return;
     }
 
@@ -1858,7 +1858,7 @@ domove_core()
     if (!test_move(u.ux, u.uy, x - u.ux, y - u.uy, DO_MOVE)) {
         if (!context.door_opened) {
             context.move = 0;
-            nomul_update_facing(facing_different);
+            nomul(0);
         }
         return;
     }
@@ -2009,7 +2009,7 @@ domove_core()
         if (context.run < 8)
             if (IS_DOOR(tmpr->typ) || IS_ROCK(tmpr->typ)
                 || IS_FURNITURE(tmpr->typ))
-                nomul_update_facing(facing_different);
+                nomul(0);
     }
 
     if (hides_under(youmonst.data) || youmonst.data->mlet == S_EEL
@@ -2067,17 +2067,6 @@ domove_core()
             }
         }
     }
-}
-
-void
-nomul_update_facing(update_facing)
-{
-    if (update_facing)
-    {
-        newsym(u.ux, u.uy);
-    }
-
-    nomul(0);
 }
 
 void

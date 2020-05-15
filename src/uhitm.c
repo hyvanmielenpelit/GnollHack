@@ -4513,7 +4513,7 @@ double hp_d;
 
 void
 update_u_facing(update_symbol)
-boolean update_symbol;
+uchar update_symbol;
 {
 	if (u.dx != 0)
 	{
@@ -4525,6 +4525,8 @@ boolean update_symbol;
 
 		if (update_symbol && u.facing_right != facing_before)
 			newsym(u.ux, u.uy);
+		if (update_symbol == 2 && u.facing_right != facing_before)
+			flush_screen(1);
 	}
 }
 /*uhitm.c*/
