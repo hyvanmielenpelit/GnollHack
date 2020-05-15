@@ -211,8 +211,7 @@
     <ClInclude Include="..\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\gnollhack64x96-transparent.png" />
-    <Image Include="..\gnollhack64x96.png" />
+    <Image Include="..\gnollhack64x96.bmp" />
     <Image Include="..\GnollHackNew.ico" />
     <Image Include="..\mnsel.bmp" />
     <Image Include="..\mnselcnt.bmp" />
@@ -223,9 +222,6 @@
     <Image Include="..\rip.bmp" />
     <Image Include="..\splash.bmp" />
     <Image Include="..\tiles.bmp" />
-    <Image Include="..\gnollhack64x96.bmp" />
-    <Image Include="gnollhack64x96-transparent.png" />
-    <Image Include="gnollhack64x96.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">

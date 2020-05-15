@@ -1219,7 +1219,7 @@ short* tilemaparray;
             }
         }
     }
-
+     
     if (process_style == 0)
     {
         /* Finished */
