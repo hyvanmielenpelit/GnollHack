@@ -1121,6 +1121,7 @@ struct monst *mtmp, *mtarg;
             /* Set target monster */
             target = mtarg;
             archer = mtmp;
+            update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
             monshoot(mtmp, otmp, mwep); /* multishot shooting or throwing */
             archer = target = (struct monst *) 0;
             nomul(0);
@@ -1136,7 +1137,7 @@ spitmm(mtmp, mattk, mtarg)
 struct monst *mtmp, *mtarg;
 struct attack *mattk;
 {
-	if (!mtmp)
+	if (!mtmp || !mtarg)
 		return 0;
 
     struct obj *otmp;
@@ -1148,6 +1149,8 @@ struct attack *mattk;
         return 0;
     }
     if (m_lined_up(mtarg, mtmp, TRUE, mattk->adtyp, FALSE, M_GENERIC_RANGED_ATTACK_RANGE)) {
+        update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
+
         switch (mattk->adtyp) {
         case AD_BLND:
         case AD_DRST:
@@ -1192,7 +1195,7 @@ breamm(mtmp, mattk, mtarg)
 struct monst *mtmp, *mtarg;
 struct attack  *mattk;
 {
-	if (!mtmp || !mattk)
+	if (!mtmp || !mtarg || !mattk)
 		return 0;
 
 
@@ -1201,7 +1204,8 @@ struct attack  *mattk;
 
     if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
-        if (is_cancelled(mtmp)) 
+        update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
+        if (is_cancelled(mtmp))
 		{
             if (!Deaf) {
                 if (canseemon(mtmp))
@@ -1249,14 +1253,15 @@ eyesmm(mtmp, mattk, mtarg)
 struct monst* mtmp, * mtarg;
 struct attack* mattk;
 {
-	if (!mtmp || !mattk)
+	if (!mtmp || !mtarg || !mattk)
 		return 0;
 
 	int typ = get_ray_adtyp(mattk->adtyp);
 
 	if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
-		if (is_cancelled(mtmp) || is_blinded(mtmp))
+        update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
+        if (is_cancelled(mtmp) || is_blinded(mtmp))
 		{
 			if (canseemon(mtmp))
 				pline("%s blinks.", Monnam(mtmp));
@@ -1310,6 +1315,7 @@ struct attack* mattk;
 
     if (m_lined_up(mtarg, mtmp, TRUE, adtyp, TRUE, M_RAY_RANGE))
     {
+        update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
         {
             if (!Deaf) {
@@ -1577,6 +1583,7 @@ struct monst *mtmp;
     if (!otmp)
         return;
 
+    update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
     if (is_appliable_pole_type_weapon(otmp))
 	{
         int dam, hitv;
@@ -1659,7 +1666,8 @@ struct attack *mattk;
     }
     if (lined_up(mtmp, TRUE, mattk->adtyp, FALSE, M_GENERIC_RANGED_ATTACK_RANGE))
 	{
-        switch (mattk->adtyp) 
+        update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
+        switch (mattk->adtyp)
 		{
         case AD_BLND:
         case AD_DRST:
@@ -1705,6 +1713,7 @@ struct attack *mattk;
 
     if (lined_up(mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
+        update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         if (is_cancelled(mtmp) || is_blinded(mtmp))
 		{
             if (canseemon(mtmp))
@@ -1742,7 +1751,8 @@ struct attack* mattk;
 
 	if (lined_up(mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
 	{
-		if (is_cancelled(mtmp)) 
+        update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
+        if (is_cancelled(mtmp))
 		{
 			if (!Deaf) {
 if (canseemon(mtmp))

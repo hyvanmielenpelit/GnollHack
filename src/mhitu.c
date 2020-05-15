@@ -484,25 +484,7 @@ register struct monst *mtmp;
         }
     }
 
-    /* Update facing */
-    boolean mtmp_facing_before = mtmp->facing_right;
-    //boolean u_facing_before = u.facing_right;
-
-    if (mtmp->mx > u.ux)
-    {
-        mtmp->facing_right = FALSE;
-        //u.facing_right = TRUE;
-    }
-    else if (mtmp->mx < u.ux)
-    {
-        mtmp->facing_right = TRUE;
-       // u.facing_right = FALSE;
-    }
-
-    if (mtmp_facing_before != mtmp->facing_right)
-        newsym(mtmp->mx, mtmp->my);
-    //if (u_facing_before != u.facing_right)
-    //    newsym(u.ux, u.uy);
+    update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
 
     if (u.uundetected && !range2 && foundyou && !u.uswallow) {
         if (!canspotmon(mtmp))
@@ -4386,6 +4368,37 @@ cloneu()
     u.mh -= mon->mhp;
     context.botl = 1;
     return mon;
+}
+
+void
+update_m_facing(mtmp, mdx, update_symbol)
+struct monst* mtmp;
+int mdx;
+boolean update_symbol;
+{
+    /* Update facing */
+    if (mdx != 0)
+    {
+        boolean mtmp_facing_before = mtmp->facing_right;
+        //boolean u_facing_before = u.facing_right;
+
+        if (mdx < 0)
+        {
+            mtmp->facing_right = FALSE;
+            //u.facing_right = TRUE;
+        }
+        else if (mdx > 0)
+        {
+            mtmp->facing_right = TRUE;
+            // u.facing_right = FALSE;
+        }
+
+        if (update_symbol && mtmp_facing_before != mtmp->facing_right)
+            newsym(mtmp->mx, mtmp->my);
+        //if (u_facing_before != u.facing_right)
+        //    newsym(u.ux, u.uy);
+
+    }
 }
 
 /*mhitu.c*/

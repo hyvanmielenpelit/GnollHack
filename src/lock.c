@@ -844,6 +844,8 @@ doclose()
         return 1;
     }
 
+    update_u_facing(TRUE);
+
     if (!isok(x, y))
         goto nodoor;
 

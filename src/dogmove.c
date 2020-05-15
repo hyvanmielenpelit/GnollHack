@@ -1637,14 +1637,7 @@ newdogpos:
 			place_monster(mtmp, nix, niy);
 
             /* Update facing */
-            if (omx > nix)
-            {
-                mtmp->facing_right = FALSE;
-            }
-            else if (omx < nix)
-            {
-                mtmp->facing_right = TRUE;
-            }
+            update_m_facing(mtmp, nix - omx, FALSE);
 
 			if (cursemsg[chi] && (wasseen || canseemon(mtmp))) 
 			{

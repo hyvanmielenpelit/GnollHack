@@ -60,6 +60,9 @@ struct obj *otmp;
         pline("Saddle yourself?  Very funny...");
         return 0;
     }
+
+    update_u_facing(TRUE);
+
     if (!isok(u.ux + u.dx, u.uy + u.dy)
         || !(mtmp = m_at(u.ux + u.dx, u.uy + u.dy)) || !canspotmon(mtmp)) {
         pline("I see nobody there.");
@@ -184,6 +187,7 @@ doride()
     } 
     else if (getdir((char *) 0) && isok(u.ux + u.dx, u.uy + u.dy))
     {
+        update_u_facing(TRUE);
         if (wizard && yn_query("Force the mount to succeed?") == 'y')
             forcemount = TRUE;
         return (mount_steed(m_at(u.ux + u.dx, u.uy + u.dy), forcemount));

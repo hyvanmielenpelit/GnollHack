@@ -100,6 +100,8 @@ int shotlimit;
     if (is_wet_towel(obj))
         dry_a_towel(obj, -1, FALSE);
 
+    update_u_facing(TRUE);
+
     /* Multishot calculations
      * (potential volley of up to N missiles; default for N is 1)
      */

@@ -1981,6 +1981,8 @@ boolean atme;
 			}
 			else
 			{
+				update_u_facing(TRUE);
+
 				if (otyp == SPE_METEOR_SWARM)
 				{
 					int shots = 1;

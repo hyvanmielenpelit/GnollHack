@@ -4879,6 +4879,9 @@ boolean force;
 
     if (!getdir((char *) 0))
         return 0;
+
+    update_u_facing(TRUE);
+
     x = u.ux + u.dx;
     y = u.uy + u.dy;
     if (!isok(x, y)) {

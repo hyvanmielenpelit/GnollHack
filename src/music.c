@@ -579,6 +579,7 @@ struct obj *instr;
                 losehp(damage, buf, KILLED_BY); /* fire or frost damage */
             }
         } else {
+            update_u_facing(TRUE);
             buzz(objects[instr->otyp].oc_dir_subtype, instr, 0, 0, 0,
                  u.ux, u.uy, u.dx, u.dy);
         }

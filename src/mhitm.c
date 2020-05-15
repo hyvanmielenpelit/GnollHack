@@ -220,15 +220,7 @@ boolean quietly;
         && magr->my != mdef->my)
         return MM_MISS;
 
-    /* Update facing */
-    if (magr->mx > mdef->mx)
-    {
-        magr->facing_right = FALSE;
-    }
-    else if (magr->mx < mdef->mx)
-    {
-        magr->facing_right = TRUE;
-    }
+    update_m_facing(magr, mdef->mx - magr->mx, FALSE);
 
     /* undetected monster becomes un-hidden if it is displaced */
     if (mdef->mundetected)
@@ -327,24 +319,7 @@ register struct monst *magr, *mdef;
         return MM_MISS;
 
     /* Update facing */
-    boolean magr_facing_before = magr->facing_right;
-    //boolean mdef_facing_before = mdef->facing_right;
-
-    if (magr->mx > mdef->mx)
-    {
-        magr->facing_right = FALSE;
-        //mdef->facing_right = TRUE;
-    }
-    else if (magr->mx < mdef->mx)
-    {
-        magr->facing_right = TRUE;
-        //mdef->facing_right = FALSE;
-    }
-
-    if (magr_facing_before != magr->facing_right)
-        newsym(magr->mx, magr->my);
-    //if (mdef_facing_before != mdef->facing_right)
-    //    newsym(mdef->mx, mdef->my);
+    update_m_facing(magr, mdef->mx - magr->mx, TRUE);
 
     /* Calculate the armour class differential. */
     tmp = find_mac(mdef) + magr->m_lev + magr->mhitinc;

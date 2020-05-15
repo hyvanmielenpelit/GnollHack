@@ -1106,6 +1106,8 @@ struct obj *obj;
     if (!getdir(qbuf))
         return res;
 
+    update_u_facing(TRUE);
+
     return use_pick_axe2(obj);
 }
 

@@ -1119,6 +1119,8 @@ dokick() {
     if (!u.dx && !u.dy)
         return 0;
 
+    update_u_facing(TRUE);
+
     x = u.ux + u.dx;
     y = u.uy + u.dy;
 

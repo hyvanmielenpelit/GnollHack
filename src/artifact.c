@@ -2561,6 +2561,7 @@ struct obj *obj;
 			}
 			else
 			{
+				update_u_facing(TRUE);
 				weffects(&pseudo);
 			}
 		}

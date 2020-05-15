@@ -4449,6 +4449,8 @@ dozap()
          * buzz(AD_ELEC) -> destroy_item(WAND_CLASS) ->
          * useup -> obfree -> dealloc_obj -> free(obj)
          */
+        update_u_facing(TRUE);
+
         current_wand = obj;
         weffects(obj);
         obj = current_wand;

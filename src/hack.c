@@ -1538,12 +1538,7 @@ domove_core()
             }
         }
 
-        boolean facing_before = u.facing_right;
-        if (u.dx < 0)
-            u.facing_right = 0;
-        else if (u.dx > 0)
-            u.facing_right = 1;
-        facing_different = (u.facing_right != facing_before);
+        update_u_facing(FALSE);
 
         if (!isok(x, y))
 		{

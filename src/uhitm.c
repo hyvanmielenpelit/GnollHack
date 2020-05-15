@@ -415,6 +415,8 @@ register struct monst *mtmp;
 	if (!mtmp)
 		return FALSE;
 
+	update_u_facing(TRUE);
+
     register struct permonst *mdat = mtmp->data;
 
     /* This section of code provides protection against accidentally
@@ -4509,4 +4511,20 @@ double hp_d;
 	return mtmp->mhp;
 }
 
+void
+update_u_facing(update_symbol)
+boolean update_symbol;
+{
+	if (u.dx != 0)
+	{
+		boolean facing_before = u.facing_right;
+		if (u.dx < 0)
+			u.facing_right = FALSE;
+		else if (u.dx > 0)
+			u.facing_right = TRUE;
+
+		if (update_symbol && u.facing_right != facing_before)
+			newsym(u.ux, u.uy);
+	}
+}
 /*uhitm.c*/

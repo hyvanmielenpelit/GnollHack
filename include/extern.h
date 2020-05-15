@@ -1388,6 +1388,7 @@ E int FDECL(gazemu, (struct monst *, struct attack *));
 E void FDECL(mdamageu, (struct monst *, double, BOOLEAN_P));
 E int FDECL(could_seduce, (struct monst *, struct monst *, struct attack *));
 E int FDECL(doseduce, (struct monst *));
+E void FDECL(update_m_facing, (struct monst*, int, BOOLEAN_P));
 
 /* ### minion.c ### */
 
@@ -2860,6 +2861,7 @@ E double FDECL(adjust_damage, (int, struct monst*, struct monst*, int, boolean))
 E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
 E void FDECL(get_game_difficulty_multipliers, (double*, double*));
+E void FDECL(update_u_facing, (boolean));
 
 /* ### unixmain.c ### */
 

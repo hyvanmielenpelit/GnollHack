@@ -1545,15 +1545,7 @@ register int after;
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
 
-        /* Update facing */
-        if (omx > nix)
-        {
-            mtmp->facing_right = FALSE;
-        }
-        else if (omx < nix)
-        {
-            mtmp->facing_right = TRUE;
-        }
+        update_m_facing(mtmp, nix - omx, FALSE);
 
         for (j = MTSZ - 1; j > 0; j--)
             mtmp->mtrack[j] = mtmp->mtrack[j - 1];

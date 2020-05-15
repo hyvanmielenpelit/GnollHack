@@ -73,6 +73,8 @@ struct obj* obj;
 	if (!getdir((char*)0))
 		return 0;
 
+    update_u_facing(TRUE);
+
 	consume_obj_charge(obj, TRUE);
 
 	const char* healing_salve = "healing salve";
@@ -144,6 +146,8 @@ boolean drink_yourself;
     else if (!getdir((char*)0))
         return 0;
 
+    update_u_facing(TRUE);
+
     consume_obj_charge(obj, TRUE);
 
     if (u.dz)
@@ -200,6 +204,8 @@ struct obj *obj;
     }
     if (!getdir((char *) 0))
         return 0;
+
+    update_u_facing(TRUE);
 
     if (obj->charges <= 0) {
         pline1(nothing_happens);
@@ -455,6 +461,8 @@ register struct obj *obj;
     }
     if (!getdir((char *) 0))
         return 0;
+
+    update_u_facing(TRUE);
 
     res = (moves == context.stethoscope_move)
           && (youmonst.movement == context.stethoscope_movement);
@@ -1013,6 +1021,7 @@ struct obj *obj;
 
     if (!getdir((char *) 0))
         return 0;
+    update_u_facing(TRUE);
     invis_mirror = Invis;
     useeit = !Blind && (!invis_mirror || See_invisible);
     uvisage = beautiful();
@@ -1188,7 +1197,8 @@ struct obj* obj;
 	if (!getdir((char*)0))
 		return 0;
 
-	u.uconduct.gnostic++;
+    update_u_facing(TRUE);
+    u.uconduct.gnostic++;
 
     if (obj->charges <= 0)
     {
@@ -2735,6 +2745,7 @@ struct obj **optr;
         context.move = multi = 0;
         return;
     }
+    update_u_facing(TRUE);
     x = u.ux + u.dx;
     y = u.uy + u.dy;
     cc.x = x;
@@ -3529,6 +3540,8 @@ struct obj *obj;
     }
     if (!getdir((char *) 0))
         return res;
+
+    update_u_facing(TRUE);
 
     if (u.uswallow) {
         mtmp = u.ustuck;
@@ -5135,7 +5148,9 @@ struct obj* obj;
 	if (!u.dx && !u.dy)
 		return 0;
 
-	x = u.ux + u.dx;
+    update_u_facing(TRUE);
+    
+    x = u.ux + u.dx;
 	y = u.uy + u.dy;
 
 	/* KMH -- Kicking boots always succeed */

@@ -1453,6 +1453,8 @@ dobreathe()
         ubreatheu(mattk);
     else
     {
+        update_u_facing(TRUE);
+
         uchar adtyp = mattk->adtyp;
         int typ = get_ray_adtyp(adtyp);
 
@@ -1512,6 +1514,9 @@ dosteedbreathe()
         impossible("bad breath attack?"); /* mouthwash needed... */
     else
     {
+        update_u_facing(FALSE);
+        update_m_facing(u.usteed, u.dx, TRUE);
+
         int typ = get_ray_adtyp(mattk->adtyp);
 
         buzz((int)(-(20 + typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
@@ -1537,6 +1542,8 @@ dospit()
     if (!mattk) {
         impossible("bad spit attack?");
     } else {
+        update_u_facing(TRUE);
+
         switch (mattk->adtyp) {
         case AD_BLND:
         case AD_DRST:
@@ -1772,6 +1779,8 @@ dogaze()
 	int maxgazerange = 18;
 	int cx = u.ux + u.dx, cy = u.uy + u.dy;
 
+    update_u_facing(TRUE);
+
 	while (isok(cx, cy) && couldsee(cx, cy) && dist2(u.ux, u.uy, cx, cy) <= maxgazerange * maxgazerange) 
 	{
 		if (MON_AT(cx, cy))
@@ -1977,6 +1986,7 @@ doeyestalk()
 		return 0;
 	}
 
+    update_u_facing(TRUE);
 
 	int attacksperformed = 0;
 	for (int i = 0; i < NATTK; i++)
