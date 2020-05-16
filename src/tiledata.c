@@ -280,6 +280,22 @@ short* tilemaparray;
                                         }
                                     }
                                 }
+                                else if (j == 1)
+                                {
+                                    if (tsd->lit_tile_style != 1)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                        tilemaparray[m + glyph_offset4] = tile_count;
+                                    }
+                                }
+                                else if (j == 2)
+                                {
+                                    if (tsd->inventory_tile_style != 1)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                        tilemaparray[m + glyph_offset4] = tile_count;
+                                    }
+                                }
                             }
                         }
 
@@ -367,6 +383,23 @@ short* tilemaparray;
                                 }
                             }
                         }
+                        else if (j == 1)
+                        {
+                            if (tsd->lit_tile_style != 1)
+                            {
+                                int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                            }
+                        }
+                        else if (j == 2)
+                        {
+                            if (tsd->inventory_tile_style != 1)
+                            {
+                                int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                            }
+                        }
+
 #endif
                         tile_count++;
                     }
@@ -481,6 +514,22 @@ short* tilemaparray;
                             }
                         }
                     }
+                    else if (j == 1)
+                    {
+                        if (tsd->lit_tile_style != 1)
+                        {
+                            int glyph_offset3 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                            tilemaparray[i + glyph_offset3] = tile_count;
+                        }
+                    }
+                    else if (j == 2)
+                    {
+                        if (tsd->inventory_tile_style != 1)
+                        {
+                            int glyph_offset3 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                            tilemaparray[i + glyph_offset3] = tile_count;
+                        }
+                    }
 
                     /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
                     if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
@@ -505,7 +554,7 @@ short* tilemaparray;
                                         if (tsd->lit_tile_style != 1)
                                         {
                                             int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
-                                            tilemaparray[i + glyph_offset4] = tile_count;
+                                            tilemaparray[m + glyph_offset4] = tile_count;
                                         }
                                     }
                                     if (tsd->lit_tile_style != 1)
@@ -520,6 +569,22 @@ short* tilemaparray;
                                         {
                                             tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
                                         }
+                                    }
+                                }
+                                else if (j == 1)
+                                {
+                                    if (tsd->lit_tile_style != 1)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                        tilemaparray[m + glyph_offset4] = tile_count;
+                                    }
+                                }
+                                else if (j == 2)
+                                {
+                                    if (tsd->inventory_tile_style != 1)
+                                    {
+                                        int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
+                                        tilemaparray[m + glyph_offset4] = tile_count;
                                     }
                                 }
                             }
