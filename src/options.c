@@ -208,7 +208,7 @@ static struct Bool_Opt {
     { "pickup_thrown", &flags.pickup_thrown, TRUE, SET_IN_GAME },
     { "popup_dialog", &iflags.wc_popup_dialog, FALSE, SET_IN_GAME },   /*WC*/
 	{ "prefer_fast_move", &flags.prefer_fast_move, FALSE, SET_IN_GAME },
-	{ "preload_tiles", &iflags.wc_preload_tiles, TRUE, DISP_IN_GAME }, /*WC*/
+    { "preload_tiles", &iflags.wc_preload_tiles, TRUE, DISP_IN_GAME }, /*WC*/
     { "pushweapon", &flags.pushweapon, FALSE, SET_IN_GAME },
 #if defined(MICRO) && !defined(AMIGA)
     { "rawio", &iflags.rawio, FALSE, DISP_IN_GAME },
@@ -401,6 +401,10 @@ static struct Comp_Opt {
       DISP_IN_GAME },
     { "player_selection", "choose character via dialog or prompts", 12,
       DISP_IN_GAME },
+#ifdef USE_TILES
+    { "preferred_screen_scale", "preferred screen scale", 3,
+      SET_IN_GAME },
+#endif
     { "race", "your starting race (e.g., Human, Elf)", PL_CSIZ,
       DISP_IN_GAME },
 	{ "ramname", "the name of your (first) ram (e.g., ramname:Silver)",
@@ -3878,12 +3882,41 @@ boolean tinitial, tfrom_file;
             itmp = atoi(op);
         }
         if (itmp < 2 || itmp > 8) {
-            config_error_add("'%s' requires a value of 2 and 8", fullname);
+            config_error_add("'%s' requires a value between 2 and 8", fullname);
             retval = FALSE;
         } else {
             iflags.wc2_statuslines = itmp;
             if (!initial)
                 need_redraw = TRUE;
+        }
+        return retval;
+    }
+
+    fullname = "preferred_screen_scale";
+    if (match_optname(opts, fullname, 22, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 100;
+            retval = FALSE;
+        }
+        else if (op) 
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < MIN_PREF_SCREEN_SCALE || itmp > MAX_PREF_SCREEN_SCALE)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, MIN_PREF_SCREEN_SCALE, MAX_PREF_SCREEN_SCALE);
+            retval = FALSE;
+        }
+        else 
+        {
+            flags.preferred_screen_scale = itmp;
         }
         return retval;
     }
@@ -5862,6 +5895,11 @@ char *buf;
         Sprintf(buf, "%d", flags.pile_limit);
     } else if (!strcmp(optname, "playmode")) {
         Strcpy(buf, wizard ? "debug" : discover ? "explore" : "normal");
+    } else if (!strcmp(optname, "preferred_screen_scale")) {
+        if (flags.preferred_screen_scale)
+            Sprintf(buf, "%d", flags.preferred_screen_scale);
+        else
+            Strcpy(buf, none);
     } else if (!strcmp(optname, "race")) {
         Sprintf(buf, "%s", rolestring(flags.initrace, races, noun));
     } else if (!strcmp(optname, "roguesymset")) {
@@ -6702,6 +6740,8 @@ static struct wc_Opt wc2_options[] = {
     { "guicolor", WC2_GUICOLOR },
     { "statuslines", WC2_STATUSLINES },
     { "windowborders", WC2_WINDOWBORDERS },
+    { "autostatuslines", WC2_AUTOSTATUSLINES },
+    { "preferred_screen_scale", WC2_PREFERRED_SCREEN_SCALE },
     { (char *) 0, 0L }
 };
 

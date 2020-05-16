@@ -62,6 +62,7 @@ struct flag {
     boolean detailed_weights; /* use ounces and grams instead of lbs and kg */
 	boolean show_weight_summary; /* show weight summary */
     double screen_scale_adjustment; /* scale = 1.0 + screen_scale_adjustment */
+    int preferred_screen_scale; /* user set preference for screen scale 25...200 */
     boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:

@@ -90,7 +90,7 @@ struct window_procs mswin_procs = {
 #ifdef STATUS_HILITES
     WC2_HITPOINTBAR | WC2_FLUSH_STATUS | WC2_RESET_STATUS | WC2_HILITE_STATUS |
 #endif
-    0L, mswin_init_nhwindows, mswin_player_selection, mswin_askname,
+    WC2_PREFERRED_SCREEN_SCALE, mswin_init_nhwindows, mswin_player_selection, mswin_askname,
     mswin_get_nh_event, mswin_exit_nhwindows, mswin_suspend_nhwindows,
     mswin_resume_nhwindows, mswin_create_nhwindow, mswin_clear_nhwindow,
     mswin_display_nhwindow, mswin_destroy_nhwindow, mswin_curs, mswin_putstr,
@@ -2044,6 +2044,13 @@ mswin_preference_update(const char *pref)
         mswin_update_inventory();
         return;
     }
+
+    if (stricmp(pref, "preferred_screen_scale") == 0) {
+        dozoomnormal();
+        mswin_stretch_window();
+        return;
+    }
+
 }
 
 #define TEXT_BUFFER_SIZE 4096

@@ -139,9 +139,9 @@ STATIC_PTR int NDECL(dosh_core);
 STATIC_PTR int NDECL(doherecmdmenu);
 STATIC_PTR int NDECL(dotherecmdmenu);
 STATIC_PTR int NDECL(doprev_message);
-STATIC_PTR int NDECL(dozoomnormal);
 STATIC_PTR int NDECL(dozoomin);
 STATIC_PTR int NDECL(dozoomout);
+STATIC_PTR int NDECL(dozoommini);
 STATIC_PTR int NDECL(timed_occupation);
 STATIC_PTR int NDECL(doextcmd);
 STATIC_PTR int NDECL(dotravel);
@@ -4754,6 +4754,8 @@ struct ext_func_tab extcmdlist[] = {
             dozoomin, IFBURIED | AUTOCOMPLETE },
     { M('-'), "zoomout", "zoom map in",
             dozoomout, IFBURIED | AUTOCOMPLETE },
+    { M(','), "zoommini", "zoom map in",
+            dozoommini, IFBURIED | AUTOCOMPLETE },
 #endif
 
 #ifdef DEBUG
@@ -7349,11 +7351,11 @@ dosh_core(VOID_ARGS)
 }
 
 
-/* Ctrl-'0' command */
-STATIC_PTR int
+int
 dozoomnormal(VOID_ARGS)
 {
-    flags.screen_scale_adjustment = 0.0;
+    flags.screen_scale_adjustment = flags.preferred_screen_scale == 0 ? 0.0 
+        : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, (((double)flags.preferred_screen_scale) / 100.0 - 1.0) ));
 
     stretch_window();
 
@@ -7363,10 +7365,10 @@ dozoomnormal(VOID_ARGS)
 STATIC_PTR int
 dozoomin(VOID_ARGS)
 {
-    double scale_level = round(flags.screen_scale_adjustment / 0.25);
-    flags.screen_scale_adjustment = (scale_level + 1) * 0.25;
-    if(flags.screen_scale_adjustment > 1.0)
-        flags.screen_scale_adjustment = 1.0;
+    double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);
+    flags.screen_scale_adjustment = (scale_level + 1) * KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP;
+    if(flags.screen_scale_adjustment > MAX_SCREEN_SCALE_ADJUSTMENT)
+        flags.screen_scale_adjustment = MAX_SCREEN_SCALE_ADJUSTMENT;
     
     stretch_window();
 
@@ -7376,14 +7378,25 @@ dozoomin(VOID_ARGS)
 STATIC_PTR int
 dozoomout(VOID_ARGS)
 {
-    double scale_level = round(flags.screen_scale_adjustment / 0.25);
-    flags.screen_scale_adjustment = (scale_level - 1) * 0.25;
-    if (flags.screen_scale_adjustment < -0.75)
-        flags.screen_scale_adjustment = -0.75;
+    double scale_level = round(flags.screen_scale_adjustment / KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP);
+    flags.screen_scale_adjustment = (scale_level - 1) * KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP;
+    if (flags.screen_scale_adjustment < MIN_SCREEN_SCALE_ADJUSTMENT)
+        flags.screen_scale_adjustment = MIN_SCREEN_SCALE_ADJUSTMENT;
 
     stretch_window();
 
     return 0;
 }
+
+STATIC_PTR int
+dozoommini(VOID_ARGS)
+{
+    flags.screen_scale_adjustment = MIN_SCREEN_SCALE_ADJUSTMENT;
+
+    stretch_window();
+
+    return 0;
+}
+
 
 /*cmd.c*/

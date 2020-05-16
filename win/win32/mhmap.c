@@ -543,14 +543,14 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             short wheeldistance = HIWORD(wParam);
             if(wheeldistance < 0)
-                flags.screen_scale_adjustment -= 0.05;
+                flags.screen_scale_adjustment -= MOUSE_SCREEN_SCALE_ADJUSTMENT_STEP;
             else 
-                flags.screen_scale_adjustment += 0.05;
+                flags.screen_scale_adjustment += MOUSE_SCREEN_SCALE_ADJUSTMENT_STEP;
 
-            if (flags.screen_scale_adjustment < -0.75)
-                flags.screen_scale_adjustment = -0.75;
-            if (flags.screen_scale_adjustment > 1.0)
-                flags.screen_scale_adjustment = 1.0;
+            if (flags.screen_scale_adjustment < MIN_SCREEN_SCALE_ADJUSTMENT)
+                flags.screen_scale_adjustment = MIN_SCREEN_SCALE_ADJUSTMENT;
+            if (flags.screen_scale_adjustment > MAX_SCREEN_SCALE_ADJUSTMENT)
+                flags.screen_scale_adjustment = MAX_SCREEN_SCALE_ADJUSTMENT;
 
             SIZE size;
             size.cx = data->xFrontTile * COLNO;
