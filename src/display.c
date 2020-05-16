@@ -1940,7 +1940,7 @@ xchar x, y;
     case TLWALL:
     case TRWALL:
     case SDOOR:
-        idx = ptr->seenv ? wall_angle(ptr) : S_unexplored;
+        idx = ptr->seenv ? wall_angle(ptr) : S_stone;
         break;
     case DOOR:
         if (ptr->doormask) {
@@ -2156,28 +2156,16 @@ STATIC_OVL int
 get_bk_glyph(x, y)
 xchar x, y;
 {
-    int idx = S_room, bkglyph = NO_GLYPH;
-    struct rm *lev = &levl[x][y];
-
-    if (iflags.use_background_glyph && lev->seenv != 0
-        && gbuf[y][x].glyph != cmap_to_glyph(S_unexplored)) {
-
-        if (!cansee(x, y) && (!lev->waslit || flags.dark_room)) {
-            /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
-            if (lev->typ == CORR && (lev->waslit || flags.lit_corridor))
-                idx = S_corr;
-            else if (idx == S_room)
-                idx = (flags.dark_room && iflags.use_color)
-                ? DARKROOMSYM : S_unexplored;
-        }
-        return cmap_to_glyph(idx);
-    }
-    else if (gbuf[y][x].glyph == cmap_to_glyph(S_unexplored))
+  if (gbuf[y][x].glyph == cmap_to_glyph(S_unexplored))
         return NO_GLYPH;
-
+  else
     return back_to_glyph(x, y);
+
 #if 0
-        switch (lev->typ) {
+  int idx = S_room, bkglyph = NO_GLYPH;
+  struct rm *lev = &levl[x][y];
+
+       switch (lev->typ) {
         case UNEXPLORED:
             idx = level.flags.arboreal ? S_tree : S_unexplored;
             break;
@@ -2230,8 +2218,8 @@ xchar x, y;
         //if (idx != S_room)
         bkglyph = cmap_to_glyph(idx);
         }
-#endif
     return bkglyph;
+#endif
 }
 
 /* floor for transparent backglyphs */

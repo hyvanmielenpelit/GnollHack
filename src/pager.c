@@ -1396,6 +1396,7 @@ coord *click_cc;
     } while (from_screen && !quick && ans != LOOK_ONCE && !clicklook);
 
     flags.verbose = save_verbose;
+
     return 0;
 }
 

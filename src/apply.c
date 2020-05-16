@@ -2199,6 +2199,7 @@ int magic; /* 0=Physical, otherwise skill level */
     getpos_sethilite(display_jump_positions, get_valid_jump_position);
     if (getpos(&cc, TRUE, "the desired position") < 0)
         return 0; /* user pressed ESC */
+
     if (!is_valid_jump_pos(cc.x, cc.y, magic, TRUE)) {
         return 0;
     } else {

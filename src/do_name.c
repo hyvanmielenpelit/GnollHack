@@ -676,6 +676,9 @@ const char *goal;
     int gcount[NUM_GLOCS] = DUMMY;
     int gidx[NUM_GLOCS] = DUMMY;
 
+    flags.show_cursor_on_u = TRUE;
+    flags.force_paint_at_cursor = TRUE;
+
     for (i = 0; i < SIZE(pick_chars_def); i++)
         pick_chars[i] = Cmd.spkeys[pick_chars_def[i].nhkf];
     pick_chars[SIZE(pick_chars_def)] = '\0';
@@ -995,6 +998,10 @@ const char *goal;
             free((genericptr_t) garr[i]);
     getpos_hilitefunc = (void FDECL((*), (int))) 0;
     getpos_getvalid = (boolean FDECL((*), (int, int))) 0;
+
+    flags.show_cursor_on_u = FALSE;
+    flags.force_paint_at_cursor = TRUE;
+
     return result;
 }
 

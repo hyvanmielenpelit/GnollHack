@@ -719,15 +719,17 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     case MSNH_MSG_CURSOR: {
         PMSNHMsgCursor msg_data = (PMSNHMsgCursor) lParam;
 
-        if (data->xCur != msg_data->x || data->yCur != msg_data->y) {
+        if (flags.force_paint_at_cursor || data->xCur != msg_data->x || data->yCur != msg_data->y) 
+        {
+            flags.force_paint_at_cursor = FALSE;
 
             dirty(data, data->xCur, data->yCur);
             dirty(data, msg_data->x, msg_data->y);
 
             data->xCur = msg_data->x;
             data->yCur = msg_data->y;
+            onPaint(hWnd);
         }
- 
     } break;
 
     case MSNH_MSG_GETTEXT: {
@@ -833,9 +835,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     signed_bkglyph = data->bkmap[i][j];
     glyph = abs(signed_glyph);
     bkglyph = abs(signed_bkglyph);
-    if (signed_glyph < -1)
+    if (signed_glyph < 0)
         flip_glyph = TRUE;
-    if (signed_bkglyph < -1)
+    if (signed_bkglyph < 0)
         flip_bkglyph = TRUE;
 
     if ((glyph == NO_GLYPH) && bkglyph == NO_GLYPH)
@@ -849,7 +851,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     if (bkglyph != NO_GLYPH) {
         ntile = glyph2tile[bkglyph];
-        t_x = TILEBMP_X(ntile);
+        int multiplier = flip_bkglyph ? -1 : 1;
+        t_x = TILEBMP_X(ntile) + (flip_bkglyph ? TILE_X - 1 : 0);
         t_y = TILEBMP_Y(ntile);
 
         StretchBlt(data->backBufferDC, rect->left, rect->top,
@@ -865,7 +868,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
         ntile = glyph2tile[glyph];
-        t_x = TILEBMP_X(ntile) + (flip_glyph ? 1 : 0) * TILE_X;
+        t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
         t_y = TILEBMP_Y(ntile);
 
         int t_per_l = GetNHApp()->mapTilesPerLine;
@@ -936,9 +939,34 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     }
 #endif
 
-    if (i == data->xCur && j == data->yCur && 
+    if (i == data->xCur && j == data->yCur &&
         (data->cursorOn || !win32_cursorblink))
-        DrawFocusRect(data->backBufferDC, rect);
+    {
+        if (i == u.ux && j == u.uy && !flags.show_cursor_on_u)
+        {
+            // Nothing
+        }
+        else
+        {
+            HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
+            HBRUSH hbr_light = CreateSolidBrush(RGB(100, 50, 0));
+            HBRUSH hbr_light2 = CreateSolidBrush(RGB(50, 25, 0));
+            RECT smaller_rect, even_smaller_rect;
+            smaller_rect.top = rect->top + 1;
+            smaller_rect.bottom = rect->bottom - 1;
+            smaller_rect.left = rect->left + 1;
+            smaller_rect.right = rect->right - 1;
+            even_smaller_rect.top = rect->top + 2;
+            even_smaller_rect.bottom = rect->bottom - 2;
+            even_smaller_rect.left = rect->left + 2;
+            even_smaller_rect.right = rect->right - 2;
+            FrameRect(data->backBufferDC, rect, hbr_dark);
+            FrameRect(data->backBufferDC, &smaller_rect, hbr_light);
+            FrameRect(data->backBufferDC, &even_smaller_rect, hbr_light2);
+            //DrawFocusRect(data->backBufferDC, rect);
+            //DrawFocusRect(data->backBufferDC, &smaller_rect);
+        }
+    };
 }
 
 
