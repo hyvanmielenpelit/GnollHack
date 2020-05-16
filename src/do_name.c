@@ -241,7 +241,7 @@ const void *b;
 #define IS_UNEXPLORED_LOC(x,y) \
     (isok((x), (y))                                     \
      && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].glyph)             \
-     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].glyph) == S_stone  \
+     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].glyph) == S_unexplored  \
      && !levl[(x)][(y)].seenv)
 
 static struct opvar *gloc_filter_map = (struct opvar *) 0;

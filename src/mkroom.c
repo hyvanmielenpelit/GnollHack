@@ -1545,6 +1545,9 @@ int sym;
     int typ = STONE; /* catchall */
 
     switch (sym) {
+    case S_unexplored:
+        typ = UNEXPLORED;
+        break;
     case S_stone:
         typ = STONE;
         break;

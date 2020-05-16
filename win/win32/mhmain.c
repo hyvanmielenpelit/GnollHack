@@ -177,7 +177,7 @@ static const unsigned char
 #define KEYTABLE(x) \
     (STATEON(VK_SHIFT) ? KEYTABLE_SHIFT(x) : KEYTABLE_REGULAR(x))
 
-static const char *extendedlist = "acdefijlmnopqrstuvw?-+.,2";
+static const char *extendedlist = "acdefijlmnopqrstuvwxyz?-+.,2";
 
 #define SCANLO 0x02
 static const char scanmap[] = {
@@ -405,7 +405,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
           If no Alt-key pressed it can never be an extended command
         */
         if (GetNHApp()->regGnollHackMode && ((lParam & 1 << 29) != 0)) {
-            unsigned char c = (unsigned char) (wParam & 0xFF);
+            unsigned char c = (unsigned char)(wParam & 0xFF);
             unsigned char scancode = (lParam >> 16) & 0xFF;
             if (index(extendedlist, tolower(c)) != 0) {
                 NHEVENT_KBD(M(tolower(c)));

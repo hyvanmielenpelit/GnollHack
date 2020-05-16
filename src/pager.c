@@ -554,11 +554,15 @@ char *buf, *monbuf;
         case S_cloud:
             Strcpy(buf, Is_airlevel(&u.uz) ? "cloudy area" : "fog/vapor cloud");
             break;
+        case S_unexplored:
+            noarticle = TRUE;
+            Strcpy(buf, "unexplored");
+            break;
         case S_stone:
 			noarticle = TRUE;
             if (!levl[x][y].seenv) 
 			{
-                Strcpy(buf, "unexplored");
+                Strcpy(buf, "unexplored stone");
                 break;
             }
 			else if (Underwater && !Is_waterlevel(&u.uz))
@@ -929,7 +933,7 @@ struct permonst **for_supplement;
     } else if (((u.uswallow || submerged) && distu(cc.x, cc.y) > 2)
                /* detection showing some category, so mostly background */
                || ((iflags.terrainmode & (TER_DETECT | TER_MAP)) == TER_DETECT
-                   && glyph == cmap_to_glyph(S_stone))) {
+                   && glyph == cmap_to_glyph(S_unexplored))) {
         x_str = unreconnoitered;
         need_to_look = FALSE;
     } else if (is_swallow_sym(sym)) {

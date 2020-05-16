@@ -145,7 +145,10 @@ const struct symdef def_warnsyms[WARNCOUNT] = {
  *  Default screen symbols with explanations and colors.
  */
 const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
-/* 0*/ { ' ', "dark part of a room", 0, 0,     { C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*5*/ C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*10*/  C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR) } },  /* stone */
+/* 0*/ { ' ', "unexplored",          0, 0,     
+                                               { C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*5*/ C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*10*/  C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR) } },  /* stone */
+/* 1*/ { ' ', "stone",               STONE_VARIATIONS, STONE_VARIATION_OFFSET,
+                                               { C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*5*/ C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR),      /*10*/  C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR), C(NO_COLOR) } },  /* stone */
        { '|', "wall",                0, 0,     { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BLUE),   /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_MAGENTA) } },                 /* vwall */
        { '-', "wall",                HWALL_VARIATIONS, HWALL_VARIATION_OFFSET,
                                                { C(CLR_GRAY), C(CLR_BROWN), C(CLR_ORANGE), C(CLR_GRAY), C(CLR_BLUE),   /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_MAGENTA) } },                 /* hwall */
@@ -172,15 +175,15 @@ const struct symdef_cmap defsyms[MAX_CMAPPED_CHARS] = {
        { '.', "floor of a room",     FLOOR_VARIATIONS, FLOOR_VARIATION_OFFSET,
                                                { C(CLR_GRAY), C(CLR_GRAY), C(CLR_YELLOW), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_WHITE) } },      /* room */
 /*+1*/ { '.', "grass",               0, 0,     { C(CLR_BRIGHT_GREEN), C(CLR_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN),/*5*/ C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), /*10*/ C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN), C(CLR_BRIGHT_GREEN) } },		 /* grass */
-/*20*/ { '.', "dark part of a room", DARK_FLOOR_VARIATIONS, DARK_FLOOR_VARIATION_OFFSET,
+/*20*/ { '.', "dark part of a room", FLOOR_VARIATIONS, DARK_FLOOR_VARIATION_OFFSET,
                                                { C(CLR_BLACK), C(CLR_BLACK), C(CLR_BROWN), C(CLR_BLACK), C(CLR_BLACK), /*5*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), /*10*/ C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK), C(CLR_BLACK) } }, /* dark room */
-       { '#', "corridor",            DARK_CORRIDOR_VARIATIONS, DARK_CORRIDOR_VARIATION_OFFSET,
+       { '#', "corridor",            CORRIDOR_VARIATIONS, DARK_CORRIDOR_VARIATION_OFFSET,
                                                { C(CLR_GRAY), C(CLR_GRAY), C(CLR_BROWN), C(CLR_GRAY), C(CLR_GRAY),     /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },             /* dark corr */
-       { '#', "lit corridor",        LIT_CORRIDOR_VARIATIONS, LIT_CORRIDOR_VARIATION_OFFSET,
+       { '#', "lit corridor",        CORRIDOR_VARIATIONS, LIT_CORRIDOR_VARIATION_OFFSET,
                                                { C(CLR_GRAY), C(CLR_GRAY), C(CLR_YELLOW), C(CLR_GRAY), C(CLR_GRAY),    /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY),      /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },   /* lit corr (see mapglyph.c) */
-       { '<', "staircase up",        STAIRCASE_UP_VARIATIONS, STAIRCASE_UP_VARIATION_OFFSET,
+       { '<', "staircase up",        STAIRCASE_VARIATIONS, STAIRCASE_UP_VARIATION_OFFSET,
                                                { C(CLR_GRAY), C(CLR_YELLOW), C(CLR_RED), C(CLR_GRAY), C(CLR_BRIGHT_BLUE),     /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },         /* upstair */
-       { '>', "staircase down",      STAIRCASE_DOWN_VARIATIONS, STAIRCASE_DOWN_VARIATION_OFFSET,
+       { '>', "staircase down",      STAIRCASE_VARIATIONS, STAIRCASE_DOWN_VARIATION_OFFSET,
                                                { C(CLR_GRAY), C(CLR_YELLOW), C(CLR_RED), C(CLR_GRAY), C(CLR_BRIGHT_BLUE),     /*5*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_BLACK),     /*10*/ C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY), C(CLR_GRAY) } },       /* dnstair */
        { '<', "ladder up",           0, 0,     { C(CLR_BROWN), C(CLR_YELLOW), C(CLR_YELLOW), C(CLR_BROWN), C(CLR_BROWN), /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) } },           /* upladder */
        { '>', "ladder down",         0, 0,     { C(CLR_BROWN), C(CLR_YELLOW), C(CLR_YELLOW), C(CLR_BROWN), C(CLR_BROWN), /*5*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), /*10*/ C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) } },         /* dnladder */
@@ -669,6 +672,7 @@ struct symparse loadsyms[] = {
     { SYM_CONTROL, 4, "color" },
     { SYM_CONTROL, 4, "colour" },
     { SYM_CONTROL, 5, "restrictions" },
+    { SYM_PCHAR, S_unexplored, "S_unexplored" },
     { SYM_PCHAR, S_stone, "S_stone" },
     { SYM_PCHAR, S_vwall, "S_vwall" },
     { SYM_PCHAR, S_hwall, "S_hwall" },

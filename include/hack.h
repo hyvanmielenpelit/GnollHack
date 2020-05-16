@@ -126,6 +126,7 @@ enum dismount_types {
 #define MG_BW_LAVA 0x80  /* 'black & white lava': highlight lava if it
                             can't be distringuished from water by color */
 #define MG_H_FLIP  0x00000100UL /* Flipped horizontally */
+#define MG_STONE_INVERSE  0x00000200UL /* ' ' is inversed if it has color */
 
 
 /* sellobj_state() states */

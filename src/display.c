@@ -184,7 +184,7 @@ int show;
         if (lev->typ == ROOM && glyph == cmap_to_glyph(S_room))
             glyph = cmap_to_glyph((flags.dark_room && iflags.use_color)
                                       ? (DARKROOMSYM)
-                                      : S_stone);
+                                      : S_unexplored);
         else if (lev->typ == CORR && glyph == cmap_to_glyph(S_litcorr))
             glyph = cmap_to_glyph(S_corr);
     }
@@ -339,9 +339,9 @@ register int x, y;
         /* turn remembered dark room squares dark */
         if (!lev->waslit && lev->glyph == cmap_to_glyph(S_room)
             && lev->typ == ROOM)
-            lev->glyph = cmap_to_glyph(S_stone);
+            lev->glyph = cmap_to_glyph(S_unexplored);
     } else {
-        levl[x][y].glyph = cmap_to_glyph(S_stone); /* default val */
+        levl[x][y].glyph = cmap_to_glyph(S_unexplored); /* default val */
     }
 }
 
@@ -680,7 +680,7 @@ xchar x, y;
                     map_background(x, y, 1);
                 else
                     do_room_glyph = TRUE;
-            } else if (lev->glyph >= cmap_to_glyph(S_stone)
+            } else if (lev->glyph >= cmap_to_glyph(S_unexplored)
                        && lev->glyph < cmap_to_glyph(S_darkroom)) {
                 do_room_glyph = TRUE;
             }
@@ -689,7 +689,7 @@ xchar x, y;
                               && !Is_rogue_level(&u.uz))
                                  ? cmap_to_glyph(S_darkroom)
                                  : (lev->waslit ? cmap_to_glyph(S_room)
-                                                : cmap_to_glyph(S_stone));
+                                                : cmap_to_glyph(S_unexplored));
                 show_glyph(x, y, lev->glyph);
             }
         } else {
@@ -733,7 +733,7 @@ xchar x, y;
         if (((lev->typ == ROOM && lev->glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->glyph == cmap_to_glyph(S_grass)))
             && (!lev->waslit || (flags.dark_room && iflags.use_color)))
             show_glyph(x, y, lev->glyph = cmap_to_glyph(
-                                 flags.dark_room ? S_darkroom : S_stone));
+                                 flags.dark_room ? S_darkroom : S_unexplored));
         else if (lev->typ == CORR && lev->glyph == cmap_to_glyph(S_litcorr)
                  && !lev->waslit)
             show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
@@ -891,8 +891,8 @@ register int x, y;
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
             else if (lev->glyph == cmap_to_glyph(S_room) && lev->typ == ROOM
                      && !lev->waslit)
-                show_glyph(x, y, lev->glyph = cmap_to_glyph(S_stone));
-            else
+                show_glyph(x, y, lev->glyph = cmap_to_glyph(S_unexplored));
+            else if(lev->glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
         } else if (!lev->waslit || (flags.dark_room && iflags.use_color)) {
             if (lev->glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
@@ -901,7 +901,7 @@ register int x, y;
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
 			else if (lev->glyph == cmap_to_glyph(S_grass) && lev->typ == GRASS)
 				show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
-			else
+			else if (lev->glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
         } else {
  show_mem:
@@ -1159,7 +1159,7 @@ int first;
         for (y = lasty - 1; y <= lasty + 1; y++)
             for (x = lastx - 1; x <= lastx + 1; x++)
                 if (isok(x, y))
-                    show_glyph(x, y, cmap_to_glyph(S_stone));
+                    show_glyph(x, y, cmap_to_glyph(S_unexplored));
     }
 
     swallower = monsndx(u.ustuck->data);
@@ -1233,7 +1233,7 @@ int mode;
         for (y = lasty - 1; y <= lasty + 1; y++)
             for (x = lastx - 1; x <= lastx + 1; x++)
                 if (isok(x, y))
-                    show_glyph(x, y, cmap_to_glyph(S_stone));
+                    show_glyph(x, y, cmap_to_glyph(S_unexplored));
     }
 
     /*
@@ -1244,7 +1244,7 @@ int mode;
         for (y = u.uy - 1; y <= u.uy + 1; y++)
             if (isok(x, y) && (is_pool_or_lava(x, y) || is_ice(x, y))) {
                 if (Blind && !(x == u.ux && y == u.uy))
-                    show_glyph(x, y, cmap_to_glyph(S_stone));
+                    show_glyph(x, y, cmap_to_glyph(S_unexplored));
                 else
                     newsym(x, y);
             }
@@ -1557,7 +1557,7 @@ docrt()
     for (x = 1; x < COLNO; x++) {
         lev = &levl[x][0];
         for (y = 0; y < ROWNO; y++, lev++)
-            if (lev->glyph != cmap_to_glyph(S_stone))
+            if (lev->glyph != cmap_to_glyph(S_unexplored))
                 show_glyph(x, y, lev->glyph);
     }
 
@@ -1790,7 +1790,7 @@ int x, y, glyph;
         }                              \
     }
 
-static gbuf_entry nul_gbuf = { 0, base_cmap_to_glyph(S_stone) };
+static gbuf_entry nul_gbuf = { 0, base_cmap_to_glyph(S_unexplored) };
 /*
  * Turn the 3rd screen into stone.
  */
@@ -1810,7 +1810,7 @@ clear_glyph_buffer()
 }
 
 /*
- * Assumes that the indicated positions are filled with S_stone glyphs.
+ * Assumes that the indicated positions are filled with S_unexplored glyphs.
  */
 void
 row_refresh(start, stop, y)
@@ -1819,7 +1819,7 @@ int start, stop, y;
     register int x;
 
     for (x = start; x <= stop; x++)
-        if (gbuf[y][x].glyph != cmap_to_glyph(S_stone))
+        if (gbuf[y][x].glyph != cmap_to_glyph(S_unexplored))
             print_glyph(WIN_MAP, x, y, gbuf[y][x].glyph, get_bk_glyph(x, y));
 }
 
@@ -1912,9 +1912,12 @@ xchar x, y;
     boolean is_variation = FALSE;
 
     switch (ptr->typ) {
+    case UNEXPLORED:
+        idx = level.flags.arboreal ? S_tree : S_unexplored;
+        break;
     case SCORR:
     case STONE:
-        idx = level.flags.arboreal ? S_tree : S_stone;
+        idx = S_stone;
         break;
     case ROOM:
         idx = S_room;
@@ -1937,7 +1940,7 @@ xchar x, y;
     case TLWALL:
     case TRWALL:
     case SDOOR:
-        idx = ptr->seenv ? wall_angle(ptr) : S_stone;
+        idx = ptr->seenv ? wall_angle(ptr) : S_unexplored;
         break;
     case DOOR:
         if (ptr->doormask) {
@@ -2157,15 +2160,30 @@ xchar x, y;
     struct rm *lev = &levl[x][y];
 
     if (iflags.use_background_glyph && lev->seenv != 0
-        && gbuf[y][x].glyph != cmap_to_glyph(S_stone)) {
+        && gbuf[y][x].glyph != cmap_to_glyph(S_unexplored)) {
 
-        idx = idx;
-        return back_to_glyph(x, y);
+        if (!cansee(x, y) && (!lev->waslit || flags.dark_room)) {
+            /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
+            if (lev->typ == CORR && (lev->waslit || flags.lit_corridor))
+                idx = S_corr;
+            else if (idx == S_room)
+                idx = (flags.dark_room && iflags.use_color)
+                ? DARKROOMSYM : S_unexplored;
+        }
+        return cmap_to_glyph(idx);
+    }
+    else if (gbuf[y][x].glyph == cmap_to_glyph(S_unexplored))
+        return NO_GLYPH;
+
+    return back_to_glyph(x, y);
 #if 0
         switch (lev->typ) {
+        case UNEXPLORED:
+            idx = level.flags.arboreal ? S_tree : S_unexplored;
+            break;
         case SCORR:
         case STONE:
-            idx = level.flags.arboreal ? S_tree : S_stone;
+            idx = S_stone;
             break;
         case ROOM:
            idx = S_room;
@@ -2206,13 +2224,13 @@ xchar x, y;
                 idx = S_corr;
             else if (idx == S_room)
                 idx = (flags.dark_room && iflags.use_color)
-                         ? DARKROOMSYM : S_stone;
+                         ? DARKROOMSYM : S_unexplored;
         }
 
         //if (idx != S_room)
         bkglyph = cmap_to_glyph(idx);
+        }
 #endif
-    }
     return bkglyph;
 }
 
@@ -2226,6 +2244,7 @@ xchar x, y;
     boolean is_variation = FALSE;
 
     switch (ptr->typ) {
+    case UNEXPLORED:
     case SCORR:
     case STONE:
     case ROOM:
@@ -2360,7 +2379,7 @@ static const char *type_names[MAX_TYPE] = {
     "SDOOR", "SCORR", "POOL", "MOAT", "WATER", "DRAWBRIDGE_UP", "LAVAPOOL",
     "IRON_BARS", "DOOR", "CORR", "ROOM", "STAIRS", "LADDER", "FOUNTAIN",
     "THRONE", "SINK", "GRAVE", "ALTAR", "ICE", "DRAWBRIDGE_DOWN", "AIR",
-    "CLOUD"
+    "CLOUD", "GRASS", "UNEXPLORED"
 };
 
 static const char *

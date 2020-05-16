@@ -637,6 +637,9 @@ curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph,
     if ((special & MG_DETECT) && iflags.use_inverse) {
         attr = A_REVERSE;
     }
+    if ((special & MG_STONE_INVERSE) && iflags.use_inverse) {
+        attr = A_REVERSE;
+    }
     if (!symset[PRIMARY].name || !strcmpi(symset[PRIMARY].name, "curses")) {
         ch = curses_convert_glyph(ch, glyph);
     }

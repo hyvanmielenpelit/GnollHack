@@ -838,6 +838,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     if (signed_bkglyph < -1)
         flip_bkglyph = TRUE;
 
+//    if ((glyph == NO_GLYPH) && bkglyph == NO_GLYPH)
+//        bkglyph = cmap_to_glyph(S_unexplored);
+
     if (glyph == NO_GLYPH && bkglyph == NO_GLYPH) {
         HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
         FillRect(data->backBufferDC, rect, blackBrush);
@@ -859,8 +862,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     //int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
     int multiplier = flip_glyph ? -1 : 1;
 
-    if(signed_glyph == u_to_glyph())
-        signed_glyph = signed_glyph;
 
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
         ntile = glyph2tile[glyph];

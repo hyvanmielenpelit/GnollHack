@@ -1926,7 +1926,7 @@ dump_map()
 {
     int x, y, glyph, skippedrows, lastnonblank;
     int subset = TER_MAP | TER_TRP | TER_OBJ | TER_MON;
-    int default_glyph = cmap_to_glyph(level.flags.arboreal ? S_tree : S_stone);
+    int default_glyph = cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
     char buf[BUFSZ];
     boolean blankrow, toprow;
 
@@ -1995,7 +1995,7 @@ int which_subset; /* when not full, whether to suppress objs and/or traps */
 
         if (unconstrain_map())
             docrt();
-        default_glyph = cmap_to_glyph(level.flags.arboreal ? S_tree : S_stone);
+        default_glyph = cmap_to_glyph(level.flags.arboreal ? S_tree : S_unexplored);
 
         for (x = 1; x < COLNO; x++)
             for (y = 0; y < ROWNO; y++) {

@@ -2393,7 +2393,7 @@ d_level *lev;
     init->final_resting_place = 0;
     /* lastseentyp[][] is reused for each level, so get rid of
        previous level's data */
-    (void) memset((genericptr_t) lastseentyp, 0, sizeof lastseentyp);
+    (void) memset((genericptr_t) lastseentyp, UNEXPLORED, sizeof lastseentyp);
 
     init->lev.dnum = lev->dnum;
     init->lev.dlevel = lev->dlevel;

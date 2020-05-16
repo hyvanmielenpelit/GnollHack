@@ -1224,8 +1224,8 @@ int x,y;
     int g = glyph_at(x,y);
     if (x == u.ux && y == u.uy)
         return TRUE;
-    if (isok(x,y) && glyph_is_cmap_or_cmap_variation(g) && S_stone == glyph_to_cmap(g)
-        && !levl[x][y].seenv)
+    if (isok(x,y) && glyph_is_cmap_or_cmap_variation(g) && S_unexplored == glyph_to_cmap(g)
+        /*&& !levl[x][y].seenv*/)
         return FALSE;
     u.tx = x;
     u.ty = y;

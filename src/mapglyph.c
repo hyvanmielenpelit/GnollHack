@@ -270,6 +270,7 @@ unsigned long *ospecial;
                 cmap_variation_color(variation_index, cmap_type_idx);
             else
                 cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+
 #if 0
             if (iflags.use_color && !flags.classic_colors)
             {
@@ -487,6 +488,9 @@ unsigned long *ospecial;
     if (!has_color(color) || (Is_rogue_level(&u.uz) && !has_rogue_color))
         color = NO_COLOR;
 #endif
+
+//    if (ch == ' ' && color != NO_COLOR)  /* Does not look very good */
+//        special |= MG_STONE_INVERSE;
 
     *ochar = (int) ch;
     *ospecial = special;

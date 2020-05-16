@@ -1144,8 +1144,8 @@ int howmuch;
                 /* Zonk all memory of this location. */
                 levl[zx][zy].seenv = 0;
                 levl[zx][zy].waslit = 0;
-                levl[zx][zy].glyph = cmap_to_glyph(S_stone);
-                lastseentyp[zx][zy] = STONE;
+                levl[zx][zy].glyph = cmap_to_glyph(S_unexplored);
+                lastseentyp[zx][zy] = UNEXPLORED;
             }
     /* forget overview data for this level */
     forget_mapseen(ledger_no(&u.uz));
