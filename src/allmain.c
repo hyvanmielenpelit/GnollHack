@@ -1064,12 +1064,12 @@ newgame()
     context.tribute.tributesz = sizeof(struct tribute_info);
 	strcpy(context.used_names, "|");
 
-    flags.screen_scale_adjustment = flags.preferred_screen_scale == 0 ? 0.0 
-        : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, ((double)flags.preferred_screen_scale) / 100.0 - 1.0));
-
     init_fountains();
 
 #ifdef USE_TILES
+    flags.screen_scale_adjustment = flags.preferred_screen_scale == 0 ? 0.0
+        : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, ((double)flags.preferred_screen_scale) / 100.0 - 1.0));
+
     process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile);
 #endif
 
