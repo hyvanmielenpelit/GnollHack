@@ -17,7 +17,7 @@
 #
 # Use the IBM character set rather than just plain ascii characters
 # for tty window-port.
-OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:8
+OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:4
 
 # Here is a suggested symbol set from Michael Feir, 
 # for use by blind NetHack players
@@ -118,7 +118,7 @@ OPTIONS=map_mode:tiles,scroll_margin:10
 OPTIONS=font_message:Arial,font_size_message:14,align_message:top
 
 # Menu settings
-OPTIONS=font_menu:Arial,font_size_menu:14
+OPTIONS=font_menu:Courier New,font_size_menu:14
 
 # Text settings
 OPTIONS=font_text:Courier New,font_size_text:14

@@ -892,7 +892,7 @@ register int x, y;
             else if (lev->glyph == cmap_to_glyph(S_room) && lev->typ == ROOM
                      && !lev->waslit)
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_unexplored));
-            else if(lev->glyph != cmap_to_glyph(S_unexplored))
+            else // if(lev->glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
         } else if (!lev->waslit || (flags.dark_room && iflags.use_color)) {
             if (lev->glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
@@ -901,7 +901,7 @@ register int x, y;
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
 			else if (lev->glyph == cmap_to_glyph(S_grass) && lev->typ == GRASS)
 				show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
-			else if (lev->glyph != cmap_to_glyph(S_unexplored))
+			else // if (lev->glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
         } else {
  show_mem:

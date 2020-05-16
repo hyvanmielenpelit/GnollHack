@@ -118,7 +118,7 @@ OPTIONS=map_mode:tiles,scroll_margin:10
 OPTIONS=font_message:Arial,font_size_message:14,align_message:top
 
 # Menu settings
-OPTIONS=font_menu:Arial,font_size_menu:14
+OPTIONS=font_menu:Courier New,font_size_menu:14
 
 # Text settings
 OPTIONS=font_text:Courier New,font_size_text:14

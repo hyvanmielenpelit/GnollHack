@@ -838,8 +838,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     if (signed_bkglyph < -1)
         flip_bkglyph = TRUE;
 
-//    if ((glyph == NO_GLYPH) && bkglyph == NO_GLYPH)
-//        bkglyph = cmap_to_glyph(S_unexplored);
+    if ((glyph == NO_GLYPH) && bkglyph == NO_GLYPH)
+        bkglyph = cmap_to_glyph(S_unexplored);
 
     if (glyph == NO_GLYPH && bkglyph == NO_GLYPH) {
         HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
