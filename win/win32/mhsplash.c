@@ -219,11 +219,11 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_PAINT: {
-        char VersionString[BUFSZ];
-        RECT rt;
+//        char VersionString[BUFSZ];
+//        RECT rt;
         HDC hdcBitmap;
         HANDLE OldBitmap;
-        HANDLE OldFont;
+//        HANDLE OldFont;
         PAINTSTRUCT ps;
 
         SplashData *splashData = (SplashData *) GetWindowLongPtr(hWnd, GWLP_USERDATA);
@@ -243,6 +243,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         SelectObject(hdcBitmap, OldBitmap);
         DeleteDC(hdcBitmap);
 
+#if 0
         SetBkMode(hdc, TRANSPARENT);
         /* Print version number */
 
@@ -256,6 +257,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                  DT_LEFT | DT_NOPREFIX | DT_CALCRECT);
         DrawText(hdc, VersionString, strlen(VersionString), &rt,
                  DT_LEFT | DT_NOPREFIX);
+#endif
         EndPaint(hWnd, &ps);
     } break;
 
