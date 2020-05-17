@@ -118,13 +118,13 @@ OPTIONS=map_mode:tiles,scroll_margin:10
 OPTIONS=font_message:Arial,font_size_message:14,align_message:top
 
 # Menu settings
-OPTIONS=font_menu:Courier New,font_size_menu:14
+OPTIONS=font_menu:Consolas,font_size_menu:14
 
 # Text settings
-OPTIONS=font_text:Courier New,font_size_text:14
+OPTIONS=font_text:Consolas,font_size_text:14
 
 # Status window settings
-OPTIONS=font_status:Courier New,font_size_status:14
+OPTIONS=font_status:Consolas,font_size_status:14
 
 # Other
 OPTIONS=hilite_pet,!toptenwin

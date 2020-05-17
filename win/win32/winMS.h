@@ -51,9 +51,11 @@
 #define TILE_Y 96
 
 #ifndef MENU_TILE_X
-#define MENU_TILE_X 16
+#define MENU_TILE_X 64
 #endif
-#define MENU_TILE_Y 24
+#define MENU_TILE_Y 48
+
+#define GLYPHLESS_MENU_HEIGHT 20
 
 /* tile background color */
 #define TILE_BK_COLOR RGB(71, 108, 108)

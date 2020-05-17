@@ -976,10 +976,10 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             && !IS_MAP_ASCII(iflags.wc_map_mode)) {
             lpmis->itemHeight =
                 max(lpmis->itemHeight,
-                    (UINT) max(tm.tmHeight, MENU_TILE_Y /*GetNHApp()->mapTile_Y*/) + 4);
+                    (UINT) max(tm.tmHeight + 4, MENU_TILE_Y + 2 /*GetNHApp()->mapTile_Y*/));
         } else {
             lpmis->itemHeight =
-                max(lpmis->itemHeight, (UINT) max(tm.tmHeight, MENU_TILE_Y) + 4);
+                max(lpmis->itemHeight, (UINT) max(tm.tmHeight + 4, GLYPHLESS_MENU_HEIGHT));
         }
     }
 
@@ -1013,6 +1013,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     int color = NO_COLOR, attr;
     boolean menucolr = FALSE;
     double monitorScale = win10_monitor_scale(hWnd);
+    int checkXScaled = (int)(CHECK_WIDTH * monitorScale);
+    int checkYScaled = (int)(CHECK_HEIGHT * monitorScale);
+
     int tileXScaled = (int) (MENU_TILE_X * monitorScale);
     int tileYScaled = (int) (MENU_TILE_Y * monitorScale);
 
@@ -1064,14 +1067,14 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 break;
             }
 
-            y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
+            y = (lpdis->rcItem.bottom + lpdis->rcItem.top - checkYScaled) / 2;
             bmpSaved = SelectBitmap(data->bmpDC, bmpCheck);
-            StretchBlt(lpdis->hDC, x, y, tileXScaled, tileYScaled, 
+            StretchBlt(lpdis->hDC, x, y, checkXScaled, checkYScaled,
                 data->bmpDC, 0, 0,  CHECK_WIDTH, CHECK_HEIGHT, SRCCOPY);
             SelectObject(data->bmpDC, bmpSaved);
         }
 
-        x += tileXScaled + spacing;
+        x += checkXScaled + spacing;
 
         if (item->accelerator != 0) {
             buf[0] = item->accelerator;
@@ -1106,7 +1109,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             t_x =
                 (ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X;
             t_y =
-                (ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y;
+                (ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y + TILE_Y / 2; /* Use lower part of the tile only */
 
             y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 
@@ -1114,7 +1117,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 /* using original GnollHack tiles - apply image transparently */
                 (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x, y, 
                                           tileXScaled, tileYScaled,
-                                          tileDC, t_x, t_y, TILE_X, TILE_Y,
+                                          tileDC, t_x, t_y, TILE_X, TILE_Y / 2, /* Use lower part of the tile only */
                                           TILE_BK_COLOR);
             } else {
                 /* using custom tiles - simple blt */

@@ -915,8 +915,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 #ifdef USE_PILEMARK
     /* rely on GnollHack core helper routine */
-    (void) mapglyph(data->map[i][j], &mgch, &color, &special,
-                    i, j);
+    (void) mapglyph(data->map[i][j], &mgch, &color, &special, i, j);
+
     if ((glyph != NO_GLYPH) && (special & MG_PET)
 #else
     if ((glyph != NO_GLYPH) && glyph_is_pet(glyph)

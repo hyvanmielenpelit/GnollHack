@@ -3447,7 +3447,7 @@ int bkglyph UNUSED;
         || ((special & MG_OBJPILE) && iflags.hilite_pile)
         || ((special & MG_DETECT) && iflags.use_inverse)
         || ((special & MG_BW_LAVA) && iflags.use_inverse)
-        || ((special & MG_STONE_INVERSE)) && iflags.use_inverse)
+        || ((special & MG_STONE_INVERSE) && iflags.use_inverse))
     {
         term_start_attr(ATR_INVERSE);
         reverse_on = TRUE;
