@@ -832,7 +832,7 @@ SetMenuListType(HWND hWnd, int how)
     int i;
     HWND control;
     LVCOLUMN lvcol;
-    LRESULT fnt;
+    //LRESULT fnt;
 
     data = (PNHMenuWindow) GetWindowLongPtr(hWnd, GWLP_USERDATA);
     if (data->type != MENU_TYPE_MENU)
@@ -881,19 +881,22 @@ SetMenuListType(HWND hWnd, int how)
     SetWindowLongPtr(control, GWLP_WNDPROC, (LONG_PTR) NHMenuListWndProc);
 
     /* set control colors */
-    ListView_SetBkColor(control, menu_bg_brush ? menu_bg_color
-                                               : (COLORREF) GetSysColor(
-                                                     DEFAULT_COLOR_BG_MENU));
+    ListView_SetBkColor(control, 1 ? RGB(15, 10, 5) : menu_bg_brush ? menu_bg_color
+                                               : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU)
+    );
     ListView_SetTextBkColor(
-        control, menu_bg_brush ? menu_bg_color : (COLORREF) GetSysColor(
-                                                     DEFAULT_COLOR_BG_MENU));
+        control, 1 ? RGB(15,10,5) : menu_bg_brush ? menu_bg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU)
+    );
     ListView_SetTextColor(
-        control, menu_fg_brush ? menu_fg_color : (COLORREF) GetSysColor(
-                                                     DEFAULT_COLOR_FG_MENU));
+        control, 1 ? RGB(255, 215, 0) : menu_fg_brush ? menu_fg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_FG_MENU)
+    );
 
     /* set control font */
-    fnt = SendMessage(hWnd, WM_GETFONT, (WPARAM) 0, (LPARAM) 0);
-    SendMessage(control, WM_SETFONT, (WPARAM) fnt, (LPARAM) 0);
+    HDC hDC = GetDC(control);
+    cached_font* font = mswin_get_font(NHW_MENU, ATR_BOLD, hDC, FALSE);
+    HFONT saveFont = font->hFont;
+    SendMessage(control, WM_SETFONT, (WPARAM)saveFont, (LPARAM) 0);
+    ReleaseDC(hWnd, hDC);
 
     /* add column to the list view */
     MonitorInfo monitorInfo;
@@ -1040,7 +1043,8 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     OldFg = SetTextColor(lpdis->hDC,
                          menu_fg_brush
                              ? menu_fg_color
-                             : (COLORREF) GetSysColor(DEFAULT_COLOR_FG_MENU));
+                             : (COLORREF) GetSysColor(DEFAULT_COLOR_FG_MENU)
+    );
 
     GetTextMetrics(lpdis->hDC, &tm);
     spacing = tm.tmAveCharWidth;

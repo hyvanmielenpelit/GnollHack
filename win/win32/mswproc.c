@@ -67,7 +67,7 @@ HBRUSH message_bg_brush = NULL;
 HBRUSH message_fg_brush = NULL;
 
 COLORREF menu_bg_color = RGB(0, 0, 0);
-COLORREF menu_fg_color = RGB(0xFF, 0xFF, 0xFF);
+COLORREF menu_fg_color = RGB(0xFF, 0xF0, 0xFF);
 COLORREF text_bg_color = RGB(0, 0, 0);
 COLORREF text_fg_color = RGB(0xFF, 0xFF, 0xFF);
 COLORREF status_bg_color = RGB(0, 0, 0);

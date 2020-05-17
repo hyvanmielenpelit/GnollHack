@@ -651,7 +651,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (flags.force_paint_at_cursor)
             {
                 flags.force_paint_at_cursor = FALSE;
-                data->cursorOn = TRUE;
+                //data->cursorOn = TRUE;
             }
             else
                 data->cursorOn = !data->cursorOn;
@@ -744,7 +744,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             if (flags.force_paint_at_cursor)
             {
                 flags.force_paint_at_cursor = FALSE;
-                data->cursorOn = TRUE;
+                //data->cursorOn = TRUE;
             }
 
             dirty(data, data->xCur, data->yCur);
