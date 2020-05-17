@@ -1001,12 +1001,14 @@ mkgarden()
 				}
 				else if (!rn2(8))
 				{
-					//Sleepy ogre or bugbear
-					struct permonst* pm = (level_difficulty() > 3 && !rn2(3)) || level_difficulty() > 7 ? mkclass(S_OGRE, 0) : &mons[PM_BUGBEAR];
-					struct monst* mon = makemon(!pm ? (&mons[
-                         level_difficulty() >= 13 && !rn2(4) ? PM_OGRE_LORD :
-                        (level_difficulty() >=  8 && !rn2(4)) || level_difficulty() >= 11 ? PM_OGRE : 
-                        (level_difficulty() >=  5 && !rn2(4)) || level_difficulty() >= 7 ? PM_BUGBEAR :
+					/* Random ogre at high levels */
+					struct permonst* pm = level_difficulty() >= mons[PM_OGRE_OVERLORD].difficulty ? mkclass(S_OGRE, 0) : (struct permonst*)0;
+					
+                    /* Otherwise, hobgoblins, bugbears or normal ogres + some bosses */
+                    struct monst* mon = makemon(!pm ? (&mons[
+                         level_difficulty() >= mons[PM_OGRE_LORD].difficulty && !rn2(4) ? PM_OGRE_LORD :
+                        (level_difficulty() >= mons[PM_OGRE].difficulty && !rn2(4)) || level_difficulty() >= (mons[PM_OGRE].difficulty + 5) ? PM_OGRE :
+                        (level_difficulty() >= mons[PM_BUGBEAR].difficulty && !rn2(4)) || level_difficulty() >= 7 ? PM_BUGBEAR :
                         PM_HOBGOBLIN]) : pm, sx, sy, NO_MM_FLAGS);
 
 					if(mon)
