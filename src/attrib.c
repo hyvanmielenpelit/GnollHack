@@ -130,15 +130,16 @@ STATIC_DCL const struct innate *FDECL(check_innate_abil, (long *, long));
 STATIC_DCL int FDECL(innately, (long *));
 #endif
 
-/* adjust an attribute; return TRUE if change is made, FALSE otherwise */
-boolean
+/* adjust an attribute; return TRUE if change is made, FALSE otherwise, +2 to the previous if a change would have reduced the attribute below its minimum (possibly implying character death in some cases) */
+uchar
 adjattrib(ndx, incr, msgflg)
 int ndx, incr;
 int msgflg; /* positive => no message, zero => message, and */
 {           /* negative => conditional (msg if change made) */
-    int old_acurr, old_abase, old_amax, decr;
+    int old_acurr, old_abase, old_amin, old_amax, decr;
     boolean abonflg;
     const char *attrstr;
+	boolean limitexceeded = FALSE;
 
     if (Fixed_abil || !incr)
         return FALSE;
@@ -154,7 +155,8 @@ int msgflg; /* positive => no message, zero => message, and */
     old_acurr = ACURR(ndx);
     old_abase = ABASE(ndx);
     old_amax = AMAX(ndx);
-    ABASE(ndx) += incr; /* when incr is negative, this reduces ABASE() */
+	old_amin = AMIN(ndx);
+	ABASE(ndx) += incr; /* when incr is negative, this reduces ABASE() */
     if (incr > 0) {
         if (ABASE(ndx) > AMAX(ndx)) {
             AMAX(ndx) = ABASE(ndx);
@@ -164,30 +166,42 @@ int msgflg; /* positive => no message, zero => message, and */
         attrstr = plusattr[ndx];
         abonflg = (ABONUS(ndx) < 0);
     } else { /* incr is negative */
-        if (ABASE(ndx) < ATTRMIN(ndx)) {
-            /*
-             * If base value has dropped so low that it is trying to be
-             * taken below the minimum, reduce max value (peak reached)
-             * instead.  That means that restore ability and repeated
-             * applications of unicorn horn will not be able to recover
-             * all the lost value.  Starting will 3.6.2, we only take away
-             * some (average half, possibly zero) of the excess from max
-             * instead of all of it, but without intervening recovery, it
-             * can still eventually drop to the minimum allowed.  After
-             * that, it can't be recovered, only improved with new gains.
-             *
-             * This used to assign a new negative value to incr and then
-             * add it, but that could affect messages below, possibly
-             * making a large decrease be described as a small one.
-             *
-             * decr = rn2(-(ABASE - ATTRMIN) + 1);
-             */
-            decr = rn2(ATTRMIN(ndx) - ABASE(ndx) + 1);
-            ABASE(ndx) = ATTRMIN(ndx);
-            AMAX(ndx) -= decr;
-            if (AMAX(ndx) < ATTRMIN(ndx))
-                AMAX(ndx) = ATTRMIN(ndx);
-        }
+		if (ABASE(ndx) < ATTRMIN(ndx)) {
+			limitexceeded = TRUE;
+			/*
+			 * If base value has dropped so low that it is trying to be
+			 * taken below the minimum, reduce max value (peak reached)
+			 * instead.  That means that restore ability and repeated
+			 * applications of unicorn horn will not be able to recover
+			 * all the lost value.  Starting with 3.6.2, we only take away
+			 * some (average half, possibly zero) of the excess from max
+			 * instead of all of it, but without intervening recovery, it
+			 * can still eventually drop to the minimum allowed.  After
+			 * that, it can't be recovered, only improved with new gains.
+			 *
+			 * This used to assign a new negative value to incr and then
+			 * add it, but that could affect messages below, possibly
+			 * making a large decrease be described as a small one.
+			 *
+			 * decr = rn2(-(ABASE - ATTRMIN) + 1);
+			 */
+			decr = rn2(ATTRMIN(ndx) - ABASE(ndx) + 1);
+			AMAX(ndx) -= decr;
+			if (AMAX(ndx) < ATTRMIN(ndx))
+				AMAX(ndx) = ATTRMIN(ndx);
+			if (AMIN(ndx) > AMAX(ndx))
+				AMIN(ndx) = AMAX(ndx);
+		}
+
+		if (ABASE(ndx) < AMIN(ndx)) {
+			AMIN(ndx) = ABASE(ndx);
+
+			if (AMIN(ndx) < ATTRMIN(ndx))
+				ABASE(ndx) = AMIN(ndx) = ATTRMIN(ndx);
+
+			if (AMAX(ndx) < AMIN(ndx))
+				AMAX(ndx) = AMIN(ndx);
+		}
         attrstr = minusattr[ndx];
         abonflg = (ABONUS(ndx) > 0);
     }
@@ -203,7 +217,7 @@ int msgflg; /* positive => no message, zero => message, and */
                      (incr > 0) ? "improved" : "declined");
             }
         }
-        return FALSE;
+        return limitexceeded ? 2 : FALSE;
     }
 
 	updatemaxhp();
@@ -217,17 +231,18 @@ int msgflg; /* positive => no message, zero => message, and */
 	find_mc();
 	if (program_state.in_moveloop && (ndx == A_STR || ndx == A_CON))
         (void) encumber_msg();
-    return TRUE;
+    return limitexceeded ? 3 : TRUE;
 }
 
 
-/* adjust monster's attribute; return TRUE if change is made, FALSE otherwise */
-boolean
+/* adjust monster's attribute; return TRUE if change is made, FALSE otherwise, +2 to previous if lower limit was exceeded */
+uchar
 m_adjattrib(mon, ndx, incr)
 struct monst* mon;
 int ndx, incr;
 {           
-	int old_acurr, old_abase, old_amax, decr;
+	int old_acurr, old_abase, old_amin, old_amax, decr;
+	boolean limitexceeded = FALSE;
 
 	if (mon->mprops[FIXED_ABIL] != 0 || !incr)
 		return FALSE;
@@ -235,6 +250,7 @@ int ndx, incr;
 	old_acurr = M_ACURR(mon, ndx);
 	old_abase = M_ABASE(mon, ndx);
 	old_amax = M_AMAX(mon, ndx);
+	old_amin = M_AMIN(mon, ndx);
 	M_ABASE(mon, ndx) += incr; /* when incr is negative, this reduces M_ABASE(mon, ndx) */
 	if (incr > 0) 
 	{
@@ -246,18 +262,35 @@ int ndx, incr;
 	}
 	else
 	{ /* incr is negative */
-		if (M_ABASE(mon, ndx) < M_ATTRMIN(mon, ndx)) 
+		/* Deduct max a little bit if attribute goes below attribute minimum */
+		if (M_ABASE(mon, ndx) < M_ATTRMIN(mon, ndx))
 		{
+			limitexceeded = TRUE;
+
 			decr = rn2(M_ATTRMIN(mon, ndx) - M_ABASE(mon, ndx) + 1);
-			M_ABASE(mon, ndx) = M_ATTRMIN(mon, ndx);
+
 			M_AMAX(mon, ndx) -= decr;
 			if (M_AMAX(mon, ndx) < M_ATTRMIN(mon, ndx))
 				M_AMAX(mon, ndx) = M_ATTRMIN(mon, ndx);
+			if (M_AMIN(mon, ndx) > M_AMAX(mon, ndx))
+				M_AMIN(mon, ndx) = M_AMAX(mon, ndx);
 		}
+
+		if (M_ABASE(mon, ndx) < M_AMIN(mon, ndx))
+		{
+			M_AMIN(mon, ndx) = M_ABASE(mon, ndx);
+
+			if (M_AMIN(mon, ndx) < M_ATTRMIN(mon, ndx))
+				M_ABASE(mon, ndx) = M_AMIN(mon, ndx) = M_ATTRMAX(mon, ndx);
+
+			if (M_AMAX(mon, ndx) < M_AMIN(mon, ndx))
+				M_AMAX(mon, ndx) = M_AMIN(mon, ndx);
+		}
+
 	}
 	if (M_ACURR(mon, ndx) == old_acurr) 
 	{
-		return FALSE;
+		return limitexceeded ? 2 : FALSE;
 	}
 
 	//m_updatemaxhp(); //Not implemented
@@ -267,7 +300,7 @@ int ndx, incr;
 	find_mac(mon);
 	//find_mmc(mon); 
 
-	return TRUE;
+	return limitexceeded ? 3 : TRUE;
 }
 
 
@@ -1264,7 +1297,7 @@ register int np;
     register int i, x, tryct;
 
     for (i = 0; i < A_MAX; i++) {
-        ABASE(i) = AMAX(i) = urole.attrbase[i];
+        ABASE(i) = AMIN(i) = AMAX(i) = urole.attrbase[i];
         ATEMP(i) = ATIME(i) = 0;
         np -= urole.attrbase[i];
     }
@@ -1284,7 +1317,8 @@ register int np;
         tryct = 0;
         ABASE(i)++;
         AMAX(i)++;
-        np--;
+		AMIN(i)++;
+		np--;
     }
 
     tryct = 0;
@@ -1303,7 +1337,8 @@ register int np;
         tryct = 0;
         ABASE(i)--;
         AMAX(i)--;
-        np++;
+		AMIN(i)--;
+		np++;
     }
 }
 
@@ -1323,10 +1358,13 @@ redist_attr()
         if (AMAX(i) < ATTRMIN(i))
             AMAX(i) = ATTRMIN(i);
         ABASE(i) = ABASE(i) * AMAX(i) / tmp;
-        /* ABASE(i) > ATTRMAX(i) is impossible */
+		AMIN(i) = AMIN(i) * AMAX(i) / tmp;
+		/* ABASE(i) > ATTRMAX(i) is impossible */
         if (ABASE(i) < ATTRMIN(i))
             ABASE(i) = ATTRMIN(i);
-    }
+		if (AMIN(i) < ATTRMIN(i))
+			AMIN(i) = ATTRMIN(i);
+	}
     (void) encumber_msg();
 }
 

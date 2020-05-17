@@ -86,7 +86,8 @@ struct monst {
 		abonus,			/* monster's bonus attributes (eg. str) */
 		afixmin,		/* monster's fixed min attributes (eg. str), set by an item */
 		afixmax,		/* monster's fixed max attributes (eg. str), set by an item */
-		amax,			/* monster's max attributes (eg. str) */
+        amin,			/* monster's min attributes (eg. str) */
+        amax,			/* monster's max attributes (eg. str) */
 		atemp,			/* used for temporary loss/gain */
 		atime;			/* used for loss/gain countdown */
 

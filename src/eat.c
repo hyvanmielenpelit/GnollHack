@@ -574,10 +574,8 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
             /* life-saving needed to reach here */
             exercise(A_WIS, FALSE);
 
-			(void)m_adjattrib(mdef, A_INT, -int_loss);
-
-			if (M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
-				*dmg_p += mdef->mhp;
+            if (m_adjattrib(mdef, A_INT, -int_loss) >= 2)
+                *dmg_p += mdef->mhp;
 
 			if (!has_fixed_ability(mdef))
 				pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
@@ -596,10 +594,8 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 
             exercise(A_WIS, TRUE);
 
-			(void)m_adjattrib(mdef, A_INT, -int_loss);
-
-			if (M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
-				*dmg_p += mdef->mhp;
+            if (m_adjattrib(mdef, A_INT, -int_loss) >= 2)
+                *dmg_p += mdef->mhp;
 
 			if (!has_fixed_ability(mdef))
 				pline("%s loses %d intelligence %s.", Monnam(mdef), int_loss, int_loss == 1 ? "point" : "points");
@@ -624,14 +620,14 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 		}
 
 		//REDUCE INTELLIGENCE
-		(void)adjattrib(A_INT, -int_loss, FALSE);
+		int adjresult = adjattrib(A_INT, -int_loss, FALSE);
 		forget_levels(25);  /* lose memory of 25% of levels */
 		forget_objects(25); /* lose memory of 25% of objects */
 
 		if(!Fixed_abil)
 			You("lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
 
-		if (ABASE(A_INT) < ATTRMIN(A_INT)) 
+		if (adjresult >= 2)
 		{
             static NEARDATA const char brainlessness[] = "brainlessness";
 
@@ -684,9 +680,9 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
         } 
 		else 
 		{
-			(void)m_adjattrib(mdef, A_INT, -rnd(2));
-			if(M_ABASE(mdef, A_INT) < M_ATTRMIN(mdef, A_INT))
-	            *dmg_p += mdef->mhp;
+            int int_loss = rnd(2);
+            if (m_adjattrib(mdef, A_INT, -int_loss) >= 2)
+                *dmg_p += mdef->mhp;
 
             give_nutrit = TRUE;
             if (*dmg_p >= mdef->mhp && visflag && canspotmon(mdef))

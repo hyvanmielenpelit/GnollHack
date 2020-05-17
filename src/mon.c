@@ -4797,12 +4797,23 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
        give the new form the same proportion of HP as its old one had) */
     hpn = mtmp->mhp;
     hpd = mtmp->mhpmax;
+
+    /* take on the new form... */
+    set_mon_data(mtmp, mdat);
+
+    /* Adjust monster ability scores to the new form */
+    int oldtype = monsndx(olddata);
+    int newtype = monsndx(mdat);
+
+    change_mon_ability_scores(mtmp, oldtype, newtype);
+
     /* set level and hit points */
     newmonhp(mtmp, monsndx(mdat), 0UL);
     /* new hp: same fraction of max as before */
 #ifndef LINT
-    mtmp->mhp = (int) (((long) hpn * (long) mtmp->mhp) / (long) hpd);
+    mtmp->mhp = (int)(((long)hpn * (long)mtmp->mhp) / (long)hpd);
 #endif
+
     /* sanity check (potential overflow) */
     if (mtmp->mhp < 0 || mtmp->mhp > mtmp->mhpmax)
         mtmp->mhp = mtmp->mhpmax;
@@ -4810,9 +4821,6 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
        into a 0HD creature will require this statement */
     if (!mtmp->mhp)
         mtmp->mhp = 1;
-
-    /* take on the new form... */
-    set_mon_data(mtmp, mdat);
 
     if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
         /* used to give light, now doesn't, or vice versa,

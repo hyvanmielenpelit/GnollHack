@@ -202,6 +202,7 @@ const char *fmt, *arg;
 
     if (Upolyd) {
         u.acurr = u.macurr; /* restore old attribs */
+        u.amin = u.mamin;
         u.amax = u.mamax;
         u.umonnum = u.umonster;
         flags.female = u.mfemale;
@@ -726,6 +727,7 @@ int mntmp;
     if (!Upolyd) {
         /* Human to monster; save human stats */
         u.macurr = u.acurr;
+        u.mamin = u.amin;
         u.mamax = u.amax;
         u.mfemale = flags.female;
     } else {
@@ -733,6 +735,7 @@ int mntmp;
          * immediately changed to provide stats for the new monster
          */
         u.acurr = u.macurr;
+        u.amin = u.mamin;
         u.amax = u.mamax;
         flags.female = u.mfemale;
     }
@@ -783,12 +786,12 @@ int mntmp;
     //    ABASE(A_STR) = AMAX(A_STR) = STR18(100);
 
 
-	ABASE(A_STR) = AMAX(A_STR) = (&mons[mntmp])->str; // STR18(100);
-	ABASE(A_DEX) = AMAX(A_DEX) = (&mons[mntmp])->dex;
-	ABASE(A_CON) = AMAX(A_CON) = (&mons[mntmp])->con;
-	ABASE(A_INT) = AMAX(A_INT) = (&mons[mntmp])->intl;
-//	ABASE(A_WIS) = AMAX(A_WIS) = (&mons[mntmp])->wis; // Wisdom does not change 
-	ABASE(A_CHA) = AMAX(A_CHA) = (&mons[mntmp])->cha;
+	ABASE(A_STR) = AMAX(A_STR) = AMIN(A_STR) = (&mons[mntmp])->str; // STR18(100);
+	ABASE(A_DEX) = AMAX(A_DEX) = AMIN(A_DEX) = (&mons[mntmp])->dex;
+	ABASE(A_CON) = AMAX(A_CON) = AMIN(A_CON) = (&mons[mntmp])->con;
+	ABASE(A_INT) = AMAX(A_INT) = AMIN(A_INT) = (&mons[mntmp])->intl;
+//	ABASE(A_WIS) = AMAX(A_WIS) = AMIN(A_WIS) = (&mons[mntmp])->wis; // Wisdom does not change 
+	ABASE(A_CHA) = AMAX(A_CHA) = AMIN(A_CHA) = (&mons[mntmp])->cha;
 
 	/* These are incorrect in the sense that they give monster race's maximum, not the current undrained maximum
 	AMAX(A_STR) = monster_attribute_maximum(&mons[mntmp], A_STR);

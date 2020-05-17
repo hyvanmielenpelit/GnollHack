@@ -322,6 +322,7 @@ struct you {
 
     int mh, mhmax, basemhmax, mtimedone;   /* for polymorph-self */
     struct attribs macurr,      /* for monster attribs */
+                   mamin,       /* for monster attribs */
                    mamax;       /* for monster attribs */
     int ulycn;                  /* lycanthrope type */
 
@@ -349,6 +350,7 @@ struct you {
                     abonus,       /* your bonus attributes (eg. str) */
                     afixmin,    /* your fixed min attributes (eg. str), set by an item */
                     afixmax,    /* your fixed max attributes (eg. str), set by an item */
+                    amin,       /* your max attributes (eg. str) */
                     amax,       /* your max attributes (eg. str) */
                    atemp,       /* used for temporary loss/gain */
                    atime;       /* used for loss/gain countdown */

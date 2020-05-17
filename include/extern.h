@@ -129,8 +129,8 @@ E int NDECL(create_portal);
 
 /* ### attrib.c ### */
 
-E boolean FDECL(adjattrib, (int, int, int));
-E boolean FDECL(m_adjattrib, (struct monst*, int, int));
+E uchar FDECL(adjattrib, (int, int, int));
+E uchar FDECL(m_adjattrib, (struct monst*, int, int));
 E void FDECL(gainstr, (struct obj *, int, BOOLEAN_P));
 E void FDECL(losestr, (int));
 E void FDECL(poisontell, (int, BOOLEAN_P));
@@ -1326,6 +1326,7 @@ E struct permonst *FDECL(mkclass_aligned, (CHAR_P, int, ALIGNTYP_P));
 E int FDECL(mkclass_poly, (int));
 E int FDECL(adj_lev, (struct permonst *));
 E struct permonst *FDECL(grow_up, (struct monst *, struct monst *));
+E void FDECL(change_mon_ability_scores, (struct monst*, int, int));
 E int FDECL(mongets, (struct monst *, int));
 E struct obj* FDECL(mon_gets_noinit_item, (struct monst*, int,  int));
 E int FDECL(mongetsgold, (struct monst*, long));

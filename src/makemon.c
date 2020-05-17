@@ -1758,8 +1758,9 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
 		m2->abonus.a[i] = mon->abonus.a[i];
 		m2->afixmin.a[i] = mon->afixmin.a[i];
 		m2->afixmax.a[i] = mon->afixmax.a[i];
-		m2->amax.a[i] = mon->amax.a[i];
-		m2->atemp.a[i] = mon->atemp.a[i];
+		m2->amin.a[i] = mon->amin.a[i];
+        m2->amax.a[i] = mon->amax.a[i];
+        m2->atemp.a[i] = mon->atemp.a[i];
 		m2->atime.a[i] = mon->atime.a[i];
 	}
 	m2->mdaminc = mon->mdaminc;
@@ -2286,7 +2287,8 @@ int level_limit;
 		mtmp->abonus.a[i] = 0;
 		mtmp->afixmin.a[i] = 0;
 		mtmp->afixmax.a[i] = i == A_STR ? STR19(25) : 25;
-		mtmp->amax.a[i] = monster_attribute_maximum(ptr, i);
+        mtmp->amin.a[i] = curscore; // monster_attribute_minimum(ptr, i);
+        mtmp->amax.a[i] = curscore; // monster_attribute_maximum(ptr, i);
 		mtmp->atemp.a[i] = 0;
 		mtmp->atime.a[i] = 0;
 	}
@@ -3170,12 +3172,12 @@ struct monst *mtmp, *victim;
     else
     {
         /* a gain level potion or wraith corpse; always go up a level
-           unless already at maximum (MAX_MONSTER_LEVEL is hard upper limit except
-           for demon lords, who start at 50 and can't go any higher) */
+           unless already at maximum (MAX_MONSTER_LEVEL is hard upper limit) */
         max_increase = cur_increase = rnd(8);
         hp_threshold = 0; /* smaller than `mhpmax + max_increase' */
         lev_limit = MAX_MONSTER_LEVEL;   /* recalc below */
     }
+
 
     mtmp->mbasehpmax += max_increase;
     mtmp->mhp += cur_increase;
@@ -3203,6 +3205,7 @@ struct monst *mtmp, *victim;
                       an(pm_monster_name(ptr, mtmp->female)), mhe(mtmp),
                       is_not_living(ptr) ? "expires" : "dies");
             set_mon_data(mtmp, ptr); /* keep mvitals[] accurate */
+            change_mon_ability_scores(mtmp, oldtype, newtype);
             mondied(mtmp);
             return (struct permonst *) 0;
         } 
@@ -3228,6 +3231,7 @@ struct monst *mtmp, *victim;
                   an(buf));
         }
         set_mon_data(mtmp, ptr);
+        change_mon_ability_scores(mtmp, oldtype, newtype);
         newsym(mtmp->mx, mtmp->my);    /* color may change */
         lev_limit = (int) mtmp->m_lev; /* never undo increment */
 
@@ -3251,6 +3255,38 @@ struct monst *mtmp, *victim;
         mtmp->mhp = mtmp->mhpmax;
 
     return ptr;
+}
+
+void
+change_mon_ability_scores(mtmp, oldtype, newtype)
+struct monst* mtmp;
+int oldtype, newtype;
+{
+    /* Adjust monster ability scores to the new form */
+    if (oldtype != newtype)
+    {
+        int strdiff = mons[newtype].str - mons[oldtype].str;
+        int dexdiff = mons[newtype].dex - mons[oldtype].dex;
+        int condiff = mons[newtype].con - mons[oldtype].con;
+        int intdiff = mons[newtype].intl - mons[oldtype].intl;
+        int wisdiff = mons[newtype].wis - mons[oldtype].wis;
+        int chadiff = mons[newtype].cha - mons[oldtype].cha;
+
+        if (strdiff)
+            m_gainstr(mtmp, (struct obj*)0, strdiff);
+        if (dexdiff)
+            (void)m_adjattrib(mtmp, A_DEX, dexdiff);
+        if (condiff)
+            (void)m_adjattrib(mtmp, A_CON, condiff);
+        if (intdiff)
+            (void)m_adjattrib(mtmp, A_INT, intdiff);
+        if (wisdiff)
+            (void)m_adjattrib(mtmp, A_WIS, wisdiff);
+        if (chadiff)
+            (void)m_adjattrib(mtmp, A_CHA, chadiff);
+    }
+
+
 }
 
 int

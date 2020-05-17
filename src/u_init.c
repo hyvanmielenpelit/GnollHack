@@ -1282,7 +1282,9 @@ u_init()
             (void) adjattrib(i, xd, TRUE);
             if (ABASE(i) < AMAX(i))
                 AMAX(i) = ABASE(i);
-        }
+			if (ABASE(i) > AMIN(i))
+				AMIN(i) = ABASE(i);
+		}
 
     /* make sure you can carry all you have - especially for Tourists */
     while (inv_weight() > 0) 
