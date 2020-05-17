@@ -283,7 +283,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             int newend = max(len + msg_data->append, 0);
             data->window_text[MSG_LINES - 1].text[newend] = '\0';
         } else {
-            if (can_append_text(hWnd, msg_data->attr, msg_data->text)) {
+            if (!(msg_data->attr & ATR_STAY_ON_LINE) && can_append_text(hWnd, msg_data->attr, msg_data->text)) {
                 strncat(data->window_text[MSG_LINES - 1].text, "  ",
                         MAXWINDOWTEXT
                             - strlen(data->window_text[MSG_LINES - 1].text));
@@ -292,7 +292,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             - strlen(data->window_text[MSG_LINES - 1].text));
             } else {
                 /* check for "--more--" */
-                if (!data->nevermore && more_prompt_check(hWnd)) {
+                if (!data->nevermore && !(msg_data->attr & ATR_STAY_ON_LINE)
+                    && more_prompt_check(hWnd)) {
                     int okkey = 0;
                     char tmptext[MAXWINDOWTEXT + 1];
 
@@ -342,10 +343,18 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                      *p && isspace((uchar) *p); p++)
                     ;
 
-                if (*p) {
-                    /* last string is not empty - scroll up */
-                    memmove(&data->window_text[0], &data->window_text[1],
-                            (MSG_LINES - 1) * sizeof(data->window_text[0]));
+                if (!(msg_data->attr & ATR_STAY_ON_LINE))
+                {
+                    if (*p) {
+                        /* last string is not empty - scroll up */
+                        memmove(&data->window_text[0], &data->window_text[1],
+                                (MSG_LINES - 1) * sizeof(data->window_text[0]));
+                    }
+                }
+                else
+                {
+                    /* clear the line instead */
+                    strcpy(data->window_text[MSG_LINES - 1].text, "");
                 }
 
                 /* append new text to the end of the array */
@@ -353,8 +362,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 strncpy(data->window_text[MSG_LINES - 1].text, msg_data->text,
                         MAXWINDOWTEXT);
 
-                data->lines_not_seen++;
-                data->lines_last_turn++;
+                if (!(msg_data->attr & ATR_STAY_ON_LINE))
+                {
+                    data->lines_not_seen++;
+                    data->lines_last_turn++;
+                }
             }
         }
 

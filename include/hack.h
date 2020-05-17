@@ -529,6 +529,7 @@ static const char* explosion_type_names[EXPL_MAX] = {
 #define OVERRIDE_MSGTYPE 2
 #define SUPPRESS_HISTORY 4
 #define URGENT_MESSAGE   8
+#define STAY_ON_LINE    16
 
 /* Macros for messages referring to hands, eyes, feet, etc... */
 enum bodypart_types {

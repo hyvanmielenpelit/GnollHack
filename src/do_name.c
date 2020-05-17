@@ -559,7 +559,7 @@ int cx, cy;
     if (do_screen_description(cc, TRUE, sym, tmpbuf, &firstmatch,
                               (struct permonst **) 0)) {
         (void) coord_desc(cx, cy, tmpbuf, iflags.getpos_coords);
-        custompline(SUPPRESS_HISTORY,
+        custompline(SUPPRESS_HISTORY | STAY_ON_LINE,
                     "%s%s%s%s%s", firstmatch, *tmpbuf ? " " : "", tmpbuf,
                     (iflags.autodescribe
                      && getpos_getvalid && !(*getpos_getvalid)(cx, cy))
@@ -706,6 +706,7 @@ const char *goal;
     lock_mouse_cursor(TRUE);
 #endif
     for (;;) {
+        flags.force_paint_at_cursor = TRUE;
         if (show_goal_msg) {
             pline("Move cursor to %s:", goal);
             curs(WIN_MAP, cx, cy);

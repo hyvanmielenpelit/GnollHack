@@ -79,6 +79,8 @@ const char *line;
     if ((pline_flags & SUPPRESS_HISTORY) != 0
         && (windowprocs.wincap2 & WC2_SUPPRESS_HIST) != 0)
         attr |= ATR_NOHISTORY;
+    if ((pline_flags & STAY_ON_LINE) != 0)
+        attr |= ATR_STAY_ON_LINE;
 
     putstr(WIN_MESSAGE, attr, line);
 }
@@ -194,7 +196,7 @@ VA_DECL(const char *, line)
     if (vision_full_recalc)
         vision_recalc(0);
     if (u.ux)
-        flush_screen(1); /* %% */
+        flush_screen(0); //1); /* %% */
 
     putmesg(line);
 

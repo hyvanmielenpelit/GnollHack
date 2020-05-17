@@ -636,8 +636,24 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_TIMER:
-        data->cursorOn = !data->cursorOn;
-        dirty(data, data->xCur, data->yCur);
+        if (data->xCur == u.ux && data->yCur == u.uy && !flags.show_cursor_on_u && !flags.force_paint_at_cursor)
+        {
+            //Nothing
+        }
+        else if (1)
+            ; /* Deactivated for the time being */
+        else
+        {
+            if (flags.force_paint_at_cursor)
+            {
+                flags.force_paint_at_cursor = FALSE;
+                data->cursorOn = TRUE;
+            }
+            else
+                data->cursorOn = !data->cursorOn;
+
+            dirty(data, data->xCur, data->yCur);
+        }
         break;
 
     case WM_DPICHANGED: {
@@ -721,14 +737,17 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         if (flags.force_paint_at_cursor || data->xCur != msg_data->x || data->yCur != msg_data->y) 
         {
-            flags.force_paint_at_cursor = FALSE;
+            if (flags.force_paint_at_cursor)
+            {
+                flags.force_paint_at_cursor = FALSE;
+                data->cursorOn = TRUE;
+            }
 
             dirty(data, data->xCur, data->yCur);
             dirty(data, msg_data->x, msg_data->y);
 
             data->xCur = msg_data->x;
             data->yCur = msg_data->y;
-            onPaint(hWnd);
         }
     } break;
 
@@ -939,8 +958,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     }
 #endif
 
-    if (i == data->xCur && j == data->yCur &&
-        (data->cursorOn || !win32_cursorblink))
+    if (i == data->xCur && j == data->yCur
+       /* && (data->cursorOn || !win32_cursorblink) */
+        )
     {
         if (i == u.ux && j == u.uy && !flags.show_cursor_on_u)
         {
@@ -1095,7 +1115,7 @@ static void dirty(PNHMapWindow data, int x, int y)
     data->mapDirty[x][y] = TRUE;
 
     RECT rt;
-    nhcoord2display(data, data->xCur, data->yCur, &rt);
+    nhcoord2display(data, x, y, &rt); //data->xCur, data->yCur
 
     InvalidateRect(data->hWnd, &rt, FALSE);
 }

@@ -61,7 +61,7 @@ struct flag {
     boolean classic_colors; /* use normal coloring scheme */
     boolean detailed_weights; /* use ounces and grams instead of lbs and kg */
     boolean show_cursor_on_u; /* force show cursor on you even with tiles */
-    boolean force_paint_at_cursor; /* force show cursor on you even with tiles */
+    boolean force_paint_at_cursor; /* force paint at cursor (normally, because the cursor appears on you) */
     boolean show_weight_summary; /* show weight summary */
     double screen_scale_adjustment; /* scale = 1.0 + screen_scale_adjustment */
     int preferred_screen_scale; /* user set preference for screen scale 25...200 */

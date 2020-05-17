@@ -84,6 +84,7 @@ typedef struct mi {
    can be masked with one regular display attribute */
 #define ATR_URGENT    16
 #define ATR_NOHISTORY 32
+#define ATR_STAY_ON_LINE 64
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1
