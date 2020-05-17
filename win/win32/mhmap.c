@@ -19,7 +19,7 @@
 #define NHMAP_TTFONT_NAME TEXT("Consolas")
 #define MAXWINDOWTEXT 255
 
-#define CURSOR_BLINK_INTERVAL 1000 // milliseconds
+#define CURSOR_BLINK_INTERVAL 500 // milliseconds
 #define CURSOR_HEIGHT 2 // pixels
 
 extern short glyph2tile[];
@@ -636,12 +636,16 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_TIMER:
-        if (data->xCur == u.ux && data->yCur == u.uy && !flags.show_cursor_on_u && !flags.force_paint_at_cursor)
+    {
+        boolean asciimode = (data->bAsciiMode || Is_rogue_level(&u.uz));
+        if ((asciimode && !win32_cursorblink)
+            || (!asciimode && (!flags.blinking_cursor_on_tiles
+                    || (data->xCur == u.ux && data->yCur == u.uy && !flags.show_cursor_on_u && !flags.force_paint_at_cursor))
+               )
+            )
         {
             //Nothing
         }
-        else if (1)
-            ; /* Deactivated for the time being */
         else
         {
             if (flags.force_paint_at_cursor)
@@ -655,7 +659,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             dirty(data, data->xCur, data->yCur);
         }
         break;
-
+    }
     case WM_DPICHANGED: {
         RECT rt;
         GetWindowRect(hWnd, &rt);
@@ -959,12 +963,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 #endif
 
     if (i == data->xCur && j == data->yCur
-       /* && (data->cursorOn || !win32_cursorblink) */
         )
     {
-        if (i == u.ux && j == u.uy && !flags.show_cursor_on_u)
+        if ((!data->cursorOn && flags.blinking_cursor_on_tiles)
+            || (i == u.ux && j == u.uy && !flags.show_cursor_on_u)
+            )
         {
-            // Nothing
+            // Nothing, cursor is invisible
         }
         else
         {
@@ -1066,7 +1071,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
     }
 
     if (i == data->xCur && j == data->yCur &&
-        (data->cursorOn || !win32_cursorblink)) {
+        (data->cursorOn || !win32_cursorblink )) {
         int yCursor = (win32_cursorblink ? data->yBlinkCursor :
                                            data->yNoBlinkCursor);
         PatBlt(data->backBufferDC, 

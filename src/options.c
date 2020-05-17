@@ -97,6 +97,7 @@ static struct Bool_Opt {
     { "BIOS", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
     { "blind", &u.uroleplay.blind, FALSE, DISP_IN_GAME },
+    { "blinking_cursor_on_tiles", &flags.blinking_cursor_on_tiles, FALSE, SET_IN_GAME },
     { "bones", &flags.bones, TRUE, SET_IN_FILE },
 #ifdef INSURANCE
     { "checkpoint", &flags.ins_chkpt, TRUE, SET_IN_GAME },
