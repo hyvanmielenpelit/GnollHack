@@ -275,16 +275,16 @@ typedef struct sortloot_item Loot;
 
 struct animation_definition {
     char* animation_name;
-    int number_of_frames;
-    int offset;
-    double frame_interval;
+    uchar number_of_frames;
+    int glyph_offset;
+    uchar intervals_between_frames;
 };
 
 enum animation_types
 {
     HANDCRAFTED_CANDLE_ANIMATION = 0,
     TWISTED_CANDLE_ANIMATION = 1,
-    MAX_ANIMATIONS /* Must be equal or smaller than the number of animations in animations array */
+    MAX_ANIMATIONS
 };
 
 #define HANDCRAFTED_CANDLE_ANIMATION_OFF (0)
