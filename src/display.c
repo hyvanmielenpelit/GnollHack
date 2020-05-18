@@ -1968,6 +1968,10 @@ xchar x, y;
         if (ptr->seenv)
         {
             idx = wall_angle(ptr);
+            
+            if (idx == S_stone)
+                goto stone_here;
+
         hwall_here:
             {
                 /* Code selecting a variation */

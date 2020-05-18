@@ -744,6 +744,22 @@ short* tilemaparray;
                             }
                         }
                     }
+                    else if (j == 1)
+                    {
+                        if (tsd->lit_tile_style != 1)
+                        {
+                            int glyph_offset3 = GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
+                            tilemaparray[(i - 1) + glyph_offset3] = tile_count;
+                        }
+                    }
+                    else if (j == 2)
+                    {
+                        if (tsd->inventory_tile_style != 1)
+                        {
+                            int glyph_offset3 = GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
+                            tilemaparray[(i - 1) + glyph_offset3] = tile_count;
+                        }
+                    }
                     tilemaparray[(i - 1) + glyph_offset] = tile_count;
                     tile_count++;
                 }
