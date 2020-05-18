@@ -1926,8 +1926,6 @@ xchar x, y;
         idx = level.flags.arboreal ? S_tree : S_unexplored;
         break;
     case SCORR:
-        idx = S_stone;
-        break;
     case STONE:
     {
     stone_here:
