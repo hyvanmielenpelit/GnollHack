@@ -1899,256 +1899,256 @@ objects,lit,rocks,luckstone,gray
 objects,missile,weapons,arrow,no description,top-left
 objects,missile,weapons,arrow,no description,top-center
 objects,missile,weapons,arrow,no description,top-right
-objects,missile,weapons,arrow,no description,middle-right
 objects,missile,weapons,arrow,no description,middle-left
+objects,missile,weapons,arrow,no description,middle-right
 objects,missile,weapons,arrow,no description,bottom-left
 objects,missile,weapons,arrow,no description,bottom-center
 objects,missile,weapons,arrow,no description,bottom-right
 objects,missile,weapons,elven arrow,runed arrow,top-left
 objects,missile,weapons,elven arrow,runed arrow,top-center
 objects,missile,weapons,elven arrow,runed arrow,top-right
-objects,missile,weapons,elven arrow,runed arrow,middle-right
 objects,missile,weapons,elven arrow,runed arrow,middle-left
+objects,missile,weapons,elven arrow,runed arrow,middle-right
 objects,missile,weapons,elven arrow,runed arrow,bottom-left
 objects,missile,weapons,elven arrow,runed arrow,bottom-center
 objects,missile,weapons,elven arrow,runed arrow,bottom-right
 objects,missile,weapons,orcish arrow,crude arrow,top-left
 objects,missile,weapons,orcish arrow,crude arrow,top-center
 objects,missile,weapons,orcish arrow,crude arrow,top-right
-objects,missile,weapons,orcish arrow,crude arrow,middle-right
 objects,missile,weapons,orcish arrow,crude arrow,middle-left
+objects,missile,weapons,orcish arrow,crude arrow,middle-right
 objects,missile,weapons,orcish arrow,crude arrow,bottom-left
 objects,missile,weapons,orcish arrow,crude arrow,bottom-center
 objects,missile,weapons,orcish arrow,crude arrow,bottom-right
 objects,missile,weapons,silver arrow,no description,top-left
 objects,missile,weapons,silver arrow,no description,top-center
 objects,missile,weapons,silver arrow,no description,top-right
-objects,missile,weapons,silver arrow,no description,middle-right
 objects,missile,weapons,silver arrow,no description,middle-left
+objects,missile,weapons,silver arrow,no description,middle-right
 objects,missile,weapons,silver arrow,no description,bottom-left
 objects,missile,weapons,silver arrow,no description,bottom-center
 objects,missile,weapons,silver arrow,no description,bottom-right
 objects,missile,weapons,ya,bamboo arrow,top-left
 objects,missile,weapons,ya,bamboo arrow,top-center
 objects,missile,weapons,ya,bamboo arrow,top-right
-objects,missile,weapons,ya,bamboo arrow,middle-right
 objects,missile,weapons,ya,bamboo arrow,middle-left
+objects,missile,weapons,ya,bamboo arrow,middle-right
 objects,missile,weapons,ya,bamboo arrow,bottom-left
 objects,missile,weapons,ya,bamboo arrow,bottom-center
 objects,missile,weapons,ya,bamboo arrow,bottom-right
 objects,missile,weapons,bone arrow,no description,top-left
 objects,missile,weapons,bone arrow,no description,top-center
 objects,missile,weapons,bone arrow,no description,top-right
-objects,missile,weapons,bone arrow,no description,middle-right
 objects,missile,weapons,bone arrow,no description,middle-left
+objects,missile,weapons,bone arrow,no description,middle-right
 objects,missile,weapons,bone arrow,no description,bottom-left
 objects,missile,weapons,bone arrow,no description,bottom-center
 objects,missile,weapons,bone arrow,no description,bottom-right
 objects,missile,weapons,crossbow bolt,no description,top-left
 objects,missile,weapons,crossbow bolt,no description,top-center
 objects,missile,weapons,crossbow bolt,no description,top-right
-objects,missile,weapons,crossbow bolt,no description,middle-right
 objects,missile,weapons,crossbow bolt,no description,middle-left
+objects,missile,weapons,crossbow bolt,no description,middle-right
 objects,missile,weapons,crossbow bolt,no description,bottom-left
 objects,missile,weapons,crossbow bolt,no description,bottom-center
 objects,missile,weapons,crossbow bolt,no description,bottom-right
 objects,missile,weapons,gnollish quarrel,crude crossbow bolt,top-left
 objects,missile,weapons,gnollish quarrel,crude crossbow bolt,top-center
 objects,missile,weapons,gnollish quarrel,crude crossbow bolt,top-right
-objects,missile,weapons,gnollish quarrel,crude crossbow bolt,middle-right
 objects,missile,weapons,gnollish quarrel,crude crossbow bolt,middle-left
+objects,missile,weapons,gnollish quarrel,crude crossbow bolt,middle-right
 objects,missile,weapons,gnollish quarrel,crude crossbow bolt,bottom-left
 objects,missile,weapons,gnollish quarrel,crude crossbow bolt,bottom-center
 objects,missile,weapons,gnollish quarrel,crude crossbow bolt,bottom-right
 objects,missile,weapons,silver crossbow bolt,no description,top-left
 objects,missile,weapons,silver crossbow bolt,no description,top-center
 objects,missile,weapons,silver crossbow bolt,no description,top-right
-objects,missile,weapons,silver crossbow bolt,no description,middle-right
 objects,missile,weapons,silver crossbow bolt,no description,middle-left
+objects,missile,weapons,silver crossbow bolt,no description,middle-right
 objects,missile,weapons,silver crossbow bolt,no description,bottom-left
 objects,missile,weapons,silver crossbow bolt,no description,bottom-center
 objects,missile,weapons,silver crossbow bolt,no description,bottom-right
 objects,missile,weapons,bone quarrel,no description,top-left
 objects,missile,weapons,bone quarrel,no description,top-center
 objects,missile,weapons,bone quarrel,no description,top-right
-objects,missile,weapons,bone quarrel,no description,middle-right
 objects,missile,weapons,bone quarrel,no description,middle-left
+objects,missile,weapons,bone quarrel,no description,middle-right
 objects,missile,weapons,bone quarrel,no description,bottom-left
 objects,missile,weapons,bone quarrel,no description,bottom-center
 objects,missile,weapons,bone quarrel,no description,bottom-right
 objects,missile,weapons,leaden sling-bullet,no description,top-left
 objects,missile,weapons,leaden sling-bullet,no description,top-center
 objects,missile,weapons,leaden sling-bullet,no description,top-right
-objects,missile,weapons,leaden sling-bullet,no description,middle-right
 objects,missile,weapons,leaden sling-bullet,no description,middle-left
+objects,missile,weapons,leaden sling-bullet,no description,middle-right
 objects,missile,weapons,leaden sling-bullet,no description,bottom-left
 objects,missile,weapons,leaden sling-bullet,no description,bottom-center
 objects,missile,weapons,leaden sling-bullet,no description,bottom-right
 objects,missile,weapons,iron sling-bullet,no description,top-left
 objects,missile,weapons,iron sling-bullet,no description,top-center
 objects,missile,weapons,iron sling-bullet,no description,top-right
-objects,missile,weapons,iron sling-bullet,no description,middle-right
 objects,missile,weapons,iron sling-bullet,no description,middle-left
+objects,missile,weapons,iron sling-bullet,no description,middle-right
 objects,missile,weapons,iron sling-bullet,no description,bottom-left
 objects,missile,weapons,iron sling-bullet,no description,bottom-center
 objects,missile,weapons,iron sling-bullet,no description,bottom-right
 objects,missile,weapons,silver sling-bullet,no description,top-left
 objects,missile,weapons,silver sling-bullet,no description,top-center
 objects,missile,weapons,silver sling-bullet,no description,top-right
-objects,missile,weapons,silver sling-bullet,no description,middle-right
 objects,missile,weapons,silver sling-bullet,no description,middle-left
+objects,missile,weapons,silver sling-bullet,no description,middle-right
 objects,missile,weapons,silver sling-bullet,no description,bottom-left
 objects,missile,weapons,silver sling-bullet,no description,bottom-center
 objects,missile,weapons,silver sling-bullet,no description,bottom-right
 objects,missile,weapons,arrow of dragon slaying,black arrow,top-left
 objects,missile,weapons,arrow of dragon slaying,black arrow,top-center
 objects,missile,weapons,arrow of dragon slaying,black arrow,top-right
-objects,missile,weapons,arrow of dragon slaying,black arrow,middle-right
 objects,missile,weapons,arrow of dragon slaying,black arrow,middle-left
+objects,missile,weapons,arrow of dragon slaying,black arrow,middle-right
 objects,missile,weapons,arrow of dragon slaying,black arrow,bottom-left
 objects,missile,weapons,arrow of dragon slaying,black arrow,bottom-center
 objects,missile,weapons,arrow of dragon slaying,black arrow,bottom-right
 objects,missile,weapons,dart,no description,top-left
 objects,missile,weapons,dart,no description,top-center
 objects,missile,weapons,dart,no description,top-right
-objects,missile,weapons,dart,no description,middle-right
 objects,missile,weapons,dart,no description,middle-left
+objects,missile,weapons,dart,no description,middle-right
 objects,missile,weapons,dart,no description,bottom-left
 objects,missile,weapons,dart,no description,bottom-center
 objects,missile,weapons,dart,no description,bottom-right
 objects,missile,weapons,shuriken,throwing star,top-left
 objects,missile,weapons,shuriken,throwing star,top-center
 objects,missile,weapons,shuriken,throwing star,top-right
-objects,missile,weapons,shuriken,throwing star,middle-right
 objects,missile,weapons,shuriken,throwing star,middle-left
+objects,missile,weapons,shuriken,throwing star,middle-right
 objects,missile,weapons,shuriken,throwing star,bottom-left
 objects,missile,weapons,shuriken,throwing star,bottom-center
 objects,missile,weapons,shuriken,throwing star,bottom-right
 objects,missile,weapons,boomerang,no description,top-left
 objects,missile,weapons,boomerang,no description,top-center
 objects,missile,weapons,boomerang,no description,top-right
-objects,missile,weapons,boomerang,no description,middle-right
 objects,missile,weapons,boomerang,no description,middle-left
+objects,missile,weapons,boomerang,no description,middle-right
 objects,missile,weapons,boomerang,no description,bottom-left
 objects,missile,weapons,boomerang,no description,bottom-center
 objects,missile,weapons,boomerang,no description,bottom-right
 objects,missile,weapons,spear,no description,top-left
 objects,missile,weapons,spear,no description,top-center
 objects,missile,weapons,spear,no description,top-right
-objects,missile,weapons,spear,no description,middle-right
 objects,missile,weapons,spear,no description,middle-left
+objects,missile,weapons,spear,no description,middle-right
 objects,missile,weapons,spear,no description,bottom-left
 objects,missile,weapons,spear,no description,bottom-center
 objects,missile,weapons,spear,no description,bottom-right
 objects,missile,weapons,elven spear,runed spear,top-left
 objects,missile,weapons,elven spear,runed spear,top-center
 objects,missile,weapons,elven spear,runed spear,top-right
-objects,missile,weapons,elven spear,runed spear,middle-right
 objects,missile,weapons,elven spear,runed spear,middle-left
+objects,missile,weapons,elven spear,runed spear,middle-right
 objects,missile,weapons,elven spear,runed spear,bottom-left
 objects,missile,weapons,elven spear,runed spear,bottom-center
 objects,missile,weapons,elven spear,runed spear,bottom-right
 objects,missile,weapons,orcish spear,crude spear,top-left
 objects,missile,weapons,orcish spear,crude spear,top-center
 objects,missile,weapons,orcish spear,crude spear,top-right
-objects,missile,weapons,orcish spear,crude spear,middle-right
 objects,missile,weapons,orcish spear,crude spear,middle-left
+objects,missile,weapons,orcish spear,crude spear,middle-right
 objects,missile,weapons,orcish spear,crude spear,bottom-left
 objects,missile,weapons,orcish spear,crude spear,bottom-center
 objects,missile,weapons,orcish spear,crude spear,bottom-right
 objects,missile,weapons,dwarvish spear,stout spear,top-left
 objects,missile,weapons,dwarvish spear,stout spear,top-center
 objects,missile,weapons,dwarvish spear,stout spear,top-right
-objects,missile,weapons,dwarvish spear,stout spear,middle-right
 objects,missile,weapons,dwarvish spear,stout spear,middle-left
+objects,missile,weapons,dwarvish spear,stout spear,middle-right
 objects,missile,weapons,dwarvish spear,stout spear,bottom-left
 objects,missile,weapons,dwarvish spear,stout spear,bottom-center
 objects,missile,weapons,dwarvish spear,stout spear,bottom-right
 objects,missile,weapons,silver spear,no description,top-left
 objects,missile,weapons,silver spear,no description,top-center
 objects,missile,weapons,silver spear,no description,top-right
-objects,missile,weapons,silver spear,no description,middle-right
 objects,missile,weapons,silver spear,no description,middle-left
+objects,missile,weapons,silver spear,no description,middle-right
 objects,missile,weapons,silver spear,no description,bottom-left
 objects,missile,weapons,silver spear,no description,bottom-center
 objects,missile,weapons,silver spear,no description,bottom-right
 objects,missile,weapons,javelin,throwing spear,top-left
 objects,missile,weapons,javelin,throwing spear,top-center
 objects,missile,weapons,javelin,throwing spear,top-right
-objects,missile,weapons,javelin,throwing spear,middle-right
 objects,missile,weapons,javelin,throwing spear,middle-left
+objects,missile,weapons,javelin,throwing spear,middle-right
 objects,missile,weapons,javelin,throwing spear,bottom-left
 objects,missile,weapons,javelin,throwing spear,bottom-center
 objects,missile,weapons,javelin,throwing spear,bottom-right
 objects,missile,weapons,javelin of returning,throwing spear,top-left
 objects,missile,weapons,javelin of returning,throwing spear,top-center
 objects,missile,weapons,javelin of returning,throwing spear,top-right
-objects,missile,weapons,javelin of returning,throwing spear,middle-right
 objects,missile,weapons,javelin of returning,throwing spear,middle-left
+objects,missile,weapons,javelin of returning,throwing spear,middle-right
 objects,missile,weapons,javelin of returning,throwing spear,bottom-left
 objects,missile,weapons,javelin of returning,throwing spear,bottom-center
 objects,missile,weapons,javelin of returning,throwing spear,bottom-right
 objects,missile,weapons,dagger,no description,top-left
 objects,missile,weapons,dagger,no description,top-center
 objects,missile,weapons,dagger,no description,top-right
-objects,missile,weapons,dagger,no description,middle-right
 objects,missile,weapons,dagger,no description,middle-left
+objects,missile,weapons,dagger,no description,middle-right
 objects,missile,weapons,dagger,no description,bottom-left
 objects,missile,weapons,dagger,no description,bottom-center
 objects,missile,weapons,dagger,no description,bottom-right
 objects,missile,weapons,elven dagger,runed dagger,top-left
 objects,missile,weapons,elven dagger,runed dagger,top-center
 objects,missile,weapons,elven dagger,runed dagger,top-right
-objects,missile,weapons,elven dagger,runed dagger,middle-right
 objects,missile,weapons,elven dagger,runed dagger,middle-left
+objects,missile,weapons,elven dagger,runed dagger,middle-right
 objects,missile,weapons,elven dagger,runed dagger,bottom-left
 objects,missile,weapons,elven dagger,runed dagger,bottom-center
 objects,missile,weapons,elven dagger,runed dagger,bottom-right
 objects,missile,weapons,elven runedagger,runed dagger,top-left
 objects,missile,weapons,elven runedagger,runed dagger,top-center
 objects,missile,weapons,elven runedagger,runed dagger,top-right
-objects,missile,weapons,elven runedagger,runed dagger,middle-right
 objects,missile,weapons,elven runedagger,runed dagger,middle-left
+objects,missile,weapons,elven runedagger,runed dagger,middle-right
 objects,missile,weapons,elven runedagger,runed dagger,bottom-left
 objects,missile,weapons,elven runedagger,runed dagger,bottom-center
 objects,missile,weapons,elven runedagger,runed dagger,bottom-right
 objects,missile,weapons,orcish dagger,crude dagger,top-left
 objects,missile,weapons,orcish dagger,crude dagger,top-center
 objects,missile,weapons,orcish dagger,crude dagger,top-right
-objects,missile,weapons,orcish dagger,crude dagger,middle-right
 objects,missile,weapons,orcish dagger,crude dagger,middle-left
+objects,missile,weapons,orcish dagger,crude dagger,middle-right
 objects,missile,weapons,orcish dagger,crude dagger,bottom-left
 objects,missile,weapons,orcish dagger,crude dagger,bottom-center
 objects,missile,weapons,orcish dagger,crude dagger,bottom-right
 objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,top-left
 objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,top-center
 objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,top-right
-objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,middle-right
 objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,middle-left
+objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,middle-right
 objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,bottom-left
 objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,bottom-center
 objects,missile,weapons,ornamental orcish dagger,crudely ornated dagger,bottom-right
 objects,missile,weapons,bone dagger,no description,top-left
 objects,missile,weapons,bone dagger,no description,top-center
 objects,missile,weapons,bone dagger,no description,top-right
-objects,missile,weapons,bone dagger,no description,middle-right
 objects,missile,weapons,bone dagger,no description,middle-left
+objects,missile,weapons,bone dagger,no description,middle-right
 objects,missile,weapons,bone dagger,no description,bottom-left
 objects,missile,weapons,bone dagger,no description,bottom-center
 objects,missile,weapons,bone dagger,no description,bottom-right
 objects,missile,weapons,silver dagger,no description,top-left
 objects,missile,weapons,silver dagger,no description,top-center
 objects,missile,weapons,silver dagger,no description,top-right
-objects,missile,weapons,silver dagger,no description,middle-right
 objects,missile,weapons,silver dagger,no description,middle-left
+objects,missile,weapons,silver dagger,no description,middle-right
 objects,missile,weapons,silver dagger,no description,bottom-left
 objects,missile,weapons,silver dagger,no description,bottom-center
 objects,missile,weapons,silver dagger,no description,bottom-right
 objects,missile,weapons,Morgul blade,black dagger,top-left
 objects,missile,weapons,Morgul blade,black dagger,top-center
 objects,missile,weapons,Morgul blade,black dagger,top-right
-objects,missile,weapons,Morgul blade,black dagger,middle-right
 objects,missile,weapons,Morgul blade,black dagger,middle-left
+objects,missile,weapons,Morgul blade,black dagger,middle-right
 objects,missile,weapons,Morgul blade,black dagger,bottom-left
 objects,missile,weapons,Morgul blade,black dagger,bottom-center
 objects,missile,weapons,Morgul blade,black dagger,bottom-right
@@ -2245,12 +2245,13 @@ artifacts,lit,The Heart of Ahriman,glowing red jewel,luckstone,gray
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-left
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-center
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-right
-artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,middle-right
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,middle-left
+artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,middle-right
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,bottom-left
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,bottom-center
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,bottom-right
-cmap,dungeon-normal,S_stone,dark part of a room
+cmap,dungeon-normal,S_unexplored,unexplored
+cmap,dungeon-normal,S_stone,stone
 cmap,dungeon-normal,S_vwall,wall
 cmap,dungeon-normal,S_hwall,wall
 cmap,dungeon-normal,S_tlcorn,wall
@@ -2282,16 +2283,7 @@ cmap,dungeon-normal,S_upstair,staircase up
 cmap,dungeon-normal,S_dnstair,staircase down
 cmap,dungeon-normal,S_upladder,ladder up
 cmap,dungeon-normal,S_dnladder,ladder down
-cmap,dungeon-normal,S_branch_upstair,staircase up
-cmap,dungeon-normal,S_branch_dnstair,staircase down
-cmap,dungeon-normal,S_extra_upstair,staircase up
-cmap,dungeon-normal,S_extra_dnstair,staircase down
 cmap,dungeon-normal,S_altar,altar
-cmap,dungeon-normal,S_lawful_altar,lawful altar
-cmap,dungeon-normal,S_neutral_altar,neutral altar
-cmap,dungeon-normal,S_chaotic_altar,chaotic altar
-cmap,dungeon-normal,S_moloch_altar,altar of Moloch
-cmap,dungeon-normal,S_high_altar,high altar
 cmap,dungeon-normal,S_extra_boulder,boulder
 cmap,dungeon-normal,S_grave,grave
 cmap,dungeon-normal,S_throne,opulent throne
@@ -2348,53 +2340,53 @@ cmap,dungeon-normal,S_ss3,no description
 cmap,dungeon-normal,S_ss4,no description
 cmap,dungeon-normal,S_poisoncloud,poison cloud
 cmap,dungeon-normal,S_goodpos,valid position
-cmap-variations,dungeon-normal,S_stone,hwall-variation-1
-cmap-variations,dungeon-normal,S_vwall,hwall-variation-2
-cmap-variations,dungeon-normal,S_hwall,hwall-variation-3
-cmap-variations,dungeon-normal,S_tlcorn,hwall-variation-4
-cmap-variations,dungeon-normal,S_trcorn,hwall-variation-5
-cmap-variations,dungeon-normal,S_blcorn,floor-variation-1
-cmap-variations,dungeon-normal,S_brcorn,floor-variation-2
-cmap-variations,dungeon-normal,S_crwall,floor-variation-3
-cmap-variations,dungeon-normal,S_tuwall,floor-variation-4
-cmap-variations,dungeon-normal,S_tdwall,floor-variation-5
-cmap-variations,dungeon-normal,S_tlwall,dark-room-variation-1
-cmap-variations,dungeon-normal,S_trwall,dark-room-variation-2
-cmap-variations,dungeon-normal,S_ndoor,dark-room-variation-3
-cmap-variations,dungeon-normal,S_vodoor,dark-room-variation-4
-cmap-variations,dungeon-normal,S_hodoor,dark-room-variation-5
-cmap-variations,dungeon-normal,S_vcdoor,lit corridor-variation-1
-cmap-variations,dungeon-normal,S_hcdoor,lit corridor-variation-2
-cmap-variations,dungeon-normal,S_vbdoor,lit corridor-variation-3
-cmap-variations,dungeon-normal,S_hbdoor,corridor-variation-1
-cmap-variations,dungeon-normal,S_voportcullis,corridor-variation-2
-cmap-variations,dungeon-normal,S_hoportcullis,corridor-variation-3
-cmap-variations,dungeon-normal,S_bars,basic altar
-cmap-variations,dungeon-normal,S_tree,lawful altar
-cmap-variations,dungeon-normal,S_room,neutral altar
-cmap-variations,dungeon-normal,S_grass,chaotic altar
-cmap-variations,dungeon-normal,S_darkroom,altar of Moloch
-cmap-variations,dungeon-normal,S_corr,high altar
-cmap-variations,dungeon-normal,S_litcorr,basic staircase up
-cmap-variations,dungeon-normal,S_upstair,branch staircase up
-cmap-variations,dungeon-normal,S_dnstair,special branch staircase up
-cmap-variations,dungeon-normal,S_upladder,basic staircase down
-cmap-variations,dungeon-normal,S_dnladder,branch staircase down
-cmap-variations,dungeon-normal,S_branch_upstair,special branch staircase down
-cmap-variations,dungeon-normal,S_branch_dnstair,basic fountain
-cmap-variations,dungeon-normal,S_extra_upstair,fountain of healing
-cmap-variations,dungeon-normal,S_extra_dnstair,fountain of mana
-cmap-variations,dungeon-normal,S_altar,fountain of power
-cmap-variations,dungeon-normal,S_lawful_altar,fountain of spring water
-cmap-variations,dungeon-normal,S_neutral_altar,fountain of poison
-cmap-variations,dungeon-normal,S_chaotic_altar,magic fountain
+cmap-variations,dungeon-normal,stone-bottom-end
+cmap-variations,dungeon-normal,vwall-bottom-end
+cmap-variations,dungeon-normal,hwall-variation-1
+cmap-variations,dungeon-normal,hwall-variation-2
+cmap-variations,dungeon-normal,hwall-variation-3
+cmap-variations,dungeon-normal,hwall-variation-4
+cmap-variations,dungeon-normal,hwall-variation-5
+cmap-variations,dungeon-normal,tlcorn-bottom-end
+cmap-variations,dungeon-normal,trcorn-bottom-end
+cmap-variations,dungeon-normal,crwall-bottom-end
+cmap-variations,dungeon-normal,tdwall-bottom-end
+cmap-variations,dungeon-normal,tlwall-bottom-end
+cmap-variations,dungeon-normal,trwall-bottom-end
+cmap-variations,dungeon-normal,room-floor-variation-1
+cmap-variations,dungeon-normal,room-floor-variation-2
+cmap-variations,dungeon-normal,room-floor-variation-3
+cmap-variations,dungeon-normal,dark-room-floor-variation-1
+cmap-variations,dungeon-normal,dark-room-floor-variation-2
+cmap-variations,dungeon-normal,dark-room-floor-variation-3
+cmap-variations,dungeon-normal,lit-corridor-variation-1
+cmap-variations,dungeon-normal,lit-corridor-variation-2
+cmap-variations,dungeon-normal,lit-corridor-variation-3
+cmap-variations,dungeon-normal,corridor-variation-1
+cmap-variations,dungeon-normal,corridor-variation-2
+cmap-variations,dungeon-normal,corridor-variation-3
+cmap-variations,dungeon-normal,branch-staircase-up
+cmap-variations,dungeon-normal,special-branch-staircase-up
+cmap-variations,dungeon-normal,branch-staircase-down
+cmap-variations,dungeon-normal,special-branch-staircase-down
+cmap-variations,dungeon-normal,lawful-altar
+cmap-variations,dungeon-normal,neutral-altar
+cmap-variations,dungeon-normal,chaotic-altar
+cmap-variations,dungeon-normal,altar-of-Moloch
+cmap-variations,dungeon-normal,high-altar
+cmap-variations,dungeon-normal,magic-fountain
+cmap-variations,dungeon-normal,fountain-of-healing
+cmap-variations,dungeon-normal,fountain-of-mana
+cmap-variations,dungeon-normal,fountain-of-power
+cmap-variations,dungeon-normal,fountain-of-poison
+cmap-variations,dungeon-normal,fountain-of-spring-water
 misc,invisible,generic
 misc,explode,generic,top-left
 misc,explode,generic,top-center
 misc,explode,generic,top-right
-misc,explode,generic,middle-right
-misc,explode,generic,middle-center
 misc,explode,generic,middle-left
+misc,explode,generic,middle-center
+misc,explode,generic,middle-right
 misc,explode,generic,bottom-left
 misc,explode,generic,bottom-center
 misc,explode,generic,bottom-right
@@ -2405,112 +2397,112 @@ misc,zap,generic,diagonal-bottom-left-to-top-right
 misc,swallow,ochre jelly,top-left
 misc,swallow,ochre jelly,top-center
 misc,swallow,ochre jelly,top-right
-misc,swallow,ochre jelly,middle-right
 misc,swallow,ochre jelly,middle-left
+misc,swallow,ochre jelly,middle-right
 misc,swallow,ochre jelly,bottom-left
 misc,swallow,ochre jelly,bottom-center
 misc,swallow,ochre jelly,bottom-right
 misc,swallow,giant luggage,top-left
 misc,swallow,giant luggage,top-center
 misc,swallow,giant luggage,top-right
-misc,swallow,giant luggage,middle-right
 misc,swallow,giant luggage,middle-left
+misc,swallow,giant luggage,middle-right
 misc,swallow,giant luggage,bottom-left
 misc,swallow,giant luggage,bottom-center
 misc,swallow,giant luggage,bottom-right
 misc,swallow,lurker above,top-left
 misc,swallow,lurker above,top-center
 misc,swallow,lurker above,top-right
-misc,swallow,lurker above,middle-right
 misc,swallow,lurker above,middle-left
+misc,swallow,lurker above,middle-right
 misc,swallow,lurker above,bottom-left
 misc,swallow,lurker above,bottom-center
 misc,swallow,lurker above,bottom-right
 misc,swallow,trapper,top-left
 misc,swallow,trapper,top-center
 misc,swallow,trapper,top-right
-misc,swallow,trapper,middle-right
 misc,swallow,trapper,middle-left
+misc,swallow,trapper,middle-right
 misc,swallow,trapper,bottom-left
 misc,swallow,trapper,bottom-center
 misc,swallow,trapper,bottom-right
 misc,swallow,dust vortex,top-left
 misc,swallow,dust vortex,top-center
 misc,swallow,dust vortex,top-right
-misc,swallow,dust vortex,middle-right
 misc,swallow,dust vortex,middle-left
+misc,swallow,dust vortex,middle-right
 misc,swallow,dust vortex,bottom-left
 misc,swallow,dust vortex,bottom-center
 misc,swallow,dust vortex,bottom-right
 misc,swallow,fog cloud,top-left
 misc,swallow,fog cloud,top-center
 misc,swallow,fog cloud,top-right
-misc,swallow,fog cloud,middle-right
 misc,swallow,fog cloud,middle-left
+misc,swallow,fog cloud,middle-right
 misc,swallow,fog cloud,bottom-left
 misc,swallow,fog cloud,bottom-center
 misc,swallow,fog cloud,bottom-right
 misc,swallow,ice vortex,top-left
 misc,swallow,ice vortex,top-center
 misc,swallow,ice vortex,top-right
-misc,swallow,ice vortex,middle-right
 misc,swallow,ice vortex,middle-left
+misc,swallow,ice vortex,middle-right
 misc,swallow,ice vortex,bottom-left
 misc,swallow,ice vortex,bottom-center
 misc,swallow,ice vortex,bottom-right
 misc,swallow,steam vortex,top-left
 misc,swallow,steam vortex,top-center
 misc,swallow,steam vortex,top-right
-misc,swallow,steam vortex,middle-right
 misc,swallow,steam vortex,middle-left
+misc,swallow,steam vortex,middle-right
 misc,swallow,steam vortex,bottom-left
 misc,swallow,steam vortex,bottom-center
 misc,swallow,steam vortex,bottom-right
 misc,swallow,fire vortex,top-left
 misc,swallow,fire vortex,top-center
 misc,swallow,fire vortex,top-right
-misc,swallow,fire vortex,middle-right
 misc,swallow,fire vortex,middle-left
+misc,swallow,fire vortex,middle-right
 misc,swallow,fire vortex,bottom-left
 misc,swallow,fire vortex,bottom-center
 misc,swallow,fire vortex,bottom-right
 misc,swallow,energy vortex,top-left
 misc,swallow,energy vortex,top-center
 misc,swallow,energy vortex,top-right
-misc,swallow,energy vortex,middle-right
 misc,swallow,energy vortex,middle-left
+misc,swallow,energy vortex,middle-right
 misc,swallow,energy vortex,bottom-left
 misc,swallow,energy vortex,bottom-center
 misc,swallow,energy vortex,bottom-right
 misc,swallow,purple worm,top-left
 misc,swallow,purple worm,top-center
 misc,swallow,purple worm,top-right
-misc,swallow,purple worm,middle-right
 misc,swallow,purple worm,middle-left
+misc,swallow,purple worm,middle-right
 misc,swallow,purple worm,bottom-left
 misc,swallow,purple worm,bottom-center
 misc,swallow,purple worm,bottom-right
 misc,swallow,air elemental,top-left
 misc,swallow,air elemental,top-center
 misc,swallow,air elemental,top-right
-misc,swallow,air elemental,middle-right
 misc,swallow,air elemental,middle-left
+misc,swallow,air elemental,middle-right
 misc,swallow,air elemental,bottom-left
 misc,swallow,air elemental,bottom-center
 misc,swallow,air elemental,bottom-right
 misc,swallow,elder air elemental,top-left
 misc,swallow,elder air elemental,top-center
 misc,swallow,elder air elemental,top-right
-misc,swallow,elder air elemental,middle-right
 misc,swallow,elder air elemental,middle-left
+misc,swallow,elder air elemental,middle-right
 misc,swallow,elder air elemental,bottom-left
 misc,swallow,elder air elemental,bottom-center
 misc,swallow,elder air elemental,bottom-right
 misc,swallow,Juiblex,top-left
 misc,swallow,Juiblex,top-center
 misc,swallow,Juiblex,top-right
-misc,swallow,Juiblex,middle-right
 misc,swallow,Juiblex,middle-left
+misc,swallow,Juiblex,middle-right
 misc,swallow,Juiblex,bottom-left
 misc,swallow,Juiblex,bottom-center
 misc,swallow,Juiblex,bottom-right
@@ -2593,3 +2585,38 @@ player,Wizard,elf,male,any,level-0
 player,Wizard,elf,female,any,level-0
 player,Wizard,orc,male,any,level-0
 player,Wizard,orc,female,any,level-0
+user-interface,cursor,generic
+user-interface,cursor,look
+user-interface,cursor,teleport
+user-interface,cursor,jump
+user-interface,cursor,polearm
+user-interface,cursor,spell
+user-interface,cursor,pay
+user-interface,ui-tile,death
+user-interface,ui-tile,hit
+user-interface,ui-tile,hit-text-1
+user-interface,ui-tile,hit-text-2
+user-interface,ui-tile,hit-text-3
+user-interface,ui-tile,hit-text-4
+user-interface,ui-tile,hit-text-5
+user-interface,ui-tile,general-ui
+user-interface,ui-tile,general-status
+user-interface,ui-tile,monster-status
+user-interface,ui-tile,main-window-borders
+user-interface,ui-tile,message-window-borders
+user-interface,ui-tile,status-window-borders
+user-interface,ui-tile,map-window-borders
+user-interface,ui-tile,menu-window-borders
+user-interface,ui-tile,text-window-borders
+animation,handcrafted-candle-lit-animation,frame-0
+animation,handcrafted-candle-lit-animation,frame-1
+animation,handcrafted-candle-lit-animation,frame-2
+animation,handcrafted-candle-lit-animation,frame-3
+animation,handcrafted-candle-lit-animation,frame-4
+animation,handcrafted-candle-lit-animation,frame-5
+animation,twisted-candle-lit-animation,frame-0
+animation,twisted-candle-lit-animation,frame-1
+animation,twisted-candle-lit-animation,frame-2
+animation,twisted-candle-lit-animation,frame-3
+animation,twisted-candle-lit-animation,frame-4
+animation,twisted-candle-lit-animation,frame-5

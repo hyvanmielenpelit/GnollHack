@@ -87,7 +87,13 @@ unsigned long *ospecial;
      *  Warning:  For speed, this makes an assumption on the order of
      *            offsets.  The order is set in display.h.
      */
-    if ((offset = (glyph - GLYPH_PLAYER_OFF)) >= 0) 
+    if ((offset = (glyph - GLYPH_CURSOR_OFF)) >= 0)
+    {
+        /* Should never arrive here, these are UI elements */
+        idx = '_';
+        color = CLR_GRAY;
+    }
+    else if ((offset = (glyph - GLYPH_PLAYER_OFF)) >= 0)
     {
         int mnum = (Upolyd || !flags.showrace ? u.umonnum : urace.monsternum);
         idx = mons[mnum >= LOW_PM ? mnum : PM_HUMAN].mlet + SYM_OFF_M;

@@ -1979,7 +1979,7 @@ xchar x, y;
                 if (var_flags)
                 {
                     is_variation = TRUE;
-                    int var_idx = (int)(var_flags - W_HWALL_VARIATION_START);
+                    int var_idx = (int)(var_flags >> 5) - 1; /* 0x20 is the first flag and becomes then 0x01 */
                     int sym_idx = idx;
                     int var_offset = defsyms[sym_idx].variation_offset;
                     idx = var_offset + var_idx;
@@ -2054,7 +2054,7 @@ xchar x, y;
     {
         boolean is_branch_staircase = (sstairs.sx  && x == sstairs.sx && y == sstairs.sy);
         boolean is_extra_staircase = use_extra_special_staircase();
-        int var_idx = 1 + (is_branch_staircase ? (is_extra_staircase ? SPECIAL_BRANCH_STAIRCASE : BRANCH_STAIRCASE) : 0);
+        int var_idx = is_branch_staircase ? (1 + (is_extra_staircase ? SPECIAL_BRANCH_STAIRCASE : BRANCH_STAIRCASE)) : 0;
         int sym_idx = (ptr->ladder & LA_DOWN) ? S_dnstair : S_upstair;
         if (var_idx == 0)
         {

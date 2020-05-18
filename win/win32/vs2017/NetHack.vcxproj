@@ -190,6 +190,7 @@
     <ClCompile Include="$(SrcDir)encounter.c" />
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
+    <ClCompile Include="$(SrcDir)animation.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)align.h" />

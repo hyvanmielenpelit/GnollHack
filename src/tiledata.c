@@ -789,7 +789,9 @@ short* tilemaparray;
         {
             if (cmap_idx > 0)
             {
-                if (tsd->other_cmaps_have_only_walls == 1 && (i < S_vwall || i > S_trwall))
+                if (tsd->cmap_limitation_style[cmap_idx] == 1 && (i < S_vwall || i > S_trwall))
+                    continue;
+                if (tsd->cmap_limitation_style[cmap_idx] == 2 && (i < S_stone || i > S_dnladder))
                     continue;
             }
             if (process_style == 0)
@@ -835,19 +837,25 @@ short* tilemaparray;
                     }
                 }
 
-                if (tsd->other_cmaps_have_only_walls == 1 && cmap_idx == 0 && num_cmaps > 1 && (i < S_vwall || i > S_trwall))
+                if (cmap_idx == 0 && num_cmaps > 1)
                 {
-                    /* copy non-walls to all other cmaps */
+                    /* copy an out-limited tiles to all limited cmaps */
                     for (int k = 1; k < num_cmaps; k++)
                     {
-                        int glyph_offset2 = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
-                        tilemaparray[i + glyph_offset2] = tile_count;
-                        if (!tsd->has_variations && defsyms[i].variations > 0)
+                        if (
+                            (tsd->cmap_limitation_style[k] == 1 && (i < S_vwall || i > S_trwall))
+                            || (tsd->cmap_limitation_style[k] == 2 && (i < S_stone || i > S_dnladder))
+                            )
                         {
-                            for (int m = 0; m < defsyms[i].variations; m++)
+                            int glyph_offset2 = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
+                            tilemaparray[i + glyph_offset2] = tile_count;
+                            if (!tsd->has_variations && defsyms[i].variations > 0)
                             {
-                                glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
-                                tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
+                                for (int m = 0; m < defsyms[i].variations; m++)
+                                {
+                                    glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                                    tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
+                                }
                             }
                         }
                     }
@@ -874,7 +882,9 @@ short* tilemaparray;
             {
                 if (cmap_idx > 0)
                 {
-                    if (tsd->other_cmaps_have_only_walls == 1 && !is_wall_variation(i))
+                    if (tsd->cmap_limitation_style[cmap_idx] == 1 && !is_wall_variation(i))
+                        continue;
+                    if (tsd->cmap_limitation_style[cmap_idx] == 2 && !is_base_cmap_variation(i))
                         continue;
                 }
 
@@ -905,22 +915,27 @@ short* tilemaparray;
                         }
                     }
 
-                    if (tsd->other_cmaps_have_only_walls == 1 && cmap_idx == 0 && num_cmaps > 1 && !is_wall_variation(i))
+                    
+                    if (cmap_idx == 0 && num_cmaps > 1)
                     {
-                        /* copy non-walls to all other cmaps */
+                        /* copy an out-limited tile to all limited cmaps */
                         for (int k = 1; k < num_cmaps; k++)
                         {
-                            int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + k * MAX_VARIATIONS;
-                            tilemaparray[i + glyph_offset2] = tile_count;
+                            if (
+                                (tsd->cmap_limitation_style[k] == 1 && !is_wall_variation(i))
+                                || (tsd->cmap_limitation_style[k] == 2 && !is_base_cmap_variation(i))
+                                )
+                            {
+                                int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + k * MAX_VARIATIONS;
+                                tilemaparray[i + glyph_offset2] = tile_count;
+                            }
                         }
                     }
-
                 }
                 tile_count++;
             }
         }
     }
-
 
 
     /* Miscellaneous tiles */
@@ -1301,6 +1316,74 @@ short* tilemaparray;
         }
     }
      
+
+    /* User interface tiles */
+    tile_section_name = "user-interface";
+
+    set_name = "cursor";
+    const char* cursor_name_array[MAX_CURSORS] = {
+        "generic", "look", "teleport",
+        "jump", "polearm", "spell", "pay" };
+
+    for (int i = 0; i < MAX_CURSORS; i++)
+    {
+
+        if (process_style == 0)
+        {
+            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, cursor_name_array[i]);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_CURSOR_OFF;
+            tilemaparray[i + GLYPH_CURSOR_OFF] = tile_count;
+        }
+        tile_count++;
+    }
+
+    set_name = "ui-tile";
+    const char* ui_tile_name_array[MAX_UI_TILES] = {
+        "death", "hit", "hit-text-1", "hit-text-2", "hit-text-3", "hit-text-4", "hit-text-5",
+        "general-ui", "general-status", "monster-status", "main-window-borders", "message-window-borders",
+        "status-window-borders", "map-window-borders",  "menu-window-borders",  "text-window-borders"
+    };
+
+    for (int i = 0; i < MAX_UI_TILES; i++)
+    {
+
+        if (process_style == 0)
+        {
+            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, ui_tile_name_array[i]);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_UI_TILE_OFF;
+            tilemaparray[i + GLYPH_UI_TILE_OFF] = tile_count;
+        }
+        tile_count++;
+    }
+
+    /* Animation tiles */
+    tile_section_name = "animation";
+    for (int i = 0; i < MAX_ANIMATIONS; i++)
+    {
+        for (int j = 0; j < animations[i].number_of_frames; j++)
+        {
+            if (process_style == 0)
+            {
+                Sprintf(buf, "%s,%s,frame-%d\n", tile_section_name, animations[i].animation_name ? animations[i].animation_name : "unknown animation", j);
+                (void)write(fd, buf, strlen(buf));
+            }
+            else if (process_style == 1)
+            {
+                glyph_offset = GLYPH_ANIMATION_OFF;
+                tilemaparray[i + GLYPH_ANIMATION_OFF] = tile_count;
+            }
+            tile_count++;
+        }
+    }
+
     if (process_style == 0)
     {
         /* Finished */

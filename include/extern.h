@@ -30,6 +30,11 @@ E void FDECL(welcome, (BOOLEAN_P));
 E time_t NDECL(get_realtime);
 E int FDECL(argcheck, (int, char **, enum earlyarg));
 
+/* ### animation.c ### */
+
+E void NDECL(init_animations);
+
+
 /* ### apply.c ### */
 
 E int NDECL(doapply);

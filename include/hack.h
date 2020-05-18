@@ -270,6 +270,35 @@ typedef struct sortloot_item Loot;
     (Orc_warning && (mon->data->mflags2 & M2_ORC)) 
 */
 
+
+/* Animation definitions */
+
+struct animation_definition {
+    char* animation_name;
+    int number_of_frames;
+    int offset;
+    double frame_interval;
+};
+
+enum animation_types
+{
+    HANDCRAFTED_CANDLE_ANIMATION = 0,
+    TWISTED_CANDLE_ANIMATION = 1,
+    MAX_ANIMATIONS /* Must be equal or smaller than the number of animations in animations array */
+};
+
+#define HANDCRAFTED_CANDLE_ANIMATION_OFF (0)
+#define HANDCRAFTED_CANDLE_ANIMATION_FRAMES 6
+#define TWISTED_CANDLE_ANIMATION_OFF (HANDCRAFTED_CANDLE_ANIMATION_FRAMES + HANDCRAFTED_CANDLE_ANIMATION_OFF)
+#define TWISTED_CANDLE_ANIMATION_FRAMES 6
+
+#define MAX_ANIMATION_FRAMES (TWISTED_CANDLE_ANIMATION_FRAMES + TWISTED_CANDLE_ANIMATION_OFF)
+
+extern NEARDATA struct animation_definition animations[];
+
+
+
+
 #include "trap.h"
 #include "flag.h"
 #include "rm.h"
@@ -303,12 +332,12 @@ struct tileset_definition {
 
     uchar swallow_tile_style;    /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
     boolean has_full_cmap_set;   /* 0 = has only number_of_cmaps cmaps, 1 = has CMAP_TYPE_MAX cmaps */
-    boolean other_cmaps_have_only_walls;    /* 0 = all cmaps have a full character set, 1 = cmap 0 has a full character set and cmaps 1...X-1 have only wall tiles */
     boolean has_variations;      /* 0 = all variations use the base tile, 1 = separate tile for each variation */
     
     uchar number_of_cmaps;       /* 0 = 1 = one set ... X = X sets */
     char* cmap_names[CMAP_TYPE_MAX]; /* names of the cmaps of this tileset */
     uchar cmap_mapping[CMAP_TYPE_MAX]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps, e.g., 0 means that this tileset's cmap 0 is being used for GnollHack's internal cmap in question */
+    uchar cmap_limitation_style[CMAP_TYPE_MAX]; /* 0 = cmap has a full character set (not applicable for cmap 0), 1 = cmap has only wall tiles, 2 = cmap is a base cmap: it has all tiles between S_stone and S_dnladder */
 
     boolean has_all_explode_tiles; /* 0 = one set of explode tiles, 1 = separate explode tile for each case  */
     boolean has_all_zap_tiles; /* 0 = one set of zap tiles, 1 = separate zap tile for each case  */
@@ -323,14 +352,13 @@ static struct tileset_definition default_tileset_definition =
 {
     2, 0, 0, 0, 2, 1,
     0, 2, 2, 
-    2, 0, 0, 1, 
+    2, 0, 1, 
     1,
     {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     0, 0, 3
 };
-
-
 
 
 #ifdef USE_TRAMPOLI /* this doesn't belong here, but we have little choice */
@@ -686,6 +714,39 @@ static const char empty_string[] = "";
 #define MOUSE_SCREEN_SCALE_ADJUSTMENT_STEP 0.05
 #define MIN_PREF_SCREEN_SCALE 25
 #define MAX_PREF_SCREEN_SCALE 200
+
+enum game_cursor_types
+{
+    GENERIC_CURSOR = 0,
+    LOOK_CURSOR,
+    TELEPORT_CURSOR,
+    JUMP_CURSOR,
+    POLEARM_CURSOR,
+    SPELL_CURSOR,
+    PAY_CURSOR,
+    MAX_CURSORS
+};
+
+enum game_ui_tile_types
+{
+    DEATH_TILE = 0,
+    HIT_TILE,
+    HIT_TEXT_1,
+    HIT_TEXT_2,
+    HIT_TEXT_3,
+    HIT_TEXT_4,
+    HIT_TEXT_5,
+    GENERAL_UI_ELEMENTS,    /* Check box etc. */
+    GENERAL_STATUS_MARKS,   /* Pet mark, detection mark, ridden mark, pile mark, etc. */
+    MONSTER_STATUS_MARKS,   /* One tile for each specified status (the same as on status line) */
+    MAIN_WINDOW_BORDERS,
+    MESSAGE_WINDOW_BORDERS,
+    STATUS_WINDOW_BORDERS,
+    MAP_WINDOW_BORDERS,
+    MENU_WINDOW_BORDERS,
+    TEXT_WINDOW_BORDERS,
+    MAX_UI_TILES
+};
 
 /* convert 1..10 to 0..9; add 10 for second group (spell casting) */
 #define ad_to_typ(k) (10 + (int) k - 1)

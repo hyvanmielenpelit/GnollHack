@@ -1065,6 +1065,7 @@ newgame()
 	strcpy(context.used_names, "|");
 
     init_fountains();
+    init_animations();
 
 #ifdef USE_TILES
     flags.screen_scale_adjustment = flags.preferred_screen_scale == 0 ? 0.0
