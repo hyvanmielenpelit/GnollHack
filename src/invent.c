@@ -3527,23 +3527,21 @@ int show_weights;
 		// Pick up show_weights, but no You are-line = 5
 		// Drop show_weights, but no You are-line = 6
 
+        boolean tiles_being_used = FALSE;
+#ifdef USE_TILES
+        tiles_being_used = TRUE;
+#endif
+
 		if (total_ounce_weight > 0)
 		{
 			char weightbuf[BUFSZ] = "";
 			printweight(weightbuf, total_ounce_weight, !flags.inventory_weights_last, FALSE);
-			if (flags.inventory_weights_last)
-				Sprintf(wtbuf, "You have %s of total weight.", weightbuf);
+			if (flags.inventory_weights_last || tiles_being_used)
+				Sprintf(wtbuf, "%s of total weight.", weightbuf);
 			else
 				Sprintf(wtbuf, "  = %s of total weight", weightbuf);
-#if 0
-			if (totalweight >= 1000)
-				Sprintf(wtbuf, "  = %3.0f %s of total weight", totalweight / 100, "cwt");
-			else if (totalweight >= 10)
-				Sprintf(wtbuf, "  = %3.0f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
-			else
-				Sprintf(wtbuf, "  = %1.1f %s of total weight", totalweight, totalweight == 1 ? "lb" : "lbs");
-#endif
-			add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
+
+            add_menu(win, NO_GLYPH, &any, 0, 0, 0, wtbuf, MENU_UNSELECTED);
 		}
 
 		if (show_weights > 0 && show_weights <= 3)
