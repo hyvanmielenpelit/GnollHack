@@ -42,10 +42,13 @@ void NDECL(monst_init);
  *      For AT_BREA attacks, '# sides' is ignored; 6 is used for most
  *      damage types, 25 for sleep, not applicable for death or poison.
  */
-#define MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col) \
+#define ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, stand_anim, attack_anim, female_stand_anim, female_attack_anim) \
     {                                                                      \
-        nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, C(col)   \
+        nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, C(col), stand_anim, attack_anim, female_stand_anim, female_attack_anim   \
     }
+#define MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col) \
+    ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, 0, 0, 0, 0)
+
 /* LVL() and SIZ() collect several fields to cut down on # of args for MON()
  */
 #define STATS(str, dex, con, intl, wis, cha) str, dex, con, intl, wis, cha

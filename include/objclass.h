@@ -941,6 +941,8 @@ struct objclass {
 /* Permitted target mask */
 #define ALL_TARGETS				0x00000000UL
 
+	int stand_animation;
+	int lit_animation;
 };
 
 struct class_sym {

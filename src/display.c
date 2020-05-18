@@ -1975,14 +1975,13 @@ xchar x, y;
         hwall_here:
             {
                 /* Code selecting a variation */
-                uchar var_flags = (ptr->wall_info & W_HWALL_VARIATION_MASK);
-                if (var_flags)
+                uchar var_idx = ptr->variation;
+                if (var_idx > 0)
                 {
                     is_variation = TRUE;
-                    int var_idx = (int)(var_flags >> 5) - 1; /* 0x20 is the first flag and becomes then 0x01 */
                     int sym_idx = idx;
                     int var_offset = defsyms[sym_idx].variation_offset;
-                    idx = var_offset + var_idx;
+                    idx = var_offset + (int)var_idx - 1;
                 }
             }
         }

@@ -77,6 +77,10 @@ struct permonst {
 #ifdef TEXTCOLOR
     uchar mcolor; /* color to use */
 #endif
+    int stand_animation;
+    int attack_animation;
+    int female_stand_animation;
+    int female_attack_animation;
 };
 
 extern NEARDATA struct permonst mons[]; /* the master list of monster types */

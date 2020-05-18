@@ -119,6 +119,9 @@ struct artifact {
     long cost; /* price when sold to hero (default 100 x base cost) */
     char acolor;        /* color to use if artifact 'glows' */
 	char ocolor;		/* color used for object instead of its normal color */
+
+	int stand_animation;
+	int lit_animation;
 };
 
 /* invoked properties with special powers */
