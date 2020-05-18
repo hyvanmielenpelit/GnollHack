@@ -212,6 +212,7 @@
 #define DISP_CHANGE  (-6) /* Change glyph. */
 #define DISP_END     (-7) /* Clean up. */
 #define DISP_FREEMEM (-8) /* Free all memory during exit only. */
+#define DISP_BEAM_DIG (-9) /* Keep all glyphs showing & clean up at end. */
 
 /* Total number of cmap indices in the shield_static[] array. */
 #define SHIELD_COUNT 21

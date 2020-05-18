@@ -486,6 +486,11 @@ dig(VOID_ARGS)
         if (!does_block(dpx, dpy, &levl[dpx][dpy]))
             unblock_point(dpx, dpy); /* vision:  can see through */
         feel_newsym(dpx, dpy);
+
+#ifdef USE_TILES
+        if (isok(dpx, dpy - 1))
+            newsym(dpx, dpy - 1);
+#endif
         if (digtxt && !context.digging.quiet)
             pline1(digtxt); /* after newsym */
         if (dmgtxt)
@@ -1433,6 +1438,10 @@ register struct monst *mtmp;
         here->typ = CORR, here->flags = 0;
         unblock_point(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
+#ifdef USE_TILES
+        if(isok(mtmp->mx, mtmp->my - 1))
+            newsym(mtmp->mx, mtmp->my - 1);
+#endif
         draft_message(FALSE); /* "You feel a draft." */
         return FALSE;
     } else if (!IS_ROCK(here->typ) && !IS_TREE(here->typ)) { /* no dig */
@@ -1487,6 +1496,10 @@ register struct monst *mtmp;
                              TRUE, FALSE);
     }
     newsym(mtmp->mx, mtmp->my);
+#ifdef USE_TILES
+    if (isok(mtmp->mx, mtmp->my - 1))
+        newsym(mtmp->mx, mtmp->my - 1);
+#endif
     if (!sobj_at(BOULDER, mtmp->mx, mtmp->my))
         unblock_point(mtmp->mx, mtmp->my); /* vision */
 
@@ -1619,7 +1632,7 @@ struct obj* origobj;
         }
     }
     digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
-    tmp_at(DISP_BEAM, cmap_to_glyph(S_digbeam));
+    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_digbeam));
     while (--digdepth >= 0) {
         if (!isok(zx, zy))
             break;
@@ -1826,7 +1839,7 @@ struct obj* origobj;
 	zx = u.ux + u.dx;
 	zy = u.uy + u.dy;
 	digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
-	tmp_at(DISP_BEAM, cmap_to_glyph(S_digbeam));
+	tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_digbeam));
 
 	while (--digdepth >= 0)
 	{

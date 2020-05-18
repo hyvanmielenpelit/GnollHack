@@ -1016,6 +1016,7 @@ int x, y;
 
     switch (x) {
     case DISP_BEAM:
+    case DISP_BEAM_DIG:
     case DISP_ALL:
     case DISP_TETHER:
     case DISP_FLASH:
@@ -1057,12 +1058,21 @@ int x, y;
         break;
 
     case DISP_END:
-        if (tglyph->style == DISP_BEAM || tglyph->style == DISP_ALL) {
+        if (tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL) {
             register int i;
 
             /* Erase (reset) from source to end */
             for (i = 0; i < tglyph->sidx; i++)
                 newsym(tglyph->saved[i].x, tglyph->saved[i].y);
+#ifdef USE_TILES
+            /* Erase (reset) from source to end, one tile above */
+            if (tglyph->style == DISP_BEAM_DIG && tglyph->sidx > 0 && isok(tglyph->saved[i].x, tglyph->saved[i].y - 1))
+            {
+                for (i = 0; i < tglyph->sidx; i++)
+                    newsym(tglyph->saved[i].x, tglyph->saved[i].y - 1);
+            }
+
+#endif
         } else if (tglyph->style == DISP_TETHER) {
             int i;
 
@@ -1093,7 +1103,7 @@ int x, y;
     default: /* do it */
         if (!isok(x, y))
             break;
-        if (tglyph->style == DISP_BEAM || tglyph->style == DISP_ALL) {
+        if (tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL) {
             if (tglyph->style != DISP_ALL && !cansee(x, y))
                 break;
             if (tglyph->sidx >= TMP_AT_MAX_GLYPHS)
@@ -1916,11 +1926,38 @@ xchar x, y;
         idx = level.flags.arboreal ? S_tree : S_unexplored;
         break;
     case SCORR:
-    case STONE:
         idx = S_stone;
         break;
+    case STONE:
+    {
+    stone_here:
+        {
+            int below_y = y + 1;
+            if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED)
+                idx = S_stone;
+            else
+            {
+                is_variation = TRUE;
+                int var_idx = STONE_BOTTOM_END;
+                int sym_idx = S_stone;
+                int var_offset = defsyms[sym_idx].variation_offset;
+                idx = var_offset + var_idx;
+            }
+        }
+    }
+    break;
     case ROOM:
-        idx = S_room;
+        idx = (!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM : S_room;
+
+        if (ptr->flags > 0)
+        {
+            is_variation = TRUE;
+            int var_idx = min(ptr->flags, FLOOR_VARIATIONS) - 1;
+            int sym_idx = idx;
+            int var_offset = defsyms[sym_idx].variation_offset;
+            idx = var_offset + var_idx;
+        }
+
         break;
 	case GRASS:
 		idx = S_grass;
@@ -1929,18 +1966,64 @@ xchar x, y;
         idx = (ptr->waslit || flags.lit_corridor) ? S_litcorr : S_corr;
         break;
     case HWALL:
+    {
+        if (ptr->seenv)
+        {
+            idx = wall_angle(ptr);
+        hwall_here:
+            {
+                /* Code selecting a variation */
+                uchar var_flags = (ptr->wall_info & W_HWALL_VARIATION_MASK);
+                if (var_flags)
+                {
+                    is_variation = TRUE;
+                    int var_idx = (int)(var_flags - W_HWALL_VARIATION_START);
+                    int sym_idx = idx;
+                    int var_offset = defsyms[sym_idx].variation_offset;
+                    idx = var_offset + var_idx;
+                }
+            }
+        }
+        else
+            goto stone_here;
+        break;
+    }
     case VWALL:
     case TLCORNER:
     case TRCORNER:
+    case CROSSWALL:
     case BLCORNER:
     case BRCORNER:
-    case CROSSWALL:
     case TUWALL:
     case TDWALL:
     case TLWALL:
     case TRWALL:
     case SDOOR:
-        idx = ptr->seenv ? wall_angle(ptr) : S_stone;
+        if (ptr->seenv)
+        {
+            idx = wall_angle(ptr);
+
+            if (idx == S_hwall)
+                goto hwall_here;
+
+            if (idx != S_tuwall && idx != S_blcorn && idx != S_brcorn)
+            {
+                int below_y = y + 1;
+                if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED)
+                    ; /* idx is ok */
+                else
+                {
+                    /* Use bottom end */
+                    is_variation = TRUE;
+                    int var_idx = GWALL_BOTTOM_END;
+                    int sym_idx = idx;
+                    int var_offset = defsyms[sym_idx].variation_offset;
+                    idx = var_offset + var_idx;
+                }
+            }
+        }
+        else
+            goto stone_here;
         break;
     case DOOR:
         if (ptr->doormask) {
@@ -1969,7 +2052,7 @@ xchar x, y;
     {
         boolean is_branch_staircase = (sstairs.sx  && x == sstairs.sx && y == sstairs.sy);
         boolean is_extra_staircase = use_extra_special_staircase();
-        int var_idx = is_branch_staircase ? (is_extra_staircase ? 2 : 1) : 0;
+        int var_idx = 1 + (is_branch_staircase ? (is_extra_staircase ? SPECIAL_BRANCH_STAIRCASE : BRANCH_STAIRCASE) : 0);
         int sym_idx = (ptr->ladder & LA_DOWN) ? S_dnstair : S_upstair;
         if (var_idx == 0)
         {
