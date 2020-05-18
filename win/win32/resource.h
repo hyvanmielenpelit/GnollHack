@@ -114,6 +114,7 @@
 #define IDC_PLSEL_ALIGN_CHAOTIC         1336
 #define IDC_PLSEL_GENDER_MALE           1337
 #define IDC_PLSEL_GENDER_FEMALE         1338
+#define IDC_EDIT1                       1342
 #define IDM_SAVE                        32771
 #define IDM_HELP_LONG                   32772
 #define IDM_HELP_COMMANDS               32773
@@ -149,9 +150,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        152
+#define _APS_NEXT_RESOURCE_VALUE        153
 #define _APS_NEXT_COMMAND_VALUE         32801
-#define _APS_NEXT_CONTROL_VALUE         1341
+#define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

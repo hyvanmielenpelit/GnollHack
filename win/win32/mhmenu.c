@@ -901,12 +901,13 @@ SetMenuListType(HWND hWnd, int how)
     /* add column to the list view */
     MonitorInfo monitorInfo;
     win10_monitor_info(hWnd, &monitorInfo);
+    
     ZeroMemory(&lvcol, sizeof(lvcol));
     lvcol.mask = LVCF_WIDTH | LVCF_TEXT;
     lvcol.cx = monitorInfo.width;
     lvcol.pszText = NH_A2W(data->menu.prompt, wbuf, BUFSZ);
     ListView_InsertColumn(control, 0, &lvcol);
-
+    
     /* add items to the list view */
     for (i = 0; i < data->menu.size; i++) {
         LVITEM lvitem;
@@ -1099,7 +1100,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
         x += tm.tmAveCharWidth + tm.tmOverhang + spacing;
     } else {
-        x += tileXScaled + tm.tmAveCharWidth + tm.tmOverhang + 2 * spacing;
+        x += checkXScaled + tm.tmAveCharWidth + tm.tmOverhang + 2 * spacing;
     }
 
     /* print glyph if present */
