@@ -16,8 +16,6 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
 };
 
 
-void init_animations();
-
 void
 init_animations()
 {
