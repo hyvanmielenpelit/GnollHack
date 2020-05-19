@@ -148,7 +148,6 @@ struct obj {
     int repowerleft;	   /* artifact cooldown left before its invoke ability can be used again*/
     int detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
 	boolean invokeon;      /* the object's / artifact's invoked ability is on */
-    uchar current_animation_frame;
 	struct oextra *oextra; /* pointer to oextra struct */
 };
 

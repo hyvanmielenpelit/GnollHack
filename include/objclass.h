@@ -941,8 +941,6 @@ struct objclass {
 /* Permitted target mask */
 #define ALL_TARGETS				0x00000000UL
 
-	int stand_animation;
-	int lit_animation;
 };
 
 struct class_sym {
@@ -956,6 +954,8 @@ struct objdescr {
     const char *oc_descr; /* description when name unknown */
 	const char* oc_content_description; /* description of contents (spellbooks) */
 	const char* oc_item_description; /* description of the item */
+	int stand_animation;
+	int lit_animation;
 };
 
 extern NEARDATA struct objclass objects[];
@@ -1042,6 +1042,9 @@ struct fruit {
 
 #define OBJ_CONTENT_DESC(otyp) (obj_descr[is_otyp_content_description_shuffled(otyp) ?  objects[(otyp)].oc_descr_idx :objects[(otyp)].oc_name_idx].oc_content_description)
 #define OBJ_ITEM_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_item_description)
+
+#define OBJ_STAND_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].stand_animation)
+#define OBJ_LIT_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].lit_animation)
 
 
 

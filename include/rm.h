@@ -581,7 +581,6 @@ struct rm {
     uchar seenv;             /* seen vector */
     uchar flags;			/* extra information for typ */
     uchar variation;
-    uchar current_animation_frame;
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */

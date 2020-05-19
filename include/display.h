@@ -476,6 +476,7 @@
 /* Not affected by hallucination.  Gives a generic body for CORPSE */
 /* MRKR: ...and the generic statue */
 #define objnum_to_glyph(onum) ((int) (onum) + GLYPH_OBJ_OFF)
+#define lit_objnum_to_glyph(onum) ((int) (onum) + GLYPH_OBJ_LIT_OFF)
 
 #define monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_MON_OFF)
 #define petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_PET_OFF)

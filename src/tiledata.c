@@ -8,6 +8,7 @@
 
 #ifdef USE_TILES
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
+short tile2animation[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 #endif
 
 NEARDATA struct tileset_definition default_tileset_definition =
@@ -1467,9 +1468,9 @@ short* tilemaparray;
 
     /* Animation tiles */
     tile_section_name = "animation";
-    for (int i = 0; i < MAX_ANIMATIONS; i++)
+    for (int i = 1; i <= NUM_ANIMATIONS; i++)  /* animation number, starts at 1 */
     {
-        for (int j = 0; j < animations[i].number_of_tiles; j++)
+        for (int j = 0; j < animations[i].number_of_tiles; j++) /* tile number */
         {
             if (process_style == 0)
             {
@@ -1479,7 +1480,11 @@ short* tilemaparray;
             else if (process_style == 1)
             {
                 glyph_offset = GLYPH_ANIMATION_OFF;
-                tilemaparray[i + GLYPH_ANIMATION_OFF] = tile_count;
+                for (int k = 0; k < MAX_FRAMES_PER_ANIMATION; k++)  /* frame number */
+                {
+                    if(animations[i].frame2tile[k] == j)
+                        tilemaparray[k + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = tile_count;
+                }
             }
             tile_count++;
         }
@@ -1490,7 +1495,78 @@ short* tilemaparray;
         /* Finished */
         (void)close(fd);
     }
-    /* Nothing for other process_styles */
+    else if (process_style == 1)
+    {
+        /* Set tile2animation */
+        /* Monsters */
+        for (int i = 0; i < NUM_MONSTERS; i++)
+        {
+            if (mons[i].stand_animation)
+            {
+                int glyph = monnum_to_glyph(i);
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].stand_animation;
+            }
+            if (mons[i].female_stand_animation)
+            {
+                int glyph = female_monnum_to_glyph(i);
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].stand_animation;
+            }
+            if (mons[i].attack_animation)
+            {
+                /* To do */
+            }
+            if (mons[i].female_attack_animation)
+            {
+                /* To do */
+            }
+        }
+        /* Objects */
+        for (int i = 0; i < NUM_OBJECTS; i++)
+        {
+            if (obj_descr[i].stand_animation)
+            {
+                int glyph = objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = obj_descr[i].stand_animation;
+            }
+            if (obj_descr[i].lit_animation)
+            {
+                int glyph = lit_objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = obj_descr[i].lit_animation;
+            }
+        }
+
+        /* CMAP */
+        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        {
+            for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
+            {
+                if (defsyms[i].stand_animation[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = defsyms[i].stand_animation[cmap_type_idx];
+                }
+            }
+        }
+
+        /* CMAP Variation */
+        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        {
+            for (int i = 0; i < MAX_VARIATIONS; i++)
+            {
+                if (defsym_variations[i].stand_animation[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = defsym_variations[i].stand_animation[cmap_type_idx];
+                }
+            }
+        }
+    }
 
     return tile_count;
 }

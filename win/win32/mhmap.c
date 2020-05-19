@@ -19,10 +19,11 @@
 #define NHMAP_TTFONT_NAME TEXT("Consolas")
 #define MAXWINDOWTEXT 255
 
-#define CURSOR_BLINK_INTERVAL 500 // milliseconds
+#define CURSOR_BLINK_INTERVAL 50 // milliseconds
 #define CURSOR_HEIGHT 2 // pixels
 
 extern short glyph2tile[];
+extern short tile2animation[];
 
 #define TILEBMP_X(ntile) \
     ((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)
@@ -35,6 +36,7 @@ typedef struct mswin_GnollHack_map_window {
 
     int map[COLNO][ROWNO];      /* glyph map */
     int bkmap[COLNO][ROWNO];    /* backround glyph map */
+    boolean mapAnimated[COLNO][ROWNO];    /* animation flag for map */
     boolean mapDirty[COLNO][ROWNO]; /* dirty flag for map */
 
     int mapMode;                /* current map mode */
@@ -58,6 +60,7 @@ typedef struct mswin_GnollHack_map_window {
     double monitorScale;        /* from 96dpi to monitor dpi*/
 
     boolean cursorOn;
+    unsigned long interval_counter;
     int yNoBlinkCursor;         /* non-blinking cursor height inback buffer
                                    in pixels */
     int yBlinkCursor;           /* blinking cursor height inback buffer
@@ -637,6 +640,17 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_TIMER:
     {
+        if(data->interval_counter >= 0xCFFFFFFFUL)
+            data->interval_counter = 0UL;
+        else
+            data->interval_counter++;
+
+        for (int x = 0; x < COLNO; x++)
+            for (int y = 0; y < ROWNO; y++) {
+                if(data->mapAnimated[x][y])
+                    dirty(data, x, y);
+            }
+
         boolean asciimode = (data->bAsciiMode || Is_rogue_level(&u.uz));
         if ((asciimode && !win32_cursorblink)
             || (!asciimode && (!flags.blinking_cursor_on_tiles
@@ -648,6 +662,11 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         else
         {
+            if (data->interval_counter >= 0xCFFFFFFFUL)
+                data->interval_counter = 0UL;
+            else
+                data->interval_counter++;
+
             if (flags.force_paint_at_cursor)
             {
                 flags.force_paint_at_cursor = FALSE;
@@ -822,6 +841,7 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     data->bAsciiMode = FALSE;
     data->cursorOn = TRUE;
+    data->interval_counter = 0;
 
     data->xFrontTile = GetNHApp()->mapTile_X;
     data->yFrontTile = GetNHApp()->mapTile_Y;
@@ -853,6 +873,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 #endif
     boolean flip_glyph = FALSE;
     boolean flip_bkglyph = FALSE;
+    data->mapAnimated[i][j] = FALSE;
     layer = 0;
     signed_glyph = data->map[i][j];
     signed_bkglyph = data->bkmap[i][j];
@@ -874,6 +895,23 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     if (bkglyph != NO_GLYPH) {
         ntile = glyph2tile[bkglyph];
+
+        short animation_idx = tile2animation[ntile];
+        if (animation_idx > 0)
+        {
+            data->mapAnimated[i][j] = TRUE;
+            int numframes = animations[animation_idx].number_of_frames + 1; /* add original tile as the first tile and frame */
+            int current_animation_frame = (data->interval_counter / animations[animation_idx].intervals_between_frames) % numframes;
+            if (current_animation_frame > 0) /* 0 is the original picture */
+            {
+                int animation_frame_index = current_animation_frame - 1;
+                short animation_tile_glyph_idx = animations[animation_idx].frame2tile[animation_frame_index];
+                int animation_glyph = animation_tile_glyph_idx + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
+                ntile = glyph2tile[animation_glyph]; /* replace */
+            }
+        }
+
+
         int multiplier = flip_bkglyph ? -1 : 1;
         t_x = TILEBMP_X(ntile) + (flip_bkglyph ? TILE_X - 1 : 0);
         t_y = TILEBMP_Y(ntile);
@@ -888,9 +926,28 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     //int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
     int multiplier = flip_glyph ? -1 : 1;
 
+    if(glyph_is_object(glyph) && glyph >= GLYPH_OBJ_LIT_OFF)
+        glyph = glyph;
+
+    if (i == u.ux - 1 && j == u.uy)
+        glyph = glyph;
 
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
         ntile = glyph2tile[glyph];
+        short animation_idx = tile2animation[ntile];
+        if (animation_idx > 0)
+        {
+            data->mapAnimated[i][j] = TRUE;
+            int numframes = animations[animation_idx].number_of_frames + 1; /* add original tile as the first tile and frame */
+            int current_animation_frame = (data->interval_counter / animations[animation_idx].intervals_between_frames) % numframes;
+            if (current_animation_frame > 0) /* 0 is the original picture */
+            {
+                int animation_frame_index = current_animation_frame - 1;
+                short animation_tile_glyph_idx = animations[animation_idx].frame2tile[animation_frame_index];
+                int animation_glyph = animation_tile_glyph_idx + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
+                ntile = glyph2tile[animation_glyph]; /* replace */
+            }
+        }
         t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
         t_y = TILEBMP_Y(ntile);
 
@@ -1102,6 +1159,7 @@ static void clearAll(PNHMapWindow data)
             data->map[x][y] = NO_GLYPH;
             data->bkmap[x][y] = NO_GLYPH;
             data->mapDirty[x][y] = TRUE;
+            data->mapAnimated[x][y] = 0;
         }
     InvalidateRect(data->hWnd, NULL, FALSE);
 }
