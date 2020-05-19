@@ -270,35 +270,7 @@ typedef struct sortloot_item Loot;
     (Orc_warning && (mon->data->mflags2 & M2_ORC)) 
 */
 
-
-/* Animation definitions */
-
-struct animation_definition {
-    char* animation_name;
-    uchar number_of_frames;
-    int glyph_offset;
-    uchar intervals_between_frames;
-};
-
-enum animation_types
-{
-    HANDCRAFTED_CANDLE_ANIMATION = 0,
-    TWISTED_CANDLE_ANIMATION = 1,
-    MAX_ANIMATIONS
-};
-
-#define HANDCRAFTED_CANDLE_ANIMATION_OFF (0)
-#define HANDCRAFTED_CANDLE_ANIMATION_FRAMES 6
-#define TWISTED_CANDLE_ANIMATION_OFF (HANDCRAFTED_CANDLE_ANIMATION_FRAMES + HANDCRAFTED_CANDLE_ANIMATION_OFF)
-#define TWISTED_CANDLE_ANIMATION_FRAMES 6
-
-#define MAX_ANIMATION_FRAMES (TWISTED_CANDLE_ANIMATION_FRAMES + TWISTED_CANDLE_ANIMATION_OFF)
-
-extern NEARDATA struct animation_definition animations[];
-
-
-
-
+#include "animation.h"
 #include "trap.h"
 #include "flag.h"
 #include "rm.h"
@@ -317,50 +289,7 @@ extern NEARDATA struct animation_definition animations[];
 #define SYM_OFF_X (SYM_OFF_W + WARNCOUNT)
 #define SYM_MAX (SYM_OFF_X + MAXOTHER)
 
-
-struct tileset_definition {
-    uchar female_tile_style;     /* 0 = use base monster, 1 = separate female tile for each monster, 2 = indicated monsters with G_FEMALE_TILE on in mons[].geno */
-    boolean has_pet_tiles;       /* 0 = use normal monster variation, 1 = separate pet tile for each monster  */
-    boolean has_detect_tiles;    /* 0 = use normal monster variation, 1 = separate detect tile for each monster  */
-    boolean has_body_tiles;      /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster */
-    boolean ridden_tile_style;    /* 0 = use normal monster variation, 1 = separate ridden tile for each monster, 2 = monsters with M1_STEED have ridden tiles */
-    boolean has_statue_tiles;    /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
-
-    uchar inventory_tile_style;  /* 0 = no inventory tiles, 1 = has separate inventory tiles for all objects, 2 = has inventory tiles for each object marked with O4_INVENTORY_TILE  */
-    uchar lit_tile_style;        /* 0 = no lit tiles, 1 = has separate lit tiles for all objects, 2 = has lit tiles for each object marked with O4_LIT_TILE  */
-    uchar missile_tile_style;    /* 0 = no missile tiles, 1 = has missile inventory tiles for all objects, 2 = has missile tiles for each object marked with O4_MISSILE_TILE  */
-
-    uchar swallow_tile_style;    /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
-    boolean has_full_cmap_set;   /* 0 = has only number_of_cmaps cmaps, 1 = has CMAP_TYPE_MAX cmaps */
-    boolean has_variations;      /* 0 = all variations use the base tile, 1 = separate tile for each variation */
-    
-    uchar number_of_cmaps;       /* 0 = 1 = one set ... X = X sets */
-    char* cmap_names[CMAP_TYPE_MAX]; /* names of the cmaps of this tileset */
-    uchar cmap_mapping[CMAP_TYPE_MAX]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps, e.g., 0 means that this tileset's cmap 0 is being used for GnollHack's internal cmap in question */
-    uchar cmap_limitation_style[CMAP_TYPE_MAX]; /* 0 = cmap has a full character set (not applicable for cmap 0), 1 = cmap has only wall tiles, 2 = cmap is a base cmap: it has all tiles between S_stone and S_dnladder */
-
-    boolean has_all_explode_tiles; /* 0 = one set of explode tiles, 1 = separate explode tile for each case  */
-    boolean has_all_zap_tiles; /* 0 = one set of zap tiles, 1 = separate zap tile for each case  */
-    uchar player_tile_style; /* 0 = use base role monster tile,
-                              * 1 = one generic icon
-                              * 2 = separate player tile for each role/race/gender/alignment/level combination
-                              * 3 = separate player tile for each role/race/gender/alignment/level combination for relevant cases only
-                              */
-};
-
-static struct tileset_definition default_tileset_definition =
-{
-    2, 0, 0, 0, 2, 1,
-    0, 2, 2, 
-    2, 0, 1, 
-    1,
-    {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    0, 0, 3
-};
-
-
+#include "tiledata.h"
 #ifdef USE_TRAMPOLI /* this doesn't belong here, but we have little choice */
 #undef NDECL
 #define NDECL(f) f()

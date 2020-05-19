@@ -402,6 +402,16 @@ enum altar_variation_types
 
 #define is_wall_variation(idx) ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
 #define is_base_cmap_variation(idx) ((idx) >= STONE_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)
+#define is_bottom_end_variation(idx) ( \
+       (idx) == (GWALL_BOTTOM_END + VWALL_VARIATION_OFFSET) \
+    || (idx) == (GWALL_BOTTOM_END + TLCORN_VARIATION_OFFSET) \
+    || (idx) == (GWALL_BOTTOM_END + TRCORN_VARIATION_OFFSET) \
+    || (idx) == (GWALL_BOTTOM_END + CRWALL_VARIATION_OFFSET) \
+    || (idx) == (GWALL_BOTTOM_END + TDWALL_VARIATION_OFFSET) \
+    || (idx) == (GWALL_BOTTOM_END + TLWALL_VARIATION_OFFSET) \
+    || (idx) == (GWALL_BOTTOM_END + TRWALL_VARIATION_OFFSET) \
+    )
+#define NUM_BOTTOM_ENDS 7
 
 struct symparse {
     unsigned range;

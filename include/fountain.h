@@ -1,5 +1,5 @@
 /*
-* Copyright 2020 Janne Gustafsson
+* Copyright 2020 by Janne Gustafsson
 */ 
 
 #ifndef FOUNTAIN_H
@@ -23,5 +23,5 @@ enum fountain_types
 #define LAST_FOUNTAIN FOUNTAIN_WATER
 #define MAX_FOUNTAINS (FOUNTAIN_TYPE_MASK + 1)
 
-#endif
+#endif /* FOUNTAIN_H */
 

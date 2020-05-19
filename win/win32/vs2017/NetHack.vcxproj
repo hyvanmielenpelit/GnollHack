@@ -257,9 +257,11 @@
     <ClInclude Include="$(WinCursDir)cursmisc.h" />
     <ClInclude Include="$(WinCursDir)cursstat.h" />
     <ClInclude Include="$(WinCursDir)curswins.h" />
-    <ClInclude Include="..\..\..\include\encounter.h" />
-    <ClInclude Include="..\..\..\include\fountain.h" />
-    <ClInclude Include="..\..\..\include\matcomps.h" />
+    <ClInclude Include="$(IncDir)animation.h" />
+    <ClInclude Include="$(IncDir)encounter.h" />
+    <ClInclude Include="$(IncDir)fountain.h" />
+    <ClInclude Include="$(IncDir)matcomps.h" />
+    <ClInclude Include="$(IncDir)tiledata.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)NetHack.rc" />

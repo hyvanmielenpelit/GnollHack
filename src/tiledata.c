@@ -10,6 +10,22 @@
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
 #endif
 
+NEARDATA struct tileset_definition default_tileset_definition =
+{
+    2, 0, 0, 0, 2, 1,
+    0, 2, 2,
+    2, 0, 1,
+    1,
+    {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    0, 0, 3
+};
+
+
+
+
 int
 process_tiledata(tsd, process_style, save_file_name, tilemaparray) /* Save tile data / read tile data / count tiles */
 struct tileset_definition* tsd;
@@ -776,7 +792,9 @@ short* tilemaparray;
 
     /* CMAP tiles */
     tile_section_name = "cmap";
+    int bottom_end_variations[NUM_BOTTOM_ENDS] = { S_vwall, S_tlcorn, S_trcorn, S_crwall, S_tdwall, S_tlwall, S_trwall };
     int num_cmaps = (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps));
+
     for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
     {
         char namebuf[BUFSZ];
@@ -794,6 +812,10 @@ short* tilemaparray;
                 if (tsd->cmap_limitation_style[cmap_idx] == 2 && (i < S_stone || i > S_dnladder))
                     continue;
             }
+
+            if (tsd->cmap_wall_style[cmap_idx] == 1 && (i < S_vwall || i > S_hwall))
+                continue;
+
             if (process_style == 0)
             {
                 Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i),
@@ -806,6 +828,28 @@ short* tilemaparray;
                 {
                     glyph_offset = GLYPH_CMAP_OFF + cmap_idx * CMAP_TYPE_CHAR_NUM;
                     tilemaparray[i + glyph_offset] = tile_count;
+
+                    /* Copy 2 simple wall tile to all other relevant tiles */
+                    if (tsd->cmap_wall_style[cmap_idx] == 1 )
+                    {
+                        if (i == S_vwall)
+                        {
+                            for (int j = S_tlcorn; j <= S_trwall; j++)
+                            {
+                                tilemaparray[j + glyph_offset] = tile_count;
+                            }
+                        }
+                        else if (i == S_hwall)
+                        {
+                            int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                            for (int j = 0; j < NUM_BOTTOM_ENDS; j++)
+                            {
+                                int variation_offset = defsyms[bottom_end_variations[j]].variation_offset;
+                                tilemaparray[GWALL_BOTTOM_END + variation_offset + glyph_offset2] = tile_count;
+                            }
+                        }
+                    }
+
                     if (!tsd->has_variations && defsyms[i].variations > 0)
                     {
                         for (int m = 0; m < defsyms[i].variations; m++)
@@ -825,6 +869,28 @@ short* tilemaparray;
                         {
                             glyph_offset = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
                             tilemaparray[i + glyph_offset] = tile_count;
+
+                            /* Copy 2 simple wall tile to all other relevant tiles */
+                            if (tsd->cmap_wall_style[k] == 1)
+                            {
+                                if (i == S_vwall)
+                                {
+                                    for (int j = S_tlcorn; j <= S_trwall; j++)
+                                    {
+                                        tilemaparray[j + glyph_offset] = tile_count;
+                                    }
+                                }
+                                else if (i == S_hwall)
+                                {
+                                    int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                                    for (int j = 0; j < NUM_BOTTOM_ENDS; j++)
+                                    {
+                                        int variation_offset = defsyms[bottom_end_variations[j]].variation_offset;
+                                        tilemaparray[GWALL_BOTTOM_END + variation_offset + glyph_offset2] = tile_count;
+                                    }
+                                }
+                            }
+
                             if (!tsd->has_variations && defsyms[i].variations > 0)
                             {
                                 for (int m = 0; m < defsyms[i].variations; m++)
@@ -887,6 +953,10 @@ short* tilemaparray;
                     if (tsd->cmap_limitation_style[cmap_idx] == 2 && !is_base_cmap_variation(i))
                         continue;
                 }
+
+                /* Already read in CMAP */
+                if (tsd->cmap_wall_style[cmap_idx] == 1 && is_bottom_end_variation(i))
+                    continue;
 
                 if (process_style == 0)
                 {
