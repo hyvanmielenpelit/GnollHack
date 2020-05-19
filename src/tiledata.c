@@ -24,22 +24,22 @@ NEARDATA struct tileset_definition default_tileset_definition =
 };
 
 NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
-    {"death",                   1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit",                     1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-1",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-2",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-3",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-4",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-5",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"general-ui",              3, 16, 16, {"check_box_unchecked", "check_box_checked", "check_box_count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"death",                   1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit",                     1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-1",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-2",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-3",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-4",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-5",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"general-ui",              3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"status",                  13, 16, 16, {"petmark", "detectmark", "pilemark", "hungry",  "weak", "faint", "burdened", "stressed",  "strained", "overtaxed", "overloaded", "two-weapon",  "skill", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"conditions",              min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"main-window-borders",     6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"message-window-borders",  6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"status-window-borders",   6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"map-window-borders",      6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"menu-window-borders",     6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"text-window-borders",     6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"main-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"message-window-borders",  6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status-window-borders",   6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"map-window-borders",      6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"menu-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"text-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
 };
 
 void
@@ -1469,11 +1469,11 @@ short* tilemaparray;
     tile_section_name = "animation";
     for (int i = 0; i < MAX_ANIMATIONS; i++)
     {
-        for (int j = 0; j < animations[i].number_of_frames; j++)
+        for (int j = 0; j < animations[i].number_of_tiles; j++)
         {
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,frame-%d\n", tile_section_name, animations[i].animation_name ? animations[i].animation_name : "unknown animation", j);
+                Sprintf(buf, "%s,%s,tile-%d\n", tile_section_name, animations[i].animation_name ? animations[i].animation_name : "unknown animation", j);
                 (void)write(fd, buf, strlen(buf));
             }
             else if (process_style == 1)

@@ -6,11 +6,15 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+#define MAX_FRAMES_PER_ANIMATION 32
+
 struct animation_definition {
     char* animation_name;
-    uchar number_of_frames;
+    short number_of_tiles;
+    int number_of_frames;
     int glyph_offset;
-    uchar intervals_between_frames;
+    int intervals_between_frames;
+    short frame2tile[MAX_FRAMES_PER_ANIMATION];
 };
 
 enum animation_types
