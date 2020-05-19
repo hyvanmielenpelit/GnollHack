@@ -656,26 +656,6 @@ enum game_cursor_types
     MAX_CURSORS
 };
 
-enum game_ui_tile_types
-{
-    DEATH_TILE = 0,
-    HIT_TILE,
-    HIT_TEXT_1,
-    HIT_TEXT_2,
-    HIT_TEXT_3,
-    HIT_TEXT_4,
-    HIT_TEXT_5,
-    GENERAL_UI_ELEMENTS,    /* Check box etc. */
-    GENERAL_STATUS_MARKS,   /* Pet mark, detection mark, ridden mark, pile mark, etc. */
-    MONSTER_STATUS_MARKS,   /* One tile for each specified status (the same as on status line) */
-    MAIN_WINDOW_BORDERS,
-    MESSAGE_WINDOW_BORDERS,
-    STATUS_WINDOW_BORDERS,
-    MAP_WINDOW_BORDERS,
-    MENU_WINDOW_BORDERS,
-    TEXT_WINDOW_BORDERS,
-    MAX_UI_TILES
-};
 
 /* convert 1..10 to 0..9; add 10 for second group (spell casting) */
 #define ad_to_typ(k) (10 + (int) k - 1)

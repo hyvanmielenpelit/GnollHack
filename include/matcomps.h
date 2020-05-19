@@ -1,5 +1,4 @@
 /* GnollHack 4.0	matcomps.h	$NHDT-Date: 1547255901 2019/01/12 01:18:21 $  $NHDT-Branch: GnollHack-3.6.2-beta01 $:$NHDT-Revision: 1.20 $ */
-/* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Janne Gustafsson 2019. */
 /* GnollHack may be freely redistributed.  See license for details. */
 

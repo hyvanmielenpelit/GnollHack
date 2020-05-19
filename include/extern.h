@@ -228,6 +228,7 @@ E void NDECL(clear_status_hilites);
 E int NDECL(count_status_hilites);
 E boolean NDECL(status_hilite_menu);
 #endif
+E const char* FDECL(get_condition_name, (unsigned long));
 
 /* ### cmd.c ### */
 
@@ -2716,6 +2717,7 @@ E void FDECL(substitute_tiles, (d_level *));
 
 
 /* ### tiledata.c ###*/
+E void NDECL(init_tiledata);
 E int FDECL(process_tiledata, (struct tileset_definition*, int, const char*, short*));
 
 

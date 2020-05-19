@@ -17,6 +17,7 @@ STATIC_OVL NEARDATA int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 STATIC_DCL void NDECL(bot_via_windowport);
 STATIC_DCL void NDECL(stat_update_time);
 STATIC_DCL void FDECL(compose_partystatline, (char*, char*, char*, char*, char*));
+STATIC_DCL char* FDECL(conditionbitmask2str, (unsigned long));
 
 char*
 get_strength_string(st)
@@ -522,7 +523,6 @@ STATIC_DCL int FDECL(query_arrayvalue, (const char *, const char *const *,
                                         int, int));
 STATIC_DCL void FDECL(status_hilite_add_threshold, (int, struct hilite_s *));
 STATIC_DCL boolean FDECL(parse_status_hl2, (char (*)[QBUFSZ], BOOLEAN_P));
-STATIC_DCL char *FDECL(conditionbitmask2str, (unsigned long));
 STATIC_DCL unsigned long FDECL(match_str2conditionbitmask, (const char *));
 STATIC_DCL unsigned long FDECL(str2conditionbitmask, (char *));
 STATIC_DCL boolean FDECL(parse_condition, (char (*)[QBUFSZ], int));
@@ -2602,7 +2602,8 @@ query_conditions()
     return ret;
 }
 
-STATIC_OVL char *
+STATIC_OVL
+char *
 conditionbitmask2str(ul)
 unsigned long ul;
 {
@@ -2632,6 +2633,18 @@ unsigned long ul;
 
     return buf;
 }
+
+const char*
+get_condition_name(ul)
+unsigned long ul;
+{
+    for (int i = 0; i < SIZE(valid_conditions); i++)
+        if ((valid_conditions[i].bitmask & ul) != 0UL)
+            return valid_conditions[i].id;
+
+    return "unknown condition";
+}
+
 
 STATIC_OVL unsigned long
 match_str2conditionbitmask(str)

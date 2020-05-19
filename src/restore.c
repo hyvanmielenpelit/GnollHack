@@ -585,6 +585,7 @@ unsigned int *stuckid, *steedid;
             return FALSE;
     }
 
+    init_tiledata();
 #ifdef USE_TILES
     process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile);
 #endif

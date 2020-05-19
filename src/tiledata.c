@@ -23,8 +23,37 @@ NEARDATA struct tileset_definition default_tileset_definition =
     0, 0, 3
 };
 
+NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
+    {"death",                   1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit",                     1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-1",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-2",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-3",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-4",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-5",              1, 64, 96, {"main", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"general-ui",              3, 16, 16, {"check_box_unchecked", "check_box_checked", "check_box_count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status",                  13, 16, 16, {"petmark", "detectmark", "pilemark", "hungry",  "weak", "faint", "burdened", "stressed",  "strained", "overtaxed", "overloaded", "two-weapon",  "skill", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"conditions",              min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"main-window-borders",     6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"message-window-borders",  6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status-window-borders",   6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"map-window-borders",      6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"menu-window-borders",     6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"text-window-borders",     6, 32, 24, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+};
 
+void
+init_tiledata()
+{
+    /* fill out condition names*/
+    for (int i = 0; i < BL_MASK_BITS; i++)
+    {
+        unsigned long bit = 1 << i;
+        const char* cond_name = get_condition_name(bit);
+        ui_tile_component_array[CONDITION_MARKS].component_names[i] = cond_name;
+    }
 
+}
 
 int
 process_tiledata(tsd, process_style, save_file_name, tilemaparray) /* Save tile data / read tile data / count tiles */
@@ -1397,7 +1426,6 @@ short* tilemaparray;
 
     for (int i = 0; i < MAX_CURSORS; i++)
     {
-
         if (process_style == 0)
         {
             Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, cursor_name_array[i]);
@@ -1412,18 +1440,21 @@ short* tilemaparray;
     }
 
     set_name = "ui-tile";
-    const char* ui_tile_name_array[MAX_UI_TILES] = {
-        "death", "hit", "hit-text-1", "hit-text-2", "hit-text-3", "hit-text-4", "hit-text-5",
-        "general-ui", "general-status", "monster-status", "main-window-borders", "message-window-borders",
-        "status-window-borders", "map-window-borders",  "menu-window-borders",  "text-window-borders"
-    };
-
     for (int i = 0; i < MAX_UI_TILES; i++)
     {
-
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, ui_tile_name_array[i]);
+            Sprintf(buf, "%s,%s,%s,%d,%d,%d", tile_section_name, set_name, 
+                ui_tile_component_array[i].name, 
+                ui_tile_component_array[i].number,
+                ui_tile_component_array[i].width,
+                ui_tile_component_array[i].height
+            );
+            for (int j = 0; j < ui_tile_component_array[i].number; j++)
+            {
+                Sprintf(eos(buf), ",%s", ui_tile_component_array[i].component_names[j]);
+            }
+            Sprintf(eos(buf), "\n");
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
