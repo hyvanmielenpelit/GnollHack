@@ -19,7 +19,7 @@
 #define NHMAP_TTFONT_NAME TEXT("Consolas")
 #define MAXWINDOWTEXT 255
 
-#define CURSOR_BLINK_INTERVAL 50 // milliseconds
+#define ANIMATION_TIMER_INTERVAL 40 // milliseconds (25 FPS)
 #define CURSOR_HEIGHT 2 // pixels
 
 extern short glyph2tile[];
@@ -139,7 +139,7 @@ mswin_init_map_window()
     mswin_apply_window_style(hWnd);
 
     /* set cursor blink timer */
-    SetTimer(hWnd, 0, CURSOR_BLINK_INTERVAL, NULL);
+    SetTimer(hWnd, 0, ANIMATION_TIMER_INTERVAL, NULL);
 
     return hWnd;
 }

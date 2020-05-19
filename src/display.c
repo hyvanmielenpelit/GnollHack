@@ -761,6 +761,7 @@ register int x, y;
     register struct rm *lev = &(levl[x][y]);
     register int see_it;
     register xchar worm_tail;
+    int orig_glyph = lev->glyph;
 
     if (in_mklev)
         return;
@@ -1931,7 +1932,7 @@ xchar x, y;
     stone_here:
         {
             int below_y = y + 1;
-            if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED)
+            if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0)
                 idx = S_stone;
             else
             {
@@ -1970,7 +1971,7 @@ xchar x, y;
             idx = wall_angle(ptr);
             
             if (idx == S_stone)
-                goto stone_here;
+                break;
 
         hwall_here:
             {
@@ -2010,7 +2011,9 @@ xchar x, y;
             if (idx != S_tuwall && idx != S_blcorn && idx != S_brcorn)
             {
                 int below_y = y + 1;
-                if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED)
+                if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) 
+                    || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED 
+                    || (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0)
                     ; /* idx is ok */
                 else
                 {
