@@ -304,6 +304,7 @@ struct symdef_cmap {
     uchar color[CMAP_TYPE_MAX];
 #endif
     int stand_animation[CMAP_TYPE_MAX];
+    int enlargement[CMAP_TYPE_MAX];
 };
 
 struct symdef_cmap_variation {
@@ -313,6 +314,7 @@ struct symdef_cmap_variation {
     uchar color[CMAP_TYPE_MAX];
 #endif
     int stand_animation[CMAP_TYPE_MAX];
+    int enlargement[CMAP_TYPE_MAX];
 };
 
 /* Variation definitions */

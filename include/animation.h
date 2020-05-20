@@ -6,7 +6,55 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+
+/* Enlargement sets */
+#define MAX_TILES_PER_ENLARGEMENT 5
+
+enum enlargement_base_type
+{
+    ENLARGEMENT_BASE_GENERAL = 0,
+    ENLARGEMENT_BASE_MONSTER,
+    ENLARGEMENT_BASE_OBJECT,
+    ENLARGEMENT_BASE_CMAP,
+    ENLARGEMENT_BASE_CMAP_VARIATION,
+    ENLARGEMENT_BASE_CMAP_PLAYER,
+    ENLARGEMENT_BASE_CMAP_ANIMATION
+};
+
+struct enlargement_definition {
+    char* enlargement_name;
+    int base_glyph_id; /* For monster, object, etc. being enlarged */
+    char number_of_tiles;
+    int glyph_offset;
+    char width_in_tiles;
+    char height_in_tiles;
+    char main_tile_x_coordinate; /* Always 0 or 1 on the last row */
+    uchar tile_position[MAX_TILES_PER_ENLARGEMENT];
+    /* Enlargement position: number from 0 to 4
+            0 1 2    
+            3 X 4
+    */
+};
+
+enum enlargement_types
+{
+    NO_ENLARGEMENT = 0,
+    DRACOLICH_ENLARGEMENT /* Keep this last */
+};
+
+#define NUM_ENLARGEMENTS DRACOLICH_ENLARGEMENT
+
+#define DRACOLICH_ENLARGEMENT_OFF (0)
+#define DRACOLICH_ENLARGEMENT_TILES 5
+
+#define MAX_ENLARGEMENT_TILES (DRACOLICH_ENLARGEMENT_TILES + DRACOLICH_ENLARGEMENT_OFF)
+
+extern NEARDATA struct enlargement_definition enlargements[];
+
+
+/* Animation tiles */
 #define MAX_FRAMES_PER_ANIMATION 32
+#define MAX_TILES_PER_ANIMATION MAX_FRAMES_PER_ANIMATION
 
 enum main_tile_use_types
 {
@@ -17,12 +65,13 @@ enum main_tile_use_types
 
 struct animation_definition {
     char* animation_name;
-    short number_of_tiles;
-    int number_of_frames;
+    char number_of_tiles;
+    char number_of_frames;
     int glyph_offset;
     int intervals_between_frames;
     enum main_tile_use_types main_tile_use_style; /* 0 = play as first tile and frame, 1 = play as last tile and frame, 2 = ignore */
-    short frame2tile[MAX_FRAMES_PER_ANIMATION];
+    char frame2tile[MAX_FRAMES_PER_ANIMATION];
+    short tile_enlargement[MAX_TILES_PER_ANIMATION];
 };
 
 enum animation_types

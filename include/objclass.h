@@ -956,6 +956,8 @@ struct objdescr {
 	const char* oc_item_description; /* description of the item */
 	int stand_animation;
 	int lit_animation;
+	int enlargement;
+	int lit_enlargement;
 };
 
 extern NEARDATA struct objclass objects[];

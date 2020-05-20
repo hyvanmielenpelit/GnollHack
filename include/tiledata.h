@@ -10,9 +10,10 @@ struct tileset_definition {
     uchar female_tile_style;     /* 0 = use base monster, 1 = separate female tile for each monster, 2 = indicated monsters with G_FEMALE_TILE on in mons[].geno */
     boolean has_pet_tiles;       /* 0 = use normal monster variation, 1 = separate pet tile for each monster  */
     boolean has_detect_tiles;    /* 0 = use normal monster variation, 1 = separate detect tile for each monster  */
-    boolean has_body_tiles;      /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster */
-    boolean ridden_tile_style;    /* 0 = use normal monster variation, 1 = separate ridden tile for each monster, 2 = monsters with M1_STEED have ridden tiles */
+    uchar body_tile_style;       /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster, 2 = monsters marked with M5_CORPSE_TILE have body tiles */
+    boolean ridden_tile_style;   /* 0 = use normal monster variation, 1 = separate ridden tile for each monster, 2 = monsters with M1_STEED have ridden tiles */
     boolean has_statue_tiles;    /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
+    uchar attack_tile_style;     /* 0 = use normal monster variation, 1 = separate attack tile for each monster, 2 = monsters with M5_ATTACK_TILE have attack tiles */
 
     uchar inventory_tile_style;  /* 0 = no inventory tiles, 1 = has separate inventory tiles for all objects, 2 = has inventory tiles for each object marked with O4_INVENTORY_TILE  */
     uchar lit_tile_style;        /* 0 = no lit tiles, 1 = has separate lit tiles for all objects, 2 = has lit tiles for each object marked with O4_LIT_TILE  */
@@ -37,6 +38,8 @@ struct tileset_definition {
                               * 3 = separate player tile for each role/race/gender/alignment/level combination for relevant cases only
                               */
 };
+
+#define GENERIC_PLAYER_HAS_ATTACK_TILE 1
 
 extern NEARDATA struct tileset_definition default_tileset_definition;
 

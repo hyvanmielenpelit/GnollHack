@@ -282,6 +282,9 @@
 #define M4_PACKMULE		            0x20000000UL        /* carries items for the player */
 
 #define M5_NONE						0x00000000UL
+#define M5_FEMALE_TILE		        0x00000001UL
+#define M5_CORPSE_TILE			    0x00000002UL
+#define M5_ATTACK_TILE			    0x00000004UL
 
 
 #define MZ_TINY 0          /* < 2' */
@@ -311,8 +314,6 @@
 #define G_GENDER_ONE_EIGTH   0x20000000UL
 #define G_GENDER_ONE_FOURTH  0x10000000UL
 #define G_GENDER_GEN_MASK    0x70000000UL /* gender distribution mask, bits 0x10000000 - 0x40000000 give relative rarity: one in 2^(1 + number) is female or male */
-
-#define G_FEMALE_TILE  0x01000000UL     /* the monster has a separate female tile */
 
 #define G_NOMINES   0x00008000UL     /* not generated in Gnomish Mines */
 #define G_YACC      0x00004000UL     /* generated on hellish pastures regardless of other flags */

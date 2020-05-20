@@ -122,6 +122,9 @@ struct artifact {
 
 	int stand_animation;
 	int lit_animation;
+
+	int enlargement;
+	int lit_enlargement;
 };
 
 /* invoked properties with special powers */

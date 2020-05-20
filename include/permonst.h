@@ -81,6 +81,11 @@ struct permonst {
     int attack_animation;
     int female_stand_animation;
     int female_attack_animation;
+
+    int enlargement;
+    int attack_enlargement;
+    int female_enlargement;
+    int female_attack_enlargement;
 };
 
 extern NEARDATA struct permonst mons[]; /* the master list of monster types */

@@ -35,6 +35,8 @@ E int FDECL(argcheck, (int, char **, enum earlyarg));
 E void NDECL(init_animations);
 E short FDECL(get_player_stand_animation, (int, int, int, int, int));
 E short FDECL(get_player_attack_animation, (int, int, int, int, int));
+E short FDECL(get_player_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_attack_enlargement, (int, int, int, int, int));
 E short FDECL(maybe_get_animated_tile, (short, unsigned long, boolean*));
 
 /* ### apply.c ### */
@@ -2419,6 +2421,8 @@ E const char *FDECL(Hello, (struct monst *));
 E const char *NDECL(Goodbye);
 E int NDECL(u_to_glyph);
 E int FDECL(player_to_glyph, (int, int, int, int, int));
+E int FDECL(player_to_attack_glyph, (int, int, int, int, int));
+E boolean FDECL(player_has_attack_tile, (int, int, int, int, int));
 E int FDECL(glyph_to_player_mon, (int));
 
 /* ### rumors.c ### */

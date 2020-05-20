@@ -2683,6 +2683,23 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 int
+player_to_attack_glyph(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    return player_to_glyph(roleidx, raceidx, genderidx, alignmentidx, levelidx) - GLYPH_PLAYER_OFF + GLYPH_PLAYER_ATTACK_OFF;
+}
+
+boolean
+player_has_attack_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == 0 && raceidx == 0 && genderidx == 0)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+int
 glyph_to_player_mon(int glyph)
 {
     int offset = glyph - GLYPH_PLAYER_OFF;

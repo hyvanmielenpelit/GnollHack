@@ -9,11 +9,12 @@
 #ifdef USE_TILES
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
 short tile2animation[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
+short tile2enlargement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 #endif
 
 NEARDATA struct tileset_definition default_tileset_definition =
 {
-    2, 0, 0, 0, 2, 1,
+    2, 0, 0, 2, 0, 1, 2,
     0, 2, 2,
     2, 0, 1,
     1,
@@ -33,7 +34,7 @@ NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = 
     {"hit-text-4",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"hit-text-5",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"general-ui",              3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"status",                  13, 16, 16, {"petmark", "detectmark", "pilemark", "hungry",  "weak", "faint", "burdened", "stressed",  "strained", "overtaxed", "overloaded", "two-weapon",  "skill", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status",                  14, 16, 16, {"petmark", "detectmark", "pilemark", "hungry",  "weak", "faint", "burdened", "stressed",  "strained", "overtaxed", "overloaded", "two-weapon",  "skill", "saddled", "", "",  "", "", "", "",  "", "", "", ""} },
     {"conditions",              min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"main-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"message-window-borders",  6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
@@ -85,6 +86,8 @@ short* tilemaparray;
 
     /* Monster tiles */
     tile_section_name = "monsters";
+    const char* monster_set_name_array[7] = { "normal", "pet", "detect", "body", "ridden", "attack", "statue" };
+
     for (int gender = 0; gender <= 1; gender++)
     {
         if (gender == 1)
@@ -94,26 +97,33 @@ short* tilemaparray;
         }
         const char* gender_name = (gender == 0 ? "base" : "female");
 
-        for (int spset = 0; spset < 6; spset++)
+        for (int spset = 0; spset < 7; spset++)
         {
             if (spset == 1 && !tsd->has_pet_tiles)
                 continue;
             if (spset == 2 && !tsd->has_detect_tiles)
                 continue;
-            if (spset == 3 && !tsd->has_body_tiles)
+            if (spset == 3 && !tsd->body_tile_style)
                 continue;
             if (spset == 4 && !tsd->ridden_tile_style)
                 continue;
-            if (spset == 5 && !tsd->has_statue_tiles)
+            if (spset == 5 && !tsd->attack_tile_style)
+                continue;
+            if (spset == 6 && !tsd->has_statue_tiles)
                 continue;
 
-            set_name = (spset == 0 ? "normal" : spset == 1 ? "pet" : spset == 2 ? "detect" :
-                spset == 3 ? "body" : spset == 4 ? "ridden" : "statue");
+            set_name = monster_set_name_array[spset];
             for (int i = LOW_PM; i < NUM_MONSTERS; i++)
             {
                 if (gender == 1)
                 {
-                    if (tsd->female_tile_style == 2 && !(mons[i].geno & G_FEMALE_TILE))
+                    if (tsd->female_tile_style == 2 && !(mons[i].mflags5 & M5_FEMALE_TILE))
+                        continue;
+                }
+
+                if (spset == 3)
+                {
+                    if (tsd->body_tile_style == 2 && !(mons[i].mflags5 & M5_CORPSE_TILE))
                         continue;
                 }
 
@@ -123,17 +133,30 @@ short* tilemaparray;
                         continue;
                 }
 
+                if (spset == 5)
+                {
+                    if (tsd->attack_tile_style == 2 && !(mons[i].mflags5 & M5_ATTACK_TILE))
+                        continue;
+                }
+
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, gender_name, set_name, mons[i].mname);
+                    Sprintf(buf, "%s,%s,%s,%s", tile_section_name, gender_name, set_name, mons[i].mname);
+                    if(gender == 0 && mons[i].enlargement > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[mons[i].enlargement].width_in_tiles, enlargements[mons[i].enlargement].height_in_tiles, enlargements[mons[i].enlargement].main_tile_x_coordinate);
+                    else if (gender == 1 && mons[i].female_enlargement > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[mons[i].female_enlargement].width_in_tiles, enlargements[mons[i].female_enlargement].height_in_tiles, enlargements[mons[i].female_enlargement].main_tile_x_coordinate);
+                    else
+                        Sprintf(eos(buf), ",1,1,0");
+                    Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
                 {
                     int glyph_offset = (spset == 0 ? GLYPH_MON_OFF : spset == 1 ? GLYPH_PET_OFF : spset == 2 ? GLYPH_DETECT_OFF :
-                        spset == 3 ? GLYPH_BODY_OFF : spset == 4 ? GLYPH_RIDDEN_OFF : GLYPH_STATUE_OFF);
+                        spset == 3 ? GLYPH_BODY_OFF : spset == 4 ? GLYPH_RIDDEN_OFF : spset == 5 ? GLYPH_ATTACK_OFF : GLYPH_STATUE_OFF);
                     int female_glyph_offset = (spset == 0 ? GLYPH_FEMALE_MON_OFF : spset == 1 ? GLYPH_FEMALE_PET_OFF : spset == 2 ? GLYPH_FEMALE_DETECT_OFF :
-                        spset == 3 ? GLYPH_FEMALE_BODY_OFF : spset == 4 ? GLYPH_FEMALE_RIDDEN_OFF : GLYPH_FEMALE_STATUE_OFF);
+                        spset == 3 ? GLYPH_FEMALE_BODY_OFF : spset == 4 ? GLYPH_FEMALE_RIDDEN_OFF : spset == 5 ? GLYPH_FEMALE_ATTACK_OFF : GLYPH_FEMALE_STATUE_OFF);
 
                     if (gender == 0)
                     {
@@ -146,6 +169,8 @@ short* tilemaparray;
                                 tilemaparray[i + GLYPH_DETECT_OFF] = tile_count;
                             if (tsd->ridden_tile_style != 1)
                                 tilemaparray[i + GLYPH_RIDDEN_OFF] = tile_count;
+                            if (tsd->attack_tile_style != 1)
+                                tilemaparray[i + GLYPH_ATTACK_OFF] = tile_count;
                         }
                     }
 
@@ -159,6 +184,8 @@ short* tilemaparray;
                             tilemaparray[i + GLYPH_FEMALE_DETECT_OFF] = tile_count;
                         if (tsd->ridden_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_RIDDEN_OFF] = tile_count;
+                        if (tsd->attack_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_ATTACK_OFF] = tile_count;
                     }
                 }
                 tile_count++;
@@ -250,7 +277,7 @@ short* tilemaparray;
                     {
                         for (int n = 0; n < missile_tile_num; n++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, 
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, oclass_name, 
                                 "generic", "scroll", 
                                 missile_tile_num == 1 ? "generic" : missile_direction_name_array[n]);
                             (void)write(fd, buf, strlen(buf));
@@ -259,7 +286,14 @@ short* tilemaparray;
                     }
                     else
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "generic", "scroll");
+                        Sprintf(buf, "%s,%s,%s,%s,%s", tile_section_name, set_name, oclass_name, "generic", "scroll");
+                        if (j == 0 && obj_descr[i].enlargement > 0)
+                            Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].enlargement].width_in_tiles, enlargements[obj_descr[i].enlargement].height_in_tiles, enlargements[obj_descr[i].enlargement].main_tile_x_coordinate);
+                        else if (j == 2 && obj_descr[i].lit_enlargement > 0)
+                            Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].lit_enlargement].width_in_tiles, enlargements[obj_descr[i].lit_enlargement].height_in_tiles, enlargements[obj_descr[i].lit_enlargement].main_tile_x_coordinate);
+                        else
+                            Sprintf(eos(buf), ",1,1,0");
+                        Sprintf(eos(buf), "\n");
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
                     }
@@ -363,7 +397,7 @@ short* tilemaparray;
                     {
                         for (int n = 0; n < missile_tile_num; n++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, 
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, oclass_name, 
                                 "mail", "envelope", 
                                 missile_tile_num == 1 ? "generic" : missile_direction_name_array[n]);
                             (void)write(fd, buf, strlen(buf));
@@ -375,7 +409,7 @@ short* tilemaparray;
                     }
                     else
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name, "mail", "envelope");
+                        Sprintf(buf, "%s,%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, oclass_name, "mail", "envelope");
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
                     }
@@ -479,7 +513,7 @@ short* tilemaparray;
                 {
                     for (int n = 0; n < missile_tile_num; n++)
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
+                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, oclass_name,
                             nameless ? nameless_name : OBJ_NAME(objects[i]),
                             no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr,
                             missile_tile_num == 1 ? "generic" : missile_direction_name_array[n]);
@@ -489,10 +523,17 @@ short* tilemaparray;
                 }
                 else
                 {
-                    Sprintf(buf, "%s,%s,%s,%s,%s\n", tile_section_name, set_name, oclass_name,
+                    Sprintf(buf, "%s,%s,%s,%s,%s", tile_section_name, set_name, oclass_name,
                         nameless ? nameless_name : OBJ_NAME(objects[i]),
                         no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr
                     );
+                    if (j == 0 && obj_descr[i].enlargement > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].enlargement].width_in_tiles, enlargements[obj_descr[i].enlargement].height_in_tiles, enlargements[obj_descr[i].enlargement].main_tile_x_coordinate);
+                    else if (j == 2 && obj_descr[i].lit_enlargement > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].lit_enlargement].width_in_tiles, enlargements[obj_descr[i].lit_enlargement].height_in_tiles, enlargements[obj_descr[i].lit_enlargement].main_tile_x_coordinate);
+                    else
+                        Sprintf(eos(buf), ",1,1,0");
+                    Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                     tile_count++;
                 }
@@ -639,7 +680,7 @@ short* tilemaparray;
 
                     /* Write generic corpse and statue tiles */
                     if (j == 0 &&
-                        (!tsd->has_body_tiles && i == CORPSE)
+                        (tsd->body_tile_style != 1 && i == CORPSE)
                         || (!tsd->has_statue_tiles && i == STATUE)
                         )
                     {
@@ -647,6 +688,9 @@ short* tilemaparray;
                         {
                             for (int k = LOW_PM; k < NUM_MONSTERS; k++)
                             {
+                                if (i == CORPSE && tsd->body_tile_style == 2 && (mons[k].mflags5 & M5_CORPSE_TILE))
+                                    continue;
+
                                 int glyph_offset2 = (gender == 0 ? (i == CORPSE ? GLYPH_BODY_OFF : GLYPH_STATUE_OFF) : (i == CORPSE ? GLYPH_FEMALE_BODY_OFF : GLYPH_FEMALE_STATUE_OFF));
                                 tilemaparray[k + glyph_offset2] = tile_count;
                             }
@@ -725,7 +769,7 @@ short* tilemaparray;
                 {
                     for (int n = 0; n < missile_tile_num; n++)
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name,
+                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name,
                             artilist[i].name,
                             no_description ? "no artifact description" : artilist[i].desc,
                             no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
@@ -738,12 +782,19 @@ short* tilemaparray;
                 }
                 else
                 {
-                    Sprintf(buf, "%s,%s,%s,%s,%s,%s\n", tile_section_name, set_name,
+                    Sprintf(buf, "%s,%s,%s,%s,%s,%s", tile_section_name, set_name,
                         artilist[i].name,
                         no_description ? "no artifact description" : artilist[i].desc,
                         no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
                         no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr
                     );
+                    if (j == 0 && artilist[i].enlargement > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[artilist[i].enlargement].width_in_tiles, enlargements[artilist[i].enlargement].height_in_tiles, enlargements[artilist[i].enlargement].main_tile_x_coordinate);
+                    else if (j == 2 && artilist[i].lit_enlargement > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[artilist[i].lit_enlargement].width_in_tiles, enlargements[artilist[i].lit_enlargement].height_in_tiles, enlargements[artilist[i].lit_enlargement].main_tile_x_coordinate);
+                    else
+                        Sprintf(eos(buf), ",1,1,0");
+                    Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                     tile_count++;
 
@@ -848,8 +899,13 @@ short* tilemaparray;
 
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i),
+                Sprintf(buf, "%s,%s,%s,%s", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i),
                     (defsyms[i].explanation && strcmp(defsyms[i].explanation, "")) ? defsyms[i].explanation : "no description");
+                if (defsyms[i].enlargement[cmap_idx] > 0)
+                    Sprintf(eos(buf), ",%d,%d,%d", enlargements[defsyms[i].enlargement[cmap_idx]].width_in_tiles, enlargements[defsyms[i].enlargement[cmap_idx]].height_in_tiles, enlargements[defsyms[i].enlargement[cmap_idx]].main_tile_x_coordinate);
+                else
+                    Sprintf(eos(buf), ",1,1,0");
+                Sprintf(eos(buf), "\n");
                 (void)write(fd, buf, strlen(buf));
             }
             else if (process_style == 1)
@@ -990,8 +1046,13 @@ short* tilemaparray;
 
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,%s\n", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf,
+                    Sprintf(buf, "%s,%s,%s", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf,
                         (defsym_variations[i].explanation && strcmp(defsym_variations[i].explanation, "")) ? defsym_variations[i].explanation : "no description");
+                    if (defsym_variations[i].enlargement[cmap_idx] > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[defsym_variations[i].enlargement[cmap_idx]].width_in_tiles, enlargements[defsym_variations[i].enlargement[cmap_idx]].height_in_tiles, enlargements[defsym_variations[i].enlargement[cmap_idx]].main_tile_x_coordinate);
+                    else
+                        Sprintf(eos(buf), ",1,1,0");
+                    Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
@@ -1051,7 +1112,7 @@ short* tilemaparray;
             {
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,generic\n", tile_section_name, set_name);
+                    Sprintf(buf, "%s,%s,generic,1,1,0\n", tile_section_name, set_name);
                     (void)write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
@@ -1066,7 +1127,7 @@ short* tilemaparray;
                 {
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,tile-%d\n", tile_section_name, set_name, i);
+                        Sprintf(buf, "%s,%s,tile-%d,1,1,0\n", tile_section_name, set_name, i);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
@@ -1093,7 +1154,7 @@ short* tilemaparray;
 
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, explosion_direction_name);
+                        Sprintf(buf, "%s,%s,generic,%s,1,1,0\n", tile_section_name, set_name, explosion_direction_name);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
@@ -1117,7 +1178,7 @@ short* tilemaparray;
                         const char* explosion_direction_name = explosion_direction_name_array[i];
                         if (process_style == 0)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, explosion_name, explosion_direction_name);
+                            Sprintf(buf, "%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, explosion_name, explosion_direction_name);
                             (void)write(fd, buf, strlen(buf));
                         }
                         else if (process_style == 1)
@@ -1142,7 +1203,7 @@ short* tilemaparray;
                     const char* zap_direction_name = zap_direction_name_array[i];
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, zap_direction_name);
+                        Sprintf(buf, "%s,%s,generic,%s,1,1,0\n", tile_section_name, set_name, zap_direction_name);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
@@ -1171,7 +1232,7 @@ short* tilemaparray;
                         const char* zap_direction_name = zap_direction_name_array[i];
                         if (process_style == 0)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, zap_name, zap_direction_name);
+                            Sprintf(buf, "%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, zap_name, zap_direction_name);
                             (void)write(fd, buf, strlen(buf));
                         }
                         else if (process_style == 1)
@@ -1198,7 +1259,7 @@ short* tilemaparray;
                     const char* swallow_direction_name = swallow_direction_name_array[i];
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s\n", tile_section_name, set_name, swallow_direction_name);
+                        Sprintf(buf, "%s,%s,generic,%s,1,1,0\n", tile_section_name, set_name, swallow_direction_name);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
@@ -1228,7 +1289,7 @@ short* tilemaparray;
                         const char* swallow_direction_name = swallow_direction_name_array[i];
                         if (process_style == 0)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s\n", tile_section_name, set_name, mons[j].mname, swallow_direction_name);
+                            Sprintf(buf, "%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, mons[j].mname, swallow_direction_name);
                             (void)write(fd, buf, strlen(buf));
                         }
                         else if (process_style == 1)
@@ -1261,7 +1322,7 @@ short* tilemaparray;
             {
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,warn-level-%d\n", tile_section_name, set_name, i);
+                    Sprintf(buf, "%s,%s,warn-level-%d,1,1,0\n", tile_section_name, set_name, i);
                     (void)write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
@@ -1277,145 +1338,206 @@ short* tilemaparray;
 
     /* Player tiles */
     tile_section_name = "player";
-    if (tsd->player_tile_style == 0 || tsd->player_tile_style == 3) /* For style 3, fill out all cases with monster tiles, and override below */
+    const char* player_set_name_array[2] = { "normal", "attack" };
+    for (int spset = 0; spset < 2; spset++)
     {
-        /* Use player monster icons */
-        if (process_style == 1)
-        {
-            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
-            {
-                int role_as_monster = roles[roleidx].monsternum;
-                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
-                {
-                    for (int gender = 0; gender <= 1; gender++)
-                    {
-                        for (int alignment = -1; alignment <= 1; alignment++)
-                        {
-                            for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
-                            {
-                                int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
-                                tilemaparray[player_glyph] = tilemaparray[role_as_monster + ((gender == 0) ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF)];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+        set_name = player_set_name_array[spset];
 
-    if (tsd->player_tile_style == 1)
-    {
-        if (process_style == 0)
+        if (tsd->player_tile_style == 0 || tsd->player_tile_style == 3) /* For style 3, fill out all cases with monster tiles, and override below */
         {
-            Sprintf(buf, "%s,generic\n", tile_section_name);
-            (void)write(fd, buf, strlen(buf));
-        }
-        else if (process_style == 1)
-        {
-            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+            /* Use player monster icons */
+            if (process_style == 1)
             {
-                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+                for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
                 {
-                    for (int gender = 0; gender <= 1; gender++)
+                    int role_as_monster = roles[roleidx].monsternum;
+                    for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
                     {
-                        for (int alignment = -1; alignment <= 1; alignment++)
+                        for (int gender = 0; gender <= 1; gender++)
                         {
-                            for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                            for (int alignment = -1; alignment <= 1; alignment++)
                             {
-                                int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
-                                tilemaparray[player_glyph] = tile_count;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        tile_count++;
-    }
-    else if (tsd->player_tile_style == 2)
-    {
-        for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
-        {
-            const char* role_name = roles[roleidx].name.m;
-            for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
-            {
-                const char* race_name = races[raceidx].noun;
-                for (int gender = 0; gender <= 1; gender++)
-                {
-                    const char* gender_name = (gender == 0 ? "male" : "female");
-                    for (int alignment = -1; alignment <= 1; alignment++)
-                    {
-                        const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified");
-                        for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
-                        {
-                            if (process_style == 0)
-                            {
-                                Sprintf(buf, "%s,%s,%s,%s,%s,level-%d\n", tile_section_name, role_name, race_name, gender_name, align_name, level);
-                                (void)write(fd, buf, strlen(buf));
-                            }
-                            else if (process_style == 1)
-                            {
-                                int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
-                                tilemaparray[player_glyph] = tile_count;
-                            }
-                            tile_count++;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else if (tsd->player_tile_style == 3)
-    {
-        for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
-        {
-            const char* role_name = roles[roleidx].name.m;
-            for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
-            {
-                if (!validrace(roleidx, raceidx))
-                    continue;
-
-                const char* race_name = races[raceidx].noun;
-                for (int gender = 0; gender <= 1; gender++)
-                {
-                    const char* gender_name = (gender == 0 ? "male" : "female");
-                    for (int alignment = -1; alignment <= 1; alignment++)
-                    {
-                        if (alignment > -1 && !(roles[roleidx].allow & ROLE_ALIGNMENT_TILES))
-                            continue;
-
-                        const char* align_name = (roles[roleidx].allow & ROLE_ALIGNMENT_TILES) ? (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified") : "any";
-                        for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
-                        {
-                            if (process_style == 0)
-                            {
-                                Sprintf(buf, "%s,%s,%s,%s,%s,level-%d\n", tile_section_name, role_name, race_name, gender_name, align_name, level);
-                                (void)write(fd, buf, strlen(buf));
-                            }
-                            else if (process_style == 1)
-                            {
-                                if (alignment == -1 && !(roles[roleidx].allow & ROLE_ALIGNMENT_TILES))
+                                for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                                 {
-                                    for (int k = 0; k <= 2; k++)
+                                    int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                    tilemaparray[player_glyph] = tilemaparray[role_as_monster + (spset == 0 ? ((gender == 0) ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF) : ((gender == 0) ? GLYPH_ATTACK_OFF : GLYPH_FEMALE_ATTACK_OFF))];
+
+                                    if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
                                     {
-                                        int player_glyph = player_to_glyph(roleidx, raceidx, gender, k, level);
-                                        tilemaparray[player_glyph] = tile_count;
+                                        int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                        tilemaparray[player_attack_glyph] = tile_count;
                                     }
                                 }
-                                else
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (tsd->player_tile_style == 1)
+        {
+            if (process_style == 0)
+            {
+                if (spset == 1 && !GENERIC_PLAYER_HAS_ATTACK_TILE)
+                    continue;
+
+                Sprintf(buf, "%s,%s,generic,1,1,0\n", tile_section_name, set_name);
+                (void)write(fd, buf, strlen(buf));
+            }
+            else if (process_style == 1)
+            {
+                for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+                {
+                    for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+                    {
+                        for (int gender = 0; gender <= 1; gender++)
+                        {
+                            for (int alignment = -1; alignment <= 1; alignment++)
+                            {
+                                for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                                 {
                                     int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
                                     tilemaparray[player_glyph] = tile_count;
+
+                                    if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    {
+                                        int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                        tilemaparray[player_attack_glyph] = tile_count;
+                                    }
+
                                 }
                             }
-                            tile_count++;
+                        }
+                    }
+                }
+            }
+            tile_count++;
+        }
+        else if (tsd->player_tile_style == 2)
+        {
+            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+            {
+                const char* role_name = roles[roleidx].name.m;
+                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+                {
+                    const char* race_name = races[raceidx].noun;
+                    for (int gender = 0; gender <= 1; gender++)
+                    {
+                        const char* gender_name = (gender == 0 ? "male" : "female");
+                        for (int alignment = -1; alignment <= 1; alignment++)
+                        {
+                            const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified");
+                            for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                            {
+                                if (process_style == 0)
+                                {
+                                    if (spset == 1 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        continue;
+
+                                    Sprintf(buf, "%s,%s,%s,%s,%s,%s,level-%d", tile_section_name, set_name, role_name, race_name, gender_name, align_name, level);
+                                    int pl_enl = get_player_enlargement(roleidx, raceidx, gender, alignment + 1, level);
+                                    if (pl_enl > 0)
+                                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[pl_enl].width_in_tiles, enlargements[pl_enl].height_in_tiles, enlargements[pl_enl].main_tile_x_coordinate);
+                                    else
+                                        Sprintf(eos(buf), ",1,1,0");
+                                    Sprintf(eos(buf), "\n");
+                                    (void)write(fd, buf, strlen(buf));
+                                }
+                                else if (process_style == 1)
+                                {
+                                    int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                    tilemaparray[player_glyph] = tile_count;
+
+                                    if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    {
+                                        int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                        tilemaparray[player_attack_glyph] = tile_count;
+                                    }
+
+                                }
+                                tile_count++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (tsd->player_tile_style == 3)
+        {
+            for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+            {
+                const char* role_name = roles[roleidx].name.m;
+                for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+                {
+                    if (!validrace(roleidx, raceidx))
+                        continue;
+
+                    const char* race_name = races[raceidx].noun;
+                    for (int gender = 0; gender <= 1; gender++)
+                    {
+                        const char* gender_name = (gender == 0 ? "male" : "female");
+                        for (int alignment = -1; alignment <= 1; alignment++)
+                        {
+                            if (alignment > -1 && !(roles[roleidx].allow & ROLE_ALIGNMENT_TILES))
+                                continue;
+
+                            const char* align_name = (roles[roleidx].allow & ROLE_ALIGNMENT_TILES) ? (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified") : "any";
+                            for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                            {
+                                if (process_style == 0)
+                                {
+                                    if (spset == 1 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        continue;
+
+                                    Sprintf(buf, "%s,%s,%s,%s,%s,%s,level-%d", tile_section_name, set_name, role_name, race_name, gender_name, align_name, level);
+                                    int pl_enl = get_player_enlargement(roleidx, raceidx, gender, alignment + 1, level);
+                                    if (pl_enl > 0)
+                                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[pl_enl].width_in_tiles, enlargements[pl_enl].height_in_tiles, enlargements[pl_enl].main_tile_x_coordinate);
+                                    else
+                                        Sprintf(eos(buf), ",1,1,0");
+                                    Sprintf(eos(buf), "\n");
+                                    (void)write(fd, buf, strlen(buf));
+                                }
+                                else if (process_style == 1)
+                                {
+                                    if (alignment == -1 && !(roles[roleidx].allow & ROLE_ALIGNMENT_TILES))
+                                    {
+                                        for (int k = 0; k <= 2; k++)
+                                        {
+                                            int player_glyph = player_to_glyph(roleidx, raceidx, gender, k, level);
+                                            tilemaparray[player_glyph] = tile_count;
+
+                                            if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                                tilemaparray[player_attack_glyph] = tile_count;
+                                            }
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                        tilemaparray[player_glyph] = tile_count;
+
+                                        if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                            tilemaparray[player_attack_glyph] = tile_count;
+                                        }
+
+                                    }
+                                }
+                                tile_count++;
+                            }
                         }
                     }
                 }
             }
         }
     }
-     
+
 
     /* User interface tiles */
     tile_section_name = "user-interface";
@@ -1429,7 +1551,7 @@ short* tilemaparray;
     {
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s\n", tile_section_name, set_name, cursor_name_array[i]);
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, cursor_name_array[i]);
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
@@ -1470,11 +1592,17 @@ short* tilemaparray;
     tile_section_name = "animation";
     for (int i = 1; i <= NUM_ANIMATIONS; i++)  /* animation number, starts at 1 */
     {
-        for (int j = 0; j < animations[i].number_of_tiles; j++) /* tile number */
+        for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
         {
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,tile-%d\n", tile_section_name, animations[i].animation_name ? animations[i].animation_name : "unknown animation", j);
+                Sprintf(buf, "%s,%s,tile-%d", tile_section_name, animations[i].animation_name ? animations[i].animation_name : "unknown animation", j);
+                int enl = animations[i].tile_enlargement[j];
+                if (enl > 0)
+                    Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
+                else
+                    Sprintf(eos(buf), ",1,1,0");
+                Sprintf(eos(buf), "\n");
                 (void)write(fd, buf, strlen(buf));
             }
             else if (process_style == 1)
@@ -1490,6 +1618,39 @@ short* tilemaparray;
         }
     }
 
+
+    /* Enlargement tiles */
+    tile_section_name = "enlargement";
+    for (int i = 1; i <= NUM_ENLARGEMENTS; i++)  /* enlargement number, starts at 1 */
+    {
+        for (int j = 0; j < max(0, min(MAX_TILES_PER_ENLARGEMENT, enlargements[i].number_of_tiles)); j++) /* tile number */
+        {
+            const char* position_names[MAX_TILES_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
+            if (process_style == 0)
+            {
+                Sprintf(buf, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", tile_section_name, 
+                    enlargements[i].enlargement_name ? enlargements[i].enlargement_name : "unknown enlargement", 
+                    position_names[enlargements[i].tile_position[j]],
+                    glyph2tile[enlargements[i].base_glyph_id], 
+                    enlargements[i].width_in_tiles,
+                    enlargements[i].height_in_tiles,
+                    enlargements[i].main_tile_x_coordinate,
+                    enlargements[i].number_of_tiles,
+                    enlargements[i].tile_position[j]
+                    );
+                (void)write(fd, buf, strlen(buf));
+            }
+            else if (process_style == 1)
+            {
+                glyph_offset = GLYPH_ENLARGEMENT_OFF;
+                tilemaparray[j + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+            }
+            tile_count++;
+        }
+    }
+
+
+    /* Finalize */
     if (process_style == 0)
     {
         /* Finished */
@@ -1497,7 +1658,10 @@ short* tilemaparray;
     }
     else if (process_style == 1)
     {
-        /* Set tile2animation */
+        /*
+         *Set tile2animation 
+         */
+
         /* Monsters */
         for (int i = 0; i < NUM_MONSTERS; i++)
         {
@@ -1515,13 +1679,18 @@ short* tilemaparray;
             }
             if (mons[i].attack_animation)
             {
-                /* To do */
+                int glyph = i + GLYPH_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].attack_animation;
             }
             if (mons[i].female_attack_animation)
             {
-                /* To do */
+                int glyph = i + GLYPH_FEMALE_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_attack_animation;
             }
         }
+
         /* Objects */
         for (int i = 0; i < NUM_OBJECTS; i++)
         {
@@ -1536,6 +1705,23 @@ short* tilemaparray;
                 int glyph = lit_objnum_to_glyph(i);
                 short tile = glyph2tile[glyph];
                 tile2animation[tile] = obj_descr[i].lit_animation;
+            }
+        }
+
+        /* Artifacts */
+        for (int i = 1; i <= NUM_ARTIFACTS; i++)
+        {
+            if (artilist[i].stand_animation)
+            {
+                int glyph = objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = artilist[i].stand_animation;
+            }
+            if (artilist[i].lit_animation)
+            {
+                int glyph = lit_objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = artilist[i].lit_animation;
             }
         }
 
@@ -1585,17 +1771,156 @@ short* tilemaparray;
                                 short tile = glyph2tile[player_stand_glyph];
                                 tile2animation[tile] = stand_anim_idx;
                             }
-#if 0
                             int attack_anim_idx = get_player_attack_animation(roleidx, raceidx, gender, alignment, level);
                             if (attack_anim_idx)
                             {
                                 int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
                                 short tile = glyph2tile[player_attack_glyph];
-                                tile2animation[tile] = stand_anim_idx;
+                                tile2animation[tile] = attack_anim_idx;
                             }
-#endif
                         }
                     }
+                }
+            }
+        }
+
+
+        /*
+         * Set tile2enlargement
+         */
+
+        /* Monsters */
+        for (int i = 0; i < NUM_MONSTERS; i++)
+        {
+            if (mons[i].enlargement)
+            {
+                int glyph = monnum_to_glyph(i);
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement;
+            }
+            if (mons[i].female_enlargement)
+            {
+                int glyph = female_monnum_to_glyph(i);
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement;
+            }
+            if (mons[i].attack_enlargement)
+            {
+                int glyph = i + GLYPH_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].attack_enlargement;
+            }
+            if (mons[i].female_attack_enlargement)
+            {
+                int glyph = i + GLYPH_FEMALE_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_attack_enlargement;
+            }
+        }
+        /* Objects */
+        for (int i = 0; i < NUM_OBJECTS; i++)
+        {
+            if (obj_descr[i].enlargement)
+            {
+                int glyph = objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = obj_descr[i].enlargement;
+            }
+            if (obj_descr[i].lit_enlargement)
+            {
+                int glyph = lit_objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = obj_descr[i].lit_enlargement;
+            }
+        }
+
+        /* Artfacts */
+        for (int i = 1; i <= NUM_ARTIFACTS; i++)
+        {
+            if (artilist[i].enlargement)
+            {
+                int glyph = i + GLYPH_ARTIFACT_OFF;
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = artilist[i].enlargement;
+            }
+            if (artilist[i].lit_enlargement)
+            {
+                int glyph = i + GLYPH_ARTIFACT_LIT_OFF;
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = artilist[i].lit_enlargement;
+            }
+        }
+
+        /* CMAP */
+        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        {
+            for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
+            {
+                if (defsyms[i].enlargement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2enlargement[tile] = defsyms[i].enlargement[cmap_type_idx];
+                }
+            }
+        }
+
+        /* CMAP Variation */
+        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        {
+            for (int i = 0; i < MAX_VARIATIONS; i++)
+            {
+                if (defsym_variations[i].enlargement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2enlargement[tile] = defsym_variations[i].enlargement[cmap_type_idx];
+                }
+            }
+        }
+
+        /* Player */
+        for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+        {
+            for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+            {
+                for (int gender = 0; gender <= 1; gender++)
+                {
+                    for (int alignment = -1; alignment <= 1; alignment++)
+                    {
+                        for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                        {
+                            int enlargement_idx = get_player_enlargement(roleidx, raceidx, gender, alignment, level);
+                            if (enlargement_idx)
+                            {
+                                int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                short tile = glyph2tile[player_glyph];
+                                tile2enlargement[tile] = enlargement_idx;
+                            }
+                            int attack_enlargement_idx = get_player_attack_enlargement(roleidx, raceidx, gender, alignment, level);
+                            if (attack_enlargement_idx)
+                            {
+                                int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                short tile = glyph2tile[player_attack_glyph];
+                                tile2enlargement[tile] = attack_enlargement_idx;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Animations */
+        for (int i = 1; i <= NUM_ANIMATIONS; i++)
+        {
+            for (int j = 0; j < max(0, min(MAX_FRAMES_PER_ANIMATION, animations[i].number_of_frames)); j++)
+            {
+                char animation_tile_glyph_index = animations[i].frame2tile[j];
+                if (animation_tile_glyph_index >= 0 && animations[i].tile_enlargement[animation_tile_glyph_index])
+                {
+                    int glyph = (int)animation_tile_glyph_index + animations[i].glyph_offset + GLYPH_ANIMATION_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2enlargement[tile] = animations[i].tile_enlargement[animation_tile_glyph_index];
                 }
             }
         }
