@@ -33,7 +33,9 @@ E int FDECL(argcheck, (int, char **, enum earlyarg));
 /* ### animation.c ### */
 
 E void NDECL(init_animations);
-
+E short FDECL(get_player_stand_animation, (int, int, int, int, int));
+E short FDECL(get_player_attack_animation, (int, int, int, int, int));
+E short FDECL(maybe_get_animated_tile, (short, unsigned long, boolean*));
 
 /* ### apply.c ### */
 

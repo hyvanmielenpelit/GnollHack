@@ -894,23 +894,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     }
 
     if (bkglyph != NO_GLYPH) {
-        ntile = glyph2tile[bkglyph];
-
-        short animation_idx = tile2animation[ntile];
-        if (animation_idx > 0)
-        {
-            data->mapAnimated[i][j] = TRUE;
-            int numframes = animations[animation_idx].number_of_frames + 1; /* add original tile as the first tile and frame */
-            int current_animation_frame = (data->interval_counter / animations[animation_idx].intervals_between_frames) % numframes;
-            if (current_animation_frame > 0) /* 0 is the original picture */
-            {
-                int animation_frame_index = current_animation_frame - 1;
-                short animation_tile_glyph_idx = animations[animation_idx].frame2tile[animation_frame_index];
-                int animation_glyph = animation_tile_glyph_idx + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
-                ntile = glyph2tile[animation_glyph]; /* replace */
-            }
-        }
-
+        ntile = maybe_get_animated_tile(glyph2tile[bkglyph], data->interval_counter, &data->mapAnimated[i][j]);
 
         int multiplier = flip_bkglyph ? -1 : 1;
         t_x = TILEBMP_X(ntile) + (flip_bkglyph ? TILE_X - 1 : 0);
@@ -933,21 +917,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         glyph = glyph;
 
     if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
-        ntile = glyph2tile[glyph];
-        short animation_idx = tile2animation[ntile];
-        if (animation_idx > 0)
-        {
-            data->mapAnimated[i][j] = TRUE;
-            int numframes = animations[animation_idx].number_of_frames + 1; /* add original tile as the first tile and frame */
-            int current_animation_frame = (data->interval_counter / animations[animation_idx].intervals_between_frames) % numframes;
-            if (current_animation_frame > 0) /* 0 is the original picture */
-            {
-                int animation_frame_index = current_animation_frame - 1;
-                short animation_tile_glyph_idx = animations[animation_idx].frame2tile[animation_frame_index];
-                int animation_glyph = animation_tile_glyph_idx + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
-                ntile = glyph2tile[animation_glyph]; /* replace */
-            }
-        }
+        ntile = maybe_get_animated_tile(glyph2tile[glyph], data->interval_counter, &data->mapAnimated[i][j]);
+
         t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
         t_y = TILEBMP_Y(ntile);
 
