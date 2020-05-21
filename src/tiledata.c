@@ -1357,10 +1357,11 @@ short* tilemaparray;
     /* Player tiles */
     tile_section_name = "player";
     const char* player_set_name_array[2] = { "normal", "attack" };
+
+    /* Initialize glyphs first with monster tiles */
     for (int spset = 0; spset < 2; spset++)
     {
         set_name = player_set_name_array[spset];
-
         if (tsd->player_tile_style == 0 || tsd->player_tile_style == 3) /* For style 3, fill out all cases with monster tiles, and override below */
         {
             /* Use player monster icons */
@@ -1377,14 +1378,13 @@ short* tilemaparray;
                             {
                                 for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                                 {
-                                    int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
-                                    tilemaparray[player_glyph] = tilemaparray[role_as_monster + (spset == 0 ? ((gender == 0) ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF) : ((gender == 0) ? GLYPH_ATTACK_OFF : GLYPH_FEMALE_ATTACK_OFF))];
+                                    int player_glyph = 0;
+                                    if (spset == 0)
+                                        player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                    else
+                                        player_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
 
-                                    if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                    {
-                                        int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
-                                        tilemaparray[player_attack_glyph] = tile_count;
-                                    }
+                                    tilemaparray[player_glyph] = tilemaparray[role_as_monster + (spset == 0 ? ((gender == 0) ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF) : ((gender == 0) ? GLYPH_ATTACK_OFF : GLYPH_FEMALE_ATTACK_OFF))];
                                 }
                             }
                         }
@@ -1392,6 +1392,12 @@ short* tilemaparray;
                 }
             }
         }
+    }
+
+    /* Now main player tiles */
+    for (int spset = 0; spset < 2; spset++)
+    {
+        set_name = player_set_name_array[spset];
 
         if (tsd->player_tile_style == 1)
         {
@@ -1418,7 +1424,7 @@ short* tilemaparray;
                                     int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
                                     tilemaparray[player_glyph] = tile_count;
 
-                                    if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    if (spset == 0 && !GENERIC_PLAYER_HAS_ATTACK_TILE)
                                     {
                                         int player_attack_glyph = player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level);
                                         tilemaparray[player_attack_glyph] = tile_count;
@@ -1448,11 +1454,11 @@ short* tilemaparray;
                             const char* align_name = (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified");
                             for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                             {
+                                if (spset == 1 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    continue;
+
                                 if (process_style == 0)
                                 {
-                                    if (spset == 1 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                        continue;
-
                                     Sprintf(buf, "%s,%s,%s,%s,%s,%s,level-%d", tile_section_name, set_name, role_name, race_name, gender_name, align_name, level);
                                     int pl_enl = get_player_enlargement(roleidx, raceidx, gender, alignment + 1, level);
                                     if (pl_enl > 0)
@@ -1503,11 +1509,11 @@ short* tilemaparray;
                             const char* align_name = (roles[roleidx].allow & ROLE_ALIGNMENT_TILES) ? (alignment == -1 ? "chaotic" : alignment == 0 ? "neutral" : alignment == 1 ? "lawful" : "unspecified") : "any";
                             for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                             {
+                                if (spset == 1 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    continue;
+
                                 if (process_style == 0)
                                 {
-                                    if (spset == 1 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                        continue;
-
                                     Sprintf(buf, "%s,%s,%s,%s,%s,%s,level-%d", tile_section_name, set_name, role_name, race_name, gender_name, align_name, level);
                                     int pl_enl = get_player_enlargement(roleidx, raceidx, gender, alignment + 1, level);
                                     if (pl_enl > 0)

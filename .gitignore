@@ -30,6 +30,7 @@ dat/quest.dat
 include/date.h
 *.bmp
 *.png
+*.csv
 
 # User-specific files
 *.suo
