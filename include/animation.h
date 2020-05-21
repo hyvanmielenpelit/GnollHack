@@ -62,6 +62,7 @@ enum main_tile_use_types
 
 struct animation_definition {
     char* animation_name;
+    int base_glyph_id; /* For monster, object, etc. being animated */
     char number_of_tiles;
     char number_of_frames;
     int glyph_offset;

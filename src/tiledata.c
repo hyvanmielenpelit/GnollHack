@@ -287,6 +287,12 @@ short* tilemaparray;
                     else
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%s", tile_section_name, set_name, oclass_name, "generic", "scroll");
+
+                        if (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                            Sprintf(eos(buf), ",1");
+                        else
+                            Sprintf(eos(buf), ",0");
+
                         if (j == 0 && obj_descr[i].enlargement > 0)
                             Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].enlargement].width_in_tiles, enlargements[obj_descr[i].enlargement].height_in_tiles, enlargements[obj_descr[i].enlargement].main_tile_x_coordinate);
                         else if (j == 2 && obj_descr[i].lit_enlargement > 0)
@@ -409,7 +415,7 @@ short* tilemaparray;
                     }
                     else
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, oclass_name, "mail", "envelope");
+                        Sprintf(buf, "%s,%s,%s,%s,%s,0,1,1,0\n", tile_section_name, set_name, oclass_name, "mail", "envelope");
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
                     }
@@ -527,6 +533,12 @@ short* tilemaparray;
                         nameless ? nameless_name : OBJ_NAME(objects[i]),
                         no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr
                     );
+
+                    if (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                        Sprintf(eos(buf), ",1");
+                    else
+                        Sprintf(eos(buf), ",0");
+
                     if (j == 0 && obj_descr[i].enlargement > 0)
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].enlargement].width_in_tiles, enlargements[obj_descr[i].enlargement].height_in_tiles, enlargements[obj_descr[i].enlargement].main_tile_x_coordinate);
                     else if (j == 2 && obj_descr[i].lit_enlargement > 0)
@@ -788,6 +800,12 @@ short* tilemaparray;
                         no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
                         no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr
                     );
+
+                    if (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                        Sprintf(eos(buf), ",1");
+                    else
+                        Sprintf(eos(buf), ",0");
+
                     if (j == 0 && artilist[i].enlargement > 0)
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[artilist[i].enlargement].width_in_tiles, enlargements[artilist[i].enlargement].height_in_tiles, enlargements[artilist[i].enlargement].main_tile_x_coordinate);
                     else if (j == 2 && artilist[i].lit_enlargement > 0)
@@ -1596,7 +1614,11 @@ short* tilemaparray;
         {
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,tile-%d", tile_section_name, animations[i].animation_name ? animations[i].animation_name : "unknown animation", j);
+                Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name, 
+                    animations[i].animation_name ? animations[i].animation_name : "unknown animation",
+                    j,
+                    glyph2tile[animations[i].base_glyph_id]
+                );
                 int enl = animations[i].tile_enlargement[j];
                 if (enl > 0)
                     Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
