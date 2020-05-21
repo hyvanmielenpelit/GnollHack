@@ -1625,25 +1625,46 @@ short* tilemaparray;
     {
         for (int j = 0; j < max(0, min(MAX_TILES_PER_ENLARGEMENT, enlargements[i].number_of_tiles)); j++) /* tile number */
         {
+            const char* pos_name = "unknown";
             const char* position_names[MAX_TILES_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
+
+            int position = -1;
+            for (int k = 0; k < MAX_ENLARGEMENT_FRAMES; k++) /* frame number */
+            {
+                if (enlargements[i].frame2tile[k] == j)
+                {
+                    position = k;
+                    break;
+                }
+            }
+            if (position >= 0)
+            {
+                pos_name = position_names[position];
+
+            }
+
             if (process_style == 0)
             {
                 Sprintf(buf, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", tile_section_name, 
                     enlargements[i].enlargement_name ? enlargements[i].enlargement_name : "unknown enlargement", 
-                    position_names[enlargements[i].tile_position[j]],
+                    pos_name,
                     glyph2tile[enlargements[i].base_glyph_id], 
                     enlargements[i].width_in_tiles,
                     enlargements[i].height_in_tiles,
                     enlargements[i].main_tile_x_coordinate,
                     enlargements[i].number_of_tiles,
-                    enlargements[i].tile_position[j]
+                    position
                     );
                 (void)write(fd, buf, strlen(buf));
             }
             else if (process_style == 1)
             {
                 glyph_offset = GLYPH_ENLARGEMENT_OFF;
-                tilemaparray[j + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                for (int k = 0; k < MAX_FRAMES_PER_ENLARGEMENT; k++)  /* frame number */
+                {
+                    if (animations[i].frame2tile[k] == j)
+                        tilemaparray[k + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                }
             }
             tile_count++;
         }

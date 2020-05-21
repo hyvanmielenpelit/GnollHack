@@ -8,33 +8,30 @@
 
 
 /* Enlargement sets */
-#define MAX_TILES_PER_ENLARGEMENT 5
-
-enum enlargement_base_type
-{
-    ENLARGEMENT_BASE_GENERAL = 0,
-    ENLARGEMENT_BASE_MONSTER,
-    ENLARGEMENT_BASE_OBJECT,
-    ENLARGEMENT_BASE_CMAP,
-    ENLARGEMENT_BASE_CMAP_VARIATION,
-    ENLARGEMENT_BASE_CMAP_PLAYER,
-    ENLARGEMENT_BASE_CMAP_ANIMATION
-};
+#define MAX_FRAMES_PER_ENLARGEMENT 5
+#define MAX_TILES_PER_ENLARGEMENT MAX_FRAMES_PER_ENLARGEMENT
 
 struct enlargement_definition {
     char* enlargement_name;
     int base_glyph_id; /* For monster, object, etc. being enlarged */
     char number_of_tiles;
+    char number_of_frames;
     int glyph_offset;
     char width_in_tiles;
     char height_in_tiles;
     char main_tile_x_coordinate; /* Always 0 or 1 on the last row */
-    uchar tile_position[MAX_TILES_PER_ENLARGEMENT];
-    /* Enlargement position: number from 0 to 4
+    char frame2tile[MAX_FRAMES_PER_ENLARGEMENT];
+    /* Enlargement frame position: number from 0 to 4, X = -1 indicates main tile
             0 1 2    
             3 X 4
     */
+    char frame_z_order[MAX_FRAMES_PER_ENLARGEMENT];
+    /* 0 = normal, -X in back, +X in front */
+    char frame_flags[MAX_FRAMES_PER_ENLARGEMENT];
 };
+
+#define ENLFLAGS_H_FLIP 0x01
+
 
 enum enlargement_types
 {
@@ -45,9 +42,9 @@ enum enlargement_types
 #define NUM_ENLARGEMENTS DRACOLICH_ENLARGEMENT
 
 #define DRACOLICH_ENLARGEMENT_OFF (0)
-#define DRACOLICH_ENLARGEMENT_TILES 5
+#define DRACOLICH_ENLARGEMENT_FRAMES 5
 
-#define MAX_ENLARGEMENT_TILES (DRACOLICH_ENLARGEMENT_TILES + DRACOLICH_ENLARGEMENT_OFF)
+#define MAX_ENLARGEMENT_FRAMES (DRACOLICH_ENLARGEMENT_FRAMES + DRACOLICH_ENLARGEMENT_OFF)
 
 extern NEARDATA struct enlargement_definition enlargements[];
 
