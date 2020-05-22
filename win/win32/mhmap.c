@@ -960,10 +960,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             signed_bkglyph = data->bkmap[enl_i][enl_j];
             glyph = abs(signed_glyph);
             bkglyph = abs(signed_bkglyph);
+            
             if (signed_glyph < 0)
                 flip_glyph = TRUE;
+            else 
+                flip_glyph = FALSE;
+
             if (signed_bkglyph < 0)
                 flip_bkglyph = TRUE;
+            else
+                flip_bkglyph = FALSE;
         }
 
         /* Set frame_index */
