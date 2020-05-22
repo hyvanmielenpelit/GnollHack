@@ -1624,7 +1624,9 @@ short* tilemaparray;
                 Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name, 
                     animations[i].animation_name ? animations[i].animation_name : "unknown animation",
                     j,
-                    glyph2tile[animations[i].base_glyph_id]
+                    glyph_is_normal_object(animations[i].base_glyph_id) ? glyph2tile[objects[(animations[i].base_glyph_id - GLYPH_OBJ_OFF)].oc_descr_idx + GLYPH_OBJ_OFF] 
+                    : glyph_is_normal_lit_object(animations[i].base_glyph_id) ? glyph2tile[objects[(animations[i].base_glyph_id - GLYPH_OBJ_LIT_OFF)].oc_descr_idx + GLYPH_OBJ_LIT_OFF]
+                    : glyph2tile[animations[i].base_glyph_id]
                 );
                 int enl = animations[i].tile_enlargement[j];
                 if (enl > 0)
@@ -1677,7 +1679,9 @@ short* tilemaparray;
                 Sprintf(buf, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", tile_section_name, 
                     enlargements[i].enlargement_name ? enlargements[i].enlargement_name : "unknown enlargement", 
                     pos_name,
-                    glyph2tile[enlargements[i].base_glyph_id], 
+                    glyph_is_normal_object(enlargements[i].base_glyph_id) ? glyph2tile[objects[(enlargements[i].base_glyph_id - GLYPH_OBJ_OFF)].oc_descr_idx + GLYPH_OBJ_OFF] 
+                    : glyph_is_normal_lit_object(enlargements[i].base_glyph_id) ? glyph2tile[objects[(enlargements[i].base_glyph_id - GLYPH_OBJ_LIT_OFF)].oc_descr_idx + GLYPH_OBJ_LIT_OFF]
+                    : glyph2tile[enlargements[i].base_glyph_id],
                     enlargements[i].width_in_tiles,
                     enlargements[i].height_in_tiles,
                     enlargements[i].main_tile_x_coordinate,

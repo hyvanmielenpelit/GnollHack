@@ -547,6 +547,8 @@
 
 #define glyph_is_normal_object(glyph) \
     ((abs(glyph)) >= GLYPH_OBJ_OFF && (abs(glyph)) < (GLYPH_OBJ_OFF + NUM_OBJECTS))
+#define glyph_is_normal_lit_object(glyph) \
+    ((abs(glyph)) >= GLYPH_OBJ_LIT_OFF && (abs(glyph)) < (GLYPH_OBJ_LIT_OFF + NUM_OBJECTS))
 #define glyph_is_artifact(glyph) \
     ((abs(glyph)) >= GLYPH_ARTIFACT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_OFF + NUM_ARTIFACTS))
 #define glyph_to_artifact(glyph) \

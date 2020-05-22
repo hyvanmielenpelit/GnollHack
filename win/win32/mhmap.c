@@ -899,7 +899,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             for (int running_index = -1; running_index < MAX_FRAMES_PER_ENLARGEMENT; running_index++)
             {
                 /* Drawing order from back to front */
-                int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { -1, 0, 1, 2, 3, 4 };
+                int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 3, 4 };
                 int enlarg_idx = z_order_array[running_index + 1];
                 layer = base_layer * (MAX_FRAMES_PER_ENLARGEMENT + 1) + enlarg_idx + 1;
 
@@ -935,11 +935,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     enl_j = j + 1;
                 }
 
+                if (!isok(enl_i, enl_j))
+                    continue;
+
                 if (enlarg_idx >= 0)
                 {
-                    if (!isok(enl_i, enl_j))
-                        continue;
-
                     int relevant_i = i;
                     int relevant_j = enl_j;
                     boolean side_not_ok = FALSE;
@@ -975,9 +975,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     signed_glyph = data->map[enl_i][enl_j];
 
                 glyph = abs(signed_glyph);
-
-                if (base_layer == 2 && enlarg_idx == 0 && glyph_is_monster(glyph))
-                    enlarg_idx = enlarg_idx;
 
 
                 /* Kludge for the time being */
@@ -1060,6 +1057,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         if (tile2enlargement[ntile] > 0)
                         {
+                            if (enl_j == j)
+                                j = j;
                             int enl_tile_idx = enlargements[tile2enlargement[ntile]].frame2tile[frame_index];
                             if (enl_tile_idx >= 0)
                             {
