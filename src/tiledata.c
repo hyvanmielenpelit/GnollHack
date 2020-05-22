@@ -34,7 +34,7 @@ NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = 
     {"hit-text-4",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"hit-text-5",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"general-ui",              3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"status",                  14, 16, 16, {"petmark", "detectmark", "pilemark", "hungry",  "weak", "faint", "burdened", "stressed",  "strained", "overtaxed", "overloaded", "two-weapon",  "skill", "saddled", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status",                  14, 16, 16, {"petmark", "detectmark", "pilemark", "hungry",  "weak", "faint", "burdened", "stressed",  "strained", "overtaxed", "overloaded", "two-weapon",  "skill", "saddled", "maintilemark", "",  "", "", "", "",  "", "", "", ""} },
     {"conditions",              min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"main-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"message-window-borders",  6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },

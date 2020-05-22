@@ -928,6 +928,34 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             if (!isok(enl_i, enl_j))
                 continue;
 
+            int relevant_i = i;
+            int relevant_j = enl_j;
+            boolean side_not_ok = FALSE;
+            if (IS_ROCK(level.locations[relevant_i][relevant_j].typ) 
+                || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].flags & D_CLOSED))
+                || data->map[relevant_i][relevant_j] == S_unexplored
+                || (data->map[relevant_i][relevant_j] == NO_GLYPH && data->bkmap[relevant_i][relevant_j] == NO_GLYPH)
+                )
+                side_not_ok = TRUE;
+
+            boolean upper_side_not_ok = FALSE;
+            relevant_i = i;
+            relevant_j = j;
+            if (relevant_j < enl_j)
+            {
+                if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
+                    || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].flags & D_CLOSED))
+                    || data->map[relevant_i][relevant_j] == S_unexplored
+                    || (data->map[relevant_i][relevant_j] == NO_GLYPH && data->bkmap[relevant_i][relevant_j] == NO_GLYPH)
+                    )
+                    upper_side_not_ok = TRUE;
+            }
+            else
+                upper_side_not_ok = TRUE;
+            
+            if (side_not_ok && upper_side_not_ok)
+                continue;
+
             signed_glyph = data->map[enl_i][enl_j];
             signed_bkglyph = data->bkmap[enl_i][enl_j];
             glyph = abs(signed_glyph);
