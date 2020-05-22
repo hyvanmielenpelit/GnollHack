@@ -22,15 +22,6 @@
 #define ANIMATION_TIMER_INTERVAL 40 // milliseconds (25 FPS)
 #define CURSOR_HEIGHT 2 // pixels
 
-extern short glyph2tile[MAX_GLYPH];
-extern short tile2animation[MAX_GLYPH];
-extern short tile2enlargement[MAX_GLYPH];
-
-#define TILEBMP_X(ntile) \
-    ((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)
-#define TILEBMP_Y(ntile) \
-    ((ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y)
-
 /* map window data */
 typedef struct mswin_GnollHack_map_window {
     HWND hWnd;                  /* window */
@@ -1050,7 +1041,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 StretchBlt(data->backBufferDC, rect->left, rect->top,
                     data->xBackTile, data->yBackTile, data->tileDC,
-                    t_x, t_y, GetNHApp()->mapTile_X,
+                    t_x, t_y, multiplier* GetNHApp()->mapTile_X,
                     GetNHApp()->mapTile_Y, SRCCOPY);
                 layer++;
             }

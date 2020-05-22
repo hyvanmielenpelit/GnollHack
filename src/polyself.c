@@ -2559,9 +2559,9 @@ udeadinside()
        seems silly when you're polymorphed into something undead;
        monkilled() distinguishes between living (killed) and non (destroyed)
        for monster death message; we refine the nonliving aspect a bit */
-    return !is_not_living(youmonst.data)
+    return is_living(youmonst.data)
              ? "dead"          /* living, including demons */
-             : !is_nonliving(youmonst.data)
+             : is_undead(youmonst.data)
                  ? "condemned" /* undead plus manes */
                  : "empty";    /* golems plus vortices */
 }

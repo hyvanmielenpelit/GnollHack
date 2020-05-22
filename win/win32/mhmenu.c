@@ -70,8 +70,6 @@ typedef struct mswin_GnollHack_menu_window {
     BOOL is_active;
 } NHMenuWindow, *PNHMenuWindow;
 
-extern short glyph2tile[];
-
 static WNDPROC wndProcListViewOrig = NULL;
 static WNDPROC editControlWndProc = NULL;
 
@@ -1110,11 +1108,19 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             double monitorScale = win10_monitor_scale(hWnd);
 
             saveBmp = SelectObject(tileDC, GetNHApp()->bmpMapTiles);
-            ntile = glyph2tile[item->glyph];
-            t_x =
-                (ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X;
-            t_y =
-                (ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y + TILE_Y / 2; /* Use lower part of the tile only */
+            int signed_glyph = item->glyph;
+            int glyph = abs(signed_glyph);
+            boolean flip_tile = FALSE;
+            if (signed_glyph < 0)
+                flip_tile = TRUE;
+
+            ntile = glyph2tile[glyph];
+            int multiplier = flip_tile ? -1 : 1;
+
+            t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
+                //((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X);
+            t_y = TILEBMP_Y(ntile) + TILE_Y / 2; /* Use lower part of the tile only */
+                //(ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y;
 
             y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 
@@ -1122,7 +1128,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 /* using original GnollHack tiles - apply image transparently */
                 (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x, y, 
                                           tileXScaled, tileYScaled,
-                                          tileDC, t_x, t_y, TILE_X, TILE_Y / 2, /* Use lower part of the tile only */
+                                          tileDC, t_x, t_y, multiplier * TILE_X, TILE_Y / 2, /* Use lower part of the tile only */
                                           TILE_BK_COLOR);
             } else {
                 /* using custom tiles - simple blt */

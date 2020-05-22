@@ -60,6 +60,17 @@
 /* tile background color */
 #define TILE_BK_COLOR RGB(71, 108, 108)
 
+
+extern short glyph2tile[MAX_GLYPH];
+extern short tile2animation[MAX_GLYPH];
+extern short tile2enlargement[MAX_GLYPH];
+
+#define TILEBMP_X(ntile) \
+    ((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)
+#define TILEBMP_Y(ntile) \
+    ((ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y)
+
+
 /* minimum/maximum font size (in points - 1/72 inch) */
 #define NHFONT_DEFAULT_SIZE 9
 #define NHFONT_SIZE_MIN 3

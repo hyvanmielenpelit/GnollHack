@@ -114,7 +114,7 @@
 #define infravisible(ptr) (((ptr)->mflags3 & M3_INFRAVISIBLE))
 #define is_displacer(ptr) (((ptr)->mflags3 & M3_DISPLACES) != 0L)
 #define noncorporeal(ptr) (((ptr)->mflags3 & M3_NONCORPOREAL) != 0L) 
-#define is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L)
+#define has_mflag_is_nonliving(ptr) (((ptr)->mflags3 & M3_NONLIVING) != 0L) /* do not use this normally; to make clearly different from is_not_living */
 #define is_multiweaponmonster(ptr) (((ptr)->mflags3 & M3_MULTIWEAPON) != 0L)
 #define leaves_corpses_randomly(ptr) (((ptr)->mflags3 & M3_RANDOM_CORPSE) != 0L)
 #define corpse_crumbles_to_dust(ptr) (((ptr)->mflags3 & M3_CORPSE_CRUMBLES_TO_DUST) != 0L)
@@ -165,7 +165,7 @@
 
 /* combinations */
 #define is_not_living(ptr) \
-    (is_undead(ptr) || is_nonliving(ptr))
+    (is_undead(ptr) || has_mflag_is_nonliving(ptr))
 #define is_living(ptr) !is_not_living(ptr)
 #define slimeproof(ptr) \
     ((ptr) == &mons[PM_GREEN_SLIME] || flaming(ptr) || noncorporeal(ptr))
