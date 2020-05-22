@@ -903,9 +903,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 int enlarg_idx = z_order_array[running_index];
                 layer = base_layer * (MAX_FRAMES_PER_ENLARGEMENT + 1) + enlarg_idx + 1;
 
-                if (running_index == 0 && (abs(data->map[i - 1][j]) == PM_DRACOLICH + GLYPH_PET_OFF || abs(data->map[i - 1][j]) == PM_DRACOLICH + GLYPH_FEMALE_PET_OFF))
-                    i = i;
-
                 /* Set coordinates */
                 if (enlarg_idx == -1)
                 {
@@ -947,7 +944,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     int relevant_j = enl_j;
                     boolean side_not_ok = FALSE;
                     if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
-                        || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].flags & D_CLOSED))
+                        || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                         || data->map[relevant_i][relevant_j] == S_unexplored
                         || (data->map[relevant_i][relevant_j] == NO_GLYPH && data->bkmap[relevant_i][relevant_j] == NO_GLYPH)
                         )
@@ -959,7 +956,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     if (relevant_j < enl_j)
                     {
                         if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
-                            || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].flags & D_CLOSED))
+                            || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                             || data->map[relevant_i][relevant_j] == S_unexplored
                             || (data->map[relevant_i][relevant_j] == NO_GLYPH && data->bkmap[relevant_i][relevant_j] == NO_GLYPH)
                             )
