@@ -896,12 +896,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         }
         else if(base_layer >= 1 && base_layer <= 2)
         {
-            for (int running_index = -1; running_index < MAX_FRAMES_PER_ENLARGEMENT; running_index++)
+            for (int running_index = 0; running_index < MAX_FRAMES_PER_ENLARGEMENT + 1; running_index++)
             {
                 /* Drawing order from back to front */
                 int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 3, 4 };
-                int enlarg_idx = z_order_array[running_index + 1];
+                int enlarg_idx = z_order_array[running_index];
                 layer = base_layer * (MAX_FRAMES_PER_ENLARGEMENT + 1) + enlarg_idx + 1;
+
+                if (running_index == 0 && (abs(data->map[i - 1][j]) == PM_DRACOLICH + GLYPH_PET_OFF || abs(data->map[i - 1][j]) == PM_DRACOLICH + GLYPH_FEMALE_PET_OFF))
+                    i = i;
 
                 /* Set coordinates */
                 if (enlarg_idx == -1)
@@ -935,11 +938,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     enl_j = j + 1;
                 }
 
-                if (!isok(enl_i, enl_j))
-                    continue;
-
                 if (enlarg_idx >= 0)
                 {
+                    if (!isok(enl_i, enl_j))
+                        continue;
+
                     int relevant_i = i;
                     int relevant_j = enl_j;
                     boolean side_not_ok = FALSE;
@@ -969,10 +972,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         continue;
                 }
 
+                int signed_bk_glyph = data->bkmap[enl_i][enl_j];
+                int signed_main_glyph = data->map[enl_i][enl_j];
+
+                int layer1signedglyph = signed_bk_glyph != NO_GLYPH ? signed_bk_glyph : (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
+                int layer2signedglyph = (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? NO_GLYPH : signed_main_glyph;
+
                 if(base_layer == 1)
-                    signed_glyph = data->bkmap[enl_i][enl_j];
+                    signed_glyph = layer1signedglyph;
                 else if(base_layer == 2)
-                    signed_glyph = data->map[enl_i][enl_j];
+                    signed_glyph = layer2signedglyph;
 
                 glyph = abs(signed_glyph);
 
