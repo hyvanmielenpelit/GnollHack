@@ -2647,6 +2647,14 @@ Goodbye()
 int
 u_to_glyph()
 {
+
+    if (Upolyd)
+    {
+        return (u.facing_right ? -1 : 1) * (flags.female ?
+            female_monnum_to_glyph(u.umonnum) :
+            monnum_to_glyph(u.umonnum));
+    }
+
     int player_role = urole.rolenum;
     int player_race = urace.racenum;
     int player_gender = (int)flags.female;

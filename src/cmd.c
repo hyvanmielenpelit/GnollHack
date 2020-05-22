@@ -2027,6 +2027,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_RIDDEN_OFF:
                 header = "MON_RIDDEN_OFF";
                 break;
+            case GLYPH_ATTACK_OFF:
+                header = "MON_ATTACK_OFF";
+                break;
             case GLYPH_FEMALE_MON_OFF:
                 header = "FEMALE_MON_OFF";
                 break;
@@ -2041,6 +2044,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_FEMALE_RIDDEN_OFF:
                 header = "FEMALE_RIDDEN_MON_OFF";
+                break;
+            case GLYPH_FEMALE_ATTACK_OFF:
+                header = "FEMALE_ATTACK_OFF";
                 break;
             case GLYPH_INVIS_OFF:
                 header = "INVIS_OFF";
@@ -2101,6 +2107,15 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_PLAYER_OFF:
                 header = "PLAYER_OFF";
+                break;
+            case GLYPH_PLAYER_ATTACK_OFF:
+                header = "PLAYER_ATTACK_OFF";
+                break;
+            case GLYPH_ANIMATION_OFF:
+                header = "ANIMATION_OFF";
+                break;
+            case GLYPH_ENLARGEMENT_OFF:
+                header = "ENLARGEMENT_OFF";
                 break;
             }
             if (strcmp(header, ""))
