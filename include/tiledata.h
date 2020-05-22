@@ -43,6 +43,20 @@ struct tileset_definition {
 
 extern NEARDATA struct tileset_definition default_tileset_definition;
 
+
+enum game_cursor_types
+{
+    GENERIC_CURSOR = 0,
+    LOOK_CURSOR,
+    TELEPORT_CURSOR,
+    JUMP_CURSOR,
+    POLEARM_CURSOR,
+    SPELL_CURSOR,
+    PAY_CURSOR,
+    MAX_CURSORS
+};
+
+
 struct ui_component_definition {
     char* name;
     int number;
@@ -63,6 +77,7 @@ enum game_ui_tile_types
     GENERAL_UI_ELEMENTS,    /* Check box etc. */
     STATUS_MARKS,   /* Pet mark, detection mark, ridden mark, pile mark, etc. */
     CONDITION_MARKS,   /* One tile for each specified status (the same as on status line) */
+    MAIN_TILE_MARK,
     MAIN_WINDOW_BORDERS,
     MESSAGE_WINDOW_BORDERS,
     STATUS_WINDOW_BORDERS,

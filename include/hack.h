@@ -644,18 +644,6 @@ static const char empty_string[] = "";
 #define MIN_PREF_SCREEN_SCALE 25
 #define MAX_PREF_SCREEN_SCALE 200
 
-enum game_cursor_types
-{
-    GENERIC_CURSOR = 0,
-    LOOK_CURSOR,
-    TELEPORT_CURSOR,
-    JUMP_CURSOR,
-    POLEARM_CURSOR,
-    SPELL_CURSOR,
-    PAY_CURSOR,
-    MAX_CURSORS
-};
-
 
 /* convert 1..10 to 0..9; add 10 for second group (spell casting) */
 #define ad_to_typ(k) (10 + (int) k - 1)
