@@ -646,7 +646,7 @@ struct edog *edog;
 		return FALSE;
 
 	/* Nonliving creatures do not get hungry */
-	if (is_nonliving(mtmp->data))
+	if (is_not_living(mtmp->data))
 	{
 		edog->hungrytime = monstermoves + 500;
 		return FALSE;
