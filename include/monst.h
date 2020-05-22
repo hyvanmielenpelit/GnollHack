@@ -167,6 +167,7 @@ struct monst {
     Bitfield(told_rumor, 1);			        /* the monster had told the player at least one rumor */
     //int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
     Bitfield(facing_right, 1);			        /* the monster is facing right */
+    Bitfield(attacking, 1);			            /* the monster is currently in the midst of an attack */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

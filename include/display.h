@@ -379,6 +379,8 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_RIDDEN_OFF))
 #define pet_to_glyph(mon, rng)                                      \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_PET_OFF))
+#define attacking_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_ATTACK_OFF))
 #define female_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_MON_OFF))
 #define female_pet_to_glyph(mon, rng)                                      \
@@ -387,9 +389,13 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DETECT_OFF))
 #define female_ridden_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_RIDDEN_OFF))
+#define female_attacking_mon_to_glyph(mon, rng)                               \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_ATTACK_OFF))
 
 #define any_mon_to_glyph(mon, rng)                               \
-    (((mon) == &youmonst ? flags.female : (mon)->female) ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng) )
+    (((mon) == &youmonst ? flags.female : (mon)->female) ? \
+        (((mon) == &youmonst ? u.attacking : (mon)->attacking) ? female_attacking_mon_to_glyph(mon, rng) : female_mon_to_glyph(mon, rng)) \
+        : (((mon) == &youmonst ? u.attacking : (mon)->attacking) ? attacking_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng) ) )
 #define any_pet_to_glyph(mon, rng)                               \
     (((mon) == &youmonst ? flags.female : (mon)->female) ? female_pet_to_glyph(mon, rng) : pet_to_glyph(mon, rng) )
 #define any_detected_mon_to_glyph(mon, rng)                               \
@@ -486,11 +492,13 @@
 #define petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_PET_OFF)
 #define detected_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DETECT_OFF)
 #define ridden_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_RIDDEN_OFF)
+#define attacking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_ATTACK_OFF)
 
 #define female_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_MON_OFF)
 #define female_petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_PET_OFF)
 #define female_detected_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DETECT_OFF)
 #define female_ridden_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_RIDDEN_OFF)
+#define female_attacking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_ATTACK_OFF)
 
 #define any_monnum_to_glyph(isfemale, mnum) (isfemale ? female_monnum_to_glyph(mnum) : monnum_to_glyph(mnum) )
 #define any_petnum_to_glyph(isfemale, mnum) (isfemale ? female_petnum_to_glyph(mnum) : petnum_to_glyph(mnum) )
@@ -522,6 +530,8 @@
     ((abs(glyph)) >= GLYPH_BODY_OFF && (abs(glyph)) < (GLYPH_BODY_OFF + NUM_MONSTERS))
 #define glyph_is_ridden_monster(glyph) \
     ((abs(glyph)) >= GLYPH_RIDDEN_OFF && (abs(glyph)) < (GLYPH_RIDDEN_OFF + NUM_MONSTERS))
+#define glyph_is_attacking_monster(glyph) \
+    ((abs(glyph)) >= GLYPH_ATTACK_OFF && (abs(glyph)) < (GLYPH_ATTACK_OFF + NUM_MONSTERS))
 #define glyph_is_statue(glyph) \
     ((abs(glyph)) >= GLYPH_STATUE_OFF && (abs(glyph)) < (GLYPH_STATUE_OFF + NUM_MONSTERS))
 
@@ -535,6 +545,8 @@
     ((abs(glyph)) >= GLYPH_FEMALE_BODY_OFF && (abs(glyph)) < (GLYPH_FEMALE_BODY_OFF + NUM_MONSTERS))
 #define glyph_is_female_ridden_monster(glyph) \
     ((abs(glyph)) >= GLYPH_FEMALE_RIDDEN_OFF && (abs(glyph)) < (GLYPH_FEMALE_RIDDEN_OFF + NUM_MONSTERS))
+#define glyph_is_female_attacking_monster(glyph) \
+    ((abs(glyph)) >= GLYPH_FEMALE_ATTACK_OFF && (abs(glyph)) < (GLYPH_FEMALE_ATTACK_OFF + NUM_MONSTERS))
 #define glyph_is_female_statue(glyph) \
     ((abs(glyph)) >= GLYPH_FEMALE_STATUE_OFF && (abs(glyph)) < (GLYPH_FEMALE_STATUE_OFF + NUM_MONSTERS))
 
@@ -575,12 +587,16 @@
     ((abs(glyph)) >= GLYPH_PLAYER_OFF && (abs(glyph)) < (GLYPH_PLAYER_OFF + NUM_PLAYER_CHARACTERS))
 #define glyph_to_player(glyph) \
     (glyph_is_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_OFF) : NO_GLYPH)
+#define glyph_is_attacking_player(glyph) \
+    ((abs(glyph)) >= GLYPH_PLAYER_ATTACK_OFF && (abs(glyph)) < (GLYPH_PLAYER_ATTACK_OFF + NUM_PLAYER_CHARACTERS))
+#define glyph_to_attacking_player(glyph) \
+    (glyph_is_attacking_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_ATTACK_OFF) : NO_GLYPH)
 #define glyph_is_monster(glyph)                            \
     (glyph_is_normal_monster(glyph) || glyph_is_pet(glyph) \
-     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph) \
+     || glyph_is_ridden_monster(glyph) || glyph_is_detected_monster(glyph) || glyph_is_attacking_monster(glyph) \
      || glyph_is_female_monster(glyph) || glyph_is_female_detected_monster(glyph) \
-     || glyph_is_female_pet(glyph) || glyph_is_female_ridden_monster(glyph) \
-     || glyph_is_player(glyph))
+     || glyph_is_female_pet(glyph) || glyph_is_female_ridden_monster(glyph) || glyph_is_female_attacking_monster(glyph) \
+     || glyph_is_player(glyph) || glyph_is_attacking_player(glyph))
 
 
  /*
@@ -604,6 +620,8 @@
                      ? ((abs(glyph)) - GLYPH_DETECT_OFF)             \
                      : glyph_is_ridden_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_RIDDEN_OFF)       \
+                     : glyph_is_attacking_monster(glyph)           \
+                           ? ((abs(glyph)) - GLYPH_ATTACK_OFF)       \
                      : glyph_is_female_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_FEMALE_MON_OFF)   \
                      : glyph_is_female_pet(glyph)  \
@@ -612,12 +630,16 @@
                            ? ((abs(glyph)) - GLYPH_FEMALE_DETECT_OFF) \
                      : glyph_is_female_ridden_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_FEMALE_RIDDEN_OFF)       \
+                     : glyph_is_female_attacking_monster(glyph)           \
+                           ? ((abs(glyph)) - GLYPH_FEMALE_ATTACK_OFF)       \
                            : glyph_is_statue(glyph)             \
                                  ? ((abs(glyph)) - GLYPH_STATUE_OFF) \
                            : glyph_is_female_statue(glyph)             \
                                  ? ((abs(glyph)) - GLYPH_FEMALE_STATUE_OFF) \
                                    : glyph_is_player(glyph)     \
                                          ? (glyph_to_player_mon(abs(glyph)))                    \
+                                   : glyph_is_attacking_player(glyph)     \
+                                         ? (attack_glyph_to_player_mon(abs(glyph)))                    \
                                              : NO_GLYPH)
 
 

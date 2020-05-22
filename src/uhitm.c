@@ -527,7 +527,7 @@ register struct monst *mtmp;
             || mtmp->mx != u.ux + u.dx
             || mtmp->my != u.uy + u.dy)) { /* it moved */
         You("miss wildly and stumble forwards.");
-        return FALSE;
+		return FALSE;
     }
 
     if (Upolyd)
@@ -724,6 +724,8 @@ struct attack *uattk;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
+		update_u_attacking(TRUE);
+
 		char strikebuf[BUFSIZ] = "";
 		if (uwep)
 			strcpy(strikebuf, Yobjnam2(uwep, "strike"));
@@ -759,6 +761,8 @@ struct attack *uattk;
 			(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 		}
 
+		update_u_attacking(FALSE);
+
 		if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 			break;
 	}
@@ -786,6 +790,8 @@ struct attack *uattk;
 
 		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
 		{
+			update_u_attacking(TRUE);
+
 			char strikebuf[BUFSIZ] = "";
 			if (uarms)
 				strcpy(strikebuf, Yobjnam2(uarms, "strike"));
@@ -820,6 +826,8 @@ struct attack *uattk;
 				if (mhit)
 					(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 			}
+
+			update_u_attacking(FALSE);
 
 			if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 				break;
@@ -3420,8 +3428,9 @@ register struct monst *mon;
     multi_claw = (multi_claw > 1); /* switch from count to yes/no */
 	int bite_butt_count = 0;
 
-    for (i = 0; i < NATTK; i++) {
-        /* sum[i] = 0; -- now done above */
+    for (i = 0; i < NATTK; i++) 
+	{
+		/* sum[i] = 0; -- now done above */
         mattk = getmattk(&youmonst, mon, i, sum, &alt_attk);
 
 		if (mattk->aatyp == AT_BITE || mattk->aatyp == AT_BUTT)
@@ -3429,7 +3438,10 @@ register struct monst *mon;
 		if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
 			continue;
 
-        weapon = 0;
+		if(mattk->aatyp != AT_NONE)
+			update_u_attacking(FALSE);
+
+		weapon = 0;
         switch (mattk->aatyp) {
         case AT_WEAP:
             /* if (!uwep) goto weaponless; */
@@ -3818,6 +3830,10 @@ register struct monst *mon;
  passivedone:
         /* stop attacking if defender has died;
            needed to defer this until after uswapwep->cursed check */
+		   /* Display attack */
+		if (mattk->aatyp != AT_NONE)
+			update_u_attacking(FALSE);
+
         if (DEADMONSTER(mon))
             break;
         if (!Upolyd)
@@ -3825,7 +3841,13 @@ register struct monst *mon;
         if (multi < 0)
             break; /* If paralyzed while attacking, i.e. floating eye */
     }
-    /* return value isn't used, but make it match hitum()'s */
+
+	if (u.attacking)
+	{
+		update_u_attacking(FALSE);
+	}
+	
+	/* return value isn't used, but make it match hitum()'s */
     return !DEADMONSTER(mon);
 }
 
@@ -4529,4 +4551,42 @@ uchar update_symbol;
 			flush_screen(1);
 	}
 }
+
+void
+update_u_attacking(attack_on)
+boolean attack_on;
+{
+	boolean attacking_before = u.attacking;
+	u.attacking = attack_on;
+#ifdef USE_TILES
+	if (attacking_before != u.attacking)
+	{
+		newsym(u.ux, u.uy);
+		flush_screen(1);
+		delay_output();
+		delay_output();
+	}
+#endif
+}
+
+void
+update_m_attacking(mtmp, attack_on)
+struct monst* mtmp;
+boolean attack_on;
+{
+	if (!mtmp)
+		return;
+	boolean attacking_before = mtmp->attacking;
+	mtmp->attacking = attack_on;
+#ifdef USE_TILES
+	if (attacking_before != mtmp->attacking)
+	{
+		newsym(mtmp->mx, mtmp->my);
+		flush_screen(0);
+		delay_output();
+		delay_output();
+	}
+#endif
+}
+
 /*uhitm.c*/

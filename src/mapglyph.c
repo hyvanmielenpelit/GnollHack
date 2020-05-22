@@ -93,7 +93,10 @@ unsigned long *ospecial;
         idx = '_';
         color = CLR_GRAY;
     }
-    else if ((offset = (glyph - GLYPH_PLAYER_OFF)) >= 0)
+    else if (
+        (offset = (glyph - GLYPH_PLAYER_ATTACK_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_OFF)) >= 0
+        )
     {
         int mnum = (Upolyd || !flags.showrace ? u.umonnum : urace.monsternum);
         idx = mons[mnum >= LOW_PM ? mnum : PM_HUMAN].mlet + SYM_OFF_M;
@@ -357,6 +360,28 @@ unsigned long *ospecial;
             invis_color(offset);
         special |= MG_INVIS;
     }
+    else if ((offset = (glyph - GLYPH_FEMALE_ATTACK_OFF)) >= 0)
+    { /* a female attacking monster */
+        idx = mons[offset].mlet + SYM_OFF_M;
+        if (has_rogue_color && iflags.use_color)
+        {
+            if (x == u.ux && y == u.uy)
+                /* actually player should be yellow-on-gray if in corridor */
+                color = CLR_YELLOW;
+            else
+                color = NO_COLOR;
+        }
+        else
+        {
+            mon_color(offset);
+    #ifdef TEXTCOLOR
+            /* special case the hero for `showrace' option */
+            if (iflags.use_color && x == u.ux && y == u.uy
+                && flags.showrace && !Upolyd)
+                color = HI_DOMESTIC;
+    #endif
+        }
+    }
     else if ((offset = (glyph - GLYPH_FEMALE_RIDDEN_OFF)) >= 0)
     { /* mon ridden */
         idx = mons[offset].mlet + SYM_OFF_M;
@@ -414,6 +439,28 @@ unsigned long *ospecial;
         else
         {
             mon_color(offset);
+    #ifdef TEXTCOLOR
+            /* special case the hero for `showrace' option */
+            if (iflags.use_color && x == u.ux && y == u.uy
+                && flags.showrace && !Upolyd)
+                color = HI_DOMESTIC;
+    #endif
+        }
+    }
+    else if ((offset = (glyph - GLYPH_ATTACK_OFF)) >= 0)
+    { /* mon attack */
+        idx = mons[glyph].mlet + SYM_OFF_M;
+        if (has_rogue_color && iflags.use_color)
+        {
+            if (x == u.ux && y == u.uy)
+                /* actually player should be yellow-on-gray if in corridor */
+                color = CLR_YELLOW;
+            else
+                color = NO_COLOR;
+        }
+        else
+        {
+            mon_color(glyph);
     #ifdef TEXTCOLOR
             /* special case the hero for `showrace' option */
             if (iflags.use_color && x == u.ux && y == u.uy

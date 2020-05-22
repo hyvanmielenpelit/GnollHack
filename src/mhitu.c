@@ -682,6 +682,7 @@ register struct monst *mtmp;
             return (foo == 1);
     }
 
+
 	int tmp2 = tmp;
 	int weaponattackcount = 0;
 	int bite_butt_count = 0;
@@ -700,6 +701,9 @@ register struct monst *mtmp;
 			bite_butt_count++;
 		if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count)
 			continue;
+
+        if (mattk->aatyp != AT_NONE)
+            update_m_attacking(mtmp, TRUE);
 
         switch (mattk->aatyp) {
         case AT_CLAW: /* "hand to hand" attacks */
@@ -842,6 +846,8 @@ register struct monst *mtmp;
 
 					for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 					{
+                        update_m_attacking(mtmp, TRUE);
+
 						if (mon_currwep)
 						{
 							if (strikeindex == 0)
@@ -859,6 +865,8 @@ register struct monst *mtmp;
 							sum[i] = hitmu(mtmp, mattk, mon_currwep);
 						else
 							missmu(mtmp, (tmp == j), mattk);
+
+                        update_m_attacking(mtmp, FALSE);
 					}
                 } 
 				else
@@ -1096,6 +1104,10 @@ register struct monst *mtmp;
                 nomovemsg = "The combat suddenly awakens you.";
             }
         }
+
+        if (mattk->aatyp != AT_NONE)
+            update_m_attacking(mtmp, FALSE);
+
         if (sum[i] == 2)
             return 1; /* attacker dead */
         if (sum[i] == 3)

@@ -2650,9 +2650,9 @@ u_to_glyph()
 
     if (Upolyd)
     {
-        return (u.facing_right ? -1 : 1) * (flags.female ?
-            female_monnum_to_glyph(u.umonnum) :
-            monnum_to_glyph(u.umonnum));
+        return (u.facing_right ? -1 : 1) * 
+            (u.attacking ? (flags.female ? female_attacking_monnum_to_glyph(u.umonnum) : attacking_monnum_to_glyph(u.umonnum))
+            : ((flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum))));
     }
 
     int player_role = urole.rolenum;
@@ -2661,7 +2661,8 @@ u_to_glyph()
     int player_alignment = u.ualign.type + 1; /* 0...2 */
     int player_glyph_level = 0;
 
-    return (u.facing_right ? -1 : 1) * player_to_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level);
+    return (u.facing_right ? -1 : 1) * (u.attacking ? player_to_attack_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level)
+        : player_to_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level));
 }
 
 int
@@ -2737,5 +2738,11 @@ glyph_to_player_mon(int glyph)
         else
             return urole.monsternum;
     }
+}
+
+int
+attack_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_ATTACK_OFF + GLYPH_PLAYER_OFF);
 }
 /* role.c */

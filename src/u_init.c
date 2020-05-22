@@ -913,6 +913,8 @@ u_init()
     u.umoved = FALSE;
     u.umortality = 0;
     u.ugrave_arise = NON_PM;
+	u.facing_right = FALSE;
+	u.attacking = FALSE;
 
     u.umonnum = u.umonster = urole.monsternum;
 	u.ulycn = NON_PM;

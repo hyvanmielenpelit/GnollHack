@@ -1422,7 +1422,7 @@ short* tilemaparray;
                             {
                                 for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                                 {
-                                    int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                    int player_glyph = (spset == 0 ? player_to_glyph(roleidx, raceidx, gender, alignment + 1, level) : player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level));
                                     tilemaparray[player_glyph] = tile_count;
 
                                     if (spset == 0 && !GENERIC_PLAYER_HAS_ATTACK_TILE)
@@ -1471,7 +1471,7 @@ short* tilemaparray;
                                 }
                                 else if (process_style == 1)
                                 {
-                                    int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                    int player_glyph = (spset == 0 ? player_to_glyph(roleidx, raceidx, gender, alignment + 1, level) : player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level));
                                     tilemaparray[player_glyph] = tile_count;
 
                                     if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
@@ -1530,7 +1530,7 @@ short* tilemaparray;
                                     {
                                         for (int k = 0; k <= 2; k++)
                                         {
-                                            int player_glyph = player_to_glyph(roleidx, raceidx, gender, k, level);
+                                            int player_glyph = (spset == 0 ? player_to_glyph(roleidx, raceidx, gender, k, level) : player_to_attack_glyph(roleidx, raceidx, gender, k, level));
                                             tilemaparray[player_glyph] = tile_count;
 
                                             if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
@@ -1543,7 +1543,7 @@ short* tilemaparray;
                                     }
                                     else
                                     {
-                                        int player_glyph = player_to_glyph(roleidx, raceidx, gender, alignment + 1, level);
+                                        int player_glyph = (spset == 0 ? player_to_glyph(roleidx, raceidx, gender, alignment + 1, level) : player_to_attack_glyph(roleidx, raceidx, gender, alignment + 1, level));
                                         tilemaparray[player_glyph] = tile_count;
 
                                         if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))

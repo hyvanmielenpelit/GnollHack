@@ -369,7 +369,8 @@ register struct monst *magr, *mdef;
 	int bite_butt_count = 0;
 
     /* Now perform all attacks for the monster. */
-    for (i = 0; i < NATTK; i++) {
+    for (i = 0; i < NATTK; i++) 
+    {
 		tmp = tmp2; //Reset hitv to original start value
 		res[i] = MM_MISS;
         mattk = getmattk(magr, mdef, i, res, &alt_attk);
@@ -383,6 +384,9 @@ register struct monst *magr, *mdef;
         attk = 1;
 		int multistrike = 1;
 		int multistrikernd = 0;
+
+        if(mattk->aatyp != AT_NONE && mattk->aatyp != AT_WEAP)
+            update_m_attacking(magr, TRUE);
 
 		switch (mattk->aatyp) {
         case AT_WEAP: /* "hand to hand" attacks */
@@ -455,6 +459,9 @@ register struct monst *magr, *mdef;
 
 			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
+                if (mattk->aatyp == AT_WEAP)
+                    update_m_attacking(magr, TRUE);
+
 				boolean endforloop = FALSE;
 
 				if (otmp)
@@ -548,6 +555,11 @@ register struct monst *magr, *mdef;
 				}
 				else
 					missmm(magr, mdef, mattk);
+
+                if (mattk->aatyp == AT_WEAP)
+                    update_m_attacking(magr, FALSE);
+
+
 
 				if(endforloop || DEADMONSTER(mdef) || DEADMONSTER(magr) || m_at(mdef_x, mdef_y) != mdef)
 					break;
@@ -667,6 +679,9 @@ register struct monst *magr, *mdef;
         if (attk && !(res[i] & MM_AGR_DIED)
             && distmin(magr->mx, magr->my, mdef->mx, mdef->my) <= 1)
             res[i] = passivemm(magr, mdef, strike, res[i] & MM_DEF_DIED);
+
+        if (mattk->aatyp != AT_NONE && mattk->aatyp != AT_WEAP)
+            update_m_attacking(magr, FALSE);
 
         if (res[i] & MM_DEF_DIED)
             return res[i];

@@ -2424,6 +2424,7 @@ E int FDECL(player_to_glyph, (int, int, int, int, int));
 E int FDECL(player_to_attack_glyph, (int, int, int, int, int));
 E boolean FDECL(player_has_attack_tile, (int, int, int, int, int));
 E int FDECL(glyph_to_player_mon, (int));
+E int FDECL(attack_glyph_to_player_mon, (int));
 
 /* ### rumors.c ### */
 
@@ -2875,7 +2876,9 @@ E double FDECL(adjust_damage, (int, struct monst*, struct monst*, int, boolean))
 E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
 E void FDECL(get_game_difficulty_multipliers, (double*, double*));
-E void FDECL(update_u_facing, (boolean));
+E void FDECL(update_u_facing, (uchar));
+E void FDECL(update_u_attacking, (boolean));
+E void FDECL(update_m_attacking, (struct monst*, boolean));
 
 /* ### unixmain.c ### */
 
