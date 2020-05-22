@@ -22,8 +22,9 @@
 #define ANIMATION_TIMER_INTERVAL 40 // milliseconds (25 FPS)
 #define CURSOR_HEIGHT 2 // pixels
 
-extern short glyph2tile[];
-extern short tile2animation[];
+extern short glyph2tile[MAX_GLYPH];
+extern short tile2animation[MAX_GLYPH];
+extern short tile2enlargement[MAX_GLYPH];
 
 #define TILEBMP_X(ntile) \
     ((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)
@@ -871,10 +872,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     unsigned long special;
     int mgch;
 #endif
+
     boolean flip_glyph = FALSE;
     boolean flip_bkglyph = FALSE;
     data->mapAnimated[i][j] = FALSE;
-    layer = 0;
     signed_glyph = data->map[i][j];
     signed_bkglyph = data->bkmap[i][j];
     glyph = abs(signed_glyph);
@@ -884,142 +885,275 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     if (signed_bkglyph < 0)
         flip_bkglyph = TRUE;
 
-    if ((glyph == NO_GLYPH) && bkglyph == NO_GLYPH)
-        bkglyph = cmap_to_glyph(S_unexplored);
+    int enl_i = -1, enl_j = -1;
+    boolean enlarged = FALSE;
+    short bk_enlargement = 0;
+    short main_enlargement = 0;
+    short bk_frame_index = 0;
+    short frame_index = 0;
+    layer = 0;
 
-    if (glyph == NO_GLYPH && bkglyph == NO_GLYPH) {
-        HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
-        FillRect(data->backBufferDC, rect, blackBrush);
-        DeleteObject(blackBrush);
-    }
+    for (int enlarg_idx = -1; enlarg_idx < MAX_FRAMES_PER_ENLARGEMENT; enlarg_idx++)
+    {
 
-    if (bkglyph != NO_GLYPH) {
-        ntile = maybe_get_animated_tile(glyph2tile[bkglyph], data->interval_counter, &data->mapAnimated[i][j]);
+        /* Set coordinates */
+        if (enlarg_idx == 0)
+        {
+            enl_i = i - 1;
+            enl_j = j;
+        }
+        else if (enlarg_idx == 1)
+        {
+            enl_i = i + 1;
+            enl_j = j;
+        }
+        else if (enlarg_idx == 2)
+        {
+            enl_i = i - 1;
+            enl_j = j + 1;
+        }
+        else if (enlarg_idx == 3)
+        {
+            enl_i = i;
+            enl_j = j + 1;
+        }
+        else if (enlarg_idx == 4)
+        {
+            enl_i = i + 1;
+            enl_j = j + 1;
+        }
+        
+        if (enlarg_idx >= 0)
+        {
+            if (!isok(enl_i, enl_j))
+                continue;
 
-        int multiplier = flip_bkglyph ? -1 : 1;
-        t_x = TILEBMP_X(ntile) + (flip_bkglyph ? TILE_X - 1 : 0);
-        t_y = TILEBMP_Y(ntile);
-
-        StretchBlt(data->backBufferDC, rect->left, rect->top,
-                    data->xBackTile, data->yBackTile, data->tileDC,
-                    t_x, t_y, GetNHApp()->mapTile_X,
-                    GetNHApp()->mapTile_Y, SRCCOPY);
-        layer++;
-    }
-
-    //int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
-    int multiplier = flip_glyph ? -1 : 1;
-
-    if(glyph_is_object(glyph) && glyph >= GLYPH_OBJ_LIT_OFF)
-        glyph = glyph;
-
-    if (i == u.ux - 1 && j == u.uy)
-        glyph = glyph;
-
-    if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
-        ntile = maybe_get_animated_tile(glyph2tile[glyph], data->interval_counter, &data->mapAnimated[i][j]);
-
-        t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
-        t_y = TILEBMP_Y(ntile);
-
-        int t_per_l = GetNHApp()->mapTilesPerLine;
-        int tiley = GetNHApp()->mapTile_Y;
-
-        if (layer > 0) {
-            (*GetNHApp()->lpfnTransparentBlt)(
-                data->backBufferDC, rect->left, rect->top,
-                data->xBackTile, data->yBackTile, data->tileDC, t_x,
-                t_y, multiplier * GetNHApp()->mapTile_X,
-                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-        } else {
-            StretchBlt(data->backBufferDC, rect->left, rect->top,
-                data->xBackTile, data->yBackTile, data->tileDC,
-                        t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                        GetNHApp()->mapTile_Y, SRCCOPY);
+            signed_glyph = data->map[enl_i][enl_j];
+            signed_bkglyph = data->bkmap[enl_i][enl_j];
+            glyph = abs(signed_glyph);
+            bkglyph = abs(signed_bkglyph);
+            if (signed_glyph < 0)
+                flip_glyph = TRUE;
+            if (signed_bkglyph < 0)
+                flip_bkglyph = TRUE;
         }
 
-        layer++;
-    }
-
-#ifdef USE_PILEMARK
-    /* rely on GnollHack core helper routine */
-    (void) mapglyph(data->map[i][j], &mgch, &color, &special, i, j);
-
-    if ((glyph != NO_GLYPH) && (special & MG_PET)
-#else
-    if ((glyph != NO_GLYPH) && glyph_is_pet(glyph)
-#endif
-        && iflags.wc_hilite_pet) {
-        /* apply pet mark transparently over
-            pet image */
-#if 1
-        HDC hdcPetMark;
-        HBITMAP bmPetMarkOld;
-
-        /* this is DC for petmark bitmap */
-        hdcPetMark = CreateCompatibleDC(data->backBufferDC);
-        bmPetMarkOld =
-            SelectObject(hdcPetMark, GetNHApp()->bmpPetMark);
-
-        (*GetNHApp()->lpfnTransparentBlt)(
-            data->backBufferDC, rect->left, rect->top,
-            data->xBackTile, data->yBackTile, hdcPetMark, 0, 0,
-            TILE_X, TILE_Y, TILE_BK_COLOR);
-        SelectObject(hdcPetMark, bmPetMarkOld);
-        DeleteDC(hdcPetMark);
-#endif
-    }
-#ifdef USE_PILEMARK
-    if ((glyph != NO_GLYPH) && (special & MG_OBJPILE)
-        && iflags.hilite_pile) {
-        /* apply pilemark transparently over other image */
-        HDC hdcPileMark;
-        HBITMAP bmPileMarkOld;
-
-        /* this is DC for pilemark bitmap */
-        hdcPileMark = CreateCompatibleDC(data->backBufferDC);
-        bmPileMarkOld = SelectObject(hdcPileMark,
-                                        GetNHApp()->bmpPileMark);
-
-        (*GetNHApp()->lpfnTransparentBlt)(
-            data->backBufferDC, rect->left, rect->top,
-            data->xBackTile, data->yBackTile, hdcPileMark, 0, 0,
-            TILE_X, TILE_Y, TILE_BK_COLOR);
-        SelectObject(hdcPileMark, bmPileMarkOld);
-        DeleteDC(hdcPileMark);
-    }
-#endif
-
-    if (i == data->xCur && j == data->yCur
-        )
-    {
-        if ((!data->cursorOn && flags.blinking_cursor_on_tiles)
-            || (i == u.ux && j == u.uy && !flags.show_cursor_on_u)
-            )
+        /* Set frame_index */
+        if (enlarg_idx == 0)
         {
-            // Nothing, cursor is invisible
+            frame_index = flip_glyph ? 3 : 4;
+            bk_frame_index = flip_bkglyph ? 3 : 4;
+        }
+        else if (enlarg_idx == 1)
+        {
+            frame_index = flip_glyph ? 4 : 3;
+            bk_frame_index = flip_bkglyph ? 4 : 3;
+        }
+        else if (enlarg_idx == 2)
+        {
+            frame_index = flip_glyph ? 0 : 2;
+            bk_frame_index = flip_bkglyph ? 0 : 2;
+        }
+        else if (enlarg_idx == 3)
+        {
+            frame_index = 1;
+            bk_frame_index = 1;
+        }
+        else if (enlarg_idx == 4)
+        {
+            frame_index = flip_glyph ? 2 : 0;
+            bk_frame_index = flip_bkglyph ? 2 : 0;
+        }
+
+
+
+        if (enlarg_idx == -1 || main_enlargement == 0 || (main_enlargement > 0 && enlargements[main_enlargement].frame2tile[enlarg_idx] == -1))
+        {
+            /* OK */
         }
         else
         {
-            HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
-            HBRUSH hbr_light = CreateSolidBrush(RGB(100, 50, 0));
-            HBRUSH hbr_light2 = CreateSolidBrush(RGB(50, 25, 0));
-            RECT smaller_rect, even_smaller_rect;
-            smaller_rect.top = rect->top + 1;
-            smaller_rect.bottom = rect->bottom - 1;
-            smaller_rect.left = rect->left + 1;
-            smaller_rect.right = rect->right - 1;
-            even_smaller_rect.top = rect->top + 2;
-            even_smaller_rect.bottom = rect->bottom - 2;
-            even_smaller_rect.left = rect->left + 2;
-            even_smaller_rect.right = rect->right - 2;
-            FrameRect(data->backBufferDC, rect, hbr_dark);
-            FrameRect(data->backBufferDC, &smaller_rect, hbr_light);
-            FrameRect(data->backBufferDC, &even_smaller_rect, hbr_light2);
-            //DrawFocusRect(data->backBufferDC, rect);
-            //DrawFocusRect(data->backBufferDC, &smaller_rect);
+            glyph = enlargements[bk_enlargement].frame2tile[enlarg_idx] + enlargements[bk_enlargement].glyph_offset + GLYPH_ENLARGEMENT_OFF;
         }
-    };
+
+        if (enlarg_idx == -1)
+        {
+            if ((glyph == NO_GLYPH) && bkglyph == NO_GLYPH)
+                bkglyph = cmap_to_glyph(S_unexplored);
+
+            if (glyph == NO_GLYPH && bkglyph == NO_GLYPH) {
+                HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+                FillRect(data->backBufferDC, rect, blackBrush);
+                DeleteObject(blackBrush);
+            }
+        }
+
+        if (bkglyph != NO_GLYPH) {
+            boolean skip_drawing = FALSE;
+            ntile = maybe_get_animated_tile(glyph2tile[bkglyph], data->interval_counter, &data->mapAnimated[i][j]);
+            if (enlarg_idx >= 0)
+            {
+                if (tile2enlargement[ntile] > 0)
+                {
+                    int enl_tile_idx = enlargements[tile2enlargement[ntile]].frame2tile[frame_index];
+                    if (enl_tile_idx >= 0)
+                    {
+                        int enl_glyph = enl_tile_idx + enlargements[tile2enlargement[ntile]].glyph_offset + GLYPH_ENLARGEMENT_OFF;
+                        ntile = glyph2tile[enl_glyph]; /* replace */
+                    }
+                    else
+                        skip_drawing = TRUE;
+                }
+                else
+                    skip_drawing = TRUE;
+            }
+
+            if (!skip_drawing)
+            {
+                int multiplier = flip_bkglyph ? -1 : 1;
+                t_x = TILEBMP_X(ntile) + (flip_bkglyph ? TILE_X - 1 : 0);
+                t_y = TILEBMP_Y(ntile);
+
+                StretchBlt(data->backBufferDC, rect->left, rect->top,
+                    data->xBackTile, data->yBackTile, data->tileDC,
+                    t_x, t_y, GetNHApp()->mapTile_X,
+                    GetNHApp()->mapTile_Y, SRCCOPY);
+                layer++;
+            }
+        }
+
+        //int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
+        int multiplier = flip_glyph ? -1 : 1;
+
+        if ((glyph != NO_GLYPH) && (glyph != bkglyph)) {
+            boolean skip_drawing = FALSE;
+            ntile = maybe_get_animated_tile(glyph2tile[glyph], data->interval_counter, &data->mapAnimated[i][j]);
+            if (enlarg_idx >= 0)
+            {
+                if (tile2enlargement[ntile] > 0)
+                {
+                    int enl_tile_idx = enlargements[tile2enlargement[ntile]].frame2tile[frame_index];
+                    if (enl_tile_idx >= 0)
+                    {
+                        int enl_glyph = enl_tile_idx + enlargements[tile2enlargement[ntile]].glyph_offset + GLYPH_ENLARGEMENT_OFF;
+                        ntile = glyph2tile[enl_glyph]; /* replace */
+                    }
+                    else
+                        skip_drawing = TRUE;
+                }
+                else
+                    skip_drawing = TRUE;
+            }
+
+            if (!skip_drawing)
+            {
+
+                t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
+                t_y = TILEBMP_Y(ntile);
+
+                int t_per_l = GetNHApp()->mapTilesPerLine;
+                int tiley = GetNHApp()->mapTile_Y;
+
+                if (layer > 0) {
+                    (*GetNHApp()->lpfnTransparentBlt)(
+                        data->backBufferDC, rect->left, rect->top,
+                        data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                        t_y, multiplier * GetNHApp()->mapTile_X,
+                        GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                }
+                else {
+                    StretchBlt(data->backBufferDC, rect->left, rect->top,
+                        data->xBackTile, data->yBackTile, data->tileDC,
+                        t_x, t_y, multiplier * GetNHApp()->mapTile_X,
+                        GetNHApp()->mapTile_Y, SRCCOPY);
+                }
+                layer++;
+            }
+        }
+
+        if(enlarg_idx == -1)
+        {
+#ifdef USE_PILEMARK
+            /* rely on GnollHack core helper routine */
+            (void) mapglyph(data->map[i][j], &mgch, &color, &special, i, j);
+
+            if ((glyph != NO_GLYPH) && (special & MG_PET)
+#else
+            if ((glyph != NO_GLYPH) && glyph_is_pet(glyph)
+#endif
+                && iflags.wc_hilite_pet) {
+                /* apply pet mark transparently over
+                    pet image */
+#if 1
+                HDC hdcPetMark;
+                HBITMAP bmPetMarkOld;
+
+                /* this is DC for petmark bitmap */
+                hdcPetMark = CreateCompatibleDC(data->backBufferDC);
+                bmPetMarkOld =
+                    SelectObject(hdcPetMark, GetNHApp()->bmpPetMark);
+
+                (*GetNHApp()->lpfnTransparentBlt)(
+                    data->backBufferDC, rect->left, rect->top,
+                    data->xBackTile, data->yBackTile, hdcPetMark, 0, 0,
+                    TILE_X, TILE_Y, TILE_BK_COLOR);
+                SelectObject(hdcPetMark, bmPetMarkOld);
+                DeleteDC(hdcPetMark);
+#endif
+            }
+#ifdef USE_PILEMARK
+            if ((glyph != NO_GLYPH) && (special & MG_OBJPILE)
+                && iflags.hilite_pile) {
+                /* apply pilemark transparently over other image */
+                HDC hdcPileMark;
+                HBITMAP bmPileMarkOld;
+
+                /* this is DC for pilemark bitmap */
+                hdcPileMark = CreateCompatibleDC(data->backBufferDC);
+                bmPileMarkOld = SelectObject(hdcPileMark,
+                    GetNHApp()->bmpPileMark);
+
+                (*GetNHApp()->lpfnTransparentBlt)(
+                    data->backBufferDC, rect->left, rect->top,
+                    data->xBackTile, data->yBackTile, hdcPileMark, 0, 0,
+                    TILE_X, TILE_Y, TILE_BK_COLOR);
+                SelectObject(hdcPileMark, bmPileMarkOld);
+                DeleteDC(hdcPileMark);
+            }
+#endif
+
+            if (i == data->xCur && j == data->yCur)
+            {
+                if (
+                    (!data->cursorOn && flags.blinking_cursor_on_tiles)
+                    || (i == u.ux && j == u.uy && !flags.show_cursor_on_u)
+                    )
+                {
+                    // Nothing, cursor is invisible
+                }
+                else
+                {
+                    HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
+                    HBRUSH hbr_light = CreateSolidBrush(RGB(100, 50, 0));
+                    HBRUSH hbr_light2 = CreateSolidBrush(RGB(50, 25, 0));
+                    RECT smaller_rect, even_smaller_rect;
+                    smaller_rect.top = rect->top + 1;
+                    smaller_rect.bottom = rect->bottom - 1;
+                    smaller_rect.left = rect->left + 1;
+                    smaller_rect.right = rect->right - 1;
+                    even_smaller_rect.top = rect->top + 2;
+                    even_smaller_rect.bottom = rect->bottom - 2;
+                    even_smaller_rect.left = rect->left + 2;
+                    even_smaller_rect.right = rect->right - 2;
+                    FrameRect(data->backBufferDC, rect, hbr_dark);
+                    FrameRect(data->backBufferDC, &smaller_rect, hbr_light);
+                    FrameRect(data->backBufferDC, &even_smaller_rect, hbr_light2);
+                    //DrawFocusRect(data->backBufferDC, rect);
+                    //DrawFocusRect(data->backBufferDC, &smaller_rect);
+                }
+            }
+        }
+    }
 }
 
 
@@ -1113,13 +1247,19 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
 static void setGlyph(PNHMapWindow data, int i, int j, int fg, int bg)
 {
     if ((data->map[i][j] != fg) || (data->bkmap[i][j] != bg)) {
+        dirty(data, i, j);
+
         data->map[i][j] = fg;
         data->bkmap[i][j] = bg;
+
+        dirty(data, i, j);
+        /*
         data->mapDirty[i][j] = TRUE;
 
         RECT rect;
         nhcoord2display(data, i, j, &rect);
         InvalidateRect(data->hWnd, &rect, FALSE);
+        */
     }
 }
 
@@ -1152,6 +1292,38 @@ static void dirty(PNHMapWindow data, int x, int y)
     nhcoord2display(data, x, y, &rt); //data->xCur, data->yCur
 
     InvalidateRect(data->hWnd, &rt, FALSE);
+
+    int enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y])]];
+    int bk_enlarg = tile2enlargement[glyph2tile[abs(data->bkmap[x][y])]];
+    if (enlarg > 0 || bk_enlarg > 0)
+    {
+        int enl_x = -1;
+        int enl_y = -1;
+        for (int i = 0; i < MAX_FRAMES_PER_ENLARGEMENT; i++)
+        {
+            if (enlargements[enlarg].frame2tile[i] == -1 && enlargements[bk_enlarg].frame2tile[i] == -1)
+                continue;
+
+            if (i <= 2)
+                enl_x = x + i - 1;
+            else if (i == 3)
+                enl_x = x - 1;
+            else if (i == 4)
+                enl_x = x + 1;
+
+            if (i <= 2)
+                enl_y = y - 1;
+            else
+                enl_y = y;
+
+            if (isok(enl_x, enl_y))
+            {
+                data->mapDirty[enl_x][enl_y] = TRUE;
+                nhcoord2display(data, enl_x, enl_y, &rt);
+                InvalidateRect(data->hWnd, &rt, FALSE);
+            }
+        }
+    }
 }
 
 static void
