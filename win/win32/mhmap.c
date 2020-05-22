@@ -20,6 +20,7 @@
 #define MAXWINDOWTEXT 255
 
 #define ANIMATION_TIMER_INTERVAL 40 // milliseconds (25 FPS)
+#define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
 /* map window data */
@@ -646,7 +647,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         boolean asciimode = (data->bAsciiMode || Is_rogue_level(&u.uz));
         if ((asciimode && !win32_cursorblink)
             || (!asciimode && (!flags.blinking_cursor_on_tiles
-                    || (data->xCur == u.ux && data->yCur == u.uy && !flags.show_cursor_on_u && !flags.force_paint_at_cursor))
+                    || (/*data->xCur == u.ux && data->yCur == u.uy &&*/ !flags.show_cursor_on_u && !flags.force_paint_at_cursor))
                )
             )
         {
@@ -654,20 +655,24 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         else
         {
+
             if (data->interval_counter >= 0xCFFFFFFFUL)
                 data->interval_counter = 0UL;
             else
                 data->interval_counter++;
 
-            if (flags.force_paint_at_cursor)
+            if (flags.blinking_cursor_on_tiles && data->interval_counter % CURSOR_BLINK_IN_INTERVALS == 0)
             {
-                flags.force_paint_at_cursor = FALSE;
-                //data->cursorOn = TRUE;
-            }
-            else
-                data->cursorOn = !data->cursorOn;
+                if (flags.force_paint_at_cursor)
+                {
+                    flags.force_paint_at_cursor = FALSE;
+                    //data->cursorOn = TRUE;
+                }
+                else
+                    data->cursorOn = !data->cursorOn;
 
-            dirty(data, data->xCur, data->yCur);
+                dirty(data, data->xCur, data->yCur);
+            }
         }
         break;
     }
@@ -1177,7 +1182,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         if (
                             (!data->cursorOn && flags.blinking_cursor_on_tiles)
-                            || (i == u.ux && j == u.uy && !flags.show_cursor_on_u)
+                            || (/*i == u.ux && j == u.uy &&*/ !flags.show_cursor_on_u)
                             )
                         {
                             // Nothing, cursor is invisible

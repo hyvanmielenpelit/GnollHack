@@ -13,6 +13,46 @@
 #endif
 #include "skills.h"
 
+
+enum role_types
+{
+    ROLE_ARCHEOLOGIST = 0,
+    ROLE_BARBARIAN,
+    ROLE_CAVEMAN,
+    ROLE_HEALER,
+    ROLE_KNIGHT,
+    ROLE_MONK,
+    ROLE_PRIEST,
+    ROLE_ROGUE,
+    ROLE_RANGER,
+    ROLE_SAMURAI,
+    ROLE_TOURIST,
+    ROLE_VALKYRIE,
+    ROLE_WIZARD,
+    NUM_ROLES
+};
+
+
+enum race_types
+{
+    RACE_HUMAN = 0,
+    RACE_ELF,
+    RACE_DWARF,
+    RACE_GNOLL,
+    RACE_ORC,
+    NUM_RACES
+};
+
+
+enum gender_types
+{
+    GENDER_MALE = 0,
+    GENDER_FEMALE,
+    GENDER_NEUTER
+};
+
+
+
 /*** Substructures ***/
 
 struct RoleName {

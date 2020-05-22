@@ -2534,6 +2534,7 @@ player,normal,Wizard,elf,female,any,level-0,1,1,0
 player,normal,Wizard,orc,male,any,level-0,1,1,0
 player,normal,Wizard,orc,female,any,level-0,1,1,0
 player,attack,Archeologist,human,male,any,level-0,1,1,0
+player,attack,Wizard,elf,female,any,level-0,1,1,0
 user-interface,cursor,generic,1,1,0
 user-interface,cursor,look,1,1,0
 user-interface,cursor,teleport,1,1,0

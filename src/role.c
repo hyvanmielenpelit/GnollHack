@@ -2702,7 +2702,9 @@ boolean
 player_has_attack_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
-    if (roleidx == 0 && raceidx == 0 && genderidx == 0)
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
         return TRUE;
     else
         return FALSE;

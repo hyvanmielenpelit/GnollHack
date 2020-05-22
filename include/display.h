@@ -12,6 +12,9 @@
 #ifndef MONDATA_H
 #include "mondata.h" /* for mindless() */
 #endif
+#ifndef YOU_H
+#include "you.h"
+#endif
 
 /*
  * vobj_at()
@@ -320,8 +323,8 @@
  * The following are offsets used to convert to and from a glyph.
  */
 #define NUM_ZAP 10 /* number of zap beam types */
-#define NUM_ROLES 13
-#define NUM_RACES 5
+//#define NUM_ROLES 13
+//#define NUM_RACES 5
 #define NUM_PLAYER_GLYPH_LEVELS 1
 #define NUM_PLAYER_CHARACTERS NUM_ROLES * NUM_RACES * 2 * 3 * NUM_PLAYER_GLYPH_LEVELS
 #define CMAP_TYPE_CHAR_NUM (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS - MAX_SWALLOW_CHARS)
