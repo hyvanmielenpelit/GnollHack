@@ -432,13 +432,22 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_SPECIAL_ATTACK_OFF))
 #define female_item_using_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_ITEM_USE_OFF))
-#define female_doori_using_mon_to_glyph(mon, rng)                               \
+#define female_door_using_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DOOR_USE_OFF))
 
-#define any_mon_to_glyph(mon, rng)                               \
-    (((mon) == &youmonst ? flags.female : (mon)->female) ? \
-        (((mon) == &youmonst ? u.attacking : (mon)->attacking) ? female_attacking_mon_to_glyph(mon, rng) : female_mon_to_glyph(mon, rng)) \
-        : (((mon) == &youmonst ? u.attacking : (mon)->attacking) ? attacking_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng) ) )
+#define any_mon_to_glyph(mon, rng)    \
+  ((mon) == &youmonst ? u_to_glyph() : \
+   ( \
+        (mon)->attacking == ACTION_TILE_ATTACK ? ((mon)->female ? female_attacking_mon_to_glyph(mon, rng) : attacking_mon_to_glyph(mon, rng)) : \
+        (mon)->attacking == ACTION_TILE_THROW ? ((mon)->female ? female_throwing_mon_to_glyph(mon, rng) : throwing_mon_to_glyph(mon, rng)) : \
+        (mon)->attacking == ACTION_TILE_FIRE ? ((mon)->female ? female_firing_mon_to_glyph(mon, rng) : firing_mon_to_glyph(mon, rng)) : \
+        (mon)->attacking == ACTION_TILE_CAST ? ((mon)->female ? female_casting_mon_to_glyph(mon, rng) : casting_mon_to_glyph(mon, rng)) : \
+        (mon)->attacking == ACTION_TILE_SPECIAL_ATTACK ? ((mon)->female ? female_special_attacking_mon_to_glyph(mon, rng) : special_attacking_mon_to_glyph(mon, rng)) : \
+        (mon)->attacking == ACTION_TILE_ITEM_USE ? ((mon)->female ? female_item_using_mon_to_glyph(mon, rng) : item_using_mon_to_glyph(mon, rng)) : \
+        (mon)->attacking == ACTION_TILE_DOOR_USE ? ((mon)->female ? female_door_using_mon_to_glyph(mon, rng) : door_using_mon_to_glyph(mon, rng)) : \
+        ((mon)->female ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng)) \
+   ))
+
 #define any_pet_to_glyph(mon, rng)                               \
     (((mon) == &youmonst ? flags.female : (mon)->female) ? female_pet_to_glyph(mon, rng) : pet_to_glyph(mon, rng) )
 #define any_detected_mon_to_glyph(mon, rng)                               \

@@ -101,6 +101,7 @@ int shotlimit;
         dry_a_towel(obj, -1, FALSE);
 
     update_u_facing(TRUE);
+    update_u_attacking(obj && uwep && ammo_and_launcher(obj, uwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
 
     /* Multishot calculations
      * (potential volley of up to N missiles; default for N is 1)
@@ -270,6 +271,7 @@ int shotlimit;
     m_shot.n = m_shot.i = 0;
     m_shot.o = STRANGE_OBJECT;
     m_shot.s = FALSE;
+    update_u_attacking(ACTION_TILE_NO_ACTION);
 
     return 1;
 }

@@ -1728,13 +1728,16 @@ boolean atme;
 	else
 		spellcooldownleft(spell) = 0;
 
+	update_u_attacking(ACTION_TILE_CAST);
+
 	//Now check if successful
     chance = percent_success(spell);
     if (confused || (rnd(100) > chance)) {
         You("fail to cast the spell correctly.");
 		deduct_mana_cost(denergy / 2);
         context.botl = 1;
-        return 1;
+		update_u_attacking(ACTION_TILE_NO_ACTION);
+		return 1;
     }
 
 	deduct_mana_cost(denergy);
@@ -2120,11 +2123,11 @@ boolean atme;
 			"enchant");
 
 		otmp = getobj(enchant_objects, buf, 0, "");
-		if (!otmp)
+		if (!otmp || inaccessible_equipment(otmp, buf, FALSE))
+		{
+			update_u_attacking(ACTION_TILE_NO_ACTION);
 			return 0;
-
-		if (inaccessible_equipment(otmp, buf, FALSE))
-			return 0;
+		}
 
 		if (otmp && otmp != &zeroobj) {
 			switch (otyp)
@@ -2219,7 +2222,8 @@ boolean atme;
 	default:
         impossible("Unknown spell %d attempted.", spell);
         obfree(pseudo, (struct obj *) 0);
-        return 0;
+		update_u_attacking(ACTION_TILE_NO_ACTION);
+		return 0;
     }
 
 
@@ -2238,6 +2242,7 @@ boolean atme;
 		result = 0;
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
+	update_u_attacking(ACTION_TILE_NO_ACTION);
 
     return result;
 }

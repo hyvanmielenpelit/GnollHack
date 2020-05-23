@@ -4553,11 +4553,11 @@ uchar update_symbol;
 }
 
 void
-update_u_attacking(attack_on)
-boolean attack_on;
+update_u_attacking(attack_mode)
+uchar attack_mode;
 {
-	boolean attacking_before = u.attacking;
-	u.attacking = attack_on;
+	uchar attacking_before = u.attacking;
+	u.attacking = attack_mode;
 #ifdef USE_TILES
 	if (attacking_before != u.attacking)
 	{
@@ -4570,14 +4570,14 @@ boolean attack_on;
 }
 
 void
-update_m_attacking(mtmp, attack_on)
+update_m_attacking(mtmp, attack_mode)
 struct monst* mtmp;
-boolean attack_on;
+uchar attack_mode;
 {
 	if (!mtmp)
 		return;
-	boolean attacking_before = mtmp->attacking;
-	mtmp->attacking = attack_on;
+	uchar attacking_before = mtmp->attacking;
+	mtmp->attacking = attack_mode;
 #ifdef USE_TILES
 	if (canseemon(mtmp) && attacking_before != mtmp->attacking)
 	{

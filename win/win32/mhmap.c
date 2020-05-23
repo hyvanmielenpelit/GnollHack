@@ -1089,6 +1089,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
                         t_y = TILEBMP_Y(ntile);
 
+                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
                         if (opaque_background_drawn)
                         {
                             (*GetNHApp()->lpfnTransparentBlt)(
@@ -1122,6 +1123,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
+                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
                             data->xBackTile, data->yBackTile, data->tileDC, t_x,
@@ -1149,6 +1151,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         bmPetMarkOld =
                             SelectObject(hdcPetMark, GetNHApp()->bmpPetMark);
 
+                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
                             data->xBackTile, data->yBackTile, hdcPetMark, 0, 0,
@@ -1169,6 +1172,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         bmPileMarkOld = SelectObject(hdcPileMark,
                             GetNHApp()->bmpPileMark);
 
+                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
                             data->xBackTile, data->yBackTile, hdcPileMark, 0, 0,
@@ -1427,6 +1431,7 @@ onPaint(HWND hWnd)
     int frontWidth = COLNO * data->xFrontTile;
     int frontHeight = ROWNO * data->yFrontTile;
 
+    SetStretchBltMode(hFrontBufferDC, COLORONCOLOR);
     StretchBlt(hFrontBufferDC,
         data->map_orig.x - (data->xPos * data->xFrontTile),
         data->map_orig.y - (data->yPos * data->yFrontTile), frontWidth, frontHeight,

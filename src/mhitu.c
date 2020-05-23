@@ -714,7 +714,7 @@ register struct monst *mtmp;
         case AT_TENT:
             if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || !touch_petrifies(youmonst.data))) 
 			{
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_ATTACK);
                 if (foundyou)
 				{
                     if (tmp > (j = rnd(20 + i)))
@@ -731,7 +731,7 @@ register struct monst *mtmp;
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
@@ -740,9 +740,9 @@ register struct monst *mtmp;
             if ((!range2 && ((!hug_requires_two_previous_attacks(mtmp->data) && tmp > (j = rnd(20 + i))) || (hug_requires_two_previous_attacks(mtmp->data) && i >= 2 && sum[i - 1] && sum[i - 2])))
                 || mtmp == u.ustuck)
             {
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = hitmu(mtmp, mattk, (struct obj*)0);
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
@@ -751,18 +751,18 @@ register struct monst *mtmp;
                dochug(); don't gaze more than once per round. */
             if (mdat != &mons[PM_MEDUSA])
             {
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = gazemu(mtmp, mattk);
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
         case AT_EXPL: /* automatic hit if next to, and aimed at you */
             if (!range2)
             {
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = explmu(mtmp, mattk, foundyou);
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
@@ -770,7 +770,7 @@ register struct monst *mtmp;
             if (!range2) {
                 if (foundyou) 
                 {
-                    update_m_attacking(mtmp, TRUE);
+                    update_m_attacking(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                     if (u.uswallow
                         || (!mtmp->mspec_used && tmp > (j = rnd(20 + i)))) {
                         /* force swallowing monster to be displayed
@@ -780,7 +780,7 @@ register struct monst *mtmp;
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
                     }
-                    update_m_attacking(mtmp, FALSE);
+                    update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
                 } else if (is_animal(mtmp->data)) {
                     pline("%s gulps some air!", Monnam(mtmp));
                 } else {
@@ -796,26 +796,26 @@ register struct monst *mtmp;
         case AT_BREA:
             if (range2)
             {
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = breamu(mtmp, mattk);
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             /* Note: breamu takes care of displacement */
             break;
 		case AT_EYES:
             if (!is_blinded(mtmp) && !Reflecting && (!range2 || rn2(6))) /* Blinded already here to prevent continuous blinking */
             {
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = eyesmu(mtmp, mattk);
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
 			break;
 		case AT_SPIT:
             if (range2)
             {
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_FIRE);
                 sum[i] = spitmu(mtmp, mattk);
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             /* Note: spitmu takes care of displacement */
             break;
@@ -851,7 +851,7 @@ register struct monst *mtmp;
                         break;
                 }
 
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_ATTACK);
                 if (foundyou)
 				{
                     weaponattackcount++;
@@ -903,25 +903,25 @@ register struct monst *mtmp;
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
         case AT_MAGC:
 			if(!is_cancelled(mtmp) && !is_silenced(mtmp))
 			{
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_CAST);
                 if (range2)
 					sum[i] = buzzmu(mtmp, mattk);
 				else
 					sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
 		case AT_SMMN:
 			if (!has_summon_forbidden(mtmp))
 			{
-                update_m_attacking(mtmp, TRUE);
+                update_m_attacking(mtmp, ACTION_TILE_CAST);
                 if (mattk->adtyp == AD_DMNS)
 				{
 					/*  Special demon handling code */
@@ -1120,7 +1120,7 @@ register struct monst *mtmp;
                         }
                     }
                 }
-                update_m_attacking(mtmp, FALSE);
+                update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
             }
 
 			break;

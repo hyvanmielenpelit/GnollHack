@@ -404,6 +404,7 @@ _nhapply_image_transparent(HDC hDC, int x, int y, int width, int height,
     bmSaveOld = SelectObject(hdcSave, bmSave);
 
     /* copy source image because it is going to be overwritten */
+    SetStretchBltMode(hdcSave, COLORONCOLOR);
     StretchBlt(hdcSave, 0, 0, width, height, sourceDC, s_x, s_y, s_width,
         s_height, SRCCOPY);
 

@@ -6,6 +6,19 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+/* Action tiles */
+enum action_tile_types
+{
+    ACTION_TILE_NO_ACTION = 0,
+    ACTION_TILE_ATTACK = 1,
+    ACTION_TILE_THROW,
+    ACTION_TILE_FIRE,
+    ACTION_TILE_CAST,
+    ACTION_TILE_SPECIAL_ATTACK,
+    ACTION_TILE_ITEM_USE,
+    ACTION_TILE_DOOR_USE
+};
+
 
 /* Enlargement sets */
 #define MAX_FRAMES_PER_ENLARGEMENT 5

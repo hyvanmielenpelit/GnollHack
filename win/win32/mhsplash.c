@@ -234,6 +234,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         hdcBitmap = CreateCompatibleDC(hdc);
         SetBkMode(hdc, OPAQUE);
         OldBitmap = SelectObject(hdcBitmap, GetNHApp()->bmpSplash);
+        SetStretchBltMode(hdc, COLORONCOLOR);
         (*GetNHApp()->lpfnTransparentBlt)(hdc,
             splashData->offset_x, splashData->offset_y,
             splashData->width, splashData->height, hdcBitmap,

@@ -1072,6 +1072,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
             y = (lpdis->rcItem.bottom + lpdis->rcItem.top - checkYScaled) / 2;
             bmpSaved = SelectBitmap(data->bmpDC, bmpCheck);
+            SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
             StretchBlt(lpdis->hDC, x, y, checkXScaled, checkYScaled,
                 data->bmpDC, 0, 0,  CHECK_WIDTH, CHECK_HEIGHT, SRCCOPY);
             SelectObject(data->bmpDC, bmpSaved);
@@ -1124,9 +1125,10 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
             y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 
+            SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
             if (GetNHApp()->bmpMapTiles == GetNHApp()->bmpTiles) {
                 /* using original GnollHack tiles - apply image transparently */
-                (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x, y, 
+                (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x, y,
                                           tileXScaled, tileYScaled,
                                           tileDC, t_x, t_y, multiplier * TILE_X, TILE_Y / 2, /* Use lower part of the tile only */
                                           TILE_BK_COLOR);

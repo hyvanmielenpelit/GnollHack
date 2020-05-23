@@ -338,7 +338,7 @@ struct obj *otmp, *mwep;
 	if (!mtmp)
 		return;
 
-    update_m_attacking(mtmp, TRUE);
+    update_m_attacking(mtmp, otmp && mwep && ammo_and_launcher(otmp, mwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
 
     struct monst *mtarg = target;
 
@@ -393,7 +393,7 @@ struct obj *otmp, *mwep;
     m_shot.o = STRANGE_OBJECT;
     m_shot.s = FALSE;
 
-    update_m_attacking(mtmp, FALSE);
+    update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
 
 }
 
@@ -1603,7 +1603,7 @@ struct monst *mtmp;
             || !couldsee(mtmp->mx, mtmp->my))
             return; /* Out of range, or intervening wall */
 
-        update_m_attacking(mtmp, TRUE);
+        update_m_attacking(mtmp, ACTION_TILE_ATTACK);
 
         if (canseemon(mtmp)) {
             onm = xname(otmp);
@@ -1632,7 +1632,7 @@ struct monst *mtmp;
 
         (void) thitu(hitv, dam, &otmp, (char *) 0);
 
-        update_m_attacking(mtmp, FALSE);
+        update_m_attacking(mtmp, ACTION_TILE_NO_ACTION);
         stop_occupation();
         return;
     }

@@ -2888,8 +2888,8 @@ E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
 E void FDECL(get_game_difficulty_multipliers, (double*, double*));
 E void FDECL(update_u_facing, (uchar));
-E void FDECL(update_u_attacking, (boolean));
-E void FDECL(update_m_attacking, (struct monst*, boolean));
+E void FDECL(update_u_attacking, (uchar));
+E void FDECL(update_m_attacking, (struct monst*, uchar));
 
 /* ### unixmain.c ### */
 

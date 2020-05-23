@@ -193,6 +193,7 @@ NHRIPWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         OldBitmap = SelectObject(hdcBitmap, GetNHApp()->bmpRip);
         SetBkMode(hdc, OPAQUE);
         bitmap_offset = (textrect.right - textrect.left - data->width) / 2;
+        SetStretchBltMode(hdc, COLORONCOLOR);
         StretchBlt(hdc, textrect.left + bitmap_offset, textrect.bottom,
             data->width, data->height, 
             hdcBitmap, 0, 0, RIP_WIDTH, RIP_HEIGHT, SRCCOPY);

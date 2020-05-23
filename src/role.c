@@ -2651,8 +2651,15 @@ u_to_glyph()
     if (Upolyd)
     {
         return (u.facing_right ? -1 : 1) * 
-            (u.attacking ? (flags.female ? female_attacking_monnum_to_glyph(u.umonnum) : attacking_monnum_to_glyph(u.umonnum))
-            : ((flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum))));
+            (
+                u.attacking == ACTION_TILE_ATTACK ? (flags.female ? female_attacking_monnum_to_glyph(u.umonnum) : attacking_monnum_to_glyph(u.umonnum))
+                : u.attacking == ACTION_TILE_THROW ? (flags.female ? female_throwing_monnum_to_glyph(u.umonnum) : throwing_monnum_to_glyph(u.umonnum))
+                : u.attacking == ACTION_TILE_FIRE ? (flags.female ? female_firing_monnum_to_glyph(u.umonnum) : firing_monnum_to_glyph(u.umonnum))
+                : u.attacking == ACTION_TILE_CAST ? (flags.female ? female_casting_monnum_to_glyph(u.umonnum) : casting_monnum_to_glyph(u.umonnum))
+                : u.attacking == ACTION_TILE_SPECIAL_ATTACK ? (flags.female ? female_special_attacking_monnum_to_glyph(u.umonnum) : special_attacking_monnum_to_glyph(u.umonnum))
+                : u.attacking == ACTION_TILE_ITEM_USE ? (flags.female ? female_item_using_monnum_to_glyph(u.umonnum) : item_using_monnum_to_glyph(u.umonnum))
+                : u.attacking == ACTION_TILE_DOOR_USE ? (flags.female ? female_door_using_monnum_to_glyph(u.umonnum) : door_using_monnum_to_glyph(u.umonnum))
+                : ((flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum))));
     }
 
     int player_role = urole.rolenum;
@@ -2661,7 +2668,16 @@ u_to_glyph()
     int player_alignment = u.ualign.type + 1; /* 0...2 */
     int player_glyph_level = 0;
     int player_glyph_index = player_to_glyph_index(player_role, player_race, player_gender, player_alignment, player_glyph_level);
-    int player_glyph_offset = (u.attacking ? GLYPH_PLAYER_ATTACK_OFF : GLYPH_PLAYER_OFF);
+    int player_glyph_offset = (
+        u.attacking == ACTION_TILE_ATTACK ? GLYPH_PLAYER_ATTACK_OFF 
+        : u.attacking == ACTION_TILE_THROW ? GLYPH_PLAYER_THROW_OFF
+        : u.attacking == ACTION_TILE_FIRE ? GLYPH_PLAYER_FIRE_OFF
+        : u.attacking == ACTION_TILE_CAST ? GLYPH_PLAYER_CAST_OFF
+        : u.attacking == ACTION_TILE_SPECIAL_ATTACK ? GLYPH_PLAYER_SPECIAL_ATTACK_OFF
+        : u.attacking == ACTION_TILE_ITEM_USE ? GLYPH_PLAYER_ITEM_USE_OFF
+        : u.attacking == ACTION_TILE_DOOR_USE ? GLYPH_PLAYER_DOOR_USE_OFF
+        : GLYPH_PLAYER_OFF);
+
     int res = (u.facing_right ? -1 : 1) * (player_glyph_index + player_glyph_offset);
 
     return res;
