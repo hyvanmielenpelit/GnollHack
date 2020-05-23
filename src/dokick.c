@@ -1120,7 +1120,7 @@ dokick() {
         return 0;
 
     update_u_facing(TRUE);
-    update_u_attacking(ACTION_TILE_ATTACK);
+    update_u_attacking(ACTION_TILE_KICK);
 
     x = u.ux + u.dx;
     y = u.uy + u.dy;
