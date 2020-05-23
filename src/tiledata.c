@@ -88,7 +88,7 @@ short* tilemaparray;
 
     /* Monster tiles */
     tile_section_name = "monsters";
-    const char* monster_set_name_array[13] = { "normal", "pet", "detect", "body", "ridden", "attack", "statue", "throw", "fire", "cast", "special-attack", "item-use", "door-use" };
+    const char* monster_set_name_array[13] = { "normal", "pet", "detect", "body", "ridden", "attack", "throw", "fire", "cast", "special-attack", "item-use", "door-use", "statue" };
     int mon_glyph_offset_array[13] = { GLYPH_MON_OFF, GLYPH_PET_OFF, GLYPH_DETECT_OFF, GLYPH_BODY_OFF, GLYPH_RIDDEN_OFF,
         GLYPH_ATTACK_OFF, GLYPH_THROW_OFF, GLYPH_FIRE_OFF, GLYPH_CAST_OFF, GLYPH_SPECIAL_ATTACK_OFF,
         GLYPH_ITEM_USE_OFF, GLYPH_DOOR_USE_OFF, GLYPH_STATUE_OFF };

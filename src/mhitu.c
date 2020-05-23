@@ -824,9 +824,7 @@ register struct monst *mtmp;
 			{
                 if (!Is_rogue_level(&u.uz))
                 {
-                    update_m_attacking(mtmp, TRUE);
                     thrwmu(mtmp);
-                    update_m_attacking(mtmp, FALSE);
                 }
             }
 			else
@@ -852,9 +850,10 @@ register struct monst *mtmp;
                     if (mon_wield_item(mtmp, FALSE) != 0)
                         break;
                 }
+
+                update_m_attacking(mtmp, TRUE);
                 if (foundyou)
 				{
-                    update_m_attacking(mtmp, TRUE);
                     weaponattackcount++;
 					if(is_multiweaponmonster(mtmp->data))
 						mon_currwep = select_multiweapon_nth_hwep(mtmp, weaponattackcount);

@@ -338,6 +338,8 @@ struct obj *otmp, *mwep;
 	if (!mtmp)
 		return;
 
+    update_m_attacking(mtmp, TRUE);
+
     struct monst *mtarg = target;
 
 	//This is monster's weapon range -- looks like unlimited
@@ -390,6 +392,9 @@ struct obj *otmp, *mwep;
     m_shot.n = m_shot.i = 0;
     m_shot.o = STRANGE_OBJECT;
     m_shot.s = FALSE;
+
+    update_m_attacking(mtmp, FALSE);
+
 }
 
 /* an object launched by someone/thing other than player attacks a monster;
@@ -1598,6 +1603,8 @@ struct monst *mtmp;
             || !couldsee(mtmp->mx, mtmp->my))
             return; /* Out of range, or intervening wall */
 
+        update_m_attacking(mtmp, TRUE);
+
         if (canseemon(mtmp)) {
             onm = xname(otmp);
             pline("%s thrusts %s.", Monnam(mtmp),
@@ -1625,6 +1632,7 @@ struct monst *mtmp;
 
         (void) thitu(hitv, dam, &otmp, (char *) 0);
 
+        update_m_attacking(mtmp, FALSE);
         stop_occupation();
         return;
     }
