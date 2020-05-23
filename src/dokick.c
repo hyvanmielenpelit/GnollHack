@@ -1120,6 +1120,7 @@ dokick() {
         return 0;
 
     update_u_facing(TRUE);
+    update_u_attacking(ACTION_TILE_ATTACK);
 
     x = u.ux + u.dx;
     y = u.uy + u.dy;
@@ -1151,12 +1152,14 @@ dokick() {
             Your("feeble kick has no effect.");
             break;
         }
+        update_u_attacking(ACTION_TILE_NO_ACTION);
         return 1;
     } 
 	else if (u.utrap && u.utraptype == TT_PIT) 
 	{
         /* must be Passes_walls */
         You("kick at the side of the pit.");
+        update_u_attacking(ACTION_TILE_NO_ACTION);
         return 1;
     }
     if (Levitation) 
@@ -1174,6 +1177,7 @@ dokick() {
             && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
 		{
             You("have nothing to brace yourself against.");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return 0;
         }
     }
@@ -1187,7 +1191,10 @@ dokick() {
 	{
         oldglyph = glyph_at(x, y);
         if (!maybe_kick_monster(mtmp, x, y))
+        {
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return context.move;
+        }
     }
 
     wake_nearby();
@@ -1249,12 +1256,14 @@ dokick() {
                 range = 1;
             hurtle(-u.dx, -u.dy, range, TRUE);
         }
+        update_u_attacking(ACTION_TILE_NO_ACTION);
         return 1;
     }
     (void) unmap_invisible(x, y);
     if (is_pool(x, y) ^ !!u.uinwater) {
         /* objects normally can't be removed from water by kicking */
         You("splash some %s around.", hliquid("water"));
+        update_u_attacking(ACTION_TILE_NO_ACTION);
         return 1;
     }
 
@@ -1265,6 +1274,8 @@ dokick() {
 		{
             if (Is_airlevel(&u.uz))
                 hurtle(-u.dx, -u.dy, 1, TRUE); /* assume it's light */
+
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return 1;
         }
         goto ouch;
@@ -1291,6 +1302,8 @@ dokick() {
                 if (maploc->doormask == D_ISOPEN
                     || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS)
                     unblock_point(x, y); /* vision */
+
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else
                 goto ouch;
@@ -1306,6 +1319,7 @@ dokick() {
                     newsym(x, y - 1);
 #endif
                 unblock_point(x, y); /* vision */
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else
                 goto ouch;
@@ -1325,6 +1339,7 @@ dokick() {
                     newsym(x, y);
                 }
                 exercise(A_DEX, TRUE);
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (Luck > 0 && !rn2(3) && !maploc->looted) {
                 (void) mkgold((long) rn1(201, 300), x, y);
@@ -1343,10 +1358,12 @@ dokick() {
                 }
                 /* prevent endless milking */
                 maploc->looted = T_LOOTED;
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!rn2(4)) {
                 if (dunlev(&u.uz) < dunlevs_in_dungeon(&u.uz)) {
                     fall_through(FALSE);
+                    update_u_attacking(ACTION_TILE_NO_ACTION);
                     return 1;
                 } else
                     goto ouch;
@@ -1361,6 +1378,7 @@ dokick() {
                 goto ouch;
             altar_wrath(x, y);
             exercise(A_DEX, TRUE);
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return 1;
         }
         if (IS_FOUNTAIN(maploc->typ)) {
@@ -1376,6 +1394,7 @@ dokick() {
                     /* could cause short-lived fumbling here */
                 }
             exercise(A_DEX, TRUE);
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return 1;
         }
         if (IS_GRAVE(maploc->typ)) {
@@ -1398,6 +1417,7 @@ dokick() {
                 pline_The("headstone topples over and breaks!");
                 newsym(x, y);
             }
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return 1;
         }
         if (maploc->typ == IRONBARS)
@@ -1439,6 +1459,7 @@ dokick() {
                 exercise(A_WIS, TRUE); /* discovered a new food source! */
                 newsym(x, y);
                 maploc->looted |= TREE_LOOTED;
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!(maploc->looted & TREE_SWARM)) {
                 int cnt = rnl(4) + 2;
@@ -1458,6 +1479,7 @@ dokick() {
                 else
                     You("smell stale honey.");
                 maploc->looted |= TREE_SWARM;
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             }
             goto ouch;
@@ -1476,6 +1498,7 @@ dokick() {
                 else
                     pline("Klunk!");
                 exercise(A_DEX, TRUE);
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!(maploc->looted & S_LPUDDING) && !rn2(3)
                        && !(mvitals[PM_BLACK_PUDDING].mvflags & G_GONE)) {
@@ -1488,6 +1511,7 @@ dokick() {
                 exercise(A_DEX, TRUE);
                 newsym(x, y);
                 maploc->looted |= S_LPUDDING;
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!(maploc->looted & S_LDWASHER) && !rn2(3)
                        && !(mvitals[washerndx].mvflags & G_GONE)) {
@@ -1497,6 +1521,7 @@ dokick() {
                     newsym(x, y);
                 maploc->looted |= S_LDWASHER;
                 exercise(A_DEX, TRUE);
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             } else if (!rn2(3)) {
                 pline("Flupp!  %s.",
@@ -1511,6 +1536,7 @@ dokick() {
                     exercise(A_WIS, TRUE); /* a discovery! */
                     maploc->looted |= S_LRING;
                 }
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 1;
             }
             goto ouch;
@@ -1539,6 +1565,7 @@ dokick() {
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), kickstr(buf, kickobjnam), KILLED_BY);
             if (Is_airlevel(&u.uz) || Levitation)
                 hurtle(-u.dx, -u.dy, rn1(2, 4), TRUE); /* assume it's heavy */
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return 1;
         }
         goto dumb;
@@ -1559,6 +1586,7 @@ dokick() {
         }
         if ((Is_airlevel(&u.uz) || Levitation) && rn2(2))
             hurtle(-u.dx, -u.dy, 1, TRUE);
+        update_u_attacking(ACTION_TILE_NO_ACTION);
         return 1; /* uses a turn */
     }
 
@@ -1638,6 +1666,7 @@ dokick() {
                 }
             }
     }
+    update_u_attacking(ACTION_TILE_NO_ACTION);
     return 1;
 }
 

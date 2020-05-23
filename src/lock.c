@@ -363,6 +363,7 @@ struct obj *pick;
     if (!get_adjacent_loc((char *) 0, "Invalid location!", u.ux, u.uy, &cc))
         return PICKLOCK_DID_NOTHING;
 
+    update_u_attacking(ACTION_TILE_DOOR_USE);
     if (cc.x == u.ux && cc.y == u.uy) { /* pick lock on a container */
         const char *verb;
         char qsfx[QBUFSZ];
@@ -372,12 +373,15 @@ struct obj *pick;
         if (u.dz < 0) {
             There("isn't any sort of lock up %s.",
                   Levitation ? "here" : "there");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         } else if (is_lava(u.ux, u.uy)) {
             pline("Doing that would probably melt %s.", yname(pick));
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         } else if (is_pool(u.ux, u.uy) && !Underwater) {
             pline_The("%s has no lock.", hliquid("water"));
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
 
@@ -388,6 +392,7 @@ struct obj *pick;
                 ++count;
                 if (!can_reach_floor(TRUE)) {
                     You_cant("reach %s from up here.", the(xname(otmp)));
+                    update_u_attacking(ACTION_TILE_NO_ACTION);
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
                 it = 0;
@@ -414,11 +419,13 @@ struct obj *pick;
 
                 if (otmp->obroken) {
                     You_cant("fix its broken lock with %s.", doname(pick));
+                    update_u_attacking(ACTION_TILE_NO_ACTION);
                     return PICKLOCK_LEARNED_SOMETHING;
                 } else if (picktyp == CREDIT_CARD && !otmp->olocked) {
                     /* credit cards are only good for unlocking */
                     You_cant("do that with %s.",
                              an(simple_typename(picktyp)));
+                    update_u_attacking(ACTION_TILE_NO_ACTION);
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
                 switch (picktyp) {
@@ -444,6 +451,7 @@ struct obj *pick;
         if (c != 'y') {
             if (!count)
                 There("doesn't seem to be any sort of lock here.");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING; /* decided against all boxes */
         }
     } else { /* pick the lock in a door */
@@ -451,6 +459,7 @@ struct obj *pick;
 
         if (u.utrap && u.utraptype == TT_PIT) {
             You_cant("reach over the edge of the pit.");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
 
@@ -464,12 +473,14 @@ struct obj *pick;
             else
                 pline("I don't think %s would appreciate that.",
                       mon_nam(mtmp));
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         } else if (mtmp && is_door_mappear(mtmp)) {
             /* "The door actually was a <mimic>!" */
             stumble_onto_mimic(mtmp);
             /* mimic might keep the key (50% chance, 10% for PYEC or MKoT) */
             maybe_absorb_item(mtmp, pick, 50, 10);
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
         if (!IS_DOOR(door->typ)) {
@@ -477,25 +488,31 @@ struct obj *pick;
                 You("%s no lock on the drawbridge.", Blind ? "feel" : "see");
             else
                 You("%s no door there.", Blind ? "feel" : "see");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
         switch (door->doormask) {
         case D_NODOOR:
             pline("This doorway has no door.");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         case D_ISOPEN:
             You("cannot lock an open door.");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         case D_BROKEN:
             pline("This door is broken.");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         case D_PORTCULLIS:
             pline("There is no lock on the portcullis.");
+            update_u_attacking(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         default:
             /* credit cards are only good for unlocking */
             if (picktyp == CREDIT_CARD && !(door->doormask & D_LOCKED)) {
                 You_cant("lock a door with a credit card.");
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return PICKLOCK_LEARNED_SOMETHING;
             }
 
@@ -504,8 +521,10 @@ struct obj *pick;
 
             c = yn_query(qbuf);
             if (c == 'n')
+            {
+                update_u_attacking(ACTION_TILE_NO_ACTION);
                 return 0;
-
+            }
             switch (picktyp) {
             case CREDIT_CARD:
                 ch = 2 * ACURR(A_DEX) + 20 * Role_if(PM_ROGUE);
@@ -529,6 +548,7 @@ struct obj *pick;
     xlock.magic_key = is_magic_key(&youmonst, pick);
     xlock.usedtime = 0;
     set_occupation(picklock, lock_action(), 0);
+    update_u_attacking(ACTION_TILE_NO_ACTION);
     return PICKLOCK_DID_SOMETHING;
 }
 
@@ -723,9 +743,7 @@ int x, y;
 
     if (!(door->doormask & D_CLOSED)) {
         const char *mesg;
-#ifdef ANDROID
-		int locked = FALSE;
-#endif
+		boolean locked = FALSE;
 
         switch (door->doormask) {
         case D_BROKEN:
@@ -742,9 +760,8 @@ int x, y;
             break;
         default:
             mesg = " is locked";
-#ifdef ANDROID
+            update_u_attacking(ACTION_TILE_DOOR_USE);
 			locked = TRUE;
-#endif
 			break;
         }
         pline("This %s%s.", door_name, mesg);
@@ -753,7 +770,9 @@ int x, y;
 			autokick();
 		}
 #endif
-		return res;
+        if(locked)
+            update_u_attacking(ACTION_TILE_NO_ACTION);
+        return res;
     }
 
     if (verysmall(youmonst.data)) {
@@ -762,6 +781,7 @@ int x, y;
     }
 
     /* door is known to be CLOSED */
+    update_u_attacking(ACTION_TILE_DOOR_USE);
     if (rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
         pline_The("%s opens.", door_name);
         if (door->doormask & D_TRAPPED) {
@@ -777,6 +797,7 @@ int x, y;
         exercise(A_STR, TRUE);
         pline_The("%s resists!", door_name);
     }
+    update_u_attacking(ACTION_TILE_NO_ACTION);
 
     return 1;
 }
@@ -902,6 +923,7 @@ doclose()
             pline("You're too small to push the door closed.");
             return res;
         }
+        update_u_attacking(ACTION_TILE_DOOR_USE);
         if (u.usteed
             || rn2(25) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
             pline_The("door closes.");
@@ -912,6 +934,7 @@ doclose()
             exercise(A_STR, TRUE);
             pline_The("door resists!");
         }
+        update_u_attacking(ACTION_TILE_NO_ACTION);
     }
 
     return 1;
