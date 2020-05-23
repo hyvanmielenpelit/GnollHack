@@ -385,9 +385,6 @@ register struct monst *magr, *mdef;
 		int multistrike = 1;
 		int multistrikernd = 0;
 
-        if(mattk->aatyp != AT_NONE && mattk->aatyp != AT_WEAP)
-            update_m_attacking(magr, TRUE);
-
 		switch (mattk->aatyp) {
         case AT_WEAP: /* "hand to hand" attacks */
             if (distmin(magr->mx, magr->my, mdef->mx, mdef->my) > 1) {
@@ -457,11 +454,9 @@ register struct monst *magr, *mdef;
 			int mdef_x = mdef->mx;
 			int mdef_y = mdef->my;
 
-			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+            update_m_attacking(magr, TRUE);
+            for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
-                if (mattk->aatyp == AT_WEAP)
-                    update_m_attacking(magr, TRUE);
-
 				boolean endforloop = FALSE;
 
 				if (otmp)
@@ -556,26 +551,29 @@ register struct monst *magr, *mdef;
 				else
 					missmm(magr, mdef, mattk);
 
-                if (mattk->aatyp == AT_WEAP)
-                    update_m_attacking(magr, FALSE);
-
 
 
 				if(endforloop || DEADMONSTER(mdef) || DEADMONSTER(magr) || m_at(mdef_x, mdef_y) != mdef)
 					break;
 			}
+            update_m_attacking(magr, FALSE);
+
             break;
 
         case AT_HUGS: /* automatic if prev two attacks succeed */
+            update_m_attacking(magr, TRUE);
             strike = (i >= 2 && res[i - 1] == MM_HIT && res[i - 2] == MM_HIT);
             if (strike)
                 res[i] = hitmm(magr, mdef, mattk, (struct obj*)0);
+            update_m_attacking(magr, FALSE);
 
             break;
 
         case AT_GAZE:
             strike = 0;
+            update_m_attacking(magr, TRUE);
             res[i] = gazemm(magr, mdef, mattk);
+            update_m_attacking(magr, FALSE);
             break;
 
         case AT_EXPL:
@@ -600,18 +598,22 @@ register struct monst *magr, *mdef;
             if (distmin(magr->mx, magr->my, mdef->mx, mdef->my) > 1)
                 continue;
             /* Engulfing attacks are directed at the hero if possible. -dlc */
+            update_m_attacking(magr, TRUE);
             if (u.uswallow && magr == u.ustuck)
                 strike = 0;
             else if ((strike = (tmp > rnd(20 + i))) != 0)
                 res[i] = gulpmm(magr, mdef, mattk);
             else
                 missmm(magr, mdef, mattk);
+            update_m_attacking(magr, FALSE);
             break;
 
         case AT_BREA:
             if (!monnear(magr, mdef->mx, mdef->my))
 			{
+                update_m_attacking(magr, TRUE);
                 strike = breamm(magr, mattk, mdef);
+                update_m_attacking(magr, FALSE);
 
                 /* We don't really know if we hit or not; pretend we did. */
                 if (strike)
@@ -627,9 +629,12 @@ register struct monst *magr, *mdef;
 
 		case AT_EYES:
 			strike = 0;
-			if ((monnear(magr, mdef->mx, mdef->my) || rn2(6)) && !is_reflecting(mdef) && !is_blinded(magr))
-				strike = eyesmm(magr, mattk, mdef);
-
+            if ((monnear(magr, mdef->mx, mdef->my) || rn2(6)) && !is_reflecting(mdef) && !is_blinded(magr))
+            {
+                update_m_attacking(magr, TRUE);
+                strike = eyesmm(magr, mattk, mdef);
+                update_m_attacking(magr, FALSE);
+            }
 			/* We don't really know if we hit or not; pretend we did. */
 			if (strike)
 				res[i] |= MM_HIT;
@@ -642,7 +647,9 @@ register struct monst *magr, *mdef;
         case AT_MAGC:
             if (!monnear(magr, mdef->mx, mdef->my))
             {
+                update_m_attacking(magr, TRUE);
                 strike = buzzmm(magr, mattk, mdef);
+                update_m_attacking(magr, FALSE);
 
                 /* We don't really know if we hit or not; pretend we did. */
                 if (strike)
@@ -658,7 +665,9 @@ register struct monst *magr, *mdef;
 
         case AT_SPIT:
             if (!monnear(magr, mdef->mx, mdef->my)) {
+                update_m_attacking(magr, TRUE);
                 strike = spitmm(magr, mattk, mdef);
+                update_m_attacking(magr, FALSE);
 
                 /* We don't really know if we hit or not; pretend we did. */
                 if (strike)
@@ -679,9 +688,6 @@ register struct monst *magr, *mdef;
         if (attk && !(res[i] & MM_AGR_DIED)
             && distmin(magr->mx, magr->my, mdef->mx, mdef->my) <= 1)
             res[i] = passivemm(magr, mdef, strike, res[i] & MM_DEF_DIED);
-
-        if (mattk->aatyp != AT_NONE && mattk->aatyp != AT_WEAP)
-            update_m_attacking(magr, FALSE);
 
         if (res[i] & MM_DEF_DIED)
             return res[i];

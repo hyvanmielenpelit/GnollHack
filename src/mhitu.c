@@ -702,9 +702,6 @@ register struct monst *mtmp;
 		if (mtmp->data->heads > 1 && mtmp->heads_left < bite_butt_count)
 			continue;
 
-        if (mattk->aatyp != AT_NONE)
-            update_m_attacking(mtmp, TRUE);
-
         switch (mattk->aatyp) {
         case AT_CLAW: /* "hand to hand" attacks */
         case AT_KICK:
@@ -717,21 +714,24 @@ register struct monst *mtmp;
         case AT_TENT:
             if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || !touch_petrifies(youmonst.data))) 
 			{
-                if (foundyou) 
+                update_m_attacking(mtmp, TRUE);
+                if (foundyou)
 				{
-                    if (tmp > (j = rnd(20 + i))) 
+                    if (tmp > (j = rnd(20 + i)))
 					{
                         if (mattk->aatyp != AT_KICK || !thick_skinned(youmonst.data))
                             sum[i] = hitmu(mtmp, mattk, (struct obj*) 0);
                     } else
                         missmu(mtmp, (tmp == j), mattk);
-                } 
+
+                }
 				else
 				{
                     wildmiss(mtmp, mattk);
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
+                update_m_attacking(mtmp, FALSE);
             }
             break;
 
@@ -739,24 +739,38 @@ register struct monst *mtmp;
             /* Note: if displaced, prev attacks never succeeded */
             if ((!range2 && ((!hug_requires_two_previous_attacks(mtmp->data) && tmp > (j = rnd(20 + i))) || (hug_requires_two_previous_attacks(mtmp->data) && i >= 2 && sum[i - 1] && sum[i - 2])))
                 || mtmp == u.ustuck)
-                sum[i] = hitmu(mtmp, mattk, (struct obj*) 0);
+            {
+                update_m_attacking(mtmp, TRUE);
+                sum[i] = hitmu(mtmp, mattk, (struct obj*)0);
+                update_m_attacking(mtmp, FALSE);
+            }
             break;
 
         case AT_GAZE: /* can affect you either ranged or not */
             /* Medusa gaze already operated through m_respond in
                dochug(); don't gaze more than once per round. */
             if (mdat != &mons[PM_MEDUSA])
+            {
+                update_m_attacking(mtmp, TRUE);
                 sum[i] = gazemu(mtmp, mattk);
+                update_m_attacking(mtmp, FALSE);
+            }
             break;
 
         case AT_EXPL: /* automatic hit if next to, and aimed at you */
             if (!range2)
+            {
+                update_m_attacking(mtmp, TRUE);
                 sum[i] = explmu(mtmp, mattk, foundyou);
+                update_m_attacking(mtmp, FALSE);
+            }
             break;
 
         case AT_ENGL:
             if (!range2) {
-                if (foundyou) {
+                if (foundyou) 
+                {
+                    update_m_attacking(mtmp, TRUE);
                     if (u.uswallow
                         || (!mtmp->mspec_used && tmp > (j = rnd(20 + i)))) {
                         /* force swallowing monster to be displayed
@@ -766,6 +780,7 @@ register struct monst *mtmp;
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
                     }
+                    update_m_attacking(mtmp, FALSE);
                 } else if (is_animal(mtmp->data)) {
                     pline("%s gulps some air!", Monnam(mtmp));
                 } else {
@@ -780,23 +795,39 @@ register struct monst *mtmp;
             break;
         case AT_BREA:
             if (range2)
+            {
+                update_m_attacking(mtmp, TRUE);
                 sum[i] = breamu(mtmp, mattk);
+                update_m_attacking(mtmp, FALSE);
+            }
             /* Note: breamu takes care of displacement */
             break;
 		case AT_EYES:
-			if(!is_blinded(mtmp) && !Reflecting && (!range2 || rn2(6))) /* Blinded already here to prevent continuous blinking */
-				sum[i] = eyesmu(mtmp, mattk);
+            if (!is_blinded(mtmp) && !Reflecting && (!range2 || rn2(6))) /* Blinded already here to prevent continuous blinking */
+            {
+                update_m_attacking(mtmp, TRUE);
+                sum[i] = eyesmu(mtmp, mattk);
+                update_m_attacking(mtmp, FALSE);
+            }
 			break;
 		case AT_SPIT:
             if (range2)
+            {
+                update_m_attacking(mtmp, TRUE);
                 sum[i] = spitmu(mtmp, mattk);
+                update_m_attacking(mtmp, FALSE);
+            }
             /* Note: spitmu takes care of displacement */
             break;
         case AT_WEAP:
             if (range2) 
 			{
                 if (!Is_rogue_level(&u.uz))
+                {
+                    update_m_attacking(mtmp, TRUE);
                     thrwmu(mtmp);
+                    update_m_attacking(mtmp, FALSE);
+                }
             }
 			else
 			{
@@ -823,7 +854,8 @@ register struct monst *mtmp;
                 }
                 if (foundyou)
 				{
-					weaponattackcount++;
+                    update_m_attacking(mtmp, TRUE);
+                    weaponattackcount++;
 					if(is_multiweaponmonster(mtmp->data))
 						mon_currwep = select_multiweapon_nth_hwep(mtmp, weaponattackcount);
 					else
@@ -844,10 +876,8 @@ register struct monst *mtmp;
 					if (multistrikernd > 0)
 						multistrike += rn2(multistrikernd + 1);
 
-					for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
+                    for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 					{
-                        update_m_attacking(mtmp, TRUE);
-
 						if (mon_currwep)
 						{
 							if (strikeindex == 0)
@@ -866,7 +896,6 @@ register struct monst *mtmp;
 						else
 							missmu(mtmp, (tmp == j), mattk);
 
-                        update_m_attacking(mtmp, FALSE);
 					}
                 } 
 				else
@@ -875,22 +904,26 @@ register struct monst *mtmp;
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
+                update_m_attacking(mtmp, FALSE);
             }
             break;
         case AT_MAGC:
 			if(!is_cancelled(mtmp) && !is_silenced(mtmp))
 			{
-				if (range2)
+                update_m_attacking(mtmp, TRUE);
+                if (range2)
 					sum[i] = buzzmu(mtmp, mattk);
 				else
 					sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
-			}
+                update_m_attacking(mtmp, FALSE);
+            }
             break;
 
 		case AT_SMMN:
 			if (!has_summon_forbidden(mtmp))
 			{
-				if (mattk->adtyp == AD_DMNS)
+                update_m_attacking(mtmp, TRUE);
+                if (mattk->adtyp == AD_DMNS)
 				{
 					/*  Special demon handling code */
 					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
@@ -911,7 +944,7 @@ register struct monst *mtmp;
 								pline("%s attempts to gate in some help, but nothing happens.", Monnam(mtmp));
 						}
 					}
-				}
+                }
 				else if (mattk->adtyp == AD_LYCA)
 				{
 					/*  Special lycanthrope handling code */
@@ -1088,6 +1121,7 @@ register struct monst *mtmp;
                         }
                     }
                 }
+                update_m_attacking(mtmp, FALSE);
             }
 
 			break;
@@ -1104,9 +1138,6 @@ register struct monst *mtmp;
                 nomovemsg = "The combat suddenly awakens you.";
             }
         }
-
-        if (mattk->aatyp != AT_NONE)
-            update_m_attacking(mtmp, FALSE);
 
         if (sum[i] == 2)
             return 1; /* attacker dead */

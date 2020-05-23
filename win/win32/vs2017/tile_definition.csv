@@ -490,494 +490,494 @@ monsters,base,body,orc,1,1,0
 monsters,base,body,hill orc,1,1,0
 monsters,base,attack,goblin,1,1,0
 monsters,base,attack,hobgoblin,1,1,0
-monsters,base,statue,giant ant,1,1,0
-monsters,base,statue,giant beetle,1,1,0
-monsters,base,statue,fire ant,1,1,0
-monsters,base,statue,killer bee,1,1,0
-monsters,base,statue,queen bee,1,1,0
-monsters,base,statue,soldier ant,1,1,0
-monsters,base,statue,quivering blob,1,1,0
-monsters,base,statue,acid blob,1,1,0
-monsters,base,statue,gelatinous cube,1,1,0
-monsters,base,statue,mucilaginous cube,1,1,0
-monsters,base,statue,pyrolisk,1,1,0
-monsters,base,statue,chickatrice,1,1,0
-monsters,base,statue,cockatrice,1,1,0
-monsters,base,statue,giant cockatrice,1,1,0
-monsters,base,statue,gargantuan cockatrice,1,1,0
-monsters,base,statue,jackal,1,1,0
-monsters,base,statue,fox,1,1,0
-monsters,base,statue,coyote,1,1,0
-monsters,base,statue,winter wolf cub,1,1,0
-monsters,base,statue,dingo,1,1,0
-monsters,base,statue,little dog,1,1,0
-monsters,base,statue,werejackal,1,1,0
-monsters,base,statue,direwolf cub,1,1,0
-monsters,base,statue,hell hound pup,1,1,0
-monsters,base,statue,dog,1,1,0
-monsters,base,statue,hyena,1,1,0
-monsters,base,statue,wolf,1,1,0
-monsters,base,statue,large dog,1,1,0
-monsters,base,statue,direwolf,1,1,0
-monsters,base,statue,winter wolf,1,1,0
-monsters,base,statue,werewolf,1,1,0
-monsters,base,statue,warg,1,1,0
-monsters,base,statue,large direwolf,1,1,0
-monsters,base,statue,hell hound,1,1,0
-monsters,base,statue,shoosuva,1,1,0
-monsters,base,statue,gas spore,1,1,0
-monsters,base,statue,floating eye,1,1,0
-monsters,base,statue,freezing sphere,1,1,0
-monsters,base,statue,flaming sphere,1,1,0
-monsters,base,statue,shocking sphere,1,1,0
-monsters,base,statue,beholder,1,1,0
-monsters,base,statue,elder orb,1,1,0
-monsters,base,statue,death tyrant,1,1,0
-monsters,base,statue,kitten,1,1,0
-monsters,base,statue,housecat,1,1,0
-monsters,base,statue,large cat,1,1,0
-monsters,base,statue,lynx,1,1,0
-monsters,base,statue,jaguar,1,1,0
-monsters,base,statue,panther,1,1,0
-monsters,base,statue,tiger,1,1,0
-monsters,base,statue,gnoll,1,1,0
-monsters,base,statue,gnoll warden,1,1,0
-monsters,base,statue,gnoll lord,1,1,0
-monsters,base,statue,gnoll king,1,1,0
-monsters,base,statue,flind,1,1,0
-monsters,base,statue,flind lord,1,1,0
-monsters,base,statue,gnome,1,1,0
-monsters,base,statue,gnome lord,1,1,0
-monsters,base,statue,gnomish wizard,1,1,0
-monsters,base,statue,gnome king,1,1,0
-monsters,base,statue,gremlin,1,1,0
-monsters,base,statue,gargoyle,1,1,0
-monsters,base,statue,winged gargoyle,1,1,0
-monsters,base,statue,hobbit,1,1,0
-monsters,base,statue,dwarf,1,1,0
-monsters,base,statue,bugbear,1,1,0
-monsters,base,statue,dwarf lord,1,1,0
-monsters,base,statue,dwarf king,1,1,0
-monsters,base,statue,mind flayer,1,1,0
-monsters,base,statue,master mind flayer,1,1,0
-monsters,base,statue,illithilich,1,1,0
-monsters,base,statue,manes,1,1,0
-monsters,base,statue,lemure,1,1,0
-monsters,base,statue,homunculus,1,1,0
-monsters,base,statue,imp,1,1,0
-monsters,base,statue,quasit,1,1,0
-monsters,base,statue,tengu,1,1,0
-monsters,base,statue,blue jelly,1,1,0
-monsters,base,statue,spotted jelly,1,1,0
-monsters,base,statue,ochre jelly,1,1,0
-monsters,base,statue,kobold,1,1,0
-monsters,base,statue,large kobold,1,1,0
-monsters,base,statue,kobold lord,1,1,0
-monsters,base,statue,kobold shaman,1,1,0
-monsters,base,statue,leprechaun,1,1,0
-monsters,base,statue,small mimic,1,1,0
-monsters,base,statue,small luggage,1,1,0
-monsters,base,statue,medium luggage,1,1,0
-monsters,base,statue,large luggage,1,1,0
-monsters,base,statue,large mimic,1,1,0
-monsters,base,statue,giant mimic,1,1,0
-monsters,base,statue,Gargantuan Mimic,1,1,0
-monsters,base,statue,giant luggage,1,1,0
-monsters,base,statue,chaos mimic,1,1,0
-monsters,base,statue,wood nymph,1,1,0
-monsters,base,statue,water nymph,1,1,0
-monsters,base,statue,mountain nymph,1,1,0
-monsters,base,statue,harpy,1,1,0
-monsters,base,statue,goblin,1,1,0
-monsters,base,statue,hobgoblin,1,1,0
-monsters,base,statue,orc,1,1,0
-monsters,base,statue,hill orc,1,1,0
-monsters,base,statue,Mordor orc,1,1,0
-monsters,base,statue,orc shaman,1,1,0
-monsters,base,statue,Uruk-hai,1,1,0
-monsters,base,statue,orc-captain,1,1,0
-monsters,base,statue,goblin king,1,1,0
-monsters,base,statue,rock piercer,1,1,0
-monsters,base,statue,iron piercer,1,1,0
-monsters,base,statue,glass piercer,1,1,0
-monsters,base,statue,rothe,1,1,0
-monsters,base,statue,wumpus,1,1,0
-monsters,base,statue,bison,1,1,0
-monsters,base,statue,titanothere,1,1,0
-monsters,base,statue,mumak,1,1,0
-monsters,base,statue,leucrotta,1,1,0
-monsters,base,statue,baluchitherium,1,1,0
-monsters,base,statue,gorgon,1,1,0
-monsters,base,statue,mastodon,1,1,0
-monsters,base,statue,sewer rat,1,1,0
-monsters,base,statue,giant rat,1,1,0
-monsters,base,statue,woodchuck,1,1,0
-monsters,base,statue,rabid rat,1,1,0
-monsters,base,statue,rock mole,1,1,0
-monsters,base,statue,wererat,1,1,0
-monsters,base,statue,centipede,1,1,0
-monsters,base,statue,cave spider,1,1,0
-monsters,base,statue,scorpion,1,1,0
-monsters,base,statue,giant spider,1,1,0
-monsters,base,statue,phase spider,1,1,0
-monsters,base,statue,lurker above,1,1,0
-monsters,base,statue,trapper,1,1,0
-monsters,base,statue,ram,1,1,0
-monsters,base,statue,pony,1,1,0
-monsters,base,statue,pegasus,1,1,0
-monsters,base,statue,horse,1,1,0
-monsters,base,statue,large ram,1,1,0
-monsters,base,statue,white unicorn,1,1,0
-monsters,base,statue,gray unicorn,1,1,0
-monsters,base,statue,black unicorn,1,1,0
-monsters,base,statue,warhorse,1,1,0
-monsters,base,statue,warram,1,1,0
-monsters,base,statue,dust vortex,1,1,0
-monsters,base,statue,fog cloud,1,1,0
-monsters,base,statue,ice vortex,1,1,0
-monsters,base,statue,steam vortex,1,1,0
-monsters,base,statue,fire vortex,1,1,0
-monsters,base,statue,energy vortex,1,1,0
-monsters,base,statue,baby long worm,1,1,0
-monsters,base,statue,baby purple worm,1,1,0
-monsters,base,statue,long worm,1,1,0
-monsters,base,statue,purple worm,1,1,0
-monsters,base,statue,grid bug,1,1,0
-monsters,base,statue,xan,1,1,0
-monsters,base,statue,yellow light,1,1,0
-monsters,base,statue,black light,1,1,0
-monsters,base,statue,kobold zombie,1,1,0
-monsters,base,statue,gnome zombie,1,1,0
-monsters,base,statue,orc zombie,1,1,0
-monsters,base,statue,dwarf zombie,1,1,0
-monsters,base,statue,elf zombie,1,1,0
-monsters,base,statue,gnoll zombie,1,1,0
-monsters,base,statue,human zombie,1,1,0
-monsters,base,statue,skeleton,1,1,0
-monsters,base,statue,ghoul,1,1,0
-monsters,base,statue,ettin zombie,1,1,0
-monsters,base,statue,ettin skeleton,1,1,0
-monsters,base,statue,giant zombie,1,1,0
-monsters,base,statue,giant skeleton,1,1,0
-monsters,base,statue,ghast,1,1,0
-monsters,base,statue,skeleton warrior,1,1,0
-monsters,base,statue,skeleton lord,1,1,0
-monsters,base,statue,skeleton king,1,1,0
-monsters,base,statue,couatl,1,1,0
-monsters,base,statue,Aleax,1,1,0
-monsters,base,statue,Angel,1,1,0
-monsters,base,statue,ki-rin,1,1,0
-monsters,base,statue,Archon,1,1,0
-monsters,base,statue,bat,1,1,0
-monsters,base,statue,giant bat,1,1,0
-monsters,base,statue,raven,1,1,0
-monsters,base,statue,vampire bat,1,1,0
-monsters,base,statue,celestial dove,1,1,0
-monsters,base,statue,celestial eagle,1,1,0
-monsters,base,statue,phoenix,1,1,0
-monsters,base,statue,roc,1,1,0
-monsters,base,statue,hell bat,1,1,0
-monsters,base,statue,plains centaur,1,1,0
-monsters,base,statue,forest centaur,1,1,0
-monsters,base,statue,mountain centaur,1,1,0
-monsters,base,statue,gray dragon hatchling,1,1,0
-monsters,base,statue,silver dragon hatchling,1,1,0
-monsters,base,statue,red dragon hatchling,1,1,0
-monsters,base,statue,white dragon hatchling,1,1,0
-monsters,base,statue,orange dragon hatchling,1,1,0
-monsters,base,statue,black dragon hatchling,1,1,0
-monsters,base,statue,blue dragon hatchling,1,1,0
-monsters,base,statue,green dragon hatchling,1,1,0
-monsters,base,statue,yellow dragon hatchling,1,1,0
-monsters,base,statue,gray dragon,1,1,0
-monsters,base,statue,silver dragon,1,1,0
-monsters,base,statue,red dragon,1,1,0
-monsters,base,statue,white dragon,1,1,0
-monsters,base,statue,orange dragon,1,1,0
-monsters,base,statue,black dragon,1,1,0
-monsters,base,statue,blue dragon,1,1,0
-monsters,base,statue,green dragon,1,1,0
-monsters,base,statue,yellow dragon,1,1,0
-monsters,base,statue,ancient gray dragon,1,1,0
-monsters,base,statue,ancient silver dragon,1,1,0
-monsters,base,statue,ancient red dragon,1,1,0
-monsters,base,statue,ancient white dragon,1,1,0
-monsters,base,statue,ancient orange dragon,1,1,0
-monsters,base,statue,ancient black dragon,1,1,0
-monsters,base,statue,ancient blue dragon,1,1,0
-monsters,base,statue,ancient green dragon,1,1,0
-monsters,base,statue,ancient yellow dragon,1,1,0
-monsters,base,statue,dracolich,3,2,0
-monsters,base,statue,elder dracolich,1,1,0
-monsters,base,statue,gold dragon,1,1,0
-monsters,base,statue,ancient gold dragon,1,1,0
-monsters,base,statue,Bahamut,1,1,0
-monsters,base,statue,water elemental,1,1,0
-monsters,base,statue,earth elemental,1,1,0
-monsters,base,statue,stalker,1,1,0
-monsters,base,statue,fire elemental,1,1,0
-monsters,base,statue,air elemental,1,1,0
-monsters,base,statue,elder water elemental,1,1,0
-monsters,base,statue,elder earth elemental,1,1,0
-monsters,base,statue,elder fire elemental,1,1,0
-monsters,base,statue,elder air elemental,1,1,0
-monsters,base,statue,lichen,1,1,0
-monsters,base,statue,brown mold,1,1,0
-monsters,base,statue,yellow mold,1,1,0
-monsters,base,statue,green mold,1,1,0
-monsters,base,statue,red mold,1,1,0
-monsters,base,statue,white lichen,1,1,0
-monsters,base,statue,violet fungus,1,1,0
-monsters,base,statue,shrieker,1,1,0
-monsters,base,statue,black lichen,1,1,0
-monsters,base,statue,giant,1,1,0
-monsters,base,statue,stone giant,1,1,0
-monsters,base,statue,hill giant,1,1,0
-monsters,base,statue,hell bovine,1,1,0
-monsters,base,statue,fire giant,1,1,0
-monsters,base,statue,frost giant,1,1,0
-monsters,base,statue,ettin,1,1,0
-monsters,base,statue,storm giant,1,1,0
-monsters,base,statue,minotaur,1,1,0
-monsters,base,statue,titan,1,1,0
-monsters,base,statue,jabberwock,1,1,0
-monsters,base,statue,juggernaut,1,1,0
-monsters,base,statue,Keystone Kop,1,1,0
-monsters,base,statue,Kop Sergeant,1,1,0
-monsters,base,statue,Kop Lieutenant,1,1,0
-monsters,base,statue,Kop Kaptain,1,1,0
-monsters,base,statue,lich,1,1,0
-monsters,base,statue,demilich,1,1,0
-monsters,base,statue,master lich,1,1,0
-monsters,base,statue,arch-lich,1,1,0
-monsters,base,statue,modron monodrone,1,1,0
-monsters,base,statue,modron duodrone,1,1,0
-monsters,base,statue,modron tridrone,1,1,0
-monsters,base,statue,modron quadrone,1,1,0
-monsters,base,statue,modron pentadrone,1,1,0
-monsters,base,statue,modron quinton,1,1,0
-monsters,base,statue,modron quarton,1,1,0
-monsters,base,statue,modron tertian,1,1,0
-monsters,base,statue,modron secundus,1,1,0
-monsters,base,statue,Modron Primus,1,1,0
-monsters,base,statue,red naga hatchling,1,1,0
-monsters,base,statue,black naga hatchling,1,1,0
-monsters,base,statue,golden naga hatchling,1,1,0
-monsters,base,statue,guardian naga hatchling,1,1,0
-monsters,base,statue,red naga,1,1,0
-monsters,base,statue,black naga,1,1,0
-monsters,base,statue,golden naga,1,1,0
-monsters,base,statue,guardian naga,1,1,0
-monsters,base,statue,ogre,1,1,0
-monsters,base,statue,ogre lord,1,1,0
-monsters,base,statue,ogre overlord,1,1,0
-monsters,base,statue,ogre mage,1,1,0
-monsters,base,statue,ogre king,1,1,0
-monsters,base,statue,ogre archmage,1,1,0
-monsters,base,statue,gray ooze,1,1,0
-monsters,base,statue,brown pudding,1,1,0
-monsters,base,statue,green slime,1,1,0
-monsters,base,statue,black pudding,1,1,0
-monsters,base,statue,quantum mechanic,1,1,0
-monsters,base,statue,rust monster,1,1,0
-monsters,base,statue,disenchanter,1,1,0
-monsters,base,statue,garter snake,1,1,0
-monsters,base,statue,snake,1,1,0
-monsters,base,statue,water moccasin,1,1,0
-monsters,base,statue,pit viper,1,1,0
-monsters,base,statue,cobra,1,1,0
-monsters,base,statue,python,1,1,0
-monsters,base,statue,boa constrictor,1,1,0
-monsters,base,statue,giant python,1,1,0
-monsters,base,statue,giant anaconda,1,1,0
-monsters,base,statue,troll,1,1,0
-monsters,base,statue,ice troll,1,1,0
-monsters,base,statue,rock troll,1,1,0
-monsters,base,statue,water troll,1,1,0
-monsters,base,statue,Olog-hai,1,1,0
-monsters,base,statue,thoul,1,1,0
-monsters,base,statue,umber hulk,1,1,0
-monsters,base,statue,otyugh,1,1,0
-monsters,base,statue,neo-otyugh,1,1,0
-monsters,base,statue,chimera,1,1,0
-monsters,base,statue,vampire,1,1,0
-monsters,base,statue,vampire lord,1,1,0
-monsters,base,statue,vampire mage,1,1,0
-monsters,base,statue,Vlad the Impaler,1,1,0
-monsters,base,statue,wraith,1,1,0
-monsters,base,statue,barrow wight,1,1,0
-monsters,base,statue,spectre,1,1,0
-monsters,base,statue,king wraith,1,1,0
-monsters,base,statue,Nazgul,1,1,0
-monsters,base,statue,xorn,1,1,0
-monsters,base,statue,monkey,1,1,0
-monsters,base,statue,ape,1,1,0
-monsters,base,statue,yeti,1,1,0
-monsters,base,statue,carnivorous ape,1,1,0
-monsters,base,statue,zruty,1,1,0
-monsters,base,statue,sasquatch,1,1,0
-monsters,base,statue,owlbear,1,1,0
-monsters,base,statue,grizzly bear,1,1,0
-monsters,base,statue,owlbear shaman,1,1,0
-monsters,base,statue,werebear,1,1,0
-monsters,base,statue,owlbear matriarch,1,1,0
-monsters,base,statue,owlbear patriarch,1,1,0
-monsters,base,statue,kobold mummy,1,1,0
-monsters,base,statue,gnome mummy,1,1,0
-monsters,base,statue,dwarf mummy,1,1,0
-monsters,base,statue,orc mummy,1,1,0
-monsters,base,statue,gnoll mummy,1,1,0
-monsters,base,statue,elf mummy,1,1,0
-monsters,base,statue,human mummy,1,1,0
-monsters,base,statue,ettin mummy,1,1,0
-monsters,base,statue,giant mummy,1,1,0
-monsters,base,statue,paper golem,1,1,0
-monsters,base,statue,straw golem,1,1,0
-monsters,base,statue,wood golem,1,1,0
-monsters,base,statue,leather golem,1,1,0
-monsters,base,statue,gold golem,1,1,0
-monsters,base,statue,rope golem,1,1,0
-monsters,base,statue,flesh golem,1,1,0
-monsters,base,statue,clay golem,1,1,0
-monsters,base,statue,glass golem,1,1,0
-monsters,base,statue,stone golem,1,1,0
-monsters,base,statue,bone golem,1,1,0
-monsters,base,statue,gemstone golem,1,1,0
-monsters,base,statue,iron golem,1,1,0
-monsters,base,statue,silver golem,1,1,0
-monsters,base,statue,treant,1,1,0
-monsters,base,statue,elder treant,1,1,0
-monsters,base,statue,human,1,1,0
-monsters,base,statue,wererat,1,1,0
-monsters,base,statue,werejackal,1,1,0
-monsters,base,statue,elf,1,1,0
-monsters,base,statue,Green-elf,1,1,0
-monsters,base,statue,Woodland-elf,1,1,0
-monsters,base,statue,prisoner,1,1,0
-monsters,base,statue,nurse,1,1,0
-monsters,base,statue,Grey-elf,1,1,0
-monsters,base,statue,werewolf,1,1,0
-monsters,base,statue,elf-lord,1,1,0
-monsters,base,statue,doppelganger,1,1,0
-monsters,base,statue,Elvenking,1,1,0
-monsters,base,statue,Oracle,1,1,0
-monsters,base,statue,shopkeeper,1,1,0
-monsters,base,statue,guard,1,1,0
-monsters,base,statue,aligned priest,1,1,0
-monsters,base,statue,werebear,1,1,0
-monsters,base,statue,high priest,1,1,0
-monsters,base,statue,soldier,1,1,0
-monsters,base,statue,sergeant,1,1,0
-monsters,base,statue,lieutenant,1,1,0
-monsters,base,statue,captain,1,1,0
-monsters,base,statue,watchman,1,1,0
-monsters,base,statue,watch captain,1,1,0
-monsters,base,statue,Medusa,1,1,0
-monsters,base,statue,Wizard of Yendor,1,1,0
-monsters,base,statue,Croesus,1,1,0
-monsters,base,statue,ghost,1,1,0
-monsters,base,statue,shade,1,1,0
-monsters,base,statue,succubus,1,1,0
-monsters,base,statue,incubus,1,1,0
-monsters,base,statue,water demon,1,1,0
-monsters,base,statue,horned devil,1,1,0
-monsters,base,statue,hezrou,1,1,0
-monsters,base,statue,vrock,1,1,0
-monsters,base,statue,erinys,1,1,0
-monsters,base,statue,ice devil,1,1,0
-monsters,base,statue,barbed devil,1,1,0
-monsters,base,statue,nalfeshnee,1,1,0
-monsters,base,statue,glabrezu,1,1,0
-monsters,base,statue,bone devil,1,1,0
-monsters,base,statue,sandestin,1,1,0
-monsters,base,statue,pit fiend,1,1,0
-monsters,base,statue,marilith,1,1,0
-monsters,base,statue,balrog,1,1,0
-monsters,base,statue,Juiblex,1,1,0
-monsters,base,statue,Yeenoghu,1,1,0
-monsters,base,statue,Yacc,1,1,0
-monsters,base,statue,Baphomet,1,1,0
-monsters,base,statue,Baalzebub,1,1,0
-monsters,base,statue,Geryon,1,1,0
-monsters,base,statue,Dispater,1,1,0
-monsters,base,statue,Asmodeus,1,1,0
-monsters,base,statue,Orcus,1,1,0
-monsters,base,statue,Demogorgon,1,1,0
-monsters,base,statue,Death,1,1,0
-monsters,base,statue,Pestilence,1,1,0
-monsters,base,statue,Famine,1,1,0
-monsters,base,statue,djinni,1,1,0
-monsters,base,statue,Tarrasque,1,1,0
-monsters,base,statue,jellyfish,1,1,0
-monsters,base,statue,piranha,1,1,0
-monsters,base,statue,shark,1,1,0
-monsters,base,statue,giant eel,1,1,0
-monsters,base,statue,electric eel,1,1,0
-monsters,base,statue,kraken,1,1,0
-monsters,base,statue,newt,1,1,0
-monsters,base,statue,gecko,1,1,0
-monsters,base,statue,iguana,1,1,0
-monsters,base,statue,baby crocodile,1,1,0
-monsters,base,statue,lizard,1,1,0
-monsters,base,statue,chameleon,1,1,0
-monsters,base,statue,crocodile,1,1,0
-monsters,base,statue,salamander,1,1,0
-monsters,base,statue,hydra,1,1,0
-monsters,base,statue,pyrohydra,1,1,0
-monsters,base,statue,lernaean hydra,1,1,0
-monsters,base,statue,long worm tail,1,1,0
-monsters,base,statue,archeologist,1,1,0
-monsters,base,statue,barbarian,1,1,0
-monsters,base,statue,caveman,1,1,0
-monsters,base,statue,healer,1,1,0
-monsters,base,statue,knight,1,1,0
-monsters,base,statue,monk,1,1,0
-monsters,base,statue,priest,1,1,0
-monsters,base,statue,ranger,1,1,0
-monsters,base,statue,rogue,1,1,0
-monsters,base,statue,samurai,1,1,0
-monsters,base,statue,tourist,1,1,0
-monsters,base,statue,valkyrie,1,1,0
-monsters,base,statue,wizard,1,1,0
-monsters,base,statue,Lord Carnarvon,1,1,0
-monsters,base,statue,Pelias,1,1,0
-monsters,base,statue,Shaman Karnov,1,1,0
-monsters,base,statue,Hippocrates,1,1,0
-monsters,base,statue,King Arthur,1,1,0
-monsters,base,statue,Grand Master,1,1,0
-monsters,base,statue,Arch Priest,1,1,0
-monsters,base,statue,Orion,1,1,0
-monsters,base,statue,Master of Thieves,1,1,0
-monsters,base,statue,Lord Sato,1,1,0
-monsters,base,statue,Twoflower,1,1,0
-monsters,base,statue,Norn,1,1,0
-monsters,base,statue,Neferet the Green,1,1,0
-monsters,base,statue,Minion of Huhetotl,1,1,0
-monsters,base,statue,Thoth Amon,1,1,0
-monsters,base,statue,Tiamat,1,1,0
-monsters,base,statue,Cyclops,1,1,0
-monsters,base,statue,Ixoth,1,1,0
-monsters,base,statue,Master Kaen,1,1,0
-monsters,base,statue,Nalzok,1,1,0
-monsters,base,statue,Scorpius,1,1,0
-monsters,base,statue,Master Assassin,1,1,0
-monsters,base,statue,Ashikaga Takauji,1,1,0
-monsters,base,statue,Lord Surtur,1,1,0
-monsters,base,statue,Dark One,1,1,0
-monsters,base,statue,student,1,1,0
-monsters,base,statue,chieftain,1,1,0
-monsters,base,statue,neanderthal,1,1,0
-monsters,base,statue,attendant,1,1,0
-monsters,base,statue,page,1,1,0
-monsters,base,statue,abbot,1,1,0
-monsters,base,statue,acolyte,1,1,0
-monsters,base,statue,hunter,1,1,0
-monsters,base,statue,thug,1,1,0
-monsters,base,statue,ninja,1,1,0
-monsters,base,statue,roshi,1,1,0
-monsters,base,statue,guide,1,1,0
-monsters,base,statue,warrior,1,1,0
-monsters,base,statue,apprentice,1,1,0
+monsters,base,door-use,giant ant,1,1,0
+monsters,base,door-use,giant beetle,1,1,0
+monsters,base,door-use,fire ant,1,1,0
+monsters,base,door-use,killer bee,1,1,0
+monsters,base,door-use,queen bee,1,1,0
+monsters,base,door-use,soldier ant,1,1,0
+monsters,base,door-use,quivering blob,1,1,0
+monsters,base,door-use,acid blob,1,1,0
+monsters,base,door-use,gelatinous cube,1,1,0
+monsters,base,door-use,mucilaginous cube,1,1,0
+monsters,base,door-use,pyrolisk,1,1,0
+monsters,base,door-use,chickatrice,1,1,0
+monsters,base,door-use,cockatrice,1,1,0
+monsters,base,door-use,giant cockatrice,1,1,0
+monsters,base,door-use,gargantuan cockatrice,1,1,0
+monsters,base,door-use,jackal,1,1,0
+monsters,base,door-use,fox,1,1,0
+monsters,base,door-use,coyote,1,1,0
+monsters,base,door-use,winter wolf cub,1,1,0
+monsters,base,door-use,dingo,1,1,0
+monsters,base,door-use,little dog,1,1,0
+monsters,base,door-use,werejackal,1,1,0
+monsters,base,door-use,direwolf cub,1,1,0
+monsters,base,door-use,hell hound pup,1,1,0
+monsters,base,door-use,dog,1,1,0
+monsters,base,door-use,hyena,1,1,0
+monsters,base,door-use,wolf,1,1,0
+monsters,base,door-use,large dog,1,1,0
+monsters,base,door-use,direwolf,1,1,0
+monsters,base,door-use,winter wolf,1,1,0
+monsters,base,door-use,werewolf,1,1,0
+monsters,base,door-use,warg,1,1,0
+monsters,base,door-use,large direwolf,1,1,0
+monsters,base,door-use,hell hound,1,1,0
+monsters,base,door-use,shoosuva,1,1,0
+monsters,base,door-use,gas spore,1,1,0
+monsters,base,door-use,floating eye,1,1,0
+monsters,base,door-use,freezing sphere,1,1,0
+monsters,base,door-use,flaming sphere,1,1,0
+monsters,base,door-use,shocking sphere,1,1,0
+monsters,base,door-use,beholder,1,1,0
+monsters,base,door-use,elder orb,1,1,0
+monsters,base,door-use,death tyrant,1,1,0
+monsters,base,door-use,kitten,1,1,0
+monsters,base,door-use,housecat,1,1,0
+monsters,base,door-use,large cat,1,1,0
+monsters,base,door-use,lynx,1,1,0
+monsters,base,door-use,jaguar,1,1,0
+monsters,base,door-use,panther,1,1,0
+monsters,base,door-use,tiger,1,1,0
+monsters,base,door-use,gnoll,1,1,0
+monsters,base,door-use,gnoll warden,1,1,0
+monsters,base,door-use,gnoll lord,1,1,0
+monsters,base,door-use,gnoll king,1,1,0
+monsters,base,door-use,flind,1,1,0
+monsters,base,door-use,flind lord,1,1,0
+monsters,base,door-use,gnome,1,1,0
+monsters,base,door-use,gnome lord,1,1,0
+monsters,base,door-use,gnomish wizard,1,1,0
+monsters,base,door-use,gnome king,1,1,0
+monsters,base,door-use,gremlin,1,1,0
+monsters,base,door-use,gargoyle,1,1,0
+monsters,base,door-use,winged gargoyle,1,1,0
+monsters,base,door-use,hobbit,1,1,0
+monsters,base,door-use,dwarf,1,1,0
+monsters,base,door-use,bugbear,1,1,0
+monsters,base,door-use,dwarf lord,1,1,0
+monsters,base,door-use,dwarf king,1,1,0
+monsters,base,door-use,mind flayer,1,1,0
+monsters,base,door-use,master mind flayer,1,1,0
+monsters,base,door-use,illithilich,1,1,0
+monsters,base,door-use,manes,1,1,0
+monsters,base,door-use,lemure,1,1,0
+monsters,base,door-use,homunculus,1,1,0
+monsters,base,door-use,imp,1,1,0
+monsters,base,door-use,quasit,1,1,0
+monsters,base,door-use,tengu,1,1,0
+monsters,base,door-use,blue jelly,1,1,0
+monsters,base,door-use,spotted jelly,1,1,0
+monsters,base,door-use,ochre jelly,1,1,0
+monsters,base,door-use,kobold,1,1,0
+monsters,base,door-use,large kobold,1,1,0
+monsters,base,door-use,kobold lord,1,1,0
+monsters,base,door-use,kobold shaman,1,1,0
+monsters,base,door-use,leprechaun,1,1,0
+monsters,base,door-use,small mimic,1,1,0
+monsters,base,door-use,small luggage,1,1,0
+monsters,base,door-use,medium luggage,1,1,0
+monsters,base,door-use,large luggage,1,1,0
+monsters,base,door-use,large mimic,1,1,0
+monsters,base,door-use,giant mimic,1,1,0
+monsters,base,door-use,Gargantuan Mimic,1,1,0
+monsters,base,door-use,giant luggage,1,1,0
+monsters,base,door-use,chaos mimic,1,1,0
+monsters,base,door-use,wood nymph,1,1,0
+monsters,base,door-use,water nymph,1,1,0
+monsters,base,door-use,mountain nymph,1,1,0
+monsters,base,door-use,harpy,1,1,0
+monsters,base,door-use,goblin,1,1,0
+monsters,base,door-use,hobgoblin,1,1,0
+monsters,base,door-use,orc,1,1,0
+monsters,base,door-use,hill orc,1,1,0
+monsters,base,door-use,Mordor orc,1,1,0
+monsters,base,door-use,orc shaman,1,1,0
+monsters,base,door-use,Uruk-hai,1,1,0
+monsters,base,door-use,orc-captain,1,1,0
+monsters,base,door-use,goblin king,1,1,0
+monsters,base,door-use,rock piercer,1,1,0
+monsters,base,door-use,iron piercer,1,1,0
+monsters,base,door-use,glass piercer,1,1,0
+monsters,base,door-use,rothe,1,1,0
+monsters,base,door-use,wumpus,1,1,0
+monsters,base,door-use,bison,1,1,0
+monsters,base,door-use,titanothere,1,1,0
+monsters,base,door-use,mumak,1,1,0
+monsters,base,door-use,leucrotta,1,1,0
+monsters,base,door-use,baluchitherium,1,1,0
+monsters,base,door-use,gorgon,1,1,0
+monsters,base,door-use,mastodon,1,1,0
+monsters,base,door-use,sewer rat,1,1,0
+monsters,base,door-use,giant rat,1,1,0
+monsters,base,door-use,woodchuck,1,1,0
+monsters,base,door-use,rabid rat,1,1,0
+monsters,base,door-use,rock mole,1,1,0
+monsters,base,door-use,wererat,1,1,0
+monsters,base,door-use,centipede,1,1,0
+monsters,base,door-use,cave spider,1,1,0
+monsters,base,door-use,scorpion,1,1,0
+monsters,base,door-use,giant spider,1,1,0
+monsters,base,door-use,phase spider,1,1,0
+monsters,base,door-use,lurker above,1,1,0
+monsters,base,door-use,trapper,1,1,0
+monsters,base,door-use,ram,1,1,0
+monsters,base,door-use,pony,1,1,0
+monsters,base,door-use,pegasus,1,1,0
+monsters,base,door-use,horse,1,1,0
+monsters,base,door-use,large ram,1,1,0
+monsters,base,door-use,white unicorn,1,1,0
+monsters,base,door-use,gray unicorn,1,1,0
+monsters,base,door-use,black unicorn,1,1,0
+monsters,base,door-use,warhorse,1,1,0
+monsters,base,door-use,warram,1,1,0
+monsters,base,door-use,dust vortex,1,1,0
+monsters,base,door-use,fog cloud,1,1,0
+monsters,base,door-use,ice vortex,1,1,0
+monsters,base,door-use,steam vortex,1,1,0
+monsters,base,door-use,fire vortex,1,1,0
+monsters,base,door-use,energy vortex,1,1,0
+monsters,base,door-use,baby long worm,1,1,0
+monsters,base,door-use,baby purple worm,1,1,0
+monsters,base,door-use,long worm,1,1,0
+monsters,base,door-use,purple worm,1,1,0
+monsters,base,door-use,grid bug,1,1,0
+monsters,base,door-use,xan,1,1,0
+monsters,base,door-use,yellow light,1,1,0
+monsters,base,door-use,black light,1,1,0
+monsters,base,door-use,kobold zombie,1,1,0
+monsters,base,door-use,gnome zombie,1,1,0
+monsters,base,door-use,orc zombie,1,1,0
+monsters,base,door-use,dwarf zombie,1,1,0
+monsters,base,door-use,elf zombie,1,1,0
+monsters,base,door-use,gnoll zombie,1,1,0
+monsters,base,door-use,human zombie,1,1,0
+monsters,base,door-use,skeleton,1,1,0
+monsters,base,door-use,ghoul,1,1,0
+monsters,base,door-use,ettin zombie,1,1,0
+monsters,base,door-use,ettin skeleton,1,1,0
+monsters,base,door-use,giant zombie,1,1,0
+monsters,base,door-use,giant skeleton,1,1,0
+monsters,base,door-use,ghast,1,1,0
+monsters,base,door-use,skeleton warrior,1,1,0
+monsters,base,door-use,skeleton lord,1,1,0
+monsters,base,door-use,skeleton king,1,1,0
+monsters,base,door-use,couatl,1,1,0
+monsters,base,door-use,Aleax,1,1,0
+monsters,base,door-use,Angel,1,1,0
+monsters,base,door-use,ki-rin,1,1,0
+monsters,base,door-use,Archon,1,1,0
+monsters,base,door-use,bat,1,1,0
+monsters,base,door-use,giant bat,1,1,0
+monsters,base,door-use,raven,1,1,0
+monsters,base,door-use,vampire bat,1,1,0
+monsters,base,door-use,celestial dove,1,1,0
+monsters,base,door-use,celestial eagle,1,1,0
+monsters,base,door-use,phoenix,1,1,0
+monsters,base,door-use,roc,1,1,0
+monsters,base,door-use,hell bat,1,1,0
+monsters,base,door-use,plains centaur,1,1,0
+monsters,base,door-use,forest centaur,1,1,0
+monsters,base,door-use,mountain centaur,1,1,0
+monsters,base,door-use,gray dragon hatchling,1,1,0
+monsters,base,door-use,silver dragon hatchling,1,1,0
+monsters,base,door-use,red dragon hatchling,1,1,0
+monsters,base,door-use,white dragon hatchling,1,1,0
+monsters,base,door-use,orange dragon hatchling,1,1,0
+monsters,base,door-use,black dragon hatchling,1,1,0
+monsters,base,door-use,blue dragon hatchling,1,1,0
+monsters,base,door-use,green dragon hatchling,1,1,0
+monsters,base,door-use,yellow dragon hatchling,1,1,0
+monsters,base,door-use,gray dragon,1,1,0
+monsters,base,door-use,silver dragon,1,1,0
+monsters,base,door-use,red dragon,1,1,0
+monsters,base,door-use,white dragon,1,1,0
+monsters,base,door-use,orange dragon,1,1,0
+monsters,base,door-use,black dragon,1,1,0
+monsters,base,door-use,blue dragon,1,1,0
+monsters,base,door-use,green dragon,1,1,0
+monsters,base,door-use,yellow dragon,1,1,0
+monsters,base,door-use,ancient gray dragon,1,1,0
+monsters,base,door-use,ancient silver dragon,1,1,0
+monsters,base,door-use,ancient red dragon,1,1,0
+monsters,base,door-use,ancient white dragon,1,1,0
+monsters,base,door-use,ancient orange dragon,1,1,0
+monsters,base,door-use,ancient black dragon,1,1,0
+monsters,base,door-use,ancient blue dragon,1,1,0
+monsters,base,door-use,ancient green dragon,1,1,0
+monsters,base,door-use,ancient yellow dragon,1,1,0
+monsters,base,door-use,dracolich,3,2,0
+monsters,base,door-use,elder dracolich,1,1,0
+monsters,base,door-use,gold dragon,1,1,0
+monsters,base,door-use,ancient gold dragon,1,1,0
+monsters,base,door-use,Bahamut,1,1,0
+monsters,base,door-use,water elemental,1,1,0
+monsters,base,door-use,earth elemental,1,1,0
+monsters,base,door-use,stalker,1,1,0
+monsters,base,door-use,fire elemental,1,1,0
+monsters,base,door-use,air elemental,1,1,0
+monsters,base,door-use,elder water elemental,1,1,0
+monsters,base,door-use,elder earth elemental,1,1,0
+monsters,base,door-use,elder fire elemental,1,1,0
+monsters,base,door-use,elder air elemental,1,1,0
+monsters,base,door-use,lichen,1,1,0
+monsters,base,door-use,brown mold,1,1,0
+monsters,base,door-use,yellow mold,1,1,0
+monsters,base,door-use,green mold,1,1,0
+monsters,base,door-use,red mold,1,1,0
+monsters,base,door-use,white lichen,1,1,0
+monsters,base,door-use,violet fungus,1,1,0
+monsters,base,door-use,shrieker,1,1,0
+monsters,base,door-use,black lichen,1,1,0
+monsters,base,door-use,giant,1,1,0
+monsters,base,door-use,stone giant,1,1,0
+monsters,base,door-use,hill giant,1,1,0
+monsters,base,door-use,hell bovine,1,1,0
+monsters,base,door-use,fire giant,1,1,0
+monsters,base,door-use,frost giant,1,1,0
+monsters,base,door-use,ettin,1,1,0
+monsters,base,door-use,storm giant,1,1,0
+monsters,base,door-use,minotaur,1,1,0
+monsters,base,door-use,titan,1,1,0
+monsters,base,door-use,jabberwock,1,1,0
+monsters,base,door-use,juggernaut,1,1,0
+monsters,base,door-use,Keystone Kop,1,1,0
+monsters,base,door-use,Kop Sergeant,1,1,0
+monsters,base,door-use,Kop Lieutenant,1,1,0
+monsters,base,door-use,Kop Kaptain,1,1,0
+monsters,base,door-use,lich,1,1,0
+monsters,base,door-use,demilich,1,1,0
+monsters,base,door-use,master lich,1,1,0
+monsters,base,door-use,arch-lich,1,1,0
+monsters,base,door-use,modron monodrone,1,1,0
+monsters,base,door-use,modron duodrone,1,1,0
+monsters,base,door-use,modron tridrone,1,1,0
+monsters,base,door-use,modron quadrone,1,1,0
+monsters,base,door-use,modron pentadrone,1,1,0
+monsters,base,door-use,modron quinton,1,1,0
+monsters,base,door-use,modron quarton,1,1,0
+monsters,base,door-use,modron tertian,1,1,0
+monsters,base,door-use,modron secundus,1,1,0
+monsters,base,door-use,Modron Primus,1,1,0
+monsters,base,door-use,red naga hatchling,1,1,0
+monsters,base,door-use,black naga hatchling,1,1,0
+monsters,base,door-use,golden naga hatchling,1,1,0
+monsters,base,door-use,guardian naga hatchling,1,1,0
+monsters,base,door-use,red naga,1,1,0
+monsters,base,door-use,black naga,1,1,0
+monsters,base,door-use,golden naga,1,1,0
+monsters,base,door-use,guardian naga,1,1,0
+monsters,base,door-use,ogre,1,1,0
+monsters,base,door-use,ogre lord,1,1,0
+monsters,base,door-use,ogre overlord,1,1,0
+monsters,base,door-use,ogre mage,1,1,0
+monsters,base,door-use,ogre king,1,1,0
+monsters,base,door-use,ogre archmage,1,1,0
+monsters,base,door-use,gray ooze,1,1,0
+monsters,base,door-use,brown pudding,1,1,0
+monsters,base,door-use,green slime,1,1,0
+monsters,base,door-use,black pudding,1,1,0
+monsters,base,door-use,quantum mechanic,1,1,0
+monsters,base,door-use,rust monster,1,1,0
+monsters,base,door-use,disenchanter,1,1,0
+monsters,base,door-use,garter snake,1,1,0
+monsters,base,door-use,snake,1,1,0
+monsters,base,door-use,water moccasin,1,1,0
+monsters,base,door-use,pit viper,1,1,0
+monsters,base,door-use,cobra,1,1,0
+monsters,base,door-use,python,1,1,0
+monsters,base,door-use,boa constrictor,1,1,0
+monsters,base,door-use,giant python,1,1,0
+monsters,base,door-use,giant anaconda,1,1,0
+monsters,base,door-use,troll,1,1,0
+monsters,base,door-use,ice troll,1,1,0
+monsters,base,door-use,rock troll,1,1,0
+monsters,base,door-use,water troll,1,1,0
+monsters,base,door-use,Olog-hai,1,1,0
+monsters,base,door-use,thoul,1,1,0
+monsters,base,door-use,umber hulk,1,1,0
+monsters,base,door-use,otyugh,1,1,0
+monsters,base,door-use,neo-otyugh,1,1,0
+monsters,base,door-use,chimera,1,1,0
+monsters,base,door-use,vampire,1,1,0
+monsters,base,door-use,vampire lord,1,1,0
+monsters,base,door-use,vampire mage,1,1,0
+monsters,base,door-use,Vlad the Impaler,1,1,0
+monsters,base,door-use,wraith,1,1,0
+monsters,base,door-use,barrow wight,1,1,0
+monsters,base,door-use,spectre,1,1,0
+monsters,base,door-use,king wraith,1,1,0
+monsters,base,door-use,Nazgul,1,1,0
+monsters,base,door-use,xorn,1,1,0
+monsters,base,door-use,monkey,1,1,0
+monsters,base,door-use,ape,1,1,0
+monsters,base,door-use,yeti,1,1,0
+monsters,base,door-use,carnivorous ape,1,1,0
+monsters,base,door-use,zruty,1,1,0
+monsters,base,door-use,sasquatch,1,1,0
+monsters,base,door-use,owlbear,1,1,0
+monsters,base,door-use,grizzly bear,1,1,0
+monsters,base,door-use,owlbear shaman,1,1,0
+monsters,base,door-use,werebear,1,1,0
+monsters,base,door-use,owlbear matriarch,1,1,0
+monsters,base,door-use,owlbear patriarch,1,1,0
+monsters,base,door-use,kobold mummy,1,1,0
+monsters,base,door-use,gnome mummy,1,1,0
+monsters,base,door-use,dwarf mummy,1,1,0
+monsters,base,door-use,orc mummy,1,1,0
+monsters,base,door-use,gnoll mummy,1,1,0
+monsters,base,door-use,elf mummy,1,1,0
+monsters,base,door-use,human mummy,1,1,0
+monsters,base,door-use,ettin mummy,1,1,0
+monsters,base,door-use,giant mummy,1,1,0
+monsters,base,door-use,paper golem,1,1,0
+monsters,base,door-use,straw golem,1,1,0
+monsters,base,door-use,wood golem,1,1,0
+monsters,base,door-use,leather golem,1,1,0
+monsters,base,door-use,gold golem,1,1,0
+monsters,base,door-use,rope golem,1,1,0
+monsters,base,door-use,flesh golem,1,1,0
+monsters,base,door-use,clay golem,1,1,0
+monsters,base,door-use,glass golem,1,1,0
+monsters,base,door-use,stone golem,1,1,0
+monsters,base,door-use,bone golem,1,1,0
+monsters,base,door-use,gemstone golem,1,1,0
+monsters,base,door-use,iron golem,1,1,0
+monsters,base,door-use,silver golem,1,1,0
+monsters,base,door-use,treant,1,1,0
+monsters,base,door-use,elder treant,1,1,0
+monsters,base,door-use,human,1,1,0
+monsters,base,door-use,wererat,1,1,0
+monsters,base,door-use,werejackal,1,1,0
+monsters,base,door-use,elf,1,1,0
+monsters,base,door-use,Green-elf,1,1,0
+monsters,base,door-use,Woodland-elf,1,1,0
+monsters,base,door-use,prisoner,1,1,0
+monsters,base,door-use,nurse,1,1,0
+monsters,base,door-use,Grey-elf,1,1,0
+monsters,base,door-use,werewolf,1,1,0
+monsters,base,door-use,elf-lord,1,1,0
+monsters,base,door-use,doppelganger,1,1,0
+monsters,base,door-use,Elvenking,1,1,0
+monsters,base,door-use,Oracle,1,1,0
+monsters,base,door-use,shopkeeper,1,1,0
+monsters,base,door-use,guard,1,1,0
+monsters,base,door-use,aligned priest,1,1,0
+monsters,base,door-use,werebear,1,1,0
+monsters,base,door-use,high priest,1,1,0
+monsters,base,door-use,soldier,1,1,0
+monsters,base,door-use,sergeant,1,1,0
+monsters,base,door-use,lieutenant,1,1,0
+monsters,base,door-use,captain,1,1,0
+monsters,base,door-use,watchman,1,1,0
+monsters,base,door-use,watch captain,1,1,0
+monsters,base,door-use,Medusa,1,1,0
+monsters,base,door-use,Wizard of Yendor,1,1,0
+monsters,base,door-use,Croesus,1,1,0
+monsters,base,door-use,ghost,1,1,0
+monsters,base,door-use,shade,1,1,0
+monsters,base,door-use,succubus,1,1,0
+monsters,base,door-use,incubus,1,1,0
+monsters,base,door-use,water demon,1,1,0
+monsters,base,door-use,horned devil,1,1,0
+monsters,base,door-use,hezrou,1,1,0
+monsters,base,door-use,vrock,1,1,0
+monsters,base,door-use,erinys,1,1,0
+monsters,base,door-use,ice devil,1,1,0
+monsters,base,door-use,barbed devil,1,1,0
+monsters,base,door-use,nalfeshnee,1,1,0
+monsters,base,door-use,glabrezu,1,1,0
+monsters,base,door-use,bone devil,1,1,0
+monsters,base,door-use,sandestin,1,1,0
+monsters,base,door-use,pit fiend,1,1,0
+monsters,base,door-use,marilith,1,1,0
+monsters,base,door-use,balrog,1,1,0
+monsters,base,door-use,Juiblex,1,1,0
+monsters,base,door-use,Yeenoghu,1,1,0
+monsters,base,door-use,Yacc,1,1,0
+monsters,base,door-use,Baphomet,1,1,0
+monsters,base,door-use,Baalzebub,1,1,0
+monsters,base,door-use,Geryon,1,1,0
+monsters,base,door-use,Dispater,1,1,0
+monsters,base,door-use,Asmodeus,1,1,0
+monsters,base,door-use,Orcus,1,1,0
+monsters,base,door-use,Demogorgon,1,1,0
+monsters,base,door-use,Death,1,1,0
+monsters,base,door-use,Pestilence,1,1,0
+monsters,base,door-use,Famine,1,1,0
+monsters,base,door-use,djinni,1,1,0
+monsters,base,door-use,Tarrasque,1,1,0
+monsters,base,door-use,jellyfish,1,1,0
+monsters,base,door-use,piranha,1,1,0
+monsters,base,door-use,shark,1,1,0
+monsters,base,door-use,giant eel,1,1,0
+monsters,base,door-use,electric eel,1,1,0
+monsters,base,door-use,kraken,1,1,0
+monsters,base,door-use,newt,1,1,0
+monsters,base,door-use,gecko,1,1,0
+monsters,base,door-use,iguana,1,1,0
+monsters,base,door-use,baby crocodile,1,1,0
+monsters,base,door-use,lizard,1,1,0
+monsters,base,door-use,chameleon,1,1,0
+monsters,base,door-use,crocodile,1,1,0
+monsters,base,door-use,salamander,1,1,0
+monsters,base,door-use,hydra,1,1,0
+monsters,base,door-use,pyrohydra,1,1,0
+monsters,base,door-use,lernaean hydra,1,1,0
+monsters,base,door-use,long worm tail,1,1,0
+monsters,base,door-use,archeologist,1,1,0
+monsters,base,door-use,barbarian,1,1,0
+monsters,base,door-use,caveman,1,1,0
+monsters,base,door-use,healer,1,1,0
+monsters,base,door-use,knight,1,1,0
+monsters,base,door-use,monk,1,1,0
+monsters,base,door-use,priest,1,1,0
+monsters,base,door-use,ranger,1,1,0
+monsters,base,door-use,rogue,1,1,0
+monsters,base,door-use,samurai,1,1,0
+monsters,base,door-use,tourist,1,1,0
+monsters,base,door-use,valkyrie,1,1,0
+monsters,base,door-use,wizard,1,1,0
+monsters,base,door-use,Lord Carnarvon,1,1,0
+monsters,base,door-use,Pelias,1,1,0
+monsters,base,door-use,Shaman Karnov,1,1,0
+monsters,base,door-use,Hippocrates,1,1,0
+monsters,base,door-use,King Arthur,1,1,0
+monsters,base,door-use,Grand Master,1,1,0
+monsters,base,door-use,Arch Priest,1,1,0
+monsters,base,door-use,Orion,1,1,0
+monsters,base,door-use,Master of Thieves,1,1,0
+monsters,base,door-use,Lord Sato,1,1,0
+monsters,base,door-use,Twoflower,1,1,0
+monsters,base,door-use,Norn,1,1,0
+monsters,base,door-use,Neferet the Green,1,1,0
+monsters,base,door-use,Minion of Huhetotl,1,1,0
+monsters,base,door-use,Thoth Amon,1,1,0
+monsters,base,door-use,Tiamat,1,1,0
+monsters,base,door-use,Cyclops,1,1,0
+monsters,base,door-use,Ixoth,1,1,0
+monsters,base,door-use,Master Kaen,1,1,0
+monsters,base,door-use,Nalzok,1,1,0
+monsters,base,door-use,Scorpius,1,1,0
+monsters,base,door-use,Master Assassin,1,1,0
+monsters,base,door-use,Ashikaga Takauji,1,1,0
+monsters,base,door-use,Lord Surtur,1,1,0
+monsters,base,door-use,Dark One,1,1,0
+monsters,base,door-use,student,1,1,0
+monsters,base,door-use,chieftain,1,1,0
+monsters,base,door-use,neanderthal,1,1,0
+monsters,base,door-use,attendant,1,1,0
+monsters,base,door-use,page,1,1,0
+monsters,base,door-use,abbot,1,1,0
+monsters,base,door-use,acolyte,1,1,0
+monsters,base,door-use,hunter,1,1,0
+monsters,base,door-use,thug,1,1,0
+monsters,base,door-use,ninja,1,1,0
+monsters,base,door-use,roshi,1,1,0
+monsters,base,door-use,guide,1,1,0
+monsters,base,door-use,warrior,1,1,0
+monsters,base,door-use,apprentice,1,1,0
 monsters,female,normal,gnoll king,1,1,0
 monsters,female,normal,gnome king,1,1,0
 monsters,female,normal,dwarf king,1,1,0
@@ -999,27 +999,27 @@ monsters,female,normal,samurai,1,1,0
 monsters,female,normal,tourist,1,1,0
 monsters,female,normal,valkyrie,1,1,0
 monsters,female,normal,wizard,1,1,0
-monsters,female,statue,gnoll king,1,1,0
-monsters,female,statue,gnome king,1,1,0
-monsters,female,statue,dwarf king,1,1,0
-monsters,female,statue,skeleton king,1,1,0
-monsters,female,statue,ogre king,1,1,0
-monsters,female,statue,king wraith,1,1,0
-monsters,female,statue,nurse,1,1,0
-monsters,female,statue,elf-lord,1,1,0
-monsters,female,statue,archeologist,1,1,0
-monsters,female,statue,barbarian,1,1,0
-monsters,female,statue,caveman,1,1,0
-monsters,female,statue,healer,1,1,0
-monsters,female,statue,knight,1,1,0
-monsters,female,statue,monk,1,1,0
-monsters,female,statue,priest,1,1,0
-monsters,female,statue,ranger,1,1,0
-monsters,female,statue,rogue,1,1,0
-monsters,female,statue,samurai,1,1,0
-monsters,female,statue,tourist,1,1,0
-monsters,female,statue,valkyrie,1,1,0
-monsters,female,statue,wizard,1,1,0
+monsters,female,door-use,gnoll king,1,1,0
+monsters,female,door-use,gnome king,1,1,0
+monsters,female,door-use,dwarf king,1,1,0
+monsters,female,door-use,skeleton king,1,1,0
+monsters,female,door-use,ogre king,1,1,0
+monsters,female,door-use,king wraith,1,1,0
+monsters,female,door-use,nurse,1,1,0
+monsters,female,door-use,elf-lord,1,1,0
+monsters,female,door-use,archeologist,1,1,0
+monsters,female,door-use,barbarian,1,1,0
+monsters,female,door-use,caveman,1,1,0
+monsters,female,door-use,healer,1,1,0
+monsters,female,door-use,knight,1,1,0
+monsters,female,door-use,monk,1,1,0
+monsters,female,door-use,priest,1,1,0
+monsters,female,door-use,ranger,1,1,0
+monsters,female,door-use,rogue,1,1,0
+monsters,female,door-use,samurai,1,1,0
+monsters,female,door-use,tourist,1,1,0
+monsters,female,door-use,valkyrie,1,1,0
+monsters,female,door-use,wizard,1,1,0
 objects,normal,illegal objects,strange object,no description,0,1,1,0
 objects,normal,weapons,arrow,no description,0,1,1,0
 objects,normal,weapons,elven arrow,runed arrow,0,1,1,0
@@ -2535,6 +2535,18 @@ player,normal,Wizard,orc,male,any,level-0,1,1,0
 player,normal,Wizard,orc,female,any,level-0,1,1,0
 player,attack,Archeologist,human,male,any,level-0,1,1,0
 player,attack,Wizard,elf,female,any,level-0,1,1,0
+player,throw,Archeologist,human,male,any,level-0,1,1,0
+player,throw,Wizard,elf,female,any,level-0,1,1,0
+player,fire,Archeologist,human,male,any,level-0,1,1,0
+player,fire,Wizard,elf,female,any,level-0,1,1,0
+player,cast,Archeologist,human,male,any,level-0,1,1,0
+player,cast,Wizard,elf,female,any,level-0,1,1,0
+player,special-attack,Archeologist,human,male,any,level-0,1,1,0
+player,special-attack,Wizard,elf,female,any,level-0,1,1,0
+player,item-use,Archeologist,human,male,any,level-0,1,1,0
+player,item-use,Wizard,elf,female,any,level-0,1,1,0
+player,door-use,Archeologist,human,male,any,level-0,1,1,0
+player,door-use,Wizard,elf,female,any,level-0,1,1,0
 user-interface,cursor,generic,1,1,0
 user-interface,cursor,look,1,1,0
 user-interface,cursor,teleport,1,1,0
@@ -2559,13 +2571,13 @@ user-interface,ui-tile,status-window-borders,6,32,32,top-left,top,middle-left,mi
 user-interface,ui-tile,map-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,menu-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,text-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
-animation,handcrafted-candle-lit-animation,tile-0,1839,1,1,0
-animation,twisted-candle-lit-animation,tile-0,1838,1,1,0
-animation,twisted-candle-lit-animation,tile-1,1838,1,1,0
-animation,twisted-candle-lit-animation,tile-2,1838,1,1,0
-animation,twisted-candle-lit-animation,tile-3,1838,1,1,0
-animation,twisted-candle-lit-animation,tile-4,1838,1,1,0
-animation,twisted-candle-lit-animation,tile-5,1838,1,1,0
+animation,handcrafted-candle-lit-animation,tile-0,1837,1,1,0
+animation,twisted-candle-lit-animation,tile-0,1839,1,1,0
+animation,twisted-candle-lit-animation,tile-1,1839,1,1,0
+animation,twisted-candle-lit-animation,tile-2,1839,1,1,0
+animation,twisted-candle-lit-animation,tile-3,1839,1,1,0
+animation,twisted-candle-lit-animation,tile-4,1839,1,1,0
+animation,twisted-candle-lit-animation,tile-5,1839,1,1,0
 enlargement,dracolich-enlargement,top-left,217,3,2,0,5,0
 enlargement,dracolich-enlargement,top,217,3,2,0,5,1
 enlargement,dracolich-enlargement,top-right,217,3,2,0,5,2

@@ -47,6 +47,12 @@ struct tileset_definition {
 };
 
 #define GENERIC_PLAYER_HAS_ATTACK_TILE 1
+#define GENERIC_PLAYER_HAS_THROW_TILE 1
+#define GENERIC_PLAYER_HAS_FIRE_TILE 1
+#define GENERIC_PLAYER_HAS_CAST_TILE 1
+#define GENERIC_PLAYER_HAS_SPECIAL_ATTACK_TILE 1
+#define GENERIC_PLAYER_HAS_ITEM_USE_TILE 1
+#define GENERIC_PLAYER_HAS_DOOR_USE_TILE 1
 
 extern NEARDATA struct tileset_definition default_tileset_definition;
 
