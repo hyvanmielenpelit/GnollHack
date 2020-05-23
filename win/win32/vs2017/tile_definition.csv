@@ -2591,6 +2591,7 @@ user-interface,ui-tile,map-window-borders,6,32,32,top-left,top,middle-left,middl
 user-interface,ui-tile,menu-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,text-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 animation,handcrafted-candle-lit-animation,tile-0,1858,1,1,0
+animation,elf_wizard_female_cast-animation,tile-0,2561,1,1,0
 animation,twisted-candle-lit-animation,tile-0,1857,1,1,0
 animation,twisted-candle-lit-animation,tile-1,1857,1,1,0
 animation,twisted-candle-lit-animation,tile-2,1857,1,1,0

@@ -1,5 +1,5 @@
 /* GnollHack 4.0 tiledata.c */
-/* Copyright (c) Janne Gustafsson 2020.                           */
+/* Copyright (c) Janne Gustafsson, 2020.                            */
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"

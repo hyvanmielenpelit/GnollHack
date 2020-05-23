@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 by Janne Gustafsson
+ * Copyright (c) Janne Gustafsson, 2020
  */
 #include "hack.h"
 
@@ -28,6 +28,12 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "elf_wizard_female_cast-animation", 369 + GLYPH_PLAYER_CAST_OFF,  1,
+      PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_OFF, 2,
+      ANIMATION_MAIN_TILE_USE_FIRST,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", WAX_CANDLE + GLYPH_OBJ_LIT_OFF, 6,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 3,
       ANIMATION_MAIN_TILE_USE_FIRST,
@@ -35,7 +41,6 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 };
-
 
 void
 init_animations()
@@ -81,6 +86,9 @@ get_player_cast_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     /* Write here the code that returns the right animation for the combination that has an animation */
+    if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION;
+
     return 0;
 }
 
