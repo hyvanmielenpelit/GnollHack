@@ -35,8 +35,20 @@ E int FDECL(argcheck, (int, char **, enum earlyarg));
 E void NDECL(init_animations);
 E short FDECL(get_player_stand_animation, (int, int, int, int, int));
 E short FDECL(get_player_attack_animation, (int, int, int, int, int));
+E short FDECL(get_player_throw_animation, (int, int, int, int, int));
+E short FDECL(get_player_fire_animation, (int, int, int, int, int));
+E short FDECL(get_player_cast_animation, (int, int, int, int, int));
+E short FDECL(get_player_special_attack_animation, (int, int, int, int, int));
+E short FDECL(get_player_item_use_animation, (int, int, int, int, int));
+E short FDECL(get_player_door_use_animation, (int, int, int, int, int));
 E short FDECL(get_player_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_attack_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_throw_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_fire_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_cast_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_special_attack_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_item_use_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_door_use_enlargement, (int, int, int, int, int));
 E short FDECL(maybe_get_animated_tile, (short, unsigned long, boolean*));
 
 /* ### apply.c ### */

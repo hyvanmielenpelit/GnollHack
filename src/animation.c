@@ -61,6 +61,56 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 short
+get_player_throw_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    return 0;
+}
+
+short
+get_player_fire_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    return 0;
+}
+
+short
+get_player_cast_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    return 0;
+}
+
+short
+get_player_special_attack_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    return 0;
+}
+
+short
+get_player_item_use_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    return 0;
+}
+
+short
+get_player_door_use_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    return 0;
+}
+
+
+
+short
 maybe_get_animated_tile(ntile, interval_counter, mapAnimated)
 short ntile;
 unsigned long interval_counter;
@@ -144,6 +194,54 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 short
 get_player_attack_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    return 0;
+}
+
+short
+get_player_throw_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    return 0;
+}
+
+short
+get_player_fire_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    return 0;
+}
+
+short
+get_player_cast_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    return 0;
+}
+
+short
+get_player_special_attack_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    return 0;
+}
+
+short
+get_player_item_use_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    return 0;
+}
+
+short
+get_player_door_use_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     /* Write here the code that returns the right enlargement for the combination that has an enlargement */

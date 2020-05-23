@@ -33,12 +33,14 @@ struct layer_info {
 #define LFLAGS_M_DETECTED           0x00000002UL
 #define LFLAGS_M_RIDDEN             0x00000004UL
 #define LFLAGS_M_SADDLED            0x00000008UL
+#define LFLAGS_M_YOU                0x00000010UL
 
-#define LFLAGS_O_THROWN             0x00000010UL
-#define LFLAGS_O_FULL_SIZED         0x00000020UL
-#define LFLAGS_O_DRAWN_IN_FRONT     0x00000040UL
+#define LFLAGS_O_THROWN             0x00000100UL
+#define LFLAGS_O_FULL_SIZED         0x00000200UL
+#define LFLAGS_O_DRAWN_IN_FRONT     0x00000400UL
 
-#define LFLAGS_UNEXPLORED           0x00000100UL
+#define LFLAGS_UNEXPLORED           0x00001000UL
+
 
 
 #endif /* LAYER_H */
