@@ -1861,12 +1861,29 @@ short* tilemaparray;
         {
             if (process_style == 0)
             {
+                int base_id_index = animations[i].base_glyph_id;
+                
+                if (glyph_is_normal_object(animations[i].base_glyph_id) || glyph_is_normal_lit_object(animations[i].base_glyph_id) || glyph_is_inventory_object(animations[i].base_glyph_id) || glyph_is_inventory_lit_object(animations[i].base_glyph_id))
+                {
+                    int og_offset = glyph_is_normal_object(animations[i].base_glyph_id) ? GLYPH_OBJ_OFF 
+                        : glyph_is_normal_lit_object(animations[i].base_glyph_id) ? GLYPH_OBJ_LIT_OFF
+                        : glyph_is_inventory_object(animations[i].base_glyph_id) ? GLYPH_OBJ_INVENTORY_OFF
+                        : GLYPH_OBJ_INVENTORY_LIT_OFF;
+
+                    int obj_idx = base_id_index - og_offset;
+                    for (int oidx = STRANGE_OBJECT; oidx < NUM_OBJECTS; oidx++)
+                    {
+                        if (objects[oidx].oc_descr_idx == obj_idx)
+                        {
+                            base_id_index = oidx + og_offset;
+                            break;
+                        }
+                    }
+                }
                 Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name, 
                     animations[i].animation_name ? animations[i].animation_name : "unknown animation",
                     j,
-                    glyph_is_normal_object(animations[i].base_glyph_id) ? glyph2tile[objects[(animations[i].base_glyph_id - GLYPH_OBJ_OFF)].oc_descr_idx + GLYPH_OBJ_OFF] 
-                    : glyph_is_normal_lit_object(animations[i].base_glyph_id) ? glyph2tile[objects[(animations[i].base_glyph_id - GLYPH_OBJ_LIT_OFF)].oc_descr_idx + GLYPH_OBJ_LIT_OFF]
-                    : glyph2tile[animations[i].base_glyph_id]
+                    glyph2tile[base_id_index]
                 );
                 int enl = animations[i].tile_enlargement[j];
                 if (enl > 0)

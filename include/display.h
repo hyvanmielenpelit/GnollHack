@@ -653,10 +653,29 @@
     ((abs(glyph)) >= GLYPH_OBJ_OFF && (abs(glyph)) < (GLYPH_OBJ_OFF + NUM_OBJECTS))
 #define glyph_is_normal_lit_object(glyph) \
     ((abs(glyph)) >= GLYPH_OBJ_LIT_OFF && (abs(glyph)) < (GLYPH_OBJ_LIT_OFF + NUM_OBJECTS))
+#define glyph_is_inventory_object(glyph) \
+    ((abs(glyph)) >= GLYPH_OBJ_INVENTORY_OFF && (abs(glyph)) < (GLYPH_OBJ_INVENTORY_OFF + NUM_OBJECTS))
+#define glyph_is_inventory_lit_object(glyph) \
+    ((abs(glyph)) >= GLYPH_OBJ_INVENTORY_LIT_OFF && (abs(glyph)) < (GLYPH_OBJ_INVENTORY_LIT_OFF + NUM_OBJECTS))
+
 #define glyph_is_artifact(glyph) \
     ((abs(glyph)) >= GLYPH_ARTIFACT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_OFF + NUM_ARTIFACTS))
 #define glyph_to_artifact(glyph) \
     (glyph_is_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
+#define glyph_is_lit_artifact(glyph) \
+    ((abs(glyph)) >= GLYPH_ARTIFACT_LIT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_LIT_OFF + NUM_ARTIFACTS))
+#define glyph_to_lit_artifact(glyph) \
+    (glyph_is_lit_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_LIT_OFF) : NO_GLYPH)
+#define glyph_is_inventory_artifact(glyph) \
+    ((abs(glyph)) >= GLYPH_ARTIFACT_INVENTORY_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_INVENTORY_OFF + NUM_ARTIFACTS))
+#define glyph_to_inventory_artifact(glyph) \
+    (glyph_is_inventory_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_INVENTORY_OFF) : NO_GLYPH)
+#define glyph_is_inventory_lit_artifact(glyph) \
+    ((abs(glyph)) >= GLYPH_ARTIFACT_INVENTORY_LIT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_INVENTORY_LIT_OFF + NUM_ARTIFACTS))
+#define glyph_to_inventory_lit_artifact(glyph) \
+    (glyph_is_inventory_lit_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_INVENTORY_LIT_OFF) : NO_GLYPH)
+
+
 #define glyph_is_object(glyph)                               \
     (glyph_is_normal_object(glyph) || glyph_is_statue(glyph)  || glyph_is_female_statue(glyph)\
      || glyph_is_body(glyph) || glyph_is_female_body(glyph) || glyph_is_artifact(glyph))
@@ -828,8 +847,20 @@
                ? STATUE                          \
 			 : glyph_is_artifact(glyph)                \
 				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
+			 : glyph_is_lit_artifact(glyph)                \
+				   ? artifact_to_obj(glyph_to_lit_artifact(glyph))   \
+			 : glyph_is_inventory_artifact(glyph)                \
+				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
+			 : glyph_is_inventory_lit_artifact(glyph)                \
+				   ? artifact_to_obj(glyph_to_lit_artifact(glyph))   \
 				   : glyph_is_normal_object(glyph)   \
 						 ? ((abs(glyph)) - GLYPH_OBJ_OFF) \
+				   : glyph_is_normal_lit_object(glyph)   \
+						 ? ((abs(glyph)) - GLYPH_OBJ_LIT_OFF) \
+				   : glyph_is_inventory_object(glyph)   \
+						 ? ((abs(glyph)) - GLYPH_OBJ_INVENTORY_OFF) \
+				   : glyph_is_inventory_lit_object(glyph)   \
+						 ? ((abs(glyph)) - GLYPH_OBJ_INVENTORY_LIT_OFF) \
 						 : NO_GLYPH)
 
 #endif /* DISPLAY_H */

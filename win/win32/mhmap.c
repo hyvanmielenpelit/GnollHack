@@ -978,7 +978,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 int signed_main_glyph = data->map[enl_i][enl_j];
 
                 int layer1signedglyph = signed_bk_glyph != NO_GLYPH ? signed_bk_glyph : (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
-                int layer2signedglyph = (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? NO_GLYPH : signed_main_glyph;
+                int layer2signedglyph = (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? (signed_bk_glyph != NO_GLYPH ? signed_main_glyph : NO_GLYPH) : signed_main_glyph;
 
                 if(base_layer == 1)
                     signed_glyph = layer1signedglyph;
