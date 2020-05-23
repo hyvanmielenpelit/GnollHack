@@ -270,12 +270,12 @@ char *posbar;
 
 /* XXX can we decode the glyph in a meaningful way? */
 void
-chainin_print_glyph(window, x, y, glyph, bkglyph)
+chainin_print_glyph(window, x, y, layers)
 winid window;
 xchar x, y;
-int glyph, bkglyph;
+struct layer_info layers;
 {
-    (*cibase->nprocs->win_print_glyph)(cibase->ndata, window, x, y, glyph, bkglyph);
+    (*cibase->nprocs->win_print_glyph)(cibase->ndata, window, x, y, layers);
 }
 
 void

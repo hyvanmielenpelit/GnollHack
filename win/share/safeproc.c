@@ -312,11 +312,10 @@ int x, y;
  *  Print the glyph to the output device.  Don't flush the output device.
  */
 void
-safe_print_glyph(window, x, y, glyph, bkglyph)
+safe_print_glyph(window, x, y, layers)
 winid window;
 xchar x, y;
-int glyph;
-int bkglyph UNUSED;
+struct layer_info layers;
 {
     return;
 }

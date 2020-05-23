@@ -6,6 +6,7 @@
 #define WINPROCS_H
 
 #include "botl.h"
+#include "layer.h"
 
 /* NB: this MUST match chain_procs below */
 struct window_procs {
@@ -44,7 +45,7 @@ struct window_procs {
 #ifdef POSITIONBAR
     void FDECL((*win_update_positionbar), (char *));
 #endif
-    void FDECL((*win_print_glyph), (winid, XCHAR_P, XCHAR_P, int, int));
+    void FDECL((*win_print_glyph), (winid, XCHAR_P, XCHAR_P, struct layer_info));
     void FDECL((*win_raw_print), (const char *));
     void FDECL((*win_raw_print_bold), (const char *));
     int NDECL((*win_nhgetch));
@@ -347,7 +348,7 @@ struct chain_procs {
 #ifdef POSITIONBAR
     void FDECL((*win_update_positionbar), (CARGS, char *));
 #endif
-    void FDECL((*win_print_glyph), (CARGS, winid, XCHAR_P, XCHAR_P, int, int));
+    void FDECL((*win_print_glyph), (CARGS, winid, XCHAR_P, XCHAR_P, struct layer_info));
     void FDECL((*win_raw_print), (CARGS, const char *));
     void FDECL((*win_raw_print_bold), (CARGS, const char *));
     int FDECL((*win_nhgetch), (CARGS));
@@ -421,7 +422,7 @@ extern void FDECL(safe_cliparound, (int, int));
 #ifdef POSITIONBAR
 extern void FDECL(safe_update_positionbar, (char *));
 #endif
-extern void FDECL(safe_print_glyph, (winid, XCHAR_P, XCHAR_P, int, int));
+extern void FDECL(safe_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 extern void FDECL(safe_raw_print, (const char *));
 extern void FDECL(safe_raw_print_bold, (const char *));
 extern int NDECL(safe_nhgetch);

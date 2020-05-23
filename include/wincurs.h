@@ -2,6 +2,8 @@
 /* Copyright (c) Karl Garrison, 2010. */
 /* NetHack may be freely redistributed.  See license for details. */
 
+#include "layer.h"
+
 #ifndef WINCURS_H
 #define WINCURS_H
 
@@ -96,7 +98,7 @@ extern void curses_mark_synch(void);
 extern void curses_wait_synch(void);
 extern void curses_cliparound(int x, int y);
 extern void curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y,
-                               int glyph, int bkglyph);
+                               struct layer_info layers);
 extern void curses_raw_print(const char *str);
 extern void curses_raw_print_bold(const char *str);
 extern int curses_nhgetch(void);

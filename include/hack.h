@@ -637,6 +637,7 @@ static const char empty_string[] = "";
 /* Maximum number of status lines */
 #define MAX_STATUS_LINES 8
 
+/* Some tile display properties */
 #define MIN_SCREEN_SCALE_ADJUSTMENT -0.75
 #define MAX_SCREEN_SCALE_ADJUSTMENT 1.0
 #define KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP 0.25
@@ -644,6 +645,7 @@ static const char empty_string[] = "";
 #define MIN_PREF_SCREEN_SCALE 25
 #define MAX_PREF_SCREEN_SCALE 200
 
+#include "layer.h"
 
 /* convert 1..10 to 0..9; add 10 for second group (spell casting) */
 #define ad_to_typ(k) (10 + (int) k - 1)

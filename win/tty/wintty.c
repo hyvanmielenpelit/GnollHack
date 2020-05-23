@@ -3395,16 +3395,17 @@ int x, y;
  */
 
 void
-tty_print_glyph(window, x, y, glyph, bkglyph)
+tty_print_glyph(window, x, y, layers)
 winid window;
 xchar x, y;
-int glyph;
-int bkglyph UNUSED;
+struct layer_info layers;
 {
     int ch;
     boolean reverse_on = FALSE;
     int color;
     unsigned long special;
+
+    int glyph = layers.glyph;
 
     HUPSKIP();
 #ifdef CLIPPING

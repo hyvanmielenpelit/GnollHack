@@ -531,7 +531,7 @@ static void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
                                  int, const char *, BOOLEAN_P));
 static void FDECL(hup_end_menu, (winid, const char *));
 static void FDECL(hup_putstr, (winid, int, const char *));
-static void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, int, int));
+static void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
 static void FDECL(hup_outrip, (winid, int, time_t));
 static void FDECL(hup_curs, (winid, int, int));
 static void FDECL(hup_display_nhwindow, (winid, BOOLEAN_P));
@@ -744,11 +744,10 @@ const char *text UNUSED;
 
 /*ARGSUSED*/
 static void
-hup_print_glyph(window, x, y, glyph, bkglyph)
+hup_print_glyph(window, x, y, layers)
 winid window UNUSED;
 xchar x UNUSED, y UNUSED;
-int glyph UNUSED;
-int bkglyph UNUSED;
+struct layer_info layers UNUSED;
 {
     return;
 }

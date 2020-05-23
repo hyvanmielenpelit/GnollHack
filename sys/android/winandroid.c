@@ -37,7 +37,7 @@ static void FDECL(and_cliparound, (int, int));
 #ifdef POSITIONBAR
 static void FDECL(and_update_positionbar, (char *));
 #endif
-static void FDECL(and_print_glyph, (winid,XCHAR_P,XCHAR_P,int,int));
+static void FDECL(and_print_glyph, (winid,XCHAR_P,XCHAR_P,struct layer_info));
 static void FDECL(and_raw_print, (const char *));
 static void FDECL(and_raw_print_bold, (const char *));
 static int NDECL(and_nhgetch);
@@ -1401,8 +1401,11 @@ void and_update_positionbar(char *features)
 //		   port wants (symbol, font, color, attributes, ...there's
 //		   a 1-1 map between glyphs and distinct things on the map).
 
-void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
+void and_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
+	int glyph = layers.glyph;
+	int bkglyph = layers.bkglyph;
+
 	//debuglog("and_print_glyph wid=%d %dx%d", wid, x, y);
 	int tile;
 	if(glyph == NO_GLYPH)

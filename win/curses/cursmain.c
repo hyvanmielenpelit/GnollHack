@@ -621,16 +621,18 @@ print_glyph(window, x, y, glyph, bkglyph)
                    It's not used here.
 */
 void
-curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph,
-                   int bkglyph UNUSED)
+curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
     int ch;
     int color;
     unsigned int special;
     int attr = -1;
 
+    int glyph = layers.glyph;
+
     /* map glyph to character and color */
     mapglyph(glyph, &ch, &color, &special, x, y);
+
     if ((special & MG_PET) && iflags.hilite_pet) {
         attr = iflags.wc2_petattr;
     }

@@ -335,15 +335,15 @@ char *posbar;
 #endif
 
 void
-chainout_print_glyph(vp, window, x, y, glyph, bkglyph)
+chainout_print_glyph(vp, window, x, y, layers)
 void *vp;
 winid window;
 xchar x, y;
-int glyph, bkglyph;
+struct layer_info layers;
 {
     struct chainout_data *tdp = vp;
 
-    (*tdp->nprocs->win_print_glyph)(window, x, y, glyph, bkglyph);
+    (*tdp->nprocs->win_print_glyph)(window, x, y, layers);
 }
 
 void

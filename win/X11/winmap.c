@@ -70,14 +70,14 @@ static void FDECL(display_cursor, (struct xwindow *));
 /* Global functions ======================================================= */
 
 void
-X11_print_glyph(window, x, y, glyph, bkglyph)
+X11_print_glyph(window, x, y, layers)
 winid window;
 xchar x, y;
-int glyph;
-int bkglyph UNUSED;
+struct layer_info layers;
 {
     struct map_info_t *map_info;
     boolean update_bbox = FALSE;
+    int glyph = layers.glyph;
 
     check_winid(window);
     if (window_list[window].type != NHW_MAP) {

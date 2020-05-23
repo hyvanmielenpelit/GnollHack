@@ -2,6 +2,8 @@
 /* Copyright (C) 2001 by Alex Kompel 	 */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#include "layer.h"
+
 #ifndef MHGnollHackMessages_H
 #define MHGnollHackMessages_H
 
@@ -37,8 +39,7 @@ typedef struct mswin_nhmsg_putstr {
 typedef struct mswin_nhmsg_print_glyph {
     XCHAR_P x;
     XCHAR_P y;
-    int glyph;
-    int bkglyph;
+    struct layer_info layers;
 } MSNHMsgPrintGlyph, *PMSNHMsgPrintGlyph;
 
 typedef struct mswin_nhmsg_cliparound {

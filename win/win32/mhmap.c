@@ -14,6 +14,7 @@
 
 #include "color.h"
 #include "patchlevel.h"
+#include "layer.h"
 
 #define NHMAP_FONT_NAME TEXT("Terminal")
 #define NHMAP_TTFONT_NAME TEXT("Consolas")
@@ -27,10 +28,9 @@
 typedef struct mswin_GnollHack_map_window {
     HWND hWnd;                  /* window */
 
-    int map[COLNO][ROWNO];      /* glyph map */
-    int bkmap[COLNO][ROWNO];    /* backround glyph map */
-    boolean mapAnimated[COLNO][ROWNO];    /* animation flag for map */
-    boolean mapDirty[COLNO][ROWNO]; /* dirty flag for map */
+    struct layer_info map[COLNO][ROWNO];    /* glyph map */
+    boolean mapAnimated[COLNO][ROWNO];      /* animation flag for map */
+    boolean mapDirty[COLNO][ROWNO];         /* dirty flag for map */
 
     int mapMode;                /* current map mode */
     boolean bAsciiMode;         /* switch ASCII/tiled mode */
@@ -80,7 +80,7 @@ static void nhcoord2display(PNHMapWindow data, int x, int y, LPRECT lpOut);
 static void paint(PNHMapWindow data, int i, int j);
 static void dirtyAll(PNHMapWindow data);
 static void dirty(PNHMapWindow data, int i, int j);
-static void setGlyph(PNHMapWindow data, int i, int j, int fg, int bg);
+static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers);
 static void clearAll(PNHMapWindow data);
 
 #if (VERSION_MAJOR < 0) && (VERSION_MINOR < 4) && (PATCHLEVEL < 2)
@@ -700,8 +700,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     switch (wParam) {
     case MSNH_MSG_PRINT_GLYPH: {
         PMSNHMsgPrintGlyph msg_data = (PMSNHMsgPrintGlyph) lParam;
-        setGlyph(data, msg_data->x, msg_data->y, 
-            msg_data->glyph, msg_data->bkglyph);
+        setGlyph(data, msg_data->x, msg_data->y, msg_data->layers);
     } break;
 
     case MSNH_MSG_CLIPAROUND: {
@@ -784,10 +783,10 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             for (col = 0; col < COLNO; col++) {
                 if (index >= msg_data->max_size)
                     break;
-                if (data->map[col][row] == NO_GLYPH) {
+                if (data->map[col][row].glyph == NO_GLYPH) {
                     mgch = ' ';
                 } else {
-                    (void) mapglyph(data->map[col][row], &mgch, &color,
+                    (void) mapglyph(data->map[col][row].glyph, &mgch, &color,
                                     &special, col, row);
                 }
                 msg_data->buffer[index] = mgch;
@@ -950,8 +949,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean side_not_ok = FALSE;
                     if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
                         || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
-                        || data->map[relevant_i][relevant_j] == S_unexplored
-                        || (data->map[relevant_i][relevant_j] == NO_GLYPH && data->bkmap[relevant_i][relevant_j] == NO_GLYPH)
+                        || data->map[relevant_i][relevant_j].glyph == S_unexplored
+                        || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
                         )
                         side_not_ok = TRUE;
 
@@ -962,8 +961,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
                             || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
-                            || data->map[relevant_i][relevant_j] == S_unexplored
-                            || (data->map[relevant_i][relevant_j] == NO_GLYPH && data->bkmap[relevant_i][relevant_j] == NO_GLYPH)
+                            || data->map[relevant_i][relevant_j].glyph == S_unexplored
+                            || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
                             )
                             upper_side_not_ok = TRUE;
                     }
@@ -974,8 +973,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         continue;
                 }
 
-                int signed_bk_glyph = data->bkmap[enl_i][enl_j];
-                int signed_main_glyph = data->map[enl_i][enl_j];
+                int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
+                int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
                 int layer1signedglyph = signed_bk_glyph != NO_GLYPH ? signed_bk_glyph : (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
                 int layer2signedglyph = (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? (signed_bk_glyph != NO_GLYPH ? signed_main_glyph : NO_GLYPH) : signed_main_glyph;
@@ -989,7 +988,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                 /* Kludge for the time being */
-                if (base_layer == 1 && glyph == NO_GLYPH && data->map[enl_i][enl_j] == NO_GLYPH)
+                if (base_layer == 1 && glyph == NO_GLYPH && data->map[enl_i][enl_j].glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
 
                 if (signed_glyph < 0)
@@ -1133,7 +1132,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     #ifdef USE_PILEMARK
                     /* rely on GnollHack core helper routine */
-                    (void) mapglyph(data->map[i][j], &mgch, &color, &special, i, j);
+                    (void) mapglyph(data->map[i][j].glyph, &mgch, &color, &special, i, j);
 
                     if ((glyph != NO_GLYPH) && (special & MG_PET)
     #else
@@ -1222,7 +1221,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 static void
 paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
 {
-    if (data->map[i][j] >= 0) {
+    if (data->map[i][j].glyph >= 0) {
 
         char ch;
         WCHAR wch;
@@ -1239,11 +1238,11 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         DeleteObject(blackBrush);
 
     #if (VERSION_MAJOR < 0) && (VERSION_MINOR < 4) && (PATCHLEVEL < 2)
-        //nhglyph2charcolor(data->map[i][j], &ch, &color);
+        //nhglyph2charcolor(data->map[i][j].glyph, &ch, &color);
         //OldFg = SetTextColor(hDC, nhcolor_to_RGB(color));
     #else
         /* rely on GnollHack core helper routine */
-        (void) mapglyph(data->map[i][j], &mgch, &color,
+        (void) mapglyph(data->map[i][j].glyph, &mgch, &color,
                         &special, i, j);
         ch = (char) mgch;
         if (((special & MG_PET) && iflags.hilite_pet)
@@ -1306,13 +1305,15 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
     }
 }
 
-static void setGlyph(PNHMapWindow data, int i, int j, int fg, int bg)
+static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
 {
-    if ((data->map[i][j] != fg) || (data->bkmap[i][j] != bg)) {
+    int fg = layers.glyph;
+    int bg = layers.bkglyph;
+
+    if ((data->map[i][j].glyph != layers.glyph) || (data->map[i][j].glyph != layers.bkglyph)) {
         dirty(data, i, j);
 
-        data->map[i][j] = fg;
-        data->bkmap[i][j] = bg;
+        data->map[i][j] = layers;
 
         dirty(data, i, j);
         /*
@@ -1329,8 +1330,21 @@ static void clearAll(PNHMapWindow data)
 {
     for (int x = 0; x < COLNO; x++)
         for (int y = 0; y < ROWNO; y++) {
-            data->map[x][y] = NO_GLYPH;
-            data->bkmap[x][y] = NO_GLYPH;
+            data->map[x][y].glyph = NO_GLYPH;
+            data->map[x][y].bkglyph = NO_GLYPH;
+            data->map[x][y].floor_glyph = NO_GLYPH;
+            data->map[x][y].dungeon_feature_glyph = NO_GLYPH;
+            data->map[x][y].object_glyph = NO_GLYPH;
+            data->map[x][y].monster_glyph = NO_GLYPH;
+            data->map[x][y].monster_effect_glyph = NO_GLYPH;
+            data->map[x][y].environment_glyph = NO_GLYPH;
+            data->map[x][y].general_effect_glyph = NO_GLYPH;
+            data->map[x][y].layer_flags = 0UL;
+            data->map[x][y].current_hp = 0;
+            data->map[x][y].max_hp = 0;
+            data->map[x][y].current_mana = 0;
+            data->map[x][y].max_mana = 0;
+            data->map[x][y].condition_flags = 0UL;
             data->mapDirty[x][y] = TRUE;
             data->mapAnimated[x][y] = 0;
         }
@@ -1355,8 +1369,8 @@ static void dirty(PNHMapWindow data, int x, int y)
 
     InvalidateRect(data->hWnd, &rt, FALSE);
 
-    int enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y])]];
-    int bk_enlarg = tile2enlargement[glyph2tile[abs(data->bkmap[x][y])]];
+    int enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y].glyph)]];
+    int bk_enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y].bkglyph)]];
     if (enlarg > 0 || bk_enlarg > 0)
     {
         int enl_x = -1;

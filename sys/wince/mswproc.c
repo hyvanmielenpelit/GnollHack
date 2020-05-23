@@ -1207,8 +1207,11 @@ print_glyph(window, x, y, glyph, bkglyph)
                    a 1-1 map between glyphs and distinct things on the map).
 */
 void
-mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
+mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
+    int glyph = layers.glyph;
+    int bkglyph = layers.bkglyph;
+
     logDebug("mswin_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)

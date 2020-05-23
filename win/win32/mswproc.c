@@ -1293,8 +1293,11 @@ print_glyph(window, x, y, glyph, bkglyph)
                    
 */
 void
-mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
+mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
+    int glyph = layers.glyph;
+    int bkglyph = layers.bkglyph;
+
     logDebug("mswin_print_glyph(%d, %d, %d, %d, %d)\n", wid, x, y, glyph, bkglyph);
 
     if ((wid >= 0) && (wid < MAXWINDOWS)
@@ -1304,8 +1307,7 @@ mswin_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
         ZeroMemory(&data, sizeof(data));
         data.x = x;
         data.y = y;
-        data.glyph = glyph;
-        data.bkglyph = bkglyph;
+        data.layers = layers;
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_PRINT_GLYPH, (LPARAM) &data);
     }

@@ -576,11 +576,11 @@ char *posbar;
 /* XXX can we decode the glyph in a meaningful way? see mapglyph()?
  genl_putmixed?  */
 void
-trace_print_glyph(vp, window, x, y, glyph, bkglyph)
+trace_print_glyph(vp, window, x, y, layers)
 void *vp;
 winid window;
 xchar x, y;
-int glyph, bkglyph;
+struct layer_info layers;
 {
     struct trace_data *tdp = vp;
 
@@ -588,7 +588,7 @@ int glyph, bkglyph;
             x, y, glyph, bkglyph);
 
     PRE;
-    (*tdp->nprocs->win_print_glyph)(tdp->ndata, window, x, y, glyph, bkglyph);
+    (*tdp->nprocs->win_print_glyph)(tdp->ndata, window, x, y, layers);
     POST;
 }
 

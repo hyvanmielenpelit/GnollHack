@@ -262,6 +262,7 @@
     <ClInclude Include="$(IncDir)fountain.h" />
     <ClInclude Include="$(IncDir)matcomps.h" />
     <ClInclude Include="$(IncDir)tiledata.h" />
+    <ClInclude Include="..\..\..\include\layer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)NetHack.rc" />

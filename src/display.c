@@ -1589,7 +1589,7 @@ docrt()
 void
 redraw_map()
 {
-    int x, y, glyph;
+    int x, y;
 
     /*
      * Not sure whether this is actually necessary; save and restore did
@@ -1609,8 +1609,14 @@ redraw_map()
      */
     for (y = 0; y < ROWNO; ++y)
         for (x = 1; x < COLNO; ++x) {
-            glyph = glyph_at(x, y); /* not levl[x][y].glyph */
-            print_glyph(WIN_MAP, x, y, glyph, get_bk_glyph(x, y));
+            //glyph = glyph_at(x, y); /* not levl[x][y].glyph */
+            struct layer_info layers = { 0 };
+            layers.glyph = glyph_at(x, y);
+            layers.bkglyph = get_bk_glyph(x, y);
+            layers.floor_glyph = get_floor_layer_glyph(x, y);
+            layers.dungeon_feature_glyph = get_bk_glyph(x, y);
+            layers.object_glyph = get_object_layer_glyph(x, y);
+            print_glyph(WIN_MAP, x, y, layers);
         }
     flush_screen(1);
 }
@@ -1620,7 +1626,7 @@ redraw_map()
 
 typedef struct {
     xchar new; /* perhaps move this bit into the rm structure. */
-    int glyph;
+    struct layer_info layers;
 } gbuf_entry;
 
 static gbuf_entry gbuf[ROWNO][COLNO];
@@ -1791,8 +1797,12 @@ int x, y, glyph;
         return;
     }
 
-    if (gbuf[y][x].glyph != glyph || iflags.use_background_glyph) {
-        gbuf[y][x].glyph = glyph;
+    if (gbuf[y][x].layers.glyph != glyph || iflags.use_background_glyph) {
+        gbuf[y][x].layers.glyph = glyph;
+        gbuf[y][x].layers.bkglyph = get_bk_glyph(x, y);
+        gbuf[y][x].layers.floor_glyph = get_floor_layer_glyph(x, y);
+        gbuf[y][x].layers.dungeon_feature_glyph = get_bk_glyph(x, y);
+        gbuf[y][x].layers.object_glyph = get_object_layer_glyph(x, y);
         gbuf[y][x].new = 1;
         if (gbuf_start[y] > x)
             gbuf_start[y] = x;
@@ -1815,7 +1825,7 @@ int x, y, glyph;
         }                              \
     }
 
-static gbuf_entry nul_gbuf = { 0, base_cmap_to_glyph(S_unexplored) };
+static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, 0, 0, 0, 0, 0UL } };
 /*
  * Turn the 3rd screen into stone.
  */
@@ -1844,8 +1854,8 @@ int start, stop, y;
     register int x;
 
     for (x = start; x <= stop; x++)
-        if (gbuf[y][x].glyph != cmap_to_glyph(S_unexplored))
-            print_glyph(WIN_MAP, x, y, gbuf[y][x].glyph, get_bk_glyph(x, y));
+        if (gbuf[y][x].layers.glyph != cmap_to_glyph(S_unexplored))
+            print_glyph(WIN_MAP, x, y, gbuf[y][x].layers);
 }
 
 void
@@ -1895,7 +1905,7 @@ int cursor_on_u;
 
         for (; x <= gbuf_stop[y]; gptr++, x++)
             if (gptr->new) {
-                print_glyph(WIN_MAP, x, y, gptr->glyph, get_bk_glyph(x, y));
+                print_glyph(WIN_MAP, x, y, gptr->layers);
                 gptr->new = 0;
             }
     }
@@ -2237,7 +2247,7 @@ xchar x, y;
 {
     if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
         return cmap_to_glyph(S_room); /* XXX */
-    return gbuf[y][x].glyph;
+    return gbuf[y][x].layers.glyph;
 }
 
 /*
@@ -2257,10 +2267,10 @@ STATIC_OVL int
 get_bk_glyph(x, y)
 xchar x, y;
 {
-  if (gbuf[y][x].glyph == cmap_to_glyph(S_unexplored))
+    if (gbuf[y][x].layers.glyph == cmap_to_glyph(S_unexplored))
         return NO_GLYPH;
-  else
-    return back_to_glyph(x, y);
+    else
+        return back_to_glyph(x, y);
 
 #if 0
   int idx = S_room, bkglyph = NO_GLYPH;
