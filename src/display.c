@@ -1665,12 +1665,16 @@ int x, y, glyph;
          *  the definition.
          */
 
-        if (glyph >= GLYPH_PLAYER_ATTACK_OFF
-            && glyph < MAX_GLYPH) { /* an attacking player character */
-            text = "attacking player character";
-            offset = glyph - GLYPH_PLAYER_OFF;
+        if (glyph >= GLYPH_CURSOR_OFF
+            && glyph < MAX_GLYPH) { /* UI, animation, and other glyphs */
+            text = "other glyph";
+            offset = glyph - GLYPH_CURSOR_OFF;
+        } else if (glyph >= GLYPH_PLAYER_ATTACK_OFF
+            && glyph < GLYPH_CURSOR_OFF) { /* a player character in action */
+            text = "player character in action";
+            offset = glyph - GLYPH_PLAYER_ATTACK_OFF;
         } else if (glyph >= GLYPH_PLAYER_OFF
-            && glyph < MAX_GLYPH) { /* a player character */
+            && glyph < GLYPH_PLAYER_ATTACK_OFF) { /* a player character */
             text = "player character";
             offset = glyph - GLYPH_PLAYER_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_MISSILE_OFF
@@ -1738,8 +1742,8 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_INVIS_OFF) { /* invisible mon */
             text = "invisible mon";
             offset = glyph - GLYPH_INVIS_OFF;
-        } else if (glyph >= GLYPH_FEMALE_ATTACK_OFF) { /* female attacking mon */
-            text = "female attacking mon";
+        } else if (glyph >= GLYPH_FEMALE_ATTACK_OFF) { /* female mon in action */
+            text = "female mon in action";
             offset = glyph - GLYPH_FEMALE_RIDDEN_OFF;
         } else if (glyph >= GLYPH_FEMALE_RIDDEN_OFF) { /* female ridden mon */
             text = "female ridden mon";
@@ -1756,8 +1760,8 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_FEMALE_MON_OFF) { /* female mon */
             text = "female mon";
             offset = glyph - GLYPH_FEMALE_MON_OFF;
-        } else if (glyph >= GLYPH_ATTACK_OFF) { /* attacking mon */
-            text = "attacking mon";
+        } else if (glyph >= GLYPH_ATTACK_OFF) { /* mon in action */
+            text = "mon in action";
             offset = glyph - GLYPH_RIDDEN_OFF;
         } else if (glyph >= GLYPH_RIDDEN_OFF) { /* ridden mon */
             text = "ridden mon";

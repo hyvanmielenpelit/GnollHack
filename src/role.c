@@ -2660,13 +2660,15 @@ u_to_glyph()
     int player_gender = (int)flags.female;
     int player_alignment = u.ualign.type + 1; /* 0...2 */
     int player_glyph_level = 0;
+    int player_glyph_index = player_to_glyph_index(player_role, player_race, player_gender, player_alignment, player_glyph_level);
+    int player_glyph_offset = (u.attacking ? GLYPH_PLAYER_ATTACK_OFF : GLYPH_PLAYER_OFF);
+    int res = (u.facing_right ? -1 : 1) * (player_glyph_index + player_glyph_offset);
 
-    return (u.facing_right ? -1 : 1) * (u.attacking ? player_to_attack_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level)
-        : player_to_glyph(player_role, player_race, player_gender, player_alignment, player_glyph_level));
+    return res;
 }
 
 int
-player_to_glyph(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+player_to_glyph_index(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     int number_of_roles = NUM_ROLES;
@@ -2685,18 +2687,11 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         number_of_glyph_levels * player_alignment +
         number_of_glyph_levels * number_of_alignments * player_gender +
         number_of_glyph_levels * number_of_alignments * number_of_genders * player_race +
-        number_of_glyph_levels * number_of_alignments * number_of_genders * number_of_races * player_role +
-        GLYPH_PLAYER_OFF;
+        number_of_glyph_levels * number_of_alignments * number_of_genders * number_of_races * player_role;
 
     return res;
 }
 
-int
-player_to_attack_glyph(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    return player_to_glyph(roleidx, raceidx, genderidx, alignmentidx, levelidx) - GLYPH_PLAYER_OFF + GLYPH_PLAYER_ATTACK_OFF;
-}
 
 boolean
 player_has_attack_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
@@ -2709,6 +2704,80 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     else
         return FALSE;
 }
+
+boolean
+player_has_throw_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+boolean
+player_has_fire_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+boolean
+player_has_cast_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+boolean
+player_has_special_attack_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+boolean
+player_has_item_use_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+boolean
+player_has_door_use_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+
 
 int
 glyph_to_player_mon(int glyph)
@@ -2747,4 +2816,42 @@ attack_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_ATTACK_OFF + GLYPH_PLAYER_OFF);
 }
+
+int
+throw_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_THROW_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+fire_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_FIRE_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+cast_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+special_attack_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+item_use_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_ITEM_USE_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+door_use_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_DOOR_USE_OFF + GLYPH_PLAYER_OFF);
+}
+
+
 /* role.c */

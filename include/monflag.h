@@ -223,7 +223,7 @@
 #define M3_NONLIVING								0x00001000UL	/* is nonliving, such as a golem or other construct or a vortex (unaffected by death attacks)*/
 #define M3_MULTIWEAPON								0x00002000UL    /* fights with more than one weapon (i.e., the wielded weapon), if available*/
 #define M3_CONSTRICTOR								0x00004000UL    /* grabbing / sticking itself causes constriction */
-#define M3_STRANGLES_NECK_BY_HAND						0x00008000UL    /* rope golem's strangulation attack */
+#define M3_STRANGLES_NECK_BY_HAND					0x00008000UL    /* rope golem's strangulation attack */
 
 #define M3_WIZARD									0x00010000UL			/* monster can use wizard items */
 #define M3_PRIEST									0x00020000UL			/* monster can use priest items */
@@ -285,6 +285,12 @@
 #define M5_FEMALE_TILE		        0x00000001UL
 #define M5_CORPSE_TILE			    0x00000002UL
 #define M5_ATTACK_TILE			    0x00000004UL
+#define M5_THROW_TILE			    0x00000008UL
+#define M5_FIRE_TILE			    0x00000010UL
+#define M5_CAST_TILE			    0x00000020UL
+#define M5_SPECIAL_ATTACK_TILE      0x00000040UL
+#define M5_ITEM_USE_TILE			0x00000080UL
+#define M5_DOOR_USE_TILE			0x00000100UL
 
 
 #define MZ_TINY 0          /* < 2' */

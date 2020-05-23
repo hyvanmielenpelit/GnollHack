@@ -13,7 +13,14 @@ struct tileset_definition {
     uchar body_tile_style;       /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster, 2 = monsters marked with M5_CORPSE_TILE have body tiles */
     boolean ridden_tile_style;   /* 0 = use normal monster variation, 1 = separate ridden tile for each monster, 2 = monsters with M1_STEED have ridden tiles */
     boolean has_statue_tiles;    /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
-    uchar attack_tile_style;     /* 0 = use normal monster variation, 1 = separate attack tile for each monster, 2 = monsters with M5_ATTACK_TILE have attack tiles */
+   
+    uchar attack_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_ATTACK_TILE have attack tiles */
+    uchar throw_tile_style;      /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_THROW_TILE have attack tiles */
+    uchar fire_tile_style;       /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_FIRE_TILE have attack tiles */
+    uchar cast_tile_style;       /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_CAST_TILE have attack tiles */
+    uchar special_attack_tile_style; /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_SPECIAL_ATTACK_TILE have attack tiles */
+    uchar item_use_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_ITEM_USE_TILE have attack tiles */
+    uchar door_use_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_DOOR_USE_TILE have attack tiles */
 
     uchar inventory_tile_style;  /* 0 = no inventory tiles, 1 = has separate inventory tiles for all objects, 2 = has inventory tiles for each object marked with O4_INVENTORY_TILE  */
     uchar lit_tile_style;        /* 0 = no lit tiles, 1 = has separate lit tiles for all objects, 2 = has lit tiles for each object marked with O4_LIT_TILE  */

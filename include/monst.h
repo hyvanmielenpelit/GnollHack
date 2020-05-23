@@ -143,6 +143,9 @@ struct monst {
 
     short mcomingtou;
     xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
+    int notalktimer;
+    short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
+    uchar attacking;		/* the monster is currently in the midst of one of its attacks or actions */
 
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */
@@ -161,13 +164,9 @@ struct monst {
 	Bitfield(talkstate, 3);						/* 1 = has said introduction, 2 = has said non-repeatable secondary question, 3 = has said first repeatable confirmatory question,  4 = has said second repeatable confirmatory question */
 	Bitfield(leaves_no_corpse, 1);				/* this particular monster does not leave a corpse */
 	Bitfield(delayed_killer_by_you, 1);			/* is petrification or other delayed killer initiated by you */
-	int notalktimer;
 	Bitfield(u_know_mname, 1);                  /* you know the monster's name */
-    short rumorsleft;                           /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
     Bitfield(told_rumor, 1);			        /* the monster had told the player at least one rumor */
-    //int max_hp_percentage;						/* % of the monster's maximum theoretical hit points at the time of creation */
     Bitfield(facing_right, 1);			        /* the monster is facing right */
-    Bitfield(attacking, 1);			            /* the monster is currently in the midst of an attack */
 
     Bitfield(iswiz, 1);     /* is the Wizard of Yendor */
     Bitfield(wormno, 5);    /* at most 31 worms on any level */

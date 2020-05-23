@@ -2420,11 +2420,22 @@ E void NDECL(role_init);
 E const char *FDECL(Hello, (struct monst *));
 E const char *NDECL(Goodbye);
 E int NDECL(u_to_glyph);
-E int FDECL(player_to_glyph, (int, int, int, int, int));
-E int FDECL(player_to_attack_glyph, (int, int, int, int, int));
+E int FDECL(player_to_glyph_index, (int, int, int, int, int));
 E boolean FDECL(player_has_attack_tile, (int, int, int, int, int));
+E boolean FDECL(player_has_throw_tile, (int, int, int, int, int));
+E boolean FDECL(player_has_fire_tile, (int, int, int, int, int));
+E boolean FDECL(player_has_cast_tile, (int, int, int, int, int));
+E boolean FDECL(player_has_special_attack_tile, (int, int, int, int, int));
+E boolean FDECL(player_has_item_use_tile, (int, int, int, int, int));
+E boolean FDECL(player_has_door_use_tile, (int, int, int, int, int));
 E int FDECL(glyph_to_player_mon, (int));
 E int FDECL(attack_glyph_to_player_mon, (int));
+E int FDECL(throw_glyph_to_player_mon, (int));
+E int FDECL(fire_glyph_to_player_mon, (int));
+E int FDECL(cast_glyph_to_player_mon, (int));
+E int FDECL(special_attack_glyph_to_player_mon, (int));
+E int FDECL(item_use_glyph_to_player_mon, (int));
+E int FDECL(door_use_glyph_to_player_mon, (int));
 
 /* ### rumors.c ### */
 

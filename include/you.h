@@ -449,7 +449,7 @@ struct you {
 	boolean canadvanceskill; /* Can advance skill */
     int carrying_capacity_level;
     boolean facing_right;
-    boolean attacking;
+    uchar attacking;
 
 }; /* end of `struct you' */
 

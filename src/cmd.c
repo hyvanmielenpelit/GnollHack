@@ -2030,6 +2030,24 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_ATTACK_OFF:
                 header = "MON_ATTACK_OFF";
                 break;
+            case GLYPH_THROW_OFF:
+                header = "MON_THROW_OFF";
+                break;
+            case GLYPH_FIRE_OFF:
+                header = "MON_FIRE_OFF";
+                break;
+            case GLYPH_CAST_OFF:
+                header = "MON_CAST_OFF";
+                break;
+            case GLYPH_SPECIAL_ATTACK_OFF:
+                header = "MON_SPECIAL_ATTACK_OFF";
+                break;
+            case GLYPH_ITEM_USE_OFF:
+                header = "MON_ITEM_USE_OFF";
+                break;
+            case GLYPH_DOOR_USE_OFF:
+                header = "MON_DOOR_USE_OFF";
+                break;
             case GLYPH_FEMALE_MON_OFF:
                 header = "FEMALE_MON_OFF";
                 break;
@@ -2047,6 +2065,24 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_FEMALE_ATTACK_OFF:
                 header = "FEMALE_ATTACK_OFF";
+                break;
+            case GLYPH_FEMALE_THROW_OFF:
+                header = "MON_FEMALE_THROW_OFF";
+                break;
+            case GLYPH_FEMALE_FIRE_OFF:
+                header = "MON_FEMALE_FIRE_OFF";
+                break;
+            case GLYPH_FEMALE_CAST_OFF:
+                header = "MON_FEMALE_CAST_OFF";
+                break;
+            case GLYPH_FEMALE_SPECIAL_ATTACK_OFF:
+                header = "MON_FEMALE_SPECIAL_ATTACK_OFF";
+                break;
+            case GLYPH_FEMALE_ITEM_USE_OFF:
+                header = "MON_FEMALE_ITEM_USE_OFF";
+                break;
+            case GLYPH_FEMALE_DOOR_USE_OFF:
+                header = "MON_FEMALE_DOOR_USE_OFF";
                 break;
             case GLYPH_INVIS_OFF:
                 header = "INVIS_OFF";
@@ -2110,6 +2146,24 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_PLAYER_ATTACK_OFF:
                 header = "PLAYER_ATTACK_OFF";
+                break;
+            case GLYPH_PLAYER_THROW_OFF:
+                header = "PLAYER_THROW_OFF";
+                break;
+            case GLYPH_PLAYER_FIRE_OFF:
+                header = "PLAYER_FIRE_OFF";
+                break;
+            case GLYPH_PLAYER_CAST_OFF:
+                header = "PLAYER_CAST_OFF";
+                break;
+            case GLYPH_PLAYER_SPECIAL_ATTACK_OFF:
+                header = "PLAYER_SPECIAL_ATTACK_OFF";
+                break;
+            case GLYPH_PLAYER_ITEM_USE_OFF:
+                header = "PLAYER_ITEM_USE_OFF";
+                break;
+            case GLYPH_PLAYER_DOOR_USE_OFF:
+                header = "PLAYER_DOOR_USE_OFF";
                 break;
             case GLYPH_ANIMATION_OFF:
                 header = "ANIMATION_OFF";

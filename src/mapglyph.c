@@ -94,7 +94,13 @@ unsigned long *ospecial;
         color = CLR_GRAY;
     }
     else if (
-        (offset = (glyph - GLYPH_PLAYER_ATTACK_OFF)) >= 0
+        (offset = (glyph - GLYPH_PLAYER_DOOR_USE_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_ITEM_USE_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_CAST_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_FIRE_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_THROW_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_ATTACK_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_OFF)) >= 0
         )
     {
@@ -360,7 +366,15 @@ unsigned long *ospecial;
             invis_color(offset);
         special |= MG_INVIS;
     }
-    else if ((offset = (glyph - GLYPH_FEMALE_ATTACK_OFF)) >= 0)
+    else if (
+    (offset = (glyph - GLYPH_FEMALE_DOOR_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_ITEM_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_SPECIAL_ATTACK_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_CAST_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_FIRE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_THROW_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_ATTACK_OFF)) >= 0
+    )
     { /* a female attacking monster */
         idx = mons[offset].mlet + SYM_OFF_M;
         if (has_rogue_color && iflags.use_color)
@@ -447,7 +461,15 @@ unsigned long *ospecial;
     #endif
         }
     }
-    else if ((offset = (glyph - GLYPH_ATTACK_OFF)) >= 0)
+    else if (
+    (offset = (glyph - GLYPH_DOOR_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_ITEM_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_SPECIAL_ATTACK_OFF)) >= 0
+    || (offset = (glyph - GLYPH_CAST_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FIRE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_THROW_OFF)) >= 0
+    || (offset = (glyph - GLYPH_ATTACK_OFF)) >= 0
+    )
     { /* mon attack */
         idx = mons[glyph].mlet + SYM_OFF_M;
         if (has_rogue_color && iflags.use_color)
