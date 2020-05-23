@@ -2562,6 +2562,8 @@ player,cast,Archeologist,human,male,any,level-0,1,1,0
 player,cast,Wizard,elf,female,any,level-0,1,1,0
 player,special-attack,Archeologist,human,male,any,level-0,1,1,0
 player,special-attack,Wizard,elf,female,any,level-0,1,1,0
+player,kick,Archeologist,human,male,any,level-0,1,1,0
+player,kick,Wizard,elf,female,any,level-0,1,1,0
 player,item-use,Archeologist,human,male,any,level-0,1,1,0
 player,item-use,Wizard,elf,female,any,level-0,1,1,0
 player,door-use,Archeologist,human,male,any,level-0,1,1,0

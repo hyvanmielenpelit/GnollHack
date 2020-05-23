@@ -96,6 +96,7 @@ unsigned long *ospecial;
     else if (
         (offset = (glyph - GLYPH_PLAYER_DOOR_USE_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_ITEM_USE_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_KICK_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_CAST_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_FIRE_OFF)) >= 0
@@ -369,6 +370,7 @@ unsigned long *ospecial;
     else if (
     (offset = (glyph - GLYPH_FEMALE_DOOR_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_ITEM_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_SPECIAL_ATTACK_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_CAST_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_FIRE_OFF)) >= 0
@@ -464,6 +466,7 @@ unsigned long *ospecial;
     else if (
     (offset = (glyph - GLYPH_DOOR_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_ITEM_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_SPECIAL_ATTACK_OFF)) >= 0
     || (offset = (glyph - GLYPH_CAST_OFF)) >= 0
     || (offset = (glyph - GLYPH_FIRE_OFF)) >= 0

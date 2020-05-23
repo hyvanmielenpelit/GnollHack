@@ -2657,6 +2657,7 @@ u_to_glyph()
                 : u.attacking == ACTION_TILE_FIRE ? (flags.female ? female_firing_monnum_to_glyph(u.umonnum) : firing_monnum_to_glyph(u.umonnum))
                 : u.attacking == ACTION_TILE_CAST ? (flags.female ? female_casting_monnum_to_glyph(u.umonnum) : casting_monnum_to_glyph(u.umonnum))
                 : u.attacking == ACTION_TILE_SPECIAL_ATTACK ? (flags.female ? female_special_attacking_monnum_to_glyph(u.umonnum) : special_attacking_monnum_to_glyph(u.umonnum))
+                : u.attacking == ACTION_TILE_KICK ? (flags.female ? female_kicking_monnum_to_glyph(u.umonnum) : kicking_monnum_to_glyph(u.umonnum))
                 : u.attacking == ACTION_TILE_ITEM_USE ? (flags.female ? female_item_using_monnum_to_glyph(u.umonnum) : item_using_monnum_to_glyph(u.umonnum))
                 : u.attacking == ACTION_TILE_DOOR_USE ? (flags.female ? female_door_using_monnum_to_glyph(u.umonnum) : door_using_monnum_to_glyph(u.umonnum))
                 : ((flags.female ? female_monnum_to_glyph(u.umonnum) : monnum_to_glyph(u.umonnum))));
@@ -2674,6 +2675,7 @@ u_to_glyph()
         : u.attacking == ACTION_TILE_FIRE ? GLYPH_PLAYER_FIRE_OFF
         : u.attacking == ACTION_TILE_CAST ? GLYPH_PLAYER_CAST_OFF
         : u.attacking == ACTION_TILE_SPECIAL_ATTACK ? GLYPH_PLAYER_SPECIAL_ATTACK_OFF
+        : u.attacking == ACTION_TILE_KICK ? GLYPH_PLAYER_KICK_OFF
         : u.attacking == ACTION_TILE_ITEM_USE ? GLYPH_PLAYER_ITEM_USE_OFF
         : u.attacking == ACTION_TILE_DOOR_USE ? GLYPH_PLAYER_DOOR_USE_OFF
         : GLYPH_PLAYER_OFF);
@@ -2759,6 +2761,18 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 boolean
 player_has_special_attack_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+boolean
+player_has_kick_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -2856,6 +2870,13 @@ special_attack_glyph_to_player_mon(int glyph)
 {
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF + GLYPH_PLAYER_OFF);
 }
+
+int
+kick_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_KICK_OFF + GLYPH_PLAYER_OFF);
+}
+
 
 int
 item_use_glyph_to_player_mon(int glyph)

@@ -714,7 +714,7 @@ register struct monst *mtmp;
         case AT_TENT:
             if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || !touch_petrifies(youmonst.data))) 
 			{
-                update_m_attacking(mtmp, ACTION_TILE_ATTACK);
+                update_m_attacking(mtmp, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
                 if (foundyou)
 				{
                     if (tmp > (j = rnd(20 + i)))

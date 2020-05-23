@@ -2042,6 +2042,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_SPECIAL_ATTACK_OFF:
                 header = "MON_SPECIAL_ATTACK_OFF";
                 break;
+            case GLYPH_KICK_OFF:
+                header = "MON_KICK_OFF";
+                break;
             case GLYPH_ITEM_USE_OFF:
                 header = "MON_ITEM_USE_OFF";
                 break;
@@ -2077,6 +2080,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_FEMALE_SPECIAL_ATTACK_OFF:
                 header = "MON_FEMALE_SPECIAL_ATTACK_OFF";
+                break;
+            case GLYPH_FEMALE_KICK_OFF:
+                header = "MON_FEMALE_KICK_OFF";
                 break;
             case GLYPH_FEMALE_ITEM_USE_OFF:
                 header = "MON_FEMALE_ITEM_USE_OFF";
@@ -2158,6 +2164,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_PLAYER_SPECIAL_ATTACK_OFF:
                 header = "PLAYER_SPECIAL_ATTACK_OFF";
+                break;
+            case GLYPH_PLAYER_KICK_OFF:
+                header = "PLAYER_KICK_OFF";
                 break;
             case GLYPH_PLAYER_ITEM_USE_OFF:
                 header = "PLAYER_ITEM_USE_OFF";

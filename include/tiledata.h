@@ -19,6 +19,7 @@ struct tileset_definition {
     uchar fire_tile_style;       /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_FIRE_TILE have attack tiles */
     uchar cast_tile_style;       /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_CAST_TILE have attack tiles */
     uchar special_attack_tile_style; /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_SPECIAL_ATTACK_TILE have attack tiles */
+    uchar kick_tile_style; /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_SPECIAL_ATTACK_TILE have attack tiles */
     uchar item_use_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_ITEM_USE_TILE have attack tiles */
     uchar door_use_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_DOOR_USE_TILE have attack tiles */
 
@@ -51,6 +52,7 @@ struct tileset_definition {
 #define GENERIC_PLAYER_HAS_FIRE_TILE 1
 #define GENERIC_PLAYER_HAS_CAST_TILE 1
 #define GENERIC_PLAYER_HAS_SPECIAL_ATTACK_TILE 1
+#define GENERIC_PLAYER_HAS_KICK_TILE 1
 #define GENERIC_PLAYER_HAS_ITEM_USE_TILE 1
 #define GENERIC_PLAYER_HAS_DOOR_USE_TILE 1
 

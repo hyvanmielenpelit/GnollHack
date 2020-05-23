@@ -454,7 +454,7 @@ register struct monst *magr, *mdef;
 			int mdef_x = mdef->mx;
 			int mdef_y = mdef->my;
 
-            update_m_attacking(magr, ACTION_TILE_ATTACK);
+            update_m_attacking(magr, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
             for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
 				boolean endforloop = FALSE;

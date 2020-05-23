@@ -15,7 +15,7 @@ short tile2enlargement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 NEARDATA struct tileset_definition default_tileset_definition =
 {
     2, 0, 0, 2, 0, 1, 
-    2, 2, 2, 2, 2, 2, 2,
+    2, 2, 2, 2, 2, 2, 2, 2,
     0, 2, 2,
     2, 0, 1,
     1,
@@ -88,14 +88,14 @@ short* tilemaparray;
 
     /* Monster tiles */
     tile_section_name = "monsters";
-    const char* monster_set_name_array[13] = { "normal", "pet", "detect", "body", "ridden", "attack", "throw", "fire", "cast", "special-attack", "item-use", "door-use", "statue" };
-    int mon_glyph_offset_array[13] = { GLYPH_MON_OFF, GLYPH_PET_OFF, GLYPH_DETECT_OFF, GLYPH_BODY_OFF, GLYPH_RIDDEN_OFF,
-        GLYPH_ATTACK_OFF, GLYPH_THROW_OFF, GLYPH_FIRE_OFF, GLYPH_CAST_OFF, GLYPH_SPECIAL_ATTACK_OFF,
+    const char* monster_set_name_array[14] = { "normal", "pet", "detect", "body", "ridden", "attack", "throw", "fire", "cast", "special-attack", "kick", "item-use", "door-use", "statue" };
+    int mon_glyph_offset_array[14] = { GLYPH_MON_OFF, GLYPH_PET_OFF, GLYPH_DETECT_OFF, GLYPH_BODY_OFF, GLYPH_RIDDEN_OFF,
+        GLYPH_ATTACK_OFF, GLYPH_THROW_OFF, GLYPH_FIRE_OFF, GLYPH_CAST_OFF, GLYPH_SPECIAL_ATTACK_OFF, GLYPH_KICK_OFF,
         GLYPH_ITEM_USE_OFF, GLYPH_DOOR_USE_OFF, GLYPH_STATUE_OFF };
-    int female_mon_glyph_offset_array[13] = { GLYPH_FEMALE_MON_OFF, GLYPH_FEMALE_PET_OFF, GLYPH_FEMALE_DETECT_OFF,
+    int female_mon_glyph_offset_array[14] = { GLYPH_FEMALE_MON_OFF, GLYPH_FEMALE_PET_OFF, GLYPH_FEMALE_DETECT_OFF,
         GLYPH_FEMALE_BODY_OFF, GLYPH_FEMALE_RIDDEN_OFF,
         GLYPH_FEMALE_ATTACK_OFF, GLYPH_FEMALE_THROW_OFF, GLYPH_FEMALE_FIRE_OFF, 
-        GLYPH_FEMALE_CAST_OFF, GLYPH_FEMALE_SPECIAL_ATTACK_OFF,
+        GLYPH_FEMALE_CAST_OFF, GLYPH_FEMALE_SPECIAL_ATTACK_OFF, GLYPH_FEMALE_KICK_OFF,
         GLYPH_FEMALE_ITEM_USE_OFF, GLYPH_FEMALE_DOOR_USE_OFF, GLYPH_FEMALE_STATUE_OFF };
 
     for (int gender = 0; gender <= 1; gender++)
@@ -107,7 +107,7 @@ short* tilemaparray;
         }
         const char* gender_name = (gender == 0 ? "base" : "female");
 
-        for (int spset = 0; spset < 13; spset++)
+        for (int spset = 0; spset < 14; spset++)
         {
             if (spset == 1 && !tsd->has_pet_tiles)
                 continue;
@@ -127,11 +127,13 @@ short* tilemaparray;
                 continue;
             if (spset == 9 && !tsd->special_attack_tile_style)
                 continue;
-            if (spset == 10 && !tsd->item_use_tile_style)
+            if (spset == 10 && !tsd->kick_tile_style)
                 continue;
-            if (spset == 11 && !tsd->door_use_tile_style)
+            if (spset == 11 && !tsd->item_use_tile_style)
                 continue;
-            if (spset == 12 && !tsd->has_statue_tiles)
+            if (spset == 12 && !tsd->door_use_tile_style)
+                continue;
+            if (spset == 13 && !tsd->has_statue_tiles)
                 continue;
 
             set_name = monster_set_name_array[spset];
@@ -187,11 +189,17 @@ short* tilemaparray;
 
                 if (spset == 10)
                 {
-                    if (tsd->item_use_tile_style == 2 && !(mons[i].mflags5 & M5_ITEM_USE_TILE))
+                    if (tsd->kick_tile_style == 2 && !(mons[i].mflags5 & M5_KICK_TILE))
                         continue;
                 }
 
                 if (spset == 11)
+                {
+                    if (tsd->item_use_tile_style == 2 && !(mons[i].mflags5 & M5_ITEM_USE_TILE))
+                        continue;
+                }
+
+                if (spset == 12)
                 {
                     if (tsd->door_use_tile_style == 2 && !(mons[i].mflags5 & M5_DOOR_USE_TILE))
                         continue;
@@ -235,10 +243,26 @@ short* tilemaparray;
                                 tilemaparray[i + GLYPH_CAST_OFF] = tile_count;
                             if (tsd->special_attack_tile_style != 1)
                                 tilemaparray[i + GLYPH_SPECIAL_ATTACK_OFF] = tile_count;
+                            if (tsd->kick_tile_style != 1)
+                                tilemaparray[i + GLYPH_KICK_OFF] = tile_count;
                             if (tsd->item_use_tile_style != 1)
                                 tilemaparray[i + GLYPH_ITEM_USE_OFF] = tile_count;
                             if (tsd->door_use_tile_style != 1)
                                 tilemaparray[i + GLYPH_DOOR_USE_OFF] = tile_count;
+                        }
+                        else if (spset == 5)
+                        {
+                            /* Write these again if we get here */
+                            if (tsd->throw_tile_style != 1)
+                                tilemaparray[i + GLYPH_THROW_OFF] = tile_count;
+                            if (tsd->fire_tile_style != 1)
+                                tilemaparray[i + GLYPH_FIRE_OFF] = tile_count;
+                            if (tsd->cast_tile_style != 1)
+                                tilemaparray[i + GLYPH_CAST_OFF] = tile_count;
+                            if (tsd->special_attack_tile_style != 1)
+                                tilemaparray[i + GLYPH_SPECIAL_ATTACK_OFF] = tile_count;
+                            if (tsd->kick_tile_style != 1)
+                                tilemaparray[i + GLYPH_KICK_OFF] = tile_count;
                         }
                     }
 
@@ -262,10 +286,26 @@ short* tilemaparray;
                             tilemaparray[i + GLYPH_FEMALE_CAST_OFF] = tile_count;
                         if (tsd->special_attack_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF] = tile_count;
+                        if (tsd->kick_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_KICK_OFF] = tile_count;
                         if (tsd->item_use_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_ITEM_USE_OFF] = tile_count;
                         if (tsd->door_use_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_DOOR_USE_OFF] = tile_count;
+                    }
+                    else if (spset == 5)
+                    {
+                        /* Write these again if we get here */
+                        if (tsd->throw_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_THROW_OFF] = tile_count;
+                        if (tsd->fire_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_FIRE_OFF] = tile_count;
+                        if (tsd->cast_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_CAST_OFF] = tile_count;
+                        if (tsd->special_attack_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF] = tile_count;
+                        if (tsd->kick_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_KICK_OFF] = tile_count;
                     }
                 }
                 tile_count++;
@@ -1436,14 +1476,14 @@ short* tilemaparray;
 
     /* Player tiles */
     tile_section_name = "player";
-    const char* player_set_name_array[8] = { "normal", "attack", "throw", "fire", "cast", "special-attack", "item-use", "door-use" };
-    int player_glyph_offset_array[8] = { GLYPH_PLAYER_OFF,
+    const char* player_set_name_array[9] = { "normal", "attack", "throw", "fire", "cast", "special-attack", "kick", "item-use", "door-use" };
+    int player_glyph_offset_array[9] = { GLYPH_PLAYER_OFF,
         GLYPH_PLAYER_ATTACK_OFF, GLYPH_PLAYER_THROW_OFF, GLYPH_PLAYER_FIRE_OFF, 
-        GLYPH_PLAYER_CAST_OFF, GLYPH_PLAYER_SPECIAL_ATTACK_OFF,
+        GLYPH_PLAYER_CAST_OFF, GLYPH_PLAYER_SPECIAL_ATTACK_OFF, GLYPH_PLAYER_KICK_OFF,
         GLYPH_PLAYER_ITEM_USE_OFF, GLYPH_PLAYER_DOOR_USE_OFF };
    
     /* Initialize glyphs first with monster tiles */
-    for (int spset = 0; spset < 8; spset++)
+    for (int spset = 0; spset < 9; spset++)
     {
         set_name = player_set_name_array[spset];
         int player_glyph_offset = player_glyph_offset_array[spset];
@@ -1475,7 +1515,7 @@ short* tilemaparray;
     }
 
     /* Now main player tiles */
-    for (int spset = 0; spset < 8; spset++)
+    for (int spset = 0; spset < 9; spset++)
     {
         set_name = player_set_name_array[spset];
         int player_glyph_offset = player_glyph_offset_array[spset];
@@ -1492,9 +1532,11 @@ short* tilemaparray;
                 continue;
             if (spset == 5 && !GENERIC_PLAYER_HAS_SPECIAL_ATTACK_TILE)
                 continue;
-            if (spset == 6 && !GENERIC_PLAYER_HAS_ITEM_USE_TILE)
+            if (spset == 6 && !GENERIC_PLAYER_HAS_KICK_TILE)
                 continue;
-            if (spset == 7 && !GENERIC_PLAYER_HAS_DOOR_USE_TILE)
+            if (spset == 7 && !GENERIC_PLAYER_HAS_ITEM_USE_TILE)
+                continue;
+            if (spset == 8 && !GENERIC_PLAYER_HAS_DOOR_USE_TILE)
                 continue;
 
             if (process_style == 0)
@@ -1518,42 +1560,77 @@ short* tilemaparray;
                                     int player_glyph = player_glyph_index + player_glyph_offset;
                                     tilemaparray[player_glyph] = tile_count;
 
-                                    if (spset == 0 && !GENERIC_PLAYER_HAS_ATTACK_TILE)
+                                    if (spset == 0)
                                     {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
+                                        if (!GENERIC_PLAYER_HAS_ATTACK_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_THROW_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_FIRE_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_CAST_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_SPECIAL_ATTACK_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_KICK_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_ITEM_USE_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_DOOR_USE_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
                                     }
-                                    if (spset == 0 && !GENERIC_PLAYER_HAS_THROW_TILE)
+                                    else if (spset == 1)
                                     {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
+                                        if (!GENERIC_PLAYER_HAS_THROW_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_FIRE_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_CAST_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_SPECIAL_ATTACK_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_KICK_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
                                     }
-                                    if (spset == 0 && !GENERIC_PLAYER_HAS_FIRE_TILE)
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !GENERIC_PLAYER_HAS_CAST_TILE)
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !GENERIC_PLAYER_HAS_SPECIAL_ATTACK_TILE)
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !GENERIC_PLAYER_HAS_ITEM_USE_TILE)
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !GENERIC_PLAYER_HAS_DOOR_USE_TILE)
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-
                                 }
                             }
                         }
@@ -1588,9 +1665,11 @@ short* tilemaparray;
                                     continue;
                                 if (spset == 5 && !player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
                                     continue;
-                                if (spset == 6 && !player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                if (spset == 6 && !player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
                                     continue;
-                                if (spset == 7 && !player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                if (spset == 7 && !player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    continue;
+                                if (spset == 8 && !player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
                                     continue;
 
                                 if (process_style == 0)
@@ -1610,42 +1689,77 @@ short* tilemaparray;
                                     int player_glyph = player_glyph_index + player_glyph_offset;
                                     tilemaparray[player_glyph] = tile_count;
 
-                                    if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    if (spset == 0)
                                     {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
+                                        if (!player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_fire_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
                                     }
-                                    if (spset == 0 && !player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    else if (spset == 1)
                                     {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
+                                        if (!player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_fire_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
                                     }
-                                    if (spset == 0 && !player_has_fire_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-                                    if (spset == 0 && !player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                    {
-                                        int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
-                                        tilemaparray[player_glyph2] = tile_count;
-                                    }
-
                                 }
                                 tile_count++;
                             }
@@ -1686,9 +1800,11 @@ short* tilemaparray;
                                     continue;
                                 if (spset == 5 && !player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
                                     continue;
-                                if (spset == 6 && !player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                if (spset == 6 && !player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
                                     continue;
-                                if (spset == 7 && !player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                if (spset == 7 && !player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                    continue;
+                                if (spset == 8 && !player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
                                     continue;
 
                                 if (process_style == 0)
@@ -1711,43 +1827,77 @@ short* tilemaparray;
                                             int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, k, level);
                                             int player_glyph = player_glyph_index + player_glyph_offset;
                                             tilemaparray[player_glyph] = tile_count;
-
-                                            if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, k, level))
+                                            if (spset == 0)
                                             {
-                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
-                                                tilemaparray[player_glyph2] = tile_count;
+                                                if (!player_has_attack_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_throw_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_fire_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_cast_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_special_attack_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_kick_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_item_use_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_door_use_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
                                             }
-                                            if (spset == 0 && !player_has_throw_tile(roleidx, raceidx, gender, k, level))
+                                            else if (spset == 1)
                                             {
-                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
-                                                tilemaparray[player_glyph2] = tile_count;
+                                                if (!player_has_throw_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_fire_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_cast_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_special_attack_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_kick_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
                                             }
-                                            if (spset == 0 && !player_has_fire_tile(roleidx, raceidx, gender, k, level))
-                                            {
-                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
-                                                tilemaparray[player_glyph2] = tile_count;
-                                            }
-                                            if (spset == 0 && !player_has_cast_tile(roleidx, raceidx, gender, k, level))
-                                            {
-                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
-                                                tilemaparray[player_glyph2] = tile_count;
-                                            }
-                                            if (spset == 0 && !player_has_special_attack_tile(roleidx, raceidx, gender, k, level))
-                                            {
-                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
-                                                tilemaparray[player_glyph2] = tile_count;
-                                            }
-                                            if (spset == 0 && !player_has_item_use_tile(roleidx, raceidx, gender, k, level))
-                                            {
-                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
-                                                tilemaparray[player_glyph2] = tile_count;
-                                            }
-                                            if (spset == 0 && !player_has_door_use_tile(roleidx, raceidx, gender, k, level))
-                                            {
-                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
-                                                tilemaparray[player_glyph2] = tile_count;
-                                            }
-
                                         }
                                     }
                                     else
@@ -1755,43 +1905,77 @@ short* tilemaparray;
                                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, level);
                                         int player_glyph = player_glyph_index + player_glyph_offset;
                                         tilemaparray[player_glyph] = tile_count;
-
-                                        if (spset == 0 && !player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        if (spset == 0)
                                         {
-                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
-                                            tilemaparray[player_glyph2] = tile_count;
+                                            if (!player_has_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_fire_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
                                         }
-                                        if (spset == 0 && !player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        else if (spset == 1)
                                         {
-                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
-                                            tilemaparray[player_glyph2] = tile_count;
+                                            if (!player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_fire_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
                                         }
-                                        if (spset == 0 && !player_has_fire_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                        {
-                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
-                                            tilemaparray[player_glyph2] = tile_count;
-                                        }
-                                        if (spset == 0 && !player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                        {
-                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
-                                            tilemaparray[player_glyph2] = tile_count;
-                                        }
-                                        if (spset == 0 && !player_has_special_attack_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                        {
-                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
-                                            tilemaparray[player_glyph2] = tile_count;
-                                        }
-                                        if (spset == 0 && !player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                        {
-                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
-                                            tilemaparray[player_glyph2] = tile_count;
-                                        }
-                                        if (spset == 0 && !player_has_door_use_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                        {
-                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
-                                            tilemaparray[player_glyph2] = tile_count;
-                                        }
-
                                     }
                                 }
                                 tile_count++;
@@ -2118,6 +2302,13 @@ short* tilemaparray;
                                 short tile = glyph2tile[player_glyph];
                                 tile2animation[tile] = anim_idx;
                             }
+                            anim_idx = get_player_kick_animation(roleidx, raceidx, gender, alignment, level);
+                            if (anim_idx)
+                            {
+                                int player_glyph = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                short tile = glyph2tile[player_glyph];
+                                tile2animation[tile] = anim_idx;
+                            }
                             anim_idx = get_player_item_use_animation(roleidx, raceidx, gender, alignment, level);
                             if (anim_idx)
                             {
@@ -2284,6 +2475,13 @@ short* tilemaparray;
                             if (enlargement_idx)
                             {
                                 int player_glyph = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
+                                short tile = glyph2tile[player_glyph];
+                                tile2enlargement[tile] = enlargement_idx;
+                            }
+                            enlargement_idx = get_player_kick_enlargement(roleidx, raceidx, gender, alignment, level);
+                            if (enlargement_idx)
+                            {
+                                int player_glyph = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
                                 short tile = glyph2tile[player_glyph];
                                 tile2enlargement[tile] = enlargement_idx;
                             }
