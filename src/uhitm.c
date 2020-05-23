@@ -4579,7 +4579,7 @@ boolean attack_on;
 	boolean attacking_before = mtmp->attacking;
 	mtmp->attacking = attack_on;
 #ifdef USE_TILES
-	if (attacking_before != mtmp->attacking)
+	if (canseemon(mtmp) && attacking_before != mtmp->attacking)
 	{
 		newsym(mtmp->mx, mtmp->my);
 		flush_screen(0);
