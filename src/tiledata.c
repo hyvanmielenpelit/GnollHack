@@ -358,6 +358,15 @@ short* tilemaparray;
                             if (tsd->item_use_tile_style != 1)
                                 tilemaparray[i + GLYPH_ITEM_USE_OFF] = tile_count;
                         }
+                        else if (spset == 12)
+                        {
+                            if (tsd->throw_tile_style != 1)
+                                tilemaparray[i + GLYPH_THROW_OFF] = tile_count;
+                            if (tsd->cast_tile_style != 1)
+                                tilemaparray[i + GLYPH_CAST_OFF] = tile_count;
+                            if (tsd->item_use_tile_style != 1)
+                                tilemaparray[i + GLYPH_ITEM_USE_OFF] = tile_count;
+                        }
                     }
 
                     /* write female versions twice just in case, first as base monster, and then override as female, if we get here */
@@ -402,6 +411,15 @@ short* tilemaparray;
                             tilemaparray[i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF] = tile_count;
                         if (tsd->kick_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_KICK_OFF] = tile_count;
+                        if (tsd->item_use_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_ITEM_USE_OFF] = tile_count;
+                    }
+                    else if (spset == 12)
+                    {
+                        if (tsd->throw_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_THROW_OFF] = tile_count;
+                        if (tsd->cast_tile_style != 1)
+                            tilemaparray[i + GLYPH_FEMALE_CAST_OFF] = tile_count;
                         if (tsd->item_use_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_ITEM_USE_OFF] = tile_count;
                     }
@@ -1744,6 +1762,24 @@ short* tilemaparray;
                                             tilemaparray[player_glyph2] = tile_count;
                                         }
                                     }
+                                    else if (spset == 8)
+                                    {
+                                        if (!GENERIC_PLAYER_HAS_THROW_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_CAST_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!GENERIC_PLAYER_HAS_ITEM_USE_TILE)
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1877,6 +1913,24 @@ short* tilemaparray;
                                         if (!player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
                                         {
                                             int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                    }
+                                    else if (spset == 8)
+                                    {
+                                        if (!player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                            tilemaparray[player_glyph2] = tile_count;
+                                        }
+                                        if (!player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                        {
+                                            int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
                                             tilemaparray[player_glyph2] = tile_count;
                                         }
                                     }
@@ -2025,6 +2079,24 @@ short* tilemaparray;
                                                     tilemaparray[player_glyph2] = tile_count;
                                                 }
                                             }
+                                            else if (spset == 8)
+                                            {
+                                                if (!player_has_throw_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_cast_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                                if (!player_has_item_use_tile(roleidx, raceidx, gender, k, level))
+                                                {
+                                                    int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
+                                                    tilemaparray[player_glyph2] = tile_count;
+                                                }
+                                            }
                                         }
                                     }
                                     else
@@ -2105,6 +2177,24 @@ short* tilemaparray;
                                             if (!player_has_kick_tile(roleidx, raceidx, gender, alignment + 1, level))
                                             {
                                                 int player_glyph2 = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                        }
+                                        else if (spset == 8)
+                                        {
+                                            if (!player_has_throw_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_cast_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
+                                                tilemaparray[player_glyph2] = tile_count;
+                                            }
+                                            if (!player_has_item_use_tile(roleidx, raceidx, gender, alignment + 1, level))
+                                            {
+                                                int player_glyph2 = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
                                                 tilemaparray[player_glyph2] = tile_count;
                                             }
                                         }
