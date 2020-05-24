@@ -36,7 +36,7 @@ NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = 
     {"hit-text-4",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"hit-text-5",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"general-ui",              3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"status",                  14, 16, 16, {"petmark", "detectmark", "pilemark", "hungry",  "weak", "faint", "burdened", "stressed",  "strained", "overtaxed", "overloaded", "two-weapon",  "skill", "saddled", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status",                  14, 16, 16, {"petmark", "peacemark", "detectmark", "pilemark",  "hungry", "weak", "faint", "burdened",  "stressed", "strained", "overtaxed", "overloaded",  "two-weapon", "skill", "saddled", "wounded",  "left-half-hp", "low-hp", "critical-hp", "",  "", "", "", ""} },
     {"conditions",              min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"main_tile_mark",          1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"main-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
@@ -2341,57 +2341,6 @@ uchar* tilemapflags;
         {
             glyph_offset = GLYPH_UI_TILE_OFF;
             tilemaparray[i + GLYPH_UI_TILE_OFF] = tile_count;
-
-#if 0
-            /* Add the generic death tile to monsters and players without their own death tile -- OBSOLETE, will be shown on top of monster's death tile, if any */
-            if (ui_tile_component_array[i].name && strcmp(ui_tile_component_array[i].name, "death") == 0)
-            {
-                if (tsd->death_tile_style != 1)
-                {
-                    for (int i = LOW_PM; i < NUM_MONSTERS; i++)
-                    {
-                        if (tsd->death_tile_style == 2 && (mons[i].mflags5 & M5_DEATH_TILE))
-                            continue;
-
-                        tilemaparray[i + GLYPH_DEATH_OFF] = tile_count;
-                        tilemaparray[i + GLYPH_FEMALE_DEATH_OFF] = tile_count;
-                    }
-                    if (tsd->player_tile_style == 0)
-                    {
-                        if (!(tsd->death_tile_style == 2 && GENERIC_PLAYER_HAS_DEATH_TILE))
-                            tilemaparray[i + GLYPH_PLAYER_OFF] = tile_count;
-                    }
-                    else
-                    {
-                        for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
-                        {
-                            for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
-                            {
-                                for (int gender = 0; gender <= 1; gender++)
-                                {
-                                    for (int alignment = -1; alignment <= 1; alignment++)
-                                    {
-                                        for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
-                                        {
-                                            if(tsd->death_tile_style == 2 && player_has_death_tile(roleidx, raceidx, gender, alignment + 1, level))
-                                                continue;
-                                            if (tsd->player_tile_style == 0 || tsd->player_tile_style == 3)
-                                            {
-                                                int role_as_monster = roles[roleidx].monsternum;
-                                                if (tsd->death_tile_style == 2 && (mons[role_as_monster].mflags5 & M5_DEATH_TILE))
-                                                    continue;
-                                            }
-                                            tilemaparray[i + GLYPH_PLAYER_DEATH_OFF] = tile_count;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-#endif
         }
         tile_count++;
     }
