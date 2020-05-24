@@ -342,7 +342,8 @@
 #define GLYPH_KICK_OFF  (NUM_MONSTERS + GLYPH_SPECIAL_ATTACK_OFF)
 #define GLYPH_ITEM_USE_OFF  (NUM_MONSTERS + GLYPH_KICK_OFF)
 #define GLYPH_DOOR_USE_OFF  (NUM_MONSTERS + GLYPH_ITEM_USE_OFF)
-#define GLYPH_FEMALE_MON_OFF  (NUM_MONSTERS + GLYPH_DOOR_USE_OFF)
+#define GLYPH_DEATH_OFF  (NUM_MONSTERS + GLYPH_DOOR_USE_OFF)
+#define GLYPH_FEMALE_MON_OFF  (NUM_MONSTERS + GLYPH_DEATH_OFF)
 #define GLYPH_FEMALE_PET_OFF  (NUM_MONSTERS + GLYPH_FEMALE_MON_OFF)
 #define GLYPH_FEMALE_DETECT_OFF (NUM_MONSTERS + GLYPH_FEMALE_PET_OFF)
 #define GLYPH_FEMALE_BODY_OFF    (NUM_MONSTERS + GLYPH_FEMALE_DETECT_OFF)
@@ -355,7 +356,8 @@
 #define GLYPH_FEMALE_KICK_OFF  (NUM_MONSTERS + GLYPH_FEMALE_SPECIAL_ATTACK_OFF)
 #define GLYPH_FEMALE_ITEM_USE_OFF  (NUM_MONSTERS + GLYPH_FEMALE_KICK_OFF)
 #define GLYPH_FEMALE_DOOR_USE_OFF  (NUM_MONSTERS + GLYPH_FEMALE_ITEM_USE_OFF)
-#define GLYPH_INVIS_OFF   (NUM_MONSTERS + GLYPH_FEMALE_DOOR_USE_OFF)
+#define GLYPH_FEMALE_DEATH_OFF  (NUM_MONSTERS + GLYPH_FEMALE_DOOR_USE_OFF)
+#define GLYPH_INVIS_OFF   (NUM_MONSTERS + GLYPH_FEMALE_DEATH_OFF)
 #define GLYPH_OBJ_OFF     (NUM_INVIS_GLYPHS + GLYPH_INVIS_OFF)
 #define GLYPH_OBJ_INVENTORY_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
 #define GLYPH_OBJ_LIT_OFF    (NUM_OBJECTS + GLYPH_OBJ_INVENTORY_OFF)
@@ -383,7 +385,8 @@
 #define GLYPH_PLAYER_KICK_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_SPECIAL_ATTACK_OFF)
 #define GLYPH_PLAYER_ITEM_USE_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_KICK_OFF)
 #define GLYPH_PLAYER_DOOR_USE_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_ITEM_USE_OFF)
-#define GLYPH_CURSOR_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_DOOR_USE_OFF)
+#define GLYPH_PLAYER_DEATH_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_DOOR_USE_OFF)
+#define GLYPH_CURSOR_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_DEATH_OFF)
 #define GLYPH_UI_TILE_OFF  (MAX_CURSORS + GLYPH_CURSOR_OFF)
 #define GLYPH_ANIMATION_OFF  (MAX_UI_TILES + GLYPH_UI_TILE_OFF)
 #define GLYPH_ENLARGEMENT_OFF  (MAX_ANIMATION_FRAMES + GLYPH_ANIMATION_OFF)
@@ -417,6 +420,8 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_ITEM_USE_OFF))
 #define door_using_mon_to_glyph(mon, rng)                                      \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_DOOR_USE_OFF))
+#define dying_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_DEATH_OFF))
 #define female_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_MON_OFF))
 #define female_pet_to_glyph(mon, rng)                                      \
@@ -441,18 +446,21 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_ITEM_USE_OFF))
 #define female_door_using_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DOOR_USE_OFF))
+#define female_dying_mon_to_glyph(mon, rng)                               \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DEATH_OFF))
 
 #define any_mon_to_glyph(mon, rng)    \
   ((mon) == &youmonst ? u_to_glyph() : \
    ( \
-        (mon)->attacking == ACTION_TILE_ATTACK ? ((mon)->female ? female_attacking_mon_to_glyph(mon, rng) : attacking_mon_to_glyph(mon, rng)) : \
-        (mon)->attacking == ACTION_TILE_THROW ? ((mon)->female ? female_throwing_mon_to_glyph(mon, rng) : throwing_mon_to_glyph(mon, rng)) : \
-        (mon)->attacking == ACTION_TILE_FIRE ? ((mon)->female ? female_firing_mon_to_glyph(mon, rng) : firing_mon_to_glyph(mon, rng)) : \
-        (mon)->attacking == ACTION_TILE_CAST ? ((mon)->female ? female_casting_mon_to_glyph(mon, rng) : casting_mon_to_glyph(mon, rng)) : \
-        (mon)->attacking == ACTION_TILE_SPECIAL_ATTACK ? ((mon)->female ? female_special_attacking_mon_to_glyph(mon, rng) : special_attacking_mon_to_glyph(mon, rng)) : \
-        (mon)->attacking == ACTION_TILE_KICK ? ((mon)->female ? female_kicking_mon_to_glyph(mon, rng) : kicking_mon_to_glyph(mon, rng)) : \
-        (mon)->attacking == ACTION_TILE_ITEM_USE ? ((mon)->female ? female_item_using_mon_to_glyph(mon, rng) : item_using_mon_to_glyph(mon, rng)) : \
-        (mon)->attacking == ACTION_TILE_DOOR_USE ? ((mon)->female ? female_door_using_mon_to_glyph(mon, rng) : door_using_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_ATTACK ? ((mon)->female ? female_attacking_mon_to_glyph(mon, rng) : attacking_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_THROW ? ((mon)->female ? female_throwing_mon_to_glyph(mon, rng) : throwing_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_FIRE ? ((mon)->female ? female_firing_mon_to_glyph(mon, rng) : firing_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_CAST ? ((mon)->female ? female_casting_mon_to_glyph(mon, rng) : casting_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_SPECIAL_ATTACK ? ((mon)->female ? female_special_attacking_mon_to_glyph(mon, rng) : special_attacking_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_KICK ? ((mon)->female ? female_kicking_mon_to_glyph(mon, rng) : kicking_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_ITEM_USE ? ((mon)->female ? female_item_using_mon_to_glyph(mon, rng) : item_using_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_DOOR_USE ? ((mon)->female ? female_door_using_mon_to_glyph(mon, rng) : door_using_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_DEATH ? ((mon)->female ? female_dying_mon_to_glyph(mon, rng) : dying_mon_to_glyph(mon, rng)) : \
         ((mon)->female ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng)) \
    ))
 
@@ -560,6 +568,7 @@
 #define kicking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_KICK_OFF)
 #define item_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_ITEM_USE_OFF)
 #define door_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DOOR_USE_OFF)
+#define dying_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DEATH_OFF)
 
 #define female_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_MON_OFF)
 #define female_petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_PET_OFF)
@@ -573,6 +582,7 @@
 #define female_kicking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_KICK_OFF)
 #define female_item_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_ITEM_USE_OFF)
 #define female_door_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DOOR_USE_OFF)
+#define female_dying_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DEATH_OFF)
 
 #define any_monnum_to_glyph(isfemale, mnum) (isfemale ? female_monnum_to_glyph(mnum) : monnum_to_glyph(mnum) )
 #define any_petnum_to_glyph(isfemale, mnum) (isfemale ? female_petnum_to_glyph(mnum) : petnum_to_glyph(mnum) )
@@ -621,6 +631,8 @@
     ((abs(glyph)) >= GLYPH_ITEM_USE_OFF && (abs(glyph)) < (GLYPH_ITEM_USE_OFF + NUM_MONSTERS))
 #define glyph_is_door_using_monster(glyph) \
     ((abs(glyph)) >= GLYPH_DOOR_USE_OFF && (abs(glyph)) < (GLYPH_DOOR_USE_OFF + NUM_MONSTERS))
+#define glyph_is_dying_monster(glyph) \
+    ((abs(glyph)) >= GLYPH_DEATH_OFF && (abs(glyph)) < (GLYPH_DEATH_OFF + NUM_MONSTERS))
 
 #define glyph_is_statue(glyph) \
     ((abs(glyph)) >= GLYPH_STATUE_OFF && (abs(glyph)) < (GLYPH_STATUE_OFF + NUM_MONSTERS))
@@ -652,6 +664,8 @@
     ((abs(glyph)) >= GLYPH_FEMALE_ITEM_USE_OFF && (abs(glyph)) < (GLYPH_FEMALE_ITEM_USE_OFF + NUM_MONSTERS))
 #define glyph_is_female_door_using_monster(glyph) \
     ((abs(glyph)) >= GLYPH_FEMALE_DOOR_USE_OFF && (abs(glyph)) < (GLYPH_FEMALE_DOOR_USE_OFF + NUM_MONSTERS))
+#define glyph_is_female_dying_monster(glyph) \
+    ((abs(glyph)) >= GLYPH_FEMALE_DEATH_OFF && (abs(glyph)) < (GLYPH_FEMALE_DEATH_OFF + NUM_MONSTERS))
 
 #define glyph_is_female_statue(glyph) \
     ((abs(glyph)) >= GLYPH_FEMALE_STATUE_OFF && (abs(glyph)) < (GLYPH_FEMALE_STATUE_OFF + NUM_MONSTERS))
@@ -755,6 +769,11 @@
 #define glyph_to_door_using_player(glyph) \
     (glyph_is_door_using_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DOOR_USE_OFF) : NO_GLYPH)
 
+#define glyph_is_dying_player(glyph) \
+    ((abs(glyph)) >= GLYPH_PLAYER_DEATH_OFF && (abs(glyph)) < (GLYPH_PLAYER_DEATH_OFF + NUM_PLAYER_CHARACTERS))
+#define glyph_to_dying_player(glyph) \
+    (glyph_is_dying_player(glyph) ? ((abs(glyph)) - GLYPH_PLAYER_DEATH_OFF) : NO_GLYPH)
+
 #define glyph_is_monster(glyph)                            \
     ((abs(glyph) >= GLYPH_MON_OFF && abs(glyph) < GLYPH_INVIS_OFF)     \
      || (abs(glyph) >= GLYPH_PLAYER_OFF && abs(glyph) < GLYPH_CURSOR_OFF))
@@ -803,6 +822,8 @@
                            ? ((abs(glyph)) - GLYPH_ITEM_USE_OFF)       \
                      : glyph_is_door_using_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_DOOR_USE_OFF)       \
+                     : glyph_is_dying_monster(glyph)           \
+                           ? ((abs(glyph)) - GLYPH_DEATH_OFF)       \
                      : glyph_is_female_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_FEMALE_MON_OFF)   \
                      : glyph_is_female_pet(glyph)  \
@@ -827,6 +848,8 @@
                            ? ((abs(glyph)) - GLYPH_FEMALE_ITEM_USE_OFF)       \
                      : glyph_is_female_door_using_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_FEMALE_DOOR_USE_OFF)       \
+                     : glyph_is_female_dying_monster(glyph)           \
+                           ? ((abs(glyph)) - GLYPH_FEMALE_DEATH_OFF)       \
                            : glyph_is_statue(glyph)             \
                                  ? ((abs(glyph)) - GLYPH_STATUE_OFF) \
                            : glyph_is_female_statue(glyph)             \
@@ -849,6 +872,8 @@
                                          ? (item_use_glyph_to_player_mon(abs(glyph)))                    \
                                    : glyph_is_door_using_player(glyph)     \
                                          ? (door_use_glyph_to_player_mon(abs(glyph)))                    \
+                                   : glyph_is_dying_player(glyph)     \
+                                         ? (death_glyph_to_player_mon(abs(glyph)))                    \
                                              : NO_GLYPH)
 
 

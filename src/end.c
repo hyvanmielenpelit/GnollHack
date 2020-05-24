@@ -1064,7 +1064,6 @@ done(how)
 int how;
 {
     boolean survive = FALSE;
-
     if (how == TRICKED) {
         if (killer.name[0]) {
             paniclog("trickery", killer.name);
@@ -1095,12 +1094,15 @@ int how;
 	}
 #endif
 
-	if (iflags.debug_fuzzer) {
-        if (!(program_state.panicking || how == PANICKED)) {
+	if (iflags.debug_fuzzer)
+    {
+        if (!(program_state.panicking || how == PANICKED)) 
+        {
             savelife(how);
             /* periodically restore characteristics and lost exp levels
                or cure lycanthropy */
-            if (!rn2(10)) {
+            if (!rn2(10))
+            {
                 struct obj *potion = mksobj((u.ulycn > LOW_PM && !rn2(3))
                                             ? POT_WATER : POT_RESTORE_ABILITY,
                                             TRUE, FALSE, FALSE);
@@ -1114,9 +1116,13 @@ int how;
             killer.format = 0;
             return;
         }
-    } else
-    if (how == ASCENDED || (!killer.name[0] && how == GENOCIDED))
+    }
+    else if (how == ASCENDED || (!killer.name[0] && how == GENOCIDED))
         killer.format = NO_KILLER_PREFIX;
+
+    if(how < PANICKED)
+        update_u_action(ACTION_TILE_DEATH);
+
     /* Avoid killed by "a" burning or "a" starvation */
     if (!killer.name[0] && (how == STARVING || how == BURNING))
         killer.format = KILLED_BY;
@@ -1176,11 +1182,15 @@ int how;
         survive = TRUE;
     }
 
-    if (survive) {
+    if (survive)
+    {
         killer.name[0] = '\0';
         killer.format = KILLED_BY_AN; /* reset to 0 */
+        if (how < PANICKED)
+            update_u_action(ACTION_TILE_NO_ACTION);
         return;
     }
+    u.action = ACTION_TILE_NO_ACTION; /* Just in case revert to normal without updating screen */
     really_done(how);
     /*NOTREACHED*/
 }

@@ -509,6 +509,8 @@ monsters,base,item-use,orc shaman,1,1,0
 monsters,base,door-use,hill orc,1,1,0
 monsters,base,door-use,Mordor orc,1,1,0
 monsters,base,door-use,orc shaman,1,1,0
+monsters,base,death,goblin,1,1,0
+monsters,base,death,hobgoblin,1,1,0
 monsters,base,statue,giant ant,1,1,0
 monsters,base,statue,giant beetle,1,1,0
 monsters,base,statue,fire ant,1,1,0
@@ -726,7 +728,7 @@ monsters,base,statue,ancient black dragon,1,1,0
 monsters,base,statue,ancient blue dragon,1,1,0
 monsters,base,statue,ancient green dragon,1,1,0
 monsters,base,statue,ancient yellow dragon,1,1,0
-monsters,base,statue,dracolich,1,1,0
+monsters,base,statue,dracolich,3,2,0
 monsters,base,statue,elder dracolich,1,1,0
 monsters,base,statue,gold dragon,1,1,0
 monsters,base,statue,ancient gold dragon,1,1,0
@@ -2568,6 +2570,8 @@ player,item-use,Archeologist,human,male,any,level-0,1,1,0
 player,item-use,Wizard,elf,female,any,level-0,1,1,0
 player,door-use,Archeologist,human,male,any,level-0,1,1,0
 player,door-use,Wizard,elf,female,any,level-0,1,1,0
+player,death,Archeologist,human,male,any,level-0,1,1,0
+player,death,Wizard,elf,female,any,level-0,1,1,0
 user-interface,cursor,generic,1,1,0
 user-interface,cursor,look,1,1,0
 user-interface,cursor,teleport,1,1,0
@@ -2592,14 +2596,14 @@ user-interface,ui-tile,status-window-borders,6,32,32,top-left,top,middle-left,mi
 user-interface,ui-tile,map-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,menu-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,text-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
-animation,handcrafted-candle-lit-animation,tile-0,1858,1,1,0
-animation,elf_wizard_female_cast-animation,tile-0,2550,1,1,0
-animation,twisted-candle-lit-animation,tile-0,2550,1,1,0
-animation,twisted-candle-lit-animation,tile-1,2550,1,1,0
-animation,twisted-candle-lit-animation,tile-2,2550,1,1,0
-animation,twisted-candle-lit-animation,tile-3,2550,1,1,0
-animation,twisted-candle-lit-animation,tile-4,2550,1,1,0
-animation,twisted-candle-lit-animation,tile-5,2550,1,1,0
+animation,handcrafted-candle-lit-animation,tile-0,1860,1,1,0
+animation,elf_wizard_female_cast-animation,tile-0,2552,1,1,0
+animation,twisted-candle-lit-animation,tile-0,2552,1,1,0
+animation,twisted-candle-lit-animation,tile-1,2552,1,1,0
+animation,twisted-candle-lit-animation,tile-2,2552,1,1,0
+animation,twisted-candle-lit-animation,tile-3,2552,1,1,0
+animation,twisted-candle-lit-animation,tile-4,2552,1,1,0
+animation,twisted-candle-lit-animation,tile-5,2552,1,1,0
 enlargement,dracolich-enlargement,top-left,217,3,2,0,5,0
 enlargement,dracolich-enlargement,top,217,3,2,0,5,1
 enlargement,dracolich-enlargement,top-right,217,3,2,0,5,2

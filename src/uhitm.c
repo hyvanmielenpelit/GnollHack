@@ -724,7 +724,7 @@ struct attack *uattk;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-		update_u_attacking(TRUE);
+		update_u_action(TRUE);
 
 		char strikebuf[BUFSIZ] = "";
 		if (uwep)
@@ -761,7 +761,7 @@ struct attack *uattk;
 			(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 		}
 
-		update_u_attacking(FALSE);
+		update_u_action(FALSE);
 
 		if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 			break;
@@ -790,7 +790,7 @@ struct attack *uattk;
 
 		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
 		{
-			update_u_attacking(TRUE);
+			update_u_action(TRUE);
 
 			char strikebuf[BUFSIZ] = "";
 			if (uarms)
@@ -827,7 +827,7 @@ struct attack *uattk;
 					(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 			}
 
-			update_u_attacking(FALSE);
+			update_u_action(FALSE);
 
 			if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 				break;
@@ -3439,7 +3439,7 @@ register struct monst *mon;
 			continue;
 
 		if(mattk->aatyp != AT_NONE)
-			update_u_attacking(FALSE);
+			update_u_action(FALSE);
 
 		weapon = 0;
         switch (mattk->aatyp) {
@@ -3832,7 +3832,7 @@ register struct monst *mon;
            needed to defer this until after uswapwep->cursed check */
 		   /* Display attack */
 		if (mattk->aatyp != AT_NONE)
-			update_u_attacking(FALSE);
+			update_u_action(FALSE);
 
         if (DEADMONSTER(mon))
             break;
@@ -3842,9 +3842,9 @@ register struct monst *mon;
             break; /* If paralyzed while attacking, i.e. floating eye */
     }
 
-	if (u.attacking)
+	if (u.action)
 	{
-		update_u_attacking(FALSE);
+		update_u_action(FALSE);
 	}
 	
 	/* return value isn't used, but make it match hitum()'s */
@@ -4553,13 +4553,13 @@ uchar update_symbol;
 }
 
 void
-update_u_attacking(attack_mode)
+update_u_action(attack_mode)
 uchar attack_mode;
 {
-	uchar attacking_before = u.attacking;
-	u.attacking = attack_mode;
+	uchar attacking_before = u.action;
+	u.action = attack_mode;
 #ifdef USE_TILES
-	if (attacking_before != u.attacking)
+	if (attacking_before != u.action)
 	{
 		newsym(u.ux, u.uy);
 		flush_screen(1);
@@ -4570,16 +4570,16 @@ uchar attack_mode;
 }
 
 void
-update_m_attacking(mtmp, attack_mode)
+update_m_action(mtmp, attack_mode)
 struct monst* mtmp;
 uchar attack_mode;
 {
 	if (!mtmp)
 		return;
-	uchar attacking_before = mtmp->attacking;
-	mtmp->attacking = attack_mode;
+	uchar attacking_before = mtmp->action;
+	mtmp->action = attack_mode;
 #ifdef USE_TILES
-	if (canseemon(mtmp) && attacking_before != mtmp->attacking)
+	if (canseemon(mtmp) && attacking_before != mtmp->action)
 	{
 		newsym(mtmp->mx, mtmp->my);
 		flush_screen(0);

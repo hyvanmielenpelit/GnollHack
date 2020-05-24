@@ -42,6 +42,7 @@ E short FDECL(get_player_special_attack_animation, (int, int, int, int, int));
 E short FDECL(get_player_kick_animation, (int, int, int, int, int));
 E short FDECL(get_player_item_use_animation, (int, int, int, int, int));
 E short FDECL(get_player_door_use_animation, (int, int, int, int, int));
+E short FDECL(get_player_death_animation, (int, int, int, int, int));
 E short FDECL(get_player_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_attack_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_throw_enlargement, (int, int, int, int, int));
@@ -51,6 +52,7 @@ E short FDECL(get_player_special_attack_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_kick_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_item_use_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_door_use_enlargement, (int, int, int, int, int));
+E short FDECL(get_player_death_enlargement, (int, int, int, int, int));
 E short FDECL(maybe_get_animated_tile, (short, unsigned long, boolean*));
 E short FDECL(get_animation_base_tile, (short));
 E short FDECL(get_enlargement_base_tile, (short));
@@ -2445,6 +2447,7 @@ E boolean FDECL(player_has_special_attack_tile, (int, int, int, int, int));
 E boolean FDECL(player_has_kick_tile, (int, int, int, int, int));
 E boolean FDECL(player_has_item_use_tile, (int, int, int, int, int));
 E boolean FDECL(player_has_door_use_tile, (int, int, int, int, int));
+E boolean FDECL(player_has_death_tile, (int, int, int, int, int));
 E int FDECL(glyph_to_player_mon, (int));
 E int FDECL(attack_glyph_to_player_mon, (int));
 E int FDECL(throw_glyph_to_player_mon, (int));
@@ -2454,6 +2457,7 @@ E int FDECL(special_attack_glyph_to_player_mon, (int));
 E int FDECL(kick_glyph_to_player_mon, (int));
 E int FDECL(item_use_glyph_to_player_mon, (int));
 E int FDECL(door_use_glyph_to_player_mon, (int));
+E int FDECL(death_glyph_to_player_mon, (int));
 
 /* ### rumors.c ### */
 
@@ -2906,8 +2910,8 @@ E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
 E void FDECL(get_game_difficulty_multipliers, (double*, double*));
 E void FDECL(update_u_facing, (uchar));
-E void FDECL(update_u_attacking, (uchar));
-E void FDECL(update_m_attacking, (struct monst*, uchar));
+E void FDECL(update_u_action, (uchar));
+E void FDECL(update_m_action, (struct monst*, uchar));
 
 /* ### unixmain.c ### */
 

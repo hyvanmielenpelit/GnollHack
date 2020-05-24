@@ -16,7 +16,7 @@
 
 #define NO_ACTION_INFO    \
     {              \
-        0, 0, 0, 0, 0, 0, 0, 0, 0 \
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 \
     }
 
 #ifdef C
@@ -74,9 +74,9 @@ void NDECL(monst_init);
         a1, a2, a3, a4, a5, a6, a7, a8    \
     }
 
-#define ACTION_INFO(a1, a2, a3, a4, a5, a6, a7, a8, a9 ) \
+#define ACTION_INFO(a1, a2, a3, a4, a5, a6, a7, a8, a9, ad, ac, as ) \
     {                             \
-        a1, a2, a3, a4, a5, a6, a7, a8, a9    \
+        a1, a2, a3, a4, a5, a6, a7, a8, a9, ad, ac, as    \
     }
 
 #define None (const char *)0
@@ -1082,7 +1082,7 @@ NEARDATA struct permonst mons[] = {
 		M1_HUMANOID | M1_OMNIVORE,
         M2_ORC | M2_COLLECT, 
 		M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
-		M4_NONE, M5_ATTACK_TILE | M5_THROW_TILE | M5_FIRE_TILE,
+		M4_NONE, M5_ATTACK_TILE | M5_THROW_TILE | M5_FIRE_TILE | M5_DEATH_TILE,
 		1, CLR_GRAY),
     MON("hobgoblin", None, "medium-sized humanoid", None, None, S_ORC, LVL(1, 9, 10, 0, 0, -4), (G_GENO | 2),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -1091,7 +1091,7 @@ NEARDATA struct permonst mons[] = {
 		MR_NONE, MC_NONE, M1_HUMANOID | M1_OMNIVORE,
         M2_ORC | M2_COLLECT, 
 		M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY,
-		M4_NONE, M5_ATTACK_TILE | M5_THROW_TILE | M5_FIRE_TILE,
+		M4_NONE, M5_ATTACK_TILE | M5_THROW_TILE | M5_FIRE_TILE | M5_DEATH_TILE,
 		3, CLR_BROWN),
     /* plain "orc" for zombie corpses only; not created at random
      */
@@ -2427,7 +2427,7 @@ NEARDATA struct permonst mons[] = {
 		M2_UNDEAD | M2_HOSTILE | M2_MAGIC,
 		M3_WAITFORU | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CORPSE_CRUMBLES_TO_DUST,
         M4_BRAVE, M5_NONE, 
-		30, CLR_BROWN, ACTION_INFO(DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0), NO_ACTION_INFO),
+		30, CLR_BROWN, ACTION_INFO(DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0,0,0,0), NO_ACTION_INFO),
 	MON("elder dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(27, 12, -14, 19, 100, -17),
 		(G_HELL | G_GENO | G_NOCORPSE | 1), 
 		A(ATTK(AT_BREA, AD_DRAY, 1, 255, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 23),

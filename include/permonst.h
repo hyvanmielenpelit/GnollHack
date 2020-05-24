@@ -35,6 +35,9 @@ struct action_info
     short kick;
     short item_use;
     short door_use;
+    short death;
+    short corpse;
+    short statue;
 };
 
 /*	Max # of attacks for any given monster.

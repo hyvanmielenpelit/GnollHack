@@ -3106,6 +3106,9 @@ register struct monst *mtmp;
     if (mtmp->isgd && !grddead(mtmp))
         return;
 
+
+    update_m_action(mtmp, ACTION_TILE_DEATH);
+
     /* Player is thrown from his steed when it dies */
     if (mtmp == u.usteed)
         dismount_steed(DISMOUNT_GENERIC);
@@ -3170,6 +3173,7 @@ register struct monst *mtmp;
         u.uachieve.killed_yacc = 1;
     if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].glyph))
         unmap_object(mtmp->mx, mtmp->my);
+    mtmp->action = 0;
     m_detach(mtmp, mptr, TRUE);
 }
 

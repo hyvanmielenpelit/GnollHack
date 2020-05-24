@@ -17,6 +17,7 @@ struct layer_info {
     int monster_effect_glyph;
     int environment_glyph;
     int general_effect_glyph;
+    int ui_glyph; /* death, hit */
 
     unsigned long layer_flags;
 

@@ -292,6 +292,7 @@
 #define M5_KICK_TILE                0x00000080UL
 #define M5_ITEM_USE_TILE			0x00000100UL
 #define M5_DOOR_USE_TILE			0x00000200UL
+#define M5_DEATH_TILE			    0x00000400UL
 
 
 #define MZ_TINY 0          /* < 2' */

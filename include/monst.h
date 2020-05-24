@@ -145,7 +145,7 @@ struct monst {
     xchar yell_x, yell_y;   /* location where the pet heard you yelling from */
     int notalktimer;
     short rumorsleft;       /* how many rumors the monster still knows, -1 means that the monster has already told the player that it does not know any more rumors */
-    uchar attacking;		/* the monster is currently in the midst of one of its attacks or actions */
+    uchar action;		/* the monster is currently in the midst of one of its attacks or actions */
 
     Bitfield(mpeaceful, 1); /* does not attack unprovoked */
     Bitfield(mtrapped, 1);  /* trapped in a pit, web or bear trap */

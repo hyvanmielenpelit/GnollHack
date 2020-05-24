@@ -2051,6 +2051,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_DOOR_USE_OFF:
                 header = "MON_DOOR_USE_OFF";
                 break;
+            case GLYPH_DEATH_OFF:
+                header = "MON_DEATH_OFF";
+                break;
             case GLYPH_FEMALE_MON_OFF:
                 header = "FEMALE_MON_OFF";
                 break;
@@ -2089,6 +2092,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_FEMALE_DOOR_USE_OFF:
                 header = "MON_FEMALE_DOOR_USE_OFF";
+                break;
+            case GLYPH_FEMALE_DEATH_OFF:
+                header = "MON_FEMALE_DEATH_OFF";
                 break;
             case GLYPH_INVIS_OFF:
                 header = "INVIS_OFF";
@@ -2173,6 +2179,9 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_PLAYER_DOOR_USE_OFF:
                 header = "PLAYER_DOOR_USE_OFF";
+                break;
+            case GLYPH_PLAYER_DEATH_OFF:
+                header = "PLAYER_DEATH_OFF";
                 break;
             case GLYPH_ANIMATION_OFF:
                 header = "ANIMATION_OFF";

@@ -124,6 +124,14 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     return 0;
 }
 
+short
+get_player_death_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    return 0;
+}
+
 
 
 short
@@ -270,6 +278,14 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     return 0;
 }
 
+short
+get_player_death_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    return 0;
+}
+
 
 short
 get_animation_base_tile(animidx)
@@ -295,6 +311,12 @@ short animidx;
             return glyph2tile[i + GLYPH_ITEM_USE_OFF];
         if (mons[i].animation.door_use == animidx)
             return glyph2tile[i + GLYPH_DOOR_USE_OFF];
+        if (mons[i].animation.death == animidx)
+            return glyph2tile[i + GLYPH_DEATH_OFF];
+        if (mons[i].animation.corpse == animidx)
+            return glyph2tile[i + GLYPH_BODY_OFF];
+        if (mons[i].animation.statue == animidx)
+            return glyph2tile[i + GLYPH_STATUE_OFF];
 
         if (mons[i].female_animation.stand == animidx)
             return glyph2tile[i + GLYPH_FEMALE_MON_OFF];
@@ -314,6 +336,12 @@ short animidx;
             return glyph2tile[i + GLYPH_FEMALE_ITEM_USE_OFF];
         if (mons[i].female_animation.door_use == animidx)
             return glyph2tile[i + GLYPH_FEMALE_DOOR_USE_OFF];
+        if (mons[i].female_animation.death == animidx)
+            return glyph2tile[i + GLYPH_FEMALE_DEATH_OFF];
+        if (mons[i].female_animation.corpse == animidx)
+            return glyph2tile[i + GLYPH_FEMALE_BODY_OFF];
+        if (mons[i].female_animation.statue == animidx)
+            return glyph2tile[i + GLYPH_FEMALE_STATUE_OFF];
     }
 
     for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
@@ -368,6 +396,8 @@ short animidx;
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF];
                         if (get_player_door_use_animation(roleidx, raceidx, gender, alignment, level))
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF];
+                        if (get_player_death_animation(roleidx, raceidx, gender, alignment, level))
+                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_DEATH_OFF];
                     }
                 }
             }
@@ -402,6 +432,12 @@ short enlidx;
             return glyph2tile[i + GLYPH_ITEM_USE_OFF];
         if (mons[i].enlargement.door_use == enlidx)
             return glyph2tile[i + GLYPH_DOOR_USE_OFF];
+        if (mons[i].enlargement.death == enlidx)
+            return glyph2tile[i + GLYPH_DEATH_OFF];
+        if (mons[i].enlargement.corpse == enlidx)
+            return glyph2tile[i + GLYPH_BODY_OFF];
+        if (mons[i].enlargement.statue == enlidx)
+            return glyph2tile[i + GLYPH_STATUE_OFF];
 
         if (mons[i].female_enlargement.stand == enlidx)
             return glyph2tile[i + GLYPH_FEMALE_MON_OFF];
@@ -421,6 +457,12 @@ short enlidx;
             return glyph2tile[i + GLYPH_FEMALE_ITEM_USE_OFF];
         if (mons[i].female_enlargement.door_use == enlidx)
             return glyph2tile[i + GLYPH_FEMALE_DOOR_USE_OFF];
+        if (mons[i].female_enlargement.death == enlidx)
+            return glyph2tile[i + GLYPH_FEMALE_DEATH_OFF];
+        if (mons[i].female_enlargement.corpse == enlidx)
+            return glyph2tile[i + GLYPH_FEMALE_BODY_OFF];
+        if (mons[i].female_enlargement.statue == enlidx)
+            return glyph2tile[i + GLYPH_FEMALE_STATUE_OFF];
     }
 
     for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
@@ -475,6 +517,8 @@ short enlidx;
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF];
                         if (get_player_door_use_enlargement(roleidx, raceidx, gender, alignment, level))
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF];
+                        if (get_player_death_enlargement(roleidx, raceidx, gender, alignment, level))
+                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_DEATH_OFF];
                     }
                 }
             }
