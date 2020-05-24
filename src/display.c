@@ -1825,7 +1825,7 @@ int x, y, glyph;
         }                              \
     }
 
-static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, 0, 0, 0, 0, 0UL } };
+static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, 0, 0, 0, 0, 0UL, 0 } };
 
 /*
  * Turn the 3rd screen into stone.

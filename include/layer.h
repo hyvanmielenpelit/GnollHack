@@ -12,9 +12,12 @@ struct layer_info {
 
     int floor_glyph;
     int dungeon_feature_glyph;
+    int doodad_glyph;
     int object_glyph;
     int monster_glyph;
     int monster_effect_glyph;
+    int missile_glyph;
+    int cover_glyph;
     int environment_glyph;
     int general_effect_glyph;
     int ui_glyph; /* death, hit */
@@ -27,6 +30,8 @@ struct layer_info {
     int current_mana;
     int max_mana;
     unsigned long condition_flags;
+
+    int damage_displayed;
 
 };
 
