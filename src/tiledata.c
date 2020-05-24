@@ -205,13 +205,83 @@ short* tilemaparray;
                         continue;
                 }
 
+                int enlargement = 0;
+                if (gender == 0)
+                {
+                    switch (spset)
+                    {
+                    case 0:
+                        enlargement = mons[i].enlargement.stand;
+                        break;
+                    case 5:
+                        enlargement = mons[i].enlargement.attacks;
+                        break;
+                    case 6:
+                        enlargement = mons[i].enlargement.throws;
+                        break;
+                    case 7:
+                        enlargement = mons[i].enlargement.fire;
+                        break;
+                    case 8:
+                        enlargement = mons[i].enlargement.cast;
+                        break;
+                    case 9:
+                        enlargement = mons[i].enlargement.special_attack;
+                        break;
+                    case 10:
+                        enlargement = mons[i].enlargement.kick;
+                        break;
+                    case 11:
+                        enlargement = mons[i].enlargement.item_use;
+                        break;
+                    case 12:
+                        enlargement = mons[i].enlargement.door_use;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                else
+                {
+                    switch (spset)
+                    {
+                    case 0:
+                        enlargement = mons[i].female_enlargement.stand;
+                        break;
+                    case 5:
+                        enlargement = mons[i].female_enlargement.attacks;
+                        break;
+                    case 6:
+                        enlargement = mons[i].female_enlargement.throws;
+                        break;
+                    case 7:
+                        enlargement = mons[i].female_enlargement.fire;
+                        break;
+                    case 8:
+                        enlargement = mons[i].female_enlargement.cast;
+                        break;
+                    case 9:
+                        enlargement = mons[i].female_enlargement.special_attack;
+                        break;
+                    case 10:
+                        enlargement = mons[i].female_enlargement.kick;
+                        break;
+                    case 11:
+                        enlargement = mons[i].female_enlargement.item_use;
+                        break;
+                    case 12:
+                        enlargement = mons[i].female_enlargement.door_use;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+
                 if (process_style == 0)
                 {
                     Sprintf(buf, "%s,%s,%s,%s", tile_section_name, gender_name, set_name, mons[i].mname);
-                    if(gender == 0 && mons[i].enlargement > 0)
-                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[mons[i].enlargement].width_in_tiles, enlargements[mons[i].enlargement].height_in_tiles, enlargements[mons[i].enlargement].main_tile_x_coordinate);
-                    else if (gender == 1 && mons[i].female_enlargement > 0)
-                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[mons[i].female_enlargement].width_in_tiles, enlargements[mons[i].female_enlargement].height_in_tiles, enlargements[mons[i].female_enlargement].main_tile_x_coordinate);
+                    if(enlargement > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[enlargement].width_in_tiles, enlargements[enlargement].height_in_tiles, enlargements[enlargement].main_tile_x_coordinate);
                     else
                         Sprintf(eos(buf), ",1,1,0");
                     Sprintf(eos(buf), "\n");
@@ -2041,33 +2111,15 @@ short* tilemaparray;
     tile_section_name = "animation";
     for (int i = 1; i <= NUM_ANIMATIONS; i++)  /* animation number, starts at 1 */
     {
+        short base_tile = get_animation_base_tile(i);
         for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
         {
             if (process_style == 0)
             {
-                int base_id_index = animations[i].base_glyph_id;
-                
-                if (glyph_is_normal_object(animations[i].base_glyph_id) || glyph_is_normal_lit_object(animations[i].base_glyph_id) || glyph_is_inventory_object(animations[i].base_glyph_id) || glyph_is_inventory_lit_object(animations[i].base_glyph_id))
-                {
-                    int og_offset = glyph_is_normal_object(animations[i].base_glyph_id) ? GLYPH_OBJ_OFF 
-                        : glyph_is_normal_lit_object(animations[i].base_glyph_id) ? GLYPH_OBJ_LIT_OFF
-                        : glyph_is_inventory_object(animations[i].base_glyph_id) ? GLYPH_OBJ_INVENTORY_OFF
-                        : GLYPH_OBJ_INVENTORY_LIT_OFF;
-
-                    int obj_idx = base_id_index - og_offset;
-                    for (int oidx = STRANGE_OBJECT; oidx < NUM_OBJECTS; oidx++)
-                    {
-                        if (objects[oidx].oc_descr_idx == obj_idx)
-                        {
-                            base_id_index = oidx + og_offset;
-                            break;
-                        }
-                    }
-                }
                 Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name, 
                     animations[i].animation_name ? animations[i].animation_name : "unknown animation",
                     j,
-                    glyph2tile[base_id_index]
+                    base_tile
                 );
                 int enl = animations[i].tile_enlargement[j];
                 if (enl > 0)
@@ -2095,6 +2147,7 @@ short* tilemaparray;
     tile_section_name = "enlargement";
     for (int i = 1; i <= NUM_ENLARGEMENTS; i++)  /* enlargement number, starts at 1 */
     {
+        short base_tile = get_enlargement_base_tile(i);
         for (int j = 0; j < max(0, min(MAX_TILES_PER_ENLARGEMENT, enlargements[i].number_of_tiles)); j++) /* tile number */
         {
             const char* pos_name = "unknown";
@@ -2117,12 +2170,10 @@ short* tilemaparray;
 
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", tile_section_name, 
+                Sprintf(buf, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", tile_section_name,
                     enlargements[i].enlargement_name ? enlargements[i].enlargement_name : "unknown enlargement", 
                     pos_name,
-                    glyph_is_normal_object(enlargements[i].base_glyph_id) ? glyph2tile[objects[(enlargements[i].base_glyph_id - GLYPH_OBJ_OFF)].oc_descr_idx + GLYPH_OBJ_OFF] 
-                    : glyph_is_normal_lit_object(enlargements[i].base_glyph_id) ? glyph2tile[objects[(enlargements[i].base_glyph_id - GLYPH_OBJ_LIT_OFF)].oc_descr_idx + GLYPH_OBJ_LIT_OFF]
-                    : glyph2tile[enlargements[i].base_glyph_id],
+                    base_tile,
                     enlargements[i].width_in_tiles,
                     enlargements[i].height_in_tiles,
                     enlargements[i].main_tile_x_coordinate,
@@ -2160,29 +2211,115 @@ short* tilemaparray;
         /* Monsters */
         for (int i = 0; i < NUM_MONSTERS; i++)
         {
-            if (mons[i].stand_animation)
+            if (mons[i].animation.stand)
             {
                 int glyph = monnum_to_glyph(i);
                 short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].stand_animation;
+                tile2animation[tile] = mons[i].animation.stand;
             }
-            if (mons[i].female_stand_animation)
-            {
-                int glyph = female_monnum_to_glyph(i);
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].stand_animation;
-            }
-            if (mons[i].attack_animation)
+            if (mons[i].animation.attacks)
             {
                 int glyph = i + GLYPH_ATTACK_OFF;
                 short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].attack_animation;
+                tile2animation[tile] = mons[i].animation.attacks;
             }
-            if (mons[i].female_attack_animation)
+            if (mons[i].animation.throws)
+            {
+                int glyph = i + GLYPH_THROW_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.throws;
+            }
+            if (mons[i].animation.fire)
+            {
+                int glyph = i + GLYPH_FIRE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.fire;
+            }
+            if (mons[i].animation.cast)
+            {
+                int glyph = i + GLYPH_CAST_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.cast;
+            }
+            if (mons[i].animation.kick)
+            {
+                int glyph = i + GLYPH_KICK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.kick;
+            }
+            if (mons[i].animation.special_attack)
+            {
+                int glyph = i + GLYPH_SPECIAL_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.special_attack;
+            }
+            if (mons[i].animation.item_use)
+            {
+                int glyph = i + GLYPH_ITEM_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.item_use;
+            }
+            if (mons[i].animation.door_use)
+            {
+                int glyph = i + GLYPH_DOOR_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.door_use;
+            }
+
+
+            if (mons[i].female_animation.stand)
+            {
+                int glyph = female_monnum_to_glyph(i);
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].animation.stand;
+            }
+            if (mons[i].female_animation.attacks)
             {
                 int glyph = i + GLYPH_FEMALE_ATTACK_OFF;
                 short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_attack_animation;
+                tile2animation[tile] = mons[i].female_animation.attacks;
+            }
+            if (mons[i].female_animation.throws)
+            {
+                int glyph = i + GLYPH_FEMALE_THROW_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_animation.throws;
+            }
+            if (mons[i].female_animation.fire)
+            {
+                int glyph = i + GLYPH_FEMALE_FIRE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_animation.fire;
+            }
+            if (mons[i].female_animation.cast)
+            {
+                int glyph = i + GLYPH_FEMALE_CAST_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_animation.cast;
+            }
+            if (mons[i].female_animation.kick)
+            {
+                int glyph = i + GLYPH_FEMALE_KICK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_animation.kick;
+            }
+            if (mons[i].female_animation.special_attack)
+            {
+                int glyph = i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_animation.special_attack;
+            }
+            if (mons[i].female_animation.item_use)
+            {
+                int glyph = i + GLYPH_FEMALE_ITEM_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_animation.item_use;
+            }
+            if (mons[i].female_animation.door_use)
+            {
+                int glyph = i + GLYPH_FEMALE_DOOR_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2animation[tile] = mons[i].female_animation.door_use;
             }
         }
 
@@ -2337,29 +2474,115 @@ short* tilemaparray;
         /* Monsters */
         for (int i = 0; i < NUM_MONSTERS; i++)
         {
-            if (mons[i].enlargement)
+            if (mons[i].enlargement.stand)
             {
                 int glyph = monnum_to_glyph(i);
                 short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement;
+                tile2enlargement[tile] = mons[i].enlargement.stand;
             }
-            if (mons[i].female_enlargement)
-            {
-                int glyph = female_monnum_to_glyph(i);
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement;
-            }
-            if (mons[i].attack_enlargement)
+            if (mons[i].enlargement.attacks)
             {
                 int glyph = i + GLYPH_ATTACK_OFF;
                 short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].attack_enlargement;
+                tile2enlargement[tile] = mons[i].enlargement.attacks;
             }
-            if (mons[i].female_attack_enlargement)
+            if (mons[i].enlargement.throws)
+            {
+                int glyph = i + GLYPH_THROW_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement.throws;
+            }
+            if (mons[i].enlargement.fire)
+            {
+                int glyph = i + GLYPH_FIRE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement.fire;
+            }
+            if (mons[i].enlargement.cast)
+            {
+                int glyph = i + GLYPH_CAST_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement.cast;
+            }
+            if (mons[i].enlargement.kick)
+            {
+                int glyph = i + GLYPH_KICK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement.kick;
+            }
+            if (mons[i].enlargement.special_attack)
+            {
+                int glyph = i + GLYPH_SPECIAL_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement.special_attack;
+            }
+            if (mons[i].enlargement.item_use)
+            {
+                int glyph = i + GLYPH_ITEM_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement.item_use;
+            }
+            if (mons[i].enlargement.door_use)
+            {
+                int glyph = i + GLYPH_DOOR_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].enlargement.door_use;
+            }
+
+
+            if (mons[i].female_enlargement.stand)
+            {
+                int glyph = female_monnum_to_glyph(i);
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.stand;
+            }
+            if (mons[i].female_enlargement.attacks)
             {
                 int glyph = i + GLYPH_FEMALE_ATTACK_OFF;
                 short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_attack_enlargement;
+                tile2enlargement[tile] = mons[i].female_enlargement.attacks;
+            }
+            if (mons[i].female_enlargement.throws)
+            {
+                int glyph = i + GLYPH_FEMALE_THROW_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.throws;
+            }
+            if (mons[i].female_enlargement.fire)
+            {
+                int glyph = i + GLYPH_FEMALE_FIRE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.fire;
+            }
+            if (mons[i].female_enlargement.cast)
+            {
+                int glyph = i + GLYPH_FEMALE_CAST_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.cast;
+            }
+            if (mons[i].female_enlargement.kick)
+            {
+                int glyph = i + GLYPH_FEMALE_KICK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.kick;
+            }
+            if (mons[i].female_enlargement.special_attack)
+            {
+                int glyph = i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.special_attack;
+            }
+            if (mons[i].female_enlargement.item_use)
+            {
+                int glyph = i + GLYPH_FEMALE_ITEM_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.item_use;
+            }
+            if (mons[i].female_enlargement.door_use)
+            {
+                int glyph = i + GLYPH_FEMALE_DOOR_USE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2enlargement[tile] = mons[i].female_enlargement.door_use;
             }
         }
         /* Objects */

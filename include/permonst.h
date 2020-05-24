@@ -24,6 +24,19 @@ struct attack {
 	int mcadj; /* MC and saving throw adjustment*/
 };
 
+struct action_info
+{
+    short stand;
+    short attacks;
+    short throws;
+    short fire;
+    short cast;
+    short special_attack;
+    short kick;
+    short item_use;
+    short door_use;
+};
+
 /*	Max # of attacks for any given monster.
  */
 
@@ -77,15 +90,11 @@ struct permonst {
 #ifdef TEXTCOLOR
     uchar mcolor; /* color to use */
 #endif
-    int stand_animation;
-    int attack_animation;
-    int female_stand_animation;
-    int female_attack_animation;
+    struct action_info animation;
+    struct action_info female_animation;
 
-    int enlargement;
-    int attack_enlargement;
-    int female_enlargement;
-    int female_attack_enlargement;
+    struct action_info enlargement;
+    struct action_info female_enlargement;
 };
 
 extern NEARDATA struct permonst mons[]; /* the master list of monster types */

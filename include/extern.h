@@ -52,6 +52,8 @@ E short FDECL(get_player_kick_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_item_use_enlargement, (int, int, int, int, int));
 E short FDECL(get_player_door_use_enlargement, (int, int, int, int, int));
 E short FDECL(maybe_get_animated_tile, (short, unsigned long, boolean*));
+E short FDECL(get_animation_base_tile, (short));
+E short FDECL(get_enlargement_base_tile, (short));
 
 /* ### apply.c ### */
 

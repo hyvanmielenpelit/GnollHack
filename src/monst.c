@@ -14,6 +14,11 @@
         0, 0, 0, 0, 0 \
     }
 
+#define NO_ACTION_INFO    \
+    {              \
+        0, 0, 0, 0, 0, 0, 0, 0, 0 \
+    }
+
 #ifdef C
 #undef C
 #endif
@@ -43,16 +48,16 @@ void NDECL(monst_init);
  *      For AT_BREA attacks, '# sides' is ignored; 6 is used for most
  *      damage types, 25 for sleep, not applicable for death or poison.
  */
-#define ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, stand_anim, attack_anim, female_stand_anim, female_attack_anim, enlarge, attack_enlarge, female_enlarge, female_attack_enlarge) \
+#define ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, enlarge, female_enlarge) \
     {                                                                      \
-        nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, C(col), stand_anim, attack_anim, female_stand_anim, female_attack_anim, enlarge, attack_enlarge, female_enlarge, female_attack_enlarge   \
+        nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, C(col), anim, female_anim, enlarge, female_enlarge   \
     }
-#define ENLARGED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, enlarge, attack_enlarge, female_enlarge, female_attack_enlarge) \
-    ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, enlarge, attack_enlarge, female_enlarge, female_attack_enlarge)
-#define ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, stand_anim, attack_anim, female_stand_anim, female_attack_anim) \
-    ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, stand_anim, attack_anim, female_stand_anim, female_attack_anim, NO_ENLARGEMENT, NO_ENLARGEMENT, NO_ENLARGEMENT, NO_ENLARGEMENT)
+#define ENLARGED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, enlarge, female_enlarge) \
+    ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ACTION_INFO, NO_ACTION_INFO, enlarge, female_enlarge)
+#define ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim) \
+    ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, NO_ACTION_INFO, NO_ACTION_INFO)
 #define MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col) \
-    ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION)
+    ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ACTION_INFO, NO_ACTION_INFO)
 
 /* LVL() and SIZ() collect several fields to cut down on # of args for MON()
  */
@@ -67,6 +72,11 @@ void NDECL(monst_init);
 #define A(a1, a2, a3, a4, a5, a6, a7, a8) \
     {                             \
         a1, a2, a3, a4, a5, a6, a7, a8    \
+    }
+
+#define ACTION_INFO(a1, a2, a3, a4, a5, a6, a7, a8, a9 ) \
+    {                             \
+        a1, a2, a3, a4, a5, a6, a7, a8, a9    \
     }
 
 #define None (const char *)0
@@ -2417,7 +2427,7 @@ NEARDATA struct permonst mons[] = {
 		M2_UNDEAD | M2_HOSTILE | M2_MAGIC,
 		M3_WAITFORU | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CORPSE_CRUMBLES_TO_DUST,
         M4_BRAVE, M5_NONE, 
-		30, CLR_BROWN, DRACOLICH_ENLARGEMENT, 0, 0, 0),
+		30, CLR_BROWN, ACTION_INFO(DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0), NO_ACTION_INFO),
 	MON("elder dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(27, 12, -14, 19, 100, -17),
 		(G_HELL | G_GENO | G_NOCORPSE | 1), 
 		A(ATTK(AT_BREA, AD_DRAY, 1, 255, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 23),
