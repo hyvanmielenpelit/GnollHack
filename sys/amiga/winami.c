@@ -54,6 +54,7 @@ struct window_procs amii_procs = {
     genl_status_init, genl_status_finish, genl_status_enablefield,
     genl_status_update,
     genl_can_suspend_yes,
+    genl_stretch_window,
 };
 
 /* The view window layout uses the same function names so we can use
@@ -86,6 +87,7 @@ struct window_procs amiv_procs = {
     genl_status_init, genl_status_finish, genl_status_enablefield,
     genl_status_update,
     genl_can_suspend_yes,
+    genl_stretch_window,
 };
 
 unsigned short amii_initmap[AMII_MAXCOLORS];

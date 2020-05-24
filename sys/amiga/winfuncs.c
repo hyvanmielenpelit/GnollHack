@@ -1936,11 +1936,14 @@ port_help()
  */
 
 void
-amii_print_glyph(win, x, y, glyph, bkglyph)
+amii_print_glyph(win, x, y, layers)
 winid win;
 xchar x, y;
-int glyph, bkglyph;
+struct layer_info layers;
 {
+    int glyph = layers.glyph;
+    int bkglyph = layers.bkglyph;
+
     struct amii_WinDesc *cw;
     uchar ch;
     int color, och;

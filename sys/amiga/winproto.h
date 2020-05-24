@@ -65,7 +65,7 @@ void Abort(long rc);
 #endif
 void CleanUp(void);
 void flush_glyph_buffer(struct Window *w);
-void amiga_print_glyph(winid window, int color_index, int glyph, int bkglyph);
+void amiga_print_glyph(winid window, int color_index, struct layer_info layers);
 void start_glyphout(winid window);
 void amii_end_glyphout(winid window);
 struct NewWindow *DupNewWindow(struct NewWindow *win);
@@ -101,7 +101,7 @@ void amii_resume_nhwindows(void);
 void amii_bell(void);
 void removetopl(int cnt);
 void port_help(void);
-void amii_print_glyph(winid win, xchar x, xchar y, int glyph, int bkglyph);
+void amii_print_glyph(winid win, xchar x, xchar y, struct layer_info layers);
 void amii_raw_print(const char *s);
 void amii_raw_print_bold(const char *s);
 void amii_update_inventory(void);

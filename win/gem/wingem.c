@@ -894,11 +894,14 @@ extern int mar_set_rogue(int);
 extern void mar_add_pet_sign(winid, int, int);
 
 void
-Gem_print_glyph(window, x, y, glyph, bkglyph)
+Gem_print_glyph(window, x, y, layers)
 winid window;
 xchar x, y;
-int glyph, bkglyph;
+struct layer_info layers;
 {
+    int glyph = layers.glyph;
+    int bkglyph = layers.bkglyph;
+
     /* Move the cursor. */
     Gem_curs(window, x, y);
 
@@ -906,7 +909,7 @@ int glyph, bkglyph;
 
     x--; /* MAR -- because x ranges from 1 to COLNO */
     if (mar_set_tile_mode(-1)) {
-        mar_print_glyph(window, x, y, glyph2tile[glyph], glyph2tile[bkglyph]);
+        mar_print_glyph(window, x, y, layers);
         if (
 #ifdef TEXTCOLOR
             iflags.hilite_pet &&

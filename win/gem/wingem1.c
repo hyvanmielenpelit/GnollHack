@@ -2918,10 +2918,14 @@ int x, y;
 }
 
 void
-mar_print_glyph(window, x, y, gl, bkgl)
+mar_print_glyph(window, x, y, layers)
 winid window;
-int x, y, gl, bkgl;
+struct layer_info layers;
+int x, y;
 {
+    int gl = layers.glyph;
+    int bkgl = layers.bkglyph;
+
     if (window != WIN_ERR && window == WIN_MAP) {
         static int pla[8];
 

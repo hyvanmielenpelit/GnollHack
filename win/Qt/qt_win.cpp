@@ -4864,10 +4864,10 @@ void NetHackQtBind::qt_cliparound_window(winid wid, int x, int y)
     NetHackQtWindow* window=id_to_window[wid];
     window->ClipAround(x,y);
 }
-void NetHackQtBind::qt_print_glyph(winid wid,XCHAR_P x,XCHAR_P y,int glyph, int bkglyph)
+void NetHackQtBind::qt_print_glyph(winid wid,XCHAR_P x,XCHAR_P y, struct layer_info layers)
 {
     NetHackQtWindow* window=id_to_window[wid];
-    window->PrintGlyph(x,y,glyph);
+    window->PrintGlyph(x,y,layers.glyph);
 }
 //void NetHackQtBind::qt_print_glyph_compose(winid wid,XCHAR_P x,XCHAR_P y,int glyph1, int glyph2)
 //{
@@ -5291,6 +5291,7 @@ struct window_procs Qt_procs = {
     genl_status_enablefield,
     genl_status_update,
     genl_can_suspend_yes,
+    genl_stretch_window,
 };
 
 extern "C" void play_usersound(const char* filename, int volume)

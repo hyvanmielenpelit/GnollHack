@@ -51,6 +51,7 @@ struct window_procs Gnome_procs = {
     genl_status_init, genl_status_finish, genl_status_enablefield,
     genl_status_update,
     genl_can_suspend_yes,
+    genl_stretch_window,
 };
 
 /*
@@ -844,15 +845,18 @@ gnome_cliparound_proper(winid wid, int x, int y)
 }
 
 /*
-print_glyph(window, x, y, glyph, bkglyph)
+print_glyph(window, x, y, layers)
                 -- Print the glyph at (x,y) on the given window.  Glyphs are
                    integers at the interface, mapped to whatever the window-
                    port wants (symbol, font, color, attributes, ...there's
                    a 1-1 map between glyphs and distinct things on the map).
 */
 void
-gnome_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, int glyph, int bkglyph)
+gnome_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
+    int glyph = layers.glyph;
+    int bkglyph = layes.bkglyph;
+
     if (wid != -1 && gnome_windowlist[wid].win != NULL) {
         GdkImlibImage *im;
 
