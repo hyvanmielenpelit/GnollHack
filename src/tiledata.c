@@ -8,6 +8,7 @@
 
 #ifdef USE_TILES
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
+uchar glyphtileflags[MAX_GLYPH] = { 0 }; /* specifies how to use the tile and operations applied to the tile before use */
 short tile2animation[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 short tile2enlargement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 #endif
@@ -52,7 +53,7 @@ init_tiledata()
     /* fill out condition names*/
     for (int i = 0; i < BL_MASK_BITS; i++)
     {
-        unsigned long bit = 1 << i;
+        unsigned long bit = 1UL << i;
         const char* cond_name = get_condition_name(bit);
         ui_tile_component_array[CONDITION_MARKS].component_names[i] = cond_name;
     }
@@ -60,11 +61,12 @@ init_tiledata()
 }
 
 int
-process_tiledata(tsd, process_style, save_file_name, tilemaparray) /* Save tile data / read tile data / count tiles */
+process_tiledata(tsd, process_style, save_file_name, tilemaparray, tilemapflags) /* Save tile data / read tile data / count tiles */
 struct tileset_definition* tsd;
 int process_style;  /* 0 = save data to file, 1 = read data from file, 2 = count tiles */
 const char* save_file_name;
 short* tilemaparray;
+uchar* tilemapflags;
 {
     const char* fq_save = save_file_name;
     const char* tile_section_name;
@@ -505,6 +507,7 @@ short* tilemaparray;
                     continue;
 
                 first_scroll_found = TRUE;
+                uchar fullsizedflag = !!(objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP);
 
                 /* First, generic scroll tile */
                 if (process_style == 0)
@@ -548,13 +551,15 @@ short* tilemaparray;
                         {
                             /* Found scroll */
                             tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                            
+                            tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+
                             /* Add the tile to all scrolls */
                             for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
                             {
                                 if (objects[m].oc_class == SCROLL_CLASS)
                                 {
                                     tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                 }
                             }
                             if(missile_tile_num != 1)
@@ -566,6 +571,7 @@ short* tilemaparray;
                     else
                     {
                         tilemaparray[i + glyph_offset] = tile_count;
+                        tilemapflags[i + glyph_offset] |= fullsizedflag;
 
                         /* Add the tile to all scrolls */
                         for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
@@ -574,6 +580,7 @@ short* tilemaparray;
                             {
                                 /* Other scroll's main tile */
                                 tilemaparray[m + glyph_offset] = tile_count;
+                                tilemapflags[m + glyph_offset] |= fullsizedflag;
 
                                 /* Add others if they do not have their own */
                                 if (j == 0)
@@ -582,16 +589,19 @@ short* tilemaparray;
                                     {
                                         int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                                         tilemaparray[m + glyph_offset3] = tile_count;
+                                        tilemapflags[m + glyph_offset3] |= fullsizedflag;
                                         if (tsd->lit_tile_style != 1)
                                         {
                                             int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                             tilemaparray[m + glyph_offset4] = tile_count;
+                                            tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                         }
                                     }
                                     if (tsd->lit_tile_style != 1)
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
+                                        tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                     }
                                     if (tsd->missile_tile_style != 1)
                                     {
@@ -599,6 +609,7 @@ short* tilemaparray;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                         {
                                             tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                         }
                                     }
                                 }
@@ -608,6 +619,7 @@ short* tilemaparray;
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
+                                        tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                     }
                                 }
                                 else if (j == 2)
@@ -616,6 +628,7 @@ short* tilemaparray;
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
+                                        tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                     }
                                 }
                             }
@@ -665,6 +678,7 @@ short* tilemaparray;
                         {
 #ifdef MAIL
                             tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                            tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
 #endif
                             if(missile_tile_num != 1)
                                 tile_count++;
@@ -675,8 +689,10 @@ short* tilemaparray;
                     else
                     {
 #ifdef MAIL
+                        fullsizedflag = !!(objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP)
                         /* Main tile */
                         tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
+                        tilemapflags[SCR_MAIL + glyph_offset] |= fullsizedflag;
 
                         /* Add to others, if they have not tiles of their own */
                         if (j == 0)
@@ -685,16 +701,19 @@ short* tilemaparray;
                             {
                                 int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                                 tilemaparray[SCR_MAIL + glyph_offset3] = tile_count;
+                                tilemapflags[SCR_MAIL + glyph_offset3] |= fullsizedflag;
                                 if (tsd->lit_tile_style != 1)
                                 {
                                     int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                     tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                                    tilemapflags[SCR_MAIL + glyph_offset4] |= fullsizedflag;
                                 }
                             }
                             if (tsd->lit_tile_style != 1)
                             {
                                 int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                                 tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                                tilemapflags[SCR_MAIL + glyph_offset4] |= fullsizedflag;
                             }
                             if (tsd->missile_tile_style != 1)
                             {
@@ -702,6 +721,7 @@ short* tilemaparray;
                                 for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                 {
                                     tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                    tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                 }
                             }
                         }
@@ -711,6 +731,7 @@ short* tilemaparray;
                             {
                                 int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                 tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                                tilemapflags[SCR_MAIL + glyph_offset4] |= fullsizedflag;
                             }
                         }
                         else if (j == 2)
@@ -719,6 +740,7 @@ short* tilemaparray;
                             {
                                 int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                 tilemaparray[SCR_MAIL + glyph_offset4] = tile_count;
+                                tilemapflags[SCR_MAIL + glyph_offset4] |= fullsizedflag;
                             }
                         }
 
@@ -748,6 +770,9 @@ short* tilemaparray;
                 nameless = TRUE;
                 nameless_idx++;
             }
+
+            /* Full-sized item */
+            uchar fullsizedflag = (objects[i].oc_flags4 & O4_FULL_SIZED_BITMAP) ? GLYPH_TILE_FLAG_FULL_SIZED_ITEM : 0;
 
             if (process_style == 0)
             {
@@ -794,6 +819,7 @@ short* tilemaparray;
                     {
                         /* Write to the tile to the main glyph */
                         tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                        tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
 
                         /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
                         if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
@@ -807,7 +833,7 @@ short* tilemaparray;
                                 {
                                     /* Write to the tile to the main glyph */
                                     tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-
+                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                 }
                             }
                         }
@@ -821,6 +847,7 @@ short* tilemaparray;
                 {
                     /* Write to the tile to the main glyph */
                     tilemaparray[i + glyph_offset] = tile_count;
+                    tilemapflags[i + glyph_offset] |= fullsizedflag;
 
                     /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
                     if (j == 0)
@@ -829,16 +856,19 @@ short* tilemaparray;
                         {
                             int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                             tilemaparray[i + glyph_offset3] = tile_count;
+                            tilemapflags[i + glyph_offset3] |= fullsizedflag;
                             if (tsd->lit_tile_style != 1)
                             {
                                 int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                 tilemaparray[i + glyph_offset4] = tile_count;
+                                tilemapflags[i + glyph_offset4] |= fullsizedflag;
                             }
                         }
                         if (tsd->lit_tile_style != 1)
                         {
                             int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                             tilemaparray[i + glyph_offset4] = tile_count;
+                            tilemapflags[i + glyph_offset4] |= fullsizedflag;
                         }
                         if (tsd->missile_tile_style != 1)
                         {
@@ -846,6 +876,7 @@ short* tilemaparray;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                             }
                         }
                     }
@@ -855,6 +886,7 @@ short* tilemaparray;
                         {
                             int glyph_offset3 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                             tilemaparray[i + glyph_offset3] = tile_count;
+                            tilemapflags[i + glyph_offset3] |= fullsizedflag;
                         }
                     }
                     else if (j == 2)
@@ -863,6 +895,7 @@ short* tilemaparray;
                         {
                             int glyph_offset3 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                             tilemaparray[i + glyph_offset3] = tile_count;
+                            tilemapflags[i + glyph_offset3] |= fullsizedflag;
                         }
                     }
 
@@ -878,6 +911,7 @@ short* tilemaparray;
                             {
                                 /* Write to the tile to the main glyph */
                                 tilemaparray[m + glyph_offset] = tile_count;
+                                tilemapflags[m + glyph_offset] |= fullsizedflag;
 
                                 /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
                                 if (j == 0)
@@ -886,16 +920,19 @@ short* tilemaparray;
                                     {
                                         int glyph_offset3 = GLYPH_OBJ_INVENTORY_OFF;
                                         tilemaparray[m + glyph_offset3] = tile_count;
+                                        tilemapflags[m + glyph_offset3] |= fullsizedflag;
                                         if (tsd->lit_tile_style != 1)
                                         {
                                             int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                             tilemaparray[m + glyph_offset4] = tile_count;
+                                            tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                         }
                                     }
                                     if (tsd->lit_tile_style != 1)
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
+                                        tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                     }
                                     if (tsd->missile_tile_style != 1)
                                     {
@@ -903,6 +940,7 @@ short* tilemaparray;
                                         for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                                         {
                                             tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                            tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                                         }
                                     }
                                 }
@@ -912,6 +950,7 @@ short* tilemaparray;
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
+                                        tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                     }
                                 }
                                 else if (j == 2)
@@ -920,6 +959,7 @@ short* tilemaparray;
                                     {
                                         int glyph_offset4 = GLYPH_OBJ_INVENTORY_LIT_OFF;
                                         tilemaparray[m + glyph_offset4] = tile_count;
+                                        tilemapflags[m + glyph_offset4] |= fullsizedflag;
                                     }
                                 }
                             }
@@ -941,6 +981,7 @@ short* tilemaparray;
 
                                 int glyph_offset2 = (gender == 0 ? (i == CORPSE ? GLYPH_BODY_OFF : GLYPH_STATUE_OFF) : (i == CORPSE ? GLYPH_FEMALE_BODY_OFF : GLYPH_FEMALE_STATUE_OFF));
                                 tilemaparray[k + glyph_offset2] = tile_count;
+                                tilemapflags[k + glyph_offset2] |= fullsizedflag;
                             }
                         }
                     }
@@ -1011,6 +1052,9 @@ short* tilemaparray;
             boolean no_description = !artilist[i].desc;
             boolean no_base_item_name = !OBJ_NAME(objects[base_item]);
             boolean no_base_item_description = !obj_descr[objects[base_item].oc_name_idx].oc_descr;
+
+            uchar fullsizedflag = !!(objects[base_item].oc_flags4 & O4_FULL_SIZED_BITMAP);
+
             if (process_style == 0)
             {
                 if (j == 4)
@@ -1069,22 +1113,28 @@ short* tilemaparray;
                 }
                 else
                 {
+                    tilemaparray[(i - 1) + glyph_offset] = tile_count;
+                    tilemapflags[(i - 1) + glyph_offset] |= fullsizedflag;
+
                     if (j == 0)
                     {
                         if (tsd->inventory_tile_style != 1)
                         {
                             int glyph_offset3 = GLYPH_ARTIFACT_INVENTORY_OFF;
                             tilemaparray[(i - 1) + glyph_offset3] = tile_count;
+                            tilemapflags[(i - 1) + glyph_offset3] |= fullsizedflag;
                             if (tsd->lit_tile_style != 1)
                             {
                                 int glyph_offset4 = GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
                                 tilemaparray[(i - 1) + glyph_offset4] = tile_count;
+                                tilemapflags[(i - 1) + glyph_offset4] |= fullsizedflag;
                             }
                         }
                         if (tsd->lit_tile_style != 1)
                         {
                             int glyph_offset4 = GLYPH_ARTIFACT_LIT_OFF;
                             tilemaparray[(i - 1) + glyph_offset4] = tile_count;
+                            tilemapflags[(i - 1) + glyph_offset4] |= fullsizedflag;
                         }
                         if (tsd->missile_tile_style != 1)
                         {
@@ -1101,6 +1151,7 @@ short* tilemaparray;
                         {
                             int glyph_offset3 = GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
                             tilemaparray[(i - 1) + glyph_offset3] = tile_count;
+                            tilemapflags[(i - 1) + glyph_offset3] |= fullsizedflag;
                         }
                     }
                     else if (j == 2)
@@ -1109,9 +1160,9 @@ short* tilemaparray;
                         {
                             int glyph_offset3 = GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
                             tilemaparray[(i - 1) + glyph_offset3] = tile_count;
+                            tilemapflags[(i - 1) + glyph_offset3] |= fullsizedflag;
                         }
                     }
-                    tilemaparray[(i - 1) + glyph_offset] = tile_count;
                     tile_count++;
                 }
             }

@@ -37,7 +37,7 @@ extern void msmsg(const char *, ...);
 #endif
 
 #ifdef TTY_TILES_ESCCODES
-extern short glyph2tile[];
+extern short glyph2tile[MAX_GLYPH];
 #define TILE_ANSI_COMMAND 'z'
 #define AVTC_GLYPH_START   0
 #define AVTC_GLYPH_END     1

@@ -1062,6 +1062,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 if ((glyph != NO_GLYPH) /*&& (glyph != bkglyph)*/) {
                     boolean skip_drawing = FALSE;
+                    boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
                     ntile = maybe_get_animated_tile(glyph2tile[glyph], data->interval_counter, &data->mapAnimated[i][j]);
                     if (enlarg_idx >= 0)
                     {
@@ -1084,25 +1085,34 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     if (!skip_drawing)
                     {
-
+                        int dest_top_added = 0;
+                        int dest_height_deducted = 0;
+                        int source_top_added = 0;
+                        int source_height_deducted = 0;
                         t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
                         t_y = TILEBMP_Y(ntile);
-
+                        if (move_obj_to_middle)
+                        {
+                            dest_top_added = (rect->bottom - rect->top) / 4;
+                            dest_height_deducted = (rect->bottom - rect->top) / 2;
+                            source_top_added = TILE_Y / 2;
+                            source_height_deducted = TILE_Y / 2;
+                        }
                         SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
                         if (opaque_background_drawn)
                         {
                             (*GetNHApp()->lpfnTransparentBlt)(
-                                data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
-                                t_y, multiplier * GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                                data->backBufferDC, rect->left, rect->top + dest_top_added,
+                                data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
                         }
                         else
                         {
-                            StretchBlt(data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, data->tileDC,
-                                t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, SRCCOPY);
+                            StretchBlt(data->backBufferDC, rect->left, rect->top + dest_top_added,
+                                data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC,
+                                t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
 
                             opaque_background_drawn = TRUE;
                         }

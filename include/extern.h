@@ -2758,7 +2758,7 @@ E void FDECL(substitute_tiles, (d_level *));
 
 /* ### tiledata.c ###*/
 E void NDECL(init_tiledata);
-E int FDECL(process_tiledata, (struct tileset_definition*, int, const char*, short*));
+E int FDECL(process_tiledata, (struct tileset_definition*, int, const char*, short*, uchar*));
 
 
 /* ### timeout.c ### */

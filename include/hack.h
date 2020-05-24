@@ -239,6 +239,22 @@ enum hmon_atkmode_types {
 	HMON_GOLF    = 5  /* alternate ranged */
 };
 
+/* Macros for explosion types */
+enum explosion_types {
+    EXPL_DARK = 0,
+    EXPL_NOXIOUS = 1,
+    EXPL_MUDDY = 2,
+    EXPL_WET = 3,
+    EXPL_MAGICAL = 4,
+    EXPL_FIERY = 5,
+    EXPL_FROSTY = 6,
+    EXPL_MAX = 7
+};
+
+static const char* explosion_type_names[EXPL_MAX] = {
+    "dark", "noxious", "muddy", "wet", "magical", "fiery", "frosty"
+};
+
 /* sortloot() return type; needed before extern.h */
 struct sortloot_item {
     struct obj *obj;
@@ -289,7 +305,17 @@ typedef struct sortloot_item Loot;
 #define SYM_OFF_X (SYM_OFF_W + WARNCOUNT)
 #define SYM_MAX (SYM_OFF_X + MAXOTHER)
 
+
+/* Tiles */
 #include "tiledata.h"
+#ifdef USE_TILES
+extern short glyph2tile[MAX_GLYPH];
+extern uchar glyphtileflags[MAX_GLYPH];
+extern short tile2animation[MAX_GLYPH];
+extern short tile2enlargement[MAX_GLYPH];
+#endif
+
+
 #ifdef USE_TRAMPOLI /* this doesn't belong here, but we have little choice */
 #undef NDECL
 #define NDECL(f) f()
@@ -442,22 +468,6 @@ typedef struct sortloot_item Loot;
 #define FLING 0x02         /* the object is flying thru the air */
 #define LAUNCH_UNSEEN 0x40 /* hero neither caused nor saw it */
 #define LAUNCH_KNOWN 0x80  /* the hero caused this by explicit action */
-
-/* Macros for explosion types */
-enum explosion_types {
-    EXPL_DARK    = 0,
-    EXPL_NOXIOUS = 1,
-    EXPL_MUDDY   = 2,
-    EXPL_WET     = 3,
-    EXPL_MAGICAL = 4,
-    EXPL_FIERY   = 5,
-    EXPL_FROSTY  = 6,
-    EXPL_MAX     = 7
-};
-
-static const char* explosion_type_names[EXPL_MAX] = {
-    "dark", "noxious", "muddy", "wet", "magical", "fiery", "frosty"
-};
 
 /* enlightenment control flags */
 #define BASICENLIGHTENMENT 1 /* show mundane stuff */

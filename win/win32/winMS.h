@@ -61,9 +61,9 @@
 #define TILE_BK_COLOR RGB(71, 108, 108)
 
 
-extern short glyph2tile[MAX_GLYPH];
-extern short tile2animation[MAX_GLYPH];
-extern short tile2enlargement[MAX_GLYPH];
+//extern short glyph2tile[MAX_GLYPH];
+//extern short tile2animation[MAX_GLYPH];
+//extern short tile2enlargement[MAX_GLYPH];
 
 #define TILEBMP_X(ntile) \
     ((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X)

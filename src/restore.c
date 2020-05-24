@@ -13,7 +13,7 @@ extern int dotrow; /* shared with save */
 #endif
 
 //#ifdef USE_TILES
-extern short glyph2tile[]; /* from tiledata.c */
+//extern short glyph2tile[]; /* from tiledata.c */
 //extern void FDECL(substitute_tiles, (d_level *)); /* from tile.c */
 //#endif
 
@@ -587,7 +587,7 @@ unsigned int *stuckid, *steedid;
 
     init_tiledata();
 #ifdef USE_TILES
-    process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile);
+    process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile, glyphtileflags);
 #endif
 
     *newgamecontext = context; /* copy statically init'd context */

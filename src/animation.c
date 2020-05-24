@@ -3,13 +3,6 @@
  */
 #include "hack.h"
 
-#ifdef USE_TILES
-extern short glyph2tile[MAX_GLYPH];
-extern short tile2animation[MAX_GLYPH];
-extern short tile2enlargement[MAX_GLYPH];
-#endif
-
-
 /*
  * Animations 
  */

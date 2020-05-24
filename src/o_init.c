@@ -16,7 +16,6 @@ static NEARDATA short disco[NUM_OBJECTS] = DUMMY;
 
 #ifdef USE_TILES
 STATIC_DCL void NDECL(shuffle_tiles);
-extern short glyph2tile[]; /* from tile.c */
 
 /* Shuffle tile assignments to match descriptions, so a red potion isn't
  * displayed with a blue tile and so on.

@@ -270,8 +270,6 @@ init_tilemap()
         tilemap[i] = -1;
     }
 
-    //tilenum = process_tiledata(&default_tileset_definition, 1, (const char*)0, tilemap);
-
     corpsetile = NUM_MONSTERS + NUM_INVIS_TILES + CORPSE;
     swallowbase = NUM_MONSTERS + NUM_INVIS_TILES + NUM_OBJECTS + S_sw_tl;
 

@@ -1959,16 +1959,18 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 STATIC_PTR int
 wiz_save_tiledata(VOID_ARGS) /* Save a csv file for tile data */
 {
+#ifdef USE_TILES
     if (wizard)
     {
         struct tileset_definition* tsd = &default_tileset_definition;
         const char* fq_save = "tile_definition.csv";
         pline("Starting writing %s...", fq_save);
-        int cnt = process_tiledata(tsd, 0, fq_save, (short*)0);
+        int cnt = process_tiledata(tsd, 0, fq_save, (short*)0, (uchar*)0);
         pline("Done writing %s. %d tiles written.", fq_save, cnt);
     }
     else
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_tiledata)));
+#endif
     return 0;
 }
 
@@ -1976,22 +1978,23 @@ wiz_save_tiledata(VOID_ARGS) /* Save a csv file for tile data */
 STATIC_PTR int
 wiz_count_tiles(VOID_ARGS) /* Save a csv file for tile data */
 {
+#ifdef USE_TILES
     if (wizard)
     {
         struct tileset_definition* tsd = &default_tileset_definition;
-        int cnt = process_tiledata(tsd, 2, (const char*)0, (short*)0);
+        int cnt = process_tiledata(tsd, 2, (const char*)0, (short*)0, (uchar*)0);
         pline("There are %d tiles.", cnt);
     }
     else
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_count_tiles)));
+#endif
     return 0;
 }
-
-extern short glyph2tile[];
 
 STATIC_PTR int
 wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
 {
+#ifdef USE_TILES
     if (wizard)
     {
         struct tileset_definition* tsd = &default_tileset_definition;
@@ -2199,7 +2202,7 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             if (i == u_to_glyph())
                 special = ",YOU";
 
-            Sprintf(buf, "glyph=%d,tile=%d%s\n", i, glyph2tile[i], special);
+            Sprintf(buf, "glyph=%d,tile=%d,flags=%d%s\n", i, glyph2tile[i], glyphtileflags[i], special);
             (void)write(fd, buf, strlen(buf));
         }
 
@@ -2208,6 +2211,7 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
     }
     else
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_save_glyph2tiles)));
+#endif
     return 0;
 }
 
