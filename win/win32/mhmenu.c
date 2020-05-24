@@ -1115,24 +1115,43 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             if (signed_glyph < 0)
                 flip_tile = TRUE;
 
+            boolean is_full_size = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM);
+
             ntile = glyph2tile[glyph];
             int multiplier = flip_tile ? -1 : 1;
 
+            int source_top_added = 0;
+            int source_height_deducted = 0;
+            int applied_tileXScaled = tileXScaled;
+            int x_added = 0;
+            if (is_full_size)
+            {
+                applied_tileXScaled = (int)((double)TILE_X * (double)MENU_TILE_Y / (double) TILE_Y * monitorScale);
+                x_added = (tileXScaled - applied_tileXScaled) / 2;
+            }
+            else
+            {
+                source_top_added = TILE_Y / 2;
+                source_height_deducted = TILE_Y / 2;
+            }
             t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
                 //((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X);
-            t_y = TILEBMP_Y(ntile) + TILE_Y / 2; /* Use lower part of the tile only */
+            t_y = TILEBMP_Y(ntile) + source_top_added; /* Use lower part of the tile only */
                 //(ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y;
 
             y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 
             SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
-            if (GetNHApp()->bmpMapTiles == GetNHApp()->bmpTiles) {
+            if (GetNHApp()->bmpMapTiles == GetNHApp()->bmpTiles) 
+            {
                 /* using original GnollHack tiles - apply image transparently */
-                (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x, y,
-                                          tileXScaled, tileYScaled,
-                                          tileDC, t_x, t_y, multiplier * TILE_X, TILE_Y / 2, /* Use lower part of the tile only */
+                (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x + x_added, y,
+                    applied_tileXScaled, tileYScaled,
+                                          tileDC, t_x, t_y, multiplier * TILE_X, TILE_Y - source_height_deducted, /* Use lower part of the tile only */
                                           TILE_BK_COLOR);
-            } else {
+            }
+            else 
+            {
                 /* using custom tiles - simple blt */
                 StretchBlt(lpdis->hDC, x, y, tileXScaled, tileYScaled, 
                     tileDC, t_x, t_y, GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, SRCCOPY);

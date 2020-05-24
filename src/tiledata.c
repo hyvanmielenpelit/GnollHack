@@ -143,6 +143,7 @@ uchar* tilemapflags;
             set_name = monster_set_name_array[spset];
             for (int i = LOW_PM; i < NUM_MONSTERS; i++)
             {
+                uchar fullsizedflag = 0;
                 if (gender == 1)
                 {
                     if (tsd->female_tile_style == 2 && !(mons[i].mflags5 & M5_FEMALE_TILE))
@@ -153,6 +154,11 @@ uchar* tilemapflags;
                 {
                     if (tsd->body_tile_style == 2 && !(mons[i].mflags5 & M5_CORPSE_TILE))
                         continue;
+
+                    if (objects[CORPSE].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                        fullsizedflag = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                    else
+                        fullsizedflag = 0;
                 }
 
                 if (spset == 4)
@@ -213,6 +219,14 @@ uchar* tilemapflags;
                 {
                     if (tsd->death_tile_style == 2 && !(mons[i].mflags5 & M5_DEATH_TILE))
                         continue;
+                }
+
+                if (spset == 14)
+                {
+                    if (objects[STATUE].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                        fullsizedflag = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                    else
+                        fullsizedflag = 0;
                 }
 
                 int enlargement = 0;
@@ -317,6 +331,9 @@ uchar* tilemapflags;
                     if (gender == 0)
                     {
                         tilemaparray[i + glyph_offset] = tile_count;
+                        if(spset == 3 || spset == 14)
+                            tilemapflags[i + glyph_offset] |= fullsizedflag;
+
                         if (spset == 0)
                         {
                             if (!tsd->has_pet_tiles)
@@ -373,6 +390,9 @@ uchar* tilemapflags;
 
                     /* write female versions twice just in case, first as base monster, and then override as female, if we get here */
                     tilemaparray[i + female_glyph_offset] = tile_count;
+                    if (spset == 3 || spset == 14)
+                        tilemapflags[i + female_glyph_offset] |= fullsizedflag;
+
                     if (spset == 0)
                     {
                         if (!tsd->has_pet_tiles)
@@ -1219,6 +1239,11 @@ uchar* tilemapflags;
                 {
                     glyph_offset = GLYPH_CMAP_OFF + cmap_idx * CMAP_TYPE_CHAR_NUM;
                     tilemaparray[i + glyph_offset] = tile_count;
+                    if (i == S_extra_boulder)
+                    {
+                        if(objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                            tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                    }
 
                     /* Copy 2 simple wall tile to all other relevant tiles */
                     if (tsd->cmap_wall_style[cmap_idx] == 1 )
@@ -1260,6 +1285,11 @@ uchar* tilemapflags;
                         {
                             glyph_offset = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
                             tilemaparray[i + glyph_offset] = tile_count;
+                            if (i == S_extra_boulder)
+                            {
+                                if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                                    tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                            }
 
                             /* Copy 2 simple wall tile to all other relevant tiles */
                             if (tsd->cmap_wall_style[k] == 1)
@@ -1306,6 +1336,11 @@ uchar* tilemapflags;
                         {
                             int glyph_offset2 = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
                             tilemaparray[i + glyph_offset2] = tile_count;
+                            if (i == S_extra_boulder)
+                            {
+                                if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                                    tilemapflags[i + glyph_offset2] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                            }
                             if (!tsd->has_variations && defsyms[i].variations > 0)
                             {
                                 for (int m = 0; m < defsyms[i].variations; m++)

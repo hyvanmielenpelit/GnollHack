@@ -4565,6 +4565,7 @@ uchar attack_mode;
 		flush_screen(1);
 		delay_output();
 		delay_output();
+		delay_output();
 	}
 #endif
 }
@@ -4583,6 +4584,7 @@ uchar attack_mode;
 	{
 		newsym(mtmp->mx, mtmp->my);
 		flush_screen(0);
+		delay_output();
 		delay_output();
 		delay_output();
 	}
