@@ -3456,7 +3456,8 @@ struct layer_info layers;
         term_start_attr(ATR_INVERSE);
         reverse_on = TRUE;
     }
-    else if ((special & MG_PEACEFUL) && flags.underline_peaceful)
+
+    if (!reverse_on && (special & MG_PEACEFUL) && flags.underline_peaceful)
     {
         term_start_attr(ATR_ULINE);
         underline_on = TRUE;

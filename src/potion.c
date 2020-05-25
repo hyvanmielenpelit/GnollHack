@@ -2936,6 +2936,7 @@ struct obj *obj;
         verbalize("You freed me!");
         mtmp->mpeaceful = TRUE;
         set_malign(mtmp);
+        newsym(mtmp->mx, mtmp->my);
         break;
     case 3:
         verbalize("It is about time!");
@@ -2947,6 +2948,7 @@ struct obj *obj;
         verbalize("You disturbed me, fool!");
         mtmp->mpeaceful = FALSE;
         set_malign(mtmp);
+        newsym(mtmp->mx, mtmp->my);
         break;
     }
 }

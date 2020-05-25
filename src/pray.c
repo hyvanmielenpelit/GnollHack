@@ -2771,6 +2771,7 @@ doturn()
                         if (u.ualign.type == A_CHAOTIC) {
                             mtmp->mpeaceful = 1;
                             set_malign(mtmp);
+                            newsym(mtmp->mx, mtmp->my);
                         } else { /* damn them */
                             killed(mtmp);
                         }

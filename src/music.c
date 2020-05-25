@@ -160,6 +160,7 @@ int distance;
             mtmp->mpeaceful = 1;
             mtmp->mavenge = 0;
             mtmp->mstrategy &= ~STRAT_WAITMASK;
+            newsym(mtmp->mx, mtmp->my);
             if (canseemon(mtmp))
                 pline(
                     "%s listens cheerfully to the music, then seems quieter.",
@@ -186,6 +187,7 @@ struct monst *bugler; /* monster that played instrument */
             mtmp->mpeaceful = mtmp->msleeping = mtmp->mfrozen = 0;
             mtmp->mcanmove = 1;
             mtmp->mstrategy &= ~STRAT_WAITMASK;
+            newsym(mtmp->mx, mtmp->my);
             if (canseemon(mtmp))
                 pline("%s is now ready for battle!", Monnam(mtmp));
             else

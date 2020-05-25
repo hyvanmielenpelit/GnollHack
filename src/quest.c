@@ -395,6 +395,7 @@ struct monst *mtmp;
         verbalize("I'm finally free!");
         mtmp->mstrategy &= ~STRAT_WAITMASK;
         mtmp->mpeaceful = 1;
+        newsym(mtmp->mx, mtmp->my);
 
         /* Your god is happy... */
         adjalign(3);

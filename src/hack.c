@@ -2380,6 +2380,7 @@ boolean pick;
                 You("surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
                 mtmp->mpeaceful = 0;
+                newsym(mtmp->mx, mtmp->my);
             } else
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
             break;

@@ -142,6 +142,7 @@ boolean quietly;
                     You("get a bad feeling about this.");
                 mtmp->mpeaceful = 0;
                 set_malign(mtmp);
+                newsym(mtmp->mx, mtmp->my);
             }
         }
         /* if figurine has been named, give same name to the monster */
@@ -1005,7 +1006,8 @@ boolean thrown;
 		/* worst case, at least it'll be peaceful. */
 		mtmp->mpeaceful = 1;
 		set_malign(mtmp);
-	}
+        newsym(mtmp->mx, mtmp->my);
+    }
 
     if (!forcetaming && thrown && flags.moonphase == FULL_MOON && night() && rn2(6) && obj
         && mtmp->data->mlet == S_DOG)

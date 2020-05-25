@@ -2507,6 +2507,7 @@ xchar x, y;
                                          : "The picture-painting demon");
         mtmp->mpeaceful = !obj->cursed;
         set_malign(mtmp);
+        newsym(mtmp->mx, mtmp->my);
     }
 }
 

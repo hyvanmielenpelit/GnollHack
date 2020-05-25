@@ -563,12 +563,14 @@ register struct obj *gold;
                 else if (mtmp->data == &mons[PM_CAPTAIN])
                     goldreqd = 750L;
 
-                if (goldreqd) {
+                if (goldreqd) 
+                {  
                     umoney = money_cnt(invent);
-                    if (value
-                        > goldreqd
-                              + (umoney + u.ulevel * rn2(5)) / ACURR(A_CHA))
+                    if (value > goldreqd + (umoney + u.ulevel * rn2(5)) / ACURR(A_CHA))
+                    {
                         mtmp->mpeaceful = TRUE;
+                        newsym(mtmp->mx, mtmp->my);
+                    }
                 }
             }
             if (is_peaceful(mtmp))

@@ -4471,6 +4471,7 @@ struct monst *mtmp;
             && mtmp->data->mlet != S_HUMAN) {
             mtmp->mpeaceful = 1;
             set_malign(mtmp); /* reset alignment */
+            newsym(mtmp->mx, mtmp->my);
             pline("%s is grateful.", Monnam(mtmp));
         }
         /* Helping someone out of a trap is a nice thing to do,
@@ -4763,6 +4764,7 @@ boolean stuff;
             && rnl(10) < 3) {
             mtmp->mpeaceful = 1;
             set_malign(mtmp); /* reset alignment */
+            newsym(mtmp->mx, mtmp->my);
             pline("%s thinks it was nice of you to try.", Monnam(mtmp));
         }
         return 0;

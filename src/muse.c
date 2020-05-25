@@ -123,6 +123,7 @@ struct obj *obj;
                     verbalize("You freed me!");
                     mtmp->mpeaceful = 1;
                     set_malign(mtmp);
+                    newsym(mtmp->mx, mtmp->my);
                 } else {
                     verbalize("It is about time.");
                     if (vis)
@@ -2206,7 +2207,7 @@ struct monst *mtmp;
 #ifdef CLIPPING
     cliparound(mtmp->mx, mtmp->my);
 #endif
-    show_glyph(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, rn2));
+    show_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, rn2), (struct obj*)0, mtmp, 0UL, 0);
     display_self();
     You_feel("aggravated at %s.", noit_mon_nam(mtmp));
     display_nhwindow(WIN_MAP, TRUE);

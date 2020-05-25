@@ -532,6 +532,7 @@ start: Blank
         S_sw_tc: \032
         S_sw_tl: \032
         S_sw_tr: \032
+        S_talkeffect: \032
         S_tdwall: \032
         S_teleportation_trap: \032
         S_throne: \032

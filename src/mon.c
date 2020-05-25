@@ -1523,8 +1523,11 @@ update_monster_timouts()
 
 								if (mtmp->mtame)
 									mtmp->mtame = 0;
-								if (is_peaceful(mtmp))
-									mtmp->mpeaceful = 0;
+                                if (is_peaceful(mtmp))
+                                {
+                                    mtmp->mpeaceful = 0;
+                                    newsym(mtmp->mx, mtmp->my);
+                                }
 							}
 						}
 						break;
@@ -3988,6 +3991,7 @@ boolean via_attack;
 
 	/* just in case remove charm */
 	break_charm(mtmp, FALSE);
+    newsym(mtmp->mx, mtmp->my);
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */
@@ -5158,6 +5162,7 @@ boolean silent;
 					slct++;
 			}
             mtmp->mpeaceful = 0;
+            newsym(mtmp->mx, mtmp->my);
         }
     }
     if (ct) {
@@ -5189,7 +5194,10 @@ pacify_guards()
         if (DEADMONSTER(mtmp))
             continue;
         if (is_watch(mtmp->data))
+        {
             mtmp->mpeaceful = 1;
+            newsym(mtmp->mx, mtmp->my);
+        }
     }
 }
 

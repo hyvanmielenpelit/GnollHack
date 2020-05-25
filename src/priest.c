@@ -507,6 +507,7 @@ int roomno;
                 You("sense a presence close by!");
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
+            newsym(mtmp->mx, mtmp->my);
             if (flags.verbose)
                 You("are frightened to death, and unable to move.");
             nomul(-3);

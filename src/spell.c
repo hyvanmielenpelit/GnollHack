@@ -252,7 +252,8 @@ struct obj *book2;
                                            MM_NO_MONSTER_INVENTORY)) != 0)) {
             mtmp->mpeaceful = 0;
             set_malign(mtmp);
-        }
+			newsym(mtmp->mx, mtmp->my);
+		}
         /* next handle the affect on things you're carrying */
         (void) revive_from_inventory(&youmonst);
         /* last place some monsters around you */
@@ -284,8 +285,11 @@ struct obj *book2;
 					else
 						(void)tamedog(mtmp, (struct obj*) 0, FALSE, FALSE, 0, FALSE, FALSE);
 				}
-                else
-                    monflee(mtmp, 0, FALSE, TRUE);
+				else 
+				{
+					monflee(mtmp, 0, FALSE, TRUE);
+					newsym(mtmp->mx, mtmp->my);
+				}
             }
         }
     }

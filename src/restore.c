@@ -1173,6 +1173,7 @@ boolean ghostly;
                         ? TRUE
                         : peace_minded(mtmp->data);
             set_malign(mtmp);
+            newsym(mtmp->mx, mtmp->my);
         } else if (elapsed > 0L) {
             mon_catchup_elapsed_time(mtmp, elapsed);
         }

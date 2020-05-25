@@ -210,33 +210,34 @@ enum screen_symbols {
     S_ss2       = 74+11,
     S_ss3       = 75+11,
     S_ss4       = 76+11,
-    S_poisoncloud = 77+11,
-    S_goodpos   = 78+11, /* valid position for targeting via getpos() */
+    S_talkeffect = 77 + 11,
+    S_poisoncloud = 77+12,
+    S_goodpos   = 78+ 12, /* valid position for targeting via getpos() */
 
-/* The 8 swallow symbols.  Do NOT separate.  To change order or add+11, */
+/* The 8 swallow symbols.  Do NOT separate.  To change order or add+12, */
 /* see the function swallow_to_glyph() in display.c.                 */
-    S_sw_tl     = 79+11, /* swallow top left [1]             */
-    S_sw_tc     = 80+11, /* swallow top center [2]    Order: */
-    S_sw_tr     = 81+11, /* swallow top right [3]            */
-    S_sw_ml     = 82+11, /* swallow middle left [4]   1 2 3  */
-    S_sw_mr     = 83+11, /* swallow middle right [6]  4 5 6  */
-    S_sw_bl     = 84+11, /* swallow bottom left [7]   7 8 9  */
-    S_sw_bc     = 85+11, /* swallow bottom center [8]        */
-    S_sw_br     = 86+11, /* swallow bottom right [9]         */
+    S_sw_tl     = 79+12, /* swallow top left [1]             */
+    S_sw_tc     = 80+12, /* swallow top center [2]    Order: */
+    S_sw_tr     = 81+12, /* swallow top right [3]            */
+    S_sw_ml     = 82+12, /* swallow middle left [4]   1 2 3  */
+    S_sw_mr     = 83+12, /* swallow middle right [6]  4 5 6  */
+    S_sw_bl     = 84+12, /* swallow bottom left [7]   7 8 9  */
+    S_sw_bc     = 85+12, /* swallow bottom center [8]        */
+    S_sw_br     = 86+12, /* swallow bottom right [9]         */
 
-    S_explode1  = 87+11, /* explosion top left               */
-    S_explode2  = 88+11, /* explosion top center             */
-    S_explode3  = 89+11, /* explosion top right        Ex.   */
-    S_explode4  = 90+11, /* explosion middle left            */
-    S_explode5  = 91+11, /* explosion middle center    /-\   */
-    S_explode6  = 92+11, /* explosion middle right     |@|   */
-    S_explode7  = 93+11, /* explosion bottom left      \-/   */
-    S_explode8  = 94+11, /* explosion bottom center          */
-    S_explode9  = 95+11, /* explosion bottom right           */
+    S_explode1  = 87+12, /* explosion top left               */
+    S_explode2  = 88+12, /* explosion top center             */
+    S_explode3  = 89+12, /* explosion top right        Ex.   */
+    S_explode4  = 90+12, /* explosion middle left            */
+    S_explode5  = 91+12, /* explosion middle center    /-\   */
+    S_explode6  = 92+12, /* explosion middle right     |@|   */
+    S_explode7  = 93+12, /* explosion bottom left      \-/   */
+    S_explode8  = 94+12, /* explosion bottom center          */
+    S_explode9  = 95+12, /* explosion bottom right           */
 
 /* end effects */
 
-    MAX_CMAPPED_CHARS   = 107  /* maximum number of mapped characters */
+    MAX_CMAPPED_CHARS   = 108  /* maximum number of mapped characters */
 };
 
 #define MAX_DUNGEON_CHARS (S_water - S_unexplored + 1) /* mapped dungeon characters */

@@ -663,6 +663,7 @@ struct monst *summoner;
             {
                 mtmp->msleeping = mtmp->mpeaceful = mtmp->mtame = 0;
                 set_malign(mtmp);
+                newsym(mtmp->mx, mtmp->my);
             }
             else /* random monster to substitute for geno'd selection */
                 mtmp = makemon((struct permonst *) 0, bypos.x, bypos.y, NO_MM_FLAGS);
@@ -754,6 +755,7 @@ struct monst* summoner;
             /* forbid summoning for a while */
             mtmp->mprops[SUMMON_FORBIDDEN] = 30;
             mtmp->mpeaceful = 0;
+            newsym(mtmp->mx, mtmp->my);
             count++;
         }
     }
@@ -817,6 +819,7 @@ resurrect()
     if (mtmp) {
         mtmp->mtame = mtmp->mpeaceful = 0; /* paranoia */
         set_malign(mtmp);
+        newsym(mtmp->mx, mtmp->my);
         if (!Deaf) {
             pline("A voice booms out...");
             verbalize("So thou thought thou couldst %s me, fool.", verb);

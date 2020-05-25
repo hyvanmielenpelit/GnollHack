@@ -675,6 +675,8 @@
     ((abs(glyph)) >= GLYPH_OBJ_INVENTORY_OFF && (abs(glyph)) < (GLYPH_OBJ_INVENTORY_OFF + NUM_OBJECTS))
 #define glyph_is_inventory_lit_object(glyph) \
     ((abs(glyph)) >= GLYPH_OBJ_INVENTORY_LIT_OFF && (abs(glyph)) < (GLYPH_OBJ_INVENTORY_LIT_OFF + NUM_OBJECTS))
+#define glyph_is_object_missile(glyph) \
+    ((abs(glyph)) >= GLYPH_OBJ_MISSILE_OFF && (abs(glyph)) < (GLYPH_OBJ_MISSILE_OFF + NUM_OBJECTS * NUM_MISSILE_DIRS))
 
 #define glyph_is_artifact(glyph) \
     ((abs(glyph)) >= GLYPH_ARTIFACT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_OFF + NUM_ARTIFACTS))
@@ -692,6 +694,8 @@
     ((abs(glyph)) >= GLYPH_ARTIFACT_INVENTORY_LIT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_INVENTORY_LIT_OFF + NUM_ARTIFACTS))
 #define glyph_to_inventory_lit_artifact(glyph) \
     (glyph_is_inventory_lit_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_INVENTORY_LIT_OFF) : NO_GLYPH)
+#define glyph_is_artifact_missile(glyph) \
+    ((abs(glyph)) >= GLYPH_ARTIFACT_MISSILE_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_MISSILE_OFF + NUM_ARTIFACTS * NUM_MISSILE_DIRS))
 
 #define glyph_is_trap(glyph)                         \
     ((((abs(glyph)) - GLYPH_CMAP_OFF) % CMAP_TYPE_CHAR_NUM) >= trap_to_defsym(1) \
@@ -702,6 +706,13 @@
     ((abs(glyph)) >= GLYPH_CMAP_VARIATION_OFF && (abs(glyph)) < (GLYPH_CMAP_VARIATION_OFF + MAX_VARIATIONS * CMAP_TYPE_MAX))
 #define glyph_is_cmap_or_cmap_variation(glyph) \
     (glyph_is_cmap(glyph) || glyph_is_cmap_variation(glyph))
+
+#define glyph_is_explosion(glyph)   \
+    ((abs(glyph)) >= GLYPH_EXPLODE_OFF \
+     && (abs(glyph)) < (GLYPH_EXPLODE_OFF + (MAX_EXPLOSION_CHARS * EXPL_MAX)))
+#define glyph_is_zap(glyph)   \
+    ((abs(glyph)) >= GLYPH_ZAP_OFF \
+     && (abs(glyph)) < (GLYPH_ZAP_OFF + (NUM_ZAP * MAX_ZAP_CHARS)))
 #define glyph_is_swallow(glyph)   \
     ((abs(glyph)) >= GLYPH_SWALLOW_OFF \
      && (abs(glyph)) < (GLYPH_SWALLOW_OFF + (NUM_MONSTERS * MAX_SWALLOW_CHARS)))
@@ -714,6 +725,7 @@
      || (glyph_is_cmap_variation(glyph) && defsym_variations[max(0, (((abs(glyph)) - GLYPH_CMAP_VARIATION_OFF) % CMAP_TYPE_CHAR_NUM))].base_screen_symbol == S_extra_boulder)  \
     )
 
+/* Note: excludes missiles */
 #define glyph_is_object(glyph)                               \
     (glyph_is_normal_object(glyph) || glyph_is_normal_lit_object(glyph)  || glyph_is_inventory_object(glyph) || glyph_is_inventory_lit_object(glyph)\
      || glyph_is_statue(glyph)  || glyph_is_female_statue(glyph)\
@@ -721,6 +733,8 @@
      || glyph_is_cmap_boulder(glyph) \
      || glyph_is_artifact(glyph)|| glyph_is_lit_artifact(glyph)|| glyph_is_inventory_artifact(glyph)|| glyph_is_inventory_lit_artifact(glyph))
 
+#define glyph_is_missile(glyph) \
+     (glyph_is_object_missile(glyph) || glyph_is_artifact_missile(glyph))
 
 #define glyph_is_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_OFF && (abs(glyph)) < (GLYPH_PLAYER_OFF + NUM_PLAYER_CHARACTERS))

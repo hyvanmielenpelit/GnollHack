@@ -289,7 +289,7 @@ register int show;
         }
     }
     if (show)
-        show_glyph(x, y, glyph);
+        show_glyph_with_extra_info(x, y, glyph, obj, (struct monst*)0, 0UL, 0);
 }
 
 /*
@@ -429,7 +429,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
                        (int) mon->m_ap_type);
             /*FALLTHRU*/
         case M_AP_NOTHING:
-            show_glyph(x, y, any_mon_to_glyph(mon, newsym_rn2));
+            show_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2), (struct obj*)0, mon, 0UL, 0);
             break;
 
         case M_AP_FURNITURE: {
@@ -468,8 +468,9 @@ xchar worm_tail;            /* mon is actually a worm tail */
         }
 
         case M_AP_MONSTER:
-            show_glyph(x, y,
-                       any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng))
+            show_glyph_with_extra_info(x, y,
+                       any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)),
+                (struct obj*)0, mon, 0UL, 0
             );
             break;
         }
@@ -976,7 +977,7 @@ xchar x, y;
 			if (showmon)
 				newsym(x, y); /* restore the old information */
 			else
-				show_glyph(x, y, objnum_to_glyph(SCR_BLANK_PAPER)); /* talk_static[i]*/
+				show_glyph(x, y, cmap_to_glyph(S_talkeffect)); /* talk_static[i]*/
 			flush_screen(1); /* make sure the glyph shows up */
 			delay_output();
 			delay_output();
@@ -1685,20 +1686,20 @@ int damage_displayed;
 
         if (otmp)
         {
-            gbuf[y][x].layers.object_data = *otmp;
+            gbuf[y][x].layers.object_data = !Hallucination ? *otmp : zeroobj;
             /* prune all pointers */
             gbuf[y][x].layers.object_data.nobj = 0;
             gbuf[y][x].layers.object_data.v.v_nexthere = 0;
             gbuf[y][x].layers.object_data.cobj = 0;
             gbuf[y][x].layers.object_data.oextra = 0;
 
-            if (objects[otmp->otyp].oc_flags4 & O4_DRAWN_IN_FRONT)
+            if (objects[otmp->otyp].oc_flags4 & O4_DRAWN_IN_FRONT && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_O_DRAWN_IN_FRONT;
         }
 
         if (mtmp)
         {
-            gbuf[y][x].layers.monster_data = *mtmp;
+            gbuf[y][x].layers.monster_data = !Hallucination ? *mtmp : zeromonst;
             /* prune all other pointers except permonst data, which is static */
             gbuf[y][x].layers.monster_data.nmon = 0;
             gbuf[y][x].layers.monster_data.minvent = 0;
@@ -1706,15 +1707,15 @@ int damage_displayed;
             gbuf[y][x].layers.monster_data.mextra = 0;
 
             struct edog zeroedog = { 0 };
-            if (mtmp->mextra && EDOG(mtmp))
+            if (mtmp->mextra && EDOG(mtmp) && !Hallucination)
                 gbuf[y][x].layers.pet_data = *EDOG(mtmp);
             else
                 gbuf[y][x].layers.pet_data = zeroedog;
 
-            if(is_tame(mtmp))
+            if(is_tame(mtmp) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET;
 
-            if (is_peaceful(mtmp) && !is_tame(mtmp))
+            if (is_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PEACEFUL;
         }
 
@@ -1724,7 +1725,7 @@ int damage_displayed;
         }
 
         if(damage_displayed > 0)
-            gbuf[y][x].layers.damage_displayed = damage_displayed;
+            gbuf[y][x].layers.damage_displayed = Hallucination ? rnd(2 * damage_displayed) : damage_displayed;
     }
 }
 
@@ -1741,7 +1742,7 @@ int x, y, glyph;
             gbuf[y][x].layers.layer_glyphs[defsyms->layer] = glyph;
             gbuf[y][x].layers.layer_flags &= LFLAGS_CMAP_MASK;
         }
-        else if (glyph_is_monster(glyph)) /* includes also players */
+        else if (glyph_is_monster(glyph) || glyph_is_invisible(glyph) || glyph_is_warning(glyph)) /* includes also players */
         {
             gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = glyph;
             gbuf[y][x].layers.layer_flags &= LFLAGS_M_MASK;
@@ -1751,13 +1752,26 @@ int x, y, glyph;
         {
             int obj_idx = glyph_to_obj(glyph);
 
-            if(objects[obj_idx].oc_flags4 & O4_DRAWN_IN_FRONT)
+            if (objects[obj_idx].oc_flags4 & O4_DRAWN_IN_FRONT)
                 gbuf[y][x].layers.layer_glyphs[LAYER_COVER] = glyph;
             else
                 gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = glyph;
 
             gbuf[y][x].layers.layer_flags &= LFLAGS_O_MASK;
             gbuf[y][x].layers.object_data = zeroobj;
+        }
+        else if (glyph_is_missile(glyph) || glyph_is_zap(glyph))
+        {
+            gbuf[y][x].layers.layer_glyphs[LAYER_MISSILE] = glyph;
+        }
+        else if (glyph_is_swallow(glyph) || glyph_is_explosion(glyph))
+        {
+            gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_EFFECT] = glyph;
+        }
+        else
+        {
+            /* Should not get here */
+            gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_UI] = glyph;
         }
     }
 }
