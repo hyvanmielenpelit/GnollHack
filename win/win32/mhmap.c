@@ -889,22 +889,21 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean opaque_background_drawn = FALSE;
     for (int base_layer = 0; base_layer < 3; base_layer++)
     {
-        if (base_layer == 0)
+        if(base_layer >= 0 && base_layer <= 2)
         {
-            layer = 0;
-            if (0) /* If cmap is transparent */
-            {
-                /* Draw background for transparent cmaps */
-                opaque_background_drawn = TRUE;
-            }
-        }
-        else if(base_layer >= 1 && base_layer <= 2)
-        {
-            for (int running_index = 0; running_index < MAX_FRAMES_PER_ENLARGEMENT + 1; running_index++)
+            boolean no_enlargements = FALSE;
+            if (base_layer == 0)
+                no_enlargements = TRUE;
+
+            for (int running_index = 0; running_index < (no_enlargements ? 1 : MAX_FRAMES_PER_ENLARGEMENT + 1); running_index++)
             {
                 /* Drawing order from back to front */
                 int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 3, 4 };
-                int enlarg_idx = z_order_array[running_index];
+                int enlarg_idx = -1;
+                
+                if(!no_enlargements)
+                    enlarg_idx = z_order_array[running_index];
+
                 layer = base_layer * (MAX_FRAMES_PER_ENLARGEMENT + 1) + enlarg_idx + 1;
 
                 /* Set coordinates */
@@ -976,10 +975,30 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
-                int layer1signedglyph = signed_bk_glyph != NO_GLYPH ? signed_bk_glyph : (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
-                int layer2signedglyph = (glyph_is_cmap(abs(signed_main_glyph)) || glyph_is_cmap_variation(abs(signed_main_glyph))) ? (signed_bk_glyph != NO_GLYPH ? signed_main_glyph : NO_GLYPH) : signed_main_glyph;
+                /*
+                boolean signed_bk_glyph_is_floor = (abs(signed_bk_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_bk_glyph)) && defsyms[glyph_to_cmap(abs(signed_bk_glyph))].layer == LAYER_FLOOR);
+                boolean signed_main_glyph_is_floor = (abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && defsyms[glyph_to_cmap(abs(signed_main_glyph))].layer == LAYER_FLOOR);
+                boolean signed_bk_glyph_is_feature = (abs(signed_bk_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_bk_glyph)) && defsyms[glyph_to_cmap(abs(signed_bk_glyph))].layer == LAYER_FEATURE);
+                boolean signed_main_glyph_is_feature = (abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && defsyms[glyph_to_cmap(abs(signed_main_glyph))].layer == LAYER_FEATURE);
 
-                if(base_layer == 1)
+                int layer0signedglyph = signed_main_glyph_is_floor ? signed_main_glyph : signed_bk_glyph_is_floor ? signed_bk_glyph : NO_GLYPH;
+                int layer1signedglyph = signed_main_glyph_is_feature ? signed_main_glyph : signed_bk_glyph_is_feature ? signed_bk_glyph : NO_GLYPH;
+                int layer2signedglyph = abs(signed_main_glyph) != NO_GLYPH && !signed_main_glyph_is_floor && !signed_main_glyph_is_feature ? signed_main_glyph : NO_GLYPH;
+
+                if (base_layer == 0)
+                    signed_glyph = layer0signedglyph;
+                else if(base_layer == 1)
+                    signed_glyph = layer1signedglyph;
+                else if(base_layer == 2)
+                    signed_glyph = layer2signedglyph;
+                */
+                int layer0signedglyph = abs(signed_bk_glyph) != NO_GLYPH ? signed_bk_glyph : NO_GLYPH;
+                int layer1signedglyph = (abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
+                int layer2signedglyph = !(abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
+
+                if (base_layer == 0)
+                    signed_glyph = layer0signedglyph;
+                else if(base_layer == 1)
                     signed_glyph = layer1signedglyph;
                 else if(base_layer == 2)
                     signed_glyph = layer2signedglyph;

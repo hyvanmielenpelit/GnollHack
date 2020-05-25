@@ -486,8 +486,6 @@ monsters,base,normal,roshi,1,1,0
 monsters,base,normal,guide,1,1,0
 monsters,base,normal,warrior,1,1,0
 monsters,base,normal,apprentice,1,1,0
-monsters,base,body,orc,1,1,0
-monsters,base,body,hill orc,1,1,0
 monsters,base,attack,goblin,1,1,0
 monsters,base,attack,hobgoblin,1,1,0
 monsters,base,attack,hill orc,1,1,0
@@ -999,6 +997,8 @@ monsters,base,statue,roshi,1,1,0
 monsters,base,statue,guide,1,1,0
 monsters,base,statue,warrior,1,1,0
 monsters,base,statue,apprentice,1,1,0
+monsters,base,body,orc,1,1,0
+monsters,base,body,hill orc,1,1,0
 monsters,female,normal,gnoll king,1,1,0
 monsters,female,normal,gnome king,1,1,0
 monsters,female,normal,dwarf king,1,1,0
@@ -2609,8 +2609,8 @@ enlargement,dracolich-enlargement,top,217,3,2,0,5,1
 enlargement,dracolich-enlargement,top-right,217,3,2,0,5,2
 enlargement,dracolich-enlargement,left,217,3,2,0,5,3
 enlargement,dracolich-enlargement,right,217,3,2,0,5,4
-enlargement,dracolich-statue-enlargement,top-left,730,3,2,0,5,0
-enlargement,dracolich-statue-enlargement,top,730,3,2,0,5,1
-enlargement,dracolich-statue-enlargement,top-right,730,3,2,0,5,2
-enlargement,dracolich-statue-enlargement,left,730,3,2,0,5,3
-enlargement,dracolich-statue-enlargement,right,730,3,2,0,5,4
+enlargement,dracolich-statue-enlargement,top-left,728,3,2,0,5,0
+enlargement,dracolich-statue-enlargement,top,728,3,2,0,5,1
+enlargement,dracolich-statue-enlargement,top-right,728,3,2,0,5,2
+enlargement,dracolich-statue-enlargement,left,728,3,2,0,5,3
+enlargement,dracolich-statue-enlargement,right,728,3,2,0,5,4

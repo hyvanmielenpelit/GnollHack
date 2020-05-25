@@ -253,7 +253,10 @@ uchar* tilemapflags;
                         enlargement = mons[i].enlargement.death;
                         break;
                     case 10:
-                        enlargement = mons[i].enlargement.stand; /* dummy for statues */
+                        enlargement = mons[i].enlargement.statue;
+                        break;
+                    case 11:
+                        enlargement = mons[i].enlargement.corpse;
                         break;
                     default:
                         break;
@@ -294,7 +297,10 @@ uchar* tilemapflags;
                         enlargement = mons[i].female_enlargement.death;
                         break;
                     case 10:
-                        enlargement = mons[i].female_enlargement.stand; /* dummy for statues */
+                        enlargement = mons[i].female_enlargement.statue;
+                        break;
+                    case 11:
+                        enlargement = mons[i].female_enlargement.corpse;
                         break;
                     default:
                         break;
@@ -2799,7 +2805,7 @@ uchar* tilemapflags;
             }
             if (mons[i].enlargement.statue)
             {
-                int glyph = i + GLYPH_DEATH_OFF;
+                int glyph = i + GLYPH_STATUE_OFF;
                 short tile = tilemaparray[glyph];
                 tile2enlargement[tile] = mons[i].enlargement.statue;
             }
@@ -2873,7 +2879,7 @@ uchar* tilemapflags;
             }
             if (mons[i].female_enlargement.statue)
             {
-                int glyph = i + GLYPH_FEMALE_DEATH_OFF;
+                int glyph = i + GLYPH_FEMALE_STATUE_OFF;
                 short tile = tilemaparray[glyph];
                 tile2enlargement[tile] = mons[i].female_enlargement.statue;
             }
@@ -2895,7 +2901,7 @@ uchar* tilemapflags;
             }
         }
 
-        /* Artfacts */
+        /* Artifacts */
         for (int i = 1; i <= NUM_ARTIFACTS; i++)
         {
             if (artilist[i].enlargement)
