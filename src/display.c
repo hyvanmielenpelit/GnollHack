@@ -152,6 +152,21 @@ STATIC_DCL int FDECL(wall_angle, (struct rm *));
 
 #define remember_topology(x, y) (lastseentyp[x][y] = levl[x][y].typ)
 
+
+/* ======================================================================== */
+/* Glyph Buffering (3rd screen) =========================================== */
+
+typedef struct {
+    xchar new; /* perhaps move this bit into the rm structure. */
+    struct layer_info layers;
+} gbuf_entry;
+
+static gbuf_entry gbuf[ROWNO][COLNO];
+static char gbuf_start[ROWNO];
+static char gbuf_stop[ROWNO];
+static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, {0}, {0}, 0 } };
+
+
 int
 artifact_to_obj(artifactid)
 int artifactid;
@@ -473,17 +488,22 @@ xchar worm_tail;            /* mon is actually a worm tail */
          * If both are being highlighted in the same way, it doesn't
          * matter, but if not, showing them as pets is preferrable.
          */
+        unsigned long flags = 0;
         if (is_tame(mon) && !Hallucination) {
             if (worm_tail)
-                num = petnum_to_glyph(PM_LONG_WORM_TAIL);
+                num = monnum_to_glyph(PM_LONG_WORM_TAIL);
             else
-                num = any_pet_to_glyph(mon, rn2_on_display_rng);
+                num = any_mon_to_glyph(mon, rn2_on_display_rng);
+
+            flags = LFLAGS_M_PET;
         } else if (sightflags == DETECTED) {
             if (worm_tail)
-                num = detected_monnum_to_glyph(
+                num = monnum_to_glyph(
                              what_mon(PM_LONG_WORM_TAIL, rn2_on_display_rng));
             else
-                num = any_detected_mon_to_glyph(mon, rn2_on_display_rng);
+                num = any_mon_to_glyph(mon, rn2_on_display_rng);
+
+            flags = LFLAGS_M_DETECTED;
         } else {
             if (worm_tail)
                 num = monnum_to_glyph(
@@ -491,7 +511,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
-        show_glyph(x, y, num);
+        show_glyph_with_extra_info(x, y, num, (struct obj*)0, worm_tail ? (struct monst*)0 : mon, flags);
     }
 }
 
@@ -757,11 +777,17 @@ void
 newsym(x, y)
 register int x, y;
 {
+    if (!isok(x, y))
+        return;
+
     register struct monst *mon;
     register struct rm *lev = &(levl[x][y]);
     register int see_it;
     register xchar worm_tail;
     int orig_glyph = lev->glyph;
+    struct layer_info new_layers = { 0 };
+
+    gbuf[y][x].layers = new_layers;
 
     if (in_mklev)
         return;
@@ -1607,31 +1633,14 @@ redraw_map()
      * progress and the screen displays something other than what
      * the map would currently be showing.
      */
+    struct layer_info layers;
     for (y = 0; y < ROWNO; ++y)
         for (x = 1; x < COLNO; ++x) {
-            //glyph = glyph_at(x, y); /* not levl[x][y].glyph */
-            struct layer_info layers = { 0 };
-            layers.glyph = glyph_at(x, y);
-            layers.bkglyph = get_bk_glyph(x, y);
-            layers.floor_glyph = get_floor_layer_glyph(x, y);
-            layers.dungeon_feature_glyph = get_bk_glyph(x, y);
-            layers.object_glyph = get_object_layer_glyph(x, y);
+            layers = layers_at(x, y); /* not levl[x][y].glyph */
             print_glyph(WIN_MAP, x, y, layers);
         }
     flush_screen(1);
 }
-
-/* ======================================================================== */
-/* Glyph Buffering (3rd screen) =========================================== */
-
-typedef struct {
-    xchar new; /* perhaps move this bit into the rm structure. */
-    struct layer_info layers;
-} gbuf_entry;
-
-static gbuf_entry gbuf[ROWNO][COLNO];
-static char gbuf_start[ROWNO];
-static char gbuf_stop[ROWNO];
 
 /* FIXME: This is a dirty hack, because newsym() doesn't distinguish
  * between object piles and single objects, it doesn't mark the location
@@ -1655,6 +1664,81 @@ void
 show_glyph(x, y, glyph)
 int x, y, glyph;
 {
+    if (isok(x, y))
+    {
+        show_glyph_ascii(x, y, glyph);
+        add_glyph_to_layer(x, y, glyph);
+    }
+}
+
+void
+show_glyph_with_extra_info(x, y, glyph, otmp, mtmp, flags)
+int x, y, glyph;
+struct obj* otmp;
+struct monst* mtmp;
+unsigned long flags;
+{
+    if (isok(x, y))
+    {
+        show_glyph_ascii(x, y, glyph);
+        add_glyph_to_layer(x, y, glyph);
+
+        if (otmp)
+        {
+            gbuf[y][x].layers.object_data = *otmp;
+        }
+
+        if (mtmp)
+        {
+            gbuf[y][x].layers.monster_data = *mtmp;
+        }
+
+        if (flags)
+        {
+            gbuf[y][x].layers.layer_flags |= flags;
+        }
+    }
+}
+
+
+void
+add_glyph_to_layer(x, y, glyph)
+int x, y, glyph;
+{
+    if (isok(x, y))
+    {
+        if (glyph_is_cmap_or_cmap_variation(glyph))
+        {
+            int idx = glyph_to_cmap(glyph);
+            gbuf[y][x].layers.layer_glyphs[defsyms->layer] = glyph;
+            gbuf[y][x].layers.layer_flags &= LFLAGS_CMAP_MASK;
+        }
+        else if (glyph_is_monster(glyph)) /* includes also players */
+        {
+            gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = glyph;
+            gbuf[y][x].layers.layer_flags &= LFLAGS_M_MASK;
+            gbuf[y][x].layers.monster_data = zeromonst;
+        }
+        else if (glyph_is_object(glyph))
+        {
+            int obj_idx = glyph_to_obj(glyph);
+
+            if(objects[obj_idx].oc_flags4 & O4_DRAWN_IN_FRONT)
+                gbuf[y][x].layers.layer_glyphs[LAYER_COVER] = glyph;
+            else
+                gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = glyph;
+
+            gbuf[y][x].layers.layer_flags &= LFLAGS_O_MASK;
+            gbuf[y][x].layers.object_data = zeroobj;
+        }
+    }
+}
+
+void
+show_glyph_ascii(x, y, glyph)
+int x, y, glyph;
+{
+
     /*
      * Check for bad positions and glyphs.
      */
@@ -1800,9 +1884,9 @@ int x, y, glyph;
     if (gbuf[y][x].layers.glyph != glyph || iflags.use_background_glyph) {
         gbuf[y][x].layers.glyph = glyph;
         gbuf[y][x].layers.bkglyph = get_bk_glyph(x, y);
-        gbuf[y][x].layers.floor_glyph = get_floor_layer_glyph(x, y);
-        gbuf[y][x].layers.dungeon_feature_glyph = get_bk_glyph(x, y);
-        gbuf[y][x].layers.object_glyph = get_object_layer_glyph(x, y);
+//        gbuf[y][x].layers.floor_glyph = get_floor_layer_glyph(x, y);
+//        gbuf[y][x].layers.dungeon_feature_glyph = get_bk_glyph(x, y);
+//        gbuf[y][x].layers.object_glyph = get_object_layer_glyph(x, y);
         gbuf[y][x].new = 1;
         if (gbuf_start[y] > x)
             gbuf_start[y] = x;
@@ -1824,8 +1908,6 @@ int x, y, glyph;
             gbuf_stop[i] = 0;          \
         }                              \
     }
-
-static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, 0, 0, 0, 0, 0UL, 0 } };
 
 /*
  * Turn the 3rd screen into stone.
@@ -2247,8 +2329,21 @@ glyph_at(x, y)
 xchar x, y;
 {
     if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
-        return cmap_to_glyph(S_room); /* XXX */
+        return cmap_to_glyph(S_unexplored); /* XXX */
     return gbuf[y][x].layers.glyph;
+}
+
+struct layer_info
+layers_at(x, y)
+xchar x, y;
+{
+    if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
+    {
+        struct layer_info layers = { 0 };
+        layers.glyph = cmap_to_glyph(S_unexplored);
+        return layers;
+    }
+    return gbuf[y][x].layers;
 }
 
 /*

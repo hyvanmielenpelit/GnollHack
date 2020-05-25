@@ -15,6 +15,9 @@
 #ifndef YOU_H
 #include "you.h"
 #endif
+#ifndef LAYER_H
+#include "layer.h"
+#endif
 
 /*
  * vobj_at()
@@ -225,29 +228,6 @@
 #define BACKTRACK (-1)    /* flag for DISP_END to display each prior location */
 
 /*
- * display_self()
- *
- * Display the hero.  It is assumed that all checks necessary to determine
- * _if_ the hero can be seen have already been done.
- */
-#define maybe_display_usteed(otherwise_self)                            \
-    ((u.usteed && mon_visible(u.usteed))                                \
-     ? (u.usteed->female ? ridden_mon_to_glyph(u.usteed, rn2_on_display_rng) : female_ridden_mon_to_glyph(u.usteed, rn2_on_display_rng))  \
-     : (otherwise_self))
-
-#define display_self() \
-    show_glyph(u.ux, u.uy,                                                  \
-           maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)                 \
-                                ? u_to_glyph() /*hero_glyph*/          \
-                                : (U_AP_TYPE == M_AP_FURNITURE)             \
-                                  ? cmap_to_glyph(youmonst.mappearance)     \
-                                  : (U_AP_TYPE == M_AP_OBJECT)              \
-                                    ? objnum_to_glyph(youmonst.mappearance) \
-                                    /* else U_AP_TYPE == M_AP_MONSTER */    \
-                                    : any_monnum_to_glyph(flags.female, youmonst.mappearance) \
-                                 ))
-
-/*
  * A glyph is an abstraction that represents a _unique_ monster, object,
  * dungeon part, or effect.  The uniqueness is important.  For example,
  * It is not enough to have four (one for each "direction") zap beam glyphs,
@@ -398,12 +378,14 @@
 #define warning_to_glyph(mwarnlev) ((mwarnlev) + GLYPH_WARNING_OFF)
 #define mon_to_glyph(mon, rng)                                      \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_MON_OFF))
+/*
+#define pet_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_PET_OFF))
 #define detected_mon_to_glyph(mon, rng)                             \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_DETECT_OFF))
 #define ridden_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_RIDDEN_OFF))
-#define pet_to_glyph(mon, rng)                                      \
-    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_PET_OFF))
+*/
 #define attacking_mon_to_glyph(mon, rng)                                      \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_ATTACK_OFF))
 #define throwing_mon_to_glyph(mon, rng)                                      \
@@ -424,12 +406,14 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_DEATH_OFF))
 #define female_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_MON_OFF))
+/*
 #define female_pet_to_glyph(mon, rng)                                      \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_PET_OFF))
 #define female_detected_mon_to_glyph(mon, rng)                             \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DETECT_OFF))
 #define female_ridden_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_RIDDEN_OFF))
+*/
 #define female_attacking_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_ATTACK_OFF))
 #define female_throwing_mon_to_glyph(mon, rng)                               \
@@ -464,10 +448,14 @@
         ((mon)->female ? female_mon_to_glyph(mon, rng) : mon_to_glyph(mon, rng)) \
    ))
 
+
+
+/*
 #define any_pet_to_glyph(mon, rng)                               \
     (((mon) == &youmonst ? flags.female : (mon)->female) ? female_pet_to_glyph(mon, rng) : pet_to_glyph(mon, rng) )
 #define any_detected_mon_to_glyph(mon, rng)                               \
     (((mon) == &youmonst ? flags.female : (mon)->female) ? female_detected_mon_to_glyph(mon, rng) : detected_mon_to_glyph(mon, rng) )
+*/
 
 #define is_obj_activated(obj) \
   ((obj)->lamplit || (obj)->invokeon || (obj)->detectioncount > 0)
@@ -557,9 +545,11 @@
 #define lit_objnum_to_glyph(onum) ((int) (onum) + GLYPH_OBJ_LIT_OFF)
 
 #define monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_MON_OFF)
+/*
 #define petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_PET_OFF)
 #define detected_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DETECT_OFF)
 #define ridden_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_RIDDEN_OFF)
+*/
 #define attacking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_ATTACK_OFF)
 #define throwing_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_THROW_OFF)
 #define firing_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FIRE_OFF)
@@ -571,9 +561,11 @@
 #define dying_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DEATH_OFF)
 
 #define female_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_MON_OFF)
+/*
 #define female_petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_PET_OFF)
 #define female_detected_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DETECT_OFF)
 #define female_ridden_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_RIDDEN_OFF)
+*/
 #define female_attacking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_ATTACK_OFF)
 #define female_throwing_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_THROW_OFF)
 #define female_firing_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_FIRE_OFF)
@@ -585,9 +577,11 @@
 #define female_dying_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DEATH_OFF)
 
 #define any_monnum_to_glyph(isfemale, mnum) (isfemale ? female_monnum_to_glyph(mnum) : monnum_to_glyph(mnum) )
+/*
 #define any_petnum_to_glyph(isfemale, mnum) (isfemale ? female_petnum_to_glyph(mnum) : petnum_to_glyph(mnum) )
 #define any_detected_monnum_to_glyph(isfemale, mnum) (isfemale ? female_detected_monnum_to_glyph(mnum) : detected_monnum_to_glyph(mnum) )
 #define any_ridden_monnum_to_glyph(isfemale, mnum) (isfemale ? female_ridden_monnum_to_glyph(mnum) : ridden_monnum_to_glyph(mnum) )
+*/
 
 /* The hero's glyph when seen as a monster. OBSOLETE --JG
  */
@@ -703,10 +697,6 @@
 #define glyph_to_inventory_lit_artifact(glyph) \
     (glyph_is_inventory_lit_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_INVENTORY_LIT_OFF) : NO_GLYPH)
 
-
-#define glyph_is_object(glyph)                               \
-    (glyph_is_normal_object(glyph) || glyph_is_statue(glyph)  || glyph_is_female_statue(glyph)\
-     || glyph_is_body(glyph) || glyph_is_female_body(glyph) || glyph_is_artifact(glyph))
 #define glyph_is_trap(glyph)                         \
     ((((abs(glyph)) - GLYPH_CMAP_OFF) % CMAP_TYPE_CHAR_NUM) >= trap_to_defsym(1) \
      && (((abs(glyph)) - GLYPH_CMAP_OFF) % CMAP_TYPE_CHAR_NUM) < trap_to_defsym(1) + TRAPNUM)
@@ -722,6 +712,19 @@
 #define glyph_is_warning(glyph)   \
     ((abs(glyph)) >= GLYPH_WARNING_OFF \
      && (abs(glyph)) < (GLYPH_WARNING_OFF + WARNCOUNT))
+
+#define glyph_is_cmap_boulder(glyph) \
+    ((glyph_is_cmap(glyph) && (((abs(glyph)) - GLYPH_CMAP_OFF) % CMAP_TYPE_CHAR_NUM) == S_extra_boulder) \
+     || (glyph_is_cmap_variation(glyph) && defsym_variations[max(0, (((abs(glyph)) - GLYPH_CMAP_VARIATION_OFF) % CMAP_TYPE_CHAR_NUM))].base_screen_symbol == S_extra_boulder)  \
+    )
+
+#define glyph_is_object(glyph)                               \
+    (glyph_is_normal_object(glyph) || glyph_is_normal_lit_object(glyph)  || glyph_is_inventory_object(glyph) || glyph_is_inventory_lit_object(glyph)\
+     || glyph_is_statue(glyph)  || glyph_is_female_statue(glyph)\
+     || glyph_is_body(glyph) || glyph_is_female_body(glyph) \
+     || glyph_is_cmap_boulder(glyph) \
+     || glyph_is_artifact(glyph)|| glyph_is_lit_artifact(glyph)|| glyph_is_inventory_artifact(glyph)|| glyph_is_inventory_lit_artifact(glyph))
+
 
 #define glyph_is_player(glyph) \
     ((abs(glyph)) >= GLYPH_PLAYER_OFF && (abs(glyph)) < (GLYPH_PLAYER_OFF + NUM_PLAYER_CHARACTERS))
@@ -895,14 +898,16 @@
          ? CORPSE                                \
          : glyph_is_statue(glyph) || glyph_is_female_statue(glyph) \
                ? STATUE                          \
+         : glyph_is_cmap_boulder(glyph) \
+               ? BOULDER                          \
 			 : glyph_is_artifact(glyph)                \
 				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
 			 : glyph_is_lit_artifact(glyph)                \
 				   ? artifact_to_obj(glyph_to_lit_artifact(glyph))   \
 			 : glyph_is_inventory_artifact(glyph)                \
-				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
+				   ? artifact_to_obj(glyph_to_inventory_artifact(glyph))   \
 			 : glyph_is_inventory_lit_artifact(glyph)                \
-				   ? artifact_to_obj(glyph_to_lit_artifact(glyph))   \
+				   ? artifact_to_obj(glyph_to_inventory_lit_artifact(glyph))   \
 				   : glyph_is_normal_object(glyph)   \
 						 ? ((abs(glyph)) - GLYPH_OBJ_OFF) \
 				   : glyph_is_normal_lit_object(glyph)   \
@@ -912,5 +917,31 @@
 				   : glyph_is_inventory_lit_object(glyph)   \
 						 ? ((abs(glyph)) - GLYPH_OBJ_INVENTORY_LIT_OFF) \
 						 : NO_GLYPH)
+
+
+/*
+ * display_self()
+ *
+ * Display the hero.  It is assumed that all checks necessary to determine
+ * _if_ the hero can be seen have already been done.
+ */
+#define maybe_display_usteed(otherwise_self)                            \
+    ((u.usteed && mon_visible(u.usteed))                                \
+     ? (u.usteed->female ? female_mon_to_glyph(u.usteed, rn2_on_display_rng) : mon_to_glyph(u.usteed, rn2_on_display_rng))  \
+     : (otherwise_self))
+
+#define display_self() \
+    show_glyph_with_extra_info(u.ux, u.uy,                                                  \
+           maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)                 \
+                                ? u_to_glyph() /*hero_glyph*/          \
+                                : (U_AP_TYPE == M_AP_FURNITURE)             \
+                                  ? cmap_to_glyph(youmonst.mappearance)     \
+                                  : (U_AP_TYPE == M_AP_OBJECT)              \
+                                    ? objnum_to_glyph(youmonst.mappearance) \
+                                    /* else U_AP_TYPE == M_AP_MONSTER */    \
+                                    : any_monnum_to_glyph(flags.female, youmonst.mappearance) \
+                                 ), (struct obj*)0, u.usteed, \
+           LFLAGS_M_YOU | (u.usteed  && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL))
+
 
 #endif /* DISPLAY_H */

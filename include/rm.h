@@ -298,6 +298,7 @@ struct symdef {
 struct symdef_cmap {
     uchar sym;
     const char *explanation;
+    uchar layer;
     int variations;
     int variation_offset;
 #ifdef TEXTCOLOR
@@ -306,6 +307,7 @@ struct symdef_cmap {
     int stand_animation[CMAP_TYPE_MAX];
     int enlargement[CMAP_TYPE_MAX];
 };
+
 
 struct symdef_cmap_variation {
     int base_screen_symbol;

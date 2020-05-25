@@ -467,12 +467,13 @@ boolean use_detection_glyph;
     int what_tail = what_mon(PM_LONG_WORM_TAIL, newsym_rn2);
 
     while (curr != wheads[worm->wormno]) {
-        num = use_detection_glyph
-            ? detected_monnum_to_glyph(what_tail)
+        num = monnum_to_glyph(what_tail);
+        unsigned long flags = use_detection_glyph
+            ? LFLAGS_M_DETECTED
             : (worm->mtame
-               ? petnum_to_glyph(what_tail)
-               : monnum_to_glyph(what_tail));
-        show_glyph(curr->wx, curr->wy, num);
+               ? LFLAGS_M_PET
+               : 0UL);
+        show_glyph_with_extra_info(curr->wx, curr->wy, num, (struct obj*)0, (struct monst*)0, flags);
         curr = curr->nseg;
     }
 }

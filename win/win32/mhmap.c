@@ -862,9 +862,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     int t_x, t_y;
     int glyph, signed_glyph;
 #ifdef USE_PILEMARK
-    int color;
-    unsigned long special;
-    int mgch;
+    //int color;
+    //unsigned long special;
+    //int mgch;
 #endif
 
     boolean flip_glyph = FALSE;
@@ -1139,16 +1139,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
-
-    #ifdef USE_PILEMARK
+//    #ifdef USE_PILEMARK
                     /* rely on GnollHack core helper routine */
-                    (void) mapglyph(data->map[i][j].glyph, &mgch, &color, &special, i, j);
+                    //(void) mapglyph(data->map[i][j].glyph, &mgch, &color, &special, i, j);
 
-                    if ((glyph != NO_GLYPH) && (special & MG_PET)
-    #else
-                    if ((glyph != NO_GLYPH) && glyph_is_pet(glyph)
-    #endif
-                        && iflags.wc_hilite_pet) {
+//                    if ((glyph != NO_GLYPH) && (data->map[i][j].layer_flags & LFLAGS_M_PET) // (special & MG_PET)
+//    #else
+//                    if ((glyph != NO_GLYPH) && glyph_is_pet(glyph)
+//    #endif
+                        if ((glyph != NO_GLYPH) && (data->map[i][j].layer_flags & LFLAGS_M_PET) // (special & MG_PET)
+                            && iflags.wc_hilite_pet) {
                         /* apply pet mark transparently over
                             pet image */
     #if 1
@@ -1170,7 +1170,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     #endif
                     }
     #ifdef USE_PILEMARK
-                    if ((glyph != NO_GLYPH) && (special & MG_OBJPILE)
+                    if ((glyph != NO_GLYPH) && (data->map[i][j].layer_flags & LFLAGS_O_PILE) //(special & MG_OBJPILE)
                         && iflags.hilite_pile) {
                         /* apply pilemark transparently over other image */
                         HDC hdcPileMark;
@@ -1359,19 +1359,12 @@ static void clearAll(PNHMapWindow data)
         for (int y = 0; y < ROWNO; y++) {
             data->map[x][y].glyph = NO_GLYPH;
             data->map[x][y].bkglyph = NO_GLYPH;
-            data->map[x][y].floor_glyph = NO_GLYPH;
-            data->map[x][y].dungeon_feature_glyph = NO_GLYPH;
-            data->map[x][y].object_glyph = NO_GLYPH;
-            data->map[x][y].monster_glyph = NO_GLYPH;
-            data->map[x][y].monster_effect_glyph = NO_GLYPH;
-            data->map[x][y].environment_glyph = NO_GLYPH;
-            data->map[x][y].general_effect_glyph = NO_GLYPH;
+            for(int i = 0; i < MAX_LAYERS; i++)
+                data->map[x][y].layer_glyphs[i] = NO_GLYPH;
             data->map[x][y].layer_flags = 0UL;
-            data->map[x][y].current_hp = 0;
-            data->map[x][y].max_hp = 0;
-            data->map[x][y].current_mana = 0;
-            data->map[x][y].max_mana = 0;
-            data->map[x][y].condition_flags = 0UL;
+            data->map[x][y].object_data = zeroobj;
+            data->map[x][y].monster_data = zeromonst;
+            data->map[x][y].damage_displayed = 0;
             data->mapDirty[x][y] = TRUE;
             data->mapAnimated[x][y] = 0;
         }

@@ -78,12 +78,10 @@ struct monst *mtmp;
 boolean showtail;
 {
     if (def_monsyms[(int) mtmp->data->mlet].sym == ' ')
-        show_glyph(mtmp->mx, mtmp->my,
-                   any_detected_mon_to_glyph(mtmp, newsym_rn2));
+        show_glyph_with_extra_info(mtmp->mx, mtmp->my,
+                   any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, LFLAGS_M_DETECTED);
     else
-        show_glyph(mtmp->mx, mtmp->my, is_tame(mtmp)
-                   ? any_pet_to_glyph(mtmp, newsym_rn2)
-                   : any_mon_to_glyph(mtmp, newsym_rn2));
+        show_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, is_tame(mtmp) ? LFLAGS_M_PET : 0UL);
 
     if (showtail && mtmp->data == &mons[PM_LONG_WORM])
         detect_wsegs(mtmp, 0);
