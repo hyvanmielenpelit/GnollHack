@@ -2064,7 +2064,7 @@ int mdead;
 				basedmg = 127;
             if (mddat == &mons[PM_FLOATING_EYE]) {
                 if (!rn2(20))
-					basedmg = 24;
+					basedmg = 48;
                 if (!is_blinded(magr) && haseyes(madat) && !is_blinded(mdef)
                     && (is_invisible(magr) || !is_invisible(mdef))) 
 				{
