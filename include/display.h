@@ -941,7 +941,8 @@
                                     /* else U_AP_TYPE == M_AP_MONSTER */    \
                                     : any_monnum_to_glyph(flags.female, youmonst.mappearance) \
                                  ), (struct obj*)0, u.usteed, \
-           LFLAGS_M_YOU | (u.usteed  && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL))
+                                    LFLAGS_M_YOU | (u.usteed  && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL), \
+                                    0)
 
 
 #endif /* DISPLAY_H */

@@ -444,7 +444,7 @@ E void NDECL(docrt);
 E void NDECL(redraw_map);
 E void FDECL(show_glyph, (int, int, int));
 E void FDECL(show_glyph_ascii, (int, int, int));
-E void FDECL(show_glyph_with_extra_info, (int, int, int, struct obj*, struct monst*, unsigned long));
+E void FDECL(show_glyph_with_extra_info, (int, int, int, struct obj*, struct monst*, unsigned long, int));
 E void FDECL(add_glyph_to_layer, (int, int, int));
 E void NDECL(clear_glyph_buffer);
 E void FDECL(row_refresh, (int, int, int));

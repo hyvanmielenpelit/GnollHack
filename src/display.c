@@ -163,7 +163,7 @@ typedef struct {
 static gbuf_entry gbuf[ROWNO][COLNO];
 static char gbuf_start[ROWNO];
 static char gbuf_stop[ROWNO];
-static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, {0}, {0}, 0 } };
+static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, {0}, {0}, {0}, 0 } };
 
 
 int
@@ -510,7 +510,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
-        show_glyph_with_extra_info(x, y, num, (struct obj*)0, worm_tail ? (struct monst*)0 : mon, flags);
+        show_glyph_with_extra_info(x, y, num, (struct obj*)0, worm_tail ? (struct monst*)0 : mon, flags, 0);
     }
 }
 
@@ -1671,11 +1671,12 @@ int x, y, glyph;
 }
 
 void
-show_glyph_with_extra_info(x, y, glyph, otmp, mtmp, flags)
+show_glyph_with_extra_info(x, y, glyph, otmp, mtmp, flags, damage_displayed)
 int x, y, glyph;
 struct obj* otmp;
 struct monst* mtmp;
 unsigned long flags;
+int damage_displayed;
 {
     if (isok(x, y))
     {
@@ -1685,17 +1686,39 @@ unsigned long flags;
         if (otmp)
         {
             gbuf[y][x].layers.object_data = *otmp;
+            /* prune all pointers */
+            gbuf[y][x].layers.object_data.nobj = 0;
+            gbuf[y][x].layers.object_data.v.v_nexthere = 0;
+            gbuf[y][x].layers.object_data.cobj = 0;
+            gbuf[y][x].layers.object_data.oextra = 0;
         }
 
         if (mtmp)
         {
             gbuf[y][x].layers.monster_data = *mtmp;
+            /* prune all other pointers except permonst data, which is static */
+            gbuf[y][x].layers.monster_data.nmon = 0;
+            gbuf[y][x].layers.monster_data.minvent = 0;
+            gbuf[y][x].layers.monster_data.mw = 0;
+            gbuf[y][x].layers.monster_data.mextra = 0;
+
+            struct edog zeroedog = { 0 };
+            if (mtmp->mextra && EDOG(mtmp))
+                gbuf[y][x].layers.pet_data = *EDOG(mtmp);
+            else
+                gbuf[y][x].layers.pet_data = zeroedog;
+
+            if(is_tame(mtmp))
+                gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET;
         }
 
         if (flags)
         {
             gbuf[y][x].layers.layer_flags |= flags;
         }
+
+        if(damage_displayed > 0)
+            gbuf[y][x].layers.damage_displayed = damage_displayed;
     }
 }
 

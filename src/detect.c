@@ -79,9 +79,9 @@ boolean showtail;
 {
     if (def_monsyms[(int) mtmp->data->mlet].sym == ' ')
         show_glyph_with_extra_info(mtmp->mx, mtmp->my,
-                   any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, LFLAGS_M_DETECTED);
+                   any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, LFLAGS_M_DETECTED, 0);
     else
-        show_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, is_tame(mtmp) ? LFLAGS_M_PET : 0UL);
+        show_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, 0UL, 0);
 
     if (showtail && mtmp->data == &mons[PM_LONG_WORM])
         detect_wsegs(mtmp, 0);

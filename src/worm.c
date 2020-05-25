@@ -473,7 +473,7 @@ boolean use_detection_glyph;
             : (worm->mtame
                ? LFLAGS_M_PET
                : 0UL);
-        show_glyph_with_extra_info(curr->wx, curr->wy, num, (struct obj*)0, (struct monst*)0, flags);
+        show_glyph_with_extra_info(curr->wx, curr->wy, num, (struct obj*)0, (struct monst*)0, flags, 0);
         curr = curr->nseg;
     }
 }

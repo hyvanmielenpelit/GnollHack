@@ -889,7 +889,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean opaque_background_drawn = FALSE;
     for (int base_layer = 0; base_layer < 3; base_layer++)
     {
-        if(base_layer >= 0 && base_layer <= 2)
+        if(base_layer >= 0 && base_layer <= 3)
         {
             boolean no_enlargements = FALSE;
             if (base_layer == 0)
@@ -898,7 +898,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             for (int running_index = 0; running_index < (no_enlargements ? 1 : MAX_FRAMES_PER_ENLARGEMENT + 1); running_index++)
             {
                 /* Drawing order from back to front */
-                int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 3, 4 };
+                int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3};
                 int enlarg_idx = -1;
                 
                 if(!no_enlargements)
@@ -992,9 +992,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 else if(base_layer == 2)
                     signed_glyph = layer2signedglyph;
                 */
+                boolean draw_in_front = ((data->map[enl_i][enl_j].layer_flags & LFLAGS_O_DRAWN_IN_FRONT) || (data->map[enl_i][enl_j].object_data.otyp > STRANGE_OBJECT && objects[data->map[enl_i][enl_j].object_data.otyp].oc_flags4 & O4_DRAWN_IN_FRONT));
+
                 int layer0signedglyph = abs(signed_bk_glyph) != NO_GLYPH ? signed_bk_glyph : NO_GLYPH;
-                int layer1signedglyph = (abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
-                int layer2signedglyph = !(abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph))) ? signed_main_glyph : NO_GLYPH;
+                int layer1signedglyph = abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
+                int layer2signedglyph = abs(signed_main_glyph) != NO_GLYPH && !glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
+                int layer3signedglyph = abs(signed_main_glyph) != NO_GLYPH && draw_in_front ? signed_main_glyph : NO_GLYPH;
 
                 if (base_layer == 0)
                     signed_glyph = layer0signedglyph;
@@ -1002,6 +1005,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     signed_glyph = layer1signedglyph;
                 else if(base_layer == 2)
                     signed_glyph = layer2signedglyph;
+                else if (base_layer == 3)
+                    signed_glyph = layer3signedglyph;
 
                 glyph = abs(signed_glyph);
 

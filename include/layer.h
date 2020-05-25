@@ -32,8 +32,9 @@ struct layer_info {
     unsigned long layer_flags;
 
     /* Monster info for display */
-    struct obj object_data;     /* Note not a pointer to avoid spurious pointers, do not use pointers within */
-    struct monst monster_data;  /* Note not a pointer to avoid spurious pointers, do not use pointers within */
+    struct obj object_data;     /* Note not a pointer to avoid spurious pointers, contained pointers set to zero */
+    struct monst monster_data;  /* Note not a pointer to avoid spurious pointers, contained pointers set to zero */
+    struct edog pet_data;       /* Note not a pointer to avoid spurious pointers */
 
     int damage_displayed;
 
