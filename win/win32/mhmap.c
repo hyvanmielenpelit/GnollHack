@@ -887,7 +887,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     */
     int layer = 0;
     boolean opaque_background_drawn = FALSE;
-    for (int base_layer = 0; base_layer < 3; base_layer++)
+    for (int base_layer = 0; base_layer <= 3; base_layer++)
     {
         if(base_layer >= 0 && base_layer <= 3)
         {
