@@ -506,6 +506,7 @@ E boolean NDECL(floorexamine);
 E int FDECL(itemdescription, (struct obj*));
 E void FDECL(printweight, (char*, int, boolean, boolean));
 E int FDECL(monsterdescription, (struct monst*));
+E int NDECL(dotogglehpbars);
 
 /* ### do_name.c ### */
 

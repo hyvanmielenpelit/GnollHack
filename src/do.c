@@ -5516,4 +5516,17 @@ int how; /* 0: ordinary, 1: dismounting steed, 2: limbs turn to stone */
     }
 }
 
+int
+dotogglehpbars()
+{
+	boolean main_flag = flags.show_tile_u_hp_bar;
+	
+	flags.show_tile_u_hp_bar = !main_flag;
+	flags.show_tile_mon_hp_bar = !main_flag;
+	flags.show_tile_pet_hp_bar = !main_flag;
+
+	redraw_map();
+
+	return 0;
+}
 /*do.c*/

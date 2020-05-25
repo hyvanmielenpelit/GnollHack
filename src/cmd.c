@@ -4667,7 +4667,9 @@ struct ext_func_tab extcmdlist[] = {
 			doattributes, IFBURIED | AUTOCOMPLETE },
 	{ '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
-	{ C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU },
+    { M('b'), "bars", "toggle tile hit point bars on/off",
+            dotogglehpbars, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+    { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU },
     { 'c', "close", "close a door", doclose },
 	{ 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
 	{ C('c'), "call", "call (name) something", docallcmd, IFBURIED | AUTOCOMPLETE },
@@ -4967,6 +4969,7 @@ commands_init()
     (void) bind_key(M('O'), "overview");
     (void) bind_key(M('1'), "handedness");
 	(void) bind_key(M('2'), "twoweapon");
+    (void) bind_key(M('3'), "bars");
 
     /* wait_on_space */
     (void) bind_key(' ',    "wait");
