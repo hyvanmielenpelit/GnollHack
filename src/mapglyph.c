@@ -426,6 +426,7 @@ unsigned long *ospecial;
     }
     else 
     { /* a monster */
+        offset = (glyph - GLYPH_MON_OFF);
 normal_monster_here:
         {
             boolean ispet = (layers.layer_flags & LFLAGS_M_PET);
@@ -447,7 +448,7 @@ normal_monster_here:
                 special |= MG_SADDLED;
 
             /* set symbol */
-            idx = mons[glyph].mlet + SYM_OFF_M;
+            idx = mons[offset].mlet + SYM_OFF_M;
         
             /* set color */
             if (has_rogue_color && iflags.use_color)
@@ -463,7 +464,7 @@ normal_monster_here:
                 if(ispet)
                     pet_color(offset);
                 else
-                    mon_color(glyph);
+                    mon_color(offset);
     #ifdef TEXTCOLOR
                 /* special case the hero for `showrace' option */
                 if (iflags.use_color && x == u.ux && y == u.uy

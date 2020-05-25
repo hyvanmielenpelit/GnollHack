@@ -636,6 +636,11 @@ curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     if ((special & MG_PET) && iflags.hilite_pet) {
         attr = iflags.wc2_petattr;
     }
+    else if ((special & MG_PEACEFUL) && flags.underline_peaceful)
+    {
+        attr = A_UNDERLINE;
+    }
+
     if ((special & MG_DETECT) && iflags.use_inverse) {
         attr = A_REVERSE;
     }

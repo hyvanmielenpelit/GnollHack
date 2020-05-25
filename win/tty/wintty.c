@@ -3402,6 +3402,7 @@ struct layer_info layers;
 {
     int ch;
     boolean reverse_on = FALSE;
+    boolean underline_on = FALSE;
     int color;
     unsigned long special;
 
@@ -3433,6 +3434,8 @@ struct layer_info layers;
     }
 #endif
 
+
+
 #ifdef TEXTCOLOR
     if (color != ttyDisplay->color) {
         if (ttyDisplay->color != NO_COLOR)
@@ -3453,6 +3456,11 @@ struct layer_info layers;
         term_start_attr(ATR_INVERSE);
         reverse_on = TRUE;
     }
+    else if ((special & MG_PEACEFUL) && flags.underline_peaceful)
+    {
+        term_start_attr(ATR_ULINE);
+        underline_on = TRUE;
+    }
 
 #if defined(USE_TILES) && defined(MSDOS)
     if (iflags.grmode && iflags.tile_view)
@@ -3461,8 +3469,11 @@ struct layer_info layers;
 #endif
         g_putch(ch); /* print the character */
 
-    if (reverse_on) {
-        term_end_attr(ATR_INVERSE);
+    if (reverse_on || underline_on) {
+        if(reverse_on)
+            term_end_attr(ATR_INVERSE);
+        else
+            term_end_attr(ATR_ULINE);
 #ifdef TEXTCOLOR
         /* turn off color as well, ATR_INVERSE may have done this already */
         if (ttyDisplay->color != NO_COLOR) {
@@ -3471,6 +3482,7 @@ struct layer_info layers;
         }
 #endif
     }
+
 
     print_vt_code1(AVTC_GLYPH_END);
 

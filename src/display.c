@@ -1691,6 +1691,9 @@ int damage_displayed;
             gbuf[y][x].layers.object_data.v.v_nexthere = 0;
             gbuf[y][x].layers.object_data.cobj = 0;
             gbuf[y][x].layers.object_data.oextra = 0;
+
+            if (objects[otmp->otyp].oc_flags4 & O4_DRAWN_IN_FRONT)
+                gbuf[y][x].layers.layer_flags |= LFLAGS_O_DRAWN_IN_FRONT;
         }
 
         if (mtmp)
@@ -1710,6 +1713,9 @@ int damage_displayed;
 
             if(is_tame(mtmp))
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET;
+
+            if (is_peaceful(mtmp) && !is_tame(mtmp))
+                gbuf[y][x].layers.layer_flags |= LFLAGS_M_PEACEFUL;
         }
 
         if (flags)

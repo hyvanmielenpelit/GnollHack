@@ -594,6 +594,9 @@ char ch;
                 console.attr |= (inverse) ?
                                 BACKGROUND_INTENSITY : FOREGROUND_INTENSITY;
 
+        if (console.current_nhattr[ATR_ULINE])
+            console.attr |= COMMON_LVB_UNDERSCORE;
+
         cell.attribute = console.attr;
         cell.character = (console.has_unicode ? console.cpMap[ch] : ch);
 
@@ -633,6 +636,9 @@ int in_ch;
                     ttycolors[console.current_nhcolor];
     if (console.current_nhattr[ATR_BOLD])
         console.attr |= (inverse) ? BACKGROUND_INTENSITY : FOREGROUND_INTENSITY;
+
+    if (console.current_nhattr[ATR_ULINE])
+        console.attr |= COMMON_LVB_UNDERSCORE;
 
     cell_t cell;
 
