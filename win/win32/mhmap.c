@@ -1177,8 +1177,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         int hp = isyou ? (Upolyd ? u.mh : u.uhp) : data->map[i][j].monster_data.mhp;
                         int hpmax = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : data->map[i][j].monster_data.mhpmax;
                         double fraction = (hpmax == 0 ? 0 : max(0, min(1,(double)hp / (double)hpmax)));
-                        double r_mult = fraction <= 0.5 ? fraction + 0.5 : (1.0 - fraction) * 2;
-                        double g_mult = fraction <= 0.25 ? 0 : fraction <= 0.5 ? (fraction - 0.25) * 4 : 1;
+                        double r_mult = fraction <= 0.25 ? fraction * 2.0 + 0.5 : fraction <= 0.5 ? 1.0 : (1.0 - fraction) * 2.0;
+                        double g_mult = fraction <= 0.25 ? 0 : fraction <= 0.5 ? (fraction - 0.25) * 4.0 : 1.0;
                         HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
                         HBRUSH hbr_light = CreateSolidBrush(RGB((int)((double)255 * r_mult), (int)((double)255 * g_mult), 0));
                         RECT smaller_rect, even_smaller_rect;
