@@ -1163,6 +1163,37 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
+
+                    boolean ismonster = !!glyph_is_monster(glyph);
+                    boolean monsterdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_DATA_SET);
+                    boolean ispet = !!(data->map[i][j].layer_flags & LFLAGS_M_PET);
+                    boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
+                    if (ismonster && (
+                        (ispet && monsterdataset && flags.show_tile_pet_hp_bar)
+                        || (isyou && flags.show_tile_u_hp_bar)
+                        || (!ispet && !isyou && monsterdataset && flags.show_tile_mon_hp_bar)
+                        ))
+                    {
+                        int hp = isyou ? (Upolyd ? u.mh : u.uhp) : data->map[i][j].monster_data.mhp;
+                        int hpmax = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : data->map[i][j].monster_data.mhpmax;
+                        double fraction = (hpmax == 0 ? 0 : max(0, min(1,(double)hp / (double)hpmax)));
+                        double r_mult = fraction <= 0.5 ? fraction + 0.5 : (1.0 - fraction) * 2;
+                        double g_mult = fraction <= 0.25 ? 0 : fraction <= 0.5 ? (fraction - 0.25) * 4 : 1;
+                        HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
+                        HBRUSH hbr_light = CreateSolidBrush(RGB((int)((double)255 * r_mult), (int)((double)255 * g_mult), 0));
+                        RECT smaller_rect, even_smaller_rect;
+                        smaller_rect.bottom = rect->bottom;
+                        smaller_rect.top = rect->bottom - max(1, (rect->bottom - rect->top) / 12);
+                        smaller_rect.left = rect->left;
+                        smaller_rect.right = rect->right;
+                        even_smaller_rect.bottom = smaller_rect.bottom - (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
+                        even_smaller_rect.top = smaller_rect.top + (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
+                        even_smaller_rect.left = smaller_rect.left + (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0);
+                        even_smaller_rect.right = even_smaller_rect.left + (int) (fraction * (double)(smaller_rect.right - (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0) - even_smaller_rect.left));
+                        FillRect(data->backBufferDC, &smaller_rect, hbr_dark);
+                        FillRect(data->backBufferDC, &even_smaller_rect, hbr_light);
+                    }
+
 //    #ifdef USE_PILEMARK
                     /* rely on GnollHack core helper routine */
                     //(void) mapglyph(data->map[i][j].glyph, &mgch, &color, &special, i, j);

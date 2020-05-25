@@ -230,6 +230,9 @@ static struct Bool_Opt {
     { "sanity_check", &iflags.sanity_check, FALSE, SET_IN_WIZGAME },
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
+    { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
+    { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
+    { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
 #ifdef SCORE_ON_BOTL
     { "showscore", &flags.showscore, FALSE, SET_IN_GAME },
@@ -4167,33 +4170,41 @@ boolean tinitial, tfrom_file;
      * OK, if we still haven't recognized the option, check the boolean
      * options list.
      */
-    for (i = 0; boolopt[i].name; i++) {
-        if (match_optname(opts, boolopt[i].name, 3, TRUE)) {
+    for (i = 0; boolopt[i].name; i++)
+    {
+        if (match_optname(opts, boolopt[i].name, 3, TRUE))
+        {
             /* options that don't exist */
-            if (!boolopt[i].addr) {
+            if (!boolopt[i].addr)
+            {
                 if (!initial && !negated)
                     pline_The("\"%s\" option is not available.",
                               boolopt[i].name);
                 return retval;
             }
             /* options that must come from config file */
-            if (!initial && (boolopt[i].optflags == SET_IN_FILE)) {
+            if (!initial && (boolopt[i].optflags == SET_IN_FILE))
+            {
                 rejectoption(boolopt[i].name);
                 return retval;
             }
 
             op = string_for_opt(opts, TRUE);
 
-            if (op) {
-                if (negated) {
+            if (op) 
+            {
+                if (negated) 
+                {
                     config_error_add(
                            "Negated boolean '%s' should not have a parameter",
                                      boolopt[i].name);
                     return FALSE;
                 }
-                if (!strcmp(op, "true") || !strcmp(op, "yes")) {
+                if (!strcmp(op, "true") || !strcmp(op, "yes"))
+                {
                     negated = FALSE;
-                } else if (!strcmp(op, "false") || !strcmp(op, "no")) {
+                } else if (!strcmp(op, "false") || !strcmp(op, "no"))
+                {
                     negated = TRUE;
                 } else {
                     config_error_add("Illegal parameter for a boolean");
@@ -4214,12 +4225,14 @@ boolean tinitial, tfrom_file;
             if (boolopt[i].addr == &iflags.zerocomp)
                 set_savepref(iflags.zerocomp ? "zerocomp" : "externalcomp");
 #endif
-            if (boolopt[i].addr == &iflags.wc_ascii_map) {
+            if (boolopt[i].addr == &iflags.wc_ascii_map) 
+            {
                 /* toggling ascii_map; set tiled_map to its opposite;
                    what does it mean to turn off ascii map if tiled map
                    isn't supported? -- right now, we do nothing */
                 iflags.wc_tiled_map = negated;
-            } else if (boolopt[i].addr == &iflags.wc_tiled_map) {
+            } else if (boolopt[i].addr == &iflags.wc_tiled_map) 
+            {
                 /* toggling tiled_map; set ascii_map to its opposite;
                    as with ascii_map, what does it mean to turn off tiled
                    map if ascii map isn't supported? */
@@ -4233,20 +4246,32 @@ boolean tinitial, tfrom_file;
 #ifdef SCORE_ON_BOTL
                 || boolopt[i].addr == &flags.showscore
 #endif
-                || boolopt[i].addr == &flags.showexp) {
+                || boolopt[i].addr == &flags.showexp)
+            {
                 if (VIA_WINDOWPORT())
                     status_initialize(REASSESS_ONLY);
                 context.botl = TRUE;
-            } else if (boolopt[i].addr == &flags.invlet_constant) {
-                if (flags.invlet_constant) {
+            }
+            else if (boolopt[i].addr == &flags.invlet_constant) 
+            {
+                if (flags.invlet_constant) 
+                {
                     reassign();
                     if (iflags.perm_invent)
                         need_redraw = TRUE;
                 }
-			} else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors) {
+			} 
+            else if (boolopt[i].addr == &flags.classic_statue_symbol || boolopt[i].addr == &flags.classic_colors)
+            {
 					need_redraw = TRUE;
-			} else if (boolopt[i].addr == &flags.lit_corridor
-                       || boolopt[i].addr == &flags.dark_room) {
+            }
+            else if (boolopt[i].addr == &flags.show_tile_mon_hp_bar || boolopt[i].addr == &flags.show_tile_pet_hp_bar || boolopt[i].addr == &flags.show_tile_u_hp_bar) 
+            {
+                need_redraw = TRUE;
+            }
+            else if (boolopt[i].addr == &flags.lit_corridor
+                       || boolopt[i].addr == &flags.dark_room)
+            {
                 /*
                  * All corridor squares seen via night vision or
                  * candles & lamps change.  Update them by calling
@@ -4258,7 +4283,8 @@ boolean tinitial, tfrom_file;
                 vision_full_recalc = 1; /* delayed recalc */
                 if (iflags.use_color)
                     need_redraw = TRUE; /* darkroom refresh */
-            } else if (boolopt[i].addr == &flags.showrace
+            } 
+            else if (boolopt[i].addr == &flags.showrace
                        || boolopt[i].addr == &iflags.use_inverse
                        || boolopt[i].addr == &iflags.hilite_pile
                        || boolopt[i].addr == &iflags.perm_invent
@@ -4266,11 +4292,15 @@ boolean tinitial, tfrom_file;
                        || boolopt[i].addr == &iflags.cursesgraphics
 #endif
                        || boolopt[i].addr == &iflags.wc_ascii_map
-                       || boolopt[i].addr == &iflags.wc_tiled_map) {
+                       || boolopt[i].addr == &iflags.wc_tiled_map) 
+            {
                 need_redraw = TRUE;
-            } else if (boolopt[i].addr == &iflags.hilite_pet) {
+            }
+            else if (boolopt[i].addr == &iflags.hilite_pet)
+            {
 #ifdef CURSES_GRAPHICS
-                if (WINDOWPORT("curses")) {
+                if (WINDOWPORT("curses")) 
+                {
                     /* if we're enabling hilite_pet and petattr isn't set,
                        set it to Inverse; if we're disabling, leave petattr
                        alone so that re-enabling will get current value back */
@@ -4279,17 +4309,23 @@ boolean tinitial, tfrom_file;
                 }
 #endif
                 need_redraw = TRUE;
-            } else if (boolopt[i].addr == &iflags.wc2_hitpointbar) {
-                if (VIA_WINDOWPORT()) {
+            } 
+            else if (boolopt[i].addr == &iflags.wc2_hitpointbar) 
+            {
+                if (VIA_WINDOWPORT())
+                {
                     /* [is reassessment really needed here?] */
                     status_initialize(REASSESS_ONLY);
                     need_redraw = TRUE;
                 }
 #ifdef TEXTCOLOR
-            } else if (boolopt[i].addr == &iflags.use_color) {
+            }
+            else if (boolopt[i].addr == &iflags.use_color) 
+            {
                 need_redraw = TRUE;
 #ifdef TOS
-                if (iflags.BIOS) {
+                if (iflags.BIOS) 
+                {
                     if (colors_changed)
                         restore_colors();
                     else
@@ -4303,7 +4339,8 @@ boolean tinitial, tfrom_file;
     }
 
     /* Is it a symbol? */
-    if (strstr(opts, "S_") == opts && parsesymbols(opts)) {
+    if (strstr(opts, "S_") == opts && parsesymbols(opts))
+    {
         switch_symbols(TRUE);
         check_gold_symbol();
         return retval;

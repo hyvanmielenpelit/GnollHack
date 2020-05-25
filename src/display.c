@@ -1686,7 +1686,16 @@ int damage_displayed;
 
         if (otmp)
         {
-            gbuf[y][x].layers.object_data = !Hallucination ? *otmp : zeroobj;
+            if (Hallucination)
+            {
+                gbuf[y][x].layers.object_data = zeroobj;
+                gbuf[y][x].layers.layer_flags &= ~LFLAGS_O_DATA_SET;
+            }
+            else
+            {
+                gbuf[y][x].layers.object_data = *otmp;
+                gbuf[y][x].layers.layer_flags |= LFLAGS_O_DATA_SET;
+            }
             /* prune all pointers */
             gbuf[y][x].layers.object_data.nobj = 0;
             gbuf[y][x].layers.object_data.v.v_nexthere = 0;
@@ -1699,7 +1708,16 @@ int damage_displayed;
 
         if (mtmp)
         {
-            gbuf[y][x].layers.monster_data = !Hallucination ? *mtmp : zeromonst;
+            if (Hallucination)
+            {
+                gbuf[y][x].layers.monster_data = zeromonst;
+                gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_DATA_SET;
+            }
+            else
+            {
+                gbuf[y][x].layers.monster_data = *mtmp;
+                gbuf[y][x].layers.layer_flags |= LFLAGS_M_DATA_SET;
+            }
             /* prune all other pointers except permonst data, which is static */
             gbuf[y][x].layers.monster_data.nmon = 0;
             gbuf[y][x].layers.monster_data.minvent = 0;
@@ -1708,10 +1726,15 @@ int damage_displayed;
 
             struct edog zeroedog = { 0 };
             if (mtmp->mextra && EDOG(mtmp) && !Hallucination)
+            {
                 gbuf[y][x].layers.pet_data = *EDOG(mtmp);
+                gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET_DATA_SET;
+            }
             else
+            {
                 gbuf[y][x].layers.pet_data = zeroedog;
-
+                gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_PET_DATA_SET;
+            }
             if(is_tame(mtmp) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET;
 
