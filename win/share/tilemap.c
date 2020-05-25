@@ -295,14 +295,8 @@ init_tilemap()
     condnum = tilenum = 0;
     for (i = 0; i < NUM_MONSTERS; i++) {
         tilemap[GLYPH_MON_OFF + i] = tilenum;
-        tilemap[GLYPH_PET_OFF + i] = tilenum;
-        tilemap[GLYPH_DETECT_OFF + i] = tilenum;
-        tilemap[GLYPH_RIDDEN_OFF + i] = tilenum;
         tilemap[GLYPH_BODY_OFF + i] = corpsetile;
         tilemap[GLYPH_FEMALE_MON_OFF + i] = tilenum;
-        tilemap[GLYPH_FEMALE_PET_OFF + i] = tilenum;
-        tilemap[GLYPH_FEMALE_DETECT_OFF + i] = tilenum;
-        tilemap[GLYPH_FEMALE_RIDDEN_OFF + i] = tilenum;
         tilemap[GLYPH_FEMALE_BODY_OFF + i] = corpsetile;
         j = GLYPH_SWALLOW_OFF + 8 * i;
         tilemap[j] = swallowbase;

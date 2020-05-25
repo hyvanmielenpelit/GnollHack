@@ -1380,7 +1380,7 @@ E boolean FDECL(randomize_monster_gender, (struct permonst*));
 
 /* ### mapglyph.c ### */
 
-E int FDECL(mapglyph, (int, int *, int *, unsigned long*, int, int));
+E int FDECL(mapglyph, (struct layer_info, int *, int *, unsigned long*, int, int));
 E char *FDECL(encglyph, (int));
 E char *FDECL(decode_mixed, (char *, const char *));
 E void FDECL(genl_putmixed, (winid, int, const char *));

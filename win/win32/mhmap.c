@@ -786,7 +786,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 if (data->map[col][row].glyph == NO_GLYPH) {
                     mgch = ' ';
                 } else {
-                    (void) mapglyph(data->map[col][row].glyph, &mgch, &color,
+                    (void) mapglyph(data->map[col][row], &mgch, &color,
                                     &special, col, row);
                 }
                 msg_data->buffer[index] = mgch;
@@ -1269,7 +1269,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         //OldFg = SetTextColor(hDC, nhcolor_to_RGB(color));
     #else
         /* rely on GnollHack core helper routine */
-        (void) mapglyph(data->map[i][j].glyph, &mgch, &color,
+        (void) mapglyph(data->map[i][j], &mgch, &color,
                         &special, i, j);
         ch = (char) mgch;
         if (((special & MG_PET) && iflags.hilite_pet)
@@ -1634,53 +1634,70 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
     *color = CLR_WHITE;
 #endif
 
-    if ((offset = (g - GLYPH_WARNING_OFF)) >= 0) { /* a warning flash */
+}
+     if ((offset = (g - GLYPH_FEMALE_BODY_OFF)) >= 0) 
+     { /* a corpse */
+         *ch = showsyms[(int)objects[CORPSE].oc_class + SYM_OFF_O];
+         mon_color(offset);
+     }
+     else if ((offset = (g - GLYPH_BODY_OFF)) >= 0)
+     { /* a corpse */
+         *ch = showsyms[(int)objects[CORPSE].oc_class + SYM_OFF_O];
+         mon_color(offset);
+     }
+     else if ((offset = (g - GLYPH_WARNING_OFF)) >= 0)
+     { /* a warning flash */
         *ch = showsyms[offset + SYM_OFF_W];
         warn_color(offset);
-    } else if ((offset = (g - GLYPH_SWALLOW_OFF)) >= 0) { /* swallow */
+     }
+     else if ((offset = (g - GLYPH_SWALLOW_OFF)) >= 0) 
+     { /* swallow */
         /* see swallow_to_glyph() in display.c */
         *ch = (uchar) showsyms[(S_sw_tl + (offset & 0x7)) + SYM_OFF_P];
         mon_color(offset >> 3);
-    } else if ((offset = (g - GLYPH_ZAP_OFF)) >= 0) { /* zap beam */
+     } 
+     else if ((offset = (g - GLYPH_ZAP_OFF)) >= 0)
+     { /* zap beam */
         /* see zapdir_to_glyph() in display.c */
         *ch = showsyms[(S_vbeam + (offset & 0x3)) + SYM_OFF_P];
         zap_color((offset >> 2));
-    } else if ((offset = (g - GLYPH_CMAP_OFF)) >= 0) { /* cmap */
+     } 
+     else if ((offset = (g - GLYPH_CMAP_OFF)) >= 0) 
+     { /* cmap */
         int cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
         int idx = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM + SYM_OFF_P;
         *ch = showsyms[idx];
         cmap_color(offset, cmap_type_idx);
-    } else if ((offset = (g - GLYPH_OBJ_MISSILE_OFF)) >= 0) { /* object */
+     } 
+     else if ((offset = (g - GLYPH_OBJ_MISSILE_OFF)) >= 0) 
+     { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
-    } else if ((offset = (g - GLYPH_OBJ_INVENTORY_LIT_OFF)) >= 0) { /* object */
+     } 
+     else if ((offset = (g - GLYPH_OBJ_INVENTORY_LIT_OFF)) >= 0)
+     { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
-    } else if ((offset = (g - GLYPH_OBJ_LIT_OFF)) >= 0) { /* object */
+     } 
+     else if ((offset = (g - GLYPH_OBJ_LIT_OFF)) >= 0) 
+     { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
-    } else if ((offset = (g - GLYPH_OBJ_INVENTORY_OFF)) >= 0) { /* object */
+     } 
+     else if ((offset = (g - GLYPH_OBJ_INVENTORY_OFF)) >= 0) 
+     { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
-    } else if ((offset = (g - GLYPH_OBJ_OFF)) >= 0) { /* object */
+     }
+     else if ((offset = (g - GLYPH_OBJ_OFF)) >= 0) 
+     { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
-        obj_color(offset);
-    } else if ((offset = (g - GLYPH_FEMALE_BODY_OFF)) >= 0) { /* a corpse */
-        *ch = showsyms[(int) objects[CORPSE].oc_class + SYM_OFF_O];
-        mon_color(offset);
-    } else if ((offset = (g - GLYPH_FEMALE_PET_OFF)) >= 0) { /* a pet */
-        *ch = showsyms[(int) mons[offset].mlet + SYM_OFF_M];
-        pet_color(offset);
-    } else if ((offset = (g - GLYPH_BODY_OFF)) >= 0) { /* a corpse */
-        *ch = showsyms[(int) objects[CORPSE].oc_class + SYM_OFF_O];
-        mon_color(offset);
-    } else if ((offset = (g - GLYPH_PET_OFF)) >= 0) { /* a pet */
-        *ch = showsyms[(int) mons[offset].mlet + SYM_OFF_M];
-        pet_color(offset);
-    } else { /* a monster */
+     } 
+     else 
+     { /* a monster */
         *ch = showsyms[(int) mons[g].mlet + SYM_OFF_M];
         mon_color(g);
-    }
+     }
     // end of wintty code
 }
 #endif

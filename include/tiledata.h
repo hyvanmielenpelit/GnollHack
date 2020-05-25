@@ -7,9 +7,6 @@
 
 struct tileset_definition {
     uchar female_tile_style;     /* 0 = use base monster, 1 = separate female tile for each monster, 2 = indicated monsters with G_FEMALE_TILE on in mons[].geno */
-    boolean has_pet_tiles;       /* 0 = use normal monster variation, 1 = separate pet tile for each monster  */
-    boolean has_detect_tiles;    /* 0 = use normal monster variation, 1 = separate detect tile for each monster  */
-    boolean ridden_tile_style;   /* 0 = use normal monster variation, 1 = separate ridden tile for each monster, 2 = monsters with M1_STEED have ridden tiles */
    
     uchar attack_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_ATTACK_TILE have attack tiles */
     uchar throw_tile_style;      /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_THROW_TILE have attack tiles */

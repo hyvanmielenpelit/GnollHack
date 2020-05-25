@@ -917,23 +917,23 @@ struct layer_info layers;
             glyph_is_pet(glyph))
             mar_add_pet_sign(window, x, y);
     } else
-        mar_print_gl_char(window, x, y, glyph);
+        mar_print_gl_char(window, x, y, layers);
 }
 
 void mar_print_char(winid, xchar, xchar, char, int);
 
 void
-mar_print_gl_char(window, x, y, glyph)
+mar_print_gl_char(window, x, y, layers)
 winid window;
 xchar x, y;
-int glyph;
+struct layer_info layers;
 {
     int ch;
     int color;
     unsigned special;
 
     /* map glyph to character and color */
-    (void) mapglyph(glyph, &ch, &color, &special, x, y);
+    (void) mapglyph(layers, &ch, &color, &special, x, y);
 
 #ifdef TEXTCOLOR
     /* Turn off color if rogue level. */

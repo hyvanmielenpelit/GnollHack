@@ -898,9 +898,10 @@ struct permonst **for_supplement;
         int oc;
         unsigned long os;
 
-        glyph = glyph_at(cc.x, cc.y);
+        struct layer_info layers = layers_at(cc.x, cc.y);
+        glyph = layers.glyph;
         /* Convert glyph at selected position to a symbol for use below. */
-        (void) mapglyph(glyph, &sym, &oc, &os, cc.x, cc.y);
+        (void) mapglyph(layers, &sym, &oc, &os, cc.x, cc.y);
 
         Sprintf(prefix, "%s - ", encglyph(glyph));
     } else

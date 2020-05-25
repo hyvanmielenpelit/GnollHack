@@ -107,7 +107,7 @@ struct layer_info layers;
 #endif
 
         /* map glyph to character and color */
-        (void) mapglyph(glyph, &och, &color, &special, x, y);
+        (void) mapglyph(layers, &och, &color, &special, x, y);
         ch = (uchar) och;
 
         if (special != map_info->tile_map.glyphs[y][x].special) {

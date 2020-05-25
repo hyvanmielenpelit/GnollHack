@@ -137,7 +137,9 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
 
 		painter.setPen( Qt::green );
 		/* map glyph to character and color */
-		mapglyph(g, &ch, &color, &special, i, j);
+		struct layer_info layers = { 0 };
+		layers.glyph = g;
+		mapglyph(layers, &ch, &color, &special, i, j);
 		ch = cp437(ch);
 #ifdef TEXTCOLOR
 		painter.setPen( nhcolor_to_pen(color) );
@@ -176,7 +178,9 @@ void NetHackQtMapViewport::paintEvent(QPaintEvent* event)
 		int color;
 		int ch;
 		unsigned special;
-		mapglyph(g, &ch, &color, &special, i, j);
+		struct layer_info layers = { 0 };
+		layers.glyph = g;
+		mapglyph(layers, &ch, &color, &special, i, j);
 		qt_settings->glyphs().drawCell(painter, g, i, j);
 #ifdef TEXTCOLOR
 		if (((special & MG_PET) != 0) && ::iflags.hilite_pet) {
@@ -829,7 +833,9 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 
 		painter.setPen( Qt::green );
 		/* map glyph to character and color */
-    		mapglyph(g, &ch, &color, &special, i, j);
+		struct layer_info layers = { 0 };
+		layers.glyph = g;
+		mapglyph(layers, &ch, &color, &special, i, j);
 #ifdef TEXTCOLOR
 		painter.setPen( nhcolor_to_pen(color) );
 #endif
@@ -859,7 +865,9 @@ void NetHackQtMapWindow::paintEvent(QPaintEvent* event)
 		int color;
 		int ch;
 		unsigned special;
-		mapglyph(g, &ch, &color, &special, i, j);
+		struct layer_info layers = { 0 };
+		layers.glyph = g;
+		mapglyph(layers, &ch, &color, &special, i, j);
 		qt_settings->glyphs().drawCell(painter, g, i, j);
 #ifdef TEXTCOLOR
 		if (((special & MG_PET) != 0) && ::iflags.hilite_pet) {

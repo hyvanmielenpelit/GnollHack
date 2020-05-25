@@ -63,11 +63,13 @@ static const int explcolors[] = {
 
 /*ARGSUSED*/
 int
-mapglyph(signed_glyph, ochar, ocolor, ospecial, x, y)
-int signed_glyph, *ocolor, x, y;
+mapglyph(layers, ochar, ocolor, ospecial, x, y)
+struct layer_info layers;
+int *ocolor, x, y;
 int *ochar;
 unsigned long *ospecial;
 {
+    int signed_glyph = layers.glyph;
     register int offset, idx;
     int color = NO_COLOR;
     nhsym ch;
@@ -157,6 +159,29 @@ unsigned long *ospecial;
 		if (objoffset != BOULDER && is_objpile(x, y))
 			special |= MG_OBJPILE;
 	}
+    else if ((offset = (glyph - GLYPH_FEMALE_BODY_OFF)) >= 0)
+    { /* a corpse */
+        idx = objects[CORPSE].oc_class + SYM_OFF_O;
+        if (has_rogue_color && iflags.use_color)
+            color = CLR_RED;
+        else
+            mon_color(offset);
+        special |= MG_FEMALE;
+        special |= MG_CORPSE;
+        if (is_objpile(x, y))
+            special |= MG_OBJPILE;
+    }
+    else if ((offset = (glyph - GLYPH_BODY_OFF)) >= 0)
+    { /* a corpse */
+        idx = objects[CORPSE].oc_class + SYM_OFF_O;
+        if (has_rogue_color && iflags.use_color)
+            color = CLR_RED;
+        else
+            mon_color(offset);
+        special |= MG_CORPSE;
+        if (is_objpile(x, y))
+            special |= MG_OBJPILE;
+    }
     else if ((offset = (glyph - GLYPH_FEMALE_STATUE_OFF)) >= 0)
     { /* a statue */
         if (flags.classic_statue_symbol)
@@ -171,6 +196,7 @@ unsigned long *ospecial;
             color = CLR_RED;
         else
             obj_color(STATUE);
+        special |= MG_FEMALE;
         special |= MG_STATUE;
         if (is_objpile(x, y))
             special |= MG_OBJPILE;
@@ -378,92 +404,11 @@ unsigned long *ospecial;
     || (offset = (glyph - GLYPH_FEMALE_FIRE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_THROW_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_ATTACK_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_MON_OFF)) >= 0
     )
-    { /* a female attacking monster */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color && iflags.use_color)
-        {
-            if (x == u.ux && y == u.uy)
-                /* actually player should be yellow-on-gray if in corridor */
-                color = CLR_YELLOW;
-            else
-                color = NO_COLOR;
-        }
-        else
-        {
-            mon_color(offset);
-    #ifdef TEXTCOLOR
-            /* special case the hero for `showrace' option */
-            if (iflags.use_color && x == u.ux && y == u.uy
-                && flags.showrace && !Upolyd)
-                color = HI_DOMESTIC;
-    #endif
-        }
-    }
-    else if ((offset = (glyph - GLYPH_FEMALE_RIDDEN_OFF)) >= 0)
-    { /* mon ridden */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color)
-            /* This currently implies that the hero is here -- monsters */
-            /* don't ride (yet...).  Should we set it to yellow like in */
-            /* the monster case below?  There is no equivalent in rogue. */
-            color = NO_COLOR; /* no need to check iflags.use_color */
-        else
-            mon_color(offset);
-        special |= MG_RIDDEN;
-    }
-    else if ((offset = (glyph - GLYPH_FEMALE_BODY_OFF)) >= 0)
-    { /* a corpse */
-        idx = objects[CORPSE].oc_class + SYM_OFF_O;
-        if (has_rogue_color && iflags.use_color)
-            color = CLR_RED;
-        else
-            mon_color(offset);
-        special |= MG_CORPSE;
-        if (is_objpile(x, y))
-            special |= MG_OBJPILE;
-    }
-    else if ((offset = (glyph - GLYPH_FEMALE_DETECT_OFF)) >= 0)
-    { /* female mon detect */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color)
-            color = NO_COLOR; /* no need to check iflags.use_color */
-        else
-            mon_color(offset);
-        /* Disabled for now; anyone want to get reverse video to work? */
-        /* is_reverse = TRUE; */
-        special |= MG_DETECT;
-    }
-    else if ((offset = (glyph - GLYPH_FEMALE_PET_OFF)) >= 0)
-    { /* a pet */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color)
-            color = NO_COLOR; /* no need to check iflags.use_color */
-        else
-            pet_color(offset);
-        special |= MG_PET;
-    }
-    else if ((offset = (glyph - GLYPH_FEMALE_MON_OFF)) >= 0)
     { /* a female monster */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color && iflags.use_color)
-        {
-            if (x == u.ux && y == u.uy)
-                /* actually player should be yellow-on-gray if in corridor */
-                color = CLR_YELLOW;
-            else
-                color = NO_COLOR;
-        }
-        else
-        {
-            mon_color(offset);
-    #ifdef TEXTCOLOR
-            /* special case the hero for `showrace' option */
-            if (iflags.use_color && x == u.ux && y == u.uy
-                && flags.showrace && !Upolyd)
-                color = HI_DOMESTIC;
-    #endif
-        }
+        special |= MG_FEMALE;
+        goto normal_monster_here;
     }
     else if (
     (offset = (glyph - GLYPH_DEATH_OFF)) >= 0
@@ -476,90 +421,56 @@ unsigned long *ospecial;
     || (offset = (glyph - GLYPH_THROW_OFF)) >= 0
     || (offset = (glyph - GLYPH_ATTACK_OFF)) >= 0
     )
-    { /* mon attack */
-        idx = mons[glyph].mlet + SYM_OFF_M;
-        if (has_rogue_color && iflags.use_color)
-        {
-            if (x == u.ux && y == u.uy)
-                /* actually player should be yellow-on-gray if in corridor */
-                color = CLR_YELLOW;
-            else
-                color = NO_COLOR;
-        }
-        else
-        {
-            mon_color(glyph);
-    #ifdef TEXTCOLOR
-            /* special case the hero for `showrace' option */
-            if (iflags.use_color && x == u.ux && y == u.uy
-                && flags.showrace && !Upolyd)
-                color = HI_DOMESTIC;
-    #endif
-        }
+    { /* mon action */
+        goto normal_monster_here;
     }
-    else if ((offset = (glyph - GLYPH_RIDDEN_OFF)) >= 0)
-    { /* mon ridden */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color)
-            /* This currently implies that the hero is here -- monsters */
-            /* don't ride (yet...).  Should we set it to yellow like in */
-            /* the monster case below?  There is no equivalent in rogue. */
-            color = NO_COLOR; /* no need to check iflags.use_color */
-        else
-            mon_color(offset);
-        special |= MG_RIDDEN;
-    } 
-    else if ((offset = (glyph - GLYPH_BODY_OFF)) >= 0)
-    { /* a corpse */
-        idx = objects[CORPSE].oc_class + SYM_OFF_O;
-        if (has_rogue_color && iflags.use_color)
-            color = CLR_RED;
-        else
-            mon_color(offset);
-        special |= MG_CORPSE;
-        if (is_objpile(x,y))
-            special |= MG_OBJPILE;
-    } 
-    else if ((offset = (glyph - GLYPH_DETECT_OFF)) >= 0) 
-    { /* mon detect */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color)
-            color = NO_COLOR; /* no need to check iflags.use_color */
-        else
-            mon_color(offset);
-        /* Disabled for now; anyone want to get reverse video to work? */
-        /* is_reverse = TRUE; */
-        special |= MG_DETECT;
-    } 
-    else if ((offset = (glyph - GLYPH_PET_OFF)) >= 0)
-    { /* a pet */
-        idx = mons[offset].mlet + SYM_OFF_M;
-        if (has_rogue_color)
-            color = NO_COLOR; /* no need to check iflags.use_color */
-        else
-            pet_color(offset);
-        special |= MG_PET;
-    } 
     else 
     { /* a monster */
-        idx = mons[glyph].mlet + SYM_OFF_M;
-        if (has_rogue_color && iflags.use_color)
+normal_monster_here:
         {
-            if (x == u.ux && y == u.uy)
-                /* actually player should be yellow-on-gray if in corridor */
-                color = CLR_YELLOW;
-            else
-                color = NO_COLOR;
-        }
-        else 
-        {
-            mon_color(glyph);
-#ifdef TEXTCOLOR
-            /* special case the hero for `showrace' option */
-            if (iflags.use_color && x == u.ux && y == u.uy
-                && flags.showrace && !Upolyd)
-                color = HI_DOMESTIC;
-#endif
+            boolean ispet = (layers.layer_flags & LFLAGS_M_PET);
+            boolean ispeaceful = (layers.layer_flags & LFLAGS_M_PEACEFUL);
+            boolean isdetected = (layers.layer_flags & LFLAGS_M_DETECTED);
+            boolean isridden = (layers.layer_flags & LFLAGS_M_RIDDEN);
+            boolean issaddled = (layers.layer_flags & LFLAGS_M_SADDLED);
+
+            /* set special flags */
+            if(ispet)
+                special |= MG_PET;
+            if (ispeaceful)
+                special |= MG_PEACEFUL;
+            if (isdetected)
+                special |= MG_DETECT;
+            if (isridden)
+                special |= MG_RIDDEN;
+            if (issaddled)
+                special |= MG_SADDLED;
+
+            /* set symbol */
+            idx = mons[glyph].mlet + SYM_OFF_M;
+        
+            /* set color */
+            if (has_rogue_color && iflags.use_color)
+            {
+                if (x == u.ux && y == u.uy)
+                    /* actually player should be yellow-on-gray if in corridor */
+                    color = CLR_YELLOW;
+                else
+                    color = NO_COLOR;
+            }
+            else 
+            {
+                if(ispet)
+                    pet_color(offset);
+                else
+                    mon_color(glyph);
+    #ifdef TEXTCOLOR
+                /* special case the hero for `showrace' option */
+                if (iflags.use_color && x == u.ux && y == u.uy
+                    && flags.showrace && !Upolyd)
+                    color = HI_DOMESTIC;
+    #endif
+            }
         }
     }
 
@@ -626,7 +537,11 @@ const char *str;
                             gv = (gv * 16) + ((int) (dp - hex) / 2);
                         else
                             break;
-                    so = mapglyph(gv, &ch, &oc, &os, 0, 0);
+
+                    struct layer_info layers = { 0 };
+                    layers.glyph = gv;
+
+                    so = mapglyph(layers, &ch, &oc, &os, 0, 0);
                     *put++ = showsyms[so];
                     /* 'str' is ready for the next loop iteration and '*str'
                        should not be copied at the end of this iteration */

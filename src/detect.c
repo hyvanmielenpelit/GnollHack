@@ -1963,7 +1963,9 @@ dump_map()
 
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
                                             default_glyph, subset);
-            (void) mapglyph(glyph, &ch, &color, &special, x, y);
+            struct layer_info layers = { 0 };
+            layers.glyph = glyph;
+            (void) mapglyph(layers, &ch, &color, &special, x, y);
             buf[x - 1] = ch;
             if (ch != ' ') {
                 blankrow = FALSE;

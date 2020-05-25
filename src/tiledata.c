@@ -15,7 +15,7 @@ short tile2enlargement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 
 NEARDATA struct tileset_definition default_tileset_definition =
 {
-    2, 0, 0, 0, 
+    2,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
     0, 2, 2,
     2, 0, 1,
@@ -90,15 +90,14 @@ uchar* tilemapflags;
 
     /* Monster tiles */
     tile_section_name = "monsters";
-    const char* monster_set_name_array[15] = { "normal", "pet", "detect", "body", "ridden", "attack", "throw", "fire", "cast", "special-attack", "kick", "item-use", "door-use", "death", "statue" };
-    int mon_glyph_offset_array[15] = { GLYPH_MON_OFF, GLYPH_PET_OFF, GLYPH_DETECT_OFF, GLYPH_BODY_OFF, GLYPH_RIDDEN_OFF,
+    const char* monster_set_name_array[12] = { "normal", "attack", "throw", "fire", "cast", "special-attack", "kick", "item-use", "door-use", "death", "statue", "body" };
+    int mon_glyph_offset_array[12] = { GLYPH_MON_OFF, 
         GLYPH_ATTACK_OFF, GLYPH_THROW_OFF, GLYPH_FIRE_OFF, GLYPH_CAST_OFF, GLYPH_SPECIAL_ATTACK_OFF, GLYPH_KICK_OFF,
-        GLYPH_ITEM_USE_OFF, GLYPH_DOOR_USE_OFF, GLYPH_DEATH_OFF, GLYPH_STATUE_OFF };
-    int female_mon_glyph_offset_array[15] = { GLYPH_FEMALE_MON_OFF, GLYPH_FEMALE_PET_OFF, GLYPH_FEMALE_DETECT_OFF,
-        GLYPH_FEMALE_BODY_OFF, GLYPH_FEMALE_RIDDEN_OFF,
+        GLYPH_ITEM_USE_OFF, GLYPH_DOOR_USE_OFF, GLYPH_DEATH_OFF, GLYPH_STATUE_OFF, GLYPH_BODY_OFF };
+    int female_mon_glyph_offset_array[12] = { GLYPH_FEMALE_MON_OFF,
         GLYPH_FEMALE_ATTACK_OFF, GLYPH_FEMALE_THROW_OFF, GLYPH_FEMALE_FIRE_OFF, 
         GLYPH_FEMALE_CAST_OFF, GLYPH_FEMALE_SPECIAL_ATTACK_OFF, GLYPH_FEMALE_KICK_OFF,
-        GLYPH_FEMALE_ITEM_USE_OFF, GLYPH_FEMALE_DOOR_USE_OFF, GLYPH_FEMALE_DEATH_OFF, GLYPH_FEMALE_STATUE_OFF };
+        GLYPH_FEMALE_ITEM_USE_OFF, GLYPH_FEMALE_DOOR_USE_OFF, GLYPH_FEMALE_DEATH_OFF, GLYPH_FEMALE_STATUE_OFF, GLYPH_FEMALE_BODY_OFF };
 
     for (int gender = 0; gender <= 1; gender++)
     {
@@ -109,35 +108,29 @@ uchar* tilemapflags;
         }
         const char* gender_name = (gender == 0 ? "base" : "female");
 
-        for (int spset = 0; spset < 15; spset++)
+        for (int spset = 0; spset < 12; spset++)
         {
-            if (spset == 1 && !tsd->has_pet_tiles)
+            if (spset == 1 && !tsd->attack_tile_style)
                 continue;
-            if (spset == 2 && !tsd->has_detect_tiles)
+            if (spset == 2 && !tsd->throw_tile_style)
                 continue;
-            if (spset == 3 && !tsd->body_tile_style)
+            if (spset == 3 && !tsd->fire_tile_style)
                 continue;
-            if (spset == 4 && !tsd->ridden_tile_style)
+            if (spset == 4 && !tsd->cast_tile_style)
                 continue;
-            if (spset == 5 && !tsd->attack_tile_style)
+            if (spset == 5 && !tsd->special_attack_tile_style)
                 continue;
-            if (spset == 6 && !tsd->throw_tile_style)
+            if (spset == 6 && !tsd->kick_tile_style)
                 continue;
-            if (spset == 7 && !tsd->fire_tile_style)
+            if (spset == 7 && !tsd->item_use_tile_style)
                 continue;
-            if (spset == 8 && !tsd->cast_tile_style)
+            if (spset == 8 && !tsd->door_use_tile_style)
                 continue;
-            if (spset == 9 && !tsd->special_attack_tile_style)
+            if (spset == 9 && !tsd->death_tile_style)
                 continue;
-            if (spset == 10 && !tsd->kick_tile_style)
+            if (spset == 10 && !tsd->statue_tile_style)
                 continue;
-            if (spset == 11 && !tsd->item_use_tile_style)
-                continue;
-            if (spset == 12 && !tsd->door_use_tile_style)
-                continue;
-            if (spset == 13 && !tsd->death_tile_style)
-                continue;
-            if (spset == 14 && !tsd->statue_tile_style)
+            if (spset == 11 && !tsd->body_tile_style)
                 continue;
 
             set_name = monster_set_name_array[spset];
@@ -150,7 +143,7 @@ uchar* tilemapflags;
                         continue;
                 }
 
-                if (spset == 3)
+                if (spset == 11)
                 {
                     if (tsd->body_tile_style == 2 && !(mons[i].mflags5 & M5_CORPSE_TILE))
                         continue;
@@ -161,73 +154,68 @@ uchar* tilemapflags;
                         fullsizedflag = 0;
                 }
 
-                if (spset == 4)
-                {
-                    if (tsd->ridden_tile_style == 2 && !(mons[i].mflags1 & M1_STEED))
-                        continue;
-                }
-
-                if (spset == 5)
+                if (spset == 1)
                 {
                     if (tsd->attack_tile_style == 2 && !(mons[i].mflags5 & M5_ATTACK_TILE))
                         continue;
                 }
 
-                if (spset == 6)
+                if (spset == 2)
                 {
                     if (tsd->throw_tile_style == 2 && !(mons[i].mflags5 & M5_THROW_TILE))
                         continue;
                 }
 
-                if (spset == 7)
+                if (spset == 3)
                 {
                     if (tsd->fire_tile_style == 2 && !(mons[i].mflags5 & M5_FIRE_TILE))
                         continue;
                 }
 
-                if (spset == 8)
+                if (spset == 4)
                 {
                     if (tsd->cast_tile_style == 2 && !(mons[i].mflags5 & M5_CAST_TILE))
                         continue;
                 }
 
-                if (spset == 9)
+                if (spset == 5)
                 {
                     if (tsd->special_attack_tile_style == 2 && !(mons[i].mflags5 & M5_SPECIAL_ATTACK_TILE))
                         continue;
                 }
 
-                if (spset == 10)
+                if (spset == 6)
                 {
                     if (tsd->kick_tile_style == 2 && !(mons[i].mflags5 & M5_KICK_TILE))
                         continue;
                 }
 
-                if (spset == 11)
+                if (spset == 7)
                 {
                     if (tsd->item_use_tile_style == 2 && !(mons[i].mflags5 & M5_ITEM_USE_TILE))
                         continue;
                 }
 
-                if (spset == 12)
+                if (spset == 8)
                 {
                     if (tsd->door_use_tile_style == 2 && !(mons[i].mflags5 & M5_DOOR_USE_TILE))
                         continue;
                 }
 
-                if (spset == 13)
+                if (spset == 9)
                 {
                     if (tsd->death_tile_style == 2 && !(mons[i].mflags5 & M5_DEATH_TILE))
                         continue;
                 }
 
-                if (spset == 14)
+                if (spset == 10)
                 {
                     if (objects[STATUE].oc_flags4 & O4_FULL_SIZED_BITMAP)
                         fullsizedflag = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
                     else
                         fullsizedflag = 0;
                 }
+
 
                 int enlargement = 0;
                 if (gender == 0)
@@ -237,34 +225,34 @@ uchar* tilemapflags;
                     case 0:
                         enlargement = mons[i].enlargement.stand;
                         break;
-                    case 5:
+                    case 1:
                         enlargement = mons[i].enlargement.attacks;
                         break;
-                    case 6:
+                    case 2:
                         enlargement = mons[i].enlargement.throws;
                         break;
-                    case 7:
+                    case 3:
                         enlargement = mons[i].enlargement.fire;
                         break;
-                    case 8:
+                    case 4:
                         enlargement = mons[i].enlargement.cast;
                         break;
-                    case 9:
+                    case 5:
                         enlargement = mons[i].enlargement.special_attack;
                         break;
-                    case 10:
+                    case 6:
                         enlargement = mons[i].enlargement.kick;
                         break;
-                    case 11:
+                    case 7:
                         enlargement = mons[i].enlargement.item_use;
                         break;
-                    case 12:
+                    case 8:
                         enlargement = mons[i].enlargement.door_use;
                         break;
-                    case 13:
+                    case 9:
                         enlargement = mons[i].enlargement.death;
                         break;
-                    case 14:
+                    case 10:
                         enlargement = mons[i].enlargement.stand; /* dummy for statues */
                         break;
                     default:
@@ -278,34 +266,34 @@ uchar* tilemapflags;
                     case 0:
                         enlargement = mons[i].female_enlargement.stand;
                         break;
-                    case 5:
+                    case 1:
                         enlargement = mons[i].female_enlargement.attacks;
                         break;
-                    case 6:
+                    case 2:
                         enlargement = mons[i].female_enlargement.throws;
                         break;
-                    case 7:
+                    case 3:
                         enlargement = mons[i].female_enlargement.fire;
                         break;
-                    case 8:
+                    case 4:
                         enlargement = mons[i].female_enlargement.cast;
                         break;
-                    case 9:
+                    case 5:
                         enlargement = mons[i].female_enlargement.special_attack;
                         break;
-                    case 10:
+                    case 6:
                         enlargement = mons[i].female_enlargement.kick;
                         break;
-                    case 11:
+                    case 7:
                         enlargement = mons[i].female_enlargement.item_use;
                         break;
-                    case 12:
+                    case 8:
                         enlargement = mons[i].female_enlargement.door_use;
                         break;
-                    case 13:
+                    case 9:
                         enlargement = mons[i].female_enlargement.death;
                         break;
-                    case 14:
+                    case 10:
                         enlargement = mons[i].female_enlargement.stand; /* dummy for statues */
                         break;
                     default:
@@ -331,17 +319,11 @@ uchar* tilemapflags;
                     if (gender == 0)
                     {
                         tilemaparray[i + glyph_offset] = tile_count;
-                        if(spset == 3 || spset == 14)
+                        if(spset == 10 || spset == 11)
                             tilemapflags[i + glyph_offset] |= fullsizedflag;
 
                         if (spset == 0)
                         {
-                            if (!tsd->has_pet_tiles)
-                                tilemaparray[i + GLYPH_PET_OFF] = tile_count;
-                            if (!tsd->has_detect_tiles)
-                                tilemaparray[i + GLYPH_DETECT_OFF] = tile_count;
-                            if (tsd->ridden_tile_style != 1)
-                                tilemaparray[i + GLYPH_RIDDEN_OFF] = tile_count;
                             if (tsd->attack_tile_style != 1)
                                 tilemaparray[i + GLYPH_ATTACK_OFF] = tile_count;
                             if (tsd->throw_tile_style != 1)
@@ -361,7 +343,7 @@ uchar* tilemapflags;
                             if (tsd->death_tile_style != 1)
                                 tilemaparray[i + GLYPH_DEATH_OFF] = tile_count;
                         }
-                        else if (spset == 5)
+                        else if (spset == 1)
                         {
                             /* Write these again if we get here */
                             if (tsd->throw_tile_style != 1)
@@ -377,7 +359,7 @@ uchar* tilemapflags;
                             if (tsd->item_use_tile_style != 1)
                                 tilemaparray[i + GLYPH_ITEM_USE_OFF] = tile_count;
                         }
-                        else if (spset == 12)
+                        else if (spset == 8)
                         {
                             if (tsd->throw_tile_style != 1)
                                 tilemaparray[i + GLYPH_THROW_OFF] = tile_count;
@@ -390,17 +372,11 @@ uchar* tilemapflags;
 
                     /* write female versions twice just in case, first as base monster, and then override as female, if we get here */
                     tilemaparray[i + female_glyph_offset] = tile_count;
-                    if (spset == 3 || spset == 14)
+                    if (spset == 10 || spset == 11)
                         tilemapflags[i + female_glyph_offset] |= fullsizedflag;
 
                     if (spset == 0)
                     {
-                        if (!tsd->has_pet_tiles)
-                            tilemaparray[i + GLYPH_FEMALE_PET_OFF] = tile_count;
-                        if (!tsd->has_detect_tiles)
-                            tilemaparray[i + GLYPH_FEMALE_DETECT_OFF] = tile_count;
-                        if (tsd->ridden_tile_style != 1)
-                            tilemaparray[i + GLYPH_FEMALE_RIDDEN_OFF] = tile_count;
                         if (tsd->attack_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_ATTACK_OFF] = tile_count;
                         if (tsd->throw_tile_style != 1)
@@ -420,7 +396,7 @@ uchar* tilemapflags;
                         if (tsd->death_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_DEATH_OFF] = tile_count;
                     }
-                    else if (spset == 5)
+                    else if (spset == 1)
                     {
                         /* Write these again if we get here */
                         if (tsd->throw_tile_style != 1)
@@ -436,7 +412,7 @@ uchar* tilemapflags;
                         if (tsd->item_use_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_ITEM_USE_OFF] = tile_count;
                     }
-                    else if (spset == 12)
+                    else if (spset == 8)
                     {
                         if (tsd->throw_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_THROW_OFF] = tile_count;

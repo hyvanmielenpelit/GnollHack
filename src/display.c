@@ -134,7 +134,6 @@ STATIC_DCL int FDECL(check_pos, (int, int, int));
 STATIC_DCL int FDECL(get_object_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
-STATIC_DCL uchar FDECL(get_glyph_layer, (int));
 STATIC_DCL int FDECL(tether_glyph, (int, int));
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
@@ -1787,8 +1786,14 @@ int x, y, glyph;
 			&& glyph < GLYPH_ARTIFACT_INVENTORY_OFF) { /* an artifact */
 			text = "artifact";
 			offset = glyph - GLYPH_ARTIFACT_OFF;
+        } else if (glyph >= GLYPH_FEMALE_BODY_OFF) { /* female corpse */
+            text = "female corpse";
+            offset = glyph - GLYPH_FEMALE_BODY_OFF;
+        } else if (glyph >= GLYPH_BODY_OFF) { /* a corpse */
+            text = "corpse";
+            offset = glyph - GLYPH_BODY_OFF;
 		} else if (glyph >= GLYPH_FEMALE_STATUE_OFF
-			&& glyph < GLYPH_ARTIFACT_OFF) { /* a female statue */
+			&& glyph < GLYPH_BODY_OFF) { /* a female statue */
 			text = "female statue";
 			offset = glyph - GLYPH_FEMALE_STATUE_OFF;
 		} else if (glyph >= GLYPH_STATUE_OFF
@@ -1834,37 +1839,13 @@ int x, y, glyph;
             offset = glyph - GLYPH_INVIS_OFF;
         } else if (glyph >= GLYPH_FEMALE_ATTACK_OFF) { /* female mon in action */
             text = "female mon in action";
-            offset = glyph - GLYPH_FEMALE_RIDDEN_OFF;
-        } else if (glyph >= GLYPH_FEMALE_RIDDEN_OFF) { /* female ridden mon */
-            text = "female ridden mon";
-            offset = glyph - GLYPH_FEMALE_RIDDEN_OFF;
-        } else if (glyph >= GLYPH_FEMALE_BODY_OFF) { /* female corpse */
-            text = "female corpse";
-            offset = glyph - GLYPH_FEMALE_BODY_OFF;
-        } else if (glyph >= GLYPH_FEMALE_DETECT_OFF) { /* female detected mon */
-            text = "female detected mon";
-            offset = glyph - GLYPH_FEMALE_DETECT_OFF;
-        } else if (glyph >= GLYPH_FEMALE_PET_OFF) { /* female pet */
-            text = "female pet";
-            offset = glyph - GLYPH_FEMALE_PET_OFF;
+            offset = glyph - GLYPH_FEMALE_ATTACK_OFF;
         } else if (glyph >= GLYPH_FEMALE_MON_OFF) { /* female mon */
             text = "female mon";
             offset = glyph - GLYPH_FEMALE_MON_OFF;
         } else if (glyph >= GLYPH_ATTACK_OFF) { /* mon in action */
             text = "mon in action";
-            offset = glyph - GLYPH_RIDDEN_OFF;
-        } else if (glyph >= GLYPH_RIDDEN_OFF) { /* ridden mon */
-            text = "ridden mon";
-            offset = glyph - GLYPH_RIDDEN_OFF;
-        } else if (glyph >= GLYPH_BODY_OFF) { /* a corpse */
-            text = "corpse";
-            offset = glyph - GLYPH_BODY_OFF;
-        } else if (glyph >= GLYPH_DETECT_OFF) { /* detected mon */
-            text = "detected mon";
-            offset = glyph - GLYPH_DETECT_OFF;
-        } else if (glyph >= GLYPH_PET_OFF) { /* a pet */
-            text = "pet";
-            offset = glyph - GLYPH_PET_OFF;
+            offset = glyph - GLYPH_ATTACK_OFF;
         } else { /* a monster */
             text = "monster";
             offset = glyph;
@@ -2525,38 +2506,6 @@ xchar x, y;
     }
     else
         return NO_GLYPH;
-}
-
-#define FLOOR_LAYER 0
-#define CMAP_LAYER 1
-#define DOODAD_LAYER 2
-#define OBJECT_LAYER 3
-#define MONSTER_LAYER 4
-#define EFFECT_LAYER 5
-
-
-uchar
-get_glyph_layer(signed_glyph)
-int signed_glyph;
-{
-    int glyph = abs(signed_glyph);
-
-    if (glyph >= GLYPH_STATUE_OFF && glyph < GLYPH_PLAYER_OFF)
-        return OBJECT_LAYER; /* Statue or artifact */
-    else if (glyph >= GLYPH_BODY_OFF && glyph < GLYPH_RIDDEN_OFF)
-        return OBJECT_LAYER; /* Corpse */
-    else if (glyph >= GLYPH_FEMALE_BODY_OFF && glyph < GLYPH_FEMALE_RIDDEN_OFF)
-        return OBJECT_LAYER; /* Corpse */
-    else if (glyph >= GLYPH_MON_OFF && glyph < GLYPH_OBJ_OFF)
-        return MONSTER_LAYER; /* Monster */
-    else if (glyph >= GLYPH_WARNING_OFF && glyph < GLYPH_STATUE_OFF)
-        return MONSTER_LAYER; /* Warning */
-    else if (glyph >= GLYPH_PLAYER_OFF && glyph < MAX_GLYPH)
-        return MONSTER_LAYER; /* Player */
-    else if (glyph >= GLYPH_CMAP_OFF && glyph < GLYPH_EXPLODE_OFF)
-        return CMAP_LAYER; /* CMAP */
-
-    return EFFECT_LAYER;
 }
 
 /* ------------------------------------------------------------------------ */

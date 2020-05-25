@@ -3121,8 +3121,13 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
             if (iflags.invis_goldsym)
                 ochar = GOLD_SYM;
             else
-                mapglyph(objnum_to_glyph(GOLD_PIECE),
-                         &ochar, &ocolor, &ospecial, 0, 0);
+            {
+                struct layer_info layers = { 0 };
+                layers.glyph = objnum_to_glyph(GOLD_PIECE);
+                mapglyph(layers,
+                    &ochar, &ocolor, &ospecial, 0, 0);
+
+            }
             buf[0] = ochar;
             p = strchr(text, ':');
             if (p) {

@@ -310,11 +310,7 @@
 #define NUM_MISSILE_DIRS 8
 
 #define GLYPH_MON_OFF     (1) /* Changed to 1 so that mirror image of mon 0 maps to -1 */
-#define GLYPH_PET_OFF     (NUM_MONSTERS + GLYPH_MON_OFF)
-#define GLYPH_DETECT_OFF  (NUM_MONSTERS + GLYPH_PET_OFF)
-#define GLYPH_BODY_OFF    (NUM_MONSTERS + GLYPH_DETECT_OFF)
-#define GLYPH_RIDDEN_OFF  (NUM_MONSTERS + GLYPH_BODY_OFF)
-#define GLYPH_ATTACK_OFF  (NUM_MONSTERS + GLYPH_RIDDEN_OFF)
+#define GLYPH_ATTACK_OFF  (NUM_MONSTERS + GLYPH_MON_OFF)
 #define GLYPH_THROW_OFF  (NUM_MONSTERS + GLYPH_ATTACK_OFF)
 #define GLYPH_FIRE_OFF  (NUM_MONSTERS + GLYPH_THROW_OFF)
 #define GLYPH_CAST_OFF  (NUM_MONSTERS + GLYPH_FIRE_OFF)
@@ -324,11 +320,7 @@
 #define GLYPH_DOOR_USE_OFF  (NUM_MONSTERS + GLYPH_ITEM_USE_OFF)
 #define GLYPH_DEATH_OFF  (NUM_MONSTERS + GLYPH_DOOR_USE_OFF)
 #define GLYPH_FEMALE_MON_OFF  (NUM_MONSTERS + GLYPH_DEATH_OFF)
-#define GLYPH_FEMALE_PET_OFF  (NUM_MONSTERS + GLYPH_FEMALE_MON_OFF)
-#define GLYPH_FEMALE_DETECT_OFF (NUM_MONSTERS + GLYPH_FEMALE_PET_OFF)
-#define GLYPH_FEMALE_BODY_OFF    (NUM_MONSTERS + GLYPH_FEMALE_DETECT_OFF)
-#define GLYPH_FEMALE_RIDDEN_OFF  (NUM_MONSTERS + GLYPH_FEMALE_BODY_OFF)
-#define GLYPH_FEMALE_ATTACK_OFF  (NUM_MONSTERS + GLYPH_FEMALE_RIDDEN_OFF)
+#define GLYPH_FEMALE_ATTACK_OFF  (NUM_MONSTERS + GLYPH_FEMALE_MON_OFF)
 #define GLYPH_FEMALE_THROW_OFF  (NUM_MONSTERS + GLYPH_FEMALE_ATTACK_OFF)
 #define GLYPH_FEMALE_FIRE_OFF  (NUM_MONSTERS + GLYPH_FEMALE_THROW_OFF)
 #define GLYPH_FEMALE_CAST_OFF  (NUM_MONSTERS + GLYPH_FEMALE_FIRE_OFF)
@@ -351,7 +343,9 @@
 #define GLYPH_WARNING_OFF ((NUM_MONSTERS * MAX_SWALLOW_CHARS) + GLYPH_SWALLOW_OFF)
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
 #define GLYPH_FEMALE_STATUE_OFF (NUM_MONSTERS + GLYPH_STATUE_OFF)
-#define GLYPH_ARTIFACT_OFF (NUM_MONSTERS + GLYPH_FEMALE_STATUE_OFF)
+#define GLYPH_BODY_OFF    (NUM_MONSTERS + GLYPH_FEMALE_STATUE_OFF)
+#define GLYPH_FEMALE_BODY_OFF    (NUM_MONSTERS + GLYPH_BODY_OFF)
+#define GLYPH_ARTIFACT_OFF (NUM_MONSTERS + GLYPH_FEMALE_BODY_OFF)
 #define GLYPH_ARTIFACT_INVENTORY_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_OFF)
 #define GLYPH_ARTIFACT_LIT_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_INVENTORY_OFF)
 #define GLYPH_ARTIFACT_INVENTORY_LIT_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_LIT_OFF)
@@ -600,14 +594,16 @@
  */
 #define glyph_is_normal_monster(glyph) \
     ((abs(glyph)) >= GLYPH_MON_OFF && (abs(glyph)) < (GLYPH_MON_OFF + NUM_MONSTERS))
+#define glyph_is_body(glyph) \
+    ((abs(glyph)) >= GLYPH_BODY_OFF && (abs(glyph)) < (GLYPH_BODY_OFF + NUM_MONSTERS))
+/*
 #define glyph_is_pet(glyph) \
     ((abs(glyph)) >= GLYPH_PET_OFF && (abs(glyph)) < (GLYPH_PET_OFF + NUM_MONSTERS))
 #define glyph_is_detected_monster(glyph) \
     ((abs(glyph)) >= GLYPH_DETECT_OFF && (abs(glyph)) < (GLYPH_DETECT_OFF + NUM_MONSTERS))
-#define glyph_is_body(glyph) \
-    ((abs(glyph)) >= GLYPH_BODY_OFF && (abs(glyph)) < (GLYPH_BODY_OFF + NUM_MONSTERS))
 #define glyph_is_ridden_monster(glyph) \
     ((abs(glyph)) >= GLYPH_RIDDEN_OFF && (abs(glyph)) < (GLYPH_RIDDEN_OFF + NUM_MONSTERS))
+*/
 
 #define glyph_is_attacking_monster(glyph) \
     ((abs(glyph)) >= GLYPH_ATTACK_OFF && (abs(glyph)) < (GLYPH_ATTACK_OFF + NUM_MONSTERS))
@@ -800,15 +796,25 @@
   *         out of range, it will return zero (for lack of anything better
   *         to return).
   */
+
+  /* REMOVED:
+             : glyph_is_pet(glyph)                                  \
+                 ? ((abs(glyph)) - GLYPH_PET_OFF)                      \
+                 : glyph_is_detected_monster(glyph)               \
+                       ? ((abs(glyph)) - GLYPH_DETECT_OFF)             \
+                       : glyph_is_ridden_monster(glyph)           \
+                             ? ((abs(glyph)) - GLYPH_RIDDEN_OFF)       \
+                     : glyph_is_female_pet(glyph)  \
+                           ? ((abs(glyph)) - GLYPH_FEMALE_PET_OFF) \
+                     : glyph_is_female_detected_monster(glyph)  \
+                           ? ((abs(glyph)) - GLYPH_FEMALE_DETECT_OFF) \
+                     : glyph_is_female_ridden_monster(glyph)           \
+                           ? ((abs(glyph)) - GLYPH_FEMALE_RIDDEN_OFF)       \
+                             */
+
 #define glyph_to_mon(glyph) \
     (glyph_is_normal_monster(glyph)                             \
          ? ((abs(glyph)) - GLYPH_MON_OFF)                            \
-         : glyph_is_pet(glyph)                                  \
-               ? ((abs(glyph)) - GLYPH_PET_OFF)                      \
-               : glyph_is_detected_monster(glyph)               \
-                     ? ((abs(glyph)) - GLYPH_DETECT_OFF)             \
-                     : glyph_is_ridden_monster(glyph)           \
-                           ? ((abs(glyph)) - GLYPH_RIDDEN_OFF)       \
                      : glyph_is_attacking_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_ATTACK_OFF)       \
                      : glyph_is_throwing_monster(glyph)           \
@@ -829,12 +835,6 @@
                            ? ((abs(glyph)) - GLYPH_DEATH_OFF)       \
                      : glyph_is_female_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_FEMALE_MON_OFF)   \
-                     : glyph_is_female_pet(glyph)  \
-                           ? ((abs(glyph)) - GLYPH_FEMALE_PET_OFF) \
-                     : glyph_is_female_detected_monster(glyph)  \
-                           ? ((abs(glyph)) - GLYPH_FEMALE_DETECT_OFF) \
-                     : glyph_is_female_ridden_monster(glyph)           \
-                           ? ((abs(glyph)) - GLYPH_FEMALE_RIDDEN_OFF)       \
                      : glyph_is_female_attacking_monster(glyph)           \
                            ? ((abs(glyph)) - GLYPH_FEMALE_ATTACK_OFF)       \
                      : glyph_is_female_throwing_monster(glyph)           \

@@ -2018,18 +2018,20 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_MON_OFF:
                 header = "MON_OFF";
                 break;
+            case GLYPH_BODY_OFF:
+                header = "MON_BODY_OFF";
+                break;
+#if 0
             case GLYPH_PET_OFF:
                 header = "MON_PET_OFF";
                 break;
             case GLYPH_DETECT_OFF:
                 header = "MON_DETECT_OFF";
                 break;
-            case GLYPH_BODY_OFF:
-                header = "MON_BODY_OFF";
-                break;
             case GLYPH_RIDDEN_OFF:
                 header = "MON_RIDDEN_OFF";
                 break;
+#endif
             case GLYPH_ATTACK_OFF:
                 header = "MON_ATTACK_OFF";
                 break;
@@ -2060,17 +2062,19 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_FEMALE_MON_OFF:
                 header = "FEMALE_MON_OFF";
                 break;
+#if 0
             case GLYPH_FEMALE_PET_OFF:
                 header = "FEMALE_PET_MON_OFF";
                 break;
             case GLYPH_FEMALE_DETECT_OFF:
                 header = "FEMALE_DETECT_MON_OFF";
                 break;
-            case GLYPH_FEMALE_BODY_OFF:
-                header = "FEMALE_BODY_MON_OFF";
-                break;
             case GLYPH_FEMALE_RIDDEN_OFF:
                 header = "FEMALE_RIDDEN_MON_OFF";
+                break;
+#endif
+            case GLYPH_FEMALE_BODY_OFF:
+                header = "FEMALE_BODY_MON_OFF";
                 break;
             case GLYPH_FEMALE_ATTACK_OFF:
                 header = "FEMALE_ATTACK_OFF";

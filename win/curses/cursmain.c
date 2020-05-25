@@ -631,7 +631,7 @@ curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
     int glyph = layers.glyph;
 
     /* map glyph to character and color */
-    mapglyph(glyph, &ch, &color, &special, x, y);
+    mapglyph(layers, &ch, &color, &special, x, y);
 
     if ((special & MG_PET) && iflags.hilite_pet) {
         attr = iflags.wc2_petattr;
