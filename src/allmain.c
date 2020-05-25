@@ -704,7 +704,7 @@ regenerate_hp()
 			if (!Regeneration && rn2(u.mh) > rn2(8) && (!Half_physical_damage || (Half_physical_damage && !rn2(2))))
 				u.mh--;
 		}
-		else if (relevant_hpmax > 0 && u.mh < relevant_hpmax || MummyRot)
+		else if (relevant_hpmax > 0 && (u.mh < relevant_hpmax || MummyRot))
 		{
 			u.mh += fixedhpperround;
 			u.mh_fraction += fractional_hp;
@@ -879,10 +879,6 @@ regenerate_hp()
         interrupt_multi("You are in full health.");
 #endif
 }
-
-static boolean alternate_rot_text = FALSE;
-static boolean alternate_rot_text2 = FALSE;
-static boolean alternate_rot_text3 = FALSE;
 
 
 STATIC_OVL void

@@ -230,9 +230,9 @@ static struct Bool_Opt {
     { "sanity_check", &iflags.sanity_check, FALSE, SET_IN_WIZGAME },
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
-    { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },
-    { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, FALSE, SET_IN_GAME },
-    { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, FALSE, SET_IN_GAME },
+    { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, TRUE, SET_IN_GAME },
+    { "show_tile_pet_hp_bar", &flags.show_tile_pet_hp_bar, TRUE, SET_IN_GAME },
+    { "show_tile_u_hp_bar", &flags.show_tile_u_hp_bar, TRUE, SET_IN_GAME },
     { "showrace", &flags.showrace, FALSE, SET_IN_GAME },
 #ifdef SCORE_ON_BOTL
     { "showscore", &flags.showscore, FALSE, SET_IN_GAME },
