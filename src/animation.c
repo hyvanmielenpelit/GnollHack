@@ -195,6 +195,12 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
       { -1, 0, 1, -1, 1 }
+    },
+    { "dracolich-statue-enlargement", 5,
+      DRACOLICH_STATUE_ENLARGEMENT_FRAMES, DRACOLICH_STATUE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { -1, 0, 1, -1, 1 }
     }
 };
 

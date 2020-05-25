@@ -2587,7 +2587,7 @@ user-interface,ui-tile,hit-text-3,1,64,96,whole
 user-interface,ui-tile,hit-text-4,1,64,96,whole
 user-interface,ui-tile,hit-text-5,1,64,96,whole
 user-interface,ui-tile,general-ui,3,16,16,checkbox-unchecked,checkbox-checked,checkbox-count
-user-interface,ui-tile,status,14,16,16,petmark,detectmark,pilemark,hungry,weak,faint,burdened,stressed,strained,overtaxed,overloaded,two-weapon,skill,saddled
+user-interface,ui-tile,status,14,16,16,petmark,peacemark,detectmark,pilemark,hungry,weak,faint,burdened,stressed,strained,overtaxed,overloaded,two-weapon,skill
 user-interface,ui-tile,conditions,22,16,16,stone,slime,strngl,suffoc,foodPois,termIll,blind,deaf,stun,conf,hallu,lev,fly,ride,slow,paral,fear,sleep,cancl,silent,grab,rot
 user-interface,ui-tile,main_tile_mark,1,64,96,whole
 user-interface,ui-tile,main-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
@@ -2609,3 +2609,8 @@ enlargement,dracolich-enlargement,top,217,3,2,0,5,1
 enlargement,dracolich-enlargement,top-right,217,3,2,0,5,2
 enlargement,dracolich-enlargement,left,217,3,2,0,5,3
 enlargement,dracolich-enlargement,right,217,3,2,0,5,4
+enlargement,dracolich-statue-enlargement,top-left,730,3,2,0,5,0
+enlargement,dracolich-statue-enlargement,top,730,3,2,0,5,1
+enlargement,dracolich-statue-enlargement,top-right,730,3,2,0,5,2
+enlargement,dracolich-statue-enlargement,left,730,3,2,0,5,3
+enlargement,dracolich-statue-enlargement,right,730,3,2,0,5,4
