@@ -2818,7 +2818,7 @@ uchar* tilemapflags;
         }
 
         /* Replacements */
-        for (int i = 1; i < NUM_REPLACEMENTS; i++)
+        for (int i = 1; i <= NUM_REPLACEMENTS; i++)
         {
             for (int j = 0; j < replacements[i].number_of_tiles; j++)
             {
@@ -2976,7 +2976,7 @@ uchar* tilemapflags;
         }
 
         /* Replacements */
-        for (int i = 1; i < NUM_REPLACEMENTS; i++)
+        for (int i = 1; i <= NUM_REPLACEMENTS; i++)
         {
             for (int j = 0; j < replacements[i].number_of_tiles; j++)
             {

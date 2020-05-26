@@ -27,6 +27,12 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "brass-lantern-lit-animation",  1,
+      BRASS_LANTERN_LIT_ANIMATION_FRAMES, BRASS_LANTERN_LIT_ANIMATION_OFF, 2,
+      ANIMATION_MAIN_TILE_USE_FIRST,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", 6,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 3,
       ANIMATION_MAIN_TILE_USE_FIRST,
@@ -137,9 +143,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 
 short
-maybe_get_replaced_tile(ntile, x, y)
+maybe_get_replaced_tile(ntile, x, y, otmp)
 int x, y;
 short ntile;
+struct obj* otmp;
 {
 #ifdef USE_TILES
     short replacement_idx = tile2replacement[ntile];
@@ -165,6 +172,17 @@ short ntile;
             }
 
             break;
+        }
+        case REPLACEMENT_ACTION_LIT:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (is_obj_activated(otmp))
+            {
+                /* Return the first tile with index 0 */
+                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
         }
         default:
             break;
@@ -575,6 +593,14 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       REPLACEMENT_ACTION_BOTTOM_TILE,
       { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "brass-lantern-replacement",
+      BRASS_LANTERN_LIT_TILES, BRASS_LANTERN_LIT_OFF,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_LIT,
+      { "lit", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { BRASS_LANTERN_LIT_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 };

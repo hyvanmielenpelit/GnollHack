@@ -1088,7 +1088,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean skip_drawing = FALSE;
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, &data->map[i][j].object_data);
                     ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j]);
                     if (enlarg_idx >= 0)
                     {
@@ -1478,8 +1478,8 @@ static void dirty(PNHMapWindow data, int x, int y)
     short bktile = glyph2tile[abs(data->map[x][y].bkglyph)];
     short replacement_idx = tile2replacement[tile];
     short bk_replacement_idx = tile2replacement[bktile];
-    tile = maybe_get_replaced_tile(tile, x, y);
-    bktile = maybe_get_replaced_tile(bktile, x, y);
+    tile = maybe_get_replaced_tile(tile, x, y, level.objects[x][y]);
+    bktile = maybe_get_replaced_tile(bktile, x, y, (struct obj*)0);
 
     tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0);
     bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0);

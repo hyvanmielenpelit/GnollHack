@@ -1951,15 +1951,15 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 
 /* tools ... */
 /* tools with weapon characteristics come last */
-#define ANIMATED_TOOL(name,desc,contentdesc,itemdesc, stand_anim, lit_anim ,subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, contentdesc, itemdesc, stand_anim, lit_anim, 0, 0, 0, 0),                                           \
+#define GENERAL_TOOL(name,desc,contentdesc,itemdesc, stand_anim, lit_anim, enl, lit_enl, repl, lit_repl, subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,flags,flags2,flags3,flags4,powconfermask) \
+    OBJECT(OBJ(name, desc, contentdesc, itemdesc, stand_anim, lit_anim, enl, lit_enl, repl, lit_repl),                                           \
            BITS(kn, mrg, charged || spetype ? 1 : 0, 0, mgc, spetype, charged, 0, 0, 0, 0, 0, subtype, P_NONE, mat), \
            power1, power2, power3, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \
 		   wt, color, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 #define TOOL(name,desc,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,flags,flags2,flags3,flags4,powconfermask) \
-   ANIMATED_TOOL(name,desc,contentdesc,itemdesc, 0, 0,subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,flags,flags2,flags3,flags4,powconfermask)
+   GENERAL_TOOL(name,desc,contentdesc,itemdesc, 0, 0, 0, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,flags,flags2,flags3,flags4,powconfermask)
 
 #define SPELLTOOL(name,desc,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,flags,flags2,flags3, flags4) \
     OBJECT(OBJ(name, desc, contentdesc, itemdesc, 0, 0, 0, 0, 0, 0),                                           \
@@ -2041,12 +2041,12 @@ TOOL("credit card",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYP
 /* light sources */
 TOOL("tallow candle",   "old-fashioned candle", None, None, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 18,  1, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_LIT_TILE, PERMITTED_ALL),
-ANIMATED_TOOL("wax candle",      "twisted candle", None, None, NO_ANIMATION, TWISTED_CANDLE_LIT_ANIMATION, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED,  9,  1, 20, 0, 0, 0, 0, 0, 0,
+GENERAL_TOOL("wax candle",      "twisted candle", None, None, NO_ANIMATION, TWISTED_CANDLE_LIT_ANIMATION, 0, 0, 0, 0, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED,  9,  1, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_LIT_TILE, PERMITTED_ALL), //ENDMARKER
-ANIMATED_TOOL("magic candle",	"handcrafted candle", None, None, NO_ANIMATION, HANDCRAFTED_CANDLE_LIT_ANIMATION, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED,  3,  1, 20, 0, 0, 0, 0, 0, 0,
+GENERAL_TOOL("magic candle",	"handcrafted candle", None, None, NO_ANIMATION, HANDCRAFTED_CANDLE_LIT_ANIMATION, 0, 0, 0, 0, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED,  3,  1, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_LIT_TILE, PERMITTED_ALL),
-TOOL("brass lantern",       None, None, None, TOOLTYPE_LANTERN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 30, 30, 12, 0, 0, 0, 0, 0, 0,
-	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_LIT_TILE, PERMITTED_ALL),
+GENERAL_TOOL("brass lantern",       None, None, None, 0, 0, 0, 0, BRASS_LANTERN_LIT_REPLACEMENT, 0, TOOLTYPE_LANTERN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 30, 30, 12, 0, 0, 0, 0, 0, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, PERMITTED_ALL),
 TOOL("oil lamp",          "antiquated brass lamp", None, None, TOOLTYPE_LAMP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 40, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_LIT_TILE, PERMITTED_ALL),
 TOOL("magic lamp",        "oriental brass lamp", None, None, TOOLTYPE_LAMP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 15, 20, 50, 0, 0, 0, 0, 0, 0,

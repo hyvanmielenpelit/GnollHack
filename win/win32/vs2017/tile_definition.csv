@@ -1859,7 +1859,6 @@ objects,normal,reagents,feather,no description,0,1,1,0
 objects,lit,tools,tallow candle,old-fashioned candle,0,1,1,0
 objects,lit,tools,wax candle,twisted candle,0,1,1,0
 objects,lit,tools,magic candle,handcrafted candle,0,1,1,0
-objects,lit,tools,brass lantern,no description,0,1,1,0
 objects,lit,tools,oil lamp,antiquated brass lamp,0,1,1,0
 objects,lit,tools,magic lamp,oriental brass lamp,0,1,1,0
 objects,lit,tools,holy symbol,religious symbol,0,1,1,0
@@ -2589,10 +2588,12 @@ user-interface,ui-tile,status-window-borders,6,32,32,top-left,top,middle-left,mi
 user-interface,ui-tile,map-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,menu-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,text-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
-replacement,dungeon-normal-stone-replacement,bottom-end,2222,1,1,0
-replacement,dungeon-normal-vwall-replacement,bottom-end,2223,1,1,0
+replacement,dungeon-normal-stone-replacement,bottom-end,2221,1,1,0
+replacement,dungeon-normal-vwall-replacement,bottom-end,2222,1,1,0
+replacement,brass-lantern-replacement,lit,1437,1,1,0
 animation,handcrafted-candle-lit-animation,tile-0,1860,1,1,0
-animation,elf_wizard_female_cast-animation,tile-0,2545,1,1,0
+animation,elf_wizard_female_cast-animation,tile-0,2544,1,1,0
+animation,brass-lantern-lit-animation,tile-0,-1,1,1,0
 animation,twisted-candle-lit-animation,tile-0,1859,1,1,0
 animation,twisted-candle-lit-animation,tile-1,1859,1,1,0
 animation,twisted-candle-lit-animation,tile-2,1859,1,1,0
