@@ -2432,9 +2432,9 @@ uchar* tilemapflags;
         {
             if (process_style == 0)
             {
-                Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name,
+                Sprintf(buf, "%s,%s,%s,%d", tile_section_name,
                     replacements[i].replacement_name ? replacements[i].replacement_name : "unknown replacement",
-                    j,
+                    replacements[i].tile_names[j],
                     base_tile
                 );
                 int enl = replacements[i].tile_enlargement[j];

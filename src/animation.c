@@ -137,6 +137,23 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 
 short
+maybe_get_replaced_tile(ntile)
+short ntile;
+{
+#ifdef USE_TILES
+    short replacement_idx = tile2replacement[ntile];
+    if (replacement_idx > 0)
+    {
+        if (replacements[replacement_idx].number_of_tiles < 1)
+            return ntile;
+    }
+#endif
+    return ntile;
+}
+
+
+
+short
 maybe_get_animated_tile(ntile, interval_counter, mapAnimated)
 short ntile;
 unsigned long interval_counter;
@@ -517,6 +534,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       0, 0,
       0UL,
       REPLACEMENT_ACTION_NO_ACTION,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -524,6 +542,15 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       DUNGEON_NORMAL_STONE_REPLACEMENT_TILES, DUNGEON_NORMAL_STONE_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
       REPLACEMENT_ACTION_BOTTOM_TILE,
+      { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-vwall-replacement",
+      DUNGEON_NORMAL_VWALL_REPLACEMENT_TILES, DUNGEON_NORMAL_VWALL_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
+      REPLACEMENT_ACTION_BOTTOM_TILE,
+      { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }

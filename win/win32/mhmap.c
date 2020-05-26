@@ -1087,7 +1087,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if ((glyph != NO_GLYPH) /*&& (glyph != bkglyph)*/) {
                     boolean skip_drawing = FALSE;
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
-                    ntile = maybe_get_animated_tile(glyph2tile[glyph], data->interval_counter, &data->mapAnimated[i][j]);
+                    ntile = glyph2tile[glyph];
+                    ntile = maybe_get_replaced_tile(ntile);
+                    ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j]);
                     if (enlarg_idx >= 0)
                     {
                         if (tile2enlargement[ntile] > 0)
@@ -1444,8 +1446,38 @@ static void dirty(PNHMapWindow data, int x, int y)
 
     InvalidateRect(data->hWnd, &rt, FALSE);
 
-    int enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y].glyph)]];
-    int bk_enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y].bkglyph)]];
+    short tile = glyph2tile[abs(data->map[x][y].glyph)];
+    short bktile = glyph2tile[abs(data->map[x][y].bkglyph)];
+    short replacement_idx = tile2replacement[tile];
+    short bk_replacement_idx = tile2replacement[bktile];
+
+    for (int i = 0; i < 2; i++)
+    {
+        short used_ridx = (i == 0 ? replacement_idx : bk_replacement_idx);
+        short used_tile = (i == 0 ? tile : bktile);
+        if (used_ridx > 0)
+        {
+            /* Update tile area */
+            if (replacements[used_ridx].replacement_events & REPLACEMENT_EVENT_UPDATE_FROM_BELOW)
+            {
+                if (isok(x, y - 1))
+                {
+                    RECT rt2;
+                    nhcoord2display(data, x, y - 1, &rt2); //data->xCur, data->yCur
+                    InvalidateRect(data->hWnd, &rt2, FALSE);
+                }
+            }
+        }
+    }
+
+    tile = maybe_get_replaced_tile(tile);
+    bktile = maybe_get_replaced_tile(bktile);
+
+    tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0);
+    bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0);
+
+    int enlarg = tile2enlargement[tile];
+    int bk_enlarg = tile2enlargement[bktile];
     if (enlarg > 0 || bk_enlarg > 0)
     {
         int enl_x = -1;

@@ -128,6 +128,7 @@ struct replacement_definition {
     int glyph_offset;
     unsigned long replacement_events;
     enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
+    char* tile_names[MAX_TILES_PER_REPLACEMENT];
     short tile_animation[MAX_TILES_PER_REPLACEMENT];
     short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
 };
