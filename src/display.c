@@ -2085,6 +2085,16 @@ xchar x, y;
     {
     stone_here:
         {
+            idx = S_stone;
+            uchar var_idx = ptr->variation;
+            if (var_idx > 0)
+            {
+                is_variation = TRUE;
+                int sym_idx = idx;
+                int var_offset = defsyms[sym_idx].variation_offset;
+                idx = var_offset + (int)var_idx - 1;
+            }
+#if 0
             int below_y = y + 1;
             if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0)
                 idx = S_stone;
@@ -2096,16 +2106,17 @@ xchar x, y;
                 int var_offset = defsyms[sym_idx].variation_offset;
                 idx = var_offset + var_idx;
             }
+#endif
         }
     }
     break;
     case ROOM:
         idx = (!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM : S_room;
 
-        if (ptr->flags > 0)
+        if (ptr->variation > 0)
         {
             is_variation = TRUE;
-            int var_idx = min(ptr->flags, FLOOR_VARIATIONS) - 1;
+            int var_idx = min(ptr->variation, FLOOR_VARIATIONS) - 1;
             int sym_idx = idx;
             int var_offset = defsyms[sym_idx].variation_offset;
             idx = var_offset + var_idx;
@@ -2162,6 +2173,7 @@ xchar x, y;
             if (idx == S_hwall)
                 goto hwall_here;
 
+#if 0
             if (idx != S_tuwall && idx != S_blcorn && idx != S_brcorn)
             {
                 int below_y = y + 1;
@@ -2179,6 +2191,7 @@ xchar x, y;
                     idx = var_offset + var_idx;
                 }
             }
+#endif
         }
         else
             goto stone_here;

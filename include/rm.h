@@ -305,9 +305,9 @@ struct symdef_cmap {
 #ifdef TEXTCOLOR
     uchar color[CMAP_TYPE_MAX];
 #endif
-    int stand_animation[CMAP_TYPE_MAX];
-    int enlargement[CMAP_TYPE_MAX];
-    int replacement[CMAP_TYPE_MAX];
+    short stand_animation[CMAP_TYPE_MAX];
+    short enlargement[CMAP_TYPE_MAX];
+    short replacement[CMAP_TYPE_MAX];
 };
 
 
@@ -317,27 +317,13 @@ struct symdef_cmap_variation {
 #ifdef TEXTCOLOR
     uchar color[CMAP_TYPE_MAX];
 #endif
-    int stand_animation[CMAP_TYPE_MAX];
-    int enlargement[CMAP_TYPE_MAX];
-    int replacement[CMAP_TYPE_MAX];
+    short stand_animation[CMAP_TYPE_MAX];
+    short enlargement[CMAP_TYPE_MAX];
+    short replacement[CMAP_TYPE_MAX];
 };
 
 /* Variation definitions */
-#define STONE_VARIATION_OFFSET (0)
-enum stone_variation_types
-{
-    STONE_BOTTOM_END = 0,
-    STONE_VARIATIONS
-};
-
-#define VWALL_VARIATION_OFFSET (STONE_VARIATIONS + STONE_VARIATION_OFFSET)
-enum general_wall_variation_types
-{
-    GWALL_BOTTOM_END = 0,
-    GWALL_VARIATIONS
-};
-
-#define HWALL_VARIATION_OFFSET (GWALL_VARIATIONS + VWALL_VARIATION_OFFSET)
+#define HWALL_VARIATION_OFFSET (0)
 enum hwall_variation_types
 {
     HWALL_VARIATION_1 = 0,
@@ -348,15 +334,7 @@ enum hwall_variation_types
     HWALL_VARIATIONS
 };
 
-#define TLCORN_VARIATION_OFFSET (HWALL_VARIATIONS + HWALL_VARIATION_OFFSET)
-#define TRCORN_VARIATION_OFFSET (GWALL_VARIATIONS + TLCORN_VARIATION_OFFSET)
-
-#define CRWALL_VARIATION_OFFSET (GWALL_VARIATIONS + TRCORN_VARIATION_OFFSET)
-#define TDWALL_VARIATION_OFFSET (GWALL_VARIATIONS + CRWALL_VARIATION_OFFSET)
-#define TLWALL_VARIATION_OFFSET (GWALL_VARIATIONS + TDWALL_VARIATION_OFFSET)
-#define TRWALL_VARIATION_OFFSET (GWALL_VARIATIONS + TLWALL_VARIATION_OFFSET)
-
-#define FLOOR_VARIATION_OFFSET (GWALL_VARIATIONS + TRWALL_VARIATION_OFFSET)
+#define FLOOR_VARIATION_OFFSET (HWALL_VARIATIONS + HWALL_VARIATION_OFFSET)
 
 enum floor_variation_types
 {
@@ -408,17 +386,7 @@ enum altar_variation_types
 #define MAX_VARIATIONS (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
 
 #define is_wall_variation(idx) ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
-#define is_base_cmap_variation(idx) ((idx) >= STONE_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)
-#define is_bottom_end_variation(idx) ( \
-       (idx) == (GWALL_BOTTOM_END + VWALL_VARIATION_OFFSET) \
-    || (idx) == (GWALL_BOTTOM_END + TLCORN_VARIATION_OFFSET) \
-    || (idx) == (GWALL_BOTTOM_END + TRCORN_VARIATION_OFFSET) \
-    || (idx) == (GWALL_BOTTOM_END + CRWALL_VARIATION_OFFSET) \
-    || (idx) == (GWALL_BOTTOM_END + TDWALL_VARIATION_OFFSET) \
-    || (idx) == (GWALL_BOTTOM_END + TLWALL_VARIATION_OFFSET) \
-    || (idx) == (GWALL_BOTTOM_END + TRWALL_VARIATION_OFFSET) \
-    )
-#define NUM_BOTTOM_ENDS 7
+#define is_base_cmap_variation(idx) ((idx) >= HWALL_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)
 
 struct symparse {
     unsigned range;

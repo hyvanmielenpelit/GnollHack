@@ -1088,7 +1088,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean skip_drawing = FALSE;
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile);
+                    ntile = maybe_get_replaced_tile(ntile, i, j);
                     ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j]);
                     if (enlarg_idx >= 0)
                     {
@@ -1446,32 +1446,40 @@ static void dirty(PNHMapWindow data, int x, int y)
 
     InvalidateRect(data->hWnd, &rt, FALSE);
 
-    short tile = glyph2tile[abs(data->map[x][y].glyph)];
-    short bktile = glyph2tile[abs(data->map[x][y].bkglyph)];
-    short replacement_idx = tile2replacement[tile];
-    short bk_replacement_idx = tile2replacement[bktile];
-
-    for (int i = 0; i < 2; i++)
+    /* Check REPLACEMENT_EVENT_UPDATE_FROM_BELOW */
+    if (isok(x, y - 1))
     {
-        short used_ridx = (i == 0 ? replacement_idx : bk_replacement_idx);
-        short used_tile = (i == 0 ? tile : bktile);
-        if (used_ridx > 0)
+        int upside_y = y - 1;
+        for (int i = 0; i < 2; i++)
         {
-            /* Update tile area */
-            if (replacements[used_ridx].replacement_events & REPLACEMENT_EVENT_UPDATE_FROM_BELOW)
+            short tile_upside = glyph2tile[abs(data->map[x][upside_y].glyph)];
+            short bktile_upside = glyph2tile[abs(data->map[x][upside_y].bkglyph)];
+            short replacement_idx_upside = tile2replacement[tile_upside];
+            short bk_replacement_idx_upside = tile2replacement[bktile_upside];
+
+            short used_ridx = (i == 0 ? replacement_idx_upside : bk_replacement_idx_upside);
+            short used_tile = (i == 0 ? tile_upside : bktile_upside);
+            if (used_ridx > 0)
             {
-                if (isok(x, y - 1))
+                /* Update tile area */
+                if (replacements[used_ridx].replacement_events & REPLACEMENT_EVENT_UPDATE_FROM_BELOW)
                 {
+                    data->mapDirty[x][upside_y] = TRUE;
                     RECT rt2;
-                    nhcoord2display(data, x, y - 1, &rt2); //data->xCur, data->yCur
+                    nhcoord2display(data, x, upside_y, &rt2); //data->xCur, data->yCur
                     InvalidateRect(data->hWnd, &rt2, FALSE);
                 }
             }
         }
     }
 
-    tile = maybe_get_replaced_tile(tile);
-    bktile = maybe_get_replaced_tile(bktile);
+    /* Now this tile */
+    short tile = glyph2tile[abs(data->map[x][y].glyph)];
+    short bktile = glyph2tile[abs(data->map[x][y].bkglyph)];
+    short replacement_idx = tile2replacement[tile];
+    short bk_replacement_idx = tile2replacement[bktile];
+    tile = maybe_get_replaced_tile(tile, x, y);
+    bktile = maybe_get_replaced_tile(bktile, x, y);
 
     tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0);
     bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0);

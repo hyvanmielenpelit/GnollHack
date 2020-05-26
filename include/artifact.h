@@ -120,14 +120,14 @@ struct artifact {
     char acolor;        /* color to use if artifact 'glows' */
 	char ocolor;		/* color used for object instead of its normal color */
 
-	int stand_animation;
-	int lit_animation;
+	short stand_animation;
+	short lit_animation;
 
-	int enlargement;
-	int lit_enlargement;
+	short enlargement;
+	short lit_enlargement;
 
-	int replacement;
-	int lit_replacement;
+	short replacement;
+	short lit_replacement;
 };
 
 /* invoked properties with special powers */

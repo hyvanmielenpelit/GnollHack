@@ -231,7 +231,7 @@ uchar* tilemapflags;
                 }
 
 
-                int enlargement = 0;
+                short enlargement = 0;
                 if (gender == 0)
                 {
                     if (spset < MAX_ACTION_TILES)
@@ -1172,7 +1172,6 @@ uchar* tilemapflags;
 
     /* CMAP tiles */
     tile_section_name = "cmap";
-    int bottom_end_variations[NUM_BOTTOM_ENDS] = { S_vwall, S_tlcorn, S_trcorn, S_crwall, S_tdwall, S_tlwall, S_trwall };
     int num_cmaps = (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps));
 
     for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
@@ -1222,20 +1221,12 @@ uchar* tilemapflags;
                     /* Copy 2 simple wall tile to all other relevant tiles */
                     if (tsd->cmap_wall_style[cmap_idx] == 1 )
                     {
+                        /* vwall is copied to everywhere else except hwall, and tile replacement changes it to look like hwall where relevant */
                         if (i == S_vwall)
                         {
                             for (int j = S_tlcorn; j <= S_trwall; j++)
                             {
                                 tilemaparray[j + glyph_offset] = tile_count;
-                            }
-                        }
-                        else if (i == S_hwall)
-                        {
-                            int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
-                            for (int j = 0; j < NUM_BOTTOM_ENDS; j++)
-                            {
-                                int variation_offset = defsyms[bottom_end_variations[j]].variation_offset;
-                                tilemaparray[GWALL_BOTTOM_END + variation_offset + glyph_offset2] = tile_count;
                             }
                         }
                     }
@@ -1273,15 +1264,6 @@ uchar* tilemapflags;
                                     for (int j = S_tlcorn; j <= S_trwall; j++)
                                     {
                                         tilemaparray[j + glyph_offset] = tile_count;
-                                    }
-                                }
-                                else if (i == S_hwall)
-                                {
-                                    int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
-                                    for (int j = 0; j < NUM_BOTTOM_ENDS; j++)
-                                    {
-                                        int variation_offset = defsyms[bottom_end_variations[j]].variation_offset;
-                                        tilemaparray[GWALL_BOTTOM_END + variation_offset + glyph_offset2] = tile_count;
                                     }
                                 }
                             }
@@ -1353,10 +1335,6 @@ uchar* tilemapflags;
                     if (tsd->cmap_limitation_style[cmap_idx] == 2 && !is_base_cmap_variation(i))
                         continue;
                 }
-
-                /* Already read in CMAP */
-                if (tsd->cmap_wall_style[cmap_idx] == 1 && is_bottom_end_variation(i))
-                    continue;
 
                 if (process_style == 0)
                 {

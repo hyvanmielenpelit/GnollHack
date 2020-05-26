@@ -137,7 +137,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 
 short
-maybe_get_replaced_tile(ntile)
+maybe_get_replaced_tile(ntile, x, y)
+int x, y;
 short ntile;
 {
 #ifdef USE_TILES
@@ -146,6 +147,28 @@ short ntile;
     {
         if (replacements[replacement_idx].number_of_tiles < 1)
             return ntile;
+
+        int action_id = replacements[replacement_idx].replacement_action;
+        switch (replacements[replacement_idx].replacement_action)
+        {
+        case REPLACEMENT_ACTION_BOTTOM_TILE:
+        {
+            int below_y = y + 1;
+            if (!isok(x, below_y) || levl[x][below_y].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0)
+            {
+                /* No action */
+            }
+            else
+            {
+                /* Return the first tile with index 0 */
+                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+
+            break;
+        }
+        default:
+            break;
+        }
     }
 #endif
     return ntile;
