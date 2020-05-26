@@ -16,7 +16,7 @@
 
 #define NO_ACTION_INFO    \
     {              \
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 \
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 \
     }
 
 #ifdef C
@@ -74,9 +74,9 @@ void NDECL(monst_init);
         a1, a2, a3, a4, a5, a6, a7, a8    \
     }
 
-#define ACTION_INFO(a1, a2, a3, a4, a5, a6, a7, a8, a9, ad, ac, as ) \
+#define ACTION_INFO(a1, a2, a3, a4, a5, a6, a7, a8, a9, ad, as, ac ) \
     {                             \
-        a1, a2, a3, a4, a5, a6, a7, a8, a9, ad, ac, as    \
+        {a1, a2, a3, a4, a5, a6, a7, a8, a9, ad}, as, ac    \
     }
 
 #define None (const char *)0
@@ -2427,7 +2427,7 @@ NEARDATA struct permonst mons[] = {
 		M2_UNDEAD | M2_HOSTILE | M2_MAGIC,
 		M3_WAITFORU | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CORPSE_CRUMBLES_TO_DUST,
         M4_BRAVE, M5_NONE, 
-		30, CLR_BROWN, ACTION_INFO(DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0,0,0,DRACOLICH_STATUE_ENLARGEMENT), NO_ACTION_INFO),
+		30, CLR_BROWN, ACTION_INFO(DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0,0,DRACOLICH_STATUE_ENLARGEMENT,0), NO_ACTION_INFO),
 	MON("elder dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(27, 12, -14, 19, 100, -17),
 		(G_HELL | G_GENO | G_NOCORPSE | 1), 
 		A(ATTK(AT_BREA, AD_DRAY, 1, 255, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 23),

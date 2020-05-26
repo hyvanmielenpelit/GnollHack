@@ -2714,6 +2714,54 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 
 boolean
+player_has_action_tile(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
+enum action_tile_types action;
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* There's always a stand tile */
+    if (action == ACTION_TILE_NO_ACTION)
+        return TRUE;
+
+    /* Test cases */
+    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+        return TRUE;
+    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+        return TRUE;
+
+    /* Real cases */
+    switch (action)
+    {
+    case ACTION_TILE_NO_ACTION:
+        break;
+    case ACTION_TILE_ATTACK:
+        break;
+    case ACTION_TILE_THROW:
+        break;
+    case ACTION_TILE_FIRE:
+        break;
+    case ACTION_TILE_CAST:
+        break;
+    case ACTION_TILE_SPECIAL_ATTACK:
+        break;
+    case ACTION_TILE_KICK:
+        break;
+    case ACTION_TILE_ITEM_USE:
+        break;
+    case ACTION_TILE_DOOR_USE:
+        break;
+    case ACTION_TILE_DEATH:
+        break;
+    case MAX_ACTION_TILES:
+        break;
+    default:
+        break;
+    }
+
+    return FALSE;
+}
+
+#if 0
+boolean
 player_has_attack_tile(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
@@ -2821,7 +2869,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     else
         return FALSE;
 }
-
+#endif
 
 int
 glyph_to_player_mon(int glyph)

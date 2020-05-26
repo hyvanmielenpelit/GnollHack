@@ -42,6 +42,64 @@ init_animations()
     return;
 }
 
+int
+get_player_action_glyph_offset(action)
+enum action_tile_types action;
+{
+    /* relies on aligned ordering of glyph offsets and action_tile_types */
+    int res = GLYPH_PLAYER_OFF + action * NUM_PLAYER_CHARACTERS;
+    return res;
+}
+
+int
+get_monster_action_glyph_offset(action, genderidx)
+enum action_tile_types action;
+int genderidx;
+{
+    /* relies on aligned ordering of glyph offsets and action_tile_types */
+    int res = (gender == 0 ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF) + action * NUM_MONSTERS;
+    return res;
+}
+
+short
+get_player_animation(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
+enum action_tile_types action;
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right animation for the combination that has an animation */
+    switch (action)
+    {
+    case ACTION_TILE_NO_ACTION:
+        break;
+    case ACTION_TILE_ATTACK:
+        break;
+    case ACTION_TILE_THROW:
+        break;
+    case ACTION_TILE_FIRE:
+        break;
+    case ACTION_TILE_CAST:
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+            return PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION;
+        break;
+    case ACTION_TILE_SPECIAL_ATTACK:
+        break;
+    case ACTION_TILE_KICK:
+        break;
+    case ACTION_TILE_ITEM_USE:
+        break;
+    case ACTION_TILE_DOOR_USE:
+        break;
+    case ACTION_TILE_DEATH:
+        break;
+    case MAX_ACTION_TILES:
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+#if 0
 short
 get_player_stand_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
@@ -124,7 +182,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     /* Write here the code that returns the right animation for the combination that has an animation */
     return 0;
 }
-
+#endif
 
 
 short
@@ -206,13 +264,42 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
 
 
 short
-get_player_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
+get_player_enlargement(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
+enum action_tile_types action;
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 {
     /* Write here the code that returns the right enlargement for the combination that has an enlargement */
+    switch (action)
+    {
+    case ACTION_TILE_NO_ACTION:
+        break;
+    case ACTION_TILE_ATTACK:
+        break;
+    case ACTION_TILE_THROW:
+        break;
+    case ACTION_TILE_FIRE:
+        break;
+    case ACTION_TILE_CAST:
+        break;
+    case ACTION_TILE_SPECIAL_ATTACK:
+        break;
+    case ACTION_TILE_KICK:
+        break;
+    case ACTION_TILE_ITEM_USE:
+        break;
+    case ACTION_TILE_DOOR_USE:
+        break;
+    case ACTION_TILE_DEATH:
+        break;
+    case MAX_ACTION_TILES:
+        break;
+    default:
+        break;
+    }
     return 0;
 }
 
+#if 0
 short
 get_player_attack_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
@@ -284,7 +371,7 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     /* Write here the code that returns the right enlargement for the combination that has an enlargement */
     return 0;
 }
-
+#endif
 
 short
 get_animation_base_tile(animidx)
@@ -292,51 +379,21 @@ short animidx;
 {
     for (int i = LOW_PM; i < NUM_MONSTERS; i++)
     {
-        if (mons[i].animation.stand == animidx)
-            return glyph2tile[i + GLYPH_MON_OFF];
-        if (mons[i].animation.attacks == animidx)
-            return glyph2tile[i + GLYPH_ATTACK_OFF];
-        if (mons[i].animation.throws == animidx)
-            return glyph2tile[i + GLYPH_THROW_OFF];
-        if (mons[i].animation.fire == animidx)
-            return glyph2tile[i + GLYPH_FIRE_OFF];
-        if (mons[i].animation.cast == animidx)
-            return glyph2tile[i + GLYPH_CAST_OFF];
-        if (mons[i].animation.special_attack == animidx)
-            return glyph2tile[i + GLYPH_SPECIAL_ATTACK_OFF];
-        if (mons[i].animation.kick == animidx)
-            return glyph2tile[i + GLYPH_KICK_OFF];
-        if (mons[i].animation.item_use == animidx)
-            return glyph2tile[i + GLYPH_ITEM_USE_OFF];
-        if (mons[i].animation.door_use == animidx)
-            return glyph2tile[i + GLYPH_DOOR_USE_OFF];
-        if (mons[i].animation.death == animidx)
-            return glyph2tile[i + GLYPH_DEATH_OFF];
-        if (mons[i].animation.corpse == animidx)
-            return glyph2tile[i + GLYPH_BODY_OFF];
+        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        {
+            if (mons[i].animation.actions[action] == animidx)
+                return glyph2tile[i + get_monster_action_glyph_offset(action, 0)];
+        }
         if (mons[i].animation.statue == animidx)
             return glyph2tile[i + GLYPH_STATUE_OFF];
+        if (mons[i].animation.corpse == animidx)
+            return glyph2tile[i + GLYPH_BODY_OFF];
 
-        if (mons[i].female_animation.stand == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_MON_OFF];
-        if (mons[i].female_animation.attacks == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_MON_OFF];
-        if (mons[i].female_animation.throws == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_THROW_OFF];
-        if (mons[i].female_animation.fire == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_FIRE_OFF];
-        if (mons[i].female_animation.cast == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_CAST_OFF];
-        if (mons[i].female_animation.special_attack == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF];
-        if (mons[i].female_animation.kick == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_KICK_OFF];
-        if (mons[i].female_animation.item_use == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_ITEM_USE_OFF];
-        if (mons[i].female_animation.door_use == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_DOOR_USE_OFF];
-        if (mons[i].female_animation.death == animidx)
-            return glyph2tile[i + GLYPH_FEMALE_DEATH_OFF];
+        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        {
+            if (mons[i].female_animation.actions[action] == animidx)
+                return glyph2tile[i + get_monster_action_glyph_offset(action, 1)];
+        }
         if (mons[i].female_animation.corpse == animidx)
             return glyph2tile[i + GLYPH_FEMALE_BODY_OFF];
         if (mons[i].female_animation.statue == animidx)
@@ -377,8 +434,12 @@ short animidx;
                     for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                     {
                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
-                        if(get_player_stand_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_OFF];
+                        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+                        {
+                            if (get_player_animation(action, roleidx, raceidx, gender, alignment, level))
+                                return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
+                        }
+#if 0
                         if (get_player_attack_animation(roleidx, raceidx, gender, alignment, level))
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_ATTACK_OFF];
                         if (get_player_throw_animation(roleidx, raceidx, gender, alignment, level))
@@ -397,6 +458,7 @@ short animidx;
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF];
                         if (get_player_death_animation(roleidx, raceidx, gender, alignment, level))
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_DEATH_OFF];
+#endif
                     }
                 }
             }
@@ -413,55 +475,25 @@ short enlidx;
 {
     for (int i = LOW_PM; i < NUM_MONSTERS; i++)
     {
-        if (mons[i].enlargement.stand == enlidx)
-            return glyph2tile[i + GLYPH_MON_OFF];
-        if (mons[i].enlargement.attacks == enlidx)
-            return glyph2tile[i + GLYPH_ATTACK_OFF];
-        if (mons[i].enlargement.throws == enlidx)
-            return glyph2tile[i + GLYPH_THROW_OFF];
-        if (mons[i].enlargement.fire == enlidx)
-            return glyph2tile[i + GLYPH_FIRE_OFF];
-        if (mons[i].enlargement.cast == enlidx)
-            return glyph2tile[i + GLYPH_CAST_OFF];
-        if (mons[i].enlargement.special_attack == enlidx)
-            return glyph2tile[i + GLYPH_SPECIAL_ATTACK_OFF];
-        if (mons[i].enlargement.kick == enlidx)
-            return glyph2tile[i + GLYPH_KICK_OFF];
-        if (mons[i].enlargement.item_use == enlidx)
-            return glyph2tile[i + GLYPH_ITEM_USE_OFF];
-        if (mons[i].enlargement.door_use == enlidx)
-            return glyph2tile[i + GLYPH_DOOR_USE_OFF];
-        if (mons[i].enlargement.death == enlidx)
-            return glyph2tile[i + GLYPH_DEATH_OFF];
-        if (mons[i].enlargement.corpse == enlidx)
-            return glyph2tile[i + GLYPH_BODY_OFF];
+        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        {
+            if (mons[i].enlargement.actions[action] == enlidx)
+                return glyph2tile[i + get_monster_action_glyph_offset(action, 0)];
+        }
         if (mons[i].enlargement.statue == enlidx)
             return glyph2tile[i + GLYPH_STATUE_OFF];
+        if (mons[i].enlargement.corpse == enlidx)
+            return glyph2tile[i + GLYPH_BODY_OFF];
 
-        if (mons[i].female_enlargement.stand == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_MON_OFF];
-        if (mons[i].female_enlargement.attacks == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_MON_OFF];
-        if (mons[i].female_enlargement.throws == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_THROW_OFF];
-        if (mons[i].female_enlargement.fire == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_FIRE_OFF];
-        if (mons[i].female_enlargement.cast == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_CAST_OFF];
-        if (mons[i].female_enlargement.special_attack == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF];
-        if (mons[i].female_enlargement.kick == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_KICK_OFF];
-        if (mons[i].female_enlargement.item_use == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_ITEM_USE_OFF];
-        if (mons[i].female_enlargement.door_use == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_DOOR_USE_OFF];
-        if (mons[i].female_enlargement.death == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_DEATH_OFF];
-        if (mons[i].female_enlargement.corpse == enlidx)
-            return glyph2tile[i + GLYPH_FEMALE_BODY_OFF];
+        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        {
+            if (mons[i].female_enlargement.actions[action] == enlidx)
+                return glyph2tile[i + get_monster_action_glyph_offset(action, 1)];
+        }
         if (mons[i].female_enlargement.statue == enlidx)
             return glyph2tile[i + GLYPH_FEMALE_STATUE_OFF];
+        if (mons[i].female_enlargement.corpse == enlidx)
+            return glyph2tile[i + GLYPH_FEMALE_BODY_OFF];
     }
 
     for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
@@ -498,6 +530,12 @@ short enlidx;
                     for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                     {
                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
+                        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+                        {
+                            if (get_player_enlargement(action, roleidx, raceidx, gender, alignment, level))
+                                return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
+                        }
+#if 0
                         if (get_player_enlargement(roleidx, raceidx, gender, alignment, level))
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_OFF];
                         if (get_player_attack_enlargement(roleidx, raceidx, gender, alignment, level))
@@ -518,6 +556,7 @@ short enlidx;
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF];
                         if (get_player_death_enlargement(roleidx, raceidx, gender, alignment, level))
                             return glyph2tile[player_glyph_index + GLYPH_PLAYER_DEATH_OFF];
+#endif
                     }
                 }
             }

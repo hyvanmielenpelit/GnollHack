@@ -3,6 +3,8 @@
 /*-Copyright (c) Kenneth Lorber, Kensington, Maryland, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#include "animation.h"
+
 #ifndef PERMONST_H
 #define PERMONST_H
 
@@ -26,18 +28,9 @@ struct attack {
 
 struct action_info
 {
-    short stand;
-    short attacks;
-    short throws;
-    short fire;
-    short cast;
-    short special_attack;
-    short kick;
-    short item_use;
-    short door_use;
-    short death;
-    short corpse;
+    short actions[MAX_ACTION_TILES];
     short statue;
+    short corpse;
 };
 
 /*	Max # of attacks for any given monster.
