@@ -11,32 +11,42 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     { "", 0,
       0, 0, 0,
       ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
 
     { "handcrafted-candle-lit-animation",  1,
       HANDCRAFTED_CANDLE_ANIMATION_FRAMES, HANDCRAFTED_CANDLE_ANIMATION_OFF, 2,
       ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "elf_wizard_female_cast-animation", 1,
       PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_OFF, 2,
       ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "brass-lantern-lit-animation",  1,
       BRASS_LANTERN_LIT_ANIMATION_FRAMES, BRASS_LANTERN_LIT_ANIMATION_OFF, 2,
       ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "twisted-candle-lit-animation", 6,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 3,
       ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 };
@@ -143,18 +153,16 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
 
 short
-maybe_get_replaced_tile(ntile, x, y, otmp)
+maybe_get_replaced_tile(ntile, x, y, otmp, autodraw_ptr)
 int x, y;
 short ntile;
 struct obj* otmp;
+enum autodraw_types* autodraw_ptr;
 {
 #ifdef USE_TILES
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
     {
-        if (replacements[replacement_idx].number_of_tiles < 1)
-            return ntile;
-
         int action_id = replacements[replacement_idx].replacement_action;
         switch (replacements[replacement_idx].replacement_action)
         {
@@ -167,7 +175,15 @@ struct obj* otmp;
             }
             else
             {
+                if(autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
                 /* Return the first tile with index 0 */
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
                 return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
 
@@ -180,20 +196,44 @@ struct obj* otmp;
 
             if (is_obj_activated(otmp))
             {
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
                 /* Return the first tile with index 0 */
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
                 return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
+            break;
         }
         case REPLACEMENT_ACTION_COIN_QUANTITY:
         {
             if (!otmp)
                 return ntile;
 
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
             if (otmp->quan > 1)
             {
                 int glyph_idx = (otmp->quan <= 6 ? 0 : 1);
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
                 return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+            break;
         }
         default:
             break;
@@ -206,15 +246,18 @@ struct obj* otmp;
 
 
 short
-maybe_get_animated_tile(ntile, interval_counter, mapAnimated)
+maybe_get_animated_tile(ntile, interval_counter, mapAnimated, autodraw_ptr)
 short ntile;
 unsigned long interval_counter;
 boolean* mapAnimated;
+enum autodraw_types* autodraw_ptr;
 {
 #ifdef USE_TILES
     short animation_idx = tile2animation[ntile];
     if (animation_idx > 0)
     {
+        if (autodraw_ptr)
+            *autodraw_ptr = animations[animation_idx].main_tile_autodraw;
         if (animations[animation_idx].number_of_frames < 1)
             return ntile;
 
@@ -239,11 +282,19 @@ boolean* mapAnimated;
         {
             char animation_frame_index = current_animation_frame - animation_tile_offset;
             if (animation_frame_index >= animations[animation_idx].number_of_frames)
+            {
                 return ntile; /* original tile is the last if number_of_frames is exceeded by numframes */
+            }
 
             char animation_tile_glyph_idx = animations[animation_idx].frame2tile[animation_frame_index];
-            if(animation_tile_glyph_idx <= -1)
+
+            if (autodraw_ptr)
+                *autodraw_ptr = animations[animation_idx].frame_autodraw[animation_frame_index];
+
+            if (animation_tile_glyph_idx <= -1)
+            {
                 return ntile; /* original tile if frame tile mapping specifies a negative number */
+            }
 
             int animation_glyph = (int)animation_tile_glyph_idx + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
             return glyph2tile[animation_glyph]; /* animated version selected */
@@ -265,20 +316,26 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       0, 0,
       0, 0, 0,
       { 0, 1, 2, 3, 4 },
-      { -1, 0, 1, -1, 1 }
+      { -1, 0, 1, -1, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
     },
 
     { "dracolich-enlargement", 5,
       DRACOLICH_ENLARGEMENT_FRAMES, DRACOLICH_ENLARGEMENT_OFF,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
-      { -1, 0, 1, -1, 1 }
+      { -1, 0, 1, -1, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
     },
     { "dracolich-statue-enlargement", 5,
       DRACOLICH_STATUE_ENLARGEMENT_FRAMES, DRACOLICH_STATUE_ENLARGEMENT_OFF,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
-      { -1, 0, 1, -1, 1 }
+      { -1, 0, 1, -1, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
     }
 };
 
@@ -580,7 +637,9 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       0, 0,
       0UL,
       REPLACEMENT_ACTION_NO_ACTION,
+      AUTODRAW_NONE,
       { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -588,7 +647,9 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       DUNGEON_NORMAL_STONE_REPLACEMENT_TILES, DUNGEON_NORMAL_STONE_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
       REPLACEMENT_ACTION_BOTTOM_TILE,
+      AUTODRAW_NONE,
       { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -596,7 +657,29 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       DUNGEON_NORMAL_VWALL_REPLACEMENT_TILES, DUNGEON_NORMAL_VWALL_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
       REPLACEMENT_ACTION_BOTTOM_TILE,
+      AUTODRAW_NONE,
       { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-crwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_CRWALL_ENDS,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-trwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_TRWALL_ENDS,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -604,7 +687,9 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       COIN_REPLACEMENT_TILES, COIN_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_COIN_QUANTITY,
+      AUTODRAW_NONE,
       { "few", "many", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -612,17 +697,31 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       BRASS_LANTERN_LIT_TILES, BRASS_LANTERN_LIT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_LIT,
+      AUTODRAW_NONE,
       { "lit", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { BRASS_LANTERN_LIT_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 };
 
 
-
-
-
-
+NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
+{
+    {"", 0, 0, 0},
+    {
+        "crwall-autodraw", 
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "trwall-autodraw",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    }
+};
 
 /* animation.c */
 

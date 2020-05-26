@@ -1045,50 +1045,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     frame_index = flip_glyph ? 2 : 0;
                 }
 
-#if 0
-                if (bkglyph != NO_GLYPH) {
-                    boolean skip_drawing = FALSE;
-                    ntile = maybe_get_animated_tile(glyph2tile[bkglyph], data->interval_counter, &data->mapAnimated[i][j]);
-                    if (enlarg_idx >= 0)
-                    {
-                        if (tile2enlargement[ntile] > 0)
-                        {
-                            int enl_tile_idx = enlargements[tile2enlargement[ntile]].frame2tile[frame_index];
-                            if (enl_tile_idx >= 0)
-                            {
-                                int enl_glyph = enl_tile_idx + enlargements[tile2enlargement[ntile]].glyph_offset + GLYPH_ENLARGEMENT_OFF;
-                                ntile = glyph2tile[enl_glyph]; /* replace */
-                            }
-                            else
-                                skip_drawing = TRUE;
-                        }
-                        else
-                            skip_drawing = TRUE;
-                    }
 
-                    if (!skip_drawing)
-                    {
-                        int multiplier = flip_bkglyph ? -1 : 1;
-                        t_x = TILEBMP_X(ntile) + (flip_bkglyph ? TILE_X - 1 : 0);
-                        t_y = TILEBMP_Y(ntile);
-
-                        StretchBlt(data->backBufferDC, rect->left, rect->top,
-                            data->xBackTile, data->yBackTile, data->tileDC,
-                            t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                            GetNHApp()->mapTile_Y, SRCCOPY);
-                        layer++;
-                    }
-                }
-#endif
-                //int is_you_facing_right = (u.facing_right && glyph == u_to_glyph());
                 int multiplier = flip_glyph ? -1 : 1;
 
                 if ((glyph != NO_GLYPH) /*&& (glyph != bkglyph)*/) {
                     boolean skip_drawing = FALSE;
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
+                    enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j, &data->map[i][j].object_data);
-                    ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j]);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, &data->map[i][j].object_data, &autodraw);
+                    ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j], &autodraw);
                     if (enlarg_idx >= 0)
                     {
                         if (tile2enlargement[ntile] > 0)
@@ -1098,6 +1064,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int enl_tile_idx = enlargements[tile2enlargement[ntile]].frame2tile[frame_index];
                             if (enl_tile_idx >= 0)
                             {
+                                autodraw = enlargements[tile2enlargement[ntile]].frame_autodraw[frame_index];
                                 int enl_glyph = enl_tile_idx + enlargements[tile2enlargement[ntile]].glyph_offset + GLYPH_ENLARGEMENT_OFF;
                                 ntile = glyph2tile[enl_glyph]; /* replace */
                             }
@@ -1142,6 +1109,98 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             opaque_background_drawn = TRUE;
                         }
 
+
+                        /* Autodraw implementation */
+                        if (autodraw > AUTODRAW_NONE)
+                        {
+                            if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_REPLACE_WALL_ENDS)
+                            {
+                                int source_glyph = autodraws[autodraw].source_glyph;
+                                int atile = glyph2tile[source_glyph];
+                                int at_x = TILEBMP_X(atile);
+                                int at_y = TILEBMP_Y(atile);
+
+                                for (int dir = 0; dir < 4; dir++)
+                                {
+                                    char dir_bit = 1 << dir;
+                                    if (autodraws[autodraw].draw_directions & dir_bit)
+                                    {
+                                        int rx = 0;
+                                        int ry = 0;
+                                        switch (dir)
+                                        {
+                                        case 0:
+                                            rx = i - 1;
+                                            ry = j;
+                                            break;
+                                        case 1:
+                                            rx = i + 1;
+                                            ry = j;
+                                            break;
+                                        case 2:
+                                            rx = i;
+                                            ry = j - 1;
+                                            break;
+                                        case 3:
+                                            rx = i;
+                                            ry = j + 1;
+                                            break;
+                                        default:
+                                            break;
+                                        }
+                                        if (!isok(rx, ry) || levl[rx][ry].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[rx][ry].typ) && !IS_TREE(levl[rx][ry].typ)) || levl[rx][ry].typ == DOOR || levl[rx][ry].typ == UNEXPLORED /*|| (levl[rx][ry].seenv & (SV4 | SV5 | SV6)) == 0 */)
+                                        {
+                                            /* No action */
+                                        }
+                                        else
+                                        {
+                                            RECT source_rt = { 0 };
+                                            switch (dir)
+                                            {
+                                            case 0: /* left */
+                                                source_rt.left = at_x;
+                                                source_rt.right = source_rt.left + 10;
+                                                source_rt.top = at_y + 10;
+                                                source_rt.bottom = at_y + TILE_Y - 10;
+                                                break;
+                                            case 1: /* right */
+                                                source_rt.right = at_x + TILE_X;
+                                                source_rt.left = source_rt.right - 10;
+                                                source_rt.top = at_y + 10;
+                                                source_rt.bottom = at_y + TILE_Y - 10;
+                                                break;
+                                            case 2: /* up */
+                                                source_rt.left = at_x + 10;
+                                                source_rt.right = at_x + TILE_X - 10;
+                                                source_rt.top = at_y;
+                                                source_rt.bottom = source_rt.top + 10;
+                                                break;
+                                            case 3: /* down */
+                                                source_rt.left = at_x + 10;
+                                                source_rt.right = at_x + TILE_X - 10;
+                                                source_rt.top = at_y + TILE_Y - 10;
+                                                source_rt.bottom = at_y + TILE_Y;
+                                                break;
+                                            default:
+                                                break;
+                                            }
+
+                                            RECT target_rt = { 0 };
+                                            target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.left - at_x));
+                                            target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.right - at_x));
+                                            target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.top - at_y));
+                                            target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.bottom - at_y));
+
+                                            (*GetNHApp()->lpfnTransparentBlt)(
+                                                data->backBufferDC, target_rt.left, target_rt.top,
+                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                source_rt.top, source_rt.right - source_rt.left,
+                                                source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -1446,27 +1505,57 @@ static void dirty(PNHMapWindow data, int x, int y)
     InvalidateRect(data->hWnd, &rt, FALSE);
 
     /* Check REPLACEMENT_EVENT_UPDATE_FROM_BELOW */
-    if (isok(x, y - 1))
+    for (int dir = 0; dir < 4; dir++)
     {
-        int upside_y = y - 1;
-        for (int i = 0; i < 2; i++)
+        int rx = 0;
+        int ry = 0;
+        int dir_bit = 0;
+        switch (dir)
         {
-            short tile_upside = glyph2tile[abs(data->map[x][upside_y].glyph)];
-            short bktile_upside = glyph2tile[abs(data->map[x][upside_y].bkglyph)];
-            short replacement_idx_upside = tile2replacement[tile_upside];
-            short bk_replacement_idx_upside = tile2replacement[bktile_upside];
-
-            short used_ridx = (i == 0 ? replacement_idx_upside : bk_replacement_idx_upside);
-            short used_tile = (i == 0 ? tile_upside : bktile_upside);
-            if (used_ridx > 0)
+        case 0:
+            rx = x - 1;
+            ry = y;
+            dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_RIGHT;
+            break;
+        case 1:
+            rx = x + 1;
+            ry = y;
+            dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_LEFT;
+            break;
+        case 2:
+            rx = x;
+            ry = y - 1;
+            dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_BELOW;
+            break;
+        case 3:
+            rx = x;
+            ry = y + 1;
+            dir_bit = REPLACEMENT_EVENT_UPDATE_FROM_TOP;
+            break;
+        default:
+            break;
+        }
+        if (isok(rx, ry))
+        {
+            for (int i = 0; i < 2; i++)
             {
-                /* Update tile area */
-                if (replacements[used_ridx].replacement_events & REPLACEMENT_EVENT_UPDATE_FROM_BELOW)
+                short tile_upside = glyph2tile[abs(data->map[rx][ry].glyph)];
+                short bktile_upside = glyph2tile[abs(data->map[rx][ry].bkglyph)];
+                short replacement_idx_upside = tile2replacement[tile_upside];
+                short bk_replacement_idx_upside = tile2replacement[bktile_upside];
+
+                short used_ridx = (i == 0 ? replacement_idx_upside : bk_replacement_idx_upside);
+                short used_tile = (i == 0 ? tile_upside : bktile_upside);
+                if (used_ridx > 0)
                 {
-                    data->mapDirty[x][upside_y] = TRUE;
-                    RECT rt2;
-                    nhcoord2display(data, x, upside_y, &rt2); //data->xCur, data->yCur
-                    InvalidateRect(data->hWnd, &rt2, FALSE);
+                    /* Update tile area */
+                    if (replacements[used_ridx].replacement_events & dir_bit)
+                    {
+                        data->mapDirty[rx][ry] = TRUE;
+                        RECT rt2;
+                        nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                        InvalidateRect(data->hWnd, &rt2, FALSE);
+                    }
                 }
             }
         }
@@ -1477,11 +1566,11 @@ static void dirty(PNHMapWindow data, int x, int y)
     short bktile = glyph2tile[abs(data->map[x][y].bkglyph)];
     short replacement_idx = tile2replacement[tile];
     short bk_replacement_idx = tile2replacement[bktile];
-    tile = maybe_get_replaced_tile(tile, x, y, level.objects[x][y]);
-    bktile = maybe_get_replaced_tile(bktile, x, y, (struct obj*)0);
+    tile = maybe_get_replaced_tile(tile, x, y, level.objects[x][y], (enum autodraw_types*)0);
+    bktile = maybe_get_replaced_tile(bktile, x, y, (struct obj*)0, (enum autodraw_types*)0);
 
-    tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0);
-    bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0);
+    tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
+    bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
 
     int enlarg = tile2enlargement[tile];
     int bk_enlarg = tile2enlargement[bktile];

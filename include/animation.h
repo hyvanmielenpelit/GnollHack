@@ -23,6 +23,39 @@ enum action_tile_types
 };
 
 
+/* Autodraw */
+enum autodraw_types
+{
+    AUTODRAW_NONE = 0,
+    AUTODRAW_DUNGEON_NORMAL_CRWALL_ENDS,
+    AUTODRAW_DUNGEON_NORMAL_TRWALL_ENDS
+};
+
+#define NUM_AUTODRAWS AUTODRAW_DUNGEON_NORMAL_TRWALL_ENDS
+
+enum autodraw_drawing_types
+{
+    AUTODRAW_DRAW_GENERAL = 0,
+    AUTODRAW_DRAW_REPLACE_WALL_ENDS
+};
+
+
+struct autodraw_definition {
+    char* autodraw_name;
+    enum autodraw_drawing_types draw_type;
+    char draw_directions;
+    int source_glyph;
+    /* and other useful stuff if need be */
+};
+
+#define AUTODRAW_DIR_LEFT 0x01
+#define AUTODRAW_DIR_RIGHT 0x02
+#define AUTODRAW_DIR_UP 0x03
+#define AUTODRAW_DIR_DOWN 0x04
+
+extern NEARDATA struct autodraw_definition autodraws[];
+
+
 /* Enlargement sets */
 #define MAX_FRAMES_PER_ENLARGEMENT 5
 #define MAX_TILES_PER_ENLARGEMENT MAX_FRAMES_PER_ENLARGEMENT
@@ -43,6 +76,7 @@ struct enlargement_definition {
     char frame_z_order[MAX_FRAMES_PER_ENLARGEMENT];
     /* 0 = normal, -X in back, +X in front */
     char frame_flags[MAX_FRAMES_PER_ENLARGEMENT];
+    enum autodraw_types frame_autodraw[MAX_FRAMES_PER_ENLARGEMENT];
 };
 
 #define ENLFLAGS_H_FLIP 0x01
@@ -86,8 +120,10 @@ struct animation_definition {
     int glyph_offset;
     int intervals_between_frames;
     enum main_tile_use_types main_tile_use_style; /* 0 = play as first tile and frame, 1 = play as last tile and frame, 2 = ignore */
+    enum autodraw_types  main_tile_autodraw;
     char frame2tile[MAX_FRAMES_PER_ANIMATION];
     short tile_enlargement[MAX_TILES_PER_ANIMATION];
+    enum autodraw_types frame_autodraw[MAX_FRAMES_PER_ANIMATION];
 };
 
 enum animation_types
@@ -123,7 +159,8 @@ enum replacement_action_types
     REPLACEMENT_ACTION_NO_ACTION = 0,
     REPLACEMENT_ACTION_BOTTOM_TILE,
     REPLACEMENT_ACTION_LIT,
-    REPLACEMENT_ACTION_COIN_QUANTITY
+    REPLACEMENT_ACTION_COIN_QUANTITY,
+    REPLACEMENT_ACTION_AUTODRAW
 };
 
 
@@ -133,14 +170,18 @@ struct replacement_definition {
     int glyph_offset;
     unsigned long replacement_events;
     enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
+    enum autodraw_types general_autodraw; /* For zero-tile replacements */
     char* tile_names[MAX_TILES_PER_REPLACEMENT];
     short tile_animation[MAX_TILES_PER_REPLACEMENT];
     short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
+    enum autodraw_types tile_autodraw[MAX_TILES_PER_REPLACEMENT];
 };
 
 #define REPLACEMENT_EVENT_NO_EVENT              0x00000000UL
 #define REPLACEMENT_EVENT_UPDATE_FROM_BELOW     0x00000001UL
-#define REPLACEMENT_EVENT_UPDATE_IF_LIT         0x00000002UL
+#define REPLACEMENT_EVENT_UPDATE_FROM_TOP       0x00000002UL
+#define REPLACEMENT_EVENT_UPDATE_FROM_LEFT      0x00000004UL
+#define REPLACEMENT_EVENT_UPDATE_FROM_RIGHT     0x00000008UL
 
 
 enum replacement_types
@@ -148,6 +189,8 @@ enum replacement_types
     NO_REPLACEMENT = 0,
     DUNGEON_NORMAL_STONE_REPLACEMENT,
     DUNGEON_NORMAL_VWALL_REPLACEMENT,
+    DUNGEON_NORMAL_CRWALL_REPLACEMENT,
+    DUNGEON_NORMAL_TRWALL_REPLACEMENT,
     COIN_REPLACEMENT,
     BRASS_LANTERN_LIT_REPLACEMENT /* Keep this last */
 };
@@ -158,6 +201,8 @@ enum replacement_types
 #define DUNGEON_NORMAL_STONE_REPLACEMENT_TILES 1
 #define DUNGEON_NORMAL_VWALL_REPLACEMENT_OFF (DUNGEON_NORMAL_STONE_REPLACEMENT_TILES + DUNGEON_NORMAL_STONE_REPLACEMENT_OFF)
 #define DUNGEON_NORMAL_VWALL_REPLACEMENT_TILES 1
+//CRWALL NO TILES
+//TRWALL NO TILES
 #define COIN_REPLACEMENT_OFF (DUNGEON_NORMAL_VWALL_REPLACEMENT_TILES + DUNGEON_NORMAL_VWALL_REPLACEMENT_OFF)
 #define COIN_REPLACEMENT_TILES 2
 #define BRASS_LANTERN_LIT_OFF (COIN_REPLACEMENT_TILES + COIN_REPLACEMENT_OFF)
@@ -165,6 +210,9 @@ enum replacement_types
 #define MAX_REPLACEMENT_TILES (BRASS_LANTERN_LIT_TILES + BRASS_LANTERN_LIT_OFF)
 
 extern NEARDATA struct replacement_definition replacements[];
+
+
+
 
 
 #endif /* ANIMATION_H */

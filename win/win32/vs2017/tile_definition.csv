@@ -2299,6 +2299,7 @@ cmap-variations,dungeon-normal,hwall-variation-2,1,1,0
 cmap-variations,dungeon-normal,hwall-variation-3,1,1,0
 cmap-variations,dungeon-normal,hwall-variation-4,1,1,0
 cmap-variations,dungeon-normal,hwall-variation-5,1,1,0
+cmap-variations,dungeon-normal,crwall-all-ends,1,1,0
 cmap-variations,dungeon-normal,room-floor-variation-1,1,1,0
 cmap-variations,dungeon-normal,room-floor-variation-2,1,1,0
 cmap-variations,dungeon-normal,room-floor-variation-3,1,1,0
@@ -2579,7 +2580,7 @@ replacement,coin-replacement,few,1811,1,1,0
 replacement,coin-replacement,many,1811,1,1,0
 replacement,brass-lantern-replacement,lit,1437,1,1,0
 animation,handcrafted-candle-lit-animation,tile-0,1436,1,1,0
-animation,elf_wizard_female_cast-animation,tile-0,2529,1,1,0
+animation,elf_wizard_female_cast-animation,tile-0,2530,1,1,0
 animation,brass-lantern-lit-animation,tile-0,-1,1,1,0
 animation,twisted-candle-lit-animation,tile-0,1435,1,1,0
 animation,twisted-candle-lit-animation,tile-1,1435,1,1,0
