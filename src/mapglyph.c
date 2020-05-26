@@ -119,9 +119,6 @@ unsigned long *ospecial;
 #endif
     }
 	else if ((offset = (glyph - GLYPH_ARTIFACT_MISSILE_OFF)) >= 0 
-        || (offset = (glyph - GLYPH_ARTIFACT_INVENTORY_LIT_OFF)) >= 0
-        || (offset = (glyph - GLYPH_ARTIFACT_LIT_OFF)) >= 0
-        || (offset = (glyph - GLYPH_ARTIFACT_INVENTORY_OFF)) >= 0
         || (offset = (glyph - GLYPH_ARTIFACT_OFF)) >= 0
         )
     { /* an artifact */
@@ -347,9 +344,6 @@ unsigned long *ospecial;
         }
     } 
     else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 
-               || (offset = (glyph - GLYPH_OBJ_INVENTORY_LIT_OFF)) >= 0
-               || (offset = (glyph - GLYPH_OBJ_LIT_OFF)) >= 0
-               || (offset = (glyph - GLYPH_OBJ_INVENTORY_OFF)) >= 0
                || (offset = (glyph - GLYPH_OBJ_OFF)) >= 0
                )
     { /* object */

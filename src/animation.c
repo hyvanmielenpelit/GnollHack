@@ -340,8 +340,6 @@ short animidx;
     {
         if(obj_descr[objects[i].oc_descr_idx].stand_animation == animidx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
-        if (obj_descr[objects[i].oc_descr_idx].lit_animation == animidx)
-            return glyph2tile[i + GLYPH_OBJ_LIT_OFF];
     }
 
     for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
@@ -426,8 +424,6 @@ short enlidx;
     {
         if (obj_descr[objects[i].oc_descr_idx].enlargement == enlidx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
-        if (obj_descr[objects[i].oc_descr_idx].lit_enlargement == enlidx)
-            return glyph2tile[i + GLYPH_OBJ_LIT_OFF];
     }
 
     for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
@@ -522,8 +518,6 @@ short replacement_idx;
     {
         if (obj_descr[objects[i].oc_descr_idx].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_OBJ_OFF];
-        if (obj_descr[objects[i].oc_descr_idx].lit_replacement == replacement_idx)
-            return glyph2tile[i + GLYPH_OBJ_LIT_OFF];
     }
 
     for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)

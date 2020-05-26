@@ -1836,20 +1836,8 @@ int x, y, glyph;
 			&& glyph < GLYPH_PLAYER_OFF) { /* an artifact as missile */
 			text = "artifact missile";
 			offset = glyph - GLYPH_ARTIFACT_MISSILE_OFF;
-        } else if (glyph >= GLYPH_ARTIFACT_INVENTORY_LIT_OFF
-			&& glyph < GLYPH_ARTIFACT_MISSILE_OFF) { /* an artifact lit in inventory */
-			text = "artifact lit in inventory";
-			offset = glyph - GLYPH_ARTIFACT_INVENTORY_LIT_OFF;
-        } else if (glyph >= GLYPH_ARTIFACT_LIT_OFF
-			&& glyph < GLYPH_ARTIFACT_INVENTORY_LIT_OFF) { /* an artifact lit */
-			text = "artifact lit";
-			offset = glyph - GLYPH_ARTIFACT_LIT_OFF;
-        } else if (glyph >= GLYPH_ARTIFACT_INVENTORY_OFF
-			&& glyph < GLYPH_ARTIFACT_LIT_OFF) { /* an artifact in inventory */
-			text = "artifact in inventory";
-			offset = glyph - GLYPH_ARTIFACT_INVENTORY_OFF;
         } else if (glyph >= GLYPH_ARTIFACT_OFF
-			&& glyph < GLYPH_ARTIFACT_INVENTORY_OFF) { /* an artifact */
+			&& glyph < GLYPH_ARTIFACT_MISSILE_OFF) { /* an artifact */
 			text = "artifact";
 			offset = glyph - GLYPH_ARTIFACT_OFF;
         } else if (glyph >= GLYPH_FEMALE_BODY_OFF) { /* female corpse */
@@ -1888,15 +1876,6 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_OBJ_MISSILE_OFF) { /* object as missile */
             text = "object missile";
             offset = glyph - GLYPH_OBJ_MISSILE_OFF;
-        } else if (glyph >= GLYPH_OBJ_INVENTORY_LIT_OFF) { /* object lit in inventory */
-            text = "object lit in inventory";
-            offset = glyph - GLYPH_OBJ_INVENTORY_LIT_OFF;
-        } else if (glyph >= GLYPH_OBJ_LIT_OFF) { /* object lit */
-            text = "object lit";
-            offset = glyph - GLYPH_OBJ_LIT_OFF;
-        } else if (glyph >= GLYPH_OBJ_INVENTORY_OFF) { /* object in inventory */
-            text = "object in inventory";
-            offset = glyph - GLYPH_OBJ_INVENTORY_OFF;
         } else if (glyph >= GLYPH_OBJ_OFF) { /* object */
             text = "object";
             offset = glyph - GLYPH_OBJ_OFF;

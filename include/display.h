@@ -331,10 +331,7 @@
 #define GLYPH_FEMALE_DEATH_OFF  (NUM_MONSTERS + GLYPH_FEMALE_DOOR_USE_OFF)
 #define GLYPH_INVIS_OFF   (NUM_MONSTERS + GLYPH_FEMALE_DEATH_OFF)
 #define GLYPH_OBJ_OFF     (NUM_INVIS_GLYPHS + GLYPH_INVIS_OFF)
-#define GLYPH_OBJ_INVENTORY_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
-#define GLYPH_OBJ_LIT_OFF    (NUM_OBJECTS + GLYPH_OBJ_INVENTORY_OFF)
-#define GLYPH_OBJ_INVENTORY_LIT_OFF    (NUM_OBJECTS + GLYPH_OBJ_LIT_OFF)
-#define GLYPH_OBJ_MISSILE_OFF    (NUM_OBJECTS + GLYPH_OBJ_INVENTORY_LIT_OFF)
+#define GLYPH_OBJ_MISSILE_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
 #define GLYPH_CMAP_OFF    (NUM_OBJECTS * NUM_MISSILE_DIRS + GLYPH_OBJ_MISSILE_OFF)
 #define GLYPH_CMAP_VARIATION_OFF    (CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX + GLYPH_CMAP_OFF)
 #define GLYPH_EXPLODE_OFF (MAX_VARIATIONS * CMAP_TYPE_MAX  + GLYPH_CMAP_VARIATION_OFF)
@@ -346,10 +343,7 @@
 #define GLYPH_BODY_OFF    (NUM_MONSTERS + GLYPH_FEMALE_STATUE_OFF)
 #define GLYPH_FEMALE_BODY_OFF    (NUM_MONSTERS + GLYPH_BODY_OFF)
 #define GLYPH_ARTIFACT_OFF (NUM_MONSTERS + GLYPH_FEMALE_BODY_OFF)
-#define GLYPH_ARTIFACT_INVENTORY_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_OFF)
-#define GLYPH_ARTIFACT_LIT_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_INVENTORY_OFF)
-#define GLYPH_ARTIFACT_INVENTORY_LIT_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_LIT_OFF)
-#define GLYPH_ARTIFACT_MISSILE_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_INVENTORY_LIT_OFF)
+#define GLYPH_ARTIFACT_MISSILE_OFF (NUM_ARTIFACTS + GLYPH_ARTIFACT_OFF)
 #define GLYPH_PLAYER_OFF  (NUM_ARTIFACTS * NUM_MISSILE_DIRS + GLYPH_ARTIFACT_MISSILE_OFF)
 #define GLYPH_PLAYER_ATTACK_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_OFF) /* Must be in same order as enum action_tile_types */
 #define GLYPH_PLAYER_THROW_OFF  (NUM_PLAYER_CHARACTERS + GLYPH_PLAYER_ATTACK_OFF)
@@ -497,21 +491,8 @@
                      : ((obj)->otyp == BOULDER) \
                         ? cmap_to_glyph(S_extra_boulder) \
                             : ((obj)->oartifact > 0) \
-                                ? (is_obj_activated(obj) ? (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_LIT_OFF : (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF) \
-						            :  (is_obj_activated(obj) ? (int)(obj)->otyp + GLYPH_OBJ_LIT_OFF : (int)(obj)->otyp + GLYPH_OBJ_OFF))
-
-#define obj_to_inventory_glyph(obj, rng)                                          \
-    (((obj)->otyp == STATUE)                                            \
-         ? (is_female_corpse_or_statue(obj) ? female_statue_to_glyph(obj, rng) : statue_to_glyph(obj, rng) )                                   \
-         : Hallucination                                                \
-               ? random_obj_to_glyph(rng)                               \
-               : ((obj)->otyp == CORPSE)                                \
-                     ?  (is_female_corpse_or_statue(obj) ? ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_FEMALE_BODY_OFF))  : ((is_corpse_or_statue_facing_right(obj) ? -1 : 1) * ((int) (obj)->corpsenm + GLYPH_BODY_OFF)) )         \
-                     : ((obj)->otyp == BOULDER) \
-                        ? cmap_to_glyph(S_extra_boulder) \
-                            : ((obj)->oartifact > 0) \
-                                ? (is_obj_activated(obj) ? (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_INVENTORY_LIT_OFF : (int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_INVENTORY_OFF) \
-						            : (is_obj_activated(obj) ? (int)(obj)->otyp + GLYPH_OBJ_INVENTORY_LIT_OFF : (int)(obj)->otyp + GLYPH_OBJ_INVENTORY_OFF))
+                                ? ((int)(obj)->oartifact - 1 + GLYPH_ARTIFACT_OFF) \
+						            :  ((int)(obj)->otyp + GLYPH_OBJ_OFF))
 
 #define obj_to_missile_glyph(obj, dir_index, rng)                                          \
     ((dir_index) < 0 || (dir_index) >= NUM_MISSILE_DIRS ? NO_GLYPH \
@@ -537,8 +518,6 @@
 /* Not affected by hallucination.  Gives a generic body for CORPSE */
 /* MRKR: ...and the generic statue */
 #define objnum_to_glyph(onum) ((int) (onum) + GLYPH_OBJ_OFF)
-#define lit_objnum_to_glyph(onum) ((int) (onum) + GLYPH_OBJ_LIT_OFF)
-
 #define monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_MON_OFF)
 /*
 #define petnum_to_glyph(mnum) ((int) (mnum) + GLYPH_PET_OFF)
@@ -670,12 +649,6 @@
 
 #define glyph_is_normal_object(glyph) \
     ((abs(glyph)) >= GLYPH_OBJ_OFF && (abs(glyph)) < (GLYPH_OBJ_OFF + NUM_OBJECTS))
-#define glyph_is_normal_lit_object(glyph) \
-    ((abs(glyph)) >= GLYPH_OBJ_LIT_OFF && (abs(glyph)) < (GLYPH_OBJ_LIT_OFF + NUM_OBJECTS))
-#define glyph_is_inventory_object(glyph) \
-    ((abs(glyph)) >= GLYPH_OBJ_INVENTORY_OFF && (abs(glyph)) < (GLYPH_OBJ_INVENTORY_OFF + NUM_OBJECTS))
-#define glyph_is_inventory_lit_object(glyph) \
-    ((abs(glyph)) >= GLYPH_OBJ_INVENTORY_LIT_OFF && (abs(glyph)) < (GLYPH_OBJ_INVENTORY_LIT_OFF + NUM_OBJECTS))
 #define glyph_is_object_missile(glyph) \
     ((abs(glyph)) >= GLYPH_OBJ_MISSILE_OFF && (abs(glyph)) < (GLYPH_OBJ_MISSILE_OFF + NUM_OBJECTS * NUM_MISSILE_DIRS))
 
@@ -683,18 +656,6 @@
     ((abs(glyph)) >= GLYPH_ARTIFACT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_OFF + NUM_ARTIFACTS))
 #define glyph_to_artifact(glyph) \
     (glyph_is_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_OFF) : NO_GLYPH)
-#define glyph_is_lit_artifact(glyph) \
-    ((abs(glyph)) >= GLYPH_ARTIFACT_LIT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_LIT_OFF + NUM_ARTIFACTS))
-#define glyph_to_lit_artifact(glyph) \
-    (glyph_is_lit_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_LIT_OFF) : NO_GLYPH)
-#define glyph_is_inventory_artifact(glyph) \
-    ((abs(glyph)) >= GLYPH_ARTIFACT_INVENTORY_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_INVENTORY_OFF + NUM_ARTIFACTS))
-#define glyph_to_inventory_artifact(glyph) \
-    (glyph_is_inventory_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_INVENTORY_OFF) : NO_GLYPH)
-#define glyph_is_inventory_lit_artifact(glyph) \
-    ((abs(glyph)) >= GLYPH_ARTIFACT_INVENTORY_LIT_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_INVENTORY_LIT_OFF + NUM_ARTIFACTS))
-#define glyph_to_inventory_lit_artifact(glyph) \
-    (glyph_is_inventory_lit_artifact(glyph) ? ((abs(glyph)) + 1 - GLYPH_ARTIFACT_INVENTORY_LIT_OFF) : NO_GLYPH)
 #define glyph_is_artifact_missile(glyph) \
     ((abs(glyph)) >= GLYPH_ARTIFACT_MISSILE_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_MISSILE_OFF + NUM_ARTIFACTS * NUM_MISSILE_DIRS))
 
@@ -728,11 +689,11 @@
 
 /* Note: excludes missiles */
 #define glyph_is_object(glyph)                               \
-    (glyph_is_normal_object(glyph) || glyph_is_normal_lit_object(glyph)  || glyph_is_inventory_object(glyph) || glyph_is_inventory_lit_object(glyph)\
+    (glyph_is_normal_object(glyph)\
      || glyph_is_statue(glyph)  || glyph_is_female_statue(glyph)\
      || glyph_is_body(glyph) || glyph_is_female_body(glyph) \
      || glyph_is_cmap_boulder(glyph) \
-     || glyph_is_artifact(glyph)|| glyph_is_lit_artifact(glyph)|| glyph_is_inventory_artifact(glyph)|| glyph_is_inventory_lit_artifact(glyph))
+     || glyph_is_artifact(glyph))
 
 #define glyph_is_missile(glyph) \
      (glyph_is_object_missile(glyph) || glyph_is_artifact_missile(glyph))
@@ -917,20 +878,8 @@
                ? BOULDER                          \
 			 : glyph_is_artifact(glyph)                \
 				   ? artifact_to_obj(glyph_to_artifact(glyph))   \
-			 : glyph_is_lit_artifact(glyph)                \
-				   ? artifact_to_obj(glyph_to_lit_artifact(glyph))   \
-			 : glyph_is_inventory_artifact(glyph)                \
-				   ? artifact_to_obj(glyph_to_inventory_artifact(glyph))   \
-			 : glyph_is_inventory_lit_artifact(glyph)                \
-				   ? artifact_to_obj(glyph_to_inventory_lit_artifact(glyph))   \
 				   : glyph_is_normal_object(glyph)   \
 						 ? ((abs(glyph)) - GLYPH_OBJ_OFF) \
-				   : glyph_is_normal_lit_object(glyph)   \
-						 ? ((abs(glyph)) - GLYPH_OBJ_LIT_OFF) \
-				   : glyph_is_inventory_object(glyph)   \
-						 ? ((abs(glyph)) - GLYPH_OBJ_INVENTORY_OFF) \
-				   : glyph_is_inventory_lit_object(glyph)   \
-						 ? ((abs(glyph)) - GLYPH_OBJ_INVENTORY_LIT_OFF) \
 						 : NO_GLYPH)
 
 

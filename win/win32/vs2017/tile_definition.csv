@@ -1856,14 +1856,6 @@ objects,normal,reagents,modronite octahedron,alien eight-faced polyhedral object
 objects,normal,reagents,modronite dodecahedron,alien twelve-faced polyhedral object,0,1,1,0
 objects,normal,reagents,modronite icosahedron,alien twenty-faced polyhedral object,0,1,1,0
 objects,normal,reagents,feather,no description,0,1,1,0
-objects,lit,tools,tallow candle,old-fashioned candle,0,1,1,0
-objects,lit,tools,wax candle,twisted candle,0,1,1,0
-objects,lit,tools,magic candle,handcrafted candle,0,1,1,0
-objects,lit,tools,oil lamp,antiquated brass lamp,0,1,1,0
-objects,lit,tools,magic lamp,oriental brass lamp,0,1,1,0
-objects,lit,tools,holy symbol,religious symbol,0,1,1,0
-objects,lit,tools,Candelabrum of Invocation,candelabrum,0,1,1,0
-objects,lit,rocks,luckstone,gray,0,1,1,0
 objects,missile,weapons,arrow,no description,top-left,1,1,0
 objects,missile,weapons,arrow,no description,top-center,1,1,0
 objects,missile,weapons,arrow,no description,top-right,1,1,0
@@ -2203,13 +2195,6 @@ artifacts,normal,The Platinum Yendorian Express Card,black credit card,credit ca
 artifacts,normal,The Orb of Fate,ornamental crystal ball,crystal ball,glass orb,0,1,1,0
 artifacts,normal,The Eye of the Aethiopica,eye-shaped amulet,amulet of ESP,circular,0,1,1,0
 artifacts,normal,The Ark of the Covenant,gold-covered wooden chest,golden chest,no base item description,0,1,1,0
-artifacts,lit,Orcrist,ornate runed broadsword,elven broadsword,runed broadsword,0,1,1,0
-artifacts,lit,Sting,ornate runed dagger,elven runedagger,runed dagger,0,1,1,0
-artifacts,lit,Dragonbane,mithril-hilted runed broadsword,sword of dragon slaying,ancient long sword,0,1,1,0
-artifacts,lit,Demonbane,runed silver long sword,sword of demon slaying,shining long sword,0,1,1,0
-artifacts,lit,Werebane,runed silver saber,saber of lycanthrope slaying,no base item description,0,1,1,0
-artifacts,lit,Sunsword,glowing runed long sword,long sword,no base item description,0,1,1,0
-artifacts,lit,The Heart of Ahriman,glowing red jewel,luckstone,gray,0,1,1,0
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-left,1,1,0
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-center,1,1,0
 artifacts,missile,Sting,ornate runed dagger,elven runedagger,runed dagger,top-right,1,1,0
@@ -2588,18 +2573,18 @@ user-interface,ui-tile,status-window-borders,6,32,32,top-left,top,middle-left,mi
 user-interface,ui-tile,map-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,menu-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 user-interface,ui-tile,text-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
-replacement,dungeon-normal-stone-replacement,bottom-end,2221,1,1,0
-replacement,dungeon-normal-vwall-replacement,bottom-end,2222,1,1,0
+replacement,dungeon-normal-stone-replacement,bottom-end,2206,1,1,0
+replacement,dungeon-normal-vwall-replacement,bottom-end,2207,1,1,0
 replacement,brass-lantern-replacement,lit,1437,1,1,0
-animation,handcrafted-candle-lit-animation,tile-0,1860,1,1,0
-animation,elf_wizard_female_cast-animation,tile-0,2544,1,1,0
+animation,handcrafted-candle-lit-animation,tile-0,1436,1,1,0
+animation,elf_wizard_female_cast-animation,tile-0,2529,1,1,0
 animation,brass-lantern-lit-animation,tile-0,-1,1,1,0
-animation,twisted-candle-lit-animation,tile-0,1859,1,1,0
-animation,twisted-candle-lit-animation,tile-1,1859,1,1,0
-animation,twisted-candle-lit-animation,tile-2,1859,1,1,0
-animation,twisted-candle-lit-animation,tile-3,1859,1,1,0
-animation,twisted-candle-lit-animation,tile-4,1859,1,1,0
-animation,twisted-candle-lit-animation,tile-5,1859,1,1,0
+animation,twisted-candle-lit-animation,tile-0,1435,1,1,0
+animation,twisted-candle-lit-animation,tile-1,1435,1,1,0
+animation,twisted-candle-lit-animation,tile-2,1435,1,1,0
+animation,twisted-candle-lit-animation,tile-3,1435,1,1,0
+animation,twisted-candle-lit-animation,tile-4,1435,1,1,0
+animation,twisted-candle-lit-animation,tile-5,1435,1,1,0
 enlargement,dracolich-enlargement,top-left,217,3,2,0,5,0
 enlargement,dracolich-enlargement,top,217,3,2,0,5,1
 enlargement,dracolich-enlargement,top-right,217,3,2,0,5,2

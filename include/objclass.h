@@ -888,12 +888,10 @@ struct objclass {
 
 /* Flags 4 */
 #define O4_NONE						0x00000000UL
-#define O4_INVENTORY_TILE			0x00000001UL
-#define O4_LIT_TILE					0x00000002UL
-#define O4_MISSILE_TILE				0x00000004UL
-#define O4_SINGLE_MISSILE_TILE		0x00000008UL
-#define O4_FULL_SIZED_BITMAP		0x00000010UL
-#define O4_DRAWN_IN_FRONT		    0x00000020UL
+#define O4_MISSILE_TILE				0x00000001UL
+#define O4_SINGLE_MISSILE_TILE		0x00000002UL
+#define O4_FULL_SIZED_BITMAP		0x00000004UL
+#define O4_DRAWN_IN_FRONT		    0x00000008UL
 
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
@@ -957,11 +955,8 @@ struct objdescr {
 	const char* oc_content_description; /* description of contents (spellbooks) */
 	const char* oc_item_description; /* description of the item */
 	short stand_animation;
-	short lit_animation;
 	short enlargement;
-	short lit_enlargement;
 	short replacement;
-	short lit_replacement;
 };
 
 extern NEARDATA struct objclass objects[];
@@ -1050,7 +1045,6 @@ struct fruit {
 #define OBJ_ITEM_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_item_description)
 
 #define OBJ_STAND_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].stand_animation)
-#define OBJ_LIT_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].lit_animation)
 
 
 

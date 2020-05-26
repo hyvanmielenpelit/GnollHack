@@ -22,8 +22,6 @@ struct tileset_definition {
     uchar statue_tile_style;    /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
     uchar body_tile_style;       /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster, 2 = monsters marked with M5_CORPSE_TILE have body tiles */
 
-    uchar inventory_tile_style;  /* 0 = no inventory tiles, 1 = has separate inventory tiles for all objects, 2 = has inventory tiles for each object marked with O4_INVENTORY_TILE  */
-    uchar lit_tile_style;        /* 0 = no lit tiles, 1 = has separate lit tiles for all objects, 2 = has lit tiles for each object marked with O4_LIT_TILE  */
     uchar missile_tile_style;    /* 0 = no missile tiles, 1 = has missile inventory tiles for all objects, 2 = has missile tiles for each object marked with O4_MISSILE_TILE  */
 
     uchar swallow_tile_style;    /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */

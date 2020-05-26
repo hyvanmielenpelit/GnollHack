@@ -1769,21 +1769,6 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
         obj_color(offset);
      } 
-     else if ((offset = (g - GLYPH_OBJ_INVENTORY_LIT_OFF)) >= 0)
-     { /* object */
-        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
-        obj_color(offset);
-     } 
-     else if ((offset = (g - GLYPH_OBJ_LIT_OFF)) >= 0) 
-     { /* object */
-        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
-        obj_color(offset);
-     } 
-     else if ((offset = (g - GLYPH_OBJ_INVENTORY_OFF)) >= 0) 
-     { /* object */
-        *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];
-        obj_color(offset);
-     }
      else if ((offset = (g - GLYPH_OBJ_OFF)) >= 0) 
      { /* object */
         *ch = showsyms[(int) objects[offset].oc_class + SYM_OFF_O];

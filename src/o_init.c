@@ -38,24 +38,6 @@ shuffle_tiles()
     for (i = 0; i < NUM_OBJECTS; i++)
         glyph2tile[i + GLYPH_OBJ_OFF] = tmp_tilemap[i];
 
-    for (i = 0; i < NUM_OBJECTS; i++)
-        tmp_tilemap[i] = glyph2tile[objects[i].oc_descr_idx + GLYPH_OBJ_INVENTORY_OFF];
-
-    for (i = 0; i < NUM_OBJECTS; i++)
-        glyph2tile[i + GLYPH_OBJ_INVENTORY_OFF] = tmp_tilemap[i];
-
-    for (i = 0; i < NUM_OBJECTS; i++)
-        tmp_tilemap[i] = glyph2tile[objects[i].oc_descr_idx + GLYPH_OBJ_LIT_OFF];
-
-    for (i = 0; i < NUM_OBJECTS; i++)
-        glyph2tile[i + GLYPH_OBJ_LIT_OFF] = tmp_tilemap[i];
-
-    for (i = 0; i < NUM_OBJECTS; i++)
-        tmp_tilemap[i] = glyph2tile[objects[i].oc_descr_idx + GLYPH_OBJ_INVENTORY_LIT_OFF];
-
-    for (i = 0; i < NUM_OBJECTS; i++)
-        glyph2tile[i + GLYPH_OBJ_INVENTORY_LIT_OFF] = tmp_tilemap[i];
-
     for (int j = 0; j < NUM_MISSILE_DIRS; j++)
     {
         for (i = 0; i < NUM_OBJECTS; i++)

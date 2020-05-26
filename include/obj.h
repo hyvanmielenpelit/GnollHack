@@ -510,11 +510,6 @@ struct obj {
 #define is_obj_normally_edible(otmp) \
 	((otmp)->oclass == FOOD_CLASS || ((otmp)->oclass == REAGENT_CLASS && (objects[(otmp)->otyp].oc_flags & O1_EDIBLE_NONFOOD) != 0))
 
-
-#define has_otyp_inventory_tile(otyp)                                 \
-    ((objects[otyp].oc_flags4 & O4_INVENTORY_TILE) != 0)
-#define has_otyp_lit_tile(otyp)                                 \
-    ((objects[otyp].oc_flags4 & O4_LIT_TILE) != 0)
 #define has_otyp_missile_tile(otyp)                                 \
     ((objects[otyp].oc_flags4 & O4_MISSILE_TILE) != 0)
 

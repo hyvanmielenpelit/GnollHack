@@ -2109,15 +2109,6 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_OBJ_OFF:
                 header = "OBJ_OFF";
                 break;
-            case GLYPH_OBJ_INVENTORY_OFF:
-                header = "OBJ_INVENTORY_OFF";
-                break;
-            case GLYPH_OBJ_LIT_OFF:
-                header = "OBJ_LIT_OFF";
-                break;
-            case GLYPH_OBJ_INVENTORY_LIT_OFF:
-                header = "OBJ_INVENTORY_LIT_OFF";
-                break;
             case GLYPH_OBJ_MISSILE_OFF:
                 header = "OBJ_MISSILE_OFF";
                 break;
@@ -2141,15 +2132,6 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 break;
             case GLYPH_ARTIFACT_OFF:
                 header = "ARTIFACT_OFF";
-                break;
-            case GLYPH_ARTIFACT_INVENTORY_OFF:
-                header = "ARTIFACT_INVENTORY_OFF";
-                break;
-            case GLYPH_ARTIFACT_LIT_OFF:
-                header = "ARTIFACT_LIT_OFF";
-                break;
-            case GLYPH_ARTIFACT_INVENTORY_LIT_OFF:
-                header = "ARTIFACT_INVENTORY_LIT_OFF";
                 break;
             case GLYPH_ARTIFACT_MISSILE_OFF:
                 header = "ARTIFACT_MISSILE_OFF";

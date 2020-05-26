@@ -46,10 +46,8 @@
 #define AF_NO_WISH							0x80000000UL  /* not wishable, not that for artifacts the base item's no wish does not apply */
 
 #define AF2_NONE							0x00000000UL  
-#define AF2_INVENTORY_TILE					0x00000001UL  
-#define AF2_LIT_TILE						0x00000002UL  
-#define AF2_MISSILE_TILE					0x00000004UL  
-#define AF2_SINGLE_MISSILE_TILE				0x00000008UL  
+#define AF2_MISSILE_TILE					0x00000001UL  
+#define AF2_SINGLE_MISSILE_TILE				0x00000002UL  
 
 
 /* wielded or carried special effects */
@@ -121,13 +119,8 @@ struct artifact {
 	char ocolor;		/* color used for object instead of its normal color */
 
 	short stand_animation;
-	short lit_animation;
-
 	short enlargement;
-	short lit_enlargement;
-
 	short replacement;
-	short lit_replacement;
 };
 
 /* invoked properties with special powers */

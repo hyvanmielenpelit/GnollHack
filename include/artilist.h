@@ -12,22 +12,22 @@ static const char *artifact_names[] = {
 #else
 /* in artifact.c, set up the actual artifact list structure */
 
-#define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, lit_anim, enlarge, lit_enlarge, replacement, lit_replacement) \
+#define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, enlarge, replacement) \
     {                                                                       \
-        typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, lit_anim, enlarge, lit_enlarge, replacement, lit_replacement    \
+        typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, enlarge, replacement    \
     }
 
-#define ENLARGED_ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, lit_anim, enlarge, lit_enlarge) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, lit_anim, enlarge, lit_enlarge, lit_anim, NO_REPLACEMENT, NO_REPLACEMENT)
+#define ENLARGED_ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, enlarge) \
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, enlarge, NO_REPLACEMENT)
 
-#define ENLARGED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, enlarge, lit_enlarge) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, NO_ANIMATION, NO_ANIMATION, enlarge, lit_enlarge, NO_REPLACEMENT, NO_REPLACEMENT)
+#define ENLARGED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, enlarge) \
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, NO_ANIMATION, enlarge, NO_REPLACEMENT)
 
-#define ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, lit_anim) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, lit_anim, NO_ENLARGEMENT, NO_ENLARGEMENT, NO_REPLACEMENT, NO_REPLACEMENT)
+#define ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim) \
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 #define A(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, NO_ANIMATION, NO_ANIMATION, NO_ENLARGEMENT, NO_ENLARGEMENT, NO_REPLACEMENT, NO_REPLACEMENT)
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 /* clang-format off */
 #define     NO_ATTK			{0,0,0,0,0,0}               /* no attack */
@@ -108,12 +108,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      EWarn_of_mon for all monsters that have the M2_value flag.
      *      Sting and Orcrist will warn of M2_ORC monsters.
      */
-    A("Orcrist", "ornate runed broadsword", None, ELVEN_BROADSWORD, ELVEN_BROADSWORD, (AF_DFLAG2 | AF_FLICKERS), AF2_LIT_TILE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
+    A("Orcrist", "ornate runed broadsword", None, ELVEN_BROADSWORD, ELVEN_BROADSWORD, (AF_DFLAG2 | AF_FLICKERS), AF2_NONE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
 	  1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
 	  A_CHAOTIC, NON_PM, PM_ELF, 2000L,
       CLR_BRIGHT_BLUE, NO_COLOR), /* bright blue is actually light blue */
 
-    A("Sting", "ornate runed dagger", None, ELVEN_RUNEDAGGER, ELVEN_DAGGER, (AF_DFLAG2 | AF_FLICKERS), AF2_MISSILE_TILE | AF2_LIT_TILE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
+    A("Sting", "ornate runed dagger", None, ELVEN_RUNEDAGGER, ELVEN_DAGGER, (AF_DFLAG2 | AF_FLICKERS), AF2_MISSILE_TILE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
 		 1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR),
     /*
      *      Magicbane is a bit different!  Its magic fanfare
@@ -133,18 +133,18 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
       NO_COLOR, CLR_RED),
 
     A("Dragonbane", "mithril-hilted runed broadsword", None, SWORD_OF_DRAGON_SLAYING, BROADSWORD,
-	  (AF_RESTR | AF_DCLAS | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_LIT_TILE, SPFX_REFLECT, SPFX_NONE, S_DRAGON,
+	  (AF_RESTR | AF_DCLAS | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_REFLECT, SPFX_NONE, S_DRAGON,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 500L,
       NO_COLOR, NO_COLOR),
 
     A("Demonbane", "runed silver long sword", None, SWORD_OF_DEMON_SLAYING, SILVER_LONG_SWORD,
 	(AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_ANGERS_DEMONS | AF_PREVENTS_SUMMONING_OF_MON),
-	AF2_LIT_TILE,
+	AF2_NONE,
 	SPFX_NONE, SPFX_NONE, M2_DEMON,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 2500L,
       NO_COLOR, NO_COLOR),
 
-    A("Werebane", "runed silver saber", None, SABER_OF_LYCANTHROPE_SLAYING, SILVER_SABER, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_LIT_TILE, SPFX_NONE, SPFX_NONE, M2_WERE,
+    A("Werebane", "runed silver saber", None, SABER_OF_LYCANTHROPE_SLAYING, SILVER_SABER, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, M2_WERE,
 	  1, 5, 0, PHYS(1, 20), LYCANTHROPY_RES, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 1500L,
       NO_COLOR, NO_COLOR),
 
@@ -210,7 +210,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		NO_COLOR, HI_GOLD),
 
     A("Sunsword", "glowing runed long sword", None, LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_ANGERS_DEMONS | AF_SHINES_MAGICAL_LIGHT),
-		AF2_LIT_TILE, SPFX_NONE, SPFX_NONE, M2_UNDEAD | M2_DEMON,
+		AF2_NONE, SPFX_NONE, SPFX_NONE, M2_UNDEAD | M2_DEMON,
 		1, 5, 0, PHYS(ARTDMG_QUADRUPLE_DAMAGE, 0), FLASH_RES, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
 		NO_COLOR, HI_GOLD),
 		  
@@ -242,7 +242,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		NO_COLOR, CLR_BLACK),
 
     A("The Holy Grail", "wooden grail", None, GRAIL_OF_HEALING, GRAIL_OF_HEALING, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED),
-		AF2_INVENTORY_TILE, SPFX_NONE, SPFX_PROTECT, 0,
+		AF2_NONE, SPFX_NONE, SPFX_PROTECT, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, SLOW_DIGESTION, ARTINVOKE_RECHARGE_ITSELF, 0, 0, 0, 0, 800, A_LAWFUL, NON_PM, NON_PM, 3000L,
 		NO_COLOR, CLR_RED),
 
@@ -256,7 +256,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		NO_COLOR, CLR_MAGENTA),
 
     A("The Heart of Ahriman", "glowing red jewel", None, LUCKSTONE, LUCKSTONE,
-		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_LIT_TILE, SPFX_NONE, SPFX_STLTH, 0,
+		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_STLTH, 0,
       /* this stone does double damage if used as a projectile weapon */
 		1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, LEVITATION, 0, 0, 0, 20, 60, A_NEUTRAL, PM_BARBARIAN, NON_PM, 2500L,
 		NO_COLOR, CLR_RED),

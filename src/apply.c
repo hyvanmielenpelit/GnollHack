@@ -4937,7 +4937,7 @@ boolean usenexthere;
 			char applied_invlet = usenexthere ? 'a' + cnt :  otmp->invlet;
 			char applied_group_accelerator = 0; // def_oc_syms[(int)objects[otmp->otyp].oc_class].sym;
 
-			add_menu(win, obj_to_inventory_glyph(otmp, rn2_on_display_rng), &any,
+			add_menu(win, obj_to_glyph(otmp, rn2_on_display_rng), &any,
 				applied_invlet,
 				applied_group_accelerator,
 				ATR_NONE, 
