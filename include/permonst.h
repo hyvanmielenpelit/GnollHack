@@ -91,6 +91,9 @@ struct permonst {
 
     struct action_info enlargement;
     struct action_info female_enlargement;
+
+    struct action_info replacement;
+    struct action_info female_replacement;
 };
 
 extern NEARDATA struct permonst mons[]; /* the master list of monster types */

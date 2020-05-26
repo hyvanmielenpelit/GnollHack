@@ -112,4 +112,45 @@ enum animation_types
 extern NEARDATA struct animation_definition animations[];
 
 
+/* Replacements */
+#define MAX_TILES_PER_REPLACEMENT 32
+
+enum replacement_action_types
+{
+    REPLACEMENT_ACTION_NO_ACTION = 0,
+    REPLACEMENT_ACTION_BOTTOM_TILE
+};
+
+
+struct replacement_definition {
+    char* replacement_name;
+    char number_of_tiles;
+    int glyph_offset;
+    unsigned long replacement_events;
+    enum replacement_action_types replacement_action; /* hard-coded - defines which tile to use and when */
+    short tile_animation[MAX_TILES_PER_REPLACEMENT];
+    short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
+};
+
+#define REPLACEMENT_EVENT_UPDATE_FROM_BELOW 0x00000001UL
+
+
+enum replacement_types
+{
+    NO_REPLACEMENT = 0,
+    DUNGEON_NORMAL_STONE_REPLACEMENT,
+    DUNGEON_NORMAL_VWALL_REPLACEMENT
+};
+
+#define NUM_REPLACEMENTS DUNGEON_NORMAL_VWALL_REPLACEMENT
+
+#define DUNGEON_NORMAL_STONE_REPLACEMENT_OFF (0)
+#define DUNGEON_NORMAL_STONE_REPLACEMENT_TILES 1
+#define DUNGEON_NORMAL_VWALL_REPLACEMENT_OFF (DUNGEON_NORMAL_STONE_REPLACEMENT_TILES + DUNGEON_NORMAL_STONE_REPLACEMENT_OFF)
+#define DUNGEON_NORMAL_VWALL_REPLACEMENT_TILES 1
+#define MAX_REPLACEMENT_TILES (DUNGEON_NORMAL_VWALL_REPLACEMENT_TILES + DUNGEON_NORMAL_VWALL_REPLACEMENT_OFF)
+
+extern NEARDATA struct replacement_definition replacements[];
+
+
 #endif /* ANIMATION_H */

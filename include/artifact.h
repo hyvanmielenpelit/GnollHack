@@ -125,6 +125,9 @@ struct artifact {
 
 	int enlargement;
 	int lit_enlargement;
+
+	int replacement;
+	int lit_replacement;
 };
 
 /* invoked properties with special powers */

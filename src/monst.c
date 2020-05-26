@@ -48,16 +48,18 @@ void NDECL(monst_init);
  *      For AT_BREA attacks, '# sides' is ignored; 6 is used for most
  *      damage types, 25 for sleep, not applicable for death or poison.
  */
-#define ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, enlarge, female_enlarge) \
+#define GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, enlarge, female_enlarge, replacement, female_replacement) \
     {                                                                      \
-        nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, C(col), anim, female_anim, enlarge, female_enlarge   \
+        nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, C(col), anim, female_anim, enlarge, female_enlarge, replacement, female_replacement   \
     }
+#define ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, enlarge, female_enlarge) \
+    GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, enlarge, female_enlarge, NO_ACTION_INFO, NO_ACTION_INFO)
 #define ENLARGED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, enlarge, female_enlarge) \
-    ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ACTION_INFO, NO_ACTION_INFO, enlarge, female_enlarge)
+    GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ACTION_INFO, NO_ACTION_INFO, enlarge, female_enlarge, NO_ACTION_INFO, NO_ACTION_INFO)
 #define ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim) \
-    ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, NO_ACTION_INFO, NO_ACTION_INFO)
+    GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, anim, female_anim, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO
 #define MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col) \
-    ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ACTION_INFO, NO_ACTION_INFO)
+    GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, flg1, flg2, flg3, flg4, flg5, d, col, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO)
 
 /* LVL() and SIZ() collect several fields to cut down on # of args for MON()
  */

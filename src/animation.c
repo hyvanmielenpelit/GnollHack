@@ -566,6 +566,36 @@ short enlidx;
     return -1;
 }
 
+/*
+    char* replacement_name;
+    char number_of_tiles;
+    int glyph_offset;
+    unsigned long replacement_events;
+    enum replacement_action_types replacement_action;
+    short tile_animation[MAX_TILES_PER_REPLACEMENT];
+    short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
+*/
+
+/* Replacements */
+NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
+{
+    { "",
+      0, 0,
+      0UL,
+      REPLACEMENT_ACTION_NO_ACTION,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-stone-replacement",
+      DUNGEON_NORMAL_STONE_REPLACEMENT_TILES, DUNGEON_NORMAL_STONE_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
+      REPLACEMENT_ACTION_BOTTOM_TILE,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    }
+};
+
+
 /* animation.c */
 
 

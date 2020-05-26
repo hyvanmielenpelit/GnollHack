@@ -960,6 +960,8 @@ struct objdescr {
 	int lit_animation;
 	int enlargement;
 	int lit_enlargement;
+	int replacement;
+	int lit_replacement;
 };
 
 extern NEARDATA struct objclass objects[];
