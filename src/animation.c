@@ -62,6 +62,42 @@ int genderidx;
 }
 
 short
+get_player_replacement(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
+enum action_tile_types action;
+int roleidx, raceidx, genderidx, alignmentidx, levelidx;
+{
+    /* Write here the code that returns the right replacement for the combination that has a replacement */
+    switch (action)
+    {
+    case ACTION_TILE_NO_ACTION:
+        break;
+    case ACTION_TILE_ATTACK:
+        break;
+    case ACTION_TILE_THROW:
+        break;
+    case ACTION_TILE_FIRE:
+        break;
+    case ACTION_TILE_CAST:
+        break;
+    case ACTION_TILE_SPECIAL_ATTACK:
+        break;
+    case ACTION_TILE_KICK:
+        break;
+    case ACTION_TILE_ITEM_USE:
+        break;
+    case ACTION_TILE_DOOR_USE:
+        break;
+    case ACTION_TILE_DEATH:
+        break;
+    case MAX_ACTION_TILES:
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+short
 get_player_animation(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
 enum action_tile_types action;
 int roleidx, raceidx, genderidx, alignmentidx, levelidx;
@@ -98,91 +134,6 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     }
     return 0;
 }
-
-#if 0
-short
-get_player_stand_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_attack_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_throw_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_fire_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_cast_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
-        return PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION;
-
-    return 0;
-}
-
-short
-get_player_special_attack_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_kick_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_item_use_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_door_use_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-
-short
-get_player_death_animation(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right animation for the combination that has an animation */
-    return 0;
-}
-#endif
 
 
 short
@@ -299,79 +250,6 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     return 0;
 }
 
-#if 0
-short
-get_player_attack_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_throw_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_fire_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_cast_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_special_attack_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_kick_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_item_use_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_door_use_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-
-short
-get_player_death_enlargement(roleidx, raceidx, genderidx, alignmentidx, levelidx)
-int roleidx, raceidx, genderidx, alignmentidx, levelidx;
-{
-    /* Write here the code that returns the right enlargement for the combination that has an enlargement */
-    return 0;
-}
-#endif
 
 short
 get_animation_base_tile(animidx)
@@ -436,32 +314,22 @@ short animidx;
                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
                         for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
-                            if (get_player_animation(action, roleidx, raceidx, gender, alignment, level))
+                            if (get_player_animation(action, roleidx, raceidx, gender, alignment, level) == animidx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
                         }
-#if 0
-                        if (get_player_attack_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_ATTACK_OFF];
-                        if (get_player_throw_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_THROW_OFF];
-                        if (get_player_fire_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_FIRE_OFF];
-                        if (get_player_cast_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_CAST_OFF];
-                        if (get_player_special_attack_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF];
-                        if (get_player_kick_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_KICK_OFF];
-                        if (get_player_item_use_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF];
-                        if (get_player_door_use_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF];
-                        if (get_player_death_animation(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_DEATH_OFF];
-#endif
                     }
                 }
             }
+        }
+    }
+
+    /* Replacement */
+    for (int i = 1; i < NUM_REPLACEMENTS; i++)
+    {
+        for (int j = 0; j < replacements[i].number_of_tiles; j++)
+        {
+            if (replacements[i].tile_animation[j] == animidx)
+                return glyph2tile[j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF];
         }
     }
 
@@ -532,31 +400,105 @@ short enlidx;
                         int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
                         for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
-                            if (get_player_enlargement(action, roleidx, raceidx, gender, alignment, level))
+                            if (get_player_enlargement(action, roleidx, raceidx, gender, alignment, level) == enlidx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
                         }
-#if 0
-                        if (get_player_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_OFF];
-                        if (get_player_attack_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_ATTACK_OFF];
-                        if (get_player_throw_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_THROW_OFF];
-                        if (get_player_fire_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_FIRE_OFF];
-                        if (get_player_cast_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_CAST_OFF];
-                        if (get_player_special_attack_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF];
-                        if (get_player_kick_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_KICK_OFF];
-                        if (get_player_item_use_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF];
-                        if (get_player_door_use_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF];
-                        if (get_player_death_enlargement(roleidx, raceidx, gender, alignment, level))
-                            return glyph2tile[player_glyph_index + GLYPH_PLAYER_DEATH_OFF];
-#endif
+                    }
+                }
+            }
+        }
+    }
+
+    /* Replacement */
+    for (int i = 1; i < NUM_REPLACEMENTS; i++)
+    {
+        for (int j = 0; j < replacements[i].number_of_tiles; j++)
+        {
+            if (replacements[i].tile_enlargement[j] == enlidx)
+                return glyph2tile[j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF];
+        }
+    }
+
+    /* Animation */
+    for (int i = 1; i < NUM_ANIMATIONS; i++)
+    {
+        for (int j = 0; j < animations[i].number_of_tiles; j++)
+        {
+            if (animations[i].tile_enlargement[j] == enlidx)
+                return glyph2tile[j + animations[i].glyph_offset + GLYPH_ANIMATION_OFF];
+        }
+    }
+
+
+    return -1;
+}
+
+short
+get_replacement_base_tile(replacement_idx)
+short replacement_idx;
+{
+    for (int i = LOW_PM; i < NUM_MONSTERS; i++)
+    {
+        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        {
+            if (mons[i].replacement.actions[action] == replacement_idx)
+                return glyph2tile[i + get_monster_action_glyph_offset(action, 0)];
+        }
+        if (mons[i].replacement.statue == replacement_idx)
+            return glyph2tile[i + GLYPH_STATUE_OFF];
+        if (mons[i].replacement.corpse == replacement_idx)
+            return glyph2tile[i + GLYPH_BODY_OFF];
+
+        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+        {
+            if (mons[i].female_replacement.actions[action] == replacement_idx)
+                return glyph2tile[i + get_monster_action_glyph_offset(action, 1)];
+        }
+        if (mons[i].female_replacement.corpse == replacement_idx)
+            return glyph2tile[i + GLYPH_FEMALE_BODY_OFF];
+        if (mons[i].female_replacement.statue == replacement_idx)
+            return glyph2tile[i + GLYPH_FEMALE_STATUE_OFF];
+    }
+
+    for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
+    {
+        if (obj_descr[objects[i].oc_descr_idx].replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_OBJ_OFF];
+        if (obj_descr[objects[i].oc_descr_idx].lit_replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_OBJ_LIT_OFF];
+    }
+
+    for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
+    {
+        for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
+        {
+            if (defsyms[i].replacement[cmap_idx] == replacement_idx)
+                return glyph2tile[i + GLYPH_CMAP_OFF];
+        }
+
+        for (int i = 0; i < MAX_VARIATIONS; i++)
+        {
+            if (defsym_variations[i].replacement[cmap_idx] == replacement_idx)
+                return glyph2tile[i + GLYPH_CMAP_VARIATION_OFF];
+        }
+    }
+
+    for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+    {
+        for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+        {
+            for (int gender = 0; gender <= 1; gender++)
+            {
+                for (int alignment = -1; alignment <= 1; alignment++)
+                {
+                    for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                    {
+                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
+                        for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+                        {
+                            if (get_player_animation(action, roleidx, raceidx, gender, alignment, level) == replacement_idx)
+                                return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
+                        }
                     }
                 }
             }
@@ -566,15 +508,7 @@ short enlidx;
     return -1;
 }
 
-/*
-    char* replacement_name;
-    char number_of_tiles;
-    int glyph_offset;
-    unsigned long replacement_events;
-    enum replacement_action_types replacement_action;
-    short tile_animation[MAX_TILES_PER_REPLACEMENT];
-    short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
-*/
+
 
 /* Replacements */
 NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
@@ -594,6 +528,11 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 };
+
+
+
+
+
 
 
 /* animation.c */

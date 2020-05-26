@@ -33,38 +33,14 @@ E int FDECL(argcheck, (int, char **, enum earlyarg));
 /* ### animation.c ### */
 
 E void NDECL(init_animations);
+E short FDECL(get_player_replacement, (enum action_tile_types, int, int, int, int, int));
 E short FDECL(get_player_animation, (enum action_tile_types, int, int, int, int, int));
+E short FDECL(get_player_enlargement, (enum action_tile_types, int, int, int, int, int));
 E int FDECL(get_player_action_glyph_offset, (enum action_tile_types));
 E int FDECL(get_monster_action_glyph_offset, (enum action_tile_types, int));
 
-#if 0
-E short FDECL(get_player_stand_animation, (int, int, int, int, int));
-E short FDECL(get_player_attack_animation, (int, int, int, int, int));
-E short FDECL(get_player_throw_animation, (int, int, int, int, int));
-E short FDECL(get_player_fire_animation, (int, int, int, int, int));
-E short FDECL(get_player_cast_animation, (int, int, int, int, int));
-E short FDECL(get_player_special_attack_animation, (int, int, int, int, int));
-E short FDECL(get_player_kick_animation, (int, int, int, int, int));
-E short FDECL(get_player_item_use_animation, (int, int, int, int, int));
-E short FDECL(get_player_door_use_animation, (int, int, int, int, int));
-E short FDECL(get_player_death_animation, (int, int, int, int, int));
-#endif
-
-E short FDECL(get_player_enlargement, (enum action_tile_types, int, int, int, int, int));
-
-#if 0
-E short FDECL(get_player_attack_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_throw_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_fire_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_cast_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_special_attack_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_kick_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_item_use_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_door_use_enlargement, (int, int, int, int, int));
-E short FDECL(get_player_death_enlargement, (int, int, int, int, int));
-#endif
-
 E short FDECL(maybe_get_animated_tile, (short, unsigned long, boolean*));
+E short FDECL(get_replacement_base_tile, (short));
 E short FDECL(get_animation_base_tile, (short));
 E short FDECL(get_enlargement_base_tile, (short));
 

@@ -9,6 +9,7 @@
 #ifdef USE_TILES
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
 uchar glyphtileflags[MAX_GLYPH] = { 0 }; /* specifies how to use the tile and operations applied to the tile before use */
+short tile2replacement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 short tile2animation[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 short tile2enlargement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 #endif
@@ -2422,6 +2423,36 @@ uchar* tilemapflags;
         tile_count++;
     }
 
+    /* Replacement tiles */
+    tile_section_name = "replacement";
+    for (int i = 1; i <= NUM_REPLACEMENTS; i++)  /* replacement number, starts at 1 */
+    {
+        short base_tile = get_replacement_base_tile(i);
+        for (int j = 0; j < max(0, min(replacements[i].number_of_tiles, MAX_TILES_PER_REPLACEMENT)); j++) /* tile number */
+        {
+            if (process_style == 0)
+            {
+                Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name,
+                    replacements[i].replacement_name ? replacements[i].replacement_name : "unknown replacement",
+                    j,
+                    base_tile
+                );
+                int enl = replacements[i].tile_enlargement[j];
+                if (enl > 0)
+                    Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
+                else
+                    Sprintf(eos(buf), ",1,1,0");
+                Sprintf(eos(buf), "\n");
+                (void)write(fd, buf, strlen(buf));
+            }
+            else if (process_style == 1)
+            {
+                tilemaparray[j + animations[i].glyph_offset + GLYPH_REPLACEMENT_OFF] = tile_count;
+            }
+            tile_count++;
+        }
+    }
+
     /* Animation tiles */
     tile_section_name = "animation";
     for (int i = 1; i <= NUM_ANIMATIONS; i++)  /* animation number, starts at 1 */
@@ -2520,6 +2551,152 @@ uchar* tilemapflags;
     else if (process_style == 1)
     {
         /*
+         *Set tile2replacement
+         */
+
+         /* Monsters */
+        for (int i = 0; i < NUM_MONSTERS; i++)
+        {
+            for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+            {
+                if (mons[i].replacement.actions[action])
+                {
+                    int glyph = i + get_monster_action_glyph_offset(action, 0);
+                    short tile = tilemaparray[glyph];
+                    tile2replacement[tile] = mons[i].replacement.actions[action];
+                }
+            }
+            if (mons[i].replacement.corpse)
+            {
+                int glyph = i + GLYPH_BODY_OFF;
+                short tile = tilemaparray[glyph];
+                tile2replacement[tile] = mons[i].replacement.corpse;
+            }
+            if (mons[i].replacement.statue)
+            {
+                int glyph = i + GLYPH_STATUE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2replacement[tile] = mons[i].replacement.statue;
+            }
+
+
+            for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+            {
+                if (mons[i].female_replacement.actions[action])
+                {
+                    int glyph = i + get_monster_action_glyph_offset(action, 1);
+                    short tile = tilemaparray[glyph];
+                    tile2replacement[tile] = mons[i].replacement.actions[action];
+                }
+            }
+            if (mons[i].female_replacement.corpse)
+            {
+                int glyph = i + GLYPH_FEMALE_BODY_OFF;
+                short tile = tilemaparray[glyph];
+                tile2replacement[tile] = mons[i].female_replacement.corpse;
+            }
+            if (mons[i].female_replacement.statue)
+            {
+                int glyph = i + GLYPH_FEMALE_STATUE_OFF;
+                short tile = tilemaparray[glyph];
+                tile2replacement[tile] = mons[i].female_replacement.statue;
+            }
+        }
+
+        /* Objects */
+        for (int i = 0; i < NUM_OBJECTS; i++)
+        {
+            if (obj_descr[i].replacement)
+            {
+                int glyph = objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = obj_descr[i].replacement;
+            }
+            if (obj_descr[i].lit_replacement)
+            {
+                int glyph = lit_objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = obj_descr[i].lit_replacement;
+            }
+        }
+
+        /* Artifacts */
+        for (int i = 1; i <= NUM_ARTIFACTS; i++)
+        {
+            if (artilist[i].replacement)
+            {
+                int glyph = objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = artilist[i].replacement;
+            }
+            if (artilist[i].lit_replacement)
+            {
+                int glyph = lit_objnum_to_glyph(i);
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = artilist[i].lit_replacement;
+            }
+        }
+
+        /* CMAP */
+        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        {
+            for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
+            {
+                if (defsyms[i].replacement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2replacement[tile] = defsyms[i].replacement[cmap_type_idx];
+                }
+            }
+        }
+
+        /* CMAP Variation */
+        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        {
+            for (int i = 0; i < MAX_VARIATIONS; i++)
+            {
+                if (defsym_variations[i].replacement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2replacement[tile] = defsym_variations[i].replacement[cmap_type_idx];
+                }
+            }
+        }
+
+        /* Player */
+        for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
+        {
+            for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
+            {
+                for (int gender = 0; gender <= 1; gender++)
+                {
+                    for (int alignment = -1; alignment <= 1; alignment++)
+                    {
+                        for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
+                        {
+                            int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, level);
+                            for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
+                            {
+                                int anim_idx = get_player_replacement(action, roleidx, raceidx, gender, alignment, level);
+                                if (anim_idx)
+                                {
+                                    int player_glyph = player_glyph_index + get_player_action_glyph_offset(action);
+                                    short tile = glyph2tile[player_glyph];
+                                    tile2replacement[tile] = anim_idx;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+        /*
          *Set tile2animation 
          */
 
@@ -2535,68 +2712,6 @@ uchar* tilemapflags;
                     tile2animation[tile] = mons[i].animation.actions[action];
                 }
             }
-#if 0
-            if (mons[i].animation.stand)
-            {
-                int glyph = monnum_to_glyph(i);
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.stand;
-            }
-            if (mons[i].animation.attacks)
-            {
-                int glyph = i + GLYPH_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.attacks;
-            }
-            if (mons[i].animation.throws)
-            {
-                int glyph = i + GLYPH_THROW_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.throws;
-            }
-            if (mons[i].animation.fire)
-            {
-                int glyph = i + GLYPH_FIRE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.fire;
-            }
-            if (mons[i].animation.cast)
-            {
-                int glyph = i + GLYPH_CAST_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.cast;
-            }
-            if (mons[i].animation.kick)
-            {
-                int glyph = i + GLYPH_KICK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.kick;
-            }
-            if (mons[i].animation.special_attack)
-            {
-                int glyph = i + GLYPH_SPECIAL_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.special_attack;
-            }
-            if (mons[i].animation.item_use)
-            {
-                int glyph = i + GLYPH_ITEM_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.item_use;
-            }
-            if (mons[i].animation.door_use)
-            {
-                int glyph = i + GLYPH_DOOR_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.door_use;
-            }
-            if (mons[i].animation.death)
-            {
-                int glyph = i + GLYPH_DEATH_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].animation.death;
-            }
-#endif
             if (mons[i].animation.corpse)
             {
                 int glyph = i + GLYPH_BODY_OFF;
@@ -2620,62 +2735,6 @@ uchar* tilemapflags;
                     tile2animation[tile] = mons[i].animation.actions[action];
                 }
             }
-#if 0
-            if (mons[i].female_animation.attacks)
-            {
-                int glyph = i + GLYPH_FEMALE_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.attacks;
-            }
-            if (mons[i].female_animation.throws)
-            {
-                int glyph = i + GLYPH_FEMALE_THROW_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.throws;
-            }
-            if (mons[i].female_animation.fire)
-            {
-                int glyph = i + GLYPH_FEMALE_FIRE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.fire;
-            }
-            if (mons[i].female_animation.cast)
-            {
-                int glyph = i + GLYPH_FEMALE_CAST_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.cast;
-            }
-            if (mons[i].female_animation.kick)
-            {
-                int glyph = i + GLYPH_FEMALE_KICK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.kick;
-            }
-            if (mons[i].female_animation.special_attack)
-            {
-                int glyph = i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.special_attack;
-            }
-            if (mons[i].female_animation.item_use)
-            {
-                int glyph = i + GLYPH_FEMALE_ITEM_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.item_use;
-            }
-            if (mons[i].female_animation.door_use)
-            {
-                int glyph = i + GLYPH_FEMALE_DOOR_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.door_use;
-            }
-            if (mons[i].female_animation.death)
-            {
-                int glyph = i + GLYPH_FEMALE_DEATH_OFF;
-                short tile = tilemaparray[glyph];
-                tile2animation[tile] = mons[i].female_animation.death;
-            }
-#endif
             if (mons[i].female_animation.corpse)
             {
                 int glyph = i + GLYPH_FEMALE_BODY_OFF;
@@ -2773,74 +2832,24 @@ uchar* tilemapflags;
                                     short tile = glyph2tile[player_glyph];
                                     tile2animation[tile] = anim_idx;
                                 }
-#if 0
-                                anim_idx = get_player_attack_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_throw_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_fire_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_cast_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_special_attack_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_kick_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_item_use_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_door_use_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-                                anim_idx = get_player_death_animation(roleidx, raceidx, gender, alignment, level);
-                                if (anim_idx)
-                                {
-                                    int player_glyph = player_glyph_index + GLYPH_PLAYER_DEATH_OFF;
-                                    short tile = glyph2tile[player_glyph];
-                                    tile2animation[tile] = anim_idx;
-                                }
-#endif
                             }
                         }
                     }
+                }
+            }
+        }
+
+        /* Replacements */
+        for (int i = 1; i < NUM_REPLACEMENTS; i++)
+        {
+            for (int j = 0; j < replacements[i].number_of_tiles; j++)
+            {
+                int anim_idx = replacements[i].tile_animation[j];
+                if (anim_idx)
+                {
+                    int glyph = j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = anim_idx;
                 }
             }
         }
@@ -2862,62 +2871,6 @@ uchar* tilemapflags;
                     tile2enlargement[tile] = mons[i].enlargement.actions[action];
                 }
             }
-#if 0
-            if (mons[i].enlargement.attacks)
-            {
-                int glyph = i + GLYPH_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.attacks;
-            }
-            if (mons[i].enlargement.throws)
-            {
-                int glyph = i + GLYPH_THROW_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.throws;
-            }
-            if (mons[i].enlargement.fire)
-            {
-                int glyph = i + GLYPH_FIRE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.fire;
-            }
-            if (mons[i].enlargement.cast)
-            {
-                int glyph = i + GLYPH_CAST_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.cast;
-            }
-            if (mons[i].enlargement.kick)
-            {
-                int glyph = i + GLYPH_KICK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.kick;
-            }
-            if (mons[i].enlargement.special_attack)
-            {
-                int glyph = i + GLYPH_SPECIAL_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.special_attack;
-            }
-            if (mons[i].enlargement.item_use)
-            {
-                int glyph = i + GLYPH_ITEM_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.item_use;
-            }
-            if (mons[i].enlargement.door_use)
-            {
-                int glyph = i + GLYPH_DOOR_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.door_use;
-            }
-            if (mons[i].enlargement.death)
-            {
-                int glyph = i + GLYPH_DEATH_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].enlargement.death;
-            }
-#endif
             if (mons[i].enlargement.corpse)
             {
                 int glyph = i + GLYPH_BODY_OFF;
@@ -2941,62 +2894,6 @@ uchar* tilemapflags;
                     tile2enlargement[tile] = mons[i].female_enlargement.actions[action];
                 }
             }
-#if 0
-            if (mons[i].female_enlargement.attacks)
-            {
-                int glyph = i + GLYPH_FEMALE_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.attacks;
-            }
-            if (mons[i].female_enlargement.throws)
-            {
-                int glyph = i + GLYPH_FEMALE_THROW_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.throws;
-            }
-            if (mons[i].female_enlargement.fire)
-            {
-                int glyph = i + GLYPH_FEMALE_FIRE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.fire;
-            }
-            if (mons[i].female_enlargement.cast)
-            {
-                int glyph = i + GLYPH_FEMALE_CAST_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.cast;
-            }
-            if (mons[i].female_enlargement.kick)
-            {
-                int glyph = i + GLYPH_FEMALE_KICK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.kick;
-            }
-            if (mons[i].female_enlargement.special_attack)
-            {
-                int glyph = i + GLYPH_FEMALE_SPECIAL_ATTACK_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.special_attack;
-            }
-            if (mons[i].female_enlargement.item_use)
-            {
-                int glyph = i + GLYPH_FEMALE_ITEM_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.item_use;
-            }
-            if (mons[i].female_enlargement.door_use)
-            {
-                int glyph = i + GLYPH_FEMALE_DOOR_USE_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.door_use;
-            }
-            if (mons[i].female_enlargement.death)
-            {
-                int glyph = i + GLYPH_FEMALE_DEATH_OFF;
-                short tile = tilemaparray[glyph];
-                tile2enlargement[tile] = mons[i].female_enlargement.death;
-            }
-#endif
             if (mons[i].female_enlargement.corpse)
             {
                 int glyph = i + GLYPH_FEMALE_BODY_OFF;
@@ -3094,73 +2991,23 @@ uchar* tilemapflags;
                                     tile2enlargement[tile] = enlargement_idx;
                                 }
                             }
-#if 0
-                            enlargement_idx = get_player_attack_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_ATTACK_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_throw_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_THROW_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_fire_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_FIRE_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_cast_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_CAST_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_special_attack_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_SPECIAL_ATTACK_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_kick_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_KICK_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_item_use_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_ITEM_USE_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_door_use_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_DOOR_USE_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-                            enlargement_idx = get_player_death_enlargement(roleidx, raceidx, gender, alignment, level);
-                            if (enlargement_idx)
-                            {
-                                int player_glyph = player_glyph_index + GLYPH_PLAYER_DEATH_OFF;
-                                short tile = glyph2tile[player_glyph];
-                                tile2enlargement[tile] = enlargement_idx;
-                            }
-#endif
                         }
                     }
+                }
+            }
+        }
+
+        /* Replacements */
+        for (int i = 1; i < NUM_REPLACEMENTS; i++)
+        {
+            for (int j = 0; j < replacements[i].number_of_tiles; j++)
+            {
+                int enl_idx = replacements[i].tile_enlargement[j];
+                if (enl_idx)
+                {
+                    int glyph = j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2enlargement[tile] = enl_idx;
                 }
             }
         }
