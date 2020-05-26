@@ -4489,6 +4489,11 @@ double hp_d;
 	}
 	context.botl = 1;
 
+#ifdef USE_TILES
+	if (flags.show_tile_u_hp_bar)
+		newsym(u.ux, u.uy);
+#endif
+
 	return *target_integer_part_ptr;
 }
 
@@ -4530,6 +4535,11 @@ double hp_d;
 		mtmp->mhp_fraction = 0;
 	}
 
+#ifdef USE_TILES
+	if((!is_tame(mtmp) && flags.show_tile_mon_hp_bar) || (is_tame(mtmp) && flags.show_tile_pet_hp_bar))
+		newsym(mtmp->mx, mtmp->my);
+#endif
+
 	return mtmp->mhp;
 }
 
@@ -4564,8 +4574,11 @@ uchar attack_mode;
 		newsym(u.ux, u.uy);
 		flush_screen(1);
 		delay_output();
-		delay_output();
-		delay_output();
+		if (u.action != ACTION_TILE_NO_ACTION)
+		{
+			delay_output();
+			delay_output();
+		}
 	}
 #endif
 }
@@ -4585,8 +4598,11 @@ uchar attack_mode;
 		newsym(mtmp->mx, mtmp->my);
 		flush_screen(0);
 		delay_output();
-		delay_output();
-		delay_output();
+		if (mtmp->action != ACTION_TILE_NO_ACTION)
+		{
+			delay_output();
+			delay_output();
+		}
 	}
 #endif
 }
