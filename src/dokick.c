@@ -1316,10 +1316,6 @@ dokick() {
                 exercise(A_DEX, TRUE);
                 maploc->typ = CORR;
                 feel_newsym(x, y); /* we know it's gone */
-#ifdef USE_TILES
-                if (isok(x, y - 1))
-                    newsym(x, y - 1);
-#endif
                 unblock_point(x, y); /* vision */
                 update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;

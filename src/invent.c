@@ -3528,7 +3528,7 @@ int show_weights;
 		// Drop show_weights, but no You are-line = 6
 
         boolean tiles_being_used = FALSE;
-#ifdef USE_TILES
+#if 0
         tiles_being_used = TRUE;
 #endif
 

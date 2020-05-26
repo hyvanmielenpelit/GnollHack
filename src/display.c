@@ -1091,15 +1091,6 @@ int x, y;
             /* Erase (reset) from source to end */
             for (i = 0; i < tglyph->sidx; i++)
                 newsym(tglyph->saved[i].x, tglyph->saved[i].y);
-#ifdef USE_TILES
-            /* Erase (reset) from source to end, one tile above */
-            if (tglyph->style == DISP_BEAM_DIG && tglyph->sidx > 0 && isok(tglyph->saved[i].x, tglyph->saved[i].y - 1))
-            {
-                for (i = 0; i < tglyph->sidx; i++)
-                    newsym(tglyph->saved[i].x, tglyph->saved[i].y - 1);
-            }
-
-#endif
         } else if (tglyph->style == DISP_TETHER) {
             int i;
 

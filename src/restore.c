@@ -12,11 +12,6 @@ extern int dotcnt; /* shared with save */
 extern int dotrow; /* shared with save */
 #endif
 
-//#ifdef USE_TILES
-//extern short glyph2tile[]; /* from tiledata.c */
-//extern void FDECL(substitute_tiles, (d_level *)); /* from tile.c */
-//#endif
-
 #ifdef ZEROCOMP
 STATIC_DCL void NDECL(zerocomp_minit);
 STATIC_DCL void FDECL(zerocomp_mread, (int, genericptr_t, size_t));

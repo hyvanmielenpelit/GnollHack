@@ -61,6 +61,7 @@ typedef struct mswin_GnollHack_menu_window {
     };
     int result;
     int done;
+    unsigned long intervalCounter;
 
     HBITMAP bmpChecked;
     HBITMAP bmpCheckedCount;
@@ -152,6 +153,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
     }
 
     data->is_active = activate && !GetNHApp()->regGnollHackMode;
+    data->intervalCounter = 0UL;
 
     /* set menu type */
     SetMenuListType(hWnd, how);
@@ -267,6 +269,9 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
             LayoutMenu(hWnd);
         }
     }
+
+    //SetTimer(hWnd, 0, ANIMATION_TIMER_INTERVAL, NULL);
+
 
     return ret_val;
 }
@@ -522,6 +527,14 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) 0);
         }
         return TRUE;
+    case WM_TIMER:
+        if (data->intervalCounter >= 0xCFFFFFFFUL)
+            data->intervalCounter = 0UL;
+        else
+            data->intervalCounter++;
+
+        break;
+
     }
     return FALSE;
 }
@@ -1118,6 +1131,8 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             boolean is_full_size = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM);
 
             ntile = glyph2tile[glyph];
+            //ntile = maybe_get_replaced_tile(ntile, -1, -1, (struct obj*)0);
+            //ntile = maybe_get_animated_tile(ntile, data->intervalCounter, (boolean*)0);
             int multiplier = flip_tile ? -1 : 1;
 
             int source_top_added = 0;

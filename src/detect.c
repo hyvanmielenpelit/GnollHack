@@ -1276,10 +1276,6 @@ register int x, y;
     if (level.flags.hero_memory) {
         magic_map_background(x, y, 0);
         newsym(x, y); /* show it, if not blocked */
-#ifdef USE_TILES
-        if (isok(x, y - 1))
-            newsym(x, y - 1);
-#endif
     } else {
         magic_map_background(x, y, 1); /* display it */
     }
@@ -1477,10 +1473,6 @@ genericptr_t num;
         unblock_point(zx, zy);
         magic_map_background(zx, zy, 0);
         newsym(zx, zy);
-#ifdef USE_TILES
-        if (isok(zx, zy - 1))
-            newsym(zx, zy - 1);
-#endif
         (*(int *) num)++;
     } else if ((ttmp = t_at(zx, zy)) != 0) {
         if (!ttmp->tseen && ttmp->ttyp != STATUE_TRAP) {
@@ -1547,10 +1539,6 @@ genericptr_t num;
         levl[zx][zy].typ = CORR;
         unblock_point(zx, zy);
         newsym(zx, zy);
-#ifdef USE_TILES
-        if (isok(zx, zy - 1))
-            newsym(zx, zy - 1);
-#endif
         (*num_p)++;
     } else if ((ttmp = t_at(zx, zy)) != 0) {
         struct monst *mon;
@@ -1760,10 +1748,6 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 						exercise(A_WIS, TRUE);
 						nomul(0);
 						feel_newsym(x, y); /* make sure it shows up */
-#ifdef USE_TILES
-                        if (isok(x, y - 1))
-                            newsym(x, y - 1);
-#endif
                         You("find a hidden passage.");
 					}
 					else

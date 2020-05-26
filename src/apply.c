@@ -565,10 +565,6 @@ register struct obj *obj;
         lev->typ = CORR, lev->flags = 0;
         unblock_point(rx, ry);
         feel_newsym(rx, ry);
-#ifdef USE_TILES
-        if (isok(rx, ry - 1))
-            newsym(rx, ry - 1);
-#endif
         return res;
     }
 

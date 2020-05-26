@@ -79,6 +79,9 @@
 #define MAX_LOADSTRING 100
 #define USE_PILEMARK
 
+#define ANIMATION_TIMER_INTERVAL 40 // milliseconds (25 FPS)
+
+
 typedef struct mswin_nhwindow_data {
     HWND win;
     int type;

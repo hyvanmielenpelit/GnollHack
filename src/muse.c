@@ -936,11 +936,6 @@ struct monst *mtmp;
         if (mtmp->wormno)
             worm_move(mtmp);
         newsym(trapx, trapy);
-#ifdef USE_TILES
-        if (isok(trapx, trapy - 1))
-            newsym(trapx, trapy - 1);
-#endif
-
         migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_RANDOM,
                          (coord *) 0);
         return 2;

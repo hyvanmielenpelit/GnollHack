@@ -487,10 +487,6 @@ dig(VOID_ARGS)
             unblock_point(dpx, dpy); /* vision:  can see through */
         feel_newsym(dpx, dpy);
 
-#ifdef USE_TILES
-        if (isok(dpx, dpy - 1))
-            newsym(dpx, dpy - 1);
-#endif
         if (digtxt && !context.digging.quiet)
             pline1(digtxt); /* after newsym */
         if (dmgtxt)
@@ -1438,10 +1434,6 @@ register struct monst *mtmp;
         here->typ = CORR, here->flags = 0;
         unblock_point(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
-#ifdef USE_TILES
-        if(isok(mtmp->mx, mtmp->my - 1))
-            newsym(mtmp->mx, mtmp->my - 1);
-#endif
         draft_message(FALSE); /* "You feel a draft." */
         return FALSE;
     } else if (!IS_ROCK(here->typ) && !IS_TREE(here->typ)) { /* no dig */
@@ -1496,10 +1488,6 @@ register struct monst *mtmp;
                              TRUE, FALSE);
     }
     newsym(mtmp->mx, mtmp->my);
-#ifdef USE_TILES
-    if (isok(mtmp->mx, mtmp->my - 1))
-        newsym(mtmp->mx, mtmp->my - 1);
-#endif
     if (!sobj_at(BOULDER, mtmp->mx, mtmp->my))
         unblock_point(mtmp->mx, mtmp->my); /* vision */
 
