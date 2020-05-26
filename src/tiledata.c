@@ -2183,7 +2183,7 @@ uchar* tilemapflags;
             }
             else if (process_style == 1)
             {
-                tilemaparray[j + animations[i].glyph_offset + GLYPH_REPLACEMENT_OFF] = tile_count;
+                tilemaparray[j + replacements[i].glyph_offset + GLYPH_REPLACEMENT_OFF] = tile_count;
             }
             tile_count++;
         }

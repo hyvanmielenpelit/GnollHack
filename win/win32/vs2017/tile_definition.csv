@@ -2575,6 +2575,8 @@ user-interface,ui-tile,menu-window-borders,6,32,32,top-left,top,middle-left,midd
 user-interface,ui-tile,text-window-borders,6,32,32,top-left,top,middle-left,middle-center,bottom-left,bottom-center
 replacement,dungeon-normal-stone-replacement,bottom-end,2206,1,1,0
 replacement,dungeon-normal-vwall-replacement,bottom-end,2207,1,1,0
+replacement,coin-replacement,few,1811,1,1,0
+replacement,coin-replacement,many,1811,1,1,0
 replacement,brass-lantern-replacement,lit,1437,1,1,0
 animation,handcrafted-candle-lit-animation,tile-0,1436,1,1,0
 animation,elf_wizard_female_cast-animation,tile-0,2529,1,1,0

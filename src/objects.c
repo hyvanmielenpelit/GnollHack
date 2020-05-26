@@ -3020,7 +3020,7 @@ WAND(None,            "jeweled", None, CHARGED_WAND_NORMAL_DIR, 0, 150, 1, 0, 0,
 
 /* coins ... - so far, gold is all there is */
 #define COIN(name,prob,metal,worth) \
-    OBJECT(OBJ(name, None, None, None, 0, 0, 0),                                       \
+    OBJECT(OBJ(name, None, None, None, 0, 0, COIN_REPLACEMENT),                                       \
            BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 0, 0, 0, 0, 0, 0, P_NONE, metal),    \
            0, 0, 0, P1_NONE, COIN_CLASS, prob, MULTIGEN_SINGLE, 0, 1, worth, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
