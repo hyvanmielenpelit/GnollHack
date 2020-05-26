@@ -8,7 +8,8 @@
 struct tileset_definition {
     uchar female_tile_style;     /* 0 = use base monster, 1 = separate female tile for each monster, 2 = indicated monsters with G_FEMALE_TILE on in mons[].geno */
    
-    uchar attack_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_ATTACK_TILE have attack tiles */
+    uchar action_tile_style[MAX_ACTION_TILES];     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_XXX_TILE have attack tiles */
+#if 0
     uchar throw_tile_style;      /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_THROW_TILE have attack tiles */
     uchar fire_tile_style;       /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_FIRE_TILE have attack tiles */
     uchar cast_tile_style;       /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_CAST_TILE have attack tiles */
@@ -17,8 +18,9 @@ struct tileset_definition {
     uchar item_use_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_ITEM_USE_TILE have attack tiles */
     uchar door_use_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_DOOR_USE_TILE have attack tiles */
     uchar death_tile_style;     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_DEATH_TILE have attack tiles */
-    uchar body_tile_style;       /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster, 2 = monsters marked with M5_CORPSE_TILE have body tiles */
+#endif
     uchar statue_tile_style;    /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster  */
+    uchar body_tile_style;       /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster, 2 = monsters marked with M5_CORPSE_TILE have body tiles */
 
     uchar inventory_tile_style;  /* 0 = no inventory tiles, 1 = has separate inventory tiles for all objects, 2 = has inventory tiles for each object marked with O4_INVENTORY_TILE  */
     uchar lit_tile_style;        /* 0 = no lit tiles, 1 = has separate lit tiles for all objects, 2 = has lit tiles for each object marked with O4_LIT_TILE  */

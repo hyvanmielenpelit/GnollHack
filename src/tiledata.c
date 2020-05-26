@@ -16,7 +16,7 @@ short tile2enlargement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
 NEARDATA struct tileset_definition default_tileset_definition =
 {
     2,
-    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,
+    {TRUE, 2, 2, 2, 2, 2, 2, 2, 2, 2}, 1, 2,
     0, 2, 2,
     2, 0, 1,
     1,
@@ -111,8 +111,12 @@ uchar* tilemapflags;
 
         for (int spset = 0; spset < MAX_ACTION_TILES + 2; spset++)
         {
-            if (spset == ACTION_TILE_ATTACK && !tsd->attack_tile_style)
-                continue;
+            if (spset > ACTION_TILE_NO_ACTION && spset < MAX_ACTION_TILES)
+            {
+                if (!tsd->action_tile_style[spset])
+                    continue;
+            }
+#if 0
             if (spset == ACTION_TILE_THROW && !tsd->throw_tile_style)
                 continue;
             if (spset == ACTION_TILE_FIRE && !tsd->fire_tile_style)
@@ -129,6 +133,8 @@ uchar* tilemapflags;
                 continue;
             if (spset == ACTION_TILE_DEATH && !tsd->death_tile_style)
                 continue;
+#endif
+
             if (spset == MAX_ACTION_TILES && !tsd->statue_tile_style)
                 continue;
             if (spset == MAX_ACTION_TILES + 1 && !tsd->body_tile_style)
@@ -155,10 +161,15 @@ uchar* tilemapflags;
                         fullsizedflag = 0;
                 }
 
+                if (spset > ACTION_TILE_NO_ACTION && spset < MAX_ACTION_TILES)
+                {
+                    unsigned long m5_action_flag = M5_ATTACK_TILE << (spset - 1);
+                    if (tsd->action_tile_style[spset] == 2 && !(mons[i].mflags5 & m5_action_flag))
+                        continue;
+                }
+#if 0
                 if (spset == ACTION_TILE_ATTACK)
                 {
-                    if (tsd->attack_tile_style == 2 && !(mons[i].mflags5 & M5_ATTACK_TILE))
-                        continue;
                 }
 
                 if (spset == ACTION_TILE_THROW)
@@ -208,6 +219,7 @@ uchar* tilemapflags;
                     if (tsd->death_tile_style == 2 && !(mons[i].mflags5 & M5_DEATH_TILE))
                         continue;
                 }
+#endif
 
                 if (spset == MAX_ACTION_TILES)
                 {
@@ -261,8 +273,12 @@ uchar* tilemapflags;
 
                         if (spset == ACTION_TILE_NO_ACTION)
                         {
-                            if (tsd->attack_tile_style != 1)
-                                tilemaparray[i + GLYPH_ATTACK_OFF] = tile_count;
+                            for (enum action_tile_types action = ACTION_TILE_ATTACK; action < MAX_ACTION_TILES; action++)
+                            {
+                                if (tsd->action_tile_style[action] != 1)
+                                    tilemaparray[i + get_monster_action_glyph_offset(action, 0)] = tile_count;
+                            }
+#if 0
                             if (tsd->throw_tile_style != 1)
                                 tilemaparray[i + GLYPH_THROW_OFF] = tile_count;
                             if (tsd->fire_tile_style != 1)
@@ -279,10 +295,19 @@ uchar* tilemapflags;
                                 tilemaparray[i + GLYPH_DOOR_USE_OFF] = tile_count;
                             if (tsd->death_tile_style != 1)
                                 tilemaparray[i + GLYPH_DEATH_OFF] = tile_count;
+#endif
                         }
                         else if (spset == ACTION_TILE_ATTACK)
                         {
                             /* Write these again if we get here */
+                            enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
+                            for (int idx = 0; idx < 6; idx++)
+                            {
+                                enum action_tile_types action = action_array[idx];
+                                if (tsd->action_tile_style[action] != 1)
+                                    tilemaparray[i + get_monster_action_glyph_offset(action, 0)] = tile_count;
+                            }
+#if 0
                             if (tsd->throw_tile_style != 1)
                                 tilemaparray[i + GLYPH_THROW_OFF] = tile_count;
                             if (tsd->fire_tile_style != 1)
@@ -295,15 +320,25 @@ uchar* tilemapflags;
                                 tilemaparray[i + GLYPH_KICK_OFF] = tile_count;
                             if (tsd->item_use_tile_style != 1)
                                 tilemaparray[i + GLYPH_ITEM_USE_OFF] = tile_count;
+#endif
                         }
                         else if (spset == ACTION_TILE_DOOR_USE)
                         {
+                            enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                            for (int idx = 0; idx < 3; idx++)
+                            {
+                                enum action_tile_types action = action_array[idx];
+                                if (tsd->action_tile_style[action] != 1)
+                                    tilemaparray[i + get_monster_action_glyph_offset(action, 0)] = tile_count;
+                            }
+#if 0
                             if (tsd->throw_tile_style != 1)
                                 tilemaparray[i + GLYPH_THROW_OFF] = tile_count;
                             if (tsd->cast_tile_style != 1)
                                 tilemaparray[i + GLYPH_CAST_OFF] = tile_count;
                             if (tsd->item_use_tile_style != 1)
                                 tilemaparray[i + GLYPH_ITEM_USE_OFF] = tile_count;
+#endif
                         }
                     }
 
@@ -312,8 +347,14 @@ uchar* tilemapflags;
                     if (spset == MAX_ACTION_TILES || spset == MAX_ACTION_TILES + 1)
                         tilemapflags[i + female_glyph_offset] |= fullsizedflag;
 
-                    if (spset == ACTION_TILE_ATTACK)
+                    if (spset == ACTION_TILE_NO_ACTION)
                     {
+                        for (enum action_tile_types action = ACTION_TILE_ATTACK; action < MAX_ACTION_TILES; action++)
+                        {
+                            if (tsd->action_tile_style[action] != 1)
+                                tilemaparray[i + get_monster_action_glyph_offset(action, 1)] = tile_count;
+                        }
+#if 0
                         if (tsd->attack_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_ATTACK_OFF] = tile_count;
                         if (tsd->throw_tile_style != 1)
@@ -332,10 +373,19 @@ uchar* tilemapflags;
                             tilemaparray[i + GLYPH_FEMALE_DOOR_USE_OFF] = tile_count;
                         if (tsd->death_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_DEATH_OFF] = tile_count;
+#endif
                     }
                     else if (spset == ACTION_TILE_ATTACK)
                     {
                         /* Write these again if we get here */
+                        enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
+                        for (int idx = 0; idx < 6; idx++)
+                        {
+                            enum action_tile_types action = action_array[idx];
+                            if (tsd->action_tile_style[action] != 1)
+                                tilemaparray[i + get_monster_action_glyph_offset(action, 1)] = tile_count;
+                        }
+#if 0
                         if (tsd->throw_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_THROW_OFF] = tile_count;
                         if (tsd->fire_tile_style != 1)
@@ -348,15 +398,25 @@ uchar* tilemapflags;
                             tilemaparray[i + GLYPH_FEMALE_KICK_OFF] = tile_count;
                         if (tsd->item_use_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_ITEM_USE_OFF] = tile_count;
+#endif
                     }
                     else if (spset == ACTION_TILE_DOOR_USE)
                     {
+                        enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                        for (int idx = 0; idx < 3; idx++)
+                        {
+                            enum action_tile_types action = action_array[idx];
+                            if (tsd->action_tile_style[action] != 1)
+                                tilemaparray[i + get_monster_action_glyph_offset(action, 1)] = tile_count;
+                        }
+#if 0
                         if (tsd->throw_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_THROW_OFF] = tile_count;
                         if (tsd->cast_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_CAST_OFF] = tile_count;
                         if (tsd->item_use_tile_style != 1)
                             tilemaparray[i + GLYPH_FEMALE_ITEM_USE_OFF] = tile_count;
+#endif
                     }
                 }
                 tile_count++;
@@ -1685,7 +1745,7 @@ uchar* tilemapflags;
                                     int player_glyph = player_glyph_index + player_glyph_offset;
                                     tilemaparray[player_glyph] = tile_count;
 
-                                    if (spset == 0)
+                                    if (spset == ACTION_TILE_NO_ACTION)
                                     {
                                         if (!GENERIC_PLAYER_HAS_ATTACK_TILE)
                                         {
@@ -1733,7 +1793,7 @@ uchar* tilemapflags;
                                             tilemaparray[player_glyph2] = tile_count;
                                         }
                                     }
-                                    else if (spset == 1)
+                                    else if (spset == ACTION_TILE_ATTACK)
                                     {
                                         if (!GENERIC_PLAYER_HAS_THROW_TILE)
                                         {
@@ -1761,7 +1821,7 @@ uchar* tilemapflags;
                                             tilemaparray[player_glyph2] = tile_count;
                                         }
                                     }
-                                    else if (spset == 8)
+                                    else if (spset == ACTION_TILE_DOOR_USE)
                                     {
                                         if (!GENERIC_PLAYER_HAS_THROW_TILE)
                                         {

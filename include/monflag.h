@@ -282,17 +282,19 @@
 #define M4_PACKMULE		            0x20000000UL        /* carries items for the player */
 
 #define M5_NONE						0x00000000UL
-#define M5_FEMALE_TILE		        0x00000001UL
-#define M5_CORPSE_TILE			    0x00000002UL
-#define M5_ATTACK_TILE			    0x00000004UL
-#define M5_THROW_TILE			    0x00000008UL
-#define M5_FIRE_TILE			    0x00000010UL
-#define M5_CAST_TILE			    0x00000020UL
-#define M5_SPECIAL_ATTACK_TILE      0x00000040UL
-#define M5_KICK_TILE                0x00000080UL
-#define M5_ITEM_USE_TILE			0x00000100UL
-#define M5_DOOR_USE_TILE			0x00000200UL
-#define M5_DEATH_TILE			    0x00000400UL
+/* Must be in the same order as enum attack_tile_types */
+#define M5_ATTACK_TILE			    0x00000001UL
+#define M5_THROW_TILE			    0x00000002UL
+#define M5_FIRE_TILE			    0x00000004UL
+#define M5_CAST_TILE			    0x00000008UL
+#define M5_SPECIAL_ATTACK_TILE      0x00000010UL
+#define M5_KICK_TILE                0x00000020UL
+#define M5_ITEM_USE_TILE			0x00000040UL
+#define M5_DOOR_USE_TILE			0x00000080UL
+#define M5_DEATH_TILE			    0x00000100UL
+/* bit reserved for statue tile*/
+#define M5_CORPSE_TILE			    0x00000400UL
+#define M5_FEMALE_TILE		        0x00000800UL
 
 
 #define MZ_TINY 0          /* < 2' */
