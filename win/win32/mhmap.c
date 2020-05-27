@@ -1162,24 +1162,24 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             case 0: /* left */
                                                 source_rt.left = at_x;
                                                 source_rt.right = source_rt.left + 10;
-                                                source_rt.top = at_y + 10;
-                                                source_rt.bottom = at_y + TILE_Y - 10;
+                                                source_rt.top = at_y;
+                                                source_rt.bottom = at_y + 20;
                                                 break;
                                             case 1: /* right */
                                                 source_rt.right = at_x + TILE_X;
                                                 source_rt.left = source_rt.right - 10;
-                                                source_rt.top = at_y + 10;
-                                                source_rt.bottom = at_y + TILE_Y - 10;
+                                                source_rt.top = at_y;
+                                                source_rt.bottom = at_y + 20;
                                                 break;
                                             case 2: /* up */
-                                                source_rt.left = at_x + 10;
-                                                source_rt.right = at_x + TILE_X - 10;
+                                                source_rt.left = at_x;
+                                                source_rt.right = at_x + TILE_X;
                                                 source_rt.top = at_y;
                                                 source_rt.bottom = source_rt.top + 10;
                                                 break;
                                             case 3: /* down */
-                                                source_rt.left = at_x + 10;
-                                                source_rt.right = at_x + TILE_X - 10;
+                                                source_rt.left = at_x;
+                                                source_rt.right = at_x + TILE_X;
                                                 source_rt.top = at_y + 20;
                                                 source_rt.bottom = at_y + TILE_Y;
                                                 break;

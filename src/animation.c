@@ -654,10 +654,10 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "dungeon-normal-vwall-replacement",
-      DUNGEON_NORMAL_VWALL_REPLACEMENT_TILES, DUNGEON_NORMAL_VWALL_REPLACEMENT_OFF,
-      REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
-      REPLACEMENT_ACTION_BOTTOM_TILE,
-      AUTODRAW_NONE,
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_UP_DOWN,
       { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -667,7 +667,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       0, 0,
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
       REPLACEMENT_ACTION_AUTODRAW,
-      AUTODRAW_DUNGEON_NORMAL_CRWALL_ENDS,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_ALL,
       { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -677,7 +677,87 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       0, 0,
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
       REPLACEMENT_ACTION_AUTODRAW,
-      AUTODRAW_DUNGEON_NORMAL_TRWALL_ENDS,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_UP_DOWN_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-tlwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_LEFT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_UP_DOWN_LEFT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-tuwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_UP_LEFT_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-tdwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_DOWN_LEFT_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-hwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_LEFT_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-tlcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_DOWN_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-trcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_DOWN_LEFT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-blcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_UP_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-brcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_NORMAL_REPLACE_WALL_ENDS_UP_LEFT,
       { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -720,17 +800,71 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
 {
     {"", 0, 0, 0},
     {
-        "crwall-autodraw", 
+        "dungeon-normal-wall-autodraw-all", 
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
     },
     {
-        "trwall-autodraw",
+        "dungeon-normal-wall-autodraw-left-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-up-down", 
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-up-down-left",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-up-down-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
-    }
+    },
+    {
+        "dungeon-normal-wall-autodraw-up-left-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-down-left-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-down-down-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-down-down-left",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-down-up-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
+    {
+        "dungeon-normal-wall-autodraw-down-up-left",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
+        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+    },
 };
 
 /* animation.c */
