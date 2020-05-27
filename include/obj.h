@@ -44,16 +44,16 @@ struct obj {
 
     short enchantment; /* Always set to zero by cancellation
 			      quality of weapon, weptool, armor or ring (+ or -);
-                  number of charges for wand or charged tool ( >= -1 );
-                  number of candles attached to candelabrum;
-                  marks your eggs, tin variety and spinach tins;
-                  Schroedinger's Box (1) or royal coffers for a court (2);
-                  tells which fruit a fruit is;
-                  special for uball and amulet;
-                  scroll of mail (normal==0, bones or wishing==1, written==2);
-                  historic and gender for statues */
+                  OBSOLETE (moved to charges): number of charges for wand or charged tool ( >= -1 );
+                  OBSOLETE (moved to special_quality): number of candles attached to candelabrum;
+                  OBSOLETE (moved to special_quality and speflags): marks your eggs, tin variety and spinach tins;
+                  OBSOLETE (moved to special_quality and speflags): Schroedinger's Box (1) or royal coffers for a court (2);
+                  OBSOLETE (moved to special_quality): tells which fruit a fruit is;
+                  OBSOLETE (moved to special_quality): special for uball and amulet;
+                  OBSOLETE (moved to special_quality): scroll of mail (normal==0, bones or wishing==1, written==2);
+                  OBSOLETE (moved to speflags): historic and gender for statues */
 	short charges; /* number of charges for wand or charged tool ( >= -1 ), always set to -1/0 by cancellation */
-	int special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
+	short special_quality; /* item-specific special quality, e.g., the amount of wetness of a towel, number of candles attached to candelabrum, not affected by cancellation */
 	unsigned long speflags; /* anything else that might be going on with an item, not affected by cancellation */
 
 #define SPEFLAGS_YOURS						0x00000001UL
@@ -106,7 +106,7 @@ struct obj {
 /* or accidental tripped rolling boulder trap */
 #define opoisoned otrapped /* object (weapon) is coated with poison */
 
-	int elemental_enchantment; /* cold, fire, lightning, or deathly */
+	char elemental_enchantment; /* cold, fire, lightning, or deathly */
 
 #define COLD_ENCHANTMENT 1
 #define FIRE_ENCHANTMENT 2
@@ -144,9 +144,9 @@ struct obj {
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
     long age;               /* creation date */
     long owornmask;
-	int cooldownleft;	   /* item cooldown left before it can be used again*/
-    int repowerleft;	   /* artifact cooldown left before its invoke ability can be used again*/
-    int detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
+	short cooldownleft;	   /* item cooldown left before it can be used again*/
+    short repowerleft;	   /* artifact cooldown left before its invoke ability can be used again*/
+    short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
 	boolean invokeon;      /* the object's / artifact's invoked ability is on */
 	struct oextra *oextra; /* pointer to oextra struct */
 };

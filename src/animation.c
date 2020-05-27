@@ -169,7 +169,7 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_BOTTOM_TILE:
         {
             int below_y = y + 1;
-            if (!isok(x, below_y) || levl[x][below_y].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0)
+            if (!isok(x, below_y) || levl[x][below_y].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
             {
                 /* No action */
             }
@@ -690,6 +690,16 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       AUTODRAW_NONE,
       { "few", "many", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "handcrafted-candle-replacement",
+      HANDCRAFTED_CANDLE_LIT_TILES, HANDCRAFTED_CANDLE_LIT_OFF,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_LIT,
+      AUTODRAW_NONE,
+      { "lit", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { HANDCRAFTED_CANDLE_LIT_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },

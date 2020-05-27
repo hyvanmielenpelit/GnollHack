@@ -72,6 +72,8 @@ STATIC_DCL void FDECL(dump_destroy_nhwindow, (winid));
 STATIC_DCL void FDECL(dump_start_menu, (winid));
 STATIC_DCL void FDECL(dump_add_menu, (winid, int, const ANY_P *, CHAR_P,
                                       CHAR_P, int, const char *, BOOLEAN_P));
+STATIC_DCL void FDECL(dump_add_extended_menu, (winid, int, const ANY_P*, struct obj*, CHAR_P,
+    CHAR_P, int, const char*, BOOLEAN_P));
 STATIC_DCL void FDECL(dump_end_menu, (winid, const char *));
 STATIC_DCL int FDECL(dump_select_menu, (winid, int, MENU_ITEM_P **));
 STATIC_DCL void FDECL(dump_putstr, (winid, int, const char *));
@@ -529,6 +531,8 @@ static winid FDECL(hup_create_nhwindow, (int));
 static int FDECL(hup_select_menu, (winid, int, MENU_ITEM_P **));
 static void FDECL(hup_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P,
                                  int, const char *, BOOLEAN_P));
+static void FDECL(hup_add_extended_menu, (winid, int, const anything*, struct obj*, CHAR_P, CHAR_P,
+    int, const char*, BOOLEAN_P));
 static void FDECL(hup_end_menu, (winid, const char *));
 static void FDECL(hup_putstr, (winid, int, const char *));
 static void FDECL(hup_print_glyph, (winid, XCHAR_P, XCHAR_P, struct layer_info));
@@ -566,7 +570,7 @@ static struct window_procs hup_procs = {
     hup_display_nhwindow, hup_void_fdecl_winid,        /* destroy_nhwindow */
     hup_curs, hup_putstr, hup_putstr,                  /* putmixed */
     hup_display_file, hup_void_fdecl_winid,            /* start_menu */
-    hup_add_menu, hup_end_menu, hup_select_menu, genl_message_menu,
+    hup_add_menu, hup_add_extended_menu, hup_end_menu, hup_select_menu, genl_message_menu,
     hup_void_ndecl,                                    /* update_inventory */
     hup_void_ndecl,                                    /* mark_synch */
     hup_void_ndecl,                                    /* wait_synch */
@@ -718,6 +722,18 @@ int glyph UNUSED, attr UNUSED;
 const anything *identifier UNUSED;
 char sel UNUSED, grpsel UNUSED;
 const char *txt UNUSED;
+boolean preselected UNUSED;
+{
+    return;
+}
+
+static void
+hup_add_extended_menu(window, glyph, identifier, sel, grpsel, attr, txt, preselected)
+winid window UNUSED;
+int glyph UNUSED, attr UNUSED;
+const anything* identifier UNUSED;
+char sel UNUSED, grpsel UNUSED;
+const char* txt UNUSED;
 boolean preselected UNUSED;
 {
     return;
@@ -1370,6 +1386,27 @@ boolean preselected UNUSED;
 
 /*ARGSUSED*/
 STATIC_OVL void
+dump_add_extended_menu(win, glyph, identifier, otmp, ch, gch, attr, str, preselected)
+winid win UNUSED;
+int glyph;
+const anything* identifier UNUSED;
+struct obj* otmp;
+char ch;
+char gch UNUSED;
+int attr UNUSED;
+const char* str;
+boolean preselected UNUSED;
+{
+    if (dumplog_file) {
+        if (glyph == NO_GLYPH)
+            fprintf(dumplog_file, " %s\n", str);
+        else
+            fprintf(dumplog_file, "  %c - %s\n", ch, str);
+    }
+}
+
+/*ARGSUSED*/
+STATIC_OVL void
 dump_end_menu(win, str)
 winid win UNUSED;
 const char *str;
@@ -1404,6 +1441,7 @@ boolean onoff_flag;
             windowprocs.win_destroy_nhwindow = dump_destroy_nhwindow;
             windowprocs.win_start_menu = dump_start_menu;
             windowprocs.win_add_menu = dump_add_menu;
+            windowprocs.win_add_extended_menu = dump_add_extended_menu;
             windowprocs.win_end_menu = dump_end_menu;
             windowprocs.win_select_menu = dump_select_menu;
             windowprocs.win_putstr = dump_putstr;

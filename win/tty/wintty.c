@@ -101,7 +101,7 @@ struct window_procs tty_procs = {
     tty_exit_nhwindows, tty_suspend_nhwindows, tty_resume_nhwindows,
     tty_create_nhwindow, tty_clear_nhwindow, tty_display_nhwindow,
     tty_destroy_nhwindow, tty_curs, tty_putstr, genl_putmixed,
-    tty_display_file, tty_start_menu, tty_add_menu, tty_end_menu,
+    tty_display_file, tty_start_menu, tty_add_menu, tty_add_extended_menu, tty_end_menu,
     tty_select_menu, tty_message_menu, tty_update_inventory, tty_mark_synch,
     tty_wait_synch,
 #ifdef CLIPPING
@@ -2988,6 +2988,21 @@ boolean preselected;        /* item is marked as selected */
 
     item->next = cw->mlist;
     cw->mlist = item;
+}
+
+void
+tty_add_extended_menu(window, glyph, identifier, otmp, ch, gch, attr, str, preselected)
+winid window;               /* window to use, must be of type NHW_MENU */
+int glyph UNUSED;           /* glyph to display with item (not used) */
+const anything* identifier; /* what to return if selected */
+struct obj* otmp;
+char ch;                    /* keyboard accelerator (0 = pick our own) */
+char gch;                   /* group accelerator (0 = no group) */
+int attr;                   /* attribute for string (like tty_putstr()) */
+const char* str;            /* menu string */
+boolean preselected;        /* item is marked as selected */
+{
+    tty_add_menu(window, glyph, identifier, ch, gch, attr, str, preselected);
 }
 
 /* Invert the given list, can handle NULL as an input. */

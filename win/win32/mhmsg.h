@@ -50,6 +50,7 @@ typedef struct mswin_nhmsg_cliparound {
 typedef struct mswin_nhmsg_add_menu {
     int glyph;
     const ANY_P *identifier;
+    struct obj* object;
     CHAR_P accelerator;
     CHAR_P group_accel;
     int attr;

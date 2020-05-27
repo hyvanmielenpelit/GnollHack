@@ -2,6 +2,8 @@
 /* Copyright (C) 2001 by Alex Kompel 	 */
 /* NetHack may be freely redistributed.  See license for details. */
 
+#include "obj.h"
+
 #ifndef MHNethackMessages_H
 #define MHNethackMessages_H
 
@@ -42,6 +44,7 @@ typedef struct mswin_nhmsg_cliparound {
 typedef struct mswin_nhmsg_add_menu {
     int glyph;
     const ANY_P *identifier;
+    struct obj* object;
     CHAR_P accelerator;
     CHAR_P group_accel;
     int attr;

@@ -111,7 +111,7 @@ struct window_procs X11_procs = {
     X11_player_selection, X11_askname, X11_get_nh_event, X11_exit_nhwindows,
     X11_suspend_nhwindows, X11_resume_nhwindows, X11_create_nhwindow,
     X11_clear_nhwindow, X11_display_nhwindow, X11_destroy_nhwindow, X11_curs,
-    X11_putstr, genl_putmixed, X11_display_file, X11_start_menu, X11_add_menu,
+    X11_putstr, genl_putmixed, X11_display_file, X11_start_menu, X11_add_menu, X11_add_extended_menu,
     X11_end_menu, X11_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     X11_update_inventory, X11_mark_synch, X11_wait_synch,

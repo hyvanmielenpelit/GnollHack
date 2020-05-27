@@ -1110,7 +1110,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
 
 
-                        /* Autodraw implementation */
+                        /* 
+                         * AUTODRAW START
+                         */
                         if (autodraw > AUTODRAW_NONE)
                         {
                             if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_REPLACE_WALL_ENDS)
@@ -1201,6 +1203,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 }
                             }
                         }
+                        /*
+                         * AUTODRAW END
+                         */
                     }
                 }
 

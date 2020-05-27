@@ -29,7 +29,7 @@ struct window_procs Gnome_procs = {
     gnome_exit_nhwindows, gnome_suspend_nhwindows, gnome_resume_nhwindows,
     gnome_create_nhwindow, gnome_clear_nhwindow, gnome_display_nhwindow,
     gnome_destroy_nhwindow, gnome_curs, gnome_putstr, genl_putmixed,
-    gnome_display_file, gnome_start_menu, gnome_add_menu, gnome_end_menu,
+    gnome_display_file, gnome_start_menu, gnome_add_menu, gnome_add_extended_menu, gnome_end_menu,
     gnome_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     gnome_update_inventory, gnome_mark_synch, gnome_wait_synch,
@@ -728,6 +728,18 @@ gnome_add_menu(winid wid, int glyph, const ANY_P *identifier,
                         ghack_signals[GHSIG_ADD_MENU], &item);
     }
 }
+
+void
+gnome_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct obj* otmp,
+    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    const char* str, BOOLEAN_P presel)
+{
+        gnome_add_menu(wid, glyph, identifier,
+            accelerator, group_accel, attr,
+            str, presel)
+
+}
+
 
 /*
 end_menu(window, prompt)

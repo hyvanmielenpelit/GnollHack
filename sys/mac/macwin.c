@@ -2013,6 +2013,14 @@ mac_add_menu(winid win, int glyph, const anything *any, CHAR_P menuChar,
     putstr(win, attr, str);
 }
 
+void
+mac_add_extended_menu(winid win, int glyph, const anything* any, struct obj* otmp, CHAR_P menuChar,
+    CHAR_P groupAcc, int attr, const char* inStr, int preselected)
+{
+    mac_add_menu(win, glyph, any, menuChar,
+        groupAcc, attr, inStr, preselected);
+}
+
 /*
  * End a menu in this window, window must a type NHW_MENU.
  * str is a list of cancel characters (values that may be input)
@@ -3256,7 +3264,7 @@ struct window_procs mac_procs = {
     mac_askname, mac_get_nh_event, mac_exit_nhwindows, mac_suspend_nhwindows,
     mac_unimplemented, mac_create_nhwindow, mac_clear_nhwindow,
     mac_display_nhwindow, mac_destroy_nhwindow, mac_curs, mac_putstr,
-    genl_putmixed, mac_display_file, mac_start_menu, mac_add_menu,
+    genl_putmixed, mac_display_file, mac_start_menu, mac_add_menu, mac_add_extended_menu,
     mac_end_menu, mac_select_menu, genl_message_menu, mac_unimplemented,
     mac_get_nh_event, mac_get_nh_event,
 #ifdef CLIPPING

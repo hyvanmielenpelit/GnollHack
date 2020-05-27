@@ -797,12 +797,15 @@ register int x, y;
 #endif
 
     /* only permit updating the hero when swallowed */
-    if (u.uswallow) {
+    if (u.uswallow)
+    {
         if (x == u.ux && y == u.uy)
             display_self();
         return;
     }
-    if (Underwater && !Is_waterlevel(&u.uz)) {
+
+    if (Underwater && !Is_waterlevel(&u.uz))
+    {
         /* when underwater, don't do anything unless <x,y> is an
            adjacent water or lava or ice position */
         if (!(is_pool_or_lava(x, y) || is_ice(x, y)) || distu(x, y) > 2)
@@ -810,7 +813,8 @@ register int x, y;
     }
 
     /* Can physically see the location. */
-    if (cansee(x, y)) {
+    if (cansee(x, y)) 
+    {
         NhRegion *reg = visible_region_at(x, y);
         /*
          * Don't use templit here:  E.g.
@@ -831,12 +835,14 @@ register int x, y;
          */
         if (reg && (ACCESSIBLE(lev->typ)
                     || (reg->glyph == cmap_to_glyph(S_poisoncloud)
-                        && is_pool_or_lava(x, y)))) {
+                        && is_pool_or_lava(x, y))))
+        {
             show_region(reg, x, y);
             return;
         }
 
-        if (x == u.ux && y == u.uy) {
+        if (x == u.ux && y == u.uy) 
+        {
             int see_self = canspotself();
 
             /* update map information for <u.ux,u.uy> (remembered topology
@@ -845,14 +851,18 @@ register int x, y;
             _map_location(x, y, !see_self);
             if (see_self)
                 display_self();
-        } else {
+        }
+        else
+        {
             mon = m_at(x, y);
             worm_tail = is_worm_tail(mon);
             see_it = mon && (mon_visible(mon)
                              || (!worm_tail && (tp_sensemon(mon)
                                                 || MATCH_WARN_OF_MON(mon))));
-            if (mon && (see_it || (!worm_tail && Detect_monsters))) {
-                if (mon->mtrapped) {
+            if (mon && (see_it || (!worm_tail && Detect_monsters))) 
+            {
+                if (mon->mtrapped)
+                {
                     struct trap *trap = t_at(x, y);
                     int tt = trap ? trap->ttyp : NO_TRAP;
 
@@ -865,31 +875,43 @@ register int x, y;
                 display_monster(x, y, mon,
                                 see_it ? PHYSICALLY_SEEN : DETECTED,
                                 worm_tail);
-            } else if (mon && mon_warning(mon) && !is_worm_tail(mon)) {
+            }
+            else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
+            {
                 display_warning(mon);
-            } else if (glyph_is_invisible(lev->glyph)) {
+            }
+            else if (glyph_is_invisible(lev->glyph)) 
+            {
                 map_invisible(x, y);
-            } else
+            }
+            else
                 _map_location(x, y, 1); /* map the location */\
         }
 
     /* Can't see the location. */
-    } else {
-        if (x == u.ux && y == u.uy) {
+    } 
+    else
+    {
+        if (x == u.ux && y == u.uy)
+        {
             feel_location(u.ux, u.uy); /* forces an update */
 
             if (canspotself())
                 display_self();
-        } else if ((mon = m_at(x, y)) != 0
+        }
+        else if ((mon = m_at(x, y)) != 0
                    && ((see_it = (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)
                                   || (see_with_infrared(mon)
                                       && mon_visible(mon)))) != 0
-                       || Detect_monsters)) {
+                       || Detect_monsters)) 
+        {
             /* Seen or sensed monsters are printed every time.
                This also gets rid of any invisibility glyph. */
             display_monster(x, y, mon, see_it ? 0 : DETECTED,
                             is_worm_tail(mon) ? TRUE : FALSE);
-        } else if (mon && mon_warning(mon) && !is_worm_tail(mon)) {
+        } 
+        else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
+        {
             display_warning(mon);
 
         /*
@@ -913,7 +935,9 @@ register int x, y;
          * These checks and changes must be here and not in back_to_glyph().
          * They are dependent on the position being out of sight.
          */
-        } else if (Is_rogue_level(&u.uz)) {
+        }
+        else if (Is_rogue_level(&u.uz)) 
+        {
             if (lev->glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
             else if (lev->glyph == cmap_to_glyph(S_room) && lev->typ == ROOM
@@ -921,7 +945,9 @@ register int x, y;
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_unexplored));
             else // if(lev->glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
-        } else if (!lev->waslit || (flags.dark_room && iflags.use_color)) {
+        }
+        else if (!lev->waslit || (flags.dark_room && iflags.use_color)) 
+        {
             if (lev->glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
                 show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
             else if (lev->glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
@@ -930,7 +956,9 @@ register int x, y;
 				show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
 			else // if (lev->glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
-        } else {
+        }
+        else
+        {
  show_mem:
             show_glyph(x, y, lev->glyph);
         }

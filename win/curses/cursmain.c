@@ -42,6 +42,7 @@ struct window_procs curses_procs = {
     curses_display_file,
     curses_start_menu,
     curses_add_menu,
+    curses_add_extended_menu,
     curses_end_menu,
     curses_select_menu,
     genl_message_menu,
@@ -500,6 +501,17 @@ curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
     curses_add_nhmenu_item(wid, glyph, identifier, accelerator, group_accel,
                            curses_attr, str, presel);
 }
+
+void
+curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct obj* otmp,
+    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    const char* str, BOOLEAN_P presel)
+{
+    curses_add_menu(wid, glyph, identifier,
+        accelerator, group_accel, attr,
+        str, presel);
+}
+
 
 /*
 end_menu(window, prompt)

@@ -4825,6 +4825,14 @@ void NetHackQtBind::qt_add_menu(winid wid, int glyph,
     window->AddMenu(glyph, identifier, ch, gch, attr, str, presel);
 }
 
+void NetHackQtBind::qt_add_extended_menu(winid wid, int glyph,
+    const ANY_P* identifier, struct obj* otmp, CHAR_P ch, CHAR_P gch, int attr,
+    const char* str, BOOLEAN_P presel)
+{
+    NetHackQtWindow* window = id_to_window[wid];
+    window->AddMenu(glyph, identifier, ch, gch, attr, str, presel);
+}
+
 void NetHackQtBind::qt_end_menu(winid wid, const char *prompt)
 {
     NetHackQtWindow* window=id_to_window[wid];
@@ -5248,6 +5256,7 @@ struct window_procs Qt_procs = {
     NetHackQtBind::qt_display_file,
     NetHackQtBind::qt_start_menu,
     NetHackQtBind::qt_add_menu,
+    NetHackQtBind::qt_add_extended_menu,
     NetHackQtBind::qt_end_menu,
     NetHackQtBind::qt_select_menu,
     genl_message_menu,      /* no need for X-specific handling */

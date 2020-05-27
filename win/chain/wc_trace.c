@@ -417,6 +417,23 @@ boolean preselected;        /* item is marked as selected */
 }
 
 void
+trace_add_extended_menu(vp, window, glyph, identifier, otmp, ch, gch, attr, str, preselected)
+void* vp;
+winid window;               /* window to use, must be of type NHW_MENU */
+int glyph;                  /* glyph to display with item (unused) */
+const anything* identifier; /* what to return if selected */
+struct obj* otmp;
+char ch;                    /* keyboard accelerator (0 = pick our own) */
+char gch;                   /* group accelerator (0 = no group) */
+int attr;                   /* attribute for string (like tty_putstr()) */
+const char* str;            /* menu string */
+boolean preselected;        /* item is marked as selected */
+{
+    trace_add_menu(vp, window, glyph, identifier, ch, gch, attr, str, preselected);
+}
+
+
+void
 trace_end_menu(vp, window, prompt)
 void *vp;
 winid window;
@@ -1138,7 +1155,7 @@ struct chain_procs trace_procs = {
     trace_exit_nhwindows, trace_suspend_nhwindows, trace_resume_nhwindows,
     trace_create_nhwindow, trace_clear_nhwindow, trace_display_nhwindow,
     trace_destroy_nhwindow, trace_curs, trace_putstr, trace_putmixed,
-    trace_display_file, trace_start_menu, trace_add_menu, trace_end_menu,
+    trace_display_file, trace_start_menu, trace_add_menu, trace_add_extended_menu, trace_end_menu,
     trace_select_menu, trace_message_menu, trace_update_inventory,
     trace_mark_synch, trace_wait_synch,
 #ifdef CLIPPING

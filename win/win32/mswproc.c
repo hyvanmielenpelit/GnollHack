@@ -94,7 +94,7 @@ struct window_procs mswin_procs = {
     mswin_get_nh_event, mswin_exit_nhwindows, mswin_suspend_nhwindows,
     mswin_resume_nhwindows, mswin_create_nhwindow, mswin_clear_nhwindow,
     mswin_display_nhwindow, mswin_destroy_nhwindow, mswin_curs, mswin_putstr,
-    genl_putmixed, mswin_display_file, mswin_start_menu, mswin_add_menu,
+    genl_putmixed, mswin_display_file, mswin_start_menu, mswin_add_menu, mswin_add_extended_menu,
     mswin_end_menu, mswin_select_menu,
     genl_message_menu, /* no need for X-specific handling */
     mswin_update_inventory, mswin_mark_synch, mswin_wait_synch,
@@ -1127,7 +1127,7 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
+mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct obj* otmp,
                CHAR_P accelerator, CHAR_P group_accel, int attr,
                const char *str, BOOLEAN_P presel)
 {
@@ -1140,6 +1140,7 @@ mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
         ZeroMemory(&data, sizeof(data));
         data.glyph = glyph;
         data.identifier = identifier;
+        data.object = otmp;
         data.accelerator = accelerator;
         data.group_accel = group_accel;
         data.attr = attr;
@@ -1149,6 +1150,16 @@ mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
         SendMessage(GetNHApp()->windowlist[wid].win, WM_MSNH_COMMAND,
                     (WPARAM) MSNH_MSG_ADDMENU, (LPARAM) &data);
     }
+}
+
+void
+mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
+    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    const char* str, BOOLEAN_P presel)
+{
+    mswin_add_extended_menu(wid, glyph, identifier, (struct obj*)0,
+        accelerator, group_accel, attr,
+        str, presel);
 }
 
 /*

@@ -3,6 +3,7 @@
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "layer.h"
+#include "obj.h"
 
 #ifndef WINCURS_H
 #define WINCURS_H
@@ -91,6 +92,9 @@ extern void curses_start_menu(winid wid);
 extern void curses_add_menu(winid wid, int glyph, const ANY_P * identifier,
                             CHAR_P accelerator, CHAR_P group_accel, int attr,
                             const char *str, BOOLEAN_P presel);
+extern void curses_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct obj*,
+    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    const char* str, BOOLEAN_P presel);
 extern void curses_end_menu(winid wid, const char *prompt);
 extern int curses_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 extern void curses_update_inventory(void);

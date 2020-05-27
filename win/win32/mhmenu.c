@@ -29,6 +29,7 @@
 typedef struct mswin_menu_item {
     int glyph;
     ANY_P identifier;
+    struct obj object_data;
     CHAR_P accelerator;
     CHAR_P group_accel;
     int attr;
@@ -36,6 +37,7 @@ typedef struct mswin_menu_item {
     BOOLEAN_P presel;
     int count;
     BOOL has_focus;
+    boolean is_animated;
 } NHMenuItem, *PNHMenuItem;
 
 typedef struct mswin_GnollHack_menu_window {
@@ -270,7 +272,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
         }
     }
 
-    //SetTimer(hWnd, 0, ANIMATION_TIMER_INTERVAL, NULL);
+    //SetTimer(hWnd, 0, ANIMATION_TIMER_INTERVAL * 5, NULL); /* Slow motion */
 
 
     return ret_val;
@@ -533,6 +535,11 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else
             data->intervalCounter++;
 
+        for (int i = 0; i < data->menu.size; i++)
+        {
+            if (data->menu.items[i].is_animated)
+                ListView_RedrawItems(GetMenuControl(hWnd), i, i);
+        }
         break;
 
     }
@@ -647,6 +654,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                    sizeof(data->menu.items[new_item]));
         data->menu.items[new_item].glyph = msg_data->glyph;
         data->menu.items[new_item].identifier = *msg_data->identifier;
+        data->menu.items[new_item].object_data = !msg_data->object ? zeroobj : *msg_data->object;
         data->menu.items[new_item].accelerator = msg_data->accelerator;
         data->menu.items[new_item].group_accel = msg_data->group_accel;
         data->menu.items[new_item].attr = msg_data->attr;
@@ -1129,10 +1137,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 flip_tile = TRUE;
 
             boolean is_full_size = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM);
-
+            enum autodraw_types autodraw = AUTODRAW_NONE;
             ntile = glyph2tile[glyph];
-            //ntile = maybe_get_replaced_tile(ntile, -1, -1, (struct obj*)0);
-            //ntile = maybe_get_animated_tile(ntile, data->intervalCounter, (boolean*)0);
+            ntile = maybe_get_replaced_tile(ntile, -1, -1,
+                item->object_data.otyp > STRANGE_OBJECT ? &item->object_data : (struct obj*)0, &autodraw);
+            //ntile = maybe_get_animated_tile(ntile, data->intervalCounter, &item->is_animated, &autodraw);
             int multiplier = flip_tile ? -1 : 1;
 
             int source_top_added = 0;

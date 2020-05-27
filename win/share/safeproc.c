@@ -71,7 +71,7 @@ struct window_procs safe_procs = {
     safe_exit_nhwindows, safe_suspend_nhwindows, safe_resume_nhwindows,
     safe_create_nhwindow, safe_clear_nhwindow, safe_display_nhwindow,
     safe_destroy_nhwindow, safe_curs, safe_putstr, genl_putmixed,
-    safe_display_file, safe_start_menu, safe_add_menu, safe_end_menu,
+    safe_display_file, safe_start_menu, safe_add_menu, safe_add_extended_menu, safe_end_menu,
     safe_select_menu, safe_message_menu, safe_update_inventory, safe_mark_synch,
     safe_wait_synch,
 #ifdef CLIPPING
@@ -247,6 +247,21 @@ char ch;                    /* keyboard accelerator (0 = pick our own) */
 char gch;                   /* group accelerator (0 = no group) */
 int attr;                   /* attribute for string (like safe_putstr()) */
 const char *str;            /* menu string */
+boolean preselected;        /* item is marked as selected */
+{
+    return;
+}
+
+void
+safe_add_extended_menu(window, glyph, identifier, otmp, ch, gch, attr, str, preselected)
+winid window;               /* window to use, must be of type NHW_MENU */
+int glyph UNUSED;           /* glyph to display with item (not used) */
+const anything* identifier; /* what to return if selected */
+struct obj* otmp;
+char ch;                    /* keyboard accelerator (0 = pick our own) */
+char gch;                   /* group accelerator (0 = no group) */
+int attr;                   /* attribute for string (like safe_putstr()) */
+const char* str;            /* menu string */
 boolean preselected;        /* item is marked as selected */
 {
     return;

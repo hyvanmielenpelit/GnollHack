@@ -47,7 +47,7 @@ struct window_procs Gem_procs = {
     Gem_get_nh_event, Gem_exit_nhwindows, Gem_suspend_nhwindows,
     Gem_resume_nhwindows, Gem_create_nhwindow, Gem_clear_nhwindow,
     Gem_display_nhwindow, Gem_destroy_nhwindow, Gem_curs, Gem_putstr,
-    genl_putmixed, Gem_display_file, Gem_start_menu, Gem_add_menu,
+    genl_putmixed, Gem_display_file, Gem_start_menu, Gem_add_menu, Gem_add_extended_menu,
     Gem_end_menu, Gem_select_menu, genl_message_menu, Gem_update_inventory,
     Gem_mark_synch, Gem_wait_synch,
 #ifdef CLIPPING
@@ -789,6 +789,22 @@ boolean preselected;        /* item is marked as selected */
     G_item->Gmi_str = copy_of(newstr);
     mar_add_menu(window, G_item);
 }
+
+void
+Gem_add_extended_menu(window, glyph, identifier, ch, gch, attr, str, preselected)
+winid window;               /* window to use, must be of type NHW_MENU */
+int glyph;                  /* glyph to display with item (unused) */
+const anything* identifier; /* what to return if selected */
+struct obj* otmp;
+char ch;                    /* keyboard accelerator (0 = pick our own) */
+char gch;                   /* group accelerator (0 = no group) */
+int attr;                   /* attribute for string (like Gem_putstr()) */
+const char* str;            /* menu string */
+boolean preselected;        /* item is marked as selected */
+{
+    Gem_add_menu(window, glyph, identifier, ch, gch, attr, str, preselected);
+}
+
 
 /*
  * End a menu in this window, window must a type NHW_MENU.

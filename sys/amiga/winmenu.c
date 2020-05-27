@@ -119,6 +119,20 @@ register BOOLEAN_P preselected;
     }
 }
 
+void
+amii_add_extended_menu(window, glyph, id, otmp, ch, gch, attr, str, preselected)
+register winid window;
+register int glyph;
+register const anything* id;
+struct obj* otmp;
+register char ch;
+register char gch;
+register int attr;
+register const char* str;
+register BOOLEAN_P preselected;
+{
+    amii_add_menu(window, glyph, id, ch, gch, attr, str, preselected);
+}
 /* Done building a menu. */
 
 void

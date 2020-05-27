@@ -33,7 +33,7 @@ struct window_procs amii_procs = {
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
     amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr, genl_putmixed,
-    amii_display_file, amii_start_menu, amii_add_menu, amii_end_menu,
+    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu,
     amii_select_menu, genl_message_menu, amii_update_inventory,
     amii_mark_synch, amii_wait_synch,
 #ifdef CLIPPING
@@ -66,7 +66,7 @@ struct window_procs amiv_procs = {
     amii_exit_nhwindows, amii_suspend_nhwindows, amii_resume_nhwindows,
     amii_create_nhwindow, amii_clear_nhwindow, amii_display_nhwindow,
     amii_destroy_nhwindow, amii_curs, amii_putstr, genl_putmixed,
-    amii_display_file, amii_start_menu, amii_add_menu, amii_end_menu,
+    amii_display_file, amii_start_menu, amii_add_menu, amii_add_extended_menu, amii_end_menu,
     amii_select_menu, genl_message_menu, amii_update_inventory,
     amii_mark_synch, amii_wait_synch,
 #ifdef CLIPPING

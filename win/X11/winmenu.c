@@ -705,6 +705,20 @@ boolean preselected;
 }
 
 void
+X11_add_extended_menu(window, glyph, identifier, otmp, ch, gch, attr, str, preselected)
+winid window;
+int glyph; /* unused (for now) */
+const anything* identifier;
+struct obj* otmp;
+char ch;
+char gch; /* group accelerator (0 = no group) */
+int attr;
+const char* str;
+boolean preselected;
+{
+    X11_add_menu(window, glyph, identifier, ch, gch, attr, str, preselected);
+}
+void
 X11_end_menu(window, query)
 winid window;
 const char *query;

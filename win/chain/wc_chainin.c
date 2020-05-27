@@ -197,6 +197,21 @@ boolean preselected;        /* item is marked as selected */
 }
 
 void
+chainin_add_extended_menu(window, glyph, identifier, otmp, ch, gch, attr, str, preselected)
+winid window;               /* window to use, must be of type NHW_MENU */
+int glyph;                  /* glyph to display with item (unused) */
+const anything* identifier; /* what to return if selected */
+struct obj* otmp;
+char ch;                    /* keyboard accelerator (0 = pick our own) */
+char gch;                   /* group accelerator (0 = no group) */
+int attr;                   /* attribute for string (like tty_putstr()) */
+const char* str;            /* menu string */
+boolean preselected;        /* item is marked as selected */
+{
+    (*cibase->nprocs->win_add_extended_menu)(cibase->ndata, window, glyph, identifier, otmp,
+        ch, gch, attr, str, preselected);
+}
+void
 chainin_end_menu(window, prompt)
 winid window;
 const char *prompt;
@@ -524,7 +539,7 @@ struct window_procs chainin_procs = {
     chainin_resume_nhwindows, chainin_create_nhwindow, chainin_clear_nhwindow,
     chainin_display_nhwindow, chainin_destroy_nhwindow, chainin_curs,
     chainin_putstr, chainin_putmixed, chainin_display_file,
-    chainin_start_menu, chainin_add_menu, chainin_end_menu,
+    chainin_start_menu, chainin_add_menu, chainin_add_extended_menu, chainin_end_menu,
     chainin_select_menu, chainin_message_menu, chainin_update_inventory,
     chainin_mark_synch, chainin_wait_synch,
 #ifdef CLIPPING
@@ -552,4 +567,5 @@ struct window_procs chainin_procs = {
     chainin_status_init, chainin_status_finish, chainin_status_enablefield,
     chainin_status_update,
     chainin_can_suspend,
+    genl_stretch_window,
 };

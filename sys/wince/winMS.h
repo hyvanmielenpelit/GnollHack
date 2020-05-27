@@ -132,6 +132,9 @@ void mswin_start_menu(winid wid);
 void mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
                     CHAR_P accelerator, CHAR_P group_accel, int attr,
                     const char *str, BOOLEAN_P presel);
+void mswin_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct obj*,
+    CHAR_P accelerator, CHAR_P group_accel, int attr,
+    const char* str, BOOLEAN_P presel);
 void mswin_end_menu(winid wid, const char *prompt);
 int mswin_select_menu(winid wid, int how, MENU_ITEM_P **selected);
 void mswin_update_inventory(void);
