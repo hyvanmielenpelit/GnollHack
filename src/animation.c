@@ -73,7 +73,7 @@ enum action_tile_types action;
 int genderidx;
 {
     /* relies on aligned ordering of glyph offsets and action_tile_types */
-    int res = (gender == 0 ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF) + action * NUM_MONSTERS;
+    int res = (genderidx == 0 ? GLYPH_MON_OFF : GLYPH_FEMALE_MON_OFF) + action * NUM_MONSTERS;
     return res;
 }
 
@@ -429,16 +429,16 @@ short animidx;
     {
         for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
         {
-            for (int gender = 0; gender <= 1; gender++)
+            for (int genderidx = 0; genderidx <= 1; genderidx++)
             {
                 for (int alignment = -1; alignment <= 1; alignment++)
                 {
                     for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                     {
-                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
+                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, level);
                         for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
-                            if (get_player_animation(action, roleidx, raceidx, gender, alignment, level) == animidx)
+                            if (get_player_animation(action, roleidx, raceidx, genderidx, alignment, level) == animidx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
                         }
                     }
@@ -513,16 +513,16 @@ short enlidx;
     {
         for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
         {
-            for (int gender = 0; gender <= 1; gender++)
+            for (int genderidx = 0; genderidx <= 1; genderidx++)
             {
                 for (int alignment = -1; alignment <= 1; alignment++)
                 {
                     for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                     {
-                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
+                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, level);
                         for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
-                            if (get_player_enlargement(action, roleidx, raceidx, gender, alignment, level) == enlidx)
+                            if (get_player_enlargement(action, roleidx, raceidx, genderidx, alignment, level) == enlidx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
                         }
                     }
@@ -607,16 +607,16 @@ short replacement_idx;
     {
         for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)
         {
-            for (int gender = 0; gender <= 1; gender++)
+            for (int genderidx = 0; genderidx <= 1; genderidx++)
             {
                 for (int alignment = -1; alignment <= 1; alignment++)
                 {
                     for (int level = 0; level < NUM_PLAYER_GLYPH_LEVELS; level++)
                     {
-                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment, level);
+                        int player_glyph_index = player_to_glyph_index(roleidx, raceidx, genderidx, alignment, level);
                         for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                         {
-                            if (get_player_animation(action, roleidx, raceidx, gender, alignment, level) == replacement_idx)
+                            if (get_player_animation(action, roleidx, raceidx, genderidx, alignment, level) == replacement_idx)
                                 return glyph2tile[player_glyph_index + get_player_action_glyph_offset(action)];
                         }
                     }

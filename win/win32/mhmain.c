@@ -15,10 +15,6 @@
 #include "mhmsgwnd.h"
 #include "mhmap.h"
 
-typedef struct mswin_GnollHack_main_window {
-    int mapAcsiiModeSave;
-} NHMainWindow, *PNHMainWindow;
-
 extern winid WIN_STATUS;
 
 static TCHAR szMainWindowClass[] = TEXT("MSNHMainWndClass");
@@ -211,6 +207,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
         ZeroMemory(data, sizeof(NHMainWindow));
         data->mapAcsiiModeSave = MAP_MODE_ASCII12x16;
+        data->wait_interval_counter = 0UL;
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);
 
         /* update menu items */
@@ -222,8 +219,9 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         CheckMenuItem(GetMenu(hWnd), IDM_SETTING_AUTOLAYOUT,
                       GetNHApp()->bAutoLayout ? MF_CHECKED : MF_UNCHECKED);
 
-        /* store handle to the mane menu in the application record */
+        /* store handle to the main window in the application record */
         GetNHApp()->hMainWnd = hWnd;
+        //SetTimer(hWnd, 0, MAIN_TIMER_INTERVAL, NULL);
         break;
 
     case WM_MSNH_COMMAND:
@@ -519,6 +517,13 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DPICHANGED: {
         mswin_layout_main_window(NULL);
     } break;
+
+    case WM_TIMER:
+        if(data->wait_interval_counter >= 0xCFFFFFFF)
+            data->wait_interval_counter = 1UL; /* It is on! */
+        else
+            data->wait_interval_counter++;
+        break;
 
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);

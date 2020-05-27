@@ -1180,7 +1180,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             case 3: /* down */
                                                 source_rt.left = at_x + 10;
                                                 source_rt.right = at_x + TILE_X - 10;
-                                                source_rt.top = at_y + TILE_Y - 10;
+                                                source_rt.top = at_y + 20;
                                                 source_rt.bottom = at_y + TILE_Y;
                                                 break;
                                             default:

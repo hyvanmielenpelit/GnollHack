@@ -94,13 +94,17 @@ uchar* tilemapflags;
     
     /* spsets must be in same order as enum action_tile_types */
     const char* monster_set_name_array[MAX_ACTION_TILES + 2] = { "normal", "attack", "throw", "fire", "cast", "special-attack", "kick", "item-use", "door-use", "death", "statue", "body" };
-    int mon_glyph_offset_array[12] = { GLYPH_MON_OFF, 
+
+    /*
+    int mon_glyph_offset_array[MAX_ACTION_TILES + 2] = { GLYPH_MON_OFF, 
         GLYPH_ATTACK_OFF, GLYPH_THROW_OFF, GLYPH_FIRE_OFF, GLYPH_CAST_OFF, GLYPH_SPECIAL_ATTACK_OFF, GLYPH_KICK_OFF,
         GLYPH_ITEM_USE_OFF, GLYPH_DOOR_USE_OFF, GLYPH_DEATH_OFF, GLYPH_STATUE_OFF, GLYPH_BODY_OFF };
     int female_mon_glyph_offset_array[MAX_ACTION_TILES + 2] = { GLYPH_FEMALE_MON_OFF,
         GLYPH_FEMALE_ATTACK_OFF, GLYPH_FEMALE_THROW_OFF, GLYPH_FEMALE_FIRE_OFF, 
         GLYPH_FEMALE_CAST_OFF, GLYPH_FEMALE_SPECIAL_ATTACK_OFF, GLYPH_FEMALE_KICK_OFF,
         GLYPH_FEMALE_ITEM_USE_OFF, GLYPH_FEMALE_DOOR_USE_OFF, GLYPH_FEMALE_DEATH_OFF, GLYPH_FEMALE_STATUE_OFF, GLYPH_FEMALE_BODY_OFF };
+    */
+
     for (int gender = 0; gender <= 1; gender++)
     {
         if (gender == 1)
@@ -138,7 +142,7 @@ uchar* tilemapflags;
 
             if (spset == MAX_ACTION_TILES && !tsd->statue_tile_style)
                 continue;
-            if (spset == MAX_ACTION_TILES + 1 && !tsd->body_tile_style)
+            if (spset == MAX_ACTION_TILES + 1 && !tsd->corpse_tile_style)
                 continue;
 
             set_name = monster_set_name_array[spset];
@@ -153,7 +157,7 @@ uchar* tilemapflags;
 
                 if (spset == MAX_ACTION_TILES + 1)
                 {
-                    if (tsd->body_tile_style == 2 && !(mons[i].mflags5 & M5_CORPSE_TILE))
+                    if (tsd->corpse_tile_style == 2 && !(mons[i].mflags5 & M5_CORPSE_TILE))
                         continue;
 
                     if (objects[CORPSE].oc_flags4 & O4_FULL_SIZED_BITMAP)
@@ -263,8 +267,8 @@ uchar* tilemapflags;
                 }
                 else if (process_style == 1)
                 {
-                    int glyph_offset = mon_glyph_offset_array[spset];
-                    int female_glyph_offset = female_mon_glyph_offset_array[spset];
+                    int glyph_offset = (spset < MAX_ACTION_TILES) ? get_monster_action_glyph_offset(spset, 0) : spset == MAX_ACTION_TILES ? GLYPH_STATUE_OFF : GLYPH_BODY_OFF; // mon_glyph_offset_array[spset];
+                    int female_glyph_offset = (spset < MAX_ACTION_TILES) ? get_monster_action_glyph_offset(spset, 1) : spset == MAX_ACTION_TILES ? GLYPH_FEMALE_STATUE_OFF : GLYPH_FEMALE_BODY_OFF;  //female_mon_glyph_offset_array[spset];
 
                     if (gender == 0)
                     {
@@ -784,7 +788,7 @@ uchar* tilemapflags;
 
                     /* Write generic corpse and statue tiles */
                     if (j == 0 &&
-                        (tsd->body_tile_style != 1 && i == CORPSE)
+                        (tsd->corpse_tile_style != 1 && i == CORPSE)
                         || (!tsd->statue_tile_style && i == STATUE)
                         )
                     {
@@ -792,7 +796,7 @@ uchar* tilemapflags;
                         {
                             for (int k = LOW_PM; k < NUM_MONSTERS; k++)
                             {
-                                if (i == CORPSE && tsd->body_tile_style == 2 && (mons[k].mflags5 & M5_CORPSE_TILE))
+                                if (i == CORPSE && tsd->corpse_tile_style == 2 && (mons[k].mflags5 & M5_CORPSE_TILE))
                                     continue;
 
                                 int glyph_offset2 = (gender == 0 ? (i == CORPSE ? GLYPH_BODY_OFF : GLYPH_STATUE_OFF) : (i == CORPSE ? GLYPH_FEMALE_BODY_OFF : GLYPH_FEMALE_STATUE_OFF));

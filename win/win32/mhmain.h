@@ -5,9 +5,18 @@
 #ifndef MSWINMainWindow_h
 #define MSWINMainWindow_h
 
+
 /* this is a main appliation window */
 
 #include "winMS.h"
+
+#define MAIN_TIMER_INTERVAL 10
+
+typedef struct mswin_GnollHack_main_window {
+    int mapAcsiiModeSave;
+    unsigned long wait_interval_counter;
+} NHMainWindow, *PNHMainWindow;
+
 
 HWND mswin_init_main_window(void);
 void mswin_layout_main_window(HWND changed_child);
