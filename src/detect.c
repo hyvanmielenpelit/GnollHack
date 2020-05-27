@@ -66,7 +66,7 @@ const char *ter_explain;
     save_autodescribe = iflags.autodescribe;
     iflags.autodescribe = TRUE;
     iflags.terrainmode = ter_typ;
-    getpos(&dummy_pos, FALSE, ter_explain);
+    getpos(&dummy_pos, FALSE, ter_explain, CURSOR_STYLE_LOOK_CURSOR);
     iflags.terrainmode = 0;
     iflags.autodescribe = save_autodescribe;
 }

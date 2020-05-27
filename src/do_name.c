@@ -636,10 +636,11 @@ int gloc;
 }
 
 int
-getpos(ccp, force, goal)
+getpos(ccp, force, goal, cursor_style)
 coord *ccp;
 boolean force;
 const char *goal;
+enum game_cursor_types cursor_style;
 {
     const char *cp;
     static struct {
@@ -678,6 +679,7 @@ const char *goal;
 
     flags.show_cursor_on_u = TRUE;
     flags.force_paint_at_cursor = TRUE;
+    flags.active_cursor_style = cursor_style;
 
     for (i = 0; i < SIZE(pick_chars_def); i++)
         pick_chars[i] = Cmd.spkeys[pick_chars_def[i].nhkf];
@@ -1002,6 +1004,7 @@ const char *goal;
 
     flags.show_cursor_on_u = FALSE;
     flags.force_paint_at_cursor = TRUE;
+    flags.active_cursor_style = CURSOR_STYLE_GENERIC_CURSOR;
 
     return result;
 }
@@ -1253,7 +1256,7 @@ do_mname()
     }
     cc.x = u.ux;
     cc.y = u.uy;
-    if (getpos(&cc, FALSE, "the monster you want to name") < 0
+    if (getpos(&cc, FALSE, "the monster you want to name", CURSOR_STYLE_NAME_CURSOR) < 0
         || (cx = cc.x) < 0)
         return;
     cy = cc.y;
@@ -1687,7 +1690,7 @@ namefloorobj()
        the help text once getpos() has started */
     Sprintf(buf, "object on map (or '.' for one %s you)",
             (u.uundetected && hides_under(youmonst.data)) ? "over" : "under");
-    if (getpos(&cc, FALSE, buf) < 0 || cc.x <= 0)
+    if (getpos(&cc, FALSE, buf, CURSOR_STYLE_NAME_CURSOR) < 0 || cc.x <= 0)
         return;
     if (cc.x == u.ux && cc.y == u.uy) {
         obj = vobj_at(u.ux, u.uy);

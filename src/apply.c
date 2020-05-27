@@ -2197,7 +2197,7 @@ int magic; /* 0=Physical, otherwise skill level */
     cc.y = u.uy;
     jumping_is_magic = magic;
     getpos_sethilite(display_jump_positions, get_valid_jump_position);
-    if (getpos(&cc, TRUE, "the desired position") < 0)
+    if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_JUMP_CURSOR) < 0)
         return 0; /* user pressed ESC */
 
     if (!is_valid_jump_pos(cc.x, cc.y, magic, TRUE)) {
@@ -4026,7 +4026,7 @@ struct obj *obj;
         cc.y = hitm->my;
     }
     getpos_sethilite(display_polearm_positions, get_valid_polearm_position);
-    if (getpos(&cc, TRUE, "the spot to hit") < 0)
+    if (getpos(&cc, TRUE, "the spot to hit", CURSOR_STYLE_POLEARM_CURSOR) < 0)
         return res; /* ESC; uses turn iff polearm became wielded */
 
     glyph = glyph_at(cc.x, cc.y);
@@ -4147,7 +4147,7 @@ struct obj *obj;
     pline(where_to_hit);
     cc.x = u.ux;
     cc.y = u.uy;
-    if (getpos(&cc, TRUE, "the spot to hit") < 0)
+    if (getpos(&cc, TRUE, "the spot to hit", CURSOR_STYLE_GRAPPLE_CURSOR) < 0)
         return res; /* ESC; uses turn iff grapnel became wielded */
 
     /* Calculate range; unlike use_pole(), there's no minimum for range */

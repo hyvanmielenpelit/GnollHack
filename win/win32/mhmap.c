@@ -1339,6 +1339,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                         else
                         {
+                            int cglyph = flags.active_cursor_style + GLYPH_CURSOR_OFF;
+                            int ctile = glyph2tile[cglyph];
+                            /* Note: possibility to do replacing and animated cursors */
+                            t_x = TILEBMP_X(ctile);
+                            t_y = TILEBMP_Y(ctile);
+
+                            SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                data->backBufferDC, rect->left, rect->top,
+                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+
+#if 0
                             HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
                             HBRUSH hbr_light = CreateSolidBrush(RGB(100, 50, 0));
                             HBRUSH hbr_light2 = CreateSolidBrush(RGB(50, 25, 0));
@@ -1356,6 +1370,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             FrameRect(data->backBufferDC, &even_smaller_rect, hbr_light2);
                             //DrawFocusRect(data->backBufferDC, rect);
                             //DrawFocusRect(data->backBufferDC, &smaller_rect);
+#endif
                         }
                     }
                 }

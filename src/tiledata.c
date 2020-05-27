@@ -2116,11 +2116,10 @@ uchar* tilemapflags;
 
     /* User interface tiles */
     tile_section_name = "user-interface";
-
     set_name = "cursor";
     const char* cursor_name_array[MAX_CURSORS] = {
-        "generic", "look", "teleport",
-        "jump", "polearm", "spell", "pay" };
+        "generic", "look", "travel", "name",  "teleport",
+        "jump", "polearm", "grapple", "spell", "pay" };
 
     for (int i = 0; i < MAX_CURSORS; i++)
     {

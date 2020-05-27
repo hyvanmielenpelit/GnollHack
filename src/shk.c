@@ -1319,7 +1319,7 @@ dopay()
         pline("Pay whom?");
         cc.x = u.ux;
         cc.y = u.uy;
-        if (getpos(&cc, TRUE, "the creature you want to pay") < 0)
+        if (getpos(&cc, TRUE, "the creature you want to pay", CURSOR_STYLE_PAY_CURSOR) < 0)
             return 0; /* player pressed ESC */
         cx = cc.x;
         cy = cc.y;

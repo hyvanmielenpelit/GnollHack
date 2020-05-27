@@ -2282,7 +2282,7 @@ wiz_smell(VOID_ARGS)
     pline("You can move the cursor to a monster that you want to smell.");
     do {
         pline("Pick a monster to smell.");
-        ans = getpos(&cc, TRUE, "a monster");
+        ans = getpos(&cc, TRUE, "a monster", CURSOR_STYLE_LOOK_CURSOR);
         if (ans < 0 || cc.x < 0) {
             return 0; /* done */
         }
@@ -7308,7 +7308,7 @@ dotravel(VOID_ARGS)
         iflags.getloc_filter = gf;
     } else {
         pline("Where do you want to travel to?");
-        if (getpos(&cc, TRUE, "the desired destination") < 0) {
+        if (getpos(&cc, TRUE, "the desired destination", CURSOR_STYLE_TRAVEL_CURSOR) < 0) {
             /* user pressed ESC */
             iflags.getloc_travelmode = FALSE;
             return 0;

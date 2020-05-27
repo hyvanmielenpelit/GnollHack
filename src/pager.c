@@ -1347,7 +1347,7 @@ coord *click_cc;
                 else
                     pline("Pick an object.");
 
-                ans = getpos(&cc, quick, what_is_an_unknown_object);
+                ans = getpos(&cc, quick, what_is_an_unknown_object, CURSOR_STYLE_LOOK_CURSOR);
                 if (ans < 0 || cc.x < 0)
                     break; /* done */
                 flags.verbose = FALSE; /* only print long question once */

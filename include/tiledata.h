@@ -57,19 +57,6 @@ struct tileset_definition {
 extern NEARDATA struct tileset_definition default_tileset_definition;
 
 
-enum game_cursor_types
-{
-    GENERIC_CURSOR = 0,
-    LOOK_CURSOR,
-    TELEPORT_CURSOR,
-    JUMP_CURSOR,
-    POLEARM_CURSOR,
-    SPELL_CURSOR,
-    PAY_CURSOR,
-    MAX_CURSORS
-};
-
-
 struct ui_component_definition {
     char* name;
     int number;

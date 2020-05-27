@@ -2552,9 +2552,12 @@ player,death,Archeologist,human,male,any,level-0,1,1,0
 player,death,Wizard,elf,female,any,level-0,1,1,0
 user-interface,cursor,generic,1,1,0
 user-interface,cursor,look,1,1,0
+user-interface,cursor,travel,1,1,0
+user-interface,cursor,name,1,1,0
 user-interface,cursor,teleport,1,1,0
 user-interface,cursor,jump,1,1,0
 user-interface,cursor,polearm,1,1,0
+user-interface,cursor,grapple,1,1,0
 user-interface,cursor,spell,1,1,0
 user-interface,cursor,pay,1,1,0
 user-interface,ui-tile,death,1,64,96,whole
@@ -2579,7 +2582,7 @@ replacement,coin-replacement,few,1811,1,1,0
 replacement,coin-replacement,many,1811,1,1,0
 replacement,handcrafted-candle-replacement,lit,1436,1,1,0
 replacement,brass-lantern-replacement,lit,1437,1,1,0
-animation,handcrafted-candle-lit-animation,tile-0,2579,1,1,0
+animation,handcrafted-candle-lit-animation,tile-0,2582,1,1,0
 animation,elf_wizard_female_cast-animation,tile-0,2530,1,1,0
 animation,brass-lantern-lit-animation,tile-0,-1,1,1,0
 animation,twisted-candle-lit-animation,tile-0,1435,1,1,0
