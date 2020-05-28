@@ -1195,11 +1195,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     if (corner == 0)
                                                     {
                                                         source_rt.top = at_y;
-                                                        source_rt.bottom = at_y + 20;
+                                                        source_rt.bottom = at_y + 18;
                                                     }
                                                     else
                                                     {
-                                                        source_rt.top = at_y + 20;
+                                                        source_rt.top = at_y + 18;
                                                         source_rt.bottom = at_y + TILE_Y;
                                                     }
                                                     break;
@@ -1216,11 +1216,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     if (corner == 0)
                                                     {
                                                         source_rt.top = at_y;
-                                                        source_rt.bottom = at_y + 20;
+                                                        source_rt.bottom = at_y + 18;
                                                     }
                                                     else
                                                     {
-                                                        source_rt.top = at_y + 20;
+                                                        source_rt.top = at_y + 18;
                                                         source_rt.bottom = at_y + TILE_Y;
                                                     }
                                                     break;
@@ -1313,11 +1313,89 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
 
-                    /* Draw hit point bars */
                     boolean ismonster = !!glyph_is_monster(glyph);
                     boolean monsterdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_DATA_SET);
                     boolean ispet = !!(data->map[i][j].layer_flags & LFLAGS_M_PET);
                     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
+
+                    /* Condition and other symbols */
+                    if (isyou)
+                    {
+                        int mglyph = CONDITION_MARKS + GLYPH_UI_TILE_OFF;
+                        int mtile = glyph2tile[mglyph];
+                        int ct_x = TILEBMP_X(mtile);
+                        int ct_y = TILEBMP_Y(mtile);
+
+                        int condition_count = 0;
+
+                        int tiles_per_row = TILE_X / ui_tile_component_array[CONDITION_MARKS].width;
+                        int max_fitted_rows = (TILE_Y - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
+
+                        /* Number is the same as condition bits */
+                        for (int i = 0; i < ui_tile_component_array[CONDITION_MARKS].number; i++)
+                        {
+                            int condition_bit = 1 << i;
+                            unsigned long u_conditions = get_u_condition_bits();
+
+                            if (u_conditions & condition_bit)
+                            {
+                                int within_tile_x = i % tiles_per_row;
+                                int within_tile_y = i / tiles_per_row;
+                                int c_x = ct_x + within_tile_x * ui_tile_component_array[CONDITION_MARKS].width;
+                                int c_y = ct_y + within_tile_y * ui_tile_component_array[CONDITION_MARKS].height;
+
+                                RECT source_rt = { 0 };
+                                source_rt.left = c_x;
+                                source_rt.right = c_x + ui_tile_component_array[CONDITION_MARKS].width;
+                                source_rt.top = c_y;
+                                source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
+
+                                /* Define draw location in target */
+                                double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
+                                int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
+                                int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
+                                int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
+
+                                RECT target_rt = { 0 };
+                                target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
+                                target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
+                                target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
+                                target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
+                                
+                                SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                                (*GetNHApp()->lpfnTransparentBlt)(
+                                    data->backBufferDC, target_rt.left, target_rt.top,
+                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                    source_rt.top, source_rt.right - source_rt.left,
+                                    source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                                condition_count++;
+
+                                if (condition_count >= max_fitted_rows)
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        struct monst* mtmp = &(data->map[i][j].monster_data);
+                        if (monsterdataset && mon_visible(mtmp) && canseemon(mtmp))
+                        {
+                            if (ispet)
+                            {
+                                /* Conditions seen for pet here */
+
+                            }
+
+                            /* Conditions seen for all monsters here */
+
+                        }
+                    }
+
+
+                    /* Draw hit point bars */
                     if (ismonster && (
                         (ispet && monsterdataset && flags.show_tile_pet_hp_bar)
                         || (isyou && flags.show_tile_u_hp_bar)

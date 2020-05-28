@@ -782,57 +782,7 @@ bot_via_windowport()
     valset[BL_CAP] = TRUE;
 
     /* Conditions */
-    blstats[idx][BL_CONDITION].a.a_ulong = 0L;
-    if (u.ustuck && !u.uswallow)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_GRAB;
-    if (Stoned)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_STONE;
-    if (Slimed)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLIME;
-    if (Strangled)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_STRNGL;
-	if (Airless_environment && !Survives_without_air)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SUFFOC;
-	if (Sick)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_TERMILL;
-	if (FoodPoisoned)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FOODPOIS;
-    if (MummyRot)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_ROT;
-    if (Slowed)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLOWED;
-	if (Silenced)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SILENCED;
-	if (Paralyzed)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_PARALYZED;
-	if (Fearful)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FEARFUL;
-	if (Sleeping)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_SLEEPING;
-	if (Cancelled)
-		blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_CANCELLED;
-
-	/*
-     * basic formatting puts hunger status and encumbrance here
-     */
-    if (Blind)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_BLIND;
-    if (Deaf)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_DEAF;
-    if (Stunned)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_STUN;
-    if (Confusion)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_CONF;
-    if (Hallucination)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_HALLU;
-    /* levitation and flying are mututally exclusive */
-    if (Levitation)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_LEV;
-    if (Flying)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_FLY;
-    if (u.usteed)
-        blstats[idx][BL_CONDITION].a.a_ulong |= BL_MASK_RIDE;
-
+    blstats[idx][BL_CONDITION].a.a_ulong = get_u_condition_bits();
 	valset[BL_CONDITION] = TRUE;
 
     /* Partyline */
@@ -861,6 +811,126 @@ bot_via_windowport()
 
     evaluate_and_notify_windowport(valset, idx);
 }
+
+unsigned long
+get_u_condition_bits()
+{
+    unsigned long conditions = 0UL;
+
+    if (u.ustuck && !u.uswallow)
+        conditions |= BL_MASK_GRAB;
+    if (Stoned)
+        conditions |= BL_MASK_STONE;
+    if (Slimed)
+        conditions |= BL_MASK_SLIME;
+    if (Strangled)
+        conditions |= BL_MASK_STRNGL;
+    if (Airless_environment && !Survives_without_air)
+        conditions |= BL_MASK_SUFFOC;
+    if (Sick)
+        conditions |= BL_MASK_TERMILL;
+    if (FoodPoisoned)
+        conditions |= BL_MASK_FOODPOIS;
+    if (MummyRot)
+        conditions |= BL_MASK_ROT;
+    if (Slowed)
+        conditions |= BL_MASK_SLOWED;
+    if (Silenced)
+        conditions |= BL_MASK_SILENCED;
+    if (Paralyzed)
+        conditions |= BL_MASK_PARALYZED;
+    if (Fearful)
+        conditions |= BL_MASK_FEARFUL;
+    if (Sleeping)
+        conditions |= BL_MASK_SLEEPING;
+    if (Cancelled)
+        conditions |= BL_MASK_CANCELLED;
+
+    /*
+     * basic formatting puts hunger status and encumbrance here
+     */
+    if (Blind)
+        conditions |= BL_MASK_BLIND;
+    if (Deaf)
+        conditions |= BL_MASK_DEAF;
+    if (Stunned)
+        conditions |= BL_MASK_STUN;
+    if (Confusion)
+        conditions |= BL_MASK_CONF;
+    if (Hallucination)
+        conditions |= BL_MASK_HALLU;
+    /* levitation and flying are mututally exclusive */
+    if (Levitation)
+        conditions |= BL_MASK_LEV;
+    if (Flying)
+        conditions |= BL_MASK_FLY;
+    if (u.usteed)
+        conditions |= BL_MASK_RIDE;
+
+    return conditions;
+}
+
+unsigned long
+get_m_condition_bits(mon)
+struct monst* mon;
+{
+    if (!mon)
+        return 0UL;
+
+    if (mon == &youmonst)
+        return get_u_condition_bits();
+
+    unsigned long conditions = 0UL;
+
+    if (0)
+        conditions |= BL_MASK_GRAB;
+    if (is_stoning(mon))
+        conditions |= BL_MASK_STONE;
+    if (is_turning_into_slime(mon))
+        conditions |= BL_MASK_SLIME;
+    if (is_being_strangled(mon))
+        conditions |= BL_MASK_STRNGL;
+    if (has_airless_environment(mon) && !mon_survives_without_air(mon))
+        conditions |= BL_MASK_SUFFOC;
+    if (is_sick(mon))
+        conditions |= BL_MASK_TERMILL;
+    if (is_food_poisoned(mon))
+        conditions |= BL_MASK_FOODPOIS;
+    if (is_mummy_rotted(mon))
+        conditions |= BL_MASK_ROT;
+    if (is_slow(mon))
+        conditions |= BL_MASK_SLOWED;
+    if (is_silenced(mon))
+        conditions |= BL_MASK_SILENCED;
+    if (is_paralyzed(mon))
+        conditions |= BL_MASK_PARALYZED;
+    if (is_fearful(mon))
+        conditions |= BL_MASK_FEARFUL;
+    if (is_sleeping(mon))
+        conditions |= BL_MASK_SLEEPING;
+    if (is_cancelled(mon))
+        conditions |= BL_MASK_CANCELLED;
+    if (is_blinded(mon))
+        conditions |= BL_MASK_BLIND;
+    if (is_deaf(mon))
+        conditions |= BL_MASK_DEAF;
+    if (is_confused(mon))
+        conditions |= BL_MASK_STUN;
+    if (mon->mprops[CONFUSION])
+        conditions |= BL_MASK_CONF;
+    if (is_hallucinating(mon))
+        conditions |= BL_MASK_HALLU;
+    /* levitation and flying are mututally exclusive */
+    if (is_levitating(mon))
+        conditions |= BL_MASK_LEV;
+    if (is_flying(mon))
+        conditions |= BL_MASK_FLY;
+    if (0)
+        conditions |= BL_MASK_RIDE;
+
+    return conditions;
+}
+
 
 STATIC_OVL
 void

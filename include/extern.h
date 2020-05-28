@@ -239,6 +239,8 @@ E int NDECL(count_status_hilites);
 E boolean NDECL(status_hilite_menu);
 #endif
 E const char* FDECL(get_condition_name, (unsigned long));
+E unsigned long NDECL(get_u_condition_bits);
+E unsigned long FDECL(get_m_condition_bits, (struct monst*));
 
 /* ### cmd.c ### */
 

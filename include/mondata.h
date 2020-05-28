@@ -244,7 +244,7 @@
 #define is_breathless(mon) \
 	(has_magical_breathing(mon) || has_innate_breathless((mon)->data))
 
-#define mon_survives_without_air  (is_breathless(mon))
+#define mon_survives_without_air(mon)  (is_breathless(mon))
 
 #define has_strangled(mon) \
 	has_property(mon, STRANGLED)

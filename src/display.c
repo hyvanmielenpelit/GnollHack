@@ -1759,6 +1759,8 @@ int damage_displayed;
 
             if (is_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PEACEFUL;
+
+            /* Other conditions here */
         }
 
         if (flags)
