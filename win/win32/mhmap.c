@@ -811,6 +811,17 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         mswin_map_stretch(hWnd, &size, TRUE);
         break;
     }
+    case MSNH_MSG_UPDATE_ALL_STATUSES_ON_MAP:
+    {
+        /* Maybe some data here to identify monsters to be updated  */
+        dirty(data, u.ux, u.uy);
+        for (struct monst* mon = fmon; mon; mon = mon->nmon)
+        {
+            if (canseemon(mon))
+                dirty(data, mon->mx, mon->my);
+        }
+        break;
+    }
     } /* end switch(wParam) */
 }
 
@@ -1316,81 +1327,221 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean ismonster = !!glyph_is_monster(glyph);
                     boolean monsterdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_DATA_SET);
                     boolean ispet = !!(data->map[i][j].layer_flags & LFLAGS_M_PET);
+                    boolean petdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_PET_DATA_SET);
+                    boolean ispeaceful = !!(data->map[i][j].layer_flags & LFLAGS_M_PEACEFUL);
                     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
 
-                    /* Condition and other symbols */
-                    if (isyou)
+                    int condition_count = 0;
+
+                    /* Conditions and status marks */
+                    if ((glyph != NO_GLYPH) && ismonster && (isyou || (monsterdataset && cansee(i,j))))
                     {
-                        int mglyph = CONDITION_MARKS + GLYPH_UI_TILE_OFF;
-                        int mtile = glyph2tile[mglyph];
-                        int ct_x = TILEBMP_X(mtile);
-                        int ct_y = TILEBMP_Y(mtile);
+                        struct monst* mtmp = isyou ? &youmonst : &data->map[i][j].monster_data;
 
-                        int condition_count = 0;
-
-                        int tiles_per_row = TILE_X / ui_tile_component_array[CONDITION_MARKS].width;
-                        int max_fitted_rows = (TILE_Y - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
-
-                        /* Number is the same as condition bits */
-                        for (int i = 0; i < ui_tile_component_array[CONDITION_MARKS].number; i++)
+                        if(isyou || canseemon(mtmp))
                         {
-                            int condition_bit = 1 << i;
-                            unsigned long u_conditions = get_u_condition_bits();
+                            /* Petmarks and other such symbols */
+                            int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
+                            int mtile = glyph2tile[mglyph];
+                            int ct_x = TILEBMP_X(mtile);
+                            int ct_y = TILEBMP_Y(mtile);
+                            int tiles_per_row = TILE_X / ui_tile_component_array[STATUS_MARKS].width;
+                            int max_fitted_rows = (TILE_Y - 4) / (ui_tile_component_array[STATUS_MARKS].height + 2);
 
-                            if (u_conditions & condition_bit)
+                            for (enum game_ui_status_mark_types status_mark = STATUS_MARK_PET; status_mark < min(MAX_STATUS_MARKS, ui_tile_component_array[STATUS_MARKS].number); status_mark++)
                             {
-                                int within_tile_x = i % tiles_per_row;
-                                int within_tile_y = i / tiles_per_row;
-                                int c_x = ct_x + within_tile_x * ui_tile_component_array[CONDITION_MARKS].width;
-                                int c_y = ct_y + within_tile_y * ui_tile_component_array[CONDITION_MARKS].height;
+                                boolean display_this_status_mark = FALSE;
 
-                                RECT source_rt = { 0 };
-                                source_rt.left = c_x;
-                                source_rt.right = c_x + ui_tile_component_array[CONDITION_MARKS].width;
-                                source_rt.top = c_y;
-                                source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
+                                switch (status_mark)
+                                {
+                                case STATUS_MARK_PET:
+                                    if (!isyou && ispet)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_PEACEFUL:
+                                    if (!isyou && ispeaceful)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_DETECTED:
+                                    if (!isyou && data->map[i][j].layer_flags & LFLAGS_M_DETECTED)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_PILE:
+                                    if (!isyou && data->map[i][j].layer_flags & LFLAGS_O_PILE)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_HUNGRY:
+                                    if ((isyou && u.uhs == HUNGRY) 
+                                        || (!isyou && ispet && petdataset && monstermoves >= data->map[i][j].pet_data.hungrytime && data->map[i][j].pet_data.mhpmax_penalty == 0)
+                                        )
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_WEAK:
+                                    if (isyou && u.uhs == WEAK
+                                        || (!isyou && ispet && petdataset && monstermoves >= data->map[i][j].pet_data.hungrytime && data->map[i][j].pet_data.mhpmax_penalty > 0)
+                                        )
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_FAINTING:
+                                    if (isyou && u.uhs >= FAINTING)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_BURDENED:
+                                    if (isyou && u.carrying_capacity_level == SLT_ENCUMBER)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_STRESSED:
+                                    if (isyou && u.carrying_capacity_level == MOD_ENCUMBER)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_STRAINED:
+                                    if (isyou && u.carrying_capacity_level == HVY_ENCUMBER)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_OVERTAXED:
+                                    if (isyou && u.carrying_capacity_level == EXT_ENCUMBER)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_OVERLOADED:
+                                    if (isyou && u.carrying_capacity_level == OVERLOADED)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_2WEP:
+                                    if (isyou && u.twoweap)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_SKILL:
+                                    if (isyou && u.canadvanceskill)
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_SADDLED:
+                                    if (!isyou && ((data->map[i][j].layer_flags & LFLAGS_M_SADDLED) || (mtmp->worn_item_flags & W_SADDLE)) )
+                                        display_this_status_mark = TRUE;
+                                    break;
+                                case STATUS_MARK_LOW_HP:
+                                case STATUS_MARK_CRITICAL_HP:
+                                {
+                                    if ((isyou && !flags.show_tile_u_hp_bar) || (ispet && !flags.show_tile_pet_hp_bar))
+                                    {
+                                        int relevant_hp_max = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
+                                        int low_threshold = min(relevant_hp_max / 2, max(4, relevant_hp_max / 4));
+                                        if (relevant_hp_max < 4)
+                                            low_threshold = 0;
+                                        int critical_threshold = max(1, min(relevant_hp_max / 5, max(4, relevant_hp_max / 10)));
+                                        if (relevant_hp_max < 2)
+                                            critical_threshold = 0;
 
-                                /* Define draw location in target */
-                                double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
-                                double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
-                                int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
-                                int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
-                                int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
-                                int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
+                                        int relevant_hp = isyou ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
+                                        if (status_mark == STATUS_MARK_CRITICAL_HP && relevant_hp <= critical_threshold)
+                                            display_this_status_mark = TRUE;
+                                        if (status_mark == STATUS_MARK_LOW_HP && relevant_hp <= low_threshold && relevant_hp > critical_threshold)
+                                            display_this_status_mark = TRUE;
+                                    }
+                                    break;
+                                }
+                                default:
+                                    break;
+                                }
 
-                                RECT target_rt = { 0 };
-                                target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
-                                target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
-                                target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
-                                target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
-                                
-                                SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
-                                (*GetNHApp()->lpfnTransparentBlt)(
-                                    data->backBufferDC, target_rt.left, target_rt.top,
-                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
-                                    source_rt.top, source_rt.right - source_rt.left,
-                                    source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                if (display_this_status_mark)
+                                {
+                                    int within_tile_x = status_mark % tiles_per_row;
+                                    int within_tile_y = status_mark / tiles_per_row;
+                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[CONDITION_MARKS].width;
+                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[CONDITION_MARKS].height;
 
-                                condition_count++;
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = c_x;
+                                    source_rt.right = c_x + ui_tile_component_array[CONDITION_MARKS].width;
+                                    source_rt.top = c_y;
+                                    source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
 
+                                    /* Define draw location in target */
+                                    double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                    double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                    int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
+                                    int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
+                                    int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
+                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
+
+                                    RECT target_rt = { 0 };
+                                    target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
+                                    target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
+                                    target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
+                                    target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                    SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        data->backBufferDC, target_rt.left, target_rt.top,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        source_rt.top, source_rt.right - source_rt.left,
+                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                                    condition_count++;
+
+                                    if (condition_count >= max_fitted_rows)
+                                        break;
+                                }
+                            }
+
+                            /* Conditions */
+                            mglyph = CONDITION_MARKS + GLYPH_UI_TILE_OFF;
+                            mtile = glyph2tile[mglyph];
+                            ct_x = TILEBMP_X(mtile);
+                            ct_y = TILEBMP_Y(mtile);
+                            tiles_per_row = TILE_X / ui_tile_component_array[CONDITION_MARKS].width;
+                            max_fitted_rows = (TILE_Y - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
+
+                            /* Number is the same as condition bits */
+                            for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
+                            {
                                 if (condition_count >= max_fitted_rows)
                                     break;
+
+                                int condition_bit = 1 << cond;
+                                unsigned long m_conditions = get_m_condition_bits(mtmp);
+
+                                if (!ispet && !isyou)
+                                    m_conditions &= ~(BL_MASK_CONF | BL_MASK_STUN | BL_MASK_HALLU | BL_MASK_FEARFUL | BL_MASK_SLEEPING
+                                        | BL_MASK_PARALYZED | BL_MASK_SLIME | BL_MASK_STONE | BL_MASK_STRNGL | BL_MASK_SUFFOC);
+
+                                if (m_conditions & condition_bit)
+                                {
+                                    int within_tile_x = cond % tiles_per_row;
+                                    int within_tile_y = cond / tiles_per_row;
+                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[CONDITION_MARKS].width;
+                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[CONDITION_MARKS].height;
+
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = c_x;
+                                    source_rt.right = c_x + ui_tile_component_array[CONDITION_MARKS].width;
+                                    source_rt.top = c_y;
+                                    source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
+
+                                    /* Define draw location in target */
+                                    double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                    double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                    int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
+                                    int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
+                                    int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
+                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
+
+                                    RECT target_rt = { 0 };
+                                    target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
+                                    target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
+                                    target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
+                                    target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                    SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        data->backBufferDC, target_rt.left, target_rt.top,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        source_rt.top, source_rt.right - source_rt.left,
+                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                                    condition_count++;
+                                }
                             }
-                        }
-                    }
-                    else
-                    {
-                        struct monst* mtmp = &(data->map[i][j].monster_data);
-                        if (monsterdataset && mon_visible(mtmp) && canseemon(mtmp))
-                        {
-                            if (ispet)
-                            {
-                                /* Conditions seen for pet here */
-
-                            }
-
-                            /* Conditions seen for all monsters here */
-
                         }
                     }
 
@@ -1434,7 +1585,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             && iflags.wc_hilite_pet) {
                         /* apply pet mark transparently over
                             pet image */
-    #if 1
+#if 0
                         HDC hdcPetMark;
                         HBITMAP bmPetMarkOld;
 
@@ -1450,9 +1601,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             TILE_X, TILE_Y, TILE_BK_COLOR);
                         SelectObject(hdcPetMark, bmPetMarkOld);
                         DeleteDC(hdcPetMark);
-    #endif
+#endif
                     }
-    #ifdef USE_PILEMARK
+#if 0 //def USE_PILEMARK
                     if ((glyph != NO_GLYPH) && (data->map[i][j].layer_flags & LFLAGS_O_PILE) //(special & MG_OBJPILE)
                         && iflags.hilite_pile) {
                         /* apply pilemark transparently over other image */
@@ -1472,7 +1623,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         SelectObject(hdcPileMark, bmPileMarkOld);
                         DeleteDC(hdcPileMark);
                     }
-    #endif
+#endif
 
                     /* Draw death marker */
                     if (glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph))
@@ -2062,3 +2213,4 @@ nhcolor_to_RGB(int c)
         return GetNHApp()->regMapColors[c];
     return RGB(0x00, 0x00, 0x00);
 }
+

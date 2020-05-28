@@ -90,6 +90,28 @@ enum game_ui_tile_types
     MAX_UI_TILES
 };
 
+enum game_ui_status_mark_types
+{
+    STATUS_MARK_PET = 0,
+    STATUS_MARK_PEACEFUL,
+    STATUS_MARK_DETECTED,
+    STATUS_MARK_PILE,
+    STATUS_MARK_HUNGRY,
+    STATUS_MARK_WEAK,
+    STATUS_MARK_FAINTING,
+    STATUS_MARK_BURDENED,
+    STATUS_MARK_STRESSED,
+    STATUS_MARK_STRAINED,
+    STATUS_MARK_OVERTAXED,
+    STATUS_MARK_OVERLOADED,
+    STATUS_MARK_2WEP,
+    STATUS_MARK_SKILL,
+    STATUS_MARK_SADDLED,
+    STATUS_MARK_LOW_HP,
+    STATUS_MARK_CRITICAL_HP,
+    MAX_STATUS_MARKS
+};
+
 extern NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES]; /* from tiledata.c */
 
 #define GLYPH_TILE_FLAG_FLIP_HORIZONTALLY       0x01

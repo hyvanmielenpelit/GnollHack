@@ -25,6 +25,7 @@
 #define MSNH_MSG_UPDATE_STATUS 112
 #define MSNH_MSG_RANDOM_INPUT 113
 #define MSNH_MSG_STRETCH_MAP 114
+#define MSNH_MSG_UPDATE_ALL_STATUSES_ON_MAP 115
 
 typedef struct mswin_nhmsg_add_wnd {
     winid wid;
