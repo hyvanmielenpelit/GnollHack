@@ -1117,11 +1117,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_REPLACE_WALL_ENDS)
                             {
-                                int source_glyph = autodraws[autodraw].source_glyph;
-                                int atile = glyph2tile[source_glyph];
-                                int at_x = TILEBMP_X(atile);
-                                int at_y = TILEBMP_Y(atile);
-
                                 for (int dir = 0; dir < 4; dir++)
                                 {
                                     char dir_bit = 1 << dir;
@@ -1129,75 +1124,164 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     {
                                         int rx = 0;
                                         int ry = 0;
+                                        int corner_x[2] = { 0, 0 };
+                                        int corner_y[2] = { 0, 0 };
                                         switch (dir)
                                         {
                                         case 0:
                                             rx = i - 1;
                                             ry = j;
+                                            corner_x[0] = i;
+                                            corner_y[0] = j - 1;
+                                            corner_x[1] = i;
+                                            corner_y[1] = j + 1;
                                             break;
                                         case 1:
                                             rx = i + 1;
                                             ry = j;
+                                            corner_x[0] = i;
+                                            corner_y[0] = j - 1;
+                                            corner_x[1] = i;
+                                            corner_y[1] = j + 1;
                                             break;
                                         case 2:
                                             rx = i;
                                             ry = j - 1;
+                                            corner_x[0] = i - 1;
+                                            corner_y[0] = j;
+                                            corner_x[1] = i + 1;
+                                            corner_y[1] = j;
                                             break;
                                         case 3:
                                             rx = i;
                                             ry = j + 1;
+                                            corner_x[0] = i - 1;
+                                            corner_y[0] = j;
+                                            corner_x[1] = i + 1;
+                                            corner_y[1] = j;
                                             break;
                                         default:
                                             break;
                                         }
-                                        if (!isok(rx, ry) || levl[rx][ry].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[rx][ry].typ) && !IS_TREE(levl[rx][ry].typ)) || levl[rx][ry].typ == DOOR || levl[rx][ry].typ == UNEXPLORED /*|| (levl[rx][ry].seenv & (SV4 | SV5 | SV6)) == 0 */)
+
+#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || levl[x][y].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNEXPLORED /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
+
+                                        if (NO_WALL_END_AUTODRAW(rx, ry))
                                         {
                                             /* No action */
                                         }
                                         else
                                         {
-                                            RECT source_rt = { 0 };
-                                            switch (dir)
+                                            for (int corner = 0; corner <= 1; corner++)
                                             {
-                                            case 0: /* left */
-                                                source_rt.left = at_x;
-                                                source_rt.right = source_rt.left + 10;
-                                                source_rt.top = at_y;
-                                                source_rt.bottom = at_y + 20;
-                                                break;
-                                            case 1: /* right */
-                                                source_rt.right = at_x + TILE_X;
-                                                source_rt.left = source_rt.right - 10;
-                                                source_rt.top = at_y;
-                                                source_rt.bottom = at_y + 20;
-                                                break;
-                                            case 2: /* up */
-                                                source_rt.left = at_x;
-                                                source_rt.right = at_x + TILE_X;
-                                                source_rt.top = at_y;
-                                                source_rt.bottom = source_rt.top + 10;
-                                                break;
-                                            case 3: /* down */
-                                                source_rt.left = at_x;
-                                                source_rt.right = at_x + TILE_X;
-                                                source_rt.top = at_y + 20;
-                                                source_rt.bottom = at_y + TILE_Y;
-                                                break;
-                                            default:
-                                                break;
+                                                int source_glyph = autodraws[autodraw].source_glyph;
+                                                int atile = glyph2tile[source_glyph];
+                                                int at_x = TILEBMP_X(atile);
+                                                int at_y = TILEBMP_Y(atile);
+
+                                                RECT source_rt = { 0 };
+                                                switch (dir)
+                                                {
+                                                case 0: /* left */
+                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    {
+                                                        source_glyph = autodraws[autodraw].source_glyph2; /* S_vwall */
+                                                        atile = glyph2tile[source_glyph];
+                                                        at_x = TILEBMP_X(atile);
+                                                        at_y = TILEBMP_Y(atile);
+                                                    }
+                                                    source_rt.left = at_x;
+                                                    source_rt.right = source_rt.left + 12;
+                                                    if (corner == 0)
+                                                    {
+                                                        source_rt.top = at_y;
+                                                        source_rt.bottom = at_y + 20;
+                                                    }
+                                                    else
+                                                    {
+                                                        source_rt.top = at_y + 20;
+                                                        source_rt.bottom = at_y + TILE_Y;
+                                                    }
+                                                    break;
+                                                case 1: /* right */
+                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    {
+                                                        source_glyph = autodraws[autodraw].source_glyph2; /* S_vwall */
+                                                        atile = glyph2tile[source_glyph];
+                                                        at_x = TILEBMP_X(atile);
+                                                        at_y = TILEBMP_Y(atile);
+                                                    }
+                                                    source_rt.right = at_x + TILE_X;
+                                                    source_rt.left = source_rt.right - 12;
+                                                    if (corner == 0)
+                                                    {
+                                                        source_rt.top = at_y;
+                                                        source_rt.bottom = at_y + 20;
+                                                    }
+                                                    else
+                                                    {
+                                                        source_rt.top = at_y + 20;
+                                                        source_rt.bottom = at_y + TILE_Y;
+                                                    }
+                                                    break;
+                                                case 2: /* up */
+                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    {
+                                                        source_glyph = autodraws[autodraw].source_glyph3; /* S_hwall */
+                                                        atile = glyph2tile[source_glyph];
+                                                        at_x = TILEBMP_X(atile);
+                                                        at_y = TILEBMP_Y(atile);
+                                                    }
+                                                    if (corner == 0)
+                                                    {
+                                                        source_rt.left = at_x;
+                                                        source_rt.right = at_x + TILE_X / 2;
+                                                    }
+                                                    else
+                                                    {
+                                                        source_rt.left = at_x + TILE_X / 2;
+                                                        source_rt.right = at_x + TILE_X;
+                                                    }
+                                                    source_rt.top = at_y;
+                                                    source_rt.bottom = source_rt.top + 12;
+                                                    break;
+                                                case 3: /* down */
+                                                    if (NO_WALL_END_AUTODRAW(corner_x[corner], corner_y[corner]))
+                                                    {
+                                                        source_glyph = autodraws[autodraw].source_glyph3; /* S_hwall */
+                                                        atile = glyph2tile[source_glyph];
+                                                        at_x = TILEBMP_X(atile);
+                                                        at_y = TILEBMP_Y(atile);
+                                                    }
+                                                    if (corner == 0)
+                                                    {
+                                                        source_rt.left = at_x;
+                                                        source_rt.right = at_x + TILE_X / 2;
+                                                    }
+                                                    else
+                                                    {
+                                                        source_rt.left = at_x + TILE_X / 2;
+                                                        source_rt.right = at_x + TILE_X;
+                                                    }
+                                                    source_rt.top = at_y + 12;
+                                                    source_rt.bottom = at_y + TILE_Y;
+                                                    break;
+                                                default:
+                                                    break;
+                                                }
+
+                                                RECT target_rt = { 0 };
+                                                target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.left - at_x));
+                                                target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.right - at_x));
+                                                target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.top - at_y));
+                                                target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.bottom - at_y));
+
+                                                (*GetNHApp()->lpfnTransparentBlt)(
+                                                    data->backBufferDC, target_rt.left, target_rt.top,
+                                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                    source_rt.top, source_rt.right - source_rt.left,
+                                                    source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                             }
-
-                                            RECT target_rt = { 0 };
-                                            target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.left - at_x));
-                                            target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.right - at_x));
-                                            target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.top - at_y));
-                                            target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.bottom - at_y));
-
-                                            (*GetNHApp()->lpfnTransparentBlt)(
-                                                data->backBufferDC, target_rt.left, target_rt.top,
-                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
-                                                source_rt.top, source_rt.right - source_rt.left,
-                                                source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                         }
                                     }
                                 }

@@ -81,6 +81,8 @@ struct autodraw_definition {
     enum autodraw_drawing_types draw_type;
     char draw_directions;
     int source_glyph;
+    int source_glyph2;
+    int source_glyph3;
     /* and other useful stuff if need be */
 };
 

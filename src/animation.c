@@ -39,7 +39,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "look-cursor-animation",  2,
-      LOOK_CURSOR_ANIMATION_FRAMES, LOOK_CURSOR_ANIMATION_OFF, 8,
+      LOOK_CURSOR_ANIMATION_FRAMES, LOOK_CURSOR_ANIMATION_OFF, 7,
       ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, -1, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
@@ -252,72 +252,94 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
 
 NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
 {
-    {"", 0, 0, 0},
+    {"", 0, 0, 0, 0, 0},
     {
         "dungeon-normal-wall-autodraw-all",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-up-down",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-up-down-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-up-down-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-up-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-down-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-down-down-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-down-down-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-down-up-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
     {
         "dungeon-normal-wall-autodraw-down-up-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
-        CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF
+        0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + GLYPH_CMAP_OFF,
+        S_hwall + GLYPH_CMAP_OFF
     },
 };
 
