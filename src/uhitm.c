@@ -4555,9 +4555,21 @@ uchar update_symbol;
 		else if (u.dx > 0)
 			u.facing_right = TRUE;
 
-		if (update_symbol && u.facing_right != facing_before)
+		boolean steed_facing_different = FALSE;
+		if (u.usteed)
+		{
+			boolean steed_facing_before = u.usteed->facing_right;
+			if (u.dx < 0)
+				u.usteed->facing_right = FALSE;
+			else if (u.dx > 0)
+				u.usteed->facing_right = TRUE;
+
+			steed_facing_different = u.usteed->facing_right != steed_facing_before;
+		}
+
+		if (update_symbol && (u.facing_right != facing_before || steed_facing_different))
 			newsym(u.ux, u.uy);
-		if (update_symbol == 2 && u.facing_right != facing_before)
+		if (update_symbol == 2 && (u.facing_right != facing_before || steed_facing_different))
 			flush_screen(1);
 	}
 }

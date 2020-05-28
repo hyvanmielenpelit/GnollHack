@@ -1330,6 +1330,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean petdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_PET_DATA_SET);
                     boolean ispeaceful = !!(data->map[i][j].layer_flags & LFLAGS_M_PEACEFUL);
                     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
+                    boolean issteed = !!(data->map[i][j].layer_flags & LFLAGS_M_RIDDEN);
 
                     int condition_count = 0;
 
@@ -1338,7 +1339,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         struct monst* mtmp = isyou ? &youmonst : &data->map[i][j].monster_data;
 
-                        if(isyou || canseemon(mtmp))
+                        if(isyou || canseemon(mtmp) || issteed)
                         {
                             /* Petmarks and other such symbols */
                             int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
@@ -1541,6 +1542,60 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     condition_count++;
                                 }
+                            }
+
+                            /* Steed mark (you as small) */
+
+                            if (isyou && issteed)
+                            {
+                                int signed_mglyph = u_to_glyph();
+                                boolean flip_rider = (signed_mglyph < 0);
+                                mglyph = abs(u_to_glyph());
+                                mtile = glyph2tile[mglyph];
+                                int c_x = TILEBMP_X(mtile);
+                                int c_y = TILEBMP_Y(mtile);
+                                double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+                                /* Define draw location in target */
+                                int unscaled_left = 3;
+                                int unscaled_right = unscaled_left + TILE_X / 2;
+                                int unscaled_top = 3;
+                                int unscaled_bottom = unscaled_top + TILE_Y / 2;
+
+
+                                /* Frame and background first */
+                                HBRUSH hbr_frame = CreateSolidBrush(RGB(100, 50, 0));
+                                HBRUSH hbr_background = CreateSolidBrush(RGB(200, 200, 200));
+                                RECT frame_rect = { 0 };
+                                frame_rect.left = rect->left + (int)(x_scaling_factor * (double)(unscaled_left - 1));
+                                frame_rect.right = rect->left + (int)(x_scaling_factor * (double)(unscaled_right + 1));
+                                frame_rect.top = rect->top + (int)(y_scaling_factor * (double)(unscaled_top - 1));
+                                frame_rect.bottom = rect->top + (int)(y_scaling_factor * (double)(unscaled_bottom + 1));
+
+                                FillRect(data->backBufferDC, &frame_rect, hbr_background);
+                                FrameRect(data->backBufferDC, &frame_rect, hbr_frame);
+
+
+                                /* Now the actual picture */
+                                RECT source_rt = { 0 };
+                                source_rt.left = c_x;
+                                source_rt.right = c_x + TILE_X;
+                                source_rt.top = c_y;
+                                source_rt.bottom = c_y + TILE_Y;
+
+                                RECT target_rt = { 0 };
+                                target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
+                                target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
+                                target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
+                                target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
+
+                                int multiplier = flip_rider ? -1 : 1;
+                                SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                                (*GetNHApp()->lpfnTransparentBlt)(
+                                    data->backBufferDC, target_rt.left, target_rt.top,
+                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left + (flip_rider ? TILE_X - 1 : 0),
+                                    source_rt.top, multiplier * (source_rt.right - source_rt.left),
+                                    source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                             }
                         }
                     }
