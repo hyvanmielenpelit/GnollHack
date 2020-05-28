@@ -1549,7 +1549,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 int signed_mglyph = u_to_glyph();
                                 boolean flip_rider = (signed_mglyph < 0);
-                                mglyph = abs(u_to_glyph());
+                                mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
                                 mtile = maybe_get_replaced_tile(mtile, i, j, &data->map[i][j].object_data, (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
