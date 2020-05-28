@@ -1545,13 +1545,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
 
                             /* Steed mark (you as small) */
-
                             if (isyou && issteed)
                             {
                                 int signed_mglyph = u_to_glyph();
                                 boolean flip_rider = (signed_mglyph < 0);
                                 mglyph = abs(u_to_glyph());
                                 mtile = glyph2tile[mglyph];
+                                mtile = maybe_get_replaced_tile(mtile, i, j, &data->map[i][j].object_data, (enum auto_drawtypes*)0);
+                                mtile = maybe_get_animated_tile(mtile, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
                                 double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
