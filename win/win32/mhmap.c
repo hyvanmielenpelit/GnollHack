@@ -1229,6 +1229,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
 
+                    /* Draw hit point bars */
                     boolean ismonster = !!glyph_is_monster(glyph);
                     boolean monsterdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_DATA_SET);
                     boolean ispet = !!(data->map[i][j].layer_flags & LFLAGS_M_PET);
@@ -1341,7 +1342,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             int cglyph = flags.active_cursor_style + GLYPH_CURSOR_OFF;
                             int ctile = glyph2tile[cglyph];
-                            /* Note: possibility to do replacing and animated cursors */
+                            ctile = maybe_get_replaced_tile(ctile, i, j, (struct obj*)0, (enum autodraw_types*)0);
+                            ctile = maybe_get_animated_tile(ctile, data->interval_counter, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
 

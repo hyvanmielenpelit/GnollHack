@@ -2584,7 +2584,9 @@ replacement,handcrafted-candle-replacement,lit,1436,1,1,0
 replacement,brass-lantern-replacement,lit,1437,1,1,0
 animation,handcrafted-candle-lit-animation,tile-0,2582,1,1,0
 animation,elf_wizard_female_cast-animation,tile-0,2530,1,1,0
-animation,brass-lantern-lit-animation,tile-0,-1,1,1,0
+animation,brass-lantern-lit-animation,tile-0,2583,1,1,0
+animation,look-cursor-animation,tile-0,2553,1,1,0
+animation,look-cursor-animation,tile-1,2553,1,1,0
 animation,twisted-candle-lit-animation,tile-0,1435,1,1,0
 animation,twisted-candle-lit-animation,tile-1,1435,1,1,0
 animation,twisted-candle-lit-animation,tile-2,1435,1,1,0

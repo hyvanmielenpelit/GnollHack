@@ -59,6 +59,9 @@ extern NEARDATA struct tileset_definition default_tileset_definition;
 
 struct ui_component_definition {
     char* name;
+    enum replacement_types replacement;
+    enum animation_types animation;
+    enum enlargement_types enlargement;
     int number;
     uchar width;
     uchar height;

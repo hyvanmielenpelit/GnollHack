@@ -169,22 +169,6 @@ enum cost_alteration_types {
 #define CXN_ARTICLE 8   /* include a/an/the prefix */
 #define CXN_NOCORPSE 16 /* suppress " corpse" suffix */
 
-/* game cursor types */
-enum game_cursor_types
-{
-    CURSOR_STYLE_GENERIC_CURSOR = 0,
-    CURSOR_STYLE_LOOK_CURSOR,
-    CURSOR_STYLE_TRAVEL_CURSOR,
-    CURSOR_STYLE_NAME_CURSOR,
-    CURSOR_STYLE_TELEPORT_CURSOR,
-    CURSOR_STYLE_JUMP_CURSOR,
-    CURSOR_STYLE_POLEARM_CURSOR,
-    CURSOR_STYLE_GRAPPLE_CURSOR,
-    CURSOR_STYLE_SPELL_CURSOR,
-    CURSOR_STYLE_PAY_CURSOR,
-    MAX_CURSORS
-};
-
 /* getpos() return values */
 enum getpos_retval {
     LOOK_TRADITIONAL = 0, /* '.' -- ask about "more info?" */

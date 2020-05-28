@@ -29,23 +29,23 @@ NEARDATA struct tileset_definition default_tileset_definition =
 };
 
 NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
-    {"death",                   1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit",                     1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-1",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-2",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-3",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-4",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit-text-5",              1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"general-ui",              3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"status",                  14, 16, 16, {"petmark", "peacemark", "detectmark", "pilemark",  "hungry", "weak", "faint", "burdened",  "stressed", "strained", "overtaxed", "overloaded",  "two-weapon", "skill", "saddled", "wounded",  "left-half-hp", "low-hp", "critical-hp", "",  "", "", "", ""} },
-    {"conditions",              min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"main_tile_mark",          1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"main-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"message-window-borders",  6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"status-window-borders",   6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"map-window-borders",      6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"menu-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"text-window-borders",     6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"death",                   NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit",                     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-1",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-2",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-3",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-4",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"hit-text-5",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"general-ui",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status",                  NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 14, 16, 16, {"petmark", "peacemark", "detectmark", "pilemark",  "hungry", "weak", "faint", "burdened",  "stressed", "strained", "overtaxed", "overloaded",  "two-weapon", "skill", "saddled", "wounded",  "left-half-hp", "low-hp", "critical-hp", "",  "", "", "", ""} },
+    {"conditions",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"main_tile_mark",          NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"main-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"message-window-borders",  NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"status-window-borders",   NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"map-window-borders",      NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"menu-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"text-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
 };
 
 void
@@ -2117,15 +2117,12 @@ uchar* tilemapflags;
     /* User interface tiles */
     tile_section_name = "user-interface";
     set_name = "cursor";
-    const char* cursor_name_array[MAX_CURSORS] = {
-        "generic", "look", "travel", "name",  "teleport",
-        "jump", "polearm", "grapple", "spell", "pay" };
 
     for (int i = 0; i < MAX_CURSORS; i++)
     {
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, cursor_name_array[i]);
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, game_cursors[i].game_cursor_name);
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
@@ -2217,10 +2214,12 @@ uchar* tilemapflags;
             else if (process_style == 1)
             {
                 glyph_offset = GLYPH_ANIMATION_OFF;
-                for (int k = 0; k < MAX_FRAMES_PER_ANIMATION; k++)  /* frame number */
+                for (int k = 0; k < min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION); k++)  /* frame number */
                 {
                     if(animations[i].frame2tile[k] == j)
                         tilemaparray[k + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = tile_count;
+                    else if (animations[i].frame2tile[k] == -1)
+                        tilemaparray[k + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = base_tile;
                 }
             }
             tile_count++;
@@ -2270,7 +2269,7 @@ uchar* tilemapflags;
             else if (process_style == 1)
             {
                 glyph_offset = GLYPH_ENLARGEMENT_OFF;
-                for (int k = 0; k < MAX_FRAMES_PER_ENLARGEMENT; k++)  /* frame number */
+                for (int k = 0; k < min(enlargements[i].number_of_frames, MAX_FRAMES_PER_ENLARGEMENT); k++)  /* frame number */
                 {
                     if (animations[i].frame2tile[k] == j)
                         tilemaparray[k + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
@@ -2420,6 +2419,27 @@ uchar* tilemapflags;
             }
         }
 
+        /* Cursors */
+        for (int i = 0; i < MAX_CURSORS; i++)
+        {
+            if (game_cursors[i].replacement)
+            {
+                int glyph = i + GLYPH_CURSOR_OFF;
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = game_cursors[i].replacement;
+            }
+        }
+
+        /* UI Tiles */
+        for (int i = 0; i < MAX_UI_TILES; i++)
+        {
+            if (ui_tile_component_array[i].replacement)
+            {
+                int glyph = i + GLYPH_UI_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = ui_tile_component_array[i].replacement;
+            }
+        }
 
 
 
@@ -2553,6 +2573,29 @@ uchar* tilemapflags;
                 }
             }
         }
+
+        /* Cursors */
+        for (int i = 0; i < MAX_CURSORS; i++)
+        {
+            if (game_cursors[i].animation)
+            {
+                int glyph = i + GLYPH_CURSOR_OFF;
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = game_cursors[i].animation;
+            }
+        }
+
+        /* UI Tiles */
+        for (int i = 0; i < MAX_UI_TILES; i++)
+        {
+            if (ui_tile_component_array[i].animation)
+            {
+                int glyph = i + GLYPH_UI_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = ui_tile_component_array[i].animation;
+            }
+        }
+
 
         /* Replacements */
         for (int i = 1; i <= NUM_REPLACEMENTS; i++)
@@ -2697,6 +2740,28 @@ uchar* tilemapflags;
                         }
                     }
                 }
+            }
+        }
+
+        /* Cursors */
+        for (int i = 0; i < MAX_CURSORS; i++)
+        {
+            if (game_cursors[i].enlargement)
+            {
+                int glyph = i + GLYPH_CURSOR_OFF;
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = game_cursors[i].enlargement;
+            }
+        }
+
+        /* UI Tiles */
+        for (int i = 0; i < MAX_UI_TILES; i++)
+        {
+            if (ui_tile_component_array[i].enlargement)
+            {
+                int glyph = i + GLYPH_UI_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = ui_tile_component_array[i].enlargement;
             }
         }
 
