@@ -31,6 +31,8 @@ include/date.h
 *.bmp
 *.png
 *.csv
+*.wav
+*.mp3
 
 # User-specific files
 *.suo

@@ -288,3 +288,5 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return FALSE;
 }
+
+
