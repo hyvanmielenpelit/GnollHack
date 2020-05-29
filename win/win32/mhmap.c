@@ -1769,7 +1769,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 static void
 paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
 {
-    if (data->map[i][j].glyph >= 0) {
+    if (1) // data->map[i][j].glyph >= 0)
+    {
 
         char ch;
         WCHAR wch;
