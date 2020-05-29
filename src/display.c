@@ -1702,11 +1702,11 @@ int x, y, glyph;
 }
 
 void
-show_glyph_with_extra_info(x, y, glyph, otmp, mtmp, flags, damage_displayed)
+show_glyph_with_extra_info(x, y, glyph, otmp, mtmp, disp_flags, damage_displayed)
 int x, y, glyph;
 struct obj* otmp;
 struct monst* mtmp;
-unsigned long flags;
+unsigned long disp_flags;
 int damage_displayed;
 {
     if (isok(x, y))
@@ -1771,12 +1771,14 @@ int damage_displayed;
             if (is_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PEACEFUL;
 
+            if ((mtmp->worn_item_flags & W_SADDLE) && !Hallucination)
+                gbuf[y][x].layers.layer_flags |= LFLAGS_M_SADDLED;
             /* Other conditions here */
         }
 
-        if (flags)
+        if (disp_flags)
         {
-            gbuf[y][x].layers.layer_flags |= flags;
+            gbuf[y][x].layers.layer_flags |= disp_flags;
         }
 
         if(damage_displayed > 0)

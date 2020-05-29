@@ -1335,11 +1335,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     int condition_count = 0;
 
                     /* Conditions and status marks */
-                    if ((glyph != NO_GLYPH) && ismonster && (isyou || (monsterdataset && cansee(i,j))))
+                    if ((glyph != NO_GLYPH) && ismonster && (isyou || (monsterdataset)))
                     {
                         struct monst* mtmp = isyou ? &youmonst : &data->map[i][j].monster_data;
 
-                        if(isyou || canseemon(mtmp) || issteed)
+                        if(1)
                         {
                             /* Petmarks and other such symbols */
                             int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
@@ -1416,7 +1416,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_SADDLED:
-                                    if (!isyou && ((data->map[i][j].layer_flags & LFLAGS_M_SADDLED) || (mtmp->worn_item_flags & W_SADDLE)) )
+                                    if (!isyou && (data->map[i][j].layer_flags & LFLAGS_M_SADDLED) )
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_LOW_HP:
