@@ -30,6 +30,8 @@
 #define IDB_RIP                         147
 #define IDD_SPLASH                      148
 #define IDB_PILEMARK                    149
+#define IDR_RCDATA1                     156
+#define IDR_RCDATA_FONT                 156
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -114,7 +116,6 @@
 #define IDC_PLSEL_ALIGN_CHAOTIC         1336
 #define IDC_PLSEL_GENDER_MALE           1337
 #define IDC_PLSEL_GENDER_FEMALE         1338
-#define IDC_EDIT1                       1342
 #define IDM_SAVE                        32771
 #define IDM_HELP_LONG                   32772
 #define IDM_HELP_COMMANDS               32773
@@ -150,7 +151,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        153
+#define _APS_NEXT_RESOURCE_VALUE        157
 #define _APS_NEXT_COMMAND_VALUE         32801
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

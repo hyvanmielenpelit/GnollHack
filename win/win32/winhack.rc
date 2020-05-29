@@ -190,10 +190,10 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,118,188,50,14
 END
 
-IDD_SPLASH DIALOG 0, 0, 281, 257
+IDD_SPLASH DIALOGEX 0, 0, 281, 257
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Welcome to GnollHack"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 400, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,224,236,50,14
     EDITTEXT        IDC_EXTRAINFO,7,176,267,52,ES_MULTILINE | ES_READONLY | WS_VSCROLL
@@ -382,6 +382,19 @@ IDD_MENU AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
+
+IDD_SPLASH AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RCDATA
+//
+
+IDR_RCDATA_FONT         RCDATA                  "uwch.ttf"
 
 
 /////////////////////////////////////////////////////////////////////////////

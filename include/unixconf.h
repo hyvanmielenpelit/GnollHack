@@ -239,7 +239,7 @@
 #endif
 
 #ifndef FCMASK
-#define FCMASK 0660 /* file creation mask */
+#define FCMASK 0664 /* file creation mask */
 #endif
 
 /* fcntl(2) is a POSIX-portable call for manipulating file descriptors.

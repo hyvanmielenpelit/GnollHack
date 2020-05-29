@@ -149,6 +149,8 @@ mswin_init_nhwindows(int *argc, char **argv)
 #endif
     logDebug("mswin_init_nhwindows()\n");
 
+    init_resource_fonts();
+
     mswin_nh_input_init();
 
     /* set it to WIN_ERR so we can detect attempts to

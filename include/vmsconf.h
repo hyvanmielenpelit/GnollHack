@@ -166,7 +166,7 @@ PANICTRACE_GDB=2  #at conclusion of panic, show a call traceback and then
 #undef ISAAC64
 #endif
 
-#define FCMASK 0660 /* file creation mask */
+#define FCMASK 0664 /* file creation mask */
 
 /*
  * The remainder of the file should not need to be changed.

@@ -246,7 +246,7 @@
 #endif
 
 #ifndef TOS
-#define FCMASK 0660 /* file creation mask */
+#define FCMASK 0664 /* file creation mask */
 #endif
 
 #include <fcntl.h>

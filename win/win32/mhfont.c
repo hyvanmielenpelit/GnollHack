@@ -7,6 +7,7 @@
 #include "win10.h"
 #include "winos.h"
 #include "mhfont.h"
+#include "resource.h"
 
 /* font table - 64 fonts ought to be enough */
 #define MAXFONTS 64
@@ -38,7 +39,7 @@ mswin_create_splashfont(HWND hWnd)
     lgfnt.lfClipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
     lgfnt.lfQuality = DEFAULT_QUALITY;           // output quality
     lgfnt.lfPitchAndFamily = DEFAULT_PITCH;      // pitch and family
-    NH_A2W("Times New Roman", lgfnt.lfFaceName, LF_FACESIZE);
+    NH_A2W("Underwood Champion", lgfnt.lfFaceName, LF_FACESIZE);
     HFONT font = CreateFontIndirect(&lgfnt);
     ReleaseDC(hWnd, hdc);
 
@@ -190,6 +191,8 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         break;
     }
 
+
+    /* Create font */
     fnt = CreateFontIndirect(&lgfnt);
 
     /* add font to the table */
@@ -241,4 +244,29 @@ void __cdecl font_table_cleanup(void)
         DeleteObject(font_table[i].hFont);
     }
     font_table_size = 0;
+}
+
+void
+init_resource_fonts()
+{
+    /* Install font from resource */
+    HINSTANCE hResInstance = (HINSTANCE)GetModuleHandle(NULL);
+    HRSRC res = FindResource(hResInstance, MAKEINTRESOURCE(IDR_RCDATA_FONT), RT_RCDATA);
+
+    if (res)
+    {
+        HGLOBAL mem = LoadResource(hResInstance, res);
+        void* data = LockResource(mem);
+        size_t len = SizeofResource(hResInstance, res);
+
+        DWORD nFonts;
+        HANDLE m_fonthandle = AddFontMemResourceEx(
+            data,       // font resource
+            len,       // number of bytes in font resource 
+            NULL,          // Reserved. Must be 0.
+            &nFonts      // number of fonts installed
+        );
+
+        nFonts = nFonts;
+    }
 }

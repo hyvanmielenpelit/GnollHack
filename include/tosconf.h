@@ -25,7 +25,7 @@
 #ifdef O_BINARY
 #define FCMASK O_BINARY
 #else
-#define FCMASK 0660
+#define FCMASK 0664
 #define O_BINARY 0
 #endif
 

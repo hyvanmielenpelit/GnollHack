@@ -707,7 +707,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         /* calculate new menu width */
         data->menu.menu_cx =
             max(data->menu.menu_cx,
-                2 * TILE_X + menuitemwidth
+                CHECK_WIDTH + TILE_X + menuitemwidth
                     + (tm.tmAveCharWidth + tm.tmOverhang) * 12);
 
         /* increment size */
@@ -719,6 +719,17 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         if (msg_data->text) {
             strncpy(data->menu.prompt, msg_data->text,
                     sizeof(data->menu.prompt) - 1);
+
+            HDC hDC = GetDC(hWnd);
+            cached_font* font = mswin_get_font(NHW_MENU, ATR_BOLD, hDC, FALSE);
+            HFONT saveFont = SelectObject(hDC, font->hFont);
+            TEXTMETRIC tm;
+            GetTextMetrics(hDC, &tm);
+
+            data->menu.menu_cx =
+                max(data->menu.menu_cx,
+                    (tm.tmAveCharWidth + tm.tmOverhang) * (strlen(data->menu.prompt) + 1) + GetSystemMetrics(SM_CXVSCROLL));
+
         } else {
             ZeroMemory(data->menu.prompt, sizeof(data->menu.prompt));
         }

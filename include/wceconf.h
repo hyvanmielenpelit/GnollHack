@@ -151,7 +151,7 @@
 # endif
 #endif
 
-#define FCMASK 0660 /* file creation mask */
+#define FCMASK 0664 /* file creation mask */
 #define regularize nt_regularize
 #define HLOCK "NHPERM"
 
