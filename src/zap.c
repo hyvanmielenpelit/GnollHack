@@ -4922,6 +4922,7 @@ boolean ordinary;
 		killer.format = NO_KILLER_PREFIX;
 		You("irradiate yourself with disintegration field!");
 		You("are disintegrated.");
+        display_u_being_hit(HIT_DISINTEGRATED, 0, LFLAGS_DISINTEGRATED);
 		/* when killed by disintegration breath, don't leave corpse */
 		u.ugrave_arise = 3;
 		done(DIED);
@@ -5895,7 +5896,7 @@ int damage;
 		else
 			pline("%s %s %s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), force);
 
-    if(!(u.uswallow && mtmp == u.ustuck))
+    if(damage > 0)
         display_m_being_hit(mtmp, HIT_TILE, damage, 0UL);
 
 }
@@ -7071,7 +7072,10 @@ const char *fltxt;
 
     if (canseemon(mon)) {
         if (!m_amulet)
+        {
             pline("%s is disintegrated!", Monnam(mon));
+            display_m_being_hit(mon, HIT_DISINTEGRATED, 0, LFLAGS_DISINTEGRATED);
+        }
         else
             hit(fltxt, mon, "!", -1);
     }
