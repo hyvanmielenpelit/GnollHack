@@ -1872,6 +1872,7 @@ dogaze()
                         int hp_after = mtmp->mhp;
                         int damage_dealt = hp_before - hp_after;
                         pline("%s sustains %d damage!", Monnam(mtmp), damage_dealt);
+                        display_m_being_hit(mtmp, HIT_TILE, damage_dealt, 0UL);
 
                         if (DEADMONSTER(mtmp))
 							killed(mtmp);

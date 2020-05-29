@@ -127,7 +127,9 @@ const char *name; /* if null, then format `*objp' */
 					You("are hit for %d damage%s", damagedealt, exclam(damagedealt));
 				else
 					You("are hit by %s for %d damage%s", onm, damagedealt, exclam(damagedealt));
-			}
+
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            }
 			if (obj && objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver) 
 			{
                 /* extra damage already applied by weapon_dmg_value() */

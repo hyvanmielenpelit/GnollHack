@@ -1863,7 +1863,8 @@ register struct obj* omonwep;
 	else if (vis && damagedealt > 0 && ((is_tame(mdef) && canspotmon(mdef)) || (is_tame(magr) && canspotmon(magr))))
 	{
 		pline("%s sustains %d damage!", Monnam(mdef), damagedealt);
-	}
+        display_m_being_hit(mdef, HIT_TILE, damagedealt, 0UL);
+    }
 
     return (res == MM_AGR_DIED) ? MM_AGR_DIED : MM_HIT;
 }
@@ -2169,8 +2170,11 @@ assess_dmg:
 		int mhp_after = magr->mhp;
 		int damagedealt = mhp_before - mhp_after;
 
-		if (canseemon(magr) && damagedealt > 0)
-			pline("%s sustains %d damage!", Monnam(magr), damagedealt);
+        if (canseemon(magr) && damagedealt > 0)
+        {
+            pline("%s sustains %d damage!", Monnam(magr), damagedealt);
+            display_m_being_hit(magr, HIT_TILE, damagedealt, 0UL);
+        }
 
 		if (magr->mhp <= 0)
 		{

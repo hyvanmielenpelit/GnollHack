@@ -1681,7 +1681,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
 #endif
 
-                    /* Draw death marker */
+                    /* Draw death and hit markers */
                     if (glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph))
                     {
                         int mglyph = DEATH_TILE + GLYPH_UI_TILE_OFF;
@@ -1696,7 +1696,22 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             t_y, GetNHApp()->mapTile_X,
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
+                    else if (data->map[i][j].layer_flags & LFLAGS_M_BEING_HIT)
+                    {
+                        unsigned long hit_text_bits = (data->map[i][j].layer_flags & LFLAGS_M_HIT_TEXT_MASK);
+                        unsigned long hit_text_num = hit_text_bits >> LFLAGS_M_HIT_TEXT_MASK_BIT_OFFSET;
+                        int mglyph = max(0, min(MAX_HIT_TEXTS, (int)hit_text_num)) + HIT_TILE + GLYPH_UI_TILE_OFF;
+                        int mtile = glyph2tile[mglyph];
+                        t_x = TILEBMP_X(mtile);
+                        t_y = TILEBMP_Y(mtile);
 
+                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            data->backBufferDC, rect->left, rect->top,
+                            data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                            t_y, GetNHApp()->mapTile_X,
+                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                    }
 
                     if (i == data->xCur && j == data->yCur)
                     {

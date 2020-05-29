@@ -890,23 +890,11 @@
  * _if_ the hero can be seen have already been done.
  */
 #define maybe_display_usteed(otherwise_self)                            \
-    ((u.usteed && mon_visible(u.usteed))                                \
-     ? (u.usteed->female ? female_mon_to_glyph(u.usteed, rn2_on_display_rng) : mon_to_glyph(u.usteed, rn2_on_display_rng))  \
+    ((u.usteed && mon_visible(u.usteed)) == TRUE                                \
+     ? (u.usteed->female == TRUE ? female_mon_to_glyph(u.usteed, rn2_on_display_rng) : mon_to_glyph(u.usteed, rn2_on_display_rng))  \
      : (otherwise_self))
 
-#define display_self() \
-    show_glyph_with_extra_info(u.ux, u.uy,                                                  \
-           maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)                 \
-                                ? u_to_glyph() /*hero_glyph*/          \
-                                : (U_AP_TYPE == M_AP_FURNITURE)             \
-                                  ? cmap_to_glyph(youmonst.mappearance)     \
-                                  : (U_AP_TYPE == M_AP_OBJECT)              \
-                                    ? objnum_to_glyph(youmonst.mappearance) \
-                                    /* else U_AP_TYPE == M_AP_MONSTER */    \
-                                    : any_monnum_to_glyph(flags.female, youmonst.mappearance) \
-                                 ), (struct obj*)0, u.usteed, \
-                                    LFLAGS_M_YOU | (u.usteed  && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL), \
-                                    0)
+#define display_self() display_self_with_extra_info(0UL, 0)
 
 
 #endif /* DISPLAY_H */

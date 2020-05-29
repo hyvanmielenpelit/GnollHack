@@ -2567,6 +2567,9 @@ user-interface,ui-tile,hit-text-2,1,64,96,whole
 user-interface,ui-tile,hit-text-3,1,64,96,whole
 user-interface,ui-tile,hit-text-4,1,64,96,whole
 user-interface,ui-tile,hit-text-5,1,64,96,whole
+user-interface,ui-tile,hit-text-6,1,64,96,whole
+user-interface,ui-tile,hit-text-7,1,64,96,whole
+user-interface,ui-tile,hit-text-8,1,64,96,whole
 user-interface,ui-tile,general-ui,3,16,16,checkbox-unchecked,checkbox-checked,checkbox-count
 user-interface,ui-tile,status,17,16,16,petmark,peacemark,detectmark,pilemark,hungry,weak,faint,burdened,stressed,strained,overtaxed,overloaded,two-weapon,skill,saddled,low-hp,critical-hp
 user-interface,ui-tile,conditions,22,16,16,stone,slime,strngl,suffoc,foodPois,termIll,blind,deaf,stun,conf,hallu,lev,fly,ride,slow,paral,fear,sleep,cancl,silent,grab,rot
@@ -2582,9 +2585,9 @@ replacement,coin-replacement,few,1811,1,1,0
 replacement,coin-replacement,many,1811,1,1,0
 replacement,handcrafted-candle-replacement,lit,1436,1,1,0
 replacement,brass-lantern-replacement,lit,1437,1,1,0
-animation,handcrafted-candle-lit-animation,tile-0,2582,1,1,0
+animation,handcrafted-candle-lit-animation,tile-0,2585,1,1,0
 animation,elf_wizard_female_cast-animation,tile-0,2530,1,1,0
-animation,brass-lantern-lit-animation,tile-0,2583,1,1,0
+animation,brass-lantern-lit-animation,tile-0,2586,1,1,0
 animation,look-cursor-animation,tile-0,2553,1,1,0
 animation,look-cursor-animation,tile-1,2553,1,1,0
 animation,twisted-candle-lit-animation,tile-0,1435,1,1,0

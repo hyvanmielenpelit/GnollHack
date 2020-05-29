@@ -1893,6 +1893,8 @@ boolean* obj_destroyed;
 					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
 					mon_nam(mon), damagedealt, frombehindtext,
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
+
+			display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
 		}
 		else 
 		{
@@ -1904,11 +1906,14 @@ boolean* obj_destroyed;
 					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
 					mon_nam(mon), 
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
+
+			display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
 		}
 	}
 	else if (hittxt && displaysustain && damagedealt > 0)
 	{
 		pline("%s sustains %d damage.", Monnam(mon), damagedealt);
+		display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
 	}
 
 	if (silvermsg) 
@@ -3058,8 +3063,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         return 2;
     } 
 	else if (flags.verbose && damagedealt > 0)
+	{
 		You("inflict %d damage.", damagedealt);
-
+		display_m_being_hit(mdef, HIT_TILE, damagedealt, 0UL);
+	}
     return 1;
 }
 
@@ -4602,6 +4609,13 @@ uchar attack_mode;
 {
 	if (!mtmp)
 		return;
+
+	if (mtmp == &youmonst)
+	{
+		update_u_action(attack_mode);
+		return;
+	}
+
 	uchar attacking_before = mtmp->action;
 	mtmp->action = attack_mode;
 #ifdef USE_TILES
@@ -4617,6 +4631,50 @@ uchar attack_mode;
 		}
 	}
 #endif
+}
+
+
+void
+display_being_hit(x, y, hit_symbol_shown, damage_shown, extra_flags)
+int x, y;
+enum game_ui_tile_types hit_symbol_shown;
+int damage_shown;
+unsigned long extra_flags;
+{
+#ifdef USE_TILES
+	boolean is_you = (x == u.ux && y == u.uy);
+	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_TILE)) << LFLAGS_M_HIT_TEXT_MASK_BIT_OFFSET;
+	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
+
+	newsym_with_extra_info(x, y, flags, damage_shown);
+	flush_screen(is_you);
+	delay_output();
+	newsym(x, y);
+	flush_screen(is_you);
+#endif
+}
+
+void
+display_u_being_hit(hit_symbol_shown, damage_shown, extra_flags)
+enum game_ui_tile_types hit_symbol_shown;
+int damage_shown;
+unsigned long extra_flags;
+{
+	display_being_hit(u.ux, u.uy, hit_symbol_shown, damage_shown, extra_flags);
+}
+
+void
+display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_flags)
+struct monst* mon;
+enum game_ui_tile_types hit_symbol_shown;
+int damage_shown;
+unsigned long extra_flags;
+{
+	if (!mon)
+		return;
+
+	if(!(u.uswallow && mon == u.ustuck))
+		display_being_hit(mon->mx, mon->my, hit_symbol_shown, damage_shown, extra_flags);
 }
 
 /*uhitm.c*/

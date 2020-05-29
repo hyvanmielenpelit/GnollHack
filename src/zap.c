@@ -5894,6 +5894,10 @@ int damage;
 //			pline("%s %s %s but %s no effect%s", The(str), vtense(str, "hit"), mon_nam(mtmp), vtense(str, "have"), force);
 		else
 			pline("%s %s %s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), force);
+
+    if(!(u.uswallow && mtmp == u.ustuck))
+        display_m_being_hit(mtmp, HIT_TILE, damage, 0UL);
+
 }
 
 void
@@ -8532,7 +8536,8 @@ int dmg, adtyp, tell;
 			if (tell && damagedealt > 0 && polyd_same && !(tell == TELL_LETHAL_STYLE && !resisted))
 			{//Lethal damage not shown, resisted though yes
 				You("sustain %d damage!", damagedealt);
-			}
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            }
 		}
 		else
 		{
@@ -8544,7 +8549,8 @@ int dmg, adtyp, tell;
 			if (tell && damagedealt > 0 && !(tell == TELL_LETHAL_STYLE && !resisted))
 			{//Lethal damage not shown, resisted though yes
 				pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-			}
+                display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+            }
 
 			if (DEADMONSTER(mtmp))
 			{

@@ -126,7 +126,7 @@
 #include "artilist.h"
 
 STATIC_DCL void FDECL(display_monster,
-                      (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P));
+                      (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P, unsigned long, int));
 STATIC_DCL int FDECL(swallow_to_glyph, (int, int));
 STATIC_DCL void FDECL(display_warning, (struct monst *));
 
@@ -405,12 +405,14 @@ int x, y, show;
  *
  */
 STATIC_OVL void
-display_monster(x, y, mon, sightflags, worm_tail)
+display_monster(x, y, mon, sightflags, worm_tail, disp_flags, damage_shown)
 register xchar x, y;        /* display position */
 register struct monst *mon; /* monster to display */
 int sightflags;             /* 1 if the monster is physically seen;
                                2 if detected using Detect_monsters */
 xchar worm_tail;            /* mon is actually a worm tail */
+unsigned long disp_flags;
+int damage_shown;
 {
     boolean mon_mimic = (M_AP_TYPE(mon) != M_AP_NOTHING);
     int sensed = (mon_mimic && (Protection_from_shape_changers
@@ -429,7 +431,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
                        (int) mon->m_ap_type);
             /*FALLTHRU*/
         case M_AP_NOTHING:
-            show_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2), (struct obj*)0, mon, 0UL, 0);
+            show_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2), (struct obj*)0, mon, disp_flags, damage_shown);
             break;
 
         case M_AP_FURNITURE: {
@@ -446,7 +448,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
 
             levl[x][y].glyph = glyph;
             if (!sensed) {
-                show_glyph(x, y, glyph);
+                show_glyph_with_extra_info(x, y, glyph, (struct obj*)0, (struct monst*)0, disp_flags, damage_shown);
                 /* override real topology with mimic's fake one */
                 lastseentyp[x][y] = cmap_to_type(sym);
             }
@@ -470,7 +472,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
         case M_AP_MONSTER:
             show_glyph_with_extra_info(x, y,
                        any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)),
-                (struct obj*)0, mon, 0UL, 0
+                (struct obj*)0, mon, disp_flags, damage_shown
             );
             break;
         }
@@ -488,14 +490,14 @@ xchar worm_tail;            /* mon is actually a worm tail */
          * If both are being highlighted in the same way, it doesn't
          * matter, but if not, showing them as pets is preferrable.
          */
-        unsigned long flags = 0;
+        unsigned long extra_flags = 0;
         if (is_tame(mon) && !Hallucination) {
             if (worm_tail)
                 num = monnum_to_glyph(PM_LONG_WORM_TAIL);
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
 
-            flags = LFLAGS_M_PET;
+            extra_flags = LFLAGS_M_PET;
         } else if (sightflags == DETECTED) {
             if (worm_tail)
                 num = monnum_to_glyph(
@@ -503,7 +505,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
 
-            flags = LFLAGS_M_DETECTED;
+            extra_flags = LFLAGS_M_DETECTED;
         } else {
             if (worm_tail)
                 num = monnum_to_glyph(
@@ -511,7 +513,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
-        show_glyph_with_extra_info(x, y, num, (struct obj*)0, worm_tail ? (struct monst*)0 : mon, flags, 0);
+        show_glyph_with_extra_info(x, y, num, (struct obj*)0, worm_tail ? (struct monst*)0 : mon, extra_flags | disp_flags, damage_shown);
     }
 }
 
@@ -764,7 +766,7 @@ xchar x, y;
                         (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon))
                             ? PHYSICALLY_SEEN
                             : DETECTED,
-                        is_worm_tail(mon));
+                        is_worm_tail(mon), 0UL, 0);
 }
 
 
@@ -776,6 +778,15 @@ xchar x, y;
 void
 newsym(x, y)
 register int x, y;
+{
+    newsym_with_extra_info(x, y, 0UL, 0);
+}
+
+void
+newsym_with_extra_info(x, y, disp_flags, damage_shown)
+register int x, y;
+unsigned long disp_flags;
+int damage_shown;
 {
     if (!isok(x, y))
         return;
@@ -800,7 +811,7 @@ register int x, y;
     if (u.uswallow)
     {
         if (x == u.ux && y == u.uy)
-            display_self();
+            display_self_with_extra_info(disp_flags, damage_shown);
         return;
     }
 
@@ -850,7 +861,7 @@ register int x, y;
                hero can't see him/herself, then show self if appropriate */
             _map_location(x, y, !see_self);
             if (see_self)
-                display_self();
+                display_self_with_extra_info(disp_flags, damage_shown);
         }
         else
         {
@@ -874,7 +885,7 @@ register int x, y;
                 /* also gets rid of any invisibility glyph */
                 display_monster(x, y, mon,
                                 see_it ? PHYSICALLY_SEEN : DETECTED,
-                                worm_tail);
+                                worm_tail, disp_flags, damage_shown);
             }
             else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
             {
@@ -897,7 +908,7 @@ register int x, y;
             feel_location(u.ux, u.uy); /* forces an update */
 
             if (canspotself())
-                display_self();
+                display_self_with_extra_info(disp_flags, damage_shown);
         }
         else if ((mon = m_at(x, y)) != 0
                    && ((see_it = (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)
@@ -908,7 +919,7 @@ register int x, y;
             /* Seen or sensed monsters are printed every time.
                This also gets rid of any invisibility glyph. */
             display_monster(x, y, mon, see_it ? 0 : DETECTED,
-                            is_worm_tail(mon) ? TRUE : FALSE);
+                            is_worm_tail(mon) ? TRUE : FALSE, disp_flags, damage_shown);
         } 
         else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
         {
@@ -3326,4 +3337,29 @@ int dx, dy;
     /* Not reached */
     return 0;
 }
+
+
+void
+display_self_with_extra_info(displayed_flags, dmg_received)
+unsigned long displayed_flags;
+int dmg_received;
+{
+
+    show_glyph_with_extra_info(u.ux, u.uy,
+        maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)
+            ? u_to_glyph() /*hero_glyph*/
+            : (U_AP_TYPE == M_AP_FURNITURE)
+            ? cmap_to_glyph(youmonst.mappearance)
+            : (U_AP_TYPE == M_AP_OBJECT)
+            ? objnum_to_glyph(youmonst.mappearance)
+            /* else U_AP_TYPE == M_AP_MONSTER */
+            : any_monnum_to_glyph(flags.female, youmonst.mappearance)
+        ),
+        (struct obj*)0, u.usteed,
+        displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL),
+        dmg_received);
+
+}
+
+
 /*display.c*/

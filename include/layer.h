@@ -45,10 +45,12 @@ struct layer_info {
 #define LFLAGS_M_DETECTED           0x00000004UL
 #define LFLAGS_M_RIDDEN             0x00000008UL
 #define LFLAGS_M_SADDLED            0x00000010UL
-#define LFLAGS_M_RECEIVING_DAMAGE   0x00000020UL
-#define LFLAGS_M_YOU                0x00000040UL
-#define LFLAGS_M_DATA_SET           0x00000080UL
-#define LFLAGS_M_PET_DATA_SET       0x00000100UL
+#define LFLAGS_M_YOU                0x00000020UL
+#define LFLAGS_M_DATA_SET           0x00000040UL
+#define LFLAGS_M_PET_DATA_SET       0x00000080UL
+#define LFLAGS_M_BEING_HIT          0x00000100UL
+#define LFLAGS_M_HIT_TEXT_MASK      0x00000E00UL /* 3 bits indicating display of hit text 1-8 */
+#define LFLAGS_M_HIT_TEXT_MASK_BIT_OFFSET 9 
 #define LFLAGS_M_MASK               0x00000FFFUL
 
 #define LFLAGS_O_DRAWN_IN_FRONT     0x00001000UL

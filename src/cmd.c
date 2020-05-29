@@ -2185,7 +2185,7 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
                 (void)write(fd, buf, strlen(buf));
             }
 
-            if (i == u_to_glyph())
+            if (i == abs(u_to_glyph()))
                 special = ",YOU";
 
             Sprintf(buf, "glyph=%d,tile=%d,flags=%d%s\n", i, glyph2tile[i], glyphtileflags[i], special);

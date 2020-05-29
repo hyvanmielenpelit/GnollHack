@@ -6,6 +6,14 @@
 #ifndef YOU_H
 #define YOU_H
 
+#ifndef CONFIG_H
+#include "config.h"
+#endif
+
+#ifndef DUNGEON_H
+#include "dungeon.h"
+#endif
+
 #include "attrib.h"
 #include "monst.h"
 #ifndef PROP_H
@@ -448,6 +456,8 @@ struct you {
     boolean twoweap;         /* KMH -- Using two-weapon combat */
 	boolean canadvanceskill; /* Can advance skill */
     int carrying_capacity_level;
+
+    /* Data influencing what is shown in tiles */
     boolean facing_right;
     uchar action;
 

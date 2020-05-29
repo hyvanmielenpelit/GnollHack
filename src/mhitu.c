@@ -138,6 +138,7 @@ int damage;
 
             }
 		}
+        display_u_being_hit(HIT_TILE, damage, 0UL);
     }
 }
 
@@ -1778,6 +1779,7 @@ register struct obj* omonwep;
 
                     update_extrinsics();
                     context.botl = context.botlx = 1;
+                    display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
 
                     if (is_constrictor(mtmp->data))
                     {
@@ -1807,7 +1809,8 @@ register struct obj* omonwep;
 					You("are being %s%s.", hug_throttles(mtmp->data)
 						? "choked"
 						: "crushed", damage == 0 ? ", but sustain no damage" : "");
-			}
+                display_u_being_hit(HIT_STRANGLED, damagedealt, 0UL);
+            }
 		}
 		else
 		{ /* hand to hand weapon */
@@ -1883,7 +1886,9 @@ register struct obj* omonwep;
 				else if (displaysustain && damagedealt > 0)
 					You("sustain %d damage.", damagedealt);
 
-				/* Silver message immediately next */
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+                
+                /* Silver message immediately next */
 				if (silvermsg)
 				{
 					pline_The("silver sears your flesh!");
@@ -1977,6 +1982,8 @@ register struct obj* omonwep;
 			else
 				pline("You're %s! You sustain %d damage.", on_fire(youmonst.data, mattk), damage == 0 ? 0 : damagedealt);
 
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(SCROLL_CLASS, AD_FIRE);
             if ((int) mtmp->m_lev > rn2(20))
@@ -2000,6 +2007,8 @@ register struct obj* omonwep;
 			else
 				pline("You're covered in frost! You sustain %d damage.", damage == 0 ? 0 : damagedealt);
 
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(POTION_CLASS, AD_COLD);
         }
@@ -2019,6 +2028,8 @@ register struct obj* omonwep;
             }
 			else
 				You("get zapped for %d damage!", damagedealt);
+
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
 
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(WAND_CLASS, AD_ELEC);
@@ -2201,6 +2212,7 @@ register struct obj* omonwep;
                 pline("%s pricks your %s %s for %d damage!", Monst_name, sidestr, leg, damagedealt);
 
             set_wounded_legs(side, rnd(60 - ACURR(A_DEX)));
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
             exercise(A_STR, FALSE);
             exercise(A_DEX, FALSE);
         }
@@ -2253,8 +2265,11 @@ register struct obj* omonwep;
                 } 
 				else 
 				{
-					if(damagedealt > 0)
-						pline("%s swings itself around you. You sustain %d damage!", Monnam(mtmp), damagedealt);
+                    if (damagedealt > 0)
+                    {
+                        pline("%s swings itself around you. You sustain %d damage!", Monnam(mtmp), damagedealt);
+                        display_u_being_hit(HIT_STRANGLED, damagedealt, 0UL);
+                    }
 					else
 						pline("%s swings itself around you!", Monnam(mtmp));
 
@@ -2292,11 +2307,16 @@ register struct obj* omonwep;
                 } 
 				else if (is_constrictor(mtmp->data))
 					pline("%s is constricting you to death!", Monnam(mtmp));
-				else if (mattk->aatyp == AT_HUGS)
-					if(damagedealt > 0)
-						You("are being crushed! You sustain %d damage.", damagedealt);
-					else
-						You("are being crushed%s.", damage == 0 ? ", but sustain no damage" : "");
+                else if (mattk->aatyp == AT_HUGS)
+                {
+                    if (damagedealt > 0)
+                    {
+                        You("are being crushed! You sustain %d damage.", damagedealt);
+                        display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
+                    }
+                    else
+                        You("are being crushed%s.", damage == 0 ? ", but sustain no damage" : "");
+                }
             } 
 			else 
 			{
@@ -3728,9 +3748,11 @@ boolean verbose;
 	int hp_after = Upolyd ? u.mh : u.uhp;
 	int damagedealt = hp_before - hp_after;
 
-	if (verbose && damagedealt > 0)
-		You("sustain %d damage!", damagedealt);
-
+    if (verbose && damagedealt > 0)
+    {
+        You("sustain %d damage!", damagedealt);
+        display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+    }
 	if (Upolyd) {
         if (u.mh < 1)
             rehumanize();
@@ -4372,8 +4394,11 @@ assess_dmg:
 	int mhp_after = mtmp->mhp;
 	damagedealt = mhp_before - mhp_after;
 
-	if (canseemon(mtmp) && damagedealt > 0)
-		pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+    if (canseemon(mtmp) && damagedealt > 0)
+    {
+        pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+        display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+    }
 
     if (mtmp->mhp <= 0)
 	{

@@ -200,6 +200,7 @@ boolean clumsy;
 	{
 		You("%s%skick %s for no damage.", effbuf, kickstylebuf, mon_nam(mon));
 	}
+    display_m_being_hit(mon, HIT_TILE, dmg, 0UL);
 
 	if (silverhit)
 		pline("Your silver boots sear %s flesh!", s_suffix(mon_nam(mon)));

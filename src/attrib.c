@@ -484,7 +484,10 @@ int poison_strength;   /* d6 per level damage*/
 		int hp_after = Upolyd ? u.mh : u.uhp;
 		int damage_dealt = hp_before - hp_after;
 		if (damage_dealt > 0)
+		{
 			You("sustain %d damage!", damage_dealt);
+			display_u_being_hit(HIT_POISONED, damage_dealt, 0UL);
+		}
 	}
 
     (void) encumber_msg();
