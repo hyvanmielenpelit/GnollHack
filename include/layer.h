@@ -32,6 +32,9 @@ struct layer_info {
     unsigned long layer_flags;
 
     /* Monster info for display */
+    void* object_comp_ptr;
+    void* monster_comp_ptr;
+
     struct obj object_data;     /* Note not a pointer to avoid spurious pointers, contained pointers set to zero */
     struct monst monster_data;  /* Note not a pointer to avoid spurious pointers, contained pointers set to zero */
     struct edog pet_data;       /* Note not a pointer to avoid spurious pointers */
@@ -49,8 +52,8 @@ struct layer_info {
 #define LFLAGS_M_DATA_SET           0x00000040UL
 #define LFLAGS_M_PET_DATA_SET       0x00000080UL
 #define LFLAGS_M_BEING_HIT          0x00000100UL
-#define LFLAGS_M_HIT_TEXT_MASK      0x00000E00UL /* 3 bits indicating display of hit text 1-8 */
-#define LFLAGS_M_HIT_TEXT_MASK_BIT_OFFSET 9 
+#define LFLAGS_M_HIT_TILE_MASK      0x00000E00UL /* 3 bits indicating display of hit tile 0-7 */
+#define LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET 9 
 #define LFLAGS_M_MASK               0x00000FFFUL
 
 #define LFLAGS_O_DRAWN_IN_FRONT     0x00001000UL

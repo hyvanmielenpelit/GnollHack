@@ -76,10 +76,9 @@ enum game_ui_tile_types
     HIT_DISINTEGRATED,
     HIT_CRUSHED,
     HIT_STRANGLED,
-    HIT_TEXT_5,
-    HIT_TEXT_6,
-    HIT_TEXT_7,
-    HIT_TEXT_8,
+    HIT_EXTRA_TILE_5,
+    HIT_EXTRA_TILE_6,
+    HIT_EXTRA_TILE_7,
     GENERAL_UI_ELEMENTS,    /* Check box etc. */
     STATUS_MARKS,   /* Pet mark, detection mark, ridden mark, pile mark, etc. */
     CONDITION_MARKS,   /* One tile for each specified status (the same as on status line) */
@@ -92,7 +91,7 @@ enum game_ui_tile_types
     TEXT_WINDOW_BORDERS,
     MAX_UI_TILES
 };
-#define MAX_HIT_TEXTS 8 
+#define MAX_HIT_TILES 8 /* Acually with hit_tile there are 8 */
 
 enum game_ui_status_mark_types
 {

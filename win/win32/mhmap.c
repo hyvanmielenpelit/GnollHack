@@ -1698,9 +1698,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
                     else if (data->map[i][j].layer_flags & LFLAGS_M_BEING_HIT)
                     {
-                        unsigned long hit_text_bits = (data->map[i][j].layer_flags & LFLAGS_M_HIT_TEXT_MASK);
-                        unsigned long hit_text_num = hit_text_bits >> LFLAGS_M_HIT_TEXT_MASK_BIT_OFFSET;
-                        int mglyph = max(0, min(MAX_HIT_TEXTS, (int)hit_text_num)) + HIT_TILE + GLYPH_UI_TILE_OFF;
+                        unsigned long hit_text_bits = (data->map[i][j].layer_flags & LFLAGS_M_HIT_TILE_MASK);
+                        unsigned long hit_text_num = hit_text_bits >> LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
+                        int mglyph = max(0, min(MAX_HIT_TILES - 1, (int)hit_text_num)) + HIT_TILE + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);

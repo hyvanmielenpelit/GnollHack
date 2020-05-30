@@ -4643,7 +4643,7 @@ unsigned long extra_flags;
 {
 #ifdef USE_TILES
 	boolean is_you = (x == u.ux && y == u.uy);
-	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_TILE)) << LFLAGS_M_HIT_TEXT_MASK_BIT_OFFSET;
+	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_TILE)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
 	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
 
 	newsym_with_extra_info(x, y, flags, damage_shown);
