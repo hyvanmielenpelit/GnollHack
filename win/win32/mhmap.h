@@ -20,4 +20,6 @@ int mswin_map_mode(HWND hWnd, int mode);
 #define DEF_CLIPAROUND_MARGIN 5
 #define DEF_CLIPAROUND_AMOUNT 1
 
+#define MAX_SHOWN_OBJECTS 12
+
 #endif /* MSWINMapWindow_h */

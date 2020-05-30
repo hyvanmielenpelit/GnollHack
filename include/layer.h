@@ -48,11 +48,10 @@ struct layer_info {
 #define LFLAGS_M_BEING_HIT          0x00000100UL
 #define LFLAGS_M_HIT_TILE_MASK      0x00000E00UL /* 3 bits indicating display of hit tile 0-7 */
 #define LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET 9 
-#define LFLAGS_M_MASK               0x00000FFFUL
+#define LFLAGS_M_MASK               0x0000FFFFUL
 
-#define LFLAGS_O_DRAWN_IN_FRONT     0x00001000UL
-#define LFLAGS_O_PILE               0x00002000UL
-#define LFLAGS_O_MASK               0x000FF000UL
+#define LFLAGS_O_PILE               0x00010000UL
+#define LFLAGS_O_MASK               0x000F0000UL
 
 #define LFLAGS_DISINTEGRATED        0x00100000UL
 #define LFLAGS_PETRIFIED            0x00200000UL

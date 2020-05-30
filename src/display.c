@@ -163,7 +163,7 @@ typedef struct {
 static gbuf_entry gbuf[ROWNO][COLNO];
 static char gbuf_start[ROWNO];
 static char gbuf_stop[ROWNO];
-static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, LFLAGS_UNEXPLORED, {0}, {0}, {0}, 0 } };
+static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, LFLAGS_UNEXPLORED, (genericptr_t)0, (genericptr_t)0, 0} };
 
 
 int
@@ -796,7 +796,7 @@ int damage_shown;
     register int see_it;
     register xchar worm_tail;
     int orig_glyph = lev->layers.glyph;
-    struct layer_info new_layers = { 0 };
+    struct layer_info new_layers = zerolayerinfo;
 
     gbuf[y][x].layers = new_layers;
 
@@ -1724,9 +1724,6 @@ int damage_displayed;
             {
                 gbuf[y][x].layers.object_comp_ptr = (genericptr_t)otmp;
             }
-
-            if (objects[otmp->otyp].oc_flags4 & O4_DRAWN_IN_FRONT && !Hallucination)
-                gbuf[y][x].layers.layer_flags |= LFLAGS_O_DRAWN_IN_FRONT;
         }
 
         if (mtmp)
@@ -1917,7 +1914,8 @@ int x, y, glyph;
         return;
     }
 
-    if (gbuf[y][x].layers.glyph != glyph || iflags.use_background_glyph) {
+    if (1)//gbuf[y][x].layers.glyph != glyph || iflags.use_background_glyph)
+    {
         gbuf[y][x].layers.glyph = glyph;
         gbuf[y][x].layers.bkglyph = get_bk_glyph(x, y);
 //        gbuf[y][x].layers.floor_glyph = get_floor_layer_glyph(x, y);
@@ -2388,7 +2386,7 @@ xchar x, y;
 {
     if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
     {
-        struct layer_info layers = { 0 };
+        struct layer_info layers = zerolayerinfo;
         layers.glyph = cmap_to_glyph(S_unexplored);
         return layers;
     }

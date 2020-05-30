@@ -884,13 +884,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean ispeaceful = !!(data->map[i][j].layer_flags & LFLAGS_M_PEACEFUL);
     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
     boolean issteed = !!(data->map[i][j].layer_flags & LFLAGS_M_RIDDEN);
-    genericptr_t m_stored = data->map[i][j].monster_comp_ptr;
-    struct monst* m_here = m_at(i, j);
-    struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
 
-    genericptr_t o_stored = data->map[i][j].object_comp_ptr;
-    struct obj* o_here = level.objects[i][j];
-    struct obj* otmp = (o_here == o_stored) ? o_here : (struct obj*)0;
+    /* Construct object pile, drawn from end to beginning */
 
     int enl_i = -1, enl_j = -1;
     boolean enlarged = FALSE;
@@ -900,92 +895,131 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
      * 0 X 1
      * 2 3 4
     */
-    int layer = 0;
     boolean opaque_background_drawn = FALSE;
-    for (int base_layer = 0; base_layer <= 3; base_layer++)
+    int layer_array[5] = { LAYER_FLOOR, LAYER_FEATURE, LAYER_OBJECT, LAYER_MONSTER, LAYER_COVER };
+    int layer_rounds[5] = { 1, 1, MAX_SHOWN_OBJECTS, 1, MAX_SHOWN_OBJECTS };
+
+    for (int layer_idx = 0; layer_idx <= 4; layer_idx++)
     {
-        if(base_layer >= 0 && base_layer <= 3)
+        int base_layer = layer_array[layer_idx];
+
+        boolean no_enlargements = FALSE;
+        if (base_layer == LAYER_FLOOR)
+            no_enlargements = TRUE;
+
+        for (int running_index = 0; running_index < (no_enlargements ? 1 : MAX_FRAMES_PER_ENLARGEMENT + 1); running_index++)
         {
-            boolean no_enlargements = FALSE;
-            if (base_layer == 0)
-                no_enlargements = TRUE;
-
-            for (int running_index = 0; running_index < (no_enlargements ? 1 : MAX_FRAMES_PER_ENLARGEMENT + 1); running_index++)
-            {
-                /* Drawing order from back to front */
-                int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3};
-                int enlarg_idx = -1;
+            /* Drawing order from back to front */
+            int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3};
+            int enlarg_idx = -1;
                 
-                if(!no_enlargements)
-                    enlarg_idx = z_order_array[running_index];
+            if(!no_enlargements)
+                enlarg_idx = z_order_array[running_index];
 
-                layer = base_layer * (MAX_FRAMES_PER_ENLARGEMENT + 1) + enlarg_idx + 1;
+            /* Set coordinates */
+            if (enlarg_idx == -1)
+            {
+                enl_i = i;
+                enl_j = j;
+            }
+            else if (enlarg_idx == 0)
+            {
+                enl_i = i - 1;
+                enl_j = j;
+            }
+            else if (enlarg_idx == 1)
+            {
+                enl_i = i + 1;
+                enl_j = j;
+            }
+            else if (enlarg_idx == 2)
+            {
+                enl_i = i - 1;
+                enl_j = j + 1;
+            }
+            else if (enlarg_idx == 3)
+            {
+                enl_i = i;
+                enl_j = j + 1;
+            }
+            else if (enlarg_idx == 4)
+            {
+                enl_i = i + 1;
+                enl_j = j + 1;
+            }
 
-                /* Set coordinates */
-                if (enlarg_idx == -1)
-                {
-                    enl_i = i;
-                    enl_j = j;
-                }
-                else if (enlarg_idx == 0)
-                {
-                    enl_i = i - 1;
-                    enl_j = j;
-                }
-                else if (enlarg_idx == 1)
-                {
-                    enl_i = i + 1;
-                    enl_j = j;
-                }
-                else if (enlarg_idx == 2)
-                {
-                    enl_i = i - 1;
-                    enl_j = j + 1;
-                }
-                else if (enlarg_idx == 3)
-                {
-                    enl_i = i;
-                    enl_j = j + 1;
-                }
-                else if (enlarg_idx == 4)
-                {
-                    enl_i = i + 1;
-                    enl_j = j + 1;
-                }
+            if (enlarg_idx >= 0)
+            {
+                if (!isok(enl_i, enl_j))
+                    continue;
 
-                if (enlarg_idx >= 0)
-                {
-                    if (!isok(enl_i, enl_j))
-                        continue;
+                int relevant_i = i;
+                int relevant_j = enl_j;
+                boolean side_not_ok = FALSE;
+                if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
+                    || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
+                    || data->map[relevant_i][relevant_j].glyph == S_unexplored
+                    || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
+                    )
+                    side_not_ok = TRUE;
 
-                    int relevant_i = i;
-                    int relevant_j = enl_j;
-                    boolean side_not_ok = FALSE;
+                boolean upper_side_not_ok = FALSE;
+                relevant_i = i;
+                relevant_j = j;
+                if (relevant_j < enl_j)
+                {
                     if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
                         || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                         || data->map[relevant_i][relevant_j].glyph == S_unexplored
                         || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
                         )
-                        side_not_ok = TRUE;
-
-                    boolean upper_side_not_ok = FALSE;
-                    relevant_i = i;
-                    relevant_j = j;
-                    if (relevant_j < enl_j)
-                    {
-                        if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
-                            || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
-                            || data->map[relevant_i][relevant_j].glyph == S_unexplored
-                            || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
-                            )
-                            upper_side_not_ok = TRUE;
-                    }
-                    else
                         upper_side_not_ok = TRUE;
-
-                    if (side_not_ok && upper_side_not_ok)
-                        continue;
                 }
+                else
+                    upper_side_not_ok = TRUE;
+
+                if (side_not_ok && upper_side_not_ok)
+                    continue;
+            }
+
+            genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
+            struct monst* m_here = m_at(enl_i, enl_j);
+            struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
+
+            genericptr_t o_stored = data->map[enl_i][enl_j].object_comp_ptr;
+            struct obj* o_here = level.objects[enl_i][enl_j];
+            struct obj* otmp = (o_here/* == o_stored*/) ? o_here : (struct obj*)0;
+
+            struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
+            int objcnt = 0;
+            for (struct obj* otmp2 = otmp; otmp2; otmp2 = otmp2->nexthere)
+            {
+                obj_pile[objcnt] = otmp2;
+                objcnt++;
+
+                if (objcnt >= MAX_SHOWN_OBJECTS)
+                    break;
+            }
+
+            for (int layer_round = 0; layer_round < layer_rounds[layer_idx]; layer_round++)
+            {
+                struct obj* otmp_round = otmp;
+
+
+                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+                {
+                    otmp_round = obj_pile[MAX_SHOWN_OBJECTS - 1 - layer_round];
+
+                    if (!otmp_round)
+                        continue; /* next round */
+
+                }
+
+                boolean draw_in_front = (otmp_round && ((objects[otmp_round->otyp].oc_flags4 & O4_DRAWN_IN_FRONT)));
+                if (base_layer == LAYER_COVER && !draw_in_front)
+                    continue; /* next round */
+                if (base_layer == LAYER_OBJECT && draw_in_front)
+                    continue; /* next round */
 
                 int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 int signed_main_glyph = data->map[enl_i][enl_j].glyph;
@@ -1007,31 +1041,34 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 else if(base_layer == 2)
                     signed_glyph = layer2signedglyph;
                 */
+                /*
                 genericptr_t o_stored_enl = data->map[enl_i][enl_j].object_comp_ptr;
                 struct obj* o_here_enl = level.objects[enl_i][enl_j];
                 struct obj* otmp_enl = (o_here_enl == o_stored_enl) ? o_here_enl : (struct obj*)0;
-
-                boolean draw_in_front = (otmp_enl && ((data->map[enl_i][enl_j].layer_flags & LFLAGS_O_DRAWN_IN_FRONT) || (objects[otmp_enl->otyp].oc_flags4 & O4_DRAWN_IN_FRONT)));
+                */
 
                 int layer0signedglyph = abs(signed_bk_glyph) != NO_GLYPH ? signed_bk_glyph : NO_GLYPH;
                 int layer1signedglyph = abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
-                int layer2signedglyph = abs(signed_main_glyph) != NO_GLYPH && !glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
-                int layer3signedglyph = abs(signed_main_glyph) != NO_GLYPH && draw_in_front ? signed_main_glyph : NO_GLYPH;
+                int layer2signedglyph = abs(signed_main_glyph) != NO_GLYPH && abs(signed_main_glyph) != cmap_to_glyph(S_unexplored) && otmp_round && !draw_in_front ? obj_to_glyph(otmp_round, rn2_on_display_rng) : NO_GLYPH;
+                int layer3signedglyph = abs(signed_main_glyph) != NO_GLYPH && !glyph_is_object(abs(signed_main_glyph)) && !glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
+                int layer4signedglyph = abs(signed_main_glyph) != NO_GLYPH && abs(signed_main_glyph) != cmap_to_glyph(S_unexplored) && otmp_round && draw_in_front ? obj_to_glyph(otmp_round, rn2_on_display_rng) : NO_GLYPH;
 
-                if (base_layer == 0)
+                if (base_layer == LAYER_FLOOR)
                     signed_glyph = layer0signedglyph;
-                else if(base_layer == 1)
+                else if(base_layer == LAYER_FEATURE)
                     signed_glyph = layer1signedglyph;
-                else if(base_layer == 2)
+                else if (base_layer == LAYER_OBJECT)
                     signed_glyph = layer2signedglyph;
-                else if (base_layer == 3)
+                else if(base_layer == LAYER_MONSTER)
                     signed_glyph = layer3signedglyph;
+                else if (base_layer == LAYER_COVER)
+                    signed_glyph = layer4signedglyph;
 
                 glyph = abs(signed_glyph);
 
 
                 /* Kludge for the time being */
-                if (base_layer == 1 && glyph == NO_GLYPH && data->map[enl_i][enl_j].glyph == NO_GLYPH)
+                if (base_layer <= LAYER_FEATURE && glyph == NO_GLYPH && data->map[enl_i][enl_j].glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
 
                 if (signed_glyph < 0)
@@ -1073,7 +1110,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(otmp), &autodraw);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(otmp_round), &autodraw);
                     ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j], &autodraw);
                     if (enlarg_idx >= 0)
                     {
@@ -1107,7 +1144,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             dest_top_added = (rect->bottom - rect->top) / 4;
                             dest_height_deducted = (rect->bottom - rect->top) / 2;
-                            source_top_added = TILE_Y / 2;
+                            source_top_added = TILE_Y / 2 - layer_round * 2;
                             source_height_deducted = TILE_Y / 2;
                         }
                         SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
@@ -1313,7 +1350,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
                 }
 
-                if (base_layer == 2 && enlarg_idx == -1)
+                if (base_layer == LAYER_MONSTER && enlarg_idx == -1)
                 {
 
                     /* Draw main tile marker for enlarged creatures */
@@ -1551,7 +1588,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 boolean flip_rider = (signed_mglyph < 0);
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
-                                mtile = maybe_get_replaced_tile(mtile, i, j, obj_to_replacement_info(otmp), (enum auto_drawtypes*)0);
+                                mtile = maybe_get_replaced_tile(mtile, i, j, obj_to_replacement_info(otmp_round), (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
@@ -1979,34 +2016,67 @@ static void dirty(PNHMapWindow data, int x, int y)
     tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
     bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
 
-    int enlarg = tile2enlargement[tile];
-    int bk_enlarg = tile2enlargement[bktile];
-    if (enlarg > 0 || bk_enlarg > 0)
+    for (int layer_idx = -2; layer_idx < MAX_LAYERS; layer_idx++)
     {
-        int enl_x = -1;
-        int enl_y = -1;
-        for (int i = 0; i < MAX_FRAMES_PER_ENLARGEMENT; i++)
+        int layer_rounds = 1;
+        struct obj* otmp = (struct obj*)0;
+        if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER)
         {
-            if (enlargements[enlarg].frame2tile[i] == -1 && enlargements[bk_enlarg].frame2tile[i] == -1)
-                continue;
+            layer_rounds = MAX_SHOWN_OBJECTS;
 
-            if (i <= 2)
-                enl_x = x + i - 1;
-            else if (i == 3)
-                enl_x = x - 1;
-            else if (i == 4)
-                enl_x = x + 1;
+            genericptr_t o_stored = data->map[x][y].object_comp_ptr;
+            struct obj* o_here = level.objects[x][y];
+            otmp = (/*o_stored == */o_here) ? o_here : (struct obj*)0;
+        }
 
-            if (i <= 2)
-                enl_y = y - 1;
-            else
-                enl_y = y;
+        for (int layer_round = 0; layer_round < layer_rounds; layer_round++)
+        {
+            if (layer_round > 0 && otmp)
+                otmp = otmp->nexthere;
 
-            if (isok(enl_x, enl_y))
+            int enlarg = 0;
+            if(layer_idx == -1)
+                enlarg = tile2enlargement[tile];
+            else if(layer_idx == -2)
+                enlarg = tile2enlargement[bktile];
+            else if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER)
             {
-                data->mapDirty[enl_x][enl_y] = TRUE;
-                nhcoord2display(data, enl_x, enl_y, &rt);
-                InvalidateRect(data->hWnd, &rt, FALSE);
+                if(otmp)
+                    enlarg = tile2enlargement[glyph2tile[obj_to_glyph(otmp, rn2_on_display_rng)]];
+            }
+            else
+            {
+                enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y].layer_glyphs[layer_idx])]];
+            }
+
+            if (enlarg > 0)
+            {
+                int enl_x = -1;
+                int enl_y = -1;
+                for (int i = 0; i < MAX_FRAMES_PER_ENLARGEMENT; i++)
+                {
+                    if (enlargements[enlarg].frame2tile[i] == -1)
+                        continue;
+
+                    if (i <= 2)
+                        enl_x = x + i - 1;
+                    else if (i == 3)
+                        enl_x = x - 1;
+                    else if (i == 4)
+                        enl_x = x + 1;
+
+                    if (i <= 2)
+                        enl_y = y - 1;
+                    else
+                        enl_y = y;
+
+                    if (isok(enl_x, enl_y) && data->mapDirty[enl_x][enl_y] == FALSE)
+                    {
+                        data->mapDirty[enl_x][enl_y] = TRUE;
+                        nhcoord2display(data, enl_x, enl_y, &rt);
+                        InvalidateRect(data->hWnd, &rt, FALSE);
+                    }
+                }
             }
         }
     }
