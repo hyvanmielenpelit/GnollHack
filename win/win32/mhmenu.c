@@ -1221,7 +1221,8 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
     } else {
         /* no glyph - need to adjust so help window won't look to cramped */
-        x += tileXScaled;
+        if (!IS_MAP_ASCII(iflags.wc_map_mode)) 
+            x += tileXScaled;
     }
 
     x += spacing;
