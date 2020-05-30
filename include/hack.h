@@ -599,6 +599,13 @@ enum bodypart_types {
 /* negative armor class is randomly weakened to prevent invulnerability */
 #define AC_VALUE(AC) ((AC) >= 0 ? (AC) : -rnd(-(AC)))
 
+/* Object pile definition */
+#define is_objpile(x,y) (!Hallucination && level.objects[(x)][(y)] \
+                         && level.objects[(x)][(y)]->nexthere)
+
+
+
+
 #if defined(MICRO) && !defined(__DJGPP__)
 #define getuid() 1
 #define getlogin() ((char *) 0)

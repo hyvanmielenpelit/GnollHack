@@ -10,6 +10,7 @@ enum layer_types
 {
     LAYER_FLOOR = 0,
     LAYER_FEATURE,
+    LAYER_TRAP,
     LAYER_DOODAD,
     LAYER_OBJECT,
     LAYER_MONSTER,
@@ -32,24 +33,27 @@ struct layer_info {
     unsigned long layer_flags;
 
     /* Monster info for display */
-    genericptr_t object_comp_ptr;   /* invalidate the pointer use for any other purposes than comparing the memory address */
     genericptr_t monster_comp_ptr;  /* invalidate the pointer use for any other purposes than comparing the memory address */
 
     int damage_displayed;
 
 };
 
+/* These are standard flags replacing earlier glyph system -- To be used mostly in map_glyph for tty */
 #define LFLAGS_M_PET                0x00000001UL
 #define LFLAGS_M_PEACEFUL           0x00000002UL
 #define LFLAGS_M_DETECTED           0x00000004UL
 #define LFLAGS_M_RIDDEN             0x00000008UL
 #define LFLAGS_M_SADDLED            0x00000010UL
 #define LFLAGS_M_YOU                0x00000020UL
+
+/* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_M_BEING_HIT          0x00000100UL
 #define LFLAGS_M_HIT_TILE_MASK      0x00000E00UL /* 3 bits indicating display of hit tile 0-7 */
 #define LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET 9 
 #define LFLAGS_M_MASK               0x0000FFFFUL
 
+/* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_O_PILE               0x00010000UL
 #define LFLAGS_O_MASK               0x000F0000UL
 

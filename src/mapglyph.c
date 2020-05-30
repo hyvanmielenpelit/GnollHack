@@ -58,9 +58,6 @@ static const int explcolors[] = {
     (currentgraphics == ROGUESET && SYMHANDLING(H_IBM))
 #endif
 
-#define is_objpile(x,y) (!Hallucination && level.objects[(x)][(y)] \
-                         && level.objects[(x)][(y)]->nexthere)
-
 /*ARGSUSED*/
 int
 mapglyph(layers, ochar, ocolor, ospecial, x, y)
@@ -260,6 +257,9 @@ unsigned long *ospecial;
         int cmap_type_idx = 0;
         int cmap_offset = 0;
         int variation_index = 0;
+
+        if (offset != 0)
+            offset = offset;
 
         if (is_variation)
         {

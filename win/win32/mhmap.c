@@ -986,19 +986,23 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* m_here = m_at(enl_i, enl_j);
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
 
-            genericptr_t o_stored = data->map[enl_i][enl_j].object_comp_ptr;
-            struct obj* o_here = level.objects[enl_i][enl_j];
-            struct obj* otmp = (o_here/* == o_stored*/) ? o_here : (struct obj*)0;
+            struct obj* otmp = level.objects[enl_i][enl_j];
 
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
-            int objcnt = 0;
-            for (struct obj* otmp2 = otmp; otmp2; otmp2 = otmp2->nexthere)
+            if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
             {
-                obj_pile[objcnt] = otmp2;
-                objcnt++;
+                if (covers_objects(enl_i, enl_j))
+                    break; /* next layer, nothing to draw here */
 
-                if (objcnt >= MAX_SHOWN_OBJECTS)
-                    break;
+                int objcnt = 0;
+                for (struct obj* otmp2 = otmp; otmp2; otmp2 = otmp2->nexthere)
+                {
+                    obj_pile[objcnt] = otmp2;
+                    objcnt++;
+
+                    if (objcnt >= MAX_SHOWN_OBJECTS)
+                        break;
+                }
             }
 
             for (int layer_round = 0; layer_round < layer_rounds[layer_idx]; layer_round++)
@@ -1023,29 +1027,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 int signed_main_glyph = data->map[enl_i][enl_j].glyph;
-
-                /*
-                boolean signed_bk_glyph_is_floor = (abs(signed_bk_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_bk_glyph)) && defsyms[glyph_to_cmap(abs(signed_bk_glyph))].layer == LAYER_FLOOR);
-                boolean signed_main_glyph_is_floor = (abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && defsyms[glyph_to_cmap(abs(signed_main_glyph))].layer == LAYER_FLOOR);
-                boolean signed_bk_glyph_is_feature = (abs(signed_bk_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_bk_glyph)) && defsyms[glyph_to_cmap(abs(signed_bk_glyph))].layer == LAYER_FEATURE);
-                boolean signed_main_glyph_is_feature = (abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && defsyms[glyph_to_cmap(abs(signed_main_glyph))].layer == LAYER_FEATURE);
-
-                int layer0signedglyph = signed_main_glyph_is_floor ? signed_main_glyph : signed_bk_glyph_is_floor ? signed_bk_glyph : NO_GLYPH;
-                int layer1signedglyph = signed_main_glyph_is_feature ? signed_main_glyph : signed_bk_glyph_is_feature ? signed_bk_glyph : NO_GLYPH;
-                int layer2signedglyph = abs(signed_main_glyph) != NO_GLYPH && !signed_main_glyph_is_floor && !signed_main_glyph_is_feature ? signed_main_glyph : NO_GLYPH;
-
-                if (base_layer == 0)
-                    signed_glyph = layer0signedglyph;
-                else if(base_layer == 1)
-                    signed_glyph = layer1signedglyph;
-                else if(base_layer == 2)
-                    signed_glyph = layer2signedglyph;
-                */
-                /*
-                genericptr_t o_stored_enl = data->map[enl_i][enl_j].object_comp_ptr;
-                struct obj* o_here_enl = level.objects[enl_i][enl_j];
-                struct obj* otmp_enl = (o_here_enl == o_stored_enl) ? o_here_enl : (struct obj*)0;
-                */
 
                 int layer0signedglyph = abs(signed_bk_glyph) != NO_GLYPH ? signed_bk_glyph : NO_GLYPH;
                 int layer1signedglyph = abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
@@ -1916,14 +1897,13 @@ static void clearAll(PNHMapWindow data)
 {
     for (int x = 0; x < COLNO; x++)
         for (int y = 0; y < ROWNO; y++) {
+            data->map[x][y] = zerolayerinfo;
             data->map[x][y].glyph = NO_GLYPH;
             data->map[x][y].bkglyph = NO_GLYPH;
-            for(int i = 0; i < MAX_LAYERS; i++)
+            for (enum layer_types i = LAYER_FLOOR; i < MAX_LAYERS; i++)
+            {
                 data->map[x][y].layer_glyphs[i] = NO_GLYPH;
-            data->map[x][y].layer_flags = 0UL;
-            data->map[x][y].monster_comp_ptr = (genericptr_t)0;
-            data->map[x][y].object_comp_ptr = (genericptr_t)0;
-            data->map[x][y].damage_displayed = 0;
+            }
             data->mapDirty[x][y] = TRUE;
             data->mapAnimated[x][y] = 0;
         }
@@ -2023,10 +2003,7 @@ static void dirty(PNHMapWindow data, int x, int y)
         if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER)
         {
             layer_rounds = MAX_SHOWN_OBJECTS;
-
-            genericptr_t o_stored = data->map[x][y].object_comp_ptr;
-            struct obj* o_here = level.objects[x][y];
-            otmp = (/*o_stored == */o_here) ? o_here : (struct obj*)0;
+            otmp = level.objects[x][y];
         }
 
         for (int layer_round = 0; layer_round < layer_rounds; layer_round++)

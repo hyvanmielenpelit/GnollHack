@@ -609,7 +609,8 @@ show_region(reg, x, y)
 NhRegion *reg;
 xchar x, y;
 {
-    show_glyph(x, y, reg->glyph);
+    show_glyph_ascii(x, y, reg->glyph);
+    show_glyph_on_layer(x, y, reg->glyph, LAYER_ENVIRONMENT);
 }
 
 /**

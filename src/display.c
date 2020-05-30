@@ -126,7 +126,7 @@
 #include "artilist.h"
 
 STATIC_DCL void FDECL(display_monster,
-                      (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P, unsigned long, int));
+                      (XCHAR_P, XCHAR_P, struct monst *, int, XCHAR_P));
 STATIC_DCL int FDECL(swallow_to_glyph, (int, int));
 STATIC_DCL void FDECL(display_warning, (struct monst *));
 
@@ -163,7 +163,7 @@ typedef struct {
 static gbuf_entry gbuf[ROWNO][COLNO];
 static char gbuf_start[ROWNO];
 static char gbuf_stop[ROWNO];
-static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, LFLAGS_UNEXPLORED, (genericptr_t)0, (genericptr_t)0, 0} };
+static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, LFLAGS_UNEXPLORED, (genericptr_t)0, 0} };
 
 
 int
@@ -186,15 +186,18 @@ magic_map_background(x, y, show)
 xchar x, y;
 int show;
 {
-    int glyph = back_to_glyph(x, y); /* assumes hero can see x,y */
+    map_background(x, y, show);
+
     struct rm *lev = &levl[x][y];
 
     /*
      * Correct for out of sight lit corridors and rooms that the hero
      * doesn't remember as lit.
      */
-    if (!cansee(x, y) && !lev->waslit) {
-        /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
+    int glyph = NO_GLYPH;
+    if (!cansee(x, y) && !lev->waslit)
+    {
+            /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
         if (lev->typ == ROOM && glyph == cmap_to_glyph(S_room))
             glyph = cmap_to_glyph((flags.dark_room && iflags.use_color)
                                       ? (DARKROOMSYM)
@@ -202,10 +205,21 @@ int show;
         else if (lev->typ == CORR && glyph == cmap_to_glyph(S_litcorr))
             glyph = cmap_to_glyph(S_corr);
     }
-    if (level.flags.hero_memory)
-        lev->layers.glyph = glyph;
-    if (show)
-        show_glyph(x, y, glyph);
+
+    if (glyph != NO_GLYPH)
+    {
+        if (level.flags.hero_memory)
+        {
+            lev->layers.glyph = glyph;
+            lev->layers.layer_glyphs[LAYER_FLOOR] = glyph;
+        }
+
+        if (show)
+        {
+            show_glyph_ascii(x, y, glyph);
+            show_glyph_on_layer(x, y, glyph, LAYER_FLOOR);
+        }
+    }
 
     remember_topology(x, y);
 }
@@ -238,10 +252,47 @@ register int show;
 {
     register int glyph = back_to_glyph(x, y);
 
+    int symbol_index = glyph_to_cmap(glyph);
+    int new_floor_glyph = NO_GLYPH;
+    int new_feature_glyph = NO_GLYPH;
+
+    if (defsyms[symbol_index].layer == LAYER_FEATURE)
+    {
+        new_floor_glyph = get_floor_layer_glyph(x, y);
+        new_feature_glyph = glyph;
+    }
+    else
+    {
+        new_floor_glyph = glyph;
+        new_feature_glyph = NO_GLYPH;
+    }
+
     if (level.flags.hero_memory)
+    {
         levl[x][y].layers.glyph = glyph;
+        levl[x][y].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
+        levl[x][y].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
+    }
+
+
     if (show)
-        show_glyph(x, y, glyph);
+    {
+        int floor_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR];
+        int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
+        gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
+
+        if (floor_glyph_before != new_floor_glyph || feature_glyph_before != new_feature_glyph)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+
+        show_glyph_ascii(x, y, glyph);
+    }
 }
 
 /*
@@ -259,9 +310,15 @@ register int show;
     register int glyph = trap_to_glyph(trap, newsym_rn2);
 
     if (level.flags.hero_memory)
+    {
         levl[x][y].layers.glyph = glyph;
+        levl[x][y].layers.layer_glyphs[LAYER_TRAP] = glyph;
+    }
     if (show)
-        show_glyph(x, y, glyph);
+    {
+        show_glyph_ascii(x, y, glyph);
+        show_glyph_on_layer(x, y, glyph, LAYER_TRAP);
+    }
 }
 
 /*
@@ -278,18 +335,25 @@ register int show;
     register int x = obj->ox, y = obj->oy;
     register int glyph = obj_to_glyph(obj, newsym_rn2);
 
-    if (level.flags.hero_memory) {
+    if (level.flags.hero_memory) 
+    {
         /* MRKR: While hallucinating, statues are seen as random monsters */
         /*       but remembered as random objects.                        */
 
-        if (Hallucination && obj->otyp == STATUE) {
-            levl[x][y].layers.glyph = random_obj_to_glyph(newsym_rn2);
-        } else {
-            levl[x][y].layers.glyph = glyph;
+        int new_glyph = glyph;
+        if (Hallucination && obj->otyp == STATUE) 
+        {
+            new_glyph = random_obj_to_glyph(newsym_rn2);
         }
+        levl[x][y].layers.glyph = new_glyph;
+        levl[x][y].layers.layer_glyphs[LAYER_OBJECT] = new_glyph;
     }
+
     if (show)
-        show_glyph_with_extra_info(x, y, glyph, obj, (struct monst*)0, 0UL, 0);
+    {
+        show_glyph_ascii(x, y, glyph);
+        show_glyph_on_layer(x, y, glyph, LAYER_OBJECT);
+    }
 }
 
 /*
@@ -307,8 +371,12 @@ register xchar x, y;
 {
     if (x != u.ux || y != u.uy) { /* don't display I at hero's location */
         if (level.flags.hero_memory)
+        {
             levl[x][y].layers.glyph = GLYPH_INVISIBLE;
-        show_glyph(x, y, GLYPH_INVISIBLE);
+            levl[x][y].layers.layer_glyphs[LAYER_MONSTER] = GLYPH_INVISIBLE;
+        }
+        show_glyph_ascii(x, y, GLYPH_INVISIBLE);
+        show_glyph_on_layer(x, y, GLYPH_INVISIBLE, LAYER_MONSTER);
     }
 }
 
@@ -372,12 +440,11 @@ register int x, y;
         register struct obj *obj;                                           \
         register struct trap *trap;                                         \
                                                                             \
+        map_background(x, y, show);                                         \
+        if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))      \
+            map_trap(trap, show);                                           \
         if ((obj = vobj_at(x, y)) && !covers_objects(x, y))                 \
             map_object(obj, show);                                          \
-        else if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y)) \
-            map_trap(trap, show);                                           \
-        else                                                                \
-            map_background(x, y, show);                                     \
                                                                             \
         remember_topology(x, y);                                            \
     }
@@ -405,14 +472,12 @@ int x, y, show;
  *
  */
 STATIC_OVL void
-display_monster(x, y, mon, sightflags, worm_tail, disp_flags, damage_shown)
+display_monster(x, y, mon, sightflags, worm_tail)
 register xchar x, y;        /* display position */
 register struct monst *mon; /* monster to display */
 int sightflags;             /* 1 if the monster is physically seen;
                                2 if detected using Detect_monsters */
 xchar worm_tail;            /* mon is actually a worm tail */
-unsigned long disp_flags;
-int damage_shown;
 {
     boolean mon_mimic = (M_AP_TYPE(mon) != M_AP_NOTHING);
     int sensed = (mon_mimic && (Protection_from_shape_changers
@@ -431,7 +496,7 @@ int damage_shown;
                        (int) mon->m_ap_type);
             /*FALLTHRU*/
         case M_AP_NOTHING:
-            show_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2), (struct obj*)0, mon, disp_flags, damage_shown);
+            show_monster_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2),  mon, 0UL, 0);
             break;
 
         case M_AP_FURNITURE: {
@@ -448,7 +513,7 @@ int damage_shown;
 
             levl[x][y].layers.glyph = glyph;
             if (!sensed) {
-                show_glyph_with_extra_info(x, y, glyph, (struct obj*)0, (struct monst*)0, disp_flags, damage_shown);
+                show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, 0UL, 0);
                 /* override real topology with mimic's fake one */
                 lastseentyp[x][y] = cmap_to_type(sym);
             }
@@ -470,9 +535,9 @@ int damage_shown;
         }
 
         case M_AP_MONSTER:
-            show_glyph_with_extra_info(x, y,
+            show_monster_glyph_with_extra_info(x, y,
                        any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)),
-                (struct obj*)0, mon, disp_flags, damage_shown
+                mon, 0UL, 0
             );
             break;
         }
@@ -513,7 +578,7 @@ int damage_shown;
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
-        show_glyph_with_extra_info(x, y, num, (struct obj*)0, worm_tail ? (struct monst*)0 : mon, extra_flags | disp_flags, damage_shown);
+        show_monster_glyph_with_extra_info(x, y, num, worm_tail ? (struct monst*)0 : mon, extra_flags, 0);
     }
 }
 
@@ -550,7 +615,9 @@ register struct monst *mon;
        reappear when the warned-of monster moves off that spot */
     if (glyph_is_invisible(levl[x][y].layers.glyph))
         unmap_object(x, y);
-    show_glyph(x, y, glyph);
+
+    show_glyph_ascii(x, y, glyph);
+    show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
 }
 
 int
@@ -625,14 +692,10 @@ xchar x, y;
 
     if (!isok(x, y))
         return;
+
     lev = &(levl[x][y]);
-    /* If hero's memory of an invisible monster is accurate, we want to keep
-     * him from detecting the same monster over and over again on each turn.
-     * We must return (so we don't erase the monster).  (We must also, in the
-     * search function, be sure to skip over previously detected 'I's.)
-     */
-    if (glyph_is_invisible(lev->layers.glyph) && m_at(x, y))
-        return;
+
+    int orig_glyph = lev->layers.glyph;
 
     /* The hero can't feel non pool locations while under water
        except for lava and ice. */
@@ -644,7 +707,8 @@ xchar x, y;
        It doesn't matter if the hero is levitating or not. */
     set_seenv(lev, u.ux, u.uy, x, y);
 
-    if (!can_reach_floor(FALSE)) {
+    if (!can_reach_floor(FALSE)) 
+    {
         /*
          * Levitation Rules.  It is assumed that the hero can feel the state
          * of the walls around herself and can tell if she is in a corridor,
@@ -660,15 +724,9 @@ xchar x, y;
          *      + Room/water positions
          *      + Everything else (hallways!)
          */
-        if (IS_ROCK(lev->typ)
-            || (IS_DOOR(lev->typ)
-                && (lev->doormask & (D_LOCKED | D_CLOSED)))) {
-            map_background(x, y, 1);
-        } else if ((boulder = sobj_at(BOULDER, x, y)) != 0) {
-            map_object(boulder, 1);
-        } else if (IS_DOOR(lev->typ)) {
-            map_background(x, y, 1);
-        } else if (IS_ROOM(lev->typ) || IS_POOL(lev->typ)) {
+
+        if (IS_ROOM(lev->typ) || IS_POOL(lev->typ))
+        {
             boolean do_room_glyph;
 
             /*
@@ -697,39 +755,84 @@ xchar x, y;
              */
             do_room_glyph = FALSE;
             if (lev->layers.glyph == objnum_to_glyph(BOULDER)
-                || glyph_is_invisible(lev->layers.glyph)) {
+                || glyph_is_invisible(lev->layers.glyph))
+            {
                 if (lev->typ != ROOM && lev->typ != GRASS && lev->seenv)
                     map_background(x, y, 1);
                 else
                     do_room_glyph = TRUE;
-            } else if (lev->layers.glyph >= cmap_to_glyph(S_unexplored)
-                       && lev->layers.glyph < cmap_to_glyph(S_darkroom)) {
+            }
+            else if (lev->layers.glyph >= cmap_to_glyph(S_unexplored)
+                && lev->layers.glyph < cmap_to_glyph(S_darkroom)) 
+            {
                 do_room_glyph = TRUE;
             }
-            if (do_room_glyph) {
-                lev->layers.glyph = (flags.dark_room && iflags.use_color
-                              && !Is_rogue_level(&u.uz))
-                                 ? cmap_to_glyph(S_darkroom)
-                                 : (lev->waslit ? cmap_to_glyph(S_room)
-                                                : cmap_to_glyph(S_unexplored));
-                show_glyph(x, y, lev->layers.glyph);
+
+            if (do_room_glyph) 
+            {
+                int new_glyph = (flags.dark_room && iflags.use_color
+                    && !Is_rogue_level(&u.uz))
+                    ? cmap_to_glyph(S_darkroom)
+                    : (lev->waslit ? cmap_to_glyph(S_room)
+                        : cmap_to_glyph(S_unexplored));
+
+                lev->layers.glyph = new_glyph;
+                lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                show_glyph_ascii(x, y, new_glyph);
+                show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
             }
-        } else {
+        }
+        else
+        {
             /* We feel it (I think hallways are the only things left). */
             map_background(x, y, 1);
+
             /* Corridors are never felt as lit (unless remembered that way) */
             /* (lit_corridor only).                                         */
             if (lev->typ == CORR && lev->layers.glyph == cmap_to_glyph(S_litcorr)
                 && !lev->waslit)
-                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
+            {
+                int new_glyph = cmap_to_glyph(S_corr);
+                lev->layers.glyph = new_glyph;
+                lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                show_glyph_ascii(x, y, new_glyph);
+                show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+            }
             else if (((lev->typ == ROOM && lev->layers.glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->layers.glyph == cmap_to_glyph(S_grass)))
-				&& flags.dark_room && iflags.use_color)
-                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_darkroom));
+                && flags.dark_room && iflags.use_color)
+            {
+                int new_glyph = cmap_to_glyph(S_darkroom);
+                lev->layers.glyph = new_glyph;
+                lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                show_glyph_ascii(x, y, new_glyph);
+                show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+            }
         }
-    } else {
+
+        if (IS_DOOR(lev->typ))
+        {
+            map_background(x, y, 1);
+        }
+
+        if ((boulder = sobj_at(BOULDER, x, y)) != 0)
+        {
+            map_object(boulder, 1);
+        } 
+        
+        if (IS_ROCK(lev->typ)
+            || (IS_DOOR(lev->typ)
+                && (lev->doormask & (D_LOCKED | D_CLOSED))))
+        {
+            map_background(x, y, 1);
+        }
+
+    } 
+    else
+    {
         _map_location(x, y, 1);
 
-        if (Punished) {
+        if (Punished) 
+        {
             /*
              * A ball or chain is only felt if it is first on the object
              * location list.  Otherwise, we need to clear the felt bit ---
@@ -737,13 +840,16 @@ xchar x, y;
              * not cleared, then when the ball/chain is moved it will drop
              * the wrong glyph.
              */
-            if (uchain->ox == x && uchain->oy == y) {
+            if (uchain->ox == x && uchain->oy == y) 
+            {
                 if (level.objects[x][y] == uchain)
                     u.bc_felt |= BC_CHAIN;
                 else
                     u.bc_felt &= ~BC_CHAIN; /* do not feel the chain */
             }
-            if (!carried(uball) && uball->ox == x && uball->oy == y) {
+
+            if (!carried(uball) && uball->ox == x && uball->oy == y) 
+            {
                 if (level.objects[x][y] == uball)
                     u.bc_felt |= BC_BALL;
                 else
@@ -754,19 +860,44 @@ xchar x, y;
         /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
         if (((lev->typ == ROOM && lev->layers.glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->layers.glyph == cmap_to_glyph(S_grass)))
             && (!lev->waslit || (flags.dark_room && iflags.use_color)))
-            show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(
-                                 flags.dark_room ? S_darkroom : S_unexplored));
+        {
+            int new_glyph = cmap_to_glyph(flags.dark_room ? S_darkroom : S_unexplored);
+            lev->layers.glyph = new_glyph;
+            lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+            show_glyph_ascii(x, y, new_glyph);
+            show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+        }
         else if (lev->typ == CORR && lev->layers.glyph == cmap_to_glyph(S_litcorr)
-                 && !lev->waslit)
-            show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
+            && !lev->waslit)
+        {
+            int new_glyph = cmap_to_glyph(S_corr);
+            lev->layers.glyph = new_glyph;
+            lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+            show_glyph_ascii(x, y, new_glyph);
+            show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+        }
     }
+
+    /* Monster layer */
     /* draw monster on top if we can sense it */
-    if ((x != u.ux || y != u.uy) && (mon = m_at(x, y)) != 0 && sensemon(mon))
-        display_monster(x, y, mon,
-                        (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon))
-                            ? PHYSICALLY_SEEN
-                            : DETECTED,
-                        is_worm_tail(mon), 0UL, 0);
+    if ((x != u.ux || y != u.uy) && (mon = m_at(x, y)) != 0)
+    {
+        /* If hero's memory of an invisible monster is accurate, we want to keep
+         * him from detecting the same monster over and over again on each turn.
+         * OBSOLETE: We must return (so we don't erase the monster).  (We must also, in the
+         * search function, be sure to skip over previously detected 'I's.)
+         */
+        if (glyph_is_invisible(orig_glyph))
+        {
+            map_invisible(x, y);
+        }
+        else if (sensemon(mon))
+            display_monster(x, y, mon,
+                (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon))
+                ? PHYSICALLY_SEEN
+                : DETECTED,
+                is_worm_tail(mon));
+    }
 }
 
 
@@ -796,9 +927,7 @@ int damage_shown;
     register int see_it;
     register xchar worm_tail;
     int orig_glyph = lev->layers.glyph;
-    struct layer_info new_layers = zerolayerinfo;
-
-    gbuf[y][x].layers = new_layers;
+    gbuf[y][x].layers = zerolayerinfo;
 
     if (in_mklev)
         return;
@@ -806,6 +935,15 @@ int damage_shown;
     if (program_state.done_hup)
         return;
 #endif
+
+    /* First, zero out and no-glyph gbuf */
+    gbuf[y][x].layers.glyph = NO_GLYPH;
+    gbuf[y][x].layers.bkglyph = NO_GLYPH;
+    for (enum layer_types i = LAYER_FLOOR; i < MAX_LAYERS; i++)
+    {
+        gbuf[y][x].layers.layer_glyphs[i] = NO_GLYPH;
+    }
+
 
     /* only permit updating the hero when swallowed */
     if (u.uswallow)
@@ -815,6 +953,7 @@ int damage_shown;
         return;
     }
 
+
     if (Underwater && !Is_waterlevel(&u.uz))
     {
         /* when underwater, don't do anything unless <x,y> is an
@@ -823,9 +962,90 @@ int damage_shown;
             return;
     }
 
+    register struct obj* obj;
+    register struct trap* trap;
+
+    /* Extra info shown */
+    show_extra_info(x, y, disp_flags, damage_shown);
+
     /* Can physically see the location. */
     if (cansee(x, y)) 
     {
+        /* Floor and feature layers */
+        map_background(x, y, 1);
+
+        /* Trap layer */
+        if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))
+            map_trap(trap, 1);
+
+        /* Doodad layer */
+        /* map_doodad(x, y) */
+        /* gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = NO_GLYPH; */
+
+        /* Object layer */
+        /* This maps only the first object for object layer; in reality, all objects at a non-covering location are rendered by GUI */
+        if ((obj = vobj_at(x, y)) && !covers_objects(x, y))
+            map_object(obj, 1);
+
+        if (is_objpile(x, y) && !Hallucination)
+            add_extra_info_flags(x, y, LFLAGS_O_PILE);
+
+        /* Monster layer */
+        if (x == u.ux && y == u.uy)
+        {
+            int see_self = canspotself();
+
+#if 0
+            /* update map information for <u.ux,u.uy> (remembered topology
+               and object/known trap/terrain glyph) but only display it if
+               hero can't see him/herself, then show self if appropriate */
+            _map_location(x, y, !see_self);
+#endif
+
+            if (see_self)
+                display_self_with_extra_info(disp_flags, damage_shown);
+        }
+        else
+        {
+            mon = m_at(x, y);
+            worm_tail = is_worm_tail(mon);
+            see_it = mon && (mon_visible(mon)
+                || (!worm_tail && (tp_sensemon(mon)
+                    || MATCH_WARN_OF_MON(mon))));
+            if (mon && (see_it || (!worm_tail && Detect_monsters)))
+            {
+                if (mon->mtrapped)
+                {
+                    struct trap* trap = t_at(x, y);
+                    int tt = trap ? trap->ttyp : NO_TRAP;
+
+                    /* if monster is in a physical trap, you see trap too */
+                    if (tt == BEAR_TRAP || is_pit(tt) || tt == WEB)
+                    {
+                        trap->tseen = 1;
+                        if (!covers_traps(x, y))
+                            map_trap(trap, 1);
+                    }
+                }
+                //_map_location(x, y, 0); /* map under the monster */
+                /* also gets rid of any invisibility glyph */
+                display_monster(x, y, mon,
+                    see_it ? PHYSICALLY_SEEN : DETECTED,
+                    worm_tail);
+            }
+            else if (mon && mon_warning(mon) && !is_worm_tail(mon))
+            {
+                display_warning(mon);
+            }
+            else if (glyph_is_invisible(lev->layers.glyph))
+            {
+                map_invisible(x, y);
+            }
+//            else
+//                _map_location(x, y, 1); /* map the location */
+        }
+
+        /* Environment layer */
         NhRegion *reg = visible_region_at(x, y);
         /*
          * Don't use templit here:  E.g.
@@ -849,129 +1069,124 @@ int damage_shown;
                         && is_pool_or_lava(x, y))))
         {
             show_region(reg, x, y);
-            return;
+            //return; /* Not needed anymore since last */
         }
-
-        if (x == u.ux && y == u.uy) 
+    } 
+    else
+    {
+        /* Can't see the location. */
+        if (x == u.ux && y == u.uy)
         {
-            int see_self = canspotself();
+            /* Feel location handles all layers up to object layer */
+            feel_location(u.ux, u.uy); /* forces an update */
 
-            /* update map information for <u.ux,u.uy> (remembered topology
-               and object/known trap/terrain glyph) but only display it if
-               hero can't see him/herself, then show self if appropriate */
-            _map_location(x, y, !see_self);
-            if (see_self)
+            /* Monster layer */
+            if (canspotself())
                 display_self_with_extra_info(disp_flags, damage_shown);
         }
         else
         {
-            mon = m_at(x, y);
-            worm_tail = is_worm_tail(mon);
-            see_it = mon && (mon_visible(mon)
-                             || (!worm_tail && (tp_sensemon(mon)
-                                                || MATCH_WARN_OF_MON(mon))));
-            if (mon && (see_it || (!worm_tail && Detect_monsters))) 
-            {
-                if (mon->mtrapped)
-                {
-                    struct trap *trap = t_at(x, y);
-                    int tt = trap ? trap->ttyp : NO_TRAP;
+            /*
+             * If the location is remembered as being both dark (waslit is false)
+             * and lit (glyph is a lit room or lit corridor) then it was either:
+             *
+             *      (1) A dark location that the hero could see through night
+             *          vision.
+             *      (2) Darkened while out of the hero's sight.  This can happen
+             *          when cursed scroll of light is read.
+             *
+             * In either case, we have to manually correct the hero's memory to
+             * match waslit.  Deciding when to change waslit is non-trivial.
+             *
+             *  Note:  If flags.lit_corridor is set, then corridors act like room
+             *         squares.  That is, they light up if in night vision range.
+             *         If flags.lit_corridor is not set, then corridors will
+             *         remain dark unless lit by a light spell and may darken
+             *         again, as discussed above.
+             *
+             * These checks and changes must be here and not in back_to_glyph().
+             * They are dependent on the position being out of sight.
+             */
 
-                    /* if monster is in a physical trap, you see trap too */
-                    if (tt == BEAR_TRAP || is_pit(tt) || tt == WEB)
-                        trap->tseen = 1;
+            /* Floor layer */
+            if (Is_rogue_level(&u.uz))
+            {
+                /* ROGUE LEVEL */
+                if (lev->layers.glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
+                {
+                    int new_glyph = cmap_to_glyph(S_corr);
+                    lev->layers.glyph = new_glyph;
+                    lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                    show_glyph_ascii(x, y, new_glyph);
+                    show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
                 }
-                _map_location(x, y, 0); /* map under the monster */
-                /* also gets rid of any invisibility glyph */
-                display_monster(x, y, mon,
-                                see_it ? PHYSICALLY_SEEN : DETECTED,
-                                worm_tail, disp_flags, damage_shown);
+                else if (lev->layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM && !lev->waslit)
+                {
+                    int new_glyph = cmap_to_glyph(S_unexplored);
+                    lev->layers.glyph = new_glyph;
+                    lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                    show_glyph_ascii(x, y, new_glyph);
+                    show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+                }
+                else
+                    goto show_mem;
             }
+            else if (!lev->waslit || (flags.dark_room && iflags.use_color))
+            {
+                /* NORMAL UNLIT */
+                if (lev->layers.glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
+                {
+                    int new_glyph = cmap_to_glyph(S_corr);
+                    lev->layers.glyph = new_glyph;
+                    lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                    show_glyph_ascii(x, y, new_glyph);
+                    show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+                }
+                else if (lev->layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
+                {
+                    int new_glyph = cmap_to_glyph(DARKROOMSYM);
+                    lev->layers.glyph = new_glyph;
+                    lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                    show_glyph_ascii(x, y, new_glyph);
+                    show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+                }
+                else if (lev->layers.glyph == cmap_to_glyph(S_grass) && lev->typ == GRASS)
+                {
+                    int new_glyph = cmap_to_glyph(DARKROOMSYM);
+                    lev->layers.glyph = new_glyph;
+                    lev->layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                    show_glyph_ascii(x, y, new_glyph);
+                    show_glyph_on_layer(x, y, new_glyph, LAYER_FLOOR);
+                }
+                else // if (lev->layers.glyph != cmap_to_glyph(S_unexplored))
+                    goto show_mem;
+            }
+            else
+            {
+            show_mem:
+                show_glyph_ascii(x, y, lev->layers.glyph);
+                for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER; layer_idx++)
+                {
+                    show_glyph_on_layer(x, y, lev->layers.layer_glyphs[layer_idx], layer_idx);
+                }
+            }
+
+            /* Monster layer */
+            if ((mon = m_at(x, y)) != 0
+                       && ((see_it = (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)
+                                      || (see_with_infrared(mon)
+                                          && mon_visible(mon)))) != 0
+                           || Detect_monsters)) 
+            {
+                /* Seen or sensed monsters are printed every time.
+                   This also gets rid of any invisibility glyph. */
+                display_monster(x, y, mon, see_it ? 0 : DETECTED,
+                                is_worm_tail(mon) ? TRUE : FALSE);
+            } 
             else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
             {
                 display_warning(mon);
             }
-            else if (glyph_is_invisible(lev->layers.glyph))
-            {
-                map_invisible(x, y);
-            }
-            else
-                _map_location(x, y, 1); /* map the location */\
-        }
-
-    /* Can't see the location. */
-    } 
-    else
-    {
-        if (x == u.ux && y == u.uy)
-        {
-            feel_location(u.ux, u.uy); /* forces an update */
-
-            if (canspotself())
-                display_self_with_extra_info(disp_flags, damage_shown);
-        }
-        else if ((mon = m_at(x, y)) != 0
-                   && ((see_it = (tp_sensemon(mon) || MATCH_WARN_OF_MON(mon)
-                                  || (see_with_infrared(mon)
-                                      && mon_visible(mon)))) != 0
-                       || Detect_monsters)) 
-        {
-            /* Seen or sensed monsters are printed every time.
-               This also gets rid of any invisibility glyph. */
-            display_monster(x, y, mon, see_it ? 0 : DETECTED,
-                            is_worm_tail(mon) ? TRUE : FALSE, disp_flags, damage_shown);
-        } 
-        else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
-        {
-            display_warning(mon);
-
-        /*
-         * If the location is remembered as being both dark (waslit is false)
-         * and lit (glyph is a lit room or lit corridor) then it was either:
-         *
-         *      (1) A dark location that the hero could see through night
-         *          vision.
-         *      (2) Darkened while out of the hero's sight.  This can happen
-         *          when cursed scroll of light is read.
-         *
-         * In either case, we have to manually correct the hero's memory to
-         * match waslit.  Deciding when to change waslit is non-trivial.
-         *
-         *  Note:  If flags.lit_corridor is set, then corridors act like room
-         *         squares.  That is, they light up if in night vision range.
-         *         If flags.lit_corridor is not set, then corridors will
-         *         remain dark unless lit by a light spell and may darken
-         *         again, as discussed above.
-         *
-         * These checks and changes must be here and not in back_to_glyph().
-         * They are dependent on the position being out of sight.
-         */
-        }
-        else if (Is_rogue_level(&u.uz)) 
-        {
-            if (lev->layers.glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
-                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
-            else if (lev->layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM
-                     && !lev->waslit)
-                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_unexplored));
-            else // if(lev->glyph != cmap_to_glyph(S_unexplored))
-                goto show_mem;
-        }
-        else if (!lev->waslit || (flags.dark_room && iflags.use_color)) 
-        {
-            if (lev->layers.glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
-                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
-            else if (lev->layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
-                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(DARKROOMSYM));
-			else if (lev->layers.glyph == cmap_to_glyph(S_grass) && lev->typ == GRASS)
-				show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(DARKROOMSYM));
-			else // if (lev->layers.glyph != cmap_to_glyph(S_unexplored))
-                goto show_mem;
-        }
-        else
-        {
- show_mem:
-            show_glyph(x, y, lev->layers.glyph);
         }
     }
 }
@@ -993,7 +1208,8 @@ xchar x, y;
     if (!flags.sparkle)
         return;
     if (cansee(x, y)) { /* Don't see anything if can't see the location */
-        for (i = 0; i < SHIELD_COUNT; i++) {
+        for (i = 0; i < SHIELD_COUNT; i++)
+        {
             show_glyph(x, y, cmap_to_glyph(shield_static[i]));
             flush_screen(1); /* make sure the glyph shows up */
             delay_output();
@@ -1696,15 +1912,78 @@ int x, y, glyph;
 {
     if (isok(x, y))
     {
+        remove_current_glyph_from_layer(x, y);
         show_glyph_ascii(x, y, glyph);
         add_glyph_to_layer(x, y, glyph);
     }
 }
 
 void
-show_glyph_with_extra_info(x, y, glyph, otmp, mtmp, disp_flags, damage_displayed)
+show_glyph_on_layer(x, y, glyph, layer_idx)
 int x, y, glyph;
-struct obj* otmp;
+enum layer_types layer_idx;
+{
+    if (isok(x, y) && layer_idx < MAX_LAYERS)
+    {
+        int layer_glyph_before = gbuf[y][x].layers.layer_glyphs[layer_idx];
+
+        gbuf[y][x].layers.layer_glyphs[layer_idx] = glyph;
+
+        if (layer_glyph_before != glyph)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
+
+
+void
+show_extra_info(x, y, disp_flags, damage_displayed)
+int x, y;
+unsigned long disp_flags;
+int damage_displayed;
+{
+    if (isok(x, y))
+    {
+        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        if (disp_flags)
+        {
+            gbuf[y][x].layers.layer_flags |= disp_flags;
+        }
+
+        int old_dmg = gbuf[y][x].layers.damage_displayed;
+        if (damage_displayed > 0)
+            gbuf[y][x].layers.damage_displayed = Hallucination ? rnd(2 * damage_displayed) : damage_displayed;
+        
+        if (old_flags != gbuf[y][x].layers.layer_flags || old_dmg != gbuf[y][x].layers.damage_displayed)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
+
+void
+add_extra_info_flags(x, y, disp_flags)
+int x, y;
+unsigned long disp_flags;
+{
+    if (isok(x, y))
+    {
+        show_extra_info(x, y, disp_flags | gbuf[y][x].layers.layer_flags, gbuf[y][x].layers.damage_displayed);
+    }
+}
+
+void
+show_monster_glyph_with_extra_info(x, y, glyph,  mtmp, disp_flags, damage_displayed)
+int x, y, glyph;
 struct monst* mtmp;
 unsigned long disp_flags;
 int damage_displayed;
@@ -1712,19 +1991,7 @@ int damage_displayed;
     if (isok(x, y))
     {
         show_glyph_ascii(x, y, glyph);
-        add_glyph_to_layer(x, y, glyph);
-
-        if (otmp)
-        {
-            if (Hallucination)
-            {
-                gbuf[y][x].layers.object_comp_ptr = (genericptr_t)0;
-            }
-            else
-            {
-                gbuf[y][x].layers.object_comp_ptr = (genericptr_t)otmp;
-            }
-        }
+        show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
 
         if (mtmp)
         {
@@ -1736,6 +2003,8 @@ int damage_displayed;
             {
                 gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)mtmp;
             }
+
+            gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_MASK;
 
             if(is_tame(mtmp) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET;
@@ -1749,33 +2018,40 @@ int damage_displayed;
             /* Other conditions here */
         }
 
-        if (disp_flags)
-        {
-            gbuf[y][x].layers.layer_flags |= disp_flags;
-        }
-
-        if(damage_displayed > 0)
-            gbuf[y][x].layers.damage_displayed = Hallucination ? rnd(2 * damage_displayed) : damage_displayed;
+        show_extra_info(x, y, disp_flags, damage_displayed);
     }
 }
 
+void
+remove_current_glyph_from_layer(x, y)
+int x, y;
+{
+    add_or_remove_glyph_to_layer(x, y, gbuf[y][x].layers.glyph, TRUE);
+}
 
 void
 add_glyph_to_layer(x, y, glyph)
 int x, y, glyph;
 {
+    add_or_remove_glyph_to_layer(x, y, glyph, FALSE);
+}
+
+void
+add_or_remove_glyph_to_layer(x, y, glyph, remove)
+int x, y, glyph;
+boolean remove;
+{
     if (isok(x, y))
     {
         if (glyph_is_cmap_or_cmap_variation(glyph))
         {
-            int idx = glyph_to_cmap(glyph);
-            gbuf[y][x].layers.layer_glyphs[defsyms->layer] = glyph;
+            gbuf[y][x].layers.layer_glyphs[defsyms->layer] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_flags &= LFLAGS_CMAP_MASK;
         }
         else if (glyph_is_monster(glyph) || glyph_is_invisible(glyph) || glyph_is_warning(glyph)) /* includes also players */
         {
-            gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = glyph;
-            gbuf[y][x].layers.layer_flags &= LFLAGS_M_MASK;
+            gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = remove ? NO_GLYPH : glyph;
+            gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_MASK;
             gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
         }
         else if (glyph_is_object(glyph))
@@ -1783,25 +2059,24 @@ int x, y, glyph;
             int obj_idx = glyph_to_obj(glyph);
 
             if (objects[obj_idx].oc_flags4 & O4_DRAWN_IN_FRONT)
-                gbuf[y][x].layers.layer_glyphs[LAYER_COVER] = glyph;
+                gbuf[y][x].layers.layer_glyphs[LAYER_COVER] = remove ? NO_GLYPH : glyph;
             else
-                gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = glyph;
+                gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = remove ? NO_GLYPH : glyph;
 
-            gbuf[y][x].layers.layer_flags &= LFLAGS_O_MASK;
-            gbuf[y][x].layers.object_comp_ptr= (genericptr_t)0;
+            gbuf[y][x].layers.layer_flags &= ~LFLAGS_O_MASK;
         }
         else if (glyph_is_missile(glyph) || glyph_is_zap(glyph))
         {
-            gbuf[y][x].layers.layer_glyphs[LAYER_MISSILE] = glyph;
+            gbuf[y][x].layers.layer_glyphs[LAYER_MISSILE] = remove ? NO_GLYPH : glyph;
         }
         else if (glyph_is_swallow(glyph) || glyph_is_explosion(glyph))
         {
-            gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_EFFECT] = glyph;
+            gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_EFFECT] = remove ? NO_GLYPH : glyph;
         }
         else
         {
             /* Should not get here */
-            gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_UI] = glyph;
+            gbuf[y][x].layers.layer_glyphs[LAYER_GENERAL_UI] = remove ? NO_GLYPH : glyph;
         }
     }
 }
@@ -1814,9 +2089,13 @@ int x, y, glyph;
     /*
      * Check for bad positions and glyphs.
      */
-    if (!isok(x, y)) {
+    if (!isok(x, y)) 
+    {
         const char *text;
         int offset;
+
+        if (glyph_is_cmap_or_cmap_variation(glyph))
+            glyph = glyph;
 
         /* column 0 is invalid, but it's often used as a flag, so ignore it */
         if (x == 0)
@@ -1908,7 +2187,7 @@ int x, y, glyph;
         return;
     }
 
-    if (glyph >= MAX_GLYPH) {
+    if (glyph > MAX_GLYPH) {
         impossible("show_glyph:  bad glyph %d [max %d] at (%d,%d).", glyph,
                    MAX_GLYPH, x, y);
         return;
@@ -1918,9 +2197,6 @@ int x, y, glyph;
     {
         gbuf[y][x].layers.glyph = glyph;
         gbuf[y][x].layers.bkglyph = get_bk_glyph(x, y);
-//        gbuf[y][x].layers.floor_glyph = get_floor_layer_glyph(x, y);
-//        gbuf[y][x].layers.dungeon_feature_glyph = get_bk_glyph(x, y);
-//        gbuf[y][x].layers.object_glyph = get_object_layer_glyph(x, y);
         gbuf[y][x].new = 1;
         if (gbuf_start[y] > x)
             gbuf_start[y] = x;
@@ -2552,7 +2828,7 @@ xchar x, y;
         }
         break;
     default:
-        impossible("back_to_glyph:  unknown level type [ = %d ]", ptr->typ);
+        impossible("get_floor_layer_glyph:  unknown level type [ = %d ]", ptr->typ);
         idx = S_room;
         break;
     }
@@ -3321,7 +3597,7 @@ unsigned long displayed_flags;
 int dmg_received;
 {
 
-    show_glyph_with_extra_info(u.ux, u.uy,
+    show_monster_glyph_with_extra_info(u.ux, u.uy,
         maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)
             ? u_to_glyph() /*hero_glyph*/
             : (U_AP_TYPE == M_AP_FURNITURE)
@@ -3331,7 +3607,7 @@ int dmg_received;
             /* else U_AP_TYPE == M_AP_MONSTER */
             : any_monnum_to_glyph(flags.female, youmonst.mappearance)
         ),
-        (struct obj*)0, u.usteed,
+        u.usteed,
         displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL),
         dmg_received);
 

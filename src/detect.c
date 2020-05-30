@@ -78,10 +78,10 @@ struct monst *mtmp;
 boolean showtail;
 {
     if (def_monsyms[(int) mtmp->data->mlet].sym == ' ')
-        show_glyph_with_extra_info(mtmp->mx, mtmp->my,
-                   any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, LFLAGS_M_DETECTED, 0);
+        show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my,
+                   any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0);
     else
-        show_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), (struct obj*)0, mtmp, 0UL, 0);
+        show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, 0UL, 0);
 
     if (showtail && mtmp->data == &mons[PM_LONG_WORM])
         detect_wsegs(mtmp, 0);
@@ -1260,7 +1260,8 @@ register int x, y;
     lev->seenv = SVALL;
 
     /* Secret corridors are found, but not secret doors. */
-    if (lev->typ == SCORR) {
+    if (lev->typ == SCORR) 
+    {
         lev->typ = CORR;
         unblock_point(x, y);
     }
@@ -1273,19 +1274,32 @@ register int x, y;
      * opposite to how normal vision behaves.
      */
     oldglyph = glyph_at(x, y);
-    if (level.flags.hero_memory) {
+    unsigned long oldlayerflags = lev->layers.layer_flags;
+
+    if (level.flags.hero_memory)
+    {
         magic_map_background(x, y, 0);
         newsym(x, y); /* show it, if not blocked */
-    } else {
+    }
+    else 
+    {
         magic_map_background(x, y, 1); /* display it */
     }
-    if (!IS_FURNITURE(lev->typ)) {
-        if ((t = t_at(x, y)) != 0 && t->tseen) {
+
+    if (!IS_FURNITURE(lev->typ))
+    {
+        if ((t = t_at(x, y)) != 0 && t->tseen) 
+        {
             map_trap(t, 1);
-        } else if (glyph_is_trap(oldglyph) || glyph_is_object(oldglyph)) {
+        } 
+        else if (glyph_is_trap(oldglyph) || glyph_is_object(oldglyph)) 
+        {
             show_glyph(x, y, oldglyph);
             if (level.flags.hero_memory)
+            {
                 lev->layers.glyph = oldglyph;
+                lev->layers.layer_glyphs[glyph_is_trap(oldglyph) ? LAYER_TRAP : LAYER_OBJECT] = oldglyph;
+            }
         }
     }
 }
