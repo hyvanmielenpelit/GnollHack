@@ -217,12 +217,8 @@
     <Image Include="..\mnsel.bmp" />
     <Image Include="..\mnselcnt.bmp" />
     <Image Include="..\mnunsel.bmp" />
-    <Image Include="..\petmark-new.bmp" />
-    <Image Include="..\petmark.bmp" />
-    <Image Include="..\pilemark.bmp" />
     <Image Include="..\rip.bmp" />
     <Image Include="..\splash.bmp" />
-    <Image Include="..\tiles.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\uwch.ttf" />

@@ -220,6 +220,11 @@ NEARDATA const struct monst zeromonst = DUMMY;
 /* used to zero out union any; initializer deliberately omitted */
 NEARDATA const anything zeroany;
 
+NEARDATA const struct layer_info zerolayerinfo = DUMMY;
+NEARDATA const struct replacement_info zeroreplacementinfo = DUMMY;
+NEARDATA const struct extended_menu_info zeroextendedmenuinfo = DUMMY;
+
+
 /* originally from dog.c */
 NEARDATA char dogname[PL_PSIZ] = DUMMY;
 NEARDATA char catname[PL_PSIZ] = DUMMY;

@@ -277,6 +277,10 @@ E NEARDATA const struct obj zeroobj; /* for init; also, &zeroobj is used
 
 E NEARDATA const anything zeroany;   /* init'd and defined in decl.c */
 
+E NEARDATA const struct layer_info zerolayerinfo;
+E NEARDATA const struct replacement_info zeroreplacementinfo;
+E NEARDATA const struct extended_menu_info zeroextendedmenuinfo;
+
 #include "you.h"
 E NEARDATA struct you u;
 E NEARDATA time_t ubirthday;

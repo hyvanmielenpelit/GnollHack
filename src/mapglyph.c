@@ -89,7 +89,12 @@ unsigned long *ospecial;
      *  Warning:  For speed, this makes an assumption on the order of
      *            offsets.  The order is set in display.h.
      */
-    if ((offset = (glyph - GLYPH_CURSOR_OFF)) >= 0)
+
+    /* Handle no glyph */
+    if (glyph == MAX_GLYPH)
+        glyph = cmap_to_glyph(S_unexplored);
+
+    if ((offset = (glyph - GLYPH_CURSOR_OFF)) >= 0 && glyph < MAX_GLYPH)
     {
         /* Should never arrive here, these are UI elements */
         idx = '_';
