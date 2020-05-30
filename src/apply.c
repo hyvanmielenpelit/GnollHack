@@ -818,7 +818,7 @@ struct obj *obj;
     spotmon = canspotmon(mtmp);
  got_target:
 
-    if (!spotmon && !glyph_is_invisible(levl[cc.x][cc.y].glyph)) {
+    if (!spotmon && !glyph_is_invisible(levl[cc.x][cc.y].layers.glyph)) {
         /* for the unleash case, we don't verify whether this unseen
            monster is the creature attached to the current leash */
         You("fail to %sleash something.", obj->leashmon ? "un" : "");
@@ -3677,7 +3677,7 @@ struct obj *obj;
             pline1(msg_snap);
 
     } else if (mtmp) {
-        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[rx][ry].glyph)) {
+        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[rx][ry].layers.glyph)) {
             pline("A monster is there that you couldn't see.");
             map_invisible(rx, ry);
         }

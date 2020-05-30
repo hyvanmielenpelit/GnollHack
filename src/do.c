@@ -4366,10 +4366,10 @@ dodown()
              */
             if (stairs_down)
                 stairs_down =
-                    (glyph_to_cmap(levl[u.ux][u.uy].glyph) == S_dnstair);
+                    (glyph_to_cmap(levl[u.ux][u.uy].layers.glyph) == S_dnstair);
             else if (ladder_down)
                 ladder_down =
-                    (glyph_to_cmap(levl[u.ux][u.uy].glyph) == S_dnladder);
+                    (glyph_to_cmap(levl[u.ux][u.uy].layers.glyph) == S_dnladder);
         }
         if (Is_airlevel(&u.uz))
             You("are floating in the %s.", surface(u.ux, u.uy));

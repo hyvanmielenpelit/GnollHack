@@ -16,8 +16,8 @@
 #include "patchlevel.h"
 #include "layer.h"
 
-#define NHMAP_FONT_NAME TEXT("Terminal")
-#define NHMAP_TTFONT_NAME TEXT("Consolas")
+#define NHMAP_FONT_NAME TEXT("Underwood Champion")
+#define NHMAP_TTFONT_NAME TEXT("Underwood Champion")
 #define MAXWINDOWTEXT 255
 
 #define CURSOR_BLINK_IN_INTERVALS 25
@@ -1184,7 +1184,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             break;
                                         }
 
-#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || levl[x][y].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNEXPLORED /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
+#define NO_WALL_END_AUTODRAW(x,y) (!isok(x, y) || levl[x][y].layers.glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ)) || levl[x][y].typ == DOOR || levl[x][y].typ == UNEXPLORED /*|| (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0 */)
 
                                         if (NO_WALL_END_AUTODRAW(rx, ry))
                                         {

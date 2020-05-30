@@ -1285,7 +1285,7 @@ register int x, y;
         } else if (glyph_is_trap(oldglyph) || glyph_is_object(oldglyph)) {
             show_glyph(x, y, oldglyph);
             if (level.flags.hero_memory)
-                lev->glyph = oldglyph;
+                lev->layers.glyph = oldglyph;
         }
     }
 }
@@ -1491,7 +1491,7 @@ genericptr_t num;
             newsym(zx, zy);
             (*(int *) num)++;
         }
-        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[zx][zy].glyph))
+        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[zx][zy].layers.glyph))
             map_invisible(zx, zy);
     } else if (unmap_invisible(zx, zy)) {
         (*(int *) num)++;
@@ -1617,7 +1617,7 @@ struct trap *trap;
        (e.g. to not prompt if any trap glyph appears on the
        square). */
     if (Hallucination ||
-        levl[trap->tx][trap->ty].glyph !=
+        levl[trap->tx][trap->ty].layers.glyph !=
         trap_to_glyph(trap, rn2_on_display_rng)) {
         /* There's too much clutter to see your find otherwise */
         cls();
@@ -1663,7 +1663,7 @@ boolean via_warning;
     }
 
     if (found_something) {
-        if (!canspotmon(mtmp) && glyph_is_invisible(levl[x][y].glyph))
+        if (!canspotmon(mtmp) && glyph_is_invisible(levl[x][y].layers.glyph))
             return -1; /* Found invisible monster in square which already has
                         * 'I' in it.  Logically, this should still take time
                         * and lead to `return 1', but if we did that the hero
@@ -1863,10 +1863,10 @@ int default_glyph, which_subset;
         levl[x][y].seenv = seenv;
     } else {
         levl_glyph = level.flags.hero_memory
-              ? levl[x][y].glyph
+              ? levl[x][y].layers.glyph
               : seenv ? back_to_glyph(x, y): default_glyph;
         /* glyph_at() returns the displayed glyph, which might
-           be a monster.  levl[][].glyph contains the remembered
+           be a monster.  levl[][].layers.glyph contains the remembered
            glyph, which will never be a monster (unless it is
            the invisible monster glyph, which is handled like
            an object, replacing any object or trap at its spot) */

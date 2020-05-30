@@ -513,7 +513,7 @@ struct obj *corpse;
         for (y = 0; y < ROWNO; y++) {
             levl[x][y].seenv = 0;
             levl[x][y].waslit = 0;
-            levl[x][y].glyph = cmap_to_glyph(S_unexplored);
+            levl[x][y].layers.glyph = cmap_to_glyph(S_unexplored);
             lastseentyp[x][y] = UNEXPLORED;
         }
 

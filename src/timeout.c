@@ -2588,7 +2588,7 @@ long timeout;
 
 	mptr = mon->data;
 
-	if (glyph_is_invisible(levl[mon->mx][mon->my].glyph))
+	if (glyph_is_invisible(levl[mon->mx][mon->my].layers.glyph))
 		unmap_object(mon->mx, mon->my);
 
 	m_detach(mon, mptr, FALSE);

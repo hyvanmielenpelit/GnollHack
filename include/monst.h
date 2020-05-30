@@ -208,6 +208,7 @@ struct monst {
     int meating;           /* monster is eating timeout */
 	long summonduration;   /* duration for summoned units */
 	long extra_encounter_xp; /* extra experience yielded by this monster due to encounter difficulty */
+    int glyph;
 
 	xchar timed;		   /* # of fuses (timers) attached to this monst */
 	struct mextra *mextra; /* point to mextra struct */

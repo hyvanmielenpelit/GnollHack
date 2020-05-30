@@ -492,7 +492,7 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_BOTTOM_TILE:
         {
             int below_y = y + 1;
-            if (!isok(x, below_y) || levl[x][below_y].glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
+            if (!isok(x, below_y) || levl[x][below_y].layers.glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
             {
                 /* No action */
             }

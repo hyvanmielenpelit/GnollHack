@@ -6,6 +6,8 @@
 #ifndef RM_H
 #define RM_H
 
+#include "layer.h"
+
 /*
  * The dungeon presentation graphics code and data structures were rewritten
  * and generalized for GnollHack's release 2 by Eric S. Raymond (eric@snark)
@@ -554,7 +556,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
  * must be updated to consider the field.
  */
 struct rm {
-    int glyph;               /* what the hero thinks is there */
+    struct layer_info layers; // glyph;               /* what the hero thinks is there */
     schar typ;               /* what is really there */
     uchar seenv;             /* seen vector */
     uchar flags;			/* extra information for typ */

@@ -203,7 +203,7 @@ int show;
             glyph = cmap_to_glyph(S_corr);
     }
     if (level.flags.hero_memory)
-        lev->glyph = glyph;
+        lev->layers.glyph = glyph;
     if (show)
         show_glyph(x, y, glyph);
 
@@ -239,7 +239,7 @@ register int show;
     register int glyph = back_to_glyph(x, y);
 
     if (level.flags.hero_memory)
-        levl[x][y].glyph = glyph;
+        levl[x][y].layers.glyph = glyph;
     if (show)
         show_glyph(x, y, glyph);
 }
@@ -259,7 +259,7 @@ register int show;
     register int glyph = trap_to_glyph(trap, newsym_rn2);
 
     if (level.flags.hero_memory)
-        levl[x][y].glyph = glyph;
+        levl[x][y].layers.glyph = glyph;
     if (show)
         show_glyph(x, y, glyph);
 }
@@ -283,9 +283,9 @@ register int show;
         /*       but remembered as random objects.                        */
 
         if (Hallucination && obj->otyp == STATUE) {
-            levl[x][y].glyph = random_obj_to_glyph(newsym_rn2);
+            levl[x][y].layers.glyph = random_obj_to_glyph(newsym_rn2);
         } else {
-            levl[x][y].glyph = glyph;
+            levl[x][y].layers.glyph = glyph;
         }
     }
     if (show)
@@ -307,7 +307,7 @@ register xchar x, y;
 {
     if (x != u.ux || y != u.uy) { /* don't display I at hero's location */
         if (level.flags.hero_memory)
-            levl[x][y].glyph = GLYPH_INVISIBLE;
+            levl[x][y].layers.glyph = GLYPH_INVISIBLE;
         show_glyph(x, y, GLYPH_INVISIBLE);
     }
 }
@@ -316,7 +316,7 @@ boolean
 unmap_invisible(x, y)
 int x, y;
 {
-    if (isok(x,y) && glyph_is_invisible(levl[x][y].glyph)) {
+    if (isok(x,y) && glyph_is_invisible(levl[x][y].layers.glyph)) {
         unmap_object(x, y);
         newsym(x, y);
         return TRUE;
@@ -351,11 +351,11 @@ register int x, y;
         map_background(x, y, 0);
 
         /* turn remembered dark room squares dark */
-        if (!lev->waslit && lev->glyph == cmap_to_glyph(S_room)
+        if (!lev->waslit && lev->layers.glyph == cmap_to_glyph(S_room)
             && lev->typ == ROOM)
-            lev->glyph = cmap_to_glyph(S_unexplored);
+            lev->layers.glyph = cmap_to_glyph(S_unexplored);
     } else {
-        levl[x][y].glyph = cmap_to_glyph(S_unexplored); /* default val */
+        levl[x][y].layers.glyph = cmap_to_glyph(S_unexplored); /* default val */
     }
 }
 
@@ -446,7 +446,7 @@ int damage_shown;
              */
             int sym = mon->mappearance, glyph = cmap_to_glyph(sym);
 
-            levl[x][y].glyph = glyph;
+            levl[x][y].layers.glyph = glyph;
             if (!sensed) {
                 show_glyph_with_extra_info(x, y, glyph, (struct obj*)0, (struct monst*)0, disp_flags, damage_shown);
                 /* override real topology with mimic's fake one */
@@ -548,7 +548,7 @@ register struct monst *mon;
        if we see a 'warning' move onto 'remembered, unseen' we
        need to explicitly remove that in order for it to not
        reappear when the warned-of monster moves off that spot */
-    if (glyph_is_invisible(levl[x][y].glyph))
+    if (glyph_is_invisible(levl[x][y].layers.glyph))
         unmap_object(x, y);
     show_glyph(x, y, glyph);
 }
@@ -631,7 +631,7 @@ xchar x, y;
      * We must return (so we don't erase the monster).  (We must also, in the
      * search function, be sure to skip over previously detected 'I's.)
      */
-    if (glyph_is_invisible(lev->glyph) && m_at(x, y))
+    if (glyph_is_invisible(lev->layers.glyph) && m_at(x, y))
         return;
 
     /* The hero can't feel non pool locations while under water
@@ -696,35 +696,35 @@ xchar x, y;
              * object stack (if anything).
              */
             do_room_glyph = FALSE;
-            if (lev->glyph == objnum_to_glyph(BOULDER)
-                || glyph_is_invisible(lev->glyph)) {
+            if (lev->layers.glyph == objnum_to_glyph(BOULDER)
+                || glyph_is_invisible(lev->layers.glyph)) {
                 if (lev->typ != ROOM && lev->typ != GRASS && lev->seenv)
                     map_background(x, y, 1);
                 else
                     do_room_glyph = TRUE;
-            } else if (lev->glyph >= cmap_to_glyph(S_unexplored)
-                       && lev->glyph < cmap_to_glyph(S_darkroom)) {
+            } else if (lev->layers.glyph >= cmap_to_glyph(S_unexplored)
+                       && lev->layers.glyph < cmap_to_glyph(S_darkroom)) {
                 do_room_glyph = TRUE;
             }
             if (do_room_glyph) {
-                lev->glyph = (flags.dark_room && iflags.use_color
+                lev->layers.glyph = (flags.dark_room && iflags.use_color
                               && !Is_rogue_level(&u.uz))
                                  ? cmap_to_glyph(S_darkroom)
                                  : (lev->waslit ? cmap_to_glyph(S_room)
                                                 : cmap_to_glyph(S_unexplored));
-                show_glyph(x, y, lev->glyph);
+                show_glyph(x, y, lev->layers.glyph);
             }
         } else {
             /* We feel it (I think hallways are the only things left). */
             map_background(x, y, 1);
             /* Corridors are never felt as lit (unless remembered that way) */
             /* (lit_corridor only).                                         */
-            if (lev->typ == CORR && lev->glyph == cmap_to_glyph(S_litcorr)
+            if (lev->typ == CORR && lev->layers.glyph == cmap_to_glyph(S_litcorr)
                 && !lev->waslit)
-                show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
-            else if (((lev->typ == ROOM && lev->glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->glyph == cmap_to_glyph(S_grass)))
+                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
+            else if (((lev->typ == ROOM && lev->layers.glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->layers.glyph == cmap_to_glyph(S_grass)))
 				&& flags.dark_room && iflags.use_color)
-                show_glyph(x, y, lev->glyph = cmap_to_glyph(S_darkroom));
+                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_darkroom));
         }
     } else {
         _map_location(x, y, 1);
@@ -752,13 +752,13 @@ xchar x, y;
         }
 
         /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
-        if (((lev->typ == ROOM && lev->glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->glyph == cmap_to_glyph(S_grass)))
+        if (((lev->typ == ROOM && lev->layers.glyph == cmap_to_glyph(S_room)) || (lev->typ == GRASS && lev->layers.glyph == cmap_to_glyph(S_grass)))
             && (!lev->waslit || (flags.dark_room && iflags.use_color)))
-            show_glyph(x, y, lev->glyph = cmap_to_glyph(
+            show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(
                                  flags.dark_room ? S_darkroom : S_unexplored));
-        else if (lev->typ == CORR && lev->glyph == cmap_to_glyph(S_litcorr)
+        else if (lev->typ == CORR && lev->layers.glyph == cmap_to_glyph(S_litcorr)
                  && !lev->waslit)
-            show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
+            show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
     }
     /* draw monster on top if we can sense it */
     if ((x != u.ux || y != u.uy) && (mon = m_at(x, y)) != 0 && sensemon(mon))
@@ -795,7 +795,7 @@ int damage_shown;
     register struct rm *lev = &(levl[x][y]);
     register int see_it;
     register xchar worm_tail;
-    int orig_glyph = lev->glyph;
+    int orig_glyph = lev->layers.glyph;
     struct layer_info new_layers = { 0 };
 
     gbuf[y][x].layers = new_layers;
@@ -891,7 +891,7 @@ int damage_shown;
             {
                 display_warning(mon);
             }
-            else if (glyph_is_invisible(lev->glyph)) 
+            else if (glyph_is_invisible(lev->layers.glyph))
             {
                 map_invisible(x, y);
             }
@@ -949,29 +949,29 @@ int damage_shown;
         }
         else if (Is_rogue_level(&u.uz)) 
         {
-            if (lev->glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
-                show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
-            else if (lev->glyph == cmap_to_glyph(S_room) && lev->typ == ROOM
+            if (lev->layers.glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
+                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
+            else if (lev->layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM
                      && !lev->waslit)
-                show_glyph(x, y, lev->glyph = cmap_to_glyph(S_unexplored));
+                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_unexplored));
             else // if(lev->glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
         }
         else if (!lev->waslit || (flags.dark_room && iflags.use_color)) 
         {
-            if (lev->glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
-                show_glyph(x, y, lev->glyph = cmap_to_glyph(S_corr));
-            else if (lev->glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
-                show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
-			else if (lev->glyph == cmap_to_glyph(S_grass) && lev->typ == GRASS)
-				show_glyph(x, y, lev->glyph = cmap_to_glyph(DARKROOMSYM));
-			else // if (lev->glyph != cmap_to_glyph(S_unexplored))
+            if (lev->layers.glyph == cmap_to_glyph(S_litcorr) && lev->typ == CORR)
+                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(S_corr));
+            else if (lev->layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
+                show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(DARKROOMSYM));
+			else if (lev->layers.glyph == cmap_to_glyph(S_grass) && lev->typ == GRASS)
+				show_glyph(x, y, lev->layers.glyph = cmap_to_glyph(DARKROOMSYM));
+			else // if (lev->layers.glyph != cmap_to_glyph(S_unexplored))
                 goto show_mem;
         }
         else
         {
  show_mem:
-            show_glyph(x, y, lev->glyph);
+            show_glyph(x, y, lev->layers.glyph);
         }
     }
 }
@@ -1624,8 +1624,8 @@ docrt()
     for (x = 1; x < COLNO; x++) {
         lev = &levl[x][0];
         for (y = 0; y < ROWNO; y++, lev++)
-            if (lev->glyph != cmap_to_glyph(S_unexplored))
-                show_glyph(x, y, lev->glyph);
+            if (lev->layers.glyph != cmap_to_glyph(S_unexplored))
+                show_glyph(x, y, lev->layers.glyph);
     }
 
     /* see what is to be seen */
@@ -1666,7 +1666,7 @@ redraw_map()
     struct layer_info layers;
     for (y = 0; y < ROWNO; ++y)
         for (x = 1; x < COLNO; ++x) {
-            layers = layers_at(x, y); /* not levl[x][y].glyph */
+            layers = layers_at(x, y); /* not levl[x][y].layers.glyph */
             print_glyph(WIN_MAP, x, y, layers);
         }
     flush_screen(1);

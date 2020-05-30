@@ -1144,7 +1144,7 @@ int howmuch;
                 /* Zonk all memory of this location. */
                 levl[zx][zy].seenv = 0;
                 levl[zx][zy].waslit = 0;
-                levl[zx][zy].glyph = cmap_to_glyph(S_unexplored);
+                levl[zx][zy].layers.glyph = cmap_to_glyph(S_unexplored);
                 lastseentyp[zx][zy] = UNEXPLORED;
             }
     /* forget overview data for this level */
