@@ -56,7 +56,7 @@ public:
 		const ANY_P * identifier, CHAR_P ch, CHAR_P gch, int attr,
 		const char *str, BOOLEAN_P presel);
 	static void qt_add_extended_menu(winid wid, int glyph,
-		const ANY_P* identifier, struct obj*, CHAR_P ch, CHAR_P gch, int attr,
+		const ANY_P* identifier, struct extended_menu_info info, CHAR_P ch, CHAR_P gch, int attr,
 		const char* str, BOOLEAN_P presel);
 	static void qt_end_menu(winid wid, const char *prompt);
 	static int qt_select_menu(winid wid, int how, MENU_ITEM_P **menu_list);

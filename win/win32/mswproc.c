@@ -1129,13 +1129,16 @@ identifier
                    menu is displayed, set preselected to TRUE.
 */
 void
-mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct obj* otmp,
+mswin_add_extended_menu(winid wid, int glyph, const ANY_P *identifier, struct extended_menu_info info,
                CHAR_P accelerator, CHAR_P group_accel, int attr,
                const char *str, BOOLEAN_P presel)
 {
     logDebug("mswin_add_menu(%d, %d, %p, %c, %c, %d, %s, %d)\n", wid, glyph,
              identifier, (char) accelerator, (char) group_accel, attr, str,
              presel);
+
+    struct obj* otmp = info.object;
+
     if ((wid >= 0) && (wid < MAXWINDOWS)
         && (GetNHApp()->windowlist[wid].win != NULL)) {
         MSNHMsgAddMenu data;
@@ -1159,7 +1162,7 @@ mswin_add_menu(winid wid, int glyph, const ANY_P* identifier,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
-    mswin_add_extended_menu(wid, glyph, identifier, (struct obj*)0,
+    mswin_add_extended_menu(wid, glyph, identifier, obj_to_extended_menu_info((struct obj*)0),
         accelerator, group_accel, attr,
         str, presel);
 }

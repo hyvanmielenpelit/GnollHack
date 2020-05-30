@@ -2014,7 +2014,7 @@ mac_add_menu(winid win, int glyph, const anything *any, CHAR_P menuChar,
 }
 
 void
-mac_add_extended_menu(winid win, int glyph, const anything* any, struct obj* otmp, CHAR_P menuChar,
+mac_add_extended_menu(winid win, int glyph, const anything* any, struct extended_menu_info info, CHAR_P menuChar,
     CHAR_P groupAcc, int attr, const char* inStr, int preselected)
 {
     mac_add_menu(win, glyph, any, menuChar,

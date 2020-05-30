@@ -1155,7 +1155,8 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             enum autodraw_types autodraw = AUTODRAW_NONE;
             ntile = glyph2tile[glyph];
             ntile = maybe_get_replaced_tile(ntile, -1, -1,
-                item->object_data.otyp > STRANGE_OBJECT ? &item->object_data : (struct obj*)0, &autodraw);
+                obj_to_replacement_info(item->object_data.otyp > STRANGE_OBJECT ? &item->object_data : (struct obj*)0),
+                &autodraw);
             //ntile = maybe_get_animated_tile(ntile, data->intervalCounter, &item->is_animated, &autodraw);
             int multiplier = flip_tile ? -1 : 1;
 

@@ -25,7 +25,7 @@ static void FDECL(and_putmixed, (winid, int, const char *));
 static void FDECL(and_display_file, (const char *, BOOLEAN_P));
 static void FDECL(and_start_menu, (winid));
 static void FDECL(and_add_menu, (winid,int,const ANY_P *, CHAR_P,CHAR_P,int,const char *, BOOLEAN_P));
-static void FDECL(and_add_extended_menu, (winid, int, const ANY_P*, struct obj*, CHAR_P, CHAR_P, int, const char*, BOOLEAN_P));
+static void FDECL(and_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P, int, const char*, BOOLEAN_P));
 static void FDECL(and_end_menu, (winid, const char *));
 static int FDECL(and_select_menu, (winid, int, MENU_ITEM_P **));
 static char FDECL(and_message_menu, (CHAR_P, int, const char *));
@@ -1218,7 +1218,7 @@ void and_add_menu(winid wid, int glyph, const ANY_P *ident, CHAR_P accelerator, 
 	destroy_jobject(jstr);
 }
 
-void and_add_extended_menu(winid wid, int glyph, const ANY_P* ident, struct obj*, CHAR_P accelerator, CHAR_P groupacc, int attr, const char* str, BOOLEAN_P preselected)
+void and_add_extended_menu(winid wid, int glyph, const ANY_P* ident, struct extended_menu_info info, CHAR_P accelerator, CHAR_P groupacc, int attr, const char* str, BOOLEAN_P preselected)
 {
 	and_add_menu(wid, glyph, ident, accelerator, groupacc, attr, str, preselected);
 }

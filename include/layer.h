@@ -75,4 +75,17 @@ struct layer_info {
 #define CMAP_FLAG_FLOOR_LAYER 0x01
 
 
+
+struct replacement_info {
+    struct obj* object;
+};
+
+
+struct extended_menu_info {
+    struct obj* object;
+    int color;
+    unsigned long menu_flags;
+};
+
+
 #endif /* LAYER_H */

@@ -1064,7 +1064,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j, &data->map[i][j].object_data, &autodraw);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(&data->map[i][j].object_data), &autodraw);
                     ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j], &autodraw);
                     if (enlarg_idx >= 0)
                     {
@@ -1551,7 +1551,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 boolean flip_rider = (signed_mglyph < 0);
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
-                                mtile = maybe_get_replaced_tile(mtile, i, j, &data->map[i][j].object_data, (enum auto_drawtypes*)0);
+                                mtile = maybe_get_replaced_tile(mtile, i, j, obj_to_replacement_info(&data->map[i][j].object_data), (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
@@ -1726,7 +1726,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             int cglyph = flags.active_cursor_style + GLYPH_CURSOR_OFF;
                             int ctile = glyph2tile[cglyph];
-                            ctile = maybe_get_replaced_tile(ctile, i, j, (struct obj*)0, (enum autodraw_types*)0);
+                            ctile = maybe_get_replaced_tile(ctile, i, j, obj_to_replacement_info((struct obj*)0), (enum autodraw_types*)0);
                             ctile = maybe_get_animated_tile(ctile, data->interval_counter, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
@@ -1973,8 +1973,8 @@ static void dirty(PNHMapWindow data, int x, int y)
     short bktile = glyph2tile[abs(data->map[x][y].bkglyph)];
     short replacement_idx = tile2replacement[tile];
     short bk_replacement_idx = tile2replacement[bktile];
-    tile = maybe_get_replaced_tile(tile, x, y, level.objects[x][y], (enum autodraw_types*)0);
-    bktile = maybe_get_replaced_tile(bktile, x, y, (struct obj*)0, (enum autodraw_types*)0);
+    tile = maybe_get_replaced_tile(tile, x, y, obj_to_replacement_info(level.objects[x][y]), (enum autodraw_types*)0);
+    bktile = maybe_get_replaced_tile(bktile, x, y, obj_to_replacement_info((struct obj*)0), (enum autodraw_types*)0);
 
     tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
     bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);

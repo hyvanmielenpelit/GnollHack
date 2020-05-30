@@ -3327,4 +3327,15 @@ struct obj *otmp;
 }
 
 
+struct extended_menu_info
+obj_to_extended_menu_info(otmp)
+struct obj* otmp;
+{
+    struct extended_menu_info info = { 0 };
+    info.object = otmp;
+
+    return info;
+}
+
+
 /*hack.c*/

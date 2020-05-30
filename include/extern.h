@@ -39,11 +39,12 @@ E short FDECL(get_player_enlargement, (enum action_tile_types, int, int, int, in
 E int FDECL(get_player_action_glyph_offset, (enum action_tile_types));
 E int FDECL(get_monster_action_glyph_offset, (enum action_tile_types, int));
 
-E short FDECL(maybe_get_replaced_tile, (short, int, int, struct obj*, enum autodraw_types*));
+E short FDECL(maybe_get_replaced_tile, (short, int, int, struct replacement_info, enum autodraw_types*));
 E short FDECL(maybe_get_animated_tile, (short, unsigned long, boolean*, enum autodraw_types*));
 E short FDECL(get_replacement_base_tile, (short));
 E short FDECL(get_animation_base_tile, (short));
 E short FDECL(get_enlargement_base_tile, (short));
+E struct replacement_info FDECL(obj_to_replacement_info, (struct obj*));
 
 /* ### apply.c ### */
 
@@ -1054,6 +1055,7 @@ E int NDECL(max_capacity);
 E boolean FDECL(check_capacity, (const char *));
 E int FDECL(inv_cnt, (BOOLEAN_P));
 E long FDECL(money_cnt, (struct obj *));
+E struct extended_menu_info FDECL(obj_to_extended_menu_info, (struct obj*));
 
 /* ### hacklib.c ### */
 

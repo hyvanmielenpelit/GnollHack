@@ -4826,7 +4826,7 @@ void NetHackQtBind::qt_add_menu(winid wid, int glyph,
 }
 
 void NetHackQtBind::qt_add_extended_menu(winid wid, int glyph,
-    const ANY_P* identifier, struct obj* otmp, CHAR_P ch, CHAR_P gch, int attr,
+    const ANY_P* identifier, struct extended_menu_info info, CHAR_P ch, CHAR_P gch, int attr,
     const char* str, BOOLEAN_P presel)
 {
     NetHackQtWindow* window = id_to_window[wid];

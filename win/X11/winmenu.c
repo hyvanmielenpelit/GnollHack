@@ -705,11 +705,11 @@ boolean preselected;
 }
 
 void
-X11_add_extended_menu(window, glyph, identifier, otmp, ch, gch, attr, str, preselected)
+X11_add_extended_menu(window, glyph, identifier, info, ch, gch, attr, str, preselected)
 winid window;
 int glyph; /* unused (for now) */
 const anything* identifier;
-struct obj* otmp;
+struct extended_menu_info info;
 char ch;
 char gch; /* group accelerator (0 = no group) */
 int attr;

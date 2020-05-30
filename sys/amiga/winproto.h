@@ -42,7 +42,7 @@ void amii_getret(void);
 void amii_start_menu(winid window);
 void FDECL(amii_add_menu, (winid, int, const anything *, CHAR_P, CHAR_P, int,
                            const char *, BOOLEAN_P));
-void FDECL(amii_add_extended_menu, (winid, int, const anything*, struct obj*, CHAR_P, CHAR_P, int,
+void FDECL(amii_add_extended_menu, (winid, int, const anything*, struct extended_menu_info, CHAR_P, CHAR_P, int,
     const char*, BOOLEAN_P));
 void FDECL(amii_end_menu, (winid, const char *));
 int FDECL(amii_select_menu, (winid, int, menu_item **));

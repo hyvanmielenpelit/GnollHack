@@ -464,15 +464,25 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     return 0;
 }
 
+struct replacement_info
+obj_to_replacement_info(otmp)
+struct obj* otmp;
+{
+    struct replacement_info info = { 0 };
+    info.object = otmp;
+
+    return info;
+}
 
 short
-maybe_get_replaced_tile(ntile, x, y, otmp, autodraw_ptr)
+maybe_get_replaced_tile(ntile, x, y, info, autodraw_ptr)
 int x, y;
 short ntile;
-struct obj* otmp;
+struct replacement_info info;
 enum autodraw_types* autodraw_ptr;
 {
 #ifdef USE_TILES
+    struct obj* otmp = info.object;
     short replacement_idx = tile2replacement[ntile];
     if (replacement_idx > 0)
     {

@@ -34,7 +34,7 @@ struct window_procs {
     void FDECL((*win_start_menu), (winid));
     void FDECL((*win_add_menu), (winid, int, const ANY_P *, CHAR_P, CHAR_P,
                                  int, const char *, BOOLEAN_P));
-    void FDECL((*win_add_extended_menu), (winid, int, const ANY_P*, struct obj*, CHAR_P, CHAR_P,
+    void FDECL((*win_add_extended_menu), (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P,
         int, const char*, BOOLEAN_P));
     void FDECL((*win_end_menu), (winid, const char *));
     int FDECL((*win_select_menu), (winid, int, MENU_ITEM_P **));
@@ -340,7 +340,7 @@ struct chain_procs {
     void FDECL((*win_start_menu), (CARGS, winid));
     void FDECL((*win_add_menu), (CARGS, winid, int, const ANY_P *, CHAR_P,
                                  CHAR_P, int, const char *, BOOLEAN_P));
-    void FDECL((*win_add_extended_menu), (CARGS, winid, int, const ANY_P*, struct obj*, CHAR_P,
+    void FDECL((*win_add_extended_menu), (CARGS, winid, int, const ANY_P*, struct extended_menu_info, CHAR_P,
         CHAR_P, int, const char*, BOOLEAN_P));
     void FDECL((*win_end_menu), (CARGS, winid, const char *));
     int FDECL((*win_select_menu), (CARGS, winid, int, MENU_ITEM_P **));
@@ -416,7 +416,7 @@ extern void FDECL(safe_display_file, (const char *, BOOLEAN_P));
 extern void FDECL(safe_start_menu, (winid));
 extern void FDECL(safe_add_menu, (winid, int, const ANY_P *, CHAR_P, CHAR_P,
                                   int, const char *, BOOLEAN_P));
-extern void FDECL(safe_add_extended_menu, (winid, int, const ANY_P*, struct obj*, CHAR_P, CHAR_P,
+extern void FDECL(safe_add_extended_menu, (winid, int, const ANY_P*, struct extended_menu_info, CHAR_P, CHAR_P,
     int, const char*, BOOLEAN_P));
 extern void FDECL(safe_end_menu, (winid, const char *));
 extern int FDECL(safe_select_menu, (winid, int, MENU_ITEM_P **));

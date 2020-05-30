@@ -1080,7 +1080,7 @@ mswin_add_menu(winid wid, int glyph, const ANY_P *identifier,
 }
 
 void
-mswin_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct obj* otmp,
+mswin_add_extended_menu(winid wid, int glyph, const ANY_P* identifier, struct extended_menu_info info,
     CHAR_P accelerator, CHAR_P group_accel, int attr,
     const char* str, BOOLEAN_P presel)
 {
