@@ -880,13 +880,18 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean flip_glyph = FALSE;
     data->mapAnimated[i][j] = FALSE;
 
-/*
-    if (glyph == NO_GLYPH && bkglyph == NO_GLYPH) {
-        HBRUSH blackBrush = CreateSolidBrush(RGB(0, 0, 0));
-        FillRect(data->backBufferDC, rect, blackBrush);
-        DeleteObject(blackBrush);
-    }
-*/
+    boolean ispet = !!(data->map[i][j].layer_flags & LFLAGS_M_PET);
+    boolean ispeaceful = !!(data->map[i][j].layer_flags & LFLAGS_M_PEACEFUL);
+    boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
+    boolean issteed = !!(data->map[i][j].layer_flags & LFLAGS_M_RIDDEN);
+    genericptr_t m_stored = data->map[i][j].monster_comp_ptr;
+    struct monst* m_here = m_at(i, j);
+    struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
+
+    genericptr_t o_stored = data->map[i][j].object_comp_ptr;
+    struct obj* o_here = level.objects[i][j];
+    struct obj* otmp = (o_here == o_stored) ? o_here : (struct obj*)0;
+
     int enl_i = -1, enl_j = -1;
     boolean enlarged = FALSE;
     short frame_index = 0;
@@ -1002,7 +1007,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 else if(base_layer == 2)
                     signed_glyph = layer2signedglyph;
                 */
-                boolean draw_in_front = ((data->map[enl_i][enl_j].layer_flags & LFLAGS_O_DRAWN_IN_FRONT) || (data->map[enl_i][enl_j].object_data.otyp > STRANGE_OBJECT && objects[data->map[enl_i][enl_j].object_data.otyp].oc_flags4 & O4_DRAWN_IN_FRONT));
+                genericptr_t o_stored_enl = data->map[enl_i][enl_j].object_comp_ptr;
+                struct obj* o_here_enl = level.objects[enl_i][enl_j];
+                struct obj* otmp_enl = (o_here_enl == o_stored_enl) ? o_here_enl : (struct obj*)0;
+
+                boolean draw_in_front = (otmp_enl && ((data->map[enl_i][enl_j].layer_flags & LFLAGS_O_DRAWN_IN_FRONT) || (objects[otmp_enl->otyp].oc_flags4 & O4_DRAWN_IN_FRONT)));
 
                 int layer0signedglyph = abs(signed_bk_glyph) != NO_GLYPH ? signed_bk_glyph : NO_GLYPH;
                 int layer1signedglyph = abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
@@ -1064,7 +1073,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(&data->map[i][j].object_data), &autodraw);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(otmp), &autodraw);
                     ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j], &autodraw);
                     if (enlarg_idx >= 0)
                     {
@@ -1325,20 +1334,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
 
                     boolean ismonster = !!glyph_is_monster(glyph);
-                    boolean monsterdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_DATA_SET);
-                    boolean ispet = !!(data->map[i][j].layer_flags & LFLAGS_M_PET);
-                    boolean petdataset = !!(data->map[i][j].layer_flags & LFLAGS_M_PET_DATA_SET);
-                    boolean ispeaceful = !!(data->map[i][j].layer_flags & LFLAGS_M_PEACEFUL);
-                    boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
-                    boolean issteed = !!(data->map[i][j].layer_flags & LFLAGS_M_RIDDEN);
-
                     int condition_count = 0;
 
                     /* Conditions and status marks */
-                    if ((glyph != NO_GLYPH) && ismonster && (isyou || (monsterdataset)))
+                    if ((glyph != NO_GLYPH) && ismonster && mtmp)
                     {
-                        struct monst* mtmp = isyou ? &youmonst : &data->map[i][j].monster_data;
-
                         if(1)
                         {
                             /* Petmarks and other such symbols */
@@ -1373,13 +1373,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     break;
                                 case STATUS_MARK_HUNGRY:
                                     if ((isyou && u.uhs == HUNGRY) 
-                                        || (!isyou && ispet && petdataset && monstermoves >= data->map[i][j].pet_data.hungrytime && data->map[i][j].pet_data.mhpmax_penalty == 0)
+                                        || (!isyou && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
                                         )
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_WEAK:
                                     if (isyou && u.uhs == WEAK
-                                        || (!isyou && ispet && petdataset && monstermoves >= data->map[i][j].pet_data.hungrytime && data->map[i][j].pet_data.mhpmax_penalty > 0)
+                                        || (!isyou && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
                                         )
                                         display_this_status_mark = TRUE;
                                     break;
@@ -1551,7 +1551,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 boolean flip_rider = (signed_mglyph < 0);
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
-                                mtile = maybe_get_replaced_tile(mtile, i, j, obj_to_replacement_info(&data->map[i][j].object_data), (enum auto_drawtypes*)0);
+                                mtile = maybe_get_replaced_tile(mtile, i, j, obj_to_replacement_info(otmp), (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
@@ -1603,14 +1603,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                     /* Draw hit point bars */
-                    if (ismonster && (
-                        (ispet && monsterdataset && flags.show_tile_pet_hp_bar)
+                    if (ismonster && mtmp && (
+                        (ispet && flags.show_tile_pet_hp_bar)
                         || (isyou && flags.show_tile_u_hp_bar)
-                        || (!ispet && !isyou && monsterdataset && flags.show_tile_mon_hp_bar)
+                        || (!ispet && !isyou && flags.show_tile_mon_hp_bar)
                         ))
                     {
-                        int hp = isyou ? (Upolyd ? u.mh : u.uhp) : data->map[i][j].monster_data.mhp;
-                        int hpmax = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : data->map[i][j].monster_data.mhpmax;
+                        int hp = isyou ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
+                        int hpmax = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
                         double fraction = (hpmax == 0 ? 0 : max(0, min(1,(double)hp / (double)hpmax)));
                         double r_mult = fraction <= 0.25 ? fraction * 2.0 + 0.5 : fraction <= 0.5 ? 1.0 : (1.0 - fraction) * 2.0;
                         double g_mult = fraction <= 0.25 ? 0 : fraction <= 0.5 ? (fraction - 0.25) * 4.0 : 1.0;
@@ -1884,8 +1884,8 @@ static void clearAll(PNHMapWindow data)
             for(int i = 0; i < MAX_LAYERS; i++)
                 data->map[x][y].layer_glyphs[i] = NO_GLYPH;
             data->map[x][y].layer_flags = 0UL;
-            data->map[x][y].object_data = zeroobj;
-            data->map[x][y].monster_data = zeromonst;
+            data->map[x][y].monster_comp_ptr = (genericptr_t)0;
+            data->map[x][y].object_comp_ptr = (genericptr_t)0;
             data->map[x][y].damage_displayed = 0;
             data->mapDirty[x][y] = TRUE;
             data->mapAnimated[x][y] = 0;

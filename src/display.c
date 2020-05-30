@@ -1718,19 +1718,12 @@ int damage_displayed;
         {
             if (Hallucination)
             {
-                gbuf[y][x].layers.object_data = zeroobj;
-                gbuf[y][x].layers.layer_flags &= ~LFLAGS_O_DATA_SET;
+                gbuf[y][x].layers.object_comp_ptr = (genericptr_t)0;
             }
             else
             {
-                gbuf[y][x].layers.object_data = *otmp;
-                gbuf[y][x].layers.layer_flags |= LFLAGS_O_DATA_SET;
+                gbuf[y][x].layers.object_comp_ptr = (genericptr_t)otmp;
             }
-            /* prune all pointers */
-            gbuf[y][x].layers.object_data.nobj = 0;
-            gbuf[y][x].layers.object_data.v.v_nexthere = 0;
-            gbuf[y][x].layers.object_data.cobj = 0;
-            gbuf[y][x].layers.object_data.oextra = 0;
 
             if (objects[otmp->otyp].oc_flags4 & O4_DRAWN_IN_FRONT && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_O_DRAWN_IN_FRONT;
@@ -1740,31 +1733,13 @@ int damage_displayed;
         {
             if (Hallucination)
             {
-                gbuf[y][x].layers.monster_data = zeromonst;
-                gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_DATA_SET;
+                gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
             }
             else
             {
-                gbuf[y][x].layers.monster_data = *mtmp;
-                gbuf[y][x].layers.layer_flags |= LFLAGS_M_DATA_SET;
+                gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)mtmp;
             }
-            /* prune all other pointers except permonst data, which is static */
-            gbuf[y][x].layers.monster_data.nmon = 0;
-            gbuf[y][x].layers.monster_data.minvent = 0;
-            gbuf[y][x].layers.monster_data.mw = 0;
-            gbuf[y][x].layers.monster_data.mextra = 0;
 
-            struct edog zeroedog = { 0 };
-            if (mtmp->mextra && EDOG(mtmp) && !Hallucination)
-            {
-                gbuf[y][x].layers.pet_data = *EDOG(mtmp);
-                gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET_DATA_SET;
-            }
-            else
-            {
-                gbuf[y][x].layers.pet_data = zeroedog;
-                gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_PET_DATA_SET;
-            }
             if(is_tame(mtmp) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET;
 
@@ -1773,6 +1748,7 @@ int damage_displayed;
 
             if ((mtmp->worn_item_flags & W_SADDLE) && !Hallucination)
                 gbuf[y][x].layers.layer_flags |= LFLAGS_M_SADDLED;
+
             /* Other conditions here */
         }
 
@@ -1803,7 +1779,7 @@ int x, y, glyph;
         {
             gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = glyph;
             gbuf[y][x].layers.layer_flags &= LFLAGS_M_MASK;
-            gbuf[y][x].layers.monster_data = zeromonst;
+            gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
         }
         else if (glyph_is_object(glyph))
         {
@@ -1815,7 +1791,7 @@ int x, y, glyph;
                 gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = glyph;
 
             gbuf[y][x].layers.layer_flags &= LFLAGS_O_MASK;
-            gbuf[y][x].layers.object_data = zeroobj;
+            gbuf[y][x].layers.object_comp_ptr= (genericptr_t)0;
         }
         else if (glyph_is_missile(glyph) || glyph_is_zap(glyph))
         {

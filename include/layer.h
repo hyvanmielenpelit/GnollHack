@@ -32,12 +32,8 @@ struct layer_info {
     unsigned long layer_flags;
 
     /* Monster info for display */
-    void* object_comp_ptr;
-    void* monster_comp_ptr;
-
-    struct obj object_data;     /* Note not a pointer to avoid spurious pointers, contained pointers set to zero */
-    struct monst monster_data;  /* Note not a pointer to avoid spurious pointers, contained pointers set to zero */
-    struct edog pet_data;       /* Note not a pointer to avoid spurious pointers */
+    genericptr_t object_comp_ptr;   /* invalidate the pointer use for any other purposes than comparing the memory address */
+    genericptr_t monster_comp_ptr;  /* invalidate the pointer use for any other purposes than comparing the memory address */
 
     int damage_displayed;
 
@@ -49,8 +45,6 @@ struct layer_info {
 #define LFLAGS_M_RIDDEN             0x00000008UL
 #define LFLAGS_M_SADDLED            0x00000010UL
 #define LFLAGS_M_YOU                0x00000020UL
-#define LFLAGS_M_DATA_SET           0x00000040UL
-#define LFLAGS_M_PET_DATA_SET       0x00000080UL
 #define LFLAGS_M_BEING_HIT          0x00000100UL
 #define LFLAGS_M_HIT_TILE_MASK      0x00000E00UL /* 3 bits indicating display of hit tile 0-7 */
 #define LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET 9 
@@ -58,7 +52,6 @@ struct layer_info {
 
 #define LFLAGS_O_DRAWN_IN_FRONT     0x00001000UL
 #define LFLAGS_O_PILE               0x00002000UL
-#define LFLAGS_O_DATA_SET           0x00004000UL
 #define LFLAGS_O_MASK               0x000FF000UL
 
 #define LFLAGS_DISINTEGRATED        0x00100000UL
