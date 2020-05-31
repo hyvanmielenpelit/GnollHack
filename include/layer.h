@@ -10,8 +10,8 @@ enum layer_types
 {
     LAYER_FLOOR = 0,
     LAYER_FEATURE,
-    LAYER_TRAP,
     LAYER_DOODAD,
+    LAYER_TRAP,
     LAYER_OBJECT,
     LAYER_MONSTER,
     LAYER_MISSILE,

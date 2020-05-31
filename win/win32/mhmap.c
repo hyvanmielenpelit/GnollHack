@@ -1023,7 +1023,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 }
 
-                boolean draw_in_front = (otmp_round && ((objects[otmp_round->otyp].oc_flags4 & O4_DRAWN_IN_FRONT)));
+                boolean draw_in_front = (otmp_round && is_obj_drawn_in_front(otmp_round));
                 if (base_layer == LAYER_COVER && !draw_in_front)
                     continue; /* next round */
                 if (base_layer == LAYER_OBJECT && draw_in_front)
@@ -1051,7 +1051,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     signed_glyph = layer4signedglyph;
                 */
                 if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
-                    signed_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer] == NO_GLYPH ? NO_GLYPH : obj_to_glyph(otmp_round, rn2_on_display_rng);
+                    signed_glyph = otmp_round->glyph == NO_GLYPH || otmp_round->glyph == 0 ? NO_GLYPH : otmp_round->glyph;
                 else
                     signed_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
 

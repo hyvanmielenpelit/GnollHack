@@ -2257,6 +2257,7 @@ int level_limit;
     if (ptr->msound == MS_LEADER && quest_info(MS_LEADER) == mndx)
         quest_status.leader_m_id = mtmp->m_id;
     mtmp->mnum = mndx;
+    mtmp->glyph = NO_GLYPH;
 
 	/* set up stats*/
 	for (int i = 0; i < A_MAX; i++)

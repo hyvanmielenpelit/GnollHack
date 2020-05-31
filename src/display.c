@@ -333,8 +333,13 @@ map_object(obj, show)
 register struct obj *obj;
 register int show;
 {
+    if (!obj)
+        return;
+
     register int x = obj->ox, y = obj->oy;
     register int glyph = obj_to_glyph(obj, newsym_rn2);
+    boolean draw_in_front = is_obj_drawn_in_front(obj);
+    enum layer_types layer = draw_in_front ? LAYER_COVER : LAYER_OBJECT;
 
     if (level.flags.hero_memory) 
     {
@@ -347,13 +352,16 @@ register int show;
             new_glyph = random_obj_to_glyph(newsym_rn2);
         }
         levl[x][y].layers.glyph = new_glyph;
-        levl[x][y].layers.layer_glyphs[LAYER_OBJECT] = new_glyph;
+        levl[x][y].layers.layer_glyphs[layer] = new_glyph;
     }
+
+    /* Save this object's glyph for showing in object pile */
+    obj->glyph = glyph;
 
     if (show)
     {
         show_glyph_ascii(x, y, glyph);
-        show_glyph_on_layer(x, y, glyph, LAYER_OBJECT);
+        show_glyph_on_layer(x, y, glyph, layer);
     }
 }
 
@@ -412,24 +420,25 @@ register int x, y;
     if (!level.flags.hero_memory)
         return;
 
-    if ((trap = t_at(x, y)) != 0 && trap->tseen && !covers_traps(x, y))
-    {
-        map_trap(trap, 0);
-    } 
-    else if (levl[x][y].seenv)
-    {
-        struct rm *lev = &levl[x][y];
+    clear_hero_memory_at(x, y);
 
+    if (levl[x][y].seenv)
+    {
         map_background(x, y, 0);
 
+#if 0
+        struct rm* lev = &levl[x][y];
+
+        /* Seems obsolete with back_to_glyph handling lighting --JG */
         /* turn remembered dark room squares dark */
-        if (!lev->waslit && lev->layers.glyph == cmap_to_glyph(S_room)
-            && lev->typ == ROOM)
-            clear_layer_info(&lev->layers);
-    } 
-    else
-    {
-        clear_layer_info(&levl[x][y].layers); /* default val */
+        if (!lev->waslit && lev->layers.glyph == cmap_to_glyph(S_room) && lev->typ == ROOM)
+            clear_all_glyphs_at(x, y);
+#endif
+
+        if ((trap = t_at(x, y)) != 0 && trap->tseen && !covers_traps(x, y))
+        {
+            map_trap(trap, 0);
+        }
     }
 }
 
@@ -441,6 +450,7 @@ register int x, y;
  *
  * Internal to display.c, this is a #define for speed.
  */
+/*
 #define _map_location(x, y, show) \
     {                                                                       \
         register struct obj *obj;                                           \
@@ -454,12 +464,46 @@ register int x, y;
                                                                             \
         remember_topology(x, y);                                            \
     }
-
+*/
 void
 map_location(x, y, show)
 int x, y, show;
 {
-    _map_location(x, y, show);
+    struct obj* obj;
+    struct trap* trap;
+
+    /* Floor and feature layers */
+    map_background(x, y, show);
+
+    /* Trap layer */
+    if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))
+        map_trap(trap, show);
+
+    /* Doodad layer */
+    /* map_doodad(x, y) */
+    /* gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = NO_GLYPH; */
+
+    /* Object layer */
+    if (!covers_objects(x, y))
+    {
+        boolean show_first_object_layer = show;
+        boolean show_first_cover_layer = show;
+        for (obj = vobj_at(x, y); obj; obj = obj->nexthere)
+        {
+            boolean draw_in_front = is_obj_drawn_in_front(obj);
+            map_object(obj, draw_in_front ? show_first_cover_layer : show_first_object_layer);
+            if (draw_in_front)
+                show_first_cover_layer = FALSE;
+            else
+                show_first_object_layer = FALSE;
+        }
+    }
+    if (is_objpile(x, y) && !Hallucination)
+        add_extra_info_flags(x, y, LFLAGS_O_PILE);
+
+    remember_topology(x, y);
+
+    //_map_location(x, y, show);
 }
 
 #define DETECTED 2
@@ -835,7 +879,7 @@ xchar x, y;
     } 
     else
     {
-        _map_location(x, y, 1);
+        map_location(x, y, 1);
 
         if (Punished) 
         {
@@ -925,6 +969,33 @@ struct layer_info* layers_ptr;
 
 }
 
+void
+clear_object_glyphs_at(x, y)
+int x, y;
+{
+    for (struct obj* otmp = vobj_at(x, y); otmp; otmp = otmp->nexthere)
+    {
+        otmp->glyph = NO_GLYPH;
+    }
+}
+
+void
+clear_hero_memory_at(x, y)
+int x, y;
+{
+    struct layer_info* layer_ptr = &levl[x][y].layers;
+    clear_layer_info(layer_ptr);
+    //clear_object_glyphs_at(x, y);
+}
+
+void
+clear_all_glyphs_at(x, y)
+int x, y;
+{
+    clear_layer_info(&gbuf[y][x].layers);
+    clear_object_glyphs_at(x, y);
+}
+
 
 /*
  * newsym()
@@ -952,7 +1023,8 @@ int damage_shown;
     register int see_it;
     register xchar worm_tail;
     int orig_glyph = lev->layers.glyph;
-    clear_layer_info(&gbuf[y][x].layers);
+    //clear_layer_info(&gbuf[y][x].layers);
+    clear_all_glyphs_at(x, y);
 
     if (in_mklev)
         return;
@@ -979,15 +1051,17 @@ int damage_shown;
             return;
     }
 
-    register struct obj* obj;
-    register struct trap* trap;
-
     /* Extra info shown */
     show_extra_info(x, y, disp_flags, damage_shown);
 
     /* Can physically see the location. */
     if (cansee(x, y)) 
     {
+        map_location(x, y, 1);
+#if 0
+        struct obj* obj;
+        struct trap* trap;
+
         /* Floor and feature layers */
         map_background(x, y, 1);
 
@@ -1000,13 +1074,23 @@ int damage_shown;
         /* gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = NO_GLYPH; */
 
         /* Object layer */
-        /* This maps only the first object for object layer; in reality, all objects at a non-covering location are rendered by GUI */
-        if ((obj = vobj_at(x, y)) && !covers_objects(x, y))
-            map_object(obj, 1);
-
+        if (!covers_objects(x, y))
+        {
+            boolean show_first_object_layer = TRUE;
+            boolean show_first_cover_layer = TRUE;
+            for (obj = vobj_at(x, y); obj; obj = obj->nexthere)
+            {
+                boolean draw_in_front = is_obj_drawn_in_front(obj);
+                map_object(obj, draw_in_front ? show_first_cover_layer : show_first_object_layer);
+                if(draw_in_front)
+                    show_first_cover_layer = FALSE;
+                else
+                    show_first_object_layer = FALSE;
+            }
+        }
         if (is_objpile(x, y) && !Hallucination)
             add_extra_info_flags(x, y, LFLAGS_O_PILE);
-
+#endif
         /* Monster layer */
         if (x == u.ux && y == u.uy)
         {
@@ -1016,7 +1100,7 @@ int damage_shown;
             /* update map information for <u.ux,u.uy> (remembered topology
                and object/known trap/terrain glyph) but only display it if
                hero can't see him/herself, then show self if appropriate */
-            _map_location(x, y, !see_self);
+            map_location(x, y, !see_self);
 #endif
 
             if (see_self)
@@ -2151,7 +2235,7 @@ boolean remove;
         {
             int obj_idx = glyph_to_obj(glyph);
 
-            if (objects[obj_idx].oc_flags4 & O4_DRAWN_IN_FRONT)
+            if (is_otyp_drawn_in_front(obj_idx))
                 gbuf[y][x].layers.layer_glyphs[LAYER_COVER] = remove ? NO_GLYPH : glyph;
             else
                 gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = remove ? NO_GLYPH : glyph;
@@ -2850,7 +2934,8 @@ xchar x, y;
     struct rm* ptr = &(levl[x][y]);
     boolean is_variation = FALSE;
 
-    switch (ptr->typ) {
+    switch (ptr->typ) 
+    {
     case UNEXPLORED:
     case SCORR:
     case STONE:
@@ -2881,10 +2966,10 @@ xchar x, y;
         return NO_GLYPH;
     case DOOR:
     case IRONBARS:
-        idx = S_room;
+        idx = ptr->lit ? S_room : DARKROOMSYM;
         break;
     case TREE:
-        idx = S_grass;
+        idx = ptr->lit ? S_grass : DARKROOMSYM;
         break;
     case LADDER:
     case STAIRS:
@@ -2893,10 +2978,11 @@ xchar x, y;
     case ALTAR:
     case GRAVE:
     case THRONE:
-        idx = S_room;
+        idx = ptr->lit ? S_room : DARKROOMSYM;
         break;
     case DRAWBRIDGE_DOWN:
-        switch (ptr->drawbridgemask & DB_UNDER) {
+        switch (ptr->drawbridgemask & DB_UNDER) 
+        {
         case DB_MOAT:
             idx = S_pool;
             break;
@@ -2907,18 +2993,18 @@ xchar x, y;
             idx = S_ice;
             break;
         case DB_FLOOR:
-            idx = S_room;
+            idx = ptr->lit ? S_room : DARKROOMSYM;
             break;
         default:
             impossible("Strange db-under: %d",
                 ptr->drawbridgemask & DB_UNDER);
-            idx = S_room; /* something is better than nothing */
+            idx = ptr->lit ? S_room : DARKROOMSYM; /* something is better than nothing */
             break;
         }
         break;
     default:
         impossible("get_floor_layer_glyph:  unknown level type [ = %d ]", ptr->typ);
-        idx = S_room;
+        idx = ptr->lit ? S_room : DARKROOMSYM;
         break;
     }
 
