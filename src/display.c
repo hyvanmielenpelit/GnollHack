@@ -916,7 +916,7 @@ struct layer_info* layers_ptr;
     /* Zero out and then no-glyph */
     *layers_ptr = zerolayerinfo;
 
-    layers_ptr->glyph = NO_GLYPH;
+    layers_ptr->glyph = base_cmap_to_glyph(S_unexplored);
     layers_ptr->bkglyph = NO_GLYPH;
     for (enum layer_types i = LAYER_FLOOR; i < MAX_LAYERS; i++)
     {
@@ -2752,8 +2752,7 @@ xchar x, y;
 {
     if (x < 0 || y < 0 || x >= COLNO || y >= ROWNO)
     {
-        struct layer_info layers = zerolayerinfo;
-        layers.glyph = cmap_to_glyph(S_unexplored);
+        struct layer_info layers = nul_layerinfo;
         return layers;
     }
     return gbuf[y][x].layers;

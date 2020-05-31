@@ -1084,6 +1084,8 @@ newgame()
                        * any artifacts */
     u_init();
 
+    flags.game_started = TRUE;
+
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif

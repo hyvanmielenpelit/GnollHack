@@ -35,6 +35,7 @@ struct flag {
     boolean female;  /* initial selection */
 #define discover flags.explore
     boolean friday13;        /* it's Friday the 13th */
+    boolean game_started;
     boolean help;            /* look in data file for info about stuff */
     boolean ignintr;         /* ignore interrupts */
     boolean ins_chkpt;       /* checkpoint as appropriate; INSURANCE */

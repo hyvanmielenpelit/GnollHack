@@ -16,8 +16,8 @@
 #include "patchlevel.h"
 #include "layer.h"
 
-#define NHMAP_FONT_NAME TEXT("Underwood Champion")
-#define NHMAP_TTFONT_NAME TEXT("Underwood Champion")
+#define NHMAP_FONT_NAME TEXT("Terminal")
+#define NHMAP_TTFONT_NAME TEXT("Consolas")
 #define MAXWINDOWTEXT 255
 
 #define CURSOR_BLINK_IN_INTERVALS 25
@@ -1875,7 +1875,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         SetTextColor(data->backBufferDC, OldFg);
     }
 
-    if (i == data->xCur && j == data->yCur &&
+    if (flags.game_started && i == data->xCur && j == data->yCur &&
         (data->cursorOn || !win32_cursorblink )) {
         int yCursor = (win32_cursorblink ? data->yBlinkCursor :
                                            data->yNoBlinkCursor);
@@ -1923,14 +1923,18 @@ static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
 static void clearAll(PNHMapWindow data)
 {
     for (int x = 0; x < COLNO; x++)
-        for (int y = 0; y < ROWNO; y++) {
+        for (int y = 0; y < ROWNO; y++) 
+        {
+            clear_layer_info(&data->map[x][y]);
+            /*
             data->map[x][y] = zerolayerinfo;
-            data->map[x][y].glyph = NO_GLYPH;
+            data->map[x][y].glyph = base_cmap_to_glyph(S_unexplored);
             data->map[x][y].bkglyph = NO_GLYPH;
             for (enum layer_types i = LAYER_FLOOR; i < MAX_LAYERS; i++)
             {
                 data->map[x][y].layer_glyphs[i] = NO_GLYPH;
             }
+            */
             data->mapDirty[x][y] = TRUE;
             data->mapAnimated[x][y] = 0;
         }
