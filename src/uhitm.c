@@ -119,7 +119,7 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
          * not stay there, so the player will have suddenly forgotten
          * the square's contents for no apparent reason.
         if (!canspotmon(mtmp)
-            && !glyph_is_invisible(levl[bhitpos.x][bhitpos.y].layers.glyph))
+            && !glyph_is_invisible(levl[bhitpos.x][bhitpos.y].hero_memory_layers.glyph))
             map_invisible(bhitpos.x, bhitpos.y);
          */
         return FALSE;
@@ -543,7 +543,7 @@ register struct monst *mtmp;
      * evade.
      */
     if (context.forcefight && !DEADMONSTER(mtmp) && !canspotmon(mtmp)
-        && !glyph_is_invisible(levl[u.ux + u.dx][u.uy + u.dy].layers.glyph)
+        && !glyph_is_invisible(levl[u.ux + u.dx][u.uy + u.dy].hero_memory_layers.glyph)
         && !(u.uswallow && mtmp == u.ustuck))
         map_invisible(u.ux + u.dx, u.uy + u.dy);
 
@@ -672,7 +672,7 @@ struct obj* weapon;
             continue;
         mtmp = m_at(tx, ty);
         if (!mtmp) {
-            if (glyph_is_invisible(levl[tx][ty].layers.glyph))
+            if (glyph_is_invisible(levl[tx][ty].hero_memory_layers.glyph))
                 (void) unmap_invisible(tx, ty);
             continue;
         }
@@ -4209,7 +4209,7 @@ struct monst *mtmp;
         else if (M_AP_TYPE(mtmp) == M_AP_MONSTER)
             what = a_monnam(mtmp); /* differs from what was sensed */
     } else {
-        int glyph = levl[u.ux + u.dx][u.uy + u.dy].layers.glyph;
+        int glyph = levl[u.ux + u.dx][u.uy + u.dy].hero_memory_layers.glyph;
 
         if (glyph_is_cmap_or_cmap_variation(glyph) && (glyph_to_cmap(glyph) == S_hcdoor
                                      || glyph_to_cmap(glyph) == S_vcdoor))
@@ -4231,7 +4231,7 @@ struct monst *mtmp;
     /* if hero is blind, wakeup() won't display the monster even though
        it's no longer concealed */
     if (!canspotmon(mtmp)
-        && !glyph_is_invisible(levl[mtmp->mx][mtmp->my].layers.glyph))
+        && !glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
         map_invisible(mtmp->mx, mtmp->my);
 }
 

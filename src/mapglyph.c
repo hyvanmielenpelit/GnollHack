@@ -538,7 +538,7 @@ const char *str;
                         else
                             break;
 
-                    struct layer_info layers = { 0 };
+                    struct layer_info layers = nul_layerinfo;
                     layers.glyph = gv;
 
                     so = mapglyph(layers, &ch, &oc, &os, 0, 0);

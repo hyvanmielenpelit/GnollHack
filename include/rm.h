@@ -556,7 +556,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
  * must be updated to consider the field.
  */
 struct rm {
-    struct layer_info layers; // glyph;               /* what the hero thinks is there */
+    struct layer_info hero_memory_layers; // glyph;               /* what the hero thinks is there */
     schar typ;               /* what is really there */
     uchar seenv;             /* seen vector */
     uchar flags;			/* extra information for typ */

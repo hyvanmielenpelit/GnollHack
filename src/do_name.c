@@ -240,8 +240,8 @@ const void *b;
 
 #define IS_UNEXPLORED_LOC(x,y) \
     (isok((x), (y))                                     \
-     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].layers.glyph)             \
-     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].layers.glyph) == S_unexplored  \
+     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].hero_memory_layers.glyph)             \
+     && glyph_is_cmap_or_cmap_variation(levl[(x)][(y)].hero_memory_layers.glyph) == S_unexplored  \
      && !levl[(x)][(y)].seenv)
 
 static struct opvar *gloc_filter_map = (struct opvar *) 0;
@@ -931,7 +931,7 @@ enum game_cursor_types cursor_style;
                                     /* !terrainmode: don't move to remembered
                                        trap or object if not currently shown */
                                     && !iflags.terrainmode) {
-                                    k = levl[tx][ty].layers.glyph;
+                                    k = levl[tx][ty].hero_memory_layers.glyph;
                                     if (glyph_is_cmap_or_cmap_variation(k)
                                         && matching[glyph_to_cmap(k)])
                                         goto foundc;

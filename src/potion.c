@@ -1072,7 +1072,7 @@ struct obj *otmp;
             incr_itimeout(&HDetect_monsters, i);
             for (x = 1; x < COLNO; x++) {
                 for (y = 0; y < ROWNO; y++) {
-                    if (levl[x][y].layers.glyph == GLYPH_INVISIBLE) {
+                    if (levl[x][y].hero_memory_layers.glyph == GLYPH_INVISIBLE) {
                         unmap_object(x, y);
                         newsym(x, y);
                     }

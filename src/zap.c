@@ -6230,7 +6230,7 @@ boolean stop_at_first_hit_object;
 		else 
 		{
             if (weapon == ZAPPED_WAND && (obj->otyp == WAN_PROBING || obj->otyp == SPE_PROBE_MONSTER)
-                && glyph_is_invisible(levl[bhitpos.x][bhitpos.y].layers.glyph))
+                && glyph_is_invisible(levl[bhitpos.x][bhitpos.y].hero_memory_layers.glyph))
 			{
                 unmap_object(bhitpos.x, bhitpos.y);
                 newsym(x, y);
@@ -6293,7 +6293,7 @@ boolean stop_at_first_hit_object;
 		{
             /* 'I' present but no monster: erase */
             /* do this before the tmp_at() */
-            if (glyph_is_invisible(levl[bhitpos.x][bhitpos.y].layers.glyph)
+            if (glyph_is_invisible(levl[bhitpos.x][bhitpos.y].hero_memory_layers.glyph)
                 && cansee(x, y)) {
                 unmap_object(bhitpos.x, bhitpos.y);
                 newsym(x, y);

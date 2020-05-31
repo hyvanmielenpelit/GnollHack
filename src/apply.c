@@ -773,7 +773,8 @@ struct obj *obj;
     struct monst *mtmp;
     int spotmon;
 
-    if (u.uswallow) {
+    if (u.uswallow) 
+    {
         /* if the leash isn't in use, assume we're trying to leash
            the engulfer; if it is use, distinguish between removing
            it from the engulfer versus from some other creature
@@ -787,7 +788,8 @@ struct obj *obj;
                  noit_mon_nam(u.ustuck));
         return 0;
     }
-    if (!obj->leashmon && number_leashed() >= MAXLEASHED) {
+    if (!obj->leashmon && number_leashed() >= MAXLEASHED) 
+    {
         You("cannot leash any more pets.");
         return 0;
     }
@@ -795,8 +797,10 @@ struct obj *obj;
     if (!get_adjacent_loc((char *) 0, (char *) 0, u.ux, u.uy, &cc))
         return 0;
 
-    if (cc.x == u.ux && cc.y == u.uy) {
-        if (u.usteed && u.dz > 0) {
+    if (cc.x == u.ux && cc.y == u.uy)
+    {
+        if (u.usteed && u.dz > 0)
+        {
             mtmp = u.usteed;
             spotmon = 1;
             goto got_target;
@@ -809,7 +813,8 @@ struct obj *obj;
      * From here on out, return value is 1 == a move is used.
      */
 
-    if (!(mtmp = m_at(cc.x, cc.y))) {
+    if (!(mtmp = m_at(cc.x, cc.y)))
+    {
         There("is no creature there.");
         (void) unmap_invisible(cc.x, cc.y);
         return 1;
@@ -818,39 +823,56 @@ struct obj *obj;
     spotmon = canspotmon(mtmp);
  got_target:
 
-    if (!spotmon && !glyph_is_invisible(levl[cc.x][cc.y].layers.glyph)) {
+    if (!spotmon && !glyph_is_invisible(levl[cc.x][cc.y].hero_memory_layers.glyph)) 
+    {
         /* for the unleash case, we don't verify whether this unseen
            monster is the creature attached to the current leash */
         You("fail to %sleash something.", obj->leashmon ? "un" : "");
         /* trying again will work provided the monster is tame
            (and also that it doesn't change location by retry time) */
         map_invisible(cc.x, cc.y);
-    } else if (!is_tame(mtmp)) {
+    } 
+    else if (!is_tame(mtmp))
+    {
         pline("%s %s leashed!", Monnam(mtmp),
               (!obj->leashmon) ? "cannot be" : "is not");
-    } else if (!obj->leashmon) {
+    }
+    else if (!obj->leashmon) 
+    {
         /* applying a leash which isn't currently in use */
-        if (mtmp->mleashed) {
+        if (mtmp->mleashed)
+        {
             pline("This %s is already leashed.",
                   spotmon ? l_monnam(mtmp) : "creature");
-        } else if (!leashable(mtmp)) {
+        }
+        else if (!leashable(mtmp)) 
+        {
             pline("The leash won't fit onto %s%s.", spotmon ? "your " : "",
                   l_monnam(mtmp));
-        } else {
+        }
+        else
+        {
             You("slip the leash around %s%s.", spotmon ? "your " : "",
                 l_monnam(mtmp));
             mtmp->mleashed = 1;
             obj->leashmon = (int) mtmp->m_id;
             mtmp->msleeping = 0;
         }
-    } else {
+    }
+    else 
+    {
         /* applying a leash which is currently in use */
-        if (obj->leashmon != (int) mtmp->m_id) {
+        if (obj->leashmon != (int) mtmp->m_id)
+        {
             pline("This leash is not attached to that creature.");
-        } else if (obj->cursed) {
+        }
+        else if (obj->cursed) 
+        {
             pline_The("leash would not come off!");
             obj->bknown = 1;
-        } else {
+        } 
+        else
+        {
             mtmp->mleashed = 0;
             obj->leashmon = 0;
             You("remove the leash from %s%s.",
@@ -3676,8 +3698,11 @@ struct obj *obj;
         } else
             pline1(msg_snap);
 
-    } else if (mtmp) {
-        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[rx][ry].layers.glyph)) {
+    } 
+    else if (mtmp) 
+    {
+        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[rx][ry].hero_memory_layers.glyph))
+        {
             pline("A monster is there that you couldn't see.");
             map_invisible(rx, ry);
         }
@@ -3828,7 +3853,8 @@ int min_range, max_range;
             if (glyph_is_monster(glyph)
                 || glyph_is_warning(glyph)
                 || glyph_is_invisible(glyph)
-                || (glyph_is_any_statue(glyph) && impaired)) {
+                || (glyph_is_any_statue(glyph) && impaired)) 
+            {
                 if (mpos.x)
                     return FALSE; /* more than one candidate location */
                 mpos.x = x, mpos.y = y;
@@ -4030,17 +4056,24 @@ struct obj *obj;
         return res; /* ESC; uses turn iff polearm became wielded */
 
     glyph = glyph_at(cc.x, cc.y);
-    if (distu(cc.x, cc.y) > max_range) {
+    if (distu(cc.x, cc.y) > max_range)
+    {
         pline("Too far!");
         return res;
-    } else if (distu(cc.x, cc.y) < min_range) {
+    } 
+    else if (distu(cc.x, cc.y) < min_range) 
+    {
         pline("Too close!");
         return res;
-    } else if (!cansee(cc.x, cc.y) && !glyph_is_monster(glyph)
-               && !glyph_is_invisible(glyph) && !glyph_is_any_statue(glyph)) {
+    } 
+    else if (!cansee(cc.x, cc.y) && !glyph_is_monster(glyph)
+               && !glyph_is_invisible(glyph) && !glyph_is_any_statue(glyph))
+    {
         You(cant_see_spot);
         return res;
-    } else if (!couldsee(cc.x, cc.y)) { /* Eyes of the Overworld */
+    } 
+    else if (!couldsee(cc.x, cc.y)) 
+    { /* Eyes of the Overworld */
         You(cant_reach);
         return res;
     }
@@ -5247,7 +5280,8 @@ struct obj* obj;
 		attack(mtmp);
 		glyph = glyph_at(x, y);
 		/* see comment in attack_checks() */
-		if (DEADMONSTER(mtmp)) { /* DEADMONSTER() */
+		if (DEADMONSTER(mtmp))
+        { /* DEADMONSTER() */
 			/* if we mapped an invisible monster and immediately
 			   killed it, we don't want to forget what we thought
 			   was there before the kick */

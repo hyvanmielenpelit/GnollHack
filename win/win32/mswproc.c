@@ -3138,7 +3138,7 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
                 ochar = GOLD_SYM;
             else
             {
-                struct layer_info layers = { 0 };
+                struct layer_info layers = nul_layerinfo;
                 layers.glyph = objnum_to_glyph(GOLD_PIECE);
                 mapglyph(layers,
                     &ochar, &ocolor, &ospecial, 0, 0);

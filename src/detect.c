@@ -1274,7 +1274,7 @@ register int x, y;
      * opposite to how normal vision behaves.
      */
     oldglyph = glyph_at(x, y);
-    unsigned long oldlayerflags = lev->layers.layer_flags;
+    unsigned long oldlayerflags = lev->hero_memory_layers.layer_flags;
 
     if (level.flags.hero_memory)
     {
@@ -1297,8 +1297,8 @@ register int x, y;
             clear_current_and_show_glyph(x, y, oldglyph);
             if (level.flags.hero_memory)
             {
-                lev->layers.glyph = oldglyph;
-                lev->layers.layer_glyphs[glyph_is_trap(oldglyph) ? LAYER_TRAP : LAYER_OBJECT] = oldglyph;
+                lev->hero_memory_layers.glyph = oldglyph;
+                lev->hero_memory_layers.layer_glyphs[glyph_is_trap(oldglyph) ? LAYER_TRAP : LAYER_OBJECT] = oldglyph;
             }
         }
     }
@@ -1477,37 +1477,51 @@ genericptr_t num;
     register struct trap *ttmp;
     register struct monst *mtmp;
 
-    if (levl[zx][zy].typ == SDOOR) {
+    if (levl[zx][zy].typ == SDOOR) 
+    {
         cvt_sdoor_to_door(&levl[zx][zy]); /* .typ = DOOR */
         magic_map_background(zx, zy, 0);
         newsym(zx, zy);
         (*(int *) num)++;
-    } else if (levl[zx][zy].typ == SCORR) {
+    } 
+    else if (levl[zx][zy].typ == SCORR)
+    {
         levl[zx][zy].typ = CORR;
         unblock_point(zx, zy);
         magic_map_background(zx, zy, 0);
         newsym(zx, zy);
         (*(int *) num)++;
-    } else if ((ttmp = t_at(zx, zy)) != 0) {
-        if (!ttmp->tseen && ttmp->ttyp != STATUE_TRAP) {
+    } 
+    else if ((ttmp = t_at(zx, zy)) != 0)
+    {
+        if (!ttmp->tseen && ttmp->ttyp != STATUE_TRAP)
+        {
             ttmp->tseen = 1;
             newsym(zx, zy);
             (*(int *) num)++;
         }
-    } else if ((mtmp = m_at(zx, zy)) != 0) {
-        if (M_AP_TYPE(mtmp)) {
+    }
+    else if ((mtmp = m_at(zx, zy)) != 0) 
+    {
+        if (M_AP_TYPE(mtmp))
+        {
             seemimic(mtmp);
             (*(int *) num)++;
         }
+
         if (mtmp->mundetected
-            && (is_hider(mtmp->data) || mtmp->data->mlet == S_EEL)) {
+            && (is_hider(mtmp->data) || mtmp->data->mlet == S_EEL))
+        {
             mtmp->mundetected = 0;
             newsym(zx, zy);
             (*(int *) num)++;
         }
-        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[zx][zy].layers.glyph))
+
+        if (!canspotmon(mtmp) && !glyph_is_invisible(levl[zx][zy].hero_memory_layers.glyph))
             map_invisible(zx, zy);
-    } else if (unmap_invisible(zx, zy)) {
+    }
+    else if (unmap_invisible(zx, zy))
+    {
         (*(int *) num)++;
     }
 }
@@ -1631,7 +1645,7 @@ struct trap *trap;
        (e.g. to not prompt if any trap glyph appears on the
        square). */
     if (Hallucination ||
-        levl[trap->tx][trap->ty].layers.glyph !=
+        levl[trap->tx][trap->ty].hero_memory_layers.glyph !=
         trap_to_glyph(trap, rn2_on_display_rng)) {
         /* There's too much clutter to see your find otherwise */
         cls();
@@ -1659,13 +1673,18 @@ boolean via_warning;
     if (via_warning && !warning_of(mtmp))
         return -1;
 
-    if (M_AP_TYPE(mtmp)) {
+    if (M_AP_TYPE(mtmp))
+    {
         seemimic(mtmp);
         found_something = TRUE;
-    } else if (!canspotmon(mtmp)) {
+    } 
+    else if (!canspotmon(mtmp))
+    {
         if (mtmp->mundetected
-            && (is_hider(mtmp->data) || mtmp->data->mlet == S_EEL)) {
-            if (via_warning) {
+            && (is_hider(mtmp->data) || mtmp->data->mlet == S_EEL))
+        {
+            if (via_warning)
+            {
                 Your("warning senses cause you to take a second %s.",
                      Blind ? "to check nearby" : "look close by");
                 display_nhwindow(WIN_MESSAGE, FALSE); /* flush messages */
@@ -1676,17 +1695,21 @@ boolean via_warning;
         found_something = TRUE;
     }
 
-    if (found_something) {
-        if (!canspotmon(mtmp) && glyph_is_invisible(levl[x][y].layers.glyph))
+    if (found_something)
+    {
+        if (!canspotmon(mtmp) && glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
             return -1; /* Found invisible monster in square which already has
                         * 'I' in it.  Logically, this should still take time
                         * and lead to `return 1', but if we did that the hero
                         * would keep finding the same monster every turn. */
         exercise(A_WIS, TRUE);
-        if (!canspotmon(mtmp)) {
+        if (!canspotmon(mtmp)) 
+        {
             map_invisible(x, y);
             You_feel("an unseen monster!");
-        } else if (!sensemon(mtmp)) {
+        }
+        else if (!sensemon(mtmp))
+        {
             You("find %s.", is_tame(mtmp) ? y_monnam(mtmp) : a_monnam(mtmp));
         }
         return 1;
@@ -1871,16 +1894,20 @@ int default_glyph, which_subset;
        monsters, objects, and/or traps removed as caller dictates */
     seenv = (full || level.flags.hero_memory)
               ? levl[x][y].seenv : cansee(x, y) ? SVALL : 0;
-    if (full) {
+    if (full)
+    {
         levl[x][y].seenv = SVALL;
         glyph = back_to_glyph(x, y);
         levl[x][y].seenv = seenv;
-    } else {
+    }
+    else
+    {
         levl_glyph = level.flags.hero_memory
-              ? levl[x][y].layers.glyph
+              ? levl[x][y].hero_memory_layers.glyph
               : seenv ? back_to_glyph(x, y): default_glyph;
+
         /* glyph_at() returns the displayed glyph, which might
-           be a monster.  levl[][].layers.glyph contains the remembered
+           be a monster.  levl[][].hero_memory_layers.glyph contains the remembered
            glyph, which will never be a monster (unless it is
            the invisible monster glyph, which is handled like
            an object, replacing any object or trap at its spot) */
@@ -1891,26 +1918,38 @@ int default_glyph, which_subset;
                    || glyph_is_warning(glyph)) && !keep_mons)
                  || glyph_is_swallow(glyph))
             glyph = levl_glyph;
+
         if (((glyph_is_object(glyph) && !keep_objs)
              || glyph_is_invisible(glyph))
-            && keep_traps && !covers_traps(x, y)) {
+            && keep_traps && !covers_traps(x, y)) 
+        {
             if ((t = t_at(x, y)) != 0 && t->tseen)
                 glyph = trap_to_glyph(t, rn2_on_display_rng);
         }
+
         if ((glyph_is_object(glyph) && !keep_objs)
             || (glyph_is_trap(glyph) && !keep_traps)
-            || glyph_is_invisible(glyph)) {
-            if (!seenv) {
+            || glyph_is_invisible(glyph))
+        {
+            if (!seenv) 
+            {
                 glyph = default_glyph;
-            } else if (lastseentyp[x][y] == levl[x][y].typ) {
+            }
+            else if (lastseentyp[x][y] == levl[x][y].typ)
+            {
                 glyph = back_to_glyph(x, y);
-            } else {
+            }
+            else
+            {
                 /* look for a mimic here posing as furniture;
                    if we don't find one, we'll have to fake it */
                 if ((mtmp = m_at(x, y)) != 0
-                    && M_AP_TYPE(mtmp) == M_AP_FURNITURE) {
+                    && M_AP_TYPE(mtmp) == M_AP_FURNITURE)
+                {
                     glyph = cmap_to_glyph(mtmp->mappearance);
-                } else {
+                }
+                else
+                {
                     /* we have a topology type but we want a screen
                        symbol in order to derive a glyph; some screen
                        symbols need the flags field of levl[][] in
@@ -1927,8 +1966,10 @@ int default_glyph, which_subset;
             }
         }
     }
+
     if (glyph == cmap_to_glyph(S_darkroom))
         glyph = cmap_to_glyph(S_room); /* FIXME: dirty hack */
+
     return glyph;
 }
 
@@ -1961,7 +2002,7 @@ dump_map()
 
             glyph = reveal_terrain_getglyph(x, y, FALSE, u.uswallow,
                                             default_glyph, subset);
-            struct layer_info layers = { 0 };
+            struct layer_info layers = nul_layerinfo;
             layers.glyph = glyph;
             (void) mapglyph(layers, &ch, &color, &special, x, y);
             buf[x - 1] = ch;

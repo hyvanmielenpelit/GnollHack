@@ -639,16 +639,16 @@ reglyph_darkroom()
 
             if (!flags.dark_room || !iflags.use_color
                 || Is_rogue_level(&u.uz)) {
-                if (lev->layers.glyph == cmap_to_glyph(S_darkroom))
-                    lev->layers.glyph = lev->waslit ? (lev->typ == GRASS ? cmap_to_glyph(S_grass) : cmap_to_glyph(S_room))
+                if (lev->hero_memory_layers.glyph == cmap_to_glyph(S_darkroom))
+                    lev->hero_memory_layers.glyph = lev->waslit ? (lev->typ == GRASS ? cmap_to_glyph(S_grass) : cmap_to_glyph(S_room))
                                              : cmap_to_glyph(S_unexplored);
             } else {
-                if (lev->layers.glyph == cmap_to_glyph(S_room) && lev->seenv
+                if (lev->hero_memory_layers.glyph == cmap_to_glyph(S_room) && lev->seenv
                     && lev->waslit && !cansee(x, y))
-                    lev->layers.glyph = cmap_to_glyph(S_darkroom);
-                else if (lev->layers.glyph == cmap_to_glyph(S_unexplored)
+                    lev->hero_memory_layers.glyph = cmap_to_glyph(S_darkroom);
+                else if (lev->hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
                          && (lev->typ == ROOM || lev->typ == GRASS) && lev->seenv && !cansee(x, y))
-                    lev->layers.glyph = cmap_to_glyph(S_darkroom);
+                    lev->hero_memory_layers.glyph = cmap_to_glyph(S_darkroom);
             }
         }
     if (flags.dark_room && iflags.use_color)

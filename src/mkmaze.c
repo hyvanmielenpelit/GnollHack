@@ -1722,7 +1722,7 @@ setup_waterlevel()
 
     for (x = xmin; x <= xmax; x++)
         for (y = ymin; y <= ymax; y++)
-            levl[x][y].layers.glyph = Is_waterlevel(&u.uz) ? water_glyph : air_glyph;
+            levl[x][y].hero_memory_layers.glyph = Is_waterlevel(&u.uz) ? water_glyph : air_glyph;
 
     /* make bubbles */
 

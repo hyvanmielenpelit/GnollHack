@@ -105,7 +105,7 @@ char *outbuf;
     struct obj *otmp;
     boolean fakeobj, isyou = (mon == &youmonst);
     int x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my,
-        glyph = (level.flags.hero_memory && !isyou) ? levl[x][y].layers.glyph
+        glyph = (level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
                                                     : glyph_at(x, y);
 
     *outbuf = '\0';

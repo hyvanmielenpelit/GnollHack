@@ -718,11 +718,11 @@ int x, y;
     const char* door_name = (door && (door->doormask & D_PORTCULLIS)) ? "portcullis" : "door";
     portcullis = (is_drawbridge_wall(cc.x, cc.y) >= 0);
     if (Blind) {
-        int oldglyph = door->layers.glyph;
+        int oldglyph = door->hero_memory_layers.glyph;
         schar oldlastseentyp = lastseentyp[cc.x][cc.y];
 
         feel_location(cc.x, cc.y);
-        if (door->layers.glyph != oldglyph
+        if (door->hero_memory_layers.glyph != oldglyph
             || lastseentyp[cc.x][cc.y] != oldlastseentyp)
             res = 1; /* learned something */
     }
@@ -881,11 +881,11 @@ doclose()
     door = &levl[x][y];
     portcullis = (is_drawbridge_wall(x, y) >= 0);
     if (Blind) {
-        int oldglyph = door->layers.glyph;
+        int oldglyph = door->hero_memory_layers.glyph;
         schar oldlastseentyp = lastseentyp[x][y];
 
         feel_location(x, y);
-        if (door->layers.glyph != oldglyph || lastseentyp[x][y] != oldlastseentyp)
+        if (door->hero_memory_layers.glyph != oldglyph || lastseentyp[x][y] != oldlastseentyp)
             res = 1; /* learned something */
     }
 

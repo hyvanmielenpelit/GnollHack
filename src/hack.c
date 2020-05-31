@@ -296,7 +296,7 @@ moverock()
             }
 
             /* Move the boulder *after* the message. */
-            if (glyph_is_invisible(levl[rx][ry].layers.glyph))
+            if (glyph_is_invisible(levl[rx][ry].hero_memory_layers.glyph))
                 unmap_object(rx, ry);
             movobj(otmp, rx, ry); /* does newsym(rx,ry) */
             if (Blind) {
@@ -1726,7 +1726,7 @@ domove_core()
          * different message and makes the player remember the monster.
          */
         if (context.nopick && !context.travel
-            && (canspotmon(mtmp) || glyph_is_invisible(levl[x][y].layers.glyph))) {
+            && (canspotmon(mtmp) || glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))) {
             if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
                 && !sensemon(mtmp))
                 stumble_onto_mimic(mtmp);
@@ -1764,7 +1764,7 @@ domove_core()
     /* specifying 'F' with no monster wastes a turn */
     if (context.forcefight
         /* remembered an 'I' && didn't use a move command */
-        || (glyph_is_invisible(levl[x][y].layers.glyph) && !context.nopick)) {
+        || (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph) && !context.nopick)) {
         struct obj *boulder = 0;
         boolean explo = (Upolyd && attacktype(youmonst.data, AT_EXPL)),
                 solid = !accessible(x, y);

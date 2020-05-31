@@ -3174,7 +3174,7 @@ register struct monst *mtmp;
         u.uachieve.killed_medusa = 1;
     if (mtmp->data == &mons[PM_YACC])
         u.uachieve.killed_yacc = 1;
-    if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].layers.glyph))
+    if (glyph_is_invisible(levl[mtmp->mx][mtmp->my].hero_memory_layers.glyph))
         unmap_object(mtmp->mx, mtmp->my);
     mtmp->action = 0;
     m_detach(mtmp, mptr, TRUE);
@@ -3377,7 +3377,7 @@ struct monst *mdef;
 
     stackobj(otmp);
     /* mondead() already does this, but we must do it before the newsym */
-    if (glyph_is_invisible(levl[x][y].layers.glyph))
+    if (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
         unmap_object(x, y);
     if (cansee(x, y))
         newsym(x, y);
