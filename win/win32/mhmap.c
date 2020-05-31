@@ -375,6 +375,7 @@ mswin_map_mode(HWND hWnd, int mode)
 
     oldMode = data->mapMode;
     data->mapMode = mode;
+    iflags.using_gui_tiles = FALSE;
 
     switch (data->mapMode) {
     case MAP_MODE_ASCII4x6:
@@ -452,6 +453,7 @@ mswin_map_mode(HWND hWnd, int mode)
         data->bFitToScreenMode = TRUE;
         data->tileWidth = GetNHApp()->mapTile_X;
         data->tileHeight = GetNHApp()->mapTile_Y;
+        iflags.using_gui_tiles = TRUE;
         break;
 
     case MAP_MODE_TILES:
@@ -460,6 +462,7 @@ mswin_map_mode(HWND hWnd, int mode)
         data->bFitToScreenMode = FALSE;
         data->tileWidth = GetNHApp()->mapTile_X;
         data->tileHeight = GetNHApp()->mapTile_Y;
+        iflags.using_gui_tiles = TRUE;
         break;
     }
 

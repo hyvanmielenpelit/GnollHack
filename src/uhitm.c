@@ -4496,10 +4496,9 @@ double hp_d;
 	}
 	context.botl = 1;
 
-#ifdef USE_TILES
-	if (flags.show_tile_u_hp_bar)
+
+	if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
 		newsym(u.ux, u.uy);
-#endif
 
 	return *target_integer_part_ptr;
 }
@@ -4542,10 +4541,11 @@ double hp_d;
 		mtmp->mhp_fraction = 0;
 	}
 
-#ifdef USE_TILES
-	if((!is_tame(mtmp) && flags.show_tile_mon_hp_bar) || (is_tame(mtmp) && flags.show_tile_pet_hp_bar))
-		newsym(mtmp->mx, mtmp->my);
-#endif
+	if (iflags.using_gui_tiles)
+	{
+		if ((!is_tame(mtmp) && flags.show_tile_mon_hp_bar) || (is_tame(mtmp) && flags.show_tile_pet_hp_bar))
+			newsym(mtmp->mx, mtmp->my);
+	}
 
 	return mtmp->mhp;
 }
@@ -4587,8 +4587,7 @@ uchar attack_mode;
 {
 	uchar attacking_before = u.action;
 	u.action = attack_mode;
-#ifdef USE_TILES
-	if (attacking_before != u.action)
+	if (iflags.using_gui_tiles && attacking_before != u.action)
 	{
 		newsym(u.ux, u.uy);
 		flush_screen(1);
@@ -4599,7 +4598,6 @@ uchar attack_mode;
 			delay_output();
 		}
 	}
-#endif
 }
 
 void
@@ -4618,8 +4616,8 @@ uchar attack_mode;
 
 	uchar attacking_before = mtmp->action;
 	mtmp->action = attack_mode;
-#ifdef USE_TILES
-	if (canseemon(mtmp) && attacking_before != mtmp->action)
+
+	if (iflags.using_gui_tiles && canseemon(mtmp) && attacking_before != mtmp->action)
 	{
 		newsym(mtmp->mx, mtmp->my);
 		flush_screen(0);
@@ -4630,7 +4628,6 @@ uchar attack_mode;
 			delay_output();
 		}
 	}
-#endif
 }
 
 
@@ -4641,7 +4638,9 @@ enum game_ui_tile_types hit_symbol_shown;
 int damage_shown;
 unsigned long extra_flags;
 {
-#ifdef USE_TILES
+	if (!iflags.using_gui_tiles)
+		return;
+
 	boolean is_you = (x == u.ux && y == u.uy);
 	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_TILE)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
 	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
@@ -4651,7 +4650,6 @@ unsigned long extra_flags;
 	delay_output();
 	newsym(x, y);
 	flush_screen(is_you);
-#endif
 }
 
 void
