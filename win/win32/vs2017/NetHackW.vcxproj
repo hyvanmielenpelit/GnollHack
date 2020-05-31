@@ -213,6 +213,7 @@
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
     <ClInclude Include="..\..\..\ext\fmod\inc\fmod.h" />
+    <ClInclude Include="..\..\..\ext\fmod\inc\fmod.hpp" />
     <ClInclude Include="..\..\..\include\encounter.h" />
     <ClInclude Include="..\..\..\include\matcomps.h" />
     <ClInclude Include="..\resource.h" />
