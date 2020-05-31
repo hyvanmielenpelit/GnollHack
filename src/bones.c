@@ -509,6 +509,7 @@ struct obj *corpse;
     u.ux = u.uy = 0;
 
     /* Clear all memory from the level. */
+    clear_memoryobjs(); /* Blanket removal just in case */
     for (x = 1; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++) {
             levl[x][y].seenv = 0;

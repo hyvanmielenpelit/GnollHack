@@ -35,6 +35,8 @@ struct layer_info {
     /* Monster info for display */
     genericptr_t monster_comp_ptr;  /* invalidate the pointer use for any other purposes than comparing the memory address */
 
+    struct obj* memory_obj;     /* Pointer to the location's first memory object*/
+
     int damage_displayed;
 
 };
@@ -55,6 +57,7 @@ struct layer_info {
 
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_O_PILE               0x00010000UL
+#define LFLAGS_O_SHOW_OBJECT_MEMORY 0x00020000UL
 #define LFLAGS_O_MASK               0x000F0000UL
 
 #define LFLAGS_DISINTEGRATED        0x00100000UL

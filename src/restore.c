@@ -22,6 +22,7 @@ STATIC_DCL void NDECL(def_minit);
 STATIC_DCL void FDECL(def_mread, (int, genericptr_t, size_t));
 
 STATIC_DCL void NDECL(find_lev_obj);
+STATIC_DCL void NDECL(find_memory_obj);
 STATIC_DCL void FDECL(restlevchn, (int));
 STATIC_DCL void FDECL(restdamage, (int, BOOLEAN_P));
 STATIC_DCL void FDECL(restobj, (int, struct obj *));
@@ -113,6 +114,37 @@ find_lev_obj()
     while ((otmp = fobjtmp) != 0) {
         fobjtmp = otmp->nobj;
         place_object(otmp, otmp->ox, otmp->oy);
+    }
+}
+
+STATIC_OVL void
+find_memory_obj()
+{
+    register struct obj* memoryobjstmp = (struct obj*)0;
+    register struct obj* otmp;
+    int x, y;
+
+    for (x = 0; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+            level.locations[x][y].hero_memory_layers.memory_obj = (struct obj*)0;
+
+    /*
+     * Reverse the entire memoryobjs chain, which is necessary so that we can
+     * place the objects in the proper order.  Make all obj in chain
+     * OBJ_FREE so place_object will work correctly.
+     */
+    while ((otmp = memoryobjs) != 0) {
+        memoryobjs = otmp->nobj;
+        otmp->nobj = memoryobjstmp;
+        otmp->where = OBJ_FREE;
+        memoryobjstmp = otmp;
+    }
+    /* memoryobjs should now be empty */
+
+    /* Set level.locations[x][y].hero_memory_layers.memory_obj (as well as reversing the chain back again) */
+    while ((otmp = memoryobjstmp) != 0) {
+        memoryobjstmp = otmp->nobj;
+        place_memory_object(otmp, otmp->ox, otmp->oy);
     }
 }
 
@@ -1143,6 +1175,7 @@ boolean ghostly;
     level.buriedobjlist = restobjchn(fd, ghostly, FALSE);
     billobjs = restobjchn(fd, ghostly, FALSE);
     memoryobjs = restobjchn(fd, ghostly, FALSE);
+    find_memory_obj();
     rest_engravings(fd);
 
     /* reset level.monsters for new level */

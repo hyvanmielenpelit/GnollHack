@@ -654,6 +654,7 @@ struct obj *obj;
     case OBJ_FREE:
     case OBJ_FLOOR:
     case OBJ_ONBILL:
+    case OBJ_HEROMEMORY:
     case OBJ_MIGRATING:
     case OBJ_BURIED:
     default:
@@ -758,6 +759,16 @@ struct obj *otmp;
         extract_nobj(obj, &fobj);
         extract_nexthere(obj, &level.objects[obj->ox][obj->oy]);
         break;
+    case OBJ_HEROMEMORY:
+        otmp->nobj = obj->nobj;
+        otmp->nexthere = obj->nexthere;
+        otmp->ox = obj->ox;
+        otmp->oy = obj->oy;
+        obj->nobj = otmp;
+        obj->nexthere = otmp;
+        extract_nobj(obj, &memoryobjs);
+        extract_nexthere(obj, &level.locations[obj->ox][obj->oy].hero_memory_layers.memory_obj);
+        break;
     default:
         panic("replace_object: obj position");
         break;
@@ -834,12 +845,20 @@ void
 memory_dummy_object(otmp)
 register struct obj* otmp;
 {
+    if (!otmp)
+        return;
+
     register struct obj* dummy;
+    int x = otmp->ox, y = otmp->oy;
+
+    if (!isok(x, y))
+        return;
 
     dummy = newobj();
     *dummy = *otmp;
     dummy->nobj = (struct obj*)0; /* set nobj to zero; this is just a copy */
     dummy->cobj = (struct obj*)0; /* set cobj to zero; this is just a copy */
+    dummy->nexthere = (struct obj*)0; /* set cobj to zero; this is just a copy */
     dummy->oextra = (struct oextra*)0;
     dummy->where = OBJ_FREE;
     dummy->o_id = context.ident++;
@@ -853,6 +872,10 @@ register struct obj* otmp;
 
     /* Add to memoryobjs chain */
     add_to_memoryobjs(dummy);
+
+    /* Add to nexthere memory */
+    dummy->nexthere = level.locations[x][y].hero_memory_layers.memory_obj;
+    level.locations[x][y].hero_memory_layers.memory_obj = dummy;
 }
 
 void
@@ -881,6 +904,21 @@ clear_memoryobjs()
         dealloc_obj(obj);
     }
 
+}
+
+void
+clear_hero_object_memory_at(x, y)
+int x, y;
+{
+    if (isok(x, y))
+    {
+        struct obj* obj;
+        while ((obj = level.locations[x][y].hero_memory_layers.memory_obj) != 0)
+        {
+            obj_extract_self(obj);
+            dealloc_obj(obj);
+        }
+    }
 }
 
 /* alteration types; must match COST_xxx macros in hack.h */
@@ -2611,16 +2649,20 @@ int x, y;
 		panic("place_object: obj not free");
 		return;
 	}
+
     obj_no_longer_held(otmp);
     /* (could bypass this vision update if there is already a boulder here) */
     if (otmp->otyp == BOULDER)
         block_point(x, y); /* vision */
 
     /* obj goes under boulders */
-    if (otmp2 && (otmp2->otyp == BOULDER)) {
+    if (otmp2 && (otmp2->otyp == BOULDER))
+    {
         otmp->nexthere = otmp2->nexthere;
         otmp2->nexthere = otmp;
-    } else {
+    } 
+    else 
+    {
         otmp->nexthere = otmp2;
         level.objects[x][y] = otmp;
     }
@@ -2637,6 +2679,64 @@ int x, y;
     if (otmp->timed)
         obj_timer_checks(otmp, x, y, 0);
 }
+
+/* put the memory object at the given location */
+void
+place_memory_object(otmp, x, y)
+register struct obj* otmp;
+int x, y;
+{
+    register struct obj* otmp2 = level.locations[x][y].hero_memory_layers.memory_obj;
+
+    if (otmp->where != OBJ_FREE)
+    {
+        panic("place_memory_object: obj not free");
+        return;
+    }
+
+    /* obj goes under boulders */
+    if (otmp2 && (otmp2->otyp == BOULDER))
+    {
+        otmp->nexthere = otmp2->nexthere;
+        otmp2->nexthere = otmp;
+    }
+    else
+    {
+        otmp->nexthere = otmp2;
+        level.locations[x][y].hero_memory_layers.memory_obj = otmp;
+    }
+
+    /* set the new object's location */
+    otmp->ox = x;
+    otmp->oy = y;
+
+    otmp->where = OBJ_HEROMEMORY;
+
+    /* add to floor chain */
+    otmp->nobj = memoryobjs;
+    memoryobjs = otmp;
+
+    /* If there is a memory object, then it must be flagged as shown */
+    if (!level.locations[x][y].hero_memory_layers.memory_obj)
+        level.locations[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_SHOW_OBJECT_MEMORY;
+}
+
+void
+remove_memory_object(otmp)
+register struct obj* otmp;
+{
+    xchar x = otmp->ox;
+    xchar y = otmp->oy;
+
+    if (otmp->where != OBJ_HEROMEMORY)
+    {
+        panic("remove_memory_object: obj not in hero memory");
+        return;
+    }
+    extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_obj);
+    extract_nobj(otmp, &memoryobjs);
+}
+
 
 #define ROT_ICE_ADJUSTMENT 2 /* rotting on ice takes 2 times as long */
 
@@ -2855,7 +2955,7 @@ struct obj *obj;
         extract_nobj(obj, &billobjs);
         break;
     case OBJ_HEROMEMORY:
-        extract_nobj(obj, &memoryobjs);
+        remove_memory_object(obj);
         break;
     default:
         panic("obj_extract_self");

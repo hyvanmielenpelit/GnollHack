@@ -261,7 +261,8 @@ move_bc(before, control, ballx, bally, chainx, chainy)
 int before, control;
 xchar ballx, bally, chainx, chainy; /* only matter !before */
 {
-    if (Blind) {
+    if (Blind)
+    {
         /*
          *  The hero is blind.  Time to work hard.  The ball and chain that
          *  are attached to the hero are very special.  The hero knows that
@@ -272,8 +273,10 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
          *  So, we have to keep track of which is felt at any one time and
          *  act accordingly.
          */
-        if (!before) {
-            if ((control & BC_CHAIN) && (control & BC_BALL)) {
+        if (!before)
+        {
+            if ((control & BC_CHAIN) && (control & BC_BALL)) 
+            {
                 /*
                  *  Both ball and chain moved.  If felt, drop glyph.
                  */
@@ -289,14 +292,23 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
 
                 movobj(uball, ballx, bally);
                 movobj(uchain, chainx, chainy);
-            } else if (control & BC_BALL) {
-                if (u.bc_felt & BC_BALL) {
-                    if (u.bc_order == BCPOS_DIFFER) { /* ball by itself */
+            } 
+            else if (control & BC_BALL) 
+            {
+                if (u.bc_felt & BC_BALL) 
+                {
+                    if (u.bc_order == BCPOS_DIFFER) 
+                    { /* ball by itself */
                         levl[uball->ox][uball->oy].hero_memory_layers.glyph = u.bglyph;
-                    } else if (u.bc_order == BCPOS_BALL) {
-                        if (u.bc_felt & BC_CHAIN) { /* know chain is there */
+                    } 
+                    else if (u.bc_order == BCPOS_BALL)
+                    {
+                        if (u.bc_felt & BC_CHAIN) 
+                        { /* know chain is there */
                             map_object(uchain, 0);
-                        } else {
+                        } 
+                        else 
+                        {
                             levl[uball->ox][uball->oy].hero_memory_layers.glyph = u.bglyph;
                         }
                     }
@@ -309,14 +321,23 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
                                : u.cglyph;
 
                 movobj(uball, ballx, bally);
-            } else if (control & BC_CHAIN) {
-                if (u.bc_felt & BC_CHAIN) {
-                    if (u.bc_order == BCPOS_DIFFER) {
+            }
+            else if (control & BC_CHAIN) 
+            {
+                if (u.bc_felt & BC_CHAIN)
+                {
+                    if (u.bc_order == BCPOS_DIFFER)
+                    {
                         levl[uchain->ox][uchain->oy].hero_memory_layers.glyph = u.cglyph;
-                    } else if (u.bc_order == BCPOS_CHAIN) {
-                        if (u.bc_felt & BC_BALL) {
+                    } 
+                    else if (u.bc_order == BCPOS_CHAIN) 
+                    {
+                        if (u.bc_felt & BC_BALL) 
+                        {
                             map_object(uball, 0);
-                        } else {
+                        } 
+                        else 
+                        {
                             levl[uchain->ox][uchain->oy].hero_memory_layers.glyph = u.cglyph;
                         }
                     }
@@ -333,14 +354,18 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
             u.bc_order = bc_order(); /* reset the order */
         }
 
-    } else {
+    } 
+    else 
+    {
         /*
          *  The hero is not blind.  To make this work correctly, we need to
          *  pick up the ball and chain before the hero moves, then put them
          *  in their new positions after the hero moves.
          */
-        if (before) {
-            if (!control) {
+        if (before)
+        {
+            if (!control)
+            {
                 /*
                  * Neither ball nor chain is moving, so remember which was
                  * on top until !before.  Use the variable u.bc_order
@@ -351,20 +376,26 @@ xchar ballx, bally, chainx, chainy; /* only matter !before */
 
             remove_object(uchain);
             newsym(uchain->ox, uchain->oy);
-            if (!carried(uball)) {
+            if (!carried(uball))
+            {
                 remove_object(uball);
                 newsym(uball->ox, uball->oy);
             }
-        } else {
+        }
+        else 
+        {
             int on_floor = !carried(uball);
 
             if ((control & BC_CHAIN)
-                || (!control && u.bc_order == BCPOS_CHAIN)) {
+                || (!control && u.bc_order == BCPOS_CHAIN))
+            {
                 /* If the chain moved or nothing moved & chain on top. */
                 if (on_floor)
                     place_object(uball, ballx, bally);
                 place_object(uchain, chainx, chainy); /* chain on top */
-            } else {
+            }
+            else
+            {
                 place_object(uchain, chainx, chainy);
                 if (on_floor)
                     place_object(uball, ballx, bally);

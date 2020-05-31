@@ -675,7 +675,7 @@ static const char empty_string[] = "";
           NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \
-        0UL, (genericptr_t)0, 0 \
+        0UL, (genericptr_t)0, (struct obj*)0, 0 \
     }
 
 /* convert 1..10 to 0..9; add 10 for second group (spell casting) */

@@ -486,6 +486,7 @@ int x, y, show;
     /* gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = NO_GLYPH; */
 
     /* Object layer */
+    clear_hero_object_memory_at(x, y);
     if (!covers_objects(x, y))
     {
         boolean show_first_object_layer = show;
@@ -494,6 +495,7 @@ int x, y, show;
         {
             boolean draw_in_front = is_obj_drawn_in_front(obj);
             map_object(obj, draw_in_front ? show_first_cover_layer : show_first_object_layer);
+            memory_dummy_object(obj);
             if (draw_in_front)
                 show_first_cover_layer = FALSE;
             else
@@ -959,15 +961,8 @@ struct layer_info* layers_ptr;
     if (!layers_ptr)
         return;
 
-    /* Zero out and then no-glyph */
-    *layers_ptr = zerolayerinfo;
-
-    layers_ptr->glyph = base_cmap_to_glyph(S_unexplored);
-    layers_ptr->bkglyph = NO_GLYPH;
-    for (enum layer_types i = LAYER_FLOOR; i < MAX_LAYERS; i++)
-    {
-        layers_ptr->layer_glyphs[i] = NO_GLYPH;
-    }
+    struct layer_info nul = nul_layerinfo;
+    *layers_ptr = nul;
 
 }
 
@@ -986,8 +981,8 @@ clear_hero_memory_at(x, y)
 int x, y;
 {
     struct layer_info* layer_ptr = &levl[x][y].hero_memory_layers;
+    clear_hero_object_memory_at(x, y);
     clear_layer_info(layer_ptr);
-    //clear_object_glyphs_at(x, y);
 }
 
 void
@@ -1254,6 +1249,8 @@ int damage_shown;
             /*** Show memory from floor to cover layer ***/
             /* Ascii */
             show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
+
+            add_extra_info_flags(x, y, LFLAGS_O_SHOW_OBJECT_MEMORY);
 
             /* Floor to cover layer, monster layer replaced below, if needed */
             for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER; layer_idx++)
@@ -1949,7 +1946,12 @@ docrt()
         lev = &levl[x][0];
         for (y = 0; y < ROWNO; y++, lev++)
             if (lev->hero_memory_layers.glyph != cmap_to_glyph(S_unexplored))
-                show_glyph(x, y, lev->hero_memory_layers.glyph);
+            {
+                show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
+                add_extra_info_flags(x, y, LFLAGS_O_SHOW_OBJECT_MEMORY);
+                for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER; layer_idx++)
+                    show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
+            }
     }
 
     /* see what is to be seen */
@@ -2114,15 +2116,14 @@ int damage_displayed;
     if (isok(x, y))
     {
         unsigned long old_flags = gbuf[y][x].layers.layer_flags;
-        if (disp_flags)
-        {
-            gbuf[y][x].layers.layer_flags |= disp_flags;
-        }
+        gbuf[y][x].layers.layer_flags = disp_flags;
 
         int old_dmg = gbuf[y][x].layers.damage_displayed;
         if (damage_displayed > 0)
             gbuf[y][x].layers.damage_displayed = Hallucination ? rnd(2 * damage_displayed) : damage_displayed;
-        
+        else
+            gbuf[y][x].layers.damage_displayed = 0;
+
         if (old_flags != gbuf[y][x].layers.layer_flags || old_dmg != gbuf[y][x].layers.damage_displayed)
         {
             gbuf[y][x].new = 1;

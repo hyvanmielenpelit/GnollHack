@@ -989,13 +989,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* m_here = m_at(enl_i, enl_j);
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
 
-            struct obj* otmp = level.objects[enl_i][enl_j];
+            boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_SHOW_OBJECT_MEMORY);
+            struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_obj : level.objects[enl_i][enl_j];
 
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
             if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
             {
-                if (covers_objects(enl_i, enl_j))
-                    break; /* next layer, nothing to draw here */
+//                if (covers_objects(enl_i, enl_j))
+//                    break; /* next layer, nothing to draw here */
 
                 int objcnt = 0;
                 for (struct obj* otmp2 = otmp; otmp2; otmp2 = otmp2->nexthere)
@@ -1097,6 +1098,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
 
 
+                /*
+                 * Draw glyph
+                 */
                 int multiplier = flip_glyph ? -1 : 1;
 
                 if ((glyph != NO_GLYPH) /*&& (glyph != bkglyph)*/) {
@@ -1889,8 +1893,6 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
 
 static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
 {
-    int fg = layers.glyph;
-    int bg = layers.bkglyph;
     boolean layer_different = FALSE;
     for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_GLYPH; layer_idx++)
     {

@@ -288,7 +288,8 @@ unsigned material;
 
     for (zx = 1; zx < COLNO; zx++)
         for (zy = 0; zy < ROWNO; zy++)
-            if (check_map_spot(zx, zy, oclass, material)) {
+            if (check_map_spot(zx, zy, oclass, material)) 
+            {
                 unmap_object(zx, zy);
                 change_made = TRUE;
             }
@@ -311,23 +312,35 @@ register struct obj *sobj;
                                     (unsigned) (sobj->blessed ? MAT_GOLD : 0));
 
     /* look for gold carried by monsters (might be in a container) */
-    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+    {
         if (DEADMONSTER(mtmp))
             continue; /* probably not needed in this case but... */
-        if (findgold(mtmp->minvent) || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
-            if (mtmp == u.usteed) {
+
+        if (findgold(mtmp->minvent) || monsndx(mtmp->data) == PM_GOLD_GOLEM) 
+        {
+            if (mtmp == u.usteed) 
+            {
                 steedgold = TRUE;
-            } else {
+            } 
+            else
+            {
                 known = TRUE;
                 goto outgoldmap; /* skip further searching */
             }
-        } else {
+        }
+        else 
+        {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
                 if ((sobj->blessed && o_material(obj, MAT_GOLD))
-                    || o_in(obj, COIN_CLASS)) {
-                    if (mtmp == u.usteed) {
+                    || o_in(obj, COIN_CLASS)) 
+                {
+                    if (mtmp == u.usteed)
+                    {
                         steedgold = TRUE;
-                    } else {
+                    } 
+                    else 
+                    {
                         known = TRUE;
                         goto outgoldmap; /* skip further searching */
                     }
@@ -336,22 +349,28 @@ register struct obj *sobj;
     }
 
     /* look for gold objects */
-    for (obj = fobj; obj; obj = obj->nobj) {
-        if (sobj->blessed && o_material(obj, MAT_GOLD)) {
+    for (obj = fobj; obj; obj = obj->nobj)
+    {
+        if (sobj->blessed && o_material(obj, MAT_GOLD)) 
+        {
             known = TRUE;
             if (obj->ox != u.ux || obj->oy != u.uy)
                 goto outgoldmap;
-        } else if (o_in(obj, COIN_CLASS)) {
+        }
+        else if (o_in(obj, COIN_CLASS)) 
+        {
             known = TRUE;
             if (obj->ox != u.ux || obj->oy != u.uy)
                 goto outgoldmap;
         }
     }
 
-    if (!known) {
+    if (!known) 
+    {
         /* no gold found on floor or monster's inventory.
            adjust message if you have gold in your inventory */
-        if (sobj) {
+        if (sobj)
+        {
             char buf[BUFSZ];
 
             if (youmonst.data == &mons[PM_GOLD_GOLEM])
@@ -380,16 +399,23 @@ outgoldmap:
     cls();
 
     (void) unconstrain_map();
+
     /* Discover gold locations. */
-    for (obj = fobj; obj; obj = obj->nobj) {
-        if (sobj->blessed && (temp = o_material(obj, MAT_GOLD)) != 0) {
-            if (temp != obj) {
+    for (obj = fobj; obj; obj = obj->nobj) 
+    {
+        if (sobj->blessed && (temp = o_material(obj, MAT_GOLD)) != 0)
+        {
+            if (temp != obj)
+            {
                 temp->ox = obj->ox;
                 temp->oy = obj->oy;
             }
             map_object(temp, 1);
-        } else if ((temp = o_in(obj, COIN_CLASS)) != 0) {
-            if (temp != obj) {
+        }
+        else if ((temp = o_in(obj, COIN_CLASS)) != 0) 
+        {
+            if (temp != obj)
+            {
                 temp->ox = obj->ox;
                 temp->oy = obj->oy;
             }
@@ -398,11 +424,15 @@ outgoldmap:
         if (temp && temp->ox == u.ux && temp->oy == u.uy)
             ugold = TRUE;
     }
-    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+    {
         if (DEADMONSTER(mtmp))
             continue; /* probably overkill here */
         temp = 0;
-        if (findgold(mtmp->minvent) || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
+
+        if (findgold(mtmp->minvent) || monsndx(mtmp->data) == PM_GOLD_GOLEM) 
+        {
             gold = zeroobj; /* ensure oextra is cleared too */
             gold.otyp = GOLD_PIECE;
             gold.quan = (long) rnd(10); /* usually more than 1 */
@@ -410,27 +440,36 @@ outgoldmap:
             gold.oy = mtmp->my;
             map_object(&gold, 1);
             temp = &gold;
-        } else {
+        } 
+        else
+        {
             for (obj = mtmp->minvent; obj; obj = obj->nobj)
-                if (sobj->blessed && (temp = o_material(obj, MAT_GOLD)) != 0) {
+                if (sobj->blessed && (temp = o_material(obj, MAT_GOLD)) != 0) 
+                {
                     temp->ox = mtmp->mx;
                     temp->oy = mtmp->my;
                     map_object(temp, 1);
                     break;
-                } else if ((temp = o_in(obj, COIN_CLASS)) != 0) {
+                }
+                else if ((temp = o_in(obj, COIN_CLASS)) != 0) 
+                {
                     temp->ox = mtmp->mx;
                     temp->oy = mtmp->my;
                     map_object(temp, 1);
                     break;
                 }
         }
+
         if (temp && temp->ox == u.ux && temp->oy == u.uy)
             ugold = TRUE;
     }
-    if (!ugold) {
+
+    if (!ugold) 
+    {
         newsym(u.ux, u.uy);
         ter_typ |= TER_MON; /* so autodescribe will recognize hero */
     }
+
     You_feel("very greedy, and sense gold!");
     exercise(A_WIS, TRUE);
 
