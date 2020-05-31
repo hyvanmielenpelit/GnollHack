@@ -33,7 +33,7 @@
       <AdditionalOptions>/Gs /Oi- %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(WinWin32Dir);$(IncDir);$(SysWinntDir);$(SysShareDir);$(WinShareDir);$(FmodIncDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TILES;_WINDOWS;DLB;MSWIN_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ResourceCompile>
@@ -42,11 +42,16 @@
     </ResourceCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;winmm.lib;bcrypt.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(FmodLibDir)x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(FmodLibDir)x86\</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>$(WinWin32Dir)NethackW.exe.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
+    <PostBuildEvent>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">xcopy /y /d "$(FmodLibDir)x64\*.dll" "$(BinDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)allmain.c" />
@@ -207,6 +212,7 @@
     <ClInclude Include="$(WinWin32Dir)mhstatus.h" />
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
+    <ClInclude Include="..\..\..\ext\fmod\inc\fmod.h" />
     <ClInclude Include="..\..\..\include\encounter.h" />
     <ClInclude Include="..\..\..\include\matcomps.h" />
     <ClInclude Include="..\resource.h" />

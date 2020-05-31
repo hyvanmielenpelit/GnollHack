@@ -17,6 +17,7 @@
 
 extern HBITMAP FDECL(loadPNG, (HINSTANCE, LPCSTR));
 extern HBITMAP FDECL(loadPNG_FromFile, (char*));
+extern void NDECL(fmod_play_sound_example);
 
 #if !defined(SAFEPROCS)
 #error You must #define SAFEPROCS to build winhack.c
@@ -262,6 +263,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     }
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
+
+    //fmod_play_sound_example();
 
     /* let main do the argument processing */
     (void) main(argc, argv);
