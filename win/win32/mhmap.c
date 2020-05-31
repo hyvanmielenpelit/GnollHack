@@ -896,12 +896,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
      * 2 3 4
     */
     boolean opaque_background_drawn = FALSE;
-    int layer_array[5] = { LAYER_FLOOR, LAYER_FEATURE, LAYER_OBJECT, LAYER_MONSTER, LAYER_COVER };
-    int layer_rounds[5] = { 1, 1, MAX_SHOWN_OBJECTS, 1, MAX_SHOWN_OBJECTS };
+    //int layer_array[5] = { LAYER_FLOOR, LAYER_FEATURE, LAYER_OBJECT, LAYER_MONSTER, LAYER_COVER };
+    //int layer_rounds[5] = { 1, 1, MAX_SHOWN_OBJECTS, 1, MAX_SHOWN_OBJECTS };
 
-    for (int layer_idx = 0; layer_idx <= 4; layer_idx++)
+    for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
     {
-        int base_layer = layer_array[layer_idx];
+        int base_layer = layer_idx; // layer_array[layer_idx];
+        int layer_rounds = 1;
+        if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+            layer_rounds = MAX_SHOWN_OBJECTS;
 
         boolean no_enlargements = FALSE;
         if (base_layer == LAYER_FLOOR)
@@ -999,13 +1002,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 {
                     obj_pile[objcnt] = otmp2;
                     objcnt++;
-
+                    if (enl_i == i && enl_j == j)
+                        j = j;
                     if (objcnt >= MAX_SHOWN_OBJECTS)
                         break;
                 }
             }
 
-            for (int layer_round = 0; layer_round < layer_rounds[layer_idx]; layer_round++)
+            for (int layer_round = 0; layer_round < layer_rounds; layer_round++)
             {
                 struct obj* otmp_round = otmp;
 
@@ -1028,6 +1032,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
+                /*
                 int layer0signedglyph = abs(signed_bk_glyph) != NO_GLYPH ? signed_bk_glyph : NO_GLYPH;
                 int layer1signedglyph = abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
                 int layer2signedglyph = abs(signed_main_glyph) != NO_GLYPH && abs(signed_main_glyph) != cmap_to_glyph(S_unexplored) && otmp_round && !draw_in_front ? obj_to_glyph(otmp_round, rn2_on_display_rng) : NO_GLYPH;
@@ -1044,13 +1049,21 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     signed_glyph = layer3signedglyph;
                 else if (base_layer == LAYER_COVER)
                     signed_glyph = layer4signedglyph;
+                */
+                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+                    signed_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer] == NO_GLYPH ? NO_GLYPH : obj_to_glyph(otmp_round, rn2_on_display_rng);
+                else
+                    signed_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
 
                 glyph = abs(signed_glyph);
 
 
                 /* Kludge for the time being */
-                if (base_layer <= LAYER_FEATURE && glyph == NO_GLYPH && data->map[enl_i][enl_j].glyph == NO_GLYPH)
+                if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH) // && signed_main_glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
+
+                if (glyph == 0)
+                    glyph = glyph;
 
                 if (signed_glyph < 0)
                     flip_glyph = TRUE;
@@ -1115,17 +1128,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     if (!skip_drawing)
                     {
-                        int dest_top_added = 0;
+                        int dest_top_added = move_obj_to_middle || layer_rounds == 1 ? 0 :(int)(((double)(rect->bottom - rect->top)/((double)TILE_Y /2.0)) * -1.0 * (double)(MAX_LAYERS - 1 - layer_round) * 2.0);
                         int dest_height_deducted = 0;
                         int source_top_added = 0;
                         int source_height_deducted = 0;
                         t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
                         t_y = TILEBMP_Y(ntile);
+                        if (layer_round > 0)
+                            layer_round = layer_round;
                         if (move_obj_to_middle)
                         {
                             dest_top_added = (rect->bottom - rect->top) / 4;
                             dest_height_deducted = (rect->bottom - rect->top) / 2;
-                            source_top_added = TILE_Y / 2 - layer_round * 2;
+                            source_top_added = TILE_Y / 2;
                             source_height_deducted = TILE_Y / 2;
                         }
                         SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
@@ -1876,8 +1891,20 @@ static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
 {
     int fg = layers.glyph;
     int bg = layers.bkglyph;
+    boolean layer_different = FALSE;
+    for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_GLYPH; layer_idx++)
+    {
+        if (data->map[i][j].layer_glyphs[layer_idx] != layers.layer_glyphs[layer_idx])
+        {
+            layer_different = TRUE;
+            break;
+        }
+    }
 
-    if ((data->map[i][j].glyph != layers.glyph) || (data->map[i][j].glyph != layers.bkglyph)) {
+    if ((data->map[i][j].glyph != layers.glyph) || (data->map[i][j].glyph != layers.bkglyph) || layer_different
+        || data->map[i][j].layer_flags != layers.layer_flags || data->map[i][j].damage_displayed != layers.damage_displayed
+        )
+    {
         dirty(data, i, j);
 
         data->map[i][j] = layers;
@@ -2069,9 +2096,12 @@ paint(PNHMapWindow data, int i, int j)
     rect.right = rect.left + data->xBackTile;
     rect.bottom = rect.top + data->yBackTile;
 
-    if (data->bAsciiMode || Is_rogue_level(&u.uz)) {
+    if (data->bAsciiMode || Is_rogue_level(&u.uz)) 
+    {
         paintGlyph(data, i, j, &rect);
-    } else {
+    } 
+    else 
+    {
         paintTile(data, i, j, &rect);
     }
 

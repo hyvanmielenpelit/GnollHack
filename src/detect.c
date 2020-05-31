@@ -1294,7 +1294,7 @@ register int x, y;
         } 
         else if (glyph_is_trap(oldglyph) || glyph_is_object(oldglyph)) 
         {
-            show_glyph(x, y, oldglyph);
+            clear_current_and_show_glyph(x, y, oldglyph);
             if (level.flags.hero_memory)
             {
                 lev->layers.glyph = oldglyph;

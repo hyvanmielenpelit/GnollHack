@@ -1236,7 +1236,7 @@ dokick() {
                killed it, we don't want to forget what we thought
                was there before the kick */
             if (glyph != oldglyph && glyph_is_invisible(glyph))
-                show_glyph(x, y, oldglyph);
+                clear_current_and_show_glyph(x, y, oldglyph);
         } else if (!canspotmon(mtmp)
                    /* check <x,y>; monster that evades kick by jumping
                       to an unseen square doesn't leave an I behind */

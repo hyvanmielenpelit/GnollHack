@@ -668,6 +668,16 @@ static const char empty_string[] = "";
 
 #include "layer.h"
 
+#define nul_layerinfo \
+    { base_cmap_to_glyph(S_unexplored),\
+        NO_GLYPH,\
+        { base_cmap_to_glyph(S_unexplored),NO_GLYPH,NO_GLYPH,NO_GLYPH,\
+          NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
+          NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH \
+        }, \
+        0UL, (genericptr_t)0, 0 \
+    }
+
 /* convert 1..10 to 0..9; add 10 for second group (spell casting) */
 #define ad_to_typ(k) (10 + (int) k - 1)
 

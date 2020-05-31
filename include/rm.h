@@ -570,6 +570,7 @@ struct rm {
     Bitfield(candig, 1); /* Exception to Can_dig_down; was a trapdoor */
 };
 
+
 #define SET_TYPLIT(x, y, ttyp, llit)                              \
     {                                                             \
         if ((x) >= 0 && (y) >= 0 && (x) < COLNO && (y) < ROWNO) { \

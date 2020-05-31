@@ -163,8 +163,9 @@ typedef struct {
 static gbuf_entry gbuf[ROWNO][COLNO];
 static char gbuf_start[ROWNO];
 static char gbuf_stop[ROWNO];
-static gbuf_entry nul_gbuf = { 0, { base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, LFLAGS_UNEXPLORED, (genericptr_t)0, 0} };
+static gbuf_entry nul_gbuf = { 0, nul_layerinfo };
 
+//{ base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, LFLAGS_UNEXPLORED, (genericptr_t)0, 0}
 
 int
 artifact_to_obj(artifactid)
@@ -411,9 +412,12 @@ register int x, y;
     if (!level.flags.hero_memory)
         return;
 
-    if ((trap = t_at(x, y)) != 0 && trap->tseen && !covers_traps(x, y)) {
+    if ((trap = t_at(x, y)) != 0 && trap->tseen && !covers_traps(x, y))
+    {
         map_trap(trap, 0);
-    } else if (levl[x][y].seenv) {
+    } 
+    else if (levl[x][y].seenv)
+    {
         struct rm *lev = &levl[x][y];
 
         map_background(x, y, 0);
@@ -421,9 +425,11 @@ register int x, y;
         /* turn remembered dark room squares dark */
         if (!lev->waslit && lev->layers.glyph == cmap_to_glyph(S_room)
             && lev->typ == ROOM)
-            lev->layers.glyph = cmap_to_glyph(S_unexplored);
-    } else {
-        levl[x][y].layers.glyph = cmap_to_glyph(S_unexplored); /* default val */
+            clear_layer_info(&lev->layers);
+    } 
+    else
+    {
+        clear_layer_info(&levl[x][y].layers); /* default val */
     }
 }
 
@@ -900,6 +906,25 @@ xchar x, y;
     }
 }
 
+void
+clear_layer_info(layers_ptr)
+struct layer_info* layers_ptr;
+{
+    if (!layers_ptr)
+        return;
+
+    /* Zero out and then no-glyph */
+    *layers_ptr = zerolayerinfo;
+
+    layers_ptr->glyph = NO_GLYPH;
+    layers_ptr->bkglyph = NO_GLYPH;
+    for (enum layer_types i = LAYER_FLOOR; i < MAX_LAYERS; i++)
+    {
+        layers_ptr->layer_glyphs[i] = NO_GLYPH;
+    }
+
+}
+
 
 /*
  * newsym()
@@ -927,7 +952,7 @@ int damage_shown;
     register int see_it;
     register xchar worm_tail;
     int orig_glyph = lev->layers.glyph;
-    gbuf[y][x].layers = zerolayerinfo;
+    clear_layer_info(&gbuf[y][x].layers);
 
     if (in_mklev)
         return;
@@ -935,14 +960,6 @@ int damage_shown;
     if (program_state.done_hup)
         return;
 #endif
-
-    /* First, zero out and no-glyph gbuf */
-    gbuf[y][x].layers.glyph = NO_GLYPH;
-    gbuf[y][x].layers.bkglyph = NO_GLYPH;
-    for (enum layer_types i = LAYER_FLOOR; i < MAX_LAYERS; i++)
-    {
-        gbuf[y][x].layers.layer_glyphs[i] = NO_GLYPH;
-    }
 
 
     /* only permit updating the hero when swallowed */
@@ -1432,17 +1449,20 @@ int first;
     static xchar lastx, lasty; /* last swallowed position */
     int swallower, left_ok, rght_ok;
 
-    if (first) {
+    if (first)
+    {
         cls();
         bot();
-    } else {
+    }
+    else
+    {
         register int x, y;
 
         /* Clear old location */
         for (y = lasty - 1; y <= lasty + 1; y++)
             for (x = lastx - 1; x <= lastx + 1; x++)
                 if (isok(x, y))
-                    show_glyph(x, y, cmap_to_glyph(S_unexplored));
+                    clear_glyph_buffer_at(x, y);
     }
 
     swallower = monsndx(u.ustuck->data);
@@ -1452,35 +1472,51 @@ int first;
     /*
      *  Display the hero surrounded by the monster's stomach.
      */
-    if (isok(u.ux, u.uy - 1)) {
+    if (isok(u.ux, u.uy - 1)) 
+    {
         if (left_ok)
-            show_glyph(u.ux - 1, u.uy - 1,
-                       swallow_to_glyph(swallower, S_sw_tl));
-        show_glyph(u.ux, u.uy - 1, swallow_to_glyph(swallower, S_sw_tc));
+            show_glyph_on_layer_and_ascii(u.ux - 1, u.uy - 1,
+                       swallow_to_glyph(swallower, S_sw_tl), LAYER_GENERAL_EFFECT);
+        show_glyph_on_layer_and_ascii(u.ux, u.uy - 1, swallow_to_glyph(swallower, S_sw_tc), LAYER_GENERAL_EFFECT);
         if (rght_ok)
-            show_glyph(u.ux + 1, u.uy - 1,
-                       swallow_to_glyph(swallower, S_sw_tr));
+            show_glyph_on_layer_and_ascii(u.ux + 1, u.uy - 1,
+                       swallow_to_glyph(swallower, S_sw_tr), LAYER_GENERAL_EFFECT);
     }
 
     if (left_ok)
-        show_glyph(u.ux - 1, u.uy, swallow_to_glyph(swallower, S_sw_ml));
+        show_glyph_on_layer_and_ascii(u.ux - 1, u.uy, swallow_to_glyph(swallower, S_sw_ml), LAYER_GENERAL_EFFECT);
     display_self();
     if (rght_ok)
-        show_glyph(u.ux + 1, u.uy, swallow_to_glyph(swallower, S_sw_mr));
+        show_glyph_on_layer_and_ascii(u.ux + 1, u.uy, swallow_to_glyph(swallower, S_sw_mr), LAYER_GENERAL_EFFECT);
 
     if (isok(u.ux, u.uy + 1)) {
         if (left_ok)
-            show_glyph(u.ux - 1, u.uy + 1,
-                       swallow_to_glyph(swallower, S_sw_bl));
-        show_glyph(u.ux, u.uy + 1, swallow_to_glyph(swallower, S_sw_bc));
+            show_glyph_on_layer_and_ascii(u.ux - 1, u.uy + 1,
+                       swallow_to_glyph(swallower, S_sw_bl), LAYER_GENERAL_EFFECT);
+        show_glyph_on_layer_and_ascii(u.ux, u.uy + 1, swallow_to_glyph(swallower, S_sw_bc), LAYER_GENERAL_EFFECT);
         if (rght_ok)
-            show_glyph(u.ux + 1, u.uy + 1,
-                       swallow_to_glyph(swallower, S_sw_br));
+            show_glyph_on_layer_and_ascii(u.ux + 1, u.uy + 1,
+                       swallow_to_glyph(swallower, S_sw_br), LAYER_GENERAL_EFFECT);
     }
 
     /* Update the swallowed position. */
     lastx = u.ux;
     lasty = u.uy;
+}
+
+void
+clear_glyph_buffer_at(x, y)
+int x, y;
+{
+    if (isok(x, y))
+    {
+        gbuf[y][x] = nul_gbuf;
+        gbuf[y][x].new = 1;
+        if (gbuf_start[y] > x)
+            gbuf_start[y] = x;
+        if (gbuf_stop[y] < x)
+            gbuf_stop[y] = x;
+    }
 }
 
 /*
@@ -1516,7 +1552,7 @@ int mode;
         for (y = lasty - 1; y <= lasty + 1; y++)
             for (x = lastx - 1; x <= lastx + 1; x++)
                 if (isok(x, y))
-                    show_glyph(x, y, cmap_to_glyph(S_unexplored));
+                    clear_glyph_buffer_at(x, y);
     }
 
     /*
@@ -1527,7 +1563,7 @@ int mode;
         for (y = u.uy - 1; y <= u.uy + 1; y++)
             if (isok(x, y) && (is_pool_or_lava(x, y) || is_ice(x, y))) {
                 if (Blind && !(x == u.ux && y == u.uy))
-                    show_glyph(x, y, cmap_to_glyph(S_unexplored));
+                    clear_glyph_buffer_at(x, y);
                 else
                     newsym(x, y);
             }
@@ -1907,15 +1943,71 @@ register int x, y;
  * Store the glyph in the 3rd screen for later flushing.
  */
 void
-show_glyph(x, y, glyph)
-int x, y, glyph;
+show_layer_glyphs(x, y, layers)
+int x, y;
+struct layer_info layers;
 {
     if (isok(x, y))
     {
-        remove_current_glyph_from_layer(x, y);
+        show_glyph_ascii(x, y, layers.glyph);
+
+        boolean layer_glyph_different = FALSE;
+        for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
+        {
+            int layer_glyph_before = gbuf[y][x].layers.layer_glyphs[layer_idx];
+            gbuf[y][x].layers.layer_glyphs[layer_idx] = layers.layer_glyphs[layer_idx];
+            if (layer_glyph_before != layers.layer_glyphs[layer_idx])
+                layer_glyph_different = TRUE;
+        }
+
+        if (layer_glyph_different)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
+
+
+void
+show_glyph(x, y, glyph)
+int x, y, glyph;
+{
+    maybe_clear_and_show_glyph(x, y, glyph, FALSE);
+}
+
+void
+clear_current_and_show_glyph(x, y, glyph)
+int x, y, glyph;
+{
+    maybe_clear_and_show_glyph(x, y, glyph, TRUE);
+}
+
+void
+maybe_clear_and_show_glyph(x, y, glyph, clear)
+int x, y, glyph;
+boolean clear;
+{
+    if (isok(x, y))
+    {
+        if(clear)
+            remove_current_glyph_from_layer(x, y);
         show_glyph_ascii(x, y, glyph);
         add_glyph_to_layer(x, y, glyph);
     }
+}
+
+void
+show_glyph_on_layer_and_ascii(x, y, glyph, layer_idx)
+int x, y, glyph;
+enum layer_types layer_idx;
+{
+    show_glyph_on_layer(x, y, glyph, layer_idx);
+    show_glyph_ascii(x, y, glyph);
+
 }
 
 void
@@ -2045,7 +2137,8 @@ boolean remove;
     {
         if (glyph_is_cmap_or_cmap_variation(glyph))
         {
-            gbuf[y][x].layers.layer_glyphs[defsyms->layer] = remove ? NO_GLYPH : glyph;
+            int cmap_idx = glyph_to_cmap(glyph);
+            gbuf[y][x].layers.layer_glyphs[defsyms[cmap_idx].layer] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_flags &= LFLAGS_CMAP_MASK;
         }
         else if (glyph_is_monster(glyph) || glyph_is_invisible(glyph) || glyph_is_warning(glyph)) /* includes also players */
@@ -2093,9 +2186,6 @@ int x, y, glyph;
     {
         const char *text;
         int offset;
-
-        if (glyph_is_cmap_or_cmap_variation(glyph))
-            glyph = glyph;
 
         /* column 0 is invalid, but it's often used as a flag, so ignore it */
         if (x == 0)
