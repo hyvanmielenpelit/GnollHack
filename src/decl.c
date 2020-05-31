@@ -213,6 +213,8 @@ NEARDATA long wailmsg = 0L;
 NEARDATA struct obj *migrating_objs = (struct obj *) 0;
 /* objects not yet paid for */
 NEARDATA struct obj *billobjs = (struct obj *) 0;
+/* objects in hero's memory */
+NEARDATA struct obj* memoryobjs = (struct obj*)0;
 
 /* used to zero all elements of a struct obj and a struct monst */
 NEARDATA const struct obj zeroobj = DUMMY;

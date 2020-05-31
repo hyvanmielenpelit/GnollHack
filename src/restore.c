@@ -1142,6 +1142,7 @@ boolean ghostly;
        routine so that we can check for objects being buried under ice */
     level.buriedobjlist = restobjchn(fd, ghostly, FALSE);
     billobjs = restobjchn(fd, ghostly, FALSE);
+    memoryobjs = restobjchn(fd, ghostly, FALSE);
     rest_engravings(fd);
 
     /* reset level.monsters for new level */

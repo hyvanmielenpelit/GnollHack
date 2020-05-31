@@ -1875,7 +1875,7 @@ paintGlyph(PNHMapWindow data, int i, int j, RECT * rect)
         SetTextColor(data->backBufferDC, OldFg);
     }
 
-    if (flags.game_started && i == data->xCur && j == data->yCur &&
+    if (context.game_started && i == data->xCur && j == data->yCur &&
         (data->cursorOn || !win32_cursorblink )) {
         int yCursor = (win32_cursorblink ? data->yBlinkCursor :
                                            data->yNoBlinkCursor);

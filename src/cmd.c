@@ -5475,6 +5475,8 @@ wiz_show_stats()
               &total_obj_count, &total_obj_size);
     obj_chain(win, "billobjs", billobjs, FALSE,
               &total_obj_count, &total_obj_size);
+    obj_chain(win, "memoryobjs", memoryobjs, FALSE,
+              &total_obj_count, &total_obj_size);
     mon_invent_chain(win, "minvent", fmon, &total_obj_count, &total_obj_size);
     mon_invent_chain(win, "migrating minvent", migrating_mons,
                      &total_obj_count, &total_obj_size);

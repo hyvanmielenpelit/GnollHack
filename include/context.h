@@ -120,8 +120,9 @@ struct novel_tracking { /* for choosing random passage when reading novel */
 
 struct context_info 
 {
-	schar game_difficulty;
-	
+    boolean game_started;
+    schar game_difficulty;
+
 	unsigned ident;         /* social security number for each monster */
     unsigned no_of_wizards; /* 0, 1 or 2 (wizard and his shadow) */
     unsigned run;           /* 0: h (etc), 1: H (etc), 2: fh (etc) */

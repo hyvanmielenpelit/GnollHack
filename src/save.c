@@ -542,7 +542,9 @@ skip_lots:
     saveobjchn(fd, fobj, mode);
     saveobjchn(fd, level.buriedobjlist, mode);
     saveobjchn(fd, billobjs, mode);
-    if (release_data(mode)) {
+    saveobjchn(fd, memoryobjs, mode);
+    if (release_data(mode))
+    {
         int x,y;
 
         for (y = 0; y < ROWNO; y++)
@@ -553,6 +555,7 @@ skip_lots:
         fobj = 0;
         level.buriedobjlist = 0;
         billobjs = 0;
+        memoryobjs = 0;
         /* level.bonesinfo = 0; -- handled by savecemetery() */
     }
     save_engravings(fd, mode);
@@ -1394,6 +1397,7 @@ freedynamicdata()
     freeobjchn(fobj);
     freeobjchn(level.buriedobjlist);
     freeobjchn(billobjs);
+    freeobjchn(memoryobjs);
     free_engravings();
     freedamage();
 

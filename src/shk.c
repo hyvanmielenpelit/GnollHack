@@ -1985,7 +1985,7 @@ register struct bill_x *bp;
 }
 
 /*
- * Look for o_id on all lists but billobj.  Return obj or NULL if not found.
+ * Look for o_id on all lists but billobj or memoryobj.  Return obj or NULL if not found.
  * Its OK for restore_timers() to call this function, there should not
  * be any timeouts on the billobjs chain.
  */

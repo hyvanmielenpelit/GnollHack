@@ -830,6 +830,59 @@ register struct obj *otmp;
     return;
 }
 
+void
+memory_dummy_object(otmp)
+register struct obj* otmp;
+{
+    register struct obj* dummy;
+
+    dummy = newobj();
+    *dummy = *otmp;
+    dummy->nobj = (struct obj*)0; /* set nobj to zero; this is just a copy */
+    dummy->cobj = (struct obj*)0; /* set cobj to zero; this is just a copy */
+    dummy->oextra = (struct oextra*)0;
+    dummy->where = OBJ_FREE;
+    dummy->o_id = context.ident++;
+    if (!dummy->o_id)
+        dummy->o_id = context.ident++; /* ident overflowed */
+    dummy->timed = 0;
+    copy_oextra(dummy, otmp);
+    if (has_omid(dummy))
+        free_omid(dummy); /* only one association with m_id*/
+    dummy->owornmask = 0L; /* dummy object is not worn */
+
+    /* Add to memoryobjs chain */
+    add_to_memoryobjs(dummy);
+}
+
+void
+add_to_memoryobjs(obj)
+struct obj* obj;
+{
+    if (obj->where != OBJ_FREE)
+    {
+        panic("add_to_memoryobjs: obj not free");
+        return;
+    }
+    if (obj->timed)
+        obj_stop_timers(obj);
+
+    obj->nobj = memoryobjs;
+    memoryobjs = obj;
+    obj->where = OBJ_HEROMEMORY;
+}
+
+void
+clear_memoryobjs()
+{
+    struct obj* obj;
+    while ((obj = memoryobjs) != 0) {
+        obj_extract_self(obj);
+        dealloc_obj(obj);
+    }
+
+}
+
 /* alteration types; must match COST_xxx macros in hack.h */
 static const char *const alteration_verbs[] = {
     "cancel", "drain", "uncharge", "unbless", "uncurse", "disenchant",
@@ -2768,6 +2821,7 @@ struct monst *mtmp;
  *      OBJ_MIGRATING   migrating chain
  *      OBJ_BURIED      level.buriedobjs chain
  *      OBJ_ONBILL      on billobjs chain
+ *      OBJ_HEROMEMORY  on memoryobjs chain
  */
 void
 obj_extract_self(obj)
@@ -2799,6 +2853,9 @@ struct obj *obj;
         break;
     case OBJ_ONBILL:
         extract_nobj(obj, &billobjs);
+        break;
+    case OBJ_HEROMEMORY:
+        extract_nobj(obj, &memoryobjs);
         break;
     default:
         panic("obj_extract_self");
@@ -3145,6 +3202,7 @@ obj_sanity_check()
     objlist_sanity(migrating_objs, OBJ_MIGRATING, "migrating sanity");
     objlist_sanity(level.buriedobjlist, OBJ_BURIED, "buried sanity");
     objlist_sanity(billobjs, OBJ_ONBILL, "bill sanity");
+    objlist_sanity(memoryobjs, OBJ_HEROMEMORY, "memoryobjs sanity");
 
     mon_obj_sanity(fmon, "minvent sanity");
     mon_obj_sanity(migrating_mons, "migrating minvent sanity");
@@ -3252,7 +3310,8 @@ const char *mesg;
 static const char *obj_state_names[NOBJ_STATES] = { "free",      "floor",
                                                     "contained", "invent",
                                                     "minvent",   "migrating",
-                                                    "buried",    "onbill" };
+                                                    "buried",    "onbill",
+                                                    "heromemory" };
 
 STATIC_OVL const char *
 where_name(obj)

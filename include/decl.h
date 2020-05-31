@@ -270,6 +270,7 @@ E NEARDATA struct obj *uchain; /* defined only when punished */
 E NEARDATA struct obj *uball;
 E NEARDATA struct obj *migrating_objs;
 E NEARDATA struct obj *billobjs;
+E NEARDATA struct obj *memoryobjs;
 E NEARDATA struct obj *current_wand, *thrownobj, *kickedobj;
 
 E NEARDATA const struct obj zeroobj; /* for init; also, &zeroobj is used
