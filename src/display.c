@@ -165,7 +165,7 @@ static char gbuf_start[ROWNO];
 static char gbuf_stop[ROWNO];
 static gbuf_entry nul_gbuf = { 0, nul_layerinfo };
 
-//{ base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, LFLAGS_UNEXPLORED, (genericptr_t)0, 0}
+//{ base_cmap_to_glyph(S_unexplored), NO_GLYPH, { NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH, NO_GLYPH }, 0UL, (genericptr_t)0, 0}
 
 int
 artifact_to_obj(artifactid)
@@ -187,10 +187,13 @@ magic_map_background(x, y, show)
 xchar x, y;
 int show;
 {
+    /* Hero gains knowledge of the lit status of the location */
+    struct rm* lev = &levl[x][y];
+    lev->waslit = lev->lit;
+
     map_background(x, y, show);
 
-    struct rm *lev = &levl[x][y];
-
+#if 0
     /*
      * Correct for out of sight lit corridors and rooms that the hero
      * doesn't remember as lit.
@@ -217,10 +220,10 @@ int show;
 
         if (show)
         {
-            show_glyph_ascii(x, y, glyph);
-            show_glyph_on_layer(x, y, glyph, LAYER_FLOOR);
+            show_glyph_on_layer_and_ascii(x, y, glyph, LAYER_FLOOR);
         }
     }
+#endif
 
     remember_topology(x, y);
 }
@@ -275,11 +278,11 @@ register int show;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
     }
 
-
     if (show)
     {
         int floor_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR];
         int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
+        unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
 
@@ -422,10 +425,12 @@ register int x, y;
     if (!level.flags.hero_memory)
         return;
 
+    boolean waslit = levl[x][y].waslit;
     clear_hero_memory_at(x, y);
 
     if (levl[x][y].seenv)
     {
+        levl[x][y].waslit = waslit;
         map_background(x, y, 0);
 
 #if 0
@@ -474,6 +479,8 @@ int x, y, show;
     struct obj* obj;
     struct trap* trap;
 
+    /* Note that this should ordinarily include also waslit, except when one is blind / cannot see the location */
+
     /* Floor and feature layers */
     map_background(x, y, show);
 
@@ -503,7 +510,7 @@ int x, y, show;
         }
     }
     if (is_objpile(x, y) && !Hallucination)
-        add_extra_info_flags(x, y, LFLAGS_O_PILE);
+        add_glyph_buffer_layer_flags(x, y, LFLAGS_O_PILE);
 
     remember_topology(x, y);
 
@@ -809,7 +816,7 @@ xchar x, y;
              */
             do_room_glyph = FALSE;
             int litsym = S_room;
-            int darksym = S_darkroom;
+            //int darksym = S_darkroom;
             if (lev->hero_memory_layers.glyph == objnum_to_glyph(BOULDER)
                 || glyph_is_invisible(lev->hero_memory_layers.glyph))
             {
@@ -827,13 +834,13 @@ xchar x, y;
             {
                 do_room_glyph = TRUE;
                 litsym = S_grass;
-                darksym = S_darkgrass;
+                //darksym = S_darkgrass;
             }
 
             if (do_room_glyph) 
             {
-                int new_glyph = (flags.dark_room && iflags.use_color && !Is_rogue_level(&u.uz))
-                    ? cmap_to_glyph(darksym) : (lev->waslit ? cmap_to_glyph(litsym) : cmap_to_glyph(S_unexplored));
+                int new_glyph = cmap_to_glyph(litsym); /* (flags.dark_room && iflags.use_color && !Is_rogue_level(&u.uz))
+                    ? cmap_to_glyph(darksym) : (lev->waslit ? cmap_to_glyph(litsym) : cmap_to_glyph(S_unexplored)); */
 
                 lev->hero_memory_layers.glyph = new_glyph;
                 lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
@@ -845,6 +852,7 @@ xchar x, y;
             /* We feel it (I think hallways are the only things left). */
             map_background(x, y, 1);
 
+#if 0
             /* Corridors are never felt as lit (unless remembered that way) */
             /* (lit_corridor only).                                         */
             if (lev->typ == CORR && lev->hero_memory_layers.glyph == cmap_to_glyph(S_litcorr)
@@ -871,6 +879,7 @@ xchar x, y;
                 lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
                 show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
             }
+#endif
         }
 
         if (IS_DOOR(lev->typ))
@@ -921,6 +930,7 @@ xchar x, y;
             }
         }
 
+#if 0
         /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
         if (lev->typ == ROOM && lev->hero_memory_layers.glyph == cmap_to_glyph(S_room))
         {
@@ -945,6 +955,8 @@ xchar x, y;
             lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
             show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
         }
+#endif
+
     }
 
     /* Monster layer */
@@ -998,6 +1010,7 @@ int x, y;
     struct layer_info* layer_ptr = &levl[x][y].hero_memory_layers;
     clear_hero_object_memory_at(x, y);
     clear_layer_info(layer_ptr);
+    levl[x][y].waslit = 0;
 }
 
 void
@@ -1071,6 +1084,22 @@ int damage_shown;
     {
         boolean old_glyph_is_invisible = glyph_is_invisible(lev->hero_memory_layers.glyph);
 
+        /* RECALL FIRST WHETHER THE LOCATION IS LIT OR NOT */
+        /*
+         * Don't use templit here:  E.g.
+         *
+         *      lev->waslit = !!(lev->lit || templit(x,y));
+         *
+         * Otherwise we have the "light pool" problem, where non-permanently
+         * lit areas just out of sight stay remembered as lit.  They should
+         * re-darken.
+         *
+         * Perhaps ALL areas should revert to their "unlit" look when
+         * out of sight.
+         */
+        lev->waslit = (lev->lit != 0); /* remember lit condition */
+
+        /* THEN, SHOW THE LOCATION IS AND PUT IT TO MEMORY */
         map_location(x, y, 1);
 #if 0
         struct obj* obj;
@@ -1103,7 +1132,7 @@ int damage_shown;
             }
         }
         if (is_objpile(x, y) && !Hallucination)
-            add_extra_info_flags(x, y, LFLAGS_O_PILE);
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_O_PILE);
 #endif
         /* Monster layer */
         if (x == u.ux && y == u.uy)
@@ -1169,20 +1198,6 @@ int damage_shown;
 
         /* Environment layer */
         NhRegion *reg = visible_region_at(x, y);
-        /*
-         * Don't use templit here:  E.g.
-         *
-         *      lev->waslit = !!(lev->lit || templit(x,y));
-         *
-         * Otherwise we have the "light pool" problem, where non-permanently
-         * lit areas just out of sight stay remembered as lit.  They should
-         * re-darken.
-         *
-         * Perhaps ALL areas should revert to their "unlit" look when
-         * out of sight.
-         */
-        lev->waslit = (lev->lit != 0); /* remember lit condition */
-
         /* normal region shown only on accessible positions, but poison clouds
          * also shown above lava, pools and moats.
          */
@@ -1208,6 +1223,7 @@ int damage_shown;
         }
         else
         {
+#if 0
             /*
              * If the location is remembered as being both dark (waslit is false)
              * and lit (glyph is a lit room or lit corridor) then it was either:
@@ -1230,10 +1246,10 @@ int damage_shown;
              * They are dependent on the position being out of sight.
              */
 
-            boolean onroguelev = Is_rogue_level(&u.uz);
 
+            boolean onroguelev = Is_rogue_level(&u.uz);
             /* CORRECT FIRST HERO MEMORY TO SHOW UNLIT IF NOT SEEN */
-            if (!lev->waslit || (flags.dark_room && iflags.use_color) || (onroguelev && lev->typ == CORR))
+            if (!lev->waslit || (flags.dark_room && iflags.use_color))
             {
                 if (lev->typ == CORR)
                 {
@@ -1261,11 +1277,29 @@ int damage_shown;
                 }
             }
 
+            if (onroguelev)
+            {
+                if (lev->typ == CORR)
+                {
+                    if(lev->hero_memory_layers.glyph == cmap_to_glyph(S_litcorr))
+                        lev->hero_memory_layers.layer_flags |= LFLAGS_DARKEN;
+                }
+                else if (!lev->waslit && (lev->typ == GRASS || lev->typ == GRASS))
+                {
+                    int old_glyph = lev->typ == GRASS ? cmap_to_glyph(S_grass) : cmap_to_glyph(S_room);
+                    int new_glyph = cmap_to_glyph(S_unexplored);
+                    if (lev->hero_memory_layers.glyph == old_glyph)
+                        lev->hero_memory_layers.glyph = new_glyph;
+                    if (lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] == old_glyph)
+                        lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
+                }
+            }
+#endif
+
             /*** Show memory from floor to cover layer ***/
             /* Ascii */
             show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
-
-            add_extra_info_flags(x, y, LFLAGS_O_SHOW_OBJECT_MEMORY);
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
 
             /* Floor to cover layer, monster layer replaced below, if needed */
             for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER; layer_idx++)
@@ -1963,7 +1997,7 @@ docrt()
             if (lev->hero_memory_layers.glyph != cmap_to_glyph(S_unexplored))
             {
                 show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
-                add_extra_info_flags(x, y, LFLAGS_O_SHOW_OBJECT_MEMORY);
+                add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
                 for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER; layer_idx++)
                     show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }
@@ -2151,13 +2185,44 @@ int damage_displayed;
 }
 
 void
-add_extra_info_flags(x, y, disp_flags)
+add_glyph_buffer_layer_flags(x, y, added_flags)
 int x, y;
-unsigned long disp_flags;
+unsigned long added_flags;
 {
     if (isok(x, y))
     {
-        show_extra_info(x, y, disp_flags | gbuf[y][x].layers.layer_flags, gbuf[y][x].layers.damage_displayed);
+        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        gbuf[y][x].layers.layer_flags |= added_flags;
+
+        if (old_flags != gbuf[y][x].layers.layer_flags)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
+
+void
+remove_glyph_buffer_layer_flags(x, y, removed_flags)
+int x, y;
+unsigned long removed_flags;
+{
+    if (isok(x, y))
+    {
+        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        gbuf[y][x].layers.layer_flags &= ~removed_flags;
+
+        if (old_flags != gbuf[y][x].layers.layer_flags)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
     }
 }
 
@@ -2552,7 +2617,7 @@ xchar x, y;
     }
     break;
     case ROOM:
-        idx = (!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM : S_room;
+        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
 
         if (ptr->variation > 0)
         {
@@ -2565,10 +2630,10 @@ xchar x, y;
 
         break;
 	case GRASS:
-        idx = (!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM : S_grass;
+        idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
         break;
 	case CORR:
-        idx = (ptr->waslit || flags.lit_corridor) ? S_litcorr : S_corr;
+        idx = /* (ptr->waslit || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
         break;
     case HWALL:
     {
@@ -2970,10 +3035,10 @@ xchar x, y;
         return NO_GLYPH;
     case DOOR:
     case IRONBARS:
-        idx = ptr->waslit ? S_room : DARKROOMSYM;
+        idx = /* ptr->waslit ? */ S_room /* : DARKROOMSYM */;
         break;
     case TREE:
-        idx = ptr->waslit ? S_grass : DARKGRASSSYM;
+        idx = /* ptr->waslit ? */ S_grass /*: DARKGRASSSYM */;
         break;
     case LADDER:
     case STAIRS:
@@ -2982,7 +3047,7 @@ xchar x, y;
     case ALTAR:
     case GRAVE:
     case THRONE:
-        idx = ptr->waslit ? S_room : DARKROOMSYM;
+        idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
         break;
     case DRAWBRIDGE_DOWN:
         switch (ptr->drawbridgemask & DB_UNDER) 
@@ -2997,18 +3062,18 @@ xchar x, y;
             idx = S_ice;
             break;
         case DB_FLOOR:
-            idx = ptr->waslit ? S_room : DARKROOMSYM;
+            idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
             break;
         default:
             impossible("Strange db-under: %d",
                 ptr->drawbridgemask & DB_UNDER);
-            idx = ptr->waslit ? S_room : DARKROOMSYM; /* something is better than nothing */
+            idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/; /* something is better than nothing */
             break;
         }
         break;
     default:
         impossible("get_floor_layer_glyph:  unknown level type [ = %d ]", ptr->typ);
-        idx = ptr->waslit ? S_room : DARKROOMSYM;
+        idx =/*  ptr->waslit ? */ S_room /* : DARKROOMSYM */;
         break;
     }
 

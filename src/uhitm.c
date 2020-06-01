@@ -3126,7 +3126,8 @@ STATIC_OVL void
 start_engulf(mdef)
 struct monst *mdef;
 {
-    if (!Invisible) {
+    if (!Invisible) 
+	{
         map_location(u.ux, u.uy, TRUE);
         tmp_at(DISP_ALWAYS, any_mon_to_glyph(&youmonst, rn2_on_display_rng));
         tmp_at(mdef->mx, mdef->my);

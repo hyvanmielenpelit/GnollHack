@@ -48,30 +48,36 @@ struct layer_info {
 #define LFLAGS_M_RIDDEN             0x00000008UL
 #define LFLAGS_M_SADDLED            0x00000010UL
 #define LFLAGS_M_YOU                0x00000020UL
+/* free for m_ flag */
+/* free for m_ flag */
 
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_M_BEING_HIT          0x00000100UL
 #define LFLAGS_M_HIT_TILE_MASK      0x00000E00UL /* 3 bits indicating display of hit tile 0-7 */
 #define LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET 9 
-#define LFLAGS_M_MASK               0x0000FFFFUL
+#define LFLAGS_M_DISINTEGRATED      0x00001000UL
+#define LFLAGS_M_PETRIFIED          0x00002000UL
+#define LFLAGS_M_CAITIFF            0x00004000UL
+#define LFLAGS_M_BACKSTAB           0x00008000UL
+#define LFLAGS_M_BREAK_WEAPON       0x00010000UL
+/* free for m_ flag */
+/* free for m_ flag */
+/* free for m_ flag */
+#define LFLAGS_M_MASK               0x000FFFFFUL
 
 /* These are flags for showing extra stuff in graphical interfaces */
-#define LFLAGS_O_PILE               0x00010000UL
-#define LFLAGS_O_SHOW_OBJECT_MEMORY 0x00020000UL
-#define LFLAGS_O_MASK               0x000F0000UL
+#define LFLAGS_O_PILE               0x00100000UL
+/* free for another obj flag */
+#define LFLAGS_O_MASK               0x00300000UL
 
-#define LFLAGS_DISINTEGRATED        0x00100000UL
-#define LFLAGS_PETRIFIED            0x00200000UL
-#define LFLAGS_CAITIFF              0x00400000UL
-#define LFLAGS_BACKSTAB             0x00800000UL
-#define LFLAGS_BREAK_WEAPON         0x01000000UL
-#define LFLAGS_SMASH                0x02000000UL
-#define LFLAGS_STUNNED_FROM_BLOW    0x04000000UL
-#define LFLAGS_EXPLODE              0x08000000UL
+/* free for cmaps */
+/* free for cmaps */
+#define LFLAGS_CMAP_MASK            0x00C00000UL
 
-#define LFLAGS_UNEXPLORED           0x10000000UL
-#define LFLAGS_CMAP_MASK            0xF0000000UL
-
+/* Rest are important general flags */
+#define LFLAGS_SHOWING_MEMORY       0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */
+/* reserved for waslit flag */
+/* free bits */
 
 #define CMAP_FLAG_FEATURE_LAYER 0x00
 #define CMAP_FLAG_FLOOR_LAYER 0x01

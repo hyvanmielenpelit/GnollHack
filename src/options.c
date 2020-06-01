@@ -631,6 +631,7 @@ STATIC_DCL int FDECL(wc_set_window_colors, (char *));
 void
 reglyph_darkroom()
 {
+#if 0
     xchar x, y;
 
     for (x = 0; x < COLNO; x++)
@@ -656,6 +657,7 @@ reglyph_darkroom()
                     lev->hero_memory_layers.glyph = cmap_to_glyph(S_darkgrass);
             }
         }
+#endif
 
     if (flags.dark_room && iflags.use_color)
     {

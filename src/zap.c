@@ -4922,7 +4922,7 @@ boolean ordinary;
 		killer.format = NO_KILLER_PREFIX;
 		You("irradiate yourself with disintegration field!");
 		You("are disintegrated.");
-        display_u_being_hit(HIT_DISINTEGRATED, 0, LFLAGS_DISINTEGRATED);
+        display_u_being_hit(HIT_DISINTEGRATED, 0, LFLAGS_M_DISINTEGRATED);
 		/* when killed by disintegration breath, don't leave corpse */
 		u.ugrave_arise = 3;
 		done(DIED);
@@ -7074,7 +7074,7 @@ const char *fltxt;
         if (!m_amulet)
         {
             pline("%s is disintegrated!", Monnam(mon));
-            display_m_being_hit(mon, HIT_DISINTEGRATED, 0, LFLAGS_DISINTEGRATED);
+            display_m_being_hit(mon, HIT_DISINTEGRATED, 0, LFLAGS_M_DISINTEGRATED);
         }
         else
             hit(fltxt, mon, "!", -1);

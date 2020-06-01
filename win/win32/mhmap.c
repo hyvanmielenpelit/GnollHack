@@ -992,7 +992,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* m_here = m_at(enl_i, enl_j);
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
 
-            boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_SHOW_OBJECT_MEMORY);
+            boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
             struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_obj : level.objects[enl_i][enl_j];
 
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
@@ -1408,8 +1408,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_PILE:
-                                    if (!isyou && data->map[i][j].layer_flags & LFLAGS_O_PILE)
-                                        display_this_status_mark = TRUE;
+                                    //if (!isyou && data->map[i][j].layer_flags & LFLAGS_O_PILE)
+                                    //    display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_HUNGRY:
                                     if ((isyou && u.uhs == HUNGRY) 
@@ -1797,6 +1797,21 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             //DrawFocusRect(data->backBufferDC, rect);
                             //DrawFocusRect(data->backBufferDC, &smaller_rect);
 #endif
+                        }
+                    }
+                }
+                else if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
+                {
+                    /* Darkening of dark areas and areas drawn from memory */
+                    if (data->map[enl_i][enl_j].glyph != NO_GLYPH && data->map[enl_i][enl_j].glyph != cmap_to_glyph(S_unexplored))
+                    {
+                        if (!cansee(enl_i, enl_j) || (data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY))
+                        {
+                            if (1 || IS_ROOM(levl[enl_i][enl_j].typ))
+                            {
+                                HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
+                                FrameRect(data->backBufferDC, rect, hbr_dark);
+                            }
                         }
                     }
                 }

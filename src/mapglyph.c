@@ -258,9 +258,6 @@ unsigned long *ospecial;
         int cmap_offset = 0;
         int variation_index = 0;
 
-        if (offset != 0)
-            offset = offset;
-
         if (is_variation)
         {
             cmap_type_idx = max(0, offset / MAX_VARIATIONS);
@@ -275,6 +272,7 @@ unsigned long *ospecial;
             idx = cmap_offset + SYM_OFF_P;
         }
 
+        /* Boulder replacement */
         if (cmap_offset == S_extra_boulder)
             idx = SYM_BOULDER + SYM_OFF_X;
 
@@ -291,9 +289,9 @@ unsigned long *ospecial;
                 color = CLR_GREEN;
             else
                 color = NO_COLOR;
-#ifdef TEXTCOLOR
+#if 0 //def TEXTCOLOR
         /* provide a visible difference if normal and lit corridor
-           use the same symbol */
+           use the same symbol -- OBSOLETE -- Assume that this is always the case */
         } 
         else if (iflags.use_color && cmap_offset == S_litcorr
                    && showsyms[idx] == showsyms[S_corr + SYM_OFF_P])
@@ -315,6 +313,50 @@ unsigned long *ospecial;
                 cmap_variation_color(variation_index, cmap_type_idx);
             else
                 cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+
+            /* Darken the rooms and corridors */
+            if (cmap_offset == S_room || cmap_offset == S_grass)
+            {
+                    if (!cansee(x,y)//levl[x][y].waslit == 0 
+                        || ((layers.layer_flags & LFLAGS_SHOWING_MEMORY) && flags.dark_room)
+                        )
+                    {
+                        if (iflags.use_color && !Is_rogue_level(&u.uz))
+                        {
+                            if (color == CLR_WHITE)
+                                color = CLR_GRAY;
+                            else
+                                color = CLR_BLACK;
+
+                        }
+                        else
+                        {
+                            is_variation = 0;
+                            variation_index = 0;
+                            cmap_offset = S_unexplored;
+                            idx = cmap_offset + SYM_OFF_P;
+                            color = CLR_GRAY;
+                        }
+
+                    }
+            }
+            else if (cmap_offset == S_litcorr && !Is_rogue_level(&u.uz)) /* Rogue level colors set earlier */
+            {
+                if (!flags.lit_corridor || !cansee(x, y) || (layers.layer_flags & LFLAGS_SHOWING_MEMORY))
+                {
+                    if (iflags.use_color)
+                    {
+                        if (color == CLR_WHITE)
+                            color = CLR_GRAY;
+                        else
+                            color = CLR_BLACK;
+                    }
+                    else
+                    {
+                        /* Do nothing? */
+                    }
+                }
+            }
         }
     } 
     else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 

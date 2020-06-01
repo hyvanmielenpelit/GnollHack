@@ -1143,8 +1143,7 @@ int howmuch;
             if (howmuch & ALL_MAP || rn2(7)) {
                 /* Zonk all memory of this location. */
                 levl[zx][zy].seenv = 0;
-                levl[zx][zy].waslit = 0;
-                levl[zx][zy].hero_memory_layers.glyph = cmap_to_glyph(S_unexplored);
+                clear_hero_memory_at(zx, zy);
                 lastseentyp[zx][zy] = UNEXPLORED;
             }
     /* forget overview data for this level */

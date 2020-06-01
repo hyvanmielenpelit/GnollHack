@@ -51,7 +51,7 @@
     </Manifest>
     <PostBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-</Command>
+      </Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -218,6 +218,9 @@
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
     <ClInclude Include="..\..\..\ext\fmod\core\inc\fmod.hpp" />
+    <ClInclude Include="..\..\..\ext\fmod\fsbank\inc\fsbank.h" />
+    <ClInclude Include="..\..\..\ext\fmod\fsbank\inc\fsbank_errors.h" />
+    <ClInclude Include="..\..\..\ext\fmod\studio\inc\fmod_studio.hpp" />
     <ClInclude Include="..\..\..\include\encounter.h" />
     <ClInclude Include="..\..\..\include\matcomps.h" />
     <ClInclude Include="..\resource.h" />

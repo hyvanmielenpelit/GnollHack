@@ -513,7 +513,6 @@ struct obj *corpse;
     for (x = 1; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++) {
             levl[x][y].seenv = 0;
-            levl[x][y].waslit = 0;
             clear_hero_memory_at(x, y);
             lastseentyp[x][y] = UNEXPLORED;
         }

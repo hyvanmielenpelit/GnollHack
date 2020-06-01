@@ -2718,7 +2718,7 @@ int x, y;
 
     /* If there is a memory object, then it must be flagged as shown */
     if (!level.locations[x][y].hero_memory_layers.memory_obj)
-        level.locations[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_SHOW_OBJECT_MEMORY;
+        level.locations[x][y].hero_memory_layers.layer_flags |= LFLAGS_SHOWING_MEMORY;
 }
 
 void
