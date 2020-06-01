@@ -287,7 +287,7 @@ unsigned long *ospecial;
             else if (cmap_offset == S_corr || cmap_offset == S_litcorr)
                 color = CLR_GRAY;
             else if (cmap_offset >= S_room && cmap_offset <= S_water
-                     && cmap_offset != S_darkroom)
+                     && cmap_offset != S_darkroom && cmap_offset != S_darkgrass)
                 color = CLR_GREEN;
             else
                 color = NO_COLOR;
@@ -315,37 +315,6 @@ unsigned long *ospecial;
                 cmap_variation_color(variation_index, cmap_type_idx);
             else
                 cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
-
-#if 0
-            if (iflags.use_color && !flags.classic_colors)
-            {
-                if (Inhell && !level.flags.is_maze_lev &&
-                    !Is_valley(&u.uz) && !Is_juiblex_level(&u.uz) && !Is_orcus_level(&u.uz) && !Is_sanctum(&u.uz) 
-                    && !In_V_tower(&u.uz) && !Is_modron_level(&u.uz) && !Is_bovine_level(&u.uz)
-                    )
-                {
-                    if (cmap_offset >= S_vwall && cmap_offset <= S_trwall)
-                    {
-                        color = CLR_ORANGE;
-                    }
-                    else if (cmap_offset == S_room || cmap_offset == S_litcorr)
-                    {
-                        color = CLR_YELLOW;
-                    }
-                    else if (cmap_offset == S_darkroom || cmap_offset == S_corr)
-                    {
-                        color = CLR_BROWN;
-                    }
-                }
-                else if (In_mines(&u.uz))
-                {
-                    if (cmap_offset >= S_vwall && cmap_offset <= S_trwall)
-                    {
-                        //color = CLR_BROWN;
-                    }
-                }
-            }
-#endif
         }
     } 
     else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 

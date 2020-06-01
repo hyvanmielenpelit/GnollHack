@@ -263,7 +263,7 @@ int glyph;
 
     c = glyph_to_cmap(glyph);
 
-    if (is_cmap_room(c) || is_cmap_furniture(c))
+    if (is_cmap_room(c) || is_cmap_grass(c) || is_cmap_furniture(c))
         return 1;
     else if (is_cmap_wall(c) || c == S_tree)
         return 2;
@@ -378,8 +378,9 @@ int x, y, gloc;
                     || glyph_to_cmap(glyph) == S_hoportcullis
                     || glyph_to_cmap(glyph) == S_voportcullis
                     || glyph_to_cmap(glyph) == S_room
-					|| glyph_to_cmap(glyph) == S_grass
-					|| glyph_to_cmap(glyph) == S_darkroom
+                    || glyph_to_cmap(glyph) == S_darkroom
+                    || glyph_to_cmap(glyph) == S_grass
+                    || glyph_to_cmap(glyph) == S_darkgrass
                     || glyph_to_cmap(glyph) == S_corr
                     || glyph_to_cmap(glyph) == S_litcorr)
                 && (IS_UNEXPLORED_LOC(x + 1, y)
@@ -408,8 +409,9 @@ int x, y, gloc;
                      || glyph_to_cmap(glyph) == S_hoportcullis
                      || glyph_to_cmap(glyph) == S_voportcullis
                      || glyph_to_cmap(glyph) == S_room
-					 || glyph_to_cmap(glyph) == S_grass
 					 || glyph_to_cmap(glyph) == S_darkroom
+                     || glyph_to_cmap(glyph) == S_grass
+                     || glyph_to_cmap(glyph) == S_darkgrass
                      || glyph_to_cmap(glyph) == S_corr
                      || glyph_to_cmap(glyph) == S_litcorr));
     }
@@ -901,8 +903,9 @@ enum game_cursor_types cursor_style;
                     if (IS_DOOR(sidx) || IS_WALL(sidx)
                         || sidx == SDOOR || sidx == SCORR
                         || glyph_to_cmap(k) == S_room
-						|| glyph_to_cmap(k) == S_grass
 						|| glyph_to_cmap(k) == S_darkroom
+                        || glyph_to_cmap(k) == S_grass
+                        || glyph_to_cmap(k) == S_darkgrass
                         || glyph_to_cmap(k) == S_corr
                         || glyph_to_cmap(k) == S_litcorr)
                         continue;

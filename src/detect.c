@@ -2008,6 +2008,8 @@ int default_glyph, which_subset;
 
     if (glyph == cmap_to_glyph(S_darkroom))
         glyph = cmap_to_glyph(S_room); /* FIXME: dirty hack */
+    else if (glyph == cmap_to_glyph(S_darkgrass))
+        glyph = cmap_to_glyph(S_grass); /* FIXME: dirty hack */
 
     return glyph;
 }

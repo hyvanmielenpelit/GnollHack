@@ -4066,7 +4066,7 @@ register struct obj *obj;
 								if (showmon)
 									newsym(x, y); /* restore the old information */
 								else
-									show_glyph(x, y, cmap_to_glyph(S_darkroom));
+									show_glyph(x, y, cmap_to_glyph(S_unexplored));
 							}
 						}
 						else
