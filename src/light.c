@@ -585,6 +585,7 @@ obj_sheds_light(obj)
 struct obj *obj;
 {
     /* so far, only burning objects shed light */
+    /* objects in memory do not shed light */
     return obj_is_burning(obj);
 }
 

@@ -2735,6 +2735,7 @@ register struct obj* otmp;
     }
     extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_obj);
     extract_nobj(otmp, &memoryobjs);
+    otmp->lamplit = 0;
 }
 
 
