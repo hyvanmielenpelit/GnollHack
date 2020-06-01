@@ -11,8 +11,6 @@
     <DocDir>$(RootDir)doc\</DocDir>
     <ExtDir>$(RootDir)ext\</ExtDir>
     <FmodDir>$(RootDir)ext\fmod\</FmodDir>
-    <FmodIncDir>$(RootDir)ext\fmod\inc\</FmodIncDir>
-    <FmodLibDir>$(RootDir)ext\fmod\lib\</FmodLibDir>
     <IncDir>$(RootDir)include\</IncDir>
     <SrcDir>$(RootDir)src\</SrcDir>
     <SysDir>$(RootDir)sys\</SysDir>

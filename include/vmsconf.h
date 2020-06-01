@@ -166,7 +166,7 @@ PANICTRACE_GDB=2  #at conclusion of panic, show a call traceback and then
 #undef ISAAC64
 #endif
 
-#define FCMASK 0664 /* file creation mask */
+#define FCMASK 0664  /* file creation mask, changed from 0660 to make dumplogs public in Junethack */
 
 /*
  * The remainder of the file should not need to be changed.

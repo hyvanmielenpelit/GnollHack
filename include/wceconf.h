@@ -151,7 +151,7 @@
 # endif
 #endif
 
-#define FCMASK 0664 /* file creation mask */
+#define FCMASK 0664  /* file creation mask, changed from 0660 to make dumplogs public in Junethack */
 #define regularize nt_regularize
 #define HLOCK "NHPERM"
 
