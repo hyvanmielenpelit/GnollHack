@@ -289,58 +289,69 @@ unsigned long *ospecial;
                 color = CLR_GREEN;
             else
                 color = NO_COLOR;
-#if 0 //def TEXTCOLOR
-        /* provide a visible difference if normal and lit corridor
-           use the same symbol -- OBSOLETE -- Assume that this is always the case */
-        } 
-        else if (iflags.use_color && cmap_offset == S_litcorr
-                   && showsyms[idx] == showsyms[S_corr + SYM_OFF_P])
-        {
-            color = CLR_WHITE;
-#endif
-        /* try to provide a visible difference between water and lava
-           if they use the same symbol and color is disabled */
         } 
         else if (!iflags.use_color && cmap_offset == S_lava
                    && (showsyms[idx] == showsyms[S_pool + SYM_OFF_P]
                        || showsyms[idx] == showsyms[S_water + SYM_OFF_P]))
         {
+            /* try to provide a visible difference between water and lava
+               if they use the same symbol and color is disabled */
             special |= MG_BW_LAVA;
         } 
         else
         {
-            if (is_variation && !flags.classic_colors)
-                cmap_variation_color(variation_index, cmap_type_idx);
+            /* Darken by changing the symbol */
+            boolean symbol_darkened_by_change = FALSE;
+            if (cmap_offset == S_litcorr && !is_variation &&
+                (!flags.lit_corridor || !cansee(x, y) || (layers.layer_flags & LFLAGS_SHOWING_MEMORY))
+                && showsyms[idx] != showsyms[S_corr + SYM_OFF_P])
+            {
+                cmap_offset = S_corr;
+                idx = cmap_offset + SYM_OFF_P;
+                symbol_darkened_by_change = TRUE;
+            }
+
+            if (iflags.use_color && cmap_offset == S_litcorr && !is_variation
+                && showsyms[idx] != showsyms[S_corr + SYM_OFF_P])
+            {
+                /* if showsyms are different, the colors will be as per S_corr, otherwise if the same symbols they will use their normal different colors */
+                cmap_color(S_corr, flags.classic_colors ? 0 : cmap_type_idx);
+            }
             else
-                cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+            {
+                if (is_variation && !flags.classic_colors)
+                    cmap_variation_color(variation_index, cmap_type_idx);
+                else
+                    cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+            }
 
             /* Darken the rooms and corridors */
             if (cmap_offset == S_room || cmap_offset == S_grass)
             {
-                    if (!cansee(x,y)//levl[x][y].waslit == 0 
-                        || ((layers.layer_flags & LFLAGS_SHOWING_MEMORY) && flags.dark_room)
-                        )
+                if (!cansee(x,y)//levl[x][y].waslit == 0 
+                    || ((layers.layer_flags & LFLAGS_SHOWING_MEMORY) && flags.dark_room)
+                    )
+                {
+                    if (iflags.use_color && !Is_rogue_level(&u.uz))
                     {
-                        if (iflags.use_color && !Is_rogue_level(&u.uz))
-                        {
-                            if (color == CLR_WHITE)
-                                color = CLR_GRAY;
-                            else
-                                color = CLR_BLACK;
-
-                        }
-                        else
-                        {
-                            is_variation = 0;
-                            variation_index = 0;
-                            cmap_offset = S_unexplored;
-                            idx = cmap_offset + SYM_OFF_P;
+                        if (color == CLR_WHITE)
                             color = CLR_GRAY;
-                        }
+                        else
+                            color = CLR_BLACK;
 
                     }
+                    else
+                    {
+                        is_variation = 0;
+                        variation_index = 0;
+                        cmap_offset = S_unexplored;
+                        idx = cmap_offset + SYM_OFF_P;
+                        color = CLR_GRAY;
+                    }
+
+                }
             }
-            else if (cmap_offset == S_litcorr && !Is_rogue_level(&u.uz)) /* Rogue level colors set earlier */
+            else if (!symbol_darkened_by_change && cmap_offset == S_litcorr && !Is_rogue_level(&u.uz)) /* Rogue level colors set earlier */
             {
                 if (!flags.lit_corridor || !cansee(x, y) || (layers.layer_flags & LFLAGS_SHOWING_MEMORY))
                 {
