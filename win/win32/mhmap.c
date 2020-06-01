@@ -1355,7 +1355,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 if (base_layer == LAYER_MONSTER && enlarg_idx == -1)
                 {
-
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
                     if (enlargement_idx > 0 && enlargements[enlargement_idx].number_of_frames > 3)
@@ -1373,11 +1372,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
 
-                    boolean ismonster = !!glyph_is_monster(glyph);
-                    int condition_count = 0;
 
+                }
+                else if (base_layer == LAYER_MONSTER_EFFECT && enlarg_idx == -1)
+                {
+                    int condition_count = 0;
                     /* Conditions and status marks */
-                    if ((glyph != NO_GLYPH) && ismonster && mtmp)
+                    if (mtmp)
                     {
                         if(1)
                         {
@@ -1643,7 +1644,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                     /* Draw hit point bars */
-                    if (ismonster && mtmp && (
+                    if (mtmp && (
                         (ispet && flags.show_tile_pet_hp_bar)
                         || (isyou && flags.show_tile_u_hp_bar)
                         || (!ispet && !isyou && flags.show_tile_mon_hp_bar)
@@ -1753,6 +1754,77 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
 
+                }
+                else if (base_layer == LAYER_ENVIRONMENT && enlarg_idx == -1)
+                {
+                    /* Darkening of dark areas and areas drawn from memory */
+                    if (data->map[enl_i][enl_j].glyph != NO_GLYPH && data->map[enl_i][enl_j].glyph != cmap_to_glyph(S_unexplored))
+                    {
+                        if (!cansee(enl_i, enl_j) || (data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY))
+                        {
+                            if (1)
+                            {
+                                double multiplier = 1.0;
+                                if (isyou)
+                                {
+                                    multiplier *= 0.8;
+                                }
+                                else
+                                {
+                                    if(!levl[enl_i][enl_j].waslit)
+                                        multiplier *= 0.35;
+                                    else
+                                        multiplier *= 0.6;
+                                }
+
+                                HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                                unsigned char* lpBitmapBits;
+                                LONG width = rect->right - rect->left;
+                                LONG height = rect->bottom - rect->top;
+
+                                BITMAPINFO bi;
+                                ZeroMemory(&bi, sizeof(BITMAPINFO));
+                                bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                bi.bmiHeader.biWidth = width;
+                                bi.bmiHeader.biHeight = height;
+                                bi.bmiHeader.biPlanes = 1;
+                                bi.bmiHeader.biBitCount = 32;
+
+                                HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                                HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+
+                                SetStretchBltMode(hDCMem, COLORONCOLOR);
+                                StretchBlt(hDCMem, 0, 0, width, height,
+                                    data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
+
+                                int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                int idx, x, y;
+                                for (x = 0; x < width; x++)
+                                {
+                                    for (y = 0; y < height; y++)
+                                    {
+                                        idx = y * pitch;
+                                        idx += x * 4;
+                                        lpBitmapBits[idx + 0] = (unsigned char)(((double)lpBitmapBits[idx + 0]) * multiplier);  // blue
+                                        lpBitmapBits[idx + 1] = (unsigned char)(((double)lpBitmapBits[idx + 1]) * multiplier); // green
+                                        lpBitmapBits[idx + 2] = (unsigned char)(((double)lpBitmapBits[idx + 2]) * multiplier);  // red 
+                                    }
+                                }
+
+
+                                StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
+                                SelectObject(hDCMem, oldbmp);
+                                DeleteDC(hDCMem);
+                                DeleteObject(bitmap);
+                                //HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
+                                //FrameRect(data->backBufferDC, rect, hbr_dark);
+                            }
+                        }
+                    }
+                }
+                else if(base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
+                {
                     if (i == data->xCur && j == data->yCur)
                     {
                         if (
@@ -1778,7 +1850,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 t_y, GetNHApp()->mapTile_X,
                                 GetNHApp()->mapTile_Y, TILE_BK_COLOR);
 
-#if 0
+    #if 0
                             HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
                             HBRUSH hbr_light = CreateSolidBrush(RGB(100, 50, 0));
                             HBRUSH hbr_light2 = CreateSolidBrush(RGB(50, 25, 0));
@@ -1796,22 +1868,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             FrameRect(data->backBufferDC, &even_smaller_rect, hbr_light2);
                             //DrawFocusRect(data->backBufferDC, rect);
                             //DrawFocusRect(data->backBufferDC, &smaller_rect);
-#endif
-                        }
-                    }
-                }
-                else if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
-                {
-                    /* Darkening of dark areas and areas drawn from memory */
-                    if (data->map[enl_i][enl_j].glyph != NO_GLYPH && data->map[enl_i][enl_j].glyph != cmap_to_glyph(S_unexplored))
-                    {
-                        if (!cansee(enl_i, enl_j) || (data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY))
-                        {
-                            if (1 || IS_ROOM(levl[enl_i][enl_j].typ))
-                            {
-                                HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
-                                FrameRect(data->backBufferDC, rect, hbr_dark);
-                            }
+    #endif
                         }
                     }
                 }
