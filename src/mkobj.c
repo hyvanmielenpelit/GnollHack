@@ -767,7 +767,8 @@ struct obj *otmp;
         obj->nobj = otmp;
         obj->nexthere = otmp;
         extract_nobj(obj, &memoryobjs);
-        extract_nexthere(obj, &level.locations[obj->ox][obj->oy].hero_memory_layers.memory_obj);
+        extract_nexthere(obj, &level.locations[obj->ox][obj->oy].hero_memory_layers.memory_objchn);
+        obj->lamplit = 0;
         break;
     default:
         panic("replace_object: obj position");
@@ -874,8 +875,8 @@ register struct obj* otmp;
     add_to_memoryobjs(dummy);
 
     /* Add to nexthere memory */
-    dummy->nexthere = level.locations[x][y].hero_memory_layers.memory_obj;
-    level.locations[x][y].hero_memory_layers.memory_obj = dummy;
+    dummy->nexthere = level.locations[x][y].hero_memory_layers.memory_objchn;
+    level.locations[x][y].hero_memory_layers.memory_objchn = dummy;
 }
 
 void
@@ -913,7 +914,7 @@ int x, y;
     if (isok(x, y))
     {
         struct obj* obj;
-        while ((obj = level.locations[x][y].hero_memory_layers.memory_obj) != 0)
+        while ((obj = level.locations[x][y].hero_memory_layers.memory_objchn) != 0)
         {
             obj_extract_self(obj);
             dealloc_obj(obj);
@@ -2686,7 +2687,7 @@ place_memory_object(otmp, x, y)
 register struct obj* otmp;
 int x, y;
 {
-    register struct obj* otmp2 = level.locations[x][y].hero_memory_layers.memory_obj;
+    register struct obj* otmp2 = level.locations[x][y].hero_memory_layers.memory_objchn;
 
     if (otmp->where != OBJ_FREE)
     {
@@ -2703,7 +2704,7 @@ int x, y;
     else
     {
         otmp->nexthere = otmp2;
-        level.locations[x][y].hero_memory_layers.memory_obj = otmp;
+        level.locations[x][y].hero_memory_layers.memory_objchn = otmp;
     }
 
     /* set the new object's location */
@@ -2717,7 +2718,7 @@ int x, y;
     memoryobjs = otmp;
 
     /* If there is a memory object, then it must be flagged as shown */
-    if (!level.locations[x][y].hero_memory_layers.memory_obj)
+    if (!level.locations[x][y].hero_memory_layers.memory_objchn)
         level.locations[x][y].hero_memory_layers.layer_flags |= LFLAGS_SHOWING_MEMORY;
 }
 
@@ -2733,7 +2734,7 @@ register struct obj* otmp;
         panic("remove_memory_object: obj not in hero memory");
         return;
     }
-    extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_obj);
+    extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_objchn);
     extract_nobj(otmp, &memoryobjs);
     otmp->lamplit = 0;
 }

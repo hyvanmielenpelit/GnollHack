@@ -126,7 +126,7 @@ find_memory_obj()
 
     for (x = 0; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++)
-            level.locations[x][y].hero_memory_layers.memory_obj = (struct obj*)0;
+            level.locations[x][y].hero_memory_layers.memory_objchn = (struct obj*)0;
 
     /*
      * Reverse the entire memoryobjs chain, which is necessary so that we can
@@ -141,7 +141,7 @@ find_memory_obj()
     }
     /* memoryobjs should now be empty */
 
-    /* Set level.locations[x][y].hero_memory_layers.memory_obj (as well as reversing the chain back again) */
+    /* Set level.locations[x][y].hero_memory_layers.memory_objchn (as well as reversing the chain back again) */
     while ((otmp = memoryobjstmp) != 0) {
         memoryobjstmp = otmp->nobj;
         place_memory_object(otmp, otmp->ox, otmp->oy);

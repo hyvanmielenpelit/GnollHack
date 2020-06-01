@@ -35,7 +35,7 @@ struct layer_info {
     /* Monster info for display */
     genericptr_t monster_comp_ptr;  /* invalidate the pointer use for any other purposes than comparing the memory address */
 
-    struct obj* memory_obj;     /* Pointer to the location's first memory object*/
+    struct obj* memory_objchn;     /* Pointer to the location's first memory object*/
 
     int damage_displayed;
 

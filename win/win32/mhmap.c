@@ -993,7 +993,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
 
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
-            struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_obj : level.objects[enl_i][enl_j];
+            struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_objchn : level.objects[enl_i][enl_j];
 
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
             if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
