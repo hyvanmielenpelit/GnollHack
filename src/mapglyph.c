@@ -302,31 +302,45 @@ unsigned long *ospecial;
         {
             /* Darken by changing the symbol */
             boolean symbol_darkened_by_change = FALSE;
-            if (cmap_offset == S_litcorr && !is_variation &&
-                (!flags.lit_corridor || !cansee(x, y) || (layers.layer_flags & LFLAGS_SHOWING_MEMORY))
-                && showsyms[idx] != showsyms[S_corr + SYM_OFF_P])
-            {
-                cmap_offset = S_corr;
-                idx = cmap_offset + SYM_OFF_P;
-                symbol_darkened_by_change = TRUE;
-            }
+            boolean dark_exchangeable = (cmap_offset == S_room || cmap_offset == S_grass || cmap_offset == S_litcorr);
+            int dark_counterpart = (cmap_offset == S_litcorr ? S_corr : cmap_offset == S_room ? S_darkroom : cmap_offset == S_grass ? S_darkgrass : S_unexplored);
 
-            if (iflags.use_color && cmap_offset == S_litcorr && !is_variation
-                && showsyms[idx] != showsyms[S_corr + SYM_OFF_P])
+            if (dark_exchangeable &&
+                ((cmap_offset == S_litcorr && !flags.lit_corridor) || !cansee(x, y) || (layers.layer_flags & LFLAGS_SHOWING_MEMORY)))
             {
-                /* if showsyms are different, the colors will be as per S_corr, otherwise if the same symbols they will use their normal different colors */
-                cmap_color(S_corr, flags.classic_colors ? 0 : cmap_type_idx);
-            }
-            else
-            {
-                if (is_variation && !flags.classic_colors)
-                    cmap_variation_color(variation_index, cmap_type_idx);
+                if ((cmap_offset == S_room || cmap_offset == S_grass) && !flags.dark_room)
+                {
+                    /* Nothing, keep as normal */
+                }
                 else
-                    cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+                {
+                    is_variation = FALSE; /* use base cmap's dark counterpart always */
+                    cmap_offset = dark_counterpart;
+                    idx = cmap_offset + SYM_OFF_P;
+                    symbol_darkened_by_change = TRUE;
+                }
             }
 
-            /* Darken the rooms and corridors */
-            if (cmap_offset == S_room || cmap_offset == S_grass)
+            if (iflags.use_color)
+            {
+                if (!symbol_darkened_by_change && dark_exchangeable && !is_variation
+                    && showsyms[idx] != showsyms[dark_counterpart + SYM_OFF_P])
+                {
+                    /* if showsyms are different, the colors will be as per dark_counterpart for the base cmap (variations can be different colors), otherwise if the same symbols they will use their normal different colors */
+                    cmap_color(dark_counterpart, flags.classic_colors ? 0 : cmap_type_idx);
+                }
+                else
+                {
+                    if (is_variation && !flags.classic_colors)
+                        cmap_variation_color(variation_index, cmap_type_idx);
+                    else
+                        cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
+                }
+            }
+
+#if 0
+            /* Darken by color change; used for variations */
+            if (!symbol_darkened_by_change && (cmap_offset == S_room || cmap_offset == S_grass))
             {
                 if (!cansee(x,y)//levl[x][y].waslit == 0 
                     || ((layers.layer_flags & LFLAGS_SHOWING_MEMORY) && flags.dark_room)
@@ -357,10 +371,7 @@ unsigned long *ospecial;
                 {
                     if (iflags.use_color)
                     {
-                        if (color == CLR_WHITE)
-                            color = CLR_GRAY;
-                        else
-                            color = CLR_BLACK;
+                        cmap_color(S_corr, flags.classic_colors ? 0 : cmap_type_idx);
                     }
                     else
                     {
@@ -368,6 +379,7 @@ unsigned long *ospecial;
                     }
                 }
             }
+#endif
         }
     } 
     else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 
