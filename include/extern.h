@@ -447,6 +447,7 @@ E void FDECL(clear_layer_info, (struct layer_info*));
 E void FDECL(clear_all_glyphs_at, (int, int));
 E void FDECL(clear_hero_memory_at, (int, int));
 E void FDECL(clear_object_glyphs_at, (int, int));
+E void FDECL(change_layer_damage_displayed, (int, int, int));
 E void FDECL(add_glyph_buffer_layer_flags, (int, int, unsigned long));
 E void FDECL(remove_glyph_buffer_layer_flags, (int, int, unsigned long));
 E void FDECL(add_or_remove_glyph_to_layer, (int, int, int, boolean));

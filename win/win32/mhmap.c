@@ -1376,13 +1376,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
                 else if (base_layer == LAYER_MONSTER_EFFECT && enlarg_idx == -1)
                 {
-                    int condition_count = 0;
                     /* Conditions and status marks */
-                    if (mtmp)
+                    int condition_count = 0;
+                    if (glyph_is_monster(data->map[enl_i][enl_j].layer_glyphs[LAYER_MONSTER]) && mtmp)
                     {
                         if(1)
                         {
-                            /* Petmarks and other such symbols */
+                            /* Petmark and other status marks */
                             int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
                             int mtile = glyph2tile[mglyph];
                             int ct_x = TILEBMP_X(mtile);

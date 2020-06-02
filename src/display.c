@@ -2164,16 +2164,36 @@ int damage_displayed;
 {
     if (isok(x, y))
     {
+        change_layer_damage_displayed(x, y, damage_displayed);
+
         unsigned long old_flags = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_flags = disp_flags;
+        if (old_flags != gbuf[y][x].layers.layer_flags)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
 
+
+void
+change_layer_damage_displayed(x, y, damage_displayed)
+int x, y;
+int damage_displayed;
+{
+    if (isok(x, y))
+    {
         int old_dmg = gbuf[y][x].layers.damage_displayed;
         if (damage_displayed > 0)
             gbuf[y][x].layers.damage_displayed = Hallucination ? rnd(2 * damage_displayed) : damage_displayed;
         else
             gbuf[y][x].layers.damage_displayed = 0;
 
-        if (old_flags != gbuf[y][x].layers.layer_flags || old_dmg != gbuf[y][x].layers.damage_displayed)
+        if (old_dmg != gbuf[y][x].layers.damage_displayed)
         {
             gbuf[y][x].new = 1;
             if (gbuf_start[y] > x)
@@ -2237,6 +2257,7 @@ int damage_displayed;
     {
         show_glyph_ascii(x, y, glyph);
         show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
+        show_extra_info(x, y, disp_flags, damage_displayed);
 
         if (mtmp)
         {
@@ -2263,7 +2284,6 @@ int damage_displayed;
             /* Other conditions here */
         }
 
-        show_extra_info(x, y, disp_flags, damage_displayed);
     }
 }
 
