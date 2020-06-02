@@ -2257,31 +2257,29 @@ int damage_displayed;
     {
         show_glyph_ascii(x, y, glyph);
         show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
-        show_extra_info(x, y, disp_flags, damage_displayed);
+        show_extra_info(x, y, disp_flags, damage_displayed); /* clears layer flags */
+
+        gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
 
         if (mtmp)
         {
-            if (Hallucination)
-            {
-                gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
-            }
-            else
-            {
+            if (!Hallucination)
                 gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)mtmp;
-            }
 
-            gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_MASK;
-
+            unsigned long extra_flags = 0UL;
             if(is_tame(mtmp) && !Hallucination)
-                gbuf[y][x].layers.layer_flags |= LFLAGS_M_PET;
+                extra_flags |= LFLAGS_M_PET;
 
             if (is_peaceful(mtmp) && !is_tame(mtmp) && !Hallucination)
-                gbuf[y][x].layers.layer_flags |= LFLAGS_M_PEACEFUL;
+                extra_flags |= LFLAGS_M_PEACEFUL;
 
             if ((mtmp->worn_item_flags & W_SADDLE) && !Hallucination)
-                gbuf[y][x].layers.layer_flags |= LFLAGS_M_SADDLED;
+                extra_flags |= LFLAGS_M_SADDLED;
 
             /* Other conditions here */
+
+            /* Add to layer */
+            add_glyph_buffer_layer_flags(x, y, extra_flags);
         }
 
     }
