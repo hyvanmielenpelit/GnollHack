@@ -1333,11 +1333,16 @@ register int x, y;
         } 
         else if (glyph_is_trap(oldglyph) || glyph_is_object(oldglyph)) 
         {
-            clear_current_and_show_glyph(x, y, oldglyph);
+            show_glyph_ascii(x, y, oldglyph);
+            if (glyph_is_trap(oldglyph))
+                show_glyph_on_layer(x, y, oldglyph, LAYER_TRAP);
+            /* Objects are not drawn on layers; they are in memory_objchn */
+
             if (level.flags.hero_memory)
             {
                 lev->hero_memory_layers.glyph = oldglyph;
-                lev->hero_memory_layers.layer_glyphs[glyph_is_trap(oldglyph) ? LAYER_TRAP : LAYER_OBJECT] = oldglyph;
+                if(glyph_is_trap(oldglyph))
+                    lev->hero_memory_layers.layer_glyphs[LAYER_TRAP] = oldglyph;
             }
         }
     }

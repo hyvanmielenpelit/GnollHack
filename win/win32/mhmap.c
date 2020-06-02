@@ -1758,7 +1758,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 else if (base_layer == LAYER_ENVIRONMENT && enlarg_idx == -1)
                 {
                     /* Darkening of dark areas and areas drawn from memory */
-                    if (data->map[enl_i][enl_j].glyph != NO_GLYPH && data->map[enl_i][enl_j].glyph != cmap_to_glyph(S_unexplored))
+                    if (1) //data->map[enl_i][enl_j].glyph != NO_GLYPH && data->map[enl_i][enl_j].glyph != cmap_to_glyph(S_unexplored))
                     {
                         if (!cansee(enl_i, enl_j) || (data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY))
                         {
