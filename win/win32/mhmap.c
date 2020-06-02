@@ -1767,14 +1767,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 double multiplier = 1.0;
                                 if (isyou)
                                 {
-                                    multiplier *= 0.8;
+                                    multiplier *= 0.85;
                                 }
                                 else
                                 {
                                     if(!levl[enl_i][enl_j].waslit)
                                         multiplier *= 0.35;
                                     else
-                                        multiplier *= 0.6;
+                                        multiplier *= 0.65;
                                 }
 
                                 HDC hDCMem = CreateCompatibleDC(data->backBufferDC);

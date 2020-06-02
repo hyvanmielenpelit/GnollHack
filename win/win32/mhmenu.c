@@ -734,6 +734,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 max(data->menu.menu_cx,
                     (tm.tmAveCharWidth + tm.tmOverhang) * (strlen(data->menu.prompt) + 1) + GetSystemMetrics(SM_CXVSCROLL));
 
+            ReleaseDC(hWnd, hDC);
+
         } else {
             ZeroMemory(data->menu.prompt, sizeof(data->menu.prompt));
         }

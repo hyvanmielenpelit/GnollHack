@@ -351,11 +351,15 @@ moverock()
                 && (((!invent || inv_weight() <= -850)
                      && (!u.dx || !u.dy || (IS_ROCK(levl[u.ux][sy].typ)
                                             && IS_ROCK(levl[sx][u.uy].typ))))
-                    || verysmall(youmonst.data))) {
-                pline(
-                   "However, you can squeeze yourself into a small opening.");
-                sokoban_guilt();
-                break;
+                    || verysmall(youmonst.data)))
+            {
+                if (yn_query("However, you can squeeze yourself into a small opening. Proceed?") == 'y')
+                {
+                    sokoban_guilt();
+                    break;
+                }
+                else
+                    return -1;
             } else
                 return -1;
         }
