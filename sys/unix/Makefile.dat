@@ -127,8 +127,8 @@ options:	../util/makedefs
 
 
 spec_levs: ../util/lev_comp \
-	bigroom.des bovine.des castle.des endgame.des gehennom.des knox.des medusa.des modron.des \
-	mines.des oracle.des sokoban.des tower.des yendor.des
+	bigroom.des bovine.des castle.des endgame.des gehennom.des knox.des medusa.des \
+	mines.des modron.des oracle.des sokoban.des tower.des yendor.des
 	../util/lev_comp bigroom.des
 	../util/lev_comp bovine.des
 	../util/lev_comp castle.des

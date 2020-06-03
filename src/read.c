@@ -1809,13 +1809,19 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	{
 		const char enchant_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, 0 };
 
+        /* Allow object selection for spells */
 		if (otyp == SPE_PROTECT_WEAPON || otyp == SPE_ENCHANT_WEAPON)
 		{
 			otmp = getobj(enchant_weapon_objects, otyp == SPE_ENCHANT_WEAPON ? "enchant" : "protect", 0, "");
 			if (!otmp)
 				return 0;
 
-			if (otmp && (!erosion_matters(otmp) || otmp->oclass == ARMOR_CLASS))
+            /* Check if the selection is not an appropriate weapon */
+			if (otmp && 
+                (!is_weapon(otmp) 
+                    || (otyp == SPE_PROTECT_WEAPON && !erosion_matters(otmp)) 
+                    || (otyp == SPE_ENCHANT_WEAPON && objects[otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
+                ))
 			{
 				pline(!Blind
 					? "%s then fades."
@@ -1823,10 +1829,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				sobj = 0;
 				break;
 			}
-
 		}
         else
         {
+            /* Select weapon randomly from left and right hands */
             if(!uarms || !is_weapon(uarms))
                 otmp = uwep;
             else if((!uwep || !is_weapon(uwep)) && uarms && is_weapon(uarms))
@@ -1837,8 +1843,12 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
                 otmp = uwep; /* Maybe null or not a weapon */
         }
 
-		if ((confused || otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON) && otmp
-			&& erosion_matters(otmp) && otmp->oclass != ARMOR_CLASS) {
+        /* Check for successful protect weapon */
+		if (
+            (confused || otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON) && otmp
+			&& erosion_matters(otmp) && is_weapon(otmp)
+            )
+        {
 			old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
 			otmp->oerodeproof = 0; /* for messages */
@@ -1869,7 +1879,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			otmp->oerodeproof = new_erodeproof ? 1 : 0;
 			break;
 		}
-		else if (otyp == SPE_PROTECT_WEAPON)
+		
+        /* Blanket selection for protect weapon */
+        if (otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON)
 		{
 			if (otmp)
 				You_feel("as if your weapon is warmer than normal, but then it passes.");
@@ -1879,6 +1891,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 
+        /* Otherwise, enchant weapon */
 		if (!enchant_weapon(sobj, otmp, scursed ? -1
 			: !otmp ? 1
 			: (otmp->enchantment >= 9) ? !rn2(max(1, otmp->enchantment))
@@ -2157,20 +2170,25 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				}
 				else 
 				{
-					otmp->blessed = otmp->cursed = 0;
-				}
+                    /* coins */
+					otmp->blessed = otmp->cursed = 0; /* just in case */
+                }
 
 				if (otmp->blessed || otmp->cursed) 
 				{
 					There("is %s flash as you cast the spell on %s.",
 						an(hcolor(otmp->blessed ? NH_AMBER : NH_BLACK)), the(cxname(otmp)));
 					otmp->bknown = 1;
+                    update_inventory();
 				}
 				else 
 				{
 					pline("The spell glimmers around %s for a moment and then fades.", the(cxname(otmp)));
-					if (otmp->oclass != COIN_CLASS)
-						otmp->bknown = 1;
+                    if (otmp->oclass != COIN_CLASS)
+                    {
+                        otmp->bknown = 1;
+                        update_inventory();
+                    }
 				}
 			}
 		}
@@ -2182,7 +2200,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				pline("You're not carrying anything to detect beautitude for.");
 		}
 		break;
-	break;	case SPE_CURSE:
+    case SPE_CURSE:
 	case SPE_BLESS:
 		allowall[0] = ALL_CLASSES;
 		allowall[1] = '\0';
