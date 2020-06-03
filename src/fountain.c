@@ -329,11 +329,14 @@ drinkfountain()
 
 	/* Exit if not normal NetHack / magic fountain */
 	if (ftyp > FOUNTAIN_MAGIC)
+	{
+		dryup(u.ux, u.uy, TRUE);
 		return;
-
+	}
 
 	/* Normal NetHack magic fountain here */
-    if (mgkftn && u.uluck >= 0 && fate >= 10) {
+    if (mgkftn && u.uluck >= 0 && fate >= 10)
+	{
         int i, ii, littleluck = (u.uluck < 4);
 
         pline("Wow!  The water makes you feel great!");
@@ -363,14 +366,18 @@ drinkfountain()
 		return;
     }
 
-    if (fate < 10) {
+    if (fate < 10)
+	{
         pline_The("cool draught refreshes you.");
         u.uhunger += rnd(10); /* don't choke on water */
         update_hunger_status(FALSE);
         if (mgkftn)
             return;
-    } else {
-        switch (fate) {
+    } 
+	else 
+	{
+        switch (fate) 
+		{
         case 19: /* Self-knowledge */
 			pline_The("water tingles in your mouth.");
 			You_feel("self-knowledgeable...");
@@ -423,7 +430,8 @@ drinkfountain()
 				You("feel as if something evil is watching you.");
 			}
 			break;
-        case 24: /* Curse an item */ {
+        case 24: /* Curse an item */
+		{
             register struct obj *obj;
 
             pline("This water's no good!");
