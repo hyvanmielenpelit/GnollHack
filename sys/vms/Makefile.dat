@@ -34,8 +34,8 @@ X11TILES= x11tiles.;
 QUESTLEVS = Arch.des Barb.des Caveman.des Healer.des Knight.des \
 	Monk.des Priest.des Ranger.des Rogue.des Samurai.des Tourist.des \
 	Valkyrie.des Wizard.des
-SPECLEVS  = bigroom.des castle.des endgame.des gehennom.des knox.des \
-	medusa.des mines.des oracle.des sokoban.des tower.des yendor.des
+SPECLEVS  = bigroom.des bovine.des castle.des endgame.des gehennom.des knox.des \
+	medusa.des mines.des modron.des oracle.des sokoban.des tower.des yendor.des
 
 all :	$(VARDAT) $(DUNGEON) $(MARKERS) $(DLB)
       @ $(ECHO) "data files are up to date."

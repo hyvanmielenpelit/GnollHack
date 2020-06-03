@@ -956,7 +956,7 @@ $(DAT)/epitaph:	     $(O)utility.tag    $(DAT)/epitaph.txt
 
 $(O)sp_lev.tag: $(O)utility.tag $(DAT)/bigroom.des  $(DAT)/castle.des \
 	$(DAT)/endgame.des $(DAT)/gehennom.des $(DAT)/knox.des \
-	$(DAT)/medusa.des  $(DAT)/oracle.des   $(DAT)/tower.des \
+	$(DAT)/medusa.des  $(DAT)/modron.des  $(DAT)/oracle.des   $(DAT)/tower.des \
 	$(DAT)/yendor.des  $(DAT)/arch.des     $(DAT)/barb.des \
 	$(DAT)/caveman.des   $(DAT)/healer.des   $(DAT)/knight.des \
 	$(DAT)/monk.des      $(DAT)/priest.des   $(DAT)/ranger.des \
@@ -970,6 +970,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)/bigroom.des  $(DAT)/castle.des \
 	@$(subst /,\,$(U)lev_comp knox.des)
 	@$(subst /,\,$(U)lev_comp mines.des)
 	@$(subst /,\,$(U)lev_comp medusa.des)
+	@$(subst /,\,$(U)lev_comp modron.des)
 	@$(subst /,\,$(U)lev_comp oracle.des)
 	@$(subst /,\,$(U)lev_comp sokoban.des)
 	@$(subst /,\,$(U)lev_comp tower.des)

@@ -79,7 +79,6 @@
     <Levfiles Include = "sanctum.lev"/>
     <Levfiles Include = "valley.lev"/>
     <Levfiles Include = "knox.lev"/>
-    <Levfiles Include = "modron1.lev"/>
     <Levfiles Include = "minefill.lev"/>
     <Levfiles Include = "minend-1.lev"/>
     <Levfiles Include = "minend-2.lev"/>
@@ -95,6 +94,7 @@
     <Levfiles Include = "medusa-2.lev"/>
     <Levfiles Include = "medusa-3.lev"/>
     <Levfiles Include = "medusa-4.lev"/>
+    <Levfiles Include = "modron1.lev"/>
     <Levfiles Include = "oracle.lev"/>
     <Levfiles Include = "soko1-1.lev"/>
     <Levfiles Include = "soko1-2.lev"/>

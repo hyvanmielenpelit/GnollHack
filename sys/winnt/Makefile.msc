@@ -696,12 +696,11 @@ recover: $(U)recover.exe
 	if exist $(U)recover.exe copy $(U)recover.exe  $(GAMEDIR)
 	if exist $(DOC)\recover.txt copy $(DOC)\recover.txt $(GAMEDIR)\recover.txt
 
-$(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
+$(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\castle.des \
 	$(DAT)\endgame.des $(DAT)\gehennom.des $(DAT)\knox.des   \
-	$(DAT)\medusa.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
+	$(DAT)\medusa.des  $(DAT)\modron.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
 	$(DAT)\caveman.des $(DAT)\healer.des   $(DAT)\knight.des \
-	$(DAT)\modron.des  $(DAT)\bovine.des \
 	$(DAT)\monk.des    $(DAT)\priest.des   $(DAT)\ranger.des \
 	$(DAT)\rogue.des   $(DAT)\samurai.des  $(DAT)\sokoban.des \
 	$(DAT)\tourist.des $(DAT)\valkyrie.des $(DAT)\wizard.des
@@ -712,9 +711,9 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(U)levcomp endgame.des
 	$(U)levcomp gehennom.des
 	$(U)levcomp knox.des
-	$(U)levcomp modron.des
 	$(U)levcomp mines.des
 	$(U)levcomp medusa.des
+	$(U)levcomp modron.des
 	$(U)levcomp oracle.des
 	$(U)levcomp sokoban.des
 	$(U)levcomp tower.des
@@ -1306,6 +1305,7 @@ spotless: clean
 	if exist $(DAT)\astral.lev	 del $(DAT)\astral.lev
 	if exist $(DAT)\baalz.lev	 del $(DAT)\baalz.lev
 	if exist $(DAT)\bigrm-*.lev	 del $(DAT)\bigrm-*.lev
+	if exist $(DAT)\bovine?.lev	 del $(DAT)\bovine?.lev
 	if exist $(DAT)\castle.lev	 del $(DAT)\castle.lev
 	if exist $(DAT)\data		 del $(DAT)\data
 	if exist $(DAT)\dungeon		 del $(DAT)\dungeon
@@ -1317,6 +1317,7 @@ spotless: clean
 	if exist $(DAT)\knox.lev	 del $(DAT)\knox.lev
 	if exist $(DAT)\medusa-?.lev	 del $(DAT)\medusa-?.lev
 	if exist $(DAT)\mine*.lev	 del $(DAT)\mine*.lev
+	if exist $(DAT)\modron?.lev	 del $(DAT)\modron?.lev
 	if exist $(DAT)\options		 del $(DAT)\options
 	if exist $(DAT)\ttyoptions	 del $(DAT)\ttyoptions
 	if exist $(DAT)\guioptions	 del $(DAT)\guioptions

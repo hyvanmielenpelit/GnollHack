@@ -779,6 +779,7 @@ sp_lev.tag: utility.tag $(DAT)/bigroom.des  $(DAT)/castle.des \
 	$(subst /,\,$(U)levcomp $(DAT)/knox.des)
 	$(subst /,\,$(U)levcomp $(DAT)/mines.des)
 	$(subst /,\,$(U)levcomp $(DAT)/medusa.des)
+	$(subst /,\,$(U)levcomp $(DAT)/modron.des)
 	$(subst /,\,$(U)levcomp $(DAT)/oracle.des)
 	$(subst /,\,$(U)levcomp $(DAT)/sokoban.des)
 	$(subst /,\,$(U)levcomp $(DAT)/tower.des)
@@ -788,7 +789,6 @@ sp_lev.tag: utility.tag $(DAT)/bigroom.des  $(DAT)/castle.des \
 	$(subst /,\,$(U)levcomp $(DAT)/caveman.des)
 	$(subst /,\,$(U)levcomp $(DAT)/healer.des)
 	$(subst /,\,$(U)levcomp $(DAT)/knight.des)
-	$(subst /,\,$(U)levcomp $(DAT)/modron.des)
 	$(subst /,\,$(U)levcomp $(DAT)/monk.des)
 	$(subst /,\,$(U)levcomp $(DAT)/priest.des)
 	$(subst /,\,$(U)levcomp $(DAT)/ranger.des)
@@ -1261,6 +1261,7 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\astral.lev	   del $(W_DAT)\astral.lev
 	if exist $(W_DAT)\baalz.lev	   del $(W_DAT)\baalz.lev
 	if exist $(W_DAT)\bigrm-*.lev	   del $(W_DAT)\bigrm-*.lev
+	if exist $(W_DAT)\bovine?.lev	   del $(W_DAT)\bovine?.lev
 	if exist $(W_DAT)\castle.lev	   del $(W_DAT)\castle.lev
 	if exist $(W_DAT)\data		   del $(W_DAT)\data
 	if exist $(W_DAT)\dungeon          del $(W_DAT)\dungeon
@@ -1272,6 +1273,7 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\knox.lev	   del $(W_DAT)\knox.lev
 	if exist $(W_DAT)\medusa-?.lev	   del $(W_DAT)\medusa-?.lev
 	if exist $(W_DAT)\mine*.lev	   del $(W_DAT)\mine*.lev
+	if exist $(W_DAT)\modron?.lev	   del $(W_DAT)\modron?.lev
 	if exist $(W_DAT)\options          del $(W_DAT)\options
 	if exist $(W_DAT)\ttyoptions	   del $(W_DAT)\ttyoptions
 	if exist $(W_DAT)\guioptions       del $(W_DAT)\guioptions

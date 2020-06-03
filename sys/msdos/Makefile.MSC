@@ -423,6 +423,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(SPLEVDES)
 	$(U)lev_comp modron.des
 	$(U)lev_comp mines.des
 	$(U)lev_comp medusa.des
+	$(U)lev_comp modron.des
 	$(U)lev_comp oracle.des
 	$(U)lev_comp sokoban.des
 	$(U)lev_comp tower.des

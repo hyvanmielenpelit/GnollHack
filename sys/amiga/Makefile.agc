@@ -288,12 +288,12 @@ TILEFILES= \
 INSTDUNGEONFILES1= \
 	$(SLIB)air.lev		$(SLIB)asmodeus.lev	$(SLIB)astral.lev \
 	$(SLIB)baalz.lev	$(SLIB)bigrm-1.lev	$(SLIB)bigrm-2.lev \
-	$(SLIB)bigrm-3.lev	$(SLIB)bigrm-4.lev	$(SLIB)bigrm-5.lev \
+	$(SLIB)bigrm-3.lev	$(SLIB)bigrm-4.lev	$(SLIB)bigrm-5.lev $(SLIB)bovine1.lev \
 	$(SLIB)castle.lev	$(SLIB)dungeon		$(SLIB)earth.lev \
 	$(SLIB)fakewiz1.lev	$(SLIB)fakewiz2.lev	$(SLIB)fire.lev \
 	$(SLIB)juiblex.lev	$(SLIB)knox.lev		$(SLIB)medusa-1.lev \
 	$(SLIB)medusa-2.lev	$(SLIB)minend-1.lev	$(SLIB)minend-2.lev \
-	$(SLIB)minetn-1.lev	$(SLIB)minetn-2.lev	$(SLIB)minefill.lev \
+	$(SLIB)minetn-1.lev	$(SLIB)minetn-2.lev	$(SLIB)minefill.lev	$(SLIB)modron1.lev \
 	$(SLIB)options		$(SLIB)oracle.lev	$(SLIB)orcus.lev \
 	$(SLIB)sanctum.lev	$(SLIB)soko1-1.lev	$(SLIB)soko1-2.lev \
 	$(SLIB)soko2-1.lev	$(SLIB)soko2-2.lev	$(SLIB)soko3-1.lev \
@@ -783,6 +783,11 @@ $(BGM):	$(SLIB)bigrm-1.lev
 
 $(SLIB)bigrm-1.lev: $(DAT)bigroom.des $(SBIN)lev_comp
 
+BOVINE1= $(SLIB)bovine1.lev
+
+$(SLIB)bovine1.lev:	$(DAT)bovine.des $(SBIN)lev_comp
+
+
 $(SLIB)castle.lev:  $(DAT)castle.des $(SBIN)lev_comp
 
 ENDGAME1= $(SLIB)air.lev $(SLIB)earth.lev $(SLIB)fire.lev $(SLIB)water.lev
@@ -820,6 +825,10 @@ MEDUSA1= $(SLIB)medusa-1.lev
 $(MEDUSA1): $(SLIB)medusa-2.lev
 
 $(SLIB)medusa-2.lev:	$(DAT)medusa.des $(SBIN)lev_comp
+
+MODRON1= $(SLIB)modron1.lev
+
+$(SLIB)modron1.lev:	$(DAT)modron.des $(SBIN)lev_comp
 
 SOKOBAN1= $(SLIB)soko1-1.lev $(SLIB)soko1-2.lev $(SLIB)soko2-1.lev \
 	$(SLIB)soko2-2.lev $(SLIB)soko3-1.lev $(SLIB)soko3-2.lev \
