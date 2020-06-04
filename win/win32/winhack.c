@@ -15,11 +15,6 @@
 #include "mhmain.h"
 #include "mhmap.h"
 
-extern HBITMAP FDECL(loadPNG, (HINSTANCE, LPCSTR));
-extern HBITMAP FDECL(loadPNG_FromFile, (char*));
-extern boolean NDECL(initialize_fmod);
-extern void NDECL(fmod_play_sound_example);
-
 #if !defined(SAFEPROCS)
 #error You must #define SAFEPROCS to build winhack.c
 #endif

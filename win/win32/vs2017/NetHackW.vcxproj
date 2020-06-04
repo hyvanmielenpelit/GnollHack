@@ -224,7 +224,9 @@
     <ClInclude Include="..\..\..\ext\fmod\studio\inc\fmod_studio.hpp" />
     <ClInclude Include="..\..\..\include\encounter.h" />
     <ClInclude Include="..\..\..\include\matcomps.h" />
+    <ClInclude Include="..\mswingdi.h" />
     <ClInclude Include="..\resource.h" />
+    <ClInclude Include="..\soundfx.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\gnollhack64x96.bmp" />

@@ -12,8 +12,6 @@
 #include "patchlevel.h"
 #include "dlb.h"
 
-extern void NDECL(fmod_stop_all_sounds);
-
 #define LLEN 128
 
 PNHWinApp GetNHApp(void);

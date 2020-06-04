@@ -35,6 +35,8 @@
 #include <tchar.h>
 #include "hack.h"
 #include "color.h"
+#include "soundfx.h"
+#include "mswingdi.h"
 
 /* Create an array to keep track of the various windows */
 
