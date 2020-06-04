@@ -4659,7 +4659,7 @@ struct ext_func_tab extcmdlist[] = {
 			docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
 	{ '\0' /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
             doconduct, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-	{ M('g'), "dig", "dig the ground", dodig, AUTOCOMPLETE | INCMDMENU },
+	{ M('g'), "dig", "dig the ground", dodig, INCMDMENU },
 	{ M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU },
 	{ '>', "down", "go down a staircase", dodown },
     { 'd', "drop", "drop an item", dodrop },
