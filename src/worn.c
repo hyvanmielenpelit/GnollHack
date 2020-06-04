@@ -52,6 +52,7 @@ long mask;
 	setworncore(obj, mask, TRUE);
 }
 
+/* Does not update stats */
 void
 setwornquietly(obj, mask)
 register struct obj* obj;
@@ -60,15 +61,16 @@ long mask;
 	setworncore(obj, mask, FALSE);
 }
 
+
 /* note: monsters don't have clairvoyance, so your role
    has no significant effect on their use of w_blocks() */
 
 /* Updated to use the extrinsic and blocked fields. */
 void
-setworncore(obj, mask, verbose)
+setworncore(obj, mask, verbose_and_update_stats)
 register struct obj *obj;
 long mask;
-boolean verbose;
+boolean verbose_and_update_stats;
 {
     register const struct worn *wp;
 	register struct obj* oobj = (struct obj*)0;
@@ -173,6 +175,12 @@ boolean verbose;
 		}
     }
 
+	if (!verbose_and_update_stats)
+		return;
+
+	/* No need to go further if verbose_and_update_stats == FALSE, as we are in newgame or restoring a saved game */
+
+
 	boolean needbecomecursedmsg = FALSE;
 	/* curse first */
 	if (obj && (objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_WORN) && !obj->cursed && (mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)))
@@ -184,7 +192,7 @@ boolean verbose;
 	/* Readying a weapon to quiver or swap weapon slot does not trigger artifact name discovery -- JG */
 	if ((mask & (W_WEP | W_WEP2 | W_ARMOR | W_ACCESSORY)) && obj && obj->oartifact && !obj->nknown && (artilist[obj->oartifact].aflags & (AF_FAMOUS | AF_NAME_KNOWN_WHEN_PICKED_UP | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED)))
 	{
-		if(verbose)
+		if(verbose_and_update_stats)
 			pline("As you %s %s, you become aware that %s named %s!", 
 			(mask == W_WEP || (u.twoweap && mask == W_WEP2)) ? "wield" : "wear", the(cxname(obj)), 
 				(pair_of(obj) || obj->quan > 1) ? "they are" : "it is",
@@ -192,7 +200,7 @@ boolean verbose;
 		obj->nknown = TRUE;
 	}
 
-	update_all_character_properties(obj, verbose);
+	update_all_character_properties(obj, verbose_and_update_stats);
 
 	/* Note that this does not work for weapons if there is an old weapon, since we do not know whether the change was caused by the old or the new weapon */
 	if ((obj && !oobj) || (oobj && !obj))

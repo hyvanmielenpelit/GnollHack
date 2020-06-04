@@ -1303,10 +1303,8 @@ u_init()
 	update_can_advance_any_skill();
 
 	/* Run initial stats */
-	update_extrinsics();
-	updateabon();
-	updatemaxen();
-	updatemaxhp();
+	update_all_character_properties((struct obj*)0, FALSE);
+	update_inventory();
 
 	/* Make sure that hp and mana are at maximum */
 	u.uhp = u.uhpmax;

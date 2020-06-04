@@ -986,6 +986,9 @@ register int fd;
         if (otmp->owornmask)
             setwornquietly(otmp, otmp->owornmask);
 
+    update_all_character_properties((struct obj*)0, FALSE);
+    update_inventory();
+
     /* in_use processing must be after:
      *    + The inventory has been read so that freeinv() works.
      *    + The current level has been restored so billing information
