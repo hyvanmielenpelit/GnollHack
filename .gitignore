@@ -33,6 +33,7 @@ include/date.h
 *.csv
 *.wav
 *.mp3
+*.ogg
 
 # User-specific files
 *.suo

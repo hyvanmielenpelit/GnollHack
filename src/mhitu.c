@@ -1687,7 +1687,7 @@ register struct obj* omonwep;
 
     if (mattk->adtyp == AD_SHRP && !rn2(10))
     {
-        damage += adjust_damage((Upolyd ? u.mh : u.uhpmax) / 4, mtmp, &youmonst, mattk->adtyp, FALSE);
+        damage += adjust_damage((Upolyd ? u.mhmax : u.uhpmax) / 4, mtmp, &youmonst, mattk->adtyp, FALSE);
         sharpness_effect = TRUE;
     }
     //Let's add this even if a weapon is being used

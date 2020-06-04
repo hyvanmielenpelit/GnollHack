@@ -396,6 +396,8 @@ END
 
 IDR_RCDATA_FONT         RCDATA                  "uwch.ttf"
 
+IDR_RCDATA_OGG          RCDATA                  "Our-Mountain_v003_Looping.ogg"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

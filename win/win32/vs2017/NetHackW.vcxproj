@@ -234,6 +234,8 @@
     <Image Include="..\mnsel.bmp" />
     <Image Include="..\mnselcnt.bmp" />
     <Image Include="..\mnunsel.bmp" />
+    <Image Include="..\petmark-new.bmp" />
+    <Image Include="..\pilemark.bmp" />
     <Image Include="..\rip.bmp" />
     <Image Include="..\splash.bmp" />
   </ItemGroup>
@@ -242,6 +244,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\font1.bin" />
+    <None Include="..\Our-Mountain_v003_Looping.ogg" />
+    <None Include="..\rcdata2.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
