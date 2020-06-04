@@ -17,6 +17,7 @@
 
 extern HBITMAP FDECL(loadPNG, (HINSTANCE, LPCSTR));
 extern HBITMAP FDECL(loadPNG_FromFile, (char*));
+extern boolean NDECL(initialize_fmod);
 extern void NDECL(fmod_play_sound_example);
 
 #if !defined(SAFEPROCS)
@@ -264,7 +265,9 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
 
-    //fmod_play_sound_example();
+    boolean sfx_res = initialize_fmod();
+    if(sfx_res)
+        fmod_play_sound_example();
 
     /* let main do the argument processing */
     (void) main(argc, argv);

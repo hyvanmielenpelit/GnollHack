@@ -198,6 +198,7 @@
     <ClCompile Include="$(SrcDir)tiledata.c" />
     <ClCompile Include="$(SrcDir)animation.c" />
     <ClCompile Include="..\mhwingdi.cpp" />
+    <ClCompile Include="..\soundfx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />

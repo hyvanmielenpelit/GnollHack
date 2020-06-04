@@ -1,8 +1,9 @@
-/* wingdi.cpp
- * Copyright 2020 by Janne Gustafsson
+/* 
+ * mhwingdi.cpp
+ * GnollHack Windows GDI+ Routines
+ *
+ * Copyright (c) Janne Gustafsson, 2020
  */
-
-#include "fmod.hpp"
 
 //#include <stdafx.h>
 #include <windows.h>
@@ -60,30 +61,7 @@ extern "C" {
     }
 
 
-    void
-    fmod_play_sound_example()
-    {
-            FMOD::System* system;
-            FMOD::Sound* sound1;
-            FMOD::Channel* channel = 0;
-            FMOD_RESULT       result;
-            unsigned int      version;
-            void* extradriverdata = 0;
-
-            /*
-                Create a System object and initialize
-            */
-            result = FMOD::System_Create(&system);
-            result = system->getVersion(&version);
-            result = system->init(32, FMOD_INIT_NORMAL, extradriverdata);
-            result = system->createSound("C:\\Users\\janne\\Test\\Sound Test\\PowerUp20.wav", FMOD_DEFAULT, 0, &sound1);
-            result = sound1->setMode(FMOD_LOOP_OFF);    /* drumloop.wav has embedded loop points which automatically makes looping turn on, */
-            result = system->playSound(sound1, 0, false, &channel);
-            Sleep(1000);
-            result = sound1->release();
-    }
-
-
 
 }
 
+/* mhwingdi.cpp */

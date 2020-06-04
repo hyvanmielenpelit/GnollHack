@@ -12,6 +12,8 @@
 #include "patchlevel.h"
 #include "dlb.h"
 
+extern void NDECL(fmod_stop_all_sounds);
+
 #define LLEN 128
 
 PNHWinApp GetNHApp(void);
@@ -270,6 +272,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 GetNHApp()->hMainWnd = NULL;
             DestroyWindow(hWnd);
             SetFocus(GetNHApp()->hMainWnd);
+            fmod_stop_all_sounds();
             return TRUE;
         }
         break;
