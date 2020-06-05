@@ -5,59 +5,76 @@
  * Copyright (c) Janne Gustafsson, 2020
  */
 
-//#include <stdafx.h>
 #include <windows.h>
-//#include <objidl.h>
-//#include <gdiplus.h>
+#include <objidl.h>
+#include <gdiplus.h>
+#include "resource.h"
 
-//using namespace Gdiplus;
-//#pragma comment (lib,"Gdiplus.lib")
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
 
 extern "C" {
 
     HBITMAP
-    loadPNG(HINSTANCE hInstance, LPCSTR lpBitmapName)
+    loadPNGResource(HINSTANCE hInstance, int resource_id, COLORREF bkcolor)
     {
-        LPCSTR vIn = lpBitmapName;
-        wchar_t* vOut = new wchar_t[strlen(vIn) + 1];
-        mbstowcs_s(NULL, vOut, strlen(vIn) + 1, vIn, strlen(vIn));
+        HBITMAP hBmp;
+        ULONG_PTR m_gdiplusToken;
+        Color bkclr;
+        bkclr.SetFromCOLORREF(bkcolor);
 
-        HBITMAP handle = (HBITMAP)0;
-#if 0
-        Bitmap* pngBitmap = Bitmap::FromResource(hInstance, (const wchar_t*)lpBitmapName); // (const WCHAR*)MAKEINTRESOURCE(IDB_GNOLLHACK_TILES));
-        if (!pngBitmap)
+        Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+        Gdiplus::GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
+
+        HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(IDB_PNG_TILES), "PNG");
+        if (!hResource)
+            return false;
+
+        DWORD imageSize = ::SizeofResource(hInstance, hResource);
+        if (!imageSize)
+            return false;
+
+        const void* pResourceData = ::LockResource(::LoadResource(hInstance,
+            hResource));
+        if (!pResourceData)
+            return false;
+
+        HGLOBAL m_hBuffer = ::GlobalAlloc(GMEM_MOVEABLE, imageSize);
+        Bitmap* m_pBitmap = NULL;
+        if (m_hBuffer)
         {
-            return handle;
-        }
-        pngBitmap->GetHBITMAP(0, &handle);
-#endif
-        return handle;
-    }
+            void* pBuffer = ::GlobalLock(m_hBuffer);
+            if (pBuffer)
+            {
+                CopyMemory(pBuffer, pResourceData, imageSize);
 
-    /*
-    Bitmap*
-    BitmapFromResource()
-    {
-        return 0;
-    }
-    */
-    HBITMAP
-    loadPNG_FromFile(char* filename)
-    {
-        char* vIn = filename;
-        wchar_t* vOut = new wchar_t[strlen(vIn) + 1];
-        mbstowcs_s(NULL, vOut, strlen(vIn) + 1, vIn, strlen(vIn));
-
-        HBITMAP handle = (HBITMAP)0;
-#if 0
-        Bitmap* pngBitmap = Bitmap::FromFile(vOut, FALSE); // (const WCHAR*)MAKEINTRESOURCE(IDB_GNOLLHACK_TILES));
-        if (!pngBitmap)
-        {
-            return handle;
+                IStream* pStream = NULL;
+                if (::CreateStreamOnHGlobal(m_hBuffer, FALSE, &pStream) == S_OK)
+                {
+                    Bitmap* m_pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+                    pStream->Release();
+                    if (m_pBitmap)
+                    {
+                        if (m_pBitmap->GetLastStatus() == Gdiplus::Ok)
+                        {
+                            m_pBitmap->GetHBITMAP(bkclr, &hBmp);
+                            Gdiplus::GdiplusShutdown(m_gdiplusToken);
+                            return hBmp;
+                        }
+                        delete m_pBitmap;
+                        m_pBitmap = NULL;
+                    }
+                }
+                m_pBitmap = NULL;
+                ::GlobalUnlock(m_hBuffer);
+            }
+            ::GlobalFree(m_hBuffer);
+            m_hBuffer = NULL;
         }
-        pngBitmap->GetHBITMAP(0, &handle);
-#endif
-        return handle;
+
+        Gdiplus::GdiplusShutdown(m_gdiplusToken);
+
+        return NULL;
     }
 
 

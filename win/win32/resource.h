@@ -13,7 +13,6 @@
 #define IDC_NETHACKW                    109
 #define IDS_APP_TITLE_SHORT             110
 #define IDR_MAINFRAME                   128
-#define IDB_TILES                       129
 #define IDD_TEXT                        130
 #define IDD_NHTEXT                      130
 #define IDD_MENU                        132
@@ -35,8 +34,8 @@
 #define IDR_RCDATA_OGG                  158
 #define IDR_RCDATA_BANK                 159
 #define IDR_RCDATA_MASTER               160
-#define IDR_RCDATA2                     161
 #define IDR_RCDATA_STRINGS              161
+#define IDB_PNG_TILES                   166
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -156,7 +155,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        162
+#define _APS_NEXT_RESOURCE_VALUE        167
 #define _APS_NEXT_COMMAND_VALUE         32801
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

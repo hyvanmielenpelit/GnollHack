@@ -5,7 +5,6 @@
 #ifndef MHWINGDI_H
 #define MHWINGDI_H
 
-extern HBITMAP FDECL(loadPNG, (HINSTANCE, LPCSTR));
-extern HBITMAP FDECL(loadPNG_FromFile, (char*));
+extern HBITMAP FDECL(loadPNGResource, (HINSTANCE, int, COLORREF));
 
 #endif /* MHWINGDI_H */

@@ -233,6 +233,8 @@
   <ItemGroup>
     <Image Include="..\gnollhack64x96.bmp" />
     <Image Include="..\GnollHackNew.ico" />
+    <Image Include="..\gnollhack_64x96_colored_32bits.png" />
+    <Image Include="..\gnollhack_64x96_transparent_32bits.png" />
     <Image Include="..\mnsel.bmp" />
     <Image Include="..\mnselcnt.bmp" />
     <Image Include="..\mnunsel.bmp" />
@@ -240,6 +242,8 @@
     <Image Include="..\pilemark.bmp" />
     <Image Include="..\rip.bmp" />
     <Image Include="..\splash.bmp" />
+    <Image Include="gnollhack_64x96_colored_32bits.png" />
+    <Image Include="gnollhack_64x96_transparent_32bits.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\uwch.ttf" />

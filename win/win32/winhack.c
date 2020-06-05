@@ -131,7 +131,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         LoadAccelerators(hInstance, (LPCTSTR) IDC_NETHACKW);
     _GnollHack_app.hMainWnd = NULL;
     _GnollHack_app.hPopupWnd = NULL;
-    _GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES)); //loadPNG(hInstance, MAKEINTRESOURCE(IDB_GNOLLHACK_TILES)); //loadPNG_FromFile("C:\\Users\\janne\\gnollhack64x96.png"); // 
+    //_GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES)); 
+    _GnollHack_app.bmpTiles = loadPNGResource(hInstance, IDB_PNG_TILES, TILE_BK_COLOR);
     if (_GnollHack_app.bmpTiles == NULL)
 	{
 		panic("cannot load tiles bitmap");
