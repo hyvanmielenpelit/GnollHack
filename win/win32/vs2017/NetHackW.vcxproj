@@ -197,8 +197,9 @@
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
     <ClCompile Include="$(SrcDir)animation.c" />
-    <ClCompile Include="..\mhwingdi.cpp" />
-    <ClCompile Include="..\soundfx.cpp" />
+    <ClCompile Include="$(SrcDir)soundset.c" />
+    <ClCompile Include="$(WinWin32Dir)mhwingdi.cpp" />
+    <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />
@@ -224,6 +225,7 @@
     <ClInclude Include="..\..\..\ext\fmod\studio\inc\fmod_studio.hpp" />
     <ClInclude Include="..\..\..\include\encounter.h" />
     <ClInclude Include="..\..\..\include\matcomps.h" />
+    <ClInclude Include="..\..\..\include\soundset.h" />
     <ClInclude Include="..\mhwingdi.h" />
     <ClInclude Include="..\resource.h" />
     <ClInclude Include="..\soundfx.h" />

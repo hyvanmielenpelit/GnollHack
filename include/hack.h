@@ -298,6 +298,7 @@ typedef struct sortloot_item Loot;
 #include "engrave.h"
 #include "rect.h"
 #include "region.h"
+#include "soundset.h"
 #include "matcomps.h" /* before extern.h */
 
 /* Symbol offsets */

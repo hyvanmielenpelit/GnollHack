@@ -191,6 +191,7 @@
     <ClCompile Include="$(SrcDir)matcomps.c" />
     <ClCompile Include="$(SrcDir)tiledata.c" />
     <ClCompile Include="$(SrcDir)animation.c" />
+    <ClCompile Include="$(SrcDir)soundset.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)align.h" />
@@ -262,7 +263,8 @@
     <ClInclude Include="$(IncDir)fountain.h" />
     <ClInclude Include="$(IncDir)matcomps.h" />
     <ClInclude Include="$(IncDir)tiledata.h" />
-    <ClInclude Include="..\..\..\include\layer.h" />
+    <ClInclude Include="$(IncDir)layer.h" />
+    <ClInclude Include="$(IncDir)soundset.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)NetHack.rc" />

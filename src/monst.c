@@ -8,6 +8,7 @@
 #include "attrib.h"
 #include "monsym.h"
 #include "animation.h"
+#include "soundset.h"
 
 #define NO_ATTK    \
     {              \
@@ -4586,7 +4587,7 @@ struct permonst _mons2[] = {
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISION, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_LORD, M5_NONE,
 		43, CLR_BRIGHT_GREEN),
-    MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghoul, gnolls, and other demons", None, None, S_DEMON, 
+    MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghouls, gnolls, and other demons", None, None, S_DEMON, 
         LVL(56, 18, -5, 17, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_CONF, 2, 8, 0, 0),

@@ -42,6 +42,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 #include "monflag.h"
 #include "monsym.h"
 #include "animation.h"
+#include "soundset.h"
 
 #else /* !OBJECTS_PASS_2_ */
 /* second pass */

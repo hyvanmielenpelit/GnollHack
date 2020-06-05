@@ -448,7 +448,7 @@ HACKCSRC = allmain.c animation.c alloc.c apply.c artifact.c attrib.c ball.c bone
 	   mplayer.c mthrowu.c muse.c music.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c restore.c \
-	   rip.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c \
+	   rip.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c soundset.c \
 	   sp_lev.c spell.c steal.c steed.c sys.c teleport.c tiledata.c timeout.c \
 	   topten.c track.c trap.c u_init.c \
 	   uhitm.c vault.c version.c vision.c weapon.c were.c wield.c \
@@ -494,7 +494,7 @@ HACKINCL = align.h amiconf.h animation.h artifact.h artilist.h attrib.h beconf.h
 	mkroom.h \
 	monattk.h mondata.h monflag.h monst.h monsym.h obj.h objclass.h \
 	os2conf.h patchlevel.h pcconf.h permonst.h prop.h rect.h region.h \
-	rm.h sp_lev.h spell.h sys.h system.h tcap.h tiledata.h timeout.h tosconf.h \
+	rm.h soundset.h sp_lev.h spell.h sys.h system.h tcap.h tiledata.h timeout.h tosconf.h \
 	tradstdc.h trampoli.h trap.h unixconf.h vision.h vmsconf.h wintty.h \
 	wincurs.h winX.h winprocs.h wintype.h you.h youprop.h
 

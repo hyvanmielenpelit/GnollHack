@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "animation.h"
+#include "soundset.h"
 
 #ifndef PERMONST_H
 #define PERMONST_H
