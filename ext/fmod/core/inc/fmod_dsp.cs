@@ -72,10 +72,10 @@ namespace FMOD
     /*
         DSP functions
     */
-    public delegate IntPtr DSP_ALLOC_FUNC                         (uint size, MEMORY_TYPE type, IntPtr sourcestr);
-    public delegate IntPtr DSP_REALLOC_FUNC                       (IntPtr ptr, uint size, MEMORY_TYPE type, IntPtr sourcestr);
-    public delegate void   DSP_FREE_FUNC                          (IntPtr ptr, MEMORY_TYPE type, IntPtr sourcestr);
-    public delegate void   DSP_LOG_FUNC                           (DEBUG_FLAGS level, IntPtr file, int line, IntPtr function, IntPtr format);
+    public delegate IntPtr DSP_ALLOC_FUNC                         (uint size, MEMORY_TYPE type, StringWrapper sourcestr);
+    public delegate IntPtr DSP_REALLOC_FUNC                       (IntPtr ptr, uint size, MEMORY_TYPE type, StringWrapper sourcestr);
+    public delegate void   DSP_FREE_FUNC                          (IntPtr ptr, MEMORY_TYPE type, StringWrapper sourcestr);
+    public delegate void   DSP_LOG_FUNC                           (DEBUG_FLAGS level, StringWrapper file, int line, StringWrapper function, StringWrapper format);
     public delegate RESULT DSP_GETSAMPLERATE_FUNC                 (ref DSP_STATE dsp_state, ref int rate);
     public delegate RESULT DSP_GETBLOCKSIZE_FUNC                  (ref DSP_STATE dsp_state, ref uint blocksize);
     public delegate RESULT DSP_GETSPEAKERMODE_FUNC                (ref DSP_STATE dsp_state, ref int speakermode_mixer, ref int speakermode_output);

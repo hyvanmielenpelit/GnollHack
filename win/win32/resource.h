@@ -32,8 +32,11 @@
 #define IDB_PILEMARK                    149
 #define IDR_RCDATA1                     156
 #define IDR_RCDATA_FONT                 156
-#define IDR_RCDATA3                     158
 #define IDR_RCDATA_OGG                  158
+#define IDR_RCDATA_BANK                 159
+#define IDR_RCDATA_MASTER               160
+#define IDR_RCDATA2                     161
+#define IDR_RCDATA_STRINGS              161
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -153,7 +156,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        159
+#define _APS_NEXT_RESOURCE_VALUE        162
 #define _APS_NEXT_COMMAND_VALUE         32801
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

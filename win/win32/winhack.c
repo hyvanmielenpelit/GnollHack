@@ -260,9 +260,9 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
 
-    boolean sfx_res = initialize_fmod();
+    boolean sfx_res = initialize_fmod_studio();
     if(sfx_res)
-        fmod_play_sound_example();
+        fmod_event_example();
 
     /* let main do the argument processing */
     (void) main(argc, argv);
