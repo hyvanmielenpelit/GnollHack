@@ -251,6 +251,7 @@
   <ItemGroup>
     <None Include="..\Master.bank" />
     <None Include="..\Master.strings.bank" />
+    <None Include="..\Music.bank" />
     <None Include="..\Our-Mountain_v003_Looping.ogg" />
     <None Include="..\rcdata2.bin" />
     <None Include="..\SFX.bank" />

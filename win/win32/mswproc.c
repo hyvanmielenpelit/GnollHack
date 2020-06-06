@@ -3248,7 +3248,10 @@ mswin_play_ghsound_movement(struct ghsound_movement_info info)
 void
 mswin_play_ghsound_music(struct ghsound_music_info info)
 {
-    return;
+    if (!fmod_play_music(info))
+    {
+        impossible("Cannot play music");
+    }
 }
 
 void

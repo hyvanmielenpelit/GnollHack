@@ -74,10 +74,13 @@ unsigned long music_flags;
 		return;
 
 	int dnum = level_ptr->dnum;
-	struct mkroom* room_ptr;
+	struct mkroom* room_ptr = (struct mkroom*)0;
+	room_ptr = room_ptr;
 
 	struct ghsound_music_info musicinfo = { 0 };
 	musicinfo.ghsound = get_dungeon_music(dnum);
+	musicinfo.volume = BACKGROUND_MUSIC_VOLUME;
+
 	play_ghsound_music(musicinfo);
 }
 

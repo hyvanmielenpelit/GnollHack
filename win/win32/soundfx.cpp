@@ -18,7 +18,7 @@ static Studio::System* fmod_studio_system = (Studio::System*)0;
 static Sound* sound1 = (Sound*)0;
 static Sound* sound2 = (Sound*)0;
 static Sound* sound3 = (Sound*)0;
-
+static Studio::EventInstance* musicInstances[2] = { 0 };
 
 /* GHSound -> FMOD event mapping here */
 enum sound_bank_types {
@@ -46,8 +46,8 @@ struct ghsound_eventmapping {
 #define NoSound { SOUND_BANK_NO_BANK,  "", 0}
 
 const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS + 1] = {
-    { SOUND_BANK_MUSIC, "Music/DungeonsOfDoom" , 1},
-    { SOUND_BANK_MUSIC, "Music/DungeonsOfDoom" , 2},
+    { SOUND_BANK_MUSIC, "event:/Music-Normal-1" , 0},
+    { SOUND_BANK_MUSIC, "event:/Music-Normal-1" , 0},
     NoSound,
     NoSound,
     NoSound,
@@ -105,7 +105,7 @@ extern "C"
         Sleep(500);
 
         HINSTANCE hResInstance = (HINSTANCE)GetModuleHandle(NULL);
-        HRSRC res = FindResource(hResInstance, MAKEINTRESOURCE(IDR_RCDATA_OGG), RT_RCDATA);
+        HRSRC res = FindResource(hResInstance, MAKEINTRESOURCE(1 /*IDR_RCDATA_OGG*/), RT_RCDATA);
 
         if (res)
         {
@@ -138,13 +138,66 @@ extern "C"
 
         FMOD_RESULT result = fmod_studio_system->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, extraDriverData);
 
-        return (result == FMOD_OK);
+        boolean res = (result == FMOD_OK);
+        return res;
     }
+
+    boolean
+    load_fmod_banks()
+    {
+        FMOD_RESULT       result;
+        FMOD::Studio::Bank* bank[2] = { 0 };
+        HINSTANCE hResInstance = (HINSTANCE)GetModuleHandle(NULL);
+
+        for (int i = 0; i < 2; i++)
+        {
+            int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
+            HRSRC res = FindResource(hResInstance, MAKEINTRESOURCE(rid[i]), RT_RCDATA);
+
+            if (res)
+            {
+                HGLOBAL mem = LoadResource(hResInstance, res);
+                void* data = LockResource(mem);
+                size_t len = SizeofResource(hResInstance, res);
+
+                result = fmod_studio_system->loadBankMemory((const char*)data, (int)len, FMOD_STUDIO_LOAD_MEMORY, FMOD_STUDIO_LOAD_BANK_NORMAL, &bank[i]);
+                if (result != FMOD_OK)
+                    return FALSE;
+            }
+        }
+
+        return TRUE;
+    }
+
+
+    void
+    fmod_test_event()
+    {
+        FMOD_RESULT       result;
+        Studio::EventDescription* footstepDescription = NULL;
+        result = fmod_studio_system->getEvent("event:/Character/Player Footsteps", &footstepDescription);
+
+        Studio::EventInstance* footstepInstance = NULL;
+        result = footstepDescription->createInstance(&footstepInstance);
+
+        FMOD_STUDIO_PARAMETER_DESCRIPTION paramDesc;
+        result = footstepDescription->getParameterDescriptionByName("Surface", &paramDesc);
+
+        FMOD_STUDIO_PARAMETER_ID surfaceID = paramDesc.id;
+        float surfaceParameterValue = 1.0f;
+        result = footstepInstance->setParameterByID(surfaceID, surfaceParameterValue);
+
+        result = footstepInstance->start();
+        result = fmod_studio_system->update();
+    }
+
 
     void
     fmod_event_example()
     {
         FMOD_RESULT       result;
+
+#if 0
         FMOD::Studio::Bank* bank[3] = { 0 };
         HINSTANCE hResInstance = (HINSTANCE)GetModuleHandle(NULL);
 
@@ -162,7 +215,7 @@ extern "C"
                 result = fmod_studio_system->loadBankMemory((const char*)data, (int)len, FMOD_STUDIO_LOAD_MEMORY, FMOD_STUDIO_LOAD_BANK_NORMAL, &bank[i]);
             }
         }
-
+#endif
         Studio::EventDescription* footstepDescription = NULL;
         result = fmod_studio_system->getEvent("event:/Character/Player Footsteps", &footstepDescription);
 
@@ -190,13 +243,6 @@ extern "C"
             result = fmod_studio_system->update();
             Sleep(300);
         }
-
-        footstepInstance->stop(FMOD_STUDIO_STOP_IMMEDIATE);
-        for(int i = 0; i < 3;i++)
-            bank[i]->unload();
-
-        result = fmod_studio_system->release();
-        fmod_studio_system = (Studio::System*)0;
 
     }
 
@@ -339,7 +385,6 @@ extern "C"
 
     }
 
-
     void
     fmod_stop_all_sounds()
     {
@@ -359,6 +404,7 @@ extern "C"
             result = sound3->release();
             sound3 = (Sound*)0;
         }
+        /*
         if (fmod_core_system)
         {
             result = fmod_core_system->release();
@@ -369,8 +415,79 @@ extern "C"
             result = fmod_studio_system->release();
             fmod_studio_system = (Studio::System*)0;
         }
+        */
     }
 
+    void
+    close_fmod_studio()
+    {
+        FMOD_RESULT result;
+
+        fmod_stop_all_sounds();
+
+        result = fmod_studio_system->unloadAll();
+        result = fmod_studio_system->release();
+
+        fmod_studio_system = (Studio::System*)0;
+    }
+
+    boolean 
+    fmod_play_music(struct ghsound_music_info info)
+    {
+        FMOD_RESULT result;
+
+        enum ghsound_types soundid = info.ghsound;
+        struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+        if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
+            return FALSE;
+
+        Studio::EventDescription* musicDescription = NULL;
+        result = fmod_studio_system->getEvent(eventmap.eventPath, &musicDescription);
+
+        if (result != FMOD_OK)
+            return FALSE;
+
+        if (musicInstances[0])
+        {
+            Studio::EventInstance* earlierMusicInstance = musicInstances[0];
+            Studio::EventDescription* earlierMusicDescription = NULL;
+            earlierMusicInstance->getDescription(&earlierMusicDescription);
+            if (earlierMusicDescription && musicDescription == earlierMusicDescription)
+            {
+                /* Already playing, no need to do anything, unless so specified */
+                return 1;
+            }
+        }
+
+        /* Not playing yet, so make a new instance */
+        Studio::EventInstance* musicInstance = NULL;
+        result = musicDescription->createInstance(&musicInstance);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        musicInstance->setVolume(info.volume);
+        result = musicInstance->start();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        /* If starting succeeded, stop the old music in musicInstances[0] by fading */
+        if (musicInstances[0])
+        {
+            musicInstances[0]->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+
+            /* move to musicInstances[1] for later release, and before that, release existing musicInstances[1] */
+            if (musicInstances[1])
+                musicInstances[1]->release();
+
+            musicInstances[1] = musicInstances[0];
+        }
+
+        /* Set the new instance as musicInstances[0] */
+        musicInstances[0] = musicInstance;
+
+        result = fmod_studio_system->update();
+        return TRUE;
+    }
 }
 
 /* soundfx.cpp */

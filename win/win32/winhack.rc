@@ -394,10 +394,6 @@ END
 
 IDR_RCDATA_FONT         RCDATA                  "uwch.ttf"
 
-IDR_RCDATA_OGG          RCDATA                  "Our-Mountain_v003_Looping.ogg"
-
-IDR_RCDATA_BANK         RCDATA                  "SFX.bank"
-
 IDR_RCDATA_MASTER       RCDATA                  "Master.bank"
 
 IDR_RCDATA_STRINGS      RCDATA                  "Master.strings.bank"

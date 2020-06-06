@@ -185,7 +185,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.bWindowsLocked = TRUE;
 
     _GnollHack_app.bNoSounds = FALSE;
-
 #if 0  /* GdiTransparentBlt does not render spash bitmap for whatever reason */
     /* use system-provided TransparentBlt for Win2k+ */
     ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
@@ -196,6 +195,18 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     else
 #endif
         _GnollHack_app.lpfnTransparentBlt = _nhapply_image_transparent;
+
+    //Initialize FMOD Studio
+    if(!initialize_fmod_studio())
+    {
+        panic("cannot initialize FMOD studio");
+        return 0;
+    }
+    if (!load_fmod_banks())
+    {
+        panic("cannot load FMOD sound banks");
+        return 0;
+    }
 
     // init controls
     if (FAILED(GetComCtlVersion(&major, &minor))) {
@@ -261,9 +272,8 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
 
-    boolean sfx_res = initialize_fmod_studio();
-    if(sfx_res)
-        fmod_event_example();
+    //fmod_event_example();
+    //fmod_test_event();
 
     /* let main do the argument processing */
     (void) main(argc, argv);

@@ -270,7 +270,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 GetNHApp()->hMainWnd = NULL;
             DestroyWindow(hWnd);
             SetFocus(GetNHApp()->hMainWnd);
-            fmod_stop_all_sounds();
+            //fmod_stop_all_sounds();
             return TRUE;
         }
         break;

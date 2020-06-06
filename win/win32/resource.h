@@ -31,8 +31,6 @@
 #define IDB_PILEMARK                    149
 #define IDR_RCDATA1                     156
 #define IDR_RCDATA_FONT                 156
-#define IDR_RCDATA_OGG                  158
-#define IDR_RCDATA_BANK                 159
 #define IDR_RCDATA_MASTER               160
 #define IDR_RCDATA_STRINGS              161
 #define IDB_PNG_TILES                   166
@@ -155,7 +153,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        167
+#define _APS_NEXT_RESOURCE_VALUE        168
 #define _APS_NEXT_COMMAND_VALUE         32801
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

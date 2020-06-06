@@ -7,6 +7,9 @@
 #ifndef SOUNDSET_H
 #define SOUNDSET_H
 
+#define BACKGROUND_MUSIC_VOLUME 0.04f
+
+
 enum ghsound_types {
 	GHSOUND_NOSOUND = 0,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL,
@@ -54,14 +57,14 @@ enum ghshoe_types {
 
 struct ghsound_action_info {
 	enum ghsound_types ghsound;
-	float specific_volume_adjustment;
+	float volume;
 };
 
 
 struct ghsound_ambience_info {
 	enum ghsound_types ghsound;
 	float intensity;
-	float specific_volume_adjustment;
+	float volume;
 	int source_x;
 	int source_y;
 	int* ghsound_ambiance_handle;
@@ -69,19 +72,19 @@ struct ghsound_ambience_info {
 
 struct ghsound_effect_info {
 	enum ghsound_types ghsound;
-	float specific_volume_adjustment;
+	float volume;
 };
 
 struct ghsound_hit_info {
 	enum ghsound_types ghsound;
 	/* Weapon type */
 	/* Armor type */
-	float specific_volume_adjustment;
+	float volume;
 };
 
 struct ghsound_miss_info {
 	enum ghsound_types ghsound;
-	float specific_volume_adjustment;
+	float volume;
 };
 
 struct ghsound_movement_info {
@@ -98,13 +101,13 @@ struct ghsound_movement_info {
 struct ghsound_music_info {
 	enum ghsound_types ghsound;
 	float intensity;
-	float specific_volume_adjustment;
+	float volume;
 	int* ghsound_music_handle;
 };
 
 struct ghsound_ui_info {
 	enum ghsound_types ghsound;
-	float specific_volume_adjustment;
+	float volume;
 };
 
 
