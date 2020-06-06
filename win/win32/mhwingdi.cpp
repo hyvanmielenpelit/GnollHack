@@ -8,7 +8,6 @@
 #include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
-#include "resource.h"
 
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
@@ -18,26 +17,25 @@ extern "C" {
     HBITMAP
     loadPNGResource(HINSTANCE hInstance, int resource_id, COLORREF bkcolor)
     {
-        HBITMAP hBmp;
+        HBITMAP hBmp = (HBITMAP)0;
         ULONG_PTR m_gdiplusToken;
         Color bkclr;
         bkclr.SetFromCOLORREF(bkcolor);
 
-        Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-        Gdiplus::GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
+        GdiplusStartupInput gdiplusStartupInput;
+        GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
 
-        HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(IDB_PNG_TILES), "PNG");
+        HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), "PNG");
         if (!hResource)
-            return false;
+            return hBmp;
 
         DWORD imageSize = ::SizeofResource(hInstance, hResource);
         if (!imageSize)
-            return false;
+            return hBmp;
 
-        const void* pResourceData = ::LockResource(::LoadResource(hInstance,
-            hResource));
+        const void* pResourceData = ::LockResource(::LoadResource(hInstance, hResource));
         if (!pResourceData)
-            return false;
+            return hBmp;
 
         HGLOBAL m_hBuffer = ::GlobalAlloc(GMEM_MOVEABLE, imageSize);
         Bitmap* m_pBitmap = NULL;
@@ -51,15 +49,14 @@ extern "C" {
                 IStream* pStream = NULL;
                 if (::CreateStreamOnHGlobal(m_hBuffer, FALSE, &pStream) == S_OK)
                 {
-                    Bitmap* m_pBitmap = Gdiplus::Bitmap::FromStream(pStream);
+                    Bitmap* m_pBitmap = Bitmap::FromStream(pStream);
                     pStream->Release();
                     if (m_pBitmap)
                     {
                         if (m_pBitmap->GetLastStatus() == Gdiplus::Ok)
                         {
                             m_pBitmap->GetHBITMAP(bkclr, &hBmp);
-                            Gdiplus::GdiplusShutdown(m_gdiplusToken);
-                            return hBmp;
+                            /* Success */
                         }
                         delete m_pBitmap;
                         m_pBitmap = NULL;
@@ -72,9 +69,9 @@ extern "C" {
             m_hBuffer = NULL;
         }
 
-        Gdiplus::GdiplusShutdown(m_gdiplusToken);
+        GdiplusShutdown(m_gdiplusToken);
 
-        return NULL;
+        return hBmp;
     }
 
 
