@@ -2648,6 +2648,13 @@ E int FDECL(release_item_from_hero_inventory, (struct obj*));
 E int FDECL(ask_shk_reconciliation, (struct monst*));
 E double FDECL(service_cost_charisma_adjustment, (int));
 
+
+/* ### soundset.c ### */
+
+E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
+E void FDECL(play_movement_sound, (struct monst*, int, int, unsigned long));
+
+
 /* ### sys.c ### */
 
 E void NDECL(sys_early_init);

@@ -1123,6 +1123,9 @@ newgame()
 #endif
     program_state.something_worth_saving++; /* useful data now exists */
 
+    /* Play music */
+    play_dungeon_music(&u.uz, u.ux, u.uy, 0UL);
+
     /* Success! */
     welcome(TRUE);
     return;

@@ -118,6 +118,21 @@ enum player_soundset_types {
 	MAX_PLAYER_SOUNDSETS
 };
 
+struct player_soundset_definition {
+	/* Ambient */
+	enum ghsound_types stand;
+
+	/* Movement */
+	enum ghsound_types movement_sounds[MAX_GHMOVEMENTS];
+
+	/* Actions */
+	enum ghsound_types action_sounds[MAX_ACTION_TILES];
+};
+
+extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1];
+
+
+/* Monster soundsets */
 enum monster_soundset_types {
 	MONSTER_SOUNDSET_NONE = 0,
 	MONSTER_SOUNDSET_GENERAL,
