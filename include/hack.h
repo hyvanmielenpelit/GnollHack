@@ -667,7 +667,9 @@ static const char empty_string[] = "";
 #define MIN_PREF_SCREEN_SCALE 25
 #define MAX_PREF_SCREEN_SCALE 200
 
+/* Some general definitions for graphics and sounds */
 #include "layer.h"
+#include "soundset.h"
 
 #define nul_layerinfo \
     { base_cmap_to_glyph(S_unexplored),\

@@ -87,6 +87,9 @@ struct permonst {
 #ifdef TEXTCOLOR
     uchar mcolor; /* color to use */
 #endif
+    enum monster_soundset_types soundset;
+    enum monster_soundset_types female_soundset;
+
     struct action_info animation;
     struct action_info female_animation;
 

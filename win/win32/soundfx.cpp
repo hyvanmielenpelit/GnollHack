@@ -1,6 +1,6 @@
 /*
  * soundfx.cpp
- * GnollHack Sound Effects
+ * GnollHack for Windows Sound Effects using FMOD
  *
  * Copyright (c) Janne Gustafsson, 2020
  *
@@ -10,13 +10,56 @@
 #include "fmod_studio.hpp"
 #include "fmod.hpp"
 #include "resource.h"
+#include "soundset.h"
 
 using namespace FMOD;
-static System* fmod_system = (System*)0;
+static System* fmod_core_system = (System*)0;
 static Studio::System* fmod_studio_system = (Studio::System*)0;
 static Sound* sound1 = (Sound*)0;
 static Sound* sound2 = (Sound*)0;
 static Sound* sound3 = (Sound*)0;
+
+
+/* GHSound -> FMOD event mapping here */
+enum sound_bank_types {
+    SOUND_BANK_NO_BANK = 0,
+    SOUND_BANK_MAIN,
+    SOUND_BANK_MUSIC,
+    SOUND_BANK_DIALOGUE,
+    MAX_SOUND_BANKS
+};
+
+struct sound_bank_definition {
+    boolean isresource;
+    int resource_id;
+    const char* filename;
+};
+
+
+struct ghsound_eventmapping {
+    enum sound_bank_types bank_id;
+    const char* eventPath;
+    int within_event_id;
+};
+
+
+#define NoSound { SOUND_BANK_NO_BANK,  "", 0}
+
+const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS + 1] = {
+    { SOUND_BANK_MUSIC, "Music/DungeonsOfDoom" , 1},
+    { SOUND_BANK_MUSIC, "Music/DungeonsOfDoom" , 2},
+    NoSound,
+    NoSound,
+    NoSound,
+    NoSound,
+    NoSound,
+    NoSound,
+    NoSound,
+    NoSound
+};
+
+#undef NoSound
+
 
 extern "C" 
 {
@@ -27,8 +70,8 @@ extern "C"
         unsigned int version;
         void* extradriverdata = 0;
 
-        result = System_Create(&fmod_system);
-        result = fmod_system->getVersion(&version);
+        result = System_Create(&fmod_core_system);
+        result = fmod_core_system->getVersion(&version);
 
         if (version < FMOD_VERSION)
         {
@@ -36,14 +79,14 @@ extern "C"
             return FALSE;
         }
 
-        result = fmod_system->init(32, FMOD_INIT_NORMAL, extradriverdata);
+        result = fmod_core_system->init(32, FMOD_INIT_NORMAL, extradriverdata);
         return TRUE;
     }
 
     void
     fmod_play_sound_example()
     {
-        if (!fmod_system)
+        if (!fmod_core_system)
             return;
 
         Channel* channel = 0;
@@ -55,9 +98,9 @@ extern "C"
 
         Sleep(500);
 
-        result = fmod_system->createSound("C:\\Users\\janne\\Test\\Sound Test\\PowerUp20.wav", FMOD_DEFAULT, 0, &sound1);
+        result = fmod_core_system->createSound("C:\\Users\\janne\\Test\\Sound Test\\PowerUp20.wav", FMOD_DEFAULT, 0, &sound1);
         result = sound1->setMode(FMOD_LOOP_OFF);    /* drumloop.wav has embedded loop points which automatically makes looping turn on, */
-        result = fmod_system->playSound(sound1, 0, false, &channel);
+        result = fmod_core_system->playSound(sound1, 0, false, &channel);
 
         Sleep(500);
 
@@ -75,9 +118,9 @@ extern "C"
             exinfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
             exinfo.length = (unsigned int)len;
 
-            result = fmod_system->createSound((const char*)data, FMOD_OPENMEMORY, &exinfo, &sound3);
+            result = fmod_core_system->createSound((const char*)data, FMOD_OPENMEMORY, &exinfo, &sound3);
             result = sound3->setMode(FMOD_LOOP_OFF);    /* drumloop.wav has embedded loop points which automatically makes looping turn on, */
-            result = fmod_system->playSound(sound3, 0, false, &channel);
+            result = fmod_core_system->playSound(sound3, 0, false, &channel);
         }
     }
 
@@ -90,8 +133,8 @@ extern "C"
 
         Studio::System::create(&fmod_studio_system);
 
-        fmod_studio_system->getCoreSystem(&fmod_system);
-        fmod_system->setSoftwareFormat(0, FMOD_SPEAKERMODE_DEFAULT, 0);
+        fmod_studio_system->getCoreSystem(&fmod_core_system);
+        fmod_core_system->setSoftwareFormat(0, FMOD_SPEAKERMODE_DEFAULT, 0);
 
         FMOD_RESULT result = fmod_studio_system->initialize(1024, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, extraDriverData);
 
@@ -316,10 +359,10 @@ extern "C"
             result = sound3->release();
             sound3 = (Sound*)0;
         }
-        if (fmod_system)
+        if (fmod_core_system)
         {
-            result = fmod_system->release();
-            fmod_system = (System*)0;
+            result = fmod_core_system->release();
+            fmod_core_system = (System*)0;
         }
         if (fmod_studio_system)
         {

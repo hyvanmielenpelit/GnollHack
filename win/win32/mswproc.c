@@ -117,6 +117,14 @@ struct window_procs mswin_procs = {
     mswin_status_update,
     genl_can_suspend_yes,
     mswin_stretch_window,
+    mswin_play_ghsound_action,
+    mswin_play_ghsound_ambience,
+    mswin_play_ghsound_effect,
+    mswin_play_ghsound_hit,
+    mswin_play_ghsound_miss,
+    mswin_play_ghsound_movement,
+    mswin_play_ghsound_music,
+    mswin_play_ghsound_ui,
 };
 
 /*
@@ -3198,5 +3206,54 @@ mswin_stretch_window(void)
         SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_STRETCH_MAP, (LPARAM)&data);
     }
+}
+
+
+void
+mswin_play_ghsound_action(struct ghsound_action_info info)
+{
+    return;
+}
+
+void
+mswin_play_ghsound_ambience(struct ghsound_ambience_info info)
+{
+    return;
+}
+
+void
+mswin_play_ghsound_effect(struct ghsound_effect_info info)
+{
+    return;
+}
+
+void
+mswin_play_ghsound_hit(struct ghsound_hit_info info)
+{
+    return;
+}
+
+void
+mswin_play_ghsound_miss(struct ghsound_miss_info info)
+{
+    return;
+}
+
+void
+mswin_play_ghsound_movement(struct ghsound_movement_info info)
+{
+    return;
+}
+
+void
+mswin_play_ghsound_music(struct ghsound_music_info info)
+{
+    return;
+}
+
+void
+mswin_play_ghsound_ui(struct ghsound_ui_info info)
+{
+    return;
 }
 

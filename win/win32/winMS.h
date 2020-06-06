@@ -216,6 +216,14 @@ void mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
                               boolean enable);
 void mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks);
 void mswin_stretch_window(void);
+void mswin_play_ghsound_action(struct ghsound_action_info info);
+void mswin_play_ghsound_ambience(struct ghsound_ambience_info info);
+void mswin_play_ghsound_effect(struct ghsound_effect_info info);
+void mswin_play_ghsound_hit(struct ghsound_hit_info info);
+void mswin_play_ghsound_miss(struct ghsound_miss_info info);
+void mswin_play_ghsound_movement(struct ghsound_movement_info info);
+void mswin_play_ghsound_music(struct ghsound_music_info info);
+void mswin_play_ghsound_ui(struct ghsound_ui_info info);
 
 /* helper function */
 HWND mswin_hwnd_from_winid(winid wid);

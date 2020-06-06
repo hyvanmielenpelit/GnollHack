@@ -803,6 +803,7 @@ E void FDECL(recbranch_mapseen, (d_level *, d_level *));
 E void FDECL(overview_stats, (winid, const char *, long *, size_t *));
 E void FDECL(remdun_mapseen, (int));
 E const char *FDECL(endgamelevelname, (char *, int));
+E enum ghsound_types FDECL(get_dungeon_music, (int));
 
 /* ### eat.c ### */
 
@@ -3261,6 +3262,15 @@ E void NDECL(genl_status_finish);
 E void FDECL(genl_status_enablefield,
              (int, const char *, const char *, BOOLEAN_P));
 E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned long *));
+E void FDECL(genl_play_ghsound_action, (struct ghsound_action_info));
+E void FDECL(genl_play_ghsound_ambience, (struct ghsound_ambience_info));
+E void FDECL(genl_play_ghsound_effect, (struct ghsound_effect_info));
+E void FDECL(genl_play_ghsound_hit, (struct ghsound_hit_info));
+E void FDECL(genl_play_ghsound_miss, (struct ghsound_miss_info));
+E void FDECL(genl_play_ghsound_movement, (struct ghsound_movement_info));
+E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));
+E void FDECL(genl_play_ghsound_ui, (struct ghsound_ui_info));
+
 
 E void FDECL(dump_open_log, (time_t));
 E void NDECL(dump_close_log);

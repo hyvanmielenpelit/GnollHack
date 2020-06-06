@@ -83,6 +83,14 @@ struct window_procs curses_procs = {
     curses_status_update,
     genl_can_suspend_yes,
     genl_stretch_window,
+    genl_play_ghsound_action,
+    genl_play_ghsound_ambience,
+    genl_play_ghsound_effect,
+    genl_play_ghsound_hit,
+    genl_play_ghsound_miss,
+    genl_play_ghsound_movement,
+    genl_play_ghsound_music,
+    genl_play_ghsound_ui,
 };
 
 /*

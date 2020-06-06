@@ -55,6 +55,14 @@ struct window_procs amii_procs = {
     genl_status_update,
     genl_can_suspend_yes,
     genl_stretch_window,
+    genl_play_ghsound_action,
+    genl_play_ghsound_ambience,
+    genl_play_ghsound_effect,
+    genl_play_ghsound_hit,
+    genl_play_ghsound_miss,
+    genl_play_ghsound_movement,
+    genl_play_ghsound_music,
+    genl_play_ghsound_ui,
 };
 
 /* The view window layout uses the same function names so we can use
@@ -88,6 +96,14 @@ struct window_procs amiv_procs = {
     genl_status_update,
     genl_can_suspend_yes,
     genl_stretch_window,
+    genl_play_ghsound_action,
+    genl_play_ghsound_ambience,
+    genl_play_ghsound_effect,
+    genl_play_ghsound_hit,
+    genl_play_ghsound_miss,
+    genl_play_ghsound_movement,
+    genl_play_ghsound_music,
+    genl_play_ghsound_ui,
 };
 
 unsigned short amii_initmap[AMII_MAXCOLORS];

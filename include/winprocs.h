@@ -84,6 +84,14 @@ struct window_procs {
     void FDECL((*win_status_update), (int, genericptr_t, int, int, int, unsigned long *));
     boolean NDECL((*win_can_suspend));
     void NDECL((*win_stretch_window));
+    void FDECL((*win_play_ghsound_action), (struct ghsound_action_info));
+    void FDECL((*win_play_ghsound_ambience), (struct ghsound_ambience_info));
+    void FDECL((*win_play_ghsound_effect), (struct ghsound_effect_info));
+    void FDECL((*win_play_ghsound_hit), (struct ghsound_hit_info));
+    void FDECL((*win_play_ghsound_miss), (struct ghsound_miss_info));
+    void FDECL((*win_play_ghsound_movement), (struct ghsound_movement_info));
+    void FDECL((*win_play_ghsound_music), (struct ghsound_music_info));
+    void FDECL((*win_play_ghsound_ui), (struct ghsound_ui_info));
 };
 
 extern
@@ -167,6 +175,15 @@ extern
 #define status_enablefield (*windowprocs.win_status_enablefield)
 #define status_update (*windowprocs.win_status_update)
 #define stretch_window (*windowprocs.win_stretch_window)
+
+#define play_ghsound_action (*windowprocs.win_play_ghsound_action)
+#define play_ghsound_ambience (*windowprocs.win_play_ghsound_ambience)
+#define play_ghsound_effect (*windowprocs.win_play_ghsound_effect)
+#define play_ghsound_hit (*windowprocs.win_play_ghsound_hit)
+#define play_ghsound_miss (*windowprocs.win_play_ghsound_miss)
+#define play_ghsound_movement (*windowprocs.win_play_ghsound_movement)
+#define play_ghsound_music (*windowprocs.win_play_ghsound_music)
+#define play_ghsound_ui (*windowprocs.win_play_ghsound_ui)
 
 /*
  * WINCAP

@@ -213,6 +213,62 @@ genl_stretch_window(VOID_ARGS)
     return;
 }
 
+void
+genl_play_ghsound_action(info)
+struct ghsound_action_info info;
+{
+    return;
+}
+
+void
+genl_play_ghsound_ambience(info)
+struct ghsound_ambience_info info;
+{
+    return;
+}
+
+void
+genl_play_ghsound_effect(info)
+struct ghsound_effect_info info;
+{
+    return;
+}
+
+void
+genl_play_ghsound_hit(info)
+struct ghsound_hit_info info;
+{
+    return;
+}
+
+void
+genl_play_ghsound_miss(info)
+struct ghsound_miss_info info;
+{
+    return;
+}
+
+void
+genl_play_ghsound_movement(info)
+struct ghsound_movement_info info;
+{
+    return;
+}
+
+void
+genl_play_ghsound_music(info)
+struct ghsound_music_info info;
+{
+    return;
+}
+
+void
+genl_play_ghsound_ui(info)
+struct ghsound_ui_info info;
+{
+    return;
+}
+
 STATIC_OVL
 void
 def_raw_print(s)
