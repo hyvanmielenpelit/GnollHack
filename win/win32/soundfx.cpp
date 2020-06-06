@@ -204,14 +204,6 @@ extern "C"
         float surfaceParameterValue = (float)info.floor;
         result = movementInstance->setParameterByID(surfaceID, surfaceParameterValue);
 
-        /* Set number of steps */
-        FMOD_STUDIO_PARAMETER_DESCRIPTION paramDesc2;
-        result = movementDescription->getParameterDescriptionByName("Steps", &paramDesc2);
-
-        FMOD_STUDIO_PARAMETER_ID stepID = paramDesc2.id;
-        float stepParameterValue = (float)info.number_of_steps;
-        result = movementInstance->setParameterByID(stepID, stepParameterValue);
-
         /* Play sound */
         result = movementInstance->start();
         if (result != FMOD_OK)

@@ -64,7 +64,6 @@ struct ghsound_movement_info {
 	enum ghshoe_types shoe;
 	float weight;
 	float volume;
-	int number_of_steps;
 	boolean isyou;
 	int source_x;
 	int source_y;
