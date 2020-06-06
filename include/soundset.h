@@ -60,8 +60,8 @@ struct ghsound_miss_info {
 
 struct ghsound_movement_info {
 	enum ghsound_types ghsound;
-	enum ghfloor_types floor;
-	enum ghshoe_types shoe;
+	enum movement_styles floor;
+	enum shoe_hardness_types shoe;
 	float weight;
 	float volume;
 	boolean isyou;

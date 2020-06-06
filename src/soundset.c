@@ -105,7 +105,7 @@ unsigned long movement_flags;
 	boolean isyou = (mtmp == &youmonst);
 
 	struct ghsound_movement_info movementinfo = { 0 };
-	enum ghfloor_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
+	enum floor_surface_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
 	enum ghsound_types soundid = GHSOUND_NONE;
 
 	if (isyou)
