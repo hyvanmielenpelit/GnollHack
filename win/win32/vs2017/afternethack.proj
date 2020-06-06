@@ -7,8 +7,8 @@
 	Outputs="$(BinDir)defaults.nh;$(BinDir)Guidebook.txt;$(BinDir)license;$(BinDir)sysconf;$(BinDir)symbols;$(BinDir)record;$(BinDir)opthelp">
 
   	<Copy SourceFiles="$(SysWinntDir)defaults.nh;$(DocDir)Guidebook.txt;$(DatDir)license;$(SysWinntDir)sysconf;$(DocDir)nethack.txt;$(DatDir)symbols;$(WinWin32Dir)record;$(DatDir)opthelp" DestinationFolder="$(BinDir)"/>
-  	<Copy SourceFiles="$(FmodDir)core\lib\lib-x86\fmod.dll;$(FmodDir)core\lib\lib-x86\fmodL.dll;$(FmodDir)fsbank\lib\lib-x86\fsbank.dll;$(FmodDir)fsbank\lib\lib-x86\libfsbvorbis.dll;$(FmodDir)studio\lib\lib-x86\fmodstudio.dll;$(FmodDir)studio\lib\lib-x86\fmodstudioL.dll" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
-  	<Copy SourceFiles="$(FmodDir)core\lib\lib-x64\fmod.dll;$(FmodDir)core\lib\lib-x64\fmodL.dll;$(FmodDir)fsbank\lib\lib-x64\fsbank.dll;$(FmodDir)fsbank\lib\lib-x64\libfsbvorbis64.dll;$(FmodDir)studio\lib\lib-x64\fmodstudio.dll;$(FmodDir)studio\lib\lib-x64\fmodstudioL.dll" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
+  	<Copy SourceFiles="$(FmodDir)core\lib\lib-x86\fmod.dll;$(FmodDir)fsbank\lib\lib-x86\fsbank.dll;$(FmodDir)fsbank\lib\lib-x86\libfsbvorbis.dll;$(FmodDir)studio\lib\lib-x86\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x86' "/>
+  	<Copy SourceFiles="$(FmodDir)core\lib\lib-x64\fmod.dll;$(FmodDir)fsbank\lib\lib-x64\fsbank.dll;$(FmodDir)fsbank\lib\lib-x64\libfsbvorbis64.dll;$(FmodDir)studio\lib\lib-x64\fmodstudio.dll;" DestinationFolder="$(BinDir)" Condition=" '$(Platform)' == 'x64' "/>
 
 	</Target>
   <Target Name="Clean">
