@@ -7,21 +7,25 @@
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1] =
 {
 	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
+		"Generic",
+		0,
+		{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	},
+	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
-		0,
-		{0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
-	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -32,31 +36,37 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS + 1] =
 {
 	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
+		"Generic",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
+		"",
 		0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -95,33 +105,56 @@ unsigned long movement_flags;
 	boolean isyou = (mtmp == &youmonst);
 
 	struct ghsound_movement_info movementinfo = { 0 };
-	enum ghfloor_types floorid = GHFLOOR_STONE_FLOOR; /* Set the appropriate floor here */
+	enum ghfloor_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
+	enum ghsound_types soundid = GHSOUND_NONE;
 
 	if (isyou)
 	{
+		enum player_soundset_types pss = get_player_soundset();
+		soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_ON_GROUND];
+		if (Flying)
+		{
+			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_FLYING];
+			floorid = FLOOR_SURFACE_NONE;
 
+		}
+		else if (Levitation)
+		{
+			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_LEVITATING];
+			floorid = FLOOR_SURFACE_NONE;
+		}
 	}
 	else
 	{
 		enum monster_soundset_types mss = is_female(mtmp->data) ? mtmp->data->female_soundset : mtmp->data->soundset;
-		enum ghsound_types soundid = monster_soundsets[mss].movement_sounds[GHMOVEMENT_ON_GROUND];
+		soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND];
 
 		if (is_flying(mtmp))
 		{
-			soundid = monster_soundsets[mss].movement_sounds[GHMOVEMENT_FLYING];
-			floorid = GHFLOOR_NO_FLOOR; /* Flying, slithering? */
+			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_FLYING];
+			floorid = FLOOR_SURFACE_NONE; 
 
 		}
 		else if (is_levitating(mtmp))
 		{
-			soundid = monster_soundsets[mss].movement_sounds[GHMOVEMENT_LEVITATING];
-			floorid = GHFLOOR_NO_FLOOR; /* Flying, slithering? */
+			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_LEVITATING];
+			floorid = FLOOR_SURFACE_NONE;
 		}
-		movementinfo.ghsound = soundid;
-		movementinfo.ghfloor = floorid; /* Flying, slithering? */
 	}
+
+	movementinfo.ghsound = soundid;
+	movementinfo.floor = floorid; /* Flying, slithering? */
+	movementinfo.volume = 1.0f;
 
 	play_ghsound_movement(movementinfo);
 }
+
+
+enum player_soundset_types
+get_player_soundset()
+{
+	return PLAYER_SOUNDSET_GENERAL;
+}
+
 
 /* soundset.c */

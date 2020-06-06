@@ -2653,6 +2653,7 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, int, int, unsigned long));
+E enum player_soundset_types NDECL(get_player_soundset);
 
 
 /* ### sys.c ### */

@@ -3171,7 +3171,7 @@ boolean printdun;
 enum ghsound_types
 get_dungeon_music(int dnum)
 {
-    enum ghsound_types res = GHSOUND_NOSOUND;
+    enum ghsound_types res = GHSOUND_NONE;
 
     switch (dnum)   
     {

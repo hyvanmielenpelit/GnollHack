@@ -3242,7 +3242,10 @@ mswin_play_ghsound_miss(struct ghsound_miss_info info)
 void
 mswin_play_ghsound_movement(struct ghsound_movement_info info)
 {
-    return;
+    if (!fmod_play_movement_sound(info))
+    {
+        impossible("Cannot play movement sound");
+    }
 }
 
 void

@@ -1882,10 +1882,16 @@ domove_core()
     u.ux += u.dx;
     u.uy += u.dy;
     /* Move your steed, too */
-    if (u.usteed) {
+    if (u.usteed) 
+    {
         u.usteed->mx = u.ux;
         u.usteed->my = u.uy;
         exercise_steed();
+        play_movement_sound(u.usteed, u.ux, u.uy, 0UL);
+    }
+    else
+    {
+        play_movement_sound(&youmonst, u.ux, u.uy, 0UL);
     }
 
     /*

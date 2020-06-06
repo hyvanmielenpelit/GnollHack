@@ -9,15 +9,15 @@
 
 #define BACKGROUND_MUSIC_VOLUME 0.04f
 
-
+/* All GnollHack Sounds */
 enum ghsound_types {
-	GHSOUND_NOSOUND = 0,
+	GHSOUND_NONE = 0,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL,
+	GHSOUND_PLAYER_FOOTSTEPS_NORMAL,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_GOING_BACK_UP,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_ATTACKED,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_CLEARED,
-	GHSOUND_PLAYER_FOOTSTEPS_NORMAL,
 	GHSOUND_PLAYER_STRIKE_GENERAL,
 	GHSOUND_PLAYER_HIT_GENERAL,
 	GHSOUND_PLAYER_MISS_GENERAL,
@@ -25,41 +25,12 @@ enum ghsound_types {
 };
 
 
-enum ghmovement_types {
-	GHMOVEMENT_ON_GROUND = 0, 
-	GHMOVEMENT_STEALTH,
-	GHMOVEMENT_FLYING,
-	GHMOVEMENT_LEVITATING,
-	GHMOVEMENT_TUNNELING,
-	GHMOVEMENT_PASSING_THROUGH_WALLS,
-	MAX_GHMOVEMENTS
-};
 
-enum ghfloor_types {
-	GHFLOOR_NO_FLOOR = 0,
-	GHFLOOR_STONE_FLOOR,
-	GHFLOOR_WOODEN_FLOOR,
-	GHFLOOR_GRASS,
-	GHFLOOR_SOIL,
-	GHFLOOR_WATER,
-	MAX_GHFLOORS
-};
-
-enum ghshoe_types {
-	GHSHOE_NO_SHOE = 0,
-	GHSHOE_SOFT_SHOE,
-	GHFLOOR_METAL_SHOE,
-	MAX_GHSHOES
-};
-
-
-
-
+/* play_ghsound function input structs */
 struct ghsound_action_info {
 	enum ghsound_types ghsound;
 	float volume;
 };
-
 
 struct ghsound_ambience_info {
 	enum ghsound_types ghsound;
@@ -89,10 +60,11 @@ struct ghsound_miss_info {
 
 struct ghsound_movement_info {
 	enum ghsound_types ghsound;
-	enum ghfloor_types ghfloor;
-	enum ghshoe_types ghshoe;
+	enum ghfloor_types floor;
+	enum ghshoe_types shoe;
 	float weight;
-	float specific_volume_adjustment;
+	float volume;
+	int number_of_steps;
 	boolean isyou;
 	int source_x;
 	int source_y;
@@ -112,7 +84,19 @@ struct ghsound_ui_info {
 
 
 
+/* PLAYER SOUNDSETS */
+struct player_soundset_definition {
+	char* soundset_name;
 
+	/* Ambient */
+	enum ghsound_types stand;
+
+	/* Movement */
+	enum ghsound_types movement_sounds[MAX_MOVEMENT_STYLES];
+
+	/* Actions */
+	enum ghsound_types action_sounds[MAX_ACTION_TILES];
+};
 
 enum player_soundset_types {
 	PLAYER_SOUNDSET_NO_SOUNDSET = 0,
@@ -121,21 +105,23 @@ enum player_soundset_types {
 	MAX_PLAYER_SOUNDSETS
 };
 
-struct player_soundset_definition {
+extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1];
+
+
+/* MONSTER SOUNDSETS */
+struct monster_soundset_definition {
+	char* soundset_name;
+
 	/* Ambient */
 	enum ghsound_types stand;
 
 	/* Movement */
-	enum ghsound_types movement_sounds[MAX_GHMOVEMENTS];
+	enum ghsound_types movement_sounds[MAX_MOVEMENT_STYLES];
 
 	/* Actions */
 	enum ghsound_types action_sounds[MAX_ACTION_TILES];
 };
 
-extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1];
-
-
-/* Monster soundsets */
 enum monster_soundset_types {
 	MONSTER_SOUNDSET_NONE = 0,
 	MONSTER_SOUNDSET_GENERAL,
@@ -145,21 +131,10 @@ enum monster_soundset_types {
 	MAX_MONSTER_SOUNDSETS
 };
 
-
-struct monster_soundset_definition {
-	/* Ambient */
-	enum ghsound_types stand;
-
-	/* Movement */
-	enum ghsound_types movement_sounds[MAX_GHMOVEMENTS];
-
-	/* Actions */
-	enum ghsound_types action_sounds[MAX_ACTION_TILES];
-};
-
 extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS + 1];
 
 
+/* ITEM SOUNDSETS */
 enum item_soundset_types {
 	ITEM_SOUNDSET_NO_SOUNDSET = 0,
 	ITEM_SOUNDSET_GENERAL,
