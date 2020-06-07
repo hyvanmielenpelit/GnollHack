@@ -219,31 +219,25 @@
     <ClInclude Include="$(WinWin32Dir)mhstatus.h" />
     <ClInclude Include="$(WinWin32Dir)mhtext.h" />
     <ClInclude Include="$(WinWin32Dir)winMS.h" />
-    <ClInclude Include="..\..\..\ext\fmod\core\inc\fmod.hpp" />
-    <ClInclude Include="..\..\..\ext\fmod\fsbank\inc\fsbank.h" />
-    <ClInclude Include="..\..\..\ext\fmod\fsbank\inc\fsbank_errors.h" />
-    <ClInclude Include="..\..\..\ext\fmod\studio\inc\fmod_studio.hpp" />
-    <ClInclude Include="..\..\..\include\encounter.h" />
-    <ClInclude Include="..\..\..\include\matcomps.h" />
-    <ClInclude Include="..\..\..\include\soundset.h" />
-    <ClInclude Include="..\mhwingdi.h" />
-    <ClInclude Include="..\resource.h" />
-    <ClInclude Include="..\soundfx.h" />
+    <ClInclude Include="$(FmodDir)core\inc\fmod.hpp" />
+    <ClInclude Include="$(FmodDir)fsbank\inc\fsbank.h" />
+    <ClInclude Include="$(FmodDir)fsbank\inc\fsbank_errors.h" />
+    <ClInclude Include="$(FmodDir)studio\inc\fmod_studio.hpp" />
+    <ClInclude Include="$(IncDir)encounter.h" />
+    <ClInclude Include="$(IncDir)matcomps.h" />
+    <ClInclude Include="$(IncDir)soundset.h" />
+    <ClInclude Include="$(WinWin32Dir)mhwingdi.h" />
+    <ClInclude Include="$(WinWin32Dir)resource.h" />
+    <ClInclude Include="$(WinWin32Dir)soundfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\gnollhack64x96.bmp" />
-    <Image Include="..\GnollHackNew.ico" />
-    <Image Include="..\gnollhack_64x96_colored_32bits.png" />
-    <Image Include="..\gnollhack_64x96_transparent_32bits.png" />
-    <Image Include="..\mnsel.bmp" />
-    <Image Include="..\mnselcnt.bmp" />
-    <Image Include="..\mnunsel.bmp" />
-    <Image Include="..\petmark-new.bmp" />
-    <Image Include="..\pilemark.bmp" />
-    <Image Include="..\rip.bmp" />
-    <Image Include="..\splash.bmp" />
-    <Image Include="gnollhack_64x96_colored_32bits.png" />
-    <Image Include="gnollhack_64x96_transparent_32bits.png" />
+    <Image Include="$(WinWin32Dir)GnollHackNew.ico" />
+    <Image Include="$(WinWin32Dir)gnollhack_64x96_transparent_32bits.png" />
+    <Image Include="$(WinWin32Dir)mnsel.bmp" />
+    <Image Include="$(WinWin32Dir)mnselcnt.bmp" />
+    <Image Include="$(WinWin32Dir)mnunsel.bmp" />
+    <Image Include="$(WinWin32Dir)rip.bmp" />
+    <Image Include="$(WinWin32Dir)splash.bmp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="..\uwch.ttf" />
@@ -252,7 +246,6 @@
     <None Include="..\Master.bank" />
     <None Include="..\Master.strings.bank" />
     <None Include="..\Music.bank" />
-    <None Include="..\Our-Mountain_v003_Looping.ogg" />
     <None Include="..\rcdata2.bin" />
     <None Include="..\SFX.bank" />
   </ItemGroup>

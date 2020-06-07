@@ -241,10 +241,6 @@ IDB_MENU_SEL            BITMAP                  "mnsel.bmp"
 
 IDB_MENU_UNSEL          BITMAP                  "mnunsel.bmp"
 
-IDB_PETMARK             BITMAP                  "petmark-new.bmp"
-
-IDB_PILEMARK            BITMAP                  "pilemark.bmp"
-
 IDB_MENU_SEL_COUNT      BITMAP                  "mnselcnt.bmp"
 
 IDB_RIP                 BITMAP                  "rip.bmp"

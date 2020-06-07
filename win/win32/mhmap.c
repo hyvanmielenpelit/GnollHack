@@ -874,11 +874,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     short ntile;
     int t_x, t_y;
     int glyph, signed_glyph;
-#ifdef USE_PILEMARK
-    //int color;
-    //unsigned long special;
-    //int mgch;
-#endif
 
     boolean flip_glyph = FALSE;
     data->mapAnimated[i][j] = FALSE;
@@ -1670,57 +1665,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         FillRect(data->backBufferDC, &even_smaller_rect, hbr_light);
                     }
 
-//    #ifdef USE_PILEMARK
-                    /* rely on GnollHack core helper routine */
-                    //(void) mapglyph(data->map[i][j].glyph, &mgch, &color, &special, i, j);
-
-//                    if ((glyph != NO_GLYPH) && (data->map[i][j].layer_flags & LFLAGS_M_PET) // (special & MG_PET)
-//    #else
-//                    if ((glyph != NO_GLYPH) && glyph_is_pet(glyph)
-//    #endif
-                        if ((glyph != NO_GLYPH) && (data->map[i][j].layer_flags & LFLAGS_M_PET) // (special & MG_PET)
-                            && iflags.wc_hilite_pet) {
-                        /* apply pet mark transparently over
-                            pet image */
-#if 0
-                        HDC hdcPetMark;
-                        HBITMAP bmPetMarkOld;
-
-                        /* this is DC for petmark bitmap */
-                        hdcPetMark = CreateCompatibleDC(data->backBufferDC);
-                        bmPetMarkOld =
-                            SelectObject(hdcPetMark, GetNHApp()->bmpPetMark);
-
-                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
-                        (*GetNHApp()->lpfnTransparentBlt)(
-                            data->backBufferDC, rect->left, rect->top,
-                            data->xBackTile, data->yBackTile, hdcPetMark, 0, 0,
-                            TILE_X, TILE_Y, TILE_BK_COLOR);
-                        SelectObject(hdcPetMark, bmPetMarkOld);
-                        DeleteDC(hdcPetMark);
-#endif
-                    }
-#if 0 //def USE_PILEMARK
-                    if ((glyph != NO_GLYPH) && (data->map[i][j].layer_flags & LFLAGS_O_PILE) //(special & MG_OBJPILE)
-                        && iflags.hilite_pile) {
-                        /* apply pilemark transparently over other image */
-                        HDC hdcPileMark;
-                        HBITMAP bmPileMarkOld;
-
-                        /* this is DC for pilemark bitmap */
-                        hdcPileMark = CreateCompatibleDC(data->backBufferDC);
-                        bmPileMarkOld = SelectObject(hdcPileMark,
-                            GetNHApp()->bmpPileMark);
-
-                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
-                        (*GetNHApp()->lpfnTransparentBlt)(
-                            data->backBufferDC, rect->left, rect->top,
-                            data->xBackTile, data->yBackTile, hdcPileMark, 0, 0,
-                            TILE_X, TILE_Y, TILE_BK_COLOR);
-                        SelectObject(hdcPileMark, bmPileMarkOld);
-                        DeleteDC(hdcPileMark);
-                    }
-#endif
 
                     /* Draw death and hit markers */
                     if (glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph))

@@ -79,7 +79,6 @@
 #define NHFONT_SIZE_MAX 20
 
 #define MAX_LOADSTRING 100
-#define USE_PILEMARK
 
 #define ANIMATION_TIMER_INTERVAL 40 // milliseconds (25 FPS)
 
@@ -103,10 +102,6 @@ typedef struct mswin_nhwindow_app {
 
     HICON iconTiles;
     HBITMAP bmpTiles;
-    HBITMAP bmpPetMark;
-#ifdef USE_PILEMARK
-    HBITMAP bmpPileMark;
-#endif
     HBITMAP bmpMapTiles; /* custom tiles bitmap */
     HBITMAP bmpRip;
     HBITMAP bmpSplash;

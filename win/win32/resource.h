@@ -22,13 +22,11 @@
 #define IDD_GETLIN                      138
 #define IDD_EXTCMD                      139
 #define IDD_PLAYER_SELECTOR             141
-#define IDB_PETMARK                     143
 #define IDB_MENU_SEL_COUNT              144
 #define IDD_NHRIP                       145
 #define IDB_SPLASH                      146
 #define IDB_RIP                         147
 #define IDD_SPLASH                      148
-#define IDB_PILEMARK                    149
 #define IDR_RCDATA1                     156
 #define IDR_RCDATA_FONT                 156
 #define IDR_RCDATA_MASTER               160

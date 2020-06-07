@@ -138,22 +138,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 		panic("cannot load tiles bitmap");
 		return 0;
 	}
-    _GnollHack_app.bmpPetMark =
-        LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_PETMARK));
-	if (_GnollHack_app.bmpPetMark == NULL)
-	{
-		panic("cannot load pet mark bitmap");
-		return 0;
-	}
-#ifdef USE_PILEMARK
-    _GnollHack_app.bmpPileMark =
-        LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_PILEMARK));
-	if (_GnollHack_app.bmpPileMark == NULL)
-	{
-		panic("cannot load pile mark bitmap");
-		return 0;
-	}
-#endif
     _GnollHack_app.bmpRip = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_RIP));
 	if (_GnollHack_app.bmpRip == NULL)
 	{
