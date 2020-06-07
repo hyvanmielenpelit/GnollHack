@@ -1008,6 +1008,9 @@ register int fd;
     restoring = FALSE;
     clear_nhwindow(WIN_MESSAGE);
 
+    /* Play music for the dungeon */
+    play_dungeon_music(&u.uz, u.ux, u.uy, 0UL);
+
     /* Success! */
     welcome(FALSE);
     check_special_room(FALSE);
