@@ -240,13 +240,11 @@
     <Image Include="$(WinWin32Dir)splash.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\uwch.ttf" />
+    <Font Include="$(WinWin32Dir)uwch.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Master.bank" />
-    <None Include="..\Master.strings.bank" />
-    <None Include="..\Music.bank" />
-    <None Include="..\rcdata2.bin" />
+    <None Include="$(WinWin32Dir)Master.bank" />
+    <None Include="$(WinWin32Dir)Master.strings.bank" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
