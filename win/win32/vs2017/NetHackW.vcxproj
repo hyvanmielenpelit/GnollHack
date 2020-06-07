@@ -247,7 +247,6 @@
     <None Include="..\Master.strings.bank" />
     <None Include="..\Music.bank" />
     <None Include="..\rcdata2.bin" />
-    <None Include="..\SFX.bank" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">

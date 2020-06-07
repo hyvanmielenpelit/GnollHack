@@ -256,9 +256,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
 
-    //fmod_event_example();
-    //fmod_test_event();
-
     /* let main do the argument processing */
     (void) main(argc, argv);
     return 0;

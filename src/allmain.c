@@ -1084,8 +1084,9 @@ newgame()
                        * any artifacts */
     u_init();
 
+    /* Mark game as started */
     context.game_started = TRUE;
-
+    
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -1123,8 +1124,9 @@ newgame()
 #endif
     program_state.something_worth_saving++; /* useful data now exists */
 
-    /* Play music */
+    /* Play music for the dungeon */
     play_dungeon_music(&u.uz, u.ux, u.uy, 0UL);
+
 
     /* Success! */
     welcome(TRUE);
