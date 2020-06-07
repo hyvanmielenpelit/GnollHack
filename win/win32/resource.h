@@ -24,7 +24,6 @@
 #define IDD_PLAYER_SELECTOR             141
 #define IDB_MENU_SEL_COUNT              144
 #define IDD_NHRIP                       145
-#define IDB_SPLASH                      146
 #define IDB_RIP                         147
 #define IDD_SPLASH                      148
 #define IDR_RCDATA1                     156
@@ -32,6 +31,9 @@
 #define IDR_RCDATA_MASTER               160
 #define IDR_RCDATA_STRINGS              161
 #define IDB_PNG_TILES                   166
+#define IDB_PNG_GNHLOGO                 168
+#define IDB_PNG1                        169
+#define IDB_PNG_FMODLOGO                169
 #define IDC_TEXT_VIEW                   1000
 #define IDC_TEXT_CONTROL                1000
 #define IDC_CMD_MOVE_NW                 1001
@@ -151,7 +153,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        168
+#define _APS_NEXT_RESOURCE_VALUE        170
 #define _APS_NEXT_COMMAND_VALUE         32801
 #define _APS_NEXT_CONTROL_VALUE         1343
 #define _APS_NEXT_SYMED_VALUE           110

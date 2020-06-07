@@ -245,8 +245,6 @@ IDB_MENU_SEL_COUNT      BITMAP                  "mnselcnt.bmp"
 
 IDB_RIP                 BITMAP                  "rip.bmp"
 
-IDB_SPLASH              BITMAP                  "splash.bmp"
-
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -401,6 +399,10 @@ IDR_RCDATA_STRINGS      RCDATA                  "Master.strings.bank"
 //
 
 IDB_PNG_TILES           PNG                     "gnollhack_64x96_transparent_32bits.png"
+
+IDB_PNG_GNHLOGO         PNG                     "gnollhack-logo-test-2.png"
+
+IDB_PNG_FMODLOGO        PNG                     "vs2017\\FMOD-Logo-32.png"
 
 
 /////////////////////////////////////////////////////////////////////////////

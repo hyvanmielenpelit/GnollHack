@@ -25,6 +25,11 @@ INT_PTR CALLBACK NHSplashWndProc(HWND, UINT, WPARAM, LPARAM);
 #define SPLASH_VERSION_X_96DPI 280
 #define SPLASH_VERSION_Y_96DPI 0
 
+#define FMOD_WIDTH_96DPI 121
+#define FMOD_HEIGHT_96DPI 32
+#define FMOD_OFFSET_X_96DPI (SPLASH_OFFSET_X_96DPI + SPLASH_WIDTH_96DPI - FMOD_WIDTH_96DPI - 10)
+#define FMOD_OFFSET_Y_96DPI (SPLASH_OFFSET_Y_96DPI + SPLASH_HEIGHT_96DPI - FMOD_HEIGHT_96DPI - 10)
+
 typedef struct {
     int boarder_width;
     int boarder_height;
@@ -230,9 +235,21 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         HDC hdc = BeginPaint(hWnd, &ps);
         /* Show splash graphic */
-
         hdcBitmap = CreateCompatibleDC(hdc);
         SetBkMode(hdc, OPAQUE);
+        OldBitmap = SelectObject(hdcBitmap, GetNHApp()->bmpFMOD);
+        SetStretchBltMode(hdc, COLORONCOLOR);
+        (*GetNHApp()->lpfnTransparentBlt)(hdc,
+            splashData->offset_x + splashData->width - FMOD_WIDTH_96DPI, splashData->offset_y,
+            FMOD_WIDTH_96DPI, FMOD_HEIGHT_96DPI, hdcBitmap,
+            0, 0, FMOD_WIDTH_96DPI, FMOD_HEIGHT_96DPI,
+            TILE_BK_COLOR);
+
+        SelectObject(hdcBitmap, OldBitmap);
+        DeleteDC(hdcBitmap);
+
+        hdcBitmap = CreateCompatibleDC(hdc);
+        SetBkMode(hdc, TRANSPARENT);
         OldBitmap = SelectObject(hdcBitmap, GetNHApp()->bmpSplash);
         SetStretchBltMode(hdc, COLORONCOLOR);
         (*GetNHApp()->lpfnTransparentBlt)(hdc,
@@ -243,6 +260,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         SelectObject(hdcBitmap, OldBitmap);
         DeleteDC(hdcBitmap);
+
 
 #if 0
         SetBkMode(hdc, TRANSPARENT);

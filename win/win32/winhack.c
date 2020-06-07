@@ -132,7 +132,10 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.hMainWnd = NULL;
     _GnollHack_app.hPopupWnd = NULL;
     //_GnollHack_app.bmpTiles = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_TILES)); 
-    _GnollHack_app.bmpTiles = loadPNGResource(hInstance, IDB_PNG_TILES, TILE_BK_COLOR);
+
+    /* Load PNGs */
+    StartGdiplus();
+    _GnollHack_app.bmpTiles = LoadPNGFromResource(hInstance, IDB_PNG_TILES, TILE_BK_COLOR);
     if (_GnollHack_app.bmpTiles == NULL)
 	{
 		panic("cannot load tiles bitmap");
@@ -144,16 +147,26 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 		panic("cannot load rip bitmap");
 		return 0;
 	}
-    _GnollHack_app.bmpSplash =
-        LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_SPLASH));
-	if (_GnollHack_app.bmpSplash == NULL)
+   // _GnollHack_app.bmpSplash = LoadBitmap(hInstance, MAKEINTRESOURCE(IDB_SPLASH));
+    _GnollHack_app.bmpSplash = LoadPNGFromResource(hInstance, IDB_PNG_GNHLOGO, TILE_BK_COLOR);
+    if (_GnollHack_app.bmpSplash == NULL)
 	{
 		panic("cannot load splash bitmap");
 		return 0;
 	}
+    _GnollHack_app.bmpFMOD = LoadPNGFromResource(hInstance, IDB_PNG_FMODLOGO, TILE_BK_COLOR);
+    if (_GnollHack_app.bmpFMOD == NULL)
+    {
+        panic("cannot load FMOD bitmap");
+        return 0;
+    }
     _GnollHack_app.bmpMapTiles = _GnollHack_app.bmpTiles;
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
+
+    StopGdiplus();
+
+    /* Process tiledata */
     int total_tiles = process_tiledata(&default_tileset_definition, 2, (const char*)0, (short*)0, (uchar*)0);
     int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
     if (tiles_per_line % 3)

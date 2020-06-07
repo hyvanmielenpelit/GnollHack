@@ -12,18 +12,33 @@
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
+ULONG_PTR m_gdiplusToken = (ULONG_PTR)0;
+
 extern "C" {
 
-    HBITMAP
-    loadPNGResource(HINSTANCE hInstance, int resource_id, COLORREF bkcolor)
+    void StopGdiplus()
     {
-        HBITMAP hBmp = (HBITMAP)0;
-        ULONG_PTR m_gdiplusToken;
-        Color bkclr;
-        bkclr.SetFromCOLORREF(bkcolor);
+        if (m_gdiplusToken)
+            GdiplusShutdown(m_gdiplusToken);
+
+        m_gdiplusToken = (ULONG_PTR)0;
+    }
+
+    void StartGdiplus()
+    {
+        StopGdiplus(); /* Just in case */
 
         GdiplusStartupInput gdiplusStartupInput;
         GdiplusStartup(&m_gdiplusToken, &gdiplusStartupInput, NULL);
+    }
+
+    HBITMAP
+    LoadPNGFromResource(HINSTANCE hInstance, int resource_id, COLORREF bkcolor)
+    {
+        /* REMEMBER TO START GDI+ FIRST */
+        HBITMAP hBmp = (HBITMAP)0;
+        Color bkclr;
+        bkclr.SetFromCOLORREF(bkcolor);
 
         HRSRC hResource = ::FindResource(hInstance, MAKEINTRESOURCE(resource_id), "PNG");
         if (!hResource)
@@ -69,9 +84,17 @@ extern "C" {
             m_hBuffer = NULL;
         }
 
-        GdiplusShutdown(m_gdiplusToken);
-
         return hBmp;
+    }
+
+
+    HBITMAP
+    LoadPNGFromResourceStandalone(HINSTANCE hInstance, int resource_id, COLORREF bkcolor)
+    {
+        StartGdiplus();
+        HBITMAP res = LoadPNGFromResource(hInstance, resource_id, bkcolor);
+        StopGdiplus();
+        return res;
     }
 
 

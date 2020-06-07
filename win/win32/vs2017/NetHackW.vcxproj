@@ -238,6 +238,10 @@
     <Image Include="$(WinWin32Dir)mnunsel.bmp" />
     <Image Include="$(WinWin32Dir)rip.bmp" />
     <Image Include="$(WinWin32Dir)splash.bmp" />
+    <Image Include="..\gnollhack-logo-test-2.png" />
+    <Image Include="FMOD-Logo-32.png" />
+    <Image Include="gnollhack-logo-test-2.png" />
+    <Image Include="vs2017\FMOD-Logo-32.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />

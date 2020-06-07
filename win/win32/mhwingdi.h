@@ -5,6 +5,9 @@
 #ifndef MHWINGDI_H
 #define MHWINGDI_H
 
-extern HBITMAP FDECL(loadPNGResource, (HINSTANCE, int, COLORREF));
+extern void NDECL(StartGdiplus);
+extern void NDECL(StopGdiplus);
+extern HBITMAP FDECL(LoadPNGFromResource, (HINSTANCE, int, COLORREF));
+extern HBITMAP FDECL(LoadPNGFromResourceStandalone, (HINSTANCE, int, COLORREF)); /* Starts and stops GDI+ */
 
 #endif /* MHWINGDI_H */
