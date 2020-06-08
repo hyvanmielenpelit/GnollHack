@@ -82,6 +82,14 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { -1, 0, 1, -1, 1 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-upstairs-enlargement", 1,
+      UPSTAIRS_ENLARGEMENT_FRAMES, UPSTAIRS_ENLARGEMENT_OFF,
+      1, 2, 0,
+      { -1, 0, -1, -1, -1 },
+      { -1, 0, 1, -1, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
     }
 };
 

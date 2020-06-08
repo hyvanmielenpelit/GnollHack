@@ -897,24 +897,29 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     //int layer_array[5] = { LAYER_FLOOR, LAYER_FEATURE, LAYER_OBJECT, LAYER_MONSTER, LAYER_COVER };
     //int layer_rounds[5] = { 1, 1, MAX_SHOWN_OBJECTS, 1, MAX_SHOWN_OBJECTS };
 
-    for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
+    for (int running_index = 0; running_index < MAX_FRAMES_PER_ENLARGEMENT + 1; running_index++)
     {
-        int base_layer = layer_idx; // layer_array[layer_idx];
-        int layer_rounds = 1;
-        if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
-            layer_rounds = MAX_SHOWN_OBJECTS;
-
-        boolean no_enlargements = FALSE;
-        if (base_layer == LAYER_FLOOR)
-            no_enlargements = TRUE;
-
-        for (int running_index = 0; running_index < (no_enlargements ? 1 : MAX_FRAMES_PER_ENLARGEMENT + 1); running_index++)
+        for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
         {
+            int base_layer = layer_idx; // layer_array[layer_idx];
+            int layer_rounds = 1;
+            if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+                layer_rounds = MAX_SHOWN_OBJECTS;
+
+            boolean no_enlargements = FALSE;
+            if (base_layer == LAYER_FLOOR)
+                no_enlargements = TRUE;
+
             /* Drawing order from back to front */
             int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3};
             int enlarg_idx = -1;
                 
-            if(!no_enlargements)
+            if (no_enlargements)
+            {
+                if (running_index > 0)
+                    continue;
+            }
+            else
                 enlarg_idx = z_order_array[running_index];
 
             /* Set coordinates */
@@ -982,6 +987,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (side_not_ok && upper_side_not_ok)
                     continue;
             }
+
+
 
             genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
             struct monst* m_here = m_at(enl_i, enl_j);
