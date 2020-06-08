@@ -5523,7 +5523,15 @@ dotogglehpbars()
 	flags.show_tile_mon_hp_bar = !main_flag;
 	flags.show_tile_pet_hp_bar = !main_flag;
 
-	redraw_map();
+	newsym(u.ux, u.uy);
+
+	for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+	{
+		if (canseemon(mtmp))
+			newsym(mtmp->mx, mtmp->my);
+	}
+	flush_screen(1);
+//	redraw_map();
 
 	return 0;
 }

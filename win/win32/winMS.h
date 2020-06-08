@@ -60,7 +60,10 @@
 #define GLYPHLESS_MENU_HEIGHT 20
 
 /* tile background color */
-#define TILE_BK_COLOR RGB(71, 108, 108)
+#define TILE_BK_COLOR_RED 71
+#define TILE_BK_COLOR_GREEN 108
+#define TILE_BK_COLOR_BLUE 108
+#define TILE_BK_COLOR RGB(TILE_BK_COLOR_RED, TILE_BK_COLOR_GREEN, TILE_BK_COLOR_BLUE)
 
 
 //extern short glyph2tile[MAX_GLYPH];

@@ -886,6 +886,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     /* Construct object pile, drawn from end to beginning */
 
     int enl_i = -1, enl_j = -1;
+    int darkening_i = -1, darkening_j = -1;
     boolean enlarged = FALSE;
     short frame_index = 0;
 
@@ -893,65 +894,155 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
      * 0 X 1
      * 2 3 4
     */
-    boolean opaque_background_drawn = FALSE;
-    //int layer_array[5] = { LAYER_FLOOR, LAYER_FEATURE, LAYER_OBJECT, LAYER_MONSTER, LAYER_COVER };
-    //int layer_rounds[5] = { 1, 1, MAX_SHOWN_OBJECTS, 1, MAX_SHOWN_OBJECTS };
 
-    for (int running_index = 0; running_index < MAX_FRAMES_PER_ENLARGEMENT + 1; running_index++)
+    struct draw_order_definition {
+        enum layer_types layer;
+        int enlargement_index;
+        boolean draw_to_buffer;
+    };
+
+    struct draw_order_definition draw_order[(MAX_FRAMES_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
+
+    int draw_count = 0;
+
+    /* First, draw floors, no enlargements here */
+    draw_order[draw_count].enlargement_index = -1;
+    draw_order[draw_count].layer = LAYER_FLOOR;
+    draw_order[draw_count].draw_to_buffer = TRUE;
+    draw_count++;
+
+    /* Second, draw other layers in order two on the same y */
+    int same_level_z_order_array[3] = { 0, 1, -1 };
+    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < LAYER_COVER; layer_idx++)
     {
-        for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
+        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
         {
-            int base_layer = layer_idx; // layer_array[layer_idx];
-            int layer_rounds = 1;
-            if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
-                layer_rounds = MAX_SHOWN_OBJECTS;
+            draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+            draw_order[draw_count].layer = layer_idx;
+            draw_count++;
+        }
+    }
+    /* Mark to be drawn to back buffer and darkened if needed */
+    /* Note these all use the darkness of the target tile, so they will be shaded similarly */
+    /* After these come monster effects and signs, so draw everything up to monsters here */
+    draw_order[draw_count - 1].draw_to_buffer = TRUE;
 
+    for (enum layer_types layer_idx = LAYER_COVER; layer_idx < MAX_LAYERS; layer_idx++)
+    {
+        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
+        {
+            draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+            draw_order[draw_count].layer = layer_idx;
+            draw_count++;
+        }
+    }
+    /* Mark to be drawn to back buffer and darkened if needed */
+    /* Note these all use the darkness of the target tile, so they will be shaded similarly */
+    draw_order[draw_count - 1].draw_to_buffer = TRUE;
+
+    /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
+    int different_level_z_order_array[3] = { 2, 4, 3 };
+    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
+    {
+        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
+        {
+            draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
+            draw_order[draw_count].layer = layer_idx;
+            draw_count++;
+        }
+    }
+    /* Mark to be drawn to back buffer and darkened if needed */
+    /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
+    draw_order[draw_count - 1].draw_to_buffer = TRUE;
+
+    /* Create DIB Section for piling up, darkening, and otherwise manipulating individual tiles */
+    HDC hDCcopy = CreateCompatibleDC(data->backBufferDC);
+
+    unsigned char* lpBitmapBitsCopy;
+    LONG bmpWidth = GetNHApp()->mapTile_X;
+    LONG bmpHeight = GetNHApp()->mapTile_Y;
+
+    BITMAPINFO binfo;
+    ZeroMemory(&binfo, sizeof(BITMAPINFO));
+    binfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    binfo.bmiHeader.biWidth = bmpWidth;
+    binfo.bmiHeader.biHeight = bmpHeight;
+    binfo.bmiHeader.biPlanes = 1;
+    binfo.bmiHeader.biBitCount = 32;
+
+    HBITMAP newhBmp = CreateDIBSection(hDCcopy, &binfo, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsCopy, NULL, 0);
+    HGDIOBJ oldbmp = SelectObject(hDCcopy, newhBmp);
+    SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+    SetStretchBltMode(hDCcopy, COLORONCOLOR);
+
+    boolean opaque_background_drawn = FALSE;
+
+    for (int draw_index = 0; draw_index < draw_count; draw_index++)
+    {
+        //int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
+        //for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
+        //{
+        boolean skip_darkening = FALSE;
+        int base_layer = draw_order[draw_index].layer; //layer_idx; // layer_array[layer_idx];
+        int layer_rounds = 1;
+        if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+            layer_rounds = MAX_SHOWN_OBJECTS;
+
+        /*
             boolean no_enlargements = FALSE;
             if (base_layer == LAYER_FLOOR)
                 no_enlargements = TRUE;
+        */
 
-            /* Drawing order from back to front */
-            int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3};
-            int enlarg_idx = -1;
+        /* Drawing order from back to front */
+        int enlarg_idx = draw_order[draw_index].enlargement_index; //-1;
                 
+            /*
             if (no_enlargements)
             {
                 if (running_index > 0)
                     continue;
             }
             else
+            {
                 enlarg_idx = z_order_array[running_index];
+            }
+            */
 
             /* Set coordinates */
             if (enlarg_idx == -1)
             {
-                enl_i = i;
-                enl_j = j;
+                enl_i = darkening_i = i;
+                enl_j = darkening_j = j;
             }
             else if (enlarg_idx == 0)
             {
-                enl_i = i - 1;
-                enl_j = j;
+                enl_i = darkening_i = i - 1;
+                enl_j = darkening_j = j;
             }
             else if (enlarg_idx == 1)
             {
-                enl_i = i + 1;
-                enl_j = j;
+                enl_i = darkening_i = i + 1;
+                enl_j = darkening_j = j;
             }
             else if (enlarg_idx == 2)
             {
                 enl_i = i - 1;
                 enl_j = j + 1;
+                darkening_i = i;
+                darkening_j = j + 1;
             }
             else if (enlarg_idx == 3)
             {
-                enl_i = i;
-                enl_j = j + 1;
+                enl_i = darkening_i = i;
+                enl_j = darkening_j = j + 1;
             }
             else if (enlarg_idx == 4)
             {
                 enl_i = i + 1;
                 enl_j = j + 1;
+                darkening_i = i;
+                darkening_j = j + 1;
             }
 
             if (enlarg_idx >= 0)
@@ -1065,50 +1156,50 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                 /* Kludge for the time being */
-                if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH) // && signed_main_glyph == NO_GLYPH)
+                if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
 
-                if (glyph == 0)
-                    glyph = glyph;
-
-                if (signed_glyph < 0)
-                    flip_glyph = TRUE;
-                else
-                    flip_glyph = FALSE;
-
-                /* Set frame_index */
-                if (enlarg_idx == -1)
-                {
-                    frame_index = -1;
-                }
-                else if (enlarg_idx == 0)
-                {
-                    frame_index = flip_glyph ? 3 : 4;
-                }
-                else if (enlarg_idx == 1)
-                {
-                    frame_index = flip_glyph ? 4 : 3;
-                }
-                else if (enlarg_idx == 2)
-                {
-                    frame_index = flip_glyph ? 0 : 2;
-                }
-                else if (enlarg_idx == 3)
-                {
-                    frame_index = 1;
-                }
-                else if (enlarg_idx == 4)
-                {
-                    frame_index = flip_glyph ? 2 : 0;
-                }
-
+                if (base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored))
+                    skip_darkening = TRUE;
 
                 /*
                  * Draw glyph
                  */
-                int multiplier = flip_glyph ? -1 : 1;
+                if (glyph != NO_GLYPH)
+                {
+                    if (signed_glyph < 0)
+                        flip_glyph = TRUE;
+                    else
+                        flip_glyph = FALSE;
 
-                if ((glyph != NO_GLYPH) /*&& (glyph != bkglyph)*/) {
+                    int multiplier = flip_glyph ? -1 : 1;
+
+                    /* Set frame_index */
+                    if (enlarg_idx == -1)
+                    {
+                        frame_index = -1;
+                    }
+                    else if (enlarg_idx == 0)
+                    {
+                        frame_index = flip_glyph ? 3 : 4;
+                    }
+                    else if (enlarg_idx == 1)
+                    {
+                        frame_index = flip_glyph ? 4 : 3;
+                    }
+                    else if (enlarg_idx == 2)
+                    {
+                        frame_index = flip_glyph ? 0 : 2;
+                    }
+                    else if (enlarg_idx == 3)
+                    {
+                        frame_index = 1;
+                    }
+                    else if (enlarg_idx == 4)
+                    {
+                        frame_index = flip_glyph ? 2 : 0;
+                    }
+
                     boolean skip_drawing = FALSE;
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
                     enum autodraw_types autodraw = AUTODRAW_NONE;
@@ -1119,8 +1210,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         if (tile2enlargement[ntile] > 0)
                         {
-                            if (enl_j == j)
-                                j = j;
                             int enl_tile_idx = enlargements[tile2enlargement[ntile]].frame2tile[frame_index];
                             if (enl_tile_idx >= 0)
                             {
@@ -1137,7 +1226,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     if (!skip_drawing)
                     {
-                        int dest_top_added = move_obj_to_middle || layer_rounds == 1 ? 0 :(int)(((double)(rect->bottom - rect->top)/((double)TILE_Y /2.0)) * -1.0 * (double)(MAX_LAYERS - 1 - layer_round) * 2.0);
+                        //int dest_top_added = move_obj_to_middle || layer_rounds == 1 ? 0 :(int)(((double)(rect->bottom - rect->top)/((double)TILE_Y / 2.0)) * -1.0 * (double)(MAX_LAYERS - 1 - layer_round) * 2.0);
+                        int dest_top_added = layer_rounds == 1 ? 0 : -2 * (MAX_LAYERS - 1 - layer_round);
                         int dest_height_deducted = 0;
                         int source_top_added = 0;
                         int source_height_deducted = 0;
@@ -1145,33 +1235,91 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         t_y = TILEBMP_Y(ntile);
                         if (layer_round > 0)
                             layer_round = layer_round;
+
                         if (move_obj_to_middle)
                         {
-                            dest_top_added = (rect->bottom - rect->top) / 4;
-                            dest_height_deducted = (rect->bottom - rect->top) / 2;
+                            dest_top_added = GetNHApp()->mapTile_Y / 4;
+                            dest_height_deducted = GetNHApp()->mapTile_Y / 2;
                             source_top_added = TILE_Y / 2;
                             source_height_deducted = TILE_Y / 2;
                         }
-                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+
+                        /*
+                        StretchBlt(hDCcopy, 0, dest_top_added,
+                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                            t_x, t_y, multiplier * GetNHApp()->mapTile_X,
+                            GetNHApp()->mapTile_Y, SRCCOPY);
+                        */
                         if (opaque_background_drawn)
                         {
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                hDCcopy, 0, dest_top_added,
+                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                t_x, t_y, multiplier * GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+/*
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                data->backBufferDC, rect->left, rect->top,
+                                data->xBackTile, data->yBackTile, hDCcopy, 0,
+                                0, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);*/
+                            /*
                             (*GetNHApp()->lpfnTransparentBlt)(
                                 data->backBufferDC, rect->left, rect->top + dest_top_added,
                                 data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
                                 t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
                                 GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                            */
                         }
                         else
                         {
-                            StretchBlt(data->backBufferDC, rect->left, rect->top + dest_top_added,
-                                data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC,
-                                t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
-
+                            StretchBlt(hDCcopy, 0, dest_top_added,
+                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                t_x, t_y, multiplier * GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, SRCCOPY);
                             opaque_background_drawn = TRUE;
                         }
 
+#if 0
+                        /* Darkening for enlargemenets */
+                        if(enlarg_idx != -1 && passed_main_square)
+                        {
+                            if (!cansee(enl_i, enl_j) || (data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY))
+                            {
+                                double color_multiplier = 1.0;
+                                if (isyou)
+                                {
+                                    color_multiplier *= 0.85;
+                                }
+                                else
+                                {
+                                    if (!levl[enl_i][enl_j].waslit)
+                                        color_multiplier *= 0.35;
+                                    else
+                                        color_multiplier *= 0.65;
+                                }
 
+                                int pitch = 4 * bmpWidth; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                int idx, x, y;
+                                for (x = 0; x < bmpWidth; x++)
+                                {
+                                    for (y = 0; y < bmpHeight; y++)
+                                    {
+                                        idx = y * pitch;
+                                        idx += x * 4;
+
+                                        if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
+                                            continue;
+
+                                        lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * color_multiplier);  // blue
+                                        lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * color_multiplier); // green
+                                        lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * color_multiplier);  // red 
+                                    }
+                                }
+
+                            }
+                        }
+#endif
                         /* 
                          * AUTODRAW START
                          */
@@ -1333,13 +1481,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 }
 
                                                 RECT target_rt = { 0 };
+#if 0
                                                 target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.left - at_x));
                                                 target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.right - at_x));
                                                 target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.top - at_y));
                                                 target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.bottom - at_y));
+#endif
+                                                target_rt.left = source_rt.left - at_x;
+                                                target_rt.right = source_rt.right - at_x;
+                                                target_rt.top = source_rt.top - at_y;
+                                                target_rt.bottom = source_rt.bottom - at_y;
 
                                                 (*GetNHApp()->lpfnTransparentBlt)(
-                                                    data->backBufferDC, target_rt.left, target_rt.top,
+                                                    hDCcopy, target_rt.left, target_rt.top,
                                                     target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
                                                     source_rt.top, source_rt.right - source_rt.left,
                                                     source_rt.bottom - source_rt.top, TILE_BK_COLOR);
@@ -1355,7 +1509,99 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
                 }
 
-                if (base_layer == LAYER_MONSTER && enlarg_idx == -1)
+
+                /* Darken and draw to buffer, opaque indicates something has been drawn to hDCcopy */
+                if (draw_order[draw_index].draw_to_buffer && opaque_background_drawn)
+                {
+                    /* First, darkening of dark areas and areas drawn from memory */
+                    if (!skip_darkening)
+                    {
+                        if (!cansee(darkening_i, darkening_j) || (data->map[darkening_i][darkening_j].layer_flags & LFLAGS_SHOWING_MEMORY))
+                        {
+                            if (1)
+                            {
+                                double multiplier = 1.0;
+                                if (isyou)
+                                {
+                                    multiplier *= 0.85;
+                                }
+                                else
+                                {
+                                    if(!levl[enl_i][enl_j].waslit)
+                                        multiplier *= 0.35;
+                                    else
+                                        multiplier *= 0.65;
+                                }
+
+#if 0
+                                HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                                unsigned char* lpBitmapBits;
+                                LONG width = rect->right - rect->left;
+                                LONG height = rect->bottom - rect->top;
+
+                                BITMAPINFO bi;
+                                ZeroMemory(&bi, sizeof(BITMAPINFO));
+                                bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                bi.bmiHeader.biWidth = width;
+                                bi.bmiHeader.biHeight = height;
+                                bi.bmiHeader.biPlanes = 1;
+                                bi.bmiHeader.biBitCount = 32;
+
+                                HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                                HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+
+                                SetStretchBltMode(hDCMem, COLORONCOLOR);
+                                StretchBlt(hDCMem, 0, 0, width, height,
+                                    data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
+#endif
+                                LONG width = GetNHApp()->mapTile_X;
+                                LONG height = GetNHApp()->mapTile_Y;
+
+                                int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                int idx, x, y;
+                                for (x = 0; x < width; x++)
+                                {
+                                    for (y = 0; y < height; y++)
+                                    {
+                                        idx = y * pitch;
+                                        idx += x * 4;
+
+                                        if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
+                                            continue;
+
+                                        lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * multiplier);  // blue
+                                        lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * multiplier); // green
+                                        lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * multiplier);  // red 
+                                    }
+                                }
+
+/*
+                                StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
+                                SelectObject(hDCMem, oldbmp);
+                                DeleteDC(hDCMem);
+                                DeleteObject(bitmap);
+                                //HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
+                                //FrameRect(data->backBufferDC, rect, hbr_dark);
+*/
+                            }
+                        }
+                    }
+
+                    /* Second, draw the current contents of the drawing bitmap to the back buffer */
+                    (*GetNHApp()->lpfnTransparentBlt)(
+                        data->backBufferDC, rect->left, rect->top,
+                        data->xBackTile, data->yBackTile, hDCcopy, 0,
+                        0, GetNHApp()->mapTile_X,
+                        GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+
+                    /* Set the drawing bitmap to be cleared next */
+                    opaque_background_drawn = FALSE;
+                }
+
+
+                /* Draw main tile markers, status marks and condition marks (no darkening) */
+                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER_EFFECT && enlarg_idx == -1)
                 {
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
@@ -1366,7 +1612,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
-                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                        /*
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            hDCcopy, 0, 0,
+                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
+                            t_y, GetNHApp()->mapTile_X,
+                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                        */
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
                             data->xBackTile, data->yBackTile, data->tileDC, t_x,
@@ -1376,13 +1628,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                 }
-                else if (base_layer == LAYER_MONSTER_EFFECT && enlarg_idx == -1)
+                
+                if (base_layer == LAYER_MONSTER_EFFECT && enlarg_idx == -1)
                 {
                     /* Conditions and status marks */
                     int condition_count = 0;
                     if (glyph_is_monster(data->map[enl_i][enl_j].layer_glyphs[LAYER_MONSTER]) && mtmp)
                     {
-                        if(1)
+                        if (1)
                         {
                             /* Petmark and other status marks */
                             int mglyph = STATUS_MARKS + GLYPH_UI_TILE_OFF;
@@ -1415,7 +1668,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     //    display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_HUNGRY:
-                                    if ((isyou && u.uhs == HUNGRY) 
+                                    if ((isyou && u.uhs == HUNGRY)
                                         || (!isyou && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
                                         )
                                         display_this_status_mark = TRUE;
@@ -1459,7 +1712,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_SADDLED:
-                                    if (!isyou && (data->map[i][j].layer_flags & LFLAGS_M_SADDLED) )
+                                    if (!isyou && (data->map[i][j].layer_flags & LFLAGS_M_SADDLED))
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_LOW_HP:
@@ -1514,7 +1767,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
                                     target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                    SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                                    /*
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        hDCcopy, unscaled_left, unscaled_top,
+                                        unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC, source_rt.left,
+                                        source_rt.top, source_rt.right - source_rt.left,
+                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    */
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, target_rt.left, target_rt.top,
                                         target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
@@ -1576,7 +1835,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
                                     target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                    SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                                    /*
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        hDCcopy, unscaled_left, unscaled_top,
+                                        unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC, source_rt.left,
+                                        source_rt.top, source_rt.right - source_rt.left,
+                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    */
+
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, target_rt.left, target_rt.top,
                                         target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
@@ -1610,6 +1876,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 /* Frame and background first */
                                 HBRUSH hbr_frame = CreateSolidBrush(RGB(100, 50, 0));
                                 HBRUSH hbr_background = CreateSolidBrush(RGB(200, 200, 200));
+                                /*
                                 RECT frame_rect = { 0 };
                                 frame_rect.left = rect->left + (int)(x_scaling_factor * (double)(unscaled_left - 1));
                                 frame_rect.right = rect->left + (int)(x_scaling_factor * (double)(unscaled_right + 1));
@@ -1618,7 +1885,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 FillRect(data->backBufferDC, &frame_rect, hbr_background);
                                 FrameRect(data->backBufferDC, &frame_rect, hbr_frame);
+                                */
+                                RECT frame_rect = { 0 };
+                                frame_rect.left = unscaled_left - 1;
+                                frame_rect.right = unscaled_right + 1;
+                                frame_rect.top = unscaled_top - 1;
+                                frame_rect.bottom = unscaled_bottom + 1;
 
+                                FillRect(hDCcopy, &frame_rect, hbr_background);
+                                FrameRect(hDCcopy, &frame_rect, hbr_frame);
 
                                 /* Now the actual picture */
                                 RECT source_rt = { 0 };
@@ -1634,7 +1909,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
 
                                 int multiplier = flip_rider ? -1 : 1;
-                                SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+
+                                /*
+                                (*GetNHApp()->lpfnTransparentBlt)(
+                                    hDCcopy, unscaled_left, unscaled_top,
+                                    unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC, source_rt.left + (flip_rider ? TILE_X - 1 : 0),
+                                    source_rt.top, multiplier * (source_rt.right - source_rt.left),
+                                    source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                */
+
                                 (*GetNHApp()->lpfnTransparentBlt)(
                                     data->backBufferDC, target_rt.left, target_rt.top,
                                     target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left + (flip_rider ? TILE_X - 1 : 0),
@@ -1654,7 +1937,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     {
                         int hp = isyou ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
                         int hpmax = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
-                        double fraction = (hpmax == 0 ? 0 : max(0, min(1,(double)hp / (double)hpmax)));
+                        double fraction = (hpmax == 0 ? 0 : max(0, min(1, (double)hp / (double)hpmax)));
                         double r_mult = fraction <= 0.25 ? fraction * 2.0 + 0.5 : fraction <= 0.5 ? 1.0 : (1.0 - fraction) * 2.0;
                         double g_mult = fraction <= 0.25 ? 0 : fraction <= 0.5 ? (fraction - 0.25) * 4.0 : 1.0;
                         HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
@@ -1667,9 +1950,23 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         even_smaller_rect.bottom = smaller_rect.bottom - (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
                         even_smaller_rect.top = smaller_rect.top + (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
                         even_smaller_rect.left = smaller_rect.left + (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0);
-                        even_smaller_rect.right = even_smaller_rect.left + (int) (fraction * (double)(smaller_rect.right - (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0) - even_smaller_rect.left));
+                        even_smaller_rect.right = even_smaller_rect.left + (int)(fraction * (double)(smaller_rect.right - (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0) - even_smaller_rect.left));
                         FillRect(data->backBufferDC, &smaller_rect, hbr_dark);
                         FillRect(data->backBufferDC, &even_smaller_rect, hbr_light);
+#if 0
+                        RECT smaller_rect, even_smaller_rect;
+                        smaller_rect.bottom = GetNHApp()->mapTile_Y;
+                        smaller_rect.top = max(1, (GetNHApp()->mapTile_X * 11) / 12); // -max(1, (rect->bottom - rect->top) / 12);
+                        smaller_rect.left = 0; // rect->left;
+                        smaller_rect.right = GetNHApp()->mapTile_X; // rect->right;
+                        even_smaller_rect.bottom = smaller_rect.bottom - (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
+                        even_smaller_rect.top = smaller_rect.top + (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
+                        even_smaller_rect.left = smaller_rect.left + (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0);
+                        even_smaller_rect.right = even_smaller_rect.left + (int)(fraction * (double)(smaller_rect.right - (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0) - even_smaller_rect.left));
+                        FillRect(hDCcopy, &smaller_rect, hbr_dark);
+                        FillRect(hDCcopy, &even_smaller_rect, hbr_light);
+#endif
+
                     }
 
 
@@ -1681,7 +1978,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
-                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                        /*
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            hDCcopy, 0, 0,
+                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
+                            t_y, GetNHApp()->mapTile_X,
+                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                                                    */
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
                             data->xBackTile, data->yBackTile, data->tileDC, t_x,
@@ -1697,7 +2000,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
-                        SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                        /*
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            hDCcopy, 0, 0,
+                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
+                            t_y, GetNHApp()->mapTile_X,
+                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                        */
                         (*GetNHApp()->lpfnTransparentBlt)(
                             data->backBufferDC, rect->left, rect->top,
                             data->xBackTile, data->yBackTile, data->tileDC, t_x,
@@ -1706,75 +2015,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
 
                 }
-                else if (base_layer == LAYER_ENVIRONMENT && enlarg_idx == -1)
-                {
-                    /* Darkening of dark areas and areas drawn from memory */
-                    if (1) //data->map[enl_i][enl_j].glyph != NO_GLYPH && data->map[enl_i][enl_j].glyph != cmap_to_glyph(S_unexplored))
-                    {
-                        if (!cansee(enl_i, enl_j) || (data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY))
-                        {
-                            if (1)
-                            {
-                                double multiplier = 1.0;
-                                if (isyou)
-                                {
-                                    multiplier *= 0.85;
-                                }
-                                else
-                                {
-                                    if(!levl[enl_i][enl_j].waslit)
-                                        multiplier *= 0.35;
-                                    else
-                                        multiplier *= 0.65;
-                                }
 
-                                HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
-
-                                unsigned char* lpBitmapBits;
-                                LONG width = rect->right - rect->left;
-                                LONG height = rect->bottom - rect->top;
-
-                                BITMAPINFO bi;
-                                ZeroMemory(&bi, sizeof(BITMAPINFO));
-                                bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                                bi.bmiHeader.biWidth = width;
-                                bi.bmiHeader.biHeight = height;
-                                bi.bmiHeader.biPlanes = 1;
-                                bi.bmiHeader.biBitCount = 32;
-
-                                HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
-                                HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
-
-                                SetStretchBltMode(hDCMem, COLORONCOLOR);
-                                StretchBlt(hDCMem, 0, 0, width, height,
-                                    data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
-
-                                int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
-                                int idx, x, y;
-                                for (x = 0; x < width; x++)
-                                {
-                                    for (y = 0; y < height; y++)
-                                    {
-                                        idx = y * pitch;
-                                        idx += x * 4;
-                                        lpBitmapBits[idx + 0] = (unsigned char)(((double)lpBitmapBits[idx + 0]) * multiplier);  // blue
-                                        lpBitmapBits[idx + 1] = (unsigned char)(((double)lpBitmapBits[idx + 1]) * multiplier); // green
-                                        lpBitmapBits[idx + 2] = (unsigned char)(((double)lpBitmapBits[idx + 2]) * multiplier);  // red 
-                                    }
-                                }
-
-
-                                StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
-                                SelectObject(hDCMem, oldbmp);
-                                DeleteDC(hDCMem);
-                                DeleteObject(bitmap);
-                                //HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
-                                //FrameRect(data->backBufferDC, rect, hbr_dark);
-                            }
-                        }
-                    }
-                }
-                else if(base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
+                /* Add cursor here */
+                if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
                     if (i == data->xCur && j == data->yCur)
                     {
@@ -1794,14 +2037,21 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
 
+                            /*
                             SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                hDCcopy, 0, 0,
+                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                            */
                             (*GetNHApp()->lpfnTransparentBlt)(
                                 data->backBufferDC, rect->left, rect->top,
                                 data->xBackTile, data->yBackTile, data->tileDC, t_x,
                                 t_y, GetNHApp()->mapTile_X,
                                 GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-
-    #if 0
+                            
+#if 0
                             HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
                             HBRUSH hbr_light = CreateSolidBrush(RGB(100, 50, 0));
                             HBRUSH hbr_light2 = CreateSolidBrush(RGB(50, 25, 0));
@@ -1819,13 +2069,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             FrameRect(data->backBufferDC, &even_smaller_rect, hbr_light2);
                             //DrawFocusRect(data->backBufferDC, rect);
                             //DrawFocusRect(data->backBufferDC, &smaller_rect);
-    #endif
+#endif
                         }
                     }
                 }
+
             }
-        }
+        //}
     }
+
+    SelectObject(hDCcopy, oldbmp);
+    DeleteDC(hDCcopy);
+    DeleteObject(newhBmp);
+
 }
 
 
