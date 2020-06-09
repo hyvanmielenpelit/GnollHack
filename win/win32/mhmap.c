@@ -1614,13 +1614,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 }
                 
+                int monster_glyph = data->map[enl_i][enl_j].layer_glyphs[LAYER_MONSTER];
 
                 /* All UI related symbols and cursors */
                 if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
                     /* Conditions and status marks */
                     int condition_count = 0;
-                    if (glyph_is_monster(data->map[enl_i][enl_j].layer_glyphs[LAYER_MONSTER]) && mtmp)
+                    if (glyph_is_monster(monster_glyph) && mtmp)
                     {
                         if (1)
                         {
@@ -1954,7 +1955,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                     /* Draw death and hit markers */
-                    if (glyph_is_dying_monster(glyph) || glyph_is_female_dying_monster(glyph) || glyph_is_dying_player(glyph))
+                    if (glyph_is_dying_monster(monster_glyph) || glyph_is_female_dying_monster(monster_glyph) || glyph_is_dying_player(monster_glyph))
                     {
                         int mglyph = DEATH_TILE + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
