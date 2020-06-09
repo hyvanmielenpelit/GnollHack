@@ -895,6 +895,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
      * 2 3 4
     */
 
+    boolean print_first_directly_to_map = FALSE;
+
+    if (data->map[i][j].layer_glyphs[LAYER_FLOOR] != NO_GLYPH && data->map[i][j].layer_glyphs[LAYER_FLOOR] != cmap_to_glyph(S_unexplored))
+        print_first_directly_to_map = TRUE;
+
     struct draw_order_definition {
         enum layer_types layer;
         int enlargement_index;
@@ -908,7 +913,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     /* First, draw floors, no enlargements here */
     draw_order[draw_count].enlargement_index = -1;
     draw_order[draw_count].layer = LAYER_FLOOR;
-    draw_order[draw_count].draw_to_buffer = TRUE;
+    if(!print_first_directly_to_map)
+        draw_order[draw_count].draw_to_buffer = TRUE;
     draw_count++;
 
     /* Second, draw other layers in order two on the same y */
@@ -925,7 +931,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     /* Mark to be drawn to back buffer and darkened if needed */
     /* Note these all use the darkness of the target tile, so they will be shaded similarly */
     /* After these come monster effects and signs, so draw everything up to monsters here */
-    draw_order[draw_count - 1].draw_to_buffer = TRUE;
+    if (!print_first_directly_to_map)
+        draw_order[draw_count - 1].draw_to_buffer = TRUE;
 
     for (enum layer_types layer_idx = LAYER_COVER; layer_idx < MAX_LAYERS; layer_idx++)
     {
@@ -1252,74 +1259,43 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         */
                         if (opaque_background_drawn)
                         {
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                hDCcopy, 0, dest_top_added,
-                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
-                                t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-/*
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, hDCcopy, 0,
-                                0, GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);*/
-                            /*
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                data->backBufferDC, rect->left, rect->top + dest_top_added,
-                                data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
-                                t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
-                            */
+                            if (print_first_directly_to_map)
+                            {
+                                (*GetNHApp()->lpfnTransparentBlt)(
+                                    data->backBufferDC, rect->left, rect->top + dest_top_added,
+                                    data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                    t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                    GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                            }
+                            else
+                            {
+                                (*GetNHApp()->lpfnTransparentBlt)(
+                                    hDCcopy, 0, dest_top_added,
+                                    GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                    t_x, t_y, multiplier * GetNHApp()->mapTile_X,
+                                    GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                            }
                         }
                         else
                         {
-                            StretchBlt(hDCcopy, 0, dest_top_added,
-                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
-                                t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, SRCCOPY);
+                            if (print_first_directly_to_map)
+                            {
+                                StretchBlt(
+                                    data->backBufferDC, rect->left, rect->top + dest_top_added,
+                                    data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                    t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                    GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
+                            }
+                            else
+                            {
+                                StretchBlt(hDCcopy, 0, dest_top_added,
+                                    GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                    t_x, t_y, multiplier * GetNHApp()->mapTile_X,
+                                    GetNHApp()->mapTile_Y, SRCCOPY);
+                            }
                             opaque_background_drawn = TRUE;
                         }
 
-#if 0
-                        /* Darkening for enlargemenets */
-                        if(enlarg_idx != -1 && passed_main_square)
-                        {
-                            if (!cansee(enl_i, enl_j) || (data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY))
-                            {
-                                double color_multiplier = 1.0;
-                                if (isyou)
-                                {
-                                    color_multiplier *= 0.85;
-                                }
-                                else
-                                {
-                                    if (!levl[enl_i][enl_j].waslit)
-                                        color_multiplier *= 0.35;
-                                    else
-                                        color_multiplier *= 0.65;
-                                }
-
-                                int pitch = 4 * bmpWidth; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
-                                int idx, x, y;
-                                for (x = 0; x < bmpWidth; x++)
-                                {
-                                    for (y = 0; y < bmpHeight; y++)
-                                    {
-                                        idx = y * pitch;
-                                        idx += x * 4;
-
-                                        if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
-                                            continue;
-
-                                        lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * color_multiplier);  // blue
-                                        lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * color_multiplier); // green
-                                        lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * color_multiplier);  // red 
-                                    }
-                                }
-
-                            }
-                        }
-#endif
                         /* 
                          * AUTODRAW START
                          */
@@ -1481,22 +1457,33 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 }
 
                                                 RECT target_rt = { 0 };
-#if 0
-                                                target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.left - at_x));
-                                                target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.right - at_x));
-                                                target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.top - at_y));
-                                                target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.bottom - at_y));
-#endif
-                                                target_rt.left = source_rt.left - at_x;
-                                                target_rt.right = source_rt.right - at_x;
-                                                target_rt.top = source_rt.top - at_y;
-                                                target_rt.bottom = source_rt.bottom - at_y;
 
-                                                (*GetNHApp()->lpfnTransparentBlt)(
-                                                    hDCcopy, target_rt.left, target_rt.top,
-                                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
-                                                    source_rt.top, source_rt.right - source_rt.left,
-                                                    source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                                if (print_first_directly_to_map)
+                                                {
+                                                    target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.left - at_x));
+                                                    target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.right - at_x));
+                                                    target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.top - at_y));
+                                                    target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.bottom - at_y));
+                                                    
+                                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                                        data->backBufferDC, target_rt.left, target_rt.top,
+                                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                        source_rt.top, source_rt.right - source_rt.left,
+                                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                                }
+                                                else
+                                                {
+                                                    target_rt.left = source_rt.left - at_x;
+                                                    target_rt.right = source_rt.right - at_x;
+                                                    target_rt.top = source_rt.top - at_y;
+                                                    target_rt.bottom = source_rt.bottom - at_y;
+
+                                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                                        hDCcopy, target_rt.left, target_rt.top,
+                                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                        source_rt.top, source_rt.right - source_rt.left,
+                                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                                }
                                             }
                                         }
                                     }
@@ -1533,70 +1520,94 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         multiplier *= 0.65;
                                 }
 
-#if 0
-                                HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
 
-                                unsigned char* lpBitmapBits;
-                                LONG width = rect->right - rect->left;
-                                LONG height = rect->bottom - rect->top;
-
-                                BITMAPINFO bi;
-                                ZeroMemory(&bi, sizeof(BITMAPINFO));
-                                bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                                bi.bmiHeader.biWidth = width;
-                                bi.bmiHeader.biHeight = height;
-                                bi.bmiHeader.biPlanes = 1;
-                                bi.bmiHeader.biBitCount = 32;
-
-                                HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
-                                HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
-
-                                SetStretchBltMode(hDCMem, COLORONCOLOR);
-                                StretchBlt(hDCMem, 0, 0, width, height,
-                                    data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
-#endif
-                                LONG width = GetNHApp()->mapTile_X;
-                                LONG height = GetNHApp()->mapTile_Y;
-
-                                int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
-                                int idx, x, y;
-                                for (x = 0; x < width; x++)
+                                if (print_first_directly_to_map)
                                 {
-                                    for (y = 0; y < height; y++)
+                                    HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                                    unsigned char* lpBitmapBits;
+                                    LONG width = rect->right - rect->left;
+                                    LONG height = rect->bottom - rect->top;
+
+                                    BITMAPINFO bi;
+                                    ZeroMemory(&bi, sizeof(BITMAPINFO));
+                                    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                    bi.bmiHeader.biWidth = width;
+                                    bi.bmiHeader.biHeight = height;
+                                    bi.bmiHeader.biPlanes = 1;
+                                    bi.bmiHeader.biBitCount = 32;
+
+                                    HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                                    HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+                                    StretchBlt(hDCMem, 0, 0, width, height,
+                                        data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
+
+                                    int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                    int idx, x, y;
+                                    for (x = 0; x < width; x++)
                                     {
-                                        idx = y * pitch;
-                                        idx += x * 4;
+                                        for (y = 0; y < height; y++)
+                                        {
+                                            idx = y * pitch;
+                                            idx += x * 4;
 
-                                        if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
-                                            continue;
+                                            lpBitmapBits[idx + 0] = (unsigned char)(((double)lpBitmapBits[idx + 0]) * multiplier);  // blue
+                                            lpBitmapBits[idx + 1] = (unsigned char)(((double)lpBitmapBits[idx + 1]) * multiplier); // green
+                                            lpBitmapBits[idx + 2] = (unsigned char)(((double)lpBitmapBits[idx + 2]) * multiplier);  // red 
+                                        }
+                                    }
+                                    StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
+                                    SelectObject(hDCMem, oldbmp);
+                                    DeleteDC(hDCMem);
+                                    DeleteObject(bitmap);
+                                }
+                                else
+                                {
 
-                                        lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * multiplier);  // blue
-                                        lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * multiplier); // green
-                                        lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * multiplier);  // red 
+                                    LONG width = GetNHApp()->mapTile_X;
+                                    LONG height = GetNHApp()->mapTile_Y;
+
+                                    int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                    int idx, x, y;
+                                    for (x = 0; x < width; x++)
+                                    {
+                                        for (y = 0; y < height; y++)
+                                        {
+                                            idx = y * pitch;
+                                            idx += x * 4;
+
+                                            if (lpBitmapBitsCopy[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsCopy[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsCopy[idx + 2] == TILE_BK_COLOR_RED)
+                                                continue;
+
+                                            lpBitmapBitsCopy[idx + 0] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 0]) * multiplier);  // blue
+                                            lpBitmapBitsCopy[idx + 1] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 1]) * multiplier); // green
+                                            lpBitmapBitsCopy[idx + 2] = (unsigned char)(((double)lpBitmapBitsCopy[idx + 2]) * multiplier);  // red 
+                                        }
                                     }
                                 }
 
-/*
-                                StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
-                                SelectObject(hDCMem, oldbmp);
-                                DeleteDC(hDCMem);
-                                DeleteObject(bitmap);
-                                //HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
-                                //FrameRect(data->backBufferDC, rect, hbr_dark);
-*/
                             }
                         }
                     }
 
-                    /* Second, draw the current contents of the drawing bitmap to the back buffer */
-                    (*GetNHApp()->lpfnTransparentBlt)(
-                        data->backBufferDC, rect->left, rect->top,
-                        data->xBackTile, data->yBackTile, hDCcopy, 0,
-                        0, GetNHApp()->mapTile_X,
-                        GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                    if (print_first_directly_to_map)
+                    {
+                        /* All drawn to the back buffer already */
+                        print_first_directly_to_map = FALSE; /* Now draw to the drawing bitmap going forward */
+                        opaque_background_drawn = FALSE; /* Indicates the drawing bitmap hasn't been drawn yet */
+                    }
+                    else
+                    {
+                        /* Second, draw the current contents of the drawing bitmap to the back buffer */
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            data->backBufferDC, rect->left, rect->top,
+                            data->xBackTile, data->yBackTile, hDCcopy, 0,
+                            0, GetNHApp()->mapTile_X,
+                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
 
-                    /* Set the drawing bitmap to be cleared next */
-                    opaque_background_drawn = FALSE;
+                        /* Set the drawing bitmap to be cleared next */
+                        opaque_background_drawn = FALSE;
+                    }
                 }
 
 
