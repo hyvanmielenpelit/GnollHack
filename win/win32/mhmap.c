@@ -895,15 +895,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
      * 2 3 4
     */
 
-    boolean print_first_directly_to_map = FALSE;
-
-    if (data->map[i][j].layer_glyphs[LAYER_FLOOR] != NO_GLYPH && data->map[i][j].layer_glyphs[LAYER_FLOOR] != cmap_to_glyph(S_unexplored))
-        print_first_directly_to_map = TRUE;
-
     struct draw_order_definition {
         enum layer_types layer;
         int enlargement_index;
-        boolean draw_to_buffer;
+        uchar draw_to_buffer;
     };
 
     struct draw_order_definition draw_order[(MAX_FRAMES_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
@@ -913,8 +908,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     /* First, draw floors, no enlargements here */
     draw_order[draw_count].enlargement_index = -1;
     draw_order[draw_count].layer = LAYER_FLOOR;
-    if(!print_first_directly_to_map)
-        draw_order[draw_count].draw_to_buffer = TRUE;
+    if(data->map[i][j].layer_glyphs[LAYER_FLOOR] == NO_GLYPH || data->map[i][j].layer_glyphs[LAYER_FLOOR] == cmap_to_glyph(S_unexplored))
+        draw_order[draw_count].draw_to_buffer = 1;
     draw_count++;
 
     /* Second, draw other layers in order two on the same y */
@@ -931,8 +926,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     /* Mark to be drawn to back buffer and darkened if needed */
     /* Note these all use the darkness of the target tile, so they will be shaded similarly */
     /* After these come monster effects and signs, so draw everything up to monsters here */
-    if (!print_first_directly_to_map)
-        draw_order[draw_count - 1].draw_to_buffer = TRUE;
+    draw_order[draw_count - 1].draw_to_buffer = 2; /* Yes, if not printing to map */
 
     for (enum layer_types layer_idx = LAYER_COVER; layer_idx < MAX_LAYERS; layer_idx++)
     {
@@ -945,7 +939,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     }
     /* Mark to be drawn to back buffer and darkened if needed */
     /* Note these all use the darkness of the target tile, so they will be shaded similarly */
-    draw_order[draw_count - 1].draw_to_buffer = TRUE;
+    draw_order[draw_count - 1].draw_to_buffer = 1;
 
     /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
     int different_level_z_order_array[3] = { 2, 4, 3 };
@@ -960,7 +954,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     }
     /* Mark to be drawn to back buffer and darkened if needed */
     /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
-    draw_order[draw_count - 1].draw_to_buffer = TRUE;
+    draw_order[draw_count - 1].draw_to_buffer = 1;
 
     /* Create DIB Section for piling up, darkening, and otherwise manipulating individual tiles */
     HDC hDCcopy = CreateCompatibleDC(data->backBufferDC);
@@ -983,6 +977,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     SetStretchBltMode(hDCcopy, COLORONCOLOR);
 
     boolean opaque_background_drawn = FALSE;
+    boolean print_first_directly_to_map = TRUE;
+
 
     for (int draw_index = 0; draw_index < draw_count; draw_index++)
     {
@@ -1498,7 +1494,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                 /* Darken and draw to buffer, opaque indicates something has been drawn to hDCcopy */
-                if (draw_order[draw_index].draw_to_buffer && opaque_background_drawn)
+                if (((draw_order[draw_index].draw_to_buffer == 1)
+                    || (draw_order[draw_index].draw_to_buffer == 2 && !print_first_directly_to_map))
+                    && opaque_background_drawn)
                 {
                     /* First, darkening of dark areas and areas drawn from memory */
                     if (!skip_darkening)
