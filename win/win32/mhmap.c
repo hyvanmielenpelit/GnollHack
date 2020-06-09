@@ -2325,7 +2325,10 @@ static void dirty(PNHMapWindow data, int x, int y)
         if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER)
         {
             layer_rounds = MAX_SHOWN_OBJECTS;
-            otmp = level.objects[x][y];
+            if(!cansee(x, y) || (data->map[x][y].layer_flags & LFLAGS_SHOWING_MEMORY))
+                otmp = level.locations[x][y].hero_memory_layers.memory_objchn;
+            else
+                otmp = level.objects[x][y];
         }
 
         for (int layer_round = 0; layer_round < layer_rounds; layer_round++)
@@ -2341,7 +2344,7 @@ static void dirty(PNHMapWindow data, int x, int y)
             else if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER)
             {
                 if(otmp)
-                    enlarg = tile2enlargement[glyph2tile[obj_to_glyph(otmp, rn2_on_display_rng)]];
+                    enlarg = tile2enlargement[glyph2tile[abs(obj_to_glyph(otmp, rn2_on_display_rng))]];
             }
             else
             {
