@@ -1531,6 +1531,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
 
         /* in case touching this object turns out to be fatal */
         place_object(obj, u.ux, u.uy);
+        newsym(u.ux, u.uy);
 
         if (!touch_artifact(obj, &youmonst)) {
             obj_extract_self(obj); /* remove it from the floor */
@@ -1595,6 +1596,8 @@ const char *drop_fmt, *drop_arg, *hold_msg;
         freeinv(obj);
         hitfloor(obj, FALSE);
     }
+    newsym(u.ux, u.uy);
+    flush_screen(1);
     return (struct obj *) 0; /* might be gone */
 }
 

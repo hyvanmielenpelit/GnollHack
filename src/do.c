@@ -4120,6 +4120,7 @@ boolean with_impact;
             map_object(obj, 0);
         newsym(u.ux, u.uy); /* remap location under self */
     }
+	flush_screen(1);
 }
 
 /* things that must change when not held; recurse into containers.

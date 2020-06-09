@@ -912,9 +912,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         draw_order[draw_count].draw_to_buffer = 1;
     draw_count++;
 
-    /* Second, draw other layers in order two on the same y */
+ 
     int same_level_z_order_array[3] = { 0, 1, -1 };
-    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < LAYER_COVER; layer_idx++)
+    /* Second, draw other layers on the same y */    
+    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
     {
         for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
         {
@@ -925,20 +926,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     }
     /* Mark to be drawn to back buffer and darkened if needed */
     /* Note these all use the darkness of the target tile, so they will be shaded similarly */
-    /* After these come monster effects and signs, so draw everything up to monsters here */
-    draw_order[draw_count - 1].draw_to_buffer = 2; /* Yes, if not printing to map */
-
-    for (enum layer_types layer_idx = LAYER_COVER; layer_idx < MAX_LAYERS; layer_idx++)
-    {
-        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
-        {
-            draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
-            draw_order[draw_count].layer = layer_idx;
-            draw_count++;
-        }
-    }
-    /* Mark to be drawn to back buffer and darkened if needed */
-    /* Note these all use the darkness of the target tile, so they will be shaded similarly */
+    /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
     draw_order[draw_count - 1].draw_to_buffer = 1;
 
     /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
@@ -978,7 +966,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     boolean opaque_background_drawn = FALSE;
     boolean print_first_directly_to_map = TRUE;
-
+    double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
+    double y_scaling_factor = ((double)data->yBackTile / (double)TILE_Y);
 
     for (int draw_index = 0; draw_index < draw_count; draw_index++)
     {
@@ -1204,7 +1193,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
 
                     boolean skip_drawing = FALSE;
-                    boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM));
+                    boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM);
+                    boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(otmp_round), &autodraw);
@@ -1230,7 +1220,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     if (!skip_drawing)
                     {
                         //int dest_top_added = move_obj_to_middle || layer_rounds == 1 ? 0 :(int)(((double)(rect->bottom - rect->top)/((double)TILE_Y / 2.0)) * -1.0 * (double)(MAX_LAYERS - 1 - layer_round) * 2.0);
-                        int dest_top_added = layer_rounds == 1 ? 0 : -2 * (MAX_LAYERS - 1 - layer_round);
+                        int dest_top_added = 0;
                         int dest_height_deducted = 0;
                         int source_top_added = 0;
                         int source_height_deducted = 0;
@@ -1239,12 +1229,22 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         if (layer_round > 0)
                             layer_round = layer_round;
 
+                        double applicable_scaling_factor_x = print_first_directly_to_map ? x_scaling_factor : 1.0;
+                        double applicable_scaling_factor_y = print_first_directly_to_map ? y_scaling_factor : 1.0;
+
                         if (move_obj_to_middle)
                         {
-                            dest_top_added = GetNHApp()->mapTile_Y / 4;
-                            dest_height_deducted = GetNHApp()->mapTile_Y / 2;
+                            dest_top_added = (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_Y / 4.0));
+                            dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
                             source_top_added = TILE_Y / 2;
                             source_height_deducted = TILE_Y / 2;
+                        }
+                        else if(!full_sized_item)
+                        {
+                            if (layer_rounds > 1)
+                            {
+                                dest_top_added = (int)(applicable_scaling_factor_y * (-2.0 * (double)(MAX_LAYERS - 1 - layer_round)));
+                            }
                         }
 
                         /*
@@ -1608,9 +1608,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
                 }
 
-
-                /* Draw main tile markers, status marks and condition marks (no darkening) */
-                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER_EFFECT && enlarg_idx == -1)
+                /* Draw main tile markers, status marks and condition marks */
+                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER && enlarg_idx == -1)
                 {
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
@@ -1621,24 +1620,30 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         t_x = TILEBMP_X(mtile);
                         t_y = TILEBMP_Y(mtile);
 
-                        /*
-                        (*GetNHApp()->lpfnTransparentBlt)(
-                            hDCcopy, 0, 0,
-                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
-                            t_y, GetNHApp()->mapTile_X,
-                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-                        */
-                        (*GetNHApp()->lpfnTransparentBlt)(
-                            data->backBufferDC, rect->left, rect->top,
-                            data->xBackTile, data->yBackTile, data->tileDC, t_x,
-                            t_y, GetNHApp()->mapTile_X,
-                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                        if (print_first_directly_to_map)
+                        {
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                data->backBufferDC, rect->left, rect->top,
+                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                        }
+                        else
+                        {
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                hDCcopy, 0, 0,
+                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                        }
                     }
 
 
                 }
                 
-                if (base_layer == LAYER_MONSTER_EFFECT && enlarg_idx == -1)
+
+                /* All UI related symbols and cursors */
+                if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
                     /* Conditions and status marks */
                     int condition_count = 0;
@@ -1763,8 +1768,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
 
                                     /* Define draw location in target */
-                                    double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
-                                    double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
                                     int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
@@ -1831,8 +1834,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
 
                                     /* Define draw location in target */
-                                    double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
-                                    double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
                                     int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
@@ -1873,8 +1874,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mtile = maybe_get_animated_tile(mtile, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
-                                double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
-                                double y_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
                                 /* Define draw location in target */
                                 int unscaled_left = 3;
                                 int unscaled_right = unscaled_left + TILE_X / 2;
@@ -1885,7 +1884,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 /* Frame and background first */
                                 HBRUSH hbr_frame = CreateSolidBrush(RGB(100, 50, 0));
                                 HBRUSH hbr_background = CreateSolidBrush(RGB(200, 200, 200));
-                                /*
+
                                 RECT frame_rect = { 0 };
                                 frame_rect.left = rect->left + (int)(x_scaling_factor * (double)(unscaled_left - 1));
                                 frame_rect.right = rect->left + (int)(x_scaling_factor * (double)(unscaled_right + 1));
@@ -1894,7 +1893,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 FillRect(data->backBufferDC, &frame_rect, hbr_background);
                                 FrameRect(data->backBufferDC, &frame_rect, hbr_frame);
-                                */
+
+#if 0
                                 RECT frame_rect = { 0 };
                                 frame_rect.left = unscaled_left - 1;
                                 frame_rect.right = unscaled_right + 1;
@@ -1903,6 +1903,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 FillRect(hDCcopy, &frame_rect, hbr_background);
                                 FrameRect(hDCcopy, &frame_rect, hbr_frame);
+#endif
 
                                 /* Now the actual picture */
                                 RECT source_rt = { 0 };
@@ -2023,11 +2024,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                     }
 
-                }
 
-                /* Add cursor here */
-                if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
-                {
+                    /* Add cursor here */
                     if (i == data->xCur && j == data->yCur)
                     {
                         if (
