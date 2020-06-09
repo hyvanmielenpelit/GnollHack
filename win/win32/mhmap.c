@@ -23,6 +23,17 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
+#define DRAW_ORDER_SIZE ((MAX_FRAMES_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1)
+
+
+/* draw order definition */
+struct draw_order_definition {
+    enum layer_types layer;
+    int enlargement_index;
+    uchar draw_to_buffer;
+};
+
+
 /* map window data */
 typedef struct mswin_GnollHack_map_window {
     HWND hWnd;                  /* window */
@@ -65,6 +76,8 @@ typedef struct mswin_GnollHack_map_window {
 
     HDC tileDC;                /* tile drawing context */
 
+    struct draw_order_definition draw_order[DRAW_ORDER_SIZE];
+
 } NHMapWindow, *PNHMapWindow;
 
 static TCHAR szNHMapWindowClass[] = TEXT("MSGnollHackMapWndClass");
@@ -81,6 +94,7 @@ static void dirtyAll(PNHMapWindow data);
 static void dirty(PNHMapWindow data, int i, int j);
 static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers);
 static void clearAll(PNHMapWindow data);
+static void setDrawOrder(PNHMapWindow data);
 
 #if (VERSION_MAJOR < 0) && (VERSION_MINOR < 4) && (PATCHLEVEL < 2)
 static void nhglyph2charcolor(short glyph, uchar *ch, int *color);
@@ -865,7 +879,7 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR) data);
 
     clearAll(data);
-
+    setDrawOrder(data);
 }
 
 static void
@@ -895,54 +909,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
      * 2 3 4
     */
 
-    struct draw_order_definition {
-        enum layer_types layer;
-        int enlargement_index;
-        uchar draw_to_buffer;
-    };
+    /* Adjust draw_order for floor layer */
+    if (data->map[i][j].layer_glyphs[LAYER_FLOOR] == NO_GLYPH || data->map[i][j].layer_glyphs[LAYER_FLOOR] == cmap_to_glyph(S_unexplored))
+        data->draw_order[0].draw_to_buffer = 1;
+    else
+        data->draw_order[0].draw_to_buffer = 0;
 
-    struct draw_order_definition draw_order[(MAX_FRAMES_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
-
-    int draw_count = 0;
-
-    /* First, draw floors, no enlargements here */
-    draw_order[draw_count].enlargement_index = -1;
-    draw_order[draw_count].layer = LAYER_FLOOR;
-    if(data->map[i][j].layer_glyphs[LAYER_FLOOR] == NO_GLYPH || data->map[i][j].layer_glyphs[LAYER_FLOOR] == cmap_to_glyph(S_unexplored))
-        draw_order[draw_count].draw_to_buffer = 1;
-    draw_count++;
-
- 
-    int same_level_z_order_array[3] = { 0, 1, -1 };
-    /* Second, draw other layers on the same y */    
-    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
-    {
-        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
-        {
-            draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
-            draw_order[draw_count].layer = layer_idx;
-            draw_count++;
-        }
-    }
-    /* Mark to be drawn to back buffer and darkened if needed */
-    /* Note these all use the darkness of the target tile, so they will be shaded similarly */
-    /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
-    draw_order[draw_count - 1].draw_to_buffer = 1;
-
-    /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
-    int different_level_z_order_array[3] = { 2, 4, 3 };
-    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
-    {
-        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
-        {
-            draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
-            draw_order[draw_count].layer = layer_idx;
-            draw_count++;
-        }
-    }
-    /* Mark to be drawn to back buffer and darkened if needed */
-    /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
-    draw_order[draw_count - 1].draw_to_buffer = 1;
+    struct draw_order_definition* draw_order = data->draw_order; // [(MAX_FRAMES_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
 
     /* Create DIB Section for piling up, darkening, and otherwise manipulating individual tiles */
     HDC hDCcopy = CreateCompatibleDC(data->backBufferDC);
@@ -969,7 +942,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
     double y_scaling_factor = ((double)data->yBackTile / (double)TILE_Y);
 
-    for (int draw_index = 0; draw_index < draw_count; draw_index++)
+    for (int draw_index = 0; draw_index < DRAW_ORDER_SIZE; draw_index++)
     {
         //int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
         //for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
@@ -2230,6 +2203,47 @@ static void clearAll(PNHMapWindow data)
             data->mapAnimated[x][y] = 0;
         }
     InvalidateRect(data->hWnd, NULL, FALSE);
+}
+
+static void setDrawOrder(PNHMapWindow data)
+{
+    int draw_count = 0;
+    /* First, draw floors, no enlargements here */
+    data->draw_order[draw_count].enlargement_index = -1;
+    data->draw_order[draw_count].layer = LAYER_FLOOR;
+    draw_count++;
+
+    int same_level_z_order_array[3] = { 0, 1, -1 };
+    /* Second, draw other layers on the same y */
+    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
+    {
+        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
+        {
+            data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+            data->draw_order[draw_count].layer = layer_idx;
+            draw_count++;
+        }
+    }
+    /* Mark to be drawn to back buffer and darkened if needed */
+    /* Note these all use the darkness of the target tile, so they will be shaded similarly */
+    /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
+    data->draw_order[draw_count - 1].draw_to_buffer = 1;
+
+    /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
+    int different_level_z_order_array[3] = { 2, 4, 3 };
+    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
+    {
+        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
+        {
+            data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
+            data->draw_order[draw_count].layer = layer_idx;
+            draw_count++;
+        }
+    }
+    /* Mark to be drawn to back buffer and darkened if needed */
+    /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
+    data->draw_order[draw_count - 1].draw_to_buffer = 1;
+
 }
 
 static void dirtyAll(PNHMapWindow data)

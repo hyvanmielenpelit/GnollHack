@@ -1597,7 +1597,6 @@ const char *drop_fmt, *drop_arg, *hold_msg;
         hitfloor(obj, FALSE);
     }
     newsym(u.ux, u.uy);
-    flush_screen(1);
     return (struct obj *) 0; /* might be gone */
 }
 
