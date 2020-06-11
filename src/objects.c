@@ -342,7 +342,7 @@ WEAPON("orcish dagger", "crude dagger",
 	0, 0, 0, P1_NONE, P, WEP_DAGGER, P_DAGGER, MAT_IRON, CLR_BLACK,
 	O1_MELEE_AND_THROWN_WEAPON, O2_ORCISH_ITEM, O3_NONE, O4_MISSILE_TILE,
 	PERMITTED_ALL, ALL_TARGETS),
-WEAPON("ornamental orcish dagger", "crudely ornated dagger", /* Base weapon for Grimtooth */
+WEAPON("ornamental orcish dagger", "crudely decorated dagger", /* Base weapon for Grimtooth */
     0, 1, 0, 0, 0, MULTIGEN_SINGLE, 10, 4, 
 	AD_PHYS, 3, 3, 0, 3, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_THROWN_2_EXPERT_1D2_SKILLED,
