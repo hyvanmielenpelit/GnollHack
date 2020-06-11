@@ -104,6 +104,13 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "tree-enlargement", 5,
+      TREE_ENLARGEMENT_FRAMES, TREE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "dungeon-normal-upstairs-enlargement", 1,
       UPSTAIRS_ENLARGEMENT_FRAMES, UPSTAIRS_ENLARGEMENT_OFF,
       1, 2, 0,

@@ -17,9 +17,9 @@ using namespace Gdiplus;
 ULONG_PTR m_gdiplusToken = (ULONG_PTR)0;
 
 ID2D1Factory* g_pD2DFactory = NULL;
-ID2D1HwndRenderTarget* g_pRenderTarget = NULL;
-ID2D1SolidColorBrush* g_pBlackBrush = NULL;
-ID2D1SolidColorBrush* g_pWhiteBrush = NULL;
+ID2D1HwndRenderTarget* g_pRenderTargetMap = NULL;
+ID2D1DCRenderTarget* g_pRenderTargetBackBufferDC = NULL;
+ID2D1DCRenderTarget* g_pRenderTargetTileDC = NULL;
 ID2D1BitmapRenderTarget* g_bitmapRenderTarget = NULL;
 
 
@@ -111,43 +111,33 @@ extern "C" {
 
     /* Direct2D */
     void
-    InitializeDirect2D(HWND hWnd, WPARAM wParam, LPARAM lParam)
+    D2D_Init()
     {
-        //if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &g_pD2DFactory))) {
-            //throw;
-        //}
+        if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &g_pD2DFactory))) 
+        {
+            return;
+        }
+    }
 
+    void
+    D2D_InitMapRenderTargetOnCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
+    {
         LPCREATESTRUCT lpcs = (LPCREATESTRUCT)lParam;
-
         HRESULT hr = g_pD2DFactory->CreateHwndRenderTarget(
             D2D1::RenderTargetProperties(),
             D2D1::HwndRenderTargetProperties(hWnd, D2D1::SizeU(lpcs->cx, lpcs->cy)),
-            &g_pRenderTarget
+            &g_pRenderTargetMap
         );
-
-        if (FAILED(hr)) {
-            //throw;
-        }
-
-        if (FAILED(g_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Black), &g_pBlackBrush))) {
-            //throw;
-        }
-
-        if (FAILED(g_pRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &g_pWhiteBrush))) {
-            //throw;
-        }
-
     }
 
-
+#if 0
     void
     D2DResizeBitmap(HWND hWnd, WPARAM wParam, LPARAM lParam)
     {
-        if (FAILED(g_pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam))))) {
-            //throw;
+        if (FAILED(g_pRenderTarget->Resize(D2D1::SizeU(LOWORD(lParam), HIWORD(lParam))))) 
+        {
+            return;
         }
-
-        //D2D_SAFE_RELEASE(g_bitmapRenderTarget)
 
         g_pRenderTarget->CreateCompatibleRenderTarget(&g_bitmapRenderTarget);
 
@@ -156,6 +146,7 @@ extern "C" {
         g_bitmapRenderTarget->DrawEllipse(D2D1::Ellipse(D2D1::Point2F(100, 100), 50, 50), g_pBlackBrush);
         g_bitmapRenderTarget->EndDraw();
     }
+#endif
 
     void D2D_DrawBitmap(HWND hWnd, WPARAM wParam, LPARAM lParam)
     {
@@ -169,12 +160,12 @@ extern "C" {
         d2d1Rect = D2D1::RectF((float)lpRect->left, (float)lpRect->top, (float)lpRect->right, (float)lpRect->bottom);
         g_bitmapRenderTarget->GetBitmap(&bitmap);
 
-        g_pRenderTarget->BeginDraw();
-        g_pRenderTarget->DrawBitmap(
+        g_pRenderTargetMap->BeginDraw();
+        g_pRenderTargetMap->DrawBitmap(
             bitmap, d2d1Rect, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_LINEAR,
             d2d1Rect
         );
-        g_pRenderTarget->EndDraw();
+        g_pRenderTargetMap->EndDraw();
 
         EndPaint(hWnd, &ps);
     }
@@ -285,14 +276,22 @@ extern "C" {
                 NULL,
                 ppBitmap
             );
-
         }
 
-        pDecoder->Release();
-        pSource->Release();
-        pStream->Release();
-        pConverter->Release();
-        pScaler->Release();
+        if(pDecoder)
+            pDecoder->Release();
+
+        if (pSource)
+            pSource->Release();
+        
+        if (pStream)
+            pStream->Release();
+
+        if (pConverter)
+            pConverter->Release();
+
+        if (pScaler)
+            pScaler->Release();
 
         return hr;
     }

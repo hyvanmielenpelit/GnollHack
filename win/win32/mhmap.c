@@ -71,10 +71,13 @@ typedef struct mswin_GnollHack_map_window {
 
     int backWidth;              /* back buffer width */
     int backHeight;             /* back buffer height */
-    HBITMAP hBackBuffer;        /* back buffe bitmap */
-    HDC backBufferDC;          /* back buffer drawing context */
+    HBITMAP hBackBuffer;        /* back buffer bitmap */
+    HDC backBufferDC;           /* back buffer drawing context */
 
     HDC tileDC;                /* tile drawing context */
+
+    void* backBufferRenderTarget;
+    void* tileRenderTarget;
 
     struct draw_order_definition draw_order[DRAW_ORDER_SIZE];
 
@@ -847,6 +850,9 @@ void
 onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
     PNHMapWindow data;
+
+    D2D_Init();
+    D2D_InitMapRenderTargetOnCreate(hWnd, wParam, lParam);
 
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
