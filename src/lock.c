@@ -161,6 +161,7 @@ picklock(VOID_ARGS)
     } else {
         xlock.box->olocked = !xlock.box->olocked;
         xlock.box->lknown = 1;
+        newsym(xlock.box->ox, xlock.box->oy);
         if (xlock.box->otrapped)
             (void) chest_trap(xlock.box, FINGER, FALSE);
     }
@@ -182,6 +183,7 @@ boolean destroyit;
         box->olocked = 0;
         box->obroken = 1;
         box->lknown = 1;
+        newsym(box->ox, box->oy);
     } else { /* #force has destroyed this box (at <u.ux,u.uy>) */
         struct obj *otmp;
         struct monst *shkp = (*u.ushops && costly_spot(u.ux, u.uy))
@@ -961,6 +963,7 @@ struct obj *obj, *otmp; /* obj *is* a box */
                 obj->lknown = 0;
             res = 1;
         } /* else already closed and locked */
+        newsym(obj->ox, obj->oy);
         break;
     case WAN_OPENING:
     case SPE_KNOCK:
@@ -974,6 +977,7 @@ struct obj *obj, *otmp; /* obj *is* a box */
                 obj->lknown = 0;
         } else /* silently fix if broken */
             obj->obroken = 0;
+        newsym(obj->ox, obj->oy);
         break;
     case WAN_POLYMORPH:
     case SPE_POLYMORPH:

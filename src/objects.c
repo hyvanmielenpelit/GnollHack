@@ -1969,8 +1969,8 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, color, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4)
-#define CONTAINER(name,desc,itemdesc,subtype,kn,mgc,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,pflags,mat,color,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, itemdesc, 0, 0, 0),                                           \
+#define CONTAINER(name,desc,itemdesc,subtype,stand_anim, enl, repl,kn,mgc,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,pflags,mat,color,flags,flags2,flags3,flags4,powconfermask) \
+    OBJECT(OBJ(name, desc, None, itemdesc, stand_anim, enl, repl),                                           \
            BITS(kn, 0, charged ? 1 : 0, 1, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, 0, 0, 0, 0, 0, subtype, P_NONE, mat),   \
            0, 0, 0, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
@@ -1985,47 +1985,47 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 		   wt, clr, 0, 0, cooldown, 0, powconfermask, permittedtargets, flags, flags2, flags3, flags4)
 
 /* containers */
-CONTAINER("large box",       None, None, TOOLTYPE_BOX,
+CONTAINER("large box",       None, None, TOOLTYPE_BOX, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	1, 0, CHARGED_NOT_CHARGED, 40, 350,   8, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_CONTAINER_BOX, O3_NONE, O4_NONE, PERMITTED_ALL), //STARTMARKER 1
-CONTAINER("chest",           None, None, TOOLTYPE_CHEST,
+CONTAINER("chest",           None, None, TOOLTYPE_CHEST, NO_ANIMATION, NO_ENLARGEMENT, CHEST_REPLACEMENT,
 	1, 0, CHARGED_NOT_CHARGED, 30, 600,  16, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_CONTAINER_BOX, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("golden chest",           None, None, TOOLTYPE_CHEST,
+CONTAINER("golden chest",           None, None, TOOLTYPE_CHEST, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	1, 0, CHARGED_NOT_CHARGED, 0, 600, 500, 0, 0, 0, 0, 0, P1_NONE, MAT_GOLD, HI_GOLD,
 	O1_DISINTEGRATION_RESISTANT | O1_NOT_CURSEABLE,
 	O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NONE, PERMITTED_ALL),
-CONTAINER("ice box",         None, None, TOOLTYPE_BOX,
+CONTAINER("ice box",         None, None, TOOLTYPE_BOX, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	1, 0, CHARGED_NOT_CHARGED,  5, 900,  42, 0, 0, 0, 0, 0, P1_NONE, MAT_PLASTIC, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("bookshelf",		 None, None, TOOLTYPE_GENERAL,
+CONTAINER("bookshelf",		 None, None, TOOLTYPE_GENERAL, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	1, 0, CHARGED_NOT_CHARGED,  0, 1600, 36, 0, 0, 0, 0, 0, P1_NONE, MAT_WOOD, HI_WOOD, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("backpack",		 None, None, TOOLTYPE_GENERAL,
+CONTAINER("backpack",		 None, None, TOOLTYPE_GENERAL, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	1, 0, CHARGED_NOT_CHARGED,  5,  15,   5, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 
 /* shuffled bags start here */
-CONTAINER("leather bag",	 "brown bag", None, TOOLTYPE_BAG,//STARTMARKER FOR SHUFFLED BAGS AND BAG WISHCLASS
+CONTAINER("leather bag",	 "brown bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,//STARTMARKER FOR SHUFFLED BAGS AND BAG WISHCLASS
 	0, 0, CHARGED_NOT_CHARGED,  5,  15,  25, 0, 0, 0, 0, 0, P1_NONE, MAT_LEATHER, HI_LEATHER, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("sack",           "vintage bag", None, TOOLTYPE_BAG,
+CONTAINER("sack",           "vintage bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 0, CHARGED_NOT_CHARGED, 10,  10,   5, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("oilskin sack",   "decorative bag", None, TOOLTYPE_BAG,
+CONTAINER("oilskin sack",   "decorative bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 0, CHARGED_NOT_CHARGED,  5,  10, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 /* magic bags start here */
-CONTAINER("bag of holding", "ornamental bag", "Reduces the weight of contents by half", TOOLTYPE_BAG,
+CONTAINER("bag of holding", "ornamental bag", "Reduces the weight of contents by half", TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 1, CHARGED_NOT_CHARGED, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, PERMITTED_ALL), //STARTMARKER 2
-CONTAINER("bag of wizardry", "antiquated bag", "Reduces the weight of spellbooks, scrolls, reagents, and wands to 1/8", TOOLTYPE_BAG,
+CONTAINER("bag of wizardry", "antiquated bag", "Reduces the weight of spellbooks, scrolls, reagents, and wands to 1/8", TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 1, CHARGED_NOT_CHARGED, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("bag of treasure hauling", "silvery bag", "Reduces the weight of coins, gems, and other treasure to 1/32", TOOLTYPE_BAG,
+CONTAINER("bag of treasure hauling", "silvery bag", "Reduces the weight of coins, gems, and other treasure to 1/32", TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 1, CHARGED_NOT_CHARGED, 15, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_SILVER, O1_NONE, O2_CONTAINER_MAGIC_BAG | O2_CONTAINER_WEIGHT_REDUCING_MAGIC_BAG, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("pouch of endless bolts", "old bag", None, TOOLTYPE_BAG,
+CONTAINER("pouch of endless bolts", "old bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 1, CHARGED_NOT_CHARGED, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, PERMITTED_ALL),
-CONTAINER("bag of infinite sling bullets", "old-fashioned bag", None, TOOLTYPE_BAG,
+CONTAINER("bag of infinite sling bullets", "old-fashioned bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 1, CHARGED_NOT_CHARGED, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, PERMITTED_ALL),
-CONTAINER("bag of tricks", "runed bag", None, TOOLTYPE_BAG,//ENDMARKER FOR SHUFFLED
+CONTAINER("bag of tricks", "runed bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,//ENDMARKER FOR SHUFFLED
 	0, 1, CHARGED_BAG_OF_TRICKS, 20, 15, 100, 0, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER | O2_CONTAINER_MAGIC_BAG, O3_NONE, O4_NONE, PERMITTED_ALL), //ENDMARKER 1&2
 /* end of shuffled bags */
-CONTAINER("expensive handbag", "gold-encrusted bag", None, TOOLTYPE_BAG,
+CONTAINER("expensive handbag", "gold-encrusted bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 0, CHARGED_NOT_CHARGED, 2, 5, 500, 0, 0, 0, BONUS_TO_CHA, 2, P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED, MAT_SILK, HI_GOLD, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_GENDER_FEMALE),
-CONTAINER("oriental silk sack", "silk-woven bag", None, TOOLTYPE_BAG,//ENDMARKER BAG WISHCLASS
+CONTAINER("oriental silk sack", "silk-woven bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,//ENDMARKER BAG WISHCLASS
 	0, 0, CHARGED_NOT_CHARGED,  5,  3,  50, 0, 0, 0, 0, 0, P1_NONE, MAT_SILK, HI_CLOTH, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-CONTAINER("quiver of infinite arrows", "cylindrical bag", None, TOOLTYPE_BAG,
+CONTAINER("quiver of infinite arrows", "cylindrical bag", None, TOOLTYPE_BAG, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT,
 	0, 1, CHARGED_NOT_CHARGED, 4, 15, 100, 1000, 0, 0, 0, 0, P1_NONE, MAT_CLOTH, HI_CLOTH, O1_NONE, O2_CONTAINER_NONCONTAINER, O3_ELEMENTAL_ENCHANTABLE, O4_NONE, PERMITTED_ALL),
 #undef CONTAINER
 

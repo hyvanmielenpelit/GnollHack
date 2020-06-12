@@ -286,6 +286,16 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "chest-replacement",
+      CHEST_REPLACEMENT_TILES, CHEST_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_CHEST,
+      AUTODRAW_NONE,
+      { "locked", "broken", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "brass-lantern-replacement",
       BRASS_LANTERN_LIT_TILES, BRASS_LANTERN_LIT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
@@ -595,6 +605,33 @@ enum autodraw_types* autodraw_ptr;
             if (otmp->quan > 1)
             {
                 int glyph_idx = (otmp->quan <= 6 ? 0 : 1);
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_CHEST:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (replacements[replacement_idx].number_of_tiles < 1)
+                return ntile;
+
+            if (otmp->olocked)
+            {
+                int glyph_idx = 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+            else if (otmp->obroken)
+            {
+                int glyph_idx = 1;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
                 return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
