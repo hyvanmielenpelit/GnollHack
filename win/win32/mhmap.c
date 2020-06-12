@@ -1203,7 +1203,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             /* Leave a little room for monster feet */
                             if (base_layer == LAYER_OBJECT)
-                                dest_top_added += (int)(applicable_scaling_factor_y * (-8));
+                                dest_top_added += (int)(applicable_scaling_factor_y * (-8.0));
 
                             /* Pile the objects in order with two pixels in between */
                             if (layer_rounds > 1)
