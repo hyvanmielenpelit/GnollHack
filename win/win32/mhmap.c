@@ -1016,11 +1016,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 darkening_j = j + 1;
             }
 
+            if (enlarg_idx >= 0 && !isok(enl_i, enl_j))
+                continue;
+
             if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
-                if (!isok(enl_i, enl_j))
-                    continue;
-
                 if (1)
                 {
                     int relevant_i = i;
@@ -1223,7 +1223,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             /* Leave a little room for monster feet */
                             if (base_layer == LAYER_OBJECT)
-                                dest_top_added += -4;
+                                dest_top_added += -8;
 
                             /* Pile the objects in order with two pixels in between */
                             if (layer_rounds > 1)
