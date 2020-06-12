@@ -1016,38 +1016,41 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 darkening_j = j + 1;
             }
 
-            if (enlarg_idx >= 0)
+            if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
                 if (!isok(enl_i, enl_j))
                     continue;
 
-                int relevant_i = i;
-                int relevant_j = enl_j;
-                boolean side_not_ok = FALSE;
-                if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
-                    || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
-                    || data->map[relevant_i][relevant_j].glyph == S_unexplored
-                    || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
-                    )
-                    side_not_ok = TRUE;
-
-                boolean upper_side_not_ok = FALSE;
-                relevant_i = i;
-                relevant_j = j;
-                if (relevant_j < enl_j)
+                if (1)
                 {
+                    int relevant_i = i;
+                    int relevant_j = enl_j;
+                    boolean side_not_ok = FALSE;
                     if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
                         || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                         || data->map[relevant_i][relevant_j].glyph == S_unexplored
                         || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
                         )
-                        upper_side_not_ok = TRUE;
-                }
-                else
-                    upper_side_not_ok = TRUE;
+                        side_not_ok = TRUE;
 
-                if (side_not_ok && upper_side_not_ok)
-                    continue;
+                    boolean upper_side_not_ok = FALSE;
+                    relevant_i = i;
+                    relevant_j = j;
+                    if (relevant_j < enl_j)
+                    {
+                        if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
+                            || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
+                            || data->map[relevant_i][relevant_j].glyph == S_unexplored
+                            || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
+                            )
+                            upper_side_not_ok = TRUE;
+                    }
+                    else
+                        upper_side_not_ok = TRUE;
+
+                    if (side_not_ok && upper_side_not_ok)
+                        continue;
+                }
             }
 
 
@@ -1070,8 +1073,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 {
                     obj_pile[objcnt] = otmp2;
                     objcnt++;
-                    if (enl_i == i && enl_j == j)
-                        j = j;
                     if (objcnt >= MAX_SHOWN_OBJECTS)
                         break;
                 }
@@ -1220,9 +1221,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                         else if(!full_sized_item)
                         {
+                            /* Leave a little room for monster feet */
+                            if (base_layer == LAYER_OBJECT)
+                                dest_top_added += -4;
+
+                            /* Pile the objects in order with two pixels in between */
                             if (layer_rounds > 1)
                             {
-                                dest_top_added = (int)(applicable_scaling_factor_y * (-2.0 * (double)(MAX_LAYERS - 1 - layer_round)));
+                                dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(MAX_LAYERS - 1 - layer_round)));
                             }
                         }
 
