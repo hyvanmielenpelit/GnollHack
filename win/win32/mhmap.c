@@ -1053,8 +1053,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
             }
 
-
-
             genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
             struct monst* m_here = m_at(enl_i, enl_j);
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
@@ -1101,24 +1099,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
-                /*
-                int layer0signedglyph = abs(signed_bk_glyph) != NO_GLYPH ? signed_bk_glyph : NO_GLYPH;
-                int layer1signedglyph = abs(signed_main_glyph) != NO_GLYPH && glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
-                int layer2signedglyph = abs(signed_main_glyph) != NO_GLYPH && abs(signed_main_glyph) != cmap_to_glyph(S_unexplored) && otmp_round && !draw_in_front ? obj_to_glyph(otmp_round, rn2_on_display_rng) : NO_GLYPH;
-                int layer3signedglyph = abs(signed_main_glyph) != NO_GLYPH && !glyph_is_object(abs(signed_main_glyph)) && !glyph_is_cmap_or_cmap_variation(abs(signed_main_glyph)) && !draw_in_front ? signed_main_glyph : NO_GLYPH;
-                int layer4signedglyph = abs(signed_main_glyph) != NO_GLYPH && abs(signed_main_glyph) != cmap_to_glyph(S_unexplored) && otmp_round && draw_in_front ? obj_to_glyph(otmp_round, rn2_on_display_rng) : NO_GLYPH;
-
-                if (base_layer == LAYER_FLOOR)
-                    signed_glyph = layer0signedglyph;
-                else if(base_layer == LAYER_FEATURE)
-                    signed_glyph = layer1signedglyph;
-                else if (base_layer == LAYER_OBJECT)
-                    signed_glyph = layer2signedglyph;
-                else if(base_layer == LAYER_MONSTER)
-                    signed_glyph = layer3signedglyph;
-                else if (base_layer == LAYER_COVER)
-                    signed_glyph = layer4signedglyph;
-                */
                 if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
                     signed_glyph = otmp_round->glyph == NO_GLYPH || otmp_round->glyph == 0 ? NO_GLYPH : otmp_round->glyph;
                 else
@@ -1223,12 +1203,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         {
                             /* Leave a little room for monster feet */
                             if (base_layer == LAYER_OBJECT)
-                                dest_top_added += -8;
+                                dest_top_added += (int)(applicable_scaling_factor_y * (-8));
 
                             /* Pile the objects in order with two pixels in between */
                             if (layer_rounds > 1)
                             {
-                                dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(MAX_LAYERS - 1 - layer_round)));
+                                dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(layer_rounds - 1 - layer_round)));
                             }
                         }
 
