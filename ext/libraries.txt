@@ -1,2 +1,0 @@
-External Libraries:
-fmod: FMOD Sound System by Firelight Technologies, see www.fmod.com
