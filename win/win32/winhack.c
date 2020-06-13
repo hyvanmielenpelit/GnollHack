@@ -160,6 +160,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         panic("cannot load FMOD bitmap");
         return 0;
     }
+
     _GnollHack_app.bmpMapTiles = _GnollHack_app.bmpTiles;
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;

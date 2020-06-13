@@ -234,7 +234,9 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         SplashData *splashData = (SplashData *) GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
         HDC hdc = BeginPaint(hWnd, &ps);
+        SetBkMode(hdc, TRANSPARENT);
         /* Show splash graphic */
+
         hdcBitmap = CreateCompatibleDC(hdc);
         SetBkMode(hdc, OPAQUE);
         OldBitmap = SelectObject(hdcBitmap, GetNHApp()->bmpFMOD);
@@ -260,7 +262,6 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         SelectObject(hdcBitmap, OldBitmap);
         DeleteDC(hdcBitmap);
-
 
 #if 0
         SetBkMode(hdc, TRANSPARENT);
