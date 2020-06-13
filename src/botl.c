@@ -93,10 +93,22 @@ do_statusline1()
             get_strength_str(),
             ACURR(A_DEX), ACURR(A_CON), ACURR(A_INT), ACURR(A_WIS),
             ACURR(A_CHA));
+
+    /*
     Sprintf(nb = eos(nb),
             (u.ualign.type == A_CHAOTIC)
                 ? "  Chaotic"
                 : (u.ualign.type == A_NEUTRAL) ? "  Neutral" : "  Lawful");
+    */
+
+    long money;
+    if ((money = money_cnt(invent)) < 0L)
+        money = 0L;
+    Sprintf(nb = eos(nb), "  %s:%-2ld",
+        (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
+          : encglyph(objnum_to_glyph(GOLD_PIECE)),
+        min(money, 999999L));
+
 #ifdef SCORE_ON_BOTL
     if (flags.showscore)
         Sprintf(nb = eos(nb), " S:%ld", botl_score());
@@ -115,7 +127,6 @@ do_statusline2()
     register char *nb;
     unsigned dln, dx, hln, xln, tln, cln, sln;
     int hp, hpmax, cap;
-//    long money;
 
     /*
      * Various min(x,9999)'s are to avoid having excessive values
@@ -126,21 +137,8 @@ do_statusline2()
      * Turn counter is also long, but we'll risk that.
      */
 
-    /* dungeon location plus gold */
+    /* dungeon location */
     (void) describe_level(dloc); /* includes at least one trailing space */
-	/*
-    if ((money = money_cnt(invent)) < 0L) 
-        money = 0L;
-    Sprintf(eos(dloc), "%s:%-2ld",
-            (iflags.in_dumplog || iflags.invis_goldsym) ? "$"
-              : encglyph(objnum_to_glyph(GOLD_PIECE)),
-            min(money, 999999L));
-    dln = strlen(dloc);
-    dx = strstri(dloc, "\\G") ? 9 : 0;
-	*/
-	/* ought to issue impossible() and then discard gold */
-    /* strongest hero can lift ~300000 gold */
-   /* '$' encoded as \GXXXXNNNN is 9 chars longer than display will need */
 	dln = strlen(dloc);
 	dx = 0;
 

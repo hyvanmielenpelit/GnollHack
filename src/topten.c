@@ -69,9 +69,6 @@ STATIC_DCL void FDECL(readentry, (FILE *, struct toptenentry *));
 STATIC_DCL void FDECL(writeentry, (FILE *, struct toptenentry *));
 #ifdef XLOGFILE
 STATIC_DCL void FDECL(writexlentry, (FILE *, struct toptenentry *, int));
-STATIC_DCL long NDECL(encodexlogflags);
-STATIC_DCL long NDECL(encodeconduct);
-STATIC_DCL long NDECL(encodeachieve);
 #endif
 STATIC_DCL void FDECL(free_ttlist, (struct toptenentry *));
 STATIC_DCL int FDECL(classmon, (char *));
@@ -382,7 +379,7 @@ int how;
 #undef XLOG_SEP
 }
 
-STATIC_OVL long
+long
 encodexlogflags()
 {
     long e = 0L;
@@ -397,7 +394,7 @@ encodexlogflags()
     return e;
 }
 
-STATIC_OVL long
+long
 encodeconduct()
 {
     long e = 0L;
@@ -430,7 +427,7 @@ encodeconduct()
     return e;
 }
 
-STATIC_OVL long
+long
 encodeachieve()
 {
     long r = 0L;
