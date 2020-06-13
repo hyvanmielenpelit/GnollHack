@@ -277,6 +277,18 @@ Helmet_on(VOID_ARGS)
 		else {
 			makeknown(uarmh->otyp);
 		}
+        update_all_character_properties((struct obj*)0, TRUE);
+        for (int i = 0; i <= 1; i++)
+        {
+            struct obj* wep = (i == 0 ? uwep : uarms);
+            if (wep && (artifact_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit)
+            {
+                begin_burn(wep, FALSE);
+                if (!Blind)
+                    pline("%s to shine %s!", Tobjnam(wep, "begin"),
+                        arti_light_description(wep));
+            }
+        }
 		break;
 	case DUNCE_CAP:
 		/*

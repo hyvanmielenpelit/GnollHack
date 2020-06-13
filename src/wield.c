@@ -281,7 +281,8 @@ long mask;
         /* KMH -- Talking artifacts are finally implemented */
         arti_speak(wep);
 
-        if (wep && (artifact_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit) {
+        if (wep && (artifact_light(wep) || (obj_shines_magical_light(wep) && !inappropriate_monster_character_type(&youmonst, wep))) && !wep->lamplit)
+		{
             begin_burn(wep, FALSE);
             if (!Blind)
                 pline("%s to shine %s!", Tobjnam(wep, "begin"),
