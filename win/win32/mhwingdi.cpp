@@ -8,20 +8,24 @@
 #include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
-#include <d2d1.h>
-#include "wincodec.h"
+#include <string>
+#include <codecvt>
+#include <locale>
+ //#include <d2d1.h>
+//#include "wincodec.h"
 
 using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
 ULONG_PTR m_gdiplusToken = (ULONG_PTR)0;
 
+#if 0
 ID2D1Factory* g_pD2DFactory = NULL;
 ID2D1HwndRenderTarget* g_pRenderTargetMap = NULL;
 ID2D1DCRenderTarget* g_pRenderTargetBackBufferDC = NULL;
 ID2D1DCRenderTarget* g_pRenderTargetTileDC = NULL;
 ID2D1BitmapRenderTarget* g_bitmapRenderTarget = NULL;
-
+#endif
 
 extern "C" {
 
@@ -107,8 +111,33 @@ extern "C" {
         return res;
     }
 
+    void
+    DrawTextToRectangle(HDC hDC, char* text, RECT* pDrawRect, HFONT hFont, COLORREF color)
+    {
+        const size_t cSize = strlen(text) + 1;
+        std::wstring wtext(cSize, L'#');
+        mbstowcs(&wtext[0], text, cSize);
 
+        Color clr;
+        clr.SetFromCOLORREF(color);
+        SolidBrush brush(clr);
 
+        //Font myFont(hDC, hFont);
+        Font myFont(L"Consolas", 14);
+
+        RectF lRect = RectF::RectF((REAL)pDrawRect->left, (REAL)pDrawRect->top, (REAL)(pDrawRect->right - pDrawRect->left), (REAL)(pDrawRect->bottom - pDrawRect->top));
+
+        StringFormat strFormat;
+        strFormat.GenericDefault();
+        strFormat.SetAlignment(StringAlignment::StringAlignmentNear);
+        strFormat.SetLineAlignment(StringAlignment::StringAlignmentCenter);
+
+        Graphics* pGraphics = Graphics::FromHDC(hDC);
+        pGraphics->DrawString(&wtext[0], (INT)(cSize - 1), &myFont, lRect, &strFormat, &brush);
+
+    }
+
+#if 0
     /* Direct2D */
     void
     D2D_Init()
@@ -130,7 +159,6 @@ extern "C" {
         );
     }
 
-#if 0
     void
     D2DResizeBitmap(HWND hWnd, WPARAM wParam, LPARAM lParam)
     {
@@ -146,7 +174,6 @@ extern "C" {
         g_bitmapRenderTarget->DrawEllipse(D2D1::Ellipse(D2D1::Point2F(100, 100), 50, 50), g_pBlackBrush);
         g_bitmapRenderTarget->EndDraw();
     }
-#endif
 
     void D2D_DrawBitmap(HWND hWnd, WPARAM wParam, LPARAM lParam)
     {
@@ -295,6 +322,7 @@ extern "C" {
 
         return hr;
     }
+#endif
 
 }
 

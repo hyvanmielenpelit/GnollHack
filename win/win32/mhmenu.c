@@ -1023,8 +1023,9 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
     }
 
-    /* set width to the window width */
-    lpmis->itemWidth = list_rect.right - list_rect.left;
+    int scrollwidth = GetSystemMetrics(SM_CXVSCROLL);
+    /* set width to the window width, less scroll width */
+    lpmis->itemWidth = max(1, list_rect.right - list_rect.left - scrollwidth);
 
     SelectObject(hdc, saveFont);
     ReleaseDC(GetMenuControl(hWnd), hdc);
@@ -1234,14 +1235,17 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     p = strchr(item->str, '\t');
     column = 0;
     SetRect(&drawRect, x, lpdis->rcItem.top,
-            min(x + data->menu.tab_stop_size[0], lpdis->rcItem.right),
+            min(x + data->menu.tab_stop_size[0], max(0, lpdis->rcItem.right)),
             lpdis->rcItem.bottom);
     for (;;) {
         TCHAR wbuf[BUFSZ];
         if (p != NULL)
             *p = '\0'; /* for time being, view tab field as zstring */
-        DrawText(lpdis->hDC, NH_A2W(p1, wbuf, BUFSZ), strlen(p1), &drawRect,
-                 DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+        //DrawText(lpdis->hDC, NH_A2W(p1, wbuf, BUFSZ), strlen(p1), &drawRect,
+        //         DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+
+        DrawTextToRectangle(lpdis->hDC, p1, &drawRect, font->hFont, nhcolor_to_RGB(color));
+
         if (p != NULL)
             *p = '\t';
         else /* last string so, */
@@ -1252,7 +1256,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         drawRect.left = drawRect.right + TAB_SEPARATION;
         ++column;
         drawRect.right = min(drawRect.left + data->menu.tab_stop_size[column],
-                             lpdis->rcItem.right);
+                             max(0, lpdis->rcItem.right));
     }
 
     /* draw focused item */

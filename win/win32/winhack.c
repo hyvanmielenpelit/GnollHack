@@ -165,7 +165,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     _GnollHack_app.mapTile_X = TILE_X;
     _GnollHack_app.mapTile_Y = TILE_Y;
 
-    StopGdiplus();
+    //StopGdiplus();
 
     /* Process tiledata */
     int total_tiles = process_tiledata(&default_tileset_definition, 2, (const char*)0, (short*)0, (uchar*)0);

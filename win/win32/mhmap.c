@@ -851,8 +851,8 @@ onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {
     PNHMapWindow data;
 
-    D2D_Init();
-    D2D_InitMapRenderTargetOnCreate(hWnd, wParam, lParam);
+    //D2D_Init();
+    //D2D_InitMapRenderTargetOnCreate(hWnd, wParam, lParam);
 
     UNREFERENCED_PARAMETER(wParam);
     UNREFERENCED_PARAMETER(lParam);
