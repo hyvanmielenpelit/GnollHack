@@ -819,7 +819,7 @@ LayoutMenu(HWND hWnd)
         ListView_SetColumnWidth(
             GetMenuControl(hWnd), 0,
             max(clrt.right - clrt.left - GetSystemMetrics(SM_CXVSCROLL),
-                data->menu.menu_cx));
+                0 /*data->menu.menu_cx*/));
     }
 
     MoveWindow(GetMenuControl(hWnd), pt_elem.x, pt_elem.y, sz_elem.cx,
@@ -1009,6 +1009,7 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     saveFont = SelectObject(hdc, font->hFont);
     GetTextMetrics(hdc, &tm);
 
+    double monitorScale = win10_monitor_scale(hWnd);
     /* Set the height of the list box items to max height of the individual
      * items */
     for (i = 0; i < data->menu.size; i++) {
@@ -1016,16 +1017,16 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             && !IS_MAP_ASCII(iflags.wc_map_mode)) {
             lpmis->itemHeight =
                 max(lpmis->itemHeight,
-                    (UINT) max(tm.tmHeight + 4, MENU_TILE_Y + 2 /*GetNHApp()->mapTile_Y*/));
+                    (UINT) max(tm.tmHeight + 4, (int)(monitorScale * ((double)MENU_TILE_Y + 2.0)) /*GetNHApp()->mapTile_Y*/));
         } else {
             lpmis->itemHeight =
-                max(lpmis->itemHeight, (UINT) max(tm.tmHeight + 4, GLYPHLESS_MENU_HEIGHT));
+                max(lpmis->itemHeight, (UINT) max(tm.tmHeight + 4, (int)(monitorScale * ((double)GLYPHLESS_MENU_HEIGHT))));
         }
     }
 
-    int scrollwidth = GetSystemMetrics(SM_CXVSCROLL);
+//    int scrollwidth = GetSystemMetrics(SM_CXVSCROLL);
     /* set width to the window width, less scroll width */
-    lpmis->itemWidth = max(1, list_rect.right - list_rect.left - scrollwidth);
+    lpmis->itemWidth = max(1, list_rect.right - list_rect.left); // -scrollwidth);
 
     SelectObject(hdc, saveFont);
     ReleaseDC(GetMenuControl(hWnd), hdc);
@@ -1073,10 +1074,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     item = &data->menu.items[lpdis->itemID];
 
     tileDC = CreateCompatibleDC(lpdis->hDC);
-    cached_font * font = mswin_get_font(NHW_MENU, item->attr, lpdis->hDC, FALSE);
+    cached_font* font = mswin_get_font(NHW_MENU, item->attr, lpdis->hDC, FALSE);
     saveFont = SelectObject(lpdis->hDC, font->hFont);
-    NewBg = menu_bg_brush ? menu_bg_color
-                          : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU);
+    NewBg = menu_bg_brush ? menu_bg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU);
     OldBg = SetBkColor(lpdis->hDC, NewBg);
     OldFg = SetTextColor(lpdis->hDC,
                          menu_fg_brush
@@ -1235,16 +1235,16 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     p = strchr(item->str, '\t');
     column = 0;
     SetRect(&drawRect, x, lpdis->rcItem.top,
-            min(x + data->menu.tab_stop_size[0], max(0, lpdis->rcItem.right)),
+            min(x + data->menu.tab_stop_size[0], lpdis->rcItem.right),
             lpdis->rcItem.bottom);
     for (;;) {
         TCHAR wbuf[BUFSZ];
         if (p != NULL)
             *p = '\0'; /* for time being, view tab field as zstring */
-        //DrawText(lpdis->hDC, NH_A2W(p1, wbuf, BUFSZ), strlen(p1), &drawRect,
-        //         DT_LEFT | DT_VCENTER | DT_SINGLELINE);
+        DrawText(lpdis->hDC, NH_A2W(p1, wbuf, BUFSZ), strlen(p1), &drawRect,
+                 DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 
-        DrawTextToRectangle(lpdis->hDC, p1, &drawRect, font->hFont, nhcolor_to_RGB(color));
+        //DrawTextToRectangle(lpdis->hDC, p1, &drawRect, iflags.wc_fontsiz_menu-2, nhcolor_to_RGB(color));
 
         if (p != NULL)
             *p = '\t';
@@ -1256,7 +1256,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         drawRect.left = drawRect.right + TAB_SEPARATION;
         ++column;
         drawRect.right = min(drawRect.left + data->menu.tab_stop_size[column],
-                             max(0, lpdis->rcItem.right));
+                             lpdis->rcItem.right);
     }
 
     /* draw focused item */

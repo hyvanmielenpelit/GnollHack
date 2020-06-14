@@ -18,6 +18,7 @@ using namespace Gdiplus;
 #pragma comment (lib,"Gdiplus.lib")
 
 ULONG_PTR m_gdiplusToken = (ULONG_PTR)0;
+PrivateFontCollection* pMainFontCollection = NULL;
 
 #if 0
 ID2D1Factory* g_pD2DFactory = NULL;
@@ -112,7 +113,17 @@ extern "C" {
     }
 
     void
-    DrawTextToRectangle(HDC hDC, char* text, RECT* pDrawRect, HFONT hFont, COLORREF color)
+    AddFontToGdiPlus(void* data, size_t length)
+    {
+        if (pMainFontCollection == NULL)
+            pMainFontCollection = new PrivateFontCollection();
+
+        Status stat = pMainFontCollection->AddMemoryFont(data, (INT)length);
+        stat = stat;
+    }
+
+    void
+    DrawTextToRectangle(HDC hDC, char* text, RECT* pDrawRect, LONG fontHeight, COLORREF color)
     {
         const size_t cSize = strlen(text) + 1;
         std::wstring wtext(cSize, L'#');
@@ -122,8 +133,8 @@ extern "C" {
         clr.SetFromCOLORREF(color);
         SolidBrush brush(clr);
 
-        //Font myFont(hDC, hFont);
-        Font myFont(L"Consolas", 14);
+        Font myFont(L"Underwood Champion", fontHeight, FontStyleRegular, UnitPoint, pMainFontCollection);
+        //Font myFont(L"Kingthings Trypewriter 2", 14);
 
         RectF lRect = RectF::RectF((REAL)pDrawRect->left, (REAL)pDrawRect->top, (REAL)(pDrawRect->right - pDrawRect->left), (REAL)(pDrawRect->bottom - pDrawRect->top));
 
@@ -133,7 +144,7 @@ extern "C" {
         strFormat.SetLineAlignment(StringAlignment::StringAlignmentCenter);
 
         Graphics* pGraphics = Graphics::FromHDC(hDC);
-        pGraphics->DrawString(&wtext[0], (INT)(cSize - 1), &myFont, lRect, &strFormat, &brush);
+        pGraphics->DrawString(wtext.c_str(), (INT)(cSize - 1), &myFont, lRect, &strFormat, &brush);
 
     }
 

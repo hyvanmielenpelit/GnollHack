@@ -268,5 +268,7 @@ init_resource_fonts()
         );
 
         nFonts = nFonts;
+        AddFontToGdiPlus(data, len);
     }
+
 }

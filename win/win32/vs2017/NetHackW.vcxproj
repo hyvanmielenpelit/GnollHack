@@ -243,6 +243,8 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="$(WinWin32Dir)uwch.ttf" />
+    <Font Include="..\Erika Ormig.ttf" />
+    <Font Include="..\Vanthian Ragnarok.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(WinWin32Dir)Master.bank" />
