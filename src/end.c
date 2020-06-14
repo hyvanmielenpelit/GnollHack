@@ -760,7 +760,7 @@ time_t when; /* date+time at end of game */
     putstr(0, 0, pbuf);
     putstr(0, 0, "");
 
-#ifdef XLOGFILE
+#if 0 //def XLOGFILE
     Sprintf(pbuf, "xlogstats: score=%ld dnum=%d realtime=%lu starttime=%lu finishtime=%lu conduct=0x%lx achieve=0x%lx cflags=0x%lx difficulty=%d", 
         u.u_gamescore,
         (int)u.uz.dnum,
@@ -1631,13 +1631,16 @@ int how;
         destroy_nhwindow(endwin);
 
     dump_close_log();
+
     /* "So when I die, the first thing I will see in Heaven is a
      * score list?" */
     if (have_windows && !iflags.toptenwin)
-        exit_nhwindows((char *) 0), have_windows = FALSE;
+        exit_nhwindows((char*)0), have_windows = FALSE;
+
     topten(how, endtime);
+
     if (have_windows)
-        exit_nhwindows((char *) 0);
+        exit_nhwindows((char*)0);
 
     if (done_stopprint) {
         raw_print("");

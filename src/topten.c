@@ -677,7 +677,9 @@ time_t when;
             break;
         }
     }
-    if (flg) { /* rewrite record file */
+
+    if (flg) 
+    { /* rewrite record file */
 #ifdef UPDATE_RECORD_IN_PLACE
         (void) fseek(rfile, (t0->fpos >= 0 ? t0->fpos : final_fpos),
                      SEEK_SET);
@@ -691,7 +693,8 @@ time_t when;
         }
 #endif /* UPDATE_RECORD_IN_PLACE */
         if (!done_stopprint)
-            if (rank0 > 0) {
+            if (rank0 > 0)
+            {
                 if (rank0 <= 10) {
                     topten_print("You made the top ten list!");
                 } else {
@@ -779,6 +782,7 @@ destroywin:
         toptenwin = WIN_ERR;
     }
 }
+
 
 STATIC_OVL void
 outheader()
