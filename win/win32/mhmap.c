@@ -1090,7 +1090,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 }
 
-                boolean draw_in_front = (otmp_round && is_obj_drawn_in_front(otmp_round));
+                boolean draw_in_front = (otmp_round && is_obj_drawn_in_front(otmp_round) && otmp_round->ox == u.ux && otmp_round->oy == u.uy);
                 if (base_layer == LAYER_COVER && !draw_in_front)
                     continue; /* next round */
                 if (base_layer == LAYER_OBJECT && draw_in_front)

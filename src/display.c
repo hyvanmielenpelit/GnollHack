@@ -2599,6 +2599,8 @@ xchar x, y;
     int idx;
     struct rm *ptr = &(levl[x][y]);
     boolean is_variation = FALSE;
+    boolean facing_right = (ptr->facing_right != 0);
+    int multiplier = facing_right ? -1 : 1;
 
     switch (ptr->typ) {
     case UNEXPLORED:
@@ -2852,9 +2854,9 @@ xchar x, y;
     }
 
     if(is_variation)
-        return cmap_variation_to_glyph(idx);
+        return multiplier * cmap_variation_to_glyph(idx);
     else
-        return cmap_to_glyph(idx);
+        return multiplier * cmap_to_glyph(idx);
 }
 
 /*

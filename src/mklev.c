@@ -1419,6 +1419,16 @@ xchar x, y; /* location */
 
         levl[x][y].ladder = sstairs.up ? LA_UP : LA_DOWN;
         levl[x][y].typ = STAIRS;
+        if (sstairs.up)
+        {
+            if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ))
+                levl[x][y].facing_right = TRUE;
+        }
+        else
+        {
+            if (!isok(x - 1, y) || !IS_ROOM(levl[x - 1][y].typ))
+                levl[x][y].facing_right = TRUE;
+        }
     }
     /*
      * Set made_branch to TRUE even if we didn't make a stairwell (i.e.
@@ -1807,6 +1817,17 @@ struct mkroom *croom;
 
     levl[x][y].typ = STAIRS;
     levl[x][y].ladder = up ? LA_UP : LA_DOWN;
+
+    if (up)
+    {
+        if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ))
+            levl[x][y].facing_right = TRUE;
+    }
+    else
+    {
+        if (!isok(x - 1, y) || !IS_ROOM(levl[x - 1][y].typ))
+            levl[x][y].facing_right = TRUE;
+    }
 }
 
 STATIC_OVL void

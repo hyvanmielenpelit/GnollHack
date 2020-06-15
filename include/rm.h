@@ -573,6 +573,7 @@ struct rm {
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */
+    Bitfield(facing_right, 1);     /* flip picture to "face right" */
 
     Bitfield(roomno, 6); /* room # for special rooms */
     Bitfield(edge, 1);   /* marks boundaries for special rooms*/
