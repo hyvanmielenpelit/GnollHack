@@ -1820,12 +1820,12 @@ struct mkroom *croom;
 
     if (up)
     {
-        if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ))
+        if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ) || IS_DOOR(levl[x + 1][y].typ))
             levl[x][y].facing_right = TRUE;
     }
     else
     {
-        if (!isok(x - 1, y) || !IS_ROOM(levl[x - 1][y].typ))
+        if (!isok(x - 1, y) || !IS_ROOM(levl[x - 1][y].typ) || IS_DOOR(levl[x - 1][y].typ))
             levl[x][y].facing_right = TRUE;
     }
 }

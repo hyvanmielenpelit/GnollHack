@@ -111,13 +111,6 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "boulder-enlargement", 2,
-      BOULDER_ENLARGEMENT_FRAMES, BOULDER_ENLARGEMENT_OFF,
-      3, 1, 0,
-      { -1, -1, -1, 0, 1 },
-      { 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0 }
-    },
     { "dungeon-normal-upstairs-enlargement", 1,
       UPSTAIRS_ENLARGEMENT_FRAMES, UPSTAIRS_ENLARGEMENT_OFF,
       1, 2, 0,
@@ -558,7 +551,7 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_BOTTOM_TILE:
         {
             int below_y = y + 1;
-            if (!isok(x, below_y) || levl[x][below_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
+            if (!isok(x, below_y) || levl[x][below_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) || (IS_DOORJOIN(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV3 | SV4 | SV5 | SV6 | SV7)) == 0)
             {
                 /* No action */
             }
