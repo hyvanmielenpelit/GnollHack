@@ -63,7 +63,8 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
 {
     HFONT fnt = NULL;
     LOGFONT lgfnt;
-    int font_size;
+    int font_size = 14;
+    char* font_name = "Consolas";
     int font_index;
     static BOOL once = FALSE;
 
@@ -101,6 +102,7 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         lgfnt.lfClipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
         lgfnt.lfQuality = DEFAULT_QUALITY;           // output quality
         if (iflags.wc_font_status && *iflags.wc_font_status) {
+            font_name = iflags.wc_font_status;
             lgfnt.lfPitchAndFamily = DEFAULT_PITCH; // pitch and family
             NH_A2W(iflags.wc_font_status, lgfnt.lfFaceName, LF_FACESIZE);
         } else {
@@ -109,9 +111,8 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         break;
 
     case NHW_MENU:
-        lgfnt.lfHeight = -iflags.wc_fontsiz_menu
-                         * GetDeviceCaps(hdc, LOGPIXELSY)
-                         / 72;   // height of font
+        font_size = iflags.wc_fontsiz_menu;
+        lgfnt.lfHeight = -font_size * GetDeviceCaps(hdc, LOGPIXELSY) / 72;   // height of font
         lgfnt.lfWidth = 0;       // average character width
         lgfnt.lfEscapement = 0;  // angle of escapement
         lgfnt.lfOrientation = 0; // base-line orientation angle
@@ -128,6 +129,7 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         lgfnt.lfClipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
         lgfnt.lfQuality = DEFAULT_QUALITY;           // output quality
         if (iflags.wc_font_menu && *iflags.wc_font_menu) {
+            font_name = iflags.wc_font_menu;
             lgfnt.lfPitchAndFamily = DEFAULT_PITCH; // pitch and family
             NH_A2W(iflags.wc_font_menu, lgfnt.lfFaceName, LF_FACESIZE);
         } else {
@@ -156,6 +158,7 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         lgfnt.lfClipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
         lgfnt.lfQuality = DEFAULT_QUALITY;           // output quality
         if (iflags.wc_font_message && *iflags.wc_font_message) {
+            font_name = iflags.wc_font_message;
             lgfnt.lfPitchAndFamily = DEFAULT_PITCH; // pitch and family
             NH_A2W(iflags.wc_font_message, lgfnt.lfFaceName, LF_FACESIZE);
         } else {
@@ -164,9 +167,8 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         break;
 
     case NHW_TEXT:
-        lgfnt.lfHeight = -iflags.wc_fontsiz_text
-                         * GetDeviceCaps(hdc, LOGPIXELSY)
-                         / 72;   // height of font
+        font_size = iflags.wc_fontsiz_menu;
+        lgfnt.lfHeight = -font_size * GetDeviceCaps(hdc, LOGPIXELSY) / 72;   // height of font
         lgfnt.lfWidth = 0;       // average character width
         lgfnt.lfEscapement = 0;  // angle of escapement
         lgfnt.lfOrientation = 0; // base-line orientation angle
@@ -183,6 +185,7 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
         lgfnt.lfClipPrecision = CLIP_DEFAULT_PRECIS; // clipping precision
         lgfnt.lfQuality = DEFAULT_QUALITY;           // output quality
         if (iflags.wc_font_text && *iflags.wc_font_text) {
+            font_name = iflags.wc_font_text;
             lgfnt.lfPitchAndFamily = DEFAULT_PITCH; // pitch and family
             NH_A2W(iflags.wc_font_text, lgfnt.lfFaceName, LF_FACESIZE);
         } else {
@@ -210,6 +213,9 @@ mswin_get_font(int win_type, int attr, HDC hdc, BOOL replace)
     font_table[font_index].code = NHFONT_CODE(win_type, attr);
     font_table[font_index].hFont = fnt;
     font_table[font_index].supportsUnicode = winos_font_support_cp437(fnt);
+    font_table[font_index].size = (float)font_size;
+    strcpy(font_table[font_index].font_name, font_name);
+    font_table[font_index].font_attributes = attr;
 
     HGDIOBJ savedFont = SelectObject(hdc, fnt);
     SIZE size;

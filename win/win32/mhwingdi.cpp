@@ -5,6 +5,7 @@
  * Copyright (c) Janne Gustafsson, 2020
  */
 
+#include "win10.h"
 #include <windows.h>
 #include <objidl.h>
 #include <gdiplus.h>
@@ -123,29 +124,47 @@ extern "C" {
     }
 
     void
-    DrawTextToRectangle(HDC hDC, char* text, RECT* pDrawRect, LONG fontHeight, COLORREF color)
+    DrawTextToRectangle(HDC hDC, char* text, RECT* pDrawRect, char* font_name, float fontHeightinPoints, int font_attributes, COLORREF color, double monitorScale)
     {
         const size_t cSize = strlen(text) + 1;
         std::wstring wtext(cSize, L'#');
         mbstowcs(&wtext[0], text, cSize);
 
+        const size_t cSizeFontName = strlen(font_name) + 1;
+        std::wstring wtextfontname(cSizeFontName, L'#');
+        mbstowcs(&wtextfontname[0], font_name, cSizeFontName);
+
         Color clr;
         clr.SetFromCOLORREF(color);
         SolidBrush brush(clr);
 
-        Font myFont(L"Underwood Champion", fontHeight, FontStyleRegular, UnitPoint, pMainFontCollection);
-        //Font myFont(L"Kingthings Trypewriter 2", 14);
+        if (monitorScale == 0.0)
+            monitorScale = 1.0;
 
-        RectF lRect = RectF::RectF((REAL)pDrawRect->left, (REAL)pDrawRect->top, (REAL)(pDrawRect->right - pDrawRect->left), (REAL)(pDrawRect->bottom - pDrawRect->top));
+        enum Gdiplus::FontStyle fs = Gdiplus::FontStyle::FontStyleRegular;
+        if (font_attributes & 1 /*ATR_BOLD*/)
+        {
+            fs = Gdiplus::FontStyle::FontStyleBold;
+        }
+        else if (font_attributes & 4 /*ATR_ULINE*/)
+        {
+            fs = Gdiplus::FontStyle::FontStyleUnderline;
+        }
 
-        StringFormat strFormat;
-        strFormat.GenericDefault();
-        strFormat.SetAlignment(StringAlignment::StringAlignmentNear);
-        strFormat.SetLineAlignment(StringAlignment::StringAlignmentCenter);
+        Font myFont(wtextfontname.c_str(), (REAL)fontHeightinPoints, fs, UnitPoint, pMainFontCollection);
+
+        RectF lRect = RectF::RectF((REAL)pDrawRect->left, (REAL)pDrawRect->top, (REAL)((double)(pDrawRect->right - pDrawRect->left) * monitorScale), (REAL)((double)(pDrawRect->bottom - pDrawRect->top) * monitorScale));
+
+        StringFormat* pStrFormat = StringFormat::GenericTypographic()->Clone();
+        pStrFormat->SetAlignment(StringAlignment::StringAlignmentNear);
+        pStrFormat->SetLineAlignment(StringAlignment::StringAlignmentCenter);
 
         Graphics* pGraphics = Graphics::FromHDC(hDC);
-        pGraphics->DrawString(wtext.c_str(), (INT)(cSize - 1), &myFont, lRect, &strFormat, &brush);
+        pGraphics->SetTextRenderingHint(TextRenderingHintAntiAlias);
+        pGraphics->DrawString(wtext.c_str(), (INT)(cSize - 1), &myFont, lRect, pStrFormat, &brush);
 
+        //Pen pen(Color(255, 255, 255, 255));
+        //pGraphics->DrawRectangle(&pen, lRect);
     }
 
 #if 0

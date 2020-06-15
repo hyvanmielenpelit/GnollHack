@@ -16,6 +16,9 @@ typedef struct cached_font {
     int code;
     HFONT hFont;
     BOOL supportsUnicode;
+    float size;
+    char font_name[BUFSZ];
+    int font_attributes;
     int width;
     int height;
 } cached_font;

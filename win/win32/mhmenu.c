@@ -1024,9 +1024,8 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         }
     }
 
-//    int scrollwidth = GetSystemMetrics(SM_CXVSCROLL);
     /* set width to the window width, less scroll width */
-    lpmis->itemWidth = max(1, list_rect.right - list_rect.left); // -scrollwidth);
+    lpmis->itemWidth = list_rect.right - list_rect.left;
 
     SelectObject(hdc, saveFont);
     ReleaseDC(GetMenuControl(hWnd), hdc);
@@ -1244,7 +1243,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         DrawText(lpdis->hDC, NH_A2W(p1, wbuf, BUFSZ), strlen(p1), &drawRect,
                  DT_LEFT | DT_VCENTER | DT_SINGLELINE);
 
-        //DrawTextToRectangle(lpdis->hDC, p1, &drawRect, iflags.wc_fontsiz_menu-2, nhcolor_to_RGB(color));
+        //DrawTextToRectangle(lpdis->hDC, p1, &drawRect, font->font_name, font->size, font->font_attributes, nhcolor_to_RGB(color), monitorScale);
 
         if (p != NULL)
             *p = '\t';
