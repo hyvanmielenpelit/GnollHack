@@ -796,6 +796,13 @@ makelevel()
         makerooms();
     sort_rooms();
 
+    /* Make corridors and niches */
+    if (!Is_rogue_level(&u.uz))
+    {
+        makecorridors();
+        make_niches();
+    }
+
     /* construct stairs (up and down in different rooms if possible) */
     croom = &rooms[rn2(nroom)];
     if (!Is_botlevel(&u.uz))
@@ -822,8 +829,8 @@ makelevel()
                                          to allow a random special room */
     if (Is_rogue_level(&u.uz))
         goto skip0;
-    makecorridors();
-    make_niches();
+    //makecorridors();
+    //make_niches();
 
     /* make a secret treasure vault, not connected to the rest */
     if (do_vault()) {
@@ -1421,12 +1428,14 @@ xchar x, y; /* location */
         levl[x][y].typ = STAIRS;
         if (sstairs.up)
         {
-            if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
+            if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ))
+                levl[x][y].facing_right = TRUE;
+            if (isok(x - 1, y) && (IS_DOOR(levl[x - 1][y].typ) || levl[x - 1][y].typ == CORR))
                 levl[x][y].facing_right = TRUE;
         }
         else
         {
-            if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
+            if (!isok(x - 1, y) || levl[x + 1][y].typ < DOOR)
                 levl[x][y].facing_right = TRUE;
         }
     }
@@ -1820,7 +1829,9 @@ struct mkroom *croom;
 
     if (up)
     {
-        if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
+        if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ))
+            levl[x][y].facing_right = TRUE;
+        if (isok(x - 1, y) && (IS_DOOR(levl[x - 1][y].typ) || levl[x - 1][y].typ == CORR))
             levl[x][y].facing_right = TRUE;
     }
     else
