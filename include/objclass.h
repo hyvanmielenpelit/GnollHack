@@ -425,6 +425,7 @@ struct objclass {
 #define TARGETED 4  /*						targeted using throwspell */
 #define TOUCH 5     /*						like immediate but touch distance */
 #define IMMEDIATE_MULTIPLE_TARGETS 6 /*		directional but many targets in a line like a ray */
+#define IMMEDIATE_ONE_TO_THREE_TARGETS 7 /*		directional but 1 target for cursed, 2 targets for uncursed and 3 targets for blessed in a line like a ray */
 
 #define IMMEDIATE_ITEM_ARROW 1
 

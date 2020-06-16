@@ -2108,7 +2108,7 @@ TOOL("tooled horn",       "arched horn", None, None, TOOLTYPE_HORN, 0, 0, 1, ENC
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 SPELLTOOL("frost horn",   "spiral horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 SPELLTOOL("fire horn",    "curved horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL,  2, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELLTOOL("horn of conflict", "polished horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_HORN_NORMAL, 2, 18, 50, NODIR, 0, 0, 0, 0, 1, 10, 70, 0, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELLTOOL("horn of conflict", "polished horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_ALWAYS_5, 2, 18, 50, NODIR, 0, 0, 0, 0, 1, 10, 70, 0, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 TOOL("horn of plenty",    "twisted horn", None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_BAG_OF_TRICKS,  2, 18, 50, 300, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),//ENDMARKER FOR HORNS
         /* horn, but not an instrument */
@@ -2544,7 +2544,7 @@ SPELL("create iron golem", "iron-reinforced", None, "Creates a permanent iron go
 SPELL("create silver golem", "silvery", None, "Creates a permanent silver golem",
 	P_TRANSMUTATION_SPELL,		 4,   4,	     0,12,750, A_MAX_INT_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("polymorph",        "silver-plated", None, "Polymorphs monsters and items into something else",
-      P_TRANSMUTATION_SPELL,    5,  6,			 0, 6, 75, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+      P_TRANSMUTATION_SPELL,    5,  6,			 0, 6, 75, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE_ONE_TO_THREE_TARGETS, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_SILVER, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("lower water",			"obnoxious", None, "Evaporates water",
       P_TRANSMUTATION_SPELL,	5,  3,			 0, 5, 50, A_MAX_INT_WIS, 10, 0, 100, 0, 1, RAY, RAY_EVAPORATION, 6, 6, 0, 0, 0, 0, S1_NONE, CLR_RED, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("touch of petrification",   "convoluted", None, "Petrifies the target over a few rounds",
@@ -2995,7 +2995,7 @@ WAND("make invisible", "marble", None, CHARGED_WAND_NORMAL_DIR, 45, 150, 1, IMME
 WAND("slow monster",      "tin", None, CHARGED_2D6_8, 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 WAND("speed monster",   "brass", None, CHARGED_2D6_8, 50, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 WAND("undead turning", "copper", None, CHARGED_2D6_8, 45, 150, 1, IMMEDIATE, 0,  8, 0, 3, 6, 0, 1, 50, 200, S1_NONE, MAT_COPPER, HI_COPPER, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-WAND("polymorph",      "silver", None, CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0,  6, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_SILVER, HI_SILVER, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
+WAND("polymorph",      "silver", None, CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE_ONE_TO_THREE_TARGETS, 0,  6, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_SILVER, HI_SILVER, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 WAND("cancellation", "platinum", None, CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 1, 20, 30, S1_NONE, MAT_PLATINUM, CLR_WHITE, O1_LIGHTNING_RESISTANT | O1_POLYMORPH_RESISTANT | O1_DISINTEGRATION_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
 WAND("teleportation", "iridium", None, CHARGED_WAND_NORMAL_DIR, 45, 200, 1, IMMEDIATE, 0, 10, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, CLR_BRIGHT_CYAN, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 WAND("opening",          "zinc", None, CHARGED_WAND_NORMAL_DIR, 25, 150, 1, IMMEDIATE, 0, 12, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_METAL, HI_METAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),

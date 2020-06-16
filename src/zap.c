@@ -3365,15 +3365,18 @@ struct obj *obj, *otmp;
 
 /* returns nonzero if something was hit */
 int
-bhitpile(obj, fhito, tx, ty, zz, stop_at_first_hit_object)
+bhitpile(obj, fhito, tx, ty, zz, hit_only_one, stop_at_first_hit_object)
 struct obj *obj;
 int FDECL((*fhito), (OBJ_P, OBJ_P));
 int tx, ty;
 schar zz;
+uchar hit_only_one;
 boolean stop_at_first_hit_object;
 {
     int hitanything = 0;
     register struct obj *otmp, *next_obj;
+    int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
+    int bhitlimit = hit_only_one == 1 ? 1 : hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 0;
 
     if (obj->otyp == SPE_FORCE_BOLT || obj->otyp == WAN_STRIKING)
 	{
@@ -3392,6 +3395,10 @@ boolean stop_at_first_hit_object;
     poly_zapped = -1;
     for (otmp = level.objects[tx][ty]; otmp; otmp = next_obj) 
 	{
+        context.bhitcount++;
+        if (context.bhitcount > bhitlimit)
+            break;
+
         next_obj = otmp->nexthere;
         /* for zap downwards, don't hit object poly'd hero is hiding under */
         if (zz > 0 && u.uundetected && otmp == level.objects[u.ux][u.uy]
@@ -5462,6 +5469,12 @@ struct obj *obj; /* wand or spell */
     struct engr *e;
     struct trap *ttmp;
     char buf[BUFSZ];
+    context.bhitcount = 0;
+    uchar hit_only_one = TRUE;
+    if (objects[obj->otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
+        hit_only_one = FALSE;
+    if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
+        hit_only_one = 2; /* 1- 3 targets based on BUC status */
 
     /* some wands have special effects other than normal bhitpile */
     /* drawbridge might change <u.ux,u.uy> */
@@ -5476,7 +5489,7 @@ struct obj *obj; /* wand or spell */
         if (u.dz < 0) {
             You("probe towards the %s.", ceiling(x, y));
         } else {
-            ptmp += bhitpile(obj, bhito, x, y, u.dz, TRUE);
+            ptmp += bhitpile(obj, bhito, x, y, u.dz, hit_only_one, TRUE);
             You("probe beneath the %s.", surface(x, y));
             ptmp += display_binventory(x, y, TRUE);
         }
@@ -5599,7 +5612,8 @@ struct obj *obj; /* wand or spell */
 
 	if (u.dz > 0) {
 		/* zapping downward */
-		(void)bhitpile(obj, bhito, x, y, u.dz, (objects[obj->otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+        context.bhitcount = 0;
+        (void)bhitpile(obj, bhito, x, y, u.dz, hit_only_one, (objects[obj->otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
 
         /* subset of engraving effects; none sets `disclose' */
         if ((e = engr_at(x, y)) != 0 && e->engr_type != HEADSTONE) {
@@ -5690,7 +5704,7 @@ struct obj *obj;
     {
         disclose = TRUE;
     } 
-    else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS || objects[otyp].oc_dir == TOUCH)
+    else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS || objects[otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS || objects[otyp].oc_dir == TOUCH)
     {
         zapsetup(); /* reset obj_zapped */
         if (u.uswallow) 
@@ -5716,9 +5730,11 @@ struct obj *obj;
 			if (objects[otyp].oc_spell_radius > 0)
 				radius = objects[otyp].oc_spell_radius;
 
-			boolean hit_only_one = TRUE;
+			uchar hit_only_one = TRUE;
 			if (objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
 				hit_only_one = FALSE;
+            if (objects[otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
+                hit_only_one = 2; /* 1- 3 targets based on BUC status */
 
 			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
@@ -5955,7 +5971,7 @@ int FDECL((*fhitm), (MONST_P, OBJ_P)), /* fns called when mon/obj hit */
     FDECL((*fhito), (OBJ_P, OBJ_P));
 struct obj **pobj; /* object tossed/used, set to NULL
                     * if object is destroyed */
-boolean hit_only_one;
+uchar hit_only_one;
 boolean stop_at_first_hit_object;
 {
     struct monst *mtmp;
@@ -5965,6 +5981,9 @@ boolean stop_at_first_hit_object;
     boolean in_skip = FALSE, allow_skip = FALSE;
     boolean tethered_weapon = FALSE;
     int skiprange_start = 0, skiprange_end = 0, skipcount = 0;
+    context.bhitcount = 0;
+    int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
+    int bhitlimit = hit_only_one == 1 ? 1 : hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 0;
 
     if (weapon == KICKED_WEAPON || weapon == GOLF_SWING)
 	{
@@ -6188,10 +6207,11 @@ boolean stop_at_first_hit_object;
                 /* ZAPPED_WAND */
 				if (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !zapped_wand_beam)
 				{
-					if (hit_only_one)
+                    context.bhitcount++;
+                    if (hit_only_one && context.bhitcount >= bhitlimit)
 					{
-						tmp_at(DISP_END, 0);
-						beam_cleared_off = TRUE;
+                        tmp_at(DISP_END, 0);
+                        beam_cleared_off = TRUE;
 					}
 					else
 						tmp_at(bhitpos.x, bhitpos.y);
@@ -6220,7 +6240,7 @@ boolean stop_at_first_hit_object;
 				}
 				if (had_effect)
 				{
-					if (hit_only_one)
+					if (hit_only_one && context.bhitcount >= bhitlimit)
 						break;
 					else
 						range -= 3;
@@ -6238,7 +6258,7 @@ boolean stop_at_first_hit_object;
         }
         if (fhito)
 		{
-			if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, stop_at_first_hit_object))
+			if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
 			{
 				if (stop_at_first_hit_object)
 					break;

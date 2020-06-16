@@ -4318,6 +4318,7 @@ struct obj *obj;
     int expltype = EXPL_MAGICAL;
     char confirm[QBUFSZ], buf[BUFSZ];
     boolean is_fragile = (!strcmp(OBJ_DESCR(objects[obj->otyp]), "balsa"));
+    context.bhitcount = 0;
 
     if (!paranoid_query(ParanoidBreakwand,
                        safe_qbuf(confirm,
@@ -4365,6 +4366,14 @@ struct obj *obj;
     obj->oy = u.uy;
     dmg = obj->charges * 4;
     affects_objects = FALSE;
+
+    uchar hit_only_one = TRUE;
+    if (objects[obj->otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
+        hit_only_one = FALSE;
+    if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
+        hit_only_one = 2; /* 1- 3 targets based on BUC status */
+
+
 
     switch (obj->otyp) {
     case WAN_WISHING:
@@ -4481,7 +4490,7 @@ struct obj *obj;
                 /* if (context.botl) bot(); */
             }
             if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, bhito, x, y, 0, FALSE);
+                (void) bhitpile(obj, bhito, x, y, 0, hit_only_one, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }
@@ -4499,7 +4508,7 @@ struct obj *obj;
              * since it's also used by retouch_equipment() for polyself.)
              */
             if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, bhito, x, y, 0, FALSE);
+                (void) bhitpile(obj, bhito, x, y, 0, hit_only_one, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }
