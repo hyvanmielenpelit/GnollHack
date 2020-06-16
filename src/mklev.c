@@ -1421,12 +1421,12 @@ xchar x, y; /* location */
         levl[x][y].typ = STAIRS;
         if (sstairs.up)
         {
-            if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ))
+            if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
                 levl[x][y].facing_right = TRUE;
         }
         else
         {
-            if (!isok(x - 1, y) || !IS_ROOM(levl[x - 1][y].typ))
+            if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
                 levl[x][y].facing_right = TRUE;
         }
     }
@@ -1820,12 +1820,12 @@ struct mkroom *croom;
 
     if (up)
     {
-        if (!isok(x + 1, y) || !IS_ROOM(levl[x + 1][y].typ) || IS_DOOR(levl[x + 1][y].typ))
+        if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)
             levl[x][y].facing_right = TRUE;
     }
     else
     {
-        if (!isok(x - 1, y) || !IS_ROOM(levl[x - 1][y].typ) || IS_DOOR(levl[x - 1][y].typ))
+        if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
             levl[x][y].facing_right = TRUE;
     }
 }

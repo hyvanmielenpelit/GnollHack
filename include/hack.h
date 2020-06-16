@@ -675,7 +675,7 @@ static const char empty_string[] = "";
     { base_cmap_to_glyph(S_unexplored),\
         NO_GLYPH,\
         { base_cmap_to_glyph(S_unexplored),NO_GLYPH,NO_GLYPH,NO_GLYPH,\
-          NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
+          NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \
         0UL, (genericptr_t)0, (struct obj*)0, 0 \

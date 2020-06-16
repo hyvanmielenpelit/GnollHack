@@ -956,7 +956,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         boolean skip_darkening = FALSE;
         int base_layer = draw_order[draw_index].layer; //layer_idx; // layer_array[layer_idx];
         int layer_rounds = 1;
-        if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+        if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
             layer_rounds = MAX_SHOWN_OBJECTS;
 
         /*
@@ -1026,7 +1026,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     int relevant_i = i;
                     int relevant_j = enl_j;
                     boolean side_not_ok = FALSE;
-                    if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
+                    if ((IS_ROCK(level.locations[relevant_i][relevant_j].typ) && !IS_TREE(level.locations[relevant_i][relevant_j].typ))
                         || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                         || data->map[relevant_i][relevant_j].glyph == S_unexplored
                         || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
@@ -1038,7 +1038,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     relevant_j = j;
                     if (relevant_j < enl_j)
                     {
-                        if (IS_ROCK(level.locations[relevant_i][relevant_j].typ)
+                        if ((IS_ROCK(level.locations[relevant_i][relevant_j].typ) && !IS_TREE(level.locations[relevant_i][relevant_j].typ))
                             || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                             || data->map[relevant_i][relevant_j].glyph == S_unexplored
                             || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
@@ -1061,7 +1061,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_objchn : level.objects[enl_i][enl_j];
 
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
-            if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+            if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
             {
 //                if (covers_objects(enl_i, enl_j))
 //                    break; /* next layer, nothing to draw here */
@@ -1081,7 +1081,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 struct obj* otmp_round = otmp;
 
 
-                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
                 {
                     otmp_round = obj_pile[MAX_SHOWN_OBJECTS - 1 - layer_round];
 
@@ -1091,7 +1091,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
 
                 boolean draw_in_front = (otmp_round && is_obj_drawn_in_front(otmp_round) /* && otmp_round->ox == u.ux && otmp_round->oy == u.uy */);
-                if (base_layer == LAYER_COVER && !draw_in_front)
+                if (base_layer == LAYER_COVER_OBJECT && !draw_in_front)
                     continue; /* next round */
                 if (base_layer == LAYER_OBJECT && draw_in_front)
                     continue; /* next round */
@@ -1099,7 +1099,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
-                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER)
+                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
                     signed_glyph = otmp_round->glyph == NO_GLYPH || otmp_round->glyph == 0 ? NO_GLYPH : otmp_round->glyph;
                 else
                     signed_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
@@ -2329,7 +2329,7 @@ static void dirty(PNHMapWindow data, int x, int y)
     {
         int layer_rounds = 1;
         struct obj* otmp = (struct obj*)0;
-        if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER)
+        if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
         {
             layer_rounds = MAX_SHOWN_OBJECTS;
             if(!cansee(x, y) || (data->map[x][y].layer_flags & LFLAGS_SHOWING_MEMORY))
@@ -2348,7 +2348,7 @@ static void dirty(PNHMapWindow data, int x, int y)
                 enlarg = tile2enlargement[tile];
             else if(layer_idx == -2)
                 enlarg = tile2enlargement[bktile];
-            else if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER)
+            else if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
             {
                 if(otmp)
                     enlarg = tile2enlargement[glyph2tile[abs(obj_to_glyph(otmp, rn2_on_display_rng))]];

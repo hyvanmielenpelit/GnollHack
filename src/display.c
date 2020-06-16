@@ -259,16 +259,27 @@ register int show;
     int symbol_index = glyph_to_cmap(glyph);
     int new_floor_glyph = NO_GLYPH;
     int new_feature_glyph = NO_GLYPH;
+    int new_cover_feature_glyph = NO_GLYPH;
 
-    if (defsyms[symbol_index].layer == LAYER_FEATURE)
+    if (defsyms[symbol_index].layer != LAYER_FLOOR)
     {
         new_floor_glyph = get_floor_layer_glyph(x, y);
-        new_feature_glyph = glyph;
+        if (defsyms[symbol_index].layer == LAYER_FEATURE)
+        {
+            new_feature_glyph = glyph;
+            new_cover_feature_glyph = NO_GLYPH;
+        }
+        else
+        {
+            new_feature_glyph = NO_GLYPH;
+            new_cover_feature_glyph = glyph;
+        }
     }
     else
     {
         new_floor_glyph = glyph;
         new_feature_glyph = NO_GLYPH;
+        new_cover_feature_glyph = NO_GLYPH;
     }
 
     if (level.flags.hero_memory)
@@ -276,17 +287,20 @@ register int show;
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
     }
 
     if (show)
     {
         int floor_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR];
         int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
+        int cover_feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE];
         unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
 
-        if (floor_glyph_before != new_floor_glyph || feature_glyph_before != new_feature_glyph)
+        if (floor_glyph_before != new_floor_glyph || feature_glyph_before != new_feature_glyph || cover_feature_glyph_before != new_cover_feature_glyph)
         {
             gbuf[y][x].new = 1;
             if (gbuf_start[y] > x)
@@ -342,7 +356,7 @@ register int show;
     register int x = obj->ox, y = obj->oy;
     register int glyph = obj_to_glyph(obj, newsym_rn2);
     boolean draw_in_front = is_obj_drawn_in_front(obj);
-    enum layer_types layer = draw_in_front ? LAYER_COVER : LAYER_OBJECT;
+    enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
 
     if (level.flags.hero_memory) 
     {
@@ -1302,7 +1316,7 @@ int damage_shown;
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
 
             /* Floor to cover layer, monster layer replaced below, if needed */
-            for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER; layer_idx++)
+            for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER_FEATURE; layer_idx++)
             {
                 show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }
@@ -1998,7 +2012,7 @@ docrt()
             {
                 show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
-                for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER; layer_idx++)
+                for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER_OBJECT; layer_idx++)
                     show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }
     }
@@ -2323,7 +2337,7 @@ boolean remove;
             int obj_idx = glyph_to_obj(glyph);
 
             if (is_otyp_drawn_in_front(obj_idx))
-                gbuf[y][x].layers.layer_glyphs[LAYER_COVER] = remove ? NO_GLYPH : glyph;
+                gbuf[y][x].layers.layer_glyphs[LAYER_COVER_OBJECT] = remove ? NO_GLYPH : glyph;
             else
                 gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = remove ? NO_GLYPH : glyph;
 
