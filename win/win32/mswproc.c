@@ -3174,11 +3174,15 @@ mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, 
 
         /* if we received an update for the hp field, we must update the
          * bar percent and bar color for the title string */
-        if (idx == BL_HP) {
+        if (idx == BL_HP || idx == BL_HPMAX)
+        {
             mswin_status_string * title_string = &_status_strings[BL_TITLE];
 
-            title_string->bar_color = color & 0xff;
-            title_string->bar_attribute = (color >> 8) & 0xff;
+            if (idx == BL_HP)
+            {
+                title_string->bar_color = color & 0xff;
+                title_string->bar_attribute = (color >> 8) & 0xff;
+            }
             title_string->bar_percent = percent;
 
         }

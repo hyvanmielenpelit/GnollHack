@@ -195,9 +195,11 @@ unsigned long *colormasks;
             vert_status_dirty = 1;
 
             curses_status_colors[fldidx] = color_and_attr;
-            if (iflags.wc2_hitpointbar && fldidx == BL_HP) {
+            if (iflags.wc2_hitpointbar && (fldidx == BL_HP || fldidx == BL_HPMAX))
+            {
                 hpbar_percent = percent;
-                hpbar_color = color_and_attr;
+                if(fldidx == BL_HP)
+                    hpbar_color = color_and_attr;
             }
         }
     } else { /* BL_FLUSH */

@@ -4123,11 +4123,15 @@ unsigned long *colormasks;
     /* default processing above was required before these */
     switch (fldidx) {
     case BL_HP:
+    case BL_HPMAX:
         if (iflags.wc2_hitpointbar) {
             /* Special additional processing for hitpointbar */
             hpbar_percent = percent;
-            hpbar_color = (color & 0x00FF);
-            tty_status[NOW][BL_TITLE].color = hpbar_color;
+            if (fldidx == BL_HP)
+            {
+                hpbar_color = (color & 0x00FF);
+                tty_status[NOW][BL_TITLE].color = hpbar_color;
+            }
             tty_status[NOW][BL_TITLE].dirty = TRUE;
         }
         break;

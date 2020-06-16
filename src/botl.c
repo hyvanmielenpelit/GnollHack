@@ -488,6 +488,7 @@ struct istat_s {
     char *val;
     int valwidth;
     enum statusfields idxmax;
+    enum statusfields idxcurr;
     enum statusfields fld;
 #ifdef STATUS_HILITES
     struct hilite_s *hilite_rule; /* the entry, if any, in 'thresholds'
@@ -549,10 +550,13 @@ STATIC_DCL boolean FDECL(status_hilite_menu_add, (int));
 
 #define INIT_BLSTAT(name, fmtstr, anytyp, wid, fld)                     \
     { name, fmtstr, 0L, FALSE, anytyp,  { (genericptr_t) 0 }, (char *) 0, \
-      wid,  -1, fld INIT_THRESH }
+      wid,  -1, -1, fld INIT_THRESH }
 #define INIT_BLSTATP(name, fmtstr, anytyp, wid, maxfld, fld)            \
     { name, fmtstr, 0L, FALSE, anytyp,  { (genericptr_t) 0 }, (char *) 0, \
-      wid,  maxfld, fld INIT_THRESH }
+      wid,  maxfld, -1, fld INIT_THRESH }
+#define INIT_BLSTATM(name, fmtstr, anytyp, wid, currfld, fld)            \
+    { name, fmtstr, 0L, FALSE, anytyp,  { (genericptr_t) 0 }, (char *) 0, \
+      wid,  -1, currfld, fld INIT_THRESH }
 
 /* If entries are added to this, botl.h will require updating too */
 STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
@@ -568,7 +572,7 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     INIT_BLSTAT("score", " S:%s", ANY_LONG, 20, BL_SCORE),
     INIT_BLSTAT("carrying-capacity", " %s", ANY_INT, 20, BL_CAP),
     INIT_BLSTATP("power", " MP:%s", ANY_INT, 10, BL_ENEMAX, BL_ENE),
-    INIT_BLSTAT("power-max", "(%s)", ANY_INT, 10, BL_ENEMAX),
+    INIT_BLSTATM("power-max", "(%s)", ANY_INT, 10, BL_ENE, BL_ENEMAX),
     INIT_BLSTAT("experience-level", " XL:%s", ANY_INT, 10, BL_XP),
 	INIT_BLSTAT("two-weapon-fighting", " %s", ANY_INT, 10, BL_2WEP),
 	INIT_BLSTAT("skill-availability", " %s", ANY_INT, 10, BL_SKILL),
@@ -580,7 +584,7 @@ STATIC_VAR struct istat_s initblstats[MAXBLSTATS] = {
     /* hunger used to be 'ANY_UINT'; see note below in bot_via_windowport() */
     INIT_BLSTAT("hunger", " %s", ANY_INT, 40, BL_HUNGER),
     INIT_BLSTATP("hitpoints", " HP:%s", ANY_INT, 10, BL_HPMAX, BL_HP),
-    INIT_BLSTAT("hitpoints-max", "(%s)", ANY_INT, 10, BL_HPMAX),
+    INIT_BLSTATM("hitpoints-max", "(%s)", ANY_INT, 10, BL_HP, BL_HPMAX),
     INIT_BLSTAT("dungeon-level", "%s", ANY_STR, MAXVALWIDTH, BL_LEVELDESC),
     INIT_BLSTAT("experience", "/%s", ANY_LONG, 20, BL_EXP),
     INIT_BLSTAT("condition", "%s", ANY_MASK32, 0, BL_CONDITION),
@@ -1112,7 +1116,7 @@ boolean *valsetlist;
     unsigned anytype;
     boolean updated = FALSE, reset;
     struct istat_s *curr = NULL, *prev = NULL;
-    enum statusfields idxmax;
+    enum statusfields idxmax, idxcurr;
 
     /*
      *  Now pass the changed values to window port.
@@ -1174,7 +1178,12 @@ boolean *valsetlist;
     if (update_all || chg || reset) 
 	{
         idxmax = curr->idxmax;
-        pc = (idxmax >= 0) ? percentage(curr, &blstats[idx][idxmax]) : 0;
+        idxcurr = curr->idxcurr;
+        pc = 0;
+        if(idxmax >= 0)
+            pc = percentage(curr, &blstats[idx][idxmax]);
+        else if(idxcurr >=0)
+            pc = percentage(&blstats[idx][idxcurr], curr);
 
         if (!valsetlist[fld])
             (void) anything_to_s(curr->val, &curr->a, anytype);

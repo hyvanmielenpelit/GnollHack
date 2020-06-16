@@ -355,9 +355,11 @@ unsigned long *colormasks;
                     status_fieldfmt[fld] ? status_fieldfmt[fld] : "%s",
                     text);
             X11_status_colors[fld] = color;
-            if (iflags.wc2_hitpointbar && fld == BL_HP) {
+            if (iflags.wc2_hitpointbar && (fld == BL_HP || fld == BL_HPMAX)) 
+            {
                 hpbar_percent = percent;
-                hpbar_color = color;
+                if(fld == BL_HP)
+                    hpbar_color = color;
              }
              break;
         }
