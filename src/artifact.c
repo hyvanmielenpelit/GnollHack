@@ -830,11 +830,11 @@ struct monst *mtmp;
         switch (weap->attk.adtyp) 
 		{
         case AD_FIRE:
-            return !(yours ? Fire_resistance : resists_fire(mtmp));
+            return !(yours ? Fire_immunity : is_mon_immune_to_fire(mtmp));
         case AD_COLD:
-            return !(yours ? Cold_resistance : resists_cold(mtmp));
+            return !(yours ? Cold_immunity : is_mon_immune_to_cold(mtmp));
         case AD_ELEC:
-            return !(yours ? Shock_resistance : resists_elec(mtmp));
+            return !(yours ? Shock_immunity : is_mon_immune_to_elec(mtmp));
 		case AD_DISN:
 			return !(yours ? Disint_resistance : resists_disint(mtmp));
 		case AD_DRAY:
@@ -876,17 +876,17 @@ int dmgtype;
 	switch (dmgtype)
 	{
 	case AD_MAGM:
-		return (yours ? (Antimagic || Magic_missile_resistance) : (resists_magic(mtmp) || resists_magicmissile(mtmp)));
+		return (yours ? (Antimagic || Magic_missile_immunity) : (resists_magic(mtmp) || is_mon_immune_to_magic_missile(mtmp)));
 	case AD_FIRE:
-		return (yours ? Fire_resistance : resists_fire(mtmp));
+		return (yours ? Fire_immunity : is_mon_immune_to_fire(mtmp));
 	case AD_COLD:
-		return (yours ? Cold_resistance : resists_cold(mtmp));
+		return (yours ? Cold_immunity : is_mon_immune_to_cold(mtmp));
 	case AD_SLEE:
 		return (yours ? Sleep_resistance : resists_sleep(mtmp));
 	case AD_DISN:
 		return (yours ? Disint_resistance : resists_disint(mtmp));
 	case AD_ELEC:
-		return (yours ? Shock_resistance : resists_elec(mtmp));
+		return (yours ? Shock_immunity : is_mon_immune_to_elec(mtmp));
 	case AD_DRST:
 		return (yours ? Poison_resistance : resists_poison(mtmp));
 	case AD_ACID:
@@ -1651,7 +1651,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		|| (youattack && mdef == u.ustuck));
 
 	/* the four basic attacks: fire, cold, shock and missiles will implemented elsewhere */
-	if (!(youdefend ? Fire_resistance : resists_fire(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_FIRE || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_FIRE)))
+	if (!(youdefend ? Fire_immunity : is_mon_immune_to_fire(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_FIRE || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_FIRE)))
 	{
 		if (realizes_damage)
 			pline("%s %s %s%c",
@@ -1669,7 +1669,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		if (youdefend && Slimed)
 			burn_away_slime();
 	}
-	if (!(youdefend ? Cold_resistance : resists_cold(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_COLD || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_COLD)))
+	if (!(youdefend ? Cold_immunity : is_mon_immune_to_cold(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_COLD || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_COLD)))
 	{
 		if (realizes_damage)
 			pline("%s %s %s%c", The(xname(otmp)),
@@ -1678,7 +1678,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		if (!rn2(4))
 			(void)destroy_mitem(mdef, POTION_CLASS, AD_COLD);
 	}
-	if (!(youdefend ? Shock_resistance : resists_elec(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_ELEC || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_ELEC)))
+	if (!(youdefend ? Shock_immunity : is_mon_immune_to_elec(mdef)) && (objects[otmp->otyp].oc_damagetype == AD_ELEC || (extradamagedone && objects[otmp->otyp].oc_extra_damagetype == AD_ELEC)))
 	{
 		if (realizes_damage)
 			pline("The electrical energies of %s jolt %s%c", the(xname(otmp)),
@@ -2118,10 +2118,10 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 
 				if (
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE
-					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mdef)))
+					&& ((objects[otmp->otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_immunity : is_mon_immune_to_fire(mdef)))
 						|| ((objects[otmp->otyp].oc_aflags & A1_MAGIC_RESISTANCE_PROTECTS) ? check_magic_resistance_and_inflict_damage(mdef, (struct obj*)0, FALSE, 0, 0, NOTELL) : 0)
-						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mdef)))
-						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mdef)))))
+						|| (objects[otmp->otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_immunity : is_mon_immune_to_cold(mdef)))
+						|| (objects[otmp->otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_immunity : is_mon_immune_to_elec(mdef)))))
 					||
 					((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK
 						&& ((youdefend ? Death_resistance : resists_death(mdef))
@@ -2955,18 +2955,22 @@ struct abil2adtyp_tag {
 	int prop;
 	uchar adtyp;
 } abil2adtyp[] = {
-	{ FIRE_RES, AD_FIRE },
-	{ COLD_RES, AD_COLD },
-	{ SHOCK_RES, AD_ELEC },
+	{ FIRE_IMMUNITY, AD_FIRE },
+	{ COLD_IMMUNITY, AD_COLD },
+	{ SHOCK_IMMUNITY, AD_ELEC },
 	{ DEATH_RES, AD_DRAY },
 	{ LYCANTHROPY_RES, AD_WERE },
-	{ MAGIC_MISSILE_RES, AD_MAGM },
+	{ MAGIC_MISSILE_IMMUNITY, AD_MAGM },
 	{ DISINT_RES, AD_DISN },
 	{ POISON_RES, AD_DRST },
 	{ DRAIN_RES, AD_DRLI },
 	{ FLASH_RES, AD_BLND },
 	{ STONE_RES, AD_STON },
 	{ STUN_RES, AD_STUN },
+	{ FIRE_RESISTANCE, AD_FIRE },
+	{ COLD_RESISTANCE, AD_COLD },
+	{ SHOCK_RESISTANCE, AD_ELEC },
+	{ MAGIC_MISSILE_RESISTANCE, AD_MAGM },
 };
 
 uchar
@@ -3013,7 +3017,7 @@ static const struct abil2spfx_tag {
 	/* SPFX_LUCK not here */
 	{ XRAY_VISION, SPFX_XRAY },
 	{ REFLECTING, SPFX_REFLECT },
-	{ DIVINE_PROTECTION, SPFX_PROTECT },
+	{ MAGICAL_PROTECTION, SPFX_PROTECT },
 	{ AGGRAVATE_MONSTER, SPFX_AGGRAVATE_MONSTER },
 	/* SPFX_UNLUCK not here */
 	{ BLOCKS_BLINDNESS, SPFX_BLIND_SEEING },

@@ -55,11 +55,11 @@ const struct propname {
 	/* properties beyond here don't have timed values during normal play,
 	   so there's not much point in trying to order them sensibly;
 	   they're either on or off based on equipment, role, actions, &c */
-	{ FIRE_RES, "resistant to fire", "fire resistance" },
-	{ COLD_RES, "resistant to cold", "cold resistance" },
+	{ FIRE_IMMUNITY, "immune to fire", "fire immunity" },
+	{ COLD_IMMUNITY, "immune to cold", "cold immunity" },
 	{ SLEEP_RES, "resistant to sleep", "sleep resistance" },
 	{ DISINT_RES, "resistant to disintegration", "disintegration resistance" },
-	{ SHOCK_RES, "resistant to shock", "shock resistance" },
+	{ SHOCK_IMMUNITY, "immune to shock", "shock immunity" },
 	{ POISON_RES, "resistant to poison", "poison resistance" },
 	{ ACID_RES, "resistant to acid", "acid resistance" },
 	{ STONE_RES, "resistant to stoning", "stoning resistance" },
@@ -92,7 +92,7 @@ const struct propname {
 	{ HALF_PHYSICAL_DAMAGE, "receiving half physical damage", "half physical damage" },
 	{ REGENERATION, "regenerating", "regeneration" },
 	{ ENERGY_REGENERATION, "regenerating mana", "mana regeneration" },
-	{ DIVINE_PROTECTION, "extra protected", "extra protection" },
+	{ MAGICAL_PROTECTION, "magically protected", "magical protection" },
 	{ PROT_FROM_SHAPE_CHANGERS, "protected from shape changers", "protection from shape changers" },
 	{ POLYMORPH_CONTROL, "controlling polymorphing", "polymorph control" },
 	{ UNCHANGING, "unchanging", "unchange" },
@@ -147,8 +147,8 @@ const struct propname {
 	{ LEVITATION_CONTROL, "controlling levitation", "levitation control" },
 	{ FIRE_VULNERABILITY, "vulnerable to fire", "fire vulnerability" },
 	{ COLD_VULNERABILITY, "vulnerable to cold", "cold vulnerability" },
-	{ ELEC_VULNERABILITY, "vulnerable to electricity", "electricity vulnerability" },
-	{ MAGM_VULNERABILITY, "vulnerable to magic damage", "magic damage vulnerability" },
+	{ SHOCK_VULNERABILITY, "vulnerable to electricity", "electricity vulnerability" },
+	{ MAGIC_MISSILE_VULNERABILITY, "vulnerable to magic damage", "magic damage vulnerability" },
 	{ DOUBLE_PHYSICAL_DAMAGE, "receiving double physical damage", "double physical damage" },
 	{ DOUBLE_SPELL_DAMAGE, "receiving double spell damage", "double spell damage" },
 	{ ENHANCED_UNTRAP, "enhanced in untrapping", "enhanced untrapping" },
@@ -158,7 +158,7 @@ const struct propname {
 	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
 	{ TITAN_STRENGTH, "as strong as a titan", "strength equivalent of a titan" },
-    { MAGIC_MISSILE_RES, "resistant to magic missiles", "magic missile resistance" },
+    { MAGIC_MISSILE_IMMUNITY, "immune to magic missiles", "magic missile immunity" },
 	{ STUN_RES, "stun resistant", "stun resistance" },
 	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
 	{ BISECTION_RES, "protected from bisection", "protection from bisection" },
@@ -168,6 +168,10 @@ const struct propname {
     { DIVINE_WISDOM, "having as high wisdom as a demigod", "wisdom equivalent of a demigod" },
     { DIVINE_CHARISMA, "having as high charisma as a demigod", "charisma equivalent of a demigod" },
     { MUMMY_ROT, "contracted with mummy rot", "mummy rot" },
+    { FIRE_RESISTANCE, "resistant to fire", "fire resistance" },
+    { COLD_RESISTANCE, "resistant to cold", "cold resistance" },
+    { SHOCK_RESISTANCE, "resistant to shock", "shock resistance" },
+    { MAGIC_MISSILE_RESISTANCE, "resistant to magic missiles", "magic missile resistance" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -1128,19 +1132,31 @@ nh_timeout()
 				if (!Reflecting)
 					Your("skin feels less reflecting than before.");
 				break;
-			case FIRE_RES:
-				if (!Fire_resistance)
+			case FIRE_IMMUNITY:
+				if (!Fire_immunity)
 					Your("skin feels more prone to burning than before.");
 				break;
-			case COLD_RES:
-				if (!Cold_resistance)
+			case COLD_IMMUNITY:
+				if (!Cold_immunity)
 					Your("skin feels more prone to frostbites than before.");
 				break;
-			case SHOCK_RES:
-				if (!Shock_resistance)
+			case SHOCK_IMMUNITY:
+				if (!Shock_immunity)
 					Your("skin feels more prone to electricity than before.");
 				break;
-			case DISINT_RES:
+            case FIRE_RESISTANCE:
+                if (!Fire_resistance)
+                    Your("skin feels more prone to burning than before.");
+                break;
+            case COLD_RESISTANCE:
+                if (!Cold_resistance)
+                    Your("skin feels more prone to frostbites than before.");
+                break;
+            case SHOCK_RESISTANCE:
+                if (!Shock_resistance)
+                    Your("skin feels more prone to electricity than before.");
+                break;
+            case DISINT_RES:
 				if (!Disint_resistance)
 					Your("body feels less firm than before.");
 				break;
@@ -1172,11 +1188,15 @@ nh_timeout()
 				if (!Antimagic)
 					You("feel less protected from magic.");
 				break;
-			case MAGIC_MISSILE_RES:
-				if (!Magic_missile_resistance)
+			case MAGIC_MISSILE_IMMUNITY:
+				if (!Magic_missile_immunity)
 					You("feel less protected from magic missiles.");
 				break;
-			case CANCELLED:
+            case MAGIC_MISSILE_RESISTANCE:
+                if (!Magic_missile_resistance)
+                    You("feel less protected from magic missiles.");
+                break;
+            case CANCELLED:
 				if (!Cancelled)
 					You("feel your magic is flowing more normally.");
 				break;
@@ -1272,8 +1292,8 @@ nh_timeout()
 				if (!Conflict)
 					Your("neighborhood feels less quarrelsome than before.");
 				break;
-			case DIVINE_PROTECTION:
-				if (!Divine_protection)
+			case MAGICAL_PROTECTION:
+				if (!Magical_protection)
 					You_feel("less protected than before.");
 				break;
 			case MAGICAL_SHIELDING:
@@ -1355,16 +1375,25 @@ nh_timeout()
 			case REFLECTING:
 				Your("skin is starting to feel less reflecting than before.");
 				break;
-			case FIRE_RES:
+			case FIRE_IMMUNITY:
 				Your("skin is starting to feel more prone to burning than before.");
 				break;
-			case COLD_RES:
+			case COLD_IMMUNITY:
 				Your("skin is starting to feel more prone to frostbites than before.");
 				break;
-			case SHOCK_RES:
+			case SHOCK_IMMUNITY:
 				Your("skin is starting to feel more prone to electricity than before.");
 				break;
-			case DISINT_RES:
+            case FIRE_RESISTANCE:
+                Your("skin is starting to feel more prone to burning than before.");
+                break;
+            case COLD_RESISTANCE:
+                Your("skin is starting to feel more prone to frostbites than before.");
+                break;
+            case SHOCK_RESISTANCE:
+                Your("skin is starting to feel more prone to electricity than before.");
+                break;
+            case DISINT_RES:
 				Your("body is starting to feel less firm than before.");
 				break;
 			case POISON_RES:
@@ -1388,10 +1417,13 @@ nh_timeout()
 			case ANTIMAGIC:
 				You("are starting to feel less protected from magic.");
 				break;
-			case MAGIC_MISSILE_RES:
+			case MAGIC_MISSILE_IMMUNITY:
 				You("are starting to feel less protected from magic missiles.");
 				break;
-			case CANCELLED:
+            case MAGIC_MISSILE_RESISTANCE:
+                You("are starting to feel less protected from magic missiles.");
+                break;
+            case CANCELLED:
 				You("feel your magic is starting to flow more normally.");
 				break;
 			case THREE_FOURTHS_MAGIC_RES:
@@ -1469,7 +1501,7 @@ nh_timeout()
 			case CONFLICT:
 				Your("neighborhood is starting to feel less quarrelsome than before.");
 				break;
-			case DIVINE_PROTECTION:
+			case MAGICAL_PROTECTION:
 				You("are starting to feel less protected than before.");
 				break;
 			case MAGICAL_SHIELDING:
@@ -2865,7 +2897,7 @@ wiz_timeout_queue()
             if ((ln = (int) strlen(propname)) > longestlen)
                 longestlen = ln;
         }
-        if (specindx == 0 && p == FIRE_RES)
+        if (specindx == 0 && p == FIRE_IMMUNITY)
             specindx = i;
     }
     putstr(win, 0, "");

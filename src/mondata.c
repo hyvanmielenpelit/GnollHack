@@ -14,47 +14,52 @@
 struct ability_conversion_table {
 	int prop;
 	unsigned long innate;
-	unsigned long conveyed;
+    unsigned long innate2;
+    unsigned long conveyed;
 	int adtype;
 };
 
 
 static NEARDATA struct ability_conversion_table prop2innate[] = {
-	{ FIRE_RES, MR_FIRE, MC_FIRE, AD_FIRE },
-	{ COLD_RES, MR_COLD, MC_COLD, AD_COLD },
-	{ SLEEP_RES, MR_SLEEP, MC_SLEEP, AD_SLEE },
-	{ DISINT_RES, MR_DISINT, MC_DISINT, AD_DISN },
-	{ SHOCK_RES, MR_ELEC, MC_ELEC, AD_ELEC },
-	{ POISON_RES, MR_POISON, MC_POISON, AD_DRST },
-	{ ACID_RES, MR_ACID, MC_ACID, AD_ACID  },
-	{ STONE_RES, MR_STONE, MC_STONE, AD_STON  },
-	{ DEATH_RES, MR_DEATH, MC_DEATH, AD_DETH },
-	{ LYCANTHROPY_RES, MR_LYCANTHROPY, MC_NONE, AD_WERE },
-	{ MAGIC_MISSILE_RES, MR_MAGIC_MISSILE, MC_NONE, AD_MAGM },
-	{ STUN_RES, MR_STUN, MC_NONE, AD_STUN },
-	{ ANTIMAGIC, MR_MAGIC, MC_NONE, -1  },
-	{ CHARM_RES, MR_CHARM, MC_CHARM, AD_SSEX },
-	{ CHARM_RES, MR_CHARM, MC_CHARM, AD_SEDU }, /* Doubles for AD_SEDU*/
-	{ HALLUC_RES, MR_NONE, MC_NONE, AD_HALU },
-	{ FEAR_RES, MR_FEAR, MC_FEAR, -1 },
-	{ SICK_RES, MR_SICK, MC_SICK, AD_DISE },
-    { SICK_RES, MR_SICK, MC_SICK, AD_ROTS }, /* Doubles for AD_ROTS */
-    { DRAIN_RES, MR_DRAIN, MC_DRAIN, AD_DRLI },
-	{ FLASH_RES, MR_FLASH, MC_NONE, AD_BLND },
-	{ REFLECTING, MR_REFLECTING, MC_NONE, -1 },
-	{ INVISIBILITY, MR_INVISIBLE, MC_NONE, -1 },
-	{ SEE_INVISIBLE, MR_SEE_INVISIBLE, MC_NONE, -1 },
-	{ REGENERATION, MR_REGENERATION, MC_NONE, -1 },
-	{ TELEPORT, MR_TELEPORT, MC_TELEPORT, -1 },
-	{ TELEPORT_CONTROL, MR_TELEPORT_CONTROL, MC_TELEPORT_CONTROL, -1 },
-	{ BLIND_TELEPAT, MR_BLIND_TELEPATHY, MC_BLIND_TELEPATHY, -1 },
-	{ TELEPAT, MR_TELEPATHY, MC_TELEPATHY, -1 },
-	{ FREE_ACTION, MR_FREE_ACTION, MC_FREE_ACTION, AD_PLYS },
-	{ LEVITATION_CONTROL, MR_LEVITATION_CONTROL, MC_NONE, -1 },
-	{ FIRE_VULNERABILITY, MR_VULNERABLITY_FIRE, MC_NONE, -1 },
-	{ COLD_VULNERABILITY, MR_VULNERABLITY_COLD, MC_NONE, -1 },
-	{ ELEC_VULNERABILITY, MR_VULNERABLITY_ELEC, MC_NONE, -1 },
-	{ MAGM_VULNERABILITY, MR_VULNERABLITY_MAGM, MC_NONE, -1 },
+	{ FIRE_IMMUNITY, MR_FIRE, MR2_NONE, MC_NONE, AD_FIRE },
+	{ COLD_IMMUNITY, MR_COLD, MR2_NONE, MC_NONE, AD_COLD },
+	{ SLEEP_RES, MR_SLEEP, MR2_NONE, MC_SLEEP, AD_SLEE },
+	{ DISINT_RES, MR_DISINT, MR2_NONE, MC_DISINT, AD_DISN },
+	{ SHOCK_IMMUNITY, MR_ELEC, MR2_NONE, MC_NONE, AD_ELEC },
+	{ POISON_RES, MR_POISON, MR2_NONE, MC_POISON, AD_DRST },
+	{ ACID_RES, MR_ACID, MR2_NONE, MC_ACID, AD_ACID  },
+	{ STONE_RES, MR_STONE, MR2_NONE, MC_STONE, AD_STON  },
+	{ DEATH_RES, MR_DEATH, MR2_NONE, MC_DEATH, AD_DETH },
+	{ LYCANTHROPY_RES, MR_LYCANTHROPY, MR2_NONE, MC_NONE, AD_WERE },
+	{ MAGIC_MISSILE_IMMUNITY, MR_MAGIC_MISSILE, MR2_NONE, MC_NONE, AD_MAGM },
+	{ STUN_RES, MR_STUN, MR2_NONE, MC_NONE, AD_STUN },
+	{ ANTIMAGIC, MR_MAGIC, MR2_NONE, MC_NONE, -1  },
+	{ CHARM_RES, MR_CHARM, MR2_NONE, MC_CHARM, AD_SSEX },
+	{ CHARM_RES, MR_CHARM, MR2_NONE, MC_CHARM, AD_SEDU }, /* Doubles for AD_SEDU*/
+	{ HALLUC_RES, MR_NONE, MR2_NONE, MC_NONE, AD_HALU },
+	{ FEAR_RES, MR_FEAR, MR2_NONE, MC_FEAR, -1 },
+	{ SICK_RES, MR_SICK, MR2_NONE, MC_SICK, AD_DISE },
+    { SICK_RES, MR_SICK, MR2_NONE, MC_SICK, AD_ROTS }, /* Doubles for AD_ROTS */
+    { DRAIN_RES, MR_DRAIN, MR2_NONE, MC_DRAIN, AD_DRLI },
+	{ FLASH_RES, MR_FLASH, MR2_NONE, MC_NONE, AD_BLND },
+	{ REFLECTING, MR_REFLECTING, MR2_NONE, MC_NONE, -1 },
+	{ INVISIBILITY, MR_INVISIBLE, MR2_NONE, MC_NONE, -1 },
+	{ SEE_INVISIBLE, MR_SEE_INVISIBLE, MR2_NONE, MC_NONE, -1 },
+	{ REGENERATION, MR_REGENERATION, MR2_NONE, MC_NONE, -1 },
+	{ TELEPORT, MR_TELEPORT, MR2_NONE, MC_TELEPORT, -1 },
+	{ TELEPORT_CONTROL, MR_TELEPORT_CONTROL, MR2_NONE, MC_TELEPORT_CONTROL, -1 },
+	{ BLIND_TELEPAT, MR_BLIND_TELEPATHY, MR2_NONE, MC_BLIND_TELEPATHY, -1 },
+	{ TELEPAT, MR_TELEPATHY, MR2_NONE, MC_TELEPATHY, -1 },
+	{ FREE_ACTION, MR_FREE_ACTION, MR2_NONE, MC_FREE_ACTION, AD_PLYS },
+	{ LEVITATION_CONTROL, MR_LEVITATION_CONTROL, MR2_NONE, MC_NONE, -1 },
+	{ FIRE_VULNERABILITY, MR_FIRE_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+	{ COLD_VULNERABILITY, MR_COLD_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+	{ SHOCK_VULNERABILITY, MR_SHOCK_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+	{ MAGIC_MISSILE_VULNERABILITY, MR_MAGIC_MISSILE_VULNERABLITY, MR2_NONE, MC_NONE, -1 },
+    { FIRE_RESISTANCE, MR_NONE, MR2_FIRE_RESISTANCE, MC_FIRE, -1 },
+    { COLD_RESISTANCE, MR_NONE, MR2_COLD_RESISTANCE, MC_COLD, -1 },
+    { SHOCK_RESISTANCE, MR_NONE, MR2_SHOCK_RESISTANCE, MC_ELEC, -1 },
+    { MAGIC_MISSILE_RESISTANCE, MR_NONE, MR2_MAGIC_MISSILE_RESISTANCE, MC_NONE, -1 },
 };
 
 struct mflag_description {
@@ -208,6 +213,19 @@ int prop_index;
 	return 0;
 }
 
+unsigned long
+prop_to_innate2(prop_index)
+int prop_index;
+{
+    for (int i = 0; i < SIZE(prop2innate); i++)
+    {
+        if (prop2innate[i].prop == prop_index)
+            return prop2innate[i].innate2;
+    }
+    return 0;
+}
+
+
 int
 innate_to_prop(innate_bit)
 unsigned long innate_bit;
@@ -219,6 +237,19 @@ unsigned long innate_bit;
 	}
 	return 0;
 }
+
+int
+innate2_to_prop(innate2_bit)
+unsigned long innate2_bit;
+{
+    for (int i = 0; i < SIZE(prop2innate); i++)
+    {
+        if (prop2innate[i].innate2 == innate2_bit)
+            return prop2innate[i].prop;
+    }
+    return 0;
+}
+
 
 /* set up an individual monster's base type (initial creation, shapechange) */
 void
@@ -658,9 +689,9 @@ register struct monst *mdef, *magr;
             || mdef->data->mattk[i].aatyp == AT_BOOM) {
             adtyp = mdef->data->mattk[i].adtyp;
             if ((adtyp == AD_ACID && !resists_acid(magr))
-                || (adtyp == AD_COLD && !resists_cold(magr))
-                || (adtyp == AD_FIRE && !resists_fire(magr))
-                || (adtyp == AD_ELEC && !resists_elec(magr))
+                || (adtyp == AD_COLD && !is_mon_immune_to_cold(magr))
+                || (adtyp == AD_FIRE && !is_mon_immune_to_fire(magr))
+                || (adtyp == AD_ELEC && !is_mon_immune_to_elec(magr))
 				|| adtyp == AD_PHYS) {
                 dmg = mdef->data->mattk[i].damn;
                 if (!dmg)

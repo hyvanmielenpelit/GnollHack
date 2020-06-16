@@ -1431,7 +1431,7 @@ struct obj *otmp;
             }
 			else
 			{
-                You("burn your %s%s.", body_part(FACE), Fire_resistance ? ", but you just get a nice tan" : "");
+                You("burn your %s%s.", body_part(FACE), Fire_immunity ? ", but you just get a nice tan" : "");
                 /* fire damage */
                 losehp(adjust_damage(d(3, 4), (struct monst*)0, &youmonst, AD_FIRE, FALSE), "burning potion of oil",
                        KILLED_BY_AN);

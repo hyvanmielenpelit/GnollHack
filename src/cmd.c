@@ -2334,7 +2334,7 @@ wiz_intrinsic(VOID_ARGS)
                    even only in wizard mode would be asking for trouble... */
                 continue;
             }
-            if (p == FIRE_RES) {
+            if (p == FIRE_IMMUNITY) {
                 any.a_int = 0;
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "--", FALSE);
             }
@@ -3661,18 +3661,26 @@ int final;
         you_are("invulnerable", from_what(INVULNERABLE));
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
-	if (Magic_missile_resistance)
-		you_are("magic missile resistant", from_what(MAGIC_MISSILE_RES));
-	if (Fire_resistance)
-        you_are("fire resistant", from_what(FIRE_RES));
+	if (Magic_missile_immunity)
+		you_are("immune to magic missiles", from_what(MAGIC_MISSILE_IMMUNITY));
+	if (Fire_immunity)
+        you_are("immune to fire", from_what(FIRE_IMMUNITY));
+    if (Cold_immunity)
+        you_are("immune to cold", from_what(COLD_IMMUNITY));
+    if (Shock_immunity)
+        you_are("immune to electric shocks", from_what(SHOCK_IMMUNITY));
+    if (Magic_missile_resistance)
+        you_are("magic missile resistant", from_what(MAGIC_MISSILE_RESISTANCE));
+    if (Fire_resistance)
+        you_are("fire resistant", from_what(FIRE_RESISTANCE));
     if (Cold_resistance)
-        you_are("cold resistant", from_what(COLD_RES));
+        you_are("cold resistant", from_what(COLD_RESISTANCE));
+    if (Shock_resistance)
+        you_are("shock resistant", from_what(SHOCK_RESISTANCE));
     if (Sleep_resistance)
         you_are("sleep resistant", from_what(SLEEP_RES));
 	if (Disint_resistance)
         you_are("disintegration resistant", from_what(DISINT_RES));
-    if (Shock_resistance)
-        you_are("shock resistant", from_what(SHOCK_RES));
 	if (Death_resistance)
 		you_are("immune to death attacks", from_what(DEATH_RES));
 	if (Charm_resistance)
@@ -3917,7 +3925,7 @@ int final;
 	if (u.ublessed > 0)
 	{
 		char protbuf[BUFSZ];
-		Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 2);
+		Sprintf(protbuf, "endowed with divine protection (-%d to AC and +%d to MC)", u.ublessed, u.ublessed / 3);
 		you_are(protbuf, "");
 	}
 	if (Role_if(PM_MONK) && (u.ulevel / 2) >= 1 && !Upolyd && !uarm && !uarms && !uwep)
@@ -3926,8 +3934,8 @@ int final;
 		Sprintf(protbuf, "innate protection (-%d to AC and +%d to MC)", u.ulevel / 2, u.ulevel / 6);
 		you_have(protbuf, "");
 	}
-	if (Divine_protection)
-		you_have("magical protection (-3 to AC and +1 to MC)", from_what(DIVINE_PROTECTION));
+	if (Magical_protection)
+		you_have("magical protection (-3 to AC and +1 to MC)", from_what(MAGICAL_PROTECTION));
 	if (Magical_shielding)
 		you_have("magical shielding (-4 to AC)", from_what(MAGICAL_SHIELDING));
 	if (Magical_barkskin)
@@ -3958,9 +3966,9 @@ int final;
 	if (Cold_vulnerability)
 		you_are("vulnerable to cold", from_what(COLD_VULNERABILITY));
 	if (Elec_vulnerability)
-		you_are("vulnerable to electricity", from_what(ELEC_VULNERABILITY));
+		you_are("vulnerable to electricity", from_what(SHOCK_VULNERABILITY));
 	if (Magic_damage_vulnerability)
-		you_are("vulnerable to magical damage", from_what(MAGM_VULNERABILITY));
+		you_are("vulnerable to magical damage", from_what(MAGIC_MISSILE_VULNERABILITY));
 	if (Double_physical_damage)
 		you_are("receiving double physical damage", from_what(DOUBLE_PHYSICAL_DAMAGE));
 	if (Double_spell_damage)

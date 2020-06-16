@@ -572,7 +572,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			switch(otmp->elemental_enchantment)
 			{
 			case COLD_ENCHANTMENT:
-				if (resists_cold(mtmp)) 
+				if (is_mon_immune_to_cold(mtmp)) 
 				{
 					if (vis)
 						pline_The("cold doesn't seem to affect %s.",
@@ -590,7 +590,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 				    otmp->elemental_enchantment = 0;
 				break;
 			case FIRE_ENCHANTMENT:
-				if (resists_fire(mtmp)) 
+				if (is_mon_immune_to_fire(mtmp)) 
 				{
 					if (vis)
 						pline_The("fire doesn't seem to affect %s.",
@@ -608,7 +608,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
                     otmp->elemental_enchantment = 0;
                 break;
 			case LIGHTNING_ENCHANTMENT:
-				if (resists_elec(mtmp)) 
+				if (is_mon_immune_to_elec(mtmp)) 
 				{
 					if (vis)
 						pline_The("lightning doesn't seem to affect %s.",

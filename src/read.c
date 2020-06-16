@@ -2504,7 +2504,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (!already_known)
             (void) learnscrolltyp(SCR_FIRE);
         if (confused) {
-            if (Fire_resistance || Invulnerable) 
+            if (Fire_immunity || Invulnerable) 
 			{
                 shieldeff(u.ux, u.uy);
                 if (!Blind)

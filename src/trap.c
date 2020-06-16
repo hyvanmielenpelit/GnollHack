@@ -2477,7 +2477,7 @@ register struct monst *mtmp;
                 You_see("a %s erupt from the %s!", tower_of_flame,
                         surface(mtmp->mx, mtmp->my));
 
-            if (resists_fire(mtmp)) {
+            if (is_mon_immune_to_fire(mtmp)) {
                 if (in_sight) {
                     shieldeff(mtmp->mx, mtmp->my);
                     pline("%s is uninjured.", Monnam(mtmp));
@@ -3255,7 +3255,7 @@ struct obj *box; /* null for floor trap */
     if ((box && !carried(box)) ? is_pool(box->ox, box->oy) : Underwater) {
         pline("A cascade of steamy bubbles erupts from %s!",
               the(box ? xname(box) : surface(u.ux, u.uy)));
-        if (Fire_resistance)
+        if (Fire_immunity)
             You("are uninjured.");
         else
             losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_FIRE, FALSE), "boiling water", KILLED_BY);
@@ -3263,7 +3263,7 @@ struct obj *box; /* null for floor trap */
     }
     pline("A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
           the(box ? xname(box) : surface(u.ux, u.uy)));
-    if (Fire_resistance) {
+    if (Fire_immunity) {
         shieldeff(u.ux, u.uy);
         num = rn2(2);
     } else if (Upolyd) {
@@ -3580,8 +3580,9 @@ xchar x, y;
        note: potions are glass so fall through to fire_damage() and boil */
     if (objects[otyp].oc_material < MAT_DRAGON_HIDE
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
-        && objects[otyp].oc_oprop != FIRE_RES && objects[otyp].oc_oprop2 != FIRE_RES && objects[otyp].oc_oprop3 != FIRE_RES
-		&& !is_otyp_indestructible(otyp)
+        && objects[otyp].oc_oprop != FIRE_IMMUNITY && objects[otyp].oc_oprop2 != FIRE_IMMUNITY && objects[otyp].oc_oprop3 != FIRE_IMMUNITY
+        && objects[otyp].oc_oprop != FIRE_RESISTANCE && objects[otyp].oc_oprop2 != FIRE_RESISTANCE && objects[otyp].oc_oprop3 != FIRE_RESISTANCE
+        && !is_otyp_indestructible(otyp)
 		&& !oresist_fire(obj)
         /* assumes oerodeproof isn't overloaded for some other purpose on
            non-eroding items */
@@ -5433,7 +5434,7 @@ boolean disarm;
             int dmg;
 
             You("are jolted by a surge of electricity!");
-            if (Shock_resistance) {
+            if (Shock_immunity) {
                 shieldeff(u.ux, u.uy);
                 You("don't seem to be affected.");
                 dmg = 0;
@@ -5783,7 +5784,7 @@ lava_effects()
     if (likes_lava(youmonst.data))
         return FALSE;
 
-    usurvive = Fire_resistance || (Wwalking && dmg < u.uhp);
+    usurvive = Fire_immunity || (Wwalking && dmg < u.uhp);
     /*
      * A timely interrupt might manage to salvage your life
      * but not your gear.  For scrolls and potions this
@@ -5815,7 +5816,7 @@ lava_effects()
         iflags.in_lava_effects--;
     }
 
-    if (!Fire_resistance) {
+    if (!Fire_immunity) {
         if (Wwalking) {
             pline_The("%s here burns you!", hliquid("lava"));
             if (usurvive) {
@@ -5875,7 +5876,7 @@ lava_effects()
         You("find yourself back on solid %s.", surface(u.ux, u.uy));
         return TRUE;
     } else if (!Wwalking && (!u.utrap || u.utraptype != TT_LAVA)) {
-        boil_away = !Fire_resistance;
+        boil_away = !Fire_immunity;
         /* if not fire resistant, sink_into_lava() will quickly be fatal;
            hero needs to escape immediately */
         set_utrap((unsigned) (rn1(4, 4) + ((boil_away ? 2 : rn1(4, 12)) << 8)),
@@ -5910,7 +5911,7 @@ sink_into_lava()
            enough to become stuck in lava, but it can happen without
            resistance if water walking boots allow survival and then
            get burned up; u.utrap time will be quite short in that case */
-        if (!Fire_resistance)
+        if (!Fire_immunity)
             u.uhp = (u.uhp + 2) / 3;
 
         u.utrap -= (1 << 8);

@@ -80,7 +80,8 @@ struct permonst {
 		wis,					/* wisdom */
 		cha;                    /* charisma */
 	unsigned long mresists;             /* resistances */
-	unsigned long mconveys;             /* conveyed by eating */
+    unsigned long mresists2;             /* more resistances */
+    unsigned long mconveys;             /* conveyed by eating */
     unsigned long mflags1,      /* boolean bitflags */
         mflags2, mflags3, mflags4, mflags5;       /* more boolean bitflags */
     int difficulty;		/* toughness (formerly from  makedefs -m) */

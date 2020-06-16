@@ -1650,7 +1650,7 @@ boolean* obj_destroyed;
 		switch (obj->elemental_enchantment)
 		{
 		case COLD_ENCHANTMENT:
-			if (resists_cold(mon))
+			if (is_mon_immune_to_cold(mon))
 				needenchantmsg = -obj->elemental_enchantment;
 			else
 			{
@@ -1667,7 +1667,7 @@ boolean* obj_destroyed;
 			}
 			break;
 		case FIRE_ENCHANTMENT:
-			if (resists_fire(mon))
+			if (is_mon_immune_to_fire(mon))
 				needenchantmsg = -obj->elemental_enchantment;
 			else
 			{
@@ -1683,7 +1683,7 @@ boolean* obj_destroyed;
 			}
 			break;
 		case LIGHTNING_ENCHANTMENT:
-			if (resists_elec(mon))
+			if (is_mon_immune_to_elec(mon))
 				needenchantmsg = -obj->elemental_enchantment;
 			else
 			{
@@ -2679,7 +2679,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 		damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), &youmonst, mdef, mattk->adtyp, FALSE);
 		damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), &youmonst, mdef, mattk->adtyp, FALSE);
 
-        if (resists_fire(mdef))
+        if (is_mon_immune_to_fire(mdef))
 		{
             if (!Blind)
                 pline_The("fire doesn't heat %s!", mon_nam(mdef));
@@ -2702,7 +2702,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         if (!Blind)
             pline("%s is covered in frost!", Monnam(mdef));
 
-        if (resists_cold(mdef)) 
+        if (is_mon_immune_to_cold(mdef)) 
 		{
             shieldeff(mdef->mx, mdef->my);
             if (!Blind)
@@ -2725,7 +2725,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
         damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), &youmonst, mdef, mattk->adtyp, FALSE);
         
-		if (resists_elec(mdef)) 
+		if (is_mon_immune_to_elec(mdef)) 
 		{
             if (!Blind)
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
@@ -3093,13 +3093,13 @@ register struct attack *mattk;
         }
         break;
     case AD_COLD:
-        resistance = resists_cold(mdef);
+        resistance = is_mon_immune_to_cold(mdef);
         goto common;
     case AD_FIRE:
-        resistance = resists_fire(mdef);
+        resistance = is_mon_immune_to_fire(mdef);
         goto common;
     case AD_ELEC:
-        resistance = resists_elec(mdef);
+        resistance = is_mon_immune_to_elec(mdef);
  common:
         if (!resistance) {
             pline("%s gets blasted!", Monnam(mdef));
@@ -3329,7 +3329,7 @@ register struct attack *mattk;
 				{
                     pline_The("air around %s crackles with electricity.",
                               mon_nam(mdef));
-                    if (resists_elec(mdef)) 
+                    if (is_mon_immune_to_elec(mdef)) 
 					{
                         pline("%s seems unhurt.", Monnam(mdef));
 						damage = 0;
@@ -3341,7 +3341,7 @@ register struct attack *mattk;
             case AD_COLD:
                 if (rn2(2)) 
 				{
-                    if (resists_cold(mdef))
+                    if (is_mon_immune_to_cold(mdef))
 					{
                         pline("%s seems mildly chilly.", Monnam(mdef));
 						damage = 0;
@@ -3354,7 +3354,7 @@ register struct attack *mattk;
             case AD_FIRE:
                 if (rn2(2)) 
 				{
-                    if (resists_fire(mdef))
+                    if (is_mon_immune_to_fire(mdef))
 					{
                         pline("%s seems mildly hot.", Monnam(mdef));
 						damage = 0;
@@ -3982,7 +3982,7 @@ boolean wep_was_destroyed;
         break;
     case AD_MAGM:
         /* wrath of gods for attacking Oracle */
-        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable) {
+        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline("A hail of magic missiles narrowly misses you!");
         } else {
@@ -4060,7 +4060,7 @@ boolean wep_was_destroyed;
             break;
         case AD_COLD: /* brown mold or blue jelly */
             if (monnear(mon, u.ux, u.uy)) {
-                if (Cold_resistance || Invulnerable) {
+                if (Cold_immunity || Invulnerable) {
                     shieldeff(u.ux, u.uy);
                     You_feel("a mild chill.");
                     ugolemeffects(AD_COLD, damage);
@@ -4086,7 +4086,7 @@ boolean wep_was_destroyed;
         case AD_FIRE:
             if (monnear(mon, u.ux, u.uy))
 			{
-                if (Fire_resistance || Invulnerable) 
+                if (Fire_immunity || Invulnerable) 
 				{
                     shieldeff(u.ux, u.uy);
 					if (flaming(mon->data))
@@ -4104,7 +4104,7 @@ boolean wep_was_destroyed;
             }
             break;
         case AD_ELEC:
-            if (Shock_resistance || Invulnerable) 
+            if (Shock_immunity || Invulnerable) 
 			{
                 shieldeff(u.ux, u.uy);
                 You_feel("a mild tingle.");
@@ -4392,6 +4392,28 @@ boolean is_spell_damage;
 		{
 			base_dmg_d *= 2;
 		}
+
+		/* Resistances (half damage, immunity takes to zero) */
+		if (adtyp == AD_FIRE && (you_defend ? Fire_resistance : mon_resists_fire(mdef)))
+		{
+			base_dmg_d /= 2;
+		}
+
+		if (adtyp == AD_COLD && (you_defend ? Cold_resistance : mon_resists_cold(mdef)))
+		{
+			base_dmg_d /= 2;
+		}
+
+		if (adtyp == AD_ELEC && (you_defend ? Shock_resistance : mon_resists_elec(mdef)))
+		{
+			base_dmg_d /= 2;
+		}
+
+		if (adtyp == AD_MAGM && (you_defend ? Magic_missile_resistance : mon_resists_magic_missile(mdef)))
+		{
+			base_dmg_d /= 2;
+		}
+
 
 		/* Game difficulty level adjustments */
 		if (you_defend || is_tame(mdef)) /* You or your pet is being hit */

@@ -907,7 +907,7 @@ boolean verbose;
 	boolean had_undead_warning = Undead_warning;
 	boolean had_troll_warning = Troll_warning;
 	boolean had_lycanthrope_warning = Lycanthrope_warning;
-	boolean had_protection = Divine_protection;
+	boolean had_protection = Magical_protection;
 	boolean had_magical_shielding= Magical_shielding;
 	boolean had_magical_barkskin = Magical_barkskin;
 	boolean had_magical_stoneskin = Magical_stoneskin;
@@ -1221,12 +1221,12 @@ boolean verbose;
 	}
 
 	/* Some spell powers */
-	if (Divine_protection && !had_protection)
+	if (Magical_protection && !had_protection)
 	{
 		state_change_detected = TRUE;
 		You("feel protected!");
 	}
-	else if (!Divine_protection && had_protection)
+	else if (!Magical_protection && had_protection)
 	{
 		state_change_detected = TRUE;
 		You("feel unprotected!");

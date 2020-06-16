@@ -45,13 +45,29 @@
 
 /*** Resistances to troubles ***/
 /* With intrinsics and extrinsics */
-#define HFire_resistance u.uprops[FIRE_RES].intrinsic
-#define EFire_resistance u.uprops[FIRE_RES].extrinsic
+#define HFire_immunity u.uprops[FIRE_IMMUNITY].intrinsic
+#define EFire_immunity u.uprops[FIRE_IMMUNITY].extrinsic
+#define Fire_immunity (HFire_immunity || EFire_immunity)
+
+#define HCold_immunity u.uprops[COLD_IMMUNITY].intrinsic
+#define ECold_immunity u.uprops[COLD_IMMUNITY].extrinsic
+#define Cold_immunity (HCold_immunity || ECold_immunity)
+
+#define HShock_immunity u.uprops[SHOCK_IMMUNITY].intrinsic
+#define EShock_immunity u.uprops[SHOCK_IMMUNITY].extrinsic
+#define Shock_immunity (HShock_immunity || EShock_immunity)
+
+#define HFire_resistance u.uprops[FIRE_RESISTANCE].intrinsic
+#define EFire_resistance u.uprops[FIRE_RESISTANCE].extrinsic
 #define Fire_resistance (HFire_resistance || EFire_resistance)
 
-#define HCold_resistance u.uprops[COLD_RES].intrinsic
-#define ECold_resistance u.uprops[COLD_RES].extrinsic
+#define HCold_resistance u.uprops[COLD_RESISTANCE].intrinsic
+#define ECold_resistance u.uprops[COLD_RESISTANCE].extrinsic
 #define Cold_resistance (HCold_resistance || ECold_resistance)
+
+#define HShock_resistance u.uprops[SHOCK_RESISTANCE].intrinsic
+#define EShock_resistance u.uprops[SHOCK_RESISTANCE].extrinsic
+#define Shock_resistance (HShock_resistance || EShock_resistance)
 
 #define HSleep_resistance u.uprops[SLEEP_RES].intrinsic
 #define ESleep_resistance u.uprops[SLEEP_RES].extrinsic
@@ -60,10 +76,6 @@
 #define HDisint_resistance u.uprops[DISINT_RES].intrinsic
 #define EDisint_resistance u.uprops[DISINT_RES].extrinsic
 #define Disint_resistance (HDisint_resistance || EDisint_resistance)
-
-#define HShock_resistance u.uprops[SHOCK_RES].intrinsic
-#define EShock_resistance u.uprops[SHOCK_RES].extrinsic
-#define Shock_resistance (HShock_resistance || EShock_resistance)
 
 #define HDeath_resistance u.uprops[DEATH_RES].intrinsic
 #define EDeath_resistance u.uprops[DEATH_RES].extrinsic
@@ -105,8 +117,12 @@
 
 #define Antimagic_or_resistance check_magic_resistance_and_inflict_damage(&youmonst, (struct obj*)0, FALSE, 0, 0, NOTELL)
 
-#define HMagic_missile_resistance u.uprops[MAGIC_MISSILE_RES].intrinsic
-#define EMagic_missile_resistance u.uprops[MAGIC_MISSILE_RES].extrinsic
+#define HMagic_missile_immunity u.uprops[MAGIC_MISSILE_IMMUNITY].intrinsic
+#define EMagic_missile_immunity u.uprops[MAGIC_MISSILE_IMMUNITY].extrinsic
+#define Magic_missile_immunity (HMagic_missile_immunity || EMagic_missile_immunity)
+
+#define HMagic_missile_resistance u.uprops[MAGIC_MISSILE_RESISTANCE].intrinsic
+#define EMagic_missile_resistance u.uprops[MAGIC_MISSILE_RESISTANCE].extrinsic
 #define Magic_missile_resistance (HMagic_missile_resistance || EMagic_missile_resistance)
 
 #define HAcid_resistance u.uprops[ACID_RES].intrinsic
@@ -530,12 +546,12 @@
 #define ECold_vulnerability u.uprops[COLD_VULNERABILITY].extrinsic
 #define Cold_vulnerability (HCold_vulnerability || ECold_vulnerability)
 
-#define HElec_vulnerability u.uprops[ELEC_VULNERABILITY].intrinsic
-#define EElec_vulnerability u.uprops[ELEC_VULNERABILITY].extrinsic
+#define HElec_vulnerability u.uprops[SHOCK_VULNERABILITY].intrinsic
+#define EElec_vulnerability u.uprops[SHOCK_VULNERABILITY].extrinsic
 #define Elec_vulnerability (HElec_vulnerability || EElec_vulnerability)
 
-#define HMagic_damage_vulnerability u.uprops[MAGM_VULNERABILITY].intrinsic
-#define EMagic_damage_vulnerability u.uprops[MAGM_VULNERABILITY].extrinsic
+#define HMagic_damage_vulnerability u.uprops[MAGIC_MISSILE_VULNERABILITY].intrinsic
+#define EMagic_damage_vulnerability u.uprops[MAGIC_MISSILE_VULNERABILITY].extrinsic
 #define Magic_damage_vulnerability (HMagic_damage_vulnerability || EMagic_damage_vulnerability)
 
 #define HRegeneration u.uprops[REGENERATION].intrinsic
@@ -546,9 +562,9 @@
 #define EEnergy_regeneration u.uprops[ENERGY_REGENERATION].extrinsic
 #define Energy_regeneration (HEnergy_regeneration || EEnergy_regeneration)
 
-#define HDivine_protection u.uprops[DIVINE_PROTECTION].intrinsic
-#define EDivine_protection u.uprops[DIVINE_PROTECTION].extrinsic
-#define Divine_protection (HDivine_protection || EDivine_protection)
+#define HMagical_protection u.uprops[MAGICAL_PROTECTION].intrinsic
+#define EMagical_protection u.uprops[MAGICAL_PROTECTION].extrinsic
+#define Magical_protection (HMagical_protection || EMagical_protection)
 
 #define HProtection_from_shape_changers \
     u.uprops[PROT_FROM_SHAPE_CHANGERS].intrinsic

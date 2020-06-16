@@ -2280,13 +2280,22 @@ int otyp;
 		case REFLECTING:
 			Your("skin feels more reflecting than before.");
 			break;
-		case FIRE_RES:
+		case FIRE_IMMUNITY:
 			Your("skin feels less prone to burning than before.");
 			break;
-		case COLD_RES:
+		case COLD_IMMUNITY:
 			Your("skin feels less prone to frostbites than before.");
 			break;
-		case SHOCK_RES:
+		case SHOCK_IMMUNITY:
+			Your("skin feels less prone to electricity than before.");
+			break;
+		case FIRE_RESISTANCE:
+			Your("skin feels less prone to burning than before.");
+			break;
+		case COLD_RESISTANCE:
+			Your("skin feels less prone to frostbites than before.");
+			break;
+		case SHOCK_RESISTANCE:
 			Your("skin feels less prone to electricity than before.");
 			break;
 		case DISINT_RES:
@@ -2313,7 +2322,10 @@ int otyp;
 		case ANTIMAGIC:
 			You_feel("more protected from magic.");
 			break;
-		case MAGIC_MISSILE_RES:
+		case MAGIC_MISSILE_IMMUNITY:
+			You_feel("more protected from magic missiles.");
+			break;
+		case MAGIC_MISSILE_RESISTANCE:
 			You_feel("more protected from magic missiles.");
 			break;
 		case DEATH_RES:
@@ -2361,7 +2373,7 @@ int otyp;
 		case CONFLICT:
 			Your("neighborhood feels more quarrelsome than before.");
 			break;
-		case DIVINE_PROTECTION:
+		case MAGICAL_PROTECTION:
 			You_feel("protected!");
 			break;
 		case MAGICAL_SHIELDING:

@@ -1490,7 +1490,7 @@ struct monst *mon;
 	{
 		if (Magical_barkskin)
 			mc += 7;
-		else if (Divine_protection)
+		else if (Magical_protection)
 			mc += 1;
 
 		/* Divine protection */
@@ -1504,7 +1504,7 @@ struct monst *mon;
 	{
 		if (mon->mprops[MAGICAL_BARKSKIN] != 0)
 			mc += 7;
-		else if (mon->mprops[DIVINE_PROTECTION] != 0)
+		else if (mon->mprops[MAGICAL_PROTECTION] != 0)
 			mc += 1;
 	}
 
@@ -1974,7 +1974,7 @@ register struct obj* omonwep;
                 rehumanize();
                 break;
             } 
-			else if (Fire_resistance || damage == 0) 
+			else if (Fire_immunity || damage == 0) 
 			{
                 pline("You are %s, but the fire doesn't feel hot!", on_fire(youmonst.data, mattk));
 				damage = 0;
@@ -1999,7 +1999,7 @@ register struct obj* omonwep;
 		hitmsg(mtmp, mattk, -1);
 		if (uncancelled) 
 		{
-            if (Cold_resistance || damage == 0) 
+            if (Cold_immunity || damage == 0) 
 			{
                 pline("You're covered in frost, but the frost doesn't feel cold!");
 				damage = 0;
@@ -2020,7 +2020,7 @@ register struct obj* omonwep;
 		hitmsg(mtmp, mattk, -1);
 		if (uncancelled)
 		{
-            if (Shock_resistance || damage == 0) 
+            if (Shock_immunity || damage == 0) 
 			{
 				You("get zapped, but the zap doesn't shock you!");
 				//pline_The("zap doesn't shock you!");
@@ -3248,7 +3248,7 @@ struct attack *mattk;
     case AD_ELEC:
         if (!is_cancelled(mtmp) && rn2(2)) {
             pline_The("air around you crackles with electricity.");
-            if (Shock_resistance || Invulnerable) {
+            if (Shock_immunity || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You("seem unhurt.");
                 ugolemeffects(AD_ELEC, damage);
@@ -3259,7 +3259,7 @@ struct attack *mattk;
         break;
     case AD_COLD:
         if (!is_cancelled(mtmp) && rn2(2)) {
-            if (Cold_resistance || Invulnerable) {
+            if (Cold_immunity || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly chilly.");
                 ugolemeffects(AD_COLD, damage);
@@ -3271,7 +3271,7 @@ struct attack *mattk;
         break;
     case AD_FIRE:
         if (!is_cancelled(mtmp) && rn2(2)) {
-            if (Fire_resistance || Invulnerable) {
+            if (Fire_immunity || Invulnerable) {
                 shieldeff(u.ux, u.uy);
                 You_feel("mildly hot.");
                 ugolemeffects(AD_FIRE, damage);
@@ -3364,15 +3364,15 @@ boolean ufound;
 		{
         case AD_COLD:
             physical_damage = FALSE;
-            not_affected |= Cold_resistance;
+            not_affected |= Cold_immunity;
             goto common;
         case AD_FIRE:
             physical_damage = FALSE;
-            not_affected |= Fire_resistance;
+            not_affected |= Fire_immunity;
             goto common;
         case AD_ELEC:
             physical_damage = FALSE;
-            not_affected |= Shock_resistance;
+            not_affected |= Shock_immunity;
             goto common;
         case AD_PHYS:
             /* there aren't any exploding creatures with AT_EXPL attack
@@ -3642,7 +3642,7 @@ struct attack *mattk;
 
                 pline("%s attacks you with a fiery gaze!", Monnam(mtmp));
                 stop_occupation();
-                if (Fire_resistance || Invulnerable) {
+                if (Fire_immunity || Invulnerable) {
                     pline_The("fire doesn't feel hot!");
                     damage = 0;
                 }
@@ -4326,7 +4326,7 @@ struct attack *mattk;
             return 1;
 		}
         case AD_COLD: /* Brown mold or blue jelly */
-            if (resists_cold(mtmp)) 
+            if (is_mon_immune_to_cold(mtmp)) 
 			{
                 shieldeff(mtmp->mx, mtmp->my);
                 pline("%s is mildly chilly.", Monnam(mtmp));
@@ -4352,7 +4352,7 @@ struct attack *mattk;
             damage = 0;
             break;
         case AD_FIRE: /* Red mold */
-            if (resists_fire(mtmp)) 
+            if (is_mon_immune_to_fire(mtmp)) 
 			{
                 shieldeff(mtmp->mx, mtmp->my);
 				if (flaming(youmonst.data))
@@ -4369,7 +4369,7 @@ struct attack *mattk;
 				pline("%s is suddenly very hot!", Monnam(mtmp));
             break;
         case AD_ELEC:
-            if (resists_elec(mtmp)) 
+            if (is_mon_immune_to_elec(mtmp)) 
 			{
                 shieldeff(mtmp->mx, mtmp->my);
                 pline("%s is slightly tingled.", Monnam(mtmp));

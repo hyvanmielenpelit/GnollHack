@@ -658,7 +658,7 @@ aligntyp resp_god;
         pline(
           "Suddenly a bolt of lightning comes down at you from the heavens!");
         pline("It strikes %s!", mon_nam(u.ustuck));
-        if (!resists_elec(u.ustuck)) {
+        if (!is_mon_immune_to_elec(u.ustuck)) {
             pline("%s fries to a crisp!", Monnam(u.ustuck));
             /* Yup, you get experience.  It takes guts to successfully
              * pull off this trick on your god, anyway.
@@ -676,7 +676,7 @@ aligntyp resp_god;
                 pline("For some reason you're unaffected.");
             else
                 (void) ureflects("%s reflects from your %s.", "It");
-        } else if (Shock_resistance) {
+        } else if (Shock_immunity) {
             shieldeff(u.ux, u.uy);
             pline("It seems not to affect you.");
         } else
@@ -844,9 +844,9 @@ gcrownu()
 #define ok_wep(o) ((o) && ((o)->oclass == WEAPON_CLASS || is_weptool(o)))
 
     HSee_invisible |= FROM_ACQUIRED;
-    HFire_resistance |= FROM_ACQUIRED;
-    HCold_resistance |= FROM_ACQUIRED;
-    HShock_resistance |= FROM_ACQUIRED;
+    HFire_immunity |= FROM_ACQUIRED;
+    HCold_immunity |= FROM_ACQUIRED;
+    HShock_immunity |= FROM_ACQUIRED;
 	HDeath_resistance |= FROM_ACQUIRED;
 	HLycanthropy_resistance |= FROM_ACQUIRED;
 	HSleep_resistance |= FROM_ACQUIRED;
@@ -1715,7 +1715,7 @@ aligntyp g_align;
                 HStealth |= FROM_ACQUIRED;
                 pline(msg, "Stealth");
             }
-			else
+			else if (u.ublessed < 9)
 			{
                 if (!u.ublessed)
                     u.ublessed = rnd(3);
@@ -1723,11 +1723,16 @@ aligntyp g_align;
                     u.ublessed++;
                 pline(msg, "my protection");
             }
+            else
+            {
+                goto crown_here;
+            }
             verbalize("Use it wisely in my name!");
             break;
         }
         case 7:
         case 8:
+crown_here:
             if (u.ualign.record >= PIOUS && !u.uevent.uhand_of_elbereth) {
                 gcrownu();
                 break;

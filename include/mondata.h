@@ -174,10 +174,12 @@
 /* Resistances and properties */
 #define has_innate(ptr, bit) \
     (((ptr)->mresists & (bit)) != 0)
+#define has_innate2(ptr, bit) \
+    (((ptr)->mresists2 & (bit)) != 0)
 #define has_property(mon, propindex) \
 	((mon)->mprops[(propindex)] != 0)
 #define has_innate_or_property(mon, propindex)\
-	(has_property(mon, propindex) || has_innate((mon)->data, prop_to_innate(propindex)))
+	(has_property(mon, propindex) || has_innate((mon)->data, prop_to_innate(propindex)) || has_innate2((mon)->data, prop_to_innate2(propindex)))
 
 
 /* innates */
@@ -480,16 +482,16 @@
 	(has_innate_or_property(mon, DEATH_RES))
 
 #define has_fire_vulnerability(mon) \
-	(has_innate((mon)->data, MR_VULNERABLITY_FIRE) || has_property(mon, FIRE_VULNERABILITY))
+	(has_innate((mon)->data, MR_FIRE_VULNERABLITY) || has_property(mon, FIRE_VULNERABILITY))
 
 #define has_cold_vulnerability(mon) \
-	(has_innate((mon)->data, MR_VULNERABLITY_COLD) || has_property(mon, COLD_VULNERABILITY))
+	(has_innate((mon)->data, MR_COLD_VULNERABLITY) || has_property(mon, COLD_VULNERABILITY))
 
 #define has_elec_vulnerability(mon) \
-	(has_innate((mon)->data, MR_VULNERABLITY_ELEC) || has_property(mon, ELEC_VULNERABILITY))
+	(has_innate((mon)->data, MR_SHOCK_VULNERABLITY) || has_property(mon, SHOCK_VULNERABILITY))
 
 #define has_magm_vulnerability(mon) \
-	(has_innate((mon)->data, MR_VULNERABLITY_MAGM) || has_property(mon, MAGM_VULNERABILITY))
+	(has_innate((mon)->data, MR_MAGIC_MISSILE_VULNERABLITY) || has_property(mon, MAGIC_MISSILE_VULNERABILITY))
 
 #define has_invulnerable(mon) \
 	(has_property(mon, INVULNERABLE))
@@ -529,22 +531,44 @@
 #define pm_resists_disint(ptr) \
     (has_innate(ptr, MR_DISINT) || noncorporeal(ptr))
 
-#define pm_resists_fire(ptr) \
+#define pm_immune_to_fire(ptr) \
     (has_innate(ptr, MR_FIRE))
 
-#define pm_resists_cold(ptr) \
+#define pm_immune_to_cold(ptr) \
     (has_innate(ptr, MR_COLD) || is_undead(ptr))
 
-#define pm_resists_elec(ptr) \
+#define pm_immune_to_elec(ptr) \
     (has_innate(ptr, MR_ELEC))
 
+#define pm_resists_fire(ptr) \
+    (has_innate2(ptr, MR2_FIRE_RESISTANCE))
+
+#define pm_resists_cold(ptr) \
+    (has_innate2(ptr, MR2_COLD_RESISTANCE) || is_undead(ptr))
+
+#define pm_resists_elec(ptr) \
+    (has_innate2(ptr, MR2_SHOCK_RESISTANCE))
+
 /* resistances at the time of acquisition */
-#define resists_fire(mon) \
-    ( pm_resists_fire((mon)->data) || has_property(mon, FIRE_RES))
-#define resists_cold(mon) \
-    (pm_resists_cold((mon)->data) || has_property(mon, COLD_RES) || is_vampshifter(mon))
-#define resists_elec(mon) \
-    (pm_resists_elec((mon)->data) || has_property(mon, SHOCK_RES))
+#define is_mon_immune_to_fire(mon) \
+    ( pm_immune_to_fire((mon)->data) || has_property(mon, FIRE_IMMUNITY))
+#define is_mon_immune_to_cold(mon) \
+    (pm_immune_to_cold((mon)->data) || has_property(mon, COLD_IMMUNITY))
+#define is_mon_immune_to_elec(mon) \
+    (pm_immune_to_elec((mon)->data) || has_property(mon, SHOCK_IMMUNITY))
+#define is_mon_immune_to_magic_missile(mon) \
+    (has_innate((mon)->data, MR_MAGIC_MISSILE) || has_property(mon, MAGIC_MISSILE_IMMUNITY))
+
+#define mon_resists_fire(mon) \
+    ( pm_resists_fire((mon)->data) || has_property(mon, FIRE_RESISTANCE))
+#define mon_resists_cold(mon) \
+    (pm_resists_cold((mon)->data) || has_property(mon, COLD_RESISTANCE) || is_vampshifter(mon))
+#define mon_resists_elec(mon) \
+    (pm_resists_elec((mon)->data) || has_property(mon, SHOCK_RESISTANCE))
+#define mon_resists_magic_missile(mon) \
+    (has_innate2((mon)->data, MR2_MAGIC_MISSILE_RESISTANCE) || has_property(mon, MAGIC_MISSILE_RESISTANCE))
+
+
 #define resists_disint(mon) \
     (pm_resists_disint((mon)->data) || has_property(mon, DISINT_RES))
 
@@ -560,8 +584,6 @@
     (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_RES) || noncorporeal((mon)->data))
 #define resists_ston(mon) \
     (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RES) || noncorporeal((mon)->data))
-#define resists_magicmissile(mon) \
-    (has_innate((mon)->data, MR_MAGIC_MISSILE) || has_property(mon, MAGIC_MISSILE_RES))
 #define resists_magic(mon) \
     (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \

@@ -173,7 +173,7 @@ struct obj *otmp;
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (resists_magicmissile(mtmp) || resists_magic(mtmp) || Invulnerable)
+        if (is_mon_immune_to_magic_missile(mtmp) || resists_magic(mtmp) || Invulnerable)
 		{ /* match effect on player */
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
@@ -199,7 +199,7 @@ struct obj *otmp;
 			seemimic(mtmp);
 		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
-		if (resists_elec(mtmp))
+		if (is_mon_immune_to_elec(mtmp))
 		{
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by your electric touch!", Monnam(mtmp));
@@ -217,7 +217,7 @@ struct obj *otmp;
 			seemimic(mtmp);
 		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
-		if (resists_fire(mtmp))
+		if (is_mon_immune_to_fire(mtmp))
 		{
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by your fiery touch!", Monnam(mtmp));
@@ -235,7 +235,7 @@ struct obj *otmp;
 			seemimic(mtmp);
 		dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
-		if (resists_cold(mtmp))
+		if (is_mon_immune_to_cold(mtmp))
 		{
 			shieldeff(mtmp->mx, mtmp->my);
 			pline("%s is unaffected by your freezing touch!", Monnam(mtmp));
@@ -1068,14 +1068,19 @@ struct monst* mtmp;
     for (int i = 1; i <= LAST_PROP; i++)
     {
         boolean has_innate = FALSE;
+        boolean has_innate2 = FALSE;
         boolean has_extrinsic = FALSE;
         boolean has_instrinsic_acquired = FALSE;
         boolean has_temporary = FALSE;
 
         unsigned long ibit = prop_to_innate(i);
+        unsigned long ibit2 = prop_to_innate2(i);
 
         if (mtmp->data->mresists & ibit)
             has_innate = TRUE;
+
+        if (mtmp->data->mresists2 & ibit2)
+            has_innate2 = TRUE;
 
         if (mtmp->mprops[i] & M_EXTRINSIC)
             has_extrinsic = TRUE;
@@ -1086,7 +1091,7 @@ struct monst* mtmp;
         if (mtmp->mprops[i] & M_TIMEOUT)
             has_temporary = TRUE;
 
-        boolean has_property = has_innate || has_extrinsic || has_instrinsic_acquired || has_temporary;
+        boolean has_property = has_innate || has_innate2 || has_extrinsic || has_instrinsic_acquired || has_temporary;
 
         if (has_property)
         {
@@ -1095,7 +1100,7 @@ struct monst* mtmp;
             strcpy(endbuf, "");
             strcpy(endbuf2, "");
 
-            if (0 && has_innate)
+            if (0 && (has_innate || has_innate2))
             {
                 if (strcmp(endbuf, ""))
                     Strcat(endbuf, ", ");
@@ -1139,14 +1144,6 @@ struct monst* mtmp;
             txt = buf;
             putstr(datawin, 0, txt);
         }
-    }
-
-    if (resists_magicmissile(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - Magic missile resistance", abilcnt);
-        txt = buf;
-        putstr(datawin, 0, txt);
     }
 
     if (!abilcnt)
@@ -4125,7 +4122,7 @@ register struct obj *obj;
 					setmangry(mon, FALSE);
 
 				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-				if (resists_fire(mon))
+				if (is_mon_immune_to_fire(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -4153,7 +4150,7 @@ register struct obj *obj;
 					setmangry(mon, FALSE);
 
 				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-				if (resists_cold(mon))
+				if (is_mon_immune_to_cold(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -4181,7 +4178,7 @@ register struct obj *obj;
 					setmangry(mon, FALSE);
 
 				int dmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;
-				if (resists_elec(mon))
+				if (is_mon_immune_to_elec(mon))
 				{
 					if (canspotmon(mon))
 					{
@@ -4487,7 +4484,7 @@ boolean ordinary;
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         learn_it = TRUE;
-        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(u.ux, u.uy);
 			damage = 0;
@@ -4509,7 +4506,7 @@ boolean ordinary;
 
 	case SPE_MAGIC_ARROW:
 		learn_it = TRUE;
-		if (Magic_missile_resistance || Invulnerable)
+		if (Magic_missile_immunity || Invulnerable)
 		{
 			shieldeff(u.ux, u.uy);
 			damage = 0;
@@ -4530,7 +4527,7 @@ boolean ordinary;
 		break;
 	case SPE_SHOCKING_TOUCH:
 		learn_it = TRUE;
-		if (!Shock_resistance && !Invulnerable) {
+		if (!Shock_immunity && !Invulnerable) {
 			You("shock yourself!");
 			exercise(A_CON, FALSE);
 			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_ELEC, TRUE);
@@ -4545,7 +4542,7 @@ boolean ordinary;
 		break;
 	case SPE_BURNING_HANDS:
 		learn_it = TRUE;
-		if (!Fire_resistance && !Invulnerable)
+		if (!Fire_immunity && !Invulnerable)
 		{
 			You("burn yourself!");
 			exercise(A_CON, FALSE);
@@ -4561,7 +4558,7 @@ boolean ordinary;
 		break;
 	case SPE_FREEZING_TOUCH:
 		learn_it = TRUE;
-		if (!Cold_resistance && !Invulnerable) {
+		if (!Cold_immunity && !Invulnerable) {
 			You("freeze yourself!");
 			exercise(A_CON, FALSE);
 			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_COLD, TRUE);
@@ -4578,7 +4575,7 @@ boolean ordinary;
 	case WAN_LIGHTNING:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_ELEC, TRUE);
-		if (!Shock_resistance && !Invulnerable) {
+		if (!Shock_immunity && !Invulnerable) {
             You("shock yourself!");
 			exercise(A_CON, FALSE);
         } else {
@@ -4628,7 +4625,7 @@ boolean ordinary;
     case FIRE_HORN:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_FIRE, TRUE);
-		if (Fire_resistance || Invulnerable) {
+		if (Fire_immunity || Invulnerable) {
             shieldeff(u.ux, u.uy);
             You_feel("rather warm.");
             ugolemeffects(AD_FIRE, damage);
@@ -4664,7 +4661,7 @@ boolean ordinary;
     case FROST_HORN:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_COLD, TRUE);
-		if (Cold_resistance || Invulnerable) {
+		if (Cold_immunity || Invulnerable) {
             shieldeff(u.ux, u.uy);
             You_feel("a little chill.");
             ugolemeffects(AD_COLD, damage);
@@ -4680,7 +4677,7 @@ boolean ordinary;
     case SPE_GREATER_MAGIC_MISSILE:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, TRUE);
-		if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable) {
+		if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce!");
 			damage = 0;
@@ -6499,7 +6496,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     switch (abstype)
 	{
     case ZT_MAGIC_MISSILE:
-        if (resists_magicmissile(mon) || resists_magic(mon) || magic_resistance_success)
+        if (is_mon_immune_to_magic_missile(mon) || resists_magic(mon) || magic_resistance_success)
 		{
             sho_shieldeff = TRUE;
 			damage = 0;
@@ -6512,7 +6509,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		*/
         break;
     case ZT_FIRE:
-        if (resists_fire(mon))
+        if (is_mon_immune_to_fire(mon))
 		{
             sho_shieldeff = TRUE;
 			damage = 0;
@@ -6520,7 +6517,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         }
 		/*
 		tmp = d(nd, 6);
-        if (resists_cold(mon))
+        if (is_mon_immune_to_cold(mon))
             tmp += 7;
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
@@ -6537,7 +6534,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         }
         break;
     case ZT_COLD:
-        if (resists_cold(mon)) 
+        if (is_mon_immune_to_cold(mon)) 
 		{
             sho_shieldeff = TRUE;
 			damage = 0;
@@ -6545,7 +6542,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         }
 		/*
 		tmp = d(nd, 6);
-        if (resists_fire(mon))
+        if (is_mon_immune_to_fire(mon))
             tmp += d(nd, 3);
         if (spellcaster)
             tmp = spell_damage_bonus(tmp);
@@ -6619,7 +6616,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		type = -1; /* so they don't get saving throws */
 		break;
 	case ZT_LIGHTNING:
-        if (resists_elec(mon)) 
+        if (is_mon_immune_to_elec(mon)) 
 		{
             sho_shieldeff = TRUE;
 			damage = 0;
@@ -6710,7 +6707,7 @@ xchar sx, sy;
     switch (abstyp % 10) 
 	{
     case ZT_MAGIC_MISSILE:
-        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(sx, sy);
 			damage = 0;
@@ -6723,7 +6720,7 @@ xchar sx, sy;
         }
         break;
     case ZT_FIRE:
-        if (Fire_resistance || Invulnerable)
+        if (Fire_immunity || Invulnerable)
 		{
             shieldeff(sx, sy);
 			You("don't feel hot!");
@@ -6747,7 +6744,7 @@ xchar sx, sy;
         }
         break;
     case ZT_COLD:
-        if (Cold_resistance || Invulnerable)
+        if (Cold_immunity || Invulnerable)
 		{
             shieldeff(sx, sy);
             You("don't feel cold.");
@@ -6861,7 +6858,7 @@ xchar sx, sy;
 		}
 		return;
 	case ZT_LIGHTNING:
-        if (Shock_resistance || Invulnerable) 
+        if (Shock_immunity || Invulnerable) 
 		{
             shieldeff(sx, sy);
 			You("aren't affected.");
@@ -8098,7 +8095,7 @@ boolean forcedestroy;
             skip++;
         break;
     case AD_FIRE:
-        xresist = (Fire_resistance && obj->oclass != POTION_CLASS
+        xresist = (Fire_immunity && obj->oclass != POTION_CLASS
                    && obj->otyp != GLOB_OF_GREEN_SLIME);
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
             skip++;
@@ -8137,7 +8134,7 @@ boolean forcedestroy;
         }
         break;
     case AD_ELEC:
-        xresist = (Shock_resistance && obj->oclass != RING_CLASS);
+        xresist = (Shock_immunity && obj->oclass != RING_CLASS);
         quan = obj->quan;
         switch (osym) 
         {

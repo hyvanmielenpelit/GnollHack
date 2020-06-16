@@ -1196,7 +1196,7 @@ register struct obj* omonwep;
         }
 		damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
 		damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
-        if (resists_fire(mdef)) {
+        if (is_mon_immune_to_fire(mdef)) {
             if (vis && canseemon(mdef))
                 pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
@@ -1213,7 +1213,7 @@ register struct obj* omonwep;
         }
         if (vis && canseemon(mdef))
             pline("%s is covered in frost!", Monnam(mdef));
-        if (resists_cold(mdef)) {
+        if (is_mon_immune_to_cold(mdef)) {
             if (vis && canseemon(mdef))
                 pline_The("frost doesn't seem to chill %s!", mon_nam(mdef));
             shieldeff(mdef->mx, mdef->my);
@@ -1234,7 +1234,7 @@ register struct obj* omonwep;
         
 		damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), magr, mdef, AD_COLD, FALSE);
         
-		if (resists_elec(mdef)) 
+		if (is_mon_immune_to_elec(mdef)) 
 		{
             if (vis && canseemon(mdef))
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
@@ -2095,7 +2095,7 @@ int mdead;
             }
             return 1;
         case AD_COLD:
-            if (resists_cold(magr)) {
+            if (is_mon_immune_to_cold(magr)) {
                 if (canseemon(magr)) {
                     pline("%s is mildly chilly.", Monnam(magr));
                     golemeffects(magr, AD_COLD, damage);
@@ -2124,7 +2124,7 @@ int mdead;
             damage = 0;
             break;
         case AD_FIRE:
-            if (resists_fire(magr)) {
+            if (is_mon_immune_to_fire(magr)) {
                 if (canseemon(magr)) 
 				{
 					if (flaming(mdef->data))
@@ -2145,7 +2145,7 @@ int mdead;
 			}
             break;
         case AD_ELEC:
-            if (resists_elec(magr)) {
+            if (is_mon_immune_to_elec(magr)) {
                 if (canseemon(magr)) {
                     pline("%s is mildly tingled.", Monnam(magr));
                     golemeffects(magr, AD_ELEC, damage);

@@ -166,13 +166,13 @@ dosit()
             return 1;
         }
         pline_The("%s burns you!", hliquid("lava"));
-        losehp(adjust_damage(d(Fire_resistance ? 2 : 10, 10), (struct monst*)0, &youmonst, AD_FIRE, FALSE), /* lava damage */
+        losehp(adjust_damage(d(Fire_immunity ? 2 : 10, 10), (struct monst*)0, &youmonst, AD_FIRE, FALSE), /* lava damage */
                "sitting on lava", KILLED_BY);
     } 
 	else if (is_ice(u.ux, u.uy))
 	{
         You(sit_message, defsyms[S_ice].explanation);
-        if (!Cold_resistance)
+        if (!Cold_immunity)
             pline_The("ice feels cold.");
     } 
 	else if (typ == DRAWBRIDGE_DOWN) 
@@ -195,8 +195,8 @@ dosit()
                 break;
             case 3:
                 pline("A%s electric shock shoots through your body!",
-                      (Shock_resistance) ? "n" : " massive");
-                losehp(adjust_damage(Shock_resistance ? rnd(6) : rnd(30), (struct monst*)0, &youmonst, AD_ELEC, FALSE), "electric chair",
+                      (Shock_immunity) ? "n" : " massive");
+                losehp(adjust_damage(Shock_immunity ? rnd(6) : rnd(30), (struct monst*)0, &youmonst, AD_ELEC, FALSE), "electric chair",
                        KILLED_BY_AN);
                 exercise(A_CON, FALSE);
                 break;
@@ -416,8 +416,8 @@ attrcurse()
 {
     switch (rnd(11)) {
     case 1:
-        if (HFire_resistance & INTRINSIC) {
-            HFire_resistance &= ~INTRINSIC;
+        if (HFire_immunity & INTRINSIC) {
+            HFire_immunity &= ~INTRINSIC;
             You_feel("warmer.");
             break;
         }
@@ -454,8 +454,8 @@ attrcurse()
 		}
 		/*FALLTHRU*/
 	case 6:
-        if (HCold_resistance & INTRINSIC) {
-            HCold_resistance &= ~INTRINSIC;
+        if (HCold_immunity & INTRINSIC) {
+            HCold_immunity &= ~INTRINSIC;
             You_feel("cooler.");
             break;
         }
@@ -491,8 +491,8 @@ attrcurse()
         /*FALLTHRU*/
     case 11:
         /* intrinsic protection is just disabled, not set back to 0 */
-        if (HDivine_protection & INTRINSIC) {
-            HDivine_protection &= ~INTRINSIC;
+        if (HMagical_protection & INTRINSIC) {
+            HMagical_protection &= ~INTRINSIC;
             You_feel("vulnerable.");
             break;
         }

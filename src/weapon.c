@@ -380,9 +380,9 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
 	if(Is_weapon || Is_worn_gauntlets || objects[otyp].oc_class == GEM_CLASS || otmp->oclass == ROCK_CLASS)
 	{
 		if (
-			(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
-			|| (objects[otyp].oc_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mon)))
-			|| (objects[otyp].oc_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mon)))
+			(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_immunity : is_mon_immune_to_fire(mon)))
+			|| (objects[otyp].oc_damagetype == AD_COLD && (youdefend ? Cold_immunity : is_mon_immune_to_cold(mon)))
+			|| (objects[otyp].oc_damagetype == AD_ELEC && (youdefend ? Shock_immunity : is_mon_immune_to_elec(mon)))
 			)
 			tmp += 0;
 		else
@@ -541,9 +541,9 @@ int basedmg;
 			)))
 	{
 		if (
-			(objects[otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
-			|| (objects[otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mon)))
-			|| (objects[otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mon)))
+			(objects[otyp].oc_extra_damagetype == AD_FIRE && (youdefend ? Fire_immunity : is_mon_immune_to_fire(mon)))
+			|| (objects[otyp].oc_extra_damagetype == AD_COLD && (youdefend ? Cold_immunity : is_mon_immune_to_cold(mon)))
+			|| (objects[otyp].oc_extra_damagetype == AD_ELEC && (youdefend ? Shock_immunity : is_mon_immune_to_elec(mon)))
 			)
 			tmp += 0;
 		else
@@ -560,9 +560,9 @@ int basedmg;
 
 	/* Double damage uses the main damage type */
 	if (
-		(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_resistance : resists_fire(mon)))
-		|| (objects[otyp].oc_damagetype == AD_COLD && (youdefend ? Cold_resistance : resists_cold(mon)))
-		|| (objects[otyp].oc_damagetype == AD_ELEC && (youdefend ? Shock_resistance : resists_elec(mon)))
+		(objects[otyp].oc_damagetype == AD_FIRE && (youdefend ? Fire_immunity : is_mon_immune_to_fire(mon)))
+		|| (objects[otyp].oc_damagetype == AD_COLD && (youdefend ? Cold_immunity : is_mon_immune_to_cold(mon)))
+		|| (objects[otyp].oc_damagetype == AD_ELEC && (youdefend ? Shock_immunity : is_mon_immune_to_elec(mon)))
 		)
 		tmp += 0;
 	else

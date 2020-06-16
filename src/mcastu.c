@@ -326,7 +326,7 @@ boolean foundyou;
     switch (mattk->adtyp) {
     case AD_FIRE:
         pline("You're enveloped in flames.");
-        if (Fire_resistance || Invulnerable) {
+        if (Fire_immunity || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline("But you resist the effects.");
             damage = 0;
@@ -335,7 +335,7 @@ boolean foundyou;
         break;
     case AD_COLD:
         pline("You're covered in frost.");
-        if (Cold_resistance || Invulnerable) {
+        if (Cold_immunity || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline("But you resist the effects.");
             damage = 0;
@@ -343,7 +343,7 @@ boolean foundyou;
         break;
     case AD_MAGM:
         You("are hit by a shower of missiles!");
-        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable) {
+        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
             shieldeff(u.ux, u.uy);
             pline_The("missiles bounce off!");
             damage = 0;
@@ -581,7 +581,7 @@ int spellnum;
     case MGC_PSI_BOLT:
         /* prior to 3.4.0 Antimagic was setting the damage to 1--this
            made the spell virtually harmless to players with magic res. */
-        if (Magic_missile_resistance || Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
 		{
             shieldeff(u.ux, u.uy);
             damage = damage / 2;
@@ -657,7 +657,7 @@ int spellnum;
         break;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
-        if (Fire_resistance) 
+        if (Fire_immunity) 
 		{
             shieldeff(u.ux, u.uy);
             damage = 0;
@@ -675,7 +675,7 @@ int spellnum;
 
         pline("A bolt of lightning strikes down at you from above!");
         reflects = ureflects("It bounces off your %s%s.", "");
-        if (reflects || Shock_resistance) {
+        if (reflects || Shock_immunity) {
             shieldeff(u.ux, u.uy);
             damage = 0;
             if (reflects)

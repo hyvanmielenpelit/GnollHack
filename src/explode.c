@@ -178,16 +178,16 @@ int expltype;
                     explmask[i][j] = !!Antimagic_or_resistance;
                     break;
                 case AD_FIRE:
-                    explmask[i][j] = !!Fire_resistance;
+                    explmask[i][j] = !!Fire_immunity;
                     break;
                 case AD_COLD:
-                    explmask[i][j] = !!Cold_resistance;
+                    explmask[i][j] = !!Cold_immunity;
                     break;
                 case AD_DISN:
                     explmask[i][j] = !!Disint_resistance;
                     break;
                 case AD_ELEC:
-                    explmask[i][j] = !!Shock_resistance;
+                    explmask[i][j] = !!Shock_immunity;
                     break;
 				case AD_DRAY:
 					explmask[i][j] = !!Death_resistance;
@@ -218,13 +218,13 @@ int expltype;
                     case AD_PHYS:
                         break;
                     case AD_MAGM:
-                        explmask[i][j] |= resists_magic(mtmp) || resists_magicmissile(mtmp);
+                        explmask[i][j] |= resists_magic(mtmp) || is_mon_immune_to_magic_missile(mtmp);
                         break;
                     case AD_FIRE:
-                        explmask[i][j] |= resists_fire(mtmp);
+                        explmask[i][j] |= is_mon_immune_to_fire(mtmp);
                         break;
                     case AD_COLD:
-                        explmask[i][j] |= resists_cold(mtmp);
+                        explmask[i][j] |= is_mon_immune_to_cold(mtmp);
                         break;
                     case AD_DISN:
                         explmask[i][j] |= resists_disint(mtmp);
@@ -233,7 +233,7 @@ int expltype;
 						explmask[i][j] |= resists_death(mtmp);
 						break;
 					case AD_ELEC:
-                        explmask[i][j] |= resists_elec(mtmp);
+                        explmask[i][j] |= is_mon_immune_to_elec(mtmp);
                         break;
                     case AD_DRST:
                         explmask[i][j] |= resists_poison(mtmp);
@@ -451,9 +451,9 @@ int expltype;
                        target more vulnerable to current type of damage
                        (when target is also resistant to current type,
                        we won't get here) */
-                    if (resists_cold(mtmp) && adtyp == AD_FIRE)
+                    if (is_mon_immune_to_cold(mtmp) && adtyp == AD_FIRE)
                         mdam *= 2;
-                    else if (resists_fire(mtmp) && adtyp == AD_COLD)
+                    else if (is_mon_immune_to_fire(mtmp) && adtyp == AD_COLD)
                         mdam *= 2;
 #endif
 					if (instadeath)

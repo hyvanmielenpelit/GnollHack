@@ -50,40 +50,45 @@
 #define MS_BOAST 41     /* giants */
 
 /* resistances, and all intrinsics and extrinsics the monster can have */
-#define MR_NONE			0x00000000UL
-#define MR_FIRE			0x00000001UL			/* resists fire */
-#define MR_COLD			0x00000002UL			/* resists cold */
-#define MR_SLEEP		0x00000004UL			/* resists sleep */
-#define MR_DISINT		0x00000008UL			/* resists disintegration */
-#define MR_ELEC			0x00000010UL			/* resists electricity */
-#define MR_POISON		0x00000020UL			/* resists poison */
-#define MR_ACID			0x00000040UL			/* resists acid */
-#define MR_STONE		0x00000080UL			/* resists petrification */
-#define MR_DEATH		0x00000100UL			/* resists death */
-#define MR_LYCANTHROPY	0x00000200UL			/* resists lycanthropy */
-#define MR_MAGIC_MISSILE 0x00000400UL			/* resists magic missiles */
-#define MR_MAGIC		0x00000800UL			/* resists magic */
-#define MR_CHARM		0x00001000UL			/* resists charm */
-#define MR_DRAIN		0x00002000UL			/* resists life draining */
-#define MR_FLASH		0x00004000UL			/* resists flash */
-#define MR_REFLECTING	0x00008000UL			/* reflecting */
-#define MR_INVISIBLE	0x00010000UL			/* invisible */
-#define MR_SEE_INVISIBLE 0x00020000UL		/* see invisible */
-#define MR_REGENERATION 0x00040000UL		
-#define MR_TELEPORT		0x00080000UL		
-#define MR_TELEPORT_CONTROL 0x00100000UL		
-#define MR_BLIND_TELEPATHY	0x00200000UL		
-#define MR_TELEPATHY	0x00400000UL		
-#define MR_FEAR			0x00800000UL			/* immune to fear */
-#define MR_SICK			0x01000000UL			/* immune to sickness */
-#define MR_FREE_ACTION	0x02000000UL			/* immune to paralysis */
-#define MR_STUN			0x04000000UL			/* immune to stun */
+#define MR_NONE			        0x00000000UL
+#define MR_FIRE			        0x00000001UL			/* resists fire */
+#define MR_COLD			        0x00000002UL			/* resists cold */
+#define MR_SLEEP		        0x00000004UL			/* resists sleep */
+#define MR_DISINT		        0x00000008UL			/* resists disintegration */
+#define MR_ELEC			        0x00000010UL			/* resists electricity */
+#define MR_POISON		        0x00000020UL			/* resists poison */
+#define MR_ACID			        0x00000040UL			/* resists acid */
+#define MR_STONE		        0x00000080UL			/* resists petrification */
+#define MR_DEATH		        0x00000100UL			/* resists death */
+#define MR_LYCANTHROPY	        0x00000200UL			/* resists lycanthropy */
+#define MR_MAGIC_MISSILE        0x00000400UL			/* resists magic missiles */
+#define MR_MAGIC		        0x00000800UL			/* resists magic */
+#define MR_CHARM		        0x00001000UL			/* resists charm */
+#define MR_DRAIN		        0x00002000UL			/* resists life draining */
+#define MR_FLASH		        0x00004000UL			/* resists flash */
+#define MR_REFLECTING	        0x00008000UL			/* reflecting */
+#define MR_INVISIBLE	        0x00010000UL			/* invisible */
+#define MR_SEE_INVISIBLE        0x00020000UL		/* see invisible */
+#define MR_REGENERATION         0x00040000UL		
+#define MR_TELEPORT		        0x00080000UL		
+#define MR_TELEPORT_CONTROL     0x00100000UL		
+#define MR_BLIND_TELEPATHY	    0x00200000UL		
+#define MR_TELEPATHY	        0x00400000UL		
+#define MR_FEAR			        0x00800000UL			/* immune to fear */
+#define MR_SICK			        0x01000000UL			/* immune to sickness */
+#define MR_FREE_ACTION	        0x02000000UL			/* immune to paralysis */
+#define MR_STUN			        0x04000000UL			/* immune to stun */
 #define MR_LEVITATION_CONTROL	0x08000000UL		
-#define MR_VULNERABLITY_FIRE	0x10000000UL		
-#define MR_VULNERABLITY_COLD	0x20000000UL		
-#define MR_VULNERABLITY_ELEC	0x40000000UL		
-#define MR_VULNERABLITY_MAGM	0x80000000UL		
+#define MR_FIRE_VULNERABLITY	0x10000000UL		
+#define MR_COLD_VULNERABLITY	0x20000000UL		
+#define MR_SHOCK_VULNERABLITY	0x40000000UL		
+#define MR_MAGIC_MISSILE_VULNERABLITY	0x80000000UL		
 
+#define MR2_NONE			            0x00000000UL
+#define MR2_FIRE_RESISTANCE	            0x10000000UL		
+#define MR2_COLD_RESISTANCE	            0x20000000UL		
+#define MR2_SHOCK_RESISTANCE	        0x40000000UL		
+#define MR2_MAGIC_MISSILE_RESISTANCE	0x80000000UL		
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE			0x00000000UL

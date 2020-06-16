@@ -1192,14 +1192,14 @@ struct monst *mtmp;
 	boolean very_low_level_skip = (mtmp->data->difficulty > 5 && mtmp->data->difficulty <= 10);
 	boolean reflection_skip = (Reflecting && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
 	boolean antimagic_skip = (Antimagic && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
-	boolean magic_missile_resistant_skip = (Magic_missile_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
+	boolean magic_missile_resistant_skip = (Magic_missile_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 15 || (mtmp->data->intl > 10 && rn2(4)) || rn2(2)));
 	boolean sleep_resistant_skip = (Sleep_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean death_resistant_skip = (Death_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean disintegration_resistant_skip = (Disint_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 	boolean petrification_resistant_skip = Stoned || (Stone_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean fire_resistant_skip = (Fire_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean cold_resistant_skip = (Cold_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
-	boolean shock_resistant_skip = (Shock_resistance && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean fire_resistant_skip = (Fire_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean cold_resistant_skip = (Cold_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
+	boolean shock_resistant_skip = (Shock_immunity && (is_lord(mtmp->data) || is_prince(mtmp->data) || mtmp->data->intl > 16 || (mtmp->data->intl > 12 && rn2(4)) || rn2(2)));
 
 	boolean level_skip_weak_wand = (very_low_level_skip && rn2(2)) || (low_level_skip && rn2(4)) || (medium_level_skip && rn2(8)) || high_level_skip || very_high_level_skip || extremely_high_level_skip;
 	boolean level_skip_normal_wand = (very_low_level_skip && !rn2(3)) || (low_level_skip && rn2(2)) || (medium_level_skip && rn2(4)) || (high_level_skip && rn2(8)) || very_high_level_skip || extremely_high_level_skip;
@@ -1365,7 +1365,7 @@ struct monst *mtmp;
 		}
 #if 0
         nomore(MUSE_SCR_FIRE);
-        if (obj->otyp == SCR_FIRE && resists_fire(mtmp)
+        if (obj->otyp == SCR_FIRE && is_mon_immune_to_fire(mtmp)
             && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 2
             && !is_blinded(mtmp) && haseyes(mtmp->data)) {
             m.offensive = obj;
@@ -1401,7 +1401,7 @@ register struct obj *otmp;
 		{
             if (zap_oseen)
                 makeknown(WAN_STRIKING);
-            if (Magic_missile_resistance || Antimagic_or_resistance) 
+            if (Magic_missile_immunity || Antimagic_or_resistance) 
 			{
                 shieldeff(u.ux, u.uy);
                 pline("Boing!");
@@ -1417,7 +1417,7 @@ register struct obj *otmp;
             stop_occupation();
             nomul(0);
         } 
-		else if (resists_magicmissile(mtmp) || resists_magic(mtmp))
+		else if (is_mon_immune_to_magic_missile(mtmp) || resists_magic(mtmp))
 		{
             shieldeff(mtmp->mx, mtmp->my);
             pline("Boing!");
@@ -1706,7 +1706,7 @@ struct monst *mtmp;
             (void) destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);
             (void) destroy_mitem(mtmp, POTION_CLASS, AD_FIRE);
             num = (2 * (rn1(3, 3) + 2 * bcsign(otmp)) + 1) / 3;
-            if (Fire_resistance)
+            if (Fire_immunity)
                 You("are not harmed.");
             burn_away_slime();
             if (Half_spell_damage)
@@ -1719,10 +1719,10 @@ struct monst *mtmp;
                 if (mtmp == mtmp2)
                     continue;
                 if (dist2(mtmp2->mx, mtmp2->my, mtmp->mx, mtmp->my) < 3) {
-                    if (resists_fire(mtmp2))
+                    if (is_mon_immune_to_fire(mtmp2))
                         continue;
                     mtmp2->mhp -= num;
-                    if (resists_cold(mtmp2))
+                    if (is_mon_immune_to_cold(mtmp2))
                         mtmp2->mhp -= 3 * num;
                     if (DEADMONSTER(mtmp2)) {
                         mondied(mtmp2);

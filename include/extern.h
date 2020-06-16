@@ -1733,8 +1733,10 @@ E const char *FDECL(on_fire, (struct permonst *, struct attack *));
 E const struct permonst *FDECL(raceptr, (struct monst *));
 E boolean FDECL(olfaction, (struct permonst *));
 E unsigned long FDECL(prop_to_innate, (int));
+E unsigned long FDECL(prop_to_innate2, (int));
 E unsigned long FDECL(prop_to_conveyed, (int));
 E int FDECL(innate_to_prop, (unsigned long));
+E int FDECL(innate2_to_prop, (unsigned long));
 E int FDECL(conveyed_to_prop, (unsigned long));
 E const char* FDECL(get_mflag_description, (unsigned long, BOOLEAN_P, unsigned char));
 

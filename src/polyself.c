@@ -63,7 +63,13 @@ set_uasmon()
 			if (has_innate(youmonst.data, bit))
 				u.uprops[prop].intrinsic |= FROM_FORM;
 		}
-	}
+        prop = innate2_to_prop(bit);
+        if (prop > 0)
+        {
+            if (has_innate2(youmonst.data, bit))
+                u.uprops[prop].intrinsic |= FROM_FORM;
+        }
+    }
 
 #define PROPSET(PropIndx, condition)                          \
     do {                                               \
@@ -75,21 +81,25 @@ set_uasmon()
 //			u.uprops[PropIndx].intrinsic &= ~FROM_FORM; \
 
 	/* We add these additionally in the case creature type (e.g., undead) has resistances not conferred explicitly by MR_ fields */
-	PROPSET(FIRE_RES, resists_fire(&youmonst));
-    PROPSET(COLD_RES, resists_cold(&youmonst));
+	PROPSET(FIRE_IMMUNITY, is_mon_immune_to_fire(&youmonst));
+    PROPSET(COLD_IMMUNITY, is_mon_immune_to_cold(&youmonst));
     PROPSET(SLEEP_RES, resists_sleep(&youmonst));
     PROPSET(DISINT_RES, resists_disint(&youmonst));
 	PROPSET(DEATH_RES, resists_death(&youmonst));
 	PROPSET(CHARM_RES, resists_charm(&youmonst));
 	PROPSET(FEAR_RES, resists_fear(&youmonst));
-	PROPSET(SHOCK_RES, resists_elec(&youmonst));
+	PROPSET(SHOCK_IMMUNITY, is_mon_immune_to_elec(&youmonst));
     PROPSET(POISON_RES, resists_poison(&youmonst));
     PROPSET(ACID_RES, resists_acid(&youmonst));
     PROPSET(STONE_RES, resists_ston(&youmonst));
 	PROPSET(DRAIN_RES, resists_drli(&youmonst));
-	PROPSET(MAGIC_MISSILE_RES, resists_magicmissile(&youmonst));
+	PROPSET(MAGIC_MISSILE_IMMUNITY, is_mon_immune_to_magic_missile(&youmonst));
 	PROPSET(STUN_RES, resists_stun(&youmonst));
 	PROPSET(BISECTION_RES, resists_bisection(&youmonst));
+    PROPSET(FIRE_RESISTANCE, mon_resists_fire(&youmonst));
+    PROPSET(COLD_RESISTANCE, mon_resists_cold(&youmonst));
+    PROPSET(SHOCK_RESISTANCE, mon_resists_elec(&youmonst));
+    PROPSET(MAGIC_MISSILE_RESISTANCE, mon_resists_magic_missile(&youmonst));
 
 #if 0
 	{
@@ -1853,7 +1863,7 @@ dogaze()
 
 						You("attack %s with a fiery gaze!", mon_nam(mtmp));
 
-						if (resists_fire(mtmp)) 
+						if (is_mon_immune_to_fire(mtmp)) 
 						{
 							pline_The("fire doesn't burn %s!", mon_nam(mtmp));
 							dmg = 0;

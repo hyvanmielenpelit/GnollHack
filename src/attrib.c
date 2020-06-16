@@ -90,10 +90,10 @@ static const struct innate
 				 { 24, SEE_INVISIBLE, "", "" },
 				 { 0, 0, 0, 0 } },
 
-  val_abil[] = { { 1, COLD_RES, "", "" },
+  val_abil[] = { { 1, COLD_IMMUNITY, "", "" },
                  { 1, STEALTH, "", "" },
                  { 7, FAST, "quick", "slow" },
-				 { 15, SHOCK_RES, "insulated", "conductive" },
+				 { 15, SHOCK_IMMUNITY, "insulated", "conductive" },
 				 { 0, 0, 0, 0 } },
 
   wiz_abil[] = { { 14, ENHANCED_VISION, "studious", "" },
@@ -529,7 +529,7 @@ boolean lifesavedalready;
 		pline("%s%s %s ice-cold!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "are" : "is");
-		if (Cold_resistance || Invulnerable) 
+		if (Cold_immunity || Invulnerable) 
 		{
 			shieldeff(u.ux, u.uy);
 			pline_The("cold doesn't seem to affect you.");
@@ -544,7 +544,7 @@ boolean lifesavedalready;
 		pline("%s%s %s burning hot!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "are" : "is");
-		if (Fire_resistance || Invulnerable)
+		if (Fire_immunity || Invulnerable)
 		{
 			shieldeff(u.ux, u.uy);
 			pline_The("fire doesn't seem to affect you.");
@@ -559,7 +559,7 @@ boolean lifesavedalready;
 		pline("%s%s %s you with lightning!",
 			isupper((uchar)* reason) ? "" : "The ", reason,
 			plural ? "jolt" : "jolts");
-		if (Shock_resistance || Invulnerable) 
+		if (Shock_immunity || Invulnerable) 
 		{
 			shieldeff(u.ux, u.uy);
 			pline_The("lightning doesn't seem to affect you.");

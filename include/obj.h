@@ -289,21 +289,24 @@ struct obj {
 #define oresist_fire(otmp)                                       \
     (objects[(otmp)->otyp].oc_flags & O1_FIRE_RESISTANT || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_fire(&mons[(otmp)->corpsenm])) \
-     || objects[(otmp)->otyp].oc_oprop == FIRE_RES  || objects[(otmp)->otyp].oc_oprop2 == FIRE_RES || objects[(otmp)->otyp].oc_oprop3 == FIRE_RES \
+     || objects[(otmp)->otyp].oc_oprop == FIRE_IMMUNITY  || objects[(otmp)->otyp].oc_oprop2 == FIRE_IMMUNITY || objects[(otmp)->otyp].oc_oprop3 == FIRE_IMMUNITY \
+     || objects[(otmp)->otyp].oc_oprop == FIRE_RESISTANCE  || objects[(otmp)->otyp].oc_oprop2 == FIRE_RESISTANCE || objects[(otmp)->otyp].oc_oprop3 == FIRE_RESISTANCE \
      || obj_resists(otmp, 0, 0) \
      || is_quest_artifact(otmp) )
 
 #define oresist_cold(otmp)                                       \
     (objects[(otmp)->otyp].oc_flags & O1_COLD_RESISTANT || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_cold(&mons[(otmp)->corpsenm])) \
-     || objects[(otmp)->otyp].oc_oprop == COLD_RES  || objects[(otmp)->otyp].oc_oprop2 == COLD_RES || objects[(otmp)->otyp].oc_oprop3 == COLD_RES \
+     || objects[(otmp)->otyp].oc_oprop == COLD_IMMUNITY  || objects[(otmp)->otyp].oc_oprop2 == COLD_IMMUNITY || objects[(otmp)->otyp].oc_oprop3 == COLD_IMMUNITY \
+     || objects[(otmp)->otyp].oc_oprop == COLD_RESISTANCE  || objects[(otmp)->otyp].oc_oprop2 == COLD_RESISTANCE || objects[(otmp)->otyp].oc_oprop3 == COLD_RESISTANCE \
      || obj_resists(otmp, 0, 0) \
      || is_quest_artifact(otmp) )
 
 #define oresist_elec(otmp)                                       \
     (objects[(otmp)->otyp].oc_flags & O1_LIGHTNING_RESISTANT || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_elec(&mons[(otmp)->corpsenm])) \
-     || objects[(otmp)->otyp].oc_oprop == SHOCK_RES  || objects[(otmp)->otyp].oc_oprop2 == SHOCK_RES || objects[(otmp)->otyp].oc_oprop3 == SHOCK_RES \
+     || objects[(otmp)->otyp].oc_oprop == SHOCK_IMMUNITY  || objects[(otmp)->otyp].oc_oprop2 == SHOCK_IMMUNITY || objects[(otmp)->otyp].oc_oprop3 == SHOCK_IMMUNITY \
+     || objects[(otmp)->otyp].oc_oprop == SHOCK_RESISTANCE  || objects[(otmp)->otyp].oc_oprop2 == SHOCK_RESISTANCE || objects[(otmp)->otyp].oc_oprop3 == SHOCK_RESISTANCE \
      || obj_resists(otmp, 0, 0) \
      || is_quest_artifact(otmp) )
 

@@ -846,13 +846,13 @@ register struct permonst *ptr;
 	int res = 0;
 	
 	switch (type) {
-    case FIRE_RES:
+    case FIRE_IMMUNITY:
         res = (ptr->mconveys & MC_FIRE) != 0;
         break;
     case SLEEP_RES:
         res = (ptr->mconveys & MC_SLEEP) != 0;
         break;
-    case COLD_RES:
+    case COLD_IMMUNITY:
         res = (ptr->mconveys & MC_COLD) != 0;
         break;
     case DISINT_RES:
@@ -870,7 +870,7 @@ register struct permonst *ptr;
 	case FEAR_RES:
 		res = (ptr->mconveys & MC_FEAR) != 0;
 		break;
-	case SHOCK_RES: /* shock (electricity) resistance */
+	case SHOCK_IMMUNITY: /* shock (electricity) resistance */
         res = (ptr->mconveys & MC_ELEC) != 0;
         break;
     case POISON_RES:
@@ -970,8 +970,15 @@ register struct permonst *ptr;
 	}
 
     switch (type) {
-    case FIRE_RES:
-        debugpline0("Trying to give fire resistance");
+    case FIRE_IMMUNITY:
+        debugpline0("Trying to give fire immunity");
+        if (!(HFire_immunity & FROM_ACQUIRED)) {
+            You(Hallucination ? "be chillin'." : "feel a momentary chill.");
+            HFire_immunity |= FROM_ACQUIRED;
+        }
+        break;
+    case FIRE_RESISTANCE:
+        debugpline0("Trying to give fire immunity");
         if (!(HFire_resistance & FROM_ACQUIRED)) {
             You(Hallucination ? "be chillin'." : "feel a momentary chill.");
             HFire_resistance |= FROM_ACQUIRED;
@@ -984,7 +991,14 @@ register struct permonst *ptr;
             HSleep_resistance |= FROM_ACQUIRED;
         }
         break;
-    case COLD_RES:
+    case COLD_IMMUNITY:
+        debugpline0("Trying to give cold immunity");
+        if (!(HCold_immunity & FROM_ACQUIRED)) {
+            You_feel("full of hot air.");
+            HCold_immunity |= FROM_ACQUIRED;
+        }
+        break;
+    case COLD_RESISTANCE:
         debugpline0("Trying to give cold resistance");
         if (!(HCold_resistance & FROM_ACQUIRED)) {
             You_feel("full of hot air.");
@@ -998,7 +1012,17 @@ register struct permonst *ptr;
             HDisint_resistance |= FROM_ACQUIRED;
         }
         break;
-    case SHOCK_RES: /* shock (electricity) resistance */
+    case SHOCK_IMMUNITY: /* shock (electricity) resistance */
+        debugpline0("Trying to give shock immunity");
+        if (!(HShock_immunity & FROM_ACQUIRED)) {
+            if (Hallucination)
+                You_feel("grounded in reality.");
+            else
+                Your("health currently feels amplified!");
+            HShock_immunity |= FROM_ACQUIRED;
+        }
+        break;
+    case SHOCK_RESISTANCE: /* shock (electricity) resistance */
         debugpline0("Trying to give shock resistance");
         if (!(HShock_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
@@ -1008,7 +1032,7 @@ register struct permonst *ptr;
             HShock_resistance |= FROM_ACQUIRED;
         }
         break;
-	case DEATH_RES: /* death resistance */
+    case DEATH_RES: /* death resistance */
 		debugpline0("Trying to give death resistance");
 		if (!(HDeath_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
@@ -2397,7 +2421,7 @@ struct obj *otmp;
             break;
         case RIN_PROTECTION:
             accessory_has_effect(otmp);
-            HDivine_protection |= FROM_ACQUIRED;
+            HMagical_protection |= FROM_ACQUIRED;
 			u.ubaseacbonus = (schar)bounded_increase((int)u.ubaseacbonus, otmp->enchantment,
 				RIN_PROTECTION);
 			//u.ublessed = bounded_increase(u.ublessed, otmp->enchantment,

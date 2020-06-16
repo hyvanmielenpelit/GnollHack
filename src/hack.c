@@ -1480,13 +1480,13 @@ domove_core()
 
             if (!skates)
                 skates = find_skates();
-            if ((uarmf && uarmf->otyp == skates) || resists_cold(&youmonst)
+            if ((uarmf && uarmf->otyp == skates) || is_mon_immune_to_cold(&youmonst)
                 || Flying || is_floater(youmonst.data)
                 || is_clinger(youmonst.data) || is_whirly(youmonst.data)) 
 			{
                 on_ice = FALSE;
             } 
-			else if (!rn2(Cold_resistance ? 3 : 2)) 
+			else if (!rn2(Cold_immunity ? 3 : 2)) 
 			{
                 HFumbling |= FROM_ACQUIRED;
                 HFumbling &= ~TIMEOUT;
@@ -3081,8 +3081,8 @@ const char *msg_override;
 STATIC_OVL void
 maybe_wail()
 {
-    static short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RES, COLD_RES,
-                              SHOCK_RES, FIRE_RES, SLEEP_RES, DISINT_RES,
+    static short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RES, COLD_IMMUNITY,
+                              SHOCK_IMMUNITY, FIRE_IMMUNITY, SLEEP_RES, DISINT_RES,
                               TELEPORT_CONTROL, STEALTH, FAST, INVISIBILITY };
 
     if (moves <= wailmsg + 50)

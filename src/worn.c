@@ -1403,7 +1403,7 @@ boolean silently;
 				case ODD_IDEAS:
 				case LAUGHING:
 				case JUMPING:
-				case DIVINE_PROTECTION:
+				case MAGICAL_PROTECTION:
 					break;
 				case BLOCKS_INVISIBILITY:
 					mon->invis_blkd = 1;
@@ -1466,14 +1466,14 @@ boolean silently;
 					in_mklev = save_in_mklev;
 					break;
 				}
-				case FIRE_RES:
-				case COLD_RES:
+				case FIRE_IMMUNITY:
+				case COLD_IMMUNITY:
 				case SLEEP_RES:
 				case DISINT_RES:
 				case DEATH_RES:
 				case CHARM_RES:
 				case MIND_SHIELDING:
-				case SHOCK_RES:
+				case SHOCK_IMMUNITY:
 				case POISON_RES:
 				case ACID_RES:
 				case STONE_RES:
@@ -1570,7 +1570,7 @@ register struct monst *mon;
 		mac -= 10;
 	else if (mon->mprops[MAGICAL_SHIELDING])
 		mac -= 4;
-	else if (mon->mprops[DIVINE_PROTECTION])
+	else if (mon->mprops[MAGICAL_PROTECTION])
 		mac -= 3;
 
     return mac;
