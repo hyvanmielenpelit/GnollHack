@@ -1634,13 +1634,14 @@ level_difficulty()
 {
     int res;
 
+    /* Maximum level limited to depth of sanctum level */
     if (In_endgame(&u.uz))
 	{
-        res = 2 * depth(&sanctum_level); //ulevel removed, depth doubled from before
+        res = deepest_lev_reached(FALSE);  //2 * depth(&sanctum_level); //ulevel removed, depth doubled from before
     } 
 	else if (u.uhave.amulet) 
 	{
-        res = 2 * deepest_lev_reached(FALSE) - depth(&u.uz);
+        res = deepest_lev_reached(FALSE); // 2 * deepest_lev_reached(FALSE) - depth(&u.uz);
     } 
 	else
 	{
