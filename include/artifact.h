@@ -117,6 +117,7 @@ struct artifact {
     long cost; /* price when sold to hero (default 100 x base cost) */
     char acolor;        /* color to use if artifact 'glows' */
 	char ocolor;		/* color used for object instead of its normal color */
+	int tile_floor_height;
 
 	short stand_animation;
 	short enlargement;

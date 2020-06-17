@@ -15,6 +15,8 @@
 #include "color.h"
 #include "patchlevel.h"
 #include "layer.h"
+#include "artifact.h"
+#include "artilist.h"
 
 #define NHMAP_FONT_NAME TEXT("Terminal")
 #define NHMAP_TTFONT_NAME TEXT("Consolas")
@@ -1194,45 +1196,76 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         double applicable_scaling_factor_x = print_first_directly_to_map ? x_scaling_factor : 1.0;
                         double applicable_scaling_factor_y = print_first_directly_to_map ? y_scaling_factor : 1.0;
                         double obj_scaling_factor = 1.0;
+                        boolean is_obj_missile = FALSE;
+                        boolean is_object = FALSE;
 
-                        if (move_obj_to_middle)
+                        if (base_layer == LAYER_MISSILE && glyph_is_missile(glyph))
                         {
-                            dest_top_added = (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_Y / 4.0));
-                            dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
-                            source_top_added = TILE_Y / 2;
-                            source_height_deducted = TILE_Y / 2;
+                            is_obj_missile = TRUE;
+                            if (glyph_is_object_missile(glyph))
+                            {
+                                int otyp = (glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
+                                if (objects[otyp].oc_tile_floor_height > 0)
+                                    obj_scaling_factor = ((double)objects[otyp].oc_tile_floor_height) / 48.0;
+                            }
+                            else if (glyph_is_artifact_missile(glyph))
+                            {
+                                int artidx = ((glyph - GLYPH_ARTIFACT_MISSILE_OFF) / NUM_MISSILE_DIRS) + 1;
+                                if (artilist[artidx].tile_floor_height > 0)
+                                    obj_scaling_factor = ((double)artilist[artidx].tile_floor_height) / 48.0;
+                            }
+
+                            /* This is a normal object used as a missile; now only lower part is used, object is moved upwards 1/4 of the tile */
+                            if (move_obj_to_middle)
+                            {
+                                /* Take lower part only */
+                                source_top_added = TILE_Y / 2;
+                                source_height_deducted = TILE_Y / 2;
+                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 4.0));
+                                dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
+                            }
                         }
-                        else if ((base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT) && !full_sized_item)
+                        else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
                         {
-                            if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0)
-                                obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
+                            is_object = TRUE;
 
-                            source_top_added = TILE_Y / 2;
-                            source_height_deducted = TILE_Y / 2;
-                            dest_top_added = (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_Y / 2.0));
-                            dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
-
-                            /* Leave a little room for monster feet if not cover object */
-                            if (base_layer == LAYER_OBJECT)
-                                dest_top_added += (int)(applicable_scaling_factor_y * (-8.0));
-
-                            /* Pile the objects in order with two pixels in between */
-                            if (layer_rounds > 1)
+                            if (!full_sized_item)
                             {
-                                dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(layer_rounds - 1 - layer_round)));
+                                /* For all normal items, we use only lower part of the tile */
+                                source_top_added = TILE_Y / 2;
+                                source_height_deducted = TILE_Y / 2;
+                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
+                                dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
+
+                                /* Leave a little room for monster feet if not cover object */
+                                if (base_layer == LAYER_OBJECT)
+                                    dest_top_added += (int)(applicable_scaling_factor_y * (-8.0));
+
+                                /* Pile the objects in order with two pixels in between */
+                                if (layer_rounds > 1)
+                                {
+                                    dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(layer_rounds - 1 - layer_round)));
+                                }
+
+                                if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0)
+                                    obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
                             }
+                        }
 
-                            /* Now scale */
-                            if (obj_scaling_factor != 1.0)
-                            {
-                                double scaled_height = (obj_scaling_factor * (double)GetNHApp()->mapTile_Y / 2.0);
-                                double scaled_width = (obj_scaling_factor * (double)GetNHApp()->mapTile_X);
+                        /* Scale object to be of oc_tile_floor_height height */
+                        if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
+                        {
+                            double scaled_height = (obj_scaling_factor * (double)GetNHApp()->mapTile_Y / 2.0);
+                            double scaled_width = (obj_scaling_factor * (double)GetNHApp()->mapTile_X);
 
+                            if(is_object)
                                 dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
-                                dest_height_deducted += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
-                                dest_left_added += (int)(applicable_scaling_factor_x * (((double)GetNHApp()->mapTile_X - scaled_width) / 2.0));
-                                dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
-                            }
+                            else
+                                dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height) / 2.0);
+
+                            dest_height_deducted += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
+                            dest_left_added += (int)(applicable_scaling_factor_x * (((double)GetNHApp()->mapTile_X - scaled_width) / 2.0));
+                            dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
                         }
 
 

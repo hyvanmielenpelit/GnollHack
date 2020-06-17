@@ -1435,6 +1435,7 @@ static struct tmp_glyph {
     int sidx;                       /* index of next unused slot in saved[] */
     int style; /* either DISP_BEAM or DISP_FLASH or DISP_ALWAYS */
     int glyph; /* glyph to use when printing */
+    int obj_tile_height;
     struct tmp_glyph *prev;
 } tgfirst;
 
