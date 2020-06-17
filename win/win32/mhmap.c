@@ -1182,6 +1182,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         //int dest_top_added = move_obj_to_middle || layer_rounds == 1 ? 0 :(int)(((double)(rect->bottom - rect->top)/((double)TILE_Y / 2.0)) * -1.0 * (double)(MAX_LAYERS - 1 - layer_round) * 2.0);
                         int dest_top_added = 0;
                         int dest_height_deducted = 0;
+                        int dest_left_added = 0;
+                        int dest_width_deducted = 0;
                         int source_top_added = 0;
                         int source_height_deducted = 0;
                         t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
@@ -1191,6 +1193,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         double applicable_scaling_factor_x = print_first_directly_to_map ? x_scaling_factor : 1.0;
                         double applicable_scaling_factor_y = print_first_directly_to_map ? y_scaling_factor : 1.0;
+                        double obj_scaling_factor = 1.0;
 
                         if (move_obj_to_middle)
                         {
@@ -1199,9 +1202,17 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             source_top_added = TILE_Y / 2;
                             source_height_deducted = TILE_Y / 2;
                         }
-                        else if(!full_sized_item)
+                        else if ((base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT) && !full_sized_item)
                         {
-                            /* Leave a little room for monster feet */
+                            if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0)
+                                obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
+
+                            source_top_added = TILE_Y / 2;
+                            source_height_deducted = TILE_Y / 2;
+                            dest_top_added = (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_Y / 2.0));
+                            dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
+
+                            /* Leave a little room for monster feet if not cover object */
                             if (base_layer == LAYER_OBJECT)
                                 dest_top_added += (int)(applicable_scaling_factor_y * (-8.0));
 
@@ -1210,7 +1221,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(layer_rounds - 1 - layer_round)));
                             }
+
+                            /* Now scale */
+                            if (obj_scaling_factor != 1.0)
+                            {
+                                double scaled_height = (obj_scaling_factor * (double)GetNHApp()->mapTile_Y / 2.0);
+                                double scaled_width = (obj_scaling_factor * (double)GetNHApp()->mapTile_X);
+
+                                dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
+                                dest_height_deducted += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
+                                dest_left_added += (int)(applicable_scaling_factor_x * (((double)GetNHApp()->mapTile_X - scaled_width) / 2.0));
+                                dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
+                            }
                         }
+
 
                         /*
                         StretchBlt(hDCcopy, 0, dest_top_added,
@@ -1223,16 +1247,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (print_first_directly_to_map)
                             {
                                 (*GetNHApp()->lpfnTransparentBlt)(
-                                    data->backBufferDC, rect->left, rect->top + dest_top_added,
-                                    data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                    data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
+                                    data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
                                     t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
                                     GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
                             }
                             else
                             {
                                 (*GetNHApp()->lpfnTransparentBlt)(
-                                    hDCcopy, 0, dest_top_added,
-                                    GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                    hDCcopy, dest_left_added, dest_top_added,
+                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
                                     t_x, t_y, multiplier * GetNHApp()->mapTile_X,
                                     GetNHApp()->mapTile_Y, TILE_BK_COLOR);
                             }
@@ -1242,15 +1266,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (print_first_directly_to_map)
                             {
                                 StretchBlt(
-                                    data->backBufferDC, rect->left, rect->top + dest_top_added,
-                                    data->xBackTile, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                    data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
+                                    data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
                                     t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
                                     GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
                             }
                             else
                             {
-                                StretchBlt(hDCcopy, 0, dest_top_added,
-                                    GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                StretchBlt(hDCcopy, dest_left_added, dest_top_added,
+                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
                                     t_x, t_y, multiplier * GetNHApp()->mapTile_X,
                                     GetNHApp()->mapTile_Y, SRCCOPY);
                             }

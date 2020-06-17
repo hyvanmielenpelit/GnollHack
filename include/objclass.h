@@ -710,6 +710,7 @@ struct objclass {
 	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
 	int oc_critical_strike_percentage;	/* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 	int oc_multigen_type;				/* class number multi multigen_type */
+	int oc_tile_floor_height;			/* (scaled) height of the item tile in pixels when it appears on the floor */
 
 /* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 
