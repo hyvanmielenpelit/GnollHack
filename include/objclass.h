@@ -299,13 +299,14 @@ enum obj_miscellaneous_types {
 	MISC_SCARF = 14,
 	MISC_EXTRA_ARMS = 15,
 	MISC_BROOCH = 16,
-	MISC_NECKTIE = 17
+	MISC_MASK = 17,
+	MISC_NECKTIE = 18
 };
 
 static const char* misc_type_names[] = {
 	"", "set of wings", "pair of pants", "skirt", "wrist watch",
 	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch", "necktie",
+	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch", "mask", "necktie",
 };
 
 static const char* misc_type_worn_texts[] = {
