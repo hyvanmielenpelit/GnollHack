@@ -27,7 +27,7 @@ static const struct innate
                  { 10, SEARCHING, "perceptive", "" },
                  { 0, 0, 0, 0 } },
 
-  bar_abil[] = { { 1, POISON_RES, "", "" },
+  bar_abil[] = { { 1, POISON_RESISTANCE, "", "" },
                  { 7, FAST, "quick", "slow" },
                  { 14, STEALTH, "stealthy", "" },
                  { 0, 0, 0, 0 } },
@@ -36,29 +36,29 @@ static const struct innate
 				 { 15, WARNING, "sensitive", "" },
 				 { 0, 0, 0, 0 } },
 
-  hea_abil[] = { { 1, POISON_RES, "", "" },
-				 { 9, SLEEP_RES, "awake", "tired" },
+  hea_abil[] = { { 1, POISON_RESISTANCE, "", "" },
+				 { 9, SLEEP_RESISTANCE, "awake", "tired" },
 				 { 14, BRAIN_PROTECTION, "hard-brained", "" },
-				 { 19, DEATH_RES, "less mortal", "more mortal" },
+				 { 19, DEATH_RESISTANCE, "less mortal", "more mortal" },
 				 { 24, REGENERATION, "regenerative", "" },
                  { 0, 0, 0, 0 } },
 
   kni_abil[] = { { 7, FAST, "quick", "slow" },
 				 { 11, WARN_UNDEAD, "sensitive to undead", "" },
 				 { 15, WARN_DEMON, "sensitive to demons", "" },
-				 { 19, CURSE_RES, "holy", "less holy" },
+				 { 19, CURSE_RESISTANCE, "holy", "less holy" },
 				 { 0, 0, 0, 0 } },
 
   mon_abil[] = { { 1, FAST, "", "" },
-                 { 1, SLEEP_RES, "", "" },
+                 { 1, SLEEP_RESISTANCE, "", "" },
 				 { 4, SLOW_DIGESTION, "less hungry", "more hungry" },
-				 { 7, POISON_RES, "healthy", "" },
+				 { 7, POISON_RESISTANCE, "healthy", "" },
 				 { 10, JUMPING, "jumpy", "" },
 				 { 13, SEE_INVISIBLE, "", "" },
 				 { 16, STEALTH, "stealthy", "" },
-				 { 19, DEATH_RES, "less mortal", "more mortal" },
+				 { 19, DEATH_RESISTANCE, "less mortal", "more mortal" },
 				 { 22, SEARCHING, "perceptive", "unaware" },
-				 { 25, SICK_RES, "even healthier", "" },
+				 { 25, SICK_RESISTANCE, "even healthier", "" },
 				 { 28, WARNING, "sensitive", "" },
 				 { 31, VERY_FAST, "very quick", "slow" },
                  { 34, TELEPORT_CONTROL, "controlled", "uncontrolled" },
@@ -67,8 +67,8 @@ static const struct innate
   pri_abil[] = { {  7, WARN_UNDEAD, "sensitive to undead", "" },
                  { 10, WARN_DEMON, "sensitive to demons", "" },
 				 { 13, WARN_ANGEL, "sensitive to angels", "" },
-				 { 16, CURSE_RES, "holy", "less holy" },
-				 { 19, DEATH_RES, "less mortal", "more mortal" },
+				 { 16, CURSE_RESISTANCE, "holy", "less holy" },
+				 { 19, DEATH_RESISTANCE, "less mortal", "more mortal" },
 				 { 0, 0, 0, 0 } },
 
   ran_abil[] = { { 1, SEARCHING, "", "" },
@@ -85,8 +85,8 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   tou_abil[] = { { 9, SEARCHING, "perceptive", "" },
-				 { 14, SICK_RES, "healthy", "" },
-				 { 19, POISON_RES, "hardy", "" },
+				 { 14, SICK_RESISTANCE, "healthy", "" },
+				 { 19, POISON_RESISTANCE, "hardy", "" },
 				 { 24, SEE_INVISIBLE, "", "" },
 				 { 0, 0, 0, 0 } },
 
@@ -105,7 +105,7 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   elf_abil[] = { { 1, INFRAVISION, "", "" },
-                 { 3, SLEEP_RES, "awake", "tired" },
+                 { 3, SLEEP_RESISTANCE, "awake", "tired" },
 				 { 6, FREE_ACTION, "nimble", "stiff" },
 				 { 0, 0, 0, 0 } },
 
@@ -113,10 +113,10 @@ static const struct innate
                  { 0, 0, 0, 0 } },
 
   orc_abil[] = { { 1, INFRAVISION, "", "" },
-                 { 1, POISON_RES, "", "" },
+                 { 1, POISON_RESISTANCE, "", "" },
                  { 0, 0, 0, 0 } },
 
-  gnl_abil[] = { { 1, LYCANTHROPY_RES, "", "" },
+  gnl_abil[] = { { 1, LYCANTHROPY_RESISTANCE, "", "" },
 				   { 0, 0, 0, 0 } },
 
   hum_abil[] = { { 0, 0, 0, 0 } };
@@ -1576,7 +1576,7 @@ int propidx;
 		return A_FROM_FORM;
 
 	/* Special cases */
-	if (propidx == DRAIN_RES && u.ulycn >= LOW_PM)
+	if (propidx == DRAIN_RESISTANCE && u.ulycn >= LOW_PM)
         return A_FROM_LYCN;
     if (propidx == BLINDED && !haseyes(youmonst.data))
         return A_FROM_FORM;

@@ -2692,7 +2692,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     m_useup(mon, obj);
     /* obj is now gone */
 
-    if (acid && !tinned && !resists_acid(mon)) 
+    if (acid && !tinned && !is_mon_immune_to_acid(mon)) 
 	{
 		deduct_monster_hp(mon, adjust_damage(rnd(15), (struct monst*)0, mon, AD_ACID, FALSE));
         if (vis)
@@ -2732,7 +2732,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
     }
     /* use up monster's next move */
 	mon->mprops[STONED] &= ~M_TIMEOUT;
-	increase_mon_property(mon, STONE_RES, 13);
+	increase_mon_property(mon, STONE_RESISTANCE, 13);
 	mon->movement -= NORMAL_SPEED;
     mon->mlstmv = monstermoves;
 }

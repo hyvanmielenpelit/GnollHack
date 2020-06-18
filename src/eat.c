@@ -849,31 +849,31 @@ register struct permonst *ptr;
     case FIRE_IMMUNITY:
         res = (ptr->mconveys & MC_FIRE) != 0;
         break;
-    case SLEEP_RES:
+    case SLEEP_RESISTANCE:
         res = (ptr->mconveys & MC_SLEEP) != 0;
         break;
     case COLD_IMMUNITY:
         res = (ptr->mconveys & MC_COLD) != 0;
         break;
-    case DISINT_RES:
+    case DISINTEGRATION_RESISTANCE:
         res = (ptr->mconveys & MC_DISINT) != 0;
         break;
-	case DEATH_RES:
+	case DEATH_RESISTANCE:
 		res = (ptr->mconveys & MC_DEATH) != 0;
 		break;
-	case DRAIN_RES:
+	case DRAIN_RESISTANCE:
 		res = (ptr->mconveys & MC_DRAIN) != 0;
 		break;
-	case CHARM_RES:
+	case CHARM_RESISTANCE:
 		res = (ptr->mconveys & MC_CHARM) != 0;
 		break;
-	case FEAR_RES:
+	case FEAR_RESISTANCE:
 		res = (ptr->mconveys & MC_FEAR) != 0;
 		break;
 	case SHOCK_IMMUNITY: /* shock (electricity) resistance */
         res = (ptr->mconveys & MC_ELEC) != 0;
         break;
-    case POISON_RES:
+    case POISON_RESISTANCE:
         res = (ptr->mconveys & MC_POISON) != 0;
         break;
     case TELEPORT:
@@ -882,7 +882,7 @@ register struct permonst *ptr;
     case TELEPORT_CONTROL:
 		res = (ptr->mconveys & MC_TELEPORT_CONTROL) != 0;
         break;
-    case BLIND_TELEPAT:
+    case BLIND_TELEPATHY:
 		res = (ptr->mconveys & MC_BLIND_TELEPATHY) != 0;
         break;
 	case TELEPAT:
@@ -941,7 +941,7 @@ register struct permonst *ptr;
 		debugpline1("Attempting to give intrinsic %d", type);
 		/* some intrinsics are easier to get than others */
 		switch (type) {
-		case POISON_RES:
+		case POISON_RESISTANCE:
 			if ((ptr == &mons[PM_KILLER_BEE] || ptr == &mons[PM_SCORPION])
 				&& !rn2(4))
 				chance = 1;
@@ -954,7 +954,7 @@ register struct permonst *ptr;
 		case TELEPORT_CONTROL:
 			chance = 12;
 			break;
-		case BLIND_TELEPAT:
+		case BLIND_TELEPATHY:
 			chance = 1;
 			break;
 		case TELEPAT:
@@ -980,11 +980,11 @@ register struct permonst *ptr;
     case FIRE_RESISTANCE:
         debugpline0("Trying to give fire immunity");
         if (!(HFire_resistance & FROM_ACQUIRED)) {
-            You(Hallucination ? "be chillin'." : "feel a momentary chill.");
+            You(Hallucination ? "be chillin'." : "feel cold for a moment.");
             HFire_resistance |= FROM_ACQUIRED;
         }
         break;
-    case SLEEP_RES:
+    case SLEEP_RESISTANCE:
         debugpline0("Trying to give sleep resistance");
         if (!(HSleep_resistance & FROM_ACQUIRED)) {
             You_feel("wide awake.");
@@ -1001,11 +1001,11 @@ register struct permonst *ptr;
     case COLD_RESISTANCE:
         debugpline0("Trying to give cold resistance");
         if (!(HCold_resistance & FROM_ACQUIRED)) {
-            You_feel("full of hot air.");
+            You_feel("hot inside.");
             HCold_resistance |= FROM_ACQUIRED;
         }
         break;
-    case DISINT_RES:
+    case DISINTEGRATION_RESISTANCE:
         debugpline0("Trying to give disintegration resistance");
         if (!(HDisint_resistance & FROM_ACQUIRED)) {
             You_feel(Hallucination ? "totally together, man." : "very firm.");
@@ -1026,13 +1026,13 @@ register struct permonst *ptr;
         debugpline0("Trying to give shock resistance");
         if (!(HShock_resistance & FROM_ACQUIRED)) {
             if (Hallucination)
-                You_feel("grounded in reality.");
+                You_feel("more grounded in reality.");
             else
-                Your("health currently feels amplified!");
+                Your("health currently feels a bit more amplified!");
             HShock_resistance |= FROM_ACQUIRED;
         }
         break;
-    case DEATH_RES: /* death resistance */
+    case DEATH_RESISTANCE: /* death resistance */
 		debugpline0("Trying to give death resistance");
 		if (!(HDeath_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
@@ -1042,7 +1042,7 @@ register struct permonst *ptr;
 			HDeath_resistance |= FROM_ACQUIRED;
 		}
 		break;
-	case CHARM_RES: /* charm resistance */
+	case CHARM_RESISTANCE: /* charm resistance */
 		debugpline0("Trying to give charm resistance");
 		if (!(HCharm_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
@@ -1052,7 +1052,7 @@ register struct permonst *ptr;
 			HCharm_resistance |= FROM_ACQUIRED;
 		}
 		break;
-	case FEAR_RES: /* charm resistance */
+	case FEAR_RESISTANCE: /* charm resistance */
 		debugpline0("Trying to give fear resistance");
 		if (!(HFear_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
@@ -1072,7 +1072,7 @@ register struct permonst *ptr;
 			HMind_shielding |= FROM_ACQUIRED;
 		}
 		break;
-	case LYCANTHROPY_RES: /* immunity to lycanthropy */
+	case LYCANTHROPY_RESISTANCE: /* immunity to lycanthropy */
 		debugpline0("Trying to give immunity to lycanthropy");
 		if (!(HLycanthropy_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
@@ -1082,7 +1082,7 @@ register struct permonst *ptr;
 			HLycanthropy_resistance |= FROM_ACQUIRED;
 		}
 		break;
-	case CURSE_RES: /* protection from curses */
+	case CURSE_RESISTANCE: /* protection from curses */
 		debugpline0("Trying to give protection from curses");
 		if (!(HCurse_resistance & FROM_ACQUIRED)) {
 			if (Hallucination)
@@ -1092,7 +1092,7 @@ register struct permonst *ptr;
 			HCurse_resistance |= FROM_ACQUIRED;
 		}
 		break;
-	case POISON_RES:
+	case POISON_RESISTANCE:
         debugpline0("Trying to give poison resistance");
         if (!(HPoison_resistance & FROM_ACQUIRED)) {
             You_feel(Poison_resistance ? "especially healthy." : "healthy.");
@@ -1114,7 +1114,7 @@ register struct permonst *ptr;
             HTeleport_control |= FROM_ACQUIRED;
         }
         break;
-    case BLIND_TELEPAT:
+    case BLIND_TELEPATHY:
         debugpline0("Trying to give blind-telepathy");
         if (!(HBlind_telepat & FROM_ACQUIRED)) {
             You_feel(Hallucination ? "in touch with the cosmos."
@@ -1995,7 +1995,7 @@ struct obj *otmp;
             return 1;
         }
     }
-    else if (has_acidic_corpse(&mons[mnum]) && !Acid_resistance)
+    else if (has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance)
     {
 		tp++;
         You("have a very bad case of stomach acid.");   /* not body_part() */
@@ -2886,7 +2886,7 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || cadaver && has_acidic_corpse(&mons[mnum]) && !Acid_resistance) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || cadaver && has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance) {
         Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
             return 1;
@@ -3197,7 +3197,7 @@ doeat()
 				useupf(otmp, 1L);
 			return 2;
 		}
-		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_resistance) {
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity && !Acid_resistance) {
 			You("have a very bad case of stomach acid.");   /* not body_part() */
 			losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), "acidic food",
 				KILLED_BY_AN); /* acid damage */

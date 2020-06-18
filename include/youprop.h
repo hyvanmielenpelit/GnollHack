@@ -69,40 +69,40 @@
 #define EShock_resistance u.uprops[SHOCK_RESISTANCE].extrinsic
 #define Shock_resistance (HShock_resistance || EShock_resistance)
 
-#define HSleep_resistance u.uprops[SLEEP_RES].intrinsic
-#define ESleep_resistance u.uprops[SLEEP_RES].extrinsic
+#define HSleep_resistance u.uprops[SLEEP_RESISTANCE].intrinsic
+#define ESleep_resistance u.uprops[SLEEP_RESISTANCE].extrinsic
 #define Sleep_resistance (HSleep_resistance || ESleep_resistance)
 
-#define HDisint_resistance u.uprops[DISINT_RES].intrinsic
-#define EDisint_resistance u.uprops[DISINT_RES].extrinsic
+#define HDisint_resistance u.uprops[DISINTEGRATION_RESISTANCE].intrinsic
+#define EDisint_resistance u.uprops[DISINTEGRATION_RESISTANCE].extrinsic
 #define Disint_resistance (HDisint_resistance || EDisint_resistance)
 
-#define HDeath_resistance u.uprops[DEATH_RES].intrinsic
-#define EDeath_resistance u.uprops[DEATH_RES].extrinsic
+#define HDeath_resistance u.uprops[DEATH_RESISTANCE].intrinsic
+#define EDeath_resistance u.uprops[DEATH_RESISTANCE].extrinsic
 #define Death_resistance (HDeath_resistance || EDeath_resistance)
 
-#define HLycanthropy_resistance u.uprops[LYCANTHROPY_RES].intrinsic
-#define ELycanthropy_resistance u.uprops[LYCANTHROPY_RES].extrinsic
+#define HLycanthropy_resistance u.uprops[LYCANTHROPY_RESISTANCE].intrinsic
+#define ELycanthropy_resistance u.uprops[LYCANTHROPY_RESISTANCE].extrinsic
 #define Lycanthropy_resistance (HLycanthropy_resistance || ELycanthropy_resistance)
 
-#define HCurse_resistance u.uprops[CURSE_RES].intrinsic
-#define ECurse_resistance u.uprops[CURSE_RES].extrinsic
+#define HCurse_resistance u.uprops[CURSE_RESISTANCE].intrinsic
+#define ECurse_resistance u.uprops[CURSE_RESISTANCE].extrinsic
 #define Curse_resistance (HCurse_resistance || ECurse_resistance)
 
-#define HPoison_resistance u.uprops[POISON_RES].intrinsic
-#define EPoison_resistance u.uprops[POISON_RES].extrinsic
+#define HPoison_resistance u.uprops[POISON_RESISTANCE].intrinsic
+#define EPoison_resistance u.uprops[POISON_RESISTANCE].extrinsic
 #define Poison_resistance (HPoison_resistance || EPoison_resistance)
 
-#define HDrain_resistance u.uprops[DRAIN_RES].intrinsic
-#define EDrain_resistance u.uprops[DRAIN_RES].extrinsic
+#define HDrain_resistance u.uprops[DRAIN_RESISTANCE].intrinsic
+#define EDrain_resistance u.uprops[DRAIN_RESISTANCE].extrinsic
 #define Drain_resistance (HDrain_resistance || EDrain_resistance)
 
-#define HCharm_resistance u.uprops[CHARM_RES].intrinsic
-#define ECharm_resistance u.uprops[CHARM_RES].extrinsic
+#define HCharm_resistance u.uprops[CHARM_RESISTANCE].intrinsic
+#define ECharm_resistance u.uprops[CHARM_RESISTANCE].extrinsic
 #define Charm_resistance (HCharm_resistance || ECharm_resistance)
 
-#define HFear_resistance u.uprops[FEAR_RES].intrinsic
-#define EFear_resistance u.uprops[FEAR_RES].extrinsic
+#define HFear_resistance u.uprops[FEAR_RESISTANCE].intrinsic
+#define EFear_resistance u.uprops[FEAR_RESISTANCE].extrinsic
 #define Fear_resistance (HFear_resistance || ECharm_resistance)
 
 #define HMind_shielding u.uprops[MIND_SHIELDING].intrinsic
@@ -125,16 +125,21 @@
 #define EMagic_missile_resistance u.uprops[MAGIC_MISSILE_RESISTANCE].extrinsic
 #define Magic_missile_resistance (HMagic_missile_resistance || EMagic_missile_resistance)
 
-#define HAcid_resistance u.uprops[ACID_RES].intrinsic
-#define EAcid_resistance u.uprops[ACID_RES].extrinsic
+#define HAcid_immunity u.uprops[ACID_IMMUNITY].intrinsic
+#define EAcid_immunity u.uprops[ACID_IMMUNITY].extrinsic
+#define Acid_immunity (HAcid_immunity || EAcid_immunity)
+
+#define HAcid_resistance u.uprops[ACID_RESISTANCE].intrinsic
+#define EAcid_resistance u.uprops[ACID_RESISTANCE].extrinsic
 #define Acid_resistance (HAcid_resistance || EAcid_resistance)
 
-#define HStone_resistance u.uprops[STONE_RES].intrinsic
-#define EStone_resistance u.uprops[STONE_RES].extrinsic
+
+#define HStone_resistance u.uprops[STONE_RESISTANCE].intrinsic
+#define EStone_resistance u.uprops[STONE_RESISTANCE].extrinsic
 #define Stone_resistance (HStone_resistance || EStone_resistance)
 
-#define HSick_resistance u.uprops[SICK_RES].intrinsic
-#define ESick_resistance u.uprops[SICK_RES].extrinsic
+#define HSick_resistance u.uprops[SICK_RESISTANCE].intrinsic
+#define ESick_resistance u.uprops[SICK_RESISTANCE].extrinsic
 #define Sick_resistance (HSick_resistance || ESick_resistance)
 
 #define HInvulnerable u.uprops[INVULNERABLE].intrinsic
@@ -201,16 +206,16 @@
 #define EFumbling u.uprops[FUMBLING].extrinsic
 #define Fumbling (HFumbling || EFumbling)
 
-#define HFlash_resistance u.uprops[FLASH_RES].intrinsic
-#define EFlash_resistance u.uprops[FLASH_RES].extrinsic
+#define HFlash_resistance u.uprops[FLASH_RESISTANCE].intrinsic
+#define EFlash_resistance u.uprops[FLASH_RESISTANCE].extrinsic
 #define Flash_resistance (HFlash_resistance || EFlash_resistance)
 
-#define HStun_resistance u.uprops[STUN_RES].intrinsic
-#define EStun_resistance u.uprops[STUN_RES].extrinsic
+#define HStun_resistance u.uprops[STUN_RESISTANCE].intrinsic
+#define EStun_resistance u.uprops[STUN_RESISTANCE].extrinsic
 #define Stun_resistance (HStun_resistance || EStun_resistance)
 
-#define HBisection_resistance u.uprops[BISECTION_RES].intrinsic
-#define EBisection_resistance u.uprops[BISECTION_RES].extrinsic
+#define HBisection_resistance u.uprops[BISECTION_RESISTANCE].intrinsic
+#define EBisection_resistance u.uprops[BISECTION_RESISTANCE].extrinsic
 #define Bisection_resistance (HBisection_resistance || EBisection_resistance)
 
 
@@ -272,8 +277,8 @@
 #define Telepat (HTelepat || ETelepat)
 #define Unblind_telepat Telepat
 
-#define HBlind_telepat u.uprops[BLIND_TELEPAT].intrinsic
-#define EBlind_telepat u.uprops[BLIND_TELEPAT].extrinsic
+#define HBlind_telepat u.uprops[BLIND_TELEPATHY].intrinsic
+#define EBlind_telepat u.uprops[BLIND_TELEPATHY].extrinsic
 #define Blind_telepat (HBlind_telepat || EBlind_telepat)
 
 #define HXRay_vision u.uprops[XRAY_VISION].intrinsic
@@ -589,20 +594,20 @@
 #define ECancelled u.uprops[CANCELLED].extrinsic
 #define Cancelled (HCancelled || ECancelled)
 
-#define HThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RES].intrinsic
-#define EThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RES].extrinsic
+#define HThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RESISTANCE].intrinsic
+#define EThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RESISTANCE].extrinsic
 #define Three_fourths_magic_resistance (HThree_fourths_magic_resistance || EThree_fourths_magic_resistance)
 
-#define HHalf_magic_resistance u.uprops[HALF_MAGIC_RES].intrinsic
-#define EHalf_magic_resistance u.uprops[HALF_MAGIC_RES].extrinsic
+#define HHalf_magic_resistance u.uprops[HALVED_MAGIC_RESISTANCE].intrinsic
+#define EHalf_magic_resistance u.uprops[HALVED_MAGIC_RESISTANCE].extrinsic
 #define Half_magic_resistance (HHalf_magic_resistance || EHalf_magic_resistance)
 
-#define HOne_fourth_magic_resistance u.uprops[ONE_FOURTH_MAGIC_RES].intrinsic
-#define EOne_fourth_magic_resistance u.uprops[ONE_FOURTH_MAGIC_RES].extrinsic
+#define HOne_fourth_magic_resistance u.uprops[ONE_FOURTH_MAGIC_RESISTANCE].intrinsic
+#define EOne_fourth_magic_resistance u.uprops[ONE_FOURTH_MAGIC_RESISTANCE].extrinsic
 #define One_fourth_magic_resistance (HOne_fourth_magic_resistance || EOne_fourth_magic_resistance)
 
-#define HNo_magic_resistance u.uprops[NO_MAGIC_RES].intrinsic
-#define ENo_magic_resistance u.uprops[NO_MAGIC_RES].extrinsic
+#define HNo_magic_resistance u.uprops[NO_MAGIC_RESISTANCE].intrinsic
+#define ENo_magic_resistance u.uprops[NO_MAGIC_RESISTANCE].extrinsic
 #define No_magic_resistance (HNo_magic_resistance || ENo_magic_resistance)
 
 #define HParalyzed u.uprops[PARALYZED].intrinsic

@@ -90,7 +90,7 @@ const char *name; /* if null, then format `*objp' */
     } 
 	else 
 	{
-        if ((is_acid && Acid_resistance))
+        if ((is_acid && Acid_immunity))
 		{
 			if (Blind || !flags.verbose)
 				You("are hit, but it does not seem to hurt you%s", exclam(dam));
@@ -530,7 +530,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 			//Bracers here, if need be
 		}
 
-        if (otmp->otyp == ACID_VENOM && resists_acid(mtmp))
+        if (otmp->otyp == ACID_VENOM && is_mon_immune_to_acid(mtmp))
             dmg = 0;
 
         if (ismimic)
@@ -664,7 +664,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
         if (otmp->otyp == ACID_VENOM && cansee(mtmp->mx, mtmp->my)) 
 		{
-            if (resists_acid(mtmp)) 
+            if (is_mon_immune_to_acid(mtmp)) 
 			{
                 if (vis || (verbose && !target))
                     pline("%s is unaffected.", Monnam(mtmp));

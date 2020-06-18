@@ -85,10 +85,11 @@
 #define MR_MAGIC_MISSILE_VULNERABLITY	0x80000000UL		
 
 #define MR2_NONE			            0x00000000UL
-#define MR2_FIRE_RESISTANCE	            0x10000000UL		
-#define MR2_COLD_RESISTANCE	            0x20000000UL		
-#define MR2_SHOCK_RESISTANCE	        0x40000000UL		
-#define MR2_MAGIC_MISSILE_RESISTANCE	0x80000000UL		
+#define MR2_FIRE_RESISTANCE	            0x00000001UL		
+#define MR2_COLD_RESISTANCE	            0x00000002UL		
+#define MR2_SHOCK_RESISTANCE	        0x00000004UL		
+#define MR2_MAGIC_MISSILE_RESISTANCE	0x00000008UL		
+#define MR2_ACID_RESISTANCE	            0x00000010UL		
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE			0x00000000UL

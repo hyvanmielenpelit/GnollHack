@@ -230,7 +230,7 @@
 	has_property(mon, STONED)
 
 #define has_petrification_resistance(mon) \
-	has_innate_or_property(mon, STONE_RES)
+	has_innate_or_property(mon, STONE_RESISTANCE)
 
 #define is_stoning(mon) \
 	(has_property(mon, STONED) && !has_petrification_resistance(mon))
@@ -269,16 +269,16 @@
 	has_cancelled(mon)
 
 #define has_three_fourths_magic_resistance(mon) \
-	has_property(mon, THREE_FOURTHS_MAGIC_RES)
+	has_property(mon, THREE_FOURTHS_MAGIC_RESISTANCE)
 
 #define has_half_magic_resistance(mon) \
-	has_property(mon, HALF_MAGIC_RES)
+	has_property(mon, HALVED_MAGIC_RESISTANCE)
 
 #define has_one_fourth_magic_resistance(mon) \
-	has_property(mon, ONE_FOURTH_MAGIC_RES)
+	has_property(mon, ONE_FOURTH_MAGIC_RESISTANCE)
 
 #define has_no_magic_resistance(mon) \
-	has_property(mon, NO_MAGIC_RES)
+	has_property(mon, NO_MAGIC_RESISTANCE)
 
 #define has_summon_forbidden(mon) \
 	has_property(mon, SUMMON_FORBIDDEN)
@@ -361,7 +361,7 @@
 	has_property(mon, SICK)
 
 #define has_sickness_resistance(mon) \
-	has_innate_or_property(mon, SICK_RES)
+	has_innate_or_property(mon, SICK_RESISTANCE)
 
 #define is_sick(mon) \
 	(has_sick(mon) && !has_sickness_resistance(mon) && !is_undead((mon)->data) && !is_demon((mon)->data) && !is_vampshifter(mon))
@@ -390,7 +390,7 @@
 	has_innate(ptr, MR_CHARM)
 
 #define has_charm_resistance(mon) \
-	(has_innate_charm_resistance((mon)->data) || has_property(mon, CHARM_RES))
+	(has_innate_charm_resistance((mon)->data) || has_property(mon, CHARM_RESISTANCE))
 
 #define is_charmed(mon) \
 	(has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !mindless((mon)->data))
@@ -407,7 +407,7 @@
 	has_property(mon, FEARFUL)
 
 #define has_fear_resistance(mon) \
-	(has_innate_or_property(mon, FEAR_RES))
+	(has_innate_or_property(mon, FEAR_RESISTANCE))
 
 #define is_fearful(mon) \
 	(has_fearful(mon) && !has_fear_resistance(mon) && !is_undead((mon)->data) && !mindless((mon)->data) && !is_vampshifter(mon))
@@ -473,13 +473,13 @@
      (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 
 #define has_blind_telepathy(mon)   \
-     (has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPAT))
+     (has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPATHY))
 
 #define has_drain_resistance(mon) \
-	(has_innate_or_property(mon, DRAIN_RES))
+	(has_innate_or_property(mon, DRAIN_RESISTANCE))
 
 #define has_death_resistance(mon) \
-	(has_innate_or_property(mon, DEATH_RES))
+	(has_innate_or_property(mon, DEATH_RESISTANCE))
 
 #define has_fire_vulnerability(mon) \
 	(has_innate((mon)->data, MR_FIRE_VULNERABLITY) || has_property(mon, FIRE_VULNERABILITY))
@@ -524,7 +524,7 @@
 	has_property(mon, WOUNDED_LEGS)
 
 #define has_bisection_resistance(mon) \
-	(has_property(mon, BISECTION_RES))
+	(has_property(mon, BISECTION_RESISTANCE))
 
 
 /* permonst resistances */
@@ -558,6 +558,8 @@
     (pm_immune_to_elec((mon)->data) || has_property(mon, SHOCK_IMMUNITY))
 #define is_mon_immune_to_magic_missile(mon) \
     (has_innate((mon)->data, MR_MAGIC_MISSILE) || has_property(mon, MAGIC_MISSILE_IMMUNITY))
+#define is_mon_immune_to_acid(mon) \
+    (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_IMMUNITY) || noncorporeal((mon)->data))
 
 #define mon_resists_fire(mon) \
     ( pm_resists_fire((mon)->data) || has_property(mon, FIRE_RESISTANCE))
@@ -567,45 +569,45 @@
     (pm_resists_elec((mon)->data) || has_property(mon, SHOCK_RESISTANCE))
 #define mon_resists_magic_missile(mon) \
     (has_innate2((mon)->data, MR2_MAGIC_MISSILE_RESISTANCE) || has_property(mon, MAGIC_MISSILE_RESISTANCE))
+#define mon_resists_acid(mon) \
+    (has_innate((mon)->data, MR2_ACID_RESISTANCE) || has_property(mon, ACID_RESISTANCE))
 
 
 #define resists_disint(mon) \
-    (pm_resists_disint((mon)->data) || has_property(mon, DISINT_RES))
+    (pm_resists_disint((mon)->data) || has_property(mon, DISINTEGRATION_RESISTANCE))
 
 #define resists_sleep(mon) \
-    (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RES) || is_undead((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_SLEEP) || has_property(mon, SLEEP_RESISTANCE) || is_undead((mon)->data) || is_vampshifter(mon))
 #define resists_death(mon) \
-    (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RES) || is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_DEATH) || has_property(mon, DEATH_RESISTANCE) || is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_lycanthropy(mon) \
-    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RES) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_LYCANTHROPY) || has_property(mon, LYCANTHROPY_RESISTANCE) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_poison(mon) \
-    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RES) || is_not_living((mon)->data) || is_vampshifter(mon))
-#define resists_acid(mon) \
-    (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_RES) || noncorporeal((mon)->data))
+    (has_innate((mon)->data, MR_POISON) || has_property(mon, POISON_RESISTANCE) || is_not_living((mon)->data) || is_vampshifter(mon))
 #define resists_ston(mon) \
-    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RES) || noncorporeal((mon)->data))
+    (has_innate((mon)->data, MR_STONE) || has_property(mon, STONE_RESISTANCE) || noncorporeal((mon)->data))
 #define resists_magic(mon) \
     (has_innate((mon)->data, MR_MAGIC) || has_property(mon, ANTIMAGIC))
 #define resists_charm(mon) \
-    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RES) || is_undead((mon)->data) || mindless((mon)->data))
+    (has_innate((mon)->data, MR_CHARM) || has_property(mon, CHARM_RESISTANCE) || is_undead((mon)->data) || mindless((mon)->data))
 #define resists_fear(mon) \
-    (has_innate((mon)->data, MR_FEAR) || has_property(mon, FEAR_RES) || is_undead((mon)->data) || mindless((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_FEAR) || has_property(mon, FEAR_RESISTANCE) || is_undead((mon)->data) || mindless((mon)->data) || is_vampshifter(mon))
 #define is_reflecting(mon) \
 	(has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
 #define resists_drain(mon) \
-    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RES) ||  is_not_living((mon)->data) || is_were((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RESISTANCE) ||  is_not_living((mon)->data) || is_were((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
 #define resists_flash(mon) \
-    (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RES) || is_blinded(mon) || !haseyes((mon)->data) )
+    (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RESISTANCE) || is_blinded(mon) || !haseyes((mon)->data) )
 #define resists_sickness(mon) \
-    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RES) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon) )
+    (has_innate((mon)->data, MR_SICK) || has_property(mon, SICK_RESISTANCE) ||  is_not_living((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon) )
 #define resists_paralysis(mon) \
     (has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION) ||  is_not_living((mon)->data) || is_vampshifter(mon))
 #define resists_stun(mon) \
-    (has_innate((mon)->data, MR_STUN) || has_property(mon, STUN_RES) ||  mindless((mon)->data) || is_not_living((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_STUN) || has_property(mon, STUN_RESISTANCE) ||  mindless((mon)->data) || is_not_living((mon)->data) || is_vampshifter(mon))
 
 /* other "resists" definitions */
 #define resists_bisection(mon) \
-    (has_property(mon, BISECTION_RES) ||  noncorporeal((mon)->data) || amorphous((mon)->data))
+    (has_property(mon, BISECTION_RESISTANCE) ||  noncorporeal((mon)->data) || amorphous((mon)->data))
 
 /* more on paralysis */
 #define is_paralyzed(mon) \
@@ -639,7 +641,7 @@
 #define has_teleport_control(mon) \
 	(has_innate_teleport_control((mon)->data) || has_property(mon, TELEPORT_CONTROL))
 #define has_blind_telepathy(mon) \
-	(has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPAT))
+	(has_innate_blind_telepathy((mon)->data) || has_property(mon, BLIND_TELEPATHY))
 #define has_telepathy(mon) \
 	(has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 

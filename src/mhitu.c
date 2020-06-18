@@ -2631,7 +2631,7 @@ register struct obj* omonwep;
 		break;
     case AD_ACID:
 		if (!is_cancelled(mtmp) && !rn2(3))
-            if (Acid_resistance) 
+            if (Acid_immunity) 
 			{
 				hitmsg(mtmp, mattk, -1);
 				pline("You're covered in %s, but it seems harmless.",
@@ -3217,7 +3217,7 @@ struct attack *mattk;
         }
         break;
     case AD_ACID:
-        if (Acid_resistance || Invulnerable) 
+        if (Acid_immunity || Invulnerable) 
 		{
             You("are covered with a seemingly harmless goo.");
             damage = 0;
@@ -4222,7 +4222,7 @@ struct attack *mattk;
                      looks strange coming immediately after player has
                      been told that hero has reverted to normal form */
                   !Upolyd ? "" : "your ", hliquid("acid"));
-            if (resists_acid(mtmp)) 
+            if (is_mon_immune_to_acid(mtmp)) 
 			{
                 pline("%s is not affected.", Monnam(mtmp));
                 damage = 0;

@@ -1445,7 +1445,7 @@ struct obj *otmp;
         break;
     }
     case POT_ACID:
-        if (Acid_resistance) {
+        if (Acid_immunity) {
             /* Not necessarily a creature who _likes_ acid */
             pline("This tastes %s.", Hallucination ? "tangy" : "sour");
         } else {
@@ -1735,7 +1735,7 @@ int how;
                 polyself(0);
             break;
         case POT_ACID:
-            if (!Acid_resistance) 
+            if (!Acid_immunity) 
 			{
                 int dmg;
 
@@ -1947,7 +1947,7 @@ do_illness: /* Pestilence's potion of healing effect */
                 explode_oil(obj, tx, ty);
             break;
         case POT_ACID:
-            if (!resists_acid(mon) && !check_ability_resistance_success(mon, A_DEX, objects[obj->otyp].oc_mc_adjustment)) {
+            if (!is_mon_immune_to_acid(mon) && !check_ability_resistance_success(mon, A_DEX, objects[obj->otyp].oc_mc_adjustment)) {
                 pline("%s %s in pain!", Monnam(mon),
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))

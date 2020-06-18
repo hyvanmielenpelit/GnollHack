@@ -1473,7 +1473,7 @@ boolean* obj_destroyed;
 					damage = 0;
 					break;
 				case ACID_VENOM: /* thrown (or spit) */
-					if (resists_acid(mon)) 
+					if (is_mon_immune_to_acid(mon)) 
 					{
 						Your("venom hits %s harmlessly.", mon_nam(mon));
 						damage = 0;
@@ -2737,7 +2737,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         damage += adjust_damage(destroy_mitem(mdef, RING_CLASS, AD_ELEC), &youmonst, mdef, mattk->adtyp, FALSE);
         break;
     case AD_ACID:
-        if (resists_acid(mdef))
+        if (is_mon_immune_to_acid(mdef))
             damage = 0;
         break;
     case AD_STON:
@@ -3308,7 +3308,7 @@ register struct attack *mattk;
                 break;
             case AD_ACID:
                 pline("%s is covered with your goo!", Monnam(mdef));
-                if (resists_acid(mdef)) {
+                if (is_mon_immune_to_acid(mdef)) {
                     pline("It seems harmless to %s.", mon_nam(mdef));
 					damage = 0;
                 }
@@ -3918,7 +3918,7 @@ boolean wep_was_destroyed;
                 You("are splashed by %s %s!", s_suffix(mon_nam(mon)),
                     hliquid("acid"));
 
-            if (!Acid_resistance && !Invulnerable)
+            if (!Acid_immunity && !Invulnerable)
                 mdamageu(mon, damage, TRUE);
             if (!rn2(30))
                 erode_armor(&youmonst, ERODE_CORRODE);
@@ -4414,6 +4414,10 @@ boolean is_spell_damage;
 			base_dmg_d /= 2;
 		}
 
+		if (adtyp == AD_ACID && (you_defend ? Acid_resistance : mon_resists_acid(mdef)))
+		{
+			base_dmg_d /= 2;
+		}
 
 		/* Game difficulty level adjustments */
 		if (you_defend || is_tame(mdef)) /* You or your pet is being hit */

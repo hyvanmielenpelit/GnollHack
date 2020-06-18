@@ -890,7 +890,7 @@ int dmgtype;
 	case AD_DRST:
 		return (yours ? Poison_resistance : resists_poison(mtmp));
 	case AD_ACID:
-		return (yours ? Acid_resistance : resists_acid(mtmp));
+		return (yours ? Acid_immunity : is_mon_immune_to_acid(mtmp));
 	case AD_DRAY:
 		return (yours ? Death_resistance : resists_death(mtmp));
 	case AD_BLND:
@@ -2958,15 +2958,15 @@ struct abil2adtyp_tag {
 	{ FIRE_IMMUNITY, AD_FIRE },
 	{ COLD_IMMUNITY, AD_COLD },
 	{ SHOCK_IMMUNITY, AD_ELEC },
-	{ DEATH_RES, AD_DRAY },
-	{ LYCANTHROPY_RES, AD_WERE },
+	{ DEATH_RESISTANCE, AD_DRAY },
+	{ LYCANTHROPY_RESISTANCE, AD_WERE },
 	{ MAGIC_MISSILE_IMMUNITY, AD_MAGM },
-	{ DISINT_RES, AD_DISN },
-	{ POISON_RES, AD_DRST },
-	{ DRAIN_RES, AD_DRLI },
-	{ FLASH_RES, AD_BLND },
-	{ STONE_RES, AD_STON },
-	{ STUN_RES, AD_STUN },
+	{ DISINTEGRATION_RESISTANCE, AD_DISN },
+	{ POISON_RESISTANCE, AD_DRST },
+	{ DRAIN_RESISTANCE, AD_DRLI },
+	{ FLASH_RESISTANCE, AD_BLND },
+	{ STONE_RESISTANCE, AD_STON },
+	{ STUN_RESISTANCE, AD_STUN },
 	{ FIRE_RESISTANCE, AD_FIRE },
 	{ COLD_RESISTANCE, AD_COLD },
 	{ SHOCK_RESISTANCE, AD_ELEC },

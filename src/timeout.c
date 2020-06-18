@@ -57,14 +57,14 @@ const struct propname {
 	   they're either on or off based on equipment, role, actions, &c */
 	{ FIRE_IMMUNITY, "immune to fire", "fire immunity" },
 	{ COLD_IMMUNITY, "immune to cold", "cold immunity" },
-	{ SLEEP_RES, "resistant to sleep", "sleep resistance" },
-	{ DISINT_RES, "resistant to disintegration", "disintegration resistance" },
+	{ SLEEP_RESISTANCE, "resistant to sleep", "sleep resistance" },
+	{ DISINTEGRATION_RESISTANCE, "resistant to disintegration", "disintegration resistance" },
 	{ SHOCK_IMMUNITY, "immune to shock", "shock immunity" },
-	{ POISON_RES, "resistant to poison", "poison resistance" },
-	{ ACID_RES, "resistant to acid", "acid resistance" },
-	{ STONE_RES, "resistant to stoning", "stoning resistance" },
-	{ DRAIN_RES, "resistant to drain", "drain resistance" },
-	{ SICK_RES, "resistant to sickness", "sickness resistance" },
+	{ POISON_RESISTANCE, "resistant to poison", "poison resistance" },
+	{ ACID_IMMUNITY, "resistant to acid", "acid resistance" },
+	{ STONE_RESISTANCE, "resistant to stoning", "stoning resistance" },
+	{ DRAIN_RESISTANCE, "resistant to drain", "drain resistance" },
+	{ SICK_RESISTANCE, "resistant to sickness", "sickness resistance" },
 	{ ANTIMAGIC, "resistant to magic", "magic resistance" },
 	{ HALLUC_RES, "resistant to hallucination", "hallucination resistance" },
 	{ FUMBLING, "fumbling", "fumbling" },
@@ -100,12 +100,12 @@ const struct propname {
 	{ FREE_ACTION, "having free action", "free action" },
 	{ FIXED_ABIL, "having fixed abilities", "fixed abilities" },
 	{ LIFESAVED, "life will be saved", "life saving" },
-	{ DEATH_RES, "resistant to death", "death resistance" },
-	{ LYCANTHROPY_RES, "resistant to lycanthropy", "lycanthropy resistance" },
-	{ CURSE_RES, "resistant to curses", "curse resistance" },
-	{ BLIND_TELEPAT, "telepathic when blind", "blind telepathy" },
+	{ DEATH_RESISTANCE, "resistant to death", "death resistance" },
+	{ LYCANTHROPY_RESISTANCE, "resistant to lycanthropy", "lycanthropy resistance" },
+	{ CURSE_RESISTANCE, "resistant to curses", "curse resistance" },
+	{ BLIND_TELEPATHY, "telepathic when blind", "blind telepathy" },
 	{ ENHANCED_VISION, "enhanced vision", "enhanced vision" },
-	{ FLASH_RES, "resistant to flashes", "flash resistance" },
+	{ FLASH_RESISTANCE, "resistant to flashes", "flash resistance" },
 	{ EYE_PROTECTION, "protected from eye damage", "protection from eye damage" },
 	{ BRAIN_PROTECTION, "protected from brain damage", "protection from brain damage" },
 	{ WARN_DEMON, "warned of demons", "warning of demons" },
@@ -121,7 +121,7 @@ const struct propname {
 	{ WARN_ANGEL, "warned of angels", "warning of angels" },
 	{ WARN_OGRE, "warned of ogres", "warning of ogres" },
 	{ WARN_OGRE, "warned of gnomes", "warning of gnomes" },
-	{ CHARM_RES, "resistant to charm", "charm resistance" },
+	{ CHARM_RESISTANCE, "resistant to charm", "charm resistance" },
 	{ MIND_SHIELDING, "mind shielded", "mind shielding" },
 	{ ODD_IDEAS, "having visionary ideas", "visionary ideas" },
 	{ MAGICAL_KICKING, "kicking magically", "magical kicking" },
@@ -135,12 +135,12 @@ const struct propname {
 	{ VERY_FAST, "very fast", "very fast speed" },
 	{ SLOWED, "slowed", "slow speed" },
 	{ CANCELLED, "cancelled", "cancellation" },
-	{ HALF_MAGIC_RES, "having halved magic resistance", "halved magic resistance" },
-	{ NO_MAGIC_RES, "lacking magic resistance", "no magic resistance" },
+	{ HALVED_MAGIC_RESISTANCE, "having halved magic resistance", "halved magic resistance" },
+	{ NO_MAGIC_RESISTANCE, "lacking magic resistance", "no magic resistance" },
 	{ CHARMED, "charmed", "charm" },
 	{ PARALYZED, "paralyzed", "paralysis" },
 	{ FEARFUL, "unnaturally frightened", "magically induced fear" },
-	{ FEAR_RES, "resistant to fear", "fear resistance" },
+	{ FEAR_RESISTANCE, "resistant to fear", "fear resistance" },
 	{ SLEEPING, "sleeping unnaturally deeply", "magically induced sleep" },
 	{ SUMMON_FORBIDDEN, "having summoning forbidden", "summoning forbidden" },
 	{ SILENCED, "silenced", "silence" },
@@ -154,14 +154,14 @@ const struct propname {
 	{ ENHANCED_UNTRAP, "enhanced in untrapping", "enhanced untrapping" },
 	{ BLOCKS_LEVITATION, "blocking levitation", "blocks levitation" },
 	{ BLOCKS_FLYING, "blocking flying", "blocks flying" },
-	{ ONE_FOURTH_MAGIC_RES, "having 25% of normal magic resistance", "25% of normal magic resistance" },
-	{ THREE_FOURTHS_MAGIC_RES, "having 75% of normal magic resistance", "75% of normal magic resistance" },
+	{ ONE_FOURTH_MAGIC_RESISTANCE, "having 25% of normal magic resistance", "25% of normal magic resistance" },
+	{ THREE_FOURTHS_MAGIC_RESISTANCE, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
 	{ TITAN_STRENGTH, "as strong as a titan", "strength equivalent of a titan" },
     { MAGIC_MISSILE_IMMUNITY, "immune to magic missiles", "magic missile immunity" },
-	{ STUN_RES, "stun resistant", "stun resistance" },
+	{ STUN_RESISTANCE, "stun resistant", "stun resistance" },
 	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
-	{ BISECTION_RES, "protected from bisection", "protection from bisection" },
+	{ BISECTION_RESISTANCE, "protected from bisection", "protection from bisection" },
     { DIVINE_ENDURANCE, "having as high constitution as a demigod", "constitution equivalent of a demigod" },
     { DIVINE_DEXTERITY, "having as high dexterity as a demigod", "dexterity equivalent of a demigod" },
     { DIVINE_INTELLECT, "having as high intelligence as a demigod", "intelligence equivalent of a demigod" },
@@ -1156,27 +1156,31 @@ nh_timeout()
                 if (!Shock_resistance)
                     Your("skin feels more prone to electricity than before.");
                 break;
-            case DISINT_RES:
+            case DISINTEGRATION_RESISTANCE:
 				if (!Disint_resistance)
 					Your("body feels less firm than before.");
 				break;
-			case POISON_RES:
+			case POISON_RESISTANCE:
 				if (!Poison_resistance)
 					You("feel less healthy than before.");
 				break;
-			case ACID_RES:
-				if (!Acid_resistance)
+			case ACID_IMMUNITY:
+				if (!Acid_immunity)
 					Your("skin feels more prone to acid than before.");
 				break;
-			case STONE_RES:
+            case ACID_RESISTANCE:
+                if (!Acid_resistance)
+                    Your("skin feels more prone to acid than before.");
+                break;
+            case STONE_RESISTANCE:
 				if (!Stone_resistance)
 					You("feel less limber than before.");
 				break;
-			case DRAIN_RES:
+			case DRAIN_RESISTANCE:
 				if (!Drain_resistance)
 					You("feel more suspectible to draining than before.");
 				break;
-			case SICK_RES:
+			case SICK_RESISTANCE:
 				if (!Sick_resistance)
 					You("feel like you might be catching a cold.");
 				break;
@@ -1200,19 +1204,19 @@ nh_timeout()
 				if (!Cancelled)
 					You("feel your magic is flowing more normally.");
 				break;
-			case THREE_FOURTHS_MAGIC_RES:
+			case THREE_FOURTHS_MAGIC_RESISTANCE:
 				if (!Three_fourths_magic_resistance && !Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is working more properly.");
 				break;
-			case HALF_MAGIC_RES:
+			case HALVED_MAGIC_RESISTANCE:
 				if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is working more properly.");
 				break;
-			case ONE_FOURTH_MAGIC_RES:
+			case ONE_FOURTH_MAGIC_RESISTANCE:
 				if (!One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is working more properly.");
 				break;
-			case NO_MAGIC_RES:
+			case NO_MAGIC_RESISTANCE:
 				if (!No_magic_resistance)
 					You("feel your magic resistance is working more properly.");
 				break;
@@ -1228,15 +1232,15 @@ nh_timeout()
 				if (!Charmed)
 					Your("own motivations make more sense to you now.");
 				break;
-			case DEATH_RES:
+			case DEATH_RESISTANCE:
 				if (!Death_resistance)
 					Your("soul's silver cord feels thinner than before.");
 				break;
-			case CHARM_RES:
+			case CHARM_RESISTANCE:
 				if (!Charm_resistance)
 					You_feel("less certain of your own motivations.");
 				break;
-			case FEAR_RES:
+			case FEAR_RESISTANCE:
 				if (!Fear_resistance)
 					You_feel("less courageous.");
 				break;
@@ -1244,11 +1248,11 @@ nh_timeout()
 				if (!Mind_shielding)
 					You_feel("unprotected from mental detection.");
 				break;
-			case LYCANTHROPY_RES:
+			case LYCANTHROPY_RESISTANCE:
 				if (!Lycanthropy_resistance)
 					You("feel that your immunity to lycanthropy is gone.");
 				break;
-			case CURSE_RES:
+			case CURSE_RESISTANCE:
 				if (!Curse_resistance)
 					You("feel less protected from curses.");
 				break;
@@ -1261,7 +1265,7 @@ nh_timeout()
 					You_feel("less sensitive to the presence of monsters than before.");
 				see_monsters();
 				break;
-			case BLIND_TELEPAT:
+			case BLIND_TELEPATHY:
 				if (!Blind_telepat)
 					You_feel("less telepathic when blind.");
 				see_monsters();
@@ -1307,7 +1311,7 @@ nh_timeout()
 			case MAGICAL_STONESKIN:
 				if (!Magical_stoneskin)
 					Your("skin feels less stone-like than before.");
-			case BISECTION_RES:
+			case BISECTION_RESISTANCE:
 				if (!Bisection_resistance)
 					Your("skin feels less steel-like than before.");
 				break;
@@ -1393,22 +1397,22 @@ nh_timeout()
             case SHOCK_RESISTANCE:
                 Your("skin is starting to feel more prone to electricity than before.");
                 break;
-            case DISINT_RES:
+            case DISINTEGRATION_RESISTANCE:
 				Your("body is starting to feel less firm than before.");
 				break;
-			case POISON_RES:
+			case POISON_RESISTANCE:
 				You("are starting to feel less healthy than before.");
 				break;
-			case ACID_RES:
+			case ACID_IMMUNITY:
 				Your("skin is starting to feel more prone to acid than before.");
 				break;
-			case STONE_RES:
+			case STONE_RESISTANCE:
 				You("are starting to feel a bit less limber than before.");
 				break;
-			case DRAIN_RES:
+			case DRAIN_RESISTANCE:
 				You("are starting to feel more suspectible to draining than before.");
 				break;
-			case SICK_RES:
+			case SICK_RESISTANCE:
 				You("are starting to feel more bothered by bugs.");
 				break;
 			case INVULNERABLE:
@@ -1426,19 +1430,19 @@ nh_timeout()
             case CANCELLED:
 				You("feel your magic is starting to flow more normally.");
 				break;
-			case THREE_FOURTHS_MAGIC_RES:
+			case THREE_FOURTHS_MAGIC_RESISTANCE:
 				if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is starting to work more properly.");
 				break;
-			case HALF_MAGIC_RES:
+			case HALVED_MAGIC_RESISTANCE:
 				if (!One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is starting to work more properly.");
 				break;
-			case ONE_FOURTH_MAGIC_RES:
+			case ONE_FOURTH_MAGIC_RESISTANCE:
 				if (!No_magic_resistance)
 					You("feel your magic resistance is starting to work more properly.");
 				break;
-			case NO_MAGIC_RES:
+			case NO_MAGIC_RESISTANCE:
 				You("feel your magic resistance is starting to work more properly.");
 				break;
 			case PARALYZED:
@@ -1456,22 +1460,22 @@ nh_timeout()
 			case CHARMED:
 				Your("own motivations are starting to make a bit more sense to you.");
 				break;
-			case DEATH_RES:
+			case DEATH_RESISTANCE:
 				Your("soul's silver cord is starting to feel thinner than before.");
 				break;
-			case CHARM_RES:
+			case CHARM_RESISTANCE:
 				You("are starting to feel less certain of your own motivations.");
 				break;
-			case FEAR_RES:
+			case FEAR_RESISTANCE:
 				You("are starting to feel less courageous.");
 				break;
 			case MIND_SHIELDING:
 				You("are starting to feel less protected from mental detection.");
 				break;
-			case LYCANTHROPY_RES:
+			case LYCANTHROPY_RESISTANCE:
 				You("are starting to feel less protected from lycanthropy.");
 				break;
-			case CURSE_RES:
+			case CURSE_RESISTANCE:
 				You("are starting to feel less protected from curses.");
 				break;
 			case LIFESAVED:
@@ -1480,7 +1484,7 @@ nh_timeout()
 			case DETECT_MONSTERS:
 				You("are starting to feel less sensitive to the presence of monsters than before.");
 				break;
-			case BLIND_TELEPAT:
+			case BLIND_TELEPATHY:
 				You("are starting to feel less telepathic when blind than before.");
 				break;
 			case TELEPAT:
@@ -1513,7 +1517,7 @@ nh_timeout()
 			case MAGICAL_STONESKIN:
 				Your("skin is starting to feel less stone-like than before.");
 				break;
-			case BISECTION_RES:
+			case BISECTION_RESISTANCE:
 				Your("skin is starting to feel less steel-like than before.");
 				break;
 			case TITAN_STRENGTH:

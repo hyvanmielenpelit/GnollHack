@@ -1389,7 +1389,7 @@ boolean silently;
 				case STEALTH:
 				case MAGICAL_KICKING:
 				case DETECT_MONSTERS:
-				case BLIND_TELEPAT:
+				case BLIND_TELEPATHY:
 				case TELEPAT:
 				case XRAY_VISION:
 					break;
@@ -1416,15 +1416,15 @@ boolean silently;
 						mask = (1 << (which - 1));
 						mon->mextrinsics |= (unsigned long)mask;
 					}
-					else if (which == CHARM_RES)
+					else if (which == CHARM_RESISTANCE)
 					{
 						mon->mextrinsics |= MR_CHARM;
 					}
-					else if (which == DEATH_RES)
+					else if (which == DEATH_RESISTANCE)
 					{
 						mon->mextrinsics |= MR_DEATH;
 					}
-					else if (which == LYCANTHROPY_RES)
+					else if (which == LYCANTHROPY_RESISTANCE)
 					{
 						mon->mextrinsics |= MR_LYCANTHROPY;
 					}
@@ -1436,11 +1436,11 @@ boolean silently;
 					{
 						mon->mextrinsics |= MR_REFLECTING;
 					}
-					else if (which == DRAIN_RES)
+					else if (which == DRAIN_RESISTANCE)
 					{
 						mon->mextrinsics |= MR_DRAIN;
 					}
-					else if (which == FLASH_RES)
+					else if (which == FLASH_RESISTANCE)
 					{
 						mon->mextrinsics |= MR_FLASH;
 					}
@@ -1468,15 +1468,15 @@ boolean silently;
 				}
 				case FIRE_IMMUNITY:
 				case COLD_IMMUNITY:
-				case SLEEP_RES:
-				case DISINT_RES:
-				case DEATH_RES:
-				case CHARM_RES:
+				case SLEEP_RESISTANCE:
+				case DISINTEGRATION_RESISTANCE:
+				case DEATH_RESISTANCE:
+				case CHARM_RESISTANCE:
 				case MIND_SHIELDING:
 				case SHOCK_IMMUNITY:
-				case POISON_RES:
-				case ACID_RES:
-				case STONE_RES:
+				case POISON_RESISTANCE:
+				case ACID_IMMUNITY:
+				case STONE_RESISTANCE:
 					mask = (uchar)(1 << (which - 1));
 					/* update monster's extrinsics (for worn objects only;
 					   'obj' itself might still be worn or already unworn) */

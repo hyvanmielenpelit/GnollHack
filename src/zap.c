@@ -1453,10 +1453,10 @@ int mnum_override; /* Use this mnum instead */
 		{
 			mtmp2->mprops[CANCELLED] = 0;
 		}
-		mtmp2->mprops[NO_MAGIC_RES] = 0;
-		mtmp2->mprops[ONE_FOURTH_MAGIC_RES] = 0;
-		mtmp2->mprops[HALF_MAGIC_RES] = 0;
-		mtmp2->mprops[THREE_FOURTHS_MAGIC_RES] = 0;
+		mtmp2->mprops[NO_MAGIC_RESISTANCE] = 0;
+		mtmp2->mprops[ONE_FOURTH_MAGIC_RESISTANCE] = 0;
+		mtmp2->mprops[HALVED_MAGIC_RESISTANCE] = 0;
+		mtmp2->mprops[THREE_FOURTHS_MAGIC_RESISTANCE] = 0;
 		mtmp2->mprops[SUMMON_FORBIDDEN] = 0;
 		mtmp2->mprops[TITAN_STRENGTH] = 0;
         mtmp2->mprops[DIVINE_DEXTERITY] = 0;
@@ -5429,16 +5429,16 @@ int duration;
 	switch (obj->otyp)
 	{
 	case SPE_LOWER_MAGIC_RESISTANCE:
-		prop = THREE_FOURTHS_MAGIC_RES;
+		prop = THREE_FOURTHS_MAGIC_RESISTANCE;
 		break;
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
-		prop = HALF_MAGIC_RES;
+		prop = HALVED_MAGIC_RESISTANCE;
 		break;
 	case SPE_ABOLISH_MAGIC_RESISTANCE:
-		prop = ONE_FOURTH_MAGIC_RES;
+		prop = ONE_FOURTH_MAGIC_RESISTANCE;
 		break;
 	case SPE_NEGATE_MAGIC_RESISTANCE:
-		prop = NO_MAGIC_RES;
+		prop = NO_MAGIC_RESISTANCE;
 		break;
 	case SPE_FORBID_SUMMONING:
 		prop = SUMMON_FORBIDDEN;
@@ -6650,7 +6650,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         //tmp = d(nd, 6);
         break;
     case ZT_ACID:
-        if (resists_acid(mon)) 
+        if (is_mon_immune_to_acid(mon)) 
 		{
             sho_shieldeff = TRUE;
 			damage = 0;
@@ -6880,7 +6880,7 @@ xchar sx, sy;
 		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE, dmgdice ? dmgdice : 4);
         break;
     case ZT_ACID:
-        if (Acid_resistance || Invulnerable)
+        if (Acid_immunity || Invulnerable)
 		{
             pline_The("%s doesn't hurt.", hliquid("acid"));
 			damage = 0;

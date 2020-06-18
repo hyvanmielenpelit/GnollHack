@@ -609,7 +609,7 @@ boolean verbose;
 					pline("%s looks limber!", Monnam(mtmp));
 			}
 
-			increase_mon_property(mtmp, STONE_RES, 13);
+			increase_mon_property(mtmp, STONE_RESISTANCE, 13);
 		}
 	}
 	return;

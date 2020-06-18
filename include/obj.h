@@ -282,7 +282,7 @@ struct obj {
 #define oresist_disintegration(otmp)                                       \
     (objects[(otmp)->otyp].oc_flags & O1_DISINTEGRATION_RESISTANT || is_obj_indestructible(otmp) \
      || ((otmp)->otyp == CORPSE && pm_resists_disint(&mons[(otmp)->corpsenm])) \
-     || objects[(otmp)->otyp].oc_oprop == DISINT_RES  || objects[(otmp)->otyp].oc_oprop2 == DISINT_RES || objects[(otmp)->otyp].oc_oprop3 == DISINT_RES \
+     || objects[(otmp)->otyp].oc_oprop == DISINTEGRATION_RESISTANCE  || objects[(otmp)->otyp].oc_oprop2 == DISINTEGRATION_RESISTANCE || objects[(otmp)->otyp].oc_oprop3 == DISINTEGRATION_RESISTANCE \
      || obj_resists(otmp, 5, 50) \
      || is_quest_artifact(otmp) )
 

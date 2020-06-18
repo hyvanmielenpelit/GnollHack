@@ -83,19 +83,20 @@ set_uasmon()
 	/* We add these additionally in the case creature type (e.g., undead) has resistances not conferred explicitly by MR_ fields */
 	PROPSET(FIRE_IMMUNITY, is_mon_immune_to_fire(&youmonst));
     PROPSET(COLD_IMMUNITY, is_mon_immune_to_cold(&youmonst));
-    PROPSET(SLEEP_RES, resists_sleep(&youmonst));
-    PROPSET(DISINT_RES, resists_disint(&youmonst));
-	PROPSET(DEATH_RES, resists_death(&youmonst));
-	PROPSET(CHARM_RES, resists_charm(&youmonst));
-	PROPSET(FEAR_RES, resists_fear(&youmonst));
+    PROPSET(SLEEP_RESISTANCE, resists_sleep(&youmonst));
+    PROPSET(DISINTEGRATION_RESISTANCE, resists_disint(&youmonst));
+	PROPSET(DEATH_RESISTANCE, resists_death(&youmonst));
+	PROPSET(CHARM_RESISTANCE, resists_charm(&youmonst));
+	PROPSET(FEAR_RESISTANCE, resists_fear(&youmonst));
 	PROPSET(SHOCK_IMMUNITY, is_mon_immune_to_elec(&youmonst));
-    PROPSET(POISON_RES, resists_poison(&youmonst));
-    PROPSET(ACID_RES, resists_acid(&youmonst));
-    PROPSET(STONE_RES, resists_ston(&youmonst));
-	PROPSET(DRAIN_RES, resists_drli(&youmonst));
+    PROPSET(POISON_RESISTANCE, resists_poison(&youmonst));
+    PROPSET(ACID_IMMUNITY, is_mon_immune_to_acid(&youmonst));
+    PROPSET(ACID_RESISTANCE, mon_resists_acid(&youmonst));
+    PROPSET(STONE_RESISTANCE, resists_ston(&youmonst));
+	PROPSET(DRAIN_RESISTANCE, resists_drli(&youmonst));
 	PROPSET(MAGIC_MISSILE_IMMUNITY, is_mon_immune_to_magic_missile(&youmonst));
-	PROPSET(STUN_RES, resists_stun(&youmonst));
-	PROPSET(BISECTION_RES, resists_bisection(&youmonst));
+	PROPSET(STUN_RESISTANCE, resists_stun(&youmonst));
+	PROPSET(BISECTION_RESISTANCE, resists_bisection(&youmonst));
     PROPSET(FIRE_RESISTANCE, mon_resists_fire(&youmonst));
     PROPSET(COLD_RESISTANCE, mon_resists_cold(&youmonst));
     PROPSET(SHOCK_RESISTANCE, mon_resists_elec(&youmonst));
@@ -107,7 +108,7 @@ set_uasmon()
         struct obj *save_uwep = uwep;
 
         uwep = 0;
-        PROPSET(DRAIN_RES, resists_drli(&youmonst));
+        PROPSET(DRAIN_RESISTANCE, resists_drli(&youmonst));
         uwep = save_uwep;
     }
     /* is_magic_resistant() takes wielded, worn, and carried equipment into
@@ -117,7 +118,7 @@ set_uasmon()
                         || dmgtype(mdat, AD_RBRE)));
 //    PROPSET(STUNNED, (mdat == &mons[PM_STALKER] || is_bat(mdat))); /* Not sure what this was about --JG */
     PROPSET(SEE_INVISIBLE, has_innate_see_invisible(mdat));
-	PROPSET(BLIND_TELEPAT, has_innate_blind_telepathy(mdat));
+	PROPSET(BLIND_TELEPATHY, has_innate_blind_telepathy(mdat));
 	PROPSET(TELEPAT, has_innate_telepathy(mdat));
     /* note that Infravision uses mons[race] rather than usual mons[role] */
     PROPSET(INVISIBILITY, has_innate_invisibility(mdat));
@@ -132,7 +133,7 @@ set_uasmon()
     PROPSET(REGENERATION, has_innate_regeneration(mdat));
     PROPSET(REFLECTING, is_reflecting(&youmonst));
 #endif
-	PROPSET(SICK_RES, (mdat->mlet == S_FUNGUS || mdat == &mons[PM_GHOUL]));
+	PROPSET(SICK_RESISTANCE, (mdat->mlet == S_FUNGUS || mdat == &mons[PM_GHOUL]));
 	PROPSET(HALLUC_RES, dmgtype(mdat, AD_HALU));
 	PROPSET(INFRAVISION, infravision(Upolyd ? mdat : &mons[urace.monsternum]));
 	PROPSET(LEVITATION, is_floater(mdat));

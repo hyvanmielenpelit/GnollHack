@@ -3678,35 +3678,37 @@ int final;
     if (Shock_resistance)
         you_are("shock resistant", from_what(SHOCK_RESISTANCE));
     if (Sleep_resistance)
-        you_are("sleep resistant", from_what(SLEEP_RES));
+        you_are("sleep resistant", from_what(SLEEP_RESISTANCE));
 	if (Disint_resistance)
-        you_are("disintegration resistant", from_what(DISINT_RES));
+        you_are("disintegration resistant", from_what(DISINTEGRATION_RESISTANCE));
 	if (Death_resistance)
-		you_are("immune to death attacks", from_what(DEATH_RES));
+		you_are("immune to death attacks", from_what(DEATH_RESISTANCE));
 	if (Charm_resistance)
-		you_are("immune to charming", from_what(CHARM_RES));
+		you_are("immune to charming", from_what(CHARM_RESISTANCE));
 	if (Fear_resistance)
-		you_are("immune to fear", from_what(FEAR_RES));
+		you_are("immune to fear", from_what(FEAR_RESISTANCE));
 	if (Mind_shielding)
 		you_are("mind-shielded", from_what(MIND_SHIELDING));
 	if (Lycanthropy_resistance)
-		you_are("immune to lycanthropy", from_what(LYCANTHROPY_RES));
+		you_are("immune to lycanthropy", from_what(LYCANTHROPY_RESISTANCE));
 	if (Curse_resistance)
-		you_are("protected from curses", from_what(CURSE_RES));
+		you_are("protected from curses", from_what(CURSE_RESISTANCE));
 	if (Poison_resistance)
-        you_are("poison resistant", from_what(POISON_RES));
+        you_are("poison resistant", from_what(POISON_RESISTANCE));
+    if (Acid_immunity)
+        you_are("immune to acid", from_what(ACID_IMMUNITY));
     if (Acid_resistance)
-        you_are("acid resistant", from_what(ACID_RES));
+        you_are("acid resistant", from_what(ACID_RESISTANCE));
     if (Drain_resistance)
-        you_are("level-drain resistant", from_what(DRAIN_RES));
+        you_are("level-drain resistant", from_what(DRAIN_RESISTANCE));
     if (Sick_resistance)
-        you_are("immune to sickness", from_what(SICK_RES));
+        you_are("immune to sickness", from_what(SICK_RESISTANCE));
     if (Stone_resistance)
-        you_are("petrification resistant", from_what(STONE_RES));
+        you_are("petrification resistant", from_what(STONE_RESISTANCE));
 	if (Stun_resistance)
-		you_are("stun resistant", from_what(STUN_RES));
+		you_are("stun resistant", from_what(STUN_RESISTANCE));
 	if (Bisection_resistance)
-		you_cannot("be bisected", from_what(BISECTION_RES));
+		you_cannot("be bisected", from_what(BISECTION_RESISTANCE));
 	if (Halluc_resistance)
         enl_msg(You_, "resist", "resisted", " hallucinations",
                 from_what(HALLUC_RES));
@@ -3729,13 +3731,13 @@ int final;
 	if (Blocks_Blindness)
 		you_are("protected against blindness", from_what(BLOCKS_BLINDNESS));
 	if (Flash_resistance)
-		you_are("protected from bright light", from_what(FLASH_RES));
+		you_are("protected from bright light", from_what(FLASH_RESISTANCE));
 	if (Brain_protection)
 		you_are("protected from brain damage", from_what(BRAIN_PROTECTION));
 	if (Unblind_telepat)
         you_are("telepathic", from_what(TELEPAT));
 	if (Blind_telepat)
-		you_are("telepathic when blind", from_what(BLIND_TELEPAT));
+		you_are("telepathic when blind", from_what(BLIND_TELEPATHY));
 	if (XRay_vision)
 		you_have("X-ray vision", from_what(XRAY_VISION));
 	if (Warning)
@@ -4053,13 +4055,13 @@ int final;
 		you_have("summoning forbidden", from_what(SUMMON_FORBIDDEN));
 
 	if (No_magic_resistance)
-		you_have("no magic resistance", from_what(NO_MAGIC_RES));
+		you_have("no magic resistance", from_what(NO_MAGIC_RESISTANCE));
 	else if (One_fourth_magic_resistance)
-		you_have("25% of normal magic resistance", from_what(ONE_FOURTH_MAGIC_RES));
+		you_have("25% of normal magic resistance", from_what(ONE_FOURTH_MAGIC_RESISTANCE));
 	else if (Half_magic_resistance)
-		you_have("half normal magic resistance", from_what(HALF_MAGIC_RES));
+		you_have("half normal magic resistance", from_what(HALVED_MAGIC_RESISTANCE));
 	else if (Three_fourths_magic_resistance)
-		you_have("75% of normal magic resistance", from_what(THREE_FOURTHS_MAGIC_RES));
+		you_have("75% of normal magic resistance", from_what(THREE_FOURTHS_MAGIC_RESISTANCE));
 
 	if (Charmed)
 		you_are("charmed", from_what(CHARMED));

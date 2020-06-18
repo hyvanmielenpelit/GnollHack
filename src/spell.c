@@ -2298,22 +2298,22 @@ int otyp;
 		case SHOCK_RESISTANCE:
 			Your("skin feels less prone to electricity than before.");
 			break;
-		case DISINT_RES:
+		case DISINTEGRATION_RESISTANCE:
 			Your("body feels firmer than before.");
 			break;
-		case POISON_RES:
+		case POISON_RESISTANCE:
 			You_feel("more healthy than before.");
 			break;
-		case ACID_RES:
+		case ACID_IMMUNITY:
 			Your("skin feels less prone to acid than before.");
 			break;
-		case STONE_RES:
+		case STONE_RESISTANCE:
 			Your("skin feels more limber than before.");
 			break;
-		case DRAIN_RES:
+		case DRAIN_RESISTANCE:
 			You_feel("less suspectible to draining than before.");
 			break;
-		case SICK_RES:
+		case SICK_RESISTANCE:
 			You_feel("unbothered by disease agents.");
 			break;
 		case INVULNERABLE:
@@ -2328,22 +2328,22 @@ int otyp;
 		case MAGIC_MISSILE_RESISTANCE:
 			You_feel("more protected from magic missiles.");
 			break;
-		case DEATH_RES:
+		case DEATH_RESISTANCE:
 			Your("soul's silver cord feels thicker than before.");
 			break;
-		case CHARM_RES:
+		case CHARM_RESISTANCE:
 			You_feel("more firm about your own motivations.");
 			break;
-		case FEAR_RES:
+		case FEAR_RESISTANCE:
 			You_feel("more courageous.");
 			break;
 		case MIND_SHIELDING:
 			You_feel("shielded from mental detection.");
 			break;
-		case LYCANTHROPY_RES:
+		case LYCANTHROPY_RESISTANCE:
 			You_feel("more protected from lycanthropy.");
 			break;
-		case CURSE_RES:
+		case CURSE_RESISTANCE:
 			You_feel("more protected from curses.");
 			break;
 		case LIFESAVED:
@@ -2352,7 +2352,7 @@ int otyp;
 		case DETECT_MONSTERS:
 			You_feel("sensitive to the presence of monsters.");
 			break;
-		case BLIND_TELEPAT:
+		case BLIND_TELEPATHY:
 			You_feel("telepathic when blind.");
 			break;
 		case TELEPAT:
@@ -2385,7 +2385,7 @@ int otyp;
 		case MAGICAL_STONESKIN:
 			Your("skin hardens into stone!");
 			break;
-		case BISECTION_RES:
+		case BISECTION_RESISTANCE:
 			Your("skin feels strong as steel!");
 			break;
 		default:

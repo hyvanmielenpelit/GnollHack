@@ -907,7 +907,7 @@ register struct obj *obj;
             if ((peek_at_iced_corpse_age(obj) + 50L <= monstermoves
                  && !nonrotting_corpse(obj->corpsenm)
                  && mptr->mlet != S_FUNGUS)
-                || (has_acidic_corpse(fptr) && !resists_acid(mon))
+                || (has_acidic_corpse(fptr) && !(is_mon_immune_to_acid(mon) || mon_resists_acid(mon)))
                 || (has_poisonous_corpse(fptr) && !resists_poison(mon))
                 || (has_sickening_corpse(fptr) && !resists_sickness(mon))
                 || (has_mummy_rotted_corpse(fptr) && !resists_sickness(mon))

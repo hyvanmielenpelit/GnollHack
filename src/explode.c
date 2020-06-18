@@ -199,7 +199,7 @@ int expltype;
                     explmask[i][j] = !!Poison_resistance;
                     break;
                 case AD_ACID:
-                    explmask[i][j] = !!Acid_resistance;
+                    explmask[i][j] = !!Acid_immunity;
                     break;
                 default:
                     impossible("explosion type %d?", adtyp);
@@ -239,7 +239,7 @@ int expltype;
                         explmask[i][j] |= resists_poison(mtmp);
                         break;
                     case AD_ACID:
-                        explmask[i][j] |= resists_acid(mtmp);
+                        explmask[i][j] |= is_mon_immune_to_acid(mtmp);
                         break;
                     default:
                         impossible("explosion type %d?", adtyp);

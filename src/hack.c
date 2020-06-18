@@ -3081,8 +3081,8 @@ const char *msg_override;
 STATIC_OVL void
 maybe_wail()
 {
-    static short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RES, COLD_IMMUNITY,
-                              SHOCK_IMMUNITY, FIRE_IMMUNITY, SLEEP_RES, DISINT_RES,
+    static short powers[] = { TELEPORT, SEE_INVISIBLE, POISON_RESISTANCE, COLD_IMMUNITY,
+                              SHOCK_IMMUNITY, FIRE_IMMUNITY, SLEEP_RESISTANCE, DISINTEGRATION_RESISTANCE,
                               TELEPORT_CONTROL, STEALTH, FAST, INVISIBILITY };
 
     if (moves <= wailmsg + 50)

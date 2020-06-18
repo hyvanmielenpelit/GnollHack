@@ -1250,7 +1250,7 @@ register struct obj* omonwep;
             damage = 0;
             break;
         }
-        if (resists_acid(mdef)) {
+        if (is_mon_immune_to_acid(mdef)) {
             if (vis && canseemon(mdef))
                 pline("%s is covered in %s, but it seems harmless.",
                       Monnam(mdef), hliquid("acid"));
@@ -2033,7 +2033,7 @@ int mdead;
             if (canseemon(magr))
                 pline("%s is splashed by %s %s!", buf,
                       s_suffix(mon_nam(mdef)), hliquid("acid"));
-            if (resists_acid(magr)) {
+            if (is_mon_immune_to_acid(magr)) {
                 if (canseemon(magr))
                     pline("%s is not affected.", Monnam(magr));
 				damage = 0;
