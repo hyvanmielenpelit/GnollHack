@@ -1027,24 +1027,25 @@ WEAPON("double-headed flail", None,
 	1, 0, 0, 0, 3, MULTIGEN_SINGLE, 55, 500, 
 	AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_2_EXPERT_1D2_SKILLED, 
-	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_DOUBLE_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 0,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* one-handed, strikes up to two times, -1 hit bonus (difficult to wield) */
 WEAPON("triple-headed flail", None,
 	1, 0, 0, 0, 0, MULTIGEN_SINGLE, 70, 2000, 
 	AD_PHYS, 1, 6, 1, 2, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, 
 	-2, 0, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_3_EXPERT_2_SKILLED, 
-	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 0, 
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_TRIPLE_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 0, 
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 	/* one-handed, strikes up to three times, -2 hit bonus (difficult to wield) */
-WEAPON("triple-headed flail of life draining", "runed triple-headed flail", /* The flail of Yeenoghu, currently non-artifact */
-	0, 0, 1, 0, 0, MULTIGEN_SINGLE, 70, 10000, 
-	AD_PHYS, 1, 6, 3, 2, 4, 2, AD_PHYS, 0, 0, 0, A1_LEVEL_DRAIN, 0, 
+WEAPON("Triple-Headed Flail of Yeenoghu", "massive black triple-headed flail", /* The flail of Yeenoghu, currently non-artifact */
+	0, 0, 1, 1, 0, MULTIGEN_SINGLE, 210, 10000, 
+	AD_PHYS, 3, 6, 3, 6, 4, 0, AD_PHYS, 0, 0, 0, A1_LEVEL_DRAIN, 0, 
 	0, -2, 0, 0, 0, 0, 0, 0, 0, 0, MULTISHOT_MELEE_3_EXPERT_2_SKILLED, 
-	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_FLAIL, P_FLAIL, MAT_IRON, HI_METAL, 0, 
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, B, WEP_TRIPLE_FLAIL, P_FLAIL, MAT_IRON, CLR_BLACK, 0, 
 	O1_ENCHANTMENT_AFFECTS_MC_ADJUSTMENT, O2_DEMON_ITEM, O3_NO_WISH | O3_NO_GENERATION,
 	O4_NONE, 
 	PERMITTED_ALL, ALL_TARGETS),
+	/* two-handed, strikes up to three times, -2 hit bonus (difficult to wield) */
 WEAPON("runed flail", None, /* Base item for Howling Flail */
     1, 0, 1, 0, 0, MULTIGEN_SINGLE, 35, 1000, 
 	AD_PHYS, 1, 6, 2, 2, 4, 1, 	AD_PHYS, 2, 4, 0, A1_NONE, 0, 

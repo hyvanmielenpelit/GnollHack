@@ -1366,21 +1366,29 @@ unsigned gid, *nidp;
     struct bucket *curr;
 
     if (n_ids_mapped)
-        for (curr = id_map; curr; curr = curr->next) {
+    {
+        for (curr = id_map; curr; curr = curr->next) 
+        {
             /* first bucket might not be totally full */
-            if (curr == id_map) {
+            if (curr == id_map) 
+            {
                 i = n_ids_mapped % N_PER_BUCKET;
                 if (i == 0)
                     i = N_PER_BUCKET;
-            } else
+            } 
+            else
                 i = N_PER_BUCKET;
 
             while (--i >= 0)
-                if (gid == curr->map[i].gid) {
+            {
+                if (gid == curr->map[i].gid)
+                {
                     *nidp = curr->map[i].nid;
                     return TRUE;
                 }
+            }
         }
+    }
 
     return FALSE;
 }

@@ -2722,13 +2722,15 @@ struct monst *mtmp, *mtmp2;
         place_monster(mtmp2, mtmp2->mx, mtmp2->my);
     if (mtmp2->wormno)      /* update level.monsters[wseg->wx][wseg->wy] */
         place_wsegs(mtmp2, NULL); /* locations to mtmp2 not mtmp. */
-    if (emitted_light_range(mtmp2->data)) {
+
+    if (emitted_light_range(mtmp2->data)) 
+    {
         /* since this is so rare, we don't have any `mon_move_light_source' */
-        new_light_source(mtmp2->mx, mtmp2->my, emitted_light_range(mtmp2->data),
-                         LS_MONSTER, monst_to_any(mtmp2));
+        new_light_source(mtmp2->mx, mtmp2->my, emitted_light_range(mtmp2->data), LS_MONSTER, monst_to_any(mtmp2));
         /* here we rely on fact that `mtmp' hasn't actually been deleted */
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
     }
+
     mtmp2->nmon = fmon;
     fmon = mtmp2;
     if (u.ustuck == mtmp)

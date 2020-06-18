@@ -873,7 +873,7 @@ register struct monst *mtmp;
             (void) mongets(mtmp, WAN_STRIKING);
             break;
         case PM_YEENOGHU:
-			otmp = mksobj(TRIPLE_HEADED_FLAIL_OF_LIFE_DRAINING, FALSE, FALSE, FALSE);
+			otmp = mksobj(TRIPLE_HEADED_FLAIL_OF_YEENOGHU, FALSE, FALSE, FALSE);
 			curse(otmp);
 			otmp->oerodeproof = TRUE;
 			spe2 = 1 + rnd(3);
@@ -1780,6 +1780,7 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     if (mon->ispriest)
         m2->ispriest = FALSE;
     place_monster(m2, m2->mx, m2->my);
+
     if (emitted_light_range(m2->data))
         new_light_source(m2->mx, m2->my, emitted_light_range(m2->data), LS_MONSTER,
                          monst_to_any(m2));

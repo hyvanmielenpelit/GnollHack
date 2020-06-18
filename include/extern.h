@@ -468,6 +468,9 @@ E int FDECL(artifact_to_obj, (int));
 E int NDECL(get_current_cmap_type_index);
 E int FDECL(get_missile_index, (int, int));
 E void FDECL(display_self_with_extra_info, (unsigned long, int dmg_received));
+E int FDECL(get_location_light_range, (xchar, xchar));
+E int FDECL(get_location_ambient_sound_type, (xchar, xchar, int*));
+
 
 /* ### do.c ### */
 

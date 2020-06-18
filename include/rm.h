@@ -7,6 +7,7 @@
 #define RM_H
 
 #include "layer.h"
+#include "soundset.h"
 
 /*
  * The dungeon presentation graphics code and data structures were rewritten
@@ -305,6 +306,7 @@ struct symdef_cmap {
     uchar sym;
     const char *explanation;
     uchar layer;
+
     int variations;
     int variation_offset;
 #ifdef TEXTCOLOR
@@ -319,6 +321,7 @@ struct symdef_cmap {
 struct symdef_cmap_variation {
     int base_screen_symbol;
     const char* explanation;
+
 #ifdef TEXTCOLOR
     uchar color[CMAP_TYPE_MAX];
 #endif

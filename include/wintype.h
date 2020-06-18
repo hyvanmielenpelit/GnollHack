@@ -26,7 +26,9 @@ typedef union any {
     const char *a_string;
     int NDECL((*a_nfunc));
     unsigned long a_mask32; /* used by status highlighting */
+    coord a_coord;
     /* add types as needed */
+    
 } anything;
 #define ANY_P union any /* avoid typedef in prototypes */
                         /* (buggy old Ultrix compiler) */

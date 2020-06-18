@@ -1435,7 +1435,7 @@ xchar x, y; /* location */
         }
         else
         {
-            if (!isok(x - 1, y) || levl[x + 1][y].typ < DOOR)
+            if (!isok(x - 1, y) || levl[x - 1][y].typ < DOOR)
                 levl[x][y].facing_right = TRUE;
         }
     }

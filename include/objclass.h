@@ -245,6 +245,8 @@ enum obj_weapon_types {
 	WEP_HOSE = 47,
 	WEP_FORK = 48,
 	WEP_WHIP = 49,
+	WEP_DOUBLE_FLAIL = 50,
+	WEP_TRIPLE_FLAIL = 51,
 	MAX_WEAPON_TYPES
 };
 
@@ -254,7 +256,7 @@ static const char* weapon_type_names[MAX_WEAPON_TYPES] = {
 	"hammer", "spiked hammer",  "staff", "rod", "spear", "javelin", "polearm", "trident",
 	"dart", "shuriken", "boomerang", "short bow", "long bow", "hand crossbow", "crossbow", "repeating crossbow", "sling",
 	"arrow", "quarrel", "sling-bullet", "pick-axe", "unicorn horn", "horn", "worm tooth",
-	"shovel", "hook", "lance", "hose", "fork", "whip"
+	"shovel", "hook", "lance", "hose", "fork", "whip", "double-headed flail", "triple-headed flail"
 };
 
 enum obj_food_types {

@@ -21,6 +21,7 @@ extern char *viz_rmax;			/* max could see indices */
  */
 #define LS_OBJECT 0
 #define LS_MONSTER 1
+#define LS_LOCATION 2
 
 /*
  *  cansee()	- Returns true if the hero can see the location.

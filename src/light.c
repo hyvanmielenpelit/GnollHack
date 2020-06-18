@@ -104,6 +104,10 @@ anything *id;
     case LS_MONSTER:
         tmp_id.a_uint = id->a_monst->m_id;
         break;
+    case LS_LOCATION:
+        tmp_id.a_coord.x = id->a_coord.x;
+        tmp_id.a_coord.y = id->a_coord.y;
+        break;
     default:
         tmp_id.a_uint = 0;
         break;
@@ -148,12 +152,21 @@ char **cs_rows;
          * the current setup -- we need to recalculate for every
          * vision recalc.
          */
-        if (ls->type == LS_OBJECT) {
+        if (ls->type == LS_OBJECT)
+        {
             if (get_obj_location(ls->id.a_obj, &ls->x, &ls->y, 0))
                 ls->flags |= LSF_SHOW;
-        } else if (ls->type == LS_MONSTER) {
+        }
+        else if (ls->type == LS_MONSTER) 
+        {
             if (get_mon_location(ls->id.a_monst, &ls->x, &ls->y, 0))
                 ls->flags |= LSF_SHOW;
+        }
+        else if (ls->type == LS_LOCATION)
+        {
+            ls->x = ls->id.a_coord.x;
+            ls->y = ls->id.a_coord.y;
+            ls->flags |= LSF_SHOW;
         }
 
         /* minor optimization: don't bother with duplicate light sources */
@@ -300,6 +313,9 @@ int fd, mode, range;
                 case LS_MONSTER:
                     is_global = !mon_is_local(curr->id.a_monst);
                     break;
+                case LS_LOCATION:
+                    is_global = 0; /* always local by definition */
+                    break;
                 default:
                     is_global = 0;
                     impossible("save_light_sources: bad type (%d) [range=%d]",
@@ -366,25 +382,41 @@ boolean ghostly;
     unsigned nid;
     light_source *ls;
 
-    for (ls = light_base; ls; ls = ls->next) {
-        if (ls->flags & LSF_NEEDS_FIXUP) {
-            if (ls->type == LS_OBJECT || ls->type == LS_MONSTER) {
-                if (ghostly) {
+    for (ls = light_base; ls; ls = ls->next)
+    {
+        if (ls->flags & LSF_NEEDS_FIXUP)
+        {
+            if (ls->type == LS_OBJECT || ls->type == LS_MONSTER) 
+            {
+                if (ghostly) 
+                {
                     if (!lookup_id_mapping(ls->id.a_uint, &nid))
                         impossible("relink_light_sources: no id mapping");
-                } else
+                }
+                else
                     nid = ls->id.a_uint;
-                if (ls->type == LS_OBJECT) {
+
+                if (ls->type == LS_OBJECT)
+                {
                     which = 'o';
                     ls->id.a_obj = find_oid(nid);
-                } else {
+                } 
+                else if (ls->type == LS_MONSTER)
+                {
                     which = 'm';
                     ls->id.a_monst = find_mid(nid, FM_EVERYWHERE);
                 }
+                else if (ls->type == LS_LOCATION)
+                {
+                    which = 'l';
+                    ls->id.a_coord.x = ls->x;
+                    ls->id.a_coord.y = ls->y;
+                }
+
                 if (!ls->id.a_monst)
-                    impossible("relink_light_sources: cant find %c_id %d",
-                               which, nid);
-            } else
+                    impossible("relink_light_sources: cant find %c_id %d", which, nid);
+            }
+            else
                 impossible("relink_light_sources: bad type (%d)", ls->type);
 
             ls->flags &= ~LSF_NEEDS_FIXUP;
@@ -405,26 +437,34 @@ boolean write_it;
     int count = 0, is_global;
     light_source *ls;
 
-    for (ls = light_base; ls; ls = ls->next) {
-        if (!ls->id.a_monst) {
+    for (ls = light_base; ls; ls = ls->next) 
+    {
+        if (!ls->id.a_monst) 
+        {
             impossible("maybe_write_ls: no id! [range=%d]", range);
             continue;
         }
-        switch (ls->type) {
+
+        switch (ls->type)
+        {
         case LS_OBJECT:
             is_global = !obj_is_local(ls->id.a_obj);
             break;
         case LS_MONSTER:
             is_global = !mon_is_local(ls->id.a_monst);
             break;
+        case LS_LOCATION:
+            is_global = 0; /* always local */
+            break;
         default:
             is_global = 0;
-            impossible("maybe_write_ls: bad type (%d) [range=%d]", ls->type,
-                       range);
+            impossible("maybe_write_ls: bad type (%d) [range=%d]", ls->type, range);
             break;
         }
+        
         /* if global and not doing local, or vice versa, count it */
-        if (is_global ^ (range == RANGE_LEVEL)) {
+        if (is_global ^ (range == RANGE_LEVEL)) 
+        {
             count++;
             if (write_it)
                 write_ls(fd, ls);
@@ -454,6 +494,7 @@ light_sources_sanity_check()
             otmp = (struct obj *) ls->id.a_obj;
 			if(otmp)
 	            auint = otmp->o_id;
+
 			if (find_oid(auint) != otmp)
 			{
 				panic("insane light source: can't find obj #%u!", auint);
@@ -465,6 +506,7 @@ light_sources_sanity_check()
 			mtmp = (struct monst *) ls->id.a_monst;
 			if(mtmp)
 	            auint = mtmp->m_id;
+
 			if (find_mid(auint, FM_EVERYWHERE) != mtmp)
 			{
 				panic("insane light source: can't find mon #%u!", auint);
@@ -489,20 +531,27 @@ light_source *ls;
     struct obj *otmp;
     struct monst *mtmp;
 
-    if (ls->type == LS_OBJECT || ls->type == LS_MONSTER) {
-        if (ls->flags & LSF_NEEDS_FIXUP) {
+    if (ls->type == LS_OBJECT || ls->type == LS_MONSTER) 
+    {
+        if (ls->flags & LSF_NEEDS_FIXUP) 
+        {
             bwrite(fd, (genericptr_t) ls, sizeof(light_source));
-        } else {
+        } 
+        else 
+        {
             /* replace object pointer with id for write, then put back */
             arg_save = ls->id;
-            if (ls->type == LS_OBJECT) {
+            if (ls->type == LS_OBJECT) 
+            {
                 otmp = ls->id.a_obj;
                 ls->id = zeroany;
                 ls->id.a_uint = otmp->o_id;
                 if (find_oid((unsigned) ls->id.a_uint) != otmp)
                     impossible("write_ls: can't find obj #%u!",
                                ls->id.a_uint);
-            } else { /* ls->type == LS_MONSTER */
+            } 
+            else
+            { /* ls->type == LS_MONSTER */
                 mtmp = (struct monst *) ls->id.a_monst;
                 ls->id = zeroany;
                 ls->id.a_uint = mtmp->m_id;
@@ -510,12 +559,15 @@ light_source *ls;
                     impossible("write_ls: can't find mon #%u!",
                                ls->id.a_uint);
             }
+
             ls->flags |= LSF_NEEDS_FIXUP;
             bwrite(fd, (genericptr_t) ls, sizeof(light_source));
             ls->id = arg_save;
             ls->flags &= ~LSF_NEEDS_FIXUP;
         }
-    } else {
+    } 
+    else 
+    {
         impossible("write_ls: bad type (%d)", ls->type);
     }
 }
@@ -528,8 +580,11 @@ struct obj *src, *dest;
     light_source *ls;
 
     for (ls = light_base; ls; ls = ls->next)
+    {
         if (ls->type == LS_OBJECT && ls->id.a_obj == src)
             ls->id.a_obj = dest;
+    }
+
     src->lamplit = 0;
     dest->lamplit = 1;
 }
@@ -764,10 +819,12 @@ wiz_light_sources()
     putstr(win, 0, buf);
     putstr(win, 0, "");
 
-    if (light_base) {
+    if (light_base) 
+    {
         putstr(win, 0, "location range flags  type    id");
         putstr(win, 0, "-------- ----- ------ ----  -------");
-        for (ls = light_base; ls; ls = ls->next) {
+        for (ls = light_base; ls; ls = ls->next) 
+        {
             Sprintf(buf, "  %2d,%2d   %2d   0x%04x  %s  %s", ls->x, ls->y,
                     ls->range, ls->flags,
                     (ls->type == LS_OBJECT
@@ -783,7 +840,8 @@ wiz_light_sources()
                     fmt_ptr(ls->id.a_void));
             putstr(win, 0, buf);
         }
-    } else
+    } 
+    else
         putstr(win, 0, "<none>");
 
     display_nhwindow(win, FALSE);

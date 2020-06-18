@@ -2874,6 +2874,21 @@ xchar x, y;
         return multiplier * cmap_to_glyph(idx);
 }
 
+int
+get_location_light_range(x, y)
+xchar x, y;
+{
+    return 0;
+}
+
+int
+get_location_ambient_sound_type(x, y, volume_ptr)
+xchar x, y;
+int* volume_ptr;
+{
+    return 0;
+}
+
 /*
  * swallow_to_glyph()
  *
