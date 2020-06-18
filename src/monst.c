@@ -58,7 +58,7 @@ void NDECL(monst_init);
 #define ENLARGED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, enlarge, female_enlarge) \
     GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, NO_ACTION_INFO, NO_ACTION_INFO, enlarge, female_enlarge, NO_ACTION_INFO, NO_ACTION_INFO)
 #define ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim) \
-    GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO
+    GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO)
 #define MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset) \
     GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO)
 
@@ -903,13 +903,15 @@ NEARDATA struct permonst mons[] = {
     /*
      * kobolds
      */
-    MON("kobold", None, "small subterranean humanoid", None, None, S_KOBOLD, LVL(0, 6, 10, 0, 0, -2), (G_GENO | 1 | G_GENDER_ONE_FOURTH),
+    ANIMATED_MON("kobold", None, "small subterranean humanoid", None, None, S_KOBOLD, LVL(0, 6, 10, 0, 0, -2), (G_GENO | 1 | G_GENDER_ONE_FOURTH),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(400, 100, MS_ORC, MZ_SMALL, 1, 0), STATS(7, 10, 11, 6, 5, 4), MR_POISON, MR2_NONE, MC_POISONOUS_CORPSE,
         M1_HUMANOID | M1_OMNIVORE, M2_HOSTILE | M2_COLLECT,
         M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, M4_NONE, M5_NONE, 
-		1, CLR_BROWN, MONSTER_SOUNDSET_NONE, MONSTER_SOUNDSET_NONE),
+		1, CLR_BROWN, MONSTER_SOUNDSET_NONE, MONSTER_SOUNDSET_NONE, 
+        ACTION_INFO(KOBOLD_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION, NO_ANIMATION),
+        NO_ACTION_INFO),
     MON("large kobold", None, "small subterranean humanoid", None, None, S_KOBOLD, LVL(1, 6, 10, 0, 0, -3), (G_GENO | 1 | G_GENDER_ONE_EIGTH),
         A(ATTK(AT_WEAP, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
