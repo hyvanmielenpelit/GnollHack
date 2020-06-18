@@ -1715,11 +1715,13 @@ struct obj* otmp;
 	if (!otmp)
 		return 0;
 
-	int init_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
+	int max_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
 
-	/* Possible extra modifications here */
+	/* Extra modifications */
+    if (is_weapon(otmp) && bimanual(otmp) && !is_launcher(otmp))
+        max_spe *= 2;
 
-	return init_spe;
+	return max_spe;
 }
 
 int

@@ -1501,21 +1501,29 @@ register int amount;
 	{
         char buf[BUFSZ];
 
-        if (amount >= 0 && weapon && will_weld(weapon, &youmonst)) { /* cursed tin opener */
-            if (!Blind) {
+        if (amount >= 0 && weapon && will_weld(weapon, &youmonst))
+		{ /* cursed tin opener */
+            if (!Blind)
+			{
                 Sprintf(buf, "%s with %s aura.",
                         Yobjnam2(weapon, "glow"), an(hcolor(NH_AMBER)));
                 weapon->bknown = !Hallucination;
-            } else {
+            }
+			else
+			{
                 /* cursed tin opener is wielded in right hand */
                 Sprintf(buf, "Your right %s tingles.", body_part(HAND));
             }
+
             uncurse(weapon);
             update_inventory();
-        } else {
+        } 
+		else
+		{
             Sprintf(buf, "Your %s %s.", makeplural(body_part(HAND)),
                     (amount >= 0) ? "twitch" : "itch");
         }
+
         strange_feeling(otmp, buf); /* pline()+docall()+useup() */
         exercise(A_DEX, (boolean) (amount >= 0));
         return 0;
@@ -1524,85 +1532,111 @@ register int amount;
     if (otmp && otmp->oclass == SCROLL_CLASS)
         otyp = otmp->otyp;
 
-    if (weapon->otyp == WORM_TOOTH && amount >= 0) {
+    if (weapon->otyp == WORM_TOOTH && amount >= 0) 
+	{
         multiple = (weapon->quan > 1L);
         /* order: message, transformation, shop handling */
         Your("%s %s much sharper now.", simpleonames(weapon),
              multiple ? "fuse, and become" : "is");
         weapon->otyp = CRYSKNIFE;
         weapon->oerodeproof = 0;
-        if (multiple) {
+
+        if (multiple)
+		{
             weapon->quan = 1L;
             weapon->owt = weight(weapon);
         }
+
         if (weapon->cursed)
             uncurse(weapon);
+
         /* update shop bill to reflect new higher value */
         if (weapon->unpaid)
             alter_cost(weapon, 0L);
+
         if (otyp != STRANGE_OBJECT)
             makeknown(otyp);
+
         if (multiple)
             encumber_msg();
+
         return 1;
-    } else if (weapon->otyp == CRYSKNIFE && amount < 0) {
+
+    } 
+	else if (weapon->otyp == CRYSKNIFE && amount < 0) 
+	{
         multiple = (weapon->quan > 1L);
+
         /* order matters: message, shop handling, transformation */
-        Your("%s %s much duller now.", simpleonames(weapon),
-             multiple ? "fuse, and become" : "is");
+        Your("%s %s much duller now.", simpleonames(weapon), multiple ? "fuse, and become" : "is");
         costly_alteration(weapon, COST_DEGRD); /* DECHNT? other? */
         weapon->otyp = WORM_TOOTH;
         weapon->oerodeproof = 0;
-        if (multiple) {
+
+        if (multiple) 
+		{
             weapon->quan = 1L;
             weapon->owt = weight(weapon);
         }
+
         if (otyp != STRANGE_OBJECT && otmp->bknown)
             makeknown(otyp);
+
         if (multiple)
             encumber_msg();
+
         return 1;
     }
 
     if (has_oname(weapon))
         wepname = ONAME(weapon);
-    if (amount < 0 && weapon->oartifact && restrict_name(weapon, wepname)) {
+
+    if (amount < 0 && weapon->oartifact && restrict_name(weapon, wepname)) 
+	{
         if (!Blind)
             pline("%s %s.", Yobjnam2(weapon, "faintly glow"), color);
         return 1;
     }
+
+	int ench_limit_multiplier = 1;
+	if(bimanual(weapon) && !is_launcher(weapon))
+		ench_limit_multiplier = 2;
+
     /* there is a (soft) upper and lower limit to weapon->enchantment */
-    if (((weapon->enchantment > 5 && amount >= 0) || (weapon->enchantment < -5 && amount < 0))
-        && rn2(3)) {
+    if (((weapon->enchantment > 5 * ench_limit_multiplier && amount >= 0) || (weapon->enchantment < -5 * ench_limit_multiplier && amount < 0)) && rn2(3)) 
+	{
         if (!Blind)
-            pline("%s %s for a while and then %s.",
-                  Yobjnam2(weapon, "violently glow"), color,
-                  otense(weapon, "evaporate"));
+            pline("%s %s for a while and then %s.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "evaporate"));
         else
             pline("%s.", Yobjnam2(weapon, "evaporate"));
 
         useupall(weapon); /* let all of them disappear */
         return 1;
     }
-    if (!Blind) {
+
+    if (!Blind) 
+	{
         xtime = (amount * amount == 1) ? "moment" : "while";
-        pline("%s %s for a %s.",
-              Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color,
-              xtime);
-        if (otyp != STRANGE_OBJECT && weapon->known
-            && (amount > 0 || (amount < 0 && otmp->bknown)))
+        pline("%s %s for a %s.", Yobjnam2(weapon, amount == 0 ? "violently glow" : "glow"), color, xtime);
+
+        if (otyp != STRANGE_OBJECT && weapon->known && (amount > 0 || (amount < 0 && otmp->bknown)))
             makeknown(otyp);
     }
+
     if (amount < 0)
         costly_alteration(weapon, COST_DECHNT);
+
     weapon->enchantment += amount;
-    if (amount > 0) {
+
+    if (amount > 0) 
+	{
         if (weapon->cursed)
             uncurse(weapon);
         /* update shop bill to reflect new higher price */
         if (weapon->unpaid)
             alter_cost(weapon, 0L);
     }
+
 
     /*
      * Enchantment, which normally improves a weapon, has an
