@@ -3722,6 +3722,7 @@ boolean catchup; /* restoring a level */
 
     /* door or wall repair; trap, if any, is now gone;
        restore original terrain type and move any items away */
+    delete_location(x, y);
     levl[x][y].typ = tmp_dam->typ;
     if (IS_DOOR(tmp_dam->typ))
         levl[x][y].doormask = D_CLOSED; /* arbitrary */

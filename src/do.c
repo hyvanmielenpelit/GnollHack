@@ -3341,17 +3341,23 @@ boolean pushing;
         int chance = rn2(10); /* water: 90%; lava: 10% */
         fills_up = lava ? chance == 0 : chance != 0;
 
-        if (fills_up) {
+        if (fills_up) 
+		{
             struct trap *ttmp = t_at(rx, ry);
 
-            if (ltyp == DRAWBRIDGE_UP) {
-                levl[rx][ry].drawbridgemask &= ~DB_UNDER; /* clear lava */
-                levl[rx][ry].drawbridgemask |= DB_FLOOR;
-            } else
-                levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
+			if (ltyp == DRAWBRIDGE_UP)
+			{
+				levl[rx][ry].drawbridgemask &= ~DB_UNDER; /* clear lava */
+				levl[rx][ry].drawbridgemask |= DB_FLOOR;
+			}
+			else
+				transform_location(rx, ry, ROOM, 0, 0, FALSE, FALSE, FALSE);
+                
+			//levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 
             if (ttmp)
                 (void) delfloortrap(ttmp);
+
             bury_objs(rx, ry);
 
             newsym(rx, ry);
@@ -3640,8 +3646,12 @@ polymorph_sink()
 
     sinklooted = levl[u.ux][u.uy].looted != 0;
     level.flags.nsinks--;
-    levl[u.ux][u.uy].doormask = 0; /* levl[][].flags */
-    switch (rn2(4)) {
+
+    //levl[u.ux][u.uy].doormask = 0; /* levl[][].flags */
+	delete_location(u.ux, u.uy);
+
+    switch (rn2(4)) 
+	{
     default:
     case 0:
         sym = S_fountain;
@@ -3671,12 +3681,16 @@ polymorph_sink()
             sym = S_grave;
         break;
     }
+
+	maybe_create_location_light_source(u.ux, u.uy);
+
     /* give message even if blind; we know we're not levitating,
        so can feel the outcome even if we can't directly see it */
     if (levl[u.ux][u.uy].typ != ROOM)
         pline_The("sink transforms into %s!", an(defsyms[sym].explanation));
     else
         pline_The("sink vanishes.");
+
     newsym(u.ux, u.uy);
 }
 
@@ -3700,12 +3714,15 @@ teleport_sink()
 
     if (levl[cx][cy].typ == ROOM && !trp && !eng) {
         /* create sink at new position */
-        levl[cx][cy].typ = SINK;
+		delete_location(cx, cy);
+		levl[cx][cy].typ = SINK;
         levl[cx][cy].looted = levl[u.ux][u.uy].looted;
+		maybe_create_location_light_source(cx, cy);
         newsym(cx, cy);
         /* remove old sink */
+		delete_location(u.ux, u.uy);
         levl[u.ux][u.uy].typ = ROOM;
-        levl[u.ux][u.uy].looted = 0;
+        //levl[u.ux][u.uy].looted = 0;
         newsym(u.ux, u.uy);
         return TRUE;
     }
@@ -5535,4 +5552,55 @@ dotogglehpbars()
 
 	return 0;
 }
+
+
+void
+delete_location(x, y)
+xchar x, y;
+{
+	if (levl[x][y].lamplit)
+	{
+		del_light_source(LS_LOCATION, xy_to_any(x, y));
+		levl[x][y].lamplit = 0;
+	}
+
+	levl[x][y].typ = UNEXPLORED;
+	levl[x][y].flags = 0;
+	levl[x][y].variation = 0;
+	levl[x][y].facing_right = 0;
+	levl[x][y].horizontal = 0;
+}
+
+void
+transform_location(x, y, type, location_flags, location_variation, facing_right, horizontal, donewsym)
+xchar x, y;
+int type;
+uchar location_flags;
+uchar location_variation;
+boolean facing_right;
+boolean horizontal;
+boolean donewsym;
+{
+	if (levl[x][y].typ == FOUNTAIN)
+		level.flags.nfountains--;
+	else if (levl[x][y].typ == SINK)
+		level.flags.nsinks--;
+
+	delete_location(x, y);
+	levl[x][y].typ = type;
+	levl[x][y].flags = location_flags;
+	levl[x][y].variation = location_variation;
+	levl[x][y].facing_right = facing_right;
+	levl[x][y].horizontal = horizontal;
+	maybe_create_location_light_source(x, y);
+
+	if (levl[x][y].typ == FOUNTAIN)
+		level.flags.nfountains++;
+	else if (levl[x][y].typ == SINK)
+		level.flags.nsinks++;
+
+	if(donewsym)
+		newsym(x, y);
+}
+
 /*do.c*/

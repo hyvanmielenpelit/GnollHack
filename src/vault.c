@@ -542,6 +542,7 @@ invault()
             else if (x == lowx - 1 || x == hix + 1)
                 EGD(guard)->fakecorr[0].ftyp = VWALL;
         }
+        delete_location(x, y);
         levl[x][y].typ = DOOR;
         levl[x][y].doormask = D_NODOOR;
         unblock_point(x, y); /* doesn't block light */
@@ -607,8 +608,10 @@ struct monst *grd;
                         (y == loy) ? TRCORNER : (y == hiy) ? BRCORNER : VWALL;
                 else /* not left or right side, must be top or bottom */
                     typ = HWALL;
+
+                delete_location(x, y);
                 levl[x][y].typ = typ;
-                levl[x][y].doormask = 0;
+                //levl[x][y].doormask = 0;
                 /*
                  * hack: player knows walls are restored because of the
                  * message, below, so show this on the screen.
@@ -811,6 +814,7 @@ register struct monst *grd;
                 if (!Deaf)
                     verbalize("You've been warned, knave!");
                 mnexto(grd);
+                delete_location(m, n);
                 levl[m][n].typ = egrd->fakecorr[0].ftyp;
                 newsym(m, n);
                 grd->mpeaceful = 0;
@@ -827,6 +831,7 @@ register struct monst *grd;
                 m = grd->mx;
                 n = grd->my;
                 (void) rloc(grd, TRUE);
+                delete_location(m, n);
                 levl[m][n].typ = egrd->fakecorr[0].ftyp;
                 newsym(m, n);
                 grd->mpeaceful = 0;

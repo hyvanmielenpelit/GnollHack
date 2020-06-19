@@ -518,6 +518,8 @@ E int FDECL(itemdescription, (struct obj*));
 E void FDECL(printweight, (char*, int, boolean, boolean));
 E int FDECL(monsterdescription, (struct monst*));
 E int NDECL(dotogglehpbars);
+E void FDECL(delete_location, (xchar, xchar));
+E void FDECL(transform_location, (xchar, xchar, int, uchar, uchar, boolean, boolean, boolean));
 
 /* ### do_name.c ### */
 
@@ -1039,6 +1041,7 @@ E anything *FDECL(long_to_any, (long));
 E anything *FDECL(monst_to_any, (struct monst *));
 E anything *FDECL(obj_to_any, (struct obj *));
 E anything* FDECL(coord_to_any, (coord));
+E anything* FDECL(xy_to_any, (xchar, xchar));
 E boolean FDECL(revive_nasty, (int, int, const char *));
 E void FDECL(movobj, (struct obj *, XCHAR_P, XCHAR_P));
 E boolean FDECL(may_dig, (XCHAR_P, XCHAR_P));
@@ -1484,6 +1487,7 @@ E void FDECL(mktrap, (int, int, struct mkroom *, coord *));
 E void FDECL(mkstairs, (XCHAR_P, XCHAR_P, CHAR_P, struct mkroom *));
 E void NDECL(mkinvokearea);
 E void FDECL(mineralize, (int, int, int, int, BOOLEAN_P));
+E void FDECL(maybe_create_location_light_source, (xchar, xchar));
 
 /* ### mkmap.c ### */
 

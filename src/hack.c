@@ -73,6 +73,15 @@ coord c;
     return &tmp_anything;
 }
 
+anything*
+xy_to_any(x, y)
+xchar x, y;
+{
+    tmp_anything = zeroany;
+    tmp_anything.a_coord.x = x;
+    tmp_anything.a_coord.y = y;
+    return &tmp_anything;
+}
 
 boolean
 revive_nasty(x, y, msg)

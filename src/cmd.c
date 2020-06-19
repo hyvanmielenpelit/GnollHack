@@ -142,6 +142,7 @@ STATIC_PTR int NDECL(doprev_message);
 STATIC_PTR int NDECL(dozoomin);
 STATIC_PTR int NDECL(dozoomout);
 STATIC_PTR int NDECL(dozoommini);
+STATIC_PTR int NDECL(dolight);
 STATIC_PTR int NDECL(timed_occupation);
 STATIC_PTR int NDECL(doextcmd);
 STATIC_PTR int NDECL(dotravel);
@@ -4709,7 +4710,8 @@ struct ext_func_tab extcmdlist[] = {
 			dowhatis, IFBURIED | GENERALCMD },
 	{ M('k'), "killed", "list killed monsters",
 			dokilledmonsters, IFBURIED | INCMDMENU },
-	{ M('l'), "loot", "loot a box on the floor", doloot, AUTOCOMPLETE },
+    { C('l'), "light", "light or snuff out something on the wall or on the floor", dolight, AUTOCOMPLETE },
+    { M('l'), "loot", "loot a box on the floor", doloot, AUTOCOMPLETE },
 #ifdef DEBUG_MIGRATING_MONS
     { '\0', "migratemons", "migrate N random monsters",
             wiz_migrate_mons, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
@@ -4942,7 +4944,7 @@ commands_init()
         if (extcmd->key)
             Cmd.commands[extcmd->key] = extcmd;
 
-    (void) bind_key(C('l'), "redraw"); /* if number_pad is set */
+    //(void) bind_key(C('l'), "redraw"); /* if number_pad is set */
     /*       'b', 'B' : go sw */
     /*       'F' : fight (one time) */
     /*       'g', 'G' : multiple go */
@@ -7486,6 +7488,70 @@ dozoommini(VOID_ARGS)
     flags.screen_scale_adjustment = MIN_SCREEN_SCALE_ADJUSTMENT;
 
     stretch_window();
+
+    return 0;
+}
+
+STATIC_PTR int
+dolight(VOID_ARGS)
+{
+    if (get_location_light_range(u.ux, u.uy) != 0)
+    {
+        if (levl[u.ux][u.uy].lamplit == 0)
+        {
+            char qbuf[BUFSZ];
+            Sprintf(qbuf, "There is an unlit %s here. Lit it?", dfeature_at(u.ux, u.uy));
+            char ans = yn_query(qbuf);
+            if (ans == 'y')
+            {
+                maybe_create_location_light_source(u.ux, u.uy);
+                newsym(u.ux, u.uy);
+                return 1;
+            }
+        }
+        else
+        {
+            char qbuf[BUFSZ];
+            Sprintf(qbuf, "There is a lit %s here. Snuff it out?", dfeature_at(u.ux, u.uy));
+            char ans = yn_query("There is a lit %s here. Lit it?");
+            if (ans == 'y')
+            {
+                levl[u.ux][u.uy].lamplit = FALSE;
+                del_light_source(LS_LOCATION, xy_to_any(u.ux, u.uy));
+                newsym(u.ux, u.uy);
+                return 1;
+            }
+        }
+    }
+
+
+    /* Light in a direction */
+    coord cc;
+    if (!get_adjacent_loc((char*)0, (char*)0, u.ux, u.uy, &cc))
+        return 0;
+
+    if (get_location_light_range(cc.x, cc.y) != 0)
+    {
+        if (levl[cc.x][cc.y].lamplit == 0)
+        {
+            maybe_create_location_light_source(cc.x, cc.y);
+            newsym(cc.x, cc.y);
+            You("light the %s up.", dfeature_at(cc.x, cc.y));
+            return 1;
+        }
+        else
+        {
+            levl[cc.x][cc.y].lamplit = FALSE;
+            del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
+            newsym(cc.x, cc.y);
+            You("snuff the %s out.", dfeature_at(cc.x, cc.y));
+            return 1;
+        }
+    }
+    else
+    {
+        pline("There's nothing to light or snuff out.");
+    }
 
     return 0;
 }

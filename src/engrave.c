@@ -1326,8 +1326,10 @@ const char *str;
     /* Can we put a grave here? */
     if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRAVE) || t_at(x, y))
         return;
+
     /* Make the grave */
-    levl[x][y].typ = GRAVE;
+    transform_location(x, y, GRAVE, 0, 0, FALSE, FALSE, FALSE);
+
     /* Engrave the headstone */
     del_engr_at(x, y);
     if (!str)

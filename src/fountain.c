@@ -137,8 +137,9 @@ genericptr_t poolcnt;
         pline("Water gushes forth from the overflowing fountain!");
 
     /* Put a pool at x, y */
-    levl[x][y].typ = POOL, levl[x][y].flags = 0;
-    /* No kelp! */
+	transform_location(x, y, POOL, 0, 0, FALSE, FALSE, FALSE);
+
+	/* No kelp! */
     del_engr_at(x, y);
     water_damage_chain(level.objects[x][y], TRUE);
 

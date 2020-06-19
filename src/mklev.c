@@ -2197,4 +2197,22 @@ create_level_light_sources()
         }
     }
 }
+
+void
+maybe_create_location_light_source(x, y)
+xchar x, y;
+{
+    int lr = get_location_light_range(x, y);
+    if (lr != 0)
+    {
+        anything id;
+        coord c;
+        c.x = x;
+        c.y = y;
+        id.a_coord = c;
+        new_light_source(x, y, lr, LS_LOCATION, &id);
+        levl[x][y].lamplit = TRUE;
+    }
+}
+
 /*mklev.c*/

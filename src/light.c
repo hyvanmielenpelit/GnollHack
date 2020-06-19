@@ -105,6 +105,7 @@ anything *id;
         tmp_id.a_uint = id->a_monst->m_id;
         break;
     case LS_LOCATION:
+        tmp_id = zeroany;
         tmp_id.a_coord.x = id->a_coord.x;
         tmp_id.a_coord.y = id->a_coord.y;
         break;
@@ -113,11 +114,15 @@ anything *id;
         break;
     }
 
-    for (prev = 0, curr = light_base; curr; prev = curr, curr = curr->next) {
+    for (prev = 0, curr = light_base; curr; prev = curr, curr = curr->next) 
+    {
         if (curr->type != type)
             continue;
-        if (curr->id.a_obj
-            == ((curr->flags & LSF_NEEDS_FIXUP) ? tmp_id.a_obj : id->a_obj)) {
+
+        if ((type == LS_LOCATION && curr->id.a_coord.x == tmp_id.a_coord.x && curr->id.a_coord.y == tmp_id.a_coord.y)
+            || (type != LS_LOCATION && curr->id.a_obj == ((curr->flags & LSF_NEEDS_FIXUP) ? tmp_id.a_obj : id->a_obj))
+           )
+        {
             if (prev)
                 prev->next = curr->next;
             else
