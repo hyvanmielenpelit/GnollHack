@@ -34,6 +34,7 @@ STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
                                  XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
+STATIC_DCL void NDECL(create_level_light_sources);
 
 #define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE)
 #define init_vault() vault_x = -1
@@ -1119,6 +1120,8 @@ makelevel()
             }
         }
     }
+
+    create_level_light_sources();
 }
 
 /*
@@ -2173,4 +2176,25 @@ xchar x, y;
     place_branch(br, x, y);
 }
 
+STATIC_OVL void
+create_level_light_sources()
+{
+    for (xchar x = 1; x < COLNO; x++)
+    {
+        for (xchar y = 0; y < ROWNO; y++)
+        {
+            int lr = get_location_light_range(x, y);
+            if (lr != 0)
+            {
+                anything id;
+                coord c;
+                c.x = x;
+                c.y = y;
+                id.a_coord = c;
+                new_light_source(x, y, lr, LS_LOCATION, &id);
+                levl[x][y].lamplit = TRUE;
+            }
+        }
+    }
+}
 /*mklev.c*/

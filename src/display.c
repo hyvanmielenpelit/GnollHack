@@ -2878,6 +2878,15 @@ int
 get_location_light_range(x, y)
 xchar x, y;
 {
+    if (!isok(x, y))
+        return 0;
+
+    struct rm* lev = &levl[x][y];
+
+    /* Altars have candles */
+    if (lev->typ == ALTAR)
+        return 1;
+
     return 0;
 }
 

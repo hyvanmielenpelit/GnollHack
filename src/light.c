@@ -386,9 +386,9 @@ boolean ghostly;
     {
         if (ls->flags & LSF_NEEDS_FIXUP)
         {
-            if (ls->type == LS_OBJECT || ls->type == LS_MONSTER) 
+            if (ls->type == LS_OBJECT || ls->type == LS_MONSTER || ls->type == LS_LOCATION)
             {
-                if (ghostly) 
+                if (ghostly && ls->type != LS_LOCATION)
                 {
                     if (!lookup_id_mapping(ls->id.a_uint, &nid))
                         impossible("relink_light_sources: no id mapping");
@@ -409,6 +409,7 @@ boolean ghostly;
                 else if (ls->type == LS_LOCATION)
                 {
                     which = 'l';
+                    ls->id = zeroany;
                     ls->id.a_coord.x = ls->x;
                     ls->id.a_coord.y = ls->y;
                 }
@@ -513,7 +514,16 @@ light_sources_sanity_check()
 				return;
 			}
         }
-		else 
+        else if (ls->type == LS_LOCATION)
+        {
+            coord c = ls->id.a_coord;
+            if (!isok(c.x, c.y))
+            {
+                panic("insane light source: invalid location coordinates (%d, %d)!", c.x, c.y);
+                return;
+            }
+        }
+        else
 		{
             panic("insane light source: bad ls type %d", ls->type);
 			return;
@@ -531,7 +541,7 @@ light_source *ls;
     struct obj *otmp;
     struct monst *mtmp;
 
-    if (ls->type == LS_OBJECT || ls->type == LS_MONSTER) 
+    if (ls->type == LS_OBJECT || ls->type == LS_MONSTER || ls->type == LS_LOCATION)
     {
         if (ls->flags & LSF_NEEDS_FIXUP) 
         {
@@ -550,7 +560,7 @@ light_source *ls;
                     impossible("write_ls: can't find obj #%u!",
                                ls->id.a_uint);
             } 
-            else
+            else if(ls->type == LS_MONSTER)
             { /* ls->type == LS_MONSTER */
                 mtmp = (struct monst *) ls->id.a_monst;
                 ls->id = zeroany;
@@ -558,6 +568,10 @@ light_source *ls;
                 if (find_mid((unsigned) ls->id.a_uint, FM_EVERYWHERE) != mtmp)
                     impossible("write_ls: can't find mon #%u!",
                                ls->id.a_uint);
+            }
+            else if (ls->type == LS_LOCATION)
+            {
+                /* No need to do anything, coord can be written to disk as is */
             }
 
             ls->flags |= LSF_NEEDS_FIXUP;
@@ -828,8 +842,10 @@ wiz_light_sources()
             Sprintf(buf, "  %2d,%2d   %2d   0x%04x  %s  %s", ls->x, ls->y,
                     ls->range, ls->flags,
                     (ls->type == LS_OBJECT
-                       ? "obj"
-                       : ls->type == LS_MONSTER
+                       ? "obj" :
+                        ls->type == LS_LOCATION
+                        ? "loc" : 
+                        ls->type == LS_MONSTER
                           ? (mon_is_local(ls->id.a_monst)
                              ? "mon"
                              : (ls->id.a_monst == &youmonst)

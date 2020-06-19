@@ -64,6 +64,16 @@ struct obj *obj;
     return &tmp_anything;
 }
 
+anything*
+coord_to_any(c)
+coord c;
+{
+    tmp_anything = zeroany;
+    tmp_anything.a_coord = c;
+    return &tmp_anything;
+}
+
+
 boolean
 revive_nasty(x, y, msg)
 int x, y;
