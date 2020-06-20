@@ -2665,6 +2665,7 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, int, int, unsigned long));
 E enum player_soundset_types NDECL(get_player_soundset);
+E void NDECL(dosetsoundvolume);
 
 
 /* ### sys.c ### */
@@ -3294,6 +3295,7 @@ E void FDECL(genl_play_ghsound_miss, (struct ghsound_miss_info));
 E void FDECL(genl_play_ghsound_movement, (struct ghsound_movement_info));
 E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));
 E void FDECL(genl_play_ghsound_ui, (struct ghsound_ui_info));
+E void NDECL(genl_adjust_ghsound_general_volumes);
 
 
 E void FDECL(dump_open_log, (time_t));

@@ -426,6 +426,12 @@ static struct Comp_Opt {
       DISP_IN_GAME }, /*WC*/
     { "sortloot", "sort object selection lists by description", 4,
       SET_IN_GAME },
+    { "sound_volume_effects", "sound effect volume", 3,
+      SET_IN_GAME },
+    { "sound_volume_general", "general game volume", 3,
+      SET_IN_GAME },
+    { "sound_volume_music", "music volume", 3,
+      SET_IN_GAME },
 #ifdef MSDOS
     { "soundcard", "type of sound card to use", 20, SET_IN_FILE },
 #endif
@@ -439,7 +445,7 @@ static struct Comp_Opt {
     },
     { "statuslines",
 #ifdef CURSES_GRAPHICS
-      "2 or 3 lines for horizonal (bottom or top) status display",
+      "2 to 8 lines for horizonal (bottom or top) status display",
       20, SET_IN_GAME
 #else
       "2 to 8 lines for status display",
@@ -511,6 +517,7 @@ extern char configfile[]; /* for messages */
 
 extern struct symparse loadsyms[];
 static boolean need_redraw; /* for doset() */
+static boolean need_set_sound_volume; /* for doset() */
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -894,6 +901,10 @@ initoptions_init()
     /* these are currently only used by curses */
     iflags.wc2_statuslines = 2;
     iflags.wc2_windowborders = 2; /* 'Auto' */
+
+    flags.sound_volume_effects = 100;
+    flags.sound_volume_general = 100;
+    flags.sound_volume_music = 100;
 
     /* since this is done before init_objects(), do partial init here */
     objects[SLIME_MOLD].oc_name_idx = SLIME_MOLD;
@@ -3940,6 +3951,96 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "sound_volume_general";
+    if (match_optname(opts, fullname, 20, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 100;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 100)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 100);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.sound_volume_general = itmp;
+            need_set_sound_volume = TRUE;
+        }
+        return retval;
+    }
+
+    fullname = "sound_volume_music";
+    if (match_optname(opts, fullname, 18, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 100;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 100)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 100);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.sound_volume_music = itmp;
+            need_set_sound_volume = TRUE;
+        }
+        return retval;
+    }
+
+    fullname = "sound_volume_effects";
+    if (match_optname(opts, fullname, 20, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 100;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 100)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 100);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.sound_volume_effects = itmp;
+            need_set_sound_volume = TRUE;
+        }
+        return retval;
+    }
+
     /* menustyle:traditional or combination or full or partial */
     fullname = "menustyle";
     if (match_optname(opts, fullname, 4, TRUE)) {
@@ -4869,11 +4970,19 @@ doset() /* changing options via menu by Per Liboriussen */
     }
 
     destroy_nhwindow(tmpwin);
-    if (need_redraw) {
+    
+    if (need_redraw)
+    {
         check_gold_symbol();
         reglyph_darkroom();
         (void) doredraw();
     }
+
+    if (need_set_sound_volume)
+    {
+        dosetsoundvolume();
+    }
+
     return 0;
 }
 
@@ -6009,13 +6118,36 @@ char *buf;
             Sprintf(buf, "%ld (on: highlight status for %ld turns)",
                     iflags.hilite_delta, iflags.hilite_delta);
 #endif
-    } else if (!strcmp(optname,"statuslines")) {
+    } 
+    else if (!strcmp(optname,"statuslines"))
+    {
         if (wc2_supported(optname))
         { 
             Sprintf(buf, "%d", (iflags.wc2_statuslines < 3) ? 2 : (iflags.wc2_statuslines > 7) ? 8 : iflags.wc2_statuslines);
         }
         /* else default to "unknown" */
-    } else if (!strcmp(optname, "suppress_alert")) {
+    } 
+    else if (!strcmp(optname, "preferred_screen_scale"))
+    {
+        if (wc2_supported(optname) && flags.preferred_screen_scale != 0)
+        {
+            Sprintf(buf, "%d", flags.preferred_screen_scale);
+        }
+        /* else default to "unknown" */
+    }
+    else if (!strcmp(optname, "sound_volume_effects"))
+    {
+        Sprintf(buf, "%d", (int)flags.sound_volume_effects);
+    }
+    else if (!strcmp(optname, "sound_volume_general"))
+    {
+        Sprintf(buf, "%d", (int)flags.sound_volume_general);
+    }
+    else if (!strcmp(optname, "sound_volume_music"))
+    {
+        Sprintf(buf, "%d", flags.sound_volume_music);
+    }
+    else if (!strcmp(optname, "suppress_alert")) {
         if (flags.suppress_alert == 0L)
             Strcpy(buf, none);
         else

@@ -223,6 +223,7 @@ void mswin_play_ghsound_miss(struct ghsound_miss_info info);
 void mswin_play_ghsound_movement(struct ghsound_movement_info info);
 void mswin_play_ghsound_music(struct ghsound_music_info info);
 void mswin_play_ghsound_ui(struct ghsound_ui_info info);
+void mswin_adjust_ghsound_general_volumes(void);
 
 /* helper function */
 HWND mswin_hwnd_from_winid(winid wid);

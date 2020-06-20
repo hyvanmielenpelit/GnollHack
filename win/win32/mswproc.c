@@ -125,6 +125,7 @@ struct window_procs mswin_procs = {
     mswin_play_ghsound_movement,
     mswin_play_ghsound_music,
     mswin_play_ghsound_ui,
+    mswin_adjust_ghsound_general_volumes,
 };
 
 /*
@@ -3248,7 +3249,7 @@ mswin_play_ghsound_movement(struct ghsound_movement_info info)
 {
     if (!fmod_play_movement_sound(info))
     {
-        impossible("Cannot play movement sound");
+        impossible("Cannot play movement sound!");
     }
 }
 
@@ -3257,7 +3258,7 @@ mswin_play_ghsound_music(struct ghsound_music_info info)
 {
     if (!fmod_play_music(info))
     {
-        impossible("Cannot play music");
+        impossible("Cannot play music!");
     }
 }
 
@@ -3267,3 +3268,15 @@ mswin_play_ghsound_ui(struct ghsound_ui_info info)
     return;
 }
 
+void
+mswin_adjust_ghsound_general_volumes(VOID_ARGS)
+{
+    float new_general_volume = ((float)flags.sound_volume_general) / 100.0f;
+    float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
+    float new_effects_volume = ((float)flags.sound_volume_effects) / 100.0f;
+
+    if (!fmod_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_effects_volume))
+    {
+        impossible("Cannot adjust volume!");
+    }
+}

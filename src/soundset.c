@@ -156,5 +156,11 @@ get_player_soundset()
 	return PLAYER_SOUNDSET_GENERAL;
 }
 
+void
+dosetsoundvolume()
+{
+	adjust_ghsound_general_volumes();
+}
+
 
 /* soundset.c */

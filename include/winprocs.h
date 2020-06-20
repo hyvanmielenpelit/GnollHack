@@ -92,6 +92,7 @@ struct window_procs {
     void FDECL((*win_play_ghsound_movement), (struct ghsound_movement_info));
     void FDECL((*win_play_ghsound_music), (struct ghsound_music_info));
     void FDECL((*win_play_ghsound_ui), (struct ghsound_ui_info));
+    void NDECL((*win_adjust_ghsound_general_volumes));
 };
 
 extern
@@ -184,6 +185,7 @@ extern
 #define play_ghsound_movement (*windowprocs.win_play_ghsound_movement)
 #define play_ghsound_music (*windowprocs.win_play_ghsound_music)
 #define play_ghsound_ui (*windowprocs.win_play_ghsound_ui)
+#define adjust_ghsound_general_volumes (*windowprocs.win_adjust_ghsound_general_volumes)
 
 /*
  * WINCAP

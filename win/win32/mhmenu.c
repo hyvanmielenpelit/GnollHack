@@ -1012,9 +1012,12 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     double monitorScale = win10_monitor_scale(hWnd);
     /* Set the height of the list box items to max height of the individual
      * items */
-    for (i = 0; i < data->menu.size; i++) {
+    for (i = 0; i < data->menu.size; i++)
+    {
+#if 0
         if (NHMENU_HAS_GLYPH(data->menu.items[i])
-            && !IS_MAP_ASCII(iflags.wc_map_mode)) {
+            && !IS_MAP_ASCII(iflags.wc_map_mode)) 
+        {
             lpmis->itemHeight =
                 max(lpmis->itemHeight,
                     (UINT) max(tm.tmHeight + 4, (int)(monitorScale * ((double)MENU_TILE_Y + 2.0)) /*GetNHApp()->mapTile_Y*/));
@@ -1022,6 +1025,9 @@ onMeasureItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             lpmis->itemHeight =
                 max(lpmis->itemHeight, (UINT) max(tm.tmHeight + 4, (int)(monitorScale * ((double)GLYPHLESS_MENU_HEIGHT))));
         }
+#endif
+        lpmis->itemHeight =
+            max(lpmis->itemHeight, (UINT)max(tm.tmHeight + 8, (int)(monitorScale * ((double)GLYPHLESS_MENU_HEIGHT))));
     }
 
     /* set width to the window width, less scroll width */
@@ -1054,11 +1060,6 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     int color = NO_COLOR, attr;
     boolean menucolr = FALSE;
     double monitorScale = win10_monitor_scale(hWnd);
-    int checkXScaled = (int)(CHECK_WIDTH * monitorScale);
-    int checkYScaled = (int)(CHECK_HEIGHT * monitorScale);
-
-    int tileXScaled = (int) (MENU_TILE_X * monitorScale);
-    int tileYScaled = (int) (MENU_TILE_Y * monitorScale);
 
     UNREFERENCED_PARAMETER(wParam);
 
@@ -1085,6 +1086,28 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     GetTextMetrics(lpdis->hDC, &tm);
     spacing = tm.tmAveCharWidth;
+
+    int row_height = lpdis->rcItem.bottom - lpdis->rcItem.top - 2;
+
+    int checkXScaled = (int)(CHECK_WIDTH * monitorScale);
+    int checkYScaled = (int)(CHECK_HEIGHT * monitorScale);
+
+    if (checkYScaled > row_height)
+    {
+        double scaling_factor = (double)row_height / (double)checkYScaled;
+        checkXScaled = (int)(scaling_factor * (double)checkXScaled);
+        checkYScaled = (int)(scaling_factor * (double)checkYScaled);
+    }
+
+    int tileXScaled = (int)(MENU_TILE_X * monitorScale);
+    int tileYScaled = (int)(MENU_TILE_Y * monitorScale);
+
+    if (tileYScaled > row_height)
+    {
+        double scaling_factor = (double)row_height / (double)tileYScaled;
+        tileXScaled = (int)(scaling_factor * (double)tileXScaled);
+        tileYScaled = (int)(scaling_factor * (double)tileYScaled);
+    }
 
     /* set initial offset */
     x = lpdis->rcItem.left + 1;
@@ -1141,11 +1164,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     }
 
     /* print glyph if present */
-    if (NHMENU_HAS_GLYPH(*item)) {
-        if (!IS_MAP_ASCII(iflags.wc_map_mode)) {
+    if (NHMENU_HAS_GLYPH(*item)) 
+    {
+        if (!IS_MAP_ASCII(iflags.wc_map_mode))
+        {
             HGDIOBJ saveBmp;
-            double monitorScale = win10_monitor_scale(hWnd);
-
             saveBmp = SelectObject(tileDC, GetNHApp()->bmpMapTiles);
             int signed_glyph = item->glyph;
             int glyph = abs(signed_glyph);

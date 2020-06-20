@@ -15,8 +15,18 @@
 using namespace FMOD;
 static System* fmod_core_system = (System*)0;
 static Studio::System* fmod_studio_system = (Studio::System*)0;
-static Studio::EventInstance* musicInstances[2] = { 0 };
-static Studio::EventInstance* movementInstances[2] = { 0 };
+
+struct GNHSoundInstance {
+    Studio::EventInstance* eventInstance;
+    float normalVolume;
+};
+
+static GNHSoundInstance musicInstances[2] = { 0 };
+static GNHSoundInstance movementInstances[2] = { 0 };
+
+static float general_volume = 1.0f;
+static float general_music_volume = 1.0f;
+static float general_sound_effects_volume = 1.0f;
 
 /* GHSound -> FMOD event mapping here */
 enum sound_bank_types {
@@ -129,9 +139,9 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
-        if (musicInstances[0])
+        if (musicInstances[0].eventInstance)
         {
-            Studio::EventInstance* earlierMusicInstance = musicInstances[0];
+            Studio::EventInstance* earlierMusicInstance = musicInstances[0].eventInstance;
             Studio::EventDescription* earlierMusicDescription = NULL;
             earlierMusicInstance->getDescription(&earlierMusicDescription);
             if (earlierMusicDescription && musicDescription == earlierMusicDescription)
@@ -147,25 +157,27 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
-        musicInstance->setVolume(info.volume);
+        musicInstance->setVolume(info.volume * general_music_volume * general_volume);
         result = musicInstance->start();
         if (result != FMOD_OK)
             return FALSE;
 
         /* If starting succeeded, stop the old music in musicInstances[0] by fading */
-        if (musicInstances[0])
+        if (musicInstances[0].eventInstance)
         {
-            musicInstances[0]->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+            musicInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 
             /* move to musicInstances[1] for later release, and before that, release existing musicInstances[1] */
-            if (musicInstances[1])
-                musicInstances[1]->release();
+            if (musicInstances[1].eventInstance)
+                musicInstances[1].eventInstance->release();
 
-            musicInstances[1] = musicInstances[0];
+            musicInstances[1].eventInstance = musicInstances[0].eventInstance;
+            musicInstances[1].normalVolume = musicInstances[0].normalVolume;
         }
 
         /* Set the new instance as musicInstances[0] */
-        musicInstances[0] = musicInstance;
+        musicInstances[0].eventInstance = musicInstance;
+        musicInstances[0].normalVolume = info.volume;
 
         result = fmod_studio_system->update();
         return TRUE;
@@ -194,7 +206,7 @@ extern "C"
             return FALSE;
 
         /* Set volume */
-        movementInstance->setVolume(info.volume);
+        movementInstance->setVolume(info.volume * general_sound_effects_volume * general_volume);
 
         /* Set surface */
         FMOD_STUDIO_PARAMETER_DESCRIPTION paramDesc;
@@ -210,25 +222,54 @@ extern "C"
             return FALSE;
 
         /* If starting succeeded, stop the old music in musicInstances[0] by fading */
-        if (movementInstances[0])
+        if (movementInstances[0].eventInstance)
         {
-            movementInstances[0]->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+            movementInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 
             /* move to movementInstances[1] for later release, and before that, release existing movementInstances[1] */
-            if (movementInstances[1])
-                movementInstances[1]->release();
+            if (movementInstances[1].eventInstance)
+                movementInstances[1].eventInstance->release();
 
-            movementInstances[1] = movementInstances[0];
+            movementInstances[1].eventInstance = movementInstances[0].eventInstance;
+            movementInstances[1].normalVolume = movementInstances[0].normalVolume;
         }
 
         /* Set the new instance as movementInstances[0] */
-        movementInstances[0] = movementInstance;
+        movementInstances[0].eventInstance = movementInstance;
+        movementInstances[0].normalVolume = info.volume;
 
         result = fmod_studio_system->update();
         return TRUE;
     }
 
 
+    int
+    fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_effects_volume)
+    {
+        general_volume = new_general_volume;
+        general_music_volume = new_general_music_volume;
+        general_sound_effects_volume = new_general_effects_volume;
+
+        FMOD_RESULT result;
+        for (int i = 0; i <= 1; i++)
+        {
+            if (musicInstances[i].eventInstance)
+            {
+                result = musicInstances[i].eventInstance->setVolume(musicInstances[i].normalVolume * general_music_volume * general_volume);
+            }
+        }
+        for (int i = 0; i <= 1; i++)
+        {
+            if (movementInstances[i].eventInstance)
+            {
+                result = movementInstances[i].eventInstance->setVolume(movementInstances[i].normalVolume * general_sound_effects_volume * general_volume);
+            }
+        }
+
+        result = fmod_studio_system->update();
+
+        return TRUE;
+    }
 
 
 #if 0

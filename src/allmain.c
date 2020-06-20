@@ -42,6 +42,9 @@ boolean resuming;
     monst_init();
     objects_init();
 
+    /* Set sound volume */
+    adjust_ghsound_general_volumes();
+
     /* if a save file created in normal mode is now being restored in
        explore mode, treat it as normal restore followed by 'X' command
        to use up the save file and require confirmation for explore mode */

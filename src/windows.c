@@ -269,6 +269,14 @@ struct ghsound_ui_info info;
     return;
 }
 
+void
+genl_adjust_ghsound_general_volumes(VOID_ARGS)
+{
+    return;
+}
+
+
+
 STATIC_OVL
 void
 def_raw_print(s)

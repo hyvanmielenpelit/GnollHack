@@ -110,6 +110,9 @@ struct flag {
     char    sortloot; /* 'n'=none, 'l'=loot (pickup), 'f'=full ('l'+invent) */
 #endif
     boolean sortpack;        /* sorted inventory */
+    int sound_volume_general;  /* user set preference for general game volume 1...100 */
+    int sound_volume_music;  /* user set preference for music volume 1...100 */
+    int sound_volume_effects;  /* user set preference for music volume 1...100 */
     boolean sparkle;         /* show "resisting" special FX (Scott Bigham) */
     boolean standout;        /* use standout for --More-- */
 	boolean	swap_rhand_only; /* swap only right hand */

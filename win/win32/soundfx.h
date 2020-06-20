@@ -11,5 +11,6 @@ extern boolean NDECL(close_fmod_studio);
 
 extern boolean FDECL(fmod_play_music, (struct ghsound_music_info));
 extern boolean FDECL(fmod_play_movement_sound, (struct ghsound_movement_info));
+extern boolean FDECL(fmod_adjust_ghsound_general_volumes, (float, float, float));
 
 #endif /* SOUNDFX_H */

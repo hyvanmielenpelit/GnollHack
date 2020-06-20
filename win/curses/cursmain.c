@@ -91,6 +91,7 @@ struct window_procs curses_procs = {
     genl_play_ghsound_movement,
     genl_play_ghsound_music,
     genl_play_ghsound_ui,
+    genl_adjust_ghsound_general_volumes,
 };
 
 /*
