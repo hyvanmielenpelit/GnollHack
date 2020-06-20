@@ -1203,8 +1203,12 @@ int damage_shown;
             else
             {
                 /* Clear hero memory of any (invisible) monster from layer */
-                if(level.flags.hero_memory)
+                if (level.flags.hero_memory)
+                {
                     lev->hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
+                    show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
+
+                }
             }
 //            else
 //                _map_location(x, y, 1); /* map the location */

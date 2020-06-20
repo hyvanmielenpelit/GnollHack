@@ -956,7 +956,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         //for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
         //{
         boolean skip_darkening = FALSE;
-        int base_layer = draw_order[draw_index].layer; //layer_idx; // layer_array[layer_idx];
+        enum layer_types base_layer = draw_order[draw_index].layer; //layer_idx; // layer_array[layer_idx];
         int layer_rounds = 1;
         if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
             layer_rounds = MAX_SHOWN_OBJECTS;
