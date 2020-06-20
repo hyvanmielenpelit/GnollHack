@@ -7485,7 +7485,7 @@ dozoomout(VOID_ARGS)
 STATIC_PTR int
 dozoommini(VOID_ARGS)
 {
-    flags.screen_scale_adjustment = MIN_SCREEN_SCALE_ADJUSTMENT;
+    flags.screen_scale_adjustment = -1.0; /* In fact fit-to-screen */
 
     stretch_window();
 

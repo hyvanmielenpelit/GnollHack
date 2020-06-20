@@ -660,11 +660,11 @@ static const char empty_string[] = "";
 #define MAX_STATUS_LINES 8
 
 /* Some tile display properties */
-#define MIN_SCREEN_SCALE_ADJUSTMENT -0.75
+#define MIN_SCREEN_SCALE_ADJUSTMENT -0.90
 #define MAX_SCREEN_SCALE_ADJUSTMENT 1.0
 #define KEYBOARD_SCREEN_SCALE_ADJUSTMENT_STEP 0.25
 #define MOUSE_SCREEN_SCALE_ADJUSTMENT_STEP 0.05
-#define MIN_PREF_SCREEN_SCALE 25
+#define MIN_PREF_SCREEN_SCALE 10
 #define MAX_PREF_SCREEN_SCALE 200
 
 /* Some general definitions for graphics and sounds */

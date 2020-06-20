@@ -298,7 +298,8 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
 
     /* calculate front buffer tile size */
 
-    if (wnd_size.cx > 0 && wnd_size.cy > 0 && !bText && data->bFitToScreenMode) {
+    if (wnd_size.cx > 0 && wnd_size.cy > 0 && !bText && (data->bFitToScreenMode || flags.screen_scale_adjustment == -1.0)) 
+    {
         double windowAspectRatio =
             (double) wnd_size.cx / (double) wnd_size.cy;
 
@@ -310,12 +311,18 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
         else
             data->frontScale = (double) wnd_size.cx / (double) data->backWidth;
 
-    } else {
-
-        if (bText) {
+        if (flags.screen_scale_adjustment == -1.0)
+            flags.screen_scale_adjustment = data->frontScale - 1.0;
+    } 
+    else 
+    {
+        if (bText) 
+        {
             data->frontScale = 1.0;
-        } else {
-            data->frontScale = data->monitorScale * (1.0 + flags.screen_scale_adjustment);
+        }
+        else 
+        {
+            data->frontScale = /* data->monitorScale * */ (1.0 + flags.screen_scale_adjustment);
         }
 
     }
