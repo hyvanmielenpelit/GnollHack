@@ -7500,7 +7500,11 @@ dolight(VOID_ARGS)
         if (levl[u.ux][u.uy].lamplit == 0)
         {
             char qbuf[BUFSZ];
-            Sprintf(qbuf, "There is an unlit %s here. Lit it?", dfeature_at(u.ux, u.uy));
+            if (levl[u.ux][u.uy].typ == ALTAR)
+                Sprintf(qbuf, "The fires on the %s are unlit here. Light them up?", dfeature_at(u.ux, u.uy));
+            else
+               Sprintf(qbuf, "There is an unlit %s here. Light it up?", dfeature_at(u.ux, u.uy));
+
             char ans = yn_query(qbuf);
             if (ans == 'y')
             {
@@ -7512,8 +7516,13 @@ dolight(VOID_ARGS)
         else
         {
             char qbuf[BUFSZ];
-            Sprintf(qbuf, "There is a lit %s here. Snuff it out?", dfeature_at(u.ux, u.uy));
-            char ans = yn_query("There is a lit %s here. Lit it?");
+
+            if (levl[u.ux][u.uy].typ == ALTAR)
+                Sprintf(qbuf, "The fires on the %s are lit here. Snuff them out?", dfeature_at(u.ux, u.uy));
+            else
+                Sprintf(qbuf, "There is a lit %s here. Snuff it out?", dfeature_at(u.ux, u.uy));
+
+            char ans = yn_query(qbuf);
             if (ans == 'y')
             {
                 levl[u.ux][u.uy].lamplit = FALSE;
@@ -7532,11 +7541,16 @@ dolight(VOID_ARGS)
 
     if (get_location_light_range(cc.x, cc.y) != 0)
     {
+        char ebuf[BUFSZ];
+        strcpy(ebuf, "");
+        if(levl[cc.x][cc.y].typ == ALTAR)
+            strcpy(ebuf, "fires on the ");
+
         if (levl[cc.x][cc.y].lamplit == 0)
         {
             maybe_create_location_light_source(cc.x, cc.y);
             newsym(cc.x, cc.y);
-            You("light the %s up.", dfeature_at(cc.x, cc.y));
+            You("light the %s%s up.", ebuf, dfeature_at(cc.x, cc.y));
             return 1;
         }
         else
@@ -7544,7 +7558,7 @@ dolight(VOID_ARGS)
             levl[cc.x][cc.y].lamplit = FALSE;
             del_light_source(LS_LOCATION, xy_to_any(cc.x, cc.y));
             newsym(cc.x, cc.y);
-            You("snuff the %s out.", dfeature_at(cc.x, cc.y));
+            You("snuff the %s%s out.", ebuf, dfeature_at(cc.x, cc.y));
             return 1;
         }
     }

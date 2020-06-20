@@ -1839,7 +1839,7 @@ domove_core()
                yield ludicrous "dark part of a room") */
             Strcpy(buf, (levl[x][y].typ == STONE) ? "solid rock"
                          : glyph_is_cmap_or_cmap_variation(glyph)
-                            ? the(defsyms[glyph_to_cmap(glyph)].explanation)
+                            ? the(get_cmap_or_cmap_variation_glyph_explanation(glyph))
                             : (const char *) "an unknown obstacle");
             /* note: 'solid' is misleadingly named and catches pools
                of water and lava as well as rock and walls */
@@ -3366,5 +3366,21 @@ struct obj* otmp;
     return info;
 }
 
+const char*
+get_cmap_or_cmap_variation_glyph_explanation(int glyph)
+{
+    if (glyph_is_cmap(glyph))
+        return defsyms[glyph_to_cmap(glyph)].explanation;
+    else if (glyph_is_cmap_variation(glyph))
+    {
+        const char* var_explanation = defsym_variations[glyph_to_cmap_variation(glyph)].explanation;
+        if(var_explanation && strcmp(var_explanation, ""))
+            return var_explanation;
+        else
+            return defsyms[glyph_to_cmap(glyph)].explanation;
+    }
+    else
+        return "unknown cmap or cmap varation";
+}
 
 /*hack.c*/

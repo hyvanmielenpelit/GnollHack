@@ -320,6 +320,7 @@ struct symdef_cmap {
 
 struct symdef_cmap_variation {
     int base_screen_symbol;
+    const char* variation_name;
     const char* explanation;
 
 #ifdef TEXTCOLOR
@@ -345,7 +346,10 @@ enum hwall_variation_types
 #define CRWALL_VARIATION_OFFSET (HWALL_VARIATIONS + HWALL_VARIATION_OFFSET)
 #define CRWALL_VARIATIONS 1
 
-#define FLOOR_VARIATION_OFFSET (CRWALL_VARIATIONS + CRWALL_VARIATION_OFFSET)
+#define IRON_BAR_VARIATION_OFFSET (CRWALL_VARIATIONS + CRWALL_VARIATION_OFFSET)
+#define IRON_BAR_VARIATIONS 1
+
+#define FLOOR_VARIATION_OFFSET (IRON_BAR_VARIATIONS + IRON_BAR_VARIATION_OFFSET)
 
 enum floor_variation_types
 {

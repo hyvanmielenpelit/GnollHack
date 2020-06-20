@@ -1103,7 +1103,7 @@ uchar* tilemapflags;
                 if (process_style == 0)
                 {
                     Sprintf(buf, "%s,%s,%s", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf,
-                        (defsym_variations[i].explanation && strcmp(defsym_variations[i].explanation, "")) ? defsym_variations[i].explanation : "no description");
+                        (defsym_variations[i].variation_name && strcmp(defsym_variations[i].variation_name, "")) ? defsym_variations[i].variation_name : "no-variation-name");
                     if (defsym_variations[i].enlargement[cmap_idx] > 0)
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[defsym_variations[i].enlargement[cmap_idx]].width_in_tiles, enlargements[defsym_variations[i].enlargement[cmap_idx]].height_in_tiles, enlargements[defsym_variations[i].enlargement[cmap_idx]].main_tile_x_coordinate);
                     else
