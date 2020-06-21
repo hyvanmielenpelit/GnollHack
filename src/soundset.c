@@ -3,6 +3,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "lev.h" /* for checking save modes */
 
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1] =
 {
@@ -75,7 +76,7 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 
 STATIC_DCL void FDECL(set_hearing_array, (int, int, int));
 
-char hearing_array[COLNO][ROWNO] = { 0 };
+//char hearing_array[COLNO][ROWNO] = { 0 };
 
 
 void
@@ -417,5 +418,672 @@ int x, y;
 	block_point(x, y);
 	update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
 }
+
+
+
+
+/*
+ * Ambient sound sources.
+ *
+ * This implementation minimizes memory at the expense of extra
+ * recalculations.
+ *
+ * Sound sources are "things" that have a physical position and volume.
+ * They have a type, which gives us information about them.  Currently
+ * they are only attached to objects, monsters, and locations.  Note:  the
+ * polymorphed-player handling assumes that both youmonst.m_id and
+ * youmonst.mx will always remain 0.
+ *
+ * Sound sources, like timers, either follow game play (RANGE_GLOBAL) or
+ * stay on a level (RANGE_LEVEL).  Sound sources are unique by their
+ * (type, id) pair.  For sound sources attached to objects, this id
+ * is a pointer to the object.
+ *
+ * The structure of the save/restore mechanism is amazingly similar to
+ * the timer save/restore.  This is because they both have the same
+ * principals of having pointers into objects that must be recalculated
+ * across saves and restores.
+ */
+
+ /* flags */
+#define SSF_SHOW 0x1        /* display the sound source */
+#define SSF_NEEDS_FIXUP 0x2 /* need oid fixup */
+#define SSF_SILENCE_SOURCE 0x4 /* emits silence rather than sound */
+
+static sound_source* sound_base = 0;
+
+STATIC_DCL void FDECL(write_soundsource, (int, sound_source*));
+STATIC_DCL int FDECL(maybe_write_soundsource, (int, int, BOOLEAN_P));
+
+
+/* Create a new sound source.  */
+void
+new_sound_source(x, y, volume, type, id)
+xchar x, y;
+int volume, type;
+anything* id;
+{
+    sound_source* ss;
+    int absvolume = abs(volume);
+
+    if (absvolume > 100 || absvolume < 1) 
+    {
+        impossible("new_sound_source:  illegal volume %d", volume);
+        return;
+    }
+
+    ss = (sound_source*)alloc(sizeof(sound_source));
+
+    ss->next = sound_base;
+    ss->x = x;
+    ss->y = y;
+    ss->volume = absvolume;
+    ss->type = type;
+    ss->id = *id;
+    ss->flags = volume < 0 ? SSF_SILENCE_SOURCE : 0;
+    sound_base = ss;
+
+    hearing_full_recalc = 1; /* make the source show up */
+}
+
+/*
+ * Delete a sound source. This assumes only one sound source is attached
+ * to an object at a time.
+ */
+void
+del_sound_source(type, id)
+int type;
+anything* id;
+{
+    sound_source* curr, * prev;
+    anything tmp_id;
+
+    tmp_id = zeroany;
+    /* need to be prepared for dealing a with sound source which
+       has only been partially restored during a level change
+       (in particular: chameleon vs prot. from shape changers) */
+    switch (type)
+    {
+    case SOUNDSOURCE_OBJECT:
+        tmp_id.a_uint = id->a_obj->o_id;
+        break;
+    case SOUNDSOURCE_MONSTER:
+        tmp_id.a_uint = id->a_monst->m_id;
+        break;
+    case SOUNDSOURCE_LOCATION:
+        tmp_id = zeroany;
+        tmp_id.a_coord.x = id->a_coord.x;
+        tmp_id.a_coord.y = id->a_coord.y;
+        break;
+    default:
+        tmp_id.a_uint = 0;
+        break;
+    }
+
+    for (prev = 0, curr = sound_base; curr; prev = curr, curr = curr->next)
+    {
+        if (curr->type != type)
+            continue;
+
+        if ((type == SOUNDSOURCE_LOCATION && curr->id.a_coord.x == tmp_id.a_coord.x && curr->id.a_coord.y == tmp_id.a_coord.y)
+            || (type != SOUNDSOURCE_LOCATION && curr->id.a_obj == ((curr->flags & SSF_NEEDS_FIXUP) ? tmp_id.a_obj : id->a_obj))
+            )
+        {
+            if (prev)
+                prev->next = curr->next;
+            else
+                sound_base = curr->next;
+
+            free((genericptr_t)curr);
+            hearing_full_recalc = 1;
+            return;
+        }
+    }
+    impossible("del_sound_source: not found type=%d, id=%s", type,
+        fmt_ptr((genericptr_t)id->a_obj));
+}
+
+/* Mark locations that are temporarily lit via mobile sound sources. */
+void
+do_sound_sources(cs_rows)
+char** cs_rows;
+{
+
+#if 0
+    int x, y, min_x, max_x, max_y, offset;
+    char* limits;
+    short at_hero_range = 0;
+    sound_source* ss;
+    char* row;
+
+    for (ss = sound_base; ss; ss = ss->next)
+    {
+        ss->flags &= ~SSF_SHOW;
+
+        /*
+         * Check for moved sound sources.  It may be possible to
+         * save some effort if an object has not moved, but not in
+         * the current setup -- we need to recalculate for every
+         * vision recalc.
+         */
+        if (ss->type == SOUNDSOURCE_OBJECT)
+        {
+            if (get_obj_location(ss->id.a_obj, &ss->x, &ss->y, 0))
+                ss->flags |= SSF_SHOW;
+        }
+        else if (ss->type == SOUNDSOURCE_MONSTER)
+        {
+            if (get_mon_location(ss->id.a_monst, &ss->x, &ss->y, 0))
+                ss->flags |= SSF_SHOW;
+        }
+        else if (ss->type == SOUNDSOURCE_LOCATION)
+        {
+            ss->x = ss->id.a_coord.x;
+            ss->y = ss->id.a_coord.y;
+            ss->flags |= SSF_SHOW;
+        }
+
+        /* minor optimization: don't bother with duplicate sound sources */
+        /* at hero */
+        if (ss->x == u.ux && ss->y == u.uy)
+        {
+            if (at_hero_range >= ss->volume)
+                ss->flags &= ~SSF_SHOW;
+            else
+                at_hero_range = ss->volume;
+        }
+
+        if (ss->flags & SSF_SHOW) 
+        {
+            /*
+             * Walk the points in the circle and see if they are
+             * visible from the center.  If so, mark'em.
+             *
+             * Kevin's tests indicated that doing this brute-force
+             * method is faster for radius <= 3 (or so).
+             */
+            limits = circle_ptr(ss->volume);
+            if ((max_y = (ss->y + ss->volume)) >= ROWNO)
+                max_y = ROWNO - 1;
+            if ((y = (ss->y - ss->volume)) < 0)
+                y = 0;
+            for (; y <= max_y; y++) 
+            {
+                row = cs_rows[y];
+                offset = limits[abs(y - ss->y)];
+                if ((min_x = (ss->x - offset)) < 0)
+                    min_x = 0;
+                if ((max_x = (ss->x + offset)) >= COLNO)
+                    max_x = COLNO - 1;
+
+                if (ss->x == u.ux && ss->y == u.uy) 
+                {
+                    /*
+                     * If the sound source is located at the hero, then
+                     * we can use the COULD_SEE bits already calculated
+                     * by the vision system.  More importantly than
+                     * this optimization, is that it allows the vision
+                     * system to correct problems with clear_path().
+                     * The function clear_path() is a simple LOS
+                     * path checker that doesn't go out of its way
+                     * make things look "correct".  The vision system
+                     * does this.
+                     */
+                    for (x = min_x; x <= max_x; x++)
+                        if (row[x] & COULD_SEE)
+                            row[x] |= ((ss->flags & SSF_SILENCE_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
+                }
+                else 
+                {
+                    for (x = min_x; x <= max_x; x++)
+                        if ((ss->x == x && ss->y == y)
+                            || clear_path((int)ss->x, (int)ss->y, x, y))
+                            row[x] |= ((ss->flags & SSF_SILENCE_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
+                }
+            }
+        }
+    }
+#endif
+}
+
+
+/* Save all sound sources of the given volume. */
+void
+save_sound_sources(fd, mode, volume)
+int fd, mode, volume;
+{
+    int count, actual, is_global;
+    sound_source** prev, * curr;
+
+    if (perform_bwrite(mode))
+    {
+        count = maybe_write_soundsource(fd, volume, FALSE);
+        bwrite(fd, (genericptr_t)&count, sizeof count);
+        actual = maybe_write_soundsource(fd, volume, TRUE);
+        if (actual != count)
+        {
+            panic("counted %d sound sources, wrote %d! [volume=%d]", count,
+                actual, volume);
+            return;
+        }
+    }
+
+    if (release_data(mode)) 
+    {
+        for (prev = &sound_base; (curr = *prev) != 0;) 
+        {
+            if (!curr->id.a_monst)
+            {
+                impossible("save_sound_sources: no id! [volume=%d]", volume);
+                is_global = 0;
+            }
+            else
+                switch (curr->type) 
+                {
+                case SOUNDSOURCE_OBJECT:
+                    is_global = !obj_is_local(curr->id.a_obj);
+                    break;
+                case SOUNDSOURCE_MONSTER:
+                    is_global = !mon_is_local_mx(curr->id.a_monst);
+                    break;
+                case SOUNDSOURCE_LOCATION:
+                    is_global = 0; /* always local by definition */
+                    break;
+                default:
+                    is_global = 0;
+                    impossible("save_sound_sources: bad type (%d) [volume=%d]",
+                        curr->type, volume);
+                    break;
+                }
+            /* if global and not doing local, or vice versa, remove it */
+            if (is_global ^ (volume == RANGE_LEVEL)) 
+            {
+                *prev = curr->next;
+                free((genericptr_t)curr);
+            }
+            else
+            {
+                prev = &(*prev)->next;
+            }
+        }
+    }
+}
+
+/*
+ * Pull in the structures from disk, but don't recalculate the object
+ * pointers.
+ */
+void
+restore_sound_sources(fd)
+int fd;
+{
+    int count;
+    sound_source* ss;
+
+    /* restore elements */
+    mread(fd, (genericptr_t)&count, sizeof count);
+
+    while (count-- > 0) {
+        ss = (sound_source*)alloc(sizeof(sound_source));
+        mread(fd, (genericptr_t)ss, sizeof(sound_source));
+        ss->next = sound_base;
+        sound_base = ss;
+    }
+}
+
+/* to support '#stats' wizard-mode command */
+void
+sound_stats(hdrfmt, hdrbuf, count, size)
+const char* hdrfmt;
+char* hdrbuf;
+long* count;
+size_t* size;
+{
+    sound_source* ss;
+
+    Sprintf(hdrbuf, hdrfmt, sizeof(sound_source));
+    *count = *size = 0L;
+    for (ss = sound_base; ss; ss = ss->next) {
+        ++* count;
+        *size += sizeof * ss;
+    }
+}
+
+/* Relink all sounds that are so marked. */
+void
+relink_sound_sources(ghostly)
+boolean ghostly;
+{
+    char which;
+    unsigned nid;
+    sound_source* ss;
+
+    for (ss = sound_base; ss; ss = ss->next)
+    {
+        if (ss->flags & SSF_NEEDS_FIXUP)
+        {
+            if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION)
+            {
+                if (ghostly && ss->type != SOUNDSOURCE_LOCATION)
+                {
+                    if (!lookup_id_mapping(ss->id.a_uint, &nid))
+                        impossible("relink_sound_sources: no id mapping");
+                }
+                else
+                    nid = ss->id.a_uint;
+
+                if (ss->type == SOUNDSOURCE_OBJECT)
+                {
+                    which = 'o';
+                    ss->id.a_obj = find_oid(nid);
+                }
+                else if (ss->type == SOUNDSOURCE_MONSTER)
+                {
+                    which = 'm';
+                    ss->id.a_monst = find_mid(nid, FM_EVERYWHERE);
+                }
+                else if (ss->type == SOUNDSOURCE_LOCATION)
+                {
+                    which = 'l';
+                    ss->id = zeroany;
+                    ss->id.a_coord.x = ss->x;
+                    ss->id.a_coord.y = ss->y;
+                }
+
+                if (!ss->id.a_monst)
+                    impossible("relink_sound_sources: cant find %c_id %d", which, nid);
+            }
+            else
+                impossible("relink_sound_sources: bad type (%d)", ss->type);
+
+            ss->flags &= ~SSF_NEEDS_FIXUP;
+        }
+    }
+}
+
+/*
+ * Part of the sound source save routine.  Count up the number of sound
+ * sources that would be written.  If write_it is true, actually write
+ * the sound source out.
+ */
+STATIC_OVL int
+maybe_write_soundsource(fd, volume, write_it)
+int fd, volume;
+boolean write_it;
+{
+    int count = 0, is_global;
+    sound_source* ss;
+
+    for (ss = sound_base; ss; ss = ss->next)
+    {
+        if (!ss->id.a_monst)
+        {
+            impossible("maybe_write_soundsource: no id! [volume=%d]", volume);
+            continue;
+        }
+
+        switch (ss->type)
+        {
+        case SOUNDSOURCE_OBJECT:
+            is_global = !obj_is_local(ss->id.a_obj);
+            break;
+        case SOUNDSOURCE_MONSTER:
+            is_global = !mon_is_local_mx(ss->id.a_monst);
+            break;
+        case SOUNDSOURCE_LOCATION:
+            is_global = 0; /* always local */
+            break;
+        default:
+            is_global = 0;
+            impossible("maybe_write_soundsource: bad type (%d) [volume=%d]", ss->type, volume);
+            break;
+        }
+
+        /* if global and not doing local, or vice versa, count it */
+        if (is_global ^ (volume == RANGE_LEVEL))
+        {
+            count++;
+            if (write_it)
+                write_soundsource(fd, ss);
+        }
+    }
+
+    return count;
+}
+
+void
+sound_sources_sanity_check()
+{
+    sound_source* ss;
+    struct monst* mtmp;
+    struct obj* otmp;
+    unsigned int auint = 0;
+
+    for (ss = sound_base; ss; ss = ss->next)
+    {
+        if (!ss->id.a_monst)
+        {
+            panic("insane sound source: no id!");
+            return;
+        }
+        if (ss->type == SOUNDSOURCE_OBJECT)
+        {
+            otmp = (struct obj*)ss->id.a_obj;
+            if (otmp)
+                auint = otmp->o_id;
+
+            if (find_oid(auint) != otmp)
+            {
+                panic("insane sound source: can't find obj #%u!", auint);
+                return;
+            }
+        }
+        else if (ss->type == SOUNDSOURCE_MONSTER)
+        {
+            mtmp = (struct monst*)ss->id.a_monst;
+            if (mtmp)
+                auint = mtmp->m_id;
+
+            if (find_mid(auint, FM_EVERYWHERE) != mtmp)
+            {
+                panic("insane sound source: can't find mon #%u!", auint);
+                return;
+            }
+        }
+        else if (ss->type == SOUNDSOURCE_LOCATION)
+        {
+            coord c = ss->id.a_coord;
+            if (!isok(c.x, c.y))
+            {
+                panic("insane sound source: invalid location coordinates (%d, %d)!", c.x, c.y);
+                return;
+            }
+        }
+        else
+        {
+            panic("insane sound source: bad ss type %d", ss->type);
+            return;
+        }
+    }
+}
+
+/* Write a sound source structure to disk. */
+STATIC_OVL void
+write_soundsource(fd, ss)
+int fd;
+sound_source* ss;
+{
+    anything arg_save;
+    struct obj* otmp;
+    struct monst* mtmp;
+
+    if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION)
+    {
+        if (ss->flags & SSF_NEEDS_FIXUP)
+        {
+            bwrite(fd, (genericptr_t)ss, sizeof(sound_source));
+        }
+        else
+        {
+            /* replace object pointer with id for write, then put back */
+            arg_save = ss->id;
+            if (ss->type == SOUNDSOURCE_OBJECT)
+            {
+                otmp = ss->id.a_obj;
+                ss->id = zeroany;
+                ss->id.a_uint = otmp->o_id;
+                if (find_oid((unsigned)ss->id.a_uint) != otmp)
+                    impossible("write_soundsource: can't find obj #%u!",
+                        ss->id.a_uint);
+            }
+            else if (ss->type == SOUNDSOURCE_MONSTER)
+            { /* ss->type == SOUNDSOURCE_MONSTER */
+                mtmp = (struct monst*)ss->id.a_monst;
+                ss->id = zeroany;
+                ss->id.a_uint = mtmp->m_id;
+                if (find_mid((unsigned)ss->id.a_uint, FM_EVERYWHERE) != mtmp)
+                    impossible("write_soundsource: can't find mon #%u!",
+                        ss->id.a_uint);
+            }
+            else if (ss->type == SOUNDSOURCE_LOCATION)
+            {
+                /* No need to do anything, coord can be written to disk as is */
+            }
+
+            ss->flags |= SSF_NEEDS_FIXUP;
+            bwrite(fd, (genericptr_t)ss, sizeof(sound_source));
+            ss->id = arg_save;
+            ss->flags &= ~SSF_NEEDS_FIXUP;
+        }
+    }
+    else
+    {
+        impossible("write_soundsource: bad type (%d)", ss->type);
+    }
+}
+
+/* Change sound source's ID from src to dest. */
+void
+obj_move_sound_source(src, dest)
+struct obj* src, * dest;
+{
+    sound_source* ss;
+
+    for (ss = sound_base; ss; ss = ss->next)
+    {
+        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == src)
+            ss->id.a_obj = dest;
+    }
+
+    //src->lamplit = 0;
+    //dest->lamplit = 1;
+}
+
+/* return true if there exist any sound sources */
+boolean
+any_sound_source()
+{
+    return (boolean)(sound_base != (sound_source*)0);
+}
+
+/*
+ * Snuff an object sound source if at (x,y).  This currently works
+ * only for burning sound sources.
+ */
+void
+snuff_sound_source(x, y)
+int x, y;
+{
+    sound_source* ss;
+    struct obj* obj;
+
+    for (ss = sound_base; ss; ss = ss->next)
+        /*
+         * Is this position check valid??? Can I assume that the positions
+         * will always be correct because the objects would have been
+         * updated with the last vision update?  [Is that recent enough???]
+         */
+        if (ss->type == SOUNDSOURCE_OBJECT && ss->x == x && ss->y == y) {
+            obj = ss->id.a_obj;
+            if (1) //obj_is_burning(obj)) 
+            {
+                del_sound_source(LS_OBJECT, obj_to_any(obj));
+                //end_burn(obj, obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE);
+                /*
+                 * The current ss element has just been removed (and
+                 * ss->next is now invalid).  Return assuming that there
+                 * is only one sound source attached to each object.
+                 */
+                return;
+            }
+        }
+}
+
+
+/* copy the sound source(s) attached to src, and attach it/them to dest */
+void
+obj_split_sound_source(src, dest)
+struct obj* src, * dest;
+{
+    sound_source* ss, * new_ss;
+
+    for (ss = sound_base; ss; ss = ss->next)
+        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == src) 
+        {
+            /*
+             * Insert the new source at beginning of list.  This will
+             * never interfere us walking down the list - we are already
+             * past the insertion point.
+             */
+            new_ss = (sound_source*)alloc(sizeof(sound_source));
+            *new_ss = *ss;
+            new_ss->id.a_obj = dest;
+            new_ss->next = sound_base;
+            sound_base = new_ss;
+            //dest->lamplit = 1; /* now an active sound source */
+        }
+}
+
+/* sound source `src' has been folded into sound source `dest';
+   used for merging lit candles and adding candle(s) to lit candelabrum */
+void
+obj_merge_sound_sources(src, dest)
+struct obj* src, * dest;
+{
+    sound_source* ss;
+
+    /* src == dest implies adding to candelabrum */
+    if (src != dest)
+        del_sound_source(LS_OBJECT, obj_to_any(src));
+    //end_burn(src, TRUE); /* extinguish candles */
+
+
+    for (ss = sound_base; ss; ss = ss->next)
+        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == dest) 
+        {
+            //ss->volume = candle_sound_range(dest);
+            hearing_full_recalc = 1; /* in case volume changed */
+            break;
+        }
+}
+
+/* sound source `obj' is being made brighter or dimmer */
+void
+obj_adjust_sound_volume(obj, new_volume)
+struct obj* obj;
+int new_volume;
+{
+    sound_source* ss;
+
+    for (ss = sound_base; ss; ss = ss->next)
+        if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == obj) {
+            if (new_volume != ss->volume)
+                hearing_full_recalc = 1;
+            ss->volume = new_volume;
+            return;
+        }
+    impossible("obj_adjust_sound_volume: can't find %s", xname(obj));
+}
+
 
 /* soundset.c */

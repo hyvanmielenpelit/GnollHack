@@ -220,4 +220,11 @@ enum ui_soundset_types {
 };
 
 
+
+#define SOUNDSOURCE_OBJECT 0
+#define SOUNDSOURCE_MONSTER 1
+#define SOUNDSOURCE_LOCATION 2
+
+
+
 #endif /* SOUNDSET_H */

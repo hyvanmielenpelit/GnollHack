@@ -365,6 +365,10 @@ E const char *materialnm[];
 E NEARDATA boolean vision_full_recalc; /* TRUE if need vision recalc */
 E NEARDATA char **viz_array;           /* could see/in sight row pointers */
 
+/* Sound */
+E NEARDATA boolean hearing_full_recalc; /* TRUE if need hearing recalc */
+E NEARDATA char hearing_array[COLNO][ROWNO]; 
+
 /* Window system stuff */
 E NEARDATA winid WIN_MESSAGE;
 E NEARDATA winid WIN_STATUS;

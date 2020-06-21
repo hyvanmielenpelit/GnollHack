@@ -258,9 +258,6 @@ unsigned nid;
 }
 
 
-/* (mon->mx == 0) implies migrating */
-#define mon_is_local(mon) ((mon)->mx > 0)
-
 struct monst *
 find_mid(nid, fmflags)
 unsigned nid;
@@ -316,7 +313,7 @@ int fd, mode, range;
                     is_global = !obj_is_local(curr->id.a_obj);
                     break;
                 case LS_MONSTER:
-                    is_global = !mon_is_local(curr->id.a_monst);
+                    is_global = !mon_is_local_mx(curr->id.a_monst);
                     break;
                 case LS_LOCATION:
                     is_global = 0; /* always local by definition */
@@ -457,7 +454,7 @@ boolean write_it;
             is_global = !obj_is_local(ls->id.a_obj);
             break;
         case LS_MONSTER:
-            is_global = !mon_is_local(ls->id.a_monst);
+            is_global = !mon_is_local_mx(ls->id.a_monst);
             break;
         case LS_LOCATION:
             is_global = 0; /* always local */
@@ -851,7 +848,7 @@ wiz_light_sources()
                         ls->type == LS_LOCATION
                         ? "loc" : 
                         ls->type == LS_MONSTER
-                          ? (mon_is_local(ls->id.a_monst)
+                          ? (mon_is_local_mx(ls->id.a_monst)
                              ? "mon"
                              : (ls->id.a_monst == &youmonst)
                                 ? "you"

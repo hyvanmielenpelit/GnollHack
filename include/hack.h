@@ -394,6 +394,8 @@ extern short tile2enlargement[MAX_GLYPH];
 	? (((dmg) + 1) / 2) : (dmg))
 
 
+ /* (mon->mx == 0) implies migrating */
+#define mon_is_local_mx(mon) ((mon)->mx > 0)
 
 /* flags for special ggetobj status returns */
 #define ALL_FINISHED 0x01 /* called routine already finished the job */

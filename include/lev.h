@@ -42,13 +42,23 @@ struct bubble {
 };
 
 /* used in light.c */
-typedef struct ls_t {
-    struct ls_t *next;
+typedef struct lightsource_t {
+    struct lightsource_t*next;
     xchar x, y;  /* source's position */
     short range; /* source's current range */
     short flags;
     short type;  /* type of light source */
     anything id; /* source's identifier */
 } light_source;
+
+/* used in soundset.c */
+typedef struct soundsource_t {
+    struct soundsource_t* next;
+    xchar x, y;  /* source's position */
+    short volume; /* source's current volume */
+    short flags;
+    short type;  /* type of sound source */
+    anything id; /* source's identifier */
+} sound_source;
 
 #endif /* LEV_H */
