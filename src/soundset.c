@@ -73,6 +73,8 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 	}
 };
 
+STATIC_DCL void FDECL(set_hearing_array, (int, int, int));
+
 char hearing_array[COLNO][ROWNO] = { 0 };
 
 
@@ -177,6 +179,8 @@ update_hearing_array()
 	int hear_distance = get_max_hearing_distance();
 
 	/* Fill the array */
+	hearing_array[u.ux][u.uy] = 100;
+
 	for (int r = 1; r <= hear_distance; r++)
 	{
 		int x_min = u.ux - r;
@@ -192,7 +196,7 @@ update_hearing_array()
 		boolean horizontal_min_done = FALSE;
 		boolean horizontal_max_done = FALSE;
 
-		/* Horizontal lines */
+		/* 1. Horizontal lines, left to right */
 		for (int i = 0; i <= 1; i++)
 		{
 			if (i == 0)
@@ -212,6 +216,7 @@ update_hearing_array()
 
 			int y = (i == 0 ? y_min_adjusted : y_max_adjusted);
 
+			
 			for (int x = x_min_adjusted; x <= x_max_adjusted; x++)
 			{
 				int prev_hearing = 0;
@@ -227,17 +232,19 @@ update_hearing_array()
 				}
 				else
 				{
-					int cnt = 0;
-					int average = 0;
+					int maximum = 0;
+
+					/* Take maximum from above or below from the previous round */
 					for (int prev_x = max(x_min_adjusted + 1, x - 1); prev_x <= min(x_max_adjusted - 1, x + 1); prev_x++)
 					{
-						cnt++;
-						average += hearing_array[prev_x][prev_y];
+						maximum = max(maximum, hearing_array[prev_x][prev_y]);
 					}
-					if (cnt > 0)
-						average = average / cnt;
+	
+					/* Take also previous from the same line */
+					if(x > x_min_adjusted)
+						maximum = max(maximum, hearing_array[x - 1][y]);
 
-					prev_hearing = average;
+					prev_hearing = maximum;
 				}
 
 				if (prev_hearing == 0)
@@ -247,28 +254,12 @@ update_hearing_array()
 				}
 				else
 				{
-					struct monst* mtmp;
-					if (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
-					{
-						/* Nothing */
-					}
-					else if ((mtmp = m_at(x, y)) && is_lightblocker_mappear(mtmp))
-					{
-						/* Nothing */
-					}
-					else if (IS_DOOR(levl[x][y].typ) && ((levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
-					{
-						hearing_array[x][y] = (char)max(0, min(127, prev_hearing / 2 - 5));
-					}
-					else
-					{
-						hearing_array[x][y] = (char)max(0, min(127, prev_hearing - 5));
-					}
+					set_hearing_array(x, y, prev_hearing);
 				}
 			}
 		}
 
-		/* Vertical lines */
+		/* Vertical lines, top to bottom */
 		for (int i = 0; i <= 1; i++)
 		{
 			if (i == 0 && x_min_adjusted != x_min)
@@ -294,17 +285,17 @@ update_hearing_array()
 				}
 				else
 				{
-					int cnt = 0;
-					int average = 0;
+					int maximum = 0;
 					for (int prev_y = max(y_min_adjusted + 1, y - 1); prev_y <= min(y_max_adjusted - 1, y + 1); prev_y++)
 					{
-						cnt++;
-						average += hearing_array[prev_x][prev_y];
+						maximum = max(maximum, hearing_array[prev_x][prev_y]);
 					}
-					if (cnt > 0)
-						average = average / cnt;
 
-					prev_hearing = average;
+					/* Take also previous from the same line */
+					if (y > y_min_adjusted)
+						maximum = max(maximum, hearing_array[x][y - 1]);
+
+					prev_hearing = maximum;
 				}
 
 				if (prev_hearing == 0)
@@ -314,27 +305,72 @@ update_hearing_array()
 				}
 				else
 				{
-					struct monst* mtmp;
-					if (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
-					{
-						/* Nothing */
-					}
-					else if ((mtmp = m_at(x, y)) && is_lightblocker_mappear(mtmp))
-					{
-						/* Nothing */
-					}
-					else if (IS_DOOR(levl[x][y].typ) && ((levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
-					{
-						hearing_array[x][y] = (char)max(0, min(127, prev_hearing / 2 - 5));
-					}
-					else
-					{
-						hearing_array[x][y] = (char)max(0, min(127, prev_hearing - 5));
-					}
+					set_hearing_array(x, y, prev_hearing);
 				}
 			}
 		}
 
+		/* Vertical lines, bottom to top */
+		for (int i = 0; i <= 1; i++)
+		{
+			if (i == 0 && x_max_adjusted != x_max)
+				continue;
+			if (i == 1 && x_min_adjusted != x_min)
+				continue;
+
+			int x = (i == 0 ? x_max_adjusted : x_min_adjusted);
+
+			for (int y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
+			{
+				if(hearing_array[x][y + 1] > 0)
+					set_hearing_array(x, y, hearing_array[x][y + 1]);
+			}
+		}
+
+		/* Horizontal lines, right to left */
+		for (int i = 0; i <= 1; i++)
+		{
+			if (i == 0 && y_max_adjusted != y_max)
+				continue;
+			if (i == 1 && y_min_adjusted != y_min)
+				continue;
+
+			int y = (i == 0 ? y_max_adjusted : y_min_adjusted);
+
+			for (int x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
+			{
+				if (hearing_array[x + 1][y] > 0)
+					set_hearing_array(x, y, hearing_array[x][y + 1]);
+			}
+		}
+	}
+
+}
+
+STATIC_OVL
+void set_hearing_array(x, y, prev_hearing)
+int x, y, prev_hearing;
+{
+	struct monst* mtmp;
+	if (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
+	{
+		/* Nothing */
+	}
+	else if ((mtmp = m_at(x, y)) && is_lightblocker_mappear(mtmp))
+	{
+		/* Nothing */
+	}
+	else if (IS_DOOR(levl[x][y].typ) && (levl[x][y].doormask != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
+	{
+		int new_hearing = (char)max(0, min(127, prev_hearing / 3 - 5));
+		if(new_hearing > hearing_array[x][y])
+			hearing_array[x][y] = new_hearing;
+	}
+	else
+	{
+		int new_hearing = (char)max(0, min(127, prev_hearing - 8));
+		if (new_hearing > hearing_array[x][y])
+			hearing_array[x][y] = new_hearing;
 	}
 
 }

@@ -608,8 +608,11 @@ boolean talk;
         talk = FALSE;
 
     set_itimeout(&HDeaf, xtime);
-    if ((xtime != 0L) ^ (old != 0L)) {
+
+    if ((xtime != 0L) ^ (old != 0L)) 
+    {
 		context.botl = context.botlx = TRUE;
+        update_hearing_array_and_ambient_sounds();
 		if (talk)
             You(old ? "can hear again." : "are unable to hear anything.");
     }
