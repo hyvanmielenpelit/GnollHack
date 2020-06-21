@@ -2125,7 +2125,7 @@ int dist;
     }
 
     if (!does_block(x, y, lev))
-        unblock_point(x, y); /* make sure vision knows this location is open */
+        unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* display new value of position; could have a monster/object on it */
     newsym(x, y);

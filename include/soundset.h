@@ -8,6 +8,8 @@
 #define SOUNDSET_H
 
 #define BACKGROUND_MUSIC_VOLUME 0.04f
+#define MAX_HEARING_DISTANCE 10
+
 
 /* All GnollHack Sounds */
 enum ghsound_types {

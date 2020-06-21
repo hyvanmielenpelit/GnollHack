@@ -1302,7 +1302,7 @@ register int x, y;
     if (lev->typ == SCORR) 
     {
         lev->typ = CORR;
-        unblock_point(x, y);
+        unblock_vision_and_hearing_at_point(x, y);
     }
 
     /*
@@ -1531,7 +1531,7 @@ genericptr_t num;
     else if (levl[zx][zy].typ == SCORR)
     {
         levl[zx][zy].typ = CORR;
-        unblock_point(zx, zy);
+        unblock_vision_and_hearing_at_point(zx, zy);
         magic_map_background(zx, zy, 0);
         newsym(zx, zy);
         (*(int *) num)++;
@@ -1604,12 +1604,12 @@ genericptr_t num;
             levl[zx][zy].doormask = D_NODOOR;
         } else
             levl[zx][zy].doormask = D_ISOPEN;
-        unblock_point(zx, zy);
+        unblock_vision_and_hearing_at_point(zx, zy);
         newsym(zx, zy);
         (*num_p)++;
     } else if (levl[zx][zy].typ == SCORR) {
         levl[zx][zy].typ = CORR;
-        unblock_point(zx, zy);
+        unblock_vision_and_hearing_at_point(zx, zy);
         newsym(zx, zy);
         (*num_p)++;
     } else if ((ttmp = t_at(zx, zy)) != 0) {
@@ -1825,7 +1825,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 						if (rn2(7 - fund))
 							continue;
 						levl[x][y].typ = CORR;
-						unblock_point(x, y); /* vision */
+						unblock_vision_and_hearing_at_point(x, y); /* vision */
 						exercise(A_WIS, TRUE);
 						nomul(0);
 						feel_newsym(x, y); /* make sure it shows up */

@@ -1637,7 +1637,7 @@ register int after;
                     if (btrapped) {
                         here->doormask = D_NODOOR;
                         newsym(mtmp->mx, mtmp->my);
-                        unblock_point(mtmp->mx, mtmp->my); /* vision */
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         if (mb_trapped(mtmp))
                             return 2;
                     } else {
@@ -1652,13 +1652,13 @@ register int after;
                         }
                         here->doormask = D_ISOPEN;
                         /* newsym(mtmp->mx, mtmp->my); */
-                        unblock_point(mtmp->mx, mtmp->my); /* vision */
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                     }
                 } else if (here->doormask == D_CLOSED && can_open) {
                     if (btrapped) {
                         here->doormask = D_NODOOR;
                         newsym(mtmp->mx, mtmp->my);
-                        unblock_point(mtmp->mx, mtmp->my); /* vision */
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         if (mb_trapped(mtmp))
                             return 2;
                     } else {
@@ -1672,14 +1672,14 @@ register int after;
                         }
                         here->doormask = D_ISOPEN;
                         /* newsym(mtmp->mx, mtmp->my); */  /* done below */
-                        unblock_point(mtmp->mx, mtmp->my); /* vision */
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                     }
                 } else if (here->doormask & (D_LOCKED | D_CLOSED)) {
                     /* mfndpos guarantees this must be a doorbuster */
                     if (btrapped) {
                         here->doormask = D_NODOOR;
                         newsym(mtmp->mx, mtmp->my);
-                        unblock_point(mtmp->mx, mtmp->my); /* vision */
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         if (mb_trapped(mtmp))
                             return 2;
                     } else {
@@ -1697,7 +1697,7 @@ register int after;
                         else
                             here->doormask = D_BROKEN;
                         /* newsym(mtmp->mx, mtmp->my); */  /* done below */
-                        unblock_point(mtmp->mx, mtmp->my); /* vision */
+                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                     }
                     /* if it's a shop door, schedule repair */
                     if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))

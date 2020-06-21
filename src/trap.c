@@ -2051,7 +2051,7 @@ int style;
                 pline_The("boulder crashes through a door.");
             levl[bhitpos.x][bhitpos.y].doormask = D_BROKEN;
             if (dist)
-                unblock_point(bhitpos.x, bhitpos.y);
+                unblock_vision_and_hearing_at_point(bhitpos.x, bhitpos.y);
         }
 
         /* if about to hit iron bars, do so now */
@@ -5102,7 +5102,7 @@ boolean force;
                 You("set it off!");
                 b_trapped("door", FINGER);
                 levl[x][y].doormask = D_NODOOR;
-                unblock_point(x, y);
+                unblock_vision_and_hearing_at_point(x, y);
                 newsym(x, y);
                 /* (probably ought to charge for this damage...) */
                 if (*in_rooms(x, y, SHOPBASE))

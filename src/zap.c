@@ -2710,10 +2710,10 @@ int id;
     } else if (obj_location == OBJ_FLOOR) {
         if (obj->otyp == BOULDER && otmp->otyp != BOULDER
             && !does_block(ox, oy, &levl[ox][oy]))
-            unblock_point(ox, oy);
+            unblock_vision_and_hearing_at_point(ox, oy);
         else if (obj->otyp != BOULDER && otmp->otyp == BOULDER)
             /* (checking does_block() here would be redundant) */
-            block_point(ox, oy);
+            block_vision_and_hearing_at_point(ox, oy);
     }
 
     /* note: if otmp is gone, billing for it was handled by useup() */
@@ -7907,7 +7907,7 @@ short exploding_wand_typ;
                     add_damage(x, y, 0L);
             }
             lev->doormask = new_doormask;
-            unblock_point(x, y); /* vision */
+            unblock_vision_and_hearing_at_point(x, y); /* vision */
             if (see_it) {
                 pline1(see_txt);
                 newsym(x, y);
@@ -7943,7 +7943,7 @@ short exploding_wand_typ;
                 lev->typ = GRASS;
             else
                 lev->typ = ROOM;
-            unblock_point(x, y); /* vision */
+            unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);
             if (cansee(x, y))
                 pline_The("tree disintegrates!");
@@ -8007,7 +8007,7 @@ register struct obj *obj; /* no texts here! */
         obj_extract_self(obj); /* move rocks back on top */
         place_object(obj, obj->ox, obj->oy);
         if (!does_block(obj->ox, obj->oy, &levl[obj->ox][obj->oy]))
-            unblock_point(obj->ox, obj->oy);
+            unblock_vision_and_hearing_at_point(obj->ox, obj->oy);
         if (cansee(obj->ox, obj->oy))
             newsym(obj->ox, obj->oy);
     }

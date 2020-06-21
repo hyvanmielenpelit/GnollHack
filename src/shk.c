@@ -3800,7 +3800,7 @@ boolean catchup; /* restoring a level */
     if (catchup)
         return 1; /* repair occurred while off level so no messages */
 
-    block_point(x, y);
+    block_vision_and_hearing_at_point(x, y);
     if (cansee(x, y)) {
         if (IS_WALL(tmp_dam->typ))
             /* player sees actual repair process, so KNOWS it's a wall */

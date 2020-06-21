@@ -879,7 +879,7 @@ int x, y;
     del_engr_at(x2, y2);
     newsym(x, y);
     newsym(x2, y2);
-    block_point(x2, y2); /* vision */
+    block_vision_and_hearing_at_point(x2, y2); /* vision */
     nokiller();
 }
 
@@ -924,7 +924,7 @@ int x, y;
     del_engr_at(x2, y2);
     newsym(x, y);
     newsym(x2, y2);
-    unblock_point(x2, y2); /* vision */
+    unblock_vision_and_hearing_at_point(x2, y2); /* vision */
     if (Is_stronghold(&u.uz))
         u.uevent.uopened_dbridge = TRUE;
     nokiller();
@@ -1019,7 +1019,7 @@ boolean is_disintegrated;
     newsym(x, y);
     newsym(x2, y2);
     if (!does_block(x2, y2, lev2))
-        unblock_point(x2, y2); /* vision */
+        unblock_vision_and_hearing_at_point(x2, y2); /* vision */
     if (Is_stronghold(&u.uz))
         u.uevent.uopened_dbridge = TRUE;
 

@@ -1823,7 +1823,7 @@ struct mkroom *croom;
                 break;
             }
             if (does_block(x, y, &levl[x][y]))
-                block_point(x, y);
+                block_vision_and_hearing_at_point(x, y);
         }
 
         if (m->peaceful >= 0) {

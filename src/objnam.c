@@ -4320,7 +4320,7 @@ struct obj *no_wish;
             lev->typ = TREE;
             pline("A tree.");
             newsym(x, y);
-            block_point(x, y);
+            block_vision_and_hearing_at_point(x, y);
             return (struct obj *) &zeroobj;
         }
 

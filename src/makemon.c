@@ -3670,7 +3670,7 @@ register struct monst *mtmp;
     }
 
     if (does_block(mx, my, &levl[mx][my]))
-        block_point(mx, my);
+        block_vision_and_hearing_at_point(mx, my);
 }
 
 /* release monster from bag of tricks; return number of monsters created */

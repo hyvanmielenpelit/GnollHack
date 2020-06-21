@@ -3474,9 +3474,9 @@ struct _create_particular_data *d;
             int mx = mtmp->mx, my = mtmp->my;
 			mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;
             if (does_block(mx, my, &levl[mx][my]))
-                block_point(mx, my);
+                block_vision_and_hearing_at_point(mx, my);
             else
-                unblock_point(mx, my);
+                unblock_vision_and_hearing_at_point(mx, my);
         }
         if (d->sleeping)
             mtmp->msleeping = 1;

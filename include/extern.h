@@ -2666,7 +2666,13 @@ E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, int, int, unsigned long));
 E enum player_soundset_types NDECL(get_player_soundset);
 E void NDECL(dosetsoundvolume);
-
+E void NDECL(update_hearing_array);
+E void NDECL(update_ambient_sounds);
+E void NDECL(update_hearing_array_and_ambient_sounds);
+E int NDECL(get_max_hearing_distance);
+E void FDECL(update_hearing_array_and_ambient_sounds_if_point_within_hearing_range, (int, int));
+E void FDECL(unblock_vision_and_hearing_at_point, (int, int));
+E void FDECL(block_vision_and_hearing_at_point, (int, int));
 
 /* ### sys.c ### */
 

@@ -1930,6 +1930,7 @@ set_mimic_blocking()
                 unblock_point(mon->mx, mon->my);
         }
     }
+    update_hearing_array_and_ambient_sounds();
 }
 
 /*

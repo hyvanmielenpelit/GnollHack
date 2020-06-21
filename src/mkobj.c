@@ -2659,7 +2659,7 @@ int x, y;
     obj_no_longer_held(otmp);
     /* (could bypass this vision update if there is already a boulder here) */
     if (otmp->otyp == BOULDER)
-        block_point(x, y); /* vision */
+        block_vision_and_hearing_at_point(x, y); /* vision */
 
     /* obj goes under boulders */
     if (otmp2 && (otmp2->otyp == BOULDER))
@@ -2880,7 +2880,7 @@ register struct obj *otmp;
     extract_nobj(otmp, &fobj);
     /* update vision iff this was the only boulder at its spot */
     if (otmp->otyp == BOULDER && !sobj_at(BOULDER, x, y))
-        unblock_point(x, y); /* vision */
+        unblock_vision_and_hearing_at_point(x, y); /* vision */
     if (otmp->timed)
         obj_timer_checks(otmp, x, y, 0);
 }

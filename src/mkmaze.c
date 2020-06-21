@@ -1542,6 +1542,7 @@ movebubbles()
             }
     }
 
+
     /*
      * Every second time traverse down.  This is because otherwise
      * all the junk that changes owners when bubbles overlap
@@ -1559,6 +1560,7 @@ movebubbles()
     if (Is_waterlevel(&u.uz) && Punished)
         placebc();
     vision_full_recalc = 1;
+    update_hearing_array_and_ambient_sounds();
 }
 
 /* when moving in water, possibly (1 in 3) alter the intended destination */

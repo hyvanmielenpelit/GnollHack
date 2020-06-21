@@ -98,7 +98,7 @@ boolean forceshow;
         }
         map_location(fcx, fcy, 1); /* bypass vision */
         if (!ACCESSIBLE(lev->typ))
-            block_point(fcx, fcy);
+            block_vision_and_hearing_at_point(fcx, fcy);
         vision_full_recalc = 1;
         egrd->fcbeg++;
     }
@@ -545,7 +545,7 @@ invault()
         delete_location(x, y);
         levl[x][y].typ = DOOR;
         levl[x][y].doormask = D_NODOOR;
-        unblock_point(x, y); /* doesn't block light */
+        unblock_vision_and_hearing_at_point(x, y); /* doesn't block light */
         EGD(guard)->fcend = 1;
         EGD(guard)->warncnt = 1;
     }
@@ -624,6 +624,8 @@ struct monst *grd;
                 fixed = TRUE;
             }
         }
+
+    update_hearing_array_and_ambient_sounds();
 
     if (movedgold || fixed) {
         if (in_fcorridor(grd, grd->mx, grd->my) || cansee(grd->mx, grd->my))
@@ -1001,7 +1003,7 @@ register struct monst *grd;
     crm->typ = CORR;
  proceed:
     newspot = TRUE;
-    unblock_point(nx, ny); /* doesn't block light */
+    unblock_vision_and_hearing_at_point(nx, ny); /* doesn't block light */
     if (cansee(nx, ny))
         newsym(nx, ny);
 

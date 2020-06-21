@@ -563,7 +563,7 @@ register struct obj *obj;
     case SCORR:
         You_hear(hollow_str, "passage");
         lev->typ = CORR, lev->flags = 0;
-        unblock_point(rx, ry);
+        unblock_vision_and_hearing_at_point(rx, ry);
         feel_newsym(rx, ry);
         return res;
     }

@@ -477,7 +477,7 @@ xchar x, y;
          */
         if (IS_ROCK(lev->typ) || closed_door(x, y)
             || sobj_at(BOULDER, x, y)) {
-            block_point(x, y); /* delobj will unblock the point */
+            block_vision_and_hearing_at_point(x, y); /* delobj will unblock the point */
             /* reset dig state */
             (void) memset((genericptr_t) &context.digging, 0,
                           sizeof (struct dig_info));
@@ -532,7 +532,7 @@ xchar x, y;
         lev->typ = CORR;
     }
 
-    unblock_point(x, y); /* vision */
+    unblock_vision_and_hearing_at_point(x, y); /* vision */
     newsym(x, y);
     if (digtxt)
         You1(digtxt); /* after newsym */
@@ -1727,7 +1727,8 @@ domove_core()
     tmpr = &levl[x][y];
 
     /* attack monster */
-    if (mtmp) {
+    if (mtmp) 
+    {
         /* don't stop travel when displacing pets; if the
            displace fails for some reason, attack() in uhitm.c
            will stop travel rather than domove */
@@ -1749,7 +1750,8 @@ domove_core()
          * different message and makes the player remember the monster.
          */
         if (context.nopick && !context.travel
-            && (canspotmon(mtmp) || glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))) {
+            && (canspotmon(mtmp) || glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))) 
+        {
             if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
                 && !sensemon(mtmp))
                 stumble_onto_mimic(mtmp);
@@ -1762,7 +1764,8 @@ domove_core()
         }
         if (context.forcefight || !mtmp->mundetected || sensemon(mtmp)
             || ((hides_under(mtmp->data) || mtmp->data->mlet == S_EEL)
-                && !is_safepet(mtmp))) {
+                && !is_safepet(mtmp))) 
+        {
             /* try to attack; note that it might evade */
             /* also, we don't attack tame when _safepet_ */
             if (attack(mtmp))
@@ -1770,10 +1773,12 @@ domove_core()
         }
     }
 
-    if (context.forcefight && levl[x][y].typ == IRONBARS && uwep) {
+    if (context.forcefight && levl[x][y].typ == IRONBARS && uwep) 
+    {
         struct obj *obj = uwep;
 
-        if (breaktest(obj)) {
+        if (breaktest(obj))
+        {
             if (obj->quan > 1L)
                 obj = splitobj(obj, 1L);
             else
@@ -1787,14 +1792,16 @@ domove_core()
     /* specifying 'F' with no monster wastes a turn */
     if (context.forcefight
         /* remembered an 'I' && didn't use a move command */
-        || (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph) && !context.nopick)) {
+        || (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph) && !context.nopick)) 
+    {
         struct obj *boulder = 0;
         boolean explo = (Upolyd && attacktype(youmonst.data, AT_EXPL)),
                 solid = !accessible(x, y);
         int glyph = glyph_at(x, y); /* might be monster */
         char buf[BUFSZ];
 
-        if (!Underwater) {
+        if (!Underwater) 
+        {
             boulder = sobj_at(BOULDER, x, y);
             /* if a statue is displayed at the target location,
                player is attempting to attack it [and boulder
@@ -1822,9 +1829,12 @@ domove_core()
         newsym(x, y);
         glyph = glyph_at(x, y); /* might have just changed */
 
-        if (boulder) {
+        if (boulder)
+        {
             Strcpy(buf, ansimpleoname(boulder));
-        } else if (Underwater && !is_pool(x, y)) {
+        } 
+        else if (Underwater && !is_pool(x, y))
+        {
             /* Underwater, targetting non-water; the map just shows blank
                because you don't see remembered terrain while underwater;
                although the hero can attack an adjacent monster this way,
@@ -1832,7 +1842,9 @@ domove_core()
             Sprintf(buf, (Is_waterlevel(&u.uz) && levl[x][y].typ == AIR)
                              ? "an air bubble"
                              : "nothing");
-        } else if (solid) {
+        } 
+        else if (solid)
+        {
             /* glyph might indicate unseen terrain if hero is blind;
                unlike searching, this won't reveal what that terrain is
                (except for solid rock, where the glyph would otherwise
@@ -1843,15 +1855,19 @@ domove_core()
                             : (const char *) "an unknown obstacle");
             /* note: 'solid' is misleadingly named and catches pools
                of water and lava as well as rock and walls */
-        } else {
+        }
+        else 
+        {
             Strcpy(buf, "thin air");
         }
+
         You("%s%s %s.",
             !(boulder || solid) ? "" : !explo ? "harmlessly " : "futilely ",
             explo ? "explode at" : "attack", buf);
 
         nomul(0);
-        if (explo) {
+        if (explo) 
+        {
             wake_nearby();
             u.mh = -1; /* dead in the current form */
             rehumanize();
@@ -1860,7 +1876,8 @@ domove_core()
     }
     (void) unmap_invisible(x, y);
     /* not attacking an animal, so we try to move */
-    if ((u.dx || u.dy) && u.usteed && stucksteed(FALSE)) {
+    if ((u.dx || u.dy) && u.usteed && stucksteed(FALSE)) 
+    {
         nomul(0);
         return;
     }
@@ -1868,7 +1885,8 @@ domove_core()
     if (u_rooted())
         return;
 
-    if (u.utrap) {
+    if (u.utrap) 
+    {
         boolean moved = trapmove(x, y, trap);
 
         if (!u.utrap)
@@ -1878,8 +1896,10 @@ domove_core()
             return;
     }
 
-    if (!test_move(u.ux, u.uy, x - u.ux, y - u.uy, DO_MOVE)) {
-        if (!context.door_opened) {
+    if (!test_move(u.ux, u.uy, x - u.ux, y - u.uy, DO_MOVE)) 
+    {
+        if (!context.door_opened) 
+        {
             context.move = 0;
             nomul(0);
         }
@@ -1888,8 +1908,7 @@ domove_core()
 
     /* Move ball and chain.  */
     if (Punished)
-        if (!drag_ball(x, y, &bc_control, &ballx, &bally, &chainx, &chainy,
-                       &cause_delay, TRUE))
+        if (!drag_ball(x, y, &bc_control, &ballx, &bally, &chainx, &chainy, &cause_delay, TRUE))
             return;
 
     /* Check regions entering/leaving */
@@ -1929,14 +1948,17 @@ domove_core()
     if (is_safepet(mtmp) && !(is_hider(mtmp->data) && mtmp->mundetected)) 
 	{
         /* if trapped, there's a chance the pet goes wild */
-        if (mtmp->mtrapped) {
+        if (mtmp->mtrapped)
+        {
             if (!rn2(mtmp->mtame)) 
 			{
                 mtmp->mtame = mtmp->mpeaceful = mtmp->msleeping = 0;
                 if (mtmp->mleashed)
                     m_unleash(mtmp, TRUE);
                 growl(mtmp);
-            } else {
+            } 
+            else 
+            {
                 yelp(mtmp);
             }
         }
@@ -1954,26 +1976,33 @@ domove_core()
 
         if (mtmp->mtrapped && (trap = t_at(mtmp->mx, mtmp->my)) != 0
             && is_pit(trap->ttyp)
-            && sobj_at(BOULDER, trap->tx, trap->ty)) {
+            && sobj_at(BOULDER, trap->tx, trap->ty)) 
+        {
             /* can't swap places with pet pinned in a pit by a boulder */
             u.ux = u.ux0, u.uy = u.uy0; /* didn't move after all */
             if (u.usteed)
                 u.usteed->mx = u.ux, u.usteed->my = u.uy;
-        } else if (u.ux0 != x && u.uy0 != y && NODIAG(mtmp->data - mons)) {
+        }
+        else if (u.ux0 != x && u.uy0 != y && NODIAG(mtmp->data - mons))
+        {
             /* can't swap places when pet can't move to your spot */
             u.ux = u.ux0, u.uy = u.uy0;
             if (u.usteed)
                 u.usteed->mx = u.ux, u.usteed->my = u.uy;
             You("stop.  %s can't move diagonally.", upstart(y_monnam(mtmp)));
-        } else if (u.ux0 != x && u.uy0 != y && bad_rock(mtmp->data, x, u.uy0)
+        }
+        else if (u.ux0 != x && u.uy0 != y && bad_rock(mtmp->data, x, u.uy0)
                    && bad_rock(mtmp->data, u.ux0, y)
-                   && (bigmonst(mtmp->data) || (curr_mon_load(mtmp) > 600))) {
+                   && (bigmonst(mtmp->data) || (curr_mon_load(mtmp) > 600)))
+        {
             /* can't swap places when pet won't fit thru the opening */
             u.ux = u.ux0, u.uy = u.uy0; /* didn't move after all */
             if (u.usteed)
                 u.usteed->mx = u.ux, u.usteed->my = u.uy;
             You("stop.  %s won't fit through.", upstart(y_monnam(mtmp)));
-        } else {
+        }
+        else
+        {
             char pnambuf[BUFSZ];
 
             /* save its current description in case of polymorph */
@@ -1988,7 +2017,8 @@ domove_core()
                 pnambuf);
 
             /* check for displacing it into pools and traps */
-            switch (minliquid(mtmp) ? 2 : mintrap(mtmp)) {
+            switch (minliquid(mtmp) ? 2 : mintrap(mtmp))
+            {
             case 0:
                 break;
             case 1: /* trapped */
@@ -2020,7 +2050,8 @@ domove_core()
                  * [This has always been pretty iffy.  Why does your
                  * patron deity care at all, let alone enough to get mad?]
                  */
-                if (rn2(4)) {
+                if (rn2(4)) 
+                {
                     You_feel("guilty about losing your pet like this.");
                     u.ugangr++;
                     adjalign(-15);
@@ -2034,7 +2065,8 @@ domove_core()
     }
 
     reset_occupations();
-    if (context.run) {
+    if (context.run)
+    {
         if (context.run < 8)
             if (IS_DOOR(tmpr->typ) || IS_ROCK(tmpr->typ)
                 || IS_FURNITURE(tmpr->typ))
@@ -2056,7 +2088,8 @@ domove_core()
 
     check_leash(u.ux0, u.uy0);
 
-    if (u.ux0 != u.ux || u.uy0 != u.uy) {
+    if (u.ux0 != u.ux || u.uy0 != u.uy) 
+    {
         /* let caller know so that an evaluation may take place */
         domove_succeeded |= (domove_attempting & (DOMOVE_RUSH | DOMOVE_WALK));
         u.umoved = TRUE;
@@ -2065,6 +2098,7 @@ domove_core()
         /* Since the hero has moved, adjust what can be seen/unseen. */
         vision_recalc(1); /* Do the work now in the recover time. */
         invocation_message();
+        update_hearing_array_and_ambient_sounds();
     }
 
     if (Punished) /* put back ball and chain */

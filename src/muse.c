@@ -924,7 +924,7 @@ struct monst *mtmp;
                   (t->ttyp == TRAPDOOR) ? "trap door" : "hole");
             if (levl[trapx][trapy].typ == SCORR) {
                 levl[trapx][trapy].typ = CORR;
-                unblock_point(trapx, trapy);
+                unblock_vision_and_hearing_at_point(trapx, trapy);
             }
             seetrap(t_at(trapx, trapy));
         }

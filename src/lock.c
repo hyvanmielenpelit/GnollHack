@@ -150,7 +150,7 @@ picklock(VOID_ARGS)
         if (xlock.door->doormask & D_TRAPPED) {
             b_trapped("door", FINGER);
             xlock.door->doormask = D_NODOOR;
-            unblock_point(u.ux + u.dx, u.uy + u.dy);
+            unblock_vision_and_hearing_at_point(u.ux + u.dx, u.uy + u.dy);
             if (*in_rooms(u.ux + u.dx, u.uy + u.dy, SHOPBASE))
                 add_damage(u.ux + u.dx, u.uy + u.dy, SHOP_DOOR_COST);
             newsym(u.ux + u.dx, u.uy + u.dy);
@@ -794,7 +794,7 @@ int x, y;
         } else
             door->doormask = D_ISOPEN;
         feel_newsym(cc.x, cc.y); /* the hero knows she opened it */
-        unblock_point(cc.x, cc.y); /* vision: new see through there */
+        unblock_vision_and_hearing_at_point(cc.x, cc.y); /* vision: new see through there */
     } else {
         exercise(A_STR, TRUE);
         pline_The("%s resists!", door_name);
@@ -931,7 +931,7 @@ doclose()
             pline_The("door closes.");
             door->doormask = D_CLOSED;
             feel_newsym(x, y); /* the hero knows she closed it */
-            block_point(x, y); /* vision:  no longer see there */
+            block_vision_and_hearing_at_point(x, y); /* vision:  no longer see there */
         } else {
             exercise(A_STR, TRUE);
             pline_The("door resists!");
@@ -1045,7 +1045,7 @@ int x, y;
                     pline_The("cloud %s.", quickly_dissipates);
                 return FALSE;
             }
-            block_point(x, y);
+            block_vision_and_hearing_at_point(x, y);
             door->typ = SDOOR, door->doormask = D_NODOOR;
             if (vis)
                 pline_The("doorway vanishes!");
@@ -1086,7 +1086,7 @@ int x, y;
             res = FALSE;
             break;
         }
-        block_point(x, y);
+        block_vision_and_hearing_at_point(x, y);
         door->doormask = D_LOCKED | (door->doormask & D_TRAPPED);
         newsym(x, y);
         break;
@@ -1111,7 +1111,7 @@ int x, y;
                         You_hear("a distant explosion.");
                 }
                 door->doormask = D_NODOOR;
-                unblock_point(x, y);
+                unblock_vision_and_hearing_at_point(x, y);
                 newsym(x, y);
                 loudness = 40;
                 break;
@@ -1123,7 +1123,7 @@ int x, y;
                 else
                     You_hear("a crashing sound.");
             }
-            unblock_point(x, y);
+            unblock_vision_and_hearing_at_point(x, y);
             newsym(x, y);
             /* force vision recalc before printing more messages */
             if (vision_full_recalc)

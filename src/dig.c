@@ -69,9 +69,10 @@ boolean waslit, rockit;
     } else if (lev->typ == ROOM)
         return;
 
-    unblock_point(x, y); /* make sure vision knows this location is open */
+    unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* fake out saved state */
+    delete_location(x, y);
     lev->seenv = 0;
     lev->doormask = 0;
     if (dist < 3)
@@ -484,7 +485,7 @@ dig(VOID_ARGS)
             return 0; /* statue or boulder got taken */
 
         if (!does_block(dpx, dpy, &levl[dpx][dpy]))
-            unblock_point(dpx, dpy); /* vision:  can see through */
+            unblock_vision_and_hearing_at_point(dpx, dpy); /* vision:  can see through */
         feel_newsym(dpx, dpy);
 
         if (digtxt && !context.digging.quiet)
@@ -1416,7 +1417,7 @@ register struct monst *mtmp;
     if (closed_door(mtmp->mx, mtmp->my)) {
         if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
             add_damage(mtmp->mx, mtmp->my, 0L);
-        unblock_point(mtmp->mx, mtmp->my); /* vision */
+        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
         if (here->doormask & D_TRAPPED) {
             here->doormask = D_NODOOR;
             if (mb_trapped(mtmp)) { /* mtmp is killed */
@@ -1432,7 +1433,7 @@ register struct monst *mtmp;
         return FALSE;
     } else if (here->typ == SCORR) {
         here->typ = CORR, here->flags = 0;
-        unblock_point(mtmp->mx, mtmp->my);
+        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
         draft_message(FALSE); /* "You feel a draft." */
         return FALSE;
@@ -1489,7 +1490,7 @@ register struct monst *mtmp;
     }
     newsym(mtmp->mx, mtmp->my);
     if (!sobj_at(BOULDER, mtmp->mx, mtmp->my))
-        unblock_point(mtmp->mx, mtmp->my); /* vision */
+        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
 
     return FALSE;
 }
@@ -1577,9 +1578,12 @@ struct obj* origobj;
         return;
     } /* swallowed */
 
-    if (u.dz) {
-        if (!Is_airlevel(&u.uz) && !Is_waterlevel(&u.uz) && !Underwater) {
-            if (u.dz < 0 || On_stairs(u.ux, u.uy)) {
+    if (u.dz)
+    {
+        if (!Is_airlevel(&u.uz) && !Is_waterlevel(&u.uz) && !Underwater) 
+        {
+            if (u.dz < 0 || On_stairs(u.ux, u.uy)) 
+            {
                 int dmg;
                 if (On_stairs(u.ux, u.uy))
                     pline_The("beam bounces off the %s and hits the %s.",
@@ -1597,7 +1601,9 @@ struct obj* origobj;
                     stackobj(otmp);
                 }
                 newsym(u.ux, u.uy);
-            } else {
+            } 
+            else 
+            {
                 watch_dig((struct monst *) 0, u.ux, u.uy, TRUE);
                 (void) dighole(FALSE, TRUE, (coord *) 0);
             }
@@ -1611,9 +1617,11 @@ struct obj* origobj;
     zx = u.ux + u.dx;
     zy = u.uy + u.dy;
     if (u.utrap && u.utraptype == TT_PIT
-        && (trap_with_u = t_at(u.ux, u.uy))) {
+        && (trap_with_u = t_at(u.ux, u.uy))) 
+    {
         pitdig = TRUE;
-        for (diridx = 0; diridx < 8; diridx++) {
+        for (diridx = 0; diridx < 8; diridx++) 
+        {
             if (xdir[diridx] == u.dx && ydir[diridx] == u.dy)
                 break;
             /* diridx is valid if < 8 */
@@ -1621,23 +1629,28 @@ struct obj* origobj;
     }
     digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
     tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_digbeam));
-    while (--digdepth >= 0) {
+    while (--digdepth >= 0) 
+    {
         if (!isok(zx, zy))
             break;
         room = &levl[zx][zy];
         tmp_at(zx, zy);
         delay_output(); /* wait a little bit */
 
-        if (pitdig) { /* we are already in a pit if this is true */
+        if (pitdig) 
+        { /* we are already in a pit if this is true */
             coord cc;
             struct trap *adjpit = t_at(zx, zy);
-            if ((diridx < 8) && !conjoined_pits(adjpit, trap_with_u, FALSE)) {
+            if ((diridx < 8) && !conjoined_pits(adjpit, trap_with_u, FALSE)) 
+            {
                 digdepth = 0; /* limited to the adjacent location only */
-                if (!(adjpit && is_pit(adjpit->ttyp))) {
+                if (!(adjpit && is_pit(adjpit->ttyp))) 
+                {
                     char buf[BUFSZ];
                     cc.x = zx;
                     cc.y = zy;
-                    if (!adj_pit_checks(&cc, buf)) {
+                    if (!adj_pit_checks(&cc, buf)) 
+                    {
                         if (buf[0])
                             pline1(buf);
                     } else {
@@ -1647,7 +1660,8 @@ struct obj* origobj;
                     }
                 }
                 if (adjpit
-                    && is_pit(adjpit->ttyp)) {
+                    && is_pit(adjpit->ttyp)) 
+                {
                     int adjidx = (diridx + 4) % 8;
                     trap_with_u->conjoined |= (1 << diridx);
                     adjpit->conjoined |= (1 << adjidx);
@@ -1655,15 +1669,19 @@ struct obj* origobj;
                     flow_y = zy;
                     pitflow = TRUE;
                 }
-                if (is_pool(zx, zy) || is_lava(zx, zy)) {
+                if (is_pool(zx, zy) || is_lava(zx, zy)) 
+                {
                     flow_x = zx - u.dx;
                     flow_y = zy - u.dy;
                     pitflow = TRUE;
                 }
                 break;
             }
-        } else if (closed_door(zx, zy) || room->typ == SDOOR) {
-            if (*in_rooms(zx, zy, SHOPBASE)) {
+        } 
+        else if (closed_door(zx, zy) || room->typ == SDOOR) 
+        {
+            if (*in_rooms(zx, zy, SHOPBASE))
+            {
                 add_damage(zx, zy, SHOP_DOOR_COST);
                 shopdoor = TRUE;
             }
@@ -1673,60 +1691,89 @@ struct obj* origobj;
                 pline_The("door is razed!");
             watch_dig((struct monst *) 0, zx, zy, TRUE);
             room->doormask = D_NODOOR;
-            unblock_point(zx, zy); /* vision */
+            unblock_vision_and_hearing_at_point(zx, zy); /* vision */
             digdepth -= 2;
             if (maze_dig)
                 break;
-        } else if (maze_dig) {
-            if (IS_WALL(room->typ)) {
-                if (!(room->wall_info & W_NONDIGGABLE)) {
-                    if (*in_rooms(zx, zy, SHOPBASE)) {
+        } 
+        else if (maze_dig) 
+        {
+            if (IS_WALL(room->typ)) 
+            {
+                if (!(room->wall_info & W_NONDIGGABLE)) 
+                {
+                    if (*in_rooms(zx, zy, SHOPBASE)) 
+                    {
                         add_damage(zx, zy, SHOP_WALL_COST);
                         shopwall = TRUE;
                     }
+                    delete_location(zx, zy);
                     room->typ = ROOM, room->flags = 0;
-                    unblock_point(zx, zy); /* vision */
-                } else if (!Blind)
+                    unblock_vision_and_hearing_at_point(zx, zy); /* vision */
+                } 
+                else if (!Blind)
                     pline_The("wall glows then fades.");
                 break;
-            } else if (IS_TREE(room->typ)) { /* check trees before stone */
-                if (!(room->wall_info & W_NONDIGGABLE)) {
+            } 
+            else if (IS_TREE(room->typ)) { /* check trees before stone */
+                if (!(room->wall_info & W_NONDIGGABLE)) 
+                {
+                    delete_location(zx, zy);
                     room->typ = ROOM, room->flags = 0;
-                    unblock_point(zx, zy); /* vision */
-                } else if (!Blind)
+                    unblock_vision_and_hearing_at_point(zx, zy); /* vision */
+                }
+                else if (!Blind)
                     pline_The("tree shudders but is unharmed.");
                 break;
-            } else if (room->typ == STONE || room->typ == SCORR) {
-                if (!(room->wall_info & W_NONDIGGABLE)) {
+            }
+            else if (room->typ == STONE || room->typ == SCORR)
+            {
+                if (!(room->wall_info & W_NONDIGGABLE))
+                {
+                    delete_location(zx, zy);
                     room->typ = CORR, room->flags = 0;
-                    unblock_point(zx, zy); /* vision */
-                } else if (!Blind)
+                    unblock_vision_and_hearing_at_point(zx, zy); /* vision */
+                } 
+                else if (!Blind)
                     pline_The("rock glows then fades.");
+
                 break;
             }
-        } else if (IS_ROCK(room->typ)) {
+        } 
+        else if (IS_ROCK(room->typ)) 
+        {
             if (!may_dig(zx, zy))
                 break;
-            if (IS_WALL(room->typ) || room->typ == SDOOR) {
-                if (*in_rooms(zx, zy, SHOPBASE)) {
+            delete_location(zx, zy);
+            if (IS_WALL(room->typ) || room->typ == SDOOR)
+            {
+                if (*in_rooms(zx, zy, SHOPBASE)) 
+                {
                     add_damage(zx, zy, SHOP_WALL_COST);
                     shopwall = TRUE;
                 }
                 watch_dig((struct monst *) 0, zx, zy, TRUE);
-                if (level.flags.is_cavernous_lev && !in_town(zx, zy)) {
+                if (level.flags.is_cavernous_lev && !in_town(zx, zy)) 
+                {
                     room->typ = CORR, room->flags = 0;
-                } else {
+                } 
+                else 
+                {
                     room->typ = DOOR, room->doormask = D_NODOOR;
                 }
                 digdepth -= 2;
-            } else if (IS_TREE(room->typ)) {
+            } 
+            else if (IS_TREE(room->typ)) 
+            {
                 room->typ = ROOM, room->flags = 0;
                 digdepth -= 2;
-            } else { /* IS_ROCK but not IS_WALL or SDOOR */
+            } 
+            else 
+            { /* IS_ROCK but not IS_WALL or SDOOR */
                 room->typ = CORR, room->flags = 0;
                 digdepth--;
             }
-            unblock_point(zx, zy); /* vision */
+            unblock_vision_and_hearing_at_point(zx, zy); /* vision */
         }
         zx += u.dx;
         zy += u.dy;

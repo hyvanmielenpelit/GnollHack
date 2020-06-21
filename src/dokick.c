@@ -1304,8 +1304,9 @@ dokick() {
                 feel_newsym(x, y); /* we know it's gone */
                 if (maploc->doormask == D_ISOPEN
                     || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS)
-                    unblock_point(x, y); /* vision */
+                    unblock_vision_and_hearing_at_point(x, y); /* vision */
 
+                update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
                 update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;
             } else
@@ -1317,7 +1318,7 @@ dokick() {
                 exercise(A_DEX, TRUE);
                 maploc->typ = CORR;
                 feel_newsym(x, y); /* we know it's gone */
-                unblock_point(x, y); /* vision */
+                unblock_vision_and_hearing_at_point(x, y); /* vision */
                 update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;
             } else
@@ -1626,7 +1627,7 @@ dokick() {
             maploc->doormask = D_BROKEN;
         }
         feel_newsym(x, y); /* we know we broke it */
-        unblock_point(x, y); /* vision */
+        unblock_vision_and_hearing_at_point(x, y); /* vision */
         if (shopdoor) {
             add_damage(x, y, SHOP_DOOR_COST);
             pay_for_damage("break", FALSE);

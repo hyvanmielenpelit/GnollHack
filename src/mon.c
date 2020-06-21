@@ -4160,7 +4160,7 @@ register struct monst *mtmp;
      */
     if (is_blocker_appear
         && !does_block(mtmp->mx, mtmp->my, &levl[mtmp->mx][mtmp->my]))
-        unblock_point(mtmp->mx, mtmp->my);
+        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
 
     newsym(mtmp->mx, mtmp->my);
 }
