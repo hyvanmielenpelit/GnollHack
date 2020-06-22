@@ -122,6 +122,7 @@ struct obj {
 
 	Bitfield(recharged, 3); /* number of times it's been recharged */
     Bitfield(lamplit, 1);   /* a light-source -- can be lit */
+    Bitfield(makingsound, 1);   /* a sound-source -- can be turned on to make noise */
     Bitfield(globby, 1);    /* combines with like types on adjacent squares */
     Bitfield(greased, 1);    /* covered with grease */
     Bitfield(nomerge, 1);    /* set temporarily to prevent merging */
@@ -133,7 +134,7 @@ struct obj {
     Bitfield(lknown, 1); /* locked/unlocked status is known */
 	Bitfield(nknown, 1); /* artifact's true name is known */
 	Bitfield(aknown, 1); /* artifact status is known; if set, the artifact will be termed "the Artifact" instead of "item named Artifact" */
-	/* 4 free bits */
+	/* 3 free bits */
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */

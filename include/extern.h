@@ -469,7 +469,7 @@ E int NDECL(get_current_cmap_type_index);
 E int FDECL(get_missile_index, (int, int));
 E void FDECL(display_self_with_extra_info, (unsigned long, int dmg_received));
 E int FDECL(get_location_light_range, (xchar, xchar));
-E int FDECL(get_location_ambient_sound_type, (xchar, xchar, int*));
+E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, int*));
 
 
 /* ### do.c ### */
@@ -1489,6 +1489,8 @@ E void FDECL(mkstairs, (XCHAR_P, XCHAR_P, CHAR_P, struct mkroom *));
 E void NDECL(mkinvokearea);
 E void FDECL(mineralize, (int, int, int, int, BOOLEAN_P));
 E void FDECL(maybe_create_location_light_source, (xchar, xchar));
+E void FDECL(maybe_create_location_sound_source, (xchar, xchar));
+E void FDECL(maybe_create_location_light_and_sound_sources, (xchar, xchar));
 
 /* ### mkmap.c ### */
 
@@ -2673,6 +2675,21 @@ E int NDECL(get_max_hearing_distance);
 E void FDECL(update_hearing_array_and_ambient_sounds_if_point_within_hearing_range, (int, int));
 E void FDECL(unblock_vision_and_hearing_at_point, (int, int));
 E void FDECL(block_vision_and_hearing_at_point, (int, int));
+E void FDECL(new_sound_source, (XCHAR_P, XCHAR_P, enum ghsound_types, int, int, ANY_P*));
+E void FDECL(del_sound_source, (int, ANY_P*));
+E void FDECL(save_sound_sources, (int, int, int));
+E void FDECL(restore_sound_sources, (int));
+E void FDECL(sound_stats, (const char*, char*, long*, size_t*));
+E void FDECL(relink_sound_sources, (BOOLEAN_P));
+E void NDECL(sound_sources_sanity_check);
+E void FDECL(obj_move_sound_source, (struct obj*, struct obj*));
+E boolean NDECL(any_sound_source);
+E void FDECL(snuff_sound_source, (int, int));
+E void FDECL(obj_split_sound_source, (struct obj*, struct obj*));
+E void FDECL(obj_merge_sound_sources, (struct obj*, struct obj*));
+E void FDECL(obj_adjust_sound_volume, (struct obj*, int));
+E void FDECL(begin_sound, (struct obj*, BOOLEAN_P));
+E void FDECL(end_sound, (struct obj*, BOOLEAN_P));
 
 /* ### sys.c ### */
 
@@ -2858,6 +2875,7 @@ E void FDECL(relink_timers, (BOOLEAN_P));
 E int NDECL(wiz_timeout_queue);
 E void NDECL(timer_sanity_check);
 E const char* FDECL(get_property_name, (int));
+E void FDECL(make_sound_object, (ANY_P*, long));
 
 /* ### topten.c ### */
 

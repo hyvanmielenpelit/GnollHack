@@ -55,6 +55,7 @@ typedef struct lightsource_t {
 typedef struct soundsource_t {
     struct soundsource_t* next;
     xchar x, y;  /* source's position */
+    enum ghsound_types ghsound; /* played ghsound */
     short volume; /* source's current volume */
     short flags;
     short type;  /* type of sound source */

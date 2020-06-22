@@ -3682,7 +3682,7 @@ polymorph_sink()
         break;
     }
 
-	maybe_create_location_light_source(u.ux, u.uy);
+	maybe_create_location_light_and_sound_sources(u.ux, u.uy);
 
     /* give message even if blind; we know we're not levitating,
        so can feel the outcome even if we can't directly see it */
@@ -3717,7 +3717,7 @@ teleport_sink()
 		delete_location(cx, cy);
 		levl[cx][cy].typ = SINK;
         levl[cx][cy].looted = levl[u.ux][u.uy].looted;
-		maybe_create_location_light_source(cx, cy);
+		maybe_create_location_light_and_sound_sources(cx, cy);
         newsym(cx, cy);
         /* remove old sink */
 		delete_location(u.ux, u.uy);
@@ -5563,6 +5563,11 @@ xchar x, y;
 		del_light_source(LS_LOCATION, xy_to_any(x, y));
 		levl[x][y].lamplit = 0;
 	}
+	if (levl[x][y].makingsound)
+	{
+		del_sound_source(LS_LOCATION, xy_to_any(x, y));
+		levl[x][y].makingsound = 0;
+	}
 
 	levl[x][y].typ = UNEXPLORED;
 	levl[x][y].flags = 0;
@@ -5592,7 +5597,7 @@ boolean donewsym;
 	levl[x][y].variation = location_variation;
 	levl[x][y].facing_right = facing_right;
 	levl[x][y].horizontal = horizontal;
-	maybe_create_location_light_source(x, y);
+	maybe_create_location_light_and_sound_sources(x, y);
 
 	if (levl[x][y].typ == FOUNTAIN)
 		level.flags.nfountains++;

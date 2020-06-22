@@ -582,6 +582,7 @@ struct rm {
     Bitfield(waslit, 1);     /* remember if a location was lit */
     Bitfield(facing_right, 1);     /* flip picture horizontally to "face right" */
     Bitfield(lamplit, 1);     /* if the location is a light source, is it on? */
+    Bitfield(makingsound, 1);     /* if the location is a sound source, is it on? */
 
     Bitfield(roomno, 6); /* room # for special rooms */
     Bitfield(edge, 1);   /* marks boundaries for special rooms*/

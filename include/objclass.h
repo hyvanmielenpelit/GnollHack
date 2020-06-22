@@ -720,6 +720,7 @@ struct objclass {
 	int oc_critical_strike_percentage;	/* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
 	int oc_multigen_type;				/* class number multi multigen_type */
 	int oc_tile_floor_height;			/* (scaled) height of the item tile in pixels when it appears on the floor */
+	enum object_soundset_types oc_soundset;
 
 /* oc_dir_subtypes for spells */
 #define RAY_WND_MAGIC_MISSILE 0 

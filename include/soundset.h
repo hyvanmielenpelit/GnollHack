@@ -23,6 +23,7 @@ enum ghsound_types {
 	GHSOUND_PLAYER_STRIKE_GENERAL,
 	GHSOUND_PLAYER_HIT_GENERAL,
 	GHSOUND_PLAYER_MISS_GENERAL,
+	GHSOUND_FOUNTAIN,
 	MAX_GHSOUNDS
 };
 
@@ -114,7 +115,8 @@ struct monster_soundset_definition {
 	char* soundset_name;
 
 	/* Ambient */
-	enum ghsound_types stand;
+	enum ghsound_types ambient_sound;
+	char ambient_volume;
 
 	/* Movement */
 	enum ghsound_types movement_sounds[MAX_MOVEMENT_STYLES];
@@ -135,21 +137,43 @@ enum monster_soundset_types {
 extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS + 1];
 
 
-/* ITEM SOUNDSETS */
-enum item_soundset_types {
-	ITEM_SOUNDSET_NO_SOUNDSET = 0,
-	ITEM_SOUNDSET_GENERAL,
-	ITEM_SOUNDSET_CANDLE,
-	MAX_ITEM_SOUNDSETS
+/* OBJECT SOUNDSETS */
+struct object_soundset_definition {
+	char* soundset_name;
+
+	/* Ambient */
+	enum ghsound_types ambient_sound;
+	char ambient_volume;
+};
+
+
+enum object_soundset_types {
+	OBJECT_SOUNDSET_NONE = 0,
+	OBJECT_SOUNDSET_GENERAL,
+	OBJECT_SOUNDSET_CANDLE,
+	MAX_OBJECT_SOUNDSETS
+};
+
+extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS + 1];
+
+
+/* LOCATION SOUNDSETS */
+struct location_soundset_definition {
+	char* soundset_name;
+
+	/* Ambient */
+	enum ghsound_types ambient_sound;
+	char ambient_volume;
 };
 
 enum location_soundset_types {
-	LOCATION_SOUNDSET_NO_SOUNDSET = 0,
+	LOCATION_SOUNDSET_NONE = 0,
 	LOCATION_SOUNDSET_GENERAL,
 	LOCATION_SOUNDSET_FOUNTAIN,
 	MAX_LOCATION_SOUNDSETS
 };
 
+extern struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS + 1];
 
 
 

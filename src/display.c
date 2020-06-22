@@ -2895,12 +2895,28 @@ xchar x, y;
     return 0;
 }
 
-int
+enum ghsound_types
 get_location_ambient_sound_type(x, y, volume_ptr)
 xchar x, y;
 int* volume_ptr;
 {
-    return 0;
+    return GHSOUND_NONE;
+
+    if (!isok(x, y))
+        return GHSOUND_NONE;
+
+    struct rm* lev = &levl[x][y];
+
+    /* Fountains have a water sound */
+    if (lev->typ == FOUNTAIN)
+    {
+        if (!volume_ptr)
+            *volume_ptr = 100;
+
+        return GHSOUND_FOUNTAIN;
+    }
+
+    return GHSOUND_NONE;
 }
 
 /*

@@ -35,6 +35,7 @@ STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
 STATIC_DCL void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
 STATIC_DCL void NDECL(create_level_light_sources);
+STATIC_DCL void NDECL(create_level_sound_sources);
 
 #define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE)
 #define init_vault() vault_x = -1
@@ -1122,6 +1123,7 @@ makelevel()
     }
 
     create_level_light_sources();
+    create_level_sound_sources();
 }
 
 /*
@@ -2215,4 +2217,52 @@ xchar x, y;
     }
 }
 
+STATIC_OVL void
+create_level_sound_sources()
+{
+    for (xchar x = 1; x < COLNO; x++)
+    {
+        for (xchar y = 0; y < ROWNO; y++)
+        {
+            int volume = 0;
+            enum ghsound_types sound_type = get_location_ambient_sound_type(x, y, &volume);
+            if (sound_type != GHSOUND_NONE)
+            {
+                anything id;
+                coord c;
+                c.x = x;
+                c.y = y;
+                id.a_coord = c;
+                new_sound_source(x, y, sound_type, volume, SOUNDSOURCE_LOCATION, &id);
+                levl[x][y].makingsound = TRUE;
+            }
+        }
+    }
+}
+
+void
+maybe_create_location_sound_source(x, y)
+xchar x, y;
+{
+    int volume = 0;
+    enum ghsound_types sound_type = get_location_ambient_sound_type(x, y, &volume);
+    if (sound_type != GHSOUND_NONE)
+    {
+        anything id;
+        coord c;
+        c.x = x;
+        c.y = y;
+        id.a_coord = c;
+        new_sound_source(x, y, sound_type, volume, SOUNDSOURCE_LOCATION, &id);
+        levl[x][y].makingsound = TRUE;
+    }
+}
+
+void
+maybe_create_location_light_and_sound_sources(x, y)
+xchar x, y;
+{
+    maybe_create_location_light_source(x, y);
+    maybe_create_location_sound_source(x, y);
+}
 /*mklev.c*/

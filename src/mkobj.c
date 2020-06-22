@@ -588,6 +588,7 @@ long num;
     otmp->o_id = nextoid(obj, otmp);
     otmp->timed = 0;                  /* not timed, yet */
     otmp->lamplit = 0;                /* ditto */
+    otmp->makingsound = 0;                /* ditto */
     otmp->owornmask = 0L;             /* new object isn't worn */
     obj->quan -= num;
     obj->owt = weight(obj);
@@ -769,6 +770,7 @@ struct obj *otmp;
         extract_nobj(obj, &memoryobjs);
         extract_nexthere(obj, &level.locations[obj->ox][obj->oy].hero_memory_layers.memory_objchn);
         obj->lamplit = 0;
+        obj->makingsound = 0;
         break;
     default:
         panic("replace_object: obj position");
@@ -831,6 +833,7 @@ register struct obj *otmp;
         free_omid(dummy); /* only one association with m_id*/
     if (is_candle(dummy))
         dummy->lamplit = 0;
+    dummy->makingsound = 0;
     dummy->owornmask = 0L; /* dummy object is not worn */
     addtobill(dummy, FALSE, TRUE, TRUE);
     if (cost)
@@ -1046,6 +1049,8 @@ int mkobj_type;
 	otmp->cooldownleft = 0;
     otmp->repowerleft = 0;
     otmp->blessed = 0;
+    otmp->lamplit = 0;
+    otmp->makingsound = 0;
 
     if (init) 
 	{
@@ -2742,6 +2747,7 @@ register struct obj* otmp;
     extract_nexthere(otmp, &level.locations[x][y].hero_memory_layers.memory_objchn);
     extract_nobj(otmp, &memoryobjs);
     otmp->lamplit = 0;
+    otmp->makingsound = 0;
 }
 
 

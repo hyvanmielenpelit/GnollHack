@@ -38,40 +38,72 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 {
 	{
 		"",
-		0,
+		0, 0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"Generic",
-		0,
+		0, 0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"",
-		0,
+		0, 0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"",
-		0,
+		0, 0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"",
-		0,
+		0, 0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"",
-		0,
+		0, 0,
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	}
+};
+
+NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS + 1] =
+{
+    {
+        "",
+        GHSOUND_NONE, 0
+    },
+    {
+        "general",
+        GHSOUND_NONE, 0
+    },
+    {
+        "candle",
+        GHSOUND_NONE, 0
+    }
+};
+
+NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS + 1] =
+{
+    {
+        "",
+        GHSOUND_NONE, 0
+    },
+    {
+        "general",
+        GHSOUND_NONE, 100
+    },
+    {
+        "fountain",
+        GHSOUND_FOUNTAIN, 100
+    }
 };
 
 STATIC_DCL void FDECL(set_hearing_array, (int, int, int));
@@ -458,15 +490,16 @@ STATIC_DCL int FDECL(maybe_write_soundsource, (int, int, BOOLEAN_P));
 
 /* Create a new sound source.  */
 void
-new_sound_source(x, y, volume, type, id)
+new_sound_source(x, y, ghsound, volume, type, id)
 xchar x, y;
+enum ghsound_types ghsound;
 int volume, type;
 anything* id;
 {
     sound_source* ss;
     int absvolume = abs(volume);
 
-    if (absvolume > 100 || absvolume < 1) 
+    if (absvolume > 100 || absvolume < 0) 
     {
         impossible("new_sound_source:  illegal volume %d", volume);
         return;
@@ -477,6 +510,7 @@ anything* id;
     ss->next = sound_base;
     ss->x = x;
     ss->y = y;
+    ss->ghsound = ghsound;
     ss->volume = absvolume;
     ss->type = type;
     ss->id = *id;
@@ -1083,6 +1117,88 @@ int new_volume;
             return;
         }
     impossible("obj_adjust_sound_volume: can't find %s", xname(obj));
+}
+
+
+/*
+ * Start a burn timeout on the given object. If not "already lit" then
+ * create a light source for the vision system.  There had better not
+ * be a burn already running on the object.
+ *
+ */
+void
+begin_sound(obj, already_making_noise)
+struct obj* obj;
+boolean already_making_noise;
+{
+    long turns = 0;
+    boolean do_timer = TRUE;
+
+    obj->makingsound = 1;
+    do_timer = FALSE;
+    turns = 0;
+
+    if (do_timer) 
+    {
+        if (start_timer(turns, TIMER_OBJECT, MAKE_SOUND_OBJECT, obj_to_any(obj))) 
+        {
+            obj->makingsound = 1;
+            obj->age -= turns; /* Needs own timer, otherwise possible conflict with light sources */
+            if (carried(obj) && !already_making_noise)
+                update_inventory();
+        }
+        else 
+        {
+            obj->makingsound = 0;
+        }
+    }
+    else 
+    {
+        if (carried(obj) && !already_making_noise)
+            update_inventory();
+    }
+
+    if (obj->makingsound && !already_making_noise) 
+    {
+        xchar x, y;
+        enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
+        enum ghsound_types ghsound = object_soundsets[objsoundset].ambient_sound;
+        int volume = object_soundsets[objsoundset].ambient_volume;
+
+        if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
+            new_sound_source(x, y, ghsound, volume, SOUNDSOURCE_OBJECT, obj_to_any(obj));
+        else
+            impossible("begin_sound: can't get obj position");
+    }
+}
+
+/*
+ * Stop a burn timeout on the given object if timer attached.  Darken
+ * light source.
+ */
+void
+end_sound(obj, timer_attached)
+struct obj* obj;
+boolean timer_attached;
+{
+    if (!obj->makingsound) 
+    {
+        impossible("end_sound: obj %s not making sound", xname(obj));
+        return;
+    }
+
+    if (1) //obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE || artifact_light(obj) || obj_shines_magical_light(obj))
+        timer_attached = FALSE;
+
+    if (!timer_attached) {
+        /* [DS] Cleanup explicitly, since timer cleanup won't happen */
+        del_sound_source(LS_OBJECT, obj_to_any(obj));
+        obj->makingsound = 0;
+        if (obj->where == OBJ_INVENT)
+            update_inventory();
+    }
+    else if (!stop_timer(MAKE_SOUND_OBJECT, obj_to_any(obj)))
+        impossible("end_sound: obj %s not timed!", xname(obj));
 }
 
 

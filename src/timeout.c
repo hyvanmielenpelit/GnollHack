@@ -18,6 +18,7 @@ STATIC_DCL void NDECL(get_odd_idea);
 STATIC_DCL void FDECL(see_lamp_flicker, (struct obj *, const char *));
 STATIC_DCL void FDECL(lantern_message, (struct obj *));
 STATIC_DCL void FDECL(cleanup_burn, (ANY_P *, long));
+STATIC_DCL void FDECL(cleanup_sound, (ANY_P*, long));
 STATIC_DCL void NDECL(sick_dialogue);
 STATIC_DCL void NDECL(food_poisoned_dialogue);
 STATIC_DCL void NDECL(mummy_rot_dialogue);
@@ -2459,7 +2460,7 @@ boolean timer_attached;
 /*
  * Cleanup a burning object if timer stopped.
  */
-static void
+STATIC_OVL void
 cleanup_burn(arg, expire_time)
 anything *arg;
 long expire_time;
@@ -2814,6 +2815,7 @@ static const ttable timeout_funcs[NUM_TIME_FUNCS] = {
     TTAB(rot_corpse, (timeout_proc) 0, "rot_corpse"),
     TTAB(revive_mon, (timeout_proc) 0, "revive_mon"),
     TTAB(burn_object, cleanup_burn, "burn_object"),
+    TTAB(make_sound_object, cleanup_sound,  "make_sound_object"),
     TTAB(hatch_egg, (timeout_proc) 0, "hatch_egg"),
     TTAB(fig_transform, (timeout_proc) 0, "fig_transform"),
     TTAB(melt_ice_away, (timeout_proc) 0, "melt_ice_away"),
@@ -3656,6 +3658,45 @@ int prop_index;
 
 	return "";
 }
+
+
+/*
+ * Timeout callback for for objects that are making noise.
+ */
+void
+make_sound_object(arg, timeout)
+anything* arg;
+long timeout;
+{
+    return;
+}
+
+/*
+ * Cleanup an object making sound if timer stopped.
+ */
+STATIC_OVL void
+cleanup_sound(arg, expire_time)
+anything* arg;
+long expire_time;
+{
+    struct obj* obj = arg->a_obj;
+    if (!obj->makingsound)
+    {
+        impossible("cleanup_sound: obj %s not making sound", xname(obj));
+        return;
+    }
+
+    del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
+
+    /* restore unused time */
+    obj->age += expire_time - monstermoves;
+
+    obj->makingsound = 0;
+
+    if (obj->where == OBJ_INVENT)
+        update_inventory();
+}
+
 
 
 /*timeout.c*/

@@ -29,6 +29,7 @@ enum timeout_types {
     ROT_CORPSE,
     REVIVE_MON,
     BURN_OBJECT,
+    MAKE_SOUND_OBJECT,
     HATCH_EGG,
     FIG_TRANSFORM,
     MELT_ICE_AWAY,
