@@ -3,6 +3,8 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "lev.h"
+
 #ifdef TTY_GRAPHICS
 #include "wintty.h"
 #endif
@@ -275,6 +277,23 @@ genl_adjust_ghsound_general_volumes(VOID_ARGS)
     return;
 }
 
+void
+genl_add_ambient_ghsound(struct soundsource_t* soundsource)
+{
+    return;
+}
+
+void
+genl_delete_ambient_ghsound(struct soundsource_t* soundsource)
+{
+    return;
+}
+
+void
+genl_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
+{
+    return;
+}
 
 
 STATIC_OVL

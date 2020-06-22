@@ -19,6 +19,7 @@ static Studio::System* fmod_studio_system = (Studio::System*)0;
 struct GNHSoundInstance {
     Studio::EventInstance* eventInstance;
     float normalVolume;
+    struct GNHSoundInstance* next_instance;
 };
 
 static GNHSoundInstance musicInstances[2] = { 0 };
@@ -27,6 +28,9 @@ static GNHSoundInstance movementInstances[2] = { 0 };
 static float general_volume = 1.0f;
 static float general_music_volume = 1.0f;
 static float general_sound_effects_volume = 1.0f;
+
+GNHSoundInstance* ambient_base = NULL;
+
 
 /* GHSound -> FMOD event mapping here */
 enum sound_bank_types {
@@ -267,10 +271,134 @@ extern "C"
         }
 
         result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            return FALSE;
 
         return TRUE;
     }
 
+    int
+    fmod_add_ambient_ghsound(enum ghsound_types ghsound, float fmod_volume, void** ambient_sound_ptr_ptr)
+    {
+        FMOD_RESULT result;
+
+        struct ghsound_eventmapping eventmap = ghsound2event[ghsound];
+        if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
+            return FALSE;
+
+        Studio::EventDescription* ambientDescription = NULL;
+        result = fmod_studio_system->getEvent(eventmap.eventPath, &ambientDescription);
+
+        if (result != FMOD_OK)
+            return FALSE;
+
+        Studio::EventInstance* ambientInstance = NULL;
+        result = ambientDescription->createInstance(&ambientInstance);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        /* Set volume */
+        ambientInstance->setVolume(fmod_volume * general_sound_effects_volume * general_volume);
+
+        /* Create new GHSoundInstance */
+        GNHSoundInstance* new_ghs_instance = (GNHSoundInstance*)malloc(sizeof(GNHSoundInstance));
+        if (!new_ghs_instance)
+        {
+            result = ambientInstance->release();
+            return FALSE;
+        }
+
+        /* Play sound */
+        result = ambientInstance->start();
+        if (result != FMOD_OK)
+        {
+            free(new_ghs_instance);
+            return FALSE;
+        }
+
+        memset((void*)new_ghs_instance, 0, sizeof(GNHSoundInstance));
+        new_ghs_instance->next_instance = ambient_base;
+        ambient_base = new_ghs_instance;
+        
+        new_ghs_instance->eventInstance = ambientInstance;
+        new_ghs_instance->normalVolume = fmod_volume;
+
+        result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        return TRUE;
+    }
+
+    int
+    fmod_delete_ambient_ghsound(void* ambient_sound_ptr)
+    {
+        if (!ambient_sound_ptr)
+            return FALSE;
+
+        FMOD_RESULT result;
+        GNHSoundInstance* ghs_ptr = (GNHSoundInstance*)ambient_sound_ptr;
+        if (!ghs_ptr->eventInstance)
+            return FALSE;
+
+        result = ghs_ptr->eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        result = ghs_ptr->eventInstance->release();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        GNHSoundInstance* prev = NULL;
+        for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)
+        {
+            if (curr == ghs_ptr)
+            {
+                if (prev == NULL)
+                    ambient_base = curr->next_instance;
+                else
+                    prev->next_instance = curr->next_instance;
+
+                break;
+            }
+            prev = curr;
+        }
+        
+        free(ghs_ptr);
+
+        return TRUE;
+    }
+
+    int
+    fmod_set_ambient_ghsound_volume(void* ambient_sound_ptr, float fmod_volume)
+    {
+        if (!ambient_sound_ptr)
+            return FALSE;
+
+        if (fmod_volume < 0.0f || fmod_volume > 1.0f)
+            return FALSE;
+
+        FMOD_RESULT result;
+        GNHSoundInstance* ghs_ptr = (GNHSoundInstance*)ambient_sound_ptr;
+        if (!ghs_ptr->eventInstance)
+            return FALSE;
+
+        result = ghs_ptr->eventInstance->setVolume(fmod_volume * general_sound_effects_volume * general_volume);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        ghs_ptr->normalVolume = fmod_volume;
+
+        return TRUE;
+    }
 
 #if 0
     /* OBSOLETE - Examples and core */

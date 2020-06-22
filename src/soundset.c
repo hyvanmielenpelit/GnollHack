@@ -517,6 +517,8 @@ anything* id;
     ss->flags = volume < 0 ? SSF_SILENCE_SOURCE : 0;
     sound_base = ss;
 
+    add_ambient_ghsound(ss);
+
     hearing_full_recalc = 1; /* make the source show up */
 }
 
@@ -567,6 +569,8 @@ anything* id;
                 prev->next = curr->next;
             else
                 sound_base = curr->next;
+
+            delete_ambient_ghsound(curr);
 
             free((genericptr_t)curr);
             hearing_full_recalc = 1;
@@ -733,6 +737,7 @@ int fd, mode, volume;
             if (is_global ^ (volume == RANGE_LEVEL)) 
             {
                 *prev = curr->next;
+                delete_ambient_ghsound(curr);
                 free((genericptr_t)curr);
             }
             else

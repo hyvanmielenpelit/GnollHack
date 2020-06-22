@@ -60,6 +60,7 @@ typedef struct soundsource_t {
     short flags;
     short type;  /* type of sound source */
     anything id; /* source's identifier */
+    void* ambient_ghsound_ptr; /* ambient sound pointer for storing */
 } sound_source;
 
 #endif /* LEV_H */

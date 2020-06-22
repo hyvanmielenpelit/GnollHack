@@ -8,6 +8,7 @@
 #include "botl.h"
 #include "layer.h"
 #include "obj.h"
+#include "lev.h"
 
 /* NB: this MUST match chain_procs below */
 struct window_procs {
@@ -93,6 +94,9 @@ struct window_procs {
     void FDECL((*win_play_ghsound_music), (struct ghsound_music_info));
     void FDECL((*win_play_ghsound_ui), (struct ghsound_ui_info));
     void NDECL((*win_adjust_ghsound_general_volumes));
+    void FDECL((*win_add_ambient_ghsound), (sound_source*));
+    void FDECL((*win_delete_ambient_ghsound), (sound_source*));
+    void FDECL((*win_set_ambient_ghsound_volume), (sound_source*));
 };
 
 extern
@@ -186,6 +190,9 @@ extern
 #define play_ghsound_music (*windowprocs.win_play_ghsound_music)
 #define play_ghsound_ui (*windowprocs.win_play_ghsound_ui)
 #define adjust_ghsound_general_volumes (*windowprocs.win_adjust_ghsound_general_volumes)
+#define add_ambient_ghsound (*windowprocs.win_add_ambient_ghsound)
+#define delete_ambient_ghsound (*windowprocs.win_delete_ambient_ghsound)
+#define set_ambient_ghsound_volume (*windowprocs.win_set_ambient_ghsound_volume)
 
 /*
  * WINCAP

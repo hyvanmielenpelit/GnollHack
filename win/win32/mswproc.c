@@ -126,6 +126,9 @@ struct window_procs mswin_procs = {
     mswin_play_ghsound_music,
     mswin_play_ghsound_ui,
     mswin_adjust_ghsound_general_volumes,
+    mswin_add_ambient_ghsound,
+    mswin_delete_ambient_ghsound,
+    mswin_set_ambient_ghsound_volume,
 };
 
 /*
@@ -3278,5 +3281,32 @@ mswin_adjust_ghsound_general_volumes(VOID_ARGS)
     if (!fmod_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_effects_volume))
     {
         impossible("Cannot adjust volume!");
+    }
+}
+
+void
+mswin_add_ambient_ghsound(struct soundsource_t* soundsource)
+{
+    if (!fmod_add_ambient_ghsound(soundsource->ghsound, ((float)soundsource->volume) / 100.0f, &soundsource->ambient_ghsound_ptr))
+    {
+        impossible("Cannot add ambient sound!");
+    }
+}
+
+void
+mswin_delete_ambient_ghsound(struct soundsource_t* soundsource)
+{
+    if (!fmod_delete_ambient_ghsound(soundsource->ambient_ghsound_ptr))
+    {
+        impossible("Cannot delete ambient sound!");
+    }
+}
+
+void
+mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
+{
+    if (!fmod_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, ((float)soundsource->volume) / 100.0f))
+    {
+        impossible("Cannot set ambient sound volume!");
     }
 }

@@ -435,6 +435,13 @@ boolean resuming;
                 vision_recalc(0); /* vision! */
         }
 
+        /* Update hearing */
+        if (!context.mv || Deaf)
+        {
+            if (hearing_full_recalc)
+                update_hearing_array_and_ambient_sounds(); /* hearing! */
+        }
+
 		/* Update the statusline */
 		if (context.botl || context.botlx) {
 			bot();
@@ -537,6 +544,9 @@ boolean resuming;
 
         if (vision_full_recalc)
             vision_recalc(0); /* vision! */
+
+        if (hearing_full_recalc)
+            update_hearing_array_and_ambient_sounds(); /* hearing! */
 
         /* when running in non-tport mode, this gets done through domove() */
         if ((!context.run || flags.runmode == RUN_TPORT)
