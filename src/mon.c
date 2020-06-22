@@ -1816,6 +1816,8 @@ movemon()
 
     if (any_light_source())
         vision_full_recalc = 1; /* in case a mon moved with a light source */
+    if (any_sound_source())
+        hearing_full_recalc = 1; /* in case a mon moved with a sound source */
     /* reset obj bypasses after last monster has moved */
     if (context.bypasses)
         clear_bypasses();
@@ -2731,6 +2733,14 @@ struct monst *mtmp, *mtmp2;
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
     }
 
+    if (mon_ambient_sound(mtmp2->data))
+    {
+        /* since this is so rare, we don't have any `mon_move_light_source' */
+        new_sound_source(mtmp2->mx, mtmp2->my, mon_ambient_sound(mtmp2->data), mon_ambient_volume(mtmp2->data), SOUNDSOURCE_MONSTER, monst_to_any(mtmp2));
+        /* here we rely on fact that `mtmp' hasn't actually been deleted */
+        del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
+    }
+
     mtmp2->nmon = fmon;
     fmon = mtmp2;
     if (u.ustuck == mtmp)
@@ -2931,6 +2941,8 @@ boolean is_mon_dead;
     }
     if (emitted_light_range(mptr))
         del_light_source(LS_MONSTER, monst_to_any(mtmp));
+    if (mon_ambient_sound(mptr))
+        del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
     if (M_AP_TYPE(mtmp))
         seemimic(mtmp);
     if (onmap)
@@ -4842,6 +4854,14 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
                              LS_MONSTER, monst_to_any(mtmp));
     }
 
+    if (mon_ambient_sound(olddata) != mon_ambient_sound(mtmp->data))
+    {
+        if (mon_ambient_sound(olddata))
+            del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
+        if (mon_ambient_sound(mtmp->data))
+            new_sound_source(mtmp->mx, mtmp->my, mon_ambient_sound(mtmp->data), mon_ambient_volume(mtmp->data),
+                SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
+    }
 
 	if (mtmp->mundetected)
         (void) hideunder(mtmp);

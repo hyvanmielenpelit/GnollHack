@@ -5380,6 +5380,16 @@ size_t *total_size;
         putstr(win, 0, buf);
     }
 
+    count = 0L;
+    size = 0;
+    sound_stats("sound sources, size %ld", hdrbuf, &count, &size);
+    if (count || size) {
+        *total_count += count;
+        *total_size += size;
+        Sprintf(buf, template, hdrbuf, count, size);
+        putstr(win, 0, buf);
+    }
+
 	count = 0L;
 	size = 0;
 	timer_stats("timers, size %ld", hdrbuf, &count, &size);
@@ -5554,6 +5564,7 @@ sanity_check()
     timer_sanity_check();
     mon_sanity_check();
     light_sources_sanity_check();
+    sound_sources_sanity_check();
     bc_sanity_check();
 }
 

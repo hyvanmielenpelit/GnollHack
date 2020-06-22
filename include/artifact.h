@@ -118,6 +118,7 @@ struct artifact {
     char acolor;        /* color to use if artifact 'glows' */
 	char ocolor;		/* color used for object instead of its normal color */
 	int tile_floor_height;
+	enum object_soundset_types soundset;
 
 	short stand_animation;
 	short enlargement;

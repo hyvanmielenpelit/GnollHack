@@ -707,6 +707,7 @@ unsigned int *stuckid, *steedid;
     restore_killers(fd);
     restore_timers(fd, RANGE_GLOBAL, FALSE, 0L);
     restore_light_sources(fd);
+    restore_sound_sources(fd);
     invent = restobjchn(fd, FALSE, FALSE);
     /* tmp_bc only gets set here if the ball & chain were orphaned
        because you were swallowed; otherwise they will be on the floor
@@ -773,6 +774,7 @@ unsigned int *stuckid, *steedid;
     /* must come after all mons & objs are restored */
     relink_timers(FALSE);
     relink_light_sources(FALSE);
+    relink_sound_sources(FALSE);
     /* inventory display is now viable */
     iflags.perm_invent = defer_perm_invent;
     return TRUE;
@@ -1161,6 +1163,7 @@ boolean ghostly;
 
     restore_timers(fd, RANGE_LEVEL, ghostly, elapsed);
     restore_light_sources(fd);
+    restore_sound_sources(fd);
     fmon = restmonchn(fd, ghostly);
 
     rest_worm(fd); /* restore worm information */
@@ -1276,6 +1279,7 @@ boolean ghostly;
     /* must come after all mons & objs are restored */
     relink_timers(ghostly);
     relink_light_sources(ghostly);
+    relink_sound_sources(ghostly);
     reset_oattached_mids(ghostly);
 
     if (ghostly)

@@ -8,6 +8,7 @@
 STATIC_DCL void FDECL(mkbox_cnts, (struct obj *));
 STATIC_DCL unsigned FDECL(nextoid, (struct obj *, struct obj *));
 STATIC_DCL void FDECL(maybe_adjust_light, (struct obj *, int));
+STATIC_DCL void FDECL(maybe_adjust_sound_volume, (struct obj*, int));
 STATIC_DCL void FDECL(obj_timer_checks, (struct obj *,
                                          XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(container_weight, (struct obj *));
@@ -611,6 +612,8 @@ long num;
         obj_split_timers(obj, otmp);
     if (obj_sheds_light(obj))
         obj_split_light_source(obj, otmp);
+    if (obj_has_sound_source(obj))
+        obj_split_sound_source(obj, otmp);
     return otmp;
 }
 
@@ -2141,6 +2144,40 @@ int old_range;
     }
 }
 
+STATIC_OVL void
+maybe_adjust_sound_volume(obj, old_volume)
+struct obj* obj;
+int old_volume;
+{
+    char buf[BUFSZ];
+    xchar ox, oy;
+    int new_volume = obj_ambient_sound_volume(obj), delta = new_volume - old_volume;
+
+    /* radius of light emitting artifact varies by curse/bless state
+       so will change after blessing or cursing */
+    if (delta) 
+    {
+        obj_adjust_sound_volume(obj, new_volume);
+        /* simplifying assumptions:  hero is wielding this object;
+           artifacts have to be in use to emit light and monsters'
+           gear won't change bless or curse state */
+        if (!Blind && get_obj_location(obj, &ox, &oy, 0)) 
+        {
+            *buf = '\0';
+            Strcpy(buf, (obj->quan == 1L) ? "An object" : "Objects");
+            if (carried(obj) || cansee(ox, oy))
+                Strcpy(buf, Yname2(obj));
+
+            if (*buf)
+            {
+                pline("%s %s sound %s%s.", buf, otense(obj, "make"),
+                    (abs(delta) > 1) ? "much " : "",
+                    (delta > 0) ? "louder" : "more quietly");
+            }
+        }
+    }
+}
+
 /*
  *      bless(), curse(), unbless(), uncurse() -- any relevant message
  *      about glowing amber/black/&c should be delivered prior to calling
@@ -2155,11 +2192,14 @@ register struct obj *otmp;
 		return;
 
 	int old_light = 0;
+    int old_volume = 0;
 
     if (otmp->oclass == COIN_CLASS)
         return;
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
+    if (otmp->makingsound)
+        old_volume = obj_ambient_sound_volume(otmp);
     otmp->cursed = 0;
     otmp->blessed = 1;
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
@@ -2170,6 +2210,8 @@ register struct obj *otmp;
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
+    if (otmp->makingsound)
+        maybe_adjust_sound_volume(otmp, old_volume);
     return;
 }
 
@@ -2181,9 +2223,12 @@ register struct obj *otmp;
 		return;
 
     int old_light = 0;
+    int old_volume = 0;
 
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
+    if (otmp->makingsound)
+        old_volume = obj_ambient_sound_volume(otmp);
     otmp->blessed = 0;
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         updateabon();
@@ -2191,6 +2236,8 @@ register struct obj *otmp;
         otmp->owt = weight(otmp);
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
+    if (otmp->makingsound)
+        maybe_adjust_sound_volume(otmp, old_volume);
 }
 
 void
@@ -2202,11 +2249,14 @@ register struct obj *otmp;
 
 	unsigned already_cursed;
     int old_light = 0;
+    int old_volume = 0;
 
     if (otmp->oclass == COIN_CLASS)
         return;
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
+    if (otmp->makingsound)
+        old_volume = obj_ambient_sound_volume(otmp);
     already_cursed = otmp->cursed;
     otmp->blessed = 0;
 	if(objects[otmp->otyp].oc_flags & O1_NOT_CURSEABLE)
@@ -2237,7 +2287,9 @@ register struct obj *otmp;
 		}
 		if (otmp->lamplit)
 			maybe_adjust_light(otmp, old_light);
-	}
+        if (otmp->makingsound)
+            maybe_adjust_sound_volume(otmp, old_volume);
+    }
     return;
 }
 
@@ -2249,9 +2301,12 @@ register struct obj *otmp;
 		return;
 
     int old_light = 0;
+    int old_volume = 0;
 
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
+    if (otmp->makingsound)
+        old_volume = obj_ambient_sound_volume(otmp);
     otmp->cursed = 0;
     if (carried(otmp) && (confers_luck(otmp) || confers_unluck(otmp)))
         updateabon();
@@ -2261,6 +2316,8 @@ register struct obj *otmp;
         (void) stop_timer(FIG_TRANSFORM, obj_to_any(otmp));
     if (otmp->lamplit)
         maybe_adjust_light(otmp, old_light);
+    if (otmp->makingsound)
+        maybe_adjust_sound_volume(otmp, old_volume);
     return;
 }
 
@@ -3168,6 +3225,9 @@ struct obj *obj;
      */
     if (obj_sheds_light(obj))
         del_light_source(LS_OBJECT, obj_to_any(obj));
+
+    if (obj_has_sound_source(obj))
+        del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
 
     if (obj == thrownobj)
         thrownobj = 0;

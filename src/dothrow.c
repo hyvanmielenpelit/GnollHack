@@ -1890,6 +1890,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             newsym(bhitpos.x, bhitpos.y);
         if (obj_sheds_light(obj))
             vision_full_recalc = 1;
+        if (obj_has_sound_source(obj))
+            hearing_full_recalc = 1;
     }
 }
 

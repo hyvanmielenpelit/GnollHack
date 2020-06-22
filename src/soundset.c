@@ -1009,8 +1009,8 @@ struct obj* src, * dest;
             ss->id.a_obj = dest;
     }
 
-    //src->lamplit = 0;
-    //dest->lamplit = 1;
+    src->makingsound = 0;
+    dest->makingsound = 1;
 }
 
 /* return true if there exist any sound sources */
@@ -1042,7 +1042,7 @@ int x, y;
             if (1) //obj_is_burning(obj)) 
             {
                 del_sound_source(LS_OBJECT, obj_to_any(obj));
-                //end_burn(obj, obj->otyp != MAGIC_LAMP && obj->otyp != MAGIC_CANDLE);
+                end_sound(obj, FALSE);
                 /*
                  * The current ss element has just been removed (and
                  * ss->next is now invalid).  Return assuming that there
@@ -1051,6 +1051,17 @@ int x, y;
                 return;
             }
         }
+        else if (ss->type == LS_LOCATION && ss->x == x && ss->y == y)
+        {
+            if (levl[x][y].makingsound)
+            {
+                levl[x][y].makingsound = 0;
+                del_sound_source(LS_LOCATION, xy_to_any(x, y));
+                newsym(x, y);
+                return;
+            }
+        }
+
 }
 
 
@@ -1201,5 +1212,31 @@ boolean timer_attached;
         impossible("end_sound: obj %s not timed!", xname(obj));
 }
 
+boolean
+obj_has_sound_source(obj)
+struct obj* obj;
+{
+    return (obj->makingsound == TRUE);
+}
+
+enum ghsound_types
+obj_ambient_sound(obj)
+struct obj* obj;
+{
+    if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
+        return GHSOUND_NONE;
+
+    return object_soundsets[objects[obj->otyp].oc_soundset].ambient_sound;
+}
+
+int
+obj_ambient_sound_volume(obj)
+struct obj* obj;
+{
+    if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
+        return 0;
+
+    return object_soundsets[objects[obj->otyp].oc_soundset].ambient_volume;
+}
 
 /* soundset.c */

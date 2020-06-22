@@ -310,6 +310,7 @@ register int fd, mode;
     /* must come before migrating_objs and migrating_mons are freed */
     save_timers(fd, mode, RANGE_GLOBAL);
     save_light_sources(fd, mode, RANGE_GLOBAL);
+    save_sound_sources(fd, mode, RANGE_GLOBAL);
 
     saveobjchn(fd, invent, mode);
     if (BALL_IN_MON) {
@@ -535,6 +536,7 @@ skip_lots:
     /* must be saved before mons, objs, and buried objs */
     save_timers(fd, mode, RANGE_LEVEL);
     save_light_sources(fd, mode, RANGE_LEVEL);
+    save_sound_sources(fd, mode, RANGE_LEVEL);
 
     savemonchn(fd, fmon, mode);
     save_worm(fd, mode); /* save worm information */
@@ -1380,6 +1382,7 @@ freedynamicdata()
 #define free_worm() save_worm(0, FREE_SAVE)
 #define free_timers(R) save_timers(0, FREE_SAVE, R)
 #define free_light_sources(R) save_light_sources(0, FREE_SAVE, R);
+#define free_sound_sources(R) save_sound_sources(0, FREE_SAVE, R);
 #define free_engravings() save_engravings(0, FREE_SAVE)
 #define freedamage() savedamage(0, FREE_SAVE)
 #define free_animals() mon_animal_list(FALSE)
@@ -1390,6 +1393,7 @@ freedynamicdata()
     /* level-specific data */
     free_timers(RANGE_LEVEL);
     free_light_sources(RANGE_LEVEL);
+    free_sound_sources(RANGE_LEVEL);
     clear_regions();
     freemonchn(fmon);
     free_worm(); /* release worm segment information */
@@ -1405,6 +1409,7 @@ freedynamicdata()
     free_killers();
     free_timers(RANGE_GLOBAL);
     free_light_sources(RANGE_GLOBAL);
+    free_sound_sources(RANGE_GLOBAL);
     freeobjchn(invent);
     freeobjchn(migrating_objs);
     freemonchn(migrating_mons);

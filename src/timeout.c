@@ -670,6 +670,8 @@ struct kinfo *kptr;
      */
     if (emitted_light_range(youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&youmonst));
+    if (mon_ambient_sound(youmonst.data))
+        del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(&youmonst));
     save_mvflags = mvitals[PM_GREEN_SLIME].mvflags;
     mvitals[PM_GREEN_SLIME].mvflags = save_mvflags & ~G_GENOD;
     (void) polymon(PM_GREEN_SLIME);

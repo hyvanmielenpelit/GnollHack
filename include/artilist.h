@@ -6,28 +6,28 @@
 #ifdef MAKEDEFS_C
 /* in makedefs.c, all we care about is the list of names */
 
-#define A(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height) nam
+#define A(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) nam
 
 static const char *artifact_names[] = {
 #else
 /* in artifact.c, set up the actual artifact list structure */
 
-#define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, stand_anim, enlarge, replacement) \
+#define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement) \
     {                                                                       \
-        typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, stand_anim, enlarge, replacement    \
+        typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement    \
     }
 
-#define ENLARGED_ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, stand_anim, enlarge) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, stand_anim, enlarge, NO_REPLACEMENT)
+#define ENLARGED_ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge) \
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, NO_REPLACEMENT)
 
-#define ENLARGED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, enlarge) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, NO_ANIMATION, enlarge, NO_REPLACEMENT)
+#define ENLARGED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, enlarge) \
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, enlarge, NO_REPLACEMENT)
 
-#define ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, stand_anim) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT)
+#define ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim) \
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT)
 
-#define A(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
+#define A(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) \
+    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 /* clang-format off */
 #define     NO_ATTK			{0,0,0,0,0,0}               /* no attack */
@@ -57,14 +57,14 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 
     /*  dummy element #0, so that all interesting indices are non-zero */
     A("", None, None, STRANGE_OBJECT, STRANGE_OBJECT, AF_NONE, AF2_NONE, SPFX_NONE, SPFX_NONE, 0, 0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE,
-      NON_PM, NON_PM, 0L, NO_COLOR, NO_COLOR, 0),
+      NON_PM, NON_PM, 0L, NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     A("Excalibur", "gold-hilted runed long sword", None,  LONG_SWORD, LONG_SWORD,
   	  AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_MONSTERS_CAN_TRACK_ARTIFACT | AF_ANGERS_DEMONS,
 	  AF2_NONE,
 	  (SPFX_SEARCH), SPFX_NONE, 0,
 	  1, 5, 0, PHYS(1, 20), DRAIN_RESISTANCE, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 4000L,
-	  NO_COLOR, NO_COLOR, 0),
+	  NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*
      *      Stormbringer only has a 5 because it can drain a level,
      *      providing 8 + CON bonus more.
@@ -74,7 +74,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		AF2_NONE,
 		SPFX_NONE, SPFX_NONE, 0, 
 		1, 5, 0, DRLI(1, 5), DRAIN_RESISTANCE, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, NON_PM, 8000L,
-		NO_COLOR, CLR_BLACK, 0),
+		NO_COLOR, CLR_BLACK, 0, OBJECT_SOUNDSET_NONE),
     /*
      *      Mjollnir will return to the hand of the wielder when thrown
      *      if the wielder is a Valkyrie wearing Gauntlets of Power.
@@ -84,12 +84,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		AF2_NONE,
 	   1, 5, 0, ELEC(1, 30), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, 
-	  NO_COLOR, NO_COLOR, 0),
+	  NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
 	/* Note: Battle axe of cleaving is different, it mimicks the effect of Tsurugi of Muramasa --JG */
     A("Cleaver", "runed double-headed axe", None, BATTLE_AXE, BATTLE_AXE,  AF_RESTR | AF_HITS_ADJACENT_SQUARES, AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 	  1, 3, 0, PHYS(1, 6), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, PM_BARBARIAN, NON_PM, 1500L,
-	  NO_COLOR, NO_COLOR, 0),
+	  NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     /*
      *      Grimtooth glows in warning when elves are present, but its
@@ -100,7 +100,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("Grimtooth", "runed crude dagger", None, ORNAMENTAL_ORCISH_DAGGER, ORCISH_DAGGER,
 	  (AF_RESTR | AF_DFLAG2 | AF_FLICKERS), AF2_NONE, SPFX_ELF_WARNING, SPFX_NONE, M2_ELF,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ORC, 500L,
-	  CLR_RED, NO_COLOR, 0),
+	  CLR_RED, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*
      *      Orcrist and Sting have same alignment as elves.
      *
@@ -111,10 +111,10 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("Orcrist", "ornate runed broadsword", None, ELVEN_BROADSWORD, ELVEN_BROADSWORD, (AF_DFLAG2 | AF_FLICKERS), AF2_NONE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
 	  1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
 	  A_CHAOTIC, NON_PM, PM_ELF, 2000L,
-      CLR_BRIGHT_BLUE, NO_COLOR, 0), /* bright blue is actually light blue */
+      CLR_BRIGHT_BLUE, NO_COLOR, 0, OBJECT_SOUNDSET_NONE), /* bright blue is actually light blue */
 
     A("Sting", "ornate runed dagger", None, ELVEN_RUNEDAGGER, ELVEN_DAGGER, (AF_DFLAG2 | AF_FLICKERS), AF2_MISSILE_TILE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
-		 1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR, 0),
+		 1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*
      *      Magicbane is a bit different!  Its magic fanfare
      *      unbalances victims in addition to doing some damage.
@@ -122,72 +122,72 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("Magicbane", "runed athame", None, ATHAME, ATHAME, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_MAGIC_ABSORBING),
 		AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 3, 0, STUN(1, 10), ANTIMAGIC, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, PM_WIZARD, NON_PM, 3500L,
-		NO_COLOR, NO_COLOR, 0),
+		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     A("Frost Brand", "iron-hilted runed long sword", "ice-cold blade", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 	  1, 5, 0, COLD(ARTDMG_DOUBLE_DAMAGE, 0), COLD_IMMUNITY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 3000L,
-      NO_COLOR, CLR_WHITE, 0),
+      NO_COLOR, CLR_WHITE, 0, OBJECT_SOUNDSET_NONE),
 
     A("Fire Brand", "copper-hilted runed long sword", "fiery blade", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 	  1, 5, 0, FIRE(ARTDMG_DOUBLE_DAMAGE, 0), FIRE_IMMUNITY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 3000L,
-      NO_COLOR, CLR_RED, 0),
+      NO_COLOR, CLR_RED, 0, OBJECT_SOUNDSET_NONE),
 
     A("Dragonbane", "mithril-hilted runed broadsword", None, SWORD_OF_DRAGON_SLAYING, BROADSWORD,
 	  (AF_RESTR | AF_DCLAS | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_REFLECT, SPFX_NONE, S_DRAGON,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 500L,
-      NO_COLOR, NO_COLOR, 0),
+      NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     A("Demonbane", "runed silver long sword", None, SWORD_OF_DEMON_SLAYING, SILVER_LONG_SWORD,
 	(AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_ANGERS_DEMONS | AF_PREVENTS_SUMMONING_OF_MON),
 	AF2_NONE,
 	SPFX_NONE, SPFX_NONE, M2_DEMON,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 2500L,
-      NO_COLOR, NO_COLOR, 0),
+      NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     A("Werebane", "runed silver saber", None, SABER_OF_LYCANTHROPE_SLAYING, SILVER_SABER, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, M2_WERE,
 	  1, 5, 0, PHYS(1, 20), LYCANTHROPY_RESISTANCE, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 1500L,
-      NO_COLOR, NO_COLOR, 0),
+      NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     A("Grayswandir", "diamond-encrusted silver saber", None, SILVER_SABER, SILVER_SABER, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_HALRES, SPFX_NONE, 0,
 	  1, 5, 0, PHYS(1, ARTDMG_DOUBLE_DAMAGE), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 8000L,
-      NO_COLOR, CLR_GRAY, 0),
+      NO_COLOR, CLR_GRAY, 0, OBJECT_SOUNDSET_NONE),
 
     A("Giantslayer", "ruby-encrusted long sword", None, SWORD_OF_GIANT_SLAYING, LONG_SWORD, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, M2_GIANT,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, NON_PM, NON_PM, 500L,
-      NO_COLOR, NO_COLOR, 0),
+      NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
     A("Ogresmasher", "gold-hilted war hammer", None, WAR_HAMMER_OF_OGRE_SLAYING, WAR_HAMMER, (AF_RESTR | AF_DCLAS | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, S_OGRE,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 500L,
-      NO_COLOR, NO_COLOR, 0),
+      NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
 	A("Trollsbane", "runed morning star", None, MORNING_STAR_OF_TROLL_SLAYING, MORNING_STAR, (AF_RESTR | AF_DCLAS | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_REGEN, SPFX_NONE, S_TROLL,
 	  1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 500L,
-      NO_COLOR, NO_COLOR, 0),
+      NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
 	A("Gnollbane", "ruby-hilted war hammer", None, WAR_HAMMER_OF_GNOLL_SLAYING, WAR_HAMMER, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, M2_GNOLL,
 		1, 5, 0, PHYS(1, 20), SHOCK_IMMUNITY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 500L,
-		NO_COLOR, NO_COLOR, 0),
+		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
 	A("Crossbow of the Gnoll Lords", "runed repeating heavy crossbow", None, REPEATING_HEAVY_CROSSBOW, REPEATING_HEAVY_CROSSBOW, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_STLTH , SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 5), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, PM_GNOLL, 2000L,
-		NO_COLOR, NO_COLOR, 0),
+		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
 	A("Howling Flail", "gold-hilted runed flail", None, RUNED_FLAIL, FLAIL, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED | AF_INVOKE_MAY_DRAIN_LIFE), AF2_NONE, SPFX_LUCK, SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 10), NO_POWER, NO_POWER, ARTINVOKE_TAMING, 0, 0, 0, 0, 200, A_CHAOTIC, NON_PM, PM_GNOLL, 6000L,
-		NO_COLOR, HI_GOLD, 0),
+		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 
 	A("Luck Blade", "bright runed broadsword", None, SWORD_OF_LUCKINESS, LONG_SWORD, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED | AF_NO_WISH), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 5), NO_POWER, NO_POWER, ARTINVOKE_WISHING, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 6000L, /* Note: Base item gives luck already */
-		NO_COLOR, HI_METAL, 0),
+		NO_COLOR, HI_METAL, 0, OBJECT_SOUNDSET_NONE),
 
 	A("Wand of Orcus", "skull-headed obsidian mace", None, MACE_OF_THE_UNDERWORLD, MACE_OF_THE_UNDERWORLD, (AF_NOGEN | AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED | AF_INVOKE_EXPENDS_CHARGE | AF_NO_WISH), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, DRLI(1, 10), NO_POWER, NO_POWER, ARTINVOKE_WAND_OF_DEATH, 0, 0, 0, 0, 150, A_CHAOTIC, NON_PM, NON_PM, 6000L,
-		NO_COLOR, CLR_BLACK, 0),
+		NO_COLOR, CLR_BLACK, 0, OBJECT_SOUNDSET_NONE),
 
     A("Rhongomyniad", "runed lance", None, LANCE, LANCE,
 		(AF_RESTR | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), CURSE_RESISTANCE, DEATH_RESISTANCE, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 2500L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
 	/*
      *      Two problems:  1) doesn't let trolls regenerate heads,
@@ -196,7 +196,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      */
     A("Vorpal Blade", "immaculate runed long sword", "Vorpal Blade", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_BEHEAD | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYSI(0, 0, 1), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, NON_PM, NON_PM, 4000L,
-		NO_COLOR, NO_COLOR, 0),
+		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*
      *      Ah, never shall I forget the cry,
      *              or the shriek that shrieked he,
@@ -207,44 +207,44 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      */
     A("Snickersnee", "gold-hilted runed katana", None, KATANA, KATANA, AF_RESTR, AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		0, 0, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L,
-		NO_COLOR, HI_GOLD, 0),
+		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 
     A("Sunsword", "glowing runed long sword", None, LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_ANGERS_DEMONS | AF_SHINES_MAGICAL_LIGHT),
 		AF2_NONE, SPFX_NONE, SPFX_NONE, M2_UNDEAD | M2_DEMON,
 		1, 5, 0, PHYS(ARTDMG_QUADRUPLE_DAMAGE, 0), FLASH_RESISTANCE, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
-		NO_COLOR, HI_GOLD, 0),
+		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 		  
 	/* Artifact rings */
     A("The One Ring", "plain golden", None, RIN_SUPREME_POWER, RIN_SUPREME_POWER, (AF_RESTR | AF_INTEL | AF_MONSTERS_CAN_TRACK_ARTIFACT),
 		AF2_NONE, SPFX_NONE, SPFX_AGGRAVATE_MONSTER | SPFX_UNLUCK, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 10000L,
-		NO_COLOR, HI_GOLD, 0),
+		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 
     A("Ring of Three Wishes", "three-ruby-studded", None, RIN_THREE_CHARGES, RIN_THREE_CHARGES, (AF_RESTR | AF_NO_WISH | AF_NAME_KNOWN_WHEN_INVOKED | AF_INVOKE_EXPENDS_CHARGE | AF_INVOKE_REQUIRES_WORN),
 		AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, ARTINVOKE_WISHING, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 4500L,
-		NO_COLOR, CLR_RED, 0),
+		NO_COLOR, CLR_RED, 0, OBJECT_SOUNDSET_NONE),
 
     A("Serpent Ring of Set", "serpent-shaped", None, RIN_THE_SERPENT_GOD, RIN_THE_SERPENT_GOD, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_INVOKE_REQUIRES_WORN),
 		AF2_NONE, SPFX_EREGEN | SPFX_INT_25 | SPFX_WIS_25, SPFX_NONE, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, ARTINVOKE_DEMON_SUMMON, 6, 6, 200, 50, 500, A_CHAOTIC, NON_PM, NON_PM, 3000L,
-		NO_COLOR, CLR_RED, 0),
+		NO_COLOR, CLR_BLACK, 0, OBJECT_SOUNDSET_NONE),
 
     A("Ring of Conflict", "ruby", None, RIN_SEVEN_CHARGES, RIN_SEVEN_CHARGES, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED | AF_INVOKE_EXPENDS_CHARGE | AF_INVOKE_REQUIRES_WORN),
 		AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, CONFLICT, 2, 10, 140, 0, 200, A_NONE, NON_PM, NON_PM, 3500L,
-		NO_COLOR, CLR_RED, 0),
+		NO_COLOR, CLR_RED, 0, OBJECT_SOUNDSET_NONE),
 
 	/* Special artifact crowning gifts  */
 	A("Gauntlets of Yin and Yang", "black and white gauntlets", None, GAUNTLETS_OF_BALANCE, GAUNTLETS_OF_BALANCE,
 		(AF_NOGEN | AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_NO_WISH | AF_INVOKE_REQUIRES_WORN | AF_INVOKE_MAY_DRAIN_ENERGY), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 10), NO_POWER, NO_POWER, ARTINVOKE_TIME_STOP, 0, 0, 0, 0, 1000, A_NONE, PM_MONK, NON_PM, 3500L,
-		NO_COLOR, CLR_BLACK, 0),
+		NO_COLOR, CLR_WHITE, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Holy Grail", "wooden grail", None, GRAIL_OF_HEALING, GRAIL_OF_HEALING, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED),
 		AF2_NONE, SPFX_NONE, SPFX_PROTECT, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, SLOW_DIGESTION, ARTINVOKE_RECHARGE_ITSELF, 0, 0, 0, 0, 800, A_LAWFUL, NON_PM, NON_PM, 3000L,
-		NO_COLOR, CLR_RED, 0),
+		NO_COLOR, HI_WOOD, 0, OBJECT_SOUNDSET_NONE),
 
 	/*
      *      The artifacts for the quest dungeon, all self-willed.
@@ -253,51 +253,51 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("The Orb of Detection", "runed crystal ball", None, CRYSTAL_BALL, CRYSTAL_BALL, //STARTMARKER FOR QUEST ARTIFACTS
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_ESP | SPFX_SEARCH, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, CLAIRVOYANT, DETECT_MONSTERS, 1, 10, 70, 25, 300, A_LAWFUL, PM_ARCHEOLOGIST, NON_PM, 2500L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Heart of Ahriman", "glowing red jewel", None, LUCKSTONE, LUCKSTONE,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_STLTH, 0,
       /* this stone does double damage if used as a projectile weapon */
 		1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, LEVITATION, 0, 0, 0, 20, 60, A_NEUTRAL, PM_BARBARIAN, NON_PM, 2500L,
-		NO_COLOR, CLR_RED, 0),
+		NO_COLOR, CLR_RED, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Sceptre of Might", "diamond-encrusted sceptre", None, RUNED_SCEPTRE, RUNED_SCEPTRE,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_DALIGN | AF_FAMOUS | AF_INVOKE_EXPENDS_CHARGE), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), ANTIMAGIC, NO_POWER, CONFLICT, 2, 10, 140, 0, 300, A_LAWFUL, PM_CAVEMAN, NON_PM, 2500L,
-		NO_COLOR, HI_GOLD, 0),
+		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 
 #if 0 /* OBSOLETE */
 A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 	AF_NONE, AF2_NONE, (SPFX_NOGEN|SPFX_RESTR|SPFX_INTEL),
                 (SPFX_ESP|SPFX_REGEN|SPFX_HSPDAM), 0,
         NO_ATTK,        NO_POWER,        NO_POWER,
-        ARTINVOKE_TAMING,         A_CHAOTIC, NON_PM , PM_ELF, 8000L, NO_COLOR, 0),
+        ARTINVOKE_TAMING,         A_CHAOTIC, NON_PM , PM_ELF, 8000L, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 #endif
 
     A("The Staff of Aesculapius", "serpent-entwined quarterstaff", None, STAFF_OF_LIFE, QUARTERSTAFF,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_DRLI | AF_FAMOUS), AF2_NONE, SPFX_REGEN, SPFX_NONE, 0,
 		0, 0, 0, DRLI(0,0), DRAIN_RESISTANCE, NO_POWER, ARTINVOKE_HEALING, 0, 0, 0, 0, 150, A_NEUTRAL, PM_HEALER, NON_PM, 5000L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Magic Mirror of Merlin", "runed looking glass", None, MAGIC_MIRROR, MIRROR,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_ESP | SPFX_REFLECT, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, DISPLACED, 0, 0, 0, 0, 25, A_LAWFUL, PM_KNIGHT, NON_PM, 1500L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Eyes of the Overworld", "runed eyeglasses", None, LENSES, LENSES,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), (SPFX_XRAY | SPFX_BLIND_SEEING), AF2_NONE, SPFX_NONE, 0,
 		0, 0, 0, NO_ATTK, ANTIMAGIC, NO_POWER, ARTINVOKE_ENLIGHTENING, 0, 0, 0, 0, 40, A_NEUTRAL, PM_MONK, NON_PM, 2500L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Mitre of Holiness", "diamond-encrusted helmet", None, HELM_OF_BRILLIANCE, HELMET,
 	  (AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_PROTECT | SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS, SPFX_NONE, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, FIRE_IMMUNITY, ARTINVOKE_ENERGY_BOOST, 0, 0, 0, 0, 150, A_LAWFUL, PM_PRIEST, NON_PM, 2000L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Longbow of Diana", "ornamental long bow", None, LONG_BOW, LONG_BOW,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_REFLECT, SPFX_ESP, 0,
 		0, 0, 20, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, ARTINVOKE_CREATE_AMMO, 0, 0, 0, 0, 75, A_CHAOTIC, PM_RANGER, NON_PM, 4000L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     /* MKoT has an additional carry property if the Key is not cursed (for
        rogues) or blessed (for non-rogues):  #untrap of doors and chests
@@ -305,39 +305,39 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
     A("The Master Key of Thievery", "ornamental key", None, MASTER_KEY, SKELETON_KEY,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_SPEAK | AF_FAMOUS), AF2_NONE, SPFX_NONE, (SPFX_WARNING | SPFX_TCTRL | SPFX_HPHDAM), 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, ARTINVOKE_UNTRAP, 0, 0, 0, 0, 40, A_CHAOTIC, PM_ROGUE, NON_PM, 3500L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Tsurugi of Muramasa", "runed tsurugi", "razor-sharp blade", TSURUGI, TSURUGI,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_BISECT | AF_FAMOUS), AF2_NONE, (SPFX_LUCK | SPFX_PROTECT), SPFX_NONE, 0, 
 		0, 0, 0, PHYS(1, 8), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_SAMURAI, NON_PM, 4500L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Platinum Yendorian Express Card", "black credit card", None, CREDIT_CARD, CREDIT_CARD,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_NONE, (SPFX_ESP | SPFX_CHA_25), 0,
 		0, 0, 0, NO_ATTK, NO_POWER, ANTIMAGIC, ARTINVOKE_CHARGE_OBJ, 0, 0, 0, 0, 150, A_NEUTRAL, PM_TOURIST, NON_PM, 7000L,
-		NO_COLOR, CLR_BLACK, 0),
+		NO_COLOR, CLR_BLACK, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Orb of Fate", "ornamental crystal ball", None, CRYSTAL_BALL, CRYSTAL_BALL,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_READABLE), AF2_NONE, SPFX_NONE, (SPFX_WARNING | SPFX_HSPDAM | SPFX_HPHDAM | SPFX_LUCK), 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, ARTINVOKE_LEVEL_TELEPORT, 0, 0, 0, 0, 40, A_NEUTRAL, PM_VALKYRIE, NON_PM, 3500L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Eye of the Aethiopica", "eye-shaped amulet", None, AMULET_OF_ESP, AMULET,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_NONE, (SPFX_EREGEN | SPFX_HSPDAM), 0,
 		0, 0, 0, NO_ATTK, ANTIMAGIC, NO_POWER, ARTINVOKE_CREATE_PORTAL, 0, 0, 0, 0, 40, A_NEUTRAL, PM_WIZARD, NON_PM, 4000L,
-		NO_COLOR, CLR_MAGENTA, 0),
+		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
 	A("The Ark of the Covenant", "gold-covered wooden chest", None, GOLDEN_CHEST, GOLDEN_CHEST,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_NO_WISH), AF2_NONE, SPFX_NONE, (SPFX_LUCK | SPFX_PROTECT), 0,
 		0, 0, 0, NO_ATTK, NO_POWER, ANTIMAGIC, ARTINVOKE_BLESS_CONTENTS, 0, 0, 0, 0, 250, A_LAWFUL, NON_PM, /* PM_ARCHEOLOGIST */ NON_PM, 5000L,
-		NO_COLOR, HI_GOLD, 0),
+		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 
 
     /*
      *  terminator; otyp must be zero
      */
     A(0, 0, 0, 0, 0, AF_NONE, AF2_NONE, SPFX_NONE, SPFX_NONE, 0, 0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 0L,
-      0, 0, 0) /* 0 is CLR_BLACK rather than NO_COLOR but it doesn't matter here */
+      0, 0, 0, OBJECT_SOUNDSET_NONE) /* 0 is CLR_BLACK rather than NO_COLOR but it doesn't matter here */
 
 }; /* artilist[] (or artifact_names[]) */
 

@@ -620,8 +620,8 @@ void
 snuff_light_source(x, y)
 int x, y;
 {
-    light_source *ls;
-    struct obj *obj;
+    light_source* ls;
+    struct obj* obj;
 
     for (ls = light_base; ls; ls = ls->next)
         /*
@@ -629,7 +629,8 @@ int x, y;
          * will always be correct because the objects would have been
          * updated with the last vision update?  [Is that recent enough???]
          */
-        if (ls->type == LS_OBJECT && ls->x == x && ls->y == y) {
+        if (ls->type == LS_OBJECT && ls->x == x && ls->y == y)
+        {
             obj = ls->id.a_obj;
             if (obj_is_burning(obj)) {
                 /* The only way to snuff Sunsword is to unwield it.  Darkness
@@ -645,6 +646,16 @@ int x, y;
                  * ls->next is now invalid).  Return assuming that there
                  * is only one light source attached to each object.
                  */
+                return;
+            }
+        }
+        else if (ls->type == LS_LOCATION && ls->x == x && ls->y == y)
+        {
+            if (levl[x][y].lamplit)
+            {
+                levl[x][y].lamplit = 0;
+                del_light_source(LS_LOCATION, xy_to_any(x, y));
+                newsym(x, y);
                 return;
             }
         }

@@ -1784,7 +1784,12 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
     if (emitted_light_range(m2->data))
         new_light_source(m2->mx, m2->my, emitted_light_range(m2->data), LS_MONSTER,
                          monst_to_any(m2));
-    if (has_mname(mon)) 
+
+    if (mon_ambient_sound(m2->data))
+        new_sound_source(m2->mx, m2->my, mon_ambient_sound(m2->data), mon_ambient_volume(m2->data), SOUNDSOURCE_MONSTER,
+            monst_to_any(m2));
+
+    if (has_mname(mon))
 	{
         m2 = christen_monst(m2, MNAME(mon));
     }
@@ -2388,6 +2393,9 @@ int level_limit;
     if ((ct = emitted_light_range(mtmp->data)) != 0)
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
                          monst_to_any(mtmp));
+    if ((ct = mon_ambient_sound(mtmp->data)) != 0)
+        new_sound_source(mtmp->mx, mtmp->my, ct, mon_ambient_volume(mtmp->data), SOUNDSOURCE_MONSTER,
+            monst_to_any(mtmp));
     mitem = 0; /* extra inventory item for this monster */
 
     if (mndx == PM_VLAD_THE_IMPALER)

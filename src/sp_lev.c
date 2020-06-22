@@ -1803,7 +1803,8 @@ struct mkroom *croom;
 
                     mgender_from_permonst(mtmp, mdat);
                     set_mon_data(mtmp, mdat);
-                    if (emitted_light_range(olddata) != emitted_light_range(mtmp->data)) {
+                    if (emitted_light_range(olddata) != emitted_light_range(mtmp->data))
+                    {
                         /* used to give light, now doesn't, or vice versa,
                            or light's range has changed */
                         if (emitted_light_range(olddata))
@@ -1812,6 +1813,17 @@ struct mkroom *croom;
                             new_light_source(mtmp->mx, mtmp->my,
                                              emitted_light_range(mtmp->data),
                                              LS_MONSTER, (genericptr_t) mtmp);
+                    }
+                    if (mon_ambient_sound(olddata) != mon_ambient_sound(mtmp->data))
+                    {
+                        /* used to give light, now doesn't, or vice versa,
+                           or light's range has changed */
+                        if (mon_ambient_sound(olddata))
+                            del_sound_source(SOUNDSOURCE_MONSTER, (genericptr_t)mtmp);
+                        if (mon_ambient_sound(mtmp->data))
+                            new_sound_source(mtmp->mx, mtmp->my,
+                                mon_ambient_sound(mtmp->data), mon_ambient_volume(mtmp->data),
+                                SOUNDSOURCE_MONSTER, (genericptr_t)mtmp);
                     }
                 }
                 break;

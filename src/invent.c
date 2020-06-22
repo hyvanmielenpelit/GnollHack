@@ -752,6 +752,8 @@ struct obj **potmp, **pobj;
         /* really should merge the timeouts */
         if (obj->lamplit)
             obj_merge_light_sources(obj, otmp);
+        if (obj->makingsound)
+            obj_merge_sound_sources(obj, otmp);
         if (obj->timed)
             obj_stop_timers(obj); /* follows lights */
 

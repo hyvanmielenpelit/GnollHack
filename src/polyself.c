@@ -439,7 +439,7 @@ polyself(psflags)
 int psflags;
 {
     char buf[BUFSZ] = DUMMY;
-    int old_light, new_light, mntmp, class, tryct;
+    int old_light, new_light, old_ambient, new_ambient, mntmp, class, tryct;
     boolean forcecontrol = (psflags == 1), monsterpoly = (psflags == 2),
             draconian = (uarm && is_dragon_scale_armor(uarm)),
 			bullheaded =
@@ -476,6 +476,7 @@ int psflags;
         }
     }
     old_light = emitted_light_range(youmonst.data);
+    old_ambient = mon_ambient_sound(youmonst.data);
     mntmp = NON_PM;
 
     if (monsterpoly && isvamp)
@@ -707,6 +708,17 @@ made_change:
         if (new_light)
             new_light_source(u.ux, u.uy, new_light, LS_MONSTER,
                              monst_to_any(&youmonst));
+    }
+    new_ambient = mon_ambient_sound(youmonst.data);
+    if (old_ambient != new_ambient)
+    {
+        if (old_ambient)
+            del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(&youmonst));
+        if (new_ambient == 1)
+            ++new_ambient; /* otherwise it's undetectable */
+        if (new_ambient)
+            new_sound_source(u.ux, u.uy, new_ambient, mon_ambient_volume(youmonst.data), SOUNDSOURCE_MONSTER,
+                monst_to_any(&youmonst));
     }
 }
 
@@ -1417,6 +1429,9 @@ rehumanize()
 
     if (emitted_light_range(youmonst.data))
         del_light_source(LS_MONSTER, monst_to_any(&youmonst));
+    if (mon_ambient_sound(youmonst.data))
+        del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(&youmonst));
+
     polyman("return to %s form!", urace.adj);
 
     if (u.uhp < 1) {

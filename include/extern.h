@@ -2690,6 +2690,9 @@ E void FDECL(obj_merge_sound_sources, (struct obj*, struct obj*));
 E void FDECL(obj_adjust_sound_volume, (struct obj*, int));
 E void FDECL(begin_sound, (struct obj*, BOOLEAN_P));
 E void FDECL(end_sound, (struct obj*, BOOLEAN_P));
+E boolean FDECL(obj_has_sound_source, (struct obj*));
+E enum ghsound_types FDECL(obj_ambient_sound, (struct obj*));
+E int FDECL(obj_ambient_sound_volume, (struct obj*));
 
 /* ### sys.c ### */
 
