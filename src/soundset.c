@@ -6,6 +6,7 @@
 #include "lev.h" /* for checking save modes */
 
 NEARDATA struct soundsource_t* sound_base = 0;
+STATIC_DCL void FDECL(set_hearing_array, (int, int, double));
 
 
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1] =
@@ -109,9 +110,6 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
     }
 };
 
-STATIC_DCL void FDECL(set_hearing_array, (int, int, int));
-
-//char hearing_array[COLNO][ROWNO] = { 0 };
 
 
 void
@@ -203,19 +201,20 @@ dosetsoundvolume()
 }
 
 void
-update_hearing_array()
+update_hearing_array(mode)
+int mode; /* 0 = normal, 1 = clear */
 {
 	/* Clear array*/
 	memset(hearing_array, 0, sizeof(hearing_array));
 
 	/* Can't hear anything */
-	if (Deaf)
+	if (Deaf || mode == 1)
 		return;
 
 	int hear_distance = get_max_hearing_distance();
 
 	/* Fill the array */
-	hearing_array[u.ux][u.uy] = 100;
+	hearing_array[u.ux][u.uy] = 1.0f;
 
 	for (int r = 1; r <= hear_distance; r++)
 	{
@@ -255,12 +254,12 @@ update_hearing_array()
 			
 			for (int x = x_min_adjusted; x <= x_max_adjusted; x++)
 			{
-				int prev_hearing = 0;
+				float prev_hearing = 0.0f;
 				int prev_y = (i == 0) ? y + 1 : y - 1;
 
 				if (r == 1)
 				{
-					prev_hearing = 100;
+					prev_hearing = 1.0f;
 				}
 				else if (prev_y > y_max_adjusted || prev_y < y_min_adjusted)
 				{
@@ -268,7 +267,7 @@ update_hearing_array()
 				}
 				else
 				{
-					int maximum = 0;
+					float maximum = 0.0f;
 
 					/* Take maximum from above or below from the previous round */
 					for (int prev_x = max(x_min_adjusted + 1, x - 1); prev_x <= min(x_max_adjusted - 1, x + 1); prev_x++)
@@ -283,7 +282,7 @@ update_hearing_array()
 					prev_hearing = maximum;
 				}
 
-				if (prev_hearing == 0)
+				if (prev_hearing == 0.0f)
 				{
 					continue;
 					/* Current hearing is 0, too */
@@ -308,12 +307,12 @@ update_hearing_array()
 
 			for (int y = y_min_adjusted + (horizontal_min_done ? 1 : 0); y <= upper_y_limit; y++)
 			{
-				int prev_hearing = 0;
+				float prev_hearing = 0.0f;
 				int prev_x = (i == 0) ? x + 1 : x - 1;
 
 				if (r == 1)
 				{
-					prev_hearing = 100;
+					prev_hearing = 1.0f;
 				}
 				else if (prev_x > x_max_adjusted || prev_x < x_min_adjusted)
 				{
@@ -321,7 +320,7 @@ update_hearing_array()
 				}
 				else
 				{
-					int maximum = 0;
+					float maximum = 0.0f;
 					for (int prev_y = max(y_min_adjusted + 1, y - 1); prev_y <= min(y_max_adjusted - 1, y + 1); prev_y++)
 					{
 						maximum = max(maximum, hearing_array[prev_x][prev_y]);
@@ -334,7 +333,7 @@ update_hearing_array()
 					prev_hearing = maximum;
 				}
 
-				if (prev_hearing == 0)
+				if (prev_hearing == 0.0f)
 				{
 					continue;
 					/* Current hearing is 0, too */
@@ -358,7 +357,7 @@ update_hearing_array()
 
 			for (int y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
 			{
-				if(hearing_array[x][y + 1] > 0)
+				if(hearing_array[x][y + 1] > 0.0f)
 					set_hearing_array(x, y, hearing_array[x][y + 1]);
 			}
 		}
@@ -375,8 +374,8 @@ update_hearing_array()
 
 			for (int x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
 			{
-				if (hearing_array[x + 1][y] > 0)
-					set_hearing_array(x, y, hearing_array[x][y + 1]);
+				if (hearing_array[x + 1][y] > 0.0f)
+					set_hearing_array(x, y, hearing_array[x + 1][y]);
 			}
 		}
 	}
@@ -385,7 +384,8 @@ update_hearing_array()
 
 STATIC_OVL
 void set_hearing_array(x, y, prev_hearing)
-int x, y, prev_hearing;
+int x, y;
+double prev_hearing;
 {
 	struct monst* mtmp;
 	if (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
@@ -398,13 +398,13 @@ int x, y, prev_hearing;
 	}
 	else if (IS_DOOR(levl[x][y].typ) && (levl[x][y].doormask != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
 	{
-		int new_hearing = (char)max(0, min(127, prev_hearing / 3 - 5));
+		float new_hearing = (float)max(0.0f, min(1.0f, (prev_hearing) / (10.0f * 2.0f)));
 		if(new_hearing > hearing_array[x][y])
 			hearing_array[x][y] = new_hearing;
 	}
 	else
 	{
-		int new_hearing = (char)max(0, min(127, prev_hearing - 8));
+		float new_hearing = (float)max(0.0f, min(1.0f, (prev_hearing) / 2.0f));
 		if (new_hearing > hearing_array[x][y])
 			hearing_array[x][y] = new_hearing;
 	}
@@ -414,28 +414,37 @@ int x, y, prev_hearing;
 void
 update_ambient_sounds()
 {
-    for (struct soundsource_t* curr = sound_base; curr; curr->next)
+    for (struct soundsource_t* curr = sound_base; curr; curr = curr->next)
     {
         if (!isok(curr->x, curr->y))
             continue;
 
-        char hearing_volume = hearing_array[curr->x][curr->y];
+        float old_heard_volume = curr->heard_volume;
+        float hearing_volume = hearing_array[curr->x][curr->y];
         float total_volume = 0.0f;
-        if (hearing_volume > 0)
+        if (hearing_volume > 0.0f)
         {
             char source_volume = curr->source_volume;
-            total_volume = (((float)source_volume * (float)hearing_volume) / 10000.0f);
+            total_volume = (((float)source_volume * hearing_volume) / 100.0f);
         }
         curr->heard_volume = total_volume;
-        set_ambient_ghsound_volume(curr);
+        if(curr->heard_volume != old_heard_volume)
+            set_ambient_ghsound_volume(curr);
     }
 }
 
 void
 update_hearing_array_and_ambient_sounds()
 {
-	update_hearing_array();
+	update_hearing_array(0);
 	update_ambient_sounds();
+}
+
+void
+clear_hearing_array_and_ambient_sounds()
+{
+    update_hearing_array(1);
+    update_ambient_sounds();
 }
 
 int get_max_hearing_distance()
@@ -528,7 +537,7 @@ anything* id;
     ss->y = y;
     ss->ghsound = ghsound;
     ss->source_volume = absvolume;
-    ss->heard_volume = ((float)absvolume * (float)hearing_array[x][y]) / 10000.0f;
+    ss->heard_volume = ((float)absvolume * hearing_array[x][y]) / 100.0f;
     ss->type = type;
     ss->id = *id;
     ss->flags = volume < 0 ? SSF_SILENCE_SOURCE : 0;
@@ -587,7 +596,8 @@ anything* id;
             else
                 sound_base = curr->next;
 
-            delete_ambient_ghsound(curr);
+            if (delete_ambient_ghsound != 0)
+                delete_ambient_ghsound(curr);
 
             free((genericptr_t)curr);
             hearing_full_recalc = 1;
@@ -651,7 +661,8 @@ int fd, mode, volume;
             if (is_global ^ (volume == RANGE_LEVEL)) 
             {
                 *prev = curr->next;
-                delete_ambient_ghsound(curr);
+                if(delete_ambient_ghsound != 0)
+                    delete_ambient_ghsound(curr);
                 free((genericptr_t)curr);
             }
             else
@@ -681,6 +692,7 @@ int fd;
         mread(fd, (genericptr_t)ss, sizeof(sound_source));
         ss->next = sound_base;
         sound_base = ss;
+        add_ambient_ghsound(ss);
     }
 }
 
@@ -1156,6 +1168,28 @@ struct obj* obj;
         return 0;
 
     return object_soundsets[objects[obj->otyp].oc_soundset].ambient_volume;
+}
+
+enum ghsound_types
+get_location_ambient_sound_type(x, y, volume_ptr)
+xchar x, y;
+int* volume_ptr;
+{
+    if (!isok(x, y))
+        return GHSOUND_NONE;
+
+    struct rm* lev = &levl[x][y];
+
+    /* Fountains have a water sound */
+    if (lev->typ == FOUNTAIN)
+    {
+        if (volume_ptr)
+            *volume_ptr = 100;
+
+        return GHSOUND_FOUNTAIN;
+    }
+
+    return GHSOUND_NONE;
 }
 
 /* soundset.c */

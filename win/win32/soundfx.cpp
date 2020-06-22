@@ -65,6 +65,8 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS + 1] = {
     NoSound,
     NoSound,
     NoSound,
+    NoSound,
+    { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0},
     NoSound
 };
 
@@ -312,11 +314,12 @@ extern "C"
         result = ambientInstance->start();
         if (result != FMOD_OK)
         {
+            result = ambientInstance->release();
             free(new_ghs_instance);
             return FALSE;
         }
 
-        memset((void*)new_ghs_instance, 0, sizeof(GNHSoundInstance));
+        memset((void*)new_ghs_instance, 0, sizeof(new_ghs_instance));
         new_ghs_instance->next_instance = ambient_base;
         ambient_base = new_ghs_instance;
         
@@ -326,6 +329,8 @@ extern "C"
         result = fmod_studio_system->update();
         if (result != FMOD_OK)
             return FALSE;
+
+        *ambient_sound_ptr_ptr = (void*)new_ghs_instance;
 
         return TRUE;
     }
@@ -337,7 +342,20 @@ extern "C"
             return FALSE;
 
         FMOD_RESULT result;
+        boolean found = FALSE;
         GNHSoundInstance* ghs_ptr = (GNHSoundInstance*)ambient_sound_ptr;
+        for (GNHSoundInstance* ghs_curr = ambient_base; ghs_curr; ghs_curr = ghs_curr->next_instance)
+        {
+            if (ghs_curr == ghs_ptr)
+            {
+                found = TRUE;
+                break;
+            }
+        }
+
+        if (!found)
+            return FALSE;
+
         if (!ghs_ptr->eventInstance)
             return FALSE;
 
@@ -387,7 +405,20 @@ extern "C"
         if (!ghs_ptr->eventInstance)
             return FALSE;
 
+        float old_volume;
+        result = ghs_ptr->eventInstance->getVolume(&old_volume);
+        if (result != FMOD_OK)
+            return FALSE;
+
         result = ghs_ptr->eventInstance->setVolume(fmod_volume * general_sound_effects_volume * general_volume);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        if (old_volume == 0.0f && fmod_volume > 0.0f)
+            result = ghs_ptr->eventInstance->start();
+        else if (old_volume > 0.0f && fmod_volume == 0.0f)
+            result = ghs_ptr->eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+
         if (result != FMOD_OK)
             return FALSE;
 

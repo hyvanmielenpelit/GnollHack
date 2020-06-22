@@ -470,7 +470,6 @@ E int NDECL(get_current_cmap_type_index);
 E int FDECL(get_missile_index, (int, int));
 E void FDECL(display_self_with_extra_info, (unsigned long, int dmg_received));
 E int FDECL(get_location_light_range, (xchar, xchar));
-E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, int*));
 
 
 /* ### do.c ### */
@@ -2669,9 +2668,10 @@ E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, int, int, unsigned long));
 E enum player_soundset_types NDECL(get_player_soundset);
 E void NDECL(dosetsoundvolume);
-E void NDECL(update_hearing_array);
+E void FDECL(update_hearing_array, (int));
 E void NDECL(update_ambient_sounds);
 E void NDECL(update_hearing_array_and_ambient_sounds);
+E void NDECL(clear_hearing_array_and_ambient_sounds);
 E int NDECL(get_max_hearing_distance);
 E void FDECL(update_hearing_array_and_ambient_sounds_if_point_within_hearing_range, (int, int));
 E void FDECL(unblock_vision_and_hearing_at_point, (int, int));
@@ -2694,6 +2694,7 @@ E void FDECL(end_sound, (struct obj*, BOOLEAN_P));
 E boolean FDECL(obj_has_sound_source, (struct obj*));
 E enum ghsound_types FDECL(obj_ambient_sound, (struct obj*));
 E int FDECL(obj_ambient_sound_volume, (struct obj*));
+E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, int*));
 
 /* ### sys.c ### */
 

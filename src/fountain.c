@@ -210,6 +210,7 @@ boolean isyou;
                 return;
         }
         /* replace the fountain with ordinary floor */
+		delete_location(x, y);
         levl[x][y].typ = ROOM, levl[x][y].flags = 0;
         levl[x][y].blessedftn = 0;
         if (cansee(x, y))

@@ -297,7 +297,7 @@ NEARDATA char **viz_array = 0; /* used in cansee() and couldsee() macros */
 
 /* Vision */
 NEARDATA boolean hearing_full_recalc = 0;
-NEARDATA char hearing_array[COLNO][ROWNO] = { 0 };
+NEARDATA float hearing_array[COLNO][ROWNO] = { 0 };
 
 /* Global windowing data, defined here for multi-window-system support */
 NEARDATA winid WIN_MESSAGE = WIN_ERR;
