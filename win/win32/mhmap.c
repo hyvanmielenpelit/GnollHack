@@ -1167,7 +1167,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(otmp_round), &autodraw);
-                    ntile = maybe_get_animated_tile(ntile, data->interval_counter, &data->mapAnimated[i][j], &autodraw);
+                    if(context.action_animation_layer == base_layer && context.action_animation_x == enl_i && context.action_animation_y == enl_j)
+                        ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &data->mapAnimated[i][j], &autodraw);
+                    else
+                        ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &data->mapAnimated[i][j], &autodraw);
+                    
                     if (enlarg_idx >= 0)
                     {
                         if (tile2enlargement[ntile] > 0)
@@ -1901,7 +1905,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
                                 mtile = maybe_get_replaced_tile(mtile, i, j, obj_to_replacement_info(otmp_round), (enum auto_drawtypes*)0);
-                                mtile = maybe_get_animated_tile(mtile, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
+                                mtile = maybe_get_animated_tile(mtile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
                                 /* Define draw location in target */
@@ -2070,7 +2074,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int cglyph = flags.active_cursor_style + GLYPH_CURSOR_OFF;
                             int ctile = glyph2tile[cglyph];
                             ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
-                            ctile = maybe_get_animated_tile(ctile, data->interval_counter, &data->mapAnimated[i][j], (enum autodraw_types*)0);
+                            ctile = maybe_get_animated_tile(ctile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
 
@@ -2379,6 +2383,7 @@ static void dirty(PNHMapWindow data, int x, int y)
     }
 
     /* Now this tile */
+#if 0
     short tile = glyph2tile[abs(data->map[x][y].glyph)];
     short bktile = glyph2tile[abs(data->map[x][y].bkglyph)];
     short replacement_idx = tile2replacement[tile];
@@ -2386,10 +2391,11 @@ static void dirty(PNHMapWindow data, int x, int y)
     tile = maybe_get_replaced_tile(tile, x, y, obj_to_replacement_info(level.objects[x][y]), (enum autodraw_types*)0);
     bktile = maybe_get_replaced_tile(bktile, x, y, zeroreplacementinfo, (enum autodraw_types*)0);
 
-    tile = maybe_get_animated_tile(tile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
-    bktile = maybe_get_animated_tile(bktile, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
+    tile = maybe_get_animated_tile(tile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
+    bktile = maybe_get_animated_tile(bktile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, (boolean*)0, (enum autodraw_types*)0);
+#endif
 
-    for (int layer_idx = -2; layer_idx < MAX_LAYERS; layer_idx++)
+    for (enum layer_types layer_idx = LAYER_FLOOR/*-2*/; layer_idx < MAX_LAYERS; layer_idx++)
     {
         int layer_rounds = 1;
         struct obj* otmp = (struct obj*)0;
@@ -2408,11 +2414,14 @@ static void dirty(PNHMapWindow data, int x, int y)
                 otmp = otmp->nexthere;
 
             int enlarg = 0;
+#if 0
             if(layer_idx == -1)
                 enlarg = tile2enlargement[tile];
             else if(layer_idx == -2)
                 enlarg = tile2enlargement[bktile];
-            else if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
+            else 
+#endif 
+            if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
             {
                 if(otmp)
                     enlarg = tile2enlargement[glyph2tile[abs(obj_to_glyph(otmp, rn2_on_display_rng))]];

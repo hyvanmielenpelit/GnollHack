@@ -389,6 +389,13 @@ chainin_delay_output()
     (*cibase->nprocs->win_delay_output)(cibase->ndata);
 }
 
+void
+chainin_delay_output_milliseconds(interval)
+int interval;
+{
+    (*cibase->nprocs->win_delay_output_milliseconds)(cibase->ndata, interval);
+}
+
 #ifdef CHANGE_COLOR
 void
 chainin_change_color(color, value, reverse)
@@ -551,7 +558,7 @@ struct window_procs chainin_procs = {
     chainin_print_glyph, chainin_raw_print, chainin_raw_print_bold,
     chainin_nhgetch, chainin_nh_poskey, chainin_nhbell,
     chainin_doprev_message, chainin_yn_function, chainin_getlin,
-    chainin_get_ext_cmd, chainin_number_pad, chainin_delay_output,
+    chainin_get_ext_cmd, chainin_number_pad, chainin_delay_output, chainin_delay_output_milliseconds,
 #ifdef CHANGE_COLOR
     chainin_change_color,
 #ifdef MAC

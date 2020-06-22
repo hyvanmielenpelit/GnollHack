@@ -719,6 +719,25 @@ tty_delay_output()
     }
 }
 
+void
+tty_delay_output_milliseconds(interval)
+int interval;
+{
+    /* delay 50 ms - uses ANSI C clock() function now */
+    clock_t goal;
+    int k;
+
+    goal = interval + clock();
+    back_buffer_flip();
+    if (iflags.debug_fuzzer)
+        return;
+
+    while (goal > clock()) {
+        k = junk; /* Do nothing */
+    }
+}
+
+
 #ifdef TEXTCOLOR
 /*
  * CLR_BLACK		0

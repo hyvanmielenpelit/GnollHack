@@ -5153,6 +5153,12 @@ void NetHackQtBind::qt_delay_output()
     delay.wait();
 }
 
+void NetHackQtBind::qt_delay_output_milliseconds(int interval)
+{
+    NetHackQtDelay delay(interval / 3);
+    delay.wait();
+}
+
 void NetHackQtBind::qt_start_screen()
 {
     // Ignore.
@@ -5282,6 +5288,7 @@ struct window_procs Qt_procs = {
     NetHackQtBind::qt_get_ext_cmd,
     NetHackQtBind::qt_number_pad,
     NetHackQtBind::qt_delay_output,
+    NetHackQtBind::qt_delay_output_milliseconds,
 #ifdef CHANGE_COLOR     /* only a Mac option currently */
     donull,
     donull,

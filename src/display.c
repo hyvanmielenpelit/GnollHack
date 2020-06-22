@@ -2074,7 +2074,14 @@ void
 newsym_force(x, y)
 register int x, y;
 {
-    newsym(x,y);
+    newsym(x, y);
+    force_redraw_at(x, y);
+}
+
+void
+force_redraw_at(x, y)
+register int x, y;
+{
     gbuf[y][x].new = 1;
     if (gbuf_start[y] > x)
         gbuf_start[y] = x;

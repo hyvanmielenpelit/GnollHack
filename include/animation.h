@@ -142,6 +142,12 @@ extern NEARDATA struct enlargement_definition enlargements[];
 #define MAX_FRAMES_PER_ANIMATION 32
 #define MAX_TILES_PER_ANIMATION MAX_FRAMES_PER_ANIMATION
 
+enum animation_play_types
+{
+    ANIMATION_PLAY_TYPE_ALWAYS = 0,
+    ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY
+};
+
 enum main_tile_use_types
 {
     ANIMATION_MAIN_TILE_USE_FIRST = 0,
@@ -155,6 +161,7 @@ struct animation_definition {
     char number_of_frames;
     int glyph_offset;
     int intervals_between_frames;
+    enum animation_play_types play_type;
     enum main_tile_use_types main_tile_use_style; /* 0 = play as first tile and frame, 1 = play as last tile and frame, 2 = ignore */
     enum autodraw_types  main_tile_autodraw;
     char frame2tile[MAX_FRAMES_PER_ANIMATION];
@@ -175,6 +182,7 @@ enum animation_types
     KOBOLD_ANIMATION,
     LARGE_KOBOLD_ANIMATION,
     KOBOLD_LORD_ANIMATION,
+    PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION,
     TWISTED_CANDLE_LIT_ANIMATION /* Keep this last */
 };
 
@@ -200,7 +208,9 @@ enum animation_types
 #define LARGE_KOBOLD_ANIMATION_FRAMES 1
 #define KOBOLD_LORD_ANIMATION_OFF (LARGE_KOBOLD_ANIMATION_FRAMES + LARGE_KOBOLD_ANIMATION_OFF)
 #define KOBOLD_LORD_ANIMATION_FRAMES 1
-#define TWISTED_CANDLE_ANIMATION_OFF (KOBOLD_LORD_ANIMATION_FRAMES + KOBOLD_LORD_ANIMATION_OFF)
+#define PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_OFF (KOBOLD_LORD_ANIMATION_FRAMES + KOBOLD_LORD_ANIMATION_OFF)
+#define PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_FRAMES 4
+#define TWISTED_CANDLE_ANIMATION_OFF (PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_FRAMES + PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_OFF)
 #define TWISTED_CANDLE_ANIMATION_FRAMES 1
 
 #define MAX_ANIMATION_FRAMES (TWISTED_CANDLE_ANIMATION_FRAMES + TWISTED_CANDLE_ANIMATION_OFF)

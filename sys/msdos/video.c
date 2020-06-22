@@ -389,6 +389,18 @@ tty_delay_output()
 }
 
 void
+tty_delay_output_milliseconds(int interval)
+{
+#ifdef TIMED_DELAY
+    if (flags.nap) {
+        (void)fflush(stdout);
+        msleep(interval); /* sleep for interval milliseconds */
+        return;
+    }
+#endif
+}
+
+void
 tty_end_screen()
 {
     if (!iflags.grmode) {

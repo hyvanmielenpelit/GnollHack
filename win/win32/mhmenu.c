@@ -272,7 +272,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected,
         }
     }
 
-    //SetTimer(hWnd, 0, ANIMATION_TIMER_INTERVAL * 5, NULL); /* Slow motion */
+    //SetTimer(hWnd, 0, ANIMATION_TIMER_INTERVAL, NULL);
 
 
     return ret_val;
@@ -1182,7 +1182,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             ntile = maybe_get_replaced_tile(ntile, -1, -1,
                 obj_to_replacement_info(item->object_data.otyp > STRANGE_OBJECT ? &item->object_data : (struct obj*)0),
                 &autodraw);
-            //ntile = maybe_get_animated_tile(ntile, data->intervalCounter, &item->is_animated, &autodraw);
+            //ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->intervalCounter, &item->is_animated, &autodraw);
             int multiplier = flip_tile ? -1 : 1;
 
             int source_top_added = 0;

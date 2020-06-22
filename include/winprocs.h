@@ -61,6 +61,7 @@ struct window_procs {
     int NDECL((*win_get_ext_cmd));
     void FDECL((*win_number_pad), (int));
     void NDECL((*win_delay_output));
+    void FDECL((*win_delay_output_milliseconds), (int));
 #ifdef CHANGE_COLOR
     void FDECL((*win_change_color), (int, long, int));
 #ifdef MAC
@@ -151,6 +152,7 @@ extern
 #define get_ext_cmd (*windowprocs.win_get_ext_cmd)
 #define number_pad (*windowprocs.win_number_pad)
 #define delay_output (*windowprocs.win_delay_output)
+#define delay_output_milliseconds (*windowprocs.win_delay_output_milliseconds)
 #ifdef CHANGE_COLOR
 #define change_color (*windowprocs.win_change_color)
 #ifdef MAC
@@ -393,6 +395,7 @@ struct chain_procs {
     int FDECL((*win_get_ext_cmd), (CARGS));
     void FDECL((*win_number_pad), (CARGS, int));
     void FDECL((*win_delay_output), (CARGS));
+    void FDECL((*win_delay_output_milliseconds), (CARGS, int));
 #ifdef CHANGE_COLOR
     void FDECL((*win_change_color), (CARGS, int, long, int));
 #ifdef MAC
@@ -468,6 +471,7 @@ extern void FDECL(safe_getlin, (const char *, char *));
 extern int NDECL(safe_get_ext_cmd);
 extern void FDECL(safe_number_pad, (int));
 extern void NDECL(safe_delay_output);
+extern void FDECL(safe_delay_output_milliseconds, (int));
 #ifdef CHANGE_COLOR
 extern void FDECL(safe_change_color, (int, long, int));
 #ifdef MAC

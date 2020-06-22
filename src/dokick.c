@@ -1123,7 +1123,6 @@ dokick() {
         return 0;
 
     update_u_facing(TRUE);
-    update_u_action(ACTION_TILE_KICK);
 
     x = u.ux + u.dx;
     y = u.uy + u.dy;
@@ -1152,6 +1151,7 @@ dokick() {
             }
             /*FALLTHRU*/
         default:
+            update_u_action(ACTION_TILE_KICK);
             Your("feeble kick has no effect.");
             break;
         }
@@ -1161,6 +1161,7 @@ dokick() {
 	else if (u.utrap && u.utraptype == TT_PIT) 
 	{
         /* must be Passes_walls */
+        update_u_action(ACTION_TILE_KICK);
         You("kick at the side of the pit.");
         update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
@@ -1180,7 +1181,6 @@ dokick() {
             && (!Is_airlevel(&u.uz) || !OBJ_AT(xx, yy))) 
 		{
             You("have nothing to brace yourself against.");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return 0;
         }
     }
@@ -1195,11 +1195,11 @@ dokick() {
         oldglyph = glyph_at(x, y);
         if (!maybe_kick_monster(mtmp, x, y))
         {
-            update_u_action(ACTION_TILE_NO_ACTION);
             return context.move;
         }
     }
 
+    update_u_action(ACTION_TILE_KICK);
     wake_nearby();
     u_wipe_engr(2);
 

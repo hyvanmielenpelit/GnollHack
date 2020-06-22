@@ -241,6 +241,7 @@
 #define tty_nhbell() tty_nhbell_()
 #define tty_number_pad(x) tty_number_pad_(x)
 #define tty_delay_output() tty_delay_output_()
+#define tty_delay_output_milliseconds() tty_delay_output_milliseconds_()
 #define tty_start_screen() tty_start_screen_()
 #define tty_end_screen() tty_end_screen_()
 

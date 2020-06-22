@@ -67,6 +67,7 @@ struct window_procs curses_procs = {
     curses_get_ext_cmd,
     curses_number_pad,
     curses_delay_output,
+    curses_delay_output_milliseconds,
 #ifdef CHANGE_COLOR             /* only a Mac option currently */
     donull,
     donull,
@@ -868,6 +869,15 @@ curses_delay_output()
      * but that's why we're here */
     refresh();
     napms(50);
+}
+
+void
+curses_delay_output_milliseconds(int interval)
+{
+    /* refreshing the whole display is a waste of time,
+     * but that's why we're here */
+    refresh();
+    napms(interval);
 }
 
 /*

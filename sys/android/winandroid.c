@@ -50,6 +50,7 @@ static void FDECL(and_getlin, (const char *,char *));
 static int NDECL(and_get_ext_cmd);
 static void FDECL(and_number_pad, (int));
 static void NDECL(and_delay_output);
+static void FDECL(and_delay_output_milliseconds, (int));
 #ifdef CHANGE_COLOR
 static void FDECL(and_change_color,(int color,long rgb,int reverse));
 static char * NDECL(and_get_color_string);
@@ -113,6 +114,7 @@ struct window_procs and_procs = {
 	and_get_ext_cmd,
 	and_number_pad,
 	and_delay_output,
+	and_delay_output_milliseconds,
 #ifdef CHANGE_COLOR
 	and_change_color,
 	and_get_color_string,
@@ -2125,6 +2127,12 @@ void and_number_pad(int state)
 void and_delay_output()
 {
 //	debuglog("and_delay_output()");
+	JNICallV(jDelayOutput);
+}
+
+void and_delay_output_milliseconds(int interval)
+{
+	//	debuglog("and_delay_output()");
 	JNICallV(jDelayOutput);
 }
 

@@ -2831,6 +2831,13 @@ Gem_delay_output()
     Event_Timer(50, 0, FALSE); /* wait 50ms */
 }
 
+void
+Gem_delay_output_milliseconds(interval)
+int interval;
+{
+    Event_Timer(interval, 0, FALSE); /* wait 50ms */
+}
+
 int
 Gem_doprev_message()
 {

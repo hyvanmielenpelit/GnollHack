@@ -11,11 +11,15 @@
 
 #ifndef PROP_H
 #include "prop.h"
-#endif // !PROP_H
+#endif
 
 #ifndef FOUNTAIN_H
 #include "fountain.h"
-#endif // !FOUNTAIN_H
+#endif 
+
+#ifndef ANIMATION_H
+#include "animation.h"
+#endif 
 
 #define CONTEXTVERBSZ 30
 
@@ -182,6 +186,10 @@ struct context_info
     struct tribute_info tribute;
     struct novel_tracking novel;
     uchar used_fountain_variation[MAX_FOUNTAINS];
+    enum layer_types action_animation_layer;
+    uchar action_animation_x;
+    uchar action_animation_y;
+    uchar action_animation_frame;
 };
 
 extern NEARDATA struct context_info context;

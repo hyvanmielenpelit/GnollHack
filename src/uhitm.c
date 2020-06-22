@@ -4609,50 +4609,98 @@ uchar update_symbol;
 }
 
 void
-update_u_action(attack_mode)
-uchar attack_mode;
+update_u_action(action)
+uchar action;
 {
-	uchar attacking_before = u.action;
-	u.action = attack_mode;
-	if (iflags.using_gui_tiles && attacking_before != u.action)
+	uchar action_before = u.action;
+	u.action = action;
+	if (iflags.using_gui_tiles && action_before != u.action)
 	{
-		newsym(u.ux, u.uy);
-		flush_screen(1);
-		delay_output();
-		if (u.action != ACTION_TILE_NO_ACTION)
+		enum animation_types anim = get_player_animation(action, urole.rolenum, urace.racenum, flags.female, u.ualign.type + 1, 0);
+		if (u.action != ACTION_TILE_NO_ACTION && anim > 0
+			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY && !u.usteed)
 		{
+			context.action_animation_layer = LAYER_MONSTER;
+			context.action_animation_x = u.ux;
+			context.action_animation_y = u.uy;
+			context.action_animation_frame = 0;
+			newsym(u.ux, u.uy);
+			for (int frame = 0; frame < animations[anim].number_of_frames; frame++)
+			{
+				force_redraw_at(u.ux, u.uy);
+				flush_screen(0);
+				delay_output_milliseconds(ANIMATION_FRAME_INTERVAL * animations[anim].intervals_between_frames);
+				context.action_animation_frame += animations[anim].intervals_between_frames;
+			}
+			context.action_animation_layer = 0;
+			context.action_animation_x = 0;
+			context.action_animation_y = 0;
+			context.action_animation_frame = 0;
+		}
+		else
+		{
+			newsym(u.ux, u.uy);
+			flush_screen(1);
 			delay_output();
-			delay_output();
+			if (u.action != ACTION_TILE_NO_ACTION)
+			{
+				delay_output();
+				delay_output();
+			}
 		}
 	}
 }
 
 void
-update_m_action(mtmp, attack_mode)
+update_m_action(mtmp, action)
 struct monst* mtmp;
-uchar attack_mode;
+uchar action;
 {
 	if (!mtmp)
 		return;
 
 	if (mtmp == &youmonst)
 	{
-		update_u_action(attack_mode);
+		update_u_action(action);
 		return;
 	}
 
-	uchar attacking_before = mtmp->action;
-	mtmp->action = attack_mode;
+	uchar action_before = mtmp->action;
+	mtmp->action = action;
 
-	if (iflags.using_gui_tiles && canseemon(mtmp) && attacking_before != mtmp->action)
+	if (iflags.using_gui_tiles && canseemon(mtmp) && action_before != mtmp->action)
 	{
-		newsym(mtmp->mx, mtmp->my);
-		flush_screen(0);
-		delay_output();
-		if (mtmp->action != ACTION_TILE_NO_ACTION)
+		enum animation_types anim = mtmp->data->animation.actions[action];
+		if (mtmp->action != ACTION_TILE_NO_ACTION && anim > 0
+			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
 		{
+			context.action_animation_layer = LAYER_MONSTER;
+			context.action_animation_x = mtmp->mx;
+			context.action_animation_y = mtmp->my;
+			context.action_animation_frame = 0;
+			newsym(mtmp->mx, mtmp->my);
+			for (int frame = 0; frame < animations[anim].number_of_frames; frame++)
+			{
+				force_redraw_at(mtmp->mx, mtmp->my);
+				flush_screen(0);
+				delay_output_milliseconds(ANIMATION_FRAME_INTERVAL * animations[anim].intervals_between_frames);
+				context.action_animation_frame += animations[anim].intervals_between_frames;
+			}
+			context.action_animation_layer = 0;
+			context.action_animation_x = 0;
+			context.action_animation_y = 0;
+			context.action_animation_frame = 0;
+		}
+		else
+		{
+			newsym(mtmp->mx, mtmp->my);
+			flush_screen(0);
 			delay_output();
-			delay_output();
+			if (mtmp->action != ACTION_TILE_NO_ACTION)
+			{
+				delay_output();
+				delay_output();
+			}
 		}
 	}
 }

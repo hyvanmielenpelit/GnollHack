@@ -84,7 +84,7 @@
 
 #define MAX_LOADSTRING 100
 
-#define ANIMATION_TIMER_INTERVAL 40 // milliseconds (25 FPS)
+#define ANIMATION_TIMER_INTERVAL ANIMATION_FRAME_INTERVAL // milliseconds (25 FPS)
 
 
 typedef struct mswin_nhwindow_data {
@@ -201,6 +201,7 @@ void mswin_getlin(const char *question, char *input);
 int mswin_get_ext_cmd(void);
 void mswin_number_pad(int state);
 void mswin_delay_output(void);
+void mswin_delay_output_milliseconds(int interval);
 void mswin_change_color(void);
 char *mswin_get_color_string(void);
 void mswin_start_screen(void);

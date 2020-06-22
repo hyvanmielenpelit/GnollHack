@@ -58,8 +58,8 @@ struct window_procs Gem_procs = {
 #endif
     Gem_print_glyph, Gem_raw_print, Gem_raw_print_bold, Gem_nhgetch,
     Gem_nh_poskey, Gem_nhbell, Gem_doprev_message, Gem_yn_function,
-    Gem_getlin, Gem_get_ext_cmd, Gem_number_pad, Gem_delay_output,
-#ifdef CHANGE_COLOR /* the Mac uses a palette device */
+    Gem_getlin, Gem_get_ext_cmd, Gem_number_pad, Gem_delay_output, Gem_delay_output_milliseconds,
+#ifdef CHANGE_COLOR /* the Mac uses a palette device */ 
     Gem_change_color,
 #ifdef MAC
     Gem_change_background, Gem_set_font_name,

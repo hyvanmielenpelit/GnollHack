@@ -114,6 +114,7 @@ extern void curses_getlin(const char *question, char *input);
 extern int curses_get_ext_cmd(void);
 extern void curses_number_pad(int state);
 extern void curses_delay_output(void);
+extern void curses_delay_output_milliseconds(int interval);
 extern void curses_start_screen(void);
 extern void curses_end_screen(void);
 extern void curses_outrip(winid wid, int how);

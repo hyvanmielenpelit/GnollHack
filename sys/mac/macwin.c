@@ -1770,6 +1770,17 @@ mac_delay_output(void)
     }
 }
 
+void
+mac_delay_output_milliseconds(int interval)
+{
+    long destTicks = (TickCount() * interval) / 50 + 1;
+
+    while (TickCount() < destTicks) 
+    {
+        mac_get_nh_event();
+    }
+}
+
 #ifdef CLIPPING
 static void
 mac_cliparound(int x, int y)
@@ -3275,7 +3286,7 @@ struct window_procs mac_procs = {
 #endif
     tty_print_glyph, tty_raw_print, tty_raw_print_bold, mac_nhgetch,
     mac_nh_poskey, tty_nhbell, mac_doprev_message, mac_yn_function,
-    mac_getlin, mac_get_ext_cmd, mac_number_pad, mac_delay_output,
+    mac_getlin, mac_get_ext_cmd, mac_number_pad, mac_delay_output, mac_delay_output_milliseconds,
 #ifdef CHANGE_COLOR
     tty_change_color, tty_change_background, set_tty_font_name,
     tty_get_color_string,

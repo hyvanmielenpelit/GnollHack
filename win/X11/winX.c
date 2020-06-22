@@ -123,7 +123,7 @@ struct window_procs X11_procs = {
 #endif
     X11_print_glyph, X11_raw_print, X11_raw_print_bold, X11_nhgetch,
     X11_nh_poskey, X11_nhbell, X11_doprev_message, X11_yn_function,
-    X11_getlin, X11_get_ext_cmd, X11_number_pad, X11_delay_output,
+    X11_getlin, X11_get_ext_cmd, X11_number_pad, X11_delay_output, X11_delay_output_milliseconds,
 #ifdef CHANGE_COLOR /* only a Mac option currently */
     donull, donull,
 #endif
@@ -1690,6 +1690,19 @@ X11_delay_output()
 
     /* The timeout function will enable the event loop exit. */
     (void) x_event(EXIT_ON_SENT_EVENT);
+}
+
+void
+X11_delay_output_milliseconds(interval)
+int interval;
+{
+    if (!x_inited)
+        return;
+
+    (void)XtAppAddTimeOut(app_context, ((long)interval * 3L) / 5L, d_timeout, (XtPointer)0);
+
+    /* The timeout function will enable the event loop exit. */
+    (void)x_event(EXIT_ON_SENT_EVENT);
 }
 
 /* X11_hangup ------------------------------------------------------------- */

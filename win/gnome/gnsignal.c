@@ -113,6 +113,10 @@ ghack_init_signals(void)
     ghack_signals[GHSIG_DELAY] = gtk_object_class_user_signal_new(
         gtk_type_class(gtk_widget_get_type()), "gnome_delay_output",
         GTK_RUN_FIRST, gtk_marshal_NONE__INT, GTK_TYPE_NONE, 1, GTK_TYPE_INT);
+
+    ghack_signals[GHSIG_DELAY] = gtk_object_class_user_signal_new(
+        gtk_type_class(gtk_widget_get_type()), "gnome_delay_output_milliseconds",
+        GTK_RUN_FIRST, gtk_marshal_NONE__INT, GTK_TYPE_NONE, 1, GTK_TYPE_INT);
 }
 
 /* For want of a better place, I'm putting the delay output stuff here

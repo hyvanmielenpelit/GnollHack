@@ -344,6 +344,21 @@ tty_delay_output(void)
 }
 
 void
+tty_delay_output_milliseconds(int interval)
+{
+    EventRecord event;
+    long toWhen = (TickCount() * interval) / 50 + 3;
+
+    while (TickCount() < toWhen) {
+        WaitNextEvent(updateMask, &event, 3L, 0);
+        if (event.what == updateEvt) {
+            HandleEvent(&event);
+            blink_cursor(_mt_window, event.when);
+        }
+    }
+}
+
+void
 cmov(int x, int y)
 {
     move_tty_cursor(_mt_window, x, y);

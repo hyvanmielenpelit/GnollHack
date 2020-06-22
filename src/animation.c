@@ -7,16 +7,15 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
 {
     { "", 0,
       0, 0, 0,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-
     { "handcrafted-candle-lit-animation",  1,
       HANDCRAFTED_CANDLE_ANIMATION_FRAMES, HANDCRAFTED_CANDLE_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -24,7 +23,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "elf_wizard_female_cast-animation", 1,
       PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -32,7 +31,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "brass-lantern-lit-animation",  1,
       BRASS_LANTERN_LIT_ANIMATION_FRAMES, BRASS_LANTERN_LIT_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -40,7 +39,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "lawful-altar-animation",  1,
       LAWFUL_ALTAR_ANIMATION_FRAMES, LAWFUL_ALTAR_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -48,7 +47,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "neutral-altar-animation",  1,
       NEUTRAL_ALTAR_ANIMATION_FRAMES, NEUTRAL_ALTAR_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -56,7 +55,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "chaotic-altar-animation",  1,
       CHAOTIC_ALTAR_ANIMATION_FRAMES, CHAOTIC_ALTAR_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -64,7 +63,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "look-cursor-animation",  2,
       LOOK_CURSOR_ANIMATION_FRAMES, LOOK_CURSOR_ANIMATION_OFF, 7,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, -1, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -72,7 +71,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "kobold-animation",  1,
       KOBOLD_ANIMATION_FRAMES, KOBOLD_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -80,7 +79,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "large-kobold-animation",  1,
       LARGE_KOBOLD_ANIMATION_FRAMES, LARGE_KOBOLD_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -88,7 +87,15 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "kobold-lord-animation",  1,
       KOBOLD_LORD_ANIMATION_FRAMES, KOBOLD_LORD_ANIMATION_OFF, 2,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-wizard-female-kick-animation",  4,
+      PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_OFF, 1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -96,7 +103,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "twisted-candle-lit-animation", 1,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 3,
-      ANIMATION_MAIN_TILE_USE_FIRST,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -582,6 +589,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;
     case ACTION_TILE_KICK:
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
+            return PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION;
         break;
     case ACTION_TILE_ITEM_USE:
         break;
@@ -763,8 +772,9 @@ enum autodraw_types* autodraw_ptr;
 
 
 short
-maybe_get_animated_tile(ntile, interval_counter, mapAnimated, autodraw_ptr)
+maybe_get_animated_tile(ntile, play_type, interval_counter, mapAnimated, autodraw_ptr)
 short ntile;
+enum animation_play_types play_type;
 unsigned long interval_counter;
 boolean* mapAnimated;
 enum autodraw_types* autodraw_ptr;
@@ -776,6 +786,8 @@ enum autodraw_types* autodraw_ptr;
         if (autodraw_ptr)
             *autodraw_ptr = animations[animation_idx].main_tile_autodraw;
         if (animations[animation_idx].number_of_frames < 1)
+            return ntile;
+        if (animations[animation_idx].play_type != play_type)
             return ntile;
 
         if (mapAnimated)
