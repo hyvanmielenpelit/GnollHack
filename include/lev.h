@@ -56,7 +56,8 @@ typedef struct soundsource_t {
     struct soundsource_t* next;
     xchar x, y;  /* source's position */
     enum ghsound_types ghsound; /* played ghsound */
-    short volume; /* source's current volume */
+    float heard_volume; /* source's volume as heard by the player, range 0.0f to 1.0f */
+    char source_volume; /* source's volume at origin, range 0 to 100 */
     short flags;
     short type;  /* type of sound source */
     anything id; /* source's identifier */

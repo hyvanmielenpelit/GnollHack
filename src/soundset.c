@@ -5,6 +5,9 @@
 #include "hack.h"
 #include "lev.h" /* for checking save modes */
 
+NEARDATA struct soundsource_t* sound_base = 0;
+
+
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1] =
 {
 	{
@@ -411,7 +414,21 @@ int x, y, prev_hearing;
 void
 update_ambient_sounds()
 {
+    for (struct soundsource_t* curr = sound_base; curr; curr->next)
+    {
+        if (!isok(curr->x, curr->y))
+            continue;
 
+        char hearing_volume = hearing_array[curr->x][curr->y];
+        float total_volume = 0.0f;
+        if (hearing_volume > 0)
+        {
+            char source_volume = curr->source_volume;
+            total_volume = (((float)source_volume * (float)hearing_volume) / 10000.0f);
+        }
+        curr->heard_volume = total_volume;
+        set_ambient_ghsound_volume(curr);
+    }
 }
 
 void
@@ -482,8 +499,6 @@ int x, y;
 #define SSF_NEEDS_FIXUP 0x2 /* need oid fixup */
 #define SSF_SILENCE_SOURCE 0x4 /* emits silence rather than sound */
 
-static sound_source* sound_base = 0;
-
 STATIC_DCL void FDECL(write_soundsource, (int, sound_source*));
 STATIC_DCL int FDECL(maybe_write_soundsource, (int, int, BOOLEAN_P));
 
@@ -493,7 +508,8 @@ void
 new_sound_source(x, y, ghsound, volume, type, id)
 xchar x, y;
 enum ghsound_types ghsound;
-int volume, type;
+char volume;
+int type;
 anything* id;
 {
     sound_source* ss;
@@ -511,7 +527,8 @@ anything* id;
     ss->x = x;
     ss->y = y;
     ss->ghsound = ghsound;
-    ss->volume = absvolume;
+    ss->source_volume = absvolume;
+    ss->heard_volume = ((float)absvolume * (float)hearing_array[x][y]) / 10000.0f;
     ss->type = type;
     ss->id = *id;
     ss->flags = volume < 0 ? SSF_SILENCE_SOURCE : 0;
@@ -579,109 +596,6 @@ anything* id;
     }
     impossible("del_sound_source: not found type=%d, id=%s", type,
         fmt_ptr((genericptr_t)id->a_obj));
-}
-
-/* Mark locations that are temporarily lit via mobile sound sources. */
-void
-do_sound_sources(cs_rows)
-char** cs_rows;
-{
-
-#if 0
-    int x, y, min_x, max_x, max_y, offset;
-    char* limits;
-    short at_hero_range = 0;
-    sound_source* ss;
-    char* row;
-
-    for (ss = sound_base; ss; ss = ss->next)
-    {
-        ss->flags &= ~SSF_SHOW;
-
-        /*
-         * Check for moved sound sources.  It may be possible to
-         * save some effort if an object has not moved, but not in
-         * the current setup -- we need to recalculate for every
-         * vision recalc.
-         */
-        if (ss->type == SOUNDSOURCE_OBJECT)
-        {
-            if (get_obj_location(ss->id.a_obj, &ss->x, &ss->y, 0))
-                ss->flags |= SSF_SHOW;
-        }
-        else if (ss->type == SOUNDSOURCE_MONSTER)
-        {
-            if (get_mon_location(ss->id.a_monst, &ss->x, &ss->y, 0))
-                ss->flags |= SSF_SHOW;
-        }
-        else if (ss->type == SOUNDSOURCE_LOCATION)
-        {
-            ss->x = ss->id.a_coord.x;
-            ss->y = ss->id.a_coord.y;
-            ss->flags |= SSF_SHOW;
-        }
-
-        /* minor optimization: don't bother with duplicate sound sources */
-        /* at hero */
-        if (ss->x == u.ux && ss->y == u.uy)
-        {
-            if (at_hero_range >= ss->volume)
-                ss->flags &= ~SSF_SHOW;
-            else
-                at_hero_range = ss->volume;
-        }
-
-        if (ss->flags & SSF_SHOW) 
-        {
-            /*
-             * Walk the points in the circle and see if they are
-             * visible from the center.  If so, mark'em.
-             *
-             * Kevin's tests indicated that doing this brute-force
-             * method is faster for radius <= 3 (or so).
-             */
-            limits = circle_ptr(ss->volume);
-            if ((max_y = (ss->y + ss->volume)) >= ROWNO)
-                max_y = ROWNO - 1;
-            if ((y = (ss->y - ss->volume)) < 0)
-                y = 0;
-            for (; y <= max_y; y++) 
-            {
-                row = cs_rows[y];
-                offset = limits[abs(y - ss->y)];
-                if ((min_x = (ss->x - offset)) < 0)
-                    min_x = 0;
-                if ((max_x = (ss->x + offset)) >= COLNO)
-                    max_x = COLNO - 1;
-
-                if (ss->x == u.ux && ss->y == u.uy) 
-                {
-                    /*
-                     * If the sound source is located at the hero, then
-                     * we can use the COULD_SEE bits already calculated
-                     * by the vision system.  More importantly than
-                     * this optimization, is that it allows the vision
-                     * system to correct problems with clear_path().
-                     * The function clear_path() is a simple LOS
-                     * path checker that doesn't go out of its way
-                     * make things look "correct".  The vision system
-                     * does this.
-                     */
-                    for (x = min_x; x <= max_x; x++)
-                        if (row[x] & COULD_SEE)
-                            row[x] |= ((ss->flags & SSF_SILENCE_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
-                }
-                else 
-                {
-                    for (x = min_x; x <= max_x; x++)
-                        if ((ss->x == x && ss->y == y)
-                            || clear_path((int)ss->x, (int)ss->y, x, y))
-                            row[x] |= ((ss->flags & SSF_SILENCE_SOURCE) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
-                }
-            }
-        }
-    }
-#endif
 }
 
 
@@ -1127,9 +1041,9 @@ int new_volume;
 
     for (ss = sound_base; ss; ss = ss->next)
         if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == obj) {
-            if (new_volume != ss->volume)
+            if (new_volume != ss->source_volume)
                 hearing_full_recalc = 1;
-            ss->volume = new_volume;
+            ss->source_volume = new_volume;
             return;
         }
     impossible("obj_adjust_sound_volume: can't find %s", xname(obj));

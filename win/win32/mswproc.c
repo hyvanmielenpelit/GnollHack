@@ -3287,7 +3287,7 @@ mswin_adjust_ghsound_general_volumes(VOID_ARGS)
 void
 mswin_add_ambient_ghsound(struct soundsource_t* soundsource)
 {
-    if (!fmod_add_ambient_ghsound(soundsource->ghsound, ((float)soundsource->volume) / 100.0f, &soundsource->ambient_ghsound_ptr))
+    if (!fmod_add_ambient_ghsound(soundsource->ghsound, soundsource->heard_volume, &soundsource->ambient_ghsound_ptr))
     {
         impossible("Cannot add ambient sound!");
     }
@@ -3305,7 +3305,7 @@ mswin_delete_ambient_ghsound(struct soundsource_t* soundsource)
 void
 mswin_set_ambient_ghsound_volume(struct soundsource_t* soundsource)
 {
-    if (!fmod_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, ((float)soundsource->volume) / 100.0f))
+    if (!fmod_set_ambient_ghsound_volume(soundsource->ambient_ghsound_ptr, soundsource->heard_volume))
     {
         impossible("Cannot set ambient sound volume!");
     }
