@@ -11,6 +11,23 @@
 #define MAX_HEARING_DISTANCE 10
 
 
+enum soundsource_types {
+	SOUNDSOURCE_OBJECT = 0,
+	SOUNDSOURCE_MONSTER,
+	SOUNDSOURCE_LOCATION,
+	SOUNDSOURCE_LIGHTSOURCE,
+	MAX_SOUNDSOURCE_TYPES
+};
+
+enum soundsource_ambient_subtypes {
+	SOUNDSOURCE_AMBIENT_GENERAL = 0,
+	SOUNDSOURCE_AMBIENT_LIT,
+	MAX_SOUNDSOURCE_AMBIENT_SUBTYPES
+};
+
+
+
+
 /* All GnollHack Sounds */
 enum ghsound_types {
 	GHSOUND_NONE = 0,
@@ -87,7 +104,6 @@ struct ghsound_ui_info {
 };
 
 
-
 /* PLAYER SOUNDSETS */
 struct player_soundset_definition {
 	char* soundset_name;
@@ -119,6 +135,7 @@ struct monster_soundset_definition {
 	/* Ambient */
 	enum ghsound_types ambient_sound;
 	char ambient_volume;
+	enum soundsource_ambient_subtypes ambient_subtype;
 
 	/* Movement */
 	enum ghsound_types movement_sounds[MAX_MOVEMENT_STYLES];
@@ -143,10 +160,9 @@ extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSET
 /* OBJECT SOUNDSETS */
 struct object_soundset_definition {
 	char* soundset_name;
-
-	/* Ambient */
 	enum ghsound_types ambient_sound;
 	char ambient_volume;
+	enum soundsource_ambient_subtypes ambient_subtype;
 };
 
 
@@ -163,16 +179,16 @@ extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS +
 /* LOCATION SOUNDSETS */
 struct location_soundset_definition {
 	char* soundset_name;
-
-	/* Ambient */
 	enum ghsound_types ambient_sound;
 	char ambient_volume;
+	enum soundsource_ambient_subtypes ambient_subtype;
 };
 
 enum location_soundset_types {
 	LOCATION_SOUNDSET_NONE = 0,
 	LOCATION_SOUNDSET_GENERAL,
 	LOCATION_SOUNDSET_FOUNTAIN,
+	LOCATION_SOUNDSET_ALTAR,
 	MAX_LOCATION_SOUNDSETS
 };
 
@@ -245,13 +261,6 @@ enum ui_soundset_types {
 	UI_SOUNDSET_BUTTON,
 	MAX_UI_SOUNDSETS
 };
-
-
-
-#define SOUNDSOURCE_OBJECT 0
-#define SOUNDSOURCE_MONSTER 1
-#define SOUNDSOURCE_LOCATION 2
-
 
 
 #endif /* SOUNDSET_H */

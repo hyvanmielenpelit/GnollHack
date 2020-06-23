@@ -1823,7 +1823,7 @@ struct mkroom *croom;
                         if (mon_ambient_sound(mtmp->data))
                             new_sound_source(mtmp->mx, mtmp->my,
                                 mon_ambient_sound(mtmp->data), mon_ambient_volume(mtmp->data),
-                                SOUNDSOURCE_MONSTER, (genericptr_t)mtmp);
+                                SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp->data), (genericptr_t)mtmp);
                     }
                 }
                 break;

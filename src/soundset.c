@@ -42,44 +42,44 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 {
 	{
 		"",
-		0, 0,
-		{0, 0, 0, 0, 0, 0},
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
+        {0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"Generic",
-		0, 0,
-		{0, 0, 0, 0, 0, 0},
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
+        {0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"",
-		0, 0,
-		{0, 0, 0, 0, 0, 0},
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
+        {0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"",
-		0, 0,
-		{0, 0, 0, 0, 0, 0},
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
+        {0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
 	{
 		"",
-		0, 0,
-		{0, 0, 0, 0, 0, 0},
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
+        {0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
     {
         "Bee",
-        GHSOUND_BEE, 100,
+        GHSOUND_BEE, 100, SOUNDSOURCE_AMBIENT_GENERAL,
         {0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     },
     {
 		"",
-		0, 0,
-		{0, 0, 0, 0, 0, 0},
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
+        {0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	}
 };
@@ -88,15 +88,15 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 {
     {
         "",
-        GHSOUND_NONE, 0
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "general",
-        GHSOUND_NONE, 0
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "candle",
-        GHSOUND_NONE, 0
+        GHSOUND_FIRE, 30, SOUNDSOURCE_AMBIENT_LIT
     }
 };
 
@@ -104,15 +104,19 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
 {
     {
         "",
-        GHSOUND_NONE, 0
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "general",
-        GHSOUND_NONE, 100
+        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "fountain",
-        GHSOUND_FOUNTAIN, 100
+        GHSOUND_FOUNTAIN, 100, SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "altar",
+        GHSOUND_FIRE, 50, SOUNDSOURCE_AMBIENT_LIT
     }
 };
 
@@ -425,21 +429,32 @@ update_ambient_sounds()
         if (!isok(curr->x, curr->y))
             continue;
 
+        boolean lit = FALSE;
+
         /* Update sound source location */
         if (curr->type == SOUNDSOURCE_OBJECT)
         {
             if (get_obj_location(curr->id.a_obj, &curr->x, &curr->y, 0))
                 ;
+
+            if (curr->id.a_obj)
+                lit = curr->id.a_obj->lamplit;
         }
         else if (curr->type == SOUNDSOURCE_MONSTER)
         {
             if (get_mon_location(curr->id.a_monst, &curr->x, &curr->y, 0))
                 ;
+
+            if (curr->id.a_monst)
+                lit = curr->id.a_monst->data->lightrange;
         }
         else if (curr->type == SOUNDSOURCE_LOCATION)
         {
             curr->x = curr->id.a_coord.x;
             curr->y = curr->id.a_coord.y;
+
+            if (isok(curr->id.a_coord.x, curr->id.a_coord.y))
+                lit = levl[curr->id.a_coord.x][curr->id.a_coord.y].lamplit;
         }
 
         /* Update sound source heard volume */
@@ -450,6 +465,8 @@ update_ambient_sounds()
         {
             char source_volume = curr->source_volume;
             total_volume = (((float)source_volume * hearing_volume) / 100.0f);
+            if (curr->subtype == SOUNDSOURCE_AMBIENT_LIT && !lit)
+                total_volume = 0.0f;
         }
         curr->heard_volume = total_volume;
         if(curr->heard_volume != old_heard_volume)
@@ -538,11 +555,12 @@ STATIC_DCL int FDECL(maybe_write_soundsource, (int, int, BOOLEAN_P));
 
 /* Create a new sound source.  */
 void
-new_sound_source(x, y, ghsound, volume, type, id)
+new_sound_source(x, y, ghsound, volume, type, subtype, id)
 xchar x, y;
 enum ghsound_types ghsound;
 char volume;
-int type;
+enum soundsource_types type;
+enum soundsource_ambient_subtypes subtype;
 anything* id;
 {
     sound_source* ss;
@@ -563,6 +581,7 @@ anything* id;
     ss->source_volume = absvolume;
     ss->heard_volume = ((float)absvolume * hearing_array[x][y]) / 100.0f;
     ss->type = type;
+    ss->subtype = subtype;
     ss->id = *id;
     ss->flags = volume < 0 ? SSF_SILENCE_SOURCE : 0;
     sound_base = ss;
@@ -1130,9 +1149,10 @@ boolean already_making_noise;
         enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
         enum ghsound_types ghsound = object_soundsets[objsoundset].ambient_sound;
         int volume = object_soundsets[objsoundset].ambient_volume;
+        enum soundsource_ambient_subtypes subtype = object_soundsets[objsoundset].ambient_subtype;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
-            new_sound_source(x, y, ghsound, volume, SOUNDSOURCE_OBJECT, obj_to_any(obj));
+            new_sound_source(x, y, ghsound, volume, SOUNDSOURCE_OBJECT, subtype, obj_to_any(obj));
         else
             impossible("begin_sound: can't get obj position");
     }
@@ -1195,25 +1215,38 @@ struct obj* obj;
 }
 
 enum ghsound_types
-get_location_ambient_sound_type(x, y, volume_ptr)
+get_location_ambient_sound_type(x, y, volume_ptr, subtype_ptr)
 xchar x, y;
 int* volume_ptr;
+enum soundsource_ambient_subtypes *subtype_ptr;
 {
     if (!isok(x, y))
         return GHSOUND_NONE;
 
     struct rm* lev = &levl[x][y];
 
-    /* Fountains have a water sound */
-    if (lev->typ == FOUNTAIN)
-    {
-        if (volume_ptr)
-            *volume_ptr = 100;
+    enum location_soundset_types lsoundset = LOCATION_SOUNDSET_NONE;
 
-        return GHSOUND_FOUNTAIN;
+    switch (lev->typ)
+    {
+    case FOUNTAIN:
+        lsoundset = LOCATION_SOUNDSET_FOUNTAIN;
+        break;
+    case ALTAR:
+        lsoundset = LOCATION_SOUNDSET_ALTAR;
+        break;
     }
 
-    return GHSOUND_NONE;
+    if (lsoundset == LOCATION_SOUNDSET_NONE)
+        return GHSOUND_NONE;
+
+    if (volume_ptr)
+        *volume_ptr = location_soundsets[lsoundset].ambient_volume;
+
+    if (subtype_ptr)
+        *subtype_ptr = location_soundsets[lsoundset].ambient_subtype;
+
+    return location_soundsets[lsoundset].ambient_sound;
 }
 
 /* soundset.c */
