@@ -72,17 +72,17 @@ boolean waslit, rockit;
     unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* fake out saved state */
-    delete_location(x, y);
+    create_simple_location(x, y, (rockit ? STONE : ROOM), 0, FALSE);
     lev->seenv = 0;
-    lev->doormask = 0;
+    //lev->doormask = 0;
     if (dist < 3)
         lev->lit = (rockit ? FALSE : TRUE);
     if (waslit)
         lev->waslit = (rockit ? FALSE : TRUE);
-    lev->horizontal = FALSE;
+    //lev->horizontal = FALSE;
     /* short-circuit vision recalc */
     viz_array[y][x] = (dist < 3) ? (IN_SIGHT | COULD_SEE) : COULD_SEE;
-    lev->typ = (rockit ? STONE : ROOM); /* flags set via doormask above */
+    //lev->typ = (rockit ? STONE : ROOM); /* flags set via doormask above */
     if (dist >= 3)
         impossible("mkcavepos called with dist %d", dist);
     feel_newsym(x, y);
@@ -129,7 +129,8 @@ register boolean rockit;
         delay_output();
     }
 
-    if (!rockit && levl[u.ux][u.uy].typ == CORR) {
+    if (!rockit && levl[u.ux][u.uy].typ == CORR)
+    {
         levl[u.ux][u.uy].typ = ROOM; /* flags for CORR already 0 */
         if (waslit)
             levl[u.ux][u.uy].waslit = TRUE;
@@ -392,37 +393,40 @@ dig(VOID_ARGS)
                  * printed a message and updated the screen
                  */
                 digtxt = (char *) 0;
-        } else if ((obj = sobj_at(BOULDER, dpx, dpy)) != 0) {
+        }
+        else if ((obj = sobj_at(BOULDER, dpx, dpy)) != 0) 
+        {
             struct obj *bobj;
 
             fracture_rock(obj);
-            if ((bobj = sobj_at(BOULDER, dpx, dpy)) != 0) {
+            if ((bobj = sobj_at(BOULDER, dpx, dpy)) != 0) 
+            {
                 /* another boulder here, restack it to the top */
                 obj_extract_self(bobj);
                 place_object(bobj, dpx, dpy);
             }
             digtxt = "The boulder falls apart.";
-        } else if (lev->typ == STONE || lev->typ == SCORR
+        } 
+        else if (lev->typ == STONE || lev->typ == SCORR
                    || IS_TREE(lev->typ)) {
             if (Is_earthlevel(&u.uz)) {
-                if (wep->blessed && !rn2(3)) {
+                if (wep->blessed && !rn2(3)) 
+                {
                     mkcavearea(FALSE);
                     goto cleanup;
-                } else if ((wep->cursed && !rn2(4))
-                           || (!wep->blessed && !rn2(6))) {
+                } 
+                else if ((wep->cursed && !rn2(4))
+                           || (!wep->blessed && !rn2(6))) 
+                {
                     mkcavearea(TRUE);
                     goto cleanup;
                 }
             }
-            if (IS_TREE(lev->typ)) {
+            if (IS_TREE(lev->typ))
+            {
                 digtxt = "You cut down the tree.";
 				struct mkroom* r = which_room(dpx, dpy);
-				if (r && r->orig_rtype == GARDEN)
-					lev->typ = GRASS;
-				else
-					lev->typ = ROOM;
-
-				lev->flags = 0;
+                create_simple_location(dpx, dpy, r && r->orig_rtype == GARDEN ? GRASS : ROOM, 0, FALSE);
 
 				/* Wood */
 				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
@@ -451,29 +455,45 @@ dig(VOID_ARGS)
 						otmp->owt = weight(otmp);
 					}
 				}
-            } else {
-                digtxt = "You succeed in cutting away some rock.";
-                lev->typ = CORR, lev->flags = 0;
             }
-        } else if (IS_WALL(lev->typ)) {
+            else 
+            {
+                digtxt = "You succeed in cutting away some rock.";
+                create_simple_location(dpx, dpy, CORR, 0, FALSE);
+            }
+        } else if (IS_WALL(lev->typ)) 
+        {
             if (shopedge) {
                 add_damage(dpx, dpy, SHOP_WALL_DMG);
                 dmgtxt = "damage";
             }
-            if (level.flags.is_maze_lev) {
-                lev->typ = ROOM, lev->flags = 0;
-            } else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) {
-                lev->typ = CORR, lev->flags = 0;
-            } else {
-                lev->typ = DOOR, lev->doormask = D_NODOOR;
+            int ltype = 0;
+            uchar lflags = 0;
+            if (level.flags.is_maze_lev)
+            {
+                ltype = ROOM;
+            } 
+            else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
+            {
+                ltype = CORR;
             }
+            else 
+            {
+                ltype = DOOR, lflags = D_NODOOR;
+            }
+            create_simple_location(dpx, dpy, ltype, lflags, FALSE);
+
             digtxt = "You make an opening in the wall.";
-        } else if (lev->typ == SDOOR) {
-            cvt_sdoor_to_door(lev); /* ->typ = DOOR */
+        } 
+        else if (lev->typ == SDOOR) 
+        {
+            cvt_sdoor_to_door(dpx, dpy); /* ->typ = DOOR */
             digtxt = "You break through a secret door!";
             if (!(lev->doormask & D_TRAPPED))
                 lev->doormask = D_BROKEN;
-        } else if (closed_door(dpx, dpy)) {
+        } 
+        else if (closed_door(dpx, dpy))
+        {
             digtxt = "You break through the door.";
             if (shopedge) {
                 add_damage(dpx, dpy, SHOP_DOOR_COST);
@@ -925,8 +945,9 @@ coord *cc;
         typ = fillholetyp(dig_x, dig_y, FALSE);
 
         lev->flags = 0;
-        if (typ != ROOM) {
-            lev->typ = typ;
+        if (typ != ROOM)
+        {
+            create_simple_location(dig_x, dig_y, typ, 0, FALSE);
             liquid_flow(dig_x, dig_y, typ, ttmp,
                         "As you dig, the hole fills with %s!");
             return TRUE;
@@ -1013,9 +1034,8 @@ coord *cc;
         pline_The("grave seems unused.  Strange....");
         break;
     }
-    levl[dig_x][dig_y].typ = ROOM, levl[dig_x][dig_y].flags = 0;
     del_engr_at(dig_x, dig_y);
-    newsym(dig_x, dig_y);
+    create_simple_location(dig_x, dig_y, ROOM, 0, TRUE);
     return;
 }
 
@@ -1411,7 +1431,7 @@ register struct monst *mtmp;
 
     here = &levl[mtmp->mx][mtmp->my];
     if (here->typ == SDOOR)
-        cvt_sdoor_to_door(here); /* ->typ = DOOR */
+        cvt_sdoor_to_door(mtmp->mx, mtmp->my); /* ->typ = DOOR */
 
     /* Eats away door if present & closed or locked */
     if (closed_door(mtmp->mx, mtmp->my)) {
@@ -1431,13 +1451,17 @@ register struct monst *mtmp;
         }
         newsym(mtmp->mx, mtmp->my);
         return FALSE;
-    } else if (here->typ == SCORR) {
-        here->typ = CORR, here->flags = 0;
+    } 
+    else if (here->typ == SCORR) 
+    {
+        create_simple_location(mtmp->mx, mtmp->my, CORR, 0, FALSE);
         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
         draft_message(FALSE); /* "You feel a draft." */
         return FALSE;
-    } else if (!IS_ROCK(here->typ) && !IS_TREE(here->typ)) { /* no dig */
+    }
+    else if (!IS_ROCK(here->typ) && !IS_TREE(here->typ))
+    { /* no dig */
         return FALSE;
     }
 
@@ -1450,30 +1474,45 @@ register struct monst *mtmp;
         return FALSE; /* still alive */
     }
 
-    if (IS_WALL(here->typ)) {
+    if (IS_WALL(here->typ))
+    {
         /* KMH -- Okay on arboreal levels (room walls are still stone) */
         if (flags.verbose && !rn2(5))
             You_hear("crashing rock.");
         if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
             add_damage(mtmp->mx, mtmp->my, 0L);
-        if (level.flags.is_maze_lev) {
-            here->typ = ROOM, here->flags = 0;
-        } else if (level.flags.is_cavernous_lev
-                   && !in_town(mtmp->mx, mtmp->my)) {
-            here->typ = CORR, here->flags = 0;
-        } else {
-            here->typ = DOOR, here->doormask = D_NODOOR;
+
+        int ltype = 0;
+        int lflags = 0;
+
+        if (level.flags.is_maze_lev)
+        {
+            ltype = ROOM, lflags = 0;
+        } 
+        else if (level.flags.is_cavernous_lev
+                   && !in_town(mtmp->mx, mtmp->my))
+        {
+            ltype = CORR, lflags = 0;
+        } 
+        else 
+        {
+            ltype = DOOR, lflags = D_NODOOR;
         }
-    } else if (IS_TREE(here->typ))
+
+        create_simple_location(mtmp->mx, mtmp->my, ltype, lflags, FALSE);
+    }
+    else if (IS_TREE(here->typ))
 	{
 		struct mkroom* r = which_room(mtmp->mx, mtmp->my);
-		if (r && r->orig_rtype == GARDEN)
-			here->typ = GRASS;
+        int ltype = 0;
+        if (r && r->orig_rtype == GARDEN)
+            ltype = GRASS;
 		else
-			here->typ = ROOM;
+            ltype = ROOM;
 
-		here->flags = 0;
-		if (pile && pile < 5)
+        create_simple_location(mtmp->mx, mtmp->my, ltype, 0, FALSE);
+
+        if (pile && pile < 5)
 		{
 			struct obj* otmp = rnd_treefruit_at(mtmp->mx, mtmp->my);
 			if (otmp && (objects[otmp->otyp].oc_edible_effect == EDIBLEFX_NO_EFFECT || objects[otmp->otyp].oc_edible_effect == EDIBLEFX_APPLE))
@@ -1482,8 +1521,11 @@ register struct monst *mtmp;
 				otmp->owt = weight(otmp);
 			}
 		}
-    } else {
-        here->typ = CORR, here->flags = 0;
+    }
+    else
+    {
+        create_simple_location(mtmp->mx, mtmp->my, CORR, 0, FALSE);
+
         if (pile && pile < 5)
             (void) mksobj_at((pile == 1) ? BOULDER : ROCK, mtmp->mx, mtmp->my,
                              TRUE, FALSE);
@@ -1686,7 +1728,7 @@ struct obj* origobj;
                 shopdoor = TRUE;
             }
             if (room->typ == SDOOR)
-                room->typ = DOOR; /* doormask set below */
+                transform_location_type(zx, zy, DOOR);  /* doormask set below */
             else if (cansee(zx, zy))
                 pline_The("door is razed!");
             watch_dig((struct monst *) 0, zx, zy, TRUE);
@@ -1707,8 +1749,7 @@ struct obj* origobj;
                         add_damage(zx, zy, SHOP_WALL_COST);
                         shopwall = TRUE;
                     }
-                    delete_location(zx, zy);
-                    room->typ = ROOM, room->flags = 0;
+                    create_simple_location(zx, zy, ROOM, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1718,8 +1759,7 @@ struct obj* origobj;
             else if (IS_TREE(room->typ)) { /* check trees before stone */
                 if (!(room->wall_info & W_NONDIGGABLE)) 
                 {
-                    delete_location(zx, zy);
-                    room->typ = ROOM, room->flags = 0;
+                    create_simple_location(zx, zy, ROOM, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 }
                 else if (!Blind)
@@ -1730,8 +1770,7 @@ struct obj* origobj;
             {
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
-                    delete_location(zx, zy);
-                    room->typ = CORR, room->flags = 0;
+                    create_simple_location(zx, zy, CORR, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1744,7 +1783,10 @@ struct obj* origobj;
         {
             if (!may_dig(zx, zy))
                 break;
-            delete_location(zx, zy);
+
+            int ltype = 0;
+            uchar lflags = 0;
+
             if (IS_WALL(room->typ) || room->typ == SDOOR)
             {
                 if (*in_rooms(zx, zy, SHOPBASE)) 
@@ -1755,24 +1797,25 @@ struct obj* origobj;
                 watch_dig((struct monst *) 0, zx, zy, TRUE);
                 if (level.flags.is_cavernous_lev && !in_town(zx, zy)) 
                 {
-                    room->typ = CORR, room->flags = 0;
+                    ltype = CORR;
                 } 
                 else 
                 {
-                    room->typ = DOOR, room->doormask = D_NODOOR;
+                    ltype = DOOR, lflags = D_NODOOR;
                 }
                 digdepth -= 2;
             } 
             else if (IS_TREE(room->typ)) 
             {
-                room->typ = ROOM, room->flags = 0;
+                ltype = ROOM;
                 digdepth -= 2;
             } 
             else 
             { /* IS_ROCK but not IS_WALL or SDOOR */
-                room->typ = CORR, room->flags = 0;
+                ltype = CORR;
                 digdepth--;
             }
+            create_simple_location(zx, zy, ltype, lflags, FALSE);
             unblock_vision_and_hearing_at_point(zx, zy); /* vision */
         }
         zx += u.dx;
@@ -1839,8 +1882,8 @@ struct obj* origobj;
 				}
 				else
 				{ // Leave no pits, evaporation gives a walkable route
-					lev->typ = ROOM, lev->flags = 0;
-					if (lev->typ == MOAT)
+                    create_simple_location(zx, zy, ROOM, 0, FALSE);
+                    if (lev->typ == MOAT)
 					{
 						struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
 						if (t)
@@ -1856,15 +1899,11 @@ struct obj* origobj;
 			else if (IS_FOUNTAIN(lev->typ))
 			{
 				/* replace the fountain with ordinary floor */
-				lev->typ = ROOM;
-				lev->flags = 0;
-				lev->blessedftn = 0;
+                create_simple_location(zx, zy, ROOM, 0, TRUE);
 				if (see_it)
 					pline_The("fountain dries up!");
 				/* The location is seen if the hero/monster is invisible
 				   or felt if the hero is blind. */
-				newsym(zx, zy);
-				level.flags.nfountains--;
 			}
 		}
 		return;
@@ -1928,8 +1967,8 @@ struct obj* origobj;
 			else
 			{ // Leave no pits, evaporation gives a walkable route
 				digdepth -= 1;
-				lev->typ = ROOM, lev->flags = 0;
-				if (lev->typ == MOAT)
+                create_simple_location(zx, zy, ROOM, 0, FALSE);
+                if (lev->typ == MOAT)
 				{
 					struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
 					if (t)
@@ -1945,15 +1984,11 @@ struct obj* origobj;
 		else if (IS_FOUNTAIN(lev->typ))
 		{
 			/* replace the fountain with ordinary floor */
-			lev->typ = ROOM;
-			lev->flags = 0;
-			lev->blessedftn = 0;
+            create_simple_location(zx, zy, ROOM, 0, TRUE);
 			if (see_it)
 				pline_The("fountain dries up!");
 			/* The location is seen if the hero/monster is invisible
 			   or felt if the hero is blind. */
-			newsym(zx, zy);
-			level.flags.nfountains--;
 			digdepth -= 1;
 		}
 

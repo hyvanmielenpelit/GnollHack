@@ -348,7 +348,7 @@ E const char *FDECL(level_distance, (d_level *));
 E void FDECL(use_crystal_ball, (struct obj **));
 E void NDECL(do_mapping);
 E void FDECL(do_vicinity_map, (struct obj *));
-E void FDECL(cvt_sdoor_to_door, (struct rm *));
+E void FDECL(cvt_sdoor_to_door, (int, int));
 #ifdef USE_TRAMPOLI
 E void FDECL(findone, (int, int, genericptr_t));
 E void FDECL(openone, (int, int, genericptr_t));
@@ -519,7 +519,10 @@ E void FDECL(printweight, (char*, int, boolean, boolean));
 E int FDECL(monsterdescription, (struct monst*));
 E int NDECL(dotogglehpbars);
 E void FDECL(delete_location, (xchar, xchar));
-E void FDECL(transform_location, (xchar, xchar, int, uchar, uchar, boolean, boolean, boolean));
+E void FDECL(full_location_transform, (xchar, xchar, int, uchar, uchar, boolean, boolean, boolean));
+E void FDECL(create_simple_location, (xchar, xchar, int, uchar, boolean));
+E void FDECL(transform_location_type, (xchar, xchar, int));
+E void FDECL(transform_location_type_and_flags, (xchar, xchar, int, uchar));
 
 /* ### do_name.c ### */
 
@@ -1491,6 +1494,8 @@ E void FDECL(mineralize, (int, int, int, int, BOOLEAN_P));
 E void FDECL(maybe_create_location_light_source, (xchar, xchar));
 E void FDECL(maybe_create_location_sound_source, (xchar, xchar));
 E void FDECL(maybe_create_location_light_and_sound_sources, (xchar, xchar));
+E void NDECL(create_level_light_sources);
+E void NDECL(create_level_sound_sources);
 
 /* ### mkmap.c ### */
 

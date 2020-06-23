@@ -557,12 +557,12 @@ register struct obj *obj;
     switch (lev->typ) {
     case SDOOR:
         You_hear(hollow_str, "door");
-        cvt_sdoor_to_door(lev); /* ->typ = DOOR */
+        cvt_sdoor_to_door(rx, ry); /* ->typ = DOOR */
         feel_newsym(rx, ry);
         return res;
     case SCORR:
         You_hear(hollow_str, "passage");
-        lev->typ = CORR, lev->flags = 0;
+        create_simple_location(rx, ry, CORR, 0, FALSE);
         unblock_vision_and_hearing_at_point(rx, ry);
         feel_newsym(rx, ry);
         return res;
@@ -5350,7 +5350,7 @@ struct obj* obj;
 	{
 		if (maploc->typ == SDOOR) 
 		{
-			cvt_sdoor_to_door(maploc); /* ->typ = DOOR */
+			cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
 			pline("Thump!  Your swing uncovers a secret door!");
 			return 1;
 		}

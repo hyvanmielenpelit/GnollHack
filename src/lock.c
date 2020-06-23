@@ -1011,8 +1011,7 @@ int x, y;
         case SPE_KNOCK:
         case WAN_STRIKING:
         case SPE_FORCE_BOLT:
-            door->typ = DOOR;
-            door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
+            transform_location_type_and_flags(x, y, DOOR, D_CLOSED | (door->doormask & D_TRAPPED));
             newsym(x, y);
             if (cansee(x, y))
                 pline("A door appears in the wall!");

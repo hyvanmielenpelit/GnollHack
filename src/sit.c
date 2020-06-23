@@ -319,10 +319,8 @@ dosit()
         if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ))
 		{
             /* may have teleported */
-            delete_location(u.ux, u.uy);
-            levl[u.ux][u.uy].typ = ROOM; // , levl[u.ux][u.uy].flags = 0;
+            create_simple_location(u.ux, u.uy, ROOM, 0, TRUE);
             pline_The("throne vanishes in a puff of logic.");
-            newsym(u.ux, u.uy);
         }
     } 
 	else

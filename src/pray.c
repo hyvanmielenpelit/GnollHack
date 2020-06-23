@@ -2047,10 +2047,9 @@ dosacrifice()
                     pline(
                     "The blood floods the altar, which vanishes in %s cloud!",
                           an(hcolor(NH_BLACK)));
-                    delete_location(u.ux, u.uy);
-                    levl[u.ux][u.uy].typ = ROOM;
-                    //levl[u.ux][u.uy].altarmask = 0;
-                    newsym(u.ux, u.uy);
+
+                    create_simple_location(u.ux, u.uy, ROOM, 0, TRUE);
+
                     angry_priest();
                     demonless_msg = "cloud dissipates";
                 } else {

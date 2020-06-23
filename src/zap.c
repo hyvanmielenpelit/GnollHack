@@ -7675,7 +7675,7 @@ short exploding_wand_typ;
                     msgtxt = "Some water evaporates.";
             } else {
                 rangemod -= 3;
-                lev->typ = ROOM, lev->flags = 0;
+                create_simple_location(x, y, ROOM, 0, FALSE);
                 t = maketrap(x, y, PIT, NON_PM, TRAP_NO_FLAGS);
                 if (t)
                     t->tseen = 1;
@@ -7789,16 +7789,20 @@ short exploding_wand_typ;
                 rangemod -= 3;
                 if (see_it)
                     Norep("The %s melt.", defsyms[S_bars].explanation);
-                if (*in_rooms(x, y, SHOPBASE)) {
+                if (*in_rooms(x, y, SHOPBASE)) 
+                {
                     /* in case we ever have a shop bounded by bars */
-                    lev->typ = ROOM, lev->flags = 0;
+                    create_simple_location(x, y, ROOM, 0, FALSE);
                     if (see_it)
                         newsym(x, y);
                     add_damage(x, y, (type >= 0) ? SHOP_BARS_COST : 0L);
                     if (type >= 0)
                         *shopdamage = TRUE;
-                } else {
-                    lev->typ = DOOR, lev->doormask = D_NODOOR;
+                }
+                else 
+                {
+                    transform_location_type_and_flags(x, y, DOOR, D_NODOOR);
+                    //lev->typ = DOOR, lev->doormask = D_NODOOR;
                     if (see_it)
                         newsym(x, y);
                 }
@@ -7823,7 +7827,7 @@ short exploding_wand_typ;
 
     /* secret door gets revealed, converted into regular door */
     if (levl[x][y].typ == SDOOR) {
-        cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
+        cvt_sdoor_to_door(x, y); /* .typ = DOOR */
         /* target spot will now pass closed_door() test below
            (except on rogue level) */
         newsym(x, y);
@@ -7939,10 +7943,12 @@ short exploding_wand_typ;
         {
             rangemod = -1000;
             struct mkroom* r = which_room(x, y);
+            int ltype = 0;
             if (r && r->orig_rtype == GARDEN)
-                lev->typ = GRASS;
+                ltype = GRASS;
             else
-                lev->typ = ROOM;
+                ltype = ROOM;
+            create_simple_location(x, y, ltype, 0, FALSE);
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);
             if (cansee(x, y))

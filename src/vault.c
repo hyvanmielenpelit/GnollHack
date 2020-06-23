@@ -542,9 +542,7 @@ invault()
             else if (x == lowx - 1 || x == hix + 1)
                 EGD(guard)->fakecorr[0].ftyp = VWALL;
         }
-        delete_location(x, y);
-        levl[x][y].typ = DOOR;
-        levl[x][y].doormask = D_NODOOR;
+        create_simple_location(x, y, DOOR, D_NODOOR, FALSE);
         unblock_vision_and_hearing_at_point(x, y); /* doesn't block light */
         EGD(guard)->fcend = 1;
         EGD(guard)->warncnt = 1;
@@ -950,10 +948,15 @@ register struct monst *grd;
                     else
                         crm->typ = DOOR;
 #else
-                    crm->typ = (typ == SCORR) ? CORR : DOOR;
+                    if(typ == SCORR)
+                        transform_location_type(nx, ny, CORR);
+                    else
+                        transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR);
+
+                    //crm->typ = (typ == SCORR) ? CORR : DOOR;
 #endif
-                    if (crm->typ == DOOR)
-                        crm->doormask = D_NODOOR;
+//                    if (crm->typ == DOOR)
+//                        crm->doormask = D_NODOOR;
                     goto proceed;
                 }
             }
@@ -976,9 +979,11 @@ register struct monst *grd;
         /* in view of the above we must have IS_WALL(typ) or typ == POOL */
         /* must be a wall here */
         if (isok(nx + nx - x, ny + ny - y) && !IS_POOL(typ)
-            && IS_ROOM(levl[nx + nx - x][ny + ny - y].typ)) {
-            crm->typ = DOOR;
-            crm->doormask = D_NODOOR;
+            && IS_ROOM(levl[nx + nx - x][ny + ny - y].typ))
+        {
+            transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR);
+//            crm->typ = DOOR;
+//            crm->doormask = D_NODOOR;
             goto proceed;
         }
         if (dy && nx != x) {
@@ -993,9 +998,11 @@ register struct monst *grd;
             continue;
         }
         /* I don't like this, but ... */
-        if (IS_ROOM(typ)) {
-            crm->typ = DOOR;
-            crm->doormask = D_NODOOR;
+        if (IS_ROOM(typ))
+        {
+            transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR);
+//            crm->typ = DOOR;
+//            crm->doormask = D_NODOOR;
             goto proceed;
         }
         break;

@@ -3351,7 +3351,7 @@ boolean pushing;
 				levl[rx][ry].drawbridgemask |= DB_FLOOR;
 			}
 			else
-				transform_location(rx, ry, ROOM, 0, 0, FALSE, FALSE, FALSE);
+				create_simple_location(rx, ry, ROOM, 0, FALSE);
                 
 			//levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 
@@ -3645,44 +3645,32 @@ polymorph_sink()
         return;
 
     sinklooted = levl[u.ux][u.uy].looted != 0;
-    level.flags.nsinks--;
-
-    //levl[u.ux][u.uy].doormask = 0; /* levl[][].flags */
-	delete_location(u.ux, u.uy);
 
     switch (rn2(4)) 
 	{
     default:
     case 0:
         sym = S_fountain;
-        levl[u.ux][u.uy].typ = FOUNTAIN;
-        levl[u.ux][u.uy].blessedftn = 0;
-		levl[u.ux][u.uy].fountaintype |= rn2(6);
+		create_simple_location(u.ux, u.uy, FOUNTAIN, rn2(6), FALSE);
 		if (sinklooted)
-            SET_FOUNTAIN_LOOTED(u.ux, u.uy);
-        level.flags.nfountains++;
-        break;
+			SET_FOUNTAIN_LOOTED(u.ux, u.uy);
+		break;
     case 1:
         sym = S_throne;
-        levl[u.ux][u.uy].typ = THRONE;
-        if (sinklooted)
-            levl[u.ux][u.uy].looted = T_LOOTED;
+		create_simple_location(u.ux, u.uy, THRONE, sinklooted ? T_LOOTED : 0, FALSE);
         break;
     case 2:
         sym = S_altar;
-        levl[u.ux][u.uy].typ = ALTAR;
-        levl[u.ux][u.uy].altarmask = Align2amask(rn2((int) A_LAWFUL + 2) - 1);
+		create_simple_location(u.ux, u.uy, ALTAR, Align2amask(rn2((int)A_LAWFUL + 2) - 1), FALSE);
         break;
     case 3:
         sym = S_room;
-        levl[u.ux][u.uy].typ = ROOM;
+		create_simple_location(u.ux, u.uy, ROOM, 0, FALSE);
         make_grave(u.ux, u.uy, (char *) 0);
         if (levl[u.ux][u.uy].typ == GRAVE)
             sym = S_grave;
         break;
     }
-
-	maybe_create_location_light_and_sound_sources(u.ux, u.uy);
 
     /* give message even if blind; we know we're not levitating,
        so can feel the outcome even if we can't directly see it */
@@ -3714,16 +3702,9 @@ teleport_sink()
 
     if (levl[cx][cy].typ == ROOM && !trp && !eng) {
         /* create sink at new position */
-		delete_location(cx, cy);
-		levl[cx][cy].typ = SINK;
-        levl[cx][cy].looted = levl[u.ux][u.uy].looted;
-		maybe_create_location_light_and_sound_sources(cx, cy);
-        newsym(cx, cy);
+		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].looted, TRUE);
         /* remove old sink */
-		delete_location(u.ux, u.uy);
-        levl[u.ux][u.uy].typ = ROOM;
-        //levl[u.ux][u.uy].looted = 0;
-        newsym(u.ux, u.uy);
+		create_simple_location(u.ux, u.uy, ROOM, 0, TRUE);
         return TRUE;
     }
     return FALSE;
@@ -5558,6 +5539,11 @@ void
 delete_location(x, y)
 xchar x, y;
 {
+	if (levl[x][y].typ == FOUNTAIN)
+		level.flags.nfountains--;
+	else if (levl[x][y].typ == SINK)
+		level.flags.nsinks--;
+
 	if (levl[x][y].lamplit)
 	{
 		del_light_source(LS_LOCATION, xy_to_any(x, y));
@@ -5577,7 +5563,7 @@ xchar x, y;
 }
 
 void
-transform_location(x, y, type, location_flags, location_variation, facing_right, horizontal, donewsym)
+full_location_transform(x, y, type, location_flags, location_variation, facing_right, horizontal, donewsym)
 xchar x, y;
 int type;
 uchar location_flags;
@@ -5586,11 +5572,6 @@ boolean facing_right;
 boolean horizontal;
 boolean donewsym;
 {
-	if (levl[x][y].typ == FOUNTAIN)
-		level.flags.nfountains--;
-	else if (levl[x][y].typ == SINK)
-		level.flags.nsinks--;
-
 	delete_location(x, y);
 	levl[x][y].typ = type;
 	levl[x][y].flags = location_flags;
@@ -5606,6 +5587,58 @@ boolean donewsym;
 
 	if(donewsym)
 		newsym(x, y);
+}
+
+void
+create_simple_location(x, y, type, location_flags, donewsym)
+xchar x, y;
+int type;
+uchar location_flags;
+boolean donewsym;
+{
+	full_location_transform(x, y, type, location_flags, 0, FALSE, FALSE, donewsym);
+}
+
+void
+transform_location_type(x, y, type)
+xchar x, y;
+int type;
+{
+	/* First, only limited delete */
+	if (levl[x][y].typ == FOUNTAIN)
+		level.flags.nfountains--;
+	else if (levl[x][y].typ == SINK)
+		level.flags.nsinks--;
+
+	if (levl[x][y].lamplit)
+	{
+		del_light_source(LS_LOCATION, xy_to_any(x, y));
+		levl[x][y].lamplit = 0;
+	}
+	if (levl[x][y].makingsound)
+	{
+		del_sound_source(LS_LOCATION, xy_to_any(x, y));
+		levl[x][y].makingsound = 0;
+	}
+
+	/* Then, change type */
+	levl[x][y].typ = type;
+
+	maybe_create_location_light_and_sound_sources(x, y);
+	if (levl[x][y].typ == FOUNTAIN)
+		level.flags.nfountains++;
+	else if (levl[x][y].typ == SINK)
+		level.flags.nsinks++;
+}
+
+void
+transform_location_type_and_flags(x, y, type, location_flags)
+xchar x, y;
+int type;
+uchar location_flags;
+{
+	levl[x][y].flags = location_flags;
+	transform_location_type(x, y, type); /* Does not clear flags */
 }
 
 /*do.c*/

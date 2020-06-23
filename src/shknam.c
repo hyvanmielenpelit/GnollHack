@@ -843,7 +843,7 @@ boolean deserted;
         newsym(sx, sy);
     }
     if (levl[sx][sy].typ == SDOOR) {
-        cvt_sdoor_to_door(&levl[sx][sy]); /* .typ = DOOR */
+        cvt_sdoor_to_door(sx, sy); /* .typ = DOOR */
         newsym(sx, sy);
     }
     if (levl[sx][sy].doormask & D_TRAPPED)

@@ -1287,7 +1287,7 @@ dokick() {
     if (!IS_DOOR(maploc->typ)) {
         if (maploc->typ == SDOOR) {
             if (!Levitation && rn2(30) < avrg_attrib) {
-                cvt_sdoor_to_door(maploc); /* ->typ = DOOR */
+                cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
                 pline("Crash!  %s a secret door!",
                       /* don't "kick open" when it's locked
                          unless it also happens to be trapped */
@@ -1316,7 +1316,7 @@ dokick() {
             if (!Levitation && rn2(30) < avrg_attrib) {
                 pline("Crash!  You kick open a secret passage!");
                 exercise(A_DEX, TRUE);
-                maploc->typ = CORR;
+                create_simple_location(x, y, CORR, 0, FALSE);
                 feel_newsym(x, y); /* we know it's gone */
                 unblock_vision_and_hearing_at_point(x, y); /* vision */
                 update_u_action(ACTION_TILE_NO_ACTION);
@@ -1328,9 +1328,9 @@ dokick() {
             register int i;
             if (Levitation)
                 goto dumb;
-            if ((Luck < 0 || maploc->doormask) && !rn2(3)) {
-                maploc->typ = ROOM;
-                maploc->doormask = 0; /* don't leave loose ends.. */
+            if ((Luck < 0 || maploc->doormask) && !rn2(3)) 
+            {
+                create_simple_location(x, y, ROOM, 0, FALSE);
                 (void) mkgold((long) rnd(200), x, y);
                 if (Blind)
                     pline("CRASH!  You destroy it.");
@@ -1407,8 +1407,7 @@ dokick() {
                 || ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10))) {
                 adjalign(-sgn(u.ualign.type));
             }
-            maploc->typ = ROOM;
-            maploc->doormask = 0;
+            create_simple_location(x, y, ROOM, 0, FALSE);
             (void) mksobj_at(ROCK, x, y, TRUE, FALSE);
             del_engr_at(x, y);
             if (Blind)

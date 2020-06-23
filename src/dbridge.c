@@ -264,21 +264,36 @@ boolean flag;
     }
     if (!IS_WALL(levl[x2][y2].typ))
         return FALSE;
-    if (flag) { /* We want the bridge open */
-        levl[x][y].typ = DRAWBRIDGE_DOWN;
-        levl[x2][y2].typ = DOOR;
-        levl[x2][y2].doormask = D_PORTCULLIS;
-    } else {
-        levl[x][y].typ = DRAWBRIDGE_UP;
-        levl[x2][y2].typ = DBWALL;
+    
+    int lev1typ = 0;
+    int lev2typ = 0;
+    uchar lev1flags = 0;
+    uchar lev2flags = 0;
+    boolean lev1horizontal = 0;
+    boolean lev2horizontal = 0;
+
+    if (flag)
+    { /* We want the bridge open */
+        lev1typ = DRAWBRIDGE_DOWN;
+        lev2typ = DOOR;
+        lev2flags = D_PORTCULLIS;
+    } 
+    else 
+    {
+        lev1typ = DRAWBRIDGE_UP;
+        lev2typ = DBWALL;
         /* Drawbridges are non-diggable. */
-        levl[x2][y2].wall_info = W_NONDIGGABLE;
+        lev2flags = W_NONDIGGABLE;
     }
-    levl[x][y].horizontal = !horiz;
-    levl[x2][y2].horizontal = horiz;
-    levl[x][y].drawbridgemask = dir;
+    lev1horizontal = !horiz;
+    lev2horizontal = horiz;
+    lev1flags = dir;
     if (lava)
-        levl[x][y].drawbridgemask |= DB_LAVA;
+        lev1flags |= DB_LAVA;
+
+    full_location_transform(x, y, lev1typ, lev1flags, 0, FALSE, lev1horizontal, FALSE);
+    full_location_transform(x2, y2, lev2typ, lev2flags, 0, FALSE, lev2horizontal, FALSE);
+
     return  TRUE;
 }
 
@@ -846,20 +861,23 @@ int x, y;
                     : "going");
     else /* "5 gears turn" for castle drawbridge tune */
         You_hear("chains rattling and gears turning.");
-    lev1->typ = DRAWBRIDGE_UP;
+
+    full_location_transform(x, y, DRAWBRIDGE_UP, lev1->flags, lev1->variation, lev1->facing_right, lev1->horizontal, FALSE);
+
     lev2 = &levl[x2][y2];
-    lev2->typ = DBWALL;
+    boolean lhoriz = FALSE;
     switch (lev1->drawbridgemask & DB_DIR) {
     case DB_NORTH:
     case DB_SOUTH:
-        lev2->horizontal = TRUE;
+        lhoriz = TRUE;
         break;
     case DB_WEST:
     case DB_EAST:
-        lev2->horizontal = FALSE;
+        lhoriz = FALSE;
         break;
     }
-    lev2->wall_info = W_NONDIGGABLE;
+    full_location_transform(x2, y2, DBWALL, W_NONDIGGABLE, lev2->variation, lev2->facing_right, lhoriz, FALSE);
+
     set_entity(x, y, &(occupants[0]));
     set_entity(x2, y2, &(occupants[1]));
     do_entity(&(occupants[0]));          /* Do set_entity after first */
@@ -905,10 +923,11 @@ int x, y;
                 (distu(x2, y2) < distu(x, y)) ? "going" : "coming");
     else /* "5 gears turn" for castle drawbridge tune */
         You_hear("gears turning and chains rattling.");
-    lev1->typ = DRAWBRIDGE_DOWN;
+
+    full_location_transform(x, y, DRAWBRIDGE_DOWN, lev1->flags, lev1->variation, lev1->facing_right, lev1->horizontal, FALSE);
     lev2 = &levl[x2][y2];
-    lev2->typ = DOOR;
-    lev2->doormask = D_PORTCULLIS;
+    full_location_transform(x2, y2, DOOR, D_PORTCULLIS, lev2->variation, lev2->facing_right, lev2->horizontal, FALSE);
+
     set_entity(x, y, &(occupants[0]));
     set_entity(x2, y2, &(occupants[1]));
     do_entity(&(occupants[0]));          /* do set_entity after first */
@@ -979,9 +998,9 @@ boolean is_disintegrated;
                     You_hear("a loud *SPLASH*!");
             }
         }
-        lev1->typ = lava ? LAVAPOOL : MOAT;
-        lev1->drawbridgemask = 0;
-        if ((otmp2 = sobj_at(BOULDER, x, y)) != 0) {
+        full_location_transform(x, y, lava ? LAVAPOOL : MOAT, 0, 0, FALSE, FALSE, FALSE);
+        if ((otmp2 = sobj_at(BOULDER, x, y)) != 0)
+        {
             obj_extract_self(otmp2);
             (void) flooreffects(otmp2, x, y, "fall");
         }
@@ -990,12 +1009,11 @@ boolean is_disintegrated;
             pline_The("drawbridge disintegrates!");
         else
             You_hear("a loud *CRASH*!");
-        lev1->typ = ((lev1->drawbridgemask & DB_ICE) ? ICE : ROOM);
-        lev1->icedpool = ((lev1->drawbridgemask & DB_ICE) ? ICED_MOAT : 0);
+
+        full_location_transform(x, y, ((lev1->drawbridgemask& DB_ICE) ? ICE : ROOM), ((lev1->drawbridgemask & DB_ICE) ? ICED_MOAT : 0), 0, FALSE, FALSE, FALSE);
     }
     wake_nearto(x, y, 500);
-    lev2->typ = DOOR;
-    lev2->doormask = D_PORTCULLIS;
+    full_location_transform(x2, y2, DOOR, D_PORTCULLIS, 0, lev2->facing_right, lev2->horizontal, FALSE);
     if ((t = t_at(x, y)) != 0)
         deltrap(t);
     if ((t = t_at(x2, y2)) != 0)

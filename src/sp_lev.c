@@ -6165,6 +6165,9 @@ sp_lev *lvl;
      * otherwise branch stairs won't be premapped. */
     fixup_special();
 
+    create_level_light_sources();
+    create_level_sound_sources();
+
     if (coder->premapped)
         sokoban_detect();
 

@@ -34,8 +34,6 @@ STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
                                  XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
-STATIC_DCL void NDECL(create_level_light_sources);
-STATIC_DCL void NDECL(create_level_sound_sources);
 
 #define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE)
 #define init_vault() vault_x = -1
@@ -2178,7 +2176,7 @@ xchar x, y;
     place_branch(br, x, y);
 }
 
-STATIC_OVL void
+void
 create_level_light_sources()
 {
     for (xchar x = 1; x < COLNO; x++)
@@ -2217,7 +2215,7 @@ xchar x, y;
     }
 }
 
-STATIC_OVL void
+void
 create_level_sound_sources()
 {
     for (xchar x = 1; x < COLNO; x++)

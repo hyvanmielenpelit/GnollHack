@@ -137,7 +137,7 @@ genericptr_t poolcnt;
         pline("Water gushes forth from the overflowing fountain!");
 
     /* Put a pool at x, y */
-	transform_location(x, y, POOL, 0, 0, FALSE, FALSE, FALSE);
+	create_simple_location(x, y, POOL, 0, FALSE);
 
 	/* No kelp! */
     del_engr_at(x, y);
@@ -210,15 +210,11 @@ boolean isyou;
                 return;
         }
         /* replace the fountain with ordinary floor */
-		delete_location(x, y);
-        levl[x][y].typ = ROOM, levl[x][y].flags = 0;
-        levl[x][y].blessedftn = 0;
+		create_simple_location(x, y, ROOM, 0, TRUE);
         if (cansee(x, y))
             pline_The("fountain dries up!");
         /* The location is seen if the hero/monster is invisible
            or felt if the hero is blind. */
-        newsym(x, y);
-        level.flags.nfountains--;
         if (isyou && in_town(x, y))
             (void) angry_guards(FALSE);
     }
@@ -577,9 +573,7 @@ register struct obj *obj;
             exercise(A_WIS, TRUE);
         }
         update_inventory();
-        levl[u.ux][u.uy].typ = ROOM, levl[u.ux][u.uy].flags = 0;
-        newsym(u.ux, u.uy);
-        level.flags.nfountains--;
+		create_simple_location(u.ux, u.uy, ROOM, 0, TRUE);
         if (in_town(u.ux, u.uy))
             (void) angry_guards(FALSE);
         return;
@@ -1116,13 +1110,9 @@ int x, y;
 {
     if (cansee(x, y) || (x == u.ux && y == u.uy))
         pline_The("pipes break!  Water spurts out!");
-    level.flags.nsinks--;
-    levl[x][y].typ = FOUNTAIN, levl[x][y].looted = 0;
-	levl[x][y].fountaintype &= ~FOUNTAIN_TYPE_MASK;
-	levl[x][y].fountaintype |= FOUNTAIN_WATER;
-	levl[x][y].blessedftn = 0;
+
+	create_simple_location(x, y, FOUNTAIN, FOUNTAIN_WATER, FALSE);
     SET_FOUNTAIN_LOOTED(x, y);
-    level.flags.nfountains++;
     newsym(x, y);
 }
 

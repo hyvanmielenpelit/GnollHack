@@ -1301,7 +1301,7 @@ register int x, y;
     /* Secret corridors are found, but not secret doors. */
     if (lev->typ == SCORR) 
     {
-        lev->typ = CORR;
+        transform_location_type(x, y, CORR);
         unblock_vision_and_hearing_at_point(x, y);
     }
 
@@ -1496,9 +1496,10 @@ struct obj *sobj; /* scroll--actually fake spellbook--object */
 
 /* convert a secret door into a normal door */
 void
-cvt_sdoor_to_door(lev)
-struct rm *lev;
+cvt_sdoor_to_door(x, y)
+int x, y;
 {
+    struct rm* lev = &levl[x][y];
     int newmask = lev->doormask & ~WM_MASK;
 
     if (Is_rogue_level(&u.uz))
@@ -1509,8 +1510,7 @@ struct rm *lev;
         if (!(newmask & D_LOCKED))
         newmask |= D_CLOSED;
 
-    lev->typ = DOOR;
-    lev->doormask = newmask;
+    transform_location_type_and_flags(x, y, DOOR, newmask);
 }
 
 STATIC_PTR void
@@ -1523,7 +1523,7 @@ genericptr_t num;
 
     if (levl[zx][zy].typ == SDOOR) 
     {
-        cvt_sdoor_to_door(&levl[zx][zy]); /* .typ = DOOR */
+        cvt_sdoor_to_door(zx, zy); /* .typ = DOOR */
         magic_map_background(zx, zy, 0);
         newsym(zx, zy);
         (*(int *) num)++;
@@ -1592,7 +1592,7 @@ genericptr_t num;
         || (levl[zx][zy].typ == DOOR
             && (levl[zx][zy].doormask & (D_CLOSED | D_LOCKED)))) {
         if (levl[zx][zy].typ == SDOOR)
-            cvt_sdoor_to_door(&levl[zx][zy]); /* .typ = DOOR */
+            cvt_sdoor_to_door(zx, zy); /* .typ = DOOR */
         if (levl[zx][zy].doormask & D_TRAPPED) {
             if (distu(zx, zy) < 3)
                 b_trapped("door", 0);
@@ -1814,7 +1814,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 					{
 						if (rn2(7 - fund))
 							continue;
-						cvt_sdoor_to_door(&levl[x][y]); /* .typ = DOOR */
+						cvt_sdoor_to_door(x, y); /* .typ = DOOR */
 						exercise(A_WIS, TRUE);
 						nomul(0);
 						feel_location(x, y); /* make sure it shows up */

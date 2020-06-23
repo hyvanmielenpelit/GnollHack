@@ -4232,44 +4232,48 @@ struct obj *no_wish;
         /* furniture and terrain */
         lev = &levl[x][y];
         p = eos(bp);
-        if (!BSTRCMPI(bp, p - 8, "fountain")) {
-            lev->typ = FOUNTAIN;
-            level.flags.nfountains++;
+        if (!BSTRCMPI(bp, p - 8, "fountain")) 
+        {
+            uchar lflags = 0;
+            boolean lhorizontal = 0;
             if (!strncmpi(bp, "enchanted magic ", 16))
-                lev->blessedftn = 1;
+                lhorizontal = 1;
 			if (!strncmpi(bp, "magic ", 6))
-				lev->fountaintype |= FOUNTAIN_MAGIC; /* does nothing */
+                lhorizontal |= FOUNTAIN_MAGIC; /* does nothing */
 			if (!strncmpi(bp, "healing ", 8))
-				lev->fountaintype |= FOUNTAIN_HEALING;
+                lhorizontal |= FOUNTAIN_HEALING;
 			if (!strncmpi(bp, "mana ", 5))
-				lev->fountaintype |= FOUNTAIN_MANA;
+                lhorizontal |= FOUNTAIN_MANA;
 			if (!strncmpi(bp, "power ", 6))
-				lev->fountaintype |= FOUNTAIN_POWER;
+                lhorizontal |= FOUNTAIN_POWER;
 			if (!strncmpi(bp, "water ", 6))
-				lev->fountaintype |= FOUNTAIN_WATER;
+                lhorizontal |= FOUNTAIN_WATER;
 			if (!strncmpi(bp, "poison ", 7))
-				lev->fountaintype |= FOUNTAIN_POISON;
-			int ftyp = (lev->fountaintype & FOUNTAIN_TYPE_MASK);
+                lhorizontal |= FOUNTAIN_POISON;
+            
+            full_location_transform(x, y, FOUNTAIN, lflags, 0, FALSE, lhorizontal, FALSE);
+
+            int ftyp = (lev->fountaintype & FOUNTAIN_TYPE_MASK);
 			pline("A %s.", ftyp > 0 ? fountain_type_text(ftyp) : lev->blessedftn ? "enchanted fountain" : "magic fountain");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
-        if (!BSTRCMPI(bp, p - 6, "throne")) {
-            lev->typ = THRONE;
+        if (!BSTRCMPI(bp, p - 6, "throne")) 
+        {
+            create_simple_location(x, y, THRONE, 0, FALSE);
             pline("A throne.");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
         if (!BSTRCMPI(bp, p - 4, "sink")) {
-            lev->typ = SINK;
-            level.flags.nsinks++;
+            create_simple_location(x, y, SINK, 0, FALSE);
             pline("A sink.");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
         /* ("water" matches "potion of water" rather than terrain) */
         if (!BSTRCMPI(bp, p - 4, "pool") || !BSTRCMPI(bp, p - 4, "moat")) {
-            lev->typ = !BSTRCMPI(bp, p - 4, "pool") ? POOL : MOAT;
+            create_simple_location(x, y, !BSTRCMPI(bp, p - 4, "pool") ? POOL : MOAT, 0, FALSE);
             del_engr_at(x, y);
             pline("A %s.", (lev->typ == POOL) ? "pool" : "moat");
             /* Must manually make kelp! */
@@ -4278,7 +4282,7 @@ struct obj *no_wish;
             return (struct obj *) &zeroobj;
         }
         if (!BSTRCMPI(bp, p - 4, "lava")) { /* also matches "molten lava" */
-            lev->typ = LAVAPOOL;
+            create_simple_location(x, y, LAVAPOOL, 0, FALSE);
             del_engr_at(x, y);
             pline("A pool of molten lava.");
             if (!(Levitation || Flying))
@@ -4290,7 +4294,6 @@ struct obj *no_wish;
         if (!BSTRCMPI(bp, p - 5, "altar")) {
             aligntyp al;
 
-            lev->typ = ALTAR;
             if (!strncmpi(bp, "chaotic ", 8))
                 al = A_CHAOTIC;
             else if (!strncmpi(bp, "neutral ", 8))
@@ -4301,7 +4304,8 @@ struct obj *no_wish;
                 al = A_NONE;
             else /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
                 al = (!rn2(6)) ? A_NONE : rn2((int) A_LAWFUL + 2) - 1;
-            lev->altarmask = Align2amask(al);
+
+            create_simple_location(x, y, ALTAR, Align2amask(al), FALSE);
             pline("%s altar.", An(align_str(al)));
             newsym(x, y);
             return (struct obj *) &zeroobj;
@@ -4317,7 +4321,7 @@ struct obj *no_wish;
         }
 
         if (!BSTRCMPI(bp, p - 4, "tree")) {
-            lev->typ = TREE;
+            create_simple_location(x, y, TREE, 0, FALSE);
             pline("A tree.");
             newsym(x, y);
             block_vision_and_hearing_at_point(x, y);
@@ -4325,7 +4329,7 @@ struct obj *no_wish;
         }
 
         if (!BSTRCMPI(bp, p - 4, "bars")) {
-            lev->typ = IRONBARS;
+            create_simple_location(x, y, IRONBARS, 0, FALSE);
             pline("Iron bars.");
             newsym(x, y);
             return (struct obj *) &zeroobj;

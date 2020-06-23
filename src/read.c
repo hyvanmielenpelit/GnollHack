@@ -2426,7 +2426,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             for (x = 1; x < COLNO; x++)
                 for (y = 0; y < ROWNO; y++)
                     if (levl[x][y].typ == SDOOR)
-                        cvt_sdoor_to_door(&levl[x][y]);
+                        cvt_sdoor_to_door(x, y);
             /* do_mapping() already reveals secret passages */
         }
         known = TRUE;

@@ -1328,7 +1328,7 @@ const char *str;
         return;
 
     /* Make the grave */
-    transform_location(x, y, GRAVE, 0, 0, FALSE, FALSE, FALSE);
+    create_simple_location(x, y, GRAVE, 0, FALSE);
 
     /* Engrave the headstone */
     del_engr_at(x, y);

@@ -484,27 +484,38 @@ xchar x, y;
             return 1;
         }
 
-    } else if (IS_WALL(lev->typ)) {
+    } else if (IS_WALL(lev->typ))
+    {
         if (*in_rooms(x, y, SHOPBASE)) {
             add_damage(x, y, SHOP_WALL_DMG);
             dmgtxt = "damage";
         }
         digtxt = "chew a hole in the wall.";
-        if (level.flags.is_maze_lev) {
-            lev->typ = ROOM;
-        } else if (level.flags.is_cavernous_lev && !in_town(x, y)) {
-            lev->typ = CORR;
-        } else {
-            lev->typ = DOOR;
-            lev->doormask = D_NODOOR;
+        int ltype = 0;
+        uchar lflags = 0;
+        if (level.flags.is_maze_lev) 
+        {
+            ltype = ROOM;
         }
+        else if (level.flags.is_cavernous_lev && !in_town(x, y))
+        {
+            ltype = CORR;
+        } 
+        else 
+        {
+            ltype = DOOR;
+            lflags = D_NODOOR;
+        }
+        create_simple_location(x, y, ltype, lflags, FALSE);
+
     } else if (IS_TREE(lev->typ)) {
         digtxt = "chew through the tree.";
-        lev->typ = ROOM;
+        create_simple_location(x, y, ROOM, 0, FALSE);
     } else if (lev->typ == IRONBARS) {
         digtxt = "eat through the bars.";
         dissolve_bars(x, y);
-    } else if (lev->typ == SDOOR) {
+    } else if (lev->typ == SDOOR) 
+    {
         if (lev->doormask & D_TRAPPED) {
             lev->doormask = D_NODOOR;
             b_trapped("secret door", 0);
@@ -512,7 +523,7 @@ xchar x, y;
             digtxt = "chew through the secret door.";
             lev->doormask = D_BROKEN;
         }
-        lev->typ = DOOR;
+        transform_location_type(x, y, DOOR);
 
     } else if (IS_DOOR(lev->typ)) {
         if (*in_rooms(x, y, SHOPBASE)) {
