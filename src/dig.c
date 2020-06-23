@@ -408,8 +408,10 @@ dig(VOID_ARGS)
             digtxt = "The boulder falls apart.";
         } 
         else if (lev->typ == STONE || lev->typ == SCORR
-                   || IS_TREE(lev->typ)) {
-            if (Is_earthlevel(&u.uz)) {
+                   || IS_TREE(lev->typ)) 
+        {
+            if (Is_earthlevel(&u.uz)) 
+            {
                 if (wep->blessed && !rn2(3)) 
                 {
                     mkcavearea(FALSE);
@@ -461,9 +463,11 @@ dig(VOID_ARGS)
                 digtxt = "You succeed in cutting away some rock.";
                 create_simple_location(dpx, dpy, CORR, 0, FALSE);
             }
-        } else if (IS_WALL(lev->typ)) 
+        } 
+        else if (IS_WALL(lev->typ)) 
         {
-            if (shopedge) {
+            if (shopedge) 
+            {
                 add_damage(dpx, dpy, SHOP_WALL_DMG);
                 dmgtxt = "damage";
             }
@@ -495,7 +499,8 @@ dig(VOID_ARGS)
         else if (closed_door(dpx, dpy))
         {
             digtxt = "You break through the door.";
-            if (shopedge) {
+            if (shopedge)
+            {
                 add_damage(dpx, dpy, SHOP_DOOR_COST);
                 dmgtxt = "break";
             }
@@ -513,10 +518,12 @@ dig(VOID_ARGS)
         if (dmgtxt)
             pay_for_damage(dmgtxt, FALSE);
 
-        if (Is_earthlevel(&u.uz) && !rn2(3)) {
+        if (Is_earthlevel(&u.uz) && !rn2(3))
+        {
             register struct monst *mtmp;
 
-            switch (rn2(2)) {
+            switch (rn2(2)) 
+            {
             case 0:
                 mtmp = makemon(&mons[!rn2(2) ? PM_ELDER_EARTH_ELEMENTAL : PM_EARTH_ELEMENTAL], dpx, dpy,
                                NO_MM_FLAGS);
@@ -528,7 +535,8 @@ dig(VOID_ARGS)
             if (mtmp)
                 pline_The("debris from your digging comes to life!");
         }
-        if (IS_DOOR(lev->typ) && (lev->doormask & D_TRAPPED)) {
+        if (IS_DOOR(lev->typ) && (lev->doormask & D_TRAPPED)) 
+        {
             lev->doormask = D_NODOOR;
             b_trapped("door", 0);
             newsym(dpx, dpy);
