@@ -67,6 +67,8 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS + 1] = {
     NoSound,
     NoSound,
     { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0},
+    { SOUND_BANK_MASTER, "event:/Bee Ambient" , 0},
+    { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0},
     NoSound
 };
 

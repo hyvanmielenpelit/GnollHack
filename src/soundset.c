@@ -70,7 +70,13 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 		{0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	},
-	{
+    {
+        "Bee",
+        GHSOUND_BEE, 100,
+        {0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+    },
+    {
 		"",
 		0, 0,
 		{0, 0, 0, 0, 0, 0},
@@ -419,6 +425,24 @@ update_ambient_sounds()
         if (!isok(curr->x, curr->y))
             continue;
 
+        /* Update sound source location */
+        if (curr->type == SOUNDSOURCE_OBJECT)
+        {
+            if (get_obj_location(curr->id.a_obj, &curr->x, &curr->y, 0))
+                ;
+        }
+        else if (curr->type == SOUNDSOURCE_MONSTER)
+        {
+            if (get_mon_location(curr->id.a_monst, &curr->x, &curr->y, 0))
+                ;
+        }
+        else if (curr->type == SOUNDSOURCE_LOCATION)
+        {
+            curr->x = curr->id.a_coord.x;
+            curr->y = curr->id.a_coord.y;
+        }
+
+        /* Update sound source heard volume */
         float old_heard_volume = curr->heard_volume;
         float hearing_volume = hearing_array[curr->x][curr->y];
         float total_volume = 0.0f;
