@@ -11,19 +11,19 @@ STATIC_DCL void FDECL(set_hearing_array, (int, int, double));
 
 NEARDATA struct ghsound_definition ghsounds[MAX_GHSOUNDS] =
 {
-    {"", "", "", GHSOUNDTYPE_SIMPLE, 0.0f, 0.0f},
-    {"dungeon-normal-music", "dungeon-music", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
-    {"player-footsteps","Player Footsteps", "",  GHSOUNDTYPE_MOVEMENT, 1.0f, 0.0f},
-    {"dungeon-normal-music-backup", "dungeon-music-backup", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
-    {"dungeon-normal-music-shop-normal", "dungeon-music-shop-normal", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
-    {"dungeon-normal-music-shop-attacked", "dungeon-music-shop-attacked", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
-    {"dungeon-normal-music-shop-cleared", "dungeon-music-shop-cleared", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
-    {"player-strike-general", "Player Strike", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
-    {"player-hit-general", "Player Hit", "", GHSOUNDTYPE_HIT, 1.0f, 0.0f},
-    {"player-miss-general", "Player Miss", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
-    {"fountain", "Fountain Ambient", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
-    {"bee", "Bee Ambient", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
-    {"fire", "Fire Ambient", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"", GHSOUND_BANK_MAIN, "", "", GHSOUNDTYPE_SIMPLE, 0.0f, 0.0f},
+    {"dungeon-normal-music", GHSOUND_BANK_MAIN, "Music-Normal-1", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"player-footsteps", GHSOUND_BANK_MAIN, "Player Footsteps", "",  GHSOUNDTYPE_MOVEMENT, 1.0f, 0.0f},
+    {"dungeon-normal-music-backup", GHSOUND_BANK_MAIN, "dungeon-music-backup", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"dungeon-normal-music-shop-normal", GHSOUND_BANK_MAIN, "dungeon-music-shop-normal", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"dungeon-normal-music-shop-attacked", GHSOUND_BANK_MAIN, "dungeon-music-shop-attacked", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"dungeon-normal-music-shop-cleared", GHSOUND_BANK_MAIN, "dungeon-music-shop-cleared", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"player-strike-general", GHSOUND_BANK_MAIN, "Player Strike", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
+    {"player-hit-general", GHSOUND_BANK_MAIN, "Player Hit", "", GHSOUNDTYPE_HIT, 1.0f, 0.0f},
+    {"player-miss-general", GHSOUND_BANK_MAIN, "Player Miss", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
+    {"fountain", GHSOUND_BANK_MAIN, "Fountain Ambient", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"bee", GHSOUND_BANK_MAIN, "Bee Ambient", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"fire", GHSOUND_BANK_MAIN, "Fire Ambient", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
 };
 
 

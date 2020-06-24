@@ -48,19 +48,26 @@ enum ghsound_types {
 
 /* ghsound types, define necessary parameters */
 enum ghsounds_styles {
-	GHSOUNDTYPE_SIMPLE = 0,			/* Most sounds */
-	GHSOUNDTYPE_AMBIENT,			/* Looping ambient or music */
-	GHSOUNDTYPE_HIT,			/* Requires strike surface parameter */
-	GHSOUNDTYPE_MOVEMENT		/* Requires shoe surface parameter */
+	GHSOUNDTYPE_SIMPLE = 0,			/* Non-looping sound with no parameters */
+	GHSOUNDTYPE_AMBIENT_SIMPLE,		/* Looping ambient with no parameters stored in ambient chain */
+	GHSOUNDTYPE_MUSIC_SIMPLE,		/* Looping music with no parameters stored in music array */
+	GHSOUNDTYPE_HIT,				/* Non-looping sound with a strike surface parameter */
+	GHSOUNDTYPE_MOVEMENT			/* Non-looping sound with a shoe surface parameter */
+};
+
+enum ghsound_bank_types {
+	GHSOUND_BANK_MAIN = 0,
+	MAX_GHSOUNDTYPE_BANKS
 };
 
 struct ghsound_definition {
 	const char* name;
+	enum ghsound_bank_types event_bank_id;
 	const char* event_name;
 	const char* event_folder;
 	enum ghsounds_types ghsoundtype;
 	float volume;
-	float id_parameter_value;
+	float id_parameter_value; /* For non-simple sounds with id parameter */
 };
 
 extern struct ghsound_definition ghsounds[MAX_GHSOUNDS];
