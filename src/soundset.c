@@ -9,6 +9,24 @@ NEARDATA struct soundsource_t* sound_base = 0;
 STATIC_DCL void FDECL(set_hearing_array, (int, int, double));
 
 
+NEARDATA struct ghsound_definition ghsounds[MAX_GHSOUNDS] =
+{
+    {"", "", "", GHSOUNDTYPE_SIMPLE, 0.0f, 0.0f},
+    {"dungeon-normal-music", "dungeon-music", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"player-footsteps","Player Footsteps", "",  GHSOUNDTYPE_MOVEMENT, 1.0f, 0.0f},
+    {"dungeon-normal-music-backup", "dungeon-music-backup", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"dungeon-normal-music-shop-normal", "dungeon-music-shop-normal", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"dungeon-normal-music-shop-attacked", "dungeon-music-shop-attacked", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"dungeon-normal-music-shop-cleared", "dungeon-music-shop-cleared", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"player-strike-general", "Player Strike", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
+    {"player-hit-general", "Player Hit", "", GHSOUNDTYPE_HIT, 1.0f, 0.0f},
+    {"player-miss-general", "Player Miss", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
+    {"fountain", "Fountain Ambient", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"bee", "Bee Ambient", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+    {"fire", "Fire Ambient", "", GHSOUNDTYPE_AMBIENT, 1.0f, 0.0f},
+};
+
+
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1] =
 {
 	{

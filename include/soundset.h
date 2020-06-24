@@ -46,6 +46,24 @@ enum ghsound_types {
 	MAX_GHSOUNDS
 };
 
+/* ghsound types, define necessary parameters */
+enum ghsounds_styles {
+	GHSOUNDTYPE_SIMPLE = 0,			/* Most sounds */
+	GHSOUNDTYPE_AMBIENT,			/* Looping ambient or music */
+	GHSOUNDTYPE_HIT,			/* Requires strike surface parameter */
+	GHSOUNDTYPE_MOVEMENT		/* Requires shoe surface parameter */
+};
+
+struct ghsound_definition {
+	const char* name;
+	const char* event_name;
+	const char* event_folder;
+	enum ghsounds_types ghsoundtype;
+	float volume;
+	float id_parameter_value;
+};
+
+extern struct ghsound_definition ghsounds[MAX_GHSOUNDS];
 
 
 /* play_ghsound function input structs */
