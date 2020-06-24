@@ -2674,6 +2674,11 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, unsigned long));
+void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, unsigned long));
+//play_miss_sound
+//play_action_sound
+//play_ui_sound
+
 E enum player_soundset_types NDECL(get_player_soundset);
 E void NDECL(dosetsoundvolume);
 E void FDECL(update_hearing_array, (int));
@@ -2703,8 +2708,6 @@ E boolean FDECL(obj_has_sound_source, (struct obj*));
 E enum ghsound_types FDECL(obj_ambient_sound, (struct obj*));
 E double FDECL(obj_ambient_sound_volume, (struct obj*));
 E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, double*, enum soundsource_ambient_subtypes*));
-
-void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, unsigned long));
 
 /* ### sys.c ### */
 
