@@ -62,12 +62,7 @@ enum ghsound_bank_types {
 
 struct ghsound_definition {
 	const char* name;
-	enum ghsound_bank_types event_bank_id;
-	const char* event_name;
-	const char* event_folder;
 	enum ghsounds_types ghsoundtype;
-	float volume;
-	float id_parameter_value; /* For non-simple sounds with id parameter */
 };
 
 extern struct ghsound_definition ghsounds[MAX_GHSOUNDS];

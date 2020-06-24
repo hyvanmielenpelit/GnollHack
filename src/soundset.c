@@ -11,19 +11,19 @@ STATIC_DCL void FDECL(set_hearing_array, (int, int, double));
 
 NEARDATA struct ghsound_definition ghsounds[MAX_GHSOUNDS] =
 {
-    {"", GHSOUND_BANK_MAIN, "", "", GHSOUNDTYPE_SIMPLE, 0.0f, 0.0f},
-    {"dungeon-normal-music", GHSOUND_BANK_MAIN, "Music-Normal-1", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
-    {"player-footsteps", GHSOUND_BANK_MAIN, "Player Footsteps", "",  GHSOUNDTYPE_MOVEMENT, 1.0f, 0.0f},
-    {"dungeon-normal-music-backup", GHSOUND_BANK_MAIN, "dungeon-music-backup", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
-    {"dungeon-normal-music-shop-normal", GHSOUND_BANK_MAIN, "dungeon-music-shop-normal", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
-    {"dungeon-normal-music-shop-attacked", GHSOUND_BANK_MAIN, "dungeon-music-shop-attacked", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
-    {"dungeon-normal-music-shop-cleared", GHSOUND_BANK_MAIN, "dungeon-music-shop-cleared", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
-    {"player-strike-general", GHSOUND_BANK_MAIN, "Player Strike", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
-    {"player-hit-general", GHSOUND_BANK_MAIN, "Player Hit", "", GHSOUNDTYPE_HIT, 1.0f, 0.0f},
-    {"player-miss-general", GHSOUND_BANK_MAIN, "Player Miss", "", GHSOUNDTYPE_SIMPLE, 1.0f, 0.0f},
-    {"fountain", GHSOUND_BANK_MAIN, "Fountain Ambient", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
-    {"bee", GHSOUND_BANK_MAIN, "Bee Ambient", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
-    {"fire", GHSOUND_BANK_MAIN, "Fire Ambient", "", GHSOUNDTYPE_AMBIENT_SIMPLE, 1.0f, 0.0f},
+    {"", GHSOUNDTYPE_SIMPLE },
+    {"dungeon-normal-music", GHSOUNDTYPE_MUSIC_SIMPLE },
+    {"player-footsteps", GHSOUNDTYPE_MOVEMENT },
+    {"dungeon-normal-music-backup", GHSOUNDTYPE_MUSIC_SIMPLE },
+    {"dungeon-normal-music-shop-normal", GHSOUNDTYPE_MUSIC_SIMPLE },
+    {"dungeon-normal-music-shop-attacked", GHSOUNDTYPE_MUSIC_SIMPLE },
+    {"dungeon-normal-music-shop-cleared",  GHSOUNDTYPE_MUSIC_SIMPLE },
+    {"player-strike-general",  GHSOUNDTYPE_SIMPLE },
+    {"player-hit-general",  GHSOUNDTYPE_HIT },
+    {"player-miss-general",  GHSOUNDTYPE_SIMPLE },
+    {"fountain", GHSOUNDTYPE_AMBIENT_SIMPLE },
+    {"bee",  GHSOUNDTYPE_AMBIENT_SIMPLE },
+    {"fire",  GHSOUNDTYPE_AMBIENT_SIMPLE },
 };
 
 
@@ -183,7 +183,7 @@ unsigned long music_flags;
 
 	struct ghsound_music_info musicinfo = { 0 };
 	musicinfo.ghsound = get_dungeon_music(dnum);
-	musicinfo.volume = BACKGROUND_MUSIC_VOLUME;
+    musicinfo.volume = BACKGROUND_MUSIC_VOLUME;
 
 	play_ghsound_music(musicinfo);
 }
@@ -245,6 +245,7 @@ unsigned long movement_flags;
 
 	movementinfo.ghsound = soundid;
 	movementinfo.floor = floorid; /* Flying, slithering? */
+
 	movementinfo.volume = volume;
 
 	play_ghsound_movement(movementinfo);
@@ -622,7 +623,6 @@ anything* id;
 {
     sound_source* ss;
     double absvolume = volume > 0.0 ? volume : -volume;
-
     if (absvolume > 1.0 || absvolume < 0.0) 
     {
         impossible("new_sound_source:  illegal volume %d", volume);
@@ -635,8 +635,8 @@ anything* id;
     ss->x = x;
     ss->y = y;
     ss->ghsound = ghsound;
-    ss->source_volume = (float)absvolume;
-    ss->heard_volume = ((float)absvolume) * hearing_array[x][y];
+    ss->source_volume = ((float)absvolume);
+    ss->heard_volume = ss->source_volume * hearing_array[x][y];
     ss->type = type;
     ss->subtype = subtype;
     ss->id = *id;
