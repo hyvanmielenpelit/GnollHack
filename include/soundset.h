@@ -55,17 +55,18 @@ enum ghsounds_styles {
 	GHSOUNDTYPE_MOVEMENT			/* Non-looping sound with a shoe surface parameter */
 };
 
-enum ghsound_bank_types {
-	GHSOUND_BANK_MAIN = 0,
-	MAX_GHSOUNDTYPE_BANKS
-};
-
+/*
 struct ghsound_definition {
 	const char* name;
 	enum ghsounds_types ghsoundtype;
 };
 
 extern struct ghsound_definition ghsounds[MAX_GHSOUNDS];
+*/
+
+struct ghsound_style_definition {
+	const char* name;
+};
 
 
 /* play_ghsound function input structs */
@@ -90,8 +91,7 @@ struct ghsound_effect_info {
 
 struct ghsound_hit_info {
 	enum ghsound_types ghsound;
-	/* Weapon type */
-	/* Armor type */
+	enum strike_surface_types strike_surface;
 	float volume;
 };
 
@@ -131,6 +131,34 @@ struct ghsound_info {
 };
 
 
+/* OBJECT SOUNDSETS */
+enum object_soundset_sound_types {
+	OBJECT_SOUNDSET_SOUND_AMBIENT = 0,
+	OBJECT_SOUNDSET_SOUND_HIT,
+	OBJECT_SOUNDSET_SOUND_MISS,
+	OBJECT_SOUNDSET_SOUND_USE,
+	OBJECT_SOUNDSET_SOUND_EFFECT,
+	OBJECT_SOUNDSET_SOUND_BREAK,
+	MAX_OBJECT_SOUNDSET_SOUNDS
+};
+
+struct object_soundset_definition {
+	char* soundset_name;
+	struct ghsound_info sounds[MAX_OBJECT_SOUNDSET_SOUNDS];
+	enum soundsource_ambient_subtypes ambient_subtype;
+
+};
+
+enum object_soundset_types {
+	OBJECT_SOUNDSET_NONE = 0,
+	OBJECT_SOUNDSET_GENERAL,
+	OBJECT_SOUNDSET_CANDLE,
+	MAX_OBJECT_SOUNDSETS
+};
+
+extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS + 1];
+
+
 /* PLAYER SOUNDSETS */
 struct player_soundset_definition {
 	char* soundset_name;
@@ -138,6 +166,9 @@ struct player_soundset_definition {
 	/* Ambient */
 	struct ghsound_info ambient_sound;
 	enum soundsource_ambient_subtypes ambient_subtype;
+
+	/* Bare handed soundset */
+	enum object_soundset_types barehanded_soundset;
 
 	/* Movement */
 	struct ghsound_info movement_sounds[MAX_MOVEMENT_STYLES];
@@ -164,6 +195,9 @@ struct monster_soundset_definition {
 	struct ghsound_info ambient_sound;
 	enum soundsource_ambient_subtypes ambient_subtype;
 
+	/* Attacks */
+	enum object_soundset_types attack_soundsets[NATTK];
+
 	/* Movement */
 	struct ghsound_info movement_sounds[MAX_MOVEMENT_STYLES];
 
@@ -183,35 +217,6 @@ enum monster_soundset_types {
 
 extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS + 1];
 
-
-enum object_soundset_sound_types {
-	OBJECT_SOUNDSET_SOUND_AMBIENT = 0,
-	OBJECT_SOUNDSET_SOUND_HIT,
-	OBJECT_SOUNDSET_SOUND_MISS,
-	OBJECT_SOUNDSET_SOUND_USE,
-	OBJECT_SOUNDSET_SOUND_EFFECT,
-	OBJECT_SOUNDSET_SOUND_BREAK,
-	MAX_OBJECT_SOUNDSET_SOUNDS
-};
-
-
-/* OBJECT SOUNDSETS */
-struct object_soundset_definition {
-	char* soundset_name;
-	struct ghsound_info sounds[MAX_OBJECT_SOUNDSET_SOUNDS];
-	enum soundsource_ambient_subtypes ambient_subtype;
-
-};
-
-
-enum object_soundset_types {
-	OBJECT_SOUNDSET_NONE = 0,
-	OBJECT_SOUNDSET_GENERAL,
-	OBJECT_SOUNDSET_CANDLE,
-	MAX_OBJECT_SOUNDSETS
-};
-
-extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS + 1];
 
 
 /* LOCATION SOUNDSETS */

@@ -3245,7 +3245,10 @@ mswin_play_ghsound_effect(struct ghsound_effect_info info)
 void
 mswin_play_ghsound_hit(struct ghsound_hit_info info)
 {
-    return;
+    if (!fmod_play_hit_sound(info))
+    {
+        impossible("Cannot play hit sound!");
+    }
 }
 
 void

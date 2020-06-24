@@ -34,11 +34,6 @@ struct action_info
     short corpse;
 };
 
-/*	Max # of attacks for any given monster.
- */
-
-#define NATTK 8
-
 /*	Weight of some bodies
  */
 

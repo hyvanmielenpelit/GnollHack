@@ -1936,11 +1936,11 @@ domove_core()
         u.usteed->mx = u.ux;
         u.usteed->my = u.uy;
         exercise_steed();
-        play_movement_sound(u.usteed, u.ux, u.uy, 0UL);
+        play_movement_sound(u.usteed, 0UL);
     }
     else
     {
-        play_movement_sound(&youmonst, u.ux, u.uy, 0UL);
+        play_movement_sound(&youmonst, 0UL);
     }
 
     /*
