@@ -1786,7 +1786,7 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
                          monst_to_any(m2));
 
     if (mon_ambient_sound(m2->data))
-        new_sound_source(m2->mx, m2->my, mon_ambient_sound(m2->data), mon_ambient_volume(m2->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(m2->data),
+        new_sound_source(m2->mx, m2->my, mon_ambient_sound(m2->data), (double)mon_ambient_volume(m2->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(m2->data),
             monst_to_any(m2));
 
     if (has_mname(mon))
@@ -2394,7 +2394,7 @@ int level_limit;
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
                          monst_to_any(mtmp));
     if ((ct = mon_ambient_sound(mtmp->data)) != 0)
-        new_sound_source(mtmp->mx, mtmp->my, ct, mon_ambient_volume(mtmp->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp->data),
+        new_sound_source(mtmp->mx, mtmp->my, ct, (double)mon_ambient_volume(mtmp->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp->data),
             monst_to_any(mtmp));
     mitem = 0; /* extra inventory item for this monster */
 

@@ -8,7 +8,7 @@
 STATIC_DCL void FDECL(mkbox_cnts, (struct obj *));
 STATIC_DCL unsigned FDECL(nextoid, (struct obj *, struct obj *));
 STATIC_DCL void FDECL(maybe_adjust_light, (struct obj *, int));
-STATIC_DCL void FDECL(maybe_adjust_sound_volume, (struct obj*, int));
+STATIC_DCL void FDECL(maybe_adjust_sound_volume, (struct obj*, double));
 STATIC_DCL void FDECL(obj_timer_checks, (struct obj *,
                                          XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(container_weight, (struct obj *));
@@ -2147,11 +2147,11 @@ int old_range;
 STATIC_OVL void
 maybe_adjust_sound_volume(obj, old_volume)
 struct obj* obj;
-int old_volume;
+double old_volume;
 {
     char buf[BUFSZ];
     xchar ox, oy;
-    int new_volume = obj_ambient_sound_volume(obj), delta = new_volume - old_volume;
+    double new_volume = obj_ambient_sound_volume(obj), delta = new_volume - old_volume;
 
     /* radius of light emitting artifact varies by curse/bless state
        so will change after blessing or cursing */
@@ -2171,8 +2171,8 @@ int old_volume;
             if (*buf)
             {
                 pline("%s %s sound %s%s.", buf, otense(obj, "make"),
-                    (abs(delta) > 1) ? "much " : "",
-                    (delta > 0) ? "louder" : "more quietly");
+                    (absd(delta) > 1.0) ? "much " : "",
+                    (delta > 0.0) ? "louder" : "more quietly");
             }
         }
     }
@@ -2192,7 +2192,7 @@ register struct obj *otmp;
 		return;
 
 	int old_light = 0;
-    int old_volume = 0;
+    double old_volume = 0;
 
     if (otmp->oclass == COIN_CLASS)
         return;
@@ -2223,7 +2223,7 @@ register struct obj *otmp;
 		return;
 
     int old_light = 0;
-    int old_volume = 0;
+    double old_volume = 0;
 
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);
@@ -2249,7 +2249,7 @@ register struct obj *otmp;
 
 	unsigned already_cursed;
     int old_light = 0;
-    int old_volume = 0;
+    double old_volume = 0;
 
     if (otmp->oclass == COIN_CLASS)
         return;
@@ -2301,7 +2301,7 @@ register struct obj *otmp;
 		return;
 
     int old_light = 0;
-    int old_volume = 0;
+    double old_volume = 0;
 
     if (otmp->lamplit)
         old_light = arti_light_radius(otmp);

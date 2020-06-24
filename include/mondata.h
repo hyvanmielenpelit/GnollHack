@@ -681,8 +681,8 @@
 #define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
 #define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
-#define mon_ambient_sound(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].ambient_sound)
-#define mon_ambient_volume(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? 0 : monster_soundsets[(ptr)->soundset].ambient_volume)
+#define mon_ambient_sound(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].ambient_sound.ghsound)
+#define mon_ambient_volume(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? 0 : monster_soundsets[(ptr)->soundset].ambient_sound.volume)
 #define mon_ambient_subtype(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? SOUNDSOURCE_AMBIENT_GENERAL : monster_soundsets[(ptr)->soundset].ambient_subtype)
 
 /* cursed items are good for some evil creatures */

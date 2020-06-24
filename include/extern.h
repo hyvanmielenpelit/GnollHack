@@ -2684,7 +2684,7 @@ E int NDECL(get_max_hearing_distance);
 E void FDECL(update_hearing_array_and_ambient_sounds_if_point_within_hearing_range, (int, int));
 E void FDECL(unblock_vision_and_hearing_at_point, (int, int));
 E void FDECL(block_vision_and_hearing_at_point, (int, int));
-E void FDECL(new_sound_source, (XCHAR_P, XCHAR_P, enum ghsound_types, char, enum soundsource_types, enum soundsource_ambient_subtypes, ANY_P*));
+E void FDECL(new_sound_source, (XCHAR_P, XCHAR_P, enum ghsound_types, double, enum soundsource_types, enum soundsource_ambient_subtypes, ANY_P*));
 E void FDECL(del_sound_source, (int, ANY_P*));
 E void FDECL(save_sound_sources, (int, int, int));
 E void FDECL(restore_sound_sources, (int));
@@ -2696,13 +2696,13 @@ E boolean NDECL(any_sound_source);
 E void FDECL(snuff_sound_source, (int, int));
 E void FDECL(obj_split_sound_source, (struct obj*, struct obj*));
 E void FDECL(obj_merge_sound_sources, (struct obj*, struct obj*));
-E void FDECL(obj_adjust_sound_volume, (struct obj*, char));
+E void FDECL(obj_adjust_sound_volume, (struct obj*, double));
 E void FDECL(begin_sound, (struct obj*, BOOLEAN_P));
 E void FDECL(end_sound, (struct obj*, BOOLEAN_P));
 E boolean FDECL(obj_has_sound_source, (struct obj*));
 E enum ghsound_types FDECL(obj_ambient_sound, (struct obj*));
-E int FDECL(obj_ambient_sound_volume, (struct obj*));
-E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, int*, enum soundsource_ambient_subtypes*));
+E double FDECL(obj_ambient_sound_volume, (struct obj*));
+E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, double*, enum soundsource_ambient_subtypes*));
 
 /* ### sys.c ### */
 

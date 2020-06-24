@@ -104,18 +104,26 @@ struct ghsound_ui_info {
 };
 
 
+/* General sound information */
+struct ghsound_info {
+	enum ghsound_types ghsound;
+	float volume;
+};
+
+
 /* PLAYER SOUNDSETS */
 struct player_soundset_definition {
 	char* soundset_name;
 
 	/* Ambient */
-	enum ghsound_types stand;
+	struct ghsound_info ambient_sound;
+	enum soundsource_ambient_subtypes ambient_subtype;
 
 	/* Movement */
-	enum ghsound_types movement_sounds[MAX_MOVEMENT_STYLES];
+	struct ghsound_info movement_sounds[MAX_MOVEMENT_STYLES];
 
 	/* Actions */
-	enum ghsound_types action_sounds[MAX_ACTION_TILES];
+	struct ghsound_info action_sounds[MAX_ACTION_TILES];
 };
 
 enum player_soundset_types {
@@ -133,15 +141,14 @@ struct monster_soundset_definition {
 	char* soundset_name;
 
 	/* Ambient */
-	enum ghsound_types ambient_sound;
-	char ambient_volume;
+	struct ghsound_info ambient_sound;
 	enum soundsource_ambient_subtypes ambient_subtype;
 
 	/* Movement */
-	enum ghsound_types movement_sounds[MAX_MOVEMENT_STYLES];
+	struct ghsound_info movement_sounds[MAX_MOVEMENT_STYLES];
 
 	/* Actions */
-	enum ghsound_types action_sounds[MAX_ACTION_TILES];
+	struct ghsound_info action_sounds[MAX_ACTION_TILES];
 };
 
 enum monster_soundset_types {
@@ -157,12 +164,23 @@ enum monster_soundset_types {
 extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS + 1];
 
 
+enum object_soundset_sound_types {
+	OBJECT_SOUNDSET_SOUND_AMBIENT = 0,
+	OBJECT_SOUNDSET_SOUND_HIT,
+	OBJECT_SOUNDSET_SOUND_MISS,
+	OBJECT_SOUNDSET_SOUND_USE,
+	OBJECT_SOUNDSET_SOUND_EFFECT,
+	OBJECT_SOUNDSET_SOUND_BREAK,
+	MAX_OBJECT_SOUNDSET_SOUNDS
+};
+
+
 /* OBJECT SOUNDSETS */
 struct object_soundset_definition {
 	char* soundset_name;
-	enum ghsound_types ambient_sound;
-	char ambient_volume;
+	struct ghsound_info sounds[MAX_OBJECT_SOUNDSET_SOUNDS];
 	enum soundsource_ambient_subtypes ambient_subtype;
+
 };
 
 
@@ -179,8 +197,7 @@ extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS +
 /* LOCATION SOUNDSETS */
 struct location_soundset_definition {
 	char* soundset_name;
-	enum ghsound_types ambient_sound;
-	char ambient_volume;
+	struct ghsound_info ambient_sound;
 	enum soundsource_ambient_subtypes ambient_subtype;
 };
 

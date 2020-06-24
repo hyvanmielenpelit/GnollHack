@@ -717,7 +717,7 @@ made_change:
         if (new_ambient == 1)
             ++new_ambient; /* otherwise it's undetectable */
         if (new_ambient)
-            new_sound_source(u.ux, u.uy, new_ambient, mon_ambient_volume(youmonst.data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(youmonst.data),
+            new_sound_source(u.ux, u.uy, new_ambient, (double)mon_ambient_volume(youmonst.data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(youmonst.data),
                 monst_to_any(&youmonst));
     }
 }

@@ -2736,7 +2736,7 @@ struct monst *mtmp, *mtmp2;
     if (mon_ambient_sound(mtmp2->data))
     {
         /* since this is so rare, we don't have any `mon_move_light_source' */
-        new_sound_source(mtmp2->mx, mtmp2->my, mon_ambient_sound(mtmp2->data), mon_ambient_volume(mtmp2->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp2->data), monst_to_any(mtmp2));
+        new_sound_source(mtmp2->mx, mtmp2->my, mon_ambient_sound(mtmp2->data), (double)mon_ambient_volume(mtmp2->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp2->data), monst_to_any(mtmp2));
         /* here we rely on fact that `mtmp' hasn't actually been deleted */
         del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
     }
@@ -4859,7 +4859,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
         if (mon_ambient_sound(olddata))
             del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(mtmp));
         if (mon_ambient_sound(mtmp->data))
-            new_sound_source(mtmp->mx, mtmp->my, mon_ambient_sound(mtmp->data), mon_ambient_volume(mtmp->data),
+            new_sound_source(mtmp->mx, mtmp->my, mon_ambient_sound(mtmp->data), (double)mon_ambient_volume(mtmp->data),
                 SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp->data), monst_to_any(mtmp));
     }
 

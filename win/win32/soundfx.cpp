@@ -55,7 +55,7 @@ struct ghsound_eventmapping {
 
 #define NoSound { SOUND_BANK_NONE,  "", 0}
 
-const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS + 1] = {
+const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "" , 0},
     { SOUND_BANK_MASTER, "event:/Music-Normal-1" , 0},
     { SOUND_BANK_MASTER, "event:/Player Footsteps" , 0},
@@ -68,8 +68,7 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS + 1] = {
     NoSound,
     { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0},
     { SOUND_BANK_MASTER, "event:/Bee Ambient" , 0},
-    { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0},
-    NoSound
+    { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0}
 };
 
 #undef NoSound

@@ -57,7 +57,7 @@ typedef struct soundsource_t {
     xchar x, y;  /* source's position */
     enum ghsound_types ghsound; /* played ghsound */
     float heard_volume; /* source's volume as heard by the player, range 0.0f to 1.0f */
-    char source_volume; /* source's volume at origin, range 0 to 100 */
+    float source_volume; /* source's volume at origin, range 0.0f to 1.0f */
     short flags;
     enum soundsource_types type;  /* type of sound source, monster, object, location */
     enum soundsource_subtypes subtype; /* subtype of soundsource, produced always, or while lit */

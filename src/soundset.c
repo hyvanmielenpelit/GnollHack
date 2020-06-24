@@ -13,28 +13,28 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 {
 	{
 		"",
-		0,
-		{0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+		{{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
 	},
 	{
 		"Generic",
-		0,
-		{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL, GHSOUND_PLAYER_FOOTSTEPS_NORMAL},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
+        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    },
 	{
 		"",
-		0,
-		{0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
+        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    },
 	{
 		"",
-		0,
-		{0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	}
+        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    }
 };
 
 
@@ -42,61 +42,85 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 {
 	{
 		"",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
-        {0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
+        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    },
 	{
 		"Generic",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
-        {0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
+        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    },
 	{
 		"",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
-        {0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
+        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    },
 	{
 		"",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
-        {0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
+        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    },
 	{
 		"",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
-        {0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	},
+        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    },
     {
         "Bee",
-        GHSOUND_BEE, 100, SOUNDSOURCE_AMBIENT_GENERAL,
-        {0, 0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+        {GHSOUND_BEE, 1.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     },
     {
 		"",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL,
-        {0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	}
+        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+    }
 };
 
 NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS + 1] =
 {
     {
         "",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "general",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "candle",
-        GHSOUND_FIRE, 30, SOUNDSOURCE_AMBIENT_LIT
+        {
+            {GHSOUND_FIRE, 0.3f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_LIT
     }
 };
 
@@ -104,19 +128,23 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
 {
     {
         "",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
+        {GHSOUND_NONE, 0.0f},
+        SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "general",
-        GHSOUND_NONE, 0, SOUNDSOURCE_AMBIENT_GENERAL
+        {GHSOUND_NONE, 0.0f},
+        SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "fountain",
-        GHSOUND_FOUNTAIN, 100, SOUNDSOURCE_AMBIENT_GENERAL
+        {GHSOUND_FOUNTAIN, 0.75f},
+        SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "altar",
-        GHSOUND_FIRE, 50, SOUNDSOURCE_AMBIENT_LIT
+        {GHSOUND_FIRE, 0.5f},
+        SOUNDSOURCE_AMBIENT_LIT
     }
 };
 
@@ -155,44 +183,51 @@ unsigned long movement_flags;
 	struct ghsound_movement_info movementinfo = { 0 };
 	enum floor_surface_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
 	enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
 
 	if (isyou)
 	{
 		enum player_soundset_types pss = get_player_soundset();
-		soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_ON_GROUND];
+		soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
+        volume = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
 		if (Flying)
 		{
-			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_FLYING];
-			floorid = FLOOR_SURFACE_NONE;
+			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
+            volume = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_FLYING].volume;
+            floorid = FLOOR_SURFACE_NONE;
 
 		}
 		else if (Levitation)
 		{
-			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_LEVITATING];
-			floorid = FLOOR_SURFACE_NONE;
+			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
+            volume = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
+            floorid = FLOOR_SURFACE_NONE;
 		}
 	}
 	else
 	{
 		enum monster_soundset_types mss = is_female(mtmp->data) ? mtmp->data->female_soundset : mtmp->data->soundset;
-		soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND];
+		soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
+        volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
 
 		if (is_flying(mtmp))
 		{
-			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_FLYING];
-			floorid = FLOOR_SURFACE_NONE; 
+			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
+            volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_FLYING].volume;
+            floorid = FLOOR_SURFACE_NONE;
 
 		}
 		else if (is_levitating(mtmp))
 		{
-			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_LEVITATING];
-			floorid = FLOOR_SURFACE_NONE;
+			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
+            volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
+            floorid = FLOOR_SURFACE_NONE;
 		}
 	}
 
 	movementinfo.ghsound = soundid;
 	movementinfo.floor = floorid; /* Flying, slithering? */
-	movementinfo.volume = 1.0f;
+	movementinfo.volume = volume;
 
 	play_ghsound_movement(movementinfo);
 }
@@ -463,11 +498,15 @@ update_ambient_sounds()
         float total_volume = 0.0f;
         if (hearing_volume > 0.0f)
         {
-            char source_volume = curr->source_volume;
-            total_volume = (((float)source_volume * hearing_volume) / 100.0f);
+            float source_volume = curr->source_volume;
+            total_volume = source_volume * hearing_volume;
             if (curr->subtype == SOUNDSOURCE_AMBIENT_LIT && !lit)
                 total_volume = 0.0f;
         }
+
+        if(total_volume < 0.001f)
+            total_volume = 0.0f; /* turn off if too quiet */
+
         curr->heard_volume = total_volume;
         if(curr->heard_volume != old_heard_volume)
             set_ambient_ghsound_volume(curr);
@@ -558,15 +597,15 @@ void
 new_sound_source(x, y, ghsound, volume, type, subtype, id)
 xchar x, y;
 enum ghsound_types ghsound;
-char volume;
+double volume;
 enum soundsource_types type;
 enum soundsource_ambient_subtypes subtype;
 anything* id;
 {
     sound_source* ss;
-    int absvolume = abs(volume);
+    double absvolume = volume > 0.0 ? volume : -volume;
 
-    if (absvolume > 100 || absvolume < 0) 
+    if (absvolume > 1.0 || absvolume < 0.0) 
     {
         impossible("new_sound_source:  illegal volume %d", volume);
         return;
@@ -578,8 +617,8 @@ anything* id;
     ss->x = x;
     ss->y = y;
     ss->ghsound = ghsound;
-    ss->source_volume = absvolume;
-    ss->heard_volume = ((float)absvolume * hearing_array[x][y]) / 100.0f;
+    ss->source_volume = (float)absvolume;
+    ss->heard_volume = ((float)absvolume) * hearing_array[x][y];
     ss->type = type;
     ss->subtype = subtype;
     ss->id = *id;
@@ -1090,15 +1129,15 @@ struct obj* src, * dest;
 void
 obj_adjust_sound_volume(obj, new_volume)
 struct obj* obj;
-int new_volume;
+double new_volume;
 {
     sound_source* ss;
 
     for (ss = sound_base; ss; ss = ss->next)
         if (ss->type == SOUNDSOURCE_OBJECT && ss->id.a_obj == obj) {
-            if (new_volume != ss->source_volume)
+            if ((float)new_volume != ss->source_volume)
                 hearing_full_recalc = 1;
-            ss->source_volume = new_volume;
+            ss->source_volume = (float)new_volume;
             return;
         }
     impossible("obj_adjust_sound_volume: can't find %s", xname(obj));
@@ -1147,12 +1186,12 @@ boolean already_making_noise;
     {
         xchar x, y;
         enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
-        enum ghsound_types ghsound = object_soundsets[objsoundset].ambient_sound;
-        int volume = object_soundsets[objsoundset].ambient_volume;
+        enum ghsound_types ghsound = object_soundsets[objsoundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].ghsound;
+        float volume = object_soundsets[objsoundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].volume;
         enum soundsource_ambient_subtypes subtype = object_soundsets[objsoundset].ambient_subtype;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
-            new_sound_source(x, y, ghsound, volume, SOUNDSOURCE_OBJECT, subtype, obj_to_any(obj));
+            new_sound_source(x, y, ghsound, (double)volume, SOUNDSOURCE_OBJECT, subtype, obj_to_any(obj));
         else
             impossible("begin_sound: can't get obj position");
     }
@@ -1201,23 +1240,23 @@ struct obj* obj;
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return GHSOUND_NONE;
 
-    return object_soundsets[objects[obj->otyp].oc_soundset].ambient_sound;
+    return object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].ghsound;
 }
 
-int
+double
 obj_ambient_sound_volume(obj)
 struct obj* obj;
 {
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
-        return 0;
+        return 0.0;
 
-    return object_soundsets[objects[obj->otyp].oc_soundset].ambient_volume;
+    return (double)object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].volume;
 }
 
 enum ghsound_types
 get_location_ambient_sound_type(x, y, volume_ptr, subtype_ptr)
 xchar x, y;
-int* volume_ptr;
+double* volume_ptr;
 enum soundsource_ambient_subtypes *subtype_ptr;
 {
     if (!isok(x, y))
@@ -1231,12 +1270,12 @@ enum soundsource_ambient_subtypes *subtype_ptr;
         return GHSOUND_NONE;
 
     if (volume_ptr)
-        *volume_ptr = location_soundsets[lsoundset].ambient_volume;
+        *volume_ptr = (double)location_soundsets[lsoundset].ambient_sound.volume;
 
     if (subtype_ptr)
         *subtype_ptr = location_soundsets[lsoundset].ambient_subtype;
 
-    return location_soundsets[lsoundset].ambient_sound;
+    return location_soundsets[lsoundset].ambient_sound.ghsound;
 }
 
 /* soundset.c */
