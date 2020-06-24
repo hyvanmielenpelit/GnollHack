@@ -3167,20 +3167,12 @@ static const char *FDECL(type_to_name, (int));
 static void FDECL(error4, (int, int, int, int, int, int));
 
 static int bad_count[MAX_TYPE]; /* count of positions flagged as bad */
-static const char *type_names[MAX_TYPE] = {
-    "STONE", "VWALL", "HWALL", "TLCORNER", "TRCORNER", "BLCORNER", "BRCORNER",
-    "CROSSWALL", "TUWALL", "TDWALL", "TLWALL", "TRWALL", "DBWALL", "TREE",
-    "SDOOR", "SCORR", "POOL", "MOAT", "WATER", "DRAWBRIDGE_UP", "LAVAPOOL",
-    "IRON_BARS", "DOOR", "CORR", "ROOM", "STAIRS", "LADDER", "FOUNTAIN",
-    "THRONE", "SINK", "GRAVE", "ALTAR", "ICE", "DRAWBRIDGE_DOWN", "AIR",
-    "CLOUD", "GRASS", "UNEXPLORED"
-};
 
 static const char *
 type_to_name(type)
 int type;
 {
-    return (type < 0 || type >= MAX_TYPE) ? "unknown" : type_names[type];
+    return (type < 0 || type >= MAX_TYPE) ? "unknown" : level_location_types[type].name;
 }
 
 static void
@@ -3418,7 +3410,7 @@ set_wall_state()
                 y = 1; /* only print once */
                 pline("set_wall_type: wall mode problems with: ");
             }
-            pline("%s %d;", type_names[x], bad_count[x]);
+            pline("%s %d;", level_location_types[x].name, bad_count[x]);
         }
 #endif /* WA_VERBOSE */
 }

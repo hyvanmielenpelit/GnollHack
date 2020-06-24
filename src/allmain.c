@@ -1071,6 +1071,7 @@ newgame()
     context.tribute.tributesz = sizeof(struct tribute_info);
 	strcpy(context.used_names, "|");
 
+    init_rm();
     init_fountains();
     init_animations();
     init_tiledata();

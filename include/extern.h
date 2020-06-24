@@ -2428,6 +2428,9 @@ E void FDECL(set_savepref, (const char *));
 
 E void FDECL(genl_outrip, (winid, int, time_t));
 
+/* ### rm.c ### */
+E void NDECL(init_rm);
+
 /* ### rnd.c ### */
 
 #ifdef USE_ISAAC64

@@ -1225,17 +1225,7 @@ enum soundsource_ambient_subtypes *subtype_ptr;
 
     struct rm* lev = &levl[x][y];
 
-    enum location_soundset_types lsoundset = LOCATION_SOUNDSET_NONE;
-
-    switch (lev->typ)
-    {
-    case FOUNTAIN:
-        lsoundset = LOCATION_SOUNDSET_FOUNTAIN;
-        break;
-    case ALTAR:
-        lsoundset = LOCATION_SOUNDSET_ALTAR;
-        break;
-    }
+    enum location_soundset_types lsoundset = level_location_types[lev->typ].soundset;
 
     if (lsoundset == LOCATION_SOUNDSET_NONE)
         return GHSOUND_NONE;

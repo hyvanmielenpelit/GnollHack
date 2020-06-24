@@ -316,7 +316,7 @@ HACK_H	= ../src/hack.h-t
 
 # all .c that are part of the main NetHack program and are not operating- or
 # windowing-system specific
-HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
+HACKCSRC = allmain.c alloc.c animation.c apply.c artifact.c attrib.c ball.c bones.c \
 	   botl.c cmd.c dbridge.c decl.c detect.c dig.c display.c dlb.c do.c \
 	   do_name.c do_wear.c dog.c dogmove.c dokick.c dothrow.c drawing.c \
 	   dungeon.c eat.c encounter.c end.c engrave.c exper.c explode.c extralev.c \
@@ -327,7 +327,7 @@ HACKCSRC = allmain.c alloc.c apply.c artifact.c attrib.c ball.c bones.c \
 	   mplayer.c mthrowu.c muse.c music.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c restore.c \
-	   rip.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c \
+	   rip.c rm.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c \
 	   sp_lev.c spell.c steal.c steed.c sys.c teleport.c tiledata.c timeout.c \
 	   topten.c track.c trap.c u_init.c \
 	   uhitm.c vault.c version.c vision.c weapon.c were.c wield.c \

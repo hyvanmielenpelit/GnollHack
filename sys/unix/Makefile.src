@@ -448,7 +448,7 @@ HACKCSRC = allmain.c animation.c alloc.c apply.c artifact.c attrib.c ball.c bone
 	   mplayer.c mthrowu.c muse.c music.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c restore.c \
-	   rip.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c soundset.c \
+	   rip.c rm.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c soundset.c \
 	   sp_lev.c spell.c steal.c steed.c sys.c teleport.c tiledata.c timeout.c \
 	   topten.c track.c trap.c u_init.c \
 	   uhitm.c vault.c version.c vision.c weapon.c were.c wield.c \

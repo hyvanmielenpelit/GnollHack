@@ -82,6 +82,14 @@ enum levl_typ_types {
     INVALID_TYPE = 127
 };
 
+struct location_type_definition {
+    const char* name;
+    enum location_soundset_types soundset;
+};
+
+extern struct location_type_definition level_location_types[MAX_TYPE];
+
+
 /*
  * Avoid using the level types in inequalities:
  * these types are subject to change.

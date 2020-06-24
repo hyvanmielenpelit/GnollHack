@@ -192,6 +192,7 @@
     <ClCompile Include="$(SrcDir)tiledata.c" />
     <ClCompile Include="$(SrcDir)animation.c" />
     <ClCompile Include="$(SrcDir)soundset.c" />
+    <ClCompile Include="$(SrcDir)rm.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)align.h" />
