@@ -340,7 +340,8 @@ struct obj *otmp, *mwep;
 	if (!mtmp)
 		return;
 
-    update_m_action(mtmp, otmp && mwep && ammo_and_launcher(otmp, mwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
+    boolean is_firing = (otmp && mwep && ammo_and_launcher(otmp, mwep));
+    update_m_action(mtmp, is_firing ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
 
     struct monst *mtarg = target;
 
@@ -353,16 +354,20 @@ struct obj *otmp, *mwep;
          * Caller must have called linedup() to set up tbx, tby.
          */
 
-    if (canseemon(mtmp)) {
+    if (canseemon(mtmp)) 
+    {
         const char *onm;
         char onmbuf[BUFSZ], trgbuf[BUFSZ];
 
-        if (multishot > 1) {
+        if (multishot > 1) 
+        {
             /* "N arrows"; multishot > 1 implies otmp->quan > 1, so
                xname()'s result will already be pluralized */
             Sprintf(onmbuf, "%d %s", multishot, xname(otmp));
             onm = onmbuf;
-        } else {
+        } 
+        else 
+        {
             /* "an arrow" */
             onm = singular(otmp, xname);
             onm = obj_is_pname(otmp) ? the(onm) : an(onm);
@@ -375,11 +380,20 @@ struct obj *otmp, *mwep;
               m_shot.s ? "shoots" : "throws", onm,
               mtarg ? " at " : "", trgbuf);
         m_shot.o = otmp->otyp;
-    } else {
+    }
+    else
+    {
         m_shot.o = STRANGE_OBJECT; /* don't give multishot feedback */
     }
+
     m_shot.n = multishot;
-    for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) {
+    for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
+    {
+        if(is_firing)
+            play_simple_weapon_sound(mtmp, 0, mwep, OBJECT_SOUND_TYPE_FIRE);
+        else
+            play_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_THROW);
+
         m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), dm, otmp);
         /* conceptually all N missiles are in flight at once, but
            if mtmp gets killed (shot kills adjacent gas spore and
@@ -1605,6 +1619,7 @@ struct monst *mtmp;
             || !couldsee(mtmp->mx, mtmp->my))
             return; /* Out of range, or intervening wall */
 
+        play_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
         update_m_action(mtmp, ACTION_TILE_ATTACK);
 
         if (canseemon(mtmp)) {

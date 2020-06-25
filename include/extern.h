@@ -1444,6 +1444,7 @@ E void FDECL(mdamageu, (struct monst *, double, BOOLEAN_P));
 E int FDECL(could_seduce, (struct monst *, struct monst *, struct attack *));
 E int FDECL(doseduce, (struct monst *));
 E void FDECL(update_m_facing, (struct monst*, int, BOOLEAN_P));
+E int FDECL(get_pm_attack_index, (struct permonst*, struct attack*));
 
 /* ### minion.c ### */
 
