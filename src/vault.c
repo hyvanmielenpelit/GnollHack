@@ -814,8 +814,7 @@ register struct monst *grd;
                 if (!Deaf)
                     verbalize("You've been warned, knave!");
                 mnexto(grd);
-                delete_location(m, n);
-                levl[m][n].typ = egrd->fakecorr[0].ftyp;
+                transform_location_type(m, n, egrd->fakecorr[0].ftyp);
                 newsym(m, n);
                 grd->mpeaceful = 0;
                 return -1;
@@ -831,8 +830,7 @@ register struct monst *grd;
                 m = grd->mx;
                 n = grd->my;
                 (void) rloc(grd, TRUE);
-                delete_location(m, n);
-                levl[m][n].typ = egrd->fakecorr[0].ftyp;
+                transform_location_type(m, n, egrd->fakecorr[0].ftyp);
                 newsym(m, n);
                 grd->mpeaceful = 0;
  letknow:
@@ -1062,10 +1060,14 @@ register struct monst *grd;
         }
         return -2;
     }
+    int face_right = grd->mx - egrd->ogx;
     egrd->ogx = grd->mx; /* update old positions */
     egrd->ogy = grd->my;
     remove_monster(grd->mx, grd->my);
     place_monster(grd, nx, ny);
+    play_movement_sound(grd, 0UL);
+    update_m_facing(grd, face_right, FALSE);
+
     if (newspot && g_at(nx, ny)) {
         /* if there's gold already here (most likely from mineralize()),
            pick it up now so that guard doesn't later think hero dropped

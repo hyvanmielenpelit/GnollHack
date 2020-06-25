@@ -1070,10 +1070,12 @@ register int after;
     long flag;
     int omx = mtmp->mx, omy = mtmp->my;
 
-    if (mtmp->mtrapped) {
+    if (mtmp->mtrapped)
+    {
         int i = mintrap(mtmp);
 
-        if (i >= 2) {
+        if (i >= 2)
+        {
             newsym(mtmp->mx, mtmp->my);
             return 2;
         } /* it died */
@@ -1082,7 +1084,8 @@ register int after;
     }
     ptr = mtmp->data; /* mintrap() can change mtmp->data -dlc */
 
-    if (mtmp->meating) {
+    if (mtmp->meating)
+    {
         mtmp->meating--;
         if (mtmp->meating <= 0)
             finish_meating(mtmp);
@@ -1098,20 +1101,24 @@ register int after;
      */
     if (!Is_rogue_level(&u.uz))
         can_tunnel = tunnels(ptr);
+
     can_open = can_operate_objects(ptr);
-    can_unlock =
-        ((can_open && monhaskey(mtmp, TRUE)) || mtmp->iswiz || is_rider(ptr));
+    can_unlock = ((can_open && monhaskey(mtmp, TRUE)) || mtmp->iswiz || is_rider(ptr));
     doorbuster = is_giant(ptr);
+
     if (mtmp->wormno)
         goto not_special;
+
     /* my dog gets special treatment */
-    if (is_tame(mtmp)) {
+    if (is_tame(mtmp)) 
+    {
         mmoved = dog_move(mtmp, after);
         goto postmov;
     }
 
     /* likewise for shopkeeper */
-    if (mtmp->isshk) {
+    if (mtmp->isshk) 
+    {
         mmoved = shk_move(mtmp);
         if (mmoved == -2)
             return 2;
@@ -1121,7 +1128,8 @@ register int after;
     }
 
     /* and for the guard */
-    if (mtmp->isgd) {
+    if (mtmp->isgd) 
+    {
         mmoved = gd_move(mtmp);
         if (mmoved == -2)
             return 2;
@@ -1142,7 +1150,8 @@ register int after;
          * attack it.
          */
         if ((dist2(mtmp->mx, mtmp->my, tx, ty) < 2) && intruder
-            && (intruder != mtmp)) {
+            && (intruder != mtmp)) 
+        {
             notonhead = (intruder->mx != tx || intruder->my != ty);
             if (mattackm(mtmp, intruder) == 2)
                 return 2;
@@ -1153,7 +1162,8 @@ register int after;
     }
 
     /* and for the priest */
-    if (mtmp->ispriest) {
+    if (mtmp->ispriest) 
+    {
         mmoved = pri_move(mtmp);
         if (mmoved == -2)
             return 2;
@@ -1163,7 +1173,8 @@ register int after;
     }
 
 #ifdef MAIL
-    if (ptr == &mons[PM_MAIL_DAEMON]) {
+    if (ptr == &mons[PM_MAIL_DAEMON])
+    {
         if (!Deaf && canseemon(mtmp))
             verbalize("I'm late!");
         mongone(mtmp);
@@ -1173,7 +1184,8 @@ register int after;
 
     /* teleport if that lies in our nature */
     if (ptr == &mons[PM_TENGU] && !rn2(5) && !is_cancelled(mtmp)
-        && !tele_restrict(mtmp)) {
+        && !tele_restrict(mtmp)) 
+    {
         if (mtmp->mhp < 7 || is_peaceful(mtmp) || rn2(2))
             (void) rloc(mtmp, TRUE);
         else
@@ -1181,6 +1193,7 @@ register int after;
         mmoved = 1;
         goto postmov;
     }
+
  not_special:
     if (u.uswallow && !is_fleeing(mtmp) && u.ustuck != mtmp)
         return 1;
@@ -1268,18 +1281,21 @@ register int after;
             && !is_peaceful(mtmp))
             minr--;
         /* guards shouldn't get too distracted */
+
         if (!is_peaceful(mtmp) && is_mercenary(ptr))
             minr = 1;
 
         if ((likegold || likegems || likeobjs || likemagic || likerock
              || conceals) && mon_can_reach_floor(mtmp) && (!*in_rooms(omx, omy, SHOPBASE)
-                              || (!rn2(25) && !mtmp->isshk))) {
+                              || (!rn2(25) && !mtmp->isshk)))
+        {
  look_for_obj:
             oomx = min(COLNO - 1, omx + minr);
             oomy = min(ROWNO - 1, omy + minr);
             lmx = max(1, omx - minr);
             lmy = max(0, omy - minr);
-            for (otmp = fobj; otmp; otmp = otmp->nobj) {
+            for (otmp = fobj; otmp; otmp = otmp->nobj) 
+            {
                 /* monsters may pick rocks up, but won't go out of their way
                    to grab them; this might hamper sling wielders, but it cuts
                    down on move overhead by filtering out most common item */
@@ -1426,7 +1442,8 @@ register int after;
         if (!is_peaceful(mtmp) && level.flags.shortsighted
             && nidist > (couldsee(nix, niy) ? 144 : 36) && appr == 1)
             appr = 0;
-        if (is_unicorn(ptr) && level.flags.noteleport) {
+        if (is_unicorn(ptr) && level.flags.noteleport)
+        {
             /* on noteleport levels, perhaps we cannot avoid hero */
             for (i = 0; i < cnt; i++)
                 if (!(info[i] & NOTONL))
@@ -1434,7 +1451,8 @@ register int after;
         }
         better_with_displacing =
             should_displace(mtmp, poss, info, cnt, gx, gy);
-        for (i = 0; i < cnt; i++) {
+        for (i = 0; i < cnt; i++)
+        {
             if (avoid && (info[i] & NOTONL))
                 continue;
             nx = poss[i].x;
@@ -1454,7 +1472,8 @@ register int after;
             nearer = ((ndist = dist2(nx, ny, gx, gy)) < nidist);
 
             if ((appr == 1 && nearer) || (appr == -1 && !nearer)
-                || (!appr && !rn2(++chcnt)) || !mmoved) {
+                || (!appr && !rn2(++chcnt)) || !mmoved) 
+            {
                 nix = nx;
                 niy = ny;
                 nidist = ndist;
@@ -1466,7 +1485,8 @@ register int after;
         }
     }
 
-    if (mmoved) {
+    if (mmoved)
+    {
         register int j;
 
         if (mmoved == 1 && (u.ux != nix || u.uy != niy) && itsstuck(mtmp))
@@ -1487,11 +1507,13 @@ register int after;
          * mfndpos) has no effect for normal attacks, though it lets a
          * confused monster attack you by accident.
          */
-        if (info[chi] & ALLOW_U) {
+        if (info[chi] & ALLOW_U)
+        {
             nix = mtmp->mux;
             niy = mtmp->muy;
         }
-        if (nix == u.ux && niy == u.uy) {
+        if (nix == u.ux && niy == u.uy) 
+        {
             mtmp->mux = u.ux;
             mtmp->muy = u.uy;
             return 0;
@@ -1502,7 +1524,8 @@ register int after;
          * Pets get taken care of above and shouldn't reach this code.
          * Conflict gets handled even farther away (movemon()).
          */
-		if ((info[chi] & (ALLOW_M | ALLOW_TM)) || (nix == mtmp->mux && niy == mtmp->muy)) {
+		if ((info[chi] & (ALLOW_M | ALLOW_TM)) || (nix == mtmp->mux && niy == mtmp->muy))
+        {
 			struct monst* mtmp2 = m_at(nix, niy);
 			int mstatus;
 
@@ -1516,7 +1539,8 @@ register int after;
 					return 2;
 
 				if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED) && rn2(4)
-					&& mtmp2->movement >= NORMAL_SPEED) {
+					&& mtmp2->movement >= NORMAL_SPEED) 
+                {
 					mtmp2->movement -= NORMAL_SPEED;
 					notonhead = 0;
 					mstatus = mattackm(mtmp2, mtmp); /* return attack */
@@ -1527,7 +1551,8 @@ register int after;
             return 3;
         }
 
-        if ((info[chi] & ALLOW_MDISP)) {
+        if ((info[chi] & ALLOW_MDISP)) 
+        {
             struct monst *mtmp2;
             int mstatus;
 
@@ -1545,7 +1570,7 @@ register int after;
 
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
-
+        play_movement_sound(mtmp, 0UL);
         update_m_facing(mtmp, nix - omx, FALSE);
 
         for (j = MTSZ - 1; j > 0; j--)
@@ -1555,19 +1580,25 @@ register int after;
         /* Place a segment at the old position. */
         if (mtmp->wormno)
             worm_move(mtmp);
-    } else {
-        if (is_unicorn(ptr) && rn2(2) && !tele_restrict(mtmp)) {
+    }
+    else
+    {
+        if (is_unicorn(ptr) && rn2(2) && !tele_restrict(mtmp)) 
+        {
             (void) rloc(mtmp, TRUE);
             return 1;
         }
         if (mtmp->wormno)
             worm_nomove(mtmp);
     }
+
  postmov:
-    if (mmoved == 1 || mmoved == 3) {
+    if (mmoved == 1 || mmoved == 3) 
+    {
         boolean canseeit = cansee(mtmp->mx, mtmp->my);
 
-        if (mmoved == 1) {
+        if (mmoved == 1) 
+        {
             /* normal monster move will already have <nix,niy>,
                but pet dog_move() with 'goto postmov' won't */
             nix = mtmp->mx, niy = mtmp->my;
@@ -1585,16 +1616,22 @@ register int after;
             if (is_vampshifter(mtmp) && !amorphous(mtmp->data)
                 && IS_DOOR(levl[nix][niy].typ)
                 && ((levl[nix][niy].doormask & (D_LOCKED | D_CLOSED)) != 0)
-                && can_fog(mtmp)) {
-                if (sawmon) {
+                && can_fog(mtmp)) 
+            {
+                if (sawmon) 
+                {
                     remove_monster(nix, niy);
                     place_monster(mtmp, omx, omy);
                     newsym(nix, niy), newsym(omx, omy);
                 }
-                if (vamp_shift(mtmp, &mons[PM_FOG_CLOUD], sawmon)) {
+
+                if (vamp_shift(mtmp, &mons[PM_FOG_CLOUD], sawmon)) 
+                {
                     ptr = mtmp->data; /* update cached value */
                 }
-                if (sawmon) {
+
+                if (sawmon) 
+                {
                     remove_monster(omx, omy);
                     place_monster(mtmp, nix, niy);
                     newsym(omx, omy), newsym(nix, niy);
@@ -1602,7 +1639,8 @@ register int after;
             }
 
             newsym(omx, omy); /* update the old position */
-            if (mintrap(mtmp) >= 2) {
+            if (mintrap(mtmp) >= 2) 
+            {
                 if (mtmp->mx)
                     newsym(mtmp->mx, mtmp->my);
                 return 2; /* it died */
@@ -1618,7 +1656,8 @@ register int after;
                         observeit = canseeit && canspotmon(mtmp);
 
                 /* if mon has MKoT, disarm door trap; no message given */
-                if (btrapped && has_magic_key(mtmp)) {
+                if (btrapped && has_magic_key(mtmp)) 
+                {
                     /* BUG: this lets a vampire or blob or a doorbuster
                        holding the Key disarm the trap even though it isn't
                        using that Key when squeezing under or smashing the
@@ -1628,20 +1667,27 @@ register int after;
                     btrapped = FALSE;
                 }
                 if ((here->doormask & (D_LOCKED | D_CLOSED)) != 0
-                    && amorphous(ptr)) {
+                    && amorphous(ptr))
+                {
                     if (flags.verbose && canseemon(mtmp))
                         pline("%s %s under the door.", Monnam(mtmp),
                               (ptr == &mons[PM_FOG_CLOUD]
                                || ptr->mlet == S_LIGHT) ? "flows" : "oozes");
-                } else if (here->doormask & D_LOCKED && can_unlock) {
-                    if (btrapped) {
+                } 
+                else if (here->doormask & D_LOCKED && can_unlock) 
+                {
+                    if (btrapped) 
+                    {
                         here->doormask = D_NODOOR;
                         newsym(mtmp->mx, mtmp->my);
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         if (mb_trapped(mtmp))
                             return 2;
-                    } else {
-                        if (flags.verbose) {
+                    }
+                    else
+                    {
+                        if (flags.verbose)
+                        {
                             if (observeit)
                                 pline("%s unlocks and opens a door.",
                                       Monnam(mtmp));
@@ -1654,15 +1700,21 @@ register int after;
                         /* newsym(mtmp->mx, mtmp->my); */
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                     }
-                } else if (here->doormask == D_CLOSED && can_open) {
-                    if (btrapped) {
+                } 
+                else if (here->doormask == D_CLOSED && can_open) 
+                {
+                    if (btrapped) 
+                    {
                         here->doormask = D_NODOOR;
                         newsym(mtmp->mx, mtmp->my);
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         if (mb_trapped(mtmp))
                             return 2;
-                    } else {
-                        if (flags.verbose) {
+                    } 
+                    else 
+                    {
+                        if (flags.verbose) 
+                        {
                             if (observeit)
                                 pline("%s opens a door.", Monnam(mtmp));
                             else if (canseeit)
@@ -1674,7 +1726,9 @@ register int after;
                         /* newsym(mtmp->mx, mtmp->my); */  /* done below */
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                     }
-                } else if (here->doormask & (D_LOCKED | D_CLOSED)) {
+                } 
+                else if (here->doormask & (D_LOCKED | D_CLOSED))
+                {
                     /* mfndpos guarantees this must be a doorbuster */
                     if (btrapped) {
                         here->doormask = D_NODOOR;
@@ -1682,8 +1736,11 @@ register int after;
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         if (mb_trapped(mtmp))
                             return 2;
-                    } else {
-                        if (flags.verbose) {
+                    }
+                    else
+                    {
+                        if (flags.verbose) 
+                        {
                             if (observeit)
                                 pline("%s smashes down a door.",
                                       Monnam(mtmp));
@@ -1703,15 +1760,19 @@ register int after;
                     if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
                         add_damage(mtmp->mx, mtmp->my, 0L);
                 }
-            } else if (levl[mtmp->mx][mtmp->my].typ == IRONBARS) {
+            } 
+            else if (levl[mtmp->mx][mtmp->my].typ == IRONBARS) 
+            {
                 /* 3.6.2: was using may_dig() but it doesn't handle bars */
                 if (!(levl[mtmp->mx][mtmp->my].wall_info & W_NONDIGGABLE)
-                    && (dmgtype(ptr, AD_RUST) || dmgtype(ptr, AD_CORR))) {
+                    && (dmgtype(ptr, AD_RUST) || dmgtype(ptr, AD_CORR))) 
+                {
                     if (canseemon(mtmp))
                         pline("%s eats through the iron bars.", Monnam(mtmp));
                     dissolve_bars(mtmp->mx, mtmp->my);
                     return 3;
-                } else if (flags.verbose && canseemon(mtmp))
+                }
+                else if (flags.verbose && canseemon(mtmp))
                     Norep("%s %s %s the iron bars.", Monnam(mtmp),
                           /* pluralization fakes verb conjugation */
                           makeplural(locomotion(ptr, "pass")),
@@ -1724,14 +1785,16 @@ register int after;
 
             /* set also in domove(), hack.c */
             if (u.uswallow && mtmp == u.ustuck
-                && (mtmp->mx != omx || mtmp->my != omy)) {
+                && (mtmp->mx != omx || mtmp->my != omy))
+            {
                 /* If the monster moved, then update */
                 u.ux0 = u.ux;
                 u.uy0 = u.uy;
                 u.ux = mtmp->mx;
                 u.uy = mtmp->my;
                 swallowed(0);
-            } else
+            }
+            else
                 newsym(mtmp->mx, mtmp->my);
         }
 
@@ -1739,7 +1802,8 @@ register int after;
 		{
             /* recompute the likes tests, in case we polymorphed
              * or if the "likegold" case got taken above */
-            if (setlikes) {
+            if (setlikes) 
+            {
                 int pctload = (curr_mon_load(mtmp) * 100) / max_mon_load(mtmp);
 
                 /* look for gold or jewels nearby */
@@ -1754,7 +1818,8 @@ register int after;
             }
 
             /* Maybe a rock mole just ate some metal object */
-            if (metallivorous(ptr)) {
+            if (metallivorous(ptr)) 
+            {
                 if (meatmetal(mtmp) == 2)
                     return 2; /* it died */
             }
@@ -1763,7 +1828,8 @@ register int after;
                 mpickgold(mtmp);
 
             /* Maybe a cube ate just about anything */
-            if (slurps_items(ptr)) {
+            if (slurps_items(ptr)) 
+            {
                 if (meatobj(mtmp) == 2)
                     return 2; /* it died */
             }
@@ -1786,14 +1852,16 @@ register int after;
                     mmoved = 3;
             }
 
-            if (is_invisible(mtmp)) {
+            if (is_invisible(mtmp)) 
+            {
                 newsym(mtmp->mx, mtmp->my);
                 if (mtmp->wormno)
                     see_wsegs(mtmp);
             }
         }
 
-        if (hides_under(ptr) || ptr->mlet == S_EEL) {
+        if (hides_under(ptr) || ptr->mlet == S_EEL) 
+        {
             /* Always set--or reset--mundetected if it's already hidden
                (just in case the object it was hiding under went away);
                usually set mundetected unless monster can't move.  */
@@ -1802,7 +1870,9 @@ register int after;
                 (void) hideunder(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
-        if (mtmp->isshk) {
+
+        if (mtmp->isshk) 
+        {
             after_shk_move(mtmp);
         }
     }

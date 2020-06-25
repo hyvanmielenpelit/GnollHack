@@ -724,7 +724,7 @@ struct attack *uattk;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-		play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUNDSET_SOUND_STRIKE_MELEE);
+		play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
 		update_u_action(TRUE);
 
 		char strikebuf[BUFSIZ] = "";
@@ -791,7 +791,7 @@ struct attack *uattk;
 
 		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
 		{
-			play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUNDSET_SOUND_STRIKE_MELEE);
+			play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(TRUE);
 
 			char strikebuf[BUFSIZ] = "";

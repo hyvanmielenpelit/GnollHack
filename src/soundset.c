@@ -48,28 +48,28 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 		"Generic",
         {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     },
 	{
-		"",
+		"Goblin",
         {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     },
 	{
-		"",
+		"Dragon",
         {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     },
 	{
-		"",
+		"Dracolich",
         {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     },
     {
@@ -246,7 +246,7 @@ unsigned long movement_flags;
 	}
 	else
 	{
-		enum monster_soundset_types mss = is_female(mtmp->data) ? mtmp->data->female_soundset : mtmp->data->soundset;
+		enum monster_soundset_types mss = mtmp->female ? mtmp->data->female_soundset : mtmp->data->soundset;
 		soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
         volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
 
@@ -263,6 +263,15 @@ unsigned long movement_flags;
             volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
             floorid = FLOOR_SURFACE_NONE;
 		}
+
+        if (isok(mtmp->mx, mtmp->my))
+        {
+            float hearing = hearing_array[mtmp->mx][mtmp->my];
+            if (hearing == 0.0f)
+                return;
+            else
+                volume *= hearing_array[mtmp->mx][mtmp->my];
+        }
 	}
 
     immediateinfo.ghsound = soundid;
@@ -271,7 +280,8 @@ unsigned long movement_flags;
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = (char*)0;
 
-    play_immediate_ghsound(immediateinfo);
+    if(volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
 }
 
 void
@@ -282,6 +292,9 @@ struct obj* weapon;
 enum object_soundset_sound_types sound_type;
 {
     /* Do not use for hit sounds */
+
+    if (!magr)
+        return;
 
     struct ghsound_hit_info hitinfo = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
@@ -306,17 +319,26 @@ enum object_soundset_sound_types sound_type;
         }
         else
         {
-            enum monster_soundset_types mss = magr->data->soundset;
+            enum monster_soundset_types mss = magr->female ? magr->data->female_soundset : magr->data->soundset;
             enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
             soundid = object_soundsets[oss].sounds[sound_type].ghsound;
             volume = object_soundsets[oss].sounds[sound_type].volume;
+            if (isok(magr->mx, magr->my))
+            {
+                float hearing = hearing_array[magr->mx][magr->my];
+                if (hearing == 0.0f)
+                    return;
+                else
+                    volume *= hearing_array[magr->mx][magr->my];
+            }
         }
     }
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
 
-    play_immediate_ghsound(immediateinfo);
+    if(volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
 
 }
 
@@ -329,13 +351,27 @@ struct obj* weapon;
 double damage;
 enum hmon_atkmode_types thrown;
 {
+    if (!magr || !mdef)
+        return;
+
     struct ghsound_hit_info hitinfo = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     boolean you_attack = (magr == &youmonst);
     boolean you_defend = (mdef == &youmonst);
-    enum object_soundset_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUNDSET_SOUND_HIT_MELEE : OBJECT_SOUNDSET_SOUND_HIT_THROW);
+    enum object_soundset_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
     struct ghsound_immediate_info immediateinfo = { 0 };
+    xchar defx = 0, defy = 0;
+    if (you_defend)
+    {
+        defx = u.ux;
+        defy = u.uy;
+    }
+    else
+    {
+        defx = mdef->mx;
+        defy = mdef->my;
+    }
 
     if (weapon)
     {
@@ -354,10 +390,19 @@ enum hmon_atkmode_types thrown;
         }
         else
         {
-            enum monster_soundset_types mss = magr->data->soundset;
+            enum monster_soundset_types mss = magr->female ? magr->data->female_soundset : magr->data->soundset;
             enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
             soundid = object_soundsets[oss].sounds[sound_type].ghsound;
             volume = object_soundsets[oss].sounds[sound_type].volume;
+            /* Hit sound is based on the defender's location */
+            if (isok(defx, defy))
+            {
+                float hearing = hearing_array[defx][defy];
+                if (hearing == 0.0f)
+                    return;
+                else
+                    volume *= hearing_array[defx][defy];
+            }
         }
     }
 
@@ -394,7 +439,8 @@ enum hmon_atkmode_types thrown;
     immediateinfo.parameter_values[1] = (float)damage;
     immediateinfo.parameter_names[2] = (char*)0;
 
-    play_immediate_ghsound(immediateinfo);
+    if (volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
 
 }
 
@@ -1351,8 +1397,8 @@ boolean already_making_noise;
     {
         xchar x, y;
         enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
-        enum ghsound_types ghsound = object_soundsets[objsoundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].ghsound;
-        float volume = object_soundsets[objsoundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].volume;
+        enum ghsound_types ghsound = object_soundsets[objsoundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].ghsound;
+        float volume = object_soundsets[objsoundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].volume;
         enum soundsource_ambient_subtypes subtype = object_soundsets[objsoundset].ambient_subtype;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
@@ -1405,7 +1451,7 @@ struct obj* obj;
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return GHSOUND_NONE;
 
-    return object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].ghsound;
+    return object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].ghsound;
 }
 
 double
@@ -1415,7 +1461,7 @@ struct obj* obj;
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return 0.0;
 
-    return (double)object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUNDSET_SOUND_AMBIENT].volume;
+    return (double)object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].volume;
 }
 
 enum ghsound_types

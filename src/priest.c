@@ -123,6 +123,8 @@ pick_move:
     if (nix != omx || niy != omy) {
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
+        play_movement_sound(mtmp, 0UL);
+        update_m_facing(mtmp, nix - omx, FALSE);
         newsym(nix, niy);
         if (mtmp->isshk && !in_his_shop && inhishop(mtmp))
             check_special_room(FALSE);
