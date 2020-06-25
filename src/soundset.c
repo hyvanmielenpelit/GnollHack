@@ -27,7 +27,7 @@ NEARDATA struct ghsound_definition ghsounds[MAX_GHSOUNDS] =
 };
 */
 
-NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1] =
+NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS] =
 {
 	{
 		"",
@@ -49,18 +49,11 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
         OBJECT_SOUNDSET_NONE,
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
-    },
-	{
-		"",
-        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
-        OBJECT_SOUNDSET_NONE,
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     }
 };
 
 
-NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS + 1] =
+NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS] =
 {
 	{
 		"",
@@ -103,17 +96,10 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
         {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
-    },
-    {
-		"",
-        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     }
 };
 
-NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS + 1] =
+NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS] =
 {
     {
         "",
@@ -153,7 +139,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
     }
 };
 
-NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS + 1] =
+NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS] =
 {
     {
         "",

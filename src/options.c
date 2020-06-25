@@ -426,6 +426,8 @@ static struct Comp_Opt {
       DISP_IN_GAME }, /*WC*/
     { "sortloot", "sort object selection lists by description", 4,
       SET_IN_GAME },
+    { "sound_volume_ambient", "ambient volume", 3,
+      SET_IN_GAME },
     { "sound_volume_effects", "sound effect volume", 3,
       SET_IN_GAME },
     { "sound_volume_general", "general game volume", 3,
@@ -902,6 +904,7 @@ initoptions_init()
     iflags.wc2_statuslines = 2;
     iflags.wc2_windowborders = 2; /* 'Auto' */
 
+    flags.sound_volume_ambient = 100;
     flags.sound_volume_effects = 100;
     flags.sound_volume_general = 100;
     flags.sound_volume_music = 100;
@@ -4011,6 +4014,36 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "sound_volume_ambient";
+    if (match_optname(opts, fullname, 20, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 100;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 100)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 100);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.sound_volume_ambient = itmp;
+            need_set_sound_volume = TRUE;
+        }
+        return retval;
+    }
+
     fullname = "sound_volume_effects";
     if (match_optname(opts, fullname, 20, TRUE))
     {
@@ -6134,6 +6167,10 @@ char *buf;
             Sprintf(buf, "%d", flags.preferred_screen_scale);
         }
         /* else default to "unknown" */
+    }
+    else if (!strcmp(optname, "sound_volume_ambient"))
+    {
+        Sprintf(buf, "%d", flags.sound_volume_ambient);
     }
     else if (!strcmp(optname, "sound_volume_effects"))
     {

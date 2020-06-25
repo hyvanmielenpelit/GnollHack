@@ -3329,14 +3329,16 @@ E void NDECL(genl_status_finish);
 E void FDECL(genl_status_enablefield,
              (int, const char *, const char *, BOOLEAN_P));
 E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned long *));
+
 E void FDECL(genl_play_ghsound_action, (struct ghsound_action_info));
 E void FDECL(genl_play_ghsound_ambience, (struct ghsound_ambience_info));
-E void FDECL(genl_play_immediate_ghsound, (struct ghsound_immediate_info));
 E void FDECL(genl_play_ghsound_hit, (struct ghsound_hit_info));
 E void FDECL(genl_play_ghsound_miss, (struct ghsound_miss_info));
 E void FDECL(genl_play_ghsound_movement, (struct ghsound_movement_info));
-E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));
 E void FDECL(genl_play_ghsound_ui, (struct ghsound_ui_info));
+
+E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));
+E void FDECL(genl_play_immediate_ghsound, (struct ghsound_immediate_info));
 E void NDECL(genl_adjust_ghsound_general_volumes);
 E void FDECL(genl_add_ambient_ghsound, (struct soundsource_t*));
 E void FDECL(genl_delete_ambient_ghsound, (struct soundsource_t*));

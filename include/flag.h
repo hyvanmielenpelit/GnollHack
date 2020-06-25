@@ -112,7 +112,8 @@ struct flag {
     boolean sortpack;        /* sorted inventory */
     int sound_volume_general;  /* user set preference for general game volume 1...100 */
     int sound_volume_music;  /* user set preference for music volume 1...100 */
-    int sound_volume_effects;  /* user set preference for music volume 1...100 */
+    int sound_volume_ambient;  /* user set preference for ambient volume 1...100 */
+    int sound_volume_effects;  /* user set preference for sound effect volume 1...100 */
     boolean sparkle;         /* show "resisting" special FX (Scott Bigham) */
     boolean standout;        /* use standout for --More-- */
 	boolean	swap_rhand_only; /* swap only right hand */

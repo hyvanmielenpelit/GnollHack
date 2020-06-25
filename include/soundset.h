@@ -46,30 +46,26 @@ enum ghsound_types {
 	MAX_GHSOUNDS
 };
 
-/* ghsound types, define necessary parameters */
-enum ghsounds_styles {
-	GHSOUNDTYPE_SIMPLE = 0,			/* Non-looping sound with no parameters */
-	GHSOUNDTYPE_AMBIENT_SIMPLE,		/* Looping ambient with no parameters stored in ambient chain */
-	GHSOUNDTYPE_MUSIC_SIMPLE,		/* Looping music with no parameters stored in music array */
-	GHSOUNDTYPE_HIT,				/* Non-looping sound with a strike surface parameter */
-	GHSOUNDTYPE_MOVEMENT			/* Non-looping sound with a shoe surface parameter */
+
+
+#define MAX_SOUND_PARAMETERS 8
+
+/* Used play_ghsound function input structs */
+struct ghsound_immediate_info {
+	enum ghsound_types ghsound;
+	char* parameter_names[MAX_SOUND_PARAMETERS];
+	float parameter_values[MAX_SOUND_PARAMETERS];
+	float volume;
 };
 
-/*
-struct ghsound_definition {
-	const char* name;
-	enum ghsounds_types ghsoundtype;
-};
-
-extern struct ghsound_definition ghsounds[MAX_GHSOUNDS];
-*/
-
-struct ghsound_style_definition {
-	const char* name;
+struct ghsound_music_info {
+	enum ghsound_types ghsound;
+	float volume;
 };
 
 
-/* play_ghsound function input structs */
+
+/* Unused play_ghsound function input structs */
 struct ghsound_action_info {
 	enum ghsound_types ghsound;
 	float volume;
@@ -77,20 +73,6 @@ struct ghsound_action_info {
 
 struct ghsound_ambience_info {
 	enum ghsound_types ghsound;
-	float intensity;
-	float volume;
-	int source_x;
-	int source_y;
-	int* ghsound_ambiance_handle;
-};
-
-
-#define MAX_SOUND_PARAMETERS 8
-
-struct ghsound_immediate_info {
-	enum ghsound_types ghsound;
-	char* parameter_names[MAX_SOUND_PARAMETERS];
-	float parameter_values[MAX_SOUND_PARAMETERS];
 	float volume;
 };
 
@@ -115,13 +97,6 @@ struct ghsound_movement_info {
 	boolean isyou;
 	int source_x;
 	int source_y;
-};
-
-struct ghsound_music_info {
-	enum ghsound_types ghsound;
-	float intensity;
-	float volume;
-	int* ghsound_music_handle;
 };
 
 struct ghsound_ui_info {
@@ -162,7 +137,7 @@ enum object_soundset_types {
 	MAX_OBJECT_SOUNDSETS
 };
 
-extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS + 1];
+extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
 
 
 /* PLAYER SOUNDSETS */
@@ -190,7 +165,7 @@ enum player_soundset_types {
 	MAX_PLAYER_SOUNDSETS
 };
 
-extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS + 1];
+extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS];
 
 
 /* MONSTER SOUNDSETS */
@@ -221,7 +196,7 @@ enum monster_soundset_types {
 	MAX_MONSTER_SOUNDSETS
 };
 
-extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS + 1];
+extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS];
 
 
 
@@ -240,7 +215,7 @@ enum location_soundset_types {
 	MAX_LOCATION_SOUNDSETS
 };
 
-extern struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS + 1];
+extern struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS];
 
 
 
