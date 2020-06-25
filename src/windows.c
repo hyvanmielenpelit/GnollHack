@@ -230,8 +230,8 @@ struct ghsound_ambience_info info;
 }
 
 void
-genl_play_ghsound_effect(info)
-struct ghsound_effect_info info;
+genl_play_immediate_ghsound(info)
+struct ghsound_immediate_info info;
 {
     return;
 }

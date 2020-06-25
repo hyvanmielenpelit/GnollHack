@@ -2674,7 +2674,7 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, unsigned long));
-void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, unsigned long));
+E void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, unsigned long));
 //play_miss_sound
 //play_action_sound
 //play_ui_sound
@@ -3331,7 +3331,7 @@ E void FDECL(genl_status_enablefield,
 E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 E void FDECL(genl_play_ghsound_action, (struct ghsound_action_info));
 E void FDECL(genl_play_ghsound_ambience, (struct ghsound_ambience_info));
-E void FDECL(genl_play_ghsound_effect, (struct ghsound_effect_info));
+E void FDECL(genl_play_immediate_ghsound, (struct ghsound_immediate_info));
 E void FDECL(genl_play_ghsound_hit, (struct ghsound_hit_info));
 E void FDECL(genl_play_ghsound_miss, (struct ghsound_miss_info));
 E void FDECL(genl_play_ghsound_movement, (struct ghsound_movement_info));

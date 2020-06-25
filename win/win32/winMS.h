@@ -219,7 +219,7 @@ void mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int co
 void mswin_stretch_window(void);
 void mswin_play_ghsound_action(struct ghsound_action_info info);
 void mswin_play_ghsound_ambience(struct ghsound_ambience_info info);
-void mswin_play_ghsound_effect(struct ghsound_effect_info info);
+void mswin_play_immediate_ghsound(struct ghsound_immediate_info info);
 void mswin_play_ghsound_hit(struct ghsound_hit_info info);
 void mswin_play_ghsound_miss(struct ghsound_miss_info info);
 void mswin_play_ghsound_movement(struct ghsound_movement_info info);

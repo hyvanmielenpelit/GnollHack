@@ -822,7 +822,7 @@ struct window_procs Qt_procs = {
     genl_stretch_window,
     genl_play_ghsound_action,
     genl_play_ghsound_ambience,
-    genl_play_ghsound_effect,
+    genl_play_immediate_ghsound,
     genl_play_ghsound_hit,
     genl_play_ghsound_miss,
     genl_play_ghsound_movement,

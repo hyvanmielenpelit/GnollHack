@@ -119,7 +119,7 @@ struct window_procs mswin_procs = {
     mswin_stretch_window,
     mswin_play_ghsound_action,
     mswin_play_ghsound_ambience,
-    mswin_play_ghsound_effect,
+    mswin_play_immediate_ghsound,
     mswin_play_ghsound_hit,
     mswin_play_ghsound_miss,
     mswin_play_ghsound_movement,
@@ -3237,18 +3237,24 @@ mswin_play_ghsound_ambience(struct ghsound_ambience_info info)
 }
 
 void
-mswin_play_ghsound_effect(struct ghsound_effect_info info)
+mswin_play_immediate_ghsound(struct ghsound_immediate_info info)
 {
-    return;
+    if (!fmod_play_immediate_sound(info))
+    {
+        impossible("Cannot play immediate sound!");
+    }
 }
 
 void
 mswin_play_ghsound_hit(struct ghsound_hit_info info)
 {
+    return;
+#if 0
     if (!fmod_play_hit_sound(info))
     {
         impossible("Cannot play hit sound!");
     }
+#endif
 }
 
 void
@@ -3260,10 +3266,12 @@ mswin_play_ghsound_miss(struct ghsound_miss_info info)
 void
 mswin_play_ghsound_movement(struct ghsound_movement_info info)
 {
+#if 0
     if (!fmod_play_movement_sound(info))
     {
         impossible("Cannot play movement sound!");
     }
+#endif
 }
 
 void

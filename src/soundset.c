@@ -208,7 +208,7 @@ unsigned long movement_flags;
 		return;
 	boolean isyou = (mtmp == &youmonst);
 
-	struct ghsound_movement_info movementinfo = { 0 };
+    struct ghsound_immediate_info immediateinfo = { 0 };
 	enum floor_surface_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
 	enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
@@ -253,12 +253,13 @@ unsigned long movement_flags;
 		}
 	}
 
-	movementinfo.ghsound = soundid;
-	movementinfo.floor = floorid; /* Flying, slithering? */
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.parameter_names[0] = "Surface";
+    immediateinfo.parameter_values[0] = (float)floorid;
+    immediateinfo.parameter_names[1] = (char*)0;
 
-	movementinfo.volume = volume;
-
-	play_ghsound_movement(movementinfo);
+    play_immediate_ghsound(immediateinfo);
 }
 
 void
@@ -274,6 +275,7 @@ unsigned long hit_flags;
     float volume = 1.0f;
     boolean you_attack = (magr == &youmonst);
     boolean you_defend = (mdef == &youmonst);
+    struct ghsound_immediate_info immediateinfo = { 0 };
 
     if (weapon)
     {
@@ -324,12 +326,14 @@ unsigned long hit_flags;
             surfaceid = STRIKE_SURFACE_INCORPOREAL;
     }
 
-    hitinfo.ghsound = soundid;
-    hitinfo.strike_surface = surfaceid;
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.parameter_names[0] = "Surface";
+    immediateinfo.parameter_values[0] = (float)surfaceid;
+    immediateinfo.parameter_names[1] = (char*)0;
 
-    hitinfo.volume = volume;
+    play_immediate_ghsound(immediateinfo);
 
-    play_ghsound_hit(hitinfo);
 }
 
 

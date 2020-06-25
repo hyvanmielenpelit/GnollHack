@@ -84,10 +84,16 @@ struct ghsound_ambience_info {
 	int* ghsound_ambiance_handle;
 };
 
-struct ghsound_effect_info {
+
+#define MAX_SOUND_PARAMETERS 8
+
+struct ghsound_immediate_info {
 	enum ghsound_types ghsound;
+	char* parameter_names[MAX_SOUND_PARAMETERS];
+	float parameter_values[MAX_SOUND_PARAMETERS];
 	float volume;
 };
+
 
 struct ghsound_hit_info {
 	enum ghsound_types ghsound;

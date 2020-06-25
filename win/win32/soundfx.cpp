@@ -23,15 +23,20 @@ struct GNHSoundInstance {
     struct GNHSoundInstance* next_instance;
 };
 
+#define NUM_IMMEDIATE_SOUND_INSTANCES 8
+
 static GNHSoundInstance musicInstances[2] = { 0 };
+static GNHSoundInstance immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES] = { 0 };
+static GNHSoundInstance* ambient_base = NULL;
+
+#if 0
 static GNHSoundInstance movementInstances[2] = { 0 };
 static GNHSoundInstance hitInstances[2] = { 0 };
+#endif
 
 static float general_volume = 1.0f;
 static float general_music_volume = 1.0f;
 static float general_sound_effects_volume = 1.0f;
-
-GNHSoundInstance* ambient_base = NULL;
 
 
 /* GHSound -> FMOD event mapping here */
@@ -197,7 +202,7 @@ extern "C"
         return TRUE;
     }
 
-
+#if 0
     boolean
     fmod_play_movement_sound(struct ghsound_movement_info info)
     {
@@ -320,6 +325,89 @@ extern "C"
         result = fmod_studio_system->update();
         return TRUE;
     }
+#endif
+
+    boolean
+    fmod_play_immediate_sound(struct ghsound_immediate_info info)
+    {
+        FMOD_RESULT result;
+
+        enum ghsound_types soundid = info.ghsound;
+        struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+        float event_volume = eventmap.volume;
+        if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
+            return FALSE;
+
+        Studio::EventDescription* immediateSoundDescription = NULL;
+        result = fmod_studio_system->getEvent(eventmap.eventPath, &immediateSoundDescription);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        Studio::EventInstance* immediateSoundInstance = NULL;
+        result = immediateSoundDescription->createInstance(&immediateSoundInstance);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        /* Set volume */
+        result = immediateSoundInstance->setVolume(info.volume * event_volume * general_sound_effects_volume * general_volume);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        /* Set parameters */
+        FMOD_STUDIO_PARAMETER_DESCRIPTION paramDesc;
+        for (int i = 0; i < MAX_SOUND_PARAMETERS; i++)
+        {
+            if(!info.parameter_names[i] || strcmp(info.parameter_names[i], "") == 0)
+                break;
+
+            result = immediateSoundDescription->getParameterDescriptionByName("Surface", &paramDesc);
+            if (result != FMOD_OK)
+                return FALSE;
+
+            FMOD_STUDIO_PARAMETER_ID paramID = paramDesc.id;
+            float parameterValue = info.parameter_values[i];
+            result = immediateSoundInstance->setParameterByID(paramID, parameterValue);
+            if (result != FMOD_OK)
+                return FALSE;
+        }
+
+        /* Play sound */
+        result = immediateSoundInstance->start();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        if (immediateSoundInstances[0].eventInstance)
+        {
+            /* Delete the last one */
+            if (immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance)
+            {
+                /* Stop playing just in case */
+                immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                /* Release */
+                immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES - 1].eventInstance->release();
+            }
+
+            /* Move all others back */
+            for (int i = NUM_IMMEDIATE_SOUND_INSTANCES - 1; i >= 1; i--)
+            {
+                immediateSoundInstances[i].eventInstance = immediateSoundInstances[i - 1].eventInstance;
+                immediateSoundInstances[i].ghsound = immediateSoundInstances[i - 1].ghsound;
+                immediateSoundInstances[i].normalVolume = immediateSoundInstances[i - 1].normalVolume;
+            }
+        }
+
+        /* Set the new instance as movementInstances[0] */
+        immediateSoundInstances[0].eventInstance = immediateSoundInstance;
+        immediateSoundInstances[0].ghsound = info.ghsound;
+        immediateSoundInstances[0].normalVolume = info.volume;
+
+        result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        return TRUE;
+    }
+
 
 
     int
@@ -332,7 +420,7 @@ extern "C"
         FMOD_RESULT result;
         for (int i = 0; i <= 1; i++)
         {
-            if (musicInstances[i].eventInstance)
+            if (immediateSoundInstances[i].eventInstance)
             {
                 enum ghsound_types soundid = musicInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
@@ -340,16 +428,18 @@ extern "C"
                 result = musicInstances[i].eventInstance->setVolume(musicInstances[i].normalVolume * event_volume * general_music_volume * general_volume);
             }
         }
-        for (int i = 0; i <= 1; i++)
+        for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
         {
-            if (movementInstances[i].eventInstance)
+            if (immediateSoundInstances[i].eventInstance)
             {
-                enum ghsound_types soundid = musicInstances[i].ghsound;
+                enum ghsound_types soundid = immediateSoundInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                result = movementInstances[i].eventInstance->setVolume(movementInstances[i].normalVolume * event_volume * general_sound_effects_volume * general_volume);
+                result = immediateSoundInstances[i].eventInstance->setVolume(immediateSoundInstances[i].normalVolume * event_volume * general_sound_effects_volume * general_volume);
             }
         }
+        for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)
+            ;
 
         result = fmod_studio_system->update();
         if (result != FMOD_OK)
