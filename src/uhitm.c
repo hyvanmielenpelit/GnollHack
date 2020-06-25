@@ -572,7 +572,7 @@ int dieroll;
 
     if (!*mhit)
 	{
-        missum(mon, uattk, (rollneeded + armorpenalty > dieroll));
+		missum(mon, uattk, (rollneeded + armorpenalty > dieroll));
     }
 	else
 	{
@@ -724,6 +724,7 @@ struct attack *uattk;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
+		play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUNDSET_SOUND_STRIKE_MELEE);
 		update_u_action(TRUE);
 
 		char strikebuf[BUFSIZ] = "";
@@ -790,6 +791,7 @@ struct attack *uattk;
 
 		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
 		{
+			play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUNDSET_SOUND_STRIKE_MELEE);
 			update_u_action(TRUE);
 
 			char strikebuf[BUFSIZ] = "";
@@ -1819,8 +1821,10 @@ boolean* obj_destroyed;
 	int mon_hp_before = mon->mhp;
 
 	if (!already_killed)
+	{
+		play_hit_sound(&youmonst, mon, 0, obj, damage, thrown);
 		deduct_monster_hp(mon, damage); //	mon->mhp -= tmp;
-
+	}
 	int mon_hp_after = mon->mhp;
 
 	int damagedealt = mon_hp_before - mon_hp_after;

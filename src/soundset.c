@@ -8,24 +8,6 @@
 NEARDATA struct soundsource_t* sound_base = 0;
 STATIC_DCL void FDECL(set_hearing_array, (int, int, double));
 
-/*
-NEARDATA struct ghsound_definition ghsounds[MAX_GHSOUNDS] =
-{
-    {"", GHSOUNDTYPE_SIMPLE },
-    {"dungeon-normal-music", GHSOUNDTYPE_MUSIC_SIMPLE },
-    {"player-footsteps", GHSOUNDTYPE_MOVEMENT },
-    {"dungeon-normal-music-backup", GHSOUNDTYPE_MUSIC_SIMPLE },
-    {"dungeon-normal-music-shop-normal", GHSOUNDTYPE_MUSIC_SIMPLE },
-    {"dungeon-normal-music-shop-attacked", GHSOUNDTYPE_MUSIC_SIMPLE },
-    {"dungeon-normal-music-shop-cleared",  GHSOUNDTYPE_MUSIC_SIMPLE },
-    {"player-strike-general",  GHSOUNDTYPE_SIMPLE },
-    {"player-hit-general",  GHSOUNDTYPE_HIT },
-    {"player-miss-general",  GHSOUNDTYPE_SIMPLE },
-    {"fountain", GHSOUNDTYPE_AMBIENT_SIMPLE },
-    {"bee",  GHSOUNDTYPE_AMBIENT_SIMPLE },
-    {"fire",  GHSOUNDTYPE_AMBIENT_SIMPLE },
-};
-*/
 
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS] =
 {
@@ -109,6 +91,14 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -116,6 +106,14 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
     {
         "general",
         {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -133,9 +131,37 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_LIT
+    },
+    {
+        "quarterstaff",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STAFF_SWING, 1.0f},
+            {GHSOUND_STAFF_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
     }
 };
 
@@ -249,25 +275,25 @@ unsigned long movement_flags;
 }
 
 void
-play_hit_sound(magr, mdef, attack_number, weapon, hit_flags)
+play_simple_weapon_sound(magr, attack_number, weapon, sound_type)
 struct monst* magr;
-struct monst* mdef;
 int attack_number;
 struct obj* weapon;
-unsigned long hit_flags;
+enum object_soundset_sound_types sound_type;
 {
+    /* Do not use for hit sounds */
+
     struct ghsound_hit_info hitinfo = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     boolean you_attack = (magr == &youmonst);
-    boolean you_defend = (mdef == &youmonst);
     struct ghsound_immediate_info immediateinfo = { 0 };
 
     if (weapon)
     {
         enum object_soundset_types oss = objects[weapon->otyp].oc_soundset;
-        soundid = object_soundsets[oss].sounds[OBJECT_SOUNDSET_SOUND_HIT].ghsound;
-        volume = object_soundsets[oss].sounds[OBJECT_SOUNDSET_SOUND_HIT].volume;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
     }
     else
     {
@@ -275,15 +301,63 @@ unsigned long hit_flags;
         {
             enum player_soundset_types pss = get_player_soundset();
             enum object_soundset_types oss = player_soundsets[pss].barehanded_soundset;
-            soundid = object_soundsets[oss].sounds[OBJECT_SOUNDSET_SOUND_HIT].ghsound;
-            volume = object_soundsets[oss].sounds[OBJECT_SOUNDSET_SOUND_HIT].volume;
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
         }
         else
         {
             enum monster_soundset_types mss = magr->data->soundset;
             enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
-            soundid = object_soundsets[oss].sounds[OBJECT_SOUNDSET_SOUND_HIT].ghsound;
-            volume = object_soundsets[oss].sounds[OBJECT_SOUNDSET_SOUND_HIT].volume;
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
+        }
+    }
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+
+    play_immediate_ghsound(immediateinfo);
+
+}
+
+void
+play_hit_sound(magr, mdef, attack_number, weapon, damage, thrown)
+struct monst* magr;
+struct monst* mdef;
+int attack_number;
+struct obj* weapon;
+double damage;
+enum hmon_atkmode_types thrown;
+{
+    struct ghsound_hit_info hitinfo = { 0 };
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    boolean you_attack = (magr == &youmonst);
+    boolean you_defend = (mdef == &youmonst);
+    enum object_soundset_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUNDSET_SOUND_HIT_MELEE : OBJECT_SOUNDSET_SOUND_HIT_THROW);
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    if (weapon)
+    {
+        enum object_soundset_types oss = objects[weapon->otyp].oc_soundset;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+    }
+    else
+    {
+        if (you_attack)
+        {
+            enum player_soundset_types pss = get_player_soundset();
+            enum object_soundset_types oss = player_soundsets[pss].barehanded_soundset;
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
+        }
+        else
+        {
+            enum monster_soundset_types mss = magr->data->soundset;
+            enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
         }
     }
 
@@ -316,7 +390,9 @@ unsigned long hit_flags;
     immediateinfo.volume = volume;
     immediateinfo.parameter_names[0] = "Surface";
     immediateinfo.parameter_values[0] = (float)surfaceid;
-    immediateinfo.parameter_names[1] = (char*)0;
+    immediateinfo.parameter_names[1] = "Damage";
+    immediateinfo.parameter_values[1] = (float)damage;
+    immediateinfo.parameter_names[2] = (char*)0;
 
     play_immediate_ghsound(immediateinfo);
 

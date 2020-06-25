@@ -43,6 +43,9 @@ enum ghsound_types {
 	GHSOUND_FOUNTAIN,
 	GHSOUND_BEE,
 	GHSOUND_FIRE,
+	GHSOUND_STAFF_SWING,
+	GHSOUND_STAFF_HIT,
+	GHSOUND_STAFF_MISS,
 	MAX_GHSOUNDS
 };
 
@@ -115,11 +118,19 @@ struct ghsound_info {
 /* OBJECT SOUNDSETS */
 enum object_soundset_sound_types {
 	OBJECT_SOUNDSET_SOUND_AMBIENT = 0,
-	OBJECT_SOUNDSET_SOUND_HIT,
-	OBJECT_SOUNDSET_SOUND_MISS,
-	OBJECT_SOUNDSET_SOUND_USE,
-	OBJECT_SOUNDSET_SOUND_EFFECT,
-	OBJECT_SOUNDSET_SOUND_BREAK,
+	OBJECT_SOUNDSET_SOUND_STRIKE_MELEE,		/* Played at the start of the attack animation */
+	OBJECT_SOUNDSET_SOUND_HIT_MELEE,		/* Played at the end of the melee attack animation and at the end of throw if the attack hits target */
+	OBJECT_SOUNDSET_SOUND_THROW,			/* Played when the object is thrown */
+	OBJECT_SOUNDSET_SOUND_FIRE,				/* Played when a launcher is fired */
+	OBJECT_SOUNDSET_SOUND_HIT_THROW,		/* Played at the end of the throw/fire attack animation and at the end of throw if the attack hits target */
+	OBJECT_SOUNDSET_SOUND_APPLY,			/* Apply, or apply if switches something on */
+	OBJECT_SOUNDSET_SOUND_APPLY_OFF,		/* Apply if switches something off */
+	OBJECT_SOUNDSET_SOUND_INVOKE,			/* Invoke, or invoke if switches something on */
+	OBJECT_SOUNDSET_SOUND_INVOKE_OFF,		/* Invoke if switches something off */
+	OBJECT_SOUNDSET_SOUND_USE,				/* Sound upon quaff, read, etc. */
+	OBJECT_SOUNDSET_SOUND_USE_EFFECT,		/* Sound upon potion or scroll effect */
+	OBJECT_SOUNDSET_SOUND_BREAK,			/* Sound upon breaking the item */
+	OBJECT_SOUNDSET_SOUND_BREAK_EFFECT,		/* Sound upon break effect */
 	MAX_OBJECT_SOUNDSET_SOUNDS
 };
 
@@ -134,6 +145,7 @@ enum object_soundset_types {
 	OBJECT_SOUNDSET_NONE = 0,
 	OBJECT_SOUNDSET_GENERAL,
 	OBJECT_SOUNDSET_CANDLE,
+	OBJECT_SOUNDSET_QUARTERSTAFF,
 	MAX_OBJECT_SOUNDSETS
 };
 

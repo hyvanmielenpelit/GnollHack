@@ -2674,7 +2674,8 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, unsigned long));
-E void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, unsigned long));
+E void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, double, boolean));
+E void FDECL(play_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_soundset_sound_types));
 //play_miss_sound
 //play_action_sound
 //play_ui_sound

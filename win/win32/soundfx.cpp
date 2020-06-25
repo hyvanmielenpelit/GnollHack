@@ -77,7 +77,9 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     NoSound,
     { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Bee Ambient" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0, 1.0f}
+    { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Quarterstaff Swing" , 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Quarterstaff Hit" , 0, 1.0f}
 };
 
 #undef NoSound
@@ -202,131 +204,6 @@ extern "C"
         result = fmod_studio_system->update();
         return TRUE;
     }
-
-#if 0
-    boolean
-    fmod_play_movement_sound(struct ghsound_movement_info info)
-    {
-        FMOD_RESULT result;
-
-        enum ghsound_types soundid = info.ghsound;
-        struct ghsound_eventmapping eventmap = ghsound2event[soundid];
-        float event_volume = eventmap.volume;
-        if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
-            return FALSE;
-
-        Studio::EventDescription* movementDescription = NULL;
-        result = fmod_studio_system->getEvent(eventmap.eventPath, &movementDescription);
-
-        if (result != FMOD_OK)
-            return FALSE;
-
-        Studio::EventInstance* movementInstance = NULL;
-        result = movementDescription->createInstance(&movementInstance);
-        if (result != FMOD_OK)
-            return FALSE;
-
-        /* Set volume */
-        movementInstance->setVolume(info.volume * event_volume * general_sound_effects_volume * general_volume);
-
-        /* Set surface */
-        FMOD_STUDIO_PARAMETER_DESCRIPTION paramDesc;
-        result = movementDescription->getParameterDescriptionByName("Surface", &paramDesc);
-
-        FMOD_STUDIO_PARAMETER_ID surfaceID = paramDesc.id;
-        float surfaceParameterValue = (float)info.floor;
-        result = movementInstance->setParameterByID(surfaceID, surfaceParameterValue);
-
-        /* Play sound */
-        result = movementInstance->start();
-        if (result != FMOD_OK)
-            return FALSE;
-
-        /* If starting succeeded, stop the old music in musicInstances[0] by fading */
-        if (movementInstances[0].eventInstance)
-        {
-            movementInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
-
-            /* move to movementInstances[1] for later release, and before that, release existing movementInstances[1] */
-            if (movementInstances[1].eventInstance)
-                movementInstances[1].eventInstance->release();
-
-            movementInstances[1].eventInstance = movementInstances[0].eventInstance;
-            movementInstances[1].ghsound = movementInstances[0].ghsound;
-            movementInstances[1].normalVolume = movementInstances[0].normalVolume;
-        }
-
-        /* Set the new instance as movementInstances[0] */
-        movementInstances[0].eventInstance = movementInstance;
-        movementInstances[0].ghsound = info.ghsound;
-        movementInstances[0].normalVolume = info.volume;
-
-        result = fmod_studio_system->update();
-        return TRUE;
-    }
-
-
-    boolean
-    fmod_play_hit_sound(struct ghsound_hit_info info)
-    {
-        FMOD_RESULT result;
-
-        enum ghsound_types soundid = info.ghsound;
-        struct ghsound_eventmapping eventmap = ghsound2event[soundid];
-        float event_volume = eventmap.volume;
-        if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
-            return FALSE;
-
-        Studio::EventDescription* hitDescription = NULL;
-        result = fmod_studio_system->getEvent(eventmap.eventPath, &hitDescription);
-
-        if (result != FMOD_OK)
-            return FALSE;
-
-        Studio::EventInstance* hitInstance = NULL;
-        result = hitDescription->createInstance(&hitInstance);
-        if (result != FMOD_OK)
-            return FALSE;
-
-        /* Set volume */
-        hitInstance->setVolume(info.volume * event_volume * general_sound_effects_volume * general_volume);
-
-        /* Set surface */
-        FMOD_STUDIO_PARAMETER_DESCRIPTION paramDesc;
-        result = hitDescription->getParameterDescriptionByName("Surface", &paramDesc);
-
-        FMOD_STUDIO_PARAMETER_ID surfaceID = paramDesc.id;
-        float surfaceParameterValue = (float)info.strike_surface;
-        result = hitInstance->setParameterByID(surfaceID, surfaceParameterValue);
-
-        /* Play sound */
-        result = hitInstance->start();
-        if (result != FMOD_OK)
-            return FALSE;
-
-        /* If starting succeeded, stop the old music in musicInstances[0] by fading */
-        if (hitInstances[0].eventInstance)
-        {
-            hitInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
-
-            /* move to movementInstances[1] for later release, and before that, release existing movementInstances[1] */
-            if (hitInstances[1].eventInstance)
-                hitInstances[1].eventInstance->release();
-
-            hitInstances[1].eventInstance = hitInstances[0].eventInstance;
-            hitInstances[1].ghsound = hitInstances[0].ghsound;
-            hitInstances[1].normalVolume = hitInstances[0].normalVolume;
-        }
-
-        /* Set the new instance as movementInstances[0] */
-        hitInstances[0].eventInstance = hitInstance;
-        hitInstances[0].ghsound = info.ghsound;
-        hitInstances[0].normalVolume = info.volume;
-
-        result = fmod_studio_system->update();
-        return TRUE;
-    }
-#endif
 
     boolean
     fmod_play_immediate_sound(struct ghsound_immediate_info info)
