@@ -1298,6 +1298,8 @@ char c;
         return (ROOM);
     case ',':
         return (GRASS);
+    case '\'':
+        return (GROUND);
     case '-':
         return (HWALL);
     case '|':

@@ -519,10 +519,13 @@ E void FDECL(printweight, (char*, int, boolean, boolean));
 E int FDECL(monsterdescription, (struct monst*));
 E int NDECL(dotogglehpbars);
 E void FDECL(delete_location, (xchar, xchar));
-E void FDECL(full_location_transform, (xchar, xchar, int, uchar, uchar, boolean, boolean, boolean));
-E void FDECL(create_simple_location, (xchar, xchar, int, uchar, boolean));
-E void FDECL(transform_location_type, (xchar, xchar, int));
-E void FDECL(transform_location_type_and_flags, (xchar, xchar, int, uchar));
+E void FDECL(full_location_transform, (xchar, xchar, int, uchar, int, int, int, boolean, boolean, boolean));
+E void FDECL(create_simple_location, (xchar, xchar, int, uchar, int, int, int, boolean));
+E void FDECL(create_basic_floor_location, (xchar, xchar, int, uchar, boolean));
+E void FDECL(create_broken_feature_floor_location, (xchar, xchar, int, uchar, int, int, boolean));
+E void FDECL(transform_location_type, (xchar, xchar, int, int));
+E void FDECL(transform_location_type_and_flags, (xchar, xchar, int, uchar, int));
+E void FDECL(transform_location_type_and_flags_and_set_broken, (xchar, xchar, int, uchar, int, int));
 
 /* ### do_name.c ### */
 

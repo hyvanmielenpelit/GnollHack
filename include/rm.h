@@ -76,19 +76,45 @@ enum levl_typ_types {
     AIR       = 34,
     CLOUD     = 35,
 	GRASS	  = 36,
+    GROUND    = 37,
 
-    UNEXPLORED = 37, /* Keep this last */
-    MAX_TYPE  = 38,
+    UNEXPLORED = 38, /* Keep this last */
+    MAX_TYPE  = 39,
     INVALID_TYPE = 127
 };
 
 struct location_type_definition {
     const char* name;
+    enum screen_symbols base_screen_symbol;
     enum location_soundset_types soundset;
 };
 
 extern struct location_type_definition level_location_types[MAX_TYPE];
 
+
+enum grass_subtypes {
+    GRASS_SUBTYPE_NORMAL = 0,
+    GRASS_SUBTYPE_FLOWERS,
+    MAX_GRASS_SUBTYPES
+};
+
+enum ground_subtypes {
+    GROUND_SUBTYPE_NORMAL = 0,
+    GROUND_SUBTYPE_HARD,
+    MAX_GROUND_SUBTYPES
+};
+
+enum floor_subtypes {
+    FLOOR_SUBTYPE_NORMAL = 0,
+    FLOOR_SUBTYPE_CRACKS,
+    MAX_FLOOR_SUBTYPES
+};
+
+enum corridor_subtypes {
+    CORRIDOR_SUBTYPE_NORMAL = 0,
+    CORRIDOR_SUBTYPE_CRACKS,
+    MAX_CORRIDOR_SUBTYPES
+};
 
 /*
  * Avoid using the level types in inequalities:
@@ -118,7 +144,10 @@ extern struct location_type_definition level_location_types[MAX_TYPE];
 #define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
 #define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
 
-/*
+ /* Location types for which floortyp is zero */
+#define IS_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND  || (typ) == UNEXPLORED || (typ) == AIR )
+
+ /*
  * The screen symbols may be the default or defined at game startup time.
  * See drawing.c for defaults.
  * Note: {ibm|dec|curses}_graphics[] arrays (also in drawing.c) must be kept in
@@ -155,101 +184,103 @@ enum screen_symbols {
 	S_darkroom  = 25,
     S_grass     = 26,
     S_darkgrass = 27,
-    S_corr      = 28,
-    S_litcorr   = 29,
-    S_upstair   = 30,
-    S_dnstair   = 31,
-    S_upladder  = 32,
-    S_dnladder  = 33,
-    S_altar     = 34,
-    S_extra_boulder = 35,
-    S_grave     = 28+8,
-    S_throne    = 29+8,
-    S_sink      = 30+8,
-    S_fountain  = 31+8,
-    S_pool      = 32+8,
-    S_ice       = 33+8,
-    S_lava      = 34+8,
-    S_vodbridge = 35+8,
-    S_hodbridge = 36+8,
-    S_vcdbridge = 37+8, /* closed drawbridge+8, vertical wall */
-    S_hcdbridge = 38+8, /* closed drawbridge+8, horizontal wall */
-    S_air       = 39+8,
-    S_cloud     = 40+8,
-    S_water     = 41+8,
+    S_ground    = 28,
+    S_darkground = 29,
+    S_corr      = 30,
+    S_litcorr   = 31,
+    S_upstair   = 32,
+    S_dnstair   = 33,
+    S_upladder  = 34,
+    S_dnladder  = 35,
+    S_altar     = 36,
+    S_extra_boulder = 37,
+    S_grave     = 28+10,
+    S_throne    = 29+10,
+    S_sink      = 30+10,
+    S_fountain  = 31+10,
+    S_pool      = 32+10,
+    S_ice       = 33+10,
+    S_lava      = 34+10,
+    S_vodbridge = 35+10,
+    S_hodbridge = 36+10,
+    S_vcdbridge = 37+10, /* closed drawbridge+10, vertical wall */
+    S_hcdbridge = 38+10, /* closed drawbridge+10, horizontal wall */
+    S_air       = 39+10,
+    S_cloud     = 40+10,
+    S_water     = 41+10,
 
-/* end dungeon characters+8, begin traps */
+/* end dungeon characters+10, begin traps */
 
-    S_arrow_trap           = 42+8,
-    S_dart_trap            = 43+8,
-    S_falling_rock_trap    = 44+8,
-    S_squeaky_board        = 45+8,
-    S_bear_trap            = 46+8,
-    S_land_mine            = 47+8,
-    S_rolling_boulder_trap = 48+8,
-    S_sleeping_gas_trap    = 49+8,
-    S_rust_trap            = 50+8,
-    S_fire_trap            = 51+8,
-    S_pit                  = 52+8,
-    S_spiked_pit           = 53+8,
-    S_hole                 = 54+8,
-    S_trap_door            = 55+8,
-    S_teleportation_trap   = 56+8,
-    S_level_teleporter     = 57+8,
-    S_magic_portal         = 58+8,
-    S_web                  = 59+8,
-    S_statue_trap          = 60+8,
-    S_magic_trap           = 61+8,
-    S_anti_magic_trap      = 62+8,
-    S_polymorph_trap       = 63+8,
-	S_octahedral_portal	   = 64+8,
-	S_tetrahedral_portal   = 65+8,
-    S_cubical_portal       = 66+8,
-    S_dodecahedral_portal  = 67+8,
-    S_vibrating_square     = 68+8, /* for display rather than any trap effect */
+    S_arrow_trap           = 42+10,
+    S_dart_trap            = 43+10,
+    S_falling_rock_trap    = 44+10,
+    S_squeaky_board        = 45+10,
+    S_bear_trap            = 46+10,
+    S_land_mine            = 47+10,
+    S_rolling_boulder_trap = 48+10,
+    S_sleeping_gas_trap    = 49+10,
+    S_rust_trap            = 50+10,
+    S_fire_trap            = 51+10,
+    S_pit                  = 52+10,
+    S_spiked_pit           = 53+10,
+    S_hole                 = 54+10,
+    S_trap_door            = 55+10,
+    S_teleportation_trap   = 56+10,
+    S_level_teleporter     = 57+10,
+    S_magic_portal         = 58+10,
+    S_web                  = 59+10,
+    S_statue_trap          = 60+10,
+    S_magic_trap           = 61+10,
+    S_anti_magic_trap      = 62+10,
+    S_polymorph_trap       = 63+10,
+	S_octahedral_portal	   = 64+10,
+	S_tetrahedral_portal   = 65+10,
+    S_cubical_portal       = 66+10,
+    S_dodecahedral_portal  = 67+10,
+    S_vibrating_square     = 68+10, /* for display rather than any trap effect */
 
-/* end traps+8, begin special effects */
+/* end traps+10, begin special effects */
 
-    S_vbeam     = 65+12, /* The 4 zap beam symbols.  Do NOT separate. */
-    S_hbeam     = 66+12, /* To change order or add+12, see function      */
-    S_lslant    = 67+12, /* zapdir_to_glyph() in display.c.           */
-    S_rslant    = 68+12,
-    S_digbeam   = 69+12, /* dig beam symbol */
-    S_flashbeam = 70+12, /* camera flash symbol */
-    S_boomleft  = 71+12, /* thrown boomerang+12, open left+12, e.g ')'    */
-    S_boomright = 72+12, /* thrown boomerang+12, open right+12, e.g. '('  */
-    S_ss1       = 73+12, /* 4 magic shield ("resistance sparkle") glyphs */
-    S_ss2       = 74+12,
-    S_ss3       = 75+12,
-    S_ss4       = 76+12,
-    S_talkeffect = 77+12,
-    S_poisoncloud = 78+12,
-    S_goodpos   = 79+12, /* valid position for targeting via getpos() */
+    S_vbeam     = 65+14, /* The 4 zap beam symbols.  Do NOT separate. */
+    S_hbeam     = 66+14, /* To change order or add+14, see function      */
+    S_lslant    = 67+14, /* zapdir_to_glyph() in display.c.           */
+    S_rslant    = 68+14,
+    S_digbeam   = 69+14, /* dig beam symbol */
+    S_flashbeam = 70+14, /* camera flash symbol */
+    S_boomleft  = 71+14, /* thrown boomerang+14, open left+14, e.g ')'    */
+    S_boomright = 72+14, /* thrown boomerang+14, open right+14, e.g. '('  */
+    S_ss1       = 73+14, /* 4 magic shield ("resistance sparkle") glyphs */
+    S_ss2       = 74+14,
+    S_ss3       = 75+14,
+    S_ss4       = 76+14,
+    S_talkeffect = 77+14,
+    S_poisoncloud = 78+14,
+    S_goodpos   = 79+14, /* valid position for targeting via getpos() */
 
-/* The 8 swallow symbols.  Do NOT separate.  To change order or add+12, */
+/* The 8 swallow symbols.  Do NOT separate.  To change order or add+14, */
 /* see the function swallow_to_glyph() in display.c.                 */
-    S_sw_tl     = 80+12, /* swallow top left [1]             */
-    S_sw_tc     = 81+12, /* swallow top center [2]    Order: */
-    S_sw_tr     = 82+12, /* swallow top right [3]            */
-    S_sw_ml     = 83+12, /* swallow middle left [4]   1 2 3  */
-    S_sw_mr     = 84+12, /* swallow middle right [6]  4 5 6  */
-    S_sw_bl     = 85+12, /* swallow bottom left [7]   7 8 9  */
-    S_sw_bc     = 86+12, /* swallow bottom center [8]        */
-    S_sw_br     = 87+12, /* swallow bottom right [9]         */
+    S_sw_tl     = 80+14, /* swallow top left [1]             */
+    S_sw_tc     = 81+14, /* swallow top center [2]    Order: */
+    S_sw_tr     = 82+14, /* swallow top right [3]            */
+    S_sw_ml     = 83+14, /* swallow middle left [4]   1 2 3  */
+    S_sw_mr     = 84+14, /* swallow middle right [6]  4 5 6  */
+    S_sw_bl     = 85+14, /* swallow bottom left [7]   7 8 9  */
+    S_sw_bc     = 86+14, /* swallow bottom center [8]        */
+    S_sw_br     = 87+14, /* swallow bottom right [9]         */
 
-    S_explode1  = 88+12, /* explosion top left               */
-    S_explode2  = 89+12, /* explosion top center             */
-    S_explode3  = 90+12, /* explosion top right        Ex.   */
-    S_explode4  = 91+12, /* explosion middle left            */
-    S_explode5  = 92+12, /* explosion middle center    /-\   */
-    S_explode6  = 93+12, /* explosion middle right     |@|   */
-    S_explode7  = 94+12, /* explosion bottom left      \-/   */
-    S_explode8  = 95+12, /* explosion bottom center          */
-    S_explode9  = 96+12, /* explosion bottom right           */
+    S_explode1  = 88+14, /* explosion top left               */
+    S_explode2  = 89+14, /* explosion top center             */
+    S_explode3  = 90+14, /* explosion top right        Ex.   */
+    S_explode4  = 91+14, /* explosion middle left            */
+    S_explode5  = 92+14, /* explosion middle center    /-\   */
+    S_explode6  = 93+14, /* explosion middle right     |@|   */
+    S_explode7  = 94+14, /* explosion bottom left      \-/   */
+    S_explode8  = 95+14, /* explosion bottom center          */
+    S_explode9  = 96+14, /* explosion bottom right           */
 
 /* end effects */
 
-    MAX_CMAPPED_CHARS   = 109  /* maximum number of mapped characters */
+    MAX_CMAPPED_CHARS   = 111  /* maximum number of mapped characters */
 };
 
 #define MAX_DUNGEON_CHARS (S_water - S_unexplored + 1) /* mapped dungeon characters */
@@ -261,6 +292,7 @@ enum screen_symbols {
 
 #define DARKROOMSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkroom)
 #define DARKGRASSSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkgrass)
+#define DARKGROUNDSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkground)
 
 #define is_cmap_trap(i) ((i) >= S_arrow_trap && (i) <= S_polymorph_trap)
 #define is_cmap_drawbridge(i) ((i) >= S_vodbridge && (i) <= S_hcdbridge)
@@ -268,6 +300,7 @@ enum screen_symbols {
 #define is_cmap_wall(i) ((i) >= S_stone && (i) <= S_trwall)
 #define is_cmap_room(i) ((i) >= S_room && (i) <= S_darkroom)
 #define is_cmap_grass(i) ((i) >= S_grass && (i) <= S_darkgrass)
+#define is_cmap_ground(i) ((i) >= S_ground && (i) <= S_darkground)
 #define is_cmap_corr(i) ((i) >= S_corr && (i) <= S_litcorr)
 #define is_cmap_furniture(i) ((i) >= S_upstair && (i) <= S_fountain)
 #define is_cmap_water(i) ((i) == S_pool || (i) == S_water)
@@ -314,6 +347,7 @@ struct symdef_cmap {
     uchar sym;
     const char *explanation;
     uchar layer;
+    boolean has_broken_tile;
 
     int variations;
     int variation_offset;
@@ -323,6 +357,10 @@ struct symdef_cmap {
     short stand_animation[CMAP_TYPE_MAX];
     short enlargement[CMAP_TYPE_MAX];
     short replacement[CMAP_TYPE_MAX];
+
+    short broken_animation[CMAP_TYPE_MAX];
+    short broken_enlargement[CMAP_TYPE_MAX];
+    short broken_replacement[CMAP_TYPE_MAX];
 };
 
 
@@ -330,6 +368,7 @@ struct symdef_cmap_variation {
     int base_screen_symbol;
     const char* variation_name;
     const char* explanation;
+    boolean has_broken_tile;
 
 #ifdef TEXTCOLOR
     uchar color[CMAP_TYPE_MAX];
@@ -337,28 +376,17 @@ struct symdef_cmap_variation {
     short stand_animation[CMAP_TYPE_MAX];
     short enlargement[CMAP_TYPE_MAX];
     short replacement[CMAP_TYPE_MAX];
+
+    short broken_animation[CMAP_TYPE_MAX];
+    short broken_enlargement[CMAP_TYPE_MAX];
+    short broken_replacement[CMAP_TYPE_MAX];
 };
 
 /* Variation definitions */
-#define HWALL_VARIATION_OFFSET (0)
-enum hwall_variation_types
-{
-    HWALL_VARIATION_FIREPLACE = 0,
-    HWALL_VARIATION_TORCH_ON_WALL,
-    HWALL_VARIATION_TORCHHOLDER_ON_WALL,
-    HWALL_VARIATION_4,
-    HWALL_VARIATION_5,
-    HWALL_VARIATIONS
-};
-
-#define CRWALL_VARIATION_OFFSET (HWALL_VARIATIONS + HWALL_VARIATION_OFFSET)
+#define CRWALL_VARIATION_OFFSET (0)
 #define CRWALL_VARIATIONS 1
 
-#define IRON_BAR_VARIATION_OFFSET (CRWALL_VARIATIONS + CRWALL_VARIATION_OFFSET)
-#define IRON_BAR_VARIATIONS 1
-
-#define FLOOR_VARIATION_OFFSET (IRON_BAR_VARIATIONS + IRON_BAR_VARIATION_OFFSET)
-
+#define FLOOR_VARIATION_OFFSET (CRWALL_VARIATIONS + CRWALL_VARIATION_OFFSET)
 enum floor_variation_types
 {
     FLOOR_VARIATION_DRIED_UP_FOUNTAIN = 0,
@@ -368,27 +396,25 @@ enum floor_variation_types
 };
 
 #define GRASS_VARIATION_OFFSET (FLOOR_VARIATIONS + FLOOR_VARIATION_OFFSET)
-
 enum grass_variation_types
 {
-    GRASS_VARIATION_TREE_STUMP = 0,
-    GRASS_VARIATION_FLOWERS,
+    GRASS_VARIATION_FLOWERS = 0,
+    GRASS_VARIATION_MORE_FLOWERS,
     GRASS_VARIATION_3,
     GRASS_VARIATIONS
 };
 
-#define LIT_CORRIDOR_VARIATION_OFFSET (GRASS_VARIATIONS + GRASS_VARIATION_OFFSET)
-
-enum corridor_variation_types
+#define GROUND_VARIATION_OFFSET (GRASS_VARIATIONS + GRASS_VARIATION_OFFSET)
+enum ground_variation_types
 {
-    CORRIDOR_VARIATION_1 = 0,
-    CORRIDOR_VARIATION_2,
-    CORRIDOR_VARIATION_3,
-    CORRIDOR_VARIATIONS
+    GROUND_VARIATION_DIRT = 0,
+    GROUND_VARIATION_GRASS,
+    GROUND_VARIATION_SWAMP,
+    GROUND_VARIATIONS
 };
 
-#define STAIRCASE_UP_VARIATION_OFFSET (CORRIDOR_VARIATIONS + LIT_CORRIDOR_VARIATION_OFFSET)
 
+#define STAIRCASE_UP_VARIATION_OFFSET (GROUND_VARIATIONS + GROUND_VARIATION_OFFSET)
 enum staircase_variation_types
 {
     BRANCH_STAIRCASE = 0,
@@ -399,7 +425,6 @@ enum staircase_variation_types
 #define STAIRCASE_DOWN_VARIATION_OFFSET (STAIRCASE_VARIATIONS + STAIRCASE_UP_VARIATION_OFFSET)
 
 #define ALTAR_VARIATION_OFFSET (STAIRCASE_VARIATIONS + STAIRCASE_DOWN_VARIATION_OFFSET)
-
 enum altar_variation_types
 {
     LAWFUL_ALTAR = 0,
@@ -414,8 +439,8 @@ enum altar_variation_types
 
 #define MAX_VARIATIONS (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
 
-#define is_wall_variation(idx) ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
-#define is_base_cmap_variation(idx) ((idx) >= HWALL_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)
+#define is_wall_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_vwall && defsym_variations[(idx)].base_screen_symbol <= S_trwall) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
+#define is_base_cmap_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_stone && defsym_variations[(idx)].base_screen_symbol <= S_dnladder) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)
 
 struct symparse {
     unsigned range;
@@ -582,15 +607,20 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 struct rm {
     struct layer_info hero_memory_layers; // glyph;               /* what the hero thinks is there */
     schar typ;               /* what is really there */
+    schar subtyp;            /* grass containing flowers, etc., which may influence tile behavior, drawing, and description */
+    schar floortyp;          /* for feature layer typs, what is the floor typ underneath, which may influence GUI drawing */
+    int brokenglyph;         /* previously broken (or similar) glyph here, which appears on the broken feature layer above the floor layer */
+    int doodadglyph;         /* any doodad glyph here, which appears on the doodad layer above the dungeon feature */
+
     uchar seenv;             /* seen vector */
-    uchar flags;			/* extra information for typ */
-    uchar variation;
+    uchar flags;			 /* extra information for typ */
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */
-    Bitfield(facing_right, 1);     /* flip picture horizontally to "face right" */
-    Bitfield(lamplit, 1);     /* if the location is a light source, is it on? */
-    Bitfield(makingsound, 1);     /* if the location is a sound source, is it on? */
+
+    Bitfield(facing_right, 1);      /* flip picture horizontally to "face right" */
+    Bitfield(lamplit, 1);           /* if the location is a light source, is it on? */
+    Bitfield(makingsound, 1);       /* if the location is a sound source, is it on? */
 
     Bitfield(roomno, 6); /* room # for special rooms */
     Bitfield(edge, 1);   /* marks boundaries for special rooms*/

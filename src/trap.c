@@ -461,7 +461,7 @@ long flags;
                            ? ROOM
                            : level.flags.is_cavernous_lev ? CORR : DOOR;
 
-        create_simple_location(x, y, ltype, lflags, FALSE);
+        create_basic_floor_location(x, y, ltype, lflags, FALSE);
         unearth_objs(&youmonst, x, y, FALSE, FALSE);
         break;
     }

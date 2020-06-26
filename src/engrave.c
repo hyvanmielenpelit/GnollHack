@@ -1324,11 +1324,11 @@ const char *str;
     char buf[BUFSZ];
 
     /* Can we put a grave here? */
-    if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRAVE) || t_at(x, y))
+    if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRASS && levl[x][y].typ != GROUND && levl[x][y].typ != GRAVE) || t_at(x, y))
         return;
 
     /* Make the grave */
-    create_simple_location(x, y, GRAVE, 0, FALSE);
+    create_simple_location(x, y, GRAVE, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, FALSE);
 
     /* Engrave the headstone */
     del_engr_at(x, y);

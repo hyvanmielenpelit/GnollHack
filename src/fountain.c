@@ -126,7 +126,7 @@ genericptr_t poolcnt;
     register struct trap *ttmp;
 
     if (((x + y) % 2) || (x == u.ux && y == u.uy)
-        || (rn2(1 + distmin(u.ux, u.uy, x, y))) || (levl[x][y].typ != ROOM)
+        || (rn2(1 + distmin(u.ux, u.uy, x, y))) || (levl[x][y].typ != ROOM && levl[x][y].typ != GRASS && levl[x][y].typ != GROUND)
         || (sobj_at(BOULDER, x, y)) || nexttodoor(x, y))
         return;
 
@@ -137,7 +137,7 @@ genericptr_t poolcnt;
         pline("Water gushes forth from the overflowing fountain!");
 
     /* Put a pool at x, y */
-	create_simple_location(x, y, POOL, 0, FALSE);
+	create_simple_location(x, y, POOL, 0, 0, 0, levl[x][y].typ, FALSE);
 
 	/* No kelp! */
     del_engr_at(x, y);
@@ -210,7 +210,7 @@ boolean isyou;
                 return;
         }
         /* replace the fountain with ordinary floor */
-		create_simple_location(x, y, ROOM, 0, TRUE);
+		create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].typ : ROOM, 0, TRUE);
         if (cansee(x, y))
             pline_The("fountain dries up!");
         /* The location is seen if the hero/monster is invisible
@@ -573,7 +573,7 @@ register struct obj *obj;
             exercise(A_WIS, TRUE);
         }
         update_inventory();
-		create_simple_location(u.ux, u.uy, ROOM, 0, TRUE);
+		create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, TRUE);
         if (in_town(u.ux, u.uy))
             (void) angry_guards(FALSE);
         return;
@@ -1111,7 +1111,7 @@ int x, y;
     if (cansee(x, y) || (x == u.ux && y == u.uy))
         pline_The("pipes break!  Water spurts out!");
 
-	create_simple_location(x, y, FOUNTAIN, FOUNTAIN_WATER, FALSE);
+	create_simple_location(x, y, FOUNTAIN, FOUNTAIN_WATER, 0, back_to_glyph(x, y), levl[x][y].floortyp, FALSE);
     SET_FOUNTAIN_LOOTED(x, y);
     newsym(x, y);
 }

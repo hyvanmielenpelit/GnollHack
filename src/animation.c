@@ -906,12 +906,16 @@ short animidx;
         {
             if (defsyms[i].stand_animation[cmap_idx] == animidx)
                 return glyph2tile[i + GLYPH_CMAP_OFF];
+            if (defsyms[i].broken_animation[cmap_idx] == animidx)
+                return glyph2tile[i + GLYPH_BROKEN_CMAP_OFF];
         }
 
         for (int i = 0; i < MAX_VARIATIONS; i++)
         {
             if (defsym_variations[i].stand_animation[cmap_idx] == animidx)
                 return glyph2tile[i + GLYPH_CMAP_VARIATION_OFF];
+            if (defsym_variations[i].broken_animation[cmap_idx] == animidx)
+                return glyph2tile[i + GLYPH_BROKEN_CMAP_VARIATION_OFF];
         }
     }
 
@@ -1005,12 +1009,16 @@ short enlidx;
         {
             if (defsyms[i].enlargement[cmap_idx] == enlidx)
                 return glyph2tile[i + GLYPH_CMAP_OFF];
+            if (defsyms[i].broken_enlargement[cmap_idx] == enlidx)
+                return glyph2tile[i + GLYPH_BROKEN_CMAP_OFF];
         }
 
         for (int i = 0; i < MAX_VARIATIONS; i++)
         {
             if (defsym_variations[i].enlargement[cmap_idx] == enlidx)
                 return glyph2tile[i + GLYPH_CMAP_VARIATION_OFF];
+            if (defsym_variations[i].broken_enlargement[cmap_idx] == enlidx)
+                return glyph2tile[i + GLYPH_BROKEN_CMAP_VARIATION_OFF];
         }
     }
     for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
@@ -1111,12 +1119,16 @@ short replacement_idx;
         {
             if (defsyms[i].replacement[cmap_idx] == replacement_idx)
                 return glyph2tile[i + GLYPH_CMAP_OFF];
+            if (defsyms[i].broken_replacement[cmap_idx] == replacement_idx)
+                return glyph2tile[i + GLYPH_BROKEN_CMAP_OFF];
         }
 
         for (int i = 0; i < MAX_VARIATIONS; i++)
         {
             if (defsym_variations[i].replacement[cmap_idx] == replacement_idx)
                 return glyph2tile[i + GLYPH_CMAP_VARIATION_OFF];
+            if (defsym_variations[i].broken_replacement[cmap_idx] == replacement_idx)
+                return glyph2tile[i + GLYPH_BROKEN_CMAP_VARIATION_OFF];
         }
     }
 

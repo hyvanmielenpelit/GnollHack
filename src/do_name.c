@@ -261,9 +261,9 @@ int glyph;
     if (!glyph_is_cmap_or_cmap_variation(glyph))
         return 0;
 
-    c = glyph_to_cmap(glyph);
+    c = generic_glyph_to_cmap(glyph);
 
-    if (is_cmap_room(c) || is_cmap_grass(c) || is_cmap_furniture(c))
+    if (is_cmap_room(c) || is_cmap_grass(c) || is_cmap_ground(c) || is_cmap_furniture(c))
         return 1;
     else if (is_cmap_wall(c) || c == S_tree)
         return 2;
@@ -364,25 +364,27 @@ int x, y, gloc;
                 && glyph != objnum_to_glyph(ROCK));
     case GLOC_DOOR:
         return (glyph_is_cmap_or_cmap_variation(glyph)
-                && (is_cmap_door(glyph_to_cmap(glyph))
-                    || is_cmap_drawbridge(glyph_to_cmap(glyph))
-                    || glyph_to_cmap(glyph) == S_ndoor
+                && (is_cmap_door(generic_glyph_to_cmap(glyph))
+                    || is_cmap_drawbridge(generic_glyph_to_cmap(glyph))
+                    || generic_glyph_to_cmap(glyph) == S_ndoor
                     ));
     case GLOC_EXPLORE:
         return (glyph_is_cmap_or_cmap_variation(glyph)
-                && (is_cmap_door(glyph_to_cmap(glyph))
-                    || is_cmap_drawbridge(glyph_to_cmap(glyph))
-                    || glyph_to_cmap(glyph) == S_ndoor
-                    || glyph_to_cmap(glyph) == S_hbdoor
-                    || glyph_to_cmap(glyph) == S_vbdoor
-                    || glyph_to_cmap(glyph) == S_hoportcullis
-                    || glyph_to_cmap(glyph) == S_voportcullis
-                    || glyph_to_cmap(glyph) == S_room
-                    || glyph_to_cmap(glyph) == S_darkroom
-                    || glyph_to_cmap(glyph) == S_grass
-                    || glyph_to_cmap(glyph) == S_darkgrass
-                    || glyph_to_cmap(glyph) == S_corr
-                    || glyph_to_cmap(glyph) == S_litcorr)
+                && (is_cmap_door(generic_glyph_to_cmap(glyph))
+                    || is_cmap_drawbridge(generic_glyph_to_cmap(glyph))
+                    || generic_glyph_to_cmap(glyph) == S_ndoor
+                    || generic_glyph_to_cmap(glyph) == S_hbdoor
+                    || generic_glyph_to_cmap(glyph) == S_vbdoor
+                    || generic_glyph_to_cmap(glyph) == S_hoportcullis
+                    || generic_glyph_to_cmap(glyph) == S_voportcullis
+                    || generic_glyph_to_cmap(glyph) == S_room
+                    || generic_glyph_to_cmap(glyph) == S_darkroom
+                    || generic_glyph_to_cmap(glyph) == S_grass
+                    || generic_glyph_to_cmap(glyph) == S_darkgrass
+                    || generic_glyph_to_cmap(glyph) == S_ground
+                    || generic_glyph_to_cmap(glyph) == S_darkground
+                    || generic_glyph_to_cmap(glyph) == S_corr
+                    || generic_glyph_to_cmap(glyph) == S_litcorr)
                 && (IS_UNEXPLORED_LOC(x + 1, y)
                     || IS_UNEXPLORED_LOC(x - 1, y)
                     || IS_UNEXPLORED_LOC(x, y + 1)
@@ -394,26 +396,28 @@ int x, y, gloc;
     case GLOC_INTERESTING:
         return gather_locs_interesting(x,y, GLOC_DOOR)
             || !(glyph_is_cmap_or_cmap_variation(glyph)
-                 && (is_cmap_wall(glyph_to_cmap(glyph))
-                     || glyph_to_cmap(glyph) == S_tree
-                     || glyph_to_cmap(glyph) == S_bars
-                     || glyph_to_cmap(glyph) == S_ice
-                     || glyph_to_cmap(glyph) == S_air
-                     || glyph_to_cmap(glyph) == S_cloud
-                     || glyph_to_cmap(glyph) == S_lava
-                     || glyph_to_cmap(glyph) == S_water
-                     || glyph_to_cmap(glyph) == S_pool
-                     || glyph_to_cmap(glyph) == S_ndoor
-                     || glyph_to_cmap(glyph) == S_hbdoor
-                     || glyph_to_cmap(glyph) == S_vbdoor
-                     || glyph_to_cmap(glyph) == S_hoportcullis
-                     || glyph_to_cmap(glyph) == S_voportcullis
-                     || glyph_to_cmap(glyph) == S_room
-					 || glyph_to_cmap(glyph) == S_darkroom
-                     || glyph_to_cmap(glyph) == S_grass
-                     || glyph_to_cmap(glyph) == S_darkgrass
-                     || glyph_to_cmap(glyph) == S_corr
-                     || glyph_to_cmap(glyph) == S_litcorr));
+                 && (is_cmap_wall(generic_glyph_to_cmap(glyph))
+                     || generic_glyph_to_cmap(glyph) == S_tree
+                     || generic_glyph_to_cmap(glyph) == S_bars
+                     || generic_glyph_to_cmap(glyph) == S_ice
+                     || generic_glyph_to_cmap(glyph) == S_air
+                     || generic_glyph_to_cmap(glyph) == S_cloud
+                     || generic_glyph_to_cmap(glyph) == S_lava
+                     || generic_glyph_to_cmap(glyph) == S_water
+                     || generic_glyph_to_cmap(glyph) == S_pool
+                     || generic_glyph_to_cmap(glyph) == S_ndoor
+                     || generic_glyph_to_cmap(glyph) == S_hbdoor
+                     || generic_glyph_to_cmap(glyph) == S_vbdoor
+                     || generic_glyph_to_cmap(glyph) == S_hoportcullis
+                     || generic_glyph_to_cmap(glyph) == S_voportcullis
+                     || generic_glyph_to_cmap(glyph) == S_room
+					 || generic_glyph_to_cmap(glyph) == S_darkroom
+                     || generic_glyph_to_cmap(glyph) == S_grass
+                     || generic_glyph_to_cmap(glyph) == S_darkgrass
+                     || generic_glyph_to_cmap(glyph) == S_ground
+                     || generic_glyph_to_cmap(glyph) == S_darkground
+                     || generic_glyph_to_cmap(glyph) == S_corr
+                     || generic_glyph_to_cmap(glyph) == S_litcorr));
     }
     /*NOTREACHED*/
     return FALSE;
@@ -902,12 +906,14 @@ enum game_cursor_types cursor_style;
                 for (sidx = 1; sidx < MAX_CMAPPED_CHARS; sidx++) { /* [0] left as 0 */
                     if (IS_DOOR(sidx) || IS_WALL(sidx)
                         || sidx == SDOOR || sidx == SCORR
-                        || glyph_to_cmap(k) == S_room
-						|| glyph_to_cmap(k) == S_darkroom
-                        || glyph_to_cmap(k) == S_grass
-                        || glyph_to_cmap(k) == S_darkgrass
-                        || glyph_to_cmap(k) == S_corr
-                        || glyph_to_cmap(k) == S_litcorr)
+                        || generic_glyph_to_cmap(k) == S_room
+						|| generic_glyph_to_cmap(k) == S_darkroom
+                        || generic_glyph_to_cmap(k) == S_grass
+                        || generic_glyph_to_cmap(k) == S_darkgrass
+                        || generic_glyph_to_cmap(k) == S_ground
+                        || generic_glyph_to_cmap(k) == S_darkground
+                        || generic_glyph_to_cmap(k) == S_corr
+                        || generic_glyph_to_cmap(k) == S_litcorr)
                         continue;
                     if (c == defsyms[sidx].sym || c == (int) showsyms[sidx])
                         matching[sidx] = (char) ++k;
@@ -926,7 +932,7 @@ enum game_cursor_types cursor_style;
                                    (might be monster) */
                                 k = glyph_at(tx, ty);
                                 if (glyph_is_cmap_or_cmap_variation(k)
-                                    && matching[glyph_to_cmap(k)])
+                                    && matching[generic_glyph_to_cmap(k)])
                                     goto foundc;
                                 /* next, try glyph that's remembered here
                                    (might be trap or object) */
@@ -936,7 +942,7 @@ enum game_cursor_types cursor_style;
                                     && !iflags.terrainmode) {
                                     k = levl[tx][ty].hero_memory_layers.glyph;
                                     if (glyph_is_cmap_or_cmap_variation(k)
-                                        && matching[glyph_to_cmap(k)])
+                                        && matching[generic_glyph_to_cmap(k)])
                                         goto foundc;
                                 }
                                 /* last, try actual terrain here (shouldn't
@@ -944,7 +950,7 @@ enum game_cursor_types cursor_style;
                                 if (levl[tx][ty].seenv) {
                                     k = back_to_glyph(tx, ty);
                                     if (glyph_is_cmap_or_cmap_variation(k)
-                                        && matching[glyph_to_cmap(k)])
+                                        && matching[generic_glyph_to_cmap(k)])
                                         goto foundc;
                                 }
                                 continue;

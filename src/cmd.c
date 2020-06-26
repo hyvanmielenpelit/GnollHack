@@ -2116,8 +2116,14 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_CMAP_OFF:
                 header = "CMAP_OFF";
                 break;
+            case GLYPH_BROKEN_CMAP_OFF:
+                header = "BROKEN_CMAP_OFF";
+                break;
             case GLYPH_CMAP_VARIATION_OFF:
                 header = "CMAP_VARIATION_OFF";
+                break;
+            case GLYPH_BROKEN_CMAP_VARIATION_OFF:
+                header = "BROKEN_CMAP_VARIATION_OFF";
                 break;
             case GLYPH_EXPLODE_OFF:
                 header = "EXPLODE_OFF";

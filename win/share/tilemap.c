@@ -567,6 +567,8 @@ struct {
 {S_darkroom, "darkroom", "dark part of a room"},
 {S_grass,    "grass", "grass"},
 {S_darkgrass, "darkgrass", "grass in dark"},
+{S_ground,    "ground", "ground"},
+{S_darkground, "darkground", "ground in dark"},
 {S_corr,     "corridor", "corridor"},
 {S_litcorr,  "lit corridor", "lit corridor"},
 {S_upstair,  "up stairs", "staircase up"},

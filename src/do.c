@@ -3351,7 +3351,7 @@ boolean pushing;
 				levl[rx][ry].drawbridgemask |= DB_FLOOR;
 			}
 			else
-				create_simple_location(rx, ry, ROOM, 0, FALSE);
+				create_basic_floor_location(rx, ry, ROOM, 0, FALSE);
                 
 			//levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 
@@ -3651,21 +3651,29 @@ polymorph_sink()
     default:
     case 0:
         sym = S_fountain;
-		create_simple_location(u.ux, u.uy, FOUNTAIN, rn2(6), FALSE);
+		create_simple_location(u.ux, u.uy, FOUNTAIN, rn2(6), 0, 0, levl[u.ux][u.uy].floortyp, FALSE);
 		if (sinklooted)
 			SET_FOUNTAIN_LOOTED(u.ux, u.uy);
 		break;
     case 1:
         sym = S_throne;
-		create_simple_location(u.ux, u.uy, THRONE, sinklooted ? T_LOOTED : 0, FALSE);
+		create_simple_location(u.ux, u.uy, THRONE, sinklooted ? T_LOOTED : 0, 0, 0, levl[u.ux][u.uy].floortyp, FALSE);
         break;
     case 2:
         sym = S_altar;
-		create_simple_location(u.ux, u.uy, ALTAR, Align2amask(rn2((int)A_LAWFUL + 2) - 1), FALSE);
+		create_simple_location(u.ux, u.uy, ALTAR, Align2amask(rn2((int)A_LAWFUL + 2) - 1), 0, 0, levl[u.ux][u.uy].floortyp, FALSE);
         break;
     case 3:
-        sym = S_room;
-		create_simple_location(u.ux, u.uy, ROOM, 0, FALSE);
+		if (levl[u.ux][u.uy].floortyp)
+		{
+			sym = level_location_types[levl[u.ux][u.uy].floortyp].base_screen_symbol;
+			create_simple_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp, 0, 0, 0, 0, FALSE);
+		}
+		else
+		{
+			sym = S_room;
+			create_basic_floor_location(u.ux, u.uy, ROOM, 0, FALSE);
+		}
         make_grave(u.ux, u.uy, (char *) 0);
         if (levl[u.ux][u.uy].typ == GRAVE)
             sym = S_grave;
@@ -3697,14 +3705,14 @@ teleport_sink()
         cy = rn2(ROWNO);
         trp = t_at(cx, cy);
         eng = engr_at(cx, cy);
-    } while ((levl[cx][cy].typ != ROOM || trp || eng || cansee(cx, cy))
+    } while (((levl[cx][cy].typ != ROOM && levl[cx][cy].typ != GRASS && levl[cx][cy].typ != GROUND) || trp || eng || cansee(cx, cy))
              && cnt++ < 200);
 
-    if (levl[cx][cy].typ == ROOM && !trp && !eng) {
+    if ((levl[cx][cy].typ == ROOM || levl[cx][cy].typ == GRASS || levl[cx][cy].typ == GROUND) && !trp && !eng) {
         /* create sink at new position */
-		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].looted, TRUE);
+		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].looted, levl[u.ux][u.uy].subtyp, 0, levl[cx][cy].floortyp, TRUE);
         /* remove old sink */
-		create_simple_location(u.ux, u.uy, ROOM, 0, TRUE);
+		create_basic_floor_location(u.ux, u.uy, levl[cx][cy].floortyp ? levl[cx][cy].floortyp : ROOM, 0, TRUE);
         return TRUE;
     }
     return FALSE;
@@ -4364,10 +4372,10 @@ dodown()
              */
             if (stairs_down)
                 stairs_down =
-                    (glyph_to_cmap(levl[u.ux][u.uy].hero_memory_layers.glyph) == S_dnstair);
+                    (generic_glyph_to_cmap(levl[u.ux][u.uy].hero_memory_layers.glyph) == S_dnstair);
             else if (ladder_down)
                 ladder_down =
-                    (glyph_to_cmap(levl[u.ux][u.uy].hero_memory_layers.glyph) == S_dnladder);
+                    (generic_glyph_to_cmap(levl[u.ux][u.uy].hero_memory_layers.glyph) == S_dnladder);
         }
         if (Is_airlevel(&u.uz))
             You("are floating in the %s.", surface(u.ux, u.uy));
@@ -5557,25 +5565,26 @@ xchar x, y;
 
 	levl[x][y].typ = UNEXPLORED;
 	levl[x][y].flags = 0;
-	levl[x][y].variation = 0;
+	levl[x][y].subtyp = 0;
+	levl[x][y].brokenglyph = 0;
+	levl[x][y].floortyp = 0;
 	levl[x][y].facing_right = 0;
 	levl[x][y].horizontal = 0;
 }
 
 void
-full_location_transform(x, y, type, location_flags, location_variation, facing_right, horizontal, donewsym)
+full_location_transform(x, y, type, location_flags, subtype, brokenglyph, floortype, facing_right, horizontal, donewsym)
 xchar x, y;
-int type;
+int type, subtype, brokenglyph, floortype;
 uchar location_flags;
-uchar location_variation;
-boolean facing_right;
-boolean horizontal;
-boolean donewsym;
+boolean facing_right, horizontal, donewsym;
 {
 	delete_location(x, y);
 	levl[x][y].typ = type;
 	levl[x][y].flags = location_flags;
-	levl[x][y].variation = location_variation;
+	levl[x][y].subtyp = subtype;
+	levl[x][y].brokenglyph = brokenglyph;
+	levl[x][y].floortyp = floortype;
 	levl[x][y].facing_right = facing_right;
 	levl[x][y].horizontal = horizontal;
 	maybe_create_location_light_and_sound_sources(x, y);
@@ -5590,19 +5599,40 @@ boolean donewsym;
 }
 
 void
-create_simple_location(x, y, type, location_flags, donewsym)
+create_simple_location(x, y, type, location_flags, subtype, brokenglyph, floortype, donewsym)
+xchar x, y;
+int type, subtype, brokenglyph, floortype;
+uchar location_flags;
+boolean donewsym;
+{
+	full_location_transform(x, y, type, location_flags, subtype, brokenglyph, floortype, FALSE, FALSE, donewsym);
+}
+
+void
+create_basic_floor_location(x, y, type, location_flags, donewsym)
 xchar x, y;
 int type;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, 0, 0, 0, FALSE, FALSE, donewsym);
 }
 
 void
-transform_location_type(x, y, type)
+create_broken_feature_floor_location(x, y, type, location_flags, subtype, brokenglyph, donewsym)
 xchar x, y;
-int type;
+int type, subtype, brokenglyph;
+uchar location_flags;
+boolean donewsym;
+{
+	full_location_transform(x, y, type, location_flags, subtype, brokenglyph, 0, FALSE, FALSE, donewsym);
+}
+
+
+void
+transform_location_type(x, y, type, subtype)
+xchar x, y;
+int type, subtype;
 {
 	/* First, only limited delete */
 	if (levl[x][y].typ == FOUNTAIN)
@@ -5622,7 +5652,15 @@ int type;
 	}
 
 	/* Then, change type */
+	if(IS_FLOOR(levl[x][y].typ) && !IS_FLOOR(type))
+		levl[x][y].floortyp = levl[x][y].typ;
+	else if (IS_FLOOR(type))
+		levl[x][y].floortyp = 0;
+
 	levl[x][y].typ = type;
+	levl[x][y].subtyp = subtype;
+	if(!IS_FLOOR(type))
+		levl[x][y].brokenglyph = 0;
 
 	maybe_create_location_light_and_sound_sources(x, y);
 	if (levl[x][y].typ == FOUNTAIN)
@@ -5632,13 +5670,24 @@ int type;
 }
 
 void
-transform_location_type_and_flags(x, y, type, location_flags)
+transform_location_type_and_flags(x, y, type, location_flags, subtype)
 xchar x, y;
-int type;
+int type, subtype;
 uchar location_flags;
 {
 	levl[x][y].flags = location_flags;
-	transform_location_type(x, y, type); /* Does not clear flags */
+	transform_location_type(x, y, type, subtype); /* Does not clear flags */
+}
+
+void
+transform_location_type_and_flags_and_set_broken(x, y, type, location_flags, subtype, brokenglyph)
+xchar x, y;
+int type, subtype, brokenglyph;
+uchar location_flags;
+{
+	levl[x][y].flags = location_flags;
+	levl[x][y].brokenglyph = brokenglyph;
+	transform_location_type(x, y, type, subtype); /* Does not clear flags nor brokentyp if floor */
 }
 
 /*do.c*/

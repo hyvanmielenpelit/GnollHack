@@ -1195,17 +1195,17 @@ do_positionbar()
     p = pbar;
     /* up stairway */
     if (upstair.sx
-        && (glyph_to_cmap(level.locations[upstair.sx][upstair.sy].hero_memory_layers.glyph)
+        && (generic_glyph_to_cmap(level.locations[upstair.sx][upstair.sy].hero_memory_layers.glyph)
                 == S_upstair
-            || glyph_to_cmap(level.locations[upstair.sx][upstair.sy].hero_memory_layers.glyph)
+            || generic_glyph_to_cmap(level.locations[upstair.sx][upstair.sy].hero_memory_layers.glyph)
                    == S_upladder)) {
         *p++ = '<';
         *p++ = upstair.sx;
     }
     if (sstairs.sx
-        && (glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
+        && (generic_glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
                 == S_upstair
-            || glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
+            || generic_glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
                    == S_upstair)) {
         *p++ = '<';
         *p++ = sstairs.sx;
@@ -1213,17 +1213,17 @@ do_positionbar()
 
     /* down stairway */
     if (dnstair.sx
-        && (glyph_to_cmap(level.locations[dnstair.sx][dnstair.sy].hero_memory_layers.glyph)
+        && (generic_glyph_to_cmap(level.locations[dnstair.sx][dnstair.sy].hero_memory_layers.glyph)
                 == S_dnstair
-            || glyph_to_cmap(level.locations[dnstair.sx][dnstair.sy].hero_memory_layers.glyph)
+            || generic_glyph_to_cmap(level.locations[dnstair.sx][dnstair.sy].hero_memory_layers.glyph)
                    == S_dnladder)) {
         *p++ = '>';
         *p++ = dnstair.sx;
     }
     if (sstairs.sx
-        && (glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
+        && (generic_glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
                 == S_branch_dnstair
-            || glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
+            || generic_glyph_to_cmap(level.locations[sstairs.sx][sstairs.sy].hero_memory_layers.glyph)
                    == S_extra_dnstair)) {
         *p++ = '>';
         *p++ = sstairs.sx;

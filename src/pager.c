@@ -529,7 +529,7 @@ char *buf, *monbuf;
         Strcpy(buf, "unexplored area");
     } 
 	else
-        switch (glyph_to_cmap(glyph))
+        switch (generic_glyph_to_cmap(glyph))
 		{
         case S_altar:
             Sprintf(buf, "%s %saltar",
@@ -580,7 +580,7 @@ char *buf, *monbuf;
             /*FALLTHRU*/
         default:
         {
-            //int cmap = glyph_to_cmap(glyph);
+            //int cmap = generic_glyph_to_cmap(glyph);
             strcpy(buf, get_cmap_or_cmap_variation_glyph_explanation(glyph)); // defsyms[cmap].explanation);
             break;
         }

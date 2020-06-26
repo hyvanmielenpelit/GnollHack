@@ -9,6 +9,7 @@
 enum layer_types
 {
     LAYER_FLOOR = 0,
+    LAYER_BROKEN_FEATURE,
     LAYER_FEATURE,
     LAYER_DOODAD,
     LAYER_TRAP,

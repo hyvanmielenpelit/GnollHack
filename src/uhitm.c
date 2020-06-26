@@ -4216,8 +4216,8 @@ struct monst *mtmp;
     } else {
         int glyph = levl[u.ux + u.dx][u.uy + u.dy].hero_memory_layers.glyph;
 
-        if (glyph_is_cmap_or_cmap_variation(glyph) && (glyph_to_cmap(glyph) == S_hcdoor
-                                     || glyph_to_cmap(glyph) == S_vcdoor))
+        if (glyph_is_cmap_or_cmap_variation(glyph) && (generic_glyph_to_cmap(glyph) == S_hcdoor
+                                     || generic_glyph_to_cmap(glyph) == S_vcdoor))
             fmt = "The door actually was %s!";
         else if (glyph_is_object(glyph) && glyph_to_obj(glyph) == GOLD_PIECE)
             fmt = "That gold was %s!";

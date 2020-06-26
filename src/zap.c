@@ -7675,7 +7675,7 @@ short exploding_wand_typ;
                     msgtxt = "Some water evaporates.";
             } else {
                 rangemod -= 3;
-                create_simple_location(x, y, ROOM, 0, FALSE);
+                create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, 0, FALSE);
                 t = maketrap(x, y, PIT, NON_PM, TRAP_NO_FLAGS);
                 if (t)
                     t->tseen = 1;
@@ -7792,7 +7792,7 @@ short exploding_wand_typ;
                 if (*in_rooms(x, y, SHOPBASE)) 
                 {
                     /* in case we ever have a shop bounded by bars */
-                    create_simple_location(x, y, ROOM, 0, FALSE);
+                    create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, 0, FALSE);
                     if (see_it)
                         newsym(x, y);
                     add_damage(x, y, (type >= 0) ? SHOP_BARS_COST : 0L);
@@ -7801,7 +7801,7 @@ short exploding_wand_typ;
                 }
                 else 
                 {
-                    transform_location_type_and_flags(x, y, DOOR, D_NODOOR);
+                    transform_location_type_and_flags(x, y, DOOR, D_NODOOR, 0);
                     //lev->typ = DOOR, lev->doormask = D_NODOOR;
                     if (see_it)
                         newsym(x, y);
@@ -7944,11 +7944,13 @@ short exploding_wand_typ;
             rangemod = -1000;
             struct mkroom* r = which_room(x, y);
             int ltype = 0;
-            if (r && r->orig_rtype == GARDEN)
+            if (levl[x][y].floortyp)
+                ltype = levl[x][y].floortyp;
+            else if (r && r->orig_rtype == GARDEN)
                 ltype = GRASS;
             else
                 ltype = ROOM;
-            create_simple_location(x, y, ltype, 0, FALSE);
+            create_simple_location(x, y, ltype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);
             if (cansee(x, y))

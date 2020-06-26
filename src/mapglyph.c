@@ -249,10 +249,14 @@ unsigned long *ospecial;
         idx = ((offset % MAX_EXPLOSION_CHARS) + S_explode1) + SYM_OFF_P;
         explode_color(offset / MAX_EXPLOSION_CHARS);
     }
-    else if ((offset = (glyph - GLYPH_CMAP_VARIATION_OFF)) >= 0 || (offset = (glyph - GLYPH_CMAP_OFF)) >= 0)
+    else if ((offset = (glyph - GLYPH_BROKEN_CMAP_VARIATION_OFF)) >= 0 
+            || (offset = (glyph - GLYPH_CMAP_VARIATION_OFF)) >= 0 
+            || (offset = (glyph - GLYPH_BROKEN_CMAP_OFF)) >= 0
+            || (offset = (glyph - GLYPH_CMAP_OFF)) >= 0
+            )
     { /* cmap */
         boolean is_variation = FALSE;
-        if ((glyph - GLYPH_CMAP_VARIATION_OFF) >= 0)
+        if ((glyph - GLYPH_BROKEN_CMAP_VARIATION_OFF) >= 0 || (glyph - GLYPH_CMAP_VARIATION_OFF) >= 0)
             is_variation = TRUE;
         int cmap_type_idx = 0;
         int cmap_offset = 0;
@@ -285,7 +289,8 @@ unsigned long *ospecial;
             else if (cmap_offset == S_corr || cmap_offset == S_litcorr)
                 color = CLR_GRAY;
             else if (cmap_offset >= S_room && cmap_offset <= S_water
-                     && cmap_offset != S_darkroom && cmap_offset != S_darkgrass)
+                     && cmap_offset != S_darkroom && cmap_offset != S_darkgrass && cmap_offset != S_darkground
+                )
                 color = CLR_GREEN;
             else
                 color = NO_COLOR;
@@ -302,13 +307,17 @@ unsigned long *ospecial;
         {
             /* Darken by changing the symbol */
             boolean symbol_darkened_by_change = FALSE;
-            boolean dark_exchangeable = (cmap_offset == S_room || cmap_offset == S_grass || cmap_offset == S_litcorr);
-            int dark_counterpart = (cmap_offset == S_litcorr ? S_corr : cmap_offset == S_room ? S_darkroom : cmap_offset == S_grass ? S_darkgrass : S_unexplored);
+            boolean dark_exchangeable = (cmap_offset == S_room
+                || cmap_offset == S_grass || cmap_offset == S_ground || cmap_offset == S_litcorr);
+            int dark_counterpart = (cmap_offset == S_litcorr ? S_corr 
+                : cmap_offset == S_room ? S_darkroom 
+                : cmap_offset == S_ground ? S_darkground
+                : cmap_offset == S_grass ? S_darkgrass : S_unexplored);
 
             if (dark_exchangeable &&
                 ((cmap_offset == S_litcorr && !flags.lit_corridor) || !cansee(x, y) || (layers.layer_flags & LFLAGS_SHOWING_MEMORY)))
             {
-                if ((cmap_offset == S_room || cmap_offset == S_grass) && !flags.dark_room)
+                if ((cmap_offset == S_room || cmap_offset == S_grass || cmap_offset == S_ground) && !flags.dark_room)
                 {
                     /* Nothing, keep as normal */
                 }
@@ -337,49 +346,6 @@ unsigned long *ospecial;
                         cmap_color(cmap_offset, flags.classic_colors ? 0 : cmap_type_idx);
                 }
             }
-
-#if 0
-            /* Darken by color change; used for variations */
-            if (!symbol_darkened_by_change && (cmap_offset == S_room || cmap_offset == S_grass))
-            {
-                if (!cansee(x,y)//levl[x][y].waslit == 0 
-                    || ((layers.layer_flags & LFLAGS_SHOWING_MEMORY) && flags.dark_room)
-                    )
-                {
-                    if (iflags.use_color && !Is_rogue_level(&u.uz))
-                    {
-                        if (color == CLR_WHITE)
-                            color = CLR_GRAY;
-                        else
-                            color = CLR_BLACK;
-
-                    }
-                    else
-                    {
-                        is_variation = 0;
-                        variation_index = 0;
-                        cmap_offset = S_unexplored;
-                        idx = cmap_offset + SYM_OFF_P;
-                        color = CLR_GRAY;
-                    }
-
-                }
-            }
-            else if (!symbol_darkened_by_change && cmap_offset == S_litcorr && !Is_rogue_level(&u.uz)) /* Rogue level colors set earlier */
-            {
-                if (!flags.lit_corridor || !cansee(x, y) || (layers.layer_flags & LFLAGS_SHOWING_MEMORY))
-                {
-                    if (iflags.use_color)
-                    {
-                        cmap_color(S_corr, flags.classic_colors ? 0 : cmap_type_idx);
-                    }
-                    else
-                    {
-                        /* Do nothing? */
-                    }
-                }
-            }
-#endif
         }
     } 
     else if ((offset = (glyph - GLYPH_OBJ_MISSILE_OFF)) >= 0 

@@ -1301,7 +1301,7 @@ register int x, y;
     /* Secret corridors are found, but not secret doors. */
     if (lev->typ == SCORR) 
     {
-        transform_location_type(x, y, CORR);
+        transform_location_type(x, y, CORR, 0);
         unblock_vision_and_hearing_at_point(x, y);
     }
 
@@ -1510,7 +1510,7 @@ int x, y;
         if (!(newmask & D_LOCKED))
         newmask |= D_CLOSED;
 
-    transform_location_type_and_flags(x, y, DOOR, newmask);
+    transform_location_type_and_flags(x, y, DOOR, newmask, 0);
 }
 
 STATIC_PTR void
@@ -2010,13 +2010,6 @@ int default_glyph, which_subset;
             }
         }
     }
-
-#if 0
-    if (glyph == cmap_to_glyph(S_darkroom))
-        glyph = cmap_to_glyph(S_room); /* FIXME: dirty hack */
-    else if (glyph == cmap_to_glyph(S_darkgrass))
-        glyph = cmap_to_glyph(S_grass); /* FIXME: dirty hack */
-#endif
 
     return glyph;
 }

@@ -562,7 +562,7 @@ register struct obj *obj;
         return res;
     case SCORR:
         You_hear(hollow_str, "passage");
-        create_simple_location(rx, ry, CORR, 0, FALSE);
+        create_basic_floor_location(rx, ry, CORR, 0, FALSE);
         unblock_vision_and_hearing_at_point(rx, ry);
         feel_newsym(rx, ry);
         return res;

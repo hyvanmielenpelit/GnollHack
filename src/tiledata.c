@@ -935,153 +935,13 @@ uchar* tilemapflags;
     }
 
     /* CMAP tiles */
-    tile_section_name = "cmap";
-    int num_cmaps = (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps));
-
-    for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
+    for (int spset = 0; spset <= 1; spset++)
     {
-        char namebuf[BUFSZ];
-        if (tsd->cmap_names[cmap_idx] && strcmp(tsd->cmap_names[cmap_idx], ""))
-            Sprintf(namebuf, "%s", tsd->cmap_names[cmap_idx]);
-        else
-            Sprintf(namebuf, "unnamed-cmap-%d", cmap_idx);
-
-        for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
-        {
-            if (cmap_idx > 0)
-            {
-                if (tsd->cmap_limitation_style[cmap_idx] == 1 && (i < S_vwall || i > S_trwall))
-                    continue;
-                if (tsd->cmap_limitation_style[cmap_idx] == 2 && (i < S_stone || i > S_dnladder))
-                    continue;
-            }
-
-            if (tsd->cmap_wall_style[cmap_idx] == 1 && (i < S_vwall || i > S_hwall))
-                continue;
-
-            if (process_style == 0)
-            {
-                Sprintf(buf, "%s,%s,%s,%s", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i),
-                    (defsyms[i].explanation && strcmp(defsyms[i].explanation, "")) ? defsyms[i].explanation : "no description");
-                if (defsyms[i].enlargement[cmap_idx] > 0)
-                    Sprintf(eos(buf), ",%d,%d,%d", enlargements[defsyms[i].enlargement[cmap_idx]].width_in_tiles, enlargements[defsyms[i].enlargement[cmap_idx]].height_in_tiles, enlargements[defsyms[i].enlargement[cmap_idx]].main_tile_x_coordinate);
-                else
-                    Sprintf(eos(buf), ",1,1,0");
-                Sprintf(eos(buf), "\n");
-                (void)write(fd, buf, strlen(buf));
-            }
-            else if (process_style == 1)
-            {
-                if (tsd->has_full_cmap_set)
-                {
-                    glyph_offset = GLYPH_CMAP_OFF + cmap_idx * CMAP_TYPE_CHAR_NUM;
-                    tilemaparray[i + glyph_offset] = tile_count;
-                    if (i == S_extra_boulder)
-                    {
-                        if(objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
-                            tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
-                    }
-
-                    /* Copy 2 simple wall tile to all other relevant tiles */
-                    if (tsd->cmap_wall_style[cmap_idx] == 1 )
-                    {
-                        /* vwall is copied to everywhere else except hwall, and tile replacement changes it to look like hwall where relevant */
-                        if (i == S_vwall)
-                        {
-                            for (int j = S_tlcorn; j <= S_trwall; j++)
-                            {
-                                tilemaparray[j + glyph_offset] = tile_count;
-                            }
-                        }
-                    }
-
-                    if (!tsd->has_variations && defsyms[i].variations > 0)
-                    {
-                        for (int m = 0; m < defsyms[i].variations; m++)
-                        {
-                            glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
-                            tilemaparray[m + defsyms[i].variation_offset+ glyph_offset] = tile_count;
-                        }
-                    }
-                }
-                else
-                {
-                    /* Go through all internal cmaps */
-                    for (int k = 0; k < CMAP_TYPE_MAX; k++)
-                    {
-                        /* Write this cmap_idx for all internal CMAPs it is used for */
-                        if (tsd->cmap_mapping[k] == cmap_idx)
-                        {
-                            glyph_offset = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
-                            tilemaparray[i + glyph_offset] = tile_count;
-                            if (i == S_extra_boulder)
-                            {
-                                if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
-                                    tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
-                            }
-
-                            /* Copy 2 simple wall tile to all other relevant tiles */
-                            if (tsd->cmap_wall_style[k] == 1)
-                            {
-                                if (i == S_vwall)
-                                {
-                                    for (int j = S_tlcorn; j <= S_trwall; j++)
-                                    {
-                                        tilemaparray[j + glyph_offset] = tile_count;
-                                    }
-                                }
-                            }
-
-                            if (!tsd->has_variations && defsyms[i].variations > 0)
-                            {
-                                for (int m = 0; m < defsyms[i].variations; m++)
-                                {
-                                    glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
-                                    tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (cmap_idx == 0 && num_cmaps > 1)
-                {
-                    /* copy an out-limited tiles to all limited cmaps */
-                    for (int k = 1; k < num_cmaps; k++)
-                    {
-                        if (
-                            (tsd->cmap_limitation_style[k] == 1 && (i < S_vwall || i > S_trwall))
-                            || (tsd->cmap_limitation_style[k] == 2 && (i < S_stone || i > S_dnladder))
-                            )
-                        {
-                            int glyph_offset2 = GLYPH_CMAP_OFF + k * CMAP_TYPE_CHAR_NUM;
-                            tilemaparray[i + glyph_offset2] = tile_count;
-                            if (i == S_extra_boulder)
-                            {
-                                if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
-                                    tilemapflags[i + glyph_offset2] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
-                            }
-                            if (!tsd->has_variations && defsyms[i].variations > 0)
-                            {
-                                for (int m = 0; m < defsyms[i].variations; m++)
-                                {
-                                    glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
-                                    tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            tile_count++;
-        }
-    }
-
-    if (tsd->has_variations)
-    {
-        /* CMAP variation tiles */
-        tile_section_name = "cmap-variations";
+        tile_section_name = (spset == 0 ? "cmap" : "broken-cmap");
+        int base_glyph_offset = (spset == 0 ? GLYPH_CMAP_OFF : GLYPH_BROKEN_CMAP_OFF);
+        int base_variation_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
         int num_cmaps = (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps));
+
         for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
         {
             char namebuf[BUFSZ];
@@ -1090,22 +950,29 @@ uchar* tilemapflags;
             else
                 Sprintf(namebuf, "unnamed-cmap-%d", cmap_idx);
 
-            for (int i = 0; i < MAX_VARIATIONS; i++)
+            for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
             {
                 if (cmap_idx > 0)
                 {
-                    if (tsd->cmap_limitation_style[cmap_idx] == 1 && !is_wall_variation(i))
+                    if (tsd->cmap_limitation_style[cmap_idx] == 1 && (i < S_vwall || i > S_trwall))
                         continue;
-                    if (tsd->cmap_limitation_style[cmap_idx] == 2 && !is_base_cmap_variation(i))
+                    if (tsd->cmap_limitation_style[cmap_idx] == 2 && (i < S_stone || i > S_dnladder))
                         continue;
                 }
 
+                if (tsd->cmap_wall_style[cmap_idx] == 1 && (i < S_vwall || i > S_hwall))
+                    continue;
+
+                if (spset == 1 && defsyms[i].has_broken_tile == FALSE)
+                    continue;
+
                 if (process_style == 0)
                 {
-                    Sprintf(buf, "%s,%s,%s", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf,
-                        (defsym_variations[i].variation_name && strcmp(defsym_variations[i].variation_name, "")) ? defsym_variations[i].variation_name : "no-variation-name");
-                    if (defsym_variations[i].enlargement[cmap_idx] > 0)
-                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[defsym_variations[i].enlargement[cmap_idx]].width_in_tiles, enlargements[defsym_variations[i].enlargement[cmap_idx]].height_in_tiles, enlargements[defsym_variations[i].enlargement[cmap_idx]].main_tile_x_coordinate);
+                    Sprintf(buf, "%s,%s,%s,%s", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf, get_cmap_tilename(i),
+                        (defsyms[i].explanation && strcmp(defsyms[i].explanation, "")) ? defsyms[i].explanation : "no description");
+                    int enl_idx = (spset == 0 ? defsyms[i].enlargement[cmap_idx] : defsyms[i].broken_enlargement[cmap_idx]);
+                    if (enl_idx > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl_idx].width_in_tiles, enlargements[enl_idx].height_in_tiles, enlargements[enl_idx].main_tile_x_coordinate);
                     else
                         Sprintf(eos(buf), ",1,1,0");
                     Sprintf(eos(buf), "\n");
@@ -1115,8 +982,35 @@ uchar* tilemapflags;
                 {
                     if (tsd->has_full_cmap_set)
                     {
-                        glyph_offset = GLYPH_CMAP_VARIATION_OFF + cmap_idx * MAX_VARIATIONS;
+                        glyph_offset = base_glyph_offset + cmap_idx * CMAP_TYPE_CHAR_NUM;
                         tilemaparray[i + glyph_offset] = tile_count;
+                        if (i == S_extra_boulder)
+                        {
+                            if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                                tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                        }
+
+                        /* Copy 2 simple wall tile to all other relevant tiles */
+                        if (tsd->cmap_wall_style[cmap_idx] == 1)
+                        {
+                            /* vwall is copied to everywhere else except hwall, and tile replacement changes it to look like hwall where relevant */
+                            if (i == S_vwall)
+                            {
+                                for (int j = S_tlcorn; j <= S_trwall; j++)
+                                {
+                                    tilemaparray[j + glyph_offset] = tile_count;
+                                }
+                            }
+                        }
+
+                        if (!tsd->has_variations && defsyms[i].variations > 0)
+                        {
+                            for (int m = 0; m < defsyms[i].variations; m++)
+                            {
+                                glyph_offset = base_variation_glyph_offset + cmap_idx * MAX_VARIATIONS;
+                                tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
+                            }
+                        }
                     }
                     else
                     {
@@ -1126,25 +1020,63 @@ uchar* tilemapflags;
                             /* Write this cmap_idx for all internal CMAPs it is used for */
                             if (tsd->cmap_mapping[k] == cmap_idx)
                             {
-                                glyph_offset = GLYPH_CMAP_VARIATION_OFF + k * MAX_VARIATIONS;
+                                glyph_offset = base_glyph_offset + k * CMAP_TYPE_CHAR_NUM;
                                 tilemaparray[i + glyph_offset] = tile_count;
+                                if (i == S_extra_boulder)
+                                {
+                                    if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                                        tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                                }
+
+                                /* Copy 2 simple wall tile to all other relevant tiles */
+                                if (tsd->cmap_wall_style[k] == 1)
+                                {
+                                    if (i == S_vwall)
+                                    {
+                                        for (int j = S_tlcorn; j <= S_trwall; j++)
+                                        {
+                                            tilemaparray[j + glyph_offset] = tile_count;
+                                        }
+                                    }
+                                }
+
+                                if (!tsd->has_variations && defsyms[i].variations > 0)
+                                {
+                                    for (int m = 0; m < defsyms[i].variations; m++)
+                                    {
+                                        glyph_offset = base_variation_glyph_offset + cmap_idx * MAX_VARIATIONS;
+                                        tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
+                                    }
+                                }
                             }
                         }
                     }
 
-                    
                     if (cmap_idx == 0 && num_cmaps > 1)
                     {
-                        /* copy an out-limited tile to all limited cmaps */
+                        /* copy an out-limited tiles to all limited cmaps */
                         for (int k = 1; k < num_cmaps; k++)
                         {
                             if (
-                                (tsd->cmap_limitation_style[k] == 1 && !is_wall_variation(i))
-                                || (tsd->cmap_limitation_style[k] == 2 && !is_base_cmap_variation(i))
+                                (tsd->cmap_limitation_style[k] == 1 && (i < S_vwall || i > S_trwall))
+                                || (tsd->cmap_limitation_style[k] == 2 && (i < S_stone || i > S_dnladder))
                                 )
                             {
-                                int glyph_offset2 = GLYPH_CMAP_VARIATION_OFF + k * MAX_VARIATIONS;
+                                int glyph_offset2 = base_glyph_offset + k * CMAP_TYPE_CHAR_NUM;
                                 tilemaparray[i + glyph_offset2] = tile_count;
+                                if (i == S_extra_boulder)
+                                {
+                                    if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                                        tilemapflags[i + glyph_offset2] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                                }
+                                if (!tsd->has_variations && defsyms[i].variations > 0)
+                                {
+                                    for (int m = 0; m < defsyms[i].variations; m++)
+                                    {
+                                        glyph_offset = base_variation_glyph_offset + cmap_idx * MAX_VARIATIONS;
+                                        tilemaparray[m + defsyms[i].variation_offset + glyph_offset] = tile_count;
+                                    }
+                                }
                             }
                         }
                     }
@@ -1154,6 +1086,90 @@ uchar* tilemapflags;
         }
     }
 
+    if (tsd->has_variations)
+    {
+        /* CMAP variation tiles */
+        for (int spset = 0; spset <= 1; spset++)
+        {
+            tile_section_name = (spset == 0 ? "cmap-variation" : "broken-cmap-variation");
+            int base_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
+            int num_cmaps = (tsd->has_full_cmap_set ? CMAP_TYPE_MAX : max(1, tsd->number_of_cmaps));
+            for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
+            {
+                char namebuf[BUFSZ];
+                if (tsd->cmap_names[cmap_idx] && strcmp(tsd->cmap_names[cmap_idx], ""))
+                    Sprintf(namebuf, "%s", tsd->cmap_names[cmap_idx]);
+                else
+                    Sprintf(namebuf, "unnamed-cmap-%d", cmap_idx);
+
+                for (int i = 0; i < MAX_VARIATIONS; i++)
+                {
+                    if (cmap_idx > 0)
+                    {
+                        if (tsd->cmap_limitation_style[cmap_idx] == 1 && !is_wall_variation(i))
+                            continue;
+                        if (tsd->cmap_limitation_style[cmap_idx] == 2 && !is_base_cmap_variation(i))
+                            continue;
+                    }
+
+                    if (spset == 1 && defsym_variations[i].has_broken_tile == FALSE)
+                        continue;
+
+                    if (process_style == 0)
+                    {
+                        Sprintf(buf, "%s,%s,%s", tile_section_name, tsd->has_full_cmap_set ? cmap_type_names[cmap_idx] : namebuf,
+                            (defsym_variations[i].variation_name && strcmp(defsym_variations[i].variation_name, "")) ? defsym_variations[i].variation_name : "no-variation-name");
+                        int enl_idx = (spset == 0 ? defsym_variations[i].enlargement[cmap_idx] : defsym_variations[i].broken_enlargement[cmap_idx]);
+                        if (enl_idx > 0)
+                            Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl_idx].width_in_tiles, enlargements[enl_idx].height_in_tiles, enlargements[enl_idx].main_tile_x_coordinate);
+                        else
+                            Sprintf(eos(buf), ",1,1,0");
+                        Sprintf(eos(buf), "\n");
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                    else if (process_style == 1)
+                    {
+                        if (tsd->has_full_cmap_set)
+                        {
+                            glyph_offset = base_glyph_offset + cmap_idx * MAX_VARIATIONS;
+                            tilemaparray[i + glyph_offset] = tile_count;
+                        }
+                        else
+                        {
+                            /* Go through all internal cmaps */
+                            for (int k = 0; k < CMAP_TYPE_MAX; k++)
+                            {
+                                /* Write this cmap_idx for all internal CMAPs it is used for */
+                                if (tsd->cmap_mapping[k] == cmap_idx)
+                                {
+                                    glyph_offset = base_glyph_offset + k * MAX_VARIATIONS;
+                                    tilemaparray[i + glyph_offset] = tile_count;
+                                }
+                            }
+                        }
+
+
+                        if (cmap_idx == 0 && num_cmaps > 1)
+                        {
+                            /* copy an out-limited tile to all limited cmaps */
+                            for (int k = 1; k < num_cmaps; k++)
+                            {
+                                if (
+                                    (tsd->cmap_limitation_style[k] == 1 && !is_wall_variation(i))
+                                    || (tsd->cmap_limitation_style[k] == 2 && !is_base_cmap_variation(i))
+                                    )
+                                {
+                                    int glyph_offset2 = base_glyph_offset + k * MAX_VARIATIONS;
+                                    tilemaparray[i + glyph_offset2] = tile_count;
+                                }
+                            }
+                        }
+                    }
+                    tile_count++;
+                }
+            }
+        }
+    }
 
     /* Miscellaneous tiles */
     tile_section_name = "misc";
@@ -2376,6 +2392,12 @@ uchar* tilemapflags;
                     short tile = glyph2tile[glyph];
                     tile2replacement[tile] = defsyms[i].replacement[cmap_type_idx];
                 }
+                if (defsyms[i].broken_replacement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_BROKEN_CMAP_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2replacement[tile] = defsyms[i].broken_replacement[cmap_type_idx];
+                }
             }
         }
 
@@ -2389,6 +2411,12 @@ uchar* tilemapflags;
                     int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF;
                     short tile = glyph2tile[glyph];
                     tile2replacement[tile] = defsym_variations[i].replacement[cmap_type_idx];
+                }
+                if (defsym_variations[i].broken_replacement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2replacement[tile] = defsym_variations[i].broken_replacement[cmap_type_idx];
                 }
             }
         }
@@ -2531,6 +2559,12 @@ uchar* tilemapflags;
                     short tile = glyph2tile[glyph];
                     tile2animation[tile] = defsyms[i].stand_animation[cmap_type_idx];
                 }
+                if (defsyms[i].broken_animation[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_BROKEN_CMAP_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = defsyms[i].broken_animation[cmap_type_idx];
+                }
             }
         }
 
@@ -2544,6 +2578,12 @@ uchar* tilemapflags;
                     int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF;
                     short tile = glyph2tile[glyph];
                     tile2animation[tile] = defsym_variations[i].stand_animation[cmap_type_idx];
+                }
+                if (defsym_variations[i].broken_animation[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = defsym_variations[i].broken_animation[cmap_type_idx];
                 }
             }
         }
@@ -2700,6 +2740,12 @@ uchar* tilemapflags;
                     short tile = glyph2tile[glyph];
                     tile2enlargement[tile] = defsyms[i].enlargement[cmap_type_idx];
                 }
+                if (defsyms[i].broken_enlargement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_BROKEN_CMAP_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2enlargement[tile] = defsyms[i].broken_enlargement[cmap_type_idx];
+                }
             }
         }
 
@@ -2713,6 +2759,12 @@ uchar* tilemapflags;
                     int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF;
                     short tile = glyph2tile[glyph];
                     tile2enlargement[tile] = defsym_variations[i].enlargement[cmap_type_idx];
+                }
+                if (defsym_variations[i].broken_enlargement[cmap_type_idx])
+                {
+                    int glyph = i + cmap_type_idx * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2enlargement[tile] = defsym_variations[i].broken_enlargement[cmap_type_idx];
                 }
             }
         }

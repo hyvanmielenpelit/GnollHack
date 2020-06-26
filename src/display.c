@@ -134,6 +134,8 @@ STATIC_DCL int FDECL(check_pos, (int, int, int));
 STATIC_DCL int FDECL(get_object_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
+STATIC_DCL int FDECL(get_broken_layer_glyph, (XCHAR_P, XCHAR_P));
+STATIC_DCL int FDECL(get_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(tether_glyph, (int, int));
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
@@ -193,38 +195,6 @@ int show;
 
     map_background(x, y, show);
 
-#if 0
-    /*
-     * Correct for out of sight lit corridors and rooms that the hero
-     * doesn't remember as lit.
-     */
-    int glyph = NO_GLYPH;
-    if (!cansee(x, y) && !lev->waslit)
-    {
-            /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
-        if (lev->typ == ROOM && glyph == cmap_to_glyph(S_room))
-            glyph = cmap_to_glyph((flags.dark_room && iflags.use_color) ? DARKROOMSYM : S_unexplored);
-        else if (lev->typ == GRASS && glyph == cmap_to_glyph(S_grass))
-            glyph = cmap_to_glyph((flags.dark_room && iflags.use_color) ? DARKGRASSSYM : S_unexplored);
-        else if (lev->typ == CORR && glyph == cmap_to_glyph(S_litcorr))
-            glyph = cmap_to_glyph(S_corr);
-    }
-
-    if (glyph != NO_GLYPH)
-    {
-        if (level.flags.hero_memory)
-        {
-            lev->hero_memory_layers.glyph = glyph;
-            lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = glyph;
-        }
-
-        if (show)
-        {
-            show_glyph_on_layer_and_ascii(x, y, glyph, LAYER_FLOOR);
-        }
-    }
-#endif
-
     remember_topology(x, y);
 }
 
@@ -256,9 +226,11 @@ register int show;
 {
     register int glyph = back_to_glyph(x, y);
 
-    int symbol_index = glyph_to_cmap(glyph);
+    int symbol_index = generic_glyph_to_cmap(glyph);
     int new_floor_glyph = NO_GLYPH;
+    int new_broken_glyph = get_broken_layer_glyph(x, y);
     int new_feature_glyph = NO_GLYPH;
+    int new_doodad_glyph = get_doodad_layer_glyph(x, y);
     int new_cover_feature_glyph = NO_GLYPH;
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
@@ -286,21 +258,29 @@ register int show;
     {
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_BROKEN_FEATURE] = new_broken_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_DOODAD] = new_doodad_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
     }
 
     if (show)
     {
         int floor_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR];
+        int broken_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_BROKEN_FEATURE];
         int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
+        int doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD];
         int cover_feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE];
         unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_BROKEN_FEATURE] = new_broken_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = new_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
 
-        if (floor_glyph_before != new_floor_glyph || feature_glyph_before != new_feature_glyph || cover_feature_glyph_before != new_cover_feature_glyph)
+        if (floor_glyph_before != new_floor_glyph || broken_glyph_before != new_broken_glyph 
+            || feature_glyph_before != new_feature_glyph || doodad_glyph_before != new_doodad_glyph 
+            || cover_feature_glyph_before != new_cover_feature_glyph)
         {
             gbuf[y][x].new = 1;
             if (gbuf_start[y] > x)
@@ -834,7 +814,7 @@ xchar x, y;
             if (lev->hero_memory_layers.glyph == objnum_to_glyph(BOULDER)
                 || glyph_is_invisible(lev->hero_memory_layers.glyph))
             {
-                if (lev->typ != ROOM && lev->typ != GRASS && lev->seenv)
+                if (lev->typ != ROOM && lev->typ != GRASS && lev->typ != GROUND && lev->seenv)
                     map_background(x, y, 1);
                 else
                     do_room_glyph = TRUE;
@@ -848,7 +828,11 @@ xchar x, y;
             {
                 do_room_glyph = TRUE;
                 litsym = S_grass;
-                //darksym = S_darkgrass;
+            }
+            else if (lev->hero_memory_layers.glyph == cmap_to_glyph(S_ground))
+            {
+                do_room_glyph = TRUE;
+                litsym = S_ground;
             }
 
             if (do_room_glyph) 
@@ -866,34 +850,6 @@ xchar x, y;
             /* We feel it (I think hallways are the only things left). */
             map_background(x, y, 1);
 
-#if 0
-            /* Corridors are never felt as lit (unless remembered that way) */
-            /* (lit_corridor only).                                         */
-            if (lev->typ == CORR && lev->hero_memory_layers.glyph == cmap_to_glyph(S_litcorr)
-                && !lev->waslit)
-            {
-                int new_glyph = cmap_to_glyph(S_corr);
-                lev->hero_memory_layers.glyph = new_glyph;
-                lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
-            }
-            else if (lev->typ == ROOM && lev->hero_memory_layers.glyph == cmap_to_glyph(S_room)
-                && flags.dark_room && iflags.use_color)
-            {
-                int new_glyph = cmap_to_glyph(S_darkroom);
-                lev->hero_memory_layers.glyph = new_glyph;
-                lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
-            }
-            else if (lev->typ == GRASS && lev->hero_memory_layers.glyph == cmap_to_glyph(S_grass)
-                && flags.dark_room && iflags.use_color)
-            {
-                int new_glyph = cmap_to_glyph(S_darkgrass);
-                lev->hero_memory_layers.glyph = new_glyph;
-                lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
-            }
-#endif
         }
 
         if (IS_DOOR(lev->typ))
@@ -943,34 +899,6 @@ xchar x, y;
                     u.bc_felt &= ~BC_BALL; /* do not feel the ball */
             }
         }
-
-#if 0
-        /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
-        if (lev->typ == ROOM && lev->hero_memory_layers.glyph == cmap_to_glyph(S_room))
-        {
-            int new_glyph = cmap_to_glyph(flags.dark_room ? S_darkroom : S_unexplored);
-            lev->hero_memory_layers.glyph = new_glyph;
-            lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-            show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
-        }
-        else if (lev->typ == GRASS && lev->hero_memory_layers.glyph == cmap_to_glyph(S_grass)
-            && (!lev->waslit || (flags.dark_room && iflags.use_color)))
-        {
-            int new_glyph = cmap_to_glyph(flags.dark_room ? S_darkgrass : S_unexplored);
-            lev->hero_memory_layers.glyph = new_glyph;
-            lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-            show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
-        }
-        else if (lev->typ == CORR && lev->hero_memory_layers.glyph == cmap_to_glyph(S_litcorr)
-            && !lev->waslit)
-        {
-            int new_glyph = cmap_to_glyph(S_corr);
-            lev->hero_memory_layers.glyph = new_glyph;
-            lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-            show_glyph_on_layer_and_ascii(x, y, new_glyph, LAYER_FLOOR);
-        }
-#endif
-
     }
 
     /* Monster layer */
@@ -1241,79 +1169,6 @@ int damage_shown;
         }
         else
         {
-#if 0
-            /*
-             * If the location is remembered as being both dark (waslit is false)
-             * and lit (glyph is a lit room or lit corridor) then it was either:
-             *
-             *      (1) A dark location that the hero could see through night
-             *          vision.
-             *      (2) Darkened while out of the hero's sight.  This can happen
-             *          when cursed scroll of light is read.
-             *
-             * In either case, we have to manually correct the hero's memory to
-             * match waslit.  Deciding when to change waslit is non-trivial.
-             *
-             *  Note:  If flags.lit_corridor is set, then corridors act like room
-             *         squares.  That is, they light up if in night vision range.
-             *         If flags.lit_corridor is not set, then corridors will
-             *         remain dark unless lit by a light spell and may darken
-             *         again, as discussed above.
-             *
-             * These checks and changes must be here and not in back_to_glyph().
-             * They are dependent on the position being out of sight.
-             */
-
-
-            boolean onroguelev = Is_rogue_level(&u.uz);
-            /* CORRECT FIRST HERO MEMORY TO SHOW UNLIT IF NOT SEEN */
-            if (!lev->waslit || (flags.dark_room && iflags.use_color))
-            {
-                if (lev->typ == CORR)
-                {
-                    int new_glyph = cmap_to_glyph(S_corr);
-                    if(lev->hero_memory_layers.glyph == cmap_to_glyph(S_litcorr))
-                        lev->hero_memory_layers.glyph = new_glyph;
-                    if(lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] == cmap_to_glyph(S_litcorr))
-                        lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                }
-                else if (lev->typ == ROOM)
-                {
-                    int new_glyph = onroguelev ? cmap_to_glyph(S_unexplored) : cmap_to_glyph(DARKROOMSYM);
-                    if(lev->hero_memory_layers.glyph == cmap_to_glyph(S_room))
-                        lev->hero_memory_layers.glyph = new_glyph;
-                    if(lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] == cmap_to_glyph(S_room))
-                        lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                }
-                else if (lev->typ == GRASS)
-                {
-                    int new_glyph = onroguelev ? cmap_to_glyph(S_unexplored) : cmap_to_glyph(DARKGRASSSYM);
-                    if(lev->hero_memory_layers.glyph == cmap_to_glyph(S_grass))
-                        lev->hero_memory_layers.glyph = new_glyph;
-                    if(lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] == cmap_to_glyph(S_grass))
-                        lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                }
-            }
-
-            if (onroguelev)
-            {
-                if (lev->typ == CORR)
-                {
-                    if(lev->hero_memory_layers.glyph == cmap_to_glyph(S_litcorr))
-                        lev->hero_memory_layers.layer_flags |= LFLAGS_DARKEN;
-                }
-                else if (!lev->waslit && (lev->typ == GRASS || lev->typ == GRASS))
-                {
-                    int old_glyph = lev->typ == GRASS ? cmap_to_glyph(S_grass) : cmap_to_glyph(S_room);
-                    int new_glyph = cmap_to_glyph(S_unexplored);
-                    if (lev->hero_memory_layers.glyph == old_glyph)
-                        lev->hero_memory_layers.glyph = new_glyph;
-                    if (lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] == old_glyph)
-                        lev->hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_glyph;
-                }
-            }
-#endif
-
             /*** Show memory from floor to cover layer ***/
             /* Ascii */
             show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
@@ -2335,7 +2190,7 @@ boolean remove;
     {
         if (glyph_is_cmap_or_cmap_variation(glyph))
         {
-            int cmap_idx = glyph_to_cmap(glyph);
+            int cmap_idx = generic_glyph_to_cmap(glyph);
             gbuf[y][x].layers.layer_glyphs[defsyms[cmap_idx].layer] = remove ? NO_GLYPH : glyph;
             gbuf[y][x].layers.layer_flags &= LFLAGS_CMAP_MASK;
         }
@@ -2441,11 +2296,17 @@ int x, y, glyph;
         } else if (glyph >= GLYPH_EXPLODE_OFF) { /* explosion */
             text = "explosion";
             offset = glyph - GLYPH_EXPLODE_OFF;
+        } else if (glyph >= GLYPH_BROKEN_CMAP_VARIATION_OFF) { /* broken cmap variation */
+            text = "broken cmap variation";
+            offset = glyph - GLYPH_BROKEN_CMAP_VARIATION_OFF;
         } else if (glyph >= GLYPH_CMAP_VARIATION_OFF) { /* cmap variation */
             text = "cmap variation";
             offset = glyph - GLYPH_CMAP_VARIATION_OFF;
+        } else if (glyph >= GLYPH_BROKEN_CMAP_OFF) { /* broken cmap */
+            text = "broken cmap index";
+            offset = glyph - GLYPH_BROKEN_CMAP_OFF;
         } else if (glyph >= GLYPH_CMAP_OFF) { /* cmap */
-            text = "cmap_index";
+            text = "cmap index";
             offset = glyph - GLYPH_CMAP_OFF;
         } else if (glyph >= GLYPH_OBJ_MISSILE_OFF) { /* object as missile */
             text = "object missile";
@@ -2639,47 +2500,25 @@ xchar x, y;
     stone_here:
         {
             idx = S_stone;
-            uchar var_idx = ptr->variation;
-            if (var_idx > 0)
-            {
-                is_variation = TRUE;
-                int sym_idx = idx;
-                int var_offset = defsyms[sym_idx].variation_offset;
-                idx = var_offset + (int)var_idx - 1;
-            }
-#if 0
-            int below_y = y + 1;
-            if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED || (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0)
-                idx = S_stone;
-            else
-            {
-                is_variation = TRUE;
-                int var_idx = STONE_BOTTOM_END;
-                int sym_idx = S_stone;
-                int var_offset = defsyms[sym_idx].variation_offset;
-                idx = var_offset + var_idx;
-            }
-#endif
         }
     }
     break;
     case ROOM:
         idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKROOMSYM: */ S_room;
 
-        if (ptr->variation > 0)
+        if (ptr->subtyp > 0)
         {
-            is_variation = TRUE;
-            int var_idx = min(ptr->variation, FLOOR_VARIATIONS) - 1;
-            int sym_idx = idx;
-            int var_offset = defsyms[sym_idx].variation_offset;
-            idx = var_offset + var_idx;
+            /* change appearance ? */
         }
 
         break;
 	case GRASS:
         idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
         break;
-	case CORR:
+    case GROUND:
+        idx = S_ground;
+        break;
+    case CORR:
         idx = /* (ptr->waslit || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
         break;
     case HWALL:
@@ -2694,14 +2533,6 @@ xchar x, y;
         hwall_here:
             {
                 /* Code selecting a variation */
-                uchar var_idx = ptr->variation;
-                if (var_idx > 0)
-                {
-                    is_variation = TRUE;
-                    int sym_idx = idx;
-                    int var_offset = defsyms[sym_idx].variation_offset;
-                    idx = var_offset + (int)var_idx - 1;
-                }
             }
         }
         else
@@ -2997,65 +2828,6 @@ xchar x, y;
     else
         return back_to_glyph(x, y);
 
-#if 0
-  int idx = S_room, bkglyph = NO_GLYPH;
-  struct rm *lev = &levl[x][y];
-
-       switch (lev->typ) {
-        case UNEXPLORED:
-            idx = level.flags.arboreal ? S_tree : S_unexplored;
-            break;
-        case SCORR:
-        case STONE:
-            idx = S_stone;
-            break;
-        case ROOM:
-           idx = S_room;
-           break;
-		case GRASS:
-			idx = S_grass;
-			break;
-		case CORR:
-           idx = (lev->waslit || flags.lit_corridor) ? S_litcorr : S_corr;
-           break;
-        case ICE:
-           idx = S_ice;
-           break;
-        case AIR:
-           idx = S_air;
-           break;
-        case CLOUD:
-           idx = S_cloud;
-           break;
-        case POOL:
-        case MOAT:
-           idx = S_pool;
-           break;
-        case WATER:
-           idx = S_water;
-           break;
-        case LAVAPOOL:
-           idx = S_lava;
-           break;
-        default:
-           idx = S_room;
-           break;
-        }
-
-        if (!cansee(x, y) && (!lev->waslit || flags.dark_room)) {
-            /* Floor spaces are dark if unlit.  Corridors are dark if unlit. */
-            if (lev->typ == CORR && idx == S_litcorr)
-                idx = S_corr;
-            else if (idx == S_room)
-                idx = (flags.dark_room && iflags.use_color)
-                         ? DARKROOMSYM : S_unexplored;
-        }
-
-        //if (idx != S_room)
-        bkglyph = cmap_to_glyph(idx);
-        }
-    return bkglyph;
-#endif
 }
 
 /* Floor layer glyph for possibly transparent feature layer glyphs, actual opaque floor layer level location types return NO_GLYPH  */
@@ -3067,6 +2839,12 @@ xchar x, y;
     struct rm* ptr = &(levl[x][y]);
     boolean is_variation = FALSE;
 
+    if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
+    {
+        idx = level_location_types[ptr->floortyp].base_screen_symbol;
+        return cmap_to_glyph(idx);
+    }
+
     switch (ptr->typ) 
     {
     case UNEXPLORED:
@@ -3074,6 +2852,7 @@ xchar x, y;
     case STONE:
     case ROOM:
     case GRASS:
+    case GROUND:
     case CORR:
     case HWALL:
     case VWALL:
@@ -3143,6 +2922,29 @@ xchar x, y;
 
     return cmap_to_glyph(idx);
 }
+
+/* Broken feature layer glyph  */
+STATIC_OVL int
+get_broken_layer_glyph(x, y)
+xchar x, y;
+{
+    if (levl[x][y].brokenglyph)
+        return levl[x][y].brokenglyph;
+
+    return NO_GLYPH;
+}
+
+/* Broken feature layer glyph  */
+STATIC_OVL int
+get_doodad_layer_glyph(x, y)
+xchar x, y;
+{
+    if (levl[x][y].doodadglyph)
+        return levl[x][y].doodadglyph;
+
+    return NO_GLYPH;
+}
+
 
 /* object glyph for object layer for transparent backglyphs */
 STATIC_OVL int

@@ -2048,7 +2048,7 @@ dosacrifice()
                     "The blood floods the altar, which vanishes in %s cloud!",
                           an(hcolor(NH_BLACK)));
 
-                    create_simple_location(u.ux, u.uy, ROOM, 0, TRUE);
+                    create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, TRUE);
 
                     angry_priest();
                     demonless_msg = "cloud dissipates";

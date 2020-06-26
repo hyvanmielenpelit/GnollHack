@@ -678,7 +678,7 @@ static const char empty_string[] = "";
 #define nul_layerinfo \
     { base_cmap_to_glyph(S_unexplored),\
         NO_GLYPH,\
-        { base_cmap_to_glyph(S_unexplored),NO_GLYPH,NO_GLYPH,NO_GLYPH,\
+        { base_cmap_to_glyph(S_unexplored),NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \

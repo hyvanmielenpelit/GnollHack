@@ -506,11 +506,11 @@ xchar x, y;
             ltype = DOOR;
             lflags = D_NODOOR;
         }
-        create_simple_location(x, y, ltype, lflags, FALSE);
+        create_simple_location(x, y, ltype, lflags, 0, back_to_glyph(x, y), lev->floortyp, FALSE);
 
     } else if (IS_TREE(lev->typ)) {
         digtxt = "chew through the tree.";
-        create_simple_location(x, y, ROOM, 0, FALSE);
+        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, 0, 0, back_to_glyph(x, y), 0, FALSE);
     } else if (lev->typ == IRONBARS) {
         digtxt = "eat through the bars.";
         dissolve_bars(x, y);
@@ -523,7 +523,7 @@ xchar x, y;
             digtxt = "chew through the secret door.";
             lev->doormask = D_BROKEN;
         }
-        transform_location_type(x, y, DOOR);
+        transform_location_type(x, y, DOOR, 0);
 
     } else if (IS_DOOR(lev->typ)) {
         if (*in_rooms(x, y, SHOPBASE)) {
@@ -1258,7 +1258,7 @@ int x,y;
     int g = glyph_at(x,y);
     if (x == u.ux && y == u.uy)
         return TRUE;
-    if (isok(x,y) && glyph_is_cmap_or_cmap_variation(g) && S_unexplored == glyph_to_cmap(g)
+    if (isok(x,y) && glyph_is_cmap_or_cmap_variation(g) && S_unexplored == generic_glyph_to_cmap(g)
         /*&& !levl[x][y].seenv*/)
         return FALSE;
     u.tx = x;
@@ -3422,7 +3422,7 @@ get_cmap_or_cmap_variation_glyph_explanation(int glyph)
         if(var_explanation && strcmp(var_explanation, ""))
             return var_explanation;
         else
-            return defsyms[glyph_to_cmap(glyph)].explanation;
+            return defsyms[generic_glyph_to_cmap(glyph)].explanation;
     }
     else
         return "unknown cmap or cmap varation";

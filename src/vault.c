@@ -542,7 +542,7 @@ invault()
             else if (x == lowx - 1 || x == hix + 1)
                 EGD(guard)->fakecorr[0].ftyp = VWALL;
         }
-        create_simple_location(x, y, DOOR, D_NODOOR, FALSE);
+        create_simple_location(x, y, DOOR, D_NODOOR, 0, 0, !IS_FLOOR(levl[x][y].typ) ? levl[x][y].floortyp : 0, FALSE);
         unblock_vision_and_hearing_at_point(x, y); /* doesn't block light */
         EGD(guard)->fcend = 1;
         EGD(guard)->warncnt = 1;
@@ -814,7 +814,7 @@ register struct monst *grd;
                 if (!Deaf)
                     verbalize("You've been warned, knave!");
                 mnexto(grd);
-                transform_location_type(m, n, egrd->fakecorr[0].ftyp);
+                transform_location_type(m, n, egrd->fakecorr[0].ftyp, 0);
                 newsym(m, n);
                 grd->mpeaceful = 0;
                 return -1;
@@ -830,7 +830,7 @@ register struct monst *grd;
                 m = grd->mx;
                 n = grd->my;
                 (void) rloc(grd, TRUE);
-                transform_location_type(m, n, egrd->fakecorr[0].ftyp);
+                transform_location_type(m, n, egrd->fakecorr[0].ftyp, 0);
                 newsym(m, n);
                 grd->mpeaceful = 0;
  letknow:
@@ -947,9 +947,9 @@ register struct monst *grd;
                         crm->typ = DOOR;
 #else
                     if(typ == SCORR)
-                        transform_location_type(nx, ny, CORR);
+                        transform_location_type(nx, ny, CORR, 0);
                     else
-                        transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR);
+                        transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR, 0);
 
                     //crm->typ = (typ == SCORR) ? CORR : DOOR;
 #endif
@@ -979,7 +979,7 @@ register struct monst *grd;
         if (isok(nx + nx - x, ny + ny - y) && !IS_POOL(typ)
             && IS_ROOM(levl[nx + nx - x][ny + ny - y].typ))
         {
-            transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR);
+            transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR, 0);
 //            crm->typ = DOOR;
 //            crm->doormask = D_NODOOR;
             goto proceed;
@@ -998,7 +998,7 @@ register struct monst *grd;
         /* I don't like this, but ... */
         if (IS_ROOM(typ))
         {
-            transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR);
+            transform_location_type_and_flags(nx, ny, DOOR, D_NODOOR, 0);
 //            crm->typ = DOOR;
 //            crm->doormask = D_NODOOR;
             goto proceed;
