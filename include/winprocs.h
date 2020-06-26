@@ -262,8 +262,8 @@ extern
                                    *    via non-display attribute flag  */
 #define WC2_SUPPRESS_HIST 0x8000UL /* 15 putstr(WIN_MESSAGE) supports history
                                    *    suppression via non-disp attr   */
-#define WC2_AUTOSTATUSLINES 0x10000UL /* automatically adjust number of status lines */
-#define WC2_PREFERRED_SCREEN_SCALE 0x20000UL /* automatically adjust number of status lines */
+#define WC2_AUTOSTATUSLINES 0x10000UL /* 16 automatically adjust number of status lines */
+#define WC2_PREFERRED_SCREEN_SCALE 0x20000UL /* 17 automatically adjust number of status lines */
                                    /* 14 free bits */
 
 #define ALIGN_LEFT   1
@@ -419,6 +419,19 @@ struct chain_procs {
                (CARGS, int, const char *, const char *, BOOLEAN_P));
     void FDECL((*win_status_update), (CARGS, int, genericptr_t, int, int, int, unsigned long *));
     boolean FDECL((*win_can_suspend), (CARGS));
+    void FDECL((*win_stretch_window, (CARGS)));
+    void FDECL((*win_open_special_view), (CARGS, struct special_view_info));
+    void FDECL((*win_extra_winproc_function_A), (CARGS, struct function_info_A));
+    void FDECL((*win_play_immediate_ghsound), (CARGS, struct ghsound_immediate_info));
+    void FDECL((*win_extra_winproc_function_C), (CARGS, struct function_info_C));
+    void FDECL((*win_extra_winproc_function_D), (CARGS, struct function_info_D));
+    void FDECL((*win_extra_winproc_function_E), (CARGS, struct function_info_E));
+    void FDECL((*win_play_ghsound_music), (CARGS, struct ghsound_music_info));
+    void FDECL((*win_extra_winproc_function_F), (CARGS, struct function_info_F));
+    void FDECL((*win_adjust_ghsound_general_volumes, (CARGS))));
+    void FDECL((*win_add_ambient_ghsound), (CARGS, sound_source*));
+    void FDECL((*win_delete_ambient_ghsound), (CARGS, sound_source*));
+    void FDECL((*win_set_ambient_ghsound_volume), (CARGS, sound_source*));
 };
 #endif /* WINCHAIN */
 
