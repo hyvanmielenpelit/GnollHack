@@ -134,8 +134,8 @@ STATIC_DCL int FDECL(check_pos, (int, int, int));
 STATIC_DCL int FDECL(get_object_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_bk_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(get_floor_layer_glyph, (XCHAR_P, XCHAR_P));
-STATIC_DCL int FDECL(get_broken_layer_glyph, (XCHAR_P, XCHAR_P));
-STATIC_DCL int FDECL(get_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
+STATIC_DCL int FDECL(get_floor_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
+STATIC_DCL int FDECL(get_feature_doodad_layer_glyph, (XCHAR_P, XCHAR_P));
 STATIC_DCL int FDECL(tether_glyph, (int, int));
 
 /*#define WA_VERBOSE*/ /* give (x,y) locations for all "bad" spots */
@@ -228,9 +228,9 @@ register int show;
 
     int symbol_index = generic_glyph_to_cmap(glyph);
     int new_floor_glyph = NO_GLYPH;
-    int new_broken_glyph = get_broken_layer_glyph(x, y);
+    int new_floor_doodad_glyph = get_floor_doodad_layer_glyph(x, y);
     int new_feature_glyph = NO_GLYPH;
-    int new_doodad_glyph = get_doodad_layer_glyph(x, y);
+    int new_feature_doodad_glyph = get_feature_doodad_layer_glyph(x, y);
     int new_cover_feature_glyph = NO_GLYPH;
 
     if (defsyms[symbol_index].layer != LAYER_FLOOR)
@@ -258,28 +258,28 @@ register int show;
     {
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
-        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_BROKEN_FEATURE] = new_broken_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
-        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_DOODAD] = new_doodad_glyph;
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
     }
 
     if (show)
     {
         int floor_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR];
-        int broken_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_BROKEN_FEATURE];
+        int floor_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD];
         int feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE];
-        int doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD];
+        int feature_doodad_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD];
         int cover_feature_glyph_before = gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE];
         unsigned long flags_before = gbuf[y][x].layers.layer_flags;
         gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR] = new_floor_glyph;
-        gbuf[y][x].layers.layer_glyphs[LAYER_BROKEN_FEATURE] = new_broken_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_FLOOR_DOODAD] = new_floor_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE] = new_feature_glyph;
-        gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = new_doodad_glyph;
+        gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD] = new_feature_doodad_glyph;
         gbuf[y][x].layers.layer_glyphs[LAYER_COVER_FEATURE] = new_cover_feature_glyph;
 
-        if (floor_glyph_before != new_floor_glyph || broken_glyph_before != new_broken_glyph 
-            || feature_glyph_before != new_feature_glyph || doodad_glyph_before != new_doodad_glyph 
+        if (floor_glyph_before != new_floor_glyph || floor_doodad_glyph_before != new_floor_doodad_glyph
+            || feature_glyph_before != new_feature_glyph || feature_doodad_glyph_before != new_feature_doodad_glyph
             || cover_feature_glyph_before != new_cover_feature_glyph)
         {
             gbuf[y][x].new = 1;
@@ -484,7 +484,7 @@ int x, y, show;
 
     /* Doodad layer */
     /* map_doodad(x, y) */
-    /* gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = NO_GLYPH; */
+    /* gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD] = NO_GLYPH; */
 
     /* Object layer */
     clear_hero_object_memory_at(x, y);
@@ -1056,7 +1056,7 @@ int damage_shown;
 
         /* Doodad layer */
         /* map_doodad(x, y) */
-        /* gbuf[y][x].layers.layer_glyphs[LAYER_DOODAD] = NO_GLYPH; */
+        /* gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD] = NO_GLYPH; */
 
         /* Object layer */
         if (!covers_objects(x, y))
@@ -2718,6 +2718,34 @@ xchar x, y;
 }
 
 int
+back_to_broken_glyph(x, y)
+xchar x, y;
+{
+    int glyph = back_to_glyph(x, y);
+    boolean multiplier = glyph < 0 ? -1 : 1;
+    int absglyph = abs(glyph);
+
+    if (glyph_is_cmap(absglyph))
+    {
+        int cmap = glyph_to_cmap(absglyph);
+        if (defsyms[cmap].has_broken_tile == FALSE)
+            return NO_GLYPH;
+
+        return multiplier * (absglyph - GLYPH_CMAP_OFF + GLYPH_BROKEN_CMAP_OFF);
+    }
+    else if (glyph_is_cmap_variation(absglyph))
+    {
+        int cmap_var_idx = glyph_to_cmap_variation(absglyph);
+        if (defsym_variations[cmap_var_idx].has_broken_tile == FALSE)
+            return NO_GLYPH;
+
+        return multiplier * (absglyph - GLYPH_CMAP_VARIATION_OFF + GLYPH_BROKEN_CMAP_VARIATION_OFF);
+    }
+    else
+        return NO_GLYPH;
+}
+
+int
 get_location_light_range(x, y)
 xchar x, y;
 {
@@ -2925,22 +2953,22 @@ xchar x, y;
 
 /* Broken feature layer glyph  */
 STATIC_OVL int
-get_broken_layer_glyph(x, y)
+get_floor_doodad_layer_glyph(x, y)
 xchar x, y;
 {
-    if (levl[x][y].brokenglyph)
-        return levl[x][y].brokenglyph;
+    if (levl[x][y].floor_doodad)
+        return levl[x][y].floor_doodad;
 
     return NO_GLYPH;
 }
 
 /* Broken feature layer glyph  */
 STATIC_OVL int
-get_doodad_layer_glyph(x, y)
+get_feature_doodad_layer_glyph(x, y)
 xchar x, y;
 {
-    if (levl[x][y].doodadglyph)
-        return levl[x][y].doodadglyph;
+    if (levl[x][y].feature_doodad)
+        return levl[x][y].feature_doodad;
 
     return NO_GLYPH;
 }

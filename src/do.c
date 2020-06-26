@@ -5566,16 +5566,16 @@ xchar x, y;
 	levl[x][y].typ = UNEXPLORED;
 	levl[x][y].flags = 0;
 	levl[x][y].subtyp = 0;
-	levl[x][y].brokenglyph = 0;
+	levl[x][y].floor_doodad = 0;
 	levl[x][y].floortyp = 0;
 	levl[x][y].facing_right = 0;
 	levl[x][y].horizontal = 0;
 }
 
 void
-full_location_transform(x, y, type, location_flags, subtype, brokenglyph, floortype, facing_right, horizontal, donewsym)
+full_location_transform(x, y, type, location_flags, subtype, floor_doodad, floortype, facing_right, horizontal, donewsym)
 xchar x, y;
-int type, subtype, brokenglyph, floortype;
+int type, subtype, floor_doodad, floortype;
 uchar location_flags;
 boolean facing_right, horizontal, donewsym;
 {
@@ -5583,7 +5583,7 @@ boolean facing_right, horizontal, donewsym;
 	levl[x][y].typ = type;
 	levl[x][y].flags = location_flags;
 	levl[x][y].subtyp = subtype;
-	levl[x][y].brokenglyph = brokenglyph;
+	levl[x][y].floor_doodad = floor_doodad;
 	levl[x][y].floortyp = floortype;
 	levl[x][y].facing_right = facing_right;
 	levl[x][y].horizontal = horizontal;
@@ -5599,13 +5599,13 @@ boolean facing_right, horizontal, donewsym;
 }
 
 void
-create_simple_location(x, y, type, location_flags, subtype, brokenglyph, floortype, donewsym)
+create_simple_location(x, y, type, location_flags, subtype, floor_doodad, floortype, donewsym)
 xchar x, y;
-int type, subtype, brokenglyph, floortype;
+int type, subtype, floor_doodad, floortype;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, brokenglyph, floortype, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, subtype, floor_doodad, floortype, FALSE, FALSE, donewsym);
 }
 
 void
@@ -5619,13 +5619,13 @@ boolean donewsym;
 }
 
 void
-create_broken_feature_floor_location(x, y, type, location_flags, subtype, brokenglyph, donewsym)
+create_doodad_floor_location(x, y, type, location_flags, subtype, floor_doodad, donewsym)
 xchar x, y;
-int type, subtype, brokenglyph;
+int type, subtype, floor_doodad;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, brokenglyph, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, subtype, floor_doodad, 0, FALSE, FALSE, donewsym);
 }
 
 
@@ -5659,8 +5659,6 @@ int type, subtype;
 
 	levl[x][y].typ = type;
 	levl[x][y].subtyp = subtype;
-	if(!IS_FLOOR(type))
-		levl[x][y].brokenglyph = 0;
 
 	maybe_create_location_light_and_sound_sources(x, y);
 	if (levl[x][y].typ == FOUNTAIN)
@@ -5680,14 +5678,14 @@ uchar location_flags;
 }
 
 void
-transform_location_type_and_flags_and_set_broken(x, y, type, location_flags, subtype, brokenglyph)
+transform_location_type_and_flags_and_set_broken(x, y, type, location_flags, subtype, floor_doodad)
 xchar x, y;
-int type, subtype, brokenglyph;
+int type, subtype, floor_doodad;
 uchar location_flags;
 {
 	levl[x][y].flags = location_flags;
-	levl[x][y].brokenglyph = brokenglyph;
-	transform_location_type(x, y, type, subtype); /* Does not clear flags nor brokentyp if floor */
+	levl[x][y].floor_doodad = floor_doodad;
+	transform_location_type(x, y, type, subtype); /* Does not clear flags nor floor_doodad */
 }
 
 /*do.c*/

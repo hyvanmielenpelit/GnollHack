@@ -1111,7 +1111,7 @@ int x, y;
     if (cansee(x, y) || (x == u.ux && y == u.uy))
         pline_The("pipes break!  Water spurts out!");
 
-	create_simple_location(x, y, FOUNTAIN, FOUNTAIN_WATER, 0, back_to_glyph(x, y), levl[x][y].floortyp, FALSE);
+	create_simple_location(x, y, FOUNTAIN, FOUNTAIN_WATER, 0, back_to_broken_glyph(x, y), levl[x][y].floortyp, FALSE);
     SET_FOUNTAIN_LOOTED(x, y);
     newsym(x, y);
 }

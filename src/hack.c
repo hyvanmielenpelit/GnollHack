@@ -506,11 +506,11 @@ xchar x, y;
             ltype = DOOR;
             lflags = D_NODOOR;
         }
-        create_simple_location(x, y, ltype, lflags, 0, back_to_glyph(x, y), lev->floortyp, FALSE);
+        create_simple_location(x, y, ltype, lflags, 0, back_to_broken_glyph(x, y), lev->floortyp, FALSE);
 
     } else if (IS_TREE(lev->typ)) {
         digtxt = "chew through the tree.";
-        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, 0, 0, back_to_glyph(x, y), 0, FALSE);
+        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, 0, 0, back_to_broken_glyph(x, y), 0, FALSE);
     } else if (lev->typ == IRONBARS) {
         digtxt = "eat through the bars.";
         dissolve_bars(x, y);
