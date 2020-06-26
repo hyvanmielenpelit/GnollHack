@@ -689,6 +689,10 @@ int ttyp;
     else if (madeby_u)
         feeltrap(ttmp);
 
+    /* Remove doodads */
+    levl[x][y].floor_doodad = 0;
+    levl[x][y].feature_doodad = 0;
+
     if (ttyp == PIT) {
         if (madeby_u) {
             if (x != u.ux || y != u.uy)

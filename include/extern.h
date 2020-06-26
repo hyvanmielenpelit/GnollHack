@@ -520,7 +520,7 @@ E void FDECL(printweight, (char*, int, boolean, boolean));
 E int FDECL(monsterdescription, (struct monst*));
 E int NDECL(dotogglehpbars);
 E void FDECL(delete_location, (xchar, xchar));
-E void FDECL(full_location_transform, (xchar, xchar, int, uchar, int, int, int, boolean, boolean, boolean));
+E void FDECL(full_location_transform, (xchar, xchar, int, uchar, int, int, int, int, boolean, boolean, boolean));
 E void FDECL(create_simple_location, (xchar, xchar, int, uchar, int, int, int, boolean));
 E void FDECL(create_basic_floor_location, (xchar, xchar, int, uchar, boolean));
 E void FDECL(create_doodad_floor_location, (xchar, xchar, int, uchar, int, int, boolean));

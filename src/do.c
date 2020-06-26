@@ -5567,15 +5567,16 @@ xchar x, y;
 	levl[x][y].flags = 0;
 	levl[x][y].subtyp = 0;
 	levl[x][y].floor_doodad = 0;
+	levl[x][y].feature_doodad = 0;
 	levl[x][y].floortyp = 0;
 	levl[x][y].facing_right = 0;
 	levl[x][y].horizontal = 0;
 }
 
 void
-full_location_transform(x, y, type, location_flags, subtype, floor_doodad, floortype, facing_right, horizontal, donewsym)
+full_location_transform(x, y, type, location_flags, subtype, feature_doodad, floor_doodad, floortype, facing_right, horizontal, donewsym)
 xchar x, y;
-int type, subtype, floor_doodad, floortype;
+int type, subtype, feature_doodad, floor_doodad, floortype;
 uchar location_flags;
 boolean facing_right, horizontal, donewsym;
 {
@@ -5584,6 +5585,7 @@ boolean facing_right, horizontal, donewsym;
 	levl[x][y].flags = location_flags;
 	levl[x][y].subtyp = subtype;
 	levl[x][y].floor_doodad = floor_doodad;
+	levl[x][y].feature_doodad = feature_doodad;
 	levl[x][y].floortyp = floortype;
 	levl[x][y].facing_right = facing_right;
 	levl[x][y].horizontal = horizontal;
@@ -5605,7 +5607,7 @@ int type, subtype, floor_doodad, floortype;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, floor_doodad, floortype, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, floortype, FALSE, FALSE, donewsym);
 }
 
 void
@@ -5615,7 +5617,7 @@ int type;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, 0, 0, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, 0, 0, 0, 0, FALSE, FALSE, donewsym);
 }
 
 void
@@ -5625,7 +5627,7 @@ int type, subtype, floor_doodad;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, floor_doodad, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, 0, FALSE, FALSE, donewsym);
 }
 
 

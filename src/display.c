@@ -2951,7 +2951,7 @@ xchar x, y;
     return cmap_to_glyph(idx);
 }
 
-/* Broken feature layer glyph  */
+/* Floor doodad layer glyph  */
 STATIC_OVL int
 get_floor_doodad_layer_glyph(x, y)
 xchar x, y;
@@ -2962,7 +2962,7 @@ xchar x, y;
     return NO_GLYPH;
 }
 
-/* Broken feature layer glyph  */
+/* Feature doodad layer glyph  */
 STATIC_OVL int
 get_feature_doodad_layer_glyph(x, y)
 xchar x, y;
