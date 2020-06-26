@@ -92,13 +92,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -106,13 +99,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
     {
         "general",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -132,13 +118,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_LIT
@@ -152,13 +131,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -169,26 +141,58 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
 {
     {
         "",
-        {GHSOUND_NONE, 0.0f},
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "general",
-        {GHSOUND_NONE, 0.0f},
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "fountain",
-        {GHSOUND_FOUNTAIN, 0.75f},
+        {
+            {GHSOUND_FOUNTAIN, 0.75f},
+            {GHSOUND_NONE, 0.0f}
+        },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "altar",
-        {GHSOUND_FIRE, 0.5f},
+        {
+            {GHSOUND_FIRE, 0.5f},
+            {GHSOUND_NONE, 0.0f}
+        },
         SOUNDSOURCE_AMBIENT_LIT
     }
 };
 
+
+NEARDATA struct effect_sound_definition effect_sounds[MAX_EFFECT_SOUNDS] =
+{
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "general",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "shield effect",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "talk effect",
+        {GHSOUND_NONE, 0.0f}
+    }
+};
 
 
 void
@@ -280,7 +284,7 @@ unsigned long movement_flags;
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = (char*)0;
 
-    if(volume > 0.0f)
+    if(soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
 }
 
@@ -289,14 +293,13 @@ play_simple_weapon_sound(magr, attack_number, weapon, sound_type)
 struct monst* magr;
 int attack_number;
 struct obj* weapon;
-enum object_soundset_sound_types sound_type;
+enum object_sound_types sound_type;
 {
     /* Do not use for hit sounds */
 
     if (!magr)
         return;
 
-    struct ghsound_hit_info hitinfo = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     boolean you_attack = (magr == &youmonst);
@@ -337,7 +340,7 @@ enum object_soundset_sound_types sound_type;
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
 
-    if(volume > 0.0f)
+    if(soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
 
 }
@@ -354,12 +357,11 @@ enum hmon_atkmode_types thrown;
     if (!magr || !mdef)
         return;
 
-    struct ghsound_hit_info hitinfo = { 0 };
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     boolean you_attack = (magr == &youmonst);
     boolean you_defend = (mdef == &youmonst);
-    enum object_soundset_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
+    enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
     struct ghsound_immediate_info immediateinfo = { 0 };
     xchar defx = 0, defy = 0;
     if (you_defend)
@@ -439,9 +441,51 @@ enum hmon_atkmode_types thrown;
     immediateinfo.parameter_values[1] = (float)damage;
     immediateinfo.parameter_names[2] = (char*)0;
 
-    if (volume > 0.0f)
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
 
+}
+
+void
+play_effect_sound(effect_sound_id)
+enum effect_sounds_types effect_sound_id;
+{
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+
+    soundid = effect_sounds[effect_sound_id].sound.ghsound;
+    volume = effect_sounds[effect_sound_id].sound.volume;
+
+    struct ghsound_immediate_info immediateinfo = { 0 };
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+}
+
+
+void
+play_effect_sound_at_location(effect_sound_id, x, y)
+enum effect_sounds_types effect_sound_id;
+int x, y;
+{
+    if (!isok(x, y) || hearing_array[x][y] == 0.0f)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+
+    soundid = effect_sounds[effect_sound_id].sound.ghsound;
+    volume = effect_sounds[effect_sound_id].sound.volume;
+
+    struct ghsound_immediate_info immediateinfo = { 0 };
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume * hearing_array[x][y];
+
+    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
 }
 
 
@@ -1481,12 +1525,12 @@ enum soundsource_ambient_subtypes *subtype_ptr;
         return GHSOUND_NONE;
 
     if (volume_ptr)
-        *volume_ptr = (double)location_soundsets[lsoundset].ambient_sound.volume;
+        *volume_ptr = (double)location_soundsets[lsoundset].sounds[LOCATION_SOUND_TYPE_AMBIENT].volume;
 
     if (subtype_ptr)
         *subtype_ptr = location_soundsets[lsoundset].ambient_subtype;
 
-    return location_soundsets[lsoundset].ambient_sound.ghsound;
+    return location_soundsets[lsoundset].sounds[LOCATION_SOUND_TYPE_AMBIENT].ghsound;
 }
 
 /* soundset.c */

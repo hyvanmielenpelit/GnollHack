@@ -2676,11 +2676,9 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void FDECL(play_movement_sound, (struct monst*, unsigned long));
 E void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, double, boolean));
-E void FDECL(play_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_soundset_sound_types));
-//play_miss_sound
-//play_action_sound
-//play_ui_sound
-
+E void FDECL(play_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_sound_types));
+E void FDECL(play_effect_sound, (enum effect_sounds_types));
+E void FDECL(play_effect_sound_at_location, (enum effect_sounds_types, int, int));
 E enum player_soundset_types NDECL(get_player_soundset);
 E void NDECL(dosetsoundvolume);
 E void FDECL(update_hearing_array, (int));
@@ -3332,12 +3330,12 @@ E void FDECL(genl_status_enablefield,
              (int, const char *, const char *, BOOLEAN_P));
 E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 
-E void FDECL(genl_play_ghsound_action, (struct ghsound_action_info));
-E void FDECL(genl_play_ghsound_ambience, (struct ghsound_ambience_info));
-E void FDECL(genl_play_ghsound_hit, (struct ghsound_hit_info));
-E void FDECL(genl_play_ghsound_miss, (struct ghsound_miss_info));
-E void FDECL(genl_play_ghsound_movement, (struct ghsound_movement_info));
-E void FDECL(genl_play_ghsound_ui, (struct ghsound_ui_info));
+E void FDECL(genl_open_special_view, (struct special_view_info));
+E void FDECL(genl_extra_winproc_function_A, (struct function_info_A));
+E void FDECL(genl_extra_winproc_function_C, (struct function_info_C));
+E void FDECL(genl_extra_winproc_function_D, (struct function_info_D));
+E void FDECL(genl_extra_winproc_function_E, (struct function_info_E));
+E void FDECL(genl_extra_winproc_function_F, (struct function_info_F));
 
 E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));
 E void FDECL(genl_play_immediate_ghsound, (struct ghsound_immediate_info));

@@ -86,14 +86,14 @@ struct window_procs {
     void FDECL((*win_status_update), (int, genericptr_t, int, int, int, unsigned long *));
     boolean NDECL((*win_can_suspend));
     void NDECL((*win_stretch_window));
-    void FDECL((*win_play_ghsound_action), (struct ghsound_action_info));
-    void FDECL((*win_play_ghsound_ambience), (struct ghsound_ambience_info));
+    void FDECL((*win_open_special_view), (struct special_view_info));
+    void FDECL((*win_extra_winproc_function_A), (struct function_info_A));
     void FDECL((*win_play_immediate_ghsound), (struct ghsound_immediate_info));
-    void FDECL((*win_play_ghsound_hit), (struct ghsound_hit_info));
-    void FDECL((*win_play_ghsound_miss), (struct ghsound_miss_info));
-    void FDECL((*win_play_ghsound_movement), (struct ghsound_movement_info));
+    void FDECL((*win_extra_winproc_function_C), (struct function_info_C));
+    void FDECL((*win_extra_winproc_function_D), (struct function_info_D));
+    void FDECL((*win_extra_winproc_function_E), (struct function_info_E));
     void FDECL((*win_play_ghsound_music), (struct ghsound_music_info));
-    void FDECL((*win_play_ghsound_ui), (struct ghsound_ui_info));
+    void FDECL((*win_extra_winproc_function_F), (struct function_info_F));
     void NDECL((*win_adjust_ghsound_general_volumes));
     void FDECL((*win_add_ambient_ghsound), (sound_source*));
     void FDECL((*win_delete_ambient_ghsound), (sound_source*));
@@ -183,14 +183,14 @@ extern
 #define status_update (*windowprocs.win_status_update)
 #define stretch_window (*windowprocs.win_stretch_window)
 
-#define play_ghsound_action (*windowprocs.win_play_ghsound_action)
-#define play_ghsound_ambience (*windowprocs.win_play_ghsound_ambience)
+#define open_special_view (*windowprocs.win_open_special_view)
+#define extra_winproc_function_A (*windowprocs.win_extra_winproc_function_A)
 #define play_immediate_ghsound (*windowprocs.win_play_immediate_ghsound)
-#define play_ghsound_hit (*windowprocs.win_play_ghsound_hit)
-#define play_ghsound_miss (*windowprocs.win_play_ghsound_miss)
-#define play_ghsound_movement (*windowprocs.win_play_ghsound_movement)
+#define extra_winproc_function_C (*windowprocs.win_extra_winproc_function_C)
+#define extra_winproc_function_D (*windowprocs.win_extra_winproc_function_D)
+#define extra_winproc_function_E (*windowprocs.win_extra_winproc_function_E)
 #define play_ghsound_music (*windowprocs.win_play_ghsound_music)
-#define play_ghsound_ui (*windowprocs.win_play_ghsound_ui)
+#define extra_winproc_function_F (*windowprocs.win_extra_winproc_function_F)
 #define adjust_ghsound_general_volumes (*windowprocs.win_adjust_ghsound_general_volumes)
 #define add_ambient_ghsound (*windowprocs.win_add_ambient_ghsound)
 #define delete_ambient_ghsound (*windowprocs.win_delete_ambient_ghsound)

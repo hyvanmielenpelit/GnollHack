@@ -69,43 +69,33 @@ struct ghsound_music_info {
 
 
 /* Unused play_ghsound function input structs */
-struct ghsound_action_info {
-	enum ghsound_types ghsound;
-	float volume;
-};
-
-struct ghsound_ambience_info {
+struct function_info_A {
 	enum ghsound_types ghsound;
 	float volume;
 };
 
 
-struct ghsound_hit_info {
+struct function_info_C {
 	enum ghsound_types ghsound;
 	enum strike_surface_types strike_surface;
 	float volume;
 };
 
-struct ghsound_miss_info {
+struct function_info_D {
 	enum ghsound_types ghsound;
 	float volume;
 };
 
-struct ghsound_movement_info {
+struct function_info_E {
 	enum ghsound_types ghsound;
-	enum movement_styles floor;
-	enum shoe_hardness_types shoe;
-	float weight;
 	float volume;
-	boolean isyou;
-	int source_x;
-	int source_y;
 };
 
-struct ghsound_ui_info {
+struct function_info_F {
 	enum ghsound_types ghsound;
 	float volume;
 };
+
 
 
 /* General sound information */
@@ -123,14 +113,7 @@ enum object_sound_types {
 	OBJECT_SOUND_TYPE_THROW,			/* Played when the object is thrown */
 	OBJECT_SOUND_TYPE_FIRE,				/* Played when a launcher is fired */
 	OBJECT_SOUND_TYPE_HIT_THROW,		/* Played at the end of the throw/fire attack animation and at the end of throw if the attack hits target */
-	OBJECT_SOUND_TYPE_APPLY,			/* Apply, or apply if switches something on */
-	OBJECT_SOUND_TYPE_APPLY_OFF,		/* Apply if switches something off */
-	OBJECT_SOUND_TYPE_INVOKE,			/* Invoke, or invoke if switches something on */
-	OBJECT_SOUND_TYPE_INVOKE_OFF,		/* Invoke if switches something off */
-	OBJECT_SOUND_TYPE_USE,				/* Sound upon quaff, read, etc. */
-	OBJECT_SOUND_TYPE_USE_EFFECT,		/* Sound upon potion or scroll effect */
 	OBJECT_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
-	OBJECT_SOUND_TYPE_BREAK_EFFECT,		/* Sound upon break effect */
 	MAX_OBJECT_SOUND_TYPES
 };
 
@@ -213,9 +196,15 @@ extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSET
 
 
 /* LOCATION SOUNDSETS */
+enum location_sound_types {
+	LOCATION_SOUND_TYPE_AMBIENT = 0,		/* Ambient sound that is typically either continuously played or played when the object is lit */
+	LOCATION_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
+	MAX_LOCATION_SOUND_TYPES
+};
+
 struct location_soundset_definition {
 	char* soundset_name;
-	struct ghsound_info ambient_sound;
+	struct ghsound_info sounds[MAX_LOCATION_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 };
 
@@ -228,6 +217,23 @@ enum location_soundset_types {
 };
 
 extern struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS];
+
+
+/* EFFECT SOUNDS */
+struct effect_sound_definition {
+	char* sound_name;
+	struct ghsound_info sound;
+};
+
+enum effect_sound_types {
+	EFFECT_SOUND_NONE = 0,
+	EFFECT_SOUND_GENERAL,
+	EFFECT_SOUND_SHIELD_EFFECT,
+	EFFECT_SOUND_TALK_EFFECT,
+	MAX_EFFECT_SOUNDS
+};
+
+extern struct effect_sound_definition effect_sounds[MAX_EFFECT_SOUNDS];
 
 
 
@@ -282,13 +288,6 @@ enum spell_soundset_types {
 	MAX_SPELL_SOUNDSETS
 };
 
-
-enum effect_soundset_types {
-	EFFECT_SOUNDSET_NO_SOUNDSET = 0,
-	EFFECT_SOUNDSET_SHIELD_EFFECT,
-	EFFECT_SOUNDSET_TALK_EFFECT,
-	MAX_EFFECT_SOUNDSETS
-};
 
 
 enum ui_soundset_types {

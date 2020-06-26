@@ -65,4 +65,12 @@ typedef struct soundsource_t {
     void* ambient_ghsound_ptr; /* ambient sound pointer for storing */
 } sound_source;
 
+
+
+struct special_view_info {
+    enum ghsound_types ghsound;
+    float volume;
+};
+
+
 #endif /* LEV_H */

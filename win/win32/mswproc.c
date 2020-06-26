@@ -117,14 +117,14 @@ struct window_procs mswin_procs = {
     mswin_status_update,
     genl_can_suspend_yes,
     mswin_stretch_window,
-    mswin_play_ghsound_action,
-    mswin_play_ghsound_ambience,
+    mswin_open_special_view,
+    mswin_extra_winproc_function_A,
     mswin_play_immediate_ghsound,
-    mswin_play_ghsound_hit,
-    mswin_play_ghsound_miss,
-    mswin_play_ghsound_movement,
+    mswin_extra_winproc_function_C,
+    mswin_extra_winproc_function_D,
+    mswin_extra_winproc_function_E,
     mswin_play_ghsound_music,
-    mswin_play_ghsound_ui,
+    mswin_extra_winproc_function_F,
     mswin_adjust_ghsound_general_volumes,
     mswin_add_ambient_ghsound,
     mswin_delete_ambient_ghsound,
@@ -3225,13 +3225,13 @@ mswin_stretch_window(void)
 
 
 void
-mswin_play_ghsound_action(struct ghsound_action_info info)
+mswin_open_special_view(struct special_view_info info)
 {
     return;
 }
 
 void
-mswin_play_ghsound_ambience(struct ghsound_ambience_info info)
+mswin_extra_winproc_function_A(struct function_info_A info)
 {
     return;
 }
@@ -3246,32 +3246,21 @@ mswin_play_immediate_ghsound(struct ghsound_immediate_info info)
 }
 
 void
-mswin_play_ghsound_hit(struct ghsound_hit_info info)
-{
-    return;
-#if 0
-    if (!fmod_play_hit_sound(info))
-    {
-        impossible("Cannot play hit sound!");
-    }
-#endif
-}
-
-void
-mswin_play_ghsound_miss(struct ghsound_miss_info info)
+mswin_extra_winproc_function_C(struct function_info_C info)
 {
     return;
 }
 
 void
-mswin_play_ghsound_movement(struct ghsound_movement_info info)
+mswin_extra_winproc_function_D(struct function_info_D info)
 {
-#if 0
-    if (!fmod_play_movement_sound(info))
-    {
-        impossible("Cannot play movement sound!");
-    }
-#endif
+    return;
+}
+
+void
+mswin_extra_winproc_function_E(struct function_info_E info)
+{
+    return;
 }
 
 void
@@ -3284,7 +3273,7 @@ mswin_play_ghsound_music(struct ghsound_music_info info)
 }
 
 void
-mswin_play_ghsound_ui(struct ghsound_ui_info info)
+mswin_extra_winproc_function_F(struct function_info_F info)
 {
     return;
 }
