@@ -86,6 +86,7 @@ enum levl_typ_types {
 struct location_type_definition {
     const char* name;
     enum screen_symbols base_screen_symbol;
+    enum levl_typ_types initial_floor_type;
     enum location_soundset_types soundset;
 };
 

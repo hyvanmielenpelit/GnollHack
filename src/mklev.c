@@ -1122,6 +1122,7 @@ makelevel()
 
     create_level_light_sources();
     create_level_sound_sources();
+    define_level_location_floor_types();
 }
 
 /*
@@ -2265,4 +2266,17 @@ xchar x, y;
     maybe_create_location_light_source(x, y);
     maybe_create_location_sound_source(x, y);
 }
+
+void
+define_level_location_floor_types()
+{
+    for (xchar x = 1; x < COLNO; x++)
+    {
+        for (xchar y = 0; y < ROWNO; y++)
+        {
+            levl[x][y].floortyp = level_location_types[levl[x][y].typ].initial_floor_type;
+        }
+    }
+}
+
 /*mklev.c*/

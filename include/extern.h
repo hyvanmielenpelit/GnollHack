@@ -1501,6 +1501,7 @@ E void FDECL(maybe_create_location_sound_source, (xchar, xchar));
 E void FDECL(maybe_create_location_light_and_sound_sources, (xchar, xchar));
 E void NDECL(create_level_light_sources);
 E void NDECL(create_level_sound_sources);
+E void NDECL(define_level_location_floor_types);
 
 /* ### mkmap.c ### */
 
