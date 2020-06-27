@@ -1316,7 +1316,7 @@ dokick() {
             if (!Levitation && rn2(30) < avrg_attrib) {
                 pline("Crash!  You kick open a secret passage!");
                 exercise(A_DEX, TRUE);
-                create_basic_floor_location(x, y, CORR, 0, FALSE);
+                create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, FALSE);
                 feel_newsym(x, y); /* we know it's gone */
                 unblock_vision_and_hearing_at_point(x, y); /* vision */
                 update_u_action(ACTION_TILE_NO_ACTION);

@@ -3351,7 +3351,7 @@ boolean pushing;
 				levl[rx][ry].drawbridgemask |= DB_FLOOR;
 			}
 			else
-				create_basic_floor_location(rx, ry, ROOM, 0, FALSE);
+				create_basic_floor_location(rx, ry, GROUND, 0, FALSE);
                 
 			//levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 
@@ -5617,6 +5617,9 @@ int type;
 uchar location_flags;
 boolean donewsym;
 {
+	if (!isok(x, y))
+		return;
+
 	full_location_transform(x, y, type, location_flags, 0, 0, 0, 0, FALSE, FALSE, donewsym);
 }
 

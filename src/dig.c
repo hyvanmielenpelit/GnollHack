@@ -461,7 +461,7 @@ dig(VOID_ARGS)
             else 
             {
                 digtxt = "You succeed in cutting away some rock.";
-                create_basic_floor_location(dpx, dpy, CORR, 0, FALSE);
+                create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, 0, FALSE);
             }
         } 
         else if (IS_WALL(lev->typ)) 
@@ -616,6 +616,8 @@ boolean fill_if_any; /* force filling if it exists at all */
         return MOAT;
     else if ((pool_cnt > 0 && rn2(pool_cnt + 1)) || (pool_cnt && fill_if_any))
         return POOL;
+    else if (levl[x][y].floortyp)
+        return levl[x][y].floortyp;
     else
         return ROOM;
 }
@@ -1466,7 +1468,7 @@ register struct monst *mtmp;
     } 
     else if (here->typ == SCORR) 
     {
-        create_basic_floor_location(mtmp->mx, mtmp->my, CORR, 0, FALSE);
+        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, FALSE);
         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
         draft_message(FALSE); /* "You feel a draft." */
@@ -1538,7 +1540,7 @@ register struct monst *mtmp;
     }
     else
     {
-        create_basic_floor_location(mtmp->mx, mtmp->my, CORR, 0, FALSE);
+        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, FALSE);
 
         if (pile && pile < 5)
             (void) mksobj_at((pile == 1) ? BOULDER : ROCK, mtmp->mx, mtmp->my,
@@ -1784,7 +1786,7 @@ struct obj* origobj;
             {
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
-                    create_basic_floor_location(zx, zy, CORR, 0, FALSE);
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : CORR, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1896,7 +1898,7 @@ struct obj* origobj;
 				}
 				else
 				{ // Leave no pits, evaporation gives a walkable route
-                    create_basic_floor_location(zx, zy, ROOM, 0, FALSE);
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, 0, FALSE);
                     if (lev->typ == MOAT)
 					{
 						struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
@@ -1981,7 +1983,7 @@ struct obj* origobj;
 			else
 			{ // Leave no pits, evaporation gives a walkable route
 				digdepth -= 1;
-                create_basic_floor_location(zx, zy, ROOM, 0, FALSE);
+                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, 0, FALSE);
                 if (lev->typ == MOAT)
 				{
 					struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
