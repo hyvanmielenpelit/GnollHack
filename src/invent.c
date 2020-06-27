@@ -4323,9 +4323,16 @@ get_floor_doodad_explanation_at(x, y)
         else if (glyph_is_broken_cmap_variation(levl[x][y].floor_doodad))
         {
             int bcmapvar = glyph_to_broken_cmap_variation(levl[x][y].floor_doodad);
-            int bcmap = defsym_variations[bcmapvar].base_screen_symbol;
-            if (defsyms[bcmap].broken_explanation && strcmp(defsyms[bcmap].broken_explanation, ""))
-                explanation = defsyms[bcmap].broken_explanation;
+            if (defsym_variations[bcmapvar].broken_explanation && strcmp(defsym_variations[bcmapvar].broken_explanation, ""))
+            {
+                explanation = defsym_variations[bcmapvar].broken_explanation;
+            }
+            else
+            {
+                int bcmap = defsym_variations[bcmapvar].base_screen_symbol;
+                if (defsyms[bcmap].broken_explanation && strcmp(defsyms[bcmap].broken_explanation, ""))
+                    explanation = defsyms[bcmap].broken_explanation;
+            }
         }
     }
 

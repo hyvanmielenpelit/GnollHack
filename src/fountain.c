@@ -210,7 +210,7 @@ boolean isyou;
                 return;
         }
         /* replace the fountain with ordinary floor */
-		create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].typ : ROOM, 0, TRUE);
+		create_simple_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : ROOM, 0, 0, back_to_broken_glyph(x, y), 0, TRUE);
         if (cansee(x, y))
             pline_The("fountain dries up!");
         /* The location is seen if the hero/monster is invisible
