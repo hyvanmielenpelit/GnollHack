@@ -4301,7 +4301,35 @@ int x, y;
 
     if (cmap >= 0)
         dfeature = defsyms[cmap].explanation;
+    else if (levl[x][y].floor_doodad)
+    {
+        dfeature = get_floor_doodad_explanation_at(x, y);
+    }
     return dfeature;
+}
+
+const char*
+get_floor_doodad_explanation_at(x, y)
+{
+    const char* explanation = 0;
+    if (levl[x][y].floor_doodad)
+    {
+        if (glyph_is_broken_cmap(levl[x][y].floor_doodad))
+        {
+            int bcmap = glyph_to_broken_cmap(levl[x][y].floor_doodad);
+            if (defsyms[bcmap].broken_explanation && strcmp(defsyms[bcmap].broken_explanation, ""))
+                explanation = defsyms[bcmap].broken_explanation;
+        }
+        else if (glyph_is_broken_cmap_variation(levl[x][y].floor_doodad))
+        {
+            int bcmapvar = glyph_to_broken_cmap_variation(levl[x][y].floor_doodad);
+            int bcmap = defsym_variations[bcmapvar].base_screen_symbol;
+            if (defsyms[bcmap].broken_explanation && strcmp(defsyms[bcmap].broken_explanation, ""))
+                explanation = defsyms[bcmap].broken_explanation;
+        }
+    }
+
+    return explanation;
 }
 
 boolean

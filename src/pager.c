@@ -581,7 +581,12 @@ char *buf, *monbuf;
         default:
         {
             //int cmap = generic_glyph_to_cmap(glyph);
-            strcpy(buf, get_cmap_or_cmap_variation_glyph_explanation(glyph)); // defsyms[cmap].explanation);
+
+            const char* explanation = get_floor_doodad_explanation_at(x, y);;
+            if (!explanation)
+                explanation = get_cmap_or_cmap_variation_glyph_explanation(glyph);
+
+            strcpy(buf, explanation); // defsyms[cmap].explanation);
             break;
         }
    }

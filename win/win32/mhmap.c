@@ -2276,7 +2276,7 @@ static void setDrawOrder(PNHMapWindow data)
 
     int same_level_z_order_array[3] = { 0, 1, -1 };
     /* Second, draw other layers on the same y */
-    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
+    for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
     {
         for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
         {
@@ -2292,7 +2292,7 @@ static void setDrawOrder(PNHMapWindow data)
 
     /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
     int different_level_z_order_array[3] = { 2, 4, 3 };
-    for (enum layer_types layer_idx = LAYER_FEATURE; layer_idx < MAX_LAYERS; layer_idx++)
+    for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
     {
         for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
         {

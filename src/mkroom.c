@@ -842,7 +842,8 @@ mkgarden()
 				&& !nexttodoor(sx, sy) && !nexttotree(sx, sy) && !rn2(3))
 			{
 				levl[sx][sy].typ = TREE;
-			}
+                levl[sx][sy].floortyp = GRASS;
+            }
 			else
 			{
 				levl[sx][sy].typ = GRASS;

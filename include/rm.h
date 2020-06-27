@@ -347,6 +347,7 @@ struct symdef {
 struct symdef_cmap {
     uchar sym;
     const char *explanation;
+    const char* broken_explanation;
     uchar layer;
     boolean has_broken_tile;
 
@@ -369,6 +370,7 @@ struct symdef_cmap_variation {
     int base_screen_symbol;
     const char* variation_name;
     const char* explanation;
+    const char* broken_explanation;
     boolean has_broken_tile;
 
 #ifdef TEXTCOLOR

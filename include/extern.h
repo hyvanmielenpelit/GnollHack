@@ -1212,6 +1212,7 @@ E struct obj *FDECL(display_cinventory, (struct obj *));
 E struct obj *FDECL(display_minventory, (struct monst *, int, char *));
 E int NDECL(dotypeinv);
 E const char *FDECL(dfeature_at, (int, int));
+E const char* FDECL(get_floor_doodad_explanation_at, (int, int));
 E int FDECL(look_here, (int, BOOLEAN_P));
 E int NDECL(dolook);
 E boolean FDECL(will_feel_cockatrice, (struct obj *, BOOLEAN_P));
