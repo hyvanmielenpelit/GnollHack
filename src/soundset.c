@@ -4,6 +4,8 @@
 
 #include "hack.h"
 #include "lev.h" /* for checking save modes */
+#include "artifact.h"
+#include "artilist.h"
 
 NEARDATA struct soundsource_t* sound_base = 0;
 STATIC_DCL void FDECL(set_hearing_array, (int, int, double));
@@ -307,9 +309,18 @@ enum object_sound_types sound_type;
 
     if (weapon)
     {
-        enum object_soundset_types oss = objects[weapon->otyp].oc_soundset;
-        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-        volume = object_soundsets[oss].sounds[sound_type].volume;
+        if (weapon->oartifact && artilist[weapon->oartifact].soundset > OBJECT_SOUNDSET_NONE)
+        {
+            enum object_soundset_types oss = artilist[weapon->oartifact].soundset;
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
+        }
+        else
+        {
+            enum object_soundset_types oss = objects[weapon->otyp].oc_soundset;
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
+        }
     }
     else
     {
@@ -377,9 +388,18 @@ enum hmon_atkmode_types thrown;
 
     if (weapon)
     {
-        enum object_soundset_types oss = objects[weapon->otyp].oc_soundset;
-        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
-        volume = object_soundsets[oss].sounds[sound_type].volume;
+        if (weapon->oartifact && artilist[weapon->oartifact].soundset > OBJECT_SOUNDSET_NONE)
+        {
+            enum object_soundset_types oss = artilist[weapon->oartifact].soundset;
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
+        }
+        else
+        {
+            enum object_soundset_types oss = objects[weapon->otyp].oc_soundset;
+            soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss].sounds[sound_type].volume;
+        }
     }
     else
     {

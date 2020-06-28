@@ -938,6 +938,8 @@ SetMenuListType(HWND hWnd, int how)
     MonitorInfo monitorInfo;
     win10_monitor_info(hWnd, &monitorInfo);
     
+    SendMessage(hWnd, WM_SETREDRAW, FALSE, (LPARAM)0);
+
     ZeroMemory(&lvcol, sizeof(lvcol));
     lvcol.mask = LVCF_WIDTH | LVCF_TEXT;
     lvcol.cx = monitorInfo.width;
@@ -966,6 +968,9 @@ SetMenuListType(HWND hWnd, int how)
     }
     if (data->is_active)
         SetFocus(control);
+
+    SendMessage(hWnd, WM_SETREDRAW, TRUE, (LPARAM)0);
+
 }
 /*-----------------------------------------------------------------------------*/
 HWND
