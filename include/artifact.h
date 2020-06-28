@@ -71,8 +71,8 @@
 #define SPFX_XRAY				0x00010000UL  /* Gives X-RAY vision to player */
 #define SPFX_REFLECT			0x00020000UL  /* Reflection */
 #define SPFX_PROTECT			0x00040000UL  /* Protection */
-#define SPFX_AGGRAVATE_MONSTER	0x00080000UL  /* Gives aggravate monster */
-#define SPFX_UNLUCK				0x00100000UL  /* Gives brings bad luck */
+#define SPFX_AGGRAVATE_MONSTER	0x00080000UL  /* Aggravates monsters */
+#define SPFX_UNLUCK				0x00100000UL  /* Brings bad luck */
 #define SPFX_BLIND_SEEING		0x00200000UL  /* Blocks blindness */
 #define SPFX_HALF_PHYSICAL_DAMAGE_AGAINST_UNDEAD_AND_DEMONS \
 								0x00400000UL  /* Ditto, for Mitre of Holiness */
@@ -136,6 +136,7 @@ enum invoke_prop_types {
     ARTINVOKE_CREATE_PORTAL,
     ARTINVOKE_ENLIGHTENING,
     ARTINVOKE_CREATE_AMMO,
+	ARTINVOKE_ARROW_OF_DIANA,
 	ARTINVOKE_WAND_OF_DEATH,
 	ARTINVOKE_BLESS_CONTENTS,
 	ARTINVOKE_WISHING,
@@ -143,5 +144,10 @@ enum invoke_prop_types {
 	ARTINVOKE_RECHARGE_ITSELF,
 	ARTINVOKE_TIME_STOP
 };
+
+#define NUM_ARTINVOKES (ARTINVOKE_TIME_STOP - ARTINVOKE_TAMING + 1)
+
+extern const char* artifact_invoke_names[NUM_ARTINVOKES];
+
 
 #endif /* ARTIFACT_H */

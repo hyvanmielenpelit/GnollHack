@@ -142,6 +142,7 @@ E int FDECL(adtyp_to_prop, (uchar));
 E struct obj* FDECL(what_gives_monster, (struct monst*, int));
 E boolean FDECL(is_immune, (struct monst*, int));
 E int NDECL(create_portal);
+E const char* FDECL(get_artifact_invoke_name, (int));
 
 /* ### attrib.c ### */
 
@@ -484,7 +485,6 @@ E int NDECL(doitemdescriptions);
 E int NDECL(docharacterstatistics);
 E const char* FDECL(get_damage_type_text, (int));
 E const char* FDECL(get_defense_type_text, (int));
-E const char* FDECL(get_artifact_invoke_name, (int));
 E const char* FDECL(get_monster_size_text, (int));
 E const char* FDECL(get_attack_type_text, (int));
 E boolean FDECL(boulder_hits_pool, (struct obj *, int, int, BOOLEAN_P));

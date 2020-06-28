@@ -16,6 +16,12 @@
 
 extern boolean notonhead; /* for long worms */
 
+const char* artifact_invoke_names[NUM_ARTINVOKES] = {
+	"taming", "healing", "mana replenishment", "untrapping", "charging",
+	"level teleportation", "portal creation", "enlightenment", "arrow creation", "arrow of Diana", "death ray", "blessing of contents", "wishing",
+	"summon demon", "recharge itself", "time stop",
+};
+
 #define get_artifact(o) \
     (((o) && (o)->oartifact) ? &artilist[(int) (o)->oartifact] : 0)
 
@@ -2536,6 +2542,36 @@ struct obj *obj;
             nhUse(otmp);
 			break;
         }
+		case ARTINVOKE_ARROW_OF_DIANA:
+		{
+			struct obj pseudo = zeroobj;
+			pseudo.otyp = SPE_ARROW_OF_DIANA;
+			pseudo.quan = 20L; /* do not let useup get it */
+			int otyp = pseudo.otyp;
+			double damage = 0;
+
+			if (!getdir((char*)0))
+			{
+				pline1(Never_mind);
+				return 0;
+			}
+			if (!u.dx && !u.dy && !u.dz)
+			{
+				if ((damage = zapyourself(&pseudo, TRUE)) > 0)
+				{
+					char buf[BUFSZ];
+
+					Sprintf(buf, "shot %sself with %s", uhim(), cxname(obj));
+					losehp(damage, buf, NO_KILLER_PREFIX);
+				}
+			}
+			else
+			{
+				update_u_facing(TRUE);
+				weffects(&pseudo);
+			}
+			break;
+		}
 		case ARTINVOKE_WAND_OF_DEATH:
 		{
 			struct obj pseudo = zeroobj;
@@ -2564,6 +2600,7 @@ struct obj *obj;
 				update_u_facing(TRUE);
 				weffects(&pseudo);
 			}
+			break;
 		}
 		case ARTINVOKE_BLESS_CONTENTS:
 		{
@@ -3633,5 +3670,17 @@ struct monst *mon; /* if null, hero assumed */
     }
     return (struct obj *) 0;
 }
+
+
+const char* get_artifact_invoke_name(specialpropindex)
+int specialpropindex;
+{
+	if (specialpropindex < ARTINVOKE_TAMING || specialpropindex >= ARTINVOKE_TAMING + SIZE(artifact_invoke_names))
+		return empty_string;
+
+	return artifact_invoke_names[specialpropindex - ARTINVOKE_TAMING];
+}
+
+
 
 /*artifact.c*/

@@ -2703,7 +2703,7 @@ register struct obj* obj;
 				if (idx > 0)
 					bit = bit << idx;
 				propnum = spfx_to_prop(bit);
-				if (propnum > 0 && (specialeffect & SPFX_WARN_OF_MON)
+				if (propnum > 0 && (specialeffect & bit)
 					&& bit != SPFX_WARN_OF_MON
 					&& bit != SPFX_STR_25
 					&& bit != SPFX_DEX_25
@@ -3050,22 +3050,6 @@ int defensetype;
 
 	return defense_type_names[defensetype];
 }
-
-static const char* artifact_invoke_names[] = { 
-	"taming", "healing", "mana replenishment", "untrapping", "charging",
-	"level teleportation", "portal creation", "enlightenment", "arrow creation", "death ray", "blessing of contents", "wishing",
-	"summon demon", "recharge itself", "time stop",
-};
-
-const char* get_artifact_invoke_name(specialpropindex)
-int specialpropindex;
-{
-	if (specialpropindex < ARTINVOKE_TAMING || specialpropindex >= ARTINVOKE_TAMING + SIZE(artifact_invoke_names))
-		return empty_string;
-
-	return artifact_invoke_names[specialpropindex - ARTINVOKE_TAMING];
-}
-
 
 int
 monsterdescription(mon)

@@ -246,8 +246,9 @@ struct obj *otmp;
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_COLD, TELL);
 		learn_it = TRUE;
 		break;
-	case SPE_MAGIC_ARROW:
-		res = 1;
+    case SPE_MAGIC_ARROW:
+    case SPE_ARROW_OF_DIANA:
+        res = 1;
 		reveal_invis = TRUE;
 		if (disguised_mimic)
 			seemimic(mtmp);
@@ -3321,7 +3322,8 @@ struct obj *obj, *otmp;
 		case WAN_SPEED_MONSTER:
 		case SPE_SILENCE:
 		case SPE_MAGIC_ARROW:
-		case WAN_NOTHING:
+        case SPE_ARROW_OF_DIANA:
+        case WAN_NOTHING:
 		case SPE_CHARM_MONSTER:
 		case SPE_CURE_BLINDNESS:
 		case SPE_CURE_SICKNESS:
@@ -4505,7 +4507,8 @@ boolean ordinary;
         break;
 
 	case SPE_MAGIC_ARROW:
-		learn_it = TRUE;
+    case SPE_ARROW_OF_DIANA:
+        learn_it = TRUE;
 		if (Magic_missile_immunity || Invulnerable)
 		{
 			shieldeff(u.ux, u.uy);
@@ -5256,7 +5259,8 @@ struct obj *obj; /* wand or spell */
 	case SPE_POWER_WORD_STUN:
 	case SPE_POWER_WORD_BLIND:
 	case SPE_MAGIC_ARROW:
-	case WAN_SLOW_MONSTER:
+    case SPE_ARROW_OF_DIANA:
+    case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
 	case SPE_MASS_SLOW:
 	case SPE_HASTE_MONSTER:

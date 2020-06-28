@@ -1810,6 +1810,7 @@ boolean atme;
 #endif
     /* these spells are all duplicates of wand effects */
 	case SPE_MAGIC_ARROW:
+	case SPE_ARROW_OF_DIANA:
 	case SPE_FORCE_BOLT:
         physical_damage = TRUE;
     /*FALLTHRU*/
