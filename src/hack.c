@@ -2630,7 +2630,7 @@ register boolean newlev;
     char *ptr;
 
     move_update(newlev);
-    play_music_type(MUSIC_ROOM);
+    play_game_music();
 
     if (*u.ushops0)
         u_left_shop(u.ushops_left, newlev);

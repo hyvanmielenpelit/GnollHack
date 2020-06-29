@@ -1328,9 +1328,9 @@ xchar x, y;
 	for (int i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
 		sroom = &rooms[i];
 		if (inside_room(sroom, x, y))
-			break;
-	}
-	return sroom;
+            return sroom;
+    }
+	return (struct mkroom*)0;
 }
 
 boolean

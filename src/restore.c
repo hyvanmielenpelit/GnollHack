@@ -1011,7 +1011,7 @@ register int fd;
     clear_nhwindow(WIN_MESSAGE);
 
     /* Play music for the dungeon */
-    play_music_type(MUSIC_NORMAL);
+    play_game_music();
 
     /* Success! */
     welcome(FALSE);

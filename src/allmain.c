@@ -1099,10 +1099,6 @@ newgame()
                        * any artifacts */
     u_init();
 
-    /* Mark game as started */
-    context.game_started = TRUE;
-    play_music_type(MUSIC_INTRO);
-
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -1123,6 +1119,9 @@ newgame()
     vision_reset();          /* set up internals for level (after mklev) */
     check_special_room(FALSE);
 
+    /* Mark game as started; check special room plays intro here */
+    context.game_started = TRUE;
+
     if (MON_AT(u.ux, u.uy))
         mnexto(m_at(u.ux, u.uy));
     (void) makedog();
@@ -1140,8 +1139,8 @@ newgame()
 #endif
     program_state.something_worth_saving++; /* useful data now exists */
 
-    /* Play music for the dungeon */
-    play_music_type(MUSIC_NORMAL);
+    /* Change to the main music */
+    play_game_music();
 
     /* Success! */
     welcome(TRUE);

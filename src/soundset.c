@@ -218,37 +218,23 @@ unsigned long music_flags;
 }
 
 void
-play_music_type(music_type)
-enum music_types music_type;
+play_game_music()
 {
     struct ghsound_music_info musicinfo = { 0 };
     musicinfo.volume = BACKGROUND_MUSIC_VOLUME;
     musicinfo.ghsound = GHSOUND_NONE;
 
-    switch (music_type)
+    if (context.game_started == FALSE)
     {
-    case MUSIC_NONE:
-        musicinfo.ghsound = GHSOUND_NONE;
-        break;
-    case MUSIC_INTRO:
         musicinfo.ghsound = GHSOUND_MUSIC_INTRO;
-        break;
-    case MUSIC_NORMAL:
-    {
-        musicinfo.ghsound = get_dungeon_music(u.uz.dnum);
-        break;
     }
-    case MUSIC_ROOM:
+    else
     {
         struct mkroom* room_ptr = which_room(u.ux, u.uy);
-        if(!room_ptr)
-            musicinfo.ghsound = get_dungeon_music(u.uz.dnum);
+        if (!room_ptr)
+            musicinfo.ghsound = get_level_music(&u.uz);
         else
             musicinfo.ghsound = get_room_music(room_ptr);
-        break;
-    }
-    default:
-        break;
     }
 
     play_ghsound_music(musicinfo);
@@ -1607,15 +1593,49 @@ int dnum;
 {
     enum ghsound_types res = GHSOUND_NONE;
 
-    switch (dnum)
-    {
-    case 0:
+    if (Inhell)
+        res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    else if (dnum == mines_dnum)
+        res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
+    else if (dnum == sokoban_dnum)
+        res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
+    else if (dnum == quest_dnum)
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
-        break;
-    default:
+    else if (dnum == tower_dnum)
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
-        break;
-    }
+    else if (dnum == modron_dnum)
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+    else if (dnum == bovine_dnum)
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+    else
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+
+    return res;
+}
+
+enum ghsound_types
+get_level_music(dlvl)
+struct d_level* dlvl;
+{
+    enum ghsound_types res = GHSOUND_NONE;
+    if (!dlvl)
+        return res;
+
+    int dnum = dlvl->dnum;
+
+
+    if (Is_valley(dlvl))
+        return GHSOUND_GEHENNOM_MUSIC_VALLEY;
+    else if (Is_sanctum(dlvl))
+        return GHSOUND_GEHENNOM_MUSIC_SANCTUM;
+    else if (Is_stronghold(dlvl))
+        return GHSOUND_DUNGEON_NORMAL_MUSIC_CASTLE;
+    else if (Is_medusa_level(dlvl))
+        return GHSOUND_DUNGEON_NORMAL_MUSIC_MEDUSA;
+    else if (Is_asmo_level(dlvl))
+        return GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    else
+        return get_dungeon_music(dnum);
 
     return res;
 }
@@ -1630,7 +1650,7 @@ struct mkroom* room;
     switch (rtype)
     {
     case OROOM:
-        res = get_dungeon_music(u.uz.dnum);
+        res = get_level_music(&u.uz);
         break;
     case COURT:
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
@@ -1663,7 +1683,7 @@ struct mkroom* room;
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case DELPHI:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_ORACLE;
         break;
     case TEMPLE:
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
@@ -1680,10 +1700,10 @@ struct mkroom* room;
     case DESERTEDSHOP:
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_DESERTED;
         break;
-    case SHOPBASE:
+    case ARMORSHOP:
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
-    case ARMORSHOP:
+    case SHOPBASE:
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case SCROLLSHOP:
