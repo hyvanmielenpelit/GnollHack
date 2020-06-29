@@ -221,7 +221,7 @@ void
 play_game_music()
 {
     struct ghsound_music_info musicinfo = { 0 };
-    musicinfo.volume = BACKGROUND_MUSIC_VOLUME;
+    musicinfo.volume = (u.uz.dnum == sokoban_dnum ? SOKOBAN_MUSIC_VOLUME : BACKGROUND_MUSIC_VOLUME);
     musicinfo.ghsound = GHSOUND_NONE;
 
     if (context.game_started == FALSE)

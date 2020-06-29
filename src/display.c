@@ -481,6 +481,11 @@ int x, y, show;
     /* Trap layer */
     if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))
         map_trap(trap, show);
+    else if (level.flags.hero_memory)
+    {
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = NO_GLYPH;
+    }
+
 
     /* Doodad layer */
     /* map_doodad(x, y) */
