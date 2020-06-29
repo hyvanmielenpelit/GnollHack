@@ -11,6 +11,7 @@
 #include "date.h"
 #include "patchlevel.h"
 #include "dlb.h"
+#include "soundset.h"
 
 #define LLEN 128
 
@@ -289,7 +290,10 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 GetNHApp()->hMainWnd = NULL;
             DestroyWindow(hWnd);
             SetFocus(GetNHApp()->hMainWnd);
-            //fmod_stop_all_sounds();
+            struct ghsound_music_info info = { 0 };
+            info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
+            info.volume = BACKGROUND_MUSIC_VOLUME;
+            mswin_play_ghsound_music(info);
             return TRUE;
         }
         break;

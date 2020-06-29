@@ -815,7 +815,6 @@ E void FDECL(recbranch_mapseen, (d_level *, d_level *));
 E void FDECL(overview_stats, (winid, const char *, long *, size_t *));
 E void FDECL(remdun_mapseen, (int));
 E const char *FDECL(endgamelevelname, (char *, int));
-E enum ghsound_types FDECL(get_dungeon_music, (int));
 
 /* ### eat.c ### */
 
@@ -2680,6 +2679,8 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 /* ### soundset.c ### */
 
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
+E void FDECL(play_music_type, (enum music_types));
+E void NDECL(stop_music);
 E void FDECL(play_movement_sound, (struct monst*, unsigned long));
 E void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, double, boolean));
 E void FDECL(play_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_sound_types));
@@ -2714,6 +2715,8 @@ E boolean FDECL(obj_has_sound_source, (struct obj*));
 E enum ghsound_types FDECL(obj_ambient_sound, (struct obj*));
 E double FDECL(obj_ambient_sound_volume, (struct obj*));
 E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, double*, enum soundsource_ambient_subtypes*));
+E enum ghsound_types FDECL(get_dungeon_music, (int));
+E enum ghsound_types FDECL(get_room_music, (enum roomtype_types));
 
 /* ### sys.c ### */
 

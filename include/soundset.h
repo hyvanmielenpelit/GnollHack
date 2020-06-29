@@ -15,7 +15,10 @@ enum soundsource_types {
 	SOUNDSOURCE_OBJECT = 0,
 	SOUNDSOURCE_MONSTER,
 	SOUNDSOURCE_LOCATION,
-	SOUNDSOURCE_LIGHTSOURCE,
+	SOUNDSOURCE_ROOM, /* Plays while in room */
+	SOUNDSOURCE_LEVEL, /* Plays while on level */
+	SOUNDSOURCE_DUNGEON, /* Plays while in dungeon */
+	SOUNDSOURCE_LEVEL_LOCATION_TYPE, /* Only nearest counts */
 	MAX_SOUNDSOURCE_TYPES
 };
 
@@ -31,6 +34,9 @@ enum soundsource_ambient_subtypes {
 /* All GnollHack Sounds */
 enum ghsound_types {
 	GHSOUND_NONE = 0,
+	GHSOUND_MUSIC_SPLASH,
+	GHSOUND_MUSIC_PLAYER_SELECTION,
+	GHSOUND_MUSIC_INTRO,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL,
 	GHSOUND_PLAYER_FOOTSTEPS_NORMAL,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_GOING_BACK_UP,
@@ -49,7 +55,16 @@ enum ghsound_types {
 	MAX_GHSOUNDS
 };
 
-
+/* Music types */
+enum music_types {
+	MUSIC_NONE = 0,
+	MUSIC_INTRO,
+	MUSIC_NORMAL, /* Level or dungeon */
+	MUSIC_ROOM_NORMAL,
+	MUSIC_SHOP_NORMAL,
+	MUSIC_SHOP_DESERTED,
+	MUSIC_SHOP_NOSHOPKEEPER
+};
 
 #define MAX_SOUND_PARAMETERS 8
 
@@ -64,6 +79,7 @@ struct ghsound_immediate_info {
 struct ghsound_music_info {
 	enum ghsound_types ghsound;
 	float volume;
+	boolean stop_music;
 };
 
 

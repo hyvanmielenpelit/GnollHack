@@ -3169,22 +3169,4 @@ boolean printdun;
     }
 }
 
-enum ghsound_types
-get_dungeon_music(int dnum)
-{
-    enum ghsound_types res = GHSOUND_NONE;
-
-    switch (dnum)   
-    {
-    case 0:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
-        break;
-    default:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
-        break;
-    }
-
-    return res;
-}
-
 /*dungeon.c*/

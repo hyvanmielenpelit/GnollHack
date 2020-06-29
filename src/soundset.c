@@ -218,6 +218,58 @@ unsigned long music_flags;
 }
 
 void
+play_music_type(music_type)
+enum music_types music_type;
+{
+    struct ghsound_music_info musicinfo = { 0 };
+    musicinfo.volume = BACKGROUND_MUSIC_VOLUME;
+    musicinfo.ghsound = GHSOUND_NONE;
+
+    switch (music_type)
+    {
+    case MUSIC_NONE:
+        musicinfo.ghsound = GHSOUND_NONE;
+        break;
+    case MUSIC_INTRO:
+        musicinfo.ghsound = GHSOUND_MUSIC_INTRO;
+        break;
+    case MUSIC_NORMAL:
+    {
+        int dnum = u.uz.dnum;
+        musicinfo.ghsound = get_dungeon_music(dnum);
+        break;
+    }
+    case MUSIC_ROOM_NORMAL:
+    {
+        struct mkroom* room_ptr = which_room(u.ux, u.uy);
+        musicinfo.ghsound = get_room_music(room_ptr->rtype);
+        break;
+    }
+    case MUSIC_SHOP_NORMAL:
+        break;
+    case MUSIC_SHOP_DESERTED:
+        break;
+    case MUSIC_SHOP_NOSHOPKEEPER:
+        break;
+    default:
+        break;
+    }
+
+    play_ghsound_music(musicinfo);
+}
+
+void
+stop_music()
+{
+    struct ghsound_music_info musicinfo = { 0 };
+    musicinfo.ghsound = GHSOUND_NONE;
+    musicinfo.volume = 0.0f;
+    musicinfo.stop_music = TRUE;
+
+    play_ghsound_music(musicinfo);
+}
+
+void
 play_movement_sound(mtmp, movement_flags)
 struct monst* mtmp;
 unsigned long movement_flags;
@@ -1552,5 +1604,130 @@ enum soundsource_ambient_subtypes *subtype_ptr;
 
     return location_soundsets[lsoundset].sounds[LOCATION_SOUND_TYPE_AMBIENT].ghsound;
 }
+
+enum ghsound_types
+get_dungeon_music(dnum)
+int dnum;
+{
+    enum ghsound_types res = GHSOUND_NONE;
+
+    switch (dnum)
+    {
+    case 0:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    default:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    }
+
+    return res;
+}
+
+enum ghsound_types
+get_room_music(rtype)
+enum roomtype_types rtype;
+{
+    enum ghsound_types res = GHSOUND_NONE;
+
+    switch (rtype)
+    {
+    case OROOM:
+        res = get_dungeon_music(u.uz.dnum);
+        break;
+    case COURT:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case SWAMP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case VAULT:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case BEEHIVE:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case DRAGONLAIR:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case LIBRARY:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case GARDEN:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case MORGUE:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case BARRACKS:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case ZOO:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case DELPHI:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case TEMPLE:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case LEPREHALL:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case COCKNEST:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case ANTHOLE:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case DESERTEDSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case SHOPBASE:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case ARMORSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case SCROLLSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case POTIONSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case WEAPONSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case FOODSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case RINGSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case WANDSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case TOOLSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case BOOKSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case REAGENTSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case FODDERSHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    case CANDLESHOP:
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        break;
+    default:
+        break;
+    }
+
+    return res;
+}
+
 
 /* soundset.c */

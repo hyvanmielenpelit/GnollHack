@@ -1101,7 +1101,8 @@ newgame()
 
     /* Mark game as started */
     context.game_started = TRUE;
-    
+    play_music_type(MUSIC_INTRO);
+
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, (SIG_RET_TYPE) done1);
 #endif
@@ -1140,7 +1141,7 @@ newgame()
     program_state.something_worth_saving++; /* useful data now exists */
 
     /* Play music for the dungeon */
-    play_dungeon_music(&u.uz, u.ux, u.uy, 0UL);
+    play_music_type(MUSIC_NORMAL);
 
     /* Success! */
     welcome(TRUE);
