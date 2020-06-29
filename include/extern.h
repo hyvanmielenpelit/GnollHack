@@ -2716,7 +2716,7 @@ E enum ghsound_types FDECL(obj_ambient_sound, (struct obj*));
 E double FDECL(obj_ambient_sound_volume, (struct obj*));
 E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, double*, enum soundsource_ambient_subtypes*));
 E enum ghsound_types FDECL(get_dungeon_music, (int));
-E enum ghsound_types FDECL(get_room_music, (enum roomtype_types));
+E enum ghsound_types FDECL(get_room_music, (struct mkroom*));
 
 /* ### sys.c ### */
 

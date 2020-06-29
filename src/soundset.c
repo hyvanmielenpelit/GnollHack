@@ -235,22 +235,18 @@ enum music_types music_type;
         break;
     case MUSIC_NORMAL:
     {
-        int dnum = u.uz.dnum;
-        musicinfo.ghsound = get_dungeon_music(dnum);
+        musicinfo.ghsound = get_dungeon_music(u.uz.dnum);
         break;
     }
-    case MUSIC_ROOM_NORMAL:
+    case MUSIC_ROOM:
     {
         struct mkroom* room_ptr = which_room(u.ux, u.uy);
-        musicinfo.ghsound = get_room_music(room_ptr->rtype);
+        if(!room_ptr)
+            musicinfo.ghsound = get_dungeon_music(u.uz.dnum);
+        else
+            musicinfo.ghsound = get_room_music(room_ptr);
         break;
     }
-    case MUSIC_SHOP_NORMAL:
-        break;
-    case MUSIC_SHOP_DESERTED:
-        break;
-    case MUSIC_SHOP_NOSHOPKEEPER:
-        break;
     default:
         break;
     }
@@ -1625,9 +1621,10 @@ int dnum;
 }
 
 enum ghsound_types
-get_room_music(rtype)
-enum roomtype_types rtype;
+get_room_music(room)
+struct mkroom* room;
 {
+    enum roomtype_types rtype = room->rtype;
     enum ghsound_types res = GHSOUND_NONE;
 
     switch (rtype)
@@ -1681,46 +1678,46 @@ enum roomtype_types rtype;
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case DESERTEDSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_DESERTED;
         break;
     case SHOPBASE:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case ARMORSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case SCROLLSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case POTIONSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case WEAPONSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case FOODSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case RINGSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case WANDSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case TOOLSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case BOOKSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case REAGENTSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case FODDERSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     case CANDLESHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
         break;
     default:
         break;
