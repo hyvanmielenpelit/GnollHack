@@ -83,16 +83,12 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music-Gehennom-Valley", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Gehennom-Sanctum", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Player Footsteps", 0, 1.0f},
-    NoSound,
     { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Shop-Angry", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Shop-Dead", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Shop-Deserted", 0, 1.0f},
-    NoSound,
-    
-    NoSound,
-    NoSound,
     { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0, 1.0f},
+
     { SOUND_BANK_MASTER, "event:/Bee Ambient" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Quarterstaff Swing" , 0, 1.0f},
