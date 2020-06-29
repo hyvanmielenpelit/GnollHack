@@ -2680,6 +2680,7 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 
 E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
 E void NDECL(play_game_music);
+E void NDECL(play_level_ambient_sounds);
 E void NDECL(stop_music);
 E void FDECL(play_movement_sound, (struct monst*, unsigned long));
 E void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, double, boolean));
@@ -2718,6 +2719,8 @@ E enum ghsound_types FDECL(get_location_ambient_sound_type, (xchar, xchar, doubl
 E enum ghsound_types FDECL(get_dungeon_music, (int));
 E enum ghsound_types FDECL(get_level_music, (struct d_level*));
 E enum ghsound_types FDECL(get_room_music, (struct mkroom*));
+E enum ghsound_types FDECL(get_level_ambient_sounds, (struct d_level*));
+E enum ghsound_types FDECL(get_room_ambient_sounds, (struct mkroom*));
 
 /* ### sys.c ### */
 
@@ -3345,7 +3348,7 @@ E void FDECL(genl_extra_winproc_function_A, (struct function_info_A));
 E void FDECL(genl_extra_winproc_function_C, (struct function_info_C));
 E void FDECL(genl_extra_winproc_function_D, (struct function_info_D));
 E void FDECL(genl_extra_winproc_function_E, (struct function_info_E));
-E void FDECL(genl_extra_winproc_function_F, (struct function_info_F));
+E void FDECL(genl_play_ghsound_level_ambient, (struct ghsound_level_ambient_info));
 
 E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));
 E void FDECL(genl_play_immediate_ghsound, (struct ghsound_immediate_info));

@@ -78,6 +78,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
 	xchar d_modron_dnum;
     d_level d_bovine_level;
     xchar d_bovine_dnum;
+    d_level d_minetown_level;
     d_level d_mineend_level;
     d_level d_sokoend_level;
 } dungeon_topology;
@@ -117,6 +118,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define modron_dnum             (dungeon_topology.d_modron_dnum)
 #define bovine_level            (dungeon_topology.d_bovine_level)
 #define bovine_dnum             (dungeon_topology.d_bovine_dnum)
+#define minetown_level          (dungeon_topology.d_minetown_level)
 #define mineend_level           (dungeon_topology.d_mineend_level)
 #define sokoend_level           (dungeon_topology.d_sokoend_level)
 /* clang-format on */

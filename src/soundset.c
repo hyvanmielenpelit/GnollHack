@@ -237,6 +237,7 @@ play_game_music()
             musicinfo.ghsound = get_room_music(room_ptr);
     }
 
+    /* play_ghsound_music will check if the music is currently playing and then do nothing if this is the case */
     play_ghsound_music(musicinfo);
 }
 
@@ -249,6 +250,31 @@ stop_music()
     musicinfo.stop_music = TRUE;
 
     play_ghsound_music(musicinfo);
+}
+
+void
+play_level_ambient_sounds()
+{
+    struct ghsound_level_ambient_info lainfo = { 0 };
+    lainfo.volume = BACKGROUND_MUSIC_VOLUME;
+    lainfo.ghsound = GHSOUND_NONE;
+
+    if (context.game_started == FALSE)
+    {
+        lainfo.ghsound = GHSOUND_MUSIC_INTRO;
+    }
+    else
+    {
+        struct mkroom* room_ptr = which_room(u.ux, u.uy);
+        if (!room_ptr)
+            lainfo.ghsound = get_level_ambient_sounds(&u.uz);
+        else
+            lainfo.ghsound = get_room_ambient_sounds(room_ptr);
+    }
+
+    /* play_ghsound_level_ambient will check if the ambient sound is currently playing and then do nothing if this is the case */
+    /* GHSOUND_NONE will stop ambient sounds */
+    play_ghsound_level_ambient(lainfo);
 }
 
 void
@@ -1634,6 +1660,8 @@ struct d_level* dlvl;
         return GHSOUND_DUNGEON_NORMAL_MUSIC_MEDUSA;
     else if (Is_asmo_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    if (Is_minetown_level(dlvl))
+        return GHSOUND_GNOMISH_MINES_MUSIC_TOWN;
     else
         return get_dungeon_music(dnum);
 
@@ -1645,57 +1673,43 @@ get_room_music(room)
 struct mkroom* room;
 {
     enum roomtype_types rtype = room->rtype;
-    enum ghsound_types res = GHSOUND_NONE;
+    enum ghsound_types res = get_level_music(&u.uz);;
 
     switch (rtype)
     {
     case OROOM:
-        res = get_level_music(&u.uz);
         break;
     case COURT:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case SWAMP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case VAULT:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case BEEHIVE:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case DRAGONLAIR:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case LIBRARY:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case GARDEN:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case MORGUE:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case BARRACKS:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case ZOO:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case DELPHI:
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_ORACLE;
         break;
     case TEMPLE:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE;
         break;
     case LEPREHALL:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case COCKNEST:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case ANTHOLE:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
         break;
     case DESERTEDSHOP:
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_DESERTED;
@@ -1745,6 +1759,106 @@ struct mkroom* room;
 
     return res;
 }
+
+
+enum ghsound_types
+get_level_ambient_sounds(dlvl)
+struct d_level* dlvl;
+{
+    enum ghsound_types res = GHSOUND_NONE;
+    if (!dlvl)
+        return res;
+
+    int dnum = dlvl->dnum;
+
+
+    if (Is_valley(dlvl))
+        return GHSOUND_GEHENNOM_VALLEY_AMBIENT;
+    else
+        return GHSOUND_NONE;
+
+    return res;
+}
+
+enum ghsound_types
+get_room_ambient_sounds(room)
+struct mkroom* room;
+{
+    enum roomtype_types rtype = room->rtype;
+    enum ghsound_types res = get_level_ambient_sounds(&u.uz);
+
+    switch (rtype)
+    {
+    case OROOM:
+        break;
+    case COURT:
+        break;
+    case SWAMP:
+        break;
+    case VAULT:
+        break;
+    case BEEHIVE:
+        break;
+    case DRAGONLAIR:
+        break;
+    case LIBRARY:
+        break;
+    case GARDEN:
+        res = GHSOUND_GARDEN;
+        break;
+    case MORGUE:
+        res = GHSOUND_MORGUE;
+        break;
+    case BARRACKS:
+        break;
+    case ZOO:
+        break;
+    case DELPHI:
+        break;
+    case TEMPLE:
+        break;
+    case LEPREHALL:
+        break;
+    case COCKNEST:
+        break;
+    case ANTHOLE:
+        break;
+    case DESERTEDSHOP:
+        res = GHSOUND_MORGUE;
+        break;
+    case ARMORSHOP:
+        break;
+    case SHOPBASE:
+        break;
+    case SCROLLSHOP:
+        break;
+    case POTIONSHOP:
+        break;
+    case WEAPONSHOP:
+        break;
+    case FOODSHOP:
+        break;
+    case RINGSHOP:
+        break;
+    case WANDSHOP:
+        break;
+    case TOOLSHOP:
+        break;
+    case BOOKSHOP:
+        break;
+    case REAGENTSHOP:
+        break;
+    case FODDERSHOP:
+        break;
+    case CANDLESHOP:
+        break;
+    default:
+        break;
+    }
+
+    return res;
+}
+
 
 
 /* soundset.c */

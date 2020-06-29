@@ -2631,6 +2631,7 @@ register boolean newlev;
 
     move_update(newlev);
     play_game_music();
+    play_level_ambient_sounds();
 
     if (*u.ushops0)
         u_left_shop(u.ushops_left, newlev);

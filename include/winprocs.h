@@ -93,7 +93,7 @@ struct window_procs {
     void FDECL((*win_extra_winproc_function_D), (struct function_info_D));
     void FDECL((*win_extra_winproc_function_E), (struct function_info_E));
     void FDECL((*win_play_ghsound_music), (struct ghsound_music_info));
-    void FDECL((*win_extra_winproc_function_F), (struct function_info_F));
+    void FDECL((*win_play_ghsound_level_ambient), (struct ghsound_level_ambient_info));
     void NDECL((*win_adjust_ghsound_general_volumes));
     void FDECL((*win_add_ambient_ghsound), (sound_source*));
     void FDECL((*win_delete_ambient_ghsound), (sound_source*));
@@ -190,7 +190,7 @@ extern
 #define extra_winproc_function_D (*windowprocs.win_extra_winproc_function_D)
 #define extra_winproc_function_E (*windowprocs.win_extra_winproc_function_E)
 #define play_ghsound_music (*windowprocs.win_play_ghsound_music)
-#define extra_winproc_function_F (*windowprocs.win_extra_winproc_function_F)
+#define play_ghsound_level_ambient (*windowprocs.win_play_ghsound_level_ambient)
 #define adjust_ghsound_general_volumes (*windowprocs.win_adjust_ghsound_general_volumes)
 #define add_ambient_ghsound (*windowprocs.win_add_ambient_ghsound)
 #define delete_ambient_ghsound (*windowprocs.win_delete_ambient_ghsound)
@@ -427,7 +427,7 @@ struct chain_procs {
     void FDECL((*win_extra_winproc_function_D), (CARGS, struct function_info_D));
     void FDECL((*win_extra_winproc_function_E), (CARGS, struct function_info_E));
     void FDECL((*win_play_ghsound_music), (CARGS, struct ghsound_music_info));
-    void FDECL((*win_extra_winproc_function_F), (CARGS, struct function_info_F));
+    void FDECL((*win_play_ghsound_level_ambient), (CARGS, struct ghsound_level_ambient_info));
     void FDECL((*win_adjust_ghsound_general_volumes, (CARGS))));
     void FDECL((*win_add_ambient_ghsound), (CARGS, sound_source*));
     void FDECL((*win_delete_ambient_ghsound), (CARGS, sound_source*));

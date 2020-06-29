@@ -224,7 +224,7 @@ void mswin_extra_winproc_function_C(struct function_info_C info);
 void mswin_extra_winproc_function_D(struct function_info_D info);
 void mswin_extra_winproc_function_E(struct function_info_E info);
 void mswin_play_ghsound_music(struct ghsound_music_info info);
-void mswin_extra_winproc_function_F(struct function_info_F info);
+void mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info);
 void mswin_adjust_ghsound_general_volumes(VOID_ARGS);
 void mswin_add_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_delete_ambient_ghsound(struct soundsource_t* soundsource);

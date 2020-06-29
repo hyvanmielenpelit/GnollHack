@@ -124,7 +124,7 @@ struct window_procs mswin_procs = {
     mswin_extra_winproc_function_D,
     mswin_extra_winproc_function_E,
     mswin_play_ghsound_music,
-    mswin_extra_winproc_function_F,
+    mswin_play_ghsound_level_ambient,
     mswin_adjust_ghsound_general_volumes,
     mswin_add_ambient_ghsound,
     mswin_delete_ambient_ghsound,
@@ -3273,9 +3273,12 @@ mswin_play_ghsound_music(struct ghsound_music_info info)
 }
 
 void
-mswin_extra_winproc_function_F(struct function_info_F info)
+mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
 {
-    return;
+    if (!fmod_play_level_ambient_sound(info))
+    {
+        impossible("Cannot play level ambient sound!");
+    }
 }
 
 void

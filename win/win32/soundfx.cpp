@@ -26,6 +26,7 @@ struct GNHSoundInstance {
 #define NUM_IMMEDIATE_SOUND_INSTANCES 8
 
 static GNHSoundInstance musicInstances[2] = { 0 };
+static GNHSoundInstance levelAmbientInstances[2] = { 0 };
 static GNHSoundInstance immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES] = { 0 };
 static GNHSoundInstance* ambient_base = NULL;
 
@@ -71,6 +72,7 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music-Intro", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Normal-1", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Oracle", 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music-Temple", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Medusa", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Castle", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Normal", 0, 1.0f},
@@ -82,7 +84,7 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Player Footsteps", 0, 1.0f},
     NoSound,
     { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, 1.0f},
-    NoSound,
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, 1.0f},
     NoSound,
     NoSound,
@@ -91,7 +93,10 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Bee Ambient" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Quarterstaff Swing" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Quarterstaff Hit" , 0, 1.0f}
+    { SOUND_BANK_MASTER, "event:/Quarterstaff Hit" , 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Valley Ambient" , 0, 0.6f},
+    { SOUND_BANK_MASTER, "event:/Morgue Ambient" , 0, 0.6f},
+    { SOUND_BANK_MASTER, "event:/Garden Ambient" , 0, 0.6f}
 };
 
 #undef NoSound
@@ -214,7 +219,92 @@ extern "C"
         musicInstances[0].normalVolume = info.volume;
 
         result = fmod_studio_system->update();
-        return TRUE;
+        return (result == FMOD_OK);
+    }
+
+
+    boolean
+    fmod_play_level_ambient_sound(struct ghsound_level_ambient_info info)
+    {
+        FMOD_RESULT result;
+
+        enum ghsound_types soundid = info.ghsound;
+
+        if (soundid == GHSOUND_NONE)
+        {
+            if (levelAmbientInstances[0].eventInstance)
+            {
+                /* Stop ambient sound */
+                result = levelAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                if (result != FMOD_OK)
+                    return FALSE;
+                levelAmbientInstances[0].ghsound = GHSOUND_NONE;
+                levelAmbientInstances[0].normalVolume = 0.0f;
+                result = fmod_studio_system->update();
+                return (result == FMOD_OK);
+            }
+
+            /* Nothing to do */
+            return TRUE;
+        }
+
+        struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+        float event_volume = eventmap.volume;
+
+        if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
+            return FALSE;
+
+        Studio::EventDescription* levelAmbientDescription = NULL;
+        result = fmod_studio_system->getEvent(eventmap.eventPath, &levelAmbientDescription);
+
+        if (result != FMOD_OK)
+            return FALSE;
+
+        if (levelAmbientInstances[0].eventInstance)
+        {
+            Studio::EventInstance* earlierLevelAmbientInstance = levelAmbientInstances[0].eventInstance;
+            Studio::EventDescription* earlierLevelAmbientDescription = NULL;
+            earlierLevelAmbientInstance->getDescription(&earlierLevelAmbientDescription);
+            if (earlierLevelAmbientDescription && levelAmbientDescription == earlierLevelAmbientDescription)
+            {
+                /* Already playing, no need to do anything, unless so specified */
+                return 1;
+            }
+        }
+
+        /* Not playing yet, so make a new instance */
+        Studio::EventInstance* levelAmbientInstance = NULL;
+        result = levelAmbientDescription->createInstance(&levelAmbientInstance);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        levelAmbientInstance->setVolume(info.volume * event_volume * general_ambient_volume * general_volume);
+        result = levelAmbientInstance->start();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        /* If starting succeeded, stop the old ambient sound in levelAmbientInstances[0] by fading */
+        if (levelAmbientInstances[0].eventInstance)
+        {
+            if(levelAmbientInstances[0].ghsound != GHSOUND_NONE)
+                levelAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+
+            /* move to levelAmbientInstances[1] for later release, and before that, release existing levelAmbientInstances[1] */
+            if (levelAmbientInstances[1].eventInstance)
+                levelAmbientInstances[1].eventInstance->release();
+
+            levelAmbientInstances[1].eventInstance = levelAmbientInstances[0].eventInstance;
+            levelAmbientInstances[1].ghsound = levelAmbientInstances[0].ghsound;
+            levelAmbientInstances[1].normalVolume = levelAmbientInstances[0].normalVolume;
+        }
+
+        /* Set the new instance as levelAmbientInstances[0] */
+        levelAmbientInstances[0].eventInstance = levelAmbientInstance;
+        levelAmbientInstances[0].ghsound = info.ghsound;
+        levelAmbientInstances[0].normalVolume = info.volume;
+
+        result = fmod_studio_system->update();
+        return (result == FMOD_OK);
     }
 
     boolean
@@ -317,6 +407,16 @@ extern "C"
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
                 result = musicInstances[i].eventInstance->setVolume(musicInstances[i].normalVolume * event_volume * general_music_volume * general_volume);
+            }
+        }
+        for (int i = 0; i <= 1; i++)
+        {
+            if (levelAmbientInstances[i].eventInstance)
+            {
+                enum ghsound_types soundid = levelAmbientInstances[i].ghsound;
+                struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+                float event_volume = eventmap.volume;
+                result = levelAmbientInstances[i].eventInstance->setVolume(levelAmbientInstances[i].normalVolume * event_volume * general_ambient_volume * general_volume);
             }
         }
         for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)

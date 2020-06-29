@@ -141,7 +141,7 @@ struct window_procs tty_procs = {
     genl_extra_winproc_function_D,
     genl_extra_winproc_function_E,
     genl_play_ghsound_music,
-    genl_extra_winproc_function_F,
+    genl_play_ghsound_level_ambient,
     genl_adjust_ghsound_general_volumes,
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,

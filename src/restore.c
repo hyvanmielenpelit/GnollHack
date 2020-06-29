@@ -1010,8 +1010,8 @@ register int fd;
     restoring = FALSE;
     clear_nhwindow(WIN_MESSAGE);
 
-    /* Play music for the dungeon */
-    play_game_music();
+    /* Play ambient sounds for the dungeon; check_special_room will play music */
+    play_level_ambient_sounds();
 
     /* Success! */
     welcome(FALSE);

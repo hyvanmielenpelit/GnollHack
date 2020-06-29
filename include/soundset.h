@@ -39,6 +39,7 @@ enum ghsound_types {
 	GHSOUND_MUSIC_INTRO,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_ORACLE,
+	GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_MEDUSA,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_CASTLE,
 	GHSOUND_GNOMISH_MINES_MUSIC_NORMAL,
@@ -61,6 +62,9 @@ enum ghsound_types {
 	GHSOUND_STAFF_SWING,
 	GHSOUND_STAFF_HIT,
 	GHSOUND_STAFF_MISS,
+	GHSOUND_GEHENNOM_VALLEY_AMBIENT,
+	GHSOUND_MORGUE,
+	GHSOUND_GARDEN,
 	MAX_GHSOUNDS
 };
 
@@ -79,8 +83,6 @@ struct ghsound_music_info {
 	float volume;
 	boolean stop_music;
 };
-
-
 
 /* Unused play_ghsound function input structs */
 struct function_info_A {
@@ -105,7 +107,7 @@ struct function_info_E {
 	float volume;
 };
 
-struct function_info_F {
+struct ghsound_level_ambient_info {
 	enum ghsound_types ghsound;
 	float volume;
 };

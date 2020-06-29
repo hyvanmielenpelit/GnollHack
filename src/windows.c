@@ -265,8 +265,8 @@ struct ghsound_music_info info;
 }
 
 void
-genl_extra_winproc_function_F(info)
-struct function_info_F info;
+genl_play_ghsound_level_ambient(info)
+struct ghsound_level_ambient_info info;
 {
     return;
 }

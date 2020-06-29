@@ -1141,6 +1141,7 @@ newgame()
 
     /* Change to the main music */
     play_game_music();
+    play_level_ambient_sounds();
 
     /* Success! */
     welcome(TRUE);
