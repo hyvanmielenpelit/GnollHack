@@ -748,6 +748,7 @@ struct monst *mtmp;
 			mtmp->mpeaceful = 0;
 			set_malign(mtmp);
 			newsym(mtmp->mx, mtmp->my);
+			play_game_music();
 			return 0;
 		}
 	}
@@ -790,6 +791,7 @@ struct monst *mtmp;
 				mtmp->mpeaceful = 0;
 				set_malign(mtmp);
 				newsym(mtmp->mx, mtmp->my);
+				play_game_music();
 				return 0;
 			}
 		}

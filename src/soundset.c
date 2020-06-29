@@ -1675,86 +1675,111 @@ struct mkroom* room;
     enum roomtype_types rtype = room->rtype;
     enum ghsound_types res = get_level_music(&u.uz);;
 
-    switch (rtype)
+    if (rtype >= SHOPBASE)
     {
-    case OROOM:
-        break;
-    case COURT:
-        break;
-    case SWAMP:
-        break;
-    case VAULT:
-        break;
-    case BEEHIVE:
-        break;
-    case DRAGONLAIR:
-        break;
-    case LIBRARY:
-        break;
-    case GARDEN:
-        break;
-    case MORGUE:
-        break;
-    case BARRACKS:
-        break;
-    case ZOO:
-        break;
-    case DELPHI:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_ORACLE;
-        break;
-    case TEMPLE:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE;
-        break;
-    case LEPREHALL:
-        break;
-    case COCKNEST:
-        break;
-    case ANTHOLE:
-        break;
-    case DESERTEDSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_DESERTED;
-        break;
-    case ARMORSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case SHOPBASE:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case SCROLLSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case POTIONSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case WEAPONSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case FOODSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case RINGSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case WANDSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case TOOLSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case BOOKSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case REAGENTSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case FODDERSHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    case CANDLESHOP:
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
-        break;
-    default:
-        break;
+        if (room->resident && room->resident->isshk && room->resident->mextra && ESHK(room->resident))
+        {
+            if(is_peaceful(room->resident))
+            {
+                switch (rtype)
+                {
+                case SHOPBASE:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case ARMORSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case SCROLLSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case POTIONSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case WEAPONSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case FOODSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case RINGSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case WANDSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case TOOLSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case BOOKSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case REAGENTSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case FODDERSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                case CANDLESHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
+                default:
+                    break;
+                }
+            }
+            else
+            {
+                res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_SHOPKEEPER_ANGRY;
+            }
+        }
+        else
+        {
+            res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_SHOPKEEPER_DEAD;
+        }
+    }
+    else
+    {
+        switch (rtype)
+        {
+        case OROOM:
+            break;
+        case COURT:
+            break;
+        case SWAMP:
+            break;
+        case VAULT:
+            break;
+        case BEEHIVE:
+            break;
+        case DRAGONLAIR:
+            break;
+        case LIBRARY:
+            break;
+        case GARDEN:
+            break;
+        case MORGUE:
+            break;
+        case BARRACKS:
+            break;
+        case ZOO:
+            break;
+        case DELPHI:
+            res = GHSOUND_DUNGEON_NORMAL_MUSIC_ORACLE;
+            break;
+        case TEMPLE:
+            res = GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE;
+            break;
+        case LEPREHALL:
+            break;
+        case COCKNEST:
+            break;
+        case ANTHOLE:
+            break;
+        case DESERTEDSHOP:
+            res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_DESERTED;
+            break;
+        default:
+            break;
+        }
     }
 
     return res;

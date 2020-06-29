@@ -738,6 +738,7 @@ register struct monst *mtmp;
                 mtmp->mpeaceful = 0;
                 newsym(mtmp->mx, mtmp->my);
                 set_malign(mtmp);
+                play_game_music();
                 /* since no way is an image going to pay it off */
             }
         }

@@ -216,6 +216,7 @@ struct monst *mtmp;
             } while (*++p);
         }
     }
+    play_game_music();
 }
 
 void
@@ -1093,6 +1094,7 @@ register struct monst *shkp;
             bp++;
         }
     }
+    play_game_music();
 }
 
 /* add aggravation surcharge to all billed items */
@@ -1112,6 +1114,7 @@ register struct monst *shkp;
             bp++;
         }
     }
+    play_game_music();
 }
 
 /* wakeup and/or unparalyze shopkeeper */
