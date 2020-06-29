@@ -1784,7 +1784,7 @@ enum ghsound_types
 get_room_ambient_sounds(room)
 struct mkroom* room;
 {
-    enum roomtype_types rtype = room->rtype;
+    enum roomtype_types rtype = room->orig_rtype;
     enum ghsound_types res = get_level_ambient_sounds(&u.uz);
 
     switch (rtype)

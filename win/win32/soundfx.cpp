@@ -65,7 +65,7 @@ struct ghsound_eventmapping {
 
 #define NoSound { SOUND_BANK_NONE,  "", 0, 0.0f}
 
-const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
+const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "" , 0, 0.0f },
     { SOUND_BANK_MASTER, "event:/Music-Splash", 0, 0.5f},
     { SOUND_BANK_MASTER, "event:/Music-Player-Selection", 0, 0.3f},
@@ -77,6 +77,7 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music-Castle", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Normal", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Town", 0, 1.0f},
+    
     { SOUND_BANK_MASTER, "event:/Music-Sokoban-Normal", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Gehennom-Normal", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Gehennom-Valley", 0, 1.0f},
@@ -87,6 +88,7 @@ const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, 1.0f},
     NoSound,
+    
     NoSound,
     NoSound,
     { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0, 1.0f},
