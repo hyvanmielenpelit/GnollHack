@@ -292,7 +292,7 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetFocus(GetNHApp()->hMainWnd);
             struct ghsound_music_info info = { 0 };
             info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
-            info.volume = BACKGROUND_MUSIC_VOLUME;
+            info.volume = 1.0f;
             mswin_play_ghsound_music(info);
             return TRUE;
         }

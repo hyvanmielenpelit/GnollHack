@@ -66,8 +66,8 @@ struct ghsound_eventmapping {
 
 const ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "" , 0, 0.0f },
-    { SOUND_BANK_MASTER, "event:/Music-Splash", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Player-Selection", 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music-Splash", 0, 0.5f},
+    { SOUND_BANK_MASTER, "event:/Music-Player-Selection", 0, 0.3f},
     { SOUND_BANK_MASTER, "event:/Music-Intro", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Music-Normal-1", 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Player Footsteps", 0, 1.0f},

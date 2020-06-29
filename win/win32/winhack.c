@@ -271,7 +271,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
     struct ghsound_music_info info = { 0 };
     info.ghsound = GHSOUND_MUSIC_SPLASH;
-    info.volume = 0.5f;
+    info.volume = 1.0f;
     mswin_play_ghsound_music(info);
 
     /* let main do the argument processing */
