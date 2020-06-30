@@ -397,7 +397,13 @@ PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
             case NM_CLICK:
                 {
-                    LPNMLISTVIEW lpnmitem = (LPNMLISTVIEW)lParam;
+                struct ghsound_immediate_info sound_info = { 0 };
+                sound_info.ghsound = GHSOUND_UI_MENU_SELECT;
+                sound_info.volume = 1.0f;
+                sound_info.sound_type = IMMEDIATE_SOUND_UI;
+                mswin_play_immediate_ghsound(sound_info);
+                
+                LPNMLISTVIEW lpnmitem = (LPNMLISTVIEW)lParam;
                     int i = lpnmitem->iItem;
                     if (i == -1)
                         return FALSE;
@@ -442,18 +448,28 @@ PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_COMMAND:
         data = (struct plsel_data *) GetWindowLongPtr(hWnd, GWLP_USERDATA);
+        struct ghsound_immediate_info sound_info = { 0 };
+        sound_info.volume = 1.0f;
+        sound_info.sound_type = IMMEDIATE_SOUND_UI;
+
         switch (LOWORD(wParam)) {
         /* OK button was clicked */
         case IDOK:
+            sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+            mswin_play_immediate_ghsound(sound_info);
             EndDialog(hWnd, wParam);
             return TRUE;
 
         /* CANCEL button was clicked */
         case IDCANCEL:
+            sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+            mswin_play_immediate_ghsound(sound_info);
             EndDialog(hWnd, wParam);
             return TRUE;
 
         case IDC_PLSEL_RANDOM:
+            sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+            mswin_play_immediate_ghsound(sound_info);
             plselRandomize(data);
             plselAdjustSelections(hWnd);
             return TRUE;
@@ -463,6 +479,8 @@ PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (HIWORD(wParam) == BN_CLICKED) {
                 int i = LOWORD(wParam) - IDC_PLSEL_GENDER_MALE;
                 if (ok_gend(flags.initrole, flags.initrace, i, ROLE_RANDOM)) {
+                    sound_info.ghsound = GHSOUND_UI_MENU_SELECT;
+                    mswin_play_immediate_ghsound(sound_info);
                     flags.initgend = i;
                     plselAdjustSelections(hWnd);
                 }
@@ -476,6 +494,8 @@ PlayerSelectorDlgProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             if (HIWORD(wParam) == BN_CLICKED) {
                 int i = LOWORD(wParam) - IDC_PLSEL_ALIGN_LAWFUL;
                 if (ok_align(flags.initrole, flags.initrace, flags.initgend, i)) {
+                    sound_info.ghsound = GHSOUND_UI_MENU_SELECT;
+                    mswin_play_immediate_ghsound(sound_info);
                     flags.initalign = i;
                     plselAdjustSelections(hWnd);
                 }

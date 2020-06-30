@@ -432,6 +432,7 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         ? 0
                         : -1);
                 }
+                play_ui_sound(UI_SOUND_MENU_SELECT);
             } break;
 
             case LVN_ITEMCHANGED: {

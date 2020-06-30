@@ -283,18 +283,28 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_COMMAND:
-        switch (LOWORD(wParam)) {
+        switch (LOWORD(wParam)) 
+        {
         case IDOK:
+        {
+            struct ghsound_immediate_info sound_info = { 0 };
+            sound_info.ghsound = GHSOUND_UI_BUTTON_DOWN;
+            sound_info.volume = 1.0f;
+            sound_info.sound_type = IMMEDIATE_SOUND_UI;
+            mswin_play_immediate_ghsound(sound_info);
+
             mswin_window_mark_dead(mswin_winid_from_handle(hWnd));
             if (GetNHApp()->hMainWnd == hWnd)
                 GetNHApp()->hMainWnd = NULL;
             DestroyWindow(hWnd);
             SetFocus(GetNHApp()->hMainWnd);
-            struct ghsound_music_info info = { 0 };
-            info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
-            info.volume = 1.0f;
-            mswin_play_ghsound_music(info);
+
+            struct ghsound_music_info music_info = { 0 };
+            music_info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
+            music_info.volume = 1.0f;
+            mswin_play_ghsound_music(music_info);
             return TRUE;
+        }
         }
         break;
 

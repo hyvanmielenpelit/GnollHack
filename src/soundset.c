@@ -178,12 +178,16 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
 NEARDATA struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES] =
 {
     {
-        "",
+        "illegal",
         {GHSOUND_NONE, 0.0f}
     },
     {
-        "",
-        {GHSOUND_NONE, 0.0f}
+        "button-down",
+        {GHSOUND_UI_BUTTON_DOWN, 1.0f}
+    },
+    {
+        "menu-select",
+        {GHSOUND_UI_MENU_SELECT, 1.0f}
     },
     {
         "",
