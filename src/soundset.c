@@ -211,12 +211,12 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_NONE, 0.0f}
     },
     {
-        "",
+        "read",
         {GHSOUND_NONE, 0.0f}
     },
     {
-        "",
-        {GHSOUND_NONE, 0.0f}
+        "quaff",
+        {GHSOUND_SFX_QUAFF, 1.0f}
     },
     {
         "",

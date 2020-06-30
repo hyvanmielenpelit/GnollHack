@@ -765,6 +765,7 @@ struct obj *otmp;
 {
     int retval;
 
+    play_sfx_sound(SFX_QUAFF);
     otmp->in_use = TRUE;
     nothing = unkn = 0;
     if ((retval = peffects(otmp)) >= 0)

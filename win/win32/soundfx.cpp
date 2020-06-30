@@ -98,7 +98,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Morgue Ambient" , 0, 0.6f},
     { SOUND_BANK_MASTER, "event:/Garden Ambient" , 0, 0.6f},
     { SOUND_BANK_MASTER, "event:/Button Down" , 0, 0.15f},
-    { SOUND_BANK_MASTER, "event:/Menu Select" , 0, 0.15f}
+    { SOUND_BANK_MASTER, "event:/Menu Select" , 0, 0.15f},
+    { SOUND_BANK_MASTER, "event:/Quaff" , 0, 1.0f}
 };
 
 #undef NoSound
