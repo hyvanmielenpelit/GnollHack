@@ -12,26 +12,9 @@
 #define MAX_HEARING_DISTANCE 10
 
 
-enum soundsource_types {
-	SOUNDSOURCE_OBJECT = 0,
-	SOUNDSOURCE_MONSTER,
-	SOUNDSOURCE_LOCATION,
-	SOUNDSOURCE_ROOM, /* Plays while in room */
-	SOUNDSOURCE_LEVEL, /* Plays while on level */
-	SOUNDSOURCE_DUNGEON, /* Plays while in dungeon */
-	SOUNDSOURCE_LEVEL_LOCATION_TYPE, /* Only nearest counts */
-	MAX_SOUNDSOURCE_TYPES
-};
-
-enum soundsource_ambient_subtypes {
-	SOUNDSOURCE_AMBIENT_GENERAL = 0,
-	SOUNDSOURCE_AMBIENT_LIT,
-	MAX_SOUNDSOURCE_AMBIENT_SUBTYPES
-};
-
-
-
-
+/*
+* GHSOUNDS
+*/
 /* All GnollHack Sounds */
 enum ghsound_types {
 	GHSOUND_NONE = 0,
@@ -65,7 +48,74 @@ enum ghsound_types {
 	MAX_GHSOUNDS
 };
 
+
+/* 
+ * SOUND SOURCES ETC.
+ */
+/* Mobile ambient sound sources */
+enum soundsource_types {
+	SOUNDSOURCE_OBJECT = 0,
+	SOUNDSOURCE_MONSTER,
+	SOUNDSOURCE_LOCATION,
+	MAX_SOUNDSOURCE_TYPES
+};
+
+enum soundsource_ambient_subtypes {
+	SOUNDSOURCE_AMBIENT_GENERAL = 0,
+	SOUNDSOURCE_AMBIENT_LIT,
+	MAX_SOUNDSOURCE_AMBIENT_SUBTYPES
+};
+
+/* Conditional sound sources */
+enum conditional_soundsource_types {
+	CONDITIONAL_SOUNDSOURCE_RIVER = 0,
+	CONDITIONAL_SOUNDSOURCE_LAVA = 0,
+	CONDITIONAL_SOUNDSOURCE_FOREST = 0,
+	MAX_CONDITIONAL_SOUNDSOURCE_TYPES
+};
+
+
+/* UI sound types */
+enum ui_sound_types {
+	UI_SOUND_ILLEGAL = 0,
+	UI_SOUND_BUTTON_DOWN,
+	UI_SOUND_TICK_BOX,
+	UI_SOUND_UNTICK_BOX,
+	UI_SOUND_OPEN_WINDOW,
+	MAX_UI_SOUND_TYPES
+};
+
+/* General effect sound types */
+enum sfx_sound_types {
+	SFX_ILLEGAL = 0,
+	SFX_READ,
+	SFX_QUAFF,
+	SFX_OPEN_DOOR,
+	SFX_CLOSE_DOOR,
+	SFX_LOCK_DOOR,
+	SFX_UNLOCK_DOOR,
+	SFX_OPEN_CHEST,
+	SFX_CLOSE_CHEST,
+	SFX_LOCK_CHEST,
+	SFX_UNLOCK_CHEST,
+	SFX_KICK_SWING,
+	SFX_KICK_THUMP,
+	SFX_MUFFLED_SHATTER,
+	SFX_CHIME_OF_CASH_REGISTER,
+	SFX_SHIELD_EFFECT,
+	SFX_TALK_EFFECT,
+	MAX_SFX_SOUND_TYPES
+};
+
+
+/* 
+ * SOUND WINDOWPROC FUNCTION DEFINITIONS 
+ */
 #define MAX_SOUND_PARAMETERS 8
+enum immediate_sound_types {
+	IMMEDIATE_SOUND_SFX = 0,
+	IMMEDIATE_SOUND_UI = 1
+};
 
 /* Used play_ghsound function input structs */
 struct ghsound_immediate_info {
@@ -73,6 +123,7 @@ struct ghsound_immediate_info {
 	char* parameter_names[MAX_SOUND_PARAMETERS];
 	float parameter_values[MAX_SOUND_PARAMETERS];
 	float volume;
+	enum immediate_sound_types sound_type;
 };
 
 struct ghsound_music_info {
@@ -80,6 +131,12 @@ struct ghsound_music_info {
 	float volume;
 	boolean stop_music;
 };
+
+struct ghsound_level_ambient_info {
+	enum ghsound_types ghsound;
+	float volume;
+};
+
 
 /* Unused play_ghsound function input structs */
 struct function_info_A {
@@ -104,19 +161,15 @@ struct function_info_E {
 	float volume;
 };
 
-struct ghsound_level_ambient_info {
-	enum ghsound_types ghsound;
-	float volume;
-};
 
-
-
+/* 
+ * SOUNDSET DEFINITIONS 
+ */
 /* General sound information */
 struct ghsound_info {
 	enum ghsound_types ghsound;
 	float volume;
 };
-
 
 /* OBJECT SOUNDSETS */
 enum object_sound_types {
@@ -207,7 +260,6 @@ enum monster_soundset_types {
 extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS];
 
 
-
 /* LOCATION SOUNDSETS */
 enum location_sound_types {
 	LOCATION_SOUND_TYPE_AMBIENT = 0,		/* Ambient sound that is typically either continuously played or played when the object is lit */
@@ -238,76 +290,10 @@ struct effect_sound_definition {
 	struct ghsound_info sound;
 };
 
-enum effect_sound_types {
-	EFFECT_SOUND_NONE = 0,
-	EFFECT_SOUND_GENERAL,
-	EFFECT_SOUND_SHIELD_EFFECT,
-	EFFECT_SOUND_TALK_EFFECT,
-	MAX_EFFECT_SOUNDS
-};
-
-extern struct effect_sound_definition effect_sounds[MAX_EFFECT_SOUNDS];
+extern struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES];
+extern struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES];
 
 
-
-enum room_soundset_types {
-	ROOM_SOUNDSET_NO_SOUNDSET = 0,
-	ROOM_SOUNDSET_GENERAL,
-	ROOM_SOUNDSET_BARRACKS,
-	ROOM_SOUNDSET_BEEHIVE,
-	ROOM_SOUNDSET_SHOP,
-	MAX_ROOM_SOUNDSETS
-};
-
-enum level_soundset_types {
-	LEVEL_SOUNDSET_NO_SOUNDSET = 0,
-	LEVEL_SOUNDSET_GENERAL,
-	LEVEL_SOUNDSET_MINETOWN,
-	LEVEL_SOUNDSET_ORACLE,
-	LEVEL_SOUNDSET_BIGROOM,
-	LEVEL_SOUNDSET_MEDUSA,
-	LEVEL_SOUNDSET_MAZES,
-	LEVEL_SOUNDSET_CASTLE,
-	LEVEL_SOUNDSET_VALLEY,
-	LEVEL_SOUNDSET_ORCUS,
-	LEVEL_SOUNDSET_WIZARD,
-	LEVEL_SOUNDSET_VLAD,
-	LEVEL_SOUNDSET_TARRASQUE,
-	LEVEL_SOUNDSET_SANCTUM,
-	LEVEL_SOUNDSET_ASTRAL_PLANE,
-	MAX_LEVEL_SOUNDSETS
-};
-
-enum dungeon_soundset_types {
-	DUNGEON_SOUNDSET_NO_SOUNDSET = 0,
-	DUNGEON_SOUNDSET_GENERAL,
-	DUNGEON_SOUNDSET_DUNGEONS_OF_DOOM,
-	DUNGEON_SOUNDSET_GEHENNOM,
-	DUNGEON_SOUNDSET_SOKOBAN,
-	DUNGEON_SOUNDSET_GNOMISH_MINES,
-	DUNGEON_SOUNDSET_MODRON,
-	DUNGEON_SOUNDSET_BOVINE,
-	DUNGEON_SOUNDSET_QUEST,
-	DUNGEON_SOUNDSET_FORT_LUDIOS,
-	DUNGEON_SOUNDSET_ENDGAME,
-	MAX_DUNGEON_SOUNDSETS
-};
-
-
-enum spell_soundset_types {
-	SPELL_SOUNDSET_NO_SOUNDSET = 0,
-	SPELL_SOUNDSET_GENERAL,
-	SPELL_SOUNDSET_RAY,
-	MAX_SPELL_SOUNDSETS
-};
-
-
-
-enum ui_soundset_types {
-	UI_SOUNDSET_NO_SOUNDSET = 0,
-	UI_SOUNDSET_BUTTON,
-	MAX_UI_SOUNDSETS
-};
 
 
 #endif /* SOUNDSET_H */

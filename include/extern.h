@@ -2678,15 +2678,15 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 
 /* ### soundset.c ### */
 
-E void FDECL(play_dungeon_music, (d_level*, int, int, unsigned long));
-E void NDECL(play_game_music);
-E void NDECL(play_level_ambient_sounds);
+E void NDECL(update_game_music);
 E void NDECL(stop_music);
+E void NDECL(play_level_ambient_sounds);
 E void FDECL(play_movement_sound, (struct monst*, unsigned long));
 E void FDECL(play_hit_sound, (struct monst*, struct monst*, int, struct obj*, double, boolean));
 E void FDECL(play_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_sound_types));
-E void FDECL(play_effect_sound, (enum effect_sounds_types));
-E void FDECL(play_effect_sound_at_location, (enum effect_sounds_types, int, int));
+E void FDECL(play_ui_sound, (enum ui_sounds_types));
+E void FDECL(play_sfx_sound, (enum sfx_sounds_types));
+E void FDECL(play_sfx_sound_at_location, (enum sfx_sounds_types, int, int));
 E enum player_soundset_types NDECL(get_player_soundset);
 E void NDECL(dosetsoundvolume);
 E void FDECL(update_hearing_array, (int));

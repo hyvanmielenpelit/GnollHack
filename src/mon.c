@@ -4006,7 +4006,7 @@ boolean via_attack;
 	/* just in case remove charm */
 	break_charm(mtmp, FALSE);
     newsym(mtmp->mx, mtmp->my);
-    play_game_music();
+    update_game_music();
 
     /* attacking your own quest leader will anger his or her guardians */
     if (!context.mon_moving /* should always be the case here */
@@ -4079,7 +4079,7 @@ boolean via_attack;
                         } else {
                             mon->mpeaceful = 0;
                             adjalign(-1);
-                            play_game_music();
+                            update_game_music();
                             if (!exclaimed)
                                 pline("%s gets angry!", Monnam(mon));
                         }

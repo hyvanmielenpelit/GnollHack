@@ -175,15 +175,91 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
     }
 };
 
-
-NEARDATA struct effect_sound_definition effect_sounds[MAX_EFFECT_SOUNDS] =
+NEARDATA struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES] =
 {
     {
         "",
         {GHSOUND_NONE, 0.0f}
     },
     {
-        "general",
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    }
+};
+
+
+NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
+{
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
+        {GHSOUND_NONE, 0.0f}
+    },
+    {
+        "",
         {GHSOUND_NONE, 0.0f}
     },
     {
@@ -198,27 +274,7 @@ NEARDATA struct effect_sound_definition effect_sounds[MAX_EFFECT_SOUNDS] =
 
 
 void
-play_dungeon_music(level_ptr, x, y, music_flags)
-d_level* level_ptr;
-int x, y;
-unsigned long music_flags;
-{
-	if (!level_ptr)
-		return;
-
-	int dnum = level_ptr->dnum;
-	struct mkroom* room_ptr = (struct mkroom*)0;
-	room_ptr = room_ptr;
-
-	struct ghsound_music_info musicinfo = { 0 };
-	musicinfo.ghsound = get_dungeon_music(dnum);
-    musicinfo.volume = BACKGROUND_MUSIC_VOLUME;
-
-	play_ghsound_music(musicinfo);
-}
-
-void
-play_game_music()
+update_game_music()
 {
     struct ghsound_music_info musicinfo = { 0 };
     musicinfo.volume = (u.uz.dnum == sokoban_dnum ? SOKOBAN_MUSIC_VOLUME : BACKGROUND_MUSIC_VOLUME);
@@ -345,6 +401,7 @@ unsigned long movement_flags;
     immediateinfo.parameter_names[0] = "Surface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = (char*)0;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 
     if(soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -410,6 +467,7 @@ enum object_sound_types sound_type;
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 
     if(soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -520,6 +578,7 @@ enum hmon_atkmode_types thrown;
     immediateinfo.parameter_names[1] = "Damage";
     immediateinfo.parameter_values[1] = (float)damage;
     immediateinfo.parameter_names[2] = (char*)0;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -527,19 +586,40 @@ enum hmon_atkmode_types thrown;
 }
 
 void
-play_effect_sound(effect_sound_id)
-enum effect_sounds_types effect_sound_id;
+play_sfx_sound(sfx_sound_id)
+enum effect_sounds_types sfx_sound_id;
 {
 
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
 
-    soundid = effect_sounds[effect_sound_id].sound.ghsound;
-    volume = effect_sounds[effect_sound_id].sound.volume;
+    soundid = sfx_sounds[sfx_sound_id].sound.ghsound;
+    volume = sfx_sounds[sfx_sound_id].sound.volume;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+}
+
+void
+play_ui_sound(ui_sound_id)
+enum ui_sounds_types ui_sound_id;
+{
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+
+    soundid = ui_sounds[ui_sound_id].sound.ghsound;
+    volume = ui_sounds[ui_sound_id].sound.volume;
+
+    struct ghsound_immediate_info immediateinfo = { 0 };
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_UI;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
@@ -547,8 +627,8 @@ enum effect_sounds_types effect_sound_id;
 
 
 void
-play_effect_sound_at_location(effect_sound_id, x, y)
-enum effect_sounds_types effect_sound_id;
+play_sfx_sound_at_location(sfx_sound_id, x, y)
+enum sfx_sounds_types sfx_sound_id;
 int x, y;
 {
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
@@ -557,12 +637,13 @@ int x, y;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
 
-    soundid = effect_sounds[effect_sound_id].sound.ghsound;
-    volume = effect_sounds[effect_sound_id].sound.volume;
+    soundid = sfx_sounds[sfx_sound_id].sound.ghsound;
+    volume = sfx_sounds[sfx_sound_id].sound.volume;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume * hearing_array[x][y];
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 
     if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
         play_immediate_ghsound(immediateinfo);

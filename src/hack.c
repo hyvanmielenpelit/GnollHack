@@ -2630,7 +2630,7 @@ register boolean newlev;
     char *ptr;
 
     move_update(newlev);
-    play_game_music();
+    update_game_music();
     play_level_ambient_sounds();
 
     if (*u.ushops0)

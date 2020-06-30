@@ -1140,7 +1140,7 @@ newgame()
     program_state.something_worth_saving++; /* useful data now exists */
 
     /* Change to the main music */
-    play_game_music();
+    update_game_music();
     play_level_ambient_sounds();
 
     /* Success! */
