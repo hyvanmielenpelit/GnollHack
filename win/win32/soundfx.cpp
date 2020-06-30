@@ -20,6 +20,7 @@ struct GNHSoundInstance {
     Studio::EventInstance* eventInstance;
     enum ghsound_types ghsound;
     float normalVolume;
+    int sound_type;
     struct GNHSoundInstance* next_instance;
 };
 
@@ -39,7 +40,7 @@ static float general_volume = 1.0f;
 static float general_music_volume = 1.0f;
 static float general_ambient_volume = 1.0f;
 static float general_sound_effects_volume = 1.0f;
-
+static float general_ui_volume = 1.0f;
 
 /* GHSound -> FMOD event mapping here */
 enum sound_bank_types {
@@ -96,8 +97,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Valley Ambient" , 0, 0.6f},
     { SOUND_BANK_MASTER, "event:/Morgue Ambient" , 0, 0.6f},
     { SOUND_BANK_MASTER, "event:/Garden Ambient" , 0, 0.6f},
-    { SOUND_BANK_MASTER, "event:/Button Down" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Menu Select" , 0, 1.0f}
+    { SOUND_BANK_MASTER, "event:/Button Down" , 0, 0.15f},
+    { SOUND_BANK_MASTER, "event:/Menu Select" , 0, 0.15f}
 };
 
 #undef NoSound
@@ -212,12 +213,14 @@ extern "C"
             musicInstances[1].eventInstance = musicInstances[0].eventInstance;
             musicInstances[1].ghsound = musicInstances[0].ghsound;
             musicInstances[1].normalVolume = musicInstances[0].normalVolume;
+            musicInstances[1].sound_type = musicInstances[0].sound_type;
         }
 
         /* Set the new instance as musicInstances[0] */
         musicInstances[0].eventInstance = musicInstance;
         musicInstances[0].ghsound = info.ghsound;
         musicInstances[0].normalVolume = info.volume;
+        musicInstances[0].sound_type = 0;
 
         result = fmod_studio_system->update();
         return (result == FMOD_OK);
@@ -241,6 +244,7 @@ extern "C"
                     return FALSE;
                 levelAmbientInstances[0].ghsound = GHSOUND_NONE;
                 levelAmbientInstances[0].normalVolume = 0.0f;
+                levelAmbientInstances[0].sound_type = 0;
                 result = fmod_studio_system->update();
                 return (result == FMOD_OK);
             }
@@ -297,12 +301,14 @@ extern "C"
             levelAmbientInstances[1].eventInstance = levelAmbientInstances[0].eventInstance;
             levelAmbientInstances[1].ghsound = levelAmbientInstances[0].ghsound;
             levelAmbientInstances[1].normalVolume = levelAmbientInstances[0].normalVolume;
+            levelAmbientInstances[1].sound_type = levelAmbientInstances[0].sound_type;
         }
 
         /* Set the new instance as levelAmbientInstances[0] */
         levelAmbientInstances[0].eventInstance = levelAmbientInstance;
         levelAmbientInstances[0].ghsound = info.ghsound;
         levelAmbientInstances[0].normalVolume = info.volume;
+        levelAmbientInstances[0].sound_type = 0;
 
         result = fmod_studio_system->update();
         return (result == FMOD_OK);
@@ -318,6 +324,7 @@ extern "C"
         float event_volume = eventmap.volume;
         if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
             return FALSE;
+        float relevant_general_volume = (info.sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sound_effects_volume);
 
         Studio::EventDescription* immediateSoundDescription = NULL;
         result = fmod_studio_system->getEvent(eventmap.eventPath, &immediateSoundDescription);
@@ -330,7 +337,7 @@ extern "C"
             return FALSE;
 
         /* Set volume */
-        result = immediateSoundInstance->setVolume(info.volume * event_volume * general_sound_effects_volume * general_volume);
+        result = immediateSoundInstance->setVolume(info.volume * event_volume * relevant_general_volume * general_volume);
         if (result != FMOD_OK)
             return FALSE;
 
@@ -374,6 +381,7 @@ extern "C"
                 immediateSoundInstances[i].eventInstance = immediateSoundInstances[i - 1].eventInstance;
                 immediateSoundInstances[i].ghsound = immediateSoundInstances[i - 1].ghsound;
                 immediateSoundInstances[i].normalVolume = immediateSoundInstances[i - 1].normalVolume;
+                immediateSoundInstances[i].sound_type = immediateSoundInstances[i - 1].sound_type;
             }
         }
 
@@ -381,6 +389,7 @@ extern "C"
         immediateSoundInstances[0].eventInstance = immediateSoundInstance;
         immediateSoundInstances[0].ghsound = info.ghsound;
         immediateSoundInstances[0].normalVolume = info.volume;
+        immediateSoundInstances[0].sound_type = info.sound_type;
 
         result = fmod_studio_system->update();
         if (result != FMOD_OK)
@@ -392,12 +401,13 @@ extern "C"
 
 
     int
-    fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_effects_volume)
+    fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_effects_volume, float new_general_ui_volume)
     {
         general_volume = new_general_volume;
         general_music_volume = new_general_music_volume;
         general_ambient_volume = new_general_ambient_volume;
         general_sound_effects_volume = new_general_effects_volume;
+        general_ui_volume = new_general_ui_volume;
 
         FMOD_RESULT result;
         for (int i = 0; i <= 1; i++)
@@ -427,7 +437,8 @@ extern "C"
                 enum ghsound_types soundid = immediateSoundInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                result = immediateSoundInstances[i].eventInstance->setVolume(immediateSoundInstances[i].normalVolume * event_volume * general_sound_effects_volume * general_volume);
+                float relevant_general_volume = (immediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sound_effects_volume);
+                result = immediateSoundInstances[i].eventInstance->setVolume(immediateSoundInstances[i].normalVolume * event_volume * relevant_general_volume * general_volume);
             }
         }
         for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)

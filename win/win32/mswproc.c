@@ -3288,8 +3288,9 @@ mswin_adjust_ghsound_general_volumes(VOID_ARGS)
     float new_music_volume = ((float)flags.sound_volume_music) / 100.0f;
     float new_ambient_volume = ((float)flags.sound_volume_ambient) / 100.0f;
     float new_effects_volume = ((float)flags.sound_volume_effects) / 100.0f;
+    float new_ui_volume = ((float)flags.sound_volume_ui) / 100.0f;
 
-    if (!fmod_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_ambient_volume, new_effects_volume))
+    if (!fmod_adjust_ghsound_general_volumes(new_general_volume, new_music_volume, new_ambient_volume, new_effects_volume, new_ui_volume))
     {
         impossible("Cannot adjust volume!");
     }
