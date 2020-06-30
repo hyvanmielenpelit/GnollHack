@@ -29,7 +29,7 @@ typedef boolean FDECL((*callback_proc), (genericptr_t, genericptr_t));
  *       to reflect the changes.
  */
 
-typedef struct {
+typedef struct nhregion {
     NhRect bounding_box;        /* Bounding box of the region */
     NhRect *rects;              /* Rectangles composing the region */
     short nrects;               /* Number of rectangles  */

@@ -27,6 +27,7 @@ typedef union any {
     int NDECL((*a_nfunc));
     unsigned long a_mask32; /* used by status highlighting */
     coord a_coord;
+    struct nhregion *a_nhregion;
     /* add types as needed */
     
 } anything;

@@ -2410,6 +2410,8 @@ E void FDECL(region_stats, (const char *, char *, long *, size_t *));
 E NhRegion *FDECL(create_gas_cloud, (XCHAR_P, XCHAR_P, int, int));
 E boolean NDECL(region_danger);
 E void NDECL(region_safety);
+E struct nhregion* FDECL(find_rid, (int));
+E int FDECL(get_rid, (struct nhregion*));
 
 /* ### restore.c ### */
 
@@ -3463,8 +3465,8 @@ E void FDECL(print_monster_statistics, (winid win, struct monst*));
 E void FDECL(display_monster_inventory, (struct monst*));
 E boolean FDECL(get_obj_location, (struct obj *, xchar *, xchar *, int));
 E boolean FDECL(get_mon_location, (struct monst *, xchar *, xchar *, int));
-E struct monst *FDECL(get_container_location,
-                      (struct obj * obj, int *, int *));
+E boolean FDECL(get_region_location, (struct nhregion*, xchar*, xchar*, int));
+E struct monst *FDECL(get_container_location, (struct obj * obj, int *, int *));
 E struct monst *FDECL(montraits, (struct obj *, coord *, BOOLEAN_P, int));
 E struct monst *FDECL(revive, (struct obj *, BOOLEAN_P, int, BOOLEAN_P));
 E int FDECL(revive_from_inventory, (struct monst *));

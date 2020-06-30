@@ -912,6 +912,14 @@ update_ambient_sounds()
             if (isok(curr->id.a_coord.x, curr->id.a_coord.y))
                 lit = levl[curr->id.a_coord.x][curr->id.a_coord.y].lamplit;
         }
+        else if (curr->type == SOUNDSOURCE_REGION)
+        {
+            if (get_region_location(curr->id.a_nhregion, &curr->x, &curr->y, 0))
+                ;
+
+            if (curr->id.a_nhregion)
+                lit = FALSE;
+        }
 
         /* Update sound source heard volume */
         float old_heard_volume = curr->heard_volume;
@@ -1079,6 +1087,9 @@ anything* id;
         tmp_id.a_coord.x = id->a_coord.x;
         tmp_id.a_coord.y = id->a_coord.y;
         break;
+    case SOUNDSOURCE_REGION:
+        tmp_id.a_uint = get_rid(id->a_nhregion);
+        break;
     default:
         tmp_id.a_uint = 0;
         break;
@@ -1151,6 +1162,9 @@ int fd, mode, volume;
                     is_global = !mon_is_local_mx(curr->id.a_monst);
                     break;
                 case SOUNDSOURCE_LOCATION:
+                    is_global = 0; /* always local by definition */
+                    break;
+                case SOUNDSOURCE_REGION:
                     is_global = 0; /* always local by definition */
                     break;
                 default:
@@ -1229,7 +1243,7 @@ boolean ghostly;
     {
         if (ss->flags & SSF_NEEDS_FIXUP)
         {
-            if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION)
+            if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION || ss->type == SOUNDSOURCE_REGION)
             {
                 if (ghostly && ss->type != SOUNDSOURCE_LOCATION)
                 {
@@ -1255,6 +1269,11 @@ boolean ghostly;
                     ss->id = zeroany;
                     ss->id.a_coord.x = ss->x;
                     ss->id.a_coord.y = ss->y;
+                }
+                else if (ss->type == SOUNDSOURCE_REGION)
+                {
+                    which = 'r';
+                    ss->id.a_nhregion = find_rid(nid);
                 }
 
                 if (!ss->id.a_monst)
@@ -1300,6 +1319,9 @@ boolean write_it;
         case SOUNDSOURCE_LOCATION:
             is_global = 0; /* always local */
             break;
+        case SOUNDSOURCE_REGION:
+            is_global = 0; /* always local */
+            break;
         default:
             is_global = 0;
             impossible("maybe_write_soundsource: bad type (%d) [volume=%d]", ss->type, volume);
@@ -1324,6 +1346,7 @@ sound_sources_sanity_check()
     sound_source* ss;
     struct monst* mtmp;
     struct obj* otmp;
+    struct nhregion* reg;
     unsigned int auint = 0;
 
     for (ss = sound_base; ss; ss = ss->next)
@@ -1366,6 +1389,18 @@ sound_sources_sanity_check()
                 return;
             }
         }
+        else if (ss->type == SOUNDSOURCE_REGION)
+        {
+            reg = (struct nhregion*)ss->id.a_nhregion;
+            if (reg)
+                auint = get_rid(reg);
+
+            if (find_rid(auint) != reg)
+            {
+                panic("insane sound source: can't find nhregion #%u!", auint);
+                return;
+            }
+        }
         else
         {
             panic("insane sound source: bad ss type %d", ss->type);
@@ -1383,8 +1418,9 @@ sound_source* ss;
     anything arg_save;
     struct obj* otmp;
     struct monst* mtmp;
+    struct nhregion* reg;
 
-    if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION)
+    if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION || ss->type == SOUNDSOURCE_REGION)
     {
         if (ss->flags & SSF_NEEDS_FIXUP)
         {
@@ -1404,7 +1440,7 @@ sound_source* ss;
                         ss->id.a_uint);
             }
             else if (ss->type == SOUNDSOURCE_MONSTER)
-            { /* ss->type == SOUNDSOURCE_MONSTER */
+            {
                 mtmp = (struct monst*)ss->id.a_monst;
                 ss->id = zeroany;
                 ss->id.a_uint = mtmp->m_id;
@@ -1415,6 +1451,15 @@ sound_source* ss;
             else if (ss->type == SOUNDSOURCE_LOCATION)
             {
                 /* No need to do anything, coord can be written to disk as is */
+            }
+            else if (ss->type == SOUNDSOURCE_REGION)
+            { 
+                reg = (struct nhregion*)ss->id.a_nhregion;
+                ss->id = zeroany;
+                ss->id.a_uint = get_rid(reg);
+                if (find_rid((unsigned)ss->id.a_uint) != reg)
+                    impossible("write_soundsource: can't find nhregion #%u!",
+                        ss->id.a_uint);
             }
 
             ss->flags |= SSF_NEEDS_FIXUP;

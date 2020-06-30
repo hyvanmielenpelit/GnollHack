@@ -1383,6 +1383,55 @@ int locflags; /* non-zero means get location even if monster is buried */
     }
 }
 
+
+boolean
+get_region_location(reg, xp, yp, locflags)
+struct nhregion* reg;
+xchar* xp, * yp;
+int locflags; /* Unused */
+{
+    if (!reg)
+        return FALSE;
+
+    if (hero_inside(reg))
+    {
+        *xp = u.ux;
+        *yp = u.uy;
+        return TRUE;
+    }
+
+    /* Assume that the location is the center of a rectangle that has the best hearing value */
+    float hearvalue = 0.0f;
+    xchar x = 0, y = 0;
+    for (int i = 0; i < reg->nrects; i++)
+    {
+        xchar midx = (xchar)((int)reg->rects[i].lx + (int)reg->rects[i].hx) / 2;
+        xchar midy = (xchar)((int)reg->rects[i].ly + (int)reg->rects[i].hy) / 2;
+        if (isok(midx, midy))
+        {
+            float h = hearing_array[midx][midy];
+            if (h > hearvalue || i == 0)
+            {
+                hearvalue = h;
+                x = midx;
+                y = midy;
+            }
+        }
+    }
+
+    if (x == 0 && y == 0)
+    {
+        *xp = *yp = 0;
+        return FALSE;
+    }
+    else
+    {
+        *xp = x;
+        *yp = y;
+        return TRUE;
+    }
+}
+
 /* used by revive() and animate_statue() */
 struct monst *
 montraits(obj, cc, adjacentok, mnum_override)

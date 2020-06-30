@@ -1130,4 +1130,29 @@ region_safety()
         make_blinded(0L, TRUE);
 }
 
+struct nhregion* 
+find_rid(nid)
+int nid;
+{
+    if (nid < 0 || nid >= n_regions)
+        return (struct nhregion*)0;
+    
+    return regions[nid];
+}
+
+int
+get_rid(reg)
+struct nhregion* reg;
+{
+    if (!reg)
+        return -1;
+
+    for (int i = 0; i < n_regions; i++)
+    {
+        if (regions[i] == reg)
+            return i;
+    }
+
+    return -1;
+}
 /*region.c*/
