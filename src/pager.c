@@ -582,7 +582,7 @@ char *buf, *monbuf;
         {
             //int cmap = generic_glyph_to_cmap(glyph);
 
-            const char* explanation = get_floor_doodad_explanation_at(x, y);;
+            const char* explanation = iflags.using_gui_tiles ? get_floor_doodad_explanation_at(x, y) : (const char*)0;
             if (!explanation)
                 explanation = get_cmap_or_cmap_variation_glyph_explanation(glyph);
 

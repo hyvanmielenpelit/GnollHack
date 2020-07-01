@@ -4301,7 +4301,7 @@ int x, y;
 
     if (cmap >= 0)
         dfeature = defsyms[cmap].explanation;
-    else if (levl[x][y].floor_doodad)
+    else if (levl[x][y].floor_doodad && iflags.using_gui_tiles)
     {
         dfeature = get_floor_doodad_explanation_at(x, y);
     }
