@@ -15,24 +15,24 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 {
 	{
 		"",
-        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         OBJECT_SOUNDSET_NONE,
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
-		{{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
 	},
 	{
 		"Generic",
-        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         OBJECT_SOUNDSET_NONE,
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"",
-        {0, 0.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         OBJECT_SOUNDSET_NONE,
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     }
 };
 
@@ -41,47 +41,48 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 {
 	{
 		"",
-        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     },
 	{
 		"Generic",
-        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Goblin",
-        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Dragon",
-        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Dracolich",
-        {GHSOUND_NONE, 0}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
     {
         "Bee",
-        {GHSOUND_BEE, 1.0f}, SOUNDSOURCE_AMBIENT_GENERAL,
+        {{GHSOUND_BEE, 1.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}},
-        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
+        {{0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}, {0, 0.0f}}
     }
 };
+
 
 NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS] =
 {
@@ -139,6 +140,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
     }
 };
 
+
 NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS] =
 {
     {
@@ -174,6 +176,32 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         SOUNDSOURCE_AMBIENT_LIT
     }
 };
+
+
+NEARDATA struct region_soundset_definition region_soundsets[MAX_REGION_SOUNDSETS] =
+{
+    {
+        "",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "poison gas",
+        {
+            {GHSOUND_POISON_GAS_OUTSIDE, 1.0f},
+            {GHSOUND_POISON_GAS_INSIDE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    }
+};
+
 
 NEARDATA struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES] =
 {
@@ -354,39 +382,39 @@ unsigned long movement_flags;
 	if (isyou)
 	{
 		enum player_soundset_types pss = get_player_soundset();
-		soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
-        volume = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
+		soundid = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
+        volume = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
 		if (Flying)
 		{
-			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
-            volume = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_FLYING].volume;
+			soundid = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
+            volume = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].volume;
             floorid = FLOOR_SURFACE_NONE;
 
 		}
 		else if (Levitation)
 		{
-			soundid = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
-            volume = player_soundsets[pss].movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
+			soundid = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
+            volume = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
             floorid = FLOOR_SURFACE_NONE;
 		}
 	}
 	else
 	{
 		enum monster_soundset_types mss = mtmp->female ? mtmp->data->female_soundset : mtmp->data->soundset;
-		soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
-        volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
+		soundid = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
+        volume = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
 
 		if (is_flying(mtmp))
 		{
-			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
-            volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_FLYING].volume;
+			soundid = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
+            volume = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].volume;
             floorid = FLOOR_SURFACE_NONE;
 
 		}
 		else if (is_levitating(mtmp))
 		{
-			soundid = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
-            volume = monster_soundsets[mss].movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
+			soundid = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
+            volume = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
             floorid = FLOOR_SURFACE_NONE;
 		}
 
@@ -1245,7 +1273,7 @@ boolean ghostly;
         {
             if (ss->type == SOUNDSOURCE_OBJECT || ss->type == SOUNDSOURCE_MONSTER || ss->type == SOUNDSOURCE_LOCATION || ss->type == SOUNDSOURCE_REGION)
             {
-                if (ghostly && ss->type != SOUNDSOURCE_LOCATION)
+                if (ghostly && ss->type != SOUNDSOURCE_LOCATION && ss->type != SOUNDSOURCE_REGION)
                 {
                     if (!lookup_id_mapping(ss->id.a_uint, &nid))
                         impossible("relink_sound_sources: no id mapping");

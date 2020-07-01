@@ -48,6 +48,8 @@ enum ghsound_types {
 	GHSOUND_UI_BUTTON_DOWN,
 	GHSOUND_UI_MENU_SELECT,
 	GHSOUND_SFX_QUAFF,
+	GHSOUND_POISON_GAS_OUTSIDE,
+	GHSOUND_POISON_GAS_INSIDE,
 	MAX_GHSOUNDS
 };
 
@@ -207,25 +209,27 @@ extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
 
 
 /* PLAYER SOUNDSETS */
+enum player_sound_types {
+	PLAYER_SOUND_TYPE_AMBIENT = 0,
+	MAX_PLAYER_SOUND_TYPES
+};
+
 struct player_soundset_definition {
 	char* soundset_name;
 
-	/* Ambient */
-	struct ghsound_info ambient_sound;
+	/* General */
+	struct ghsound_info sounds[MAX_PLAYER_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 
 	/* Bare handed soundset */
 	enum object_soundset_types barehanded_soundset;
 
 	/* Movement */
-	struct ghsound_info movement_sounds[MAX_MOVEMENT_STYLES];
-
-	/* Actions */
-	struct ghsound_info action_sounds[MAX_ACTION_TILES];
+	struct ghsound_info innate_movement_sounds[MAX_MOVEMENT_STYLES];
 };
 
 enum player_soundset_types {
-	PLAYER_SOUNDSET_NO_SOUNDSET = 0,
+	PLAYER_SOUNDSET_NONE = 0,
 	PLAYER_SOUNDSET_GENERAL,
 	PLAYER_SOUNDSET_FEMALE_ELVEN_WIZARD,
 	MAX_PLAYER_SOUNDSETS
@@ -235,21 +239,23 @@ extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS];
 
 
 /* MONSTER SOUNDSETS */
+enum monster_sound_types {
+	MONSTER_SOUND_TYPE_AMBIENT = 0,
+	MAX_MONSTER_SOUND_TYPES
+};
+
 struct monster_soundset_definition {
 	char* soundset_name;
 
-	/* Ambient */
-	struct ghsound_info ambient_sound;
+	/* General */
+	struct ghsound_info sounds[MAX_MONSTER_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 
 	/* Attacks */
 	enum object_soundset_types attack_soundsets[NATTK];
 
 	/* Movement */
-	struct ghsound_info movement_sounds[MAX_MOVEMENT_STYLES];
-
-	/* Actions */
-	struct ghsound_info action_sounds[MAX_ACTION_TILES];
+	struct ghsound_info innate_movement_sounds[MAX_MOVEMENT_STYLES];
 };
 
 enum monster_soundset_types {
@@ -267,8 +273,8 @@ extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSET
 
 /* LOCATION SOUNDSETS */
 enum location_sound_types {
-	LOCATION_SOUND_TYPE_AMBIENT = 0,		/* Ambient sound that is typically either continuously played or played when the object is lit */
-	LOCATION_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
+	LOCATION_SOUND_TYPE_AMBIENT = 0,	/* Ambient sound that is typically either continuously played or played when the location is lit */
+	LOCATION_SOUND_TYPE_BREAK,			/* Sound upon breaking the location */
 	MAX_LOCATION_SOUND_TYPES
 };
 
@@ -288,6 +294,29 @@ enum location_soundset_types {
 
 extern struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS];
 
+
+/* REGION SOUNDSETS */
+enum region_sound_types {
+	REGION_SOUND_TYPE_AMBIENT_OUTSIDE = 0,		/* Player outside of the region, based on the square with best hearing value: Ambient sound that is typically either continuously played or played when the region is lit */
+	REGION_SOUND_TYPE_AMBIENT_INSIDE,		    /* Player inside of the region: Ambient sound that is typically either continuously played or played when the region is lit */
+	REGION_SOUND_TYPE_CREATE,					/* Sound upon creation of the region */
+	REGION_SOUND_TYPE_DESTROY,					/* Sound upon destruction of the region */
+	MAX_REGION_SOUND_TYPES
+};
+
+struct region_soundset_definition {
+	char* soundset_name;
+	struct ghsound_info sounds[MAX_REGION_SOUND_TYPES];
+	enum soundsource_ambient_subtypes ambient_subtype;
+};
+
+enum region_soundset_types {
+	REGION_SOUNDSET_NONE = 0,
+	REGION_SOUNDSET_POISON_GAS,
+	MAX_REGION_SOUNDSETS
+};
+
+extern struct region_soundset_definition region_soundsets[MAX_REGION_SOUNDSETS];
 
 /* EFFECT SOUNDS */
 struct effect_sound_definition {

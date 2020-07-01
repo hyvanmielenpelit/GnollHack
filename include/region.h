@@ -61,6 +61,11 @@ typedef struct nhregion {
     int glyph;       /* Which glyph to use if visible */
     anything arg;    /* Optional user argument (Ex: strength of
                         force field, damage of a fire zone, ...*/
+
+    boolean lamplit;        /* region is attached to a lightsource */
+    boolean makingsound;    /* region is attached to a soundsource */
+
+    enum region_soundset_types soundset;
 } NhRegion;
 
 #endif /* REGION_H */
