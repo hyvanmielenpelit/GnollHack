@@ -211,7 +211,14 @@ extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
 /* PLAYER SOUNDSETS */
 enum player_sound_types {
 	PLAYER_SOUND_TYPE_AMBIENT = 0,
+	PLAYER_SOUND_TYPE_COUGH,
 	MAX_PLAYER_SOUND_TYPES
+};
+
+enum player_attack_soundset_types {
+	PLAYER_ATTACK_SOUNDSET_BAREHANDED = 0,
+	PLAYER_ATTACK_SOUNDSET_KICK,
+	MAX_PLAYER_ATTACK_SOUNDSETS
 };
 
 struct player_soundset_definition {
@@ -221,8 +228,8 @@ struct player_soundset_definition {
 	struct ghsound_info sounds[MAX_PLAYER_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 
-	/* Bare handed soundset */
-	enum object_soundset_types barehanded_soundset;
+	/* Bare-handed and kick soundsets */
+	enum object_soundset_types attack_soundsets[MAX_PLAYER_ATTACK_SOUNDSETS];
 
 	/* Movement */
 	struct ghsound_info innate_movement_sounds[MAX_MOVEMENT_STYLES];
@@ -241,6 +248,7 @@ extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS];
 /* MONSTER SOUNDSETS */
 enum monster_sound_types {
 	MONSTER_SOUND_TYPE_AMBIENT = 0,
+	MONSTER_SOUND_TYPE_COUGH,
 	MAX_MONSTER_SOUND_TYPES
 };
 
@@ -252,7 +260,7 @@ struct monster_soundset_definition {
 	enum soundsource_ambient_subtypes ambient_subtype;
 
 	/* Attacks */
-	enum object_soundset_types attack_soundsets[NATTK];
+	enum object_soundset_types attack_soundsets[NATTK + 1]; /* +1 for kick command */
 
 	/* Movement */
 	struct ghsound_info innate_movement_sounds[MAX_MOVEMENT_STYLES];

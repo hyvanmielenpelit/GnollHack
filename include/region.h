@@ -21,6 +21,18 @@ typedef boolean FDECL((*callback_proc), (genericptr_t, genericptr_t));
 #define set_heros_fault(r) ((r)->player_flags &= ~REG_NOT_HEROS)
 #define clear_heros_fault(r) ((r)->player_flags |= REG_NOT_HEROS)
 
+enum region_types {
+    REGION_GENERAL = 0, /* Normal region */
+    REGION_POISON_GAS,
+    REGION_FIRE,
+    REGION_LIGHTNING,
+    REGION_FROST,
+    REGION_DEATH,
+    REGION_ANNIHILATION,
+    REGION_FORCE_FIELD,
+    MAX_REGION_TYPES
+};
+
 /*
  * Note: if you change the size/type of any of the fields below,
  *       or add any/remove any fields, you must update the
@@ -61,9 +73,16 @@ typedef struct nhregion {
     int glyph;       /* Which glyph to use if visible */
     anything arg;    /* Optional user argument (Ex: strength of
                         force field, damage of a fire zone, ...*/
+    enum region_types typ;  /* type of the region, normally indicating visible, audible, and game play effects */
+    int extra1;             /* Extra information, e.g. type of damage */
+    int extra2;             /* Extra information, e.g. number of dice for damage */
+    int extra3;             /* Extra information, e.g. die size for damage */
+    int extra4;             /* Extra information, e.g. constant for damage */
+    int extra5;             /* Extra information, e.g. damage frequency */
+    unsigned long region_flags; /* No teleport region etc. */
 
-    boolean lamplit;        /* region is attached to a lightsource */
-    boolean makingsound;    /* region is attached to a soundsource */
+    boolean lamplit;        /* region is attached to a light source, which temp-lights the region */
+    boolean makingsound;    /* region is attached to a sound source, which may cause ambient sounds outside and inside the region */
 
     enum region_soundset_types soundset;
 } NhRegion;
