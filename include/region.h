@@ -29,9 +29,26 @@ enum region_types {
     REGION_FROST,
     REGION_DEATH,
     REGION_ANNIHILATION,
-    REGION_FORCE_FIELD,
+    REGION_MAGICAL_DARKNESS,
+    REGION_MAGICAL_SILENCE,
+    REGION_FORCE_FIELD_TRANSPARENT,
+    REGION_FORCE_FIELD_OPAQUE,
     MAX_REGION_TYPES
 };
+
+struct region_type_definition {
+    const char* name;
+    boolean sensed_blind_at_location;
+    boolean sensed_by_touching_around;
+    boolean touch_causes_effect;
+    boolean accessible;
+    boolean causes_blindness;
+    boolean causes_silence;
+    boolean blocks_vision;
+    xchar is_light_source;
+};
+
+extern struct region_type_definition region_type_definitions[MAX_REGION_TYPES];
 
 /*
  * Note: if you change the size/type of any of the fields below,

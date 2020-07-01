@@ -21,7 +21,7 @@ boolean FDECL(inside_gas_cloud, (genericptr, genericptr));
 boolean FDECL(expire_gas_cloud, (genericptr, genericptr));
 boolean FDECL(inside_rect, (NhRect *, int, int));
 boolean FDECL(inside_region, (NhRegion *, int, int));
-NhRegion *FDECL(create_region, (NhRect *, int));
+NhRegion *FDECL(create_region, (enum region_types, NhRect *, int));
 void FDECL(add_rect_to_reg, (NhRegion *, NhRect *));
 void FDECL(add_mon_to_reg, (NhRegion *, struct monst *));
 void FDECL(remove_mon_from_reg, (NhRegion *, struct monst *));
@@ -51,6 +51,23 @@ static callback_proc callbacks[] = {
 #define EXPIRE_GAS_CLOUD 1
     expire_gas_cloud
 };
+
+struct region_type_definition region_type_definitions[MAX_REGION_TYPES] =
+{
+    {"general",                 FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0 },
+    {"poison gas",              TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0 },
+    {"fire",                    TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1 },
+    {"lightning",               TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1 },
+    {"frost",                   TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0 },
+    {"death",                   TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0 },
+    {"annihilation",            TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE, -1 },
+    {"magical darkness",        FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE, -1 },
+    {"magical silence",         FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0 },
+    {"transparent force field", TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  FALSE,  0 },
+    {"opaque force field",      TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   0 }
+};
+
+
 
 /* Should be inlined. */
 boolean
@@ -82,8 +99,9 @@ int x, y;
 /*
  * Create a region. It does not activate it.
  */
-NhRegion *
-create_region(rects, nrect)
+NhRegion*
+create_region(typ, rects, nrect)
+enum region_types typ;
 NhRect *rects;
 int nrect;
 {
@@ -132,6 +150,9 @@ int nrect;
     reg->max_monst = 0;
     reg->monsters = (unsigned int *) 0;
     reg->arg = zeroany;
+    reg->typ = typ;
+    if (region_type_definitions[typ].is_light_source)
+        reg->lamplit = TRUE;
     return reg;
 }
 
@@ -237,7 +258,7 @@ NhRegion *reg;
 {
     NhRegion *ret_reg;
 
-    ret_reg = create_region(reg->rects, reg->nrects);
+    ret_reg = create_region(reg->typ, reg->rects, reg->nrects);
     ret_reg->ttl = reg->ttl;
     ret_reg->attach_2_u = reg->attach_2_u;
     ret_reg->attach_2_m = reg->attach_2_m;
@@ -346,6 +367,12 @@ NhRegion *reg;
             for (y = reg->bounding_box.ly; y <= reg->bounding_box.hy; y++)
                 if (isok(x, y) && inside_region(reg, x, y) && cansee(x, y))
                     newsym(x, y);
+
+    if (reg->makingsound)
+    {
+        del_sound_source(SOUNDSOURCE_REGION, region_to_any(reg));
+        reg->makingsound = FALSE;
+    }
 
     free_region(reg);
     regions[i] = regions[n_regions - 1];
@@ -665,6 +692,16 @@ int mode;
         bwrite(fd, (genericptr_t) &regions[i]->visible, sizeof(boolean));
         bwrite(fd, (genericptr_t) &regions[i]->glyph, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->arg, sizeof(anything));
+        bwrite(fd, (genericptr_t) &regions[i]->typ, sizeof(enum region_types));
+        bwrite(fd, (genericptr_t) &regions[i]->extra1, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->extra2, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->extra3, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->extra4, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->extra5, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
+        bwrite(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
+        bwrite(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
+        bwrite(fd, (genericptr_t) &regions[i]->soundset, sizeof(enum region_soundset_types));
     }
 
 skip_lots:
@@ -678,7 +715,7 @@ int fd;
 boolean ghostly; /* If a bones file restore */
 {
     int i, j;
-    unsigned n;
+    size_t n;
     long tmstamp;
     char *msg_buf;
 
@@ -707,7 +744,7 @@ boolean ghostly; /* If a bones file restore */
 
         mread(fd, (genericptr_t) &n, sizeof n);
         if (n > 0) {
-            msg_buf = (char *) alloc((size_t)n + 1);
+            msg_buf = (char *) alloc(n + 1);
             mread(fd, (genericptr_t) msg_buf, n);
             msg_buf[n] = '\0';
             regions[i]->enter_msg = (const char *) msg_buf;
@@ -753,6 +790,16 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->visible, sizeof(boolean));
         mread(fd, (genericptr_t) &regions[i]->glyph, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->arg, sizeof(anything));
+        mread(fd, (genericptr_t)&regions[i]->typ, sizeof(enum region_types));
+        mread(fd, (genericptr_t)&regions[i]->extra1, sizeof(int));
+        mread(fd, (genericptr_t)&regions[i]->extra2, sizeof(int));
+        mread(fd, (genericptr_t)&regions[i]->extra3, sizeof(int));
+        mread(fd, (genericptr_t)&regions[i]->extra4, sizeof(int));
+        mread(fd, (genericptr_t)&regions[i]->extra5, sizeof(int));
+        mread(fd, (genericptr_t)&regions[i]->region_flags, sizeof(unsigned long));
+        mread(fd, (genericptr_t)&regions[i]->lamplit, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->makingsound, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->soundset, sizeof(enum region_soundset_types));
     }
     /* remove expired regions, do not trigger the expire_f callback (yet!);
        also update monster lists if this data is coming from a bones file */
@@ -827,7 +874,7 @@ const char *msg_enter;
 const char *msg_leave;
 {
     NhRect tmprect;
-    NhRegion *reg = create_region((NhRect *) 0, 0);
+    NhRegion *reg = create_region(REGION_GENERAL, (NhRect *) 0, 0);
 
     if (msg_enter)
         reg->enter_msg = dupstr(msg_enter);
@@ -882,7 +929,7 @@ long ttl;
     int nrect;
     NhRect tmprect;
 
-    ff = create_region((NhRect *) 0, 0);
+    ff = create_region(REGION_FORCE_FIELD_TRANSPARENT, (NhRect *) 0, 0);
     nrect = radius;
     tmprect.lx = x;
     tmprect.hx = x;
@@ -1043,7 +1090,7 @@ int damage;
     int i, nrect;
     NhRect tmprect;
 
-    cloud = create_region((NhRect *) 0, 0);
+    cloud = create_region(REGION_POISON_GAS, (NhRect *) 0, 0);
     nrect = radius;
     tmprect.lx = x;
     tmprect.hx = x;
@@ -1065,6 +1112,14 @@ int damage;
     cloud->arg.a_int = damage;
     cloud->visible = TRUE;
     cloud->glyph = cmap_to_glyph(damage ? S_poisoncloud : S_cloud);
+    cloud->typ = REGION_POISON_GAS;
+    cloud->soundset = REGION_SOUNDSET_POISON_GAS;
+    new_sound_source(x, y,
+        region_soundsets[cloud->soundset].sounds[REGION_SOUND_TYPE_AMBIENT].ghsound,
+        region_soundsets[cloud->soundset].sounds[REGION_SOUND_TYPE_AMBIENT].volume,
+        SOUNDSOURCE_REGION,
+        region_soundsets[cloud->soundset].ambient_subtype, region_to_any(cloud));
+    cloud->makingsound = TRUE;
     add_region(cloud);
     return cloud;
 }
@@ -1155,4 +1210,34 @@ struct nhregion* reg;
 
     return -1;
 }
+
+
+void
+do_light_regions(cs_rows)
+char** cs_rows;
+{
+    char* row;
+    for (int i = 0; i < n_regions; i++)
+    {
+        struct nhregion* reg = regions[i];
+        if (!reg)
+            break;
+        if (!reg->lamplit)
+            continue;
+
+        for (int j = 0; j < reg->nrects; j++)
+        {
+            for (int y = reg->rects[j].ly; y <= reg->rects[j].hy; y++)
+            {
+                row = cs_rows[y];
+                for (int x = reg->rects[j].lx; x <= reg->rects[j].hx; x++)
+                {
+                    if (row[x] & COULD_SEE)
+                        row[x] |= ((region_type_definitions[reg->typ].is_light_source < 0) ? TEMP_MAGICAL_DARKNESS : TEMP_LIT);
+                }
+            }
+        }
+    }
+}
+
 /*region.c*/

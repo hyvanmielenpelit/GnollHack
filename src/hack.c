@@ -83,6 +83,15 @@ xchar x, y;
     return &tmp_anything;
 }
 
+anything*
+region_to_any(reg)
+struct nhregion* reg;
+{
+    tmp_anything = zeroany;
+    tmp_anything.a_nhregion = reg;
+    return &tmp_anything;
+}
+
 boolean
 revive_nasty(x, y, msg)
 int x, y;

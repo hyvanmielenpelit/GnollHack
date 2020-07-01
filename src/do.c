@@ -5543,7 +5543,7 @@ xchar x, y;
 	}
 	if (levl[x][y].makingsound)
 	{
-		del_sound_source(LS_LOCATION, xy_to_any(x, y));
+		del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
 		levl[x][y].makingsound = 0;
 	}
 
@@ -5636,7 +5636,7 @@ int type, subtype;
 	}
 	if (levl[x][y].makingsound)
 	{
-		del_sound_source(LS_LOCATION, xy_to_any(x, y));
+		del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
 		levl[x][y].makingsound = 0;
 	}
 

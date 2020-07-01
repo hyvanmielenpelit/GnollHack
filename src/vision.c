@@ -712,6 +712,7 @@ int control;
 
     /* Set the correct bits for all light sources. */
     do_light_sources(next_array);
+    do_light_regions(next_array);
 
     /*
      * Make the viz_array the new array so that cansee() will work correctly.

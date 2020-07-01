@@ -48,7 +48,6 @@ enum ghsound_types {
 	GHSOUND_UI_BUTTON_DOWN,
 	GHSOUND_UI_MENU_SELECT,
 	GHSOUND_SFX_QUAFF,
-	GHSOUND_POISON_GAS_OUTSIDE,
 	GHSOUND_POISON_GAS_INSIDE,
 	MAX_GHSOUNDS
 };
@@ -69,6 +68,7 @@ enum soundsource_types {
 enum soundsource_ambient_subtypes {
 	SOUNDSOURCE_AMBIENT_GENERAL = 0,
 	SOUNDSOURCE_AMBIENT_LIT,
+	SOUNDSOURCE_AMBIENT_INSIDE_REGION,
 	MAX_SOUNDSOURCE_AMBIENT_SUBTYPES
 };
 
@@ -305,8 +305,7 @@ extern struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUND
 
 /* REGION SOUNDSETS */
 enum region_sound_types {
-	REGION_SOUND_TYPE_AMBIENT_OUTSIDE = 0,		/* Player outside of the region, based on the square with best hearing value: Ambient sound that is typically either continuously played or played when the region is lit */
-	REGION_SOUND_TYPE_AMBIENT_INSIDE,		    /* Player inside of the region: Ambient sound that is typically either continuously played or played when the region is lit */
+	REGION_SOUND_TYPE_AMBIENT = 0,				/* Player inside or outside of the region, based on the square with best hearing value: Ambient sound that is typically either continuously played or played when the region is lit */
 	REGION_SOUND_TYPE_CREATE,					/* Sound upon creation of the region */
 	REGION_SOUND_TYPE_DESTROY,					/* Sound upon destruction of the region */
 	MAX_REGION_SOUND_TYPES

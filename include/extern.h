@@ -1047,6 +1047,7 @@ E anything *FDECL(long_to_any, (long));
 E anything *FDECL(monst_to_any, (struct monst *));
 E anything *FDECL(obj_to_any, (struct obj *));
 E anything* FDECL(coord_to_any, (coord));
+E anything* FDECL(region_to_any, (struct nhregion*));
 E anything* FDECL(xy_to_any, (xchar, xchar));
 E boolean FDECL(revive_nasty, (int, int, const char *));
 E void FDECL(movobj, (struct obj *, XCHAR_P, XCHAR_P));
@@ -2412,6 +2413,7 @@ E boolean NDECL(region_danger);
 E void NDECL(region_safety);
 E struct nhregion* FDECL(find_rid, (int));
 E int FDECL(get_rid, (struct nhregion*));
+E void FDECL(do_light_regions, (char**));
 
 /* ### restore.c ### */
 

@@ -926,6 +926,16 @@ xchar x, y;
                 : DETECTED,
                 is_worm_tail(mon));
     }
+
+    /* Environment layer */
+    struct nhregion* reg = visible_region_at(x, y);
+    if (reg && (ACCESSIBLE(lev->typ) || (reg->typ == REGION_POISON_GAS && is_pool_or_lava(x, y))))
+    {
+        if ((x == u.ux && y == u.uy && region_type_definitions[reg->typ].sensed_blind_at_location && iflags.using_gui_tiles) 
+            ||((x != u.ux || y == u.uy) && region_type_definitions[reg->typ].sensed_by_touching_around)
+           )
+            show_region(reg, x, y);
+    }
 }
 
 void
@@ -1048,39 +1058,7 @@ int damage_shown;
 
         /* THEN, SHOW THE LOCATION IS AND PUT IT TO MEMORY */
         map_location(x, y, 1);
-#if 0
-        struct obj* obj;
-        struct trap* trap;
 
-        /* Floor and feature layers */
-        map_background(x, y, 1);
-
-        /* Trap layer */
-        if ((trap = t_at(x, y)) && trap->tseen && !covers_traps(x, y))
-            map_trap(trap, 1);
-
-        /* Doodad layer */
-        /* map_doodad(x, y) */
-        /* gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD] = NO_GLYPH; */
-
-        /* Object layer */
-        if (!covers_objects(x, y))
-        {
-            boolean show_first_object_layer = TRUE;
-            boolean show_first_cover_layer = TRUE;
-            for (obj = vobj_at(x, y); obj; obj = obj->nexthere)
-            {
-                boolean draw_in_front = is_obj_drawn_in_front(obj);
-                map_object(obj, draw_in_front ? show_first_cover_layer : show_first_object_layer);
-                if(draw_in_front)
-                    show_first_cover_layer = FALSE;
-                else
-                    show_first_object_layer = FALSE;
-            }
-        }
-        if (is_objpile(x, y) && !Hallucination)
-            add_glyph_buffer_layer_flags(x, y, LFLAGS_O_PILE);
-#endif
         /* Monster layer */
         if (x == u.ux && y == u.uy)
         {
@@ -1152,9 +1130,7 @@ int damage_shown;
         /* normal region shown only on accessible positions, but poison clouds
          * also shown above lava, pools and moats.
          */
-        if (reg && (ACCESSIBLE(lev->typ)
-                    || (reg->glyph == cmap_to_glyph(S_poisoncloud)
-                        && is_pool_or_lava(x, y))))
+        if (reg && (ACCESSIBLE(lev->typ) || (reg->typ == REGION_POISON_GAS && is_pool_or_lava(x, y))))
         {
             show_region(reg, x, y);
             //return; /* Not needed anymore since last */
@@ -1179,8 +1155,8 @@ int damage_shown;
             show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
 
-            /* Floor to cover layer, monster layer replaced below, if needed */
-            for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER_FEATURE; layer_idx++)
+            /* Floor to environment, monster layer replaced below, if needed */
+            for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_ENVIRONMENT; layer_idx++)
             {
                 show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }

@@ -1402,34 +1402,40 @@ int locflags; /* Unused */
 
     /* Assume that the location is the center of a rectangle that has the best hearing value */
     float hearvalue = 0.0f;
-    xchar x = 0, y = 0;
+    xchar fx = 0, fy = 0;
     for (int i = 0; i < reg->nrects; i++)
     {
-        xchar midx = (xchar)((int)reg->rects[i].lx + (int)reg->rects[i].hx) / 2;
-        xchar midy = (xchar)((int)reg->rects[i].ly + (int)reg->rects[i].hy) / 2;
-        if (isok(midx, midy))
+        if (isok(reg->rects[i].lx, reg->rects[i].ly) && isok(reg->rects[i].hx, reg->rects[i].hy))
         {
-            float h = hearing_array[midx][midy];
-            if (h > hearvalue || i == 0)
+            for (int x = reg->rects[i].lx; x <= reg->rects[i].hx; x++)
             {
-                hearvalue = h;
-                x = midx;
-                y = midy;
+                for (int y = reg->rects[i].ly; y <= reg->rects[i].hy; y++)
+                {
+                    float h = hearing_array[x][y];
+                    if (h > hearvalue || i == 0)
+                    {
+                        hearvalue = h;
+                        fx = (xchar)x;
+                        fy = (xchar)y;
+                        if (hearvalue == 1.0f)
+                        {
+                            /* Stop immediately */
+                            *xp = fx;
+                            *yp = fy;
+                            return TRUE;
+                        }
+                    }
+                }
             }
         }
     }
 
-    if (x == 0 && y == 0)
-    {
-        *xp = *yp = 0;
+    *xp = fx;
+    *yp = fy;
+    if (fx == 0 && fy == 0)
         return FALSE;
-    }
     else
-    {
-        *xp = x;
-        *yp = y;
         return TRUE;
-    }
 }
 
 /* used by revive() and animate_statue() */

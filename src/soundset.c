@@ -185,7 +185,6 @@ NEARDATA struct region_soundset_definition region_soundsets[MAX_REGION_SOUNDSETS
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -193,12 +192,11 @@ NEARDATA struct region_soundset_definition region_soundsets[MAX_REGION_SOUNDSETS
     {
         "poison gas",
         {
-            {GHSOUND_POISON_GAS_OUTSIDE, 1.0f},
             {GHSOUND_POISON_GAS_INSIDE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_INSIDE_REGION
     }
 };
 
@@ -914,6 +912,7 @@ update_ambient_sounds()
             continue;
 
         boolean lit = FALSE;
+        boolean insidereg = FALSE;
 
         /* Update sound source location */
         if (curr->type == SOUNDSOURCE_OBJECT)
@@ -946,7 +945,10 @@ update_ambient_sounds()
                 ;
 
             if (curr->id.a_nhregion)
-                lit = FALSE;
+            {
+                lit = curr->id.a_nhregion->lamplit;
+                insidereg = hero_inside(curr->id.a_nhregion);
+            }
         }
 
         /* Update sound source heard volume */
@@ -958,6 +960,8 @@ update_ambient_sounds()
             float source_volume = curr->source_volume;
             total_volume = source_volume * hearing_volume;
             if (curr->subtype == SOUNDSOURCE_AMBIENT_LIT && !lit)
+                total_volume = 0.0f;
+            else if (curr->subtype == SOUNDSOURCE_AMBIENT_INSIDE_REGION && !insidereg)
                 total_volume = 0.0f;
         }
 
@@ -1547,7 +1551,7 @@ int x, y;
             obj = ss->id.a_obj;
             if (1) //obj_is_burning(obj)) 
             {
-                del_sound_source(LS_OBJECT, obj_to_any(obj));
+                del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
                 end_sound(obj, FALSE);
                 /*
                  * The current ss element has just been removed (and
@@ -1557,12 +1561,12 @@ int x, y;
                 return;
             }
         }
-        else if (ss->type == LS_LOCATION && ss->x == x && ss->y == y)
+        else if (ss->type == SOUNDSOURCE_LOCATION && ss->x == x && ss->y == y)
         {
             if (levl[x][y].makingsound)
             {
                 levl[x][y].makingsound = 0;
-                del_sound_source(LS_LOCATION, xy_to_any(x, y));
+                del_sound_source(SOUNDSOURCE_LOCATION, xy_to_any(x, y));
                 newsym(x, y);
                 return;
             }
@@ -1605,7 +1609,7 @@ struct obj* src, * dest;
 
     /* src == dest implies adding to candelabrum */
     if (src != dest)
-        del_sound_source(LS_OBJECT, obj_to_any(src));
+        del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(src));
     //end_burn(src, TRUE); /* extinguish candles */
 
 
@@ -1710,7 +1714,7 @@ boolean timer_attached;
 
     if (!timer_attached) {
         /* [DS] Cleanup explicitly, since timer cleanup won't happen */
-        del_sound_source(LS_OBJECT, obj_to_any(obj));
+        del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
         obj->makingsound = 0;
         if (obj->where == OBJ_INVENT)
             update_inventory();
