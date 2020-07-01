@@ -24,6 +24,8 @@ typedef boolean FDECL((*callback_proc), (genericptr_t, genericptr_t));
 enum region_types {
     REGION_GENERAL = 0, /* Normal region */
     REGION_POISON_GAS,
+    REGION_SMOKE,
+    REGION_CLOUD,
     REGION_FIRE,
     REGION_LIGHTNING,
     REGION_FROST,
@@ -36,8 +38,25 @@ enum region_types {
     MAX_REGION_TYPES
 };
 
+enum region_base_types {
+    REGION_BASETYPE_GENERAL = 0, /* Normal region */
+    REGION_BASETYPE_GAS,
+    REGION_BASETYPE_ELEMENTAL_EFFECT,
+    REGION_BASETYPE_MAGICAL_EFFECT,
+    REGION_BASETYPE_FORCEFIELD,
+    MAX_REGION_BASETYPES
+};
+
 struct region_type_definition {
     const char* name;
+    enum region_base_types base_type;
+    boolean causes_damage;
+    int damage_type;
+    int dmg_dice;
+    int dmg_diesize;
+    int dmg_plus;
+    boolean visible;
+    int screen_symbol;
     boolean sensed_blind_at_location;
     boolean sensed_by_touching_around;
     boolean touch_causes_effect;
@@ -46,6 +65,8 @@ struct region_type_definition {
     boolean causes_silence;
     boolean blocks_vision;
     xchar is_light_source;
+    enum region_soundset_types soundset;
+    unsigned long rt_flags;
 };
 
 extern struct region_type_definition region_type_definitions[MAX_REGION_TYPES];
@@ -91,17 +112,10 @@ typedef struct nhregion {
     anything arg;    /* Optional user argument (Ex: strength of
                         force field, damage of a fire zone, ...*/
     enum region_types typ;  /* type of the region, normally indicating visible, audible, and game play effects */
-    int extra1;             /* Extra information, e.g. type of damage */
-    int extra2;             /* Extra information, e.g. number of dice for damage */
-    int extra3;             /* Extra information, e.g. die size for damage */
-    int extra4;             /* Extra information, e.g. constant for damage */
-    int extra5;             /* Extra information, e.g. damage frequency */
     unsigned long region_flags; /* No teleport region etc. */
 
     boolean lamplit;        /* region is attached to a light source, which temp-lights the region */
     boolean makingsound;    /* region is attached to a sound source, which may cause ambient sounds outside and inside the region */
-
-    enum region_soundset_types soundset;
 } NhRegion;
 
 #endif /* REGION_H */

@@ -54,17 +54,19 @@ static callback_proc callbacks[] = {
 
 struct region_type_definition region_type_definitions[MAX_REGION_TYPES] =
 {
-    {"general",                 FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0 },
-    {"poison gas",              TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0 },
-    {"fire",                    TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1 },
-    {"lightning",               TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1 },
-    {"frost",                   TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0 },
-    {"death",                   TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0 },
-    {"annihilation",            TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE, -1 },
-    {"magical darkness",        FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE, -1 },
-    {"magical silence",         FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0 },
-    {"transparent force field", TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  FALSE,  0 },
-    {"opaque force field",      TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   0 }
+    {"general",                 REGION_BASETYPE_GENERAL, FALSE, AD_PHYS, 0, 0, 0, FALSE, S_unexplored, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"poison gas",              REGION_BASETYPE_GAS, TRUE,  AD_DRST, 0, 0, 0,  TRUE, S_poisoncloud, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_POISON_GAS, 0UL },
+    {"smoke",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, 0, 0, 0,  TRUE, S_cloud, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
+    {"cloud",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, 0, 0, 0,  TRUE, S_cloud, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
+    {"fire",                    REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_FIRE, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
+    {"lightning",               REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_ELEC, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
+    {"frost",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_COLD, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"death",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DRAY, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"annihilation",            REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DISN, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
+    {"magical darkness",        REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
+    {"magical silence",         REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"transparent force field", REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"opaque force field",      REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL }
 };
 
 
@@ -693,15 +695,9 @@ int mode;
         bwrite(fd, (genericptr_t) &regions[i]->glyph, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->arg, sizeof(anything));
         bwrite(fd, (genericptr_t) &regions[i]->typ, sizeof(enum region_types));
-        bwrite(fd, (genericptr_t) &regions[i]->extra1, sizeof(int));
-        bwrite(fd, (genericptr_t) &regions[i]->extra2, sizeof(int));
-        bwrite(fd, (genericptr_t) &regions[i]->extra3, sizeof(int));
-        bwrite(fd, (genericptr_t) &regions[i]->extra4, sizeof(int));
-        bwrite(fd, (genericptr_t) &regions[i]->extra5, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
         bwrite(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         bwrite(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
-        bwrite(fd, (genericptr_t) &regions[i]->soundset, sizeof(enum region_soundset_types));
     }
 
 skip_lots:
@@ -791,15 +787,9 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->glyph, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->arg, sizeof(anything));
         mread(fd, (genericptr_t)&regions[i]->typ, sizeof(enum region_types));
-        mread(fd, (genericptr_t)&regions[i]->extra1, sizeof(int));
-        mread(fd, (genericptr_t)&regions[i]->extra2, sizeof(int));
-        mread(fd, (genericptr_t)&regions[i]->extra3, sizeof(int));
-        mread(fd, (genericptr_t)&regions[i]->extra4, sizeof(int));
-        mread(fd, (genericptr_t)&regions[i]->extra5, sizeof(int));
         mread(fd, (genericptr_t)&regions[i]->region_flags, sizeof(unsigned long));
         mread(fd, (genericptr_t)&regions[i]->lamplit, sizeof(boolean));
         mread(fd, (genericptr_t)&regions[i]->makingsound, sizeof(boolean));
-        mread(fd, (genericptr_t)&regions[i]->soundset, sizeof(enum region_soundset_types));
     }
     /* remove expired regions, do not trigger the expire_f callback (yet!);
        also update monster lists if this data is coming from a bones file */
@@ -1112,13 +1102,11 @@ int damage;
     cloud->arg.a_int = damage;
     cloud->visible = TRUE;
     cloud->glyph = cmap_to_glyph(damage ? S_poisoncloud : S_cloud);
-    cloud->typ = REGION_POISON_GAS;
-    cloud->soundset = REGION_SOUNDSET_POISON_GAS;
     new_sound_source(x, y,
-        region_soundsets[cloud->soundset].sounds[REGION_SOUND_TYPE_AMBIENT].ghsound,
-        region_soundsets[cloud->soundset].sounds[REGION_SOUND_TYPE_AMBIENT].volume,
+        region_soundsets[region_type_definitions[cloud->typ].soundset].sounds[REGION_SOUND_TYPE_AMBIENT].ghsound,
+        region_soundsets[region_type_definitions[cloud->typ].soundset].sounds[REGION_SOUND_TYPE_AMBIENT].volume,
         SOUNDSOURCE_REGION,
-        region_soundsets[cloud->soundset].ambient_subtype, region_to_any(cloud));
+        region_soundsets[region_type_definitions[cloud->typ].soundset].ambient_subtype, region_to_any(cloud));
     cloud->makingsound = TRUE;
     add_region(cloud);
     return cloud;
