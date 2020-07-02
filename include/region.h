@@ -113,6 +113,7 @@ typedef struct nhregion {
     int dmg_dice;
     int dmg_diesize;
     int dmg_plus;
+    double dmg_adjustment;
     unsigned long region_flags; /* No teleport region etc. */
 
     boolean lamplit;        /* region is attached to a light source, which temp-lights the region */

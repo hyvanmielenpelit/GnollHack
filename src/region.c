@@ -723,6 +723,7 @@ int mode;
         bwrite(fd, (genericptr_t) &regions[i]->dmg_dice, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->dmg_adjustment, sizeof(double));
         bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
         bwrite(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         bwrite(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
@@ -818,6 +819,7 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->dmg_dice, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
+        mread(fd, (genericptr_t) &regions[i]->dmg_adjustment, sizeof(double));
         mread(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
         mread(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         mread(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
@@ -991,17 +993,13 @@ genericptr_t p1;
 genericptr_t p2 UNUSED;
 {
     NhRegion *reg;
-    double adj;
 
     reg = (NhRegion *) p1;
-    adj = reg->arg.a_double;
 
     /* If it was a thick cloud, it dissipates a little first */
-    if (adj >= 0.5) 
+    if (reg->dmg_adjustment >= 0.5)
     { /* Do it twice */
-        adj /= 2.0; /* It dissipates, let's do less damage */
-        reg->arg = zeroany;
-        reg->arg.a_double = adj;
+        reg->dmg_adjustment /= 2.0;
         reg->ttl = 2L; /* Here's the trick : reset ttl */
         return FALSE;  /* THEN return FALSE, means "still there" */
     }
@@ -1016,7 +1014,7 @@ genericptr_t p2;
     NhRegion *reg;
     struct monst *mtmp;
     int dam, dmg_n, dmg_d, dmg_p;
-    double expiration_adjustment = 1.0;
+    double expiration_adjustment;
 
     /*
      * Gas clouds can't be targetted at water locations, but they can
@@ -1024,7 +1022,7 @@ genericptr_t p2;
      */
 
     reg = (NhRegion *) p1;
-    expiration_adjustment = reg->arg.a_double;
+    expiration_adjustment = reg->dmg_adjustment;
     dmg_n = reg->dmg_dice;
     dmg_d = reg->dmg_diesize;
     dmg_p = reg->dmg_plus;
@@ -1137,11 +1135,11 @@ int dmg_dice, dmg_diesize, dmg_plus;
         set_heros_fault(cloud); /* assume player has created it */
     cloud->inside_f = INSIDE_GAS_CLOUD;
     cloud->expire_f = EXPIRE_GAS_CLOUD;
-    cloud->arg = zeroany;
-    cloud->arg.a_double = 1.0; /* Now ussed for adjusting damage by expiration */
+    cloud->arg = zeroany; /* Unused */
     cloud->dmg_dice = dmg_dice;
     cloud->dmg_diesize = dmg_diesize;
     cloud->dmg_plus = dmg_plus;
+    cloud->dmg_adjustment = 1.0; /* Might go down towards dissipation */
     add_region(cloud);
     return cloud;
 }
