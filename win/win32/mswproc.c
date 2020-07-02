@@ -121,8 +121,8 @@ struct window_procs mswin_procs = {
     mswin_extra_winproc_function_A,
     mswin_play_immediate_ghsound,
     mswin_extra_winproc_function_C,
-    mswin_extra_winproc_function_D,
-    mswin_extra_winproc_function_E,
+    mswin_play_ghsound_effect_ambient,
+    mswin_set_effect_ambient_volume,
     mswin_play_ghsound_music,
     mswin_play_ghsound_level_ambient,
     mswin_adjust_ghsound_general_volumes,
@@ -3252,15 +3252,21 @@ mswin_extra_winproc_function_C(struct function_info_C info)
 }
 
 void
-mswin_extra_winproc_function_D(struct function_info_D info)
+mswin_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info)
 {
-    return;
+    if (!fmod_play_effect_ambient_sound(info))
+    {
+        impossible("Cannot play effect ambient sound!");
+    }
 }
 
 void
-mswin_extra_winproc_function_E(struct function_info_E info)
+mswin_set_effect_ambient_volume(struct effect_ambient_volume_info info)
 {
-    return;
+    if (!fmod_set_effect_ambient_volume(info))
+    {
+        impossible("Cannot play set effect ambient volume!");
+    }
 }
 
 void

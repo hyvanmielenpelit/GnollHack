@@ -49,6 +49,10 @@ enum ghsound_types {
 	GHSOUND_UI_MENU_SELECT,
 	GHSOUND_SFX_QUAFF,
 	GHSOUND_POISON_GAS_INSIDE,
+	GHSOUND_RAY_ELEC_AMBIENT,
+	GHSOUND_RAY_ELEC_CREATE,
+	GHSOUND_RAY_ELEC_DESTROY,
+	GHSOUND_RAY_ELEC_BOUNCE,
 	MAX_GHSOUNDS
 };
 
@@ -158,13 +162,12 @@ struct function_info_C {
 	float volume;
 };
 
-struct function_info_D {
+struct ghsound_effect_ambient_info {
 	enum ghsound_types ghsound;
 	float volume;
 };
 
-struct function_info_E {
-	enum ghsound_types ghsound;
+struct effect_ambient_volume_info {
 	float volume;
 };
 
@@ -335,6 +338,25 @@ extern struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES];
 extern struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES];
 
 
+/* RAY SOUNDSETS */
+enum ray_sound_types {
+	RAY_SOUND_TYPE_AMBIENT = 0,				/* Ambient sound while the ray is travelling */
+	RAY_SOUND_TYPE_CREATE,					/* Sound upon creation of the ray */
+	RAY_SOUND_TYPE_DESTROY,					/* Sound upon dissipation of the ray */
+	RAY_SOUND_TYPE_BOUNCE,					/* Sound upon the ray bouncing */
+	RAY_SOUND_TYPE_WHIZZES_BY_YOU,			/* Sound upon the ray wheezing by you */
+	RAY_SOUND_TYPE_HIT_MONSTER,				/* Sound upon the ray hitting a monster */
+	RAY_SOUND_TYPE_HIT_OBJECT,				/* Sound upon the ray hitting an object */
+	RAY_SOUND_TYPE_HIT_LOCATION,			/* Sound upon the ray hitting a location, e.g. digging a wall */
+	MAX_RAY_SOUND_TYPES
+}; 
+
+struct ray_soundset_definition {
+	char* soundset_name;
+	struct ghsound_info sounds[MAX_RAY_SOUND_TYPES];
+};
+
+extern struct ray_soundset_definition ray_soundsets[2 * NRAYS]; /* 0...NRAYS-1 normal ray, NRAYS...2NRAYS-1 explosion */
 
 
 #endif /* SOUNDSET_H */

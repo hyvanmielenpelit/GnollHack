@@ -7231,9 +7231,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	boolean isexplosioneffect = FALSE;
 	if (origobj && objects[origobj->otyp].oc_aflags & S1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
 		isexplosioneffect = TRUE;
-
+    int soundset_id = abstype % NRAYS + (isexplosioneffect ? NRAYS : 0);
 	fltxt = flash_types[(type <= -40) ? abstype : abs(type)];
 
+    play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_CREATE, sx, sy);
+    
     if (u.uswallow)
 	{
         double damage = 0;
@@ -7267,6 +7269,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
         range = 1;
     save_bhitpos = bhitpos;
 
+    start_ambient_ray_sound_at_location(soundset_id, sx, sy);
+
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
     while (range-- > 0)
 	{
@@ -7286,7 +7290,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 (void) unmap_invisible(sx, sy);
             if (ZAP_POS(levl[sx][sy].typ)
                 || (isok(lsx, lsy) && cansee(lsx, lsy)))
+            {
                 tmp_at(sx, sy);
+                update_ambient_ray_sound_to_location(soundset_id, sx, sy);
+            }
             delay_output(); /* wait a little */
         }
 
@@ -7434,6 +7441,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 			else if (zap_hit((int) u.uac, -1, (struct obj*)0)) /* No accuracy or skill bonus for hitting yourself */
 			{
                 range -= 2;
+                play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, sx, sy);
                 pline("%s hits you!", The(fltxt));
                 if (Reflecting) {
                     if (!Blind) {
@@ -7450,6 +7458,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             } 
 			else if (!Blind) 
 			{
+                play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_WHIZZES_BY_YOU, sx, sy);
                 pline("%s whizzes by you!", The(fltxt));
             }
 			else if (abstype == ZT_LIGHTNING)
@@ -7495,8 +7504,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     sx = lsx;
                     sy = lsy;
                     break; /* fireballs explode before the obstacle */
-                } else
+                }
+                else
+                {
+                    play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_BOUNCE, lsx, lsy);
                     pline_The("%s bounces!", fltxt);
+                }
             }
             if (!dx || !dy || !rn2(bchance)) {
                 dx = -dx;
@@ -7530,6 +7543,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
     }
     tmp_at(DISP_END, 0);
+    stop_ambient_ray_sound(soundset_id);
+    play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_DESTROY, lsx, lsy);
 
 	if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
 	{

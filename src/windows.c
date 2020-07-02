@@ -244,15 +244,15 @@ struct function_info_C info;
 }
 
 void
-genl_extra_winproc_function_D(info)
-struct function_info_D info;
+genl_play_ghsound_effect_ambient(info)
+struct ghsound_effect_ambient_info info;
 {
     return;
 }
 
 void
-genl_extra_winproc_function_E(info)
-struct function_info_E info;
+genl_set_effect_ambient_volume(info)
+struct effect_ambient_volume_info info;
 {
     return;
 }

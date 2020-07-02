@@ -73,7 +73,7 @@ enum strike_surface_types {
 /*	Max # of attacks for any given monster. -- Moved here from permonst.h --JG
  */
 
-#define NATTK 8
-
+#define NATTK 8	    /* Maximum number of attacks per monster */
+#define NRAYS 10	/* Maximum number of rays */
 
 #endif /* ACTION_H */

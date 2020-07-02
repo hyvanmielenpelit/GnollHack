@@ -90,8 +90,8 @@ struct window_procs {
     void FDECL((*win_extra_winproc_function_A), (struct function_info_A));
     void FDECL((*win_play_immediate_ghsound), (struct ghsound_immediate_info));
     void FDECL((*win_extra_winproc_function_C), (struct function_info_C));
-    void FDECL((*win_extra_winproc_function_D), (struct function_info_D));
-    void FDECL((*win_extra_winproc_function_E), (struct function_info_E));
+    void FDECL((*win_play_ghsound_effect_ambient), (struct ghsound_effect_ambient_info));
+    void FDECL((*win_set_effect_ambient_volume), (struct effect_ambient_volume_info));
     void FDECL((*win_play_ghsound_music), (struct ghsound_music_info));
     void FDECL((*win_play_ghsound_level_ambient), (struct ghsound_level_ambient_info));
     void NDECL((*win_adjust_ghsound_general_volumes));
@@ -187,8 +187,8 @@ extern
 #define extra_winproc_function_A (*windowprocs.win_extra_winproc_function_A)
 #define play_immediate_ghsound (*windowprocs.win_play_immediate_ghsound)
 #define extra_winproc_function_C (*windowprocs.win_extra_winproc_function_C)
-#define extra_winproc_function_D (*windowprocs.win_extra_winproc_function_D)
-#define extra_winproc_function_E (*windowprocs.win_extra_winproc_function_E)
+#define play_ghsound_effect_ambient (*windowprocs.win_play_ghsound_effect_ambient)
+#define set_effect_ambient_volume (*windowprocs.win_set_effect_ambient_volume)
 #define play_ghsound_music (*windowprocs.win_play_ghsound_music)
 #define play_ghsound_level_ambient (*windowprocs.win_play_ghsound_level_ambient)
 #define adjust_ghsound_general_volumes (*windowprocs.win_adjust_ghsound_general_volumes)
@@ -424,8 +424,8 @@ struct chain_procs {
     void FDECL((*win_extra_winproc_function_A), (CARGS, struct function_info_A));
     void FDECL((*win_play_immediate_ghsound), (CARGS, struct ghsound_immediate_info));
     void FDECL((*win_extra_winproc_function_C), (CARGS, struct function_info_C));
-    void FDECL((*win_extra_winproc_function_D), (CARGS, struct function_info_D));
-    void FDECL((*win_extra_winproc_function_E), (CARGS, struct function_info_E));
+    void FDECL((*win_play_ghsound_effect_ambient), (CARGS, struct ghsound_effect_ambient_info));
+    void FDECL((*win_set_effect_ambient_volume), (CARGS, struct effect_ambient_volume_info));
     void FDECL((*win_play_ghsound_music), (CARGS, struct ghsound_music_info));
     void FDECL((*win_play_ghsound_level_ambient), (CARGS, struct ghsound_level_ambient_info));
     void FDECL((*win_adjust_ghsound_general_volumes, (CARGS))));

@@ -2692,6 +2692,10 @@ E void FDECL(play_simple_weapon_sound, (struct monst*, int, struct obj*, enum ob
 E void FDECL(play_ui_sound, (enum ui_sounds_types));
 E void FDECL(play_sfx_sound, (enum sfx_sounds_types));
 E void FDECL(play_sfx_sound_at_location, (enum sfx_sounds_types, int, int));
+E void FDECL(play_immediate_ray_sound_at_location, (int, enum ray_sound_types, int, int));
+E void FDECL(start_ambient_ray_sound_at_location, (int, int, int));
+E void FDECL(update_ambient_ray_sound_to_location, (int, int, int));
+E void FDECL(stop_ambient_ray_sound, (int));
 E enum player_soundset_types NDECL(get_player_soundset);
 E void NDECL(dosetsoundvolume);
 E void FDECL(update_hearing_array, (int));
@@ -3351,8 +3355,8 @@ E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned lon
 E void FDECL(genl_open_special_view, (struct special_view_info));
 E void FDECL(genl_extra_winproc_function_A, (struct function_info_A));
 E void FDECL(genl_extra_winproc_function_C, (struct function_info_C));
-E void FDECL(genl_extra_winproc_function_D, (struct function_info_D));
-E void FDECL(genl_extra_winproc_function_E, (struct function_info_E));
+E void FDECL(genl_play_ghsound_effect_ambient, (struct ghsound_effect_ambient_info));
+E void FDECL(genl_set_effect_ambient_volume, (struct effect_ambient_volume_info));
 E void FDECL(genl_play_ghsound_level_ambient, (struct ghsound_level_ambient_info));
 
 E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));

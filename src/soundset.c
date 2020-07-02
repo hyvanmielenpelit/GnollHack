@@ -303,6 +303,271 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
 };
 
 
+struct ray_soundset_definition ray_soundsets[2 * NRAYS] =
+{
+    {
+        "ray of magic missiles",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of fire",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of frost",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of sleep",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of disintegration",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of electricity",
+        {
+            {GHSOUND_RAY_ELEC_AMBIENT, 1.0f},
+            {GHSOUND_RAY_ELEC_CREATE, 100.0f},
+            {GHSOUND_RAY_ELEC_DESTROY, 100.0f},
+            {GHSOUND_RAY_ELEC_BOUNCE, 100.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of poison gas",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of acid",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of death",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "ray of petrification",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of magic missiles",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of fire",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of frost",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of sleep",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of disintegration",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of electricity",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of poison gas",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of acid",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of death",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "explosion of petrification",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    }
+};
+
+
 void
 update_game_music()
 {
@@ -624,7 +889,7 @@ enum effect_sounds_types sfx_sound_id;
     float volume = 1.0f;
 
     soundid = sfx_sounds[sfx_sound_id].sound.ghsound;
-    volume = sfx_sounds[sfx_sound_id].sound.volume;
+    volume = min(1.0f, sfx_sounds[sfx_sound_id].sound.volume);
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
@@ -648,7 +913,7 @@ enum ui_sounds_types ui_sound_id;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = min(1.0f, volume);
     immediateinfo.sound_type = IMMEDIATE_SOUND_UI;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
@@ -672,13 +937,93 @@ int x, y;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume * hearing_array[x][y];
+    immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 
     if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
 }
 
+void
+play_immediate_ray_sound_at_location(ray_type, ray_sound_type, x, y)
+int ray_type; /* same as in buzz */
+enum ray_sounds_types ray_sound_type;
+int x, y;
+{
+    if (!isok(x, y) || hearing_array[x][y] == 0.0f)
+        return;
+    int typ = abs(ray_type) % NRAYS;
+    if (ray_soundsets[typ].sounds[ray_sound_type].ghsound == GHSOUND_NONE)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+
+    soundid = ray_soundsets[typ].sounds[ray_sound_type].ghsound;
+    volume = ray_soundsets[typ].sounds[ray_sound_type].volume;
+
+    struct ghsound_immediate_info immediateinfo = { 0 };
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = min(1.0f, volume * hearing_array[x][y]);
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (immediateinfo.ghsound > GHSOUND_NONE && immediateinfo.volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+}
+
+void
+start_ambient_ray_sound_at_location(ray_type, x, y)
+int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
+int x, y;
+{
+    int typ = ray_type;
+    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+        return;
+
+    float hearing_volume = 0.0f;
+    if (isok(x, y))
+        hearing_volume = hearing_array[x][y];
+
+    struct ghsound_effect_ambient_info info = { 0 };
+    info.ghsound = ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound;
+    info.volume = min(1.0f, ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].volume * hearing_volume);
+
+    play_ghsound_effect_ambient(info);
+}
+
+void
+update_ambient_ray_sound_to_location(ray_type, x, y)
+int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
+int x, y;
+{
+    int typ = ray_type;
+    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+        return;
+
+    float hearing_volume = 0.0f;
+    if (isok(x, y))
+        hearing_volume = hearing_array[x][y];
+
+    struct effect_ambient_volume_info vinfo = { 0 };
+    vinfo.volume = min(1.0f, ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].volume * hearing_volume);
+
+    set_effect_ambient_volume(vinfo);
+}
+
+void
+stop_ambient_ray_sound(ray_type)
+int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
+{
+    int typ = ray_type;
+
+    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+        return;
+
+    struct effect_ambient_volume_info vinfo = { 0 };
+    vinfo.volume = 0.0f;
+
+    set_effect_ambient_volume(vinfo);
+}
 
 enum player_soundset_types
 get_player_soundset()

@@ -579,7 +579,7 @@ struct window_procs chainin_procs = {
     genl_extra_winproc_function_A,
     genl_play_immediate_ghsound,
     genl_extra_winproc_function_C,
-    genl_extra_winproc_function_D,
+    genl_play_ghsound_effect_ambient,
     genl_extra_winproc_function_E,
     genl_play_ghsound_music,
     genl_play_ghsound_level_ambient,
