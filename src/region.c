@@ -155,8 +155,9 @@ int nrect;
     reg->typ = typ;
     reg->visible = region_type_definitions[typ].visible;
     reg->glyph = region_type_definitions[typ].variation > 0 && defsyms[region_type_definitions[typ].screen_symbol].variations <= region_type_definitions[typ].variation
-        ? cmap_variation_to_glyph(defsyms[region_type_definitions[typ].screen_symbol].variation_offset + region_type_definitions[typ].variation - 1) : cmap_to_glyph(region_type_definitions[typ].screen_symbol);
-    if (region_type_definitions[typ].is_light_source)
+        ? cmap_variation_to_glyph(defsyms[region_type_definitions[typ].screen_symbol].variation_offset + region_type_definitions[typ].variation - 1) 
+        : cmap_to_glyph(region_type_definitions[typ].screen_symbol);
+    if (region_type_definitions[typ].is_light_source != 0)
         reg->lamplit = TRUE;
 
     return reg;
