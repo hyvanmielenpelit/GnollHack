@@ -375,7 +375,7 @@ struct ray_soundset_definition ray_soundsets[2 * NRAYS] =
         {
             {GHSOUND_RAY_ELEC_AMBIENT, 1.0f},
             {GHSOUND_RAY_ELEC_CREATE, 100.0f},
-            {GHSOUND_RAY_ELEC_DESTROY, 100.0f},
+            {GHSOUND_RAY_ELEC_DESTROY, 10.0f},
             {GHSOUND_RAY_ELEC_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},

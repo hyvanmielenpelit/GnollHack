@@ -7327,6 +7327,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 if (mon_reflects(mon, (char *) 0)) 
 				{
 					/* Ray is reflected */
+                    play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_BOUNCE, mon->mx, mon->my);
                     if (cansee(mon->mx, mon->my))
 					{
                         hit(fltxt, mon, exclam(0), -1);
@@ -7344,7 +7345,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					boolean mon_could_move = mon_can_move(mon);
 					
 					/* Ray does damage and actually reduces mon's hit points */
-					double damage = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
+                    play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, mon->mx, mon->my);
+                    double damage = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
 
 					/* Rider non-disintegration */
                     if (abstype == ZT_DISINTEGRATION && check_rider_disintegration(mon, fltxt))
