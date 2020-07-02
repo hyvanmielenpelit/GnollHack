@@ -1784,6 +1784,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
                                     break;
                                 }
+                                case STATUS_MARK_SPEC_USED:
+                                    if (!isyou && mtmp->mspec_used)
+                                        display_this_status_mark = TRUE;
+                                    break;
                                 default:
                                     break;
                                 }
