@@ -54,19 +54,19 @@ static callback_proc callbacks[] = {
 
 struct region_type_definition region_type_definitions[MAX_REGION_TYPES] =
 {
-    {"general",                 REGION_BASETYPE_GENERAL, FALSE, AD_PHYS, 0, 0, 0, FALSE, S_unexplored, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"poison gas",              REGION_BASETYPE_GAS, TRUE,  AD_DRST, 0, 0, 0,  TRUE, S_poisoncloud, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_POISON_GAS, 0UL },
-    {"smoke",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, 0, 0, 0,  TRUE, S_cloud, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
-    {"cloud",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, 0, 0, 0,  TRUE, S_cloud, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
-    {"fire",                    REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_FIRE, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
-    {"lightning",               REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_ELEC, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
-    {"frost",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_COLD, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"death",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DRAY, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"annihilation",            REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DISN, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
-    {"magical darkness",        REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
-    {"magical silence",         REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"transparent force field", REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"opaque force field",      REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, 0, 0, 0, TRUE, S_unexplored, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL }
+    {"general",                 REGION_BASETYPE_GENERAL, FALSE, AD_PHYS, FALSE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"poison gas",              REGION_BASETYPE_GAS, TRUE,  AD_DRST, TRUE, S_poisoncloud, 0, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_POISON_GAS, 0UL },
+    {"smoke",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, TRUE, S_cloud, 0, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
+    {"cloud",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, TRUE, S_cloud, 0, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
+    {"fire",                    REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_FIRE, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
+    {"lightning",               REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_ELEC, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
+    {"frost",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_COLD, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"death",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DRAY, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"annihilation",            REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DISN, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
+    {"magical darkness",        REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, TRUE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
+    {"magical silence",         REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, TRUE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"transparent force field", REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, TRUE, S_unexplored, 0, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"opaque force field",      REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, TRUE, S_unexplored, 0, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL }
 };
 
 
@@ -153,8 +153,12 @@ int nrect;
     reg->monsters = (unsigned int *) 0;
     reg->arg = zeroany;
     reg->typ = typ;
+    reg->visible = region_type_definitions[typ].visible;
+    reg->glyph = region_type_definitions[typ].variation > 0 && defsyms[region_type_definitions[typ].screen_symbol].variations <= region_type_definitions[typ].variation
+        ? cmap_variation_to_glyph(defsyms[region_type_definitions[typ].screen_symbol].variation_offset + region_type_definitions[typ].variation - 1) : cmap_to_glyph(region_type_definitions[typ].screen_symbol);
     if (region_type_definitions[typ].is_light_source)
         reg->lamplit = TRUE;
+
     return reg;
 }
 
@@ -329,9 +333,28 @@ NhRegion *reg;
     }
     regions[n_regions] = reg;
     n_regions++;
+
+    /* Start making sound */
+    if (region_type_definitions[reg->typ].soundset > REGION_SOUNDSET_NONE)
+    {
+        int x, y;
+        x = (reg->bounding_box.lx + reg->bounding_box.hx) / 2;
+        y = (reg->bounding_box.ly + reg->bounding_box.hy) / 2;
+        if (!isok(x, y))
+            x = 1, y = 1; /* These are actually not being used for a region sound source */
+
+        new_sound_source(x, y,
+            region_soundsets[region_type_definitions[reg->typ].soundset].sounds[REGION_SOUND_TYPE_AMBIENT].ghsound,
+            region_soundsets[region_type_definitions[reg->typ].soundset].sounds[REGION_SOUND_TYPE_AMBIENT].volume,
+            SOUNDSOURCE_REGION,
+            region_soundsets[region_type_definitions[reg->typ].soundset].ambient_subtype, region_to_any(reg));
+        reg->makingsound = TRUE;
+    }
+
     /* Check for monsters inside the region */
     for (i = reg->bounding_box.lx; i <= reg->bounding_box.hx; i++)
-        for (j = reg->bounding_box.ly; j <= reg->bounding_box.hy; j++) {
+        for (j = reg->bounding_box.ly; j <= reg->bounding_box.hy; j++)
+        {
             /* Some regions can cross the level boundaries */
             if (!isok(i, j))
                 continue;
@@ -340,6 +363,7 @@ NhRegion *reg;
             if (reg->visible && cansee(i, j))
                 newsym(i, j);
         }
+
     /* Check for player now... */
     if (inside_region(reg, u.ux, u.uy))
         set_hero_inside(reg);
@@ -695,6 +719,9 @@ int mode;
         bwrite(fd, (genericptr_t) &regions[i]->glyph, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->arg, sizeof(anything));
         bwrite(fd, (genericptr_t) &regions[i]->typ, sizeof(enum region_types));
+        bwrite(fd, (genericptr_t) &regions[i]->dmg_dice, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
+        bwrite(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
         bwrite(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
         bwrite(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
         bwrite(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
@@ -786,10 +813,13 @@ boolean ghostly; /* If a bones file restore */
         mread(fd, (genericptr_t) &regions[i]->visible, sizeof(boolean));
         mread(fd, (genericptr_t) &regions[i]->glyph, sizeof(int));
         mread(fd, (genericptr_t) &regions[i]->arg, sizeof(anything));
-        mread(fd, (genericptr_t)&regions[i]->typ, sizeof(enum region_types));
-        mread(fd, (genericptr_t)&regions[i]->region_flags, sizeof(unsigned long));
-        mread(fd, (genericptr_t)&regions[i]->lamplit, sizeof(boolean));
-        mread(fd, (genericptr_t)&regions[i]->makingsound, sizeof(boolean));
+        mread(fd, (genericptr_t) &regions[i]->typ, sizeof(enum region_types));
+        mread(fd, (genericptr_t) &regions[i]->dmg_dice, sizeof(int));
+        mread(fd, (genericptr_t) &regions[i]->dmg_diesize, sizeof(int));
+        mread(fd, (genericptr_t) &regions[i]->dmg_plus, sizeof(int));
+        mread(fd, (genericptr_t) &regions[i]->region_flags, sizeof(unsigned long));
+        mread(fd, (genericptr_t) &regions[i]->lamplit, sizeof(boolean));
+        mread(fd, (genericptr_t) &regions[i]->makingsound, sizeof(boolean));
     }
     /* remove expired regions, do not trigger the expire_f callback (yet!);
        also update monster lists if this data is coming from a bones file */
@@ -960,16 +990,17 @@ genericptr_t p1;
 genericptr_t p2 UNUSED;
 {
     NhRegion *reg;
-    int damage;
+    double adj;
 
     reg = (NhRegion *) p1;
-    damage = reg->arg.a_int;
+    adj = reg->arg.a_double;
 
     /* If it was a thick cloud, it dissipates a little first */
-    if (damage >= 5) {
-        damage /= 2; /* It dissipates, let's do less damage */
+    if (adj >= 0.5) 
+    { /* Do it twice */
+        adj /= 2.0; /* It dissipates, let's do less damage */
         reg->arg = zeroany;
-        reg->arg.a_int = damage;
+        reg->arg.a_double = adj;
         reg->ttl = 2L; /* Here's the trick : reset ttl */
         return FALSE;  /* THEN return FALSE, means "still there" */
     }
@@ -983,7 +1014,8 @@ genericptr_t p2;
 {
     NhRegion *reg;
     struct monst *mtmp;
-    int dam;
+    int dam, dmg_n, dmg_d, dmg_p;
+    double expiration_adjustment = 1.0;
 
     /*
      * Gas clouds can't be targetted at water locations, but they can
@@ -991,7 +1023,12 @@ genericptr_t p2;
      */
 
     reg = (NhRegion *) p1;
-    dam = reg->arg.a_int;
+    expiration_adjustment = reg->arg.a_double;
+    dmg_n = reg->dmg_dice;
+    dmg_d = reg->dmg_diesize;
+    dmg_p = reg->dmg_plus;
+    dam = dd(dmg_n, dmg_d, dmg_p);
+    dam = (int)((double)dam * expiration_adjustment);
 
     if (p2 == (genericptr_t) 0) 
 	{ /* This means *YOU* Bozo! */
@@ -1005,12 +1042,12 @@ genericptr_t p2;
             make_blinded(1L, FALSE);
         }
 
-        if (!Poison_resistance) 
+        if (!Poison_resistance && dam > 0) 
 		{
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
             You("cough and spit blood!");
-            losehp(adjust_damage(rnd(dam) + 5, (struct monst*)0, &youmonst, AD_DRST, FALSE), "gas cloud", KILLED_BY_AN);
+            losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_DRST, FALSE), "gas cloud", KILLED_BY_AN);
             return FALSE;
         } 
 		else 
@@ -1051,7 +1088,7 @@ genericptr_t p2;
             if (resists_poison(mtmp))
                 return FALSE;
 
-			deduct_monster_hp(mtmp, adjust_damage(rnd(dam) + 5, (struct monst*)0, mtmp, AD_DRST, FALSE));
+			deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_DRST, FALSE));
 
 			if (DEADMONSTER(mtmp)) 
 			{
@@ -1071,16 +1108,17 @@ genericptr_t p2;
 }
 
 NhRegion *
-create_gas_cloud(x, y, radius, damage)
+create_gas_cloud(x, y, type, radius, dmg_dice, dmg_diesize, dmg_plus)
 xchar x, y;
+enum region_types type;
 int radius;
-int damage;
+int dmg_dice, dmg_diesize, dmg_plus;
 {
     NhRegion *cloud;
     int i, nrect;
     NhRect tmprect;
 
-    cloud = create_region(REGION_POISON_GAS, (NhRect *) 0, 0);
+    cloud = create_region(type, (NhRect *) 0, 0);
     nrect = radius;
     tmprect.lx = x;
     tmprect.hx = x;
@@ -1099,15 +1137,10 @@ int damage;
     cloud->inside_f = INSIDE_GAS_CLOUD;
     cloud->expire_f = EXPIRE_GAS_CLOUD;
     cloud->arg = zeroany;
-    cloud->arg.a_int = damage;
-    cloud->visible = TRUE;
-    cloud->glyph = cmap_to_glyph(damage ? S_poisoncloud : S_cloud);
-    new_sound_source(x, y,
-        region_soundsets[region_type_definitions[cloud->typ].soundset].sounds[REGION_SOUND_TYPE_AMBIENT].ghsound,
-        region_soundsets[region_type_definitions[cloud->typ].soundset].sounds[REGION_SOUND_TYPE_AMBIENT].volume,
-        SOUNDSOURCE_REGION,
-        region_soundsets[region_type_definitions[cloud->typ].soundset].ambient_subtype, region_to_any(cloud));
-    cloud->makingsound = TRUE;
+    cloud->arg.a_double = 1.0; /* Now ussed for adjusting damage by expiration */
+    cloud->dmg_dice = dmg_dice;
+    cloud->dmg_diesize = dmg_diesize;
+    cloud->dmg_plus = dmg_plus;
     add_region(cloud);
     return cloud;
 }

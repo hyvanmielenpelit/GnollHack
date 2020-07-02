@@ -2612,8 +2612,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         }
         if (!is_valid_stinking_cloud_pos(cc.x, cc.y, TRUE))
             break;
-        (void) create_gas_cloud(cc.x, cc.y, 3 + bcsign(sobj),
-                                8 + 4 * bcsign(sobj));
+        (void) create_gas_cloud(cc.x, cc.y, REGION_POISON_GAS, 3 + bcsign(sobj),
+                                1, 8 + 4 * bcsign(sobj), 5);
         break;
     }
     default:

@@ -52,11 +52,9 @@ struct region_type_definition {
     enum region_base_types base_type;
     boolean causes_damage;
     int damage_type;
-    int dmg_dice;
-    int dmg_diesize;
-    int dmg_plus;
     boolean visible;
     int screen_symbol;
+    int variation;
     boolean sensed_blind_at_location;
     boolean sensed_by_touching_around;
     boolean touch_causes_effect;
@@ -112,6 +110,9 @@ typedef struct nhregion {
     anything arg;    /* Optional user argument (Ex: strength of
                         force field, damage of a fire zone, ...*/
     enum region_types typ;  /* type of the region, normally indicating visible, audible, and game play effects */
+    int dmg_dice;
+    int dmg_diesize;
+    int dmg_plus;
     unsigned long region_flags; /* No teleport region etc. */
 
     boolean lamplit;        /* region is attached to a light source, which temp-lights the region */

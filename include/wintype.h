@@ -28,6 +28,8 @@ typedef union any {
     unsigned long a_mask32; /* used by status highlighting */
     coord a_coord;
     struct nhregion *a_nhregion;
+    float a_float;
+    double a_double;
     /* add types as needed */
     
 } anything;

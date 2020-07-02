@@ -244,4 +244,12 @@ int i;
     return (int) x;
 }
 
+
+int
+dd(dice, diesize, plus)
+int dice, diesize, plus;
+{
+    return (dice > 0 && diesize > 0 ? d(dice, diesize) : 0) + plus;
+}
+
 /*rnd.c*/
