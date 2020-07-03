@@ -1822,7 +1822,11 @@ boolean* obj_destroyed;
 
 	if (!already_killed)
 	{
-		play_hit_sound(&youmonst, mon, 0, obj, damage, thrown);
+		if(thrown == HMON_MELEE)
+			play_monster_hit_sound(&youmonst, mon, 0, obj, damage, thrown);
+		else
+			play_object_hit_sound(obj, mon, damage, thrown);
+
 		deduct_monster_hp(mon, damage); //	mon->mhp -= tmp;
 	}
 	int mon_hp_after = mon->mhp;

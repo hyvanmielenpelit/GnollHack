@@ -2928,7 +2928,7 @@ register struct obj* omonwep;
 			context.botl = 1;
 		}
 
-        play_hit_sound(mtmp, &youmonst, get_pm_attack_index(mtmp->data, mattk), omonwep, damage, 0);
+        play_monster_hit_sound(mtmp, &youmonst, get_pm_attack_index(mtmp->data, mattk), omonwep, damage, 0);
         mdamageu(mtmp, damage, FALSE);
 
 		if (permdmg2 > 0)

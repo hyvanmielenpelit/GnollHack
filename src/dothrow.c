@@ -2241,8 +2241,6 @@ boolean is_golf;
             if (hmode == HMON_APPLIED)
                 u.uconduct.weaphit++;
 
-            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_HIT_THROW);
-            
             //DAMAGE IS DONE HERE
             boolean obj_destroyed = FALSE;
             if (hmon(mon, obj, hmode, dieroll, &obj_destroyed)) 

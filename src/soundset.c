@@ -841,6 +841,8 @@ enum object_sound_types sound_type;
         else
             volume *= hearing_array[x][y];
     }
+    else
+        return;
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
@@ -919,7 +921,7 @@ enum object_sound_types sound_type;
 }
 
 void
-play_hit_sound(magr, mdef, attack_number, weapon, damage, thrown)
+play_monster_hit_sound(magr, mdef, attack_number, weapon, damage, thrown)
 struct monst* magr;
 struct monst* mdef;
 int attack_number;
@@ -998,6 +1000,99 @@ enum hmon_atkmode_types thrown;
     else if(mdef)
     {
         if(is_wooden(mdef->data))
+            surfaceid = STRIKE_SURFACE_WOOD;
+        else if (is_dragon(mdef->data))
+            surfaceid = STRIKE_SURFACE_SCALES;
+        else if (thick_skinned(mdef->data))
+            surfaceid = STRIKE_SURFACE_THICK_HIDE;
+        else if (is_whirly(mdef->data))
+            surfaceid = STRIKE_SURFACE_AIR;
+        else if (flaming(mdef->data))
+            surfaceid = STRIKE_SURFACE_FIRE;
+        else if (is_watery(mdef->data))
+            surfaceid = STRIKE_SURFACE_WATER;
+        else if (is_stony(mdef->data))
+            surfaceid = STRIKE_SURFACE_STONE;
+        else if (noncorporeal(mdef->data))
+            surfaceid = STRIKE_SURFACE_INCORPOREAL;
+    }
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.parameter_names[0] = "Surface";
+    immediateinfo.parameter_values[0] = (float)surfaceid;
+    immediateinfo.parameter_names[1] = "Damage";
+    immediateinfo.parameter_values[1] = (float)damage;
+    immediateinfo.parameter_names[2] = (char*)0;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+
+}
+
+
+void
+play_object_hit_sound(obj, mdef, damage, thrown)
+struct obj* obj;
+struct monst* mdef;
+double damage;
+enum hmon_atkmode_types thrown;
+{
+    if (!mdef || !obj)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    boolean you_defend = (mdef == &youmonst);
+    enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
+    struct ghsound_immediate_info immediateinfo = { 0 };
+    xchar defx = 0, defy = 0;
+    if (you_defend)
+    {
+        defx = u.ux;
+        defy = u.uy;
+    }
+    else
+    {
+        defx = mdef->mx;
+        defy = mdef->my;
+    }
+
+    if (obj->oartifact && artilist[obj->oartifact].soundset > OBJECT_SOUNDSET_NONE)
+    {
+        enum object_soundset_types oss = artilist[obj->oartifact].soundset;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+    }
+    else
+    {
+        enum object_soundset_types oss = objects[obj->otyp].oc_soundset;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+    }
+
+    xchar x = defx, y = defy;
+    if (isok(x, y))
+    {
+        float hearing = hearing_array[x][y];
+        if (hearing == 0.0f)
+            return;
+        else
+            volume *= hearing_array[x][y];
+    }
+    else
+        return;
+
+
+    enum strike_surface_types surfaceid = STRIKE_SURFACE_FLESH;
+    if (you_defend)
+    {
+        surfaceid = STRIKE_SURFACE_FLESH;
+    }
+    else if (mdef)
+    {
+        if (is_wooden(mdef->data))
             surfaceid = STRIKE_SURFACE_WOOD;
         else if (is_dragon(mdef->data))
             surfaceid = STRIKE_SURFACE_SCALES;
