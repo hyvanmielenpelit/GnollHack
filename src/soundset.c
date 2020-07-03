@@ -589,6 +589,7 @@ update_game_music()
     }
 
     /* play_ghsound_music will check if the music is currently playing and then do nothing if this is the case */
+    /* GHSOUND_NONE will stop music */
     play_ghsound_music(musicinfo);
 }
 
@@ -612,7 +613,7 @@ play_level_ambient_sounds()
 
     if (context.game_started == FALSE)
     {
-        lainfo.ghsound = GHSOUND_MUSIC_INTRO;
+        lainfo.ghsound = GHSOUND_NONE;
     }
     else
     {

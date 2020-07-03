@@ -40,7 +40,7 @@ static GNHSoundInstance hitInstances[2] = { 0 };
 static float general_volume = 1.0f;
 static float general_music_volume = 1.0f;
 static float general_ambient_volume = 1.0f;
-static float general_sound_effects_volume = 1.0f;
+static float general_sfx_volume = 1.0f;
 static float general_ui_volume = 1.0f;
 
 /* GHSound -> FMOD event mapping here */
@@ -60,53 +60,52 @@ struct sound_bank_definition {
 struct ghsound_eventmapping {
     enum sound_bank_types bank_id;
     const char* eventPath;
-    int within_event_id;
     float volume;
 };
 
 
-#define NoSound { SOUND_BANK_NONE,  "", 0, 0.0f}
+#define NoSound { SOUND_BANK_NONE,  "", 0.0f}
 
 const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
-    { SOUND_BANK_NONE, "" , 0, 0.0f },
-    { SOUND_BANK_MASTER, "event:/Music-Splash", 0, 0.5f},
-    { SOUND_BANK_MASTER, "event:/Music-Player-Selection", 0, 0.3f},
-    { SOUND_BANK_MASTER, "event:/Music-Intro", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Normal-1", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Oracle", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Temple", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Medusa", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Castle", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Normal", 0, 0.07f},
-    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Town", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_NONE, "" , 0.0f },
+    { SOUND_BANK_MASTER, "event:/Music-Splash", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Music-Player-Selection", 0.3f},
+    { SOUND_BANK_MASTER, "event:/Music-Intro", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Normal-1", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Oracle", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Temple", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Medusa", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Castle", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Normal", 0.07f},
+    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Town", BACKGROUND_MUSIC_VOLUME},
     
-    { SOUND_BANK_MASTER, "event:/Music-Sokoban-Normal", 0, 0.10f},
-    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Normal", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Valley", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Sanctum", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Player Footsteps", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Angry", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Dead", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Deserted", 0, BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music-Sokoban-Normal", 0.10f},
+    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Normal", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Valley", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Sanctum", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Player Footsteps", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Angry", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Dead", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Deserted", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 1.0f},
 
-    { SOUND_BANK_MASTER, "event:/Bee Ambient" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Quarterstaff Swing" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Quarterstaff Hit" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Valley Ambient" , 0, 0.10f},
-    { SOUND_BANK_MASTER, "event:/Morgue Ambient" , 0, 0.10f},
-    { SOUND_BANK_MASTER, "event:/Garden Ambient" , 0, 0.03f},
-    { SOUND_BANK_MASTER, "event:/Button Down" , 0, 0.15f},
-    { SOUND_BANK_MASTER, "event:/Menu Select" , 0, 0.15f},
-    { SOUND_BANK_MASTER, "event:/Quaff" , 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Bee Ambient" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Fire Ambient" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Quarterstaff Swing" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Quarterstaff Hit" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Valley Ambient" , 0.10f},
+    { SOUND_BANK_MASTER, "event:/Morgue Ambient" , 0.10f},
+    { SOUND_BANK_MASTER, "event:/Garden Ambient" , 0.03f},
+    { SOUND_BANK_MASTER, "event:/Button Down" , 0.15f},
+    { SOUND_BANK_MASTER, "event:/Menu Select" , 0.15f},
+    { SOUND_BANK_MASTER, "event:/Quaff" , 1.0f},
 
-    { SOUND_BANK_MASTER, "event:/Poison Gas" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Ray Electricity Ambient" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Ray Electricity Create" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Ray Electricity Destroy" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Ray Electricity Bounce" , 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Poison Gas" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ray Electricity Ambient" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ray Electricity Create" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ray Electricity Destroy" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ray Electricity Bounce" , 1.0f},
 };
 
 #undef NoSound
@@ -174,6 +173,24 @@ extern "C"
         FMOD_RESULT result;
 
         enum ghsound_types soundid = info.ghsound;
+        if (soundid == GHSOUND_NONE)
+        {
+            if (musicInstances[0].eventInstance)
+            {
+                /* Stop music */
+                result = musicInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                if (result != FMOD_OK)
+                    return FALSE;
+                musicInstances[0].normalVolume = 0.0f;
+                result = fmod_studio_system->update();
+                return (result == FMOD_OK);
+            }
+
+            /* Nothing to do */
+            return TRUE;
+        }
+
+
         struct ghsound_eventmapping eventmap = ghsound2event[soundid];
         float event_volume = eventmap.volume;
 
@@ -193,8 +210,43 @@ extern "C"
             earlierMusicInstance->getDescription(&earlierMusicDescription);
             if (earlierMusicDescription && musicDescription == earlierMusicDescription)
             {
-                /* Already playing, no need to do anything, unless so specified */
-                return 1;
+                /* Already playing, just check the difference in volume */
+                if (musicInstances[0].normalVolume == 0.0f && info.volume > 0.0f)
+                {
+                    /* Restart the music and adjust volume */
+                    result = musicInstances[0].eventInstance->setVolume(min(1.0f, info.volume * event_volume * general_music_volume * general_volume));
+                    if (result != FMOD_OK)
+                        return FALSE;
+
+                    result = musicInstances[0].eventInstance->start();
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+                else if (musicInstances[0].normalVolume > 0.0f && info.volume == 0.0f)
+                {
+                    /* Stop music */
+                    result = musicInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+                else if (musicInstances[0].normalVolume != info.volume)
+                {
+                    /* Adjust volume */
+                    result = musicInstances[0].eventInstance->setVolume(min(1.0f, info.volume * event_volume * general_music_volume * general_volume));
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+
+                /* Finally, update */
+                if (musicInstances[0].normalVolume != info.volume)
+                {
+                    musicInstances[0].normalVolume = info.volume;
+                    result = fmod_studio_system->update();
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+
+                return TRUE;
             }
         }
 
@@ -204,7 +256,7 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
-        musicInstance->setVolume(info.volume * event_volume * general_music_volume * general_volume);
+        musicInstance->setVolume(min(1.0f, info.volume * event_volume * general_music_volume * general_volume));
         result = musicInstance->start();
         if (result != FMOD_OK)
             return FALSE;
@@ -250,9 +302,7 @@ extern "C"
                 result = levelAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
                 if (result != FMOD_OK)
                     return FALSE;
-                levelAmbientInstances[0].ghsound = GHSOUND_NONE;
                 levelAmbientInstances[0].normalVolume = 0.0f;
-                levelAmbientInstances[0].sound_type = 0;
                 result = fmod_studio_system->update();
                 return (result == FMOD_OK);
             }
@@ -280,8 +330,43 @@ extern "C"
             earlierLevelAmbientInstance->getDescription(&earlierLevelAmbientDescription);
             if (earlierLevelAmbientDescription && levelAmbientDescription == earlierLevelAmbientDescription)
             {
-                /* Already playing, no need to do anything, unless so specified */
-                return 1;
+                /* Already playing, just check the difference in volume */
+                if (levelAmbientInstances[0].normalVolume == 0.0f && info.volume > 0.0f)
+                {
+                    /* Restart the sound and adjust volume */
+                    result = levelAmbientInstances[0].eventInstance->setVolume(min(1.0f, info.volume * event_volume * general_ambient_volume * general_volume));
+                    if (result != FMOD_OK)
+                        return FALSE;
+
+                    result = levelAmbientInstances[0].eventInstance->start();
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+                else if (levelAmbientInstances[0].normalVolume > 0.0f && info.volume == 0.0f)
+                {
+                    /* Stop ambient sound */
+                    result = levelAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+                else if (levelAmbientInstances[0].normalVolume != info.volume)
+                {
+                    /* Adjust volume */
+                    result = levelAmbientInstances[0].eventInstance->setVolume(min(1.0f, info.volume * event_volume * general_ambient_volume * general_volume));
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+
+                /* Finally, update */
+                if (levelAmbientInstances[0].normalVolume != info.volume)
+                {
+                    levelAmbientInstances[0].normalVolume = info.volume;
+                    result = fmod_studio_system->update();
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+
+                return TRUE;
             }
         }
 
@@ -291,7 +376,10 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
-        levelAmbientInstance->setVolume(info.volume * event_volume * general_ambient_volume * general_volume);
+        result = levelAmbientInstance->setVolume(min(1.0f, info.volume * event_volume * general_ambient_volume * general_volume));
+        if (result != FMOD_OK)
+            return FALSE;
+
         result = levelAmbientInstance->start();
         if (result != FMOD_OK)
             return FALSE;
@@ -333,7 +421,7 @@ extern "C"
             float volume = info.volume;
 
             /* Adjust volume */
-            effectAmbientInstances[0].eventInstance->setVolume(volume * event_volume * general_sound_effects_volume * general_volume);
+            effectAmbientInstances[0].eventInstance->setVolume(min(1.0f, volume * event_volume * general_sfx_volume * general_volume));
 
             if (volume == 0.0f && effectAmbientInstances[0].normalVolume > 0.0f)
             {
@@ -419,7 +507,7 @@ extern "C"
             return FALSE;
 
         /* Note: effect ambient uses sfx volume instead of ambient volume */
-        effectAmbientInstance->setVolume(info.volume * event_volume * general_sound_effects_volume * general_volume);
+        effectAmbientInstance->setVolume(min(1.0f, info.volume * event_volume * general_sfx_volume * general_volume));
         if (info.volume > 0.0f)
         {
             result = effectAmbientInstance->start();
@@ -463,7 +551,7 @@ extern "C"
         float event_volume = eventmap.volume;
         if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
             return FALSE;
-        float relevant_general_volume = (info.sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sound_effects_volume);
+        float relevant_general_volume = (info.sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sfx_volume);
 
         Studio::EventDescription* immediateSoundDescription = NULL;
         result = fmod_studio_system->getEvent(eventmap.eventPath, &immediateSoundDescription);
@@ -476,7 +564,7 @@ extern "C"
             return FALSE;
 
         /* Set volume */
-        result = immediateSoundInstance->setVolume(info.volume * event_volume * relevant_general_volume * general_volume);
+        result = immediateSoundInstance->setVolume(min(1.0f, info.volume * event_volume * relevant_general_volume * general_volume));
         if (result != FMOD_OK)
             return FALSE;
 
@@ -540,12 +628,12 @@ extern "C"
 
 
     int
-    fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_effects_volume, float new_general_ui_volume)
+    fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_sfx_volume, float new_general_ui_volume)
     {
         general_volume = new_general_volume;
         general_music_volume = new_general_music_volume;
         general_ambient_volume = new_general_ambient_volume;
-        general_sound_effects_volume = new_general_effects_volume;
+        general_sfx_volume = new_general_sfx_volume;
         general_ui_volume = new_general_ui_volume;
 
         FMOD_RESULT result;
@@ -556,7 +644,7 @@ extern "C"
                 enum ghsound_types soundid = musicInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                result = musicInstances[i].eventInstance->setVolume(musicInstances[i].normalVolume * event_volume * general_music_volume * general_volume);
+                result = musicInstances[i].eventInstance->setVolume(min(1.0f, musicInstances[i].normalVolume * event_volume * general_music_volume * general_volume));
             }
         }
         for (int i = 0; i <= 1; i++)
@@ -566,7 +654,17 @@ extern "C"
                 enum ghsound_types soundid = levelAmbientInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                result = levelAmbientInstances[i].eventInstance->setVolume(levelAmbientInstances[i].normalVolume * event_volume * general_ambient_volume * general_volume);
+                result = levelAmbientInstances[i].eventInstance->setVolume(min(1.0f, levelAmbientInstances[i].normalVolume * event_volume * general_ambient_volume * general_volume));
+            }
+        }
+        for (int i = 0; i <= 1; i++)
+        {
+            if (effectAmbientInstances[i].eventInstance)
+            {
+                enum ghsound_types soundid = effectAmbientInstances[i].ghsound;
+                struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+                float event_volume = eventmap.volume;
+                result = effectAmbientInstances[i].eventInstance->setVolume(min(1.0f, effectAmbientInstances[i].normalVolume * event_volume * general_ambient_volume * general_volume));
             }
         }
         for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
@@ -576,8 +674,8 @@ extern "C"
                 enum ghsound_types soundid = immediateSoundInstances[i].ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                float relevant_general_volume = (immediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sound_effects_volume);
-                result = immediateSoundInstances[i].eventInstance->setVolume(immediateSoundInstances[i].normalVolume * event_volume * relevant_general_volume * general_volume);
+                float relevant_general_volume = (immediateSoundInstances[i].sound_type == IMMEDIATE_SOUND_UI ? general_ui_volume : general_sfx_volume);
+                result = immediateSoundInstances[i].eventInstance->setVolume(min(1.0f, immediateSoundInstances[i].normalVolume * event_volume * relevant_general_volume * general_volume));
             }
         }
         for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)
@@ -587,7 +685,7 @@ extern "C"
                 enum ghsound_types soundid = curr->ghsound;
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
-                result = curr->eventInstance->setVolume(curr->normalVolume * event_volume * general_ambient_volume * general_volume);
+                result = curr->eventInstance->setVolume(min(1.0f, curr->normalVolume * event_volume * general_ambient_volume * general_volume));
             }
         }
 
