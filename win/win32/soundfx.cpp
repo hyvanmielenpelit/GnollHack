@@ -175,7 +175,7 @@ extern "C"
         enum ghsound_types soundid = info.ghsound;
         if (soundid == GHSOUND_NONE)
         {
-            if (musicInstances[0].eventInstance)
+            if (musicInstances[0].eventInstance && musicInstances[0].normalVolume > 0.0f)
             {
                 /* Stop music */
                 result = musicInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
@@ -257,9 +257,12 @@ extern "C"
             return FALSE;
 
         musicInstance->setVolume(min(1.0f, info.volume * event_volume * general_music_volume * general_volume));
-        result = musicInstance->start();
-        if (result != FMOD_OK)
-            return FALSE;
+        if (info.volume > 0.0f)
+        {
+            result = musicInstance->start();
+            if (result != FMOD_OK)
+                return FALSE;
+        }
 
         /* If starting succeeded, stop the old music in musicInstances[0] by fading */
         if (musicInstances[0].eventInstance)
@@ -296,7 +299,7 @@ extern "C"
 
         if (soundid == GHSOUND_NONE)
         {
-            if (levelAmbientInstances[0].eventInstance)
+            if (levelAmbientInstances[0].eventInstance && levelAmbientInstances[0].normalVolume > 0.0f)
             {
                 /* Stop ambient sound */
                 result = levelAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
@@ -380,10 +383,12 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
-        result = levelAmbientInstance->start();
-        if (result != FMOD_OK)
-            return FALSE;
-
+        if (info.volume > 0.0f)
+        {
+            result = levelAmbientInstance->start();
+            if (result != FMOD_OK)
+                return FALSE;
+        }
         /* If starting succeeded, stop the old ambient sound in levelAmbientInstances[0] by fading */
         if (levelAmbientInstances[0].eventInstance)
         {
