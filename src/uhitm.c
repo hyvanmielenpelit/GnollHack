@@ -724,7 +724,7 @@ struct attack *uattk;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-		play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
+		play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
 		update_u_action(TRUE);
 
 		char strikebuf[BUFSIZ] = "";
@@ -791,7 +791,7 @@ struct attack *uattk;
 
 		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
 		{
-			play_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
+			play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(TRUE);
 
 			char strikebuf[BUFSIZ] = "";
@@ -1823,7 +1823,7 @@ boolean* obj_destroyed;
 	if (!already_killed)
 	{
 		if(thrown == HMON_MELEE)
-			play_monster_hit_sound(&youmonst, mon, 0, obj, damage, thrown);
+			play_monster_weapon_hit_sound(&youmonst, mon, 0, obj, damage, thrown);
 		else
 			play_object_hit_sound(obj, mon, damage, thrown);
 
@@ -1840,6 +1840,7 @@ boolean* obj_destroyed;
 
 	if (DEADMONSTER(mon))
 	{
+		play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_DEATH);
 		destroyed = TRUE;
 		if (poisondamage > 0 && ((double)mon->mhp + ((double)mon->mhp_fraction) / 10000 - 1) > -poisondamage)
 		{

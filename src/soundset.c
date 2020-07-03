@@ -15,21 +15,21 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 {
 	{
 		"",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
 	},
 	{
 		"Generic",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
@@ -41,42 +41,42 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 {
 	{
 		"",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
     },
 	{
 		"Generic",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Goblin",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Dragon",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Dracolich",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
     {
         "Bee",
-        {{GHSOUND_BEE, 1.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
@@ -854,7 +854,83 @@ enum object_sound_types sound_type;
 }
 
 void
-play_simple_weapon_sound(magr, attack_number, weapon, sound_type)
+play_simple_player_sound(sound_type)
+enum player_sound_types sound_type;
+{
+    /* Do not use for hit sounds */
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    enum player_soundset_types pss = get_player_soundset();
+    soundid = player_soundsets[pss].sounds[sound_type].ghsound;
+    volume = monster_soundsets[pss].sounds[sound_type].volume;
+
+    xchar x = u.ux, y = u.uy;
+
+    if (isok(x, y))
+    {
+        float hearing = hearing_array[x][y];
+        if (hearing == 0.0f)
+            return;
+        else
+            volume *= hearing_array[x][y];
+    }
+    else
+        return;
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+
+}
+
+void
+play_simple_monster_sound(mon, sound_type)
+struct monst* mon;
+enum monster_sound_types sound_type;
+{
+    /* Do not use for hit sounds */
+
+    if (!mon)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    enum monster_soundset_types mss = mon->female ? mon->data->female_soundset : mon->data->soundset;
+    soundid = monster_soundsets[mss].sounds[sound_type].ghsound;
+    volume = monster_soundsets[mss].sounds[sound_type].volume;
+
+    xchar x = mon->mx, y = mon->my;
+
+    if (isok(x, y))
+    {
+        float hearing = hearing_array[x][y];
+        if (hearing == 0.0f)
+            return;
+        else
+            volume *= hearing_array[x][y];
+    }
+    else
+        return;
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+
+}
+
+void
+play_monster_simple_weapon_sound(magr, attack_number, weapon, sound_type)
 struct monst* magr;
 int attack_number;
 struct obj* weapon;
@@ -921,7 +997,7 @@ enum object_sound_types sound_type;
 }
 
 void
-play_monster_hit_sound(magr, mdef, attack_number, weapon, damage, thrown)
+play_monster_weapon_hit_sound(magr, mdef, attack_number, weapon, damage, thrown)
 struct monst* magr;
 struct monst* mdef;
 int attack_number;

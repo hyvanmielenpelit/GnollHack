@@ -58,6 +58,7 @@ enum ghsound_types {
 	GHSOUND_SWORD_HIT,
 	GHSOUND_AXE_SWING,
 	GHSOUND_AXE_HIT,
+	GHSOUND_GOBLIN_DEATH,
 	MAX_GHSOUNDS
 };
 
@@ -230,6 +231,7 @@ extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
 enum player_sound_types {
 	PLAYER_SOUND_TYPE_AMBIENT = 0,
 	PLAYER_SOUND_TYPE_COUGH,
+	PLAYER_SOUND_TYPE_DEATH,
 	MAX_PLAYER_SOUND_TYPES
 };
 
@@ -267,6 +269,7 @@ extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS];
 enum monster_sound_types {
 	MONSTER_SOUND_TYPE_AMBIENT = 0,
 	MONSTER_SOUND_TYPE_COUGH,
+	MONSTER_SOUND_TYPE_DEATH,
 	MAX_MONSTER_SOUND_TYPES
 };
 

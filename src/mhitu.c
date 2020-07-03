@@ -715,7 +715,7 @@ register struct monst *mtmp;
         case AT_TENT:
             if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || !touch_petrifies(youmonst.data))) 
 			{
-                play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
                 if (foundyou)
 				{
@@ -742,7 +742,7 @@ register struct monst *mtmp;
             if ((!range2 && ((!hug_requires_two_previous_attacks(mtmp->data) && tmp > (j = rnd(20 + i))) || (hug_requires_two_previous_attacks(mtmp->data) && i >= 2 && sum[i - 1] && sum[i - 2])))
                 || mtmp == u.ustuck)
             {
-                play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = hitmu(mtmp, mattk, (struct obj*)0);
                 update_m_action(mtmp, ACTION_TILE_NO_ACTION);
@@ -754,7 +754,7 @@ register struct monst *mtmp;
                dochug(); don't gaze more than once per round. */
             if (mdat != &mons[PM_MEDUSA])
             {
-                play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = gazemu(mtmp, mattk);
                 update_m_action(mtmp, ACTION_TILE_NO_ACTION);
@@ -764,7 +764,7 @@ register struct monst *mtmp;
         case AT_EXPL: /* automatic hit if next to, and aimed at you */
             if (!range2)
             {
-                play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = explmu(mtmp, mattk, foundyou);
                 update_m_action(mtmp, ACTION_TILE_NO_ACTION);
@@ -775,7 +775,7 @@ register struct monst *mtmp;
             if (!range2) {
                 if (foundyou) 
                 {
-                    play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                    play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                     update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                     if (u.uswallow
                         || (!mtmp->mspec_used && tmp > (j = rnd(20 + i)))) {
@@ -802,7 +802,7 @@ register struct monst *mtmp;
         case AT_BREA:
             if (range2)
             {
-                play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = breamu(mtmp, mattk);
                 update_m_action(mtmp, ACTION_TILE_NO_ACTION);
@@ -812,7 +812,7 @@ register struct monst *mtmp;
 		case AT_EYES:
             if (!is_blinded(mtmp) && !Reflecting && (!range2 || rn2(6))) /* Blinded already here to prevent continuous blinking */
             {
-                play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, ACTION_TILE_SPECIAL_ATTACK);
                 sum[i] = eyesmu(mtmp, mattk);
                 update_m_action(mtmp, ACTION_TILE_NO_ACTION);
@@ -821,7 +821,7 @@ register struct monst *mtmp;
 		case AT_SPIT:
             if (range2)
             {
-                play_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
+                play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, ACTION_TILE_FIRE);
                 sum[i] = spitmu(mtmp, mattk);
                 update_m_action(mtmp, ACTION_TILE_NO_ACTION);
@@ -888,7 +888,7 @@ register struct monst *mtmp;
 					{
 						if (mon_currwep)
 						{
-                            play_simple_weapon_sound(mtmp, i, mon_currwep, OBJECT_SOUND_TYPE_SWING_MELEE);
+                            play_monster_simple_weapon_sound(mtmp, i, mon_currwep, OBJECT_SOUND_TYPE_SWING_MELEE);
                             if (strikeindex == 0)
 								mswings(mtmp, mon_currwep);
 							else
@@ -2928,7 +2928,7 @@ register struct obj* omonwep;
 			context.botl = 1;
 		}
 
-        play_monster_hit_sound(mtmp, &youmonst, get_pm_attack_index(mtmp->data, mattk), omonwep, damage, 0);
+        play_monster_weapon_hit_sound(mtmp, &youmonst, get_pm_attack_index(mtmp->data, mattk), omonwep, damage, 0);
         mdamageu(mtmp, damage, FALSE);
 
 		if (permdmg2 > 0)

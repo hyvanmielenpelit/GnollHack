@@ -390,9 +390,9 @@ struct obj *otmp, *mwep;
     for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
     {
         if(is_firing)
-            play_simple_weapon_sound(mtmp, 0, mwep, OBJECT_SOUND_TYPE_FIRE);
+            play_monster_simple_weapon_sound(mtmp, 0, mwep, OBJECT_SOUND_TYPE_FIRE);
         else
-            play_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_THROW);
+            play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_THROW);
 
         m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), dm, otmp);
         /* conceptually all N missiles are in flight at once, but
@@ -1619,7 +1619,7 @@ struct monst *mtmp;
             || !couldsee(mtmp->mx, mtmp->my))
             return; /* Out of range, or intervening wall */
 
-        play_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
+        play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
         update_m_action(mtmp, ACTION_TILE_ATTACK);
 
         if (canseemon(mtmp)) {

@@ -1136,8 +1136,11 @@ int how;
     else if (how == ASCENDED || (!killer.name[0] && how == GENOCIDED))
         killer.format = NO_KILLER_PREFIX;
 
-    if(how < PANICKED)
+    if (how < PANICKED)
+    {
+        play_simple_player_sound(PLAYER_SOUND_TYPE_DEATH);
         update_u_action(ACTION_TILE_DEATH);
+    }
 
     /* Avoid killed by "a" burning or "a" starvation */
     if (!killer.name[0] && (how == STARVING || how == BURNING))

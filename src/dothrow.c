@@ -252,9 +252,9 @@ boolean firing;
     for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
 	{
         if (firing && uwep && obj && ammo_and_launcher(obj, uwep))
-            play_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_FIRE);
+            play_monster_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_FIRE);
         else
-            play_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_THROW);
+            play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_THROW);
 
         update_u_action(obj && uwep && ammo_and_launcher(obj, uwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
 
