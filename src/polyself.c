@@ -432,6 +432,8 @@ newman()
     retouch_equipment(2);
     if (!uarmg)
         selftouch(no_longer_petrify_resistant);
+
+    newsym(u.ux, u.uy);
 }
 
 void

@@ -2442,6 +2442,7 @@ struct obj *otmp;
             change_sex();
             You("are suddenly very %s!",
                 flags.female ? "feminine" : "masculine");
+            newsym(u.ux, u.uy);
             context.botl = 1;
             break;
         case AMULET_OF_UNCHANGING:

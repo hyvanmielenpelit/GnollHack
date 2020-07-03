@@ -655,6 +655,7 @@ struct obj* uitem;
 		&& !objects[uitem->otyp].oc_uname)
 		docall(uitem);
 	useup(uitem);
+    newsym(u.ux, u.uy);
 }
 
 /* handle ring discovery; comparable to learnwand() */
