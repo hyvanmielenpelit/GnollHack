@@ -95,6 +95,12 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -102,6 +108,12 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
     {
         "general",
         {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -121,6 +133,12 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_LIT
@@ -134,10 +152,92 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
-    }
+    },
+    {
+        "bow",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STAFF_SWING, 1.0f},
+            {GHSOUND_STAFF_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_BOW_FIRE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "arrow",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STAFF_SWING, 1.0f},
+            {GHSOUND_STAFF_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_ARROW_HIT, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "sword",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_SWORD_SWING, 1.0f},
+            {GHSOUND_SWORD_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "axe",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_AXE_SWING, 1.0f},
+            {GHSOUND_AXE_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
 };
 
 
@@ -701,6 +801,54 @@ unsigned long movement_flags;
 
     if(soundid > GHSOUND_NONE && volume > 0.0f)
         play_immediate_ghsound(immediateinfo);
+}
+
+void
+play_simple_object_sound(obj, sound_type)
+struct obj* obj;
+enum object_sound_types sound_type;
+{
+    /* Do not use for hit sounds */
+
+    if (!obj)
+        return;
+
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    if (obj->oartifact && artilist[obj->oartifact].soundset > OBJECT_SOUNDSET_NONE)
+    {
+        enum object_soundset_types oss = artilist[obj->oartifact].soundset;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+    }
+    else
+    {
+        enum object_soundset_types oss = objects[obj->otyp].oc_soundset;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+    }
+
+    xchar x = 0, y = 0;
+    get_obj_location(obj, &x, &y, 0);
+
+    if (isok(x, y))
+    {
+        float hearing = hearing_array[x][y];
+        if (hearing == 0.0f)
+            return;
+        else
+            volume *= hearing_array[x][y];
+    }
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+
 }
 
 void

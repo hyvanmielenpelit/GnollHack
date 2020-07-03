@@ -1400,7 +1400,6 @@ int locflags; /* Unused */
         return TRUE;
     }
 
-    /* Assume that the location is the center of a rectangle that has the best hearing value */
     float hearvalue = 0.0f;
     xchar fx = 0, fy = 0;
     for (int i = 0; i < reg->nrects; i++)
@@ -6041,13 +6040,18 @@ boolean stop_at_first_hit_object;
     int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
     int bhitlimit = hit_only_one == 1 ? 1 : hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 0;
 
+    if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_CREATE_MISSILE_EFFECT);
+
     if (weapon == KICKED_WEAPON || weapon == GOLF_SWING)
 	{
         /* object starts one square in front of player */
         bhitpos.x = u.ux + ddx;
         bhitpos.y = u.uy + ddy;
         range--;
-    } else {
+    }
+    else
+    {
         bhitpos.x = u.ux;
         bhitpos.y = u.uy;
     }
@@ -6075,17 +6079,23 @@ boolean stop_at_first_hit_object;
 	boolean zapped_wand_obj_displayed = FALSE;
 	boolean zapped_wand_beam = FALSE;
 
-    if (weapon == FLASHED_LIGHT) {
+    if (weapon == FLASHED_LIGHT) 
+    {
         tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
-    } else if (weapon == THROWN_TETHERED_WEAPON && obj) {
-            tethered_weapon = TRUE;
-            weapon = THROWN_WEAPON;     /* simplify if's that follow below */
-            tmp_at(DISP_TETHER, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng));
-    } else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
+    } 
+    else if (weapon == THROWN_TETHERED_WEAPON && obj) 
+    {
+        tethered_weapon = TRUE;
+        weapon = THROWN_WEAPON;     /* simplify if's that follow below */
+        tmp_at(DISP_TETHER, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng));
+    }
+    else if (weapon != ZAPPED_WAND && weapon != INVIS_BEAM)
+    {
         tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(ddx, ddy), rn2_on_display_rng));
+    }
 	else if (weapon == ZAPPED_WAND && displayedobjtype != STRANGE_OBJECT)
 	{
-		zapped_wand_obj_displayed = TRUE;
+        zapped_wand_obj_displayed = TRUE;
 		if (displayedobjtype > STRANGE_OBJECT)
 		{
 			tmp_at(DISP_FLASH, obj_to_missile_glyph(&dispobj, get_missile_index(ddx, ddy), rn2_on_display_rng));
@@ -6100,6 +6110,8 @@ boolean stop_at_first_hit_object;
 			tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1));
 		}
 	}
+
+
 	boolean beam_cleared_off = FALSE;
     boolean drawbridge_hit = FALSE;
 
@@ -6145,7 +6157,8 @@ boolean stop_at_first_hit_object;
 		{
             boolean learn_it = FALSE;
 
-            switch (obj->otyp) {
+            switch (obj->otyp) 
+            {
             case WAN_OPENING:
             case SPE_KNOCK:
                 if (is_db_wall(bhitpos.x, bhitpos.y))
@@ -6174,6 +6187,7 @@ boolean stop_at_first_hit_object;
                 learn_it = TRUE;
                 break;
             }
+
             if (learn_it)
                 learnwand(obj);
 
@@ -6202,6 +6216,7 @@ boolean stop_at_first_hit_object;
                 --skiprange_start;
             }
         }
+
         if (in_skip)
 		{
             if (range <= skiprange_end)
@@ -6209,7 +6224,8 @@ boolean stop_at_first_hit_object;
                 in_skip = FALSE;
                 if (range > 3) /* another bounce? */
                     skiprange(range, &skiprange_start, &skiprange_end);
-            } else if (mtmp && M_IN_WATER(mtmp->data)) 
+            }
+            else if (mtmp && M_IN_WATER(mtmp->data)) 
 			{
                 if ((!Blind && canseemon(mtmp)) || sensemon(mtmp))
                     pline("%s %s over %s.", Yname2(obj), otense(obj, "pass"),
@@ -6220,7 +6236,12 @@ boolean stop_at_first_hit_object;
         if (mtmp && !(in_skip && M_IN_WATER(mtmp->data)))
 		{
             notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
-            if (weapon == FLASHED_LIGHT) {
+
+            if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_MONSTER);
+
+            if (weapon == FLASHED_LIGHT) 
+            {
                 /* FLASHED_LIGHT hitting invisible monster should
                    pass through instead of stop so we call
                    flash_hits_mon() directly rather than returning
@@ -6228,12 +6249,15 @@ boolean stop_at_first_hit_object;
                    keep on going.  Note that we use mtmp->minvis
                    not canspotmon() because it makes no difference
                    whether the hero can see the monster or not. */
-                if (is_invisible(mtmp)) 
+                if (is_invisible(mtmp))
 				{
                     obj->ox = u.ux, obj->oy = u.uy;
                     (void) flash_hits_mon(mtmp, obj);
-                } else {
+                } 
+                else 
+                {
                     tmp_at(DISP_END, 0);
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
                     return mtmp; /* caller will call flash_hits_mon */
                 }
             } 
@@ -6245,17 +6269,22 @@ boolean stop_at_first_hit_object;
                    that's either visible or could see its invisible
                    self.  [No tmp_at() cleanup is needed here.] */
                 if (!is_invisible(mtmp) || has_see_invisible(mtmp))
+                {
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
                     return mtmp;
+                }
             } 
 			else if (weapon != ZAPPED_WAND)
 			{
 
                 /* THROWN_WEAPON, KICKED_WEAPON */
                 if (!tethered_weapon)
+                {
                     tmp_at(DISP_END, 0);
-
+                }
                 if (cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp))
                     map_invisible(bhitpos.x, bhitpos.y);
+
                 return mtmp;
             }
 			else 
@@ -6267,13 +6296,18 @@ boolean stop_at_first_hit_object;
                     if (hit_only_one && context.bhitcount >= bhitlimit)
 					{
                         tmp_at(DISP_END, 0);
+                        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
                         beam_cleared_off = TRUE;
 					}
 					else
 						tmp_at(bhitpos.x, bhitpos.y);
 				}
-				int had_effect = (*fhitm)(mtmp, obj);
+                
+                int had_effect = (*fhitm)(mtmp, obj);
 				int more_effect_num = 0;
+
+                if(had_effect)
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_MONSTER);
 
 				/* Make radius if it is specified */
 				if (radius > 0)
@@ -6314,9 +6348,11 @@ boolean stop_at_first_hit_object;
         }
         if (fhito)
 		{
-			if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
+            if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
 			{
-				if (stop_at_first_hit_object)
+                if(weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_OBJECT);
+                if (stop_at_first_hit_object)
 					break;
 				else
 					range--;
@@ -6370,7 +6406,8 @@ boolean stop_at_first_hit_object;
             /* 'I' present but no monster: erase */
             /* do this before the tmp_at() */
             if (glyph_is_invisible(levl[bhitpos.x][bhitpos.y].hero_memory_layers.glyph)
-                && cansee(x, y)) {
+                && cansee(x, y)) 
+            {
                 unmap_object(bhitpos.x, bhitpos.y);
                 newsym(x, y);
             }
@@ -6381,9 +6418,12 @@ boolean stop_at_first_hit_object;
                 && (is_pool(bhitpos.x, bhitpos.y)
                     || is_lava(bhitpos.x, bhitpos.y)))
                 break;
+
             if (IS_SINK(typ) && weapon != FLASHED_LIGHT)
                 break; /* physical objects fall onto sink */
+
         }
+
         /* limit range of ball so hero won't make an invalid move */
         if (weapon == THROWN_WEAPON && range > 0
             && obj->otyp == HEAVY_IRON_BALL)
@@ -6398,7 +6438,8 @@ boolean stop_at_first_hit_object;
                           an(xname(bobj)));
                 range = 0;
             } 
-			else if (obj == uball) {
+			else if (obj == uball)
+            {
                 if (!test_move(x - ddx, y - ddy, ddx, ddy, TEST_MOVE))
 				{
                     /* nb: it didn't hit anything directly */
@@ -6406,7 +6447,8 @@ boolean stop_at_first_hit_object;
                         pline("%s jerks to an abrupt halt.",
                               The(distant_name(obj, xname))); /* lame */
                     range = 0;
-                } else if (Sokoban && (t = t_at(x, y)) != 0
+                } 
+                else if (Sokoban && (t = t_at(x, y)) != 0
                            && (is_pit(t->ttyp) || is_hole(t->ttyp))) 
 				{
                     /* hero falls into the trap, so ball stops */
@@ -6420,12 +6462,15 @@ boolean stop_at_first_hit_object;
     }
 
     if ((
-		weapon != ZAPPED_WAND 
-		|| (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !beam_cleared_off)
-		) 
-		&& weapon != INVIS_BEAM && !tethered_weapon)
+        weapon != ZAPPED_WAND
+        || (weapon == ZAPPED_WAND && zapped_wand_obj_displayed && !beam_cleared_off)
+        )
+        && weapon != INVIS_BEAM && !tethered_weapon)
+    {
         tmp_at(DISP_END, 0);
-
+        if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
+    }
     if (shopdoor)
         pay_for_damage("destroy", FALSE);
 

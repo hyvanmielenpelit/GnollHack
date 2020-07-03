@@ -7,7 +7,7 @@
 
 #include "hack.h"
 
-STATIC_DCL int FDECL(throw_obj, (struct obj *, int));
+STATIC_DCL int FDECL(throw_obj, (struct obj *, int, boolean));
 STATIC_DCL boolean FDECL(ok_to_throw, (int *));
 STATIC_DCL void NDECL(autoquiver);
 STATIC_DCL int FDECL(gem_accept, (struct monst *, struct obj *));
@@ -30,9 +30,10 @@ extern boolean notonhead; /* for long worms */
 
 /* Throw the selected object, asking for direction */
 STATIC_OVL int
-throw_obj(obj, shotlimit)
+throw_obj(obj, shotlimit, firing)
 struct obj *obj;
 int shotlimit;
+boolean firing;
 {
     struct obj *otmp;
     int multishot;
@@ -55,6 +56,8 @@ int shotlimit;
         return 0; /* no time passes */
     }
 
+    update_u_facing(TRUE);
+
     /*
      * Throwing money is usually for getting rid of it when
      * a leprechaun approaches, or for bribing an oncoming
@@ -66,7 +69,7 @@ int shotlimit;
     if (obj->oclass == COIN_CLASS && obj != uquiver)
         return throw_gold(obj);
 
-    if (!canletgo(obj, "throw"))
+    if (!canletgo(obj, firing ? "fire" : "throw"))
         return 0;
     if ((objects[obj->otyp].oc_flags & O1_CAN_BE_THROWN_ONLY_IF_WIELDED) && obj != uwep) {
         pline("%s must be wielded before it can be thrown.", The(xname(obj)));
@@ -79,7 +82,7 @@ int shotlimit;
         return 1;
     }
     if (!u.dx && !u.dy && !u.dz) {
-        You("cannot throw an object at yourself.");
+        You("cannot %s an object at yourself.", firing ? "fire" : "throw");
         return 0;
     }
     u_wipe_engr(2);
@@ -99,9 +102,6 @@ int shotlimit;
     }
     if (is_wet_towel(obj))
         dry_a_towel(obj, -1, FALSE);
-
-    update_u_facing(TRUE);
-    update_u_action(obj && uwep && ammo_and_launcher(obj, uwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
 
     /* Multishot calculations
      * (potential volley of up to N missiles; default for N is 1)
@@ -251,7 +251,14 @@ int shotlimit;
     m_shot.n = multishot;
     for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
 	{
-		context.multishot_target_killed = FALSE;
+        if (firing && uwep && obj && ammo_and_launcher(obj, uwep))
+            play_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_FIRE);
+        else
+            play_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_THROW);
+
+        update_u_action(obj && uwep && ammo_and_launcher(obj, uwep) ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
+
+        context.multishot_target_killed = FALSE;
         /* split this object off from its slot if necessary */
         if (obj->quan > 1L) {
             otmp = splitobj(obj, 1L);
@@ -267,11 +274,11 @@ int shotlimit;
 			context.multishot_target_killed = FALSE;
 			break;
 		}
+        update_u_action(ACTION_TILE_NO_ACTION);
     }
     m_shot.n = m_shot.i = 0;
     m_shot.o = STRANGE_OBJECT;
     m_shot.s = FALSE;
-    update_u_action(ACTION_TILE_NO_ACTION);
 
     return 1;
 }
@@ -694,7 +701,7 @@ dothrow()
     /* it is also possible to throw food */
     /* (or jewels, or iron balls... ) */
 
-    return obj ? throw_obj(obj, shotlimit) : 0;
+    return obj ? throw_obj(obj, shotlimit, FALSE) : 0;
 }
 
 /* KMH -- Automatically fill quiver */
@@ -848,7 +855,7 @@ dofire()
         return 0;
     }
 
-    return obj ? throw_obj(obj, shotlimit) : 0;
+    return obj ? throw_obj(obj, shotlimit, TRUE) : 0;
 }
 
 /* if in midst of multishot shooting/throwing, stop early */
@@ -1559,12 +1566,16 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
     boolean tethered_weapon = (obj->otyp == AKLYS && (wep_mask & W_WIELDED_WEAPON) != 0);
 
     notonhead = FALSE; /* reset potentially stale value */
-    if ((obj->cursed || obj->greased) && (u.dx || u.dy) && !rn2(7)) {
+    if ((obj->cursed || obj->greased) && (u.dx || u.dy) && !rn2(7))
+    {
         boolean slipok = TRUE;
 
-        if (ammo_and_launcher(obj, uwep)) {
+        if (ammo_and_launcher(obj, uwep))
+        {
             pline("%s!", Tobjnam(obj, "misfire"));
-        } else {
+        }
+        else 
+        {
             /* only slip if it's greased or meant to be thrown */
             if (obj->greased || throwing_weapon(obj))
                 /* BUG: this message is grammatically incorrect if obj has
@@ -1573,7 +1584,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             else
                 slipok = FALSE;
         }
-        if (slipok) {
+        if (slipok) 
+        {
             u.dx = rn2(3) - 1;
             u.dy = rn2(3) - 1;
             if (!u.dx && !u.dy)
@@ -1587,7 +1599,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         && (Upolyd ? (u.mh < 5 && u.mh != u.mhmax)
                    : (u.uhp < 10 && u.uhp != u.uhpmax))
         && obj->owt > (unsigned) ((Upolyd ? u.mh : u.uhp) * 2)
-        && !Is_airlevel(&u.uz)) {
+        && !Is_airlevel(&u.uz)) 
+    {
         You("have so little stamina, %s drops from your grasp.",
             the(xname(obj)));
         exercise(A_CON, FALSE);
@@ -1598,13 +1611,16 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
     thrownobj = obj;
     thrownobj->was_thrown = 1;
 
-    if (u.uswallow) {
+    if (u.uswallow) 
+    {
         mon = u.ustuck;
         bhitpos.x = mon->mx;
         bhitpos.y = mon->my;
         if (tethered_weapon)
             tmp_at(DISP_TETHER, obj_to_missile_glyph(obj, get_missile_index(u.dx, u.dy), rn2_on_display_rng));
-    } else if (u.dz) {
+    }
+    else if (u.dz) 
+    {
         if (u.dz < 0
             /* Mjollnir must we wielded to be thrown--caller verifies this;
                aklys must we wielded as primary to return when thrown */
@@ -1625,34 +1641,47 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
                 setuqwep((struct obj *) 0);
             if(wep_mask)
 				setuwep(obj, wep_mask);
-		} else if (u.dz < 0) {
+		}
+        else if (u.dz < 0) 
+        {
             (void) toss_up(obj, rn2(5) && !Underwater);
-        } else if (u.dz > 0 && u.usteed && obj->oclass == POTION_CLASS
-                   && rn2(6)) {
+        } 
+        else if (u.dz > 0 && u.usteed && obj->oclass == POTION_CLASS && rn2(6)) 
+        {
             /* alternative to prayer or wand of opening/spell of knock
                for dealing with cursed saddle:  throw holy water > */
             potionhit(u.usteed, &obj, POTHIT_HERO_THROW);
-        } else {
+        }
+        else
+        {
             hitfloor(obj, TRUE);
         }
         thrownobj = (struct obj *) 0;
         return;
 
-    } else if (obj->otyp == BOOMERANG && !Underwater) {
+    }
+    else if (obj->otyp == BOOMERANG && !Underwater) 
+    {
         if (Is_airlevel(&u.uz) || Levitation)
             hurtle(-u.dx, -u.dy, 1, TRUE);
         mon = boomhit(obj, u.dx, u.dy);
-        if (mon == &youmonst) { /* the thing was caught */
+
+        if (mon == &youmonst) 
+        { /* the thing was caught */
             exercise(A_DEX, TRUE);
             obj = addinv(obj);
             (void) encumber_msg();
-            if (wep_mask && !(obj->owornmask & wep_mask)) {
+
+            if (wep_mask && !(obj->owornmask & wep_mask)) 
+            {
                 setworn(obj, wep_mask);
             }
             thrownobj = (struct obj *) 0;
             return;
         }
-    } else {
+    }
+    else 
+    {
 		/* urange your moving in a weightless levitation situation */
 		if (is_ammo(obj) && uwep && ammo_and_launcher(obj, uwep))
 			range = weapon_range(obj, uwep);
@@ -1660,7 +1689,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
 			range = weapon_range(obj, (struct obj*)0);
 
 		urange = 0;
-        if (Is_airlevel(&u.uz) || Levitation) {
+        if (Is_airlevel(&u.uz) || Levitation) 
+        {
             /* action, reaction... */
 			if(youmonst.data->cwt)
 	            urange = min(MAXIMUM_RECOIL_DISTANCE, range * obj->owt / youmonst.data->cwt);
@@ -1687,7 +1717,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         if (Is_airlevel(&u.uz) || Levitation)
             hurtle(-u.dx, -u.dy, urange, TRUE);
 
-        if (!obj) {
+        if (!obj) 
+        {
             /* bhit display cleanup was left with this caller
                for tethered_weapon, but clean it up now since
                we're about to return */
@@ -1697,16 +1728,20 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         }
     }
 
-    if (mon) {
+    if (mon)
+    {
         boolean obj_gone;
 
-        if (mon->isshk && obj->where == OBJ_MINVENT && obj->ocarry == mon) {
+        if (mon->isshk && obj->where == OBJ_MINVENT && obj->ocarry == mon) 
+        {
             thrownobj = (struct obj *) 0;
             return; /* alert shk caught it */
         }
+
         (void) snuff_candle(obj);
         notonhead = (bhitpos.x != mon->mx || bhitpos.y != mon->my);
         obj_gone = thitmonst(mon, obj, FALSE);
+
 		if (mon && DEADMONSTER(mon))
 			context.multishot_target_killed = TRUE;
 
@@ -1723,11 +1758,15 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             thrownobj = 0;
     }
 
-    if (!thrownobj) {
+    if (!thrownobj) 
+    {
         /* missile has already been handled */
         if (tethered_weapon) tmp_at(DISP_END, 0);
-    } else if (u.uswallow) {
-        if (tethered_weapon) {
+    } 
+    else if (u.uswallow)
+    {
+        if (tethered_weapon) 
+        {
             tmp_at(DISP_END, 0);
             pline("%s returns to your %s!", The(xname(thrownobj)), body_part(HAND));
             thrownobj = addinv(thrownobj);
@@ -1736,17 +1775,22 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             if (thrownobj->owornmask & W_QUIVER)
                 setuqwep((struct obj *) 0);
             setuwep(thrownobj, W_WEP);
-        } else {
+        } 
+        else
+        {
             /* ball is not picked up by monster */
             if (obj != uball)
                 (void) mpickobj(u.ustuck, obj);
             thrownobj = (struct obj *) 0;
         }
-    } else {
+    }
+    else
+    {
         /* Mjollnir must we wielded to be thrown--caller verifies this;
            aklys must we wielded as primary to return when thrown */
         if (// (obj->oartifact == ART_MJOLLNIR && Role_if(PM_VALKYRIE))
-            tethered_weapon || ((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !inappropriate_character_type(obj))) {
+            tethered_weapon || ((objects[obj->otyp].oc_flags & O1_RETURNS_TO_HAND_AFTER_THROWING) && !inappropriate_character_type(obj))) 
+        {
 //            if (rn2(100)) {
                 if (tethered_weapon)
                     tmp_at(DISP_END, BACKTRACK);
@@ -1841,7 +1885,8 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         if ((!IS_SOFT(levl[bhitpos.x][bhitpos.y].typ) && breaktest(obj))
             /* venom [via #monster to spit while poly'd] fails breaktest()
                but we want to force breakage even when location IS_SOFT() */
-            || obj->oclass == VENOM_CLASS) {
+            || obj->oclass == VENOM_CLASS) 
+        {
             tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(u.dx, u.dy), rn2_on_display_rng));
             tmp_at(bhitpos.x, bhitpos.y);
             delay_output();
@@ -1851,12 +1896,17 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             thrownobj = (struct obj *) 0;
             return;
         }
-        if (flooreffects(obj, bhitpos.x, bhitpos.y, "fall")) {
+
+        if (flooreffects(obj, bhitpos.x, bhitpos.y, "fall")) 
+        {
             thrownobj = (struct obj *) 0;
             return;
         }
+
         obj_no_longer_held(obj);
-        if (mon && mon->isshk && is_pick(obj)) {
+
+        if (mon && mon->isshk && is_pick(obj))
+        {
             if (cansee(bhitpos.x, bhitpos.y))
                 pline("%s snatches up %s.", Monnam(mon), the(xname(obj)));
             if (*u.ushops || obj->unpaid)
@@ -1865,8 +1915,11 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             thrownobj = (struct obj *) 0;
             return;
         }
+
         (void) snuff_candle(obj);
-        if (!mon && ship_object(obj, bhitpos.x, bhitpos.y, FALSE)) {
+
+        if (!mon && ship_object(obj, bhitpos.x, bhitpos.y, FALSE)) 
+        {
             thrownobj = (struct obj *) 0;
             return;
         }
@@ -2188,8 +2241,10 @@ boolean is_golf;
             if (hmode == HMON_APPLIED)
                 u.uconduct.weaphit++;
 
-			//DAMAGE IS DONE HERE
-			boolean obj_destroyed = FALSE;
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_HIT_THROW);
+            
+            //DAMAGE IS DONE HERE
+            boolean obj_destroyed = FALSE;
             if (hmon(mon, obj, hmode, dieroll, &obj_destroyed)) 
 			{ /* mon still alive */
                 if (mon->wormno)
