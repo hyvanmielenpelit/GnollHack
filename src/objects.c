@@ -1166,10 +1166,10 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
            BITS(kn, 0, 1, 0, mgc, 1, CHARGED_NOT_CHARGED, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
-           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, height,soundset,\
+           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,\
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
-		   wt, color, \
+		   wt, color, height,soundset,\
 		   0, 0, 0, 0, \
 		   powconfermask,permittedtargets, O1_IS_WEAPON_WHEN_WIELDED | flags, flags2, flags3, flags4)
 
@@ -1180,10 +1180,10 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
            BITS(kn, 0, 1, 0, mgc, 1, CHARGED_NOT_CHARGED, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
-           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, height,soundset,\
+           power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
-		   wt, color, \
+		   wt, color, height,soundset, \
 		   0, 0, 0, 0, \
 		   powconfermask,permittedtargets, flags, flags2, flags3, flags4)
 
@@ -1641,7 +1641,8 @@ WEAPONBOOTS("spiked silver boots", None,
            power, power2, power3, pflags, RING_CLASS, prob, MULTIGEN_SINGLE, 0, 1, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
-		   15, color, height,soundset, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+		   15, color, height,soundset, \
+	       0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 
 #define RING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
      CHARGEDRING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,CHARGED_NOT_CHARGED,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,height,soundset,flags,flags2,flags3,flags4,powconfermask)
@@ -1801,7 +1802,8 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
            power, power2, power3, pflags, MISCELLANEOUS_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabonus, hpbonus, bonusattrs, attrbonus, splcastpen, 0, \
-		   nut, color, height,soundset, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+		   nut, color, height,soundset, \
+           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 MISCELLANEOUSITEM("brooch of shielding", "golden brooch", MISC_BROOCH, None,
 	0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 50, 150, 5,
 	MAGIC_MISSILE_RESISTANCE, NO_POWER, NO_POWER, P1_NONE, 0, 0, BONUS_TO_MC, 5, 0,
@@ -1978,7 +1980,8 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
            power1, power2, power3, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \
-		   wt, color, height,soundset, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+		   wt, color, height,soundset, \
+           0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 #define TOOL(name,desc,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
    GENERAL_TOOL(name,desc,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 
@@ -2219,7 +2222,8 @@ OBJECT(OBJ("Bell of Opening", "silver bell", None, None, 0, 0, 0),
 		   0, 0, 0, 0, FOOD_CLASS, prob, multigen, delay, wt, nutrition / 20 + 5,  \
 		   0, 0, 0, 0, durdice, durdiesize, durplus, 0, 0, 0, 0, A1_NONE, acquireprob, \
 		   0, 0, 0, 0, ediblesubtype, edibleeffect, 0, 0, 0, 0, 0, 0, \
-           nutrition, color, height,soundset, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+           nutrition, color, height,soundset, \
+           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 
 /* All types of food (except tins & corpses) must have a delay of at least 1.
  * Delay on corpses is computed and is weight dependant.
@@ -2407,7 +2411,8 @@ FOOD("tin", None, None, FOODTYPE_TIN, 1,
            power, 0, 0, P1_NONE, POTION_CLASS, prob, MULTIGEN_SINGLE, 0, 12, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-		   10, color, height,soundset, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 | O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE)
+		   10, color, height,soundset, \
+           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 | O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE)
 POTION("gain ability",           "ruby", None, 1, 0, 20, 400, CLR_RED, 32, OBJECT_SOUNDSET_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 POTION("restore ability",        "pink",
 	"Restores one or more lost ability points and experience levels",
@@ -2531,7 +2536,8 @@ SCROLL("blank paper", "unlabeled", None, 0,  25,  60, S1_NONE, O1_NONE, O2_NONE,
            0, 0, 0, P1_NONE, SPBOOK_CLASS, prob, MULTIGEN_SINGLE, learndelay, 50, (level + 2) * 50 + (level + 1) * (level + 1) * 5,               \
            0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, 0, \
 		   0, savingthrowadj, 0, 0, cooldown, level, manacost, attr, range, radius, skillchance, 0, \
-		   20, color, height,soundset, dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3, flags4)
+		   20, color, height,soundset, \
+           dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3, flags4)
 /* Spellbook description normally refers to book covers (primarily color).
    Parchment and vellum would never be used for such, but rather than
    eliminate those, finagle their definitions to refer to the pages
@@ -3001,7 +3007,8 @@ OBJECT(OBJ("Book of the Dead", "papyrus", None, None, 0, 0, 0),
            0, 0, 0, P1_NONE, WAND_CLASS, prob, MULTIGEN_SINGLE, 0, 6, cost, \
 		   0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, range, radius, 0, 0, \
-		   30, color, height,soundset, dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3, flags4)
+		   30, color, height,soundset, \
+           dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3, flags4)
 WAND("light",           "glass", None, CHARGED_WAND_NORMAL_NODIR, 60, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 WAND("secret door detection",
                         "balsa", None, CHARGED_WAND_NORMAL_NODIR, 30, 150, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
@@ -3060,7 +3067,8 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
            0, 0, 0, P1_NONE, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, 1, gval, \
 		   0, 1, 3, 0, 1, 3, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-		   nutr, color, height,soundset, WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+		   nutr, color, height,soundset, \
+           WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 #define ROCK(name,desc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
     OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                            \
            BITS(kn, 1, (enchtype > 0 ? 1 : 0), 0, mgc, enchtype, CHARGED_NOT_CHARGED, 0, 0, 0,                           \
@@ -3068,7 +3076,8 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
            power1, power2, power3, pflags, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, wt, gval, \
 		   0, sdice, sdam, splus, ldice, ldam, lplus, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-		   nutr, color, height,soundset, WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+		   nutr, color, height,soundset, \
+           WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 GEM("dilithium crystal", "white",  2, 1, 2250, 15,  5, MAT_GEMSTONE, CLR_WHITE, 16, OBJECT_SOUNDSET_NONE, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 GEM("diamond",           "white",  3, 1, 2000, 15,  10, MAT_GEMSTONE, CLR_WHITE, 16, OBJECT_SOUNDSET_NONE, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 GEM("black pearl",		 "black",  3, 1, 1750, 15,  5, MAT_GEMSTONE, CLR_BLACK, 16, OBJECT_SOUNDSET_NONE, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
@@ -3239,13 +3248,15 @@ OBJECT(OBJ("blinding venom", "splash of venom", None, None, 0, 0, 0),
 	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	   0, HI_ORGANIC, 0, OBJECT_SOUNDSET_NONE, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	   0, HI_ORGANIC, 0, OBJECT_SOUNDSET_NONE,
+	   0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 OBJECT(OBJ("acid venom", "splash of venom", None, None, 0, 0, 0),
        BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, 0, 1, 0, 0, 0, 0, P_NONE, MAT_LIQUID),
 	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   AD_PHYS, 2, 6, 0, 2, 6, 0, 0, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	   0, HI_ORGANIC, 0, OBJECT_SOUNDSET_NONE, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	   0, HI_ORGANIC, 0, OBJECT_SOUNDSET_NONE,
+	   0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
         /* +d6 small or large */
 
 /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
@@ -3255,7 +3266,8 @@ OBJECT(OBJ("acid venom", "splash of venom", None, None, 0, 0, 0),
 		   0, 0, 0, P1_NONE, REAGENT_CLASS, prob, multigen, eatdelay, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, ediblechance, \
 		   0, 0, 0, 0, ediblesubtype, edibleeffect, 0, 0, 0, 0, 0, 0, \
-           nutrition, color, height,soundset, 0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+           nutrition, color, height,soundset, \
+           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 
 	REAGENT("thread of spider silk", None, 1,	50, MULTIGEN_1D3, 0, 1, 10, MAT_SILK, EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 2, CLR_GRAY, 24, OBJECT_SOUNDSET_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL), /* STARTMARKER 1&2 */
 
@@ -3288,7 +3300,8 @@ OBJECT(OBJ(None, None, None, None, 0, 0, 0),
 	   0, 0, 0, P1_NONE, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
-	   0, 0, 0, OBJECT_SOUNDSET_NONE, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE)
+	   0, 0, 0, OBJECT_SOUNDSET_NONE, \
+	   0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE)
 }; /* objects[] */
 
 #ifndef OBJECTS_PASS_2_
