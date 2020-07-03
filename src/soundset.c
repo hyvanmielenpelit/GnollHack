@@ -572,7 +572,7 @@ void
 update_game_music()
 {
     struct ghsound_music_info musicinfo = { 0 };
-    musicinfo.volume = (u.uz.dnum == sokoban_dnum ? SOKOBAN_MUSIC_VOLUME : BACKGROUND_MUSIC_VOLUME);
+    musicinfo.volume = 1.0f;
     musicinfo.ghsound = GHSOUND_NONE;
 
     if (context.game_started == FALSE)
@@ -607,7 +607,7 @@ void
 play_level_ambient_sounds()
 {
     struct ghsound_level_ambient_info lainfo = { 0 };
-    lainfo.volume = BACKGROUND_MUSIC_VOLUME;
+    lainfo.volume = 1.0f;
     lainfo.ghsound = GHSOUND_NONE;
 
     if (context.game_started == FALSE)

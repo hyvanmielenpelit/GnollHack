@@ -71,33 +71,33 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "" , 0, 0.0f },
     { SOUND_BANK_MASTER, "event:/Music-Splash", 0, 0.5f},
     { SOUND_BANK_MASTER, "event:/Music-Player-Selection", 0, 0.3f},
-    { SOUND_BANK_MASTER, "event:/Music-Intro", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Normal-1", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Oracle", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Temple", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Medusa", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Castle", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Normal", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Town", 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music-Intro", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Normal-1", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Oracle", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Temple", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Medusa", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Castle", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Normal", 0, 0.07f},
+    { SOUND_BANK_MASTER, "event:/Music-Gnomish-Mines-Town", 0, BACKGROUND_MUSIC_VOLUME},
     
-    { SOUND_BANK_MASTER, "event:/Music-Sokoban-Normal", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Normal", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Valley", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Sanctum", 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music-Sokoban-Normal", 0, 0.10f},
+    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Normal", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Valley", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Gehennom-Sanctum", 0, BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Player Footsteps", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Angry", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Dead", 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Music-Shop-Deserted", 0, 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Normal", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Angry", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Dead", 0, BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music-Shop-Deserted", 0, BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0, 1.0f},
 
     { SOUND_BANK_MASTER, "event:/Bee Ambient" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Fire Ambient" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Quarterstaff Swing" , 0, 1.0f},
     { SOUND_BANK_MASTER, "event:/Quarterstaff Hit" , 0, 1.0f},
-    { SOUND_BANK_MASTER, "event:/Valley Ambient" , 0, 0.6f},
-    { SOUND_BANK_MASTER, "event:/Morgue Ambient" , 0, 0.6f},
-    { SOUND_BANK_MASTER, "event:/Garden Ambient" , 0, 0.6f},
+    { SOUND_BANK_MASTER, "event:/Valley Ambient" , 0, 0.10f},
+    { SOUND_BANK_MASTER, "event:/Morgue Ambient" , 0, 0.10f},
+    { SOUND_BANK_MASTER, "event:/Garden Ambient" , 0, 0.03f},
     { SOUND_BANK_MASTER, "event:/Button Down" , 0, 0.15f},
     { SOUND_BANK_MASTER, "event:/Menu Select" , 0, 0.15f},
     { SOUND_BANK_MASTER, "event:/Quaff" , 0, 1.0f},
@@ -323,7 +323,7 @@ extern "C"
     }
 
     boolean
-        fmod_set_effect_ambient_volume(struct effect_ambient_volume_info info)
+    fmod_set_effect_ambient_volume(struct effect_ambient_volume_info info)
     {
         FMOD_RESULT result;
         if (effectAmbientInstances[0].eventInstance)
