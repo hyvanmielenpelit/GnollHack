@@ -1786,7 +1786,6 @@ register struct obj* omonwep;
 
     if (DEADMONSTER(mdef)) 
 	{
-        play_simple_monster_sound(mdef, MONSTER_SOUND_TYPE_DEATH);
         if (poisondamage > 0 && ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000 - 1) > -poisondamage && vis && canspotmon(mdef) && !isdisintegrated)
 			pline_The("poison was deadly...");
 
@@ -2179,7 +2178,6 @@ assess_dmg:
 
 		if (magr->mhp <= 0)
 		{
-            play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_DEATH);
             monkilled(magr, "", (int) mddat->mattk[i].adtyp);
 			return (mdead | mhit | MM_AGR_DIED);
 		}

@@ -128,6 +128,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Door Lock" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Door Resists" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Door Try Locked" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Chest Unlock" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Chest Lock" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Crossbow Fire" , 1.0f},
 };
 
 #undef NoSound

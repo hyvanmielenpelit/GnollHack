@@ -152,25 +152,28 @@ picklock(VOID_ARGS)
         return ((xlock.usedtime = 0));
     }
 
-    if(xlock.door->doormask & D_LOCKED)
-        play_sfx_sound(SFX_UNLOCK_DOOR);
-    else
-        play_sfx_sound(SFX_LOCK_DOOR);
-
     You("succeed in %s.", lock_action());
-    if (xlock.door) {
-        if (xlock.door->doormask & D_TRAPPED) {
+    if (xlock.door) 
+    {
+        play_sfx_sound(xlock.door->doormask & D_LOCKED ? SFX_UNLOCK_DOOR : SFX_LOCK_DOOR);
+            
+        if (xlock.door->doormask & D_TRAPPED)
+        {
             b_trapped("door", FINGER);
             xlock.door->doormask = D_NODOOR;
             unblock_vision_and_hearing_at_point(u.ux + u.dx, u.uy + u.dy);
             if (*in_rooms(u.ux + u.dx, u.uy + u.dy, SHOPBASE))
                 add_damage(u.ux + u.dx, u.uy + u.dy, SHOP_DOOR_COST);
             newsym(u.ux + u.dx, u.uy + u.dy);
-        } else if (xlock.door->doormask & D_LOCKED)
+        }
+        else if (xlock.door->doormask & D_LOCKED)
             xlock.door->doormask = D_CLOSED;
         else
             xlock.door->doormask = D_LOCKED;
-    } else {
+    } 
+    else 
+    {
+        play_simple_object_sound(xlock.box, xlock.box->olocked ? OBJECT_SOUND_TYPE_UNLOCK_CONTAINER : OBJECT_SOUND_TYPE_LOCK_CONTAINER);
         xlock.box->olocked = !xlock.box->olocked;
         xlock.box->lknown = 1;
         newsym(xlock.box->ox, xlock.box->oy);

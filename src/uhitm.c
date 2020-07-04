@@ -1840,7 +1840,6 @@ boolean* obj_destroyed;
 
 	if (DEADMONSTER(mon))
 	{
-		play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_DEATH);
 		destroyed = TRUE;
 		if (poisondamage > 0 && ((double)mon->mhp + ((double)mon->mhp_fraction) / 10000 - 1) > -poisondamage)
 		{

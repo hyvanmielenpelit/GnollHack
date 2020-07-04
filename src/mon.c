@@ -3418,14 +3418,20 @@ int how;
 
     if ((mdef->wormno ? worm_known(mdef) : cansee(mdef->mx, mdef->my))
         && fltxt)
+    {
         pline("%s is %s%s%s!", Monnam(mdef),
-              is_not_living(mdef->data) ? "destroyed" : "killed",
-              *fltxt ? " by the " : "", fltxt);
+            is_not_living(mdef->data) ? "destroyed" : "killed",
+            *fltxt ? " by the " : "", fltxt);
+    }
     else
         be_sad = (is_tame(mdef) != 0);
 
     /* no corpses if digested or disintegrated */
     disintegested = (how == AD_DGST || how == -AD_RBRE);
+
+    if (!disintegested)
+        play_simple_monster_sound(mdef, MONSTER_SOUND_TYPE_DEATH);
+
     if (disintegested)
         mondead(mdef);
     else
@@ -3484,6 +3490,9 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             dropdead = (xkill_flags & XKILL_DROPDEAD) != 0,
             nocorpse = (xkill_flags & XKILL_NOCORPSE) != 0,
             noconduct = (xkill_flags & XKILL_NOCONDUCT) != 0;
+
+    if(!nomsg)
+        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_DEATH);
 
     mtmp->mhp = 0; /* caller will usually have already done this */
     if (!noconduct) /* KMH, conduct */
