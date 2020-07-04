@@ -1149,13 +1149,17 @@ struct obj **optr;
     int oops;
     struct obj *obj = *optr;
 
-    if (Blind) {
+    if (Blind)
+    {
         pline("Too bad you can't see %s.", the(xname(obj)));
         return;
     }
+
     oops = (rnd(20) > ACURR(A_INT) || obj->cursed);
-    if (oops && (obj->charges > 0)) {
-        switch (rnd(obj->oartifact ? 4 : 5)) {
+    if (oops && (obj->charges > 0)) 
+    {
+        switch (rnd(4)) //obj->oartifact ? 4 : 5))
+        {
         case 1:
             pline("%s too much to comprehend!", Tobjnam(obj, "are"));
             break;
@@ -1170,7 +1174,9 @@ struct obj **optr;
                 make_blinded((Blinded & TIMEOUT) + (long) rnd(100), FALSE);
                 if (!Blind)
                     Your1(vision_clears);
-            } else {
+            }
+            else
+            {
                 pline("%s your vision.", Tobjnam(obj, "assault"));
                 You("are unaffected!");
             }
@@ -1194,11 +1200,16 @@ struct obj **optr;
         return;
     }
 
-    if (Hallucination) {
-        if (!obj->charges) {
+    if (Hallucination) 
+    {
+        if (!obj->charges) 
+        {
             pline("All you see is funky %s haze.", hcolor((char *) 0));
-        } else {
-            switch (rnd(6)) {
+        } 
+        else 
+        {
+            switch (rnd(6)) 
+            {
             case 1:
                 You("grok some groovy globs of incandescent lava.");
                 break;
@@ -1237,12 +1248,16 @@ struct obj **optr;
         return;
     }
     You("peer into %s...", the(xname(obj)));
-    nomul(-rnd(10));
-    multi_reason = "gazing into a crystal ball";
-    nomovemsg = "";
-    if (obj->charges <= 0) {
+    //nomul(-rnd(10));
+    //multi_reason = "gazing into a crystal ball";
+    //nomovemsg = "";
+
+    if (obj->charges <= 0)
+    {
         pline_The("vision is unclear.");
-    } else {
+    } 
+    else
+    {
         int class, i;
         int ret = 0;
 
@@ -1262,7 +1277,8 @@ struct obj **optr;
         else if (iflags.bouldersym && (ch == iflags.bouldersym))
             ret = object_detect((struct obj *) 0, ROCK_CLASS);
         else
-            switch (ch) {
+            switch (ch) 
+            {
             case '^':
                 ret = trap_detect((struct obj *) 0);
                 break;
@@ -1274,7 +1290,8 @@ struct obj **optr;
                 break;
             }
 
-        if (ret) {
+        if (ret)
+        {
             if (!rn2(100)) /* make them nervous */
                 You_see("the Wizard of Yendor gazing out at you.");
             else

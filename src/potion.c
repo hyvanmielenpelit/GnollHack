@@ -1934,10 +1934,14 @@ do_illness: /* Pestilence's potion of healing effect */
                         && !Protection_from_shape_changers)
                         new_were(mon); /* transform into beast */
                 }
-            } else if (mon->data == &mons[PM_GREMLIN]) {
+            } 
+            else if (mon->data == &mons[PM_GREMLIN]) 
+            {
                 angermon = FALSE;
                 (void) split_mon(mon, (struct monst *) 0);
-            } else if (mon->data == &mons[PM_IRON_GOLEM]) {
+            }
+            else if (is_iron(mon->data)) 
+            {
                 if (canseemon(mon))
                     pline("%s rusts.", Monnam(mon));
 				deduct_monster_hp(mon, adjust_damage(d(1, 6), &youmonst, mon, AD_PHYS, FALSE));

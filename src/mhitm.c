@@ -1267,7 +1267,8 @@ register struct obj* omonwep;
     case AD_RUST:
         if (is_cancelled(magr))
             break;
-        if (pd == &mons[PM_IRON_GOLEM]) {
+        if (is_iron(pd)) 
+        {
             if (vis && canseemon(mdef))
                 pline("%s falls to pieces!", Monnam(mdef));
             mondied(mdef);

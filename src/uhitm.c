@@ -2854,7 +2854,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
     case AD_RUST:
-        if (pd == &mons[PM_IRON_GOLEM]) {
+        if (is_iron(pd)) 
+		{
             pline("%s falls to pieces!", Monnam(mdef));
             xkilled(mdef, XKILL_NOMSG);
         }

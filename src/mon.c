@@ -1189,7 +1189,7 @@ register struct monst *mtmp;
             water_damage_chain(mtmp->minvent, FALSE);
         return 0;
     } 
-	else if (mtmp->data == &mons[PM_IRON_GOLEM] && inpool && !rn2(5)) 
+	else if (is_iron(mtmp->data) && inpool && !rn2(5)) 
 	{
         int dam = d(2, 6);
 
@@ -2543,7 +2543,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                     }
 					/* The if excludes the types of the traps the mon should not care about */
                     if ((ttmp->ttyp != RUST_TRAP
-                         || mdat == &mons[PM_IRON_GOLEM])
+                         || is_iron(mdat))
                         && ttmp->ttyp != STATUE_TRAP
                         && ttmp->ttyp != VIBRATING_SQUARE
                         && ttmp->ttyp != MODRON_OCTAHEDRAL_PORTAL && ttmp->ttyp != MODRON_TETRAHEDRAL_PORTAL

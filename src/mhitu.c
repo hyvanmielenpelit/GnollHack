@@ -2489,7 +2489,7 @@ register struct obj* omonwep;
         hitmsg(mtmp, mattk, damagedealt);
         if (is_cancelled(mtmp))
             break;
-        if (u.umonnum == PM_IRON_GOLEM) {
+        if (is_iron(youmonst.data)) {
             You("rust!");
             /* KMH -- this is okay with unchanging */
             rehumanize();

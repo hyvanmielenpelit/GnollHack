@@ -146,6 +146,8 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
     { M4_VORPAL_VULNERABILITY, "vorpal vulnerable", "monsters vulnerable to vorpal weapons" },
     { M4_LORD, "lord", "lords" },
     { M4_PRINCE, "prince", "princes" },
+    { M4_IRON, "iron", "monsters made of iron" },
+    { M4_METAL, "metal", "monsters made of metal other than iron" },
     { 0 , "", "" }
 };
 

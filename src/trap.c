@@ -1214,12 +1214,15 @@ unsigned trflags;
         }
         update_inventory();
 
-        if (u.umonnum == PM_IRON_GOLEM) {
+        if (is_iron(youmonst.data)) 
+        {
             int dam = u.mhmax;
 
             You("are covered with rust!");
             losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "rusting away", KILLED_BY);
-        } else if (u.umonnum == PM_GREMLIN && rn2(3)) {
+        }
+        else if (u.umonnum == PM_GREMLIN && rn2(3))
+        {
             (void) split_mon(&youmonst, (struct monst *) 0);
         }
 
@@ -2458,7 +2461,7 @@ register struct monst *mtmp;
                     (void) water_damage(target, "shirt", TRUE);
             }
 
-            if (mptr == &mons[PM_IRON_GOLEM]) {
+            if (is_iron(mptr)) {
                 if (in_sight)
                     pline("%s falls to pieces!", Monnam(mtmp));
                 else if (is_tame(mtmp))
@@ -3966,7 +3969,8 @@ drown()
 
     if (u.umonnum == PM_GREMLIN && rn2(3))
         (void) split_mon(&youmonst, (struct monst *) 0);
-    else if (u.umonnum == PM_IRON_GOLEM) {
+    else if (is_iron(youmonst.data)) 
+    {
         You("rust!");
 		double damage = adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
         i = (int)floor(damage);
