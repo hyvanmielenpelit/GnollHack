@@ -1823,9 +1823,9 @@ boolean* obj_destroyed;
 	if (!already_killed)
 	{
 		if(thrown == HMON_MELEE)
-			play_monster_weapon_hit_sound(&youmonst, mon, 0, obj, damage, thrown);
+			play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), 0, obj, damage, thrown);
 		else
-			play_object_hit_sound(obj, mon, damage, thrown);
+			play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), damage, thrown);
 
 		deduct_monster_hp(mon, damage); //	mon->mhp -= tmp;
 	}

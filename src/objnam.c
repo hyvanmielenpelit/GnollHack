@@ -7,6 +7,98 @@
 #include "artifact.h"
 #include "artilist.h"
 
+
+/* NOTE: the order of these words exactly corresponds to the
+   order of oc_material values #define'd in objclass.h. */
+const char* materialnm[MAX_MATERIAL_TYPES] = {
+                             "mysterious", "liquid",    "wax",        "vegetable",
+                             "flesh",      "organic",   "paper",      "cloth",          "silk",         "leather",
+                             "wooden",     "bone",      "dragonhide", "iron",
+                             "metal",      "copper",    "silver",     "gold",
+                             "platinum",   "orichalcum","adamantium", "mithril",        "plastic",      "glass",
+                             "gemstone",   "stone",     "modronite",  "planar rift",    "force field",
+                             "air",        "fire",      "energy",     "incorporeal",    "carapace",     "ice" };
+
+
+const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {
+    "None",
+    "1d2 when firing", "2 when firing", "1d2+1 when firing", "3 when firing", "1d3 when firing",
+    "1d2 when thrown", "2 when thrown", "1d2+1 when thrown", "3 when thrown", "1d3 when thrown",
+    "1d2 in melee", "2 in melee", "1d2+1 in melee", "3 in melee", "1d3 in melee",
+    "1d2 when firing with basic skill",
+    "1d2 when thrown with basic skill",
+    "1d2 in melee with basic skill",
+    "2 when firing with basic skill",
+    "2 when thrown with basic skill",
+    "2 in melee with basic skill",
+    "1d2/2/1d2+1 by skill level when firing",
+    "1d2/2/1d2+1 by skill level when thrown",
+    "1d2/2/1d2+1 by skill level in melee",
+    "1d2/2/3 by skill level when firing",
+    "1d2/2/3 by skill level when thrown",
+    "1d2/2/3 by skill level in melee",
+    "2/3/4 by skill level when firing",
+    "2/3/4 by skill level when thrown",
+    "2/3/4 by skill level in melee",
+    "1d2 when firing with skilled skill",
+    "1d2 when thrown with skilled skill",
+    "1d2 in melee with skilled skill",
+    "1/1d2/2 by skill level when firing",
+    "1/1d2/2 by skill level when thrown",
+    "1/1d2/2 by skill level in melee",
+    "1/2/3 by skill level when firing",
+    "1/2/3 by skill level when thrown",
+    "1/2/3 by skill level in melee",
+    "1d2 when firing with expert skill",
+    "1d2 when thrown with expert skill",
+    "1d2 in melee with expert skill",
+    "2 when firing with expert skill",
+    "2 when thrown with expert skill",
+    "2 in melee with expert skill",
+    "2 when firing with basic skill",
+    "2 when firing with skilled skill",
+    "2 when thrown with basic skill",
+    "2 when thrown with skilled skill",
+    "2 in melee with basic skill",
+    "2 in melee with skilled skill"
+};
+
+const char* armor_type_names[MAX_ARMOR_TYPES] = {
+    "suit of armor", "shield", "helmet", "gloves", "boots", "cloak", "shirt", "robe", "bracers",
+};
+
+const char* weapon_type_names[MAX_WEAPON_TYPES] = {
+    "short sword", "long sword", "two-handed sword", "broadsword", "bastard sword", "scimitar", "saber", "katana",  "tsurugi",
+    "axe", "throwing axe", "two-handed axe", "dagger", "knife", "mace", "spiked mace", "flail", "morning star", "club", "spiked club",
+    "hammer", "spiked hammer",  "staff", "rod", "spear", "javelin", "polearm", "trident",
+    "dart", "shuriken", "boomerang", "short bow", "long bow", "hand crossbow", "crossbow", "repeating crossbow", "sling",
+    "arrow", "quarrel", "sling-bullet", "pick-axe", "unicorn horn", "horn", "worm tooth",
+    "shovel", "hook", "lance", "hose", "fork", "whip", "double-headed flail", "triple-headed flail"
+};
+
+const char* food_type_names[MAX_FOOD_TYPES] = {
+    "general food", "ration", "fruit", "vegetable", "nuts", "seeds", "leaf", "kelp",  "bread",
+    "cake", "candy", "mushroom", "mold", "glob", "egg", "meat", "jelly", "corpse",  "tin"
+};
+
+const char* misc_type_names[MAX_MISC_TYPES] = {
+    "", "set of wings", "pair of pants", "skirt", "wrist watch",
+    "nose ring", "headband", "pair of earrings",
+    "ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch", "mask", "necktie"
+};
+
+const char* misc_type_worn_texts[MAX_MISC_TYPES] = {
+    "", "attached to back", "", "", "on left wrist",
+    "on nose", "", "",
+    "orbiting head", "", "", "", "", "", "", "attached to body", "", "", ""
+};
+
+const char* tool_type_names[MAX_TOOL_TYPES] = {
+    "tool", "box", "chest", "bag", "pick-axe", "shovel", "long club-headed weapon", "hook", "horn", "candelabrum", "bell",
+    "candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can", "grail"
+};
+
+
 /* "an uncursed greased partly eaten guardian naga hatchling [corpse]" */
 #define PREFIX 80 /* (56) */
 #define SCHAR_LIM 127

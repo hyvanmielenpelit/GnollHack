@@ -4621,36 +4621,36 @@ struct trap* ttmp;
 	return 1;
 }
 
-	const char* trap_names[] = {
-				   "",
-				   "arrow trap",
-				   "dart trap",
-				   "falling rock trap",
-				   "squeaky board",
-				   "bear trap",
-				   "land mine",
-				   "rolling boulder trap",
-				   "sleep gas trap",
-				   "rust trap", 
-				   "fire trap", 
-				   "pit", 
-				   "spiked pit",
-				   "hole",
-				   "trap door",
-				   "teleport trap",
-				   "level teleport trap",
-				   "magic portal",
-				   "web",
-				   "statue",
-				   "magic trap",
-				   "anti-magic trap",
-				   "polymorph trap",
-                   "octahedral magic portal",
-                   "tetrahedral magic portal",
-                   "cubical magic portal",
-                   "dodecahedral magic portal",
-                   "vibrating square",
-                   0 };
+	struct trap_type_definition trap_type_definitions[TRAPNUM] = {
+                   {"", MAT_MINERAL},
+                   {"arrow trap", MAT_METAL},
+                   {"dart trap", MAT_METAL},
+                   {"falling rock trap", MAT_MINERAL},
+                   {"squeaky board", MAT_WOOD},
+                   {"bear trap", MAT_METAL},
+                   {"land mine", MAT_MINERAL},
+                   {"rolling boulder trap", MAT_MINERAL},
+                   {"sleep gas trap", MAT_MINERAL},
+                   {"rust trap", MAT_MINERAL},
+                   {"fire trap", MAT_MINERAL},
+                   {"pit", MAT_MINERAL},
+                   {"spiked pit", MAT_MINERAL},
+                   {"hole", MAT_MINERAL},
+                   {"trap door", MAT_MINERAL},
+                   {"teleport trap", MAT_ENERGY},
+                   {"level teleport trap", MAT_ENERGY},
+                   {"magic portal", MAT_ENERGY},
+                   {"web", MAT_ORGANIC},
+                   {"statue", MAT_MINERAL},
+                   {"magic trap", MAT_ENERGY},
+                   {"anti-magic trap", MAT_ENERGY},
+                   {"polymorph trap", MAT_ENERGY},
+                   {"octahedral magic portal", MAT_ENERGY},
+                   {"tetrahedral magic portal", MAT_ENERGY},
+                   {"cubical magic portal", MAT_ENERGY},
+                   {"dodecahedral magic portal", MAT_ENERGY},
+                   {"vibrating square", MAT_MINERAL}
+    };
 
 /*
  * Find the type of a trap in the table, knowing its name.
@@ -4659,7 +4659,7 @@ const char*
 get_trap_name(trapid)
 int trapid;
 {
-	return trap_names[trapid];
+	return trap_type_definitions[trapid].name;
 }
 
 

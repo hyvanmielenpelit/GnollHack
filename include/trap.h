@@ -87,6 +87,13 @@ enum trap_types {
     TRAPNUM      = 28
 };
 
+struct trap_type_definition {
+    const char* name;
+    enum obj_material_types material;
+};
+
+extern struct trap_type_definition trap_type_definitions[TRAPNUM];
+
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
 

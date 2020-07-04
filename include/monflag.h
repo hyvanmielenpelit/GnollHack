@@ -286,6 +286,8 @@
 #define M4_LORD			            0x08000000UL        /* is a lord to its kind */
 #define M4_PRINCE		            0x10000000UL        /* is an overlord to its kind */
 #define M4_PACKMULE		            0x20000000UL        /* carries items for the player */
+#define M4_IRON 		            0x40000000UL        /* is made of iron (can rust) */
+#define M4_METAL 		            0x80000000UL        /* is made of metal other than iron */
 
 #define M5_NONE						0x00000000UL
 /* Must be in the same order as enum attack_tile_types */

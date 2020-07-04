@@ -346,9 +346,6 @@ E struct c_common_strings {
 #define vision_clears c_common_strings.c_vision_clears
 #define the_your c_common_strings.c_the_your
 
-/* material strings */
-E const char *materialnm[];
-
 /* Monster name articles */
 #define ARTICLE_NONE 0
 #define ARTICLE_THE 1

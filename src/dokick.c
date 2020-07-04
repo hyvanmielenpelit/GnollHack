@@ -1151,6 +1151,7 @@ dokick() {
             }
             /*FALLTHRU*/
         default:
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(u.ustuck), NATTK, (struct obj*)0, 0.0, HMON_MELEE);
             update_u_action(ACTION_TILE_KICK);
             Your("feeble kick has no effect.");
             break;
@@ -1161,6 +1162,9 @@ dokick() {
 	else if (u.utrap && u.utraptype == TT_PIT) 
 	{
         /* must be Passes_walls */
+        struct trap* t = t_at(u.ux, u.uy);
+        if(t)
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_TRAP, trap_to_any(t), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
         update_u_action(ACTION_TILE_KICK);
         You("kick at the side of the pit.");
         update_u_action(ACTION_TILE_NO_ACTION);
@@ -1228,6 +1232,7 @@ dokick() {
         /* save mtmp->data (for recoil) in case mtmp gets killed */
         struct permonst *mdat = mtmp->data;
 
+        play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mtmp), NATTK, (struct obj*)0, 0.0, HMON_MELEE);
         kick_monster(mtmp, x, y);
         glyph = glyph_at(x, y);
         /* see comment in attack_checks() */
@@ -1265,6 +1270,7 @@ dokick() {
     (void) unmap_invisible(x, y);
     if (is_pool(x, y) ^ !!u.uinwater) {
         /* objects normally can't be removed from water by kicking */
+        play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 1.0, HMON_MELEE);
         You("splash some %s around.", hliquid("water"));
         update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
@@ -1273,7 +1279,8 @@ dokick() {
     if (OBJ_AT(x, y) && (!Levitation || Is_airlevel(&u.uz)
                          || Is_waterlevel(&u.uz) || sobj_at(BOULDER, x, y))) 
 	{
-        if (kick_object(x, y, kickobjnam, FALSE)) 
+        play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(level.objects[x][y]), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
+        if (kick_object(x, y, kickobjnam, FALSE))
 		{
             if (Is_airlevel(&u.uz))
                 hurtle(-u.dx, -u.dy, 1, TRUE); /* assume it's light */
@@ -1287,6 +1294,7 @@ dokick() {
     if (!IS_DOOR(maploc->typ)) {
         if (maploc->typ == SDOOR) {
             if (!Levitation && rn2(30) < avrg_attrib) {
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
                 pline("Crash!  %s a secret door!",
                       /* don't "kick open" when it's locked
@@ -1314,6 +1322,7 @@ dokick() {
         }
         if (maploc->typ == SCORR) {
             if (!Levitation && rn2(30) < avrg_attrib) {
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 pline("Crash!  You kick open a secret passage!");
                 exercise(A_DEX, TRUE);
                 create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, FALSE);
@@ -1332,6 +1341,7 @@ dokick() {
             {
                 create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, 0, FALSE);
                 (void) mkgold((long) rnd(200), x, y);
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 if (Blind)
                     pline("CRASH!  You destroy it.");
                 else {
@@ -1350,6 +1360,8 @@ dokick() {
                     (void) mksobj_at(
                         rnd_class(DILITHIUM_CRYSTAL, LUCKSTONE - 1), x, y,
                         FALSE, TRUE);
+
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 if (Blind)
                     You("kick %s loose!", something);
                 else {
@@ -1373,6 +1385,7 @@ dokick() {
         if (IS_ALTAR(maploc->typ)) {
             if (Levitation)
                 goto dumb;
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
             You("kick %s.", (Blind ? something : "the altar"));
             if (!rn2(3))
                 goto ouch;
@@ -1384,6 +1397,7 @@ dokick() {
         if (IS_FOUNTAIN(maploc->typ)) {
             if (Levitation)
                 goto dumb;
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
             You("kick %s.", (Blind ? something : "the fountain"));
             if (!rn2(3))
                 goto ouch;
@@ -1407,6 +1421,7 @@ dokick() {
                 || ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10))) {
                 adjalign(-sgn(u.ualign.type));
             }
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
             create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, 0, FALSE);
             (void) mksobj_at(ROCK, x, y, TRUE, FALSE);
             del_engr_at(x, y);
@@ -1420,9 +1435,13 @@ dokick() {
             return 1;
         }
         if (maploc->typ == IRONBARS)
+        {
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
             goto ouch;
+        }
         if (IS_TREE(maploc->typ)) {
             struct obj *treefruit;
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
 
             /* nothing, fruit or trouble? 75:23.5:1.5% */
             if (rn2(3)) {
@@ -1491,6 +1510,9 @@ dokick() {
 
             if (Levitation)
                 goto dumb;
+
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
+            
             if (rn2(5)) {
                 if (!Deaf)
                     pline("Klunk!  The pipes vibrate noisily.");
@@ -1541,10 +1563,15 @@ dokick() {
             goto ouch;
         }
         if (maploc->typ == STAIRS || maploc->typ == LADDER
-            || IS_STWALL(maploc->typ)) {
+            || IS_STWALL(maploc->typ)) 
+        {
             if (!IS_STWALL(maploc->typ) && maploc->ladder == LA_DOWN)
                 goto dumb;
+
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
  ouch:
+
+            play_simple_player_sound(PLAYER_SOUND_TYPE_OUCH);
             pline("Ouch!  That hurts!");
             exercise(A_DEX, FALSE);
             exercise(A_STR, FALSE);
@@ -1594,11 +1621,16 @@ dokick() {
         goto ouch;
 
     exercise(A_DEX, TRUE);
+
     /* door is known to be CLOSED or LOCKED */
-    if (rnl(35) < avrg_attrib + (!martial() ? 0 : ACURR(A_DEX))) {
+    play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
+    if (rnl(35) < avrg_attrib + (!martial() ? 0 : ACURR(A_DEX)))
+    {
         boolean shopdoor = *in_rooms(x, y, SHOPBASE) ? TRUE : FALSE;
+
         /* break the door */
-        if (maploc->doormask & D_TRAPPED) {
+        if (maploc->doormask & D_TRAPPED) 
+        {
             if (flags.verbose)
                 You("kick the door.");
             exercise(A_STR, FALSE);
@@ -1611,7 +1643,9 @@ dokick() {
 				otmp->quan = 1;
 				otmp->owt = weight(otmp);
 			}
-        } else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor) {
+        }
+        else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor) 
+        {
             pline("As you kick the door, it shatters to pieces!");
             exercise(A_STR, TRUE);
             maploc->doormask = D_NODOOR;
@@ -1620,40 +1654,53 @@ dokick() {
 			otmp->quan = 1;
 			otmp->owt = weight(otmp);
 
-        } else {
+        } 
+        else
+        {
             pline("As you kick the door, it crashes open!");
             exercise(A_STR, TRUE);
             maploc->doormask = D_BROKEN;
         }
+
         feel_newsym(x, y); /* we know we broke it */
         unblock_vision_and_hearing_at_point(x, y); /* vision */
-        if (shopdoor) {
+
+        if (shopdoor)
+        {
             add_damage(x, y, SHOP_DOOR_COST);
             pay_for_damage("break", FALSE);
         }
+
         if (in_town(x, y))
-            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+            {
                 if (DEADMONSTER(mtmp))
                     continue;
                 if (is_watch(mtmp->data) && couldsee(mtmp->mx, mtmp->my)
-                    && is_peaceful(mtmp)) {
+                    && is_peaceful(mtmp)) 
+                {
                     mon_yells(mtmp, "Halt, thief!  You're under arrest!", "yell", "angrily", FALSE);
                     (void) angry_guards(FALSE);
                     break;
                 }
             }
-    } else {
+    }
+    else
+    {
         if (Blind)
             feel_location(x, y); /* we know we hit it */
         exercise(A_STR, TRUE);
         pline("WHAMMM!!!");
         if (in_town(x, y))
-            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+            {
                 if (DEADMONSTER(mtmp))
                     continue;
                 if (is_watch(mtmp->data) && is_peaceful(mtmp)
-                    && couldsee(mtmp->mx, mtmp->my)) {
-                    if (levl[x][y].looted & D_WARNED) {
+                    && couldsee(mtmp->mx, mtmp->my)) 
+                {
+                    if (levl[x][y].looted & D_WARNED)
+                    {
                         mon_yells(mtmp,
                                   "Halt, vandal!  You're under arrest!", "yell", "angrily", FALSE);
                         (void) angry_guards(FALSE);

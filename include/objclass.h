@@ -97,55 +97,14 @@ enum multishot_types {
 	MULTISHOT_MELEE_2_SKILLED = 51,
 	MAX_MULTISHOT_TYPES
 };
-
-static const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {
-	"None", 
-	"1d2 when firing", "2 when firing", "1d2+1 when firing", "3 when firing", "1d3 when firing",
-	"1d2 when thrown", "2 when thrown", "1d2+1 when thrown", "3 when thrown", "1d3 when thrown",
-	"1d2 in melee", "2 in melee", "1d2+1 in melee", "3 in melee", "1d3 in melee",
-	"1d2 when firing with basic skill",
-	"1d2 when thrown with basic skill",
-	"1d2 in melee with basic skill",
-	"2 when firing with basic skill",
-	"2 when thrown with basic skill",
-	"2 in melee with basic skill",
-	"1d2/2/1d2+1 by skill level when firing",
-	"1d2/2/1d2+1 by skill level when thrown",
-	"1d2/2/1d2+1 by skill level in melee",
-	"1d2/2/3 by skill level when firing",
-	"1d2/2/3 by skill level when thrown",
-	"1d2/2/3 by skill level in melee",
-	"2/3/4 by skill level when firing",
-	"2/3/4 by skill level when thrown",
-	"2/3/4 by skill level in melee",
-	"1d2 when firing with skilled skill",
-	"1d2 when thrown with skilled skill",
-	"1d2 in melee with skilled skill",
-	"1/1d2/2 by skill level when firing",
-	"1/1d2/2 by skill level when thrown",
-	"1/1d2/2 by skill level in melee",
-	"1/2/3 by skill level when firing",
-	"1/2/3 by skill level when thrown",
-	"1/2/3 by skill level in melee",
-	"1d2 when firing with expert skill",
-	"1d2 when thrown with expert skill",
-	"1d2 in melee with expert skill",
-	"2 when firing with expert skill",
-	"2 when thrown with expert skill",
-	"2 in melee with expert skill",
-	"2 when firing with basic skill",
-	"2 when firing with skilled skill",
-	"2 when thrown with basic skill",
-	"2 when thrown with skilled skill",
-	"2 in melee with basic skill",
-	"2 in melee with skilled skill"
-};
+extern const char* multishot_style_names[MAX_MULTISHOT_TYPES]; /* in objnam.c */
 
 
 /* [misnamed] definition of a type of object; many objects are composites
    (liquid potion inside glass bottle, metal arrowhead on wooden shaft)
-   and object definitions only specify one type on a best-fit basis */
+   and object definitions only specify one type on a< best-fit basis */
 enum obj_material_types {
+	MAT_NONE        =  0,
     MAT_LIQUID      =  1, /* currently only for venom */  /* Organics start here */
     MAT_WAX         =  2,
     MAT_VEGGY       =  3, /* foodstuffs */
@@ -173,8 +132,16 @@ enum obj_material_types {
     MAT_MINERAL     = 25,
 	MAT_MODRONITE	= 26,
 	MAT_PLANARRIFT	= 27,
-	MAT_FORCEFIELD  = 28
+	MAT_FORCEFIELD  = 28,
+	MAT_AIR         = 29,
+	MAT_FIRE        = 30,
+	MAT_ENERGY      = 31,
+	MAT_INCORPOREAL = 32,
+	MAT_CARAPACE    = 33,
+	MAT_ICE         = 34,
+	MAX_MATERIAL_TYPES
 };
+extern const char* materialnm[MAX_MATERIAL_TYPES]; /* in objnam.c */
 
 enum obj_armor_types {
     ARM_SUIT    = 0,
@@ -188,10 +155,7 @@ enum obj_armor_types {
 	ARM_BRACERS = 8, //END MARKER FOR ARMOR TYPES
 	MAX_ARMOR_TYPES
 };
-
-static const char* armor_type_names[MAX_ARMOR_TYPES] = {
-	"suit of armor", "shield", "helmet", "gloves", "boots", "cloak", "shirt", "robe", "bracers",
-};
+extern const char* armor_type_names[MAX_ARMOR_TYPES]; /* in objnam.c */
 
 
 enum obj_weapon_types {
@@ -249,15 +213,8 @@ enum obj_weapon_types {
 	WEP_TRIPLE_FLAIL = 51,
 	MAX_WEAPON_TYPES
 };
+extern const char* weapon_type_names[MAX_WEAPON_TYPES]; /* in objnam.c */
 
-static const char* weapon_type_names[MAX_WEAPON_TYPES] = {
-	"short sword", "long sword", "two-handed sword", "broadsword", "bastard sword", "scimitar", "saber", "katana",  "tsurugi",
-	"axe", "throwing axe", "two-handed axe", "dagger", "knife", "mace", "spiked mace", "flail", "morning star", "club", "spiked club", 
-	"hammer", "spiked hammer",  "staff", "rod", "spear", "javelin", "polearm", "trident",
-	"dart", "shuriken", "boomerang", "short bow", "long bow", "hand crossbow", "crossbow", "repeating crossbow", "sling",
-	"arrow", "quarrel", "sling-bullet", "pick-axe", "unicorn horn", "horn", "worm tooth",
-	"shovel", "hook", "lance", "hose", "fork", "whip", "double-headed flail", "triple-headed flail"
-};
 
 enum obj_food_types {
 	FOODTYPE_GENERAL = 0,
@@ -281,11 +238,7 @@ enum obj_food_types {
 	FOODTYPE_TIN = 18,
 	MAX_FOOD_TYPES
 };
-
-static const char* food_type_names[MAX_FOOD_TYPES] = {
-	"general food", "ration", "fruit", "vegetable", "nuts", "seeds", "leaf", "kelp",  "bread",
-	"cake", "candy", "mushroom", "mold", "glob", "egg", "meat", "jelly", "corpse",  "tin"
-};
+extern const char* food_type_names[MAX_FOOD_TYPES]; /* in objnam.c */
 
 enum obj_miscellaneous_types {
 	MISC_MULTIPLE_PERMITTED = 0,
@@ -310,17 +263,8 @@ enum obj_miscellaneous_types {
 	MAX_MISC_TYPES
 };
 
-static const char* misc_type_names[MAX_MISC_TYPES] = {
-	"", "set of wings", "pair of pants", "skirt", "wrist watch",
-	"nose ring", "headband", "pair of earrings",
-	"ioun stone", "bracelet", "pair of bracers", "belt", "pair of eyeglasses", "blindfold", "scarf", "set of extra arms", "brooch", "mask", "necktie"
-};
-
-static const char* misc_type_worn_texts[MAX_MISC_TYPES] = {
-	"", "attached to back", "", "", "on left wrist",
-	"on nose", "", "",
-	"orbiting head", "", "", "", "", "", "", "attached to body", "", "", ""
-};
+extern const char* misc_type_names[MAX_MISC_TYPES]; /* in objnam.c */
+extern const char* misc_type_worn_texts[MAX_MISC_TYPES]; /* in objnam.c */
 
 /* Note: there are only those where the description is not suitable for !dknown, others are of general tooltype */
 enum obj_tool_types {
@@ -348,11 +292,7 @@ enum obj_tool_types {
 	TOOLTYPE_GRAIL = 21,
 	MAX_TOOL_TYPES
 };
-
-static const char* tool_type_names[MAX_TOOL_TYPES] = {
-	"tool", "box", "chest", "bag", "pick-axe", "shovel", "long club-headed weapon", "hook", "horn", "candelabrum", "bell", 
-	"candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can", "grail"
-};
+extern const char* tool_type_names[MAX_TOOL_TYPES]; /* in objnam.c */
 
 enum charged_init_types {
 	CHARGED_NOT_CHARGED = 0,

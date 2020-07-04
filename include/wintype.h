@@ -30,6 +30,7 @@ typedef union any {
     struct nhregion *a_nhregion;
     float a_float;
     double a_double;
+    struct trap* a_trap;
     /* add types as needed */
     
 } anything;

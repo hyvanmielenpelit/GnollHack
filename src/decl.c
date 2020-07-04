@@ -281,15 +281,6 @@ struct c_common_strings c_common_strings = { "Nothing happens.",
                                              "vision quickly clears.",
                                              { "the", "your" } };
 
-/* NOTE: the order of these words exactly corresponds to the
-   order of oc_material values #define'd in objclass.h. */
-const char *materialnm[] = { "mysterious", "liquid",  "wax",        "vegetable",
-                             "flesh",      "organic", "paper",      "cloth",   "silk",      "leather",
-                             "wooden",     "bone",    "dragonhide", "iron",
-                             "metal",      "copper",  "silver",     "gold",
-                             "platinum",   "orichalcum", "adamantium", "mithril", "plastic",    "glass",
-                             "gemstone",   "stone",  "modronite",    "planar rift", "force field" };
-
 
 /* Vision */
 NEARDATA boolean vision_full_recalc = 0;

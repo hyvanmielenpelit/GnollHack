@@ -65,6 +65,15 @@ struct obj *obj;
 }
 
 anything*
+trap_to_any(t)
+struct trap* t;
+{
+    tmp_anything = zeroany;
+    tmp_anything.a_trap = t;
+    return &tmp_anything;
+}
+
+anything*
 coord_to_any(c)
 coord c;
 {

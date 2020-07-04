@@ -68,6 +68,7 @@ struct permonst {
     uchar msize;                /* physical size (3 bits) */
 	uchar heads;				/* number of heads */
 	int lightrange;				/* range of emitted light, if any */
+    uchar natural_armor_material_type; /* one of the obj_material_types */
 	int str,					/* strength */
 		dex,					/* dexterity */
 		con,					/* constitution */

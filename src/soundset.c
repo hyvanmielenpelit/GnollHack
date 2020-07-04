@@ -15,21 +15,21 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 {
 	{
 		"",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
 	},
 	{
 		"Generic",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GOBLIN_DEATH, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_KICK},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
@@ -225,6 +225,63 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_AXE_SWING, 1.0f},
             {GHSOUND_AXE_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "dagger",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_DAGGER_SWING, 1.0f},
+            {GHSOUND_DAGGER_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "human barehanded",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_HUMAN_BAREHANDED_SWING, 1.0f},
+            {GHSOUND_HUMAN_BAREHANDED_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "human barehanded",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_HUMAN_KICK_SWING, 1.0f},
+            {GHSOUND_HUMAN_KICK_HIT, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -997,34 +1054,149 @@ enum object_sound_types sound_type;
 }
 
 void
-play_monster_weapon_hit_sound(magr, mdef, attack_number, weapon, damage, thrown)
+get_hit_location(surface_type, surface_source_ptr, defx_ptr, defy_ptr)
+enum hit_surface_source_types surface_type;
+anything* surface_source_ptr;
+xchar *defx_ptr, *defy_ptr;
+{
+    if (!surface_source_ptr || !defx_ptr || !defy_ptr)
+        return;
+
+    boolean you_defend = FALSE;
+    anything surface_source = *surface_source_ptr;
+
+    struct monst* mdef = 0;
+    struct obj* obj = 0;
+    coord cc = { 0 };
+
+    *defx_ptr = 0;
+    *defy_ptr = 0;
+
+    if (surface_type == HIT_SURFACE_SOURCE_MONSTER)
+    {
+        mdef = surface_source.a_monst;
+        if (!mdef)
+            return;
+
+        you_defend = (mdef == &youmonst);
+
+        if (you_defend)
+        {
+            *defx_ptr = u.ux;
+            *defy_ptr = u.uy;
+        }
+        else
+        {
+            *defx_ptr = mdef->mx;
+            *defy_ptr = mdef->my;
+        }
+    }
+    else if (surface_type == HIT_SURFACE_SOURCE_OBJECT)
+    {
+        obj = surface_source.a_obj;
+        if (!obj)
+            return;
+        get_obj_location(obj, defx_ptr, defy_ptr, 0);
+    }
+    else if (surface_type == HIT_SURFACE_SOURCE_LOCATION)
+    {
+        cc.x = surface_source.a_coord.x;
+        cc.y = surface_source.a_coord.y;
+        if (!isok(cc.x, cc.y))
+            return;
+        *defx_ptr = cc.x;
+        *defy_ptr = cc.y;
+    }
+    else if (surface_type == HIT_SURFACE_SOURCE_TRAP)
+    {
+        struct trap* t = surface_source.a_trap;
+        if (!t)
+            return;
+        *defx_ptr = t->tx;
+        *defy_ptr = t->ty;
+    }
+
+}
+
+enum obj_material_types
+get_hit_surface_type(surface_type, surface_source_ptr)
+enum hit_surface_source_types surface_type;
+anything* surface_source_ptr;
+{
+    enum obj_mat_types surfaceid = MAT_NONE;
+    if (!surface_source_ptr)
+        return surfaceid;
+
+    anything surface_source = *surface_source_ptr;
+
+    if (surface_type == HIT_SURFACE_SOURCE_MONSTER)
+    {
+        struct monst* mdef = surface_source.a_monst;
+        if (!mdef)
+            return surfaceid;
+
+        boolean you_defend = (mdef == &youmonst);
+
+        surfaceid = mdef->data->natural_armor_material_type;
+        if (you_defend)
+        {
+            /* Maybe change if you are wearing armor */
+        }
+        else if (mdef)
+        {
+            /* Maybe change if monster is wearing armor */
+        }
+    }
+    else if (surface_type == HIT_SURFACE_SOURCE_OBJECT)
+    {
+        struct obj* obj = surface_source.a_obj;
+        if (!obj)
+            return surfaceid;
+        surfaceid = objects[obj->otyp].oc_material;
+    }
+    else if (surface_type == HIT_SURFACE_SOURCE_LOCATION)
+    {
+        coord cc = { 0 };
+        cc.x = surface_source.a_coord.x;
+        cc.y = surface_source.a_coord.y;
+        if (!isok(cc.x, cc.y))
+            return surfaceid;
+        surfaceid = level_location_types[levl[cc.x][cc.y].typ].material;
+    }
+    else if (surface_type == HIT_SURFACE_SOURCE_TRAP)
+    {
+        struct trap* t = surface_source.a_trap;
+        if (!t)
+            return surfaceid;
+        surfaceid = trap_type_definitions[t->ttyp].material;
+    }
+    return surfaceid;
+}
+
+void
+play_monster_weapon_hit_sound(magr, surface_type, surface_source_ptr, attack_number, weapon, damage, thrown)
 struct monst* magr;
-struct monst* mdef;
-int attack_number;
+enum hit_surface_source_types surface_type;
+anything* surface_source_ptr;
+int attack_number; /* attack_number == NATTK indicates kicking */
 struct obj* weapon;
 double damage;
 enum hmon_atkmode_types thrown;
 {
-    if (!magr || !mdef)
+    if (!magr || !surface_source_ptr)
         return;
+
+    boolean you_attack = (magr == &youmonst);
 
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    boolean you_attack = (magr == &youmonst);
-    boolean you_defend = (mdef == &youmonst);
     enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
     struct ghsound_immediate_info immediateinfo = { 0 };
+
     xchar defx = 0, defy = 0;
-    if (you_defend)
-    {
-        defx = u.ux;
-        defy = u.uy;
-    }
-    else
-    {
-        defx = mdef->mx;
-        defy = mdef->my;
-    }
+    get_hit_location(surface_type, surface_source_ptr, &defx, &defy);
+    if (!isok(defx, defy))
+        return;
 
     if (weapon)
     {
@@ -1046,7 +1218,7 @@ enum hmon_atkmode_types thrown;
         if (you_attack)
         {
             enum player_soundset_types pss = get_player_soundset();
-            enum object_soundset_types oss = player_soundsets[pss].attack_soundsets[PLAYER_ATTACK_SOUNDSET_BAREHANDED];
+            enum object_soundset_types oss = player_soundsets[pss].attack_soundsets[attack_number == NATTK ? PLAYER_ATTACK_SOUNDSET_KICK : PLAYER_ATTACK_SOUNDSET_BAREHANDED];
             soundid = object_soundsets[oss].sounds[sound_type].ghsound;
             volume = object_soundsets[oss].sounds[sound_type].volume;
         }
@@ -1068,30 +1240,7 @@ enum hmon_atkmode_types thrown;
         }
     }
 
-    enum strike_surface_types surfaceid = STRIKE_SURFACE_FLESH;
-    if (you_defend)
-    {
-        surfaceid = STRIKE_SURFACE_FLESH;
-    }
-    else if(mdef)
-    {
-        if(is_wooden(mdef->data))
-            surfaceid = STRIKE_SURFACE_WOOD;
-        else if (is_dragon(mdef->data))
-            surfaceid = STRIKE_SURFACE_SCALES;
-        else if (thick_skinned(mdef->data))
-            surfaceid = STRIKE_SURFACE_THICK_HIDE;
-        else if (is_whirly(mdef->data))
-            surfaceid = STRIKE_SURFACE_AIR;
-        else if (flaming(mdef->data))
-            surfaceid = STRIKE_SURFACE_FIRE;
-        else if (is_watery(mdef->data))
-            surfaceid = STRIKE_SURFACE_WATER;
-        else if (is_stony(mdef->data))
-            surfaceid = STRIKE_SURFACE_STONE;
-        else if (noncorporeal(mdef->data))
-            surfaceid = STRIKE_SURFACE_INCORPOREAL;
-    }
+    enum obj_mat_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
@@ -1109,31 +1258,26 @@ enum hmon_atkmode_types thrown;
 
 
 void
-play_object_hit_sound(obj, mdef, damage, thrown)
+play_object_hit_sound(obj, surface_type, surface_source_ptr, damage, thrown)
 struct obj* obj;
-struct monst* mdef;
+enum hit_surface_source_types surface_type;
+anything* surface_source_ptr;
 double damage;
 enum hmon_atkmode_types thrown;
 {
-    if (!mdef || !obj)
+    if (!surface_source_ptr || !obj)
         return;
 
+    struct monst* mdef = 0;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    boolean you_defend = (mdef == &youmonst);
     enum object_sound_types sound_type = (thrown == HMON_MELEE ? OBJECT_SOUND_TYPE_HIT_MELEE : OBJECT_SOUND_TYPE_HIT_THROW);
     struct ghsound_immediate_info immediateinfo = { 0 };
+
     xchar defx = 0, defy = 0;
-    if (you_defend)
-    {
-        defx = u.ux;
-        defy = u.uy;
-    }
-    else
-    {
-        defx = mdef->mx;
-        defy = mdef->my;
-    }
+    get_hit_location(surface_type, surface_source_ptr, &defx, &defy);
+    if (!isok(defx, defy))
+        return;
 
     if (obj->oartifact && artilist[obj->oartifact].soundset > OBJECT_SOUNDSET_NONE)
     {
@@ -1161,30 +1305,7 @@ enum hmon_atkmode_types thrown;
         return;
 
 
-    enum strike_surface_types surfaceid = STRIKE_SURFACE_FLESH;
-    if (you_defend)
-    {
-        surfaceid = STRIKE_SURFACE_FLESH;
-    }
-    else if (mdef)
-    {
-        if (is_wooden(mdef->data))
-            surfaceid = STRIKE_SURFACE_WOOD;
-        else if (is_dragon(mdef->data))
-            surfaceid = STRIKE_SURFACE_SCALES;
-        else if (thick_skinned(mdef->data))
-            surfaceid = STRIKE_SURFACE_THICK_HIDE;
-        else if (is_whirly(mdef->data))
-            surfaceid = STRIKE_SURFACE_AIR;
-        else if (flaming(mdef->data))
-            surfaceid = STRIKE_SURFACE_FIRE;
-        else if (is_watery(mdef->data))
-            surfaceid = STRIKE_SURFACE_WATER;
-        else if (is_stony(mdef->data))
-            surfaceid = STRIKE_SURFACE_STONE;
-        else if (noncorporeal(mdef->data))
-            surfaceid = STRIKE_SURFACE_INCORPOREAL;
-    }
+    enum strike_surface_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;

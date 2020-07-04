@@ -59,6 +59,12 @@ enum ghsound_types {
 	GHSOUND_AXE_SWING,
 	GHSOUND_AXE_HIT,
 	GHSOUND_GOBLIN_DEATH,
+	GHSOUND_DAGGER_SWING,
+	GHSOUND_DAGGER_HIT,
+	GHSOUND_HUMAN_BAREHANDED_SWING,
+	GHSOUND_HUMAN_BAREHANDED_HIT,
+	GHSOUND_HUMAN_KICK_SWING,
+	GHSOUND_HUMAN_KICK_HIT,
 	MAX_GHSOUNDS
 };
 
@@ -164,7 +170,7 @@ struct function_info_A {
 
 struct function_info_C {
 	enum ghsound_types ghsound;
-	enum strike_surface_types strike_surface;
+	enum obj_material_types strike_surface;
 	float volume;
 };
 
@@ -221,6 +227,9 @@ enum object_soundset_types {
 	OBJECT_SOUNDSET_ARROW,
 	OBJECT_SOUNDSET_SWORD,
 	OBJECT_SOUNDSET_AXE,
+	OBJECT_SOUNDSET_DAGGER,
+	OBJECT_SOUNDSET_HUMAN_BAREHANDED,
+	OBJECT_SOUNDSET_HUMAN_KICK,
 	MAX_OBJECT_SOUNDSETS
 };
 
@@ -231,6 +240,7 @@ extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
 enum player_sound_types {
 	PLAYER_SOUND_TYPE_AMBIENT = 0,
 	PLAYER_SOUND_TYPE_COUGH,
+	PLAYER_SOUND_TYPE_OUCH,
 	PLAYER_SOUND_TYPE_DEATH,
 	MAX_PLAYER_SOUND_TYPES
 };
@@ -376,5 +386,14 @@ struct ray_soundset_definition {
 
 extern struct ray_soundset_definition ray_soundsets[2 * NRAYS]; /* 0...NRAYS-1 normal ray, NRAYS...2NRAYS-1 explosion */
 
+
+/* Other definitions */
+enum hit_surface_source_types {
+	HIT_SURFACE_SOURCE_NONE = 0,
+	HIT_SURFACE_SOURCE_MONSTER,
+	HIT_SURFACE_SOURCE_OBJECT,
+	HIT_SURFACE_SOURCE_LOCATION,
+	HIT_SURFACE_SOURCE_TRAP
+};
 
 #endif /* SOUNDSET_H */
