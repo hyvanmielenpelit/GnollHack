@@ -88,7 +88,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music-Shop-Angry", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music-Shop-Dead", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music-Shop-Deserted", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Fountain Ambient" , 0.75f},
 
     { SOUND_BANK_MASTER, "event:/Bee Ambient" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Fire Ambient" , 1.0f},
@@ -122,14 +122,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Human Kick Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Door Wham" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Door Break" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Door Open" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Door Close" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Door Unlock" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Door Lock" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Door Resists" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Door Try Locked" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Chest Unlock" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Chest Lock" , 1.0f},
+
+    { SOUND_BANK_MASTER, "event:/Door Open" , 0.1f},
+    { SOUND_BANK_MASTER, "event:/Door Close" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Door Unlock" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Door Lock" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Door Resists" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Door Try Locked" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Chest Unlock" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Chest Lock" , 0.5f},
     { SOUND_BANK_MASTER, "event:/Crossbow Fire" , 1.0f},
 };
 

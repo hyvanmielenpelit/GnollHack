@@ -2050,7 +2050,7 @@ int radius;
     }
     else if (radius == 1)
     {
-        multiplier = 0.5f; /* Specially adjusted value */
+        multiplier = 0.75f; /* Specially adjusted value */
     }
     else if (radius >= 2)
     {
