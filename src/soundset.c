@@ -8,7 +8,7 @@
 #include "artilist.h"
 
 NEARDATA struct soundsource_t* sound_base = 0;
-STATIC_DCL void FDECL(set_hearing_array, (int, int, double));
+STATIC_DCL void FDECL(set_hearing_array, (int, int, double, int));
 
 
 NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS] =
@@ -407,6 +407,41 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DAGGER_SWING, 1.0f},
             {GHSOUND_DAGGER_HIT, 1.0f},
+            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "bone dagger",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STAFF_SWING, 1.0f},
+            {GHSOUND_STAFF_HIT, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1908,7 +1943,7 @@ int mode; /* 0 = normal, 1 = clear */
 				}
 				else
 				{
-					set_hearing_array(x, y, prev_hearing);
+					set_hearing_array(x, y, prev_hearing, r);
 				}
 			}
 		}
@@ -1959,7 +1994,7 @@ int mode; /* 0 = normal, 1 = clear */
 				}
 				else
 				{
-					set_hearing_array(x, y, prev_hearing);
+					set_hearing_array(x, y, prev_hearing, r);
 				}
 			}
 		}
@@ -1977,7 +2012,7 @@ int mode; /* 0 = normal, 1 = clear */
 			for (int y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
 			{
 				if(hearing_array[x][y + 1] > 0.0f)
-					set_hearing_array(x, y, hearing_array[x][y + 1]);
+					set_hearing_array(x, y, hearing_array[x][y + 1], r);
 			}
 		}
 
@@ -1994,7 +2029,7 @@ int mode; /* 0 = normal, 1 = clear */
 			for (int x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
 			{
 				if (hearing_array[x + 1][y] > 0.0f)
-					set_hearing_array(x, y, hearing_array[x + 1][y]);
+					set_hearing_array(x, y, hearing_array[x + 1][y], r);
 			}
 		}
 	}
@@ -2002,10 +2037,28 @@ int mode; /* 0 = normal, 1 = clear */
 }
 
 STATIC_OVL
-void set_hearing_array(x, y, prev_hearing)
+void set_hearing_array(x, y, prev_hearing, radius)
 int x, y;
 double prev_hearing;
+int radius;
 {
+    float multiplier = 1.0f;
+    if (radius <= 0)
+    {
+        hearing_array[x][y] = 1.0f;
+        return;
+    }
+    else if (radius == 1)
+    {
+        multiplier = 0.5f; /* Specially adjusted value */
+    }
+    else if (radius >= 2)
+    {
+        float prev_factor = 1.0f / ((float)(radius - 1) * (float)(radius - 1));
+        float curr_factor = 1.0f / ((float)radius * (float)radius);
+        multiplier = curr_factor / prev_factor;
+    }
+
 	struct monst* mtmp;
 	if (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
 	{
@@ -2017,13 +2070,13 @@ double prev_hearing;
 	}
 	else if (IS_DOOR(levl[x][y].typ) && (levl[x][y].doormask != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
 	{
-		float new_hearing = (float)max(0.0f, min(1.0f, (prev_hearing) / (10.0f * 2.0f)));
+		float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (10.0f)));
 		if(new_hearing > hearing_array[x][y])
 			hearing_array[x][y] = new_hearing;
 	}
 	else
 	{
-		float new_hearing = (float)max(0.0f, min(1.0f, (prev_hearing) / 2.0f));
+		float new_hearing = (float)max(0.0f, min(1.0f, multiplier * (float)prev_hearing));
 		if (new_hearing > hearing_array[x][y])
 			hearing_array[x][y] = new_hearing;
 	}
