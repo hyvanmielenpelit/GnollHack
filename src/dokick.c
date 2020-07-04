@@ -1646,6 +1646,7 @@ dokick() {
         }
         else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor) 
         {
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline("As you kick the door, it shatters to pieces!");
             exercise(A_STR, TRUE);
             maploc->doormask = D_NODOOR;
@@ -1657,6 +1658,7 @@ dokick() {
         } 
         else
         {
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline("As you kick the door, it crashes open!");
             exercise(A_STR, TRUE);
             maploc->doormask = D_BROKEN;
@@ -1690,6 +1692,7 @@ dokick() {
         if (Blind)
             feel_location(x, y); /* we know we hit it */
         exercise(A_STR, TRUE);
+        play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
         pline("WHAMMM!!!");
         if (in_town(x, y))
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)

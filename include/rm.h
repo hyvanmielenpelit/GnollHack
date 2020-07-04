@@ -91,7 +91,7 @@ struct location_type_definition {
     enum location_soundset_types soundset;
 };
 
-extern struct location_type_definition level_location_types[MAX_TYPE];
+extern struct location_type_definition location_type_definitions[MAX_TYPE];
 
 
 enum grass_subtypes {

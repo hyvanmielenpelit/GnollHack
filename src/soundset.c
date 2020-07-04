@@ -304,6 +304,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         "",
         {
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -311,6 +312,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
     {
         "general",
         {
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
@@ -320,6 +322,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         "fountain",
         {
             {GHSOUND_FOUNTAIN, 0.75f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -328,10 +331,20 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         "altar",
         {
             {GHSOUND_FIRE, 0.5f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_LIT
-    }
+    },
+    {
+        "door",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_DOOR_WHAM, 1.0f},
+            {GHSOUND_DOOR_BREAK, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
 };
 
 
@@ -402,20 +415,28 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_SFX_QUAFF, 1.0f}
     },
     {
-        "",
-        {GHSOUND_NONE, 0.0f}
+        "door open",
+        {GHSOUND_DOOR_OPEN, 1.0f}
     },
     {
-        "",
-        {GHSOUND_NONE, 0.0f}
+        "door close",
+        {GHSOUND_DOOR_CLOSE, 1.0f}
     },
     {
-        "",
-        {GHSOUND_NONE, 0.0f}
+        "door unlock",
+        {GHSOUND_DOOR_UNLOCK, 1.0f}
     },
     {
-        "",
-        {GHSOUND_NONE, 0.0f}
+        "door lock",
+        {GHSOUND_DOOR_LOCK, 1.0f}
+    },
+    {
+        "door resists",
+        {GHSOUND_DOOR_RESISTS, 1.0f}
+    },
+    {
+        "door try locked",
+        {GHSOUND_DOOR_TRY_LOCKED, 1.0f}
     },
     {
         "",
@@ -911,6 +932,44 @@ enum object_sound_types sound_type;
 }
 
 void
+play_simple_location_sound(x, y, sound_type)
+xchar x, y;
+enum location_sound_types sound_type;
+{
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    if (!isok(x, y))
+        return;
+
+    enum location_soundset_types lss = location_type_definitions[levl[x][y].typ].soundset;
+    soundid = location_soundsets[lss].sounds[sound_type].ghsound;
+    volume = location_soundsets[lss].sounds[sound_type].volume;
+
+    /* Move one square towards the player, since the square itself may be rock etc. */
+    xchar hear_x = x + sgn(u.ux - x);
+    xchar hear_y = y + sgn(u.uy - y);
+    
+    if (!isok(hear_x, hear_y))
+        hear_x = x, hear_y = y;
+
+    float hearing = hearing_array[hear_x][hear_y];
+    if (hearing == 0.0f)
+        return;
+    else
+        volume *= hearing_array[hear_x][hear_y];
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+
+}
+
+void
 play_simple_player_sound(sound_type)
 enum player_sound_types sound_type;
 {
@@ -922,7 +981,7 @@ enum player_sound_types sound_type;
 
     enum player_soundset_types pss = get_player_soundset();
     soundid = player_soundsets[pss].sounds[sound_type].ghsound;
-    volume = monster_soundsets[pss].sounds[sound_type].volume;
+    volume = player_soundsets[pss].sounds[sound_type].volume;
 
     xchar x = u.ux, y = u.uy;
 
@@ -1104,8 +1163,21 @@ xchar *defx_ptr, *defy_ptr;
         cc.y = surface_source.a_coord.y;
         if (!isok(cc.x, cc.y))
             return;
-        *defx_ptr = cc.x;
-        *defy_ptr = cc.y;
+
+        /* Move one square closer to the player */
+        xchar hear_x = cc.x + sgn(u.ux - cc.x);
+        xchar hear_y = cc.y + sgn(u.uy - cc.y);
+
+        if(isok(hear_x, hear_y))
+        { 
+            *defx_ptr = hear_x;
+            *defy_ptr = hear_y;
+        }
+        else
+        {
+            *defx_ptr = cc.x;
+            *defy_ptr = cc.y;
+        }
     }
     else if (surface_type == HIT_SURFACE_SOURCE_TRAP)
     {
@@ -1161,7 +1233,7 @@ anything* surface_source_ptr;
         cc.y = surface_source.a_coord.y;
         if (!isok(cc.x, cc.y))
             return surfaceid;
-        surfaceid = level_location_types[levl[cc.x][cc.y].typ].material;
+        surfaceid = location_type_definitions[levl[cc.x][cc.y].typ].material;
     }
     else if (surface_type == HIT_SURFACE_SOURCE_TRAP)
     {
@@ -2547,7 +2619,7 @@ enum soundsource_ambient_subtypes *subtype_ptr;
 
     struct rm* lev = &levl[x][y];
 
-    enum location_soundset_types lsoundset = level_location_types[lev->typ].soundset;
+    enum location_soundset_types lsoundset = location_type_definitions[lev->typ].soundset;
 
     if (lsoundset == LOCATION_SOUNDSET_NONE)
         return GHSOUND_NONE;

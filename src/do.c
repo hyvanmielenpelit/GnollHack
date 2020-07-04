@@ -3650,7 +3650,7 @@ polymorph_sink()
     case 3:
 		if (levl[u.ux][u.uy].floortyp)
 		{
-			sym = level_location_types[levl[u.ux][u.uy].floortyp].base_screen_symbol;
+			sym = location_type_definitions[levl[u.ux][u.uy].floortyp].base_screen_symbol;
 			create_simple_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp, 0, 0, 0, 0, FALSE);
 		}
 		else

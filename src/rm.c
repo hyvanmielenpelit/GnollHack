@@ -4,7 +4,7 @@
 
 #include "hack.h"
 
-NEARDATA struct location_type_definition level_location_types[MAX_TYPE] = {
+NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"STONE", S_stone, CORR, MAT_MINERAL, LOCATION_SOUNDSET_NONE},
     {"VWALL", S_vwall, ROOM, MAT_MINERAL, LOCATION_SOUNDSET_NONE},
     {"HWALL", S_hwall, ROOM, MAT_MINERAL, LOCATION_SOUNDSET_NONE},
@@ -24,10 +24,10 @@ NEARDATA struct location_type_definition level_location_types[MAX_TYPE] = {
     {"POOL", S_pool, GROUND, MAT_LIQUID, LOCATION_SOUNDSET_NONE},
     {"MOAT", S_pool, GROUND, MAT_LIQUID, LOCATION_SOUNDSET_NONE},
     {"WATER", S_pool, GROUND, MAT_LIQUID, LOCATION_SOUNDSET_NONE},
-    {"DRAWBRIDGE_UP", S_vcdbridge, MAT_LIQUID, GROUND, LOCATION_SOUNDSET_NONE},
+    {"DRAWBRIDGE_UP", S_vcdbridge, MAT_LIQUID, GROUND, LOCATION_SOUNDSET_DOOR},
     {"LAVAPOOL", S_lava, GROUND, MAT_LIQUID, LOCATION_SOUNDSET_NONE},
     {"IRON_BARS", S_bars, ROOM, MAT_IRON, LOCATION_SOUNDSET_NONE},
-    {"DOOR", S_vcdoor, ROOM, MAT_WOOD, LOCATION_SOUNDSET_NONE},
+    {"DOOR", S_vcdoor, ROOM, MAT_WOOD, LOCATION_SOUNDSET_DOOR},
     {"CORR", S_litcorr, 0, MAT_MINERAL, LOCATION_SOUNDSET_NONE},
     {"ROOM", S_room, 0, MAT_MINERAL, LOCATION_SOUNDSET_NONE },
     {"STAIRS", S_dnstair, ROOM, MAT_MINERAL, LOCATION_SOUNDSET_NONE},

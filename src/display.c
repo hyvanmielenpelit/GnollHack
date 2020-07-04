@@ -2850,7 +2850,7 @@ xchar x, y;
 
     if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
     {
-        idx = level_location_types[ptr->floortyp].base_screen_symbol;
+        idx = location_type_definitions[ptr->floortyp].base_screen_symbol;
         return cmap_to_glyph(idx);
     }
 
@@ -2983,7 +2983,7 @@ static const char *
 type_to_name(type)
 int type;
 {
-    return (type < 0 || type >= MAX_TYPE) ? "unknown" : level_location_types[type].name;
+    return (type < 0 || type >= MAX_TYPE) ? "unknown" : location_type_definitions[type].name;
 }
 
 static void
@@ -3221,7 +3221,7 @@ set_wall_state()
                 y = 1; /* only print once */
                 pline("set_wall_type: wall mode problems with: ");
             }
-            pline("%s %d;", level_location_types[x].name, bad_count[x]);
+            pline("%s %d;", location_type_definitions[x].name, bad_count[x]);
         }
 #endif /* WA_VERBOSE */
 }

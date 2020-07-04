@@ -65,6 +65,14 @@ enum ghsound_types {
 	GHSOUND_HUMAN_BAREHANDED_HIT,
 	GHSOUND_HUMAN_KICK_SWING,
 	GHSOUND_HUMAN_KICK_HIT,
+	GHSOUND_DOOR_WHAM,
+	GHSOUND_DOOR_BREAK,
+	GHSOUND_DOOR_OPEN,
+	GHSOUND_DOOR_CLOSE,
+	GHSOUND_DOOR_UNLOCK,
+	GHSOUND_DOOR_LOCK,
+	GHSOUND_DOOR_RESISTS,
+	GHSOUND_DOOR_TRY_LOCKED,
 	MAX_GHSOUNDS
 };
 
@@ -115,8 +123,10 @@ enum sfx_sound_types {
 	SFX_QUAFF,
 	SFX_OPEN_DOOR,
 	SFX_CLOSE_DOOR,
-	SFX_LOCK_DOOR,
 	SFX_UNLOCK_DOOR,
+	SFX_LOCK_DOOR,
+	SFX_DOOR_RESISTS,
+	SFX_DOOR_TRY_LOCKED,
 	SFX_OPEN_CHEST,
 	SFX_CLOSE_CHEST,
 	SFX_LOCK_CHEST,
@@ -313,6 +323,7 @@ extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSET
 /* LOCATION SOUNDSETS */
 enum location_sound_types {
 	LOCATION_SOUND_TYPE_AMBIENT = 0,	/* Ambient sound that is typically either continuously played or played when the location is lit */
+	LOCATION_SOUND_TYPE_WHAM,			/* Sound upon kicking the location */
 	LOCATION_SOUND_TYPE_BREAK,			/* Sound upon breaking the location */
 	MAX_LOCATION_SOUND_TYPES
 };
@@ -328,6 +339,7 @@ enum location_soundset_types {
 	LOCATION_SOUNDSET_GENERAL,
 	LOCATION_SOUNDSET_FOUNTAIN,
 	LOCATION_SOUNDSET_ALTAR,
+	LOCATION_SOUNDSET_DOOR,
 	MAX_LOCATION_SOUNDSETS
 };
 
@@ -395,5 +407,6 @@ enum hit_surface_source_types {
 	HIT_SURFACE_SOURCE_LOCATION,
 	HIT_SURFACE_SOURCE_TRAP
 };
+
 
 #endif /* SOUNDSET_H */

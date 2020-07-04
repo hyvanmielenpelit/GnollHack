@@ -120,6 +120,14 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Human Barehanded Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Human Kick Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Human Kick Hit" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Wham" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Break" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Open" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Close" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Unlock" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Lock" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Resists" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Door Try Locked" , 1.0f},
 };
 
 #undef NoSound

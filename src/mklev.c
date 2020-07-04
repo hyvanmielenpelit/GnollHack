@@ -2274,7 +2274,7 @@ define_level_location_floor_types()
     {
         for (xchar y = 0; y < ROWNO; y++)
         {
-            levl[x][y].floortyp = level_location_types[levl[x][y].typ].initial_floor_type;
+            levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
         }
     }
 }
