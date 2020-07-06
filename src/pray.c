@@ -858,6 +858,7 @@ gcrownu()
     obj = ok_wep(uwep) ? uwep : 0;
 	obj2 = ok_wep(uarms) ? uarms : 0;
 	already_exists = in_hand = in_hand2 = FALSE; /* lint suppression */
+    boolean katana_already_exists = exist_artifact(KATANA, artiname(ART_KATANA_OF_MUSAMUNE));
     boolean lance_already_exists = exist_artifact(LANCE, artiname(ART_RHONGOMYNIAD));
     boolean grail_already_exists = exist_artifact(GRAIL_OF_HEALING, artiname(ART_HOLY_GRAIL));
     boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
@@ -870,8 +871,8 @@ gcrownu()
 	switch (u.ualign.type) {
 	case A_LAWFUL:
 		u.uevent.uhand_of_elbereth = 1;
-        in_hand = (uwep && uwep->oartifact == ART_RHONGOMYNIAD);
-        in_hand2 = (uarms && uarms->oartifact == ART_RHONGOMYNIAD);
+        in_hand = (uwep && uwep->oartifact == ART_KATANA_OF_MUSAMUNE);
+        in_hand2 = (uarms && uarms->oartifact == ART_KATANA_OF_MUSAMUNE);
         verbalize("I crown thee...  The Hand of Elbereth!");
 		break;
 	case A_NEUTRAL:
@@ -1275,6 +1276,33 @@ gcrownu()
                     discover_artifact(ART_HOLY_GRAIL);
                 }
             }
+            else if (obj && in_hand)
+            {
+                Your("%s shines white for a while!", xname(obj));
+                obj->enchantment = max(1, obj->enchantment + rnd(3));
+                obj->dknown = obj->aknown = obj->nknown = TRUE;
+            }
+            else if (obj2 && in_hand2)
+            {
+                Your("%s shines white for a while!", xname(obj2));
+                obj2->enchantment = max(1, obj2->enchantment + rnd(3));
+                obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
+            }
+            else if (!katana_already_exists)
+            {
+                class_gift = KATANA;
+                obj = mksobj(KATANA, FALSE, FALSE, FALSE);
+                obj = oname(obj, artiname(ART_KATANA_OF_MUSAMUNE));
+                obj->enchantment = 1;
+                at_your_feet("A katana");
+                dropy(obj);
+                u.ugifts++;
+                if (obj->oartifact == ART_KATANA_OF_MUSAMUNE)
+                {
+                    obj->aknown = obj->nknown = TRUE;
+                    discover_artifact(ART_KATANA_OF_MUSAMUNE);
+                }
+            }
             else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000 && !obj->oartifact)
 			{
 				if (!Blind)
@@ -1343,12 +1371,14 @@ gcrownu()
             else if (obj && in_hand)
 			{
 				Your("%s goes snicker-snack!", xname(obj));
-				obj->dknown = obj->aknown = obj->nknown = TRUE;
+                obj->enchantment = max(1, obj->enchantment + rnd(3));
+                obj->dknown = obj->aknown = obj->nknown = TRUE;
 			} 
 			else if (obj2 && in_hand2)
 			{
 				Your("%s goes snicker-snack!", xname(obj2));
-				obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
+                obj2->enchantment = max(1, obj2->enchantment + rnd(3));
+                obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
 			}
 			else if (!already_exists)
 			{
@@ -1382,12 +1412,14 @@ gcrownu()
 			else if (obj && in_hand) 
 			{
 				Your("%s hums ominously!", swordbuf);
-				obj->dknown = obj->aknown = obj->nknown = TRUE;
+                obj->enchantment = max(1, obj->enchantment + rnd(3));
+                obj->dknown = obj->aknown = obj->nknown = TRUE;
 			}
 			else if (obj2 && in_hand2)
 			{
 				Your("%s hums ominously!", swordbuf);
-				obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
+                obj2->enchantment = max(1, obj2->enchantment + rnd(3));
+                obj2->dknown = obj2->aknown = obj2->nknown = TRUE;
 			}
 			else if (!already_exists)
 			{

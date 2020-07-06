@@ -83,6 +83,7 @@ boolean domaterial;
 {
     int i, j, num_to_shuffle;
     short sw;
+    uchar mat;
     int color;
 
     for (num_to_shuffle = 0, j = o_low; j <= o_high; j++)
@@ -109,9 +110,9 @@ boolean domaterial;
 
         /* shuffle material */
         if (domaterial) {
-            sw = objects[j].oc_material;
+            mat = objects[j].oc_material;
             objects[j].oc_material = objects[i].oc_material;
-            objects[i].oc_material = sw;
+            objects[i].oc_material = mat;
         }
     }
 }

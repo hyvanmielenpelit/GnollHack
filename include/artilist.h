@@ -194,7 +194,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 	 *      2) doesn't give unusual message for 2-headed monsters (but
 	 *      allowing those at all causes more problems than worth the effort).
 	 */
-	A("Vorpal Blade", "immaculate runed long sword", "Vorpal Blade", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_BEHEAD | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
+	A("Vorpal Blade", "immaculate runed long sword", "Vorpal Blade", LONG_SWORD, LONG_SWORD, (AF_RESTR | AF_BEHEAD), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYSI(0, 0, 1), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, NON_PM, NON_PM, 4000L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 	/*
@@ -220,6 +220,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		SPFX_STR_25 | SPFX_WIS_25 | SPFX_REFLECT, SPFX_HALRES, 0,
 		1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_KNIGHT, NON_PM, 5000L,
 		NO_COLOR, CLR_BRIGHT_GREEN, 0, OBJECT_SOUNDSET_NONE),
+
+	/* Not associated with samurai to make it more useful in game play, as the samurai also have The Tsurugi of Muramasa as quest artifact  */
+	A("The Katana of Musamune", "engraved katana", "razor-sharp blade", KATANA, KATANA,
+		(AF_RESTR | AF_BISECT), AF2_NONE, SPFX_LUCK, SPFX_NONE, 0,
+		1, 5, 0, PHYS(1, 4), BISECTION_RESISTANCE, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 6000L,
+		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
 
 	/* Artifact rings */

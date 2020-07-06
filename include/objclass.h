@@ -113,32 +113,33 @@ enum obj_material_types {
 	MAT_PAPER       =  6,
     MAT_CLOTH       =  7,
 	MAT_SILK		=  8,
-	MAT_LEATHER     =  9,
-    MAT_WOOD        = 10, /* Organics stop here */
-    MAT_BONE		= 11,
-    MAT_DRAGON_HIDE = 12, /* not leather! */
-    MAT_IRON        = 13, /* Fe - includes steel */
-    MAT_METAL       = 14, /* Sn, &c. */
-    MAT_COPPER      = 15, /* Cu - includes brass */
-    MAT_SILVER      = 16, /* Ag */
-    MAT_GOLD        = 17, /* Au */
-    MAT_PLATINUM    = 18, /* Pt */
-	MAT_ORICHALCUM	= 19,
-	MAT_ADAMANTIUM  = 20,
-	MAT_MITHRIL     = 21,
-    MAT_PLASTIC     = 22,
-    MAT_GLASS       = 23,
-    MAT_GEMSTONE    = 24,
-    MAT_MINERAL     = 25,
-	MAT_MODRONITE	= 26,
-	MAT_PLANARRIFT	= 27,
-	MAT_FORCEFIELD  = 28,
-	MAT_AIR         = 29,
-	MAT_FIRE        = 30,
-	MAT_ENERGY      = 31,
-	MAT_INCORPOREAL = 32,
-	MAT_CARAPACE    = 33,
-	MAT_ICE         = 34,
+	MAT_LEATHER     =  9, /* Flimsy materials stop here */
+	MAT_WOOD        = 10, /* Organics stop here */
+	MAT_BONE        = 11,
+	MAT_CHITIN      = 12,
+	MAT_TOOTH       = 13, /* Hard bone-like materials stop here */
+	MAT_DRAGON_HIDE = 14, /* not leather! */
+    MAT_IRON        = 15, /* Fe - includes steel */
+    MAT_METAL       = 16, /* Sn, &c. */
+    MAT_COPPER      = 17, /* Cu - includes brass */
+    MAT_SILVER      = 18, /* Ag */
+    MAT_GOLD        = 19, /* Au */
+    MAT_PLATINUM    = 20, /* Pt */
+	MAT_ORICHALCUM	= 21,
+	MAT_ADAMANTIUM  = 22,
+	MAT_MITHRIL     = 23,
+    MAT_PLASTIC     = 24,
+    MAT_GLASS       = 25,
+    MAT_GEMSTONE    = 26,
+    MAT_MINERAL     = 27,
+	MAT_MODRONITE	= 28,
+	MAT_PLANARRIFT	= 29,
+	MAT_FORCEFIELD  = 30,
+	MAT_AIR         = 31,
+	MAT_FIRE        = 32,
+	MAT_ENERGY      = 33,
+	MAT_INCORPOREAL = 34,
+	MAT_ICE         = 35,
 	MAX_MATERIAL_TYPES
 };
 extern const char* materialnm[MAX_MATERIAL_TYPES]; /* in objnam.c */
@@ -383,12 +384,12 @@ struct objclass {
 #define WHACK 0
 	/* 4 free bits */
 
-    Bitfield(oc_material, 5); /* one of obj_material_types */
+    uchar oc_material; /* one of obj_material_types */
 
 #define is_organic(otmp) (objects[otmp->otyp].oc_material <= MAT_WOOD)
 #define is_metallic(otmp)                    \
-    (objects[otmp->otyp].oc_material >= MAT_IRON \
-     && objects[otmp->otyp].oc_material <= MAT_MITHRIL)
+    (objects[(otmp)->otyp].oc_material >= MAT_IRON \
+     && objects[(otmp)->otyp].oc_material <= MAT_MITHRIL)
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
@@ -396,8 +397,8 @@ struct objclass {
 
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
-    ((objects[otmp->otyp].oc_material == MAT_COPPER \
-     || objects[otmp->otyp].oc_material == MAT_IRON) && !(objects[otmp->otyp].oc_flags & O1_CORROSION_RESISTANT))
+    ((objects[(otmp)->otyp].oc_material == MAT_COPPER \
+     || objects[(otmp)->otyp].oc_material == MAT_IRON) && !(objects[(otmp)->otyp].oc_flags & O1_CORROSION_RESISTANT))
 
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \

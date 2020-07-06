@@ -13,11 +13,11 @@
 const char* materialnm[MAX_MATERIAL_TYPES] = {
                              "mysterious", "liquid",    "wax",        "vegetable",
                              "flesh",      "organic",   "paper",      "cloth",          "silk",         "leather",
-                             "wooden",     "bone",      "dragonhide", "iron",
+                             "wooden",     "bone",      "chitin",   "tooth",          "dragonhide",   "iron",
                              "metal",      "copper",    "silver",     "gold",
                              "platinum",   "orichalcum","adamantium", "mithril",        "plastic",      "glass",
                              "gemstone",   "stone",     "modronite",  "planar rift",    "force field",
-                             "air",        "fire",      "energy",     "incorporeal",    "carapace",     "ice" };
+                             "air",        "fire",      "energy",     "incorporeal",    "ice" };
 
 
 const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {
