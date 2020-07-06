@@ -19,7 +19,7 @@ extern boolean notonhead; /* for long worms */
 const char* artifact_invoke_names[NUM_ARTINVOKES] = {
 	"taming", "healing", "mana replenishment", "untrapping", "charging",
 	"level teleportation", "portal creation", "enlightenment", "arrow creation", "arrow of Diana", "death ray", "blessing of contents", "wishing",
-	"summon demon", "recharge itself", "time stop",
+	"summon demon", "summon air elemental", "recharge itself", "time stop"
 };
 
 #define get_artifact(o) \

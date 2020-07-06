@@ -858,7 +858,7 @@ gcrownu()
     obj = ok_wep(uwep) ? uwep : 0;
 	obj2 = ok_wep(uarms) ? uarms : 0;
 	already_exists = in_hand = in_hand2 = FALSE; /* lint suppression */
-    boolean katana_already_exists = exist_artifact(KATANA, artiname(ART_KATANA_OF_MUSAMUNE));
+    boolean katana_already_exists = exist_artifact(KATANA, artiname(ART_KATANA_OF_MASAMUNE));
     boolean lance_already_exists = exist_artifact(LANCE, artiname(ART_RHONGOMYNIAD));
     boolean grail_already_exists = exist_artifact(GRAIL_OF_HEALING, artiname(ART_HOLY_GRAIL));
     boolean gauntlets_already_exists = exist_artifact(GAUNTLETS_OF_BALANCE, artiname(ART_GAUNTLETS_OF_YIN_AND_YANG));
@@ -871,8 +871,8 @@ gcrownu()
 	switch (u.ualign.type) {
 	case A_LAWFUL:
 		u.uevent.uhand_of_elbereth = 1;
-        in_hand = (uwep && uwep->oartifact == ART_KATANA_OF_MUSAMUNE);
-        in_hand2 = (uarms && uarms->oartifact == ART_KATANA_OF_MUSAMUNE);
+        in_hand = (uwep && uwep->oartifact == ART_KATANA_OF_MASAMUNE);
+        in_hand2 = (uarms && uarms->oartifact == ART_KATANA_OF_MASAMUNE);
         verbalize("I crown thee...  The Hand of Elbereth!");
 		break;
 	case A_NEUTRAL:
@@ -1292,15 +1292,15 @@ gcrownu()
             {
                 class_gift = KATANA;
                 obj = mksobj(KATANA, FALSE, FALSE, FALSE);
-                obj = oname(obj, artiname(ART_KATANA_OF_MUSAMUNE));
+                obj = oname(obj, artiname(ART_KATANA_OF_MASAMUNE));
                 obj->enchantment = 1;
                 at_your_feet("A katana");
                 dropy(obj);
                 u.ugifts++;
-                if (obj->oartifact == ART_KATANA_OF_MUSAMUNE)
+                if (obj->oartifact == ART_KATANA_OF_MASAMUNE)
                 {
                     obj->aknown = obj->nknown = TRUE;
-                    discover_artifact(ART_KATANA_OF_MUSAMUNE);
+                    discover_artifact(ART_KATANA_OF_MASAMUNE);
                 }
             }
             else if (obj && objects[obj->otyp].oc_subtyp == WEP_LONG_SWORD && objects[obj->otyp].oc_cost < 2000 && !obj->oartifact)

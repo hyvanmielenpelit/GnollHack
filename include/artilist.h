@@ -222,7 +222,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		NO_COLOR, CLR_BRIGHT_GREEN, 0, OBJECT_SOUNDSET_NONE),
 
 	/* Not associated with samurai to make it more useful in game play, as the samurai also have The Tsurugi of Muramasa as quest artifact  */
-	A("The Katana of Musamune", "engraved katana", "razor-sharp blade", KATANA, KATANA,
+	A("The Katana of Masamune", "engraved katana", "razor-sharp blade", KATANA, KATANA,
 		(AF_RESTR | AF_BISECT), AF2_NONE, SPFX_LUCK, SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 4), BISECTION_RESISTANCE, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 6000L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
@@ -325,7 +325,7 @@ A("The Palantir of Westernesse",        CRYSTAL_BALL, CRYSTAL_BALL,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, ARTINVOKE_UNTRAP, 0, 0, 0, 0, 40, A_CHAOTIC, PM_ROGUE, NON_PM, 3500L,
 		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
 
-    A("The Tsurugi of Muramasa", "runed tsurugi", "razor-sharp blade", TSURUGI, TSURUGI,
+    A("The Tsurugi of Muramasa", "engraved tsurugi", "razor-sharp blade", TSURUGI, TSURUGI,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_BISECT | AF_FAMOUS), AF2_NONE, (SPFX_LUCK | SPFX_PROTECT), SPFX_NONE, 0, 
 		0, 0, 0, PHYS(1, 8), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_SAMURAI, NON_PM, 4500L,
 		NO_COLOR, CLR_MAGENTA, 0, OBJECT_SOUNDSET_NONE),
