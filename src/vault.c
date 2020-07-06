@@ -1065,7 +1065,7 @@ register struct monst *grd;
     egrd->ogy = grd->my;
     remove_monster(grd->mx, grd->my);
     place_monster(grd, nx, ny);
-    play_movement_sound(grd, 0UL);
+    play_movement_sound(grd);
     update_m_facing(grd, face_right, FALSE);
 
     if (newspot && g_at(nx, ny)) {

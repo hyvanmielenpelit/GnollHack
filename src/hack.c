@@ -146,8 +146,11 @@ moverock()
     register struct trap *ttmp;
     register struct monst *mtmp;
 
+    play_simple_player_sound(PLAYER_SOUND_TYPE_PUSH_EFFORT);
+
     sx = u.ux + u.dx, sy = u.uy + u.dy; /* boulder starting position */
-    while ((otmp = sobj_at(BOULDER, sx, sy)) != 0) {
+    while ((otmp = sobj_at(BOULDER, sx, sy)) != 0) 
+    {
         /* make sure that this boulder is visible as the top object */
         if (otmp != level.objects[sx][sy])
             movobj(otmp, sx, sy);
@@ -155,14 +158,16 @@ moverock()
         rx = u.ux + 2 * u.dx; /* boulder destination position */
         ry = u.uy + 2 * u.dy;
         nomul(0);
-        if (Levitation || Is_airlevel(&u.uz)) {
+        if (Levitation || Is_airlevel(&u.uz)) 
+        {
             if (Blind)
                 feel_location(sx, sy);
             You("don't have enough leverage to push %s.", the(xname(otmp)));
             /* Give them a chance to climb over it? */
             return -1;
         }
-        if (verysmall(youmonst.data) && !u.usteed) {
+        if (verysmall(youmonst.data) && !u.usteed) 
+        {
             if (Blind)
                 feel_location(sx, sy);
             pline("You're too small to push that %s.", xname(otmp));
@@ -171,12 +176,14 @@ moverock()
         if (isok(rx, ry) && !IS_ROCK(levl[rx][ry].typ)
             && levl[rx][ry].typ != IRONBARS
             && (!IS_DOOR(levl[rx][ry].typ) || !(u.dx && u.dy)
-                || doorless_door(rx, ry)) && !sobj_at(BOULDER, rx, ry)) {
+                || doorless_door(rx, ry)) && !sobj_at(BOULDER, rx, ry)) 
+        {
             ttmp = t_at(rx, ry);
             mtmp = m_at(rx, ry);
 
             /* KMH -- Sokoban doesn't let you push boulders diagonally */
-            if (Sokoban && u.dx && u.dy) {
+            if (Sokoban && u.dx && u.dy) 
+            {
                 if (Blind)
                     feel_location(sx, sy);
                 pline("%s won't roll diagonally on this %s.",
@@ -189,10 +196,12 @@ moverock()
 
             if (mtmp && !noncorporeal(mtmp->data)
                 && (!mtmp->mtrapped
-                    || !(ttmp && is_pit(ttmp->ttyp)))) {
+                    || !(ttmp && is_pit(ttmp->ttyp)))) 
+            {
                 if (Blind)
                     feel_location(sx, sy);
-                if (canspotmon(mtmp)) {
+                if (canspotmon(mtmp))
+                {
                     pline("There's %s on the other side.", a_monnam(mtmp));
                 } else {
                     You_hear("a monster behind %s.", the(xname(otmp)));
@@ -204,14 +213,18 @@ moverock()
                 goto cannot_push;
             }
 
-            if (ttmp) {
+            if (ttmp) 
+            {
                 /* if a trap operates on the boulder, don't attempt
                    to move any others at this location; return -1
                    if another boulder is in hero's way, or 0 if he
                    should advance to the vacated boulder position */
-                switch (ttmp->ttyp) {
+                play_object_push_sound(otmp);
+                switch (ttmp->ttyp)
+                {
                 case LANDMINE:
-                    if (rn2(10)) {
+                    if (rn2(10))
+                    {
                         obj_extract_self(otmp);
                         place_object(otmp, rx, ry);
                         newsym(sx, sy);
@@ -234,7 +247,8 @@ moverock()
                        if this is one among multiple boulders */
                     if (!Blind)
                         viz_array[ry][rx] |= IN_SIGHT;
-                    if (!flooreffects(otmp, rx, ry, "fall")) {
+                    if (!flooreffects(otmp, rx, ry, "fall")) 
+                    {
                         place_object(otmp, rx, ry);
                     }
                     if (mtmp && !Blind)
@@ -263,11 +277,13 @@ moverock()
                         newsym(rx, ry);
                     return sobj_at(BOULDER, sx, sy) ? -1 : 0;
                 case LEVEL_TELEP:
-                case TELEP_TRAP: {
+                case TELEP_TRAP:
+                {
                     int newlev = 0; /* lint suppression */
                     d_level dest;
 
-                    if (ttmp->ttyp == LEVEL_TELEP) {
+                    if (ttmp->ttyp == LEVEL_TELEP)
+                    {
                         newlev = random_teleport_level();
                         if (newlev == depth(&u.uz) || In_endgame(&u.uz))
                             /* trap didn't work; skip "disappears" message */
@@ -279,7 +295,8 @@ moverock()
                     else
                         You("push %s and suddenly it disappears!",
                             the(xname(otmp)));
-                    if (ttmp->ttyp == TELEP_TRAP) {
+                    if (ttmp->ttyp == TELEP_TRAP)
+                    {
                         (void) rloco(otmp);
                     } else {
                         obj_extract_self(otmp);
@@ -305,7 +322,8 @@ moverock()
              * Re-link at top of fobj chain so that pile order is preserved
              * when level is restored.
              */
-            if (otmp != fobj) {
+            if (otmp != fobj) 
+            {
                 remove_object(otmp);
                 place_object(otmp, otmp->ox, otmp->oy);
             }
@@ -319,14 +337,17 @@ moverock()
                 static NEARDATA long lastmovetime;
 #endif
  dopush:
-                if (!u.usteed) {
+                play_object_push_sound(otmp);
+                if (!u.usteed)
+                {
                     if (moves > lastmovetime + 2 || moves < lastmovetime)
                         pline("With %s effort you move %s.",
                               throws_rocks(youmonst.data) ? "little"
                                                           : "great",
                               the(xname(otmp)));
                     exercise(A_STR, TRUE);
-                } else
+                }
+                else
                     pline("%s moves %s.", upstart(y_monnam(u.usteed)),
                           the(xname(otmp)));
                 lastmovetime = moves;
@@ -336,7 +357,8 @@ moverock()
             if (glyph_is_invisible(levl[rx][ry].hero_memory_layers.glyph))
                 unmap_object(rx, ry);
             movobj(otmp, rx, ry); /* does newsym(rx,ry) */
-            if (Blind) {
+            if (Blind) 
+            {
                 feel_location(rx, ry);
                 feel_location(sx, sy);
             } else {
@@ -352,7 +374,8 @@ moverock()
             if (Blind)
                 feel_location(sx, sy);
  cannot_push:
-            if (throws_rocks(youmonst.data)) {
+            if (throws_rocks(youmonst.data)) 
+            {
                 boolean
                     canpickup = (!Sokoban
                                  /* similar exception as in can_lift():
@@ -363,11 +386,14 @@ moverock()
                               && (inv_cnt(FALSE) < 52 || !carrying(BOULDER))),
                     willpickup = (canpickup && autopick_testobj(otmp, TRUE) && (flags.pickup || flags.pickup_thrown));
 
-                if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) {
+                if (u.usteed && P_SKILL_LEVEL(P_RIDING) < P_BASIC) 
+                {
                     You("aren't skilled enough to %s %s from %s.",
                         willpickup ? "pick up" : "push aside",
                         the(xname(otmp)), y_monnam(u.usteed));
-                } else {
+                } 
+                else 
+                {
                     /*
                      * willpickup:  you easily pick it up
                      * canpickup:   you XcouldX easily pick it up
@@ -1954,11 +1980,11 @@ domove_core()
         u.usteed->mx = u.ux;
         u.usteed->my = u.uy;
         exercise_steed();
-        play_movement_sound(u.usteed, 0UL);
+        play_movement_sound(u.usteed);
     }
     else
     {
-        play_movement_sound(&youmonst, 0UL);
+        play_movement_sound(&youmonst);
     }
 
     /*

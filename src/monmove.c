@@ -1571,7 +1571,7 @@ register int after;
 
         remove_monster(omx, omy);
         place_monster(mtmp, nix, niy);
-        play_movement_sound(mtmp, 0UL);
+        play_movement_sound(mtmp);
         update_m_facing(mtmp, nix - omx, FALSE);
 
         for (j = MTSZ - 1; j > 0; j--)
