@@ -209,8 +209,8 @@ struct obj {
      && objects[(otmp)->otyp].oc_skill >= P_DAGGER \
      && objects[(otmp)->otyp].oc_skill <= P_SWORD)
 #define is_axe(otmp)                                              \
-    (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && objects[(otmp)->otyp].oc_skill == P_AXE)
+    ((((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
+     && objects[(otmp)->otyp].oc_skill == P_AXE) || ((otmp)->oartifact && is_artifact_applicable_as_axe(otmp)))
 #define is_pick(otmp)                                             \
     (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
      && objects[(otmp)->otyp].oc_skill == P_PICK_AXE)

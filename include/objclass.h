@@ -142,7 +142,33 @@ enum obj_material_types {
 	MAT_ICE         = 35,
 	MAX_MATERIAL_TYPES
 };
-extern const char* materialnm[MAX_MATERIAL_TYPES]; /* in objnam.c */
+enum material_phase {
+	PHASE_SOLID = 0,
+	PHASE_LIQUID,
+	PHASE_GAS,
+	PHASE_ENERGY,
+	PHASE_VOID
+};
+
+struct material_definition {
+	const char* name;
+	enum material_phase phase;
+	Bitfield(flammable,1);
+	Bitfield(rustprone, 1);
+	Bitfield(corrodeable, 1);
+	Bitfield(rottable, 1);
+
+	Bitfield(death_enchantable, 1);
+	Bitfield(physical, 1);
+	Bitfield(flimsy, 1);
+	Bitfield(metallic, 1);
+
+	Bitfield(gemstone, 1);
+	Bitfield(organic, 1);
+	Bitfield(edible, 1);
+	Bitfield(slurpable, 1);
+};
+extern struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in objnam.c */
 
 enum obj_armor_types {
     ARM_SUIT    = 0,

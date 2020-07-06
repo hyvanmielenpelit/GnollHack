@@ -8,16 +8,46 @@
 #include "artilist.h"
 
 
-/* NOTE: the order of these words exactly corresponds to the
+/* NOTE: the order of these exactly corresponds to the
    order of oc_material values #define'd in objclass.h. */
-const char* materialnm[MAX_MATERIAL_TYPES] = {
-                             "mysterious", "liquid",    "wax",        "vegetable",
-                             "flesh",      "organic",   "paper",      "cloth",          "silk",         "leather",
-                             "wooden",     "bone",      "chitin",   "tooth",          "dragonhide",   "iron",
-                             "metal",      "copper",    "silver",     "gold",
-                             "platinum",   "orichalcum","adamantium", "mithril",        "plastic",      "glass",
-                             "gemstone",   "stone",     "modronite",  "planar rift",    "force field",
-                             "air",        "fire",      "energy",     "incorporeal",    "ice" };
+struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
+    {"mysterious",  PHASE_VOID,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"liquid",      PHASE_LIQUID,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"wax",         PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"vegetable",   PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"flesh",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"organic",     PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"paper",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"cloth",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"silk",        PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"leather",     PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"wooden",      PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"bone",        PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"chitin",      PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"tooth",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"dragonhide",  PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"iron",        PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"metal",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"copper",      PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"silver",      PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"gold",        PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"platinum",    PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"orichalcum",  PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"adamantium",  PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"mithril",     PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"plastic",     PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"glass",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"gemstone",    PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"stone",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"modronite",   PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"planar rift", PHASE_VOID,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"force field", PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"air",         PHASE_GAS,      FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"fire",        PHASE_ENERGY,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"energy",      PHASE_ENERGY,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"incorporeal", PHASE_VOID,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+    {"ice",         PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE },
+};
 
 
 const char* multishot_style_names[MAX_MULTISHOT_TYPES] = {

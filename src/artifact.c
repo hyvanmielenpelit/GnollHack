@@ -2675,6 +2675,33 @@ struct obj *obj;
 			}
 			break;
 		}
+		case ARTINVOKE_AIR_ELEMENTAL_SUMMON:
+		{
+			struct monst* mon = (struct monst*)0;
+			mon = makemon(&mons[PM_ELDER_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH);
+			if(!mon)
+				mon = makemon(&mons[PM_AIR_ELEMENTAL], u.ux, u.uy, MM_NOCOUNTBIRTH);
+
+			if (mon)
+			{
+				mon->issummoned = TRUE;
+				(void)tamedog(mon, (struct obj*)0, TRUE, FALSE, 0, FALSE, FALSE);
+
+				if (temporary_effect)
+				{
+					mon->summonduration = d(art_inv_dur_dice, art_inv_dur_diesize) + art_inv_dur_plus;
+					begin_summontimer(mon);
+				}
+				mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
+
+				pline("The air around you starts to swirl and forms into %s!", a_monnam(mon));
+			}
+			else
+			{
+				goto nothing_special;
+			}
+			break;
+		}
 		case ARTINVOKE_RECHARGE_ITSELF:
 		{
 			int old_recharged = obj->recharged;
@@ -3681,6 +3708,10 @@ int specialpropindex;
 	return artifact_invoke_names[specialpropindex - ARTINVOKE_TAMING];
 }
 
-
+boolean
+is_artifact_applicable_as_axe(struct obj* obj)
+{
+	return (obj && obj->oartifact && (artilist[obj->oartifact].aflags2 & AF2_APPLICABLE_AS_AXE) != 0);
+}
 
 /*artifact.c*/

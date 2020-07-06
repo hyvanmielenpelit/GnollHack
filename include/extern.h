@@ -143,6 +143,7 @@ E struct obj* FDECL(what_gives_monster, (struct monst*, int));
 E boolean FDECL(is_immune, (struct monst*, int));
 E int NDECL(create_portal);
 E const char* FDECL(get_artifact_invoke_name, (int));
+E boolean FDECL(is_artifact_applicable_as_axe, (struct obj*));
 
 /* ### attrib.c ### */
 

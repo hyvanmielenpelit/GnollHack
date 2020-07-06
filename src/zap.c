@@ -3623,7 +3623,7 @@ register struct obj *obj;
 		if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The air starts to swirl around you and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The earth near you starts to swirl and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_ANIMATE_FIRE:
 		known = TRUE;

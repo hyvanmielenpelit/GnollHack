@@ -2679,8 +2679,7 @@ register struct obj *otmp;
 
     if ((objects[otyp].oc_flags & O1_FIRE_RESISTANT) != 0 
         || objects[otyp].oc_oprop == FIRE_IMMUNITY || objects[otyp].oc_oprop2 == FIRE_IMMUNITY || objects[otyp].oc_oprop3 == FIRE_IMMUNITY 
-        || objects[otyp].oc_oprop == FIRE_RESISTANCE || objects[otyp].oc_oprop2 == FIRE_RESISTANCE || objects[otyp].oc_oprop3 == FIRE_RESISTANCE
-        || otyp == WAN_FIRE)
+        || objects[otyp].oc_oprop == FIRE_RESISTANCE || objects[otyp].oc_oprop2 == FIRE_RESISTANCE || objects[otyp].oc_oprop3 == FIRE_RESISTANCE)
         return FALSE;
 
     return (boolean) ((omat <= MAT_WOOD && omat != MAT_LIQUID) || omat == MAT_PLASTIC);

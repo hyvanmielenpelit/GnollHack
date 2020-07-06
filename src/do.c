@@ -791,7 +791,7 @@ register struct obj* obj;
 	}
 
 	/* Material */
-	strcpy(buf2, materialnm[objects[otyp].oc_material]);
+	strcpy(buf2, material_definitions[objects[otyp].oc_material].name);
 	*buf2 = highc(*buf2);
 	Sprintf(buf, "Material:               %s", buf2);
 	txt = buf;
@@ -2569,6 +2569,7 @@ register struct obj* obj;
 
 
 		unsigned long aflags = artilist[obj->oartifact].aflags;
+		unsigned long aflags2 = artilist[obj->oartifact].aflags2;
 		unsigned long mtype = artilist[obj->oartifact].mtype;
 		if (aflags & AF_BEHEAD)
 		{
@@ -2673,6 +2674,13 @@ register struct obj* obj;
 		{
 			powercnt++;
 			Sprintf(buf, " %2d - Drains life levels on hit", powercnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+		if (aflags2 & AF2_APPLICABLE_AS_AXE)
+		{
+			powercnt++;
+			Sprintf(buf, " %2d - Can be applied as an axe", powercnt);
 			txt = buf;
 			putstr(datawin, 0, txt);
 		}
