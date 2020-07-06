@@ -1983,7 +1983,7 @@ struct monst *mtmp;
             continue;
 
         /* inedible items -- engulf these */
-        } else if (!is_organic(otmp) || obj_resists(otmp, 5, 95)
+        } else if (!is_slurpable(otmp) || obj_resists(otmp, 5, 95)
                    || !touch_artifact(otmp, mtmp)
                    /* redundant due to non-organic composition but
                       included for emphasis */

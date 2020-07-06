@@ -169,7 +169,7 @@ int x, y;
     if (obj->otyp == CREAM_PIE 
 		|| (!uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_ITEM_VANISHES_ON_HIT) // The item vanishes here always, because we cannot check appropriateness properly
 			)
-		|| (objects[obj->otyp].oc_material == MAT_GLASS
+		|| (is_fragile(obj)
 		&& !is_obj_indestructible(obj)
 		&& !is_quest_artifact(obj)
 		&& !obj->oartifact)

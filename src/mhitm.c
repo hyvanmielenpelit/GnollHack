@@ -487,7 +487,7 @@ register struct monst *magr, *mdef;
 					/* Check if the weapon shatters */
 					/* Check if the object should shatter */
 
-					if (omonwep && omonwep->where == OBJ_MINVENT && objects[omonwep->otyp].oc_material == MAT_GLASS
+					if (omonwep && omonwep->where == OBJ_MINVENT && is_fragile(omonwep)
 						&& !is_obj_indestructible(omonwep)
 						&& !is_quest_artifact(omonwep)
 						&& !omonwep->oartifact

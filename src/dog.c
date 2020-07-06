@@ -960,7 +960,7 @@ register struct obj *obj;
             return TABU;
         if (mon_hates_silver(mon) && objects[obj->otyp].oc_material == MAT_SILVER)
             return TABU;
-        if (slurps_items(mptr) && is_organic(obj))
+        if (slurps_items(mptr) && is_slurpable(obj))
             return ACCFOOD;
         if (metallivorous(mptr) && is_metallic(obj)
             && (is_rustprone(obj) || mptr != &mons[PM_RUST_MONSTER])) {

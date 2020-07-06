@@ -2666,8 +2666,7 @@ struct obj *obj;
 {
     if (obj_resists(obj, 1, 99))
         return 0;
-    if (objects[obj->otyp].oc_material == MAT_GLASS && !obj->oartifact
-        && obj->oclass != GEM_CLASS)
+    if (is_fragile(obj) && !obj->oartifact) /* Removed glass gems from not breaking; why not? */
         return 1;
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case EXPENSIVE_CAMERA:
@@ -2693,7 +2692,7 @@ boolean in_view;
     to_pieces = "";
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     default: /* glass or crystal wand */
-        if (objects[obj->otyp].oc_material != MAT_GLASS)
+        if (!is_fragile(obj))
             impossible("breaking odd object?");
         /*FALLTHRU*/
     case CRYSTAL_PLATE_MAIL:

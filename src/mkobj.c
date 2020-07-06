@@ -2682,7 +2682,7 @@ register struct obj *otmp;
         || objects[otyp].oc_oprop == FIRE_RESISTANCE || objects[otyp].oc_oprop2 == FIRE_RESISTANCE || objects[otyp].oc_oprop3 == FIRE_RESISTANCE)
         return FALSE;
 
-    return (boolean) ((omat <= MAT_WOOD && omat != MAT_LIQUID) || omat == MAT_PLASTIC);
+    return (boolean)material_definitions[omat].flammable; // ((omat <= MAT_WOOD && omat != MAT_LIQUID) || omat == MAT_PLASTIC);
 }
 
 boolean
@@ -2694,8 +2694,7 @@ register struct obj *otmp;
 	if (objects[otyp].oc_flags & O1_ROT_RESISTANT)
 		return FALSE;
 
-    return (boolean) (objects[otyp].oc_material <= MAT_WOOD
-                      && objects[otyp].oc_material != MAT_LIQUID);
+    return (boolean)material_definitions[objects[otyp].oc_material].rottable;// <= MAT_WOOD && objects[otyp].oc_material != MAT_LIQUID);
 }
 
 /*

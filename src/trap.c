@@ -3584,7 +3584,7 @@ xchar x, y;
        and books--let fire damage deal with them), cloth, leather, wood, bone
        unless it's inherently or explicitly fireproof or contains something;
        note: potions are glass so fall through to fire_damage() and boil */
-    if (objects[otyp].oc_material < MAT_DRAGON_HIDE
+    if (melts_in_lava(obj)
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
         && objects[otyp].oc_oprop != FIRE_IMMUNITY && objects[otyp].oc_oprop2 != FIRE_IMMUNITY && objects[otyp].oc_oprop3 != FIRE_IMMUNITY
         && objects[otyp].oc_oprop != FIRE_RESISTANCE && objects[otyp].oc_oprop2 != FIRE_RESISTANCE && objects[otyp].oc_oprop3 != FIRE_RESISTANCE
@@ -5804,7 +5804,7 @@ lava_effects()
      */
     if (!usurvive)
         for (obj = invent; obj; obj = obj->nobj)
-            if ((is_organic(obj) || obj->oclass == POTION_CLASS)
+            if ((melts_in_lava(obj) || obj->oclass == POTION_CLASS)
                 && !obj->oerodeproof
 				&& !oresist_fire(obj)
                 ) /* for invocation items */
@@ -5814,7 +5814,7 @@ lava_effects()
      * make the player sink into the lava. Assumption: water walking only
      * comes from boots.
      */
-    if (uarmf && is_organic(uarmf) && !uarmf->oerodeproof) {
+    if (uarmf && melts_in_lava(uarmf) && !uarmf->oerodeproof) {
         obj = uarmf;
         pline("%s into flame!", Yobjnam2(obj, "burst"));
         iflags.in_lava_effects++; /* (see above) */

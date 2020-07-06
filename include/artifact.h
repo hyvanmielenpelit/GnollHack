@@ -128,7 +128,7 @@ struct artifact {
 
 /* invoked properties with special powers */
 enum invoke_prop_types {
-    ARTINVOKE_TAMING = (LAST_PROP + 1),
+    ARTINVOKE_TAMING = (LAST_PROP + 1), /* Keep first */
     ARTINVOKE_HEALING,
     ARTINVOKE_ENERGY_BOOST,
     ARTINVOKE_UNTRAP,
@@ -144,7 +144,7 @@ enum invoke_prop_types {
 	ARTINVOKE_DEMON_SUMMON,
 	ARTINVOKE_AIR_ELEMENTAL_SUMMON,
 	ARTINVOKE_RECHARGE_ITSELF,
-	ARTINVOKE_TIME_STOP
+	ARTINVOKE_TIME_STOP /* Keep last */
 };
 
 #define NUM_ARTINVOKES (ARTINVOKE_TIME_STOP - ARTINVOKE_TAMING + 1)

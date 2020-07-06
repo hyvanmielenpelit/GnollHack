@@ -106,40 +106,41 @@ extern const char* multishot_style_names[MAX_MULTISHOT_TYPES]; /* in objnam.c */
 enum obj_material_types {
 	MAT_NONE        =  0,
     MAT_LIQUID      =  1, /* currently only for venom */  /* Organics start here */
-    MAT_WAX         =  2,
-    MAT_VEGGY       =  3, /* foodstuffs */
-	MAT_FLESH       =  4, /*   ditto    */
-	MAT_ORGANIC		=  5, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
-	MAT_PAPER       =  6,
-    MAT_CLOTH       =  7,
-	MAT_SILK		=  8,
-	MAT_LEATHER     =  9, /* Flimsy materials stop here */
-	MAT_WOOD        = 10, /* Organics stop here */
-	MAT_BONE        = 11,
-	MAT_CHITIN      = 12,
-	MAT_TOOTH       = 13, /* Hard bone-like materials stop here */
-	MAT_DRAGON_HIDE = 14, /* not leather! */
-    MAT_IRON        = 15, /* Fe - includes steel */
-    MAT_METAL       = 16, /* Sn, &c. */
-    MAT_COPPER      = 17, /* Cu - includes brass */
-    MAT_SILVER      = 18, /* Ag */
-    MAT_GOLD        = 19, /* Au */
-    MAT_PLATINUM    = 20, /* Pt */
-	MAT_ORICHALCUM	= 21,
-	MAT_ADAMANTIUM  = 22,
-	MAT_MITHRIL     = 23,
-    MAT_PLASTIC     = 24,
-    MAT_GLASS       = 25,
-    MAT_GEMSTONE    = 26,
-    MAT_MINERAL     = 27,
-	MAT_MODRONITE	= 28,
-	MAT_PLANARRIFT	= 29,
-	MAT_FORCEFIELD  = 30,
-	MAT_AIR         = 31,
-	MAT_FIRE        = 32,
-	MAT_ENERGY      = 33,
-	MAT_INCORPOREAL = 34,
-	MAT_ICE         = 35,
+	MAT_OIL         =  2, /* flammable liquid */
+	MAT_WAX         =  3,
+    MAT_VEGGY       =  4, /* foodstuffs */
+	MAT_FLESH       =  5, /*   ditto    */
+	MAT_ORGANIC		=  6, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
+	MAT_PAPER       =  7,
+    MAT_CLOTH       =  8,
+	MAT_SILK		=  9,
+	MAT_LEATHER     = 10, /* Flimsy materials stop here */
+	MAT_WOOD        = 11, /* Organics stop here */
+	MAT_BONE        = 12,
+	MAT_CHITIN      = 13,
+	MAT_TOOTH       = 14, /* Hard bone-like materials stop here */
+	MAT_DRAGON_HIDE = 15, /* not leather! */
+    MAT_IRON        = 16, /* Fe - includes steel */
+    MAT_METAL       = 17, /* Sn, &c. */
+    MAT_COPPER      = 18, /* Cu - includes brass */
+    MAT_SILVER      = 19, /* Ag */
+    MAT_GOLD        = 20, /* Au */
+    MAT_PLATINUM    = 21, /* Pt */
+	MAT_ORICHALCUM	= 22,
+	MAT_ADAMANTIUM  = 23,
+	MAT_MITHRIL     = 24,
+    MAT_PLASTIC     = 25,
+    MAT_GLASS       = 26,
+    MAT_GEMSTONE    = 27,
+    MAT_MINERAL     = 28,
+	MAT_MODRONITE	= 29,
+	MAT_PLANARRIFT	= 30,
+	MAT_FORCEFIELD  = 31,
+	MAT_AIR         = 32,
+	MAT_FIRE        = 33,
+	MAT_ENERGY      = 34,
+	MAT_INCORPOREAL = 35,
+	MAT_ICE         = 36,
 	MAX_MATERIAL_TYPES
 };
 enum material_phase {
@@ -153,13 +154,13 @@ enum material_phase {
 struct material_definition {
 	const char* name;
 	enum material_phase phase;
-	Bitfield(flammable,1);
+	Bitfield(flammable, 1);
 	Bitfield(rustprone, 1);
 	Bitfield(corrodeable, 1);
 	Bitfield(rottable, 1);
 
+	Bitfield(melts_in_fire, 1);		/* Solids melt, liquids boil */
 	Bitfield(death_enchantable, 1);
-	Bitfield(physical, 1);
 	Bitfield(flimsy, 1);
 	Bitfield(metallic, 1);
 
@@ -167,6 +168,9 @@ struct material_definition {
 	Bitfield(organic, 1);
 	Bitfield(edible, 1);
 	Bitfield(slurpable, 1);
+
+	Bitfield(fragile, 1);
+	Bitfield(destroyed_in_lava, 1);
 };
 extern struct material_definition material_definitions[MAX_MATERIAL_TYPES]; /* in objnam.c */
 
@@ -412,19 +416,21 @@ struct objclass {
 
     uchar oc_material; /* one of obj_material_types */
 
-#define is_organic(otmp) (objects[otmp->otyp].oc_material <= MAT_WOOD)
-#define is_metallic(otmp)                    \
-    (objects[(otmp)->otyp].oc_material >= MAT_IRON \
-     && objects[(otmp)->otyp].oc_material <= MAT_MITHRIL)
+#define is_organic(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].organic != 0) //(objects[otmp->otyp].oc_material <= MAT_WOOD)
+#define is_slurpable(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].slurpable != 0)
+#define melts_in_lava(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].destroyed_in_lava != 0)
+#define is_metallic(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].metallic != 0) 
+//    (objects[(otmp)->otyp].oc_material >= MAT_IRON \
+//     && objects[(otmp)->otyp].oc_material <= MAT_MITHRIL)
+#define is_fragile(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].fragile != 0) 
 
 /* primary damage: fire/rust/--- */
 /* is_flammable(otmp), is_rottable(otmp) in mkobj.c */
-#define is_rustprone(otmp) (objects[(otmp)->otyp].oc_material == MAT_IRON && !(objects[(otmp)->otyp].oc_flags & O1_RUST_RESISTANT))
+#define is_rustprone(otmp) ((material_definitions[objects[(otmp)->otyp].oc_material].rustprone != 0) && !(objects[(otmp)->otyp].oc_flags & O1_RUST_RESISTANT))
 
 /* secondary damage: rot/acid/acid */
 #define is_corrodeable(otmp)                   \
-    ((objects[(otmp)->otyp].oc_material == MAT_COPPER \
-     || objects[(otmp)->otyp].oc_material == MAT_IRON) && !(objects[(otmp)->otyp].oc_flags & O1_CORROSION_RESISTANT))
+    ((material_definitions[objects[(otmp)->otyp].oc_material].corrodeable != 0) && !(objects[(otmp)->otyp].oc_flags & O1_CORROSION_RESISTANT))
 
 #define is_damageable(otmp)                                        \
     (is_rustprone(otmp) || is_flammable(otmp) || is_rottable(otmp) \

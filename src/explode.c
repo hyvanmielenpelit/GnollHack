@@ -719,8 +719,8 @@ struct obj *obj; /* only scatter this obj        */
 
             /* 1 in 10 chance of destruction of obj; glass, egg destruction */
         } else if ((scflags & MAY_DESTROY) != 0
-                   && (!rn2(10) || (objects[otmp->otyp].oc_material == MAT_GLASS
-                                    || otmp->otyp == EGG))) {
+                   && (!rn2(10) || (is_fragile(otmp) || otmp->otyp == EGG))) 
+        {
             if (breaks(otmp, (xchar) sx, (xchar) sy))
                 used_up = TRUE;
         }

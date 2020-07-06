@@ -2304,7 +2304,7 @@ boolean *dealloced;
      */
     if (otmp->otyp == CORPSE) {
         ; /* should cancel timer if under_ice */
-    } else if ((under_ice ? otmp->oclass == POTION_CLASS : is_organic(otmp))
+    } else if ((under_ice ? otmp->oclass == POTION_CLASS : is_rottable(otmp))
                && !obj_resists(otmp, 5, 95)) {
         (void) start_timer((under_ice ? 0L : 250L) + (long) rnd(250),
                            TIMER_OBJECT, ROT_ORGANIC, obj_to_any(otmp));

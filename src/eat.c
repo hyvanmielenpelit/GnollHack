@@ -92,7 +92,7 @@ register struct obj *obj;
                           && !vegan(&mons[obj->corpsenm]))
                          || (obj->otyp == EGG));
 
-    if (slurps_items(&mons[u.umonnum]) && is_organic(obj)
+    if (slurps_items(&mons[u.umonnum]) && is_slurpable(obj)
         /* [g.cubes can eat containers and retain all contents
             as engulfed items, but poly'd player can't do that] */
         && !Has_contents(obj))

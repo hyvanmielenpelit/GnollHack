@@ -268,8 +268,7 @@ struct obj {
 /* Unusual definition to account for weapons appropriately */
 #define is_elemental_enchantable(o)	 (((o)->oclass == WEAPON_CLASS && !is_launcher(o)) || is_otyp_elemental_enchantable((o)->otyp))
 
-#define is_death_enchantable(otmp)                                            \
-    (objects[(otmp)->otyp].oc_material == MAT_BONE || objects[(otmp)->otyp].oc_material == MAT_TOOTH || objects[(otmp)->otyp].oc_material == MAT_GLASS)
+#define is_death_enchantable(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].death_enchantable != 0)
 
 #define is_cursed_magic_item(otmp)                                            \
 	(objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
