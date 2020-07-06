@@ -80,7 +80,14 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
-    }
+    },
+    {
+        "Horse",
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
+        {{GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}}
+    },
 };
 
 
@@ -594,8 +601,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_PICKUP_COINS, 1.0f},
+            {GHSOUND_DROP_COINS, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1123,7 +1130,7 @@ unsigned long movement_flags;
     struct ghsound_immediate_info immediateinfo = { 0 };
 	enum floor_surface_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
 	enum ghsound_types soundid = GHSOUND_NONE;
-    float volume = 1.0f;
+    float volume = 1.0f, base_volume = isyou || mtmp == u.usteed ? 1.0f : 0.25f;
 
 	if (isyou)
 	{
@@ -1175,7 +1182,7 @@ unsigned long movement_flags;
 	}
 
     immediateinfo.ghsound = soundid;
-    immediateinfo.volume = volume;
+    immediateinfo.volume = base_volume * volume;
     immediateinfo.parameter_names[0] = "Surface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = (char*)0;

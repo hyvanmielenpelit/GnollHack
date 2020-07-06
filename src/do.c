@@ -4061,53 +4061,73 @@ boolean with_impact;
 	if (obj == uswapwep2)
 		setuswapwep((struct obj*) 0, W_SWAPWEP2);
 
-    if (!u.uswallow && flooreffects(obj, u.ux, u.uy, "drop"))
-        return;
+	if (!u.uswallow && flooreffects(obj, u.ux, u.uy, "drop"))
+	{
+		play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DROP);
+		return;
+	}
     /* uswallow check done by GAN 01/29/87 */
-    if (u.uswallow) {
+    if (u.uswallow) 
+	{
         boolean could_petrify = FALSE;
         boolean could_poly = FALSE;
         boolean could_slime = FALSE;
         boolean could_grow = FALSE;
         boolean could_heal = FALSE;
 
-        if (obj != uball) { /* mon doesn't pick up ball */
-            if (obj->otyp == CORPSE) {
+        if (obj != uball) 
+		{ /* mon doesn't pick up ball */
+            if (obj->otyp == CORPSE)
+			{
                 could_petrify = touch_petrifies(&mons[obj->corpsenm]);
                 could_poly = polyfodder(obj);
                 could_slime = (obj->corpsenm == PM_GREEN_SLIME);
                 could_grow = (obj->corpsenm == PM_WRAITH || obj->corpsenm == PM_SPECTRE || obj->corpsenm == PM_KING_WRAITH);
                 could_heal = (obj->corpsenm == PM_NURSE);
             }
+
             if (is_unpaid(obj))
                 (void) stolen_value(obj, u.ux, u.uy, TRUE, FALSE);
+
             (void) mpickobj(u.ustuck, obj);
-            if (is_animal(u.ustuck->data)) {
-                if (could_poly || could_slime) {
+
+            if (is_animal(u.ustuck->data)) 
+			{
+                if (could_poly || could_slime) 
+				{
                     (void) newcham(u.ustuck,
                                    could_poly ? (struct permonst *) 0
                                               : &mons[PM_GREEN_SLIME],
                                    FALSE, could_slime);
                     delobj(obj); /* corpse is digested */
-                } else if (could_petrify) {
+                }
+				else if (could_petrify) 
+				{
 					int existing_stoning = get_mon_property(u.ustuck, STONED);
 					(void)set_mon_property_verbosely(u.ustuck, STONED, max(1, min(existing_stoning - 1, 5)));
 					//minstapetrify(u.ustuck, TRUE);
                     /* Don't leave a cockatrice corpse in a statue */
                     if (!u.uswallow)
                         delobj(obj);
-                } else if (could_grow) {
+                } 
+				else if (could_grow)
+				{
                     (void) grow_up(u.ustuck, (struct monst *) 0);
                     delobj(obj); /* corpse is digested */
-                } else if (could_heal) {
+                } 
+				else if (could_heal)
+				{
                     u.ustuck->mhp = u.ustuck->mhpmax;
                     delobj(obj); /* corpse is digested */
                 }
             }
         }
-    } else {
+    } 
+	else
+	{
         place_object(obj, u.ux, u.uy);
-        if (with_impact)
+		play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DROP);
+		if (with_impact)
             container_impact_dmg(obj, u.ux, u.uy);
         if (obj == uball)
             drop_ball(u.ux, u.uy);
