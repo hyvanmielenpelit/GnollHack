@@ -454,17 +454,15 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
         || otmp->oclass == CHAIN_CLASS || otmp->oclass == ROCK_CLASS) {
         int bonus = 0;
 
-        if (otmp->blessed
-            && (is_undead(ptr) || is_demon(ptr) || is_vampshifter(mon)))
+        if (otmp->blessed && mon_hates_blessed(mon))
             bonus += rnd(4);
-		if (otmp->cursed
-			&& (is_angel(ptr)))
+		if (otmp->cursed && mon_hates_cursed(mon))
 			bonus += rnd(4);
 		if ((is_axe(otmp) || is_saw(otmp)) && is_wooden(ptr))
             bonus += rnd(4);
         if (objects[otyp].oc_material == MAT_SILVER && mon_hates_silver(mon))
             bonus += rnd(20);
-        if ((artifact_light(otmp) || obj_shines_magical_light(otmp)) && otmp->lamplit && hates_light(ptr))
+        if ((artifact_light(otmp) || obj_shines_magical_light(otmp)) && otmp->lamplit && mon_hates_light(mon))
             bonus += rnd(8);
 
         /* if the weapon is going to get a double damage bonus, adjust

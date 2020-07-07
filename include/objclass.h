@@ -840,8 +840,8 @@ struct objclass {
 #define O3_DOUBLE_DIGGING_EFFORT					0x00000020UL  /* double normal digging effort */
 #define O3_BURIED_SEARCHABLE						0x00000040UL  /* if buried, can be found by explicit searching */
 #define O3_CONTENT_DESCRIPTION_SHUFFLED				0x00000080UL  /* uses (shuffled) description index instead of name index for content description */
-#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS		0x00000100UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
-/* free bit */
+#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS			0x00000100UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
+#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH	0x00000200UL 
 
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400UL  /* wielding or wearing prohibits the revival of permitted targets */
 #define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800UL  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
@@ -867,8 +867,8 @@ struct objclass {
 #define O3_TARGET_PERMISSION_IS_M2_FLAG				0x10000000UL
 #define O3_TARGET_PERMISSION_IS_M3_FLAG				0x20000000UL 
 #define O3_TARGET_PERMISSION_IS_M4_FLAG				0x40000000UL 
+#define O3_TARGET_PERMISSION_IS_M5_FLAG				0x80000000UL 
 
-#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH 0x80000000UL 
 
 
 /* Flags 4 */

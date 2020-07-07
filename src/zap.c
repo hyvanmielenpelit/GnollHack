@@ -1160,7 +1160,7 @@ struct monst* mtmp;
 
     abilcnt = 0;
 
-    for (int j = 1; j <= 4; j++)
+    for (int j = 1; j <= 5; j++)
     {
         for (int i = 0; i < 32; i++)
         {
@@ -1168,7 +1168,7 @@ struct monst* mtmp;
             if (i > 0)
                 bit = bit << i;
 
-            unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : mtmp->data->mflags4;
+            unsigned long flags = j == 1 ? mtmp->data->mflags1 : j == 2 ? mtmp->data->mflags2 : j == 3 ? mtmp->data->mflags3 : j == 4 ? mtmp->data->mflags4 : mtmp->data->mflags5;
 
             if (flags & bit)
             {
@@ -1186,6 +1186,37 @@ struct monst* mtmp;
         }
     }
 
+    if (!innate_eschew_cursed(mtmp->data))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, mon_eschews_cursed(mtmp) ? "Eschews cursed items" : "Does not eschew cursed items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (!innate_eschew_silver(mtmp->data) && mon_eschews_silver(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews silver items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (!innate_eschew_blessed(mtmp->data) && mon_eschews_blessed(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews blessed items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_eschews_light(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
 
     /* Heads */
     if (!(mtmp->data->heads == 1 && mtmp->heads_left == 1))

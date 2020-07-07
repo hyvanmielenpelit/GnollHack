@@ -166,6 +166,10 @@
 #define is_noniron_metal(ptr) (((ptr)->mflags4 & M4_METAL) != 0)
 #define is_metal(ptr) (is_iron(ptr) || is_noniron_metal(ptr))
 
+#define innate_eschew_cursed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_CURSED_ITEMS) != 0)
+#define innate_eschew_blessed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_BLESSED_ITEMS) != 0)
+#define innate_eschew_silver(ptr) (((ptr)->mflags5 & M5_ESCHEWS_SILVER_ITEMS) != 0)
+
 /* combinations */
 #define is_not_living(ptr) \
     (is_undead(ptr) || has_mflag_is_nonliving(ptr))

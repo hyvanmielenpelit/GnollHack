@@ -1265,7 +1265,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(layer_rounds - 1 - layer_round)));
                                 }
 
-                                if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0)
+                                if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && !showing_detection)
                                     obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
                             }
                         }
@@ -1308,8 +1308,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 (*GetNHApp()->lpfnTransparentBlt)(
                                     hDCcopy, dest_left_added, dest_top_added,
                                     GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
-                                    t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                                    GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                                    t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                    GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
                             }
                         }
                         else
@@ -1358,8 +1358,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 StretchBlt(hDCcopy, dest_left_added, dest_top_added,
                                     GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
-                                    t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                                    GetNHApp()->mapTile_Y, SRCCOPY);
+                                    t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                    GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
                             }
                             opaque_background_drawn = TRUE;
                         }

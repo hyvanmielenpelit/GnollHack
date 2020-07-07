@@ -304,6 +304,10 @@
 #define M5_CORPSE_TILE			    0x00000400UL
 #define M5_FEMALE_TILE		        0x00000800UL
 
+#define M5_ESCHEWS_CURSED_ITEMS     0x00001000UL
+#define M5_ESCHEWS_BLESSED_ITEMS    0x00002000UL
+#define M5_ESCHEWS_SILVER_ITEMS     0x00004000UL
+
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

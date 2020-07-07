@@ -151,6 +151,12 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
     { 0 , "", "" }
 };
 
+static NEARDATA struct mflag_description m5flag_descriptions[] = {
+    { M5_ESCHEWS_CURSED_ITEMS, "eschews cursed items", "monsters able to sense cursed items" },
+    { M5_ESCHEWS_BLESSED_ITEMS, "eschews blessed items", "monsters able to sense blessed items" },
+    { M5_ESCHEWS_SILVER_ITEMS, "eschews silver items", "monsters able to sense silver items" },
+    { 0 , "", "" }
+};
 
 const char*
 get_mflag_description(mflag_bit, plural, mindex)
@@ -166,6 +172,8 @@ unsigned char mindex;
 		mtable = m3flag_descriptions;
 	else if (mindex == 4)
 		mtable = m4flag_descriptions;
+    else if (mindex == 5)
+        mtable = m5flag_descriptions;
 
 	for (int i = 0; mtable[i].mflag_bit != 0 ; i++)
 	{
@@ -471,12 +479,94 @@ register struct permonst *ptr;
                       || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU]));
 }
 
+/* True if specific monster is especially affected by silver weapons */
+boolean
+mon_hates_cursed(mon)
+struct monst* mon;
+{
+    return hates_cursed(mon->data);
+}
+
+/* True if monster-type is especially affected by silver weapons */
+boolean
+hates_cursed(ptr)
+register struct permonst* ptr;
+{
+    return is_angel(ptr);
+}
+
+/* True if monster-type is especially affected by silver weapons */
+boolean
+hates_blessed(ptr)
+register struct permonst* ptr;
+{
+    return (is_demon(ptr) || is_undead(ptr));
+}
+
+boolean
+mon_hates_blessed(mon)
+struct monst* mon;
+{
+    return (hates_blessed(mon->data) || is_vampshifter(mon));
+}
+
+boolean
+eschews_cursed(ptr)
+register struct permonst* ptr;
+{
+    return (innate_eschew_cursed(ptr) || is_animal(ptr) || hates_cursed(ptr));
+}
+
+boolean
+mon_eschews_cursed(mon)
+struct monst* mon;
+{
+    return (eschews_cursed(mon->data) || mon_hates_cursed(mon));
+}
+
+boolean
+eschews_blessed(ptr)
+register struct permonst* ptr;
+{
+    return (innate_eschew_blessed(ptr) || hates_blessed(ptr));
+}
+
+boolean
+mon_eschews_blessed(mon)
+struct monst* mon;
+{
+    return (eschews_blessed(mon->data) || mon_hates_blessed(mon));
+}
+
+
+boolean
+eschews_silver(ptr)
+register struct permonst* ptr;
+{
+    return (innate_eschew_silver(ptr) || hates_silver(ptr));
+}
+
+boolean
+mon_eschews_silver(mon)
+struct monst* mon;
+{
+    return (eschews_silver(mon->data) || mon_hates_silver(mon));
+}
+
+
 /* True if specific monster is especially affected by light-emitting weapons */
 boolean
 mon_hates_light(mon)
 struct monst *mon;
 {
     return (boolean) (hates_light(mon->data));
+}
+
+boolean
+mon_eschews_light(mon)
+struct monst* mon;
+{
+    return (mon_hates_light(mon));
 }
 
 /* True iff the type of monster pass through iron bars */

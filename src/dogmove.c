@@ -1491,11 +1491,23 @@ int after; /* this is extra fast monster movement */
         if (has_edog)
             for (obj = level.objects[nx][ny]; obj; obj = obj->nexthere) 
 			{
-                if (obj->cursed && (is_animal(mtmp->data) || is_angel(mtmp->data))) /* animals and angels eschew cursed objects */
+                if (obj->blessed && mon_eschews_blessed(mtmp)) /* animals and angels eschew cursed objects */
+                {
+                    cursemsg[i] = TRUE;
+                }
+                else if (objects[obj->otyp].oc_material == MAT_SILVER && mon_eschews_silver(mtmp))
+                {
+                    cursemsg[i] = TRUE;
+                }
+                else if (obj->cursed && mon_eschews_cursed(mtmp))
 				{
                     cursemsg[i] = TRUE;
                 } 
-				else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) && dog_wants_to_eat(mtmp) &&
+                else if (obj_sheds_light(obj) && mon_eschews_light(mtmp))
+                {
+                    cursemsg[i] = TRUE;
+                }
+                else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) && dog_wants_to_eat(mtmp) &&
                     (!EDOG(mtmp)->chastised || (EDOG(mtmp)->chastised && !(obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy)))))
                          && (foodtyp < ACCFOOD || edog->hungrytime <= monstermoves))
 				{

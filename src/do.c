@@ -2105,7 +2105,7 @@ register struct obj* obj;
 			/* Flags here */
 			if (objects[otyp].oc_target_permissions != ALL_TARGETS)
 			{
-				if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG))
+				if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M1_FLAG | O3_TARGET_PERMISSION_IS_M2_FLAG | O3_TARGET_PERMISSION_IS_M3_FLAG | O3_TARGET_PERMISSION_IS_M4_FLAG | O3_TARGET_PERMISSION_IS_M5_FLAG))
 				{
 					int flag_idx = 1;
 					if(objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M2_FLAG))
@@ -2114,7 +2114,9 @@ register struct obj* obj;
 						flag_idx = 3;
 					else if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M4_FLAG))
 						flag_idx = 4;
-					
+					else if (objects[otyp].oc_flags3 & (O3_TARGET_PERMISSION_IS_M5_FLAG))
+						flag_idx = 5;
+
 					for (int idx = 0; idx < 32; idx++)
 					{
 						unsigned long bit = 1;
