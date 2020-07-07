@@ -600,7 +600,7 @@ enum bodypart_types {
 #define rn1(x, y) (rn2(x) + (y))
 
 /* negative armor class is randomly weakened to prevent invulnerability */
-#define AC_VALUE(AC) ((AC) >= 0 ? (AC) : -rnd(-(AC)))
+#define AC_VALUE(AC) ((AC) >= 0 ? (AC) : (AC) >= -21 ? -rnd(-(AC)) : (AC) >= -41 ? -rnd(21 + (-(AC) - 21) / 2) : -rnd(31 + (-(AC) - 41) / 4))
 
 /* Object pile definition */
 #define is_objpile(x,y) (!Hallucination && level.objects[(x)][(y)] \

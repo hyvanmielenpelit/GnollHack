@@ -1737,7 +1737,10 @@ register struct obj* omonwep;
 		/*  Negative armor class reduces damage done instead of fully protecting against hits. */
 		if (damage > 1 && u.uac < 0)
 		{
-			damage -= (double)rnd(-u.uac);
+            int absac = -u.uac;
+            int damage_reduction_max = absac <= 20 ? absac : absac <= 40 ? (20 + (absac - 20) / 2) : (30 + (absac - 40) / 4);
+
+			damage -= (double)rnd(damage_reduction_max);
 			if (damage < 1)
 				damage = 1;
 		}
