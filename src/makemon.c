@@ -2830,7 +2830,8 @@ int difficulty_level_adjustment;
 	int minmlev = 0;
 	int maxmlev = 0;
     
-    int applied_difficulty = (int)context.game_difficulty + difficulty_level_adjustment;
+    /* game difficulty deactivated here for the time being */
+    int applied_difficulty = 0 /*(int)context.game_difficulty*/ + difficulty_level_adjustment;
     if (applied_difficulty < -4)
         applied_difficulty = -4;
     if (applied_difficulty > 4)
