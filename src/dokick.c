@@ -839,6 +839,7 @@ boolean is_golf_swing;
         container_impact_dmg(kickedobj, x, y);
         if (kickedobj->olocked) {
             if (!rn2(5) || (martial() && !rn2(2))) {
+                play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_BREAK_LOCK_CONTAINER);
                 You("break open the lock!");
                 breakchestlock(kickedobj, FALSE);
                 if (otrp)
@@ -847,6 +848,7 @@ boolean is_golf_swing;
             }
         } else {
             if (!rn2(3) || (martial() && !rn2(2))) {
+                play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_LID_SLAM_CONTAINER);
                 pline_The("lid slams open, then falls shut.");
                 kickedobj->lknown = 1;
                 if (otrp)

@@ -141,6 +141,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Cause Paralysis" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Cause Sleeping" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Generic Monster Death" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Chest Lock Break" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Chest Lid Slam" , 1.0f},
 };
 
 #undef NoSound
