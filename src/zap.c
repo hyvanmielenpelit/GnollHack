@@ -1186,6 +1186,38 @@ struct monst* mtmp;
         }
     }
 
+    if (mon_hates_silver(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to silver weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_hates_blessed(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to blessed weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_hates_cursed(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to cursed weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_hates_light(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to lit weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
     if (!innate_eschew_cursed(mtmp->data))
     {
         abilcnt++;
