@@ -709,7 +709,7 @@ NEARDATA struct permonst mons[] = {
         M1_SWIM | M1_HUMANOID, 
         M2_STALK, 
         M3_INFRAVISIBLE, 
-        M4_NONE, M5_NONE,
+        M4_NONE, M5_HATES_LIGHT,
         7, CLR_GREEN, MONSTER_SOUNDSET_NONE, MONSTER_SOUNDSET_NONE),
     MON("gargoyle", None, "stony creature resembling a monstrous statue", None, None, S_GNOME, LVL(6, 10, -4, 10, 0, -9), (G_GENO | G_NOMINES | 2 | G_GENDER_ONE_FOURTH),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 2, 6, 0, 0),

@@ -169,6 +169,7 @@
 #define innate_eschew_cursed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_CURSED_ITEMS) != 0)
 #define innate_eschew_blessed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_BLESSED_ITEMS) != 0)
 #define innate_eschew_silver(ptr) (((ptr)->mflags5 & M5_ESCHEWS_SILVER_ITEMS) != 0)
+#define hates_light(ptr) (((ptr)->mflags5 & M5_HATES_LIGHT) != 0)
 
 /* combinations */
 #define is_not_living(ptr) \
@@ -687,7 +688,6 @@
 #define is_mind_flayer(ptr) (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
 #define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
-#define hates_light(ptr) ((ptr) == &mons[PM_GREMLIN])
 #define mon_ambient_sound(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound)
 #define mon_ambient_volume(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? 0 : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].volume)
 #define mon_ambient_subtype(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? SOUNDSOURCE_AMBIENT_GENERAL : monster_soundsets[(ptr)->soundset].ambient_subtype)

@@ -155,6 +155,7 @@ static NEARDATA struct mflag_description m5flag_descriptions[] = {
     { M5_ESCHEWS_CURSED_ITEMS, "eschews cursed items", "monsters able to sense cursed items" },
     { M5_ESCHEWS_BLESSED_ITEMS, "eschews blessed items", "monsters able to sense blessed items" },
     { M5_ESCHEWS_SILVER_ITEMS, "eschews silver items", "monsters able to sense silver items" },
+    { M5_HATES_LIGHT, "vulnerable to light", "monsters vulnerable to light" },
     { 0 , "", "" }
 };
 

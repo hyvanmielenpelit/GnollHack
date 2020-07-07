@@ -307,6 +307,7 @@
 #define M5_ESCHEWS_CURSED_ITEMS     0x00001000UL
 #define M5_ESCHEWS_BLESSED_ITEMS    0x00002000UL
 #define M5_ESCHEWS_SILVER_ITEMS     0x00004000UL
+#define M5_HATES_LIGHT              0x00008000UL /* Gremlin only */
 
 
 #define MZ_TINY 0          /* < 2' */
