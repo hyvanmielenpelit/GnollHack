@@ -1867,6 +1867,24 @@ register struct obj *objchn;
     return (struct obj *) 0;
 }
 
+
+struct obj*
+o_on_memory(id, objchn)
+unsigned int id;
+register struct obj* objchn;
+{
+    struct obj* temp;
+
+    while (objchn) {
+        if (objchn->o_id_memory == id)
+            return objchn;
+        if (Has_contents(objchn) && (temp = o_on_memory(id, objchn->cobj)))
+            return temp;
+        objchn = objchn->nobj;
+    }
+    return (struct obj*)0;
+}
+
 void
 reduce_item_cooldown(objchn)
 register struct obj *objchn;

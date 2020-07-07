@@ -63,6 +63,7 @@ struct obj {
 #define SPEFLAGS_SCHROEDINGERS_BOX			0x00000010UL
 #define SPEFLAGS_STATUE_HISTORIC			0x00000020UL
 #define SPEFLAGS_CORPSE_ON_ICE				0x00000040UL
+#define SPEFLAGS_DETECTED   				0x00000080UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
@@ -150,6 +151,8 @@ struct obj {
     short repowerleft;	   /* artifact cooldown left before its invoke ability can be used again*/
     short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
 	boolean invokeon;      /* the object's / artifact's invoked ability is on */
+    unsigned o_id_memory;  /* This is a memory object of this o_id */
+
     int glyph;
 	struct oextra *oextra; /* pointer to oextra struct */
 };

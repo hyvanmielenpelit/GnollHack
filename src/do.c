@@ -4134,8 +4134,10 @@ boolean with_impact;
         else if (level.flags.has_shop)
             sellobj(obj, u.ux, u.uy);
         stackobj(obj);
-        if (Blind && Levitation)
-            map_object(obj, 0);
+		if (Blind && Levitation)
+		{
+			map_object(obj, 0);
+		}
         newsym(u.ux, u.uy); /* remap location under self */
     }
 }

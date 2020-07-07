@@ -397,6 +397,7 @@ register struct obj *sobj;
 
 outgoldmap:
     cls();
+    show_detection_everywhere();
 
     (void) unconstrain_map();
 
@@ -410,7 +411,7 @@ outgoldmap:
                 temp->ox = obj->ox;
                 temp->oy = obj->oy;
             }
-            map_object(temp, 1);
+            map_object_for_detection(temp, 1);
         }
         else if ((temp = o_in(obj, COIN_CLASS)) != 0) 
         {
@@ -419,7 +420,7 @@ outgoldmap:
                 temp->ox = obj->ox;
                 temp->oy = obj->oy;
             }
-            map_object(temp, 1);
+            map_object_for_detection(temp, 1);
         }
         if (temp && temp->ox == u.ux && temp->oy == u.uy)
             ugold = TRUE;
@@ -438,7 +439,7 @@ outgoldmap:
             gold.quan = (long) rnd(10); /* usually more than 1 */
             gold.ox = mtmp->mx;
             gold.oy = mtmp->my;
-            map_object(&gold, 1);
+            map_object_for_detection(&gold, 1);
             temp = &gold;
         } 
         else
@@ -448,14 +449,14 @@ outgoldmap:
                 {
                     temp->ox = mtmp->mx;
                     temp->oy = mtmp->my;
-                    map_object(temp, 1);
+                    map_object_for_detection(temp, 1);
                     break;
                 }
                 else if ((temp = o_in(obj, COIN_CLASS)) != 0) 
                 {
                     temp->ox = mtmp->mx;
                     temp->oy = mtmp->my;
-                    map_object(temp, 1);
+                    map_object_for_detection(temp, 1);
                     break;
                 }
         }
@@ -561,6 +562,8 @@ register struct obj *sobj;
 
         known = TRUE;
         cls();
+        show_detection_everywhere();
+
         (void) unconstrain_map();
         for (obj = fobj; obj; obj = obj->nobj)
             if ((temp = o_in(obj, oclass)) != 0) {
@@ -568,7 +571,7 @@ register struct obj *sobj;
                     temp->ox = obj->ox;
                     temp->oy = obj->oy;
                 }
-                map_object(temp, 1);
+                map_object_for_detection(temp, 1);
             }
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             /* no DEADMONSTER() check needed -- dmons never have inventory */
@@ -576,7 +579,7 @@ register struct obj *sobj;
                 if ((temp = o_in(obj, oclass)) != 0) {
                     temp->ox = mtmp->mx;
                     temp->oy = mtmp->my;
-                    map_object(temp, 1);
+                    map_object_for_detection(temp, 1);
                     break; /* skip rest of this monster's inventory */
                 }
         if (!ctu) {
@@ -709,6 +712,7 @@ int class;            /* an object class, 0 for all */
     }
 
     cls();
+    show_detection_everywhere();
 
     (void) unconstrain_map();
     /*
@@ -721,9 +725,9 @@ int class;            /* an object class, 0 for all */
                     otmp->ox = obj->ox;
                     otmp->oy = obj->oy;
                 }
-                map_object(otmp, 1);
+                map_object_for_detection(otmp, 1);
             } else
-                map_object(obj, 1);
+                map_object_for_detection(obj, 1);
         }
     /*
      * If we are mapping all objects, map only the top object of a pile or
@@ -743,9 +747,9 @@ int class;            /* an object class, 0 for all */
                             otmp->ox = obj->ox;
                             otmp->oy = obj->oy;
                         }
-                        map_object(otmp, 1);
+                        map_object_for_detection(otmp, 1);
                     } else
-                        map_object(obj, 1);
+                        map_object_for_detection(obj, 1);
                     break;
                 }
 
@@ -760,7 +764,7 @@ int class;            /* an object class, 0 for all */
                     otmp = obj;
                 otmp->ox = mtmp->mx; /* at monster location */
                 otmp->oy = mtmp->my;
-                map_object(otmp, 1);
+                map_object_for_detection(otmp, 1);
                 break;
             }
         /* Allow a mimic to override the detected objects it is carrying. */
@@ -774,7 +778,7 @@ int class;            /* an object class, 0 for all */
             temp.ox = mtmp->mx;
             temp.oy = mtmp->my;
             temp.corpsenm = PM_TENGU; /* if mimicing a corpse */
-            map_object(&temp, 1);
+            map_object_for_detection(&temp, 1);
         } else if (findgold(mtmp->minvent)
                    && (!class || class == COIN_CLASS)) {
             struct obj gold;
@@ -784,7 +788,7 @@ int class;            /* an object class, 0 for all */
             gold.quan = (long) rnd(10); /* usually more than 1 */
             gold.ox = mtmp->mx;
             gold.oy = mtmp->my;
-            map_object(&gold, 1);
+            map_object_for_detection(&gold, 1);
         }
     }
     if (!glyph_is_object(glyph_at(u.ux, u.uy))) {
@@ -843,6 +847,8 @@ int mclass;                /* monster class, 0 for all */
         unsigned swallowed = u.uswallow; /* before unconstrain_map() */
 
         cls();
+        show_detection_everywhere();
+
         unconstrained = unconstrain_map();
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))
@@ -911,7 +917,7 @@ int src_cursed;
         obj.quan = (long) ((obj.otyp == GOLD_PIECE) ? rnd(10)
                            : objects[obj.otyp].oc_merge ? rnd(2) : 1);
         obj.corpsenm = random_monster(rn2); /* if otyp == CORPSE */
-        map_object(&obj, 1);
+        map_object_for_detection(&obj, 1);
     } else if (trap) {
         map_trap(trap, 1);
         trap->tseen = 1;
@@ -972,7 +978,7 @@ struct obj *sobj; /* null if crystal ball, *scroll if gold detection scroll */
 {
     register struct trap *ttmp;
     struct monst *mon;
-    int door, glyph, tr, ter_typ = TER_DETECT | TER_TRP;
+    int door, glyph, tr, ter_typ = TER_DETECT | TER_TRP | TER_OBJ;
     int cursed_src = sobj && sobj->cursed;
     boolean found = FALSE;
     coord cc;
@@ -1031,10 +1037,12 @@ struct obj *sobj; /* null if crystal ball, *scroll if gold detection scroll */
     }
     /* traps exist, but only under me - no separate display required */
     Your("%s itch.", makeplural(body_part(TOE)));
+    clear_memory_object_detection_marks();
     return 0;
 
 outtrapmap:
     cls();
+    show_detection_everywhere();
 
     (void) unconstrain_map();
     /* show chest traps first, so that subsequent floor trap display

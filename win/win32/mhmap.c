@@ -912,6 +912,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
     boolean issteed = !!(data->map[i][j].layer_flags & LFLAGS_M_RIDDEN);
 
+    if (i == data->xCur && j == data->yCur)
+        i = i;
     /* Construct object pile, drawn from end to beginning */
 
     int enl_i = -1, enl_j = -1;
@@ -1066,18 +1068,23 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* m_here = m_at(enl_i, enl_j);
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
 
-            boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
-            struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_objchn : level.objects[enl_i][enl_j];
-
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
+            boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
+            boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
+                
             if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
             {
-//                if (covers_objects(enl_i, enl_j))
+                struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_objchn : level.objects[enl_i][enl_j];
+
+                //                if (covers_objects(enl_i, enl_j))
 //                    break; /* next layer, nothing to draw here */
 
                 int objcnt = 0;
                 for (struct obj* otmp2 = otmp; otmp2; otmp2 = otmp2->nexthere)
                 {
+                    if(showing_detection && !(otmp2->speflags & SPEFLAGS_DETECTED))
+                        continue;
+
                     obj_pile[objcnt] = otmp2;
                     objcnt++;
                     if (objcnt >= MAX_SHOWN_OBJECTS)
@@ -1087,7 +1094,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
             for (int layer_round = 0; layer_round < layer_rounds; layer_round++)
             {
-                struct obj* otmp_round = otmp;
+                struct obj* otmp_round = (struct obj*)0;//otmp;
 
 
                 if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
@@ -1105,8 +1112,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (base_layer == LAYER_OBJECT && draw_in_front)
                     continue; /* next round */
 
-                int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
-                int signed_main_glyph = data->map[enl_i][enl_j].glyph;
+                //int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
+                //int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
                 if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
                     signed_glyph = otmp_round->glyph == NO_GLYPH || otmp_round->glyph == 0 ? NO_GLYPH : otmp_round->glyph;
@@ -1120,7 +1127,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
 
-                if (base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored))
+                if (showing_detection ||(base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored)))
                     skip_darkening = TRUE;
 
                 /*
@@ -1317,6 +1324,38 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                             else
                             {
+                                if (dest_left_added != 0 || dest_top_added != 0 || dest_width_deducted != 0 || dest_height_deducted != 0)
+                                {
+                                    /*
+                                    RECT fillrect = { 0 };
+                                    fillrect.top = 0;
+                                    fillrect.left = 0;
+                                    fillrect.bottom = GetNHApp()->mapTile_Y;
+                                    fillrect.right = GetNHApp()->mapTile_X;
+                                    HBRUSH fillbrush = CreateSolidBrush(TILE_BK_COLOR);
+                                    FillRect(hDCcopy, rect, fillbrush);
+                                    */
+
+                                    LONG width = GetNHApp()->mapTile_X;
+                                    LONG height = GetNHApp()->mapTile_Y;
+
+                                    int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                    int idx, x, y;
+                                    for (x = 0; x < width; x++)
+                                    {
+                                        for (y = 0; y < height; y++)
+                                        {
+                                            idx = y * pitch;
+                                            idx += x * 4;
+
+                                            lpBitmapBitsCopy[idx + 0] = TILE_BK_COLOR_BLUE;  // blue
+                                            lpBitmapBitsCopy[idx + 1] = TILE_BK_COLOR_GREEN; // green
+                                            lpBitmapBitsCopy[idx + 2] = TILE_BK_COLOR_RED;  // red 
+                                        }
+                                    }
+
+                                }
+
                                 StretchBlt(hDCcopy, dest_left_added, dest_top_added,
                                     GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
                                     t_x, t_y, multiplier * GetNHApp()->mapTile_X,

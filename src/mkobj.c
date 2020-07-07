@@ -848,18 +848,18 @@ register struct obj *otmp;
     return;
 }
 
-void
+struct obj*
 memory_dummy_object(otmp)
 register struct obj* otmp;
 {
     if (!otmp)
-        return;
+        return (struct obj*)0;
 
     register struct obj* dummy;
     int x = otmp->ox, y = otmp->oy;
 
     if (!isok(x, y))
-        return;
+        return (struct obj*)0;
 
     dummy = newobj();
     *dummy = *otmp;
@@ -868,6 +868,7 @@ register struct obj* otmp;
     dummy->nexthere = (struct obj*)0; /* set cobj to zero; this is just a copy */
     dummy->oextra = (struct oextra*)0;
     dummy->where = OBJ_FREE;
+    dummy->o_id_memory = otmp->o_id;
     dummy->o_id = context.ident++;
     if (!dummy->o_id)
         dummy->o_id = context.ident++; /* ident overflowed */
@@ -883,6 +884,8 @@ register struct obj* otmp;
     /* Add to nexthere memory */
     dummy->nexthere = level.locations[x][y].hero_memory_layers.memory_objchn;
     level.locations[x][y].hero_memory_layers.memory_objchn = dummy;
+
+    return dummy;
 }
 
 void

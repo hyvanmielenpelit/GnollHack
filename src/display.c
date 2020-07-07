@@ -327,8 +327,34 @@ register int show;
  */
 void
 map_object(obj, show)
+register struct obj* obj;
+register int show;
+{
+    map_object_core(obj, show, TRUE, FALSE);
+}
+
+void
+map_object_for_detection(obj, show)
+register struct obj* obj;
+register int show;
+{
+    map_object_core(obj, show, TRUE, TRUE);
+}
+
+void
+map_object_no_chain_check(obj, show)
+register struct obj* obj;
+register int show;
+{
+    map_object_core(obj, show, FALSE, FALSE);
+}
+
+void
+map_object_core(obj, show, chain_check, add_detection_mark)
 register struct obj *obj;
 register int show;
+boolean chain_check;
+boolean add_detection_mark;
 {
     if (!obj)
         return;
@@ -338,7 +364,10 @@ register int show;
     boolean draw_in_front = is_obj_drawn_in_front(obj);
     enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
 
-    if (level.flags.hero_memory) 
+    /* Save this object's glyph for showing in object pile */
+    obj->glyph = glyph;
+
+    if (level.flags.hero_memory)
     {
         /* MRKR: While hallucinating, statues are seen as random monsters */
         /*       but remembered as random objects.                        */
@@ -350,10 +379,19 @@ register int show;
         }
         levl[x][y].hero_memory_layers.glyph = new_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_glyph;
-    }
 
-    /* Save this object's glyph for showing in object pile */
-    obj->glyph = glyph;
+        struct obj* memobj = o_on_memory(obj->o_id, levl[x][y].hero_memory_layers.memory_objchn);
+        if (!chain_check || (chain_check && !memobj))
+        {
+            struct obj* dummy = memory_dummy_object(obj);
+            if(dummy && add_detection_mark)
+                dummy->speflags |= SPEFLAGS_DETECTED;
+        }
+        else if (add_detection_mark && memobj)
+        {
+            memobj->speflags |= SPEFLAGS_DETECTED;
+        }
+    }
 
     if (show)
     {
@@ -361,6 +399,22 @@ register int show;
         show_glyph_on_layer(x, y, glyph, layer);
     }
 }
+
+/*
+void
+map_object_and_update_chain(obj, show)
+register struct obj* obj;
+register int show;
+{
+    if (!obj || !isok(obj->ox, obj->oy))
+        return;
+
+    map_object(obj, show);
+
+    //if(o_on(obj->o_id, levl[obj->ox][obj->oy].hero_memory_layers.memory_objchn) == 0)
+        memory_dummy_object(obj);
+}
+*/
 
 /*
  * map_invisible()
@@ -475,7 +529,7 @@ int x, y, show;
 
     /* Note that this should ordinarily include also waslit, except when one is blind / cannot see the location */
 
-    /* Floor and feature layers */
+    /* Floor, feature, and doodad layers */
     map_background(x, y, show);
 
     /* Trap layer */
@@ -486,11 +540,6 @@ int x, y, show;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = NO_GLYPH;
     }
 
-
-    /* Doodad layer */
-    /* map_doodad(x, y) */
-    /* gbuf[y][x].layers.layer_glyphs[LAYER_FEATURE_DOODAD] = NO_GLYPH; */
-
     /* Object layer */
     clear_hero_object_memory_at(x, y);
     if (!covers_objects(x, y))
@@ -500,8 +549,7 @@ int x, y, show;
         for (obj = vobj_at(x, y); obj; obj = obj->nexthere)
         {
             boolean draw_in_front = is_obj_drawn_in_front(obj);
-            map_object(obj, draw_in_front ? show_first_cover_layer : show_first_object_layer);
-            memory_dummy_object(obj);
+            map_object_no_chain_check(obj, draw_in_front ? show_first_cover_layer : show_first_object_layer);
             if (draw_in_front)
                 show_first_cover_layer = FALSE;
             else
@@ -865,7 +913,7 @@ xchar x, y;
         if ((boulder = sobj_at(BOULDER, x, y)) != 0)
         {
             map_object(boulder, 1);
-        } 
+        }
         
         if (IS_ROCK(lev->typ)
             || (IS_DOOR(lev->typ)
@@ -1839,6 +1887,9 @@ docrt()
     /* shut down vision */
     vision_recalc(2);
 
+    /* clear detection markers from memory objects */
+    clear_memory_object_detection_marks();
+
     /*
      * This routine assumes that cls() does the following:
      *      + fills the physical screen with the symbol for rock
@@ -1870,6 +1921,16 @@ docrt()
 
     context.botlx = 1; /* force a redraw of the bottom line */
 }
+
+void
+clear_memory_object_detection_marks()
+{
+    for (struct obj* otmp = memoryobjs; otmp; otmp = otmp->nobj)
+    {
+        otmp->speflags &= ~SPEFLAGS_DETECTED;
+    }
+}
+
 
 /* for panning beyond a clipped region; resend the current map data to
    the interface rather than use docrt()'s regeneration of that data */
@@ -2395,6 +2456,28 @@ cls()
 
     clear_glyph_buffer(); /* this is sort of an extra effort, but OK */
     in_cls = FALSE;
+}
+
+void
+show_memory_everywhere()
+{
+    for (int x = 1; x < COLNO; x++) 
+    {
+        for (int y = 0; y < ROWNO; y++)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
+    }
+
+}
+
+void
+show_detection_everywhere()
+{
+    for (int x = 1; x < COLNO; x++)
+    {
+        for (int y = 0; y < ROWNO; y++)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY | LFLAGS_SHOWING_DETECTION);
+    }
+
 }
 
 /*

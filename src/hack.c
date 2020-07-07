@@ -1880,7 +1880,9 @@ domove_core()
         /* about to become known empty -- remove 'I' if present */
         unmap_object(x, y);
         if (boulder)
+        {
             map_object(boulder, TRUE);
+        }
         newsym(x, y);
         glyph = glyph_at(x, y); /* might have just changed */
 

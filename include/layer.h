@@ -78,6 +78,8 @@ struct layer_info {
 
 /* Rest are important general flags */
 #define LFLAGS_SHOWING_MEMORY       0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */
+#define LFLAGS_SHOWING_DETECTION    0x02000000UL /* Do not darken */
+
 /* reserved for waslit flag */
 /* free bits */
 
