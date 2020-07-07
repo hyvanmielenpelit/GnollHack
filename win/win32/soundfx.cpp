@@ -138,6 +138,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Horse Footsteps" , 0.15f},
     { SOUND_BANK_MASTER, "event:/Push Boulder" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Push Effort" , 0.25f},
+    { SOUND_BANK_MASTER, "event:/Cause Paralysis" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Cause Sleeping" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Generic Monster Death" , 1.0f},
 };
 
 #undef NoSound

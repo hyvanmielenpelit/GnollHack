@@ -454,6 +454,7 @@ register struct monst *magr, *mdef;
 			int mdef_x = mdef->mx;
 			int mdef_y = mdef->my;
 
+            play_monster_simple_weapon_sound(magr, i, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
             update_m_action(magr, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
             for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
@@ -561,6 +562,7 @@ register struct monst *magr, *mdef;
             break;
 
         case AT_HUGS: /* automatic if prev two attacks succeed */
+            play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             strike = (i >= 2 && res[i - 1] == MM_HIT && res[i - 2] == MM_HIT);
             if (strike)
@@ -571,6 +573,7 @@ register struct monst *magr, *mdef;
 
         case AT_GAZE:
             strike = 0;
+            play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             res[i] = gazemm(magr, mdef, mattk);
             update_m_action(magr, ACTION_TILE_NO_ACTION);
@@ -598,6 +601,7 @@ register struct monst *magr, *mdef;
             if (distmin(magr->mx, magr->my, mdef->mx, mdef->my) > 1)
                 continue;
             /* Engulfing attacks are directed at the hero if possible. -dlc */
+            play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             if (u.uswallow && magr == u.ustuck)
                 strike = 0;
@@ -611,6 +615,7 @@ register struct monst *magr, *mdef;
         case AT_BREA:
             if (!monnear(magr, mdef->mx, mdef->my))
 			{
+                play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
                 strike = breamm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
@@ -631,6 +636,7 @@ register struct monst *magr, *mdef;
 			strike = 0;
             if ((monnear(magr, mdef->mx, mdef->my) || rn2(6)) && !is_reflecting(mdef) && !is_blinded(magr))
             {
+                play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
                 strike = eyesmm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
@@ -647,6 +653,7 @@ register struct monst *magr, *mdef;
         case AT_MAGC:
             if (!monnear(magr, mdef->mx, mdef->my))
             {
+                play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(magr, ACTION_TILE_CAST);
                 strike = buzzmm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
@@ -665,6 +672,7 @@ register struct monst *magr, *mdef;
 
         case AT_SPIT:
             if (!monnear(magr, mdef->mx, mdef->my)) {
+                play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(magr, ACTION_TILE_FIRE);
                 strike = spitmm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
@@ -1779,11 +1787,11 @@ register struct obj* omonwep;
 	int hp_after = mdef->mhp;
 	int damagedealt = hp_before - hp_after;
 	update_mon_maxhp(mdef);
+    play_monster_weapon_hit_sound(magr, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(magr->data, mattk), omonwep, damage, 0);
 
 	//Adjust further if mhpmax is smaller
 	if (mdef->mhp > mdef->mhpmax)
 		mdef->mhp = mdef->mhpmax;
-
 
     if (DEADMONSTER(mdef)) 
 	{
@@ -1876,8 +1884,11 @@ struct monst *mon;
 int amt;
 boolean verbosely;
 {
-	if (verbosely)
+    if (verbosely)
+    {
         (void)nonadditive_increase_mon_property_verbosely(mon, PARALYZED, amt);
+        play_sfx_sound_at_location(SFX_CAUSE_PARALYSIS, mon->mx, mon->my);
+    }
 	else
         nonadditive_increase_mon_property(mon, PARALYZED, amt);
 
@@ -2026,7 +2037,9 @@ int mdead;
 
 	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, FALSE);
 	
-	/* These affect the enemy even if defender killed */
+    play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+
+    /* These affect the enemy even if defender killed */
     switch (mddat->mattk[i].adtyp) {
     case AD_ACID:
         if (mhit && !rn2(2)) {

@@ -139,6 +139,10 @@ const char *name; /* if null, then format `*objp' */
             if (is_acid)
                 pline("It burns!"); /* acid damage */
 
+            if (obj)
+            {
+                play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(&youmonst), damage, HMON_THROWN);
+            }
 			//DAMAGE IS DONE HERE
             losehp(damage, knm, kprefix);
             exercise(A_STR, FALSE);
@@ -341,7 +345,6 @@ struct obj *otmp, *mwep;
 		return;
 
     boolean is_firing = (otmp && mwep && ammo_and_launcher(otmp, mwep));
-    update_m_action(mtmp, is_firing ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
 
     struct monst *mtarg = target;
 
@@ -389,6 +392,7 @@ struct obj *otmp, *mwep;
     m_shot.n = multishot;
     for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++) 
     {
+        update_m_action(mtmp, is_firing ? ACTION_TILE_FIRE : ACTION_TILE_THROW);
         if(is_firing)
             play_monster_simple_weapon_sound(mtmp, 0, mwep, OBJECT_SOUND_TYPE_FIRE);
         else
@@ -399,6 +403,7 @@ struct obj *otmp, *mwep;
            if mtmp gets killed (shot kills adjacent gas spore and
            triggers explosion, perhaps), inventory will be dropped
            and otmp might go away via merging into another stack */
+        update_m_action(mtmp, ACTION_TILE_NO_ACTION);
         if (DEADMONSTER(mtmp) && m_shot.i < m_shot.n)
             /* cancel pending shots (perhaps ought to give a message here
                since we gave one above about throwing/shooting N missiles) */
@@ -409,7 +414,6 @@ struct obj *otmp, *mwep;
     m_shot.o = STRANGE_OBJECT;
     m_shot.s = FALSE;
 
-    update_m_action(mtmp, ACTION_TILE_NO_ACTION);
 
 }
 
