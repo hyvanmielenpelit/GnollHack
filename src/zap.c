@@ -1186,70 +1186,6 @@ struct monst* mtmp;
         }
     }
 
-    if (mon_hates_silver(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to silver weapons");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (mon_hates_blessed(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to blessed weapons");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (mon_hates_cursed(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to cursed weapons");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (mon_hates_light(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to lit weapons");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (!innate_eschew_cursed(mtmp->data))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, mon_eschews_cursed(mtmp) ? "Eschews cursed items" : "Does not eschew cursed items");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (!innate_eschew_silver(mtmp->data) && mon_eschews_silver(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Eschews silver items");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (!innate_eschew_blessed(mtmp->data) && mon_eschews_blessed(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Eschews blessed items");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
-    if (mon_eschews_light(mtmp))
-    {
-        abilcnt++;
-        Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");
-        txt = buf;
-        putstr(datawin, 0, txt);
-    }
-
     /* Heads */
     if (!(mtmp->data->heads == 1 && mtmp->heads_left == 1))
     {
@@ -1288,6 +1224,83 @@ struct monst* mtmp;
         txt = buf;
         putstr(datawin, 0, txt);
     }
+
+
+    Sprintf(buf, "Notable:");// , noit_mon_nam(mtmp));
+    txt = buf;
+    putstr(datawin, 0, txt);
+
+    abilcnt = 0;
+
+    if (mon_hates_silver(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to silver weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_hates_blessed(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to blessed weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_hates_cursed(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to cursed weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_hates_light(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Vulnerable to lit weapons");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    abilcnt++;
+    Sprintf(buf, " %2d - %s", abilcnt, mon_eschews_cursed(mtmp) ? "Eschews cursed items" : "Does not eschew cursed items");
+    txt = buf;
+    putstr(datawin, 0, txt);
+
+    if (mon_eschews_silver(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews silver items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_eschews_blessed(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews blessed items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (mon_eschews_light(mtmp))
+    {
+        abilcnt++;
+        Sprintf(buf, " %2d - %s", abilcnt, "Eschews lit items");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+    if (!abilcnt)
+    {
+        strcpy(buf, " (None)");
+        txt = buf;
+        putstr(datawin, 0, txt);
+    }
+
+
 }
 
 void print_monster_statistics(datawin, mtmp)
