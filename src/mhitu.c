@@ -1738,7 +1738,7 @@ register struct obj* omonwep;
 		if (damage > 1 && u.uac < 0)
 		{
             int absac = -u.uac;
-            int damage_reduction_max = absac <= 20 ? absac : absac <= 40 ? (20 + (absac - 20) / 2) : (30 + (absac - 40) / 4);
+            int damage_reduction_max = absac <= 20 ? absac : absac <= 40 ? (20 + (absac - 20) / 2) : (30 + (absac - 40) / 3);
 
 			damage -= (double)rnd(damage_reduction_max);
 			if (damage < 1)
