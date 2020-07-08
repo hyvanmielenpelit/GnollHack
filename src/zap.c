@@ -8148,7 +8148,7 @@ short exploding_wand_typ;
                 ltype = GRASS;
             else
                 ltype = ROOM;
-            create_simple_location(x, y, ltype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
+            create_simple_location(x, y, ltype, 0, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);
             if (cansee(x, y))

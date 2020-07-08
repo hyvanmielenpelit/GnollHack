@@ -86,6 +86,8 @@ enum ghsound_types {
 	GHSOUND_MONSTER_DEATH_GENERIC,
 	GHSOUND_CHEST_BREAK_LOCK,
 	GHSOUND_CHEST_LID_SLAM,
+	GHSOUND_GENERIC_ITEM_PICK_UP,
+	GHSOUND_GENERIC_ITEM_DROP,
 	MAX_GHSOUNDS
 };
 
@@ -107,14 +109,6 @@ enum soundsource_ambient_subtypes {
 	SOUNDSOURCE_AMBIENT_LIT,
 	SOUNDSOURCE_AMBIENT_INSIDE_REGION,
 	MAX_SOUNDSOURCE_AMBIENT_SUBTYPES
-};
-
-/* Conditional sound sources */
-enum conditional_soundsource_types {
-	CONDITIONAL_SOUNDSOURCE_RIVER = 0,
-	CONDITIONAL_SOUNDSOURCE_LAVA = 0,
-	CONDITIONAL_SOUNDSOURCE_FOREST = 0,
-	MAX_CONDITIONAL_SOUNDSOURCE_TYPES
 };
 
 
@@ -188,6 +182,15 @@ struct ghsound_level_ambient_info {
 	float volume;
 };
 
+struct ghsound_effect_ambient_info {
+	enum ghsound_types ghsound;
+	float volume;
+};
+
+struct effect_ambient_volume_info {
+	float volume;
+};
+
 
 /* Unused play_ghsound function input structs */
 struct function_info_A {
@@ -199,15 +202,6 @@ struct function_info_A {
 struct function_info_C {
 	enum ghsound_types ghsound;
 	enum obj_material_types strike_surface;
-	float volume;
-};
-
-struct ghsound_effect_ambient_info {
-	enum ghsound_types ghsound;
-	float volume;
-};
-
-struct effect_ambient_volume_info {
 	float volume;
 };
 
@@ -314,6 +308,17 @@ enum player_attack_soundset_types {
 	PLAYER_ATTACK_SOUNDSET_KICK,
 	MAX_PLAYER_ATTACK_SOUNDSETS
 };
+
+enum innate_movement_styles {
+	MOVEMENT_STYLE_ON_GROUND = 0,
+	MOVEMENT_STYLE_STEALTH,
+	MOVEMENT_STYLE_FLYING,
+	MOVEMENT_STYLE_LEVITATING,
+	MOVEMENT_STYLE_SWIMMING,
+	MOVEMENT_STYLE_PASSING_THROUGH_WALLS,
+	MAX_MOVEMENT_STYLES
+};
+
 
 struct player_soundset_definition {
 	char* soundset_name;
@@ -464,5 +469,31 @@ enum hit_surface_source_types {
 	HIT_SURFACE_SOURCE_TRAP
 };
 
+enum hit_surface_types {
+	HIT_SURFACE_NONE = 0,
+	HIT_SURFACE_FLESH,
+	HIT_SURFACE_ORGANIC, /* Jellies */
+	HIT_SURFACE_BONE,  /* Also chitin etc. */
+	HIT_SURFACE_LEATHER,
+	HIT_SURFACE_METAL,
+	HIT_SURFACE_WOOD,
+	HIT_SURFACE_STONE,
+	HIT_SURFACE_GLASS,
+	HIT_SURFACE_LIQUID,
+	HIT_SURFACE_IMMATERIAL,
+	MAX_HIT_SURFACE_TYPES
+};
+
+enum floor_surface_types {
+	FLOOR_SURFACE_NONE = 0,
+	FLOOR_SURFACE_STONE,
+	FLOOR_SURFACE_WOOD,
+	FLOOR_SURFACE_GROUND,
+	FLOOR_SURFACE_GRASS,
+	FLOOR_SURFACE_METAL,
+	FLOOR_SURFACE_CARPET,
+	FLOOR_SURFACE_LIQUID,
+	MAX_FLOOR_SURFACE_TYPES
+};
 
 #endif /* SOUNDSET_H */

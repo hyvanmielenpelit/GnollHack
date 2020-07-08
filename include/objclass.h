@@ -154,6 +154,8 @@ enum material_phase {
 struct material_definition {
 	const char* name;
 	enum material_phase phase;
+	enum hit_surface_types hit_surface_mapping;
+	enum floor_surface_types floor_surface_mapping;
 	Bitfield(flammable, 1);
 	Bitfield(rustprone, 1);
 	Bitfield(corrodeable, 1);

@@ -1328,7 +1328,7 @@ const char *str;
         return;
 
     /* Make the grave */
-    create_simple_location(x, y, GRAVE, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, FALSE);
+    create_simple_location(x, y, GRAVE, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == GRAVE ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
 
     /* Engrave the headstone */
     del_engr_at(x, y);

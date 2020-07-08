@@ -185,8 +185,9 @@ gottype:
         if ((wizard && ep && sroom->doorct != 0) || sroom->doorct == 1)
             break;
     }
+
+    int x, y;
     if (!sroom->rlit) {
-        int x, y;
 
         for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
             for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
@@ -209,6 +210,15 @@ gottype:
             i = 0;
     }
     sroom->rtype = SHOPBASE + i;
+
+    /* Change floor type */
+    enum floor_subtypes subtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if (levl[x][y].typ == ROOM)
+                levl[x][y].subtyp = subtype;
+            else if (levl[x][y].floortyp == ROOM)
+                levl[x][y].floorsubtyp = subtype;
 
     /* set room bits before stocking the shop */
 #ifdef SPECIALIZATION
@@ -275,6 +285,16 @@ mkdesertedshop()
 
 	/* Change temporarily to so mimics look correct */
 	sroom->rtype = SHOPBASE + i;
+
+    /* Change floor */
+    int x, y;
+    enum floor_subtypes subtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
+    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+            if (levl[x][y].typ == ROOM)
+                levl[x][y].subtyp = subtype;
+            else if (levl[x][y].floortyp == ROOM)
+                levl[x][y].floorsubtyp = subtype;
 
 	/* set room bits before stocking the shop */
 	topologize(sroom);

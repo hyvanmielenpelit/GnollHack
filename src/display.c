@@ -2572,18 +2572,38 @@ xchar x, y;
 
         if (ptr->subtyp > 0)
         {
-            /* change appearance ? */
+            is_variation = TRUE;
+            int var_offset = defsyms[idx].variation_offset;
+            idx = var_offset + ptr->subtyp - 1;
         }
 
         break;
 	case GRASS:
         idx = /*(!ptr->waslit || flags.dark_room) && !cansee(x, y) ? DARKGRASSSYM :*/ S_grass;
+        if (ptr->subtyp > 0)
+        {
+            is_variation = TRUE;
+            int var_offset = defsyms[idx].variation_offset;
+            idx = var_offset + ptr->subtyp - 1;
+        }
         break;
     case GROUND:
         idx = S_ground;
+        if (ptr->subtyp > 0)
+        {
+            is_variation = TRUE;
+            int var_offset = defsyms[idx].variation_offset;
+            idx = var_offset + ptr->subtyp - 1;
+        }
         break;
     case CORR:
         idx = /* (ptr->waslit || flags.lit_corridor) ? */ S_litcorr /* : S_corr */;
+        if (ptr->subtyp > 0)
+        {
+            is_variation = TRUE;
+            int var_offset = defsyms[idx].variation_offset;
+            idx = var_offset + ptr->subtyp - 1;
+        }
         break;
     case HWALL:
     {
@@ -2934,6 +2954,13 @@ xchar x, y;
     if (ptr->floortyp && IS_FLOOR(ptr->floortyp))
     {
         idx = location_type_definitions[ptr->floortyp].base_screen_symbol;
+        if (ptr->floorsubtyp > 0)
+        {
+            int var_offset = defsyms[idx].variation_offset;
+            idx = var_offset + ptr->floorsubtyp - 1;
+            return cmap_variation_to_glyph(idx);
+        }
+
         return cmap_to_glyph(idx);
     }
 

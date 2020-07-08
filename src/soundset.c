@@ -140,14 +140,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -178,14 +180,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -215,15 +219,17 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_STAFF_HIT, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+            ,
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -254,14 +260,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_BOW_FIRE, 1.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -292,14 +300,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_CROSSBOW_FIRE, 1.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -331,14 +341,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_ARROW_HIT, 1.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -368,14 +380,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -406,14 +420,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -444,14 +460,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -482,14 +500,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -520,14 +540,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -558,14 +580,16 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -596,6 +620,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -603,9 +628,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_CHEST_UNLOCK, 1.0f},
             {GHSOUND_CHEST_LOCK, 1.0f},
@@ -636,6 +661,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -676,6 +702,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -683,8 +710,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
-            {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1215,6 +1242,25 @@ play_level_ambient_sounds()
     play_ghsound_level_ambient(lainfo);
 }
 
+enum floor_surface_types
+get_floor_surface_type(x, y)
+int x, y;
+{
+    if (!isok(x, y))
+        return FLOOR_SURFACE_NONE;
+
+    struct rm* lev = &levl[x][y];
+
+    enum floor_surface_types floorid = FLOOR_SURFACE_NONE;
+    int ftyp = IS_FLOOR(lev->typ) ? lev->typ : lev->floortyp;
+    int fsubtyp = IS_FLOOR(lev->typ) ? lev->subtyp : lev->floorsubtyp;
+
+    enum obj_material_types floor_material = get_location_type_material(ftyp, fsubtyp);
+    floorid = material_definitions[floor_material].floor_surface_mapping;
+
+    return floorid;
+}
+
 void
 play_movement_sound(mtmp)
 struct monst* mtmp;
@@ -1224,7 +1270,7 @@ struct monst* mtmp;
 	boolean isyou = (mtmp == &youmonst);
 
     struct ghsound_immediate_info immediateinfo = { 0 };
-	enum floor_surface_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
+	enum floor_surface_types floorid = get_floor_surface_type(isyou ? u.ux : mtmp->mx, isyou ? u.uy : mtmp->my); /* Set the appropriate floor here */
 	enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f, base_volume = isyou || mtmp == u.usteed ? 1.0f : 0.25f;
 
@@ -1643,12 +1689,15 @@ xchar *defx_ptr, *defy_ptr;
 
 }
 
-enum obj_material_types
+
+
+enum hit_surface_types
 get_hit_surface_type(surface_type, surface_source_ptr)
 enum hit_surface_source_types surface_type;
 anything* surface_source_ptr;
 {
-    enum obj_mat_types surfaceid = MAT_NONE;
+    enum hit_surface_types surfaceid = HIT_SURFACE_NONE;
+    enum obj_mat_types surface_material = MAT_NONE;
     if (!surface_source_ptr)
         return surfaceid;
 
@@ -1662,7 +1711,7 @@ anything* surface_source_ptr;
 
         boolean you_defend = (mdef == &youmonst);
 
-        surfaceid = mdef->data->natural_armor_material_type;
+        surface_material = mdef->data->natural_armor_material_type;
         if (you_defend)
         {
             /* Maybe change if you are wearing armor */
@@ -1677,7 +1726,7 @@ anything* surface_source_ptr;
         struct obj* obj = surface_source.a_obj;
         if (!obj)
             return surfaceid;
-        surfaceid = objects[obj->otyp].oc_material;
+        surface_material = objects[obj->otyp].oc_material;
     }
     else if (surface_type == HIT_SURFACE_SOURCE_LOCATION)
     {
@@ -1686,15 +1735,18 @@ anything* surface_source_ptr;
         cc.y = surface_source.a_coord.y;
         if (!isok(cc.x, cc.y))
             return surfaceid;
-        surfaceid = location_type_definitions[levl[cc.x][cc.y].typ].material;
+        surface_material = location_type_definitions[levl[cc.x][cc.y].typ].material;
     }
     else if (surface_type == HIT_SURFACE_SOURCE_TRAP)
     {
         struct trap* t = surface_source.a_trap;
         if (!t)
             return surfaceid;
-        surfaceid = trap_type_definitions[t->ttyp].material;
+        surface_material = trap_type_definitions[t->ttyp].material;
     }
+
+    surfaceid = material_definitions[surface_material].hit_surface_mapping;
+
     return surfaceid;
 }
 
@@ -1765,7 +1817,7 @@ enum hmon_atkmode_types thrown;
         }
     }
 
-    enum obj_mat_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
+    enum hit_surface_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
@@ -1830,7 +1882,7 @@ enum hmon_atkmode_types thrown;
         return;
 
 
-    enum strike_surface_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
+    enum hit_surface_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;

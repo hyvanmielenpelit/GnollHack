@@ -3645,23 +3645,23 @@ polymorph_sink()
     default:
     case 0:
         sym = S_fountain;
-		create_simple_location(u.ux, u.uy, FOUNTAIN, rn2(6), 0, 0, levl[u.ux][u.uy].floortyp, FALSE);
+		create_simple_location(u.ux, u.uy, FOUNTAIN, 0, rn2(6), 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
 		if (sinklooted)
 			SET_FOUNTAIN_LOOTED(u.ux, u.uy);
 		break;
     case 1:
         sym = S_throne;
-		create_simple_location(u.ux, u.uy, THRONE, sinklooted ? T_LOOTED : 0, 0, 0, levl[u.ux][u.uy].floortyp, FALSE);
+		create_simple_location(u.ux, u.uy, THRONE, 0, sinklooted ? T_LOOTED : 0, 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
         break;
     case 2:
         sym = S_altar;
-		create_simple_location(u.ux, u.uy, ALTAR, Align2amask(rn2((int)A_LAWFUL + 2) - 1), 0, 0, levl[u.ux][u.uy].floortyp, FALSE);
+		create_simple_location(u.ux, u.uy, ALTAR, 0, Align2amask(rn2((int)A_LAWFUL + 2) - 1), 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
         break;
     case 3:
 		if (levl[u.ux][u.uy].floortyp)
 		{
 			sym = location_type_definitions[levl[u.ux][u.uy].floortyp].base_screen_symbol;
-			create_simple_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp, 0, 0, 0, 0, FALSE);
+			create_simple_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, 0, 0, 0, 0, FALSE);
 		}
 		else
 		{
@@ -3704,7 +3704,7 @@ teleport_sink()
 
     if ((levl[cx][cy].typ == ROOM || levl[cx][cy].typ == GRASS || levl[cx][cy].typ == GROUND) && !trp && !eng) {
         /* create sink at new position */
-		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].looted, levl[u.ux][u.uy].subtyp, 0, levl[cx][cy].floortyp, TRUE);
+		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].looted, levl[u.ux][u.uy].subtyp, 0, levl[cx][cy].floortyp, levl[cx][cy].floorsubtyp, TRUE);
         /* remove old sink */
 		create_basic_floor_location(u.ux, u.uy, levl[cx][cy].floortyp ? levl[cx][cy].floortyp : ROOM, 0, TRUE);
         return TRUE;
@@ -5590,7 +5590,7 @@ xchar x, y;
 }
 
 void
-full_location_transform(x, y, type, location_flags, subtype, feature_doodad, floor_doodad, floortype, facing_right, horizontal, donewsym)
+full_location_transform(x, y, type, location_flags, subtype, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, donewsym)
 xchar x, y;
 int type, subtype, feature_doodad, floor_doodad, floortype;
 uchar location_flags;
@@ -5603,6 +5603,7 @@ boolean facing_right, horizontal, donewsym;
 	levl[x][y].floor_doodad = floor_doodad;
 	levl[x][y].feature_doodad = feature_doodad;
 	levl[x][y].floortyp = floortype;
+	levl[x][y].floorsubtyp = floorsubtype;
 	levl[x][y].facing_right = facing_right;
 	levl[x][y].horizontal = horizontal;
 	maybe_create_location_light_and_sound_sources(x, y);
@@ -5617,13 +5618,13 @@ boolean facing_right, horizontal, donewsym;
 }
 
 void
-create_simple_location(x, y, type, location_flags, subtype, floor_doodad, floortype, donewsym)
+create_simple_location(x, y, type, subtype, location_flags, floor_doodad, floortype, floorsubtype, donewsym)
 xchar x, y;
-int type, subtype, floor_doodad, floortype;
+int type, subtype, floor_doodad, floortype, floorsubtype;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, floortype, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, donewsym);
 }
 
 void
@@ -5636,7 +5637,7 @@ boolean donewsym;
 	if (!isok(x, y))
 		return;
 
-	full_location_transform(x, y, type, location_flags, 0, 0, 0, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, 0, 0, 0, 0, 0, FALSE, FALSE, donewsym);
 }
 
 void
@@ -5646,7 +5647,7 @@ int type, subtype, floor_doodad;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, 0, 0, FALSE, FALSE, donewsym);
 }
 
 
@@ -5673,10 +5674,16 @@ int type, subtype;
 	}
 
 	/* Then, change type */
-	if(IS_FLOOR(levl[x][y].typ) && !IS_FLOOR(type))
+	if (IS_FLOOR(levl[x][y].typ) && !IS_FLOOR(type))
+	{
 		levl[x][y].floortyp = levl[x][y].typ;
+		levl[x][y].floorsubtyp = levl[x][y].subtyp;
+	}
 	else if (IS_FLOOR(type))
+	{
 		levl[x][y].floortyp = 0;
+		levl[x][y].floorsubtyp = 0;
+	}
 
 	levl[x][y].typ = type;
 	levl[x][y].subtyp = subtype;

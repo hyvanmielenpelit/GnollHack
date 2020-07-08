@@ -11,43 +11,43 @@
 /* NOTE: the order of these exactly corresponds to the
    order of oc_material values #define'd in objclass.h. */
 struct material_definition material_definitions[MAX_MATERIAL_TYPES] = {
-    {"mysterious",  PHASE_VOID,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"liquid",      PHASE_LIQUID,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, TRUE },
-    {"oil",         PHASE_LIQUID,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"wax",         PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"vegetable",   PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE },
-    {"flesh",       PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE },
-    {"organic",     PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"paper",       PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"cloth",       PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"silk",        PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"leather",     PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"wooden",      PHASE_SOLID,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"bone",        PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"chitin",      PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE },
-    {"tooth",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
-    {"dragonhide",  PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE },
-    {"iron",        PHASE_SOLID,    FALSE, TRUE,  TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"metal",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"copper",      PHASE_SOLID,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"silver",      PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"gold",        PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"platinum",    PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"orichalcum",  PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"adamantium",  PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"mithril",     PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"plastic",     PHASE_SOLID,    TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE  },
-    {"glass",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE  },
-    {"gemstone",    PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"stone",       PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"modronite",   PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE  },
-    {"planar rift", PHASE_VOID,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"force field", PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"air",         PHASE_GAS,      FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"fire",        PHASE_ENERGY,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"energy",      PHASE_ENERGY,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"incorporeal", PHASE_VOID,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
-    {"ice",         PHASE_SOLID,    FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE  },
+    {"mysterious",  PHASE_VOID,     HIT_SURFACE_NONE,       FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"liquid",      PHASE_LIQUID,   HIT_SURFACE_LIQUID,     FLOOR_SURFACE_LIQUID,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, TRUE },
+    {"oil",         PHASE_LIQUID,   HIT_SURFACE_LIQUID,     FLOOR_SURFACE_LIQUID,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"wax",         PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_GROUND,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"vegetable",   PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_GRASS,    TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE },
+    {"flesh",       PHASE_SOLID,    HIT_SURFACE_FLESH,      FLOOR_SURFACE_GROUND,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  TRUE,  TRUE,    FALSE, TRUE },
+    {"organic",     PHASE_SOLID,    HIT_SURFACE_ORGANIC,    FLOOR_SURFACE_GROUND,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"paper",       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"cloth",       PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"silk",        PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"leather",     PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_CARPET,   TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, TRUE,  FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"wooden",      PHASE_SOLID,    HIT_SURFACE_WOOD,       FLOOR_SURFACE_WOOD,     TRUE,  FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"bone",        PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"chitin",      PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE },
+    {"tooth",       PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, TRUE,  FALSE, TRUE,    FALSE, TRUE },
+    {"dragonhide",  PHASE_SOLID,    HIT_SURFACE_BONE,       FLOOR_SURFACE_CARPET,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE },
+    {"iron",        PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, TRUE,  TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"metal",       PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"copper",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, TRUE,  FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"silver",      PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"gold",        PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"platinum",    PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"orichalcum",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"adamantium",  PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"mithril",     PHASE_SOLID,    HIT_SURFACE_METAL,      FLOOR_SURFACE_METAL,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, TRUE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"plastic",     PHASE_SOLID,    HIT_SURFACE_LEATHER,    FLOOR_SURFACE_GROUND,   TRUE,  FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE  },
+    {"glass",       PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE,  FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  TRUE  },
+    {"gemstone",    PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"stone",       PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"modronite",   PHASE_SOLID,    HIT_SURFACE_STONE,      FLOOR_SURFACE_STONE,    FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE  },
+    {"planar rift", PHASE_VOID,     HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"force field", PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"air",         PHASE_GAS,      HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"fire",        PHASE_ENERGY,   HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"energy",      PHASE_ENERGY,   HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"incorporeal", PHASE_VOID,     HIT_SURFACE_IMMATERIAL, FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, FALSE },
+    {"ice",         PHASE_SOLID,    HIT_SURFACE_GLASS,      FLOOR_SURFACE_NONE,     FALSE, FALSE, FALSE, FALSE,   TRUE,  FALSE, FALSE, FALSE,   FALSE, FALSE, FALSE, FALSE,   FALSE, TRUE  },
 };
 
 
@@ -4374,7 +4374,7 @@ struct obj *no_wish;
 			if (!strncmpi(bp, "poison ", 7))
                 lhorizontal |= FOUNTAIN_POISON;
             
-            full_location_transform(x, y, FOUNTAIN, lflags, 0, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, FALSE, lhorizontal, FALSE);
+            full_location_transform(x, y, FOUNTAIN, lflags, 0, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : 0, FALSE, lhorizontal, FALSE);
 
             int ftyp = (lev->fountaintype & FOUNTAIN_TYPE_MASK);
 			pline("A %s.", ftyp > 0 ? fountain_type_text(ftyp) : lev->blessedftn ? "enchanted fountain" : "magic fountain");
@@ -4383,20 +4383,20 @@ struct obj *no_wish;
         }
         if (!BSTRCMPI(bp, p - 6, "throne")) 
         {
-            create_simple_location(x, y, THRONE, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, FALSE);
+            create_simple_location(x, y, THRONE, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A throne.");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
         if (!BSTRCMPI(bp, p - 4, "sink")) {
-            create_simple_location(x, y, SINK, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, FALSE);
+            create_simple_location(x, y, SINK, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A sink.");
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }
         /* ("water" matches "potion of water" rather than terrain) */
         if (!BSTRCMPI(bp, p - 4, "pool") || !BSTRCMPI(bp, p - 4, "moat")) {
-            create_simple_location(x, y, !BSTRCMPI(bp, p - 4, "pool") ? POOL : MOAT, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, FALSE);
+            create_simple_location(x, y, !BSTRCMPI(bp, p - 4, "pool") ? POOL : MOAT, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             del_engr_at(x, y);
             pline("A %s.", (lev->typ == POOL) ? "pool" : "moat");
             /* Must manually make kelp! */
@@ -4405,7 +4405,7 @@ struct obj *no_wish;
             return (struct obj *) &zeroobj;
         }
         if (!BSTRCMPI(bp, p - 4, "lava")) { /* also matches "molten lava" */
-            create_simple_location(x, y, LAVAPOOL, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, FALSE);
+            create_simple_location(x, y, LAVAPOOL, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             del_engr_at(x, y);
             pline("A pool of molten lava.");
             if (!(Levitation || Flying))
@@ -4428,7 +4428,7 @@ struct obj *no_wish;
             else /* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
                 al = (!rn2(6)) ? A_NONE : rn2((int) A_LAWFUL + 2) - 1;
 
-            create_simple_location(x, y, ALTAR, Align2amask(al), 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, FALSE);
+            create_simple_location(x, y, ALTAR, 0, Align2amask(al), 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("%s altar.", An(align_str(al)));
             newsym(x, y);
             return (struct obj *) &zeroobj;
@@ -4444,7 +4444,7 @@ struct obj *no_wish;
         }
 
         if (!BSTRCMPI(bp, p - 4, "tree")) {
-            create_simple_location(x, y, TREE, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, FALSE);
+            create_simple_location(x, y, TREE, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("A tree.");
             newsym(x, y);
             block_vision_and_hearing_at_point(x, y);
@@ -4452,7 +4452,7 @@ struct obj *no_wish;
         }
 
         if (!BSTRCMPI(bp, p - 4, "bars")) {
-            create_simple_location(x, y, IRONBARS, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, FALSE);
+            create_simple_location(x, y, IRONBARS, 0, 0, 0, IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp, IS_FLOOR(levl[x][y].typ) ? levl[x][y].subtyp : levl[x][y].floorsubtyp, FALSE);
             pline("Iron bars.");
             newsym(x, y);
             return (struct obj *) &zeroobj;

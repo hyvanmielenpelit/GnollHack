@@ -41,7 +41,7 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"DRAWBRIDGE_DOWN", S_vodbridge, GROUND, MAT_WOOD, LOCATION_SOUNDSET_NONE},
     {"AIR", S_air, 0, MAT_AIR, LOCATION_SOUNDSET_NONE},
     {"CLOUD", S_cloud, AIR, MAT_AIR, LOCATION_SOUNDSET_NONE},
-    {"GRASS", S_grass, 0, MAT_MINERAL, LOCATION_SOUNDSET_NONE},
+    {"GRASS", S_grass, 0, MAT_VEGGY, LOCATION_SOUNDSET_NONE},
     {"GROUND", S_ground, 0, MAT_MINERAL, LOCATION_SOUNDSET_NONE},
     {"UNEXPLORED", S_unexplored, 0, MAT_NONE, LOCATION_SOUNDSET_NONE}
 };
@@ -51,6 +51,39 @@ void
 init_rm()
 {
     return;
+}
+
+enum obj_material_types
+get_location_type_material(typ, subtyp)
+int typ, subtyp;
+{
+    if (subtyp <= 0)
+        return typ >= 0 && typ < MAX_MATERIAL_TYPES ? location_type_definitions[typ].material : MAT_NONE;
+
+    enum obj_material_types material = location_type_definitions[typ].material;
+
+    if (typ == ROOM)
+    {
+        enum floor_subtypes subtype = subtyp;
+        switch (subtype)
+        {
+        case FLOOR_SUBTYPE_NORMAL:
+            break;
+        case FLOOR_SUBTYPE_MARBLE:
+            break;
+        case FLOOR_SUBTYPE_PARQUET:
+            material = MAT_WOOD;
+            break;
+        case FLOOR_SUBTYPE_STONE_CRACKS:
+            break;
+        case MAX_FLOOR_SUBTYPES:
+            break;
+        default:
+            break;
+        }
+    }
+
+    return material;
 }
 
 /* rm.c */

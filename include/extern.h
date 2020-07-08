@@ -527,8 +527,8 @@ E void FDECL(printweight, (char*, int, boolean, boolean));
 E int FDECL(monsterdescription, (struct monst*));
 E int NDECL(dotogglehpbars);
 E void FDECL(delete_location, (xchar, xchar));
-E void FDECL(full_location_transform, (xchar, xchar, int, uchar, int, int, int, int, boolean, boolean, boolean));
-E void FDECL(create_simple_location, (xchar, xchar, int, uchar, int, int, int, boolean));
+E void FDECL(full_location_transform, (xchar, xchar, int, int, uchar, int, int, int, int, boolean, boolean, boolean));
+E void FDECL(create_simple_location, (xchar, xchar, int, uchar, int, int, int, int, boolean));
 E void FDECL(create_basic_floor_location, (xchar, xchar, int, uchar, boolean));
 E void FDECL(create_doodad_floor_location, (xchar, xchar, int, uchar, int, int, boolean));
 E void FDECL(transform_location_type, (xchar, xchar, int, int));
@@ -2460,6 +2460,7 @@ E void FDECL(genl_outrip, (winid, int, time_t));
 
 /* ### rm.c ### */
 E void NDECL(init_rm);
+E enum obj_material_types FDECL(get_location_type_material, (int, int));
 
 /* ### rnd.c ### */
 
@@ -2706,9 +2707,10 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 E void NDECL(update_game_music);
 E void NDECL(stop_music);
 E void NDECL(play_level_ambient_sounds);
+E enum floor_surface_types FDECL(get_floor_surface_type, (int, int));
 E void FDECL(play_movement_sound, (struct monst*));
 E void FDECL(play_object_push_sound, (struct obj*));
-E enum obj_material_types FDECL(get_hit_surface_type, (enum hit_surface_source_types, ANY_P*));
+E enum hit_surface_types FDECL(get_hit_surface_type, (enum hit_surface_source_types, ANY_P*));
 E void FDECL(get_hit_location, (enum hit_surface_source_types, ANY_P*, xchar*, xchar*));
 E void FDECL(play_simple_object_sound, (struct obj*, enum object_sound_types));
 E void FDECL(play_object_hit_sound, (struct obj*, enum hit_surface_source_types, ANY_P*, double, enum hmon_atkmode_types));

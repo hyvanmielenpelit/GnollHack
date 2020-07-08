@@ -108,7 +108,9 @@ enum ground_subtypes {
 
 enum floor_subtypes {
     FLOOR_SUBTYPE_NORMAL = 0,
-    FLOOR_SUBTYPE_CRACKS,
+    FLOOR_SUBTYPE_MARBLE,
+    FLOOR_SUBTYPE_PARQUET,
+    FLOOR_SUBTYPE_STONE_CRACKS,
     MAX_FLOOR_SUBTYPES
 };
 
@@ -613,7 +615,8 @@ struct rm {
     schar typ;               /* what is really there */
     schar subtyp;            /* grass containing flowers, etc., which may influence tile behavior, drawing, and description */
     schar floortyp;          /* for feature layer typs, what is the floor typ underneath, which may influence GUI drawing */
-    
+    schar floorsubtyp;       /* subtyp for floortyp */
+
     int floor_doodad;        /* a floor doodad layer glyph: previously broken typ, etc., which appears on the broken feature layer above the floor layer */
     int feature_doodad;      /* a feature doodad layer glyph, which appears on the doodad layer above the dungeon feature */
 
