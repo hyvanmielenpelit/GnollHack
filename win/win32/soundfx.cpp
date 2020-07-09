@@ -146,6 +146,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Pick Up" , 0.3f},
 
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Drop" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Throw" , 0.5f},
 };
 
 #undef NoSound

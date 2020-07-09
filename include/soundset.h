@@ -88,6 +88,7 @@ enum ghsound_types {
 	GHSOUND_CHEST_LID_SLAM,
 	GHSOUND_GENERIC_ITEM_PICK_UP,
 	GHSOUND_GENERIC_ITEM_DROP,
+	GHSOUND_GENERIC_ITEM_THROW,
 	MAX_GHSOUNDS
 };
 
@@ -257,6 +258,13 @@ enum object_sound_types {
 	/* General */
 	OBJECT_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
 	OBJECT_SOUND_TYPE_PUSH,
+#if 0
+	/* Movement */
+	OBJECT_SOUND_TYPE_WALK,				/* Walk sound if used as boots */
+	OBJECT_SOUND_TYPE_FLY,				/* Wings of flying: Fly sound if worn */
+	OBJECT_SOUND_TYPE_LEVITATION,		/* Levitation items: Levitation sound if worn */
+	OBJECT_SOUND_TYPE_SWIMMING,		    /* Swimming items: Swimming sound if worn */
+#endif
 	MAX_OBJECT_SOUND_TYPES
 };
 
@@ -280,7 +288,7 @@ enum object_soundset_types {
 	OBJECT_SOUNDSET_DAGGER,
 	OBJECT_SOUNDSET_BONE_DAGGER,
 	OBJECT_SOUNDSET_HUMAN_BAREHANDED,
-	OBJECT_SOUNDSET_HUMAN_KICK,
+	OBJECT_SOUNDSET_HUMAN_BAREFOOTED,
 	OBJECT_SOUNDSET_CHEST,
 	OBJECT_SOUNDSET_COIN,
 	OBJECT_SOUNDSET_BOULDER,
@@ -305,7 +313,7 @@ enum player_sound_types {
 
 enum player_attack_soundset_types {
 	PLAYER_ATTACK_SOUNDSET_BAREHANDED = 0,
-	PLAYER_ATTACK_SOUNDSET_KICK,
+	PLAYER_ATTACK_SOUNDSET_BAREFOOTED,
 	MAX_PLAYER_ATTACK_SOUNDSETS
 };
 
@@ -361,7 +369,10 @@ struct monster_soundset_definition {
 	enum soundsource_ambient_subtypes ambient_subtype;
 
 	/* Attacks */
-	enum object_soundset_types attack_soundsets[NATTK + 1]; /* +1 for kick command */
+	enum object_soundset_types attack_soundsets[NATTK + 1]; /* attack # NATTK is used for hit sounds in kick command and for walking sound */
+
+#define BAREHANDED_ATTACK_NUMBER 0
+#define BAREFOOTED_ATTACK_NUMBER NATTK
 
 	/* Movement */
 	struct ghsound_info innate_movement_sounds[MAX_MOVEMENT_STYLES];

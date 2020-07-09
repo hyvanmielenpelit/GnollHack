@@ -1905,7 +1905,7 @@ docrt()
             {
                 show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
-                for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_COVER_OBJECT; layer_idx++)
+                for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_GENERAL_UI; layer_idx++)
                     show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }
     }

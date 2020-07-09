@@ -24,7 +24,7 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 		"Generic",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_PUSH_EFFORT, 1.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_KICK},
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
@@ -50,42 +50,42 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 		"Generic",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL},
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Goblin",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL},
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Dragon",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL},
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
 	{
 		"Dracolich",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL},
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
     },
     {
         "Bee",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL},
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
     },
     {
         "Horse",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL},
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
         {{GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}}
     },
 };
@@ -137,7 +137,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -177,7 +177,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_FIRE, 0.3f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -217,7 +217,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
             ,
@@ -257,7 +257,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_BOW_FIRE, 1.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -297,7 +297,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_CROSSBOW_FIRE, 1.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -337,7 +337,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_ARROW_HIT, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -377,7 +377,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_SWORD_SWING, 1.0f},
             {GHSOUND_SWORD_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -417,7 +417,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_AXE_SWING, 1.0f},
             {GHSOUND_AXE_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -457,7 +457,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DAGGER_SWING, 1.0f},
             {GHSOUND_DAGGER_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -497,7 +497,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -617,7 +617,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -658,7 +658,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -699,7 +699,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -1325,7 +1325,7 @@ struct monst* mtmp;
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = base_volume * volume;
-    immediateinfo.parameter_names[0] = "Surface";
+    immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
@@ -1421,7 +1421,7 @@ struct obj* obj;
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
-    immediateinfo.parameter_names[0] = "Surface";
+    immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
@@ -1795,7 +1795,7 @@ enum hmon_atkmode_types thrown;
         if (you_attack)
         {
             enum player_soundset_types pss = get_player_soundset();
-            enum object_soundset_types oss = player_soundsets[pss].attack_soundsets[attack_number == NATTK ? PLAYER_ATTACK_SOUNDSET_KICK : PLAYER_ATTACK_SOUNDSET_BAREHANDED];
+            enum object_soundset_types oss = player_soundsets[pss].attack_soundsets[attack_number == NATTK ? PLAYER_ATTACK_SOUNDSET_BAREFOOTED : PLAYER_ATTACK_SOUNDSET_BAREHANDED];
             soundid = object_soundsets[oss].sounds[sound_type].ghsound;
             volume = object_soundsets[oss].sounds[sound_type].volume;
         }
@@ -1821,7 +1821,7 @@ enum hmon_atkmode_types thrown;
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
-    immediateinfo.parameter_names[0] = "Surface";
+    immediateinfo.parameter_names[0] = "HitSurface";
     immediateinfo.parameter_values[0] = (float)surfaceid;
     immediateinfo.parameter_names[1] = "Damage";
     immediateinfo.parameter_values[1] = (float)damage;
@@ -1886,7 +1886,7 @@ enum hmon_atkmode_types thrown;
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
-    immediateinfo.parameter_names[0] = "Surface";
+    immediateinfo.parameter_names[0] = "HitSurface";
     immediateinfo.parameter_values[0] = (float)surfaceid;
     immediateinfo.parameter_names[1] = "Damage";
     immediateinfo.parameter_values[1] = (float)damage;
