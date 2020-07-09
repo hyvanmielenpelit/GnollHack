@@ -8,6 +8,7 @@
 #define SOUNDSET_H
 
 #define BACKGROUND_MUSIC_VOLUME 0.04f
+#define SIMPLE_STEALTH_VOLUME 0.08f
 #define MAX_HEARING_DISTANCE 10
 
 
@@ -262,8 +263,9 @@ enum object_sound_types {
 
 	/* Movement */
 	OBJECT_SOUND_TYPE_WALK,				/* Walk sound if used as boots */
+	OBJECT_SOUND_TYPE_STEALTH,			/* Walk sound while in stealth if used as boots */
 	OBJECT_SOUND_TYPE_CLIMB_STAIRS,		/* Climb stairs sound if used as boots */
-	OBJECT_SOUND_TYPE_CLIMB_LADDER,	/* Climb ladder sound if used as boots or gloves */
+	OBJECT_SOUND_TYPE_CLIMB_LADDER,		/* Climb ladder sound if used as boots or gloves */
 #if 0
 	OBJECT_SOUND_TYPE_FLY,				/* Wings of flying: Fly sound if worn */
 	OBJECT_SOUND_TYPE_LEVITATION,		/* Levitation items: Levitation sound if worn */

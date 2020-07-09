@@ -387,9 +387,23 @@ struct mkroom *sroom;
 
 
     sh = sroom->fdoor;
-    switch (type) {
+    switch (type)
+    {
+    case MORGUE:
+        /* Change floor to ground, more sensible for graveyards */
+        for (int x = sroom->lx; x <= sroom->hx; x++)
+            for (int y = sroom->ly; y <= sroom->hy; y++)
+                if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
+                {
+                    if (levl[x][y].typ == ROOM)
+                        levl[x][y].typ = GROUND, levl[x][y].subtyp = 0;
+                    else if (levl[x][y].floortyp == ROOM)
+                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = 0;
+                }
+        break;
     case COURT:
-        if (level.flags.is_maze_lev) {
+        if (level.flags.is_maze_lev) 
+        {
             for (tx = sroom->lx; tx <= sroom->hx; tx++)
                 for (ty = sroom->ly; ty <= sroom->hy; ty++)
                     if (IS_THRONE(levl[tx][ty].typ))
@@ -486,13 +500,16 @@ struct mkroom *sroom;
     }
 
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
-        for (sy = sroom->ly; sy <= sroom->hy; sy++) {
-            if (sroom->irregular) {
+        for (sy = sroom->ly; sy <= sroom->hy; sy++) 
+        {
+            if (sroom->irregular)
+            {
                 if ((int) levl[sx][sy].roomno != rmno || levl[sx][sy].edge
                     || (sroom->doorct
                         && distmin(sx, sy, doors[sh].x, doors[sh].y) <= 1))
                     continue;
-            } else if (!SPACE_POS(levl[sx][sy].typ)
+            }
+            else if (!SPACE_POS(levl[sx][sy].typ)
                        || (sroom->doorct
                            && ((sx == sroom->lx && doors[sh].x == sx - 1)
                                || (sx == sroom->hx && doors[sh].x == sx + 1)

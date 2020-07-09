@@ -133,6 +133,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -176,6 +177,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
+            {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, SIMPLE_STEALTH_VOLUME},
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}
         },
@@ -217,6 +219,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -265,6 +268,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -305,6 +309,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -353,6 +358,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -393,6 +399,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -441,6 +448,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -481,6 +489,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -529,6 +538,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -569,6 +579,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -617,6 +628,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -660,6 +672,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
+            {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, SIMPLE_STEALTH_VOLUME},
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}
         },
@@ -704,6 +717,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_HORSE_FOOTSTEPS, 1.0f},
+            {GHSOUND_HORSE_FOOTSTEPS, SIMPLE_STEALTH_VOLUME},
             {GHSOUND_HORSE_FOOTSTEPS, 1.0f},
             {GHSOUND_HORSE_FOOTSTEPS, 1.0f}
         },
@@ -748,6 +762,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_FOOTSTEPS_COTTON_SLIPPERS, 1.0f},
+            {GHSOUND_FOOTSTEPS_COTTON_SLIPPERS, SIMPLE_STEALTH_VOLUME},
             {GHSOUND_FOOTSTEPS_COTTON_SLIPPERS, 1.0f},
             {GHSOUND_FOOTSTEPS_COTTON_SLIPPERS, 1.0f}
         },
@@ -789,6 +804,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -837,6 +853,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -879,6 +896,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_PUSH_BOULDER, 1.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
@@ -1429,16 +1447,22 @@ struct monst* mtmp;
 
     enum monster_soundset_types mss = isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
     enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[BAREFOOTED_ATTACK_NUMBER];
-    soundid = object_soundsets[oss].sounds[OBJECT_SOUND_TYPE_WALK].ghsound;
-    volume = object_soundsets[oss].sounds[OBJECT_SOUND_TYPE_WALK].volume;
     
     if (isyou)
 	{ 
+        if (Wwalking && floorid == FLOOR_SURFACE_LIQUID)
+            floorid = FLOOR_SURFACE_CARPET;
+
+        enum object_sound_types sound_type = Stealth ? OBJECT_SOUND_TYPE_STEALTH : OBJECT_SOUND_TYPE_WALK;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+
+
         if (uarmf)
         {
             enum object_soundset_types oss_boots = objects[uarmf->otyp].oc_soundset;
-            soundid = object_soundsets[oss_boots].sounds[OBJECT_SOUND_TYPE_WALK].ghsound;
-            volume = object_soundsets[oss_boots].sounds[OBJECT_SOUND_TYPE_WALK].volume;
+            soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
+            volume = object_soundsets[oss_boots].sounds[sound_type].volume;
         }
 
         enum player_soundset_types pss = get_player_soundset();
@@ -1460,14 +1484,21 @@ struct monst* mtmp;
 	}
 	else
 	{
+        if (mtmp->mprops[WATER_WALKING] != 0 && floorid == FLOOR_SURFACE_LIQUID)
+            floorid = FLOOR_SURFACE_CARPET;
+
+        enum object_sound_types sound_type = mtmp->mprops[STEALTH] != 0 ? OBJECT_SOUND_TYPE_STEALTH : OBJECT_SOUND_TYPE_WALK;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+
         if (mtmp->worn_item_flags & W_ARMF)
         {
             struct obj* omtp_boots = which_armor(mtmp, W_ARMF);
             if (omtp_boots)
             {
                 enum object_soundset_types oss_boots = objects[omtp_boots->otyp].oc_soundset;
-                soundid = object_soundsets[oss_boots].sounds[OBJECT_SOUND_TYPE_WALK].ghsound;
-                volume = object_soundsets[oss_boots].sounds[OBJECT_SOUND_TYPE_WALK].volume;
+                soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss_boots].sounds[sound_type].volume;
             }
         }
         
@@ -1476,7 +1507,6 @@ struct monst* mtmp;
 			soundid = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
             volume = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].volume;
             floorid = FLOOR_SURFACE_NONE;
-
 		}
 		else if (is_levitating(mtmp))
 		{
@@ -1500,7 +1530,7 @@ struct monst* mtmp;
     immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = "Weight";
-    immediateinfo.parameter_values[1] = (float)floorid;
+    immediateinfo.parameter_values[1] = weight;
     immediateinfo.parameter_names[2] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 

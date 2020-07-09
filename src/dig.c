@@ -1049,7 +1049,7 @@ coord *cc;
         break;
     }
     del_engr_at(dig_x, dig_y);
-    create_simple_location(dig_x, dig_y, ROOM, 0, 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
+    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : ROOM, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : 0, 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
     return;
 }
 

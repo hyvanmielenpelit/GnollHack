@@ -5590,7 +5590,7 @@ xchar x, y;
 }
 
 void
-full_location_transform(x, y, type, location_flags, subtype, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, donewsym)
+full_location_transform(x, y, type, subtype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, donewsym)
 xchar x, y;
 int type, subtype, feature_doodad, floor_doodad, floortype;
 uchar location_flags;
@@ -5624,7 +5624,7 @@ int type, subtype, floor_doodad, floortype, floorsubtype;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, donewsym);
 }
 
 void
@@ -5637,7 +5637,7 @@ boolean donewsym;
 	if (!isok(x, y))
 		return;
 
-	full_location_transform(x, y, type, location_flags, 0, 0, 0, 0, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, 0, location_flags, 0, 0, 0, 0, FALSE, FALSE, donewsym);
 }
 
 void
@@ -5647,7 +5647,7 @@ int type, subtype, floor_doodad;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, location_flags, subtype, 0, floor_doodad, 0, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, 0, 0, FALSE, FALSE, donewsym);
 }
 
 
