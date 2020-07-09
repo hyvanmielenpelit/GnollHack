@@ -426,7 +426,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
-            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_SWORD_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -471,7 +471,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
-            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_SWORD_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -516,7 +516,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
-            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_DAGGER_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
