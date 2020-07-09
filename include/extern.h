@@ -3358,6 +3358,7 @@ E void FDECL(weldmsg, (struct obj *));
 E void FDECL(setmnotwielded, (struct monst *, struct obj *));
 E boolean FDECL(mwelded, (struct obj *, struct monst*));
 E void NDECL(update_unweapon);
+E void FDECL(update_hand_unweapon, (int));
 
 /* ### windows.c ### */
 

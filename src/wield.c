@@ -142,29 +142,32 @@ boolean verbose;
 void
 update_unweapon()
 {
-	boolean unweapon1 = FALSE;
-	boolean unweapon2 = FALSE;
+	update_hand_unweapon(1);
+	update_hand_unweapon(2);
+}
 
-	if (uwep) {
-		unweapon1 = (uwep->oclass == WEAPON_CLASS)
-			? is_launcher(uwep) || is_ammo(uwep) || is_missile(uwep)
-			|| (is_appliable_pole_type_weapon(uwep) && !u.usteed)
-			: !is_weptool(uwep) && !is_wet_towel(uwep);
+void
+update_hand_unweapon(hand)
+int hand;
+{
+	struct obj* wep = (hand <= 1 ? uwep : uarms);
+	boolean* unweapon_ptr = (hand <= 1 ? &unweapon1 : &unweapon2);
+
+	if (hand >= 2 && !u.twoweap)
+	{
+		*unweapon_ptr = FALSE;
+		return;
+	}
+		
+	if (wep)
+	{
+		*unweapon_ptr = (wep->oclass == WEAPON_CLASS)
+			? is_launcher(wep) || is_ammo(wep) || is_missile(wep)
+			|| (is_appliable_pole_type_weapon(wep) && !is_spear(wep) && !u.usteed)
+			: !is_weptool(wep) && !is_wet_towel(wep);
 	}
 	else
-		unweapon1 = TRUE; /* for "bare hands" message */
-
-	if (u.twoweap && uarms) {
-		unweapon2 = (uarms->oclass == WEAPON_CLASS)
-			? is_launcher(uarms) || is_ammo(uarms) || is_missile(uarms)
-			|| (is_appliable_pole_type_weapon(uarms) && !u.usteed)
-			: !is_weptool(uarms) && !is_wet_towel(uarms);
-	}
-	else
-		unweapon2 = TRUE; /* for "bare hands" message */
-
-	unweapon = unweapon1 && unweapon2;
-
+		*unweapon_ptr = TRUE; /* for "bare hands" message */
 
 }
 
@@ -1389,10 +1392,12 @@ int
 dotwoweapon()
 {
     /* You can always toggle it off */
-    if (u.twoweap) {
+    if (u.twoweap) 
+	{
         //You("switch to your primary weapon.");
 		You("stop two-weapon fighting.");
         u.twoweap = 0;
+		update_hand_unweapon(2);
 		context.botl = context.botlx = TRUE;
         update_inventory();
         return 0;
@@ -1404,6 +1409,7 @@ dotwoweapon()
         /* Success! */
         You("begin two-weapon fighting.");
         u.twoweap = 1;
+		update_hand_unweapon(2);
 		context.botl = context.botlx = TRUE;
 		update_inventory();
 		return 0; // (rnd(20) > ACURR(A_DEX));

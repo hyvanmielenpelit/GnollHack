@@ -117,7 +117,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Player/Human/Barehanded/Human Barehanded Swing" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Barehanded//Human Barehanded Hit" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Player/Human/Barehanded/Human Barehanded Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Player/Human/Kick//Human Kick Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Player/Human/Kick/Human Kick Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/SFX/Door/Door Wham" , 1.0f},
@@ -620,7 +620,7 @@ extern "C"
             if(!info.parameter_names[i] || strcmp(info.parameter_names[i], "") == 0)
                 break;
 
-            result = immediateSoundDescription->getParameterDescriptionByName("Surface", &paramDesc);
+            result = immediateSoundDescription->getParameterDescriptionByName(info.parameter_names[i], &paramDesc);
             if (result != FMOD_OK)
                 return FALSE;
 
