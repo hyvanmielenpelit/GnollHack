@@ -141,6 +141,7 @@ enum obj_material_types {
 	MAT_ENERGY      = 34,
 	MAT_INCORPOREAL = 35,
 	MAT_ICE         = 36,
+	MAT_SOIL        = 37,
 	MAX_MATERIAL_TYPES
 };
 enum material_phase {

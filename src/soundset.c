@@ -1592,11 +1592,12 @@ void
 play_object_push_sound(obj)
 struct obj* obj;
 {
-    if (!obj)
+    if (!obj || !isok(obj->ox, obj->oy))
         return;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
-    enum floor_surface_types floorid = FLOOR_SURFACE_CARPET; /* Set the appropriate floor here */
+    enum floor_surface_types floorid = get_floor_surface_type(obj->ox, obj->oy);
+    float weight = (float)obj->owt;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     enum object_sound_types sound_type = OBJECT_SOUND_TYPE_PUSH;
@@ -1614,20 +1615,19 @@ struct obj* obj;
         volume = object_soundsets[oss].sounds[sound_type].volume;
     }
 
-    if (isok(obj->ox, obj->oy))
-    {
-        float hearing = hearing_array[obj->ox][obj->oy];
-        if (hearing == 0.0f)
-            return;
-        else
-            volume *= hearing_array[obj->ox][obj->oy];
-    }
+    float hearing = hearing_array[obj->ox][obj->oy];
+    if (hearing == 0.0f)
+        return;
+    else
+        volume *= hearing_array[obj->ox][obj->oy];
 
     immediateinfo.ghsound = soundid;
     immediateinfo.volume = volume;
     immediateinfo.parameter_names[0] = "FloorSurface";
     immediateinfo.parameter_values[0] = (float)floorid;
-    immediateinfo.parameter_names[1] = (char*)0;
+    immediateinfo.parameter_names[1] = "Weight";
+    immediateinfo.parameter_values[1] = weight;
+    immediateinfo.parameter_names[2] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 
     if (soundid > GHSOUND_NONE && volume > 0.0f)
