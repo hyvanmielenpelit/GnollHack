@@ -83,7 +83,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Normal", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Valley", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Footsteps/Player Footsteps", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Player Footsteps", 1.0f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Normal", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Angry", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Dead", BACKGROUND_MUSIC_VOLUME},
@@ -116,10 +116,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Goblin/Goblin Death" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Hit" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Barehanded/Human Barehanded Swing" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Barehanded/Human Barehanded Hit" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Kick/Human Kick Swing" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Kick/Human Kick Hit" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Monster/Human/Barehanded/Human Barehanded Swing" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Monster/Human/Barehanded/Human Barehanded Hit" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Human Kick Swing" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Human Kick Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/SFX/Door/Door Wham" , 1.0f},
     { SOUND_BANK_MASTER, "event:/SFX/Door/Door Break" , 1.0f},
 
@@ -135,9 +135,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Coin/Coins Pick Up" , 1.0f},
 
     { SOUND_BANK_MASTER, "event:/Object/General/Coin/Coins Drop" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Footsteps" , 0.15f},
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Barefooted/Horse Footsteps" , 0.15f},
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Push Boulder" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Push/Push Effort" , 0.25f},
+    { SOUND_BANK_MASTER, "event:/Monster/Human/Male/Push Effort" , 0.25f},
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Cause Paralysis" , 1.0f},
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Cause Sleeping" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Monster Death" , 1.0f},
@@ -147,6 +147,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Drop" , 0.5f},
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Item Throw" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Object/Armor/Cotton Slippers/Cotton Slipper Footsteps" , 0.1f},
 };
 
 #undef NoSound

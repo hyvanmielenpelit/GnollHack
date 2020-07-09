@@ -374,7 +374,7 @@ xchar x, y;
                 break; /* skip any additional kicks */
             } else if (tmp > kickdieroll) {
                 You("kick %s.", mon_nam(mon));
-                sum = damageum(mon, uattk, specialdmg);
+                sum = damageum(mon, uattk, uarmf, specialdmg);
                 (void) passive(mon, uarmf, (boolean) (sum > 0),
                                (sum != 2), AT_KICK, FALSE);
                 if (sum == 2)

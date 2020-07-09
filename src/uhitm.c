@@ -759,7 +759,7 @@ struct attack *uattk;
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
 		play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
-		update_u_action(TRUE);
+		update_u_action(ACTION_TILE_ATTACK);
 
 		char strikebuf[BUFSIZ] = "";
 		if (uwep)
@@ -863,7 +863,7 @@ struct attack *uattk;
 					(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 			}
 
-			update_u_action(FALSE);
+			update_u_action(ACTION_TILE_NO_ACTION);
 
 			if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 				break;
@@ -2589,9 +2589,10 @@ struct attack *mattk;
 }
 
 int
-damageum(mdef, mattk, specialdmg)
+damageum(mdef, mattk, omonwep, specialdmg)
 register struct monst *mdef;
 register struct attack *mattk;
+struct obj* omonwep;
 int specialdmg; /* blessed and/or silver bonus against various things */
 {
     register struct permonst *pd = mdef->data;
@@ -2604,7 +2605,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	double damage = 0;
 	
 	/*  First determine the base damage done */
-	struct obj* mweapon = uwep;
+	struct obj* mweapon = omonwep;
 	if (mweapon && mattk->aatyp == AT_WEAP)
 	{
 		int basedmg = 0;
@@ -3082,6 +3083,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	deduct_monster_hp(mdef, damage);
 	int hp_after = mdef->mhp;
 	int damagedealt = hp_after - hp_before;
+	play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(youmonst.data, mattk), mweapon, damage, HMON_MELEE);
 
     if (DEADMONSTER(mdef)) 
 	{
@@ -3489,8 +3491,6 @@ register struct monst *mon;
 		if (youmonst.data->heads > 1 && youmonst.heads_left < bite_butt_count)
 			continue;
 
-		if(mattk->aatyp != AT_NONE)
-			update_u_action(FALSE);
 
 		weapon = 0;
         switch (mattk->aatyp) {
@@ -3543,6 +3543,9 @@ register struct monst *mon;
 
 			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
+				play_monster_simple_weapon_sound(&youmonst, i, weapon, OBJECT_SOUND_TYPE_SWING_MELEE);
+				update_u_action(ACTION_TILE_ATTACK);
+
 				char strikebuf[BUFSIZ] = "";
 				if (weapon)
 					strcpy(strikebuf, Yobjnam2(weapon, "strike"));
@@ -3578,7 +3581,9 @@ register struct monst *mon;
 				}
 				/* Do not print "You hit" message; known_hitum already did it. */
 				if (dhit && mattk->adtyp != AD_SPEL && mattk->adtyp != AD_PHYS)
-					sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+					sum[i] = damageum(mon, mattk, weapon, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+
+				update_u_action(ACTION_TILE_NO_ACTION);
 			}
             break;
         case AT_CLAW:
@@ -3600,7 +3605,10 @@ register struct monst *mon;
 			}
 			/*FALLTHRU*/
 		case AT_SMMN:
-			sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			update_u_action(ACTION_TILE_ATTACK);
+			sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
+			update_u_action(ACTION_TILE_NO_ACTION);
 			break;
 
 		case AT_KICK:
@@ -3611,7 +3619,9 @@ register struct monst *mon;
 		case AT_TAIL:
 		case AT_TENT:
         /*weaponless:*/
-            tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			update_u_action(ACTION_TILE_ATTACK);
+			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
                                    &attknum, &armorpenalty);
             dieroll = rnd(20);
             dhit = (tmp > dieroll || u.uswallow);
@@ -3628,7 +3638,7 @@ register struct monst *mon;
                         mon_nam(mon),
                         (compat == 2) ? "engagingly" : "seductively");
                     /* doesn't anger it; no wakeup() */
-                    sum[i] = damageum(mon, mattk, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS WITHOUT HITUM
+                    sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS WITHOUT HITUM
                     break;
                 }
                 wakeup(mon, TRUE);
@@ -3707,16 +3717,19 @@ register struct monst *mon;
                             silver_sears(&youmonst, mon, silverhit);
                     }
 					//SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS WITHOUT HITUM (AND BELOW MORE FOR HUGS)
-                    sum[i] = damageum(mon, mattk, specialdmg);
+                    sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg);
                 }
             } else { /* !dhit */
                 missum(mon, mattk, (tmp + armorpenalty > dieroll));
             }
-            break;
+			update_u_action(ACTION_TILE_NO_ACTION);
+			break;
 
         case AT_HUGS: 
 		{
-            int specialdmg;
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			update_u_action(ACTION_TILE_ATTACK);
+			int specialdmg;
             long silverhit = 0L;
             boolean byhand = hug_throttles(&mons[u.umonnum]), /* rope golem */
                     unconcerned = (byhand && !can_be_strangled(mon));
@@ -3734,7 +3747,9 @@ register struct monst *mon;
                 if (byhand && uwep && u.ustuck
                     && !(sticks(u.ustuck->data) || u.uswallow))
                     uunstick();
-                continue; /* not 'break'; bypass passive counter-attack */
+				
+				update_u_action(ACTION_TILE_NO_ACTION);
+				continue; /* not 'break'; bypass passive counter-attack */
             }
             /* automatic if prev two attacks succeed, or if
                already grabbed in a previous attack */
@@ -3777,12 +3792,13 @@ register struct monst *mon;
                     
 					if (silverhit && flags.verbose)
                         silver_sears(&youmonst, mon, silverhit);
-                    sum[i] = damageum(mon, mattk, specialdmg);
+                    sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg);
                 } else {
                     Your("%s passes harmlessly through %s.",
                          verb, mon_nam(mon));
                 }
-                break;
+				update_u_action(ACTION_TILE_NO_ACTION);
+				break;
             }
             /* hug attack against ordinary foe */
             if (mon == u.ustuck)
@@ -3793,7 +3809,7 @@ register struct monst *mon;
                       unconcerned ? " but doesn't seem concerned" : "");
                 if (silverhit && flags.verbose)
                     silver_sears(&youmonst, mon, silverhit);
-                sum[i] = damageum(mon, mattk, specialdmg);
+                sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg);
             }
 			else if (i >= 2 && sum[i - 1] && sum[i - 2]) 
 			{
@@ -3806,19 +3822,25 @@ register struct monst *mon;
                 u.ustuck = mon;
                 if (silverhit && flags.verbose)
                     silver_sears(&youmonst, mon, silverhit);
-                sum[i] = damageum(mon, mattk, specialdmg);
+                sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg);
             }
-            break; /* AT_HUGS */
+			update_u_action(ACTION_TILE_NO_ACTION);
+			break; /* AT_HUGS */
         }
 
         case AT_EXPL: /* automatic hit if next to */
-            dhit = -1;
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			update_u_action(ACTION_TILE_ATTACK);
+			dhit = -1;
             wakeup(mon, TRUE);
             sum[i] = explum(mon, mattk);
-            break;
+			update_u_action(ACTION_TILE_NO_ACTION);
+			break;
 
         case AT_ENGL:
-            tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			update_u_action(ACTION_TILE_ATTACK);
+			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
                                    &attknum, &armorpenalty);
             if ((dhit = (tmp > rnd(20 + i)))) {
                 wakeup(mon, TRUE);
@@ -3836,7 +3858,8 @@ register struct monst *mon;
             } else {
                 missum(mon, mattk, FALSE);
             }
-            break;
+			update_u_action(ACTION_TILE_NO_ACTION);
+			break;
 
         case AT_MAGC:
             /* No check for uwep; if wielding nothing we want to
@@ -3881,9 +3904,6 @@ register struct monst *mon;
  passivedone:
         /* stop attacking if defender has died;
            needed to defer this until after uswapwep->cursed check */
-		   /* Display attack */
-		if (mattk->aatyp != AT_NONE)
-			update_u_action(FALSE);
 
         if (DEADMONSTER(mon))
             break;
@@ -3892,11 +3912,6 @@ register struct monst *mon;
         if (multi < 0)
             break; /* If paralyzed while attacking, i.e. floating eye */
     }
-
-	if (u.action)
-	{
-		update_u_action(FALSE);
-	}
 	
 	/* return value isn't used, but make it match hitum()'s */
     return !DEADMONSTER(mon);
@@ -4653,9 +4668,9 @@ uchar update_symbol;
 
 void
 update_u_action(action)
-uchar action;
+enum action_tile_types action;
 {
-	uchar action_before = u.action;
+	enum action_tile_types action_before = u.action;
 	u.action = action;
 	if (iflags.using_gui_tiles && action_before != u.action)
 	{

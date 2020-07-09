@@ -1574,7 +1574,7 @@ WEAPONBOOTS("iron shoes", "hard shoes",
 BOOTS("leather sandals", None,
       1, 0,          0, 0, 0, P1_NONE, 2, 1, 6,  4, 10, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 BOOTS("cotton slippers", None,
-      1, 0,          0, 0, 0, P1_NONE, 2, 1, 3,  4, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+      1, 0,          0, 0, 0, P1_NONE, 2, 1, 3,  4, 10, 0, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_WHITE, 0, OBJECT_SOUNDSET_COTTON_SLIPPERS, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 BOOTS("high boots", "jackboots",
       0, 0,          0, 0, 0, P1_NONE, 12, 2, 30, 12, 8, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 /* with shuffled appearances... */

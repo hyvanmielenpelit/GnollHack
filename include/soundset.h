@@ -89,6 +89,7 @@ enum ghsound_types {
 	GHSOUND_GENERIC_ITEM_PICK_UP,
 	GHSOUND_GENERIC_ITEM_DROP,
 	GHSOUND_GENERIC_ITEM_THROW,
+	GHSOUND_FOOTSTEPS_COTTON_SLIPPERS,
 	MAX_GHSOUNDS
 };
 
@@ -258,9 +259,12 @@ enum object_sound_types {
 	/* General */
 	OBJECT_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
 	OBJECT_SOUND_TYPE_PUSH,
-#if 0
+
 	/* Movement */
 	OBJECT_SOUND_TYPE_WALK,				/* Walk sound if used as boots */
+	OBJECT_SOUND_TYPE_CLIMB_STAIRS,		/* Climb stairs sound if used as boots */
+	OBJECT_SOUND_TYPE_CLIMB_LADDER,	/* Climb ladder sound if used as boots or gloves */
+#if 0
 	OBJECT_SOUND_TYPE_FLY,				/* Wings of flying: Fly sound if worn */
 	OBJECT_SOUND_TYPE_LEVITATION,		/* Levitation items: Levitation sound if worn */
 	OBJECT_SOUND_TYPE_SWIMMING,		    /* Swimming items: Swimming sound if worn */
@@ -289,6 +293,8 @@ enum object_soundset_types {
 	OBJECT_SOUNDSET_BONE_DAGGER,
 	OBJECT_SOUNDSET_HUMAN_BAREHANDED,
 	OBJECT_SOUNDSET_HUMAN_BAREFOOTED,
+	OBJECT_SOUNDSET_HORSE_BAREFOOTED,
+	OBJECT_SOUNDSET_COTTON_SLIPPERS,
 	OBJECT_SOUNDSET_CHEST,
 	OBJECT_SOUNDSET_COIN,
 	OBJECT_SOUNDSET_BOULDER,

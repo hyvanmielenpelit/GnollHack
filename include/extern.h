@@ -3041,7 +3041,7 @@ E int FDECL(find_roll_to_hit, (struct monst *, UCHAR_P, struct obj *,
                                int *, int *));
 E boolean FDECL(attack, (struct monst *));
 E boolean FDECL(hmon, (struct monst *, struct obj *, int, int, boolean *));
-E int FDECL(damageum, (struct monst *, struct attack *, int));
+E int FDECL(damageum, (struct monst *, struct attack *, struct obj*, int));
 E void FDECL(missum, (struct monst *, struct attack *, BOOLEAN_P));
 E int FDECL(passive, (struct monst *, struct obj *, BOOLEAN_P, int,
                       UCHAR_P, BOOLEAN_P));
@@ -3054,7 +3054,7 @@ E int FDECL(deduct_player_hp, (double));
 E int FDECL(deduct_monster_hp, (struct monst*, double));
 E void FDECL(get_game_difficulty_multipliers, (double*, double*));
 E void FDECL(update_u_facing, (uchar));
-E void FDECL(update_u_action, (uchar));
+E void FDECL(update_u_action, (enum action_tile_types));
 E void FDECL(update_m_action, (struct monst*, uchar));
 E void FDECL(display_being_hit, (int, int, enum game_ui_tile_types, int, unsigned long));
 E void FDECL(display_u_being_hit, (enum game_ui_tile_types, int, unsigned long));
