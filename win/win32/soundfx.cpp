@@ -118,7 +118,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Player/Human/Barehanded/Human Barehanded Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Player/Human/Barehanded/Human Barehanded Hit" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Player/Human/Kick//Human Kick Swing" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Player/Human/Kick/Human Kick Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Player/Human/Kick/Human Kick Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/SFX/Door/Door Wham" , 1.0f},
     { SOUND_BANK_MASTER, "event:/SFX/Door/Door Break" , 1.0f},
