@@ -107,7 +107,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ray/Electricity/Ray Electricity Destroy" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Ray/Electricity/Ray Electricity Bounce" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Bow/Bow Fire" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Object/Weapon/Arrow/Arrow Hit" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Object/Weapon/Arrow/Arrow Hit" , 4.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Sword/Sword Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Sword/Sword Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Axe/Axe Swing" , 1.0f},

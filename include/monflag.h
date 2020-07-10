@@ -303,11 +303,11 @@
 /* bit reserved for statue tile*/
 #define M5_CORPSE_TILE			    0x00000400UL
 #define M5_FEMALE_TILE		        0x00000800UL
-
-#define M5_ESCHEWS_CURSED_ITEMS     0x00001000UL
-#define M5_ESCHEWS_BLESSED_ITEMS    0x00002000UL
-#define M5_ESCHEWS_SILVER_ITEMS     0x00004000UL
-#define M5_HATES_LIGHT              0x00008000UL /* Gremlin only */
+/* 4 bits free, reserved for expanding enum attack_tile_types */
+#define M5_ESCHEWS_CURSED_ITEMS     0x00010000UL
+#define M5_ESCHEWS_BLESSED_ITEMS    0x00020000UL
+#define M5_ESCHEWS_SILVER_ITEMS     0x00040000UL
+#define M5_HATES_LIGHT              0x00080000UL /* Gremlin only */
 
 
 #define MZ_TINY 0          /* < 2' */

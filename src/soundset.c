@@ -17,22 +17,19 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 		"",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
+        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE}
 	},
 	{
 		"Generic",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_PUSH_EFFORT, 1.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
 	{
 		"",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
+        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE}
     }
 };
 
@@ -43,50 +40,42 @@ NEARDATA struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDS
 		"",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE},
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
+        {OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE, OBJECT_SOUNDSET_NONE}
     },
 	{
 		"Generic",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
 	{
 		"Goblin",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
+        {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
 	{
 		"Dragon",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
 	{
 		"Dracolich",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
-        {{GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}, {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f}}
-    },
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}    },
     {
         "Bee",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED},
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}}
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
     {
         "Horse",
         {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_MONSTER_DEATH_GENERIC, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
-        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HORSE_BAREFOOTED},
-        {{GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}, {GHSOUND_HORSE_FOOTSTEPS, 1.0f}}
+        {OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_GENERAL, OBJECT_SOUNDSET_HORSE_BAREFOOTED}
     },
 };
 
@@ -372,7 +361,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_ARROW_HIT, 1.0f},
-            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -383,6 +371,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1453,51 +1442,146 @@ enum climbing_types climbingid;
 
     enum monster_soundset_types mss = isfemale ? mtmp->data->female_soundset : mtmp->data->soundset;
     enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[BAREFOOTED_ATTACK_NUMBER];
-    
+    enum object_sound_types sound_type = OBJECT_SOUND_TYPE_WALK;
+
     if (isyou)
 	{ 
-        if (Wwalking && floorid == FLOOR_SURFACE_LIQUID)
-            floorid = FLOOR_SURFACE_CARPET;
+        if (!isok(u.ux, u.uy))
+            return;
 
-        enum object_sound_types sound_type = Stealth ? OBJECT_SOUND_TYPE_STEALTH : OBJECT_SOUND_TYPE_WALK;
+        if (Wwalking && floorid == FLOOR_SURFACE_LIQUID)
+            passingid = LOCATION_PASSING_TYPE_WATERWALKING;
+        else if (!Swimming && floorid == FLOOR_SURFACE_LIQUID)
+            passingid = LOCATION_PASSING_TYPE_SUBMERGED;
+        else if (Passes_walls && IS_ROCK(levl[u.ux][u.uy].typ))
+            passingid = LOCATION_PASSING_TYPE_THROUGH_SOLID_WALLS;
+
+        treadingid = Stealth ? FLOOR_TREADING_TYPE_STEALTH : FLOOR_TREADING_TYPE_NORMAL;
+
         soundid = object_soundsets[oss].sounds[sound_type].ghsound;
         volume = object_soundsets[oss].sounds[sound_type].volume;
 
-
-        if (uarmf)
+        if (is_flyer(mtmp->data) || Flying)
+        {
+            sound_type = OBJECT_SOUND_TYPE_FLY;
+            struct obj* otmp = what_gives(FLYING);
+            if (otmp)
+            {
+                enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
+                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss2].sounds[sound_type].volume;
+            }
+            else
+            {
+                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss].sounds[sound_type].volume;
+            }
+        }
+        else if (is_floater(mtmp->data) || Levitation)
+        {
+            sound_type = OBJECT_SOUND_TYPE_LEVITATION;
+            struct obj* otmp = what_gives(LEVITATION);
+            if (otmp)
+            {
+                enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
+                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss2].sounds[sound_type].volume;
+            }
+            else
+            {
+                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss].sounds[sound_type].volume;
+            }
+        }
+        else if ((is_swimmer(mtmp->data) || amphibious(mtmp->data) || Swimming) && floorid == FLOOR_SURFACE_LIQUID)
+        {
+            sound_type = OBJECT_SOUND_TYPE_SWIM;
+            struct obj* otmp = what_gives(SWIMMING);
+            if (otmp)
+            {
+                enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
+                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss2].sounds[sound_type].volume;
+            }
+            else
+            {
+                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss].sounds[sound_type].volume;
+            }
+        }
+        else if (uarmf)
         {
             enum object_soundset_types oss_boots = objects[uarmf->otyp].oc_soundset;
             soundid = object_soundsets[oss_boots].sounds[sound_type].ghsound;
             volume = object_soundsets[oss_boots].sounds[sound_type].volume;
         }
-
-        enum player_soundset_types pss = get_player_soundset();
-		//soundid = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_ON_GROUND].ghsound;
-        //volume = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_ON_GROUND].volume;
-		if (Flying)
-		{
-			soundid = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
-            volume = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].volume;
-            floorid = FLOOR_SURFACE_NONE;
-
-		}
-		else if (Levitation)
-		{
-			soundid = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
-            volume = player_soundsets[pss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
-            floorid = FLOOR_SURFACE_NONE;
-		}
 	}
 	else
 	{
+        if (!isok(mtmp->mx, mtmp->my))
+            return;
+
         if (mtmp->mprops[WATER_WALKING] != 0 && floorid == FLOOR_SURFACE_LIQUID)
             passingid = LOCATION_PASSING_TYPE_WATERWALKING;
+        else if (mtmp->mprops[SWIMMING] == 0 && floorid == FLOOR_SURFACE_LIQUID)
+            passingid = LOCATION_PASSING_TYPE_SUBMERGED;
+        else if (mtmp->mprops[PASSES_WALLS] != 0 && IS_ROCK(levl[mtmp->mx][mtmp->my].typ))
+            passingid = LOCATION_PASSING_TYPE_THROUGH_SOLID_WALLS;
 
-        enum object_sound_types sound_type = mtmp->mprops[STEALTH] != 0 ? OBJECT_SOUND_TYPE_STEALTH : OBJECT_SOUND_TYPE_WALK;
+        treadingid = mtmp->mprops[STEALTH] != 0 ? FLOOR_TREADING_TYPE_STEALTH : FLOOR_TREADING_TYPE_NORMAL;
+
         soundid = object_soundsets[oss].sounds[sound_type].ghsound;
         volume = object_soundsets[oss].sounds[sound_type].volume;
 
-        if (mtmp->worn_item_flags & W_ARMF)
+        if (is_flyer(mtmp->data) || mtmp->mprops[FLYING] != 0)
+        {
+            sound_type = OBJECT_SOUND_TYPE_FLY;
+            struct obj* otmp = what_gives_monster(mtmp, FLYING);
+            if (otmp)
+            {
+                enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
+                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss2].sounds[sound_type].volume;
+            }
+            else
+            {
+                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss].sounds[sound_type].volume;
+            }
+        }
+        else if (is_flyer(mtmp->data) || mtmp->mprops[LEVITATION] != 0)
+        {
+            sound_type = OBJECT_SOUND_TYPE_LEVITATION;
+            struct obj* otmp = what_gives_monster(mtmp, LEVITATION);
+            if (otmp)
+            {
+                enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
+                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss2].sounds[sound_type].volume;
+            }
+            else
+            {
+                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss].sounds[sound_type].volume;
+            }
+        }
+        else if ((is_swimmer(mtmp->data) || amphibious(mtmp->data) || mtmp->mprops[SWIMMING] != 0) && floorid == FLOOR_SURFACE_LIQUID)
+        {
+            sound_type = OBJECT_SOUND_TYPE_SWIM;
+            struct obj* otmp = what_gives_monster(mtmp, SWIMMING);
+            if (otmp)
+            {
+                enum object_soundset_types oss2 = objects[otmp->otyp].oc_soundset;
+                soundid = object_soundsets[oss2].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss2].sounds[sound_type].volume;
+            }
+            else
+            {
+                soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+                volume = object_soundsets[oss].sounds[sound_type].volume;
+            }
+        }
+        else if (mtmp->worn_item_flags & W_ARMF)
         {
             struct obj* omtp_boots = which_armor(mtmp, W_ARMF);
             if (omtp_boots)
@@ -1508,27 +1592,11 @@ enum climbing_types climbingid;
             }
         }
         
-        if (is_flying(mtmp))
-		{
-			soundid = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].ghsound;
-            volume = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_FLYING].volume;
-            floorid = FLOOR_SURFACE_NONE;
-		}
-		else if (is_levitating(mtmp))
-		{
-			soundid = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].ghsound;
-            volume = monster_soundsets[mss].innate_movement_sounds[MOVEMENT_STYLE_LEVITATING].volume;
-            floorid = FLOOR_SURFACE_NONE;
-		}
-
-        if (isok(mtmp->mx, mtmp->my))
-        {
-            float hearing = hearing_array[mtmp->mx][mtmp->my];
-            if (hearing == 0.0f)
-                return;
-            else
-                volume *= hearing_array[mtmp->mx][mtmp->my];
-        }
+        float hearing = hearing_array[mtmp->mx][mtmp->my];
+        if (hearing == 0.0f)
+            return;
+        else
+            volume *= hearing_array[mtmp->mx][mtmp->my];
 	}
 
     immediateinfo.ghsound = soundid;

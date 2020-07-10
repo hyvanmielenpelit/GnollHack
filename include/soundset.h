@@ -265,14 +265,9 @@ enum object_sound_types {
 
 	/* Movement */
 	OBJECT_SOUND_TYPE_WALK,				/* Walk sound if used as boots */
-	OBJECT_SOUND_TYPE_STEALTH,			/* Walk sound while in stealth if used as boots */
-	OBJECT_SOUND_TYPE_CLIMB_STAIRS,		/* Climb stairs sound if used as boots */
-	OBJECT_SOUND_TYPE_CLIMB_LADDER,		/* Climb ladder sound if used as boots or gloves */
-#if 0
-	OBJECT_SOUND_TYPE_FLY,				/* Wings of flying: Fly sound if worn */
-	OBJECT_SOUND_TYPE_LEVITATION,		/* Levitation items: Levitation sound if worn */
-	OBJECT_SOUND_TYPE_SWIMMING,		    /* Swimming items: Swimming sound if worn */
-#endif
+	OBJECT_SOUND_TYPE_FLY,				/* Fly if attached to back */
+	OBJECT_SOUND_TYPE_LEVITATION,		/* Levitate when worn / used */
+	OBJECT_SOUND_TYPE_SWIM,				/* Swim when worn */
 	MAX_OBJECT_SOUND_TYPES
 };
 
@@ -327,17 +322,6 @@ enum player_attack_soundset_types {
 	MAX_PLAYER_ATTACK_SOUNDSETS
 };
 
-enum innate_movement_styles {
-	MOVEMENT_STYLE_ON_GROUND = 0,
-	MOVEMENT_STYLE_STEALTH,
-	MOVEMENT_STYLE_FLYING,
-	MOVEMENT_STYLE_LEVITATING,
-	MOVEMENT_STYLE_SWIMMING,
-	MOVEMENT_STYLE_PASSING_THROUGH_WALLS,
-	MAX_MOVEMENT_STYLES
-};
-
-
 struct player_soundset_definition {
 	char* soundset_name;
 
@@ -347,9 +331,6 @@ struct player_soundset_definition {
 
 	/* Bare-handed and kick soundsets */
 	enum object_soundset_types attack_soundsets[MAX_PLAYER_ATTACK_SOUNDSETS];
-
-	/* Movement */
-	struct ghsound_info innate_movement_sounds[MAX_MOVEMENT_STYLES];
 };
 
 enum player_soundset_types {
@@ -383,9 +364,6 @@ struct monster_soundset_definition {
 
 #define BAREHANDED_ATTACK_NUMBER 0
 #define BAREFOOTED_ATTACK_NUMBER NATTK
-
-	/* Movement */
-	struct ghsound_info innate_movement_sounds[MAX_MOVEMENT_STYLES];
 };
 
 enum monster_soundset_types {
