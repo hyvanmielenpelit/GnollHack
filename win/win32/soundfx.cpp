@@ -150,6 +150,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Armor/Cotton Slippers/Cotton Slipper Footsteps" , 0.1f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Sword/Sword Drop" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Drop" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Fly" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Levitate" , 1.0f},
 };
 
 #undef NoSound
