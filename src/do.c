@@ -4065,7 +4065,7 @@ boolean with_impact;
 
 	if (!u.uswallow && flooreffects(obj, u.ux, u.uy, "drop"))
 	{
-		play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DROP);
+		play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
 		return;
 	}
     /* uswallow check done by GAN 01/29/87 */
@@ -4128,7 +4128,7 @@ boolean with_impact;
 	else
 	{
         place_object(obj, u.ux, u.uy);
-		play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DROP);
+		play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
 		if (with_impact)
             container_impact_dmg(obj, u.ux, u.uy);
         if (obj == uball)
@@ -4500,6 +4500,7 @@ dodown()
 	else
 	{
         at_ladder = (boolean) (levl[u.ux][u.uy].typ == LADDER);
+		play_movement_sound(&youmonst, at_ladder ? CLIMBING_TYPE_LADDER_DOWN : CLIMBING_TYPE_STAIRS_DOWN);
         next_level(!trap);
         at_ladder = FALSE;
     }
@@ -4553,7 +4554,8 @@ doup()
         return 0;
     }
     at_ladder = (boolean) (levl[u.ux][u.uy].typ == LADDER);
-    prev_level(TRUE);
+	play_movement_sound(&youmonst, at_ladder ? CLIMBING_TYPE_LADDER_UP : CLIMBING_TYPE_STAIRS_UP);
+	prev_level(TRUE);
     at_ladder = FALSE;
     return 1;
 }

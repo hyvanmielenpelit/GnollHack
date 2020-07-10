@@ -617,6 +617,9 @@ extern "C"
         if (result != FMOD_OK)
             return FALSE;
 
+        if (result != FMOD_OK)
+            return FALSE;
+
         /* Set parameters */
         FMOD_STUDIO_PARAMETER_DESCRIPTION paramDesc;
         for (int i = 0; i < MAX_SOUND_PARAMETERS; i++)

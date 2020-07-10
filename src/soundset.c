@@ -1431,8 +1431,9 @@ int x, y;
 }
 
 void
-play_movement_sound(mtmp)
+play_movement_sound(mtmp, climbingid)
 struct monst* mtmp;
+enum climbing_types climbingid;
 {
 	if (!mtmp)
 		return;
@@ -1440,7 +1441,12 @@ struct monst* mtmp;
     boolean isfemale = isyou ? (Upolyd ? u.mfemale : flags.female) : mtmp->female;
 
     struct ghsound_immediate_info immediateinfo = { 0 };
+
+    /* Parameters */
 	enum floor_surface_types floorid = get_floor_surface_type(isyou ? u.ux : mtmp->mx, isyou ? u.uy : mtmp->my); /* Set the appropriate floor here */
+    enum floor_treading_types treadingid = FLOOR_TREADING_TYPE_NORMAL;
+    enum location_passing_types passingid = LOCATION_PASSING_TYPE_NORMAL;
+
 	enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f, base_volume = isyou || mtmp == u.usteed ? 1.0f : 0.25f;
     float weight = max(0.0f, min(10000.0f, (float)mtmp->data->cwt));
@@ -1485,7 +1491,7 @@ struct monst* mtmp;
 	else
 	{
         if (mtmp->mprops[WATER_WALKING] != 0 && floorid == FLOOR_SURFACE_LIQUID)
-            floorid = FLOOR_SURFACE_CARPET;
+            passingid = LOCATION_PASSING_TYPE_WATERWALKING;
 
         enum object_sound_types sound_type = mtmp->mprops[STEALTH] != 0 ? OBJECT_SOUND_TYPE_STEALTH : OBJECT_SOUND_TYPE_WALK;
         soundid = object_soundsets[oss].sounds[sound_type].ghsound;
@@ -1531,7 +1537,13 @@ struct monst* mtmp;
     immediateinfo.parameter_values[0] = (float)floorid;
     immediateinfo.parameter_names[1] = "Weight";
     immediateinfo.parameter_values[1] = weight;
-    immediateinfo.parameter_names[2] = (char*)0;
+    immediateinfo.parameter_names[2] = "TreadingType";
+    immediateinfo.parameter_values[2] = (float)treadingid;
+    immediateinfo.parameter_names[3] = "ClimbingType";
+    immediateinfo.parameter_values[3] = (float)climbingid;
+    immediateinfo.parameter_names[4] = "PassingType";
+    immediateinfo.parameter_values[4] = (float)passingid;
+    immediateinfo.parameter_names[5] = (char*)0;
     immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
 
     if(soundid > GHSOUND_NONE && volume > 0.0f)
@@ -1589,8 +1601,9 @@ enum object_sound_types sound_type;
 }
 
 void
-play_object_push_sound(obj)
+play_object_floor_sound(obj, sound_type)
 struct obj* obj;
+enum object_sound_types sound_type;
 {
     if (!obj || !isok(obj->ox, obj->oy))
         return;
@@ -1600,7 +1613,6 @@ struct obj* obj;
     float weight = (float)obj->owt;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
-    enum object_sound_types sound_type = OBJECT_SOUND_TYPE_PUSH;
 
     if (obj->oartifact && artilist[obj->oartifact].soundset > OBJECT_SOUNDSET_NONE)
     {

@@ -505,6 +505,8 @@ enum hit_surface_types {
 	MAX_HIT_SURFACE_TYPES
 };
 
+
+/* Movement paramters (+weight) */
 enum floor_surface_types {
 	FLOOR_SURFACE_NONE = 0,
 	FLOOR_SURFACE_STONE,
@@ -515,6 +517,30 @@ enum floor_surface_types {
 	FLOOR_SURFACE_CARPET,
 	FLOOR_SURFACE_LIQUID,
 	MAX_FLOOR_SURFACE_TYPES
+};
+
+enum floor_treading_types {
+	FLOOR_TREADING_TYPE_NORMAL = 0,
+	FLOOR_TREADING_TYPE_STEALTH,
+	FLOOR_TREADING_TYPE_RUN,
+	MAX_FLOOR_TREADING_TYPES
+};
+
+enum climbing_types {
+	CLIMBING_TYPE_NONE = 0,
+	CLIMBING_TYPE_STAIRS_UP,
+	CLIMBING_TYPE_STAIRS_DOWN,
+	CLIMBING_TYPE_LADDER_UP,
+	CLIMBING_TYPE_LADDER_DOWN,
+	MAX_CLIMBING_TYPES
+};
+
+enum location_passing_types {
+	LOCATION_PASSING_TYPE_NORMAL = 0,
+	LOCATION_PASSING_TYPE_WATERWALKING,			/* Has waterwalking on water or lava, so does not strictly splash the water or lava */
+	LOCATION_PASSING_TYPE_THROUGH_SOLID_WALLS,  /* Like a ghost, xorn or earth elemental; sound inside solid wall, maybe normal while not inside? */
+	LOCATION_PASSING_TYPE_SUBMERGED,			/* Maybe an amulet of magical breathing and no swimming */
+	MAX_LOCATION_PASSING_TYPES
 };
 
 #endif /* SOUNDSET_H */

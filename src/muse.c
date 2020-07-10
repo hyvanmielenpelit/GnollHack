@@ -953,11 +953,13 @@ struct monst *mtmp;
                the Wizard and he'll immediately go right to the
                upstairs, so there's not much point in having any
                chance for a random position on the current level */
+            play_movement_sound(mtmp, CLIMBING_TYPE_STAIRS_UP);
             migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_RANDOM,
                              (coord *) 0);
         } else {
             if (vismon)
                 pline("%s escapes upstairs!", Monnam(mtmp));
+            play_movement_sound(mtmp, CLIMBING_TYPE_STAIRS_UP);
             migrate_to_level(mtmp, ledger_no(&u.uz) - 1, MIGR_STAIRS_DOWN,
                              (coord *) 0);
         }
@@ -966,6 +968,7 @@ struct monst *mtmp;
         m_flee(mtmp);
         if (vismon)
             pline("%s escapes downstairs!", Monnam(mtmp));
+        play_movement_sound(mtmp, CLIMBING_TYPE_STAIRS_DOWN);
         migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_STAIRS_UP,
                          (coord *) 0);
         return 2;
@@ -973,6 +976,7 @@ struct monst *mtmp;
         m_flee(mtmp);
         if (vismon)
             pline("%s escapes up the ladder!", Monnam(mtmp));
+        play_movement_sound(mtmp, CLIMBING_TYPE_LADDER_UP);
         migrate_to_level(mtmp, ledger_no(&u.uz) - 1, MIGR_LADDER_DOWN,
                          (coord *) 0);
         return 2;
@@ -980,6 +984,7 @@ struct monst *mtmp;
         m_flee(mtmp);
         if (vismon)
             pline("%s escapes down the ladder!", Monnam(mtmp));
+        play_movement_sound(mtmp, CLIMBING_TYPE_LADDER_DOWN);
         migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_LADDER_UP,
                          (coord *) 0);
         return 2;
@@ -998,6 +1003,7 @@ struct monst *mtmp;
                 return 0;
             if (vismon)
                 pline("%s escapes the dungeon!", Monnam(mtmp));
+            play_movement_sound(mtmp, sstairs.up ? CLIMBING_TYPE_STAIRS_UP : CLIMBING_TYPE_STAIRS_DOWN);
             mongone(mtmp);
             return 2;
         }
@@ -1008,12 +1014,14 @@ struct monst *mtmp;
            to target, but having sstairs.<sx,sy> == <0,0> will work the
            same as specifying MIGR_RANDOM when mon_arrive() eventually
            places the monster, so we can use MIGR_SSTAIRS unconditionally */
+        play_movement_sound(mtmp, sstairs.up ? CLIMBING_TYPE_STAIRS_UP : CLIMBING_TYPE_STAIRS_DOWN);
         migrate_to_level(mtmp, ledger_no(&sstairs.tolev), MIGR_SSTAIRS,
                          (coord *) 0);
         return 2;
     case MUSE_TELEPORT_TRAP:
         m_flee(mtmp);
-        if (vis) {
+        if (vis)
+        {
             Mnam = Monnam(mtmp);
             pline("%s %s onto a teleport trap!", Mnam,
                   vtense(Mnam, locomotion(mtmp->data, "jump")));

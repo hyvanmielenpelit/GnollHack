@@ -1647,7 +1647,7 @@ newdogpos:
 			wasseen = canseemon(mtmp);
 			remove_monster(omx, omy);
 			place_monster(mtmp, nix, niy);
-            play_movement_sound(mtmp);
+            play_movement_sound(mtmp, CLIMBING_TYPE_NONE);
             update_m_facing(mtmp, nix - omx, FALSE);
 
 			if (cursemsg[chi] && (wasseen || canseemon(mtmp))) 

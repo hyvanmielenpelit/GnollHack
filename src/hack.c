@@ -219,7 +219,7 @@ moverock()
                    to move any others at this location; return -1
                    if another boulder is in hero's way, or 0 if he
                    should advance to the vacated boulder position */
-                play_object_push_sound(otmp);
+                play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_PUSH);
                 switch (ttmp->ttyp)
                 {
                 case LANDMINE:
@@ -337,7 +337,7 @@ moverock()
                 static NEARDATA long lastmovetime;
 #endif
  dopush:
-                play_object_push_sound(otmp);
+                play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_PUSH);
                 if (!u.usteed)
                 {
                     if (moves > lastmovetime + 2 || moves < lastmovetime)
@@ -1982,11 +1982,11 @@ domove_core()
         u.usteed->mx = u.ux;
         u.usteed->my = u.uy;
         exercise_steed();
-        play_movement_sound(u.usteed);
+        play_movement_sound(u.usteed, CLIMBING_TYPE_NONE);
     }
     else
     {
-        play_movement_sound(&youmonst);
+        play_movement_sound(&youmonst, CLIMBING_TYPE_NONE);
     }
 
     /*
