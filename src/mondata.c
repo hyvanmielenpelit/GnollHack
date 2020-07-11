@@ -378,6 +378,7 @@ struct obj *obj; /* aatyp == AT_WEAP, AT_SPIT */
     case AT_WEAP:
     case AT_SPIT:
     case AT_NONE:
+    case AT_PASV:
         /* an object is used (thrown/spit/other) */
         if (obj && (obj->otyp == CREAM_PIE)) {
             if (is_you && Blindfolded)
@@ -775,7 +776,7 @@ register struct monst *mdef, *magr;
         }
 
     for (i = 0; i < NATTK; i++)
-        if (mdef->data->mattk[i].aatyp == AT_NONE
+        if (mdef->data->mattk[i].aatyp == AT_PASV
             || mdef->data->mattk[i].aatyp == AT_BOOM) {
             adtyp = mdef->data->mattk[i].adtyp;
             if ((adtyp == AD_ACID && !is_mon_immune_to_acid(magr))

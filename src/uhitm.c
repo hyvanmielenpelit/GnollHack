@@ -3872,7 +3872,8 @@ register struct monst *mon;
             /*FALLTHRU*/
 
         case AT_NONE:
-        case AT_BOOM:
+		case AT_PASV:
+		case AT_BOOM:
             continue;
         /* Not break--avoid passive attacks from enemy */
 
@@ -3936,12 +3937,9 @@ boolean wep_was_destroyed;
 	{
         if (i >= NATTK)
             return (malive | mhit); /* no passive attacks */
-        if (ptr->mattk[i].aatyp == AT_NONE)
+        if (ptr->mattk[i].aatyp == AT_PASV)
             break; /* try this one */
     }
-
-	if (ptr->mattk[i].damn == 0 && ptr->mattk[i].damd == 0 && ptr->mattk[i].damp == 0)
-		return 0;
 
     /* Note: tmp not always used */
     if (ptr->mattk[i].damn && ptr->mattk[i].damd)
@@ -4215,7 +4213,7 @@ struct attack *mattk;     /* null means we find one internally */
         for (i = 0;; i++) {
             if (i >= NATTK)
                 return; /* no passive attacks */
-            if (ptr->mattk[i].aatyp == AT_NONE)
+            if (ptr->mattk[i].aatyp == AT_PASV)
                 break; /* try this one */
         }
         mattk = &(ptr->mattk[i]);

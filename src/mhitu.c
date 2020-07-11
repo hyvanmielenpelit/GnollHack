@@ -4213,13 +4213,10 @@ struct attack *mattk;
 	{
         if (i >= NATTK)
             return 1;
-        if (olduasmon->mattk[i].aatyp == AT_NONE
+        if (olduasmon->mattk[i].aatyp == AT_PASV
             || olduasmon->mattk[i].aatyp == AT_BOOM)
             oldu_mattk = &olduasmon->mattk[i];
     }
-
-    if (oldu_mattk->damn == 0 && oldu_mattk->damd == 0 && oldu_mattk->damp == 0)
-        return 0;
 
     if (oldu_mattk->damn > 0 && oldu_mattk->damd > 0)
         damage = adjust_damage(d((int)oldu_mattk->damn, (int)oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, FALSE);

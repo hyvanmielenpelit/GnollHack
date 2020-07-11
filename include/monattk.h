@@ -9,7 +9,7 @@
  *	Attacks > AT_BUTT are worth extra experience.
  */
 #define AT_ANY (-1) /* fake attack; dmgtype_fromattack wildcard */
-#define AT_NONE 0   /* passive monster (ex. acid blob) */
+#define AT_NONE 0   /* no attack, passive moved to 252 */
 #define AT_CLAW 1   /* claw (punch, hit, etc.) */
 #define AT_BITE 2   /* bite */
 #define AT_KICK 3   /* kick */
@@ -28,6 +28,7 @@
 #define AT_TENT 16  /* tentacles */
 #define AT_EYES 17  /* beholder eye stalk - ranged */
 
+#define AT_PASV 252 /* passive defense */
 #define AT_SMMN 253 /* uses demon special abilities */
 #define AT_WEAP 254 /* uses weapon */
 #define AT_MAGC 255 /* uses magic spell(s) */
