@@ -753,6 +753,13 @@ makelevel()
         else if (In_mines(&u.uz))
         {
             makemaz("minefill");
+            for (int x = 1; x < COLNO; x++)
+                for (int y = 0; y < ROWNO; y++)
+                    if (levl[x][y].typ == ROOM)
+                        levl[x][y].typ = GROUND, levl[x][y].subtyp = 0;
+                    else if (levl[x][y].floortyp == ROOM)
+                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = 0;
+
             return;
         } 
         else if (In_quest(&u.uz))
