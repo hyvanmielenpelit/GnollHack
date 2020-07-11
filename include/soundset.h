@@ -95,6 +95,10 @@ enum ghsound_types {
 	GHSOUND_DAGGER_DROP,
 	GHSOUND_GENERIC_FLY,
 	GHSOUND_GENERIC_LEVITATE,
+	GHSOUND_EAT_GENERIC,
+	GHSOUND_TASTE_GENERIC,
+	GHSOUND_EAT_APPLE,
+	GHSOUND_EAT_CARROT,
 	MAX_GHSOUNDS
 };
 
@@ -263,13 +267,16 @@ enum object_sound_types {
 
 	/* General */
 	OBJECT_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
-	OBJECT_SOUND_TYPE_PUSH,
+	OBJECT_SOUND_TYPE_EAT,				/* Sound upon eating the item */
+	OBJECT_SOUND_TYPE_TASTE,			/* Sound upon tasting the item */
+	OBJECT_SOUND_TYPE_PUSH,				/* Sound upon pushing the item on the ground */
 
 	/* Movement */
 	OBJECT_SOUND_TYPE_WALK,				/* Walk sound if used as boots */
 	OBJECT_SOUND_TYPE_FLY,				/* Fly if attached to back */
 	OBJECT_SOUND_TYPE_LEVITATION,		/* Levitate when worn / used */
 	OBJECT_SOUND_TYPE_SWIM,				/* Swim when worn */
+
 	MAX_OBJECT_SOUND_TYPES
 };
 

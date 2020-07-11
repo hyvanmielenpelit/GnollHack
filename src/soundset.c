@@ -122,6 +122,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
@@ -164,7 +167,10 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
+
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
             {GHSOUND_GENERIC_FLY, 1.0f},
             {GHSOUND_GENERIC_LEVITATE, 1.0f},
@@ -209,6 +215,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -254,6 +262,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -299,6 +309,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -344,6 +356,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -389,6 +403,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -434,6 +450,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -479,6 +497,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -524,6 +544,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -569,6 +591,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -618,6 +642,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
@@ -658,6 +684,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
@@ -705,6 +733,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_HORSE_FOOTSTEPS, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -749,6 +779,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_FOOTSTEPS_COTTON_SLIPPERS, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -794,6 +826,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -839,6 +873,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -884,6 +920,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_EAT_GENERIC, 1.0f},
+            {GHSOUND_TASTE_GENERIC, 1.0f},
             {GHSOUND_PUSH_BOULDER, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},

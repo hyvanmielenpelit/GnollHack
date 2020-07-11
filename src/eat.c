@@ -1934,6 +1934,7 @@ struct obj *otmp;
 
     if (mnum != PM_ACID_BLOB && !stoneable && !slimeable && rotted > 5L)
     {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
         boolean cannibal = maybe_cannibal(mnum, FALSE);
 
 		pline("Ulch - that %s was tainted%s!",
@@ -1969,10 +1970,12 @@ struct obj *otmp;
         pline("Ulch - that must have been infected by terminal disease!");
         if (Sick_resistance) 
         {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
             pline("It doesn't seem at all sickening, though...");
         }
         else
         {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
             long sick_time;
 
             sick_time = (long)rn1(10, 10);
@@ -1990,10 +1993,12 @@ struct obj *otmp;
         pline("Ecch - that must have been infected by mummy rot!");
         if (Sick_resistance)
         {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
             pline("It doesn't seem at all sickening, though...");
         }
         else
         {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
             make_mummy_rotted(-1L, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
 
             (void)touchfood(otmp);
@@ -2002,14 +2007,16 @@ struct obj *otmp;
     }
     else if (has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance)
     {
-		tp++;
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
+        tp++;
         You("have a very bad case of stomach acid.");   /* not body_part() */
         losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), !glob ? "acidic corpse" : "acidic glob",
                KILLED_BY_AN); /* acid damage */
     } 
     else if (has_poisonous_corpse(&mons[mnum]) && rn2(5))
     {
-		tp++;
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
+        tp++;
         pline("Ecch - that must have been poisonous!");
         if (!Poison_resistance)
         {
@@ -2023,7 +2030,8 @@ struct obj *otmp;
     } 
     else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance)
     {
-		tp++;
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
+        tp++;
         You_feel("%ssick.", (FoodPoisoned) ? "very " : "");
         losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, FALSE), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
     }
@@ -2031,8 +2039,11 @@ struct obj *otmp;
     /* delay is weight dependent */
     context.victual.reqtime = 3 + ((!glob ? mons[mnum].cwt : otmp->owt) >> 6);
 
-    if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten)) { //  || !rn2(7)
-		if (rottenfood(otmp)) {
+    if (!tp && !nonrotting_corpse(mnum) && (otmp->orotten)) 
+    { //  || !rn2(7)
+		if (rottenfood(otmp)) 
+        {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
             otmp->orotten = TRUE;
             (void) touchfood(otmp);
             retcode = 1;
@@ -2053,10 +2064,13 @@ struct obj *otmp;
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
     } else if (touch_petrifies(&mons[mnum]) //(mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
                && (Stone_resistance || Hallucination)) {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         pline("This tastes just like chicken!");
     } else if (mnum == PM_FLOATING_EYE && u.umonnum == PM_RAVEN) {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         You("peck the eyeball with delight.");
     } else {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         /* yummy is always False for omnivores, palatable always True */
         boolean yummy = (vegan(&mons[mnum])
                             ? (!carnivorous(youmonst.data)
@@ -3042,6 +3056,8 @@ doeat()
                 otmp = splitobj(otmp, 1L);
         }
 
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+
         pline("Ulch - that %s was rustproofed!", xname(otmp));
         /* The regurgitated object's rustproofing is gone now */
         otmp->oerodeproof = 0;
@@ -3077,6 +3093,7 @@ doeat()
     /* KMH -- Slow digestion is... indigestible */
     if (otmp->otyp == RIN_SLOW_DIGESTION)
     {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
         pline("This ring is indigestible!");
         (void) rottenfood(otmp);
         if (otmp->dknown && !objects[otmp->otyp].oc_name_known
@@ -3128,13 +3145,16 @@ doeat()
 
         if (otmp->cursed) 
         {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
             (void) rottenfood(otmp);
             nodelicious = TRUE;
-        } else if (objects[otmp->otyp].oc_material == MAT_PAPER)
+        }
+        else if (objects[otmp->otyp].oc_material == MAT_PAPER)
             nodelicious = TRUE;
 
         if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
         {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
             pline("Ecch - that must have been poisonous!");
             if (!Poison_resistance) 
             {
@@ -3146,6 +3166,7 @@ doeat()
         } 
         else if (!nodelicious) 
         {
+            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
             pline("%s%s is delicious!",
                   (obj_is_pname(otmp)
                    && !any_quest_artifact(otmp))
@@ -3173,6 +3194,7 @@ doeat()
         if (context.victual.piece)
             context.victual.o_id = context.victual.piece->o_id;
         You("resume your meal.");
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         start_eating(context.victual.piece);
         return 1;
     }
@@ -3241,9 +3263,10 @@ doeat()
 
         context.victual.reqtime = objects[otmp->otyp].oc_delay;
 
-		if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED) 
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
+        if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED)
         {
-			pline("Ulch - that %s was tainted!", cxname(otmp));
+            pline("Ulch - that %s was tainted!", cxname(otmp));
 			if (Sick_resistance)
             {
 				pline("It doesn't seem at all sickening, though...");
