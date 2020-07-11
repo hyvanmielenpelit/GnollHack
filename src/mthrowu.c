@@ -700,7 +700,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 		{
 			if (check_magic_cancellation_success(mtmp, 0) || resists_ston(mtmp))
 			{
-				shieldeff(mtmp->mx, mtmp->my);
+				m_shieldeff(mtmp);
 				pline("%s resists!", Monnam(mtmp));
 			}
 			else

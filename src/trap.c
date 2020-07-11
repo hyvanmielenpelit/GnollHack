@@ -1523,7 +1523,7 @@ unsigned trflags;
                                : locomotion(youmonst.data, "step"));
         You("%s a polymorph trap!", verbbuf);
         if (Antimagic_or_resistance || Unchanging) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You_feel("momentarily different.");
             /* Trap did nothing; don't remove it --KAA */
         } else {
@@ -2485,7 +2485,7 @@ register struct monst *mtmp;
 
             if (is_mon_immune_to_fire(mtmp)) {
                 if (in_sight) {
-                    shieldeff(mtmp->mx, mtmp->my);
+                    m_shieldeff(mtmp);
                     pline("%s is uninjured.", Monnam(mtmp));
                 }
             } else {
@@ -2767,7 +2767,7 @@ register struct monst *mtmp;
             break;
         case POLY_TRAP:
             if (resists_magic(mtmp)) {
-                shieldeff(mtmp->mx, mtmp->my);
+                m_shieldeff(mtmp);
             } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, NOTELL)) {
                 if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
                     /* we're done with mptr but keep it up to date */
@@ -3270,7 +3270,7 @@ struct obj *box; /* null for floor trap */
     pline("A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
           the(box ? xname(box) : surface(u.ux, u.uy)));
     if (Fire_immunity) {
-        shieldeff(u.ux, u.uy);
+        u_shieldeff();
         num = rn2(2);
     } else if (Upolyd) {
         num = d(2, 4);
@@ -5442,7 +5442,7 @@ boolean disarm;
 
             You("are jolted by a surge of electricity!");
             if (Shock_immunity) {
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
                 You("don't seem to be affected.");
                 dmg = 0;
             } else

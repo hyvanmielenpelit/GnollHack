@@ -1339,7 +1339,7 @@ boolean* obj_destroyed;
 						obj->dknown = 1;
 						if (check_magic_cancellation_success(mon, 0) || resists_ston(mon))
 						{
-							shieldeff(mon->mx, mon->my);
+							m_shieldeff(mon);
 							pline("%s resists!", Monnam(mon));
 						}
 						else
@@ -1406,7 +1406,7 @@ boolean* obj_destroyed;
 
 						if (check_magic_cancellation_success(mon, 0) || resists_ston(mon))
 						{
-							shieldeff(mon->mx, mon->my);
+							m_shieldeff(mon);
 							pline("%s resists!", Monnam(mon));
 						}
 						else
@@ -2154,7 +2154,7 @@ boolean* obj_destroyed;
 		struct obj* otmp2 = (struct obj*) 0;
 
 		if (resists_disint(mon) || noncorporeal(mon->data)) {
-			shieldeff(mon->mx, mon->my);
+			m_shieldeff(mon);
 		}
 		else if (mon->worn_item_flags & W_ARMS) {
 			/* destroy shield; victim survives */
@@ -2727,7 +2727,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             if (!Blind)
                 pline_The("fire doesn't heat %s!", mon_nam(mdef));
             golemeffects(mdef, AD_FIRE, damage);
-            shieldeff(mdef->mx, mdef->my);
+            m_shieldeff(mdef);
             damage = 0;
         }
 
@@ -2747,7 +2747,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
         if (is_mon_immune_to_cold(mdef)) 
 		{
-            shieldeff(mdef->mx, mdef->my);
+            m_shieldeff(mdef);
             if (!Blind)
                 pline_The("frost doesn't chill %s!", mon_nam(mdef));
             golemeffects(mdef, AD_COLD, damage);
@@ -2773,7 +2773,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             if (!Blind)
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
             golemeffects(mdef, AD_ELEC, damage);
-            shieldeff(mdef->mx, mdef->my);
+            m_shieldeff(mdef);
             damage = 0;
         }
         /* only rings damage resistant players in destroy_item */
@@ -3154,7 +3154,7 @@ register struct attack *mattk;
                 return 2;
             }
         } else {
-            shieldeff(mdef->mx, mdef->my);
+            m_shieldeff(mdef);
             if (is_golem(mdef->data))
                 golemeffects(mdef, (int) mattk->adtyp, damage);
             else
@@ -3950,6 +3950,9 @@ boolean wep_was_destroyed;
 
 	damage += adjust_damage(basedmg, mon, &youmonst, ptr->mattk[i].adtyp, FALSE);
 
+	update_m_action(mon, ACTION_TILE_PASSIVE_DEFENSE);
+	play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+
     /*  These affect you even if they just died.
      */
     switch (ptr->mattk[i].adtyp)
@@ -4011,7 +4014,8 @@ boolean wep_was_destroyed;
                     && !(poly_when_stoned(youmonst.data)
                          && polymon(PM_STONE_GOLEM))) {
                     done_in_by(mon, STONING); /* "You turn to stone..." */
-                    return 2;
+					update_m_action(mon, ACTION_TILE_NO_ACTION);
+					return 2;
                 }
             }
         }
@@ -4041,7 +4045,7 @@ boolean wep_was_destroyed;
     case AD_MAGM:
         /* wrath of gods for attacking Oracle */
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline("A hail of magic missiles narrowly misses you!");
         } else {
             You("are hit by magic missiles appearing from thin air!");
@@ -4119,7 +4123,7 @@ boolean wep_was_destroyed;
         case AD_COLD: /* brown mold or blue jelly */
             if (monnear(mon, u.ux, u.uy)) {
                 if (Cold_immunity || Invulnerable) {
-                    shieldeff(u.ux, u.uy);
+                    u_shieldeff();
                     You_feel("a mild chill.");
                     ugolemeffects(AD_COLD, damage);
                     break;
@@ -4146,7 +4150,7 @@ boolean wep_was_destroyed;
 			{
                 if (Fire_immunity || Invulnerable) 
 				{
-                    shieldeff(u.ux, u.uy);
+                    u_shieldeff();
 					if (flaming(mon->data))
 						You("are engulfed in %s flames, but they do not burn you!", s_suffix(mon_nam(mon)));
 					else
@@ -4164,7 +4168,7 @@ boolean wep_was_destroyed;
         case AD_ELEC:
             if (Shock_immunity || Invulnerable) 
 			{
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
                 You_feel("a mild tingle.");
                 ugolemeffects(AD_ELEC, damage);
                 break;
@@ -4176,7 +4180,8 @@ boolean wep_was_destroyed;
             break;
         }
     }
-    return (malive | mhit);
+	update_m_action(mon, ACTION_TILE_NO_ACTION);
+	return (malive | mhit);
 }
 
 /*
@@ -4765,7 +4770,8 @@ uchar action;
 
 
 void
-display_being_hit(x, y, hit_symbol_shown, damage_shown, extra_flags)
+display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags)
+struct monst* mon;
 int x, y;
 enum game_ui_tile_types hit_symbol_shown;
 int damage_shown;
@@ -4778,9 +4784,12 @@ unsigned long extra_flags;
 	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_TILE)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
 	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
 
+	enum action_tile_types action_before = is_you ? u.action : mon->action;
+	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
 	newsym_with_extra_info(x, y, flags, damage_shown);
 	flush_screen(is_you);
 	delay_output();
+	update_m_action(mon, action_before);
 	newsym(x, y);
 	flush_screen(is_you);
 }
@@ -4791,7 +4800,7 @@ enum game_ui_tile_types hit_symbol_shown;
 int damage_shown;
 unsigned long extra_flags;
 {
-	display_being_hit(u.ux, u.uy, hit_symbol_shown, damage_shown, extra_flags);
+	display_being_hit(&youmonst, u.ux, u.uy, hit_symbol_shown, damage_shown, extra_flags);
 }
 
 void
@@ -4805,7 +4814,7 @@ unsigned long extra_flags;
 		return;
 
 	if(!(u.uswallow && mon == u.ustuck))
-		display_being_hit(mon->mx, mon->my, hit_symbol_shown, damage_shown, extra_flags);
+		display_being_hit(mon, mon->mx, mon->my, hit_symbol_shown, damage_shown, extra_flags);
 }
 
 /*uhitm.c*/

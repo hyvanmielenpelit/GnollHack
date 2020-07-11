@@ -128,7 +128,7 @@ struct obj *bp;
         break;
     case 6:
         if (Antimagic_or_resistance) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline_The("book %s, but you are unharmed!", explodes);
         } else {
             pline("As you read the book, it %s in your %s!", explodes,

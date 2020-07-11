@@ -1411,7 +1411,7 @@ register struct obj *otmp;
                 makeknown(WAN_STRIKING);
             if (Magic_missile_immunity || Antimagic_or_resistance) 
 			{
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
                 pline("Boing!");
             } 
 			else if (rnd(20) < 10 + u.uac)
@@ -1427,7 +1427,7 @@ register struct obj *otmp;
         } 
 		else if (is_mon_immune_to_magic_missile(mtmp) || resists_magic(mtmp))
 		{
-            shieldeff(mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
             pline("Boing!");
         } 
 		else if (rnd(20) < 10 + find_mac(mtmp)) 
@@ -1708,7 +1708,7 @@ struct monst *mtmp;
 
             if (vis)
                 pline_The("scroll erupts in a tower of flame!");
-            shieldeff(mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
             pline("%s is uninjured.", Monnam(mtmp));
             (void) destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);
             (void) destroy_mitem(mtmp, SPBOOK_CLASS, AD_FIRE);

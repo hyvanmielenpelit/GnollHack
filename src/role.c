@@ -2724,9 +2724,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
     /* Test cases */
     if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
-        return TRUE;
+        return (action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
     else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
-        return TRUE;
+        return (action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
 
     /* Real cases */
     switch (action)
@@ -2744,6 +2744,12 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;
     case ACTION_TILE_KICK:
+        break;
+    case ACTION_TILE_PASSIVE_DEFENSE:
+        break;
+    case ACTION_TILE_DEFEND:
+        break;
+    case ACTION_TILE_RECEIVE_DAMAGE:
         break;
     case ACTION_TILE_ITEM_USE:
         break;

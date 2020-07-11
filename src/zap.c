@@ -175,7 +175,7 @@ struct obj *otmp;
             seemimic(mtmp);
         if (is_mon_immune_to_magic_missile(mtmp) || resists_magic(mtmp) || Invulnerable)
 		{ /* match effect on player */
-            shieldeff(mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
             pline("Boing!");
             break; /* skip makeknown */
         }
@@ -201,7 +201,7 @@ struct obj *otmp;
 
 		if (is_mon_immune_to_elec(mtmp))
 		{
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s is unaffected by your electric touch!", Monnam(mtmp));
 			break;
 		}
@@ -219,7 +219,7 @@ struct obj *otmp;
 
 		if (is_mon_immune_to_fire(mtmp))
 		{
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s is unaffected by your fiery touch!", Monnam(mtmp));
 			break;
 		}
@@ -237,7 +237,7 @@ struct obj *otmp;
 
 		if (is_mon_immune_to_cold(mtmp))
 		{
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s is unaffected by your freezing touch!", Monnam(mtmp));
 			break;
 		}
@@ -276,7 +276,7 @@ struct obj *otmp;
 		}
 		else if (resists_death(mtmp))
 		{ /* match effect on player */
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s is unaffected by your touch!", Monnam(mtmp));
 			break; /* skip makeknown */
 		} 
@@ -304,7 +304,7 @@ struct obj *otmp;
         }
         else if (resists_disint(mtmp) || is_peaceful(mtmp))
         { /* match effect on player */
-            shieldeff(mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
             pline("%s is unaffected by your touch!", Monnam(mtmp));
             break; /* skip makeknown */
         }
@@ -390,7 +390,7 @@ struct obj *otmp;
 		}
 		else if (resists_death(mtmp))
 		{ /* match effect on player */
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
@@ -406,7 +406,7 @@ struct obj *otmp;
 		res = 1;
 		reveal_invis = TRUE;
 		if (mindless(mtmp->data)) { /* match effect on player */
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
@@ -424,7 +424,7 @@ struct obj *otmp;
 		reveal_invis = TRUE;
 		if (!haseyes(mtmp->data) || mindless(mtmp->data))
 		{ /* match effect on player */
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
@@ -474,7 +474,7 @@ struct obj *otmp;
 		}
 		else
 		{
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s resists!", Monnam(mtmp));
 		}
 		break;
@@ -579,7 +579,7 @@ struct obj *otmp;
 		{
             /* magic missile resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
-            shieldeff(mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
         }
 		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, NOTELL))
 		{
@@ -949,7 +949,7 @@ cure_sickness_here:
         
 		if (resists_drli(mtmp)) 
 		{
-            shieldeff(mtmp->mx, mtmp->my);
+            m_shieldeff(mtmp);
         } 
 		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp)) 
 		{
@@ -4231,7 +4231,7 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						shieldeff(mon->mx, mon->my);
+						m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4259,7 +4259,7 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						shieldeff(mon->mx, mon->my);
+						m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4287,7 +4287,7 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						shieldeff(mon->mx, mon->my);
+						m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4315,7 +4315,7 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						shieldeff(mon->mx, mon->my);
+						m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4343,7 +4343,7 @@ register struct obj *obj;
 				{
 					if (canspotmon(mon))
 					{
-						shieldeff(mon->mx, mon->my);
+						m_shieldeff(mon);
 						pline("%s is unaffected!", Monnam(mon));
 					}
 				}
@@ -4619,7 +4619,7 @@ boolean ordinary;
         learn_it = TRUE;
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
 		{
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
 			damage = 0;
             pline("Boing!");
         }
@@ -4642,7 +4642,7 @@ boolean ordinary;
         learn_it = TRUE;
 		if (Magic_missile_immunity || Invulnerable)
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			damage = 0;
 			pline("Boing!");
 		}
@@ -4668,7 +4668,7 @@ boolean ordinary;
 		}
 		else
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			You("shock yourself, but seem unharmed.");
 			ugolemeffects(AD_ELEC, damage);
 			damage = 0;
@@ -4684,7 +4684,7 @@ boolean ordinary;
 		}
 		else
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			You("burn yourself, but seem unharmed.");
 			ugolemeffects(AD_FIRE, damage);
 			damage = 0;
@@ -4699,7 +4699,7 @@ boolean ordinary;
 		}
 		else
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			You("freeze yourself, but seem unharmed.");
 			ugolemeffects(AD_COLD, damage);
 			damage = 0;
@@ -4713,7 +4713,7 @@ boolean ordinary;
             You("shock yourself!");
 			exercise(A_CON, FALSE);
         } else {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You("zap yourself, but seem unharmed.");
             ugolemeffects(AD_ELEC, damage);
 			damage = 0;
@@ -4760,7 +4760,7 @@ boolean ordinary;
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_FIRE, TRUE);
 		if (Fire_immunity || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You_feel("rather warm.");
             ugolemeffects(AD_FIRE, damage);
 			damage = 0;
@@ -4796,7 +4796,7 @@ boolean ordinary;
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_COLD, TRUE);
 		if (Cold_immunity || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You_feel("a little chill.");
             ugolemeffects(AD_COLD, damage);
 			damage = 0;
@@ -4812,7 +4812,7 @@ boolean ordinary;
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, TRUE);
 		if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline_The("missiles bounce!");
 			damage = 0;
         } else {
@@ -4905,7 +4905,7 @@ boolean ordinary;
 		damage = 0;
 		learn_it = TRUE;
         if (Sleep_resistance) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You("don't feel sleepy!");
         } else {
             pline_The("sleep ray hits you!");
@@ -4954,7 +4954,7 @@ boolean ordinary;
 		}
 		else
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			You("resist!");
 		}
 		break;
@@ -6845,7 +6845,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     }
     if (sho_shieldeff)
-        shieldeff(mon->mx, mon->my);
+        m_shieldeff(mon);
 //    if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
 //        tmp *= 2;
     
@@ -6890,7 +6890,7 @@ xchar sx, sy;
     case ZT_MAGIC_MISSILE:
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
 		{
-            shieldeff(sx, sy);
+            u_shieldeff(); // shieldeff(sx, sy);
 			damage = 0;
             pline_The("missiles bounce off!");
         } 
@@ -6903,7 +6903,7 @@ xchar sx, sy;
     case ZT_FIRE:
         if (Fire_immunity || Invulnerable)
 		{
-            shieldeff(sx, sy);
+            u_shieldeff(); // shieldeff(sx, sy);
 			You("don't feel hot!");
             ugolemeffects(AD_FIRE, damage);
 			damage = 0;
@@ -6927,7 +6927,7 @@ xchar sx, sy;
     case ZT_COLD:
         if (Cold_immunity || Invulnerable)
 		{
-            shieldeff(sx, sy);
+            u_shieldeff(); // shieldeff(sx, sy);
             You("don't feel cold.");
             ugolemeffects(AD_COLD, damage);
 			damage = 0;
@@ -6943,7 +6943,7 @@ xchar sx, sy;
 		damage = 0;
 		if (Sleep_resistance)
 		{
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You("don't feel sleepy.");
         } else {
             fall_asleep(-rn1(5, 8), TRUE); /* sleep ray */
@@ -6990,7 +6990,7 @@ xchar sx, sy;
 		damage = 0;
 		if (resists_death(&youmonst) || Death_resistance || Invulnerable)
 		{
-			shieldeff(sx, sy);
+            u_shieldeff(); // (sx, sy);
 			You("seem unaffected.");
 			break;
 		}
@@ -7011,7 +7011,7 @@ xchar sx, sy;
 		damage = 0;
 		if (Stoned || Stone_resistance)
 		{
-			shieldeff(sx, sy);
+            u_shieldeff(); // shieldeff(sx, sy);
 			You("aren't affected.");
 		}
 		else if (Stoned)
@@ -7041,7 +7041,7 @@ xchar sx, sy;
 	case ZT_LIGHTNING:
         if (Shock_immunity || Invulnerable) 
 		{
-            shieldeff(sx, sy);
+            u_shieldeff(); // shieldeff(sx, sy);
 			You("aren't affected.");
             ugolemeffects(AD_ELEC, damage);
 			damage = 0;
@@ -7246,7 +7246,7 @@ const char* fltxt;
 		/* should never get here if the resistance and magic resistance are properly checked earlier */
 		if (canspotmon(mon))
 		{
-			shieldeff(mon->mx, mon->my);
+			m_shieldeff(mon);
 			pline("%s is unaffected!", Monnam(mon));
 		}
 	}
@@ -7453,7 +7453,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     if (cansee(mon->mx, mon->my))
 					{
                         hit(fltxt, mon, exclam(0), -1);
-                        shieldeff(mon->mx, mon->my);
+                        m_shieldeff(mon);
                         (void) mon_reflects(mon,
                                             "But it reflects from %s %s!");
                     }
@@ -7575,7 +7575,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                         pline("For some reason you are not affected.");
                     dx = -dx;
                     dy = -dy;
-                    shieldeff(sx, sy);
+                    u_shieldeff(); // shieldeff(sx, sy);
                 } else {
                     zhitu(type, origobj, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
@@ -8737,12 +8737,12 @@ int dmg, adtyp, tell;
 		{
 			if (is_you)
 			{
-				shieldeff(u.ux, u.uy);
+				u_shieldeff();
 				You("resist!");
 			}
 			else
 			{
-				shieldeff(mtmp->mx, mtmp->my);
+				m_shieldeff(mtmp);
 				pline("%s resists!", Monnam(mtmp));
 			}
 		}

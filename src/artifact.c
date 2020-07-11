@@ -1248,8 +1248,10 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
         (void) upstart(hittee); /* capitalize */
         if (resisted) {
             pline("%s %s!", hittee, vtense(fakename, "resist"));
-            shieldeff(youdefend ? u.ux : mdef->mx,
-                      youdefend ? u.uy : mdef->my);
+			if (youdefend)
+				u_shieldeff();
+			else
+				m_shieldeff(mdef);
         }
         if ((do_stun || do_confuse) && flags.verbose) {
             char buf[BUFSZ];
@@ -2166,7 +2168,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 						}
 						else
 						{
-							shieldeff(mdef->mx, mdef->my);
+							m_shieldeff(mdef);
 							pline("%s is unaffected!", Monnam(mdef));
 						}
 					}
@@ -2185,7 +2187,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 							pline("%s hits you with a deadly blow!", The(xname(otmp)));
 						}
 
-						shieldeff(u.ux, u.uy);
+						u_shieldeff();
 						You("are unaffected!");
 					}
 				}
@@ -2201,7 +2203,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 							if (resists_disint(mdef))
 							{
 								/* should never go here */
-								shieldeff(mdef->mx, mdef->my);
+								m_shieldeff(mdef);
 							}
 							else if (mdef->worn_item_flags & W_ARMS) 
 							{

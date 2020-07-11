@@ -3834,5 +3834,23 @@ int dmg_received;
 
 }
 
+void
+u_shieldeff()
+{
+    enum action_tile_types action_before = u.action;
+    update_u_action(ACTION_TILE_DEFEND);
+    shieldeff(u.ux, u.uy);
+    update_u_action(action_before);
+}
+
+void
+m_shieldeff(mon)
+struct monst* mon;
+{
+    enum action_tile_types action_before = mon->action;
+    update_m_action(mon, ACTION_TILE_DEFEND);
+    shieldeff(mon->mx, mon->my);
+    update_m_action(mon, action_before);
+}
 
 /*display.c*/

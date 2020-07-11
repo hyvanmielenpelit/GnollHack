@@ -552,6 +552,12 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_KICK:
         break;
+    case ACTION_TILE_PASSIVE_DEFENSE:
+        break;
+    case ACTION_TILE_DEFEND:
+        break;
+    case ACTION_TILE_RECEIVE_DAMAGE:
+        break;
     case ACTION_TILE_ITEM_USE:
         break;
     case ACTION_TILE_DOOR_USE:
@@ -591,6 +597,12 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_KICK:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
             return PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION;
+        break;
+    case ACTION_TILE_PASSIVE_DEFENSE:
+        break;
+    case ACTION_TILE_DEFEND:
+        break;
+    case ACTION_TILE_RECEIVE_DAMAGE:
         break;
     case ACTION_TILE_ITEM_USE:
         break;
@@ -851,6 +863,12 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;
     case ACTION_TILE_KICK:
+        break;
+    case ACTION_TILE_PASSIVE_DEFENSE:
+        break;
+    case ACTION_TILE_DEFEND:
+        break;
+    case ACTION_TILE_RECEIVE_DAMAGE:
         break;
     case ACTION_TILE_ITEM_USE:
         break;

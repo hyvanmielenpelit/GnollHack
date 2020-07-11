@@ -671,13 +671,13 @@ aligntyp resp_god;
     } else {
         pline("Suddenly, a bolt of lightning strikes you!");
         if (Reflecting) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             if (Blind)
                 pline("For some reason you're unaffected.");
             else
                 (void) ureflects("%s reflects from your %s.", "It");
         } else if (Shock_immunity) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline("It seems not to affect you.");
         } else
             fry_by_god(resp_god, FALSE);

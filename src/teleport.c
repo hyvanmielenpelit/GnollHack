@@ -1170,7 +1170,7 @@ struct trap *trap;
 {
     if (In_endgame(&u.uz) || Antimagic) {
         if (Antimagic)
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
         You_feel("a wrenching sensation.");
     } else if (!next_to_u()) {
         You1(shudder_for_moment);
@@ -1198,7 +1198,7 @@ unsigned trflags;
     You("%s a level teleport trap!", verbbuf);
 
     if (Antimagic) {
-        shieldeff(u.ux, u.uy);
+        u_shieldeff();
     }
     if (Antimagic || In_endgame(&u.uz)) {
         You_feel("a wrenching sensation.");

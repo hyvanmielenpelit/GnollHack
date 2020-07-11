@@ -2719,7 +2719,7 @@ register struct obj* omonwep;
         case 1:
         case 0:
             if (Death_resistance)
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
             pline("Lucky for you, it didn't work!");
 			damage = 0;
             break;
@@ -3263,7 +3263,7 @@ struct attack *mattk;
         if (!is_cancelled(mtmp) && rn2(2)) {
             pline_The("air around you crackles with electricity.");
             if (Shock_immunity || Invulnerable) {
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
                 You("seem unhurt.");
                 ugolemeffects(AD_ELEC, damage);
 				damage = 0;
@@ -3274,7 +3274,7 @@ struct attack *mattk;
     case AD_COLD:
         if (!is_cancelled(mtmp) && rn2(2)) {
             if (Cold_immunity || Invulnerable) {
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
                 You_feel("mildly chilly.");
                 ugolemeffects(AD_COLD, damage);
 				damage = 0;
@@ -3286,7 +3286,7 @@ struct attack *mattk;
     case AD_FIRE:
         if (!is_cancelled(mtmp) && rn2(2)) {
             if (Fire_immunity || Invulnerable) {
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
                 You_feel("mildly hot.");
                 ugolemeffects(AD_FIRE, damage);
 				damage = 0;
@@ -3594,7 +3594,7 @@ struct attack *mattk;
 				else
 				{
 					You("resist!");
-					shieldeff(u.ux, u.uy);
+					u_shieldeff();
 				}
             }
         }
@@ -4225,6 +4225,9 @@ struct attack *mattk;
     else
         damage = 0;
 
+    update_u_action(ACTION_TILE_PASSIVE_DEFENSE);
+    play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+
     /* These affect the enemy even if you were "killed" (rehumanized) */
     switch (oldu_mattk->adtyp)
 	{
@@ -4269,15 +4272,18 @@ struct attack *mattk;
             if (poly_when_stoned(mtmp->data))
 			{
                 mon_to_stone(mtmp);
+                update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;
             }
             pline("%s turns to stone!", Monnam(mtmp));
             stoned = 1;
             xkilled(mtmp, XKILL_NOMSG);
+            update_u_action(ACTION_TILE_NO_ACTION);
             if (!DEADMONSTER(mtmp))
                 return 1;
             return 2;
         }
+        update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
     }
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
@@ -4288,12 +4294,17 @@ struct attack *mattk;
             (void) drain_item(mon_currwep, TRUE);
             /* No message */
         }
+        update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
     default:
         break;
     }
+
     if (!Upolyd)
+    {
+        update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
+    }
 
     /* These affect the enemy only if you are still a monster */
     if (rn2(3))
@@ -4323,6 +4334,7 @@ struct attack *mattk;
                               mon_monster_name(&youmonst));
                     else
 					{
+                        update_u_action(ACTION_TILE_NO_ACTION);
                         if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))
                             return 1;
                         pline("%s is frozen by your gaze!", Monnam(mtmp));
@@ -4335,6 +4347,7 @@ struct attack *mattk;
 			{ /* gelatinous cube */
                 pline("%s is frozen by you.", Monnam(mtmp));
                 paralyze_monst(mtmp, paralyse_duration, FALSE);
+                update_u_action(ACTION_TILE_NO_ACTION);
                 return 3;
             }
             return 1;
@@ -4342,7 +4355,7 @@ struct attack *mattk;
         case AD_COLD: /* Brown mold or blue jelly */
             if (is_mon_immune_to_cold(mtmp)) 
 			{
-                shieldeff(mtmp->mx, mtmp->my);
+                m_shieldeff(mtmp);
                 pline("%s is mildly chilly.", Monnam(mtmp));
                 golemeffects(mtmp, AD_COLD, damage);
                 damage = 0;
@@ -4368,7 +4381,7 @@ struct attack *mattk;
         case AD_FIRE: /* Red mold */
             if (is_mon_immune_to_fire(mtmp)) 
 			{
-                shieldeff(mtmp->mx, mtmp->my);
+                m_shieldeff(mtmp);
 				if (flaming(youmonst.data))
 					pline("%s is engulfed in your flames, but they do not burn %s.", Monnam(mtmp), mon_nam(mtmp));
 				else
@@ -4385,7 +4398,7 @@ struct attack *mattk;
         case AD_ELEC:
             if (is_mon_immune_to_elec(mtmp)) 
 			{
-                shieldeff(mtmp->mx, mtmp->my);
+                m_shieldeff(mtmp);
                 pline("%s is slightly tingled.", Monnam(mtmp));
                 golemeffects(mtmp, AD_ELEC, damage);
 				damage = 0;
@@ -4418,10 +4431,12 @@ assess_dmg:
 	{
         pline("%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);
+        update_u_action(ACTION_TILE_NO_ACTION);
         if (!DEADMONSTER(mtmp))
             return 1;
         return 2;
     }
+    update_u_action(ACTION_TILE_NO_ACTION);
     return 1;
 }
 

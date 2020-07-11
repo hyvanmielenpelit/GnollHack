@@ -479,8 +479,8 @@ E int NDECL(get_current_cmap_type_index);
 E int FDECL(get_missile_index, (int, int));
 E void FDECL(display_self_with_extra_info, (unsigned long, int dmg_received));
 E int FDECL(get_location_light_range, (xchar, xchar));
-
-
+E void NDECL(u_shieldeff);
+E void FDECL(m_shieldeff, (struct monst*));
 /* ### do.c ### */
 
 #ifdef USE_TRAMPOLI
@@ -2896,8 +2896,8 @@ E void FDECL(substitute_tiles, (d_level *));
 
 /* ### tiledata.c ###*/
 E void NDECL(init_tiledata);
+E boolean FDECL(has_generic_player_action_tile, (enum action_tile_types action));
 E int FDECL(process_tiledata, (struct tileset_definition*, int, const char*, short*, uchar*));
-
 
 /* ### timeout.c ### */
 
@@ -3056,7 +3056,7 @@ E void FDECL(get_game_difficulty_multipliers, (double*, double*));
 E void FDECL(update_u_facing, (uchar));
 E void FDECL(update_u_action, (enum action_tile_types));
 E void FDECL(update_m_action, (struct monst*, uchar));
-E void FDECL(display_being_hit, (int, int, enum game_ui_tile_types, int, unsigned long));
+E void FDECL(display_being_hit, (struct monst*, int, int, enum game_ui_tile_types, int, unsigned long));
 E void FDECL(display_u_being_hit, (enum game_ui_tile_types, int, unsigned long));
 E void FDECL(display_m_being_hit, (struct monst*, enum game_ui_tile_types, int, unsigned long));
 

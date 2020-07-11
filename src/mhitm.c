@@ -1207,7 +1207,7 @@ register struct obj* omonwep;
         if (is_mon_immune_to_fire(mdef)) {
             if (vis && canseemon(mdef))
                 pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
-            shieldeff(mdef->mx, mdef->my);
+            m_shieldeff(mdef);
             golemeffects(mdef, AD_FIRE, damage);
 			damage = 0;
         }
@@ -1224,7 +1224,7 @@ register struct obj* omonwep;
         if (is_mon_immune_to_cold(mdef)) {
             if (vis && canseemon(mdef))
                 pline_The("frost doesn't seem to chill %s!", mon_nam(mdef));
-            shieldeff(mdef->mx, mdef->my);
+            m_shieldeff(mdef);
             golemeffects(mdef, AD_COLD, damage);
 			damage = 0;
         }
@@ -1246,7 +1246,7 @@ register struct obj* omonwep;
 		{
             if (vis && canseemon(mdef))
                 pline_The("zap doesn't shock %s!", mon_nam(mdef));
-            shieldeff(mdef->mx, mdef->my);
+            m_shieldeff(mdef);
             golemeffects(mdef, AD_ELEC, damage);
             damage = 0;
         }
@@ -1917,14 +1917,14 @@ int amt, saving_throw_adjustment, tellstyle;
 		if (tellstyle != NOTELL)
 			pline("%s is unaffected!", Monnam(mon));
 			
-		shieldeff(mon->mx, mon->my);
+		m_shieldeff(mon);
 	}
 	else if(saving_throw_adjustment > -100 && check_ability_resistance_success(mon, A_WIS, 0)) // check_magic_resistance_and_inflict_damage(mon, otmp, FALSE, 0, 0, tellstyle))
 	{
 		if (tellstyle != NOTELL)
 			pline("%s is unaffected!", Monnam(mon));
 
-		shieldeff(mon->mx, mon->my);
+		m_shieldeff(mon);
 	}
 	else
 	{
@@ -2037,7 +2037,8 @@ int mdead;
 
 	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, FALSE);
 	
-    play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+    update_m_action(mdef, ACTION_TILE_PASSIVE_DEFENSE);
+    play_monster_simple_weapon_sound(mdef, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 
     /* These affect the enemy even if defender killed */
     switch (mddat->mattk[i].adtyp) {
@@ -2069,7 +2070,10 @@ int mdead;
         break;
     }
     if (mdead || is_cancelled(mdef))
+    {
+        update_m_action(mdef, ACTION_TILE_NO_ACTION);
         return (mdead | mhit);
+    }
 
     /* These affect the enemy only if defender is still alive */
     if (rn2(3))
@@ -2087,9 +2091,11 @@ int mdead;
                     Strcpy(buf, s_suffix(Monnam(mdef)));
                     (void) strNsubst(buf, "%", "%%", 0);
                     Strcat(buf, " gaze is reflected by %s %s.");
-                    if (mon_reflects(magr,
-                                     canseemon(magr) ? buf : (char *) 0))
+                    if (mon_reflects(magr, canseemon(magr) ? buf : (char*)0))
+                    {
+                        update_m_action(mdef, ACTION_TILE_NO_ACTION);
                         return (mdead | mhit);
+                    }
                     Strcpy(buf, Monnam(magr));
 					if(!resists_paralysis(mdef))
 					{
@@ -2098,6 +2104,7 @@ int mdead;
 								  s_suffix(mon_nam(mdef)));
 						paralyze_monst(magr, basedmg, FALSE);
 					}
+                    update_m_action(mdef, ACTION_TILE_NO_ACTION);
                     return (mdead | mhit);
                 }
             } else { /* gelatinous cube */
@@ -2105,6 +2112,7 @@ int mdead;
                 if (canseemon(magr))
                     pline("%s is frozen by %s.", buf, mon_nam(mdef));
                 paralyze_monst(magr, basedmg, FALSE);
+                update_m_action(mdef, ACTION_TILE_NO_ACTION);
                 return (mdead | mhit);
             }
             return 1;
@@ -2193,10 +2201,12 @@ assess_dmg:
 		if (magr->mhp <= 0)
 		{
             monkilled(magr, "", (int) mddat->mattk[i].adtyp);
-			return (mdead | mhit | MM_AGR_DIED);
+            update_m_action(mdef, ACTION_TILE_NO_ACTION);
+            return (mdead | mhit | MM_AGR_DIED);
 		}
 	}
-	return (mdead | mhit);
+    update_m_action(mdef, ACTION_TILE_NO_ACTION);
+    return (mdead | mhit);
 }
 
 /* hero or monster has successfully hit target mon with drain energy attack */

@@ -354,7 +354,7 @@ rndcurse()
 
     if (antimagicsuccess)
 	{
-        shieldeff(u.ux, u.uy);
+        u_shieldeff();
         You(mal_aura, "you");
     }
 

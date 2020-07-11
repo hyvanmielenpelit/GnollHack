@@ -414,7 +414,7 @@ int poison_strength;   /* d6 per level damage*/
     if (Poison_resistance)
 	{
         if (!strcmp(reason, "blast"))
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
         pline_The("poison doesn't seem to affect you.");
         return;
     }
@@ -531,7 +531,7 @@ boolean lifesavedalready;
 			plural ? "are" : "is");
 		if (Cold_immunity || Invulnerable) 
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			pline_The("cold doesn't seem to affect you.");
 			return;
 		}
@@ -546,7 +546,7 @@ boolean lifesavedalready;
 			plural ? "are" : "is");
 		if (Fire_immunity || Invulnerable)
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			pline_The("fire doesn't seem to affect you.");
 			return;
 		}
@@ -561,7 +561,7 @@ boolean lifesavedalready;
 			plural ? "jolt" : "jolts");
 		if (Shock_immunity || Invulnerable) 
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			pline_The("lightning doesn't seem to affect you.");
 			return;
 		}
@@ -576,7 +576,7 @@ boolean lifesavedalready;
 			plural ? "were" : "was");
 		if (Death_resistance || is_not_living(youmonst.data) || is_demon(youmonst.data))
 		{
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			pline_The("death magic doesn't seem to affect you.");
 			return;
 		}

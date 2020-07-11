@@ -1309,7 +1309,7 @@ struct obj *sobj;
 		}
 		else
 		{
-			shieldeff(mtmp->mx, mtmp->my);
+			m_shieldeff(mtmp);
 			pline("%s resists!", Monnam(mtmp));
 		}
         if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
@@ -2506,7 +2506,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         if (confused) {
             if (Fire_immunity || Invulnerable) 
 			{
-                shieldeff(u.ux, u.uy);
+                u_shieldeff();
                 if (!Blind)
                     pline("Oh, look, what a pretty fire in your %s.",
                           makeplural(body_part(HAND)));

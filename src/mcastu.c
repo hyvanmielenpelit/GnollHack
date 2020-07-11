@@ -327,7 +327,7 @@ boolean foundyou;
     case AD_FIRE:
         pline("You're enveloped in flames.");
         if (Fire_immunity || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline("But you resist the effects.");
             damage = 0;
         }
@@ -336,7 +336,7 @@ boolean foundyou;
     case AD_COLD:
         pline("You're covered in frost.");
         if (Cold_immunity || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline("But you resist the effects.");
             damage = 0;
         }
@@ -344,7 +344,7 @@ boolean foundyou;
     case AD_MAGM:
         You("are hit by a shower of missiles!");
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline_The("missiles bounce off!");
             damage = 0;
         } else
@@ -429,7 +429,7 @@ int spellnum;
 		else 
 		{
             //if (Antimagic || magic_resistance_success)
-            //    shieldeff(u.ux, u.uy);
+            //    u_shieldeff();
             pline("Lucky for you, it didn't work!");
         }
         damage = 0;
@@ -512,11 +512,11 @@ int spellnum;
         break;
     case MGC_DESTRY_ARMR:
 		if (Antimagic_or_resistance) {
-			shieldeff(u.ux, u.uy);
+			u_shieldeff();
 			pline("A field of force surrounds you!");
 		}
 		else if (uarmc && uarmc->otyp == CLOAK_OF_INTEGRITY) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             pline("Your cloak neutralizes the destructive energies of the spell!");
 			makeknown(uarmc->otyp);
         } else if (!destroy_arm(some_armor(&youmonst))) {
@@ -526,7 +526,7 @@ int spellnum;
         break;
     case MGC_WEAKEN_YOU: /* drain strength */
         if (Antimagic_or_resistance) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You_feel("momentarily weakened.");
         }
 		else 
@@ -558,7 +558,7 @@ int spellnum;
         break;
     case MGC_STUN_YOU:
         if (Antimagic_or_resistance || Free_action || Invulnerable) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             if (!Stunned)
                 You_feel("momentarily disoriented.");
             make_stunned(1L, FALSE);
@@ -583,7 +583,7 @@ int spellnum;
            made the spell virtually harmless to players with magic res. */
         if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
 		{
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             damage = damage / 2;
         }
         if (damage <= 5)
@@ -659,7 +659,7 @@ int spellnum;
         pline("A pillar of fire strikes all around you!");
         if (Fire_immunity) 
 		{
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             damage = 0;
         } else
             damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_FIRE, TRUE);
@@ -676,7 +676,7 @@ int spellnum;
         pline("A bolt of lightning strikes down at you from above!");
         reflects = ureflects("It bounces off your %s%s.", "");
         if (reflects || Shock_immunity) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             damage = 0;
             if (reflects)
                 break;
@@ -782,7 +782,7 @@ int spellnum;
         break;
     case CLC_PARALYZE:
         if (Antimagic_or_resistance || Free_action) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             if (multi >= 0)
                 You("stiffen briefly.");
             nomul(-1);
@@ -803,7 +803,7 @@ int spellnum;
         break;
     case CLC_CONFUSE_YOU:
         if (Antimagic_or_resistance) {
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             You_feel("momentarily dizzy.");
         } else {
             boolean oldprop = !!Confusion;
@@ -825,7 +825,7 @@ int spellnum;
     case CLC_OPEN_WOUNDS:
         if (Antimagic_or_resistance)
 		{
-            shieldeff(u.ux, u.uy);
+            u_shieldeff();
             damage = damage / 2;
         }
         if (damage <= 5)
