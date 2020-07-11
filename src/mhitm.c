@@ -2027,6 +2027,10 @@ int mdead;
         if (mddat->mattk[i].aatyp == AT_NONE)
             break;
     }
+
+    if (mddat->mattk[i].damn == 0 && mddat->mattk[i].damd == 0 && mddat->mattk[i].damp == 0)
+        return 0;
+
     if (mddat->mattk[i].damn > 0 && mddat->mattk[i].damd)
 		basedmg = d((int) mddat->mattk[i].damn, (int) mddat->mattk[i].damd);
     else if (mddat->mattk[i].damd)

@@ -220,9 +220,11 @@ boolean clumsy;
             mon->mflee = 0;
     }
 
+    double damage = adjust_damage(dmg, &youmonst, mon, AD_PHYS, FALSE);
     if (dmg > 0)
-        deduct_monster_hp(mon, adjust_damage(dmg, &youmonst, mon, AD_PHYS, FALSE));
+        deduct_monster_hp(mon, damage);
 
+    play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mon), BAREFOOTED_ATTACK_NUMBER, uarmf, damage, HMON_MELEE);
 
 	boolean hurtles = FALSE;
 	boolean reels = FALSE;
@@ -365,6 +367,9 @@ xchar x, y;
             if (uattk->aatyp != AT_KICK)
                 continue;
 
+            play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+            update_u_action(ACTION_TILE_KICK);
+
             kickdieroll = rnd(20);
             specialdmg = special_dmgval(&youmonst, mon, W_ARMF, (long *) 0);
             if (mon->data == &mons[PM_SHADE] && !specialdmg) {
@@ -372,17 +377,26 @@ xchar x, y;
                    and shades have no passive counterattack */
                 Your("%s %s.", kick_passes_thru, mon_nam(mon));
                 break; /* skip any additional kicks */
-            } else if (tmp > kickdieroll) {
+            } 
+            else if (tmp > kickdieroll) 
+            {
                 You("kick %s.", mon_nam(mon));
                 sum = damageum(mon, uattk, uarmf, specialdmg);
                 (void) passive(mon, uarmf, (boolean) (sum > 0),
                                (sum != 2), AT_KICK, FALSE);
                 if (sum == 2)
+                {
+                    update_u_action(ACTION_TILE_NO_ACTION);
                     break; /* Defender died */
-            } else {
+                }
+            } 
+            else 
+            {
                 missum(mon, uattk, (tmp + armorpenalty > kickdieroll));
                 (void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
             }
+            update_u_action(ACTION_TILE_NO_ACTION);
+
         }
         return;
     }
@@ -397,7 +411,10 @@ xchar x, y;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-		char strikebuf[BUFSIZ] = "";
+        play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+        update_u_action(ACTION_TILE_KICK);
+
+        char strikebuf[BUFSIZ] = "";
 		Sprintf(strikebuf, "You attack");
 
 		if (strikeindex > 0)
@@ -436,7 +453,8 @@ xchar x, y;
 					pline("However, %s blocks your %skick.", mon_nam(mon),
 						clumsy ? "clumsy " : "");
 					(void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
-					return;
+                    update_u_action(ACTION_TILE_NO_ACTION);
+                    return;
 				}
 				else
 				{
@@ -457,6 +475,7 @@ xchar x, y;
 							: "jumps",
 							clumsy ? "easily" : "nimbly", clumsy ? "clumsy " : "");
 						(void)passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
+                        update_u_action(ACTION_TILE_NO_ACTION);
 						return;
 					}
 				}
@@ -470,7 +489,9 @@ xchar x, y;
 			Your("kick misses %s.", mon_nam(mon));
 		}
 
-		if (!mon || DEADMONSTER(mon) || m_at(x, y) != mon)
+        update_u_action(ACTION_TILE_NO_ACTION);
+        
+        if (!mon || DEADMONSTER(mon) || m_at(x, y) != mon)
 			break;
 
 	}
@@ -1084,6 +1105,7 @@ dokick() {
     } 
 	else if (u.uinwater && !rn2(2)) 
 	{
+        //play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
         Your("slow motion kick doesn't hit anything.");
         no_kick = TRUE;
     }
@@ -1153,8 +1175,9 @@ dokick() {
             }
             /*FALLTHRU*/
         default:
-            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(u.ustuck), NATTK, (struct obj*)0, 0.0, HMON_MELEE);
+            play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
             update_u_action(ACTION_TILE_KICK);
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(u.ustuck), NATTK, uarmf, 0.0, HMON_MELEE);
             Your("feeble kick has no effect.");
             break;
         }
@@ -1165,10 +1188,11 @@ dokick() {
 	{
         /* must be Passes_walls */
         struct trap* t = t_at(u.ux, u.uy);
-        if(t)
-            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_TRAP, trap_to_any(t), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
+        play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
         update_u_action(ACTION_TILE_KICK);
         You("kick at the side of the pit.");
+        if (t)
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_TRAP, trap_to_any(t), BAREFOOTED_ATTACK_NUMBER, uarmf, 5.0, HMON_MELEE);
         update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
     }
@@ -1205,7 +1229,6 @@ dokick() {
         }
     }
 
-    update_u_action(ACTION_TILE_KICK);
     wake_nearby();
     u_wipe_engr(2);
 
@@ -1234,7 +1257,6 @@ dokick() {
         /* save mtmp->data (for recoil) in case mtmp gets killed */
         struct permonst *mdat = mtmp->data;
 
-        play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mtmp), NATTK, (struct obj*)0, 0.0, HMON_MELEE);
         kick_monster(mtmp, x, y);
         glyph = glyph_at(x, y);
         /* see comment in attack_checks() */
@@ -1266,9 +1288,12 @@ dokick() {
                 range = 1;
             hurtle(-u.dx, -u.dy, range, TRUE);
         }
-        update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
     }
+
+    play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+    update_u_action(ACTION_TILE_KICK);
+
     (void) unmap_invisible(x, y);
     if (is_pool(x, y) ^ !!u.uinwater) {
         /* objects normally can't be removed from water by kicking */
@@ -1293,9 +1318,12 @@ dokick() {
         goto ouch;
     }
 
-    if (!IS_DOOR(maploc->typ)) {
-        if (maploc->typ == SDOOR) {
-            if (!Levitation && rn2(30) < avrg_attrib) {
+    if (!IS_DOOR(maploc->typ)) 
+    {
+        if (maploc->typ == SDOOR) 
+        {
+            if (!Levitation && rn2(30) < avrg_attrib)
+            {
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
                 pline("Crash!  %s a secret door!",
@@ -1305,10 +1333,12 @@ dokick() {
                           ? "Your kick uncovers"
                           : "You kick open");
                 exercise(A_DEX, TRUE);
-                if (maploc->doormask & D_TRAPPED) {
+                if (maploc->doormask & D_TRAPPED)
+                {
                     maploc->doormask = D_NODOOR;
                     b_trapped("door", FOOT);
-                } else if (maploc->doormask != D_NODOOR && maploc->doormask != D_PORTCULLIS
+                }
+                else if (maploc->doormask != D_NODOOR && maploc->doormask != D_PORTCULLIS
                            && !(maploc->doormask & D_LOCKED))
                     maploc->doormask = D_ISOPEN;
                 feel_newsym(x, y); /* we know it's gone */
@@ -1319,11 +1349,14 @@ dokick() {
                 update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
                 update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;
-            } else
+            } 
+            else
                 goto ouch;
         }
-        if (maploc->typ == SCORR) {
-            if (!Levitation && rn2(30) < avrg_attrib) {
+        if (maploc->typ == SCORR) 
+        {
+            if (!Levitation && rn2(30) < avrg_attrib)
+            {
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 pline("Crash!  You kick open a secret passage!");
                 exercise(A_DEX, TRUE);
@@ -1332,10 +1365,12 @@ dokick() {
                 unblock_vision_and_hearing_at_point(x, y); /* vision */
                 update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;
-            } else
+            } 
+            else
                 goto ouch;
         }
-        if (IS_THRONE(maploc->typ)) {
+        if (IS_THRONE(maploc->typ)) 
+        {
             register int i;
             if (Levitation)
                 goto dumb;

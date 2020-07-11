@@ -4218,6 +4218,9 @@ struct attack *mattk;
             oldu_mattk = &olduasmon->mattk[i];
     }
 
+    if (oldu_mattk->damn == 0 && oldu_mattk->damd == 0 && oldu_mattk->damp == 0)
+        return 0;
+
     if (oldu_mattk->damn > 0 && oldu_mattk->damd > 0)
         damage = adjust_damage(d((int)oldu_mattk->damn, (int)oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, FALSE);
     else if (oldu_mattk->damd > 0)

@@ -3940,9 +3940,12 @@ boolean wep_was_destroyed;
             break; /* try this one */
     }
 
+	if (ptr->mattk[i].damn == 0 && ptr->mattk[i].damd == 0 && ptr->mattk[i].damp == 0)
+		return 0;
+
     /* Note: tmp not always used */
-    if (ptr->mattk[i].damn)
-		basedmg = d((int) ptr->mattk[i].damn, (int) ptr->mattk[i].damd);
+    if (ptr->mattk[i].damn && ptr->mattk[i].damd)
+		basedmg = d((int) ptr->mattk[i].damn, (int) ptr->mattk[i].damd) + (int)ptr->mattk[i].damp;
     else if (ptr->mattk[i].damd)
 		basedmg = d((int) mon->m_lev + 1, (int) ptr->mattk[i].damd);
     else
