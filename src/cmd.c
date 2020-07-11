@@ -141,7 +141,6 @@ STATIC_PTR int NDECL(dotherecmdmenu);
 STATIC_PTR int NDECL(doprev_message);
 STATIC_PTR int NDECL(dozoomin);
 STATIC_PTR int NDECL(dozoomout);
-STATIC_PTR int NDECL(dozoommini);
 STATIC_PTR int NDECL(dolight);
 STATIC_PTR int NDECL(timed_occupation);
 STATIC_PTR int NDECL(doextcmd);
@@ -4849,7 +4848,7 @@ struct ext_func_tab extcmdlist[] = {
             dozoomin, IFBURIED | AUTOCOMPLETE },
     { M('-'), "zoomout", "zoom map in",
             dozoomout, IFBURIED | AUTOCOMPLETE },
-    { M(','), "zoommini", "zoom map in",
+    { M(','), "zoommini", "zoom map to fit to screen",
             dozoommini, IFBURIED | AUTOCOMPLETE },
 #endif
 
@@ -7499,7 +7498,7 @@ dozoomout(VOID_ARGS)
     return 0;
 }
 
-STATIC_PTR int
+int
 dozoommini(VOID_ARGS)
 {
     flags.screen_scale_adjustment = -1.0; /* In fact fit-to-screen */
@@ -7507,6 +7506,14 @@ dozoommini(VOID_ARGS)
     stretch_window();
 
     return 0;
+}
+
+void
+zoomtoscale(scale)
+double scale;
+{
+    flags.screen_scale_adjustment = scale;
+    stretch_window();
 }
 
 STATIC_PTR int

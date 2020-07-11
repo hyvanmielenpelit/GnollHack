@@ -562,6 +562,8 @@ register struct obj *sobj;
 
         known = TRUE;
         cls();
+        double scale_before = flags.screen_scale_adjustment;
+        dozoommini();
         show_detection_everywhere();
 
         (void) unconstrain_map();
@@ -600,6 +602,7 @@ register struct obj *sobj;
         browse_map(ter_typ, "food");
 
         reconstrain_map();
+        zoomtoscale(scale_before);
         docrt();
         if (Underwater)
             under_water(2);
@@ -700,7 +703,8 @@ int class;            /* an object class, 0 for all */
         }
     }
 
-    if (!clear_stale_map(!class ? ALL_CLASSES : class, 0) && !ct) {
+    if (!clear_stale_map(!class ? ALL_CLASSES : class, 0) && !ct) 
+    {
         if (!ctu) {
             if (detector)
                 strange_feeling(detector, "You feel a lack of something.");
@@ -712,6 +716,8 @@ int class;            /* an object class, 0 for all */
     }
 
     cls();
+    double scale_before = flags.screen_scale_adjustment;
+    dozoommini();
     show_detection_everywhere();
 
     (void) unconstrain_map();
@@ -803,6 +809,7 @@ int class;            /* an object class, 0 for all */
         browse_map(ter_typ, "object");
 
     reconstrain_map();
+    zoomtoscale(scale_before);
     docrt(); /* this will correctly reset vision */
     if (Underwater)
         under_water(2);
@@ -836,17 +843,22 @@ int mclass;                /* monster class, 0 for all */
             break;
         }
 
-    if (!mcnt) {
+    if (!mcnt)
+    {
         if (otmp)
             strange_feeling(otmp, Hallucination
                                       ? "You get the heebie jeebies."
                                       : "You feel threatened.");
         return 1;
-    } else {
+    } 
+    else 
+    {
         boolean unconstrained, woken = FALSE;
         unsigned swallowed = u.uswallow; /* before unconstrain_map() */
 
         cls();
+        double scale_before = flags.screen_scale_adjustment;
+        dozoommini();
         show_detection_everywhere();
 
         unconstrained = unconstrain_map();
@@ -887,6 +899,7 @@ int mclass;                /* monster class, 0 for all */
         }
 
         reconstrain_map();
+        zoomtoscale(scale_before);
         docrt(); /* redraw the screen to remove unseen monsters from map */
         if (Underwater)
             under_water(2);
@@ -1042,6 +1055,8 @@ struct obj *sobj; /* null if crystal ball, *scroll if gold detection scroll */
 
 outtrapmap:
     cls();
+    double scale_before = flags.screen_scale_adjustment;
+    dozoommini();
     show_detection_everywhere();
 
     (void) unconstrain_map();
@@ -1076,6 +1091,7 @@ outtrapmap:
     browse_map(ter_typ, "trap of interest");
 
     reconstrain_map();
+    zoomtoscale(scale_before);
     docrt(); /* redraw the screen to remove unseen traps from the map */
     if (Underwater)
         under_water(2);
