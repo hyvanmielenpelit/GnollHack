@@ -26,6 +26,7 @@ STATIC_DCL void NDECL(dispfile_help);
 STATIC_DCL void NDECL(dispfile_shelp);
 STATIC_DCL void NDECL(dispfile_optionfile);
 STATIC_DCL void NDECL(dispfile_license);
+STATIC_DCL void NDECL(dispfile_credits);
 STATIC_DCL void NDECL(dispfile_debughelp);
 STATIC_DCL void NDECL(hmenu_doextversion);
 STATIC_DCL void NDECL(hmenu_dohistory);
@@ -2017,6 +2018,13 @@ dispfile_license(VOID_ARGS)
 }
 
 void
+dispfile_credits(VOID_ARGS)
+{
+    display_file(CREDITSFILE, TRUE);
+}
+
+
+void
 dispfile_debughelp(VOID_ARGS)
 {
     display_file(DEBUGHELP, TRUE);
@@ -2078,6 +2086,7 @@ static struct {
     { hmenu_doextlist, "List of extended commands." },
     { domenucontrols, "List menu control keys" },
     { dispfile_license, "The GnollHack license." },
+    { dispfile_credits, "Credits." },
     { docontact, "Support information." },
 #ifdef PORT_HELP
     { port_help, "%s-specific help and commands." },

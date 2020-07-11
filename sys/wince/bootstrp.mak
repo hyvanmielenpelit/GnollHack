@@ -510,7 +510,7 @@ $(O)dlb_main.o: $(UTIL)\dlb_main.c $(INCL)\config.h $(INCL)\dlb.h
 $(DAT)\nhdat:	$(U)dlb_main.exe $(DAT)\data $(DAT)\oracles $(OPTIONS_FILE) \
 	$(DAT)\quest.dat $(DAT)\rumors $(DAT)\help $(DAT)\hh $(DAT)\cmdhelp \
 	$(DAT)\history $(DAT)\opthelp $(DAT)\wizhelp $(DAT)\dungeon  \
-	$(DAT)\license $(O)sp_lev.tag
+	$(DAT)\license $(DAT)\credits $(O)sp_lev.tag
 	cd $(DAT)
 	echo data >dlb.lst
 	echo oracles >>dlb.lst
@@ -528,6 +528,7 @@ $(DAT)\nhdat:	$(U)dlb_main.exe $(DAT)\data $(DAT)\oracles $(OPTIONS_FILE) \
 	echo wizhelp >>dlb.lst
 	echo dungeon >>dlb.lst
 	echo license >>dlb.lst
+	echo credits >>dlb.lst
 	for %%N in (*.lev) do echo %%N >>dlb.lst
 	$(U)dlb_main cIf dlb.lst nhdat
 	cd $(WINCE)

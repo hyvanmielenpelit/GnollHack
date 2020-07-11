@@ -1055,6 +1055,10 @@ onWMCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         display_file(LICENSE, TRUE);
         break;
 
+    case IDM_HELP_CREDITS:
+        display_file(CREDITSFILE, TRUE);
+        break;
+
     case IDM_HELP_PORTHELP:
         display_file(PORT_HELP, TRUE);
         break;

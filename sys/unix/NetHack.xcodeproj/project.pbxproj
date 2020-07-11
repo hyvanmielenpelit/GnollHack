@@ -1609,6 +1609,7 @@
 			inputPaths = (
 				"$(NH_DAT_DIR)/nhdat",
 				"$(NH_DAT_DIR)/license",
+				"$(NH_DAT_DIR)/credits",
 				"$(NH_DAT_DIR)/symbols",
 				"$(NH_SRC_DIR)/gnollhack",
 				"$(NH_UTIL_DIR)/recover",
@@ -1628,7 +1629,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p ${NH_INSTALL_DIR}/save\ncd ${NH_DAT_DIR}\ncp nhdat license symbols ${NH_INSTALL_DIR}\ncp ${NH_SRC_DIR}/gnollhack ${NH_INSTALL_DIR}\ncp ${NH_UTIL_DIR}/recover ${NH_INSTALL_DIR}\ntouch ${NH_INSTALL_DIR}/perm\ntouch ${NH_INSTALL_DIR}/record\ntouch ${NH_INSTALL_DIR}/logfile\ntouch ${NH_INSTALL_DIR}/xlogfile\ncd ${NH_ROOT_DIR}\nsys/unix/hints/macosx.sh editsysconf sys/unix/sysconf ${NH_INSTALL_DIR}/sysconf\n";
+			shellScript = "mkdir -p ${NH_INSTALL_DIR}/save\ncd ${NH_DAT_DIR}\ncp nhdat license credits symbols ${NH_INSTALL_DIR}\ncp ${NH_SRC_DIR}/gnollhack ${NH_INSTALL_DIR}\ncp ${NH_UTIL_DIR}/recover ${NH_INSTALL_DIR}\ntouch ${NH_INSTALL_DIR}/perm\ntouch ${NH_INSTALL_DIR}/record\ntouch ${NH_INSTALL_DIR}/logfile\ntouch ${NH_INSTALL_DIR}/xlogfile\ncd ${NH_ROOT_DIR}\nsys/unix/hints/macosx.sh editsysconf sys/unix/sysconf ${NH_INSTALL_DIR}/sysconf\n";
 		};
 		3192867121A3A2D500325BEB /* Copy gnollhack */ = {
 			isa = PBXShellScriptBuildPhase;

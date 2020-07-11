@@ -34,6 +34,7 @@ REM Some file movemet for those that still want to use MAKE or NMAKE and a Makef
 :do_tty
 if NOT exist %BINPATH%\*.* mkdir %BINPATH%
 if NOT exist %BINPATH%\license copy ..\..\dat\license %BINPATH%\license >nul
+if NOT exist %BINPATH%\credits copy ..\..\dat\credits %BINPATH%\credits >nul
 echo Copying Microsoft Makefile - Makefile.msc to ..\..\src\Makefile...
 if NOT exist ..\..\src\Makefile goto :domsc
 copy ..\..\src\Makefile ..\..\src\Makefile-orig >nul

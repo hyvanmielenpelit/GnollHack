@@ -250,6 +250,7 @@ else
 	rm -rf RESOURCES
 	mkdir RESOURCES
 	#enscript --language=rtf -o - < dat/license >RESOURCES/License.rtf
+	#enscript --language=rtf -o - < dat/credits >RESOURCES/Credits.rtf
 	sys/unix/hints/macosx.sh descplist > RESOURCES/Description.plist
 	sys/unix/hints/macosx.sh infoplist > Info.plist
 
@@ -308,6 +309,7 @@ build_package_root:
 	echo chmod $(VARDIRPERM)  $(HACKDIR)          >> PKGSCRIPTS/postinstall
 	echo chmod $(VARDIRPERM)  $(HACKDIR)/save     >> PKGSCRIPTS/postinstall
 	echo chmod $(FILEPERM)    $(HACKDIR)/license  >> PKGSCRIPTS/postinstall
+	echo chmod $(FILEPERM)    $(HACKDIR)/credits  >> PKGSCRIPTS/postinstall
 	echo chmod $(FILEPERM)    $(HACKDIR)/nhdat    >> PKGSCRIPTS/postinstall
 	echo chmod $(FILEPERM)    $(HACKDIR)/symbols  >> PKGSCRIPTS/postinstall
 	echo chmod $(VARFILEPERM) $(HACKDIR)/perm     >> PKGSCRIPTS/postinstall

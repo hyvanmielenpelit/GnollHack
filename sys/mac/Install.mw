@@ -48,8 +48,9 @@ for the Mac.  Copy the following files.  You may want to change News or NHDeflts
 		f. copy ':dat:hh' to 'lib:hh'
 		g. copy	':dat:history' to ':lib:history'
 		h. copy	':dat:license' to ':lib:license'
-		i. copy	':dat:opthelp' to ':lib:opthelp'
-		j. copy	':dat:wizhelp' to ':lib:wizhelp'
+		i. copy	':dat:credits' to ':lib:credits'
+		j. copy	':dat:opthelp' to ':lib:opthelp'
+		k. copy	':dat:wizhelp' to ':lib:wizhelp'
 
 5. Create an empty file, ':lib:record'
 

@@ -739,6 +739,7 @@ install.tag:  $(DAT)/data    $(DAT)/rumors    $(DAT)/dungeon \
 ifeq  "$(USE_DLB)" "Y"
 	$(subst /,\,copy nhdat                $(GAMEDIR))
 	$(subst /,\,copy $(DAT)/license       $(GAMEDIR))
+	$(subst /,\,copy $(DAT)/credits       $(GAMEDIR))
 	$(subst /,\,copy $(DAT)/opthelp       $(GAMEDIR))
 else
 	$(subst /,\,copy $(DAT)/*.            $(GAMEDIR))
@@ -1105,7 +1106,7 @@ $(DAT)/porthelp: $(MSWSYS)/porthelp
 nhdat:  $(U)dlb_main.exe $(DAT)/data $(DAT)/oracles $(OPTIONS_FILE) \
 	 $(DAT)/quest.dat $(DAT)/rumors $(DAT)/help $(DAT)/hh $(DAT)/cmdhelp $(DAT)/keyhelp \
 	 $(DAT)/history $(DAT)/opthelp $(DAT)/wizhelp $(DAT)/dungeon \
-	 $(DAT)/porthelp $(DAT)/license $(DAT)/engrave $(DAT)/epitaph $(DAT)/bogusmon $(DAT)/tribute sp_lev.tag
+	 $(DAT)/porthelp $(DAT)/license $(DAT)/credits $(DAT)/engrave $(DAT)/epitaph $(DAT)/bogusmon $(DAT)/tribute sp_lev.tag
 	$(subst /,\,echo data >$(DAT)/dlb.lst)
 	$(subst /,\,echo oracles >>$(DAT)/dlb.lst)
 	$(subst /,\,if exist $(DAT)/options echo options >>$(DAT)/dlb.lst)
@@ -1123,6 +1124,7 @@ nhdat:  $(U)dlb_main.exe $(DAT)/data $(DAT)/oracles $(OPTIONS_FILE) \
 	$(subst /,\,echo wizhelp >>$(DAT)/dlb.lst)
 	$(subst /,\,echo dungeon >>$(DAT)/dlb.lst)
 	$(subst /,\,echo license >>$(DAT)/dlb.lst)
+	$(subst /,\,echo credits >>$(DAT)/dlb.lst)
 	$(subst /,\,echo engrave >>$(DAT)/dlb.lst)
 	$(subst /,\,echo epitaph >>$(DAT)/dlb.lst)
 	$(subst /,\,echo bogusmon >>$(DAT)/dlb.lst)
@@ -1334,6 +1336,7 @@ ifneq "$(W_OBJ)" ""
 endif
 endif
 	if exist $(W_GAMEDIR)\license. del $(W_GAMEDIR)\license.
+	if exist $(W_GAMEDIR)\credits. del $(W_GAMEDIR)\credits.
 	if exist $(W_GAMEDIR)\nh340key.dll del $(W_GAMEDIR)\nh340key.dll
 	if exist $(W_GAMEDIR)\nhdefkey.dll del $(W_GAMEDIR)\nhdefkey.dll
 	if exist $(W_GAMEDIR)\nhraykey.dll del $(W_GAMEDIR)\nhraykey.dll

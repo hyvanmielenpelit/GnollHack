@@ -308,7 +308,7 @@ INSTDUNGEONFILES= $(NETHACK)NetHack.cnf $(INSTDUNGEONFILES1)
 
 
 INSTDATAFILES= \
-	$(NETHACK)license	$(NETHACK)logfile	$(NETHACK)record \
+	$(NETHACK)license	$(NETHACK)credits	$(NETHACK)logfile	$(NETHACK)record \
 	$(NETHACK)tomb.iff	$(NETHACK)amii.hlp 	$(NETHACK)Recover.txt \
 	$(NETHACK)GuideBook.txt	$(NETHACK)NetHack.txt	$(NETHACK)Install.ami \
 #	$(NETHACK)HackWB.hlp	$(NETHACK)WBDefaults.def
@@ -929,6 +929,9 @@ $(SLIB)history:  $(DAT)history
 
 $(NETHACK)license:  $(DAT)license
 	copy $(DAT)license $@
+
+$(NETHACK)credits:  $(DAT)credits
+	copy $(DAT)credits $@
 
 $(SLIB)opthelp:  $(DAT)opthelp
 	copy $(DAT)opthelp $@

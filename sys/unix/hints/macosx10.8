@@ -249,6 +249,7 @@ else
 	rm -rf RESOURCES
 	mkdir RESOURCES
 	#enscript --language=rtf -o - < dat/license >RESOURCES/License.rtf
+	#enscript --language=rtf -o - < dat/credits >RESOURCES/Credits.rtf
 	sys/unix/hints/macosx.sh descplist > RESOURCES/Description.plist
 	sys/unix/hints/macosx.sh infoplist > Info.plist
 

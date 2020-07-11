@@ -673,6 +673,7 @@ $(O)install.tag: 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
 ! IF ("$(USE_DLB)"=="Y")
 	copy nhdat                $(GAMEDIR)
 	copy $(DAT)\license       $(GAMEDIR)
+	copy $(DAT)\credits       $(GAMEDIR)
 	copy $(DAT)\opthelp       $(GAMEDIR)
 ! ELSE
 	copy $(DAT)\*.            $(GAMEDIR)
@@ -1124,7 +1125,7 @@ $(DAT)\porthelp: $(MSWSYS)\porthelp
 nhdat:	$(U)dlb_main.exe $(DAT)\data $(DAT)\oracles $(OPTIONS_FILE) \
 	$(DAT)\quest.dat $(DAT)\rumors $(DAT)\help $(DAT)\hh $(DAT)\cmdhelp $(DAT)\keyhelp \
 	$(DAT)\history $(DAT)\opthelp $(DAT)\wizhelp $(DAT)\dungeon $(DAT)\porthelp \
-	$(DAT)\license $(DAT)\engrave $(DAT)\epitaph $(DAT)\bogusmon $(DAT)\tribute $(O)sp_lev.tag
+	$(DAT)\license $(DAT)\credits $(DAT)\engrave $(DAT)\epitaph $(DAT)\bogusmon $(DAT)\tribute $(O)sp_lev.tag
 	cd $(DAT)
 	echo data >dlb.lst
 	echo oracles >>dlb.lst
@@ -1147,6 +1148,7 @@ nhdat:	$(U)dlb_main.exe $(DAT)\data $(DAT)\oracles $(OPTIONS_FILE) \
 	echo wizhelp >>dlb.lst
 	echo dungeon >>dlb.lst
 	echo license >>dlb.lst
+	echo credits >>dlb.lst
 	for %%N in (*.lev) do echo %%N >>dlb.lst
 	$(U)dlb_main cIf dlb.lst $(SRC)\nhdat
 	cd $(SRC)

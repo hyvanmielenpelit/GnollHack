@@ -1258,7 +1258,7 @@ dat :	spec_lev help_fil $(GAMEDIR)\dungeon $(GAMEDIR)\data $(GAMEDIR)\rumors \
 	$(WINX11VARDAT)
 
 help_fil : $(GAMEDIR)\cmdhelp $(GAMEDIR)\help $(GAMEDIR)\hh $(GAMEDIR)\history \
-	$(GAMEDIR)\license $(GAMEDIR)\opthelp $(GAMEDIR)\wizhelp
+	$(GAMEDIR)\license $(GAMEDIR)\credits $(GAMEDIR)\opthelp $(GAMEDIR)\wizhelp
 
 $(GAMEDIR)\cmdhelp : $(DAT)\cmdhelp
 	$(CP) $(DAT)\cmdhelp $(GAMEDIR)
@@ -1270,6 +1270,8 @@ $(GAMEDIR)\history : $(DAT)\history
 	$(CP) $(DAT)\history $(GAMEDIR)
 $(GAMEDIR)\license : $(DAT)\license
 	$(CP) $(DAT)\license $(GAMEDIR)
+$(GAMEDIR)\credits : $(DAT)\credits
+	$(CP) $(DAT)\credits $(GAMEDIR)
 $(GAMEDIR)\opthelp : $(DAT)\opthelp
 	$(CP) $(DAT)\opthelp $(GAMEDIR)
 $(GAMEDIR)\wizhelp : $(DAT)\wizhelp

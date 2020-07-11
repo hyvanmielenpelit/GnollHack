@@ -230,6 +230,7 @@
     <DlbList Include = "$(DatDir)wizhelp"/>
     <DlbList Include = "$(DatDir)dungeon"/>
     <DlbList Include = "$(DatDir)license"/>
+    <DlbList Include = "$(DatDir)credits"/>
     <DlbList Include = "$(DatDir)*.lev"/>
   </ItemGroup>
  </Project>

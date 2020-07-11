@@ -941,6 +941,7 @@ install.tag: 	$(DAT)\data	$(DAT)\rumors	$(DAT)\dungeon \
 ! IF ("$(USE_DLB)"=="Y")
 	copy nhdat                $(GAMEDIR)
 	copy $(DAT)\license       $(GAMEDIR)
+	copy $(DAT)\credits       $(GAMEDIR)
 ! ELSE
 	copy $(DAT)\*.            $(GAMEDIR)
 	copy $(DAT)\*.dat         $(GAMEDIR)
@@ -1375,6 +1376,7 @@ nhdat:	$(U)dlb_main.exe
 	@echo wizhelp >>dlb.lst
 	@echo dungeon >>dlb.lst
 	@echo license >>dlb.lst
+	@echo credits >>dlb.lst
 	@echo msdoshlp.txt >>dlb.lst
 	@for %%N in (*.lev) do echo %%N >>dlb.lst
 	$(U)dlb_main cvIf dlb.lst $(SRC)\nhdat

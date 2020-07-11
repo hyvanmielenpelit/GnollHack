@@ -299,10 +299,15 @@ NHSplashWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             DestroyWindow(hWnd);
             SetFocus(GetNHApp()->hMainWnd);
 
-            struct ghsound_music_info music_info = { 0 };
-            music_info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
-            music_info.volume = 1.0f;
-            mswin_play_ghsound_music(music_info);
+            if (context.game_started && play_ghsound_music) /* Function pointer is nonzero */
+                update_game_music();
+            else
+            {
+                struct ghsound_music_info music_info = { 0 };
+                music_info.ghsound = GHSOUND_MUSIC_PLAYER_SELECTION;
+                music_info.volume = 1.0f;
+                mswin_play_ghsound_music(music_info);
+            }
             return TRUE;
         }
         }

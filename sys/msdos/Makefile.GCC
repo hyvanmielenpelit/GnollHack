@@ -441,6 +441,7 @@ $(O)install.tag: $(O)dat.tag $(GAMEFILE)
 ifeq ($(USE_DLB),Y)
 	@$(subst /,\,copy $(DAT)/nhdat $(GAMEDIR))
 	@$(subst /,\,copy $(DAT)/license $(GAMEDIR))
+	@$(subst /,\,copy $(DAT)/credits $(GAMEDIR))
 else
 	@$(subst /,\,copy $(DAT)/*. $(GAMEDIR))
 	@$(subst /,\,copy $(DAT)/*.dat $(GAMEDIR))
@@ -1010,7 +1011,7 @@ $(DAT)/nhdat:	$(U)dlb_main.exe $(DAT)/data $(DAT)/rumors $(DAT)/dungeon \
 	@$(subst /,\,cd $(DAT))
 	@$(subst /,\,copy $(MSYS)/msdoshlp.txt .)
 	@$(LS) data dungeon oracles options quest.dat rumors help hh >dlb.lst
-	@$(LS) cmdhelp history opthelp wizhelp license msdoshlp.txt >>dlb.lst
+	@$(LS) cmdhelp history opthelp wizhelp license credits msdoshlp.txt >>dlb.lst
 	@$(LS) bogusmon engrave epitaph tribute >>dlb.lst
 	$(LS) $(subst /,\,*.lev) >>dlb.lst
 	@$(subst /,\,$(U)dlb_main cvIf dlb.lst nhdat)

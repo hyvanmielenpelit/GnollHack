@@ -84,10 +84,11 @@ BEGIN
         MENUITEM "&Info on a character",        IDM_HELP_INFO_CHAR
         MENUITEM "Info on what a given &key does", IDM_HELP_INFO_KEY
         MENUITEM "List of game &options",       IDM_HELP_OPTIONS
-        MENUITEM "&Longer list of game options", IDM_HELP_OPTIONS_LONG
+        MENUITEM "Longer list of game o&ptions", IDM_HELP_OPTIONS_LONG
         MENUITEM "List of e&xtended commands",  IDM_HELP_EXTCMD
         MENUITEM "The &GnollHack license",      IDM_HELP_LICENSE
         MENUITEM "GnollHack for &Windows help", IDM_HELP_PORTHELP
+        MENUITEM "C&redits",                    IDM_HELP_CREDITS
     END
 END
 

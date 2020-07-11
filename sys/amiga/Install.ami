@@ -151,7 +151,7 @@ Configuration
 III.B. File Location Table
 NetHack:
 	amii.hlp	Guidebook.txt	hack.font
-	license		NetHack		NetHack.cnf
+	license		credits     NetHack		NetHack.cnf
 	NetHack.txt	nhdat		nhsdat
 	record		Recover		Recover.txt
 	logfile (optional, but useful)

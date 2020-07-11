@@ -29,6 +29,7 @@
 #define CMDHELPFILE "cmdhelp"   /* file telling what commands do */
 #define HISTORY "history"       /* file giving GnollHack's history */
 #define LICENSE "license"       /* file with license information */
+#define CREDITSFILE "credits"   /* file with GnollHack specific credits */
 #define OPTIONFILE "opthelp"    /* file explaining runtime options */
 #define OPTIONS_USED "options"  /* compile-time options, for #version */
 #define SYMBOLS "symbols"       /* replacement symbol sets */

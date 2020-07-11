@@ -24,6 +24,7 @@ echo Directories OK.
 
 if not exist ..\..\binary\* mkdir ..\..\binary
 if NOT exist ..\..\binary\license copy ..\..\dat\license ..\..\binary\license >nul
+if NOT exist ..\..\binary\credits copy ..\..\dat\credits ..\..\binary\credits >nul
 
 if exist ..\..\dat\data.bas goto long1ok
 if exist ..\..\dat\data.base goto long1a

@@ -159,7 +159,7 @@ II. To compile your copy of NetHack on a DOS machine:
 
     If you didn't choose DLB support, make sure the support files --
     data, rumors, cmdhelp, opthelp, help, hh,history, guidebook.txt
-    license, and all the *.lev files -- were copied to the game directory.  
+    license, credits, and all the *.lev files -- were copied to the game directory.  
     If not, move them there from the dat directory yourself.  rumors can 
     be created manually be entering "makedefs -r", data by entering 
     "makedefs -d".
@@ -207,7 +207,7 @@ Appendix A - Building the "official binary"
 
     Make sure the following files have been converted from the
     unix style "^J" end of line, to the msdos style "^M^J":
-      license, defaults.nh.
+      license, credits, defaults.nh.
 
     Place all the files in a clean directory and test.
 

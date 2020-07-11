@@ -1,0 +1,39 @@
+                           GNOLLHACK CREDITS
+                (Copyright 2020 Hyvän mielen pelit ry)
+
+                              DEVELOPMENT
+
+Game Design:                   Tommi Gustafsson, Janne Gustafsson 
+Programming, GnollHack:        Janne Gustafsson
+Programming, TilesetCompiler:  Tommi Gustafsson
+Tile Graphics, Monsters:       Riikka Laakkonen
+Tile Graphics, Dungeon:        Anu Kogger
+Tile Graphics, Additional:     Jenni Berg
+Tile Graphics, Management:     Mikko Kangas
+Audio Effects:                 Elina Palmroos
+Improved TTY Player:           Olli Lounela
+Playtesting:                   Tommi Gustafsson, Mikko Kangas
+
+
+                           EXTERNAL SOFTWARE
+
+Sound system:  FMOD by Firelight Technologies
+
+
+                               GRAPHICS
+
+[Specify, if any]
+
+
+                                MUSIC
+
+Zapsplat
+Eric Matyas, soundimage.org
+  [Specify]
+
+
+                            SOUND EFFECTS
+
+Zapsplat
+Eric Matyas, soundimage.org
+  [Specify]

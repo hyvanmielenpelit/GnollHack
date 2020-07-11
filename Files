@@ -33,7 +33,7 @@ dat:
 Arch.des      Barb.des      Caveman.des   GENFILES      Healer.des
 Knight.des    Monk.des      Priest.des    Ranger.des    Rogue.des
 Samurai.des   Tourist.des   Valkyrie.des  Wizard.des    bigroom.des
-bogusmon.txt  castle.des    cmdhelp       data.base     dungeon.def
+bogusmon.txt  castle.des    cmdhelp       credits       data.base     dungeon.def
 endgame.des   engrave.txt   epitaph.txt   gehennom.des  help
 hh            history       keyhelp       knox.des      license
 medusa.des    mines.des     opthelp       oracle.des    oracles.txt
