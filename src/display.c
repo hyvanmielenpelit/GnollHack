@@ -588,8 +588,7 @@ int sightflags;             /* 1 if the monster is physically seen;
 xchar worm_tail;            /* mon is actually a worm tail */
 {
     boolean mon_mimic = (M_AP_TYPE(mon) != M_AP_NOTHING);
-    int sensed = (mon_mimic && (Protection_from_shape_changers
-                                || sensemon(mon)));
+    int sensed = (mon_mimic && (Protection_from_shape_changers || sensemon(mon)));
     /*
      * We must do the mimic check first.  If the mimic is mimicing something,
      * and the location is in sight, we have to change the hero's memory
@@ -619,10 +618,17 @@ xchar worm_tail;            /* mon is actually a worm tail */
              */
             int sym = mon->mappearance, glyph = cmap_to_glyph(sym);
 
-            levl[x][y].hero_memory_layers.glyph = glyph;
+            //levl[x][y].hero_memory_layers.glyph = glyph;
+            if (level.flags.hero_memory)
+            {
+                levl[x][y].hero_memory_layers.glyph = glyph;
+                levl[x][y].hero_memory_layers.layer_glyphs[LAYER_FEATURE] = glyph; /* Override, as otherwise not very credible */
+            }
             if (!sensed) {
-                show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, 0UL, 0);
+                //show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, LFLAGS_M_MIMIC_FURNITURE, 0);
                 /* override real topology with mimic's fake one */
+                show_glyph_ascii(x, y, glyph);
+                show_glyph_on_layer(x, y, glyph, LAYER_FEATURE);
                 lastseentyp[x][y] = cmap_to_type(sym);
             }
             break;
@@ -638,7 +644,34 @@ xchar worm_tail;            /* mon is actually a worm tail */
             obj.otyp = mon->mappearance;
             /* might be mimicing a corpse or statue */
             obj.corpsenm = has_mcorpsenm(mon) ? MCORPSENM(mon) : PM_TENGU;
-            map_object(&obj, !sensed);
+            int glyph = obj_to_glyph(&obj, newsym_rn2);
+            obj.glyph = glyph;
+            //show_monster_glyph_with_extra_info(x, y,
+            //    glyph, mon, LFLAGS_M_MIMIC_OBJECT, 0);
+            //map_object(&obj, !sensed);
+            if (level.flags.hero_memory)
+            {
+                int new_glyph = glyph;
+                if (Hallucination && obj.otyp == STATUE)
+                {
+                    new_glyph = random_obj_to_glyph(newsym_rn2);
+                }
+                obj.glyph = new_glyph;
+                levl[x][y].hero_memory_layers.glyph = new_glyph;
+                levl[x][y].hero_memory_layers.layer_glyphs[LAYER_OBJECT] = new_glyph;
+
+                struct obj* memobj = m_on_memory(mon->m_id, levl[x][y].hero_memory_layers.memory_objchn);
+                if (!memobj)
+                {
+                    struct obj* dummy = memory_dummy_object(&obj);
+                    /* o_id is zero in any case */
+                    if(dummy)
+                        dummy->m_id_memory = mon->m_id;
+                }
+            }
+            show_glyph_ascii(x, y, glyph);
+            show_glyph_on_layer(x, y, glyph, LAYER_OBJECT);
+
             break;
         }
 

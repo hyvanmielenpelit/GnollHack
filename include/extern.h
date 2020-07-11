@@ -1194,6 +1194,7 @@ E boolean NDECL(have_lizard);
 E struct obj *NDECL(u_have_novel);
 E struct obj *FDECL(o_on, (unsigned int, struct obj *));
 E struct obj* FDECL(o_on_memory, (unsigned int, struct obj*));
+E struct obj* FDECL(m_on_memory, (unsigned int, struct obj*));
 E void FDECL(reduce_item_cooldown, (struct obj*));
 E boolean FDECL(obj_here, (struct obj *, int, int));
 E boolean NDECL(wearing_armor);

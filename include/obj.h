@@ -152,6 +152,7 @@ struct obj {
     short detectioncount;    /* monsters detected for WARN_ORC and other similar properties */
 	boolean invokeon;      /* the object's / artifact's invoked ability is on */
     unsigned o_id_memory;  /* This is a memory object of this o_id */
+    unsigned m_id_memory;  /* This is a memory object of this mimic m_id */
 
     int glyph;
 	struct oextra *oextra; /* pointer to oextra struct */

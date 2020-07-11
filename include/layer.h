@@ -50,8 +50,8 @@ struct layer_info {
 #define LFLAGS_M_RIDDEN             0x00000008UL
 #define LFLAGS_M_SADDLED            0x00000010UL
 #define LFLAGS_M_YOU                0x00000020UL
-/* free for m_ flag */
-/* free for m_ flag */
+#define LFLAGS_M_MIMIC_OBJECT       0x00000040UL
+#define LFLAGS_M_MIMIC_FURNITURE    0x00000080UL
 
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_M_BEING_HIT          0x00000100UL

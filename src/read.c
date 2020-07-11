@@ -3427,10 +3427,12 @@ struct _create_particular_data *d;
     struct monst *mtmp;
     boolean madeany = FALSE;
 
-    if (!d->randmonst) {
+    if (!d->randmonst)
+    {
         firstchoice = d->which;
         if (cant_revive(&d->which, FALSE, (struct obj *) 0)
-            && firstchoice != PM_LONG_WORM_TAIL) {
+            && firstchoice != PM_LONG_WORM_TAIL) 
+        {
             /* wizard mode can override handling of special monsters */
             char buf[BUFSZ];
 
@@ -3441,36 +3443,50 @@ struct _create_particular_data *d;
         }
         whichpm = &mons[d->which];
     }
-    for (i = 0; i <= multi; i++) {
+
+    for (i = 0; i <= multi; i++)
+    {
         if (d->monclass != MAX_MONSTER_CLASSES)
             whichpm = mkclass(d->monclass, 0);
         else if (d->randmonst)
             whichpm = rndmonst();
+
         mtmp = makemon(whichpm, u.ux, u.uy, NO_MM_FLAGS);
-        if (!mtmp) {
+
+        if (!mtmp)
+        {
             /* quit trying if creation failed and is going to repeat */
             if (d->monclass == MAX_MONSTER_CLASSES && !d->randmonst)
                 break;
             /* otherwise try again */
             continue;
         }
+
         /* 'is_FOO()' ought to be called 'always_FOO()' */
         if (d->fem != -1 && !is_male(mtmp->data) && !is_female(mtmp->data))
             mtmp->female = d->fem; /* ignored for is_neuter() */
-        if (d->maketame) {
+
+        if (d->maketame) 
+        {
             (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE, FALSE);
-        } else if (d->makepeaceful || d->makehostile) {
+        } 
+        else if (d->makepeaceful || d->makehostile) 
+        {
             mtmp->mtame = 0; /* sanity precaution */
             mtmp->mpeaceful = d->makepeaceful ? 1 : 0;
             set_malign(mtmp);
             newsym(mtmp->mx, mtmp->my);
         }
-        if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
+
+        if (d->saddled && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) 
+        {
             struct obj *otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
 
             put_saddle_on_mon(otmp, mtmp);
         }
-        if (d->invisible) {
+
+        if (d->invisible) 
+        {
             int mx = mtmp->mx, my = mtmp->my;
 			mtmp->mprops[INVISIBILITY] |= M_INTRINSIC_ACQUIRED;
             if (does_block(mx, my, &levl[mx][my]))
@@ -3478,15 +3494,19 @@ struct _create_particular_data *d;
             else
                 unblock_vision_and_hearing_at_point(mx, my);
         }
+
         if (d->sleeping)
             mtmp->msleeping = 1;
+
         madeany = TRUE;
         /* in case we got a doppelganger instead of what was asked
            for, make it start out looking like what was asked for */
-        if (mtmp->cham != NON_PM && firstchoice != NON_PM
-            && mtmp->cham != firstchoice)
+        if (mtmp->cham != NON_PM && firstchoice != NON_PM && mtmp->cham != firstchoice)
             (void) newcham(mtmp, &mons[firstchoice], FALSE, FALSE);
+
+        newsym(mtmp->mx, mtmp->my);
     }
+
     return madeany;
 }
 

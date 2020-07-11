@@ -1071,10 +1071,32 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
             boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
+
+            /* Object mimic handling */
+            boolean has_obj_mimic = FALSE;
+            struct obj mimic_obj = zeroobj;
+            if (base_layer == LAYER_OBJECT && m_here && (M_AP_TYPE(m_here) == M_AP_OBJECT))
+            {
+                int sensed = (Protection_from_shape_changers || sensemon(m_here));
+                if (!sensed)
+                {
+                    has_obj_mimic = TRUE;
+                    mimic_obj.otyp = m_here->mappearance;
+                    mimic_obj.corpsenm = has_mcorpsenm(m_here) ? MCORPSENM(m_here) : PM_TENGU;
+                    mimic_obj.glyph = obj_to_glyph(&mimic_obj, newsym_rn2);
+                }
+            }
                 
             if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
             {
                 struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_objchn : level.objects[enl_i][enl_j];
+
+                /* If there is an object mimic, let it be first */
+                if (has_obj_mimic && !show_memory_objects) /* The mimic has been added to memory objects */
+                {
+                    mimic_obj.nexthere = otmp;
+                    otmp = &mimic_obj;
+                }
 
                 //                if (covers_objects(enl_i, enl_j))
 //                    break; /* next layer, nothing to draw here */
@@ -2019,7 +2041,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     if (mtmp && (
                         (ispet && flags.show_tile_pet_hp_bar)
                         || (isyou && flags.show_tile_u_hp_bar)
-                        || (!ispet && !isyou && flags.show_tile_mon_hp_bar)
+                        || (!ispet && !isyou && flags.show_tile_mon_hp_bar && canspotmon(mtmp))
                         ))
                     {
                         int hp = isyou ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
