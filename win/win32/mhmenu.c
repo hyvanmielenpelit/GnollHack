@@ -1288,18 +1288,23 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     }
 
     /* draw focused item */
-    if (item->has_focus || (NHMENU_IS_SELECTABLE(*item)
-                            && data->menu.items[lpdis->itemID].count != -1)) {
+    if (1) //item->has_focus || (NHMENU_IS_SELECTABLE(*item) && data->menu.items[lpdis->itemID].count != -1)) 
+    {
         RECT client_rt;
 
         GetClientRect(lpdis->hwndItem, &client_rt);
         client_rt.right = min(client_rt.right, lpdis->rcItem.right);
         if (NHMENU_IS_SELECTABLE(*item)
             && data->menu.items[lpdis->itemID].count != 0
-            && item->glyph != NO_GLYPH) {
-            if (data->menu.items[lpdis->itemID].count == -1) {
+            && data->menu.items[lpdis->itemID].object_data.quan > 1
+            && item->glyph != NO_GLYPH)
+        {
+            if (data->menu.items[lpdis->itemID].count == -1) 
+            {
                 _stprintf(wbuf, TEXT("Count: All"));
-            } else {
+            } 
+            else 
+            {
                 _stprintf(wbuf, TEXT("Count: %d"),
                           data->menu.items[lpdis->itemID].count);
             }
@@ -1574,7 +1579,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
     accelerator:
     default:
         if (strchr(data->menu.gacc, ch)
-            && !((ch == '0' || ch == '9' || ch == '8') && data->menu.counting)) 
+            && !((ch == '0' || ch == '9' || ch == '8' || ch == GOLD_SYM || ch == GOLD_SYM_ALTERNATE) && data->menu.counting)) 
         {
             /* matched a group accelerator */
             if (data->how == PICK_ANY || data->how == PICK_ONE) 
@@ -1582,13 +1587,11 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
                 reset_menu_count(hwndList, data);
                 for (i = 0; i < data->menu.size; i++) 
                 {
-                    if (NHMENU_IS_SELECTABLE(data->menu.items[i])
-                        && data->menu.items[i].group_accel == ch)
+                    if (NHMENU_IS_SELECTABLE(data->menu.items[i]) && data->menu.items[i].group_accel == ch)
                     {
                         if (data->how == PICK_ANY) 
                         {
-                            SelectMenuItem(hwndList, data, i,
-                                NHMENU_IS_SELECTED(data->menu.items[i]) ? 0 : -1);
+                            SelectMenuItem(hwndList, data, i, NHMENU_IS_SELECTED(data->menu.items[i]) ? 0 : -1);
                         }
                         else if (data->how == PICK_ONE) 
                         {
@@ -1600,7 +1603,9 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
                     }
                 }
                 return -2;
-            } else {
+            } 
+            else
+            {
                 mswin_nhbell();
                 return -2;
             }
@@ -1610,8 +1615,9 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
         {
             int count;
             i = ListView_GetNextItem(hwndList, -1, LVNI_FOCUSED);
-            if (i >= 0)
+            if (0) //i >= 0) //This system has been deactivated
             {
+                curcount = 0;
                 count = data->menu.items[i].count;
                 if (count == -1)
                     count = 0;
@@ -1623,6 +1629,19 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
                     data->menu.items[i].count = min(100000, count);
                     ListView_RedrawItems(hwndList, i,
                                          i); /* update count mark */
+                }
+            }
+            else
+            {
+                count = curcount;
+                if (count == -1)
+                    count = 0;
+                count *= 10L;
+                count += (int)(ch - '0');
+                if (count != 0) /* ignore leading zeros */
+                {
+                    data->menu.counting = TRUE;
+                    curcount = min(1000000, count);
                 }
             }
             return -2;
@@ -1637,26 +1656,32 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
                     break; // impossible?
 
                 int iter = topIndex;
-                do {
+                do
+                {
                     i = iter % data->menu.size;
                     if (data->menu.items[i].accelerator == ch)
                     {
+                        if (data->menu.items[i].object_data.quan > 0 && curcount >= data->menu.items[i].object_data.quan)
+                            curcount = -1;
+
                         if (data->how == PICK_ANY)
                         {
-                            SelectMenuItem(hwndList, data, i, NHMENU_IS_SELECTED(data->menu.items[i]) ? 0 : -1);
+                            SelectMenuItem(hwndList, data, i, curcount != 0 ? curcount : NHMENU_IS_SELECTED(data->menu.items[i]) ? 0 : -1);
                             ListView_SetItemState(hwndList, i, LVIS_FOCUSED, LVIS_FOCUSED);
                             ListView_EnsureVisible(hwndList, i, FALSE);
                             return -2;
                         }
                         else if (data->how == PICK_ONE) 
                         {
-                            SelectMenuItem(hwndList, data, i, -1);
+                            
+                            SelectMenuItem(hwndList, data, i, curcount != 0 ? curcount : -1);
                             data->result = 0;
                             data->done = 1;
                             return -2;
                         }
                     }
                 } while( (++iter % data->menu.size) != topIndex ); 
+                curcount = 0;
             }
         }
         break;
@@ -1711,9 +1736,11 @@ SelectMenuItem(HWND hwndList, PNHMenuWindow data, int item, int count)
     if (item < 0 || item >= data->menu.size)
         return;
 
-    if (data->how == PICK_ONE && count != 0) {
+    if (data->how == PICK_ONE && count != 0) 
+    {
         for (i = 0; i < data->menu.size; i++)
-            if (item != i && data->menu.items[i].count != 0) {
+            if (item != i && data->menu.items[i].count != 0) 
+            {
                 data->menu.items[i].count = 0;
                 ListView_RedrawItems(hwndList, i, i);
             };
@@ -1729,6 +1756,7 @@ reset_menu_count(HWND hwndList, PNHMenuWindow data)
 {
     int i;
     data->menu.counting = FALSE;
+    curcount = 0;
     if (IsWindow(hwndList)) {
         i = ListView_GetNextItem((hwndList), -1, LVNI_FOCUSED);
         if (i >= 0)

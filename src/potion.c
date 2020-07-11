@@ -1027,8 +1027,8 @@ struct obj *otmp;
 		u.uhunger += (otmp->odiluted ? 10 : 20);
 		update_hunger_status(FALSE);
 
-		if (otmp->cursed && !otmp->odiluted)
-			make_confused(itimeout_incr(HConfusion, d(3, 8)), FALSE);
+		if (!otmp->odiluted)
+			make_confused(itimeout_incr(HConfusion, otmp->cursed ? d(3, 8) : d(2, 4)), FALSE);
 
 		break;
 	case POT_PARALYSIS:

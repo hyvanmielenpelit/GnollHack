@@ -657,6 +657,11 @@ static const char empty_string[] = "";
 #define THROWN_WEAPON_TO_HIT_MELEE_PENALTY 30
 #define THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON 18
 
+#define CORPSE_ROTTING_SPEED 35L            /* Turns per one rotting level */
+#define CORPSE_ROTTING_SPEED_VARIATION 10L  /* Turns per one rotting level */
+#define ROTTING_THRESHOLD 40L               /* Turns before can rot */
+#define BLESSED_ROTTING_THRESHOLD 80L       /* Turns before can rot */
+
 
 /* Maximum number of status lines */
 #define MAX_STATUS_LINES 8

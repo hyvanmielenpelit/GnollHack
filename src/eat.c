@@ -1862,20 +1862,25 @@ rottenfood(obj)
 struct obj *obj;
 {
     pline("Blecch!  Rotten %s!", foodword(obj));
-    if (!rn2(4)) {
+    if (!rn2(4))
+    {
         if (Hallucination)
             You_feel("rather trippy.");
         else
             You_feel("rather %s.", body_part(LIGHT_HEADED));
         make_confused(itimeout_incr(HConfusion, d(2, 4)), FALSE);
-    } else if (!rn2(4) && !Blind) {
+    } 
+    else if (!rn2(4) && !Blind) 
+    {
         pline("Everything suddenly goes dark.");
         /* hero is not Blind, but Blinded timer might be nonzero if
            blindness is being overridden by the Eyes of the Overworld */
         make_blinded((Blinded & TIMEOUT) + (long) d(2, 10), FALSE);
         if (!Blind)
             Your1(vision_clears);
-    } else if (!rn2(3)) {
+    }
+    else if (!rn2(3)) 
+    {
         const char *what, *where;
         int duration = rnd(10);
 
@@ -1920,7 +1925,7 @@ struct obj *otmp;
     if (!nonrotting_corpse(mnum)) {
         long age = peek_at_iced_corpse_age(otmp);
 
-        rotted = (monstermoves - age) / (20L + rn2(20));
+        rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + rn2(CORPSE_ROTTING_SPEED_VARIATION));
         if (otmp->cursed)
             rotted += 2L;
         else if (otmp->blessed)
@@ -2813,7 +2818,8 @@ struct obj *otmp;
     Sprintf(eat_it_anyway, "Eat %s anyway?",
             (otmp->quan == 1L) ? "it" : "one");
 
-    if (cadaver || otmp->otyp == EGG || otmp->otyp == TIN) {
+    if (cadaver || otmp->otyp == EGG || otmp->otyp == TIN) 
+    {
         /* These checks must match those in eatcorpse() */
         stoneorslime = (flesh_petrifies(&mons[mnum]) && !Stone_resistance
                         && !poly_when_stoned(youmonst.data));
@@ -2821,12 +2827,13 @@ struct obj *otmp;
         if (mnum == PM_GREEN_SLIME || otmp->otyp == GLOB_OF_GREEN_SLIME)
             stoneorslime = (!Unchanging && !slimeproof(youmonst.data));
 
-        if (cadaver && !nonrotting_corpse(mnum)) {
+        if (cadaver && !nonrotting_corpse(mnum))
+        {
             long age = peek_at_iced_corpse_age(otmp);
 
             /* worst case rather than random
                in this calculation to force prompt */
-            rotted = (monstermoves - age) / (10L + 0 /* was rn2(20) */);
+            rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
             if (otmp->cursed)
                 rotted += 2L;
             else if (otmp->blessed)
@@ -2838,7 +2845,8 @@ struct obj *otmp;
      * These problems with food should be checked in
      * order from most detrimental to least detrimental.
      */
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED || (cadaver  && mnum != PM_ACID_BLOB && rotted > 5L && !Sick_resistance)) {
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED || (cadaver  && mnum != PM_ACID_BLOB && rotted > 5L && !Sick_resistance))
+    {
         /* Tainted meat */
         Sprintf(buf, "%s like %s could be tainted!  %s", foodsmell, it_or_they,
                 eat_it_anyway);
@@ -2847,7 +2855,9 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING || stoneorslime || (cadaver && has_sickening_corpse(&mons[mnum]) && !Sick_resistance)) {
+
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_HALLUCINATING || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_SICKENING || stoneorslime || (cadaver && (has_sickening_corpse(&mons[mnum]) || has_mummy_rotted_corpse(&mons[mnum])) && !Sick_resistance))
+    {
         Sprintf(buf, "%s like %s could be something very dangerous!  %s",
                 foodsmell, it_or_they, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
@@ -2855,6 +2865,7 @@ struct obj *otmp;
         else
             return 2;
     }
+
     if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ROTTEN || otmp->orotten || (cadaver && rotted > 3L)) {
         /* Rotten */
         Sprintf(buf, "%s like %s could be rotten! %s",  foodsmell, it_or_they,
@@ -2864,7 +2875,9 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS || (cadaver && has_poisonous_corpse(&mons[mnum]) && !Poison_resistance)) {
+
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS || (cadaver && has_poisonous_corpse(&mons[mnum]) && !Poison_resistance)) 
+    {
         /* poisonous */
         Sprintf(buf, "%s like %s might be poisonous!  %s", foodsmell,
                 it_or_they, eat_it_anyway);
@@ -2873,29 +2886,37 @@ struct obj *otmp;
         else
             return 2;
     }
-    if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance) {
+
+    if (otmp->otyp == APPLE && otmp->cursed && !Sleep_resistance) 
+    {
         /* causes sleep, for long enough to be dangerous */
         Sprintf(buf, "%s like %s might have been poisoned.  %s", foodsmell,
                 it_or_they, eat_it_anyway);
         return (yn_function(buf, ynchars, 'n') == 'n') ? 1 : 2;
     }
+
     if (cadaver && !vegetarian(&mons[mnum]) && !u.uconduct.unvegetarian
-        && Role_if(PM_MONK)) {
+        && Role_if(PM_MONK)) 
+    {
         Sprintf(buf, "%s unhealthy.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
     }
-    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || cadaver && has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance) {
+
+    if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC || cadaver && has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance) 
+    {
         Sprintf(buf, "%s rather acidic.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
             return 1;
         else
             return 2;
     }
+
     if (Upolyd && u.umonnum == PM_RUST_MONSTER && is_metallic(otmp)
-        && otmp->oerodeproof) {
+        && otmp->oerodeproof) 
+    {
         Sprintf(buf, "%s disgusting to you right now.  %s", foodsmell,
                 eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
@@ -2910,7 +2931,8 @@ struct obj *otmp;
     if (!u.uconduct.unvegan && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
         && ((material == MAT_LEATHER || material == MAT_BONE
              || material == MAT_DRAGON_HIDE || material == MAT_WAX)
-            || (cadaver && !vegan(&mons[mnum])))) {
+            || (cadaver && !vegan(&mons[mnum])))) 
+    {
         Sprintf(buf, "%s foul and unfamiliar to you.  %s", foodsmell,
                 eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
@@ -2918,10 +2940,12 @@ struct obj *otmp;
         else
             return 2;
     }
+
     if (!u.uconduct.unvegetarian && !maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))
         && ((material == MAT_LEATHER || material == MAT_BONE
              || material == MAT_DRAGON_HIDE)
-            || (cadaver && !vegetarian(&mons[mnum])))) {
+            || (cadaver && !vegetarian(&mons[mnum]))))
+    {
         Sprintf(buf, "%s unfamiliar to you.  %s", foodsmell, eat_it_anyway);
         if (yn_function(buf, ynchars, 'n') == 'n')
             return 1;
@@ -2929,7 +2953,8 @@ struct obj *otmp;
             return 2;
     }
 
-    if (cadaver && mnum != PM_ACID_BLOB && rotted > 5L && Sick_resistance) {
+    if (cadaver && mnum != PM_ACID_BLOB && rotted > 5L && Sick_resistance) 
+    {
         /* Tainted meat with Sick_resistance */
         Sprintf(buf, "%s like %s could be tainted!  %s",
                 foodsmell, it_or_they, eat_it_anyway);
@@ -2938,6 +2963,7 @@ struct obj *otmp;
         else
             return 2;
     }
+
     return 0;
 }
 
@@ -2950,22 +2976,27 @@ doeat()
     boolean dont_start = FALSE, nodelicious = FALSE;
 	boolean hadhallucination = !!Hallucination;
 
-    if (Strangled) {
+    if (Strangled) 
+    {
         pline("If you can't breathe air, how can you consume solids?");
         return 0;
     }
     if (!(otmp = floorfood("eat", 0)))
         return 0;
+
     if (check_capacity((char *) 0))
         return 0;
 
-	if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL))) {
+	if (maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))
+    {
 		int res = edibility_prompts(otmp);
 
-		if (res == 1) {
+		if (res == 1) 
+        {
 			return 0;
 		}
-	} else if (u.uedibility) {
+	} else if (u.uedibility) 
+    {
         int res = edibility_prompts(otmp);
 
         if (res) {
@@ -2983,27 +3014,34 @@ doeat()
      * mails, players who polymorph back to human in the middle of their
      * metallic meal, etc....
      */
-    if (!is_edible(otmp)) {
+    if (!is_edible(otmp))
+    {
         You("cannot eat that!");
         return 0;
-    } else if ((otmp->owornmask & (W_ARMOR | W_BLINDFOLD | W_AMUL | W_SADDLE))
-               != 0) {
+    } else if ((otmp->owornmask & (W_ARMOR | W_BLINDFOLD | W_AMUL | W_SADDLE)) != 0) 
+    {
         /* let them eat rings */
         You_cant("eat %s you're wearing.", something);
         return 0;
-    } else if (!(carried(otmp) ? retouch_object(&otmp, FALSE)
-                               : touch_artifact(otmp, &youmonst))) {
+    }
+    else if (!(carried(otmp) ? retouch_object(&otmp, FALSE)
+                               : touch_artifact(otmp, &youmonst)))
+    {
         return 1; /* got blasted so use a turn */
     }
+
     if (is_metallic(otmp) && u.umonnum == PM_RUST_MONSTER
-        && otmp->oerodeproof) {
+        && otmp->oerodeproof)
+    {
         otmp->rknown = TRUE;
-        if (otmp->quan > 1L) {
+        if (otmp->quan > 1L)
+        {
             if (!carried(otmp))
                 (void) splitobj(otmp, otmp->quan - 1L);
             else
                 otmp = splitobj(otmp, 1L);
         }
+
         pline("Ulch - that %s was rustproofed!", xname(otmp));
         /* The regurgitated object's rustproofing is gone now */
         otmp->oerodeproof = 0;
@@ -3013,13 +3051,18 @@ doeat()
          * or wearing cursed rings which were rustproofed, but guard
          * against the possibility just in case.
          */
-        if (welded(otmp, &youmonst) || (otmp->cursed && (otmp->owornmask & W_RING))) {
+        if (welded(otmp, &youmonst) || (otmp->cursed && (otmp->owornmask & W_RING)))
+        {
             otmp->bknown = 1; /* for ring; welded() does this for weapon */
             You("spit out %s.", the(xname(otmp)));
-        } else {
+        }
+        else 
+        {
             You("spit %s out onto the %s.", the(xname(otmp)),
                 surface(u.ux, u.uy));
-            if (carried(otmp)) {
+
+            if (carried(otmp))
+            {
                 /* no need to check for leash in use; it's not metallic */
                 if (otmp->owornmask)
                     remove_worn_item(otmp, FALSE);
@@ -3030,8 +3073,10 @@ doeat()
         }
         return 1;
     }
+
     /* KMH -- Slow digestion is... indigestible */
-    if (otmp->otyp == RIN_SLOW_DIGESTION) {
+    if (otmp->otyp == RIN_SLOW_DIGESTION)
+    {
         pline("This ring is indigestible!");
         (void) rottenfood(otmp);
         if (otmp->dknown && !objects[otmp->otyp].oc_name_known
@@ -3039,7 +3084,9 @@ doeat()
             docall(otmp);
         return 1;
     }
-    if (!is_obj_normally_edible(otmp)) {
+
+    if (!is_obj_normally_edible(otmp)) 
+    {
         int material;
 
         context.victual.reqtime = 1;
@@ -3070,27 +3117,35 @@ doeat()
 
         material = objects[otmp->otyp].oc_material;
         if (material == MAT_LEATHER || material == MAT_BONE
-            || material == MAT_DRAGON_HIDE) {
+            || material == MAT_DRAGON_HIDE) 
+        {
             u.uconduct.unvegan++;
             violated_vegetarian();
         } else if (material == MAT_WAX)
             u.uconduct.unvegan++;
+
         u.uconduct.food++;
 
-        if (otmp->cursed) {
+        if (otmp->cursed) 
+        {
             (void) rottenfood(otmp);
             nodelicious = TRUE;
         } else if (objects[otmp->otyp].oc_material == MAT_PAPER)
             nodelicious = TRUE;
 
-        if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) {
+        if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
+        {
             pline("Ecch - that must have been poisonous!");
-            if (!Poison_resistance) {
+            if (!Poison_resistance) 
+            {
                 losestr(rnd(4));
                 losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, FALSE), xname(otmp), KILLED_BY_AN);
-            } else
+            } 
+            else
                 You("seem unaffected by the poison.");
-        } else if (!nodelicious) {
+        } 
+        else if (!nodelicious) 
+        {
             pline("%s%s is delicious!",
                   (obj_is_pname(otmp)
                    && !any_quest_artifact(otmp))
@@ -3104,7 +3159,8 @@ doeat()
         return 1;
     }
 
-    if (otmp == context.victual.piece) {
+    if (otmp == context.victual.piece)
+    {
         /* If they weren't able to choke, they don't suddenly become able to
          * choke just because they were interrupted.  On the other hand, if
          * they were able to choke before, if they lost food it's possible
@@ -3124,7 +3180,8 @@ doeat()
     /* nothing in progress - so try to find something. */
     /* tins are a special case */
     /* tins must also check conduct separately in case they're discarded */
-    if (otmp->otyp == TIN) {
+    if (otmp->otyp == TIN)
+    {
         start_tin(otmp);
         return 1;
     }
@@ -3143,26 +3200,33 @@ doeat()
      * for normal vs. rotten food.  The reqtime and nutrit values are
      * then adjusted in accordance with the amount of food left.
      */
-    if (otmp->otyp == CORPSE || otmp->globby) {
+    if (otmp->otyp == CORPSE || otmp->globby) 
+    {
         int tmp = eatcorpse(otmp);
 
-        if (tmp == 2) {
+        if (tmp == 2)
+        {
             /* used up */
             context.victual.piece = (struct obj *) 0;
             context.victual.o_id = 0;
             return 1;
-        } else if (tmp)
+        }
+        else if (tmp)
             dont_start = TRUE;
         /* if not used up, eatcorpse sets up reqtime and may modify oeaten */
-    } else {
+    } 
+    else 
+    {
         /* No checks for MAT_WAX, MAT_LEATHER, MAT_BONE, MAT_DRAGON_HIDE.  These are
          * all handled in the != FOOD_CLASS case, above.
          */
-        switch (objects[otmp->otyp].oc_material) {
+        switch (objects[otmp->otyp].oc_material)
+        {
 		case MAT_ORGANIC:
 		case MAT_FLESH:
             u.uconduct.unvegan++;
-            if (otmp->otyp != EGG) {
+            if (otmp->otyp != EGG)
+            {
                 violated_vegetarian();
             }
             break;
@@ -3177,9 +3241,11 @@ doeat()
 
         context.victual.reqtime = objects[otmp->otyp].oc_delay;
 
-		if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED) {
+		if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED) 
+        {
 			pline("Ulch - that %s was tainted!", cxname(otmp));
-			if (Sick_resistance) {
+			if (Sick_resistance)
+            {
 				pline("It doesn't seem at all sickening, though...");
 			}
 			else 
@@ -3198,15 +3264,18 @@ doeat()
 				useupf(otmp, 1L);
 			return 2;
 		}
-		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity && !Acid_resistance) {
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ACIDIC && !Acid_immunity && !Acid_resistance) 
+        {
 			You("have a very bad case of stomach acid.");   /* not body_part() */
 			losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), "acidic food",
 				KILLED_BY_AN); /* acid damage */
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
-		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS) {
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_POISONOUS)
+        {
 			pline("Ecch - that must have been poisonous!");
-			if (!Poison_resistance) {
+			if (!Poison_resistance) 
+            {
 				losestr(rnd(4));
 				losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, FALSE), "poisonous food",
 					KILLED_BY_AN);
@@ -3215,9 +3284,11 @@ doeat()
 				You("seem unaffected by the poison.");
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
-		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS) {
+		else if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_DEADLY_POISONOUS)
+        {
 			pline("Ecch - that must have been terribly poisonous!");
-			if (!Poison_resistance) {
+			if (!Poison_resistance) 
+            {
 				losestr(d(2, 6));
 				losehp(adjust_damage(d(5, 20), (struct monst*)0, &youmonst, AD_DRST, FALSE), "poisonous food",
 					KILLED_BY_AN);
@@ -3242,12 +3313,14 @@ doeat()
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}
 		else if (otmp->otyp != FORTUNE_COOKIE
-            && (otmp->cursed || otmp->orotten || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ROTTEN || (!nonrotting_food(otmp->otyp)
-                                 && (monstermoves - otmp->age)
-                                        > (otmp->blessed ? 50L : 30L)
-                                 && (otmp->orotten || !rn2(7))))) 
+            && (otmp->cursed || otmp->orotten || objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_ROTTEN 
+                || (!nonrotting_food(otmp->otyp) && (monstermoves - otmp->age) > (otmp->blessed ? BLESSED_ROTTING_THRESHOLD : ROTTING_THRESHOLD)
+                                 && (otmp->orotten || !rn2(7))
+                   )
+               )) 
 		{
-            if (rottenfood(otmp)) {
+            if (rottenfood(otmp))
+            {
                 otmp->orotten = TRUE;
                 dont_start = TRUE;
             }
