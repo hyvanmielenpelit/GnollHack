@@ -1740,6 +1740,43 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 /* All UI related symbols and cursors */
                 if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
+                    /* Add cursor first, as it can be the largest, and we do not want it to cover other UI elements */
+                    if (i == data->xCur && j == data->yCur)
+                    {
+                        boolean cannotseeself = (i == u.ux && j == u.uy) && !canspotself();
+                        if (!cannotseeself &&
+                            ((!data->cursorOn && flags.blinking_cursor_on_tiles)
+                            || (/*i == u.ux && j == u.uy &&*/ !flags.show_cursor_on_u)
+                            ))
+                        {
+                            // Nothing, cursor is invisible
+                        }
+                        else
+                        {
+                            int cglyph = (cannotseeself && flags.active_cursor_style == CURSOR_STYLE_GENERIC_CURSOR ? CURSOR_STYLE_INVISIBLE : flags.active_cursor_style) + GLYPH_CURSOR_OFF;
+                            int ctile = glyph2tile[cglyph];
+                            ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
+                            ctile = maybe_get_animated_tile(ctile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &data->mapAnimated[i][j], (enum autodraw_types*)0);
+                            t_x = TILEBMP_X(ctile);
+                            t_y = TILEBMP_Y(ctile);
+
+                            /*
+                            SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                hDCcopy, 0, 0,
+                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                            */
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                data->backBufferDC, rect->left, rect->top,
+                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+
+                        }
+                    }
+
                     /* Conditions and status marks */
                     int condition_count = 0;
                     if (glyph_is_monster(monster_glyph) && mtmp)
@@ -2124,60 +2161,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
 
 
-                    /* Add cursor here */
-                    if (i == data->xCur && j == data->yCur)
-                    {
-                        if (
-                            (!data->cursorOn && flags.blinking_cursor_on_tiles)
-                            || (/*i == u.ux && j == u.uy &&*/ !flags.show_cursor_on_u)
-                            )
-                        {
-                            // Nothing, cursor is invisible
-                        }
-                        else
-                        {
-                            int cglyph = flags.active_cursor_style + GLYPH_CURSOR_OFF;
-                            int ctile = glyph2tile[cglyph];
-                            ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
-                            ctile = maybe_get_animated_tile(ctile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &data->mapAnimated[i][j], (enum autodraw_types*)0);
-                            t_x = TILEBMP_X(ctile);
-                            t_y = TILEBMP_Y(ctile);
-
-                            /*
-                            SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                hDCcopy, 0, 0,
-                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
-                                t_y, GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-                            */
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
-                                t_y, GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-                            
-#if 0
-                            HBRUSH hbr_dark = CreateSolidBrush(RGB(0, 0, 0));
-                            HBRUSH hbr_light = CreateSolidBrush(RGB(100, 50, 0));
-                            HBRUSH hbr_light2 = CreateSolidBrush(RGB(50, 25, 0));
-                            RECT smaller_rect, even_smaller_rect;
-                            smaller_rect.top = rect->top + 1;
-                            smaller_rect.bottom = rect->bottom - 1;
-                            smaller_rect.left = rect->left + 1;
-                            smaller_rect.right = rect->right - 1;
-                            even_smaller_rect.top = rect->top + 2;
-                            even_smaller_rect.bottom = rect->bottom - 2;
-                            even_smaller_rect.left = rect->left + 2;
-                            even_smaller_rect.right = rect->right - 2;
-                            FrameRect(data->backBufferDC, rect, hbr_dark);
-                            FrameRect(data->backBufferDC, &smaller_rect, hbr_light);
-                            FrameRect(data->backBufferDC, &even_smaller_rect, hbr_light2);
-                            //DrawFocusRect(data->backBufferDC, rect);
-                            //DrawFocusRect(data->backBufferDC, &smaller_rect);
-#endif
-                        }
-                    }
                 }
 
             }
