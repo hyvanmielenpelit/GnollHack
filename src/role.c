@@ -2658,6 +2658,9 @@ u_to_glyph()
                 : u.action == ACTION_TILE_CAST ? (flags.female ? female_casting_monnum_to_glyph(u.umonnum) : casting_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_SPECIAL_ATTACK ? (flags.female ? female_special_attacking_monnum_to_glyph(u.umonnum) : special_attacking_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_KICK ? (flags.female ? female_kicking_monnum_to_glyph(u.umonnum) : kicking_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_PASSIVE_DEFENSE ? (flags.female ? female_passive_defense_monnum_to_glyph(u.umonnum) : passive_defense_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_DEFEND ? (flags.female ? female_defending_monnum_to_glyph(u.umonnum) : defending_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_RECEIVE_DAMAGE ? (flags.female ? female_damage_receiving_monnum_to_glyph(u.umonnum) : damage_receiving_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_ITEM_USE ? (flags.female ? female_item_using_monnum_to_glyph(u.umonnum) : item_using_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_DOOR_USE ? (flags.female ? female_door_using_monnum_to_glyph(u.umonnum) : door_using_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_DEATH ? (flags.female ? female_dying_monnum_to_glyph(u.umonnum) : dying_monnum_to_glyph(u.umonnum))
@@ -2677,6 +2680,9 @@ u_to_glyph()
         : u.action == ACTION_TILE_CAST ? GLYPH_PLAYER_CAST_OFF
         : u.action == ACTION_TILE_SPECIAL_ATTACK ? GLYPH_PLAYER_SPECIAL_ATTACK_OFF
         : u.action == ACTION_TILE_KICK ? GLYPH_PLAYER_KICK_OFF
+        : u.action == ACTION_TILE_PASSIVE_DEFENSE ? GLYPH_PLAYER_PASSIVE_DEFENSE_OFF
+        : u.action == ACTION_TILE_DEFEND ? GLYPH_PLAYER_DEFEND_OFF
+        : u.action == ACTION_TILE_RECEIVE_DAMAGE ? GLYPH_PLAYER_RECEIVE_DAMAGE_OFF
         : u.action == ACTION_TILE_ITEM_USE ? GLYPH_PLAYER_ITEM_USE_OFF
         : u.action == ACTION_TILE_DOOR_USE ? GLYPH_PLAYER_DOOR_USE_OFF
         : u.action == ACTION_TILE_DEATH ? GLYPH_PLAYER_DEATH_OFF
@@ -2724,9 +2730,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 
     /* Test cases */
     if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
-        return (action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
+        return TRUE;  //(action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
     else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
-        return (action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
+        return TRUE;  //(action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
 
     /* Real cases */
     switch (action)

@@ -153,6 +153,7 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
 
 static NEARDATA struct mflag_description m5flag_descriptions[] = {
     { M5_HATES_LIGHT, "vulnerable to light", "monsters vulnerable to light" },
+    { M5_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
     { 0 , "", "" }
 };
 
@@ -474,8 +475,7 @@ hates_silver(ptr)
 register struct permonst *ptr;
 {
     return (boolean) (is_were(ptr) || ptr->mlet == S_VAMPIRE || is_demon(ptr)
-                      || ptr == &mons[PM_SHADE]
-                      || (ptr->mlet == S_IMP && ptr != &mons[PM_TENGU]));
+                      || is_special_silver_hater(ptr));
 }
 
 /* True if specific monster is especially affected by silver weapons */

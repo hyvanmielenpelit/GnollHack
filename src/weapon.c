@@ -434,7 +434,7 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
     if (objects[otyp].oc_material <= MAT_LEATHER && thick_skinned(ptr))
         /* thick skinned/scaled creatures don't feel it */
         tmp = 0;
-    if (ptr == &mons[PM_SHADE] && !shade_glare(otmp))
+    if (is_shade(ptr) && !shade_glare(otmp))
         tmp = 0;
 
     /* "very heavy iron ball"; weight increase is in increments */

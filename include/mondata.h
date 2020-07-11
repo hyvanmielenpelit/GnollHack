@@ -170,6 +170,8 @@
 #define innate_eschew_blessed(ptr) (((ptr)->mflags5 & M5_ESCHEWS_BLESSED_ITEMS) != 0)
 #define innate_eschew_silver(ptr) (((ptr)->mflags5 & M5_ESCHEWS_SILVER_ITEMS) != 0)
 #define hates_light(ptr) (((ptr)->mflags5 & M5_HATES_LIGHT) != 0)
+#define is_shade(ptr) (((ptr)->mflags5 & M5_SHADE) != 0)
+#define is_special_silver_hater(ptr) (((ptr)->mflags5 & M5_HATES_SILVER) != 0)
 
 /* combinations */
 #define is_not_living(ptr) \

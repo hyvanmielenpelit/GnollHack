@@ -314,6 +314,8 @@
 #define M5_ESCHEWS_BLESSED_ITEMS    0x00020000UL
 #define M5_ESCHEWS_SILVER_ITEMS     0x00040000UL
 #define M5_HATES_LIGHT              0x00080000UL /* Gremlin only */
+#define M5_HATES_SILVER             0x00100000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
+#define M5_SHADE                    0x00200000UL /* Shade only */
 
 
 #define MZ_TINY 0          /* < 2' */

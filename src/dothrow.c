@@ -1469,7 +1469,7 @@ boolean hitsroof;
 				damage = 1;
             else if (damage > 6)
                 damage = 6;
-            if (youmonst.data == &mons[PM_SHADE]
+            if (is_shade(youmonst.data)
                 && objects[obj->otyp].oc_material != MAT_SILVER)
 				damage = 0;
         }

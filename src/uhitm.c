@@ -955,7 +955,7 @@ boolean* obj_destroyed;
 		/* All gloves give bonuses when fighting 'bare-handed'. -- JG
 		   So do silver rings.  Note:  rings are worn under gloves, so you don't
 		   get both bonuses, and two silver rings don't give double bonus. */
-		if (mdat == &mons[PM_SHADE])
+		if (is_shade(mdat))
 			damage = 0;
 		else
 		{
@@ -1090,7 +1090,7 @@ boolean* obj_destroyed;
 			{
 				/* then do only 1-2 points of damage */
 				damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
-				if (mdat == &mons[PM_SHADE] && !shade_glare(obj))
+				if (is_shade(mdat) && !shade_glare(obj))
 					damage = 0;
 				else
 					damage = adjust_damage(rnd(2), &youmonst, mon, objects[obj->otyp].oc_damagetype, FALSE);
@@ -1123,7 +1123,7 @@ boolean* obj_destroyed;
 					if (!more_than_1)
 						obj = (struct obj*) 0;
 					hittxt = TRUE;
-					if (mdat != &mons[PM_SHADE])
+					if (!is_shade(mdat))
 						damage++;
 				}
 			}
@@ -1283,11 +1283,11 @@ boolean* obj_destroyed;
 			hittxt = TRUE;
 			/* in case potion effect causes transformation */
 			mdat = mon->data;
-			damage = (mdat == &mons[PM_SHADE]) ? 0 : 1;
+			damage = is_shade(mdat) ? 0 : 1;
 		}
 		else
 		{
-			if (mdat == &mons[PM_SHADE] && !shade_aware(obj)) 
+			if (is_shade(mdat) && !shade_aware(obj))
 			{
 				damage = 0;
 				Strcpy(unconventional, cxname(obj));
@@ -1777,7 +1777,7 @@ boolean* obj_destroyed;
 		/* make sure that negative damage adjustment can't result
 		   in inadvertently boosting the victim's hit points */
 		damage = 0;
-		if (mdat == &mons[PM_SHADE]) 
+		if (is_shade(mdat))
 		{
 			if (!hittxt) 
 			{
@@ -2661,7 +2661,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_HEAL: /* likewise */
     case AD_PHYS:
  physical:
-        if (pd == &mons[PM_SHADE]) {
+        if (is_shade(pd)) 
+		{
             damage = 0;
             if (!specialdmg)
                 impossible("bad shade attack function flow?");
@@ -3700,7 +3701,7 @@ register struct monst *mon;
                     verb = "hit";
                     break;
                 }
-                if (mon->data == &mons[PM_SHADE] && !specialdmg) {
+                if (is_shade(mon->data) && !specialdmg) {
                     if (!strcmp(verb, "hit")
                         || (mattk->aatyp == AT_CLAW && humanoid(mon->data)))
                         verb = "attack";
@@ -3779,7 +3780,7 @@ register struct monst *mon;
                     || mon->mhp <= 1 + max(u.ubasedaminc + u.udaminc, 1))
                     unconcerned = FALSE;
             }
-            if (mon->data == &mons[PM_SHADE])
+            if (is_shade(mon->data))
 			{
                 const char *verb = byhand ? "grasp" : "hug";
 
@@ -3840,11 +3841,12 @@ register struct monst *mon;
         case AT_ENGL:
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(ACTION_TILE_ATTACK);
-			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
-                                   &attknum, &armorpenalty);
-            if ((dhit = (tmp > rnd(20 + i)))) {
+			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0, &attknum, &armorpenalty);
+
+            if ((dhit = (tmp > rnd(20 + i))))
+			{
                 wakeup(mon, TRUE);
-                if (mon->data == &mons[PM_SHADE])
+                if (is_shade(mon->data))
                     Your("attempt to surround %s is harmless.", mon_nam(mon));
                 else {
                     sum[i] = gulpum(mon, mattk);
@@ -3951,6 +3953,7 @@ boolean wep_was_destroyed;
 
 	damage += adjust_damage(basedmg, mon, &youmonst, ptr->mattk[i].adtyp, FALSE);
 
+	enum action_tile_types action_before = mon->action;
 	update_m_action(mon, ACTION_TILE_PASSIVE_DEFENSE);
 	play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 
@@ -4015,7 +4018,7 @@ boolean wep_was_destroyed;
                     && !(poly_when_stoned(youmonst.data)
                          && polymon(PM_STONE_GOLEM))) {
                     done_in_by(mon, STONING); /* "You turn to stone..." */
-					update_m_action(mon, ACTION_TILE_NO_ACTION);
+					update_m_action(mon, action_before);
 					return 2;
                 }
             }
@@ -4181,7 +4184,7 @@ boolean wep_was_destroyed;
             break;
         }
     }
-	update_m_action(mon, ACTION_TILE_NO_ACTION);
+	update_m_action(mon, action_before);
 	return (malive | mhit);
 }
 
@@ -4718,7 +4721,7 @@ enum action_tile_types action;
 void
 update_m_action(mtmp, action)
 struct monst* mtmp;
-uchar action;
+enum action_tile_types action;
 {
 	if (!mtmp)
 		return;
@@ -4729,7 +4732,7 @@ uchar action;
 		return;
 	}
 
-	uchar action_before = mtmp->action;
+	enum action_tile_types action_before = mtmp->action;
 	mtmp->action = action;
 
 	if (iflags.using_gui_tiles && canseemon(mtmp) && action_before != mtmp->action)

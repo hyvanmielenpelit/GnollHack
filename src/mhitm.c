@@ -2038,6 +2038,7 @@ int mdead;
 
 	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, FALSE);
 	
+    enum action_tile_types action_before = mdef->action;
     update_m_action(mdef, ACTION_TILE_PASSIVE_DEFENSE);
     play_monster_simple_weapon_sound(mdef, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 
@@ -2072,7 +2073,7 @@ int mdead;
     }
     if (mdead || is_cancelled(mdef))
     {
-        update_m_action(mdef, ACTION_TILE_NO_ACTION);
+        update_m_action(mdef, action_before);
         return (mdead | mhit);
     }
 
@@ -2094,7 +2095,7 @@ int mdead;
                     Strcat(buf, " gaze is reflected by %s %s.");
                     if (mon_reflects(magr, canseemon(magr) ? buf : (char*)0))
                     {
-                        update_m_action(mdef, ACTION_TILE_NO_ACTION);
+                        update_m_action(mdef, action_before);
                         return (mdead | mhit);
                     }
                     Strcpy(buf, Monnam(magr));
@@ -2105,7 +2106,7 @@ int mdead;
 								  s_suffix(mon_nam(mdef)));
 						paralyze_monst(magr, basedmg, FALSE);
 					}
-                    update_m_action(mdef, ACTION_TILE_NO_ACTION);
+                    update_m_action(mdef, action_before);
                     return (mdead | mhit);
                 }
             } else { /* gelatinous cube */
@@ -2113,7 +2114,7 @@ int mdead;
                 if (canseemon(magr))
                     pline("%s is frozen by %s.", buf, mon_nam(mdef));
                 paralyze_monst(magr, basedmg, FALSE);
-                update_m_action(mdef, ACTION_TILE_NO_ACTION);
+                update_m_action(mdef, action_before);
                 return (mdead | mhit);
             }
             return 1;
@@ -2202,11 +2203,11 @@ assess_dmg:
 		if (magr->mhp <= 0)
 		{
             monkilled(magr, "", (int) mddat->mattk[i].adtyp);
-            update_m_action(mdef, ACTION_TILE_NO_ACTION);
+            update_m_action(mdef, action_before);
             return (mdead | mhit | MM_AGR_DIED);
 		}
 	}
-    update_m_action(mdef, ACTION_TILE_NO_ACTION);
+    update_m_action(mdef, action_before);
     return (mdead | mhit);
 }
 

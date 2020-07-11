@@ -371,6 +371,12 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_SPECIAL_ATTACK_OFF))
 #define kicking_mon_to_glyph(mon, rng)                                      \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_KICK_OFF))
+#define passive_defense_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_PASSIVE_DEFENSE_OFF))
+#define defending_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_DEFEND_OFF))
+#define damage_receiving_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_RECEIVE_DAMAGE_OFF))
 #define item_using_mon_to_glyph(mon, rng)                                      \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_ITEM_USE_OFF))
 #define door_using_mon_to_glyph(mon, rng)                                      \
@@ -392,6 +398,12 @@
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_SPECIAL_ATTACK_OFF))
 #define female_kicking_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_KICK_OFF))
+#define female_passive_defense_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_PASSIVE_DEFENSE_OFF))
+#define female_defending_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_DEFEND_OFF))
+#define female_damage_receiving_mon_to_glyph(mon, rng)                                      \
+    (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_RECEIVE_DAMAGE_OFF))
 #define female_item_using_mon_to_glyph(mon, rng)                               \
     (((mon)->facing_right ? -1 : 1) * ((int) what_mon(monsndx((mon)->data), rng) + GLYPH_FEMALE_ITEM_USE_OFF))
 #define female_door_using_mon_to_glyph(mon, rng)                               \
@@ -408,6 +420,9 @@
         (mon)->action == ACTION_TILE_CAST ? ((mon)->female ? female_casting_mon_to_glyph(mon, rng) : casting_mon_to_glyph(mon, rng)) : \
         (mon)->action == ACTION_TILE_SPECIAL_ATTACK ? ((mon)->female ? female_special_attacking_mon_to_glyph(mon, rng) : special_attacking_mon_to_glyph(mon, rng)) : \
         (mon)->action == ACTION_TILE_KICK ? ((mon)->female ? female_kicking_mon_to_glyph(mon, rng) : kicking_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_PASSIVE_DEFENSE ? ((mon)->female ? female_passive_defense_mon_to_glyph(mon, rng) : passive_defense_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_DEFEND ? ((mon)->female ? female_defending_mon_to_glyph(mon, rng) : defending_mon_to_glyph(mon, rng)) : \
+        (mon)->action == ACTION_TILE_RECEIVE_DAMAGE ? ((mon)->female ? female_damage_receiving_mon_to_glyph(mon, rng) : damage_receiving_mon_to_glyph(mon, rng)) : \
         (mon)->action == ACTION_TILE_ITEM_USE ? ((mon)->female ? female_item_using_mon_to_glyph(mon, rng) : item_using_mon_to_glyph(mon, rng)) : \
         (mon)->action == ACTION_TILE_DOOR_USE ? ((mon)->female ? female_door_using_mon_to_glyph(mon, rng) : door_using_mon_to_glyph(mon, rng)) : \
         (mon)->action == ACTION_TILE_DEATH ? ((mon)->female ? female_dying_mon_to_glyph(mon, rng) : dying_mon_to_glyph(mon, rng)) : \
@@ -497,6 +512,9 @@
 #define casting_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_CAST_OFF)
 #define special_attacking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_SPECIAL_ATTACK_OFF)
 #define kicking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_KICK_OFF)
+#define passive_defense_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_PASSIVE_DEFENSE_OFF)
+#define defending_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DEFEND_OFF)
+#define damage_receiving_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_RECEIVE_DAMAGE_OFF)
 #define item_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_ITEM_USE_OFF)
 #define door_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DOOR_USE_OFF)
 #define dying_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_DEATH_OFF)
@@ -508,6 +526,9 @@
 #define female_casting_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_CAST_OFF)
 #define female_special_attacking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_SPECIAL_ATTACK_OFF)
 #define female_kicking_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_KICK_OFF)
+#define female_passive_defense_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_PASSIVE_DEFENSE_OFF)
+#define female_defending_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DEFEND_OFF)
+#define female_damage_receiving_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_RECEIVE_DAMAGE_OFF)
 #define female_item_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_ITEM_USE_OFF)
 #define female_door_using_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DOOR_USE_OFF)
 #define female_dying_monnum_to_glyph(mnum) ((int) (mnum) + GLYPH_FEMALE_DEATH_OFF)

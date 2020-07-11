@@ -4225,6 +4225,7 @@ struct attack *mattk;
     else
         damage = 0;
 
+    enum action_tile_types action_before = u.action;
     update_u_action(ACTION_TILE_PASSIVE_DEFENSE);
     play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 
@@ -4272,18 +4273,18 @@ struct attack *mattk;
             if (poly_when_stoned(mtmp->data))
 			{
                 mon_to_stone(mtmp);
-                update_u_action(ACTION_TILE_NO_ACTION);
+                update_u_action(action_before);
                 return 1;
             }
             pline("%s turns to stone!", Monnam(mtmp));
             stoned = 1;
             xkilled(mtmp, XKILL_NOMSG);
-            update_u_action(ACTION_TILE_NO_ACTION);
+            update_u_action(action_before);
             if (!DEADMONSTER(mtmp))
                 return 1;
             return 2;
         }
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action(action_before);
         return 1;
     }
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
@@ -4294,7 +4295,7 @@ struct attack *mattk;
             (void) drain_item(mon_currwep, TRUE);
             /* No message */
         }
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action(action_before);
         return 1;
     default:
         break;
@@ -4302,7 +4303,7 @@ struct attack *mattk;
 
     if (!Upolyd)
     {
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action(action_before);
         return 1;
     }
 
@@ -4334,7 +4335,7 @@ struct attack *mattk;
                               mon_monster_name(&youmonst));
                     else
 					{
-                        update_u_action(ACTION_TILE_NO_ACTION);
+                        update_u_action(action_before);
                         if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))
                             return 1;
                         pline("%s is frozen by your gaze!", Monnam(mtmp));
@@ -4347,7 +4348,7 @@ struct attack *mattk;
 			{ /* gelatinous cube */
                 pline("%s is frozen by you.", Monnam(mtmp));
                 paralyze_monst(mtmp, paralyse_duration, FALSE);
-                update_u_action(ACTION_TILE_NO_ACTION);
+                update_u_action(action_before);
                 return 3;
             }
             return 1;
@@ -4431,12 +4432,12 @@ assess_dmg:
 	{
         pline("%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action(action_before);
         if (!DEADMONSTER(mtmp))
             return 1;
         return 2;
     }
-    update_u_action(ACTION_TILE_NO_ACTION);
+    update_u_action(action_before);
     return 1;
 }
 
