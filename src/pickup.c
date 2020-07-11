@@ -1575,7 +1575,13 @@ struct obj *otmp;
     int ox = otmp->ox, oy = otmp->oy;
     boolean robshop = (!u.uswallow && otmp != uball && costly_spot(ox, oy));
 
-    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
+    /* Play first so the location is still available */
+    if (iflags.using_gui_sounds)
+    {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
+        delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
+    }
+
     obj_extract_self(otmp);
     newsym(ox, oy);
 
@@ -1604,6 +1610,7 @@ struct obj *otmp;
     }
 
     result = addinv(otmp);
+
     /* if you're taking a shop item from outside the shop, make shk notice */
     if (robshop)
         remote_burglary(ox, oy);

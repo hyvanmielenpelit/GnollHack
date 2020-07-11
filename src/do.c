@@ -4065,7 +4065,11 @@ boolean with_impact;
 
 	if (!u.uswallow && flooreffects(obj, u.ux, u.uy, "drop"))
 	{
-		play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+		if (iflags.using_gui_sounds)
+		{
+			play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+			delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
+		}
 		return;
 	}
     /* uswallow check done by GAN 01/29/87 */
@@ -4128,7 +4132,11 @@ boolean with_impact;
 	else
 	{
         place_object(obj, u.ux, u.uy);
-		play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+		if (iflags.using_gui_sounds)
+		{
+			play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+			delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
+		}
 		if (with_impact)
             container_impact_dmg(obj, u.ux, u.uy);
         if (obj == uball)
