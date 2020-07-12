@@ -271,6 +271,8 @@ xchar lx, ly, hx, hy;
                       || within_bounded_area(x, y, lx, ly, hx, hy)
                       || !((levl[x][y].typ == CORR && level.flags.is_maze_lev)
                            || levl[x][y].typ == ROOM
+                           || levl[x][y].typ == GRASS
+                           || levl[x][y].typ == GROUND
                            || levl[x][y].typ == AIR));
 }
 
