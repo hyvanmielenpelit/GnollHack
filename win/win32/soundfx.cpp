@@ -28,6 +28,7 @@ struct GNHSoundInstance {
 
 static GNHSoundInstance musicInstances[2] = { 0 };
 static GNHSoundInstance levelAmbientInstances[2] = { 0 };
+static GNHSoundInstance occupationAmbientInstances[2] = { 0 };
 static GNHSoundInstance effectAmbientInstances[2] = { 0 };
 static GNHSoundInstance immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES] = { 0 };
 static GNHSoundInstance* ambient_base = NULL;
@@ -83,7 +84,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Normal", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Valley", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Player Footsteps", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Music/Game Over", 0.5f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Normal", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Angry", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Dead", BACKGROUND_MUSIC_VOLUME},
@@ -157,6 +158,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Food/Apple/Apple Eat" , 0.5f},
 
     { SOUND_BANK_MASTER, "event:/Object/Food/Carrot/Carrot Eat" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Player Footsteps", 1.0f},
 };
 
 #undef NoSound
@@ -371,8 +373,8 @@ extern "C"
         if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
             return FALSE;
 
-        Studio::EventDescription* levelAmbientDescription = NULL;
-        result = fmod_studio_system->getEvent(eventmap.eventPath, &levelAmbientDescription);
+        Studio::EventDescription* occupationAmbientDescription = NULL;
+        result = fmod_studio_system->getEvent(eventmap.eventPath, &occupationAmbientDescription);
 
         if (result != FMOD_OK)
             return FALSE;
@@ -382,7 +384,7 @@ extern "C"
             Studio::EventInstance* earlierLevelAmbientInstance = levelAmbientInstances[0].eventInstance;
             Studio::EventDescription* earlierLevelAmbientDescription = NULL;
             earlierLevelAmbientInstance->getDescription(&earlierLevelAmbientDescription);
-            if (earlierLevelAmbientDescription && levelAmbientDescription == earlierLevelAmbientDescription)
+            if (earlierLevelAmbientDescription && occupationAmbientDescription == earlierLevelAmbientDescription)
             {
                 /* Already playing, just check the difference in volume */
                 if (levelAmbientInstances[0].normalVolume == 0.0f && info.volume > 0.0f)
@@ -426,7 +428,7 @@ extern "C"
 
         /* Not playing yet, so make a new instance */
         Studio::EventInstance* levelAmbientInstance = NULL;
-        result = levelAmbientDescription->createInstance(&levelAmbientInstance);
+        result = occupationAmbientDescription->createInstance(&levelAmbientInstance);
         if (result != FMOD_OK)
             return FALSE;
 
@@ -465,6 +467,135 @@ extern "C"
         result = fmod_studio_system->update();
         return (result == FMOD_OK);
     }
+
+
+    boolean
+    fmod_play_occupation_ambient_sound(struct ghsound_occupation_ambient_info info)
+    {
+        FMOD_RESULT result;
+
+        enum ghsound_types soundid = info.ghsound;
+
+        if (soundid == GHSOUND_NONE)
+        {
+            if (occupationAmbientInstances[0].eventInstance && occupationAmbientInstances[0].normalVolume > 0.0f)
+            {
+                /* Stop ambient sound */
+                result = occupationAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                if (result != FMOD_OK)
+                    return FALSE;
+                occupationAmbientInstances[0].normalVolume = 0.0f;
+                result = fmod_studio_system->update();
+                return (result == FMOD_OK);
+            }
+
+            /* Nothing to do */
+            return TRUE;
+        }
+
+        struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+        float event_volume = eventmap.volume;
+
+        if (!eventmap.eventPath || !strcmp(eventmap.eventPath, ""))
+            return FALSE;
+
+        Studio::EventDescription* occupationAmbientDescription = NULL;
+        result = fmod_studio_system->getEvent(eventmap.eventPath, &occupationAmbientDescription);
+
+        if (result != FMOD_OK)
+            return FALSE;
+
+        if (occupationAmbientInstances[0].eventInstance)
+        {
+            Studio::EventInstance* earlierOccupationAmbientInstance = occupationAmbientInstances[0].eventInstance;
+            Studio::EventDescription* earlierOccupationAmbientDescription = NULL;
+            earlierOccupationAmbientInstance->getDescription(&earlierOccupationAmbientDescription);
+            if (earlierOccupationAmbientDescription && occupationAmbientDescription == earlierOccupationAmbientDescription)
+            {
+                /* Already playing, just check the difference in volume */
+                if (occupationAmbientInstances[0].normalVolume == 0.0f && info.volume > 0.0f)
+                {
+                    /* Restart the sound and adjust volume */
+                    result = occupationAmbientInstances[0].eventInstance->setVolume(min(1.0f, info.volume * event_volume * general_ambient_volume * general_volume));
+                    if (result != FMOD_OK)
+                        return FALSE;
+
+                    result = occupationAmbientInstances[0].eventInstance->start();
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+                else if (occupationAmbientInstances[0].normalVolume > 0.0f && info.volume == 0.0f)
+                {
+                    /* Stop ambient sound */
+                    result = occupationAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+                else if (occupationAmbientInstances[0].normalVolume != info.volume)
+                {
+                    /* Adjust volume */
+                    result = occupationAmbientInstances[0].eventInstance->setVolume(min(1.0f, info.volume * event_volume * general_ambient_volume * general_volume));
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+
+                /* Finally, update */
+                if (occupationAmbientInstances[0].normalVolume != info.volume)
+                {
+                    occupationAmbientInstances[0].normalVolume = info.volume;
+                    result = fmod_studio_system->update();
+                    if (result != FMOD_OK)
+                        return FALSE;
+                }
+
+                return TRUE;
+            }
+        }
+
+        /* Not playing yet, so make a new instance */
+        Studio::EventInstance* occupationAmbientInstance = NULL;
+        result = occupationAmbientDescription->createInstance(&occupationAmbientInstance);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        result = occupationAmbientInstance->setVolume(min(1.0f, info.volume * event_volume * general_ambient_volume * general_volume));
+        if (result != FMOD_OK)
+            return FALSE;
+
+        if (info.volume > 0.0f)
+        {
+            result = occupationAmbientInstance->start();
+            if (result != FMOD_OK)
+                return FALSE;
+        }
+        /* If starting succeeded, stop the old ambient sound in occupationAmbientInstances[0] by fading */
+        if (occupationAmbientInstances[0].eventInstance)
+        {
+            if (occupationAmbientInstances[0].ghsound != GHSOUND_NONE)
+                occupationAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
+
+            /* move to occupationAmbientInstances[1] for later release, and before that, release existing occupationAmbientInstances[1] */
+            if (occupationAmbientInstances[1].eventInstance)
+                occupationAmbientInstances[1].eventInstance->release();
+
+            occupationAmbientInstances[1].eventInstance = occupationAmbientInstances[0].eventInstance;
+            occupationAmbientInstances[1].ghsound = occupationAmbientInstances[0].ghsound;
+            occupationAmbientInstances[1].normalVolume = occupationAmbientInstances[0].normalVolume;
+            occupationAmbientInstances[1].sound_type = occupationAmbientInstances[0].sound_type;
+        }
+
+        /* Set the new instance as occupationAmbientInstances[0] */
+        occupationAmbientInstances[0].eventInstance = occupationAmbientInstance;
+        occupationAmbientInstances[0].ghsound = info.ghsound;
+        occupationAmbientInstances[0].normalVolume = info.volume;
+        occupationAmbientInstances[0].sound_type = 0;
+
+        result = fmod_studio_system->update();
+        return (result == FMOD_OK);
+    }
+
+
+
 
     boolean
     fmod_set_effect_ambient_volume(struct effect_ambient_volume_info info)
@@ -571,13 +702,13 @@ extern "C"
                 return FALSE;
         }
 
-        /* If starting succeeded, stop the old ambient sound in levelAmbientInstances[0] by fading */
+        /* If starting succeeded, stop the old ambient sound in effectAmbientInstances[0] by fading */
         if (effectAmbientInstances[0].eventInstance)
         {
             if (effectAmbientInstances[0].ghsound != GHSOUND_NONE && effectAmbientInstances[0].normalVolume > 0.0f)
                 effectAmbientInstances[0].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 
-            /* move to levelAmbientInstances[1] for later release, and before that, release existing levelAmbientInstances[1] */
+            /* move to effectAmbientInstances[1] for later release, and before that, release existing effectAmbientInstances[1] */
             if (effectAmbientInstances[1].eventInstance)
                 effectAmbientInstances[1].eventInstance->release();
 
@@ -587,7 +718,7 @@ extern "C"
             effectAmbientInstances[1].sound_type = effectAmbientInstances[0].sound_type;
         }
 
-        /* Set the new instance as levelAmbientInstances[0] */
+        /* Set the new instance as effectAmbientInstances[0] */
         effectAmbientInstances[0].eventInstance = effectAmbientInstance;
         effectAmbientInstances[0].ghsound = info.ghsound;
         effectAmbientInstances[0].normalVolume = info.volume;
@@ -684,7 +815,7 @@ extern "C"
         return TRUE;
     }
 
-
+    
 
     int
     fmod_adjust_ghsound_general_volumes(float new_general_volume, float new_general_music_volume, float new_general_ambient_volume, float new_general_sfx_volume, float new_general_ui_volume)
@@ -714,6 +845,16 @@ extern "C"
                 struct ghsound_eventmapping eventmap = ghsound2event[soundid];
                 float event_volume = eventmap.volume;
                 result = levelAmbientInstances[i].eventInstance->setVolume(min(1.0f, levelAmbientInstances[i].normalVolume * event_volume * general_ambient_volume * general_volume));
+            }
+        }
+        for (int i = 0; i <= 1; i++)
+        {
+            if (occupationAmbientInstances[i].eventInstance)
+            {
+                enum ghsound_types soundid = occupationAmbientInstances[i].ghsound;
+                struct ghsound_eventmapping eventmap = ghsound2event[soundid];
+                float event_volume = eventmap.volume;
+                result = occupationAmbientInstances[i].eventInstance->setVolume(min(1.0f, occupationAmbientInstances[i].normalVolume * event_volume * general_ambient_volume * general_volume));
             }
         }
         for (int i = 0; i <= 1; i++)
@@ -913,6 +1054,92 @@ extern "C"
     }
 
 
+    boolean
+    fmod_stop_all_sounds(struct stop_all_info info)
+    {
+
+        FMOD_RESULT result;
+        if (info.stop_flags & 1)
+        {
+            for (int i = 0; i <= 1; i++)
+            {
+                if (musicInstances[i].eventInstance)
+                {
+                    if ((result = musicInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                        return FALSE;
+                    if ((result = musicInstances[i].eventInstance->release()) != FMOD_OK)
+                        return FALSE;
+                    musicInstances[i].eventInstance = 0;
+                }
+            }
+        }
+
+        for (int i = 0; i <= 1; i++)
+        {
+            if (levelAmbientInstances[i].eventInstance)
+            {
+                if (levelAmbientInstances[i].normalVolume > 0.0f && (result = levelAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                    return FALSE;
+                if ((result = levelAmbientInstances[i].eventInstance->release()) != FMOD_OK)
+                    return FALSE;
+                levelAmbientInstances[i].eventInstance = 0;
+            }
+        }
+        for (int i = 0; i <= 1; i++)
+        {
+            if (occupationAmbientInstances[i].eventInstance)
+            {
+                if (occupationAmbientInstances[i].normalVolume > 0.0f && (result = occupationAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                    return FALSE;
+                if ((result = occupationAmbientInstances[i].eventInstance->release()) != FMOD_OK)
+                    return FALSE;
+                occupationAmbientInstances[i].eventInstance = 0;
+            }
+        }
+        for (int i = 0; i <= 1; i++)
+        {
+            if (effectAmbientInstances[i].eventInstance)
+            {
+                if (effectAmbientInstances[i].normalVolume > 0.0f && (result = effectAmbientInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                    return FALSE;
+                if ((result = effectAmbientInstances[i].eventInstance->release()) != FMOD_OK)
+                    return FALSE;
+                effectAmbientInstances[i].eventInstance = 0;
+            }
+        }
+        if (info.stop_flags & 2)
+        {
+            for (int i = 0; i < NUM_IMMEDIATE_SOUND_INSTANCES; i++)
+            {
+                if (immediateSoundInstances[i].eventInstance)
+                {
+                    if (immediateSoundInstances[i].normalVolume > 0.0f && (result = immediateSoundInstances[i].eventInstance->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT)) != FMOD_OK)
+                        return FALSE;
+                    if ((result = immediateSoundInstances[i].eventInstance->release()) != FMOD_OK)
+                        return FALSE;
+                    immediateSoundInstances[i].eventInstance = 0;
+                }
+            }
+        }
+
+        /* These we just set volume to zero, since they are linked with sound_sources */
+        for (GNHSoundInstance* curr = ambient_base; curr; curr = curr->next_instance)
+        {
+            if (curr->eventInstance)
+            {
+                if (curr->normalVolume > 0.0f)
+                    fmod_set_ambient_ghsound_volume((void*)curr, 0.0f);
+            }
+        }
+
+        result = fmod_studio_system->update();
+        if (result != FMOD_OK)
+            return FALSE;
+
+        return TRUE;
+    }
+
 }
+
 
 /* soundfx.cpp */

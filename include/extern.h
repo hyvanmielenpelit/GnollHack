@@ -3387,8 +3387,8 @@ E void FDECL(genl_status_enablefield,
 E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 
 E void FDECL(genl_open_special_view, (struct special_view_info));
-E void FDECL(genl_extra_winproc_function_A, (struct function_info_A));
-E void FDECL(genl_extra_winproc_function_C, (struct function_info_C));
+E void FDECL(genl_stop_all_sounds, (struct stop_all_info));
+E void FDECL(genl_play_ghsound_occupation_ambient, (struct ghsound_occupation_ambient_info));
 E void FDECL(genl_play_ghsound_effect_ambient, (struct ghsound_effect_ambient_info));
 E void FDECL(genl_set_effect_ambient_volume, (struct effect_ambient_volume_info));
 E void FDECL(genl_play_ghsound_level_ambient, (struct ghsound_level_ambient_info));

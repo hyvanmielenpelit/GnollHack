@@ -1388,6 +1388,10 @@ update_game_music()
     {
         musicinfo.ghsound = GHSOUND_MUSIC_INTRO;
     }
+    else if (program_state.gameover == 1)
+    {
+        musicinfo.ghsound = GHSOUND_MUSIC_GAMEOVER;
+    }
     else
     {
         struct mkroom* room_ptr = which_room(u.ux, u.uy);

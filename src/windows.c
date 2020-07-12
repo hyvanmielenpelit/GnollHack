@@ -223,8 +223,8 @@ struct special_view_info info;
 }
 
 void
-genl_extra_winproc_function_A(info)
-struct function_info_A info;
+genl_stop_all_sounds(info)
+struct stop_all_info info;
 {
     return;
 }
@@ -237,8 +237,8 @@ struct ghsound_immediate_info info;
 }
 
 void
-genl_extra_winproc_function_C(info)
-struct function_info_C info;
+genl_play_ghsound_occupation_ambient(info)
+struct ghsound_occupation_ambient_info info;
 {
     return;
 }

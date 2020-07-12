@@ -118,9 +118,9 @@ struct window_procs mswin_procs = {
     genl_can_suspend_yes,
     mswin_stretch_window,
     mswin_open_special_view,
-    mswin_extra_winproc_function_A,
+    mswin_stop_all_sounds,
     mswin_play_immediate_ghsound,
-    mswin_extra_winproc_function_C,
+    mswin_play_ghsound_occupation_ambient,
     mswin_play_ghsound_effect_ambient,
     mswin_set_effect_ambient_volume,
     mswin_play_ghsound_music,
@@ -3231,9 +3231,12 @@ mswin_open_special_view(struct special_view_info info)
 }
 
 void
-mswin_extra_winproc_function_A(struct function_info_A info)
+mswin_stop_all_sounds(struct stop_all_info info)
 {
-    return;
+    if (!fmod_stop_all_sounds(info))
+    {
+        impossible("Cannot stop all sounds!");
+    }
 }
 
 void
@@ -3246,9 +3249,12 @@ mswin_play_immediate_ghsound(struct ghsound_immediate_info info)
 }
 
 void
-mswin_extra_winproc_function_C(struct function_info_C info)
+mswin_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info)
 {
-    return;
+    if (!fmod_play_occupation_ambient_sound(info))
+    {
+        impossible("Cannot play occupation ambient sound!");
+    }
 }
 
 void

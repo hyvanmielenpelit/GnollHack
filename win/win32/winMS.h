@@ -218,9 +218,9 @@ void mswin_status_enablefield(int fieldidx, const char *nm, const char *fmt,
 void mswin_status_update(int idx, genericptr_t ptr, int chg, int percent, int color, unsigned long *colormasks);
 void mswin_stretch_window(void);
 void mswin_open_special_view(struct special_view_info info);
-void mswin_extra_winproc_function_A(struct function_info_A info);
+void mswin_stop_all_sounds(struct stop_all_info info);
 void mswin_play_immediate_ghsound(struct ghsound_immediate_info info);
-void mswin_extra_winproc_function_C(struct function_info_C info);
+void mswin_play_ghsound_occupation_ambient(struct ghsound_occupation_ambient_info info);
 void mswin_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info);
 void mswin_set_effect_ambient_volume(struct effect_ambient_volume_info info);
 void mswin_play_ghsound_music(struct ghsound_music_info info);

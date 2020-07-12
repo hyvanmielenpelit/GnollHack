@@ -32,7 +32,7 @@ enum ghsound_types {
 	GHSOUND_GEHENNOM_MUSIC_NORMAL,
 	GHSOUND_GEHENNOM_MUSIC_VALLEY,
 	GHSOUND_GEHENNOM_MUSIC_SANCTUM,
-	GHSOUND_PLAYER_FOOTSTEPS_NORMAL,
+	GHSOUND_MUSIC_GAMEOVER,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_SHOPKEEPER_ANGRY,
 	GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_SHOPKEEPER_DEAD,
@@ -99,6 +99,7 @@ enum ghsound_types {
 	GHSOUND_TASTE_GENERIC,
 	GHSOUND_EAT_APPLE,
 	GHSOUND_EAT_CARROT,
+	GHSOUND_PLAYER_FOOTSTEPS_NORMAL,
 	MAX_GHSOUNDS
 };
 
@@ -204,13 +205,12 @@ struct effect_ambient_volume_info {
 
 
 /* Unused play_ghsound function input structs */
-struct function_info_A {
-	enum ghsound_types ghsound;
-	float volume;
+struct stop_all_info {
+	unsigned char stop_flags;
 };
 
 
-struct function_info_C {
+struct ghsound_occupation_ambient_info {
 	enum ghsound_types ghsound;
 	enum obj_material_types strike_surface;
 	float volume;
