@@ -274,11 +274,14 @@ int NDECL((*fn));
 const char *txt;
 int xtime;
 {
-    if (xtime) {
+    if (xtime) 
+    {
         occupation = timed_occupation;
         timed_occ_fn = fn;
-    } else
+    } 
+    else
         occupation = fn;
+
     occtxt = txt;
     occtime = 0;
     return;

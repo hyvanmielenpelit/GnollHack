@@ -203,12 +203,9 @@ struct effect_ambient_volume_info {
 	float volume;
 };
 
-
-/* Unused play_ghsound function input structs */
 struct stop_all_info {
 	unsigned char stop_flags;
 };
-
 
 struct ghsound_occupation_ambient_info {
 	enum ghsound_types ghsound;
@@ -225,6 +222,53 @@ struct ghsound_info {
 	enum ghsound_types ghsound;
 	float volume;
 };
+
+
+/* OCCUPATION SOUNDSETS */
+enum occupation_sound_types {
+	OCCUPATION_SOUND_TYPE_AMBIENT = 0,				/* Ambient sound while being occupied */
+	OCCUPATION_SOUND_TYPE_START,					/* Sound upon starting the occupation */
+	OCCUPATION_SOUND_TYPE_FINISH,					/* Sound upon finally finishing the occupation */
+	OCCUPATION_SOUND_TYPE_INTERRUPTED,				/* Sound upon the occupation being interrupted */
+	OCCUPATION_SOUND_TYPE_RESUME,					/* Sound upon resuming the occupation */
+	MAX_OCCUPATION_SOUND_TYPES
+};
+
+struct occupation_soundset_definition {
+	char* soundset_name;
+	struct ghsound_info sounds[MAX_OCCUPATION_SOUND_TYPES];
+};
+
+enum occupation_soundset_types {
+	OCCUPATION_SOUNDSET_NONE = 0,			
+	OCCUPATION_SOUNDSET_GENERIC_EATING,		
+	OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+	OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+	OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+	OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+	OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+	OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+	OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+	OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+	MAX_OCCUPATION_SOUNDSETS
+};
+
+extern struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS];
+
+enum object_occupation_types {
+	OCCUPATION_NONE = 0,
+	OCCUPATION_EATING,
+	OCCUPATION_OPENING_TIN,
+	OCCUPATION_DIGGING,
+	OCCUPATION_SETTING_TRAP,
+	OCCUPATION_WIPING_OFF,
+	OCCUPATION_TAKING_OFF,
+	OCCUPATION_PICKING_LOCK,
+	OCCUPATION_FORCING_LOCK,
+	OCCUPATION_STUDYING,
+	MAX_OBJECT_OCCUPATION_TYPES
+};
+
 
 /* OBJECT SOUNDSETS */
 enum object_sound_types {
@@ -285,6 +329,7 @@ struct object_soundset_definition {
 	char* soundset_name;
 	struct ghsound_info sounds[MAX_OBJECT_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
+	enum occupation_soundset_types occupation_soundsets[MAX_OBJECT_OCCUPATION_TYPES];
 };
 
 enum object_soundset_types {
@@ -468,6 +513,7 @@ struct ray_soundset_definition {
 extern struct ray_soundset_definition ray_soundsets[2 * NRAYS]; /* 0...NRAYS-1 normal ray, NRAYS...2NRAYS-1 explosion */
 
 
+
 /* Other definitions */
 enum hit_surface_source_types {
 	HIT_SURFACE_SOURCE_NONE = 0,
@@ -529,5 +575,6 @@ enum location_passing_types {
 	LOCATION_PASSING_TYPE_SUBMERGED,			/* Maybe an amulet of magical breathing and no swimming */
 	MAX_LOCATION_PASSING_TYPES
 };
+
 
 #endif /* SOUNDSET_H */

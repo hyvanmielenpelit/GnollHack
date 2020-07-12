@@ -3431,21 +3431,29 @@ struct obj *obj;
 STATIC_OVL int
 bite()
 {
-    if (context.victual.canchoke && u.uhunger >= 2000) {
+    if (context.victual.canchoke && u.uhunger >= 2000) 
+    {
         choke(context.victual.piece);
         return 1;
     }
-    if (context.victual.doreset) {
+
+    if (context.victual.doreset) 
+    {
         do_reset_eat();
         return 0;
     }
+
     force_save_hs = TRUE;
-    if (context.victual.nmod < 0) {
+
+    if (context.victual.nmod < 0) 
+    {
         lesshungry(-context.victual.nmod);
         consume_oeaten(context.victual.piece,
                        context.victual.nmod); /* -= -nmod */
-    } else if (context.victual.nmod > 0
-               && (context.victual.usedtime % context.victual.nmod)) {
+    } 
+    else if (context.victual.nmod > 0
+               && (context.victual.usedtime % context.victual.nmod)) 
+    {
         lesshungry(1);
         consume_oeaten(context.victual.piece, -1); /* -= 1 */
     }

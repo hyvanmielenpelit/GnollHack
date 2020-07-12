@@ -128,7 +128,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_NONE
+        }
     },
     {
         "general",
@@ -176,7 +188,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_GENERIC_LEVITATE, 1.0f},
             {GHSOUND_NONE, 1.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING        
+        }
     },
     {
         "candle",
@@ -223,7 +247,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_LIT
+        SOUNDSOURCE_AMBIENT_LIT,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "quarterstaff",
@@ -270,7 +306,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "bow",
@@ -317,7 +365,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "crossbow",
@@ -364,7 +424,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "arrow",
@@ -411,7 +483,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "sword",
@@ -458,7 +542,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "axe",
@@ -505,7 +601,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "dagger",
@@ -552,7 +660,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "bone dagger",
@@ -599,7 +719,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "human barehanded",
@@ -646,7 +778,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "human barefooted",
@@ -693,7 +837,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "horse barefooted",
@@ -740,7 +896,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "cotton slippers",
@@ -787,7 +955,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "chest",
@@ -834,7 +1014,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "coins",
@@ -881,7 +1073,19 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
     {
         "boulder",
@@ -928,10 +1132,115 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
-        SOUNDSOURCE_AMBIENT_GENERAL
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING
+        }
     },
 };
 
+NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =
+{
+    {
+        "",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_EATING",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_DIGGING",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "OCCUPATION_SOUNDSET_GENERIC_STUDYING",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+};
 
 NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOUNDSETS] =
 {
@@ -1377,6 +1686,7 @@ struct ray_soundset_definition ray_soundsets[2 * NRAYS] =
 };
 
 
+
 void
 update_game_music()
 {
@@ -1424,7 +1734,7 @@ play_level_ambient_sounds()
     lainfo.volume = 1.0f;
     lainfo.ghsound = GHSOUND_NONE;
 
-    if (context.game_started == FALSE)
+    if (context.game_started == FALSE || program_state.gameover == 1)
     {
         lainfo.ghsound = GHSOUND_NONE;
     }
@@ -2358,6 +2668,54 @@ int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
     vinfo.volume = 0.0f;
 
     set_effect_ambient_volume(vinfo);
+}
+
+
+void
+start_occupation_ambient_sound(object_soundset_id, occupation_type)
+enum object_soundset_types object_soundset_id;
+enum occupation_types occupation_type;
+{
+    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+        return;
+
+    struct ghsound_occupation_ambient_info info = { 0 };
+    info.ghsound = occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound;
+    info.volume = min(1.0f, occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].volume);
+
+    play_ghsound_occupation_ambient(info);
+}
+
+void
+stop_occupation_ambient_sound(object_soundset_id, occupation_type)
+enum object_soundset_types object_soundset_id;
+enum occupation_types occupation_type;
+{
+    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+        return;
+
+    struct ghsound_occupation_ambient_info info = { 0 };
+    info.volume = 0.0f;
+
+    play_ghsound_occupation_ambient(info);
+
+}
+
+void
+play_occupation_immediate_sound(object_soundset_id, occupation_type, sound_type)
+enum object_soundset_types object_soundset_id;
+enum occupation_types occupation_type;
+enum occupation_sound_types sound_type;
+{
+
+    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == GHSOUND_NONE)
+        return;
+
+    struct ghsound_immediate_info info = { 0 };
+    info.ghsound = occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound;
+    info.volume = min(1.0f, occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].volume);
+
+    play_immediate_ghsound(info);
 }
 
 enum player_soundset_types
