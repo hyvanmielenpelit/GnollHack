@@ -34,6 +34,7 @@ STATIC_DCL int FDECL(do_chat_pet_dounwield, (struct monst*));
 STATIC_DCL int FDECL(do_chat_feed, (struct monst*));
 STATIC_DCL int FDECL(do_chat_buy_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_join_party, (struct monst*));
+STATIC_DCL int FDECL(do_chat_explain_statistics, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_consult, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_oracle_enlightenment, (struct monst*));
@@ -1882,6 +1883,19 @@ dochat()
 			available_chat_list[chatnum].name, MENU_UNSELECTED);
 
 		chatnum++;
+
+		strcpy(available_chat_list[chatnum].name, "Ask to explain current statistics");
+		available_chat_list[chatnum].function_ptr = &do_chat_explain_statistics;
+		available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+		any = zeroany;
+		any.a_char = available_chat_list[chatnum].charnum;
+
+		add_menu(win, NO_GLYPH, &any,
+			any.a_char, 0, ATR_NONE,
+			available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+		chatnum++;
 	}
 
 
@@ -3199,6 +3213,63 @@ struct monst* mtmp;
 	return 0; 
 }
 
+STATIC_OVL int
+do_chat_explain_statistics(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp)
+		return 0;
+
+	long umoney;
+	int u_pay;
+	long base_explain_cost = 5 + 1 * mtmp->data->difficulty;
+	int ucha = ACURR(A_CHA);
+	long explain_cost = (base_explain_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!m_general_talk_check(mtmp, "explaining") || !m_speak_check(mtmp)) {
+		return 0;
+	}
+	else if (is_tame(mtmp)) 
+	{
+		monsterdescription(mtmp);
+		return 0;
+	}
+
+	if (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10))
+	{
+		pline("%s first %s, but then says:", Monnam(mtmp), mtmp->data->msound == MS_MUMBLE ? "mumbles incomprehensibly" : "chuckles");
+		Sprintf(qbuf, "\"You shall pay me %d %s for learning my statistics.\" Do you accept?", explain_cost, currency(explain_cost));
+	}
+	else
+	{
+		pline("%s looks at you and then says:", Monnam(mtmp));
+		Sprintf(qbuf, "\"I can explain my statistics to you for a fee of %d %s. Do you accept?\"", explain_cost, currency(explain_cost));
+	}
+	switch (ynq(qbuf))
+	{
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)explain_cost)
+		{
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = explain_cost;
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+		monsterdescription(mtmp);
+		return 1;
+	}
+
+	return 0;
+}
 
 
 STATIC_OVL int

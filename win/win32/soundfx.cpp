@@ -1,6 +1,6 @@
 /*
  * soundfx.cpp
- * GnollHack for Windows Sound Effects using FMOD
+ * GnollHack for Windows Sound Effects Using FMOD
  *
  * Copyright (c) Janne Gustafsson, 2020
  *
@@ -31,12 +31,7 @@ static GNHSoundInstance levelAmbientInstances[2] = { 0 };
 static GNHSoundInstance occupationAmbientInstances[2] = { 0 };
 static GNHSoundInstance effectAmbientInstances[2] = { 0 };
 static GNHSoundInstance immediateSoundInstances[NUM_IMMEDIATE_SOUND_INSTANCES] = { 0 };
-static GNHSoundInstance* ambient_base = NULL;
-
-#if 0
-static GNHSoundInstance movementInstances[2] = { 0 };
-static GNHSoundInstance hitInstances[2] = { 0 };
-#endif
+static GNHSoundInstance* ambient_base = NULL; /* for sound source ambients */
 
 static float general_volume = 1.0f;
 static float general_music_volume = 1.0f;
@@ -84,7 +79,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Normal", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Valley", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", BACKGROUND_MUSIC_VOLUME},
-    { SOUND_BANK_MASTER, "event:/Music/Game Over", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Music/Game Over", 0.1f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Normal", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Angry", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Dead", BACKGROUND_MUSIC_VOLUME},
