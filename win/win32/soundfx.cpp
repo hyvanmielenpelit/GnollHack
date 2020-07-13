@@ -162,6 +162,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Ambient", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Start", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Finish", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Interrupted", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Resume", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Ambient", 1.0f},
