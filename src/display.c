@@ -604,6 +604,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
             /*FALLTHRU*/
         case M_AP_NOTHING:
             show_monster_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2),  mon, 0UL, 0);
+            levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH; /* Clear monster memory */
             break;
 
         case M_AP_FURNITURE: {
@@ -676,10 +677,8 @@ xchar worm_tail;            /* mon is actually a worm tail */
         }
 
         case M_AP_MONSTER:
-            show_monster_glyph_with_extra_info(x, y,
-                       any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)),
-                mon, 0UL, 0
-            );
+            show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0 );
+            levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH; /* Clear monster memory */
             break;
         }
     }
@@ -720,6 +719,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
         show_monster_glyph_with_extra_info(x, y, num, worm_tail ? (struct monst*)0 : mon, extra_flags, 0);
+        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH; /* Clear monster memory */
     }
 }
 
@@ -1199,7 +1199,6 @@ int damage_shown;
                 {
                     lev->hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
                     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
-
                 }
             }
 //            else
