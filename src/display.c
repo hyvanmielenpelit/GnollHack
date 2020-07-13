@@ -2454,7 +2454,7 @@ clear_glyph_buffer()
 
     for (y = 0; y < ROWNO; y++) {
         gptr = &gbuf[y][0];
-        for (x = COLNO; x; x--) {
+        for (x = COLNO; x > 0; x--) {
             *gptr++ = nul_gbuf;
         }
     }

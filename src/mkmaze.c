@@ -1286,7 +1286,7 @@ bound_digging()
         return; /* everything diggable here */
 
     found = nonwall = FALSE;
-    for (xmin = 0; !found && xmin <= COLNO; xmin++) {
+    for (xmin = 0; !found && xmin <= COLNO - 1; xmin++) {
         lev = &levl[xmin][0];
         for (y = 0; y <= ROWNO - 1; y++, lev++) {
             typ = lev->typ;
@@ -1318,7 +1318,7 @@ bound_digging()
         xmax = COLNO - 1;
 
     found = nonwall = FALSE;
-    for (ymin = 0; !found && ymin <= ROWNO; ymin++) {
+    for (ymin = 0; !found && ymin <= ROWNO - 1; ymin++) {
         lev = &levl[xmin][ymin];
         for (x = xmin; x <= xmax; x++, lev += ROWNO) {
             typ = lev->typ;
