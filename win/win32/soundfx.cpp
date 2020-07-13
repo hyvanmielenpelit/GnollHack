@@ -24,7 +24,7 @@ struct GNHSoundInstance {
     struct GNHSoundInstance* next_instance;
 };
 
-#define NUM_IMMEDIATE_SOUND_INSTANCES 8
+#define NUM_IMMEDIATE_SOUND_INSTANCES 16
 
 static GNHSoundInstance musicInstances[2] = { 0 };
 static GNHSoundInstance levelAmbientInstances[2] = { 0 };
@@ -148,12 +148,27 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Dagger/Dagger Drop" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Fly" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Levitate" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Eat" , 0.5f},
-    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Taste" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Discard" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Reserved" , 0.5f},
     { SOUND_BANK_MASTER, "event:/Object/Food/Apple/Apple Eat" , 0.5f},
 
     { SOUND_BANK_MASTER, "event:/Object/Food/Carrot/Carrot Eat" , 0.5f},
     { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Player Footsteps", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Eating/Eating Ambient", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Eating/Eating Start", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Eating/Eating Finish", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Eating/Eating Interrupted", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Eating/Eating Resume", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Start", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Finish", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Interrupted", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging/Digging Resume", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Ambient", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Start", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Finish", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Interrupted", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Resume", 1.0f},
 };
 
 #undef NoSound

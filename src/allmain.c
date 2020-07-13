@@ -471,7 +471,14 @@ boolean resuming;
 #else
             if ((*occupation)() == 0)
 #endif
+            {
+                stop_occupation_ambient_sound(occsoundset, occtyp);
+                play_occupation_immediate_sound(occsoundset, occtyp, OCCUPATION_SOUND_TYPE_FINISH);
+
                 occupation = 0;
+                occsoundset = 0;
+                occtyp = 0;
+            }
 
             if (
 #if defined(MICRO) || defined(WIN32)
@@ -943,7 +950,11 @@ stop_occupation()
     if (occupation) {
         if (!maybe_finished_meal(TRUE))
             You("stop %s.", occtxt);
+        stop_occupation_ambient_sound(occsoundset, occtyp);
+        play_occupation_immediate_sound(occsoundset, occtyp, OCCUPATION_SOUND_TYPE_INTERRUPTED);
         occupation = 0;
+        occsoundset = 0;
+        occtyp = 0;
         context.botl = TRUE; /* in case u.uhs changed */
         nomul(0);
         pushch(0);

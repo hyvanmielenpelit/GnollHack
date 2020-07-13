@@ -601,12 +601,14 @@ register struct obj *spellbook;
 		}
 	}
 
+	boolean resume = FALSE;
     if (context.spbook.delay && !confused && spellbook == context.spbook.book
         /* handle the sequence: start reading, get interrupted, have
            context.spbook.book become erased somehow, resume reading it */
         && booktype != SPE_BLANK_PAPER) {
         You("continue your efforts to %s.",
             (booktype == SPE_NOVEL) ? "read the novel" : "memorize the spell");
+		resume = TRUE;
     } 
 	else 
 	{
@@ -753,7 +755,8 @@ register struct obj *spellbook;
     context.spbook.book = spellbook;
     if (context.spbook.book)
         context.spbook.o_id = context.spbook.book->o_id;
-    set_occupation(learn, "studying", 0);
+
+	set_occupation(learn, "studying", objects[spellbook->otyp].oc_soundset, OCCUPATION_STUDYING, resume ? OCCUPATION_SOUND_TYPE_RESUME : OCCUPATION_SOUND_TYPE_START, 0);
     return 1;
 }
 

@@ -5463,11 +5463,16 @@ wipeoff(VOID_ARGS)
 int
 dowipe()
 {
-    if (u.ucreamed) {
-        static NEARDATA char buf[39];
+    if (u.ucreamed)
+	{
+		boolean isfemale = Upolyd ? youmonst.female : flags.female;
+		enum monster_soundset_types mss = isfemale ? youmonst.data->female_soundset : youmonst.data->soundset;
+		enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[BAREHANDED_ATTACK_NUMBER];
+		enum object_soundset_types used_oss = uarmg ? objects[uarmg->otyp].oc_soundset : oss;
 
+		static NEARDATA char buf[39];
         Sprintf(buf, "wiping off your %s", body_part(FACE));
-        set_occupation(wipeoff, buf, 0);
+        set_occupation(wipeoff, buf, used_oss, OCCUPATION_WIPING_OFF, OCCUPATION_SOUND_TYPE_START, 0);
         /* Not totally correct; what if they change back after now
          * but before they're finished wiping?
          */

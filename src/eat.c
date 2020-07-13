@@ -25,7 +25,7 @@ STATIC_DCL void FDECL(corpse_after_effect, (int));
 STATIC_DCL void FDECL(consume_tin, (const char *));
 STATIC_DCL void FDECL(start_tin, (struct obj *));
 STATIC_DCL int FDECL(eatcorpse, (struct obj *));
-STATIC_DCL void FDECL(start_eating, (struct obj *));
+STATIC_DCL void FDECL(start_eating, (struct obj *, boolean));
 STATIC_DCL void FDECL(food_pre_effect, (struct obj *));
 STATIC_DCL void FDECL(food_after_effect, (struct obj *));
 STATIC_DCL int NDECL(bite);
@@ -465,6 +465,14 @@ boolean message;
     } else if (message)
         You("finish eating %s.", food_xname(piece, TRUE));
 
+    if (occsoundset > 0)
+    {
+        stop_occupation_ambient_sound(occsoundset, occtyp);
+        play_occupation_immediate_sound(occsoundset, occtyp, OCCUPATION_SOUND_TYPE_FINISH);
+        occsoundset = 0;
+        occtyp = 0;
+    }
+
     if (piece->otyp == CORPSE || piece->globby)
         corpse_after_effect(piece->corpsenm);
     else
@@ -476,8 +484,7 @@ boolean message;
         useupf(piece, 1L);
     context.victual.piece = (struct obj *) 0;
     context.victual.o_id = 0;
-    context.victual.fullwarn = context.victual.eating =
-        context.victual.doreset = FALSE;
+    context.victual.fullwarn = context.victual.eating = context.victual.doreset = FALSE;
 }
 
 void
@@ -1649,6 +1656,7 @@ const char *mesg;
             if (!Hallucination)
                 tin->dknown = tin->known = 1;
             tin = costly_tin(COST_OPEN);
+            play_simple_object_sound(tin, OBJECT_SOUND_TYPE_DISCARD);
             goto use_up_tin;
         }
 
@@ -1658,6 +1666,7 @@ const char *mesg;
         context.victual.fullwarn = context.victual.eating =
             context.victual.doreset = FALSE;
 
+        play_occupation_immediate_sound(objects[tin->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         You("consume %s %s.", tintxts[r].txt, pm_common_name(&mons[mnum]));
 
         eating_conducts(&mons[mnum]);
@@ -1694,6 +1703,7 @@ const char *mesg;
             if (flags.verbose)
                 You("discard the open tin.");
             tin = costly_tin(COST_OPEN);
+            play_simple_object_sound(tin, OBJECT_SOUND_TYPE_DISCARD);
             goto use_up_tin;
         }
 
@@ -1701,6 +1711,7 @@ const char *mesg;
          * Same order as with non-spinach above:
          * conduct update, side-effects, shop handling, and nutrition.
          */
+        play_occupation_immediate_sound(objects[tin->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         u.uconduct.food++; /* don't need vegetarian checks for spinach */
         if (!tin->cursed)
             pline("This makes you feel like %s!",
@@ -1839,7 +1850,7 @@ struct obj *otmp;
     } else {
         context.tin.reqtime = tmp;
         context.tin.usedtime = 0;
-        set_occupation(opentin, "opening the tin", 0);
+        set_occupation(opentin, "opening the tin", objects[otmp->otyp].oc_soundset, OCCUPATION_OPENING_TIN, OCCUPATION_SOUND_TYPE_START, 0);
     }
     return;
 }
@@ -1934,7 +1945,7 @@ struct obj *otmp;
 
     if (mnum != PM_ACID_BLOB && !stoneable && !slimeable && rotted > 5L)
     {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+        play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         boolean cannibal = maybe_cannibal(mnum, FALSE);
 
 		pline("Ulch - that %s was tainted%s!",
@@ -1970,12 +1981,11 @@ struct obj *otmp;
         pline("Ulch - that must have been infected by terminal disease!");
         if (Sick_resistance) 
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
             pline("It doesn't seem at all sickening, though...");
         }
         else
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             long sick_time;
 
             sick_time = (long)rn1(10, 10);
@@ -1993,12 +2003,11 @@ struct obj *otmp;
         pline("Ecch - that must have been infected by mummy rot!");
         if (Sick_resistance)
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
             pline("It doesn't seem at all sickening, though...");
         }
         else
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             make_mummy_rotted(-1L, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
 
             (void)touchfood(otmp);
@@ -2007,7 +2016,6 @@ struct obj *otmp;
     }
     else if (has_acidic_corpse(&mons[mnum]) && !Acid_immunity && !Acid_resistance)
     {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         tp++;
         You("have a very bad case of stomach acid.");   /* not body_part() */
         losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_ACID, FALSE), !glob ? "acidic corpse" : "acidic glob",
@@ -2015,7 +2023,6 @@ struct obj *otmp;
     } 
     else if (has_poisonous_corpse(&mons[mnum]) && rn2(5))
     {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         tp++;
         pline("Ecch - that must have been poisonous!");
         if (!Poison_resistance)
@@ -2030,7 +2037,6 @@ struct obj *otmp;
     } 
     else if ((rotted > 5L || (rotted > 3L && rn2(5))) && !Sick_resistance)
     {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         tp++;
         You_feel("%ssick.", (FoodPoisoned) ? "very " : "");
         losehp(adjust_damage(rnd(8), (struct monst*)0, &youmonst, AD_DISE, FALSE), !glob ? "cadaver" : "rotted glob", KILLED_BY_AN);
@@ -2043,7 +2049,6 @@ struct obj *otmp;
     { //  || !rn2(7)
 		if (rottenfood(otmp)) 
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
             otmp->orotten = TRUE;
             (void) touchfood(otmp);
             retcode = 1;
@@ -2064,13 +2069,10 @@ struct obj *otmp;
             consume_oeaten(otmp, 2); /* oeaten >>= 2 */
     } else if (touch_petrifies(&mons[mnum]) //(mnum == PM_COCKATRICE || mnum == PM_CHICKATRICE)
                && (Stone_resistance || Hallucination)) {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         pline("This tastes just like chicken!");
     } else if (mnum == PM_FLOATING_EYE && u.umonnum == PM_RAVEN) {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         You("peck the eyeball with delight.");
     } else {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         /* yummy is always False for omnivores, palatable always True */
         boolean yummy = (vegan(&mons[mnum])
                             ? (!carnivorous(youmonst.data)
@@ -2106,8 +2108,9 @@ struct obj *otmp;
 
 /* called as you start to eat */
 STATIC_OVL void
-start_eating(otmp)
+start_eating(otmp, resume)
 struct obj *otmp;
+boolean resume;
 {
     const char *old_nomovemsg, *save_nomovemsg;
 
@@ -2133,6 +2136,7 @@ struct obj *otmp;
     }
 
     old_nomovemsg = nomovemsg;
+    play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, resume ? OCCUPATION_SOUND_TYPE_RESUME : OCCUPATION_SOUND_TYPE_START);
     if (bite()) {
         /* survived choking, finish off food that's nearly done;
            need this to handle cockatrice eggs, fortune cookies, etc */
@@ -2156,7 +2160,7 @@ struct obj *otmp;
     }
 
     Sprintf(msgbuf, "eating %s", food_xname(otmp, TRUE));
-    set_occupation(eatfood, msgbuf, 0);
+    set_occupation(eatfood, msgbuf, objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, MAX_OCCUPATION_SOUND_TYPES, 0);
 }
 
 /*
@@ -2505,7 +2509,8 @@ eatspecial()
     struct obj *otmp = context.victual.piece;
 
     /* lesshungry wants an occupation to handle choke messages correctly */
-    set_occupation(eatfood, "eating non-food", 0);
+    play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
+    set_occupation(eatfood, "eating non-food", 0, 0, 0, 0);
     lesshungry(context.victual.nmod);
     occupation = 0;
     context.victual.piece = (struct obj *) 0;
@@ -3056,7 +3061,7 @@ doeat()
                 otmp = splitobj(otmp, 1L);
         }
 
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+        play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
 
         pline("Ulch - that %s was rustproofed!", xname(otmp));
         /* The regurgitated object's rustproofing is gone now */
@@ -3093,7 +3098,7 @@ doeat()
     /* KMH -- Slow digestion is... indigestible */
     if (otmp->otyp == RIN_SLOW_DIGESTION)
     {
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+        play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
         pline("This ring is indigestible!");
         (void) rottenfood(otmp);
         if (otmp->dknown && !objects[otmp->otyp].oc_name_known
@@ -3145,7 +3150,7 @@ doeat()
 
         if (otmp->cursed) 
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             (void) rottenfood(otmp);
             nodelicious = TRUE;
         }
@@ -3154,7 +3159,7 @@ doeat()
 
         if (otmp->oclass == WEAPON_CLASS && otmp->opoisoned) 
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_TASTE);
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             pline("Ecch - that must have been poisonous!");
             if (!Poison_resistance) 
             {
@@ -3166,7 +3171,7 @@ doeat()
         } 
         else if (!nodelicious) 
         {
-            play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             pline("%s%s is delicious!",
                   (obj_is_pname(otmp)
                    && !any_quest_artifact(otmp))
@@ -3194,8 +3199,7 @@ doeat()
         if (context.victual.piece)
             context.victual.o_id = context.victual.piece->o_id;
         You("resume your meal.");
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
-        start_eating(context.victual.piece);
+        start_eating(context.victual.piece, TRUE);
         return 1;
     }
 
@@ -3229,12 +3233,16 @@ doeat()
         if (tmp == 2)
         {
             /* used up */
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             context.victual.piece = (struct obj *) 0;
             context.victual.o_id = 0;
             return 1;
         }
         else if (tmp)
+        {
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             dont_start = TRUE;
+        }
         /* if not used up, eatcorpse sets up reqtime and may modify oeaten */
     } 
     else 
@@ -3263,9 +3271,9 @@ doeat()
 
         context.victual.reqtime = objects[otmp->otyp].oc_delay;
 
-        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_EAT);
         if (objects[otmp->otyp].oc_edible_subtype == EDIBLETYPE_TAINTED)
         {
+            play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             pline("Ulch - that %s was tainted!", cxname(otmp));
 			if (Sick_resistance)
             {
@@ -3346,6 +3354,7 @@ doeat()
             {
                 otmp->orotten = TRUE;
                 dont_start = TRUE;
+                play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
             }
             consume_oeaten(otmp, 1); /* oeaten >>= 1 */
 		} else
@@ -3388,7 +3397,8 @@ doeat()
     context.victual.canchoke = (u.uhs == SATIATED);
 
     if (!dont_start)
-        start_eating(otmp);
+        start_eating(otmp, FALSE);
+
     return 1;
 }
 
@@ -4006,7 +4016,16 @@ boolean stopping;
     if (occupation == eatfood
         && context.victual.usedtime >= context.victual.reqtime) {
         if (stopping)
+        {
             occupation = 0; /* for do_reset_eat */
+            if (occsoundset > 0)
+            {
+                stop_occupation_ambient_sound(occsoundset, occtyp);
+                play_occupation_immediate_sound(occsoundset, occtyp, OCCUPATION_SOUND_TYPE_INTERRUPTED);
+                occsoundset = 0;
+                occtyp = 0;
+            }
+        }
         (void) eatfood();   /* calls done_eating() to use up
                                context.victual.piece */
         return TRUE;

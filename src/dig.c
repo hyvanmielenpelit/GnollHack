@@ -1162,6 +1162,7 @@ struct obj *obj;
 	boolean isaxe = is_axe(obj);
 	boolean issaw = is_saw(obj);
 	const char *verbing = ispick ? "digging" : isaxe ? "chopping" : "cutting";
+    boolean resume = FALSE;
 
     if (u.uswallow && attack(u.ustuck))
 	{
@@ -1305,6 +1306,13 @@ struct obj *obj;
 										 "cutting at the door",
 										 "cutting the tree" };
 
+            static const enum object_occupation_types d_action_soundset[6] = { OCCUPATION_SWINGING,
+                                         OCCUPATION_DIGGING_ROCK,
+                                         OCCUPATION_DIGGING_ROCK,
+                                         OCCUPATION_DIGGING_ROCK,
+                                         OCCUPATION_HITTING_DOOR,
+                                         OCCUPATION_CUTTING_TREE };
+
             did_dig_msg = FALSE;
             context.digging.quiet = FALSE;
             if (context.digging.pos.x != rx || context.digging.pos.y != ry
@@ -1335,7 +1343,9 @@ struct obj *obj;
 					issaw ? d_action_saw[dig_target] : d_action[dig_target]);
                 context.digging.chew = FALSE;
             }
-            set_occupation(dig, verbing, 0);
+            set_occupation(dig, verbing, objects[obj->otyp].oc_soundset, 
+                d_action_soundset[dig_target],
+                context.digging.chew ? OCCUPATION_SOUND_TYPE_START : OCCUPATION_SOUND_TYPE_RESUME, 0);
         }
     } 
 	else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
@@ -1376,10 +1386,18 @@ struct obj *obj;
             You("start %s downward.", verbing);
             if (*u.ushops)
                 shopdig(0);
-        } else
+        }
+        else
+        {
             You("continue %s downward.", verbing);
+            resume = TRUE;
+        }
         did_dig_msg = FALSE;
-        set_occupation(dig, verbing, 0);
+        set_occupation(dig, verbing, objects[obj->otyp].oc_soundset,
+            (context.digging.down && (levl[u.ux][u.uy].typ == GROUND || levl[u.ux][u.uy].typ == GRASS ||
+                levl[u.ux][u.uy].floortyp == GROUND || levl[u.ux][u.uy].floortyp == GRASS)) 
+            ? OCCUPATION_DIGGING_GROUND : OCCUPATION_DIGGING_ROCK, 
+            resume ? OCCUPATION_SOUND_TYPE_RESUME : OCCUPATION_SOUND_TYPE_START, 0);
     }
     return 1;
 }

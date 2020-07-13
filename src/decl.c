@@ -61,6 +61,9 @@ NEARDATA char tune[6] = DUMMY;
 NEARDATA boolean ransacked = 0;
 
 const char *occtxt = DUMMY;
+enum object_soundset_types occsoundset = OBJECT_SOUNDSET_NONE; /* defined when occupation != NULL */
+enum object_occupation_types occtyp = OCCUPATION_NONE; /* defined when occupation != NULL */
+
 const char quitchars[] = " \r\n\033";
 const char vowels[] = "aeiouAEIOU";
 const char ynchars[] = "yn";

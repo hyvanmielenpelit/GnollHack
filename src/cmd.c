@@ -269,9 +269,12 @@ reset_occupations()
  * function times out by its own means.
  */
 void
-set_occupation(fn, txt, xtime)
+set_occupation(fn, txt, soundset_id, occ_type, sound_type, xtime)
 int NDECL((*fn));
 const char *txt;
+enum object_soundset_types soundset_id;
+enum object_occupation_types occ_type;
+enum occupation_sound_types sound_type;
 int xtime;
 {
     if (xtime) 
@@ -284,6 +287,15 @@ int xtime;
 
     occtxt = txt;
     occtime = 0;
+    occsoundset = soundset_id;
+    occtyp = occ_type;
+    if (soundset_id > 0)
+    {
+        if(sound_type < MAX_OCCUPATION_SOUND_TYPES)
+            play_occupation_immediate_sound(soundset_id, occ_type, sound_type);
+
+        start_occupation_ambient_sound(soundset_id, occ_type);
+    }
     return;
 }
 
@@ -6231,25 +6243,32 @@ register char *cmd;
         int res = 0, NDECL((*func));
 
         /* current - use *cmd to directly index cmdlist array */
-        if ((tlist = Cmd.commands[*cmd & 0xff]) != 0) {
-            if (!wizard && (tlist->flags & WIZMODECMD)) {
+        if ((tlist = Cmd.commands[*cmd & 0xff]) != 0)
+        {
+            if (!wizard && (tlist->flags & WIZMODECMD))
+            {
                 You_cant("do that!");
                 res = 0;
-            } else if (u.uburied && !(tlist->flags & IFBURIED)) {
+            }
+            else if (u.uburied && !(tlist->flags & IFBURIED)) 
+            {
                 You_cant("do that while you are buried!");
                 res = 0;
-            } else {
+            } 
+            else 
+            {
                 /* we discard 'const' because some compilers seem to have
                    trouble with the pointer passed to set_occupation() */
                 func = ((struct ext_func_tab *) tlist)->ef_funct;
 				if (func)
 				{
 					if (tlist->f_text && !occupation && multi)
-						set_occupation(func, tlist->f_text, multi);
+						set_occupation(func, tlist->f_text, 0, 0, 0, multi);
 					res = (*func)(); /* perform the command */
 				}
             }
-            if (!res) {
+            if (!res)
+            {
                 context.move = FALSE;
                 multi = 0;
             }

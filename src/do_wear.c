@@ -2524,7 +2524,7 @@ take_off(VOID_ARGS)
     if (doff->delay > 0)
         doff->delay--;
 
-    set_occupation(take_off, doff->disrobing, 0);
+    set_occupation(take_off, doff->disrobing, objects[otmp->otyp].oc_soundset, OCCUPATION_TAKING_OFF, OCCUPATION_SOUND_TYPE_RESUME, 0);
     return 1; /* get busy */
 }
 
@@ -2544,7 +2544,7 @@ doddoremarm()
 
     if (context.takeoff.what || context.takeoff.mask) {
         You("continue %s.", context.takeoff.disrobing);
-        set_occupation(take_off, context.takeoff.disrobing, 0);
+        set_occupation(take_off, context.takeoff.disrobing, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
         return 0;
     } else if (!uwep && !uswapwep && !uquiver && !uamul && !ublindf && !uleft
                && !uright && !wearing_armor()) {
