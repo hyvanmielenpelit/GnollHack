@@ -1386,11 +1386,11 @@ struct obj *otmp;
          */
 		num = 0;
 		if(otmp->otyp == POT_GAIN_ENERGY)
-	        num = d(3, 6);
+	        num = d(6, 6) + 20;
 		else if (otmp->otyp == POT_GREATER_ENERGY)
-			num = d(6, 6);
+			num = d(12, 6) + 60;
 		else if (otmp->otyp == POT_FULL_ENERGY)
-			num = d(12, 6) + 400;
+			num = d(24, 6) + 400;
 
 		if (otmp->otyp == POT_GAIN_ENERGY)
 			numxtra = 1;

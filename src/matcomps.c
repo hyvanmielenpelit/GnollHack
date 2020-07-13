@@ -1564,7 +1564,7 @@ struct materialcomponentlist matlists[] =
 	{ SPE_FULL_HEALING,
 		"Ginseng, healing mushroom, sporal powder",
 		STRANGE_OBJECT,
-		5,
+		3,
 		{
 			{
 				{GINSENG_ROOT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT, STRANGE_OBJECT},

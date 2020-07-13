@@ -80,7 +80,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Valley", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Game Over", 0.1f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Normal", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Normal", 0.07f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Angry", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Dead", BACKGROUND_MUSIC_VOLUME},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Deserted", BACKGROUND_MUSIC_VOLUME},

@@ -256,7 +256,7 @@ struct monst *mtmp;
     /* creatures who are directly resistant to magical scaring:
      * Rodney, lawful minions, Angels, the Riders, shopkeepers
      * inside their own shop, priests inside their own temple */
-    if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL]
+    if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL] || (mtmp->data->geno & G_UNIQ)
         || is_rider(mtmp->data)
 		|| (mtmp->isshk && inhishop(mtmp))
         || (mtmp->ispriest && inhistemple(mtmp)))
