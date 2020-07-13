@@ -2716,6 +2716,7 @@ E void NDECL(play_level_ambient_sounds);
 E enum floor_surface_types FDECL(get_floor_surface_type, (int, int));
 E void FDECL(play_movement_sound, (struct monst*, enum climbing_types));
 E void FDECL(play_object_floor_sound, (struct obj*, enum object_sound_types));
+E void FDECL(play_object_container_in_sound, (struct obj*, struct obj*));
 E enum hit_surface_types FDECL(get_hit_surface_type, (enum hit_surface_source_types, ANY_P*));
 E void FDECL(get_hit_location, (enum hit_surface_source_types, ANY_P*, xchar*, xchar*));
 E void FDECL(play_simple_object_sound, (struct obj*, enum object_sound_types));

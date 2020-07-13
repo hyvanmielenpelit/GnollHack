@@ -2392,6 +2392,11 @@ register struct obj *obj;
 	{
         Strcpy(buf, the(xname(current_container)));
         You("put %s into %s.", doname(obj), buf);
+        if (iflags.using_gui_sounds)
+        {
+            play_object_container_in_sound(obj, current_container);
+            delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
+        }
 
         /* gold in container always needs to be added to credit */
         if (floor_container && obj->oclass == COIN_CLASS)
@@ -2565,7 +2570,11 @@ register struct obj *obj;
                         : "You have much trouble removing")
                   : (char *) 0,
           otmp, count);
-
+    if (iflags.using_gui_sounds)
+    {
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
+        delay_output_milliseconds(ITEM_PICKUP_DROP_DELAY);
+    }
     if (is_gold) 
 	{
         bot(); /* update character's gold piece count immediately */

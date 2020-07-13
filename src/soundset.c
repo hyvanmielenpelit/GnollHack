@@ -2107,6 +2107,49 @@ enum object_sound_types sound_type;
 }
 
 void
+play_object_container_in_sound(obj, container)
+struct obj* obj;
+struct obj* container;
+{
+    if (!obj || !container)
+        return;
+
+    enum object_sound_types sound_type = OBJECT_SOUND_TYPE_DROP;
+    struct ghsound_immediate_info immediateinfo = { 0 };
+
+    enum obj_material_types container_material = objects[container->otyp].oc_material;
+    enum floor_surface_types floorid = material_definitions[container_material].floor_surface_mapping;
+    float weight = (float)obj->owt;
+    enum ghsound_types soundid = GHSOUND_NONE;
+    float volume = 1.0f;
+
+    if (obj->oartifact && artilist[obj->oartifact].soundset > OBJECT_SOUNDSET_NONE)
+    {
+        enum object_soundset_types oss = artilist[obj->oartifact].soundset;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+    }
+    else
+    {
+        enum object_soundset_types oss = objects[obj->otyp].oc_soundset;
+        soundid = object_soundsets[oss].sounds[sound_type].ghsound;
+        volume = object_soundsets[oss].sounds[sound_type].volume;
+    }
+
+    immediateinfo.ghsound = soundid;
+    immediateinfo.volume = volume;
+    immediateinfo.parameter_names[0] = "FloorSurface";
+    immediateinfo.parameter_values[0] = (float)floorid;
+    immediateinfo.parameter_names[1] = "Weight";
+    immediateinfo.parameter_values[1] = weight;
+    immediateinfo.parameter_names[2] = (char*)0;
+    immediateinfo.sound_type = IMMEDIATE_SOUND_SFX;
+
+    if (soundid > GHSOUND_NONE && volume > 0.0f)
+        play_immediate_ghsound(immediateinfo);
+}
+
+void
 play_simple_location_sound(x, y, sound_type)
 xchar x, y;
 enum location_sound_types sound_type;
