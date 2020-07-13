@@ -6118,7 +6118,7 @@ boolean stop_at_first_hit_object;
     int bhitlimit = hit_only_one == 1 ? 1 : hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 0;
 
     if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
-        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_CREATE_MISSILE_EFFECT);
+        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_CREATE, u.ux, u.uy);
 
     if (weapon == KICKED_WEAPON || weapon == GOLF_SWING)
 	{
@@ -6315,7 +6315,7 @@ boolean stop_at_first_hit_object;
             notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
 
             if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
-                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_MONSTER);
+                play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
 
             if (weapon == FLASHED_LIGHT) 
             {
@@ -6334,7 +6334,7 @@ boolean stop_at_first_hit_object;
                 else 
                 {
                     tmp_at(DISP_END, 0);
-                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
+                    play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
                     return mtmp; /* caller will call flash_hits_mon */
                 }
             } 
@@ -6347,7 +6347,7 @@ boolean stop_at_first_hit_object;
                    self.  [No tmp_at() cleanup is needed here.] */
                 if (!is_invisible(mtmp) || has_see_invisible(mtmp))
                 {
-                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
+                    play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
                     return mtmp;
                 }
             } 
@@ -6373,7 +6373,7 @@ boolean stop_at_first_hit_object;
                     if (hit_only_one && context.bhitcount >= bhitlimit)
 					{
                         tmp_at(DISP_END, 0);
-                        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
+                        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
                         beam_cleared_off = TRUE;
 					}
 					else
@@ -6384,7 +6384,7 @@ boolean stop_at_first_hit_object;
 				int more_effect_num = 0;
 
                 if(had_effect)
-                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_MONSTER);
+                    play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
 
 				/* Make radius if it is specified */
 				if (radius > 0)
@@ -6428,7 +6428,8 @@ boolean stop_at_first_hit_object;
             if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
 			{
                 if(weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
-                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_OBJECT);
+                    play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_OBJECT, bhitpos.x, bhitpos.y);
+
                 if (stop_at_first_hit_object)
 					break;
 				else
@@ -6546,7 +6547,7 @@ boolean stop_at_first_hit_object;
     {
         tmp_at(DISP_END, 0);
         if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
-            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT);
+            play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, u.ux, u.uy);
     }
     if (shopdoor)
         pay_for_damage("destroy", FALSE);

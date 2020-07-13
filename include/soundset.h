@@ -269,6 +269,32 @@ enum object_occupation_types {
 	MAX_OBJECT_OCCUPATION_TYPES
 };
 
+/* RAY SOUNDSETS */
+enum ray_sound_types {
+	RAY_SOUND_TYPE_AMBIENT = 0,				/* Ambient sound while the ray is travelling */
+	RAY_SOUND_TYPE_CREATE,					/* Sound upon creation of the ray */
+	RAY_SOUND_TYPE_DESTROY,					/* Sound upon dissipation of the ray */
+	RAY_SOUND_TYPE_BOUNCE,					/* Sound upon the ray bouncing */
+	RAY_SOUND_TYPE_WHIZZES_BY_YOU,			/* Sound upon the ray wheezing by you */
+	RAY_SOUND_TYPE_HIT_MONSTER,				/* Sound upon the ray hitting a monster */
+	RAY_SOUND_TYPE_HIT_OBJECT,				/* Sound upon the ray hitting an object */
+	RAY_SOUND_TYPE_HIT_LOCATION,			/* Sound upon the ray hitting a location, e.g. digging a wall */
+	MAX_RAY_SOUND_TYPES
+};
+
+struct ray_soundset_definition {
+	char* soundset_name;
+	struct ghsound_info sounds[MAX_RAY_SOUND_TYPES];
+};
+
+enum object_ray_soundset_types {
+	/* 0...NRAYS-1 normal ray, NRAYS...2NRAYS-1 explosion */
+	OBJECT_RAY_SOUNDSET_NONE = 2 * NRAYS,
+	OBJECT_RAY_SOUNDSET_GENERIC,
+	MAX_RAY_SOUNDSETS
+};
+
+extern struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS];
 
 /* OBJECT SOUNDSETS */
 enum object_sound_types {
@@ -280,14 +306,6 @@ enum object_sound_types {
 	OBJECT_SOUND_TYPE_THROW,			/* Played when the object is thrown */
 	OBJECT_SOUND_TYPE_FIRE,				/* Played when a launcher is fired */
 	OBJECT_SOUND_TYPE_HIT_THROW,		/* Played at the end of the throw/fire attack animation and at the end of throw if the attack hits target */
-
-	/* Spell */
-	OBJECT_SOUND_TYPE_MISSILE_EFFECT_AMBIENT,
-	OBJECT_SOUND_TYPE_CREATE_MISSILE_EFFECT,
-	OBJECT_SOUND_TYPE_DESTROY_MISSILE_EFFECT,
-	OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_MONSTER,
-	OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_OBJECT,
-	OBJECT_SOUND_TYPE_MISSILE_EFFECT_HIT_LOCATION,
 
 	/* Handling */
 	OBJECT_SOUND_TYPE_PICK_UP,
@@ -330,6 +348,7 @@ struct object_soundset_definition {
 	struct ghsound_info sounds[MAX_OBJECT_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 	enum occupation_soundset_types occupation_soundsets[MAX_OBJECT_OCCUPATION_TYPES];
+	enum object_ray_soundset_types ray_soundset;
 };
 
 enum object_soundset_types {
@@ -492,25 +511,7 @@ extern struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES];
 extern struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES];
 
 
-/* RAY SOUNDSETS */
-enum ray_sound_types {
-	RAY_SOUND_TYPE_AMBIENT = 0,				/* Ambient sound while the ray is travelling */
-	RAY_SOUND_TYPE_CREATE,					/* Sound upon creation of the ray */
-	RAY_SOUND_TYPE_DESTROY,					/* Sound upon dissipation of the ray */
-	RAY_SOUND_TYPE_BOUNCE,					/* Sound upon the ray bouncing */
-	RAY_SOUND_TYPE_WHIZZES_BY_YOU,			/* Sound upon the ray wheezing by you */
-	RAY_SOUND_TYPE_HIT_MONSTER,				/* Sound upon the ray hitting a monster */
-	RAY_SOUND_TYPE_HIT_OBJECT,				/* Sound upon the ray hitting an object */
-	RAY_SOUND_TYPE_HIT_LOCATION,			/* Sound upon the ray hitting a location, e.g. digging a wall */
-	MAX_RAY_SOUND_TYPES
-}; 
 
-struct ray_soundset_definition {
-	char* soundset_name;
-	struct ghsound_info sounds[MAX_RAY_SOUND_TYPES];
-};
-
-extern struct ray_soundset_definition ray_soundsets[2 * NRAYS]; /* 0...NRAYS-1 normal ray, NRAYS...2NRAYS-1 explosion */
 
 
 

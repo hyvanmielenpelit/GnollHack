@@ -98,13 +98,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -140,7 +133,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_NONE,
             OCCUPATION_SOUNDSET_NONE,
             OCCUPATION_SOUNDSET_NONE
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "general",
@@ -149,13 +143,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -200,7 +187,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING        
-        }
+        },
+        OBJECT_RAY_SOUNDSET_GENERIC
     },
     {
         "candle",
@@ -209,13 +197,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -259,7 +240,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "quarterstaff",
@@ -268,13 +250,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f}
-            ,
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -318,7 +293,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "bow",
@@ -330,13 +306,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_BOW_FIRE, 1.0f},
             {GHSOUND_NONE, 0.0f},
 
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -377,7 +346,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "crossbow",
@@ -389,13 +359,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_CROSSBOW_FIRE, 1.0f},
             {GHSOUND_NONE, 0.0f},
 
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -436,7 +399,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "arrow",
@@ -448,13 +412,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_ARROW_HIT, 1.0f},
 
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -495,7 +452,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "sword",
@@ -507,13 +465,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_SWORD_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -554,7 +505,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "axe",
@@ -566,13 +518,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_SWORD_DROP, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -613,7 +558,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "dagger",
@@ -622,13 +568,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_DAGGER_SWING, 1.0f},
             {GHSOUND_DAGGER_HIT, 1.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -672,7 +611,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "bone dagger",
@@ -681,13 +621,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_STAFF_SWING, 1.0f},
             {GHSOUND_STAFF_HIT, 1.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -731,7 +664,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "human barehanded",
@@ -740,13 +674,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_HUMAN_BAREHANDED_SWING, 1.0f},
             {GHSOUND_HUMAN_BAREHANDED_HIT, 1.0f},
             {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -790,7 +717,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "human barefooted",
@@ -799,13 +727,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_HUMAN_KICK_SWING, 1.0f},
             {GHSOUND_HUMAN_KICK_HIT, 1.0f},
             {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -849,7 +770,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "horse barefooted",
@@ -858,13 +780,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_HUMAN_KICK_SWING, 1.0f},
             {GHSOUND_HUMAN_KICK_HIT, 1.0f},
             {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -908,7 +823,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "cotton slippers",
@@ -917,13 +833,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_HUMAN_KICK_SWING, 1.0f},
             {GHSOUND_HUMAN_KICK_HIT, 0.5f},
             {GHSOUND_NONE, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -967,7 +876,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "chest",
@@ -976,13 +886,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -1026,7 +929,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "coins",
@@ -1035,13 +939,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -1085,7 +982,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
+        },
+        OBJECT_RAY_SOUNDSET_NONE
     },
     {
         "boulder",
@@ -1094,13 +992,6 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_NONE, 1.0f},
             {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
 
@@ -1144,8 +1035,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
             OCCUPATION_SOUNDSET_GENERIC_STUDYING
-        }
-    },
+        },
+        OBJECT_RAY_SOUNDSET_NONE
+    }
 };
 
 NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =
@@ -1421,7 +1313,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
 };
 
 
-struct ray_soundset_definition ray_soundsets[2 * NRAYS] =
+struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {
     {
         "ray of magic missiles",
@@ -1682,7 +1574,33 @@ struct ray_soundset_definition ray_soundsets[2 * NRAYS] =
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         }
-    }
+    },
+    {
+        "no object ray soundset",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "generic object ray soundset",
+        {
+            {GHSOUND_RAY_ELEC_AMBIENT, 1.0f},
+            {GHSOUND_RAY_ELEC_CREATE, 100.0f},
+            {GHSOUND_RAY_ELEC_DESTROY, 10.0f},
+            {GHSOUND_RAY_ELEC_BOUNCE, 100.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
 };
 
 
@@ -2590,14 +2508,14 @@ int x, y;
 }
 
 void
-play_immediate_ray_sound_at_location(ray_type, ray_sound_type, x, y)
-int ray_type; /* same as in buzz */
+play_immediate_ray_sound_at_location(ray_soundset_id, ray_sound_type, x, y)
+enum ray_soundset_types ray_soundset_id; 
 enum ray_sounds_types ray_sound_type;
 int x, y;
 {
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
         return;
-    int typ = abs(ray_type) % NRAYS;
+    enum ray_soundset_types typ = ray_soundset_id;
     if (ray_soundsets[typ].sounds[ray_sound_type].ghsound == GHSOUND_NONE)
         return;
 
