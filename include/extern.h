@@ -483,6 +483,8 @@ E void FDECL(display_self_with_extra_info, (unsigned long, int dmg_received));
 E int FDECL(get_location_light_range, (xchar, xchar));
 E void NDECL(u_shieldeff);
 E void FDECL(m_shieldeff, (struct monst*));
+
+
 /* ### do.c ### */
 
 #ifdef USE_TRAMPOLI
@@ -1219,6 +1221,7 @@ E char *FDECL(xprname,
               (struct obj *, const char *, CHAR_P, BOOLEAN_P, long, long));
 E int NDECL(ddoinv);
 E char FDECL(display_inventory, (const char *, BOOLEAN_P, int));
+E char FDECL(display_inventory_with_header, (const char*, BOOLEAN_P, int));
 E int FDECL(display_binventory, (int, int, BOOLEAN_P));
 E struct obj *FDECL(display_cinventory, (struct obj *));
 E struct obj *FDECL(display_minventory, (struct monst *, int, char *));
@@ -2187,8 +2190,8 @@ E int FDECL(query_objlist, (const char *, struct obj **, int,
                             menu_item **, int, boolean (*)(OBJ_P), int));
 E void FDECL(add_weight_summary, (winid, int, int));
 E void FDECL(add_weight_summary_putstr, (winid, int, int));
-E int FDECL(enclevelmaximumweight, (int));
-E int FDECL(enclevelminimumweight, (int));
+E int FDECL(enclevelmaximumweight, (enum encumbrance_types));
+E int FDECL(enclevelminimumweight, (enum encumbrance_types));
 E struct obj *FDECL(pick_obj, (struct obj *));
 E int NDECL(encumber_msg);
 E int FDECL(container_at, (int, int, BOOLEAN_P));

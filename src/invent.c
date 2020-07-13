@@ -32,8 +32,7 @@ STATIC_PTR int FDECL(ckvalidcat, (struct obj *));
 STATIC_PTR int FDECL(ckunpaid, (struct obj *));
 STATIC_PTR char *FDECL(safeq_xprname, (struct obj *));
 STATIC_PTR char *FDECL(safeq_shortxprname, (struct obj *));
-STATIC_DCL char FDECL(display_pickinv, (const char *, const char *,
-                                        const char *, BOOLEAN_P, long *, int, const char*));
+STATIC_DCL char FDECL(display_pickinv, (const char *, char *, char *, BOOLEAN_P, long *, int, const char*, BOOLEAN_P));
 STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
@@ -2350,7 +2349,7 @@ const char* headertext;
                 allowed_choices = altlets;
             ilet = display_pickinv(allowed_choices, *qbuf ? qbuf : (char *) 0,
                                    menuquery,
-                                   TRUE, allowcnt ? &ctmp : (long *) 0, show_weights, headertext);
+                                   TRUE, allowcnt ? &ctmp : (long *) 0, show_weights, headertext, FALSE);
             if (!ilet)
                 continue;
             if (ilet == HANDS_SYM)
@@ -3182,7 +3181,7 @@ ddoinv()
 
 	char invlet;
 
-	invlet = display_inventory((const char*)0, TRUE, 1);
+	invlet = display_inventory_with_header((const char*)0, TRUE, 1);
 	if (!invlet || invlet == '\033' || invlet == '\0')
 		return 0;
 
@@ -3253,14 +3252,15 @@ free_pickinv_cache()
  * any count returned from the menu selection is placed here.
  */
 STATIC_OVL char
-display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights, headertext)
-register const char *lets;
-const char *xtra_choice; /* "fingers", pick hands rather than an object */
-const char *query;
+display_pickinv(lets, xtra_choice, query, want_reply, out_cnt, show_weights, headertext, addinventoryheader)
+const char *lets;
+char *xtra_choice; /* "fingers", pick hands rather than an object */
+char *query;
 boolean want_reply;
 long *out_cnt;
 int show_weights;
 const char* headertext;
+boolean addinventoryheader;
 {
     static const char not_carrying_anything[] = "Not carrying anything";
     struct obj *otmp, wizid_fakeobj;
@@ -3479,7 +3479,23 @@ nextclass:
 		if (flags.show_weight_summary)
 			add_weight_summary(win, wtcount, show_weights);
 	}
-    end_menu(win, query && *query ? query : (char *) 0);
+
+    if (addinventoryheader)
+    {
+        char qbuf[BUFSIZ];
+        int icnt = inv_cnt(FALSE);
+        char weightbuf[BUFSZ];
+        printweight(weightbuf, wtcount, FALSE, FALSE);
+
+        int maxwt = enclevelmaximumweight(UNENCUMBERED);
+        char maxbuf[BUFSZ];
+        printweight(maxbuf, maxwt, FALSE, FALSE);
+
+        Sprintf(qbuf, "Inventory - %d/52 slots, %s/%s weight", icnt, weightbuf, maxbuf);
+        end_menu(win, qbuf);
+    }
+    else
+        end_menu(win, query && *query ? query : (char *) 0);
 
     n = select_menu(win,
                     wizid ? PICK_ANY : want_reply ? PICK_ONE : PICK_NONE,
@@ -3573,7 +3589,7 @@ int show_weights;
 
 		if (total_ounce_weight > 0)
 		{
-			char weightbuf[BUFSZ] = "";
+			char weightbuf[BUFSZ];
 			printweight(weightbuf, total_ounce_weight, !flags.inventory_weights_last, FALSE);
 			if (flags.inventory_weights_last || tiles_being_used)
 				Sprintf(wtbuf, "%s of total weight.", weightbuf);
@@ -3618,7 +3634,7 @@ int show_weights;
 
 int
 enclevelminimumweight(enclevel)
-int enclevel;
+enum encumbrance_types enclevel;
 {
 	int weight;
 	int wt = weight_cap();
@@ -3632,7 +3648,7 @@ int enclevel;
 
 int
 enclevelmaximumweight(enclevel)
-int enclevel;
+enum encumbrance_types enclevel;
 {
 	int weight;
 	int wt = weight_cap();
@@ -3755,7 +3771,18 @@ boolean want_reply;
 int show_weights;
 {
     return display_pickinv(lets, (char *) 0, (char *) 0,
-                           want_reply, (long *) 0, show_weights, "");
+                           want_reply, (long *) 0, show_weights, "", FALSE);
+}
+
+char
+display_inventory_with_header(lets, want_reply, show_weights)
+const char* lets;
+boolean want_reply;
+int show_weights;
+{
+    int icnt = inv_cnt(FALSE);
+    return display_pickinv(lets, (char*)0, (char*)0,
+        want_reply, (long*)0, show_weights, "", TRUE);
 }
 
 /*
