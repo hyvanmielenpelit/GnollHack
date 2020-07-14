@@ -149,7 +149,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Fly" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Levitate" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Discard" , 0.5f},
-    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Reserved" , 0.5f},
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Sparks Fly" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Object/Food/Apple/Apple Eat" , 0.5f},
 
     { SOUND_BANK_MASTER, "event:/Object/Food/Carrot/Carrot Eat" , 0.5f},

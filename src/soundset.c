@@ -171,7 +171,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
@@ -229,7 +229,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -286,7 +286,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -343,7 +343,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -400,7 +400,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -457,7 +457,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -514,7 +514,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -571,7 +571,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -628,7 +628,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -685,7 +685,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -913,7 +913,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_FOOTSTEPS_COTTON_SLIPPERS, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -970,7 +970,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1027,7 +1027,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1084,7 +1084,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
-            {GHSOUND_RESERVED_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_PUSH_BOULDER, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},

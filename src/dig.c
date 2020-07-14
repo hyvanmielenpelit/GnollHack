@@ -1187,6 +1187,7 @@ struct obj *obj;
         dam = rnd(2) + u_str_dmg_bonus() + obj->enchantment;
         if (dam <= 0)
             dam = 1;
+        play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(&youmonst), dam, HMON_MELEE);
         You("hit yourself with %s.", yname(obj));
         Sprintf(buf, "%s own %s", uhis(), OBJ_NAME(objects[obj->otyp]));
         losehp(adjust_damage(dam, &youmonst, &youmonst, AD_PHYS, FALSE), buf, KILLED_BY);
@@ -1201,6 +1202,7 @@ struct obj *obj;
         ry = u.uy + u.dy;
         if (!isok(rx, ry))
 		{
+            play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
             pline("Clash!");
             return 1;
         }
@@ -1214,7 +1216,8 @@ struct obj *obj;
             trap = t_at(rx, ry);
             if (trap && trap->ttyp == WEB)
 			{
-                if (!trap->tseen) 
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+                if (!trap->tseen)
 				{
                     seetrap(trap);
                     There("is a spider web there!");
@@ -1228,6 +1231,7 @@ struct obj *obj;
             } 
 			else if (lev->typ == IRONBARS) 
 			{
+                play_object_hit_sound(obj, HIT_SURFACE_SOURCE_LOCATION, xy_to_any( rx, ry), 0, HMON_MELEE);
                 pline("Clang!");
                 wake_nearby();
             }
@@ -1241,22 +1245,25 @@ struct obj *obj;
             }
 			else if (!ispick && ((sobj_at(STATUE, rx, ry) && !issaw) || sobj_at(BOULDER, rx, ry)))
 			{
-				if (isaxe)
+                if (isaxe)
 				{
-					boolean vibrate = !rn2(3);
-
-					pline("Sparks fly as you whack the %s.%s",
+                    boolean vibrate = !rn2(3);
+                    play_object_hit_sound(obj, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(sobj_at(STATUE, rx, ry)), vibrate ? 2 : 0, HMON_MELEE);
+                    pline("Sparks fly as you whack the %s.%s",
 						sobj_at(STATUE, rx, ry) ? "statue" : "boulder",
 						vibrate ? " The axe-handle vibrates violently!" : "");
-					if (vibrate)
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SPARKS_FLY);
+                    if (vibrate)
 						losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "axing a hard object",
 							KILLED_BY);
 				}
 				else if(issaw)
 				{
-					pline("Sparks fly as you cut the %s, but nothing much else happens.",
+                    play_object_hit_sound(obj, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(sobj_at(STATUE, rx, ry)), 0, HMON_MELEE);
+                    pline("Sparks fly as you cut the %s, but nothing much else happens.",
 						sobj_at(STATUE, rx, ry) ? "statue" : "boulder");
-				}
+                    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SPARKS_FLY);
+                }
             }
 			else if (u.utrap && u.utraptype == TT_PIT && trap
                        && (trap_with_u = t_at(u.ux, u.uy))
@@ -1264,6 +1271,7 @@ struct obj *obj;
                        && !conjoined_pits(trap, trap_with_u, FALSE)) 
 			{
                 int idx;
+                play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
 
                 for (idx = 0; idx < 8; idx++) 
 				{
@@ -1277,16 +1285,20 @@ struct obj *obj;
                     trap_with_u->conjoined |= (1 << idx);
                     trap->conjoined |= (1 << adjidx);
                     pline("You clear some debris from between the pits.");
+                    play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_FINISH);
                 }
             } 
 			else if (u.utrap && u.utraptype == TT_PIT
                        && (trap_with_u = t_at(u.ux, u.uy)) != 0)
 			{
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
                 You("swing %s, but the rubble has no place to go.",
                     yobjnam(obj, (char *) 0));
+                play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
             } 
 			else 
 			{
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
                 You("swing %s through thin air.", yobjnam(obj, (char *) 0));
             }
         }
@@ -1352,30 +1364,48 @@ struct obj *obj;
 	{
         /* it must be air -- water checked above */
         You("swing %s through thin air.", yobjnam(obj, (char *) 0));
-    } else if (!can_reach_floor(FALSE)) {
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+    }
+    else if (!can_reach_floor(FALSE)) 
+    {
         cant_reach_floor(u.ux, u.uy, FALSE, FALSE);
-    } else if (is_pool_or_lava(u.ux, u.uy)) {
+    }
+    else if (is_pool_or_lava(u.ux, u.uy)) 
+    {
         /* Monsters which swim also happen not to be able to dig */
         You("cannot stay under%s long enough.",
             is_pool(u.ux, u.uy) ? "water" : " the lava");
-    } else if ((trap = t_at(u.ux, u.uy)) != 0
-               && uteetering_at_seen_pit(trap)) {
+    }
+    else if ((trap = t_at(u.ux, u.uy)) != 0
+               && uteetering_at_seen_pit(trap)) 
+    {
         dotrap(trap, FORCEBUNGLE);
         /* might escape trap and still be teetering at brink */
         if (!u.utrap)
             cant_reach_floor(u.ux, u.uy, FALSE, TRUE);
-    } else if (!ispick
+    } 
+    else if (!ispick
                /* can only dig down with an axe when doing so will
                   trigger or disarm a trap here */
                && (!trap || (trap->ttyp != LANDMINE
-                             && trap->ttyp != BEAR_TRAP))) {
+                             && trap->ttyp != BEAR_TRAP))) 
+    {
         pline("%s merely scratches the %s.", Yobjnam2(obj, (char *) 0),
               surface(u.ux, u.uy));
         u_wipe_engr(3);
-    } else {
+
+        if(trap)
+            play_object_hit_sound(obj, HIT_SURFACE_SOURCE_TRAP, trap_to_any(trap), 0, HMON_MELEE);
+        else
+            play_object_hit_sound(obj, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(u.ux, u.uy), 0, HMON_MELEE);
+
+    } 
+    else 
+    {
         if (context.digging.pos.x != u.ux || context.digging.pos.y != u.uy
             || !on_level(&context.digging.level, &u.uz)
-            || !context.digging.down) {
+            || !context.digging.down) 
+        {
             context.digging.chew = FALSE;
             context.digging.down = TRUE;
             context.digging.warned = FALSE;

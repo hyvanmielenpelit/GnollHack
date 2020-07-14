@@ -96,7 +96,7 @@ enum ghsound_types {
 	GHSOUND_GENERIC_FLY,
 	GHSOUND_GENERIC_LEVITATE,
 	GHSOUND_DISCARD_GENERIC,
-	GHSOUND_RESERVED_GENERIC,
+	GHSOUND_SPARKS_FLY_GENERIC,
 	GHSOUND_EAT_APPLE,
 	GHSOUND_EAT_CARROT,
 	GHSOUND_PLAYER_FOOTSTEPS_NORMAL,
@@ -334,8 +334,8 @@ enum object_sound_types {
 
 	/* General */
 	OBJECT_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
-	OBJECT_SOUND_TYPE_DISCARD,			/* Sound upon discaarding a tin */
-	OBJECT_SOUND_TYPE_RESERVED,			/* RESERVED */
+	OBJECT_SOUND_TYPE_DISCARD,			/* Sound upon discarding a tin */
+	OBJECT_SOUND_TYPE_SPARKS_FLY,		/* Sound when you hit and sparks fly */
 	OBJECT_SOUND_TYPE_PUSH,				/* Sound upon pushing the item on the ground */
 
 	/* Movement */
