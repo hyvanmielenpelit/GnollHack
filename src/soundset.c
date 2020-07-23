@@ -21,7 +21,7 @@ NEARDATA struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS
 	},
 	{
 		"Generic",
-        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_PUSH_EFFORT, 1.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}},
+        {{GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_PUSH_EFFORT, 1.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_NONE, 0.0f}, {GHSOUND_GOBLIN_DEATH, 1.0f}},
         SOUNDSOURCE_AMBIENT_GENERAL,
         {OBJECT_SOUNDSET_HUMAN_BAREHANDED, OBJECT_SOUNDSET_HUMAN_BAREFOOTED}
     },
@@ -2309,6 +2309,7 @@ struct monst* mon;
 enum monster_sound_types sound_type;
 {
     /* Do not use for hit sounds */
+    boolean isyou = (mon == &youmonst);
 
     if (!mon)
         return;
@@ -2321,7 +2322,7 @@ enum monster_sound_types sound_type;
     soundid = monster_soundsets[mss].sounds[sound_type].ghsound;
     volume = monster_soundsets[mss].sounds[sound_type].volume;
 
-    if (!Upolyd && mon == &youmonst)
+    if (!Upolyd && isyou)
     {
         enum player_soundset_types pss = get_player_soundset();
         if (pss > PLAYER_SOUNDSET_NONE)
@@ -2331,7 +2332,7 @@ enum monster_sound_types sound_type;
         }
     }
 
-    xchar x = mon->mx, y = mon->my;
+    xchar x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my;
 
     if (isok(x, y))
     {
