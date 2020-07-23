@@ -1891,10 +1891,14 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			break;
 		}
 
+        boolean isweptwohanded = (otmp && bimanual(otmp));
+        int special_threshold = isweptwohanded ? 18 : 9;
+        int special_chance = max(1, otmp->enchantment / (isweptwohanded ? 2 : 1));
+
         /* Otherwise, enchant weapon */
 		if (!enchant_weapon(sobj, otmp, scursed ? -1
 			: !otmp ? 1
-			: (otmp->enchantment >= 9) ? !rn2(max(1, otmp->enchantment))
+			: (otmp->enchantment >= special_threshold) ? !rn2(special_chance)
 			: sblessed ? rnd(max(1, 3 - otmp->enchantment / 3))
 			: 1))
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
