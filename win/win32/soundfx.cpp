@@ -170,6 +170,29 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Finish", 1.0f},
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Interrupted", 1.0f},
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Resume", 1.0f},
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Desecrate Altar", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Summon Demon", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Sacrifice Pet", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Sacrifice Coaligned Unicorn", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Add Alignment", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Environment/Thunderclap", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Environment/Charged Air", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Accepts Sacrifice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Rejects Sacrifice", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Power Increase", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Power Decrease", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/God Mollified", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Inadequacy", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Absolved", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Hopeful Feeling", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Reconciliation", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Gift", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Four-Leaf Clover", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Aura Glow", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Burst of Flame", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Vanish", 1.0f },
 };
 
 #undef NoSound

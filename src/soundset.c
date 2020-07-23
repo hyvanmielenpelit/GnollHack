@@ -1432,6 +1432,86 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "sleeping",
         {GHSOUND_CAUSE_SLEEPING, 1.0f}
     },
+    {
+        "desecrate altar",
+        {GHSOUND_DESECRATE_ALTAR, 1.0f}
+    },
+    {
+        "summon demon",
+        {GHSOUND_SUMMON_DEMON, 1.0f}
+    },
+    {
+        "sacrifice pet",
+        {GHSOUND_SACRIFICE_PET, 1.0f}
+    },
+    {
+        "sacrifice coaligned unicorn",
+        {GHSOUND_SACRIFICE_COALIGNED_UNICORN, 1.0f}
+    },
+    {
+        "altar add alignment",
+        {GHSOUND_ALTAR_ADD_ALIGNMENT, 1.0f}
+    },
+    {
+        "altar thunderclap",
+        {GHSOUND_ALTAR_THUNDERCLAP, 1.0f}
+    },
+    {
+        "altar charged air",
+        {GHSOUND_ALTAR_CHARGED_AIR, 1.0f}
+    },
+    {
+        "altar accepts sacrifice",
+        {GHSOUND_ALTAR_ANGRY_ACCEPTS_SACRIFICE, 1.0f}
+    },
+    {
+        "altar rejects sacrifice",
+        {GHSOUND_ALTAR_ANGRY_REJECTS_SACRIFICE, 1.0f}
+    },
+    {
+        "altar power increase",
+        {GHSOUND_ALTAR_POWER_INCREASE, 1.0f}
+    },
+    {
+        "altar power decrease",
+        {GHSOUND_ALTAR_POWER_DECREASE, 1.0f}
+    },
+    {
+        "altar god mollified",
+        {GHSOUND_ALTAR_GOD_MOLLIFIED, 1.0f}
+    },
+    {
+        "altar inadequacy",
+        {GHSOUND_ALTAR_INADEQUACY, 1.0f}
+    },
+    {
+        "altar absolved",
+        {GHSOUND_ALTAR_ABSOLVED, 1.0f}
+    },
+    {
+        "altar hopeful feeling",
+        {GHSOUND_ALTAR_HOPEFUL_FEELING, 1.0f}
+    },
+    {
+        "altar reconciliation",
+        {GHSOUND_ALTAR_RECONCILIATION, 1.0f}
+    },
+    {
+        "altar gift",
+        {GHSOUND_ALTAR_GIFT, 1.0f}
+    },
+    {
+        "altar four-leaf clover",
+        {GHSOUND_ALTAR_FOUR_LEAF_CLOVER, 1.0f}
+    },
+    {
+        "aura glow",
+        {GHSOUND_AURA_GLOW, 1.0f}
+    },
+    {
+        "altar burst of flame",
+        {GHSOUND_ALTAR_BURST_OF_FLAME, 1.0f}
+    },
 };
 
 

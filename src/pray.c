@@ -1976,23 +1976,35 @@ consume_offering(otmp)
 register struct obj *otmp;
 {
     if (Hallucination)
-        switch (rn2(3)) {
+    {
+        switch (rn2(3))
+        {
         case 0:
+            play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
             Your("sacrifice sprouts wings and a propeller and roars away!");
             break;
         case 1:
+            play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
             Your("sacrifice puffs up, swelling bigger and bigger, and pops!");
             break;
         case 2:
+            play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
             Your(
      "sacrifice collapses into a cloud of dancing particles and fades away!");
             break;
         }
+    }
     else if (Blind && u.ualign.type == A_LAWFUL)
+    {
+        play_sfx_sound(SFX_ALTAR_OFFERING_VANISH);
         Your("sacrifice disappears!");
+    }
     else
+    {
+        play_sfx_sound(SFX_ALTAR_BURST_OF_FLAME);
         Your("sacrifice is consumed in a %s!",
-             u.ualign.type == A_LAWFUL ? "flash of light" : "burst of flame");
+            u.ualign.type == A_LAWFUL ? "flash of light" : "burst of flame");
+    }
     if (carried(otmp))
         useup(otmp);
     else
@@ -2010,10 +2022,12 @@ dosacrifice()
     boolean highaltar;
     aligntyp altaralign = a_align(u.ux, u.uy);
 
-    if (!on_altar() || u.uswallow) {
+    if (!on_altar() || u.uswallow) 
+    {
         You("are not standing on an altar.");
         return 0;
     }
+
     highaltar = ((Is_astralevel(&u.uz) || Is_sanctum(&u.uz))
                  && (levl[u.ux][u.uy].altarmask & AM_SHRINE));
 
@@ -2031,7 +2045,8 @@ dosacrifice()
      */
 #define MAXVALUE 24 /* Highest corpse value (besides Wiz) */
 
-    if (otmp->otyp == CORPSE) {
+    if (otmp->otyp == CORPSE) 
+    {
         register struct permonst *ptr = &mons[otmp->corpsenm];
         struct monst *mtmp;
 
@@ -2045,54 +2060,69 @@ dosacrifice()
             return 1;
 
         if (otmp->corpsenm == PM_ACID_BLOB
-            || (monstermoves <= peek_at_iced_corpse_age(otmp) + 50)) {
+            || (monstermoves <= peek_at_iced_corpse_age(otmp) + 50)) 
+        {
             value = mons[otmp->corpsenm].difficulty + 1;
             if (otmp->oeaten)
                 value = eaten_stat(value, otmp);
         }
 
-        if (your_race(ptr)) {
+        if (your_race(ptr)) 
+        {
 			int luck_change = 0;
-            if (is_demon(youmonst.data)) {
+            if (is_demon(youmonst.data)) 
+            {
                 You("find the idea very satisfying.");
                 exercise(A_WIS, TRUE);
-            } else if (u.ualign.type != A_CHAOTIC) {
+            }
+            else if (u.ualign.type != A_CHAOTIC) 
+            {
                 pline("You'll regret this infamous offense!");
                 exercise(A_WIS, FALSE);
             }
 
             if (highaltar
-                && (altaralign != A_CHAOTIC || u.ualign.type != A_CHAOTIC)) {
+                && (altaralign != A_CHAOTIC || u.ualign.type != A_CHAOTIC))
+            {
                 goto desecrate_high_altar;
-            } else if (altaralign != A_CHAOTIC && altaralign != A_NONE) {
+            } 
+            else if (altaralign != A_CHAOTIC && altaralign != A_NONE) 
+            {
                 /* curse the lawful/neutral altar */
+                play_sfx_sound(SFX_DESECRATE_ALTAR);
                 pline_The("altar is stained with %s blood.", urace.adj);
                 levl[u.ux][u.uy].altarmask = AM_CHAOTIC;
                 angry_priest();
-            } else {
+            } 
+            else 
+            {
                 struct monst *dmon;
                 const char *demonless_msg;
 
                 /* Human sacrifice on a chaotic or unaligned altar */
                 /* is equivalent to demon summoning */
-                if (altaralign == A_CHAOTIC && u.ualign.type != A_CHAOTIC) {
-                    pline(
-                    "The blood floods the altar, which vanishes in %s cloud!",
+                play_sfx_sound(SFX_DESECRATE_ALTAR);
+                if (altaralign == A_CHAOTIC && u.ualign.type != A_CHAOTIC)
+                {
+                    pline("The blood floods the altar, which vanishes in %s cloud!",
                           an(hcolor(NH_BLACK)));
 
                     create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, TRUE);
 
                     angry_priest();
                     demonless_msg = "cloud dissipates";
-                } else {
+                } 
+                else 
+                {
                     /* either you're chaotic or altar is Moloch's or both */
                     pline_The("blood covers the altar!");
                     luck_change += (altaralign == A_NONE ? -2 : 2);
                     demonless_msg = "blood coagulates";
                 }
-                if ((pm = dlord(altaralign)) != NON_PM
-                    && (dmon = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS))
-                           != 0) {
+
+                if ((pm = dlord(altaralign)) != NON_PM && (dmon = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS)) != 0) 
+                {
+                    play_sfx_sound(SFX_SUMMON_DEMON);
                     char dbuf[BUFSZ];
 
                     Strcpy(dbuf, a_monnam(dmon));
@@ -2100,18 +2130,25 @@ dosacrifice()
                         Strcpy(dbuf, "something dreadful");
                     else
                         dmon->mstrategy &= ~STRAT_APPEARMSG;
+
                     You("have summoned %s!", dbuf);
                     if (sgn(u.ualign.type) == sgn(dmon->data->maligntyp))
                         dmon->mpeaceful = TRUE;
-                    You("are terrified, and unable to move.");
-                    nomul(-3);
-                    multi_reason = "being terrified of a demon";
-                    nomovemsg = 0;
-                } else
+
+                    if (!Fear_resistance)
+                    {
+                        You("are terrified, and unable to move.");
+                        nomul(-3);
+                        multi_reason = "being terrified of a demon";
+                        nomovemsg = 0;
+                    }
+                }
+                else
                     pline_The("%s.", demonless_msg);
             }
 
-            if (u.ualign.type != A_CHAOTIC) {
+            if (u.ualign.type != A_CHAOTIC) 
+            {
                 adjalign(-5);
                 u.ugangr += 3;
                 (void) adjattrib(A_WIS, -1, TRUE);
@@ -2128,22 +2165,29 @@ dosacrifice()
             else
                 useupf(otmp, 1L);
             return 1;
-        } else if (has_omonst(otmp)
+        } 
+        else if (has_omonst(otmp)
                    && (mtmp = get_mtraits(otmp, FALSE)) != 0
-                   && is_tame(mtmp)) {
+                   && is_tame(mtmp)) 
+        {
                 /* mtmp is a temporary pointer to a tame monster's attributes,
                  * not a real monster */
             pline("So this is how you repay loyalty?");
             adjalign(-3);
             value = -1;
             HAggravate_monster |= FROM_ACQUIRED;
-        } else if (is_undead(ptr)) { /* Not demons--no demon corpses */
+            play_sfx_sound(SFX_SACRIFICE_PET);
+        }
+        else if (is_undead(ptr)) { /* Not demons--no demon corpses */
             if (u.ualign.type != A_CHAOTIC)
                 value += 1;
-        } else if (is_unicorn(ptr)) {
+        }
+        else if (is_unicorn(ptr)) 
+        {
             int unicalign = sgn(ptr->maligntyp);
 
-            if (unicalign == altaralign) {
+            if (unicalign == altaralign) 
+            {
                 /* When same as altar, always a very bad action.
                  */
                 pline("Such an action is an insult to %s!",
@@ -2151,7 +2195,10 @@ dosacrifice()
                          : unicalign ? "law" : "balance");
                 (void) adjattrib(A_WIS, -1, TRUE);
                 value = -5;
-            } else if (u.ualign.type == altaralign) {
+                play_sfx_sound(SFX_SACRIFICE_COALIGNED_UNICORN);
+            }
+            else if (u.ualign.type == altaralign)
+            {
                 /* When different from altar, and altar is same as yours,
                  * it's a very good action.
                  */
@@ -2161,13 +2208,18 @@ dosacrifice()
                     You_feel("you are thoroughly on the right path.");
                 adjalign(5);
                 value += 3;
-            } else if (unicalign == u.ualign.type) {
+                play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
+            }
+            else if (unicalign == u.ualign.type)
+            {
                 /* When sacrificing unicorn of your alignment to altar not of
                  * your alignment, your god gets angry and it's a conversion.
                  */
                 u.ualign.record = -1;
                 value = 1;
-            } else {
+            }
+            else
+            {
                 /* Otherwise, unicorn's alignment is different from yours
                  * and different from the altar's.  It's an ordinary (well,
                  * with a bonus) sacrifice on a cross-aligned altar.
@@ -2177,8 +2229,10 @@ dosacrifice()
         }
     } /* corpse */
 
-    if (otmp->otyp == AMULET_OF_YENDOR) {
-        if (!highaltar) {
+    if (otmp->otyp == AMULET_OF_YENDOR)
+    {
+        if (!highaltar)
+        {
         too_soon:
             if (altaralign == A_NONE && Inhell)
                 /* hero has left Moloch's Sanctum so is in the process
@@ -2195,7 +2249,9 @@ dosacrifice()
                                /* else headed towards celestial disgrace */
                                : "ashamed");
             return 1;
-        } else {
+        }
+        else
+        {
             /* The final Test.  Did you win? */
             if (uamul == otmp)
                 Amulet_off();
@@ -2205,7 +2261,8 @@ dosacrifice()
             else
                 useupf(otmp, 1L);
             You("offer the Amulet of Yendor to %s...", a_gname());
-            if (altaralign == A_NONE) {
+            if (altaralign == A_NONE)
+            {
                 /* Moloch's high altar */
                 if (u.ualign.record > -99)
                     u.ualign.record = -99;
@@ -2222,7 +2279,9 @@ dosacrifice()
                 /* declined to die in wizard or explore mode */
                 pline(cloud_of_smoke, hcolor(NH_BLACK));
                 done(ESCAPED);
-            } else if (u.ualign.type != altaralign) {
+            } 
+            else if (u.ualign.type != altaralign)
+            {
                 /* And the opposing team picks you up and
                    carries you off on their shoulders */
                 adjalign(-99);
@@ -2232,7 +2291,9 @@ dosacrifice()
                 pline("Fortunately, %s permits you to live...", a_gname());
                 pline(cloud_of_smoke, hcolor(NH_ORANGE));
                 done(ESCAPED);
-            } else { /* super big win */
+            } 
+            else
+            { /* super big win */
                 adjalign(10);
                 u.uachieve.ascended = 1;
                 pline(
@@ -2249,17 +2310,24 @@ dosacrifice()
     } /* real Amulet */
 
 	int luck_change = 0;
-    if (otmp->otyp == FAKE_AMULET_OF_YENDOR) {
+    if (otmp->otyp == FAKE_AMULET_OF_YENDOR)
+    {
         if (!highaltar && !otmp->known)
             goto too_soon;
+
+        play_sfx_sound(SFX_ALTAR_THUNDERCLAP);
         You_hear("a nearby thunderclap.");
-        if (!otmp->known) {
+
+        if (!otmp->known)
+        {
             You("realize you have made a %s.",
                 Hallucination ? "boo-boo" : "mistake");
             otmp->known = TRUE;
             change_luck(-1, TRUE);
             return 1;
-        } else {
+        } 
+        else 
+        {
             /* don't you dare try to fool the gods */
             if (Deaf)
                 pline("Oh, no."); /* didn't hear thunderclap */
@@ -2270,7 +2338,8 @@ dosacrifice()
         }
     } /* fake Amulet */
 
-    if (value == 0) {
+    if (value == 0) 
+    {
 		if (luck_change)
 			change_luck(luck_change, TRUE);
 		else
@@ -2278,46 +2347,58 @@ dosacrifice()
         return 1;
     }
 
-    if (altaralign != u.ualign.type && highaltar) {
+    if (altaralign != u.ualign.type && highaltar) 
+    {
     desecrate_high_altar:
         /*
          * REAL BAD NEWS!!! High altars cannot be converted.  Even an attempt
          * gets the god who owns it truly pissed off.
          */
+        play_sfx_sound(SFX_ALTAR_CHARGED_AIR);
         You_feel("the air around you grow charged...");
         pline("Suddenly, you realize that %s has noticed you...", a_gname());
         godvoice(altaralign,
                  "So, mortal!  You dare desecrate my High Temple!");
         /* Throw everything we have at the player */
         god_zaps_you(altaralign);
-    } else if (value
-               < 0) { /* I don't think the gods are gonna like this... */
+    }
+    else if (value < 0) 
+    { /* I don't think the gods are gonna like this... */
         gods_upset(altaralign);
-    } else {
+    }
+    else
+    {
         int saved_anger = u.ugangr;
         int saved_cnt = u.uprayer_timeout;
         int saved_luck = u.uluck;
 
         /* Sacrificing at an altar of a different alignment */
-        if (u.ualign.type != altaralign) {
+        if (u.ualign.type != altaralign) 
+        {
             /* Is this a conversion ? */
             /* An unaligned altar in Gehennom will always elicit rejection. */
-            if (ugod_is_angry() || (altaralign == A_NONE && Inhell)) {
+            if (ugod_is_angry() || (altaralign == A_NONE && Inhell)) 
+            {
                 if (u.ualignbase[A_CURRENT] == u.ualignbase[A_ORIGINAL]
-                    && altaralign != A_NONE) {
+                    && altaralign != A_NONE) 
+                {
                     You("have a strong feeling that %s is angry...",
                         u_gname());
                     consume_offering(otmp);
                     pline("%s accepts your allegiance.", a_gname());
+                    play_sfx_sound(SFX_ALTAR_ANGRY_ACCEPTS_SACRIFICE);
 
                     uchangealign(altaralign, 0);
                     /* Beware, Conversion is costly */
 					luck_change += -3;
                     u.uprayer_timeout += Role_if(PM_PRIEST) ? 150 : 300;
-                } else {
+                } 
+                else 
+                {
                     u.ugangr += 3;
                     adjalign(-5);
                     pline("%s rejects your sacrifice!", a_gname());
+                    play_sfx_sound(SFX_ALTAR_ANGRY_REJECTS_SACRIFICE);
                     godvoice(altaralign, "Suffer, infidel!");
 					luck_change += -5;
                     (void) adjattrib(A_WIS, -2, TRUE);
@@ -2326,12 +2407,15 @@ dosacrifice()
                 }
 				change_luck(luck_change, TRUE);
                 return 1;
-            } else {
+            }
+            else 
+            {
                 consume_offering(otmp);
-                You("sense a conflict between %s and %s.", u_gname(),
-                    a_gname());
-                if (rn2(8 + u.ulevel) > 5) {
+                You("sense a conflict between %s and %s.", u_gname(), a_gname());
+                if (rn2(8 + u.ulevel) > 5)
+                {
                     struct monst *pri;
+                    play_sfx_sound(SFX_ALTAR_POWER_INCREASE);
                     You_feel("the power of %s increase.", u_gname());
                     exercise(A_WIS, TRUE);
 					luck_change += 1;
@@ -2357,7 +2441,10 @@ dosacrifice()
                     if ((pri = findpriest(temple_occupied(u.urooms)))
                         && !p_coaligned(pri))
                         angry_priest();
-                } else {
+                }
+                else
+                {
+                    play_sfx_sound(SFX_ALTAR_POWER_DECREASE);
                     pline("Unluckily, you feel the power of %s decrease.",
                           u_gname());
                     luck_change += -1;
@@ -2376,19 +2463,25 @@ dosacrifice()
 		boolean bless_savestone = FALSE;
 
         /* OK, you get brownie points. */
-        if (u.ugangr) {
+        if (u.ugangr) 
+        {
             u.ugangr -= ((value * (u.ualign.type == A_CHAOTIC ? 2 : 3))
                          / MAXVALUE);
             if (u.ugangr < 0)
                 u.ugangr = 0;
-            if (u.ugangr != saved_anger) {
-                if (u.ugangr) {
+            if (u.ugangr != saved_anger)
+            {
+                play_sfx_sound(SFX_ALTAR_GOD_MOLLIFIED);
+                if (u.ugangr)
+                {
                     pline("%s seems %s.", u_gname(),
                           Hallucination ? "groovy" : "slightly mollified");
 
                     if ((int) u.uluck < 0)
 						luck_change += 1;
-                } else {
+                } 
+                else
+                {
                     pline("%s seems %s.", u_gname(),
                           Hallucination ? "cosmic (not a new fact)"
                                         : "mollified");
@@ -2396,18 +2489,24 @@ dosacrifice()
                     if ((int) u.uluck < 0)
                         u.uluck = 0;
                 }
-            } else { /* not satisfied yet */
+            } 
+            else 
+            { /* not satisfied yet */
+                play_sfx_sound(SFX_ALTAR_INADEQUACY);
                 if (Hallucination)
                     pline_The("gods seem tall.");
                 else
                     You("have a feeling of inadequacy.");
             }
-        } else if (ugod_is_angry()) {
+        }
+        else if (ugod_is_angry()) 
+        {
             if (value > MAXVALUE)
                 value = MAXVALUE;
             if (value > -u.ualign.record)
                 value = -u.ualign.record;
             adjalign(value);
+            play_sfx_sound(SFX_ALTAR_ABSOLVED);
             You_feel("partially absolved.");
         }
 		else if (u.uprayer_timeout > 0)
@@ -2418,15 +2517,21 @@ dosacrifice()
                             / MAXVALUE);
             if (u.uprayer_timeout < 0)
                 u.uprayer_timeout = 0;
-            if (u.uprayer_timeout != saved_cnt) {
-                if (u.uprayer_timeout) {
+            if (u.uprayer_timeout != saved_cnt) 
+            {
+                if (u.uprayer_timeout) 
+                {
+                    play_sfx_sound(SFX_ALTAR_HOPEFUL_FEELING);
                     if (Hallucination)
                         You("realize that the gods are not like you and I.");
                     else
                         You("have a hopeful feeling.");
                     if ((int) u.uluck < 0)
 						luck_change += 1;
-                } else {
+                } 
+                else 
+                {
+                    play_sfx_sound(SFX_ALTAR_RECONCILIATION);
                     if (Hallucination)
                         pline("Overall, there is a smell of fried onions.");
                     else
@@ -2446,9 +2551,12 @@ dosacrifice()
             /* The player can gain an artifact */
             /* The chance goes down as the number of artifacts goes up */
             if (u.ulevel > 2 && u.uluck >= 0
-                && !rn2(10 + (2 * u.ugifts * nartifacts))) {
+                && !rn2(10 + (2 * u.ugifts * nartifacts))) 
+            {
                 otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
-                if (otmp) {
+                if (otmp)
+                {
+                    play_sfx_sound(SFX_ALTAR_GIFT);
                     if (otmp->enchantment < 0)
                         otmp->enchantment = 0;
                     if (otmp->cursed)
@@ -2482,7 +2590,8 @@ dosacrifice()
                     exercise(A_WIS, TRUE);
                     /* make sure we can use this weapon */
                     unrestrict_weapon_skill(weapon_skill_type(otmp));
-                    if (!Hallucination && !Blind) {
+                    if (!Hallucination && !Blind) 
+                    {
                         otmp->dknown = 1;
 						otmp->nknown = 1;
 						makeknown(otmp->otyp);
@@ -2501,6 +2610,7 @@ dosacrifice()
 
 			if (luck_change) //u.uluck != saved_luck) 
 			{
+                play_sfx_sound(SFX_ALTAR_FOUR_LEAF_CLOVER);
                 if (Blind)
                     You("think %s brushed your %s.", something,
                         body_part(FOOT));
@@ -2518,7 +2628,8 @@ dosacrifice()
 			{
 				if (is_obj_special_praying_item(otmp) && !otmp->blessed)
 				{
-					if(!Blind)
+                    play_sfx_sound(SFX_AURA_GLOW);
+                    if(!Blind)
 						pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
 					bless(otmp);
 					otmp->bknown = 1;
