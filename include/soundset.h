@@ -136,6 +136,8 @@ enum ghsound_types {
 	GHSOUND_AURA_GLOW,
 	GHSOUND_ALTAR_BURST_OF_FLAME,
 	GHSOUND_ALTAR_OFFERING_VANISH,
+	GHSOUND_DOG_YELP,
+	GHSOUND_DOG_WARN_CURSED,
 	MAX_GHSOUNDS
 };
 
@@ -440,51 +442,15 @@ enum object_soundset_types {
 extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
 
 
-/* PLAYER SOUNDSETS */
-enum player_sound_types {
-	PLAYER_SOUND_TYPE_AMBIENT = 0,
-	PLAYER_SOUND_TYPE_COUGH,
-	PLAYER_SOUND_TYPE_OUCH,
-	PLAYER_SOUND_TYPE_SEARCH,
-	PLAYER_SOUND_TYPE_SEARCH_FOUND_SOMETHING,
-	PLAYER_SOUND_TYPE_WAIT,
-	PLAYER_SOUND_TYPE_PUSH_EFFORT,
-	PLAYER_SOUND_TYPE_DEATH,
-	MAX_PLAYER_SOUND_TYPES
-};
-
-enum player_attack_soundset_types {
-	PLAYER_ATTACK_SOUNDSET_BAREHANDED = 0,
-	PLAYER_ATTACK_SOUNDSET_BAREFOOTED,
-	MAX_PLAYER_ATTACK_SOUNDSETS
-};
-
-struct player_soundset_definition {
-	char* soundset_name;
-
-	/* General */
-	struct ghsound_info sounds[MAX_PLAYER_SOUND_TYPES];
-	enum soundsource_ambient_subtypes ambient_subtype;
-
-	/* Bare-handed and kick soundsets */
-	enum object_soundset_types attack_soundsets[MAX_PLAYER_ATTACK_SOUNDSETS];
-};
-
-enum player_soundset_types {
-	PLAYER_SOUNDSET_NONE = 0,
-	PLAYER_SOUNDSET_GENERAL,
-	PLAYER_SOUNDSET_FEMALE_ELVEN_WIZARD,
-	MAX_PLAYER_SOUNDSETS
-};
-
-extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS];
-
-
 /* MONSTER SOUNDSETS */
 enum monster_sound_types {
 	MONSTER_SOUND_TYPE_AMBIENT = 0,
 	MONSTER_SOUND_TYPE_COUGH,
 	MONSTER_SOUND_TYPE_PUSH_EFFORT,
+	MONSTER_SOUND_TYPE_YELP,
+	MONSTER_SOUND_TYPE_WARN_CURSED,
+	MONSTER_SOUND_TYPE_OUCH,
+	MONSTER_SOUND_TYPE_SEARCH,
 	MONSTER_SOUND_TYPE_DEATH,
 	MAX_MONSTER_SOUND_TYPES
 };
@@ -515,6 +481,36 @@ enum monster_soundset_types {
 };
 
 extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS];
+
+
+
+/* PLAYER SOUNDSETS */
+enum player_attack_soundset_types {
+	PLAYER_ATTACK_SOUNDSET_BAREHANDED = 0,
+	PLAYER_ATTACK_SOUNDSET_BAREFOOTED,
+	MAX_PLAYER_ATTACK_SOUNDSETS
+};
+
+struct player_soundset_definition {
+	char* soundset_name;
+
+	/* Overrides monster-specific values */
+	struct ghsound_info sounds[MAX_MONSTER_SOUND_TYPES];
+	enum soundsource_ambient_subtypes ambient_subtype;
+
+	/* Bare-handed and kick soundsets */
+	enum object_soundset_types attack_soundsets[MAX_PLAYER_ATTACK_SOUNDSETS];
+};
+
+enum player_soundset_types {
+	PLAYER_SOUNDSET_NONE = 0,
+	PLAYER_SOUNDSET_GENERAL,
+	PLAYER_SOUNDSET_FEMALE_ELVEN_WIZARD,
+	MAX_PLAYER_SOUNDSETS
+};
+
+extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS];
+
 
 
 /* LOCATION SOUNDSETS */

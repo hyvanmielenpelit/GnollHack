@@ -1660,6 +1660,7 @@ newdogpos:
 								   ? vobj_at(nix, niy) : 0;
 				const char *what = o ? distant_name(o, doname) : something;
 
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WARN_CURSED);
 				pline("%s %s reluctantly over %s.", noit_Monnam(mtmp),
 					  vtense((char *) 0, locomotion(mtmp->data, "step")), what);
 			}

@@ -544,7 +544,8 @@ register struct monst *mtmp;
         }
     if (yelp_verb)
 	{
-        pline("%s %s!", Monnam(mtmp), vtense((char *) 0, yelp_verb));
+		play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_YELP);
+		pline("%s %s!", Monnam(mtmp), vtense((char *) 0, yelp_verb));
         if (context.run)
             nomul(0);
         wake_nearto(mtmp->mx, mtmp->my, mtmp->data->mlevel * 12);

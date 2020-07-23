@@ -193,6 +193,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Aura Glow", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Burst of Flame", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Vanish", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Yelp", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Warn Cursed", 1.0f },
 };
 
 #undef NoSound

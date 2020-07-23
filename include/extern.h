@@ -2721,7 +2721,7 @@ E enum hit_surface_types FDECL(get_hit_surface_type, (enum hit_surface_source_ty
 E void FDECL(get_hit_location, (enum hit_surface_source_types, ANY_P*, xchar*, xchar*));
 E void FDECL(play_simple_object_sound, (struct obj*, enum object_sound_types));
 E void FDECL(play_object_hit_sound, (struct obj*, enum hit_surface_source_types, ANY_P*, double, enum hmon_atkmode_types));
-E void FDECL(play_simple_player_sound, (enum player_sound_types));
+E void FDECL(play_simple_player_sound, (enum monster_sound_types)); /* somewhat obsolete */
 E void FDECL(play_simple_monster_sound, (struct monst*, enum monster_sound_types));
 E void FDECL(play_monster_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_sound_types));
 E void FDECL(play_monster_weapon_hit_sound, (struct monst*, enum hit_surface_source_types, ANY_P*, int, struct obj*, double, enum hmon_atkmode_types));

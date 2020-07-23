@@ -1138,7 +1138,7 @@ int how;
 
     if (how < PANICKED)
     {
-        play_simple_player_sound(PLAYER_SOUND_TYPE_DEATH);
+        play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
         update_u_action(ACTION_TILE_DEATH);
     }
 
