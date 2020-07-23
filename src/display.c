@@ -988,8 +988,11 @@ xchar x, y;
     }
 
     /* Monster layer */
+    /* Clear out hero memory in the case nothing's found below */
+    levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
+    
     /* draw monster on top if we can sense it */
-    if ((x != u.ux || y != u.uy) && (mon = m_at(x, y)) != 0)
+    if ((mon = m_at(x, y)) != 0)
     {
         /* If hero's memory of an invisible monster is accurate, we want to keep
          * him from detecting the same monster over and over again on each turn.
