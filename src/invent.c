@@ -2165,6 +2165,8 @@ const char* headertext;
                              || !objects[POT_OIL].oc_name_known))
                      || (otmp->oclass == FOOD_CLASS
                          && otyp != CREAM_PIE && otyp != EUCALYPTUS_LEAF)
+                     || (otmp->oclass == MISCELLANEOUS_CLASS
+                         && !is_obj_appliable(otmp))
                      || (otmp->oclass == GEM_CLASS && !is_graystone(otmp))))
              || (!strcmp(word, "invoke")
                  && !otmp->oartifact

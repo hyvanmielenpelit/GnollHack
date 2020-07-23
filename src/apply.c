@@ -34,6 +34,7 @@ STATIC_PTR void FDECL(display_polearm_positions, (int));
 STATIC_DCL int FDECL(use_pole, (struct obj *));
 
 STATIC_DCL int FDECL(use_cream_pie, (struct obj *));
+STATIC_DCL int FDECL(use_watch, (struct obj*));
 STATIC_DCL int FDECL(use_grapple, (struct obj *));
 STATIC_DCL int FDECL(do_break_wand, (struct obj *));
 STATIC_DCL boolean FDECL(figurine_location_checks, (struct obj *,
@@ -4155,6 +4156,18 @@ struct obj *obj;
 }
 
 STATIC_OVL int
+use_watch(obj)
+struct obj* obj;
+{
+    if(midnight())
+        You("check your watch. It is midnight!");
+    else if (night())
+        You("check your watch. It is nighttime!");
+    else
+        You("check your watch. It is daytime.");
+}
+
+STATIC_OVL int
 use_grapple(obj)
 struct obj *obj;
 {
@@ -4565,11 +4578,11 @@ char class_list[];
 {
     register struct obj *otmp;
     int otyp;
-    boolean knowoil, knowtouchstone, addpotions, addstones, addfood;
+    boolean knowoil, knowtouchstone, addpotions, addstones, addfood, addmisc;
 
     knowoil = objects[POT_OIL].oc_name_known;
     knowtouchstone = objects[TOUCHSTONE].oc_name_known;
-    addpotions = addstones = addfood = FALSE;
+    addpotions = addstones = addfood = addmisc = FALSE;
     for (otmp = invent; otmp; otmp = otmp->nobj) {
         otyp = otmp->otyp;
         if (otyp == POT_OIL
@@ -4584,6 +4597,8 @@ char class_list[];
             addstones = TRUE;
         if (otyp == CREAM_PIE || otyp == EUCALYPTUS_LEAF)
             addfood = TRUE;
+        if (otmp->oclass == MISCELLANEOUS_CLASS && is_obj_appliable(otmp))
+            addmisc = TRUE;
     }
 
     class_list[0] = '\0';
@@ -4596,6 +4611,8 @@ char class_list[];
         add_class(class_list, GEM_CLASS);
     if (addfood)
         add_class(class_list, FOOD_CLASS);
+    if (addmisc)
+        add_class(class_list, MISCELLANEOUS_CLASS);
 }
 
 
@@ -4719,7 +4736,10 @@ doapply()
 		case CREAM_PIE:
 			res = use_cream_pie(obj);
 			break;
-		case BULLWHIP:
+        case EXPENSIVE_WATCH:
+            res = use_watch(obj);
+            break;
+        case BULLWHIP:
 			res = use_whip(obj);
 			break;
 		case GRAPPLING_HOOK:
