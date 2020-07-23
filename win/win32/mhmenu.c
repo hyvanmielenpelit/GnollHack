@@ -1195,43 +1195,131 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             int source_height_deducted = 0;
             int applied_tileXScaled = tileXScaled;
             int x_added = 0;
-            if (is_full_size)
+            int enlargement_idx = tile2enlargement[ntile];
+
+            if (enlargement_idx > 0)
             {
-                applied_tileXScaled = (int)((double)TILE_X * (double)MENU_TILE_Y / (double) TILE_Y * monitorScale);
-                x_added = (tileXScaled - applied_tileXScaled) / 2;
+                int enl_height = enlargements[enlargement_idx].height_in_tiles;
+                int enl_width = enlargements[enlargement_idx].width_in_tiles;
+                int enl_x = enl_width == 3 ? 1 :enlargements[enlargement_idx].main_tile_x_coordinate;
+
+                HDC hDCMem = CreateCompatibleDC(tileDC);
+
+                int width = TILE_X * enl_width;
+                int height = TILE_Y * enl_height;
+                t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
+                t_y = TILEBMP_Y(ntile);
+
+                HBITMAP bitmap = CreateCompatibleBitmap(hDCMem, width, height);
+                HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+
+                /* Main tile */
+                StretchBlt(hDCMem, enl_x * TILE_X, TILE_Y * (enl_height - 1), TILE_X, TILE_Y,
+                    tileDC, t_x, t_y, TILE_Y, height, SRCCOPY);
+
+                /* Enlargement tiles */
+                for (int idx = 0; idx < MAX_FRAMES_PER_ENLARGEMENT; idx++)
+                {
+                    if (enl_height == 1 && idx < 3)
+                        continue;
+
+                    if (enl_width == 2 && enl_x == 0 && (idx == 0 || idx == 3))
+                        continue;
+
+                    if (enl_width == 2 && enl_x == 1 && (idx == 2 || idx == 4))
+                        continue;
+
+                    char enltile = enlargements[enlargement_idx].frame2tile[idx];
+                    if (enltile >= 0)
+                    {
+                        int glyph = enltile + enlargements[enlargement_idx].glyph_offset + GLYPH_ENLARGEMENT_OFF;
+                        short etile = glyph2tile[glyph];
+                        t_x = TILEBMP_X(etile) + (flip_tile ? TILE_X - 1 : 0);
+                        t_y = TILEBMP_Y(etile);
+                        int target_x = 0;
+                        int target_y = 0;
+
+                        if (enl_height == 2)
+                        {
+                            target_y = idx < 3 ? 0 : TILE_Y;
+                        }
+
+                        if (enl_width == 2 && enl_x == 0)
+                        {
+                            target_x = idx == 1 ? 0 : TILE_X;
+                        }
+                        else if (enl_width == 2 && enl_x == 1)
+                        {
+                            target_x = idx == 1 ? TILE_X : 0;
+                        }
+                        else if (enl_width == 3)
+                        {
+                            target_x = idx == 0 || idx == 3 ? 0 : idx == 1 ? TILE_X : 2 * TILE_X;
+                        }
+
+                        StretchBlt(hDCMem, target_x, target_y, TILE_X, TILE_Y,
+                                tileDC, t_x, t_y, TILE_X, TILE_Y, SRCCOPY);
+                    }
+                }
+
+                y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
+                x_added = max(0, (tileXScaled - (width * tileYScaled) / height) / 2);
+
+                SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
+                (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x + x_added, y,
+                    (width * tileYScaled) / height, tileYScaled,
+                    hDCMem, 0, 0, width, height, /* Use lower part of the tile only */
+                    TILE_BK_COLOR);
+                //StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
+                SelectObject(hDCMem, oldbmp);
+                DeleteDC(hDCMem);
+                DeleteObject(bitmap);
+                x += tileXScaled;
             }
             else
             {
-                source_top_added = TILE_Y / 2;
-                source_height_deducted = TILE_Y / 2;
-            }
-            t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
+                if (is_full_size)
+                {
+                    applied_tileXScaled = (int)((double)TILE_X * (double)MENU_TILE_Y / (double)TILE_Y * monitorScale);
+                    x_added = (tileXScaled - applied_tileXScaled) / 2;
+                }
+                else
+                {
+                    source_top_added = TILE_Y / 2;
+                    source_height_deducted = TILE_Y / 2;
+                }
+
+                t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
                 //((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X);
-            t_y = TILEBMP_Y(ntile) + source_top_added; /* Use lower part of the tile only */
-                //(ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y;
+                t_y = TILEBMP_Y(ntile) + source_top_added; /* Use lower part of the tile only */
+                    //(ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y;
 
-            y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
+                y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
 
-            SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
-            if (GetNHApp()->bmpMapTiles == GetNHApp()->bmpTiles) 
-            {
-                /* using original GnollHack tiles - apply image transparently */
-                (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x + x_added, y,
-                    applied_tileXScaled, tileYScaled,
-                                          tileDC, t_x, t_y, multiplier * TILE_X, TILE_Y - source_height_deducted, /* Use lower part of the tile only */
-                                          TILE_BK_COLOR);
+                SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
+                if (GetNHApp()->bmpMapTiles == GetNHApp()->bmpTiles)
+                {
+                    /* using original GnollHack tiles - apply image transparently */
+                    (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x + x_added, y,
+                        applied_tileXScaled, tileYScaled,
+                        tileDC, t_x, t_y, multiplier * TILE_X, TILE_Y - source_height_deducted, /* Use lower part of the tile only */
+                        TILE_BK_COLOR);
+                }
+                else
+                {
+                    /* using custom tiles - simple blt */
+                    StretchBlt(lpdis->hDC, x, y, tileXScaled, tileYScaled,
+                        tileDC, t_x, t_y, GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, SRCCOPY);
+                }
+                SelectObject(tileDC, saveBmp);
+                x += tileXScaled;
             }
-            else 
-            {
-                /* using custom tiles - simple blt */
-                StretchBlt(lpdis->hDC, x, y, tileXScaled, tileYScaled, 
-                    tileDC, t_x, t_y, GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, SRCCOPY);
-            }
-            SelectObject(tileDC, saveBmp);
-            x += tileXScaled;
-        } else {
+        } 
+        else 
+        {
             const char *sel_ind;
-            switch (item->count) {
+            switch (item->count) 
+            {
             case -1:
                 sel_ind = "+";
                 break;
@@ -1250,7 +1338,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                      DT_CENTER | DT_VCENTER | DT_SINGLELINE);
             x += tm.tmAveCharWidth;
         }
-    } else {
+    }
+    else 
+    {
         /* no glyph - need to adjust so help window won't look to cramped */
         if (!IS_MAP_ASCII(iflags.wc_map_mode)) 
             x += tileXScaled;
@@ -1265,7 +1355,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     SetRect(&drawRect, x, lpdis->rcItem.top,
             min(x + data->menu.tab_stop_size[0], lpdis->rcItem.right),
             lpdis->rcItem.bottom);
-    for (;;) {
+
+    for (;;)
+    {
         TCHAR wbuf[BUFSZ];
         if (p != NULL)
             *p = '\0'; /* for time being, view tab field as zstring */
@@ -1337,7 +1429,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                      DT_RIGHT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
         }
     }
-    if (item->has_focus) {
+    
+    if (item->has_focus) 
+    {
         /* draw focus rect */
         RECT client_rt;
 
