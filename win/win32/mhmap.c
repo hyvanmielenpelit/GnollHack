@@ -43,6 +43,8 @@ typedef struct mswin_GnollHack_map_window {
     struct layer_info map[COLNO][ROWNO];    /* glyph map */
     boolean mapAnimated[COLNO][ROWNO];      /* animation flag for map */
     boolean mapDirty[COLNO][ROWNO];         /* dirty flag for map */
+    short printedObjectTile[COLNO][ROWNO][MAX_SHOWN_OBJECTS];       /* To check if there are any enlargements */
+    short printedCoverObjectTile[COLNO][ROWNO][MAX_SHOWN_OBJECTS];  /* To check if there are any enlargements */
 
     int mapMode;                /* current map mode */
     boolean bAsciiMode;         /* switch ASCII/tiled mode */
@@ -96,7 +98,7 @@ static void onCreate(HWND hWnd, WPARAM wParam, LPARAM lParam);
 static void nhcoord2display(PNHMapWindow data, int x, int y, LPRECT lpOut);
 static void paint(PNHMapWindow data, int i, int j);
 static void dirtyAll(PNHMapWindow data);
-static void dirty(PNHMapWindow data, int i, int j);
+static void dirty(PNHMapWindow data, int i, int j, boolean usePrinted);
 static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers);
 static void clearAll(PNHMapWindow data);
 static void setDrawOrder(PNHMapWindow data);
@@ -669,7 +671,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         for (int x = 0; x < COLNO; x++)
             for (int y = 0; y < ROWNO; y++) {
                 if(data->mapAnimated[x][y])
-                    dirty(data, x, y);
+                    dirty(data, x, y, FALSE);
             }
 
         boolean asciimode = (data->bAsciiMode || Is_rogue_level(&u.uz));
@@ -699,7 +701,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 else
                     data->cursorOn = !data->cursorOn;
 
-                dirty(data, data->xCur, data->yCur);
+                dirty(data, data->xCur, data->yCur, FALSE);
             }
         }
         break;
@@ -790,8 +792,8 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 //data->cursorOn = TRUE;
             }
 
-            dirty(data, data->xCur, data->yCur);
-            dirty(data, msg_data->x, msg_data->y);
+            dirty(data, data->xCur, data->yCur, FALSE);
+            dirty(data, msg_data->x, msg_data->y, FALSE);
 
             data->xCur = msg_data->x;
             data->yCur = msg_data->y;
@@ -843,11 +845,11 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     case MSNH_MSG_UPDATE_ALL_STATUSES_ON_MAP:
     {
         /* Maybe some data here to identify monsters to be updated  */
-        dirty(data, u.ux, u.uy);
+        dirty(data, u.ux, u.uy, FALSE);
         for (struct monst* mon = fmon; mon; mon = mon->nmon)
         {
             if (canseemon(mon))
-                dirty(data, mon->mx, mon->my);
+                dirty(data, mon->mx, mon->my, FALSE);
         }
         break;
     }
@@ -912,9 +914,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
     boolean issteed = !!(data->map[i][j].layer_flags & LFLAGS_M_RIDDEN);
 
-    if (i == data->xCur && j == data->yCur)
-        i = i;
-    /* Construct object pile, drawn from end to beginning */
+    for (int idx = 0; idx < MAX_SHOWN_OBJECTS; idx++)
+    {
+        data->printedObjectTile[i][j][idx] = -1;
+        data->printedCoverObjectTile[i][j][idx] = -1;
+    }
 
     int enl_i = -1, enl_j = -1;
     int darkening_i = -1, darkening_j = -1;
@@ -1217,6 +1221,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                         else
                             skip_drawing = TRUE;
+                    }
+                    else
+                    {
+                        /* Main tile */
+                        /* Save printed tile for objects so enlargements can be checked later */
+                        if (base_layer == LAYER_OBJECT)
+                        {
+                            data->printedObjectTile[i][j][MAX_SHOWN_OBJECTS - 1 - layer_round] = ntile;
+                        }
+                        else if (base_layer == LAYER_COVER_OBJECT)
+                        {
+                            data->printedCoverObjectTile[i][j][MAX_SHOWN_OBJECTS - 1 - layer_round] = ntile;
+                        }
                     }
 
                     if (!skip_drawing)
@@ -2278,11 +2295,11 @@ static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
         || data->map[i][j].layer_flags != layers.layer_flags || data->map[i][j].damage_displayed != layers.damage_displayed
         )
     {
-        dirty(data, i, j);
+        dirty(data, i, j, TRUE);
 
         data->map[i][j] = layers;
 
-        dirty(data, i, j);
+        dirty(data, i, j, FALSE);
         /*
         data->mapDirty[i][j] = TRUE;
 
@@ -2364,7 +2381,7 @@ static void dirtyAll(PNHMapWindow data)
     InvalidateRect(data->hWnd, NULL, FALSE);
 }
 
-static void dirty(PNHMapWindow data, int x, int y)
+static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
 {
     data->mapDirty[x][y] = TRUE;
 
@@ -2447,32 +2464,46 @@ static void dirty(PNHMapWindow data, int x, int y)
     {
         int layer_rounds = 1;
         struct obj* otmp = (struct obj*)0;
+        short ntile = -1;
         if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
         {
             layer_rounds = MAX_SHOWN_OBJECTS;
-            if(!cansee(x, y) || (data->map[x][y].layer_flags & LFLAGS_SHOWING_MEMORY))
-                otmp = level.locations[x][y].hero_memory_layers.memory_objchn;
-            else
-                otmp = level.objects[x][y];
+            if (!usePrinted)
+            {
+                if (!cansee(x, y) || (data->map[x][y].layer_flags & LFLAGS_SHOWING_MEMORY))
+                    otmp = level.locations[x][y].hero_memory_layers.memory_objchn;
+                else
+                    otmp = level.objects[x][y];
+            }
         }
 
         for (int layer_round = 0; layer_round < layer_rounds; layer_round++)
-        {
-            if (layer_round > 0 && otmp)
-                otmp = otmp->nexthere;
-
+        {            
             int enlarg = 0;
-#if 0
-            if(layer_idx == -1)
-                enlarg = tile2enlargement[tile];
-            else if(layer_idx == -2)
-                enlarg = tile2enlargement[bktile];
-            else 
-#endif 
             if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
             {
-                if(otmp)
-                    enlarg = tile2enlargement[glyph2tile[abs(obj_to_glyph(otmp, rn2_on_display_rng))]];
+                if (usePrinted)
+                {
+                    if (layer_idx == LAYER_OBJECT)
+                    {
+                        ntile = data->printedObjectTile[x][y][layer_round];
+                    }
+                    else if (layer_idx == LAYER_COVER_OBJECT)
+                    {
+                        ntile = data->printedCoverObjectTile[x][y][layer_round];
+                    }
+
+                    if (ntile >= 0)
+                        enlarg = tile2enlargement[ntile]; //[glyph2tile[abs(obj_to_glyph(otmp, rn2_on_display_rng))]];
+                }
+                else
+                {
+                    if (layer_round > 0 && otmp)
+                        otmp = otmp->nexthere;
+
+                    if (otmp)
+                        enlarg = tile2enlargement[glyph2tile[abs(obj_to_glyph(otmp, rn2_on_display_rng))]];
+                }
             }
             else
             {
