@@ -195,6 +195,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Vanish", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Yelp", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Warn Cursed", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Yelp", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Warn Cursed", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Yelp", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Warn Cursed", 1.0f },
 };
 
 #undef NoSound
