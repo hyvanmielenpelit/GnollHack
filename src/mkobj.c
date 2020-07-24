@@ -1569,7 +1569,7 @@ int charge_init_index;
 		charge = rn1(70, 30);
 		break;
 	case CHARGED_LUCK_BLADE:
-		charge = rnd(3) + 1;
+		charge = 2;
 		break;
 	case CHARGED_1D6_6:
 		charge = rnd(6) + 6;
@@ -1673,7 +1673,7 @@ int charge_init_index;
 		charge = 100;
 		break;
 	case CHARGED_LUCK_BLADE:
-		charge = 4;
+		charge = 2;
 		break;
 	case CHARGED_1D6_6:
 		charge = 12;

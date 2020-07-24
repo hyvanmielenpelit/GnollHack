@@ -881,57 +881,70 @@ boolean verbose;
 			}
 			break;
         case RIN_THREE_CHARGES:
-        case RIN_SEVEN_CHARGES:
-        case MACE_OF_THE_UNDERWORLD:
         case SWORD_OF_LUCKINESS:
-			if (obj->recharged > 1)
-			{
-				obj->charges = 0;
-                if (verbose)
-                    pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
-				break;
-			}
-
-			int lim = get_obj_max_charge(obj);
-			if (is_cursed)
-			{
-				strip_charges(obj, verbose);
+            /* Unchargeable */
+            if (is_cursed)
+            {
+                strip_charges(obj, verbose);
                 update_inventory();
                 break;
-			}
-
-			if (obj->charges > lim)
+            }
+            else
 			{
-				obj->charges = 0;
+                goto not_chargable;
+            }
+            break;
+        case RIN_SEVEN_CHARGES:
+        case MACE_OF_THE_UNDERWORLD:
+            if (obj->recharged > 1)
+            {
+                obj->charges = 0;
+                if (verbose)
+                    pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
+                update_inventory();
+                break;
+            }
+
+            int lim = get_obj_max_charge(obj);
+            if (is_cursed)
+            {
+                strip_charges(obj, verbose);
+                update_inventory();
+                break;
+            }
+
+            if (obj->charges > lim)
+            {
+                obj->charges = 0;
                 if (verbose)
                     pline("The glow arounds %s suddenly dims.", yname(obj));
                 update_inventory();
                 break;
-			}
-			else if (obj->charges < lim)
-			{
-				if (is_blessed)
-				{
-					obj->charges = lim;
+            }
+            else if (obj->charges < lim)
+            {
+                if (is_blessed)
+                {
+                    obj->charges = lim;
                     if (verbose)
                         p_glow2(obj, NH_BLUE);
-				}
-				else if (obj->charges < lim)
-				{
-					obj->charges++;
-					if (obj->charges > lim)
-						obj->charges = lim;
+                }
+                else if (obj->charges < lim)
+                {
+                    obj->charges++;
+                    if (obj->charges > lim)
+                        obj->charges = lim;
                     if (verbose)
                         p_glow1(obj);
-				}
+                }
                 update_inventory();
             }
-			else
-			{
-				goto not_chargable;
-			}
+            else
+            {
+                goto not_chargable;
+            }
 
-			break;
+            break;
         case GRAIL_OF_HEALING:
             if (objects[obj->otyp].oc_charged == CHARGED_HOLY_GRAIL)
             {
