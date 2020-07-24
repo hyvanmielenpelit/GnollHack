@@ -1201,7 +1201,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             {
                 int enl_height = enlargements[enlargement_idx].height_in_tiles;
                 int enl_width = enlargements[enlargement_idx].width_in_tiles;
-                int enl_x = enl_width == 3 ? 1 :enlargements[enlargement_idx].main_tile_x_coordinate;
+                int enl_x = enl_width == 3 ? 1 : enlargements[enlargement_idx].main_tile_x_coordinate;
 
                 HDC hDCMem = CreateCompatibleDC(tileDC);
 
@@ -1210,12 +1210,26 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
                 t_y = TILEBMP_Y(ntile);
 
-                HBITMAP bitmap = CreateCompatibleBitmap(hDCMem, width, height);
+                unsigned char* lpBitmapBits;
+                BITMAPINFO bi;
+                ZeroMemory(&bi, sizeof(BITMAPINFO));
+                bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                bi.bmiHeader.biWidth = width;
+                bi.bmiHeader.biHeight = height;
+                bi.bmiHeader.biPlanes = 1;
+                bi.bmiHeader.biBitCount = 32;
+
+                HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                //HBITMAP bitmap = CreateCompatibleBitmap(hDCMem, width, height);
                 HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
 
                 /* Main tile */
-                StretchBlt(hDCMem, enl_x * TILE_X, TILE_Y * (enl_height - 1), TILE_X, TILE_Y,
-                    tileDC, t_x, t_y, TILE_Y, height, SRCCOPY);
+                if(flip_tile)
+                    StretchBlt(hDCMem, (enl_width - 1 - enl_x) * TILE_X, TILE_Y * (enl_height - 1), TILE_X, TILE_Y,
+                        tileDC, t_x, t_y, -TILE_X, TILE_Y, SRCCOPY);
+                else
+                    StretchBlt(hDCMem, enl_x* TILE_X, TILE_Y* (enl_height - 1), TILE_X, TILE_Y,
+                        tileDC, t_x, t_y, TILE_X, TILE_Y, SRCCOPY);
 
                 /* Enlargement tiles */
                 for (int idx = 0; idx < MAX_FRAMES_PER_ENLARGEMENT; idx++)
@@ -1257,20 +1271,32 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             target_x = idx == 0 || idx == 3 ? 0 : idx == 1 ? TILE_X : 2 * TILE_X;
                         }
 
-                        StretchBlt(hDCMem, target_x, target_y, TILE_X, TILE_Y,
+                        if (flip_tile)
+                            StretchBlt(hDCMem, (enl_width - 1) * TILE_X - target_x, target_y, TILE_X, TILE_Y,
+                                tileDC, t_x, t_y, -TILE_X, TILE_Y, SRCCOPY);
+                        else
+                            StretchBlt(hDCMem, target_x, target_y, TILE_X, TILE_Y,
                                 tileDC, t_x, t_y, TILE_X, TILE_Y, SRCCOPY);
                     }
                 }
 
-                y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tileYScaled) / 2;
-                x_added = max(0, (tileXScaled - (width * tileYScaled) / height) / 2);
+                int applied_height = tileYScaled;
+                int applied_width = (width * applied_height) / height;
+                if (applied_width > tileXScaled)
+                {
+                    applied_height = (tileYScaled * tileXScaled) / applied_width;
+                    applied_width = tileXScaled;
+                }
+
+                y = (lpdis->rcItem.bottom + lpdis->rcItem.top - applied_height) / 2;
+                x_added = max(0, (tileXScaled - applied_width) / 2);
 
                 SetStretchBltMode(lpdis->hDC, COLORONCOLOR);
                 (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x + x_added, y,
-                    (width * tileYScaled) / height, tileYScaled,
-                    hDCMem, 0, 0, width, height, /* Use lower part of the tile only */
+                    applied_width, applied_height,
+                    hDCMem, 0, 0, width, height,
                     TILE_BK_COLOR);
-                //StretchBlt(data->backBufferDC, rect->left, rect->top, width, height, hDCMem, 0, 0, width, height, SRCCOPY);
+
                 SelectObject(hDCMem, oldbmp);
                 DeleteDC(hDCMem);
                 DeleteObject(bitmap);
