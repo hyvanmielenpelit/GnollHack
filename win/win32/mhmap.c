@@ -1195,7 +1195,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
 
                     boolean skip_drawing = FALSE;
-                    boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM);
+                    boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(glyph); /* hallucinated statue */
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
@@ -2502,7 +2502,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                         otmp = otmp->nexthere;
 
                     if (otmp)
-                        enlarg = tile2enlargement[glyph2tile[abs(obj_to_glyph(otmp, rn2_on_display_rng))]];
+                        enlarg = tile2enlargement[glyph2tile[abs(otmp->glyph)]]; // obj_to_glyph(otmp, rn2_on_display_rng))]];
                 }
             }
             else
