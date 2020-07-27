@@ -882,8 +882,24 @@ register struct obj* otmp;
     add_to_memoryobjs(dummy);
 
     /* Add to nexthere memory */
-    dummy->nexthere = level.locations[x][y].hero_memory_layers.memory_objchn;
-    level.locations[x][y].hero_memory_layers.memory_objchn = dummy;
+    if (!level.locations[x][y].hero_memory_layers.memory_objchn)
+    {
+        level.locations[x][y].hero_memory_layers.memory_objchn = dummy;
+    }
+    else
+    {
+        /* Do for to preserve order */
+        // dummy->nexthere = level.locations[x][y].hero_memory_layers.memory_objchn;
+        // level.locations[x][y].hero_memory_layers.memory_objchn = dummy;
+        for (struct obj* last_obj = level.locations[x][y].hero_memory_layers.memory_objchn; last_obj; last_obj = last_obj->nexthere)
+        {
+            if (last_obj->nexthere == (struct obj*)0)
+            {
+                last_obj->nexthere = dummy;
+                break;
+            }
+        }
+    }
 
     return dummy;
 }
