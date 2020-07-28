@@ -17,8 +17,9 @@ static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
 
 static NEARDATA const long takeoff_order[] = {
     WORN_BLINDF, W_WEP,      WORN_SHIELD, WORN_GLOVES, LEFT_RING,
-    RIGHT_RING,  WORN_CLOAK, WORN_HELMET, WORN_AMUL,   WORN_ARMOR,
-    WORN_SHIRT,  WORN_BOOTS, W_SWAPWEP,   W_QUIVER,    0L
+    RIGHT_RING,  W_MISC,     W_MISC2,     W_MISC3,     W_MISC4,      W_MISC5,  
+    WORN_BRACERS, WORN_CLOAK, WORN_HELMET, WORN_AMUL,   WORN_ROBE,   WORN_ARMOR,
+    WORN_SHIRT,  WORN_BOOTS, W_SWAPWEP,   W_SWAPWEP2,   W_QUIVER,    0L
 };
 
 STATIC_DCL void FDECL(on_msg, (struct obj *));
@@ -2546,8 +2547,8 @@ doddoremarm()
         You("continue %s.", context.takeoff.disrobing);
         set_occupation(take_off, context.takeoff.disrobing, occsoundset, occtyp, OCCUPATION_SOUND_TYPE_RESUME, 0);
         return 0;
-    } else if (!uwep && !uswapwep && !uquiver && !uamul && !ublindf && !uleft
-               && !uright && !wearing_armor()) {
+    } else if (!uwep && !uarms && !uswapwep && !uswapwep2 && !uquiver && !uamul && !ublindf && !uleft
+               && !uright && !umisc && !umisc2 && !umisc3 && !umisc4 && !umisc5 && !wearing_armor()) {
         You("are not wearing anything.");
         return 0;
     }
