@@ -16,10 +16,10 @@ static NEARDATA const char c_armor[] = "armor", c_suit[] = "suit",
                            c_axe[] = "axe", c_that_[] = "that";
 
 static NEARDATA const long takeoff_order[] = {
-    WORN_BLINDF, W_WEP,      WORN_SHIELD, WORN_GLOVES, LEFT_RING,
-    RIGHT_RING,  W_MISC,     W_MISC2,     W_MISC3,     W_MISC4,      W_MISC5,  
+    WORN_BLINDF,  W_WEP,      WORN_SHIELD, WORN_GLOVES, LEFT_RING,
+    RIGHT_RING,   W_MISC,     W_MISC2,     W_MISC3,     W_MISC4,      W_MISC5,  
     WORN_BRACERS, WORN_CLOAK, WORN_HELMET, WORN_AMUL,   WORN_ROBE,   WORN_ARMOR,
-    WORN_SHIRT,  WORN_BOOTS, W_SWAPWEP,   W_SWAPWEP2,   W_QUIVER,    0L
+    WORN_SHIRT,   WORN_BOOTS, W_SWAPWEP,   W_SWAPWEP2,   W_QUIVER,    0L
 };
 
 STATIC_DCL void FDECL(on_msg, (struct obj *));
