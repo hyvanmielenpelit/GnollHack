@@ -200,6 +200,21 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Warn Cursed", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Yelp", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Warn Cursed", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Pray", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Pleased", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Fix All Troubles", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Fix One Trouble", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Repair", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Healing", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Uncurse", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Gift", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Crowning", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Spellbook", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Bless Water", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Curse Water", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Pray/Shimmering Light", 1.0f },
 };
 
 #undef NoSound

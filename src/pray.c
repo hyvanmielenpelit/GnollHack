@@ -853,6 +853,8 @@ gcrownu()
     HPoison_resistance |= FROM_ACQUIRED;
 	HFear_resistance |= FROM_ACQUIRED;
 
+    play_sfx_sound(SFX_PRAY_CROWNING);
+
     godvoice(u.ualign.type, (char *) 0);
 
     obj = ok_wep(uwep) ? uwep : 0;
@@ -1487,6 +1489,7 @@ aligntyp g_align;
     int trouble = in_trouble(); /* what's your worst difficulty? */
     int pat_on_head = 0, kick_on_butt;
 
+    play_sfx_sound(SFX_PRAY_PLEASED);
     You_feel("that %s is %s.", align_gname(g_align),
              (u.ualign.record >= DEVOUT)
                  ? Hallucination ? "pleased as punch" : "well-pleased"
@@ -1509,7 +1512,8 @@ aligntyp g_align;
 		{
 			if (is_obj_special_praying_item(otmp) && !otmp->blessed)
 			{
-				if(!Blind)
+                play_sfx_sound(SFX_AURA_GLOW);
+                if(!Blind)
 					pline("%s with %s aura.", Yobjnam2(otmp, "softly glow"), an(hcolor(NH_LIGHT_BLUE)));
 				bless(otmp);
 				otmp->bknown = 1;
@@ -1564,6 +1568,7 @@ aligntyp g_align;
             pat_on_head = 1;
             /*FALLTHRU*/
         case 4:
+            play_sfx_sound(SFX_PRAY_FIX_ALL_TROUBLES);
             do
                 fix_worst_trouble(trouble);
             while ((trouble = in_trouble()) != 0);
@@ -1573,11 +1578,13 @@ aligntyp g_align;
             fix_worst_trouble(trouble);
         case 2:
             /* arbitrary number of tries */
+            play_sfx_sound(SFX_PRAY_FIX_ALL_TROUBLES);
             while ((trouble = in_trouble()) > 0 && (++tryct < 10))
                 fix_worst_trouble(trouble);
             break;
 
         case 1:
+            play_sfx_sound(SFX_PRAY_FIX_ONE_TROUBLE);
             if (trouble > 0)
                 fix_worst_trouble(trouble);
         case 0:
@@ -1597,6 +1604,7 @@ aligntyp g_align;
                          || is_weptool(uwep)))
 			{
                 char repair_buf[BUFSZ];
+                play_sfx_sound(SFX_PRAY_REPAIR);
 
                 *repair_buf = '\0';
                 if (uwep->oeroded || uwep->oeroded2)
@@ -1668,6 +1676,7 @@ aligntyp g_align;
             }
             /*FALLTHRU*/
         case 2:
+            play_sfx_sound(SFX_PRAY_HEALING);
             if (!Blind)
                 You("are surrounded by %s glow.", an(hcolor(NH_GOLDEN)));
             /* if any levels have been lost (and not yet regained),
@@ -1707,6 +1716,7 @@ aligntyp g_align;
             register struct obj *otmp;
             int any = 0;
 
+            play_sfx_sound(SFX_PRAY_UNCURSE);
             if (Blind)
                 You_feel("the power of %s.", u_gname());
             else
@@ -1733,6 +1743,7 @@ aligntyp g_align;
             static NEARDATA const char msg[] =
                 "\"and thus I grant thee the gift of %s!\"";
 
+            play_sfx_sound(SFX_PRAY_GIFT);
             godvoice(u.ualign.type,
                      "Thou hast pleased me with thy progress,");
             if (!(HTelepat & INTRINSIC)) {
@@ -1794,6 +1805,7 @@ crown_here:
                 otmp->otyp = rnd_class(bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
             }
             bless(otmp);
+            play_sfx_sound(SFX_PRAY_SPELLBOOK);
             at_your_feet("A spellbook");
             place_object(otmp, u.ux, u.uy);
             newsym(u.ux, u.uy);
@@ -1845,9 +1857,12 @@ boolean bless_water;
             other = TRUE;
     }
 
-    if (!Blind && changed)
+    if (changed)
     {
-        pline("%s potion%s on the altar glow%s %s for a moment.",
+        play_sfx_sound(bless_water ? SFX_PRAY_BLESS_WATER : SFX_PRAY_CURSE_WATER);
+
+        if (!Blind)
+            pline("%s potion%s on the altar glow%s %s for a moment.",
               ((other && changed > 1L) ? "Some of the"
                                        : (other ? "One of the" : "The")),
               ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
@@ -1914,14 +1929,17 @@ boolean bless_stuff;
         }
     }
 
-    if (!Blind && changed)
+    if (changed)
     {
-        pline("%s %s%s on the altar glow%s %s for a moment.",
-            ((other && changed > 1L) ? "Some of the"
-                : (other ? "One of the" : "The")),
-            use_items || !strcmp(buf, "") ? "religious item" : buf,
-            ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
-            (bless_stuff ? hcolor(NH_LIGHT_BLUE) : hcolor(NH_BLACK)));
+        play_sfx_sound(bless_stuff ? SFX_PRAY_BLESS_WATER : SFX_PRAY_CURSE_WATER);
+
+        if(!Blind)
+            pline("%s %s%s on the altar glow%s %s for a moment.",
+                ((other && changed > 1L) ? "Some of the"
+                    : (other ? "One of the" : "The")),
+                use_items || !strcmp(buf, "") ? "religious item" : buf,
+                ((other || changed > 1L) ? "s" : ""), (changed > 1L ? "" : "s"),
+                (bless_stuff ? hcolor(NH_LIGHT_BLUE) : hcolor(NH_BLACK)));
     }
 
     return (boolean)(changed > 0L);
@@ -2722,11 +2740,13 @@ dopray()
     multi_reason = "praying";
     nomovemsg = "You finish your prayer.";
     afternmv = prayer_done;
+    play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_PRAY);
 
     if (p_type == 3 && !Inhell) {
         /* if you've been true to your god you can't die while you pray */
         if (!Blind)
             You("are surrounded by a shimmering light.");
+        play_sfx_sound(SFX_PRAY_SHIMMERING_LIGHT);
         u.uinvulnerable = TRUE;
     }
 
@@ -2757,6 +2777,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 
     if (Inhell) 
     {
+        play_sfx_sound(SFX_PRAY_FAIL);
         pline("Since you are in Gehennom, %s won't help you.",
               align_gname(alignment));
         /* haltingly aligned is least likely to anger */
@@ -2767,6 +2788,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 
     if (p_type == 0)
     {
+        play_sfx_sound(SFX_PRAY_FAIL);
         if (on_altar() && u.ualign.type != alignment)
             (void)altar_prayer(FALSE);
 
@@ -2776,6 +2798,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
 	} 
     else if (p_type == 1) 
     {
+        play_sfx_sound(SFX_PRAY_FAIL);
         if (on_altar() && u.ualign.type != alignment)
             (void) altar_prayer(FALSE);
         angrygods(u.ualign.type); /* naughty */
@@ -2784,6 +2807,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
     {
         if (altar_prayer(FALSE))
         {
+            play_sfx_sound(SFX_PRAY_FAIL);
             /* attempted water prayer on a non-coaligned altar */
             u.uprayer_timeout += Role_if(PM_PRIEST) ? rnz(125) : rnz(250);
             gods_upset(u.ualign.type);

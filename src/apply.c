@@ -4165,6 +4165,8 @@ struct obj* obj;
         You("check your watch. It is nighttime!");
     else
         You("check your watch. It is daytime.");
+
+    return 0;
 }
 
 STATIC_OVL int
