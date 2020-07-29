@@ -153,7 +153,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
         OBJECT_RAY_SOUNDSET_NONE
     },
     {
-        "general",
+        "generic",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_STAFF_SWING, 1.0f},
@@ -1121,7 +1121,65 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
         OBJECT_RAY_SOUNDSET_NONE
-    }
+    },
+    {
+        "camera",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STAFF_SWING, 1.0f},
+            {GHSOUND_STAFF_HIT, 1.0f},
+            {GHSOUND_GENERIC_ITEM_THROW, 1.0f},
+            {GHSOUND_BOW_FIRE, 1.0f},
+            {GHSOUND_ARROW_HIT, 1.0f},
+
+            {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
+            {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_DISCARD_GENERIC, 1.0f},
+            {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+
+            {GHSOUND_PLAYER_FOOTSTEPS_NORMAL, 1.0f},
+            {GHSOUND_GENERIC_FLY, 1.0f},
+            {GHSOUND_GENERIC_LEVITATE, 1.0f},
+            {GHSOUND_NONE, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL,
+        {
+            OCCUPATION_SOUNDSET_NONE,
+            OCCUPATION_SOUNDSET_GENERIC_EATING,
+            OCCUPATION_SOUNDSET_GENERIC_OPENING_TIN,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_ROCK,
+            OCCUPATION_SOUNDSET_GENERIC_SETTING_TRAP,
+            OCCUPATION_SOUNDSET_GENERIC_WIPING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_TAKING_OFF,
+            OCCUPATION_SOUNDSET_GENERIC_PICKING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_FORCING_LOCK,
+            OCCUPATION_SOUNDSET_GENERIC_STUDYING,
+            OCCUPATION_SOUNDSET_GENERIC_DIGGING_GROUND,
+            OCCUPATION_SOUNDSET_GENERIC_SWINGING,
+            OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
+            OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
+        },
+        OBJECT_RAY_SOUNDSET_CAMERA
+    },
 };
 
 NEARDATA struct occupation_soundset_definition occupation_soundset_definitions[MAX_OCCUPATION_SOUNDSETS] =
@@ -1865,6 +1923,19 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
             {GHSOUND_RAY_ELEC_CREATE, 100.0f},
             {GHSOUND_RAY_ELEC_DESTROY, 10.0f},
             {GHSOUND_RAY_ELEC_BOUNCE, 100.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "camera",
+        {
+            {GHSOUND_CAMERA_FLASH_AMBIENT, 100.0f},
+            {GHSOUND_CAMERA_FLASH_CREATE, 1.0f},
+            {GHSOUND_NONE, 10.0f},
+            {GHSOUND_NONE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},

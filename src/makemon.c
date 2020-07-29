@@ -2443,6 +2443,8 @@ int level_limit;
             set_apparxy(mtmp);
         }
     }
+
+#if 0
     if (is_dprince(ptr) && ptr->msound == MS_BRIBE) 
 	{
 		mtmp->mpeaceful = 1;
@@ -2453,6 +2455,8 @@ int level_limit;
 			)
 			mtmp->mpeaceful = mtmp->mtame = FALSE;
     }
+#endif
+
 #ifndef DCC30_BUG
     if (mndx == PM_LONG_WORM && (mtmp->wormno = get_wormno()) != 0)
 #else

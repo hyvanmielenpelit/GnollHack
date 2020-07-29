@@ -2150,6 +2150,21 @@ int skill;
 }
 
 void
+add_weapon_skill_maximum_by_one(skill)
+int skill;
+{
+    if (skill < P_NUM_SKILLS && P_MAX_SKILL_LEVEL(skill) < P_EXPERT)
+    {
+        if (P_SKILL_LEVEL(skill) < P_UNSKILLED)
+        {
+            P_SKILL_LEVEL(skill) = P_UNSKILLED;
+            P_ADVANCE(skill) = 0;
+        }
+        P_MAX_SKILL_LEVEL(skill) = min(P_EXPERT, max(P_MAX_SKILL_LEVEL(skill) + 1, P_BASIC));
+    }
+}
+
+void
 use_skill(skill, degree)
 int skill;
 int degree;

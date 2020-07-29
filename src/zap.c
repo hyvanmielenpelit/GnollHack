@@ -6118,7 +6118,8 @@ boolean stop_at_first_hit_object;
     int bhitlimit = hit_only_one == 1 ? 1 : hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 0;
 
     if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
-        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_CREATE, u.ux, u.uy);
+        if(obj)
+            play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_CREATE, u.ux, u.uy);
 
     if (weapon == KICKED_WEAPON || weapon == GOLF_SWING)
 	{
@@ -6189,6 +6190,9 @@ boolean stop_at_first_hit_object;
 	}
 
 
+    if(obj)
+        start_ambient_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, bhitpos.x, bhitpos.y);
+
 	boolean beam_cleared_off = FALSE;
     boolean drawbridge_hit = FALSE;
 
@@ -6201,6 +6205,9 @@ boolean stop_at_first_hit_object;
         x = bhitpos.x;
         y = bhitpos.y;
 
+        if (obj)
+            update_ambient_ray_sound_to_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, bhitpos.x, bhitpos.y);
+
         if (!isok(x, y))
 		{
             bhitpos.x -= ddx;
@@ -6212,6 +6219,8 @@ boolean stop_at_first_hit_object;
             && (mtmp = shkcatch(obj, x, y)) != 0) 
 		{
             tmp_at(DISP_END, 0);
+            if (obj)
+                stop_ambient_ray_sound(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset);
             return mtmp;
         }
 
@@ -6334,7 +6343,11 @@ boolean stop_at_first_hit_object;
                 else 
                 {
                     tmp_at(DISP_END, 0);
-                    play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
+                    if (obj)
+                    {
+                        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
+                        stop_ambient_ray_sound(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset);
+                    }
                     return mtmp; /* caller will call flash_hits_mon */
                 }
             } 
@@ -6347,7 +6360,11 @@ boolean stop_at_first_hit_object;
                    self.  [No tmp_at() cleanup is needed here.] */
                 if (!is_invisible(mtmp) || has_see_invisible(mtmp))
                 {
-                    play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
+                    if (obj)
+                    {
+                        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
+                            stop_ambient_ray_sound(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset);
+                    }
                     return mtmp;
                 }
             } 
@@ -6362,6 +6379,8 @@ boolean stop_at_first_hit_object;
                 if (cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp))
                     map_invisible(bhitpos.x, bhitpos.y);
 
+                if (obj)
+                    stop_ambient_ray_sound(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset);
                 return mtmp;
             }
 			else 
@@ -6373,7 +6392,8 @@ boolean stop_at_first_hit_object;
                     if (hit_only_one && context.bhitcount >= bhitlimit)
 					{
                         tmp_at(DISP_END, 0);
-                        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
+                        if(obj)
+                            play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
                         beam_cleared_off = TRUE;
 					}
 					else
@@ -6383,7 +6403,7 @@ boolean stop_at_first_hit_object;
                 int had_effect = (*fhitm)(mtmp, obj);
 				int more_effect_num = 0;
 
-                if(had_effect)
+                if(had_effect && obj)
                     play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
 
 				/* Make radius if it is specified */
@@ -6428,7 +6448,8 @@ boolean stop_at_first_hit_object;
             if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
 			{
                 if(weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
-                    play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_OBJECT, bhitpos.x, bhitpos.y);
+                    if(obj)
+                        play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_OBJECT, bhitpos.x, bhitpos.y);
 
                 if (stop_at_first_hit_object)
 					break;
@@ -6445,6 +6466,8 @@ boolean stop_at_first_hit_object;
                                    costly_spot(bhitpos.x, bhitpos.y))))
 			{
                 tmp_at(DISP_END, 0);
+                if (obj)
+                    stop_ambient_ray_sound(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset);
                 return (struct monst *) 0;
             }
         }
@@ -6547,10 +6570,14 @@ boolean stop_at_first_hit_object;
     {
         tmp_at(DISP_END, 0);
         if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
-            play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, u.ux, u.uy);
+            if(obj)
+               play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, u.ux, u.uy);
     }
     if (shopdoor)
         pay_for_damage("destroy", FALSE);
+
+    if (obj)
+        stop_ambient_ray_sound(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset);
 
     return (struct monst *) 0;
 }

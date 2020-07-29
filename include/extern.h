@@ -3316,6 +3316,7 @@ E boolean FDECL(can_advance, (int, BOOLEAN_P));
 E void NDECL(update_can_advance_any_skill);
 E int NDECL(enhance_weapon_skill);
 E void FDECL(unrestrict_weapon_skill, (int));
+E void FDECL(add_weapon_skill_maximum_by_one, (int));
 E void FDECL(use_skill, (int, int));
 E void FDECL(add_weapon_skill, (int));
 E void FDECL(lose_weapon_skill, (int));

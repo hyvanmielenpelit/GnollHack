@@ -215,6 +215,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Pray/Bless Water", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Pray/Curse Water", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Pray/Shimmering Light", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Create", 1.0f },
 };
 
 #undef NoSound
