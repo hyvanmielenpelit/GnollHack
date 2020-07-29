@@ -1306,7 +1306,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             {
                 if (is_full_size)
                 {
-                    applied_tileXScaled = (int)((double)TILE_X * (double)MENU_TILE_Y / (double)TILE_Y * monitorScale);
+                    applied_tileXScaled = tileXScaled / 2;
                     x_added = (tileXScaled - applied_tileXScaled) / 2;
                 }
                 else

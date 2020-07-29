@@ -184,13 +184,17 @@ dosounds()
             }
         return;
     }
-    if (level.flags.has_beehive && !rn2(200)) {
-        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+    if (level.flags.has_beehive && !rn2(200)) 
+	{
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
             if (DEADMONSTER(mtmp))
                 continue;
             if ((mtmp->data->mlet == S_ANT && is_flyer(mtmp->data))
-                && mon_in_room(mtmp, BEEHIVE)) {
-                switch (rn2(2) + hallu) {
+                && mon_in_room(mtmp, BEEHIVE)) 
+			{
+                switch (rn2(2) + hallu) 
+				{
                 case 0:
                     You_hear("a low buzzing.");
                     break;
@@ -207,14 +211,18 @@ dosounds()
         }
     }
 
-	if (level.flags.has_library && !rn2(200)) {
-		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+	if (level.flags.has_library && !rn2(200)) 
+	{
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
 			if (DEADMONSTER(mtmp))
 				continue;
 			if ((mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_IMP] || mtmp->data == &mons[PM_QUASIT]  
-				|| mtmp->data == &mons[PM_GNOLL_WARDEN] || mtmp->data == &mons[PM_GNOMISH_WIZARD])
-				&& mon_in_room(mtmp, LIBRARY)) {
-				switch (rn2(2) + hallu) {
+				|| mtmp->data == &mons[PM_GNOLL_WARDEN] || mtmp->data == &mons[PM_GNOLL_SUPREME_WARDEN] || mtmp->data == &mons[PM_GNOMISH_WIZARD])
+				&& mon_in_room(mtmp, LIBRARY))
+			{
+				switch (rn2(2) + hallu)
+				{
 				case 0:
 					You("suddenly realize it is quiter than usual.");
 					break;
@@ -230,13 +238,17 @@ dosounds()
 		}
 	}
 
-	if (level.flags.has_dragonlair && !rn2(200)) {
-		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+	if (level.flags.has_dragonlair && !rn2(200))
+	{
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
 			if (DEADMONSTER(mtmp))
 				continue;
 			if ((mtmp->data->mlet == S_DRAGON)
-				&& mon_in_room(mtmp, DRAGONLAIR)) {
-				switch (rn2(2) + hallu) {
+				&& mon_in_room(mtmp, DRAGONLAIR))
+			{
+				switch (rn2(2) + hallu) 
+				{
 				case 0:
 					if (is_sleeping(mtmp))
 						You_feel("ominiously threatened.");

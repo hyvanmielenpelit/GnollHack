@@ -253,7 +253,8 @@ register struct monst *mtmp;
 		break;
 	case S_GNOLL:
 		switch (mm) {
-		case PM_GNOLL_WARDEN:
+        case PM_GNOLL_SUPREME_WARDEN:
+        case PM_GNOLL_WARDEN:
 			if (rn2(7))
 				(void)mongets(mtmp, GNOLLISH_HAIRCLOTH_ROBE);
 			if (!rn2(3))
@@ -1549,7 +1550,7 @@ register struct monst *mtmp;
 			if (!rn2(2))
 				(void)mongets(mtmp, WAN_LIGHTNING);
 		}
-		else if (ptr == &mons[PM_GNOLL_WARDEN])
+		else if (ptr == &mons[PM_GNOLL_WARDEN] || ptr == &mons[PM_GNOLL_SUPREME_WARDEN])
 		{
 				int n = rn2(3);
 				for (int i = 0; i < n; i++)

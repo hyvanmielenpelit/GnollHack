@@ -450,7 +450,7 @@ struct mkroom *sroom;
 		}
 		else if (librarytype == 1) // Gnolls
 		{
-			mainlibrarymonst = &mons[PM_GNOLL_WARDEN];
+			mainlibrarymonst = &mons[PM_GNOLL_SUPREME_WARDEN];
 		}
 		else if (librarytype == 2) // Liches
 		{
