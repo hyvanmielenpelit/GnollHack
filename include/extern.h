@@ -1594,6 +1594,7 @@ E int FDECL(get_multigen_quan, (int));
 E int FDECL(get_init_charge, (int));
 E int FDECL(get_obj_init_charge, (struct obj*));
 E int FDECL(get_max_charge, (int));
+E const char* FDECL(get_recharge_text, (enum recharging_types));
 E int FDECL(get_obj_max_charge, (struct obj*));
 E int FDECL(get_init_enchantment, (int));
 E int FDECL(get_obj_init_enchantment, (struct obj*));

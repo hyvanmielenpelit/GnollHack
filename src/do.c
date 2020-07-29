@@ -1282,6 +1282,28 @@ register struct obj* obj;
 		Sprintf(buf, "Charges left:           %d", obj->charges);
 		txt = buf;
 		putstr(datawin, 0, txt);
+
+		strcpy(buf, "");
+
+		Sprintf(buf, "Maximum charges:        %d", get_obj_max_charge(obj));
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		strcpy(buf, "");
+
+		Sprintf(buf, "Rechargings before:     %d", obj->recharged);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		strcpy(buf, "");
+
+		char rechargebuf[BUFSZ];
+		strcpy(rechargebuf, get_recharge_text(objects[otyp].oc_recharging));
+		*rechargebuf = highc(*rechargebuf);
+
+		Sprintf(buf, "Recharging type:        %s", rechargebuf);
+		txt = buf;
+		putstr(datawin, 0, txt);
 	}
 
 	if (obj->known && objects[otyp].oc_enchantable)

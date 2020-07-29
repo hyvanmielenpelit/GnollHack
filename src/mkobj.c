@@ -1720,6 +1720,38 @@ int charge_init_index;
 	return charge;
 }
 
+const char* recharge_texts[MAX_RECHARGING_TYPES] =
+{
+    "not rechargeable",
+    "rechargeable normally",
+    "rechargeable normally as wand",
+    "rechargeable once as wand",
+    "rechargeable as normal tool",
+    "rechargeable as special tool",
+    "rechargeable as nonmagical tool",
+    "rechargeable as musical instrument",
+    "rechargeable as can of grease",
+    "rechargeable as unicorn horn",
+    "rechargeable as holy symbol",
+    "rechargeable as crystal ball",
+    "rechargeable as special magical tool",
+    "rechargeable as camera",
+    "rechargeable as an artifact bell",
+    "rechargeable up to five times",
+    "not rechargeable",
+    "not rechargeable",
+    "rechargeable as an artifact ring",
+    "rechargeable as an artifact mace",
+    "rechargeable as an artifact grail"    
+};
+
+const char *
+get_recharge_text(recharge_index)
+enum recharging_types recharge_index;
+{
+    return recharge_texts[recharge_index];
+}
+
 
 int
 get_obj_init_enchantment(otmp)

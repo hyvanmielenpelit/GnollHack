@@ -2965,7 +2965,7 @@ struct permonst _mons2[] = {
     /*
      * Liches
      */
-    MON("lich", None, "skeletal undead sorcerer", None, None, S_LICH, LVL(11, 6, 0, 10, 30, -9), (G_GENO | G_NOCORPSE | 1),
+    MON("lich", None, "skeletal undead sorcerer", None, None, S_LICH, LVL(11, 12, 0, 10, 30, -9), (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_COLD, 1, 10, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1200, 100, MS_MUMBLE, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(15, 9, 14, 19, 15, 9), 
@@ -2976,7 +2976,7 @@ struct permonst _mons2[] = {
 		M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY | M3_CORPSE_CRUMBLES_TO_DUST, 
 		M4_NONE, M5_NONE, 
 		11, CLR_BROWN, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
-    MON("demilich", None, "skeletal undead wizard", None, None, S_LICH, LVL(14, 9, -2, 13, 60, -12),
+    MON("demilich", None, "skeletal undead wizard", None, None, S_LICH, LVL(14, 15, -2, 13, 60, -12),
         (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_COLD, 3, 4, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2986,8 +2986,8 @@ struct permonst _mons2[] = {
         M2_UNDEAD | M2_HOSTILE | M2_MAGIC, 
 		M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY | M3_CORPSE_CRUMBLES_TO_DUST, 
 		M4_NONE, M5_NONE, 
-		13, CLR_RED, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
-    MON("master lich", None, "powerful skeletal undead wizard", None, None, S_LICH, LVL(17, 9, -4, 16, 90, -15),
+		14, CLR_RED, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
+    MON("master lich", None, "powerful skeletal undead wizard", None, None, S_LICH, LVL(17, 18, -4, 16, 90, -15),
         (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_COLD, 3, 6, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2998,8 +2998,8 @@ struct permonst _mons2[] = {
         M2_UNDEAD | M2_HOSTILE | M2_MAGIC, 
 		M3_WANTSBOOK | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY | M3_CORPSE_CRUMBLES_TO_DUST,
 		M4_NONE, M5_NONE,
-        17, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
-    MON("arch-lich", None, "skeletal undead arch-mage", None, None, S_LICH, LVL(25, 9, -6, 19, 95, -15),
+        18, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
+    MON("arch-lich", None, "skeletal undead arch-mage", None, None, S_LICH, LVL(25, 21, -6, 19, 95, -15),
         (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_TUCH, AD_COLD, 5, 6, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -3010,7 +3010,7 @@ struct permonst _mons2[] = {
         M2_UNDEAD | M2_HOSTILE | M2_MAGIC, 
 		M3_WANTSBOOK | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY | M3_CORPSE_CRUMBLES_TO_DUST,
 		M4_NONE, M5_NONE,
-        25, CLR_BRIGHT_MAGENTA, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
+        29, CLR_BRIGHT_MAGENTA, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 
 	/*
      * modrons

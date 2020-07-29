@@ -361,6 +361,31 @@ enum charged_init_types {
 	CHARGED_UNICORN_HORN = 29
 };
 
+enum recharging_types {
+	RECHARGING_NOT_RECHARGEABLE = 0,
+	RECHARGING_GENERAL,
+	RECHARGING_WAND_GENERAL,
+	RECHARGING_WAND_WISHING,
+	RECHARGING_TOOL_GENERAL,
+	RECHARGING_TOOL_SPECIAL_MAGICAL,
+	RECHARGING_TOOL_NONMAGICAL,
+	RECHARGING_MUSICAL_INSTRUMENT,
+	RECHARGING_CAN_OF_GREASE,
+	RECHARGING_UNICORN_HORN,
+	RECHARGING_HOLY_SYMBOL,
+	RECHARGING_CRYSTAL_BALL,
+	RECHARGING_MAGIC_MARKER,
+	RECHARGING_CAMERA,
+	RECHARGING_BELL_OF_OPENING,
+	RECHARGING_NINE_LIVES_STEALER,
+	RECHARGING_RING_OF_THREE_WISHES,
+	RECHARGING_LUCK_BLADE,
+	RECHARGING_RING_OF_CONFLICT,
+	RECHARGING_WAND_OF_ORCUS,
+	RECHARGING_HOLY_GRAIL,
+	MAX_RECHARGING_TYPES
+};
+
 enum enchantment_init_types {
 	ENCHTYPE_NO_ENCHANTMENT = 0,
 	ENCHTYPE_GENERAL = 1,
@@ -393,7 +418,8 @@ struct objclass {
     Bitfield(oc_magic, 1);          /* inherently magical object */
 	uchar oc_enchantable;				/* Uses +X statistic (enchantment) */
 	uchar oc_charged;		        /* may have +n or (n) charges */
-    Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
+	uchar oc_recharging;		    /* recharging type */
+	Bitfield(oc_unique, 1);         /* special one-of-a-kind object */
     Bitfield(oc_nowish, 1);         /* cannot wish for this object */
 
     Bitfield(oc_big, 1);

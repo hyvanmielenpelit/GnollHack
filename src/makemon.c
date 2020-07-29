@@ -2371,12 +2371,12 @@ int level_limit;
         (void) hideunder(mtmp);
         break;
     case S_LEPRECHAUN:
-        mtmp->msleeping = 1;
+        //mtmp->msleeping = 1;
         break;
     case S_JABBERWOCK:
     case S_NYMPH:
-        if (rn2(5) && !u.uhave.amulet)
-            mtmp->msleeping = 1;
+        //if (rn2(5) && !u.uhave.amulet)
+        //    mtmp->msleeping = 1;
         break;
     case S_ORC:
         if (Race_if(PM_ELF))

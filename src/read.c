@@ -546,7 +546,9 @@ boolean verbose;
     is_cursed = curse_bless < 0;
     is_blessed = curse_bless > 0;
 
-    if (obj->oclass == WAND_CLASS)
+    enum recharging_types rtype = objects[obj->otyp].oc_recharging;
+
+    if (rtype == RECHARGING_WAND_GENERAL || rtype == RECHARGING_WAND_WISHING)
 	{
 		int lim = get_obj_max_charge(obj);
 		
@@ -569,7 +571,7 @@ boolean verbose;
          *      7 : 100     100
          */
         n = (int) obj->recharged;
-        if (n > 0 && (objects[obj->otyp].oc_charged == CHARGED_WAND_WISHING
+        if (n > 0 && (rtype == RECHARGING_WAND_WISHING
                       || (n * n * n > rn2(7 * 7 * 7))))
 		{ /* recharge_limit */
             wand_explode(obj, rnd(lim));
@@ -594,7 +596,7 @@ boolean verbose;
             else
                 obj->charges++;
 
-            if (objects[obj->otyp].oc_charged == CHARGED_WAND_WISHING && obj->charges > lim)
+            if (rtype == RECHARGING_WAND_WISHING && obj->charges > lim)
 			{
                 wand_explode(obj, 1);
                 return;
@@ -614,7 +616,18 @@ boolean verbose;
         }
 
     }
-	else if (obj->oclass == TOOL_CLASS) 
+	else if (rtype == RECHARGING_TOOL_GENERAL 
+        || rtype == RECHARGING_TOOL_NONMAGICAL
+        || rtype == RECHARGING_TOOL_SPECIAL_MAGICAL
+        || rtype == RECHARGING_MAGIC_MARKER
+        || rtype == RECHARGING_CAMERA
+        || rtype == RECHARGING_CRYSTAL_BALL
+        || rtype == RECHARGING_BELL_OF_OPENING
+        || rtype == RECHARGING_CAN_OF_GREASE
+        || rtype == RECHARGING_HOLY_SYMBOL
+        || rtype == RECHARGING_MUSICAL_INSTRUMENT
+        || rtype == RECHARGING_UNICORN_HORN
+        )
 	{
         int rechrg = (int) obj->recharged;
 
@@ -626,8 +639,8 @@ boolean verbose;
                 obj->recharged++;
         }
 
-        switch (obj->otyp) {
-        case BELL_OF_OPENING:
+        switch (rtype) {
+        case RECHARGING_BELL_OF_OPENING:
             if (is_cursed)
                 strip_charges(obj, verbose);
             else if (is_blessed)
@@ -637,9 +650,9 @@ boolean verbose;
             if (obj->charges > 5)
                 obj->charges = 5;
             break;
-        case MAGIC_MARKER:
-        case TINNING_KIT:
-        case EXPENSIVE_CAMERA:
+        case RECHARGING_MAGIC_MARKER:
+        case RECHARGING_TOOL_NONMAGICAL:
+        case RECHARGING_CAMERA:
         {
             int lim = get_obj_max_charge(obj);
             if (is_cursed)
@@ -718,7 +731,7 @@ boolean verbose;
             }
             break;
 #endif
-        case CRYSTAL_BALL:
+        case RECHARGING_CRYSTAL_BALL:
         {
             int lim = get_obj_max_charge(obj);
             if (is_cursed)
@@ -744,9 +757,8 @@ boolean verbose;
             }
             break;
         }
-        case HORN_OF_PLENTY:
-        case BAG_OF_TRICKS:
-        case CAN_OF_GREASE:
+        case RECHARGING_TOOL_SPECIAL_MAGICAL:
+        case RECHARGING_CAN_OF_GREASE:
         {
             int lim = get_obj_max_charge(obj);
             if (is_cursed)
@@ -774,7 +786,7 @@ boolean verbose;
             }
             break;
         }
-        case HOLY_SYMBOL:
+        case RECHARGING_HOLY_SYMBOL:
         {
             int lim = get_obj_max_charge(obj);
             if (is_cursed)
@@ -799,12 +811,8 @@ boolean verbose;
             }
             break;
         }
-        case MAGIC_FLUTE:
-        case MAGIC_HARP:
-        case FROST_HORN:
-        case FIRE_HORN:
-		case UNICORN_HORN:
-		case DRUM_OF_EARTHQUAKE:
+        case RECHARGING_MUSICAL_INSTRUMENT:
+        case RECHARGING_UNICORN_HORN:
         {
             int lim = get_obj_max_charge(obj);
             if (is_cursed)
@@ -834,16 +842,15 @@ boolean verbose;
             /*NOTREACHED*/
             break;
         } /* switch */
-
     } 
-	else if (objects[obj->otyp].oc_charged)  // obj->oclass == WEAPON_CLASS)
+	else if (objects[obj->otyp].oc_charged && objects[obj->otyp].oc_recharging)  // obj->oclass == WEAPON_CLASS)
 	{
 		/* All other charged items here */
 		int lim = get_obj_max_charge(obj);
 
-		switch (obj->otyp)
+		switch (rtype)
 		{
-		case NINE_LIVES_STEALER:
+		case RECHARGING_NINE_LIVES_STEALER:
 			if (is_cursed) 
 			{
 				strip_charges(obj, verbose);
@@ -880,8 +887,8 @@ boolean verbose;
 				goto not_chargable;
 			}
 			break;
-        case RIN_THREE_CHARGES:
-        case SWORD_OF_LUCKINESS:
+        case RECHARGING_RING_OF_THREE_WISHES:
+        case RECHARGING_LUCK_BLADE:
             /* Unchargeable */
             if (is_cursed)
             {
@@ -894,8 +901,8 @@ boolean verbose;
                 goto not_chargable;
             }
             break;
-        case RIN_SEVEN_CHARGES:
-        case MACE_OF_THE_UNDERWORLD:
+        case RECHARGING_RING_OF_CONFLICT:
+        case RECHARGING_WAND_OF_ORCUS:
             if (obj->recharged > 1)
             {
                 obj->charges = 0;
@@ -945,7 +952,7 @@ boolean verbose;
             }
 
             break;
-        case GRAIL_OF_HEALING:
+        case RECHARGING_HOLY_GRAIL:
             if (objects[obj->otyp].oc_charged == CHARGED_HOLY_GRAIL)
             {
                 if (obj->recharged > 3)
