@@ -2517,6 +2517,7 @@ register struct monst *mtmp;
 
                 if (thitm(0, mtmp, (struct obj *) 0, num, immolate))
                     trapkilled = TRUE;
+#if 0
                 else
 				{
                     /* we know mhp is at least `num' below mhpmax,
@@ -2524,6 +2525,7 @@ register struct monst *mtmp;
                     mtmp->mbasehpmax -= rn2(num + 1);
 					update_mon_maxhp(mtmp);
 				}
+#endif
             }
             if (burnarmor(mtmp) || rn2(3)) {
                 (void) destroy_mitem(mtmp, SCROLL_CLASS, AD_FIRE);

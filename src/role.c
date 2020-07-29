@@ -839,18 +839,18 @@ const struct Role roles[] = {
             {0, 0, 0, 0, 0, 0, 0}, /* P_THROWN_WEAPON */
             {0, 0, 0, 0, 0, 0, 0}, /* P_WHIP */
 
-            {0, 0, 12,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
-            {0, 0,  9,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
+            {0, 0, 13,  0,  0, 0, 0}, /* P_ARCANE_SPELL */
+            {0, 0, 10,  0,  0, 0, 0}, /* P_CLERIC_SPELL */
             {0, 0,  6,  0,  0, 0, 0}, /* P_HEALING_SPELL */
             {0, 0,  5, 15,  0, 0, 0}, /* P_DIVINATION_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
+            {0, 0, 12,  0,  0, 0, 0}, /* P_ABJURATION_SPELL */
             {0, 0,  4, 14, 24, 0, 0}, /* P_MOVEMENT_SPELL */
-            {0, 0,  0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
+            {0, 0, 11,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0,  7,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0,  8,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
             {0, 0,  0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
-            {0, 0, 13,  0,  0, 0, 0}, /* P_NATURE_SPELL */
-            {0, 0, 14,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
+            {0, 0, 14,  0,  0, 0, 0}, /* P_NATURE_SPELL */
+            {0, 0, 15,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
 
             {0, 0, 0, 0, 0, 0, 0}, /* P_BARE_HANDED_COMBAT */
             {0, 0, 0, 0, 0, 0, 0}, /* P_MARTIAL_ARTS */
