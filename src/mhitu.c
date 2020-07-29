@@ -1812,10 +1812,18 @@ register struct obj* omonwep;
 				if (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]))
 				{
 					damage = 1;
-					pline("%s hits you with the %s corpse.", Monnam(mtmp),
-						corpse_monster_name(otmp));
-					if (!Stoned)
-						goto do_stone;
+					pline("%s hits you with the %s corpse.", Monnam(mtmp), corpse_monster_name(otmp));
+
+                    if (check_magic_cancellation_success(&youmonst, 0) || Stone_resistance)
+                    {
+                        shieldeff(u.ux, u.uy);
+                        You("resist!");
+                    }
+                    else
+                    {
+                        if (!Stoned)
+                            goto do_stone;
+                    }
 				}
 
 				/* Negative AC reduces damage */

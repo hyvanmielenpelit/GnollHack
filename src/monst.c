@@ -4707,7 +4707,7 @@ struct permonst _mons2[] = {
 
 	/* Demon princes */
     MON("Baalzebub", "Arch-Devil, Lord of Lies", "powerful arch-devil capable of a stunning gaze, a poisonous bite, and summoning other devils", 
-        None, None, S_DEMON, LVL(89, 9, -5, 18, 85, 20), //STARTMARKER FOR DEMON PRINCES
+        None, None, S_DEMON, LVL(89, 12, -5, 18, 85, 20), //STARTMARKER FOR DEMON PRINCES
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_BITE, AD_DRST, 2, 6, 0, 0), ATTK(AT_GAZE, AD_STUN, 2, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 27),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4760,7 +4760,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_NONE,
 		80, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 	MON("Orcus", "Demon Prince of the Undead", "goat-headed demon prince capable of summoning undead and other demons", 
-        None, None, S_DEMON, LVL(66, 18, -6, 18, 85, -20),
+        None, None, S_DEMON, LVL(66, 15, -6, 18, 85, -20),
 		(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
 		A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0),
 		ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0), ATTK(AT_MAGC, AD_SPEL, 8, 6, 0, 0),
