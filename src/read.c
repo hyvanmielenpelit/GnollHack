@@ -862,7 +862,7 @@ boolean verbose;
 				obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
                 if (verbose)
                     pline("%s %s explodes!", Yname2(obj), expltext);
-				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, TRUE), "exploding sword", KILLED_BY_AN);
+				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding sword", KILLED_BY_AN);
 				useup(obj);
 			}
 			else if (obj->charges < lim)
@@ -1039,7 +1039,7 @@ int curse_bless;
 				Ring_gone(obj);
 			s = rnd(3 * abs(obj->enchantment)); /* amount of damage */
 			useup(obj);
-			losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exploding ring", KILLED_BY_AN);
+			losehp(adjust_damage(s, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "exploding ring", KILLED_BY_AN);
 		}
 		else
 		{
@@ -2542,7 +2542,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			{
                 pline_The("scroll catches fire and you burn your %s.",
                           makeplural(body_part(HAND)));
-                losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_FIRE, FALSE), "scroll of fire", KILLED_BY_AN);
+                losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "scroll of fire", KILLED_BY_AN);
             }
             break;
         }
@@ -2692,7 +2692,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
         newsym(u.ux, u.uy);
     }
     if (dmg)
-        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "scroll of earth", KILLED_BY_AN);
+        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "scroll of earth", KILLED_BY_AN);
 }
 
 boolean
@@ -2743,7 +2743,7 @@ boolean confused, byu;
             }
         }
 
-		deduct_monster_hp(mtmp, adjust_damage(mdmg, byu ? &youmonst : (struct monst*)0, mtmp, AD_PHYS, FALSE));
+		deduct_monster_hp(mtmp, adjust_damage(mdmg, byu ? &youmonst : (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
         
 		if (DEADMONSTER(mtmp)) 
 		{
@@ -2817,7 +2817,7 @@ int chg; /* recharging */
     dmg = d(n, k);
     obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
     pline("%s %s explodes!", Yname2(obj), expl);
-    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, TRUE), "exploding wand", KILLED_BY_AN);
+    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding wand", KILLED_BY_AN);
     useup(obj);
     /* obscure side-effect */
     exercise(A_STR, FALSE);

@@ -500,6 +500,42 @@
 
 
 /* other properties */
+#define has_heroism(mon) \
+	has_property(mon, HEROISM)
+
+#define has_super_heroism(mon) \
+	has_property(mon, SUPER_HEROISM)
+
+#define has_rapid_regeneration(mon) \
+	has_property(mon, RAPID_REGENERATION)
+
+#define has_rapider_regeneration(mon) \
+	has_property(mon, RAPIDER_REGENERATION)
+
+#define has_rapidest_regeneration(mon) \
+	has_property(mon, RAPIDEST_REGENERATION)
+
+#define has_rapid_energy_regeneration(mon) \
+	has_property(mon, RAPID_ENERGY_REGENERATION)
+
+#define has_rapider_energy_regeneration(mon) \
+	has_property(mon, RAPIDER_ENERGY_REGENERATION)
+
+#define has_rapidest_energy_regeneration(mon) \
+	has_property(mon, RAPIDEST_ENERGY_REGENERATION)
+
+#define has_melee_life_leech(mon) \
+	has_property(mon, MELEE_LIFE_LEECH)
+
+#define has_crazed(mon) \
+	has_property(mon, CRAZED)
+
+#define has_mind_shielding(mon) \
+	has_property(mon, MIND_SHIELDING)
+
+#define is_crazed(mon) \
+	(has_crazed(mon) && !has_mind_shielding(mon))
+
 #define has_telepathy(mon)   \
      (has_innate_telepathy((mon)->data) || has_property(mon, TELEPAT))
 

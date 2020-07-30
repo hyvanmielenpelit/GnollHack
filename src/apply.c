@@ -2172,7 +2172,8 @@ int magic; /* 0=Physical, otherwise skill level */
         pline("This calls for swimming, not jumping!");
         return 0;
     } else if (u.ustuck) {
-        if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck)) {
+        if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck) && !is_crazed(u.ustuck))
+        {
             You("pull free from %s.", mon_nam(u.ustuck));
             u.ustuck = 0;
             return 1;
@@ -2235,7 +2236,7 @@ int magic; /* 0=Physical, otherwise skill level */
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
 
                 You("rip yourself free of the bear trap!  Ouch!");
-                losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "jumping out of a bear trap",
+                losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "jumping out of a bear trap",
                        KILLED_BY);
                 set_wounded_legs(side, rn1(1000, 500));
                 break;
@@ -3637,7 +3638,7 @@ struct obj *obj;
             dam = 1;
         You("hit your %s with your bullwhip.", body_part(FOOT));
         Sprintf(buf, "killed %sself with %s bullwhip", uhim(), uhis());
-        losehp(adjust_damage(dam, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE), buf, NO_KILLER_PREFIX);
+        losehp(adjust_damage(dam, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
         return 1;
 
     } else if ((Fumbling || Glib) && !rn2(5)) {
@@ -4306,7 +4307,7 @@ struct obj *obj;
     default: /* Yourself (oops!) */
         if (P_SKILL_LEVEL(typ) <= P_BASIC) {
             You("hook yourself!");
-            losehp(adjust_damage(rn1(10, 10), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE), "a grappling hook",
+            losehp(adjust_damage(rn1(10, 10), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE), "a grappling hook",
                    KILLED_BY);
             return 1;
         }

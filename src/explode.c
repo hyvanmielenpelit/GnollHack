@@ -142,7 +142,7 @@ int expltype;
         }
 	}
 
-	double damu = adjust_damage(dam, (struct monst*)0, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? TRUE : FALSE);
+	double damu = adjust_damage(dam, (struct monst*)0, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
 	if (olet == WAND_CLASS)
 	{
 		switch (Role_switch)
@@ -408,13 +408,13 @@ int expltype;
                     pline("%s is caught in the %s!", Monnam(mtmp), str);
                 }
 
-                idamres += adjust_damage(destroy_mitem(mtmp, SCROLL_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, FALSE);
-                idamres += adjust_damage(destroy_mitem(mtmp, SPBOOK_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, FALSE);
-                idamnonres += adjust_damage(destroy_mitem(mtmp, POTION_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, FALSE);
-                idamnonres += adjust_damage(destroy_mitem(mtmp, WAND_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, FALSE);
-                idamnonres += adjust_damage(destroy_mitem(mtmp, RING_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, FALSE);
+                idamres += adjust_damage(destroy_mitem(mtmp, SCROLL_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
+                idamres += adjust_damage(destroy_mitem(mtmp, SPBOOK_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
+                idamnonres += adjust_damage(destroy_mitem(mtmp, POTION_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
+                idamnonres += adjust_damage(destroy_mitem(mtmp, WAND_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
+                idamnonres += adjust_damage(destroy_mitem(mtmp, RING_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
-				double ddam = adjust_damage(dam, (struct monst*)0, mtmp, adtyp, FALSE);
+				double ddam = adjust_damage(dam, (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
                 if (explmask[i][j] == 1) 
 				{

@@ -2771,7 +2771,7 @@ prayer_done() /* M. Stephenson (1.0.3b) */
         /* KMH -- Gods have mastery over unchanging */
         rehumanize();
         /* no Half_physical_damage adjustment here */
-        losehp(adjust_damage(rnd(20), (struct monst*)0, &youmonst, AD_CLRC, FALSE), "residual undead turning effect", KILLED_BY_AN);
+        losehp(adjust_damage(rnd(20), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "residual undead turning effect", KILLED_BY_AN);
         exercise(A_CON, FALSE);
         return 1;
     }

@@ -3412,7 +3412,7 @@ boolean pushing;
                     hliquid("lava"), Fire_immunity ? '.' : '!');
                 burn_away_slime();
                 dmg = d((Fire_immunity ? 1 : 3), 6);
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), /* lava damage */
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), /* lava damage */
                        "molten lava", KILLED_BY);
             } else if (!fills_up && flags.verbose
                        && (pushing ? !Blind : cansee(rx, ry)))
@@ -3493,7 +3493,7 @@ const char *verb;
 						else
 							dmg = weapon_total_dmg_value(obj, mtmp, &youmonst, 0);
 
-                        deduct_monster_hp(mtmp, adjust_damage(dmg, (struct monst*)0, mtmp, objects[obj->otyp].oc_damagetype, FALSE));
+                        deduct_monster_hp(mtmp, adjust_damage(dmg, (struct monst*)0, mtmp, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE));
                         if (DEADMONSTER(mtmp)) 
 						{
                             if (canspotmon(mtmp))
@@ -3520,7 +3520,7 @@ const char *verb;
 			{
                 if (!Passes_walls && !throws_rocks(youmonst.data)) 
 				{
-                    losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
+                    losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            "squished under a boulder", NO_KILLER_PREFIX);
                     return FALSE; /* player remains trapped */
                 } else
@@ -4505,7 +4505,7 @@ dodown()
                 if (!rn2(3))
 				{
                     actn = "manage to squeeze";
-                    losehp(adjust_damage(rnd(4), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
+                    losehp(adjust_damage(rnd(4), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            "contusion from a small passage", KILLED_BY);
                 }
 				else
@@ -4959,7 +4959,7 @@ boolean at_stairs, falling, portal;
                 if (u.usteed)
                     dismount_steed(DISMOUNT_FELL);
                 else
-                    losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
+                    losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            at_ladder ? "falling off a ladder"
                                      : "tumbling down a flight of stairs",
                            KILLED_BY);

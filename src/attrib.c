@@ -441,7 +441,7 @@ int poison_strength;   /* d6 per level damage*/
     if (i == 0 && typ != A_CHA)
 	{
 		/* no more instant kill but (4 + poison strength)d6 + 10 damage */
-		damage = adjust_damage(d(poison_strength ? 4 + poison_strength : 6, 6) + 10, (struct monst*)0, &youmonst, AD_DRST, FALSE);
+		damage = adjust_damage(d(poison_strength ? 4 + poison_strength : 6, 6) + 10, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix); /* poison damage */
 
 		//Attribute loss
@@ -456,7 +456,7 @@ int poison_strength;   /* d6 per level damage*/
 	else
 	{
         /* HP damage; more likely--but less severe--with missiles */
-		damage = adjust_damage(poison_strength ? d(poison_strength, 6) : thrown_weapon ? rnd(6) : rn1(10, 6), (struct monst*)0, & youmonst, AD_DRST, FALSE); //10...15
+		damage = adjust_damage(poison_strength ? d(poison_strength, 6) : thrown_weapon ? rnd(6) : rn1(10, 6), (struct monst*)0, & youmonst, AD_DRST, ADFLAGS_NONE); //10...15
         losehp(damage, pkiller, kprefix); /* poison damage */
 
 		if (rn2(100) < (poison_strength ? 5 * poison_strength : 15))
@@ -536,7 +536,7 @@ boolean lifesavedalready;
 			return;
 		}
 
-		damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, FALSE);
+		damage = adjust_damage(d(12, 6), (struct monst*)0, &youmonst, AD_COLD, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == FIRE_ENCHANTMENT)
@@ -551,7 +551,7 @@ boolean lifesavedalready;
 			return;
 		}
 
-		damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, FALSE);
+		damage = adjust_damage(d(4, 6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == LIGHTNING_ENCHANTMENT)
@@ -566,7 +566,7 @@ boolean lifesavedalready;
 			return;
 		}
 
-		damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, FALSE);
+		damage = adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE);
 		losehp(damage, pkiller, kprefix);
 	}
 	else if (sptype == DEATH_ENCHANTMENT)
@@ -585,7 +585,7 @@ boolean lifesavedalready;
 		if (lifesavedalready)
 		{
 			//Just do 10d6 damage if life was saved by amulet of life saving
-			damage = adjust_damage(d(10, 6), (struct monst*)0, &youmonst, AD_DRAY, FALSE);
+			damage = adjust_damage(d(10, 6), (struct monst*)0, &youmonst, AD_DRAY, ADFLAGS_NONE);
 			losehp(damage, pkiller, kprefix);
 		}
 		else

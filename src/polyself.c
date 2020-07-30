@@ -471,7 +471,7 @@ int psflags;
             if (!wizard || (wizard && yn_query("You are about to shudder. Force polymorph instead?") != 'y'))
             {
                 You1(shudder_for_moment);
-                losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_SHOC, TRUE), "system shock", KILLED_BY_AN);
+                losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_SHOC, ADFLAGS_NONE), "system shock", KILLED_BY_AN);
                 exercise(A_CON, FALSE);
                 return;
             }
@@ -1896,7 +1896,7 @@ dogaze()
 
                         int hp_before = mtmp->mhp;
 						if (dmg)
-							deduct_monster_hp(mtmp, adjust_damage(dmg, &youmonst, mtmp, adtyp, FALSE));
+							deduct_monster_hp(mtmp, adjust_damage(dmg, &youmonst, mtmp, adtyp, ADFLAGS_NONE));
                         int hp_after = mtmp->mhp;
                         int damage_dealt = hp_before - hp_after;
                         pline("%s sustains %d damage!", Monnam(mtmp), damage_dealt);
@@ -2250,7 +2250,7 @@ domindblast()
             You("lock in on %s %s.", s_suffix(mon_nam(mtmp)),
                 u_sen ? "telepathy"
                       : has_telepathy(mtmp) ? "latent telepathy" : "mind");
-			deduct_monster_hp(mtmp, adjust_damage(rnd(15), &youmonst, mtmp, AD_PSIO, FALSE));
+			deduct_monster_hp(mtmp, adjust_damage(rnd(15), &youmonst, mtmp, AD_PSIO, ADFLAGS_NONE));
 			if (DEADMONSTER(mtmp))
                 killed(mtmp);
         }

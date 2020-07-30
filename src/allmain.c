@@ -708,15 +708,46 @@ regenerate_hp()
 {
     /* regenerate hp */
     int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
-    int roundstofull = Regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
+    int roundstofull = Regeneration || Rapid_regeneration || Rapider_regeneration || Rapidest_regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
     int fixedhpperround = relevant_hpmax / roundstofull;
     int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
     int added_hp = 0;
 
+    if (Rapidest_regeneration && fixedhpperround < 20)
+    {
+        fixedhpperround = 20;
+        fractional_hp = 0;
+    }
+    else if (Rapider_regeneration && fixedhpperround < 10)
+    {
+        fixedhpperround = 10;
+        fractional_hp = 0;
+    }
+    else if (Rapid_regeneration && fixedhpperround < 5)
+    {
+        fixedhpperround = 5;
+        fractional_hp = 0;
+    }
+
     /* Mummy rot here */
     if (MummyRot && !Sick_resistance)
     {
-        if (Regeneration)
+        if (Rapidest_regeneration)
+        {
+            fixedhpperround = 3;
+            fractional_hp = 0;
+        }
+        else if (Rapider_regeneration)
+        {
+            fixedhpperround = 2;
+            fractional_hp = 0;
+        }
+        else if (Rapid_regeneration)
+        {
+            fixedhpperround = 1;
+            fractional_hp = 0;
+        }
+        else if (Regeneration)
         {
             fixedhpperround = 0;
             fractional_hp = 0;
@@ -925,9 +956,25 @@ regenerate_mana()
 {
 
 	/* regenerate mana */
-	int roundstofull = Energy_regeneration ? max(1, min(u.uenmax, 450)) : 900;
+	int roundstofull = Energy_regeneration || Rapid_energy_regeneration || Rapider_energy_regeneration || Rapidest_energy_regeneration ? max(1, min(u.uenmax, 450)) : 900;
 	int fixedmanaperround = u.uenmax / roundstofull;
 	int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
+
+    if (Rapidest_energy_regeneration && fixedmanaperround < 20)
+    {
+        fixedmanaperround = 20;
+        fractional_mana = 0;
+    }
+    else if (Rapider_energy_regeneration && fixedmanaperround < 10)
+    {
+        fixedmanaperround = 10;
+        fractional_mana = 0;
+    }
+    else if (Rapid_energy_regeneration && fixedmanaperround < 5)
+    {
+        fixedmanaperround = 5;
+        fractional_mana = 0;
+    }
 
 	/*
 	&& ((wtcap < MOD_ENCUMBER

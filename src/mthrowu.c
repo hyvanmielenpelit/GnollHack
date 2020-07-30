@@ -111,7 +111,7 @@ const char *name; /* if null, then format `*objp' */
         } 
 		else 
 		{
-			double damage = adjust_damage(dam, (struct monst*)0, &youmonst, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, FALSE);
+			double damage = adjust_damage(dam, (struct monst*)0, &youmonst, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
 			if(damage == 0)
 			{
 				if (Blind || !flags.verbose)
@@ -556,7 +556,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
         mtmp->msleeping = 0;
 
-		damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, FALSE);
+		damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
 
         if (vis) 
 		{
@@ -580,7 +580,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
             } 
 			else 
 			{
-				poisondamage = adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_DRST, FALSE);
+				poisondamage = adjust_damage(d(2, 6), (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE);
 				damage += poisondamage;
             }
         }
@@ -602,7 +602,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline_The("cold sears %s!", mon_nam(mtmp));
 					else if (verbose && !target)
 						pline_The("cold sears it!", mon_nam(mtmp));
-					damage += adjust_damage(d(12, 6), (struct monst*)0, mtmp, AD_COLD, FALSE);
+					damage += adjust_damage(d(12, 6), (struct monst*)0, mtmp, AD_COLD, ADFLAGS_NONE);
 				}
                 if(is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
 				    otmp->elemental_enchantment = 0;
@@ -620,7 +620,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 						pline_The("fire burns %s!", mon_nam(mtmp));
 					else if (verbose && !target)
 						pline_The("fire burns it!");
-					damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_FIRE, FALSE);
+					damage += adjust_damage(d(4, 6), (struct monst*)0, mtmp, AD_FIRE, ADFLAGS_NONE);
 				}
                 if (is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
                     otmp->elemental_enchantment = 0;
@@ -639,7 +639,7 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 					else if (verbose && !target)
 						pline("It is jolted by lightning!");
 
-					damage += adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_ELEC, FALSE);
+					damage += adjust_damage(d(6, 6), (struct monst*)0, mtmp, AD_ELEC, ADFLAGS_NONE);
 				}
                 if (is_ammo(otmp) || throwing_weapon(otmp) || objects[otmp->otyp].oc_merge ? 1 : !rn2(ELEMENTAL_ENCHANTMENT_QUANTITY_NORMAL))
                     otmp->elemental_enchantment = 0;
@@ -1933,7 +1933,7 @@ int range;
 	boolean block_if_peaceful_monster = 0;
 	boolean block_if_tame_monster = 0;
 
-	if (can_hit_others && !Conflict)
+	if (can_hit_others && !(Conflict || is_crazed(mtmp)))
 	{
 		block_if_hostile_monster = !is_peaceful(mtmp) && !mon_has_bloodlust(mtmp);
 		block_if_peaceful_monster = !mon_has_bloodlust(mtmp) && mtmp->data->maligntyp >= 0;
@@ -1966,7 +1966,7 @@ int range;
 	boolean block_if_peaceful_monster = 0;
 	boolean block_if_tame_monster = 0;
 
-	if(can_hit_others && !Conflict)
+	if(can_hit_others && !(Conflict || is_crazed(mtmp)))
 	{
 		block_if_hostile_monster = !is_peaceful(mtmp) && !mon_has_bloodlust(mtmp);
 		block_if_peaceful_monster = !mon_has_bloodlust(mtmp) && mtmp->data->maligntyp >= 0;

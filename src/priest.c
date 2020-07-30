@@ -203,7 +203,7 @@ register struct monst *priest;
     gx += rn1(3, -1); /* mill around the altar */
     gy += rn1(3, -1);
 
-    if (!is_peaceful(priest)
+    if (!is_peaceful(priest) || is_crazed(priest)
         || (Conflict && !check_ability_resistance_success(priest, A_WIS, 0))) {
         if (monnear(priest, u.ux, u.uy)) {
             if (Displaced)

@@ -153,7 +153,7 @@ struct obj *obj;
                         ? "nearby" : "in the distance");
         }
         m_useup(mon, obj);
-		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, AD_MAGM, FALSE));
+		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, AD_MAGM, ADFLAGS_NONE));
         //mon->mhp -= dam;
         if (DEADMONSTER(mon))
 		{
@@ -1417,7 +1417,7 @@ register struct obj *otmp;
 			else if (rnd(20) < 10 + u.uac)
 			{
                 pline_The("wand hits you!");
-                losehp(adjust_damage(d(2, 12), (struct monst*)0, &youmonst, AD_PHYS, TRUE), "wand", KILLED_BY_AN);
+                losehp(adjust_damage(d(2, 12), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "wand", KILLED_BY_AN);
             }
 			else
                 pline_The("wand misses you.");
@@ -2702,7 +2702,7 @@ boolean stoning; /* True: stop petrification, False: cure stun && confusion */
 
     if (acid && !tinned && !is_mon_immune_to_acid(mon)) 
 	{
-		deduct_monster_hp(mon, adjust_damage(rnd(15), (struct monst*)0, mon, AD_ACID, FALSE));
+		deduct_monster_hp(mon, adjust_damage(rnd(15), (struct monst*)0, mon, AD_ACID, ADFLAGS_NONE));
         if (vis)
             pline("%s has a very bad case of stomach acid.", Monnam(mon));
         if (DEADMONSTER(mon)) {

@@ -737,7 +737,7 @@ struct monst *mon;
 			/* add half (maybe quarter) of the usual silver damage bonus */
 			if (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver)
 				dmg += rnd(10);
-			damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+			damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
 
 			Sprintf(buf, "touching %s", (oart ? oart->name : an(cxname(obj))));
 			losehp(damage, buf, KILLED_BY); /* magic damage, not physical */
@@ -977,7 +977,7 @@ double damage;
 	{
 		double dbon = 0;
 		if (weap->attk.damd > 0 && weap->attk.damn > 0)
-			dbon += adjust_damage(d(weap->attk.damn, weap->attk.damd) + weap->attk.damp, (struct monst*)0, mon, !weap ? AD_PHYS : weap->attk.adtyp, FALSE);
+			dbon += adjust_damage(d(weap->attk.damn, weap->attk.damd) + weap->attk.damp, (struct monst*)0, mon, !weap ? AD_PHYS : weap->attk.adtyp, ADFLAGS_NONE);
 		else if(weap->attk.damn < 0)
 			dbon += max(-((double)weap->attk.damn) * damage, 0);
 
@@ -1123,18 +1123,18 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
        [note that a successful save against AD_STUN doesn't actually
        prevent the target from ending up stunned] */
     attack_indx = MB_INDEX_PROBE;
-    *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (2..3)d4 */
+    *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, ADFLAGS_NONE); /* (2..3)d4 */
     if (do_stun) {
         attack_indx = MB_INDEX_STUN;
-        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (3..4)d4 */
+        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, ADFLAGS_NONE); /* (3..4)d4 */
     }
     if (dieroll <= scare_dieroll) {
         attack_indx = MB_INDEX_SCARE;
-        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (3..5)d4 */
+        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, ADFLAGS_NONE); /* (3..5)d4 */
     }
     if (dieroll <= (scare_dieroll / 2)) {
         attack_indx = MB_INDEX_CANCEL;
-        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, FALSE); /* (4..6)d4 */
+        *dmgptr += adjust_damage(rnd(4), magr, mdef, objects[mb->otyp].oc_damagetype, ADFLAGS_NONE); /* (4..6)d4 */
     }
 
     /* give the hit message prior to inflicting the effects */
@@ -3443,9 +3443,9 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
             /* damage is somewhat arbitrary; half the usual 1d20 physical
                for silver, 1d10 magical for <foo>bane, potentially both */
             if (ag)
-                damage = adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+                damage = adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
             if (bane)
-				damage += adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+				damage += adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
 			Sprintf(buf, "handling %s", killer_xname(obj));
             losehp(damage, buf, KILLED_BY);
             exercise(A_CON, FALSE);

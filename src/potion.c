@@ -889,7 +889,7 @@ struct obj *otmp;
             } else {
                 if (u.ualign.type == A_LAWFUL) {
                     pline("This burns like %s!", hliquid("acid"));
-                    losehp(adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of unholy water",
+                    losehp(adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), "potion of unholy water",
                            KILLED_BY_AN);
                 } else
                     You_feel("full of dread.");
@@ -1107,7 +1107,7 @@ struct obj *otmp;
             if (!Role_if(PM_HEALER) && !Sick_resistance)
 			{
                 /* NB: blessed otmp->fromsink is not possible */
-                losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_DISE, FALSE), "mildly contaminated potion", KILLED_BY_AN);
+                losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "mildly contaminated potion", KILLED_BY_AN);
             }
         }
 		else 
@@ -1148,11 +1148,11 @@ struct obj *otmp;
 			}
 			if (!Poison_resistance) 
 			{
-					losehp(adjust_damage(rnd(10) + 5 * !!(otmp->cursed), (struct monst*)0, &youmonst, AD_DRST, FALSE), "drinking poison", KILLED_BY);
+					losehp(adjust_damage(rnd(10) + 5 * !!(otmp->cursed), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
 			}
 			else
 			{
-				losehp(adjust_damage(1 + rn2(2), (struct monst*)0, &youmonst, AD_DRST, FALSE), "drinking poison", KILLED_BY);
+				losehp(adjust_damage(1 + rn2(2), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
 			}
 			exercise(A_CON, FALSE);
 		}
@@ -1382,7 +1382,7 @@ struct obj *otmp;
 
                 You("hit your %s on the %s.", body_part(HEAD),
                     ceiling(u.ux, u.uy));
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "colliding with the ceiling",
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "colliding with the ceiling",
                        KILLED_BY);
                 nothing = 0; /* not nothing after all */
             }
@@ -1473,7 +1473,7 @@ struct obj *otmp;
 			{
                 You("burn your %s%s.", body_part(FACE), Fire_immunity ? ", but you just get a nice tan" : "");
                 /* fire damage */
-                losehp(adjust_damage(d(3, 4), (struct monst*)0, &youmonst, AD_FIRE, FALSE), "burning potion of oil",
+                losehp(adjust_damage(d(3, 4), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "burning potion of oil",
                        KILLED_BY_AN);
             }
         } 
@@ -1495,7 +1495,7 @@ struct obj *otmp;
                   otmp->blessed ? " a little" : otmp->cursed ? " a lot"
                                                              : " like acid");
             dmg = d(otmp->cursed ? 8 : 6, otmp->blessed ? 6 : 8);
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of acid", KILLED_BY_AN);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), "potion of acid", KILLED_BY_AN);
             exercise(A_CON, FALSE);
         }
         if (Stoned)
@@ -1708,7 +1708,7 @@ int how;
         distance = 0;
         pline_The("%s crashes on your %s and breaks into shards.", botlnam,
                   body_part(HEAD));
-        losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
+        losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                (how == POTHIT_OTHER_THROW) ? "propelled potion" /* scatter */
                                            : "thrown potion",
                KILLED_BY_AN);
@@ -1953,7 +1953,7 @@ do_illness: /* Pestilence's potion of healing effect */
                           is_silent(mon->data) ? "writhes" : "shrieks");
                     if (!is_silent(mon->data))
                         wake_nearto(tx, ty, mon->data->mlevel * 10);
-					deduct_monster_hp(mon, adjust_damage(d(2, 6), &youmonst, mon, AD_CLRC, FALSE));
+					deduct_monster_hp(mon, adjust_damage(d(2, 6), &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
 					/* should only be by you */
                     if (DEADMONSTER(mon))
                         killed(mon);
@@ -1965,7 +1965,7 @@ do_illness: /* Pestilence's potion of healing effect */
                     angermon = FALSE;
                     if (canseemon(mon))
                         pline("%s looks healthier.", Monnam(mon));
-					deduct_monster_hp(mon, adjust_damage(-d(2, 6), &youmonst, mon, AD_CLRC, FALSE));
+					deduct_monster_hp(mon, adjust_damage(-d(2, 6), &youmonst, mon, AD_CLRC, ADFLAGS_NONE));
                     if (is_were(mon->data) && is_human(mon->data)
                         && !Protection_from_shape_changers)
                         new_were(mon); /* transform into beast */
@@ -1980,7 +1980,7 @@ do_illness: /* Pestilence's potion of healing effect */
             {
                 if (canseemon(mon))
                     pline("%s rusts.", Monnam(mon));
-				deduct_monster_hp(mon, adjust_damage(d(1, 6), &youmonst, mon, AD_PHYS, FALSE));
+				deduct_monster_hp(mon, adjust_damage(d(1, 6), &youmonst, mon, AD_PHYS, ADFLAGS_NONE));
                 /* should only be by you */
                 if (DEADMONSTER(mon))
                     killed(mon);
@@ -1996,7 +1996,7 @@ do_illness: /* Pestilence's potion of healing effect */
                       is_silent(mon->data) ? "writhes" : "shrieks");
                 if (!is_silent(mon->data))
                     wake_nearto(tx, ty, mon->data->mlevel * 10);
-				deduct_monster_hp(mon, adjust_damage(d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8), &youmonst, mon, AD_ACID, FALSE));
+				deduct_monster_hp(mon, adjust_damage(d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8), &youmonst, mon, AD_ACID, ADFLAGS_NONE));
                 if (DEADMONSTER(mon)) {
                     if (your_fault)
                         killed(mon);
@@ -2663,7 +2663,7 @@ dodip()
             if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))
                 potionbreathe(obj);
             useupall(obj);
-            losehp(adjust_damage(amt + rnd(9), (struct monst*)0, &youmonst, AD_MAGM, FALSE), /* not physical damage */
+            losehp(adjust_damage(amt + rnd(9), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), /* not physical damage */
                    "alchemic blast", KILLED_BY_AN);
             return 1;
         }

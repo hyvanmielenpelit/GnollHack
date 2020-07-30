@@ -90,7 +90,7 @@ dosit()
             } else if (u.utraptype == TT_PIT) {
                 if (trap && trap->ttyp == SPIKED_PIT) {
                     You("sit down on a spike.  Ouch!");
-                    losehp(adjust_damage(rn2(2), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
+                    losehp(adjust_damage(rn2(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            "sitting on an iron spike", KILLED_BY);
                     exercise(A_STR, FALSE);
                 } else
@@ -105,7 +105,7 @@ dosit()
                 if (Slimed)
                     burn_away_slime();
                 u.utrap += rnd(4);
-                losehp(adjust_damage(d(2, 10), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "sitting in lava",
+                losehp(adjust_damage(d(2, 10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "sitting in lava",
                        KILLED_BY); /* lava damage */
             } else if (u.utraptype == TT_INFLOOR
                        || u.utraptype == TT_BURIEDBALL) {
@@ -166,7 +166,7 @@ dosit()
             return 1;
         }
         pline_The("%s burns you!", hliquid("lava"));
-        losehp(adjust_damage(d(Fire_immunity ? 2 : 10, 10), (struct monst*)0, &youmonst, AD_FIRE, FALSE), /* lava damage */
+        losehp(adjust_damage(d(Fire_immunity ? 2 : 10, 10), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
                "sitting on lava", KILLED_BY);
     } 
 	else if (is_ice(u.ux, u.uy))
@@ -188,7 +188,7 @@ dosit()
 			{
             case 1:
                 (void) adjattrib(rn2(A_MAX), -rn1(4, 3), FALSE);
-                losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, FALSE), "cursed throne", KILLED_BY_AN);
+                losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "cursed throne", KILLED_BY_AN);
                 break;
             case 2:
                 (void) adjattrib(rn2(A_MAX), 1, FALSE);
@@ -196,7 +196,7 @@ dosit()
             case 3:
                 pline("A%s electric shock shoots through your body!",
                       (Shock_immunity) ? "n" : " massive");
-                losehp(adjust_damage(Shock_immunity ? rnd(6) : rnd(30), (struct monst*)0, &youmonst, AD_ELEC, FALSE), "electric chair",
+                losehp(adjust_damage(Shock_immunity ? rnd(6) : rnd(30), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE), "electric chair",
                        KILLED_BY_AN);
                 exercise(A_CON, FALSE);
                 break;

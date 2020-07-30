@@ -355,7 +355,7 @@ dig(VOID_ARGS)
                 You("hit yourself in the %s.", body_part(FOOT));
                 Sprintf(kbuf, "%s off %s own %s", issaw ? "slicing" : "chopping", uhis(),
                         body_part(FOOT));
-                losehp(adjust_damage(dmg, &youmonst, &youmonst, AD_PHYS, FALSE), kbuf, KILLED_BY);
+                losehp(adjust_damage(dmg, &youmonst, &youmonst, AD_PHYS, ADFLAGS_NONE), kbuf, KILLED_BY);
             } else {
                 You("destroy the bear trap with %s.",
                     yobjnam(wep, (const char *) 0));
@@ -1190,7 +1190,7 @@ struct obj *obj;
         play_object_hit_sound(obj, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(&youmonst), dam, HMON_MELEE);
         You("hit yourself with %s.", yname(obj));
         Sprintf(buf, "%s own %s", uhis(), OBJ_NAME(objects[obj->otyp]));
-        losehp(adjust_damage(dam, &youmonst, &youmonst, AD_PHYS, FALSE), buf, KILLED_BY);
+        losehp(adjust_damage(dam, &youmonst, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, KILLED_BY);
         context.botl = 1;
         return 1;
     }
@@ -1254,7 +1254,7 @@ struct obj *obj;
 						vibrate ? " The axe-handle vibrates violently!" : "");
                     play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SPARKS_FLY);
                     if (vibrate)
-						losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "axing a hard object",
+						losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "axing a hard object",
 							KILLED_BY);
 				}
 				else if(issaw)
@@ -1700,7 +1700,7 @@ struct obj* origobj;
                 You("loosen a rock from the %s.", ceiling(u.ux, u.uy));
                 pline("It falls on your %s!", body_part(HEAD));
                 dmg = rnd((uarmh && is_metallic(uarmh)) ? 2 : 6);
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "falling rock", KILLED_BY_AN);
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
                 otmp = mksobj_at(ROCK, u.ux, u.uy, FALSE, FALSE);
                 if (otmp) {
                     (void) xname(otmp); /* set dknown, maybe bknown */

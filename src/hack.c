@@ -640,13 +640,13 @@ dosinkfall()
         ELevitation = HLevitation = 0L;
         You("crash to the floor!");
         dmg = rn1(8, 25 - (int) ACURR(A_CON));
-        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), fell_on_sink, NO_KILLER_PREFIX);
+        losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), fell_on_sink, NO_KILLER_PREFIX);
         exercise(A_DEX, FALSE);
         selftouch("Falling, you");
         for (obj = level.objects[u.ux][u.uy]; obj; obj = obj->nexthere)
             if (obj->oclass == WEAPON_CLASS || is_weptool(obj)) {
                 You("fell on %s.", doname(obj));
-                losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_PHYS, FALSE), fell_on_sink,
+                losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), fell_on_sink,
                        NO_KILLER_PREFIX);
                 exercise(A_CON, FALSE);
             }
@@ -1749,7 +1749,7 @@ domove_core()
                     }
                 /*FALLTHRU*/
                 default:
-                    if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck))
+                    if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck) && !is_crazed(u.ustuck))
                         goto pull_free;
                     You("cannot escape from %s!", mon_nam(u.ustuck));
                     nomul(0);
@@ -2488,7 +2488,7 @@ boolean pick;
 
                 You("are hit by %s!",
                     x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));
-				damage = adjust_damage(d(max(1, mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+				damage = adjust_damage(d(max(1, mtmp->data->mlevel - 1), 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
                 mdamageu(mtmp, damage, TRUE);
             }
             break;

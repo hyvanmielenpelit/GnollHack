@@ -543,7 +543,7 @@ register struct monst *mtmp;
                 if (3 + find_mac(mtmp) <= rnd(20)) {
                     pline("%s is hit by a falling piercer (you)!",
                           Monnam(mtmp));
-                    if (deduct_monster_hp(mtmp, adjust_damage(d(3, 6), &youmonst, mtmp, AD_PHYS, FALSE)) < 1)
+                    if (deduct_monster_hp(mtmp, adjust_damage(d(3, 6), &youmonst, mtmp, AD_PHYS, ADFLAGS_NONE)) < 1)
                         killed(mtmp);
                 } else
                     pline("%s is almost hit by a falling piercer (you)!",
@@ -713,7 +713,7 @@ register struct monst *mtmp;
         case AT_BUTT:
         case AT_TAIL:
         case AT_TENT:
-            if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || !touch_petrifies(youmonst.data))) 
+            if (!range2 && (!MON_WEP(mtmp) || is_confused(mtmp) || Conflict || is_crazed(mtmp) || !touch_petrifies(youmonst.data)))
 			{
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 update_m_action(mtmp, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
@@ -1645,7 +1645,7 @@ register struct obj* omonwep;
 		else
 		{
 			int basedmg = weapon_dmg_value(mweapon, &youmonst, mtmp, 0);
-			damage += adjust_damage(basedmg, mtmp, &youmonst, objects[mweapon->otyp].oc_damagetype, FALSE);
+			damage += adjust_damage(basedmg, mtmp, &youmonst, objects[mweapon->otyp].oc_damagetype, ADFLAGS_NONE);
 			extradmg += weapon_extra_dmg_value(mweapon, &youmonst, mtmp, basedmg);
 			damage += extradmg;
 			increase_damage_adtyp = objects[mweapon->otyp].oc_damagetype;
@@ -1658,24 +1658,24 @@ register struct obj* omonwep;
 		if (mattk->damn > 0 && mattk->damd > 0)
 			basedmg += d((int)mattk->damn, (int)mattk->damd);
 		basedmg += (int)mattk->damp;
-		damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, FALSE);
+		damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
 		increase_damage_adtyp = mattk->adtyp;
 	}
 	
-	damage += adjust_damage(mtmp->mdaminc, mtmp, &youmonst, increase_damage_adtyp, FALSE);
+	damage += adjust_damage(mtmp->mdaminc, mtmp, &youmonst, increase_damage_adtyp, ADFLAGS_NONE);
 
 	//Get damage bonus in both cases if physical
 	if(mattk->adtyp == AD_PHYS || mattk->adtyp == AD_SHRP || mattk->adtyp == AD_DRIN)
 	{
 		if(omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
-			damage += adjust_damage(m_str_dmg_bonus(mtmp), mtmp, &youmonst, mattk->adtyp, FALSE);
+			damage += adjust_damage(m_str_dmg_bonus(mtmp), mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
 		else
-			damage += adjust_damage(m_str_dmg_bonus(mtmp) / 2, mtmp, & youmonst, mattk->adtyp, FALSE);
+			damage += adjust_damage(m_str_dmg_bonus(mtmp) / 2, mtmp, & youmonst, mattk->adtyp, ADFLAGS_NONE);
 	}
 
     if (mattk->adtyp == AD_SHRP && !rn2(10))
     {
-        damage += adjust_damage((Upolyd ? u.mhmax : u.uhpmax) / 4, mtmp, &youmonst, mattk->adtyp, FALSE);
+        damage += adjust_damage((Upolyd ? u.mhmax : u.uhpmax) / 4, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
         sharpness_effect = TRUE;
     }
     //Let's add this even if a weapon is being used
@@ -1685,7 +1685,7 @@ register struct obj* omonwep;
 		if (mattk->damn > 0 && mattk->damd > 0)
 			basedmg += d((int) mattk->damn, (int) mattk->damd); /* extra damage */
 		basedmg += (int)mattk->damp;
-		damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, FALSE);
+		damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
 	}
 
 	//Make sure damage is at least 1
@@ -1867,13 +1867,13 @@ register struct obj* omonwep;
 				}
 				else if (special_hit_dmg > 0)
 				{
-					damage += adjust_damage(special_hit_dmg, mtmp, &youmonst, spec_adtyp, FALSE);
+					damage += adjust_damage(special_hit_dmg, mtmp, &youmonst, spec_adtyp, ADFLAGS_NONE);
 				}
 
 				boolean silvermsg = FALSE;
 				if (objects[otmp->otyp].oc_material == MAT_SILVER && Hate_silver)
 				{
-					damage += adjust_damage(rnd(20), mtmp, &youmonst, objects[otmp->otyp].oc_damagetype, FALSE);
+					damage += adjust_damage(rnd(20), mtmp, &youmonst, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
 					silvermsg = TRUE;
 				}
 
@@ -3073,7 +3073,7 @@ struct attack *mattk;
 		basedmg += d((int)mattk->damn, (int)mattk->damd);
 	basedmg += mattk->damp;
 
-	damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, FALSE);
+	damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
 
 	int tim_tmp;
     struct obj *otmp2;
@@ -3355,7 +3355,7 @@ boolean ufound;
 		if(mattk->damn > 0 && mattk->damd > 0)
 			basedmg += d((int)mattk->damn, (int)mattk->damd);
 		basedmg += (int)mattk->damp;
-		damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, FALSE);
+		damage += adjust_damage(basedmg, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
 
 		boolean not_affected = 0;
 
@@ -3638,7 +3638,7 @@ struct attack *mattk;
             }
 			else
 			{
-				double damage = adjust_damage(d(2, 6), mtmp, &youmonst, mattk->adtyp, FALSE);
+				double damage = adjust_damage(d(2, 6), mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
 				int lev = (int)mtmp->m_lev;
 
                 pline("%s attacks you with a fiery gaze!", Monnam(mtmp));
@@ -4043,7 +4043,7 @@ struct monst *mon;
             You_feel("exhausted.");
             exercise(A_STR, FALSE);
             tmp = rn1(10, 6);
-            losehp(adjust_damage(tmp, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exhaustion", KILLED_BY);
+            losehp(adjust_damage(tmp, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "exhaustion", KILLED_BY);
             break;
         } /* case 4 */
         } /* switch */
@@ -4206,9 +4206,9 @@ struct attack *mattk;
     }
 
     if (oldu_mattk->damn > 0 && oldu_mattk->damd > 0)
-        damage = adjust_damage(d((int)oldu_mattk->damn, (int)oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, FALSE);
+        damage = adjust_damage(d((int)oldu_mattk->damn, (int)oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, ADFLAGS_NONE);
     else if (oldu_mattk->damd > 0)
-        damage = adjust_damage(d((int) olduasmon->mlevel + 1, (int) oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, FALSE);
+        damage = adjust_damage(d((int) olduasmon->mlevel + 1, (int) oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, ADFLAGS_NONE);
     else
         damage = 0;
 

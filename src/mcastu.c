@@ -317,9 +317,9 @@ boolean foundyou;
         }
     } 
 	else if (mattk->damd)
-        damage = adjust_damage(d((int) ((ml / 2) + mattk->damn), (int) mattk->damd), mtmp, &youmonst, mattk->adtyp, TRUE);
+        damage = adjust_damage(d((int) ((ml / 2) + mattk->damn), (int) mattk->damd), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
     else
-        damage = adjust_damage(d((int) ((ml / 2) + 1), 6), mtmp, &youmonst, mattk->adtyp, TRUE);
+        damage = adjust_damage(d((int) ((ml / 2) + 1), 6), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
 
     ret = 1;
 
@@ -348,7 +348,7 @@ boolean foundyou;
             pline_The("missiles bounce off!");
             damage = 0;
         } else
-            damage = adjust_damage(d((int) mtmp->m_lev / 2 + 1, 6), mtmp, &youmonst, mattk->adtyp, TRUE);
+            damage = adjust_damage(d((int) mtmp->m_lev / 2 + 1, 6), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
         break;
     case AD_SPEL: /* wizard spell */
 		cast_wizard_spell(mtmp, damage, spellnum);
@@ -653,7 +653,7 @@ int spellnum;
          * not magical damage or fire damage
          */
         pline("A sudden geyser slams into you from nowhere!");
-        damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_PHYS, TRUE);
+        damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE);
         break;
     case CLC_FIRE_PILLAR:
         pline("A pillar of fire strikes all around you!");
@@ -662,7 +662,7 @@ int spellnum;
             u_shieldeff();
             damage = 0;
         } else
-            damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_FIRE, TRUE);
+            damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
         burn_away_slime();
         (void) burnarmor(&youmonst);
         destroy_item(SCROLL_CLASS, AD_FIRE);
@@ -681,7 +681,7 @@ int spellnum;
             if (reflects)
                 break;
         } else
-            damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_ELEC, TRUE);
+            damage = adjust_damage(d(8, 6), mtmp, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
         destroy_item(WAND_CLASS, AD_ELEC);
         destroy_item(RING_CLASS, AD_ELEC);
         (void) flashburn((long) rnd(100));

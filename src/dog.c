@@ -1224,7 +1224,7 @@ struct monst *mtmp;
     if (!mtmp->mtame)
         return;
 
-    if (Aggravate_monster || Conflict)
+    if (Aggravate_monster || Conflict || is_crazed(mtmp))
         mtmp->mtame /= 2;
     else
         mtmp->mtame--;

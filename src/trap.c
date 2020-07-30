@@ -1100,7 +1100,7 @@ unsigned trflags;
             stackobj(otmp);
             newsym(u.ux, u.uy); /* map the rock */
 
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "falling rock", KILLED_BY_AN);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
             exercise(A_STR, FALSE);
         }
         break;
@@ -1152,7 +1152,7 @@ unsigned trflags;
             set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE, rn1(10, 10));
             if (is_bear(&mons[u.umonnum]))
                 You("howl in anger!");
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "bear trap", KILLED_BY_AN);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "bear trap", KILLED_BY_AN);
         }
         exercise(A_DEX, FALSE);
         break;
@@ -1219,7 +1219,7 @@ unsigned trflags;
             int dam = u.mhmax;
 
             You("are covered with rust!");
-            losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "rusting away", KILLED_BY);
+            losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "rusting away", KILLED_BY);
         }
         else if (u.umonnum == PM_GREMLIN && rn2(3))
         {
@@ -1303,7 +1303,7 @@ unsigned trflags;
         if (!steedintrap(trap, (struct obj *) 0)) {
             if (ttype == SPIKED_PIT) {
                 oldumort = u.umortality;
-                losehp(adjust_damage(rnd(conj_pit ? 4 : adj_pit ? 6 : 10), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
+                losehp(adjust_damage(rnd(conj_pit ? 4 : adj_pit ? 6 : 10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                        /* note: these don't need locomotion() handling;
                           if fatal while poly'd and Unchanging, the
                           death reason will be overridden with
@@ -1328,7 +1328,7 @@ unsigned trflags;
                 /* plunging flyers take spike damage but not pit damage */
                 if (!conj_pit
                     && !(plunged && (Flying || is_clinger(youmonst.data))))
-                    losehp(adjust_damage(rnd(adj_pit ? 3 : 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE),
+                    losehp(adjust_damage(rnd(adj_pit ? 3 : 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            plunged ? "deliberately plunged into a pit"
                                    : "fell into a pit",
                            NO_KILLER_PREFIX);
@@ -1463,7 +1463,7 @@ unsigned trflags;
             deltrap(trap);
             newsym(u.ux, u.uy); /* update position */
             You("are caught in a magical explosion!");
-            losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, FALSE), "magical explosion", KILLED_BY_AN);
+            losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "magical explosion", KILLED_BY_AN);
             Your("body absorbs some of the magical energy!");
             u.uen = (u.ubaseenmax += 2);
 			updatemaxen();
@@ -1503,7 +1503,7 @@ unsigned trflags;
                                      : (dmgval2 >= hp / 4) ? "very lethargic."
                                                            : "sluggish.");
             /* opposite of magical explosion */
-            losehp(adjust_damage(dmgval2, (struct monst*)0, &youmonst, AD_MAGM, FALSE), "anti-magical implosion", KILLED_BY_AN);
+            losehp(adjust_damage(dmgval2, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "anti-magical implosion", KILLED_BY_AN);
         }
         break;
 
@@ -1579,7 +1579,7 @@ unsigned trflags;
         if (steed_mid && saddle && !u.usteed)
             (void) keep_saddle_with_steedcorpse(steed_mid, fobj, saddle);
         newsym(u.ux, u.uy); /* update trap symbol */
-        losehp(adjust_damage(rnd(16), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "land mine", KILLED_BY_AN);
+        losehp(adjust_damage(rnd(16), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "land mine", KILLED_BY_AN);
         /* fall recursively into the pit... */
         if ((trap = t_at(u.ux, u.uy)) != 0)
             dotrap(trap, RECURSIVETRAP);
@@ -2707,7 +2707,7 @@ register struct monst *mtmp;
                 if (in_sight)
                     seetrap(trap);
 
-				deduct_monster_hp(mtmp, adjust_damage(dmgval2, (struct monst*)0, mtmp, AD_MAGM, FALSE));
+				deduct_monster_hp(mtmp, adjust_damage(dmgval2, (struct monst*)0, mtmp, AD_MAGM, ADFLAGS_NONE));
 
                 if (DEADMONSTER(mtmp))
                     monkilled(mtmp,
@@ -3157,7 +3157,7 @@ long hmask, emask; /* might cancel timeout */
                         pline("Bummer!  You've crashed.");
                     else
                         You("fall over.");
-                    losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "dangerous winds", KILLED_BY);
+                    losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "dangerous winds", KILLED_BY);
                     if (u.usteed)
                         dismount_steed(DISMOUNT_FELL);
                     selftouch("As you fall, you");
@@ -3266,7 +3266,7 @@ struct obj *box; /* null for floor trap */
         if (Fire_immunity)
             You("are uninjured.");
         else
-            losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_FIRE, FALSE), "boiling water", KILLED_BY);
+            losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "boiling water", KILLED_BY);
         return;
     }
     pline("A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
@@ -3314,7 +3314,7 @@ struct obj *box; /* null for floor trap */
     if (!num)
         You("are uninjured.");
     else
-        losehp(adjust_damage(num, (struct monst*)0, &youmonst, AD_FIRE, FALSE), tower_of_flame, KILLED_BY_AN); /* fire damage */
+        losehp(adjust_damage(num, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), tower_of_flame, KILLED_BY_AN); /* fire damage */
     burn_away_slime();
 
     if (burnarmor(&youmonst) || rn2(3)) {
@@ -3974,7 +3974,7 @@ drown()
     else if (is_iron(youmonst.data)) 
     {
         You("rust!");
-		double damage = adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+		double damage = adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
         i = (int)floor(damage);
         if (u.basemhmax > i)
             u.basemhmax -= i;
@@ -4434,7 +4434,7 @@ boolean force_failure;
                     if (mtmp->mtame)
                         abuse_dog(mtmp);
 
-					deduct_monster_hp(mtmp, adjust_damage(rnd(4), (struct monst*)0, mtmp, AD_PHYS, FALSE));
+					deduct_monster_hp(mtmp, adjust_damage(rnd(4), (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
 
 					if (DEADMONSTER(mtmp))
                         killed(mtmp);
@@ -5401,7 +5401,7 @@ boolean disarm;
                 delobj(otmp);
             }
             wake_nearby();
-            losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, FALSE), buf, KILLED_BY_AN);
+            losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, KILLED_BY_AN);
             exercise(A_STR, FALSE);
             if (costly && loss) {
                 if (insider)
@@ -5686,7 +5686,7 @@ int bodypart;
 
     pline("KABOOM!!  %s was booby-trapped!", The(item));
     wake_nearby();
-    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "explosion", KILLED_BY_AN);
+    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "explosion", KILLED_BY_AN);
     exercise(A_STR, FALSE);
     if (bodypart)
         exercise(A_CON, FALSE);
@@ -5741,7 +5741,7 @@ boolean nocorpse;
                 dam = 1;
         }
 		
-		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, FALSE));
+		deduct_monster_hp(mon, adjust_damage(dam, (struct monst*)0, mon, obj ? objects[obj->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE));
 
 		if (DEADMONSTER(mon)) 
 		{
@@ -5829,7 +5829,7 @@ lava_effects()
         if (Wwalking) {
             pline_The("%s here burns you!", hliquid("lava"));
             if (usurvive) {
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, FALSE), lava_killer, KILLED_BY); /* lava damage */
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), lava_killer, KILLED_BY); /* lava damage */
                 goto burn_stuff;
             }
         } else
@@ -5894,7 +5894,7 @@ lava_effects()
             !boil_away ? ", but it only burns slightly"
                        : " and are about to be immolated");
         if (u.uhp > 1)
-            losehp(adjust_damage(!boil_away ? 1 : (u.uhp / 2), (struct monst*)0, &youmonst, AD_FIRE, FALSE), lava_killer,
+            losehp(adjust_damage(!boil_away ? 1 : (u.uhp / 2), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), lava_killer,
                    KILLED_BY); /* lava damage */
     }
 

@@ -375,7 +375,7 @@ boolean force;      /* Quietly force this animal */
                          SUPPRESS_IT | SUPPRESS_INVISIBLE
                              | SUPPRESS_HALLUCINATION,
                          TRUE));
-        losehp(adjust_damage(rnd(8) + 1, (struct monst*)0, &youmonst, AD_PHYS, FALSE), buf, NO_KILLER_PREFIX);
+        losehp(adjust_damage(rnd(8) + 1, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
         return (FALSE);
     }
 
@@ -547,7 +547,7 @@ int reason; /* Player was thrown off etc. */
         You("%s off of %s!", verb, mon_nam(mtmp));
         if (!have_spot)
             have_spot = landing_spot(&cc, reason, 1);
-        losehp(adjust_damage(rn1(10, 10), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "riding accident", KILLED_BY_AN);
+        losehp(adjust_damage(rn1(10, 10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "riding accident", KILLED_BY_AN);
         set_wounded_legs(BOTH_SIDES, (int) HWounded_legs + rn1(5, 5));
         repair_leg_damage = FALSE;
         break;

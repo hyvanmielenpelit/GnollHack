@@ -366,7 +366,7 @@ int force;
                             mselftouch(mtmp, "Falling, ", TRUE);
                             if (!DEADMONSTER(mtmp)) 
 							{
-								deduct_monster_hp(mtmp, adjust_damage(rnd(m_already_trapped ? 4 : 6), (struct monst*)0, mtmp, AD_PHYS, FALSE));
+								deduct_monster_hp(mtmp, adjust_damage(rnd(m_already_trapped ? 4 : 6), (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
                                 if (DEADMONSTER(mtmp)) 
 								{
                                     if (!cansee(x, y)) 
@@ -412,7 +412,7 @@ int force;
                                not in it even if there was */
                             You("fall into a chasm!");
                             set_utrap(rn1(6, 2), TT_PIT);
-                            losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "fell into a chasm", NO_KILLER_PREFIX);
+                            losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "fell into a chasm", NO_KILLER_PREFIX);
                             selftouch("Falling, you");
                         } else if (u.utrap && u.utraptype == TT_PIT) {
                             boolean keepfooting =
@@ -422,7 +422,7 @@ int force;
 
                             You("are jostled around violently!");
                             set_utrap(rn1(6, 2), TT_PIT);
-                            losehp(adjust_damage(rnd(keepfooting ? 2 : 4), (struct monst*)0, &youmonst, AD_PHYS, FALSE), //Maybe_Half_Phys(rnd(keepfooting ? 2 : 4)),
+                            losehp(adjust_damage(rnd(keepfooting ? 2 : 4), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), //Maybe_Half_Phys(rnd(keepfooting ? 2 : 4)),
                                    "hurt in a chasm", NO_KILLER_PREFIX);
                             if (keepfooting)
                                 exercise(A_DEX, TRUE);
@@ -592,18 +592,28 @@ struct obj *instr;
     {
         consume_obj_charge(instr, TRUE);
         You("produce a strange, vibrating sound.");
-        boolean had_conflict = Conflict;
         wake_nearby();
         int dur_dice = objects[instr->otyp].oc_spell_dur_dice;
         int dur_diesize = objects[instr->otyp].oc_spell_dur_diesize;
         int dur_plus = objects[instr->otyp].oc_spell_dur_plus;
-        incr_itimeout(&u.uprops[CONFLICT].intrinsic, (dur_dice > 0 && dur_diesize > 0 ? d(dur_dice, dur_diesize) : 0) + dur_plus);
-        if (Conflict && !had_conflict)
+        int radius = 10;
+        int affected_cnt = 0;
+        for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+        {
+            if (isok(mtmp->mx, mtmp->my) && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= radius * radius && hearing_array[mtmp->mx][mtmp->my] > 0.0f)
+            {
+                if (!check_ability_resistance_success(mtmp, A_WIS, 0))
+                {
+                    increase_mon_property_b(mtmp, CRAZED, (dur_dice > 0 && dur_diesize > 0 ? d(dur_dice, dur_diesize) : 0) + dur_plus, canspotmon(mtmp));
+                    //incr_itimeout(&u.uprops[CRAZED].intrinsic, (dur_dice > 0 && dur_diesize > 0 ? d(dur_dice, dur_diesize) : 0) + dur_plus);
+                    affected_cnt++;
+                }
+            }
+        }
+        if (affected_cnt)
             You_feel("like a rabble-rouser.");
-        else if(Conflict)
-            You_feel("the tension remains high around you.");
         else
-            You_feel("the atmosphere is oddly relaxed around you.");
+            You_feel("tense for a moment.");
 
         break;
     }

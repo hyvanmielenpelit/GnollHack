@@ -442,7 +442,7 @@ register struct monst *magr, *mdef;
              * have a weapon instead.  This instinct doesn't work for
              * players, or under conflict or confusion.
              */
-            if (!is_confused(magr) && !Conflict && otmp && mattk->aatyp != AT_WEAP
+            if (!is_confused(magr) && !Conflict && !is_crazed(magr) && otmp && mattk->aatyp != AT_WEAP
                 && touch_petrifies(mdef->data)) {
                 strike = 0;
                 break;
@@ -1035,11 +1035,11 @@ register struct obj* omonwep;
 	if (mweapon)
 	{
 		if (is_launcher(mweapon))
-			damage += adjust_damage(d(1, 2), magr, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
+			damage += adjust_damage(d(1, 2), magr, mdef, objects[mweapon->otyp].oc_damagetype, ADFLAGS_NONE);
 		else
 		{
 			int basedmg = weapon_dmg_value(mweapon, mdef, magr, 0);
-			damage += adjust_damage(basedmg, magr, mdef, objects[mweapon->otyp].oc_damagetype, FALSE);
+			damage += adjust_damage(basedmg, magr, mdef, objects[mweapon->otyp].oc_damagetype, ADFLAGS_NONE);
 			extratmp = weapon_extra_dmg_value(mweapon, mdef, magr, basedmg);
 			damage += extratmp;
 		}
@@ -1051,19 +1051,19 @@ register struct obj* omonwep;
 		if (mattk->damn > 0 && mattk->damd > 0)
 			basedmg += d((int)mattk->damn, (int)mattk->damd);
 		basedmg += (int)mattk->damp;
-		damage += adjust_damage(basedmg, magr, mdef, mattk->adtyp, FALSE);
+		damage += adjust_damage(basedmg, magr, mdef, mattk->adtyp, ADFLAGS_NONE);
 	}
 
 	//Damage bonus is obtained in any case
 	if (mattk->adtyp == AD_PHYS || mattk->adtyp == AD_DRIN)
 	{
 		if (omonwep || mattk->aatyp == AT_WEAP || mattk->aatyp == AT_HUGS)
-			damage += adjust_damage(m_str_dmg_bonus(magr), magr, mdef, mattk->adtyp, FALSE);
+			damage += adjust_damage(m_str_dmg_bonus(magr), magr, mdef, mattk->adtyp, ADFLAGS_NONE);
 		else
-			damage += adjust_damage(m_str_dmg_bonus(magr) / 2, magr, mdef, mattk->adtyp, FALSE);
+			damage += adjust_damage(m_str_dmg_bonus(magr) / 2, magr, mdef, mattk->adtyp, ADFLAGS_NONE);
 	}
 
-	damage += adjust_damage(magr->mdaminc, magr, mdef, increase_damage_adtyp, FALSE);
+	damage += adjust_damage(magr->mdaminc, magr, mdef, increase_damage_adtyp, ADFLAGS_NONE);
 
     if ((touch_petrifies(pd) /* or flesh_petrifies() */
          || (mattk->adtyp == AD_DGST && pd == &mons[PM_MEDUSA]))
@@ -1169,7 +1169,7 @@ register struct obj* omonwep;
 				}
 				else if (special_hit_dmg > 0)
 				{
-					damage += adjust_damage(special_hit_dmg, magr, mdef, spec_adtyp, FALSE);
+					damage += adjust_damage(special_hit_dmg, magr, mdef, spec_adtyp, ADFLAGS_NONE);
 				}
 
 				/* Check if the object shatters */
@@ -1202,8 +1202,8 @@ register struct obj* omonwep;
                 pline("May %s roast in peace.", mon_nam(mdef));
             return (MM_DEF_DIED | (grow_up(magr, mdef) ? 0 : MM_AGR_DIED));
         }
-		damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
-		damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
+		damage += adjust_damage(destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
+		damage += adjust_damage(destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
         if (is_mon_immune_to_fire(mdef)) {
             if (vis && canseemon(mdef))
                 pline_The("fire doesn't seem to burn %s!", mon_nam(mdef));
@@ -1212,7 +1212,7 @@ register struct obj* omonwep;
 			damage = 0;
         }
         /* only potions damage resistant players in destroy_item */
-        damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_FIRE), magr, mdef, AD_FIRE, FALSE);
+        damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
         break;
     case AD_COLD:
         if (cancelled) {
@@ -1228,7 +1228,7 @@ register struct obj* omonwep;
             golemeffects(mdef, AD_COLD, damage);
 			damage = 0;
         }
-		damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), magr, mdef, AD_COLD, FALSE);
+		damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_COLD), magr, mdef, AD_COLD, ADFLAGS_NONE);
         break;
     case AD_ELEC:
         if (cancelled) 
@@ -1240,7 +1240,7 @@ register struct obj* omonwep;
 		if (vis && canseemon(mdef))
             pline("%s gets zapped!", Monnam(mdef));
         
-		damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), magr, mdef, AD_COLD, FALSE);
+		damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), magr, mdef, AD_COLD, ADFLAGS_NONE);
         
 		if (is_mon_immune_to_elec(mdef)) 
 		{
@@ -1251,7 +1251,7 @@ register struct obj* omonwep;
             damage = 0;
         }
         /* only rings damage resistant players in destroy_item */
-        damage += adjust_damage(destroy_mitem(mdef, RING_CLASS, AD_ELEC), magr, mdef, AD_ELEC, FALSE);
+        damage += adjust_damage(destroy_mitem(mdef, RING_CLASS, AD_ELEC), magr, mdef, AD_ELEC, ADFLAGS_NONE);
         break;
     case AD_ACID:
         if (is_cancelled(magr)) {
@@ -1390,7 +1390,7 @@ register struct obj* omonwep;
                 Strcpy(buf, Monnam(mdef));
                 pline("%s is deeply wounded by %s.", buf, mon_nam(magr));
             }
-            damage += adjust_damage(mdef->mhpmax / 4, magr, mdef, AD_PHYS, FALSE);
+            damage += adjust_damage(mdef->mhpmax / 4, magr, mdef, AD_PHYS, ADFLAGS_NONE);
         }
         break;
     case AD_SLOW:
@@ -1622,18 +1622,18 @@ register struct obj* omonwep;
             {
                 if (magr->m_lev <= 2)
                 {
-                    poisondamage = adjust_damage(d(1, 6), magr, mdef, AD_DRCO, FALSE);
+                    poisondamage = adjust_damage(d(1, 6), magr, mdef, AD_DRCO, ADFLAGS_NONE);
                 }
                 else if (magr->m_lev <= 5)
                 {
-                    poisondamage = adjust_damage(d(2, 6), magr, mdef, AD_DRCO, FALSE);
+                    poisondamage = adjust_damage(d(2, 6), magr, mdef, AD_DRCO, ADFLAGS_NONE);
                 }
                 else
                 {
                     if (rn2(10) || magr->m_lev <= 8)
-                        poisondamage = adjust_damage(d(3, 6), magr, mdef, AD_DRCO, FALSE);
+                        poisondamage = adjust_damage(d(3, 6), magr, mdef, AD_DRCO, ADFLAGS_NONE);
                     else 
-                        poisondamage = adjust_damage(d(6, 6) + 10, magr, mdef, AD_DRCO, FALSE); // mdef->mhp;
+                        poisondamage = adjust_damage(d(6, 6) + 10, magr, mdef, AD_DRCO, ADFLAGS_NONE); // mdef->mhp;
                 }
 				damage += poisondamage;
             }
@@ -2036,7 +2036,7 @@ int mdead;
 		basedmg = 0;
 	basedmg += (int)mddat->mattk[i].damp;
 
-	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, FALSE);
+	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, ADFLAGS_NONE);
 	
     enum action_tile_types action_before = mdef->action;
     update_m_action(mdef, ACTION_TILE_PASSIVE_DEFENSE);

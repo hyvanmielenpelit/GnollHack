@@ -1215,7 +1215,7 @@ struct obj **optr;
             useup(obj);
             *optr = obj = 0; /* it's gone */
             /* physical damage cause by the shards and force */
-            losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "exploding crystal ball",
+            losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "exploding crystal ball",
                    KILLED_BY_AN);
             break;
         }

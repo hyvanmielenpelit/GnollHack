@@ -185,6 +185,8 @@ const struct propname {
     { RAPID_ENERGY_REGENERATION, "rapidly regenerating mana", "rapid mana regeneration" },
     { RAPIDER_ENERGY_REGENERATION, "very rapidly regenerating mana", "very rapid mana regeneration" },
     { RAPIDEST_ENERGY_REGENERATION, "very very rapidly regenerating mana", "very very rapid mana regeneration" },
+    { MELEE_LIFE_LEECH, "having melee life leech", "melee life leech" },
+    { CRAZED, "crazed", "crazedness" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -954,7 +956,54 @@ nh_timeout()
 					You_feel("yourself speed up%s.",
 						Very_fast || Ultra_fast || Super_fast || Lightning_fast ? " a lot" : Fast ? "" : " a bit");
 				break;
-			case SILENCED:
+            case HEROISM:
+                if (!Super_heroism && !Heroism)
+                    You_feel("less heroic than before.");
+                break;
+            case SUPER_HEROISM:
+                if (!Super_heroism)
+                    You_feel("%sless heroic than before.",
+                        Heroism ? "a bit " : "");
+                break;
+            case RAPID_REGENERATION:
+                if (!Rapidest_regeneration && !Rapider_regeneration && !Rapid_regeneration)
+                    You_feel("you are healing %sless rapidly than before.",
+                        Regeneration ? "" : "much ");
+                break;
+            case RAPIDER_REGENERATION:
+                if (!Rapidest_regeneration && !Rapider_regeneration)
+                    You_feel("you are healing %sless rapidly than before.",
+                        Rapid_regeneration || Regeneration ? "" : "much ");
+                break;
+            case RAPIDEST_REGENERATION:
+                if (!Rapidest_regeneration)
+                    You_feel("you are healing %sless rapidly than before.",
+                        Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
+                break;
+            case RAPID_ENERGY_REGENERATION:
+                if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration && !Rapid_energy_regeneration)
+                    You_feel("you are gaining mana %sless rapidly than before.",
+                        Energy_regeneration ? "" : "much ");
+                break;
+            case RAPIDER_ENERGY_REGENERATION:
+                if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration)
+                    You_feel("you are gaining mana %sless rapidly than before.",
+                        Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
+                break;
+            case RAPIDEST_ENERGY_REGENERATION:
+                if (!Rapidest_energy_regeneration)
+                    You_feel("you are gaining mana %sless rapidly than before.",
+                        Rapider_energy_regeneration || Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
+                break;
+            case MELEE_LIFE_LEECH:
+                if (!Melee_life_leech)
+                    You("have lost your ability to leech life in melee!");
+                break;
+            case CRAZED:
+                if (!Crazed)
+                    You_feel("more sane than before!");
+                break;
+            case SILENCED:
 				if (!Silenced)
 					You("can speak again!");
 				break;
@@ -1402,7 +1451,50 @@ nh_timeout()
             case SLOWED:
 				You_feel("you are starting to speed up.");
 				break;
-			case SILENCED:
+            case HEROISM:
+                if (!Super_heroism && !Heroism)
+                    You("are starting to feel less heroic than before.");
+                break;
+            case SUPER_HEROISM:
+                if (!Super_heroism)
+                    You("are starting to feel%s less heroic than before.",
+                        Heroism ? " a bit" : "");
+                break;
+            case RAPID_REGENERATION:
+                if (!Rapidest_regeneration && !Rapider_regeneration)
+                    You_feel("you are starting to heal %sless rapidly than before.",
+                        Regeneration ? "" : "much ");
+                break;
+            case RAPIDER_REGENERATION:
+                if (!Rapidest_regeneration)
+                    You_feel("you are starting to heal %sless rapidly than before.",
+                        Rapid_regeneration || Regeneration ? "" : "much ");
+                break;
+            case RAPIDEST_REGENERATION:
+                You_feel("you are starting to heal %sless rapidly than before.",
+                    Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
+                break;
+            case RAPID_ENERGY_REGENERATION:
+                if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration)
+                    You_feel("you are starting to gain mana %sless rapidly than before.",
+                        Energy_regeneration ? "" : "much ");
+                break;
+            case RAPIDER_ENERGY_REGENERATION:
+                if (!Rapidest_energy_regeneration)
+                    You_feel("you are starting to gain mana %sless rapidly than before.",
+                        Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
+                break;
+            case RAPIDEST_ENERGY_REGENERATION:
+                You_feel("you are starting to gain mana %sless rapidly than before.",
+                    Rapider_energy_regeneration || Rapid_energy_regeneration || Energy_regeneration ? "" : "much ");
+                break;
+            case MELEE_LIFE_LEECH:
+                You_feel("you are starting to lose your ability to leech life in melee.");
+                break;
+            case CRAZED:
+                You("are starting to feel more sane than before.");
+                break;
+            case SILENCED:
 				You_feel("your is starting to return.");
 				break;
 			case INVISIBILITY:

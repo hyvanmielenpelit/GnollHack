@@ -953,7 +953,7 @@ cure_sickness_here:
         } 
 		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp)) 
 		{
-			double damage = adjust_damage(dmg, &youmonst, mtmp, AD_DRLI, TRUE);
+			double damage = adjust_damage(dmg, &youmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
 
 			deduct_monster_hp(mtmp, damage);
             mtmp->mbasehpmax -= (int)floor(damage);
@@ -4524,7 +4524,7 @@ struct obj *otmp;
     otmp->in_use = TRUE; /* in case losehp() is fatal */
     pline("%s suddenly explodes!", The(xname(otmp)));
     dmg = d(otmp->charges + 2, 6);
-    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, FALSE), "exploding wand", KILLED_BY_AN);
+    losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding wand", KILLED_BY_AN);
     useup(otmp);
 }
 
@@ -4632,7 +4632,7 @@ boolean ordinary;
 			else
                 basedmg = d(1 + obj->charges, 6);
 
-			damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
+			damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE);
 			exercise(A_STR, FALSE);
         }
         break;
@@ -4655,7 +4655,7 @@ boolean ordinary;
 			else
 				basedmg = d(1 + obj->charges, 3);
 
-			damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, TRUE);
+			damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE);
 			exercise(A_STR, FALSE);
 		}
 		break;
@@ -4664,7 +4664,7 @@ boolean ordinary;
 		if (!Shock_immunity && !Invulnerable) {
 			You("shock yourself!");
 			exercise(A_CON, FALSE);
-			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_ELEC, TRUE);
+			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
 		}
 		else
 		{
@@ -4680,7 +4680,7 @@ boolean ordinary;
 		{
 			You("burn yourself!");
 			exercise(A_CON, FALSE);
-			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_FIRE, TRUE);
+			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
 		}
 		else
 		{
@@ -4695,7 +4695,7 @@ boolean ordinary;
 		if (!Cold_immunity && !Invulnerable) {
 			You("freeze yourself!");
 			exercise(A_CON, FALSE);
-			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_COLD, TRUE);
+			damage = adjust_damage(d(1, 4), &youmonst, &youmonst, AD_COLD, ADFLAGS_SPELL_DAMAGE);
 		}
 		else
 		{
@@ -4708,7 +4708,7 @@ boolean ordinary;
 	case SPE_LIGHTNING_BOLT:
 	case WAN_LIGHTNING:
         learn_it = TRUE;
-		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_ELEC, TRUE);
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
 		if (!Shock_immunity && !Invulnerable) {
             You("shock yourself!");
 			exercise(A_CON, FALSE);
@@ -4758,7 +4758,7 @@ boolean ordinary;
 	case WAN_FIRE:
     case FIRE_HORN:
         learn_it = TRUE;
-		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_FIRE, TRUE);
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
 		if (Fire_immunity || Invulnerable) {
             u_shieldeff();
             You_feel("rather warm.");
@@ -4794,7 +4794,7 @@ boolean ordinary;
     case SPE_CONE_OF_COLD:
     case FROST_HORN:
         learn_it = TRUE;
-		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_COLD, TRUE);
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_COLD, ADFLAGS_SPELL_DAMAGE);
 		if (Cold_immunity || Invulnerable) {
             u_shieldeff();
             You_feel("a little chill.");
@@ -4810,7 +4810,7 @@ boolean ordinary;
     case SPE_MAGIC_MISSILE:
     case SPE_GREATER_MAGIC_MISSILE:
         learn_it = TRUE;
-		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, TRUE);
+		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE);
 		if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable) {
             u_shieldeff();
             pline_The("missiles bounce!");
@@ -5157,13 +5157,13 @@ boolean ordinary;
 		break;
 	case WAN_LIGHT: /* (broken wand) */
         /* assert( !ordinary ); */
-		damage = adjust_damage(d(obj->charges, 25), &youmonst, &youmonst, AD_ELEC, TRUE);
+		damage = adjust_damage(d(obj->charges, 25), &youmonst, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
 		/*FALLTHRU*/
     case EXPENSIVE_CAMERA:
         if (basedmg == 0)
 			basedmg = 5;
         damage = lightdamage(obj, ordinary, basedmg);
-        damage += adjust_damage(rnd(25), &youmonst, &youmonst, AD_PHYS, FALSE);
+        damage += adjust_damage(rnd(25), &youmonst, &youmonst, AD_PHYS, ADFLAGS_NONE);
         if (flashburn((long)ceil(damage)))
             learn_it = TRUE;
         damage = 0; /* reset */
@@ -5310,7 +5310,7 @@ int amt;          /* pseudo-damage used to determine blindness duration */
         Sprintf(buf, "%s %sself with %s", ordinary ? "zapped" : "blasted",
                 uhim(), how);
         /* might rehumanize(); could be fatal, but only for Unchanging */
-		damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+		damage = adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
         losehp(damage, buf, NO_KILLER_PREFIX);
     }
     return damage;
@@ -5675,7 +5675,7 @@ struct obj *obj; /* wand or spell */
             pline("A rock is dislodged from the %s and falls on your %s.",
                   ceiling(x, y), body_part(HEAD));
             dmg = rnd((uarmh && is_metallic(uarmh)) ? 2 : 6);
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "falling rock", KILLED_BY_AN);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
             if ((otmp = mksobj_at(ROCK, x, y, FALSE, FALSE)) != 0) {
                 (void) xname(otmp); /* set dknown, maybe bknown */
                 stackobj(otmp);
@@ -6700,7 +6700,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	if(origobj)
 		duration = d(objects[origobj->otyp].oc_spell_dur_dice, objects[origobj->otyp].oc_spell_dur_diesize) + objects[origobj->otyp].oc_spell_dur_plus; //Same for smal and big
 
-	damage = adjust_damage(dmg, (struct monst*)0, mon, abstype + 1, (abs(type) >= 20 && abs(type) <=29) ? FALSE : TRUE);
+	damage = adjust_damage(dmg, (struct monst*)0, mon, abstype + 1, (abs(type) >= 20 && abs(type) <=29) ? ADFLAGS_NONE : ADFLAGS_SPELL_DAMAGE);
 
     switch (abstype)
 	{
@@ -6911,7 +6911,7 @@ xchar sx, sy;
 	else
 		dam = d(dmgdice, dicesize) + dmgplus;
 
-	double damage = adjust_damage(dam, (struct monst*)0, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39));
+	double damage = adjust_damage(dam, (struct monst*)0, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39) ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
 
     switch (abstyp % 10) 
 	{
@@ -8445,7 +8445,7 @@ boolean forcedestroy;
                     how = "exploding glob of slime";
                 if (physical_damage)
                     dmg = Maybe_Half_Phys(dmg);
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), one ? how : (const char *) makeplural(how),
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), one ? how : (const char *) makeplural(how),
                        one ? KILLED_BY_AN : KILLED_BY);
                 exercise(A_STR, FALSE);
             }
@@ -8754,7 +8754,7 @@ int dmg, adtyp, tell;
 	if (dmg == 0 && tell == NOTELL)
 		return resisted;
 
-	double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, TRUE);
+	double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, ADFLAGS_SPELL_DAMAGE);
 
 	if (resisted)
 	{

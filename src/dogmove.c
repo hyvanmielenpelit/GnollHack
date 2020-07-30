@@ -1295,8 +1295,10 @@ int after; /* this is extra fast monster movement */
 
     udist = distu(omx, omy);
     /* Let steeds eat and maybe throw rider during Conflict */
-    if (mtmp == u.usteed) {
-        if (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)) {
+    if (mtmp == u.usteed) 
+    {
+        if (is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0))) 
+        {
             dismount_steed(DISMOUNT_THROWN);
             return 1;
         }
@@ -1342,9 +1344,11 @@ int after; /* this is extra fast monster movement */
 		allowflags |= ALLOW_PITS;
 	if (is_displacer(mtmp->data))
         allowflags |= ALLOW_MDISP;
-    if (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)) {
+    if (is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)))
+    {
         allowflags |= (ALLOW_U  | ALLOW_TM);
-        if (!has_edog) {
+        if (!has_edog) 
+        {
             /* Guardian angel refuses to be conflicted; rather,
              * it disappears, angrily, and sends in some nasties
              */
@@ -1353,7 +1357,7 @@ int after; /* this is extra fast monster movement */
         }
     }
 #if 0 /* [this is now handled in dochug()] */
-    if (!Conflict && !is_confused(mtmp)
+    if (!Conflict && !is_crazed(mtmp) && !is_confused(mtmp)
         && mtmp == u.ustuck && !sticks(youmonst.data)) {
         unstuck(mtmp); /* swallowed case handled above */
         You("get released!");
@@ -1421,12 +1425,12 @@ int after; /* this is extra fast monster movement */
                     && !is_blinded(mtmp) && haseyes(mtmp->data) && !is_blinded(mtmp2)
                     && (has_see_invisible(mtmp) || !is_invisible(mtmp2)))
                 || (slurps_items(mtmp2->data) && rn2(10))
-                || (is_tame(mtmp2) && !Conflict)
+                || (is_tame(mtmp2) && !Conflict && !is_crazed(mtmp2))
 				|| (max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp)
 				|| (((!mon_disregards_own_health(mtmp) && mtmp->mhp * 4 < mtmp->mhpmax)
                      || mtmp2->data->msound == MS_GUARDIAN
                      || mtmp2->data->msound == MS_LEADER || !mon_has_bloodlust(mtmp) /*mtmp->ispacifist*/) && is_peaceful(mtmp2)
-                    && !Conflict && !mon_has_bloodlust(mtmp))
+                    && !Conflict && !is_crazed(mtmp) && !mon_has_bloodlust(mtmp))
                 || (touch_petrifies(mtmp2->data) && !resists_ston(mtmp) && !MON_WEP(mtmp)))
                 continue;
 

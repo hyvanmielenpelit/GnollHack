@@ -1046,7 +1046,7 @@ genericptr_t p2;
             pline("%s is burning your %s!", Something,
                   makeplural(body_part(LUNG)));
             You("cough and spit blood!");
-            losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_DRST, FALSE), "gas cloud", KILLED_BY_AN);
+            losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "gas cloud", KILLED_BY_AN);
             return FALSE;
         } 
 		else 
@@ -1087,7 +1087,7 @@ genericptr_t p2;
             if (resists_poison(mtmp))
                 return FALSE;
 
-			deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_DRST, FALSE));
+			deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_DRST, ADFLAGS_NONE));
 
 			if (DEADMONSTER(mtmp)) 
 			{

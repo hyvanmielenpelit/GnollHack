@@ -659,6 +659,47 @@
 #define ELightning_fast u.uprops[LIGHTNING_FAST].extrinsic
 #define Lightning_fast ((HLightning_fast || ELightning_fast) && !Slowed && !Stoned)
 
+#define HHeroism u.uprops[HEROISM].intrinsic
+#define EHeroism u.uprops[HEROISM].extrinsic
+#define Heroism (HHeroism || EHeroism)
+
+#define HSuper_heroism u.uprops[SUPER_HEROISM].intrinsic
+#define ESuper_heroism u.uprops[SUPER_HEROISM].extrinsic
+#define Super_heroism (HSuper_heroism || ESuper_heroism)
+
+#define HRapid_regeneration u.uprops[RAPID_REGENERATION].intrinsic
+#define ERapid_regeneration u.uprops[RAPID_REGENERATION].extrinsic
+#define Rapid_regeneration (HRapid_regeneration || ERapid_regeneration)
+
+#define HRapider_regeneration u.uprops[RAPIDER_REGENERATION].intrinsic
+#define ERapider_regeneration u.uprops[RAPIDER_REGENERATION].extrinsic
+#define Rapider_regeneration (HRapider_regeneration || ERapider_regeneration)
+
+#define HRapidest_regeneration u.uprops[RAPIDEST_REGENERATION].intrinsic
+#define ERapidest_regeneration u.uprops[RAPIDEST_REGENERATION].extrinsic
+#define Rapidest_regeneration (HRapidest_regeneration || ERapidest_regeneration)
+
+#define HRapid_energy_regeneration u.uprops[RAPID_ENERGY_REGENERATION].intrinsic
+#define ERapid_energy_regeneration u.uprops[RAPID_ENERGY_REGENERATION].extrinsic
+#define Rapid_energy_regeneration (HRapid_energy_regeneration || ERapid_energy_regeneration)
+
+#define HRapider_energy_regeneration u.uprops[RAPIDER_ENERGY_REGENERATION].intrinsic
+#define ERapider_energy_regeneration u.uprops[RAPIDER_ENERGY_REGENERATION].extrinsic
+#define Rapider_energy_regeneration (HRapider_energy_regeneration || ERapider_energy_regeneration)
+
+#define HRapidest_energy_regeneration u.uprops[RAPIDEST_ENERGY_REGENERATION].intrinsic
+#define ERapidest_energy_regeneration u.uprops[RAPIDEST_ENERGY_REGENERATION].extrinsic
+#define Rapidest_energy_regeneration (HRapidest_energy_regeneration || ERapidest_energy_regeneration)
+
+#define HMelee_life_leech u.uprops[MELEE_LIFE_LEECH].intrinsic
+#define EMelee_life_leech u.uprops[MELEE_LIFE_LEECH].extrinsic
+#define Melee_life_leech (HMelee_life_leech || EMelee_life_leech)
+
+#define HCrazed u.uprops[CRAZED].intrinsic
+#define ECrazed u.uprops[CRAZED].extrinsic
+#define Crazed (HCrazed || ECrazed)
+
+
 #define HReflecting u.uprops[REFLECTING].intrinsic
 #define EReflecting u.uprops[REFLECTING].extrinsic
 #define Reflecting (HReflecting || EReflecting)

@@ -1765,7 +1765,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
     if (cobj->otyp == BAG_OF_TRICKS) {
         You("carefully open %s...", the(xname(cobj)));
         pline("It develops a huge set of teeth and bites you!");
-        losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, FALSE), "carnivorous bag", KILLED_BY_AN);
+        losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "carnivorous bag", KILLED_BY_AN);
         makeknown(BAG_OF_TRICKS);
         abort_looting = TRUE;
         return 1;
@@ -2384,7 +2384,7 @@ register struct obj *obj;
 			return 0;
 		}
 
-        losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, TRUE), "magical explosion", KILLED_BY_AN);
+        losehp(adjust_damage(d(6, 6), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_SPELL_DAMAGE), "magical explosion", KILLED_BY_AN);
         current_container = 0; /* baggone = TRUE; */
     }
 

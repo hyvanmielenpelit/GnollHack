@@ -3935,16 +3935,79 @@ int final;
         you_can("walk through walls", from_what(PASSES_WALLS));
 
     /*** Physical attributes ***/
+    if (Rapidest_regeneration)
+    {
+        enl_msg("You very very rapidly regenerate", "", "d", " hit points", from_what(RAPIDEST_REGENERATION));
+    }
+    if (Rapider_regeneration)
+    {
+        if (Rapidest_regeneration)
+            enl_msg("You latently very rapidly regenerate", "", "d", " hit points", from_what(RAPIDER_REGENERATION));
+        else
+            enl_msg("You very rapidly regenerate", "", "d", " hit points", from_what(RAPIDER_REGENERATION));
+    }
+    if (Rapid_regeneration)
+    {
+        if (Rapider_regeneration || Rapidest_regeneration)
+            enl_msg("You latently rapidly regenerate", "", "d", " hit points", from_what(RAPID_REGENERATION));
+        else
+            enl_msg("You rapidly regenerate", "", "d", " hit points", from_what(RAPID_REGENERATION));
+    }
     if (Regeneration)
-        enl_msg("You regenerate", "", "d", " hit points", from_what(REGENERATION));
-	if (Energy_regeneration)
-		enl_msg("You regenerate", "", "d", " mana", from_what(ENERGY_REGENERATION));
+    {
+        if(Rapid_regeneration || Rapider_regeneration || Rapidest_regeneration)
+            enl_msg("You latently regenerate", "", "d", " hit points", from_what(REGENERATION));
+        else
+            enl_msg("You regenerate", "", "d", " hit points", from_what(REGENERATION));
+    }
+
+    if (Rapidest_energy_regeneration)
+    {
+        enl_msg("You very very rapidly regenerate", "", "d", " mana", from_what(RAPIDEST_ENERGY_REGENERATION));
+    }
+    if (Rapider_energy_regeneration)
+    {
+        if (Rapidest_energy_regeneration)
+            enl_msg("You latently very rapidly regenerate", "", "d", " mana", from_what(RAPIDER_ENERGY_REGENERATION));
+        else
+            enl_msg("You very rapidly regenerate", "", "d", " mana", from_what(RAPIDER_ENERGY_REGENERATION));
+    }
+    if (Rapid_energy_regeneration)
+    {
+        if (Rapider_energy_regeneration || Rapidest_energy_regeneration)
+            enl_msg("You latently rapidly regenerate", "", "d", " mana", from_what(RAPID_ENERGY_REGENERATION));
+        else
+            enl_msg("You rapidly regenerate", "", "d", " mana", from_what(RAPID_ENERGY_REGENERATION));
+    }
+    if (Energy_regeneration)
+    {
+        if (Rapid_energy_regeneration || Rapider_energy_regeneration || Rapidest_energy_regeneration)
+            enl_msg("You latently regenerate", "", "d", " mana", from_what(ENERGY_REGENERATION));
+        else
+            enl_msg("You regenerate", "", "d", " mana", from_what(ENERGY_REGENERATION));
+    }
+
 	if (Slow_digestion)
         you_have("slower digestion", from_what(SLOW_DIGESTION));
     if (u.ubasehitinc + u.uhitinc)
         you_have(enlght_combatinc("to hit", u.ubasehitinc + u.uhitinc, final, buf), "");
     if (u.ubasedaminc + u.udaminc)
         you_have(enlght_combatinc("damage", u.ubasedaminc + u.udaminc, final, buf), "");
+    if (Super_heroism)
+    {
+        enl_msg("You cause", "", "d", " quadruple damage", from_what(SUPER_HEROISM));
+    }
+    if (Heroism)
+    {
+        if (Super_heroism)
+            enl_msg("You latently cause", "", "d", " double damage", from_what(HEROISM));
+        else
+            enl_msg("You cause", "", "d", " double damage", from_what(HEROISM));
+    }
+    if (Melee_life_leech)
+        enl_msg("You leech", "", "d", " life in melee", from_what(MELEE_LIFE_LEECH));
+
+
 	if (u.ublessed > 0)
 	{
 		char protbuf[BUFSZ];
@@ -4085,7 +4148,7 @@ int final;
 	}
 	if (Slowed)
 		you_are("slowed", from_what(SLOWED));
-	if (Silenced)
+    if (Silenced)
 		you_are("silenced", from_what(SILENCED));
 	if (Paralyzed)
 		you_are("paralyzed", from_what(PARALYZED));
@@ -4097,6 +4160,8 @@ int final;
 		you_are("cancelled", from_what(CANCELLED));
 	if (Summon_forbidden)
 		you_have("summoning forbidden", from_what(SUMMON_FORBIDDEN));
+    if (Crazed)
+        you_are("crazed", from_what(CRAZED));
 
 	if (No_magic_resistance)
 		you_have("no magic resistance", from_what(NO_MAGIC_RESISTANCE));

@@ -1195,7 +1195,7 @@ register struct monst *mtmp;
 
         if (cansee(mtmp->mx, mtmp->my))
             pline("%s rusts.", Monnam(mtmp));
-		deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_PHYS, FALSE));
+		deduct_monster_hp(mtmp, adjust_damage(dam, (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
         //mtmp->mhp -= dam;
 
         if (mtmp->mhpmax > dam)
@@ -1251,7 +1251,7 @@ register struct monst *mtmp;
             } 
 			else
 			{
-				deduct_monster_hp(mtmp, adjust_damage(1, (struct monst*)0, mtmp, AD_FIRE, FALSE));
+				deduct_monster_hp(mtmp, adjust_damage(1, (struct monst*)0, mtmp, AD_FIRE, ADFLAGS_NONE));
                 if (DEADMONSTER(mtmp)) 
 				{
                     if (cansee(mtmp->mx, mtmp->my))
@@ -1802,7 +1802,8 @@ movemon()
         }
 
         /* continue if the monster died fighting */
-        if (Conflict && !mtmp->iswiz && !is_blinded(mtmp)) {
+        if ((Conflict || is_crazed(mtmp)) && !mtmp->iswiz && !is_blinded(mtmp)) 
+        {
             /* Note:
              *  Conflict does not take effect in the first round.
              *  Therefore, A monster when stepping into the area will
@@ -3236,12 +3237,12 @@ boolean was_swallowed; /* digestion */
                     There("is an explosion in your %s!", body_part(STOMACH));
                     Sprintf(killer.name, "%s explosion",
                             s_suffix(mon_monster_name(mon)));
-                    losehp(adjust_damage(tmp, mon, &youmonst, AD_PHYS, FALSE), killer.name, KILLED_BY_AN);
+                    losehp(adjust_damage(tmp, mon, &youmonst, AD_PHYS, ADFLAGS_NONE), killer.name, KILLED_BY_AN);
                 } 
 				else
 				{
                     You_hear("an explosion.");
-					deduct_monster_hp(magr, adjust_damage(tmp, mon, magr, AD_PHYS, FALSE));
+					deduct_monster_hp(magr, adjust_damage(tmp, mon, magr, AD_PHYS, ADFLAGS_NONE));
                     //magr->mhp -= tmp;
                     if (DEADMONSTER(magr))
                         mondied(magr);

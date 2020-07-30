@@ -451,6 +451,11 @@ extern short tile2enlargement[MAX_GLYPH];
 #define TEST_TRAV 2 /* test a future travel location */
 #define TEST_TRAP 3 /* check if a future travel loc is a trap */
 
+/* Flags to control adjust_damage */
+#define ADFLAGS_NONE            0x00000000UL
+#define ADFLAGS_SPELL_DAMAGE    0x00000001UL
+#define ADFLAGS_MELEE_DAMAGE    0x00000002UL
+
 /*** some utility macros ***/
 #define yn_query(query) yn_function(query, ynchars, 'n')
 #define ynq(query) yn_function(query, ynqchars, 'q')

@@ -33,7 +33,7 @@ struct monst *mtmp;
     }
     wake_nearto(mtmp->mx, mtmp->my, 7 * 7);
 	increase_mon_property(mtmp, STUNNED, 5 + rnd(10));
-	deduct_monster_hp(mtmp, adjust_damage(rnd(15), (struct monst*)0, mtmp, AD_PHYS, FALSE));
+	deduct_monster_hp(mtmp, adjust_damage(rnd(15), (struct monst*)0, mtmp, AD_PHYS, ADFLAGS_NONE));
     if (DEADMONSTER(mtmp)) 
 	{
         mondied(mtmp);
@@ -324,9 +324,40 @@ boolean digest_meal;
 	int fixedhpperround = mon->mhpmax / roundstofull;
 	int fractional_hp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
 
+    if (has_rapidest_regeneration(mon))
+    {
+        fixedhpperround = 20;
+        fractional_hp = 0;
+    }
+    else if (has_rapider_regeneration(mon))
+    {
+        fixedhpperround = 10;
+        fractional_hp = 0;
+    }
+    else if (has_rapid_regeneration(mon))
+    {
+        fixedhpperround = 5;
+        fractional_hp = 0;
+    }
+
     if (is_mummy_rotted(mon))
     {
-        if (has_regeneration(mon))
+        if (has_rapidest_regeneration(mon))
+        {
+            fixedhpperround = 3;
+            fractional_hp = 0;
+        }
+        else if (has_rapider_regeneration(mon))
+        {
+            fixedhpperround = 2;
+            fractional_hp = 0;
+        }
+        else if (has_rapid_regeneration(mon))
+        {
+            fixedhpperround = 1;
+            fractional_hp = 0;
+        }
+        else if (has_regeneration(mon))
         {
             fixedhpperround = 0;
             fractional_hp = 0;
@@ -683,7 +714,7 @@ register struct monst *mtmp;
         mtmp->mflee = 0;
 
     /* cease conflict-induced swallow/grab if conflict has ended */
-    if (mtmp == u.ustuck && is_peaceful(mtmp) && !is_confused(mtmp) && !(Conflict))
+    if (mtmp == u.ustuck && is_peaceful(mtmp) && !is_confused(mtmp) && !(Conflict || is_crazed(mtmp)))
 	{
         release_hero(mtmp);
         return 0; /* uses up monster's turn */
@@ -766,7 +797,7 @@ register struct monst *mtmp;
         }
         pline("A wave of psychic energy pours over you!");
         if (is_peaceful(mtmp)
-            && (!Conflict || check_ability_resistance_success(mtmp, A_WIS, 0)))
+            && (!(Conflict || is_crazed(mtmp)) || check_ability_resistance_success(mtmp, A_WIS, 0)))
 		{
             pline("It feels quite soothing.");
         } 
@@ -779,7 +810,7 @@ register struct monst *mtmp;
                 pline("It locks on to your %s!",
                       m_sen ? "telepathy" : (Blind_telepat || Unblind_telepat) ? "latent telepathy"
                                                           : "mind");
-                losehp(adjust_damage(rnd(15), mtmp, &youmonst, AD_PSIO, TRUE), "psychic blast", KILLED_BY_AN);
+                losehp(adjust_damage(rnd(15), mtmp, &youmonst, AD_PSIO, ADFLAGS_SPELL_DAMAGE), "psychic blast", KILLED_BY_AN);
             }
         }
 		else
@@ -803,7 +834,7 @@ register struct monst *mtmp;
 			{
                 if (cansee(m2->mx, m2->my))
                     pline("It locks on to %s.", mon_nam(m2));
-				deduct_monster_hp(m2, adjust_damage(rnd(15), mtmp, m2, AD_PSIO, FALSE));
+				deduct_monster_hp(m2, adjust_damage(rnd(15), mtmp, m2, AD_PSIO, ADFLAGS_NONE));
 				//m2->mhp -= rnd(15);
                 if (DEADMONSTER(m2))
                     monkilled(m2, "", AD_DRIN);
@@ -817,7 +848,7 @@ register struct monst *mtmp;
     /* If monster is nearby you, and has to wield a weapon, do so.   This
      * costs the monster a move, of course.
      */
-    if ((!is_peaceful(mtmp) || Conflict) && inrange
+    if ((!is_peaceful(mtmp) || is_crazed(mtmp) || Conflict) && inrange
         && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 8
         && attacktype(mdat, AT_WEAP))
 	{
@@ -848,7 +879,7 @@ register struct monst *mtmp;
         || (is_invisible(mtmp) && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
-        || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
+        || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || is_crazed(mtmp) || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
         || (is_blinded(mtmp) && !rn2(4)) || is_peaceful(mtmp))
 	{
         /* Possibly cast an undirected spell if not attacking you */
@@ -922,7 +953,7 @@ register struct monst *mtmp;
     /*  Now, attack the player if possible - one attack set per monst
      */
 
-    if (!is_peaceful(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)))
+    if (!is_peaceful(mtmp) || is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0)))
 	{
         if (inrange && !noattacks(mdat)
             && (Upolyd ? u.mh : u.uhp) > 0 && !scared && tmp != 3)
@@ -1388,14 +1419,14 @@ register int after;
 
     /* don't tunnel if hostile and close enough to prefer a weapon */
     if (can_tunnel && needspick(ptr)
-        && ((!is_peaceful(mtmp) || Conflict)
+        && ((!is_peaceful(mtmp) || Conflict || is_crazed(mtmp))
             && dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 8))
         can_tunnel = FALSE;
 
     nix = omx;
     niy = omy;
     flag = 0L;
-    if (is_peaceful(mtmp) && (!(Conflict) || check_ability_resistance_success(mtmp, A_WIS, 0)))
+    if (is_peaceful(mtmp) && (!(Conflict || is_crazed(mtmp)) || check_ability_resistance_success(mtmp, A_WIS, 0)))
         flag |= (ALLOW_SANCT | ALLOW_SSM);
     else
 	{

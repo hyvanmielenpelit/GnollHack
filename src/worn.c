@@ -833,6 +833,7 @@ boolean silently;
 	boolean was_peaceful = is_peaceful(mtmp);
 	boolean was_silenced = is_silenced(mtmp);
 	boolean was_cancelled = is_cancelled(mtmp);
+	boolean was_crazed = is_crazed(mtmp);
 
 
 	switch (function_choice)
@@ -961,6 +962,18 @@ boolean silently;
 		{
 			res = TRUE;
 			pline("%s magic seems to start flowing properly.", s_suffix(Monnam(mtmp)));
+		}
+
+		/* Crazedness */
+		if (is_crazed(mtmp) && !was_crazed)
+		{
+			res = TRUE;
+			pline("%s looks crazed.", Monnam(mtmp));
+		}
+		else if (!is_crazed(mtmp) && was_crazed)
+		{
+			res = TRUE;
+			pline("%s looks more sane.", Monnam(mtmp));
 		}
 
 		/* Sleeping */

@@ -220,7 +220,7 @@ boolean clumsy;
             mon->mflee = 0;
     }
 
-    double damage = adjust_damage(dmg, &youmonst, mon, AD_PHYS, FALSE);
+    double damage = adjust_damage(dmg, &youmonst, mon, AD_PHYS, ADFLAGS_NONE);
     if (dmg > 0)
         deduct_monster_hp(mon, damage);
 
@@ -1625,7 +1625,7 @@ dokick() {
             if (!rn2(3))
                 set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
             dmg = rnd(ACURR(A_CON) > 15 ? 3 : 5);
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), kickstr(buf, kickobjnam), KILLED_BY);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), kickstr(buf, kickobjnam), KILLED_BY);
             if (Is_airlevel(&u.uz) || Levitation)
                 hurtle(-u.dx, -u.dy, rn1(2, 4), TRUE); /* assume it's heavy */
             update_u_action(ACTION_TILE_NO_ACTION);

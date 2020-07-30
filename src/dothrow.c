@@ -1062,14 +1062,14 @@ int x, y;
             else
                 s = "bumping into a door";
             dmg = rnd(2 + *range);
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), s, KILLED_BY);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), s, KILLED_BY);
             wake_nearto(x,y, 10);
             return FALSE;
         }
         if (levl[x][y].typ == IRONBARS) {
             You("crash into some iron bars.  Ouch!");
             dmg = rnd(2 + *range);
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "crashing into iron bars",
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "crashing into iron bars",
                    KILLED_BY);
             wake_nearto(x,y, 20);
             return FALSE;
@@ -1077,7 +1077,7 @@ int x, y;
         if ((obj = sobj_at(BOULDER, x, y)) != 0) {
             You("bump into a %s.  Ouch!", xname(obj));
             dmg = rnd(2 + *range);
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "bumping into a boulder", KILLED_BY);
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "bumping into a boulder", KILLED_BY);
             wake_nearto(x,y, 10);
             return FALSE;
         }
@@ -1085,7 +1085,7 @@ int x, y;
             /* did we hit a no-dig non-wall position? */
             You("smack into something!");
             dmg = rnd(2 + *range);
-            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "touching the edge of the universe",
+            losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "touching the edge of the universe",
                    KILLED_BY);
             wake_nearto(x,y, 10);
             return FALSE;
@@ -1099,7 +1099,7 @@ int x, y;
                 You("%sget forcefully wedged into a crevice.",
                     too_much ? "and all your belongings " : "");
                 dmg = rnd(2 + *range);
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, FALSE), "wedging into a narrow crevice",
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "wedging into a narrow crevice",
                        KILLED_BY);
                 wake_nearto(x,y, 10);
                 return FALSE;
@@ -1457,14 +1457,14 @@ boolean hitsroof;
     } else { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
         int basedmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst, 1);
-		double damage = adjust_damage(basedmg, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
+		double damage = adjust_damage(basedmg, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
 
         if (obj->oartifact)
             /* need a fake die roll here; rn1(18,2) avoids 1 and 20 */
             artimsg = artifact_hit((struct monst *) 0, &youmonst, obj, &damage, rn1(18, 2));
 
         if (damage == 0) { /* probably wasn't a weapon; base damage on weight */
-			damage = adjust_damage(obj->owt / 100, (struct monst*)0, &youmonst, AD_PHYS, FALSE);
+			damage = adjust_damage(obj->owt / 100, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
             if (damage < 1)
 				damage = 1;
             else if (damage > 6)
@@ -1476,7 +1476,7 @@ boolean hitsroof;
         if (damage > 1 && less_damage)
 			damage = 1;
         if (damage > 0)
-			damage += adjust_damage(u.ubasedaminc + u.udaminc, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
+			damage += adjust_damage(u.ubasedaminc + u.udaminc, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
         if (damage < 0)
 			damage = 0; /* beware negative rings of increase damage */
 
@@ -1836,7 +1836,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
                 }
 				else 
 				{
-                    double dmg = adjust_damage(rn2(2), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
+                    double dmg = adjust_damage(rn2(2), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
 
                     if (!dmg) 
 					{
@@ -1848,7 +1848,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
                     }
 					else 
 					{
-                        dmg += adjust_damage(rnd(3), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, FALSE);
+                        dmg += adjust_damage(rnd(3), &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);
                         pline(Blind ? "%s your %s!"
                                     : "%s back toward you, hitting your %s!",
                               Tobjnam(obj, Blind ? "hit" : "fly"),

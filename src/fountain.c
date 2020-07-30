@@ -316,7 +316,7 @@ drinkfountain()
 		else
 		{
 			losestr(rn1(4, 2));
-			losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_DRST, FALSE), "poisonous water", KILLED_BY);
+			losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "poisonous water", KILLED_BY);
 		}
 		if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 		{
@@ -394,11 +394,11 @@ drinkfountain()
             if (Poison_resistance) {
                 pline("Perhaps it is runoff from the nearby %s farm.",
                       fruitname(FALSE));
-                losehp(adjust_damage(rnd(4), (struct monst*)0, &youmonst, AD_DRST, FALSE), "unrefrigerated sip of juice", KILLED_BY_AN);
+                losehp(adjust_damage(rnd(4), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "unrefrigerated sip of juice", KILLED_BY_AN);
                 break;
             }
             losestr(rn1(4, 3));
-            losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_DRST, FALSE), "contaminated water", KILLED_BY);
+            losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "contaminated water", KILLED_BY);
             exercise(A_CON, FALSE);
             break;
         case 22: /* Fountain of snakes! */
@@ -1139,7 +1139,7 @@ drinksink()
         if (Fire_immunity)
             pline("It seems quite tasty.");
         else
-            losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_FIRE, FALSE), "sipping boiling water", KILLED_BY);
+            losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "sipping boiling water", KILLED_BY);
         /* boiling water burns considered fire damage */
         break;
     case 3:
