@@ -2430,8 +2430,10 @@ take_off(VOID_ARGS)
     register struct obj *otmp;
     struct takeoff_info *doff = &context.takeoff;
 
-    if (doff->what) {
-        if (doff->delay > 0) {
+    if (doff->what) 
+    {
+        if (doff->delay > 0) 
+        {
             doff->delay--;
             return 1; /* still busy */
         }
@@ -2442,7 +2444,8 @@ take_off(VOID_ARGS)
     }
 
     for (i = 0; takeoff_order[i]; i++)
-        if (doff->mask & takeoff_order[i]) {
+        if (doff->mask & takeoff_order[i]) 
+        {
             doff->what = takeoff_order[i];
             break;
         }
@@ -2450,16 +2453,25 @@ take_off(VOID_ARGS)
     otmp = (struct obj *) 0;
     doff->delay = 0;
 
-    if (doff->what == 0L) {
+    if (doff->what == 0L) 
+    {
         You("finish %s.", doff->disrobing);
         return 0;
-    } else if (doff->what == W_WEP) {
+    } 
+    else if (doff->what == W_WEP) 
+    {
         doff->delay = 1;
-    } else if (doff->what == W_SWAPWEP) {
+    } 
+    else if (doff->what == W_SWAPWEP)
+    {
         doff->delay = 1;
-    } else if (doff->what == W_QUIVER) {
+    }
+    else if (doff->what == W_QUIVER) 
+    {
         doff->delay = 1;
-    } else if (doff->what == WORN_ARMOR) {
+    }
+    else if (doff->what == WORN_ARMOR) 
+    {
         otmp = uarm;
         /* If a cloak is being worn, add the time to take it off and put
          * it back on again.  Kludge alert! since that time is 0 for all
@@ -2470,7 +2482,8 @@ take_off(VOID_ARGS)
 		if (uarmo)
 			doff->delay += 2 * objects[uarmo->otyp].oc_delay + 1;
 	}
-	else if (doff->what == WORN_ROBE) {
+	else if (doff->what == WORN_ROBE) 
+    {
 		otmp = uarmo;
 		/* If a cloak is being worn, add the time to take it off and put
 		 * it back on again.  Kludge alert! since that time is 0 for all
@@ -2478,20 +2491,33 @@ take_off(VOID_ARGS)
 		 */
 		if (uarmc)
 			doff->delay += 2 * objects[uarmc->otyp].oc_delay + 1;
-	} else if (doff->what == WORN_CLOAK) {
+	} 
+    else if (doff->what == WORN_CLOAK)
+    {
         otmp = uarmc;
-    } else if (doff->what == WORN_BOOTS) {
+    }
+    else if (doff->what == WORN_BOOTS)
+    {
         otmp = uarmf;
 	}
-	else if (doff->what == WORN_BRACERS) {
+	else if (doff->what == WORN_BRACERS) 
+    {
 		otmp = uarmb;
-	} else if (doff->what == WORN_GLOVES) {
+	} 
+    else if (doff->what == WORN_GLOVES) 
+    {
         otmp = uarmg;
-    } else if (doff->what == WORN_HELMET) {
+    }
+    else if (doff->what == WORN_HELMET) 
+    {
         otmp = uarmh;
-    } else if (doff->what == WORN_SHIELD) {
+    }
+    else if (doff->what == WORN_SHIELD) 
+    {
         otmp = uarms;
-    } else if (doff->what == WORN_SHIRT) {
+    }
+    else if (doff->what == WORN_SHIRT) 
+    {
         otmp = uarmu;
         /* add the time to take off and put back on armor and/or cloak */
         if (uarm)
@@ -2500,17 +2526,27 @@ take_off(VOID_ARGS)
 			doff->delay += 2 * objects[uarmo->otyp].oc_delay + 1;
 		if (uarmc)
             doff->delay += 2 * objects[uarmc->otyp].oc_delay + 1;
-    } else if (doff->what == WORN_AMUL) {
+    }
+    else if (doff->what == WORN_AMUL) 
+    {
         doff->delay = 1;
-    } else if (doff->what == LEFT_RING) {
+    }
+    else if (doff->what == LEFT_RING) 
+    {
         doff->delay = 1;
-    } else if (doff->what == RIGHT_RING) {
+    }
+    else if (doff->what == RIGHT_RING)
+    {
         doff->delay = 1;
-    } else if (doff->what == WORN_BLINDF) {
+    }
+    else if (doff->what == WORN_BLINDF) 
+    {
         /* [this used to be 2, but 'R' (and 'T') only require 1 turn to
            remove a blindfold, so 'A' shouldn't have been requiring 2] */
         doff->delay = 1;
-    } else {
+    } 
+    else 
+    {
         impossible("take_off: taking off %lx", doff->what);
         return 0; /* force done */
     }
