@@ -4051,11 +4051,34 @@ int final;
     if (Hate_silver)
         you_are("harmed by silver", "");
     /* movement and non-armor-based protection */
-	if (Very_fast)
-		you_are("very fast", from_what(VERY_FAST));
-	if (Fast)
+    if (Lightning_fast)
+    {
+        you_are("lightning fast", from_what(LIGHTNING_FAST));
+    }
+    if (Super_fast)
+    {
+        if (Lightning_fast)
+            you_have("latent super-fastness", from_what(SUPER_FAST));
+        else
+            you_are("super fast", from_what(SUPER_FAST));
+    }
+    if (Ultra_fast)
+    {
+        if (Super_fast || Lightning_fast)
+            you_have("latent ultra-fastness", from_what(ULTRA_FAST));
+        else
+            you_are("ultra fast", from_what(ULTRA_FAST));
+    }
+    if (Very_fast)
+    {
+        if (Ultra_fast || Super_fast || Lightning_fast)
+            you_have("latent very-fastness", from_what(VERY_FAST));
+        else
+            you_are("very fast", from_what(VERY_FAST));
+    }
+    if (Fast)
 	{
-		if (Very_fast)
+		if (Very_fast || Ultra_fast || Super_fast || Lightning_fast)
 			you_have("latent fastness", from_what(FAST));
 		else
 			you_are("fast", from_what(FAST));

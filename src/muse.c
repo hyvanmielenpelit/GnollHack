@@ -2081,7 +2081,7 @@ struct monst *mtmp;
 		if (!otmp)
 			return 2;
 		mquaffmsg(mtmp, otmp);
-        (void)increase_mon_property_verbosely(mtmp, VERY_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+        (void)increase_mon_property_verbosely(mtmp, ULTRA_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
 		m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:

@@ -4892,7 +4892,7 @@ boolean ordinary;
 		boolean was_very_fast = Very_fast;
 		incr_itimeout(&HVery_fast, 150 + rnd(50));
 		context.botl = context.botlx = TRUE;
-		if (Very_fast && !was_very_fast)
+		if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
 		{
 			learn_it = TRUE;
 			You("speed up.");
@@ -4932,7 +4932,7 @@ boolean ordinary;
 		boolean was_very_fast = Very_fast;
 		incr_itimeout(&HVery_fast, obj->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(obj)) : duration);
 		context.botl = context.botlx = TRUE;
-		if (Very_fast && !was_very_fast)
+		if (Very_fast && !was_very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
 		{
 			learn_it = TRUE;
 			You("speed up.");

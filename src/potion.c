@@ -1219,14 +1219,15 @@ struct obj *otmp;
         }
         /* FALLTHRU */
     case SPE_HASTE_SELF:
-        if (!Very_fast) { /* wwf@doe.carleton.ca */
-            You("are suddenly moving %sfaster.", Fast ? "" : "much ");
+        if (!Ultra_fast || !Super_fast || !Lightning_fast)
+        { /* wwf@doe.carleton.ca */
+            You("are suddenly moving %sfaster.", Fast || Very_fast ? "" : "much ");
         } else {
             Your("%s get new energy.", makeplural(body_part(LEG)));
             unkn++;
         }
         exercise(A_DEX, TRUE);
-        incr_itimeout(&HVery_fast, otmp->oclass == POTION_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+        incr_itimeout(&HUltra_fast, otmp->oclass == POTION_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
         break;
 	case POT_MAGIC_RESISTANCE:
 		if (!Antimagic)
@@ -1241,7 +1242,33 @@ struct obj *otmp;
 		exercise(A_WIS, TRUE);
 		incr_itimeout(&HAntimagic, otmp->oclass == POTION_CLASS ? rn1(10, 180 + 90 * bcsign(otmp)) : duration);
 		break;
-	case POT_BLINDNESS:
+    case POT_TITAN_STRENGTH:
+        if (!Titan_strength)
+        {
+            You("feel as strong as a titan.");
+        }
+        else
+        {
+            You("feel a bit stronger than before.");
+            unkn++;
+        }
+        exercise(A_WIS, TRUE);
+        incr_itimeout(&HTitan_strength, otmp->oclass == POTION_CLASS ? rn1(10, 180 + 90 * bcsign(otmp)) : duration);
+        break;
+    case POT_FIRE_IMMUNITY:
+        if (!Titan_strength)
+        {
+            You("feel protected from fire.");
+        }
+        else
+        {
+            You("feel a bit more protected from fire.");
+            unkn++;
+        }
+        exercise(A_WIS, TRUE);
+        incr_itimeout(&HFire_immunity, otmp->oclass == POTION_CLASS ? rn1(10, 180 + 90 * bcsign(otmp)) : duration);
+        break;
+    case POT_BLINDNESS:
         if (Blind)
             nothing++;
         make_blinded(itimeout_incr(Blinded,
@@ -1283,13 +1310,13 @@ struct obj *otmp;
         break;
     case POT_HEALING:
         You_feel("better.");
-        healup(d(6 + 2 * bcsign(otmp), 4), otmp->blessed ? 1 : 0,
+        healup(d(12 + 6 * bcsign(otmp), 6), otmp->blessed ? 1 : 0,
                !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
         break;
     case POT_EXTRA_HEALING:
         You_feel("much better.");
-        healup(d(6 + 2 * bcsign(otmp), 8),
+        healup(d(24 + 15 * bcsign(otmp), 6),
                otmp->blessed ? 2 : 0, !otmp->cursed,
                TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
         exercise(A_CON, TRUE);
@@ -1297,7 +1324,7 @@ struct obj *otmp;
         break;
 	case POT_GREATER_HEALING:
 		You_feel("much, much better.");
-		healup(d(10 + 2 * bcsign(otmp), 8) + 8,
+		healup(d(36 + 18 * bcsign(otmp), 8),
 			otmp->blessed ? 3 : 0, !otmp->cursed,
 			TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
 		exercise(A_CON, TRUE);
@@ -1906,7 +1933,7 @@ do_illness: /* Pestilence's potion of healing effect */
             break;
         case POT_SPEED:
             angermon = FALSE;
-			increase_mon_property_verbosely(mon, VERY_FAST, rn1(10, 100 + 60 * bcsign(obj)));
+			increase_mon_property_verbosely(mon, ULTRA_FAST, rn1(10, 100 + 60 * bcsign(obj)));
             break;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) 
@@ -2192,6 +2219,18 @@ struct obj *obj;
         if (!Antimagic)
             You("feel a bit more protected now.");
         incr_itimeout(&HAntimagic, rnd(5));
+        exercise(A_WIS, TRUE);
+        break;
+    case POT_TITAN_STRENGTH:
+        if (!Titan_strength)
+            You("feel a bit stronger than before.");
+        incr_itimeout(&HTitan_strength, rnd(5));
+        exercise(A_WIS, TRUE);
+        break;
+    case POT_FIRE_IMMUNITY:
+        if (!Fire_immunity)
+            You("feel a bit more fire-protected now.");
+        incr_itimeout(&HFire_immunity, rnd(5));
         exercise(A_WIS, TRUE);
         break;
     case POT_BLINDNESS:

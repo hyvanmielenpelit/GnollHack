@@ -471,11 +471,32 @@
 #define has_very_fast(mon) \
 	has_property(mon, VERY_FAST)
 
+#define has_ultra_fast(mon) \
+	has_property(mon, ULTRA_FAST)
+
+#define has_super_fast(mon) \
+	has_property(mon, SUPER_FAST)
+
+#define has_lightning_fast(mon) \
+	has_property(mon, LIGHTNING_FAST)
+
+#define is_lightning_fast(mon) \
+	(has_lightning_fast(mon) && !is_slow(mon))
+
+#define is_super_fast(mon) \
+	(has_super_fast(mon) && !is_slow(mon) && !is_lightning_fast(mon))
+
+#define is_ultra_fast(mon) \
+	(has_ultra_fast(mon) && !is_slow(mon) && !is_super_fast(mon) && !is_lightning_fast(mon))
+
 #define is_very_fast(mon) \
-	(has_very_fast(mon) && !is_slow(mon))
+	(has_very_fast(mon) && !is_slow(mon) && !is_ultra_fast(mon) && !is_super_fast(mon) && !is_lightning_fast(mon))
 
 #define is_fast(mon) \
-	(has_fast(mon) && !is_slow(mon) && !is_very_fast(mon))
+	(has_fast(mon) && !is_slow(mon) && !is_very_fast(mon) && !is_ultra_fast(mon) && !is_super_fast(mon) && !is_lightning_fast(mon))
+
+
+
 
 
 /* other properties */

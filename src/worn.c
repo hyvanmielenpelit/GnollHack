@@ -812,6 +812,9 @@ boolean silently;
 	boolean was_suffocating = is_suffocating(mtmp);
 	boolean was_fast = is_fast(mtmp);
 	boolean was_very_fast = is_very_fast(mtmp);
+	boolean was_ultra_fast = is_ultra_fast(mtmp);
+	boolean was_super_fast = is_super_fast(mtmp);
+	boolean was_lightning_fast = is_lightning_fast(mtmp);
 	boolean was_slow = is_slow(mtmp);
 	boolean was_sleeping = is_sleeping(mtmp);
 	boolean was_paralyzed = is_paralyzed(mtmp);
@@ -895,15 +898,35 @@ boolean silently;
 		}
 
 		/* Speed */
-		if ((is_very_fast(mtmp) && !was_very_fast) || (is_fast(mtmp) && was_slow))
+		if (
+			(!is_slow(mtmp) && was_slow)
+			)
 		{
 			res = TRUE;
-			pline("%s is moving %sfaster.", Monnam(mtmp), !was_fast ? "much " : "");
+			pline("%s is moving %sfaster.", Monnam(mtmp), 
+				is_fast(mtmp) || is_very_fast(mtmp) || is_ultra_fast(mtmp) || is_super_fast(mtmp) || is_lightning_fast(mtmp) ? "much " : "");
 		}
-		else if (is_fast(mtmp) && !was_fast && !was_very_fast)
+		else if (
+			(is_fast(mtmp) && !was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+			|| (is_very_fast(mtmp) && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+			|| (is_ultra_fast(mtmp) && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+			|| (is_super_fast(mtmp) && !was_super_fast && !was_lightning_fast)
+			|| (is_lightning_fast(mtmp) && !was_lightning_fast)
+			)
 		{
 			res = TRUE;
 			pline("%s is moving faster.", Monnam(mtmp));
+		}
+		else if (
+			(!is_fast(mtmp) && !is_very_fast(mtmp) && !is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_fast || was_very_fast || was_ultra_fast || was_super_fast || was_lightning_fast))
+			|| (!is_very_fast(mtmp) && !is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_very_fast || was_ultra_fast || was_super_fast || was_lightning_fast))
+			|| (!is_ultra_fast(mtmp) && !is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_ultra_fast || was_super_fast || was_lightning_fast))
+			|| (!is_super_fast(mtmp) && !is_lightning_fast(mtmp) && (was_super_fast || was_lightning_fast))
+			|| (!is_lightning_fast(mtmp) && (was_lightning_fast))
+			)
+		{
+			res = TRUE;
+			pline("%s is moving slower.", Monnam(mtmp));
 		}
 		else if (is_slow(mtmp) && !was_slow)
 		{
@@ -2299,7 +2322,16 @@ struct obj *obj;
      */
 	if (obj) 
 	{
-		if ((objects[obj->otyp].oc_oprop == VERY_FAST || objects[obj->otyp].oc_oprop2 == VERY_FAST || objects[obj->otyp].oc_oprop3 == VERY_FAST) 
+		if ((objects[obj->otyp].oc_oprop == LIGHTNING_FAST || objects[obj->otyp].oc_oprop2 == LIGHTNING_FAST || objects[obj->otyp].oc_oprop3 == LIGHTNING_FAST)
+			&& !(mon->mprops[LIGHTNING_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
+			return 50;
+		if ((objects[obj->otyp].oc_oprop == SUPER_FAST || objects[obj->otyp].oc_oprop2 == SUPER_FAST || objects[obj->otyp].oc_oprop3 == SUPER_FAST)
+			&& !(mon->mprops[SUPER_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
+			return 40;
+		if ((objects[obj->otyp].oc_oprop == ULTRA_FAST || objects[obj->otyp].oc_oprop2 == ULTRA_FAST || objects[obj->otyp].oc_oprop3 == ULTRA_FAST)
+			&& !(mon->mprops[ULTRA_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
+			return 30;
+		if ((objects[obj->otyp].oc_oprop == VERY_FAST || objects[obj->otyp].oc_oprop2 == VERY_FAST || objects[obj->otyp].oc_oprop3 == VERY_FAST)
 			&& !(mon->mprops[VERY_FAST] & (M_EXTRINSIC | M_INTRINSIC_ACQUIRED)))
             return 20;
     }

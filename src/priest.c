@@ -1074,7 +1074,13 @@ boolean showheads;
 		Strcat(info, ", trapped");
 	if (is_slow(mtmp))
 		Strcat(info, ", slow");
-	else if (is_very_fast(mtmp))
+    else if (is_lightning_fast(mtmp))
+        Strcat(info, ", lightning fast");
+    else if (is_super_fast(mtmp))
+        Strcat(info, ", super fast");
+    else if (is_ultra_fast(mtmp))
+        Strcat(info, ", ultra fast");
+    else if (is_very_fast(mtmp))
 		Strcat(info, ", very fast");
 	else if (is_fast(mtmp))
 		Strcat(info, ", fast");
@@ -1175,8 +1181,18 @@ ustatusline()
         Sprintf(eos(info), ", slippery %s", makeplural(body_part(HAND)));
     if (u.utrap)
         Strcat(info, ", trapped");
-    if (Very_fast || Fast)
-        Strcat(info, Very_fast ? ", very fast" : ", fast");
+
+    if (Lightning_fast)
+        Strcat(info, ", lightning fast");
+    else if (Super_fast)
+        Strcat(info, ", super fast");
+    else if (Ultra_fast)
+        Strcat(info, ", ultra fast");
+    else if (Very_fast)
+        Strcat(info, ", very fast");
+    else if (Fast)
+        Strcat(info,  ", fast");
+
     if (u.uundetected)
         Strcat(info, ", concealed");
     if (Invis)

@@ -173,6 +173,18 @@ const struct propname {
     { COLD_RESISTANCE, "resistant to cold", "cold resistance" },
     { SHOCK_RESISTANCE, "resistant to shock", "shock resistance" },
     { MAGIC_MISSILE_RESISTANCE, "resistant to magic missiles", "magic missile resistance" },
+    { ACID_RESISTANCE, "resistant to acid", "acid resistance" },
+    { ULTRA_FAST, "ultra fast", "ultra fast speed" },
+    { SUPER_FAST, "super fast", "super fast speed" },
+    { LIGHTNING_FAST, "lightning fast", "lightning fast speed" },
+    { HEROISM, "heroic", "heroism" },
+    { SUPER_HEROISM, "super-heroic", "super-heroism" },
+    { RAPID_REGENERATION, "rapidly regenerating", "rapid regeneration" },
+    { RAPIDER_REGENERATION, "very rapidly regenerating", "very rapid regeneration" },
+    { RAPIDEST_REGENERATION, "very very rapidly regenerating", "very very rapid regeneration" },
+    { RAPID_ENERGY_REGENERATION, "rapidly regenerating mana", "rapid mana regeneration" },
+    { RAPIDER_ENERGY_REGENERATION, "very rapidly regenerating mana", "very rapid mana regeneration" },
+    { RAPIDEST_ENERGY_REGENERATION, "very very rapidly regenerating mana", "very very rapid mana regeneration" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -914,18 +926,33 @@ nh_timeout()
 
 				break;
 			case FAST:
-				if (!Very_fast && !Fast)
+				if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast && !Fast)
 					You_feel("less quick than before.");
 				break;
 			case VERY_FAST:
-				if (!Very_fast)
+				if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast)
 					You_feel("%sless quick than before.",
 						Fast ? "a bit " : "");
 				break;
-			case SLOWED:
+            case ULTRA_FAST:
+                if (!Lightning_fast && !Super_fast && !Ultra_fast)
+                    You_feel("%sless quick than before.",
+                        Very_fast || Fast ? "a bit " : "");
+                break;
+            case SUPER_FAST:
+                if (!Lightning_fast && !Super_fast)
+                    You_feel("%sless quick than before.",
+                        Ultra_fast || Very_fast || Fast ? "a bit " : "");
+                break;
+            case LIGHTNING_FAST:
+                if (!Lightning_fast)
+                    You_feel("%sless quick than before.",
+                        Super_fast || Ultra_fast || Very_fast || Fast ? "a bit " : "");
+                break;
+            case SLOWED:
 				if (!Slowed)
 					You_feel("yourself speed up%s.",
-						Very_fast ? " a lot" : Fast ? "" : " a bit");
+						Very_fast || Ultra_fast || Super_fast || Lightning_fast ? " a lot" : Fast ? "" : " a bit");
 				break;
 			case SILENCED:
 				if (!Silenced)
@@ -1349,14 +1376,30 @@ nh_timeout()
 			/* Early warning */
 			switch (propnum) {
 			case FAST:
-				if (!Very_fast)
+				if (!Lightning_fast && !Super_fast && !Ultra_fast && !Very_fast)
 					You("are starting to feel less quick than before.");
 				break;
 			case VERY_FAST:
-				You("are starting to feel%s less quick than before.",
+                if (!Lightning_fast && !Super_fast && !Ultra_fast)
+                    You("are starting to feel%s less quick than before.",
 					Fast ? " a bit" : "");
 				break;
-			case SLOWED:
+            case ULTRA_FAST:
+                if (!Lightning_fast && !Super_fast)
+                    You("are starting to feel%s less quick than before.",
+                        Very_fast || Fast ? " a bit" : "");
+                break;
+            case SUPER_FAST:
+                if (!Lightning_fast)
+                    You("are starting to feel%s less quick than before.",
+                        Ultra_fast || Very_fast || Fast ? " a bit" : "");
+                break;
+            case LIGHTNING_FAST:
+                if (1)
+                    You("are starting to feel%s less quick than before.",
+                        Super_fast || Ultra_fast || Very_fast || Fast ? " a bit" : "");
+                break;
+            case SLOWED:
 				You_feel("you are starting to speed up.");
 				break;
 			case SILENCED:

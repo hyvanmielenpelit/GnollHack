@@ -647,6 +647,17 @@
 #define EVery_fast u.uprops[VERY_FAST].extrinsic
 #define Very_fast ((HVery_fast || EVery_fast) && !Slowed && !Stoned)
 
+#define HUltra_fast u.uprops[ULTRA_FAST].intrinsic
+#define EUltra_fast u.uprops[ULTRA_FAST].extrinsic
+#define Ultra_fast ((HUltra_fast || EUltra_fast) && !Slowed && !Stoned)
+
+#define HSuper_fast u.uprops[SUPER_FAST].intrinsic
+#define ESuper_fast u.uprops[SUPER_FAST].extrinsic
+#define Super_fast ((HSuper_fast || ESuper_fast) && !Slowed && !Stoned)
+
+#define HLightning_fast u.uprops[LIGHTNING_FAST].intrinsic
+#define ELightning_fast u.uprops[LIGHTNING_FAST].extrinsic
+#define Lightning_fast ((HLightning_fast || ELightning_fast) && !Slowed && !Stoned)
 
 #define HReflecting u.uprops[REFLECTING].intrinsic
 #define EReflecting u.uprops[REFLECTING].extrinsic

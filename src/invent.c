@@ -920,7 +920,10 @@ boolean verbose;
     boolean had_divine_charisma = Divine_charisma;
     boolean was_fast = Fast;
 	boolean was_very_fast = Very_fast;
-	boolean was_slowed = Slowed;
+    boolean was_ultra_fast = Ultra_fast;
+    boolean was_super_fast = Super_fast;
+    boolean was_lightning_fast = Lightning_fast;
+    boolean was_slowed = Slowed;
 	boolean was_silenced = Silenced;
 	boolean was_cancelled = Cancelled;
 	long previous_warntype_obj = context.warntype.obj;
@@ -1180,17 +1183,38 @@ boolean verbose;
 
 
 	/* Speed */
-	if ((!was_slowed && Slowed) || (was_very_fast && !Very_fast) || (!was_very_fast && was_fast && !Very_fast && !Fast))
+	if ((!was_slowed && Slowed) 
+        || (was_lightning_fast && !Lightning_fast)
+        || (was_super_fast && !was_lightning_fast && !Super_fast && !Lightning_fast)
+        || (was_ultra_fast && !was_super_fast && !was_lightning_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
+        || (was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast && !Very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
+        || (was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast && !Fast && !Very_fast && !Ultra_fast && !Super_fast && !Lightning_fast)
+        )
 	{
 		state_change_detected = TRUE;
 		You_feel("yourself slow down%s.", Fast ? " a bit" : "");
 	}
-	else if (Very_fast && !was_very_fast)
+    else if (Lightning_fast && !was_lightning_fast)
+    {
+        state_change_detected = TRUE;
+        You_feel("yourself speed up%s.", was_fast || was_very_fast || was_ultra_fast || was_super_fast ? " a bit more" : "");
+    }
+    else if (Super_fast && !was_super_fast && !was_lightning_fast)
+    {
+        state_change_detected = TRUE;
+        You_feel("yourself speed up%s.", was_fast || was_very_fast || was_ultra_fast ? " a bit more" : "");
+    }
+    else if (Ultra_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
+    {
+        state_change_detected = TRUE;
+        You_feel("yourself speed up%s.", was_fast || was_very_fast ? " a bit more" : "");
+    }
+    else if (Very_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
 	{
 		state_change_detected = TRUE;
 		You_feel("yourself speed up%s.", was_fast ? " a bit more" : "");
 	}
-	else if (Fast && !was_fast && !was_very_fast)
+	else if (Fast && !was_fast && !was_very_fast && !was_ultra_fast && !was_super_fast && !was_lightning_fast)
 	{
 		state_change_detected = TRUE;
 		You_feel("yourself speed up.");
