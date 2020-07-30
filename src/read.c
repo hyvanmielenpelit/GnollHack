@@ -1525,16 +1525,15 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		s = scursed ? -1
 			: (otmp->enchantment >= 9)
 			? (rn2(max(1, otmp->enchantment)) == 0)
-			: sblessed
-			? rnd(3 - otmp->enchantment / 3)
-			: 1;
+			: sblessed ? rnd(2) : 1;
 		if (s >= 0 && is_dragon_scales(otmp)) {
 			/* dragon scales get turned into dragon scale mail */
 			pline("%s merges and hardens!", Yname2(otmp));
 			setworn((struct obj*) 0, W_ARM);
 			/* assumes same order */
 			otmp->otyp += GRAY_DRAGON_SCALE_MAIL - GRAY_DRAGON_SCALES;
-			if (sblessed) {
+			if (sblessed) 
+            {
 				otmp->enchantment++;
 				if (!otmp->blessed)
 					bless(otmp);
@@ -1564,7 +1563,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			bless(otmp);
 		else if (!scursed && otmp->cursed)
 			uncurse(otmp);
-		if (s) {
+		
+        if (s) 
+        {
 			otmp->enchantment += s;
 			//adj_abon(otmp, s);
 			updateabon();
@@ -1640,34 +1641,41 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	}   break;
 	case SCR_CONFUSE_MONSTER:
 	case SPE_CONFUSE_MONSTER:
-		if (youmonst.data->mlet != S_HUMAN || scursed) {
+		if (youmonst.data->mlet != S_HUMAN || scursed) 
+        {
 			if (!HConfusion)
 				You_feel("confused.");
 			make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
 		}
-		else if (confused) {
-			if (!sblessed) {
+		else if (confused) 
+        {
+			if (!sblessed) 
+            {
 				Your("%s begin to %s%s.", makeplural(body_part(HAND)),
 					Blind ? "tingle" : "glow ",
 					Blind ? "" : hcolor(NH_PURPLE));
 				make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
 			}
-			else {
+			else 
+            {
 				pline("A %s%s surrounds your %s.",
 					Blind ? "" : hcolor(NH_RED),
 					Blind ? "faint buzz" : " glow", body_part(HEAD));
 				make_confused(0L, TRUE);
 			}
 		}
-		else {
-			if (!sblessed) {
+		else
+        {
+			if (!sblessed) 
+            {
 				Your("%s%s %s%s.", makeplural(body_part(HAND)),
 					Blind ? "" : " begin to glow",
 					Blind ? (const char*) "tingle" : hcolor(NH_RED),
 					u.umconf ? " even more" : "");
 				u.umconf++;
 			}
-			else {
+			else 
+            {
 				if (Blind)
 					Your("%s tingle %s sharply.", makeplural(body_part(HAND)),
 						u.umconf ? "even more" : "very");
@@ -1729,7 +1737,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		known = TRUE;
 		break;
 	case SCR_REMOVE_CURSE:
-	case SPE_REMOVE_CURSE: {
+	case SPE_REMOVE_CURSE: 
+    {
 		register struct obj* obj;
 
 		You_feel(!Hallucination
@@ -1741,44 +1750,54 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		if (scursed) {
 			pline_The("scroll disintegrates.");
 		}
-		else {
-			for (obj = invent; obj; obj = obj->nobj) {
+		else
+        {
+			for (obj = invent; obj; obj = obj->nobj) 
+            {
 				long wornmask;
 
 				/* gold isn't subject to cursing and blessing */
 				if (obj->oclass == COIN_CLASS)
 					continue;
 				wornmask = (obj->owornmask & ~(W_BALL | W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED));
-				if (wornmask && !sblessed) {
+				if (wornmask && !sblessed)
+                {
 					/* handle a couple of special cases; we don't
 					   allow auxiliary weapon slots to be used to
 					   artificially increase number of worn items */
-					if (obj == uswapwep || obj == uswapwep2) {
+					if (obj == uswapwep || obj == uswapwep2) 
+                    {
 						wornmask = 0L;
 					}
-					else if (obj == uquiver) {
-						if (obj->oclass == WEAPON_CLASS) {
+					else if (obj == uquiver)
+                    {
+						if (obj->oclass == WEAPON_CLASS) 
+                        {
 							/* mergeable weapon test covers ammo,
 							   missiles, spears, daggers & knives */
 							if (!objects[obj->otyp].oc_merge)
 								wornmask = 0L;
 						}
-						else if (obj->oclass == GEM_CLASS) {
+						else if (obj->oclass == GEM_CLASS)
+                        {
 							/* possibly ought to check whether
 							   alternate weapon is a sling... */
 							if (!uslinging())
 								wornmask = 0L;
 						}
-						else {
+						else 
+                        {
 							/* weptools don't merge and aren't
 							   reasonable quivered weapons */
 							wornmask = 0L;
 						}
 					}
 				}
+
 				if (sblessed || wornmask || objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED
 					|| objects[obj->otyp].oc_flags & O1_BECOMES_CURSED_WHEN_PICKED_UP_AND_DROPPED
-					|| (obj->otyp == LEASH && obj->leashmon)) {
+					|| (obj->otyp == LEASH && obj->leashmon)) 
+                {
 					/* water price varies by curse/bless status */
 					boolean shop_h2o = (obj->unpaid && obj->otyp == POT_WATER);
 
@@ -1793,7 +1812,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 						if (shop_h2o && (obj->cursed || obj->blessed))
 							alter_cost(obj, 0L); /* price goes up */
 					}
-					else if (obj->cursed) {
+					else if (obj->cursed) 
+                    {
 						if (shop_h2o)
 							costly_alteration(obj, COST_UNCURS);
 						uncurse(obj);
@@ -1803,7 +1823,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		}
 		if (Punished && !confused)
 			unpunish();
-		if (u.utrap && u.utraptype == TT_BURIEDBALL) {
+		if (u.utrap && u.utraptype == TT_BURIEDBALL) 
+        {
 			buried_ball_to_freedom();
 			pline_The("clasp on your %s vanishes.", body_part(LEG));
 		}
@@ -1872,11 +1893,14 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
 			otmp->oerodeproof = 0; /* for messages */
-			if (Blind) {
+
+			if (Blind)
+            {
 				otmp->rknown = FALSE;
 				Your("weapon feels warm for a moment.");
 			}
-			else {
+			else 
+            {
 				otmp->rknown = TRUE;
 				if (!confused && !scursed && otyp == SCR_PROTECT_WEAPON)
 					known = TRUE;
@@ -1886,12 +1910,16 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					hcolor(scursed ? NH_PURPLE : NH_GOLDEN),
 					scursed ? "glow" : "shield");
 			}
-			if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) {
+
+			if (new_erodeproof && (otmp->oeroded || otmp->oeroded2)) 
+            {
 				otmp->oeroded = otmp->oeroded2 = 0;
 				pline("%s as good as new!",
 					Yobjnam2(otmp, Blind ? "feel" : "look"));
 			}
-			if (old_erodeproof && !new_erodeproof) {
+
+			if (old_erodeproof && !new_erodeproof)
+            {
 				/* restore old_erodeproof before shop charges */
 				otmp->oerodeproof = 1;
 				costly_alteration(otmp, COST_DEGRD);
@@ -1912,15 +1940,14 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		}
 
         boolean isweptwohanded = (otmp && bimanual(otmp));
-        int special_threshold = isweptwohanded ? 18 : 9;
+        int special_threshold = isweptwohanded ? 24 : 12;
         int special_chance = max(1, otmp->enchantment / (isweptwohanded ? 2 : 1));
 
         /* Otherwise, enchant weapon */
 		if (!enchant_weapon(sobj, otmp, scursed ? -1
 			: !otmp ? 1
 			: (otmp->enchantment >= special_threshold) ? !rn2(special_chance)
-			: sblessed ? rnd(max(1, 3 - otmp->enchantment / 3))
-			: 1))
+			: sblessed ? rnd(2): 1))
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
 		break;
 	}

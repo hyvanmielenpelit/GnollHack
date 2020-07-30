@@ -1609,7 +1609,7 @@ register int amount;
 		ench_limit_multiplier = 2;
 
     /* there is a (soft) upper and lower limit to weapon->enchantment */
-    if (((weapon->enchantment > 5 * ench_limit_multiplier && amount >= 0) || (weapon->enchantment < -5 * ench_limit_multiplier && amount < 0)) && rn2(3)) 
+    if (((weapon->enchantment > 10 * ench_limit_multiplier && amount >= 0) || (weapon->enchantment < -10 * ench_limit_multiplier && amount < 0)) && rn2(3)) 
 	{
         if (!Blind)
             pline("%s %s for a while and then %s.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "evaporate"));

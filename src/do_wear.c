@@ -2525,7 +2525,7 @@ take_off(VOID_ARGS)
     if (doff->delay > 0)
         doff->delay--;
 
-    set_occupation(take_off, doff->disrobing, objects[otmp->otyp].oc_soundset, OCCUPATION_TAKING_OFF, OCCUPATION_SOUND_TYPE_RESUME, 0);
+    set_occupation(take_off, doff->disrobing, otmp ? objects[otmp->otyp].oc_soundset : OBJECT_SOUNDSET_NONE, OCCUPATION_TAKING_OFF, OCCUPATION_SOUND_TYPE_RESUME, 0);
     return 1; /* get busy */
 }
 

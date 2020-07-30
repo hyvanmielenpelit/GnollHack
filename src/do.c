@@ -3330,6 +3330,8 @@ int aatyp;
 		return "by weapon";
 	else if (aatyp == AT_MAGC)
 		return "spell casting";
+	else if (aatyp == AT_PASV)
+		return "passive defense";
 	else if (aatyp < 0 || aatyp >= SIZE(attack_type_names))
 		return empty_string;
 
