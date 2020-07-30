@@ -302,7 +302,7 @@ boolean force;      /* Quietly force this animal */
         Sprintf(kbuf, "attempting to ride %s", an(mon_monster_name(mtmp)));
         instapetrify(kbuf);
     }
-    if (!mtmp->mtame || mtmp->isminion)
+    if (!is_tame(mtmp) || mtmp->isminion)
     {
         pline("I think %s would mind.", mon_nam(mtmp));
         return (FALSE);
