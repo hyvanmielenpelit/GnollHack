@@ -982,12 +982,12 @@ boolean silently;
 		if (is_super_heroic(mtmp) && !was_super_heroic)
 		{
 			res = TRUE;
-			pline("%s looks super heroic.", Monnam(mtmp));
+			pline("%s looks super-heroic.", Monnam(mtmp));
 		}
 		else if (!is_super_heroic(mtmp) && was_super_heroic)
 		{
 			res = TRUE;
-			pline("%s looks less super heroic than before.", Monnam(mtmp));
+			pline("%s looks less super-heroic than before.", Monnam(mtmp));
 		}
 		else if (!is_heroic(mtmp) && !is_super_heroic(mtmp) && was_heroic)
 		{
