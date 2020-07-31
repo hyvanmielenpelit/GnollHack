@@ -1740,9 +1740,9 @@ const char* recharge_texts[MAX_RECHARGING_TYPES] =
     "rechargeable up to five times",
     "not rechargeable",
     "not rechargeable",
-    "rechargeable as an artifact ring",
-    "rechargeable as an artifact mace",
-    "rechargeable as an artifact grail"    
+    "rechargeable up to seven times",
+    "rechargeable up to seven times",
+    "rechargeable up to five times"    
 };
 
 const char *

@@ -845,6 +845,9 @@ boolean verbose;
     } 
 	else if (objects[obj->otyp].oc_charged && objects[obj->otyp].oc_recharging)  // obj->oclass == WEAPON_CLASS)
 	{
+        if (obj->recharged >= 7) /* recharge_limit */
+            goto not_chargable;
+
 		/* All other charged items here */
 		int lim = get_obj_max_charge(obj);
 
@@ -855,14 +858,14 @@ boolean verbose;
 			{
 				strip_charges(obj, verbose);
 			}
-			else if (obj->recharged >= 6 || !rn2(max(2, 4 - obj->recharged)))
+			else if (obj->recharged >= 5 || !rn2(max(2, 6 - obj->recharged)))
 			{
 				const char* expltext = !obj->charges ? "suddenly" : "vibrates violently and";
 				int dmg = d(3, 9);
 				obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
                 if (verbose)
                     pline("%s %s explodes!", Yname2(obj), expltext);
-				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding sword", KILLED_BY_AN);
+				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding sword", KILLED_BY_AN);
 				useup(obj);
 			}
 			else if (obj->charges < lim)
@@ -903,15 +906,7 @@ boolean verbose;
             break;
         case RECHARGING_RING_OF_CONFLICT:
         case RECHARGING_WAND_OF_ORCUS:
-            if (obj->recharged > 1)
-            {
-                obj->charges = 0;
-                if (verbose)
-                    pline("The glow arounds %s %s.", yname(obj), obj->recharged == 1 ? "dims" : "stays dim");
-                update_inventory();
-                break;
-            }
-
+        {
             int lim = get_obj_max_charge(obj);
             if (is_cursed)
             {
@@ -922,9 +917,7 @@ boolean verbose;
 
             if (obj->charges > lim)
             {
-                obj->charges = 0;
-                if (verbose)
-                    pline("The glow arounds %s suddenly dims.", yname(obj));
+                obj->charges = lim;
                 update_inventory();
                 break;
             }
@@ -952,56 +945,56 @@ boolean verbose;
             }
 
             break;
+        }
         case RECHARGING_HOLY_GRAIL:
-            if (objects[obj->otyp].oc_charged == CHARGED_HOLY_GRAIL)
+            if (obj->recharged >= 5)
             {
-                if (obj->recharged > 3)
-                {
-                    goto not_chargable;
-                    break;
-                }
+                goto not_chargable;
+                break;
+            }
 
-                int lim = get_obj_max_charge(obj);
-                if (is_cursed)
-                {
-                    strip_charges(obj, verbose);
-                    update_inventory();
-                    break;
-                }
+            int lim = get_obj_max_charge(obj);
+            if (is_cursed)
+            {
+                strip_charges(obj, verbose);
+                update_inventory();
+                break;
+            }
 
-                if (obj->charges >= lim)
-                {
-                    goto not_chargable;
-                    break;
-                }
-                else
-                {
-                    int old_charges = obj->charges;
-                    if (is_blessed)
-                    {
-                        obj->charges = lim;
-                    }
-                    else if (obj->charges < lim)
-                    {
-                        obj->charges += rnd(2);
-                        if (obj->charges > lim)
-                            obj->charges = lim;
-                    }
-
-                    if (verbose)
-                    {
-                        pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
-                    }
-                    update_inventory();
-                }
+            if (obj->charges >= lim)
+            {
+                goto not_chargable;
+                break;
             }
             else
-                goto not_chargable;
+            {
+                int old_charges = obj->charges;
+                if (is_blessed)
+                {
+                    obj->charges = lim;
+                }
+                else if (obj->charges < lim)
+                {
+                    obj->charges += rnd(2);
+                    if (obj->charges > lim)
+                        obj->charges = lim;
+                }
+
+                if (verbose)
+                {
+                    pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
+                }
+                update_inventory();
+            }
             break;
         default:
 			goto not_chargable;
 			break;
 		}
+
+        /* items don't have a limit, but the counter used does */
+        if (obj->recharged < 7) /* recharge_limit */
+            obj->recharged++;
 
 	}
 	else
