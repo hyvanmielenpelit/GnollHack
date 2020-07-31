@@ -445,10 +445,10 @@ long flags;
                         && !context.mon_moving)
                            ? SHOP_HOLE_COST
                            : 0L);
-        int ltype = 0;
+        int ltype = lev->floortyp ? lev->floortyp : lev->typ;
         uchar lflags = 0;
 
-        if (IS_ROOM(lev->typ)) /* && !IS_AIR(lev->typ) */
+        if (ltype == 0 && IS_ROOM(lev->typ)) /* && !IS_AIR(lev->typ) */
             ltype = ROOM;
         /*
          * some cases which can happen when digging
