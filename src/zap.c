@@ -3526,7 +3526,7 @@ boolean stop_at_first_hit_object;
     for (otmp = level.objects[tx][ty]; otmp; otmp = next_obj) 
 	{
         context.bhitcount++;
-        if (context.bhitcount > bhitlimit)
+        if (hit_only_one && context.bhitcount > bhitlimit)
             break;
 
         next_obj = otmp->nexthere;
@@ -6705,7 +6705,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     switch (abstype)
 	{
     case ZT_MAGIC_MISSILE:
-        if (is_mon_immune_to_magic_missile(mon) || resists_magic(mon) || magic_resistance_success)
+        if (is_mon_immune_to_magic_missile(mon))
 		{
             sho_shieldeff = TRUE;
 			damage = 0;
@@ -6916,7 +6916,7 @@ xchar sx, sy;
     switch (abstyp % 10) 
 	{
     case ZT_MAGIC_MISSILE:
-        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_immunity || Invulnerable)
 		{
             u_shieldeff(); // shieldeff(sx, sy);
 			damage = 0;

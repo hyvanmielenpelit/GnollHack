@@ -548,7 +548,50 @@ boolean verbose;
 
     enum recharging_types rtype = objects[obj->otyp].oc_recharging;
 
-    if (rtype == RECHARGING_WAND_GENERAL || rtype == RECHARGING_WAND_WISHING)
+    if (rtype == RECHARGING_GENERAL)
+    {
+        if (obj->recharged >= 7) /* recharge_limit */
+            goto not_chargable;
+
+        /* All other charged items here */
+        int lim = get_obj_max_charge(obj);
+
+        if (is_cursed)
+        {
+            strip_charges(obj, verbose);
+            update_inventory();
+        }
+        else if (obj->charges > lim)
+        {
+            obj->charges = lim;
+            update_inventory();
+        }
+        else if (obj->charges < lim)
+        {
+            obj->recharged++;
+
+            if (is_blessed)
+            {
+                obj->charges = lim;
+                if (verbose)
+                    p_glow2(obj, NH_BLUE);
+            }
+            else if (obj->charges < lim)
+            {
+                obj->charges++;
+                if (obj->charges > lim)
+                    obj->charges = lim;
+                if (verbose)
+                    p_glow1(obj);
+            }
+            update_inventory();
+        }
+        else
+        {
+            goto not_chargable;
+        }
+    }
+    else if (rtype == RECHARGING_WAND_GENERAL || rtype == RECHARGING_WAND_WISHING)
 	{
 		int lim = get_obj_max_charge(obj);
 		
@@ -1944,7 +1987,15 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
 		break;
 	}
-	case SCR_TAMING:
+	case SCR_CONFLICT:
+        if (!Conflict)
+        {
+            You_feel("like a rabble-rouser.");
+            known = TRUE;
+        }
+        incr_itimeout(&HConflict, d(10, 6) + 240);
+        break;
+    case SCR_TAMING:
 	case SPE_SPHERE_OF_CHARMING:
 	case SPE_SPHERE_OF_DOMINATION:
 	case SPE_MASS_DOMINATION:
@@ -1980,11 +2031,13 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					}
 				}
 		}
-		if (!results) {
+		if (!results) 
+        {
 			pline("Nothing interesting %s.",
 				!candidates ? "happens" : "seems to happen");
 		}
-		else {
+		else
+        {
 			pline_The("neighborhood %s %sfriendlier.",
 				vis_results ? "is" : "seems",
 				(results < 0) ? "un" : "");
@@ -2319,11 +2372,15 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		}
 		break;
 	case SCR_CHARGING:
-        if (confused) {
-            if (scursed) {
+        if (confused)
+        {
+            if (scursed)
+            {
                 You_feel("discharged.");
                 u.uen = 0;
-            } else {
+            } 
+            else 
+            {
                 You_feel("charged up!");
                 u.uen += d(sblessed ? 6 : 4, 4);
 				if (u.uen > u.uenmax) { /* if current energy is already at   */
@@ -2337,7 +2394,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             break;
         }
         /* known = TRUE; -- handled inline here */
-        if (!already_known) {
+        if (!already_known)
+        {
             pline("This is a charging scroll.");
             learnscroll(sobj);
         }

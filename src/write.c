@@ -38,6 +38,7 @@ register struct obj *otmp;
     case SCR_PUNISHMENT:
         return 10;
 	case SCR_CONFUSE_MONSTER:
+    case SCR_CONFLICT:
         return 12;
 	case SCR_ENCHANT_ACCESSORY:
 	case SCR_IDENTIFY:

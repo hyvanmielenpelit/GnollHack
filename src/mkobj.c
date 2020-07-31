@@ -1257,7 +1257,7 @@ int mkobj_type;
 			case MAGIC_HARP:
 			case FROST_HORN:
 			case FIRE_HORN:
-            case HORN_OF_CONFLICT:
+            case HORN_OF_CHAOS:
             case UNICORN_HORN:
 			case DRUM_OF_EARTHQUAKE:
                 break;

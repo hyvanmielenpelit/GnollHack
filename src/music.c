@@ -588,7 +588,7 @@ struct obj *instr;
         }
         makeknown(instr->otyp);
         break;
-    case HORN_OF_CONFLICT:
+    case HORN_OF_CHAOS:
     {
         consume_obj_charge(instr, TRUE);
         You("produce a strange, vibrating sound.");
@@ -600,7 +600,7 @@ struct obj *instr;
         int affected_cnt = 0;
         for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
         {
-            if (isok(mtmp->mx, mtmp->my) && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= radius * radius && hearing_array[mtmp->mx][mtmp->my] > 0.0f)
+            if (!DEADMONSTER(mtmp) && !is_tame(mtmp) && !is_peaceful(mtmp) && !has_mind_shielding(mtmp) && isok(mtmp->mx, mtmp->my) && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= radius * radius && hearing_array[mtmp->mx][mtmp->my] > 0.0f)
             {
                 if (!check_ability_resistance_success(mtmp, A_WIS, 0))
                 {
