@@ -78,7 +78,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Music-Sokoban-Normal", 0.10f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Normal", 0.12f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Valley", 0.08f},
-    { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", BACKGROUND_MUSIC_VOLUME},
+    { SOUND_BANK_MASTER, "event:/Music/Music-Gehennom-Sanctum", 0.08f},
     { SOUND_BANK_MASTER, "event:/Music/Game Over", 0.1f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Normal", 0.07f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Shop-Angry", BACKGROUND_MUSIC_VOLUME},
@@ -219,9 +219,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Create", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Music/Quest-Normal", BACKGROUND_MUSIC_VOLUME },
-    { SOUND_BANK_MASTER, "event:/Music/Vlad-Tower-Normal", BACKGROUND_MUSIC_VOLUME },
+    { SOUND_BANK_MASTER, "event:/Music/Vlad-Tower-Normal", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/Modron-Normal", BACKGROUND_MUSIC_VOLUME },
     { SOUND_BANK_MASTER, "event:/Music/Bovine-Normal", BACKGROUND_MUSIC_VOLUME },
+    { SOUND_BANK_MASTER, "event:/Music/End-Game-Normal", 0.08f },
+    { SOUND_BANK_MASTER, "event:/Music/End-Game-Astral", 0.08f },
 
 };
 

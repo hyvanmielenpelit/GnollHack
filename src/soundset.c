@@ -4150,22 +4150,24 @@ int dnum;
 {
     enum ghsound_types res = GHSOUND_NONE;
 
-    if (Inhell)
-        res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
-    else if (dnum == mines_dnum)
-        res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
+    if (dnum == mines_dnum)
+       res = GHSOUND_GNOMISH_MINES_MUSIC_NORMAL;
     else if (dnum == sokoban_dnum)
-        res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
+       res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
     else if (dnum == quest_dnum)
-        res = GHSOUND_QUEST_MUSIC_NORMAL;
+       res = GHSOUND_QUEST_MUSIC_NORMAL;
     else if (dnum == tower_dnum)
-        res = GHSOUND_VLAD_TOWER_MUSIC_NORMAL;
+       res = GHSOUND_VLAD_TOWER_MUSIC_NORMAL;
     else if (dnum == modron_dnum)
-        res = GHSOUND_MODRON_MUSIC_NORMAL;
+       res = GHSOUND_MODRON_MUSIC_NORMAL;
     else if (dnum == bovine_dnum)
-        res = GHSOUND_BOVINE_MUSIC_NORMAL;
+       res = GHSOUND_BOVINE_MUSIC_NORMAL;
+    else if (Inhell)
+       res = GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    else if (In_endgame(&u.uz))
+       res = GHSOUND_ENDGAME_MUSIC_NORMAL;
     else
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+       res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
 
     return res;
 }
@@ -4201,6 +4203,8 @@ struct d_level* dlvl;
         return GHSOUND_GEHENNOM_MUSIC_VALLEY;
     if (Is_minetown_level(dlvl))
         return GHSOUND_GNOMISH_MINES_MUSIC_TOWN;
+    if (Is_astralevel(dlvl))
+        return GHSOUND_ENDGAME_MUSIC_ASTRAL;
     else
         return get_dungeon_music(dnum);
 

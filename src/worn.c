@@ -834,6 +834,8 @@ boolean silently;
 	boolean was_silenced = is_silenced(mtmp);
 	boolean was_cancelled = is_cancelled(mtmp);
 	boolean was_crazed = is_crazed(mtmp);
+	boolean was_heroic = is_heroic(mtmp);
+	boolean was_super_heroic = is_super_heroic(mtmp);
 
 
 	switch (function_choice)
@@ -974,6 +976,28 @@ boolean silently;
 		{
 			res = TRUE;
 			pline("%s looks more sane.", Monnam(mtmp));
+		}
+
+		/* Heroism */
+		if (is_super_heroic(mtmp) && !was_super_heroic)
+		{
+			res = TRUE;
+			pline("%s looks super heroic.", Monnam(mtmp));
+		}
+		else if (!is_super_heroic(mtmp) && was_super_heroic)
+		{
+			res = TRUE;
+			pline("%s looks less super heroic than before.", Monnam(mtmp));
+		}
+		else if (!is_heroic(mtmp) && !is_super_heroic(mtmp) && was_heroic)
+		{
+			res = TRUE;
+			pline("%s looks less heroic than before.", Monnam(mtmp));
+		}
+		else if (is_heroic(mtmp) && !was_heroic && !was_super_heroic && !is_super_heroic(mtmp))
+		{
+			res = TRUE;
+			pline("%s looks heroic.", Monnam(mtmp));
 		}
 
 		/* Sleeping */

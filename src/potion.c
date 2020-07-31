@@ -1240,6 +1240,8 @@ struct obj *otmp;
         }
         break;
     case POT_SPEED:
+    case POT_GREATER_SPEED:
+    case POT_LIGHTNING_SPEED:
         /* skip when mounted; heal_legs() would heal steed's legs */
         if (Wounded_legs && !otmp->cursed && !u.usteed) {
             heal_legs(0);
@@ -1296,6 +1298,43 @@ struct obj *otmp;
         }
         exercise(A_WIS, TRUE);
         incr_itimeout(&HFire_immunity, duration);
+        break;
+    case POT_HEROISM:
+    case POT_SUPER_HEROISM:
+        if (otmp->otyp == POT_HEROISM ? (!Heroism && !Super_heroism) : !Super_heroism)
+        {
+            You("feel %sheroic.", otmp->otyp == POT_SUPER_HEROISM ? "super " : "");
+        }
+        else
+        {
+            You("feel a bit more %sheroic than before.", otmp->otyp == POT_SUPER_HEROISM ? "super " : "");
+            unkn++;
+        }
+        exercise(A_WIS, TRUE);
+        incr_itimeout(otmp->otyp == POT_HEROISM ? &HHeroism : &HSuper_heroism, duration);
+        break;
+    case POT_LESSER_REGENERATION:
+    case POT_REGENERATION:
+    case POT_GREATER_REGENERATION:
+        if (otmp->otyp == POT_GREATER_REGENERATION ? !Divine_regeneration : otmp->otyp == POT_REGENERATION ? !Divine_regeneration && !Rapidest_regeneration : !Divine_regeneration && !Rapidest_regeneration &&!Rapider_regeneration)
+        {
+            You_feel("unusually regenerative.");
+        }
+        else
+        {
+            You("feel a bit more regenerative than before.");
+            unkn++;
+        }
+        exercise(A_WIS, TRUE);
+        incr_itimeout(otmp->otyp == POT_GREATER_REGENERATION ? &HDivine_regeneration : otmp->otyp == POT_REGENERATION ? &HRapidest_regeneration : &HRapider_regeneration, duration);
+        break;
+    case POT_LESSER_REJUVENATION:
+    case POT_REJUVENATION:
+    case POT_GREATER_REJUVENATION:
+        You_feel("rejuvenated.");
+        exercise(A_WIS, TRUE);
+        incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_regeneration : &HRapid_regeneration, duration);
+        incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_energy_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_energy_regeneration : &HRapid_energy_regeneration, duration);
         break;
     case POT_BLINDNESS:
         if (Blind)
@@ -1746,7 +1785,19 @@ int how;
 	if (!obj)
 		return;
 
-    if (isyou) 
+    if (obj->oclass != POTION_CLASS)
+        return;
+
+    int power1 = objects[obj->otyp].oc_oprop;
+    int power2 = objects[obj->otyp].oc_oprop2;
+    int power3 = objects[obj->otyp].oc_oprop3;
+    int dicebuc = objects[obj->otyp].oc_potion_breathe_dice_buc_multiplier;
+    int duration =
+        d(max(1, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), objects[obj->otyp].oc_potion_breathe_diesize)
+        + objects[obj->otyp].oc_potion_breathe_plus
+        + bcsign(obj) * objects[obj->otyp].oc_potion_breathe_buc_multiplier;
+
+    if (isyou)
 	{
         tx = u.ux, ty = u.uy;
         distance = 0;
@@ -1826,7 +1877,7 @@ int how;
                 pline("This burns%s!",
                       obj->blessed ? " a little"
                                    : obj->cursed ? " a lot" : "");
-                dmg = d(obj->cursed ? 4 : 3, obj->blessed ? 6 : 8);
+                dmg = duration;
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of acid", KILLED_BY_AN);
             }
             break;
@@ -1936,11 +1987,11 @@ do_illness: /* Pestilence's potion of healing effect */
 				pline("%s looks rather ill.", Monnam(mon));
 			break;
 		case POT_CONFUSION:
-            (void)increase_mon_property_verbosely(mon, CONFUSION, rn1(9, 8));
+            (void)increase_mon_property_verbosely(mon, CONFUSION, duration);
 			break;
 		case POT_URINE:
 			if (canseemon(mon) && !noncorporeal(mon->data))
-				pline("%s looks concerened of its body odor.", Monnam(mon));
+				pline("%s looks concerened of %s body odor.", Monnam(mon), mhis(mon));
 			break;
 		case POT_DWARVEN_STOUT:
 			if (canseemon(mon))
@@ -1948,20 +1999,22 @@ do_illness: /* Pestilence's potion of healing effect */
 			break;
 		case POT_BOOZE:
             if (!check_ability_resistance_success(mon, A_CON, objects[obj->otyp].oc_mc_adjustment))
-                increase_mon_property_verbosely(mon, CONFUSION, 4 + rnd(4));
+                increase_mon_property_verbosely(mon, CONFUSION, duration);
             break;
-        case POT_INVISIBILITY: {
+        case POT_INVISIBILITY: 
+        {
             boolean sawit = canspotmon(mon);
 
             angermon = FALSE;
-			increase_mon_property_verbosely(mon, INVISIBILITY, d(1, 6) + 20);
+			increase_mon_property_verbosely(mon, INVISIBILITY, duration);
 			if (sawit && !canspotmon(mon) && cansee(mon->mx, mon->my))
                 map_invisible(mon->mx, mon->my);
             break;
         }
         case POT_SLEEPING:
             /* wakeup() doesn't rouse victims of temporary sleep */
-            if (sleep_monst(mon, obj, rn1(9,8), 0, FALSE)) {
+            if (sleep_monst(mon, obj, duration, 0, FALSE)) 
+            {
                 pline("%s falls asleep.", Monnam(mon));
                 slept_monst(mon);
             }
@@ -1972,12 +2025,27 @@ do_illness: /* Pestilence's potion of healing effect */
                 /* really should be rnd(5) for consistency with players
                  * breathing potions, but...
                  */
-				paralyze_monst(mon, d(3 - 1 * bcsign(obj), 4), TRUE); //rn1(9, 8));
+				paralyze_monst(mon, duration, TRUE); //rn1(9, 8));
             }
             break;
         case POT_SPEED:
+        case POT_GREATER_SPEED:
+        case POT_LIGHTNING_SPEED:
+        case POT_HEROISM:
+        case POT_SUPER_HEROISM:
+        case POT_LESSER_REGENERATION:
+        case POT_REGENERATION:
+        case POT_GREATER_REGENERATION:
+        case POT_LESSER_REJUVENATION:
+        case POT_REJUVENATION:
+        case POT_GREATER_REJUVENATION:
             angermon = FALSE;
-			increase_mon_property_verbosely(mon, ULTRA_FAST, rn1(10, 100 + 60 * bcsign(obj)));
+            if(power1)
+    			increase_mon_property_verbosely(mon, power1, duration);
+            if (power2)
+                increase_mon_property_verbosely(mon, power2, duration);
+            if (power3)
+                increase_mon_property_verbosely(mon, power3, duration);
             break;
         case POT_BLINDNESS:
             if (haseyes(mon->data)) 
@@ -2269,9 +2337,11 @@ struct obj *obj;
             You("yawn.");
         break;
     case POT_SPEED:
-        if (!Fast)
+    case POT_GREATER_SPEED:
+    case POT_LIGHTNING_SPEED:
+        if (obj->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast : obj->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast && !Super_fast : !Lightning_fast && !Super_fast && !Ultra_fast)
             Your("knees seem more flexible now.");
-        incr_itimeout(&HVery_fast, duration);
+        incr_itimeout(obj->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : obj->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
         exercise(A_DEX, TRUE);
         break;
     case POT_MAGIC_RESISTANCE:
@@ -2290,6 +2360,22 @@ struct obj *obj;
         if (!Fire_immunity)
             You("feel a bit more fire-protected now.");
         incr_itimeout(&HFire_immunity, duration);
+        exercise(A_WIS, TRUE);
+        break;
+    case POT_HEROISM:
+    case POT_SUPER_HEROISM:
+        if (obj->otyp == POT_SUPER_HEROISM ? !Super_heroism : !Super_heroism && !Heroism)
+            You("feel a bit more heroic.");
+        incr_itimeout(obj->otyp == POT_SUPER_HEROISM ? &HSuper_heroism : &HHeroism, duration);
+        exercise(A_WIS, TRUE);
+        break;
+    case POT_LESSER_REGENERATION:
+    case POT_REGENERATION:
+    case POT_GREATER_REGENERATION:
+        if (obj->otyp == POT_GREATER_REGENERATION ? !Divine_regeneration :
+            obj->otyp == POT_REGENERATION ? !Divine_regeneration && !Rapidest_regeneration : !Super_heroism && !Heroism)
+            You("feel a bit more heroic.");
+        incr_itimeout(obj->otyp == POT_SUPER_HEROISM ? &HSuper_heroism : &HHeroism, duration);
         exercise(A_WIS, TRUE);
         break;
     case POT_BLINDNESS:

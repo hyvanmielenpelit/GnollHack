@@ -506,6 +506,13 @@
 #define has_super_heroism(mon) \
 	has_property(mon, SUPER_HEROISM)
 
+#define is_heroic(mon) \
+	has_heroism(mon)
+
+#define is_super_heroic(mon) \
+	has_super_heroism(mon)
+
+
 #define has_rapid_regeneration(mon) \
 	has_property(mon, RAPID_REGENERATION)
 
