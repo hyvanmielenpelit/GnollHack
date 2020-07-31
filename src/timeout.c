@@ -187,6 +187,7 @@ const struct propname {
     { RAPIDEST_ENERGY_REGENERATION, "very very rapidly regenerating mana", "very very rapid mana regeneration" },
     { MELEE_LIFE_LEECH, "having melee life leech", "melee life leech" },
     { CRAZED, "crazed", "crazedness" },
+    { DIVINE_REGENERATION, "extremely rapidly regenerating", "extremely rapid regeneration" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -966,19 +967,24 @@ nh_timeout()
                         Heroism ? "a bit " : "");
                 break;
             case RAPID_REGENERATION:
-                if (!Rapidest_regeneration && !Rapider_regeneration && !Rapid_regeneration)
+                if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration && !Rapid_regeneration)
                     You_feel("you are healing %sless rapidly than before.",
                         Regeneration ? "" : "much ");
                 break;
             case RAPIDER_REGENERATION:
-                if (!Rapidest_regeneration && !Rapider_regeneration)
+                if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration)
                     You_feel("you are healing %sless rapidly than before.",
                         Rapid_regeneration || Regeneration ? "" : "much ");
                 break;
             case RAPIDEST_REGENERATION:
-                if (!Rapidest_regeneration)
+                if (!Divine_regeneration && !Rapidest_regeneration)
                     You_feel("you are healing %sless rapidly than before.",
                         Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
+                break;
+            case DIVINE_REGENERATION:
+                if (!Divine_regeneration)
+                    You_feel("you are healing %sless rapidly than before.",
+                        Rapidest_regeneration || Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
                 break;
             case RAPID_ENERGY_REGENERATION:
                 if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration && !Rapid_energy_regeneration)
@@ -1461,18 +1467,23 @@ nh_timeout()
                         Heroism ? " a bit" : "");
                 break;
             case RAPID_REGENERATION:
-                if (!Rapidest_regeneration && !Rapider_regeneration)
+                if (!Divine_regeneration && !Rapidest_regeneration && !Rapider_regeneration)
                     You_feel("you are starting to heal %sless rapidly than before.",
                         Regeneration ? "" : "much ");
                 break;
             case RAPIDER_REGENERATION:
-                if (!Rapidest_regeneration)
+                if (!Divine_regeneration && !Rapidest_regeneration)
                     You_feel("you are starting to heal %sless rapidly than before.",
                         Rapid_regeneration || Regeneration ? "" : "much ");
                 break;
             case RAPIDEST_REGENERATION:
-                You_feel("you are starting to heal %sless rapidly than before.",
+                if (!Divine_regeneration)
+                    You_feel("you are starting to heal %sless rapidly than before.",
                     Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
+                break;
+            case DIVINE_REGENERATION:
+                You_feel("you are starting to heal %sless rapidly than before.",
+                    Rapidest_regeneration || Rapider_regeneration || Rapid_regeneration || Regeneration ? "" : "much ");
                 break;
             case RAPID_ENERGY_REGENERATION:
                 if (!Rapidest_energy_regeneration && !Rapider_energy_regeneration)

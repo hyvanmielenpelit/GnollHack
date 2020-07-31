@@ -3935,27 +3935,34 @@ int final;
         you_can("walk through walls", from_what(PASSES_WALLS));
 
     /*** Physical attributes ***/
+    if (Divine_regeneration)
+    {
+        enl_msg("You extremely rapidly regenerate", "", "d", " hit points", from_what(DIVINE_REGENERATION));
+    }
     if (Rapidest_regeneration)
     {
-        enl_msg("You very very rapidly regenerate", "", "d", " hit points", from_what(RAPIDEST_REGENERATION));
+        if (Divine_regeneration)
+            enl_msg("You latently very very rapidly regenerate", "", "d", " hit points", from_what(RAPIDEST_REGENERATION));
+        else
+            enl_msg("You very very rapidly regenerate", "", "d", " hit points", from_what(RAPIDEST_REGENERATION));
     }
     if (Rapider_regeneration)
     {
-        if (Rapidest_regeneration)
+        if (Rapidest_regeneration || Divine_regeneration)
             enl_msg("You latently very rapidly regenerate", "", "d", " hit points", from_what(RAPIDER_REGENERATION));
         else
             enl_msg("You very rapidly regenerate", "", "d", " hit points", from_what(RAPIDER_REGENERATION));
     }
     if (Rapid_regeneration)
     {
-        if (Rapider_regeneration || Rapidest_regeneration)
+        if (Rapider_regeneration || Rapidest_regeneration || Divine_regeneration)
             enl_msg("You latently rapidly regenerate", "", "d", " hit points", from_what(RAPID_REGENERATION));
         else
             enl_msg("You rapidly regenerate", "", "d", " hit points", from_what(RAPID_REGENERATION));
     }
     if (Regeneration)
     {
-        if(Rapid_regeneration || Rapider_regeneration || Rapidest_regeneration)
+        if(Rapid_regeneration || Rapider_regeneration || Rapidest_regeneration || Divine_regeneration)
             enl_msg("You latently regenerate", "", "d", " hit points", from_what(REGENERATION));
         else
             enl_msg("You regenerate", "", "d", " hit points", from_what(REGENERATION));

@@ -217,6 +217,12 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Pray/Shimmering Light", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Ambient", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/Camera Flash/Camera Flash Create", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Music/Quest-Normal", BACKGROUND_MUSIC_VOLUME },
+    { SOUND_BANK_MASTER, "event:/Music/Vlad-Tower-Normal", BACKGROUND_MUSIC_VOLUME },
+    { SOUND_BANK_MASTER, "event:/Music/Modron-Normal", BACKGROUND_MUSIC_VOLUME },
+    { SOUND_BANK_MASTER, "event:/Music/Bovine-Normal", BACKGROUND_MUSIC_VOLUME },
+
 };
 
 #undef NoSound

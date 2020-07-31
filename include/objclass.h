@@ -710,7 +710,8 @@ struct objclass {
 #define oc_potion_normal_buc_multiplier oc_oc2
 #define oc_potion_nutrition_buc_multiplier oc_oc3
 #define oc_potion_extra_data1 oc_oc4
-#define oc_potion_extra_data2 oc_oc5
+#define oc_potion_breathe_dice_buc_multiplier oc_oc5
+#define oc_potion_normal_dice_buc_multiplier oc_oc6
 #define oc_potion_saving_throw_adjustment oc_mc_adjustment	/* potions: potion saving throw adjustment */
 #define oc_potion_breathe_dice oc_wsdice					/* potions: potion breathe duration no of dice */
 #define oc_potion_breathe_diesize oc_wsdam					/* potions: potion breathe duration size of dice */

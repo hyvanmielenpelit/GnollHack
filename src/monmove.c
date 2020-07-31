@@ -324,17 +324,22 @@ boolean digest_meal;
 	int fixedhpperround = mon->mhpmax / roundstofull;
 	int fractional_hp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
 
-    if (has_rapidest_regeneration(mon))
+    if (has_divine_regeneration(mon) && fixedhpperround < 40)
+    {
+        fixedhpperround = 40;
+        fractional_hp = 0;
+    }
+    else if (has_rapidest_regeneration(mon) && fixedhpperround < 20)
     {
         fixedhpperround = 20;
         fractional_hp = 0;
     }
-    else if (has_rapider_regeneration(mon))
+    else if (has_rapider_regeneration(mon) && fixedhpperround < 10)
     {
         fixedhpperround = 10;
         fractional_hp = 0;
     }
-    else if (has_rapid_regeneration(mon))
+    else if (has_rapid_regeneration(mon) && fixedhpperround < 5)
     {
         fixedhpperround = 5;
         fractional_hp = 0;
@@ -342,7 +347,12 @@ boolean digest_meal;
 
     if (is_mummy_rotted(mon))
     {
-        if (has_rapidest_regeneration(mon))
+        if (has_divine_regeneration(mon))
+        {
+            fixedhpperround = 4;
+            fractional_hp = 0;
+        }
+        else if (has_rapidest_regeneration(mon))
         {
             fixedhpperround = 3;
             fractional_hp = 0;

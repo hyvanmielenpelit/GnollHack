@@ -524,6 +524,9 @@
 #define has_rapidest_energy_regeneration(mon) \
 	has_property(mon, RAPIDEST_ENERGY_REGENERATION)
 
+#define has_divine_regeneration(mon) \
+	has_property(mon, DIVINE_REGENERATION)
+
 #define has_melee_life_leech(mon) \
 	has_property(mon, MELEE_LIFE_LEECH)
 

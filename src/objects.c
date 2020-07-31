@@ -2405,53 +2405,53 @@ FOOD("tin", None, None, FOODTYPE_TIN, 1,
 #undef FOOD
 
 /* potions ... */
-#define POTION(name,desc,itemdesc,mgc,power1,power2,power3,prob,cost,breathe_n,breathe_d,breathe_p,breathe_pbuc,normal_n,normal_d,normal_p,normal_pbuc,nut_n,nut_d,nut_p,nut_pbuc,extra1,extra2,color,soundset,flags,flags2,flags3,flags4,powconfermask) \
+#define POTION(name,desc,itemdesc,mgc,power1,power2,power3,prob,cost,breathe_n,breathe_d,breathe_p,breathe_pbuc,normal_n,normal_d,normal_p,normal_pbuc,nut_n,nut_d,nut_p,nut_pbuc,extra1,breathe_dicebuc,normal_dicebuc,color,soundset,flags,flags2,flags3,flags4,powconfermask) \
     OBJECT(OBJ(name, desc, None, itemdesc, 0, 0, 0),                                           \
            BITS(0, 1, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MAT_GLASS),      \
            power1, power2, power3, P1_NONE, POTION_CLASS, prob, MULTIGEN_SINGLE, 0, 12, cost,  \
 		   0, breathe_n,breathe_d,breathe_p, normal_n,normal_d,normal_p, 0, nut_n, nut_d, nut_p, A1_NONE, 0, \
-		   0, 0, 0, 0, breathe_pbuc, normal_pbuc, nut_pbuc, extra1, extra2, 0, 0, 0, \
+		   0, 0, 0, 0, breathe_pbuc, normal_pbuc, nut_pbuc, extra1, breathe_dicebuc, normal_dicebuc, 0, 0, \
 		   10, color, 0, soundset, \
            0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 | O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE)
-POTION("gain ability",           "ruby", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("gain ability",           "ruby", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 POTION("restore ability",        "pink",
 	"Restores one or more lost ability points and experience levels",
-	1, NO_POWER, NO_POWER, NO_POWER, 30, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_MAGENTA, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("confusion",            "orange", None, 1, CONFUSION, NO_POWER, NO_POWER, 30, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_ORANGE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("blindness",            "yellow", None, 1, BLINDED, NO_POWER, NO_POWER, 30, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("paralysis",           "emerald", None, 1, NO_POWER, NO_POWER, NO_POWER, 40, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_GREEN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("speed",            "dark green", None, 1, ULTRA_FAST, NO_POWER, NO_POWER, 30, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_GREEN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("levitation",             "cyan", None, 1, LEVITATION, NO_POWER, NO_POWER, 30, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("hallucination",      "sky blue", None, 1, HALLUC, NO_POWER, NO_POWER, 40, 100, 0, 0, 0, 0, 1, 200, 600, 300, 0, 0, 0, 0, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("invisibility", "brilliant blue", None, 1, INVISIBILITY, NO_POWER, NO_POWER, 30, 150, 0, 0, 0, 0, 10, 10, 400, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_BLUE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("see invisible",       "magenta", None, 1, SEE_INVISIBLE, NO_POWER, NO_POWER, 40, 50, 0, 0, 0, 0, 1, 100, 750, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("magic resistance",		 "gray", None, 1, ANTIMAGIC, NO_POWER, NO_POWER, 30, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("fire immunity",       "crimson", None, 1, FIRE_IMMUNITY, NO_POWER, NO_POWER, 20, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("titan strength",          "red", None, 1, TITAN_STRENGTH, NO_POWER, NO_POWER, 20, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("healing",          "purple-red", None, 1, NO_POWER, NO_POWER, NO_POWER, 50, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("extra healing",          "puce", None, 1, NO_POWER, NO_POWER, NO_POWER, 40, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("greater healing",	 "deep red", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("full healing",          "black", None, 1, NO_POWER, NO_POWER, NO_POWER, 10, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("gain level",            "milky", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("enlightenment",        "swirly", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("monster detection",    "bubbly", None, 1, NO_POWER, NO_POWER, NO_POWER, 30, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("object detection",      "smoky", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("gain energy",          "cloudy", None, 1, NO_POWER, NO_POWER, NO_POWER, 30, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("greater energy",     "greenish", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_GREEN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("full energy",		  "silvery", None, 1, NO_POWER, NO_POWER, NO_POWER, 10, 300, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("sleeping",       "effervescent", None, 1, NO_POWER, NO_POWER, NO_POWER, 30, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("polymorph",            "golden", None, 1, NO_POWER, NO_POWER, NO_POWER, 10, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, OBJECT_SOUNDSET_GENERAL, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("booze",                 "brown", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 3, 8, 0, 0, 0, 0, 20, 10, 15, 0, CLR_BROWN, OBJECT_SOUNDSET_GENERAL, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("sickness",              "fizzy", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("fruit juice",            "dark", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("acid",                  "white", None, 0, NO_POWER, NO_POWER, NO_POWER, 10, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("oil",                   "murky", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, OBJECT_SOUNDSET_GENERAL, O1_COLD_RESISTANT, O3_NONE, O4_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
-POTION("poison",             "sapphire", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BLUE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+	1, NO_POWER, NO_POWER, NO_POWER, 30, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_MAGENTA, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("confusion",            "orange", None, 1, CONFUSION, NO_POWER, NO_POWER, 30, 100, 4, 8, 0, 0, 6, 8, 0, 0, 0, 0, 0, 0, 0, -1, -2, CLR_ORANGE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("blindness",            "yellow", None, 1, BLINDED, NO_POWER, NO_POWER, 30, 150, 4, 8, 0, 0, 1, 200, 250, -125, 0, 0, 0, 0, 0, -1, 0, CLR_YELLOW, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("paralysis",           "emerald", None, 1, NO_POWER, NO_POWER, NO_POWER, 40, 300, 3, 4, 0, 0, 5, 4, 0, 0, 0, 0, 0, 0, 0, -1, -2, CLR_BRIGHT_GREEN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("speed",            "dark green", None, 1, ULTRA_FAST, NO_POWER, NO_POWER, 30, 200, 1, 5, 0, 0, 1, 10, 100, 60, 0, 0, 0, 0, 0, 0, 0, CLR_GREEN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("levitation",             "cyan", None, 1, LEVITATION, NO_POWER, NO_POWER, 30, 200, 0, 0, 0, 0, 1, 140, 10, 0, 0, 0, 0, 0, 240, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("hallucination",      "sky blue", None, 1, HALLUC, NO_POWER, NO_POWER, 40, 100, 0, 0, 0, 0, 1, 200, 600, -300, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("invisibility", "brilliant blue", None, 1, INVISIBILITY, NO_POWER, NO_POWER, 30, 150, 0, 0, 0, 0, 10, 10, 400, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BRIGHT_BLUE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("see invisible",       "magenta", None, 1, SEE_INVISIBLE, NO_POWER, NO_POWER, 40, 50, 0, 0, 0, 0, 1, 100, 750, 0, 0, 0, 0, 0, 0, 0, 0, CLR_MAGENTA, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("magic resistance",		 "gray", None, 1, ANTIMAGIC, NO_POWER, NO_POWER, 30, 100, 1, 5, 0, 0, 1, 10, 180, 90, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("fire immunity",       "crimson", None, 1, FIRE_IMMUNITY, NO_POWER, NO_POWER, 20, 100, 1, 5, 0, 0, 1, 10, 180, 90, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("titan strength",          "red", None, 1, TITAN_STRENGTH, NO_POWER, NO_POWER, 20, 100, 1, 5, 0, 0, 1, 10, 180, 90, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("healing",          "purple-red", None, 1, NO_POWER, NO_POWER, NO_POWER, 50, 100, 0, 0, 0, 0, 12, 6, 0, 0, 0, 0, 0, 0, 1, 0, 6, CLR_MAGENTA, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("extra healing",          "puce", None, 1, NO_POWER, NO_POWER, NO_POWER, 40, 150, 0, 0, 0, 0, 24, 6, 0, 0, 0, 0, 0, 0, 2, 0, 15, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("greater healing",	 "deep red", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 200, 0, 0, 0, 0, 36, 8, 0, 0, 0, 0, 0, 0, 3, 0, 18, CLR_RED, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("full healing",          "black", None, 1, NO_POWER, NO_POWER, NO_POWER, 10, 300, 0, 0, 0, 0, 0, 0, 1000, 0, 0, 0, 0, 0, 4, 0, 0, CLR_BLACK, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("gain level",            "milky", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("enlightenment",        "swirly", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("monster detection",    "bubbly", None, 1, NO_POWER, NO_POWER, NO_POWER, 30, 150, 0, 0, 0, 0, 1, 50, 100, 0, 0, 0, 0, 0, 0, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("object detection",      "smoky", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_GRAY, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("gain energy",          "cloudy", None, 1, NO_POWER, NO_POWER, NO_POWER, 30, 150, 0, 0, 0, 0, 6, 6, 20, 0, 0, 0, 0, 0, 1, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("greater energy",     "greenish", None, 1, NO_POWER, NO_POWER, NO_POWER, 20, 200, 0, 0, 0, 0, 12, 6, 60, 0, 0, 0, 0, 0, 2, 0, 0, CLR_GREEN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("full energy",		  "silvery", None, 1, NO_POWER, NO_POWER, NO_POWER, 10, 300, 0, 0, 0, 0, 24, 6, 500, 0, 0, 0, 0, 0, 3, 0, 0, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("sleeping",       "effervescent", None, 1, NO_POWER, NO_POWER, NO_POWER, 30, 100, 3, 4, 0, 0, 5, 4, 0, 0, 0, 0, 0, 0, 0, -1, -2, CLR_GRAY, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("polymorph",            "golden", None, 1, NO_POWER, NO_POWER, NO_POWER, 10, 200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, OBJECT_SOUNDSET_GENERAL, O1_POLYMORPH_RESISTANT, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("booze",                 "brown", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 1, 5, 0, 0, 3, 8, 0, 0, 0, 0, 20, -10, 15, 0, 0, CLR_BROWN, OBJECT_SOUNDSET_GENERAL, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("sickness",              "fizzy", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("fruit juice",            "dark", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, -10, 0, 0, 0, CLR_BLACK, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("acid",                  "white", None, 0, NO_POWER, NO_POWER, NO_POWER, 10, 250, 0, 0, 0, 0, 6, 8, 0, 0, 0, 0, 0, 0, 0, 0, -2, CLR_WHITE, OBJECT_SOUNDSET_GENERAL, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("oil",                   "murky", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BROWN, OBJECT_SOUNDSET_GENERAL, O1_COLD_RESISTANT, O3_NONE, O4_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, PERMITTED_ALL),
+POTION("poison",             "sapphire", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,  50, 0, 0, 0, 0, 1, 10, 5, -5, 0, 0, 0, 0, 3, 0, 0, CLR_BLUE, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 /* fixed description
  */
-POTION("water",                 "clear", None, 0, NO_POWER, NO_POWER, NO_POWER, 80, 100, 0, 0, 0, 0, 2, 6, 0, 0, 1, 10, 0, 0, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
-POTION("dwarven stout",     "dark ruby", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,   5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_BLACK, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
-POTION("urine",           "pale yellow", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,   5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("water",                 "clear", None, 0, NO_POWER, NO_POWER, NO_POWER, 80, 100, 0, 0, 0, 0, 2, 6, 0, 0, 1, 10, 0, 0, 0, 0, 0, CLR_CYAN, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL), /* MARKER FOR FIRST NON-SHUFFLED */
+POTION("dwarven stout",     "dark ruby", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,   5, 0, 0, 0, 0, 1, 4, 3, -3, 0, 0, 20, 0, 0, 0, 0, CLR_BLACK, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+POTION("urine",           "pale yellow", None, 0, NO_POWER, NO_POWER, NO_POWER, 30,   5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_YELLOW, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 #undef POTION
 
 /* scrolls ... */

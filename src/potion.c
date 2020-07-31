@@ -796,12 +796,15 @@ struct obj *otmp;
 	if (!otmp)
 		return 0;
 
+    int dicebuc = otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_normal_dice_buc_multiplier : 0;
     int duration =
-        otmp->oclass == POTION_CLASS ? d(objects[otmp->otyp].oc_potion_normal_dice, objects[otmp->otyp].oc_potion_normal_diesize) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
+        otmp->oclass == POTION_CLASS ? d(max(1,objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), objects[otmp->otyp].oc_potion_normal_diesize) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
         d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
     int nutrition =
         otmp->oclass == POTION_CLASS ? d(objects[otmp->otyp].oc_potion_nutrition_dice, objects[otmp->otyp].oc_potion_nutrition_diesize) + objects[otmp->otyp].oc_potion_nutrition_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_nutrition_buc_multiplier :
         0;
+
+    int extra_data1 = otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_extra_data1 : 0;
 
     switch (otmp->otyp) {
     case POT_RESTORE_ABILITY:
@@ -929,7 +932,7 @@ struct obj *otmp;
         if (otmp->cursed) 
         {
             You("pass out.");
-            multi = -rnd(max(1, objects[otmp->otyp].oc_potion_extra_data1));
+            multi = -rnd(max(1, extra_data1));
             nomovemsg = "You awake with a headache.";
         }
         break;
@@ -1005,7 +1008,7 @@ struct obj *otmp;
                 otmp->odiluted ? "reconstituted " : "", fruitname(TRUE));
         if (otmp->otyp == POT_FRUIT_JUICE) 
         {
-            u.uhunger += (otmp->odiluted ? 5 : 10) * (2 + bcsign(otmp));
+            u.uhunger += nutrition / (otmp->odiluted ? 2 : 1); // 5 : 10) *(2 + bcsign(otmp));
             update_hunger_status(FALSE);
             break;
         }
@@ -1018,7 +1021,7 @@ struct obj *otmp;
         if (otmp->blessed)
             HSee_invisible |= FROM_ACQUIRED;
         else
-            incr_itimeout(&HSee_invisible, otmp->oclass == POTION_CLASS ? rn1(100, 750) : duration);
+            incr_itimeout(&HSee_invisible, duration);
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();       /* see invisible monsters */
         newsym(u.ux, u.uy);   /* see yourself! */
@@ -1046,11 +1049,11 @@ struct obj *otmp;
 		else
 			You("feel refreshed.");
 
-		u.uhunger += (otmp->odiluted ? 10 : 20);
+		u.uhunger += nutrition / (otmp->odiluted ? 2 : 1);
 		update_hunger_status(FALSE);
 
 		if (!otmp->odiluted)
-			make_confused(itimeout_incr(HConfusion, otmp->cursed ? d(3, 8) : d(2, 4)), FALSE);
+			make_confused(itimeout_incr(HConfusion, duration), FALSE);
 
 		break;
 	case POT_PARALYSIS:
@@ -1064,7 +1067,7 @@ struct obj *otmp;
             else
                 Your("%s are frozen to the %s!", makeplural(body_part(FOOT)),
                      surface(u.ux, u.uy));
-			incr_itimeout(&HParalyzed, d(5 - 2 * bcsign(otmp), 4));
+			incr_itimeout(&HParalyzed, duration);
 			context.botl = context.botlx = 1;
 #if 0
 			nomul(-d(5 - 2 * bcsign(otmp), 4)); // (rn1(9 - 6 * bcsign(otmp), 8 - 4 * bcsign(otmp))));
@@ -1075,16 +1078,20 @@ struct obj *otmp;
         }
         break;
     case POT_SLEEPING:
-        if (Sleep_resistance || Free_action) {
+        if (Sleep_resistance || Free_action)
+        {
             You("yawn.");
-        } else {
+        } 
+        else
+        {
             You("suddenly fall asleep!");
-            fall_asleep(-d(5 - 2 * bcsign(otmp), 4), TRUE);
+            fall_asleep(-duration, TRUE);
         }
         break;
     case POT_MONSTER_DETECTION:
     case SPE_DETECT_MONSTERS:
-        if (otmp->blessed) {
+        if (otmp->blessed)
+        {
             int x, y;
 
             if (Detect_monsters)
@@ -1094,11 +1101,13 @@ struct obj *otmp;
             if ((HDetect_monsters & TIMEOUT) >= 300L)
                 i = 1;
             else
-                i = rn1(50, 101);
+                i = duration;
             incr_itimeout(&HDetect_monsters, i);
             for (x = 1; x < COLNO; x++) {
-                for (y = 0; y < ROWNO; y++) {
-                    if (levl[x][y].hero_memory_layers.glyph == GLYPH_INVISIBLE) {
+                for (y = 0; y < ROWNO; y++) 
+                {
+                    if (levl[x][y].hero_memory_layers.glyph == GLYPH_INVISIBLE) 
+                    {
                         unmap_object(x, y);
                         newsym(x, y);
                     }
@@ -1166,15 +1175,15 @@ struct obj *otmp;
 			{
 				int typ = rn2(A_MAX);
 				poisontell(typ, FALSE);
-				(void)adjattrib(typ, Poison_resistance ? -1 : (otmp->blessed ? -rnd(3) : -rn1(4, 3)), 1);
+				(void)adjattrib(typ, Poison_resistance ? -1 : (otmp->blessed ? -rnd(max(1,extra_data1)) : -d(2, max(1, extra_data1))), 1);
 			}
 			if (!Poison_resistance) 
 			{
-					losehp(adjust_damage(rnd(10) + 5 * !!(otmp->cursed), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
+					losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
 			}
 			else
 			{
-				losehp(adjust_damage(1 + rn2(2), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
+				losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), "drinking poison", KILLED_BY);
 			}
 			exercise(A_CON, FALSE);
 		}
@@ -1199,9 +1208,7 @@ struct obj *otmp;
                 pline("Huh, What?  Where am I?");
         } else
             nothing++;
-        make_confused(itimeout_incr(HConfusion,
-			d(6 - 2 * bcsign(otmp), 8)),  //rn1(7, 16 - 8 * bcsign(otmp))
-                      FALSE);
+        make_confused(itimeout_incr(HConfusion, duration), FALSE);
         break;
     case POT_GAIN_ABILITY:
         if (otmp->cursed)
@@ -1249,7 +1256,7 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_DEX, TRUE);
-        incr_itimeout(&HUltra_fast, otmp->oclass == POTION_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+        incr_itimeout(&HUltra_fast, duration);
         break;
 	case POT_MAGIC_RESISTANCE:
 		if (!Antimagic)
@@ -1262,7 +1269,7 @@ struct obj *otmp;
 			unkn++;
 		}
 		exercise(A_WIS, TRUE);
-		incr_itimeout(&HAntimagic, otmp->oclass == POTION_CLASS ? rn1(10, 180 + 90 * bcsign(otmp)) : duration);
+		incr_itimeout(&HAntimagic, duration);
 		break;
     case POT_TITAN_STRENGTH:
         if (!Titan_strength)
@@ -1275,10 +1282,10 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_WIS, TRUE);
-        incr_itimeout(&HTitan_strength, otmp->oclass == POTION_CLASS ? rn1(10, 180 + 90 * bcsign(otmp)) : duration);
+        incr_itimeout(&HTitan_strength, duration);
         break;
     case POT_FIRE_IMMUNITY:
-        if (!Titan_strength)
+        if (!Fire_immunity)
         {
             You("feel protected from fire.");
         }
@@ -1288,39 +1295,43 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_WIS, TRUE);
-        incr_itimeout(&HFire_immunity, otmp->oclass == POTION_CLASS ? rn1(10, 180 + 90 * bcsign(otmp)) : duration);
+        incr_itimeout(&HFire_immunity, duration);
         break;
     case POT_BLINDNESS:
         if (Blind)
             nothing++;
-        make_blinded(itimeout_incr(Blinded,
-                                   rn1(200, 250 - 125 * bcsign(otmp))),
-                     (boolean) !Blind);
+        make_blinded(itimeout_incr(Blinded, duration), (boolean) !Blind);
         break;
     case POT_GAIN_LEVEL:
         if (otmp->cursed) {
             unkn++;
             /* they went up a level */
             if ((ledger_no(&u.uz) == 1 && u.uhave.amulet)
-                || Can_rise_up(u.ux, u.uy, &u.uz)) {
+                || Can_rise_up(u.ux, u.uy, &u.uz)) 
+            {
                 const char *riseup = "rise up, through the %s!";
 
-                if (ledger_no(&u.uz) == 1) {
+                if (ledger_no(&u.uz) == 1) 
+                {
                     You(riseup, ceiling(u.ux, u.uy));
                     goto_level(&earth_level, FALSE, FALSE, FALSE);
-                } else {
+                } 
+                else
+                {
                     int newlev = depth(&u.uz) - 1;
                     d_level newlevel;
 
                     get_level(&newlevel, newlev);
-                    if (on_level(&newlevel, &u.uz)) {
+                    if (on_level(&newlevel, &u.uz)) 
+                    {
                         pline("It tasted bad.");
                         break;
                     } else
                         You(riseup, ceiling(u.ux, u.uy));
                     goto_level(&newlevel, FALSE, FALSE, FALSE);
                 }
-            } else
+            } 
+            else
                 You("have an uneasy feeling.");
             break;
         }
@@ -1332,29 +1343,29 @@ struct obj *otmp;
         break;
     case POT_HEALING:
         You_feel("better.");
-        healup(d(12 + 6 * bcsign(otmp), 6), otmp->blessed ? 1 : 0,
+        healup(duration, otmp->blessed ? extra_data1 : 0,
                !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
         break;
     case POT_EXTRA_HEALING:
         You_feel("much better.");
-        healup(d(24 + 15 * bcsign(otmp), 6),
-               otmp->blessed ? 2 : 0, !otmp->cursed,
+        healup(duration,
+               otmp->blessed ? extra_data1 : 0, !otmp->cursed,
                TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);
         break;
 	case POT_GREATER_HEALING:
 		You_feel("much, much better.");
-		healup(d(36 + 18 * bcsign(otmp), 8),
-			otmp->blessed ? 3 : 0, !otmp->cursed,
+		healup(duration,
+			otmp->blessed ? extra_data1 : 0, !otmp->cursed,
 			TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
 		exercise(A_CON, TRUE);
 		exercise(A_STR, TRUE);
 		break;
 	case POT_FULL_HEALING:
         You_feel("completely healed.");
-        healup(1000, otmp->blessed ? 4 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
+        healup(duration, otmp->blessed ? extra_data1 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
         if (otmp->blessed && u.ulevel < u.ulevelmax) {
             /* when multiple levels have been lost, drinking
@@ -1374,7 +1385,8 @@ struct obj *otmp;
          * (which will take effect after escaping from the rock if it hasn't
          * expired by then).
          */
-        if (!Levitation && !Blocks_Levitation) {
+        if (!Levitation && !Blocks_Levitation)
+        {
             /* kludge to ensure proper operation of float_up() */
             set_itimeout(&HLevitation, 1L);
             float_up();
@@ -1385,21 +1397,27 @@ struct obj *otmp;
         } else /* already levitating, or can't levitate */
             nothing++;
 
-        if (otmp->cursed) {
+        if (otmp->cursed) 
+        {
             /* 'already levitating' used to block the cursed effect(s)
                aside from ~I_SPECIAL; it was not clear whether that was
                intentional; either way, it no longer does (as of 3.6.1) */
             HLevitation &= ~I_SPECIAL; /* can't descend upon demand */
-            if (Blocks_Levitation) {
+            if (Blocks_Levitation)
+            {
                 ; /* rising via levitation is blocked */
-            } else if ((u.ux == xupstair && u.uy == yupstair)
+            }
+            else if ((u.ux == xupstair && u.uy == yupstair)
                     || (sstairs.up && u.ux == sstairs.sx && u.uy == sstairs.sy)
-                    || (xupladder && u.ux == xupladder && u.uy == yupladder)) {
+                    || (xupladder && u.ux == xupladder && u.uy == yupladder))
+            {
                 (void) doup();
                 /* in case we're already Levitating, which would have
                    resulted in incrementing 'nothing' */
                 nothing = 0; /* not nothing after all */
-            } else if (has_ceiling(&u.uz)) {
+            } 
+            else if (has_ceiling(&u.uz))
+            {
                 int dmg = rnd(!uarmh ? 10 : !is_metallic(uarmh) ? 6 : 3);
 
                 You("hit your %s on the %s.", body_part(HEAD),
@@ -1408,14 +1426,16 @@ struct obj *otmp;
                        KILLED_BY);
                 nothing = 0; /* not nothing after all */
             }
-        } else if (otmp->blessed) {
+        } else if (otmp->blessed) 
+        {
             /* at this point, timeout is already at least 1 */
-            incr_itimeout(&HLevitation, rn1(50, 250));
+            incr_itimeout(&HLevitation, duration + extra_data1);
             /* can descend at will (stop levitating via '>') provided timeout
                is the only factor (ie, not also wearing Lev ring or boots) */
             HLevitation |= I_SPECIAL;
-        } else /* timeout is already at least 1 */
-            incr_itimeout(&HLevitation, otmp->oclass == POTION_CLASS ? rn1(140, 10) : duration);
+        } 
+        else /* timeout is already at least 1 */
+            incr_itimeout(&HLevitation, duration);
 
         if (Levitation && IS_SINK(levl[u.ux][u.uy].typ))
             spoteffects(FALSE);
@@ -1442,8 +1462,10 @@ struct obj *otmp;
          *      uncursed: +2..12 max (+ 7   avg), +6..36 current (+21   avg)
          *      cursed:   -1.. 6 max (- 3.5 avg), -3..18 current (-10.5 avg)
          */
-		num = 0;
-		if(otmp->otyp == POT_GAIN_ENERGY)
+		num = duration;
+        numxtra = extra_data1;
+#if 0
+        if(otmp->otyp == POT_GAIN_ENERGY)
 	        num = d(6, 6) + 20;
 		else if (otmp->otyp == POT_GREATER_ENERGY)
 			num = d(12, 6) + 60;
@@ -1456,7 +1478,7 @@ struct obj *otmp;
 			numxtra = 2;
 		else if (otmp->otyp == POT_FULL_ENERGY)
 			numxtra = 3;
-
+#endif
 		if (otmp->cursed)
 		{
 			/* subtract instead of add when cursed */
@@ -1495,7 +1517,7 @@ struct obj *otmp;
 			{
                 You("burn your %s%s.", body_part(FACE), Fire_immunity ? ", but you just get a nice tan" : "");
                 /* fire damage */
-                losehp(adjust_damage(d(3, 4), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "burning potion of oil",
+                losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "burning potion of oil",
                        KILLED_BY_AN);
             }
         } 
@@ -1516,7 +1538,7 @@ struct obj *otmp;
             pline("This burns%s!",
                   otmp->blessed ? " a little" : otmp->cursed ? " a lot"
                                                              : " like acid");
-            dmg = d(otmp->cursed ? 8 : 6, otmp->blessed ? 6 : 8);
+            dmg = duration;
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), "potion of acid", KILLED_BY_AN);
             exercise(A_CON, FALSE);
         }
@@ -2083,15 +2105,26 @@ struct obj *obj;
     int i, ii, isdone, kn = 0;
     boolean cureblind = FALSE;
 
+    if (obj->oclass != POTION_CLASS)
+        return;
+
     /* potion of unholy water might be wielded; prevent
        you_were() -> drop_weapon() from dropping it so that it
        remains in inventory where our caller expects it to be */
+    int dicebuc = objects[obj->otyp].oc_potion_breathe_dice_buc_multiplier;
+    int duration =
+        d(max(1, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), objects[obj->otyp].oc_potion_breathe_diesize)
+        + objects[obj->otyp].oc_potion_breathe_plus
+        + bcsign(obj) * objects[obj->otyp].oc_potion_breathe_buc_multiplier;
+
     obj->in_use = 1;
 
-    switch (obj->otyp) {
+    switch (obj->otyp) 
+    {
     case POT_RESTORE_ABILITY:
     case POT_GAIN_ABILITY:
-        if (obj->cursed) {
+        if (obj->cursed) 
+        {
             if (!has_innate_breathless(youmonst.data))
                 pline("Ulch!  That potion smells terrible!");
             else if (haseyes(youmonst.data)) {
@@ -2102,10 +2135,14 @@ struct obj *obj;
                 Your("%s %s!", eyes, vtense(eyes, "sting"));
             }
             break;
-        } else {
+        } 
+        else 
+        {
             i = rn2(A_MAX); /* start at a random point */
-            for (isdone = ii = 0; !isdone && ii < A_MAX; ii++) {
-                if (ABASE(i) < AMAX(i)) {
+            for (isdone = ii = 0; !isdone && ii < A_MAX; ii++) 
+            {
+                if (ABASE(i) < AMAX(i)) 
+                {
                     ABASE(i)++;
                     /* only first found if not blessed */
                     isdone = !(obj->blessed);
@@ -2177,7 +2214,7 @@ struct obj *obj;
 	case POT_BOOZE:
 		if (!Confusion)
 			You_feel("somewhat dizzy.");
-		make_confused(itimeout_incr(HConfusion, d(1, 5)), FALSE);
+		make_confused(itimeout_incr(HConfusion, duration), FALSE);
 		break;
 	case POT_URINE:
 		if (!has_innate_breathless(youmonst.data))
@@ -2190,7 +2227,7 @@ struct obj *obj;
 	case POT_CONFUSION:
         if (!Confusion)
             You_feel("somewhat dizzy.");
-        make_confused(itimeout_incr(HConfusion, d(4 - 1 * bcsign(obj), 8)), FALSE);
+        make_confused(itimeout_incr(HConfusion, duration), FALSE);
         break;
     case POT_INVISIBILITY:
         if (!Blind && !Invis) {
@@ -2205,7 +2242,7 @@ struct obj *obj;
         if (!Free_action) 
 		{
             pline("%s seems to be holding you.", Something);
-			incr_itimeout(&HParalyzed, d(3 - 1 * bcsign(obj), 4));
+			incr_itimeout(&HParalyzed, duration);
 			context.botl = context.botlx = 1;
 #if 0
 			nomul(-d(3 - 1 * bcsign(obj), 4)); // rnd(5));
@@ -2221,7 +2258,7 @@ struct obj *obj;
         kn++;
         if (!Free_action && !Sleep_resistance) {
             You_feel("rather tired.");
-			fall_asleep(-d(3 - 1 * bcsign(obj), 4), FALSE);
+			fall_asleep(-duration, FALSE);
 #if 0
             nomul(-d(3 - 1 * bcsign(obj), 4));
             multi_reason = "sleeping off a magical draught";
@@ -2234,31 +2271,31 @@ struct obj *obj;
     case POT_SPEED:
         if (!Fast)
             Your("knees seem more flexible now.");
-        incr_itimeout(&HFast, rnd(5));
+        incr_itimeout(&HVery_fast, duration);
         exercise(A_DEX, TRUE);
         break;
     case POT_MAGIC_RESISTANCE:
         if (!Antimagic)
             You("feel a bit more protected now.");
-        incr_itimeout(&HAntimagic, rnd(5));
+        incr_itimeout(&HAntimagic, duration);
         exercise(A_WIS, TRUE);
         break;
     case POT_TITAN_STRENGTH:
         if (!Titan_strength)
             You("feel a bit stronger than before.");
-        incr_itimeout(&HTitan_strength, rnd(5));
+        incr_itimeout(&HTitan_strength, duration);
         exercise(A_WIS, TRUE);
         break;
     case POT_FIRE_IMMUNITY:
         if (!Fire_immunity)
             You("feel a bit more fire-protected now.");
-        incr_itimeout(&HFire_immunity, rnd(5));
+        incr_itimeout(&HFire_immunity, duration);
         exercise(A_WIS, TRUE);
         break;
     case POT_BLINDNESS:
 	{
 		boolean was_blind = Blind;
-        make_blinded(itimeout_incr(Blinded, d(4 - 1 * bcsign(obj), 8)), FALSE);
+        make_blinded(itimeout_incr(Blinded, duration), FALSE);
 		if (Blind && !Unaware) {
 			kn++;
 			pline("It suddenly gets dark.");

@@ -699,6 +699,11 @@
 #define ECrazed u.uprops[CRAZED].extrinsic
 #define Crazed (HCrazed || ECrazed)
 
+#define HDivine_regeneration u.uprops[DIVINE_REGENERATION].intrinsic
+#define EDivine_regeneration u.uprops[DIVINE_REGENERATION].extrinsic
+#define Divine_regeneration (HDivine_regeneration || EDivine_regeneration)
+
+
 
 #define HReflecting u.uprops[REFLECTING].intrinsic
 #define EReflecting u.uprops[REFLECTING].extrinsic

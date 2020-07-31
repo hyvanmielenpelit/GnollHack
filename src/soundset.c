@@ -4157,13 +4157,13 @@ int dnum;
     else if (dnum == sokoban_dnum)
         res = GHSOUND_SOKOBAN_MUSIC_NORMAL;
     else if (dnum == quest_dnum)
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_QUEST_MUSIC_NORMAL;
     else if (dnum == tower_dnum)
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_VLAD_TOWER_MUSIC_NORMAL;
     else if (dnum == modron_dnum)
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_MODRON_MUSIC_NORMAL;
     else if (dnum == bovine_dnum)
-        res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
+        res = GHSOUND_BOVINE_MUSIC_NORMAL;
     else
         res = GHSOUND_DUNGEON_NORMAL_MUSIC_NORMAL;
 
@@ -4191,6 +4191,14 @@ struct d_level* dlvl;
         return GHSOUND_DUNGEON_NORMAL_MUSIC_MEDUSA;
     else if (Is_asmo_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    else if (Is_baal_level(dlvl))
+        return GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    else if (Is_yeenoghu_level(dlvl))
+        return GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    else if (Is_tarrasque_level(dlvl))
+        return GHSOUND_GEHENNOM_MUSIC_NORMAL;
+    else if (Is_orcus_level(dlvl))
+        return GHSOUND_GEHENNOM_MUSIC_VALLEY;
     if (Is_minetown_level(dlvl))
         return GHSOUND_GNOMISH_MINES_MUSIC_TOWN;
     else

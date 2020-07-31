@@ -708,12 +708,17 @@ regenerate_hp()
 {
     /* regenerate hp */
     int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
-    int roundstofull = Regeneration || Rapid_regeneration || Rapider_regeneration || Rapidest_regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
+    int roundstofull = Regeneration || Rapid_regeneration || Rapider_regeneration || Rapidest_regeneration || Divine_regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
     int fixedhpperround = relevant_hpmax / roundstofull;
     int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
     int added_hp = 0;
 
-    if (Rapidest_regeneration && fixedhpperround < 20)
+    if (Divine_regeneration && fixedhpperround < 40)
+    {
+        fixedhpperround = 40;
+        fractional_hp = 0;
+    }
+    else if (Rapidest_regeneration && fixedhpperround < 20)
     {
         fixedhpperround = 20;
         fractional_hp = 0;
@@ -732,7 +737,12 @@ regenerate_hp()
     /* Mummy rot here */
     if (MummyRot && !Sick_resistance)
     {
-        if (Rapidest_regeneration)
+        if (Divine_regeneration)
+        {
+            fixedhpperround = 4;
+            fractional_hp = 0;
+        }
+        else if (Rapidest_regeneration)
         {
             fixedhpperround = 3;
             fractional_hp = 0;
