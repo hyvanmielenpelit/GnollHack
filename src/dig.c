@@ -1567,14 +1567,15 @@ register struct monst *mtmp;
 	{
 		struct mkroom* r = which_room(mtmp->mx, mtmp->my);
         int ltype = 0;
+        int lsubtype = 0;
         if(here->floortyp)
-            ltype = here->floortyp;
+            ltype = here->floortyp, lsubtype = here->floorsubtyp;
         else if (r && r->orig_rtype == GARDEN)
-            ltype = GRASS;
+            ltype = GRASS, lsubtype = rn2(3);
 		else
             ltype = ROOM;
 
-        create_simple_location(mtmp->mx, mtmp->my, ltype, 0, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, FALSE);
+        create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, FALSE);
 
         if (pile && pile < 5)
 		{

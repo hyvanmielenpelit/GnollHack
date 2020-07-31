@@ -8169,14 +8169,14 @@ short exploding_wand_typ;
         {
             rangemod = -1000;
             struct mkroom* r = which_room(x, y);
-            int ltype = 0;
+            int ltype = 0, lsubtype = 0;
             if (levl[x][y].floortyp)
-                ltype = levl[x][y].floortyp;
+                ltype = levl[x][y].floortyp, lsubtype = levl[x][y].floorsubtyp;
             else if (r && r->orig_rtype == GARDEN)
-                ltype = GRASS;
+                ltype = GRASS, lsubtype = rn2(3);
             else
                 ltype = ROOM;
-            create_simple_location(x, y, ltype, 0, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
+            create_simple_location(x, y, ltype, lsubtype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);
             if (cansee(x, y))

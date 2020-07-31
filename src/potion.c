@@ -796,7 +796,12 @@ struct obj *otmp;
 	if (!otmp)
 		return 0;
 
-	int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
+    int duration =
+        otmp->oclass == POTION_CLASS ? d(objects[otmp->otyp].oc_potion_normal_dice, objects[otmp->otyp].oc_potion_normal_diesize) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
+        d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
+    int nutrition =
+        otmp->oclass == POTION_CLASS ? d(objects[otmp->otyp].oc_potion_nutrition_dice, objects[otmp->otyp].oc_potion_nutrition_diesize) + objects[otmp->otyp].oc_potion_nutrition_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_nutrition_buc_multiplier :
+        0;
 
     switch (otmp->otyp) {
     case POT_RESTORE_ABILITY:
@@ -842,41 +847,47 @@ struct obj *otmp;
     case POT_HALLUCINATION:
         if (Hallucination || Halluc_resistance)
             nothing++;
-        (void) make_hallucinated(itimeout_incr(HHallucination,
-			otmp->oclass == POTION_CLASS ? rn1(200, 600 - 300 * bcsign(otmp)) : duration),
+        (void) make_hallucinated(itimeout_incr(HHallucination, duration),
                                  TRUE, 0L);
         break;
     case POT_WATER:
         if (!otmp->blessed && !otmp->cursed) {
             pline("This tastes like %s.", hliquid("water"));
-            u.uhunger += rnd(10);
+            u.uhunger += nutrition;
             update_hunger_status(FALSE);
             break;
         }
         unkn++;
         if (is_undead(youmonst.data) || is_demon(youmonst.data)
-            || u.ualign.type == A_CHAOTIC) {
+            || u.ualign.type == A_CHAOTIC)
+        {
             if (otmp->blessed) {
                 pline("This burns like %s!", hliquid("acid"));
                 exercise(A_CON, FALSE);
-                if (u.ulycn >= LOW_PM) {
+                if (u.ulycn >= LOW_PM) 
+                {
                     Your("affinity to %s disappears!",
                          makeplural(mons[u.ulycn].mname));
                     if (youmonst.data == &mons[u.ulycn])
                         you_unwere(FALSE);
                     set_ulycn(NON_PM); /* cure lycanthropy */
                 }
-                losehp(adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of holy water",
+                losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_ACID, FALSE), "potion of holy water",
                        KILLED_BY_AN);
-            } else if (otmp->cursed) {
+            } 
+            else if (otmp->cursed) 
+            {
                 You_feel("quite proud of yourself.");
-                healup(d(2, 6), 0, 0, 0, 0, 0, 0);
+                healup(duration, 0, 0, 0, 0, 0, 0);
                 if (u.ulycn >= LOW_PM && !Upolyd)
                     you_were();
                 exercise(A_CON, TRUE);
             }
-        } else {
-            if (otmp->blessed) {
+        }
+        else 
+        {
+            if (otmp->blessed) 
+            {
                 You_feel("full of awe.");
                 make_sick(0L, (char *) 0, TRUE);
 				make_food_poisoned(0L, (char*)0, TRUE);
@@ -886,10 +897,13 @@ struct obj *otmp;
                 if (u.ulycn >= LOW_PM)
                     you_unwere(TRUE); /* "Purified" */
                 /* make_confused(0L, TRUE); */
-            } else {
-                if (u.ualign.type == A_LAWFUL) {
+            } 
+            else 
+            {
+                if (u.ualign.type == A_LAWFUL)
+                {
                     pline("This burns like %s!", hliquid("acid"));
-                    losehp(adjust_damage(d(2, 6), (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), "potion of unholy water",
+                    losehp(adjust_damage(duration, (struct monst*)0, &youmonst, AD_ACID, ADFLAGS_NONE), "potion of unholy water",
                            KILLED_BY_AN);
                 } else
                     You_feel("full of dread.");
@@ -905,16 +919,17 @@ struct obj *otmp;
               otmp->odiluted ? "watered down " : "",
               Hallucination ? "dandelion wine" : "liquid fire");
         if (!otmp->blessed)
-            make_confused(itimeout_incr(HConfusion, d(3, 8)), FALSE);
+            make_confused(itimeout_incr(HConfusion, duration), FALSE);
         /* the whiskey makes us feel better */
         if (!otmp->odiluted)
             healup(1, 0, FALSE, FALSE, FALSE, FALSE, FALSE);
-        u.uhunger += 10 * (2 + bcsign(otmp));
+        u.uhunger += nutrition; // 10 * (2 + bcsign(otmp));
         update_hunger_status(FALSE);
         exercise(A_WIS, FALSE);
-        if (otmp->cursed) {
+        if (otmp->cursed) 
+        {
             You("pass out.");
-            multi = -rnd(15);
+            multi = -rnd(max(1, objects[otmp->otyp].oc_potion_extra_data1));
             nomovemsg = "You awake with a headache.";
         }
         break;
@@ -925,12 +940,16 @@ struct obj *otmp;
 			Hallucination ? "dwarven ale" : objects[POT_URINE].oc_name_known ? "pee" : "urine sample");
 		break;
 	case POT_ENLIGHTENMENT:
-        if (otmp->cursed) {
+        if (otmp->cursed)
+        {
             unkn++;
             You("have an uneasy feeling...");
             exercise(A_WIS, FALSE);
-        } else {
-            if (otmp->blessed) {
+        }
+        else 
+        {
+            if (otmp->blessed)
+            {
                 (void) adjattrib(A_INT, 1, FALSE);
                 (void) adjattrib(A_WIS, 1, FALSE);
             }
@@ -943,7 +962,8 @@ struct obj *otmp;
         break;
     case SPE_INVISIBILITY:
         /* spell cannot penetrate mummy wrapping */
-        if (uarmo && Blocks_Invisibility && uarmo->otyp == MUMMY_WRAPPING) {
+        if (uarmo && Blocks_Invisibility && uarmo->otyp == MUMMY_WRAPPING) 
+        {
             You_feel("rather itchy under %s.", yname(uarmo));
             break;
         }
@@ -958,7 +978,7 @@ struct obj *otmp;
             self_invis_message();
         }
 
-        incr_itimeout(&HInvis, otmp->oclass == POTION_CLASS ? d(10, 10) + 400 : duration);
+        incr_itimeout(&HInvis, duration);
 
         newsym(u.ux, u.uy); /* update position */
 
@@ -969,7 +989,8 @@ struct obj *otmp;
         }
         break;
     case POT_SEE_INVISIBLE: /* tastes like fruit juice in Rogue */
-    case POT_FRUIT_JUICE: {
+    case POT_FRUIT_JUICE: 
+    {
         int msg = Invisible && !Blind;
 
         unkn++;
@@ -982,7 +1003,8 @@ struct obj *otmp;
                     ? "This tastes like 10%% real %s%s all-natural beverage."
                     : "This tastes like %s%s.",
                 otmp->odiluted ? "reconstituted " : "", fruitname(TRUE));
-        if (otmp->otyp == POT_FRUIT_JUICE) {
+        if (otmp->otyp == POT_FRUIT_JUICE) 
+        {
             u.uhunger += (otmp->odiluted ? 5 : 10) * (2 + bcsign(otmp));
             update_hunger_status(FALSE);
             break;

@@ -880,11 +880,13 @@ mkgarden()
 			{
 				levl[sx][sy].typ = TREE;
                 levl[sx][sy].floortyp = GRASS;
+                levl[sx][sy].floorsubtyp = rn2(3);
             }
 			else
 			{
 				levl[sx][sy].typ = GRASS;
-				/* Buried items */
+                levl[sx][sy].subtyp = rn2(3);
+                /* Buried items */
 				if (!rn2(5))
 				{
 					int itemtype = MANDRAKE_ROOT;

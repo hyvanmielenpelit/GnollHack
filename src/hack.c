@@ -554,7 +554,7 @@ xchar x, y;
 
     } else if (IS_TREE(lev->typ)) {
         digtxt = "chew through the tree.";
-        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(x, y), 0, 0, FALSE);
+        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, lev->floorsubtyp ? lev->floorsubtyp : rn2(3), 0, back_to_broken_glyph(x, y), 0, 0, FALSE);
     } else if (lev->typ == IRONBARS) {
         digtxt = "eat through the bars.";
         dissolve_bars(x, y);

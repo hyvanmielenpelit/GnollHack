@@ -628,12 +628,11 @@ struct objclass {
 #define BONUS_TO_SPELL_CASTING 0x0400
 #define BONUS_TO_EXPERIENCE 0x0800
 #define BONUS_TO_ARCHERY 0x1000
+#define SETS_FIXED_ATTRIBUTE 0x2000
+#define FIXED_IS_MAXIMUM 0x4000
+#define IGNORE_ENCHANTMENT 0x8000
 
 #define BONUS_TO_ALLSTATS BONUS_TO_STR | BONUS_TO_DEX | BONUS_TO_CON | BONUS_TO_INT | BONUS_TO_WIS | BONUS_TO_CHA
-
-#define SETS_FIXED_ATTRIBUTE 0x1000
-#define FIXED_IS_MAXIMUM 0x2000
-#define IGNORE_ENCHANTMENT 0x4000
 
 
 /* weapons */
@@ -705,6 +704,25 @@ struct objclass {
 #define oc_spell_dur_dice oc_wldice		/* books: spell duration no of dice */
 #define oc_spell_dur_diesize oc_wldam	/* books: spell duration size of dice */
 #define oc_spell_dur_plus oc_wldmgplus	/* books: spell duration constant added */
+
+/* potions */
+#define oc_potion_breathe_buc_multiplier oc_oc1
+#define oc_potion_normal_buc_multiplier oc_oc2
+#define oc_potion_nutrition_buc_multiplier oc_oc3
+#define oc_potion_extra_data1 oc_oc4
+#define oc_potion_extra_data2 oc_oc5
+#define oc_potion_saving_throw_adjustment oc_mc_adjustment	/* potions: potion saving throw adjustment */
+#define oc_potion_breathe_dice oc_wsdice					/* potions: potion breathe duration no of dice */
+#define oc_potion_breathe_diesize oc_wsdam					/* potions: potion breathe duration size of dice */
+#define oc_potion_breathe_plus oc_wsdmgplus					/* potions: potion breathe duration constant added */
+/* Note potion duration data locations are aligned with spell duration data locations for simplicity */
+#define oc_potion_normal_dice oc_spell_dur_dice				/* potions: potion quaff duration no of dice */
+#define oc_potion_normal_diesize oc_spell_dur_diesize		/* potions: potion quaff duration size of dice */
+#define oc_potion_normal_plus oc_spell_dur_plus				/* potions: potion quaff duration constant added */
+#define oc_potion_nutrition_dice oc_wedice					/* potions: potion nutrition no of dice */
+#define oc_potion_nutrition_diesize oc_wedam				/* potions: potion nutrition size of dice */
+#define oc_potion_nutrition_plus oc_wedmgplus				/* potions: potion nutrition constant added */
+
 
 	int oc_dir_subtype;				/* spells: ID for type of ray or immediate effect, weapons: damage type */
 

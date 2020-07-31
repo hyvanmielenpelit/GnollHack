@@ -3728,7 +3728,7 @@ teleport_sink()
 
     if ((levl[cx][cy].typ == ROOM || levl[cx][cy].typ == GRASS || levl[cx][cy].typ == GROUND) && !trp && !eng) {
         /* create sink at new position */
-		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].looted, levl[u.ux][u.uy].subtyp, 0, levl[cx][cy].floortyp, levl[cx][cy].floorsubtyp, TRUE);
+		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].subtyp, levl[u.ux][u.uy].looted, 0, levl[cx][cy].floortyp, levl[cx][cy].floorsubtyp, TRUE);
         /* remove old sink */
 		create_basic_floor_location(u.ux, u.uy, levl[cx][cy].floortyp ? levl[cx][cy].floortyp : ROOM, 0, TRUE);
         return TRUE;
