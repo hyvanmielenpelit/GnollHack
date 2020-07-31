@@ -1250,15 +1250,17 @@ struct obj *otmp;
         }
         /* FALLTHRU */
     case SPE_HASTE_SELF:
-        if (!Ultra_fast || !Super_fast || !Lightning_fast)
+        if (otmp->otyp == POT_LIGHTNING_SPEED ? !Lightning_fast : otmp->otyp == POT_GREATER_SPEED ? !Ultra_fast || !Super_fast : otmp->otyp == POT_SPEED ? !Ultra_fast || !Super_fast || !Lightning_fast : !Very_fast || !Ultra_fast || !Super_fast || !Lightning_fast)
         { /* wwf@doe.carleton.ca */
-            You("are suddenly moving %sfaster.", Fast || Very_fast ? "" : "much ");
-        } else {
+            You("are suddenly moving %sfaster.", (otmp->otyp == POT_LIGHTNING_SPEED ? Super_fast : otmp->otyp == POT_GREATER_SPEED ? Ultra_fast : otmp->otyp == POT_SPEED ? Very_fast : Fast) ? "" : "much ");
+        }
+        else 
+        {
             Your("%s get new energy.", makeplural(body_part(LEG)));
             unkn++;
         }
         exercise(A_DEX, TRUE);
-        incr_itimeout(&HUltra_fast, duration);
+        incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : otmp->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
         break;
 	case POT_MAGIC_RESISTANCE:
 		if (!Antimagic)
