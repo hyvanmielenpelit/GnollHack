@@ -3069,6 +3069,8 @@ static const struct abil2spfx_tag {
 	int prop;
 	unsigned long spfx;
 } abil2spfx[] = {
+	{ DEATH_RESISTANCE, SPFX_DEATH_RES },
+	{ DRAIN_RESISTANCE, SPFX_DRAIN_RES },
 	{ ANTIMAGIC, SPFX_ANTIMAGIC },
 	{ WARN_OF_MON, SPFX_WARN_OF_MON },
 	{ SEARCHING, SPFX_SEARCH },

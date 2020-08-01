@@ -53,8 +53,8 @@
 
 /* wielded or carried special effects */
 #define SPFX_NONE				0x00000000UL  /* No special effects, just a bonus */
-/* free bit */
-/* free bit */
+#define SPFX_DEATH_RES			0x00000001UL  /* Death resistance */
+#define SPFX_DRAIN_RES			0x00000002UL  /* Drain resistance */
 /* free bit */
 /* free bit */
 #define SPFX_ANTIMAGIC			0x00000010UL  /* Antimagic */

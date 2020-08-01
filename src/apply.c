@@ -2135,7 +2135,8 @@ int magic; /* 0=Physical, otherwise skill level */
     coord cc;
 
     /* attempt "jumping" spell if hero has no innate jumping ability */
-    if (!magic && !Jumping) {
+    if (!magic && !Jumping) 
+    {
         int sp_no;
 
         for (sp_no = 0; sp_no < MAXSPELL; ++sp_no)
@@ -2145,33 +2146,45 @@ int magic; /* 0=Physical, otherwise skill level */
                 return spelleffects(sp_no, FALSE);
     }
 
-    if (!magic && (nolimbs(youmonst.data) || slithy(youmonst.data))) {
+    if (!magic && (nolimbs(youmonst.data) || slithy(youmonst.data))) 
+    {
         /* normally (nolimbs || slithy) implies !Jumping,
            but that isn't necessarily the case for knights */
         You_cant("jump; you have no legs!");
         return 0;
-    } else if (!magic && !Jumping) {
+    } else if (!magic && !Jumping)
+    {
         You_cant("jump very far.");
         return 0;
     /* if steed is immobile, can't do physical jump but can do spell one */
-    } else if (!magic && u.usteed && stucksteed(FALSE)) {
+    }
+    else if (!magic && u.usteed && stucksteed(FALSE)) 
+    {
         /* stucksteed gave "<steed> won't move" message */
         return 0;
-    } else if (u.uswallow) {
-        if (magic) {
+    } 
+    else if (u.uswallow) 
+    {
+        if (magic) 
+        {
             You("bounce around a little.");
             return 1;
         }
         pline("You've got to be kidding!");
         return 0;
-    } else if (u.uinwater) {
-        if (magic) {
+    } 
+    else if (u.uinwater) 
+    {
+        if (magic) 
+        {
             You("swish around a little.");
             return 1;
         }
         pline("This calls for swimming, not jumping!");
         return 0;
-    } else if (u.ustuck) {
+    }
+    else if (u.ustuck) 
+    {
         if (is_tame(u.ustuck) && !Conflict && !is_confused(u.ustuck) && !is_crazed(u.ustuck))
         {
             You("pull free from %s.", mon_nam(u.ustuck));
@@ -2184,20 +2197,29 @@ int magic; /* 0=Physical, otherwise skill level */
         }
         You("cannot escape from %s!", mon_nam(u.ustuck));
         return 0;
-    } else if (Levitation || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
-        if (magic) {
+    }
+    else if (Levitation || Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) 
+    {
+        if (magic) 
+        {
             You("flail around a little.");
             return 1;
         }
         You("don't have enough traction to jump.");
         return 0;
-    } else if (!magic && near_capacity() > UNENCUMBERED) {
+    } 
+    else if (!magic && near_capacity() > UNENCUMBERED) 
+    {
         You("are carrying too much to jump!");
         return 0;
-    } else if (!magic && (u.uhunger <= 100 || ACURR(A_STR) < 6)) {
+    } 
+    else if (!magic && (u.uhunger <= 100 || ACURR(A_STR) < 6))
+    {
         You("lack the strength to jump!");
         return 0;
-    } else if (!magic && Wounded_legs) {
+    }
+    else if (!magic && Wounded_legs) 
+    {
         long wl = (Wounded_legs & BOTH_SIDES);
         const char *bp = body_part(LEG);
 
@@ -2211,7 +2233,9 @@ int magic; /* 0=Physical, otherwise skill level */
                                                                   : "",
                  bp, (wl == BOTH_SIDES) ? "are" : "is");
         return 0;
-    } else if (u.usteed && u.utrap) {
+    } 
+    else if (u.usteed && u.utrap) 
+    {
         pline("%s is stuck in a trap.", Monnam(u.usteed));
         return 0;
     }
@@ -2224,15 +2248,20 @@ int magic; /* 0=Physical, otherwise skill level */
     if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_JUMP_CURSOR) < 0)
         return 0; /* user pressed ESC */
 
-    if (!is_valid_jump_pos(cc.x, cc.y, magic, TRUE)) {
+    if (!is_valid_jump_pos(cc.x, cc.y, magic, TRUE))
+    {
         return 0;
-    } else {
+    } 
+    else 
+    {
         coord uc;
         int range, temp;
 
         if (u.utrap)
-            switch (u.utraptype) {
-            case TT_BEARTRAP: {
+            switch (u.utraptype) 
+            {
+            case TT_BEARTRAP:
+            {
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
 
                 You("rip yourself free of the bear trap!  Ouch!");
