@@ -550,36 +550,52 @@ struct monst *mtmp;
     /* target every quest artifact, not just current role's;
        if hero has more than one, choose randomly so that player
        can't use inventory ordering to influence the theft */
-    for (n = 0, obj = invent; obj; obj = obj->nobj)
-        if (any_quest_artifact(obj))
-            ++n, otmp = obj;
-    if (n > 1) {
-        n = rnd(n);
-        for (otmp = invent; otmp; otmp = otmp->nobj)
-            if (any_quest_artifact(otmp) && !--n)
-                break;
+    if (mtmp->data->mflags3 & M3_WANTSARTI)
+    {
+        for (n = 0, obj = invent; obj; obj = obj->nobj)
+            if (any_quest_artifact(obj))
+                ++n, otmp = obj;
+
+        if (n > 1) 
+        {
+            n = rnd(n);
+            for (otmp = invent; otmp; otmp = otmp->nobj)
+                if (any_quest_artifact(otmp) && !--n)
+                    break;
+        }
     }
 
-    if (!otmp) {
+    if (!otmp) 
+    {
         /* if we didn't find any quest arifact, find another valuable item */
-        if (u.uhave.amulet) {
+        if (u.uhave.amulet && (mtmp->data->mflags3 & M3_WANTSAMUL))
+        {
             real = AMULET_OF_YENDOR;
             fake = FAKE_AMULET_OF_YENDOR;
-        } else if (u.uhave.bell) {
+        } 
+        else if (u.uhave.bell && (mtmp->data->mflags3 & M3_WANTSBELL))
+        {
             real = BELL_OF_OPENING;
             fake = BELL;
-        } else if (u.uhave.book) {
+        }
+        else if (u.uhave.book && (mtmp->data->mflags3 & M3_WANTSBOOK))
+        {
             real = SPE_BOOK_OF_THE_DEAD;
-        } else if (u.uhave.menorah) {
+        }
+        else if (u.uhave.menorah && (mtmp->data->mflags3 & M3_WANTSCAND))
+        {
             real = CANDELABRUM_OF_INVOCATION;
-        } else
+        }
+        else
             return; /* you have nothing of special interest */
 
         /* If we get here, real and fake have been set up. */
         for (n = 0, obj = invent; obj; obj = obj->nobj)
             if (obj->otyp == real || (obj->otyp == fake && !mtmp->iswiz))
                 ++n, otmp = obj;
-        if (n > 1) {
+        
+        if (n > 1) 
+        {
             n = rnd(n);
             for (otmp = invent; otmp; otmp = otmp->nobj)
                 if ((otmp->otyp == real
@@ -588,7 +604,8 @@ struct monst *mtmp;
         }
     }
 
-    if (otmp) { /* we have something to snatch */
+    if (otmp)
+    { /* we have something to snatch */
         /* take off outer gear if we're targetting [hypothetical]
            quest artifact suit, shirt, gloves, or rings */
         if ((otmp == uarm || otmp == uarmo || otmp == uarmu) && uarmc)

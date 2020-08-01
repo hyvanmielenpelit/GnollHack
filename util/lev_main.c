@@ -1298,7 +1298,7 @@ char c;
         return (ROOM);
     case ',':
         return (GRASS);
-    case '\'':
+    case ':':
         return (GROUND);
     case '-':
         return (HWALL);
