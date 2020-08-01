@@ -1713,7 +1713,7 @@ int charge_init_index;
 		charge = 9;
 		break;
     case CHARGED_HOLY_GRAIL:
-        charge = 4;
+        charge = 2;
         break;
     }
 

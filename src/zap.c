@@ -804,7 +804,30 @@ cure_sickness_here:
 	case SPE_FULL_HEALING:
 		res = 1;
 		reveal_invis = TRUE;
-        if (mtmp->data != &mons[PM_PESTILENCE] && is_living(mtmp->data)) {
+        if (otyp == GRAIL_OF_HEALING && (is_undead(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)))
+        {
+            dmg = d(20, 6);
+            context.bypasses = TRUE; /* for make_corpse() */
+            int hp_before = mtmp->mhp;
+            deduct_monster_hp(mtmp, dmg);
+            int hp_after = mtmp->mhp;
+
+            int damagedealt = hp_before - hp_after;
+            if (damagedealt > 0)
+            {
+                pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+                display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+            }
+            if (DEADMONSTER(mtmp))
+            {
+                if (m_using)
+                    monkilled(mtmp, "", AD_RBRE);
+                else
+                    killed(mtmp);
+            }
+        }
+        else if (mtmp->data != &mons[PM_PESTILENCE] && is_living(mtmp->data))
+        {
             wake = FALSE; /* wakeup() makes the target angry */
 			if(otyp == SPE_FULL_HEALING)
 				mtmp->mhp = mtmp->mhpmax;
@@ -849,6 +872,12 @@ cure_sickness_here:
 
                 if (has_slimed(mtmp))
                     (void)set_mon_property_b(mtmp, SLIMED, 0, canseemon(mtmp));
+
+                if (is_tame(mtmp))
+                {
+                    if (EDOG(mtmp)->hungrytime < monstermoves + 500)
+                        EDOG(mtmp)->hungrytime = monstermoves + 500;
+                }
             }
 
             if (is_tame(mtmp) || is_peaceful(mtmp)) {
@@ -868,7 +897,7 @@ cure_sickness_here:
             (void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE,
                           d(3, otyp == SPE_FULL_HEALING ? 12 : otyp == SPE_EXTRA_HEALING ? 8 : 4), AD_CLRC, TELL);
         }
-		else
+        else
 		{ /* Undead and other nonliving such as golems */
 			pline("%s is unaffected.", Monnam(mtmp));
 		}
@@ -5088,7 +5117,6 @@ boolean ordinary;
 		break;
 	case JAR_OF_HEALING_SALVE:
 	case JAR_OF_EXTRA_HEALING_SALVE:
-    case GRAIL_OF_HEALING:
     case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
@@ -5124,12 +5152,56 @@ boolean ordinary;
 		damage = 0;
 		break;
 	case SPE_FULL_HEALING:
-		learn_it = TRUE; /* (no effect for spells...) */
-		healup(9999, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
-		You_feel("completely healed.");
-		damage = 0;
-		break;
-	case SPE_CURE_BLINDNESS:
+        if (is_living(youmonst.data))
+        {
+            learn_it = TRUE; /* (no effect for spells...) */
+            healup(1000, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
+            You_feel("completely healed.");
+        }
+        else
+            You_feel("no different than before.");
+
+        damage = 0;
+        break;
+    case GRAIL_OF_HEALING:
+        if (is_undead(youmonst.data) || is_demon(youmonst.data))
+        {
+            pline("The liquid burns inside you!");
+            u.uen = 0;
+            losehp(adjust_damage(d(20, 6), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "drinking from Holy Grail", KILLED_BY_AN);
+            context.botl = 1;
+        }
+        else if (is_living(youmonst.data))
+        {
+            learn_it = TRUE;
+            healup(1000, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
+            You_feel("truly completely healed.");
+
+            if (u.ulycn >= LOW_PM || is_were(youmonst.data))
+                you_unwere(TRUE);
+
+            if(Stoned)
+                make_stoned(0L, (char*)0, 0, (char*)0);
+
+            if (u.uhunger < 500)
+            {
+                int nut = 500 - u.uhunger;
+                lesshungry(nut);
+            }
+
+            u.uen += 500;
+            if (u.uen > u.uenmax)
+                u.uen = u.uenmax;
+            else if (u.uen <= 0)
+                u.uen = 0;
+            context.botl = 1;
+        }
+        else
+            You_feel("no different than before.");
+
+        damage = 0;
+        break;
+    case SPE_CURE_BLINDNESS:
 		healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_CURE_SICKNESS:

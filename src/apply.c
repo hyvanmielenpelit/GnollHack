@@ -168,7 +168,7 @@ boolean drink_yourself;
             struct monst* mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
             if (mtmp)
             {
-                You("give some %s to %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
+                You("%s some %s %s %s.", is_tame(mtmp) ? "give" : "splash", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), is_tame(mtmp) ? "to" : "on", mon_nam(mtmp));
             }
             else if (IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
             {
