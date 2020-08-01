@@ -2688,14 +2688,18 @@ register struct monst *mtmp;
             /* similar to hero's case, more or less */
             if (!resists_magic(mtmp)) { /* lose spell energy */
                 if (!is_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
-                                    || attacktype(mptr, AT_BREA))) {
-                    mtmp->mspec_used += d(2, 2);
-                    if (in_sight) {
+                                    || attacktype(mptr, AT_BREA))) 
+                {
+                    mtmp->mspec_used += d(2, 20);
+                    if (in_sight)
+                    {
                         seetrap(trap);
                         pline("%s seems lethargic.", Monnam(mtmp));
                     }
                 }
-            } else { /* take some damage */
+            } 
+            else
+            { /* take some damage */
                 int dmgval2 = rnd(4);
 
                 if ((otmp = MON_WEP(mtmp)) != 0

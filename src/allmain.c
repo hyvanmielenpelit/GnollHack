@@ -708,31 +708,17 @@ regenerate_hp()
 {
     /* regenerate hp */
     int relevant_hpmax = Upolyd ? u.mhmax : u.uhpmax;
-    int roundstofull = Regeneration || Rapid_regeneration || Rapider_regeneration || Rapidest_regeneration || Divine_regeneration ? max(1, min(relevant_hpmax, 150)) : 300;
+    int roundstofull = 
+        Divine_regeneration ? max(1, min(relevant_hpmax / 16, 10)) :
+        Rapidest_regeneration ? max(1, min(relevant_hpmax / 8, 20)) :
+        Rapider_regeneration ? max(1, min(relevant_hpmax / 4, 40)) :
+        Rapid_regeneration ? max(1, min(relevant_hpmax / 2, 80)) :
+        Regeneration ? max(1, min(relevant_hpmax, 160)) :
+        320;
     int fixedhpperround = relevant_hpmax / roundstofull;
     int fractional_hp = (10000 * (relevant_hpmax % roundstofull)) / roundstofull;
     int added_hp = 0;
 
-    if (Divine_regeneration && fixedhpperround < 40)
-    {
-        fixedhpperround = 40;
-        fractional_hp = 0;
-    }
-    else if (Rapidest_regeneration && fixedhpperround < 20)
-    {
-        fixedhpperround = 20;
-        fractional_hp = 0;
-    }
-    else if (Rapider_regeneration && fixedhpperround < 10)
-    {
-        fixedhpperround = 10;
-        fractional_hp = 0;
-    }
-    else if (Rapid_regeneration && fixedhpperround < 5)
-    {
-        fixedhpperround = 5;
-        fractional_hp = 0;
-    }
 
     /* Mummy rot here */
     if (MummyRot && !Sick_resistance)
@@ -765,7 +751,7 @@ regenerate_hp()
         }
         else
         {
-            roundstofull = 900;
+            roundstofull = 960;
             fixedhpperround = -relevant_hpmax / roundstofull;
             fractional_hp = -(10000 * (relevant_hpmax % roundstofull)) / roundstofull;
         }
@@ -966,25 +952,14 @@ regenerate_mana()
 {
 
 	/* regenerate mana */
-	int roundstofull = Energy_regeneration || Rapid_energy_regeneration || Rapider_energy_regeneration || Rapidest_energy_regeneration ? max(1, min(u.uenmax, 450)) : 900;
+	int roundstofull =
+        Rapidest_energy_regeneration ? max(1, min(u.uenmax / 8, 60)) :
+        Rapider_energy_regeneration ? max(1, min(u.uenmax / 4, 120)) :
+        Rapid_energy_regeneration ? max(1, min(u.uenmax / 2, 240)) :
+        Energy_regeneration ? max(1, min(u.uenmax, 480)) :
+        960;
 	int fixedmanaperround = u.uenmax / roundstofull;
 	int fractional_mana = (10000 * (u.uenmax % roundstofull)) / roundstofull;
-
-    if (Rapidest_energy_regeneration && fixedmanaperround < 20)
-    {
-        fixedmanaperround = 20;
-        fractional_mana = 0;
-    }
-    else if (Rapider_energy_regeneration && fixedmanaperround < 10)
-    {
-        fixedmanaperround = 10;
-        fractional_mana = 0;
-    }
-    else if (Rapid_energy_regeneration && fixedmanaperround < 5)
-    {
-        fixedmanaperround = 5;
-        fractional_mana = 0;
-    }
 
 	/*
 	&& ((wtcap < MOD_ENCUMBER

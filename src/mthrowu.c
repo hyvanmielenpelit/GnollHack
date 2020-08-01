@@ -1783,7 +1783,8 @@ struct attack* mattk;
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
 		{
-			if (!Deaf) {
+			if (!Deaf) 
+            {
 if (canseemon(mtmp))
 pline("%s coughs.", Monnam(mtmp));
 else
@@ -1791,8 +1792,10 @@ You_hear("a cough.");
 			}
 			return 0;
 		}
-		if (!mtmp->mspec_used && rn2(3)) {
-			if ((typ >= AD_MAGM) && (typ <= AD_STON)) {
+		if (!mtmp->mspec_used && rn2(3))
+        {
+			if ((typ >= AD_MAGM) && (typ <= AD_STON))
+            {
 				if (canseemon(mtmp))
 					pline("%s breathes %s!", Monnam(mtmp),
 						breathwep[typ - 1]);

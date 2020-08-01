@@ -550,7 +550,7 @@ boolean verbose;
 
     if (rtype == RECHARGING_GENERAL)
     {
-        if (obj->recharged >= 7) /* recharge_limit */
+        if (obj->recharged >= RECHARGE_LIMIT) /* recharge_limit */
             goto not_chargable;
 
         /* All other charged items here */
@@ -678,7 +678,7 @@ boolean verbose;
         if (objects[obj->otyp].oc_charged) 
 		{
             /* tools don't have a limit, but the counter used does */
-            if (rechrg < 7) /* recharge_limit */
+            if (rechrg < RECHARGE_LIMIT) /* recharge_limit */
                 obj->recharged++;
         }
 
@@ -888,7 +888,7 @@ boolean verbose;
     } 
 	else if (objects[obj->otyp].oc_charged && objects[obj->otyp].oc_recharging)  // obj->oclass == WEAPON_CLASS)
 	{
-        if (obj->recharged >= 7) /* recharge_limit */
+        if (obj->recharged >= RECHARGE_LIMIT) /* recharge_limit */
             goto not_chargable;
 
 		/* All other charged items here */
@@ -1036,7 +1036,7 @@ boolean verbose;
 		}
 
         /* items don't have a limit, but the counter used does */
-        if (obj->recharged < 7) /* recharge_limit */
+        if (obj->recharged < RECHARGE_LIMIT) /* recharge_limit */
             obj->recharged++;
 
 	}

@@ -320,30 +320,15 @@ monster_regeneration_and_timeout(mon, digest_meal)
 struct monst *mon;
 boolean digest_meal;
 {
-	int roundstofull = has_regeneration(mon) ? max(1, min(mon->mhpmax, 150)) : 300;
+	int roundstofull = 
+        has_divine_regeneration(mon) ? max(1, min(mon->mhpmax / 16, 10)) :
+        has_rapidest_regeneration(mon) ? max(1, min(mon->mhpmax / 8, 20)) :
+        has_rapider_regeneration(mon) ? max(1, min(mon->mhpmax / 4, 40)) :
+        has_rapid_regeneration(mon) ? max(1, min(mon->mhpmax / 2, 80)) :
+        has_regeneration(mon) ? max(1, min(mon->mhpmax, 160)) :
+        320;
 	int fixedhpperround = mon->mhpmax / roundstofull;
 	int fractional_hp = (10000 * (mon->mhpmax % roundstofull)) / roundstofull;
-
-    if (has_divine_regeneration(mon) && fixedhpperround < 40)
-    {
-        fixedhpperround = 40;
-        fractional_hp = 0;
-    }
-    else if (has_rapidest_regeneration(mon) && fixedhpperround < 20)
-    {
-        fixedhpperround = 20;
-        fractional_hp = 0;
-    }
-    else if (has_rapider_regeneration(mon) && fixedhpperround < 10)
-    {
-        fixedhpperround = 10;
-        fractional_hp = 0;
-    }
-    else if (has_rapid_regeneration(mon) && fixedhpperround < 5)
-    {
-        fixedhpperround = 5;
-        fractional_hp = 0;
-    }
 
     if (is_mummy_rotted(mon))
     {
@@ -428,10 +413,29 @@ boolean digest_meal;
     }
 
 
+    /* Spec_used */
     if (mon->mspec_used)
         mon->mspec_used--;
 
-    if (digest_meal) 
+    if (mon->mmagespell_used)
+        mon->mmagespell_used--;
+
+    if (mon->mmageultimate_used)
+        mon->mmageultimate_used--;
+
+    if (mon->mclericspell_used)
+        mon->mclericspell_used--;
+
+    if (mon->mclericultimate_used)
+        mon->mclericultimate_used--;
+
+    if (mon->mdemonsummon_used)
+        mon->mdemonsummon_used--;
+
+    if (mon->mspecialsummon_used)
+        mon->mspecialsummon_used--;
+
+    if (digest_meal)
     {
         if (mon->meating)
         {

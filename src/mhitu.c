@@ -931,17 +931,19 @@ register struct monst *mtmp;
 		case AT_SMMN:
 			if (!has_summon_forbidden(mtmp))
 			{
-                update_m_action(mtmp, ACTION_TILE_CAST);
-                if (mattk->adtyp == AD_DMNS)
+                if (!mtmp->mdemonsummon_used && mattk->adtyp == AD_DMNS)
 				{
-					/*  Special demon handling code */
-					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    /*  Special demon handling code */
+					if ((mtmp->cham == NON_PM) && !range2)
+                    { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s gates in some help.", Monnam(mtmp));
 							(void)msummon(mtmp);
 							sum[i] = 1;
+                            mtmp->mdemonsummon_used = 30;
 						}
 						else
 						{
@@ -954,11 +956,14 @@ register struct monst *mtmp;
 						}
 					}
                 }
-				else if (mattk->adtyp == AD_LYCA)
+				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_LYCA)
 				{
-					/*  Special lycanthrope handling code */
-					if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) {
-						if (is_human(mdat)) {
+                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    /*  Special lycanthrope handling code */
+					if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) 
+                    {
+						if (is_human(mdat)) 
+                        {
 							if (!rn2(5 - (night() * 2)) && !is_cancelled(mtmp))
 								new_were(mtmp);
 						}
@@ -966,35 +971,43 @@ register struct monst *mtmp;
 							new_were(mtmp);
 						mdat = mtmp->data;
 
-						if (!rn2(10) && !is_cancelled(mtmp) && !item_prevents_summoning(mtmp->mnum)) {
+						if (!rn2(10) && !is_cancelled(mtmp) && !item_prevents_summoning(mtmp->mnum)) 
+                        {
 							int numseen, numhelp;
 							char buf[BUFSZ], genericwere[BUFSZ];
 
 							Strcpy(genericwere, "creature");
 							numhelp = were_summon(mdat, FALSE, &numseen, genericwere);
-							if (youseeit)
+                            mtmp->mdemonsummon_used = 30;
+                            if (youseeit)
                             {
 								pline("%s summons help!", Monnam(mtmp));
-								if (numhelp > 0) {
+								if (numhelp > 0) 
+                                {
 									if (numseen == 0)
 										You_feel("hemmed in.");
 								}
 								else
 									pline("But none comes.");
 							}
-							else {
+							else
+                            {
 								const char* from_nowhere;
 
-								if (!Deaf) {
+								if (!Deaf) 
+                                {
 									pline("%s %s!", Something, makeplural(growl_sound(mtmp)));
 									from_nowhere = "";
 								}
 								else
 									from_nowhere = " from nowhere";
-								if (numhelp > 0) {
+
+								if (numhelp > 0)
+                                {
 									if (numseen < 1)
 										You_feel("hemmed in.");
-									else {
+									else 
+                                    {
 										if (numseen == 1)
 											Sprintf(buf, "%s appears", an(genericwere));
 										else
@@ -1007,16 +1020,19 @@ register struct monst *mtmp;
 						}
 					}
 				}
-				else if (mattk->adtyp == AD_GNOL)
+				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_GNOL)
 				{
-					/*  Special gnoll handling code */
-					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    /*  Special gnoll handling code */
+					if ((mtmp->cham == NON_PM) && !range2)
+                    { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							(void)yeenoghu_gnoll_summon(mtmp);
 							sum[i] = 1;
-						}
+                            mtmp->mspecialsummon_used = 45;
+                        }
 						else
 						{
 							if ((!rn2(2) || is_silenced(mtmp))
@@ -1029,16 +1045,19 @@ register struct monst *mtmp;
 						}
 					}
 				}
-				else if (mattk->adtyp == AD_GHUL)
+				else if (!mtmp->mclericultimate_used && mattk->adtyp == AD_GHUL) /* Uses cleric ultimate in the absence of a better summon counter */
 				{
-					/*  Special ghoul handling code */
-					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    /*  Special ghoul handling code */
+					if ((mtmp->cham == NON_PM) && !range2)
+                    { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							(void)yeenoghu_ghoul_summon(mtmp);
 							sum[i] = 1;
-						}
+                            mtmp->mclericultimate_used = 45;
+                        }
 						else if(!is_silenced(mtmp) && !Deaf)
 						{
 							if (!rn2(2))
@@ -1048,37 +1067,43 @@ register struct monst *mtmp;
 						}
 					}
 				}
-				else if (mattk->adtyp == AD_BISN)
+				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_BISN)
 				{
-				/*  Special bison handling code */
-				if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
-					int chance = mattk->mcadj;
-					if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
-					{
-						pline("%s summons some bison!", Monnam(mtmp));
-						(void)yacc_bison_summon();
-						sum[i] = 1;
-					}
-					else if (canseemon(mtmp))
-					{
-						if (!rn2(2) || is_silenced(mtmp))
-							pline("%s raises its head in rage!", Monnam(mtmp));
-						else if(!Deaf)
-							pline("%s grunts threateningly!", Monnam(mtmp));
-					}
+                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    /*  Special bison handling code */
+				    if ((mtmp->cham == NON_PM) && !range2)
+                    { //Chameleons do not summon, others only in close range
+					    int chance = mattk->mcadj;
+					    if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
+					    {
+						    pline("%s summons some bison!", Monnam(mtmp));
+						    (void)yacc_bison_summon();
+						    sum[i] = 1;
+                            mtmp->mspecialsummon_used = 45;
+                        }
+					    else if (canseemon(mtmp))
+					    {
+						    if (!rn2(2) || is_silenced(mtmp))
+							    pline("%s raises its head in rage!", Monnam(mtmp));
+						    else if(!Deaf)
+							    pline("%s grunts threateningly!", Monnam(mtmp));
+					    }
+				    }
 				}
-				}
-				else if (mattk->adtyp == AD_UNDO)
+				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_UNDO)
 				{
+                    update_m_action(mtmp, ACTION_TILE_CAST);
 					/*  Special gnoll handling code */
-					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+					if ((mtmp->cham == NON_PM) && !range2)
+                    { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
 							pline("%s summons some undead!", Monnam(mtmp));
 							(void)orcus_undead_summon();
 							sum[i] = 1;
-						}
+                            mtmp->mspecialsummon_used = 90;
+                        }
 						else
 						{
 							if ((!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_DEATH) && !m_carrying(mtmp, WAN_DEATH))) && !is_silenced(mtmp) && !Deaf)
@@ -1088,9 +1113,11 @@ register struct monst *mtmp;
 						}
 					}
 				}
-				else if (mattk->adtyp == AD_MINO)
+				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_MINO)
 				{
-					if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    if ((mtmp->cham == NON_PM) && !range2)
+                    { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & G_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
@@ -1098,7 +1125,8 @@ register struct monst *mtmp;
 							if(mtmp2)
 								pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
 							sum[i] = 1;
-						}
+                            mtmp->mspecialsummon_used = 90;
+                        }
 						else if(!is_silenced(mtmp) && canseemon(mtmp))
 						{
 							if (!rn2(2))
@@ -1108,9 +1136,11 @@ register struct monst *mtmp;
 						}
 					}
 				}
-                else if (mattk->adtyp == AD_GDRA)
+                else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_GDRA)
                 {
-                    if ((mtmp->cham == NON_PM) && !range2) { //Chameleons do not summon, others only in close range
+                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    if ((mtmp->cham == NON_PM) && !range2) 
+                    { //Chameleons do not summon, others only in close range
                         int chance = mattk->mcadj;
                         if (!is_cancelled(mtmp) && !((mvitals[PM_ANCIENT_GOLD_DRAGON].mvflags & G_GONE) && (mvitals[PM_GOLD_DRAGON].mvflags & G_GONE)) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
@@ -1120,6 +1150,7 @@ register struct monst *mtmp;
                             if (mtmp2)
                                 pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
                             sum[i] = 1;
+                            mtmp->mspecialsummon_used = 120;
                         }
                         else if (!is_silenced(mtmp) && canseemon(mtmp))
                         {
@@ -4047,7 +4078,9 @@ struct monst *mon;
             break;
         } /* case 4 */
         } /* switch */
-    } else {
+    } 
+    else 
+    {
         mon->mspec_used = rnd(100); /* monster is worn out */
         You("seem to have enjoyed it more than %s...", noit_mon_nam(mon));
         switch (rn2(5)) {

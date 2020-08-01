@@ -169,7 +169,8 @@ struct monst *mon;
         mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
         if (mtmp) 
 		{
-			mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+			mtmp->mdemonsummon_used = 30;
+			mtmp->mspecialsummon_used = 30;
 			result++;
             /* an angel's alignment should match the summoner */
             if (dtype == PM_ANGEL)

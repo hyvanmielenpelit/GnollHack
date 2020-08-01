@@ -671,8 +671,13 @@ struct monst *summoner;
             if (mtmp)
             {
                 /* delay first use of spell or breath attack */
-                mtmp->mspec_used = rnd(4);
-                mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+                mtmp->mspec_used = 3 + rnd(3);
+                mtmp->mmagespell_used = mtmp->mspec_used;
+                mtmp->mmageultimate_used = mtmp->mspec_used;
+                mtmp->mclericspell_used = mtmp->mspec_used;
+                mtmp->mclericultimate_used = mtmp->mspec_used;
+                mtmp->mdemonsummon_used = 30;
+                mtmp->mspecialsummon_used = 30;
                 count++;
 
 #if 0
@@ -751,9 +756,14 @@ struct monst* summoner;
         if (mtmp)
         {
             /* delay first use of spell or breath attack */
-            mtmp->mspec_used = rnd(4);
-            /* forbid summoning for a while */
-            mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+            mtmp->mspec_used = 3 + rnd(3);
+            mtmp->mmagespell_used = mtmp->mspec_used;
+            mtmp->mmageultimate_used = mtmp->mspec_used;
+            mtmp->mclericspell_used = mtmp->mspec_used;
+            mtmp->mclericultimate_used = mtmp->mspec_used;
+            mtmp->mdemonsummon_used = 30;
+            mtmp->mspecialsummon_used = 30;
+
             mtmp->mpeaceful = 0;
             newsym(mtmp->mx, mtmp->my);
             count++;

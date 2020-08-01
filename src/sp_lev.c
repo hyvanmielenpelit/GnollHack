@@ -1993,7 +1993,7 @@ struct mkroom *croom;
         }
     }
     if (o->recharged)
-        otmp->recharged = (o->recharged % 8);
+        otmp->recharged = min(RECHARGE_LIMIT, o->recharged);
     if (o->locked) {
         otmp->olocked = 1;
     } else if (o->broken) {

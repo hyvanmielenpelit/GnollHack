@@ -537,13 +537,17 @@ long nmv; /* number of moves */
     int imv = 0; /* avoid zillions of casts and lint warnings */
 
 #if defined(DEBUG) || defined(BETA)
-    if (nmv < 0L) { /* crash likely... */
+    if (nmv < 0L) 
+    { /* crash likely... */
         panic("catchup from future time?");
         /*NOTREACHED*/
         return;
-    } else if (nmv == 0L) { /* safe, but should'nt happen */
+    }
+    else if (nmv == 0L) 
+    { /* safe, but should'nt happen */
         impossible("catchup from now?");
-    } else
+    } 
+    else
 #endif
         if (nmv >= LARGEST_INT) /* paranoia */
         imv = LARGEST_INT - 1;
@@ -552,37 +556,48 @@ long nmv; /* number of moves */
 
     /* might stop being afraid, blind or frozen */
     /* set to 1 and allow final decrement in movemon() */
-    if (is_blinded(mtmp)) {
+    if (is_blinded(mtmp)) 
+    {
 		if (imv >= (int)is_blinded(mtmp))
 			set_mon_property(mtmp, BLINDED, 0);
 		else
 			increase_mon_property(mtmp, BLINDED, -imv);
     }
-    if (mtmp->mfrozen) {
+
+    if (mtmp->mfrozen)
+    {
         if (imv >= (int) mtmp->mfrozen)
             mtmp->mfrozen = 1;
         else
             mtmp->mfrozen -= imv;
     }
-	if (mtmp->mstaying) {
+
+	if (mtmp->mstaying) 
+    {
 		if (imv >= (int)mtmp->mstaying)
 			mtmp->mstaying = 1;
 		else
 			mtmp->mstaying -= imv;
 	}
-	if (mtmp->mcarrying) {
+
+	if (mtmp->mcarrying) 
+    {
 		if (imv >= (int)mtmp->mcarrying)
 			mtmp->mcarrying = 1;
 		else
 			mtmp->mcarrying -= imv;
 	}
-    if (mtmp->mcomingtou) {
+
+    if (mtmp->mcomingtou) 
+    {
         if (imv >= (int)mtmp->mcomingtou)
             mtmp->mcomingtou = 1;
         else
             mtmp->mcomingtou -= imv;
     }
-    if (mtmp->mflee_timer) {
+
+    if (mtmp->mflee_timer) 
+    {
         if (imv >= (int) mtmp->mflee_timer)
             mtmp->mflee_timer = 1;
         else
@@ -602,13 +617,46 @@ long nmv; /* number of moves */
         finish_meating(mtmp);
     else
         mtmp->meating -= imv;
+
+    /* reduce spec_used */
     if (imv > mtmp->mspec_used)
         mtmp->mspec_used = 0;
     else
         mtmp->mspec_used -= imv;
 
+    if (imv > mtmp->mmagespell_used)
+        mtmp->mmagespell_used = 0;
+    else
+        mtmp->mmagespell_used -= imv;
+
+    if (imv > mtmp->mclericspell_used)
+        mtmp->mclericspell_used = 0;
+    else
+        mtmp->mclericspell_used -= imv;
+
+    if (imv > mtmp->mmageultimate_used)
+        mtmp->mmageultimate_used = 0;
+    else
+        mtmp->mmageultimate_used -= imv;
+
+    if (imv > mtmp->mclericultimate_used)
+        mtmp->mclericultimate_used = 0;
+    else
+        mtmp->mclericultimate_used -= imv;
+
+    if (imv > mtmp->mdemonsummon_used)
+        mtmp->mdemonsummon_used = 0;
+    else
+        mtmp->mdemonsummon_used -= imv;
+
+    if (imv > mtmp->mspecialsummon_used)
+        mtmp->mspecialsummon_used = 0;
+    else
+        mtmp->mspecialsummon_used -= imv;
+
     /* reduce tameness for every 150 moves you are separated */
-    if (mtmp->mtame && !mtmp->isfaithful) {
+    if (mtmp->mtame && !mtmp->isfaithful) 
+    {
         int wilder = (imv + 75) / 150;
         if (mtmp->mtame > wilder)
             mtmp->mtame -= wilder; /* less tame */
@@ -620,11 +668,13 @@ long nmv; /* number of moves */
 		if (!mtmp->mtame)
 			mtmp->ispartymember = FALSE;
     }
+
     /* check to see if it would have died as a pet; if so, go wild instead
      * of dying the next time we call dog_move()
      */
     if (mtmp->mtame && !mtmp->isminion
-        && (carnivorous(mtmp->data) || herbivorous(mtmp->data))) {
+        && (carnivorous(mtmp->data) || herbivorous(mtmp->data)))
+    {
         struct edog *edog = EDOG(mtmp);
 
         if ((monstermoves > edog->hungrytime + 500 && mtmp->mhp < 3)
@@ -635,7 +685,8 @@ long nmv; /* number of moves */
 			mtmp->ispartymember = 0;
 	}
 
-    if (!mtmp->mtame && mtmp->mleashed) {
+    if (!mtmp->mtame && mtmp->mleashed) 
+    {
         /* leashed monsters should always be with hero, consequently
            never losing any time to be accounted for later */
         impossible("catching up for leashed monster?");

@@ -2617,22 +2617,27 @@ int id;
 
     if (obj->otyp == BOULDER)
         sokoban_guilt();
-    if (id == STRANGE_OBJECT) { /* preserve symbol */
+    if (id == STRANGE_OBJECT) 
+    { /* preserve symbol */
         int try_limit = 3;
         unsigned magic_obj = objects[obj->otyp].oc_magic;
 
         if (obj->otyp == UNICORN_HORN && obj->degraded_horn)
             magic_obj = 0;
+
         /* Try up to 3 times to make the magic-or-not status of
            the new item be the same as it was for the old one. */
         otmp = (struct obj *) 0;
-        do {
+        do 
+        {
             if (otmp)
                 delobj(otmp);
             otmp = mkobj(obj->oclass, FALSE, FALSE);
         } while (--try_limit > 0
                  && objects[otmp->otyp].oc_magic != magic_obj);
-    } else {
+    }
+    else 
+    {
         /* literally replace obj with this new thing */
         otmp = mksobj(id, FALSE, FALSE, FALSE);
 /* Actually more things use corpsenm but they polymorph differently */
@@ -2651,11 +2656,13 @@ int id;
     /* preserve inventory letter if in inventory */
     if (obj_location == OBJ_INVENT)
         otmp->invlet = obj->invlet;
+
 #ifdef MAIL
     /* You can't send yourself 100 mail messages and then
      * polymorph them into useful scrolls
      */
-    if (obj->otyp == SCR_MAIL) {
+    if (obj->otyp == SCR_MAIL) 
+    {
         otmp->otyp = SCR_MAIL;
         otmp->special_quality = 1;
     }
@@ -2669,7 +2676,8 @@ int id;
         /* first, turn into a generic egg */
         if (otmp->otyp == EGG)
             kill_egg(otmp);
-        else {
+        else 
+        {
             otmp->otyp = EGG;
             otmp->owt = weight(otmp);
         }
@@ -2677,9 +2685,11 @@ int id;
         otmp->speflags &= ~SPEFLAGS_YOURS;
 
         /* now change it into something laid by the hero */
-        while (tryct--) {
+        while (tryct--) 
+        {
             mnum = can_be_hatched(random_monster(rn2));
-            if (mnum != NON_PM && !dead_species(mnum, TRUE)) {
+            if (mnum != NON_PM && !dead_species(mnum, TRUE))
+            {
                 otmp->speflags |= SPEFLAGS_YOURS;            /* laid by hero */
                 set_corpsenm(otmp, mnum); /* also sets hatch timer */
                 break;
@@ -2709,11 +2719,14 @@ int id;
     otmp->cursed = obj->cursed;
     otmp->blessed = obj->blessed;
 
-    if (erosion_matters(otmp)) {
+    if (erosion_matters(otmp)) 
+    {
         if (is_flammable(otmp) || is_rustprone(otmp))
             otmp->oeroded = obj->oeroded;
+
         if (is_corrodeable(otmp) || is_rottable(otmp))
             otmp->oeroded2 = obj->oeroded2;
+
         if (is_damageable(otmp))
             otmp->oerodeproof = obj->oerodeproof;
     }
@@ -2728,9 +2741,11 @@ int id;
 	if (obj->elemental_enchantment > 0)
 		otmp->elemental_enchantment = 0; //Special enchantments do not get passed at the moment
 
-	if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
+	if (id == STRANGE_OBJECT && obj->otyp == CORPSE) 
+    {
         /* turn crocodile corpses into shoes */
-        if (obj->corpsenm == PM_CROCODILE) {
+        if (obj->corpsenm == PM_CROCODILE) 
+        {
             otmp->otyp = LOW_BOOTS;
             otmp->oclass = ARMOR_CLASS;
             otmp->enchantment = 0;
@@ -2751,12 +2766,16 @@ int id;
                             || (can_merge && otmp->quan > (long) rn2(1000))))
         otmp->quan = 1L;
 
-    switch (otmp->oclass) {
+    switch (otmp->oclass) 
+    {
     case TOOL_CLASS:
-        if (otmp->otyp == MAGIC_LAMP) {
+        if (otmp->otyp == MAGIC_LAMP) 
+        {
             otmp->otyp = OIL_LAMP;
             otmp->age = 1500L; /* "best" oil lamp possible */
-        } else if (otmp->otyp == MAGIC_MARKER) {
+        }
+        else if (otmp->otyp == MAGIC_MARKER) 
+        {
             otmp->recharged = 1; /* degraded quality */
         }
         /* don't care about the recharge count of other tools */
@@ -2767,7 +2786,7 @@ int id;
             otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
         /* altering the object tends to degrade its quality
            (analogous to spellbook `read count' handling) */
-        if ((int) otmp->recharged < rn2(7)) /* recharge_limit */
+        if ((int) otmp->recharged < rn2(RECHARGE_LIMIT)) /* recharge_limit */
             otmp->recharged++;
         break;
 
@@ -2780,9 +2799,11 @@ int id;
         while (otmp->otyp == SPE_POLYMORPH)
             otmp->otyp = rnd_class(SPE_DIG, SPE_BLANK_PAPER);
         /* reduce spellbook abuse; non-blank books degrade */
-        if (otmp->otyp != SPE_BLANK_PAPER) {
+        if (otmp->otyp != SPE_BLANK_PAPER) 
+        {
             otmp->spestudied = obj->spestudied + 1;
-            if (otmp->spestudied > MAX_SPELL_STUDY) {
+            if (otmp->spestudied > MAX_SPELL_STUDY) 
+            {
                 otmp->otyp = SPE_BLANK_PAPER;
                 /* writing a new book over it will yield an unstudied
                    one; re-polymorphing this one as-is may or may not
@@ -2795,7 +2816,8 @@ int id;
     case GEM_CLASS:
         if (otmp->quan > (long) rnd(4)
             && objects[obj->otyp].oc_material == MAT_MINERAL
-            && objects[otmp->otyp].oc_material != MAT_MINERAL) {
+            && objects[otmp->otyp].oc_material != MAT_MINERAL)
+        {
             otmp->otyp = ROCK; /* transmutation backfired */
             otmp->quan /= 2L;  /* some material has been lost */
         }
@@ -2813,7 +2835,8 @@ int id;
     old_wornmask = obj->owornmask & ~(W_ARTIFACT_CARRIED | W_ARTIFACT_INVOKED);
     /* swap otmp for obj */
     replace_object(obj, otmp);
-    if (obj_location == OBJ_INVENT) {
+    if (obj_location == OBJ_INVENT) 
+    {
         /*
          * We may need to do extra adjustments for the hero if we're
          * messing with the hero's inventory.  The following calls are
@@ -2830,7 +2853,8 @@ int id;
          * of polymorph can produce side-effects but those won't yield out
          * of sequence messages because current polymorph is finished.
          */
-        if (old_wornmask) {
+        if (old_wornmask) 
+        {
             boolean was_twohanded = bimanual(obj), was_twoweap = u.twoweap;
 
             /* wearslot() returns a mask which might have multiple bits set;
@@ -2858,9 +2882,11 @@ int id;
 				if (was_twohanded || !bimanual(otmp) || !uswapwep)
 					setuswapwep(otmp, W_SWAPWEP2);
 			}
-			else if ((new_wornmask & W_QUIVER) != 0L) {
+			else if ((new_wornmask & W_QUIVER) != 0L) 
+            {
                 setuqwep(otmp);
-            } else if (new_wornmask) {
+            } else if (new_wornmask)
+            {
                 setworn(otmp, new_wornmask);
                 /* set_wear() might result in otmp being destroyed if
                    worn amulet has been turned into an amulet of change */
@@ -2868,7 +2894,9 @@ int id;
                 otmp = wearmask_to_obj(new_wornmask); /* might be Null */
             }
         } /* old_wornmask */
-    } else if (obj_location == OBJ_FLOOR) {
+    } 
+    else if (obj_location == OBJ_FLOOR) 
+    {
         if (obj->otyp == BOULDER && otmp->otyp != BOULDER
             && !does_block(ox, oy, &levl[ox][oy]))
             unblock_vision_and_hearing_at_point(ox, oy);
@@ -2878,24 +2906,31 @@ int id;
     }
 
     /* note: if otmp is gone, billing for it was handled by useup() */
-    if (((otmp && !carried(otmp)) || obj->unpaid) && costly_spot(ox, oy)) {
+    if (((otmp && !carried(otmp)) || obj->unpaid) && costly_spot(ox, oy)) 
+    {
         struct monst *shkp = shop_keeper(*in_rooms(ox, oy, SHOPBASE));
 
         if ((!obj->no_charge
              || (Has_contents(obj)
                  && (contained_cost(obj, shkp, 0L, FALSE, FALSE) != 0L)))
-            && inhishop(shkp)) {
-            if (is_peaceful(shkp)) {
+            && inhishop(shkp))
+        {
+            if (is_peaceful(shkp)) 
+            {
                 if (*u.ushops
                     && (*in_rooms(u.ux, u.uy, 0)
                         == *in_rooms(shkp->mx, shkp->my, 0))
-                    && !costly_spot(u.ux, u.uy)) {
+                    && !costly_spot(u.ux, u.uy))
+                {
                     make_angry_shk(shkp, ox, oy);
-                } else {
+                } 
+                else 
+                {
                     pline("%s gets angry!", Monnam(shkp));
                     hot_pursuit(shkp);
                 }
-            } else
+            } 
+            else
                 Norep("%s is furious!", Monnam(shkp));
         }
     }

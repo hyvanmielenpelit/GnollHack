@@ -1299,7 +1299,7 @@ unsigned doname_flags;
 
 	/* charges */
 	if (objects[obj->otyp].oc_charged && known)
-		Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, obj->charges);
+		Sprintf(eos(bp), " (%d:%d)", (int)obj->recharged, (int)obj->charges);
 
 	/* post and prefixes */
     switch (is_weptool(obj) ? WEAPON_CLASS : obj->oclass) {
@@ -3795,8 +3795,8 @@ struct obj *no_wish;
 	if (charges > SCHAR_LIM)
 		charges = SCHAR_LIM;
 
-	if (rechrg < 0 || rechrg > 7)
-        rechrg = 7; /* recharge_limit */
+	if (rechrg < 0 || rechrg > RECHARGE_LIMIT)
+        rechrg = RECHARGE_LIMIT;
 
     /* now we have the actual name, as delivered by xname, say
      *  green potions called whisky
@@ -4755,7 +4755,7 @@ struct obj *no_wish;
         /* prevent wishing abuse */
         if (otmp->otyp == WAN_WISHING && !wizard)
             rechrg = 1;
-        otmp->recharged = (unsigned) rechrg;
+        otmp->recharged = (char) rechrg;
     }
 
     /* set poisoned */

@@ -115,7 +115,13 @@ struct monst {
 #define M_INTRINSIC_ACQUIRED	0x4000  /* permanent intrisic acquired e.g. by eating monster corpses */
 #define M_EXTRINSIC				0x8000  /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
 
-	int mspec_used;             /* monster's special ability attack timeout */
+	unsigned short mspec_used;             /* monster's general special ability and spell attack timeout */
+    unsigned short mmagespell_used;        /* monster's ultimate ability or high-powered spell timeout */
+    unsigned short mclericspell_used;      /* monster's ultimate ability or high-powered spell timeout */
+    unsigned short mmageultimate_used;     /* monster's mage-style ultimate ability or high-powered mage spell timeout */
+    unsigned short mclericultimate_used;   /* monster's cleric-style ultimate ability or high-powered mage spell timeout */
+    unsigned short mdemonsummon_used;      /* demon summon timeout */
+    unsigned short mspecialsummon_used;    /* special (nondemon) summon timeout */
 
     Bitfield(female, 1);		/* is female */
 	Bitfield(mburied, 1);		/* has been buried */

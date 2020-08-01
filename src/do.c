@@ -1291,7 +1291,7 @@ register struct obj* obj;
 
 		strcpy(buf, "");
 
-		Sprintf(buf, "Rechargings before:     %d", obj->recharged);
+		Sprintf(buf, "Rechargings before:     %d", (int)obj->recharged);
 		txt = buf;
 		putstr(datawin, 0, txt);
 
