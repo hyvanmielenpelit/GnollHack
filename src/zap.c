@@ -806,7 +806,7 @@ cure_sickness_here:
 		reveal_invis = TRUE;
         if (otyp == GRAIL_OF_HEALING && (is_undead(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp)))
         {
-            dmg = d(20, 6);
+            dmg = d(48, 6);
             context.bypasses = TRUE; /* for make_corpse() */
             int hp_before = mtmp->mhp;
             deduct_monster_hp(mtmp, dmg);
@@ -5168,7 +5168,7 @@ boolean ordinary;
         {
             pline("The liquid burns inside you!");
             u.uen = 0;
-            losehp(adjust_damage(d(20, 6), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "drinking from Holy Grail", KILLED_BY_AN);
+            losehp(adjust_damage(d(48, 6), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "drinking from Holy Grail", KILLED_BY_AN);
             context.botl = 1;
         }
         else if (is_living(youmonst.data))
