@@ -26,24 +26,24 @@ TERRAIN:$pools, 'L'
 GEOMETRY:center,center
 MAP
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx..{..xxxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.....xxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxx
-xxxxxxxxxxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx..xxxxxxxxxxxxxxxxxxx
-xxxxxxxx.....xxxxxxxxxxxxx|----------------|xxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxx
-xxxxxxx..xxx...xxxxxxxxxxx|................|xxxxxxxxxx..xxxxxxxxxxxxxxxxxxxx
-xxxxxx..xxxxxx......xxxxx.|................|.xxxxxxxxx.xxxxxxxxxxxxxxxxxxxxx
-xxxxx..xxxxxxxxxxxx.......+................+...xxxxxxx.xxxxxxxxxxxxxxxxxxxxx
-xxxx..xxxxxxxxx.....xxxxx.|................|.x...xxxxx.xxxxxxxxxxxxxxxxxxxxx
-xxx..xxxxxxxxx..xxxxxxxxxx|................|xxxx.......xxxxxxxxxxxxxxxxxxxxx
-xxxx..xxxxxxx..xxxxxxxxxxx|----------------|xxxxxxxxxx...xxxxxxxxxxxxxxxxxxx
-xxxxxx..xxxx..xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxx
-xxxxxxx......xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxx
-xxxxxxxxx...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...x......xxxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.........xxxxx
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.......xxxxxx
+xxxxxxxxxxxxxxxxx::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::xxxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxxx::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx::{::xxxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxxx::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::::xxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxxx::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:xxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxxx::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:xxxxxxxxxxxxxxxxxxx
+xxxxxxxxxxxx::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx::xxxxxxxxxxxxxxxxxxx
+xxxxxxxx:::::xxxxxxxxxxxxx|----------------|xxxxxxxxxxx:xxxxxxxxxxxxxxxxxxxx
+xxxxxxx::xxx:::xxxxxxxxxxx|................|xxxxxxxxxx::xxxxxxxxxxxxxxxxxxxx
+xxxxxx::xxxxxx::::::xxxxx:|................|:xxxxxxxxx:xxxxxxxxxxxxxxxxxxxxx
+xxxxx::xxxxxxxxxxxx:::::::+................+:::xxxxxxx:xxxxxxxxxxxxxxxxxxxxx
+xxxx::xxxxxxxxx:::::xxxxx:|................|:x:::xxxxx:xxxxxxxxxxxxxxxxxxxxx
+xxx::xxxxxxxxx::xxxxxxxxxx|................|xxxx:::::::xxxxxxxxxxxxxxxxxxxxx
+xxxx::xxxxxxx::xxxxxxxxxxx|----------------|xxxxxxxxxx:::xxxxxxxxxxxxxxxxxxx
+xxxxxx::xxxx::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::xxxxxxxxxxxxxxxxx
+xxxxxxx::::::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::xxxxxxxxxxxxxxx
+xxxxxxxxx:::xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::x::::::xxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::::::::xxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::::::xxxxxx
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ENDMAP
 # Dungeon Description
@@ -102,20 +102,20 @@ MONSTER: ('H',"fire giant"),(10,16),hostile
 
 MAZE: "Val-loca",' '
 FLAGS: hardfloor,icedpools
-INIT_MAP: mines, '.', 'I', true, true, lit, false
+INIT_MAP: mines, ':', 'I', true, true, lit, false
 GEOMETRY:center,center
 MAP
 PPPPxxxx                      xxxxPPPPPx
 PLPxxx                          xPPLLLPP
-PPP    .......................    PPPLLP
-xx   ............................   PPPP
-x  ...............................  xxxx
-  .................................   xx
-....................................   x
-  ...................................   
-x  ..................................  x
-xx   ..............................   PP
-xPPP  ..........................     PLP
+PPP    :::::::::::::::::::::::    PPPLLP
+xx   ::::::::::::::::::::::::::::   PPPP
+x  :::::::::::::::::::::::::::::::  xxxx
+  :::::::::::::::::::::::::::::::::   xx
+::::::::::::::::::::::::::::::::::::   x
+  :::::::::::::::::::::::::::::::::::   
+x  ::::::::::::::::::::::::::::::::::  x
+xx   ::::::::::::::::::::::::::::::   PP
+xPPP  ::::::::::::::::::::::::::     PLP
 xPLLP                             xxPLLP
 xPPPPxx                         xxxxPPPP
 ENDMAP
@@ -188,26 +188,26 @@ MONSTER:'H',random,hostile
 
 MAZE: "Val-goal", 'L'
 FLAGS: icedpools
-INIT_MAP: mines, '.', 'L', true, true, lit, false
+INIT_MAP: mines, ':', 'L', true, true, lit, false
 GEOMETRY:center,center
 MAP
-xxxxxx.....................xxxxxxxx
-xxxxx.......LLLLL.LLLLL......xxxxxx
-xxxx......LLLLLLLLLLLLLLL......xxxx
-xxxx.....LLL|---------|LLL.....xxxx
-xxxx....LL|--.........--|LL.....xxx
-x......LL|-...LLLLLLL...-|LL.....xx
-.......LL|...LL.....LL...|LL......x
-......LL|-..LL.......LL..-|LL......
-......LL|.................|LL......
-......LL|-..LL.......LL..-|LL......
-.......LL|...LL.....LL...|LL.......
-xx.....LL|-...LLLLLLL...-|LL......x
-xxx.....LL|--.........--|LL.....xxx
-xxxx.....LLL|---------|LLL...xxxxxx
-xxxxx.....LLLLLLLLLLLLLLL...xxxxxxx
-xxxxxx......LLLLL.LLLLL.....xxxxxxx
-xxxxxxxxx..................xxxxxxxx
+xxxxxx:::::::::::::::::::::xxxxxxxx
+xxxxx:::::::LLLLL:LLLLL::::::xxxxxx
+xxxx::::::LLLLLLLLLLLLLLL::::::xxxx
+xxxx:::::LLL|---------|LLL:::::xxxx
+xxxx::::LL|--.........--|LL:::::xxx
+x::::::LL|-...LLLLLLL...-|LL:::::xx
+:::::::LL|...LL.....LL...|LL::::::x
+::::::LL|-..LL.......LL..-|LL::::::
+::::::LL|.................|LL::::::
+::::::LL|-..LL.......LL..-|LL::::::
+:::::::LL|...LL.....LL...|LL:::::::
+xx:::::LL|-...LLLLLLL...-|LL::::::x
+xxx:::::LL|--.........--|LL:::::xxx
+xxxx:::::LLL|---------|LLL:::xxxxxx
+xxxxx:::::LLLLLLLLLLLLLLL:::xxxxxxx
+xxxxxx::::::LLLLL:LLLLL:::::xxxxxxx
+xxxxxxxxx::::::::::::::::::xxxxxxxx
 ENDMAP
 # Dungeon Description
 REGION:(00,00,34,16),lit,"ordinary"
@@ -284,7 +284,7 @@ MONSTER:'H',random,hostile
 
 MAZE: "Val-fila" , 'I'
 FLAGS: icedpools
-INIT_MAP: mines, '.', 'I', true, true, lit, false
+INIT_MAP: mines, ':', 'I', true, true, lit, false
 NOMAP
 #
 STAIR: random, up
@@ -318,7 +318,7 @@ TRAP: random, random
 
 MAZE: "Val-filb" , 'L'
 FLAGS: icedpools
-INIT_MAP: mines, '.', 'L', true, true, lit, false
+INIT_MAP: mines, ':', 'L', true, true, lit, false
 NOMAP
 #
 STAIR: random, up

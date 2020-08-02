@@ -801,6 +801,7 @@ struct levelflags {
                                   normal mode descendant of such) */
     Bitfield(corrmaze, 1);     /* Whether corridors are used for the maze
                                   rather than ROOM */
+    Bitfield(throne_floor_room, 1); /* Thrones on this level has a room floor rather than normal floor */
 };
 
 typedef struct {

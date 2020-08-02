@@ -707,6 +707,7 @@ clear_level_structures()
     level.flags.swampy = 0;
     level.flags.wizard_bones = 0;
     level.flags.corrmaze = 0;
+    level.flags.throne_floor_room = 0;
 
     nroom = 0;
     rooms[0].hx = -1;

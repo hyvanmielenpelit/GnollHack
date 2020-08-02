@@ -3464,6 +3464,8 @@ struct sp_coder *coder;
         level.flags.arboreal = 1;
     if (lflags & SWAMPY)
         level.flags.swampy = 1;
+    if (lflags & THRONE_ROOM_FLOOR)
+        level.flags.throne_floor_room = 1;
     if (lflags & MAZELEVEL)
         level.flags.is_maze_lev = 1;
     if (lflags & PREMAPPED)
@@ -4490,7 +4492,7 @@ genericptr_t arg;
         levl[x][y].floortyp = 0;
         levl[x][y].floorsubtyp = 0;
     }
-    else if (IS_FLOOR(levl[x][y].typ))
+    else if (IS_FLOOR(levl[x][y].typ) && !(level.flags.throne_floor_room && *(int*)arg == THRONE))
     {
         levl[x][y].floortyp = levl[x][y].typ;
         levl[x][y].floorsubtyp = levl[x][y].subtyp;
