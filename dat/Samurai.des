@@ -8,7 +8,7 @@
 #	Here you meet your (besieged) class leader, Lord Sato
 #	and receive your quest assignment.
 #
-MAZE: "Sam-strt",' '
+MAZE: "Sam-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal
 GEOMETRY:center,center
 MAP

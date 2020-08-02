@@ -338,7 +338,7 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
 
     /* set map origin point */
     data->map_orig.x =
-        max(0, client_rt.left + (wnd_size.cx - data->xFrontTile * COLNO) / 2);
+        max(0, client_rt.left + (wnd_size.cx - data->xFrontTile * (COLNO - 1)) / 2);
     data->map_orig.y =
         max(0, client_rt.top + (wnd_size.cy - data->yFrontTile * ROWNO) / 2);
 
@@ -347,12 +347,12 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
 
     // Set horizontal scroll
 
-    data->xPageSize = min(COLNO, wnd_size.cx / data->xFrontTile);
+    data->xPageSize = min((COLNO - 1), wnd_size.cx / data->xFrontTile);
 
-    GetNHApp()->bNoHScroll = (data->xPageSize == COLNO);
+    GetNHApp()->bNoHScroll = (data->xPageSize == (COLNO - 1));
 
     data->xMin = 0;
-    data->xMax = COLNO - data->xPageSize;
+    data->xMax = (COLNO - 1) - data->xPageSize;
     data->xPos = max(0, min(data->xMax, u.ux - (data->xPageSize / 2)));
 
     SCROLLINFO si;
@@ -494,7 +494,7 @@ mswin_map_mode(HWND hWnd, int mode)
         break;
     }
 
-    mapSize.cx = data->tileWidth * COLNO;
+    mapSize.cx = data->tileWidth * (COLNO - 1);
     mapSize.cy = data->tileHeight * ROWNO;
 
     mswin_map_stretch(hWnd, &mapSize, TRUE);
@@ -579,7 +579,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 flags.screen_scale_adjustment = MAX_SCREEN_SCALE_ADJUSTMENT;
 
             SIZE size;
-            size.cx = data->xFrontTile * COLNO;
+            size.cx = data->xFrontTile * (COLNO - 1);
             size.cy = data->yFrontTile * ROWNO;
             mswin_map_stretch(hWnd, &size, TRUE);
         }
@@ -608,7 +608,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         } else {
             /* mapping factor is unchaged we just need to adjust scroll bars
              */
-            size.cx = data->xFrontTile * COLNO;
+            size.cx = data->xFrontTile * (COLNO - 1);
             size.cy = data->yFrontTile * ROWNO;
         }
         mswin_map_stretch(hWnd, &size, TRUE);
@@ -631,7 +631,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_LBUTTONDOWN:
         NHEVENT_MS(CLICK_1,
-                   max(0, min(COLNO, data->xPos
+                   max(0, min((COLNO - 1), data->xPos
                                          + (LOWORD(lParam) - data->map_orig.x)
                                                / data->xFrontTile)),
                    max(0, min(ROWNO, data->yPos
@@ -642,7 +642,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONDBLCLK:
     case WM_RBUTTONDOWN:
         NHEVENT_MS(CLICK_2,
-                   max(0, min(COLNO, data->xPos
+                   max(0, min((COLNO - 1), data->xPos
                                          + (LOWORD(lParam) - data->map_orig.x)
                                                / data->xFrontTile)),
                    max(0, min(ROWNO, data->yPos
@@ -668,7 +668,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else
             data->interval_counter++;
 
-        for (int x = 0; x < COLNO; x++)
+        for (int x = 1; x < COLNO; x++)
             for (int y = 0; y < ROWNO; y++) {
                 if(data->mapAnimated[x][y])
                     dirty(data, x, y, FALSE);
@@ -753,9 +753,9 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         /* get page size and center horizontally on x-position */
         if (scroll_x) {
             if (data->xPageSize <= 2 * mcam) {
-                x = max(0, min(COLNO, msg_data->x - data->xPageSize / 2));
+                x = max(0, min((COLNO - 1), msg_data->x - data->xPageSize / 2));
             } else if (msg_data->x < data->xPos + data->xPageSize / 2) {
-                x = max(0, min(COLNO, msg_data->x - mcam));
+                x = max(0, min((COLNO - 1), msg_data->x - mcam));
             } else {
                 x = max(0, min(COLNO, msg_data->x - data->xPageSize + mcam));
             }
@@ -810,7 +810,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
         index = 0;
         for (row = 0; row < ROWNO; row++) {
-            for (col = 0; col < COLNO; col++) {
+            for (col = 1; col < COLNO; col++) {
                 if (index >= msg_data->max_size)
                     break;
                 if (data->map[col][row].glyph == NO_GLYPH) {
@@ -837,7 +837,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
     {
         PMSNHMsgClipAround msg_data = (PMSNHMsgClipAround)lParam;
         SIZE size;
-        size.cx = msg_data->x * COLNO;
+        size.cx = msg_data->x * (COLNO - 1);
         size.cy = msg_data->y * ROWNO;
         mswin_map_stretch(hWnd, &size, TRUE);
         break;
@@ -2312,7 +2312,7 @@ static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
 
 static void clearAll(PNHMapWindow data)
 {
-    for (int x = 0; x < COLNO; x++)
+    for (int x = 1; x < COLNO; x++)
         for (int y = 0; y < ROWNO; y++) 
         {
             clear_layer_info(&data->map[x][y]);
@@ -2374,7 +2374,7 @@ static void setDrawOrder(PNHMapWindow data)
 
 static void dirtyAll(PNHMapWindow data)
 {
-    for (int i = 0; i < COLNO; i++)
+    for (int i = 1; i < COLNO; i++)
         for (int j = 0; j < ROWNO; j++)
             data->mapDirty[i][j] = TRUE;
 
@@ -2575,7 +2575,7 @@ onPaint(HWND hWnd)
     /* update back buffer */
     HBITMAP savedBitmap = SelectObject(data->tileDC, GetNHApp()->bmpMapTiles);
 
-    for (int i = 0; i < COLNO; i++)
+    for (int i = 1; i < COLNO; i++)
         for (int j = 0; j < ROWNO; j++)
             if (data->mapDirty[i][j])
                 paint(data, i, j);
@@ -2586,14 +2586,14 @@ onPaint(HWND hWnd)
     HDC hFrontBufferDC = BeginPaint(hWnd, &ps);
 
     /* stretch back buffer onto front buffer window */
-    int frontWidth = COLNO * data->xFrontTile;
+    int frontWidth = (COLNO - 1) * data->xFrontTile;
     int frontHeight = ROWNO * data->yFrontTile;
 
     SetStretchBltMode(hFrontBufferDC, COLORONCOLOR);
     StretchBlt(hFrontBufferDC,
-        data->map_orig.x - (data->xPos * data->xFrontTile),
+        data->map_orig.x - ((data->xPos - 1) * data->xFrontTile),
         data->map_orig.y - (data->yPos * data->yFrontTile), frontWidth, frontHeight,
-                data->backBufferDC, 0, 0, data->backWidth, data->backHeight, SRCCOPY);
+                data->backBufferDC, data->xBackTile, 0, data->backWidth - data->xBackTile, data->backHeight, SRCCOPY);
 
     EndPaint(hWnd, &ps);
 }
