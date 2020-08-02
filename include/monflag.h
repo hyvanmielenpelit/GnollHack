@@ -316,6 +316,7 @@
 #define M5_HATES_LIGHT              0x00080000UL /* Gremlin only */
 #define M5_HATES_SILVER             0x00100000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
 #define M5_SHADE                    0x00200000UL /* Shade only */
+#define M5_TELEPORT_HEAL_TACTICS           0x00400000UL /* Arch-lich and Wizard of Yendor */
 
 
 #define MZ_TINY 0          /* < 2' */

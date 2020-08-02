@@ -742,7 +742,7 @@ register struct monst *mtmp;
 
     /* Monsters that want to acquire things */
     /* may teleport, so do it before inrange is set */
-    if (mtmp->mnum == PM_WIZARD_OF_YENDOR) //is_covetous(mdat))
+    if (is_teleport_heal_caster(mtmp->data))
         (void) tactics(mtmp);
 
     /* check distance and scariness of attacks */

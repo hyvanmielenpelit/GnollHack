@@ -1500,6 +1500,10 @@ update_monster_timouts()
 						break;
 					}
 
+                    if (i == CHARMED && mtmp == u.usteed && !is_tame(mtmp))
+                    {
+                        dismount_steed(DISMOUNT_THROWN);
+                    }
 
 					/* These should only include timed troubles, where the final effect is dependent on the */
 					/* counter going to zero, rather than going to zero some other way */
@@ -1736,6 +1740,13 @@ movemon()
             break;
         }
         nmtmp = mtmp->nmon;
+
+        /* Check need for dismounting */
+        if (mtmp == u.usteed && !is_tame(mtmp))
+        {
+            dismount_steed(DISMOUNT_THROWN);
+        }
+
         /* one dead monster needs to perform a move after death: vault
            guard whose temporary corridor is still on the map; live
            guards who have led the hero back to civilization get moved

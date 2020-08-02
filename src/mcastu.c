@@ -259,14 +259,14 @@ boolean foundyou;
     boolean is_ultimate = FALSE;
     if (mattk->adtyp == AD_SPEL)
     {
-        if (is_ultimate = is_ultimate_spell(spellnum, mattk->adtyp))
+        if (is_ultimate = is_ultimate_spell(mattk->adtyp, spellnum))
             appr_spec_ptr = &mtmp->mmageultimate_used;
         else
             appr_spec_ptr = &mtmp->mmagespell_used;
     }
     else if (mattk->adtyp == AD_CLRC)
     {
-        if (is_ultimate = is_ultimate_spell(spellnum, mattk->adtyp))
+        if (is_ultimate = is_ultimate_spell(mattk->adtyp, spellnum))
             appr_spec_ptr = &mtmp->mclericultimate_used;
         else
             appr_spec_ptr = &mtmp->mclericspell_used;
@@ -1031,7 +1031,7 @@ int spellnum;
     } 
 	else if (adtyp == AD_CLRC) 
 	{
-        if (is_ultimate_spell(spellnum, adtyp) && mtmp->mclericultimate_used > 0)
+        if (is_ultimate_spell(adtyp, spellnum) && mtmp->mclericultimate_used > 0)
             return TRUE;
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */

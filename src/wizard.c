@@ -392,11 +392,13 @@ register struct monst *mtmp;
                 return 0;
             }
         }
+
         /* if you're not around, cast healing spells */
-        if (distu(mtmp->mx, mtmp->my) > (U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE))
-            if (mtmp->mhp <= mtmp->mhpmax - 1) //8)
+        if (distu(mtmp->mx, mtmp->my) > (U_NOT_NEARBY_RANGE * U_NOT_NEARBY_RANGE) && !mtmp->mclericspell_used)
+            if (mtmp->mhp <= mtmp->mhpmax - 8)
 			{
-				mtmp->mhp += 1; // rnd(8);
+                mtmp->mclericspell_used = 1 + rnd(3);
+				mtmp->mhp += rnd(8);
                 return 1;
             }
         /*FALLTHRU*/
