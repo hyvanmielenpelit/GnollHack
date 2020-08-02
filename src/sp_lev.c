@@ -657,8 +657,8 @@ schar lit;
 {
     int x, y;
 
-    for (x = 2; x <= x_maze_max; x++)
-        for (y = 0; y <= y_maze_max; y++) {
+    for (x = 1; x < COLNO /*x_maze_max*/; x++)
+        for (y = 0; y < ROWNO /*y_maze_max*/; y++) {
             SET_TYPLIT(x, y, filling, lit);
         }
 }

@@ -295,7 +295,7 @@ WALLIFY
 #
 
 MAZE: "Ran-fila" , ' '
-INIT_MAP: mines, ':' , 'T', true, true, random, true
+INIT_MAP: mines, ':' , ' ', true, true, random, true
 NOMAP
 #
 STAIR: random, up

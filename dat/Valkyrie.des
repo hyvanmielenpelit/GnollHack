@@ -8,7 +8,7 @@
 #	Here you meet your (besieged) class leader, the Norn,
 #	and receive your quest assignment.
 #
-MAZE: "Val-strt",' '
+MAZE: "Val-strt",'I'
 FLAGS: noteleport,hardfloor,icedpools
 INIT_MAP:solidfill,'I'
 

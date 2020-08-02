@@ -95,7 +95,7 @@ MONSTER:('E',"stalker"),random
 #	further towards your assigned quest.
 #
 
-MAZE: "Sam-loca",' '
+MAZE: "Sam-loca",'T'
 FLAGS: hardfloor
 GEOMETRY:center,center
 MAP

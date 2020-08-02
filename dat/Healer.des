@@ -8,7 +8,7 @@
 #	Here you meet your (besieged) class leader, Hippocrates
 #	and receive your quest assignment.
 #
-MAZE: "Hea-strt",' '
+MAZE: "Hea-strt",'P'
 FLAGS: noteleport,hardfloor
 GEOMETRY:center,center
 MAP
@@ -110,7 +110,7 @@ MONSTER: 'S',random,hostile
 #	further towards your assigned quest.
 #
 
-MAZE: "Hea-loca",' '
+MAZE: "Hea-loca",'P'
 FLAGS: hardfloor
 #
 INIT_MAP: mines, ',' , 'P', true , true , lit , false

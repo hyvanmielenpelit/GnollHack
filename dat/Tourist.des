@@ -8,7 +8,7 @@
 #	Here you meet your (besieged) class leader, Twoflower
 #	and receive your quest assignment.
 #
-MAZE: "Tou-strt",' '
+MAZE: "Tou-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal,throne_room_floor
 GEOMETRY:center,center
 MAP

@@ -7,7 +7,7 @@
 #	Here you meet your (besieged) class leader, Neferet the Green
 #	and receive your quest assignment.
 #
-MAZE: "Wiz-strt",' '
+MAZE: "Wiz-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal,throne_room_floor
 GEOMETRY:center,center
 MAP

@@ -314,7 +314,7 @@ level_def	: LEVEL_ID ':' STRING
 		      start_level_def(&splev, $3);
 		      $$ = $3;
 		  }
-		| MAZE_ID ':' STRING ',' mazefiller
+		| MAZE_ID ':' STRING ',' CHAR
 		  {
 		      start_level_def(&splev, $3);
 		      if ($5 == -1) {
@@ -322,10 +322,10 @@ level_def	: LEVEL_ID ':' STRING
 				     VA_PASS9(LVLINIT_MAZEGRID, HWALL, 0,0,
 					      0,0,0,0, SPO_INITLEVEL));
 		      } else {
-			  int bg = (int) what_map_char((char) $5);
+			  int bg = (int)what_map_char((char) $5);
 
 			  add_opvars(splev, "iiiiiiiio",
-				     VA_PASS9(LVLINIT_SOLIDFILL, bg, 0,0,
+				     VA_PASS9(LVLINIT_SOLIDFILL, bg, 0, 0,
 					      0,0,0,0, SPO_INITLEVEL));
 		      }
 		      add_opvars(splev, "io",

@@ -8,7 +8,7 @@
 #	Here you meet your (besieged) class leader, Pelias,
 #	and receive your quest assignment.
 #
-MAZE: "Bar-strt",' '
+MAZE: "Bar-strt",'T'
 FLAGS: noteleport,hardfloor,arboreal
 GEOMETRY:center,center
 MAP
@@ -107,7 +107,7 @@ MONSTER:('O',"ogre"),(42,10),hostile
 #	further towards your assigned quest.
 #
 
-MAZE: "Bar-loca",' '
+MAZE: "Bar-loca",'T'
 FLAGS: hardfloor,arboreal
 GEOMETRY:center,center
 MAP

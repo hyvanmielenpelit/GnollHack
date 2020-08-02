@@ -2607,10 +2607,10 @@ yyreduce:
 				     VA_PASS9(LVLINIT_MAZEGRID, HWALL, 0,0,
 					      0,0,0,0, SPO_INITLEVEL));
 		      } else {
-			  int bg = (int) what_map_char((char) (yyvsp[(5) - (5)].i));
+			  int bg = (int)(yyvsp[(5) - (5)].i);
 
 			  add_opvars(splev, "iiiiiiiio",
-				     VA_PASS9(LVLINIT_SOLIDFILL, bg, 0,0,
+				     VA_PASS9(LVLINIT_SOLIDFILL, bg, 0, 0,
 					      0,0,0,0, SPO_INITLEVEL));
 		      }
 		      add_opvars(splev, "io",
