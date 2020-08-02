@@ -65,10 +65,12 @@
       </PropertyGroup>
     </Otherwise>
   </Choose>
-  <Target Name="Yacc" Inputs="$(UtilDir)lev_comp.y" Outputs="$(UtilDir)lev_yacc.c;$(IncDir)lev_comp.h">
+  <Target Name="Yacc" Inputs="$(UtilDir)lev_comp.y" Outputs= "$(UtilDir)lev_comp.tab.c;$(UtilDir)lev_comp.tab.h">
+    <!-- "$(UtilDir)lev_yacc.c;$(IncDir)lev_comp.h"> -->
     <Message Text="Running Yacc" Importance="high" />
     <Exec Command="$(YACC) -d lev_comp.y" WorkingDirectory="$(UtilDir)" />
-    <Move SourceFiles="$(UtilDir)y.tab.c;$(UtilDir)y.tab.h" DestinationFiles="$(UtilDir)lev_yacc.c;$(IncDir)lev_comp.h" />
+    <Move SourceFiles="$(UtilDir)lev_comp.tab.c;$(UtilDir)lev_comp.tab.h" DestinationFiles="$(UtilDir)lev_yacc.c;$(IncDir)lev_comp.h" />
+    <!--    <Move SourceFiles="$(UtilDir)y.tab.c;$(UtilDir)y.tab.h" DestinationFiles="$(UtilDir)lev_yacc.c;$(IncDir)lev_comp.h" /> -->
   </Target>
   <Target Name="Lex" Inputs="$(UtilDir)lev_comp.l" Outputs="$(UtilDir)lev_lex.c">
     <Message Text="Running Lex" Importance="high" />

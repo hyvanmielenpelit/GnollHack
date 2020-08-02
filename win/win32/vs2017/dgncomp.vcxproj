@@ -105,7 +105,8 @@
   <Target Name="Yacc" Inputs="$(UtilDir)dgn_comp.y" Outputs="$(UtilDir)dgn_yacc.c;$(IncDir)dgn_comp.h">
     <Message Text="Running Yacc" Importance="high" />
     <Exec Command="$(YACC) -d dgn_comp.y" WorkingDirectory="$(UtilDir)" />
-    <Move SourceFiles="$(UtilDir)y.tab.c;$(UtilDir)y.tab.h" DestinationFiles="$(UtilDir)dgn_yacc.c;$(IncDir)dgn_comp.h" />
+    <Move SourceFiles="$(UtilDir)dng_comp.tab.c;$(UtilDir)dng_comp.tab.h" DestinationFiles="$(UtilDir)dgn_yacc.c;$(IncDir)dgn_comp.h" />
+    <!-- <Move SourceFiles="$(UtilDir)y.tab.c;$(UtilDir)y.tab.h" DestinationFiles="$(UtilDir)dgn_yacc.c;$(IncDir)dgn_comp.h" /> -->
   </Target>
   <Target Name="Lex" Inputs="$(UtilDir)lev_comp.l" Outputs="$(UtilDir)dgn_lex.c">
     <Message Text="Running Lex" Importance="high" />
