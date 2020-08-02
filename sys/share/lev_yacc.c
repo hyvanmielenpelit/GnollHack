@@ -2702,7 +2702,7 @@ yyreduce:
 			  lc_error("INIT_MAP: Invalid foreground type.");
 		      if (bg == INVALID_TYPE || bg >= MAX_TYPE)
 			  lc_error("INIT_MAP: Invalid background type.");
-		      if (joined && fg != CORR && fg != ROOM)
+		      if (joined && fg != CORR && fg != ROOM && fg != GRASS && fg != GROUND)
 			  lc_error("INIT_MAP: Invalid foreground type for joined map.");
 
 		      if (filling == INVALID_TYPE)
