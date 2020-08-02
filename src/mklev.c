@@ -1132,6 +1132,7 @@ makelevel()
     create_level_light_sources();
     create_level_sound_sources();
     define_level_location_floor_types();
+    randomize_level_location_subtypes();
 }
 
 /*
@@ -2334,5 +2335,21 @@ define_level_location_floor_types()
         }
     }
 }
+
+void
+randomize_level_location_subtypes()
+{
+    for (xchar x = 1; x < COLNO; x++)
+    {
+        for (xchar y = 0; y < ROWNO; y++)
+        {
+            if (levl[x][y].typ == GRASS)
+                levl[x][y].subtyp = rn2(2);
+            else if (levl[x][y].floortyp == GRASS)
+                levl[x][y].floorsubtyp = rn2(2);
+        }
+    }
+}
+
 
 /*mklev.c*/

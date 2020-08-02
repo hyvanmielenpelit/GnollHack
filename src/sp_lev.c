@@ -6346,6 +6346,7 @@ sp_lev *lvl;
     create_level_light_sources();
     create_level_sound_sources();
     define_level_location_floor_types();
+    randomize_level_location_subtypes();
 
     if (coder->premapped)
         sokoban_detect();
