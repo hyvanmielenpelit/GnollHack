@@ -261,7 +261,7 @@ wallify_map()
 			{
                 for (yy = y - 1; yy <= y + 1; yy++)
                     for (xx = x - 1; xx <= x + 1; xx++)
-                        if (isok(xx, yy) && levl[xx][yy].typ == ROOM) 
+                        if (isok(xx, yy) && (levl[xx][yy].typ == ROOM || levl[xx][yy].typ == GRASS || levl[xx][yy].typ == GROUND))
 						{
                             if (yy != y)
                                 levl[x][y].typ = HWALL;

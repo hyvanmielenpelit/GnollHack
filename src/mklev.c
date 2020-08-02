@@ -755,13 +755,14 @@ makelevel()
         else if (In_mines(&u.uz))
         {
             makemaz("minefill");
+#if 0
             for (int x = 1; x < COLNO; x++)
                 for (int y = 0; y < ROWNO; y++)
                     if (levl[x][y].typ == ROOM)
                         levl[x][y].typ = GROUND, levl[x][y].subtyp = 0;
                     else if (levl[x][y].floortyp == ROOM)
                         levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = 0;
-
+#endif
             return;
         } 
         else if (In_quest(&u.uz))
@@ -1370,7 +1371,9 @@ coord *mp;
                 impossible("Can't place branch!");
         } while (occupied(mp->x, mp->y)
                  || (levl[mp->x][mp->y].typ != CORR
-                     && levl[mp->x][mp->y].typ != ROOM));
+                     && levl[mp->x][mp->y].typ != ROOM
+                     && levl[mp->x][mp->y].typ != GROUND
+                     && levl[mp->x][mp->y].typ != GRASS));
     }
     return croom;
 }
