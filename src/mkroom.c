@@ -817,7 +817,10 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                     if ((sx + sy) % 2)
 					{
                         levl[sx][sy].typ = POOL;
-                        if (!eelct || !rn2(4)) 
+                        levl[sx][sy].subtyp = 0;
+                        levl[sx][sy].floortyp = location_type_definitions[POOL].initial_floor_type;
+                        levl[sx][sy].floorsubtyp = 0;
+                        if (!eelct || !rn2(4))
 						{
                             /* mkclass() won't do, as we might get kraken */
                             (void) makemon(rn2(5)

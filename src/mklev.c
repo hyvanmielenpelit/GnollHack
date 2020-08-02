@@ -301,7 +301,7 @@ boolean nxcor;
     dest.x = tx;
     dest.y = ty;
 
-    if (!dig_corridor(&org, &dest, nxcor, level.flags.arboreal ? ROOM : CORR,
+    if (!dig_corridor(&org, &dest, nxcor, level.flags.arboreal || level.flags.swampy ? GRASS : CORR,
                       STONE))
         return;
 
@@ -704,6 +704,7 @@ clear_level_structures()
     level.flags.is_maze_lev = 0;
     level.flags.is_cavernous_lev = 0;
     level.flags.arboreal = 0;
+    level.flags.swampy = 0;
     level.flags.wizard_bones = 0;
     level.flags.corrmaze = 0;
 
@@ -1835,7 +1836,19 @@ struct mkroom *croom;
         dnstairs_room = croom;
     }
 
+    if (IS_FLOOR(levl[x][y].typ))
+    {
+        levl[x][y].floortyp = levl[x][y].typ;
+        levl[x][y].floorsubtyp = levl[x][y].subtyp;
+    }
+    else
+    {
+        levl[x][y].floortyp = location_type_definitions[STAIRS].initial_floor_type;
+        levl[x][y].floorsubtyp = 0;
+    }
+
     levl[x][y].typ = STAIRS;
+    levl[x][y].subtyp = 0;
     levl[x][y].ladder = up ? LA_UP : LA_DOWN;
 
     if (up)
@@ -1870,8 +1883,20 @@ struct mkroom *croom;
     } while (occupied(m.x, m.y) || bydoor(m.x, m.y));
 
     /* Put a fountain at m.x, m.y */
+    if (IS_FLOOR(levl[m.x][m.y].typ))
+    {
+        levl[m.x][m.y].floortyp = levl[m.x][m.y].typ;
+        levl[m.x][m.y].floorsubtyp = levl[m.x][m.y].subtyp;
+    }
+    else
+    {
+        levl[m.x][m.y].floortyp = location_type_definitions[FOUNTAIN].initial_floor_type;
+        levl[m.x][m.y].floorsubtyp = 0;
+    }
+
     levl[m.x][m.y].typ = FOUNTAIN;
-	levl[m.x][m.y].fountaintype &= ~FOUNTAIN_TYPE_MASK;
+    levl[m.x][m.y].subtyp = 0;
+    levl[m.x][m.y].fountaintype &= ~FOUNTAIN_TYPE_MASK;
 	levl[m.x][m.y].fountaintype |= rn2(6);
 
     /* Is it a "blessed" fountain? (affects drinking from fountain) */
@@ -1896,7 +1921,18 @@ struct mkroom *croom;
     } while (occupied(m.x, m.y) || bydoor(m.x, m.y));
 
     /* Put a sink at m.x, m.y */
+    if (IS_FLOOR(levl[m.x][m.y].typ))
+    {
+        levl[m.x][m.y].floortyp = levl[m.x][m.y].typ;
+        levl[m.x][m.y].floorsubtyp = levl[m.x][m.y].subtyp;
+    }
+    else
+    {
+        levl[m.x][m.y].floortyp = location_type_definitions[SINK].initial_floor_type;
+        levl[m.x][m.y].floorsubtyp = 0;
+    }
     levl[m.x][m.y].typ = SINK;
+    levl[m.x][m.y].subtyp = 0;
 
     level.flags.nsinks++;
 }
@@ -1921,7 +1957,18 @@ boolean match_player_alignment;
     } while (occupied(m.x, m.y) || bydoor(m.x, m.y));
 
     /* Put an altar at m.x, m.y */
+    if (IS_FLOOR(levl[m.x][m.y].typ))
+    {
+        levl[m.x][m.y].floortyp = levl[m.x][m.y].typ;
+        levl[m.x][m.y].floorsubtyp = levl[m.x][m.y].subtyp;
+    }
+    else
+    {
+        levl[m.x][m.y].floortyp = location_type_definitions[ALTAR].initial_floor_type;
+        levl[m.x][m.y].floorsubtyp = 0;
+    }
     levl[m.x][m.y].typ = ALTAR;
+    levl[m.x][m.y].subtyp = 0;
 
 	/* -1 - A_CHAOTIC, 0 - A_NEUTRAL, 1 - A_LAWFUL */
 	if (match_player_alignment)

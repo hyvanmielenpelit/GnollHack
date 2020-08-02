@@ -7,7 +7,7 @@
 #
 
 MAZE:"medusa-1",' '
-FLAGS: noteleport
+FLAGS: noteleport,swampy
 GEOMETRY:center,center
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -157,7 +157,7 @@ MONSTER:random,random
 MONSTER:random,random
 
 MAZE:"medusa-2",' '
-FLAGS: noteleport
+FLAGS: noteleport,swampy
 GEOMETRY:center,center
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -317,7 +317,7 @@ MONSTER:random,random
 
 
 LEVEL:"medusa-3"
-FLAGS: noteleport,mazelevel,shortsighted
+FLAGS: noteleport,mazelevel,shortsighted,swampy
 INIT_MAP:solidfill,' '
 GEOMETRY:center,center
 #
@@ -462,7 +462,7 @@ LOOP [30] {
 
 
 LEVEL:"medusa-4"
-FLAGS: noteleport,mazelevel
+FLAGS: noteleport,mazelevel,swampy
 INIT_MAP:solidfill,' '
 GEOMETRY:center,center
 #

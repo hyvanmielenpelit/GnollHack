@@ -795,6 +795,7 @@ struct levelflags {
     Bitfield(is_maze_lev, 1);
     Bitfield(is_cavernous_lev, 1);
     Bitfield(arboreal, 1);     /* Trees replace rock */
+    Bitfield(swampy, 1);       /* Swampy outdoor level with swampy grass */
     Bitfield(wizard_bones, 1); /* set if level came from a bones file
                                   which was created in wizard mode (or
                                   normal mode descendant of such) */

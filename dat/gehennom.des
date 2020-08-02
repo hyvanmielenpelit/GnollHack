@@ -177,24 +177,24 @@ MONSTER:'z',random
 # The Juiblex level
 #
 MAZE:"juiblex",' '
-FLAGS:noteleport,shortsighted
-INIT_MAP:mines,'.','}',true,true,unlit,false
+FLAGS:noteleport,shortsighted,swampy
+INIT_MAP:mines,',','}',true,true,unlit,false
 # guarantee at least one open spot to ensure successful stair placement
 GEOMETRY:left,bottom
 MAP
 xxxxxxxx
-xx...xxx
-xxx...xx
-xxxx.xxx
+xx,,,xxx
+xxx,,,xx
+xxxx,xxx
 xxxxxxxx
 ENDMAP
 OBJECT:('`',"boulder"),random
 GEOMETRY:right,top
 MAP
 xxxxxxxx
-xxxx.xxx
-xxx...xx
-xx...xxx
+xxxx,xxx
+xxx,,,xx
+xx,,,xxx
 xxxxxxxx
 ENDMAP
 OBJECT:('`',"boulder"),random
@@ -202,22 +202,22 @@ OBJECT:('`',"boulder"),random
 GEOMETRY:center,center
 MAP
 xx}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}xx
-x}}}.}}}}}..}}}..}}}}}..}}}..}}}}}..}}}..}}}}}.}}}x
-}}}...}}..}}.}.}}.}}.}}}...}}}.}}}..}}}..}}}}...}}}
-x}}}.}}.}}}.}}.}}.}}...}}.}}.....}}.....}....}.}}}x
-xx}}}..}}}.}}.}}.}}..}}.....}}.}}}.}}.}}}}}}}}}}}xx
-x}}}..}}}}}.}}.}}.}}...}}}}}.....}}.}}}}}}.....}}}x
-}}}..}}...}}..}}.}}}.}}}...}}}.}}}.}.}}}}..P.P..}}}
-}}.}}}}...}}}}}.}...}}}..P..}}}.}.}}}.}}}}.....}}}}
-}.}}}}.}}.}..}.}}}}}}}..P.P..}}}.}}}.}}..}}...}}}}x
-x}}}}.}}}}....}}}}}.}}}..P..}}}.}}}}.}}..}}...}}}.}
-}}}}..}}.}}..}}}}...}}}}...}}}.}}}}}.}}}}.}}}}}}.}}
-}}}...}}...}}}..}}}}}}}}}}}}.....}}}}.}}...}..}.}}}
-x}}}..}}.}}}}....}}..}}}..}}.....}}}}.}}}.}....}}}x
-xx}}}.}}}}..}}..}}..}}..}}..}}.}}}..}.}..}}}..}}}xx
-x}}}.}}}}....}}}}..}}....}}}}}}}...}}}....}}}}.}}}x
-}}}...}}}....}}}..}}}....}}}..}}...}}}....}}}...}}}
-x}}}.}}}}}..}}}..}}}}}..}}}..}}}}}..}}}..}}}}}.}}}x
+x}}},}}}}},,}}},,}}}}},,}}},,}}}}},,}}},,}}}}},}}}x
+}}},,,}},,}},},}},}},}}},,,}}},}}},,}}},,}}}},,,}}}
+x}}},}},}}},}},}},}},,,}},}},,,,,}},,,,,},,,,},}}}x
+xx}}},,}}},}},}},}},,}},,,,,}},}}},}},}}}}}}}}}}}xx
+x}}},,}}}}},}},}},}},,,}}}}},,,,,}},}}}}}},,,,,}}}x
+}}},,}},,,}},,}},}}},}}},,,}}},}}},},}}}},,P,P,,}}}
+}},}}}},,,}}}}},},,,}}},,P,,}}},},}}},}}}},,,,,}}}}
+},}}}},}},},,},}}}}}}},,P,P,,}}},}}},}},,}},,,}}}}x
+x}}}},}}}},,,,}}}}},}}},,P,,}}},}}}},}},,}},,,}}},}
+}}}},,}},}},,}}}},,,}}}},,,}}},}}}}},}}}},}}}}}},}}
+}}},,,}},,,}}},,}}}}}}}}}}}},,,,,}}}},}},,,},,},}}}
+x}}},,}},}}}},,,,}},,}}},,}},,,,,}}}},}}},},,,,}}}x
+xx}}},}}}},,}},,}},,}},,}},,}},}}},,},},,}}},,}}}xx
+x}}},}}}},,,,}}}},,}},,,,}}}}}}},,,}}},,,,}}}},}}}x
+}}},,,}}},,,,}}},,}}},,,,}}},,}},,,}}},,,,}}},,,}}}
+x}}},}}}}},,}}},,}}}}},,}}},,}}}}},,}}},,}}}}},}}}x
 xx}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}x}}}}}xx
 ENDMAP
 # Random registers
@@ -720,7 +720,7 @@ MONSTER:('T',"thoul"),random
 # The Tarrasque Level
 #
 MAZE: "tarrasque" , ' '
-INIT_MAP: mines, '.' , ' ' , true , true , random , true
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
 #
 STAIR: random, up
@@ -945,7 +945,7 @@ TELEPORT_REGION:levregion(54,1,79,18),(0,0,0,0),down
 #	specific levels as defined below.
 #
 MAZE: "hellfill" , ' '
-INIT_MAP: mines, '.' , ' ' , true , true , random , true
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
 #
 STAIR: random, up
@@ -1021,7 +1021,7 @@ TRAP: "fire", random
 #	specific levels as defined below.
 #
 MAZE: "mainfill" , ' '
-INIT_MAP: mines, '.' , ' ' , true , true , random , true
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
 #
 STAIR: random, up
