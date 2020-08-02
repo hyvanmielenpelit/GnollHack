@@ -631,7 +631,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_LBUTTONDOWN:
         NHEVENT_MS(CLICK_1,
-                   max(0, min((COLNO - 1), data->xPos
+                   max(1, min((COLNO - 1), data->xPos + 1
                                          + (LOWORD(lParam) - data->map_orig.x)
                                                / data->xFrontTile)),
                    max(0, min(ROWNO, data->yPos
@@ -642,7 +642,7 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONDBLCLK:
     case WM_RBUTTONDOWN:
         NHEVENT_MS(CLICK_2,
-                   max(0, min((COLNO - 1), data->xPos
+                   max(1, min((COLNO - 1), data->xPos + 1
                                          + (LOWORD(lParam) - data->map_orig.x)
                                                / data->xFrontTile)),
                    max(0, min(ROWNO, data->yPos
@@ -2591,7 +2591,7 @@ onPaint(HWND hWnd)
 
     SetStretchBltMode(hFrontBufferDC, COLORONCOLOR);
     StretchBlt(hFrontBufferDC,
-        data->map_orig.x - ((data->xPos - 1) * data->xFrontTile),
+        data->map_orig.x - (data->xPos * data->xFrontTile),
         data->map_orig.y - (data->yPos * data->yFrontTile), frontWidth, frontHeight,
                 data->backBufferDC, data->xBackTile, 0, data->backWidth - data->xBackTile, data->backHeight, SRCCOPY);
 
@@ -2724,7 +2724,7 @@ onMSNH_HScroll(HWND hWnd, WPARAM wParam, LPARAM lParam)
 void
 nhcoord2display(PNHMapWindow data, int x, int y, LPRECT lpOut)
 {
-    lpOut->left = (x - data->xPos) * data->xFrontTile + data->map_orig.x;
+    lpOut->left = (x - 1 - data->xPos) * data->xFrontTile + data->map_orig.x;
     lpOut->top = (y - data->yPos) * data->yFrontTile + data->map_orig.y;
     lpOut->right = lpOut->left + data->xFrontTile;
     lpOut->bottom = lpOut->top + data->yFrontTile;
