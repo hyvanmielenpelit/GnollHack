@@ -413,6 +413,16 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dungeon-normal-water-replacement",
+      DUNGEON_NORMAL_WATER_REPLACEMENT_TILES, DUNGEON_NORMAL_WATER_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_SHORE_TILE,
+      AUTODRAW_NONE,
+      { "shore-room", "shore-grass", "shore-ground", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "brass-lantern-replacement",
       BRASS_LANTERN_LIT_TILES, BRASS_LANTERN_LIT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
@@ -422,7 +432,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { BRASS_LANTERN_LIT_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-    }
+    },
 };
 
 
@@ -699,6 +709,30 @@ enum autodraw_types* autodraw_ptr;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
                 return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+
+            break;
+        }
+        case REPLACEMENT_ACTION_SHORE_TILE:
+        {
+            int above_y = y - 1;
+            if (!isok(x, above_y) || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) 
+                || IS_POOL(levl[x][above_y].typ) || levl[x][above_y].typ == LAVAPOOL || levl[x][above_y].typ == UNEXPLORED)
+            {
+                /* No action */
+            }
+            else
+            {
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
+                int tileidx = levl[x][above_y].typ == GROUND || levl[x][above_y].floortyp == GROUND ? 2 : levl[x][above_y].typ == GRASS || levl[x][above_y].floortyp == GRASS ? 1 : 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
+                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
 
             break;

@@ -1961,6 +1961,10 @@ update_game_music()
     {
         musicinfo.ghsound = GHSOUND_MUSIC_GAMEOVER;
     }
+    else if (program_state.gameover == 2)
+    {
+        musicinfo.ghsound = GHSOUND_MUSIC_VICTORY;
+    }
     else
     {
         struct mkroom* room_ptr = which_room(u.ux, u.uy);
@@ -1993,7 +1997,7 @@ play_level_ambient_sounds()
     lainfo.volume = 1.0f;
     lainfo.ghsound = GHSOUND_NONE;
 
-    if (context.game_started == FALSE || program_state.gameover == 1)
+    if (context.game_started == FALSE || program_state.gameover > 0)
     {
         lainfo.ghsound = GHSOUND_NONE;
     }

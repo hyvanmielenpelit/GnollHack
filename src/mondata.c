@@ -154,7 +154,7 @@ static NEARDATA struct mflag_description m4flag_descriptions[] = {
 static NEARDATA struct mflag_description m5flag_descriptions[] = {
     { M5_HATES_LIGHT, "vulnerable to light", "monsters vulnerable to light" },
     { M5_SHADE, "impervious to physical weapons", "monsters impervious to physical weapons" },
-    { M5_TELEPORT_HEAL_TACTICS, "able to teleport at will", "monsters able to teleport at will" },
+    { M5_TELEPORT_HEAL_TACTICS, "using teleport and heal tactics", "monsters using teleport and heal tactics" },
     { 0 , "", "" }
 };
 

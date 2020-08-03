@@ -3241,16 +3241,22 @@ tty_wait_synch()
 {
     HUPSKIP();
     /* we just need to make sure all windows are synch'd */
-    if (!ttyDisplay || ttyDisplay->rawprint) {
+    if (!ttyDisplay || ttyDisplay->rawprint)
+    {
         getret();
         if (ttyDisplay)
             ttyDisplay->rawprint = 0;
-    } else {
+    } 
+    else 
+    {
         tty_display_nhwindow(WIN_MAP, FALSE);
-        if (ttyDisplay->inmore) {
+        if (ttyDisplay->inmore) 
+        {
             addtopl("--More--");
             (void) fflush(stdout);
-        } else if (ttyDisplay->inread > program_state.gameover) {
+        } 
+        else if (ttyDisplay->inread > (program_state.gameover ? 1 : 0)) 
+        {
             /* this can only happen if we were reading and got interrupted */
             ttyDisplay->toplin = 3;
             /* do this twice; 1st time gets the Quit? message again */
