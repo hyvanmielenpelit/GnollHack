@@ -224,7 +224,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/Bovine-Normal", BACKGROUND_MUSIC_VOLUME },
     { SOUND_BANK_MASTER, "event:/Music/End-Game-Normal", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/End-Game-Astral", 0.08f },
-    { SOUND_BANK_MASTER, "event:/Music/Victory", 0.08f },
+    { SOUND_BANK_MASTER, "event:/Music/Victory", 0.20f },
 
 };
 
