@@ -93,13 +93,13 @@
 
 /* conveyances: resistances, teleport, teleport control, telepathy, as well as other properties from eating the corpse */
 #define MC_NONE			0x00000000UL
-#define MC_FIRE			0x00000001UL			/* confers fire resistance */
-#define MC_COLD			0x00000002UL   			/* confers cold resistance */
+#define MC_FIRE			0x00000001UL			/* confers weak fire resistance */
+#define MC_COLD			0x00000002UL   			/* confers weak cold resistance */
 #define MC_SLEEP		0x00000004UL  			/* confers sleep resistance */
 #define MC_DISINT		0x00000008UL 			/* confers disintegration resistance */
-#define MC_ELEC			0x00000010UL   			/* confers shock resistance */
+#define MC_ELEC			0x00000010UL   			/* confers weak shock resistance */
 #define MC_POISON		0x00000020UL 			/* confers poison resistance */
-#define MC_ACID			0x00000040UL   			/* confers acid resistance */
+#define MC_ACID			0x00000040UL   			/* confers weak acid resistance */
 #define MC_STONE		0x00000080UL  			/* confers petrification resistance */
 #define MC_DEATH		0x00000100UL			/* confers death resistance */
 #define MC_DRAIN		0x00000200UL			/* confers life draining resistance */

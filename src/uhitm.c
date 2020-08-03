@@ -4419,71 +4419,96 @@ unsigned long ad_flags;
 			|| (magr && (you_defend ? Half_physical_damage_against_undead_and_demons : has_half_physical_damage_against_undead_and_demons(mdef)) && (is_undead(magr->data) || is_demon(magr->data)))
 			)
 		{
-			base_dmg_d /= 2;
+			base_dmg_d /= 2.0;
 		}
 
 		if ((adtyp == AD_PHYS || adtyp == AD_ACID || adtyp == AD_DGST || adtyp == AD_MAGM) &&
 			((you_defend ? Double_physical_damage : has_double_physical_damage(mdef)))
 			)
 		{
-			base_dmg_d *= 2;
+			base_dmg_d *= 2.0;
 		}
 
 		if ((ad_flags & ADFLAGS_SPELL_DAMAGE) && (you_defend ? Half_spell_damage : has_half_spell_damage(mdef)))
 		{
-			base_dmg_d /= 2;
+			base_dmg_d /= 2.0;
 		}
 
 		if ((ad_flags & ADFLAGS_SPELL_DAMAGE) && (you_defend ? Double_spell_damage : has_double_spell_damage(mdef)))
 		{
-			base_dmg_d *= 2;
+			base_dmg_d *= 2.0;
 		}
 
 		/* Armor-type reductions, half specific damage type reductions, and vulneratbilities here */
 		if (adtyp == AD_FIRE && (you_defend ? Fire_vulnerability : has_fire_vulnerability(mdef)))
 		{
-			base_dmg_d *= 2;
+			base_dmg_d *= 2.0;
 		}
 
 		if (adtyp == AD_COLD && (you_defend ? Cold_vulnerability : has_cold_vulnerability(mdef)))
 		{
-			base_dmg_d *= 2;
+			base_dmg_d *= 2.0;
 		}
 
 		if (adtyp == AD_ELEC && (you_defend ? Elec_vulnerability : has_elec_vulnerability(mdef)))
 		{
-			base_dmg_d *= 2;
+			base_dmg_d *= 2.0;
 		}
 
 		if (adtyp == AD_MAGM && (you_defend ? Magic_damage_vulnerability : has_magm_vulnerability(mdef)))
 		{
-			base_dmg_d *= 2;
+			base_dmg_d *= 2.0;
 		}
 
 		/* Resistances (half damage, immunity takes to zero) */
-		if (adtyp == AD_FIRE && (you_defend ? Fire_resistance : mon_resists_fire(mdef)))
+		if (adtyp == AD_FIRE)
 		{
-			base_dmg_d /= 2;
+			if (you_defend ? Fire_immunity : is_mon_immune_to_fire(mdef))
+				base_dmg_d = 0.0;
+			else if (you_defend ? Improved_fire_resistance : mon_resists_fire_strongly(mdef))
+				base_dmg_d /= 4.0;
+			else if(you_defend ? Fire_resistance : mon_resists_fire_weakly(mdef))
+				base_dmg_d /= 2.0;
 		}
 
-		if (adtyp == AD_COLD && (you_defend ? Cold_resistance : mon_resists_cold(mdef)))
+		if (adtyp == AD_COLD)
 		{
-			base_dmg_d /= 2;
+			if (you_defend ? Cold_immunity : is_mon_immune_to_cold(mdef))
+				base_dmg_d = 0.0;
+			else if (you_defend ? Improved_cold_resistance : mon_resists_cold_strongly(mdef))
+				base_dmg_d /= 4.0;
+			else if(you_defend ? Cold_resistance : mon_resists_cold_weakly(mdef))
+				base_dmg_d /= 2.0;
 		}
 
-		if (adtyp == AD_ELEC && (you_defend ? Shock_resistance : mon_resists_elec(mdef)))
+		if (adtyp == AD_ELEC)
 		{
-			base_dmg_d /= 2;
+			if (you_defend ? Shock_immunity : is_mon_immune_to_elec(mdef))
+				base_dmg_d = 0.0;
+			else if (you_defend ? Improved_shock_resistance : mon_resists_elec_strongly(mdef))
+				base_dmg_d /= 4.0;
+			else if(you_defend ? Shock_resistance : mon_resists_elec_weakly(mdef))
+				base_dmg_d /= 2.0;
 		}
 
-		if (adtyp == AD_MAGM && (you_defend ? Magic_missile_resistance : mon_resists_magic_missile(mdef)))
+		if (adtyp == AD_MAGM)
 		{
-			base_dmg_d /= 2;
+			if (you_defend ? Magic_missile_immunity : is_mon_immune_to_magic_missile(mdef))
+				base_dmg_d = 0.0;
+			else if (you_defend ? Improved_magic_missile_resistance : mon_resists_magic_missile_strongly(mdef))
+				base_dmg_d /= 4.0;
+			else if (you_defend ? Magic_missile_resistance : mon_resists_magic_missile_weakly(mdef))
+				base_dmg_d /= 2.0;
 		}
 
-		if (adtyp == AD_ACID && (you_defend ? Acid_resistance : mon_resists_acid(mdef)))
+		if (adtyp == AD_ACID)
 		{
-			base_dmg_d /= 2;
+			if (you_defend ? Acid_immunity : is_mon_immune_to_acid(mdef))
+				base_dmg_d = 0.0;
+			else if (you_defend ? Improved_acid_resistance : mon_resists_acid_strongly(mdef))
+				base_dmg_d /= 4.0;
+			else if (you_defend ? Acid_resistance : mon_resists_acid_weakly(mdef))
+				base_dmg_d /= 2.0;
 		}
 
 		/* Game difficulty level adjustments */

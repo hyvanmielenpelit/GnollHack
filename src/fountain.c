@@ -1136,7 +1136,7 @@ drinksink()
         break;
     case 2:
         You("take a sip of scalding hot %s.", hliquid("water"));
-        if (Fire_immunity)
+        if (Fire_immunity || Improved_fire_resistance || Fire_resistance)
             pline("It seems quite tasty.");
         else
             losehp(adjust_damage(rnd(6), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "sipping boiling water", KILLED_BY);

@@ -977,15 +977,8 @@ register struct permonst *ptr;
 	}
 
     switch (type) {
-    case FIRE_IMMUNITY:
-        debugpline0("Trying to give fire immunity");
-        if (!(HFire_immunity & FROM_ACQUIRED)) {
-            You(Hallucination ? "be chillin'." : "feel a momentary chill.");
-            HFire_immunity |= FROM_ACQUIRED;
-        }
-        break;
     case FIRE_RESISTANCE:
-        debugpline0("Trying to give fire immunity");
+        debugpline0("Trying to give fire resistance");
         if (!(HFire_resistance & FROM_ACQUIRED)) {
             You(Hallucination ? "be chillin'." : "feel cold for a moment.");
             HFire_resistance |= FROM_ACQUIRED;
@@ -998,13 +991,6 @@ register struct permonst *ptr;
             HSleep_resistance |= FROM_ACQUIRED;
         }
         break;
-    case COLD_IMMUNITY:
-        debugpline0("Trying to give cold immunity");
-        if (!(HCold_immunity & FROM_ACQUIRED)) {
-            You_feel("full of hot air.");
-            HCold_immunity |= FROM_ACQUIRED;
-        }
-        break;
     case COLD_RESISTANCE:
         debugpline0("Trying to give cold resistance");
         if (!(HCold_resistance & FROM_ACQUIRED)) {
@@ -1012,21 +998,18 @@ register struct permonst *ptr;
             HCold_resistance |= FROM_ACQUIRED;
         }
         break;
+    case ACID_RESISTANCE:
+        debugpline0("Trying to give acid resistance");
+        if (!(HAcid_resistance & FROM_ACQUIRED)) {
+            You_feel("less soluble.");
+            HAcid_resistance |= FROM_ACQUIRED;
+        }
+        break;
     case DISINTEGRATION_RESISTANCE:
         debugpline0("Trying to give disintegration resistance");
         if (!(HDisint_resistance & FROM_ACQUIRED)) {
             You_feel(Hallucination ? "totally together, man." : "very firm.");
             HDisint_resistance |= FROM_ACQUIRED;
-        }
-        break;
-    case SHOCK_IMMUNITY: /* shock (electricity) resistance */
-        debugpline0("Trying to give shock immunity");
-        if (!(HShock_immunity & FROM_ACQUIRED)) {
-            if (Hallucination)
-                You_feel("grounded in reality.");
-            else
-                Your("health currently feels amplified!");
-            HShock_immunity |= FROM_ACQUIRED;
         }
         break;
     case SHOCK_RESISTANCE: /* shock (electricity) resistance */

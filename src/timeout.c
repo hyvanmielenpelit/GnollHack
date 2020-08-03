@@ -56,13 +56,13 @@ const struct propname {
 	/* properties beyond here don't have timed values during normal play,
 	   so there's not much point in trying to order them sensibly;
 	   they're either on or off based on equipment, role, actions, &c */
-	{ FIRE_IMMUNITY, "immune to fire", "fire immunity" },
-	{ COLD_IMMUNITY, "immune to cold", "cold immunity" },
+	{ FIRE_IMMUNITY, "fully resistant to fire", "full fire resistance" },
+	{ COLD_IMMUNITY, "fully resistant to cold", "full cold resistance" },
 	{ SLEEP_RESISTANCE, "resistant to sleep", "sleep resistance" },
 	{ DISINTEGRATION_RESISTANCE, "resistant to disintegration", "disintegration resistance" },
-	{ SHOCK_IMMUNITY, "immune to shock", "shock immunity" },
+	{ SHOCK_IMMUNITY, "fully resistant to shock", "full shock resistance" },
 	{ POISON_RESISTANCE, "resistant to poison", "poison resistance" },
-	{ ACID_IMMUNITY, "resistant to acid", "acid resistance" },
+	{ ACID_IMMUNITY, "fully resistant to acid", "full acid resistance" },
 	{ STONE_RESISTANCE, "resistant to stoning", "stoning resistance" },
 	{ DRAIN_RESISTANCE, "resistant to drain", "drain resistance" },
 	{ SICK_RESISTANCE, "resistant to sickness", "sickness resistance" },
@@ -159,7 +159,7 @@ const struct propname {
 	{ THREE_FOURTHS_MAGIC_RESISTANCE, "having 75% of normal magic resistance", "75% of normal magic resistance" },
 	{ BLINDFOLDED, "blindfolded", "blindness due to a blindfold" },
 	{ TITAN_STRENGTH, "as strong as a titan", "strength equivalent of a titan" },
-    { MAGIC_MISSILE_IMMUNITY, "immune to magic missiles", "magic missile immunity" },
+    { MAGIC_MISSILE_IMMUNITY, "fully resistant to magic missiles", "full magic missile resistance" },
 	{ STUN_RESISTANCE, "stun resistant", "stun resistance" },
 	{ FOOD_POISONED, "fatally food poisoned", "fatal food poisoning" },
 	{ BISECTION_RESISTANCE, "protected from bisection", "protection from bisection" },
@@ -169,11 +169,11 @@ const struct propname {
     { DIVINE_WISDOM, "having as high wisdom as a demigod", "wisdom equivalent of a demigod" },
     { DIVINE_CHARISMA, "having as high charisma as a demigod", "charisma equivalent of a demigod" },
     { MUMMY_ROT, "contracted with mummy rot", "mummy rot" },
-    { FIRE_RESISTANCE, "resistant to fire", "fire resistance" },
-    { COLD_RESISTANCE, "resistant to cold", "cold resistance" },
-    { SHOCK_RESISTANCE, "resistant to shock", "shock resistance" },
-    { MAGIC_MISSILE_RESISTANCE, "resistant to magic missiles", "magic missile resistance" },
-    { ACID_RESISTANCE, "resistant to acid", "acid resistance" },
+    { FIRE_RESISTANCE, "50% resistant to fire", "50% fire resistance" },
+    { COLD_RESISTANCE, "50% resistant to cold", "50% cold resistance" },
+    { SHOCK_RESISTANCE, "50% resistant to shock", "50% shock resistance" },
+    { MAGIC_MISSILE_RESISTANCE, "50% resistant to magic missiles", "50% magic missile resistance" },
+    { ACID_RESISTANCE, "50% resistant to acid", "50% acid resistance" },
     { ULTRA_FAST, "ultra fast", "ultra fast speed" },
     { SUPER_FAST, "super fast", "super fast speed" },
     { LIGHTNING_FAST, "lightning fast", "lightning fast speed" },
@@ -188,6 +188,11 @@ const struct propname {
     { MELEE_LIFE_LEECH, "having melee life leech", "melee life leech" },
     { CRAZED, "crazed", "crazedness" },
     { DIVINE_REGENERATION, "extremely rapidly regenerating", "extremely rapid regeneration" },
+    { IMPROVED_FIRE_RESISTANCE, "75% resistant to fire", "75% fire resistance" },
+    { IMPROVED_COLD_RESISTANCE, "75% resistant to cold", "75% cold resistance" },
+    { IMPROVED_SHOCK_RESISTANCE, "75% resistant to shock", "75% shock resistance" },
+    { IMPROVED_MAGIC_MISSILE_RESISTANCE, "75% resistant to magic missiles", "75% magic missile resistance" },
+    { IMPROVED_ACID_RESISTANCE, "75% resistant to acid", "75% acid resistance" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -1229,16 +1234,28 @@ nh_timeout()
 				if (!Shock_immunity)
 					Your("skin feels more prone to electricity than before.");
 				break;
+            case IMPROVED_FIRE_RESISTANCE:
+                if (!Improved_fire_resistance && !Fire_immunity)
+                    Your("skin feels more prone to burning than before.");
+                break;
+            case IMPROVED_COLD_RESISTANCE:
+                if (!Improved_cold_resistance && !Cold_immunity)
+                    Your("skin feels more prone to frostbites than before.");
+                break;
+            case IMPROVED_SHOCK_RESISTANCE:
+                if (!Improved_shock_resistance && !Shock_immunity)
+                    Your("skin feels more prone to electricity than before.");
+                break;
             case FIRE_RESISTANCE:
-                if (!Fire_resistance)
+                if (!Fire_resistance && !Improved_fire_resistance && !Fire_immunity)
                     Your("skin feels more prone to burning than before.");
                 break;
             case COLD_RESISTANCE:
-                if (!Cold_resistance)
+                if (!Cold_resistance && !Improved_cold_resistance && !Cold_immunity)
                     Your("skin feels more prone to frostbites than before.");
                 break;
             case SHOCK_RESISTANCE:
-                if (!Shock_resistance)
+                if (!Shock_resistance && !Improved_shock_resistance && !Shock_immunity)
                     Your("skin feels more prone to electricity than before.");
                 break;
             case DISINTEGRATION_RESISTANCE:
@@ -1253,8 +1270,12 @@ nh_timeout()
 				if (!Acid_immunity)
 					Your("skin feels more prone to acid than before.");
 				break;
+            case IMPROVED_ACID_RESISTANCE:
+                if (!Improved_acid_resistance && !Acid_immunity)
+                    Your("skin feels more prone to acid than before.");
+                break;
             case ACID_RESISTANCE:
-                if (!Acid_resistance)
+                if (!Acid_resistance && !Improved_acid_resistance && !Acid_immunity)
                     Your("skin feels more prone to acid than before.");
                 break;
             case STONE_RESISTANCE:
@@ -1281,8 +1302,12 @@ nh_timeout()
 				if (!Magic_missile_immunity)
 					You("feel less protected from magic missiles.");
 				break;
+            case IMPROVED_MAGIC_MISSILE_RESISTANCE:
+                if (!Improved_magic_missile_resistance && !Magic_missile_immunity)
+                    You("feel less protected from magic missiles.");
+                break;
             case MAGIC_MISSILE_RESISTANCE:
-                if (!Magic_missile_resistance)
+                if (!Magic_missile_resistance && !Improved_magic_missile_resistance && !Magic_missile_immunity)
                     You("feel less protected from magic missiles.");
                 break;
             case CANCELLED:
@@ -1537,14 +1562,29 @@ nh_timeout()
 			case SHOCK_IMMUNITY:
 				Your("skin is starting to feel more prone to electricity than before.");
 				break;
+            case IMPROVED_FIRE_RESISTANCE:
+                if (!Fire_immunity)
+                    Your("skin is starting to feel more prone to burning than before.");
+                break;
+            case IMPROVED_COLD_RESISTANCE:
+                if (!Cold_immunity)
+                    Your("skin is starting to feel more prone to frostbites than before.");
+                break;
+            case IMPROVED_SHOCK_RESISTANCE:
+                if (!Shock_immunity)
+                    Your("skin is starting to feel more prone to electricity than before.");
+                break;
             case FIRE_RESISTANCE:
-                Your("skin is starting to feel more prone to burning than before.");
+                if(!Improved_fire_resistance && !Fire_immunity)
+                    Your("skin is starting to feel more prone to burning than before.");
                 break;
             case COLD_RESISTANCE:
-                Your("skin is starting to feel more prone to frostbites than before.");
+                if (!Improved_cold_resistance && !Cold_immunity)
+                    Your("skin is starting to feel more prone to frostbites than before.");
                 break;
             case SHOCK_RESISTANCE:
-                Your("skin is starting to feel more prone to electricity than before.");
+                if (!Improved_shock_resistance && !Shock_immunity)
+                    Your("skin is starting to feel more prone to electricity than before.");
                 break;
             case DISINTEGRATION_RESISTANCE:
 				Your("body is starting to feel less firm than before.");
@@ -1555,7 +1595,15 @@ nh_timeout()
 			case ACID_IMMUNITY:
 				Your("skin is starting to feel more prone to acid than before.");
 				break;
-			case STONE_RESISTANCE:
+            case IMPROVED_ACID_RESISTANCE:
+                if (!Acid_immunity)
+                    Your("skin is starting to feel more prone to acid than before.");
+                break;
+            case ACID_RESISTANCE:
+                if (!Improved_acid_resistance && !Acid_immunity)
+                    Your("skin is starting to feel more prone to acid than before.");
+                break;
+            case STONE_RESISTANCE:
 				You("are starting to feel a bit less limber than before.");
 				break;
 			case DRAIN_RESISTANCE:
@@ -1573,8 +1621,13 @@ nh_timeout()
 			case MAGIC_MISSILE_IMMUNITY:
 				You("are starting to feel less protected from magic missiles.");
 				break;
+            case IMPROVED_MAGIC_MISSILE_RESISTANCE:
+                if (!Magic_missile_immunity)
+                    You("are starting to feel less protected from magic missiles.");
+                break;
             case MAGIC_MISSILE_RESISTANCE:
-                You("are starting to feel less protected from magic missiles.");
+                if (!Improved_magic_missile_resistance && !Magic_missile_immunity)
+                    You("are starting to feel less protected from magic missiles.");
                 break;
             case CANCELLED:
 				You("feel your magic is starting to flow more normally.");

@@ -3660,7 +3660,7 @@ int final;
     enlght_out(final ? "Final Attributes:" : "Current Attributes:");
 
     if (u.uevent.uhand_of_elbereth) {
-        static const char *const hofe_titles[3] = { "the Hand of Elbereth",
+        static const char* const hofe_titles[3] = { "the Hand of Elbereth",
                                                     "the Envoy of Balance",
                                                     "the Glory of Arioch" };
         you_are(hofe_titles[u.uevent.uhand_of_elbereth - 1], "");
@@ -3682,22 +3682,75 @@ int final;
         you_are("invulnerable", from_what(INVULNERABLE));
     if (Antimagic)
         you_are("magic-protected", from_what(ANTIMAGIC));
-	if (Magic_missile_immunity)
-		you_are("immune to magic missiles", from_what(MAGIC_MISSILE_IMMUNITY));
-	if (Fire_immunity)
-        you_are("immune to fire", from_what(FIRE_IMMUNITY));
-    if (Cold_immunity)
-        you_are("immune to cold", from_what(COLD_IMMUNITY));
-    if (Shock_immunity)
-        you_are("immune to electric shocks", from_what(SHOCK_IMMUNITY));
+
+    if (Magic_missile_immunity)
+        you_are("fully magic missile resistant", from_what(MAGIC_MISSILE_IMMUNITY));
+    if (Improved_magic_missile_resistance)
+    {
+        if (Magic_missile_immunity)
+            you_are("latently strongly (75%) magic missile resistant", from_what(IMPROVED_MAGIC_MISSILE_RESISTANCE));
+        else
+            you_are("strongly (75%) magic missile resistant", from_what(IMPROVED_MAGIC_MISSILE_RESISTANCE));
+    }
     if (Magic_missile_resistance)
-        you_are("magic missile resistant", from_what(MAGIC_MISSILE_RESISTANCE));
+    {
+        if (Magic_missile_immunity || Improved_magic_missile_resistance)
+            you_are("latently weakly (50%) magic missile resistant", from_what(MAGIC_MISSILE_RESISTANCE));
+        else
+            you_are("weakly (50%) magic missile resistant", from_what(MAGIC_MISSILE_RESISTANCE));
+    }
+
+    if (Fire_immunity)
+        you_are("fully fire resistant", from_what(FIRE_IMMUNITY));
+    if (Improved_fire_resistance)
+    {
+        if (Fire_immunity)
+            you_are("latently strongly (75%) fire resistant", from_what(IMPROVED_FIRE_RESISTANCE));
+        else
+            you_are("strongly (75%) fire resistant", from_what(IMPROVED_FIRE_RESISTANCE));
+    }
     if (Fire_resistance)
-        you_are("fire resistant", from_what(FIRE_RESISTANCE));
+    {
+        if (Fire_immunity || Improved_fire_resistance)
+            you_are("latently weakly (50%) fire resistant", from_what(FIRE_RESISTANCE));
+        else
+            you_are("weakly (50%) fire resistant", from_what(FIRE_RESISTANCE));
+    }
+
+    if (Cold_immunity)
+        you_are("fully cold resistant", from_what(COLD_IMMUNITY));
+    if (Improved_cold_resistance)
+    {
+        if (Cold_immunity)
+            you_are("latently strongly (75%) cold resistant", from_what(IMPROVED_COLD_RESISTANCE));
+        else
+            you_are("strongly (75%) cold resistant", from_what(IMPROVED_COLD_RESISTANCE));
+    }
     if (Cold_resistance)
-        you_are("cold resistant", from_what(COLD_RESISTANCE));
+    {
+        if (Cold_immunity || Improved_cold_resistance)
+            you_are("latently weakly (50%) cold resistant", from_what(COLD_RESISTANCE));
+        else
+            you_are("weakly (50%) cold resistant", from_what(COLD_RESISTANCE));
+    }
+
+    if (Shock_immunity)
+        you_are("fully shock resistant", from_what(SHOCK_IMMUNITY));
+    if (Improved_shock_resistance)
+    {
+        if (Shock_immunity)
+            you_are("latently strongly (75%) shock resistant", from_what(IMPROVED_SHOCK_RESISTANCE));
+        else
+            you_are("strongly (75%) shock resistant", from_what(IMPROVED_SHOCK_RESISTANCE));
+    }
     if (Shock_resistance)
-        you_are("shock resistant", from_what(SHOCK_RESISTANCE));
+    {
+        if (Shock_immunity || Improved_shock_resistance)
+            you_are("latently weakly (50%) shock resistant", from_what(SHOCK_RESISTANCE));
+        else
+            you_are("weakly (50%) shock resistant", from_what(SHOCK_RESISTANCE));
+    }
+
     if (Sleep_resistance)
         you_are("sleep resistant", from_what(SLEEP_RESISTANCE));
 	if (Disint_resistance)
@@ -3716,10 +3769,24 @@ int final;
 		you_are("protected from curses", from_what(CURSE_RESISTANCE));
 	if (Poison_resistance)
         you_are("poison resistant", from_what(POISON_RESISTANCE));
+
     if (Acid_immunity)
-        you_are("immune to acid", from_what(ACID_IMMUNITY));
+        you_are("fully acid resistant", from_what(ACID_IMMUNITY));
+    if (Improved_acid_resistance)
+    {
+        if(Acid_immunity)
+            you_are("latently strongly (75%) acid resistant", from_what(IMPROVED_ACID_RESISTANCE));
+        else
+            you_are("strongly (75%) acid resistant", from_what(IMPROVED_ACID_RESISTANCE));
+    }
     if (Acid_resistance)
-        you_are("acid resistant", from_what(ACID_RESISTANCE));
+    {
+        if (Acid_immunity || Improved_acid_resistance)
+            you_are("latently weakly (50%) acid resistant", from_what(ACID_RESISTANCE));
+        else
+            you_are("weakly (50%) acid resistant", from_what(ACID_RESISTANCE));
+    }
+
     if (Drain_resistance)
         you_are("level-drain resistant", from_what(DRAIN_RESISTANCE));
     if (Sick_resistance)

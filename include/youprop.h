@@ -109,6 +109,19 @@
 #define EMind_shielding u.uprops[MIND_SHIELDING].extrinsic
 #define Mind_shielding (HMind_shielding || EMind_shielding)
 
+#define HImproved_fire_resistance u.uprops[IMPROVED_FIRE_RESISTANCE].intrinsic
+#define EImproved_fire_resistance u.uprops[IMPROVED_FIRE_RESISTANCE].extrinsic
+#define Improved_fire_resistance (HImproved_fire_resistance || EImproved_fire_resistance)
+
+#define HImproved_cold_resistance u.uprops[IMPROVED_COLD_RESISTANCE].intrinsic
+#define EImproved_cold_resistance u.uprops[IMPROVED_COLD_RESISTANCE].extrinsic
+#define Improved_cold_resistance (HImproved_cold_resistance || EImproved_cold_resistance)
+
+#define HImproved_shock_resistance u.uprops[IMPROVED_SHOCK_RESISTANCE].intrinsic
+#define EImproved_shock_resistance u.uprops[IMPROVED_SHOCK_RESISTANCE].extrinsic
+#define Improved_shock_resistance (HImproved_shock_resistance || EImproved_shock_resistance)
+
+
 
 /* More resistances */
 #define HAntimagic u.uprops[ANTIMAGIC].intrinsic
@@ -125,6 +138,11 @@
 #define EMagic_missile_resistance u.uprops[MAGIC_MISSILE_RESISTANCE].extrinsic
 #define Magic_missile_resistance (HMagic_missile_resistance || EMagic_missile_resistance)
 
+#define HImproved_magic_missile_resistance u.uprops[IMPROVED_MAGIC_MISSILE_RESISTANCE].intrinsic
+#define EImproved_magic_missile_resistance u.uprops[IMPROVED_MAGIC_MISSILE_RESISTANCE].extrinsic
+#define Improved_magic_missile_resistance (HImproved_magic_missile_resistance || EImproved_magic_missile_resistance)
+
+
 #define HAcid_immunity u.uprops[ACID_IMMUNITY].intrinsic
 #define EAcid_immunity u.uprops[ACID_IMMUNITY].extrinsic
 #define Acid_immunity (HAcid_immunity || EAcid_immunity)
@@ -132,6 +150,10 @@
 #define HAcid_resistance u.uprops[ACID_RESISTANCE].intrinsic
 #define EAcid_resistance u.uprops[ACID_RESISTANCE].extrinsic
 #define Acid_resistance (HAcid_resistance || EAcid_resistance)
+
+#define HImproved_acid_resistance u.uprops[IMPROVED_ACID_RESISTANCE].intrinsic
+#define EImproved_acid_resistance u.uprops[IMPROVED_ACID_RESISTANCE].extrinsic
+#define Improved_acid_resistance (HImproved_acid_resistance || EImproved_acid_resistance)
 
 
 #define HStone_resistance u.uprops[STONE_RESISTANCE].intrinsic

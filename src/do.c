@@ -3413,8 +3413,8 @@ boolean pushing;
                 You("are hit by molten %s%c",
                     hliquid("lava"), Fire_immunity ? '.' : '!');
                 burn_away_slime();
-                dmg = d((Fire_immunity ? 1 : 3), 6);
-                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), /* lava damage */
+                dmg = d(3, 6);
+                losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
                        "molten lava", KILLED_BY);
             } else if (!fills_up && flags.verbose
                        && (pushing ? !Blind : cansee(rx, ry)))

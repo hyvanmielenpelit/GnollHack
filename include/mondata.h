@@ -639,16 +639,27 @@
 #define is_mon_immune_to_acid(mon) \
     (has_innate((mon)->data, MR_ACID) || has_property(mon, ACID_IMMUNITY) || noncorporeal((mon)->data))
 
-#define mon_resists_fire(mon) \
+#define mon_resists_fire_weakly(mon) \
     ( pm_resists_fire((mon)->data) || has_property(mon, FIRE_RESISTANCE))
-#define mon_resists_cold(mon) \
+#define mon_resists_cold_weakly(mon) \
     (pm_resists_cold((mon)->data) || has_property(mon, COLD_RESISTANCE) || is_vampshifter(mon))
-#define mon_resists_elec(mon) \
+#define mon_resists_elec_weakly(mon) \
     (pm_resists_elec((mon)->data) || has_property(mon, SHOCK_RESISTANCE))
-#define mon_resists_magic_missile(mon) \
+#define mon_resists_magic_missile_weakly(mon) \
     (has_innate2((mon)->data, MR2_MAGIC_MISSILE_RESISTANCE) || has_property(mon, MAGIC_MISSILE_RESISTANCE))
-#define mon_resists_acid(mon) \
+#define mon_resists_acid_weakly(mon) \
     (has_innate((mon)->data, MR2_ACID_RESISTANCE) || has_property(mon, ACID_RESISTANCE))
+
+#define mon_resists_fire_strongly(mon) \
+    (has_property(mon, IMPROVED_FIRE_RESISTANCE))
+#define mon_resists_cold_strongly(mon) \
+    (has_property(mon, IMPROVED_COLD_RESISTANCE))
+#define mon_resists_elec_strongly(mon) \
+    (has_property(mon, IMPROVED_SHOCK_RESISTANCE))
+#define mon_resists_magic_missile_strongly(mon) \
+    (has_property(mon, IMPROVED_MAGIC_MISSILE_RESISTANCE))
+#define mon_resists_acid_strongly(mon) \
+    (has_property(mon, IMPROVED_ACID_RESISTANCE))
 
 
 #define resists_disint(mon) \

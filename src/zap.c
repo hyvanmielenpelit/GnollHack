@@ -7221,7 +7221,15 @@ xchar sx, sy;
        including hero's own ricochets; breath attacks do full damage */
     //if (dam && Half_spell_damage && !(abstyp >= 20 && abstyp <= 29))
     //    dam = (dam + 1) / 2;
-    losehp(damage, fltxt, KILLED_BY_AN);
+    if (damage > 0)
+    {
+        int hpbefore = Upolyd ? u.mh : u.uhp;
+        losehp(damage, fltxt, KILLED_BY_AN);
+        int hpafter = Upolyd ? u.mh : u.uhp;
+        int damagedealt = hpbefore - hpafter;
+        if(damagedealt > 0)
+            You("sustain %d damage!", damagedealt);
+    }
     return;
 }
 
@@ -7702,8 +7710,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 range -= 2;
                 play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, sx, sy);
                 pline("%s hits you!", The(fltxt));
-                if (Reflecting) {
-                    if (!Blind) {
+                if (Reflecting) 
+                {
+                    if (!Blind)
+                    {
                         (void) ureflects("But %s reflects from your %s!",
                                          "it");
                     } else
@@ -7711,7 +7721,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dx = -dx;
                     dy = -dy;
                     u_shieldeff(); // shieldeff(sx, sy);
-                } else {
+                } 
+                else 
+                {
                     zhitu(type, origobj, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
             } 

@@ -2285,20 +2285,17 @@ int otyp;
 			Your("skin feels more reflecting than before.");
 			break;
 		case FIRE_IMMUNITY:
-			Your("skin feels less prone to burning than before.");
-			break;
-		case COLD_IMMUNITY:
-			Your("skin feels less prone to frostbites than before.");
-			break;
-		case SHOCK_IMMUNITY:
-			Your("skin feels less prone to electricity than before.");
-			break;
+		case IMPROVED_FIRE_RESISTANCE:
 		case FIRE_RESISTANCE:
 			Your("skin feels less prone to burning than before.");
 			break;
+		case COLD_IMMUNITY:
+		case IMPROVED_COLD_RESISTANCE:
 		case COLD_RESISTANCE:
 			Your("skin feels less prone to frostbites than before.");
 			break;
+		case SHOCK_IMMUNITY:
+		case IMPROVED_SHOCK_RESISTANCE:
 		case SHOCK_RESISTANCE:
 			Your("skin feels less prone to electricity than before.");
 			break;
@@ -2308,6 +2305,8 @@ int otyp;
 		case POISON_RESISTANCE:
 			You_feel("more healthy than before.");
 			break;
+		case ACID_RESISTANCE:
+		case IMPROVED_ACID_RESISTANCE:
 		case ACID_IMMUNITY:
 			Your("skin feels less prone to acid than before.");
 			break;
@@ -2327,8 +2326,7 @@ int otyp;
 			You_feel("more protected from magic.");
 			break;
 		case MAGIC_MISSILE_IMMUNITY:
-			You_feel("more protected from magic missiles.");
-			break;
+		case IMPROVED_MAGIC_MISSILE_RESISTANCE:
 		case MAGIC_MISSILE_RESISTANCE:
 			You_feel("more protected from magic missiles.");
 			break;

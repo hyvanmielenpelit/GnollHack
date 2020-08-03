@@ -3592,8 +3592,6 @@ xchar x, y;
        note: potions are glass so fall through to fire_damage() and boil */
     if (melts_in_lava(obj)
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
-        && objects[otyp].oc_oprop != FIRE_IMMUNITY && objects[otyp].oc_oprop2 != FIRE_IMMUNITY && objects[otyp].oc_oprop3 != FIRE_IMMUNITY
-        && objects[otyp].oc_oprop != FIRE_RESISTANCE && objects[otyp].oc_oprop2 != FIRE_RESISTANCE && objects[otyp].oc_oprop3 != FIRE_RESISTANCE
         && !is_otyp_indestructible(otyp)
 		&& !oresist_fire(obj)
         /* assumes oerodeproof isn't overloaded for some other purpose on

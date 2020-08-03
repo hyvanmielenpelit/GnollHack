@@ -166,7 +166,7 @@ dosit()
             return 1;
         }
         pline_The("%s burns you!", hliquid("lava"));
-        losehp(adjust_damage(d(Fire_immunity ? 2 : 10, 10), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
+        losehp(adjust_damage(d(10, 10), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), /* lava damage */
                "sitting on lava", KILLED_BY);
     } 
 	else if (is_ice(u.ux, u.uy))

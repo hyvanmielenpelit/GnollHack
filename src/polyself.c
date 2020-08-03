@@ -81,26 +81,30 @@ set_uasmon()
 //			u.uprops[PropIndx].intrinsic &= ~FROM_FORM; \
 
 	/* We add these additionally in the case creature type (e.g., undead) has resistances not conferred explicitly by MR_ fields */
-	PROPSET(FIRE_IMMUNITY, is_mon_immune_to_fire(&youmonst));
-    PROPSET(COLD_IMMUNITY, is_mon_immune_to_cold(&youmonst));
     PROPSET(SLEEP_RESISTANCE, resists_sleep(&youmonst));
     PROPSET(DISINTEGRATION_RESISTANCE, resists_disint(&youmonst));
 	PROPSET(DEATH_RESISTANCE, resists_death(&youmonst));
 	PROPSET(CHARM_RESISTANCE, resists_charm(&youmonst));
 	PROPSET(FEAR_RESISTANCE, resists_fear(&youmonst));
-	PROPSET(SHOCK_IMMUNITY, is_mon_immune_to_elec(&youmonst));
     PROPSET(POISON_RESISTANCE, resists_poison(&youmonst));
-    PROPSET(ACID_IMMUNITY, is_mon_immune_to_acid(&youmonst));
-    PROPSET(ACID_RESISTANCE, mon_resists_acid(&youmonst));
     PROPSET(STONE_RESISTANCE, resists_ston(&youmonst));
 	PROPSET(DRAIN_RESISTANCE, resists_drli(&youmonst));
-	PROPSET(MAGIC_MISSILE_IMMUNITY, is_mon_immune_to_magic_missile(&youmonst));
 	PROPSET(STUN_RESISTANCE, resists_stun(&youmonst));
 	PROPSET(BISECTION_RESISTANCE, resists_bisection(&youmonst));
-    PROPSET(FIRE_RESISTANCE, mon_resists_fire(&youmonst));
-    PROPSET(COLD_RESISTANCE, mon_resists_cold(&youmonst));
-    PROPSET(SHOCK_RESISTANCE, mon_resists_elec(&youmonst));
-    PROPSET(MAGIC_MISSILE_RESISTANCE, mon_resists_magic_missile(&youmonst));
+
+    PROPSET(FIRE_IMMUNITY, is_mon_immune_to_fire(&youmonst));
+    PROPSET(COLD_IMMUNITY, is_mon_immune_to_cold(&youmonst));
+    PROPSET(SHOCK_IMMUNITY, is_mon_immune_to_elec(&youmonst));
+    PROPSET(MAGIC_MISSILE_IMMUNITY, is_mon_immune_to_magic_missile(&youmonst));
+    PROPSET(ACID_IMMUNITY, is_mon_immune_to_acid(&youmonst));
+
+    PROPSET(FIRE_RESISTANCE, mon_resists_fire_weakly(&youmonst));
+    PROPSET(COLD_RESISTANCE, mon_resists_cold_weakly(&youmonst));
+    PROPSET(SHOCK_RESISTANCE, mon_resists_elec_weakly(&youmonst));
+    PROPSET(MAGIC_MISSILE_RESISTANCE, mon_resists_magic_missile_weakly(&youmonst));
+    PROPSET(ACID_RESISTANCE, mon_resists_acid_weakly(&youmonst));
+
+    /* Strong resistances cannot be innate */
 
 #if 0
 	{
