@@ -561,7 +561,7 @@ struct monst* origmonst;
         break;
 	case SPE_FEAR:
 		res = 1;
-		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_ability_resistance_success(mtmp, A_WIS, objects[otmp->otyp].oc_spell_saving_throw_adjustment))
+		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_ability_resistance_success(mtmp, A_WIS, save_adj))
 		{
 			make_mon_fearful(mtmp, duration);
 		}
@@ -4724,6 +4724,7 @@ boolean ordinary;
 	int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 	double damage = 0;
 	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
+    int save_adj = get_saving_throw_adjustment(obj, &youmonst);
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -5053,7 +5054,7 @@ boolean ordinary;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 		damage = 0;
-		if (!check_ability_resistance_success(&youmonst, A_WIS, objects[obj->otyp].oc_spell_saving_throw_adjustment))
+		if (!check_ability_resistance_success(&youmonst, A_WIS, save_adj))
 		{
 			boolean was_paralyzed = Paralyzed;
 			incr_itimeout(&HParalyzed, duration);
