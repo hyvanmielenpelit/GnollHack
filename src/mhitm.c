@@ -1041,7 +1041,7 @@ register struct obj* omonwep;
 			int basedmg = weapon_dmg_value(mweapon, mdef, magr, 0);
 			damage += adjust_damage(basedmg, magr, mdef, objects[mweapon->otyp].oc_damagetype, ADFLAGS_NONE);
 			extratmp = weapon_extra_dmg_value(mweapon, mdef, magr, basedmg);
-			damage += extratmp;
+			damage += adjust_damage(extratmp, magr, mdef, objects[mweapon->otyp].oc_extra_damagetype, ADFLAGS_NONE);
 		}
 		increase_damage_adtyp = objects[mweapon->otyp].oc_damagetype;
 	}
@@ -1098,7 +1098,8 @@ register struct obj* omonwep;
         }
     }
 
-    switch (mattk->adtyp) {
+    switch (mattk->adtyp) 
+    {
     case AD_DGST:
         /* eating a Rider or its corpse is fatal */
         if (is_rider(pd)) {
@@ -1138,10 +1139,14 @@ register struct obj* omonwep;
     case AD_HEAL:
     case AD_PHYS:
  physical:
-        if (mattk->aatyp == AT_KICK && thick_skinned(pd)) {
+        if (mattk->aatyp == AT_KICK && thick_skinned(pd)) 
+        {
 			damage = 0;
-        } else if (mattk->aatyp == AT_WEAP) {
-            if (otmp) {
+        } 
+        else if (mattk->aatyp == AT_WEAP) 
+        {
+            if (otmp) 
+            {
                 if (otmp->otyp == CORPSE
                     && touch_petrifies(&mons[otmp->corpsenm]))
                     goto do_stone;
@@ -1176,7 +1181,9 @@ register struct obj* omonwep;
                 if (damage > 0)
                     rustm(mdef, otmp);
             }
-        } else if (pa == &mons[PM_PURPLE_WORM] && pd == &mons[PM_SHRIEKER]) {
+        }
+        else if (pa == &mons[PM_PURPLE_WORM] && pd == &mons[PM_SHRIEKER])
+        {
             /* hack to enhance mm_aggression(); we don't want purple
                worm's bite attack to kill a shrieker because then it
                won't swallow the corpse; but if the target survives,
@@ -1186,7 +1193,8 @@ register struct obj* omonwep;
         }
         break;
     case AD_FIRE:
-        if (cancelled) {
+        if (cancelled)
+        {
 			damage = 0;
             break;
         }
@@ -1215,7 +1223,8 @@ register struct obj* omonwep;
         damage += adjust_damage(destroy_mitem(mdef, POTION_CLASS, AD_FIRE), magr, mdef, AD_FIRE, ADFLAGS_NONE);
         break;
     case AD_COLD:
-        if (cancelled) {
+        if (cancelled) 
+        {
 			damage = 0;
             break;
         }

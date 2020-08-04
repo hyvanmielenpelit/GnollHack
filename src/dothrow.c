@@ -368,7 +368,7 @@ int* output_multishot_rnd;
 		if (is_prince(magr->data))
 			skilllevel = P_EXPERT;
 		else if (is_lord(magr->data))
-			skilllevel = P_EXPERT;
+			skilllevel = P_SKILLED;
 		else
 			skilllevel = P_BASIC;
 	}
@@ -1393,27 +1393,37 @@ boolean hitsroof;
                          && touch_petrifies(&mons[obj->corpsenm]));
     /* note: obj->quan == 1 */
 
-    if (!has_ceiling(&u.uz)) {
+    if (!has_ceiling(&u.uz))
+    {
         action = "flies up into"; /* into "the sky" or "the water above" */
-    } else if (hitsroof) {
-        if (breaktest(obj)) {
+    }
+    else if (hitsroof)
+    {
+        if (breaktest(obj))
+        {
             pline("%s hits the %s.", Doname2(obj), ceiling(u.ux, u.uy));
             breakmsg(obj, !Blind);
             breakobj(obj, u.ux, u.uy, TRUE, TRUE);
             return FALSE;
         }
         action = "hits";
-    } else {
+    }
+    else 
+    {
         action = "almost hits";
     }
+
     pline("%s %s the %s, then falls back on top of your %s.", Doname2(obj),
           action, ceiling(u.ux, u.uy), body_part(HEAD));
 
     /* object now hits you */
 
-    if (obj->oclass == POTION_CLASS) {
+    if (obj->oclass == POTION_CLASS)
+    {
         potionhit(&youmonst, &obj, POTHIT_HERO_THROW);
-    } else if (breaktest(obj)) {
+    } 
+    else if (breaktest(obj)) 
+    {
         int otyp = obj->otyp;
         int blindinc;
 
@@ -1430,7 +1440,8 @@ boolean hitsroof;
         case EGG:
             if (petrifier && !Stone_resistance
                 && !(poly_when_stoned(youmonst.data)
-                     && polymon(PM_STONE_GOLEM))) {
+                     && polymon(PM_STONE_GOLEM)))
+            {
                 /* egg ends up "all over your face"; perhaps
                    visored helmet should still save you here */
                 if (uarmh)
@@ -1441,7 +1452,8 @@ boolean hitsroof;
         case CREAM_PIE:
         case BLINDING_VENOM:
             pline("You've got it all over your %s!", body_part(FACE));
-            if (blindinc) {
+            if (blindinc)
+            {
                 if (otyp == BLINDING_VENOM && !Blind)
                     pline("It blinds you!");
                 u.ucreamed += blindinc;
@@ -1454,7 +1466,9 @@ boolean hitsroof;
             break;
         }
         return FALSE;
-    } else { /* neither potion nor other breaking object */
+    }
+    else
+    { /* neither potion nor other breaking object */
         boolean less_damage = uarmh && is_metallic(uarmh), artimsg = FALSE;
         int basedmg = is_launcher(obj) ? d(1, 2) : weapon_total_dmg_value(obj, &youmonst, &youmonst, 1);
 		double damage = adjust_damage(basedmg, (struct monst*)0, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE);

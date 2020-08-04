@@ -106,7 +106,8 @@ struct obj *otmp;
         chance -= 10 * mtmp->m_lev;
     if (Role_if(PM_KNIGHT))
         chance += 20;
-    switch (P_SKILL_LEVEL(P_RIDING)) {
+    switch (P_SKILL_LEVEL(P_RIDING)) 
+    {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
     default:
@@ -118,6 +119,8 @@ struct obj *otmp;
         chance += 15;
         break;
     case P_EXPERT:
+    case P_MASTER:
+    case P_GRAND_MASTER:
         chance += 30;
         break;
     }

@@ -3316,18 +3316,20 @@ E const char *FDECL(skill_name, (int, BOOLEAN_P));
 E boolean FDECL(can_advance, (int, BOOLEAN_P));
 E void NDECL(update_can_advance_any_skill);
 E int NDECL(enhance_weapon_skill);
-E void FDECL(unrestrict_weapon_skill, (int));
-E void FDECL(add_weapon_skill_maximum_by_one, (int));
+E void FDECL(unrestrict_weapon_skill, (enum p_skills));
+E void FDECL(add_weapon_skill_maximum_by_one, (enum p_skills));
 E void FDECL(use_skill, (int, int));
 E void FDECL(add_weapon_skill, (int));
 E void FDECL(lose_weapon_skill, (int));
-E int FDECL(weapon_skill_type, (struct obj *));
-E int NDECL(uwep_skill_type);
+E enum p_skills FDECL(weapon_skill_type, (struct obj *));
+E enum p_skills NDECL(uwep_skill_type);
 E int FDECL(weapon_skill_hit_bonus, (struct obj *, int, boolean));
 E int FDECL(weapon_skill_dmg_bonus, (struct obj *, int, boolean));
 E int FDECL(wand_skill_hit_bonus, (int));
 E void FDECL(skill_init, (const struct def_skill*, const struct def_skill *));
 E int FDECL(martial_arts_multishot_percentage_chance, (int));
+E int FDECL(get_skill_critical_strike_chance, (enum p_skills));
+
 
 /* ### were.c ### */
 

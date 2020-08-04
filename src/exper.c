@@ -20,7 +20,7 @@ int lev;
 	long total_level_exp = 0L;
 	double multiplier = 1.0;
     double monsters_to_be_killed = 10.0;
-    double base = 1.0868;
+    double base = 1.0525;
 
 	for(int i = 1; i <= lev; i++)
 	{

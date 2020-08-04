@@ -868,7 +868,7 @@ gcrownu()
 	boolean usegnollchaoticgift = (Race_if(PM_GNOLL) && !exist_artifact(FLAIL, artiname(ART_HOWLING_FLAIL)));
 	int chaotic_crowning_gift_oartifact = usegnollchaoticgift ? ART_HOWLING_FLAIL : ART_STORMBRINGER;
 	int chaotic_crowning_gift_baseitem = usegnollchaoticgift ? RUNED_FLAIL : RUNESWORD;
-	int chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
+    enum p_skills chaotic_crowning_gift_skill = usegnollchaoticgift ? P_FLAIL : P_SWORD;
 
 	switch (u.ualign.type) {
 	case A_LAWFUL:
@@ -2607,7 +2607,7 @@ dosacrifice()
                     u.uprayer_timeout = Role_if(PM_PRIEST) ? rnz(150 + (25 * nartifacts)) : rnz(300 + (50 * nartifacts));
                     exercise(A_WIS, TRUE);
                     /* make sure we can use this weapon */
-                    int wep_skill_idx = weapon_skill_type(otmp);
+                    enum p_skills wep_skill_idx = weapon_skill_type(otmp);
                     add_weapon_skill_maximum_by_one(wep_skill_idx);
                     if (!Hallucination && !Blind) 
                     {

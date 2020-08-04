@@ -245,7 +245,7 @@ struct obj {
 #define ammo_and_launcher(a, l) (is_ammo(a) && matching_launcher(a, l))
 #define is_missile(otmp)                                          \
     (((otmp)->oclass == WEAPON_CLASS || (otmp)->oclass == TOOL_CLASS) \
-     && objects[(otmp)->otyp].oc_skill == -P_THROWN_WEAPON)
+     && (objects[(otmp)->otyp].oc_flags & O1_THROWN_WEAPON_ONLY))
 #define is_weptool(o) \
     ((o)->oclass == TOOL_CLASS && objects[(o)->otyp].oc_skill != P_NONE)
         /* towel is not a weptool:  enchantment isn't an enchantment, cursed towel

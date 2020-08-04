@@ -2140,7 +2140,7 @@ update_can_advance_any_skill()
  */
 void
 unrestrict_weapon_skill(skill)
-int skill;
+enum p_skills skill;
 {
     if (skill < P_NUM_SKILLS && P_RESTRICTED(skill)) {
         P_SKILL_LEVEL(skill) = P_UNSKILLED;
@@ -2151,16 +2151,16 @@ int skill;
 
 void
 add_weapon_skill_maximum_by_one(skill)
-int skill;
+enum p_skills skill;
 {
-    if (skill < P_NUM_SKILLS && P_MAX_SKILL_LEVEL(skill) < P_EXPERT)
+    if (skill < P_NUM_SKILLS && P_MAX_SKILL_LEVEL(skill) < P_GRAND_MASTER)
     {
         if (P_SKILL_LEVEL(skill) < P_UNSKILLED)
         {
             P_SKILL_LEVEL(skill) = P_UNSKILLED;
             P_ADVANCE(skill) = 0;
         }
-        P_MAX_SKILL_LEVEL(skill) = min(P_EXPERT, max(P_MAX_SKILL_LEVEL(skill) + 1, P_BASIC));
+        P_MAX_SKILL_LEVEL(skill) = min(P_GRAND_MASTER, max(P_MAX_SKILL_LEVEL(skill) + 1, P_BASIC));
     }
 }
 
@@ -2230,12 +2230,12 @@ int n; /* number of slots to lose; normally one */
 	update_can_advance_any_skill();
 }
 
-int
+enum p_skills
 weapon_skill_type(obj)
 struct obj *obj;
 {
     /* KMH -- now uses the object table */
-    int type;
+    enum p_skills type;
 
     if (!obj || (is_gloves(obj) && (obj->owornmask & W_ARMG)))
         return (P_SKILL_LEVEL(P_MARTIAL_ARTS) <= P_UNSKILLED || P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT  ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS); /* Not using a weapon */
@@ -2250,7 +2250,7 @@ struct obj *obj;
     return (type < 0) ? -type : type;
 }
 
-int
+enum p_skills
 uwep_skill_type()
 {
     //if (u.twoweap)
@@ -2312,16 +2312,22 @@ boolean nextlevel;
             impossible(bad_skill, P_SKILL_LEVEL(type)); /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += -3;
+            bonus += -4;
             break;
         case P_BASIC:
             bonus += 0;
             break;
         case P_SKILLED:
-            bonus += 2;
+            bonus += 4;
             break;
         case P_EXPERT:
-            bonus += 4;
+            bonus += 8;
+            break;
+        case P_MASTER:
+            bonus += 12;
+            break;
+        case P_GRAND_MASTER:
+            bonus += 16;
             break;
         }
     } 
@@ -2351,6 +2357,12 @@ boolean nextlevel;
         case P_EXPERT:
             bonus -= 3;
             break;
+        case P_MASTER:
+            bonus -= 1;
+            break;
+        case P_GRAND_MASTER:
+            bonus += 1;
+            break;
         }
     }
 
@@ -2379,8 +2391,9 @@ boolean nextlevel;
             bonus -= 1;
             break;
         case P_SKILLED:
-            break;
         case P_EXPERT:
+        case P_MASTER:
+        case P_GRAND_MASTER:
             break;
         }
         if (u.twoweap)
@@ -2443,7 +2456,7 @@ boolean nextlevel;
         /* fall through */
         case P_ISRESTRICTED:
         case P_UNSKILLED:
-            bonus += -2;
+            bonus += -3;
             break;
         case P_BASIC:
             bonus += 0;
@@ -2453,6 +2466,12 @@ boolean nextlevel;
             break;
         case P_EXPERT:
             bonus += 6;
+            break;
+        case P_MASTER:
+            bonus += 9;
+            break;
+        case P_GRAND_MASTER:
+            bonus += 12;
             break;
         }
     } 
@@ -2478,6 +2497,12 @@ boolean nextlevel;
             break;
         case P_EXPERT:
             bonus += 1;
+            break;
+        case P_MASTER:
+            bonus += 2;
+            break;
+        case P_GRAND_MASTER:
+            bonus += 3;
             break;
         }
     } 
@@ -2508,6 +2533,12 @@ boolean nextlevel;
         case P_EXPERT:
             bonus += 2;
             break;
+        case P_MASTER:
+            bonus += 3;
+            break;
+        case P_GRAND_MASTER:
+            bonus += 4;
+            break;
         }
     }
 
@@ -2536,7 +2567,13 @@ int skill_level;
 	case P_EXPERT:
 		hit_bon = 9;
 		break;
-	}
+    case P_MASTER:
+        hit_bon = 12;
+        break;
+    case P_GRAND_MASTER:
+        hit_bon = 15;
+        break;
+    }
 
 	return hit_bon;
 }
@@ -2676,6 +2713,44 @@ register struct obj *obj;
         MON_NOWEP(mon);
     obj->owornmask &= ~W_WEP;
 
+}
+
+int
+get_skill_critical_strike_chance(skill_type)
+enum p_skills skill_type;
+{
+    /* Note that P_NONE returns also 0 */
+    if (skill_type <= P_NONE || skill_type >= P_NUM_SKILLS)
+        return 0;
+
+    enum skill_levels skill_level = P_SKILL_LEVEL(skill_type);
+    int res = 0;
+
+    switch (skill_level)
+    {
+    case P_ISRESTRICTED:
+    case P_UNSKILLED:
+        break;
+    case P_BASIC:
+        res = 5;
+        break;
+    case P_SKILLED:
+        res = 10;
+        break;
+    case P_EXPERT:
+        res = 20;
+        break;
+    case P_MASTER:
+        res = 40;
+        break;
+    case P_GRAND_MASTER:
+        res = 80;
+        break;
+    default:
+        break;
+    }
+
+    return res;
 }
 
 /*weapon.c*/

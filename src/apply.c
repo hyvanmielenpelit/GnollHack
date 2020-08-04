@@ -3975,7 +3975,13 @@ int* max_range;
 			case P_EXPERT:
 				*max_range = SPEAR_EXPERT_MAX_DISTANCE;
 				break;
-			default:
+            case P_MASTER:
+                *max_range = SPEAR_MASTER_MAX_DISTANCE;
+                break;
+            case P_GRAND_MASTER:
+                *max_range = SPEAR_GRAND_MASTER_MAX_DISTANCE;
+                break;
+            default:
 				*max_range = SPEAR_UNSKILLED_MAX_DISTANCE;
 				break;
 			}
@@ -4001,7 +4007,13 @@ int* max_range;
 			case P_EXPERT:
 				*max_range = LANCE_EXPERT_MAX_DISTANCE;
 				break;
-			default:
+            case P_MASTER:
+                *max_range = LANCE_MASTER_MAX_DISTANCE;
+                break;
+            case P_GRAND_MASTER :
+                *max_range = LANCE_GRAND_MASTER_MAX_DISTANCE;
+                break;
+            default:
 				*max_range = LANCE_UNSKILLED_MAX_DISTANCE;
 				break;
 			}
@@ -4205,7 +4217,8 @@ STATIC_OVL int
 use_grapple(obj)
 struct obj *obj;
 {
-    int res = 0, typ, max_range = 4, tohit;
+    int res = 0, max_range = 4, tohit;
+    enum p_skills typ;
     boolean save_confirm;
     coord cc;
     struct monst *mtmp;

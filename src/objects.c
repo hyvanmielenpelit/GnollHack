@@ -2177,7 +2177,7 @@ WEPTOOL("golf club", "club-headed metal rod", None,
 WEPTOOL("grappling hook", "iron hook", None,
 	0, 0, 0,  4, 30,  50,
 	AD_PHYS, 1, 2, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0, WHACK, 0, TOOLTYPE_HOOK, P_THROWN_WEAPON, 0, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERAL,
-	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
+	O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 #if 0
 WEPTOOL("unicorn horn", None, None,
 	1, 1, 1,  0, 20, 100, 

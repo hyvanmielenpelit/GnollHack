@@ -1098,6 +1098,8 @@ int level;
 		multiplier = 70;
 		break;
 	case P_EXPERT:
+	case P_MASTER: /* Not possible */
+	case P_GRAND_MASTER: /* Not possible */
 		multiplier = 50;
 		break;
 	default:
@@ -3946,7 +3948,7 @@ char *outbuf;
          */
         percent = (turnsleft - 1L) / ((long) KEEN / 100L) + 1L;
         accuracy =
-            (skill == P_EXPERT) ? 2L : (skill == P_SKILLED)
+            (skill >= P_EXPERT) ? 2L : (skill == P_SKILLED)
                                            ? 5L
                                            : (skill == P_BASIC) ? 10L : 25L;
         /* round up to the high end of this range */

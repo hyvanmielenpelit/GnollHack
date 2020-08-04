@@ -6149,6 +6149,12 @@ int otyp;
     case P_EXPERT:
         hit_bon = 9;
         break;
+    case P_MASTER:
+        hit_bon = 12;
+        break;
+    case P_GRAND_MASTER:
+        hit_bon = 15;
+        break;
     }
 
     if (dex < 4)

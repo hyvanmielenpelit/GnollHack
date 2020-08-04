@@ -3238,7 +3238,8 @@ int mode;
 int final;
 {
     boolean magic = (mode & MAGICENLIGHTENMENT) ? TRUE : FALSE;
-    int cap, wtype;
+    int cap;
+    enum p_skills wtype;
     char buf[BUFSZ], youtoo[BUFSZ];
     boolean Riding = (u.usteed
                       /* if hero dies while dismounting, u.usteed will still

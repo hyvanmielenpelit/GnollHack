@@ -938,6 +938,7 @@ boolean* obj_destroyed;
 	boolean hide_damage_amount = FALSE;
 	boolean isdisintegrated = FALSE;
 	int damage_increase_adtyp = AD_MAGM; /* base assumption if nothing else is set */
+	boolean incorrect_weapon_use = FALSE;
 
 	int critstrikeroll = rn2(100);
 	boolean is_golf_swing_with_stone = (thrown == HMON_GOLF && obj && uwep && (obj->oclass == GEM_CLASS || objects[obj->otyp].oc_skill == -P_SLING) && uwep->otyp == GOLF_CLUB);
@@ -946,7 +947,7 @@ boolean* obj_destroyed;
 
 	int jousting = 0;
 	long silverhit = 0L;
-	int wtype;
+	enum p_skills wtype;
 	struct obj* monwep;
 	char unconventional[BUFSZ]; /* substituted for word "attack" in msg */
 	char saved_oname[BUFSZ];
@@ -1081,6 +1082,7 @@ boolean* obj_destroyed;
 			Strcpy(saved_oname, cxname(obj));
 		else
 			Strcpy(saved_oname, bare_artifactname(obj));
+
 		if (is_weapon(obj) || obj->oclass == GEM_CLASS) 
 		{
 			/* is it not a melee weapon? */
@@ -1094,6 +1096,8 @@ boolean* obj_destroyed;
 				|| (is_ammo(obj) && !is_golf_swing_with_stone && (thrown != HMON_THROWN
 					|| !ammo_and_launcher(obj, uwep)))) 
 			{
+				incorrect_weapon_use = TRUE;
+
 				/* then do only 1-2 points of damage */
 				damage_increase_adtyp = objects[obj->otyp].oc_damagetype;
 				if (is_shade(mdat) && !shade_glare(obj))
@@ -1640,17 +1644,18 @@ boolean* obj_destroyed;
 	}
 
 	//Bonus from weapon skills
-	if (valid_weapon_attack) 
+	struct obj* wep;
+	wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
+	wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
+		(!obj || !wep) ? (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_GRAND_MASTER ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
+		weapon_skill_type(wep); //: uwep_skill_type();
+
+	if (valid_weapon_attack)
 	{
-		struct obj* wep;
 
 		/* to be valid a projectile must have had the correct projector */
-		wep = (is_golf_swing_with_stone || PROJECTILE(obj)) ? uwep : obj;
 		damage += adjust_damage(weapon_skill_dmg_bonus(wep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE), &youmonst, mon, wep ? objects[wep->otyp].oc_damagetype : AD_PHYS, ADFLAGS_NONE);
 		/* [this assumes that `!thrown' implies wielded...] */
-		wtype = is_golf_swing_with_stone ? P_THROWN_WEAPON :
-			(!obj || !wep) ? (P_SKILL_LEVEL(P_BARE_HANDED_COMBAT) < P_EXPERT ? P_BARE_HANDED_COMBAT : P_MARTIAL_ARTS) :
-			weapon_skill_type(wep); //: uwep_skill_type();
 		use_skill(wtype, 1);
 
 		if(u.twoweap && obj && uarms && obj == uarms) /* Two weapon combat skill is increased when you successfully hit with a weapon in your left hand */
@@ -1857,6 +1862,17 @@ boolean* obj_destroyed;
 		hide_damage_amount = TRUE;
 	}
 #endif
+
+	/* Skill-based critical strike */
+	if (damage > 0 && !incorrect_weapon_use)
+	{
+		int skill_crit_chance = get_skill_critical_strike_chance(wtype);
+		if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
+		{
+			damage *= 2;
+		}
+	}
+
 
 	int mon_hp_before = mon->mhp;
 
@@ -2609,15 +2625,19 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 
 	int extratmp = 0;
 	double damage = 0;
+	enum p_skills wtype = P_BARE_HANDED_COMBAT;
+	boolean incorrect_weapon_use = FALSE;
 	
 	/*  First determine the base damage done */
 	struct obj* mweapon = omonwep;
 	if (mweapon && mattk->aatyp == AT_WEAP)
 	{
+		wtype = weapon_skill_type(mweapon);
+
 		int basedmg = 0;
 		//Use weapon damage
-		if (is_launcher(mweapon))
-			basedmg = d(1, 2);
+		if (is_launcher(mweapon) || is_ammo(mweapon) || is_missile(mweapon))
+			basedmg = d(1, 2), incorrect_weapon_use = TRUE;
 		else
 			basedmg = weapon_dmg_value(mweapon, mdef, &youmonst, 0);
 
@@ -3084,6 +3104,17 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 		damage = 0;
         break;
     }
+
+	/* Skill-based critical strike */
+	if (damage > 0 && !incorrect_weapon_use)
+	{
+		int skill_crit_chance = get_skill_critical_strike_chance(wtype);
+		if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
+		{
+			damage *= 2;
+		}
+	}
+
 
     mdef->mstrategy &= ~STRAT_WAITFORU; /* in case player is very fast */
 	int hp_before = mdef->mhp;
