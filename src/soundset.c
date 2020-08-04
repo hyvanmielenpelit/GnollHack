@@ -4205,9 +4205,17 @@ struct d_level* dlvl;
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (Is_orcus_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_VALLEY;
-    if (Is_minetown_level(dlvl))
+    else if (Is_minetown_level(dlvl))
         return GHSOUND_GNOMISH_MINES_MUSIC_TOWN;
-    if (Is_astralevel(dlvl))
+    else if (Is_earthlevel(dlvl))
+        return GHSOUND_ENDGAME_MUSIC_EARTH;
+    else if (Is_airlevel(dlvl))
+        return GHSOUND_ENDGAME_MUSIC_AIR;
+    else if (Is_waterlevel(dlvl))
+        return GHSOUND_ENDGAME_MUSIC_WATER;
+    else if (Is_firelevel(dlvl))
+        return GHSOUND_ENDGAME_MUSIC_FIRE;
+    else if (Is_astralevel(dlvl))
         return GHSOUND_ENDGAME_MUSIC_ASTRAL;
     else
         return get_dungeon_music(dnum);
