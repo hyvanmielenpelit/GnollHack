@@ -690,15 +690,17 @@ static const char empty_string[] = "";
 #include "layer.h"
 #include "soundset.h"
 
-#define nul_layerinfo \
-    { base_cmap_to_glyph(S_unexplored),\
+#define empty_layerinfo(empty_symbol) \
+    { base_cmap_to_glyph(empty_symbol),\
         NO_GLYPH,\
-        { base_cmap_to_glyph(S_unexplored),NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
+        { base_cmap_to_glyph(empty_symbol),NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \
         0UL, (genericptr_t)0, (struct obj*)0, 0 \
     }
+
+#define nul_layerinfo empty_layerinfo(S_unexplored)
 
 /* convert 1..10 to 0..9; add 10 for second group (spell casting) */
 #define ad_to_typ(k) (10 + (int) k - 1)

@@ -1427,10 +1427,12 @@ movebubbles()
     struct bubble *b;
     int x, y, i, j;
     struct trap *btrap;
-    static const struct rm water_pos = { base_cmap_to_glyph(S_water), WATER, 0, 0,
-                                         0, 0, 0, 0, 0, 0 };
-    static const struct rm air_pos = { base_cmap_to_glyph(S_cloud), AIR, 0, 0, 0,
-                                       1, 0, 0, 0, 0 };
+    static struct rm zerorm = { nul_layerinfo,
+        0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const struct rm water_pos = { empty_layerinfo(S_water),
+        WATER, 0, 0, 0, 0, 0, 0, 0, 0 };
+    static const struct rm air_pos = { empty_layerinfo(S_cloud), 
+        AIR, 0, 0, 0, 1, 0, 0, 0, 0 };
 
     /* set up the portal the first time bubbles are moved */
     if (!wportal)
