@@ -508,7 +508,7 @@ register struct obj *gold;
 {
     boolean msg_given = FALSE;
 
-    if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest
+    if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith
         && !mtmp->isgd && !is_mercenary(mtmp->data)) {
         wakeup(mtmp, TRUE);
     } else if (!mon_can_move(mtmp))
@@ -555,6 +555,12 @@ register struct obj *gold;
         } else if (mtmp->ispriest) {
             if (is_peaceful(mtmp))
                 verbalize("Thank you for your contribution.");
+            else
+                verbalize("Thanks, scum!");
+        }
+        else if (mtmp->issmith) {
+            if (is_peaceful(mtmp))
+                verbalize("Thank you for your assistance.");
             else
                 verbalize("Thanks, scum!");
         } else if (mtmp->isgd) {
@@ -1000,6 +1006,8 @@ const char *kickobjnam;
         what = "a sink";
     else if (IS_ALTAR(maploc->typ))
         what = "an altar";
+    else if (IS_ANVIL(maploc->typ))
+        what = "an anvil";
     else if (IS_DRAWBRIDGE(maploc->typ))
         what = "a drawbridge";
     else if (maploc->typ == STAIRS)
@@ -1430,6 +1438,13 @@ dokick() {
             exercise(A_DEX, TRUE);
             update_u_action(ACTION_TILE_NO_ACTION);
             return 1;
+        }
+        if (IS_ANVIL(maploc->typ)) {
+            if (Levitation)
+                goto dumb;
+            play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
+            You("kick %s.", (Blind ? something : "the anvil"));
+            goto ouch;
         }
         if (IS_FOUNTAIN(maploc->typ)) {
             if (Levitation)

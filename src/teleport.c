@@ -1262,6 +1262,10 @@ struct monst *mtmp;
             if (levl[x][y].roomno != EPRI(mtmp)->shroom)
                 return FALSE;
         }
+        else if (mtmp->issmith && inhissmithy(mtmp)) {
+            if (levl[x][y].roomno != ESMI(mtmp)->smithy_room)
+                return FALSE;
+        }
         /* current location is <xx,yy> */
         if (!tele_jump_ok(xx, yy, x, y))
             return FALSE;

@@ -5444,7 +5444,15 @@ struct obj* obj;
 			altar_wrath(x, y);
 			return 1;
 		}
-		if (IS_FOUNTAIN(maploc->typ)) 
+        if (IS_ANVIL(maploc->typ))
+        {
+            if (Levitation)
+                goto dumb;
+            You("swing your %s at %s.", cxname(obj), (Blind ? something : "the altar"));
+            pline("THUD!");
+            return 1;
+        }
+        if (IS_FOUNTAIN(maploc->typ))
 		{
 			if (Levitation)
 				goto dumb;

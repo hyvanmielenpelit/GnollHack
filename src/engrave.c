@@ -205,6 +205,8 @@ register int x, y;
         return "bridge";
     else if (IS_ALTAR(levl[x][y].typ))
         return "altar";
+    else if (IS_ANVIL(levl[x][y].typ))
+        return "anvil";
     else if (IS_GRAVE(levl[x][y].typ))
         return "headstone";
 	else if (IS_FOUNTAIN(levl[x][y].typ))
@@ -233,6 +235,8 @@ register int x, y;
         what = "vault's ceiling";
     else if (*in_rooms(x, y, TEMPLE))
         what = "temple's ceiling";
+    else if (*in_rooms(x, y, SMITHY))
+        what = "smithy's ceiling";
     else if (*in_rooms(x, y, SHOPBASE))
         what = "shop's ceiling";
     else if (Is_waterlevel(&u.uz))
@@ -579,6 +583,10 @@ doengrave()
     if (IS_ALTAR(levl[u.ux][u.uy].typ)) {
         You("make a motion towards the altar with %s.", writer);
         altar_wrath(u.ux, u.uy);
+        return 0;
+    }
+    if (IS_ANVIL(levl[u.ux][u.uy].typ)) {
+        You("cannot scratch the anvil with %s.", writer);
         return 0;
     }
     if (IS_GRAVE(levl[u.ux][u.uy].typ)) {

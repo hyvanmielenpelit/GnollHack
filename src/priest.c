@@ -12,6 +12,9 @@
 STATIC_DCL boolean FDECL(histemple_at, (struct monst *, XCHAR_P, XCHAR_P));
 STATIC_DCL boolean FDECL(has_shrine, (struct monst *));
 
+STATIC_DCL boolean FDECL(hissmithy_at, (struct monst*, XCHAR_P, XCHAR_P));
+STATIC_DCL boolean FDECL(has_smithy, (struct monst*));
+
 void
 newepri(mtmp)
 struct monst *mtmp;
@@ -28,11 +31,36 @@ void
 free_epri(mtmp)
 struct monst *mtmp;
 {
-    if (mtmp->mextra && EPRI(mtmp)) {
+    if (mtmp->mextra && EPRI(mtmp)) 
+    {
         free((genericptr_t) EPRI(mtmp));
         EPRI(mtmp) = (struct epri *) 0;
     }
     mtmp->ispriest = 0;
+}
+
+void
+newesmi(mtmp)
+struct monst* mtmp;
+{
+    if (!mtmp->mextra)
+        mtmp->mextra = newmextra();
+    if (!ESMI(mtmp)) {
+        ESMI(mtmp) = (struct esmi*)alloc(sizeof(struct esmi));
+        (void)memset((genericptr_t)ESMI(mtmp), 0, sizeof(struct esmi));
+    }
+}
+
+void
+free_esmi(mtmp)
+struct monst* mtmp;
+{
+    if (mtmp->mextra && ESMI(mtmp)) 
+    {
+        free((genericptr_t)ESMI(mtmp));
+        ESMI(mtmp) = (struct esmi*)0;
+    }
+    mtmp->issmith = 0;
 }
 
 /*
@@ -154,6 +182,18 @@ register char *array;
     return '\0';
 }
 
+char
+smithy_occupied(array)
+register char* array;
+{
+    register char* ptr;
+
+    for (ptr = array; *ptr; ptr++)
+        if (rooms[*ptr - ROOMOFFSET].rtype == SMITHY)
+            return *ptr;
+    return '\0';
+}
+
 STATIC_OVL boolean
 histemple_at(priest, x, y)
 register struct monst *priest;
@@ -177,6 +217,32 @@ struct monst *priest;
     /* temple room must still contain properly aligned altar */
     return has_shrine(priest);
 }
+
+
+STATIC_OVL boolean
+hissmithy_at(smith, x, y)
+register struct monst* smith;
+register xchar x, y;
+{
+    return (boolean)(smith && smith->issmith
+        && (ESMI(smith)->smithy_room == *in_rooms(x, y, SMITHY))
+        && on_level(&(ESMI(smith)->smithy_level), &u.uz));
+}
+
+boolean
+inhissmithy(smith)
+struct monst* smith;
+{
+    /* make sure we have a priest */
+    if (!smith || !smith->issmith)
+        return FALSE;
+    /* priest must be on right level and in right room */
+    if (!hissmithy_at(smith, smith->mx, smith->my))
+        return FALSE;
+    /* temple room must still contain properly aligned altar */
+    return has_smithy(smith);
+}
+
 
 /*
  * pri_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
@@ -239,8 +305,8 @@ boolean sanctum; /* is it the seat of the high priest? */
     if (MON_AT(sx + 1, sy))
         (void) rloc(m_at(sx + 1, sy), FALSE); /* insurance */
 
-    priest = makemon(&mons[sanctum ? PM_HIGH_PRIEST : PM_ALIGNED_PRIEST],
-                     sx + 1, sy, MM_EPRI);
+    priest = makemon(&mons[sanctum ? PM_HIGH_PRIEST : PM_ALIGNED_PRIEST], sx + 1, sy, MM_EPRI);
+
     if (priest) {
         EPRI(priest)->shroom = (schar) ((sroom - rooms) + ROOMOFFSET);
         EPRI(priest)->shralign = Amask2align(levl[sx][sy].altarmask);
@@ -270,6 +336,89 @@ boolean sanctum; /* is it the seat of the high priest? */
             else
                 curse(otmp);
         }
+    }
+}
+
+/*
+ * smith_move: return 1: moved  0: didn't  -1: let m_move do it  -2: died
+ */
+int
+smith_move(smith)
+register struct monst* smith;
+{
+    register xchar gx, gy, omx, omy;
+    schar smithy;
+    boolean avoid = TRUE;
+
+    omx = smith->mx;
+    omy = smith->my;
+
+    if (!hissmithy_at(smith, omx, omy))
+        return -1;
+
+    smithy = ESMI(smith)->smithy_room;
+
+    gx = ESMI(smith)->anvil_pos.x;
+    gy = ESMI(smith)->anvil_pos.y;
+
+    gx += rn1(3, -1); /* mill around the anvil */
+    gy += rn1(3, -1);
+
+    if (!is_peaceful(smith) || is_crazed(smith)
+        || (Conflict && !check_ability_resistance_success(smith, A_WIS, 0))) 
+    {
+        if (monnear(smith, u.ux, u.uy)) 
+        {
+            if (Displaced)
+                Your("displaced image doesn't fool %s!", mon_nam(smith));
+            (void)mattacku(smith);
+            return 0;
+        }
+        else if (index(u.urooms, smithy))
+        {
+            /* chase player if inside temple & can see him */
+            if (!is_blinded(smith) && m_canseeu(smith)) 
+            {
+                gx = u.ux;
+                gy = u.uy;
+            }
+            avoid = FALSE;
+        }
+    }
+    else if (Invis)
+        avoid = FALSE;
+
+    return move_special(smith, FALSE, TRUE, FALSE, avoid, omx, omy, gx, gy);
+}
+
+/* exclusively for mksmithy() */
+void
+smithini(lvl, sroom, sx, sy, smithtype)
+d_level* lvl;
+struct mkroom* sroom;
+int sx, sy;
+int smithtype;
+{
+    struct monst* smith;
+
+    if (MON_AT(sx + 1, sy))
+        (void)rloc(m_at(sx + 1, sy), FALSE); /* insurance */
+
+    smith = makemon(&mons[PM_SMITH], sx + 1, sy, MM_ESMI);
+
+    if (smith) 
+    {
+        ESMI(smith)->smithy_room = (schar)((sroom - rooms) + ROOMOFFSET);
+        ESMI(smith)->smith_typ=  smithtype;
+        ESMI(smith)->anvil_pos.x = sx;
+        ESMI(smith)->anvil_pos.y = sy;
+        assign_level(&(ESMI(smith)->smithy_level), lvl);
+        smith->mtrapseen = ~0; /* traps are known */
+        smith->mpeaceful = 1;
+        smith->issmith = 1;
+        smith->isminion = 0;
+        smith->msleeping = 0;
+        set_malign(smith); /* mpeaceful may have changed */
     }
 }
 
@@ -385,6 +534,41 @@ char roomno;
             return mtmp;
     }
     return (struct monst *) 0;
+}
+
+STATIC_OVL boolean
+has_smithy(smith)
+struct monst* smith;
+{
+    struct rm* lev;
+    struct esmi* esmi_p;
+
+    if (!smith || !smith->issmith)
+        return FALSE;
+
+    esmi_p = ESMI(smith);
+    lev = &levl[esmi_p->anvil_pos.x][esmi_p->anvil_pos.y];
+
+    if (!IS_ANVIL(lev->typ))
+        return FALSE;
+
+    return TRUE;
+}
+
+struct monst*
+findsmith(roomno)
+char roomno;
+{
+    register struct monst* mtmp;
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        if (DEADMONSTER(mtmp))
+            continue;
+        if (mtmp->issmith && (ESMI(mtmp)->smithy_room == roomno)
+            && hissmithy_at(mtmp, mtmp->mx, mtmp->my))
+            return mtmp;
+    }
+    return (struct monst*)0;
 }
 
 /* called from check_special_room() when the player enters the temple room */
@@ -534,6 +718,89 @@ struct monst *priest;
     epri_p->intone_time = epri_p->enter_time = epri_p->peaceful_time =
         epri_p->hostile_time = 0L;
 }
+
+void
+forget_smithy_entry(smith)
+struct monst* smith;
+{
+    struct esmi* esmi_p = smith->issmith ? ESMI(smith) : 0;
+
+    if (!esmi_p) {
+        impossible("attempting to manipulate smithy data for non-smith?");
+        return;
+    }
+    esmi_p->intone_time = esmi_p->enter_time = esmi_p->peaceful_time =
+        esmi_p->hostile_time = 0L;
+}
+
+/* called from check_special_room() when the player enters the smithy */
+void
+insmithy(roomno)
+int roomno;
+{
+    struct monst* smith;
+    struct esmi* esmi_p;
+    boolean smithied, can_speak;
+    const char* msg1, * msg2;
+    char buf[BUFSZ];
+
+    /* don't do anything if hero is already in the room */
+    if (smithy_occupied(u.urooms0))
+        return;
+
+    if ((smith = findsmith((char)roomno)) != 0) 
+    {
+        /* tended */
+
+        esmi_p = ESMI(smith);
+        smithied = has_smithy(smith);
+        can_speak = (mon_can_move(smith));
+        if (can_speak && !Deaf && moves >= esmi_p->intone_time)
+        {
+            pline("%s says:",
+                canseemon(smith) ? Monnam(smith) : "A nearby voice");
+            esmi_p->intone_time = moves + (long)d(10, 500); /* ~2505 */
+            esmi_p->enter_time = 0L;
+        }
+        msg1 = msg2 = 0;
+
+        if (moves >= esmi_p->enter_time) 
+        {
+            Sprintf(buf, "Adventurer, %s!",
+                !smithied ? "welcome" : "welcome to the smithy");
+
+            msg1 = buf;
+        }
+
+        if (msg1 && can_speak && !Deaf) 
+        {
+            verbalize1(msg1);
+            if (msg2)
+                verbalize1(msg2);
+            esmi_p->enter_time = moves + (long)d(10, 100); /* ~505 */
+        }
+    }
+    else 
+    {
+        /* untended */
+        switch (rn2(4))
+        {
+        case 0:
+            You("have an oddly wishful feeling...");
+            break;
+        case 1:
+            You_feel("something is out of place.");
+            break;
+        case 2:
+            You_feel("strangely worried.");
+            break;
+        default:
+            break; 
+        }
+    }
+}
+
+
 
 void
 priest_talk(priest)
@@ -884,6 +1151,31 @@ boolean ghostly;
     if (u.uz.dlevel) {
         if (ghostly)
             assign_level(&(EPRI(mtmp)->shrlevel), &u.uz);
+    }
+}
+
+void
+clearsmiths()
+{
+    struct monst* mtmp;
+
+    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        if (DEADMONSTER(mtmp))
+            continue;
+        if (mtmp->issmith && !on_level(&(ESMI(mtmp)->smithy_level), &u.uz))
+            mongone(mtmp);
+    }
+}
+
+/* munge smith-specific structure when restoring -dlc */
+void
+restsmith(mtmp, ghostly)
+register struct monst* mtmp;
+boolean ghostly;
+{
+    if (u.uz.dlevel) {
+        if (ghostly)
+            assign_level(&(ESMI(mtmp)->smithy_level), &u.uz);
     }
 }
 

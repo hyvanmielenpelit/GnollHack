@@ -2349,6 +2349,18 @@ E void FDECL(mstatusline, (struct monst *));
 E void FDECL(print_mstatusline, (char*, struct monst*, int, boolean));
 E void NDECL(ustatusline);
 
+E char FDECL(smithy_occupied, (char*));
+E struct monst* FDECL(findsmith, (CHAR_P));
+E boolean FDECL(inhissmithy, (struct monst*));
+E void FDECL(insmithy, (int));
+E void FDECL(smithini, (d_level*, struct mkroom*, int, int, int));
+E void FDECL(forget_smithy_entry, (struct monst*));
+E void FDECL(newesmi, (struct monst*));
+E void FDECL(free_esmi, (struct monst*));
+E void NDECL(clearsmiths);
+E void FDECL(restsmith, (struct monst*, BOOLEAN_P));
+E int FDECL(smith_move, (struct monst*));
+
 /* ### quest.c ### */
 
 E void NDECL(onquest);

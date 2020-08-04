@@ -694,6 +694,7 @@ clear_level_structures()
 	level.flags.has_garden = 0;
 	level.flags.has_barracks = 0;
     level.flags.has_temple = 0;
+    level.flags.has_smithy = 0;
     level.flags.has_swamp = 0;
     level.flags.noteleport = 0;
     level.flags.hardfloor = 0;
@@ -889,7 +890,9 @@ makelevel()
             && nroom >= room_threshold && shopok)  // rn2(u_depth) < 3))
             res = mkroom(SHOPBASE);
 
-		if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
+        if (!res && u_depth > 3 && !rn2(7))
+            res = mkroom(SMITHY);
+        if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
 			&& !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))
 			res = mkroom(LEPREHALL);
 		if (!res && u_depth > 5 && u_depth < 16 && !rn2(6))
@@ -898,9 +901,9 @@ makelevel()
 			res = mkroom(COURT);
 		if (!res && u_depth > 7 && !rn2(7))
 			res = mkroom(LIBRARY);
-		if (!res && u_depth > 8 && !rn2(6))
+        if (!res && u_depth > 8 && !rn2(6))
 			res = mkroom(TEMPLE);
-		if (!res && u_depth > 9 && u_depth < 20 && !rn2(6)
+        if (!res && u_depth > 9 && u_depth < 20 && !rn2(6)
 			&& !(mvitals[PM_KILLER_BEE].mvflags & G_GONE))
 			res = mkroom(BEEHIVE);
 		if (!res && u_depth > 10 && u_depth < 21 && !rn2(8) && antholemon())

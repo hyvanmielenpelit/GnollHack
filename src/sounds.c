@@ -49,6 +49,13 @@ STATIC_DCL int FDECL(do_chat_shk_pricequote, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_chat, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_shk_reconciliation, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_reconciliation, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_enchant_armor, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_enchant_weapon, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_repair_armor, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
@@ -368,8 +375,10 @@ dosounds()
 	}
 
     if (level.flags.has_temple && !rn2(200)
-        && !(Is_astralevel(&u.uz) || Is_sanctum(&u.uz))) {
-        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+        && !(Is_astralevel(&u.uz) || Is_sanctum(&u.uz))) 
+	{
+        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
             if (DEADMONSTER(mtmp))
                 continue;
             if (mtmp->ispriest && inhistemple(mtmp)
@@ -379,7 +388,8 @@ dosounds()
                 && temple_occupied(u.urooms) != EPRI(mtmp)->shroom)
                 break;
         }
-        if (mtmp) {
+        if (mtmp) 
+		{
             /* Generic temple messages; no attempt to match topic or tone
                to the pantheon involved, let alone to the specific deity.
                These are assumed to be coming from the attending priest;
@@ -416,7 +426,35 @@ dosounds()
             return;
         }
     }
-    if (Is_oracle_level(&u.uz) && !rn2(400)) {
+
+	if (level.flags.has_smithy && !rn2(200) && !Deaf)
+	{
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
+			if (DEADMONSTER(mtmp))
+				continue;
+			if (mtmp->issmith && inhissmithy(mtmp)
+				/* priest must be active */
+				&& mon_can_move(mtmp)
+				/* hero must be outside this temple */
+				&& smithy_occupied(u.urooms) != ESMI(mtmp)->smithy_room)
+				break;
+		}
+		if (mtmp)
+		{
+			static const char* const smithy_msg[] = {
+				"iron being forged.", "loud clanging.",
+				"water being vaporized.",
+			};
+			const char* msg;
+			msg = smithy_msg[rn2(SIZE(smithy_msg))];
+			You_hear1(msg);
+			return;
+		}
+	}
+
+    if (Is_oracle_level(&u.uz) && !rn2(400))
+	{
         /* make sure the Oracle is still here */
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))
@@ -744,7 +782,14 @@ register struct monst *mtmp;
         }
 #endif
         break;
-    case MS_VAMPIRE: {
+	case MS_SMITH: /* pitch, pay, total */
+		if (is_peaceful(mtmp))
+			Sprintf(verbuf, "Welcome to my smithy, adventurer!");
+		else
+			Sprintf(verbuf, "You rotten thief!");
+		verbl_msg = verbuf;
+		break;
+	case MS_VAMPIRE: {
         /* vampire messages are varied by tameness, peacefulness, and time of
          * night */
         boolean isnight = night();
@@ -2200,6 +2245,109 @@ dochat()
 		}
 	}
 
+	/* Smith */
+	if (msound == MS_SMITH || mtmp->issmith)
+	{
+		if (!is_peaceful(mtmp))
+		{
+			strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_reconciliation;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+		if (is_peaceful(mtmp) && mtmp->mextra && ESMI(mtmp))
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask for armor enchantment");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_armor;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+			Sprintf(available_chat_list[chatnum].name, "Ask for weapon enchantment");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_weapon;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+			Sprintf(available_chat_list[chatnum].name, "Ask for armor repair");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_repair_armor;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+			Sprintf(available_chat_list[chatnum].name, "Ask for weapon repair");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_repair_weapon;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+			Sprintf(available_chat_list[chatnum].name, "Ask for armor protection");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_armor;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+			Sprintf(available_chat_list[chatnum].name, "Ask for weapon protection");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_weapon;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+		}
+
+	}
+
 	/* Watchmen */
 	if (is_watch(mtmp->data))
 	{
@@ -2360,6 +2508,16 @@ struct monst* mtmp;
 		Sprintf(ansbuf, "I am %s, your quest leader.", mon_nam(mtmp));
 		verbalize(ansbuf);
 
+	}
+	else if (mtmp->issmith)
+	{
+		if (has_mname(mtmp))
+			Sprintf(ansbuf, "I am %s, a local smith.", MNAME(mtmp));
+		else
+			Sprintf(ansbuf, "I am a local smith.");
+
+		mtmp->u_know_mname = 1;
+		verbalize(ansbuf);
 	}
 	else if (msound == MS_GUARDIAN)
 	{
@@ -4258,6 +4416,120 @@ struct monst* mtmp;
 	return 1;
 }
 
+
+STATIC_OVL int
+do_chat_smith_reconciliation(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	long umoney;
+	long u_pay;
+	long reconcile_cost = max(1, (int)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!mtmp) {
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!m_speak_check(mtmp))
+		return 0;
+
+
+	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)reconcile_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = reconcile_cost;
+		break;
+	}
+
+	money2mon(mtmp, u_pay);
+	context.botl = 1;
+
+	mtmp->mpeaceful = 1;
+	newsym(mtmp->mx, mtmp->my);
+
+	if (is_peaceful(mtmp))
+		pline("\"That's a deal. Be more careful next time.\"");
+	else
+		pline("\"On second thought, maybe you should hang for your crimes anyway.\"");
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_smith_enchant_armor(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_smith_enchant_weapon(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_smith_repair_armor(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_smith_repair_weapon(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	return 1;
+}
+
+
+STATIC_OVL int
+do_chat_smith_protect_armor(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_smith_protect_weapon(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	return 1;
+}
 
 
 STATIC_OVL int

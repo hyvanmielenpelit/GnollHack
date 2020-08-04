@@ -2627,6 +2627,8 @@ struct monst *mtmp;
 {
     if (mtmp->ispriest)
         forget_temple_entry(mtmp); /* EPRI() */
+    if (mtmp->issmith)
+        forget_smithy_entry(mtmp); /* ESMI() */
     if (!has_omonst(obj))
         newomonst(obj);
     if (has_omonst(obj)) {

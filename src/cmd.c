@@ -1738,6 +1738,8 @@ wiz_map_levltyp(VOID_ARGS)
             Strcat(dsc, " shop");
         if (level.flags.has_temple)
             Strcat(dsc, " temple");
+        if (level.flags.has_smithy)
+            Strcat(dsc, " smithy");
         if (level.flags.has_court)
             Strcat(dsc, " throne");
         if (level.flags.has_zoo)
@@ -5478,6 +5480,8 @@ boolean incl_wsegs;
             sz += sizeof (struct egd);
         if (EPRI(mtmp))
             sz += sizeof (struct epri);
+        if (ESMI(mtmp))
+            sz += sizeof(struct esmi);
         if (ESHK(mtmp))
             sz += sizeof (struct eshk);
         if (EMIN(mtmp))

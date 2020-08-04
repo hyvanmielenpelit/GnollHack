@@ -143,7 +143,12 @@ dosit()
         You(sit_message, defsyms[S_altar].explanation);
         altar_wrath(u.ux, u.uy);
     }
-	else if (IS_GRAVE(typ)) 
+    else if (IS_ANVIL(typ))
+    {
+        You(sit_message, defsyms[S_altar].explanation);
+        pline("The anvil feels cold.");
+    }
+    else if (IS_GRAVE(typ))
 	{
         You(sit_message, defsyms[S_grave].explanation);
     } 

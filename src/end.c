@@ -1323,6 +1323,7 @@ int how;
         taken = paybill((how == ESCAPED) ? -1 : (how != QUIT), silently);
         paygd(silently);
         clearpriests();
+        clearsmiths();
     } else
         taken = FALSE; /* lint; assert( !bones_ok ); */
 

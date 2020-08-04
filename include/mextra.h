@@ -98,6 +98,18 @@ struct epri {
 /* note: roaming priests (no shrine) switch from ispriest to isminion
    (and emin extension) */
 
+/* smith extension */
+struct esmi {
+    int smith_typ;      /* type of smith */
+    schar smithy_room;  /* index in rooms */
+    coord anvil_pos;   /* position of anvil */
+    d_level smithy_level;  /* level (& dungeon) of smithy */
+    long intone_time,  /* used to limit verbosity  +*/
+        enter_time,    /*+ of smithy entry messages */
+        hostile_time,  /* forbidding feeling */
+        peaceful_time; /* sense of peace */
+};
+
 /***
  **     formerly eshk.h -- shopkeeper extension
  */
@@ -178,6 +190,7 @@ struct mextra {
 	char *umname;
 	struct egd *egd;
     struct epri *epri;
+    struct esmi *esmi;
     struct eshk *eshk;
     struct emin *emin;
     struct edog *edog;
@@ -188,6 +201,7 @@ struct mextra {
 #define UMNAME(mon) ((mon)->mextra->umname)
 #define EGD(mon) ((mon)->mextra->egd)
 #define EPRI(mon) ((mon)->mextra->epri)
+#define ESMI(mon) ((mon)->mextra->esmi)
 #define ESHK(mon) ((mon)->mextra->eshk)
 #define EMIN(mon) ((mon)->mextra->emin)
 #define EDOG(mon) ((mon)->mextra->edog)
@@ -197,6 +211,7 @@ struct mextra {
 #define has_umname(mon) ((mon)->mextra && UMNAME(mon))
 #define has_egd(mon)   ((mon)->mextra && EGD(mon))
 #define has_epri(mon)  ((mon)->mextra && EPRI(mon))
+#define has_esmi(mon)  ((mon)->mextra && ESMI(mon))
 #define has_eshk(mon)  ((mon)->mextra && ESHK(mon))
 #define has_emin(mon)  ((mon)->mextra && EMIN(mon))
 #define has_edog(mon)  ((mon)->mextra && EDOG(mon))

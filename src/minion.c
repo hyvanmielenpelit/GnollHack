@@ -620,7 +620,7 @@ boolean talk;
             EMIN(mon)->renegade = FALSE;
         }
     }
-	else if (mnum != PM_SHOPKEEPER && mnum != PM_GUARD
+	else if (mnum != PM_SHOPKEEPER && mnum != PM_SMITH && mnum != PM_GUARD
                && mnum != PM_ALIGNED_PRIEST && mnum != PM_HIGH_PRIEST) 
 	{
         /* This was mons[mnum].pxlth == 0 but is this restriction

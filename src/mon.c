@@ -74,6 +74,8 @@ const char *msg;
         impossible("shk without eshk (%s)", msg);
     if (mtmp->ispriest && !has_epri(mtmp))
         impossible("priest without epri (%s)", msg);
+    if (mtmp->issmith && !has_esmi(mtmp))
+        impossible("smith without esmi (%s)", msg);
     if (mtmp->isgd && !has_egd(mtmp))
         impossible("guard without egd (%s)", msg);
     if (mtmp->isminion && !has_emin(mtmp))
@@ -2867,6 +2869,12 @@ struct monst *mtmp2, *mtmp1;
 		if(EPRI(mtmp2))
 	        *EPRI(mtmp2) = *EPRI(mtmp1);
     }
+    if (ESMI(mtmp1)) {
+        if (!ESMI(mtmp2))
+            newesmi(mtmp2);
+        if (ESMI(mtmp2))
+            *ESMI(mtmp2) = *ESMI(mtmp1);
+    }
     if (ESHK(mtmp1)) {
         if (!ESHK(mtmp2))
             neweshk(mtmp2);
@@ -2904,6 +2912,8 @@ struct monst *m;
             free((genericptr_t) x->egd);
         if (x->epri)
             free((genericptr_t) x->epri);
+        if (x->esmi)
+            free((genericptr_t)x->esmi);
         if (x->eshk)
             free((genericptr_t) x->eshk);
         if (x->emin)
@@ -4082,7 +4092,7 @@ boolean via_attack;
                 && !is_blinded(mon) && m_canseeu(mon)) {
                 boolean exclaimed = FALSE;
 
-                if (humanoid(mon->data) || mon->isshk || mon->ispriest) {
+                if (humanoid(mon->data) || mon->isshk || mon->ispriest || mon->issmith) {
                     if (is_watch(mon->data)) {
                         verbalize("Halt!  You're under arrest!");
                         (void) angry_guards(!!Deaf);
@@ -4093,7 +4103,7 @@ boolean via_attack;
                         }
                         /* shopkeepers and temple priests might gasp in
                            surprise, but they won't become angry here */
-                        if (mon->isshk || mon->ispriest)
+                        if (mon->isshk || mon->ispriest || mon->ispriest)
                             continue;
 
                         if (mon->data->mlevel < rn2(10)) {
@@ -4507,7 +4517,7 @@ STATIC_OVL boolean
 isspecmon(mon)
 struct monst *mon;
 {
-    return (mon->isshk || mon->ispriest || mon->isgd
+    return (mon->isshk || mon->ispriest || mon->issmith || mon->isgd
             || mon->m_id == quest_status.leader_m_id);
 }
 

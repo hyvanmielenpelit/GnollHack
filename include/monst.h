@@ -160,7 +160,8 @@ struct monst {
     Bitfield(isminion, 1);  /* is a minion */
     Bitfield(isgd, 1);      /* is guard */
     Bitfield(ispriest, 1);  /* is an aligned priest or high priest */
-	Bitfield(issummoned, 1);					/* is a summoned monster */
+    Bitfield(issmith, 1);   /* is a smith */
+    Bitfield(issummoned, 1);					/* is a summoned monster */
 	Bitfield(disregards_enemy_strength, 1);		/* the monster attacks too strong enemies */
 	Bitfield(disregards_own_health, 1);			/* the monster attacks even when its health is low */
 	Bitfield(hasbloodlust, 1);					/* attacks also peaceful */

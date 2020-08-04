@@ -36,6 +36,7 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"THRONE",          S_throne,   ROOM,   MAT_MINERAL, LOCATION_SOUNDSET_NONE},
     {"SINK",            S_sink,     ROOM,   MAT_METAL,   LOCATION_SOUNDSET_NONE },
     {"GRAVE",           S_grave,    GROUND, MAT_MINERAL, LOCATION_SOUNDSET_NONE},
+    {"ANVIL",           S_anvil,    ROOM,   MAT_METAL,   LOCATION_SOUNDSET_NONE},
     {"ALTAR",           S_altar,    ROOM,   MAT_MINERAL, LOCATION_SOUNDSET_ALTAR},
     {"ICE",             S_ice,      GROUND, MAT_ICE,     LOCATION_SOUNDSET_NONE},
     {"DRAWBRIDGE_DOWN", S_vodbridge,GROUND, MAT_WOOD,    LOCATION_SOUNDSET_NONE},

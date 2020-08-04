@@ -2418,7 +2418,7 @@ d_level *lev;
 
 #define INTEREST(feat)                                                \
     ((feat).nfount || (feat).nsink || (feat).nthrone || (feat).naltar \
-     || (feat).ngrave || (feat).ntree || (feat).nshop || (feat).ntemple)
+     || (feat).ngrave || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy)
   /* || (feat).water || (feat).ice || (feat).lava */
 
 /* returns true if this level has something interesting to print out */
@@ -2530,15 +2530,20 @@ recalc_mapseen()
                 : (rooms[ridx].rtype == TEMPLE)
                       ? (!(mtmp = findpriest(u.urooms[i]))
                          || !inhistemple(mtmp))
-                      : 0;
+            : (rooms[ridx].rtype == SMITHY)
+            ? (!(mtmp = findsmith(u.urooms[i]))
+                || !inhissmithy(mtmp))
+            : 0;
     }
 
     /* recalculate room knowledge: for now, just shops and temples
      * this could be extended to an array of 0..SHOPBASE
      */
-    for (i = 0; i < SIZE(mptr->msrooms); ++i) {
+    for (i = 0; i < SIZE(mptr->msrooms); ++i)
+    {
         if (mptr->msrooms[i].seen) {
-            if (rooms[i].rtype >= SHOPBASE) {
+            if (rooms[i].rtype >= SHOPBASE) 
+            {
                 if (mptr->msrooms[i].untended)
                     mptr->feat.shoptype = SHOPBASE - 1;
                 else if (!mptr->feat.nshop)
@@ -2548,12 +2553,23 @@ recalc_mapseen()
                 count = mptr->feat.nshop + 1;
                 if (count <= 3)
                     mptr->feat.nshop = count;
-            } else if (rooms[i].rtype == TEMPLE) {
+            } 
+            else if (rooms[i].rtype == TEMPLE) 
+            {
                 /* altar and temple alignment handled below */
                 count = mptr->feat.ntemple + 1;
                 if (count <= 3)
                     mptr->feat.ntemple = count;
-            } else if (rooms[i].orig_rtype == DELPHI) {
+            } 
+            else if (rooms[i].rtype == SMITHY)
+            {
+                /* altar and temple alignment handled below */
+                count = mptr->feat.nsmithy + 1;
+                if (count <= 3)
+                    mptr->feat.nsmithy = count;
+            }
+            else if (rooms[i].orig_rtype == DELPHI)
+            {
                 mptr->flags.oracle = 1;
             }
         }
@@ -3039,7 +3055,8 @@ boolean printdun;
     if (mptr->flags.forgot)
         return;
 
-    if (INTEREST(mptr->feat)) {
+    if (INTEREST(mptr->feat)) 
+    {
         buf[0] = 0;
 
         i = 0; /* interest counter */
@@ -3064,6 +3081,8 @@ boolean printdun;
             if (Amask2align(Msa2amask(mptr->feat.msalign)) == u.ualign.type)
                 Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
         }
+        ADDNTOBUF("smithy", mptr->feat.nsmithy);
+
         ADDNTOBUF("throne", mptr->feat.nthrone);
         ADDNTOBUF("fountain", mptr->feat.nfount);
         ADDNTOBUF("sink", mptr->feat.nsink);

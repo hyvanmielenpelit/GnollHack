@@ -4323,6 +4323,9 @@ struct mkroom* room;
         case TEMPLE:
             res = GHSOUND_DUNGEON_NORMAL_MUSIC_TEMPLE;
             break;
+        case SMITHY:
+            res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+            break;
         case LEPREHALL:
             break;
         case COCKNEST:
@@ -4396,6 +4399,8 @@ struct mkroom* room;
     case DELPHI:
         break;
     case TEMPLE:
+        break;
+    case SMITHY:
         break;
     case LEPREHALL:
         break;

@@ -353,18 +353,19 @@ extern short tile2enlargement[MAX_GLYPH];
 #define MM_NONAME					0x00000040UL /* monster is not christened */
 #define MM_EGD						0x00000100UL /* add egd structure */
 #define MM_EPRI						0x00000200UL /* add epri structure */
-#define MM_ESHK						0x00000400UL /* add eshk structure */
-#define MM_EMIN						0x00000800UL /* add emin structure */
-#define MM_EDOG						0x00001000UL /* add edog structure */
-#define MM_ASLEEP					0x00002000UL /* monsters should be generated asleep */
-#define MM_NOGRP					0x00004000UL /* suppress creation of monster groups */
-#define MM_MAX_HP					0x00008000UL /* maximum hit points */
-#define MM_MALE						0x00010000UL /* always male */
-#define MM_FEMALE					0x00020000UL /* always female */
-#define MM_NORMAL_HIT_DICE			0x00040000UL /* use normal hit dice */
-#define MM_EMIN_COALIGNED			0x00080000UL /* minion is of the same alignment as player */
-#define MM_NO_DIFFICULTY_HP_CHANGE  0x00100000UL /* OBSOLETE - HP remains unadjusted due to difficulty */
-#define MM_ADJUST_HP_FROM_EXISTING  0x00200000UL /* OBSOLETE - Calculate only new maxhp and adjust HP proportionally */
+#define MM_ESMI						0x00000400UL /* add esmi structure */
+#define MM_ESHK						0x00000800UL /* add eshk structure */
+#define MM_EMIN						0x00001000UL /* add emin structure */
+#define MM_EDOG						0x00002000UL /* add edog structure */
+#define MM_ASLEEP					0x00004000UL /* monsters should be generated asleep */
+#define MM_NOGRP					0x00008000UL /* suppress creation of monster groups */
+#define MM_MAX_HP					0x00010000UL /* maximum hit points */
+#define MM_MALE						0x00020000UL /* always male */
+#define MM_FEMALE					0x00040000UL /* always female */
+#define MM_NORMAL_HIT_DICE			0x00080000UL /* use normal hit dice */
+#define MM_EMIN_COALIGNED			0x00100000UL /* minion is of the same alignment as player */
+#define MM_NO_DIFFICULTY_HP_CHANGE  0x00200000UL /* OBSOLETE - HP remains unadjusted due to difficulty */
+#define MM_ADJUST_HP_FROM_EXISTING  0x00400000UL /* OBSOLETE - Calculate only new maxhp and adjust HP proportionally */
 
 /* flags for make_corpse() and mkcorpstat() */
 #define CORPSTAT_NONE 0x00

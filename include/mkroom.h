@@ -61,7 +61,7 @@ enum roomtype_types {
     BEEHIVE,    /* contains killer bees and royal jelly */
 	DRAGONLAIR, /* contains one or more dragons */
 	LIBRARY,    /* contains bookshelves with scrolls and spellbooks and magic-using monsters such as liches */
-	GARDEN,     /* herbs etc. */
+	GARDEN,     /* contains, trees, garden gnomes, herbs, and some possibly angry humanoids etc. */
 	MORGUE,     /* contains corpses, undead and ghosts */
     BARRACKS,   /* contains soldiers and their gear */
     ZOO,        /* floor covered with treasure and monsters */
@@ -70,7 +70,8 @@ enum roomtype_types {
     LEPREHALL,  /* leprechaun hall (Tom Proudfoot) */
     COCKNEST,   /* cockatrice nest (Tom Proudfoot) */
     ANTHOLE,    /* ants (Tom Proudfoot) */
-	DESERTEDSHOP,   /* a deserted shop */
+    SMITHY,     /* contains an anvil and a smith */
+    DESERTEDSHOP,   /* a deserted shop */
 	SHOPBASE,   /* everything above this is a shop */
     ARMORSHOP,  /* specific shop defines for level compiler */
     SCROLLSHOP,

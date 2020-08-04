@@ -2753,6 +2753,9 @@ xchar x, y;
     case SINK:
         idx = S_sink;
         break;
+    case ANVIL:
+        idx = S_anvil;
+        break;
     case ALTAR:
     {
         aligntyp alignment_mask = (ptr->altarmask & ~AM_SHRINE);

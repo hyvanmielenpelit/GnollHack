@@ -496,7 +496,7 @@ struct monst *mtmp;
             /* use trap if it's the correct type */
             if (is_hole(t->ttyp)
                 && !is_floater(mtmp->data)
-                && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest
+                && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith
                 && Can_fall_thru(&u.uz)) {
                 trapx = xx;
                 trapy = yy;
@@ -567,7 +567,7 @@ struct monst *mtmp;
         if (m.has_defense == MUSE_WAN_DIGGING)
             break;
         if (obj->otyp == WAN_DIGGING && obj->charges > 0 && !stuck && !t
-            && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest
+            && !mtmp->isshk && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith
             && !is_floater(mtmp->data)
             /* monsters digging in Sokoban can ruin things */
             && !Sokoban
@@ -604,7 +604,7 @@ struct monst *mtmp;
         if (obj->otyp == SCR_TELEPORTATION && !is_blinded(mtmp)
             && haseyes(mtmp->data)
             && (!obj->cursed || (!(mtmp->isshk && inhishop(mtmp))
-                                 && !mtmp->isgd && !mtmp->ispriest)))
+                                 && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith)))
 		{
             /* see WAN_TELEPORTATION case above */
             if (!level.flags.noteleport
@@ -731,7 +731,7 @@ struct monst *mtmp;
         awaken_soldiers(mtmp);
         return 2;
     case MUSE_WAN_TELEPORTATION_SELF:
-        if ((mtmp->isshk && inhishop(mtmp)) || mtmp->isgd || mtmp->ispriest)
+        if ((mtmp->isshk && inhishop(mtmp)) || mtmp->isgd || mtmp->ispriest || mtmp->issmith)
             return 2;
         m_flee(mtmp);
 		if (!otmp)
@@ -776,7 +776,7 @@ struct monst *mtmp;
 
         int obj_is_cursed = otmp->cursed;
 
-        if (mtmp->isshk || mtmp->isgd || mtmp->ispriest)
+        if (mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith)
             return 2;
         m_flee(mtmp);
         mreadmsg(mtmp, otmp);
@@ -1155,7 +1155,7 @@ struct monst *mtmp;
         return (mtmp->data != &mons[PM_PESTILENCE]) ? POT_FULL_HEALING
                                                     : POT_SICKNESS;
     case 7:
-        if (is_floater(pm) || mtmp->isshk || mtmp->isgd || mtmp->ispriest)
+        if (is_floater(pm) || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith)
             return 0;
         else
             return WAN_DIGGING;
@@ -1895,7 +1895,7 @@ struct monst *mtmp;
            necessary to prevent serious problems though... */
         if (obj->otyp == POT_GAIN_LEVEL
             && (!obj->cursed
-                || (!mtmp->isgd && !mtmp->isshk && !mtmp->ispriest))) {
+                || (!mtmp->isgd && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith))) {
             m.misc = obj;
             m.has_misc = MUSE_POT_GAIN_LEVEL;
         }

@@ -2636,6 +2636,9 @@ boolean prefilled;
     case TEMPLE:
         level.flags.has_temple = TRUE;
         break;
+    case SMITHY:
+        level.flags.has_smithy = TRUE;
+        break;
     case SWAMP:
         level.flags.has_swamp = TRUE;
         break;

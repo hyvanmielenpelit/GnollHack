@@ -2760,20 +2760,30 @@ register boolean newlev;
                 msg_given = FALSE;
             break;
         }
+        case SMITHY:
+            insmithy(roomno + ROOMOFFSET);
+            msg_given = TRUE;
+            rt = 0;
+            break;
         case TEMPLE:
             intemple(roomno + ROOMOFFSET);
-        /*FALLTHRU*/
+            msg_given = TRUE;
+            rt = 0;
+            break;
         default:
-            msg_given = (rt == TEMPLE);
+            msg_given = FALSE;
             rt = 0;
             break;
         }
+
         if (msg_given)
             room_discovered(roomno);
 
-        if (rt != 0) {
+        if (rt != 0) 
+        {
             rooms[roomno].rtype = OROOM;
-            if (!search_special(rt)) {
+            if (!search_special(rt)) 
+            {
                 /* No more room of that type */
                 switch (rt) {
                 case COURT:
@@ -2793,6 +2803,9 @@ register boolean newlev;
                     break;
                 case TEMPLE:
                     level.flags.has_temple = 0;
+                    break;
+                case SMITHY:
+                    level.flags.has_smithy = 0;
                     break;
                 case BEEHIVE:
                     level.flags.has_beehive = 0;
@@ -2882,6 +2895,8 @@ pickup_checks()
             pline("It won't come off the hinges.");
         else if (IS_ALTAR(lev->typ))
             pline("Moving the altar would be a very bad idea.");
+        else if (IS_ANVIL(lev->typ))
+            pline("The anvil is bolted down to the floor.");
         else if (lev->typ == STAIRS)
             pline_The("stairs are solidly fixed to the %s.",
                       surface(u.ux, u.uy));

@@ -1780,6 +1780,8 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
         m2->isgd = FALSE;
     if (mon->ispriest)
         m2->ispriest = FALSE;
+    if (mon->issmith)
+        m2->issmith = FALSE;
     place_monster(m2, m2->mx, m2->my);
 
     if (emitted_light_range(m2->data))
@@ -2059,6 +2061,7 @@ newmextra()
 	mextra->umname = 0;
 	mextra->egd = 0;
     mextra->epri = 0;
+    mextra->esmi = 0;
     mextra->eshk = 0;
     mextra->emin = 0;
     mextra->edog = 0;
@@ -2247,6 +2250,8 @@ int level_limit;
         newegd(mtmp);
     if (mmflags & MM_EPRI)
         newepri(mtmp);
+    if (mmflags & MM_ESMI)
+        newesmi(mtmp);
     if (mmflags & MM_ESHK)
         neweshk(mtmp);
     if (mmflags & MM_EMIN)
@@ -3493,7 +3498,8 @@ struct monst *mtmp;
     schar mal = mtmp->data->maligntyp;
     boolean coaligned;
 
-    if (mtmp->ispriest || mtmp->isminion) {
+    if (mtmp->ispriest || mtmp->isminion) 
+    {
         /* some monsters have individual alignments; check them */
         if (mtmp->ispriest && EPRI(mtmp))
             mal = EPRI(mtmp)->shralign;
@@ -3506,32 +3512,42 @@ struct monst *mtmp;
     }
 
     coaligned = (sgn(mal) == sgn(u.ualign.type));
-    if (mtmp->data->msound == MS_LEADER) {
+    if (mtmp->data->msound == MS_LEADER)
+    {
         mtmp->malign = -20;
-    } else if (mal == A_NONE) {
+    } 
+    else if (mal == A_NONE) 
+    {
         if (is_peaceful(mtmp))
             mtmp->malign = 0;
         else
             mtmp->malign = 20; /* really hostile */
-    } else if (always_peaceful(mtmp->data)) {
+    }
+    else if (always_peaceful(mtmp->data))
+    {
         int absmal = abs(mal);
         if (is_peaceful(mtmp))
             mtmp->malign = -3 * max(5, absmal);
         else
             mtmp->malign = 3 * max(5, absmal); /* renegade */
-    } else if (always_hostile(mtmp->data)) {
+    } 
+    else if (always_hostile(mtmp->data)) 
+    {
         int absmal = abs(mal);
         if (coaligned)
             mtmp->malign = 0;
         else
             mtmp->malign = max(5, absmal);
-    } else if (coaligned) {
+    }
+    else if (coaligned) 
+    {
         int absmal = abs(mal);
         if (is_peaceful(mtmp))
             mtmp->malign = -3 * max(3, absmal);
         else /* renegade */
             mtmp->malign = max(3, absmal);
-    } else /* not coaligned and therefore hostile */
+    } 
+    else /* not coaligned and therefore hostile */
         mtmp->malign = abs(mal);
 }
 
@@ -3634,6 +3650,10 @@ register struct monst *mtmp;
          * We won't bother with beehives, morgues, barracks, throne rooms
          * since they shouldn't contain too many mimics anyway...
          */
+    }
+    else if (rt == SMITHY) {
+        ap_type = M_AP_FURNITURE;
+        appear = S_anvil;
     } else if (rt >= SHOPBASE) {
         s_sym = get_shop_item(rt - SHOPBASE);
         if (s_sym < 0) {

@@ -429,6 +429,12 @@ struct monst *mtmp;
             newepri(mtmp);
             mread(fd, (genericptr_t) EPRI(mtmp), sizeof(struct epri));
         }
+        /* esmi - smith */
+        mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+        if (buflen > 0) {
+            newesmi(mtmp);
+            mread(fd, (genericptr_t)ESMI(mtmp), sizeof(struct esmi));
+        }
         /* eshk - shopkeeper */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
@@ -515,6 +521,8 @@ boolean ghostly;
             restshk(mtmp, ghostly);
         if (mtmp->ispriest)
             restpriest(mtmp, ghostly);
+        if (mtmp->issmith)
+            restsmith(mtmp, ghostly);
 
         if (!ghostly) {
             if (mtmp->m_id == context.polearm.m_id)

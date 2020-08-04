@@ -206,6 +206,11 @@ int x, y;
         if (verbose)
             pline_The("throne is too hard to break apart.");
         return FALSE;
+    }
+    else if (IS_ANVIL(levl[x][y].typ)) {
+        if (verbose)
+            pline_The("anvil is too hard to break apart.");
+        return FALSE;
     } else if (IS_ALTAR(levl[x][y].typ)
                && (madeby != BY_OBJECT || Is_astralevel(&u.uz)
                    || Is_sanctum(&u.uz))) {
@@ -951,6 +956,10 @@ coord *cc;
     /* the following two are here for the wand of digging */
     } else if (IS_THRONE(lev->typ)) {
         pline_The("throne is too hard to break apart.");
+
+    }
+    else if (IS_ANVIL(lev->typ)) {
+        pline_The("anvil is too hard to break apart.");
 
     } else if (IS_ALTAR(lev->typ)) {
         pline_The("altar is too hard to break apart.");
@@ -2141,6 +2150,8 @@ char *msg;
             supporting = "throne";
         else if (IS_ALTAR(ltyp))
             supporting = "altar";
+        else if (IS_ANVIL(ltyp))
+            supporting = "anvil";
         else if ((cc->x == xupstair && cc->y == yupstair)
                  || (cc->x == sstairs.sx && cc->y == sstairs.sy
                      && sstairs.up))

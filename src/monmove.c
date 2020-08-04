@@ -125,7 +125,7 @@ struct monst* mon;
 			{ 
 				/* Normal peaceful monster talk */
 				if(is_peaceful(mon) && !is_undead(mon->data) && !is_demon(mon->data)
-					&& !mon->isshk && !mon->isgd && !mon->ispriest && !is_watch(mon->data) && !is_mercenary(mon->data)
+					&& !mon->isshk && !mon->isgd && !mon->ispriest && !mon->issmith && !is_watch(mon->data) && !is_mercenary(mon->data)
 					&& !(mon->iswiz || mon->data == &mons[PM_MEDUSA]
 						|| mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
 						|| mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
@@ -259,7 +259,9 @@ struct monst *mtmp;
     if (mtmp->iswiz || is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL] || (mtmp->data->geno & G_UNIQ)
         || is_rider(mtmp->data)
 		|| (mtmp->isshk && inhishop(mtmp))
-        || (mtmp->ispriest && inhistemple(mtmp)))
+        || (mtmp->ispriest && inhistemple(mtmp))
+        || (mtmp->issmith && inhissmithy(mtmp))
+        )
         return FALSE;
 
     /* <0,0> is used by musical scaring to check for the above;
@@ -1186,7 +1188,7 @@ register int after;
 
     /* and the acquisitive monsters get special treatment */
 	/* Covetous has been deactivated -- JG */
-    if (is_teleport_heal_caster(mtmp->data)) // is_covetous(ptr))
+    if (is_teleport_heal_caster(mtmp->data) && !is_peaceful(mtmp)) // is_covetous(ptr))
 	{
         xchar tx = STRAT_GOALX(mtmp->mstrategy),
               ty = STRAT_GOALY(mtmp->mstrategy);
@@ -1211,6 +1213,16 @@ register int after;
     if (mtmp->ispriest) 
     {
         mmoved = pri_move(mtmp);
+        if (mmoved == -2)
+            return 2;
+        if (mmoved >= 0)
+            goto postmov;
+        mmoved = 0;
+    }
+
+    if (mtmp->issmith)
+    {
+        mmoved = smith_move(mtmp);
         if (mmoved == -2)
             return 2;
         if (mmoved >= 0)
