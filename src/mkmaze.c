@@ -1427,12 +1427,11 @@ movebubbles()
     struct bubble *b;
     int x, y, i, j;
     struct trap *btrap;
-    static struct rm zerorm = { nul_layerinfo,
-        0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
     static const struct rm water_pos = { empty_layerinfo(S_water),
-        WATER, 0, 0, 0, 0, 0, 0, 0, 0 };
+        WATER, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0 };
     static const struct rm air_pos = { empty_layerinfo(S_cloud), 
-        AIR, 0, 0, 0, 1, 0, 0, 0, 0 };
+        AIR, 0, 0, 0, 0,  0, 0, 0, 0, 0,  0, 0, 1, 0, 0,  0, 0 };
 
     /* set up the portal the first time bubbles are moved */
     if (!wportal)
@@ -1714,8 +1713,8 @@ setup_waterlevel()
 {
     int x, y;
     int xskip, yskip;
-    int water_glyph = cmap_to_glyph(S_water),
-        air_glyph = cmap_to_glyph(S_air);
+    struct layer_info water_info = empty_layerinfo(S_water), 
+        air_info = empty_layerinfo(S_air);
 
     /* ouch, hardcoded... */
 
@@ -1728,7 +1727,7 @@ setup_waterlevel()
 
     for (x = xmin; x <= xmax; x++)
         for (y = ymin; y <= ymax; y++)
-            levl[x][y].hero_memory_layers.glyph = Is_waterlevel(&u.uz) ? water_glyph : air_glyph;
+            levl[x][y].hero_memory_layers = Is_waterlevel(&u.uz) ? water_info : air_info;
 
     /* make bubbles */
 
@@ -1893,10 +1892,12 @@ boolean ini;
             if (b->bm[j + 2] & (1 << i)) {
                 if (Is_waterlevel(&u.uz)) {
                     levl[x][y].typ = AIR;
+                    levl[x][y].subtyp = 0;
                     levl[x][y].lit = 1;
                     unblock_point(x, y);
                 } else if (Is_airlevel(&u.uz)) {
                     levl[x][y].typ = CLOUD;
+                    levl[x][y].subtyp = 0;
                     levl[x][y].lit = 1;
                     block_point(x, y);
                 }
