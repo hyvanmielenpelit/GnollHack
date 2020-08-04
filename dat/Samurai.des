@@ -96,7 +96,7 @@ MONSTER:('E',"stalker"),random
 #
 
 MAZE: "Sam-loca",'T'
-FLAGS: hardfloor,fountain_on_grass
+FLAGS: hardfloor
 GEOMETRY:center,center
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -148,7 +148,7 @@ DOOR:closed,(51,10)
 DOOR:closed,(60,09)
 DOOR:closed,(60,10)
 FOUNTAIN:(25,08)
-FOUNTAIN:(24,11)
+FOUNTAIN:(25,11)
 FOUNTAIN:(50,08)
 FOUNTAIN:(50,11)
 
@@ -360,8 +360,8 @@ MONSTER:('E',"stalker"),random
 #	and goal levels.
 #
 
-MAZE: "Sam-fila", ' '
-INIT_MAP: mines, '.' , 'P', true, true, random, true
+MAZE: "Sam-fila", 'P'
+INIT_MAP: mines, ',' , 'P', true, true, random, true
 NOMAP
 #
 STAIR: random, up
