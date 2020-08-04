@@ -16,7 +16,7 @@
 # To motivate the player : there are 4 storerooms (armors, weapons, food and
 # gems) and a wand of wishing in one of the 4 towers...
 
-MAZE:"castle",random
+MAZE:"castle", ' '
 FLAGS: noteleport
 GEOMETRY:center,center
 MAP

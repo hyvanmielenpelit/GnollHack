@@ -8,7 +8,7 @@
 #	and receive your quest assignment.
 #
 MAZE: "Wiz-strt",'T'
-FLAGS: noteleport,hardfloor,arboreal,throne_room_floor
+FLAGS: noteleport,hardfloor,arboreal
 GEOMETRY:center,center
 MAP
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

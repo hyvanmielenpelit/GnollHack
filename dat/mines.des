@@ -544,6 +544,7 @@ RANDOM_CORRIDORS
 # "Grotto Town" by Kelly Bailey
 #
 MAZE: "minetn-5",' '
+FLAGS: fountain_on_ground
 GEOMETRY:center,center
 MAP
 -----         ---------                                                    
@@ -674,7 +675,7 @@ ALTAR:(31,03),align[0],shrine
 # "Bustling Town" by Kelly Bailey
 #
 MAZE: "minetn-6",' '
-FLAGS: inaccessibles
+FLAGS: inaccessibles,fountain_on_ground
 INIT_MAP:mines,':','-',true,true,lit,true
 GEOMETRY:center,top
 MAP
@@ -1163,7 +1164,7 @@ MONSTER:'h',random
 # Relies on some very specific behavior of MAZEWALK.
 #
 MAZE:"minend-3",'-'
-FLAGS:nommap
+FLAGS:nommap,fountain_on_ground
 GEOMETRY:center,bottom
 MAP
  - - - - - - - - - - -- -- - - : - - - - - - - - - -- - - -- - - - - : - - |

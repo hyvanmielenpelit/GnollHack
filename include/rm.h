@@ -807,7 +807,9 @@ struct levelflags {
                                   normal mode descendant of such) */
     Bitfield(corrmaze, 1);     /* Whether corridors are used for the maze
                                   rather than ROOM */
-    Bitfield(throne_floor_room, 1); /* Thrones on this level has a room floor rather than normal floor */
+    Bitfield(throne_on_ground, 1); /* Throne symbols on special level maps are on ground  */
+    Bitfield(fountain_on_grass, 1); /* Fountain symbols on special level maps are on grass */
+    Bitfield(fountain_on_ground, 1); /* Fountain and tree symbols on special level maps are on ground */
 };
 
 typedef struct {

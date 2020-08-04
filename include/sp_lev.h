@@ -31,7 +31,9 @@
 #define CORRMAZE        0x00000800L  /* for maze levels only */
 #define CHECK_INACCESSIBLES 0x00001000L /* check for inaccessible areas and generate ways to escape from them */
 #define SWAMPY          0x00002000L
-#define THRONE_ROOM_FLOOR 0x00004000L
+#define THRONE_ON_GROUND 0x00004000L
+#define FOUNTAIN_ON_GRASS 0x00008000L
+#define FOUNTAIN_ON_GROUND 0x00010000L
 
 /* different level layout initializers */
 enum lvlinit_types {

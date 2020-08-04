@@ -186,6 +186,7 @@ MONSTER:'s',random,hostile
 #
 
 MAZE: "Ran-goal", ' '
+FLAGS: throne_on_ground
 GEOMETRY:center,center
 MAP
                                                                             

@@ -1103,11 +1103,11 @@ packed_coord pos;
     register int trycnt = 0;
 
     get_location_coord(&try_x, &try_y, DRY, croom, pos);
-    if (levl[try_x][try_y].typ != ROOM) {
+    if (levl[try_x][try_y].typ != ROOM && levl[try_x][try_y].typ != GRASS && levl[try_x][try_y].typ != GROUND) {
         do {
             try_x = *x, try_y = *y;
             get_room_loc(&try_x, &try_y, croom);
-        } while (levl[try_x][try_y].typ != ROOM && ++trycnt <= 100);
+        } while (levl[try_x][try_y].typ != ROOM && levl[try_x][try_y].typ != GRASS && levl[try_x][try_y].typ != GROUND && ++trycnt <= 100);
 
 		if (trycnt > 100)
 		{
@@ -3464,8 +3464,12 @@ struct sp_coder *coder;
         level.flags.arboreal = 1;
     if (lflags & SWAMPY)
         level.flags.swampy = 1;
-    if (lflags & THRONE_ROOM_FLOOR)
-        level.flags.throne_floor_room = 1;
+    if (lflags & THRONE_ON_GROUND)
+        level.flags.throne_on_ground = 1;
+    if (lflags & FOUNTAIN_ON_GRASS)
+        level.flags.fountain_on_grass = 1;
+    if (lflags & FOUNTAIN_ON_GROUND)
+        level.flags.fountain_on_ground = 1;
     if (lflags & MAZELEVEL)
         level.flags.is_maze_lev = 1;
     if (lflags & PREMAPPED)
@@ -4492,7 +4496,7 @@ genericptr_t arg;
         levl[x][y].floortyp = 0;
         levl[x][y].floorsubtyp = 0;
     }
-    else if (IS_FLOOR(levl[x][y].typ) && !(level.flags.throne_floor_room && *(int*)arg == THRONE))
+    else if (IS_FLOOR(levl[x][y].typ))
     {
         levl[x][y].floortyp = levl[x][y].typ;
         levl[x][y].floorsubtyp = levl[x][y].subtyp;
@@ -4522,6 +4526,7 @@ genericptr_t arg;
 {
     xchar typ = *(xchar *) arg;
     xchar x = dx, y = dy;
+    int settyp = (typ & D_SECRET) ? SDOOR : DOOR;
 
     if (!IS_DOOR(levl[x][y].typ) && levl[x][y].typ != SDOOR)
     {
@@ -4532,11 +4537,11 @@ genericptr_t arg;
         }
         else
         {
-            levl[x][y].floortyp = ROOM;
+            levl[x][y].floortyp = location_type_definitions[settyp].initial_floor_type;
             levl[x][y].floorsubtyp = 0;
         }
 
-        levl[x][y].typ = (typ & D_SECRET) ? SDOOR : DOOR;
+        levl[x][y].typ = settyp;
         levl[x][y].subtyp = 0;
     }
 
@@ -4683,7 +4688,7 @@ struct opvar *ov;
             }
             else
             {
-                levl[x + 1][y].floortyp = ROOM;
+                levl[x + 1][y].floortyp = location_type_definitions[SDOOR].initial_floor_type;
                 levl[x + 1][y].floorsubtyp = 0;
 
             }
@@ -4703,7 +4708,7 @@ struct opvar *ov;
             }
             else
             {
-                levl[x - 1][y].floortyp = ROOM;
+                levl[x - 1][y].floortyp = location_type_definitions[SDOOR].initial_floor_type;
                 levl[x - 1][y].floorsubtyp = 0;
 
             }
@@ -4723,7 +4728,7 @@ struct opvar *ov;
             }
             else
             {
-                levl[x][y + 1].floortyp = ROOM;
+                levl[x][y + 1].floortyp = location_type_definitions[SDOOR].initial_floor_type;
                 levl[x][y + 1].floorsubtyp = 0;
 
             }
@@ -4743,7 +4748,7 @@ struct opvar *ov;
             }
             else
             {
-                levl[x][y - 1].floortyp = ROOM;
+                levl[x][y - 1].floortyp = location_type_definitions[SDOOR].initial_floor_type;
                 levl[x][y - 1].floorsubtyp = 0;
 
             }
@@ -5320,8 +5325,19 @@ struct sp_coder *coder;
                     continue;
                 levl[x][y].typ = mptyp;
                 levl[x][y].subtyp = 0;
-                levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
                 levl[x][y].floorsubtyp = 0;
+                if (mptyp == FOUNTAIN && level.flags.fountain_on_grass)
+                {
+                    levl[x][y].floortyp = GRASS;
+                    levl[x][y].floorsubtyp = rn2(3);
+                }
+                else if ((mptyp == FOUNTAIN || mptyp == TREE) && level.flags.fountain_on_ground)
+                    levl[x][y].floortyp = GROUND;
+                else if (mptyp == THRONE && level.flags.throne_on_ground)
+                    levl[x][y].floortyp = GROUND;
+                else
+                    levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
+
                 levl[x][y].lit = FALSE;
                 /* clear out levl: load_common_data may set them */
                 levl[x][y].flags = 0;

@@ -615,7 +615,7 @@ fixup_special()
         croom = search_special(TEMPLE);
 
         create_secret_door(croom, W_ANY);
-    } else if (on_level(&u.uz, &orcus_level)) {
+    } else if (on_level(&u.uz, &orcus_level) && 0) {
         struct monst *mtmp, *mtmp2;
 
         /* it's a ghost town, get rid of shopkeepers */

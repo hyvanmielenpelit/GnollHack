@@ -742,7 +742,7 @@ register struct monst *mtmp;
 
     /* Monsters that want to acquire things */
     /* may teleport, so do it before inrange is set */
-    if (is_teleport_heal_caster(mtmp->data))
+    if (is_teleport_heal_caster(mtmp->data) && !is_peaceful(mtmp))
         (void) tactics(mtmp);
 
     /* check distance and scariness of attacks */
@@ -1186,7 +1186,7 @@ register int after;
 
     /* and the acquisitive monsters get special treatment */
 	/* Covetous has been deactivated -- JG */
-    if (mtmp->mnum == PM_WIZARD_OF_YENDOR) // is_covetous(ptr))
+    if (is_teleport_heal_caster(mtmp->data)) // is_covetous(ptr))
 	{
         xchar tx = STRAT_GOALX(mtmp->mstrategy),
               ty = STRAT_GOALY(mtmp->mstrategy);

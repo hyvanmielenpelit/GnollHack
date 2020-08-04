@@ -263,7 +263,6 @@ extern char curr_token[512];
 %type	<i> func_param_type
 %type	<i> objectid monsterid terrainid
 %type	<i> opt_coord_or_var opt_limited
-%type   <i> mazefiller
 %type	<map> level_def
 %type	<map> any_var any_var_array any_var_or_arr any_var_or_unk
 %type	<map> func_call_params_list func_call_param_list
@@ -333,16 +332,6 @@ level_def	: LEVEL_ID ':' STRING
 		      max_x_map = COLNO-1;
 		      max_y_map = ROWNO;
 		      $$ = $3;
-		  }
-		;
-
-mazefiller	: RANDOM_TYPE
-		  {
-		      $$ = -1;
-		  }
-		| CHAR
-		  {
-		      $$ = what_map_char((char) $1);
 		  }
 		;
 

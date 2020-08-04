@@ -9,7 +9,7 @@
 #	and receive your quest assignment.
 #
 MAZE: "Val-strt",'I'
-FLAGS: noteleport,hardfloor,icedpools
+FLAGS: noteleport,hardfloor,icedpools,fountain_on_ground
 INIT_MAP:solidfill,'I'
 
 $pools = selection: random & random & random & random & random &
