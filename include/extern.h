@@ -71,8 +71,8 @@ E boolean FDECL(tinnable, (struct obj *));
 E void NDECL(reset_trapset);
 E void FDECL(fig_transform, (ANY_P *, long));
 E int FDECL(unfixable_trouble_count, (BOOLEAN_P));
-E int FDECL(uthitm, (struct monst*, struct obj*));
-E int FDECL(uthito, (struct obj*, struct obj*));
+E int FDECL(uthitm, (struct monst*, struct obj*, struct monst*));
+E int FDECL(uthito, (struct obj*, struct obj*, struct monst*));
 E int FDECL(endlessarrows, (struct obj*, int, int));
 E struct obj* FDECL(elemental_enchant_quan, (struct obj*, int, int));
 E void FDECL(use_magic_whistle, (struct obj*));
@@ -1916,7 +1916,7 @@ E int FDECL(use_defensive, (struct monst *));
 E int FDECL(rnd_defensive_item, (struct monst *));
 E boolean FDECL(find_offensive, (struct monst *));
 #ifdef USE_TRAMPOLI
-E int FDECL(mbhitm, (struct monst *, struct obj *));
+E int FDECL(mbhitm, (struct monst *, struct obj *, struct monst*));
 #endif
 E int FDECL(use_offensive, (struct monst *));
 E int FDECL(rnd_offensive_item, (struct monst *));
@@ -3508,7 +3508,8 @@ E int FDECL(dowrite, (struct obj *));
 /* ### zap.c ### */
 
 E void FDECL(learnwand, (struct obj *));
-E int FDECL(bhitm, (struct monst *, struct obj *));
+E int FDECL(get_saving_throw_adjustment, (struct obj*, struct monst*));
+E int FDECL(bhitm, (struct monst*, struct obj*, struct monst*));
 E void FDECL(probe_monster, (struct monst *));
 E void FDECL(display_monster_information, (struct monst*));
 E void FDECL(print_monster_intrinsics, (winid win, struct monst*));
@@ -3527,8 +3528,8 @@ E struct obj *FDECL(poly_obj, (struct obj *, int));
 E boolean FDECL(obj_resists, (struct obj *, int, int));
 E boolean FDECL(obj_shudders, (struct obj *));
 E void FDECL(do_osshock, (struct obj *));
-E int FDECL(bhito, (struct obj *, struct obj *));
-E int FDECL(bhitpile, (struct obj *, int (*)(OBJ_P, OBJ_P), int, int, SCHAR_P, uchar, BOOLEAN_P));
+E int FDECL(bhito, (struct obj *, struct obj *, struct monst*));
+E int FDECL(bhitpile, (struct obj *, struct monst*, int (*)(OBJ_P, OBJ_P, MONST_P), int, int, SCHAR_P, uchar, BOOLEAN_P));
 E int FDECL(zappable, (struct obj *));
 E void FDECL(zapnodir, (struct obj *));
 E int NDECL(dozap);
@@ -3547,13 +3548,13 @@ E const char *FDECL(exclam, (int force));
 E void FDECL(hit, (const char *, struct monst *, const char *, int));
 E void FDECL(miss, (const char *, struct monst *));
 E struct monst *FDECL(bhit, (int, int, int, int, enum bhit_call_types,
-                             int (*)(MONST_P, OBJ_P),
-                             int (*)(OBJ_P, OBJ_P), struct obj **, uchar, BOOLEAN_P));
+                             int (*)(MONST_P, OBJ_P, MONST_P),
+                             int (*)(OBJ_P, OBJ_P, MONST_P), struct obj **, struct monst*, uchar, BOOLEAN_P));
 E struct monst *FDECL(boomhit, (struct obj *, int, int));
-E double FDECL(zhitm, (struct monst *, int, struct obj*, int, int, int, struct obj **));
+E double FDECL(zhitm, (struct monst *, int, struct obj*, struct monst*, int, int, int, struct obj **));
 E int FDECL(burn_floor_objects, (int, int, BOOLEAN_P, BOOLEAN_P));
-E void FDECL(buzz, (int, struct obj*, int, int, int, XCHAR_P, XCHAR_P, int, int));
-E void FDECL(dobuzz, (int, struct obj*, int, int, int, XCHAR_P, XCHAR_P, int, int, BOOLEAN_P));
+E void FDECL(buzz, (int, struct obj*, struct monst*, int, int, int, XCHAR_P, XCHAR_P, int, int));
+E void FDECL(dobuzz, (int, struct obj*, struct monst*, int, int, int, XCHAR_P, XCHAR_P, int, int, BOOLEAN_P));
 E void FDECL(melt_ice, (XCHAR_P, XCHAR_P, const char *));
 E void FDECL(start_melt_ice_timeout, (XCHAR_P, XCHAR_P, long));
 E void FDECL(melt_ice_away, (ANY_P *, long));

@@ -27,11 +27,11 @@ STATIC_DCL void FDECL(polyuse, (struct obj *, int, int));
 STATIC_DCL void FDECL(create_polymon, (struct obj *, int));
 STATIC_DCL int FDECL(stone_to_flesh_obj, (struct obj *));
 STATIC_DCL boolean FDECL(zap_updown, (struct obj *));
-STATIC_DCL void FDECL(zhitu, (int, struct obj*, int, int, int, const char *, XCHAR_P, XCHAR_P));
+STATIC_DCL void FDECL(zhitu, (int, struct obj*, struct monst*, int, int, int, const char *, XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(revive_egg, (struct obj *));
 STATIC_DCL boolean FDECL(zap_steed, (struct obj *));
 STATIC_DCL void FDECL(skiprange, (int, int *, int *));
-STATIC_DCL int FDECL(zap_hit, (int, int, struct obj*));
+STATIC_DCL int FDECL(zap_hit, (int, int, struct obj*, struct monst*));
 STATIC_DCL void FDECL(backfire, (struct obj *));
 STATIC_DCL int FDECL(spell_hit_bonus, (int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
@@ -138,12 +138,54 @@ struct obj *obj;
     }
 }
 
+int
+get_saving_throw_adjustment(otmp, origmonst)
+struct obj* otmp;
+struct monst* origmonst; 
+{
+    if (!otmp)
+        return 0;
+    
+    int otyp = otmp->otyp;
+
+    int res = 0;
+    res += objects[otyp].oc_spell_saving_throw_adjustment;
+
+    if (!origmonst)
+        return res;
+
+    int skill = P_NONE;
+    if (otmp->oclass == SPBOOK_CLASS || otmp->oclass == WAND_CLASS || otmp->oclass == TOOL_CLASS)
+    {
+        if(otmp->oclass == SPBOOK_CLASS)
+            skill = objects[otyp].oc_skill;
+        else 
+            skill = P_WAND;
+
+        if (origmonst == &youmonst)
+        {
+            int skill_level = P_SKILL_LEVEL(skill);
+            res += -2 * max(0, P_SKILL_LEVEL(skill) - 1);
+        }
+        else
+        {
+            if (is_prince(origmonst->data))
+                return -6;
+            else if (is_lord(origmonst->data))
+                return -4;
+        }
+    }
+
+    return res;
+}
+
 /* Routines for IMMEDIATE wands and spells. */
 /* bhitm: monster mtmp was hit by the effect of wand or spell otmp */
 int
-bhitm(mtmp, otmp)
+bhitm(mtmp, otmp, origmonst)
 struct monst *mtmp;
 struct obj *otmp;
+struct monst* origmonst;
 {
 	int res = 0;
     boolean wake = TRUE; /* Most 'zaps' should wake monster */
@@ -156,8 +198,12 @@ struct obj *otmp;
                                && M_AP_TYPE(mtmp) != M_AP_NOTHING);
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
 	int dmg = d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus;
+
+    int save_adj = get_saving_throw_adjustment(otmp, origmonst);
+
     boolean surpress_noeffect_message = FALSE;
 	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, 0, 0, NOTELL);
+    boolean magic_cancellation_success = check_magic_cancellation_success(mtmp, save_adj);
 	if (u.uswallow && mtmp == u.ustuck)
         reveal_invis = FALSE;
 
@@ -280,7 +326,7 @@ struct obj *otmp;
 			pline("%s is unaffected by your touch!", Monnam(mtmp));
 			break; /* skip makeknown */
 		} 
-		else if (check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))
+		else if (magic_cancellation_success)
 		{
 			pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
 			break; /* skip makeknown */
@@ -308,7 +354,7 @@ struct obj *otmp;
             pline("%s is unaffected by your touch!", Monnam(mtmp));
             break; /* skip makeknown */
         }
-        else if (check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))
+        else if (magic_cancellation_success)
         {
             pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
             break; /* skip makeknown */
@@ -322,7 +368,7 @@ struct obj *otmp;
 		res = 1;
 		if (resists_ston(mtmp))
 			pline("%s is unaffected.", Monnam(mtmp));
-		else if (check_ability_resistance_success(mtmp, A_DEX, objects[otyp].oc_spell_saving_throw_adjustment))
+		else if (check_ability_resistance_success(mtmp, A_DEX, save_adj))
 			pline("%s dodges your spell.", Monnam(mtmp));
 		else
 			start_delayed_petrification(mtmp, TRUE);
@@ -332,7 +378,7 @@ struct obj *otmp;
 		You("reach out with your petrifying touch...");
 		if (resists_ston(mtmp))
 			pline("%s is unaffected.", Monnam(mtmp));
-		else if (check_magic_cancellation_success(mtmp, objects[otyp].oc_spell_saving_throw_adjustment))
+		else if (magic_cancellation_success)
 			pline("Luckily for %s, it didn't work!", mon_nam(mtmp));
 		else
 			start_delayed_petrification(mtmp, TRUE);
@@ -394,7 +440,7 @@ struct obj *otmp;
 			pline("%s is unaffected by the power word!", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if(!check_ability_resistance_success(mtmp, A_CON, objects[otyp].oc_spell_saving_throw_adjustment)) // if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
+		else if(!check_ability_resistance_success(mtmp, A_CON, save_adj)) // if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
 		{ //Otherwise dead
 			mtmp->mhp = 0;
 			if (DEADMONSTER(mtmp)) {
@@ -414,7 +460,7 @@ struct obj *otmp;
 			pline("%s does not seem more stunned than before.", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (!check_ability_resistance_success(mtmp, A_CON, objects[otyp].oc_spell_saving_throw_adjustment))
+		else if (!check_ability_resistance_success(mtmp, A_CON, save_adj))
 		{
 			increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
 		}
@@ -433,7 +479,7 @@ struct obj *otmp;
 			pline("%s does not seem more blind than before.", Monnam(mtmp));
 			break; /* skip makeknown */
 		}
-		else if (!check_ability_resistance_success(mtmp, A_CON, objects[otyp].oc_spell_saving_throw_adjustment))
+		else if (!check_ability_resistance_success(mtmp, A_CON, save_adj))
 		{
 			increase_mon_property_verbosely(mtmp, BLINDED, duration);
 		}
@@ -442,7 +488,7 @@ struct obj *otmp;
     case SPE_SLOW_MONSTER:
 	case SPE_MASS_SLOW:
 		res = 1;
-		if (!check_ability_resistance_success(mtmp, A_WIS, objects[otyp].oc_spell_saving_throw_adjustment)) {
+		if (!check_ability_resistance_success(mtmp, A_WIS, save_adj)) {
             if (disguised_mimic)
                 seemimic(mtmp);
 			increase_mon_property_verbosely(mtmp, SLOWED, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
@@ -460,7 +506,7 @@ struct obj *otmp;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
 		res = 1;
-		if (!check_ability_resistance_success(mtmp, A_WIS, objects[otmp->otyp].oc_spell_saving_throw_adjustment))
+		if (!check_ability_resistance_success(mtmp, A_WIS, save_adj))
 		{
 			if (disguised_mimic)
 				seemimic(mtmp);
@@ -493,7 +539,7 @@ struct obj *otmp;
     }
 	case SPE_SILENCE:
 		res = 1;
-		if (!check_ability_resistance_success(mtmp, A_CHA, objects[otyp].oc_spell_saving_throw_adjustment))
+		if (!check_ability_resistance_success(mtmp, A_CHA, save_adj))
 		{
 			increase_mon_property_verbosely(mtmp, SILENCED, duration);
 		}
@@ -3064,8 +3110,9 @@ struct obj *obj;
  * non-zero if the wand/spell had any effect.
  */
 int
-bhito(obj, otmp)
+bhito(obj, otmp, origmonst)
 struct obj *obj, *otmp;
+struct monst* origmonst;
 {
     int res = 0; /* affected object by default */
     boolean learn_it = FALSE, maybelearnit;
@@ -3559,9 +3606,10 @@ struct obj *obj, *otmp;
 
 /* returns nonzero if something was hit */
 int
-bhitpile(obj, fhito, tx, ty, zz, hit_only_one, stop_at_first_hit_object)
+bhitpile(obj, origmonst, fhito, tx, ty, zz, hit_only_one, stop_at_first_hit_object)
 struct obj *obj;
-int FDECL((*fhito), (OBJ_P, OBJ_P));
+struct monst* origmonst;
+int FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P));
 int tx, ty;
 schar zz;
 uchar hit_only_one;
@@ -3599,7 +3647,7 @@ boolean stop_at_first_hit_object;
             && hides_under(youmonst.data))
             continue;
 
-        hitanything += (*fhito)(otmp, obj);
+        hitanything += (*fhito)(otmp, obj, origmonst);
 
 		if (hitanything && stop_at_first_hit_object)
 			break;
@@ -5341,7 +5389,7 @@ boolean ordinary;
         /* but at a cost.. */
         for (otmp = invent; otmp; otmp = onxt) {
             onxt = otmp->nobj;
-            if (bhito(otmp, obj))
+            if (bhito(otmp, obj, &youmonst))
                 learn_it = TRUE;
         }
         /*
@@ -5383,7 +5431,7 @@ struct attack *mattk;
     int dtyp = 20 + typ - 1;      /* breath by hero */
     const char *fltxt = flash_types[dtyp]; /* blast of <something> */
 
-    zhitu(dtyp, (struct obj*)0, mattk->damn, mattk->damd, mattk->damp, fltxt, u.ux, u.uy);
+    zhitu(dtyp, (struct obj*)0, &youmonst, mattk->damn, mattk->damd, mattk->damp, fltxt, u.ux, u.uy);
 }
 
 /* light damages hero in gremlin form */
@@ -5523,7 +5571,7 @@ struct obj *obj; /* wand or spell */
 	case SPE_DRAIN_LEVEL:
     case WAN_OPENING:
     case SPE_KNOCK:
-        (void) bhitm(u.usteed, obj);
+        (void) bhitm(u.usteed, obj, &youmonst);
         steedhit = TRUE;
         break;
 
@@ -5728,7 +5776,7 @@ struct obj *obj; /* wand or spell */
         if (u.dz < 0) {
             You("probe towards the %s.", ceiling(x, y));
         } else {
-            ptmp += bhitpile(obj, bhito, x, y, u.dz, hit_only_one, TRUE);
+            ptmp += bhitpile(obj, &youmonst, bhito, x, y, u.dz, hit_only_one, TRUE);
             You("probe beneath the %s.", surface(x, y));
             ptmp += display_binventory(x, y, TRUE);
         }
@@ -5852,7 +5900,7 @@ struct obj *obj; /* wand or spell */
 	if (u.dz > 0) {
 		/* zapping downward */
         context.bhitcount = 0;
-        (void)bhitpile(obj, bhito, x, y, u.dz, hit_only_one, (objects[obj->otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+        (void)bhitpile(obj, &youmonst, bhito, x, y, u.dz, hit_only_one, (objects[obj->otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
 
         /* subset of engraving effects; none sets `disclose' */
         if ((e = engr_at(x, y)) != 0 && e->engr_type != HEADSTONE) {
@@ -5899,7 +5947,7 @@ struct obj *obj; /* wand or spell */
             otmp = level.objects[u.ux][u.uy];
 
             if (otmp)
-                hitit = bhito(otmp, obj);
+                hitit = bhito(otmp, obj, &youmonst);
             if (hitit) {
                 (void) hideunder(&youmonst);
                 disclose = TRUE;
@@ -5948,7 +5996,7 @@ struct obj *obj;
         zapsetup(); /* reset obj_zapped */
         if (u.uswallow) 
         {
-            (void) bhitm(u.ustuck, obj);
+            (void) bhitm(u.ustuck, obj, &youmonst);
             /* [how about `bhitpile(u.ustuck->minvent)' effect?] */
         }
         else if (u.dz) 
@@ -5975,7 +6023,7 @@ struct obj *obj;
             if (objects[otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
                 hit_only_one = 2; /* 1- 3 targets based on BUC status */
 
-			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -6022,7 +6070,7 @@ struct obj *obj;
 		case RAY_DEATH:
 		case RAY_DISINTEGRATION:
 		case RAY_PETRIFICATION:
-			buzz(osubtype, obj, 0, 0, 0, u.ux, u.uy, u.dx, u.dy);
+			buzz(osubtype, obj, &youmonst, 0, 0, 0, u.ux, u.uy, u.dx, u.dy);
 			break;
 		default:
 			impossible("weffects: unexpected spell or wand");
@@ -6203,13 +6251,14 @@ int range, *skipstart, *skipend;
  *  one is revealed for a weapon, but if not a weapon is left up to fhitm().
  */
 struct monst *
-bhit(ddx, ddy, range, radius, weapon, fhitm, fhito, pobj, hit_only_one, stop_at_first_hit_object)
+bhit(ddx, ddy, range, radius, weapon, fhitm, fhito, pobj, origmonst, hit_only_one, stop_at_first_hit_object)
 register int ddx, ddy, range, radius;          /* direction, range, and effect radius */
 enum bhit_call_types weapon;           /* defined in hack.h */
-int FDECL((*fhitm), (MONST_P, OBJ_P)), /* fns called when mon/obj hit */
-    FDECL((*fhito), (OBJ_P, OBJ_P));
+int FDECL((*fhitm), (MONST_P, OBJ_P, MONST_P)), /* fns called when mon/obj hit */
+    FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P));
 struct obj **pobj; /* object tossed/used, set to NULL
                     * if object is destroyed */
+struct monst* origmonst;
 uchar hit_only_one;
 boolean stop_at_first_hit_object;
 {
@@ -6507,7 +6556,7 @@ boolean stop_at_first_hit_object;
 						tmp_at(bhitpos.x, bhitpos.y);
 				}
                 
-                int had_effect = (*fhitm)(mtmp, obj);
+                int had_effect = (*fhitm)(mtmp, obj, origmonst);
 				int more_effect_num = 0;
 
                 if(had_effect && obj)
@@ -6527,7 +6576,7 @@ boolean stop_at_first_hit_object;
 							{
 								struct monst* mtmp2 = m_at(px, py);
 								if(mtmp2 && mtmp2 != mtmp && mtmp2 != &youmonst)
-									more_effect_num += (*fhitm)(mtmp2, obj);
+									more_effect_num += (*fhitm)(mtmp2, obj, origmonst);
 							}
 						}
 					}
@@ -6552,7 +6601,7 @@ boolean stop_at_first_hit_object;
         }
         if (fhito)
 		{
-            if (bhitpile(obj, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
+            if (bhitpile(obj, origmonst, fhito, bhitpos.x, bhitpos.y, 0, hit_only_one, stop_at_first_hit_object))
 			{
                 if(weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
                     if(obj)
@@ -6778,10 +6827,11 @@ int dx, dy;
 /* used by buzz(); also used by munslime(muse.c); returns damage applied
    to mon; note: caller is responsible for killing mon if damage is fatal */
 double
-zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, ootmp)
+zhitm(mon, type, origobj, origmonst, dmgdice, dicesize, dmgplus, ootmp)
 register struct monst *mon;
 register int type;
 struct obj* origobj;
+struct monst* origmonst;
 int dmgdice, dicesize, dmgplus;
 struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 {
@@ -7001,9 +7051,10 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 }
 
 STATIC_OVL void
-zhitu(type, origobj, dmgdice, dicesize, dmgplus, fltxt, sx, sy)
+zhitu(type, origobj, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy)
 int type;
 struct obj* origobj;
+struct monst* origmonst;
 int dmgdice, dicesize, dmgplus;
 const char *fltxt;
 xchar sx, sy;
@@ -7080,7 +7131,9 @@ xchar sx, sy;
 		{
             u_shieldeff();
             You("don't feel sleepy.");
-        } else {
+        }
+        else 
+        {
             fall_asleep(-rn1(5, 8), TRUE); /* sleep ray */
         }
         break;
@@ -7295,14 +7348,15 @@ boolean u_caused;
 
 /* will zap/spell/breath attack score a hit against armor class `ac'? */
 STATIC_OVL int
-zap_hit(ac, type, origobj)
+zap_hit(ac, type, origobj, origmonst)
 int ac;
 int type;
 struct obj* origobj;
+struct monst* origmonst;
 {
     int chance = rn2(20);
     int spell_bonus = origobj ? spell_hit_bonus(origobj->otyp) : 0; /* Seems to apply for both wands (DEX only) and spells */
-	int wand_bonus = origobj && origobj->oclass == WAND_CLASS ? wand_skill_hit_bonus(P_SKILL_LEVEL(P_WAND)) : 0; /* And extra bonus for wands */
+	int wand_bonus = origobj && origmonst && origmonst == &youmonst && origobj->oclass == WAND_CLASS ? wand_skill_hit_bonus(P_SKILL_LEVEL(P_WAND)) : 0; /* And extra bonus for wands */
 	int accuracy_bonus = type >=0 ? u.uhitinc : 0;
 
     /* small chance for naked target to avoid being hit */
@@ -7451,14 +7505,15 @@ const char *fltxt;
 }
 
 void
-buzz(type, origobj, dmgdice, dicesize, dmgplus, sx, sy, dx, dy)
+buzz(type, origobj, origmonst, dmgdice, dicesize, dmgplus, sx, sy, dx, dy)
 int type;
 struct obj* origobj; //Originating item or spell, null if breath weapon
+struct monst* origmonst; //Originating monst, null if god, trap, etc.
 int dmgdice, dicesize, dmgplus;		 //Damage ndd+p, used only for breath weapons
 xchar sx, sy;
 int dx, dy;
 {
-    dobuzz(type, origobj, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, TRUE);
+    dobuzz(type, origobj, origmonst, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, TRUE);
 }
 
 /*
@@ -7473,9 +7528,10 @@ int dx, dy;
  * called with dx = dy = 0 with vertical bolts
  */
 void
-dobuzz(type, origobj, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, say)
+dobuzz(type, origobj, origmonst, dmgdice, dicesize, dmgplus, sx, sy, dx, dy, say)
 register int type;
 struct obj* origobj; //Originating item or spell, null if breath weapon
+struct monst* origmonst; //Originating monst, null if god, trap, etc.
 int dmgdice, dicesize, dmgplus;		 //Damage ndd+p, used only for breath weapons
 register xchar sx, sy;
 register int dx, dy;
@@ -7507,7 +7563,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
         if (type < 0)
             return;
-		damage = zhitm(u.ustuck, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
+		damage = zhitm(u.ustuck, type, origobj, origmonst, dmgdice, dicesize, dmgplus, &otmp);
 
         if (!u.ustuck)
             u.uswallow = 0;
@@ -7587,7 +7643,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             
 			notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
             
-			if (zap_hit(find_mac(mon), type, origobj))
+			if (zap_hit(find_mac(mon), type, origobj, origmonst))
 			{
                 if (mon_reflects(mon, (char *) 0)) 
 				{
@@ -7611,7 +7667,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					
 					/* Ray does damage and actually reduces mon's hit points */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, mon->mx, mon->my);
-                    double damage = zhitm(mon, type, origobj, dmgdice, dicesize, dmgplus, &otmp);
+                    double damage = zhitm(mon, type, origobj, origmonst, dmgdice, dicesize, dmgplus, &otmp);
 
 					/* Rider non-disintegration */
                     if (abstype == ZT_DISINTEGRATION && check_rider_disintegration(mon, fltxt))
@@ -7705,7 +7761,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 mon = u.usteed;
                 goto buzzmonst;
             } 
-			else if (zap_hit((int) u.uac, -1, (struct obj*)0)) /* No accuracy or skill bonus for hitting yourself */
+			else if (zap_hit((int) u.uac, -1, (struct obj*)0, origmonst)) /* No accuracy or skill bonus for hitting yourself */
 			{
                 range -= 2;
                 play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, sx, sy);
@@ -7724,7 +7780,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 } 
                 else 
                 {
-                    zhitu(type, origobj, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
+                    zhitu(type, origobj, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
             } 
 			else if (!Blind) 

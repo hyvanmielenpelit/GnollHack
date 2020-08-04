@@ -1246,7 +1246,7 @@ struct attack  *mattk;
 			{
                 if (canseemon(mtmp))
                     pline("%s breathes %s!", Monnam(mtmp), breathwep[typ - 1]);
-                dobuzz((int) (-20 - (typ - 1)), (struct obj*)0, (int) mattk->damn, (int)mattk->damd, (int)mattk->damp,
+                dobuzz((int) (-20 - (typ - 1)), (struct obj*)0, mtmp, (int) mattk->damn, (int)mattk->damd, (int)mattk->damp,
                        mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
                 nomul(0);
                 /* breath runs out sometimes. Also, give monster some
@@ -1297,7 +1297,7 @@ struct attack* mattk;
 		{
 			if (canseemon(mtmp))
 				pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)), eyestalk[typ - 1]);
-			dobuzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
+			dobuzz((int)(-30 - (typ - 1)), (struct obj*)0, mtmp, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
 				mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
 			nomul(0);
 		}
@@ -1359,7 +1359,7 @@ struct attack* mattk;
                     pline("%s casts \'%s\' at %s!", Monnam(mtmp), mon_nam(mtarg),
                         flash_types[ad_to_typ(adtyp)]);
 
-                dobuzz((int)(-ad_to_typ(adtyp)), (struct obj*)0, damn, damd, damp,
+                dobuzz((int)(-ad_to_typ(adtyp)), (struct obj*)0, mtmp, damn, damd, damp,
                     mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), FALSE);
 
                 nomul(0);
@@ -1754,7 +1754,7 @@ struct attack *mattk;
             if (canseemon(mtmp))
                 pline("One of %s eyestalks fires %s!", s_suffix(mon_nam(mtmp)),
                         eyestalk[typ - 1]);
-			buzz((int)(-30 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
+			buzz((int)(-30 - (typ - 1)), (struct obj*)0, mtmp, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
                     mtmp->my, sgn(tbx), sgn(tby));
             nomul(0);
         } 
@@ -1799,7 +1799,7 @@ You_hear("a cough.");
 				if (canseemon(mtmp))
 					pline("%s breathes %s!", Monnam(mtmp),
 						breathwep[typ - 1]);
-				buzz((int)(-20 - (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
+				buzz((int)(-20 - (typ - 1)), (struct obj*)0, mtmp, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, mtmp->mx,
 					mtmp->my, sgn(tbx), sgn(tby));
 				nomul(0);
 				/* breath runs out sometimes. Also, give monster some

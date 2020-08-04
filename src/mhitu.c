@@ -1558,14 +1558,14 @@ int mclevel;
 {
 	if (mclevel <= 0)
 		return 0;
-	if (mclevel > 30)
+	if (mclevel > 25)
 		return 99;
 
 	int mcpercentage = 0;
 
-    if (mclevel > 11)
+    if (mclevel > 16)
     {
-        mcpercentage = mclevel + 69;
+        mcpercentage = mclevel + 74;
     }
     else
     {
@@ -1603,6 +1603,21 @@ int mclevel;
             break;
         case 11:
             mcpercentage = 80;
+            break;
+        case 12:
+            mcpercentage = 82;
+            break;
+        case 13:
+            mcpercentage = 84;
+            break;
+        case 14:
+            mcpercentage = 86;
+            break;
+        case 15:
+            mcpercentage = 88;
+            break;
+        case 16:
+            mcpercentage = 90;
             break;
         default:
             mcpercentage = 0;

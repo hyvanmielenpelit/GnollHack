@@ -1493,7 +1493,7 @@ dobreathe()
         uchar adtyp = mattk->adtyp;
         int typ = get_ray_adtyp(adtyp);
 
-        buzz((20 + typ - 1), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy,
+        buzz((20 + typ - 1), (struct obj*)0, &youmonst, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy,
             u.dx, u.dy);
 
     }
@@ -1554,7 +1554,7 @@ dosteedbreathe()
 
         int typ = get_ray_adtyp(mattk->adtyp);
 
-        buzz((int)(-(20 + typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
+        buzz((int)(-(20 + typ - 1)), (struct obj*)0, u.usteed, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp, u.ux, u.uy, u.dx, u.dy);
 
         u.usteed->mspec_used = 5 + rn2(10);
         if (typ == AD_SLEE && !Sleep_resistance)
@@ -2047,7 +2047,7 @@ doeyestalk()
 		if ((typ >= AD_MAGM) && (typ <= AD_STON))
 		{
 			pline("One of your eyestalks fires %s!", get_eyestalk_ray_name(typ));
-			buzz((int)(30 + (typ - 1)), (struct obj*)0, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
+			buzz((int)(30 + (typ - 1)), (struct obj*)0, &youmonst, (int)mattk->damn, (int)mattk->damd, (int)mattk->damp,
 				u.ux, u.uy, u.dx, u.dy);
 			attacksperformed++;
 		}

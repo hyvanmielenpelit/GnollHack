@@ -229,8 +229,8 @@
 #define dowield() dowield_()
 
 /* ### zap.c ### */
-#define bhitm(x, y) bhitm_(x, y)
-#define bhito(x, y) bhito_(x, y)
+#define bhitm(x, y, z) bhitm_(x, y, z)
+#define bhito(x, y, z) bhito_(x, y, z)
 #define dozap() dozap_()
 
 /* ### getline.c ### */

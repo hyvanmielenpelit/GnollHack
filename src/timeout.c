@@ -2898,7 +2898,7 @@ do_storms()
             diry = rn2(3) - 1;
             if (dirx != 0 || diry != 0)
                 buzz(-15, /* "monster" LIGHTNING spell */
-                     (struct obj*)0, 8, 8, 0, x, y, dirx, diry);
+                     (struct obj*)0, (struct monst*)0, 8, 8, 0, x, y, dirx, diry);
         }
     }
 

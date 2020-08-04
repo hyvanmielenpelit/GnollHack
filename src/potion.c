@@ -2122,7 +2122,7 @@ do_illness: /* Pestilence's potion of healing effect */
             }
             break;
         case POT_POLYMORPH:
-            (void) bhitm(mon, obj);
+            (void) bhitm(mon, obj, (struct monst*)0);
             break;
         /*
         case POT_GAIN_LEVEL:

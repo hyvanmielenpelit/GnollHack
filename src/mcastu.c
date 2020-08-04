@@ -1118,7 +1118,7 @@ register struct attack *mattk;
             if (canseemon(mtmp))
                 pline("%s casts \'%s\' at you!", Monnam(mtmp),
                       flash_types[ad_to_typ(adtyp)]);
-			buzz(-ad_to_typ(adtyp), (struct obj*)0, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
+			buzz(-ad_to_typ(adtyp), (struct obj*)0, mtmp, damn, damd, damp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby));
             *appr_spec_ptr = is_ultimate ? d(2, 8) + 100 : d(2, 4) + 10;
         }
         else

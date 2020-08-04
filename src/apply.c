@@ -225,8 +225,8 @@ struct obj *obj;
     } else if (!u.dx && !u.dy) {
         (void) zapyourself(obj, TRUE);
     } else if ((mtmp = bhit(u.dx, u.dy, COLNO, 0, FLASHED_LIGHT,
-                            (int FDECL((*), (MONST_P, OBJ_P))) 0,
-                            (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE)) != 0) {
+                            (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
+                            (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE)) != 0) {
         obj->ox = u.ux, obj->oy = u.uy;
         (void) flash_hits_mon(mtmp, obj);
     }
@@ -1111,8 +1111,8 @@ struct obj *obj;
         return 1;
     }
     mtmp = bhit(u.dx, u.dy, COLNO, 0, INVIS_BEAM,
-                (int FDECL((*), (MONST_P, OBJ_P))) 0,
-                (int FDECL((*), (OBJ_P, OBJ_P))) 0, &obj, TRUE, FALSE);
+                (int FDECL((*), (MONST_P, OBJ_P, MONST_P))) 0,
+                (int FDECL((*), (OBJ_P, OBJ_P, MONST_P))) 0, &obj, &youmonst, TRUE, FALSE);
     if (!mtmp || !haseyes(mtmp->data) || notonhead)
         return 1;
 
@@ -1242,7 +1242,7 @@ struct obj* obj;
     You("raise %s high.", yname(obj));
     exercise(A_WIS, TRUE);
 	(void)bhit(u.dx, u.dy, obj->blessed ? 4 : 3, 0, ZAPPED_WAND, uthitm, uthito,
-		& obj, TRUE, FALSE);
+		&obj, &youmonst, TRUE, FALSE);
 
 	return 1;
 }
@@ -1250,9 +1250,10 @@ struct obj* obj;
 /* Routines for IMMEDIATE wands and spells. */
 /* bhitm: monster mtmp was hit by the effect of wand or spell otmp */
 int
-uthitm(mtmp, otmp)
+uthitm(mtmp, otmp, origmonst)
 struct monst* mtmp;
 struct obj* otmp;
+struct monst* origmonst;
 {
 	boolean wake = TRUE; /* Most 'zaps' should wake monster */
 	boolean reveal_invis = FALSE, learn_it = FALSE;
@@ -1372,8 +1373,9 @@ struct obj* otmp;
 }
 
 int
-uthito(obj, otmp)
+uthito(obj, otmp, origmonst)
 struct obj* obj, * otmp;
+struct monst* origmonst;
 {
 	int res = 0; /* did not affect object by default */
 
@@ -4532,11 +4534,11 @@ struct obj *obj;
              * turning that kills an undead from raising resulting corpse.
              */
             if ((mon = m_at(x, y)) != 0) {
-                (void) bhitm(mon, obj);
+                (void) bhitm(mon, obj, (struct monst*)0);
                 /* if (context.botl) bot(); */
             }
             if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, bhito, x, y, 0, hit_only_one, FALSE);
+                (void) bhitpile(obj, (struct monst*)0, bhito, x, y, 0, hit_only_one, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }
@@ -4554,7 +4556,7 @@ struct obj *obj;
              * since it's also used by retouch_equipment() for polyself.)
              */
             if (affects_objects && level.objects[x][y]) {
-                (void) bhitpile(obj, bhito, x, y, 0, hit_only_one, FALSE);
+                (void) bhitpile(obj, (struct monst*)0, bhito, x, y, 0, hit_only_one, FALSE);
                 if (context.botl)
                     bot(); /* potion effects */
             }

@@ -22,10 +22,10 @@ STATIC_DCL void FDECL(mzapmsg, (struct monst *, struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(mreadmsg, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(mquaffmsg, (struct monst *, struct obj *));
 STATIC_DCL boolean FDECL(m_use_healing, (struct monst *));
-STATIC_PTR int FDECL(mbhitm, (struct monst *, struct obj *));
+STATIC_PTR int FDECL(mbhitm, (struct monst *, struct obj *, struct monst*));
 STATIC_DCL void FDECL(mbhit, (struct monst *, int,
-                              int FDECL((*), (MONST_P, OBJ_P)),
-                              int FDECL((*), (OBJ_P, OBJ_P)), struct obj *));
+                              int FDECL((*), (MONST_P, OBJ_P, MONST_P)),
+                              int FDECL((*), (OBJ_P, OBJ_P, MONST_P)), struct obj *));
 STATIC_DCL void FDECL(you_aggravate, (struct monst *));
 STATIC_DCL void FDECL(mon_consume_unstone, (struct monst *, struct obj *,
                                             BOOLEAN_P, BOOLEAN_P));
@@ -1387,9 +1387,10 @@ struct monst *mtmp;
 
 STATIC_PTR
 int
-mbhitm(mtmp, otmp)
+mbhitm(mtmp, otmp, origmonst)
 register struct monst *mtmp;
 register struct obj *otmp;
+register struct monst* origmonst;
 {
     int tmp;
     boolean reveal_invis = FALSE;
@@ -1490,8 +1491,8 @@ STATIC_OVL void
 mbhit(mon, range, fhitm, fhito, obj)
 struct monst *mon;  /* monster shooting the wand */
 register int range; /* direction and range */
-int FDECL((*fhitm), (MONST_P, OBJ_P));
-int FDECL((*fhito), (OBJ_P, OBJ_P)); /* fns called when mon/obj hit */
+int FDECL((*fhitm), (MONST_P, OBJ_P, MONST_P));
+int FDECL((*fhito), (OBJ_P, OBJ_P, MONST_P)); /* fns called when mon/obj hit */
 struct obj *obj;                     /* 2nd arg to fhitm/fhito */
 {
     register struct monst *mtmp;
@@ -1523,12 +1524,12 @@ struct obj *obj;                     /* 2nd arg to fhitm/fhito */
                 destroy_drawbridge(x, y, FALSE);
             }
         if (bhitpos.x == u.ux && bhitpos.y == u.uy) {
-            (*fhitm)(&youmonst, obj);
+            (*fhitm)(&youmonst, obj, mon);
             range -= 3;
         } else if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != 0) {
             if (cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp))
                 map_invisible(bhitpos.x, bhitpos.y);
-            (*fhitm)(mtmp, obj);
+            (*fhitm)(mtmp, obj, mon);
             range -= 3;
         }
         /* modified by GAN to hit all objects */
@@ -1540,7 +1541,7 @@ struct obj *obj;                     /* 2nd arg to fhitm/fhito */
                  otmp = next_obj) {
                 /* Fix for polymorph bug, Tim Wright */
                 next_obj = otmp->nexthere;
-                hitanything += (*fhito)(otmp, obj);
+                hitanything += (*fhito)(otmp, obj, mon);
             }
             if (hitanything)
                 range--;
@@ -1615,7 +1616,7 @@ struct monst *mtmp;
 
 		raytype = -40 - objects[otmp->otyp].oc_dir_subtype; //-40...-48;
 
-        buzz(raytype, otmp, 0, 0, 0, mtmp->mx, mtmp->my,
+        buzz(raytype, otmp, mtmp, 0, 0, 0, mtmp->mx, mtmp->my,
              sgn(mtmp->mux - mtmp->mx), sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
         return (DEADMONSTER(mtmp)) ? 1 : 2;
@@ -1631,7 +1632,7 @@ struct monst *mtmp;
             You_hear("a horn being played.");
         otmp->charges--;
         m_using = TRUE;
-        buzz(-40 - objects[otmp->otyp].oc_dir_subtype, otmp, 0, 0, 0,
+        buzz(-40 - objects[otmp->otyp].oc_dir_subtype, otmp, mtmp, 0, 0, 0,
              mtmp->mx, mtmp->my, sgn(mtmp->mux - mtmp->mx),
              sgn(mtmp->muy - mtmp->my));
         m_using = FALSE;
@@ -2891,14 +2892,18 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
     /* -4 => sliming, causes quiet loss of enhanced speed */
     (void)increase_mon_property_verbosely(mon, SLIMED, 10);
 
-    if (trap) {
+    if (trap)
+    {
         const char *Mnam = vis ? Monnam(mon) : 0;
 
-        if (mon->mx == trap->tx && mon->my == trap->ty) {
+        if (mon->mx == trap->tx && mon->my == trap->ty)
+        {
             if (vis)
                 pline("%s triggers %s fire trap!", Mnam,
                       trap->tseen ? "the" : "a");
-        } else {
+        } 
+        else 
+        {
             remove_monster(mon->mx, mon->my);
             newsym(mon->mx, mon->my);
             place_monster(mon, trap->tx, trap->ty);
@@ -2914,17 +2919,22 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         /* hack to avoid mintrap()'s chance of avoiding known trap */
         mon->mtrapseen &= ~(1 << (FIRE_TRAP - 1));
         mintrap(mon);
-    } else if (otyp == STRANGE_OBJECT) {
+    } 
+    else if (otyp == STRANGE_OBJECT) 
+    {
         /* monster is using fire breath on self */
         if (vis)
             pline("%s breathes fire on %sself.", Monnam(mon), mhim(mon));
         if (!rn2(3))
             mon->mspec_used = rn1(10, 5);
         /* -21 => monster's fire breath; 1 => # of damage dice */
-		damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, 1, 8, 0, &odummyp);
-    } else if (otyp == SCR_FIRE) {
+		damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, mon, 1, 8, 0, &odummyp);
+    } 
+    else if (otyp == SCR_FIRE) 
+    {
         mreadmsg(mon, obj);
-        if (is_confused(mon)) {
+        if (is_confused(mon))
+        {
             if (cansee(mon->mx, mon->my))
                 pline("Oh, what a pretty fire!");
             if (vis && !objects[otyp].oc_name_known
@@ -2933,7 +2943,9 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
             m_useup(mon, obj); /* after docall() */
             vis = FALSE;       /* skip makeknown() below */
             res = FALSE;       /* failed to cure sliming */
-        } else {
+        } 
+        else 
+        {
             m_useup(mon, obj); /* before explode() */
             int dmg = (2 * (rn1(3, 3) + 2 * bcsign(obj)) + 1) / 3;
             /* -11 => monster's fireball */
@@ -2942,20 +2954,25 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
                     by_you ? -EXPL_FIERY : EXPL_FIERY);
             damage = 0; /* damage has been applied by explode() */
         }
-    } else { /* wand/horn of fire w/ positive charge count */
+    }
+    else
+    { /* wand/horn of fire w/ positive charge count */
         mzapmsg(mon, obj, TRUE);
         obj->charges--;
         /* -1 => monster's wand of fire; 2 => # of damage dice */
-        damage = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, 2, 8, 0, &odummyp);
+        damage = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, mon, 2, 8, 0, &odummyp);
     }
 
-    if (damage > 0) {
+    if (damage > 0) 
+    {
         /* zhitm() applies damage but doesn't kill creature off;
            for fire breath, dmg is going to be 0 (fire breathers are
            immune to fire damage) but for wand of fire or fire horn,
            'mon' could have taken damage so might die */
-        if (DEADMONSTER(mon)) {
-            if (by_you) {
+        if (DEADMONSTER(mon))
+        {
+            if (by_you)
+            {
                 /* mon killed self but hero gets credit and blame (except
                    for pacifist conduct); xkilled()'s message would say
                    "You killed/destroyed <mon>" so give our own message */
@@ -2965,13 +2982,16 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
                 xkilled(mon, XKILL_NOMSG | XKILL_NOCONDUCT);
             } else
                 monkilled(mon, "fire", AD_FIRE);
-        } else {
+        } 
+        else 
+        {
             /* non-fatal damage occurred */
             if (vis)
                 pline("%s is burned%s", Monnam(mon), exclam((int)damage));
         }
     }
-    if (vis) {
+    if (vis) 
+    {
         if (res && !DEADMONSTER(mon))
             pline("%s slime is burned away!", s_suffix(Monnam(mon)));
         if (otyp != STRANGE_OBJECT)

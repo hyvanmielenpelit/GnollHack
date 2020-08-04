@@ -583,7 +583,7 @@ struct obj *instr;
             }
         } else {
             update_u_facing(TRUE);
-            buzz(objects[instr->otyp].oc_dir_subtype, instr, 0, 0, 0,
+            buzz(objects[instr->otyp].oc_dir_subtype, instr, &youmonst, 0, 0, 0,
                  u.ux, u.uy, u.dx, u.dy);
         }
         makeknown(instr->otyp);
@@ -602,7 +602,7 @@ struct obj *instr;
         {
             if (!DEADMONSTER(mtmp) && !is_tame(mtmp) && !is_peaceful(mtmp) && !has_mind_shielding(mtmp) && isok(mtmp->mx, mtmp->my) && dist2(mtmp->mx, mtmp->my, u.ux, u.uy) <= radius * radius && hearing_array[mtmp->mx][mtmp->my] > 0.0f)
             {
-                if (!check_ability_resistance_success(mtmp, A_WIS, 0))
+                if (!check_ability_resistance_success(mtmp, A_WIS, objects[instr->otyp].oc_spell_saving_throw_adjustment))
                 {
                     increase_mon_property_b(mtmp, CRAZED, (dur_dice > 0 && dur_diesize > 0 ? d(dur_dice, dur_diesize) : 0) + dur_plus, canspotmon(mtmp));
                     //incr_itimeout(&u.uprops[CRAZED].intrinsic, (dur_dice > 0 && dur_diesize > 0 ? d(dur_dice, dur_diesize) : 0) + dur_plus);
@@ -637,7 +637,7 @@ struct obj *instr;
         consume_obj_charge(instr, TRUE);
 
         pline("%s very attractive music.", Tobjnam(instr, "produce"));
-        charm_monsters((u.ulevel - 1) / 3 + 1, objects[instr->otyp].oc_mc_adjustment);
+        charm_monsters((u.ulevel - 1) / 3 + 1, objects[instr->otyp].oc_spell_saving_throw_adjustment);
         exercise(A_DEX, TRUE);
         break;
     case WOODEN_HARP: /* May calm Nymph */
