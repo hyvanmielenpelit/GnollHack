@@ -355,7 +355,7 @@ struct savefile_info {
 #define MAXSTAIRS 1   /* max # of special stairways in a dungeon */
 #define ALIGNWEIGHT 4 /* generation weight of alignment */
 
-#define MAXULEV 36 /* max character experience level */
+#define MAXULEV 50 /* max character experience level */
 #define MAX_MONSTER_LEVEL 127 /* max m_lev for a monster, maximum value for a signed char */
 
 #define MAXMONNO 240 /* extinct monst after this number created (JG -- doubled) */

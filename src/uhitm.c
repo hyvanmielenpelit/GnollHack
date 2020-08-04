@@ -274,6 +274,8 @@ int *attk_count, *role_roll_penalty;
 	}
 	else if (weaponskill == P_MARTIAL_ARTS && !uarm && !uarms)
 	{
+		skill_multiplier = 1.0;
+#if 0
 		switch (skill_level)
 		{
 		case P_ISRESTRICTED:
@@ -298,9 +300,12 @@ int *attk_count, *role_roll_penalty;
 		default:
 			break;
 		}
+#endif
 	}
 	else if(weaponskill != P_NONE)
 	{
+		skill_multiplier = 0.5;
+#if 0
 		switch (skill_level)
 		{
 		case P_ISRESTRICTED:
@@ -319,6 +324,7 @@ int *attk_count, *role_roll_penalty;
 		default:
 			break;
 		}
+#endif
 	}
     *role_roll_penalty = 0; /* default is `none' */
 

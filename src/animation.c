@@ -423,6 +423,26 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dungeon-normal-ice-replacement",
+      DUNGEON_NORMAL_ICE_REPLACEMENT_TILES, DUNGEON_NORMAL_ICE_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_SHORE_TILE,
+      AUTODRAW_NONE,
+      { "shore-room", "shore-grass", "shore-ground", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-normal-lava-replacement",
+      DUNGEON_NORMAL_LAVA_REPLACEMENT_TILES, DUNGEON_NORMAL_LAVA_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_SHORE_TILE,
+      AUTODRAW_NONE,
+      { "shore-room", "shore-grass", "shore-ground", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "brass-lantern-replacement",
       BRASS_LANTERN_LIT_TILES, BRASS_LANTERN_LIT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
@@ -717,7 +737,7 @@ enum autodraw_types* autodraw_ptr;
         {
             int above_y = y - 1;
             if (!isok(x, above_y) || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) 
-                || IS_POOL(levl[x][above_y].typ) || levl[x][above_y].typ == LAVAPOOL || levl[x][above_y].typ == UNEXPLORED)
+                || IS_POOL(levl[x][above_y].typ) || levl[x][above_y].typ == ICE || levl[x][above_y].typ == LAVAPOOL || levl[x][above_y].typ == UNEXPLORED)
             {
                 /* No action */
             }

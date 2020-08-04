@@ -17,27 +17,23 @@ int lev;
 	if (lev <= 0)
 		return 0;
 
-	long total_level_exp = 0;
-	double multiplier = 1;
+	long total_level_exp = 0L;
+	double multiplier = 1.0;
+    double monsters_to_be_killed = 10.0;
+    double base = 1.0868;
 
 	for(int i = 1; i <= lev; i++)
 	{
 		double levd = (double)i;
-		double monst_exp_cur_lvl = 1 + levd * levd;
-		double monst_exp_prev_lvl = 1 + (levd - 1) * (levd - 1);
-		double avg_monst_exp = (monst_exp_cur_lvl + monst_exp_prev_lvl) / 2;
+		double monst_exp_cur_lvl = 1.0 + levd * levd;
+		double monst_exp_prev_lvl = 1.0 + (levd - 1.0) * (levd - 1.0);
+		double avg_monst_exp = (monst_exp_cur_lvl + monst_exp_prev_lvl) / 2.0;
 
-		double monsters_to_be_killed = 10;
-		double base = 1.14177;
-		//double exponent = levd - 5;
-
-		if (levd > 5)
-			multiplier = multiplier * base; // pow(base, exponent);
-
-		monsters_to_be_killed = monsters_to_be_killed * multiplier;
+		if (levd > 5.0)
+            monsters_to_be_killed *= base;
 
 		double exp_needed = avg_monst_exp * monsters_to_be_killed;
-		long exp_needed_long = ((long)(exp_needed / 10) + 1) * 10; // Round up to the closest 10
+		long exp_needed_long = ((long)(exp_needed / 10L) + 1L) * 10L; // Round up to the closest 10
 		total_level_exp += exp_needed_long;
 	}
 
