@@ -2268,7 +2268,7 @@ dochat()
 			chatnum++;
 		}
 
-		if (is_peaceful(mtmp) && mtmp->mextra && ESMI(mtmp))
+		if (is_peaceful(mtmp) && mtmp->mextra && ESMI(mtmp) &&!mtmp->mrevived) /* no mrivived here to prevent abuse*/
 		{
 			Sprintf(available_chat_list[chatnum].name, "Ask for armor enchantment");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_armor;

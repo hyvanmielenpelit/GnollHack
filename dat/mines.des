@@ -303,7 +303,7 @@ SUBROOM: "temple", lit, (19,5), (4,4) {
 
 SUBROOM: "smithy", lit, (18,10), (4,3) {
   ROOMDOOR: false, closed, west, random
-  ANVIL:(02,02)
+  ANVIL:(02,01)
   MONSTER: ('g', "gnome lord"), random
 }
 
