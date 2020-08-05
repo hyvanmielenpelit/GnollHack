@@ -4006,6 +4006,7 @@ struct monst* mtmp;
 	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
 	pseudo->blessed = pseudo->cursed = 0;
 	pseudo->quan = 20L; /* do not let useup get it */
+	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
 	seffects(pseudo);
 	obfree(pseudo, (struct obj*)0);
 	/* gnostic handled in seffects */
@@ -4053,6 +4054,7 @@ struct monst* mtmp;
 	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
 	pseudo->blessed = pseudo->cursed = 0;
 	pseudo->quan = 20L; /* do not let useup get it */
+	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
 	peffects(pseudo);
 	obfree(pseudo, (struct obj*)0);
 	u.uconduct.gnostic++;
@@ -4099,6 +4101,7 @@ struct monst* mtmp;
 	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
 	pseudo->blessed = pseudo->cursed = 0;
 	pseudo->quan = 20L; /* do not let useup get it */
+	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
 	peffects(pseudo);
 	obfree(pseudo, (struct obj*)0);
 	u.uconduct.gnostic++;
@@ -4145,6 +4148,7 @@ struct monst* mtmp;
 	struct obj* pseudo = mksobj(otyp, FALSE, FALSE, FALSE);
 	pseudo->blessed = pseudo->cursed = 0;
 	pseudo->quan = 20L; /* do not let useup get it */
+	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
 	zapyourself(pseudo, TRUE);
 	obfree(pseudo, (struct obj*)0);
 	u.uconduct.gnostic++;
@@ -4760,6 +4764,7 @@ char* no_mood_string;
 	struct obj* pseudo = mksobj(service_spell_id, FALSE, FALSE, FALSE);
 	pseudo->blessed = pseudo->cursed = 0;
 	pseudo->quan = 20L; /* do not let useup get it */
+	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
 	seffects(pseudo);
 	obfree(pseudo, (struct obj*)0);
 	/* gnostic handled in seffects */
@@ -4830,15 +4835,18 @@ struct monst* mtmp;
 
 	if (otmp && !otmp->oclass == ARMOR_CLASS)
 	{
+		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, this is not an armor I can repair.");
 		return;
 	}
 	else if (otmp && !erosion_matters(otmp))
 	{
+		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, I couldn't make this any better than before.");
 		return;
 	}
 
+	play_sfx_sound(SFX_REPAIR_ITEM_SUCCESS);
 	if (otmp->oeroded || otmp->oeroded2)
 	{
 		otmp->oeroded = otmp->oeroded2 = 0;
@@ -4871,15 +4879,18 @@ struct monst* mtmp;
 	/* Check if the selection is not an appropriate weapon */
 	if (otmp && !is_weapon(otmp))
 	{
+		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, this is not a weapon I can repair.");
 		return;
 	}
 	else if (otmp && !erosion_matters(otmp))
 	{
+		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, I couldn't make this any better than before.");
 		return;
 	}
 
+	play_sfx_sound(SFX_REPAIR_ITEM_SUCCESS);
 	if (otmp->oeroded || otmp->oeroded2)
 	{
 		otmp->oeroded = otmp->oeroded2 = 0;

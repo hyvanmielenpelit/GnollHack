@@ -1439,7 +1439,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	int costchange = COST_none;
 	boolean altfmt = FALSE;
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
-
+    boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */
     already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
@@ -1481,7 +1481,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 
 			if(otmp && otmp->oclass != ARMOR_CLASS)
 			{
-				pline(!Blind
+                play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+                pline(!Blind
 					? "%s then fades."
 					: "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
 				sobj = 0;
@@ -1493,7 +1494,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 
 	enchantarmor:
 		if (!otmp) {
-			strange_feeling(sobj, !Blind
+            play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+            strange_feeling(sobj, !Blind
 				? "Your skin glows then fades."
 				: "Your skin feels warm for a moment.");
 			sobj = 0; /* useup() in strange_feeling() */
@@ -1501,11 +1503,12 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			exercise(A_STR, !scursed);
 			break;
 		}
-		if (confused || otyp == SPE_PROTECT_ARMOR || otyp == SCR_PROTECT_ARMOR) {
+		if ((!is_serviced_spell && confused) || otyp == SPE_PROTECT_ARMOR || otyp == SCR_PROTECT_ARMOR) {
 			old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
 			otmp->oerodeproof = 0; /* for messages */
-			if (Blind) {
+            play_sfx_sound(SFX_PROTECT_ITEM_SUCCESS);
+            if (Blind) {
 				otmp->rknown = FALSE;
 				pline("%s warm for a moment.", Yobjnam2(otmp, "feel"));
 			}
@@ -1549,7 +1552,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		/* KMH -- catch underflow */
 		s = scursed ? -otmp->enchantment : otmp->enchantment;
 		if (s > (special_armor ? 5 : 3) && rn2(max(1, s))) {
-			otmp->in_use = TRUE;
+            play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
+            otmp->in_use = TRUE;
 			pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
 				otense(otmp, Blind ? "vibrate" : "glow"),
 				(!Blind && !same_color) ? " " : "",
@@ -1565,7 +1569,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			? (rn2(max(1, otmp->enchantment)) == 0)
 			: sblessed ? rnd(2) : 1;
 		if (s >= 0 && is_dragon_scales(otmp)) {
-			/* dragon scales get turned into dragon scale mail */
+            play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
+            /* dragon scales get turned into dragon scale mail */
 			pline("%s merges and hardens!", Yname2(otmp));
 			setworn((struct obj*) 0, W_ARM);
 			/* assumes same order */
@@ -1584,7 +1589,17 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				alter_cost(otmp, 0L); /* shop bill */
 			break;
 		}
-		pline("%s %s%s%s%s for a %s.", Yname2(otmp),
+
+        if(s == 0)
+            play_sfx_sound(SFX_ENCHANT_ITEM_VIOLENT_GLOW);
+        else if(s < 0)
+            play_sfx_sound(SFX_ENCHANT_ITEM_NEGATIVE);
+        else if(s > 1)
+            play_sfx_sound(SFX_ENCHANT_ITEM_BLESSED_SUCCESS);
+        else
+            play_sfx_sound(SFX_ENCHANT_ITEM_SUCCESS);
+
+        pline("%s %s%s%s%s for a %s.", Yname2(otmp),
 			s == 0 ? "violently " : "",
 			otense(otmp, Blind ? "vibrate" : "glow"),
 			(!Blind && !same_color) ? " " : "",
@@ -1615,17 +1630,24 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				alter_cost(otmp, 0L);
 		}
 
-		if ((otmp->enchantment > (special_armor ? 5 : 3))
-			&& (special_armor || !rn2(7)))
-			pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
-				Blind ? "again" : "unexpectedly");
+        if ((otmp->enchantment > (special_armor ? 5 : 3))
+            && (special_armor || !rn2(7)))
+        {
+            play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
+            pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
+                Blind ? "again" : "unexpectedly");
+        }
 		break;
 	}
-	case SCR_DESTROY_ARMOR: {
+	case SCR_DESTROY_ARMOR:
+    {
 		otmp = some_armor(&youmonst);
-		if (confused) {
-			if (!otmp) {
-				strange_feeling(sobj, "Your bones itch.");
+		if (confused)
+        {
+			if (!otmp)
+            {
+                play_sfx_sound(SFX_HANDS_ITCH);
+                strange_feeling(sobj, "Your bones itch.");
 				sobj = 0; /* useup() in strange_feeling() */
 				exercise(A_STR, FALSE);
 				exercise(A_CON, FALSE);
@@ -1902,6 +1924,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
                     || (otyp == SPE_ENCHANT_WEAPON && objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
                 ))
 			{
+                play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
 				pline(!Blind
 					? "%s then fades."
 					: "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
@@ -1924,11 +1947,11 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 
         /* Check for successful protect weapon */
 		if (
-            (confused || otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON) && otmp
+            ((confused && !is_serviced_spell) || otyp == SPE_PROTECT_WEAPON || otyp == SCR_PROTECT_WEAPON) && otmp
 			&& erosion_matters(otmp) && is_weapon(otmp)
             )
         {
-            play_sfx_sound(SFX_AURA_GLOW);
+            play_sfx_sound(SFX_PROTECT_ITEM_SUCCESS);
             
             old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
@@ -2305,39 +2328,52 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	case SPE_BLESS:
 		allowall[0] = ALL_CLASSES;
 		allowall[1] = '\0';
-		if (invent && !confused) {
+		if (invent && !confused) 
+        {
 			otmp = getobj(allowall, (otyp == SPE_BLESS ? "bless" : "curse"), 0, "");
 			if (otmp)
 			{
 				u.uconduct.gnostic++;
+                enum sfx_sound_types soundid = SFX_BLESS_ITEM_SUCCESS;
 
-				if (otyp == SPE_BLESS) {
-					if (otmp->cursed) {
+				if (otyp == SPE_BLESS) 
+                {
+					if (otmp->cursed) 
+                    {
 						func = uncurse;
 						glowcolor = NH_AMBER;
 						costchange = COST_UNCURS;
+                        soundid = SFX_UNCURSE_ITEM_SUCCESS;
 					}
-					else if (!otmp->blessed) {
+					else if (!otmp->blessed) 
+                    {
 						func = bless;
 						glowcolor = NH_LIGHT_BLUE;
 						costchange = COST_alter;
 						altfmt = TRUE; /* "with a <color> aura" */
-					}
+                        soundid = SFX_BLESS_ITEM_SUCCESS;
+                    }
 				}
-				else  { //Curse
-					if (otmp->blessed) {
+				else  
+                { //Curse
+					if (otmp->blessed) 
+                    {
 						func = unbless;
 						glowcolor = "brown";
 						costchange = COST_UNBLSS;
-					}
-					else if (!otmp->cursed) {
+                        soundid = SFX_UNBLESS_ITEM_SUCCESS;
+                    }
+					else if (!otmp->cursed)
+                    {
 						func = curse;
 						glowcolor = NH_BLACK;
 						costchange = COST_alter;
 						altfmt = TRUE;
-					}
+                        soundid = SFX_CURSE_ITEM_SUCCESS;
+                    }
 				}
-				if (func) {
+				if (func) 
+                {
 					/* give feedback before altering the target object;
 					   this used to set obj->bknown even when not seeing
 					   the effect; now hero has to see the glow, and bknown
@@ -2351,7 +2387,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					otmp->bknown = !Hallucination;
 					/* potions of water are the only shop goods whose price depends
 					   on their curse/bless state */
-					if (otmp->unpaid && otmp->otyp == POT_WATER) {
+					if (otmp->unpaid && otmp->otyp == POT_WATER) 
+                    {
 						if (costchange == COST_alter)
 							/* added blessing or cursing; update shop
 							   bill to reflect item's new higher price */
@@ -2362,7 +2399,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 							costly_alteration(otmp, costchange);
 					}
 					/* finally, change curse/bless state */
-					(*func)(otmp);
+                    play_sfx_sound(soundid);
+                    (*func)(otmp);
 				}
 				update_inventory();
 			}

@@ -1703,16 +1703,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_BLESS_ITEM_SUCCESS, 1.0f}
     },
     {
-        "GHSOUND_BLESS_ITEM_FAIL",
-        {GHSOUND_BLESS_ITEM_FAIL, 1.0f}
+        "GHSOUND_UNCURSE_ITEM_SUCCESS",
+        {GHSOUND_UNCURSE_ITEM_SUCCESS, 1.0f}
     },
     {
         "GHSOUND_CURSE_ITEM_SUCCESS",
         {GHSOUND_CURSE_ITEM_SUCCESS, 1.0f}
     },
     {
-        "GHSOUND_CURSE_ITEM_FAIL",
-        {GHSOUND_CURSE_ITEM_FAIL, 1.0f}
+        "GHSOUND_UNBLESS_ITEM_SUCCESS",
+        {GHSOUND_UNBLESS_ITEM_SUCCESS, 1.0f}
     },
 };
 

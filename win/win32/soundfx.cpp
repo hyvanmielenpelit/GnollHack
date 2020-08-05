@@ -247,9 +247,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Repair Item/Success", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Repair Item/Fail", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Bless Item/Success", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/Bless Item/Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Bless Item/Uncurse", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Curse Item/Success", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/Curse Item/Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Curse Item/Unbless", 1.0f },
 };
 
 

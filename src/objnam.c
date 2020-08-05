@@ -3426,8 +3426,10 @@ static const struct alt_spellings {
 	{ "sulphurous ash", PINCH_OF_SULFUROUS_ASH },
 	{ "ash", PINCH_OF_SULFUROUS_ASH },
 	{ "spinach", HANDFUL_OF_SPINACH_LEAVES },
-	{ "ring of death resistance", RIN_LIFE_PROTECTION },
-	{ "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
+	{ "ring of death resistance", RIN_PROTECTION_FROM_UNDEATH },
+    { "ring of drain resistance", RIN_PROTECTION_FROM_UNDEATH },
+    { "ring of protection from death", RIN_PROTECTION_FROM_UNDEATH },
+    { "ring of protection from shape shifters", RIN_PROTECTION_FROM_SHAPE_CHANGERS },
 	{ "belt of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
 	{ "girdle of giant strength", BELT_OF_HILL_GIANT_STRENGTH },
 	/* if we ever add other sizes, move this to o_ranges[] with "bag" */

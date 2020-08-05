@@ -4603,24 +4603,33 @@ double *monster_hp_multiplier_ptr;
 	if (!monster_damage_multiplier_ptr || !monster_hp_multiplier_ptr)
 		return;
 
-	*monster_damage_multiplier_ptr = 1;
-	*monster_hp_multiplier_ptr = 1;
+	*monster_damage_multiplier_ptr = 1.0;
+	*monster_hp_multiplier_ptr = 1.0;
 
 	switch (context.game_difficulty)
 	{
 	case -2:
+		*monster_damage_multiplier_ptr = 0.63;
+		*monster_hp_multiplier_ptr = 0.40;
+		break;
+	case -1:
+		*monster_damage_multiplier_ptr = 0.71;
+		*monster_hp_multiplier_ptr = 0.50;
+		break;
+	case 0:
 		*monster_damage_multiplier_ptr = 0.79;
 		*monster_hp_multiplier_ptr = 0.63;
 		break;
-	case -1:
+	case 1:
 		*monster_damage_multiplier_ptr = 0.89;
 		*monster_hp_multiplier_ptr = 0.79;
 		break;
-	case 1:
+	/* Inactive currently */
+	case 3:
 		*monster_damage_multiplier_ptr = 1.12;
 		*monster_hp_multiplier_ptr = 1.26;
 		break;
-	case 2:
+	case 4:
 		*monster_damage_multiplier_ptr = 1.26;
 		*monster_hp_multiplier_ptr = 1.59;
 		break;

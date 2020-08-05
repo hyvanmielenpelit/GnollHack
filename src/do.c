@@ -3771,7 +3771,7 @@ register struct obj *obj;
     case RIN_SHOCK_RESISTANCE:
         pline("Static electricity surrounds the sink.");
         break;
-	case RIN_LIFE_PROTECTION:
+	case RIN_PROTECTION_FROM_UNDEATH:
 		pline("A pillar of smoke arises from the sink.");
 		break;
 	case RIN_SEVEN_CHARGES: /* Artifact version of ring of conflict */

@@ -64,6 +64,7 @@ struct obj {
 #define SPEFLAGS_STATUE_HISTORIC			0x00000020UL
 #define SPEFLAGS_CORPSE_ON_ICE				0x00000040UL
 #define SPEFLAGS_DETECTED   				0x00000080UL
+#define SPEFLAGS_SERVICED_SPELL     		0x00000100UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
