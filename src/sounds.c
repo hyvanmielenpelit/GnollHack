@@ -59,6 +59,10 @@ STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
+STATIC_OVL int FDECL(spell_service_query, (struct monst*, int, const char*, int, char*));
+STATIC_OVL int FDECL(general_service_query, (struct monst*, void (*)(struct monst*), const char*, int, char*));
+STATIC_OVL void FDECL(repair_armor_func, (struct monst*));
+STATIC_OVL void FDECL(repair_weapon_func, (struct monst*));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -4477,7 +4481,8 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	return 1;
+	int cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));	
+	return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, "enchant an armor", cost, "enchanting an armor");
 }
 
 STATIC_OVL int
@@ -4487,7 +4492,8 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	return 1;
+	int cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, "enchant a weapon", cost, "enchanting a weapon");
 }
 
 STATIC_OVL int
@@ -4497,7 +4503,8 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	return 1;
+	int cost = max(1, (int)((150 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor");
 }
 
 STATIC_OVL int
@@ -4507,7 +4514,8 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	return 1;
+	int cost = max(1, (int)((150 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon");
 }
 
 
@@ -4518,7 +4526,8 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	return 1;
+	int cost = max(1, (int)((600 + 30 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return spell_service_query(mtmp, SPE_PROTECT_ARMOR, "protect an armor", cost, "protecting an armor");
 }
 
 STATIC_OVL int
@@ -4528,7 +4537,8 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	return 1;
+	int cost = max(1, (int)((600 + 30 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return spell_service_query(mtmp, SPE_PROTECT_WEAPON, "protect a weapon", cost, "protecting a weapon");
 }
 
 
@@ -4703,6 +4713,188 @@ const char *msg;
     }
 }
 
+
+STATIC_OVL int
+spell_service_query(mtmp, service_spell_id, service_verb, service_cost, no_mood_string)
+struct monst* mtmp;
+int service_spell_id, service_cost;
+const char* service_verb;
+char* no_mood_string;
+{
+
+	long umoney = money_cnt(invent);
+	int u_pay;
+	int service_action = 0;
+	char qbuf[QBUFSZ];
+
+	if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to %s?\" (%d %s)", service_verb, service_cost, currency((long)service_cost));
+	switch (ynq(qbuf)) 
+	{
+	default:
+	case 'n':
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)service_cost) 
+		{
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = service_cost;
+		service_action = 1;
+		break;
+	}
+
+
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	struct obj* pseudo = mksobj(service_spell_id, FALSE, FALSE, FALSE);
+	pseudo->blessed = pseudo->cursed = 0;
+	pseudo->quan = 20L; /* do not let useup get it */
+	seffects(pseudo);
+	obfree(pseudo, (struct obj*)0);
+	/* gnostic handled in seffects */
+
+	return 1;
+}
+
+STATIC_OVL int
+general_service_query(mtmp, service_func, service_verb, service_cost, no_mood_string)
+struct monst* mtmp;
+int service_cost;
+void (*service_func)(struct monst*);
+const char* service_verb;
+char* no_mood_string;
+{
+
+	long umoney = money_cnt(invent);
+	int u_pay;
+	int service_action = 0;
+	char qbuf[QBUFSZ];
+
+	if (!m_general_talk_check(mtmp, no_mood_string) || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to %s?\" (%d %s)", service_verb, service_cost, currency((long)service_cost));
+	switch (ynq(qbuf))
+	{
+	default:
+	case 'n':
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)service_cost)
+		{
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = service_cost;
+		service_action = 1;
+		break;
+	}
+
+
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	service_func(mtmp);
+
+	return 1;
+}
+
+STATIC_OVL void
+repair_armor_func(mtmp)
+struct monst* mtmp;
+{
+	const char repair_armor_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
+	struct obj* otmp = getobj(repair_armor_objects, "repair", 0, "");
+
+	if (!otmp)
+		return;
+
+	pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+
+	if (otmp && !otmp->oclass == ARMOR_CLASS)
+	{
+		verbalize("Sorry, this is not an armor I can repair.");
+		return;
+	}
+	else if (otmp && !erosion_matters(otmp))
+	{
+		verbalize("Sorry, I couldn't make this any better than before.");
+		return;
+	}
+
+	if (otmp->oeroded || otmp->oeroded2)
+	{
+		otmp->oeroded = otmp->oeroded2 = 0;
+		pline("%s as good as new!",
+			Yobjnam2(otmp, Blind ? "feel" : "look"));
+	}
+	else
+	{
+		otmp->oeroded = otmp->oeroded2 = 0;
+		pline("%s as good as new, just like %s before!",
+			Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
+	}
+
+	verbalize("Thank you for using my services.");
+
+}
+
+STATIC_OVL void
+repair_weapon_func(mtmp)
+struct monst* mtmp;
+{
+	const char repair_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, 0 };
+	struct obj* otmp = getobj(repair_weapon_objects, "repair", 0, "");
+
+	if (!otmp)
+		return;
+
+	pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
+
+	/* Check if the selection is not an appropriate weapon */
+	if (otmp && !is_weapon(otmp))
+	{
+		verbalize("Sorry, this is not a weapon I can repair.");
+		return;
+	}
+	else if (otmp && !erosion_matters(otmp))
+	{
+		verbalize("Sorry, I couldn't make this any better than before.");
+		return;
+	}
+
+	if (otmp->oeroded || otmp->oeroded2)
+	{
+		otmp->oeroded = otmp->oeroded2 = 0;
+		pline("%s as good as new!",
+			Yobjnam2(otmp, Blind ? "feel" : "look"));
+	}
+	else
+	{
+		otmp->oeroded = otmp->oeroded2 = 0;
+		pline("%s as good as new, just like %s before!",
+			Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
+	}
+
+	verbalize("Thank you for using my services.");
+}
 
 #endif /* USER_SOUNDS */
 

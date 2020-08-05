@@ -890,7 +890,7 @@ makelevel()
             && nroom >= room_threshold && shopok)  // rn2(u_depth) < 3))
             res = mkroom(SHOPBASE);
 
-        if (!res && u_depth > 3 && !rn2(7))
+        if (!res && u_depth > 1 && !rn2(7))
             res = mkroom(SMITHY);
         if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
 			&& !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))

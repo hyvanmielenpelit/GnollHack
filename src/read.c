@@ -1897,7 +1897,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			if (otmp && 
                 (!is_weapon(otmp) 
                     || (otyp == SPE_PROTECT_WEAPON && !erosion_matters(otmp)) 
-                    || (otyp == SPE_ENCHANT_WEAPON && objects[otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
+                    || (otyp == SPE_ENCHANT_WEAPON && objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
                 ))
 			{
 				pline(!Blind
