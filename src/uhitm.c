@@ -1240,9 +1240,11 @@ boolean* obj_destroyed;
 					silvermsg = TRUE;
 					silverobj = TRUE;
 				}
+
 				if ((artifact_light(obj) || obj_shines_magical_light(obj)) && obj->lamplit
 					&& mon_hates_light(mon))
 					lightobj = TRUE;
+
 				if (u.usteed && !thrown && damage > 0
 					&& obj && objects[obj->otyp].oc_subtyp == WEP_LANCE && mon != u.ustuck) 
 				{
@@ -1250,22 +1252,6 @@ boolean* obj_destroyed;
 					/* exercise skill even for minimal damage hits */
 					if (jousting)
 						valid_weapon_attack = TRUE;
-				}
-				if (thrown == HMON_THROWN
-					&& (is_ammo(obj) || is_missile(obj))) 
-				{
-					if (ammo_and_launcher(obj, uwep)) 
-					{
-						/* Elves and Samurai do extra damage using
-						 * their bows&arrows; they're highly trained.
-						 */
-						if (Role_if(PM_SAMURAI) && obj->otyp == YA
-							&& uwep->otyp == YUMI)
-							damage++;
-						else if (Race_if(PM_ELF) && obj->otyp == ELVEN_ARROW
-							&& uwep->otyp == ELVEN_LONG_BOW)
-							damage++;
-					}
 				}
 
 				if (obj->opoisoned && is_poisonable(obj))
@@ -1864,11 +1850,13 @@ boolean* obj_destroyed;
 #endif
 
 	/* Skill-based critical strike */
+	boolean skill_critical_success = FALSE;
 	if (damage > 0 && !incorrect_weapon_use)
 	{
 		int skill_crit_chance = get_skill_critical_strike_chance(wtype);
 		if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
 		{
+			skill_critical_success = TRUE;
 			damage *= 2;
 		}
 	}
@@ -1943,19 +1931,20 @@ boolean* obj_destroyed;
 		const char* striketext = strikefrombehind ? "strike" : "hit";
 		const char* frombehindtext = strikefrombehind ? " from behind" : "";
 		const char* strikemark = strikefrombehind ? "!" : ".";
+		const char* critical_text = skill_critical_success ? " critically" : "";
 
 		if (thrown)
-			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt);
+			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt, critical_text);
 		else if (!hide_damage_amount && damagedealt > 0) 
 		{
 
 			if (!flags.verbose)
-				You("%s it for %d damage%s%s", striketext, damagedealt, frombehindtext, strikemark);
+				You("%s%s it for %d damage%s%s", striketext, critical_text, damagedealt, frombehindtext, strikemark);
 			else
-				You("%s %s for %d damage%s%s",
+				You("%s %s%s for %d damage%s%s", 
 				(obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
 					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
-					mon_nam(mon), damagedealt, frombehindtext,
+					mon_nam(mon), critical_text, damagedealt, frombehindtext,
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 
 			display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
@@ -1963,12 +1952,12 @@ boolean* obj_destroyed;
 		else 
 		{
 			if (!flags.verbose)
-				You("%s it%s%s", striketext, frombehindtext, strikemark);
+				You("%s it%s%s%s", striketext, critical_text, frombehindtext, strikemark);
 			else
-				You("%s %s%s",
+				You("%s %s%s%s",
 				(obj && (is_shield(obj) || obj->otyp == HEAVY_IRON_BALL))
 					? "bash" : Role_if(PM_BARBARIAN) ? "smite" : striketext,
-					mon_nam(mon), 
+					mon_nam(mon), critical_text,
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 
 			display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
@@ -3106,11 +3095,13 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     }
 
 	/* Skill-based critical strike */
+	boolean skill_critical_success = FALSE;
 	if (damage > 0 && !incorrect_weapon_use)
 	{
 		int skill_crit_chance = get_skill_critical_strike_chance(wtype);
 		if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
 		{
+			skill_critical_success = TRUE;
 			damage *= 2;
 		}
 	}
@@ -3147,7 +3138,10 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     } 
 	else if (flags.verbose && damagedealt > 0)
 	{
-		You("inflict %d damage.", damagedealt);
+		if(skill_critical_success)
+			Your("critical strike inflicts %d damage!", damagedealt);
+		else
+			You("inflict %d damage.", damagedealt);
 		display_m_being_hit(mdef, HIT_TILE, damagedealt, 0UL);
 	}
     return 1;

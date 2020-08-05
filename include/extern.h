@@ -3559,7 +3559,7 @@ E void NDECL(zapsetup);
 E void NDECL(zapwrapup);
 E void FDECL(weffects, (struct obj *));
 E const char *FDECL(exclam, (int force));
-E void FDECL(hit, (const char *, struct monst *, const char *, int));
+E void FDECL(hit, (const char *, struct monst *, const char *, int, const char*));
 E void FDECL(miss, (const char *, struct monst *));
 E struct monst *FDECL(bhit, (int, int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P, MONST_P),

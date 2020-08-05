@@ -230,7 +230,7 @@ struct monst* origmonst;
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Spells do the same damage for small and big
 
 			/* resist deals the damage and displays the damage dealt */
-			hit(zap_type_text, mtmp, exclam(dmg), -1);
+			hit(zap_type_text, mtmp, exclam(dmg), -1, "");
 			(void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_MAGM, TELL);
 
         } 
@@ -304,7 +304,7 @@ struct monst* origmonst;
 			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Same for small and big
 
 			/* resist deals the damage and displays the damage dealt */
-			hit(zap_type_text, mtmp, exclam(dmg), -1);
+			hit(zap_type_text, mtmp, exclam(dmg), -1, "");
 			(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_MAGM, TELL);
 		}
 		else
@@ -6184,27 +6184,24 @@ int force;
 }
 
 void
-hit(str, mtmp, force, damage)
+hit(str, mtmp, force, damage, adjective)
 const char *str;
 struct monst *mtmp;
 const char *force; /* usually either "." or "!" */
+const char* adjective; /* usually either "" or " critically" */
 int damage;
 {
     if ((!cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp)
          && !(u.uswallow && mtmp == u.ustuck)) || !flags.verbose)
 		if(damage >  0)
-	        pline("%s %s it for %d damage%s", The(str), vtense(str, "hit"), damage, force);
-//		else if (!damage)
-//			pline("%s %s it but %s no effect%s", The(str), vtense(str, "hit"), vtense(str, "have"), force);
+	        pline("%s %s it%s for %d damage%s", The(str), vtense(str, "hit"), adjective, damage, force);
 		else
-			pline("%s %s it%s", The(str), vtense(str, "hit"), force);
+			pline("%s %s it%s%s", The(str), vtense(str, "hit"), adjective, force);
 	else
 		if (damage > 0)
-			pline("%s %s %s for %d damage%s", The(str), vtense(str, "hit"), mon_nam(mtmp), damage, force);
-//		else if (!damage)
-//			pline("%s %s %s but %s no effect%s", The(str), vtense(str, "hit"), mon_nam(mtmp), vtense(str, "have"), force);
+			pline("%s %s %s%s for %d damage%s", The(str), vtense(str, "hit"), mon_nam(mtmp), adjective, damage, force);
 		else
-			pline("%s %s %s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), force);
+			pline("%s %s %s%s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), adjective, force);
 
     if(damage > 0)
         display_m_being_hit(mtmp, HIT_TILE, damage, 0UL);
@@ -7387,7 +7384,7 @@ const char* fltxt;
 		if (canseemon(mon))
 		{
 			if(fltxt && strcmp(fltxt, ""))
-				hit(fltxt, mon, ".", -1);
+				hit(fltxt, mon, ".", -1, "");
 
 			pline("%s disintegrates.", Monnam(mon));
 			pline("%s body reintegrates before your %s!",
@@ -7415,7 +7412,7 @@ const char* fltxt;
 		if (canseemon(mon)) 
 		{
 			if (fltxt && strcmp(fltxt, ""))
-				hit(fltxt, mon, ".", -1);
+				hit(fltxt, mon, ".", -1, "");
 
 			pline("%s absorbs the deadly magics!", Monnam(mon));
 			pline("It seems even stronger than before.");
@@ -7479,7 +7476,7 @@ const char *fltxt;
             display_m_being_hit(mon, HIT_DISINTEGRATED, 0, LFLAGS_M_DISINTEGRATED);
         }
         else
-            hit(fltxt, mon, "!", -1);
+            hit(fltxt, mon, "!", -1, "");
     }
 	
     for (otmp = mon->minvent; otmp; otmp = otmp2) 
@@ -7658,7 +7655,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_BOUNCE, mon->mx, mon->my);
                     if (cansee(mon->mx, mon->my))
 					{
-                        hit(fltxt, mon, exclam(0), -1);
+                        hit(fltxt, mon, exclam(0), -1, "");
                         m_shieldeff(mon);
                         (void) mon_reflects(mon,
                                             "But it reflects from %s %s!");
@@ -7687,7 +7684,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					{
 						if (canseemon(mon)) 
 						{
-							hit(fltxt, mon, ".", -1);
+							hit(fltxt, mon, ".", -1, "");
 							pline("%s absorbs the deadly %s!", Monnam(mon),
 								type == ZT_BREATH(ZT_DEATH) ? "blast"
 								: "ray");
@@ -7734,7 +7731,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 						{
                             /* normal non-fatal hit text */
                             if (say || canseemon(mon))
-                                hit(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage));
+                                hit(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage), "");
                         } 
 						else 
 						{
