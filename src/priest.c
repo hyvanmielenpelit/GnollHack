@@ -400,11 +400,34 @@ int sx, sy;
 int smithtype;
 {
     struct monst* smith;
+    int smith_loc_x = sx + 1;
+    int smith_loc_y = sy ;
+    if (!isok(smith_loc_x, smith_loc_y) || IS_ROCK(levl[smith_loc_x][smith_loc_y].typ))
+    {
+        smith_loc_x = sx - 1;
+        smith_loc_y = sy;
+    }
+    if (!isok(smith_loc_x, smith_loc_y) || IS_ROCK(levl[smith_loc_x][smith_loc_y].typ))
+    {
+        smith_loc_x = sx;
+        smith_loc_y = sy - 1;
+    }
+    if (!isok(smith_loc_x, smith_loc_y) || IS_ROCK(levl[smith_loc_x][smith_loc_y].typ))
+    {
+        smith_loc_x = sx;
+        smith_loc_y = sy + 1;
+    }
+    if (!isok(smith_loc_x, smith_loc_y) || IS_ROCK(levl[smith_loc_x][smith_loc_y].typ))
+    {
+        smith_loc_x = sx;
+        smith_loc_y = sy;
+    }
 
-    if (MON_AT(sx + 1, sy))
-        (void)rloc(m_at(sx + 1, sy), FALSE); /* insurance */
+    if (MON_AT(smith_loc_x, smith_loc_y))
+        (void)rloc(m_at(smith_loc_x, smith_loc_y), FALSE); /* insurance */
 
-    smith = makemon(&mons[PM_SMITH], sx + 1, sy, MM_ESMI);
+    int smith_montype = Is_yeenoghu_level(&u.uz) ? PM_FLIND_LORD : PM_SMITH;
+    smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI);
 
     if (smith) 
     {

@@ -1328,7 +1328,7 @@ mksmithy()
     lev = &levl[anvil_spot->x][anvil_spot->y];
     lev->typ = ANVIL;
     lev->subtyp = 0;
-    smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, FALSE);
+    smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, 0);
     level.flags.has_smithy = 1;
     return 1;
 }

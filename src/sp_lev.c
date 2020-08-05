@@ -76,6 +76,7 @@ STATIC_DCL int FDECL(pm_to_humidity, (struct permonst *));
 STATIC_DCL void FDECL(create_monster, (monster *, struct mkroom *));
 STATIC_DCL void FDECL(create_object, (object *, struct mkroom *));
 STATIC_DCL void FDECL(create_altar, (altar *, struct mkroom *));
+STATIC_DCL void FDECL(create_anvil, (anvil*, struct mkroom*));
 STATIC_DCL void FDECL(replace_terrain, (replaceterrain *, struct mkroom *));
 STATIC_DCL boolean FDECL(search_door, (struct mkroom *,
                                        xchar *, xchar *, XCHAR_P, int));
@@ -145,6 +146,7 @@ STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
+STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_replace_terrain, (struct sp_coder *));
 STATIC_DCL boolean FDECL(generate_way_out_method, (int, int, struct opvar *));
@@ -2266,6 +2268,56 @@ struct mkroom *croom;
         levl[x][y].altarmask |= AM_SHRINE;
         level.flags.has_temple = TRUE;
     }
+}
+
+/*
+ * Create an anvil in a room.
+ */
+STATIC_OVL void
+create_anvil(a, croom)
+anvil* a;
+struct mkroom* croom;
+{
+    schar sproom, x = -1, y = -1;
+    boolean croom_is_smithy = TRUE;
+    int oldtyp;
+
+    if (croom) {
+        get_free_room_loc(&x, &y, croom, a->coord);
+        if (croom->rtype != SMITHY)
+            croom_is_smithy = FALSE;
+    }
+    else {
+        get_location_coord(&x, &y, DRY, croom, a->coord);
+        if ((sproom = (schar)*in_rooms(x, y, SMITHY)) != 0)
+            croom = &rooms[sproom - ROOMOFFSET];
+        else
+            croom_is_smithy = FALSE;
+    }
+
+    /* check for existing features */
+    oldtyp = levl[x][y].typ;
+    if (oldtyp == STAIRS || oldtyp == LADDER)
+        return;
+
+    if (IS_FLOOR(oldtyp))
+    {
+        levl[x][y].floortyp = oldtyp;
+        levl[x][y].floorsubtyp = levl[x][y].subtyp;
+    }
+    else
+    {
+        levl[x][y].floortyp = location_type_definitions[ANVIL].initial_floor_type;
+        levl[x][y].floorsubtyp = 0;
+    }
+    levl[x][y].typ = ANVIL;
+    levl[x][y].subtyp = 0;
+
+    if (!croom_is_smithy)
+        return;
+
+    smithini(&u.uz, croom, x, y, 0);
+    level.flags.has_smithy = TRUE;
 }
 
 void
@@ -4596,6 +4648,9 @@ struct sp_coder *coder;
     case SPO_FOUNTAIN:
         typ = FOUNTAIN;
         break;
+    case SPO_THRONE:
+        typ = THRONE;
+        break;
     case SPO_SINK:
         typ = SINK;
         break;
@@ -4604,7 +4659,25 @@ struct sp_coder *coder;
         break;
     }
     selection_iterate(sel, sel_set_feature, (genericptr_t) &typ);
+
     opvar_free(sel);
+}
+
+void spo_anvil(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_anvil";
+    struct opvar* acoord;
+    anvil tmpanvil;
+
+    if (!OV_pop_c(acoord))
+        return;
+
+    tmpanvil.coord = OV_i(acoord);
+
+    create_anvil(&tmpanvil, coder->croom);
+
+    opvar_free(acoord);
 }
 
 void
@@ -5815,7 +5888,11 @@ sp_lev *lvl;
         case SPO_SINK:
         case SPO_POOL:
         case SPO_FOUNTAIN:
+        case SPO_THRONE:
             spo_feature(coder);
+            break;
+        case SPO_ANVIL:
+            spo_anvil(coder);
             break;
         case SPO_TRAP:
             spo_trap(coder);

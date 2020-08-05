@@ -43,12 +43,15 @@ ENDMAP
 $object = object: { '[',')','*','%' }
 SHUFFLE: $object
 
-$place = { (04,02),(58,02),(04,14),(58,14) }
+$place = { (04,02),(58,02),(04,14) }
 SHUFFLE: $place
 
 $monster = monster: { 'L','N','E','H','M','O','R','T','X','Z' }
 SHUFFLE: $monster
 
+# Smithy
+REGION:(56,13,60,14),lit,"smithy"
+ANVIL:(58,14)
 
 TELEPORT_REGION:levregion(01,00,10,20),(1,1,61,15),down
 TELEPORT_REGION:levregion(69,00,79,20),(1,1,61,15),up

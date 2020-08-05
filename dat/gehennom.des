@@ -668,6 +668,10 @@ DOOR:closed,(16,08)
 DOOR:closed,(08,02)
 DOOR:closed,(12,02)
 
+# Smithy
+REGION:(13,09,19,10),lit,"smithy"
+ANVIL:(16,10)
+
 # Non diggable walls
 NON_DIGGABLE:(00,00,20,11)
 MAZEWALK:(00,06),west

@@ -71,7 +71,9 @@ enum opcode_defs {
     SPO_STAIR,
     SPO_LADDER,
     SPO_ALTAR,
+    SPO_ANVIL,
     SPO_FOUNTAIN,
+    SPO_THRONE,
     SPO_SINK,
     SPO_POOL,
     SPO_TRAP,
@@ -390,6 +392,11 @@ typedef struct {
     aligntyp align;
     xchar shrine;
 } altar;
+
+typedef struct {
+    packed_coord coord;
+    xchar x, y;
+} anvil;
 
 typedef struct {
     xchar x1, y1, x2, y2;
