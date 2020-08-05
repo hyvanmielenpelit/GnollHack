@@ -3130,7 +3130,8 @@ struct obj* obj;
 				{
 					suggestnamingwand = TRUE;
 					//This will prompt weapon glow
-					pline("%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
+                    play_sfx_sound(SFX_AURA_GLOW);
+                    pline("%s black-bluish for a while.", Yobjnam2(otmp, "glow"));
 					otmp->enchantment += 3 - otmp->enchantment / 3;
 					break;
 				}
@@ -4864,7 +4865,8 @@ doapply()
 				/* sometimes the blessing will be worn off */
 				if (!rn2(49))
 				{
-					if (!Blind)
+                    play_sfx_sound(SFX_AURA_GLOW);
+                    if (!Blind)
 					{
 						pline("%s %s.", Yobjnam2(obj, "glow"), hcolor("brown"));
 						obj->bknown = 1;

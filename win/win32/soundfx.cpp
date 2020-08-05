@@ -171,7 +171,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Interrupted", 1.0f},
     { SOUND_BANK_MASTER, "event:/Ambience/Occupation/Digging Ground/Digging Ground Resume", 1.0f},
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Desecrate Altar", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/Summon Demon", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Summon Demon", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Sacrifice Pet", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Sacrifice Coaligned Unicorn", 1.0f },
@@ -190,7 +190,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Reconciliation", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Gift", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Four-Leaf Clover", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/Aura Glow", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Aura Glow", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Burst of Flame", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Vanish", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Yelp", 1.0f },
@@ -228,9 +228,30 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Music/End Game/Water", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Fire", 0.08f },
     { SOUND_BANK_MASTER, "event:/Music/End Game/Astral", 0.08f },
-    { SOUND_BANK_MASTER, "event:/Music/Victory", 0.20f },
 
+    { SOUND_BANK_MASTER, "event:/Music/Victory", 0.20f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Blessed Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Uncurse and Other", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Negative", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Violent Glow", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Vibrate Warning", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Vibrate and Destroy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Special Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Special Negative", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/General Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Hands Itch", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Protect Item/Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Protect Item/Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Repair Item/Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Repair Item/Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Bless Item/Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Bless Item/Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Curse Item/Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Curse Item/Fail", 1.0f },
 };
+
 
 #undef NoSound
 

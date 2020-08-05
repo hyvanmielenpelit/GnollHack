@@ -492,6 +492,7 @@ void
 p_glow1(otmp)
 register struct obj *otmp;
 {
+    play_sfx_sound(SFX_AURA_GLOW);
     pline("%s briefly.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"));
 }
 
@@ -500,6 +501,7 @@ p_glow2(otmp, color)
 register struct obj *otmp;
 register const char *color;
 {
+    play_sfx_sound(SFX_AURA_GLOW);
     pline("%s%s%s for a moment.", Yobjnam2(otmp, Blind ? "vibrate" : "glow"),
           Blind ? "" : " ", Blind ? "" : hcolor(color));
 }
@@ -1926,7 +1928,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			&& erosion_matters(otmp) && is_weapon(otmp)
             )
         {
-			old_erodeproof = (otmp->oerodeproof != 0);
+            play_sfx_sound(SFX_AURA_GLOW);
+            
+            old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
 			otmp->oerodeproof = 0; /* for messages */
 

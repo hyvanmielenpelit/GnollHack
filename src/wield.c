@@ -1509,7 +1509,8 @@ register int amount;
 
         if (amount >= 0 && weapon && will_weld(weapon, &youmonst))
 		{ /* cursed tin opener */
-            if (!Blind)
+			play_sfx_sound(SFX_ENCHANT_ITEM_UNCURSE_AND_OTHER);
+			if (!Blind)
 			{
                 Sprintf(buf, "%s with %s aura.",
                         Yobjnam2(weapon, "glow"), an(hcolor(NH_AMBER)));
@@ -1523,10 +1524,11 @@ register int amount;
 
             uncurse(weapon);
             update_inventory();
-        } 
+        }
 		else
 		{
-            Sprintf(buf, "Your %s %s.", makeplural(body_part(HAND)),
+			play_sfx_sound(SFX_HANDS_ITCH);
+			Sprintf(buf, "Your %s %s.", makeplural(body_part(HAND)),
                     (amount >= 0) ? "twitch" : "itch");
         }
 
@@ -1540,7 +1542,8 @@ register int amount;
 
     if (weapon->otyp == WORM_TOOTH && amount >= 0) 
 	{
-        multiple = (weapon->quan > 1L);
+		play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
+		multiple = (weapon->quan > 1L);
         /* order: message, transformation, shop handling */
         Your("%s %s much sharper now.", simpleonames(weapon),
              multiple ? "fuse, and become" : "is");
@@ -1572,6 +1575,7 @@ register int amount;
 	else if (weapon->otyp == CRYSKNIFE && amount < 0) 
 	{
         multiple = (weapon->quan > 1L);
+		play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_NEGATIVE);
 
         /* order matters: message, shop handling, transformation */
         Your("%s %s much duller now.", simpleonames(weapon), multiple ? "fuse, and become" : "is");
@@ -1599,7 +1603,8 @@ register int amount;
 
     if (amount < 0 && weapon->oartifact && restrict_name(weapon, wepname)) 
 	{
-        if (!Blind)
+		play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+		if (!Blind)
             pline("%s %s.", Yobjnam2(weapon, "faintly glow"), color);
         return 1;
     }
@@ -1611,7 +1616,8 @@ register int amount;
     /* there is a (soft) upper and lower limit to weapon->enchantment */
     if (((weapon->enchantment > 10 * ench_limit_multiplier && amount >= 0) || (weapon->enchantment < -10 * ench_limit_multiplier && amount < 0)) && rn2(3)) 
 	{
-        if (!Blind)
+		play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
+		if (!Blind)
             pline("%s %s for a while and then %s.", Yobjnam2(weapon, "violently glow"), color, otense(weapon, "evaporate"));
         else
             pline("%s.", Yobjnam2(weapon, "evaporate"));
@@ -1632,7 +1638,12 @@ register int amount;
     if (amount < 0)
         costly_alteration(weapon, COST_DECHNT);
 
-    weapon->enchantment += amount;
+	if(amount == 0)
+		play_sfx_sound(SFX_ENCHANT_ITEM_VIOLENT_GLOW);
+	else
+		play_sfx_sound(amount > 1 ? SFX_ENCHANT_ITEM_BLESSED_SUCCESS : amount < 0 ? SFX_ENCHANT_ITEM_NEGATIVE : SFX_ENCHANT_ITEM_SUCCESS);
+
+	weapon->enchantment += amount;
 
     if (amount > 0) 
 	{
@@ -1649,16 +1660,21 @@ register int amount;
      * addition adverse reaction on Magicbane whose effects are
      * enchantment dependent.  Give an obscure clue here.
      */
-    if (weapon->oartifact && artifact_has_flag(weapon, AF_MAGIC_ABSORBING) && weapon->enchantment >= 0) {
-        Your("right %s %sches!", body_part(HAND),
+    if (weapon->oartifact && artifact_has_flag(weapon, AF_MAGIC_ABSORBING) && weapon->enchantment >= 0) 
+	{
+		play_sfx_sound(SFX_HANDS_ITCH);
+		Your("right %s %sches!", body_part(HAND),
              (((amount > 1) && (weapon->enchantment > 1)) ? "flin" : "it"));
     }
 
     /* an elven magic clue, cookie@keebler */
     /* elven weapons vibrate warningly when enchanted beyond a limit */
-    if ((weapon->enchantment > get_obj_max_enchantment(weapon))
-        && (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)))
-        pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
+	if ((weapon->enchantment > get_obj_max_enchantment(weapon))
+		&& (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)))
+	{
+		play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
+		pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));
+	}
 
     return 1;
 }
