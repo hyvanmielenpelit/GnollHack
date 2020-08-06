@@ -1418,14 +1418,56 @@ struct mkroom* which_room(x, y)
 xchar x, y;
 {
 	struct mkroom* sroom = (struct mkroom*)0;
+    struct mkroom* irregular_room = (struct mkroom*)0;
 
 	for (int i = 0; i < nroom; i++) { /* turn up to 1 rooms gardenlike */
 		sroom = &rooms[i];
-		if (inside_room(sroom, x, y))
+        if (inside_room(sroom, x, y))
+        {
+            if (sroom->irregular)
+            {
+                irregular_room = sroom;
+            }
+            else
+            {
+                if (sroom->nsubrooms > 0)
+                {
+                    struct mkroom* subroom = which_room_by_list(sroom->sbrooms, sroom->nsubrooms, x, y);
+                    if (subroom)
+                        return subroom;
+                }
             return sroom;
+            }
+        }
     }
-	return (struct mkroom*)0;
+	return irregular_room;
 }
+
+struct mkroom* which_room_by_list(room_list_ptr, list_length, x, y)
+struct mkroom** room_list_ptr;
+int list_length;
+xchar x, y;
+{
+    if (!room_list_ptr || *room_list_ptr == (struct mkroom*)0)
+        return (struct mkroom*)0;
+
+    struct mkroom* sroom = (struct mkroom*)0;
+    for (int i = 0; i < list_length; i++) { /* turn up to 1 rooms gardenlike */
+        sroom = room_list_ptr[i];
+        if (inside_room(sroom, x, y))
+        {
+            if (sroom->nsubrooms > 0)
+            {
+                struct mkroom* subroom = which_room_by_list(sroom->sbrooms, sroom->nsubrooms, x, y);
+                if (subroom)
+                    return subroom;
+            }
+            return sroom;
+        }
+    }
+    return (struct mkroom*)0;
+}
+
 
 boolean
 somexy(croom, c)

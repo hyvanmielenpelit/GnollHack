@@ -1646,6 +1646,7 @@ E int FDECL(somex, (struct mkroom *));
 E int FDECL(somey, (struct mkroom *));
 E boolean FDECL(inside_room, (struct mkroom *, XCHAR_P, XCHAR_P));
 E struct mkroom* FDECL(which_room, (XCHAR_P, XCHAR_P));
+E struct mkroom* FDECL(which_room_by_list, (struct mkroom**, int, XCHAR_P, XCHAR_P));
 E boolean FDECL(somexy, (struct mkroom *, coord *));
 E void FDECL(mkundead, (coord *, BOOLEAN_P, int));
 E struct permonst *NDECL(courtmon);

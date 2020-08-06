@@ -1236,7 +1236,7 @@ struct obj *otmp;
                 if (adjattrib(i, 1, itmp))
                     added_abilities++;
 
-                if (added_abilities >= (otmp->blessed ? 2 : 1));
+                if (added_abilities >= (otmp->blessed ? 2 : 1))
                     break;
             }
         }
