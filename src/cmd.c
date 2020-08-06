@@ -3087,8 +3087,7 @@ int final;
 	int pct_monster_dmg_mult = (int)(monster_damage_mult * 100);
 	int pct_player_dmg_mult = (int)((1 / monster_hp_mult) * 100);
 	char difficultybuf[BUFSIZ] = "";
-	if(pct_monster_dmg_mult != 100 || pct_player_dmg_mult != 100)
-		Sprintf(difficultybuf, " (%d%% monster damage, %d%% player damage)", pct_monster_dmg_mult, pct_player_dmg_mult);
+	Sprintf(difficultybuf, " (%d%% monster damage, %d%% player damage)", pct_monster_dmg_mult, pct_player_dmg_mult);
 	enl_msg("Your game difficulty ", "is ", "was ", buf, difficultybuf);
 
 
