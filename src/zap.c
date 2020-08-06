@@ -5258,7 +5258,7 @@ boolean ordinary;
         else if (is_living(youmonst.data))
         {
             learn_it = TRUE;
-            healup(1000, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
+            healup(basedmg, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
             You_feel("truly completely healed.");
 
             if (u.ulycn >= LOW_PM || is_were(youmonst.data))
@@ -5273,7 +5273,7 @@ boolean ordinary;
                 lesshungry(nut);
             }
 
-            u.uen += 500;
+            u.uen += basedmg / 2;
             if (u.uen > u.uenmax)
                 u.uen = u.uenmax;
             else if (u.uen <= 0)

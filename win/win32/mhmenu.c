@@ -686,12 +686,20 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
             DrawText(hDC, NH_A2W(p1, wbuf, BUFSZ), strlen(p1), &drawRect,
                      DT_CALCRECT | DT_LEFT | DT_VCENTER | DT_EXPANDTABS
                          | DT_SINGLELINE);
-            data->menu.tab_stop_size[column] =
-                max(data->menu.tab_stop_size[column],
-                    drawRect.right - drawRect.left);
 
-            menuitemwidth += data->menu.tab_stop_size[column];
+            if (data->menu.items[new_item].attr & ATR_NOTABS)
+            {
+                menuitemwidth += drawRect.right - drawRect.left;
+                break; /* Only one string with no tabs allowed */
+            }
+            else
+            {
+                data->menu.tab_stop_size[column] =
+                    max(data->menu.tab_stop_size[column],
+                        drawRect.right - drawRect.left);
 
+                menuitemwidth += data->menu.tab_stop_size[column];
+            }
             if (p != NULL)
                 *p = '\t';
             else /* last string so, */
@@ -1379,7 +1387,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     p = strchr(item->str, '\t');
     column = 0;
     SetRect(&drawRect, x, lpdis->rcItem.top,
-            min(x + data->menu.tab_stop_size[0], lpdis->rcItem.right),
+            item->attr & ATR_NOTABS ? lpdis->rcItem.right : min(x + data->menu.tab_stop_size[0], lpdis->rcItem.right),
             lpdis->rcItem.bottom);
 
     for (;;)

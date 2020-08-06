@@ -1753,7 +1753,7 @@ enhance_weapon_skill()
 			Sprintf(buf, "Skill slot%s available: %d",
 				plur(u.weapon_slots), u.weapon_slots);
 
-			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf,
 				MENU_UNSELECTED);
 
 			strcpy(buf, "");
@@ -1768,13 +1768,13 @@ enhance_weapon_skill()
 			boolean martialartsshown = (P_SKILL_LEVEL(P_MARTIAL_ARTS) > P_ISRESTRICTED);
 			any = zeroany;
 			
-			Sprintf(buf, "Bonuses are to-hit/damage for weapon and combat skills,");
-			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			Sprintf(buf, "Bonuses are to-hit/damage/critical-%% for weapons and combat,");
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
 
 			if (martialartsshown)
 			{
-				Sprintf(buf, "to-hit/damage/double-hit chance for martial arts,");
-				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+				Sprintf(buf, "to-hit/damage/double-hit-%% for martial arts,");
+				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
 			}
 
 			if(disarmtrapslast)
@@ -1786,12 +1786,12 @@ enhance_weapon_skill()
 				else
 					Sprintf(buf, "and success/cost adjustment for spells");
 			}
-			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
 
 			if (disarmtrapslast)
 			{
 				Sprintf(buf, "arrow/magic trap untrap chance for disarm trap");
-				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+				add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf, MENU_UNSELECTED);
 			}
 			add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
 		}
@@ -1805,14 +1805,14 @@ enhance_weapon_skill()
                         (u.ulevel < MAXULEV)
                             ? "when you're more experienced"
                             : "if skill slots become available");
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf,
                          MENU_UNSELECTED);
             }
             if (maxxed_cnt > 0)
 			{
                 Sprintf(buf, "#: Cannot be enhanced further.");
 
-                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
+                add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NOTABS, buf,
                          MENU_UNSELECTED);
             }
             add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "",
@@ -2018,21 +2018,27 @@ enhance_weapon_skill()
                     {
                         int tohitbonus = weapon_skill_hit_bonus((struct obj*)0, i, FALSE);
                         int dmgbonus = weapon_skill_dmg_bonus((struct obj*)0, i, FALSE);
-                        char hbuf[BUFSZ] = "";
-                        char dbuf[BUFSZ] = "";
+                        int criticalhitpct = get_skill_critical_strike_chance(i, FALSE);
+                        char hbuf[BUFSZ];
+                        char dbuf[BUFSZ];
+                        char cbuf[BUFSZ];
                         Sprintf(hbuf, "%s%d", tohitbonus >= 0 ? "+" : "", tohitbonus);
                         Sprintf(dbuf, "%s%d", dmgbonus >= 0 ? "+" : "", dmgbonus);
-                        Sprintf(bonusbuf, "%5s/%s", hbuf, dbuf);
+                        Sprintf(cbuf, "%d%%", criticalhitpct);
+                        Sprintf(bonusbuf, "%5s/%s/%s", hbuf, dbuf, cbuf);
 
                         if (can_advance(i, speedy) || could_advance(i))
                         {
                             int tohitbonus2 = weapon_skill_hit_bonus((struct obj*)0, i, TRUE);
                             int dmgbonus2 = weapon_skill_dmg_bonus((struct obj*)0, i, TRUE);
-                            char hbuf2[BUFSZ] = "";
-                            char dbuf2[BUFSZ] = "";
+                            int criticalhitpct2 = get_skill_critical_strike_chance(i, TRUE);
+                            char hbuf2[BUFSZ];
+                            char dbuf2[BUFSZ];
+                            char cbuf2[BUFSZ];
                             Sprintf(hbuf2, "%s%d", tohitbonus2 >= 0 ? "+" : "", tohitbonus2);
                             Sprintf(dbuf2, "%s%d", dmgbonus2 >= 0 ? "+" : "", dmgbonus2);
-                            Sprintf(nextbonusbuf, "%5s/%s", hbuf2, dbuf2);
+                            Sprintf(cbuf2, "%d%%", criticalhitpct2);
+                            Sprintf(nextbonusbuf, "%5s/%s/%s", hbuf2, dbuf2, cbuf2);
                         }
                     }
                     else if (i >= P_FIRST_SPELL && i <= P_LAST_SPELL)
@@ -2716,14 +2722,15 @@ register struct obj *obj;
 }
 
 int
-get_skill_critical_strike_chance(skill_type)
+get_skill_critical_strike_chance(skill_type, nextlevel)
 enum p_skills skill_type;
+boolean nextlevel;
 {
     /* Note that P_NONE returns also 0 */
     if (skill_type <= P_NONE || skill_type >= P_NUM_SKILLS)
         return 0;
 
-    enum skill_levels skill_level = P_SKILL_LEVEL(skill_type);
+    enum skill_levels skill_level = min(P_MAX_SKILL_LEVEL(skill_type), P_SKILL_LEVEL(skill_type) + (nextlevel ? 1 : 0));
     int res = 0;
 
     switch (skill_level)

@@ -3320,7 +3320,7 @@ struct monst* mtmp;
 
 	long umoney;
 	int u_pay;
-	long base_join_cost = 40 + 10 * mtmp->data->difficulty * mtmp->data->difficulty;
+	long base_join_cost = 20 + 5 * mtmp->data->difficulty * mtmp->data->difficulty;
 	int ucha = ACURR(A_CHA);
 	long join_cost = (base_join_cost * max(10, (100 - (ucha - 8) * 5))) / 100;
 	char qbuf[QBUFSZ];

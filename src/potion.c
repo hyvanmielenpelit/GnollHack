@@ -1797,7 +1797,7 @@ int how;
     int power3 = objects[obj->otyp].oc_oprop3;
     int dicebuc = objects[obj->otyp].oc_potion_breathe_dice_buc_multiplier;
     int duration =
-        d(max(1, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), objects[obj->otyp].oc_potion_breathe_diesize)
+        d(max(1, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), max(1, objects[obj->otyp].oc_potion_breathe_diesize))
         + objects[obj->otyp].oc_potion_breathe_plus
         + bcsign(obj) * objects[obj->otyp].oc_potion_breathe_buc_multiplier;
 

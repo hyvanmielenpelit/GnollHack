@@ -91,6 +91,7 @@ typedef struct mi {
 #define ATR_URGENT    16
 #define ATR_NOHISTORY 32
 #define ATR_STAY_ON_LINE 64
+#define ATR_NOTABS    128
 
 /* nh_poskey() modifier types */
 #define CLICK_1 1

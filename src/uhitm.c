@@ -1853,7 +1853,7 @@ boolean* obj_destroyed;
 	boolean skill_critical_success = FALSE;
 	if (damage > 0 && !incorrect_weapon_use)
 	{
-		int skill_crit_chance = get_skill_critical_strike_chance(wtype);
+		int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE);
 		if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
 		{
 			skill_critical_success = TRUE;
@@ -3098,7 +3098,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	boolean skill_critical_success = FALSE;
 	if (damage > 0 && !incorrect_weapon_use)
 	{
-		int skill_crit_chance = get_skill_critical_strike_chance(wtype);
+		int skill_crit_chance = get_skill_critical_strike_chance(wtype, FALSE);
 		if (skill_crit_chance > 0 && rn2(100) < skill_crit_chance)
 		{
 			skill_critical_success = TRUE;
