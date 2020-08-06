@@ -1385,12 +1385,14 @@ struct obj *otmp;
             u.uexp = rndexp(TRUE);
         break;
     case POT_HEALING:
+        play_sfx_sound(SFX_HEALING);
         You_feel("better.");
         healup(duration, otmp->blessed ? extra_data1 : 0,
                !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
         break;
     case POT_EXTRA_HEALING:
+        play_sfx_sound(SFX_HEALING);
         You_feel("much better.");
         healup(duration,
                otmp->blessed ? extra_data1 : 0, !otmp->cursed,
@@ -1399,7 +1401,8 @@ struct obj *otmp;
         exercise(A_STR, TRUE);
         break;
 	case POT_GREATER_HEALING:
-		You_feel("much, much better.");
+        play_sfx_sound(SFX_HEALING);
+        You_feel("much, much better.");
 		healup(duration,
 			otmp->blessed ? extra_data1 : 0, !otmp->cursed,
 			TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
@@ -1407,6 +1410,7 @@ struct obj *otmp;
 		exercise(A_STR, TRUE);
 		break;
 	case POT_FULL_HEALING:
+        play_sfx_sound(SFX_FULL_HEALING);
         You_feel("completely healed.");
         healup(duration, otmp->blessed ? extra_data1 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
@@ -1527,12 +1531,18 @@ struct obj *otmp;
 			/* subtract instead of add when cursed */
             num = -num;
 			u.ubaseenmax -= numxtra;
-		}
+            play_sfx_sound(SFX_LOSE_ENERGY);
+        }
 		else if(otmp->blessed)
 		{
 			num = num * 2;
 	        u.ubaseenmax += numxtra;
-		}
+            play_sfx_sound(SFX_FULL_ENERGY);
+        }
+        else
+        {
+            play_sfx_sound(otmp->otyp == POT_FULL_ENERGY ? SFX_FULL_ENERGY : SFX_GAIN_ENERGY);
+        }
 		u.uen += num;
 
 		updatemaxen();

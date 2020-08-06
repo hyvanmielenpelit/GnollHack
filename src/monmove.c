@@ -730,7 +730,7 @@ register struct monst *mtmp;
         mtmp->mflee = 0;
 
     /* cease conflict-induced swallow/grab if conflict has ended */
-    if (mtmp == u.ustuck && is_peaceful(mtmp) && !is_confused(mtmp) && !(Conflict || is_crazed(mtmp)))
+    if (mtmp == u.ustuck && is_peaceful(mtmp) && !is_confused(mtmp) && !is_crazed(mtmp) && !Conflict)
 	{
         release_hero(mtmp);
         return 0; /* uses up monster's turn */
@@ -813,7 +813,7 @@ register struct monst *mtmp;
         }
         pline("A wave of psychic energy pours over you!");
         if (is_peaceful(mtmp)
-            && (!(Conflict || is_crazed(mtmp)) || check_ability_resistance_success(mtmp, A_WIS, 0)))
+            && !(is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0))))
 		{
             pline("It feels quite soothing.");
         } 
@@ -1452,7 +1452,7 @@ register int after;
     nix = omx;
     niy = omy;
     flag = 0L;
-    if (is_peaceful(mtmp) && (!(Conflict || is_crazed(mtmp)) || check_ability_resistance_success(mtmp, A_WIS, 0)))
+    if (is_peaceful(mtmp) && !(is_crazed(mtmp) || (Conflict && !check_ability_resistance_success(mtmp, A_WIS, 0))))
         flag |= (ALLOW_SANCT | ALLOW_SSM);
     else
 	{

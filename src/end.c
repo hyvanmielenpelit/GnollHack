@@ -1160,7 +1160,9 @@ int how;
             context.botl = 1;
         }
     }
-    if (Lifesaved && (how <= GENOCIDED)) {
+    if (Lifesaved && (how <= GENOCIDED)) 
+    {
+        play_sfx_sound(SFX_LIFE_SAVED);
         pline("But wait...");
 		if (HLifesaved)
 		{
@@ -1183,7 +1185,20 @@ int how;
 				if (uamul)
 					useup(uamul);
 			}
-			//If other possible items, they should come here, or we should make a selection function
+            else
+            {
+                struct obj* lifesaver = what_gives(LIFESAVED);
+                if (lifesaver)
+                {
+                    pline("%s %s!", Yname2(lifesaver), !Blind ? "begins to glow" : "feels warm");
+                    if (how == CHOKING)
+                        You("vomit ...");
+                    You_feel("much better!");
+                    pline_The("%s crumbles to dust!", cxname(lifesaver));
+                    if (lifesaver)
+                        useup(lifesaver);
+                }
+            }
 		}
         (void) adjattrib(A_CON, -1, TRUE);
         savelife(how);

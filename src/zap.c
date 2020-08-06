@@ -779,7 +779,8 @@ struct monst* origmonst;
 	{
 cure_sickness_here:
         res = 1;
-		boolean was_sick = is_sick(mtmp);
+        play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
+        boolean was_sick = is_sick(mtmp);
 		boolean had_sick = !!mtmp->mprops[SICK];
 		mtmp->mprops[SICK] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
@@ -812,8 +813,9 @@ cure_sickness_here:
 	}
 	case SPE_CURE_BLINDNESS:
 	{
-		res = 1;
-		boolean was_blinded = is_blinded(mtmp);
+        res = 1;
+        play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
+        boolean was_blinded = is_blinded(mtmp);
 		boolean had_blinded = !!mtmp->mprops[BLINDED];
 		mtmp->mprops[BLINDED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 		if (!is_blinded(mtmp) && was_blinded)
@@ -827,8 +829,9 @@ cure_sickness_here:
 	}
 	case SPE_CURE_PETRIFICATION:
 	{
-		res = 1;
-		boolean was_stoning = is_stoning(mtmp);
+        res = 1;
+        play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
+        boolean was_stoning = is_stoning(mtmp);
 		boolean had_stoned = !!mtmp->mprops[STONED];
 		mtmp->mprops[STONED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 		if (!is_stoning(mtmp) && was_stoning)
@@ -875,11 +878,16 @@ cure_sickness_here:
         else if (mtmp->data != &mons[PM_PESTILENCE] && is_living(mtmp->data))
         {
             wake = FALSE; /* wakeup() makes the target angry */
-			if(otyp == SPE_FULL_HEALING)
-				mtmp->mhp = mtmp->mhpmax;
-			else
-	            mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
-
+            if (otyp == SPE_FULL_HEALING)
+            {
+                play_sfx_sound_at_location(SFX_FULL_HEALING, mtmp->mx, mtmp->my);
+                mtmp->mhp = mtmp->mhpmax;
+            }
+            else
+            {
+                play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
+                mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+            }
             if (mtmp->mhp > mtmp->mhpmax)
                 mtmp->mhp = mtmp->mhpmax;
 
@@ -956,7 +964,8 @@ cure_sickness_here:
 		{
 			wake = FALSE; /* wakeup() makes the target angry */
 
-			mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+            play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
+            mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
 			if (mtmp->mhp > mtmp->mhpmax)
 				mtmp->mhp = mtmp->mhpmax;
@@ -5209,7 +5218,8 @@ boolean ordinary;
 		if(is_living(youmonst.data))
 		{
 			//learn_it = TRUE; /* (no effect for spells...) */
-			healup(basedmg, 0, 
+            play_sfx_sound(SFX_HEALING);
+            healup(basedmg, 0,
                 obj->otyp == GRAIL_OF_HEALING, 
                 (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)),
 				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)), 
@@ -5238,6 +5248,7 @@ boolean ordinary;
 	case SPE_FULL_HEALING:
         if (is_living(youmonst.data))
         {
+            play_sfx_sound(SFX_FULL_HEALING);
             learn_it = TRUE; /* (no effect for spells...) */
             healup(1000, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
             You_feel("completely healed.");
@@ -5257,6 +5268,7 @@ boolean ordinary;
         }
         else if (is_living(youmonst.data))
         {
+            play_sfx_sound(SFX_FULL_HEALING);
             learn_it = TRUE;
             healup(basedmg, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
             You_feel("truly completely healed.");
@@ -5286,10 +5298,12 @@ boolean ordinary;
         damage = 0;
         break;
     case SPE_CURE_BLINDNESS:
-		healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
+        play_sfx_sound(SFX_CURE_AILMENT);
+        healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_CURE_SICKNESS:
-		if (Sick || FoodPoisoned || MummyRot)
+        play_sfx_sound(SFX_CURE_DISEASE);
+        if (Sick || FoodPoisoned || MummyRot)
 			You("are no longer ill.");
 		if (Slimed)
 			make_slimed(0L, "The slime disappears!");
@@ -5303,7 +5317,8 @@ boolean ordinary;
 	case SPE_GREATER_UNDEATH_REPLENISHMENT:
 		if (is_undead(youmonst.data))
 		{
-			learn_it = TRUE; /* (no effect for spells...) */
+            play_sfx_sound(SFX_HEALING);
+            learn_it = TRUE; /* (no effect for spells...) */
 			healup(basedmg, 0, FALSE, (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
 			You_feel("%sbetter.", obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much " : "");
 		}
@@ -7469,7 +7484,10 @@ const char *fltxt;
 
     struct obj *otmp, *otmp2, *m_amulet = mlifesaver(mon);
 
-    if (canseemon(mon)) {
+    play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
+
+    if (canseemon(mon)) 
+    {
         if (!m_amulet)
         {
             pline("%s is disintegrated!", Monnam(mon));

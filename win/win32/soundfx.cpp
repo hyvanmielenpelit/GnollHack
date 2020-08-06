@@ -171,7 +171,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Occupation/Digging Ground/Digging Ground Interrupted", 0.3f},
     { SOUND_BANK_MASTER, "event:/Occupation/Digging Ground/Digging Ground Resume", 0.3f},
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Desecrate Altar", 0.3f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Summon Demon", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Summon Demon", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Sacrifice Pet", 0.3f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Sacrifice Coaligned Unicorn", 0.3f },
@@ -190,7 +190,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Reconciliation", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Gift", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Four-Leaf Clover", 0.3f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Aura Glow", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Aura Glow", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Burst of Flame", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Altar/Offering Vanish", 0.3f },
     { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Yelp", 0.7f },
@@ -241,7 +241,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/Special Negative", 0.3f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Enchant Item/General Fail", 0.3f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Hands Itch", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Hands Itch", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Protect Item/Success", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Protect Item/Fail", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Repair Item/Success", 0.3f },
@@ -252,8 +252,20 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Curse Item/Unbless", 0.3f },
 
     { SOUND_BANK_MASTER, "event:/Music/Smith/Normal", 0.08f },
-};
+    { SOUND_BANK_MASTER, "event:/SFX/General/Disintegrate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Life Saved", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Healing", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Full Healing", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Cure Disease", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Healing/Cure Ailment", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Mana/Gain Energy", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Mana/Full Energy", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Gain Level", 0.3f },
 
+    { SOUND_BANK_MASTER, "event:/SFX/General/Gain Skill", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Lose Level", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Mana/Lose Energy", 0.3f },
+};
 
 #undef NoSound
 

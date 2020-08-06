@@ -2639,12 +2639,14 @@ struct monst *magr, /* monster that is currently deciding where to move */
        elf vs orc have been suggested.  For the time being we don't
        support those. */
 
+#if 0
 	if (mon_has_bloodlust(magr))
 	{
 		if(is_peaceful(mdef) && !is_tame(mdef) && is_living(mdef->data) && !is_vampshifter(mdef) && !is_demon(mdef->data)
             && !mdef->isshk && !mdef->ispriest && !mdef->issmith && !mdef->iswiz)
 			return ALLOW_M;
 	}
+#endif
 
 	return 0L;
 }

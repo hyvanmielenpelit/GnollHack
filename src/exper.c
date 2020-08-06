@@ -369,12 +369,16 @@ const char *drainer; /* cause of death, if drain should be fatal */
     else if (resists_drli(&youmonst))
         return;
 
-    if (u.ulevel > 1) {
+    play_sfx_sound(SFX_LOSE_LEVEL);
+    if (u.ulevel > 1)
+    {
         pline("%s level %d.", Goodbye(), u.ulevel--);
         /* remove intrinsic abilities */
         adjabil(u.ulevel + 1, u.ulevel);
         reset_rndmonst(NON_PM); /* new monster selection */
-    } else {
+    }
+    else 
+    {
         if (drainer) {
             killer.format = KILLED_BY;
             if (killer.name != drainer)
@@ -445,6 +449,8 @@ boolean incr; /* true iff via incremental experience growth */
 
     if (!incr)
         You_feel("more experienced.");
+
+    play_sfx_sound(SFX_GAIN_LEVEL);
 
     /* increase hit points (when polymorphed, do monster form first
        in order to retain normal human/whatever increase for later) */

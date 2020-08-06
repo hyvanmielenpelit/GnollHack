@@ -92,6 +92,8 @@ STATIC_OVL void
 give_may_advance_msg(skill)
 int skill;
 {
+    play_sfx_sound(SFX_GAIN_SKILL);
+
     You_feel("more confident in your %sskills.",
              (skill == P_NONE) ? ""
                  : (skill <= P_LAST_WEAPON) ? "weapon "

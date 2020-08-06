@@ -1714,8 +1714,55 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_UNBLESS_ITEM_SUCCESS",
         {GHSOUND_UNBLESS_ITEM_SUCCESS, 1.0f}
     },
+    {
+        "GHSOUND_DISINTEGRATE",
+        {GHSOUND_DISINTEGRATE, 1.0f}
+    },
+    {
+        "GHSOUND_LIFE_SAVED",
+        {GHSOUND_LIFE_SAVED, 1.0f}
+    },
+    {
+        "GHSOUND_HEALING",
+        {GHSOUND_HEALING, 1.0f}
+    },
+    {
+        "GHSOUND_FULL_HEALING",
+        {GHSOUND_FULL_HEALING, 1.0f}
+    },
+    {
+        "GHSOUND_CURE_DISEASE",
+        {GHSOUND_CURE_DISEASE, 1.0f}
+    },
+    {
+        "GHSOUND_CURE_AILMENT",
+        {GHSOUND_CURE_AILMENT, 1.0f}
+    },
+    {
+        "GHSOUND_GAIN_ENERGY",
+        {GHSOUND_GAIN_ENERGY, 1.0f}
+    },
+    {
+        "GHSOUND_FULL_ENERGY",
+        {GHSOUND_FULL_ENERGY, 1.0f}
+    },
+    {
+        "GHSOUND_GAIN_LEVEL",
+        {GHSOUND_GAIN_LEVEL, 1.0f}
+    },
+    {
+        "GHSOUND_GAIN_SKILL",
+        {GHSOUND_GAIN_SKILL, 1.0f}
+    },
+    {
+        "GHSOUND_LOSE_LEVEL",
+        {GHSOUND_LOSE_LEVEL, 1.0f}
+    },
+    {
+        "GHSOUND_LOSE_ENERGY",
+        {GHSOUND_LOSE_ENERGY, 1.0f}
+    },
 };
-
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {
