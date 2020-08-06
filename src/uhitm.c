@@ -4563,23 +4563,22 @@ unsigned long ad_flags;
 		{
 			if (Super_heroism)
 			{
-				base_dmg_d *= 4.0;
+				base_dmg_d *= 2.0;
 			}
 			else if (Heroism)
 			{
-				base_dmg_d *= 2.0;
+				base_dmg_d *= 1.5;
 			}
 		}
 		else
 		{
 			if (has_super_heroism(magr))
 			{
-				base_dmg_d *= 4.0;
-
+				base_dmg_d *= 2.0;
 			}
 			else if (has_heroism(magr))
 			{
-				base_dmg_d *= 2.0;
+				base_dmg_d *= 1.5;
 
 			}
 		}

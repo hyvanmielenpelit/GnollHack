@@ -276,7 +276,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("The Heart of Ahriman", "glowing red jewel", None, LUCKSTONE, LUCKSTONE,
 		(AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_STLTH, 0,
       /* this stone does double damage if used as a projectile weapon */
-		1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, LEVITATION, 0, 0, 0, 20, 60, A_NEUTRAL, PM_BARBARIAN, NON_PM, 2500L,
+		1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, LEVITATION, 0, 0, 0, 20, 0, A_NEUTRAL, PM_BARBARIAN, NON_PM, 2500L,
 		NO_COLOR, CLR_RED, 0, OBJECT_SOUNDSET_NONE),
 
     A("The Sceptre of Might", "diamond-encrusted sceptre", None, RUNED_SCEPTRE, RUNED_SCEPTRE,

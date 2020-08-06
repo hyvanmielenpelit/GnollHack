@@ -5025,30 +5025,36 @@ boolean at_stairs, falling, portal;
     /* special levels can have a custom arrival message */
     deliver_splev_message();
 
-    /* give room entrance message, if any */
+	/* give room entrance message, if any */
     check_special_room(FALSE);
 
     /* deliver objects traveling with player */
     obj_delivery(TRUE);
 
     /* Check whether we just entered Gehennom. */
-    if (!In_hell(&u.uz0) && Inhell) {
-        if (Is_valley(&u.uz)) {
+    if (!In_hell(&u.uz0) && Inhell) 
+	{
+        if (Is_valley(&u.uz))
+		{
             You("arrive at the Valley of the Dead...");
             pline_The("odor of burnt flesh and decay pervades the air.");
 #ifdef MICRO
             display_nhwindow(WIN_MESSAGE, FALSE);
 #endif
             You_hear("groans and moans everywhere.");
-        } else
+        } 
+		else
             pline("It is hot here.  You smell smoke...");
+
         u.uachieve.enter_gehennom = 1;
     }
+
     /* in case we've managed to bypass the Valley's stairway down */
     if (Inhell && !Is_valley(&u.uz))
         u.uevent.gehennom_entered = 1;
 
-    if (familiar) {
+    if (familiar) 
+	{
         static const char *const fam_msgs[4] = {
             "You have a sense of deja vu.",
             "You feel like you've been here before.",
@@ -5067,7 +5073,9 @@ boolean at_stairs, falling, portal;
             mesg = halu_fam_msgs[which];
         else
             mesg = fam_msgs[which];
-        if (mesg && index(mesg, '%')) {
+
+        if (mesg && index(mesg, '%'))
+		{
             Sprintf(buf, mesg, !Blind ? "looks" : "seems");
             mesg = buf;
         }
@@ -5076,42 +5084,70 @@ boolean at_stairs, falling, portal;
     }
 
     /* special location arrival messages/events */
-    if (In_endgame(&u.uz)) {
-        if (new &&on_level(&u.uz, &astral_level))
+    if (In_endgame(&u.uz)) 
+	{
+        if (new && on_level(&u.uz, &astral_level))
             final_level(); /* guardian angel,&c */
         else if (newdungeon && u.uhave.amulet)
             resurrect(); /* force confrontation with Wizard */
-    } else if (In_quest(&u.uz)) {
+    } 
+	else if (In_quest(&u.uz)) 
+	{
         onquest(); /* might be reaching locate|goal level */
-    } else if (In_V_tower(&u.uz)) {
+    } 
+	else if (In_V_tower(&u.uz))
+	{
         if (newdungeon && In_hell(&u.uz0))
             pline_The("heat and smoke are gone.");
-    } else if (Is_knox(&u.uz)) {
+    } 
+	else if (Is_knox(&u.uz))
+	{
         /* alarm stops working once Croesus has died */
-        if (new || !mvitals[PM_CROESUS].died) {
+        if (new || !mvitals[PM_CROESUS].died) 
+		{
             You("have penetrated a high security area!");
             pline("An alarm sounds!");
-            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+            for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) 
+			{
                 if (DEADMONSTER(mtmp))
                     continue;
                 mtmp->msleeping = 0;
             }
         }
-    } else {
+    } 
+	else 
+	{
         if (new && Is_rogue_level(&u.uz))
             You("enter what seems to be an older, more primitive world.");
+
         /* main dungeon message from your quest leader */
         if (!In_quest(&u.uz0) && at_dgn_entrance("The Quest")
             && !(u.uevent.qcompleted || u.uevent.qexpelled
-                 || quest_status.leader_is_dead)) {
-            if (!u.uevent.qcalled) {
+                 || quest_status.leader_is_dead)) 
+		{
+            if (!u.uevent.qcalled) 
+			{
                 u.uevent.qcalled = 1;
                 com_pager(2); /* main "leader needs help" message */
-            } else {          /* reminder message */
+            }
+			else 
+			{          /* reminder message */
                 com_pager(Role_if(PM_ROGUE) ? 4 : 3);
             }
         }
-    }
+
+		if (!Is_modron_level(&u.uz0) && !u.uevent.modron_portal_hint && at_dgn_entrance("Plane of the Modron"))
+		{
+			u.uevent.modron_portal_hint = 1;
+			You("suddenly feel that angles are here straighter than normal, but then the feeling subsides.");
+		}
+
+		if (!Is_bovine_level(&u.uz0) && !u.uevent.bovine_portal_hint && at_dgn_entrance("Hellish Pastures"))
+		{
+			u.uevent.bovine_portal_hint = 1;
+			pline("For a moment, you think you hear distant grunting and bellowing, but then the noises are gone.");
+		}
+	}
 
     assign_level(&u.uz0, &u.uz); /* reset u.uz0 */
 #ifdef INSURANCE

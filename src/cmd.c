@@ -4071,14 +4071,14 @@ int final;
         you_have(enlght_combatinc("damage", u.ubasedaminc + u.udaminc, final, buf), "");
     if (Super_heroism)
     {
-        enl_msg("You cause", "", "d", " quadruple damage", from_what(SUPER_HEROISM));
+        enl_msg("You cause", "", "d", " double damage", from_what(SUPER_HEROISM));
     }
     if (Heroism)
     {
         if (Super_heroism)
-            enl_msg("You latently cause", "", "d", " double damage", from_what(HEROISM));
+            enl_msg("You latently cause", "", "d", " 150% damage", from_what(HEROISM));
         else
-            enl_msg("You cause", "", "d", " double damage", from_what(HEROISM));
+            enl_msg("You cause", "", "d", " 150% damage", from_what(HEROISM));
     }
     if (Melee_life_leech)
         enl_msg("You leech", "", "d", " life in melee", from_what(MELEE_LIFE_LEECH));

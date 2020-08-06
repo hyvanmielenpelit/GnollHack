@@ -2040,7 +2040,8 @@ xchar *rdgn;
         /* only report "no portal found" when actually expecting a portal */
         else if (Is_earthlevel(&u.uz) || Is_waterlevel(&u.uz)
                  || Is_firelevel(&u.uz) || Is_airlevel(&u.uz)
-                 || Is_qstart(&u.uz) || at_dgn_entrance("The Quest")
+                 || Is_qstart(&u.uz) || at_dgn_entrance("The Quest") 
+                 || at_dgn_entrance("Plane of the Modron") || at_dgn_entrance("Hellish Pastures")
                  || Is_knox(&u.uz))
             Strcpy(buf, "No portal found.");
 
