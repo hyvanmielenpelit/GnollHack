@@ -895,7 +895,7 @@ register struct monst *mtmp;
         || (is_invisible(mtmp) && !rn2(3))
         || (mdat->mlet == S_LEPRECHAUN && !findgold(invent)
             && (findgold(mtmp->minvent) || rn2(2)))
-        || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || is_crazed(mtmp) || mon_has_bloodlust(mtmp)) && !mtmp->iswiz)
+        || (is_wanderer(mdat) && !rn2(4)) || ((Conflict || is_crazed(mtmp)) && !mtmp->iswiz)
         || (is_blinded(mtmp) && !rn2(4)) || is_peaceful(mtmp))
 	{
         /* Possibly cast an undirected spell if not attacking you */

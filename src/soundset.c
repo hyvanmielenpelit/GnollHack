@@ -2620,15 +2620,21 @@ enum object_sound_types sound_type;
             enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
             soundid = object_soundsets[oss].sounds[sound_type].ghsound;
             volume = object_soundsets[oss].sounds[sound_type].volume;
-            if (isok(magr->mx, magr->my))
-            {
-                float hearing = hearing_array[magr->mx][magr->my];
-                if (hearing == 0.0f)
-                    return;
-                else
-                    volume *= hearing_array[magr->mx][magr->my];
-            }
         }
+    }
+
+    if (!you_attack)
+    {
+        if (isok(magr->mx, magr->my))
+        {
+            float hearing = hearing_array[magr->mx][magr->my];
+            if (hearing == 0.0f)
+                return;
+            else
+                volume *= hearing_array[magr->mx][magr->my];
+        }
+        else
+            return;
     }
 
     immediateinfo.ghsound = soundid;

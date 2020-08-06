@@ -2641,7 +2641,8 @@ struct monst *magr, /* monster that is currently deciding where to move */
 
 	if (mon_has_bloodlust(magr))
 	{
-		if(is_peaceful(mdef) && !is_tame(mdef))
+		if(is_peaceful(mdef) && !is_tame(mdef) && is_living(mdef->data) && !is_vampshifter(mdef) && !is_demon(mdef->data)
+            && !mdef->isshk && !mdef->ispriest && !mdef->issmith && !mdef->iswiz)
 			return ALLOW_M;
 	}
 
