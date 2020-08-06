@@ -4859,7 +4859,7 @@ struct monst* mtmp;
 		pline("%s as good as new, just like %s before!",
 			Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
 	}
-
+	update_inventory();
 	verbalize("Thank you for using my services.");
 
 }
@@ -4903,7 +4903,7 @@ struct monst* mtmp;
 		pline("%s as good as new, just like %s before!",
 			Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
 	}
-
+	update_inventory();
 	verbalize("Thank you for using my services.");
 }
 

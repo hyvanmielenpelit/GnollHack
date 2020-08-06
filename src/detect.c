@@ -1503,7 +1503,8 @@ struct obj *sobj; /* scroll--actually fake spellbook--object */
             }
         }
 
-    if (!level.flags.hero_memory || unconstrained || mdetected || odetected) {
+    if (sobj && (!level.flags.hero_memory || unconstrained || mdetected || odetected))
+    {
         flush_screen(1);                 /* flush temp screen */
         /* the getpos() prompt from browse_map() is only shown when
            flags.verbose is set, but make this unconditional so that

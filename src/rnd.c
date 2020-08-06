@@ -181,6 +181,9 @@ int
 d(n, x)
 register int n, x;
 {
+    if (x <= 0)
+        return 0;
+
     register int tmp = n;
 
 #ifdef BETA
@@ -190,7 +193,7 @@ register int n, x;
     }
 #endif
 
-    while (n--)
+    while (n-- > 0)
         tmp += RND(x);
     return tmp; /* Alea iacta est. -- J.C. */
 }

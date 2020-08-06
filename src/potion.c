@@ -799,11 +799,11 @@ struct obj *otmp;
     int dicebuc = otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_normal_dice_buc_multiplier : 0;
     int duration =
         max(0, 
-            otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(1,objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), objects[otmp->otyp].oc_potion_normal_diesize)) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
+            otmp->oclass == POTION_CLASS ? (objects[otmp->otyp].oc_potion_normal_diesize == 0 ? 0 : d(max(0, objects[otmp->otyp].oc_potion_normal_dice + dicebuc * bcsign(otmp)), max(1, objects[otmp->otyp].oc_potion_normal_diesize))) + objects[otmp->otyp].oc_potion_normal_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_normal_buc_multiplier :
             d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus
            );
     int nutrition =
-        otmp->oclass == POTION_CLASS ? d(objects[otmp->otyp].oc_potion_nutrition_dice, objects[otmp->otyp].oc_potion_nutrition_diesize) + objects[otmp->otyp].oc_potion_nutrition_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_nutrition_buc_multiplier :
+        otmp->oclass == POTION_CLASS ? d(max(0, objects[otmp->otyp].oc_potion_nutrition_dice), max(1, objects[otmp->otyp].oc_potion_nutrition_diesize)) + objects[otmp->otyp].oc_potion_nutrition_plus + bcsign(otmp) * objects[otmp->otyp].oc_potion_nutrition_buc_multiplier :
         0;
 
     int extra_data1 = otmp->oclass == POTION_CLASS ? objects[otmp->otyp].oc_potion_extra_data1 : 0;
@@ -1797,7 +1797,7 @@ int how;
     int power3 = objects[obj->otyp].oc_oprop3;
     int dicebuc = objects[obj->otyp].oc_potion_breathe_dice_buc_multiplier;
     int duration =
-        d(max(1, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), max(1, objects[obj->otyp].oc_potion_breathe_diesize))
+        d(max(0, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), max(1, objects[obj->otyp].oc_potion_breathe_diesize))
         + objects[obj->otyp].oc_potion_breathe_plus
         + bcsign(obj) * objects[obj->otyp].oc_potion_breathe_buc_multiplier;
 
@@ -2185,7 +2185,7 @@ struct obj *obj;
        remains in inventory where our caller expects it to be */
     int dicebuc = objects[obj->otyp].oc_potion_breathe_dice_buc_multiplier;
     int duration =
-        d(max(1, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), objects[obj->otyp].oc_potion_breathe_diesize)
+        d(max(0, objects[obj->otyp].oc_potion_breathe_dice + dicebuc * bcsign(obj)), max(1, objects[obj->otyp].oc_potion_breathe_diesize))
         + objects[obj->otyp].oc_potion_breathe_plus
         + bcsign(obj) * objects[obj->otyp].oc_potion_breathe_buc_multiplier;
 
