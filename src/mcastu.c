@@ -31,6 +31,7 @@ enum mcast_cleric_spells {
     CLC_PARALYZE,
     CLC_BLIND_YOU,
     CLC_INSECTS,
+    CLC_SNAKES,
     CLC_CURSE_ITEMS,
     CLC_LIGHTNING,
     CLC_FIRE_PILLAR,
@@ -47,6 +48,7 @@ STATIC_DCL void FDECL(cast_wizard_spell, (struct monst *, double, int));
 STATIC_DCL void FDECL(cast_cleric_spell, (struct monst *, double, int));
 STATIC_DCL boolean FDECL(is_undirected_spell, (unsigned int, int));
 STATIC_DCL boolean FDECL(is_ultimate_spell, (unsigned int, int));
+STATIC_DCL boolean FDECL(is_intermediate_spell, (unsigned int, int));
 STATIC_DCL boolean
 FDECL(spell_would_be_useless, (struct monst *, unsigned int, int));
 
@@ -169,6 +171,7 @@ int spellnum;
     case 11:
         return CLC_LIGHTNING;
     case 10:
+        return CLC_SNAKES;
     case 9:
         return CLC_CURSE_ITEMS;
     case 8:
@@ -257,10 +260,13 @@ boolean foundyou;
 
     unsigned short* appr_spec_ptr = &mtmp->mspec_used;
     boolean is_ultimate = FALSE;
+    boolean is_intermediate = FALSE;
     if (mattk->adtyp == AD_SPEL)
     {
         if (is_ultimate = is_ultimate_spell(mattk->adtyp, spellnum))
             appr_spec_ptr = &mtmp->mmageultimate_used;
+        else if (is_intermediate = is_intermediate_spell(mattk->adtyp, spellnum))
+            appr_spec_ptr = &mtmp->mmageintermediate_used;
         else
             appr_spec_ptr = &mtmp->mmagespell_used;
     }
@@ -268,6 +274,8 @@ boolean foundyou;
     {
         if (is_ultimate = is_ultimate_spell(mattk->adtyp, spellnum))
             appr_spec_ptr = &mtmp->mclericultimate_used;
+        else if (is_intermediate = is_intermediate_spell(mattk->adtyp, spellnum))
+            appr_spec_ptr = &mtmp->mclericintermediate_used;
         else
             appr_spec_ptr = &mtmp->mclericspell_used;
     }
@@ -279,7 +287,7 @@ boolean foundyou;
         return (0);
     }
 
-    *appr_spec_ptr = is_ultimate ? d(2, 8) + 100 : rnd(2) + 1;
+    *appr_spec_ptr = is_ultimate ? d(3, 20) + 60 : is_intermediate ? d(1, 6) + 14 : rnd(2) + 1;
 
     /* monster can cast spells, but is casting a directed spell at the
        wrong place?  If so, give a message, and return.  Do this *after*
@@ -467,7 +475,8 @@ int spellnum;
         } else
             impossible("bad wizard cloning?");
         break;
-    case MGC_SUMMON_MONS: {
+    case MGC_SUMMON_MONS: 
+    {
         int count;
 
         if (mtmp->iswiz)
@@ -497,7 +506,8 @@ int spellnum;
         damage = 0;
         break;
     }
-    case MGC_SUMMON_NASTY: {
+    case MGC_SUMMON_NASTY: 
+    {
         int count;
 
         count = summon_nasties(mtmp); /* summon something nasty */
@@ -717,12 +727,15 @@ int spellnum;
         damage = 0;
         break;
     case CLC_INSECTS: 
+    case CLC_SNAKES:
     {
         /* Try for insects, and if there are none
            left, go for (sticks to) snakes.  -3. */
-        struct permonst *pm = mkclass(S_ANT, 0);
+        char let = (spellnum == CLC_INSECTS ? S_ANT : S_SNAKE);
+        struct permonst *pm = mkclass(let, 0);
         struct monst *mtmp2 = (struct monst *) 0;
-        char let = (pm ? S_ANT : S_SNAKE);
+        if (!pm)
+            break;
         boolean success = FALSE, seecaster;
         int i, quan, oldseen, newseen;
         coord bypos;
@@ -894,8 +907,10 @@ is_undirected_spell(adtyp, spellnum)
 unsigned int adtyp;
 int spellnum;
 {
-    if (adtyp == AD_SPEL) {
-        switch (spellnum) {
+    if (adtyp == AD_SPEL) 
+    {
+        switch (spellnum) 
+        {
         case MGC_CLONE_WIZ:
         case MGC_SUMMON_MONS:
         case MGC_SUMMON_NASTY:
@@ -907,9 +922,13 @@ int spellnum;
         default:
             break;
         }
-    } else if (adtyp == AD_CLRC) {
-        switch (spellnum) {
+    }
+    else if (adtyp == AD_CLRC)
+    {
+        switch (spellnum) 
+        {
         case CLC_INSECTS:
+        case CLC_SNAKES:
         case CLC_CURE_SELF:
             return TRUE;
         default:
@@ -925,10 +944,11 @@ is_ultimate_spell(adtyp, spellnum)
 unsigned int adtyp;
 int spellnum;
 {
-    if (adtyp == AD_SPEL) {
-        switch (spellnum) {
+    if (adtyp == AD_SPEL)
+    {
+        switch (spellnum)
+        {
         case MGC_CLONE_WIZ:
-        case MGC_SUMMON_MONS:
         case MGC_SUMMON_NASTY:
         case MGC_DEATH_TOUCH:
             return TRUE;
@@ -936,12 +956,43 @@ int spellnum;
             break;
         }
     }
-    else if (adtyp == AD_CLRC) {
-        switch (spellnum) {
-        case CLC_INSECTS:
-        case CLC_GEYSER:
+    else if (adtyp == AD_CLRC) 
+    {
+        switch (spellnum)
+        {
+        case CLC_SNAKES:
         case CLC_DEATH_TOUCH:
                 return TRUE;
+        default:
+            break;
+        }
+    }
+    return FALSE;
+}
+
+STATIC_DCL
+boolean
+is_intermediate_spell(adtyp, spellnum)
+unsigned int adtyp;
+int spellnum;
+{
+    if (adtyp == AD_SPEL) 
+    {
+        switch (spellnum)
+        {
+        case MGC_SUMMON_MONS:
+            return TRUE;
+        default:
+            break;
+        }
+    }
+    else if (adtyp == AD_CLRC)
+    {
+        switch (spellnum) 
+        {
+        case CLC_INSECTS:
+        case CLC_GEYSER:
+            return TRUE;
         default:
             break;
         }
@@ -969,6 +1020,9 @@ int spellnum;
 	{
         /* aggravate monsters, etc. won't be cast by peaceful monsters */
         if (is_ultimate_spell(adtyp, spellnum) && mtmp->mmageultimate_used > 0)
+            return TRUE;
+
+        if (is_intermediate_spell(adtyp, spellnum) && mtmp->mmageintermediate_used > 0)
             return TRUE;
 
         if (is_peaceful(mtmp)
@@ -1033,15 +1087,21 @@ int spellnum;
 	{
         if (is_ultimate_spell(adtyp, spellnum) && mtmp->mclericultimate_used > 0)
             return TRUE;
+        if (is_intermediate_spell(adtyp, spellnum) && mtmp->mclericintermediate_used > 0)
+            return TRUE;
         /* summon insects/sticks to snakes won't be cast by peaceful monsters
          */
-        if (is_peaceful(mtmp) && spellnum == CLC_INSECTS)
+        if (is_peaceful(mtmp) && (spellnum == CLC_INSECTS || spellnum == CLC_SNAKES))
             return TRUE;
         /* healing when already healed */
         if (mtmp->mhp == mtmp->mhpmax && spellnum == CLC_CURE_SELF)
             return TRUE;
         /* don't summon insects if it doesn't think you're around */
-        if (!mcouldseeu && spellnum == CLC_INSECTS)
+        if (!mcouldseeu && (spellnum == CLC_INSECTS || spellnum == CLC_SNAKES))
+            return TRUE;
+        if (spellnum == CLC_INSECTS && mkclass(S_ANT, 0) == (struct permonst*)0)
+            return TRUE;
+        if (spellnum == CLC_SNAKES && mkclass(S_SNAKE, 0) == (struct permonst*)0)
             return TRUE;
         /* blindness spell on blinded player */
         if (Blinded && spellnum == CLC_BLIND_YOU)

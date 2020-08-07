@@ -116,12 +116,15 @@ struct monst {
 #define M_EXTRINSIC				0x8000  /* extrinsic from items or environment, updated frequently by clearing and checking a new value */
 
 	unsigned short mspec_used;             /* monster's general special ability and spell attack timeout */
-    unsigned short mmagespell_used;        /* monster's ultimate ability or high-powered spell timeout */
-    unsigned short mclericspell_used;      /* monster's ultimate ability or high-powered spell timeout */
+    unsigned short mmagespell_used;        /* monster's mage-style normal ability or low-powered spell timeout */
+    unsigned short mmageintermediate_used; /* monster's mage-style intermediate ability or medium-powered mage spell timeout */
     unsigned short mmageultimate_used;     /* monster's mage-style ultimate ability or high-powered mage spell timeout */
+    unsigned short mclericspell_used;      /* monster's cleric-style normal ability or low-powered spell timeout */
+    unsigned short mclericintermediate_used; /* monster's cleric-style intermediate ability or medium-powered spell timeout */
     unsigned short mclericultimate_used;   /* monster's cleric-style ultimate ability or high-powered mage spell timeout */
     unsigned short mdemonsummon_used;      /* demon summon timeout */
     unsigned short mspecialsummon_used;    /* special (nondemon) summon timeout */
+    unsigned short mspecialsummon2_used;   /* another special (nondemon) summon timeout */
 
     Bitfield(female, 1);		/* is female */
 	Bitfield(mburied, 1);		/* has been buried */

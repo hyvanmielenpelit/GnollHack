@@ -1045,7 +1045,7 @@ register struct monst *mtmp;
 						}
 					}
 				}
-				else if (!mtmp->mclericultimate_used && mattk->adtyp == AD_GHUL) /* Uses cleric ultimate in the absence of a better summon counter */
+				else if (!mtmp->mspecialsummon2_used && mattk->adtyp == AD_GHUL)
 				{
                     update_m_action(mtmp, ACTION_TILE_CAST);
                     /*  Special ghoul handling code */
@@ -1056,7 +1056,7 @@ register struct monst *mtmp;
 						{
 							(void)yeenoghu_ghoul_summon(mtmp);
 							sum[i] = 1;
-                            mtmp->mclericultimate_used = 45;
+                            mtmp->mspecialsummon2_used = 45;
                         }
 						else if(!is_silenced(mtmp) && !Deaf)
 						{

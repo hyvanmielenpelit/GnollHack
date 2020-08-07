@@ -606,14 +606,14 @@ struct monst *summoner;
 		if (summoner)
 		{
 			if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
-                summon_num = rnd(3);
+                summon_num = rnd(3) + 2;
             else if (summoner != &youmonst && summoner->m_lev >= 30)
-                summon_num = rnd(2);
+                summon_num = 1 + rnd(3);
             else
-                summon_num = 1;
+                summon_num = rnd(3);
 		}
 		else
-            summon_num = rnd(3);
+            summon_num = rnd(3) + 2;
 
 		/* if we don't have a casting monster, nasties appear around hero,
            otherwise they'll appear around spot summoner thinks she's at */
@@ -760,11 +760,14 @@ struct monst* summoner;
             /* delay first use of spell or breath attack */
             mtmp->mspec_used = 3 + rnd(3);
             mtmp->mmagespell_used = mtmp->mspec_used;
+            mtmp->mmageintermediate_used = mtmp->mspec_used;
             mtmp->mmageultimate_used = mtmp->mspec_used;
             mtmp->mclericspell_used = mtmp->mspec_used;
+            mtmp->mclericintermediate_used = mtmp->mspec_used;
             mtmp->mclericultimate_used = mtmp->mspec_used;
             mtmp->mdemonsummon_used = 30;
             mtmp->mspecialsummon_used = 30;
+            mtmp->mspecialsummon2_used = 30;
 
             mtmp->mpeaceful = 0;
             newsym(mtmp->mx, mtmp->my);

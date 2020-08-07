@@ -629,15 +629,25 @@ long nmv; /* number of moves */
     else
         mtmp->mmagespell_used -= imv;
 
-    if (imv > mtmp->mclericspell_used)
-        mtmp->mclericspell_used = 0;
+    if (imv > mtmp->mmageintermediate_used)
+        mtmp->mmageintermediate_used = 0;
     else
-        mtmp->mclericspell_used -= imv;
+        mtmp->mmageintermediate_used -= imv;
 
     if (imv > mtmp->mmageultimate_used)
         mtmp->mmageultimate_used = 0;
     else
         mtmp->mmageultimate_used -= imv;
+
+    if (imv > mtmp->mclericspell_used)
+        mtmp->mclericspell_used = 0;
+    else
+        mtmp->mclericspell_used -= imv;
+
+    if (imv > mtmp->mclericintermediate_used)
+        mtmp->mclericintermediate_used = 0;
+    else
+        mtmp->mclericintermediate_used -= imv;
 
     if (imv > mtmp->mclericultimate_used)
         mtmp->mclericultimate_used = 0;
@@ -653,6 +663,11 @@ long nmv; /* number of moves */
         mtmp->mspecialsummon_used = 0;
     else
         mtmp->mspecialsummon_used -= imv;
+
+    if (imv > mtmp->mspecialsummon2_used)
+        mtmp->mspecialsummon2_used = 0;
+    else
+        mtmp->mspecialsummon2_used -= imv;
 
     /* reduce tameness for every 150 moves you are separated */
     if (mtmp->mtame && !mtmp->isfaithful) 

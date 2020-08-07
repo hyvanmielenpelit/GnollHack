@@ -422,11 +422,17 @@ boolean digest_meal;
     if (mon->mmagespell_used)
         mon->mmagespell_used--;
 
+    if (mon->mmageintermediate_used)
+        mon->mmageintermediate_used--;
+
     if (mon->mmageultimate_used)
         mon->mmageultimate_used--;
 
     if (mon->mclericspell_used)
         mon->mclericspell_used--;
+
+    if (mon->mclericintermediate_used)
+        mon->mclericintermediate_used--;
 
     if (mon->mclericultimate_used)
         mon->mclericultimate_used--;
@@ -436,6 +442,9 @@ boolean digest_meal;
 
     if (mon->mspecialsummon_used)
         mon->mspecialsummon_used--;
+
+    if (mon->mspecialsummon2_used)
+        mon->mspecialsummon2_used--;
 
     if (digest_meal)
     {

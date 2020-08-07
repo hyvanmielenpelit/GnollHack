@@ -171,6 +171,7 @@ struct monst *mon;
 		{
 			mtmp->mdemonsummon_used = 30;
 			mtmp->mspecialsummon_used = 30;
+			mtmp->mspecialsummon2_used = 30;
 			result++;
             /* an angel's alignment should match the summoner */
             if (dtype == PM_ANGEL)
