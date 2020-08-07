@@ -11,29 +11,29 @@ REPLACE_TERRAIN:(0,0,76,19),',', 'T', 5%
 GEOMETRY:left,center
 #1234567890123456789012345678901234567890123456789012345678901234567890
 MAP
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,-+----------+--------,,,,,,,,,,,,,,,,,,,,
-,,,|.............|.....|,,,,,,,,,,}}},,,,,,,
-,,,|.............S.....|,,,,,,,,,}}}}},,,,,,
-,,,|--S------S------...|,,,,,,,,,}}}}},,,,,,
-,,,S.....S,,,,,,,,,|-+--,,,,,,,,,,}}},,,,,,,
-,,,|.....|,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,S.....S,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,|.....|,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,S.....S,,,,,,,,,|-+--,,,,,,,,,,}}},,,,,,,
-,,,|--S------S------...|,,,,,,,,,}}}}},,,,,,
-,,,|.............S.....|,,,,,,,,,}}}}},,,,,,
-,,,-+-----------+-------,,,,,,,,,,}}},,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,-+----------+--------,,,,,,,,,,,,,,,,,,,,,,,
+,,,|.............|.....|,,,,,,,,,,}}},,,,,,,,,,
+,,,|.............S.....|,,,,,,,,,}}}}},,,,,,,,,
+,,,|--S------S------...|,,,,,,,,,}}}}},,,,,,,,,
+,,,S.....S,,,,,,,,,|-+--,,,,,,,,,,}}},,,,,,,,,,
+,,,|.....|,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,S.....S,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,|.....|,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,S.....S,,,,,,,,,|-+--,,,,,,,,,,}}},,,,,,,,,,
+,,,|--S------S------...|,,,,,,,,,}}}}},,,,,,,,,
+,,,|.............S.....|,,,,,,,,,}}}}},,,,,,,,,
+,,,-+-----------+-------,,,,,,,,,,}}},,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ENDMAP
 # Dungeon Description
-REGION:(00,00,43,15),lit,"ordinary"
+REGION:(00,00,46,15),lit,"ordinary"
 # Doors
 ## Portal arrival point; just about anywhere on the right hand side of the map
 BRANCH:levregion(51,2,77,18),(0,0,26,15)
-# Orion
+# Yacc
 MONSTER:('&',"Yacc"),(06,08)
 # The treasure of Yacc
 CONTAINER:('(',"chest"),not_trapped,(06,08) {
@@ -53,38 +53,9 @@ FOUNTAIN:(06,07)
 FOUNTAIN:(06,09)
 
 # Base bovine army
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
-MONSTER:('H',"hell bovine"),random,hostile
+LOOP [40 + 1d10] {
+  MONSTER:('H',"hell bovine"),random,hostile
+}
 
 # Non diggable walls
 NON_DIGGABLE:(00,00,26,15)
@@ -107,29 +78,28 @@ TRAP:"magic", random
 TRAP:"magic", random
 TRAP:"magic", random
 
-# Monsters on siege duty.
+# Other monsters on siege duty.
 MONSTER: ('H',"minotaur"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
-MONSTER: ('H',"hell bovine"),random,hostile
+MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
 MONSTER: ('H',"minotaur"),random,hostile
 MONSTER: ('q',"bison"),random,hostile
