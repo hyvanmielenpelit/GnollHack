@@ -1287,8 +1287,9 @@ struct monst* origmonst;
 		if (is_dlord(mtmp->data) || is_dprince(mtmp->data))
 			percentchance = 0;
 #endif
-
-		if (!(mtmp->data->geno & G_UNIQ) || !check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))  //
+        int chance = 10 * (10 + u.ulevel - mtmp->m_lev + (otmp->blessed ? 5 : 0) + Luck);
+        boolean turn_success = rn2(100) < chance;
+		if (!(mtmp->data->geno & G_UNIQ) && turn_success)
 		{
             pline("%s brightly before %s!", Yobjnam2(otmp, "shine"), mon_nam(mtmp));
             if (!DEADMONSTER(mtmp))

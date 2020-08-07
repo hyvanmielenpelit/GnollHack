@@ -883,24 +883,24 @@ struct objclass {
 #define O3_NO_WISH									0x00000002UL  /* item is special, it cannot be wished for, mimics oc_nowish */
 #define O3_UNIQUE									0x00000004UL  /* the item is unique, mimics oc_unique */
 
-/* free bit */
-#define O3_EXTENDED_POLEARM_REACH					0x00000010UL  /* range is max 13 instead of normal 8 */
-#define O3_DOUBLE_DIGGING_EFFORT					0x00000020UL  /* double normal digging effort */
-#define O3_BURIED_SEARCHABLE						0x00000040UL  /* if buried, can be found by explicit searching */
-#define O3_CONTENT_DESCRIPTION_SHUFFLED				0x00000080UL  /* uses (shuffled) description index instead of name index for content description */
-#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS			0x00000100UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
-#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH	0x00000200UL 
+#define O3_EXTENDED_POLEARM_REACH					0x00000008UL  /* range is max 13 instead of normal 8 */
+#define O3_DOUBLE_DIGGING_EFFORT					0x00000010UL  /* double normal digging effort */
+#define O3_BURIED_SEARCHABLE						0x00000020UL  /* if buried, can be found by explicit searching */
+#define O3_CONTENT_DESCRIPTION_SHUFFLED				0x00000040UL  /* uses (shuffled) description index instead of name index for content description */
+#define O3_CONSUMES_NUTRITION_EVERY_20_ROUNDS			0x00000080UL  /* consumes nutrition every 20 rounds when worn. WORKS ONLY FOR MISCELLANEOUS MAGIC ITEMS */
+#define O3_USES_FIXED_DAMAGE_BONUS_INSTEAD_OF_STRENGTH	0x00000100UL 
 
-#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000400UL  /* wielding or wearing prohibits the revival of permitted targets */
-#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000800UL  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00001000UL	/* deals damage when wielded like artifacts */
+#define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000200UL  /* wielding or wearing prohibits the revival of permitted targets */
+#define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000400UL  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
+#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00000800UL	/* deals damage when wielded like artifacts */
 
-#define O3_INVOKABLE								0x00002000UL	/* can be invoked using invoke command */
-#define O3_APPLIABLE								0x00004000UL	/* can be applied as a tool */
-#define O3_WIELDABLE								0x00008000UL	/* can be wielded in a weapon slot */
-#define O3_READABLE									0x00010000UL	/* can be read */								
-#define O3_IGNITABLE								0x00020000UL	
-#define O3_RELATIVE_AGE								0x00040000UL	
+#define O3_INVOKABLE								0x00001000UL	/* can be invoked using invoke command */
+#define O3_APPLIABLE								0x00002000UL	/* can be applied as a tool */
+#define O3_WIELDABLE								0x00004000UL	/* can be wielded in a weapon slot */
+#define O3_READABLE									0x00008000UL	/* can be read */								
+#define O3_IGNITABLE								0x00010000UL	
+#define O3_RELATIVE_AGE								0x00020000UL	
+#define O3_REFILLABLE_WITH_OIL						0x00040000UL	
 #define O3_ELEMENTAL_ENCHANTABLE					0x00080000UL
 #define O3_EATING_IDENTIFIES						0x00100000UL	
 #define O3_NONROTTING_FOOD							0x00200000UL

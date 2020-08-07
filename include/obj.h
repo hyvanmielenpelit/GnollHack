@@ -452,6 +452,9 @@ struct obj {
 /* object can be ignited */
 #define ignitable(otmp)                                             \
     ((objects[(otmp)->otyp].oc_flags3 & O3_IGNITABLE) != 0)
+/* object can be refilled with oil */
+#define is_refillable_with_oil(otmp)                                             \
+    ((objects[(otmp)->otyp].oc_flags3 & O3_REFILLABLE_WITH_OIL) != 0)
 
 /* things that can be read */
 #define is_readable(otmp)                                                    \

@@ -56,6 +56,7 @@ STATIC_DCL int FDECL(do_chat_smith_repair_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
@@ -63,6 +64,7 @@ STATIC_OVL int FDECL(spell_service_query, (struct monst*, int, const char*, int,
 STATIC_OVL int FDECL(general_service_query, (struct monst*, void (*)(struct monst*), const char*, int, char*));
 STATIC_OVL void FDECL(repair_armor_func, (struct monst*));
 STATIC_OVL void FDECL(repair_weapon_func, (struct monst*));
+STATIC_OVL void FDECL(refill_lantern_func, (struct monst*));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -2348,6 +2350,19 @@ dochat()
 
 			chatnum++;
 
+			Sprintf(available_chat_list[chatnum].name, "Ask for oil refill for a lamp or lantern");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_refill_lantern;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
 		}
 
 	}
@@ -4545,6 +4560,18 @@ struct monst* mtmp;
 	return spell_service_query(mtmp, SPE_PROTECT_WEAPON, "protect a weapon", cost, "protecting a weapon");
 }
 
+STATIC_OVL int
+do_chat_smith_refill_lantern(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
+		return 0;
+
+	int cost = max(5, (int)((max(objects[BRASS_LANTERN].oc_cost, objects[POT_OIL].oc_cost)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern");
+}
+
+
 
 STATIC_OVL int
 do_chat_watchman_reconciliation(mtmp)
@@ -4904,6 +4931,51 @@ struct monst* mtmp;
 			Yobjnam2(otmp, Blind ? "feel" : "look"), otmp->quan == 1 ? "it was" : "they were");
 	}
 	update_inventory();
+	verbalize("Thank you for using my services.");
+}
+
+STATIC_OVL void
+refill_lantern_func(mtmp)
+struct monst* mtmp;
+{
+	const char refill_lantern_objects[] = { ALL_CLASSES, TOOL_CLASS, 0 };
+	struct obj* otmp = getobj(refill_lantern_objects, "refill", 0, "");
+
+	if (!otmp)
+		return;
+
+	/* Check if the selection is appropriate */
+	if (otmp && !is_refillable_with_oil(otmp))
+	{
+		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
+		verbalize("Sorry, this is not an item that I can fill with oil.");
+		return;
+	}
+	else if (otmp && otmp->age > 1500L)
+	{
+		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
+		verbalize("Sorry, %s %s already full.", yname(otmp), otense(otmp, "are"));
+		return;
+	}
+
+	if (otmp->lamplit)
+		snuff_lit(otmp);
+
+	play_sfx_sound(SFX_REPAIR_ITEM_SUCCESS);
+
+	/* Adding oil to an empty magic lamp renders it into an oil lamp */
+	if ((otmp->otyp == MAGIC_LAMP) && otmp->special_quality == 0)
+	{
+		otmp->otyp = OIL_LAMP;
+		otmp->age = 0;
+	}
+
+	pline("%s fills %s with oil.", Monnam(mtmp), yname(otmp));
+
+	otmp->age = 1500L;
+	otmp->special_quality = 1;
+	update_inventory();
+
 	verbalize("Thank you for using my services.");
 }
 

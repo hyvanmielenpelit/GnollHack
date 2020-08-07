@@ -215,11 +215,13 @@ struct monst* origmonst;
         zap_type_text = "wand";
     /*FALLTHRU*/
 	case SPE_FORCE_BOLT:
-		res = 1;
+    case SPE_MAGIC_ARROW:
+    case SPE_ARROW_OF_DIANA:
+        res = 1;
         reveal_invis = TRUE;
         if (disguised_mimic)
             seemimic(mtmp);
-        if (is_mon_immune_to_magic_missile(mtmp) || resists_magic(mtmp) || Invulnerable)
+        if (is_mon_immune_to_magic_missile(mtmp) || Invulnerable)
 		{ /* match effect on player */
             m_shieldeff(mtmp);
             pline("Boing!");
@@ -231,8 +233,7 @@ struct monst* origmonst;
 
 			/* resist deals the damage and displays the damage dealt */
 			hit(zap_type_text, mtmp, exclam(dmg), -1, "");
-			(void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_MAGM, TELL);
-
+			(void) inflict_spell_damage(mtmp, otmp, dmg, AD_MAGM, TELL);
         } 
 		else
             miss(zap_type_text, mtmp);
@@ -290,25 +291,6 @@ struct monst* origmonst;
 		/* resist deals the damage and displays the damage dealt */
 		Your("freezing touch sears %s!", mon_nam(mtmp));
 		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_COLD, TELL);
-		learn_it = TRUE;
-		break;
-    case SPE_MAGIC_ARROW:
-    case SPE_ARROW_OF_DIANA:
-        res = 1;
-		reveal_invis = TRUE;
-		if (disguised_mimic)
-			seemimic(mtmp);
-		if (u.uswallow || 1) //rnd(20) < 5 + u.ulevel + find_mac(mtmp)) //Hitsas +5 arrow + caster level, good at high levels
-		{
-			dmg = 0;
-			dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus; //Same for small and big
-
-			/* resist deals the damage and displays the damage dealt */
-			hit(zap_type_text, mtmp, exclam(dmg), -1, "");
-			(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_MAGM, TELL);
-		}
-		else
-			miss(zap_type_text, mtmp);
 		learn_it = TRUE;
 		break;
 	case SPE_TOUCH_OF_DEATH:
@@ -576,11 +558,9 @@ struct monst* origmonst;
             reveal_invis = TRUE;
             wake = TRUE;
             context.bypasses = TRUE; /* for make_corpse() */
-            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL))
-			{
-                if (!DEADMONSTER(mtmp))
-					monflee(mtmp, duration, FALSE, TRUE);
-			}
+            (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
+            if (!DEADMONSTER(mtmp))
+                monflee(mtmp, duration, FALSE, TRUE);
         }
         break;
 	case SPE_FEAR:
@@ -4769,7 +4749,7 @@ boolean ordinary;
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         learn_it = TRUE;
-        if (Magic_missile_immunity || Antimagic_or_resistance || Invulnerable)
+        if (Magic_missile_immunity || Invulnerable)
 		{
             u_shieldeff();
 			damage = 0;
@@ -7106,11 +7086,6 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	if (damage == PETRIFICATION_DUMMY_DAMAGE) /* caller starts delayed petrification */
 		return damage;
 
-	/* Magic resistance may halve the damage */
-	if (damage > 0 && type >= 0 && (resists_magic(mon) || magic_resistance_success) && damage != DISINTEGRATION_DUMMY_DAMAGE)
-		damage /= 2;
-    
-
 	if (damage < 0)
 		damage = 0; /* don't allow negative damage */
 
@@ -9066,6 +9041,62 @@ int dmg, adtyp, tell;
 	}
     return resisted;
 }
+
+boolean
+inflict_spell_damage(mtmp, otmp, dmg, adtyp, tell)
+struct monst* mtmp;
+struct obj* otmp;
+int dmg, adtyp, tell;
+{
+    boolean is_you = (mtmp == &youmonst);
+
+    double damage = dmg == 0 ? 0 : adjust_damage(dmg, (struct monst*)0, mtmp, adtyp, ADFLAGS_SPELL_DAMAGE);
+
+    if (damage > 0)
+    {
+        int hp_before = 0, hp_after = 0;
+        if (is_you)
+        {
+            boolean was_polyd = Upolyd;
+            hp_before = Upolyd ? u.mh : u.uhp;
+            losehp(dmg, otmp ? cxname(otmp) : "damage source", KILLED_BY);
+            hp_after = Upolyd ? u.mh : u.uhp;
+            boolean polyd_same = (Upolyd && was_polyd) || (!Upolyd && !was_polyd);
+
+            int damagedealt = hp_before - hp_after;
+            if (tell == TELL && damagedealt > 0 && polyd_same)
+            {//Lethal damage not shown
+                You("sustain %d damage!", damagedealt);
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            }
+        }
+        else
+        {
+            hp_before = mtmp->mhp;
+            deduct_monster_hp(mtmp, dmg);
+            hp_after = mtmp->mhp;
+
+            int damagedealt = hp_before - hp_after;
+            if (tell == TELL && damagedealt > 0)
+            {//Lethal damage not shown
+                pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
+                display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+            }
+
+            if (DEADMONSTER(mtmp))
+            {
+                if (m_using)
+                    monkilled(mtmp, "", AD_RBRE);
+                else
+                    killed(mtmp);
+            }
+        }
+
+    }
+
+    return 0;
+}
+
 
 #define MAXWISHTRY 5
 

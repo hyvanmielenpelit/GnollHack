@@ -2983,10 +2983,11 @@ dodip()
  more_dips:
 
     /* Allow filling of MAGIC_LAMPs to prevent identification by player */
-    if ((obj->otyp == OIL_LAMP || obj->otyp == MAGIC_LAMP)
-        && (potion->otyp == POT_OIL)) {
+    if (is_refillable_with_oil(obj) && potion->otyp == POT_OIL) 
+    {
         /* Turn off engine before fueling, turn off fuel too :-)  */
-        if (obj->lamplit || potion->lamplit) {
+        if (obj->lamplit || potion->lamplit) 
+        {
             useup(potion);
             explode(u.ux, u.uy, 11, d(6, 6), obj->otyp, 0, EXPL_FIERY);
             exercise(A_WIS, FALSE);
@@ -2998,10 +2999,13 @@ dodip()
             obj->otyp = OIL_LAMP;
             obj->age = 0;
         }
-        if (obj->age > 1000L) {
+        if (obj->age > 1000L) 
+        {
             pline("%s %s full.", Yname2(obj), otense(obj, "are"));
             potion->in_use = FALSE; /* didn't go poof */
-        } else {
+        } 
+        else 
+        {
             You("fill %s with oil.", yname(obj));
             check_unpaid(potion);        /* Yendorian Fuel Tax */
             /* burns more efficiently in a lamp than in a bottle;
