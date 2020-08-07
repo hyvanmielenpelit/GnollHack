@@ -1502,7 +1502,7 @@ update_monster_timouts()
 						break;
 					}
 
-                    if (i == CHARMED && mtmp == u.usteed && !is_tame(mtmp))
+                    if ((i == CHARMED || i == UNDEAD_CONTROL) && mtmp == u.usteed && !is_tame(mtmp))
                     {
                         dismount_steed(DISMOUNT_THROWN);
                     }

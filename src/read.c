@@ -1321,12 +1321,14 @@ int howmuch;
 
 /* monster is hit by scroll of taming's effect */
 int
-maybe_tame(mtmp, sobj)
+maybe_tame(mtmp, sobj, origmonst)
 struct monst *mtmp;
 struct obj *sobj;
+struct monst* origmonst;
 {
 	boolean was_tame = is_tame(mtmp);
 	boolean was_peaceful = is_peaceful(mtmp);
+    int adj_save = get_saving_throw_adjustment(sobj, origmonst);
 
     if (sobj->cursed) 
 	{
@@ -1347,16 +1349,16 @@ struct obj *sobj;
 		{
 			pline("%s is unaffected.", Monnam(mtmp));
 		}
-		else if (!check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+		else if (!check_ability_resistance_success(mtmp, A_WIS, adj_save))
 		{
 			int duration = 0;
-			boolean charmed = FALSE;
+			int charmed = 0;
 			if (sobj && !(objects[sobj->otyp].oc_spell_flags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
 			{
 				int existing_charmed_duration = get_mon_property(mtmp, CHARMED);
 				duration += existing_charmed_duration;
 				duration += d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
-				charmed = TRUE;
+				charmed = 1;
 			}
 
 			/* tame dog verbosely */
@@ -1375,6 +1377,64 @@ struct obj *sobj;
     }
     return 0;
 }
+
+/* Control Undead */
+int
+maybe_controlled(mtmp, sobj, origmonst)
+struct monst* mtmp;
+struct obj* sobj;
+struct monst* origmonst;
+{
+    if (!mtmp || !sobj)
+        return 0;
+
+    boolean was_tame = is_tame(mtmp);
+    boolean was_peaceful = is_peaceful(mtmp);
+
+    int save_adj = get_saving_throw_adjustment(sobj, origmonst);
+
+    if(is_undead(mtmp->data) || is_vampshifter(mtmp))
+    {
+        if (sobj->cursed)
+        {
+            setmangry(mtmp, FALSE);
+            if (was_peaceful && !is_peaceful(mtmp))
+                return -1;
+        }
+        else if (mtmp->isshk)
+            make_happy_shk(mtmp, FALSE);
+        else if (!check_ability_resistance_success(mtmp, A_WIS, save_adj))
+        {
+            int duration = 0;
+            int controlled = 0;
+            if (sobj && !(objects[sobj->otyp].oc_spell_flags & S1_SPELL_IS_NONREVERSIBLE_PERMANENT))
+            {
+                int existing_control_duration = get_mon_property(mtmp, UNDEAD_CONTROL);
+                duration += existing_control_duration;
+                duration += d(objects[sobj->otyp].oc_spell_dur_dice, objects[sobj->otyp].oc_spell_dur_diesize) + objects[sobj->otyp].oc_spell_dur_plus;
+                controlled = 2;
+            }
+
+            /* tame dog verbosely */
+            if (!tamedog(mtmp, (struct obj*)0, FALSE, controlled, duration, TRUE, FALSE) || !is_tame(mtmp))
+            {
+                pline("%s is unaffected!", Monnam(mtmp));
+            }
+        }
+        else
+        {
+            m_shieldeff(mtmp);
+            pline("%s resists!", Monnam(mtmp));
+        }
+        if ((!was_peaceful && is_peaceful(mtmp)) || (!was_tame && is_tame(mtmp)))
+            return 1;
+    }
+    else
+        pline("%s is unaffected!", Monnam(mtmp));
+
+    return 0;
+}
+
 
 STATIC_OVL boolean
 get_valid_stinking_cloud_pos(x,y)
@@ -1440,6 +1500,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	boolean altfmt = FALSE;
 	int duration = d(objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize) + objects[otyp].oc_spell_dur_plus;
     boolean is_serviced_spell = !!(sobj->speflags & SPEFLAGS_SERVICED_SPELL);
+    int save_adj = get_saving_throw_adjustment(sobj, sobj->oclass != SPBOOK_CLASS || is_serviced_spell ? (struct monst*)0 : &youmonst);
     if (objects[otyp].oc_magic)
         exercise(A_WIS, TRUE);                       /* just for trying */
     already_known = (sobj->oclass == SPBOOK_CLASS /* spell */
@@ -1760,7 +1821,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		{
 			if (DEADMONSTER(mtmp))
 				continue;
-			if (resists_fear(mtmp) || check_ability_resistance_success(mtmp, A_WIS, objects[sobj->otyp].oc_spell_saving_throw_adjustment))
+			if (resists_fear(mtmp) || check_ability_resistance_success(mtmp, A_WIS, save_adj))
 				continue;
 
 			if (cansee(mtmp->mx, mtmp->my)) 
@@ -2032,7 +2093,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 
 		if (u.uswallow) {
 			candidates = 1;
-			results = vis_results = maybe_tame(u.ustuck, sobj);
+			results = vis_results = maybe_tame(u.ustuck, sobj, otyp != SCR_TAMING ? &youmonst : (struct monst*)0);
 		}
 		else {
 			int i, j, bd = confused ? 5 : 1;
@@ -2051,7 +2112,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					if ((mtmp = m_at(u.ux + i, u.uy + j)) != 0 || (!i && !j && (mtmp = u.usteed) != 0))
 					{
 						++candidates;
-						res = maybe_tame(mtmp, sobj);
+						res = maybe_tame(mtmp, sobj, otyp != SCR_TAMING ? &youmonst : (struct monst*)0);
 						results += res;
 						if (canspotmon(mtmp))
 							vis_results += res;
@@ -2096,7 +2157,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					{
 						++candidates;
 						res = 0;
-						if (sleep_monst(mtmp, sobj, duration, objects[otyp].oc_spell_saving_throw_adjustment, TELL))
+						if (sleep_monst(mtmp, sobj, duration, save_adj, TELL))
 						{
 							slept_monst(mtmp);
 							res = 1;
@@ -2149,7 +2210,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 					++candidates;
 					res = 0;
 					if (!mtmp->mtame && !is_peaceful(mtmp) 
-						&& !check_ability_resistance_success(&youmonst, A_CON, objects[otyp].oc_spell_saving_throw_adjustment))
+						&& !check_ability_resistance_success(&youmonst, A_CON, save_adj))
 					{
 						if (mtmp->m_lev < u.ulevel - 10)
 						{

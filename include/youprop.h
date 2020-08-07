@@ -632,10 +632,6 @@
 #define ENo_magic_resistance u.uprops[NO_MAGIC_RESISTANCE].extrinsic
 #define No_magic_resistance (HNo_magic_resistance || ENo_magic_resistance)
 
-#define HParalyzed u.uprops[PARALYZED].intrinsic
-#define EParalyzed u.uprops[PARALYZED].extrinsic
-#define Paralyzed (HParalyzed || EParalyzed)
-
 #define HSleeping u.uprops[SLEEPING].intrinsic
 #define ESleeping u.uprops[SLEEPING].extrinsic
 #define Sleeping (HSleeping || ESleeping)
@@ -651,6 +647,13 @@
 #define HCharmed u.uprops[CHARMED].intrinsic
 #define ECharmed u.uprops[CHARMED].extrinsic
 #define Charmed (HCharmed || ECharmed)
+
+#define HUndead_control u.uprops[UNDEAD_CONTROL].intrinsic
+#define EUndead_control u.uprops[UNDEAD_CONTROL].extrinsic
+#define Undead_control (HUndead_control || EUndead_control)
+
+#define Charmed_or_controlled ((Charmed && !Charm_resistance) || Undead_control)
+
 
 #define HSlowed u.uprops[SLOWED].intrinsic
 #define ESlowed u.uprops[SLOWED].extrinsic
@@ -734,6 +737,16 @@
 #define HFree_action u.uprops[FREE_ACTION].intrinsic
 #define EFree_action u.uprops[FREE_ACTION].extrinsic
 #define Free_action (HFree_action || EFree_action)
+
+#define HUndead_immobility u.uprops[UNDEAD_IMMOBILITY].intrinsic
+#define EUndead_immobility u.uprops[UNDEAD_IMMOBILITY].extrinsic
+#define Undead_immobility (HUndead_immobility || EUndead_immobility)
+
+#define HParalyzed u.uprops[PARALYZED].intrinsic
+#define EParalyzed u.uprops[PARALYZED].extrinsic
+#define Paralyzed (HParalyzed || EParalyzed)
+
+#define Paralyzed_or_immobile (Paralyzed || (is_undead(youmonst.data) && Undead_immobility) && !Free_action)
 
 #define HFixed_abil u.uprops[FIXED_ABIL].intrinsic
 #define EFixed_abil u.uprops[FIXED_ABIL].extrinsic

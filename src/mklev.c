@@ -952,10 +952,11 @@ makelevel()
            while a monster was on the stairs. Conclusion:
            we have to check for monsters on the stairs anyway. */
 
-        if (u.uhave.amulet || !rn2(3)) {
+        if (u.uhave.amulet || !rn2(3)) 
+        {
             x = somex(croom);
             y = somey(croom);
-			if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
+			if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
 			{
 				randomize_encounter(x, y);
 			}

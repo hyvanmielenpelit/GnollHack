@@ -524,7 +524,31 @@ struct monst* origmonst;
 			pline("%s resists!", Monnam(mtmp));
 		}
 		break;
-	case WAN_SPEED_MONSTER:
+    case SPE_HOLD_UNDEAD:
+        res = 1;
+        if (!(is_undead(mtmp->data) || is_vampshifter(mtmp)))
+        {
+            pline("%s is unaffected.", Monnam(mtmp));
+        }
+        else if (!check_ability_resistance_success(mtmp, A_WIS, save_adj))
+        {
+            if (disguised_mimic)
+                seemimic(mtmp);
+            increase_mon_property_verbosely(mtmp, UNDEAD_IMMOBILITY, duration);
+            if (u.uswallow && (mtmp == u.ustuck) && (is_undead(mtmp->data) || is_vampshifter(mtmp)) && is_whirly(mtmp->data))
+            {
+                You("disrupt %s!", mon_nam(mtmp));
+                pline("A huge hole opens up...");
+                expels(mtmp, mtmp->data, TRUE);
+            }
+        }
+        else
+        {
+            m_shieldeff(mtmp);
+            pline("%s resists!", Monnam(mtmp));
+        }
+        break;
+    case WAN_SPEED_MONSTER:
     {
         res = 1;
         if (disguised_mimic)
@@ -609,9 +633,13 @@ struct monst* origmonst;
 	case SPE_CHARM_MONSTER:
 	case SPE_DOMINATE_MONSTER:
 		res = 1;
-		helpful_gesture = (maybe_tame(mtmp, otmp) == 1 || is_tame(mtmp));
+		helpful_gesture = (maybe_tame(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
 		break;
-	case WAN_POLYMORPH:
+    case SPE_CONTROL_UNDEAD:
+        res = 1;
+        helpful_gesture = (maybe_controlled(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
+        break;
+    case WAN_POLYMORPH:
     case SPE_POLYMORPH:
     case POT_POLYMORPH:
 		res = 1;
@@ -3570,13 +3598,15 @@ struct monst* origmonst;
 		case SPE_HASTE_MONSTER:
 		case SPE_HOLD_MONSTER:
 		case SPE_MASS_HOLD:
-		case WAN_SPEED_MONSTER:
+        case SPE_HOLD_UNDEAD:
+        case WAN_SPEED_MONSTER:
 		case SPE_SILENCE:
 		case SPE_MAGIC_ARROW:
         case SPE_ARROW_OF_DIANA:
         case WAN_NOTHING:
 		case SPE_CHARM_MONSTER:
-		case SPE_CURE_BLINDNESS:
+        case SPE_CONTROL_UNDEAD:
+        case SPE_CURE_BLINDNESS:
 		case SPE_CURE_SICKNESS:
 		case SPE_CURE_PETRIFICATION:
 		case SPE_MINOR_HEALING:
@@ -4733,7 +4763,7 @@ boolean ordinary;
 	int duration = d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus;
 	double damage = 0;
 	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(&youmonst, obj, FALSE, 0, 0, NOTELL);
-    int save_adj = get_saving_throw_adjustment(obj, &youmonst);
+    int save_adj = get_saving_throw_adjustment(obj, obj->oclass == SPBOOK_CLASS && !(obj->speflags & SPEFLAGS_SERVICED_SPELL) ? &youmonst : (struct monst*)0);
 
     switch (obj->otyp) {
     case WAN_STRIKING:
@@ -5065,10 +5095,10 @@ boolean ordinary;
 		damage = 0;
 		if (!check_ability_resistance_success(&youmonst, A_WIS, save_adj))
 		{
-			boolean was_paralyzed = Paralyzed;
+			boolean was_paralyzed = Paralyzed_or_immobile;
 			incr_itimeout(&HParalyzed, duration);
 			context.botl = context.botlx = TRUE;
-			if (Paralyzed && !was_paralyzed)
+			if (Paralyzed_or_immobile && !was_paralyzed)
 			{
 				learn_it = TRUE;
 				You("are paralyzed!");
@@ -5080,7 +5110,26 @@ boolean ordinary;
 			You("resist!");
 		}
 		break;
-	case SPE_SILENCE:
+    case SPE_HOLD_UNDEAD:
+        damage = 0;
+        if (!check_ability_resistance_success(&youmonst, A_WIS, save_adj))
+        {
+            boolean was_paralyzed = Paralyzed_or_immobile;
+            incr_itimeout(&HUndead_immobility, duration);
+            context.botl = context.botlx = TRUE;
+            if (Paralyzed_or_immobile && !was_paralyzed)
+            {
+                learn_it = TRUE;
+                You("are paralyzed!");
+            }
+        }
+        else
+        {
+            u_shieldeff();
+            You("resist!");
+        }
+        break;
+    case SPE_SILENCE:
 		damage = 0;
 		boolean was_silenced = Silenced;
 		incr_itimeout(&HSilenced, duration);
@@ -5568,7 +5617,8 @@ struct obj *obj; /* wand or spell */
 	case SPE_HASTE_MONSTER:
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
-	case WAN_SPEED_MONSTER:
+    case SPE_HOLD_UNDEAD:
+    case WAN_SPEED_MONSTER:
 	case SPE_SILENCE:
 	case SPE_CURE_BLINDNESS:
 	case SPE_CURE_SICKNESS:

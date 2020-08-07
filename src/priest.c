@@ -1471,7 +1471,7 @@ ustatusline()
 		Strcat(info, ", cancelled");
 	if (Silenced)
 		Strcat(info, ", silenced");
-	if (Paralyzed)
+	if (Paralyzed_or_immobile)
 		Strcat(info, ", paralyzed");
 	if (Sleeping)
 		Strcat(info, ", sleeping");

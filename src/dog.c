@@ -1035,11 +1035,11 @@ register struct obj *obj;
  * succeeded.
  */
 boolean
-tamedog(mtmp, obj, forcetaming, charm, duration, verbose, thrown)
+tamedog(mtmp, obj, forcetaming, charm_type, duration, verbose, thrown)
 register struct monst *mtmp;
 register struct obj *obj;
 boolean forcetaming;
-boolean charm;
+int charm_type; /* 0 = permanent, 1 = charm, 2 = control undead */
 unsigned short duration;
 boolean verbose;
 boolean thrown;
@@ -1052,7 +1052,7 @@ boolean thrown;
 	boolean was_tame = is_tame(mtmp);
 	boolean has_edog = has_edog(mtmp);
 
-	if (!charm)
+	if (!charm_type)
 	{
 		/* worst case, at least it'll be peaceful. */
 		mtmp->mpeaceful = 1;
@@ -1135,20 +1135,24 @@ boolean thrown;
 	if(!has_edog)
 	{
 	    newedog(mtmp);
-		initedog(mtmp, !charm);
+		initedog(mtmp, !charm_type);
 	}
-	else if (!charm)
+	else if (!charm_type)
 	{
 		mtmp->mtame = is_domestic(mtmp->data) ? 10 : 5;
 		mtmp->mpeaceful = 1;
 
 	}
 
-	if (charm)
+	if (charm_type == 1)
 	{
         (void)set_mon_property_b(mtmp, CHARMED, !duration ? -1 : duration, verbose);
 	}
-	else if(is_tame(mtmp) && !was_tame)
+    else if (charm_type == 2)
+    {
+        (void)set_mon_property_b(mtmp, UNDEAD_CONTROL, !duration ? -1 : duration, verbose);
+    }
+    else if(is_tame(mtmp) && !was_tame)
 	{
 		newsym(mtmp->mx, mtmp->my);
 		//if (context.game_difficulty != 0)
@@ -1186,6 +1190,10 @@ boolean verbose;
 	{
 		(void)set_mon_property_verbosely(mtmp, CHARMED, -3);
 	}
+    if (has_undead_control(mtmp))
+    {
+        (void)set_mon_property_verbosely(mtmp, UNDEAD_CONTROL, -3);
+    }
 }
 
 /*

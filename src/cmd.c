@@ -4228,7 +4228,9 @@ int final;
 		you_are("silenced", from_what(SILENCED));
 	if (Paralyzed)
 		you_are("paralyzed", from_what(PARALYZED));
-	if (Fearful)
+    if (Undead_immobility)
+        you_are("magically held immobile when undead", from_what(UNDEAD_IMMOBILITY));
+    if (Fearful)
 		you_are("magically frightened", from_what(FEARFUL));
 	if (Sleeping)
 		you_are("in a magically induced sleep", from_what(SLEEPING));
@@ -4250,6 +4252,13 @@ int final;
 
 	if (Charmed)
 		you_are("charmed", from_what(CHARMED));
+    if (Undead_control)
+    {
+        if(is_undead(youmonst.data))
+            you_are("under undead control", from_what(UNDEAD_CONTROL));
+        else
+            you_are("latently under undead control", from_what(UNDEAD_CONTROL));
+    }
 
 	if (Reflecting)
         you_have("reflection", from_what(REFLECTING));

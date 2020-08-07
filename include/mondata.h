@@ -315,6 +315,9 @@
 #define has_paralyzed(mon) \
 	has_property(mon, PARALYZED)
 
+#define has_undead_immobility(mon) \
+	has_property(mon, UNDEAD_IMMOBILITY)
+
 #define has_free_action(mon) \
 	has_innate_or_property(mon, FREE_ACTION)
 
@@ -403,8 +406,13 @@
 #define has_charm_resistance(mon) \
 	(has_innate_charm_resistance((mon)->data) || has_property(mon, CHARM_RESISTANCE))
 
+#define has_undead_control(mon) \
+	has_property(mon, UNDEAD_CONTROL)
+
 #define is_charmed(mon) \
-	(has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !mindless((mon)->data))
+	((has_charmed(mon) && !has_charm_resistance(mon) && !is_undead((mon)->data) && !is_vampshifter(mon) && !mindless((mon)->data)) \
+     || (has_undead_control(mon) && (is_undead((mon)->data) || is_vampshifter(mon))) \
+    )
 
 #define is_tame(mon) \
 	((is_charmed(mon) || (mon)->mtame) && (mon)->mextra && (mon)->mextra->edog) /* Note: currently a monster cannot be tame without an edog */
@@ -700,7 +708,9 @@
 
 /* more on paralysis */
 #define is_paralyzed(mon) \
-	(has_paralyzed(mon) && !resists_paralysis(mon))
+	((has_paralyzed(mon) && !resists_paralysis(mon)) || \
+     ((is_undead(mon->data) || is_vampshifter(mon)) && has_undead_immobility(mon) && !(has_innate((mon)->data, MR_FREE_ACTION) || has_property(mon, FREE_ACTION))) \
+    )
 
 #define mon_can_move(mon) \
 	((mon)->mcanmove && !is_sleeping(mon) && !is_paralyzed(mon))

@@ -193,6 +193,8 @@ const struct propname {
     { IMPROVED_SHOCK_RESISTANCE, "75% resistant to shock", "75% shock resistance" },
     { IMPROVED_MAGIC_MISSILE_RESISTANCE, "75% resistant to magic missiles", "75% magic missile resistance" },
     { IMPROVED_ACID_RESISTANCE, "75% resistant to acid", "75% acid resistance" },
+    { UNDEAD_IMMOBILITY, "held magically immobile", "magically induced undead immobility" },
+    { UNDEAD_CONTROL, "controlled as undead", "undead control" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -1163,14 +1165,15 @@ nh_timeout()
 				if (!Sleeping)
 				{
 					u.usleep = 0;
-					if (Paralyzed)
+					if (Paralyzed_or_immobile)
 						You("wake up but still cannot move!");
 					else
 						You("wake up!");
 				}
 				break;
-			case PARALYZED:
-				if (!Paralyzed)
+            case UNDEAD_IMMOBILITY:
+            case PARALYZED:
+				if (!Paralyzed_or_immobile)
 				{
 					if (Sleeping)
 						You("are no longer paralyzed but still asleep!");
@@ -1180,7 +1183,7 @@ nh_timeout()
 						Your("limbs are moving again!");
 				}
 				break;
-			case FUMBLING:
+            case FUMBLING:
 				/* call this only when a move took place.  */
 				/* otherwise handle fumbling msgs locally. */
 				if (u.umoved && !Levitation) {
@@ -1339,10 +1342,14 @@ nh_timeout()
 					You("feel summoning is working properly again.");
 				break;
 			case CHARMED:
-				if (!Charmed)
+                if (!Charmed_or_controlled)
 					Your("own motivations make more sense to you now.");
 				break;
-			case DEATH_RESISTANCE:
+            case UNDEAD_CONTROL:
+                if (is_undead(youmonst.data) && !Charmed_or_controlled)
+                    Your("are more in control of your own actions.");
+                break;
+            case DEATH_RESISTANCE:
 				if (!Death_resistance)
 					Your("soul's silver cord feels thinner than before.");
 				break;
@@ -1648,9 +1655,14 @@ nh_timeout()
 				You("feel your magic resistance is starting to work more properly.");
 				break;
 			case PARALYZED:
-				Your("limbs are starting move a bit.");
+                if(!(Undead_immobility && is_undead(youmonst.data)))
+    				Your("limbs are starting move a bit.");
 				break;
-			case FEARFUL:
+            case UNDEAD_IMMOBILITY:
+                if (!(Undead_immobility && is_undead(youmonst.data)))
+                    Your("limbs are starting move a bit.");
+                break;
+            case FEARFUL:
 				You("are starting to regain your composure.");
 				break;
 			case SLEEPING:
@@ -1662,7 +1674,10 @@ nh_timeout()
 			case CHARMED:
 				Your("own motivations are starting to make a bit more sense to you.");
 				break;
-			case DEATH_RESISTANCE:
+            case UNDEAD_CONTROL:
+                You("are starting to be more in control of your own actions.");
+                break;
+            case DEATH_RESISTANCE:
 				Your("soul's silver cord is starting to feel thinner than before.");
 				break;
 			case CHARM_RESISTANCE:

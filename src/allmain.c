@@ -389,7 +389,7 @@ boolean resuming;
                         under_ground(0);
 
                     /* when immobile, count is in turns */
-                    if (multi < 0 && !Sleeping && !Paralyzed) /* Let Sleeping and Paralyzed expire first, and then multi */
+                    if (multi < 0 && !Sleeping && !Paralyzed_or_immobile) /* Let Sleeping and Paralyzed expire first, and then multi */
 					{
                         if (++multi == 0)
 						{ /* finished yet? */
@@ -472,7 +472,7 @@ boolean resuming;
 
 		context.move = 1;
 
-        if (multi >= 0 && occupation && !Sleeping && !Paralyzed) /* No occupation when sleeping or paralyzed */
+        if (multi >= 0 && occupation && !Sleeping && !Paralyzed_or_immobile) /* No occupation when sleeping or paralyzed */
 		{
 #if defined(MICRO) || defined(WIN32)
             abort_lev = 0;
@@ -524,7 +524,7 @@ boolean resuming;
 
         u.umoved = FALSE;
 
-		if (!Sleeping && !Paralyzed)
+		if (!Sleeping && !Paralyzed_or_immobile)
 		{
 			if (multi > 0) 
 			{
@@ -603,7 +603,7 @@ create_monster_or_encounter()
         {
             (void)makemon(&mons[!rn2(2) ? PM_HELL_BOVINE : PM_BISON], 0, 0, NO_MM_FLAGS);
         }
-        else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
+        else if (!(u.uz.dnum == quest_dnum) && !In_endgame(&u.uz) && !Is_rogue_level(&u.uz) && !In_sokoban(&u.uz) && !In_V_tower(&u.uz) && (flags.wiz_alwaysenc || !rn2(ENCOUNTER_ONE_IN_CHANCE)))
 		{
 			randomize_encounter(0, 0);
 		}

@@ -193,7 +193,7 @@ do_statusline2()
 		Strcpy(nb = eos(nb), " Slow");
 	if (Silenced)
 		Strcpy(nb = eos(nb), " Silent");
-	if (Paralyzed)
+	if (Paralyzed_or_immobile)
 		Strcpy(nb = eos(nb), " Paral");
 	if (Fearful)
 		Strcpy(nb = eos(nb), " Fear");
@@ -839,7 +839,7 @@ get_u_condition_bits()
         conditions |= BL_MASK_SLOWED;
     if (Silenced)
         conditions |= BL_MASK_SILENCED;
-    if (Paralyzed)
+    if (Paralyzed_or_immobile)
         conditions |= BL_MASK_PARALYZED;
     if (Fearful)
         conditions |= BL_MASK_FEARFUL;
@@ -1041,37 +1041,37 @@ char* outbuf5;
 //            changepartyline();
 //            strcat(targetbuf, tempbuf);
 
-            if (mtmp->mprops[SICK])
+            if (is_sick(mtmp))
                 strcat(tempbuf, " TermIll");
 
-            if (mtmp->mprops[FOOD_POISONED])
+            if (is_food_poisoned(mtmp))
                 strcat(tempbuf, " FoodPois");
 
-            if (mtmp->mprops[MUMMY_ROT])
+            if (is_mummy_rotted(mtmp))
                 strcat(tempbuf, " Rot");
 
-            if (mtmp->mprops[STONED])
+            if (is_stoning(mtmp))
                 strcat(tempbuf, " Stoned");
 
-            if (mtmp->mprops[SLIMED])
+            if (is_turning_into_slime(mtmp))
                 strcat(tempbuf, " Slime");
 
-            if (mtmp->mprops[HALLUC])
+            if (is_hallucinating(mtmp))
                 strcat(tempbuf, " Hallu");
 
-            if(mtmp->mprops[STUNNED])
+            if(is_stunned(mtmp))
                 strcat(tempbuf, " Stun");
 
-            if (mtmp->mprops[BLINDED])
+            if (is_blinded(mtmp))
                 strcat(tempbuf, " Blind");
 
-            if (mtmp->mprops[CONFUSION])
+            if (is_confused(mtmp))
                 strcat(tempbuf, " Conf");
 
-            if (mtmp->mprops[SLEEPING])
+            if (is_sleeping(mtmp))
                 strcat(tempbuf, " Sleep");
 
-            if (mtmp->mprops[PARALYZED])
+            if (is_paralyzed(mtmp))
                 strcat(tempbuf, " Paral");
 
             if (mtmp->mspec_used)

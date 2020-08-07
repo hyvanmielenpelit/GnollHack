@@ -1341,14 +1341,14 @@ gcrownu()
             }
 
             /* acquire Excalibur's skill regardless of weapon or gift */
-            add_weapon_skill_maximum_by_one(P_SWORD);
+            unrestrict_weapon_skill(P_SWORD);
 			if ((obj && obj->oartifact == ART_EXCALIBUR) || (obj2 && obj2->oartifact == ART_EXCALIBUR))
 				discover_artifact(ART_EXCALIBUR);
 
             if (Role_if(PM_KNIGHT))
             {
                 /* acquire Rhongomyniad's skill regardless of weapon or gift */
-                add_weapon_skill_maximum_by_one(P_SPEAR);
+                unrestrict_weapon_skill(P_SPEAR);
             }
             break;
 		case A_NEUTRAL:
@@ -1393,7 +1393,7 @@ gcrownu()
 				obj->aknown = obj->nknown = TRUE;
 			}
 			/* acquire Vorpal Blade's skill regardless of weapon or gift */
-            add_weapon_skill_maximum_by_one(P_SWORD);
+            unrestrict_weapon_skill(P_SWORD);
 			if ((obj && obj->oartifact == ART_VORPAL_BLADE) || (obj2 && obj2->oartifact == ART_VORPAL_BLADE))
 				discover_artifact(ART_VORPAL_BLADE);
 			break;
@@ -1434,7 +1434,7 @@ gcrownu()
 				obj->aknown = obj->nknown = TRUE;
 			}
 			/* acquire Stormbringer's skill regardless of weapon or gift */
-            add_weapon_skill_maximum_by_one(chaotic_crowning_gift_skill);
+            unrestrict_weapon_skill(chaotic_crowning_gift_skill);
 			if (obj && obj->oartifact == chaotic_crowning_gift_oartifact)
 				discover_artifact(chaotic_crowning_gift_oartifact);
 			break;
@@ -1455,7 +1455,7 @@ gcrownu()
         if (obj->enchantment < 1)
             obj->enchantment = 1;
         /* acquire skill in this weapon */
-        add_weapon_skill_maximum_by_one(weapon_skill_type(obj));
+        unrestrict_weapon_skill(weapon_skill_type(obj));
     }
 	else if (ok_wep(obj2) || in_hand2)
 	{
@@ -1466,7 +1466,7 @@ gcrownu()
 		if (obj2->enchantment < 1)
 			obj2->enchantment = 1;
 		/* acquire skill in this weapon */
-        add_weapon_skill_maximum_by_one(weapon_skill_type(obj2));
+        unrestrict_weapon_skill(weapon_skill_type(obj2));
 	}
 	else if (class_gift == STRANGE_OBJECT)
 	{
@@ -2608,7 +2608,7 @@ dosacrifice()
                     exercise(A_WIS, TRUE);
                     /* make sure we can use this weapon */
                     enum p_skills wep_skill_idx = weapon_skill_type(otmp);
-                    add_weapon_skill_maximum_by_one(wep_skill_idx);
+                    unrestrict_weapon_skill(wep_skill_idx);
                     if (!Hallucination && !Blind) 
                     {
                         otmp->dknown = 1;
