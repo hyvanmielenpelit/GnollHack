@@ -7,6 +7,12 @@
 #include "artifact.h"
 #include "artilist.h"
 
+ /* flags */
+#define SSF_SHOW 0x1        /* display the sound source */
+#define SSF_NEEDS_FIXUP 0x2 /* need oid fixup */
+#define SSF_SILENCE_SOURCE 0x4 /* emits silence rather than sound */
+
+
 NEARDATA struct soundsource_t* sound_base = 0;
 STATIC_DCL void FDECL(set_hearing_array, (int, int, double, int));
 
@@ -3413,6 +3419,9 @@ update_ambient_sounds()
         if (!isok(curr->x, curr->y))
             continue;
 
+        if (curr->flags & SSF_NEEDS_FIXUP)
+            continue;
+
         boolean lit = FALSE;
         boolean insidereg = FALSE;
 
@@ -3545,11 +3554,6 @@ int x, y;
  * principals of having pointers into objects that must be recalculated
  * across saves and restores.
  */
-
- /* flags */
-#define SSF_SHOW 0x1        /* display the sound source */
-#define SSF_NEEDS_FIXUP 0x2 /* need oid fixup */
-#define SSF_SILENCE_SOURCE 0x4 /* emits silence rather than sound */
 
 STATIC_DCL void FDECL(write_soundsource, (int, sound_source*));
 STATIC_DCL int FDECL(maybe_write_soundsource, (int, int, BOOLEAN_P));
