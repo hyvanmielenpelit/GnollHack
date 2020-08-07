@@ -606,14 +606,14 @@ struct monst *summoner;
 		if (summoner)
 		{
 			if (summoner != &youmonst && (summoner->iswiz || summoner->m_lev >= 50))
-                summon_num = rnd(3) + 2;
+                summon_num = rnd(3) + 1;
             else if (summoner != &youmonst && summoner->m_lev >= 30)
-                summon_num = 1 + rnd(3);
+                summon_num = 1 + rnd(2);
             else
                 summon_num = rnd(3);
 		}
 		else
-            summon_num = rnd(3) + 2;
+            summon_num = rnd(3) + 1;
 
 		/* if we don't have a casting monster, nasties appear around hero,
            otherwise they'll appear around spot summoner thinks she's at */
