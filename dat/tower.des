@@ -82,9 +82,9 @@ DOOR:locked,(10,04)
 DOOR:locked,(09,07)
 MONSTER:'&',$place[0]
 MONSTER:'&',$place[1]
-MONSTER:('d',"hell hound pup"),$place[2]
-MONSTER:('d',"hell hound pup"),$place[3]
-MONSTER:('d',"winter wolf"),$place[4]
+MONSTER:('d',"shoosuva"),$place[2]
+MONSTER:('d',"shoosuva"),$place[3]
+MONSTER:('d',"shoosuva"),$place[4]
 CONTAINER:('(',"chest"),$place[5] {
   OBJECT:('"',"amulet of life saving")
 }
@@ -94,6 +94,7 @@ CONTAINER:('(',"chest"),$place[6] {
 OBJECT:('[',"water walking boots"),$place[7]
 OBJECT:('[',"crystal plate mail"),$place[8]
 OBJECT:('+',"invisibility"),$place[9]
+MONSTER:('d',"Cerberus"),(04,05)
 # Walls in the tower are non diggable
 NON_DIGGABLE:(00,00,14,10)
 

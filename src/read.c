@@ -1527,9 +1527,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	case SPE_PROTECT_ARMOR:
 	case SCR_PROTECT_ARMOR:
 	case SPE_ENCHANT_ARMOR:
-	case SCR_ENCHANT_ARMOR: {
+	case SCR_ENCHANT_ARMOR: 
+    {
 		register schar s;
-		boolean special_armor;
 		boolean same_color;
 
 		const char enchant_armor_objects[] = { ALL_CLASSES, ARMOR_CLASS, 0 };
@@ -1597,9 +1597,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			otmp->oerodeproof = new_erodeproof ? 1 : 0;
 			break;
 		}
-		/* elven armor vibrates warningly when enchanted beyond a limit */
-		special_armor = is_elven_armor(otmp)
-			|| (Role_if(PM_WIZARD) && otmp->otyp == CORNUTHAUM);
+
+        int max_ench = get_obj_max_enchantment(otmp);
 		if (scursed)
 			same_color = (otmp->otyp == BLACK_DRAGON_SCALE_MAIL
 				|| otmp->otyp == BLACK_DRAGON_SCALES);
@@ -1612,7 +1611,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 
 		/* KMH -- catch underflow */
 		s = scursed ? -otmp->enchantment : otmp->enchantment;
-		if (s > (special_armor ? 5 : 3) && rn2(max(1, s))) {
+		if (s > max_ench && rn2(max(1, s)))
+        {
             play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
             otmp->in_use = TRUE;
 			pline("%s violently %s%s%s for a while, then %s.", Yname2(otmp),
@@ -1625,11 +1625,14 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			useup(otmp);
 			break;
 		}
+
 		s = scursed ? -1
 			: (otmp->enchantment >= 9)
 			? (rn2(max(1, otmp->enchantment)) == 0)
 			: sblessed ? rnd(2) : 1;
-		if (s >= 0 && is_dragon_scales(otmp)) {
+
+		if (s >= 0 && is_dragon_scales(otmp)) 
+        {
             play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
             /* dragon scales get turned into dragon scale mail */
 			pline("%s merges and hardens!", Yname2(otmp));
@@ -1667,7 +1670,8 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 			(Blind || same_color)
 			? "" : hcolor(scursed ? NH_BLACK : NH_SILVER),
 			(s * s > 1) ? "while" : "moment");
-		/* [this cost handling will need updating if shop pricing is
+
+        /* [this cost handling will need updating if shop pricing is
 		   ever changed to care about curse/bless status of armor] */
 		if (s < 0)
 			costly_alteration(otmp, COST_DECHNT);
@@ -1691,8 +1695,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				alter_cost(otmp, 0L);
 		}
 
-        if ((otmp->enchantment > (special_armor ? 5 : 3))
-            && (special_armor || !rn2(7)))
+        if (otmp->enchantment >= max_ench)
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
             pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
@@ -1969,7 +1972,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 	case SPE_ENCHANT_WEAPON:
 	case SCR_ENCHANT_WEAPON:
 	{
-		const char enchant_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, 0 };
+        const char enchant_weapon_objects[] = { ALL_CLASSES, WEAPON_CLASS, TOOL_CLASS, 0 };
 
         /* Allow object selection for spells */
 		if (otyp == SPE_PROTECT_WEAPON || otyp == SPE_ENCHANT_WEAPON)

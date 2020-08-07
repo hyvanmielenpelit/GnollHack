@@ -2379,7 +2379,7 @@ struct obj *obj;
 	/* Check requirements */
 	if ((oart->aflags & AF_INVOKE_REQUIRES_WORN) && !is_worn_correctly(obj))
 	{
-		pline("Nothing happens.");
+		pline("You have to wear %s before invoking.", the(cxname(obj)));
 		return 1;
 	}
 	else if ((oart->aflags & AF_INVOKE_EXPENDS_CHARGE) && obj->charges <= 0)

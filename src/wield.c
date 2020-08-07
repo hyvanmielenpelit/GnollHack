@@ -1609,12 +1609,14 @@ register int amount;
         return 1;
     }
 
+	int max_ench = get_obj_max_enchantment(weapon);
+
 	int ench_limit_multiplier = 1;
 	if(bimanual(weapon) && !is_launcher(weapon))
 		ench_limit_multiplier = 2;
 
     /* there is a (soft) upper and lower limit to weapon->enchantment */
-    if (((weapon->enchantment > 10 * ench_limit_multiplier && amount >= 0) || (weapon->enchantment < -10 * ench_limit_multiplier && amount < 0)) && rn2(3)) 
+    if (((weapon->enchantment > max_ench * ench_limit_multiplier && amount >= 0) || (weapon->enchantment < -max_ench * ench_limit_multiplier && amount < 0)) && rn2(3))
 	{
 		play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
 		if (!Blind)
@@ -1669,8 +1671,8 @@ register int amount;
 
     /* an elven magic clue, cookie@keebler */
     /* elven weapons vibrate warningly when enchanted beyond a limit */
-	if ((weapon->enchantment > get_obj_max_enchantment(weapon))
-		&& (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)))
+	if ((weapon->enchantment >= max_ench)
+		/*&& (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)) */ ) /* Vibrates for sure */
 	{
 		play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
 		pline("%s unexpectedly.", Yobjnam2(weapon, "suddenly vibrate"));

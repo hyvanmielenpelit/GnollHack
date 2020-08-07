@@ -1794,11 +1794,18 @@ int spe_type_index;
 	case ENCHTYPE_NO_ENCHANTMENT:
 		initspe = 0;
 		break;
-	case ENCHTYPE_GENERAL:
-		initspe = rne(3);
+	case ENCHTYPE_GENERAL_WEAPON:
+		initspe = Inhell ? rne(6) : rne(3);
 		break;
-    case ENCHTYPE_GENERAL_ALWAYS_START_0:
+    case ENCHTYPE_GENERAL_ARMOR:
+        initspe = Inhell ? rne(4) : rne(3);
+        break;
+    case ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0:
+    case ENCHTYPE_GENERAL_ARMOR_ALWAYS_START_0:
         initspe = 0;
+        break;
+    case ENCHTYPE_SPECIAL_ARMOR:
+        initspe = Inhell ? rne(5) : rne(4);
         break;
     case ENCHTYPE_ALWAYS_1:
 		initspe = 1;
@@ -1847,10 +1854,15 @@ int spe_type_index;
 	case ENCHTYPE_NO_ENCHANTMENT:
 		maxspe = 0;
 		break;
-	case ENCHTYPE_GENERAL:
-		maxspe = 5;
+	case ENCHTYPE_GENERAL_WEAPON:
+    case ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0:
+        maxspe = 10;
 		break;
-    case ENCHTYPE_GENERAL_ALWAYS_START_0:
+    case ENCHTYPE_GENERAL_ARMOR:
+    case ENCHTYPE_GENERAL_ARMOR_ALWAYS_START_0:
+        maxspe = 3;
+        break;
+    case ENCHTYPE_SPECIAL_ARMOR:
         maxspe = 5;
         break;
     case ENCHTYPE_ALWAYS_1:

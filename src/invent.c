@@ -2214,6 +2214,8 @@ const char* headertext;
                      || !objects[HORN_OF_PLENTY].oc_name_known))
  			 || (!strcmp(word, "detect blessedness for") && otmp->bknown)
  			 || (!strcmp(word, "refill") && !is_refillable_with_oil(otmp))
+ 			 || (!strcmp(word, "enchant") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
+ 			 || (!strcmp(word, "protect") && otmp->oclass == TOOL_CLASS && !is_obj_enchantable(otmp))
 			 || (!strcmp(word, "charge") && !is_chargeable(otmp))
  			 || (!strcmp(word, "fire") && (!uwep || !otmp || (otmp && uwep && !ammo_and_launcher(otmp, uwep))))
              || (!strcmp(word, "open") && otyp != TIN)

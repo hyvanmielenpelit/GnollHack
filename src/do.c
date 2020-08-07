@@ -1357,8 +1357,12 @@ register struct obj* obj;
 				obj->enchantment / 2 >= 0 ? "bonus" : "penalty");
 		}
 
-		Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);
-	
+		Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);	
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		int max_ench = get_obj_max_enchantment(obj);
+		Sprintf(buf, "Maximum enchantment:    %s%d", max_ench >= 0 ? "+" : "", max_ench);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}

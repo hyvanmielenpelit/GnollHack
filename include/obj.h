@@ -269,6 +269,11 @@ struct obj {
 /* 'is_quest_artifact()' only applies to the current role's artifact */
 #define any_quest_artifact(o) ((o)->oartifact >= ART_ORB_OF_DETECTION)
 
+#define is_otyp_enchantable(otyp)     \
+	(objects[(otyp)].oc_enchantable > ENCHTYPE_NO_ENCHANTMENT)
+
+#define is_obj_enchantable(o) is_otyp_enchantable((o)->otyp) 
+
 #define is_otyp_elemental_enchantable(otyp)     \
 	(objects[(otyp)].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
 

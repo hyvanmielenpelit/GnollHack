@@ -101,7 +101,7 @@ NEARDATA struct objclass objects[] =
 				power,power2,power3,pflags,typ,sub,skill,metal,color,height,soundset,\
 				flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
 	    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-	           BITS(nmkn, mrg, 1, 0, mgc, ENCHTYPE_GENERAL, charged, recharging, 0, 0, bi, 0, typ, sub, skill, metal),  \
+	           BITS(nmkn, mrg, 1, 0, mgc, ENCHTYPE_GENERAL_WEAPON, charged, recharging, 0, 0, bi, 0, typ, sub, skill, metal),  \
 	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
 			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 			   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
@@ -122,7 +122,7 @@ NEARDATA struct objclass objects[] =
 
 	#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,  hitbon,mcadj,  metal,sub,launcher_skill,skill,color,height,soundset,  flags,flags2,flags3,flags4, permittedtargets) \
 	    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),   \
-	           BITS(nmkn, 1, 1, 0, mgc, ENCHTYPE_GENERAL, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, PIERCE, sub, skill, metal), \
+	           BITS(nmkn, 1, 1, 0, mgc, ENCHTYPE_GENERAL_WEAPON, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, PIERCE, sub, skill, metal), \
 	           NO_POWER, NO_POWER, NO_POWER, P1_NONE, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
 			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 			   hitbon, mcadj, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
@@ -133,7 +133,7 @@ NEARDATA struct objclass objects[] =
 
 	#define BOW(name,desc,  nmkn,mgc,bi,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,power,power2,power3,pflags,metal,sub,skill,color,height,soundset,flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
 	    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-	           BITS(nmkn, 0, 1, 0, mgc, ENCHTYPE_GENERAL, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, bi, 0, WHACK, sub, skill, metal),      \
+	           BITS(nmkn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_WEAPON, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, bi, 0, WHACK, sub, skill, metal),      \
 	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost,                            \
 	           dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 			   hitbon, mcadj, fixeddmgbon, launchrange, 0, 0, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount,  \
@@ -1122,17 +1122,24 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
          * Only MAT_IRON weapons and armor can rust.
          * Only MAT_COPPER (including brass) corrodes.
          * Some creatures are vulnerable to MAT_SILVER.
-         */
-#define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,prob,delay,wt,  \
+
+		 */
+
+#define SPECIAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)                   \
     OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                       \
-           BITS(kn, 0, 1, 0, mgc, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, blk, 0, 0, sub, skill, metal),  \
+           BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, blk, 0, 0, sub, skill, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost,                     \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, 0, \
 		   0, 0, 0, 0, 10 - ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, 0, \
 		   wt, c, height,soundset,\
 		   0, 0, 0, 0, \
 		   powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 )
+
+#define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,prob,delay,wt,  \
+              cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)                   \
+		SPECIAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,ENCHTYPE_GENERAL_ARMOR,prob,delay,wt,  \
+              cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 #define HELM(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, height,soundset, flags, flags2, flags3,flags4,powconfermask)
@@ -1203,9 +1210,9 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 
 
 /* helmets */
-HELM("elven leather helm", "leather hat",
-    0, 0,           0, 0, 0, P1_NONE,
-	6, 1,  3,  8,  9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL,
+SPECIAL_ARMOR("elven leather helm", "leather hat",
+    0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR,
+	6, 1,  3,  8,  9, 0, 0, 0, 0, 0, 0, ARM_HELM, P_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL,
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 HELM("cotton hood", None,
     1, 0,           0, 0, 0, P1_NONE,  
@@ -1243,9 +1250,12 @@ HELM("crown of rulership", "ornamental crown", //ENDMARKER FOR SHUFFLED CROWNS &
     0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	2, 1, 20, 5000, 10, 0, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, 24, 0, MAT_GOLD, HI_GOLD, 0, OBJECT_SOUNDSET_GENERAL,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-HELM("cornuthaum", "blue conical hat", //STARTMARKER FOR CONICAL HATS
-    0, 1, CLAIRVOYANT, BLOCKS_CLAIRVOYANCE, NO_POWER, P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS | P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY,
-	3, 1, 4, 80, 10, 1, 0, 0, BONUS_TO_CHA | IGNORE_ENCHANTMENT, 1, 0, MAT_CLOTH, CLR_BLUE, 0, OBJECT_SOUNDSET_GENERAL,
+SPECIAL_ARMOR("cornuthaum", "blue conical hat", //STARTMARKER FOR CONICAL HATS
+    0, 1, 0, CLAIRVOYANT, BLOCKS_CLAIRVOYANCE, NO_POWER, 
+	P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS | P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY, 
+	ENCHTYPE_SPECIAL_ARMOR,
+	3, 1, 4, 80, 10, 1, 0, 0, BONUS_TO_CHA | IGNORE_ENCHANTMENT, 1, 0, 
+	ARM_HELM, P_NONE, MAT_CLOTH, CLR_BLUE, 0, OBJECT_SOUNDSET_GENERAL,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ROLE_WIZARD),
         /* name coined by devteam; confers clairvoyance for wizards,
            blocks clairvoyance if worn by role other than wizard */
@@ -1361,8 +1371,8 @@ ARMOR("gnollish bone mail", "crude bone armor",
       0, 0, 1,			 0, 0, 0, P1_NONE, 10, 5, 420, 100,  5, 3, 0, 0, 0, 0, 9, ARM_SUIT, P_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ARMOR("dwarvish mithril-coat", None,
       1, 0, 0,			 0, 0, 0, P1_NONE, 10, 1, 250, 750,  4, 6, 0, 0, 0, 0, 3, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERAL, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
-ARMOR("elven mithril-coat", None,
-      1, 0, 0,			 0, 0, 0, P1_NONE, 15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 2, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERAL, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+SPECIAL_ARMOR("elven mithril-coat", None,
+      1, 0, 0,			 0, 0, 0, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 2, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERAL, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 ARMOR("chain mail", None,
       1, 0, 0,			 0, 0, 0, P1_NONE, 30, 5, 480,  75,  5, 3, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ARMOR("orcish chain mail", "crude chain mail",
@@ -1401,8 +1411,8 @@ ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
 
 
 /* cloaks */
-CLOAK("elven cloak", "faded pall",
-      0, 1,        STEALTH, 0, 0, P1_NONE, 8,  0, 10, 60,  9, 2, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+SPECIAL_ARMOR("elven cloak", "faded pall",
+      0, 1,        0, STEALTH, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 8,  0, 10, 60,  9, 2, 0, 0, 0, 0, 0, ARM_CLOAK, P_NONE, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 CLOAK("orcish cloak", "coarse mantelet",
       0, 0,				 0, 0, 0, P1_NONE, 8,  0, 10, 40, 10, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 CLOAK("dwarvish cloak", "hooded cloak",
@@ -1480,8 +1490,8 @@ BRACERS("bracers against magic missiles", "ornamental bracers",//ENDMARKER 1 & 2
 /* shields */
 SHIELD("small shield", None,
        1, 0, 0,          0, 0, 0, P1_NONE, 6, 0,  80,  3, 9, 0, 0, 0, 0, 0, 3, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SHIELD("elven shield", "blue and green shield",
-       0, 0, 0,          0, 0, 0, P1_NONE, 2, 0,  140,  7, 8, 0, 0, 0, 0, 0, 2, MAT_WOOD, CLR_GREEN, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+SPECIAL_ARMOR("elven shield", "blue and green shield",
+       0, 0, 0,          NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 2, 0,  140,  7, 8, 0, 0, 0, 0, 0, 2, ARM_SHIELD, P_NONE, MAT_WOOD, CLR_GREEN, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 SHIELD("Uruk-hai shield", "white-handed shield",
        0, 0, 0,          0, 0, 0, P1_NONE, 2, 0,  120,  7, 9, 0, 0, 0, 0, 0, 4, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 SHIELD("orcish shield", "red-eyed shield",
@@ -1584,8 +1594,8 @@ BOOTS("water walking boots", "jungle boots",
       0, 1,   WATER_WALKING, 0, 0, P1_NONE, 12, 2, 15, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 BOOTS("jumping boots", "hiking boots",
       0, 1,    JUMPING, 0, 0, P1_NONE, 12, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-BOOTS("elven boots", "mud boots",
-      0, 1,    STEALTH, 0, 0, P1_NONE, 12, 2, 20,  8, 9, 0, 0, 0, 0, 0, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+SPECIAL_ARMOR("elven boots", "mud boots",
+      0, 1,    0, STEALTH, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 12, 2, 20,  8, 9, 0, 0, 0, 0, 0, 0, ARM_BOOTS, P_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 WEAPONBOOTS("kicking boots", "buckled boots",
 	0, 1, 2, 12, 60, 50,
 	AD_PHYS, 1, 7, 0, 1, 7, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
@@ -1629,6 +1639,7 @@ WEAPONBOOTS("spiked silver boots", None,
 #undef GLOVES
 #undef BOOTS
 #undef ARMOR
+#undef SPECIAL_ARMOR
 #undef WEAPONSHIELD
 #undef WEAPONGLOVES
 #undef WEAPONBOOTS
@@ -2000,7 +2011,7 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 		   wt, color, height,soundset, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, O2_CONTAINER | flags2, flags3, flags4)
 #define WEPTOOL(name,desc,itemdesc,kn,mgc,bi,prob,wt,cost, dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, critpct, hitbon,splcastpen,sub,skill,cooldown,mat,clr,height,soundset,flags,flags2,flags3,flags4,powconfermask,permittedtargets)\
     OBJECT(OBJ(name, desc, None, itemdesc, 0, 0, 0),                                           \
-           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, bi, 0, hitbon, sub, skill, mat),    \
+           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_WEAPON, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, bi, 0, hitbon, sub, skill, mat),    \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, critpct, \
 		   hitbon, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
@@ -2187,7 +2198,7 @@ WEPTOOL("unicorn horn", None, None,
         /* 3.4.1: unicorn horn left classified as "magic" */
 #endif
 OBJECT(OBJ("unicorn horn", None, None, None, 0, 0, 0),
-       BITS(1, 0, 1, 0, 1, ENCHTYPE_GENERAL, CHARGED_HORN_NORMAL, RECHARGING_UNICORN_HORN, 0, 0, 0, 0, 0, TOOLTYPE_HORN, P_SPEAR, MAT_BONE),
+       BITS(1, 0, 1, 0, 1, ENCHTYPE_GENERAL_WEAPON, CHARGED_HORN_NORMAL, RECHARGING_UNICORN_HORN, 0, 0, 0, 0, 0, TOOLTYPE_HORN, P_SPEAR, MAT_BONE),
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 100,
 	   AD_PHYS, 1, 12, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -3174,7 +3185,7 @@ ROCK("touchstone", "gray",
 	O3_NONE, O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE, PERMITTED_ALL),
 ROCK("flint", "gray",      //Gray stone end marker 
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE,
-	0, 8, 5, 1, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 8, 0, 1, 8, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERAL,
+	0, 8, 5, 1, ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0, 1, 8, 0, 1, 8, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, 24, OBJECT_SOUNDSET_GENERAL,
 	O1_THROWN_WEAPON_ONLY,
 	O2_GRAYSTONE, 
 	O3_ELEMENTAL_ENCHANTABLE, 
@@ -3182,7 +3193,7 @@ ROCK("flint", "gray",      //Gray stone end marker
 	PERMITTED_ALL),
 ROCK("rock", None,         
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE,
-	1, 26, 10,  0, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, 16, OBJECT_SOUNDSET_GENERAL,
+	1, 26, 10,  0, ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0, 1, 6, 0, 1, 6, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, 16, OBJECT_SOUNDSET_GENERAL,
 	O1_THROWN_WEAPON_ONLY, 
 	O2_ROCK, 
 	O3_ELEMENTAL_ENCHANTABLE,
@@ -3190,7 +3201,7 @@ ROCK("rock", None,
 	PERMITTED_ALL),
 ROCK("stone pebble", None,         
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE,
-	1, 40, 2, 0, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, 16, OBJECT_SOUNDSET_GENERAL,
+	1, 40, 2, 0, ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0, 1, 4, 0, 1, 4, 0, 0, 10, 7, MAT_MINERAL, CLR_GRAY, 16, OBJECT_SOUNDSET_GENERAL,
 	O1_THROWN_WEAPON_ONLY, 
 	O2_ROCK,
 	O3_ELEMENTAL_ENCHANTABLE,
@@ -3198,7 +3209,7 @@ ROCK("stone pebble", None,
 	PERMITTED_ALL),
 ROCK("clay pebble", None,         
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE,
-	1,  40, 2, 0, ENCHTYPE_GENERAL_ALWAYS_START_0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MINERAL, CLR_BROWN, 16, OBJECT_SOUNDSET_GENERAL,
+	1,  40, 2, 0, ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0, 1, 3, 0, 1, 3, 0, 0, 10, 7, MAT_MINERAL, CLR_BROWN, 16, OBJECT_SOUNDSET_GENERAL,
 	O1_THROWN_WEAPON_ONLY, 
 	O2_ROCK, 
 	O3_ELEMENTAL_ENCHANTABLE, 

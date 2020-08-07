@@ -52,7 +52,7 @@ FOUNTAIN:(14,08)
 FOUNTAIN:(06,07)
 FOUNTAIN:(06,09)
 
-# Guards for the audience chamber
+# Base bovine army
 MONSTER:('H',"hell bovine"),random,hostile
 MONSTER:('H',"hell bovine"),random,hostile
 MONSTER:('H',"hell bovine"),random,hostile
@@ -61,6 +61,31 @@ MONSTER:('H',"hell bovine"),random,hostile
 MONSTER:('H',"hell bovine"),random,hostile
 MONSTER:('H',"hell bovine"),random,hostile
 MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+MONSTER:('H',"hell bovine"),random,hostile
+
 # Non diggable walls
 NON_DIGGABLE:(00,00,26,15)
 # Traps
