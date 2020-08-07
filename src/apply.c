@@ -4945,8 +4945,9 @@ doapply()
 		case DRUM_OF_EARTHQUAKE:
 			res = do_play_instrument(obj);
 			break;
-		case JAR_OF_HEALING_SALVE:
 		case JAR_OF_EXTRA_HEALING_SALVE:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
             res = use_salve(obj);
             break;
         case GRAIL_OF_HEALING:

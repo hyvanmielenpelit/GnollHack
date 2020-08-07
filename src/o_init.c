@@ -257,8 +257,8 @@ int *lo_p, *hi_p; /* output: range that item belongs among */
 			*lo_p = WOODEN_HARP, * hi_p = MAGIC_HARP;
 		if (otyp >= LEATHER_DRUM && otyp <= DRUM_OF_EARTHQUAKE)
 			*lo_p = LEATHER_DRUM, * hi_p = DRUM_OF_EARTHQUAKE;
-		if (otyp >= JAR_OF_HEALING_SALVE && otyp <= JAR_OF_EXTRA_HEALING_SALVE)
-			*lo_p = JAR_OF_HEALING_SALVE, * hi_p = JAR_OF_EXTRA_HEALING_SALVE;
+		if (otyp >= JAR_OF_EXTRA_HEALING_SALVE && otyp <= JAR_OF_PRODIGIOUS_HEALING_SALVE)
+			*lo_p = JAR_OF_EXTRA_HEALING_SALVE, * hi_p = JAR_OF_PRODIGIOUS_HEALING_SALVE;
 		if (otyp >= TOOLED_HORN && otyp <= HORN_OF_PLENTY)
 			*lo_p = TOOLED_HORN, * hi_p = HORN_OF_PLENTY;
 		break;
@@ -327,7 +327,7 @@ shuffle_all()
     /* armor sub-class type ranges (one item from each group) */
     static short shuffle_types[] = {
         HELMET, LEATHER_GLOVES, SHIRT_OF_UNCONTROLLABLE_LAUGHTER, CLOAK_OF_PROTECTION, SPEED_BOOTS, SWORD_OF_DEFENSE, STAFF_OF_THE_MAGI, LEATHER_BAG,
-		TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM, JAR_OF_HEALING_SALVE
+		TALLOW_CANDLE, OIL_LAMP, TIN_WHISTLE, WOODEN_FLUTE, TOOLED_HORN, WOODEN_HARP, LEATHER_DRUM, JAR_OF_EXTRA_HEALING_SALVE
     };
 	static short shuffle_types_with_material[] = {
 		 ROBE, LEATHER_BRACERS, NOSE_RING_OF_BULL_STRENGTH, IOUN_STONE_OF_PROTECTION, 

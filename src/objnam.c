@@ -3336,8 +3336,8 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "flute", TOOL_CLASS, WOODEN_FLUTE, MAGIC_FLUTE },
 	{ "harp", TOOL_CLASS, WOODEN_HARP, MAGIC_HARP },
 	{ "drum", TOOL_CLASS, LEATHER_DRUM, DRUM_OF_EARTHQUAKE },
-	{ "jar", TOOL_CLASS, JAR_OF_HEALING_SALVE, JAR_OF_EXTRA_HEALING_SALVE },
-	{ "salve", TOOL_CLASS, JAR_OF_HEALING_SALVE, JAR_OF_EXTRA_HEALING_SALVE },
+	{ "jar", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_PRODIGIOUS_HEALING_SALVE },
+	{ "salve", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_PRODIGIOUS_HEALING_SALVE },
 };
 
 /* alternate spellings; if the difference is only the presence or
@@ -3443,9 +3443,12 @@ static const struct alt_spellings {
     { "load stone", LOADSTONE },
     { "touch stone", TOUCHSTONE },
     { "flintstone", FLINT },
-	{ "healing salve", JAR_OF_HEALING_SALVE },
+    { "salve", JAR_OF_EXTRA_HEALING_SALVE },
+    { "healing salve", JAR_OF_EXTRA_HEALING_SALVE },
 	{ "extra healing salve", JAR_OF_EXTRA_HEALING_SALVE },
-	{ (const char *) 0, 0 },
+    { "greater healing salve", JAR_OF_GREATER_HEALING_SALVE },
+    { "prodigious healing salve", JAR_OF_PRODIGIOUS_HEALING_SALVE },
+    { (const char *) 0, 0 },
 };
 
 STATIC_OVL short

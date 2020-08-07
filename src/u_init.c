@@ -78,7 +78,7 @@ static struct trobj Healer[] = {
 	{ STETHOSCOPE, 0, TOOL_CLASS, 1, 0 },
     { POT_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0 },
     { POT_EXTRA_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0 },
-	{ JAR_OF_HEALING_SALVE, 0, POTION_CLASS, 1, UNDEF_BLESS, 0 },
+	{ JAR_OF_EXTRA_HEALING_SALVE, 0, POTION_CLASS, 1, UNDEF_BLESS, 0 },
 	{ WAN_PROBING, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
 	{ WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
     /* always blessed, so it's guaranteed readable */
@@ -1027,8 +1027,9 @@ u_init()
 		knows_object(POT_SLEEPING);
 		knows_object(POT_SICKNESS);
 		knows_object(POT_POISON);
-		knows_object(JAR_OF_HEALING_SALVE);
 		knows_object(JAR_OF_EXTRA_HEALING_SALVE);
+		knows_object(JAR_OF_GREATER_HEALING_SALVE);
+		knows_object(JAR_OF_PRODIGIOUS_HEALING_SALVE);
 		break;
     case PM_KNIGHT:
         ini_inv(Knight);

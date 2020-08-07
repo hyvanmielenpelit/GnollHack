@@ -850,8 +850,9 @@ cure_sickness_here:
 			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
 		break;
 	}
-	case JAR_OF_HEALING_SALVE:
 	case JAR_OF_EXTRA_HEALING_SALVE:
+    case JAR_OF_GREATER_HEALING_SALVE:
+    case JAR_OF_PRODIGIOUS_HEALING_SALVE:
     case GRAIL_OF_HEALING:
     case SPE_MINOR_HEALING:
 	case SPE_HEALING:
@@ -903,7 +904,7 @@ cure_sickness_here:
                healing only needs to not be cursed, so spell always cures
                [potions quaffed by monsters behave slightly differently;
                we use the rules for the hero here...] */
-            if (skilled_spell || otyp == SPE_EXTRA_HEALING || otyp == SPE_GREATER_HEALING || otyp == SPE_FULL_HEALING || otyp == GRAIL_OF_HEALING)
+            if (skilled_spell || (otyp != SPE_MINOR_HEALING && otyp != SPE_HEALING))
                 mcureblindness(mtmp, canseemon(mtmp));
 
 			if (canseemon(mtmp)) {
@@ -916,8 +917,8 @@ cure_sickness_here:
                         mimic_hit_msg(mtmp, otyp);
                 } else
                     pline("%s looks %s.", Monnam(mtmp),
-                          otyp == SPE_PRODIGIOUS_HEALING ? "vastly better" : 
-						otyp == SPE_GREATER_HEALING || otyp == GRAIL_OF_HEALING ? "much, much better" :
+                          otyp == SPE_PRODIGIOUS_HEALING || otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || otyp == GRAIL_OF_HEALING ? "vastly better" :
+						otyp == SPE_GREATER_HEALING || otyp == JAR_OF_GREATER_HEALING_SALVE ? "much, much better" :
 						otyp == SPE_EXTRA_HEALING || otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much better" : 
 						otyp == SPE_FULL_HEALING ? "completely healed" : 
 						"better");
@@ -3590,8 +3591,9 @@ struct monst* origmonst;
 		case SPE_CURE_SICKNESS:
 		case SPE_CURE_PETRIFICATION:
 		case SPE_MINOR_HEALING:
-		case JAR_OF_HEALING_SALVE:
 		case JAR_OF_EXTRA_HEALING_SALVE:
+        case JAR_OF_GREATER_HEALING_SALVE:
+        case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
         case SPE_HEALING:
         case SPE_EXTRA_HEALING:
@@ -5237,8 +5239,9 @@ boolean ordinary;
 		learn_it = TRUE;
 		(void)revive_from_inventory(&youmonst);
 		break;
-	case JAR_OF_HEALING_SALVE:
 	case JAR_OF_EXTRA_HEALING_SALVE:
+    case JAR_OF_GREATER_HEALING_SALVE:
+    case JAR_OF_PRODIGIOUS_HEALING_SALVE:
     case SPE_MINOR_HEALING:
 	case SPE_HEALING:
     case SPE_EXTRA_HEALING:
@@ -5250,14 +5253,14 @@ boolean ordinary;
             play_sfx_sound(SFX_HEALING);
             healup(basedmg, 0,
                 obj->otyp == GRAIL_OF_HEALING, 
-                (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)),
-				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != JAR_OF_HEALING_SALVE && obj->otyp != SPE_MINOR_HEALING)), 
+                (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
+				(obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)), 
                 obj->otyp == GRAIL_OF_HEALING, 
                 obj->otyp == GRAIL_OF_HEALING);
             
 			You_feel("%sbetter.", 
-				obj->otyp == SPE_GREATER_HEALING ? "vastly " : 
-				obj->otyp == SPE_GREATER_HEALING || obj->otyp == GRAIL_OF_HEALING ? "much, much " :
+				obj->otyp == SPE_PRODIGIOUS_HEALING || obj->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || obj->otyp == GRAIL_OF_HEALING ? "vastly " :
+				obj->otyp == SPE_GREATER_HEALING || obj->otyp == JAR_OF_GREATER_HEALING_SALVE ? "much, much " :
 				obj->otyp == SPE_EXTRA_HEALING || obj->otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much " :
 				"");
 
@@ -5604,8 +5607,9 @@ struct obj *obj; /* wand or spell */
 	case SPE_CURE_SICKNESS:
 	case SPE_CURE_PETRIFICATION:
 	case SPE_MINOR_HEALING:
-	case JAR_OF_HEALING_SALVE:
 	case JAR_OF_EXTRA_HEALING_SALVE:
+    case JAR_OF_GREATER_HEALING_SALVE:
+    case JAR_OF_PRODIGIOUS_HEALING_SALVE:
     case GRAIL_OF_HEALING:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:
