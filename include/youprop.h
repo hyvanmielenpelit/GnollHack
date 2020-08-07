@@ -652,7 +652,7 @@
 #define EUndead_control u.uprops[UNDEAD_CONTROL].extrinsic
 #define Undead_control (HUndead_control || EUndead_control)
 
-#define Charmed_or_controlled ((Charmed && !Charm_resistance) || Undead_control)
+#define Charmed_or_controlled ((Charmed && !Charm_resistance) || (Undead_control && is_undead(youmonst.data)))
 
 
 #define HSlowed u.uprops[SLOWED].intrinsic

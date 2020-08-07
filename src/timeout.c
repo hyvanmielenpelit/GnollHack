@@ -1346,7 +1346,7 @@ nh_timeout()
 					Your("own motivations make more sense to you now.");
 				break;
             case UNDEAD_CONTROL:
-                if (is_undead(youmonst.data) && !Charmed_or_controlled)
+                if (!Charmed_or_controlled)
                     Your("are more in control of your own actions.");
                 break;
             case DEATH_RESISTANCE:
