@@ -3,6 +3,8 @@
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#include "action.h"
+
 #ifndef OBJCLASS_H
 #define OBJCLASS_H
 
@@ -99,58 +101,6 @@ enum multishot_types {
 };
 extern const char* multishot_style_names[MAX_MULTISHOT_TYPES]; /* in objnam.c */
 
-
-/* [misnamed] definition of a type of object; many objects are composites
-   (liquid potion inside glass bottle, metal arrowhead on wooden shaft)
-   and object definitions only specify one type on a< best-fit basis */
-enum obj_material_types {
-	MAT_NONE        =  0,
-    MAT_LIQUID      =  1, /* currently only for venom */  /* Organics start here */
-	MAT_OIL         =  2, /* flammable liquid */
-	MAT_WAX         =  3,
-    MAT_VEGGY       =  4, /* foodstuffs */
-	MAT_FLESH       =  5, /*   ditto    */
-	MAT_ORGANIC		=  6, /* non-veggy, non-flesh organic material, e.g. bat guano, feathers */
-	MAT_PAPER       =  7,
-    MAT_CLOTH       =  8,
-	MAT_SILK		=  9,
-	MAT_LEATHER     = 10, /* Flimsy materials stop here */
-	MAT_WOOD        = 11, /* Organics stop here */
-	MAT_BONE        = 12,
-	MAT_CHITIN      = 13,
-	MAT_TOOTH       = 14, /* Hard bone-like materials stop here */
-	MAT_DRAGON_HIDE = 15, /* not leather! */
-    MAT_IRON        = 16, /* Fe - includes steel */
-    MAT_METAL       = 17, /* Sn, &c. */
-    MAT_COPPER      = 18, /* Cu - includes brass */
-    MAT_SILVER      = 19, /* Ag */
-    MAT_GOLD        = 20, /* Au */
-    MAT_PLATINUM    = 21, /* Pt */
-	MAT_ORICHALCUM	= 22,
-	MAT_ADAMANTIUM  = 23,
-	MAT_MITHRIL     = 24,
-    MAT_PLASTIC     = 25,
-    MAT_GLASS       = 26,
-    MAT_GEMSTONE    = 27,
-    MAT_MINERAL     = 28,
-	MAT_MODRONITE	= 29,
-	MAT_PLANARRIFT	= 30,
-	MAT_FORCEFIELD  = 31,
-	MAT_AIR         = 32,
-	MAT_FIRE        = 33,
-	MAT_ENERGY      = 34,
-	MAT_INCORPOREAL = 35,
-	MAT_ICE         = 36,
-	MAT_SOIL        = 37,
-	MAX_MATERIAL_TYPES
-};
-enum material_phase {
-	PHASE_SOLID = 0,
-	PHASE_LIQUID,
-	PHASE_GAS,
-	PHASE_ENERGY,
-	PHASE_VOID
-};
 
 struct material_definition {
 	const char* name;

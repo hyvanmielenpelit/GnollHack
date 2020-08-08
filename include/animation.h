@@ -7,32 +7,6 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-/* Game cursor types */
-enum game_cursor_types
-{
-    CURSOR_STYLE_GENERIC_CURSOR = 0,
-    CURSOR_STYLE_LOOK_CURSOR,
-    CURSOR_STYLE_TRAVEL_CURSOR,
-    CURSOR_STYLE_NAME_CURSOR,
-    CURSOR_STYLE_TELEPORT_CURSOR,
-    CURSOR_STYLE_JUMP_CURSOR,
-    CURSOR_STYLE_POLEARM_CURSOR,
-    CURSOR_STYLE_GRAPPLE_CURSOR,
-    CURSOR_STYLE_SPELL_CURSOR,
-    CURSOR_STYLE_PAY_CURSOR,
-    CURSOR_STYLE_INVISIBLE,
-    MAX_CURSORS
-};
-
-struct game_cursor_definition {
-    char* game_cursor_name;
-    enum replacement_types replacement;
-    enum animation_types animation;
-    enum enlargement_types enlargement;
-};
-
-
-extern NEARDATA struct game_cursor_definition game_cursors[];
 
 
 /* Autodraw */
@@ -337,6 +311,32 @@ enum replacement_types
 extern NEARDATA struct replacement_definition replacements[];
 
 
+/* Game cursor types */
+enum game_cursor_types
+{
+    CURSOR_STYLE_GENERIC_CURSOR = 0,
+    CURSOR_STYLE_LOOK_CURSOR,
+    CURSOR_STYLE_TRAVEL_CURSOR,
+    CURSOR_STYLE_NAME_CURSOR,
+    CURSOR_STYLE_TELEPORT_CURSOR,
+    CURSOR_STYLE_JUMP_CURSOR,
+    CURSOR_STYLE_POLEARM_CURSOR,
+    CURSOR_STYLE_GRAPPLE_CURSOR,
+    CURSOR_STYLE_SPELL_CURSOR,
+    CURSOR_STYLE_PAY_CURSOR,
+    CURSOR_STYLE_INVISIBLE,
+    MAX_CURSORS
+};
+
+struct game_cursor_definition {
+    char* game_cursor_name;
+    enum replacement_types replacement;
+    enum animation_types animation;
+    enum enlargement_types enlargement;
+};
+
+
+extern NEARDATA struct game_cursor_definition game_cursors[];
 
 
 
