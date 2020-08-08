@@ -402,8 +402,6 @@ struct objclass {
 #define is_slurpable(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].slurpable != 0)
 #define melts_in_lava(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].destroyed_in_lava != 0)
 #define is_metallic(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].metallic != 0) 
-//    (objects[(otmp)->otyp].oc_material >= MAT_IRON \
-//     && objects[(otmp)->otyp].oc_material <= MAT_MITHRIL)
 #define is_fragile(otmp)  (material_definitions[objects[(otmp)->otyp].oc_material].fragile != 0) 
 
 /* primary damage: fire/rust/--- */
