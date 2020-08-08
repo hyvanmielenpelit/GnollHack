@@ -577,7 +577,7 @@ int y;
 		if (mtmp == &youmonst)
 			pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
 		else if (canseemon(mtmp))
-			pline("%s glimmer flashes around %s.", portal_color), mon_nam(mtmp);
+			pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
 		return FALSE;
 	}
 

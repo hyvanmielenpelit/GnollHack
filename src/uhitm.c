@@ -4557,7 +4557,7 @@ unsigned long ad_flags;
 
 	}
 
-	if (magr && you_attack && !(ad_flags & ADFLAGS_SPELL_DAMAGE))
+	if (magr && !(ad_flags & ADFLAGS_SPELL_DAMAGE))
 	{
 		if(you_attack)
 		{

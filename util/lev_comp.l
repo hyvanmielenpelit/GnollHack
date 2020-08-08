@@ -163,6 +163,7 @@ TELEPORT_REGION	ST_RET(TELEPRT_ID);
 BRANCH		ST_RET(BRANCH_ID);
 FOUNTAIN	ST_RET(FOUNTAIN_ID);
 THRONE	    ST_RET(THRONE_ID);
+MODRON_PORTAL	ST_RET(MODRON_PORTAL_ID);
 SINK		ST_RET(SINK_ID);
 POOL		ST_RET(POOL_ID);
 NON_DIGGABLE	ST_RET(NON_DIGGABLE_ID);
@@ -282,8 +283,18 @@ m_object	{ savetoken(yytext); yylval.i= M_AP_OBJECT;    return MON_APPEARANCE; }
 sanctum		{ savetoken(yytext); yylval.i=2; return ALTAR_TYPE; }
 shrine		{ savetoken(yytext); yylval.i=1; return ALTAR_TYPE; }
 altar		{ savetoken(yytext); yylval.i=0; return ALTAR_TYPE; }
-up		{ savetoken(yytext); yylval.i=1; return UP_OR_DOWN; }
+up		    { savetoken(yytext); yylval.i=1; return UP_OR_DOWN; }
 down		{ savetoken(yytext); yylval.i=0; return UP_OR_DOWN; }
+active		{ savetoken(yytext); yylval.i=1; return ACTIVE_OR_INACTIVE; }
+inactive	{ savetoken(yytext); yylval.i=0; return ACTIVE_OR_INACTIVE; }
+unspecified	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_UNSPECIFIED; return MODRON_PORTAL_TYPE; }
+spherical	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_SPHERICAL; return MODRON_PORTAL_TYPE; }
+cylindrical	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_CYLINDRICAL; return MODRON_PORTAL_TYPE; }
+tetrahedral	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_TETRAHEDRAL; return MODRON_PORTAL_TYPE; }
+cubical		{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_CUBICAL; return MODRON_PORTAL_TYPE; }
+octahedral	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_OCTAHEDRAL; return MODRON_PORTAL_TYPE; }
+dodecahedral { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_DODECAHEDRAL; return MODRON_PORTAL_TYPE; }
+icosahedral { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_ICOSAHEDRAL; return MODRON_PORTAL_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }

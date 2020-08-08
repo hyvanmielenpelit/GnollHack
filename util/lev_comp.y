@@ -195,10 +195,10 @@ extern char curr_token[512];
 %token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID FILLING IRREGULAR JOINED
 %token	<i> ALTAR_ID ANVIL_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID
 %token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV MINERALIZE_ID
-%token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID POOL_ID SINK_ID NONE
+%token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID MODRON_PORTAL_ID POOL_ID SINK_ID NONE
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
-%token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN
+%token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE MODRON_PORTAL_TYPE
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
 %token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID
@@ -484,6 +484,7 @@ levstatement 	: message
 		| mineralize
 		| fountain_detail
 		| throne_detail
+		| modron_portal_detail
 		| gold_detail
 		| switchstatement
 		| forstatement
@@ -1852,6 +1853,12 @@ fountain_detail : FOUNTAIN_ID ':' ter_selection
 throne_detail : THRONE_ID ':' ter_selection
 		  {
 		      add_opvars(splev, "o", VA_PASS1(SPO_THRONE));
+		  }
+		;
+
+modron_portal_detail : MODRON_PORTAL_ID ':' coord_or_var ',' '(' INTEGER ',' INTEGER ')' ',' MODRON_PORTAL_TYPE ',' ACTIVE_OR_INACTIVE
+		  {
+		      add_opvars(splev, "iiiio", VA_PASS5((int)$<i>6, (int)$<i>8, (int) $<i>11, (int) $<i>13, SPO_MODRON_PORTAL));
 		  }
 		;
 

@@ -77,6 +77,7 @@ STATIC_DCL void FDECL(create_monster, (monster *, struct mkroom *));
 STATIC_DCL void FDECL(create_object, (object *, struct mkroom *));
 STATIC_DCL void FDECL(create_altar, (altar *, struct mkroom *));
 STATIC_DCL void FDECL(create_anvil, (anvil*, struct mkroom*));
+STATIC_DCL void FDECL(create_modron_portal, (modron_portal*, struct mkroom*));
 STATIC_DCL void FDECL(replace_terrain, (replaceterrain *, struct mkroom *));
 STATIC_DCL boolean FDECL(search_door, (struct mkroom *,
                                        xchar *, xchar *, XCHAR_P, int));
@@ -2318,6 +2319,21 @@ struct mkroom* croom;
 
     smithini(&u.uz, croom, x, y, 0);
     level.flags.has_smithy = TRUE;
+}
+
+/*
+ * Create an modron portal in a room.
+ */
+STATIC_OVL void
+create_modron_portal(a, croom)
+modron_portal* a;
+struct mkroom* croom;
+{
+    spltrap tr = { 0 };
+    tr.type = MODRON_OCTAHEDRAL_PORTAL;
+    tr.coord = a->coord;
+
+    create_trap(&tr, 0);
 }
 
 void
@@ -4680,6 +4696,36 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
+void spo_modron_portal(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_modron_portal";
+    struct opvar* acoord, *t_x, * t_y, *activated, *typ;
+    modron_portal tmpportal;
+    schar x, y;
+
+    if (!OV_pop_i(activated) || !OV_pop_i(typ) || !OV_pop_i(t_y) || !OV_pop_i(t_x) || !OV_pop_c(acoord))
+        return;
+
+    get_location_coord(&x, &y, ANY_LOC, coder->croom, OV_i(acoord));
+
+    tmpportal.coord = OV_i(acoord);
+    tmpportal.x = x;
+    tmpportal.y = y;
+    tmpportal.t_x = OV_i(t_x);
+    tmpportal.t_y = OV_i(t_y);
+    tmpportal.typ = OV_i(typ);
+    tmpportal.activated = OV_i(activated);
+
+    create_modron_portal(&tmpportal, coder->croom);
+
+    opvar_free(activated);
+    opvar_free(typ);
+    opvar_free(t_x);
+    opvar_free(t_y);
+    opvar_free(acoord);
+}
+
 void
 spo_terrain(coder)
 struct sp_coder *coder;
@@ -5893,6 +5939,9 @@ sp_lev *lvl;
             break;
         case SPO_ANVIL:
             spo_anvil(coder);
+            break;
+        case SPO_MODRON_PORTAL:
+            spo_modron_portal(coder);
             break;
         case SPO_TRAP:
             spo_trap(coder);

@@ -1046,7 +1046,7 @@ cure_sickness_here:
         } 
 		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp)) 
 		{
-			double damage = adjust_damage(dmg, &youmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
+			double damage = adjust_damage(dmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
 
 			deduct_monster_hp(mtmp, damage);
             mtmp->mbasehpmax -= (int)floor(damage);
@@ -6910,7 +6910,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	if(origobj)
 		duration = d(objects[origobj->otyp].oc_spell_dur_dice, objects[origobj->otyp].oc_spell_dur_diesize) + objects[origobj->otyp].oc_spell_dur_plus; //Same for smal and big
 
-	damage = adjust_damage(dmg, (struct monst*)0, mon, abstype + 1, (abs(type) >= 20 && abs(type) <=29) ? ADFLAGS_NONE : ADFLAGS_SPELL_DAMAGE);
+	damage = adjust_damage(dmg, origmonst, mon, abstype + 1, (abs(type) >= 20 && abs(type) <=29) ? ADFLAGS_NONE : ADFLAGS_SPELL_DAMAGE);
 
     switch (abstype)
 	{
@@ -7117,7 +7117,7 @@ xchar sx, sy;
 	else
 		dam = d(dmgdice, dicesize) + dmgplus;
 
-	double damage = adjust_damage(dam, (struct monst*)0, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39) ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
+	double damage = adjust_damage(dam, origmonst, &youmonst, (abstyp % 10) + 1, !(abstyp >= 20 && abstyp <= 39) ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
 
     switch (abstyp % 10) 
 	{

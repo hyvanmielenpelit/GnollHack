@@ -74,6 +74,7 @@ enum opcode_defs {
     SPO_ANVIL,
     SPO_FOUNTAIN,
     SPO_THRONE,
+    SPO_MODRON_PORTAL,
     SPO_SINK,
     SPO_POOL,
     SPO_TRAP,
@@ -399,6 +400,15 @@ typedef struct {
 } anvil;
 
 typedef struct {
+    packed_coord coord;
+    packed_coord t_coord;
+    xchar x, y;
+    xchar t_x, t_y;
+    uchar typ;
+    boolean activated;
+} modron_portal;
+
+typedef struct {
     xchar x1, y1, x2, y2;
     xchar rtype, rlit, rirreg;
 } region;
@@ -558,6 +568,7 @@ typedef const char *vA;
 #define VA_PASS3(a1,a2,a3) a1, a2, a3
 #define VA_PASS4(a1,a2,a3,a4) a1, a2, a3, a4
 #define VA_PASS5(a1,a2,a3,a4,a5) a1, a2, a3, a4, a5
+#define VA_PASS6(a1,a2,a3,a4,a5,a6) a1, a2, a3, a4, a5, a6
 #define VA_PASS7(a1,a2,a3,a4,a5,a6,a7) a1, a2, a3, a4, a5, a6, a7
 #define VA_PASS8(a1,a2,a3,a4,a5,a6,a7,a8) a1, a2, a3, a4, a5, a6, a7, a8
 #define VA_PASS9(a1,a2,a3,a4,a5,a6,a7,a8,a9) a1, a2, a3, a4, a5, a6, a7, a8, a9
