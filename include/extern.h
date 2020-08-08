@@ -2749,7 +2749,7 @@ E void FDECL(play_simple_location_sound, (xchar, xchar, enum location_sound_type
 E void FDECL(play_ui_sound, (enum ui_sound_types));
 E void FDECL(play_sfx_sound, (enum sfx_sound_types));
 E void FDECL(play_sfx_sound_at_location, (enum sfx_sound_types, int, int));
-E void FDECL(play_immediate_ray_sound_at_location, (enum ray_soundset_types, enum ray_sound_types, int, int));
+E void FDECL(play_immediate_ray_sound_at_location, (enum object_ray_soundset_types, enum ray_sound_types, int, int));
 E void FDECL(start_ambient_ray_sound_at_location, (int, int, int));
 E void FDECL(update_ambient_ray_sound_to_location, (int, int, int));
 E void FDECL(stop_ambient_ray_sound, (int));

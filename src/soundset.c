@@ -3042,13 +3042,13 @@ int x, y;
 
 void
 play_immediate_ray_sound_at_location(ray_soundset_id, ray_sound_type, x, y)
-enum ray_soundset_types ray_soundset_id; 
+enum object_ray_soundset_types ray_soundset_id;
 enum ray_sound_types ray_sound_type;
 int x, y;
 {
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
         return;
-    enum ray_soundset_types typ = ray_soundset_id;
+    enum object_ray_soundset_types typ = ray_soundset_id;
     if (ray_soundsets[typ].sounds[ray_sound_type].ghsound == GHSOUND_NONE)
         return;
 
