@@ -62,8 +62,7 @@ NEARDATA boolean ransacked = 0;
 
 const char *occtxt = DUMMY;
 enum object_soundset_types occsoundset = OBJECT_SOUNDSET_NONE; /* defined when occupation != NULL */
-int occtyp = 0;
-//enum object_occupation_types occtyp = OCCUPATION_NONE; /* defined when occupation != NULL */
+enum object_occupation_types occtyp = OCCUPATION_NONE; /* defined when occupation != NULL */
 
 const char quitchars[] = " \r\n\033";
 const char vowels[] = "aeiouAEIOU";
