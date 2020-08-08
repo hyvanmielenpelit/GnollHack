@@ -60,11 +60,11 @@ STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
-STATIC_OVL int FDECL(spell_service_query, (struct monst*, int, const char*, int, char*));
-STATIC_OVL int FDECL(general_service_query, (struct monst*, void (*)(struct monst*), const char*, int, char*));
-STATIC_OVL void FDECL(repair_armor_func, (struct monst*));
-STATIC_OVL void FDECL(repair_weapon_func, (struct monst*));
-STATIC_OVL void FDECL(refill_lantern_func, (struct monst*));
+STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, const char*, int, char*));
+STATIC_DCL int FDECL(general_service_query, (struct monst*, void (*)(struct monst*), const char*, int, char*));
+STATIC_DCL void FDECL(repair_armor_func, (struct monst*));
+STATIC_DCL void FDECL(repair_weapon_func, (struct monst*));
+STATIC_DCL void FDECL(refill_lantern_func, (struct monst*));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
