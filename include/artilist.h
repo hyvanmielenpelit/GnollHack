@@ -3,6 +3,8 @@
 /*-Copyright (c) Robert Patrick Rankin, 2017. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#include "animation.h"
+
 #ifdef MAKEDEFS_C
 /* in makedefs.c, all we care about is the list of names */
 
@@ -13,21 +15,23 @@ static const char *artifact_names[] = {
 /* in artifact.c, set up the actual artifact list structure */
 
 #define GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement) \
-    {                                                                       \
-        typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement    \
-    }
+    {  typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, replacement }
 
 #define ENLARGED_ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, NO_REPLACEMENT)
+    {  typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, NO_REPLACEMENT }
+//    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, enlarge, NO_REPLACEMENT)
 
 #define ENLARGED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, enlarge) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, enlarge, NO_REPLACEMENT)
+    {  typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, enlarge, NO_REPLACEMENT }
+//    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, enlarge, NO_REPLACEMENT)
 
 #define ANIMATED_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT)
+    {  typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT }
+//    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, stand_anim, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 #define A(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset) \
-    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
+    {  typ, masktyp, nam, desc, hit_desc, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT }
+//    GENERAL_ARTIFACT(nam, desc, hit_desc, typ, masktyp, aflags, aflags2, spfx, cspfx, mt, tohitdice, tohitsize, tohitplus, atk, dfn, cry, inv, inv_dur_dice, inv_dur_diesize, inv_dur_plus, manacost, repower, al, cl, rac, cost, glowclr, objclr, height, soundset, NO_ANIMATION, NO_ENLARGEMENT, NO_REPLACEMENT)
 
 /* clang-format off */
 #define     NO_ATTK			{0,0,0,0,0,0}               /* no attack */
