@@ -1362,7 +1362,7 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 
 		int max_ench = get_obj_max_enchantment(obj);
-		Sprintf(buf, "Maximum enchantment:    %s%d", max_ench >= 0 ? "+" : "", max_ench);
+		Sprintf(buf, "Safe enchantable level: %s%d or below", max_ench >= 0 ? "+" : "", max_ench);
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
