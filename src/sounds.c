@@ -4744,6 +4744,11 @@ const char *msg;
     }
 }
 
+#endif /* USER_SOUNDS */
+
+
+
+
 
 STATIC_OVL int
 spell_service_query(mtmp, service_spell_id, service_verb, service_cost, no_mood_string)
@@ -4978,7 +4983,5 @@ struct monst* mtmp;
 
 	verbalize("Thank you for using my services.");
 }
-
-#endif /* USER_SOUNDS */
 
 /*sounds.c*/
