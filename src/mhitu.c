@@ -1719,11 +1719,12 @@ register struct obj* omonwep;
 			damage += adjust_damage(m_str_dmg_bonus(mtmp) / 2, mtmp, & youmonst, mattk->adtyp, ADFLAGS_NONE);
 	}
 
-    if (mattk->adtyp == AD_SHRP && !rn2(10))
+    if (mattk->adtyp == AD_SHRP && (rn2(100) < 15))
     {
-        damage += adjust_damage((Upolyd ? u.mhmax : u.uhpmax) / 4, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
+        damage += adjust_damage(((Upolyd ? u.mhmax : u.uhpmax) * 15) / 100, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
         sharpness_effect = TRUE;
     }
+
     //Let's add this even if a weapon is being used
     if ((is_undead(mdat) || is_vampshifter(mtmp)) && midnight())
 	{
@@ -2199,7 +2200,7 @@ register struct obj* omonwep;
     case AD_SHRP:
         hitmsg(mtmp, mattk, damagedealt);
         if (sharpness_effect)
-            pline("%s strike cuts you deeply.", s_suffix(Monnam(mtmp)));
+            pline("%s strike slices a part of you off!", s_suffix(Monnam(mtmp)));
         break;
     case AD_DRLI:
 		hitmsg(mtmp, mattk, damagedealt);

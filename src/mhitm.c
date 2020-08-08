@@ -1459,14 +1459,13 @@ register struct obj* omonwep;
         }
         break;
     case AD_SHRP:
-        if (!rn2(10))
+        if (rn2(100) < 15)
         {
             if (vis && canspotmon(mdef) && !is_paralyzed(mdef))
             {
-                Strcpy(buf, Monnam(mdef));
-                pline("%s is deeply wounded by %s.", buf, mon_nam(magr));
+                pline("%s strike slices a part of %s off!", s_suffix(Monnam(magr)), mon_nam(mdef));
             }
-            damage += adjust_damage(mdef->mhpmax / 4, magr, mdef, AD_PHYS, ADFLAGS_NONE);
+            damage += adjust_damage((mdef->mhpmax * 15) / 100, magr, mdef, AD_PHYS, ADFLAGS_NONE);
         }
         break;
     case AD_SLOW:

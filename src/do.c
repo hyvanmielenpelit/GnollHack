@@ -1851,7 +1851,7 @@ register struct obj* obj;
 			if (!uses_spell_flags && (objects[otyp].oc_aflags & A1_SVB_MASK) == A1_SHARPNESS)
 			{
 				powercnt++;
-				Sprintf(buf, " %2d - 10%% chance of permanent damage equal to 25%% of target's maximum hit points", powercnt);
+				Sprintf(buf, " %2d - 15%% chance of damage equal to 15%% of target's maximum hit points", powercnt);
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}

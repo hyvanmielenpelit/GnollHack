@@ -4866,7 +4866,7 @@ struct permonst _mons2[] = {
 		M4_NONE, M5_NONE, 
 		9, CLR_YELLOW, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
     MON("Tarrasque", "great reptilian punisher", "colossal magical beast with regeneration, reflecting carapace, and teeth as sharp as sword of sharpness", None, None, S_DEMON, LVL(70, 9, -3, 30, 0, 0), (G_NOGEN | G_UNIQ),
-        A(ATTK(AT_BITE, AD_PHYS, 5, 10, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 12, 0, 0),
+        A(ATTK(AT_BITE, AD_SHRP, 5, 10, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 12, 0, 0),
             ATTK(AT_CLAW, AD_PHYS, 1, 12, 0, 0), ATTK(AT_TAIL, AD_PHYS, 2, 12, 0, 0), ATTK(AT_BUTT, AD_PHYS, 2, 10, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(3000, 1000, MS_SILENT, MZ_HUGE, 1, 0, MAT_FLESH), STATS(STR19(25), 18, 25, 3, 3, 1), 
         MR_REFLECTING | MR_MAGIC_MISSILE | MR_STONE | MR_POISON | MR_SICK | MR_DISINT | MR_DEATH | MR_SLEEP | MR_CHARM | MR_FEAR,

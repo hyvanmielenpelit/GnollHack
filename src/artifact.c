@@ -1856,7 +1856,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				)
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-					&& dieroll <= 2)
+					&& dieroll <= 3)
 				)
 			)
 		{
@@ -1868,22 +1868,12 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				}
 				else
 				{
-					int damagedone = mdef->mhpmax / 4;
+					int damagedone = (mdef->mhpmax * 15) / 100;
 					if (damagedone < 1)
 						damagedone = 1;
 
 					totaldamagedone += damagedone;
 
-					if (!does_regenerate_bodyparts(mdef->data))
-					{
-						/* Max HP does not go down if the creature can regenerate the lost body part */
-						mdef->mbasehpmax -= damagedone;
-						mdef->mhpmax -= damagedone;
-						if (mdef->mhpmax < 1)
-							mdef->mhpmax = 1, lethaldamage = TRUE;
-						else
-							update_mon_maxhp(mdef);
-					}
 					pline("%s slices a part of %s off!", The(xname(otmp)),
 						mon_nam(mdef));
 					if (Hallucination && !lethaldamage)
@@ -1907,36 +1897,19 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				{
 					if (Upolyd)
 					{
-						int damagedone = u.mhmax / 4;
+						int damagedone = (u.mhmax * 15) / 100;
 						if (damagedone < 1)
 							damagedone = 1;
 
 						totaldamagedone += damagedone;
-
-						if (!does_regenerate_bodyparts(youmonst.data))
-						{
-							/* Max HP does not go down if the creature can regenerate the lost body part */
-							u.basemhmax -= damagedone;
-							u.mhmax -= damagedone;
-							if (u.mhmax < 1)
-								u.mhmax = 1, lethaldamage = TRUE;
-						}
 					}
 					else
 					{
-						int damagedone = u.uhpmax / 4;
+						int damagedone = (u.uhpmax * 15) / 100;
 						if (damagedone < 1)
 							damagedone = 1;
 
 						totaldamagedone += damagedone;
-
-						if (!does_regenerate_bodyparts(youmonst.data))
-						{
-							/* Max HP does not go down if the creature can regenerate the lost body part */
-							u.uhpmax -= damagedone;
-							if (u.uhpmax < 1)
-								u.uhpmax = 1, lethaldamage = TRUE;
-						}
 					}
 					pline("%s slices a part of %s off!", The(xname(otmp)), "you");
 					otmp->dknown = TRUE;

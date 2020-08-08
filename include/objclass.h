@@ -552,9 +552,9 @@ struct objclass {
 #define A1_LIFE_LEECH_DISRESPECTS_TARGETS							0x00001000UL  /* successful critical strike causes lethal damage */
 #define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS						0x00002000UL  /* successful critical strike causes lethal damage */
 
-#define A1_SHARPNESS												0x00004000UL	/* 2/20 chance of the monster losing 25% of maximum hit points */
+#define A1_SHARPNESS												0x00004000UL	/* 3/20 chance of the monster losing 15% of maximum hit points */
 #define A1_VORPAL													0x00008000UL	/* 1/20 chance of the monster being beheaded */
-#define A1_BISECT (A1_SHARPNESS | A1_VORPAL) /* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
+#define A1_BISECT (A1_SHARPNESS | A1_VORPAL)										/* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
 #define A1_VORPAL_LIKE_DISRESPECTS_TARGETS							0x00010000UL
 #define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS						0x00020000UL
