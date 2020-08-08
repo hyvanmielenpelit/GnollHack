@@ -11,15 +11,9 @@
 #include "soundset.h"
 #include "objclass.h"
 
-#define NO_ATTK    \
-    {              \
-        0, 0, 0, 0, 0 \
-    }
+#define NO_ATTK { 0, 0, 0, 0, 0 }
 
-#define NO_ACTION_INFO    \
-    {              \
-        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 \
-    }
+#define NO_ACTION_INFO { {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 }
 
 #ifdef C
 #undef C
@@ -50,16 +44,19 @@ void NDECL(monst_init);
  *      For AT_BREA attacks, '# sides' is ignored; 6 is used for most
  *      damage types, 25 for sleep, not applicable for death or poison.
  */
+
 #define GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim, enlarge, female_enlarge, replacement, female_replacement) \
-    {                                                                      \
-        nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, C(col), soundset, female_soundset, anim, female_anim, enlarge, female_enlarge, replacement, female_replacement   \
-    }
+    { nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, C(col), soundset, female_soundset, anim, female_anim, enlarge, female_enlarge, replacement, female_replacement }
+
 #define ENLARGED_ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim, enlarge, female_enlarge) \
     GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim, enlarge, female_enlarge, NO_ACTION_INFO, NO_ACTION_INFO)
+
 #define ENLARGED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, enlarge, female_enlarge) \
     GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, NO_ACTION_INFO, NO_ACTION_INFO, enlarge, female_enlarge, NO_ACTION_INFO, NO_ACTION_INFO)
+
 #define ANIMATED_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim) \
     GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, anim, female_anim, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO)
+
 #define MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset) \
     GENERAL_MON(nam, title, desc, femalename, commonname, sym, lvl, gen, atk, siz, stats, mr1, mr2, mc1, flg1, flg2, flg3, flg4, flg5, d, col, soundset, female_soundset, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO, NO_ACTION_INFO)
 
