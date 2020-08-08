@@ -12,8 +12,8 @@
 #include "objclass.h"
 
 #define NO_ATTK { 0, 0, 0, 0, 0 }
-
-#define NO_ACTION_INFO { {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0, 0 }
+#define NO_ACTION_SUBINFO {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+#define NO_ACTION_INFO { NO_ACTION_SUBINFO, 0, 0 }
 
 #ifdef C
 #undef C
