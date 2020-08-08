@@ -309,7 +309,7 @@ int force;
                 case ROOM:
                 case CORR: /* Try to make a pit */
                 do_pit:
-                    chasm = maketrap(x, y, PIT, NON_PM, TRAP_NO_FLAGS);
+                    chasm = maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
                     if (!chasm)
                         break; /* no pit if portal at that location */
                     chasm->tseen = 1;

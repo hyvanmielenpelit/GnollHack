@@ -1045,7 +1045,7 @@ mkgarden()
 				if (!rn2(8))
 				{
 					// Garden gnome as statue (with a conical hat)
-					maketrap(sx, sy, STATUE_TRAP, !rn2(15) && level_difficulty() > 4 ? PM_GNOME_KING : !rn2(5) && level_difficulty() > 2 ? PM_GNOME_LORD : PM_GNOME, TRAPFLAG_GARDEN_GNOME_ITEMS);
+					maketrap(sx, sy, STATUE_TRAP, !rn2(15) && level_difficulty() > 4 ? PM_GNOME_KING : !rn2(5) && level_difficulty() > 2 ? PM_GNOME_LORD : PM_GNOME, MKTRAPFLAG_GARDEN_GNOME_ITEMS);
 				}
 				else if (!rn2(8))
 				{

@@ -38,10 +38,11 @@ TELEPORT_REGION:(01,07,05,11),(0,0,0,0),up
 TELEPORT_REGION:(01,07,05,11),(0,0,0,0),down
 
 # The special entrace portal
-TRAP:"octahedral portal", (05,09)
-TRAP:"tetrahedral portal", (08,09)
+MODRON_PORTAL:(05,09),(4,0),octahedral,inactive
+MODRON_PORTAL:(08,09),(-4,0),tetrahedral,active
+#TRAP:"octahedral portal", (05,09)
+#TRAP:"tetrahedral portal", (08,09)
 
-MODRON_PORTAL:(05,10),(03,08),cubical,inactive
 
 # Dead adventurers
 OBJECT: ')', (01,07)

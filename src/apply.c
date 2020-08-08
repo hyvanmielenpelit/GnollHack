@@ -3557,7 +3557,7 @@ set_trap()
         return 1; /* still busy */
 
     ttyp = (otmp->otyp == LAND_MINE) ? LANDMINE : BEAR_TRAP;
-    ttmp = maketrap(u.ux, u.uy, ttyp, NON_PM, TRAP_NO_FLAGS);
+    ttmp = maketrap(u.ux, u.uy, ttyp, NON_PM, MKTRAP_NO_FLAGS);
     if (ttmp) {
         ttmp->madeby_u = 1;
         feeltrap(ttmp);

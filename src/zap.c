@@ -5900,6 +5900,8 @@ struct obj *obj; /* wand or spell */
                     disclose = TRUE;
                 }
                 ttmp->ttyp = HOLE;
+                ttmp->tsubtyp = 0;
+                ttmp->tflags = 0;
                 ttmp->tseen = 1;
                 newsym(x, y);
                 /* might fall down hole */
@@ -5907,6 +5909,8 @@ struct obj *obj; /* wand or spell */
             } else if (!striking && ttmp->ttyp == HOLE) {
                 /* locking transforms hole into trapdoor */
                 ttmp->ttyp = TRAPDOOR;
+                ttmp->tsubtyp = 0;
+                ttmp->tflags = 0;
                 if (Blind || !ttmp->tseen) {
                     pline("Some %s swirls beneath you.",
                           is_ice(x, y) ? "frost" : "dust");
@@ -8128,7 +8132,7 @@ short exploding_wand_typ;
             } else {
                 rangemod -= 3;
                 create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, 0, FALSE);
-                t = maketrap(x, y, PIT, NON_PM, TRAP_NO_FLAGS);
+                t = maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
                 if (t)
                     t->tseen = 1;
                 if (see_it)

@@ -367,6 +367,8 @@ long flags;
     ttmp->once = 0;
     ttmp->tseen = (typ == HOLE); /* hide non-holes */
     ttmp->ttyp = typ;
+    ttmp->tsubtyp = 0;
+    ttmp->tflags = 0;
 
     switch (typ) {
     case SQKY_BOARD: {
@@ -417,7 +419,7 @@ long flags;
 			if (is_helmet(otmp))
 				has_hat = TRUE;
         }
-		if (!has_hat && (flags & TRAPFLAG_GARDEN_GNOME_ITEMS))
+		if (!has_hat && (flags & MKTRAPFLAG_GARDEN_GNOME_ITEMS))
 		{
 			if(!rn2(2))
 			{
@@ -1613,25 +1615,53 @@ unsigned trflags;
         break;
 
 	case MODRON_OCTAHEDRAL_PORTAL:
-		feeltrap(trap);
-		(void)modronportaltele(trap, &youmonst, u.ux + 7, u.uy + 0);
-		break;
-
-	case MODRON_TETRAHEDRAL_PORTAL:
-		feeltrap(trap);
-		(void)modronportaltele(trap, &youmonst, u.ux - 4, u.uy + 0);
-		break;
-
-    case MODRON_CUBICAL_PORTAL:
+    {
         feeltrap(trap);
+        int tx = u.ux + 7, ty = u.uy;
+        if (isok(trap->launch.x, trap->launch.y))
+        {
+            tx = trap->launch.x;
+            ty = trap->launch.y;
+        }
+        (void)modronportaltele(trap, &youmonst, tx, ty);
+        break;
+    }
+	case MODRON_TETRAHEDRAL_PORTAL:
+    {
+        feeltrap(trap);
+        int tx = u.ux - 4, ty = u.uy;
+        if (isok(trap->launch.x, trap->launch.y))
+        {
+            tx = trap->launch.x;
+            ty = trap->launch.y;
+        }
+        (void)modronportaltele(trap, &youmonst, tx, ty);
+        break;
+    }
+    case MODRON_CUBICAL_PORTAL:
+    {
+        feeltrap(trap);
+        int tx = u.ux, ty = u.uy + 4;
+        if (isok(trap->launch.x, trap->launch.y))
+        {
+            tx = trap->launch.x;
+            ty = trap->launch.y;
+        }
         (void)modronportaltele(trap, &youmonst, u.ux, u.uy + 4);
         break;
-
+    }
     case MODRON_DODECAHEDRAL_PORTAL:
+    {
         feeltrap(trap);
-        (void)modronportaltele(trap, &youmonst, u.ux, u.uy - 4);
+        int tx = u.ux, ty = u.uy - 4;
+        if (isok(trap->launch.x, trap->launch.y))
+        {
+            tx = trap->launch.x;
+            ty = trap->launch.y;
+        }
+        (void)modronportaltele(trap, &youmonst, tx, ty);
         break;
-
+    }
     default:
         feeltrap(trap);
         impossible("You hit a trap of type %u", trap->ttyp);
@@ -1764,6 +1794,8 @@ struct trap *trap;
             deltrap(trap);
         } else {
             trap->ttyp = PIT;       /* explosion creates a pit */
+            trap->tsubtyp = 0;
+            trap->tflags = 0;
             trap->madeby_u = FALSE; /* resulting pit isn't yours */
             seetrap(trap);          /* and it isn't concealed */
         }
@@ -2261,6 +2293,8 @@ register struct monst *mtmp;
                 if (canseemon(mtmp))
                     pline("%s munches on some spikes!", Monnam(mtmp));
                 trap->ttyp = PIT;
+                trap->tsubtyp = 0;
+                trap->tflags = 0;
                 mtmp->meating = 5;
             }
         }
@@ -4442,7 +4476,7 @@ boolean force_failure;
                         killed(mtmp);
                 } else if (ttype == WEB) {
                     if (!webmaker(youmonst.data)) {
-                        struct trap *ttmp2 = maketrap(u.ux, u.uy, WEB, NON_PM, TRAP_NO_FLAGS);
+                        struct trap *ttmp2 = maketrap(u.ux, u.uy, WEB, NON_PM, MKTRAP_NO_FLAGS);
 
                         if (ttmp2) {
                             pline_The(

@@ -516,7 +516,7 @@ int trap_type;
                 if (trap_type) {
                     if (is_hole(trap_type) && !Can_fall_thru(&u.uz))
                         trap_type = ROCKTRAP;
-                    ttmp = maketrap(xx, yy + dy, trap_type, NON_PM, TRAP_NO_FLAGS);
+                    ttmp = maketrap(xx, yy + dy, trap_type, NON_PM, MKTRAP_NO_FLAGS);
                     if (ttmp) {
                         if (trap_type != ROCKTRAP)
                             ttmp->once = 1;
@@ -966,11 +966,11 @@ makelevel()
 				if (tmonst && !occupied(x, y))
 				{
 					if (tmonst->data == &mons[PM_GIANT_SPIDER] || (tmonst->data == &mons[PM_PHASE_SPIDER] && !rn2(2)))
-						(void)maketrap(x, y, WEB, NON_PM, TRAP_NO_FLAGS);
+						(void)maketrap(x, y, WEB, NON_PM, MKTRAP_NO_FLAGS);
 					else if (tmonst->data == &mons[PM_OTYUGH] || tmonst->data == &mons[PM_NEO_OTYUGH])
 					{
 						/* Otyugh lair */
-						(void)maketrap(x, y, PIT, NON_PM, TRAP_NO_FLAGS);
+						(void)maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
 						int itemnum = rnd(3) + 2;
 						for(int i = 0; i < itemnum;i++)
 						{
@@ -1653,7 +1653,7 @@ coord *tm;
                  || (avoid_boulder && sobj_at(BOULDER, m.x, m.y)));
     }
 
-    t = maketrap(m.x, m.y, kind, NON_PM, TRAP_NO_FLAGS);
+    t = maketrap(m.x, m.y, kind, NON_PM, MKTRAP_NO_FLAGS);
     /* we should always get type of trap we're asking for (occupied() test
        should prevent cases where that might not happen) but be paranoid */
     kind = t ? t->ttyp : NO_TRAP;
@@ -1812,6 +1812,44 @@ coord *tm;
 			if (otmp)
 				otmp->age -= 51; /* died too long ago to eat */
 		}
+    }
+}
+
+void
+mkmodronportal(subtyp, tm, portal_tm, portal_flags)
+int subtyp;
+coord* tm;
+coord* portal_tm;
+uchar portal_flags;
+{
+    struct trap* t;
+
+    if (subtyp < MODRON_PORTAL_SUBTYPE_SPHERICAL && subtyp >= MAX_MODRON_PORTAL_SUBTYPES)
+        return;
+
+    if (!tm) 
+        return;
+
+    if (!isok(tm->x, tm->y))
+        return;
+
+    enum trap_types portal_type = 
+        (subtyp == MODRON_PORTAL_SUBTYPE_CUBICAL ? MODRON_CUBICAL_PORTAL
+        : subtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL ? MODRON_TETRAHEDRAL_PORTAL
+        : subtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL ? MODRON_DODECAHEDRAL_PORTAL
+        : MODRON_OCTAHEDRAL_PORTAL
+        );
+
+    t = maketrap(tm->x, tm->y, portal_type, NON_PM, MKTRAP_NO_FLAGS);
+    if (t)
+    {
+        t->launch = *portal_tm;
+        t->tsubtyp = subtyp;
+        t->tflags = portal_flags;
+        if (t->tflags & 1)
+        {
+            t->tseen = TRUE;
+        }
     }
 }
 
@@ -2157,7 +2195,7 @@ int dist;
         if (is_pool(x, y))
             break;
         lev->typ = ROOM;
-        ttmp = maketrap(x, y, FIRE_TRAP, NON_PM, TRAP_NO_FLAGS);
+        ttmp = maketrap(x, y, FIRE_TRAP, NON_PM, MKTRAP_NO_FLAGS);
         if (ttmp)
             ttmp->tseen = TRUE;
         break;

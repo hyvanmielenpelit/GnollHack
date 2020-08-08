@@ -20,7 +20,9 @@ struct trap {
     xchar tx, ty;
     d_level dst; /* destination for portals */
     coord launch;
-    Bitfield(ttyp, 5);
+    uchar ttyp;
+    uchar tsubtyp;
+    uchar tflags;
     Bitfield(tseen, 1);
     Bitfield(once, 1);
     Bitfield(madeby_u, 1); /* So monsters may take offence when you trap
@@ -97,8 +99,8 @@ extern struct trap_type_definition trap_type_definitions[TRAPNUM];
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
 
-#define TRAP_NO_FLAGS					0x00000000L
-#define TRAPFLAG_GARDEN_GNOME_ITEMS		0x00000001L
+#define MKTRAP_NO_FLAGS					0x00000000L
+#define MKTRAPFLAG_GARDEN_GNOME_ITEMS	0x00000001L
 
 
 #endif /* TRAP_H */

@@ -685,7 +685,7 @@ int ttyp;
         Strcpy(surface_type, surface(x, y));
     shopdoor = IS_DOOR(lev->typ) && *in_rooms(x, y, SHOPBASE);
     oldobjs = level.objects[x][y];
-    ttmp = maketrap(x, y, ttyp, NON_PM, TRAP_NO_FLAGS);
+    ttmp = maketrap(x, y, ttyp, NON_PM, MKTRAP_NO_FLAGS);
     if (!ttmp)
         return;
     newobjs = level.objects[x][y];
@@ -916,6 +916,8 @@ coord *cc;
             pline_The("boulder settles into the %spit.",
                       (dig_x != u.ux || dig_y != u.uy) ? "adjacent " : "");
             ttmp->ttyp = PIT; /* crush spikes */
+            ttmp->tsubtyp = 0;
+            ttmp->tflags = 0;
         } else {
             /*
              * digging makes a hole, but the boulder immediately
@@ -1959,7 +1961,7 @@ struct obj* origobj;
                     create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, 0, FALSE);
                     if (lev->typ == MOAT)
 					{
-						struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
+						struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
 						if (t)
 							t->tseen = 1;
 					}
@@ -2044,7 +2046,7 @@ struct obj* origobj;
                 create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, 0, FALSE);
                 if (lev->typ == MOAT)
 				{
-					struct trap* t = maketrap(zx, zy, PIT, NON_PM, TRAP_NO_FLAGS);
+					struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
 					if (t)
 						t->tseen = 1;
 				}

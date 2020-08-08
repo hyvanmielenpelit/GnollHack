@@ -2329,11 +2329,32 @@ create_modron_portal(a, croom)
 modron_portal* a;
 struct mkroom* croom;
 {
-    spltrap tr = { 0 };
-    tr.type = MODRON_OCTAHEDRAL_PORTAL;
-    tr.coord = a->coord;
+    schar x = -1, y = -1;
+    coord tm, portal_tm;
+    uchar pflags = a->activated;
 
-    create_trap(&tr, 0);
+    if (croom)
+        get_free_room_loc(&x, &y, croom, a->coord);
+    else 
+    {
+        int trycnt = 0;
+        do 
+        {
+            get_location_coord(&x, &y, ANY_LOC, croom, a->coord);
+        } while ((levl[x][y].typ == STAIRS || levl[x][y].typ == LADDER)
+            && ++trycnt <= 100);
+
+        if (trycnt > 100)
+            return;
+    }
+
+    tm.x = x;
+    tm.y = y;
+
+    portal_tm.x = tm.x + a->t_x;
+    portal_tm.y = tm.y + a->t_y;
+
+    mkmodronportal(a->typ, &tm, &portal_tm, pflags);
 }
 
 void
@@ -2885,7 +2906,7 @@ fill_empty_maze()
             if (sobj_at(BOULDER, mm.x, mm.y))
                 while (is_pit(trytrap) || is_hole(trytrap))
                     trytrap = rndtrap();
-            (void) maketrap(mm.x, mm.y, trytrap, NON_PM, TRAP_NO_FLAGS);
+            (void) maketrap(mm.x, mm.y, trytrap, NON_PM, MKTRAP_NO_FLAGS);
         }
     }
 }
@@ -4885,7 +4906,7 @@ struct opvar *ov;
         opvar_free(ov3);
         ov3 = opvar_clone(ov2);
         while (selection_rndcoord(ov3, &x, &y, TRUE)) {
-            if (maketrap(x,y, rn2(2) ? HOLE : TRAPDOOR, NON_PM, TRAP_NO_FLAGS))
+            if (maketrap(x,y, rn2(2) ? HOLE : TRAPDOOR, NON_PM, MKTRAP_NO_FLAGS))
                 goto gotitdone;
         }
     }

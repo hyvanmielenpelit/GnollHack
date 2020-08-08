@@ -1856,7 +1856,7 @@ throne_detail : THRONE_ID ':' ter_selection
 		  }
 		;
 
-modron_portal_detail : MODRON_PORTAL_ID ':' coord_or_var ',' '(' INTEGER ',' INTEGER ')' ',' MODRON_PORTAL_TYPE ',' ACTIVE_OR_INACTIVE
+modron_portal_detail : MODRON_PORTAL_ID ':' coord_or_var ',' '(' all_integers ',' all_integers ')' ',' MODRON_PORTAL_TYPE ',' ACTIVE_OR_INACTIVE
 		  {
 		      add_opvars(splev, "iiiio", VA_PASS5((int)$<i>6, (int)$<i>8, (int) $<i>11, (int) $<i>13, SPO_MODRON_PORTAL));
 		  }

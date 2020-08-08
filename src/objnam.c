@@ -4353,7 +4353,7 @@ struct obj *no_wish;
             /* found it; avoid stupid mistakes */
             if (is_hole(trap) && !Can_fall_thru(&u.uz))
                 trap = ROCKTRAP;
-            if ((t = maketrap(x, y, trap, NON_PM, TRAP_NO_FLAGS)) != 0) {
+            if ((t = maketrap(x, y, trap, NON_PM, MKTRAP_NO_FLAGS)) != 0) {
                 trap = t->ttyp;
                 tname = defsyms[trap_to_defsym(trap)].explanation;
                 pline("%s%s.", An(tname),

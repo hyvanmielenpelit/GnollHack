@@ -287,7 +287,6 @@ up		    { savetoken(yytext); yylval.i=1; return UP_OR_DOWN; }
 down		{ savetoken(yytext); yylval.i=0; return UP_OR_DOWN; }
 active		{ savetoken(yytext); yylval.i=1; return ACTIVE_OR_INACTIVE; }
 inactive	{ savetoken(yytext); yylval.i=0; return ACTIVE_OR_INACTIVE; }
-unspecified	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_UNSPECIFIED; return MODRON_PORTAL_TYPE; }
 spherical	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_SPHERICAL; return MODRON_PORTAL_TYPE; }
 cylindrical	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_CYLINDRICAL; return MODRON_PORTAL_TYPE; }
 tetrahedral	{ savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_TETRAHEDRAL; return MODRON_PORTAL_TYPE; }

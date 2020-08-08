@@ -572,7 +572,7 @@ int y;
 	else
 		otmp = m_carrying(mtmp, portal_object);
 
-	if (!otmp)
+	if (!otmp && ttmp->tflags == 0)
 	{
 		if (mtmp == &youmonst)
 			pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
@@ -580,9 +580,6 @@ int y;
 			pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
 		return FALSE;
 	}
-
-	if (!otmp) /* The modronite key must be selected */
-		return FALSE;
 
 	/* Now do the teleport */
 	int nux= x, nuy = y;
@@ -606,12 +603,17 @@ int y;
 	{
 		if (mtmp == &youmonst || mtmp == u.usteed)
 		{
-			pline("%s light envelops %s!", portal_color, yname(otmp));
+            if(otmp && ttmp->tflags == 0)
+    			pline("%s light envelops %s!", portal_color, yname(otmp));
 			pline("You feel your essence unsolidifying...");
 			pline("You reemerge at a new location!");
             teleds(nux, nuy, TRUE);
-            //pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
-            //useup(otmp);
+            if (otmp && ttmp->tflags == 0)
+            {
+                pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
+                useup(otmp);
+                ttmp->tflags = 1;
+            }
 		}
 		else
 		{
@@ -621,7 +623,11 @@ int y;
 
 			rloc_to(mtmp, nux, nuy);
 			pline("%s disappears in a flash of %s light.", Monnam(mtmp), colorbuf);
-            //m_useup(mtmp, otmp);
+            if (otmp && ttmp->tflags == 0)
+            {
+                m_useup(mtmp, otmp);
+                ttmp->tflags = 1;
+            }
         }
 		return TRUE;
 	}
