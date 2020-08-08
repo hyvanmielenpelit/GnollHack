@@ -21,6 +21,10 @@
 #include "animation.h"
 #endif 
 
+#ifndef LAYER_H
+#include "layer.h"
+#endif 
+
 #define CONTEXTVERBSZ 30
 
 /*

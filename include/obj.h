@@ -383,11 +383,8 @@ struct obj {
 /* dragon gear */
 #define is_dragon_scales(obj) \
 	(is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALES))
-    //((obj)->otyp >= GRAY_DRAGON_SCALES && (obj)->otyp <= YELLOW_DRAGON_SCALES)
-#define is_dragon_mail(obj)                \
+#define is_dragon_mail(obj)  \
 	(is_dragon_obj(obj) && (objects[(obj)->otyp].oc_flags2 & O2_MONSTER_SCALE_MAIL))
-//    ((obj)->otyp >= GRAY_DRAGON_SCALE_MAIL \
-//     && (obj)->otyp <= YELLOW_DRAGON_SCALE_MAIL)
 #define is_dragon_scale_armor(obj) \
 	(is_dragon_scales(obj) || is_dragon_mail(obj))
 #define Dragon_scales_to_pm(obj) \
