@@ -9,162 +9,6 @@
 #include "layer.h"
 #include "soundset.h"
 
-/*
- * The dungeon presentation graphics code and data structures were rewritten
- * and generalized for GnollHack's release 2 by Eric S. Raymond (eric@snark)
- * building on Don G. Kneller's MS-DOS implementation.	See drawing.c for
- * the code that permits the user to set the contents of the symbol structure.
- *
- * The door representation was changed by Ari
- * Huttunen(ahuttune@niksula.hut.fi)
- */
-
-/*
- * TLCORNER     TDWALL          TRCORNER
- * +-           -+-             -+
- * |             |               |
- *
- * TRWALL       CROSSWALL       TLWALL          HWALL
- * |             |               |
- * +-           -+-             -+              ---
- * |             |               |
- *
- * BLCORNER     TUWALL          BRCORNER        VWALL
- * |             |               |              |
- * +-           -+-             -+              |
- */
-
-/* Level location types.  [Some debugging code in src/display.c
-   defines array type_names[] which contains an entry for each of
-   these, so needs to be kept in sync if any new types are added
-   or existing ones renumbered.] */
-enum levl_typ_types {
-    STONE     =  0,
-    VWALL     =  1,
-    HWALL     =  2,
-    TLCORNER  =  3,
-    TRCORNER  =  4,
-    BLCORNER  =  5,
-    BRCORNER  =  6,
-    CROSSWALL =  7, /* For pretty mazes and special levels */
-    TUWALL    =  8,
-    TDWALL    =  9,
-    TLWALL    = 10,
-    TRWALL    = 11,
-    DBWALL    = 12,
-    TREE      = 13, /* KMH */
-    SDOOR     = 14,
-    SCORR     = 15,
-    POOL      = 16,
-    MOAT      = 17, /* pool that doesn't boil, adjust messages */
-    WATER     = 18,
-    DRAWBRIDGE_UP = 19,
-    LAVAPOOL  = 20,
-    IRONBARS  = 21, /* KMH */
-    DOOR      = 22,
-    CORR      = 23,
-    ROOM      = 24,
-    STAIRS    = 25,
-    LADDER    = 26,
-    FOUNTAIN  = 27,
-    THRONE    = 28,
-    SINK      = 29,
-    GRAVE     = 30,
-    ANVIL     = 31,
-    ALTAR     = 32,
-    ICE       = 33,
-    DRAWBRIDGE_DOWN = 34,
-    AIR       = 35,
-    CLOUD     = 36,
-	GRASS	  = 37,
-    GROUND    = 38,
-
-    UNEXPLORED = 39, /* Keep this last */
-    MAX_TYPE  = 40,
-    INVALID_TYPE = 127
-};
-
-struct location_type_definition {
-    const char* name;
-    enum screen_symbols base_screen_symbol;
-    enum levl_typ_types initial_floor_type;
-    enum obj_material_types material;
-    enum location_soundset_types soundset;
-};
-
-extern struct location_type_definition location_type_definitions[MAX_TYPE];
-
-
-enum grass_subtypes {
-    GRASS_SUBTYPE_NORMAL = 0,
-    GRASS_SUBTYPE_FLOWERS,
-    MAX_GRASS_SUBTYPES
-};
-
-enum ground_subtypes {
-    GROUND_SUBTYPE_NORMAL = 0,
-    GROUND_SUBTYPE_HARD,
-    MAX_GROUND_SUBTYPES
-};
-
-enum floor_subtypes {
-    FLOOR_SUBTYPE_NORMAL = 0,
-    FLOOR_SUBTYPE_MARBLE,
-    FLOOR_SUBTYPE_PARQUET,
-    FLOOR_SUBTYPE_STONE_CRACKS,
-    MAX_FLOOR_SUBTYPES
-};
-
-enum corridor_subtypes {
-    CORRIDOR_SUBTYPE_NORMAL = 0,
-    CORRIDOR_SUBTYPE_CRACKS,
-    MAX_CORRIDOR_SUBTYPES
-};
-
-enum modron_portal_subtypes {
-    MODRON_PORTAL_SUBTYPE_BASE = 0, /* Indicates use of base cmap */
-    MODRON_PORTAL_SUBTYPE_SPHERICAL,
-    MODRON_PORTAL_SUBTYPE_CYLINDRICAL,
-    MODRON_PORTAL_SUBTYPE_TETRAHEDRAL,
-    MODRON_PORTAL_SUBTYPE_CUBICAL,
-    MODRON_PORTAL_SUBTYPE_OCTAHEDRAL,
-    MODRON_PORTAL_SUBTYPE_DODECAHEDRAL,
-    MODRON_PORTAL_SUBTYPE_ICOSAHEDRAL,
-    MAX_MODRON_PORTAL_SUBTYPES
-};
-
-
-/*
- * Avoid using the level types in inequalities:
- * these types are subject to change.
- * Instead, use one of the macros below.
- */
-#define IS_WALL(typ) ((typ) && (typ) <= DBWALL && (typ) >= (STONE))
-#define IS_STWALL(typ) ((typ) <= DBWALL && (typ) >= (STONE)) /* STONE <= (typ) <= DBWALL */
-#define IS_ROCK(typ) ((typ) < POOL)      /* absolutely nonaccessible */
-#define IS_DOOR(typ) ((typ) == DOOR)
-#define IS_DOORJOIN(typ) (IS_ROCK(typ) || (typ) == IRONBARS)
-#define IS_TREE(typ)                                            \
-    ((typ) == TREE || (level.flags.arboreal && (typ) == UNEXPLORED))
-#define ACCESSIBLE(typ) ((typ) >= DOOR) /* good position */
-#define IS_ROOM(typ) ((typ) >= ROOM)    /* ROOM, STAIRS, furniture.. */
-#define ZAP_POS(typ) ((typ) >= POOL)
-#define SPACE_POS(typ) ((typ) > DOOR)
-#define IS_POOL(typ) ((typ) >= POOL && (typ) <= DRAWBRIDGE_UP)
-#define IS_THRONE(typ) ((typ) == THRONE)
-#define IS_FOUNTAIN(typ) ((typ) == FOUNTAIN)
-#define IS_SINK(typ) ((typ) == SINK)
-#define IS_GRAVE(typ) ((typ) == GRAVE)
-#define IS_ALTAR(typ) ((typ) == ALTAR)
-#define IS_ANVIL(typ) ((typ) == ANVIL)
-#define IS_DRAWBRIDGE(typ) \
-    ((typ) == DRAWBRIDGE_UP || (typ) == DRAWBRIDGE_DOWN)
-#define IS_FURNITURE(typ) ((typ) >= STAIRS && (typ) <= ALTAR)
-#define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
-#define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
-
- /* Location types for which floortyp is zero */
-#define IS_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND  || (typ) == UNEXPLORED || (typ) == AIR )
 
  /*
  * The screen symbols may be the default or defined at game startup time.
@@ -323,6 +167,162 @@ enum screen_symbols {
 #define is_cmap_water(i) ((i) == S_pool || (i) == S_water)
 #define is_cmap_lava(i) ((i) == S_lava)
 
+/*
+ * The dungeon presentation graphics code and data structures were rewritten
+ * and generalized for GnollHack's release 2 by Eric S. Raymond (eric@snark)
+ * building on Don G. Kneller's MS-DOS implementation.	See drawing.c for
+ * the code that permits the user to set the contents of the symbol structure.
+ *
+ * The door representation was changed by Ari
+ * Huttunen(ahuttune@niksula.hut.fi)
+ */
+
+ /*
+  * TLCORNER     TDWALL          TRCORNER
+  * +-           -+-             -+
+  * |             |               |
+  *
+  * TRWALL       CROSSWALL       TLWALL          HWALL
+  * |             |               |
+  * +-           -+-             -+              ---
+  * |             |               |
+  *
+  * BLCORNER     TUWALL          BRCORNER        VWALL
+  * |             |               |              |
+  * +-           -+-             -+              |
+  */
+
+  /* Level location types.  [Some debugging code in src/display.c
+     defines array type_names[] which contains an entry for each of
+     these, so needs to be kept in sync if any new types are added
+     or existing ones renumbered.] */
+enum levl_typ_types {
+    STONE = 0,
+    VWALL = 1,
+    HWALL = 2,
+    TLCORNER = 3,
+    TRCORNER = 4,
+    BLCORNER = 5,
+    BRCORNER = 6,
+    CROSSWALL = 7, /* For pretty mazes and special levels */
+    TUWALL = 8,
+    TDWALL = 9,
+    TLWALL = 10,
+    TRWALL = 11,
+    DBWALL = 12,
+    TREE = 13, /* KMH */
+    SDOOR = 14,
+    SCORR = 15,
+    POOL = 16,
+    MOAT = 17, /* pool that doesn't boil, adjust messages */
+    WATER = 18,
+    DRAWBRIDGE_UP = 19,
+    LAVAPOOL = 20,
+    IRONBARS = 21, /* KMH */
+    DOOR = 22,
+    CORR = 23,
+    ROOM = 24,
+    STAIRS = 25,
+    LADDER = 26,
+    FOUNTAIN = 27,
+    THRONE = 28,
+    SINK = 29,
+    GRAVE = 30,
+    ANVIL = 31,
+    ALTAR = 32,
+    ICE = 33,
+    DRAWBRIDGE_DOWN = 34,
+    AIR = 35,
+    CLOUD = 36,
+    GRASS = 37,
+    GROUND = 38,
+
+    UNEXPLORED = 39, /* Keep this last */
+    MAX_TYPE = 40,
+    INVALID_TYPE = 127
+};
+
+struct location_type_definition {
+    const char* name;
+    enum screen_symbols base_screen_symbol;
+    enum levl_typ_types initial_floor_type;
+    enum obj_material_types material;
+    enum location_soundset_types soundset;
+};
+
+extern struct location_type_definition location_type_definitions[MAX_TYPE];
+
+
+enum grass_subtypes {
+    GRASS_SUBTYPE_NORMAL = 0,
+    GRASS_SUBTYPE_FLOWERS,
+    MAX_GRASS_SUBTYPES
+};
+
+enum ground_subtypes {
+    GROUND_SUBTYPE_NORMAL = 0,
+    GROUND_SUBTYPE_HARD,
+    MAX_GROUND_SUBTYPES
+};
+
+enum floor_subtypes {
+    FLOOR_SUBTYPE_NORMAL = 0,
+    FLOOR_SUBTYPE_MARBLE,
+    FLOOR_SUBTYPE_PARQUET,
+    FLOOR_SUBTYPE_STONE_CRACKS,
+    MAX_FLOOR_SUBTYPES
+};
+
+enum corridor_subtypes {
+    CORRIDOR_SUBTYPE_NORMAL = 0,
+    CORRIDOR_SUBTYPE_CRACKS,
+    MAX_CORRIDOR_SUBTYPES
+};
+
+enum modron_portal_subtypes {
+    MODRON_PORTAL_SUBTYPE_BASE = 0, /* Indicates use of base cmap */
+    MODRON_PORTAL_SUBTYPE_SPHERICAL,
+    MODRON_PORTAL_SUBTYPE_CYLINDRICAL,
+    MODRON_PORTAL_SUBTYPE_TETRAHEDRAL,
+    MODRON_PORTAL_SUBTYPE_CUBICAL,
+    MODRON_PORTAL_SUBTYPE_OCTAHEDRAL,
+    MODRON_PORTAL_SUBTYPE_DODECAHEDRAL,
+    MODRON_PORTAL_SUBTYPE_ICOSAHEDRAL,
+    MAX_MODRON_PORTAL_SUBTYPES
+};
+
+
+/*
+ * Avoid using the level types in inequalities:
+ * these types are subject to change.
+ * Instead, use one of the macros below.
+ */
+#define IS_WALL(typ) ((typ) && (typ) <= DBWALL && (typ) >= (STONE))
+#define IS_STWALL(typ) ((typ) <= DBWALL && (typ) >= (STONE)) /* STONE <= (typ) <= DBWALL */
+#define IS_ROCK(typ) ((typ) < POOL)      /* absolutely nonaccessible */
+#define IS_DOOR(typ) ((typ) == DOOR)
+#define IS_DOORJOIN(typ) (IS_ROCK(typ) || (typ) == IRONBARS)
+#define IS_TREE(typ)                                            \
+    ((typ) == TREE || (level.flags.arboreal && (typ) == UNEXPLORED))
+#define ACCESSIBLE(typ) ((typ) >= DOOR) /* good position */
+#define IS_ROOM(typ) ((typ) >= ROOM)    /* ROOM, STAIRS, furniture.. */
+#define ZAP_POS(typ) ((typ) >= POOL)
+#define SPACE_POS(typ) ((typ) > DOOR)
+#define IS_POOL(typ) ((typ) >= POOL && (typ) <= DRAWBRIDGE_UP)
+#define IS_THRONE(typ) ((typ) == THRONE)
+#define IS_FOUNTAIN(typ) ((typ) == FOUNTAIN)
+#define IS_SINK(typ) ((typ) == SINK)
+#define IS_GRAVE(typ) ((typ) == GRAVE)
+#define IS_ALTAR(typ) ((typ) == ALTAR)
+#define IS_ANVIL(typ) ((typ) == ANVIL)
+#define IS_DRAWBRIDGE(typ) \
+    ((typ) == DRAWBRIDGE_UP || (typ) == DRAWBRIDGE_DOWN)
+#define IS_FURNITURE(typ) ((typ) >= STAIRS && (typ) <= ALTAR)
+#define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
+#define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
+
+ /* Location types for which floortyp is zero */
+#define IS_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND  || (typ) == UNEXPLORED || (typ) == AIR )
 
 /* Character maps for various dungeons */
 enum cmap_types {

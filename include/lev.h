@@ -8,6 +8,8 @@
 #ifndef LEV_H
 #define LEV_H
 
+#include "soundset.h"
+
 #define COUNT_SAVE 0x1
 #define WRITE_SAVE 0x2
 #define FREE_SAVE 0x4

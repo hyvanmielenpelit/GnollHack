@@ -5,6 +5,8 @@
 #ifndef EXTERN_H
 #define EXTERN_H
 
+#include "soundset.h"
+
 #define E extern
 
 /* ### alloc.c ### */
