@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "soundset.h"
 
 int NDECL((*afternmv));
 int NDECL((*occupation));
