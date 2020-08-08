@@ -514,7 +514,7 @@ HOBJ = $(FIRSTOBJ) allmain.o alloc.o animation.o apply.o artifact.o attrib.o bal
 	mkmaze.o mkobj.o mkroom.o mon.o mondata.o monmove.o \
 	mplayer.o mthrowu.o muse.o music.o o_init.o objnam.o options.o \
 	pager.o pickup.o pline.o polyself.o potion.o pray.o priest.o \
-	quest.o questpgr.o read.o rect.o region.o restore.o rip.o rnd.o \
+	quest.o questpgr.o read.o rect.o region.o restore.o rip.o rm.o rnd.o \
 	role.o rumors.o save.o shk.o shknam.o sit.o sounds.o soundset.o sp_lev.o spell.o \
 	sys.o \
 	steal.o steed.o teleport.o tiledata.o timeout.o topten.o track.o trap.o u_init.o \
@@ -1061,6 +1061,7 @@ rect.o: rect.c $(HACK_H)
 region.o: region.c $(HACK_H) ../include/lev.h
 restore.o: restore.c $(HACK_H) ../include/lev.h ../include/tcap.h
 rip.o: rip.c $(HACK_H)
+rm.o: rm.c $(HACK_H)
 rnd.o: rnd.c $(HACK_H)
 role.o: role.c $(HACK_H)
 rumors.o: rumors.c $(HACK_H) ../include/lev.h ../include/dlb.h
