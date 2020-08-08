@@ -57,7 +57,7 @@ struct window_procs Gnome_procs = {
     genl_play_immediate_ghsound,
     genl_play_ghsound_occupation_ambient,
     genl_play_ghsound_effect_ambient,
-    genl_extra_winproc_function_E,
+    genl_set_effect_ambient_volume,
     genl_play_ghsound_music,
     genl_play_ghsound_level_ambient,
     genl_adjust_ghsound_general_volumes,
