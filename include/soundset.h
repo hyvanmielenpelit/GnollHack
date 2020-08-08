@@ -343,7 +343,7 @@ enum immediate_sound_types {
 /* Used play_ghsound function input structs */
 struct ghsound_immediate_info {
 	enum ghsound_types ghsound;
-	char* parameter_names[MAX_SOUND_PARAMETERS];
+	const char* parameter_names[MAX_SOUND_PARAMETERS];
 	float parameter_values[MAX_SOUND_PARAMETERS];
 	float volume;
 	enum immediate_sound_types sound_type;
@@ -401,7 +401,7 @@ enum occupation_sound_types {
 };
 
 struct occupation_soundset_definition {
-	char* soundset_name;
+	const char* soundset_name;
 	struct ghsound_info sounds[MAX_OCCUPATION_SOUND_TYPES];
 };
 
@@ -439,7 +439,7 @@ enum ray_sound_types {
 };
 
 struct ray_soundset_definition {
-	char* soundset_name;
+	const char* soundset_name;
 	struct ghsound_info sounds[MAX_RAY_SOUND_TYPES];
 };
 
@@ -518,7 +518,7 @@ enum object_occupation_types {
 };
 
 struct object_soundset_definition {
-	char* soundset_name;
+	const char* soundset_name;
 	struct ghsound_info sounds[MAX_OBJECT_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 	enum occupation_soundset_types occupation_soundsets[MAX_OBJECT_OCCUPATION_TYPES];
@@ -566,7 +566,7 @@ enum monster_sound_types {
 };
 
 struct monster_soundset_definition {
-	char* soundset_name;
+	const char* soundset_name;
 
 	/* General */
 	struct ghsound_info sounds[MAX_MONSTER_SOUND_TYPES];
@@ -604,7 +604,7 @@ enum player_attack_soundset_types {
 };
 
 struct player_soundset_definition {
-	char* soundset_name;
+	const char* soundset_name;
 
 	/* Overrides monster-specific values */
 	struct ghsound_info sounds[MAX_MONSTER_SOUND_TYPES];
@@ -634,7 +634,7 @@ enum location_sound_types {
 };
 
 struct location_soundset_definition {
-	char* soundset_name;
+	const char* soundset_name;
 	struct ghsound_info sounds[MAX_LOCATION_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 };
@@ -660,7 +660,7 @@ enum region_sound_types {
 };
 
 struct region_soundset_definition {
-	char* soundset_name;
+	const char* soundset_name;
 	struct ghsound_info sounds[MAX_REGION_SOUND_TYPES];
 	enum soundsource_ambient_subtypes ambient_subtype;
 };
@@ -675,7 +675,7 @@ extern struct region_soundset_definition region_soundsets[MAX_REGION_SOUNDSETS];
 
 /* EFFECT SOUNDS */
 struct effect_sound_definition {
-	char* sound_name;
+	const char* sound_name;
 	struct ghsound_info sound;
 };
 

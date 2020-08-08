@@ -2785,7 +2785,7 @@ enum hit_surface_source_types surface_type;
 anything* surface_source_ptr;
 {
     enum hit_surface_types surfaceid = HIT_SURFACE_NONE;
-    enum obj_mat_types surface_material = MAT_NONE;
+    enum obj_material_types surface_material = MAT_NONE;
     if (!surface_source_ptr)
         return surfaceid;
 
