@@ -1327,7 +1327,7 @@ struct obj *obj;
 										 "cutting at the door",
 										 "cutting the tree" };
 
-            static const enum object_occupation_types d_action_soundset[6] = { OCCUPATION_SWINGING,
+            static const int /*enum object_occupation_types*/ d_action_soundset[6] = { OCCUPATION_SWINGING,
                                          OCCUPATION_DIGGING_ROCK,
                                          OCCUPATION_DIGGING_ROCK,
                                          OCCUPATION_DIGGING_ROCK,

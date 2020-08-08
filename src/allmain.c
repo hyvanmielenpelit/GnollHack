@@ -6,7 +6,6 @@
 /* various code that was replicated in *main.c */
 
 #include "hack.h"
-#include "soundset.h"
 #include <ctype.h>
 
 #ifndef NO_SIGNAL
