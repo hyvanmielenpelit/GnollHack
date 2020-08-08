@@ -240,8 +240,6 @@ boolean trapok;
 		struct trap* trap = t_at(x, y);
 
 		if (trap && trap->ttyp != VIBRATING_SQUARE
-            && trap->ttyp != MODRON_OCTAHEDRAL_PORTAL && trap->ttyp != MODRON_TETRAHEDRAL_PORTAL
-            && trap->ttyp != MODRON_CUBICAL_PORTAL && trap->ttyp != MODRON_DODECAHEDRAL_PORTAL
             )
 			return FALSE;
 	}
@@ -557,13 +555,23 @@ int y;
 	if (!mtmp)
 		return FALSE;
 
-    const char* portal_color = ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL ? "Blue" :
-        ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL ? "Violet" :
-        ttmp->ttyp == MODRON_CUBICAL_PORTAL ? "Purple" : "Yellow";
+    const char* portal_color = 
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_SPHERICAL ? "Red" :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_CYLINDRICAL ? "Green" :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL ? "Violet" :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_CUBICAL ? "Purple" : 
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_OCTAHEDRAL ? "Blue" :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL ? "Light blue" :
+        "Yellow";
 
-    int portal_object = ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL ? MODRONITE_OCTAHEDRON :
-        ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL ? MODRONITE_TETRAHEDRON :
-        ttmp->ttyp == MODRON_CUBICAL_PORTAL ? MODRONITE_CUBE : MODRONITE_DODECAHEDRON;
+    int portal_object = 
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_SPHERICAL ? MODRONITE_SPHERE :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_CYLINDRICAL ? MODRONITE_MONOPOLE :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL ? MODRONITE_TETRAHEDRON :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_CUBICAL ? MODRONITE_CUBE : 
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_OCTAHEDRAL ? MODRONITE_OCTAHEDRON :
+        ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL ? MODRONITE_DODECAHEDRON :
+        MODRONITE_ICOSAHEDRON;
 
     struct obj* otmp = (struct obj*)0;
 

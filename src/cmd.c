@@ -3379,7 +3379,7 @@ int final;
             Strcpy(predicament, "trapped");
             if ((t = t_at(u.ux, u.uy)) != 0)
                 Sprintf(eos(predicament), " in %s",
-                        an(defsyms[trap_to_defsym(t->ttyp)].explanation));
+                        an(get_trap_explanation(t)));
         }
         if (u.usteed) { /* not `Riding' here */
             Sprintf(buf, "%s%s ", anchored ? "you and " : "", steedname);
@@ -6946,8 +6946,7 @@ int x, y;
     if ((ttmp = t_at(x, y)) != 0 && ttmp->tseen) {
         add_herecmd_menuitem(win, doidtrap, "Examine trap"), ++K;
         if (ttmp->ttyp != VIBRATING_SQUARE 
-            && ttmp->ttyp != MODRON_OCTAHEDRAL_PORTAL && ttmp->ttyp != MODRON_TETRAHEDRAL_PORTAL
-            && ttmp->ttyp != MODRON_CUBICAL_PORTAL && ttmp->ttyp != MODRON_DODECAHEDRAL_PORTAL
+            && ttmp->ttyp != MODRON_PORTAL
             )
             add_herecmd_menuitem(win, dountrap, "Attempt to disarm trap"), ++K;
     }

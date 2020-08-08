@@ -1582,10 +1582,7 @@ coord *tm;
             kind = rnd(TRAPNUM - 1);
             /* reject "too hard" traps */
             switch (kind) {
-			case MODRON_OCTAHEDRAL_PORTAL:
-			case MODRON_TETRAHEDRAL_PORTAL:
-            case MODRON_CUBICAL_PORTAL:
-            case MODRON_DODECAHEDRAL_PORTAL:
+			case MODRON_PORTAL:
             case MAGIC_PORTAL:
             case VIBRATING_SQUARE:
                 kind = NO_TRAP;
@@ -1833,14 +1830,7 @@ uchar portal_flags;
     if (!isok(tm->x, tm->y))
         return;
 
-    enum trap_types portal_type = 
-        (subtyp == MODRON_PORTAL_SUBTYPE_CUBICAL ? MODRON_CUBICAL_PORTAL
-        : subtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL ? MODRON_TETRAHEDRAL_PORTAL
-        : subtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL ? MODRON_DODECAHEDRAL_PORTAL
-        : MODRON_OCTAHEDRAL_PORTAL
-        );
-
-    t = maketrap(tm->x, tm->y, portal_type, NON_PM, MKTRAP_NO_FLAGS);
+    t = maketrap(tm->x, tm->y, MODRON_PORTAL, NON_PM, MKTRAP_NO_FLAGS);
     if (t)
     {
         t->launch = *portal_tm;

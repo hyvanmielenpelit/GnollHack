@@ -1856,7 +1856,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				)
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
-					&& dieroll <= 3)
+					&& dieroll <= SHARPNESS_DIE_ROLL_CHANCE)
 				)
 			)
 		{
@@ -1868,7 +1868,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				}
 				else
 				{
-					int damagedone = (mdef->mhpmax * 15) / 100;
+					int damagedone = (mdef->mhpmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100;
 					if (damagedone < 1)
 						damagedone = 1;
 
@@ -1897,7 +1897,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				{
 					if (Upolyd)
 					{
-						int damagedone = (u.mhmax * 15) / 100;
+						int damagedone = (u.mhmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100;
 						if (damagedone < 1)
 							damagedone = 1;
 
@@ -1905,7 +1905,7 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 					}
 					else
 					{
-						int damagedone = (u.uhpmax * 15) / 100;
+						int damagedone = (u.uhpmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100;
 						if (damagedone < 1)
 							damagedone = 1;
 

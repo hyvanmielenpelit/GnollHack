@@ -4482,7 +4482,7 @@ boolean picked_some;
     }
     if (!skip_objects && (trap = t_at(u.ux, u.uy)) && trap->tseen)
         There("is %s here.",
-              an(defsyms[trap_to_defsym(trap->ttyp)].explanation));
+              an(get_trap_explanation(trap)));
 
     otmp = level.objects[u.ux][u.uy];
     dfeature = dfeature_at(u.ux, u.uy);

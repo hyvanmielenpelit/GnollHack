@@ -556,10 +556,7 @@ start: Blank
         S_vcdbridge: \032
         S_vcdoor: \032
         S_venom: \032
-        S_tetrahedral_portal: \032
-        S_cubical_portal: \032
-        S_octahedral_portal: \032
-        S_dodecahedral_portal: \032
+        S_modron_portal: \032
         S_vibrating_square: \032
         S_vodbridge: \032
         S_vodoor: \032

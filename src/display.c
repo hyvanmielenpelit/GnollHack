@@ -312,6 +312,7 @@ register int show;
         levl[x][y].hero_memory_layers.glyph = glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[LAYER_TRAP] = glyph;
     }
+
     if (show)
     {
         show_glyph_ascii(x, y, glyph);

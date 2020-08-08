@@ -171,10 +171,7 @@ static struct {
                    { "magic", MAGIC_TRAP },
                    { "anti magic", ANTI_MAGIC_TRAP },
                    { "polymorph", POLY_TRAP },
-                   { "octahedral portal", MODRON_OCTAHEDRAL_PORTAL },
-                   { "tetrahedral portal", MODRON_TETRAHEDRAL_PORTAL },
-                   { "cubical portal", MODRON_CUBICAL_PORTAL },
-                   { "dodecahedral portal", MODRON_DODECAHEDRAL_PORTAL },
+                   { "modron portal", MODRON_PORTAL },
                    { "vibrating square", VIBRATING_SQUARE },
                    { 0, 0 } };
 

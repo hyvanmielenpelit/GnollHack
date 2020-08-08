@@ -122,7 +122,8 @@ enum corridor_subtypes {
 };
 
 enum modron_portal_subtypes {
-    MODRON_PORTAL_SUBTYPE_SPHERICAL = 0,
+    MODRON_PORTAL_SUBTYPE_BASE = 0, /* Indicates use of base cmap */
+    MODRON_PORTAL_SUBTYPE_SPHERICAL,
     MODRON_PORTAL_SUBTYPE_CYLINDRICAL,
     MODRON_PORTAL_SUBTYPE_TETRAHEDRAL,
     MODRON_PORTAL_SUBTYPE_CUBICAL,
@@ -252,54 +253,51 @@ enum screen_symbols {
     S_magic_trap           = 61+11,
     S_anti_magic_trap      = 62+11,
     S_polymorph_trap       = 63+11,
-	S_octahedral_portal	   = 64+11,
-	S_tetrahedral_portal   = 65+11,
-    S_cubical_portal       = 66+11,
-    S_dodecahedral_portal  = 67+11,
-    S_vibrating_square     = 68+11, /* for display rather than any trap effect */
+	S_modron_portal	       = 64+11,
+    S_vibrating_square     = 65+11, /* for display rather than any trap effect */
 
 /* end traps+11, begin special effects */
 
-    S_vbeam     = 65+15, /* The 4 zap beam symbols.  Do NOT separate. */
-    S_hbeam     = 66+15, /* To change order or add+15, see function      */
-    S_lslant    = 67+15, /* zapdir_to_glyph() in display.c.           */
-    S_rslant    = 68+15,
-    S_digbeam   = 69+15, /* dig beam symbol */
-    S_flashbeam = 70+15, /* camera flash symbol */
-    S_boomleft  = 71+15, /* thrown boomerang+15, open left+15, e.g ')'    */
-    S_boomright = 72+15, /* thrown boomerang+15, open right+15, e.g. '('  */
-    S_ss1       = 73+15, /* 4 magic shield ("resistance sparkle") glyphs */
-    S_ss2       = 74+15,
-    S_ss3       = 75+15,
-    S_ss4       = 76+15,
-    S_talkeffect = 77+15,
-    S_poisoncloud = 78+15,
-    S_goodpos   = 79+15, /* valid position for targeting via getpos() */
+    S_vbeam     = 65+12, /* The 4 zap beam symbols.  Do NOT separate. */
+    S_hbeam     = 66+12, /* To change order or add+12, see function      */
+    S_lslant    = 67+12, /* zapdir_to_glyph() in display.c.           */
+    S_rslant    = 68+12,
+    S_digbeam   = 69+12, /* dig beam symbol */
+    S_flashbeam = 70+12, /* camera flash symbol */
+    S_boomleft  = 71+12, /* thrown boomerang+12, open left+12, e.g ')'    */
+    S_boomright = 72+12, /* thrown boomerang+12, open right+12, e.g. '('  */
+    S_ss1       = 73+12, /* 4 magic shield ("resistance sparkle") glyphs */
+    S_ss2       = 74+12,
+    S_ss3       = 75+12,
+    S_ss4       = 76+12,
+    S_talkeffect = 77+12,
+    S_poisoncloud = 78+12,
+    S_goodpos   = 79+12, /* valid position for targeting via getpos() */
 
-/* The 8 swallow symbols.  Do NOT separate.  To change order or add+15, */
+/* The 8 swallow symbols.  Do NOT separate.  To change order or add+12, */
 /* see the function swallow_to_glyph() in display.c.                 */
-    S_sw_tl     = 80+15, /* swallow top left [1]             */
-    S_sw_tc     = 81+15, /* swallow top center [2]    Order: */
-    S_sw_tr     = 82+15, /* swallow top right [3]            */
-    S_sw_ml     = 83+15, /* swallow middle left [4]   1 2 3  */
-    S_sw_mr     = 84+15, /* swallow middle right [6]  4 5 6  */
-    S_sw_bl     = 85+15, /* swallow bottom left [7]   7 8 9  */
-    S_sw_bc     = 86+15, /* swallow bottom center [8]        */
-    S_sw_br     = 87+15, /* swallow bottom right [9]         */
+    S_sw_tl     = 80+12, /* swallow top left [1]             */
+    S_sw_tc     = 81+12, /* swallow top center [2]    Order: */
+    S_sw_tr     = 82+12, /* swallow top right [3]            */
+    S_sw_ml     = 83+12, /* swallow middle left [4]   1 2 3  */
+    S_sw_mr     = 84+12, /* swallow middle right [6]  4 5 6  */
+    S_sw_bl     = 85+12, /* swallow bottom left [7]   7 8 9  */
+    S_sw_bc     = 86+12, /* swallow bottom center [8]        */
+    S_sw_br     = 87+12, /* swallow bottom right [9]         */
 
-    S_explode1  = 88+15, /* explosion top left               */
-    S_explode2  = 89+15, /* explosion top center             */
-    S_explode3  = 90+15, /* explosion top right        Ex.   */
-    S_explode4  = 91+15, /* explosion middle left            */
-    S_explode5  = 92+15, /* explosion middle center    /-\   */
-    S_explode6  = 93+15, /* explosion middle right     |@|   */
-    S_explode7  = 94+15, /* explosion bottom left      \-/   */
-    S_explode8  = 95+15, /* explosion bottom center          */
-    S_explode9  = 96+15, /* explosion bottom right           */
+    S_explode1  = 88+12, /* explosion top left               */
+    S_explode2  = 89+12, /* explosion top center             */
+    S_explode3  = 90+12, /* explosion top right        Ex.   */
+    S_explode4  = 91+12, /* explosion middle left            */
+    S_explode5  = 92+12, /* explosion middle center    /-\   */
+    S_explode6  = 93+12, /* explosion middle right     |@|   */
+    S_explode7  = 94+12, /* explosion bottom left      \-/   */
+    S_explode8  = 95+12, /* explosion bottom center          */
+    S_explode9  = 96+12, /* explosion bottom right           */
 
 /* end effects */
 
-    MAX_CMAPPED_CHARS   = 112  /* maximum number of mapped characters */
+    MAX_CMAPPED_CHARS   = 109  /* maximum number of mapped characters */
 };
 
 #define MAX_DUNGEON_CHARS (S_water - S_unexplored + 1) /* mapped dungeon characters */
@@ -313,7 +311,7 @@ enum screen_symbols {
 #define DARKGRASSSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkgrass)
 #define DARKGROUNDSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkground)
 
-#define is_cmap_trap(i) ((i) >= S_arrow_trap && (i) <= S_polymorph_trap)
+#define is_cmap_trap(i) ((i) >= S_arrow_trap && (i) <= S_modron_portal)
 #define is_cmap_drawbridge(i) ((i) >= S_vodbridge && (i) <= S_hcdbridge)
 #define is_cmap_door(i) ((i) >= S_vodoor && (i) <= S_hoportcullis)
 #define is_cmap_wall(i) ((i) >= S_stone && (i) <= S_trwall)
@@ -457,8 +455,9 @@ enum altar_variation_types
 };
 
 #define FOUNTAIN_VARIATION_OFFSET (ALTAR_VARIATIONS + ALTAR_VARIATION_OFFSET)
+#define MODRON_PORTAL_VARIATION_OFFSET (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
 
-#define MAX_VARIATIONS (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
+#define MAX_VARIATIONS (MAX_MODRON_PORTAL_SUBTYPES + MODRON_PORTAL_VARIATION_OFFSET)
 
 #define is_wall_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_vwall && defsym_variations[(idx)].base_screen_symbol <= S_trwall) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
 #define is_base_cmap_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_stone && defsym_variations[(idx)].base_screen_symbol <= S_dnladder) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)

@@ -3052,6 +3052,7 @@ E void NDECL(sink_into_lava);
 E void NDECL(sokoban_guilt);
 E int FDECL(untrap_probability, (int, int));
 E const char* FDECL(get_trap_name, (int));
+E const char* FDECL(get_trap_explanation, (struct trap*));
 
 /* ### u_init.c ### */
 

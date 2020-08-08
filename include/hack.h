@@ -663,9 +663,14 @@ enum bodypart_types {
 
 static const char empty_string[] = "";
 
+/* Game play constants */
 #define BOW_TO_HIT_MELEE_PENALTY 40
 #define THROWN_WEAPON_TO_HIT_MELEE_PENALTY 40
 #define THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON 20
+
+#define SHARPNESS_PERCENTAGE_CHANCE 15
+#define SHARPNESS_DIE_ROLL_CHANCE (SHARPNESS_PERCENTAGE_CHANCE / 5)
+#define SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE 15
 
 #define CORPSE_ROTTING_SPEED 35L            /* Turns per one rotting level */
 #define CORPSE_ROTTING_SPEED_VARIATION 10L  /* Turns per one rotting level */

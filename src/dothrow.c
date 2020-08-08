@@ -1033,23 +1033,32 @@ int x, y;
     struct trap *ttmp;
     int dmg = 0;
 
-    if (!isok(x, y)) {
+    if (!isok(x, y))
+    {
         You_feel("the spirits holding you back.");
         return FALSE;
-    } else if (!in_out_region(x, y)) {
+    }
+    else if (!in_out_region(x, y)) 
+    {
         return FALSE;
-    } else if (*range == 0) {
+    }
+    else if (*range == 0)
+    {
         return FALSE; /* previous step wants to stop now */
     }
+
+
     via_jumping = (EWwalking & I_SPECIAL) != 0L;
     stopping_short = (via_jumping && *range < 2);
 
-    if (!Passes_walls || !(may_pass = may_passwall(x, y))) {
+    if (!Passes_walls || !(may_pass = may_passwall(x, y))) 
+    {
         boolean odoor_diag = (IS_DOOR(levl[x][y].typ)
                               && (levl[x][y].doormask & D_ISOPEN)
                               && (u.ux - x) && (u.uy - y));
 
-        if (IS_ROCK(levl[x][y].typ) || closed_door(x, y) || odoor_diag) {
+        if (IS_ROCK(levl[x][y].typ) || closed_door(x, y) || odoor_diag) 
+        {
             const char *s;
 
             if (odoor_diag)
@@ -1066,7 +1075,9 @@ int x, y;
             wake_nearto(x,y, 10);
             return FALSE;
         }
-        if (levl[x][y].typ == IRONBARS) {
+
+        if (levl[x][y].typ == IRONBARS)
+        {
             You("crash into some iron bars.  Ouch!");
             dmg = rnd(2 + *range);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "crashing into iron bars",
@@ -1074,14 +1085,18 @@ int x, y;
             wake_nearto(x,y, 20);
             return FALSE;
         }
-        if ((obj = sobj_at(BOULDER, x, y)) != 0) {
+
+        if ((obj = sobj_at(BOULDER, x, y)) != 0) 
+        {
             You("bump into a %s.  Ouch!", xname(obj));
             dmg = rnd(2 + *range);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "bumping into a boulder", KILLED_BY);
             wake_nearto(x,y, 10);
             return FALSE;
         }
-        if (!may_pass) {
+
+        if (!may_pass) 
+        {
             /* did we hit a no-dig non-wall position? */
             You("smack into something!");
             dmg = rnd(2 + *range);
@@ -1090,12 +1105,15 @@ int x, y;
             wake_nearto(x,y, 10);
             return FALSE;
         }
+
         if ((u.ux - x) && (u.uy - y) && bad_rock(youmonst.data, u.ux, y)
-            && bad_rock(youmonst.data, x, u.uy)) {
+            && bad_rock(youmonst.data, x, u.uy)) 
+        {
             boolean too_much = (invent && (inv_weight() + weight_cap() > 600));
 
             /* Move at a diagonal. */
-            if (bigmonst(youmonst.data) || too_much) {
+            if (bigmonst(youmonst.data) || too_much)
+            {
                 You("%sget forcefully wedged into a crevice.",
                     too_much ? "and all your belongings " : "");
                 dmg = rnd(2 + *range);
@@ -1116,20 +1134,25 @@ int x, y;
         && !(mon->mundetected && mon->data->mlet == S_EEL
              && (Flying || Levitation || Wwalking))
 #endif
-        ) {
+        )
+    {
         const char *mnam, *pronoun;
         int glyph = glyph_at(x, y);
 
         mon->mundetected = 0; /* wakeup() will handle mimic */
         mnam = a_monnam(mon); /* after unhiding */
         pronoun = noit_mhim(mon);
-        if (!strcmp(mnam, "it")) {
+
+        if (!strcmp(mnam, "it")) 
+        {
             mnam = !strcmp(pronoun, "it") ? "something" : "someone";
         }
+
         if (!glyph_is_monster(glyph) && !glyph_is_invisible(glyph))
             You("find %s by bumping into %s.", mnam, pronoun);
         else
             You("bump into %s.", mnam);
+
         wakeup(mon, FALSE);
         if (!canspotmon(mon))
             map_invisible(mon->mx, mon->my);
@@ -1140,16 +1163,19 @@ int x, y;
 
     if ((u.ux - x) && (u.uy - y)
         && bad_rock(youmonst.data, u.ux, y)
-        && bad_rock(youmonst.data, x, u.uy)) {
+        && bad_rock(youmonst.data, x, u.uy)) 
+    {
         /* Move at a diagonal. */
-        if (Sokoban) {
+        if (Sokoban) 
+        {
             You("come to an abrupt halt!");
             return FALSE;
         }
     }
 
     /* Caller has already determined that dragging the ball is allowed */
-    if (Punished && uball->where == OBJ_FLOOR) {
+    if (Punished && uball->where == OBJ_FLOOR) 
+    {
         int bc_control;
         xchar ballx, bally, chainx, chainy;
         boolean cause_delay;
@@ -1171,16 +1197,22 @@ int x, y;
     if (levl[u.ux][u.uy].typ != levl[ox][oy].typ)
         switch_terrain();
 
-    if (is_pool(x, y) && !u.uinwater) {
+    if (is_pool(x, y) && !u.uinwater) 
+    {
         if ((Is_waterlevel(&u.uz) && levl[x][y].typ == WATER)
-            || !(Levitation || Flying || Wwalking)) {
+            || !(Levitation || Flying || Wwalking)) 
+        {
             multi = 0; /* can move, so drown() allows crawling out of water */
             (void) drown();
             return FALSE;
-        } else if (!Is_waterlevel(&u.uz) && !stopping_short) {
+        } 
+        else if (!Is_waterlevel(&u.uz) && !stopping_short) 
+        {
             Norep("You move over %s.", an(is_moat(x, y) ? "moat" : "pool"));
-       }
-    } else if (is_lava(x, y) && !stopping_short) {
+        }
+    }
+    else if (is_lava(x, y) && !stopping_short) 
+    {
         Norep("You move over some lava.");
     }
 
@@ -1191,29 +1223,41 @@ int x, y;
      * those that we have tested, and offer a message for the ones
      * that we have not yet tested.
      */
-    if ((ttmp = t_at(x, y)) != 0) {
-        if (stopping_short) {
+    if ((ttmp = t_at(x, y)) != 0)
+    {
+        if (stopping_short)
+        {
             ; /* see the comment above hurtle_jump() */
-        } else if (ttmp->ttyp == MAGIC_PORTAL) {
+        } 
+        else if (ttmp->ttyp == MAGIC_PORTAL)
+        {
             dotrap(ttmp, 0);
             return FALSE;
-        } else if (ttmp->ttyp == VIBRATING_SQUARE) {
+        }
+        else if (ttmp->ttyp == VIBRATING_SQUARE)
+        {
             pline("The ground vibrates as you pass it.");
             dotrap(ttmp, 0); /* doesn't print messages */
-        } else if (ttmp->ttyp == FIRE_TRAP) {
+        } 
+        else if (ttmp->ttyp == FIRE_TRAP) 
+        {
             dotrap(ttmp, 0);
-        } else if ((is_pit(ttmp->ttyp) || is_hole(ttmp->ttyp))
-                   && Sokoban) {
+        }
+        else if ((is_pit(ttmp->ttyp) || is_hole(ttmp->ttyp))
+                   && Sokoban)
+        {
             /* air currents overcome the recoil in Sokoban;
                when jumping, caller performs last step and enters trap */
             if (!via_jumping)
                 dotrap(ttmp, 0);
             *range = 0;
             return TRUE;
-        } else {
+        }
+        else 
+        {
             if (ttmp->tseen)
                 You("pass right over %s.",
-                    an(defsyms[trap_to_defsym(ttmp->ttyp)].explanation));
+                    an(get_trap_explanation(ttmp)));
         }
     }
     if (--*range < 0) /* make sure our range never goes negative */

@@ -335,8 +335,7 @@ long flags;
 
     if ((ttmp = t_at(x, y)) != 0) {
         if (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE
-            || ttmp->ttyp == MODRON_OCTAHEDRAL_PORTAL || ttmp->ttyp == MODRON_TETRAHEDRAL_PORTAL
-            || ttmp->ttyp == MODRON_CUBICAL_PORTAL || ttmp->ttyp == MODRON_DODECAHEDRAL_PORTAL
+            || ttmp->ttyp == MODRON_PORTAL
             )
             return (struct trap *) 0;
         oldplace = TRUE;
@@ -945,6 +944,7 @@ register struct trap *trap;
 unsigned trflags;
 {
     register int ttype = trap->ttyp;
+    const char* trapdesc = get_trap_explanation(trap);
     struct obj *otmp;
     boolean already_seen = trap->tseen,
             forcetrap = ((trflags & FORCETRAP) != 0
@@ -970,7 +970,7 @@ unsigned trflags;
          */
         pline("Air currents pull you down into %s %s!",
               a_your[trap->madeby_u],
-              defsyms[trap_to_defsym(ttype)].explanation);
+              trapdesc);
         /* then proceed to normal trap effect */
     }
 	else if (already_seen && !forcetrap) 
@@ -980,13 +980,12 @@ unsigned trflags;
 		{
             You("%s over %s %s.", Levitation ? "float" : "fly",
                 a_your[trap->madeby_u],
-                defsyms[trap_to_defsym(ttype)].explanation);
+                trapdesc);
             return;
         }
 
         if (!Fumbling && ttype != MAGIC_PORTAL && ttype != VIBRATING_SQUARE
-            && ttype != MODRON_OCTAHEDRAL_PORTAL && ttype != MODRON_TETRAHEDRAL_PORTAL
-            && ttype != MODRON_CUBICAL_PORTAL && ttype != MODRON_DODECAHEDRAL_PORTAL
+            && ttype != MODRON_PORTAL
             && ttype != ANTI_MAGIC_TRAP && !forcebungle && !plunged
             && !conj_pit && !adj_pit
             && (!rn2(5) || (is_pit(ttype)
@@ -995,7 +994,7 @@ unsigned trflags;
                 You("escape %s %s.", (ttype == ARROW_TRAP && !trap->madeby_u)
                                      ? "an"
                                      : a_your[trap->madeby_u],
-                defsyms[trap_to_defsym(ttype)].explanation);
+                trapdesc);
             return;
         }
     }
@@ -1614,46 +1613,25 @@ unsigned trflags;
          * square for future reference */
         break;
 
-	case MODRON_OCTAHEDRAL_PORTAL:
+	case MODRON_PORTAL:
     {
         feeltrap(trap);
-        int tx = u.ux + 7, ty = u.uy;
-        if (isok(trap->launch.x, trap->launch.y))
+
+        int tx = u.ux + 7;
+        int ty = u.uy;
+        if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL)
         {
-            tx = trap->launch.x;
-            ty = trap->launch.y;
+            tx = u.ux - 4, ty = u.uy;
         }
-        (void)modronportaltele(trap, &youmonst, tx, ty);
-        break;
-    }
-	case MODRON_TETRAHEDRAL_PORTAL:
-    {
-        feeltrap(trap);
-        int tx = u.ux - 4, ty = u.uy;
-        if (isok(trap->launch.x, trap->launch.y))
+        else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_CUBICAL)
         {
-            tx = trap->launch.x;
-            ty = trap->launch.y;
+            tx = u.ux, ty = u.uy + 4;
         }
-        (void)modronportaltele(trap, &youmonst, tx, ty);
-        break;
-    }
-    case MODRON_CUBICAL_PORTAL:
-    {
-        feeltrap(trap);
-        int tx = u.ux, ty = u.uy + 4;
-        if (isok(trap->launch.x, trap->launch.y))
+        else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL)
         {
-            tx = trap->launch.x;
-            ty = trap->launch.y;
+            tx = u.ux, ty = u.uy - 4;
         }
-        (void)modronportaltele(trap, &youmonst, u.ux, u.uy + 4);
-        break;
-    }
-    case MODRON_DODECAHEDRAL_PORTAL:
-    {
-        feeltrap(trap);
-        int tx = u.ux, ty = u.uy - 4;
+
         if (isok(trap->launch.x, trap->launch.y))
         {
             tx = trap->launch.x;
@@ -2863,18 +2841,31 @@ register struct monst *mtmp;
                 }
             }
             break;
-		case MODRON_OCTAHEDRAL_PORTAL:
-			modronportaltele(trap, mtmp, mtmp->mx + 7, mtmp->my);
-			break;
-		case MODRON_TETRAHEDRAL_PORTAL:
-			modronportaltele(trap, mtmp, mtmp->mx - 4, mtmp->my);
-			break;
-        case MODRON_CUBICAL_PORTAL:
-            modronportaltele(trap, mtmp, mtmp->mx, mtmp->my - 4);
+		case MODRON_PORTAL:
+        {
+            int tx = mtmp->mx + 7;
+            int ty = mtmp->my;
+            if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL)
+            {
+                tx = mtmp->mx - 4, ty = mtmp->my;
+            }
+            else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_CUBICAL)
+            {
+                tx = mtmp->mx, ty = mtmp->my + 4;
+            }
+            else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL)
+            {
+                tx = mtmp->mx, ty = mtmp->my - 4;
+            }
+
+            if (isok(trap->launch.x, trap->launch.y))
+            {
+                tx = trap->launch.x;
+                ty = trap->launch.y;
+            }
+            modronportaltele(trap, mtmp, tx, ty);
             break;
-        case MODRON_DODECAHEDRAL_PORTAL:
-            modronportaltele(trap, mtmp, mtmp->mx, mtmp->my + 4);
-            break;
+        }
         default:
             impossible("Some monster encountered a strange trap of type %d.",
                        tt);
@@ -4427,6 +4418,7 @@ boolean force_failure;
 {
     struct monst *mtmp = m_at(ttmp->tx, ttmp->ty);
     int ttype = ttmp->ttyp;
+    const char* trapdesc = get_trap_explanation(ttmp);
     boolean under_u = (!u.dx && !u.dy);
     boolean holdingtrap = (ttype == BEAR_TRAP || ttype == WEB);
 
@@ -4447,7 +4439,7 @@ boolean force_failure;
             || bigmonst(youmonst.data)) {
             /* don't allow untrap if they can't get thru to it */
             You("are unable to reach the %s!",
-                defsyms[trap_to_defsym(ttype)].explanation);
+                trapdesc);
             return 0;
         }
     }
@@ -4457,7 +4449,7 @@ boolean force_failure;
             rider_cant_reach();
         else
             You("are unable to reach the %s!",
-                defsyms[trap_to_defsym(ttype)].explanation);
+                trapdesc);
         return 0;
     }
 
@@ -4499,7 +4491,7 @@ boolean force_failure;
         } else {
             pline("%s %s is difficult to %s.",
                   ttmp->madeby_u ? "Your" : under_u ? "This" : "That",
-                  defsyms[trap_to_defsym(ttype)].explanation,
+                  trapdesc,
                   (ttype == WEB) ? "remove" : "disarm");
         }
         return 1;
@@ -4574,7 +4566,7 @@ struct trap* ttmp;
 
 	if (fails < 2)
 		return fails;
-	You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_name(ttmp->ttyp));
+	You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
 	
 	/* Skills gained */
 	int skillgained = 5;
@@ -4663,6 +4655,7 @@ struct trap* ttmp;
 	return 1;
 }
 
+    /* Note these names are not currently being used, instead use the explanations in defsyms and defsym_variations */
 	struct trap_type_definition trap_type_definitions[TRAPNUM] = {
                    {"", MAT_MINERAL},
                    {"arrow trap", MAT_METAL},
@@ -4687,16 +4680,14 @@ struct trap* ttmp;
                    {"magic trap", MAT_ENERGY},
                    {"anti-magic trap", MAT_ENERGY},
                    {"polymorph trap", MAT_ENERGY},
-                   {"octahedral magic portal", MAT_ENERGY},
-                   {"tetrahedral magic portal", MAT_ENERGY},
-                   {"cubical magic portal", MAT_ENERGY},
-                   {"dodecahedral magic portal", MAT_ENERGY},
+                   {"geomteric magic portal", MAT_ENERGY},
                    {"vibrating square", MAT_MINERAL}
     };
 
 /*
  * Find the type of a trap in the table, knowing its name.
  */
+/* OBSOLETE - JG */
 const char*
 get_trap_name(trapid)
 int trapid;
@@ -4782,7 +4773,7 @@ int otyp;
 
     if (fails < 2)
         return fails;
-    You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_name(ttmp->ttyp));
+    You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
     cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
 
 	/* gain skill for untrap */
@@ -4944,7 +4935,7 @@ boolean force;
     ttmp = t_at(x, y);
     if (ttmp && !ttmp->tseen)
         ttmp = 0;
-    trapdescr = ttmp ? defsyms[trap_to_defsym(ttmp->ttyp)].explanation : 0;
+    trapdescr = ttmp ? get_trap_explanation(ttmp) : 0;
     here = (x == u.ux && y == u.uy); /* !u.dx && !u.dy */
 
     if (here) /* are there are one or more containers here? */
@@ -5215,7 +5206,7 @@ boolean *noticed; /* set to true iff hero notices the effect; */
     }
 
     if (!trapdescr)
-        trapdescr = defsyms[trap_to_defsym(t->ttyp)].explanation;
+        trapdescr = get_trap_explanation(t);
     if (!which)
         which = t->tseen ? the_your[t->madeby_u ? 1 : 0]
                          : index(vowels, *trapdescr) ? "an" : "a";
@@ -6026,6 +6017,20 @@ maybe_finish_sokoban()
             /* TODO: give some feedback about solving the sokoban puzzle
                (perhaps say "congratulations" in Japanese?) */
         }
+    }
+}
+
+const char*
+get_trap_explanation(trap)
+struct trap* trap;
+{
+    if (!Hallucination && trap->tsubtyp && defsyms[trap_to_defsym(trap->ttyp)].variations >= trap->tsubtyp)
+    {
+        return  defsym_variations[trap->tsubtyp - 1 +defsyms[trap_to_defsym(trap->ttyp)].variation_offset].explanation;
+    }
+    else
+    {
+        return defsyms[trap_to_defsym(what_trap(trap->ttyp, rn2_on_display_rng))].explanation;
     }
 }
 

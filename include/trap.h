@@ -80,13 +80,10 @@ enum trap_types {
     MAGIC_TRAP   = 20,
     ANTI_MAGIC_TRAP = 21,
     POLY_TRAP    = 22,
-	MODRON_OCTAHEDRAL_PORTAL = 23,
-	MODRON_TETRAHEDRAL_PORTAL = 24,
-    MODRON_CUBICAL_PORTAL = 25,
-    MODRON_DODECAHEDRAL_PORTAL = 26,
-    VIBRATING_SQUARE = 27,
+	MODRON_PORTAL = 23,
+    VIBRATING_SQUARE = 24,
 
-    TRAPNUM      = 28
+    TRAPNUM      = 25
 };
 
 struct trap_type_definition {

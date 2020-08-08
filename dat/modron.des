@@ -39,9 +39,7 @@ TELEPORT_REGION:(01,07,05,11),(0,0,0,0),down
 
 # The special entrace portal
 MODRON_PORTAL:(05,09),(4,0),octahedral,inactive
-MODRON_PORTAL:(08,09),(-4,0),tetrahedral,active
-#TRAP:"octahedral portal", (05,09)
-#TRAP:"tetrahedral portal", (08,09)
+MODRON_PORTAL:(08,09),(-4,0),tetrahedral,inactive
 
 
 # Dead adventurers
@@ -66,15 +64,20 @@ OBJECT:('9',"bone"),(01,10)
 [50%]: OBJECT:('9',"bone"),(05,07)
 
 # Portals to the main guard room and back
-TRAP:"octahedral portal", (24,12)
-TRAP:"tetrahedral portal", (26,11)
+MODRON_PORTAL:(24,12),(7,0),octahedral,inactive
+MODRON_PORTAL:(26,11),(-4,0),tetrahedral,inactive
+#TRAP:"octahedral portal", (24,12)
+#TRAP:"tetrahedral portal", (26,11)
 
 # Portals from upper area back
-TRAP:"octahedral portal", (22,06)
-TRAP:"tetrahedral portal", (24,07)
+MODRON_PORTAL:(22,06),(7,0),octahedral,inactive
+MODRON_PORTAL:(24,07),(-4,0),tetrahedral,inactive
+#TRAP:"octahedral portal", (22,06)
+#TRAP:"tetrahedral portal", (24,07)
 
 # Portal from lower area back
-TRAP:"tetrahedral portal", (07,15)
+MODRON_PORTAL:(07,15),(-4,0),tetrahedral,inactive
+#TRAP:"tetrahedral portal", (07,15)
 
 #   Lighted areas
 REGION:(01,07,17,11),lit,"ordinary"

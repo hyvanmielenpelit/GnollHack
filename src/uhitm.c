@@ -3017,9 +3017,9 @@ int specialdmg; /* blessed and/or silver bonus against various things */
         }
         break;
 	case AD_SHRP:
-		if (!rn2(10))
+		if (rn2(100) < SHARPNESS_PERCENTAGE_CHANCE)
 		{
-			damage += adjust_damage(mdef->mhpmax / 4, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
+			damage += adjust_damage((mdef->mhpmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
 		}
 		break;
 	case AD_SLEE:

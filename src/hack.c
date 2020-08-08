@@ -1635,10 +1635,9 @@ domove_core()
 				{
                     if (trap && trap->tseen)
 					{
-                        int tt = what_trap(trap->ttyp, rn2_on_display_rng);
-
+                        //int tt = what_trap(trap->ttyp, rn2_on_display_rng);
                         You("stop in front of %s.",
-                            an(defsyms[trap_to_defsym(tt)].explanation));
+                            an(get_trap_explanation(trap)));
                     } else if (is_pool_or_lava(x,y) && levl[x][y].seenv) {
                         You("stop at the edge of the %s.",
                             hliquid(is_pool(x,y) ? "water" : "lava"));
@@ -1701,7 +1700,7 @@ domove_core()
                 )
 			{
 				char ynqbuf[BUFSZ] = "";
-				Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_name(trap->ttyp)));
+				Sprintf(ynqbuf, "There is %s. Step into it?", an(get_trap_explanation(trap)));
 
 				char ans = ynq(ynqbuf);
 				if (ans != 'y')
@@ -3019,14 +3018,18 @@ lookaround()
                     corrct++;
                 }
                 continue;
-            } else if ((trap = t_at(x, y)) && trap->tseen) {
+            } 
+            else if ((trap = t_at(x, y)) && trap->tseen) 
+            {
                 if (context.run == 1)
                     goto bcorr; /* if you must */
-                if (x == u.ux + u.dx && y == u.uy + u.dy) {
-                    if (iflags.mention_walls) {
-                        int tt = what_trap(trap->ttyp, rn2_on_display_rng);
+                if (x == u.ux + u.dx && y == u.uy + u.dy)
+                {
+                    if (iflags.mention_walls)
+                    {
+                        //int tt = what_trap(trap->ttyp, rn2_on_display_rng);
                         You("stop in front of %s.",
-                            an(defsyms[trap_to_defsym(tt)].explanation));
+                            an(get_trap_explanation(trap)));
                     }
                     goto stop;
                 }

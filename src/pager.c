@@ -325,7 +325,7 @@ int x, y;
         /* newsym lets you know of the trap, so mention it here */
         if (tt == BEAR_TRAP || is_pit(tt) || tt == WEB)
             Sprintf(eos(buf), ", trapped in %s",
-                    an(defsyms[trap_to_defsym(tt)].explanation));
+                    an(get_trap_explanation(t)));
     }
 
     /* we know the hero sees a monster at this location, but if it's shown
@@ -506,6 +506,9 @@ char *buf, *monbuf;
 	else if (glyph_is_trap(glyph))
 	{
         int tnum = what_trap(glyph_to_trap(glyph), rn2_on_display_rng);
+        int tsubtyp = 0;
+        if (glyph_is_cmap_variation(glyph) && !Hallucination)
+            tsubtyp = max(0, min(defsyms[trap_to_defsym(tnum)].variations, glyph_to_cmap_variation(glyph) - defsyms[trap_to_defsym(tnum)].variation_offset + 1));
 
         /* Trap detection displays a bear trap at locations having
          * a trapped door or trapped container or both.
@@ -517,7 +520,7 @@ char *buf, *monbuf;
         else if (trapped_door_at(tnum, x, y))
             Strcpy(buf, "trapped door"); /* not "trap door"... */
         else
-            Strcpy(buf, defsyms[trap_to_defsym(tnum)].explanation);
+            Strcpy(buf, tsubtyp ? defsym_variations[max(0, tsubtyp - 1 + defsyms[trap_to_defsym(tnum)].variation_offset)].explanation : defsyms[trap_to_defsym(tnum)].explanation);
     }
 	else if (glyph_is_warning(glyph))
 	{
@@ -900,7 +903,8 @@ struct permonst **for_supplement;
             submerged = (Underwater && !Is_waterlevel(&u.uz));
     const char *x_str;
 
-    if (looked) {
+    if (looked) 
+    {
         int oc;
         unsigned long os;
 
@@ -910,7 +914,8 @@ struct permonst **for_supplement;
         (void) mapglyph(layers, &sym, &oc, &os, cc.x, cc.y);
 
         Sprintf(prefix, "%s - ", encglyph(glyph));
-    } else
+    }
+    else
         Sprintf(prefix, "%c - ", sym);
 
     /*
@@ -935,28 +940,40 @@ struct permonst **for_supplement;
      * submerged will always both be False and skip this code.)
      */
     x_str = 0;
-    if (!looked) {
+    if (!looked) 
+    {
         ; /* skip special handling */
-    } else if (((u.uswallow || submerged) && distu(cc.x, cc.y) > 2)
+    }
+    else if (((u.uswallow || submerged) && distu(cc.x, cc.y) > 2)
                /* detection showing some category, so mostly background */
                || ((iflags.terrainmode & (TER_DETECT | TER_MAP)) == TER_DETECT
-                   && glyph == cmap_to_glyph(S_unexplored))) {
+                   && glyph == cmap_to_glyph(S_unexplored)))
+    {
         x_str = unreconnoitered;
         need_to_look = FALSE;
-    } else if (is_swallow_sym(sym)) {
+    }
+    else if (is_swallow_sym(sym))
+    {
         x_str = mon_interior;
         need_to_look = TRUE; /* for specific monster type */
     }
-    if (x_str) {
+
+    if (x_str)
+
+    {
         /* we know 'found' is zero here, but guard against some other
            special case being inserted ahead of us someday */
-        if (!found) {
+        if (!found) 
+        {
             Sprintf(out_str, "%s%s", prefix, x_str);
             *firstmatch = x_str;
             found++;
-        } else {
+        }
+        else 
+        {
             found += append_str(out_str, x_str); /* not 'an(x_str)' */
         }
+
         /* for is_swallow_sym(), we want to list the current symbol's
            other possibilities (wand for '/', throne for '\\', &c) so
            don't jump to the end for the x_str==mon_interior case */
@@ -965,7 +982,8 @@ struct permonst **for_supplement;
     }
 
     /* Check for monsters */
-    if (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0) {
+    if (!iflags.terrainmode || (iflags.terrainmode & TER_MON) != 0)
+    {
         for (i = 1; i < MAX_MONSTER_CLASSES; i++)
         {
             if (sym == (looked ? showsyms[i + SYM_OFF_M] : def_monsyms[i].sym)
@@ -996,53 +1014,69 @@ struct permonst **for_supplement;
     }
 
     /* Now check for objects */
-    if (!iflags.terrainmode || (iflags.terrainmode & TER_OBJ) != 0) {
-        for (i = 1; i < MAX_OBJECT_CLASSES; i++) {
+    if (!iflags.terrainmode || (iflags.terrainmode & TER_OBJ) != 0) 
+    {
+        for (i = 1; i < MAX_OBJECT_CLASSES; i++)
+        {
             if (sym == (looked ? showsyms[i + SYM_OFF_O]
                                : def_oc_syms[i].sym)
-                || (looked && i == ROCK_CLASS && glyph_is_any_statue(glyph))) {
+                || (looked && i == ROCK_CLASS && glyph_is_any_statue(glyph))) 
+            {
                 need_to_look = TRUE;
-                if (looked && i == VENOM_CLASS) {
+                if (looked && i == VENOM_CLASS
+                    ) 
+                {
                     skipped_venom++;
                     continue;
                 }
-                if (!found) {
+                if (!found)
+                {
                     Sprintf(out_str, "%s%s",
                             prefix, an(def_oc_syms[i].explain));
                     *firstmatch = an(def_oc_syms[i].explain);
                     found++;
-                } else {
+                } 
+                else 
+                {
                     found += append_str(out_str, an(def_oc_syms[i].explain));
                 }
             }
         }
     }
 
-    if (sym == DEF_INVISIBLE) {
+    if (sym == DEF_INVISIBLE) 
+    {
         extern const char altinvisexplain[]; /* drawing.c */
         /* for active clairvoyance, use alternate "unseen creature" */
         boolean usealt = (EDetect_monsters & I_SPECIAL) != 0L;
         const char *unseen_explain = !usealt ? invisexplain : altinvisexplain;
 
-        if (!found) {
+        if (!found) 
+        {
             Sprintf(out_str, "%s%s", prefix, an(unseen_explain));
             *firstmatch = an(unseen_explain);
             found++;
-        } else {
+        }
+        else 
+        {
             found += append_str(out_str, an(unseen_explain));
         }
     }
 
     /* Now check for graphics symbols */
     alt_i = (sym == (looked ? showsyms[0] : defsyms[0].sym)) ? 0 : (2 + 1);
-    for (hit_trap = FALSE, i = 0; i < MAX_CMAPPED_CHARS; i++) {
+    for (hit_trap = FALSE, i = 0; i < MAX_CMAPPED_CHARS; i++) 
+    {
         /* when sym is the default background character, we process
            i == 0 three times: unexplored, stone, dark part of a room */
-        if (alt_i < 2) {
+        if (alt_i < 2) 
+        {
             x_str = !alt_i++ ? "unexplored" : submerged ? "unknown" : "stone";
             i = 0; /* for second iteration, undo loop increment */
             /* alt_i is now 1 or 2 */
-        } else {
+        } 
+        else 
+        {
             if (alt_i++ == 2)
                 i = 0; /* undo loop increment */
             
@@ -1052,7 +1086,9 @@ struct permonst **for_supplement;
                 x_str = "land"; /* replace "dark part of a room" */
             /* alt_i is now 3 or more and no longer of interest */
         }
-        if (sym == (looked ? showsyms[i] : defsyms[i].sym) && *x_str) {
+
+        if (sym == (looked ? showsyms[i] : defsyms[i].sym) && *x_str) 
+        {
             /* avoid "an unexplored", "an stone", "an air", "a water",
                "a floor of a room", "a dark part of a room";
                article==2 => "the", 1 => "an", 0 => (none) */
@@ -1062,11 +1098,15 @@ struct permonst **for_supplement;
                               || strcmp(x_str, "land") == 0
                               || strcmp(x_str, "water") == 0);
 
-            if (!found) {
-                if (is_cmap_trap(i)) {
+            if (!found)
+            {
+                if (is_cmap_trap(i))
+                {
                     Sprintf(out_str, "%sa trap", prefix);
                     hit_trap = TRUE;
-                } else {
+                }
+                else 
+                {
                     Sprintf(out_str, "%s%s", prefix,
                             article == 2 ? the(x_str)
                             : article == 1 ? an(x_str) : x_str);
@@ -1074,13 +1114,15 @@ struct permonst **for_supplement;
                 *firstmatch = article == 2 ? the(x_str)
 					: article == 1 ? an(x_str) : x_str;
                 found++;
-            } else if (!(hit_trap && is_cmap_trap(i))
+            } 
+            else if (!(hit_trap && is_cmap_trap(i))
                        && !(found >= 3 && is_cmap_drawbridge(i))
                        /* don't mention vibrating square outside of Gehennom
                           unless this happens to be one (hallucination?) */
                        && (i != S_vibrating_square || Inhell
                            || (looked && glyph_is_trap(glyph)
-                               && glyph_to_trap(glyph) == VIBRATING_SQUARE))) {
+                               && glyph_to_trap(glyph) == VIBRATING_SQUARE))) 
+            {
                 found += append_str(out_str, (article == 2) ? the(x_str)
                                              : (article == 1) ? an(x_str)
                                                : x_str);
@@ -1094,16 +1136,22 @@ struct permonst **for_supplement;
     }
 
     /* Now check for warning symbols */
-    for (i = 1; i < WARNCOUNT; i++) {
+    for (i = 1; i < WARNCOUNT; i++) 
+    {
         x_str = def_warnsyms[i].explanation;
-        if (sym == (looked ? warnsyms[i] : def_warnsyms[i].sym)) {
-            if (!found) {
+        if (sym == (looked ? warnsyms[i] : def_warnsyms[i].sym)) 
+        {
+            if (!found) 
+            {
                 Sprintf(out_str, "%s%s", prefix, def_warnsyms[i].explanation);
                 *firstmatch = def_warnsyms[i].explanation;
                 found++;
-            } else {
+            }
+            else 
+            {
                 found += append_str(out_str, def_warnsyms[i].explanation);
             }
+
             /* Kludge: warning trumps boulders on the display.
                Reveal the boulder too or player can get confused */
             if (looked && sobj_at(BOULDER, cc.x, cc.y))
@@ -1113,24 +1161,32 @@ struct permonst **for_supplement;
     }
 
     /* if we ignored venom and list turned out to be short, put it back */
-    if (skipped_venom && found < 2) {
+    if (skipped_venom && found < 2) 
+    {
         x_str = def_oc_syms[VENOM_CLASS].explain;
-        if (!found) {
+        if (!found)
+        {
             Sprintf(out_str, "%s%s", prefix, an(x_str));
             *firstmatch = an(x_str);
             found++;
-        } else {
+        }
+        else 
+        {
             found += append_str(out_str, an(x_str));
         }
     }
 
     /* handle optional boulder symbol as a special case */
-    if (iflags.bouldersym && sym == iflags.bouldersym) {
-        if (!found) {
+    if (iflags.bouldersym && sym == iflags.bouldersym) 
+    {
+        if (!found) 
+        {
             *firstmatch = "a boulder";
             Sprintf(out_str, "%s%s", prefix, *firstmatch);
             found++;
-        } else {
+        } 
+        else 
+        {
             found += append_str(out_str, "boulder");
         }
     }
@@ -1157,6 +1213,7 @@ struct permonst **for_supplement;
             if (pm && for_supplement)
                 *for_supplement = pm;
             *firstmatch = look_buf;
+
             if (*(*firstmatch))
             {
                 char mdescbuf[BUFSZ];
@@ -1174,7 +1231,9 @@ struct permonst **for_supplement;
                                BUFSZ - strlen(out_str) - 1);
                 found = 1; /* we have something to look up */
             }
-            if (monbuf[0]) {
+
+            if (monbuf[0]) 
+            {
                 Sprintf(temp_buf, " [seen: %s]", monbuf);
                 (void) strncat(out_str, temp_buf,
                                BUFSZ - strlen(out_str) - 1);
@@ -1611,27 +1670,31 @@ doidtrap()
 
     /* check fake bear trap from confused gold detection */
     glyph = glyph_at(x, y);
-    if (glyph_is_trap(glyph) && (tt = glyph_to_trap(glyph)) == BEAR_TRAP) {
+    if (glyph_is_trap(glyph) && (tt = glyph_to_trap(glyph)) == BEAR_TRAP) 
+    {
         boolean chesttrap = trapped_chest_at(tt, x, y);
 
-        if (chesttrap || trapped_door_at(tt, x, y)) {
+        if (chesttrap || trapped_door_at(tt, x, y))
+        {
             pline("That is a trapped %s.", chesttrap ? "chest" : "door");
             return 0; /* trap ID'd, but no time elapses */
         }
     }
 
     for (trap = ftrap; trap; trap = trap->ntrap)
-        if (trap->tx == x && trap->ty == y) {
+        if (trap->tx == x && trap->ty == y) 
+        {
             if (!trap->tseen)
                 break;
             tt = trap->ttyp;
-            if (u.dz) {
+            if (u.dz)
+            {
                 if (u.dz < 0 ? is_hole(tt) : tt == ROCKTRAP)
                     break;
             }
             tt = what_trap(tt, rn2_on_display_rng);
             pline("That is %s%s%s.",
-                  an(defsyms[trap_to_defsym(tt)].explanation),
+                  an(!Hallucination ? get_trap_explanation(trap) : defsyms[trap_to_defsym(tt)].explanation),
                   !trap->madeby_u
                      ? ""
                      : (tt == WEB)
@@ -1643,6 +1706,7 @@ doidtrap()
                            ? " dug"
                            : " set",
                   !trap->madeby_u ? "" : " by you");
+
             return 0;
         }
     pline("I can't see a trap there.");

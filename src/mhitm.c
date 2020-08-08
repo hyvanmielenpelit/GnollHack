@@ -1459,13 +1459,13 @@ register struct obj* omonwep;
         }
         break;
     case AD_SHRP:
-        if (rn2(100) < 15)
+        if (rn2(100) < SHARPNESS_PERCENTAGE_CHANCE)
         {
             if (vis && canspotmon(mdef) && !is_paralyzed(mdef))
             {
                 pline("%s strike slices a part of %s off!", s_suffix(Monnam(magr)), mon_nam(mdef));
             }
-            damage += adjust_damage((mdef->mhpmax * 15) / 100, magr, mdef, AD_PHYS, ADFLAGS_NONE);
+            damage += adjust_damage((mdef->mhpmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100, magr, mdef, AD_PHYS, ADFLAGS_NONE);
         }
         break;
     case AD_SLOW:

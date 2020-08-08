@@ -1719,9 +1719,9 @@ register struct obj* omonwep;
 			damage += adjust_damage(m_str_dmg_bonus(mtmp) / 2, mtmp, & youmonst, mattk->adtyp, ADFLAGS_NONE);
 	}
 
-    if (mattk->adtyp == AD_SHRP && (rn2(100) < 15))
+    if (mattk->adtyp == AD_SHRP && (rn2(100) < SHARPNESS_PERCENTAGE_CHANCE))
     {
-        damage += adjust_damage(((Upolyd ? u.mhmax : u.uhpmax) * 15) / 100, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
+        damage += adjust_damage(((Upolyd ? u.mhmax : u.uhpmax) * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100, mtmp, &youmonst, mattk->adtyp, ADFLAGS_NONE);
         sharpness_effect = TRUE;
     }
 

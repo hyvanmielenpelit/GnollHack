@@ -1740,7 +1740,7 @@ struct trap *trap;
         cleared = TRUE;
     }
 
-    You("find %s.", an(defsyms[trap_to_defsym(tt)].explanation));
+    You("find %s.", an(get_trap_explanation(trap)));
 
     if (cleared) {
         display_nhwindow(WIN_MAP, TRUE); /* wait */
