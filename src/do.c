@@ -3196,7 +3196,7 @@ register struct monst* mon;
 		Sprintf(buf2, " (base %d)", ptr->mc);
 	}
 
-	Sprintf(buf, "Magic cancellation:     %d%s", mc, buf2);
+	Sprintf(buf, "Magic cancellation:     %d%s (%d%%)", mc, buf2, magic_negation_percentage(mc));
 	txt = buf;
 	putstr(datawin, 0, txt);
 

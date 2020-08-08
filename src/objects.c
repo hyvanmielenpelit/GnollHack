@@ -2507,7 +2507,7 @@ SCROLL("enchant accessory",		      "REX SAPH", None, 1,  30,  60, S1_NONE, O1_NO
 SCROLL("create monster",       "LEP GEX VEN ZEA", None, 1,  40, 200, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 SCROLL("taming",                   "PRIRUTSENIE", None, 1,  15, 200, S1_SPELL_IS_NONREVERSIBLE_PERMANENT, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 SCROLL("genocide",                  "ELBIB YLOH", None, 1,  15, 300, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SCROLL("conflict",               "HOKKUS POKKUS", None, 1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
+SCROLL("conflict",                 "HOCUS POCUS", None, 1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 SCROLL("light",                 "VERR YED HORRE", None, 1,  45,  50, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 SCROLL("teleportation",        "VENZAR BORGAVVE", None, 1,  45, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 SCROLL("gold detection",                 "THARR", None, 1,  30, 100, S1_NONE, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
