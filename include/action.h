@@ -86,4 +86,67 @@ enum material_phase {
 	PHASE_VOID
 };
 
+/* Other definitions */
+enum hit_surface_source_types {
+	HIT_SURFACE_SOURCE_NONE = 0,
+	HIT_SURFACE_SOURCE_MONSTER,
+	HIT_SURFACE_SOURCE_OBJECT,
+	HIT_SURFACE_SOURCE_LOCATION,
+	HIT_SURFACE_SOURCE_TRAP
+};
+
+enum hit_surface_types {
+	HIT_SURFACE_NONE = 0,
+	HIT_SURFACE_FLESH,
+	HIT_SURFACE_ORGANIC, /* Jellies */
+	HIT_SURFACE_BONE,  /* Also chitin etc. */
+	HIT_SURFACE_LEATHER,
+	HIT_SURFACE_METAL,
+	HIT_SURFACE_WOOD,
+	HIT_SURFACE_STONE,
+	HIT_SURFACE_GLASS,
+	HIT_SURFACE_LIQUID,
+	HIT_SURFACE_IMMATERIAL,
+	MAX_HIT_SURFACE_TYPES
+};
+
+
+/* Movement paramters (+weight) */
+enum floor_surface_types {
+	FLOOR_SURFACE_NONE = 0,
+	FLOOR_SURFACE_STONE,
+	FLOOR_SURFACE_WOOD,
+	FLOOR_SURFACE_GROUND,
+	FLOOR_SURFACE_GRASS,
+	FLOOR_SURFACE_METAL,
+	FLOOR_SURFACE_CARPET,
+	FLOOR_SURFACE_LIQUID,
+	MAX_FLOOR_SURFACE_TYPES
+};
+
+enum floor_treading_types {
+	FLOOR_TREADING_TYPE_NORMAL = 0,
+	FLOOR_TREADING_TYPE_STEALTH,
+	FLOOR_TREADING_TYPE_RUN,
+	MAX_FLOOR_TREADING_TYPES
+};
+
+enum climbing_types {
+	CLIMBING_TYPE_NONE = 0,
+	CLIMBING_TYPE_STAIRS_UP,
+	CLIMBING_TYPE_STAIRS_DOWN,
+	CLIMBING_TYPE_LADDER_UP,
+	CLIMBING_TYPE_LADDER_DOWN,
+	MAX_CLIMBING_TYPES
+};
+
+enum location_passing_types {
+	LOCATION_PASSING_TYPE_NORMAL = 0,
+	LOCATION_PASSING_TYPE_WATERWALKING,			/* Has waterwalking on water or lava, so does not strictly splash the water or lava */
+	LOCATION_PASSING_TYPE_THROUGH_SOLID_WALLS,  /* Like a ghost, xorn or earth elemental; sound inside solid wall, maybe normal while not inside? */
+	LOCATION_PASSING_TYPE_SUBMERGED,			/* Maybe an amulet of magical breathing and no swimming */
+	MAX_LOCATION_PASSING_TYPES
+};
+
+
 #endif /* ACTION_H */
