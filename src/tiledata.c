@@ -468,7 +468,8 @@ uchar* tilemapflags;
                     else
                     {
 #ifdef MAIL
-                        fullsizedflag = !!(objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                        fullsizedflag = !!(objects[SCR_MAIL].oc_flags4 & O4_FULL_SIZED_BITMAP);
+
                         /* Main tile */
                         tilemaparray[SCR_MAIL + glyph_offset] = tile_count;
                         tilemapflags[SCR_MAIL + glyph_offset] |= fullsizedflag;
