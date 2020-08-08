@@ -220,8 +220,7 @@ E NEARDATA char wolfname[];
 E char preferred_pet;
 E const char *occtxt; /* defined when occupation != NULL */
 E enum object_soundset_types occsoundset; /* defined when occupation != NULL */
-E int occtyp; /* defined when occupation != NULL */
-//E enum object_occupation_types occtyp; /* defined when occupation != NULL */
+E enum object_occupation_types occtyp; /* defined when occupation != NULL */
 
 E const char *nomovemsg;
 E char lock[];

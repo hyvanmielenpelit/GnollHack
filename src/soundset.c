@@ -3141,7 +3141,7 @@ enum occupation_types occupation_type;
 void
 stop_occupation_ambient_sound(object_soundset_id, occupation_type)
 enum object_soundset_types object_soundset_id;
-enum occupation_types occupation_type;
+enum object_occupation_types occupation_type;
 {
     if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
         return;
@@ -3156,7 +3156,7 @@ enum occupation_types occupation_type;
 void
 play_occupation_immediate_sound(object_soundset_id, occupation_type, sound_type)
 enum object_soundset_types object_soundset_id;
-enum occupation_types occupation_type;
+enum object_occupation_types occupation_type;
 enum occupation_sound_types sound_type;
 {
 
