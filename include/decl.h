@@ -6,6 +6,8 @@
 #ifndef DECL_H
 #define DECL_H
 
+#include "soundset.h"
+
 #define E extern
 
 E int NDECL((*occupation));
