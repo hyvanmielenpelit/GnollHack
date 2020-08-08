@@ -273,7 +273,7 @@ set_occupation(fn, txt, soundset_id, occ_type, sound_type, xtime)
 int NDECL((*fn));
 const char *txt;
 enum object_soundset_types soundset_id;
-int /*enum object_occupation_types*/ occ_type;
+enum object_occupation_types occ_type;
 enum occupation_sound_types sound_type;
 int xtime;
 {
