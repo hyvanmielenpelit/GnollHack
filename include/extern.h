@@ -6,6 +6,7 @@
 #define EXTERN_H
 
 #include "soundset.h"
+#include "lev.h"
 
 #define E extern
 
