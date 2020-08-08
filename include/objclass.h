@@ -4,6 +4,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "action.h"
+#include "soundset.h"
 
 #ifndef OBJCLASS_H
 #define OBJCLASS_H
