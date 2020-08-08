@@ -2979,9 +2979,8 @@ enum hmon_atkmode_types thrown;
 
 void
 play_sfx_sound(sfx_sound_id)
-enum effect_sounds_types sfx_sound_id;
+enum sfx_sound_types sfx_sound_id;
 {
-
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
 
@@ -2999,7 +2998,7 @@ enum effect_sounds_types sfx_sound_id;
 
 void
 play_ui_sound(ui_sound_id)
-enum ui_sounds_types ui_sound_id;
+enum ui_sound_types ui_sound_id;
 {
 
     enum ghsound_types soundid = GHSOUND_NONE;
@@ -3020,7 +3019,7 @@ enum ui_sounds_types ui_sound_id;
 
 void
 play_sfx_sound_at_location(sfx_sound_id, x, y)
-enum sfx_sounds_types sfx_sound_id;
+enum sfx_sound_types sfx_sound_id;
 int x, y;
 {
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
@@ -3044,7 +3043,7 @@ int x, y;
 void
 play_immediate_ray_sound_at_location(ray_soundset_id, ray_sound_type, x, y)
 enum ray_soundset_types ray_soundset_id; 
-enum ray_sounds_types ray_sound_type;
+enum ray_sound_types ray_sound_type;
 int x, y;
 {
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
@@ -3126,7 +3125,7 @@ int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
 void
 start_occupation_ambient_sound(object_soundset_id, occupation_type)
 enum object_soundset_types object_soundset_id;
-enum occupation_types occupation_type;
+enum object_occupation_types occupation_type;
 {
     if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
         return;

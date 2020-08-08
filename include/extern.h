@@ -2745,14 +2745,14 @@ E void FDECL(play_simple_monster_sound, (struct monst*, enum monster_sound_types
 E void FDECL(play_monster_simple_weapon_sound, (struct monst*, int, struct obj*, enum object_sound_types));
 E void FDECL(play_monster_weapon_hit_sound, (struct monst*, enum hit_surface_source_types, ANY_P*, int, struct obj*, double, enum hmon_atkmode_types));
 E void FDECL(play_simple_location_sound, (xchar, xchar, enum location_sound_types));
-E void FDECL(play_ui_sound, (enum ui_sounds_types));
-E void FDECL(play_sfx_sound, (enum sfx_sounds_types));
-E void FDECL(play_sfx_sound_at_location, (enum sfx_sounds_types, int, int));
+E void FDECL(play_ui_sound, (enum ui_sound_types));
+E void FDECL(play_sfx_sound, (enum sfx_sound_types));
+E void FDECL(play_sfx_sound_at_location, (enum sfx_sound_types, int, int));
 E void FDECL(play_immediate_ray_sound_at_location, (enum ray_soundset_types, enum ray_sound_types, int, int));
 E void FDECL(start_ambient_ray_sound_at_location, (int, int, int));
 E void FDECL(update_ambient_ray_sound_to_location, (int, int, int));
 E void FDECL(stop_ambient_ray_sound, (int));
-E void FDECL(start_occupation_ambient_sound, (enum object_soundset_types, enum occupation_types));
+E void FDECL(start_occupation_ambient_sound, (enum object_soundset_types, enum object_occupation_types));
 E void FDECL(stop_occupation_ambient_sound, (enum object_soundset_types, enum object_occupation_types));
 E void FDECL(play_occupation_immediate_sound, (enum object_soundset_types, enum object_occupation_types, enum occupation_sound_types));
 E enum player_soundset_types NDECL(get_player_soundset);
