@@ -65,20 +65,12 @@ void NDECL(monst_init);
 #define STATS(str, dex, con, intl, wis, cha) str, dex, con, intl, wis, cha
 #define LVL(lvl, mov, ac, mc, mr, aln) lvl, mov, ac, mc, mr, aln
 #define SIZ(wt, nut, snd, siz, heads, lightrange, armor_material) wt, nut, snd, siz, heads, lightrange, armor_material
-/* ATTK() and A() are to avoid braces and commas within args to MON() */
-#define ATTK(at, ad, n, d, p, adj) \
-    {                      \
-        at, ad, n, d, p, adj      \
-    }
-#define A(a1, a2, a3, a4, a5, a6, a7, a8) \
-    {                             \
-        a1, a2, a3, a4, a5, a6, a7, a8    \
-    }
 
-#define ACTION_INFO(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, ad, as, ac ) \
-    {                             \
-        {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, ad}, as, ac    \
-    }
+ /* ATTK() and A() are to avoid braces and commas within args to MON() */
+#define ATTK(at, ad, n, d, p, adj) { at, ad, n, d, p, adj }
+#define A(a1, a2, a3, a4, a5, a6, a7, a8) { a1, a2, a3, a4, a5, a6, a7, a8 }
+
+#define ACTION_INFO(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, ad, as, ac ) { {a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, ad}, as, ac }
 
 #define None (const char *)0
 
