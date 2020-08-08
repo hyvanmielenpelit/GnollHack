@@ -70,8 +70,7 @@ typedef struct soundsource_t {
 
 
 struct special_view_info {
-    enum ghsound_types ghsound;
-    float volume;
+    int data1;
 };
 
 
