@@ -90,10 +90,10 @@ static const struct innate
 				 { 24, SEE_INVISIBLE, "", "" },
 				 { 0, 0, 0, 0 } },
 
-  val_abil[] = { { 1, COLD_IMMUNITY, "", "" },
+  val_abil[] = { { 1, COLD_RESISTANCE, "", "" },
                  { 1, STEALTH, "", "" },
                  { 7, FAST, "quick", "slow" },
-				 { 15, SHOCK_IMMUNITY, "insulated", "conductive" },
+				 { 15, SHOCK_RESISTANCE, "insulated", "conductive" },
 				 { 0, 0, 0, 0 } },
 
   wiz_abil[] = { { 14, ENHANCED_VISION, "studious", "" },
