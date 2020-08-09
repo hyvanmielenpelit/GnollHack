@@ -650,7 +650,7 @@ curses_print_glyph(winid wid, XCHAR_P x, XCHAR_P y, struct layer_info layers)
 {
     int ch;
     int color;
-    unsigned int special;
+    unsigned long special;
     int attr = -1;
 
     int glyph = layers.glyph;

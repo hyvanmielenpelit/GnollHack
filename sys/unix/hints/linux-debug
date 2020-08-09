@@ -43,10 +43,11 @@ CFLAGS+=-DDGAMELAUNCH
 CFLAGS+=-DLIVELOG_ENABLE
 CFLAGS+=-DDUMPLOG
 CFLAGS+=-DDUMPHTML
+CFLAGS+=-fsanitize=address
 
 LINK=$(CC)
 # Only needed for GLIBC stack trace:
-LFLAGS=-lm -rdynamic -no-pie
+LFLAGS=-lm -rdynamic -no-pie -fsanitize=address
 
 WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
 WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)
