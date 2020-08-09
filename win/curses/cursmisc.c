@@ -616,6 +616,8 @@ curses_rtrim(char *str)
     char *s;
 
     for (s = str; *s != '\0'; ++s);
+    if (s == str)
+        return;
     for (--s; isspace(*s) && s > str; --s);
     if (s == str)
         *s = '\0';
