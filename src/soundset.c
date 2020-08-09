@@ -3207,7 +3207,7 @@ int mode; /* 0 = normal, 1 = clear */
 		int y_min = u.uy - r;
 		int y_max = u.uy + r;
 		int y_min_adjusted = max(0, y_min);
-		int y_max_adjusted = min(COLNO - 1, y_max);
+		int y_max_adjusted = min(ROWNO - 1, y_max);
 
 		boolean horizontal_min_done = FALSE;
 		boolean horizontal_max_done = FALSE;
