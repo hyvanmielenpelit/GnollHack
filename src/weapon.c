@@ -2753,7 +2753,7 @@ boolean nextlevel;
         res = 40;
         break;
     case P_GRAND_MASTER:
-        res = 80;
+        res = 70;
         break;
     default:
         break;
