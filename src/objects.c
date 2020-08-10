@@ -1172,7 +1172,7 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 			power,power2,power3,pflags,typ,skill,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-           BITS(kn, 0, 1, 0, mgc, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
+           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_ARMOR, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,\
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
@@ -1186,7 +1186,7 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 			power,power2,power3,pflags,typ,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-           BITS(kn, 0, 1, 0, mgc, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
+           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_ARMOR, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
@@ -1200,7 +1200,7 @@ BOW("repeating heavy crossbow", None,		1, 0, 1, 1, MULTIGEN_SINGLE, 360, 1000,
 			power,power2,power3,pflags,typ,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-           BITS(kn, 0, 1, 0, mgc, 1, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, metal),  \
+           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_ARMOR, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
