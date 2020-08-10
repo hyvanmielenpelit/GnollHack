@@ -384,11 +384,33 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             ZeroMemory(kbd_state, sizeof(kbd_state));
             (void)GetKeyboardState(kbd_state);
 
-            if (ToAscii((UINT) wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0))
+            if(kbd_state[VK_CONTROL] > 1 && kbd_state['0'] > 1)
+            { 
+                NHEVENT_KBD(C('0'));
+                return 0;
+            }
+            else if (kbd_state[VK_CONTROL] > 1 && kbd_state['1'] > 1)
+            {
+                NHEVENT_KBD(C('1'));
+                return 0;
+            }
+            else if (kbd_state[VK_CONTROL] > 1 && kbd_state[VK_OEM_PLUS] > 1)
+            {
+                NHEVENT_KBD(C('+'));
+                return 0;
+            }
+            else if (kbd_state[VK_CONTROL] > 1 && kbd_state[VK_OEM_MINUS] > 1)
+            {
+                NHEVENT_KBD(C('-'));
+                return 0;
+            }
+            else if (ToAscii((UINT)wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0))
             {
                 NHEVENT_KBD(c & 0xFF);
                 return 0;
-            } else {
+            }
+            else
+            {
                 return 1;
             }
         }

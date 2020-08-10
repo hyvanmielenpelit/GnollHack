@@ -22,6 +22,7 @@ VARDIR = $(HACKDIR)/var
 
 POSTINSTALL=cp -n sys/unix/sysconf $(INSTDIR)/sysconf; $(CHOWN) $(GAMEUID) $(INSTDIR)/sysconf; $(CHGRP) $(GAMEGRP) $(INSTDIR)/sysconf; chmod $(VARFILEPERM) $(INSTDIR)/sysconf;
 
+# Additional CFLAGS
 CFLAGS=-g -O0 -I../include -DNOTPARMDECL
 CFLAGS+=-DDLB
 CFLAGS+=-DCOMPRESS=\"/bin/gzip\" -DCOMPRESS_EXTENSION=\".gz\"
@@ -43,10 +44,14 @@ CFLAGS+=-DDGAMELAUNCH
 CFLAGS+=-DLIVELOG_ENABLE
 CFLAGS+=-DDUMPLOG
 CFLAGS+=-DDUMPHTML
+CFLAGS+=-fsanitize=address
+
+# Additional CXXFLAGS
+CXXFLAGS+=-fsanitize=address
 
 LINK=$(CC)
 # Only needed for GLIBC stack trace:
-LFLAGS=-lm -rdynamic -no-pie
+LFLAGS=-lm -rdynamic -no-pie -fsanitize=address
 
 WINSRC = $(WINTTYSRC) $(WINCURSESSRC)
 WINOBJ = $(WINTTYOBJ) $(WINCURSESOBJ)

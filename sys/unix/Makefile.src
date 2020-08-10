@@ -176,7 +176,7 @@ GNOMEINC=-I/usr/lib/glib/include -I/usr/lib/gnome-libs/include -I../win/gnome
 # The Qt and Be window systems are written in C++, while the rest of
 # GnollHack is standard C.  If using Qt, uncomment the LINK line here to get
 # the C++ libraries linked in.
-CXXFLAGS = $(CFLAGS) -I. -I$(QTDIR)/include -fsanitize=address
+CXXFLAGS = $(CFLAGS) -I. -I$(QTDIR)/include
 CXX ?= g++
 MOC ?= moc
 #LINK=g++

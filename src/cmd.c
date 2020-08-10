@@ -5151,6 +5151,10 @@ commands_init()
     (void) bind_key(M('n'), "name");
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
+    (void) bind_key(C('0'), "zoommini");
+    (void) bind_key(C('1'), "zoomnormal");
+    (void) bind_key(C('+'), "zoomin");
+    (void) bind_key(C('-'), "zoomout");
 
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
