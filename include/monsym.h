@@ -37,7 +37,7 @@ enum mon_class_types {
     S_WORM       = 23, /* w */
     S_XAN        = 24, /* x */
     S_LIGHT      = 25, /* y: yellow light, black light */
-    S_LESSER_UNDEAD      = 26, /* z */
+    S_LESSER_UNDEAD = 26, /* z */
     S_ANGEL      = 27, /* A */
     S_BAT        = 28, /* B */
     S_CENTAUR    = 29, /* C */
@@ -50,7 +50,7 @@ enum mon_class_types {
     S_JABBERWOCK = 36, /* J */
     S_KOP        = 37, /* K */
     S_LICH       = 38, /* L */
-    S_MODRON      = 39, /* M */
+    S_MODRON     = 39, /* M */
     S_NAGA       = 40, /* N */
     S_OGRE       = 41, /* O */
     S_PUDDING    = 42, /* P */
@@ -63,7 +63,7 @@ enum mon_class_types {
     S_WRAITH     = 49, /* W */
     S_XORN       = 50, /* X */
     S_YETI       = 51, /* Y: includes owlbear, monkey, grizzly bear */
-    S_GREATER_UNDEAD     = 52, /* Z */
+    S_GREATER_UNDEAD = 52, /* Z */
     S_HUMAN      = 53, /* @ */
     S_GHOST      = 54, /* <space> */
     S_GOLEM      = 55, /* ' */
