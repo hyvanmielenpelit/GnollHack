@@ -1417,27 +1417,36 @@ xchar x, y; /* location */
     if (!br || made_branch)
         return;
 
-    if (!x) { /* find random coordinates for branch */
+    if (!x)
+    { /* find random coordinates for branch */
         br_room = find_branch_room(&m);
         x = m.x;
         y = m.y;
-    } else {
+    } 
+    else 
+    {
         br_room = pos_to_room(x, y);
     }
 
-    if (on_level(&br->end1, &u.uz)) {
+    if (on_level(&br->end1, &u.uz)) 
+    {
         /* we're on end1 */
         make_stairs = br->type != BR_NO_END1;
         dest = &br->end2;
-    } else {
+    } 
+    else 
+    {
         /* we're on end2 */
         make_stairs = br->type != BR_NO_END2;
         dest = &br->end1;
     }
 
-    if (br->type == BR_PORTAL) {
+    if (br->type == BR_PORTAL) 
+    {
         mkportal(x, y, dest->dnum, dest->dlevel);
-    } else if (make_stairs) {
+    }
+    else if (make_stairs) 
+    {
         sstairs.sx = x;
         sstairs.sy = y;
         sstairs.up =
@@ -1445,8 +1454,21 @@ xchar x, y; /* location */
         assign_level(&sstairs.tolev, dest);
         sstairs_room = br_room;
 
+        if (IS_FLOOR(levl[x][y].typ))
+        {
+            levl[x][y].floortyp = levl[x][y].typ;
+            levl[x][y].floorsubtyp = levl[x][y].subtyp;
+        }
+        else
+        {
+            levl[x][y].floortyp = location_type_definitions[STAIRS].initial_floor_type;
+            levl[x][y].floorsubtyp = 0;
+        }
+
         levl[x][y].ladder = sstairs.up ? LA_UP : LA_DOWN;
         levl[x][y].typ = STAIRS;
+        levl[x][y].subtyp = 0;
+
         if (sstairs.up)
         {
             if (!isok(x + 1, y) || levl[x + 1][y].typ < DOOR)

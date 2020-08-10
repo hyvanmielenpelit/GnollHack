@@ -2388,9 +2388,9 @@ boolean nextlevel;
 
     /* KMH -- It's harder to hit while you are riding */
     if (!use_this_skill && u.usteed)
-	{
-        switch (P_SKILL_LEVEL(P_RIDING)) 
-		{
+    {
+        switch (P_SKILL_LEVEL(P_RIDING))
+        {
         case P_ISRESTRICTED:
         case P_UNSKILLED:
             bonus -= 2;
@@ -2404,8 +2404,14 @@ boolean nextlevel;
         case P_GRAND_MASTER:
             break;
         }
+
         if (u.twoweap)
-            bonus -= 2;
+        {
+            if (P_SKILL_LEVEL(P_RIDING) < P_MASTER)
+                bonus -= 2;
+            else if (P_SKILL_LEVEL(P_RIDING) == P_MASTER)
+                bonus -= 1;
+        }
     }
 
     return bonus;
@@ -2498,19 +2504,19 @@ boolean nextlevel;
             bonus += -3;
             break;
         case P_BASIC:
-            bonus += -1;
+            bonus += -2;
             break;
         case P_SKILLED:
-            bonus += 0;
+            bonus += -1;
             break;
         case P_EXPERT:
-            bonus += 1;
+            bonus += 0;
             break;
         case P_MASTER:
-            bonus += 2;
+            bonus += 1;
             break;
         case P_GRAND_MASTER:
-            bonus += 3;
+            bonus += 2;
             break;
         }
     } 
@@ -2735,28 +2741,85 @@ boolean nextlevel;
     enum skill_levels skill_level = min(P_MAX_SKILL_LEVEL(skill_type), P_SKILL_LEVEL(skill_type) + (nextlevel ? 1 : 0));
     int res = 0;
 
-    switch (skill_level)
+    /* Bare handed combat and martial arts use less skill points, hence less critical strike */
+    if (skill_type == P_BARE_HANDED_COMBAT)
     {
-    case P_ISRESTRICTED:
-    case P_UNSKILLED:
-        break;
-    case P_BASIC:
-        res = 5;
-        break;
-    case P_SKILLED:
-        res = 10;
-        break;
-    case P_EXPERT:
-        res = 20;
-        break;
-    case P_MASTER:
-        res = 40;
-        break;
-    case P_GRAND_MASTER:
-        res = 70;
-        break;
-    default:
-        break;
+        switch (skill_level)
+        {
+        case P_ISRESTRICTED:
+        case P_UNSKILLED:
+            break;
+        case P_BASIC:
+            res = 5;
+            break;
+        case P_SKILLED:
+            res = 10;
+            break;
+        case P_EXPERT:
+            res = 15;
+            break;
+        case P_MASTER:
+            res = 20;
+            break;
+        case P_GRAND_MASTER:
+            res = 25;
+            break;
+        default:
+            break;
+        }
+    }
+    else if (skill_type == P_MARTIAL_ARTS)
+    {
+        switch (skill_level)
+        {
+        case P_ISRESTRICTED:
+        case P_UNSKILLED:
+            res = get_skill_critical_strike_chance(P_BARE_HANDED_COMBAT, nextlevel);
+            break;
+        case P_BASIC:
+            res = 30;
+            break;
+        case P_SKILLED:
+            res = 40;
+            break;
+        case P_EXPERT:
+            res = 50;
+            break;
+        case P_MASTER:
+            res = 60;
+            break;
+        case P_GRAND_MASTER:
+            res = 70;
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        switch (skill_level)
+        {
+        case P_ISRESTRICTED:
+        case P_UNSKILLED:
+            break;
+        case P_BASIC:
+            res = 5;
+            break;
+        case P_SKILLED:
+            res = 10;
+            break;
+        case P_EXPERT:
+            res = 20;
+            break;
+        case P_MASTER:
+            res = 40;
+            break;
+        case P_GRAND_MASTER:
+            res = 70;
+            break;
+        default:
+            break;
+        }
     }
 
     return res;
