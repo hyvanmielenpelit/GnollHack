@@ -1330,6 +1330,17 @@ mksmithy()
     lev->subtyp = 0;
     smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, 0);
     level.flags.has_smithy = 1;
+
+    /* The smith has lights turned on */
+    int x, y;
+    if (!sroom->rlit) {
+
+        for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+            for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+                levl[x][y].lit = 1;
+        sroom->rlit = 1;
+    }
+
     return 1;
 }
 
