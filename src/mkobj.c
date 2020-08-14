@@ -1122,7 +1122,7 @@ int mkobj_type;
 			}
 
 			if (artif && !rn2(20))
-                otmp = mk_artifact(otmp, (aligntyp) A_NONE);
+                otmp = mk_artifact(otmp, (aligntyp) A_NONE, FALSE);
 			break;
 		case FOOD_CLASS:
             otmp->oeaten = 0;
@@ -1314,7 +1314,7 @@ int mkobj_type;
             } else
                 blessorcurse(otmp, 10);
             if (artif && !rn2(40))
-                otmp = mk_artifact(otmp, (aligntyp) A_NONE);
+                otmp = mk_artifact(otmp, (aligntyp) A_NONE, FALSE);
             /* simulate lacquered armor for samurai */
             if (Role_if(PM_SAMURAI) && otmp->otyp == SPLINT_MAIL
                 && (moves <= 1 || In_quest(&u.uz))) {
@@ -1478,7 +1478,7 @@ int mkobj_type;
 
     /* unique objects may have an associated artifact entry */
     if (is_otyp_unique(otyp) && !otmp->oartifact)
-        otmp = mk_artifact(otmp, (aligntyp) A_NONE);
+        otmp = mk_artifact(otmp, (aligntyp) A_NONE, FALSE);
     otmp->owt = weight(otmp);
 
     return otmp;

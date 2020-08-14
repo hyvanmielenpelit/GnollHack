@@ -126,9 +126,10 @@ int artinum;
    for the 1st, ``obj = mk_artifact((struct obj *)0, some_alignment);''.
  */
 struct obj *
-mk_artifact(otmp, alignment)
+mk_artifact(otmp, alignment, nonweaponsonly)
 struct obj *otmp;   /* existing object; ignored if alignment specified */
 aligntyp alignment; /* target alignment, or A_NONE */
+boolean nonweaponsonly; /* for monks */
 {
     const struct artifact *a;
     int m, n, altn;
@@ -140,11 +141,14 @@ aligntyp alignment; /* target alignment, or A_NONE */
     n = altn = 0;    /* no candidates found yet */
     eligible[0] = 0; /* lint suppression */
     /* gather eligible artifacts */
-    for (m = 1, a = &artilist[m]; a->otyp; a++, m++) {
+    for (m = 1, a = &artilist[m]; a->otyp; a++, m++) 
+	{
         if (artiexist[m])
             continue;
         if ((a->aflags & AF_NOGEN) || unique)
             continue;
+		if (nonweaponsonly && objects[a->otyp].oc_class == WEAPON_CLASS)
+			continue;
 
         if (!by_align) {
             /* looking for a particular type of item; not producing a
@@ -158,20 +162,26 @@ aligntyp alignment; /* target alignment, or A_NONE */
            suitable for hero's role+race */
         if ((a->alignment == alignment || a->alignment == A_NONE)
             /* avoid enemies' equipment */
-            && (a->race == NON_PM || !race_hostile(&mons[a->race]))) {
+            && (a->race == NON_PM || !race_hostile(&mons[a->race])))
+		{
             /* when a role-specific first choice is available, use it */
-            if (Role_if(a->role)) {
+            if (Role_if(a->role))
+			{
                 /* make this be the only possibility in the list */
                 eligible[0] = m;
                 n = 1;
                 break; /* skip all other candidates */
             }
+
             /* found something to consider for random selection */
-            if (a->alignment != A_NONE || u.ugifts > 0) {
+            if (a->alignment != A_NONE || u.ugifts > 0) 
+			{
                 /* right alignment, or non-aligned with at least 1
                    previous gift bestowed, makes this one viable */
                 eligible[n++] = m;
-            } else {
+            } 
+			else
+			{
                 /* non-aligned with no previous gifts;
                    if no candidates have been found yet, record
                    this one as a[nother] fallback possibility in
@@ -189,7 +199,8 @@ aligntyp alignment; /* target alignment, or A_NONE */
     if (!n)
         n = altn;
 
-    if (n) {
+    if (n) 
+	{
         /* found at least one candidate; pick one at random */
         m = eligible[rn2(n)]; /* [0..n-1] */
         a = &artilist[m];
@@ -198,12 +209,15 @@ aligntyp alignment; /* target alignment, or A_NONE */
         if (by_align)
             otmp = mksobj((int) a->otyp, TRUE, FALSE, FALSE);
 
-        if (otmp) {
+        if (otmp) 
+		{
             otmp = oname(otmp, a->name);
             otmp->oartifact = m;
             artiexist[m] = TRUE;
         }
-    } else {
+    } 
+	else 
+	{
         /* nothing appropriate could be found; return original object */
         if (by_align)
             otmp = 0; /* (there was no original object) */

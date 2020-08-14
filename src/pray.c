@@ -2571,7 +2571,43 @@ dosacrifice()
             if (u.ulevel > 2 && u.uluck >= 0
                 && !rn2(10 + (2 * u.ugifts * nartifacts))) 
             {
-                otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy));
+                otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy), urole.rolenum == ROLE_MONK ? TRUE : FALSE);
+                if (!otmp)
+                {
+                    /* Non-artifact replacement in the case an artifact couldn't be made (most likely a case for monk) */
+                    int repl_otyp = ACURR(A_STR) < STR19(19) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) && !carrying(BELT_OF_STONE_GIANT_STRENGTH) && !carrying(BELT_OF_FIRE_GIANT_STRENGTH) && !carrying(BELT_OF_FROST_GIANT_STRENGTH) && !carrying(BELT_OF_HILL_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH :
+                        !EReflecting && !rn2(2) && !carrying(BRACERS_OF_REFLECTION) && !carrying(AMULET_OF_REFLECTION) ? BRACERS_OF_REFLECTION :
+                        !EAntimagic && !rn2(2) && !carrying(CLOAK_OF_MAGIC_RESISTANCE) ? CLOAK_OF_MAGIC_RESISTANCE :
+                        !EVery_fast && !rn2(2) && !carrying(GLOVES_OF_HASTE) && !carrying(SPEED_BOOTS) ? (!rn2(2) ? GLOVES_OF_HASTE : SPEED_BOOTS) :
+                        !ELifesaved && !rn2(2) && !carrying(AMULET_OF_LIFE_SAVING) ? AMULET_OF_LIFE_SAVING :
+                        !EFlying && !rn2(2) && !carrying(WINGS_OF_FLYING) ? WINGS_OF_FLYING :
+                        !EDeath_resistance && !rn2(2) && !carrying(RIN_PROTECTION_FROM_UNDEATH) && !carrying(AMULET_VERSUS_UNDEATH) && !carrying(GOWN_OF_THE_ARCHBISHOPS) ? RIN_PROTECTION_FROM_UNDEATH :
+                        ACURR(A_STR) < STR19(24) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH : !rn2(2) ? (!rn2(2) ? WAN_DEATH : WAN_DISINTEGRATION) :
+                        !rn2(2) ? MAGIC_MARKER :
+                        !rn2(2) ? POT_GAIN_LEVEL :
+                        !rn2(2) ? POT_LIGHTNING_SPEED : POT_GREATER_REGENERATION;
+
+                    otmp = mksobj(repl_otyp, TRUE, FALSE, 2);
+                    if (otmp)
+                    {
+                        if (otmp->cursed)
+                            uncurse(otmp);
+
+                        if (objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
+                            otmp->charges = get_obj_max_charge(otmp);
+
+                        if (objects[otmp->otyp].oc_enchantable > ENCHTYPE_NO_ENCHANTMENT)
+                        {
+                            int maxench = get_obj_max_enchantment(otmp);
+                            if (otmp->enchantment <= 0)
+                                otmp->enchantment = 1; 
+                            if (otmp->enchantment < maxench)
+                                otmp->enchantment++;
+                            otmp->enchantment = min(maxench, max(otmp->enchantment, rnd(max(2, maxench))));
+                        }
+                    }
+                }
+
                 if (otmp)
                 {
                     play_sfx_sound(SFX_ALTAR_GIFT);
@@ -2579,7 +2615,8 @@ dosacrifice()
                         otmp->enchantment = 0;
                     if (otmp->cursed)
                         uncurse(otmp);
-                    otmp->oerodeproof = TRUE;
+                    if(erosion_matters(otmp))
+                        otmp->oerodeproof = TRUE;
                     at_your_feet("An object");
                     dropy(otmp);
 					if (is_launcher(otmp))
@@ -2608,13 +2645,19 @@ dosacrifice()
                     exercise(A_WIS, TRUE);
                     /* make sure we can use this weapon */
                     enum p_skills wep_skill_idx = weapon_skill_type(otmp);
-                    unrestrict_weapon_skill(wep_skill_idx);
-                    if (!Hallucination && !Blind) 
+                    if (wep_skill_idx > P_NONE)
+                    {
+                        unrestrict_weapon_skill(wep_skill_idx);
+                    }
+                    if (!Hallucination && !Blind)
                     {
                         otmp->dknown = 1;
-						otmp->nknown = 1;
-						makeknown(otmp->otyp);
-                        discover_artifact(otmp->oartifact);
+                        makeknown(otmp->otyp);
+                        if (otmp->oartifact)
+                        {
+                            otmp->nknown = 1;
+                            discover_artifact(otmp->oartifact);
+                        }
                     }
                     return 1;
                 }
