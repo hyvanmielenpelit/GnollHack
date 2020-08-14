@@ -583,7 +583,7 @@ struct monst *mtmp;
         }
         nomore(MUSE_WAN_TELEPORTATION_SELF);
         nomore(MUSE_WAN_TELEPORTATION);
-        if (obj->otyp == WAN_TELEPORTATION && obj->charges > 0)
+        if (obj->otyp == WAN_TELEPORTATION && obj->charges > 0 && !level.flags.noteleport)
 		{
             /* use the TELEP_TRAP bit to determine if they know
              * about noteleport on this level or not.  Avoids
@@ -602,7 +602,7 @@ struct monst *mtmp;
         }
         nomore(MUSE_SCR_TELEPORTATION);
         if (obj->otyp == SCR_TELEPORTATION && !is_blinded(mtmp)
-            && haseyes(mtmp->data)
+            && haseyes(mtmp->data) && !level.flags.noteleport
             && (!obj->cursed || (!(mtmp->isshk && inhishop(mtmp))
                                  && !mtmp->isgd && !mtmp->ispriest && !mtmp->issmith)))
 		{
