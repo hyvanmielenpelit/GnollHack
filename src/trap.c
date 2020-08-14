@@ -1932,7 +1932,7 @@ int style;
         /* dstage@u.washington.edu -- Delay only if hero sees it */
         if (cansee(bhitpos.x, bhitpos.y))
             while (tmp-- > 0)
-                delay_output();
+                adjusted_delay_output();
 
         bhitpos.x += dx;
         bhitpos.y += dy;

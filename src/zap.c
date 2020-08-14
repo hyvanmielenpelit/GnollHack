@@ -4345,8 +4345,8 @@ register struct obj *obj;
 				}
 			}
 			flush_screen(1); /* make sure the glyph shows up */
-			delay_output();
-			delay_output();
+            adjusted_delay_output();
+            adjusted_delay_output();
 			showmon = !showmon;
 		}
 
@@ -6726,7 +6726,7 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
-            delay_output();
+            adjusted_delay_output();
             /* kicked objects fall in pools */
             if ((weapon == KICKED_WEAPON || weapon == GOLF_SWING)
                 && (is_pool(bhitpos.x, bhitpos.y)
@@ -6866,7 +6866,7 @@ int dx, dy;
             }
         }
         tmp_at(bhitpos.x, bhitpos.y);
-        delay_output();
+        adjusted_delay_output();
         if (IS_SINK(levl[bhitpos.x][bhitpos.y].typ)) {
             if (!Deaf)
                 pline("Klonk!");
@@ -7670,7 +7670,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 tmp_at(sx, sy);
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
             }
-            delay_output(); /* wait a little */
+            adjusted_delay_output(); /* wait a little */
         }
 
         /* hit() and miss() need bhitpos to match the target */

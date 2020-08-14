@@ -1085,11 +1085,11 @@ struct obj *obj;         /* missile (or stack providing it) */
         }
 
         tmp_at(bhitpos.x, bhitpos.y);
-        delay_output();
+        adjusted_delay_output();
     }
 
     tmp_at(bhitpos.x, bhitpos.y);
-    delay_output();
+    adjusted_delay_output();
     
 	tmp_at(DISP_END, 0);
     mesg_given = 0; /* reset */

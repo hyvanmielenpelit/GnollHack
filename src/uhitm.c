@@ -3210,8 +3210,8 @@ struct monst *mdef;
         tmp_at(mdef->mx, mdef->my);
     }
     You("engulf %s!", mon_nam(mdef));
-    delay_output();
-    delay_output();
+	adjusted_delay_output();
+	adjusted_delay_output();
 }
 
 STATIC_OVL void
@@ -4803,11 +4803,11 @@ enum action_tile_types action;
 		{
 			newsym(u.ux, u.uy);
 			flush_screen(1);
-			delay_output();
+			adjusted_delay_output();
 			if (u.action != ACTION_TILE_NO_ACTION)
 			{
-				delay_output();
-				delay_output();
+				adjusted_delay_output();
+				adjusted_delay_output();
 			}
 		}
 	}
@@ -4845,7 +4845,7 @@ enum action_tile_types action;
 			{
 				force_redraw_at(mtmp->mx, mtmp->my);
 				flush_screen(0);
-				delay_output_milliseconds(ANIMATION_FRAME_INTERVAL * animations[anim].intervals_between_frames);
+				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
 				context.action_animation_frame += animations[anim].intervals_between_frames;
 			}
 			context.action_animation_layer = 0;
@@ -4857,11 +4857,11 @@ enum action_tile_types action;
 		{
 			newsym(mtmp->mx, mtmp->my);
 			flush_screen(0);
-			delay_output();
+			adjusted_delay_output();
 			if (mtmp->action != ACTION_TILE_NO_ACTION)
 			{
-				delay_output();
-				delay_output();
+				adjusted_delay_output();
+				adjusted_delay_output();
 			}
 		}
 	}
@@ -4887,7 +4887,7 @@ unsigned long extra_flags;
 	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
 	newsym_with_extra_info(x, y, flags, damage_shown);
 	flush_screen(is_you);
-	delay_output();
+	adjusted_delay_output();
 	update_m_action(mon, action_before);
 	newsym(x, y);
 	flush_screen(is_you);

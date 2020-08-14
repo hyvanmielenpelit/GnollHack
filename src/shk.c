@@ -3458,7 +3458,7 @@ register xchar x, y;
                   the(xname(obj)));
             if (!canspotmon(shkp))
                 map_invisible(x, y);
-            delay_output();
+            adjusted_delay_output();
             mark_synch();
         }
         subfrombill(obj, shkp);

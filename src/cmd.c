@@ -6410,7 +6410,7 @@ register char *cmd;
         /* don't report "unknown command" for change of heart... */
         bad_command = FALSE;
     }
-	else if (*cmd == ' ' || *cmd == '\n') // && !flags.rest_on_space)
+	else if (*cmd == ' ' || *cmd == '\n' || *cmd == '\r') // && !flags.rest_on_space)
 	{
 		bad_command = FALSE;//TRUE; /* skip cmdlist[] loop */
 
@@ -7352,7 +7352,7 @@ parse()
     else
     {
         last_multi = multi;
-        if (foo != ' ' && foo != '\n')
+        if (foo != ' ' && foo != '\n' && foo != '\r')
         {
             savech(0); /* reset input queue */
             savech((char)foo);

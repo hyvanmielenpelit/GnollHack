@@ -1209,10 +1209,10 @@ int mode;
                 for (i = 0; i < nn; ++i) {
                     tmp_at(travelstepx[1 - set][i], travelstepy[1 - set][i]);
                 }
-                delay_output();
+                adjusted_delay_output();
                 if (flags.runmode == RUN_CRAWL) {
-                    delay_output();
-                    delay_output();
+                    adjusted_delay_output();
+                    adjusted_delay_output();
                 }
                 tmp_at(DISP_END, 0);
             }
@@ -1265,10 +1265,10 @@ int mode;
                 tmp_at(px, py);
                 delay_output();
                 if (flags.runmode == RUN_CRAWL) {
-                    delay_output();
-                    delay_output();
-                    delay_output();
-                    delay_output();
+                    adjusted_delay_output();
+                    adjusted_delay_output();
+                    adjusted_delay_output();
+                    adjusted_delay_output();
                 }
                 tmp_at(DISP_END, 0);
             }
@@ -2177,12 +2177,12 @@ domove_core()
             if (flags.time)
                 context.botl = 1;
             curs_on_u();
-            delay_output();
+            adjusted_delay_output();
             if (flags.runmode == RUN_CRAWL) {
-                delay_output();
-                delay_output();
-                delay_output();
-                delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
+                adjusted_delay_output();
             }
         }
     }
@@ -3492,6 +3492,19 @@ get_cmap_or_cmap_variation_glyph_explanation(int glyph)
     }
     else
         return "unknown cmap or cmap varation";
+}
+
+void
+adjusted_delay_output()
+{
+    if (flags.delay_output_time > 0)
+    {
+        delay_output_milliseconds(flags.delay_output_time);
+    }
+    else
+    {
+        delay_output();
+    }
 }
 
 

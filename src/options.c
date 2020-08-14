@@ -304,6 +304,7 @@ static struct Comp_Opt {
                * a different format */
     int optflags;
 } compopt[] = {
+    { "active_animation_interval", "frame interval for active animations in milliseconds", 3, SET_IN_GAME },
     { "align", "your starting alignment (lawful, neutral, or chaotic)", 8,
       DISP_IN_GAME },
     { "align_message", "message window alignment", 20, DISP_IN_GAME }, /*WC*/
@@ -3931,6 +3932,36 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    /* This is in fact milliseconds in delay_output, which slows down the game, not just any animation */
+    fullname = "active_animation_interval";
+    if (match_optname(opts, fullname, 25, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = 0;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 0 || itmp > 999)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 0, 999);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.delay_output_time = itmp;
+        }
+        return retval;
+    }
+
     fullname = "sound_volume_general";
     if (match_optname(opts, fullname, 20, TRUE))
     {
@@ -5886,7 +5917,15 @@ char *buf;
                   : (which == ALIGN_BOTTOM) ? "bottom"
                     : (which == ALIGN_RIGHT) ? "right"
                       : defopt);
-    } else if (!strcmp(optname, "align"))
+    }
+    else if (!strcmp(optname, "active_animation_interval"))
+    {
+        if(flags.delay_output_time > 0)
+            Sprintf(buf, "%d milliseconds", flags.delay_output_time);
+        else
+            Sprintf(buf, "%s", defopt);
+    }
+    else if (!strcmp(optname, "align"))
         Sprintf(buf, "%s", rolestring(flags.initalign, aligns, adj));
 #ifdef WIN32
     else if (!strcmp(optname, "altkeyhandler"))

@@ -1263,7 +1263,7 @@ int x, y;
     if (--*range < 0) /* make sure our range never goes negative */
         *range = 0;
     if (*range != 0)
-        delay_output();
+        adjusted_delay_output();
     return TRUE;
 }
 
@@ -1603,7 +1603,7 @@ struct obj *obj;
         tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(u.dx, u.dy), rn2_on_display_rng));
         while (isok(x,y) && (x != u.ux || y != u.uy)) {
             tmp_at(x, y);
-            delay_output();
+            adjusted_delay_output();
             x -= u.dx;
             y -= u.dy;
         }
@@ -1947,7 +1947,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
         {
             tmp_at(DISP_FLASH, obj_to_missile_glyph(obj, get_missile_index(u.dx, u.dy), rn2_on_display_rng));
             tmp_at(bhitpos.x, bhitpos.y);
-            delay_output();
+            adjusted_delay_output();
             tmp_at(DISP_END, 0);
             breakmsg(obj, cansee(bhitpos.x, bhitpos.y));
             breakobj(obj, bhitpos.x, bhitpos.y, TRUE, TRUE);

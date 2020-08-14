@@ -1285,7 +1285,7 @@ xchar x, y;
         {
             show_glyph(x, y, cmap_to_glyph(shield_static[i]));
             flush_screen(1); /* make sure the glyph shows up */
-            delay_output();
+            adjusted_delay_output();
         }
         newsym(x, y); /* restore the old information */
     }
@@ -1307,8 +1307,8 @@ xchar x, y;
 			else
 				show_glyph(x, y, cmap_to_glyph(S_talkeffect)); /* talk_static[i]*/
 			flush_screen(1); /* make sure the glyph shows up */
-			delay_output();
-			delay_output();
+            adjusted_delay_output();
+            adjusted_delay_output();
 			showmon = !showmon;
 		}
 		newsym(x, y); /* restore the old information */
@@ -1430,7 +1430,7 @@ int x, y;
                     show_glyph(tglyph->saved[i - 1].x,
                                tglyph->saved[i - 1].y, tglyph->glyph);
                     flush_screen(0);   /* make sure it shows up */
-                    delay_output();
+                    adjusted_delay_output();
                 }
                 tglyph->sidx = 1;
             }

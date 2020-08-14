@@ -126,7 +126,7 @@ register boolean rockit;
         }
 
         flush_screen(1); /* make sure the new glyphs shows up */
-        delay_output();
+        adjusted_delay_output();
     }
 
     if (!rockit && levl[u.ux][u.uy].typ == CORR)
@@ -1751,7 +1751,7 @@ struct obj* origobj;
             break;
         room = &levl[zx][zy];
         tmp_at(zx, zy);
-        delay_output(); /* wait a little bit */
+        adjusted_delay_output(); /* wait a little bit */
 
         if (pitdig) 
         { /* we are already in a pit if this is true */
@@ -1995,7 +1995,7 @@ struct obj* origobj;
 			break;
 
 		tmp_at(zx, zy);
-		delay_output(); /* wait a little bit */
+        adjusted_delay_output(); /* wait a little bit */
 
 		struct rm* lev = &levl[zx][zy];
 		boolean see_it = cansee(zx, zy);
