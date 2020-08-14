@@ -671,9 +671,12 @@ dotelecmd()
 
     added = hidden = NOOP_SPELL;
     save_HTele = HTeleportation, save_ETele = ETeleportation;
-    if (!iflags.menu_requested) {
+    if (!iflags.menu_requested)
+    {
         ignore_restrictions = TRUE;
-    } else {
+    }
+    else 
+    {
         static const struct tporttypes {
             char menulet;
             const char *menudesc;
@@ -707,29 +710,39 @@ dotelecmd()
         win = create_nhwindow(NHW_MENU);
         start_menu(win);
         any = zeroany;
-        for (i = 0; i < SIZE(tports); ++i) {
+
+        for (i = 0; i < SIZE(tports); ++i)
+        {
             any.a_int = (int) tports[i].menulet;
             add_menu(win, NO_GLYPH, &any, (char) any.a_int, 0, ATR_NONE,
                      tports[i].menudesc,
                      (tports[i].menulet == 'w') ? MENU_SELECTED
                                                 : MENU_UNSELECTED);
         }
+
         end_menu(win, "Which way do you want to teleport?");
         i = select_menu(win, PICK_ONE, &picks);
         destroy_nhwindow(win);
-        if (i > 0) {
+        if (i > 0)
+        {
             tmode = picks[0].item.a_int;
             /* if we got 2, use the one which wasn't preselected */
             if (i > 1 && tmode == 'w')
                 tmode = picks[1].item.a_int;
             free((genericptr_t) picks);
-        } else if (i == 0) {
+        } 
+        else if (i == 0)
+        {
             /* preselected one was explicitly chosen and got toggled off */
             tmode = 'w';
-        } else { /* ESC */
+        }
+        else 
+        { /* ESC */
             return 0;
         }
-        switch (tmode) {
+
+        switch (tmode) 
+        {
         case 'n':
             HTeleportation |= I_SPECIAL; /* confer intrinsic teleportation */
             hidden = tport_spell(HIDE_SPELL); /* hide teleport-away */
@@ -774,13 +787,18 @@ boolean break_the_rules; /* True: wizard mode ^T */
     if (trap && (!trap->tseen || trap->ttyp != TELEP_TRAP))
         trap = 0;
 
-    if (trap) {
+    if (trap) 
+    {
         trap_once = trap->once; /* trap may get deleted, save this */
-        if (trap->once) {
+        if (trap->once)
+        {
             pline("This is a vault teleport, usable once only.");
-            if (yn_query("Jump in?") == 'n') {
+            if (yn_query("Jump in?") == 'n')
+            {
                 trap = 0;
-            } else {
+            } 
+            else 
+            {
                 deltrap(trap);
                 newsym(u.ux, u.uy);
             }
@@ -789,12 +807,15 @@ boolean break_the_rules; /* True: wizard mode ^T */
             You("%s onto the teleportation trap.",
                 locomotion(youmonst.data, "jump"));
     }
-    if (!trap) {
+
+    if (!trap)
+    {
         boolean castit = FALSE;
         register int sp_no = 0, energy = 0;
 
         if (!Teleportation || (u.ulevel < (Role_if(PM_WIZARD) ? 8 : 12)
-                               && !has_innate_teleportation(youmonst.data))) {
+                               && !has_innate_teleportation(youmonst.data)))
+        {
             /* Try to use teleport away spell.
                3.6.2: this used to require that you know the spellbook
                (probably just intended as an optimization to skip the
@@ -803,9 +824,11 @@ boolean break_the_rules; /* True: wizard mode ^T */
             for (sp_no = 0; sp_no < MAXSPELL; sp_no++)
                 if (spl_book[sp_no].sp_id == SPE_TELEPORT_MONSTER)
                     break;
+
             /* casting isn't inhibited by being Stunned (...it ought to be) */
             castit = (sp_no < MAXSPELL && !Confusion);
-            if (!castit && !break_the_rules) {
+            if (!castit && !break_the_rules) 
+            {
                 You("%s.",
                     !Teleportation ? ((sp_no < MAXSPELL)
                                         ? "can't cast that spell"
@@ -824,7 +847,9 @@ boolean break_the_rules; /* True: wizard mode ^T */
            but they both yield the same result.] */
 #define spellev(spell_otyp) ((int) objects[spell_otyp].oc_spell_level)
         energy = 5 * spellev(SPE_TELEPORT_MONSTER);
-        if (break_the_rules) {
+
+        if (break_the_rules) 
+        {
             if (!castit)
                 energy = 0;
             /* spell will cost more if carrying the Amulet, but the
@@ -834,37 +859,51 @@ boolean break_the_rules; /* True: wizard mode ^T */
                having enough to cast (which also uses the move) */
             else if (u.uen < energy)
                 u.uen = energy;
-        } else if (u.uhunger <= 10) {
+        } 
+        else if (u.uhunger <= 10)
+        {
             cantdoit = "are too weak from hunger";
-        } else if (ACURR(A_STR) < 4) {
+        } 
+        else if (ACURR(A_STR) < 4) 
+        {
             cantdoit = "lack the strength";
-        } else if (energy > u.uen) {
+        }
+        else if (energy > u.uen)
+        {
             cantdoit = "lack the energy";
         }
-        if (cantdoit) {
+
+        if (cantdoit) 
+        {
             You("%s %s.", cantdoit,
                 castit ? "for a teleport spell" : "to teleport");
             return 0;
-        } else if (check_capacity(
-                       "Your concentration falters from carrying so much.")) {
+        } 
+        else if (check_capacity(
+                       "Your concentration falters from carrying so much."))
+        {
             return 1; /* this failure in spelleffects() also uses the move */
         }
 
-        if (castit) {
+        if (castit)
+        {
             /* energy cost is deducted in spelleffects() */
             exercise(A_WIS, TRUE);
             if (spelleffects(sp_no, TRUE))
                 return 1;
             else if (!break_the_rules)
                 return 0;
-        } else {
+        } 
+        else 
+        {
             /* bypassing spelleffects(); apply energy cost directly */
             u.uen -= energy;
             context.botl = 1;
         }
     }
 
-    if (next_to_u()) {
+    if (next_to_u()) 
+    {
 		if (trap && trap_once)
 			vault_tele();
 		else if (break_the_rules)
@@ -872,12 +911,16 @@ boolean break_the_rules; /* True: wizard mode ^T */
         else
             tele();
         (void) next_to_u();
-    } else {
+    }
+    else 
+    {
         You("%s", shudder_for_moment);
         return 0;
     }
-    if (!trap)
+
+    if (!trap && !break_the_rules)
         morehungry(100);
+
     return 1;
 }
 
