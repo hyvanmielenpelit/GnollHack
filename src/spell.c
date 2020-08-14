@@ -881,7 +881,7 @@ int spell_list_type;
 
     if (flags.menu_style == MENU_TRADITIONAL) {
         /* we know there is at least 1 known spell */
-        for (nspells = 1; nspells < min(MAXSPELL, 52) && spellid(nspells) != NO_SPELL;
+        for (nspells = 1; nspells < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(nspells) != NO_SPELL;
              nspells++)
             continue;
 
@@ -2937,7 +2937,7 @@ int *spell_no;
 		int maxlen = 15;
 		int maxnamelen = 0;
 
-		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
 		{
 			int desclen = 0;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
@@ -2981,7 +2981,7 @@ int *spell_no;
 			MENU_UNSELECTED);
 
 
-		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++) {
+		for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++) {
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
 			char shortenedname[BUFSZ] = "";
 			char fullname[BUFSZ] = "";
@@ -3034,7 +3034,7 @@ int *spell_no;
 				Sprintf(buf, fmt, shortenedname, hotkeychar, descbuf);
 
 			any.a_int = splnum + 1; /* must be non-zero */
-			add_menu(tmpwin, NO_GLYPH, &any, spellet(splnum), 0, ATR_NONE, buf,
+			add_menu(tmpwin, NO_GLYPH, &any, 0 /*spellet(splnum)*/, 0, ATR_NONE, buf,
 				(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
 
 		}
@@ -3044,7 +3044,7 @@ int *spell_no;
 		int maxlen = 23;
 		int maxnamelen = 0;
 
-		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
 		{
 			int desclen = 0;
 			int namelen = 0;
@@ -3081,7 +3081,7 @@ int *spell_no;
 			add_spell_prepare_menu_heading(tmpwin, namelength, extraspaces, TRUE);
 		}
 
-		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
 		{
 			add_spell_prepare_menu_item(tmpwin, i, splaction, namelength, extraspaces, FALSE);
 		}
@@ -3090,7 +3090,7 @@ int *spell_no;
 	{
 		int maxnamelen = 0;
 
-		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
 		{
 			int namelen = 0;
 			splnum = !spl_orderindx ? i : spl_orderindx[i];
@@ -3116,7 +3116,7 @@ int *spell_no;
 			add_spell_cast_menu_heading(tmpwin, namelength, TRUE);
 		}
 
-		for (i = 0; i < min(MAXSPELL, 52) && spellid(i) != NO_SPELL; i++)
+		for (i = 0; i < MAXSPELL /*min(MAXSPELL, 52)*/ && spellid(i) != NO_SPELL; i++)
 		{
 			add_spell_cast_menu_item(tmpwin, i, splaction, namelength, colorbufs[colorbufcnt], &colorbufcnt, FALSE);
 		}
@@ -3325,7 +3325,7 @@ boolean usehotkey;
 			letter = spellhotkey(i) + '0';
 	}
 	else
-		letter = spellet(splnum);
+		letter = 0; // spellet(splnum);
 
 
 	any.a_int = splnum + 1; /* must be non-zero */
@@ -3515,7 +3515,7 @@ boolean usehotkey;
 			letter = spellhotkey(i) + '0';
 	}
 	else
-		letter = spellet(splnum);
+		letter = 0; // spellet(splnum);
 
 	add_menu(tmpwin, NO_GLYPH, &any, letter, 0, ATR_NONE, buf,
 		(splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED);
