@@ -195,6 +195,7 @@ const struct propname {
     { IMPROVED_ACID_RESISTANCE, "75% resistant to acid", "75% acid resistance" },
     { UNDEAD_IMMOBILITY, "held magically immobile", "magically induced undead immobility" },
     { UNDEAD_CONTROL, "controlled as undead", "undead control" },
+    { CANCELLATION_RESISTANCE, "resistant to cancellation", "cancellation resistance" },
     { LAUGHING, "laughing uncontrollably", "uncontrollable laughter" },
 	{  0, 0 },
 };
@@ -1317,7 +1318,10 @@ nh_timeout()
 				if (!Cancelled)
 					You("feel your magic is flowing more normally.");
 				break;
-			case THREE_FOURTHS_MAGIC_RESISTANCE:
+            case CANCELLATION_RESISTANCE:
+                /* Nothing intentionally */
+                break;
+            case THREE_FOURTHS_MAGIC_RESISTANCE:
 				if (!Three_fourths_magic_resistance && !Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is working more properly.");
 				break;
@@ -1639,7 +1643,10 @@ nh_timeout()
             case CANCELLED:
 				You("feel your magic is starting to flow more normally.");
 				break;
-			case THREE_FOURTHS_MAGIC_RESISTANCE:
+            case CANCELLATION_RESISTANCE:
+                /* Nothing intentionally */
+                break;
+            case THREE_FOURTHS_MAGIC_RESISTANCE:
 				if (!Half_magic_resistance && !One_fourth_magic_resistance && !No_magic_resistance)
 					You("feel your magic resistance is starting to work more properly.");
 				break;

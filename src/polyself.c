@@ -1919,19 +1919,31 @@ dogaze()
 							You("stare blindly at %s general direction.", s_suffix(mon_nam(mtmp)));
 							break;
 						}
+#if 0
 						else if (is_reflecting(mtmp))
 						{
 							You("gaze at %s.", mon_nam(mtmp));
 							(void)mon_reflects(mtmp, "The gaze is reflected away by %s %s!");
 							break;
 						}
+#endif
 						else
 						{
 							if (is_cancelled(mtmp))
 								You("gaze at %s. %s is hit by an invisible anti-magic ray!", mon_nam(mtmp), Monnam(mtmp));
 							else
 								You("focus your anti-magic gaze on %s.", mon_nam(mtmp));
-							nonadditive_increase_mon_property_verbosely(mtmp, CANCELLED, 7);
+                            if (has_cancellation_resistance(mtmp))
+                            {
+                                pline("However, %s is unaffected!", mon_nam(mtmp));
+                                m_shieldeff(mtmp);
+
+                            }
+                            else
+                            {
+                                nonadditive_increase_mon_property_verbosely(mtmp, CANCELLED, d(2, 4));
+                                nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
+                            }
 						}
 						break;
 					}

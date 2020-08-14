@@ -693,10 +693,20 @@ struct monst* origmonst;
         break;
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
-		res = 1;
+        res = 1;
+        if (disguised_mimic)
+            seemimic(mtmp);
+        if (!has_cancellation_resistance(mtmp))
+        {
+            (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+            (void)nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
+        }
+        break;
+    case SPE_DISJUNCTION:
+        res = 1;
 		if (disguised_mimic)
             seemimic(mtmp);
-        if(!(mtmp->data->geno & G_UNIQ) || !check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, TELL))
+        if(!has_cancellation_resistance(mtmp))
             (void) cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
@@ -3328,7 +3338,8 @@ struct monst* origmonst;
             break;
         case WAN_CANCELLATION:
         case SPE_CANCELLATION:
-			res = 1;
+        case SPE_DISJUNCTION:
+            res = 1;
 			cancel_item(obj);
 #ifdef TEXTCOLOR
             newsym(obj->ox, obj->oy); /* might change color */
@@ -4965,8 +4976,11 @@ boolean ordinary;
 
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
-		damage = 0;
+    case SPE_DISJUNCTION:
+        damage = 0;
 		(void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
+        if (obj->otyp != SPE_DISJUNCTION)
+            set_itimeout(&HCancellation_resistance, max(HCancellation_resistance & TIMEOUT, 10));
         break;
 
 	case SPE_LOWER_MAGIC_RESISTANCE:
@@ -5573,7 +5587,8 @@ struct obj *obj; /* wand or spell */
 	case WAN_MAKE_INVISIBLE:
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
-	case SPE_LOWER_MAGIC_RESISTANCE:
+    case SPE_DISJUNCTION:
+    case SPE_LOWER_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
 	case SPE_ABOLISH_MAGIC_RESISTANCE:
 	case SPE_NEGATE_MAGIC_RESISTANCE:
@@ -5966,6 +5981,7 @@ struct obj *obj; /* wand or spell */
                 break;
             case WAN_CANCELLATION:
             case SPE_CANCELLATION:
+            case SPE_DISJUNCTION:
             case WAN_MAKE_INVISIBLE:
                 del_engr(e);
                 break;

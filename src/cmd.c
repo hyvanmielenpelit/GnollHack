@@ -4236,7 +4236,14 @@ int final;
 		you_are("in a magically induced sleep", from_what(SLEEPING));
 	if (Cancelled)
 		you_are("cancelled", from_what(CANCELLED));
-	if (Summon_forbidden)
+    if (Cancellation_resistance)
+    {
+        if(Cancelled)
+            you_cannot("be cancelled again", from_what(CANCELLATION_RESISTANCE));
+        else
+            you_cannot("be cancelled", from_what(CANCELLATION_RESISTANCE));
+    }
+    if (Summon_forbidden)
 		you_have("summoning forbidden", from_what(SUMMON_FORBIDDEN));
     if (Crazed)
         you_are("crazed", from_what(CRAZED));

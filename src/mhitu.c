@@ -3719,6 +3719,7 @@ struct attack *mattk;
 				pline("%s stares blindly at your general direction.", Monnam(mtmp));
 			break;
 		}
+#if 0
 		else if (Reflecting)
 		{
 			if (canseemon(mtmp))
@@ -3726,6 +3727,7 @@ struct attack *mattk;
 
 			break;
 		}
+#endif
 		else
 		{
 			if (canseemon(mtmp))
@@ -3735,8 +3737,17 @@ struct attack *mattk;
 				else
 					pline("%s focuses %s anti-magic gaze on you.", Monnam(mtmp), mhis(mtmp));
 			}
-			set_itimeout(&HCancelled, max(HCancelled & TIMEOUT, 7));
-			context.botl = context.botlx = 1;
+            if (Cancellation_resistance)
+            {
+                pline("However, you are unaffected!");
+                u_shieldeff();
+            }
+            else
+            {
+                set_itimeout(&HCancelled, max(HCancelled & TIMEOUT, d(2, 4)));
+                set_itimeout(&HCancellation_resistance, max(HCancellation_resistance& TIMEOUT, 10));
+                context.botl = context.botlx = 1;
+            }
 		}
 		break;
 #if 0 /* work in progress */
@@ -4167,7 +4178,7 @@ struct monst *mon;
         }
     }
     if (!rn2(25))
-        increase_mon_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
+        mon->mspec_used = max(mon->mspec_used, 10 + rnd(40)); // increase_mon_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
     if (!tele_restrict(mon))
         (void) rloc(mon, TRUE);
     return 1;

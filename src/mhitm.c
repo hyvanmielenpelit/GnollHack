@@ -1514,6 +1514,7 @@ register struct obj* omonwep;
 				pline("%s stares blindly at %s general direction.", Monnam(magr), s_suffix(mon_nam(mdef)));
 			break;
 		}
+#if 0
 		else if (is_reflecting(mdef))
 		{
 			if (canseemon(magr))
@@ -1523,6 +1524,7 @@ register struct obj* omonwep;
 			}
 			break;
 		}
+#endif
 		else
 		{
 			if (canseemon(magr))
@@ -1532,7 +1534,16 @@ register struct obj* omonwep;
 				else
 					pline("%s focuses %s anti-magic gaze on %s.", Monnam(magr), mhis(magr), mon_nam(mdef));
 			}
-            (void)nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, 7);
+            if (has_cancellation_resistance(mdef))
+            {
+                pline("However, %s is unaffected!", mon_nam(mdef));
+                m_shieldeff(mdef);
+            }
+            else
+            {
+                (void)nonadditive_increase_mon_property_verbosely(mdef, CANCELLED, d(2, 4));
+                (void)nonadditive_increase_mon_property_verbosely(mdef, CANCELLATION_RESISTANCE, 10);
+            }
 		}
 		break;    
 	case AD_HALU:
@@ -1550,7 +1561,7 @@ register struct obj* omonwep;
     case AD_CURS:
         if (!night() && (pa == &mons[PM_GREMLIN]))
             break;
-        if (!is_cancelled(magr)&& !rn2(10)) 
+        if (!is_cancelled(magr) && !has_cancellation_resistance(mdef) && !rn2(10)) 
         {
             increase_mon_property(mdef, CANCELLED, 100 + rnd(50)); /* cancelled regardless of lifesave */
             mdef->mstrategy &= ~STRAT_WAITFORU;

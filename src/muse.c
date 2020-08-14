@@ -1464,6 +1464,7 @@ register struct monst* origmonst;
 #endif
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
+    case SPE_DISJUNCTION:
         (void) cancel_monst(mtmp, otmp, FALSE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:

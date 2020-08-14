@@ -279,6 +279,10 @@
 #define is_cancelled(mon) \
 	has_cancelled(mon)
 
+/* This is really a delay until one can be cancelled again */
+#define has_cancellation_resistance(mon) \
+	has_property(mon, CANCELLATION_RESISTANCE)
+
 #define has_three_fourths_magic_resistance(mon) \
 	has_property(mon, THREE_FOURTHS_MAGIC_RESISTANCE)
 

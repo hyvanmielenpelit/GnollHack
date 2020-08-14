@@ -1513,7 +1513,7 @@ int *typ, *damn, *damd, *damp;
     switch (sel_adtyp)
     {
     case AD_MAGM:
-        *damn = ml >= 20 ? 16 : 2; /* larger damage is greater magic missile */
+        *damn = ml >= 15 ? 16 : 2; /* larger damage is greater magic missile */
         *damd = 6;
         *damp = 0;
         break;

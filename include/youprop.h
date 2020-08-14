@@ -616,6 +616,11 @@
 #define ECancelled u.uprops[CANCELLED].extrinsic
 #define Cancelled (HCancelled || ECancelled)
 
+#define HCancellation_resistance u.uprops[CANCELLATION_RESISTANCE].intrinsic
+#define ECancellation_resistance u.uprops[CANCELLATION_RESISTANCE].extrinsic
+#define Cancellation_resistance (HCancellation_resistance || ECancellation_resistance)
+
+
 #define HThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RESISTANCE].intrinsic
 #define EThree_fourths_magic_resistance u.uprops[THREE_FOURTHS_MAGIC_RESISTANCE].extrinsic
 #define Three_fourths_magic_resistance (HThree_fourths_magic_resistance || EThree_fourths_magic_resistance)
