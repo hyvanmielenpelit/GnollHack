@@ -9475,22 +9475,14 @@ int spl_otyp;
 void
 armageddon()
 {
-	struct monst* mon, *mtmp, * mmtmp[3];
+	struct monst* mon;
 	int killstyle = rn2(3); //0 = all monsters, but not pets or you, 1 = all monsters and pets, but not you, 2 = also you
 
-	mmtmp[0] = fmon;
-	mmtmp[1] = migrating_mons; // Do not kill migrating mons
-	mmtmp[2] = mydogs; /* for use during level changes */
-	for (mon = mmtmp[0]; mon; mon = mon->nmon)
+	for (mon = fmon; mon; mon = mon->nmon)
 	{
-		if (mon->mtame > 5 && killstyle == 0)
+		if (is_tame(mon) && killstyle == 0)
 			continue;
 
-		for (mtmp = mmtmp[2]; mtmp; mtmp = mtmp->nmon)
-		{
-			if (mtmp == mon && killstyle == 0)
-				continue;
-		}
 		if(!DEADMONSTER(mon))
 		{
 			mon->mhp = 0;

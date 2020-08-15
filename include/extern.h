@@ -1653,6 +1653,7 @@ E boolean FDECL(inside_room, (struct mkroom *, XCHAR_P, XCHAR_P));
 E struct mkroom* FDECL(which_room, (XCHAR_P, XCHAR_P));
 E struct mkroom* FDECL(which_room_by_list, (struct mkroom**, int, XCHAR_P, XCHAR_P));
 E boolean FDECL(somexy, (struct mkroom *, coord *));
+E boolean FDECL(somexy_within_distance, (struct mkroom*, coord, int, coord*));
 E void FDECL(mkundead, (coord *, BOOLEAN_P, int));
 E struct permonst *NDECL(courtmon);
 E void FDECL(save_rooms, (int));

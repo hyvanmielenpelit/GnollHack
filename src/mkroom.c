@@ -1481,6 +1481,106 @@ xchar x, y;
 
 
 boolean
+somexy_within_distance(croom, cpoint, distance, c)
+struct mkroom* croom;
+coord cpoint;
+int distance;
+coord* c;
+{
+    int try_cnt = 0;
+    int i = (int)((croom - rooms) + ROOMOFFSET);
+
+    if (!isok(cpoint.x, cpoint.y))
+        return FALSE;
+    if (distance < 0)
+        return somexy(croom, c);
+
+    if (distance == 0)
+    {
+        c->x = cpoint.x;
+        c->y = cpoint.y;
+        return TRUE;
+    }
+    else if (distance <= 10 && ((!croom->irregular && !croom->nsubrooms) || (croom->irregular)))
+    {
+        int x_min = max(1, cpoint.x - distance);
+        int x_max = min(COLNO - 1, cpoint.x + distance);
+        int y_min = max(0, cpoint.y - distance);
+        int y_max = min(ROWNO - 1, cpoint.y + distance);
+        int x_rand = x_max - x_min + 1;
+        int y_rand = y_max - y_min + 1;
+        if(x_rand <= 1 && y_rand <= 1)
+        {
+            c->x = cpoint.x;
+            c->y = cpoint.y;
+            return TRUE;
+        }
+
+        while (try_cnt++ < 100) 
+        {
+            c->x = x_min + (x_rand > 1 ? rn2(x_rand) : 0);
+            c->y = y_min + (y_rand > 1 ? rn2(y_rand) : 0);
+            if (!IS_WALL(levl[c->x][c->y].typ) && !IS_ROCK(levl[c->x][c->y].typ) && (int)levl[c->x][c->y].roomno == i &&
+                ((!croom->irregular && !croom->nsubrooms) || (croom->irregular && !levl[c->x][c->y].edge))
+                && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
+                return TRUE;
+        }
+    }
+
+    try_cnt = 0;
+    if (croom->irregular) 
+    {
+        while (try_cnt++ < 100) 
+        {
+            c->x = somex(croom);
+            c->y = somey(croom);
+            if (!levl[c->x][c->y].edge && (int)levl[c->x][c->y].roomno == i
+                && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
+                return TRUE;
+        }
+        /* try harder; exhaustively search until one is found */
+        for (c->x = croom->lx; c->x <= croom->hx; c->x++)
+            for (c->y = croom->ly; c->y <= croom->hy; c->y++)
+                if (!levl[c->x][c->y].edge
+                    && (int)levl[c->x][c->y].roomno == i
+                    && dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
+                    return TRUE;
+        return FALSE;
+    }
+
+    if (!croom->nsubrooms)
+    {
+        while (try_cnt++ < 100) {
+            c->x = somex(croom);
+            c->y = somey(croom);
+            if (dist2(cpoint.x, cpoint.y, c->x, c->y) <= distance * distance)
+                return TRUE;
+        }
+        c->x = somex(croom);
+        c->y = somey(croom);
+        return TRUE;
+    }
+
+    /* Check that coords doesn't fall into a subroom or into a wall */
+    while (try_cnt++ < 100) 
+    {
+        c->x = somex(croom);
+        c->y = somey(croom);
+        if (IS_WALL(levl[c->x][c->y].typ) || dist2(cpoint.x, cpoint.y, c->x, c->y) > distance * distance)
+            continue;
+        for (int j = 0; j < croom->nsubrooms; j++)
+            if (inside_room(croom->sbrooms[j], c->x, c->y))
+                goto you_lose;
+        break;
+    you_lose:
+        ;
+    }
+    if (try_cnt >= 100)
+        return FALSE;
+    return TRUE;
+}
+
+boolean
 somexy(croom, c)
 struct mkroom *croom;
 coord *c;

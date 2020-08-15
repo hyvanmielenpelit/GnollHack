@@ -382,12 +382,15 @@ boolean with_you;
         set_residency(mtmp, FALSE);
 
     num_segs = mtmp->wormno;
+
     /* baby long worms have no tail so don't use is_longworm() */
-    if (mtmp->data == &mons[PM_LONG_WORM]) {
+    if (mtmp->data == &mons[PM_LONG_WORM]) 
+    {
         mtmp->wormno = get_wormno();
         if (mtmp->wormno)
             initworm(mtmp, num_segs);
-    } else
+    } 
+    else
         mtmp->wormno = 0;
 
     /* some monsters might need to do something special upon arrival
@@ -404,7 +407,9 @@ boolean with_you;
 
     if (mtmp == u.usteed)
         return; /* don't place steed on the map */
-    if (with_you) {
+    
+    if (with_you) 
+    {
         /* When a monster accompanies you, sometimes it will arrive
            at your intended destination and you'll end up next to
            that spot.  This code doesn't control the final outcome;
@@ -423,19 +428,22 @@ boolean with_you;
      * specify its final destination.
      */
 
-    if (mtmp->mlstmv < monstermoves - 1L) {
+    long nmv = monstermoves - 1L - mtmp->mlstmv;
+    if (nmv > 0) 
+    {
+        /* mtmp->mlstmv < monstermoves - 1L */
         /* heal monster for time spent in limbo */
-        long nmv = monstermoves - 1L - mtmp->mlstmv;
-
         mon_catchup_elapsed_time(mtmp, nmv);
         mtmp->mlstmv = monstermoves - 1L;
 
         /* let monster move a bit on new level (see placement code below) */
         wander = (xchar) min(nmv, 8);
-    } else
+    } 
+    else
         wander = 0;
 
-    switch (xyloc) {
+    switch (xyloc) 
+    {
     case MIGR_APPROX_XY: /* {x,y}locale set above */
         break;
     case MIGR_EXACT_XY:
@@ -460,7 +468,8 @@ boolean with_you;
         xlocale = sstairs.sx, ylocale = sstairs.sy;
         break;
     case MIGR_PORTAL:
-        if (In_endgame(&u.uz)) {
+        if (In_endgame(&u.uz)) 
+        {
             /* there is no arrival portal for endgame levels */
             /* BUG[?]: for simplicity, this code relies on the fact
                that we know that the current endgame levels always
@@ -474,10 +483,13 @@ boolean with_you;
         for (t = ftrap; t; t = t->ntrap)
             if (t->ttyp == MAGIC_PORTAL)
                 break;
-        if (t) {
+        if (t) 
+        {
             xlocale = t->tx, ylocale = t->ty;
             break;
-        } else {
+        }
+        else 
+        {
             impossible("mon_arrive: no corresponding portal?");
         } /*FALLTHRU*/
     default:
@@ -486,26 +498,34 @@ boolean with_you;
         break;
     }
 
-    if ((mtmp->mspare1 & MIGR_LEFTOVERS) != 0L) {
+    if ((mtmp->mspare1 & MIGR_LEFTOVERS) != 0L) 
+    {
         /* Pick up the rest of the MIGR_TO_SPECIES objects */
         if (migrating_objs)
             deliver_obj_to_mon(mtmp, 0, DF_ALL);
     }
 
-    if (xlocale && wander) {
+    if (xlocale && wander) 
+    {
         /* monster moved a bit; pick a nearby location */
         /* mnearto() deals w/stone, et al */
         char *r = in_rooms(xlocale, ylocale, 0);
 
-        if (r && *r) {
+        if (r && *r) 
+        {
             coord c;
 
             /* somexy() handles irregular rooms */
-            if (somexy(&rooms[*r - ROOMOFFSET], &c))
+            coord point = { 0 };
+            point.x = xlocale;
+            point.y = ylocale;
+            if (somexy_within_distance(&rooms[*r - ROOMOFFSET], point, wander, &c))
                 xlocale = c.x, ylocale = c.y;
             else
                 xlocale = ylocale = 0;
-        } else { /* not in a room */
+        } 
+        else 
+        { /* not in a room */
             int i, j;
 
             i = max(1, xlocale - wander);

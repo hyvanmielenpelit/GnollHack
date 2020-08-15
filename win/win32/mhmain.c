@@ -173,7 +173,7 @@ static const unsigned char
 #define KEYTABLE(x) \
     (STATEON(VK_SHIFT) ? KEYTABLE_SHIFT(x) : KEYTABLE_REGULAR(x))
 
-static const char *extendedlist = "abcdefijlmnopqrstuvwxyz?-+.,01235";
+static const char *extendedlist = "abcdefhijlmnopqrstuvwxyz?-+.,01235";
 
 #define SCANLO 0x02
 static const char scanmap[] = {
