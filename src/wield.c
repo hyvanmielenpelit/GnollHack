@@ -1671,7 +1671,7 @@ register int amount;
 
     /* an elven magic clue, cookie@keebler */
     /* elven weapons vibrate warningly when enchanted beyond a limit */
-	if ((weapon->enchantment >= max_ench)
+	if ((weapon->enchantment > max_ench)
 		/*&& (is_elven_weapon(weapon) || weapon->oartifact || !rn2(7)) */ ) /* Vibrates for sure */
 	{
 		play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);

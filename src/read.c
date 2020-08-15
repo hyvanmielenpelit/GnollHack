@@ -1060,16 +1060,15 @@ int curse_bless;
 	is_cursed = curse_bless < 0;
 	is_blessed = curse_bless > 0;
 
-	if (obj && obj->oclass == RING_CLASS && objects[obj->otyp].oc_enchantable)
+	if (obj && (obj->oclass == RING_CLASS || obj->oclass == MISCELLANEOUS_CLASS) && objects[obj->otyp].oc_enchantable)
 	{
 		/* enchantment does not affect ring's curse/bless status */
 		int maxcharge = get_obj_max_enchantment(obj);
-		int safecharge = get_obj_max_enchantment(obj) / 3;
 		int s = is_blessed ? rnd(max(1, maxcharge / 3)) : is_cursed ? -rnd(max(1, maxcharge / 3)) : maxcharge >= 12 ? rnd(max(1, maxcharge / 6)) : 1;
 		boolean is_on = (obj == uleft || obj == uright);
 
 		/* destruction depends on current state, not adjustment */
-		if (obj->enchantment > rn2(max(2, maxcharge - safecharge)) + safecharge || obj->enchantment <= -(5 * maxcharge) / 7)
+		if ((obj->enchantment > maxcharge || obj->enchantment < -maxcharge) && rn2(3))
 		{
 			pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
 				otense(obj, "explode"));
@@ -1088,17 +1087,25 @@ int curse_bless;
 			if (s < 0)
 				costly_alteration(obj, COST_DECHNT);
 			/* cause attributes and/or properties to be updated */
-			if (is_on)
-				Ring_off(obj);
+//			if (is_on)
+//				Ring_off(obj);
 			obj->enchantment += s; /* update the ring while it's off */
-			if (is_on)
-				setworn(obj, mask), Ring_on(obj);
+//			if (is_on)
+//				setworn(obj, mask), Ring_on(obj);
 			/* oartifact: if a touch-sensitive artifact ring is
 			   ever created the above will need to be revised  */
 			   /* update shop bill to reflect new higher price */
 			if (s > 0 && obj->unpaid)
 				alter_cost(obj, 0L);
-		}
+
+            if (obj->enchantment > maxcharge)
+            {
+                play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
+                pline("%s unexpectedly.", Yobjnam2(obj, "suddenly vibrate"));
+            }
+
+            update_all_character_properties(obj, TRUE);
+        }
 	}
 	else
 	{
@@ -1695,7 +1702,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 				alter_cost(otmp, 0L);
 		}
 
-        if (otmp->enchantment >= max_ench)
+        if (otmp->enchantment > max_ench)
         {
             play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_WARNING);
             pline("%s %s.", Yobjnam2(otmp, "suddenly vibrate"),
