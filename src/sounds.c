@@ -4500,7 +4500,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));	
+	int cost = max(1, (int)((400 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));	
 	return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, "enchant an armor", cost, "enchanting an armor");
 }
 
@@ -4511,7 +4511,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((400 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, "enchant a weapon", cost, "enchanting a weapon");
 }
 
@@ -4522,7 +4522,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((150 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((240 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor");
 }
 
@@ -4533,7 +4533,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((150 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((240 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon");
 }
 
@@ -4545,7 +4545,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((600 + 30 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((800 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SPE_PROTECT_ARMOR, "protect an armor", cost, "protecting an armor");
 }
 
@@ -4556,7 +4556,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((600 + 30 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((800 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SPE_PROTECT_WEAPON, "protect a weapon", cost, "protecting a weapon");
 }
 
