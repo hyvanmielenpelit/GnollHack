@@ -468,7 +468,7 @@ MenuWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             } break;
 
             case NM_KILLFOCUS:
-                reset_menu_count(lpnmhdr->hwndFrom, data);
+                //reset_menu_count(lpnmhdr->hwndFrom, data);
                 break;
             }
         } break;
@@ -1739,7 +1739,7 @@ onListChar(HWND hWnd, HWND hwndList, WORD ch)
             }
         }
 
-        if (isdigit((uchar) ch))
+        if (isdigit((uchar) ch) && (data->menu.counting || !is_accelerator))
         {
             int count;
             i = ListView_GetNextItem(hwndList, -1, LVNI_FOCUSED);

@@ -165,14 +165,14 @@ struct monst* origmonst;
         if (origmonst == &youmonst)
         {
             int skill_level = P_SKILL_LEVEL(skill);
-            res += -2 * max(0, P_SKILL_LEVEL(skill) - 1);
+            res += -2 * (max(0, P_SKILL_LEVEL(skill) - 1) - 1);
         }
         else
         {
             if (is_prince(origmonst->data))
-                return -6;
-            else if (is_lord(origmonst->data))
                 return -4;
+            else if (is_lord(origmonst->data))
+                return -2;
         }
     }
 
