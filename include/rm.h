@@ -291,6 +291,12 @@ enum modron_portal_subtypes {
     MAX_MODRON_PORTAL_SUBTYPES
 };
 
+enum arrow_trap_subtypes_types
+{
+    ARROW_TRAP_NORMAL = 0,
+    CROSSBOW_BOLT_TRAP,
+    MAX_ARROW_TRAP_SUBTYPES
+};
 
 /*
  * Avoid using the level types in inequalities:
@@ -455,9 +461,11 @@ enum altar_variation_types
 };
 
 #define FOUNTAIN_VARIATION_OFFSET (ALTAR_VARIATIONS + ALTAR_VARIATION_OFFSET)
-#define MODRON_PORTAL_VARIATION_OFFSET (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
-
-#define MAX_VARIATIONS (MAX_MODRON_PORTAL_SUBTYPES + MODRON_PORTAL_VARIATION_OFFSET)
+#define ARROW_TRAP_VARIATION_OFFSET (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
+#define ARROW_TRAP_VARIATIONS (MAX_ARROW_TRAP_SUBTYPES - 1)
+#define MODRON_PORTAL_VARIATION_OFFSET (ARROW_TRAP_VARIATIONS + ARROW_TRAP_VARIATION_OFFSET)
+#define MODRON_PORTAL_VARIATIONS (MAX_MODRON_PORTAL_SUBTYPES - 1)
+#define MAX_VARIATIONS (MODRON_PORTAL_VARIATIONS + MODRON_PORTAL_VARIATION_OFFSET)
 
 #define is_wall_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_vwall && defsym_variations[(idx)].base_screen_symbol <= S_trwall) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < FLOOR_VARIATION_OFFSET)
 #define is_base_cmap_variation(idx) (defsym_variations[(idx)].base_screen_symbol >= S_stone && defsym_variations[(idx)].base_screen_symbol <= S_dnladder) // ((idx) >= HWALL_VARIATION_OFFSET && (idx) < ALTAR_VARIATION_OFFSET)

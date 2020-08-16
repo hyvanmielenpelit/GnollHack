@@ -370,6 +370,9 @@ long flags;
     ttmp->tflags = 0;
 
     switch (typ) {
+    case ARROW_TRAP:
+        ttmp->tsubtyp = rn2(2);
+        break;
     case SQKY_BOARD: {
         int tavail[12], tpick[12], tcnt = 0, k;
         struct trap *t;
@@ -991,10 +994,11 @@ unsigned trflags;
             && (!rn2(5) || (is_pit(ttype)
                             && is_clinger(youmonst.data))))
 		{
-                You("escape %s %s.", (ttype == ARROW_TRAP && !trap->madeby_u)
-                                     ? "an"
-                                     : a_your[trap->madeby_u],
-                trapdesc);
+            if(trap->madeby_u)
+                You("escape your %s.", trapdesc);
+            else
+                You("escape %s.", an(trapdesc));
+
             return;
         }
     }
@@ -1019,11 +1023,14 @@ unsigned trflags;
         }
         trap->once = 1;
         seetrap(trap);
-        pline("An arrow shoots out at you!");
-        otmp = t_missile(ARROW, trap);
-        if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) {
+        otmp = t_missile(get_shooting_trap_object(trap), trap);
+        pline("%s shoots out at you!", An(cxname_singular(otmp)));
+        if (u.usteed && !rn2(2) && steedintrap(trap, otmp))
+        {
             ; /* nothing */
-        } else if (thitu(8, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, "arrow")) {
+        } 
+        else if (thitu(8, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, (const char*)0)) 
+        {
             if (otmp)
                 obfree(otmp, (struct obj *) 0);
         } else {
@@ -1045,11 +1052,13 @@ unsigned trflags;
         trap->once = 1;
         seetrap(trap);
         pline("A little dart shoots out at you!");
-        otmp = t_missile(DART, trap);
+        otmp = t_missile(get_shooting_trap_object(trap), trap);
         if (!rn2(6))
             otmp->opoisoned = 1;
         oldumort = u.umortality;
-        if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) {
+
+        if (u.usteed && !rn2(2) && steedintrap(trap, otmp)) 
+        {
             ; /* nothing */
         } 
         else if (thitu(7, weapon_total_dmg_value(otmp, &youmonst, (struct monst*)0, 1), &otmp, "little dart")) 
@@ -1063,7 +1072,9 @@ unsigned trflags;
                              0, TRUE, 2);
                 obfree(otmp, (struct obj *) 0);
             }
-        } else {
+        } 
+        else 
+        {
             place_object(otmp, u.ux, u.uy);
             if (!Blind)
                 otmp->dknown = 1;
@@ -1073,26 +1084,33 @@ unsigned trflags;
         break;
 
     case ROCKTRAP:
-        if (trap->once && trap->tseen && !rn2(15)) {
+        if (trap->once && trap->tseen && !rn2(15)) 
+        {
             pline("A trap door in %s opens, but nothing falls out!",
                   the(ceiling(u.ux, u.uy)));
             deltrap(trap);
             newsym(u.ux, u.uy);
-        } else {
+        }
+        else 
+        {
             int dmg = d(2, 6); /* should be std ROCK dmg? */
 
             trap->once = 1;
             feeltrap(trap);
-            otmp = t_missile(ROCK, trap);
+            otmp = t_missile(get_shooting_trap_object(trap), trap);
             place_object(otmp, u.ux, u.uy);
 
             pline("A trap door in %s opens and %s falls on your %s!",
                   the(ceiling(u.ux, u.uy)), an(xname(otmp)), body_part(HEAD));
-            if (uarmh) {
-                if (is_metallic(uarmh)) {
+            if (uarmh) 
+            {
+                if (is_metallic(uarmh)) 
+                {
                     pline("Fortunately, you are wearing a hard helmet.");
                     dmg = 2;
-                } else if (flags.verbose) {
+                } 
+                else if (flags.verbose) 
+                {
                     pline("%s does not protect you.", Yname2(uarmh));
                 }
             }
@@ -1107,15 +1125,19 @@ unsigned trflags;
         break;
 
     case SQKY_BOARD: /* stepped on a squeaky board */
-        if ((Levitation || Flying) && !forcetrap) {
-            if (!Blind) {
+        if ((Levitation || Flying) && !forcetrap) 
+        {
+            if (!Blind) 
+            {
                 seetrap(trap);
                 if (Hallucination)
                     You("notice a crease in the linoleum.");
                 else
                     You("notice a loose board below you.");
             }
-        } else {
+        } 
+        else 
+        {
             seetrap(trap);
             pline("A board beneath you %s%s%s.",
                   Deaf ? "vibrates" : "squeaks ",
@@ -1124,30 +1146,39 @@ unsigned trflags;
         }
         break;
 
-    case BEAR_TRAP: {
+    case BEAR_TRAP: 
+    {
         int dmg = d(2, 4);
 
         if ((Levitation || Flying) && !forcetrap)
             break;
         feeltrap(trap);
+
         if (amorphous(youmonst.data) || is_whirly(youmonst.data)
-            || unsolid(youmonst.data) || noncorporeal(youmonst.data)) {
+            || unsolid(youmonst.data) || noncorporeal(youmonst.data))
+        {
             pline("%s bear trap closes harmlessly through you.",
                   A_Your[trap->madeby_u]);
             break;
         }
-        if (!u.usteed && youmonst.data->msize <= MZ_SMALL) {
+
+        if (!u.usteed && youmonst.data->msize <= MZ_SMALL) 
+        {
             pline("%s bear trap closes harmlessly over you.",
                   A_Your[trap->madeby_u]);
             break;
         }
         set_utrap((unsigned) rn1(4, 4), TT_BEARTRAP);
-        if (u.usteed) {
+
+        if (u.usteed) 
+        {
             pline("%s bear trap closes on %s %s!", A_Your[trap->madeby_u],
                   s_suffix(mon_nam(u.usteed)), mbodypart(u.usteed, FOOT));
             if (thitm(0, u.usteed, (struct obj *) 0, dmg, FALSE))
                 reset_utrap(TRUE); /* steed died, hero not trapped */
-        } else {
+        } 
+        else 
+        {
             pline("%s bear trap closes on your %s!", A_Your[trap->madeby_u],
                   body_part(FOOT));
             set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE, rn1(10, 10));
@@ -1161,12 +1192,16 @@ unsigned trflags;
 
     case SLP_GAS_TRAP:
         seetrap(trap);
-        if (Sleep_resistance || has_innate_breathless(youmonst.data)) {
+        if (Sleep_resistance || has_innate_breathless(youmonst.data)) 
+        {
             You("are enveloped in a cloud of gas!");
-        } else {
+        } 
+        else 
+        {
             pline("A cloud of gas puts you to sleep!");
             fall_asleep(-rn1(7,8), TRUE);
         }
+
         (void) steedintrap(trap, (struct obj *) 0);
         break;
 
@@ -1178,7 +1213,8 @@ unsigned trflags;
          * first rustable one or the body, we take whatever we get,
          * even if it is not rustable.
          */
-        switch (rn2(5)) {
+        switch (rn2(5)) 
+        {
         case 0:
             pline("%s you on the %s!", A_gush_of_water_hits, body_part(HEAD));
             (void) water_damage(uarmh, helm_simple_name(uarmh), TRUE);
@@ -2327,7 +2363,7 @@ register struct monst *mtmp;
                 break;
             }
             trap->once = 1;
-            otmp = t_missile(ARROW, trap);
+            otmp = t_missile(get_shooting_trap_object(trap), trap);
             if (in_sight)
                 seetrap(trap);
             if (thitm(8, mtmp, otmp, 0, FALSE))
@@ -2343,7 +2379,7 @@ register struct monst *mtmp;
                 break;
             }
             trap->once = 1;
-            otmp = t_missile(DART, trap);
+            otmp = t_missile(get_shooting_trap_object(trap), trap);
             if (!rn2(6))
                 otmp->opoisoned = 1;
             if (in_sight)
@@ -2362,7 +2398,7 @@ register struct monst *mtmp;
                 break;
             }
             trap->once = 1;
-            otmp = t_missile(ROCK, trap);
+            otmp = t_missile(get_shooting_trap_object(trap), trap);
             if (in_sight)
                 seetrap(trap);
             if (thitm(0, mtmp, otmp, d(2, 6), FALSE))
@@ -4362,10 +4398,11 @@ boolean bury_it;
             sellobj(otmp, ttmp->tx, ttmp->ty);
         stackobj(otmp);
     }
-    newsym(ttmp->tx, ttmp->ty);
+    int tx = ttmp->tx, ty = ttmp->ty;
     if (u.utrap && ttmp->tx == u.ux && ttmp->ty == u.uy)
         reset_utrap(TRUE);
     deltrap(ttmp);
+    newsym(tx, ty);
 }
 
 /* while attempting to disarm an adjacent trap, we've fallen into it */
@@ -4639,7 +4676,7 @@ struct trap* ttmp;
 		genotyp = WAN_FIRE;
 		break;
 	case ROCKTRAP:
-		genotyp = ROCK;
+		genotyp = get_shooting_trap_object(ttmp);
 		break;
 	default:
 		break;
@@ -5010,11 +5047,12 @@ boolean force;
                 case SQKY_BOARD:
                     return disarm_squeaky_board(ttmp);
                 case DART_TRAP:
-                    return disarm_shooting_trap(ttmp, DART);
+                    return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
                 case ARROW_TRAP:
-                    return disarm_shooting_trap(ttmp, ARROW);
+                    return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
 				case ROCKTRAP:
-				case ROLLING_BOULDER_TRAP:
+                    return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
+                case ROLLING_BOULDER_TRAP:
 				case ANTI_MAGIC_TRAP:
 				case POLY_TRAP:
 				case TELEP_TRAP:
@@ -6032,6 +6070,28 @@ struct trap* trap;
     {
         return defsyms[trap_to_defsym(what_trap(trap->ttyp, rn2_on_display_rng))].explanation;
     }
+}
+
+int
+get_shooting_trap_object(trap)
+struct trap* trap;
+{
+    if (!trap)
+        return 0;
+
+    if (trap->ttyp == ARROW_TRAP)
+    {
+        if (trap->tsubtyp == ARROW_TRAP_NORMAL)
+            return ARROW;
+        else if (trap->tsubtyp == CROSSBOW_BOLT_TRAP)
+            return CROSSBOW_BOLT;
+    }
+    else if (trap->ttyp == DART_TRAP)
+        return DART;
+    else if (trap->ttyp == ROCKTRAP)
+        return ROCK;
+
+    return 0;
 }
 
 /*trap.c*/

@@ -1719,16 +1719,16 @@ coord *tm;
            that kill in a specific way that's obvious after the fact. */
         switch (kind) {
         case ARROW_TRAP:
-            otmp = mksobj(ARROW, TRUE, FALSE, FALSE);
+            otmp = mksobj(t ? get_shooting_trap_object(t) : ARROW, TRUE, FALSE, FALSE);
             otmp->opoisoned = 0;
             /* don't adjust the quantity; maybe the trap shot multiple
                times, there was an untrapping attempt, etc... */
             break;
         case DART_TRAP:
-            otmp = mksobj(DART, TRUE, FALSE, FALSE);
+            otmp = mksobj(t ? get_shooting_trap_object(t) : DART, TRUE, FALSE, FALSE);
             break;
         case ROCKTRAP:
-            otmp = mksobj(ROCK, TRUE, FALSE, FALSE);
+            otmp = mksobj(t ? get_shooting_trap_object(t) : ROCK, TRUE, FALSE, FALSE);
             break;
         default:
             /* no item dropped by the trap */
