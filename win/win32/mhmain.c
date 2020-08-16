@@ -225,10 +225,15 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_MSNH_COMMAND:
+        if (in_wait_loop)
+            return 0;
+
         onMSNHCommand(hWnd, wParam, lParam);
         break;
 
     case WM_KEYDOWN: {
+        if (in_wait_loop)
+            return 0;
 
         /* translate arrow keys into GnollHack commands */
         switch (wParam) {
@@ -420,6 +425,9 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_SYSCHAR: /* Alt-char pressed */
     {
+        if (in_wait_loop)
+            return 0;
+
         /*
           If not GnollHackmode, don't handle Alt-keys here.
           If no Alt-key pressed it can never be an extended command
@@ -438,6 +446,9 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_COMMAND:
+        if (in_wait_loop)
+            return 0;
+
         /* process commands - menu commands mostly */
         if (onWMCommand(hWnd, wParam, lParam))
             return DefWindowProc(hWnd, message, wParam, lParam);

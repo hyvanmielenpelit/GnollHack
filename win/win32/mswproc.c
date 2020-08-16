@@ -54,6 +54,8 @@ static void mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
                                     COLORREF *colorptr);
 static void prompt_for_player_selection(void);
 
+boolean in_wait_loop = FALSE;
+
 #define TOTAL_BRUSHES 10
 HBRUSH brush_table[TOTAL_BRUSHES];
 int max_brush = 0;
@@ -2202,6 +2204,8 @@ mswin_wait_loop(int milliseconds)
     if (threshold > 50000000)
         threshold = 50000000;
 
+    in_wait_loop = TRUE;
+
     do 
     {
         if (GetMessage(&msg, NULL, 0, 0) != 0) 
@@ -2225,6 +2229,8 @@ mswin_wait_loop(int milliseconds)
 
         timepassed = current_largeint.QuadPart - start_largeint.QuadPart;
     } while (timepassed < threshold);
+
+    in_wait_loop = FALSE;
 
 }
 
