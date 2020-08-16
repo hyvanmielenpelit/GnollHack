@@ -2200,9 +2200,9 @@ mswin_wait_loop(int milliseconds)
     FILETIME current_filetime = { 0 };
     ULARGE_INTEGER current_largeint = { 0 };
     ULONGLONG timepassed = 0;
-    ULONGLONG threshold = (ULONGLONG)milliseconds * (ULONGLONG)10000;
-    if (threshold > 50000000)
-        threshold = 50000000;
+    ULONGLONG threshold = (ULONGLONG)milliseconds * 10000ULL;
+    if (threshold > 50000000ULL)
+        threshold = 50000000ULL;
 
     in_wait_loop = TRUE;
 
