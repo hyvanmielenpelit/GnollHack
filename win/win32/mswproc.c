@@ -48,6 +48,7 @@ logDebug(const char *fmt, ...)
 #endif
 
 static void mswin_main_loop(void);
+static void mswin_wait_loop(int milliseconds);
 static BOOL initMapTiles(void);
 static void mswin_color_from_string(char *colorstring, HBRUSH *brushptr,
                                     COLORREF *colorptr);
@@ -1867,14 +1868,16 @@ void
 mswin_delay_output()
 {
     logDebug("mswin_delay_output()\n");
-    Sleep(50);
+    //Sleep(50);
+    mswin_wait_loop(50);
 }
 
 void
 mswin_delay_output_milliseconds(int interval)
 {
     logDebug("mswin_delay_output_milliseconds()\n");
-    Sleep(interval);
+    //Sleep(interval);
+    mswin_wait_loop(interval);
 }
 
 void
@@ -2174,6 +2177,58 @@ mswin_main_loop()
                         MSNH_MSG_RANDOM_INPUT, 0);
         }
     }
+}
+
+void
+mswin_wait_loop(int milliseconds)
+{
+    if (milliseconds <= 0)
+        return;
+
+    MSG msg;
+    SYSTEMTIME start_systime = { 0 };
+    FILETIME start_filetime = { 0 };
+    ULARGE_INTEGER start_largeint = { 0 };
+    GetSystemTime(&start_systime);
+    SystemTimeToFileTime(&start_systime, &start_filetime);
+    start_largeint.LowPart = start_filetime.dwLowDateTime;
+    start_largeint.HighPart = start_filetime.dwHighDateTime;
+
+    SYSTEMTIME current_systime = { 0 };
+    FILETIME current_filetime = { 0 };
+    ULARGE_INTEGER current_largeint = { 0 };
+    ULONGLONG timepassed = 0;
+    ULONGLONG threshold = (ULONGLONG)milliseconds * (ULONGLONG)10000;
+    if (threshold > 50000000)
+        threshold = 50000000;
+
+    do 
+    {
+        if (GetMessage(&msg, NULL, 0, 0) != 0) 
+        {
+            if (GetNHApp()->regGnollHackMode
+                || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable,
+                    &msg)) 
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        else 
+        
+{
+            /* WM_QUIT */
+            break;
+        }
+
+        GetSystemTime(&current_systime);
+        SystemTimeToFileTime(&current_systime, &current_filetime);
+        current_largeint.LowPart = current_filetime.dwLowDateTime;
+        current_largeint.HighPart = current_filetime.dwHighDateTime;
+
+        timepassed = current_largeint.QuadPart - start_largeint.QuadPart;
+    } while (timepassed < threshold);
+
 }
 
 /* clean up and quit */
