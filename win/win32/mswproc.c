@@ -2206,17 +2206,14 @@ mswin_wait_loop(int milliseconds)
     {
         if (GetMessage(&msg, NULL, 0, 0) != 0) 
         {
-            if (GetNHApp()->regGnollHackMode
-                || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable,
-                    &msg)) 
+            if (GetNHApp()->regGnollHackMode || !TranslateAccelerator(msg.hwnd, GetNHApp()->hAccelTable, &msg)) 
             {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
         }
         else 
-        
-{
+        {
             /* WM_QUIT */
             break;
         }
