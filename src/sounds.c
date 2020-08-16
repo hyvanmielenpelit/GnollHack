@@ -2074,20 +2074,21 @@ dochat()
 
 		chatnum++;
 
+		if (mtmp->ispriest && inhistemple(mtmp))
+		{
+			strcpy(available_chat_list[chatnum].name, "Chat about a monetary contribution to the temple");
+			available_chat_list[chatnum].function_ptr = &do_chat_priest_chat;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-		strcpy(available_chat_list[chatnum].name, "Chat about a monetary contribution to the temple");
-		available_chat_list[chatnum].function_ptr = &do_chat_priest_chat;
-		available_chat_list[chatnum].charnum = 'a' + chatnum;
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
 
-		any = zeroany;
-		any.a_char = available_chat_list[chatnum].charnum;
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
 
-		add_menu(win, NO_GLYPH, &any,
-			any.a_char, 0, ATR_NONE,
-			available_chat_list[chatnum].name, MENU_UNSELECTED);
-
-		chatnum++;
-
+			chatnum++;
+		}
 	}
 	else if (is_peaceful(mtmp) && is_priest(mtmp->data) && msound != MS_ORACLE)
 	{
@@ -4178,7 +4179,109 @@ struct monst* mtmp;
 	if (!m_speak_check(mtmp))
 		return 0;
 
-	priest_talk(mtmp);
+	//priest_talk(mtmp);
+
+	long umoney = money_cnt(invent);
+	int u_pay,
+		major_cost = max(1, (int)((1200 + 75 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))),
+		minor_cost = max(1, (int)((300 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int priest_action = 0;
+	char qbuf[QBUFSZ];
+
+	if (!m_general_talk_check(mtmp, "taking your donation") || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to make a major contribution for the temple?\" (%d %s)", major_cost, currency((long)major_cost));
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)major_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = major_cost;
+		priest_action = 1;
+		break;
+		break;
+	case 'n':
+		Sprintf(qbuf, "\"Then would you like to make a minor donation instead?\" (%d %s)",
+			minor_cost, currency((long)minor_cost));
+		if (yn_query(qbuf) != 'y')
+			return 0;
+		if (umoney < (long)minor_cost)
+		{
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = minor_cost;
+		priest_action = 2;
+		break;
+	}
+
+
+	money2mon(mtmp, (long)u_pay);
+	context.botl = 1;
+
+	boolean coaligned = p_coaligned(mtmp);
+	boolean strayed = (u.ualign.record < 0);
+
+	if (priest_action == 2)
+	{
+		verbalize("Thou art indeed a pious individual.");
+		if (coaligned && u.ualign.record <= ALGN_SINNED)
+		{
+			play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
+			adjalign(1);
+		}
+		play_sfx_sound(SFX_PRAY_BLESS_WATER);
+		verbalize("I bestow upon thee a blessing.");
+		incr_itimeout(&HClairvoyant, rn1(500, 500));
+	}
+	else if (priest_action == 1
+		/* u.ublessed is only active when Protection is
+		   enabled via something other than worn gear
+		   (theft by gremlin clears the intrinsic but not
+		   its former magnitude, making it recoverable) */
+		&& (u.ublessed == 0
+			|| (u.ublessed < 12
+				&& (u.ublessed < 8 || !rn2(u.ublessed)))))
+		{
+		play_sfx_sound(SFX_ALTAR_GIFT);
+		verbalize("Thy devotion has been rewarded.");
+		if (u.ublessed == 0)
+			u.ublessed = rnd(3);
+		else
+			u.ublessed++;
+		}
+	else
+	{
+		verbalize("Thy selfless generosity is deeply appreciated.");
+		if (coaligned)
+		{
+			if (strayed && (moves - u.ucleansed) > 5000L)
+			{
+				play_sfx_sound(SFX_ALTAR_ABSOLVED);
+				u.ualign.record = 0; /* cleanse thee */
+				u.ucleansed = moves;
+			}
+			else
+			{
+				play_sfx_sound(SFX_ALTAR_ADD_ALIGNMENT);
+				adjalign(2);
+			}
+		}
+	}
+
+	find_ac();
+	find_mc();
+
 	return 1;
 }
 

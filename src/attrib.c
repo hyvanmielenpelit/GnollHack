@@ -1630,7 +1630,10 @@ int propidx; /* OBSOLETE: special cases can have negative values */
 			else if (innateness == A_FROM_FORM)
 				Strcpy(buf, " from current creature form");
 			else if (u.uprops[propidx].intrinsic & TIMEOUT)
-				Sprintf(buf, because_of, "a temporary effect");
+			{
+				long dur = u.uprops[propidx].intrinsic & TIMEOUT;
+				Sprintf(buf, " because of %s (%ld rounds remaining)", "a temporary effect", dur);
+			}
 			else if (u.uprops[propidx].extrinsic & W_ENVIRONMENT)
 				Sprintf(buf, because_of, "your surroundings");
 			else if (u.uprops[propidx].extrinsic & W_STUCK)

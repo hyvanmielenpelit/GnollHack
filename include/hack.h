@@ -545,6 +545,10 @@ enum bodypart_types {
 #define RANDOM_TIN (-2)
 #define HEALTHY_TIN (-3)
 
+/* these match the categorizations shown by enlightenment */
+#define ALGN_SINNED (-4) /* worse than strayed (-1..-3) */
+#define ALGN_PIOUS 14    /* better than fervent (9..13) */
+
 /* Some misc definitions */
 #define POTION_OCCUPANT_CHANCE(n) (13 + 2 * (n))
 #define WAND_BACKFIRE_CHANCE 100

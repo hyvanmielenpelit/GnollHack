@@ -1176,6 +1176,7 @@ struct monst* mtmp;
         boolean has_extrinsic = FALSE;
         boolean has_instrinsic_acquired = FALSE;
         boolean has_temporary = FALSE;
+        unsigned short temp_dur = 0;
 
         unsigned long ibit = prop_to_innate(i);
         unsigned long ibit2 = prop_to_innate2(i);
@@ -1191,8 +1192,9 @@ struct monst* mtmp;
 
         if (mtmp->mprops[i] & M_INTRINSIC_ACQUIRED)
             has_instrinsic_acquired = TRUE;
-
-        if (mtmp->mprops[i] & M_TIMEOUT)
+        
+        temp_dur = mtmp->mprops[i] & M_TIMEOUT;
+        if (temp_dur)
             has_temporary = TRUE;
 
         boolean has_property = has_innate || has_innate2 || has_extrinsic || has_instrinsic_acquired || has_temporary;
@@ -1231,7 +1233,7 @@ struct monst* mtmp;
                 if (strcmp(endbuf, ""))
                     Strcat(endbuf, ", ");
 
-                Strcat(endbuf, "temporary");
+                Sprintf(eos(endbuf), "temporary for %d rounds", temp_dur);
             }
 
             if (strcmp(endbuf, ""))

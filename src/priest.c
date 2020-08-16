@@ -5,10 +5,6 @@
 #include "hack.h"
 #include "mfndpos.h"
 
-/* these match the categorizations shown by enlightenment */
-#define ALGN_SINNED (-4) /* worse than strayed (-1..-3) */
-#define ALGN_PIOUS 14    /* better than fervent (9..13) */
-
 STATIC_DCL boolean FDECL(histemple_at, (struct monst *, XCHAR_P, XCHAR_P));
 STATIC_DCL boolean FDECL(has_shrine, (struct monst *));
 
@@ -835,7 +831,8 @@ register struct monst *priest;
     /* KMH, conduct */
     u.uconduct.gnostic++;
 
-    if (is_fleeing(priest) || (!priest->ispriest && coaligned && strayed)) {
+    if (is_fleeing(priest) || (!priest->ispriest && coaligned && strayed)) 
+    {
         pline("%s doesn't want anything to do with you!", Monnam(priest));
         priest->mpeaceful = 0;
         return;
@@ -843,14 +840,16 @@ register struct monst *priest;
 
     /* priests don't chat unless peaceful and in their own temple */
     if (!inhistemple(priest) || !is_peaceful(priest)
-        || !mon_can_move(priest)) {
+        || !mon_can_move(priest)) 
+    {
         static const char *cranky_msg[3] = {
             "Thou wouldst have words, eh?  I'll give thee a word or two!",
             "Talk?  Here is what I have to say!",
             "Pilgrim, I would speak no longer with thee."
         };
 
-        if (!mon_can_move(priest)) {
+        if (!mon_can_move(priest)) 
+        {
             pline("%s breaks out of %s reverie!", Monnam(priest),
                   mhis(priest));
             priest->mfrozen = priest->msleeping = 0;
@@ -863,44 +862,63 @@ register struct monst *priest;
 
     /* you desecrated the temple and now you want to chat? */
     if (is_peaceful(priest) && *in_rooms(priest->mx, priest->my, TEMPLE)
-        && !has_shrine(priest)) {
+        && !has_shrine(priest)) 
+    {
         verbalize(
               "Begone!  Thou desecratest this holy place with thy presence.");
         priest->mpeaceful = 0;
         return;
     }
-    if (!money_cnt(invent)) {
-        if (coaligned && !strayed) {
+
+    if (!money_cnt(invent)) 
+    {
+        if (coaligned && !strayed) 
+        {
             long pmoney = money_cnt(priest->minvent);
-            if (pmoney > 0L) {
+            if (pmoney > 0L) 
+            {
                 /* Note: two bits is actually 25 cents.  Hmm. */
                 pline("%s gives you %s for an ale.", Monnam(priest),
                       (pmoney == 1L) ? "one bit" : "two bits");
                 money2u(priest, pmoney > 1L ? 2 : 1);
-            } else
+            }
+            else
                 pline("%s preaches the virtues of poverty.", Monnam(priest));
+
             exercise(A_WIS, TRUE);
-        } else
+        } 
+        else
             pline("%s is not interested.", Monnam(priest));
+
         return;
-    } else {
+    } 
+    else 
+    {
         long offer;
 
         pline("%s asks you for a contribution for the temple.",
               Monnam(priest));
-        if ((offer = bribe(priest)) == 0) {
+        if ((offer = bribe(priest)) == 0) 
+        {
             verbalize("Thou shalt regret thine action!");
             if (coaligned)
                 adjalign(-1);
-        } else if (offer < (u.ulevel * 200)) {
-            if (money_cnt(invent) > (offer * 2L)) {
+        }
+        else if (offer < (u.ulevel * 200))
+        {
+            if (money_cnt(invent) > (offer * 2L)) 
+            {
                 verbalize("Cheapskate.");
-            } else {
+            } 
+            else 
+            {
                 verbalize("I thank thee for thy contribution.");
                 /* give player some token */
                 exercise(A_WIS, TRUE);
             }
-        } else if (offer < (u.ulevel * 400)) {
+        } 
+        else if (offer < (u.ulevel * 400)) 
+        {
             verbalize("Thou art indeed a pious individual.");
             if (money_cnt(invent) < (offer * 2L)) {
                 if (coaligned && u.ualign.record <= ALGN_SINNED)
@@ -908,7 +926,8 @@ register struct monst *priest;
                 verbalize("I bestow upon thee a blessing.");
                 incr_itimeout(&HClairvoyant, rn1(500, 500));
             }
-        } else if (offer < (u.ulevel * 600)
+        }
+        else if (offer < (u.ulevel * 600)
                    /* u.ublessed is only active when Protection is
                       enabled via something other than worn gear
                       (theft by gremlin clears the intrinsic but not

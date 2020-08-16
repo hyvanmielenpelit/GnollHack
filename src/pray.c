@@ -2880,11 +2880,11 @@ absolution_spell()
 
 	u.uprayer_timeout = 0;
 	if (u.uluck < 0)
-		u.uluck = 0, sins_absolved = TRUE;
-	if (u.ualign.record <= 0)
-		u.ualign.record = 1, sins_absolved = TRUE;
+		u.uluck = 0, sins_absolved = TRUE, u.ucleansed = moves;
+	if (u.ualign.record < 0)
+		u.ualign.record = 0, sins_absolved = TRUE, u.ucleansed = moves;
 	if (u.ugangr)
-		u.ugangr = 0, sins_absolved = TRUE;
+		u.ugangr = 0, sins_absolved = TRUE, u.ucleansed = moves;
 
 	if (sins_absolved)
 	{
