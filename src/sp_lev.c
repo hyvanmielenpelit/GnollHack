@@ -4603,8 +4603,10 @@ genericptr_t arg;
 
 	if (levl[x][y].typ == FOUNTAIN)
 	{
-		levl[x][y].fountaintype &= ~FOUNTAIN_TYPE_MASK;
-		levl[x][y].fountaintype |= rn2(6);
+        levl[x][y].subtyp = rn2(6);
+        levl[x][y].fountainmask = 0;
+//        levl[x][y].fountainmask &= ~FOUNTAIN_TYPE_MASK;
+//		levl[x][y].fountainmask |= rn2(6);
 	}
 }
 

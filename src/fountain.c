@@ -169,7 +169,7 @@ dryup(x, y, isyou)
 xchar x, y;
 boolean isyou;
 {
-	int ftyp = (levl[x][y].fountaintype & FOUNTAIN_TYPE_MASK);
+	int ftyp = levl[x][y].subtyp; // (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
 
     if (IS_FOUNTAIN(levl[x][y].typ)
         && (!rn2(ftyp == FOUNTAIN_POWER ? 2 : ftyp == FOUNTAIN_MAGIC ? 3 : 4) || FOUNTAIN_IS_WARNED(x, y)))
@@ -230,7 +230,7 @@ drinkfountain()
 	register int zlevel;
 	zlevel = level_difficulty();
 	boolean fountain_blessed = levl[u.ux][u.uy].blessedftn;
-	int ftyp = (levl[u.ux][u.uy].fountaintype & FOUNTAIN_TYPE_MASK);
+	int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
 
 	if (Levitation && !Levitation_control) 
 	{
@@ -535,7 +535,7 @@ register struct obj *obj;
 	boolean nodryup = FALSE;
 	boolean effecthappened = FALSE;
 
-	int ftyp = (levl[u.ux][u.uy].fountaintype & FOUNTAIN_TYPE_MASK);
+	int ftyp = levl[u.ux][u.uy].subtyp; //(levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
 
     /* Don't grant Excalibur when there's more than one object.  */
     /* (quantity could be > 1 if merged daggers got polymorphed) */
@@ -1069,7 +1069,7 @@ int x, y;
 	if (!IS_FOUNTAIN(levl[x][y].typ))
 		return "a non-fountain";
 
-	int ftyp = (levl[x][y].fountaintype & FOUNTAIN_TYPE_MASK);
+	int ftyp = levl[x][y].subtyp; //  (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
 
 	return FOUNTAIN_IS_KNOWN(x, y) ? (ftyp > FOUNTAIN_MAGIC ? fountain_type_text(ftyp) : levl[x][y].blessedftn ? "enchanted magic fountain" : "magic fountain") : defsyms[S_fountain].explanation;
 }
@@ -1230,18 +1230,18 @@ void
 init_fountains()
 {
 	/*Initialize fountain variations */
-	for (int i = 0; i < LAST_FOUNTAIN; i++)
+	for (int i = 0; i < MAX_FOUNTAIN_SUBTYPES; i++)
 	{
-		context.used_fountain_variation[i] = i;
+		context.used_fountain_subtype[i] = i;
 	}
 
 	/* Water always looks like water, so it is not shuffled */
 	for (int i = 0; i < LAST_SHUFFLED_FOUNTAIN - 1; i++)
 	{
 		int new_i = i + rn2(LAST_SHUFFLED_FOUNTAIN - i);
-		int saved_value = context.used_fountain_variation[i];
-		context.used_fountain_variation[i] = context.used_fountain_variation[new_i];
-		context.used_fountain_variation[new_i] = saved_value;
+		int saved_value = context.used_fountain_subtype[i];
+		context.used_fountain_subtype[i] = context.used_fountain_subtype[new_i];
+		context.used_fountain_subtype[new_i] = saved_value;
 	}
 
 }

@@ -461,7 +461,8 @@ enum altar_variation_types
 };
 
 #define FOUNTAIN_VARIATION_OFFSET (ALTAR_VARIATIONS + ALTAR_VARIATION_OFFSET)
-#define ARROW_TRAP_VARIATION_OFFSET (FOUNTAIN_VARIATIONS + FOUNTAIN_VARIATION_OFFSET)
+#define FOUNTAIN_VARIATIONS (MAX_FOUNTAIN_SUBTYPES) /* Slightly unusual: also subtype 0 has a variation for historical reasons */
+#define ARROW_TRAP_VARIATION_OFFSET (MAX_FOUNTAIN_SUBTYPES + FOUNTAIN_VARIATION_OFFSET)
 #define ARROW_TRAP_VARIATIONS (MAX_ARROW_TRAP_SUBTYPES - 1)
 #define MODRON_PORTAL_VARIATION_OFFSET (ARROW_TRAP_VARIATIONS + ARROW_TRAP_VARIATION_OFFSET)
 #define MODRON_PORTAL_VARIATIONS (MAX_MODRON_PORTAL_SUBTYPES - 1)
@@ -761,7 +762,7 @@ struct rm {
 
 #define doormask flags
 #define altarmask flags
-#define fountaintype flags
+#define fountainmask flags
 
 #define wall_info flags
 #define ladder flags

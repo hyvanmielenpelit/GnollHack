@@ -4252,14 +4252,14 @@ struct monst* mtmp;
 		&& (u.ublessed == 0
 			|| (u.ublessed < 12
 				&& (u.ublessed < 8 || !rn2(u.ublessed)))))
-		{
+	{
 		play_sfx_sound(SFX_ALTAR_GIFT);
 		verbalize("Thy devotion has been rewarded.");
 		if (u.ublessed == 0)
 			u.ublessed = rnd(3);
 		else
 			u.ublessed++;
-		}
+	}
 	else
 	{
 		verbalize("Thy selfless generosity is deeply appreciated.");

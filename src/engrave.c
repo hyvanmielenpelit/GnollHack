@@ -211,7 +211,7 @@ register int x, y;
         return "headstone";
 	else if (IS_FOUNTAIN(levl[x][y].typ))
 	{
-		int ftyp = (levl[x][y].fountaintype & FOUNTAIN_TYPE_MASK);
+        int ftyp = levl[x][y].subtyp; //  (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
 		return FOUNTAIN_IS_KNOWN(x, y) ? fountain_type_text(ftyp) : "fountain";
 	}
     else if ((IS_ROOM(lev->typ) && !Is_earthlevel(&u.uz))

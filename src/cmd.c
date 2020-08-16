@@ -7029,13 +7029,13 @@ boolean doit;
 
     if (IS_FOUNTAIN(typ) || IS_SINK(typ)) 
 	{
-		int ftyp = (levl[u.ux][u.uy].fountaintype & FOUNTAIN_TYPE_MASK);
+        int ftyp = levl[u.ux][u.uy].subtyp; // (levl[u.ux][u.uy].fountainmask & FOUNTAIN_TYPE_MASK);
         Sprintf(buf, "Drink from the %s", IS_FOUNTAIN(typ) ? get_fountain_name(u.ux, u.uy) : defsyms[S_sink].explanation);
         add_herecmd_menuitem(win, dodrink, buf);
     }
 	if (IS_FOUNTAIN(typ))
 	{
-		int ftyp = (levl[u.ux][u.uy].fountaintype & FOUNTAIN_TYPE_MASK);
+        int ftyp = levl[u.ux][u.uy].subtyp; //  (levl[u.ux][u.uy].fountainmask& FOUNTAIN_TYPE_MASK);
 		Sprintf(buf, "Dip something into the %s", get_fountain_name(u.ux, u.uy));
 		add_herecmd_menuitem(win, dodip, buf);
 	}

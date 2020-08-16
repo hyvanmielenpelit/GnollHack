@@ -189,7 +189,7 @@ struct context_info
     struct obj_split objsplit; /* track most recently split object stack */
     struct tribute_info tribute;
     struct novel_tracking novel;
-    uchar used_fountain_variation[MAX_FOUNTAINS];
+    uchar used_fountain_subtype[MAX_FOUNTAIN_SUBTYPES];
     enum layer_types action_animation_layer;
     uchar action_animation_x;
     uchar action_animation_y;

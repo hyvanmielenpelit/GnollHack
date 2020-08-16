@@ -4387,7 +4387,7 @@ struct obj *no_wish;
             
             full_location_transform(x, y, FOUNTAIN, 0, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : 0, FALSE, lhorizontal, FALSE);
 
-            int ftyp = (lev->fountaintype & FOUNTAIN_TYPE_MASK);
+            int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
 			pline("A %s.", ftyp > 0 ? fountain_type_text(ftyp) : lev->blessedftn ? "enchanted fountain" : "magic fountain");
             newsym(x, y);
             return (struct obj *) &zeroobj;

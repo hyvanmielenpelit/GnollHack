@@ -6,7 +6,7 @@
 #define FOUNTAIN_H
 
 /* Fountain types */
-enum fountain_types
+enum fountain_subtypes
 {
 	FOUNTAIN_MAGIC = 0,
 	FOUNTAIN_HEALING = 1,
@@ -14,14 +14,10 @@ enum fountain_types
 	FOUNTAIN_POWER = 3,
 	FOUNTAIN_POISON = 4,
 	FOUNTAIN_WATER = 5,
-	FOUNTAIN_VARIATIONS
+	MAX_FOUNTAIN_SUBTYPES
 };
 
-#define FOUNTAIN_TYPE_MASK 15
-
 #define LAST_SHUFFLED_FOUNTAIN FOUNTAIN_POISON
-#define LAST_FOUNTAIN FOUNTAIN_WATER
-#define MAX_FOUNTAINS (FOUNTAIN_TYPE_MASK + 1)
 
 #endif /* FOUNTAIN_H */
 
