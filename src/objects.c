@@ -2829,7 +2829,7 @@ SPELL("minor consultation",		"damaged", None, "The caster receives a minor hint 
 SPELL("major consultation",		"scratched", None, "The caster receives a major hint about the game",
 	P_DIVINATION_SPELL,			5, 3,			 0, 4, 30, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("detect blessedness",     "orichalcum-plated", None, "Detects whether an item is cursed, uncursed, or blessed",
-      P_DIVINATION_SPELL,		5,  1,			 0, 0, 7, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_COPPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+      P_DIVINATION_SPELL,		5,  1,			 0, 1, 10, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_COPPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("sleep", "mottled", None, "Shoots a sleep ray",
 	P_ENCHANTMENT_SPELL,		5, 1,           25, 5, 50, A_MAX_INT_CHA, 12, 0, 100, 0, 1, RAY, RAY_SLEEP, 0, 0, 0, 2, 6, 7, S1_NONE, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
