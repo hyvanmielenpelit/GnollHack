@@ -2761,14 +2761,14 @@ xchar x, y;
     {
         aligntyp alignment_mask = (ptr->altarmask & ~AM_SHRINE);
         aligntyp alignment = Amask2align(alignment_mask);
-        int var_idx = Is_astralevel(&u.uz) ? 5 :
-            alignment == A_LAWFUL ? 1 :
-            alignment == A_NEUTRAL ? 2 :
-            alignment == A_CHAOTIC ? 3 :
-            alignment == A_NONE /*&& (Is_sanctum(&u.uz) || Is_valley(&u.uz))*/ ? 4 : 0
+        int var_idx = Is_astralevel(&u.uz) ? ALTAR_VARIATION_HIGH :
+            alignment == A_LAWFUL ? ALTAR_VARIATION_LAWFUL :
+            alignment == A_NEUTRAL ? ALTAR_VARIATION_NEUTRAL :
+            alignment == A_CHAOTIC ? ALTAR_VARIATION_CHAOTIC :
+            alignment == A_NONE /*&& (Is_sanctum(&u.uz) || Is_valley(&u.uz))*/ ? ALTAR_VARIATION_MOLOCH : -1
             ;
         int sym_idx = S_altar;
-        if (var_idx == 0)
+        if (var_idx == -1)
         {
             idx = sym_idx;
         }
@@ -2776,7 +2776,7 @@ xchar x, y;
         {
             is_variation = TRUE;
             int var_offset = defsyms[sym_idx].variation_offset;
-            idx = var_offset + var_idx - 1;
+            idx = var_offset + var_idx;
         }
         break;
     }
