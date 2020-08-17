@@ -450,10 +450,11 @@ long flags;
                            ? SHOP_HOLE_COST
                            : 0L);
         int ltype = lev->floortyp ? lev->floortyp : lev->typ;
+        int lsubtype = lev->floorsubtyp ? lev->floorsubtyp : lev->subtyp;
         uchar lflags = 0;
 
         if (ltype == 0 && IS_ROOM(lev->typ)) /* && !IS_AIR(lev->typ) */
-            ltype = ROOM;
+            ltype = ROOM, lsubtype = rn2(4);
         /*
          * some cases which can happen when digging
          * down while phazing thru solid areas
@@ -461,11 +462,14 @@ long flags;
         else if (lev->typ == STONE || lev->typ == SCORR)
             ltype = CORR;
         else if (IS_WALL(lev->typ) || lev->typ == SDOOR)
+        {
             ltype = level.flags.is_maze_lev
-                           ? ROOM
-                           : level.flags.is_cavernous_lev ? CORR : DOOR;
+                ? ROOM
+                : level.flags.is_cavernous_lev ? CORR : DOOR;
 
-        create_basic_floor_location(x, y, ltype, lflags, FALSE);
+            lsubtype = level.flags.is_maze_lev ? rn2(4) : 0;
+        }
+        create_basic_floor_location(x, y, ltype, lsubtype, lflags, FALSE);
         unearth_objs(&youmonst, x, y, FALSE, FALSE);
         break;
     }

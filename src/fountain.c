@@ -573,7 +573,7 @@ register struct obj *obj;
             exercise(A_WIS, TRUE);
         }
         update_inventory();
-		create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, TRUE);
+		create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, levl[u.ux][u.uy].floorsubtyp ? levl[u.ux][u.uy].floorsubtyp : 0, 0, TRUE);
         if (in_town(u.ux, u.uy))
             (void) angry_guards(FALSE);
         return;

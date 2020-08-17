@@ -68,16 +68,15 @@ int typ, subtyp;
         enum floor_subtypes subtype = subtyp;
         switch (subtype)
         {
-        case FLOOR_SUBTYPE_NORMAL:
-            break;
-        case FLOOR_SUBTYPE_MARBLE:
-            break;
         case FLOOR_SUBTYPE_PARQUET:
             material = MAT_WOOD;
             break;
-        case FLOOR_SUBTYPE_STONE_CRACKS:
-            break;
-        case MAX_FLOOR_SUBTYPES:
+        case FLOOR_SUBTYPE_NORMAL:
+        case FLOOR_SUBTYPE_NORMAL_VARIATION_1:
+        case FLOOR_SUBTYPE_NORMAL_VARIATION_2:
+        case FLOOR_SUBTYPE_NORMAL_VARIATION_3:
+        case FLOOR_SUBTYPE_MARBLE:
+            /* Base material type */
             break;
         default:
             break;

@@ -1950,7 +1950,9 @@ void
 dissolve_bars(x, y)
 register int x, y;
 {
-    levl[x][y].typ = (Is_special(&u.uz) || *in_rooms(x, y, 0)) ? ROOM : CORR;
+    boolean floor_is_room = (Is_special(&u.uz) || *in_rooms(x, y, 0));
+    levl[x][y].typ = floor_is_room ? ROOM : CORR;
+    levl[x][y].subtyp = floor_is_room ? !rn2(4) : 0;
     levl[x][y].flags = 0;
     newsym(x, y);
 }

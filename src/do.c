@@ -3373,7 +3373,7 @@ boolean pushing;
 				levl[rx][ry].drawbridgemask |= DB_FLOOR;
 			}
 			else
-				create_basic_floor_location(rx, ry, GROUND, 0, FALSE);
+				create_basic_floor_location(rx, ry, GROUND, 0, 0, FALSE);
                 
 			//levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 
@@ -3694,7 +3694,7 @@ polymorph_sink()
 		else
 		{
 			sym = S_room;
-			create_basic_floor_location(u.ux, u.uy, ROOM, 0, FALSE);
+			create_basic_floor_location(u.ux, u.uy, ROOM, rn2(4), 0, FALSE);
 		}
         make_grave(u.ux, u.uy, (char *) 0);
         if (levl[u.ux][u.uy].typ == GRAVE)
@@ -3734,7 +3734,7 @@ teleport_sink()
         /* create sink at new position */
 		create_simple_location(cx, cy, SINK, levl[u.ux][u.uy].subtyp, levl[u.ux][u.uy].looted, 0, levl[cx][cy].floortyp, levl[cx][cy].floorsubtyp, TRUE);
         /* remove old sink */
-		create_basic_floor_location(u.ux, u.uy, levl[cx][cy].floortyp ? levl[cx][cy].floortyp : ROOM, 0, TRUE);
+		create_basic_floor_location(u.ux, u.uy, levl[cx][cy].floortyp ? levl[cx][cy].floortyp : ROOM, levl[cx][cy].floorsubtyp ? levl[cx][cy].floorsubtyp : 0, 0, TRUE);
         return TRUE;
     }
     return FALSE;
@@ -5707,16 +5707,16 @@ boolean donewsym;
 }
 
 void
-create_basic_floor_location(x, y, type, location_flags, donewsym)
+create_basic_floor_location(x, y, type, subtype, location_flags, donewsym)
 xchar x, y;
-int type;
+int type, subtype;
 uchar location_flags;
 boolean donewsym;
 {
 	if (!isok(x, y))
 		return;
 
-	full_location_transform(x, y, type, 0, location_flags, 0, 0, 0, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, subtype, location_flags, 0, 0, 0, 0, FALSE, FALSE, donewsym);
 }
 
 void

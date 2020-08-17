@@ -754,7 +754,7 @@ remove_boundary_syms()
                 if ((levl[x][y].typ == CROSSWALL) && SpLev_Map[x][y])
                 {
                     levl[x][y].typ = ROOM;
-                    levl[x][y].subtyp = 0;
+                    levl[x][y].subtyp = rn2(4);
                     levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
                     levl[x][y].floorsubtyp = 0;
                 }
@@ -5219,7 +5219,7 @@ struct sp_coder *coder;
     if (!IS_DOOR(levl[x][y].typ)) 
     {
         levl[x][y].typ = OV_i(ftyp);
-        levl[x][y].subtyp = 0;
+        levl[x][y].subtyp = (levl[x][y].typ == ROOM ? rn2(4) : levl[x][y].typ == GRASS ? rn2(3) : 0);
         levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
         levl[x][y].floorsubtyp = 0;
         levl[x][y].flags = 0;

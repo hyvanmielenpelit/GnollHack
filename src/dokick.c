@@ -1368,7 +1368,7 @@ dokick() {
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 pline("Crash!  You kick open a secret passage!");
                 exercise(A_DEX, TRUE);
-                create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, FALSE);
+                create_basic_floor_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : CORR, 0, 0, FALSE);
                 feel_newsym(x, y); /* we know it's gone */
                 unblock_vision_and_hearing_at_point(x, y); /* vision */
                 update_u_action(ACTION_TILE_NO_ACTION);
@@ -1384,7 +1384,7 @@ dokick() {
                 goto dumb;
             if ((Luck < 0 || maploc->doormask) && !rn2(3)) 
             {
-                create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, 0, FALSE);
+                create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, maploc->floorsubtyp ? maploc->floorsubtyp : 0, 0, FALSE);
                 (void) mkgold((long) rnd(200), x, y);
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 if (Blind)
@@ -1474,7 +1474,7 @@ dokick() {
                 adjalign(-sgn(u.ualign.type));
             }
             play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
-            create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, 0, FALSE);
+            create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, maploc->floorsubtyp ? maploc->floorsubtyp : 0, 0, FALSE);
             (void) mksobj_at(ROCK, x, y, TRUE, FALSE);
             del_engr_at(x, y);
             if (Blind)

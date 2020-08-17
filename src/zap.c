@@ -8149,7 +8149,7 @@ short exploding_wand_typ;
                     msgtxt = "Some water evaporates.";
             } else {
                 rangemod -= 3;
-                create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, 0, FALSE);
+                create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
                 t = maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
                 if (t)
                     t->tseen = 1;
@@ -8192,6 +8192,7 @@ short exploding_wand_typ;
                                          : (lev->typ == POOL) ? ICED_POOL
                                                               : ICED_MOAT;
                     lev->typ = lava ? ROOM : ICE;
+                    lev->subtyp = 0;
                 }
                 bury_objs(x, y);
                 if (see_it) {
@@ -8266,7 +8267,7 @@ short exploding_wand_typ;
                 if (*in_rooms(x, y, SHOPBASE)) 
                 {
                     /* in case we ever have a shop bounded by bars */
-                    create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, 0, FALSE);
+                    create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
                     if (see_it)
                         newsym(x, y);
                     add_damage(x, y, (type >= 0) ? SHOP_BARS_COST : 0L);
@@ -8423,7 +8424,7 @@ short exploding_wand_typ;
             else if (r && r->orig_rtype == GARDEN)
                 ltype = GRASS, lsubtype = rn2(3);
             else
-                ltype = ROOM;
+                ltype = ROOM, lsubtype = rn2(4);
             create_simple_location(x, y, ltype, lsubtype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);

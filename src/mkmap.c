@@ -263,10 +263,15 @@ wallify_map()
                     for (xx = x - 1; xx <= x + 1; xx++)
                         if (isok(xx, yy) && (levl[xx][yy].typ == ROOM || levl[xx][yy].typ == GRASS || levl[xx][yy].typ == GROUND))
 						{
+                            levl[xx][yy].floortyp = levl[xx][yy].typ;
+                            levl[xx][yy].floorsubtyp = levl[xx][yy].subtyp;
+
                             if (yy != y)
                                 levl[x][y].typ = HWALL;
                             else
                                 levl[x][y].typ = VWALL;
+
+                            levl[x][y].subtyp = 0;
                         }
             }
 }

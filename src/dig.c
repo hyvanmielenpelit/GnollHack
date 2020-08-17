@@ -72,7 +72,7 @@ boolean waslit, rockit;
     unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* fake out saved state */
-    create_simple_location(x, y, (rockit ? STONE : ROOM), 0, 0, 0, rockit ? CORR : 0, 0, FALSE);
+    create_simple_location(x, y, (rockit ? STONE : ROOM), (rockit ? 0 : rn2(4)), 0, 0, rockit ? CORR : 0, 0, FALSE);
     lev->seenv = 0;
     //lev->doormask = 0;
     if (dist < 3)
@@ -132,6 +132,7 @@ register boolean rockit;
     if (!rockit && levl[u.ux][u.uy].typ == CORR)
     {
         levl[u.ux][u.uy].typ = ROOM; /* flags for CORR already 0 */
+        levl[u.ux][u.uy].subtyp = rn2(4);
         if (waslit)
             levl[u.ux][u.uy].waslit = TRUE;
         newsym(u.ux, u.uy); /* in case player is invisible */
@@ -432,7 +433,7 @@ dig(VOID_ARGS)
             {
                 digtxt = "You cut down the tree.";
 				struct mkroom* r = which_room(dpx, dpy);
-                create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
+                create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? rn2(3) : rn2(4), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
 
 				/* Wood */
 				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
@@ -465,7 +466,7 @@ dig(VOID_ARGS)
             else 
             {
                 digtxt = "You succeed in cutting away some rock.";
-                create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, 0, FALSE);
+                create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, 0, 0, FALSE);
             }
         } 
         else if (IS_WALL(lev->typ)) 
@@ -476,10 +477,12 @@ dig(VOID_ARGS)
                 dmgtxt = "damage";
             }
             int ltype = 0;
+            int lsubtype = 0;
             uchar lflags = 0;
             if (level.flags.is_maze_lev)
             {
                 ltype = ROOM;
+                lsubtype = rn2(4);
             } 
             else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
             {
@@ -489,7 +492,7 @@ dig(VOID_ARGS)
             {
                 ltype = DOOR, lflags = D_NODOOR;
             }
-            create_simple_location(dpx, dpy, ltype, 0, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, FALSE);
+            create_simple_location(dpx, dpy, ltype, lsubtype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, FALSE);
 
             digtxt = "You make an opening in the wall.";
         } 
@@ -970,7 +973,7 @@ coord *cc;
         lev->flags = 0;
         if (typ != ROOM)
         {
-            create_basic_floor_location(dig_x, dig_y, typ, 0, FALSE);
+            create_basic_floor_location(dig_x, dig_y, typ, 0, 0, FALSE);
             liquid_flow(dig_x, dig_y, typ, ttmp,
                         "As you dig, the hole fills with %s!");
             return TRUE;
@@ -1058,7 +1061,7 @@ coord *cc;
         break;
     }
     del_engr_at(dig_x, dig_y);
-    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : ROOM, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : 0, 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
+    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : ROOM, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : rn2(4), 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
     return;
 }
 
@@ -1525,7 +1528,7 @@ register struct monst *mtmp;
     } 
     else if (here->typ == SCORR) 
     {
-        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, FALSE);
+        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, 0, FALSE);
         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
         draft_message(FALSE); /* "You feel a draft." */
@@ -1554,11 +1557,12 @@ register struct monst *mtmp;
             add_damage(mtmp->mx, mtmp->my, 0L);
 
         int ltype = 0;
+        int lsubtype = 0;
         int lflags = 0;
 
         if (level.flags.is_maze_lev)
         {
-            ltype = ROOM, lflags = 0;
+            ltype = ROOM, lsubtype = rn2(4), lflags = 0;
         } 
         else if (level.flags.is_cavernous_lev
                    && !in_town(mtmp->mx, mtmp->my))
@@ -1570,7 +1574,7 @@ register struct monst *mtmp;
             ltype = DOOR, lflags = D_NODOOR;
         }
 
-        create_simple_location(mtmp->mx, mtmp->my, ltype, 0, lflags, back_to_broken_glyph(mtmp->mx, mtmp->my), !IS_FLOOR(ltype) ? here->floortyp : 0, !IS_FLOOR(ltype) ? here->floorsubtyp : 0, FALSE);
+        create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, lflags, back_to_broken_glyph(mtmp->mx, mtmp->my), !IS_FLOOR(ltype) ? here->floortyp : 0, !IS_FLOOR(ltype) ? here->floorsubtyp : 0, FALSE);
     }
     else if (IS_TREE(here->typ))
 	{
@@ -1582,7 +1586,7 @@ register struct monst *mtmp;
         else if (r && r->orig_rtype == GARDEN)
             ltype = GRASS, lsubtype = rn2(3);
 		else
-            ltype = ROOM;
+            ltype = ROOM, lsubtype = rn2(4);
 
         create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, FALSE);
 
@@ -1598,7 +1602,7 @@ register struct monst *mtmp;
     }
     else
     {
-        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, FALSE);
+        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, 0, FALSE);
 
         if (pile && pile < 5)
             (void) mksobj_at((pile == 1) ? BOULDER : ROCK, mtmp->mx, mtmp->my,
@@ -1823,7 +1827,7 @@ struct obj* origobj;
                         add_damage(zx, zy, SHOP_WALL_COST);
                         shopwall = TRUE;
                     }
-                    create_simple_location(zx, zy, ROOM, 0, 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+                    create_simple_location(zx, zy, ROOM, rn2(4), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1844,7 +1848,7 @@ struct obj* origobj;
             {
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
-                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : CORR, 0, FALSE);
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : CORR, 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1859,6 +1863,7 @@ struct obj* origobj;
                 break;
 
             int ltype = 0;
+            int lsubtype = 0;
             uchar lflags = 0;
 
             if (IS_WALL(room->typ) || room->typ == SDOOR)
@@ -1881,7 +1886,8 @@ struct obj* origobj;
             } 
             else if (IS_TREE(room->typ)) 
             {
-                ltype = ROOM;
+                ltype = room->floortyp;
+                lsubtype = room->floorsubtyp;
                 digdepth -= 2;
             } 
             else 
@@ -1889,7 +1895,7 @@ struct obj* origobj;
                 ltype = CORR;
                 digdepth--;
             }
-            create_simple_location(zx, zy, ltype, 0, lflags, back_to_broken_glyph(zx, zy), !IS_FLOOR(ltype) ? room->floortyp : 0, !IS_FLOOR(ltype) ? room->floorsubtyp : 0, FALSE);
+            create_simple_location(zx, zy, ltype, lsubtype, lflags, back_to_broken_glyph(zx, zy), !IS_FLOOR(ltype) ? room->floortyp : 0, !IS_FLOOR(ltype) ? room->floorsubtyp : 0, FALSE);
             unblock_vision_and_hearing_at_point(zx, zy); /* vision */
         }
         zx += u.dx;
@@ -1956,7 +1962,7 @@ struct obj* origobj;
 				}
 				else
 				{ // Leave no pits, evaporation gives a walkable route
-                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, 0, FALSE);
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
                     if (lev->typ == MOAT)
 					{
 						struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
@@ -2041,7 +2047,7 @@ struct obj* origobj;
 			else
 			{ // Leave no pits, evaporation gives a walkable route
 				digdepth -= 1;
-                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, 0, FALSE);
+                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
                 if (lev->typ == MOAT)
 				{
 					struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);

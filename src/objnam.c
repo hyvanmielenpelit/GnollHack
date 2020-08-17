@@ -4385,7 +4385,7 @@ struct obj *no_wish;
 			if (!strncmpi(bp, "poison ", 7))
                 lhorizontal |= FOUNTAIN_POISON;
             
-            full_location_transform(x, y, FOUNTAIN, 0, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : 0, FALSE, lhorizontal, FALSE);
+            full_location_transform(x, y, FOUNTAIN, 0, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : rn2(4), FALSE, lhorizontal, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
 			pline("A %s.", ftyp > 0 ? fountain_type_text(ftyp) : lev->blessedftn ? "enchanted fountain" : "magic fountain");

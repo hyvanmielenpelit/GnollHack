@@ -324,7 +324,7 @@ dosit()
         if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ))
 		{
             /* may have teleported */
-            create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, TRUE);
+            create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, 0, TRUE);
             pline_The("throne vanishes in a puff of logic.");
         }
     } 

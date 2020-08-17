@@ -170,7 +170,11 @@ boolean is_room;
         for (x = lowx; x <= hix; x++) {
             lev = &levl[x][lowy];
             for (y = lowy; y <= hiy; y++)
-                lev++->typ = ROOM;
+            {
+                lev->typ = ROOM;
+                lev->subtyp = rn2(4);
+                lev++;
+            }
         }
         if (is_room) {
             levl[lowx - 1][lowy - 1].typ = TLCORNER;
@@ -2208,6 +2212,7 @@ int dist;
         if (is_pool(x, y))
             break;
         lev->typ = ROOM;
+        lev->subtyp = rn2(4);
         ttmp = maketrap(x, y, FIRE_TRAP, NON_PM, MKTRAP_NO_FLAGS);
         if (ttmp)
             ttmp->tseen = TRUE;
@@ -2217,6 +2222,7 @@ int dist;
     case 3:
     case 6: /* unlit room locations */
         lev->typ = ROOM;
+        lev->subtyp = rn2(4);
         break;
     case 4: /* pools (aka a wide moat) */
     case 5:

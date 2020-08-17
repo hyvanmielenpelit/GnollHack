@@ -536,10 +536,12 @@ xchar x, y;
         }
         digtxt = "chew a hole in the wall.";
         int ltype = 0;
+        int lsubtype = 0;
         uchar lflags = 0;
         if (level.flags.is_maze_lev) 
         {
             ltype = ROOM;
+            lsubtype = rn2(4);
         }
         else if (level.flags.is_cavernous_lev && !in_town(x, y))
         {
@@ -550,7 +552,7 @@ xchar x, y;
             ltype = DOOR;
             lflags = D_NODOOR;
         }
-        create_simple_location(x, y, ltype, 0, lflags, back_to_broken_glyph(x, y), lev->floortyp, lev->floorsubtyp, FALSE);
+        create_simple_location(x, y, ltype, lsubtype, lflags, back_to_broken_glyph(x, y), lev->floortyp, lev->floorsubtyp, FALSE);
 
     } else if (IS_TREE(lev->typ)) {
         digtxt = "chew through the tree.";
