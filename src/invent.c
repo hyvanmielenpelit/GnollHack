@@ -1775,9 +1775,63 @@ int x, y;
 
     for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
         if (otmp->otyp == otyp)
-            break;
+            return otmp;
 
     return otmp;
+}
+
+/* try to find a particular type of object at designated map location */
+struct obj*
+any_obj_at(otyp, x, y)
+int otyp;
+int x, y;
+{
+    register struct obj* otmp;
+
+    /* Memory objects first */
+    for (otmp = level.locations[x][y].hero_memory_layers.memory_objchn; otmp; otmp = otmp->nexthere)
+        if (otmp->otyp == otyp)
+            return otmp;
+
+    /* Then actual */
+    for (otmp = level.objects[x][y]; otmp; otmp = otmp->nexthere)
+        if (otmp->otyp == otyp)
+            return otmp;
+        else if (Is_container(otmp))
+        {
+            struct obj* otmp2 = (struct obj*)0;
+            if (otmp2 = otyp_in_objchn(otyp, otmp->cobj))
+                return otmp2;
+        }
+
+    /* Then buried */
+    for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj)
+        if (otmp->ox == x && otmp->oy == y)
+        {
+            if(otmp->otyp == otyp)
+                return otmp;
+            else if (Is_container(otmp))
+            {
+                struct obj* otmp2 = (struct obj*)0;
+                if (otmp2 = otyp_in_objchn(otyp, otmp->cobj))
+                    return otmp2;
+            }
+        }
+
+    return otmp;
+}
+
+/* Note uses nobj, not nexthere */
+struct obj*
+otyp_in_objchn(otyp, objchn)
+int otyp;
+struct obj* objchn;
+{
+    for (struct obj* otmp = objchn; otmp; otmp = otmp->nobj)
+        if (otmp->otyp == otyp)
+            return otmp;
+
+    return (struct obj*)0;
 }
 
 /* sobj_at(&c) traversal -- find next object of specified type */

@@ -167,11 +167,7 @@ struct obj **obj_p;
     int glyphotyp = glyph_to_obj(glyph);
 
     *obj_p = (struct obj *) 0;
-    /* TODO: check inside containers in case glyph came from detection */
-    if ((otmp = sobj_at(glyphotyp, x, y)) == 0)
-        for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj)
-            if (otmp->ox == x && otmp->oy == y && otmp->otyp == glyphotyp)
-                break;
+    otmp = any_obj_at(glyphotyp, x, y);
 
     /* there might be a mimic here posing as an object */
     mtmp = m_at(x, y);

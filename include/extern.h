@@ -1196,6 +1196,8 @@ E void FDECL(freeinv, (struct obj *));
 E void FDECL(delallobj, (int, int));
 E void FDECL(delobj, (struct obj *));
 E struct obj *FDECL(sobj_at, (int, int, int));
+E struct obj* FDECL(any_obj_at, (int, int, int));
+E struct obj* FDECL(otyp_in_objchn, (int, struct obj*));
 E struct obj *FDECL(nxtobj, (struct obj *, int, BOOLEAN_P));
 E struct obj *FDECL(carrying, (int));
 E boolean NDECL(have_lizard);
