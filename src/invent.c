@@ -1804,7 +1804,7 @@ int x, y;
                 return otmp2;
         }
 
-    /* Then buried */
+    /* Then buried, note that you have to check x and y here */
     for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj)
         if (otmp->ox == x && otmp->oy == y)
         {
@@ -1821,7 +1821,7 @@ int x, y;
     return otmp;
 }
 
-/* Note uses nobj, not nexthere */
+/* Note: uses nobj, not nexthere */
 struct obj*
 otyp_in_objchn(otyp, objchn)
 int otyp;
@@ -1830,6 +1830,12 @@ struct obj* objchn;
     for (struct obj* otmp = objchn; otmp; otmp = otmp->nobj)
         if (otmp->otyp == otyp)
             return otmp;
+        else if (Is_container(otmp))
+        {
+            struct obj* otmp2 = (struct obj*)0;
+            if (otmp2 = otyp_in_objchn(otyp, otmp->cobj))
+                return otmp2;
+        }
 
     return (struct obj*)0;
 }
