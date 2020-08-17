@@ -191,22 +191,22 @@ struct obj **obj_p;
             otmp->corpsenm = MCORPSENM(mtmp);
         else if (otmp->otyp == CORPSE && glyph_is_body(glyph))
         {
-            otmp->corpsenm = glyph - GLYPH_BODY_OFF;
+            otmp->corpsenm = abs(glyph) - GLYPH_BODY_OFF;
             otmp->speflags |= SPEFLAGS_MALE;
         }
         else if (otmp->otyp == CORPSE && glyph_is_female_body(glyph))
         {
-            otmp->corpsenm = glyph - GLYPH_FEMALE_BODY_OFF;
+            otmp->corpsenm = abs(glyph) - GLYPH_FEMALE_BODY_OFF;
             otmp->speflags |= SPEFLAGS_FEMALE;
         }
         else if (otmp->otyp == STATUE && glyph_is_statue(glyph))
         {
-            otmp->corpsenm = glyph - GLYPH_STATUE_OFF;
+            otmp->corpsenm = abs(glyph) - GLYPH_STATUE_OFF;
             otmp->speflags |= SPEFLAGS_MALE;
         }
         else if (otmp->otyp == STATUE && glyph_is_female_statue(glyph))
         {
-            otmp->corpsenm = glyph - GLYPH_FEMALE_STATUE_OFF;
+            otmp->corpsenm = abs(glyph) - GLYPH_FEMALE_STATUE_OFF;
             otmp->speflags |= SPEFLAGS_FEMALE;
         }
         if (otmp->otyp == LEASH)
