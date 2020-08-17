@@ -2566,6 +2566,9 @@ E int FDECL(kick_glyph_to_player_mon, (int));
 E int FDECL(item_use_glyph_to_player_mon, (int));
 E int FDECL(door_use_glyph_to_player_mon, (int));
 E int FDECL(death_glyph_to_player_mon, (int));
+E int FDECL(passive_defense_glyph_to_player_mon, (int));
+E int FDECL(defend_glyph_to_player_mon, (int));
+E int FDECL(damage_receive_glyph_to_player_mon, (int));
 
 /* ### rumors.c ### */
 

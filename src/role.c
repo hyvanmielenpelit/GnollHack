@@ -2976,4 +2976,22 @@ death_glyph_to_player_mon(int glyph)
     return glyph_to_player_mon(glyph - GLYPH_PLAYER_DEATH_OFF + GLYPH_PLAYER_OFF);
 }
 
+int
+damage_receive_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_RECEIVE_DAMAGE_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+passive_defense_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_PASSIVE_DEFENSE_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+defend_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_DEFEND_OFF + GLYPH_PLAYER_OFF);
+}
+
 /* role.c */
