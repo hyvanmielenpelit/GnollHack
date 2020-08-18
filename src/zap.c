@@ -3652,7 +3652,11 @@ boolean stop_at_first_hit_object;
     int hitanything = 0;
     register struct obj *otmp, *next_obj;
     int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
-    int bhitlimit = hit_only_one == 1 ? 1 : hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 0;
+    int bhitlimit = hit_only_one == 1 ? 1 : 
+        hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 
+        hit_only_one == 3 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 4 : 7) :
+        hit_only_one == 4 ? (bucstatus == -1 ? 2 : bucstatus == 0 ? 4 : 6) :
+        0;
 
     if (obj->otyp == SPE_FORCE_BOLT || obj->otyp == WAN_STRIKING)
 	{
@@ -5824,11 +5828,15 @@ struct obj *obj; /* wand or spell */
     struct trap *ttmp;
     char buf[BUFSZ];
     context.bhitcount = 0;
-    uchar hit_only_one = TRUE;
+    uchar hit_only_one = 1;
     if (objects[obj->otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
-        hit_only_one = FALSE;
-    if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
+        hit_only_one = 0;
+    else if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
         hit_only_one = 2; /* 1- 3 targets based on BUC status */
+    else if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_SEVEN_TARGETS)
+        hit_only_one = 3; /* 1- 7 targets based on BUC status */
+    else if (objects[obj->otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
+        hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
     /* some wands have special effects other than normal bhitpile */
     /* drawbridge might change <u.ux,u.uy> */
@@ -6063,7 +6071,9 @@ struct obj *obj;
     {
         disclose = TRUE;
     } 
-    else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS || objects[otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS || objects[otyp].oc_dir == TOUCH)
+    else if (objects[otyp].oc_dir == IMMEDIATE || objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS
+        || objects[otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS || objects[otyp].oc_dir == IMMEDIATE_ONE_TO_SEVEN_TARGETS || objects[otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS
+        || objects[otyp].oc_dir == TOUCH)
     {
         zapsetup(); /* reset obj_zapped */
         if (u.uswallow) 
@@ -6089,11 +6099,15 @@ struct obj *obj;
 			if (objects[otyp].oc_spell_radius > 0)
 				radius = objects[otyp].oc_spell_radius;
 
-			uchar hit_only_one = TRUE;
+			uchar hit_only_one = 1;
 			if (objects[otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
-				hit_only_one = FALSE;
-            if (objects[otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
+				hit_only_one = 0;
+            else if (objects[otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
                 hit_only_one = 2; /* 1- 3 targets based on BUC status */
+            else if (objects[otyp].oc_dir == IMMEDIATE_ONE_TO_SEVEN_TARGETS)
+                hit_only_one = 3; /* 1- 7 targets based on BUC status */
+            else if (objects[otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
+                hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
 			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
@@ -6346,7 +6360,11 @@ boolean stop_at_first_hit_object;
     int skiprange_start = 0, skiprange_end = 0, skipcount = 0;
     context.bhitcount = 0;
     int bucstatus = !obj || obj->cursed ? -1 : obj->blessed ? 1 : 0;
-    int bhitlimit = hit_only_one == 1 ? 1 : hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) : 0;
+    int bhitlimit = hit_only_one == 1 ? 1 : 
+        hit_only_one == 2 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 2 : 3) :
+        hit_only_one == 3 ? (bucstatus == -1 ? 1 : bucstatus == 0 ? 4 : 7) :
+        hit_only_one == 4 ? (bucstatus == -1 ? 2 : bucstatus == 0 ? 4 : 6) :
+        0;
 
     if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
         if(obj)

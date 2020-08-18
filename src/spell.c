@@ -1289,6 +1289,12 @@ int spell;
 		case IMMEDIATE_ONE_TO_THREE_TARGETS:
 			strcpy(buf2, "1/2/3 targets in selected direction depending on blessedness");
 			break;
+		case IMMEDIATE_ONE_TO_SEVEN_TARGETS:
+			strcpy(buf2, "1/4/7 targets in selected direction depending on blessedness");
+			break;
+		case IMMEDIATE_TWO_TO_SIX_TARGETS:
+			strcpy(buf2, "2/4/6 targets in selected direction depending on blessedness");
+			break;
 		default:
 			break;
 		}

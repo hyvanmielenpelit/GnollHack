@@ -4430,12 +4430,15 @@ struct obj *obj;
     dmg = obj->charges * 4;
     affects_objects = FALSE;
 
-    uchar hit_only_one = TRUE;
+    uchar hit_only_one = 1;
     if (objects[obj->otyp].oc_dir == IMMEDIATE_MULTIPLE_TARGETS)
-        hit_only_one = FALSE;
-    if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
+        hit_only_one = 0;
+    else if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_THREE_TARGETS)
         hit_only_one = 2; /* 1- 3 targets based on BUC status */
-
+    else if (objects[obj->otyp].oc_dir == IMMEDIATE_ONE_TO_SEVEN_TARGETS)
+        hit_only_one = 3; /* 1- 7 targets based on BUC status */
+    else if (objects[obj->otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
+        hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
 
     switch (obj->otyp) {
