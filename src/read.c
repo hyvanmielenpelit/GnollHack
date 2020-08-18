@@ -1117,7 +1117,8 @@ int curse_bless;
 	}
 	else
 	{
-		You("have a feeling of loss.");
+        play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+        You("have a feeling of loss.");
 	}
 
 }
@@ -2541,12 +2542,15 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             if (!otmp)
                 return 0;
 
-            if (otmp && otmp->oclass != RING_CLASS && otmp->oclass != MISCELLANEOUS_CLASS)
+            if (otmp && ((otmp->oclass != RING_CLASS && otmp->oclass != MISCELLANEOUS_CLASS) || objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT))
             {
                 play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
-                pline(!Blind
-                    ? "%s then fades."
-                    : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
+                if(objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT)
+                    You("have a feeling of loss.");
+                else
+                    pline(!Blind
+                        ? "%s then fades."
+                        : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
                 sobj = 0;
                 break;
             }

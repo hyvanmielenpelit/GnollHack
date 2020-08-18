@@ -15,10 +15,23 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         PM_ARCHMAGE,
         "archmage",
         "residence",
-        NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING
+        8, 0,
+        NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING,
+        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
     },
 };
 
+schar
+min_npc_appearance_depth()
+{
+    schar minlvl = 0;
+    for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
+    {
+        if (npc_subtype_definitions[i].min_appearance_depth > minlvl)
+            minlvl = npc_subtype_definitions[i].min_appearance_depth;
+    }
+    return (int)minlvl;
+}
 
 void
 forget_npc_entry(npc)

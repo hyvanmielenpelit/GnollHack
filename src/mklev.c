@@ -897,7 +897,7 @@ makelevel()
 
         if (!res && u_depth > 1 && !rn2(7))
             res = mkroom(SMITHY);
-        if (!res && u_depth > 1 && !rn2(7))
+        if (!res && u_depth >= min_npc_appearance_depth() && !rn2(7))
             res = mkroom(NPCROOM);
         if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
 			&& !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))

@@ -222,8 +222,8 @@ gottype:
 
     /* Change floor type */
     enum floor_subtypes subtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
-    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
-        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+    for (x = sroom->lx; x <= sroom->hx; x++)
+        for (y = sroom->ly; y <= sroom->hy; y++)
             if (levl[x][y].typ == ROOM)
                 levl[x][y].subtyp = subtype;
             else if (levl[x][y].floortyp == ROOM)
@@ -298,8 +298,8 @@ mkdesertedshop()
     /* Change floor */
     int x, y;
     enum floor_subtypes subtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
-    for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
-        for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+    for (x = sroom->lx; x <= sroom->hx; x++)
+        for (y = sroom->ly; y <= sroom->hy; y++)
             if (levl[x][y].typ == ROOM)
                 levl[x][y].subtyp = subtype;
             else if (levl[x][y].floortyp == ROOM)
@@ -821,32 +821,44 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
         sroom->rtype = SWAMP;
         for (sx = sroom->lx; sx <= sroom->hx; sx++)
             for (sy = sroom->ly; sy <= sroom->hy; sy++)
+            {
+                if (levl[sx][sy].typ == ROOM)
+                {
+                    levl[sx][sy].typ = GRASS;
+                    levl[sx][sy].subtyp = rn2(3);
+                }
+                else
+                {
+                    levl[sx][sy].floortyp = GRASS;
+                    levl[sx][sy].floorsubtyp = rn2(3);
+                }
+
                 if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy) && !nexttodoor(sx, sy))
-				{
+                {
                     if ((sx + sy) % 2)
-					{
+                    {
                         levl[sx][sy].typ = POOL;
                         levl[sx][sy].subtyp = 0;
                         levl[sx][sy].floortyp = location_type_definitions[POOL].initial_floor_type;
                         levl[sx][sy].floorsubtyp = 0;
                         if (!eelct || !rn2(4))
-						{
+                        {
                             /* mkclass() won't do, as we might get kraken */
-                            (void) makemon(rn2(5)
-                                              ? &mons[PM_GIANT_EEL]
-                                              : rn2(2)
-                                                 ? &mons[PM_PIRANHA]
-                                                 : &mons[PM_ELECTRIC_EEL],
-                                           sx, sy, NO_MM_FLAGS);
+                            (void)makemon(rn2(5)
+                                ? &mons[PM_GIANT_EEL]
+                                : rn2(2)
+                                ? &mons[PM_PIRANHA]
+                                : &mons[PM_ELECTRIC_EEL],
+                                sx, sy, NO_MM_FLAGS);
                             eelct++;
                         }
-                    } 
-					else if (!rn2(4)) /* swamps tend to be moldy */
-                        (void) makemon(mkclass(S_FUNGUS, 0), sx, sy, NO_MM_FLAGS);
+                    }
+                    else if (!rn2(4)) /* swamps tend to be moldy */
+                        (void)makemon(mkclass(S_FUNGUS, 0), sx, sy, NO_MM_FLAGS);
                     else if (!rn2(8)) /* swamps may have cloudberries */
                         (void)mksobj_at(DRAGON_FRUIT, sx, sy, TRUE, FALSE);
                     else if (!rn2(10)) /* swamps may have cloudberries */
-						(void)mksobj_at(CLOUDBERRY, sx, sy, TRUE, FALSE);
+                        (void)mksobj_at(CLOUDBERRY, sx, sy, TRUE, FALSE);
                     else if (!rn2(10)) /* swamps may have cloudberries */
                         (void)mksobj_at(PANTHER_CAP, sx, sy, TRUE, FALSE);
                     else if (!rn2(10)) /* swamps may have cloudberries */
@@ -854,8 +866,12 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                     else if (!rn2(8)) /* swamps may have cloudberries */
                         (void)mksobj_at(!rn2(4) ? CHANTERELLE : !rn2(3) ? PENNY_BUN : !rn2(2) ? CHAMPIGNON : FLY_AGARIC, sx, sy, TRUE, FALSE);
                     else if (!rn2(50)) /* swamps may have phantomberries */
-						(void)mksobj_at(PHANTOMBERRY, sx, sy, TRUE, FALSE);
-				}
+                        (void)mksobj_at(PHANTOMBERRY, sx, sy, TRUE, FALSE);
+                }
+
+            }
+
+
         level.flags.has_swamp = 1;
 		swampnumber++;
     }
@@ -1302,9 +1318,27 @@ mktemple()
      * In temples, shrines are blessed altars
      * located in the center of the room
      */
+
+#if 0
+     /* Change floor type */
+    enum floor_subtypes subtype = FLOOR_SUBTYPE_MARBLE;
+    for (int x = sroom->lx; x <= sroom->hx; x++)
+        for (int y = sroom->ly - 1; y <= sroom->hy; y++)
+            if (levl[x][y].typ == ROOM)
+                levl[x][y].subtyp = subtype;
+            else if (levl[x][y].floortyp == ROOM)
+                levl[x][y].floorsubtyp = subtype;
+#endif
+
     shrine_spot = shrine_pos((int) ((sroom - rooms) + ROOMOFFSET));
     lev = &levl[shrine_spot->x][shrine_spot->y];
+    if (IS_FLOOR(lev->typ))
+    {
+        lev->floortyp = lev->typ;
+        lev->floorsubtyp = lev->subtyp;
+    }
     lev->typ = ALTAR;
+    lev->subtyp = 0;
     lev->altarmask = induced_align(80);
     priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE);
     lev->altarmask |= AM_SHRINE;
@@ -1325,7 +1359,7 @@ mksmithy()
     /* set up the smith and the smithy */
     sroom->rtype = SMITHY;
     /*
-     * In temples, shrines are blessed altars
+     * In smithies, anvils are
      * located in the center of the room
      */
     anvil_spot = anvil_pos((int)((sroom - rooms) + ROOMOFFSET));
@@ -1358,19 +1392,88 @@ mknpcroom()
         return 0;
 
     sroom->rtype = NPCROOM;
-    npcini(&u.uz, sroom, somex(sroom), somey(sroom), MAX_NPC_SUBTYPES > 1 ? rn2(MAX_NPC_SUBTYPES) : NPC_WIZARD);
-    level.flags.has_npc_room = 1;
+    
+    schar u_depth = depth(&u.uz);
+    int npctype = NPC_WIZARD;
 
-    /* The NPC has lights turned on */
-    int x, y;
-    if (!sroom->rlit) {
+    /* Select appropriate NPC */
+    int ok_npc_cnt = 0;
+    boolean is_npc_ok[MAX_NPC_SUBTYPES] = { 0 };
+    for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
+    {
+        is_npc_ok[i] = TRUE;
+        if(npc_subtype_definitions[i].min_appearance_depth > 0 && u_depth < npc_subtype_definitions[i].min_appearance_depth)
+            is_npc_ok[i] = FALSE;
+        if (npc_subtype_definitions[i].max_appearance_depth > 0 && u_depth > npc_subtype_definitions[i].max_appearance_depth)
+            is_npc_ok[i] = FALSE;
 
-        for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
-            for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
-                levl[x][y].lit = 1;
-        sroom->rlit = 1;
+        if (is_npc_ok[i])
+            ok_npc_cnt++;
     }
 
+    if (ok_npc_cnt > 0)
+    {
+        int cnt = 0;
+        int rndidx = (ok_npc_cnt == 1 ? 1 : rn2(ok_npc_cnt));
+        for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
+        {
+            if (is_npc_ok[i])
+                cnt++;
+            if (cnt == rndidx)
+            {
+                npctype = i;
+                break;
+            }
+        }
+    }
+
+
+    if (sroom->doorct > 0 && sroom->fdoor >= 0 && (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_DOORS_CLOSED))
+    {
+        for (int i = 0; i < sroom->doorct; i++)
+        {
+            if(sroom->fdoor + i >= DOORMAX)
+                break;
+
+            int doorx = doors[sroom->fdoor + i].x;
+            int doory = doors[sroom->fdoor + i].y;
+            if (isok(doorx, doory) && levl[doorx][doory].typ == DOOR)
+            {
+                if (levl[doorx][doory].doormask == D_NODOOR || levl[doorx][doory].doormask == D_BROKEN)
+                    levl[doorx][doory].doormask = D_CLOSED;
+            }
+        }
+    }
+
+
+    /* Change floor type */
+    if (npc_subtype_definitions[npctype].general_flags & (NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_MARBLE_FLOOR))
+    {
+        enum floor_subtypes subtype = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_PARQUET_FLOOR) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
+        for (int x = sroom->lx; x <= sroom->hx; x++)
+            for (int y = sroom->ly - 1; y <= sroom->hy; y++)
+                if (levl[x][y].typ == ROOM)
+                    levl[x][y].subtyp = subtype;
+                else if (levl[x][y].floortyp == ROOM)
+                    levl[x][y].floorsubtyp = subtype;
+
+    }
+
+    npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype);
+    level.flags.has_npc_room = 1;
+
+    if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_LIGHTS_ON)
+    {
+        /* The NPC has lights turned on */
+        int x, y;
+        if (!sroom->rlit) {
+
+            for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+                for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+                    levl[x][y].lit = 1;
+            sroom->rlit = 1;
+        }
+    }
     return 1;
 }
 

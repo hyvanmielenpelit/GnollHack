@@ -88,13 +88,22 @@ struct npc_subtype_definition {
     int mnum;
     const char* npc_role_name;
     const char* room_name;
+    schar min_appearance_depth;
+    schar max_appearance_depth;
     unsigned long service_flags;
+    unsigned long general_flags;
 };
 
 extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 
 #define NPC_SERVICE_ENCHANT_ACCESSORY       0x00000001UL
 #define NPC_SERVICE_RECHARGING              0x00000002UL
+
+
+#define NPC_FLAGS_PARQUET_FLOOR             0x00000001UL
+#define NPC_FLAGS_MARBLE_FLOOR              0x00000002UL
+#define NPC_FLAGS_DOORS_CLOSED              0x00000004UL
+#define NPC_FLAGS_LIGHTS_ON              0x00000008UL
 
 
 /* weight increment of heavy iron ball */

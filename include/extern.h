@@ -1969,7 +1969,7 @@ E void FDECL(newenpc, (struct monst*));
 E void FDECL(free_enpc, (struct monst*));
 E void NDECL(clearnpcs);
 E void FDECL(restnpc, (struct monst*, BOOLEAN_P));
-
+E schar NDECL(min_npc_appearance_depth);
 
 /* ### nttty.c ### */
 
