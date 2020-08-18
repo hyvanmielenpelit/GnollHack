@@ -125,7 +125,7 @@ struct monst* mon;
 			{ 
 				/* Normal peaceful monster talk */
 				if(is_peaceful(mon) && !is_undead(mon->data) && !is_demon(mon->data)
-					&& !mon->isshk && !mon->isgd && !mon->ispriest && !mon->issmith && !is_watch(mon->data) && !is_mercenary(mon->data)
+					&& !mon->isshk && !mon->isgd && !mon->ispriest && !mon->issmith && !mon->isnpc && !is_watch(mon->data) && !is_mercenary(mon->data)
 					&& !(mon->iswiz || mon->data == &mons[PM_MEDUSA]
 						|| mon->data->msound == MS_NEMESIS || mon->data->msound == MS_LEADER || mon->data->msound == MS_ORACLE
 						|| mon->data->msound == MS_GUARDIAN || mon->data->msound == MS_BRIBE
@@ -261,6 +261,7 @@ struct monst *mtmp;
 		|| (mtmp->isshk && inhishop(mtmp))
         || (mtmp->ispriest && inhistemple(mtmp))
         || (mtmp->issmith && inhissmithy(mtmp))
+        || (mtmp->isnpc && in_his_npc_room(mtmp))
         )
         return FALSE;
 
@@ -1238,6 +1239,17 @@ register int after;
             goto postmov;
         mmoved = 0;
     }
+
+    if (mtmp->isnpc)
+    {
+        mmoved = npc_move(mtmp);
+        if (mmoved == -2)
+            return 2;
+        if (mmoved >= 0)
+            goto postmov;
+        mmoved = 0;
+    }
+
 
 #ifdef MAIL
     if (ptr == &mons[PM_MAIL_DAEMON])

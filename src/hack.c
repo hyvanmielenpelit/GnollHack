@@ -2766,6 +2766,11 @@ register boolean newlev;
             msg_given = TRUE;
             rt = 0;
             break;
+        case NPCROOM:
+            in_npc_room(roomno + ROOMOFFSET);
+            msg_given = TRUE;
+            rt = 0;
+            break;
         case TEMPLE:
             intemple(roomno + ROOMOFFSET);
             msg_given = TRUE;
@@ -2807,6 +2812,9 @@ register boolean newlev;
                     break;
                 case SMITHY:
                     level.flags.has_smithy = 0;
+                    break;
+                case NPCROOM:
+                    level.flags.has_npc_room = 0;
                     break;
                 case BEEHIVE:
                     level.flags.has_beehive = 0;

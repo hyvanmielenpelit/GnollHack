@@ -1139,6 +1139,14 @@ struct monst *mtmp;
         if (buflen > 0)
             bwrite(fd, (genericptr_t)ESMI(mtmp), buflen);
 
+        if (ENPC(mtmp))
+            buflen = sizeof(struct enpc);
+        else
+            buflen = 0;
+        bwrite(fd, (genericptr_t)&buflen, sizeof buflen);
+        if (buflen > 0)
+            bwrite(fd, (genericptr_t)ENPC(mtmp), buflen);
+
         if (ESHK(mtmp))
             buflen = sizeof(struct eshk);
         else
@@ -1186,6 +1194,8 @@ register struct monst *mtmp;
                 forget_temple_entry(mtmp); /* EPRI() */
             if (mtmp->issmith)
                 forget_smithy_entry(mtmp); /* ESMI() */
+            if (mtmp->isnpc)
+                forget_npc_entry(mtmp); /* ENPC() */
             savemon(fd, mtmp);
         }
         if (mtmp->minvent)

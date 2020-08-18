@@ -1957,6 +1957,20 @@ E const char *FDECL(regex_error_desc, (struct nhregex *));
 E boolean FDECL(regex_match, (const char *, struct nhregex *));
 E void FDECL(regex_free, (struct nhregex *));
 
+/* ### npc.c ### */
+E void FDECL(forget_npc_entry, (struct monst*));
+E int FDECL(npc_move, (struct monst*));
+E char FDECL(npc_room_occupied, (char*));
+E struct monst* FDECL(findnpc, (CHAR_P));
+E boolean FDECL(in_his_npc_room, (struct monst*));
+E void FDECL(in_npc_room, (int));
+E void FDECL(npcini, (d_level*, struct mkroom*, int, int, int));
+E void FDECL(newenpc, (struct monst*));
+E void FDECL(free_enpc, (struct monst*));
+E void NDECL(clearnpcs);
+E void FDECL(restnpc, (struct monst*, BOOLEAN_P));
+
+
 /* ### nttty.c ### */
 
 #ifdef WIN32

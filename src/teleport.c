@@ -1318,9 +1318,11 @@ struct monst *mtmp;
         } else if (mtmp->ispriest && inhistemple(mtmp)) {
             if (levl[x][y].roomno != EPRI(mtmp)->shroom)
                 return FALSE;
-        }
-        else if (mtmp->issmith && inhissmithy(mtmp)) {
+        } else if (mtmp->issmith && inhissmithy(mtmp)) {
             if (levl[x][y].roomno != ESMI(mtmp)->smithy_room)
+                return FALSE;
+        } else if (mtmp->isnpc && in_his_npc_room(mtmp)) {
+            if (levl[x][y].roomno != ENPC(mtmp)->npc_room)
                 return FALSE;
         }
         /* current location is <xx,yy> */

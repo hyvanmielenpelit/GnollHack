@@ -49,6 +49,7 @@
 #define MS_WERE 40      /* lycanthrope in human form */
 #define MS_BOAST 41     /* giants */
 #define MS_SMITH 42     /* offer artisan services */
+#define MS_NPC 43     /* offer artisan services */
 
 /* resistances, and all intrinsics and extrinsics the monster can have */
 #define MR_NONE			        0x00000000UL

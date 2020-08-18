@@ -1107,7 +1107,33 @@ register struct monst *mtmp;
 				(void)mongets(mtmp, WAN_STRIKING);
 			}
 		}
-		else if (ptr->msound == MS_PRIEST
+        else if (ptr == &mons[PM_ARCHMAGE]) 
+        {
+            if (!rn2(2))
+                (void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
+            else if (!rn2(2))
+                (void)mongets(mtmp, !rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : !rn2(2) ? ROBE_OF_PROTECTION : ROBE_OF_EYES);
+            else
+                (void)mongets(mtmp, ROBE);
+
+            if(!rn2(2))
+                (void)mongets(mtmp, BRACERS_OF_DEFENSE);
+            else if (!rn2(2))
+                (void)mongets(mtmp, !rn2(2) ? BRACERS_OF_REFLECTION : !rn2(2) ? BRACERS_OF_SPELL_CASTING : BRACERS_AGAINST_MAGIC_MISSILES);
+            else
+                (void)mongets(mtmp, LEATHER_BRACERS);
+
+            if (!rn2(2))
+                (void)mongets(mtmp, STAFF_OF_THE_MAGI);
+            else if(!rn2(2))
+                (void)mongets(mtmp, !rn2(2) ? STAFF_OF_FIRE : !rn2(2) ? STAFF_OF_THUNDER_AND_LIGHTNING : STAFF_OF_FROST);
+            else
+                (void)mongets(mtmp, QUARTERSTAFF);
+
+            (void)mongets(mtmp, !rn2(2) ? POT_GREATER_HEALING : POT_EXTRA_HEALING);
+
+        }
+        else if (ptr->msound == MS_PRIEST
 			|| quest_mon_represents_role(ptr, PM_PRIEST)) {
 			(void)mongets(mtmp, rn2(7) ? ROBE
 				: rn2(3) ? CLOAK_OF_PROTECTION
@@ -1782,6 +1808,8 @@ xchar x, y; /* clone's preferred location or 0 (near mon) */
         m2->ispriest = FALSE;
     if (mon->issmith)
         m2->issmith = FALSE;
+    if (mon->isnpc)
+        m2->isnpc = FALSE;
     place_monster(m2, m2->mx, m2->my);
 
     if (emitted_light_range(m2->data))
@@ -2062,6 +2090,7 @@ newmextra()
 	mextra->egd = 0;
     mextra->epri = 0;
     mextra->esmi = 0;
+    mextra->enpc = 0;
     mextra->eshk = 0;
     mextra->emin = 0;
     mextra->edog = 0;
@@ -2252,6 +2281,8 @@ int level_limit;
         newepri(mtmp);
     if (mmflags & MM_ESMI)
         newesmi(mtmp);
+    if (mmflags & MM_ENPC)
+        newenpc(mtmp);
     if (mmflags & MM_ESHK)
         neweshk(mtmp);
     if (mmflags & MM_EMIN)

@@ -193,6 +193,7 @@
     <ClCompile Include="$(SrcDir)animation.c" />
     <ClCompile Include="$(SrcDir)soundset.c" />
     <ClCompile Include="$(SrcDir)rm.c" />
+    <ClCompile Include="$(SrcDir)npc.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(IncDir)align.h" />

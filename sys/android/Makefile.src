@@ -324,7 +324,7 @@ HACKCSRC = allmain.c alloc.c animation.c apply.c artifact.c attrib.c ball.c bone
 	   lock.c mail.c makemon.c mapglyph.c matcomps.c mcastu.c mhitm.c mhitu.c minion.c \
 	   mklev.c mkmap.c \
 	   mkmaze.c mkobj.c mkroom.c mon.c mondata.c monmove.c monst.c \
-	   mplayer.c mthrowu.c muse.c music.c o_init.c objects.c objnam.c \
+	   mplayer.c mthrowu.c muse.c music.c npc.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c restore.c \
 	   rip.c rm.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c \

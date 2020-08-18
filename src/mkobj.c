@@ -2641,6 +2641,8 @@ struct monst *mtmp;
         forget_temple_entry(mtmp); /* EPRI() */
     if (mtmp->issmith)
         forget_smithy_entry(mtmp); /* ESMI() */
+    if (mtmp->isnpc)
+        forget_npc_entry(mtmp); /* ENPC() */
     if (!has_omonst(obj))
         newomonst(obj);
     if (has_omonst(obj)) {

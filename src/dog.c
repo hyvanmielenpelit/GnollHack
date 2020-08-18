@@ -1151,7 +1151,7 @@ boolean thrown;
 
     if ((mtmp->mtame) ||  (mtmp->data->geno & G_UNIQ) /* Unique monsters cannot be tamed -- JG */
         /* monsters with conflicting structures cannot be tamed */
-        || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
+        || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc /* shopkeepers, guards, and priests cannot be forced to be tame for now -- JG */
         || (!forcetaming && 
 			(mtmp->isminion /* minions cannot be tamed, not sure why this is --JG */
 			|| is_covetous(mtmp->data)

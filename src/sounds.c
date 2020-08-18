@@ -57,6 +57,9 @@ STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
@@ -459,7 +462,33 @@ dosounds()
 		}
 	}
 
-    if (Is_oracle_level(&u.uz) && !rn2(400))
+	if (level.flags.has_npc_room && !rn2(200) && !Deaf)
+	{
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+		{
+			if (DEADMONSTER(mtmp))
+				continue;
+			if (mtmp->isnpc && in_his_npc_room(mtmp)
+				/* priest must be active */
+				&& mon_can_move(mtmp)
+				/* hero must be outside this temple */
+				&& npc_room_occupied(u.urooms) != ENPC(mtmp)->npc_room)
+				break;
+		}
+		if (mtmp)
+		{
+			static const char* const npc_msg[] = {
+				"somebody mumbling.", "distant chitchat.",
+				"footsteps at a distance.",
+			};
+			const char* msg;
+			msg = npc_msg[rn2(SIZE(npc_msg))];
+			You_hear1(msg);
+			return;
+		}
+	}
+
+	if (Is_oracle_level(&u.uz) && !rn2(400))
 	{
         /* make sure the Oracle is still here */
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -791,6 +820,13 @@ register struct monst *mtmp;
 	case MS_SMITH: /* pitch, pay, total */
 		if (is_peaceful(mtmp))
 			Sprintf(verbuf, "Welcome to my smithy, adventurer!");
+		else
+			Sprintf(verbuf, "You rotten thief!");
+		verbl_msg = verbuf;
+		break;
+	case MS_NPC: /* pitch, pay, total */
+		if (is_peaceful(mtmp))
+			Sprintf(verbuf, "Welcome to my residence, adventurer!");
 		else
 			Sprintf(verbuf, "You rotten thief!");
 		verbl_msg = verbuf;
@@ -2368,6 +2404,57 @@ dochat()
 
 	}
 
+	/* NPCs */
+	if (msound == MS_NPC || mtmp->isnpc)
+	{
+		if (!is_peaceful(mtmp))
+		{
+			strcpy(available_chat_list[chatnum].name, "Ask for reconciliation");
+			available_chat_list[chatnum].function_ptr = &do_chat_npc_reconciliation;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+		if (is_peaceful(mtmp) && mtmp->mextra && ENPC(mtmp) && !mtmp->mrevived) /* no mrivived here to prevent abuse*/
+		{
+			Sprintf(available_chat_list[chatnum].name, "Ask for accessory enchantment");
+			available_chat_list[chatnum].function_ptr = &do_chat_npc_enchant_accessory;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
+			Sprintf(available_chat_list[chatnum].name, "Ask for recharging an item");
+			available_chat_list[chatnum].function_ptr = &do_chat_npc_recharge;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+		}
+
+	}
+
+
 	/* Watchmen */
 	if (is_watch(mtmp->data))
 	{
@@ -2535,6 +2622,16 @@ struct monst* mtmp;
 			Sprintf(ansbuf, "I am %s, a local smith.", MNAME(mtmp));
 		else
 			Sprintf(ansbuf, "I am a local smith.");
+
+		mtmp->u_know_mname = 1;
+		verbalize(ansbuf);
+	}
+	else if (mtmp->isnpc)
+	{
+		if (has_mname(mtmp))
+			Sprintf(ansbuf, "I am %s, an archmage.", MNAME(mtmp));
+		else
+			Sprintf(ansbuf, "I am an archmage.");
 
 		mtmp->u_know_mname = 1;
 		verbalize(ansbuf);
@@ -4603,7 +4700,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((400 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));	
+	int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));	
 	return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, "enchant an armor", cost, "enchanting an armor");
 }
 
@@ -4614,7 +4711,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((400 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, "enchant a weapon", cost, "enchanting a weapon");
 }
 
@@ -4625,7 +4722,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((240 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return general_service_query(mtmp, repair_armor_func, "repair an armor", cost, "repairing an armor");
 }
 
@@ -4636,7 +4733,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((240 + 15 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return general_service_query(mtmp, repair_weapon_func, "repair a weapon", cost, "repairing a weapon");
 }
 
@@ -4648,7 +4745,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((800 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SPE_PROTECT_ARMOR, "protect an armor", cost, "protecting an armor");
 }
 
@@ -4659,7 +4756,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->issmith || !mtmp->mextra || !ESMI(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((800 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SPE_PROTECT_WEAPON, "protect a weapon", cost, "protecting a weapon");
 }
 
@@ -4674,6 +4771,81 @@ struct monst* mtmp;
 	return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern");
 }
 
+
+STATIC_OVL int
+do_chat_npc_reconciliation(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+		return 0;
+
+	long umoney;
+	long u_pay;
+	long reconcile_cost = max(1, (int)((1000 + u.ulevel * 100 + (mtmp->mrevived ? u.ulevel * 100 : 0)) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!mtmp) {
+		There("is no one here to talk to.");
+		return 0;
+	}
+	else if (!m_speak_check(mtmp))
+		return 0;
+
+
+	Sprintf(qbuf, "\"You need to pay %d %s in compensation. Agree?\"", reconcile_cost, currency(reconcile_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)reconcile_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = reconcile_cost;
+		break;
+	}
+
+	money2mon(mtmp, u_pay);
+	context.botl = 1;
+
+	mtmp->mpeaceful = 1;
+	newsym(mtmp->mx, mtmp->my);
+
+	if (is_peaceful(mtmp))
+		pline("\"That's a deal. Be more careful next time.\"");
+	else
+		pline("\"On second thought, maybe you should hang for your crimes anyway.\"");
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_npc_enchant_accessory(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+		return 0;
+
+	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, "enchant an accessory", cost, "enchanting an accessory");
+}
+
+STATIC_OVL int
+do_chat_npc_recharge(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+		return 0;
+
+	int cost = max(1, (int)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return spell_service_query(mtmp, SCR_CHARGING, "recharge an item", cost, "recharging an item");
+}
 
 
 STATIC_OVL int
@@ -4754,9 +4926,9 @@ service_cost_charisma_adjustment(cha)
 int cha;
 {
 	if (cha < 1 || cha > 25)
-		return 1;
+		return 1.0;
 
-	return pow(2.0, (11.0 - (double)cha) / 8.0);
+	return pow(2.0, (11.0 - (double)cha) / 14.0);
 }
 
 

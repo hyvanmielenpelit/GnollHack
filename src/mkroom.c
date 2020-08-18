@@ -24,6 +24,7 @@ STATIC_DCL int FDECL(mkzoo, (int)), NDECL(mkswamp), NDECL(mkgarden), NDECL(mkdra
 STATIC_DCL int NDECL(mktemple);
 STATIC_DCL coord* FDECL(shrine_pos, (int));
 STATIC_DCL int NDECL(mksmithy);
+STATIC_DCL int NDECL(mknpcroom);
 STATIC_DCL coord* FDECL(anvil_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
 STATIC_DCL struct permonst *FDECL(librarymon, (int));
@@ -86,6 +87,9 @@ int roomtype;
             break;
         case SMITHY:
             return mksmithy();
+            break;
+        case NPCROOM:
+            return mknpcroom();
             break;
         case LEPREHALL:
 			return mkzoo(LEPREHALL);
@@ -1332,6 +1336,32 @@ mksmithy()
     level.flags.has_smithy = 1;
 
     /* The smith has lights turned on */
+    int x, y;
+    if (!sroom->rlit) {
+
+        for (x = sroom->lx - 1; x <= sroom->hx + 1; x++)
+            for (y = sroom->ly - 1; y <= sroom->hy + 1; y++)
+                levl[x][y].lit = 1;
+        sroom->rlit = 1;
+    }
+
+    return 1;
+}
+
+
+STATIC_OVL int
+mknpcroom()
+{
+    register struct mkroom* sroom;
+
+    if (!(sroom = pick_room(TRUE)))
+        return 0;
+
+    sroom->rtype = NPCROOM;
+    npcini(&u.uz, sroom, somex(sroom), somey(sroom), 0);
+    level.flags.has_npc_room = 1;
+
+    /* The NPC has lights turned on */
     int x, y;
     if (!sroom->rlit) {
 

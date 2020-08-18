@@ -219,6 +219,7 @@ typedef struct mapseen {
         Bitfield(nshop, 2);
         Bitfield(ntemple, 2);
         Bitfield(nsmithy, 2);
+        Bitfield(nnpcroom, 2);
         /* altar alignment; MSA_NONE if there is more than one and
            they aren't all the same */
         Bitfield(msalign, 2);

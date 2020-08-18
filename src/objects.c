@@ -2676,7 +2676,7 @@ SPELL("circle of frost",	"pearl-studded", None, "Damages the monsters around you
 SPELL("globe of invulnerability", "striped", "some long-forgotten arcane magic", "Makes the caster invulnerable to physical damage",
 	  P_ARCANE_SPELL,            5,  1,         60, 9,200, A_INT, 0, 0, 100, 0, 1, NODIR, INVULNERABLE, 0, 0, 0, 1, 6, 4, S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_INDESTRUCTIBLE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("anti-magic shell",   "immaculate", None, "Grants resistance to magic",
-	P_ARCANE_SPELL,	             5,  1,		   120, 7,100, A_INT, 0, 0, 100, 0, 1, NODIR, ANTIMAGIC, 0, 0, 0, 10, 6, 25, S1_NONE, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	P_ARCANE_SPELL,	             5,  1,		   120, 3, 30, A_INT, 0, 0, 100, 0, 1, NODIR, ANTIMAGIC, 0, 0, 0, 10, 6, 25, S1_NONE, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("shield",       "obsidian-studded", None, "Gives -4 bonus to AC",
 	P_ARCANE_SPELL,			     5,  3,		     0, 1, 10, A_INT, 0, 0, 100, 0, 1, NODIR, MAGICAL_SHIELDING, 0, 0, 0, 2, 10, 130, S1_NONE, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 

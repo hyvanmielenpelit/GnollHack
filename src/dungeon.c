@@ -2419,7 +2419,7 @@ d_level *lev;
 
 #define INTEREST(feat)                                                \
     ((feat).nfount || (feat).nsink || (feat).nthrone || (feat).naltar \
-     || (feat).ngrave || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy)
+     || (feat).ngrave || (feat).ntree || (feat).nshop || (feat).ntemple || (feat).nsmithy || (feat).nnpcroom)
   /* || (feat).water || (feat).ice || (feat).lava */
 
 /* returns true if this level has something interesting to print out */
@@ -2534,6 +2534,9 @@ recalc_mapseen()
             : (rooms[ridx].rtype == SMITHY)
             ? (!(mtmp = findsmith(u.urooms[i]))
                 || !inhissmithy(mtmp))
+            : (rooms[ridx].rtype == NPCROOM)
+            ? (!(mtmp = findnpc(u.urooms[i]))
+                || !in_his_npc_room(mtmp))
             : 0;
     }
 
@@ -2564,10 +2567,15 @@ recalc_mapseen()
             } 
             else if (rooms[i].rtype == SMITHY)
             {
-                /* altar and temple alignment handled below */
                 count = mptr->feat.nsmithy + 1;
                 if (count <= 3)
                     mptr->feat.nsmithy = count;
+            }
+            else if (rooms[i].rtype == NPCROOM)
+            {
+                count = mptr->feat.nnpcroom + 1;
+                if (count <= 3)
+                    mptr->feat.nnpcroom = count;
             }
             else if (rooms[i].orig_rtype == DELPHI)
             {
@@ -3083,6 +3091,7 @@ boolean printdun;
                 Sprintf(eos(buf), " to %s", align_gname(u.ualign.type));
         }
         ADDNTOBUF("smithy", mptr->feat.nsmithy);
+        ADDNTOBUF("residence", mptr->feat.nnpcroom);
 
         ADDNTOBUF("throne", mptr->feat.nthrone);
         ADDNTOBUF("fountain", mptr->feat.nfount);

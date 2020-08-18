@@ -71,6 +71,7 @@ enum roomtype_types {
     COCKNEST,   /* cockatrice nest (Tom Proudfoot) */
     ANTHOLE,    /* ants (Tom Proudfoot) */
     SMITHY,     /* contains an anvil and a smith */
+    NPCROOM,    /* contains a non-player character */
     DESERTEDSHOP,   /* a deserted shop */
 	SHOPBASE,   /* everything above this is a shop */
     ARMORSHOP,  /* specific shop defines for level compiler */

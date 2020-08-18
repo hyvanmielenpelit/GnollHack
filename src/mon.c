@@ -76,6 +76,8 @@ const char *msg;
         impossible("priest without epri (%s)", msg);
     if (mtmp->issmith && !has_esmi(mtmp))
         impossible("smith without esmi (%s)", msg);
+    if (mtmp->isnpc && !has_enpc(mtmp))
+        impossible("non-player character without enpc (%s)", msg);
     if (mtmp->isgd && !has_egd(mtmp))
         impossible("guard without egd (%s)", msg);
     if (mtmp->isminion && !has_emin(mtmp))
@@ -2642,7 +2644,7 @@ struct monst *magr, /* monster that is currently deciding where to move */
 	if (mon_has_bloodlust(magr))
 	{
 		if(is_peaceful(mdef) && !is_tame(mdef) && is_living(mdef->data) && !is_vampshifter(mdef) && !is_demon(mdef->data)
-            && !mdef->isshk && !mdef->ispriest && !mdef->issmith && !mdef->iswiz)
+            && !mdef->isshk && !mdef->ispriest && !mdef->issmith && !mdef->isnpc && !mdef->iswiz)
 			return ALLOW_M;
 	}
 #endif
@@ -2877,6 +2879,12 @@ struct monst *mtmp2, *mtmp1;
         if (ESMI(mtmp2))
             *ESMI(mtmp2) = *ESMI(mtmp1);
     }
+    if (ENPC(mtmp1)) {
+        if (!ENPC(mtmp2))
+            newenpc(mtmp2);
+        if (ENPC(mtmp2))
+            *ENPC(mtmp2) = *ENPC(mtmp1);
+    }
     if (ESHK(mtmp1)) {
         if (!ESHK(mtmp2))
             neweshk(mtmp2);
@@ -2916,6 +2924,8 @@ struct monst *m;
             free((genericptr_t) x->epri);
         if (x->esmi)
             free((genericptr_t)x->esmi);
+        if (x->enpc)
+            free((genericptr_t)x->enpc);
         if (x->eshk)
             free((genericptr_t) x->eshk);
         if (x->emin)
@@ -4094,7 +4104,7 @@ boolean via_attack;
                 && !is_blinded(mon) && m_canseeu(mon)) {
                 boolean exclaimed = FALSE;
 
-                if (humanoid(mon->data) || mon->isshk || mon->ispriest || mon->issmith) {
+                if (humanoid(mon->data) || mon->isshk || mon->ispriest || mon->issmith || mon->isnpc) {
                     if (is_watch(mon->data)) {
                         verbalize("Halt!  You're under arrest!");
                         (void) angry_guards(!!Deaf);
@@ -4519,7 +4529,7 @@ STATIC_OVL boolean
 isspecmon(mon)
 struct monst *mon;
 {
-    return (mon->isshk || mon->ispriest || mon->issmith || mon->isgd
+    return (mon->isshk || mon->ispriest || mon->issmith || mon->isnpc || mon->isgd
             || mon->m_id == quest_status.leader_m_id);
 }
 

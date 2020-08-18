@@ -59,6 +59,7 @@ struct monst* mtmp;
     mtmp->issmith = 0;
 }
 
+
 /*
  * Move for priests and shopkeepers.  Called from shk_move() and pri_move().
  * Valid returns are  1: moved  0: didn't  -1: let m_move do it  -2: died.
@@ -435,7 +436,6 @@ int smithtype;
         smith->mtrapseen = ~0; /* traps are known */
         smith->mpeaceful = 1;
         smith->issmith = 1;
-        smith->isminion = 0;
         smith->msleeping = 0;
         set_malign(smith); /* mpeaceful may have changed */
     }

@@ -1317,7 +1317,7 @@ do_mname()
 			mtmp->u_know_mname = 1;
 			verbalize("I'm %s, not %s.", shkname(mtmp), buf);
 		}
-    } else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith) {
+    } else if (mtmp->ispriest || mtmp->isminion || mtmp->isshk || mtmp->issmith || mtmp->isnpc) {
         if (!alreadynamed(mtmp, monnambuf, buf))
             pline("%s will not accept the name %s.", upstart(monnambuf), buf);
     }

@@ -435,6 +435,12 @@ struct monst *mtmp;
             newesmi(mtmp);
             mread(fd, (genericptr_t)ESMI(mtmp), sizeof(struct esmi));
         }
+        /* enpc - non-player character */
+        mread(fd, (genericptr_t)&buflen, sizeof(buflen));
+        if (buflen > 0) {
+            newenpc(mtmp);
+            mread(fd, (genericptr_t)ENPC(mtmp), sizeof(struct enpc));
+        }
         /* eshk - shopkeeper */
         mread(fd, (genericptr_t) &buflen, sizeof(buflen));
         if (buflen > 0) {
@@ -523,6 +529,8 @@ boolean ghostly;
             restpriest(mtmp, ghostly);
         if (mtmp->issmith)
             restsmith(mtmp, ghostly);
+        if (mtmp->isnpc)
+            restnpc(mtmp, ghostly);
 
         if (!ghostly) {
             if (mtmp->m_id == context.polearm.m_id)

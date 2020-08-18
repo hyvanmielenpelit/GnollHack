@@ -78,6 +78,7 @@ STATIC_DCL void FDECL(create_object, (object *, struct mkroom *));
 STATIC_DCL void FDECL(create_altar, (altar *, struct mkroom *));
 STATIC_DCL void FDECL(create_anvil, (anvil*, struct mkroom*));
 STATIC_DCL void FDECL(create_modron_portal, (modron_portal*, struct mkroom*));
+STATIC_DCL void FDECL(create_npc, (npc_create_info*, struct mkroom*));
 STATIC_DCL void FDECL(replace_terrain, (replaceterrain *, struct mkroom *));
 STATIC_DCL boolean FDECL(search_door, (struct mkroom *,
                                        xchar *, xchar *, XCHAR_P, int));
@@ -148,6 +149,7 @@ STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_replace_terrain, (struct sp_coder *));
 STATIC_DCL boolean FDECL(generate_way_out_method, (int, int, struct opvar *));
@@ -2318,6 +2320,38 @@ struct mkroom* croom;
     level.flags.has_smithy = TRUE;
 }
 
+
+/*
+ * Create an anvil in a room.
+ */
+STATIC_OVL void
+create_npc(a, croom)
+npc_create_info* a;
+struct mkroom* croom;
+{
+    schar sproom, x = -1, y = -1;
+    boolean croom_is_npc_room = TRUE;
+
+    if (croom) {
+        get_free_room_loc(&x, &y, croom, a->coord);
+        if (croom->rtype != NPCROOM)
+            croom_is_npc_room = FALSE;
+    }
+    else {
+        get_location_coord(&x, &y, DRY, croom, a->coord);
+        if ((sproom = (schar)*in_rooms(x, y, NPCROOM)) != 0)
+            croom = &rooms[sproom - ROOMOFFSET];
+        else
+            croom_is_npc_room = FALSE;
+    }
+
+    if (!croom_is_npc_room)
+        return;
+
+    npcini(&u.uz, croom, x, y, 0);
+    level.flags.has_npc_room = TRUE;
+}
+
 /*
  * Create an modron portal in a room.
  */
@@ -2724,6 +2758,9 @@ boolean prefilled;
         break;
     case SMITHY:
         level.flags.has_smithy = TRUE;
+        break;
+    case NPCROOM:
+        level.flags.has_npc_room = TRUE;
         break;
     case SWAMP:
         level.flags.has_swamp = TRUE;
@@ -4716,6 +4753,23 @@ struct sp_coder* coder;
     opvar_free(acoord);
 }
 
+void spo_npc(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_npc";
+    struct opvar* acoord;
+    npc_create_info tmpnpc;
+
+    if (!OV_pop_c(acoord))
+        return;
+
+    tmpnpc.coord = OV_i(acoord);
+
+    create_npc(&tmpnpc, coder->croom);
+
+    opvar_free(acoord);
+}
+
 void spo_modron_portal(coder)
 struct sp_coder* coder;
 {
@@ -5958,6 +6012,9 @@ sp_lev *lvl;
             break;
         case SPO_ANVIL:
             spo_anvil(coder);
+            break;
+        case SPO_NPC:
+            spo_npc(coder);
             break;
         case SPO_MODRON_PORTAL:
             spo_modron_portal(coder);

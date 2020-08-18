@@ -508,7 +508,7 @@ register struct obj *gold;
 {
     boolean msg_given = FALSE;
 
-    if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith
+    if (!likes_gold(mtmp->data) && !mtmp->isshk && !mtmp->ispriest && !mtmp->issmith && !mtmp->isnpc
         && !mtmp->isgd && !is_mercenary(mtmp->data)) {
         wakeup(mtmp, TRUE);
     } else if (!mon_can_move(mtmp))
@@ -557,8 +557,7 @@ register struct obj *gold;
                 verbalize("Thank you for your contribution.");
             else
                 verbalize("Thanks, scum!");
-        }
-        else if (mtmp->issmith) {
+        } else if (mtmp->issmith || mtmp->isnpc) {
             if (is_peaceful(mtmp))
                 verbalize("Thank you for your assistance.");
             else

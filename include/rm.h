@@ -794,6 +794,7 @@ struct levelflags {
     Bitfield(has_barracks, 1);
     Bitfield(has_temple, 1);
     Bitfield(has_smithy, 1);
+    Bitfield(has_npc_room, 1);
     Bitfield(has_library, 1);
 	Bitfield(has_dragonlair, 1);
 	Bitfield(has_garden, 1);

@@ -201,6 +201,7 @@
     <ClCompile Include="$(WinWin32Dir)mhwingdi.cpp" />
     <ClCompile Include="$(WinWin32Dir)soundfx.cpp" />
     <ClCompile Include="$(SrcDir)rm.c" />
+    <ClCompile Include="$(SrcDir)npc.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)winhack.rc" />

@@ -110,6 +110,19 @@ struct esmi {
         peaceful_time; /* sense of peace */
 };
 
+
+/* Non-player character (NPC) extension */
+struct enpc {
+    int npc_typ;     /* type of NPC */
+    schar npc_room;  /* index in rooms */
+    d_level npc_room_level;  /* level (& dungeon) of NPC's room */
+    long intone_time,  /* used to limit verbosity  +*/
+        enter_time,    /*+ of smithy entry messages */
+        hostile_time,  /* forbidding feeling */
+        peaceful_time; /* sense of peace */
+};
+
+
 /***
  **     formerly eshk.h -- shopkeeper extension
  */
@@ -191,6 +204,7 @@ struct mextra {
 	struct egd *egd;
     struct epri *epri;
     struct esmi *esmi;
+    struct enpc *enpc;
     struct eshk *eshk;
     struct emin *emin;
     struct edog *edog;
@@ -202,6 +216,7 @@ struct mextra {
 #define EGD(mon) ((mon)->mextra->egd)
 #define EPRI(mon) ((mon)->mextra->epri)
 #define ESMI(mon) ((mon)->mextra->esmi)
+#define ENPC(mon) ((mon)->mextra->enpc)
 #define ESHK(mon) ((mon)->mextra->eshk)
 #define EMIN(mon) ((mon)->mextra->emin)
 #define EDOG(mon) ((mon)->mextra->edog)
@@ -212,6 +227,7 @@ struct mextra {
 #define has_egd(mon)   ((mon)->mextra && EGD(mon))
 #define has_epri(mon)  ((mon)->mextra && EPRI(mon))
 #define has_esmi(mon)  ((mon)->mextra && ESMI(mon))
+#define has_enpc(mon)  ((mon)->mextra && ENPC(mon))
 #define has_eshk(mon)  ((mon)->mextra && ESHK(mon))
 #define has_emin(mon)  ((mon)->mextra && EMIN(mon))
 #define has_edog(mon)  ((mon)->mextra && EDOG(mon))

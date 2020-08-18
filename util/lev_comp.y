@@ -193,7 +193,7 @@ extern char curr_token[512];
 %token	<i> OBJECT_ID COBJECT_ID MONSTER_ID TRAP_ID DOOR_ID DRAWBRIDGE_ID
 %token	<i> object_ID monster_ID terrain_ID
 %token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID FILLING IRREGULAR JOINED
-%token	<i> ALTAR_ID ANVIL_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID
+%token	<i> ALTAR_ID ANVIL_ID NPC_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID
 %token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV MINERALIZE_ID
 %token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID MODRON_PORTAL_ID POOL_ID SINK_ID NONE
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE
@@ -472,6 +472,7 @@ levstatement 	: message
 		| lev_init
 		| altar_detail
 		| anvil_detail
+		| npc_detail
 		| grave_detail
 		| branch_region
 		| corridor
@@ -1955,6 +1956,12 @@ altar_detail	: ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type
 anvil_detail : ANVIL_ID ':' coord_or_var
 		  {
 		      add_opvars(splev, "o", VA_PASS1(SPO_ANVIL));
+		  }
+		;
+
+npc_detail : NPC_ID ':' coord_or_var
+		  {
+		      add_opvars(splev, "o", VA_PASS1(SPO_NPC));
 		  }
 		;
 

@@ -237,6 +237,8 @@ register int x, y;
         what = "temple's ceiling";
     else if (*in_rooms(x, y, SMITHY))
         what = "smithy's ceiling";
+    else if (*in_rooms(x, y, NPCROOM))
+        what = "residence's ceiling";
     else if (*in_rooms(x, y, SHOPBASE))
         what = "shop's ceiling";
     else if (Is_waterlevel(&u.uz))

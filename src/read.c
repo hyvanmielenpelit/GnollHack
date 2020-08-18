@@ -1070,7 +1070,8 @@ int curse_bless;
 		/* destruction depends on current state, not adjustment */
 		if ((obj->enchantment > maxcharge || obj->enchantment < -maxcharge) && rn2(3))
 		{
-			pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
+            play_sfx_sound(SFX_ENCHANT_ITEM_VIBRATE_AND_DESTROY);
+            pline("%s momentarily, then %s!", Yobjnam2(obj, "pulsate"),
 				otense(obj, "explode"));
 			if (is_on)
 				Ring_gone(obj);
@@ -1082,7 +1083,14 @@ int curse_bless;
 		{
 			long mask = is_on ? (obj == uleft ? LEFT_RING : RIGHT_RING) : 0L;
 
-			pline("%s spins %sclockwise for a moment.", Yname2(obj),
+            if (s == 0)
+                play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+            else if(s > 0)
+                play_sfx_sound(SFX_ENCHANT_ITEM_SUCCESS);
+            else
+                play_sfx_sound(SFX_ENCHANT_ITEM_NEGATIVE);
+
+            pline("%s spins %sclockwise for a moment.", Yname2(obj),
 				s < 0 ? "counter" : "");
 			if (s < 0)
 				costly_alteration(obj, COST_DECHNT);
@@ -2485,129 +2493,152 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		}
 		break;
 	case SCR_CHARGING:
-        if (confused)
+        if(!(sobj->speflags & SPEFLAGS_SERVICED_SPELL))
         {
-            if (scursed)
+            if (confused)
             {
-                You_feel("discharged.");
-                u.uen = 0;
-            } 
-            else 
-            {
-                You_feel("charged up!");
-                u.uen += d(sblessed ? 6 : 4, 4);
-				if (u.uen > u.uenmax) { /* if current energy is already at   */
-					u.ubaseenmax += u.uen - u.uenmax; /* or near maximum, increase maximum */
-					updatemaxen();
-				}
-                else
-                    u.uen = u.uenmax; /* otherwise restore current to max  */
+                if (scursed)
+                {
+                    You_feel("discharged.");
+                    u.uen = 0;
+                } 
+                else 
+                {
+                    You_feel("charged up!");
+                    u.uen += d(sblessed ? 6 : 4, 4);
+				    if (u.uen > u.uenmax) { /* if current energy is already at   */
+					    u.ubaseenmax += u.uen - u.uenmax; /* or near maximum, increase maximum */
+					    updatemaxen();
+				    }
+                    else
+                        u.uen = u.uenmax; /* otherwise restore current to max  */
+                }
+                context.botl = 1;
+                break;
             }
-            context.botl = 1;
-            break;
+            /* known = TRUE; -- handled inline here */
+            if (!already_known)
+            {
+                pline("This is a charging scroll.");
+                learnscroll(sobj);
+            }
+            /* use it up now to prevent it from showing in the
+               getobj picklist because the "disappears" message
+               was already delivered */
+            useup(sobj);
+            sobj = 0; /* it's gone */
         }
-        /* known = TRUE; -- handled inline here */
-        if (!already_known)
-        {
-            pline("This is a charging scroll.");
-            learnscroll(sobj);
-        }
-        /* use it up now to prevent it from showing in the
-           getobj picklist because the "disappears" message
-           was already delivered */
-        useup(sobj);
-        sobj = 0; /* it's gone */
         otmp = getobj(all_count, "charge", 0, "");
         if (otmp)
             recharge(otmp, scursed ? -1 : sblessed ? 1 : 0, TRUE);
         break;
 	case SCR_ENCHANT_ACCESSORY:
-		if (confused) 
-		{
-			Your("head spins.");
-			make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;
-			context.botl = context.botlx = 1;
-			break;
-		}
-		boolean rightok = uright && objects[uright->otyp].oc_enchantable;
-		boolean leftok = uleft && objects[uleft->otyp].oc_enchantable;
-        boolean misc1ok = umisc && objects[umisc->otyp].oc_enchantable;
-        boolean misc2ok = umisc2 && objects[umisc2->otyp].oc_enchantable;
-        boolean misc3ok = umisc3 && objects[umisc3->otyp].oc_enchantable;
-        boolean misc4ok = umisc4 && objects[umisc4->otyp].oc_enchantable;
-        boolean misc5ok = umisc5 && objects[umisc5->otyp].oc_enchantable;
-        boolean amuletok = uamul && objects[uamul->otyp].oc_enchantable;
-
-        int numok = rightok + leftok + misc1ok + misc2ok + misc3ok + misc4ok + misc5ok + amuletok;
-        int rndindex = numok <= 0 ? 0 : rnd(numok);
-        int cnt = 0;
         otmp = (struct obj*)0;
-        for (int i = 1; i <= 8; i++)
+        if (sobj->speflags & SPEFLAGS_SERVICED_SPELL)
         {
-            switch (i)
+            const char enchant_accessory_objects[] = { ALL_CLASSES, RING_CLASS, MISCELLANEOUS_CLASS, 0 };
+            otmp = getobj(enchant_accessory_objects, "enchant", 0, "");
+            if (!otmp)
+                return 0;
+
+            if (otmp && otmp->oclass != RING_CLASS && otmp->oclass != MISCELLANEOUS_CLASS)
             {
-            case 1:
-                if (rightok)
-                {
-                    cnt++;
-                    otmp = uright;
-                }
-                break;
-            case 2:
-                if (leftok)
-                {
-                    cnt++;
-                    otmp = uleft;
-                }
-                break;
-            case 3:
-                if (misc1ok)
-                {
-                    cnt++;
-                    otmp = umisc;
-                }
-                break;
-            case 4:
-                if (misc2ok)
-                {
-                    cnt++;
-                    otmp = umisc2;
-                }
-                break;
-            case 5:
-                if (misc3ok)
-                {
-                    cnt++;
-                    otmp = umisc3;
-                }
-                break;
-            case 6:
-                if (misc4ok)
-                {
-                    cnt++;
-                    otmp = umisc4;
-                }
-                break;
-            case 7:
-                if (misc5ok)
-                {
-                    cnt++;
-                    otmp = umisc5;
-                }
-                break;
-            case 8:
-                if (amuletok)
-                {
-                    cnt++;
-                    otmp = uamul;
-                }
+                play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+                pline(!Blind
+                    ? "%s then fades."
+                    : "%s warm for a moment.", Yobjnam2(otmp, !Blind ? "glow" : "feel"));
+                sobj = 0;
                 break;
             }
-
-            if (cnt == rndindex)
-                break;
         }
-		//otmp = rightok && leftok ? (!rn2(2) ? uright : uleft) : rightok ? uright : leftok ? uleft : (struct obj*)0;
+        else
+        {
+            if (confused)
+		    {
+			    Your("head spins.");
+			    make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;
+			    context.botl = context.botlx = 1;
+			    break;
+		    }
+		    boolean rightok = uright && objects[uright->otyp].oc_enchantable;
+		    boolean leftok = uleft && objects[uleft->otyp].oc_enchantable;
+            boolean misc1ok = umisc && objects[umisc->otyp].oc_enchantable;
+            boolean misc2ok = umisc2 && objects[umisc2->otyp].oc_enchantable;
+            boolean misc3ok = umisc3 && objects[umisc3->otyp].oc_enchantable;
+            boolean misc4ok = umisc4 && objects[umisc4->otyp].oc_enchantable;
+            boolean misc5ok = umisc5 && objects[umisc5->otyp].oc_enchantable;
+            boolean amuletok = uamul && objects[uamul->otyp].oc_enchantable;
+
+            int numok = rightok + leftok + misc1ok + misc2ok + misc3ok + misc4ok + misc5ok + amuletok;
+            int rndindex = numok <= 0 ? 0 : rnd(numok);
+            int cnt = 0;
+            for (int i = 1; i <= 8; i++)
+            {
+                switch (i)
+                {
+                case 1:
+                    if (rightok)
+                    {
+                        cnt++;
+                        otmp = uright;
+                    }
+                    break;
+                case 2:
+                    if (leftok)
+                    {
+                        cnt++;
+                        otmp = uleft;
+                    }
+                    break;
+                case 3:
+                    if (misc1ok)
+                    {
+                        cnt++;
+                        otmp = umisc;
+                    }
+                    break;
+                case 4:
+                    if (misc2ok)
+                    {
+                        cnt++;
+                        otmp = umisc2;
+                    }
+                    break;
+                case 5:
+                    if (misc3ok)
+                    {
+                        cnt++;
+                        otmp = umisc3;
+                    }
+                    break;
+                case 6:
+                    if (misc4ok)
+                    {
+                        cnt++;
+                        otmp = umisc4;
+                    }
+                    break;
+                case 7:
+                    if (misc5ok)
+                    {
+                        cnt++;
+                        otmp = umisc5;
+                    }
+                    break;
+                case 8:
+                    if (amuletok)
+                    {
+                        cnt++;
+                        otmp = uamul;
+                    }
+                    break;
+                }
+
+                if (cnt == rndindex)
+                    break;
+            }
+		    //otmp = rightok && leftok ? (!rn2(2) ? uright : uleft) : rightok ? uright : leftok ? uleft : (struct obj*)0;
+        }
 
 		if (otmp)
 		{

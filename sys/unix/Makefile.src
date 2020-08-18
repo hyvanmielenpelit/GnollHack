@@ -445,7 +445,7 @@ HACKCSRC = allmain.c animation.c alloc.c apply.c artifact.c attrib.c ball.c bone
 	   light.c  lock.c mail.c makemon.c mapglyph.c matcomps.c mcastu.c \
 	   mhitm.c mhitu.c minion.c mklev.c mkmap.c \
 	   mkmaze.c mkobj.c mkroom.c mon.c mondata.c monmove.c monst.c \
-	   mplayer.c mthrowu.c muse.c music.c o_init.c objects.c objnam.c \
+	   mplayer.c mthrowu.c muse.c music.c npc.c o_init.c objects.c objnam.c \
 	   options.c pager.c pickup.c pline.c polyself.c potion.c pray.c \
 	   priest.c quest.c questpgr.c read.c rect.c region.c restore.c \
 	   rip.c rm.c rnd.c role.c rumors.c save.c shk.c shknam.c sit.c sounds.c soundset.c \
@@ -512,7 +512,7 @@ HOBJ = $(FIRSTOBJ) allmain.o alloc.o animation.o apply.o artifact.o attrib.o bal
 	isaac64.o  light.o lock.o mail.o makemon.o mapglyph.o matcomps.o \
 	mcastu.o mhitm.o mhitu.o minion.o mklev.o mkmap.o \
 	mkmaze.o mkobj.o mkroom.o mon.o mondata.o monmove.o \
-	mplayer.o mthrowu.o muse.o music.o o_init.o objnam.o options.o \
+	mplayer.o mthrowu.o muse.o music.o npc.o o_init.o objnam.o options.o \
 	pager.o pickup.o pline.o polyself.o potion.o pray.o priest.o \
 	quest.o questpgr.o read.o rect.o region.o restore.o rip.o rm.o rnd.o \
 	role.o rumors.o save.o shk.o shknam.o sit.o sounds.o soundset.o sp_lev.o spell.o \
@@ -1041,6 +1041,7 @@ mplayer.o: mplayer.c $(HACK_H)
 mthrowu.o: mthrowu.c $(HACK_H)
 muse.o: muse.c $(HACK_H)
 music.o: music.c $(HACK_H) #interp.c
+npc.o: npc.c $(HACK_H)
 o_init.o: o_init.c $(HACK_H) ../include/lev.h
 objects.o: objects.c $(CONFIG_H) ../include/obj.h ../include/objclass.h \
 		../include/prop.h ../include/skills.h ../include/color.h

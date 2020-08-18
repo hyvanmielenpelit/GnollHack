@@ -1339,6 +1339,7 @@ int how;
         paygd(silently);
         clearpriests();
         clearsmiths();
+        clearnpcs();
     } else
         taken = FALSE; /* lint; assert( !bones_ok ); */
 

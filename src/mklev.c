@@ -699,6 +699,7 @@ clear_level_structures()
 	level.flags.has_barracks = 0;
     level.flags.has_temple = 0;
     level.flags.has_smithy = 0;
+    level.flags.has_npc_room = 0;
     level.flags.has_swamp = 0;
     level.flags.noteleport = 0;
     level.flags.hardfloor = 0;
@@ -896,6 +897,8 @@ makelevel()
 
         if (!res && u_depth > 1 && !rn2(7))
             res = mkroom(SMITHY);
+        if (!res && u_depth > 1 && !rn2(7))
+            res = mkroom(NPCROOM);
         if (!res && u_depth > 4 && u_depth < 15 && !rn2(8)
 			&& !(mvitals[PM_LEPRECHAUN].mvflags & G_GONE))
 			res = mkroom(LEPREHALL);
