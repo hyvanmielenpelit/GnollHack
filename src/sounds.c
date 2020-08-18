@@ -2428,33 +2428,40 @@ dochat()
 			chatnum++;
 		}
 
-		if (is_peaceful(mtmp) && mtmp->mextra && ENPC(mtmp) && !mtmp->mrevived) /* no mrivived here to prevent abuse*/
+		if (is_peaceful(mtmp) && has_enpc(mtmp) && !mtmp->mrevived) /* no mrivived here to prevent abuse*/
 		{
-			Sprintf(available_chat_list[chatnum].name, "Ask for accessory enchantment");
-			available_chat_list[chatnum].function_ptr = &do_chat_npc_enchant_accessory;
-			available_chat_list[chatnum].charnum = 'a' + chatnum;
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_ENCHANT_ACCESSORY)
+			{
+				Sprintf(available_chat_list[chatnum].name, "Ask for accessory enchantment");
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_enchant_accessory;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-			any = zeroany;
-			any.a_char = available_chat_list[chatnum].charnum;
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
 
-			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
-				available_chat_list[chatnum].name, MENU_UNSELECTED);
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
 
-			chatnum++;
+				chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for recharging an item");
-			available_chat_list[chatnum].function_ptr = &do_chat_npc_recharge;
-			available_chat_list[chatnum].charnum = 'a' + chatnum;
+			}
 
-			any = zeroany;
-			any.a_char = available_chat_list[chatnum].charnum;
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_RECHARGING)
+			{
+				Sprintf(available_chat_list[chatnum].name, "Ask for recharging an item");
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_recharge;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
 
-			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
-				available_chat_list[chatnum].name, MENU_UNSELECTED);
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
 
-			chatnum++;
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
 		}
 
 	}

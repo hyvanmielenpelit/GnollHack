@@ -1358,7 +1358,7 @@ mknpcroom()
         return 0;
 
     sroom->rtype = NPCROOM;
-    npcini(&u.uz, sroom, somex(sroom), somey(sroom), 0);
+    npcini(&u.uz, sroom, somex(sroom), somey(sroom), MAX_NPC_SUBTYPES > 1 ? rn2(MAX_NPC_SUBTYPES) : NPC_WIZARD);
     level.flags.has_npc_room = 1;
 
     /* The NPC has lights turned on */

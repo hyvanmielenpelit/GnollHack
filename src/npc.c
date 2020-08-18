@@ -14,7 +14,8 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
     {
         PM_ARCHMAGE,
         "archmage",
-        "residence"
+        "residence",
+        NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING
     },
 };
 

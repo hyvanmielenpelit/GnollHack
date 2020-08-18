@@ -88,9 +88,14 @@ struct npc_subtype_definition {
     int mnum;
     const char* npc_role_name;
     const char* room_name;
+    unsigned long service_flags;
 };
 
 extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
+
+#define NPC_SERVICE_ENCHANT_ACCESSORY       0x00000001UL
+#define NPC_SERVICE_RECHARGING              0x00000002UL
+
 
 /* weight increment of heavy iron ball */
 #define IRON_BALL_W_INCR 160
