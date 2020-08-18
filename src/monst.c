@@ -4657,7 +4657,7 @@ struct permonst _mons2[] = {
 
 	 /* Demon lords */
 	MON("Juiblex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", None, None, S_DEMON, 
-        LVL(50, 15, -7, 18, 65, -15), //STARTMARKER FOR DEMON LORDS
+        LVL(50, 15, -7, 19, 65, -15), //STARTMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0),
 		ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 25), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4670,7 +4670,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_LORD, M5_NONE,
 		43, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
     MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghouls, gnolls, and other demons", None, None, S_DEMON, 
-        LVL(56, 18, -5, 18, 80, -15),
+        LVL(56, 18, -5, 21, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_CONF, 2, 8, 0, 0),
           ATTK(AT_CLAW, AD_PLYS, 1, 6, 0, 0), ATTK(AT_MAGC, AD_MAGM, 2, 6, 0, 0),
@@ -4685,7 +4685,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_LORD, M5_NONE,
 		45, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
     MON("Yacc", "Demon Lord of Bovines", "powerful demon lord capable of a confusing gaze and summoning bison and hell bovine", None, None, S_DEMON, 
-        LVL(52, 24, -3, 18, 70, -15),
+        LVL(52, 24, -3, 20, 70, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_BUTT, AD_PHYS, 5, 6, 0, 0), ATTK(AT_KICK, AD_PHYS, 4, 6, 0, 0),
 			ATTK(AT_GAZE, AD_CONF, 0, 0, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 20), ATTK(AT_SMMN, AD_BISN, 0, 0, 0, 30),
@@ -4699,7 +4699,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_IGNORES_ELBERETH | M4_PROPER_NAME | M4_LORD, M5_NONE,
 		80, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
     MON("Baphomet", "Demon Lord of Minotaurs", "powerful demon lord capable of causing massive damage and summoning minotaurs and other demons", 
-        None, None, S_DEMON, LVL(57, 24, -4, 19, 75, -15), //ENDMARKER FOR DEMON LORDS
+        None, None, S_DEMON, LVL(57, 24, -4, 21, 75, -15), //ENDMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_WEAP, AD_PHYS, 4, 10, 0, 0), ATTK(AT_CLAW, AD_PHYS, 4, 10, 0, 0), ATTK(AT_BUTT, AD_PHYS, 3, 8, 0, 0),
 			ATTK(AT_BITE, AD_PHYS, 1, 4, 1, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 10), ATTK(AT_SMMN, AD_MINO, 0, 0, 0, 30),
@@ -4715,7 +4715,7 @@ struct permonst _mons2[] = {
 
 	/* Demon princes */
     MON("Baalzebub", "Arch-Devil, Lord of Lies", "powerful arch-devil capable of a stunning gaze, a poisonous bite, and summoning other devils", 
-        None, None, S_DEMON, LVL(89, 12, -5, 20, 85, 20), //STARTMARKER FOR DEMON PRINCES
+        None, None, S_DEMON, LVL(89, 12, -5, 24, 85, 20), //STARTMARKER FOR DEMON PRINCES
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_BITE, AD_DRST, 2, 6, 0, 0), ATTK(AT_GAZE, AD_STUN, 2, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 27),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4728,7 +4728,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_NONE,
         40, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
     MON("Geryon", "Arch-Devil", "powerful serpent-bodied arch-devil capable of a constriction attack and summoning minotaurs and other devils", None, None, S_DEMON, 
-        LVL(72, 18, -3, 19, 75, 15),
+        LVL(72, 18, -3, 22, 75, 15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 6, 0, 0),
             ATTK(AT_HUGS, AD_WRAP, 3, 6, 0, 0), ATTK(AT_STNG, AD_DRST, 2, 4, 0, 0),
@@ -4742,7 +4742,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_NONE,
 		75, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 	MON("Dispater", "Arch-Devil", "powerful arch-devil capable of casting spells and summoning other devils", None, None, S_DEMON, 
-        LVL(78, 15, -2, 20, 80, 15),
+        LVL(78, 15, -2, 23, 80, 15),
     	(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
 		A(ATTK(AT_WEAP, AD_PHYS, 4, 6, 0, 0), ATTK(AT_MAGC, AD_SPEL, 6, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 25),
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4755,7 +4755,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_NONE,
 		85, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 	MON("Asmodeus", "Arch-Devil, Ruler of the Nine Hells", "powerful arch-devil capable of casting cold spells and summoning other devils", None, None, S_DEMON, 
-        LVL(105, 24, -7, 21, 90, 20),
+        LVL(105, 24, -7, 25, 90, 20),
 	(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
 		A(ATTK(AT_CLAW, AD_PHYS, 2, 6, 2, 0), ATTK(AT_MAGC, AD_COLD, 6, 6, 0, 0), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 30),
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -4768,11 +4768,11 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_NONE,
 		80, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 	MON("Orcus", "Demon Prince of the Undead", "goat-headed demon prince capable of summoning undead and other demons", 
-        None, None, S_DEMON, LVL(66, 15, -6, 22, 85, -20),
+        None, None, S_DEMON, LVL(66, 15, -6, 24, 85, -20),
 		(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
 		A(ATTK(AT_WEAP, AD_PHYS, 3, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0),
 		ATTK(AT_CLAW, AD_PHYS, 3, 4, 0, 0), ATTK(AT_MAGC, AD_SPEL, 8, 6, 0, 0),
-		ATTK(AT_STNG, AD_DRST, 2, 4, 0, -8), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 20),
+		ATTK(AT_STNG, AD_DRST, 2, 4, 0, -10), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 20),
 		ATTK(AT_SMMN, AD_UNDO, 0, 0, 0, 30), NO_ATTK),
 		SIZ(1500, 500, MS_ORC, MZ_HUGE, 1, -5, MAT_FLESH), STATS(STR19(25), 19, 25, 24, 23, 22),
 		MR_POISON | MR_SEE_INVISIBLE | MR_STUN,
@@ -4783,10 +4783,10 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_PRINCE, M5_NONE,
 		95, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 	MON("Demogorgon", "Prince of Demons", "two-headed demon prince with disease and life-draining attacks capable of summoning other demons", 
-        None, None, S_DEMON, LVL(106, 15, -8, 23, 95, -20), //ENDMARKER FOR DEMON PRINCES
+        None, None, S_DEMON, LVL(106, 15, -8, 25, 95, -20), //ENDMARKER FOR DEMON PRINCES
 	(G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
-		A(ATTK(AT_MAGC, AD_SPEL, 8, 6, 0, 0), ATTK(AT_STNG, AD_DRLI, 1, 4, 0, -10),
-			ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -18), ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -18), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 30),
+		A(ATTK(AT_MAGC, AD_SPEL, 8, 6, 0, 0), ATTK(AT_STNG, AD_DRLI, 1, 4, 0, -20),
+			ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -25), ATTK(AT_CLAW, AD_DISE, 1, 6, 0, -25), ATTK(AT_SMMN, AD_DMNS, 0, 0, 0, 30),
 			NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(1500, 500, MS_GROWL, MZ_HUGE, 2, -5, MAT_FLESH), STATS(STR19(24), 20, 24, 24, 23, 19),
 		MR_POISON | MR_SEE_INVISIBLE | MR_STUN,
@@ -4802,7 +4802,7 @@ struct permonst _mons2[] = {
 	 * depicted with '&' but do not have M2_DEMON set.
 	 */
 	MON("Death", "Horseman of the Apocalypse", "personification of death", None, None, S_DEMON, LVL(30, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
-		A(ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -12), ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -12), NO_ATTK,
+		A(ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -15), ATTK(AT_TUCH, AD_DETH, 8, 8, 0, -15), NO_ATTK,
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 10, 4, 19, 19, 1),
 		MR_FIRE | MR_COLD | MR_ELEC | MR_SLEEP | MR_POISON | MR_STONE | MR_DEATH | MR_DRAIN | MR_REGENERATION | MR_SEE_INVISIBLE | MR_TELEPORT_CONTROL | MR_CHARM | MR_STUN,
@@ -4813,7 +4813,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_NONROTTING_CORPSE | M4_PROPER_NAME, M5_NONE,
 		40, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 	MON("Pestilence", "Horseman of the Apocalypse", "personification of terminal illness", None, None, S_DEMON, LVL(30, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
-		A(ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -12), ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -12), NO_ATTK,
+		A(ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -30), ATTK(AT_TUCH, AD_PEST, 8, 8, 0, -30), NO_ATTK,
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 10, 4, 19, 19, 1),
 		MR_FIRE | MR_COLD | MR_ELEC | MR_SLEEP | MR_POISON | MR_STONE | MR_REGENERATION | MR_SEE_INVISIBLE | MR_TELEPORT_CONTROL | MR_CHARM | MR_STUN,
@@ -4824,7 +4824,7 @@ struct permonst _mons2[] = {
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_NONROTTING_CORPSE | M4_PROPER_NAME, M5_NONE,
 		40, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 	MON("Famine", "Horseman of the Apocalypse", "personification of starvation", None, None, S_DEMON, LVL(30, 12, -5, 25, 100, 0), (G_UNIQ | G_NOGEN),
-		A(ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -12), ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -12), NO_ATTK,
+		A(ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -30), ATTK(AT_TUCH, AD_FAMN, 8, 8, 0, -30), NO_ATTK,
 			NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(WT_HUMAN, 1, MS_RIDER, MZ_HUMAN, 1, 0, MAT_FLESH), STATS(STR18(100), 10, 4, 19, 19, 1),
 		MR_FIRE | MR_COLD | MR_ELEC | MR_SLEEP | MR_POISON | MR_STONE | MR_REGENERATION | MR_SEE_INVISIBLE | MR_TELEPORT_CONTROL | MR_CHARM | MR_STUN,
