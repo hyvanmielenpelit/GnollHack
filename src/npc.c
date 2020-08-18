@@ -9,6 +9,16 @@ STATIC_DCL boolean FDECL(his_npc_room_at, (struct monst*, XCHAR_P, XCHAR_P));
 STATIC_DCL boolean FDECL(has_npc_room, (struct monst*));
 
 
+struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] = 
+{
+    {
+        PM_ARCHMAGE,
+        "archmage",
+        "residence"
+    },
+};
+
+
 void
 forget_npc_entry(npc)
 struct monst* npc;
@@ -174,8 +184,10 @@ int roomno;
 
         if (moves >= enpc_p->enter_time)
         {
-            Sprintf(buf, "Adventurer, %s!",
-                !has_room ? "welcome" : "welcome to my residence");
+            if(has_room)
+                Sprintf(buf, "Adventurer, %s %s!", "welcome to my", npc_subtype_definitions[enpc_p->npc_typ].room_name);
+            else
+                Sprintf(buf, "Adventurer, welcome!");
 
             msg1 = buf;
         }
@@ -255,7 +267,7 @@ int npctype;
     if (MON_AT(npc_loc_x, npc_loc_y))
         (void)rloc(m_at(npc_loc_x, npc_loc_y), FALSE); /* insurance */
 
-    int npc_montype = Is_yeenoghu_level(&u.uz) ? PM_FLIND_LORD : PM_ARCHMAGE;
+    int npc_montype = npc_subtype_definitions[npctype].mnum;
     npc = makemon(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC);
 
     if (npc)

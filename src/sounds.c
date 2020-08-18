@@ -826,7 +826,12 @@ register struct monst *mtmp;
 		break;
 	case MS_NPC: /* pitch, pay, total */
 		if (is_peaceful(mtmp))
-			Sprintf(verbuf, "Welcome to my residence, adventurer!");
+		{
+			if(mtmp->isnpc && has_enpc(mtmp))
+				Sprintf(verbuf, "Welcome to my %s, adventurer!", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
+			else
+				Sprintf(verbuf, "Welcome to my residence, adventurer!");
+		}
 		else
 			Sprintf(verbuf, "You rotten thief!");
 		verbl_msg = verbuf;
@@ -2626,12 +2631,12 @@ struct monst* mtmp;
 		mtmp->u_know_mname = 1;
 		verbalize(ansbuf);
 	}
-	else if (mtmp->isnpc)
+	else if (mtmp->isnpc && has_enpc(mtmp))
 	{
 		if (has_mname(mtmp))
-			Sprintf(ansbuf, "I am %s, an archmage.", MNAME(mtmp));
+			Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
 		else
-			Sprintf(ansbuf, "I am an archmage.");
+			Sprintf(ansbuf, "I am %s.", an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
 
 		mtmp->u_know_mname = 1;
 		verbalize(ansbuf);

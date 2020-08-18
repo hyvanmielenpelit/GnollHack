@@ -78,6 +78,20 @@ enum verbose_function_types {
 	VERBOSE_FUNCTION_SET_MON_PROPERTY = 1
 };
 
+/* NPCs */
+enum npc_subtypes {
+    NPC_WIZARD = 0,
+    MAX_NPC_SUBTYPES
+};
+
+struct npc_subtype_definition {
+    int mnum;
+    const char* npc_role_name;
+    const char* room_name;
+};
+
+extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
+
 /* weight increment of heavy iron ball */
 #define IRON_BALL_W_INCR 160
 
@@ -351,6 +365,7 @@ extern short tile2enlargement[MAX_GLYPH];
 #define MM_ADJACENTOK				0x00000010UL /* it is acceptable to use adjacent coordinates */
 #define MM_ANGRY					0x00000020UL /* monster is created angry */
 #define MM_NONAME					0x00000040UL /* monster is not christened */
+/* free bit */
 #define MM_EGD						0x00000100UL /* add egd structure */
 #define MM_EPRI						0x00000200UL /* add epri structure */
 #define MM_ESMI						0x00000400UL /* add esmi structure */
