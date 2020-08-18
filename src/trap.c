@@ -5099,7 +5099,7 @@ boolean force;
 
                     if ((otmp->otrapped
                          && (force || (!confused
-                                       && rn2(MAXULEV + 1 - u.ulevel) < 10)))
+                                       && rn2(MAXULEV + 1 - u.ulevel) < (MAXULEV / 3))))
                         || (!force && confused && !rn2(3))) {
                         You("find a trap on %s!", the(xname(otmp)));
                         if (!confused)
