@@ -228,6 +228,7 @@ static struct Bool_Opt {
 #endif
     { "safe_pet", &flags.safe_dog, TRUE, SET_IN_GAME },
     { "sanity_check", &iflags.sanity_check, FALSE, SET_IN_WIZGAME },
+    { "search_box_traps", &flags.search_box_traps, TRUE, SET_IN_GAME },
     { "selectsaved", &iflags.wc2_selectsaved, TRUE, DISP_IN_GAME }, /*WC*/
     { "showexp", &flags.showexp, FALSE, SET_IN_GAME },
     { "show_tile_mon_hp_bar", &flags.show_tile_mon_hp_bar, FALSE, SET_IN_GAME },

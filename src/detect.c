@@ -1821,10 +1821,16 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
     register struct trap *trap;
     register struct monst *mtmp;
 
-    if (u.uswallow) {
+    if (u.uswallow) 
+    {
         if (!aflag)
             pline("What are you looking for?  The exit?");
-    } else {
+    }
+    else 
+    {
+        if (flags.search_box_traps && check_all_box_traps(FALSE) == 1)
+            return 1;
+
 		int fund = 0;
         if (Enhanced_vision && !Blind)
             fund += 2; /* JDS: lenses help searching */

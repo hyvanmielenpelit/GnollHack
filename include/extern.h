@@ -3057,6 +3057,8 @@ E void FDECL(drain_en, (int));
 E int NDECL(dountrap);
 E void FDECL(cnv_trap_obj, (int, int, struct trap *, BOOLEAN_P));
 E int FDECL(untrap, (BOOLEAN_P));
+E int FDECL(check_all_box_traps, (BOOLEAN_P));
+E int FDECL(check_box_trap, (struct obj*, BOOLEAN_P));
 E boolean FDECL(openholdingtrap, (struct monst *, boolean *));
 E boolean FDECL(closeholdingtrap, (struct monst *, boolean *));
 E boolean FDECL(openfallingtrap, (struct monst *, BOOLEAN_P, boolean *));
