@@ -1708,6 +1708,7 @@ domove_core()
 				if (ans != 'y')
 				{
                     nomul(0);
+                    context.move = FALSE;
                     return;
 				}
 			}

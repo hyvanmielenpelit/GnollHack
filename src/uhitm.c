@@ -508,19 +508,21 @@ register struct monst *mtmp;
         || overexertion())
         goto atk_done;
 
-    if (unweapon1 && unweapon2) 
+	char qbuf[BUFSIZ];
+	strcpy(qbuf, "");
+	
+	if (unweapon1 && unweapon2)
 	{
-        unweapon1 = unweapon2 = FALSE;
         if (flags.verbose) 
 		{
 			if (uwep && uarms)
-				You("begin bashing monsters with %s and %s.", yname(uwep), cxname(uarms));
+				Sprintf(qbuf, "You begin bashing monsters with %s and %s. Continue?", yname(uwep), cxname(uarms));
 			else if (uwep)
-                You("begin bashing monsters with %s and %s left %s.", yname(uwep), uarmg ? "gloved" : "bare", body_part(HAND));
+				Sprintf(qbuf, "You begin bashing monsters with %s and %s left %s. Continue?", yname(uwep), uarmg ? "gloved" : "bare", body_part(HAND));
 			else if (uarms)
-				You("begin bashing monsters with %s and %s right %s.", yname(uarms), uarmg ? "gloved" : "bare", body_part(HAND));
+				Sprintf(qbuf, "You begin bashing monsters with %s and %s right %s. Continue?", yname(uarms), uarmg ? "gloved" : "bare", body_part(HAND));
 			else if (!cantwield(youmonst.data))
-                You("begin %s monsters with your %s %s.",
+				Sprintf(qbuf, "You begin %s monsters with your %s %s. Continue?",
                     ing_suffix(Role_if(PM_MONK) ? "strike" : "bash"),
                     uarmg ? "gloved" : "bare", /* Del Lamb */
                     makeplural(body_part(HAND)));
@@ -528,32 +530,44 @@ register struct monst *mtmp;
     }
 	else if (unweapon1)
 	{
-		unweapon1 = FALSE;
 		if (flags.verbose)
 		{
 			if (uwep)
-				You("begin bashing monsters with %s.", yname(uwep));
+				Sprintf(qbuf, "You begin bashing monsters with %s. Continue?", yname(uwep));
 			else if (!cantwield(youmonst.data))
-				You("begin %s monsters with your %s %s%s.",
+				Sprintf(qbuf, "You begin %s monsters with your %s %s%s. Continue?",
 					ing_suffix(Role_if(PM_MONK) ? "strike" : "bash"),
 					uarmg ? "gloved" : "bare", /* Del Lamb */
 					u.twoweap ? "right " : "",
 					u.twoweap ? body_part(HAND) : makeplural(body_part(HAND)));
+
 		}
 	}
 	else if (unweapon2)
 	{
-		unweapon2 = FALSE;
 		if (flags.verbose)
 		{
 			if (uarms)
-				You("begin bashing monsters with %s.", yname(uarms));
+				Sprintf(qbuf, "You begin bashing monsters with %s. Continue?", yname(uarms));
 			else if (!cantwield(youmonst.data))
-				You("begin %s monsters with your %s left %s.",
+				Sprintf(qbuf, "You begin %s monsters with your %s left %s. Continue?",
 					ing_suffix(Role_if(PM_MONK) ? "strike" : "bash"),
 					uarmg ? "gloved" : "bare", /* Del Lamb */
 					body_part(HAND));
 		}
+	}
+
+	if (strcmp(qbuf, ""))
+	{
+		char ans = yn_query(qbuf);
+		if (ans == 'n')
+		{
+			nomul(0);
+			context.move = FALSE;
+			return TRUE;
+		}
+		else
+			unweapon1 = unweapon2 = FALSE;
 	}
 
 	exercise(A_STR, TRUE); /* you're exercising muscles */

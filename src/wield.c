@@ -153,7 +153,7 @@ int hand;
 	struct obj* wep = (hand <= 1 ? uwep : uarms);
 	boolean* unweapon_ptr = (hand <= 1 ? &unweapon1 : &unweapon2);
 
-	if (hand >= 2 && !u.twoweap)
+ 	if (hand >= 2 && !u.twoweap)
 	{
 		*unweapon_ptr = FALSE;
 		return;
