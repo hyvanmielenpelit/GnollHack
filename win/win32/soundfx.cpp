@@ -265,6 +265,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Gain Skill", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Lose Level", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Mana/Lose Energy", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Muffled Shatter", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Muffled Cracking", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Muffled Crash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Muffled Splat", 1.0f },
 };
 
 #undef NoSound

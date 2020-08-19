@@ -1768,6 +1768,22 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         "GHSOUND_LOSE_ENERGY",
         {GHSOUND_LOSE_ENERGY, 1.0f}
     },
+    {
+        "GHSOUND_MUFFLED_SHATTER",
+        {GHSOUND_MUFFLED_SHATTER, 1.0f}
+    },
+    {
+        "GHSOUND_MUFFLED_CRACKING",
+        {GHSOUND_MUFFLED_CRACKING, 1.0f}
+    },
+    {
+        "GHSOUND_MUFFLED_CRASH",
+        {GHSOUND_MUFFLED_CRASH, 1.0f}
+    },
+    {
+        "GHSOUND_MUFFLED_SPLAT",
+        {GHSOUND_MUFFLED_SPLAT, 1.0f}
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

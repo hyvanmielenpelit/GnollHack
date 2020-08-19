@@ -643,8 +643,10 @@ xchar x, y; /* coordinates where object was before the impact, not after */
         if (is_fragile(otmp)
             && otmp->oclass != GEM_CLASS && !obj_resists(otmp, 33, 100)) {
             result = "shatter";
+            play_sfx_sound_at_location(SFX_MUFFLED_SHATTER, x, y);
         } else if (otmp->otyp == EGG && !rn2(3)) {
             result = "cracking";
+            play_sfx_sound_at_location(SFX_MUFFLED_CRACKING, x, y);
         }
         if (result) {
 			You_hear("a muffled %s.", result);
@@ -2017,13 +2019,15 @@ boolean shop_floor_obj;
         if (is_fragile(otmp)
             || otmp->otyp == EXPENSIVE_CAMERA)
         {
-			result = "crash";
+            play_sfx_sound_at_location(SFX_MUFFLED_CRASH, x, y);
+            result = "crash";
 			You_hear("a muffled %s.", result);
 			if (otmp->otyp == MIRROR || otmp->otyp == MAGIC_MIRROR)
                 change_luck(-2, TRUE);
         } else {
             /* penalty for breaking eggs laid by you */
-			result = "splat";
+            play_sfx_sound_at_location(SFX_MUFFLED_SPLAT, x, y);
+            result = "splat";
 			You_hear("a muffled %s.", result);
 			if (otmp->otyp == EGG && (otmp->speflags & SPEFLAGS_YOURS) && otmp->corpsenm >= LOW_PM)
                 change_luck((schar) -min(otmp->quan, 5L), TRUE);
