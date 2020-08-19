@@ -1045,6 +1045,10 @@ const char *in_str;
             { "djinn", PM_DJINNI },
             { "mumakil", PM_MUMAK },
             { "erinyes", PM_ERINYS },
+            { "mummy pharaoh", PM_GREATER_MUMMY_PHARAOH },
+            { "mummy king", PM_GREATER_MUMMY_PHARAOH },
+            { "mummy priest", PM_GREATER_MUMMY_PRIEST },
+            { "mummy high priest", PM_GREATER_MUMMY_HIGH_PRIEST },
             /* end of list */
             { 0, NON_PM }
         };

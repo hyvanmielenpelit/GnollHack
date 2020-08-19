@@ -822,7 +822,7 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
         for (sx = sroom->lx; sx <= sroom->hx; sx++)
             for (sy = sroom->ly; sy <= sroom->hy; sy++)
             {
-                if (levl[sx][sy].typ == ROOM)
+                if (IS_FLOOR(levl[sx][sy].typ))
                 {
                     levl[sx][sy].typ = GRASS;
                     levl[sx][sy].subtyp = rn2(3);
