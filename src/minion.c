@@ -268,7 +268,9 @@ struct monst* summoner;
 		if (mtmp) 
 		{
 			result++;
-			mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+			mtmp->mdemonsummon_used = 30;
+			mtmp->mspecialsummon_used = 30;
+			mtmp->mspecialsummon2_used = 30;
 			if (canseemon(mtmp))
 			{
 				canseemonnumber++;
@@ -338,7 +340,9 @@ struct monst* summoner;
 		if (mtmp) 
 		{
 			result++;
-			mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+			mtmp->mdemonsummon_used = 30;
+			mtmp->mspecialsummon_used = 30;
+			mtmp->mspecialsummon2_used = 30;
 
 			if (dtype = PM_GHOUL)
 				ghoul_cnt++;
@@ -410,7 +414,9 @@ yacc_bison_summon()
 		if (mtmp)
 		{
 			result++;
-			mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+			mtmp->mdemonsummon_used = 30;
+			mtmp->mspecialsummon_used = 30;
+			mtmp->mspecialsummon2_used = 30;
 			if (canseemon(mtmp))
 			{
 				canseemonnumber++;
@@ -461,7 +467,7 @@ orcus_undead_summon()
 	struct monst* mtmp2 = (struct monst*) 0;
 
 	while (cnt > 0) {
-		int roll = rn2(22);
+		int roll = rn2(28);
 		dtype = NON_PM;
 
 		switch (roll)
@@ -513,7 +519,7 @@ orcus_undead_summon()
 			dtype = PM_LICH;
 			break;
 		case 16:
-			dtype = PM_BARROW_WIGHT;
+			dtype = PM_DEMILICH;
 			break;
 		case 17:
 			dtype = PM_GIANT_ZOMBIE;
@@ -530,6 +536,24 @@ orcus_undead_summon()
 		case 21:
 			dtype = PM_KING_WRAITH;
 			break;
+		case 22:
+			dtype = PM_SKELETON_WARRIOR;
+			break;
+		case 23:
+			dtype = PM_SKELETON_LORD;
+			break;
+		case 24:
+			dtype = PM_SKELETON_KING;
+			break;
+		case 25:
+			dtype = PM_GREATER_MUMMY;
+			break;
+		case 26:
+			dtype = PM_GREATER_MUMMY_PRIEST;
+			break;
+		case 27:
+			dtype = PM_GREATER_MUMMY_PHARAOH;
+			break;
 		default:
 			break;
 		}
@@ -544,7 +568,9 @@ orcus_undead_summon()
 		if (mtmp) 
 		{
 			result++;
-			mtmp->mprops[SUMMON_FORBIDDEN] = 30;
+			mtmp->mdemonsummon_used = 30;
+			mtmp->mspecialsummon_used = 30;
+			mtmp->mspecialsummon2_used = 30;
 			if (canseemon(mtmp))
 			{
 				canseemonnumber++;

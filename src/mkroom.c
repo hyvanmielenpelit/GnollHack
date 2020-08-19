@@ -718,7 +718,8 @@ morguemon()
         return mkclass(S_VAMPIRE, 0);
 
     return ((i < 20) ? &mons[PM_GHOST]
-                     : (i < 40) ? &mons[PM_WRAITH]
+                     : (i < 30) ? &mons[PM_WRAITH]
+                     : (i < 55) ? mkclass(S_GREATER_UNDEAD, 0)
 						: mkclass(S_LESSER_UNDEAD, 0));
 }
 
