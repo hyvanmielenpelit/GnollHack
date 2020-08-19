@@ -2117,7 +2117,7 @@ boolean is_golf;
      * Distance and monster size affect chance to hit.
      */
     tmp = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(mon) + u.ubasehitinc + u.uhitinc
-          + maybe_polyd(youmonst.data->mlevel, u.ulevel);
+          + maybe_polyd(youmonst.data->mlevel, (int)(TO_HIT_LEVEL_MULTIPLIER * (double)u.ulevel));
 
     /* Modify to-hit depending on distance; but keep it sane.
      * Polearms get a distance penalty even when wielded; it's

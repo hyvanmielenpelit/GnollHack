@@ -1246,11 +1246,7 @@ u_strdex_to_hit_bonus()
 	sbon += strength_tohit_bonus(str);
 	sbon += dexterity_tohit_bonus(dex);
 
-    /* Game tuning kludge: make it a bit easier for a low level character to
-     * hit */
-    sbon += (u.ulevel < 3) ? 1 : 0;
 	return sbon;
-
 }
 
 /* attack bonus for dexterity only for ranged*/

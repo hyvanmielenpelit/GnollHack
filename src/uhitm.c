@@ -304,7 +304,7 @@ int *attk_count, *role_roll_penalty;
 	}
 	else if(weaponskill != P_NONE)
 	{
-		skill_multiplier = 0.5;
+		skill_multiplier = TO_HIT_LEVEL_MULTIPLIER;
 #if 0
 		switch (skill_level)
 		{
@@ -329,7 +329,7 @@ int *attk_count, *role_roll_penalty;
     *role_roll_penalty = 0; /* default is `none' */
 
     tmp = 1 + Luck + u_strdex_to_hit_bonus() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc
-          + maybe_polyd(youmonst.data->mlevel, (int)(skill_multiplier * ((double)u.ulevel + 1.0)));
+          + maybe_polyd(youmonst.data->mlevel, (int)(skill_multiplier * (double)u.ulevel));
 
 	if (mtmp != &youmonst)
 	{

@@ -698,6 +698,7 @@ enum bodypart_types {
 static const char empty_string[] = "";
 
 /* Game play constants */
+#define TO_HIT_LEVEL_MULTIPLIER 0.25
 #define BOW_TO_HIT_MELEE_PENALTY 40
 #define THROWN_WEAPON_TO_HIT_MELEE_PENALTY 40
 #define THROWING_WEAPON_TO_HIT_MELEE_PENALTY_WHEN_USED_AS_MELEE_WEAPON 20
