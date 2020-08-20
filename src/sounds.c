@@ -973,8 +973,8 @@ register struct monst *mtmp;
         if (!is_peaceful(mtmp))
             pline_msg = "hisses!";
         else
-            return 0; /* no sound */
-        break;
+			pline_msg = "hisses gently.";
+		break;
     case MS_BUZZ:
         pline_msg = is_peaceful(mtmp) ? "drones." : "buzzes angrily.";
         break;
@@ -1974,6 +1974,8 @@ dochat()
 		&& !mtmp->isgd
 		&& !is_watch(mtmp->data)
 		&& !mtmp->ispriest
+		&& !mtmp->issmith
+		&& !mtmp->isnpc
 		&& msound != MS_ORACLE
 		&& msound != MS_ARREST
 		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)

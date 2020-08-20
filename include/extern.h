@@ -2708,6 +2708,7 @@ E long FDECL(set_cost, (struct obj*, struct monst*));
 E void FDECL(neweshk, (struct monst *));
 E void FDECL(free_eshk, (struct monst *));
 E void FDECL(stock_room, (int, struct mkroom *, BOOLEAN_P));
+E int FDECL(get_gehennom_undead_spellcaster, (int));
 E boolean FDECL(saleable, (struct monst *, struct obj *));
 E int FDECL(get_shop_item, (int));
 E char *FDECL(Shknam, (struct monst *));

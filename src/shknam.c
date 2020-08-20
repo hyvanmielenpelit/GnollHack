@@ -767,41 +767,7 @@ struct mkroom *sroom;
 
     if (Inhell)
     {
-        boolean arch_lich_gone = (mvitals[PM_ARCH_LICH].mvflags & G_GONE);
-        boolean master_lich_gone = (mvitals[PM_MASTER_LICH].mvflags & G_GONE);
-        boolean demilich_gone = (mvitals[PM_DEMILICH].mvflags & G_GONE);
-        boolean lich_gone = (mvitals[PM_LICH].mvflags & G_GONE);
-        boolean illithilich_gone = (mvitals[PM_ILLITHILICH].mvflags & G_GONE);
-        boolean ghost_gone = (mvitals[PM_GHOST].mvflags & G_GONE);
-        boolean vampire_mage_gone = (mvitals[PM_VAMPIRE_MAGE].mvflags & G_GONE);
-        boolean all_liches_gone = arch_lich_gone && master_lich_gone && demilich_gone && lich_gone;
-
-        if (arch_lich_gone && all_liches_gone && vampire_mage_gone && ghost_gone)
-            shkomontype = PM_SHOPKEEPER;
-        else if (all_liches_gone && illithilich_gone && vampire_mage_gone)
-            shkomontype = PM_GHOST;
-        else if (all_liches_gone && illithilich_gone && !ghost_gone)
-            shkomontype = !rn2(2) ? PM_VAMPIRE_MAGE : PM_GHOST;
-        else if (all_liches_gone && illithilich_gone)
-            shkomontype = PM_VAMPIRE_MAGE;
-        else if (all_liches_gone)
-            shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_VAMPIRE_MAGE;
-        else if (!arch_lich_gone && !illithilich_gone)
-            shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_ARCH_LICH;
-        else if (!arch_lich_gone)
-            shkomontype = PM_ARCH_LICH;
-        else if (!master_lich_gone && !illithilich_gone)
-            shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_MASTER_LICH;
-        else if (!arch_lich_gone)
-            shkomontype = PM_MASTER_LICH;
-        else if (!demilich_gone && !illithilich_gone)
-            shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_DEMILICH;
-        else if (!demilich_gone)
-            shkomontype = PM_DEMILICH;
-        else if (!lich_gone && !illithilich_gone)
-            shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_LICH;
-        else if (!lich_gone)
-            shkomontype = PM_LICH;
+        shkomontype = get_gehennom_undead_spellcaster(shkomontype);
     }
 
     if (!(shk = makemon(&mons[shkomontype], sx, sy, MM_ESHK)))
@@ -848,6 +814,50 @@ int rmno, sh, sx,sy;
                || (sy == sroom->hy && doors[sh].y == sy + 1))
         return FALSE;
     return TRUE;
+}
+
+int
+get_gehennom_undead_spellcaster(origtype)
+int origtype;
+{
+    int shkomontype = origtype;
+    boolean arch_lich_gone = (mvitals[PM_ARCH_LICH].mvflags & G_GONE);
+    boolean master_lich_gone = (mvitals[PM_MASTER_LICH].mvflags & G_GONE);
+    boolean demilich_gone = (mvitals[PM_DEMILICH].mvflags & G_GONE);
+    boolean lich_gone = (mvitals[PM_LICH].mvflags & G_GONE);
+    boolean illithilich_gone = (mvitals[PM_ILLITHILICH].mvflags & G_GONE);
+    boolean ghost_gone = (mvitals[PM_GHOST].mvflags & G_GONE);
+    boolean vampire_mage_gone = (mvitals[PM_VAMPIRE_MAGE].mvflags & G_GONE);
+    boolean all_liches_gone = arch_lich_gone && master_lich_gone && demilich_gone && lich_gone;
+
+    if (arch_lich_gone && all_liches_gone && vampire_mage_gone && ghost_gone)
+        shkomontype = PM_SHOPKEEPER;
+    else if (all_liches_gone && illithilich_gone && vampire_mage_gone)
+        shkomontype = PM_GHOST;
+    else if (all_liches_gone && illithilich_gone && !ghost_gone)
+        shkomontype = !rn2(2) ? PM_VAMPIRE_MAGE : PM_GHOST;
+    else if (all_liches_gone && illithilich_gone)
+        shkomontype = PM_VAMPIRE_MAGE;
+    else if (all_liches_gone)
+        shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_VAMPIRE_MAGE;
+    else if (!arch_lich_gone && !illithilich_gone)
+        shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_ARCH_LICH;
+    else if (!arch_lich_gone)
+        shkomontype = PM_ARCH_LICH;
+    else if (!master_lich_gone && !illithilich_gone)
+        shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_MASTER_LICH;
+    else if (!arch_lich_gone)
+        shkomontype = PM_MASTER_LICH;
+    else if (!demilich_gone && !illithilich_gone)
+        shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_DEMILICH;
+    else if (!demilich_gone)
+        shkomontype = PM_DEMILICH;
+    else if (!lich_gone && !illithilich_gone)
+        shkomontype = !rn2(2) ? PM_ILLITHILICH : PM_LICH;
+    else if (!lich_gone)
+        shkomontype = PM_LICH;
+
+    return shkomontype;
 }
 
 /* stock a newly-created room with objects */

@@ -84,6 +84,13 @@ enum verbose_function_types {
     (!mon_can_move(shkp) || (shkp)->data->msound <= MS_ANIMAL)
 
 /* NPCs */
+enum npc_gehennom_types {
+    NPC_GEHENNOM_STANDARD = 0,
+    NPC_GEHENNOM_UNDEAD_SPELLCASTER,
+    NPC_GEHENNOM_PIT_FIEND,
+    MAX_NPC_GEHENNOM_TYPES
+};
+
 enum npc_subtypes {
     NPC_WIZARD = 0,
     NPC_GEOLOGIST,
@@ -92,6 +99,7 @@ enum npc_subtypes {
 
 struct npc_subtype_definition {
     int mnum;
+    enum npc_gehennom_types npc_gehennom_type;
     const char* npc_role_name;
     const char* room_name;
     schar min_appearance_depth;

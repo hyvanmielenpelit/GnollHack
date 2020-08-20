@@ -13,6 +13,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
 {
     {
         PM_ARCHMAGE,
+        NPC_GEHENNOM_UNDEAD_SPELLCASTER,
         "archmage",
         "residence",
         8, 0,
@@ -22,6 +23,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
     },
     {
         PM_DWARVEN_GEOLOGIST,
+        NPC_GEHENNOM_PIT_FIEND,
         "geologist",
         "trading post",
         6, 0,
@@ -292,6 +294,23 @@ int npctype;
         (void)rloc(m_at(npc_loc_x, npc_loc_y), FALSE); /* insurance */
 
     int npc_montype = npc_subtype_definitions[npctype].mnum;
+    if (Inhell)
+    {
+        switch (npc_subtype_definitions[npctype].npc_gehennom_type)
+        {
+        case NPC_GEHENNOM_STANDARD:
+            break;
+        case NPC_GEHENNOM_UNDEAD_SPELLCASTER:
+            npc_montype = get_gehennom_undead_spellcaster(npc_montype);
+            break;
+        case NPC_GEHENNOM_PIT_FIEND:
+            if (!(mvitals[PM_PIT_FIEND].mvflags & G_GONE))
+                npc_montype = PM_PIT_FIEND;
+            break;
+        default:
+            break;
+        }
+    }
     npc = makemon(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC);
 
     if (npc)
