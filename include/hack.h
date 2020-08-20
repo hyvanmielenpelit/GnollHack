@@ -92,7 +92,7 @@ enum npc_gehennom_types {
 };
 
 enum npc_subtypes {
-    NPC_WIZARD = 0,
+    NPC_ARTIFICER = 0,
     NPC_GEOLOGIST,
     MAX_NPC_SUBTYPES
 };

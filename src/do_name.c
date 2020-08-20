@@ -3225,6 +3225,163 @@ char* s;
 	return s;
 }
 
+char*
+randomize_demon_name(s)
+char* s;
+{
+    static const char* names[] = {
+        "Baalzephon",
+        "Dagos",
+        "Furcas",
+        "Pearza",
+        "Zaebos",
+        "Zapan",
+        "Zimimar",
+        "Koraboros",
+        "Abarax",
+        "Tanetal",
+        "Abbatorru",
+        "Adacher",
+        "Adaddon",
+        "Adadese",
+        "Akinurb",
+        "Anurnac",
+        "Anur-Shub",
+        "Arbelah",
+        "Babzidu",
+        "Bal-Balah",
+        "Barbagg",
+        "Bis",
+        "Bisrib",
+        "Chuh-Arbalma",
+        "Damasze",
+        "Dimgidu",
+        "Dingidnin",
+        "Dinimabi",
+        "Dukiana",
+        "Dur",
+        "Ehur-Shu-Dur",
+        "Ehurtar",
+        "Elamash",
+        "Enian",
+        "Enlilil",
+        "Esagala",
+        "Esarhal",
+        "Esarruk",
+        "Gaszarsir",
+        "Gismudurug",
+        "Gissz",
+        "Giszagnabi",
+        "Haburta",
+        "Harch-sschwat",
+        "Harrapi",
+        "Hisszagu",
+        "Hursag",
+        "Huszi",
+        "Ibza",
+        "Iduduamnaa",
+        "Igaam",
+        "Igalil",
+        "Ilile",
+        "Imhiakaam",
+        "Jebel",
+        "Jebelat",
+        "Jezirpa",
+        "Karduki",
+        "Kikabi",
+        "Kilzecru",
+        "Klo-Thort",
+        "Kulzu",
+        "Kuninin",
+        "Maam",
+        "Maradaraam",
+        "Matukal",
+        "Meteneg",
+        "Mitanu",
+        "Muibzur",
+        "Muigude",
+        "Muisze",
+        "Muninaam",
+        "Mununaa",
+        "Nab-kin",
+        "Naszsir",
+        "Nimrisr",
+        "Nin",
+        "Nutae",
+        "Pisipad",
+        "Pismurda",
+        "Riasir",
+        "Sag",
+        "Sagrata",
+        "Shaddon",
+        "Shalbal",
+        "Shalih",
+        "Sharrar",
+        "Sharruk",
+        "Sigsir",
+        "Sineser",
+        "Szekaabsuk",
+        "Szerinsuk",
+        "Szumuzabi",
+        "Szusumu",
+        "T'aah'ukin",
+        "Tho'Daah-Nugh",
+        "Tigla",
+        "Tubidu",
+        "Tumunnu",
+        "Turtush",
+        "Tur-uk",
+        "Ubienlnaa",
+        "Udnaa",
+        "Urah",
+        "Zaburra",
+        "Zaganit",
+        "Zalidamsir",
+        "Zamanni",
+        "Zananaa"
+    };
+
+    if (s)
+    {
+        strcpy(s, "");
+        Sprintf(s, "%s", names[rn2(SIZE(names))]);
+    }
+    return s;
+}
+
+char*
+randomize_undead_spellcaster_name(s)
+char* s;
+{
+    static const char* names[] = {
+        "Arklem Greeth",
+        "Asberdies",
+        "Aumvor",
+        "Azalin",
+        "Boretti",
+        "Zrie Prakis",
+        "Erandis Vol",
+        "Tordynnar Rhaevaern",
+        "Sammaster",
+        "Redeye",
+        "Thessalar",
+        "Szass Tam",
+        "Skall",
+        "Larloch",
+        "Harthoon",
+        "Dregoth",
+        "Dragotha"
+    };
+
+    if (s)
+    {
+        strcpy(s, "");
+        Sprintf(s, "%s", names[rn2(SIZE(names))]);
+    }
+    return s;
+}
+
+
 
 struct monst *
 christen_orc(mtmp, gang, other)

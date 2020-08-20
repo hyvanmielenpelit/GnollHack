@@ -2684,7 +2684,7 @@ struct monst* mtmp;
 		if (has_mname(mtmp))
 			Sprintf(ansbuf, "I am %s, %s.", MNAME(mtmp), an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
 		else
-			Sprintf(ansbuf, "I am %s.", an(npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name));
+			Sprintf(ansbuf, "I am a local %s.", npc_subtype_definitions[ENPC(mtmp)->npc_typ].npc_role_name);
 
 		mtmp->u_know_mname = 1;
 		verbalize(ansbuf);

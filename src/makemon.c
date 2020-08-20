@@ -195,19 +195,25 @@ register struct monst* mtmp;
 {
 	char mnamebuf[BUFSZ];
 
-	if (is_dwarf(mtmp->data) && !has_mname(mtmp))
+	if (is_dwarf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_dwarf_name(mnamebuf)));
 
-	if (is_orc(mtmp->data) && !has_mname(mtmp))
+	if (is_orc(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(rndorcname(mnamebuf)));
 
-	if (is_elf(mtmp->data) && !has_mname(mtmp))
+	if (is_elf(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_elf_name(mnamebuf)));
 
-	if (is_gnome(mtmp->data) && !has_mname(mtmp))
+	if (is_gnome(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_gnome_name(mnamebuf)));
 
-	if (is_gnoll(mtmp->data) && !has_mname(mtmp))
+    if (is_demon(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+        christen_monst(mtmp, upstart(randomize_demon_name(mnamebuf)));
+
+    if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_ILLITHILICH] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+        christen_monst(mtmp, upstart(randomize_undead_spellcaster_name(mnamebuf)));
+
+    if (is_gnoll(mtmp->data) && !has_mname(mtmp))
 	{
 		if (mtmp->data == &mons[PM_FLIND] || mtmp->data == &mons[PM_FLIND_LORD])
 			christen_monst(mtmp, upstart(randomize_flind_name(mnamebuf)));

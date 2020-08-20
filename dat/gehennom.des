@@ -359,7 +359,7 @@ MAP
 .--+-...-+----+--....-------...--------.-+---
 .....................|.....|.................
 .....................|.....|.................
-.--+----...--+---....|.....|...----------+---
+.--+----....-+---....|.....|...----------+---
 .|....|....|....|....---+---...|......|......
 .|.........|....|..............|......|......
 .----...---------.....-----....+......|......
@@ -409,7 +409,6 @@ DOOR:closed,(09,05)
 DOOR:closed,(14,05)
 DOOR:closed,(41,05)
 DOOR:open,(03,08)
-DOOR:nodoor,(13,08)
 DOOR:open,(41,08)
 DOOR:closed,(24,09)
 DOOR:closed,(31,11)
@@ -417,7 +416,6 @@ DOOR:open,(11,13)
 DOOR:closed,(18,13)
 DOOR:closed,(41,13)
 DOOR:open,(26,14)
-DOOR:closed,(06,15)
 
 # Special rooms
 REGION:(22,06,26,08),lit,"temple"
@@ -425,10 +423,12 @@ ALTAR:(24,07),noalign,shrine
 REGION:(22,12,25,16),unlit,"morgue"
 REGION:(32,09,37,12),lit,"shop"
 REGION:(12,00,15,04),lit,"shop"
-REGION:(03,14,07,16),lit,"npcroom"
-NPC: (04,15), npc_wizard
+REGION:(03,14,05,16),lit,"npcroom"
+NPC:(04,15), npc_artificer
+DOOR:closed,(06,15)
 REGION:(12,09,15,10),lit,"npcroom"
-NPC: (14,10), npc_geologist
+NPC:(14,10), npc_geologist
+DOOR:closed,(13,08) 
 
 # Some traps.
 TRAP:"spiked pit", random
