@@ -2370,14 +2370,15 @@ register struct obj* obj;
 	if (stats_known && OBJ_ITEM_DESC(otyp) && !(obj->oartifact && obj->nknown))
 	{
 		/* One empty line here */
-		Sprintf(buf, "");
+		strcpy(buf, "");
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		Sprintf(buf, "Description:");
+		strcpy(buf, "Description:");
 		txt = buf;
 		putstr(datawin, 0, txt);
-		Sprintf(buf, OBJ_ITEM_DESC(otyp));
+
+		strcpy(buf, OBJ_ITEM_DESC(otyp));
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
