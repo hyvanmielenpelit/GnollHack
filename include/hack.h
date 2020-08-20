@@ -120,7 +120,8 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_PARQUET_FLOOR             0x00000001UL
 #define NPC_FLAGS_MARBLE_FLOOR              0x00000002UL
 #define NPC_FLAGS_DOORS_CLOSED              0x00000004UL
-#define NPC_FLAGS_LIGHTS_ON              0x00000008UL
+#define NPC_FLAGS_LIGHTS_ON                 0x00000008UL
+#define NPC_FLAGS_DOUBLE_MONEY_IN_HELL      0x00000010UL
 
 
 /* weight increment of heavy iron ball */

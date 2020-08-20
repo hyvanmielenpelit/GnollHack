@@ -262,6 +262,7 @@ struct obj *weapon; /* uwep or uarms or NULL */
 int *attk_count, *role_roll_penalty;
 {
     int tmp, tmp2;
+	int polytmp = 0, nonpolytmp = 0;
 	int weaponskill = weapon_skill_type(weapon);
 	if (weaponskill == P_MARTIAL_ARTS)
 		weaponskill = P_BARE_HANDED_COMBAT;
@@ -328,8 +329,9 @@ int *attk_count, *role_roll_penalty;
 	}
     *role_roll_penalty = 0; /* default is `none' */
 
-    tmp = 1 + Luck + u_strdex_to_hit_bonus() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc
-          + maybe_polyd(youmonst.data->mlevel, (int)(skill_multiplier * (double)u.ulevel));
+	polytmp = youmonst.data->mlevel;
+	nonpolytmp = (int)(skill_multiplier * (double)u.ulevel);
+    tmp = 1 + Luck + u_strdex_to_hit_bonus() + find_mac(mtmp) + u.ubasehitinc + u.uhitinc;
 
 	if (mtmp != &youmonst)
 	{
@@ -398,7 +400,7 @@ int *attk_count, *role_roll_penalty;
             tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
 		else if(uarmg)
 			tmp += weapon_to_hit_value(uarmg, mtmp, &youmonst, 0);
-		tmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE);
+		nonpolytmp += weapon_skill_hit_bonus(weapon, P_NONE, FALSE);
     } 
 	else if (aatyp == AT_KICK && martial_bonus()) 
 	{
@@ -406,10 +408,12 @@ int *attk_count, *role_roll_penalty;
 			tmp += weapon_to_hit_value(weapon, mtmp, &youmonst, 0);
 		else if (uarmf)
 			tmp += weapon_to_hit_value(uarmf, mtmp, &youmonst, 0);
-		tmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE);
+		nonpolytmp += weapon_skill_hit_bonus((struct obj *) 0, P_NONE, FALSE);
     }
 
-    return tmp;
+	tmp += maybe_polyd(max(polytmp, nonpolytmp), nonpolytmp);
+
+	return tmp;
 }
 
 /* try to attack; return False if monster evaded;

@@ -1959,9 +1959,9 @@ anvil_detail : ANVIL_ID ':' coord_or_var
 		  }
 		;
 
-npc_detail : NPC_ID ':' coord_or_var ',' NPC_TYPE
+npc_detail : NPC_ID ':' NPC_TYPE ',' coord_or_var
 		  {
-		      add_opvars(splev, "io", VA_PASS2((int)$5, SPO_NPC));
+		      add_opvars(splev, "io", VA_PASS2((int)$3, SPO_NPC));
 		  }
 		;
 

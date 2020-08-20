@@ -1964,7 +1964,8 @@ find_ac()
 	*/
 
 	/* DEX Bonus */
-	uac -= dexterity_ac_bonus(ACURR(A_DEX));
+    if(!Paralyzed && !Sleeping)
+    	uac -= dexterity_ac_bonus(ACURR(A_DEX));
 	
 	/* Intrinsic and extrinsic AC Bonus */
 	uac -= u.ubaseacbonus;

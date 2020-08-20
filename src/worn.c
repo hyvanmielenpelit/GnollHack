@@ -1623,7 +1623,9 @@ register struct monst *mon;
 		mac = armor_ac;
 
 	//DEX bonus for monsters, reduce the number from AC; not add!
-	mac -= dexterity_ac_bonus(m_acurr(mon, A_DEX));
+	if(mon_can_move(mon))
+		mac -= dexterity_ac_bonus(m_acurr(mon, A_DEX));
+
 	mac -= mon->macbonus;
 
 	if (mon->mprops[MAGICAL_STONESKIN])

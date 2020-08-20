@@ -2100,6 +2100,7 @@ boolean is_golf;
     int otyp = obj->otyp, hmode;
     boolean guaranteed_hit = (u.uswallow && mon == u.ustuck);
     int dieroll;
+    int polytmp = 0, nonpolytmp = 0;
 
     hmode = (obj == uwep) ? HMON_APPLIED
               : (obj == kickedobj) ? (is_golf ? HMON_GOLF : HMON_KICKED)
@@ -2116,8 +2117,11 @@ boolean is_golf;
      * Certain items which don't in themselves do damage ignore 'tmp'.
      * Distance and monster size affect chance to hit.
      */
-    tmp = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(mon) + u.ubasehitinc + u.uhitinc
-          + maybe_polyd(youmonst.data->mlevel, (int)(TO_HIT_LEVEL_MULTIPLIER * (double)u.ulevel));
+
+    /* Plusses have been divided into poly-case, non-poly-case, and always-case */
+    polytmp += youmonst.data->mlevel;
+    nonpolytmp += (int)(TO_HIT_LEVEL_MULTIPLIER * (double)u.ulevel);
+    tmp = -1 + Luck + u_ranged_strdex_to_hit_bonus() + find_mac(mon) + u.ubasehitinc + u.uhitinc;
 
     /* Modify to-hit depending on distance; but keep it sane.
      * Polearms get a distance penalty even when wielded; it's
@@ -2258,7 +2262,7 @@ boolean is_golf;
 			else if (uwep)
 			{
 				tmp += weapon_to_hit_value(uwep, mon, &youmonst, 2);	//tmp += uwep->enchantment - greatest_erosion(uwep);
-                tmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE); //Players get skill bonuses
+                nonpolytmp += weapon_skill_hit_bonus(uwep, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE); //Players get skill bonuses
 //                if (uwep->oartifact)
 //                    tmp += spec_abon(uwep, mon);
                 /*
@@ -2286,8 +2290,11 @@ boolean is_golf;
                 tmp -= 2;
             /* we know we're dealing with a weapon or weptool handled
                by WEAPON_SKILLS once ammo objects have been excluded */
-            tmp += weapon_skill_hit_bonus(obj, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE);
+            nonpolytmp += weapon_skill_hit_bonus(obj, is_golf_swing_with_stone ? P_THROWN_WEAPON : P_NONE, FALSE);
         }
+
+        /* If poly'd, give maximum of player hit chance and polymorph form hit dice, otherwise use normal player chance */
+        tmp += maybe_polyd(max(polytmp, nonpolytmp), nonpolytmp);
 
         if (tmp >= dieroll) 
 		{

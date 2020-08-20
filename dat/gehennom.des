@@ -424,10 +424,10 @@ REGION:(22,12,25,16),unlit,"morgue"
 REGION:(32,09,37,12),lit,"shop"
 REGION:(12,00,15,04),lit,"shop"
 REGION:(03,14,05,16),lit,"npcroom"
-NPC:(04,15), npc_artificer
+NPC:npc_artificer,(04,15)
 DOOR:closed,(06,15)
 REGION:(12,09,15,10),lit,"npcroom"
-NPC:(14,10), npc_geologist
+NPC:npc_geologist,(14,10)
 DOOR:closed,(13,08) 
 
 # Some traps.

@@ -27,9 +27,9 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "geologist",
         "workshop",
         6, 0,
-        13, 1000, 7000,
+        8, 1000, 7000,
         NPC_SERVICE_BUY_GEMS_AND_STONES | NPC_SERVICE_IDENTIFY_GEMS_AND_STONES,
-        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
+        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL
     },
 };
 
@@ -324,8 +324,15 @@ int npctype;
         npc->msleeping = 0;
         set_malign(npc); /* mpeaceful may have changed */
 
-        if(npc_subtype_definitions[npctype].start_money_d > 0 || npc_subtype_definitions[npctype].start_money_n > 0 || npc_subtype_definitions[npctype].start_money_p > 0)
-            (void)mongetsgold(npc, d(npc_subtype_definitions[npctype].start_money_d, npc_subtype_definitions[npctype].start_money_n)+ npc_subtype_definitions[npctype].start_money_p);
+        if ((npc_subtype_definitions[npctype].start_money_d > 0 && npc_subtype_definitions[npctype].start_money_n > 0) || npc_subtype_definitions[npctype].start_money_p > 0)
+        {
+            long npcmoney = d(npc_subtype_definitions[npctype].start_money_d, npc_subtype_definitions[npctype].start_money_n) + npc_subtype_definitions[npctype].start_money_p;
+            
+            if (Inhell && (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_DOUBLE_MONEY_IN_HELL))
+                npcmoney *= 2;
+
+            (void)mongetsgold(npc, npcmoney);
+        }
 
     }
 }
