@@ -2348,7 +2348,8 @@ struct mkroom* croom;
     if (!croom_is_npc_room)
         return;
 
-    npcini(&u.uz, croom, x, y, 0);
+    int usedtyp = (a->typ >= 0 && a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
+    npcini(&u.uz, croom, x, y, usedtyp);
     level.flags.has_npc_room = TRUE;
 }
 
@@ -4757,13 +4758,14 @@ void spo_npc(coder)
 struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_npc";
-    struct opvar* acoord;
+    struct opvar *acoord, *typ;
     npc_create_info tmpnpc;
 
-    if (!OV_pop_c(acoord))
+    if (!OV_pop_i(typ) || !OV_pop_c(acoord))
         return;
 
     tmpnpc.coord = OV_i(acoord);
+    tmpnpc.typ = OV_i(typ);
 
     create_npc(&tmpnpc, coder->croom);
 

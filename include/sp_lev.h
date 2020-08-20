@@ -403,6 +403,7 @@ typedef struct {
 typedef struct {
     packed_coord coord;
     xchar x, y;
+    uchar typ;
 } npc_create_info;
 
 

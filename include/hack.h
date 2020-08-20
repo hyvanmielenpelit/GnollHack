@@ -78,9 +78,15 @@ enum verbose_function_types {
 	VERBOSE_FUNCTION_SET_MON_PROPERTY = 1
 };
 
+
+/* Muteness */
+#define muteshk(shkp)                       \
+    (!mon_can_move(shkp) || (shkp)->data->msound <= MS_ANIMAL)
+
 /* NPCs */
 enum npc_subtypes {
     NPC_WIZARD = 0,
+    NPC_GEOLOGIST,
     MAX_NPC_SUBTYPES
 };
 
@@ -90,14 +96,17 @@ struct npc_subtype_definition {
     const char* room_name;
     schar min_appearance_depth;
     schar max_appearance_depth;
+    int start_money_d, start_money_n, start_money_p;
     unsigned long service_flags;
     unsigned long general_flags;
 };
 
 extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 
-#define NPC_SERVICE_ENCHANT_ACCESSORY       0x00000001UL
-#define NPC_SERVICE_RECHARGING              0x00000002UL
+#define NPC_SERVICE_ENCHANT_ACCESSORY        0x00000001UL
+#define NPC_SERVICE_RECHARGING               0x00000002UL
+#define NPC_SERVICE_BUY_GEMS_AND_STONES      0x00000004UL
+#define NPC_SERVICE_IDENTIFY_GEMS_AND_STONES 0x00000008UL
 
 
 #define NPC_FLAGS_PARQUET_FLOOR             0x00000001UL

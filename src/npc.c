@@ -16,7 +16,17 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "archmage",
         "residence",
         8, 0,
+        5, 100, 0,
         NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING,
+        NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
+    },
+    {
+        PM_DWARVEN_GEOLOGIST,
+        "geologist",
+        "trading post",
+        6, 0,
+        13, 1000, 7000,
+        NPC_SERVICE_BUY_GEMS_AND_STONES | NPC_SERVICE_IDENTIFY_GEMS_AND_STONES,
         NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
     },
 };
@@ -294,6 +304,10 @@ int npctype;
         npc->isnpc = 1;
         npc->msleeping = 0;
         set_malign(npc); /* mpeaceful may have changed */
+
+        if(npc_subtype_definitions[npctype].start_money_d > 0 || npc_subtype_definitions[npctype].start_money_n > 0 || npc_subtype_definitions[npctype].start_money_p > 0)
+            (void)mongetsgold(npc, d(npc_subtype_definitions[npctype].start_money_d, npc_subtype_definitions[npctype].start_money_n)+ npc_subtype_definitions[npctype].start_money_p);
+
     }
 }
 

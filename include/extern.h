@@ -2700,6 +2700,7 @@ E char *FDECL(shk_your, (char *, struct obj *));
 E char *FDECL(Shk_Your, (char *, struct obj *));
 E long FDECL(get_cost, (struct obj*, struct monst*));
 E int FDECL(shk_chastise_pet, (struct monst* mtmp, struct obj*, boolean));
+E long FDECL(set_cost, (struct obj*, struct monst*));
 
 
 /* ### shknam.c ### */
@@ -2744,6 +2745,7 @@ E boolean FDECL(m_sellable_item, (struct obj*, struct monst*));
 E long FDECL(get_cost_of_monster_item, (struct obj*, struct monst*));
 E long FDECL(m_contained_cost, (struct obj*, struct monst*));
 E boolean FDECL(is_shop_item_type, (struct obj*, int));
+E boolean FDECL(is_npc_item_identification_type, (struct obj*, int));
 E int FDECL(release_item_from_hero_inventory, (struct obj*));
 E int FDECL(ask_shk_reconciliation, (struct monst*));
 E double FDECL(service_cost_charisma_adjustment, (int));

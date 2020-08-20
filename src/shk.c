@@ -19,9 +19,6 @@ STATIC_DCL void FDECL(kops_gone, (BOOLEAN_P));
 #define ANGRY(mon) (!NOTANGRY(mon))
 #define IS_SHOP(x) (rooms[x].rtype >= SHOPBASE)
 
-#define muteshk(shkp)                       \
-    (!mon_can_move(shkp) || (shkp)->data->msound <= MS_ANIMAL)
-
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
 STATIC_VAR NEARDATA long int followmsg; /* last time of follow message */
@@ -41,7 +38,6 @@ STATIC_DCL void FDECL(clear_unpaid_obj, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(clear_unpaid, (struct monst *, struct obj *));
 STATIC_DCL long FDECL(check_credit, (long, struct monst *));
 STATIC_DCL void FDECL(pay, (long, struct monst *));
-STATIC_DCL long FDECL(set_cost, (struct obj *, struct monst *));
 STATIC_DCL const char *FDECL(shk_embellish, (struct obj *, long));
 STATIC_DCL long FDECL(cost_per_charge, (struct monst *, struct obj *,
                                         BOOLEAN_P));
@@ -2344,10 +2340,10 @@ boolean quietly;
 }
 
 /* calculate how much the shk will pay when buying [all of] an object */
-STATIC_OVL long
-set_cost(obj, shkp)
+long
+set_cost(obj, mtmp)
 register struct obj *obj;
-register struct monst *shkp;
+register struct monst * mtmp;
 {
     long tmp = getprice(obj, TRUE) * obj->quan, multiplier = 1L, divisor = 1L;
 
@@ -2366,10 +2362,10 @@ register struct monst *shkp;
             /* different shop keepers give different prices */
             if (objects[obj->otyp].oc_material == MAT_GEMSTONE
                 || objects[obj->otyp].oc_material == MAT_GLASS) {
-                tmp = (obj->otyp % (6 - shkp->m_id % 3));
+                tmp = (obj->otyp % (6 - mtmp->m_id % 3));
                 tmp = (tmp + 3) * obj->quan;
             }
-        } else if (tmp > 1L && !(shkp->m_id % 4))
+        } else if (tmp > 1L && !(mtmp->m_id % 4))
             multiplier *= 3L, divisor *= 4L;
     }
 

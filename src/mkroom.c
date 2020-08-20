@@ -1414,7 +1414,7 @@ mknpcroom()
 
     if (ok_npc_cnt > 0)
     {
-        int cnt = 0;
+        int cnt = -1;
         int rndidx = (ok_npc_cnt == 1 ? 1 : rn2(ok_npc_cnt));
         for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
         {

@@ -158,7 +158,8 @@ struct context_info
 	struct prop_info properties[LAST_PROP + 1]; /* here until a better place can be found */
 	boolean encounter_appeared[256];
 	int shop_identify_type;
-	boolean mon_moving; /* monsters' turn to move */
+    int npc_identify_type;
+    boolean mon_moving; /* monsters' turn to move */
 	boolean mon_talking; /* a monster is talking this turn */
 	boolean hungry_message_displayed;
     boolean move;
