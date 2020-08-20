@@ -195,6 +195,7 @@ static struct {
     { "delphi", DELPHI },
     { "temple", TEMPLE },
     { "smithy", SMITHY },
+    { "npcroom", NPCROOM },
     { "anthole", ANTHOLE },
     { "cocknest", COCKNEST },
     { "leprehall", LEPREHALL },

@@ -289,9 +289,9 @@ SUBROOM: "candle shop", lit, (11,10), (4,3) {
   ROOMDOOR: false, closed, east, random
 }
 
-[75%]: SUBROOM: "ordinary", unlit, (7,10), (3,3) {
-  ROOMDOOR: false, locked, north, random
-  MONSTER: ('g', "gnome"), random
+SUBROOM: "npcroom", unlit, (7,10), (3,3) {
+  ROOMDOOR: false, closed, north, random
+  NPC: random, npc_geologist
 }
 
 SUBROOM: "temple", lit, (19,5), (4,4) {
@@ -372,8 +372,9 @@ SUBROOM:"temple",lit,(10,2),(3,4) {
   MONSTER: ('g', "gnomish wizard"), random
 }
 
-SUBROOM:"ordinary",random,(11,7),(2,2) {
+SUBROOM:"npcroom",random,(11,7),(2,2) {
   ROOMDOOR: false,closed,west,random
+  NPC: random, npc_geologist
 }
 
 SUBROOM:"shop",lit,(10,10),(3,3) {
@@ -473,9 +474,9 @@ SUBROOM:"temple",lit,(11,3),(5,4) {
   MONSTER: ('g', "gnomish wizard"), random
 }
 
-SUBROOM:"ordinary",random,(19,2),(2,2) {
+SUBROOM:"npcroom",random,(19,2),(2,2) {
   ROOMDOOR: false,closed,south,random
-  MONSTER: 'g', random
+  NPC: random, npc_geologist
 }
 
 SUBROOM:"candle shop",lit,(22,2),(3,3) {
@@ -682,6 +683,12 @@ REGION:(01,18,03,19),lit,"smithy"
 DOOR:closed,(01,17)
 ANVIL:(02,19)
 
+# Geologist
+REGION:(19,17,21,18),lit,"npcroom"
+DOOR:closed,(20,16)
+NPC:(20,18),npc_geologist
+
+
 # "Bustling Town" by Kelly Bailey
 #
 MAZE: "minetn-6",' '
@@ -724,6 +731,11 @@ ALTAR:(35,13),align[0],shrine
 REGION:(02,01,04,03),lit,"smithy"
 DOOR:closed,(05,02)
 ANVIL:(03,02)
+
+# Geologist
+REGION:(19,11,20,13),lit,"npcroom"
+DOOR:closed,(19,10)
+NPC:(20,13),npc_geologist
 
 DOOR:locked,(4,8)
 DOOR:closed,(10,2)
@@ -770,9 +782,10 @@ ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) {
 FOUNTAIN: (12, 07)
 FOUNTAIN: (11, 13)
 
-[75%]: SUBROOM: "ordinary", random, (2,2), (4,2) {
+SUBROOM: "npcroom", random, (2,2), (4,2) {
   ROOMDOOR: false, closed, south, random
-}
+  NPC: random, npc_geologist
+} 
 
 [75%]: SUBROOM: "ordinary", random, (7,2), (2,2) {
   ROOMDOOR: false, closed, north, random
