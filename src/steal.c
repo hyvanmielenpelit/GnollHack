@@ -786,8 +786,8 @@ boolean is_mon_dead;
     struct obj *otmp;
     int omx = mtmp->mx, omy = mtmp->my;
 
-    /* vault guard's gold goes away rather than be dropped... */
-    if (mtmp->isgd && (otmp = findgold(mtmp->minvent)) != 0)
+    /* vault guard's and Gehennom special monster gold goes away rather than be dropped... */
+    if ((mtmp->isgd || ((mtmp->issmith || mtmp->ispriest || mtmp->isshk || mtmp->isnpc) && Inhell)) && (otmp = findgold(mtmp->minvent)) != 0)
     {
         if (canspotmon(mtmp))
             pline("%s gold %s.", s_suffix(Monnam(mtmp)),
