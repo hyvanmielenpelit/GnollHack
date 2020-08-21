@@ -1704,51 +1704,69 @@ uchar* tilemapflags;
     tile_section_name = "enlargement";
     for (int i = 1; i <= NUM_ENLARGEMENTS; i++)  /* enlargement number, starts at 1 */
     {
-        short base_tile = get_enlargement_base_tile(i);
-        for (int j = 0; j < max(0, min(MAX_TILES_PER_ENLARGEMENT, enlargements[i].number_of_tiles)); j++) /* tile number */
+        short enl_anim_tiles = enlargements[i].number_of_animation_tiles ? enlargements[i].number_of_animation_tiles : 1;
+        for (int m = 0; m < enl_anim_tiles; m++)
         {
-            const char* pos_name = "unknown";
-            const char* position_names[MAX_TILES_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
-
-            int position = -1;
-            for (int k = 0; k < MAX_ENLARGEMENT_FRAMES; k++) /* frame number */
+            short enl_anim_tile_idx = enlargements[i].number_of_animation_tiles ? m : -1;
+            short base_tile = get_enlargement_base_tile(i, enl_anim_tile_idx);
+            for (int j = 0; j < max(0, min(MAX_TILES_PER_ENLARGEMENT, enlargements[i].number_of_tiles)); j++) /* tile number */
             {
-                if (enlargements[i].frame2tile[k] == j)
+                const char* pos_name = "unknown";
+                const char* position_names[MAX_TILES_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
+
+                int position = -1;
+                for (int k = 0; k < MAX_ENLARGEMENT_FRAMES; k++) /* frame number */
                 {
-                    position = k;
-                    break;
+                    if (enlargements[i].frame2tile[k] == j)
+                    {
+                        position = k;
+                        break;
+                    }
                 }
-            }
-            if (position >= 0)
-            {
-                pos_name = position_names[position];
+                if (position >= 0)
+                {
+                    pos_name = position_names[position];
 
-            }
+                }
 
-            if (process_style == 0)
-            {
-                Sprintf(buf, "%s,%s,%s,%d,%d,%d,%d,%d,%d\n", tile_section_name,
-                    enlargements[i].enlargement_name ? enlargements[i].enlargement_name : "unknown enlargement", 
-                    pos_name,
-                    base_tile,
-                    enlargements[i].width_in_tiles,
-                    enlargements[i].height_in_tiles,
-                    enlargements[i].main_tile_x_coordinate,
-                    enlargements[i].number_of_tiles,
-                    position
+                if (process_style == 0)
+                {
+                    char tilebuf[BUFSIZ];
+                    strcpy(tilebuf, "");
+//                    if (enl_anim_tile_idx >= 0)
+//                        Sprintf(tilebuf, "_tile-%d", enl_anim_tile_idx);
+
+                    char enlbuf[BUFSIZ];
+                    Sprintf(enlbuf, "%s%s", enlargements[i].enlargement_name ? enlargements[i].enlargement_name : "unknown enlargement",
+                        tilebuf);
+
+                    Sprintf(buf, "%s,%s,%s,%d,%d,%d,%d,%d,%d,%d\n", tile_section_name,
+                        enlbuf,
+                        pos_name,
+                        base_tile,
+                        enlargements[i].width_in_tiles,
+                        enlargements[i].height_in_tiles,
+                        enlargements[i].main_tile_x_coordinate,
+                        enlargements[i].number_of_tiles,
+                        position,
+                        enl_anim_tile_idx
                     );
-                (void)write(fd, buf, strlen(buf));
-            }
-            else if (process_style == 1)
-            {
-                glyph_offset = GLYPH_ENLARGEMENT_OFF;
-                for (int k = 0; k < min(enlargements[i].number_of_frames, MAX_FRAMES_PER_ENLARGEMENT); k++)  /* frame number */
-                {
-                    if (animations[i].frame2tile[k] == j)
-                        tilemaparray[k + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                    (void)write(fd, buf, strlen(buf));
                 }
+                else if (process_style == 1)
+                {
+                    glyph_offset = GLYPH_ENLARGEMENT_OFF;
+                    for (int k = 0; k < min(enlargements[i].number_of_frames, MAX_FRAMES_PER_ENLARGEMENT); k++)  /* frame number */
+                    {
+                        int addedindex = enl_anim_tile_idx >= 0 ? 
+                            enl_anim_tile_idx * min(enlargements[i].number_of_frames, MAX_FRAMES_PER_ENLARGEMENT) 
+                            : 0;
+                        if (animations[i].frame2tile[k] == j)
+                            tilemaparray[k + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+                    }
+                }
+                tile_count++;
             }
-            tile_count++;
         }
     }
 

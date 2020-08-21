@@ -1196,7 +1196,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             ntile = maybe_get_replaced_tile(ntile, -1, -1,
                 obj_to_replacement_info(item->object_data.otyp > STRANGE_OBJECT ? &item->object_data : (struct obj*)0),
                 &autodraw);
-            //ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->intervalCounter, &item->is_animated, &autodraw);
+            //ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->intervalCounter, &frame_idx, &main_tile_idx, &item->is_animated, &autodraw);
             int multiplier = flip_tile ? -1 : 1;
 
             int source_top_added = 0;

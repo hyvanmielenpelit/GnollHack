@@ -2475,7 +2475,7 @@ NEARDATA struct permonst mons[] = {
         35, CLR_YELLOW, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 
 	/* dracolich */
-	ENLARGED_MON("dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(20, 12, -5, 18, 90, -16),
+    ENLARGED_ANIMATED_MON("dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(20, 12, -5, 18, 90, -16),
 		(G_HELL | G_GENO | G_NOCORPSE | 1), 
 		A(ATTK(AT_BREA, AD_DRAY, 1, 255, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 11),
 			ATTK(AT_BITE, AD_PHYS, 4, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 2, 4, 0, 0),
@@ -2487,7 +2487,9 @@ NEARDATA struct permonst mons[] = {
 		M2_UNDEAD | M2_HOSTILE | M2_MAGIC,
 		M3_WAITFORU | M3_INFRAVISION | M3_WIZARD | M3_SPEAKING | M3_CORPSE_CRUMBLES_TO_DUST,
         M4_BRAVE, M5_NONE, 
-		30, CLR_BROWN, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL, ACTION_INFO(DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0,0,0,0,0,DRACOLICH_STATUE_ENLARGEMENT,0), NO_ACTION_INFO),
+		30, CLR_BROWN, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL, 
+        ACTION_INFO(0, DRACOLICH_ATTACK_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ACTION_INFO(0, DRACOLICH_ATTACK_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+        ACTION_INFO(DRACOLICH_ENLARGEMENT,0,0,0,0,0,0,0,0,0,0,0,0,DRACOLICH_STATUE_ENLARGEMENT,0), ACTION_INFO(DRACOLICH_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DRACOLICH_STATUE_ENLARGEMENT, 0)),
 	MON("elder dracolich", None, "undead skeletal dragon that has a death ray breath weapon and can cast spells", None, None, S_DRAGON, LVL(27, 12, -14, 19, 100, -17),
 		(G_HELL | G_GENO | G_NOCORPSE | 1), 
 		A(ATTK(AT_BREA, AD_DRAY, 1, 255, 0, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 23),

@@ -117,6 +117,14 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dracolich-attack-animation",  4,
+      DRACOLICH_ATTACK_ANIMATION_FRAMES, DRACOLICH_ATTACK_ANIMATION_OFF, 1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { DRACOLICH_ATTACK_ENLARGEMENT, DRACOLICH_ATTACK_ENLARGEMENT, DRACOLICH_ATTACK_ENLARGEMENT, DRACOLICH_ATTACK_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", 1,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 2,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
@@ -129,7 +137,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
 
 NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
 {
-    { "", 0,
+    { "", 0, 0, 0,
       0, 0,
       0, 0, 0,
       { 0, 1, 2, 3, 4 },
@@ -137,48 +145,55 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 }
     },
 
-    { "dracolich-enlargement", 5,
+    { "dracolich-enlargement", 0, 0, 5,
       DRACOLICH_ENLARGEMENT_FRAMES, DRACOLICH_ENLARGEMENT_OFF,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "dracolich-statue-enlargement", 5,
+    { "dracolich-statue-enlargement", 0, 0, 5,
       DRACOLICH_STATUE_ENLARGEMENT_FRAMES, DRACOLICH_STATUE_ENLARGEMENT_OFF,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "tree-enlargement", 5,
+    { "tree-enlargement", 0, 0, 5,
       TREE_ENLARGEMENT_FRAMES, TREE_ENLARGEMENT_OFF,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "dungeon-normal-upstairs-enlargement", 1,
+    { "dungeon-normal-upstairs-enlargement", 0, 0, 1,
       UPSTAIRS_ENLARGEMENT_FRAMES, UPSTAIRS_ENLARGEMENT_OFF,
       1, 2, 0,
       { -1, 0, -1, -1, -1 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "dungeon-normal-branch-upstairs-enlargement", 1,
+    { "dungeon-normal-branch-upstairs-enlargement", 0, 0, 1,
       BRANCH_UPSTAIRS_ENLARGEMENT_FRAMES, BRANCH_UPSTAIRS_ENLARGEMENT_OFF,
       1, 2, 0,
       { -1, 0, -1, -1, -1 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "dungeon-normal-special-branch-upstairs-enlargement", 1,
+    { "dungeon-normal-special-branch-upstairs-enlargement", 0, 0, 1,
       SPECIAL_BRANCH_UPSTAIRS_ENLARGEMENT_FRAMES, SPECIAL_BRANCH_UPSTAIRS_ENLARGEMENT_OFF,
       1, 2, 0,
       { -1, 0, -1, -1, -1 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
-    }
+    },
+    { "dracolich-attack-enlargement", 4, DRACOLICH_ATTACK_ANIMATION_FRAMES, 5,
+      DRACOLICH_ATTACK_ENLARGEMENT_FRAMES, DRACOLICH_ATTACK_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
 };
 
 NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
@@ -875,14 +890,20 @@ enum autodraw_types* autodraw_ptr;
 
 
 short
-maybe_get_animated_tile(ntile, play_type, interval_counter, mapAnimated, autodraw_ptr)
+maybe_get_animated_tile(ntile, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
 short ntile;
 enum animation_play_types play_type;
 unsigned long interval_counter;
+int *frame_idx_ptr, *main_tile_idx_ptr;
 boolean* mapAnimated;
 enum autodraw_types* autodraw_ptr;
 {
 #ifdef USE_TILES
+    if (frame_idx_ptr)
+        *frame_idx_ptr = -1;
+    if (main_tile_idx_ptr)
+        *main_tile_idx_ptr = -1;
+
     short animation_idx = tile2animation[ntile];
     if (animation_idx > 0)
     {
@@ -905,11 +926,15 @@ enum autodraw_types* autodraw_ptr;
         {
             main_tile_frame_position = animations[animation_idx].number_of_frames;
         }
+        if (main_tile_idx_ptr)
+            *main_tile_idx_ptr = main_tile_frame_position;
         char additional_tile_num = (main_tile_frame_position > -1 ? 1 : 0);
         char animation_tile_offset = (main_tile_frame_position == 0 ? 1 : 0);
         unsigned long numframes = (unsigned long)(animations[animation_idx].number_of_frames + additional_tile_num); /* add original tile as the first tile and frame */
         char current_animation_frame = (char)((interval_counter / (unsigned long)animations[animation_idx].intervals_between_frames) % numframes);
-        
+        if (frame_idx_ptr)
+            *frame_idx_ptr = current_animation_frame;
+
         if (current_animation_frame > main_tile_frame_position) /* 0 is the original picture */
         {
             char animation_frame_index = current_animation_frame - animation_tile_offset;
@@ -1079,8 +1104,8 @@ short animidx;
 
 
 short
-get_enlargement_base_tile(enlidx)
-short enlidx;
+get_enlargement_base_tile(enlidx, enl_anim_tile_idx)
+short enlidx, enl_anim_tile_idx;
 {
     for (int i = LOW_PM; i < NUM_MONSTERS; i++)
     {
@@ -1180,7 +1205,7 @@ short enlidx;
     {
         for (int j = 0; j < animations[i].number_of_tiles; j++)
         {
-            if (animations[i].tile_enlargement[j] == enlidx)
+            if (animations[i].tile_enlargement[j] == enlidx && (enl_anim_tile_idx < 0 || enl_anim_tile_idx == j))
                 return glyph2tile[j + animations[i].glyph_offset + GLYPH_ANIMATION_OFF];
         }
     }
