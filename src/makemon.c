@@ -213,6 +213,9 @@ register struct monst* mtmp;
     if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_ILLITHILICH] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_undead_spellcaster_name(mnamebuf)));
 
+    if (mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ALEAX] || mtmp->data == &mons[PM_ARCHON])
+        christen_monst(mtmp, upstart(randomize_angel_name(mnamebuf)));
+
     if (is_gnoll(mtmp->data) && !has_mname(mtmp))
 	{
 		if (mtmp->data == &mons[PM_FLIND] || mtmp->data == &mons[PM_FLIND_LORD])
