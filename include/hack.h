@@ -742,7 +742,7 @@ static const char empty_string[] = "";
 #define MIN_PREF_SCREEN_SCALE 10
 #define MAX_PREF_SCREEN_SCALE 200
 
-#define ANIMATION_FRAME_INTERVAL 40 /* in milliseconds */
+#define ANIMATION_FRAME_INTERVAL 30 /* in milliseconds */
 #define ITEM_PICKUP_DROP_DELAY 80 /* in milliseconds */
 
 /* Some general definitions for graphics and sounds */
