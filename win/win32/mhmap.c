@@ -1230,7 +1230,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     {
                                         addedindex = (frame_idx - 1) * enlargements[tile2enlargement[ntile]].number_of_frames;
                                     }
-                                    else if (main_tile_idx == enlargements[tile2enlargement[ntile]].number_of_frames
+                                    else if (main_tile_idx == enlargements[tile2enlargement[ntile]].number_of_animation_frames
                                         && frame_idx >= 0
                                         && frame_idx < enlargements[tile2enlargement[ntile]].number_of_animation_frames
                                         )
