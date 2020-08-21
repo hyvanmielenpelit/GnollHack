@@ -2746,6 +2746,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_NO_ACTION:
         break;
     case ACTION_TILE_ATTACK:
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return TRUE;
         break;
     case ACTION_TILE_THROW:
         break;
@@ -2756,6 +2758,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;
     case ACTION_TILE_KICK:
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return TRUE;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;

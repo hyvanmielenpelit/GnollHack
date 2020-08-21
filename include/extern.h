@@ -48,6 +48,7 @@ E short FDECL(get_replacement_base_tile, (short));
 E short FDECL(get_animation_base_tile, (short));
 E short FDECL(get_enlargement_base_tile, (short, short));
 E struct replacement_info FDECL(obj_to_replacement_info, (struct obj*));
+E int FDECL(get_animation_frame_with_tile, (int, int));
 
 /* ### apply.c ### */
 

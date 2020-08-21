@@ -1709,8 +1709,9 @@ uchar* tilemapflags;
         {
             short enl_anim_tile_idx = enlargements[i].number_of_animation_tiles ? m : -1;
             short base_tile = get_enlargement_base_tile(i, enl_anim_tile_idx);
-            for (int j = 0; j < max(0, min(MAX_TILES_PER_ENLARGEMENT, enlargements[i].number_of_tiles)); j++) /* tile number */
+            for (int j = 0; j < enlargements[i].number_of_frames; j++)
             {
+                /* j is enlargement glyph index number, normally the same as tile number */
                 const char* pos_name = "unknown";
                 const char* position_names[MAX_TILES_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
 
@@ -1756,14 +1757,17 @@ uchar* tilemapflags;
                 else if (process_style == 1)
                 {
                     glyph_offset = GLYPH_ENLARGEMENT_OFF;
+                    int addedindex = enl_anim_tile_idx >= 0 ?
+                        enl_anim_tile_idx * enlargements[i].number_of_frames
+                        : 0;
+                    tilemaparray[j + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
+#if 0
                     for (int k = 0; k < min(enlargements[i].number_of_frames, MAX_FRAMES_PER_ENLARGEMENT); k++)  /* frame number */
                     {
-                        int addedindex = enl_anim_tile_idx >= 0 ? 
-                            enl_anim_tile_idx * min(enlargements[i].number_of_frames, MAX_FRAMES_PER_ENLARGEMENT) 
-                            : 0;
-                        if (animations[i].frame2tile[k] == j)
+                        if (enlargements[i].frame2tile[k] == j)
                             tilemaparray[k + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
                     }
+#endif
                 }
                 tile_count++;
             }

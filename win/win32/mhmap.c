@@ -2534,8 +2534,21 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
             }
             else
             {
-                enlarg = tile2enlargement[glyph2tile[abs(data->map[x][y].layer_glyphs[layer_idx])]];
+                int frame_idx = -1, main_tile_idx = -1;
+                int ntile = glyph2tile[abs(data->map[x][y].layer_glyphs[layer_idx])];
+                boolean mapanimateddummy = 0;
+                struct replacement_info info = { 0 };
+                enum autodraw_types autodraw = AUTODRAW_NONE;
+                ntile = maybe_get_replaced_tile(ntile, x, y, info, &autodraw);
+                if (context.action_animation_layer == layer_idx && context.action_animation_x == x && context.action_animation_y == y)
+                    ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                else
+                    ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                enlarg = tile2enlargement[ntile];
             }
+
+            if (layer_idx == LAYER_MONSTER)
+                layer_idx = layer_idx;
 
             if (enlarg > 0)
             {
