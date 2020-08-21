@@ -125,7 +125,15 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       { DRACOLICH_ATTACK_ENLARGEMENT, DRACOLICH_ATTACK_ENLARGEMENT, DRACOLICH_ATTACK_ENLARGEMENT, DRACOLICH_ATTACK_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "twisted-candle-lit-animation", 1,
+      { "magic-fountain-animation", 1,
+        MAGIC_FOUNTAIN_ANIMATION_FRAMES, MAGIC_FOUNTAIN_ANIMATION_OFF, 2,
+        ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+      },
+      { "twisted-candle-lit-animation", 1,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 2,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
