@@ -108,7 +108,7 @@ typedef struct branch {
 #define Is_valley(x) (on_level(x, &valley_level))
 #define Is_juiblex_level(x) (on_level(x, &juiblex_level))
 #define Is_orcus_level(x) (on_level(x, &orcus_level))
-#define Is_asmo_level(x) (on_level(x, &asmodeus_level))
+#define Is_dispater_level(x) (on_level(x, &dispater_level))
 #define Is_baal_level(x) (on_level(x, &baalzebub_level))
 #define Is_yeenoghu_level(x) (on_level(x, &yeenoghu_level))
 #define Is_tarrasque_level(x) (on_level(x, &tarrasque_level))

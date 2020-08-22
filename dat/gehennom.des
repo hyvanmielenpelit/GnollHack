@@ -491,9 +491,9 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 #
-# The Asmodeus Level
+# The Dispater Level
 #
-MAZE:"asmodeus",' '
+MAZE:"dispater",' '
 FLAGS: noteleport
 # First part
 GEOMETRY:half-left,center
@@ -526,7 +526,7 @@ NON_DIGGABLE:(00,00,20,11)
 # Entire main area
 REGION:(01,01,20,10),unlit,"ordinary"
 # The fellow in residence
-MONSTER:('&',"Asmodeus"),(12,07)
+MONSTER:('&',"Dispater"),(12,07)
 # Some random weapons and armor.
 OBJECT:'[',random
 OBJECT:'[',random

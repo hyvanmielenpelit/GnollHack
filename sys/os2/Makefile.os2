@@ -515,7 +515,7 @@ DATHELP = \
  help hh cmdhelp history opthelp wizhelp
 
 SPEC_LEVS = \
- asmodeus.lev baalz.lev    bigrm-1.lev \
+ dispater.lev baalz.lev    bigrm-1.lev \
  bigrm-2.lev  bigrm-3.lev  bigrm-4.lev castle.lev  bovine1.lev  fakewiz1.lev fakewiz2.lev \
  juiblex.lev  knox.lev     medusa-1.lev medusa-2.lev minend-1.lev minend-2.lev \
  minend-3.lev minefill.lev minetn-1.lev minetn-2.lev minetn-3.lev minetn-4.lev \
@@ -1108,7 +1108,7 @@ dlb_yup : dlb
 	-$(RM) $(GAMEDIR)\history
 	-$(RM) $(GAMEDIR)\opthelp
 	-$(RM) $(GAMEDIR)\wizhelp
-	-$(RM) $(GAMEDIR)\asmodeus.lev
+	-$(RM) $(GAMEDIR)\dispater.lev
 	-$(RM) $(GAMEDIR)\baalz.lev
 	-$(RM) $(GAMEDIR)\bigrm-?.lev
 	-$(RM) $(GAMEDIR)\bovine?.lev
@@ -1371,7 +1371,7 @@ $(GAMEDIR)\tower1.lev : $(DAT)\tower.des $(TEMP)\lev_comp.exe
 
 $(GAMEDIR)\valley.lev : $(DAT)\gehennom.des $(TEMP)\lev_comp.exe
 	$(TEMP)\lev_comp $(DAT)\gehennom.des
-	$(CP) asmodeus.lev $(GAMEDIR)
+	$(CP) dispater.lev $(GAMEDIR)
 	$(CP) baalz.lev $(GAMEDIR)
 	$(CP) juiblex.lev $(GAMEDIR)
 	$(CP) orcus.lev $(GAMEDIR)
@@ -1381,7 +1381,7 @@ $(GAMEDIR)\valley.lev : $(DAT)\gehennom.des $(TEMP)\lev_comp.exe
 	$(CP) yeenoghu.lev $(GAMEDIR)
 	$(CP) mainfill.lev $(GAMEDIR)
 	$(CP) hellfill.lev $(GAMEDIR)
-	$(RM) asmodeus.lev
+	$(RM) dispater.lev
 	$(RM) baalz.lev
 	$(RM) juiblex.lev
 	$(RM) orcus.lev

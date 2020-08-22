@@ -4343,7 +4343,7 @@ struct d_level* dlvl;
         return GHSOUND_DUNGEON_NORMAL_MUSIC_CASTLE;
     else if (Is_medusa_level(dlvl))
         return GHSOUND_DUNGEON_NORMAL_MUSIC_MEDUSA;
-    else if (Is_asmo_level(dlvl))
+    else if (Is_dispater_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;
     else if (Is_baal_level(dlvl))
         return GHSOUND_GEHENNOM_MUSIC_NORMAL;

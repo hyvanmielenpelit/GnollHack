@@ -349,7 +349,7 @@ boolean foundyou;
         }
     } 
 	else if (mattk->damd)
-        damage = adjust_damage(d((int) ((ml / 2) + mattk->damn), (int) mattk->damd), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
+        damage = adjust_damage(d((int)mattk->damn, (int) mattk->damd), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
     else
         damage = adjust_damage(d((int) ((ml / 2) + 1), 6), mtmp, &youmonst, mattk->adtyp, ADFLAGS_SPELL_DAMAGE);
 

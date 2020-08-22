@@ -1259,7 +1259,7 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\???-loca.lev	   del $(W_DAT)\???-loca.lev
 	if exist $(W_DAT)\???-strt.lev	   del $(W_DAT)\???-strt.lev
 	if exist $(W_DAT)\air.lev          del $(W_DAT)\air.lev
-	if exist $(W_DAT)\asmodeus.lev	   del $(W_DAT)\asmodeus.lev
+	if exist $(W_DAT)\dispater.lev	   del $(W_DAT)\dispater.lev
 	if exist $(W_DAT)\astral.lev	   del $(W_DAT)\astral.lev
 	if exist $(W_DAT)\baalz.lev	   del $(W_DAT)\baalz.lev
 	if exist $(W_DAT)\bigrm-*.lev	   del $(W_DAT)\bigrm-*.lev

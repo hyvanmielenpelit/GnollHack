@@ -1303,7 +1303,7 @@ spotless: clean
 	if exist $(DAT)\???-loca.lev	 del $(DAT)\???-loca.lev
 	if exist $(DAT)\???-strt.lev	 del $(DAT)\???-strt.lev
 	if exist $(DAT)\air.lev		 del $(DAT)\air.lev
-	if exist $(DAT)\asmodeus.lev	 del $(DAT)\asmodeus.lev
+	if exist $(DAT)\dispater.lev	 del $(DAT)\dispater.lev
 	if exist $(DAT)\astral.lev	 del $(DAT)\astral.lev
 	if exist $(DAT)\baalz.lev	 del $(DAT)\baalz.lev
 	if exist $(DAT)\bigrm-*.lev	 del $(DAT)\bigrm-*.lev

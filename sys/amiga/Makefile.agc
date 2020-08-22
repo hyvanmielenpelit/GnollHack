@@ -286,7 +286,7 @@ TILEFILES= \
 	$(NETHACK)tiles/other.iff
 
 INSTDUNGEONFILES1= \
-	$(SLIB)air.lev		$(SLIB)asmodeus.lev	$(SLIB)astral.lev \
+	$(SLIB)air.lev		$(SLIB)dispater.lev	$(SLIB)astral.lev \
 	$(SLIB)baalz.lev	$(SLIB)bigrm-1.lev	$(SLIB)bigrm-2.lev \
 	$(SLIB)bigrm-3.lev	$(SLIB)bigrm-4.lev	$(SLIB)bigrm-5.lev $(SLIB)bovine1.lev \
 	$(SLIB)castle.lev	$(SLIB)dungeon		$(SLIB)earth.lev \
@@ -795,7 +795,7 @@ $(ENDGAME1):	$(SLIB)astral.lev
 
 $(SLIB)astral.lev:	$(DAT)endgame.des $(SBIN)lev_comp
 
-GEHENNOM1= $(SLIB)asmodeus.lev $(SLIB)baalz.lev $(SLIB)juiblex.lev \
+GEHENNOM1= $(SLIB)dispater.lev $(SLIB)baalz.lev $(SLIB)juiblex.lev \
   $(SLIB)orcus.lev $(SLIB)sanctum.lev 
 $(GEHENNOM1):	$(SLIB)valley.lev
 

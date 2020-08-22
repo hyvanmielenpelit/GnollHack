@@ -59,7 +59,7 @@ BRANCH:		"Plane of the Modron" @ (2, 2) portal
 BRANCH:		"Hellish Pastures" @ (8, 10) portal
 LEVEL:		"juiblex" "J" @ (5, 4)
 LEVEL:		"baalz" "B" @ (6, 4)
-LEVEL:		"asmodeus" "A" @ (2, 6)
+LEVEL:		"dispater" "A" @ (2, 6)
 LEVEL:		"wizard1" "none" @ (11, 6)
 CHAINLEVEL:	"wizard2" "X" "wizard1" + (1, 0)
 CHAINLEVEL:	"wizard3" "Y" "wizard1" + (2, 0)

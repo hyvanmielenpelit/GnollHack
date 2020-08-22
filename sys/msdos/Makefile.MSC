@@ -952,7 +952,7 @@ nhdat:	$(U)dlb_main.exe $(DAT)\data $(DAT)\oracles $(DAT)\options \
 	echo ARC-GOAL.LEV  >>dlb.lst
 	echo ARC-LOCA.LEV  >>dlb.lst
 	echo ARC-STRT.LEV  >>dlb.lst
-	echo ASMODEUS.LEV  >>dlb.lst
+	echo DISPATER.LEV  >>dlb.lst
 	echo ASTRAL.LEV    >>dlb.lst
 	echo BAALZ.LEV     >>dlb.lst
 	echo BAR-FILA.LEV  >>dlb.lst

@@ -694,7 +694,7 @@ struct level_map {
     const char *lev_name;
     d_level *lev_spec;
 } level_map[] = { { "air", &air_level },
-                  { "asmodeus", &asmodeus_level },
+                  { "dispater", &dispater_level },
                   { "astral", &astral_level },
                   { "baalz", &baalzebub_level },
                   { "bigrm", &bigroom_level },
