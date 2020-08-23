@@ -56,7 +56,7 @@ ANVIL:(58,14)
 TELEPORT_REGION:levregion(01,00,10,20),(1,1,61,15),down
 TELEPORT_REGION:levregion(69,00,79,20),(1,1,61,15),up
 STAIR:levregion(01,00,10,20),(0,0,62,16),up
-FOUNTAIN:(10,08)
+FOUNTAIN:(10,08),fountain_power
 # Doors
 DOOR:closed,(07,03)
 DOOR:closed,(55,03)

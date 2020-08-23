@@ -19,6 +19,7 @@
 #endif
 
 typedef void FDECL((*select_iter_func), (int, int, genericptr));
+typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
 
 extern void FDECL(mkmap, (lev_init *));
 
@@ -143,11 +144,15 @@ STATIC_DCL void FDECL(selection_do_randline, (SCHAR_P, SCHAR_P, SCHAR_P,
                                               struct opvar *));
 STATIC_DCL void FDECL(selection_iterate, (struct opvar *, select_iter_func,
                                           genericptr_t));
+STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
+    genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
+STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
+STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
@@ -4581,6 +4586,22 @@ genericptr_t arg;
 }
 
 void
+selection_iterate2(ov, func, arg, arg2)
+struct opvar* ov;
+select_iter_func2 func;
+genericptr_t arg, arg2;
+{
+    int x, y;
+
+    /* yes, this is very naive, but it's not _that_ expensive. */
+    for (x = 0; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+            if (selection_getpoint(x, y, ov))
+                (*func)(x, y, arg, arg2);
+}
+
+
+void
 sel_set_ter(x, y, arg)
 int x, y;
 genericptr_t arg;
@@ -4635,17 +4656,37 @@ genericptr_t arg;
     }
 
     levl[x][y].typ = (*(int *) arg);
-
-    /* One can add subtyp handling here */
     levl[x][y].subtyp = 0;
+}
 
-	if (levl[x][y].typ == FOUNTAIN)
-	{
-        levl[x][y].subtyp = rn2(6);
-        levl[x][y].fountainmask = 0;
-//        levl[x][y].fountainmask &= ~FOUNTAIN_TYPE_MASK;
-//		levl[x][y].fountainmask |= rn2(6);
-	}
+void
+sel_set_feature2(x, y, arg, arg2)
+int x, y;
+genericptr_t arg, arg2;
+{
+    /* Do nothing if there is already a feature */
+    if (IS_FURNITURE(levl[x][y].typ))
+        return;
+
+    /* Feature sounds etc. are genereated after the level creation is complee */
+    if (IS_FLOOR((*(int*)arg)))
+    {
+        levl[x][y].floortyp = 0;
+        levl[x][y].floorsubtyp = 0;
+    }
+    else if (IS_FLOOR(levl[x][y].typ))
+    {
+        levl[x][y].floortyp = levl[x][y].typ;
+        levl[x][y].floorsubtyp = levl[x][y].subtyp;
+    }
+    else
+    {
+        levl[x][y].floortyp = location_type_definitions[(*(int*)arg)].initial_floor_type;
+        levl[x][y].floorsubtyp = 0;
+    }
+
+    levl[x][y].typ = (*(int*)arg);
+    levl[x][y].subtyp = (*(int*)arg2);
 }
 
 void
@@ -4719,9 +4760,6 @@ struct sp_coder *coder;
     default:
         impossible("spo_feature called with wrong opcode %i.", coder->opcode);
         break;
-    case SPO_FOUNTAIN:
-        typ = FOUNTAIN;
-        break;
     case SPO_THRONE:
         typ = THRONE;
         break;
@@ -4735,6 +4773,27 @@ struct sp_coder *coder;
     selection_iterate(sel, sel_set_feature, (genericptr_t) &typ);
 
     opvar_free(sel);
+}
+
+void spo_fountain(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_fountain";
+    struct opvar* sel;
+    struct opvar* subtyp_opvar;
+
+    if (!OV_pop_i(subtyp_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
+        return;
+
+    int typ = FOUNTAIN;
+    int subtyp = OV_i(subtyp_opvar);
+    
+    if (subtyp >= MAX_FOUNTAIN_SUBTYPES || subtyp < 0)
+        subtyp = rn2(MAX_FOUNTAIN_SUBTYPES);
+
+    selection_iterate2(sel, sel_set_feature2, (genericptr_t)&typ, (genericptr_t)&subtyp);
+    opvar_free(sel);
+
 }
 
 void spo_anvil(coder)
@@ -6008,9 +6067,11 @@ sp_lev *lvl;
             break;
         case SPO_SINK:
         case SPO_POOL:
-        case SPO_FOUNTAIN:
         case SPO_THRONE:
             spo_feature(coder);
+            break;
+        case SPO_FOUNTAIN:
+            spo_fountain(coder);
             break;
         case SPO_ANVIL:
             spo_anvil(coder);

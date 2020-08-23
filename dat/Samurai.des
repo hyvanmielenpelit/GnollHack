@@ -147,10 +147,10 @@ DOOR:closed,(51,09)
 DOOR:closed,(51,10)
 DOOR:closed,(60,09)
 DOOR:closed,(60,10)
-FOUNTAIN:(25,08)
-FOUNTAIN:(25,11)
-FOUNTAIN:(50,08)
-FOUNTAIN:(50,11)
+FOUNTAIN:(25,08),fountain_water
+FOUNTAIN:(25,11),fountain_water
+FOUNTAIN:(50,08),fountain_water
+FOUNTAIN:(50,11),fountain_water
 
 # Stairs
 STAIR:(10,10),up

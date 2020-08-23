@@ -236,7 +236,7 @@ STAIR:levregion(69,00,79,20),(0,0,50,17),up
 BRANCH:levregion(01,00,11,20),(0,0,50,17)
 TELEPORT_REGION:levregion(01,00,11,20),(0,0,50,17),up
 TELEPORT_REGION:levregion(69,00,79,20),(0,0,50,17),down
-FOUNTAIN:$place[0]
+FOUNTAIN:$place[0],fountain_random
 MONSTER:('m',"giant mimic"),$place[1],m_feature "fountain"
 MONSTER:('m',"giant mimic"),$place[2],m_feature "fountain"
 MONSTER:('m',"giant mimic"),$place[3],m_feature "fountain"

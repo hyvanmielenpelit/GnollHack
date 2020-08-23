@@ -367,7 +367,7 @@ DOOR:locked,(64,05)
 DOOR:random,(50,13)
 DOOR:locked,(48,15)
 # 
-FOUNTAIN:$place[1]
+FOUNTAIN:$place[1],fountain_random
 #
 CONTAINER:('`',"statue"),$place[2],uncursed,montype:"knight",3,name:"Perseus" {
   [75%]: OBJECT: ('[',"shield of reflection"),cursed,+0

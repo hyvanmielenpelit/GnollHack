@@ -53,7 +53,7 @@ REGION:(27,08,42,12),lit,"ordinary"
 BRANCH:(66,17,66,17),(0,0,0,0)
 # Stairs
 STAIR:(18,01),down
-FOUNTAIN:(53,02)
+FOUNTAIN:(53,02),fountain_healing
 # Doors
 DOOR:locked,(26,10)
 DOOR:locked,(43,10)
