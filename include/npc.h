@@ -37,7 +37,6 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_SERVICE_BUY_GEMS_AND_STONES      0x00000004UL
 #define NPC_SERVICE_IDENTIFY_GEMS_AND_STONES 0x00000008UL
 
-
 #define NPC_FLAGS_PARQUET_FLOOR             0x00000001UL
 #define NPC_FLAGS_MARBLE_FLOOR              0x00000002UL
 #define NPC_FLAGS_DOORS_CLOSED              0x00000004UL
