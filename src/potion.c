@@ -1303,6 +1303,19 @@ struct obj *otmp;
         exercise(A_WIS, TRUE);
         incr_itimeout(&HFire_immunity, duration);
         break;
+    case POT_COLD_IMMUNITY:
+        if (!Cold_immunity)
+        {
+            You("feel protected from cold.");
+        }
+        else
+        {
+            You("feel a bit more protected from cold.");
+            unkn++;
+        }
+        exercise(A_WIS, TRUE);
+        incr_itimeout(&HCold_immunity, duration);
+        break;
     case POT_HEROISM:
     case POT_SUPER_HEROISM:
         if (otmp->otyp == POT_HEROISM ? (!Heroism && !Super_heroism) : !Super_heroism)
@@ -2374,6 +2387,12 @@ struct obj *obj;
         if (!Fire_immunity)
             You("feel a bit more fire-protected now.");
         incr_itimeout(&HFire_immunity, duration);
+        exercise(A_WIS, TRUE);
+        break;
+    case POT_COLD_IMMUNITY:
+        if (!Cold_immunity)
+            You("feel a bit more cold-protected now.");
+        incr_itimeout(&HCold_immunity, duration);
         exercise(A_WIS, TRUE);
         break;
     case POT_HEROISM:

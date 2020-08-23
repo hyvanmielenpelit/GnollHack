@@ -3993,12 +3993,10 @@ boolean wep_was_destroyed;
     }
 
     /* Note: tmp not always used */
-    if (ptr->mattk[i].damn && ptr->mattk[i].damd)
-		basedmg = d((int) ptr->mattk[i].damn, (int) ptr->mattk[i].damd) + (int)ptr->mattk[i].damp;
-    else if (ptr->mattk[i].damd)
-		basedmg = d((int) mon->m_lev + 1, (int) ptr->mattk[i].damd);
+    if (ptr->mattk[i].damn > 0 || ptr->mattk[i].damd > 0)
+		basedmg = max(0, d(ptr->mattk[i].damn > 0 ? ptr->mattk[i].damn : (int) mon->m_lev / 2 + 2, ptr->mattk[i].damd > 0 ? (int) ptr->mattk[i].damd : 6) + (int)ptr->mattk[i].damp);
     else
-		basedmg = 0;
+		basedmg = max(0, ptr->mattk[i].damp);
 
 	damage += adjust_damage(basedmg, mon, &youmonst, ptr->mattk[i].adtyp, ADFLAGS_NONE);
 

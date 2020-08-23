@@ -2140,14 +2140,10 @@ int mdead;
             break;
     }
 
-    if (mddat->mattk[i].damn > 0 && mddat->mattk[i].damd)
-		basedmg = d((int) mddat->mattk[i].damn, (int) mddat->mattk[i].damd);
-    else if (mddat->mattk[i].damd)
-		basedmg = d((int) mddat->mlevel + 1, (int) mddat->mattk[i].damd);
+    if (mddat->mattk[i].damn > 0 || mddat->mattk[i].damd > 0)
+		basedmg = max(0, d(mddat->mattk[i].damn > 0 ? mddat->mattk[i].damn : mddat->mlevel / 2 + 2, mddat->mattk[i].damd > 0 ? mddat->mattk[i].damd : 6) + (int)mddat->mattk[i].damp);
     else
-		basedmg = 0;
-
-	basedmg += (int)mddat->mattk[i].damp;
+		basedmg = max(0, mddat->mattk[i].damp);
 
 	damage += adjust_damage(basedmg, magr, mdef, mddat->mattk[i].adtyp, ADFLAGS_NONE);
 	

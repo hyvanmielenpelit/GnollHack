@@ -4265,12 +4265,12 @@ struct attack *mattk;
             oldu_mattk = &olduasmon->mattk[i];
     }
 
-    if (oldu_mattk->damn > 0 && oldu_mattk->damd > 0)
-        damage = adjust_damage(d((int)oldu_mattk->damn, (int)oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, ADFLAGS_NONE);
-    else if (oldu_mattk->damd > 0)
-        damage = adjust_damage(d((int) olduasmon->mlevel + 1, (int) oldu_mattk->damd) + oldu_mattk->damp, &youmonst, mtmp, mattk->adtyp, ADFLAGS_NONE);
+    if (oldu_mattk->damd > 0 || oldu_mattk->damn > 0)
+        damage = adjust_damage(
+            max(0, d(oldu_mattk->damn > 0 ? oldu_mattk->damn : olduasmon->mlevel / 2 + 2, oldu_mattk->damd > 0 ? oldu_mattk->damd : 6) + oldu_mattk->damp), 
+            &youmonst, mtmp, mattk->adtyp, ADFLAGS_NONE);
     else
-        damage = 0;
+        damage = max(0, oldu_mattk->damp);
 
     enum action_tile_types action_before = u.action;
     update_u_action(ACTION_TILE_PASSIVE_DEFENSE);
