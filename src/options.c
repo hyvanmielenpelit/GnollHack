@@ -524,6 +524,7 @@ extern char configfile[]; /* for messages */
 extern struct symparse loadsyms[];
 static boolean need_redraw; /* for doset() */
 static boolean need_set_sound_volume; /* for doset() */
+static boolean need_update_inventory; /* for doset() */
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -4456,6 +4457,10 @@ boolean tinitial, tfrom_file;
             {
                 need_redraw = TRUE;
             }
+            else if (boolopt[i].addr == &flags.show_weight_summary || boolopt[i].addr == &flags.inventory_weights_last || boolopt[i].addr == &flags.detailed_weights)
+            {
+                need_update_inventory = TRUE;
+            }
             else if (boolopt[i].addr == &flags.lit_corridor
                        || boolopt[i].addr == &flags.dark_room)
             {
@@ -4969,6 +4974,8 @@ doset() /* changing options via menu by Per Liboriussen */
 #endif
     end_menu(tmpwin, "Set what options?");
     need_redraw = FALSE;
+    need_set_sound_volume = FALSE;
+    need_update_inventory = FALSE;
     if ((pick_cnt = select_menu(tmpwin, PICK_ANY, &pick_list)) > 0) {
         /*
          * Walk down the selection list and either invert the booleans
@@ -5053,6 +5060,11 @@ doset() /* changing options via menu by Per Liboriussen */
     if (need_set_sound_volume)
     {
         dosetsoundvolume();
+    }
+
+    if (need_update_inventory)
+    {
+        update_inventory();
     }
 
     return 0;
