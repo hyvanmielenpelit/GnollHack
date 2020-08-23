@@ -1,5 +1,6 @@
 /*
- * Actions. Copyright (c) Janne Gustafsson, 2020
+ * action.h
+ * Copyright (c) Janne Gustafsson, 2020
  *
  */
 

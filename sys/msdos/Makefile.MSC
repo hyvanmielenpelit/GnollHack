@@ -270,7 +270,7 @@ HACK_H	   = $(CONFIG_H)	$(INCL)\context.h   $(DUNGEON_H) $(DECL_H) \
 	      $(INCL)\objclass.h $(INCL)\trap.h	     $(INCL)\flag.h    \
 	      $(RM_H)		 $(INCL)\vision.h    $(INCL)\wintype.h \
 	      $(INCL)\engrave.h	 $(INCL)\rect.h	     $(INCL)\sys.h \
-	       $(INCL)\trampoli.h $(INCL)\hack.h
+	       $(INCL)\trampoli.h $(INCL)\hack.h  $(INCL)\npc.h
 DLB_H      = $(INCL)\dlb.h
 TILE_H	   = $(WSHR)\tile.h $(MSYS)\pctiles.h
 

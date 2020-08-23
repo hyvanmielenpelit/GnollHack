@@ -868,7 +868,7 @@ HACK_H      = $(CONFIG_H) $(INCL)\context.h $(INCL)\dungeon.h $(INCL)\align.h \
 	      $(INCL)\timeout.h $(INCL)\trap.h $(INCL)\flag.h $(INCL)\rm.h \
 	      $(INCL)\vision.h $(INCL)\mondata.h $(INCL)\wintype.h \
 	      $(INCL)\engrave.h $(INCL)\rect.h $(EXTERN_H) $(INCL)\sys.h \
-	      $(INCL)\winprocs.h $(INCL)\trampoli.h $(INCL)\display.h
+	      $(INCL)\winprocs.h $(INCL)\trampoli.h $(INCL)\display.h $(INCL)\npc.h
 TILE_H      = $(INCL)\tile.h $(INCL)\pctiles.h
 PCVIDEO_H   = $(INCL)\portio.h $(INCL)\pcvideo.h
 ALIGN_H     = $(INCL)\align.h
