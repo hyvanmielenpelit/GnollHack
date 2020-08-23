@@ -1667,7 +1667,7 @@ encumber_msg()
 
 	u.carrying_capacity_level = newcap;
 
-    if (oldcap != newcap && flags.show_weight_summary)
+    if (flags.show_weight_summary)
         update_inventory();
 
     return newcap;
