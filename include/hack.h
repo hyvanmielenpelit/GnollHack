@@ -87,7 +87,7 @@ enum verbose_function_types {
 enum npc_gehennom_types {
     NPC_GEHENNOM_STANDARD = 0,
     NPC_GEHENNOM_UNDEAD_SPELLCASTER,
-    NPC_GEHENNOM_PIT_FIEND,
+    NPC_GEHENNOM_DWARF_MUMMY,
     MAX_NPC_GEHENNOM_TYPES
 };
 

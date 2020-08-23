@@ -23,7 +23,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
     },
     {
         PM_DWARVEN_GEOLOGIST,
-        NPC_GEHENNOM_PIT_FIEND,
+        NPC_GEHENNOM_DWARF_MUMMY,
         "geologist",
         "workshop",
         6, 0,
@@ -303,8 +303,16 @@ int npctype;
         case NPC_GEHENNOM_UNDEAD_SPELLCASTER:
             npc_montype = get_gehennom_undead_spellcaster(npc_montype);
             break;
-        case NPC_GEHENNOM_PIT_FIEND:
-            if (!(mvitals[PM_PIT_FIEND].mvflags & G_GONE))
+        case NPC_GEHENNOM_DWARF_MUMMY:
+            if (!(mvitals[PM_GREATER_DWARVEN_MUMMY_GEOLOGIST].mvflags & G_GONE))
+                npc_montype = PM_GREATER_DWARVEN_MUMMY_GEOLOGIST;
+            else if (!(mvitals[PM_DWARF_MUMMY].mvflags & G_GONE))
+                npc_montype = PM_DWARF_MUMMY;
+            else if (!(mvitals[PM_DWARF_ZOMBIE].mvflags & G_GONE))
+                npc_montype = PM_DWARF_ZOMBIE;
+            else if (!(mvitals[PM_GHOST].mvflags & G_GONE))
+                npc_montype = PM_GHOST;
+            else if (!(mvitals[PM_PIT_FIEND].mvflags & G_GONE))
                 npc_montype = PM_PIT_FIEND;
             break;
         default:
