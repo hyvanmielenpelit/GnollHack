@@ -77,11 +77,15 @@ map_monst(mtmp, showtail)
 struct monst *mtmp;
 boolean showtail;
 {
+    show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, 0UL, 0);
+
+#if 0
     if (def_monsyms[(int) mtmp->data->mlet].sym == ' ')
         show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my,
                    any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0);
     else
         show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0);
+#endif
 
     if (showtail && mtmp->data == &mons[PM_LONG_WORM])
         detect_wsegs(mtmp, 0);
