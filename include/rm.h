@@ -257,13 +257,21 @@ struct category_definition {
     int number_of_subtypes;
 };
 
+enum corridor_categories {
+    CORRIDOR_CATEGORY_NORMAL = 0,
+    MAX_CORRIDOR_CATEGORIES
+};
+
+extern struct category_definition corridor_category_definitions[MAX_CORRIDOR_CATEGORIES];
+
+
 enum grass_categories {
     GRASS_CATEGORY_NORMAL = 0,
     GRASS_CATEGORY_SWAMPY,
     MAX_GRASS_CATEGORIES
 };
 
-extern struct category_definition ground_category_definitions[MAX_GRASS_CATEGORIES];
+extern struct category_definition grass_category_definitions[MAX_GRASS_CATEGORIES];
 
 enum grass_subtypes {
     GRASS_SUBTYPE_NORMAL = 0,

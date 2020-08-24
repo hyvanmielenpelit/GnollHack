@@ -48,6 +48,11 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
 };
 
 
+struct category_definition corridor_category_definitions[MAX_CORRIDOR_CATEGORIES] =
+{
+    { CORRIDOR_SUBTYPE_NORMAL, 1},
+};
+
 struct category_definition grass_category_definitions[MAX_GRASS_CATEGORIES] =
 {
     { GRASS_SUBTYPE_NORMAL, 3},
@@ -153,7 +158,9 @@ int
 get_initial_location_subtype(ltype)
 int ltype;
 {
-    return get_location_subtype_by_category(ltype, ltype == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0);
+    return get_location_subtype_by_category(ltype, 
+        ltype == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0
+    );
 }
 
 int
@@ -163,7 +170,12 @@ int typ, subtyp;
     struct category_definition* cat_def = 0;
     int num_cats = 0;
 
-    if (typ == GRASS)
+    if (typ == CORR)
+    {
+        cat_def = corridor_category_definitions;
+        num_cats = MAX_CORRIDOR_CATEGORIES;
+    }
+    else if (typ == GRASS)
     {
         cat_def = grass_category_definitions;
         num_cats = MAX_GRASS_CATEGORIES;

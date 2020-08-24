@@ -131,7 +131,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/General/Coin/Coins Pick Up" , 1.0f},
 
     { SOUND_BANK_MASTER, "event:/Object/General/Coin/Coins Drop" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/Monster/Horse/Barefooted/Horse Footsteps" , 0.15f},
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Barefooted/Horse Footsteps" , 0.08f},
     { SOUND_BANK_MASTER, "event:/Object/General/Boulder/Push Boulder" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Monster/Human/Male/Push Effort" , 0.25f},
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Cause Paralysis" , 1.0f},
