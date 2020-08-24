@@ -25,7 +25,7 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((MAX_FRAMES_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1)
+#define DRAW_ORDER_SIZE ((MAX_POSITIONS_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1)
 
 
 /* draw order definition */
@@ -923,7 +923,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     int enl_i = -1, enl_j = -1;
     int darkening_i = -1, darkening_j = -1;
     boolean enlarged = FALSE;
-    short frame_index = 0;
+    short position_index = 0;
 
     /* running index and enlarg_index form an u around the main tile X = -1:
      * 0 X 1
@@ -936,7 +936,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     else
         data->draw_order[0].draw_to_buffer = 0;
 
-    struct draw_order_definition* draw_order = data->draw_order; // [(MAX_FRAMES_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
+    struct draw_order_definition* draw_order = data->draw_order; // [(MAX_POSITIONS_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
 
     /* Create DIB Section for piling up, darkening, and otherwise manipulating individual tiles */
     HDC hDCcopy = CreateCompatibleDC(data->backBufferDC);
@@ -965,7 +965,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     for (int draw_index = 0; draw_index < DRAW_ORDER_SIZE; draw_index++)
     {
-        //int z_order_array[MAX_FRAMES_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
+        //int z_order_array[MAX_POSITIONS_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
         //for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
         //{
         boolean skip_darkening = FALSE;
@@ -1168,33 +1168,33 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     int multiplier = flip_glyph ? -1 : 1;
 
-                    /* Set frame_index */
+                    /* Set position_index */
                     if (enlarg_idx == -1)
                     {
-                        frame_index = -1;
+                        position_index = -1;
                     }
                     else if (enlarg_idx == 0)
                     {
-                        frame_index = flip_glyph ? 3 : 4;
+                        position_index = flip_glyph ? 3 : 4;
                     }
                     else if (enlarg_idx == 1)
                     {
-                        frame_index = flip_glyph ? 4 : 3;
+                        position_index = flip_glyph ? 4 : 3;
                     }
                     else if (enlarg_idx == 2)
                     {
-                        frame_index = flip_glyph ? 0 : 2;
+                        position_index = flip_glyph ? 0 : 2;
                     }
                     else if (enlarg_idx == 3)
                     {
-                        frame_index = 1;
+                        position_index = 1;
                     }
                     else if (enlarg_idx == 4)
                     {
-                        frame_index = flip_glyph ? 2 : 0;
+                        position_index = flip_glyph ? 2 : 0;
                     }
 
-                    int frame_idx = -1, main_tile_idx = -1;
+                    int anim_frame_idx = -1, main_tile_idx = -1;
                     boolean skip_drawing = FALSE;
                     boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(glyph); /* hallucinated statue */
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
@@ -1202,40 +1202,40 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(otmp_round), &autodraw);
                     if(context.action_animation_layer == base_layer && context.action_animation_x == enl_i && context.action_animation_y == enl_j)
-                        ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                        ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else
-                        ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                        ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     
                     if (enlarg_idx >= 0)
                     {
                         if (tile2enlargement[ntile] > 0)
                         {
-                            int enl_tile_idx = enlargements[tile2enlargement[ntile]].frame2tile[frame_index];
+                            int enl_tile_idx = enlargements[tile2enlargement[ntile]].position2tile[position_index];
                             if (enl_tile_idx >= 0)
                             {
-                                autodraw = enlargements[tile2enlargement[ntile]].frame_autodraw[frame_index];
+                                autodraw = enlargements[tile2enlargement[ntile]].position_autodraw[position_index];
                                 int addedindex = 0;
                                 if (enlargements[tile2enlargement[ntile]].number_of_animation_frames > 0)
                                 {
                                     if (main_tile_idx == -1
-                                        && frame_idx >= 0
-                                        && frame_idx < enlargements[tile2enlargement[ntile]].number_of_animation_frames
+                                        && anim_frame_idx >= 0
+                                        && anim_frame_idx < enlargements[tile2enlargement[ntile]].number_of_animation_frames
                                         )
                                     {
-                                        addedindex = frame_idx * enlargements[tile2enlargement[ntile]].number_of_frames;
+                                        addedindex = anim_frame_idx * enlargements[tile2enlargement[ntile]].number_of_positions;
                                     }
                                     else if (main_tile_idx == 0
-                                        && frame_idx > 0
-                                        && frame_idx <= enlargements[tile2enlargement[ntile]].number_of_animation_frames)
+                                        && anim_frame_idx > 0
+                                        && anim_frame_idx <= enlargements[tile2enlargement[ntile]].number_of_animation_frames)
                                     {
-                                        addedindex = (frame_idx - 1) * enlargements[tile2enlargement[ntile]].number_of_frames;
+                                        addedindex = (anim_frame_idx - 1) * enlargements[tile2enlargement[ntile]].number_of_positions;
                                     }
                                     else if (main_tile_idx == enlargements[tile2enlargement[ntile]].number_of_animation_frames
-                                        && frame_idx >= 0
-                                        && frame_idx < enlargements[tile2enlargement[ntile]].number_of_animation_frames
+                                        && anim_frame_idx >= 0
+                                        && anim_frame_idx < enlargements[tile2enlargement[ntile]].number_of_animation_frames
                                         )
                                     {
-                                        addedindex = frame_idx * enlargements[tile2enlargement[ntile]].number_of_frames;
+                                        addedindex = anim_frame_idx * enlargements[tile2enlargement[ntile]].number_of_positions;
                                     }
                                 }
                                 int enl_glyph = enl_tile_idx + addedindex + enlargements[tile2enlargement[ntile]].glyph_offset + GLYPH_ENLARGEMENT_OFF;
@@ -1749,7 +1749,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 {
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
-                    if (enlargement_idx > 0 && enlargements[enlargement_idx].number_of_frames > 3)
+                    if (enlargement_idx > 0 && enlargements[enlargement_idx].number_of_positions > 3)
                     {
                         int mglyph = MAIN_TILE_MARK + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
@@ -1795,11 +1795,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                         else
                         {
-                            int frame_idx = -1, main_tile_idx  = -1;
+                            int anim_frame_idx = -1, main_tile_idx  = -1;
                             int cglyph = (cannotseeself && flags.active_cursor_style == CURSOR_STYLE_GENERIC_CURSOR ? CURSOR_STYLE_INVISIBLE : flags.active_cursor_style) + GLYPH_CURSOR_OFF;
                             int ctile = glyph2tile[cglyph];
                             ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
-                            ctile = maybe_get_animated_tile(ctile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
+                            ctile = maybe_get_animated_tile(ctile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
 
@@ -2045,13 +2045,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Steed mark (you as small) */
                             if (isyou && issteed)
                             {
-                                int frame_idx = -1, main_tile_idx = -1;
+                                int anim_frame_idx = -1, main_tile_idx = -1;
                                 int signed_mglyph = u_to_glyph();
                                 boolean flip_rider = (signed_mglyph < 0);
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
                                 mtile = maybe_get_replaced_tile(mtile, i, j, obj_to_replacement_info(otmp_round), (enum auto_drawtypes*)0);
-                                mtile = maybe_get_animated_tile(mtile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
+                                mtile = maybe_get_animated_tile(mtile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
                                 /* Define draw location in target */
@@ -2483,8 +2483,8 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
     tile = maybe_get_replaced_tile(tile, x, y, obj_to_replacement_info(level.objects[x][y]), (enum autodraw_types*)0);
     bktile = maybe_get_replaced_tile(bktile, x, y, zeroreplacementinfo, (enum autodraw_types*)0);
 
-    tile = maybe_get_animated_tile(tile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &frame_idx, &main_tile_idx, (boolean*)0, (enum autodraw_types*)0);
-    bktile = maybe_get_animated_tile(bktile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &frame_idx, &main_tile_idx, (boolean*)0, (enum autodraw_types*)0);
+    tile = maybe_get_animated_tile(tile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, (boolean*)0, (enum autodraw_types*)0);
+    bktile = maybe_get_animated_tile(bktile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, (boolean*)0, (enum autodraw_types*)0);
 #endif
 
     for (enum layer_types layer_idx = LAYER_FLOOR/*-2*/; layer_idx < MAX_LAYERS; layer_idx++)
@@ -2534,16 +2534,16 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
             }
             else
             {
-                int frame_idx = -1, main_tile_idx = -1;
+                int anim_frame_idx = -1, main_tile_idx = -1;
                 int ntile = glyph2tile[abs(data->map[x][y].layer_glyphs[layer_idx])];
                 boolean mapanimateddummy = 0;
                 struct replacement_info info = { 0 };
                 enum autodraw_types autodraw = AUTODRAW_NONE;
                 ntile = maybe_get_replaced_tile(ntile, x, y, info, &autodraw);
                 if (context.action_animation_layer == layer_idx && context.action_animation_x == x && context.action_animation_y == y)
-                    ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                    ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else
-                    ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                    ntile = maybe_get_animated_tile(ntile, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 enlarg = tile2enlargement[ntile];
             }
 
@@ -2554,9 +2554,9 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
             {
                 int enl_x = -1;
                 int enl_y = -1;
-                for (int i = 0; i < MAX_FRAMES_PER_ENLARGEMENT; i++)
+                for (int i = 0; i < MAX_POSITIONS_PER_ENLARGEMENT; i++)
                 {
-                    if (enlargements[enlarg].frame2tile[i] == -1)
+                    if (enlargements[enlarg].position2tile[i] == -1)
                         continue;
 
                     if (i <= 2)

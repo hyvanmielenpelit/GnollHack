@@ -84,7 +84,7 @@
 
 #define MAX_LOADSTRING 100
 
-#define ANIMATION_TIMER_INTERVAL ANIMATION_FRAME_INTERVAL // milliseconds (25 FPS)
+#define ANIMATION_TIMER_INTERVAL ANIMATION_FRAME_INTERVAL // milliseconds (40 FPS)
 
 
 typedef struct mswin_nhwindow_data {

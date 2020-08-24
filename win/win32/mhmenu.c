@@ -1240,7 +1240,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         tileDC, t_x, t_y, TILE_X, TILE_Y, SRCCOPY);
 
                 /* Enlargement tiles */
-                for (int idx = 0; idx < MAX_FRAMES_PER_ENLARGEMENT; idx++)
+                for (int idx = 0; idx < MAX_POSITIONS_PER_ENLARGEMENT; idx++)
                 {
                     if (enl_height == 1 && idx < 3)
                         continue;
@@ -1251,7 +1251,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     if (enl_width == 2 && enl_x == 1 && (idx == 2 || idx == 4))
                         continue;
 
-                    char enltile = enlargements[enlargement_idx].frame2tile[idx];
+                    char enltile = enlargements[enlargement_idx].position2tile[idx];
                     if (enltile >= 0)
                     {
                         int glyph = enltile + enlargements[enlargement_idx].glyph_offset + GLYPH_ENLARGEMENT_OFF;

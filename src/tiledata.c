@@ -1709,16 +1709,16 @@ uchar* tilemapflags;
         {
             short enl_anim_tile_idx = enlargements[i].number_of_animation_tiles ? m : -1;
             short base_tile = get_enlargement_base_tile(i, enl_anim_tile_idx);
-            for (int j = 0; j < enlargements[i].number_of_frames; j++)
+            for (int j = 0; j < enlargements[i].number_of_positions; j++)
             {
-                /* j is enlargement glyph index number, normally the same as tile number */
+                /* j is enlargement glyph index number, the same as position tile number */
                 const char* pos_name = "unknown";
-                const char* position_names[MAX_TILES_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
+                const char* position_names[MAX_POSITIONS_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
 
                 int position = -1;
-                for (int k = 0; k < MAX_ENLARGEMENT_FRAMES; k++) /* frame number */
+                for (int k = 0; k < MAX_ENLARGEMENT_POSITIONS; k++) /* position number */
                 {
-                    if (enlargements[i].frame2tile[k] == j)
+                    if (enlargements[i].position2tile[k] == j)
                     {
                         position = k;
                         break;
@@ -1748,7 +1748,7 @@ uchar* tilemapflags;
                         enlargements[i].width_in_tiles,
                         enlargements[i].height_in_tiles,
                         enlargements[i].main_tile_x_coordinate,
-                        enlargements[i].number_of_tiles,
+                        enlargements[i].number_of_positions,
                         position,
                         enl_anim_tile_idx
                     );
@@ -1758,13 +1758,13 @@ uchar* tilemapflags;
                 {
                     glyph_offset = GLYPH_ENLARGEMENT_OFF;
                     int addedindex = enl_anim_tile_idx >= 0 ?
-                        enl_anim_tile_idx * enlargements[i].number_of_frames
+                        enl_anim_tile_idx * enlargements[i].number_of_positions
                         : 0;
                     tilemaparray[j + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
 #if 0
-                    for (int k = 0; k < min(enlargements[i].number_of_frames, MAX_FRAMES_PER_ENLARGEMENT); k++)  /* frame number */
+                    for (int k = 0; k < min(enlargements[i].number_of_positions, MAX_POSITIONS_PER_ENLARGEMENT); k++)  /* frame number */
                     {
-                        if (enlargements[i].frame2tile[k] == j)
+                        if (enlargements[i].position2tile[k] == j)
                             tilemaparray[k + addedindex + enlargements[i].glyph_offset + GLYPH_ENLARGEMENT_OFF] = tile_count;
                     }
 #endif
