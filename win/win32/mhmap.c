@@ -1153,7 +1153,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
 
-                if (showing_detection ||(base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored)))
+                if (showing_detection || (base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored)))
                     skip_darkening = TRUE;
 
                 /*

@@ -81,7 +81,7 @@ boolean showtail;
         show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my,
                    any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0);
     else
-        show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, 0UL, 0);
+        show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, LFLAGS_M_DETECTED, 0);
 
     if (showtail && mtmp->data == &mons[PM_LONG_WORM])
         detect_wsegs(mtmp, 0);
@@ -398,8 +398,8 @@ register struct obj *sobj;
 
 outgoldmap:
     cls();
-    show_detection_everywhere();
-
+    double scale_before = flags.screen_scale_adjustment;
+    dozoommini();
     (void) unconstrain_map();
 
     /* Discover gold locations. */
@@ -471,6 +471,7 @@ outgoldmap:
         newsym(u.ux, u.uy);
         ter_typ |= TER_MON; /* so autodescribe will recognize hero */
     }
+    show_detection_everywhere();
 
     You_feel("very greedy, and sense gold!");
     exercise(A_WIS, TRUE);
@@ -478,6 +479,7 @@ outgoldmap:
     browse_map(ter_typ, "gold");
 
     reconstrain_map();
+    zoomtoscale(scale_before);
     docrt();
     if (Underwater)
         under_water(2);
@@ -565,7 +567,6 @@ register struct obj *sobj;
         cls();
         double scale_before = flags.screen_scale_adjustment;
         dozoommini();
-        show_detection_everywhere();
 
         (void) unconstrain_map();
         for (obj = fobj; obj; obj = obj->nobj)
@@ -589,6 +590,8 @@ register struct obj *sobj;
             newsym(u.ux, u.uy);
             ter_typ |= TER_MON; /* for autodescribe of self */
         }
+        show_detection_everywhere();
+
         if (sobj) {
             if (sobj->blessed) {
                 Your("%s %s to tingle and you smell %s.", body_part(NOSE),
@@ -719,8 +722,6 @@ int class;            /* an object class, 0 for all */
     cls();
     double scale_before = flags.screen_scale_adjustment;
     dozoommini();
-    show_detection_everywhere();
-
     (void) unconstrain_map();
     /*
      *  Map all buried objects first.
@@ -802,6 +803,7 @@ int class;            /* an object class, 0 for all */
         newsym(u.ux, u.uy);
         ter_typ |= TER_MON;
     }
+    show_detection_everywhere();
     You("detect the %s of %s.", ct ? "presence" : "absence", stuff);
 
     if (!ct)
@@ -860,7 +862,6 @@ int mclass;                /* monster class, 0 for all */
         cls();
         double scale_before = flags.screen_scale_adjustment;
         dozoommini();
-        show_detection_everywhere();
 
         unconstrained = unconstrain_map();
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -882,6 +883,8 @@ int mclass;                /* monster class, 0 for all */
 				woken = TRUE;
             }
         }
+        show_detection_everywhere();
+
         if (!swallowed)
             display_self();
         You("sense the presence of monsters.");
@@ -1058,7 +1061,6 @@ outtrapmap:
     cls();
     double scale_before = flags.screen_scale_adjustment;
     dozoommini();
-    show_detection_everywhere();
 
     (void) unconstrain_map();
     /* show chest traps first, so that subsequent floor trap display
@@ -1087,6 +1089,7 @@ outtrapmap:
         newsym(u.ux, u.uy);
         ter_typ |= TER_MON; /* for autodescribe at <u.ux,u.uy> */
     }
+    show_detection_everywhere();
     You_feel("%s.", cursed_src ? "very greedy" : "entrapped");
 
     browse_map(ter_typ, "trap of interest");
