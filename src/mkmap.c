@@ -33,7 +33,10 @@ schar bg_typ;
 
     for (i = 1; i < COLNO; i++)
         for (j = 0; j < ROWNO; j++)
+        {
             levl[i][j].typ = bg_typ;
+            levl[i][j].subtyp = get_initial_location_subtype(bg_typ);
+        }
 }
 
 STATIC_OVL void
@@ -50,6 +53,7 @@ schar bg_typ, fg_typ;
         j = rnd(HEIGHT - 1);
         if (levl[i][j].typ == bg_typ) {
             levl[i][j].typ = fg_typ;
+            levl[i][j].subtyp = get_initial_location_subtype(fg_typ);
             count++;
         }
     }

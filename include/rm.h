@@ -683,7 +683,7 @@ struct rm {
                      levl[(x)][(y)].floorsubtyp = levl[(x)][(y)].subtyp; \
                 }                                                 \
                 levl[(x)][(y)].typ = (ttyp);                      \
-                levl[(x)][(y)].subtyp = 0;                        \
+                levl[(x)][(y)].subtyp = get_initial_location_subtype(ttyp); \
             }                                                     \
             if ((ttyp) == LAVAPOOL)                               \
                 levl[(x)][(y)].lit = 1;                           \
