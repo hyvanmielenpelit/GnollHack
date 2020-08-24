@@ -149,4 +149,47 @@ int category_id;
 
 }
 
+int
+get_initial_location_subtype(ltype)
+int ltype;
+{
+    return get_location_subtype_by_category(ltype, ltype == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0);
+}
+
+int
+get_location_category(typ, subtyp)
+int typ, subtyp;
+{
+    struct category_definition* cat_def = 0;
+    int num_cats = 0;
+
+    if (typ == GRASS)
+    {
+        cat_def = grass_category_definitions;
+        num_cats = MAX_GRASS_CATEGORIES;
+    }
+    else if (typ == GROUND)
+    {
+        cat_def = ground_category_definitions;
+        num_cats = MAX_GROUND_CATEGORIES;
+    }
+    else if (typ == ROOM)
+    {
+        cat_def = floor_category_definitions;
+        num_cats = MAX_FLOOR_CATEGORIES;
+    }
+
+    if (cat_def == 0)
+        return 0;
+
+    for (int i = 0; i < num_cats; i++)
+    {
+        if (subtyp >= cat_def[i].first_subtype && subtyp < cat_def[i].first_subtype + cat_def[i].number_of_subtypes)
+        {
+            return i;
+        }
+    }
+
+    return 0;
+}
 /* rm.c */

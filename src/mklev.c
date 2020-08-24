@@ -172,7 +172,7 @@ boolean is_room;
             for (y = lowy; y <= hiy; y++)
             {
                 lev->typ = ROOM;
-                lev->subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
+                lev->subtyp = get_initial_location_subtype(ROOM);
                 lev++;
             }
         }
@@ -765,9 +765,9 @@ makelevel()
             for (int x = 1; x < COLNO; x++)
                 for (int y = 0; y < ROWNO; y++)
                     if (levl[x][y].typ == ROOM)
-                        levl[x][y].typ = GROUND, levl[x][y].subtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                        levl[x][y].typ = GROUND, levl[x][y].subtyp = get_initial_location_subtype(GROUND);
                     else if (levl[x][y].floortyp == ROOM)
-                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = get_initial_location_subtype(GROUND);
 #endif
             return;
         } 
@@ -1144,7 +1144,7 @@ makelevel()
     create_level_light_sources();
     create_level_sound_sources();
     define_level_location_floor_types();
-    randomize_level_location_subtypes();
+
 }
 
 /*
@@ -1469,7 +1469,7 @@ xchar x, y; /* location */
         else
         {
             levl[x][y].floortyp = location_type_definitions[STAIRS].initial_floor_type;
-            levl[x][y].floorsubtyp = 0;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
         }
 
         levl[x][y].ladder = sstairs.up ? LA_UP : LA_DOWN;
@@ -1910,7 +1910,7 @@ struct mkroom *croom;
     else
     {
         levl[x][y].floortyp = location_type_definitions[STAIRS].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     }
 
     levl[x][y].typ = STAIRS;
@@ -1957,7 +1957,7 @@ struct mkroom *croom;
     else
     {
         levl[m.x][m.y].floortyp = location_type_definitions[FOUNTAIN].initial_floor_type;
-        levl[m.x][m.y].floorsubtyp = 0;
+        levl[m.x][m.y].floorsubtyp = get_initial_location_subtype(levl[m.x][m.y].floortyp);
     }
 
     levl[m.x][m.y].typ = FOUNTAIN;
@@ -1996,7 +1996,7 @@ struct mkroom *croom;
     else
     {
         levl[m.x][m.y].floortyp = location_type_definitions[SINK].initial_floor_type;
-        levl[m.x][m.y].floorsubtyp = 0;
+        levl[m.x][m.y].floorsubtyp = get_initial_location_subtype(levl[m.x][m.y].floortyp);
     }
     levl[m.x][m.y].typ = SINK;
     levl[m.x][m.y].subtyp = 0;
@@ -2032,7 +2032,7 @@ boolean match_player_alignment;
     else
     {
         levl[m.x][m.y].floortyp = location_type_definitions[ALTAR].initial_floor_type;
-        levl[m.x][m.y].floorsubtyp = 0;
+        levl[m.x][m.y].floorsubtyp = get_initial_location_subtype(levl[m.x][m.y].floortyp);
     }
     levl[m.x][m.y].typ = ALTAR;
     levl[m.x][m.y].subtyp = 0;
@@ -2215,7 +2215,7 @@ int dist;
         if (is_pool(x, y))
             break;
         lev->typ = ROOM;
-        lev->subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
+        lev->subtyp = get_initial_location_subtype(ROOM);
         ttmp = maketrap(x, y, FIRE_TRAP, NON_PM, MKTRAP_NO_FLAGS);
         if (ttmp)
             ttmp->tseen = TRUE;
@@ -2225,7 +2225,7 @@ int dist;
     case 3:
     case 6: /* unlit room locations */
         lev->typ = ROOM;
-        lev->subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
+        lev->subtyp = get_initial_location_subtype(ROOM);
         break;
     case 4: /* pools (aka a wide moat) */
     case 5:
@@ -2399,21 +2399,6 @@ define_level_location_floor_types()
         {
             if(levl[x][y].floortyp == 0 && !IS_FLOOR(levl[x][y].typ))
                 levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-        }
-    }
-}
-
-void
-randomize_level_location_subtypes()
-{
-    for (xchar x = 1; x < COLNO; x++)
-    {
-        for (xchar y = 0; y < ROWNO; y++)
-        {
-            if (levl[x][y].typ == GRASS)
-                levl[x][y].subtyp = rn2(2);
-            else if (levl[x][y].floortyp == GRASS)
-                levl[x][y].floorsubtyp = rn2(2);
         }
     }
 }

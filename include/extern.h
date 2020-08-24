@@ -1529,7 +1529,6 @@ E void FDECL(maybe_create_location_light_and_sound_sources, (xchar, xchar));
 E void NDECL(create_level_light_sources);
 E void NDECL(create_level_sound_sources);
 E void NDECL(define_level_location_floor_types);
-E void NDECL(randomize_level_location_subtypes);
 
 /* ### mkmap.c ### */
 
@@ -2510,6 +2509,8 @@ E void FDECL(genl_outrip, (winid, int, time_t));
 E void NDECL(init_rm);
 E enum obj_material_types FDECL(get_location_type_material, (int, int));
 E int FDECL(get_location_subtype_by_category, (int, int));
+E int FDECL(get_initial_location_subtype, (int));
+E int FDECL(get_location_category, (int, int));
 
 /* ### rnd.c ### */
 

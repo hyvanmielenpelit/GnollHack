@@ -3374,7 +3374,7 @@ boolean pushing;
 				levl[rx][ry].drawbridgemask |= DB_FLOOR;
 			}
 			else
-				create_basic_floor_location(rx, ry, GROUND, get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL), 0, FALSE);
+				create_basic_floor_location(rx, ry, GROUND, get_location_subtype_by_category(GROUND, GROUND_CATEGORY_SWAMPY), 0, FALSE);
                 
 			//levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 

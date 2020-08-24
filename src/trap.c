@@ -454,7 +454,7 @@ long flags;
         uchar lflags = 0;
 
         if (ltype == 0 && IS_ROOM(lev->typ)) /* && !IS_AIR(lev->typ) */
-            ltype = ROOM, lsubtype = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
+            ltype = ROOM, lsubtype = get_initial_location_subtype(ROOM);
         /*
          * some cases which can happen when digging
          * down while phazing thru solid areas
@@ -467,7 +467,7 @@ long flags;
                 ? ROOM
                 : level.flags.is_cavernous_lev ? CORR : DOOR;
 
-            lsubtype = level.flags.is_maze_lev ? get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL) : 0;
+            lsubtype = level.flags.is_maze_lev ? get_initial_location_subtype(ROOM) : 0;
         }
         create_basic_floor_location(x, y, ltype, lsubtype, lflags, FALSE);
         unearth_objs(&youmonst, x, y, FALSE, FALSE);

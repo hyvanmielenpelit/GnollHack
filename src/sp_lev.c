@@ -654,9 +654,9 @@ schar filling;
                 levl[x][y].typ = (y < 2 || ((x % 2) && (y % 2))) ? STONE
                                                                  : filling;
 
-            levl[x][y].subtyp = 0;
+            levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
             levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-            levl[x][y].floorsubtyp = 0;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
         }
 }
 
@@ -761,9 +761,9 @@ remove_boundary_syms()
                 if ((levl[x][y].typ == CROSSWALL) && SpLev_Map[x][y])
                 {
                     levl[x][y].typ = ROOM;
-                    levl[x][y].subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
+                    levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
                     levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-                    levl[x][y].floorsubtyp = 0;
+                    levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
                 }
     }
 }
@@ -1519,14 +1519,14 @@ struct mkroom *broom;
     else
     {
         levl[x][y].floortyp = location_type_definitions[typ].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     }
 #endif
 
     levl[x][y].typ = typ;
-    levl[x][y].subtyp = 0;
+    levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
     levl[x][y].floortyp = location_type_definitions[typ].initial_floor_type;
-    levl[x][y].floorsubtyp = 0;
+    levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     levl[x][y].doormask = dd->mask;
 }
 
@@ -1573,7 +1573,7 @@ xchar walls; /* any of W_NORTH | W_SOUTH | W_EAST | W_WEST (or W_ANY) */
             levl[sx][sy].typ = SDOOR;
             levl[sx][sy].subtyp = 0;
             levl[sx][sy].floortyp = location_type_definitions[levl[sx][sy].typ].initial_floor_type;
-            levl[sx][sy].floorsubtyp = 0;
+            levl[sx][sy].floorsubtyp = get_initial_location_subtype(levl[sx][sy].floortyp);
             levl[sx][sy].doormask = D_CLOSED;
             return;
         }
@@ -2256,7 +2256,7 @@ struct mkroom *croom;
     else
     {
         levl[x][y].floortyp = location_type_definitions[ALTAR].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     }
     levl[x][y].typ = ALTAR;
     levl[x][y].subtyp = 0;
@@ -2313,7 +2313,7 @@ struct mkroom* croom;
     else
     {
         levl[x][y].floortyp = location_type_definitions[ANVIL].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     }
     levl[x][y].typ = ANVIL;
     levl[x][y].subtyp = 0;
@@ -2526,7 +2526,7 @@ schar ftyp, btyp;
         if (crm->typ == btyp) {
             if (ftyp != CORR || rn2(100)) {
                 crm->typ = ftyp;
-                crm->subtyp = get_location_subtype_by_category(ftyp, ftyp == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ftyp == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0);
+                crm->subtyp = get_initial_location_subtype(ftyp);
                 if (nxcor && !rn2(50))
                     (void) mksobj_at(BOULDER, xx, yy, TRUE, FALSE);
             } else {
@@ -3827,7 +3827,7 @@ struct sp_coder *coder;
     else
     {
         levl[x][y].floortyp = location_type_definitions[LADDER].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
 
     }
 
@@ -3869,7 +3869,7 @@ struct sp_coder *coder;
         else
         {
             levl[x][y].floortyp = location_type_definitions[GRAVE].initial_floor_type;
-            levl[x][y].floorsubtyp = 0;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
 
         }
 
@@ -4653,7 +4653,7 @@ genericptr_t arg;
     else
     {
         levl[x][y].floortyp = location_type_definitions[(*(int*)arg)].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     }
 
     levl[x][y].typ = (*(int *) arg);
@@ -4683,7 +4683,7 @@ genericptr_t arg, arg2;
     else
     {
         levl[x][y].floortyp = location_type_definitions[(*(int*)arg)].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     }
 
     levl[x][y].typ = (*(int*)arg);
@@ -4709,7 +4709,7 @@ genericptr_t arg;
         else
         {
             levl[x][y].floortyp = location_type_definitions[settyp].initial_floor_type;
-            levl[x][y].floorsubtyp = 0;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
         }
 
         levl[x][y].typ = settyp;
@@ -4947,7 +4947,7 @@ struct opvar *ov;
             else
             {
                 levl[x + 1][y].floortyp = location_type_definitions[SDOOR].initial_floor_type;
-                levl[x + 1][y].floorsubtyp = 0;
+                levl[x + 1][y].floorsubtyp = get_initial_location_subtype(levl[x + 1][y].floortyp);
 
             }
             levl[x + 1][y].typ = SDOOR;
@@ -4967,7 +4967,7 @@ struct opvar *ov;
             else
             {
                 levl[x - 1][y].floortyp = location_type_definitions[SDOOR].initial_floor_type;
-                levl[x - 1][y].floorsubtyp = 0;
+                levl[x - 1][y].floorsubtyp = get_initial_location_subtype(levl[x - 1][y].floortyp);
 
             }
             levl[x - 1][y].typ = SDOOR;
@@ -4987,7 +4987,7 @@ struct opvar *ov;
             else
             {
                 levl[x][y + 1].floortyp = location_type_definitions[SDOOR].initial_floor_type;
-                levl[x][y + 1].floorsubtyp = 0;
+                levl[x][y + 1].floorsubtyp = get_initial_location_subtype(levl[x][y + 1].floortyp);
 
             }
             levl[x][y + 1].typ = SDOOR;
@@ -5007,7 +5007,7 @@ struct opvar *ov;
             else
             {
                 levl[x][y - 1].floortyp = location_type_definitions[SDOOR].initial_floor_type;
-                levl[x][y - 1].floorsubtyp = 0;
+                levl[x][y - 1].floorsubtyp = get_initial_location_subtype(levl[x][y - 1].floortyp);
 
             }
             levl[x][y - 1].typ = SDOOR;
@@ -5335,9 +5335,9 @@ struct sp_coder *coder;
     if (!IS_DOOR(levl[x][y].typ)) 
     {
         levl[x][y].typ = OV_i(ftyp);
-        levl[x][y].subtyp = (levl[x][y].typ == ROOM ? get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL) : levl[x][y].typ == GRASS ? get_location_subtype_by_category(GRASS, level.flags.swampy ? GRASS_CATEGORY_SWAMPY : GRASS_CATEGORY_NORMAL) : 0);
+        levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
         levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-        levl[x][y].floorsubtyp = get_location_subtype_by_category(levl[x][y].floortyp, 0);
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
         levl[x][y].flags = 0;
     }
 
@@ -5354,9 +5354,9 @@ struct sp_coder *coder;
 
         /* no need for IS_DOOR check; out of map bounds */
         levl[x][y].typ = OV_i(ftyp);
-        levl[x][y].subtyp = 0;
+        levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
         levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-        levl[x][y].floorsubtyp = get_location_subtype_by_category(levl[x][y].floortyp, 0);
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
         levl[x][y].flags = 0;
     }
 
@@ -5580,36 +5580,37 @@ struct sp_coder *coder;
                                                   + (x - xstart)] - 1);
                 if (mptyp >= MAX_TYPE)
                     continue;
-                levl[x][y].typ = mptyp;
-                levl[x][y].subtyp = 0;
-                levl[x][y].floorsubtyp = 0;
+
+                struct rm* lev = &levl[x][y];
+                lev->typ = mptyp;
+                lev->subtyp = get_initial_location_subtype(lev->typ);
                 if (mptyp == FOUNTAIN && level.flags.fountain_on_grass)
                 {
-                    levl[x][y].floortyp = GRASS;
-                    levl[x][y].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
+                    lev->floortyp = GRASS;
+                    lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
                 }
                 else if ((mptyp == FOUNTAIN || mptyp == TREE) && level.flags.fountain_on_ground)
                 {
-                    levl[x][y].floortyp = GROUND;
-                    levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                    lev->floortyp = GROUND;
+                    lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
                 }
                 else if (mptyp == THRONE && level.flags.throne_on_ground)
                 {
-                    levl[x][y].floortyp = GROUND;
-                    levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                    lev->floortyp = GROUND;
+                    lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
                 }
                 else
                 {
-                    levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-                    levl[x][y].floorsubtyp = get_location_subtype_by_category(location_type_definitions[levl[x][y].typ].initial_floor_type, 0);
+                    lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
+                    lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
                 }
 
-                levl[x][y].lit = FALSE;
+                lev->lit = FALSE;
                 /* clear out levl: load_common_data may set them */
-                levl[x][y].flags = 0;
-                levl[x][y].horizontal = 0;
-                levl[x][y].roomno = 0;
-                levl[x][y].edge = 0;
+                lev->flags = 0;
+                lev->horizontal = 0;
+                lev->roomno = 0;
+                lev->edge = 0;
                 SpLev_Map[x][y] = 1;
                 /*
                  *  Set secret doors to closed (why not trapped too?).  Set
@@ -6640,7 +6641,6 @@ sp_lev *lvl;
     create_level_light_sources();
     create_level_sound_sources();
     define_level_location_floor_types();
-    randomize_level_location_subtypes();
 
     if (coder->premapped)
         sokoban_detect();

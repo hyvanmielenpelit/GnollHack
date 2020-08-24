@@ -826,12 +826,12 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                 if (IS_FLOOR(levl[sx][sy].typ))
                 {
                     levl[sx][sy].typ = GRASS;
-                    levl[sx][sy].subtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
+                    levl[sx][sy].subtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_SWAMPY);
                 }
                 else
                 {
                     levl[sx][sy].floortyp = GRASS;
-                    levl[sx][sy].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
+                    levl[sx][sy].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_SWAMPY);
                 }
 
                 if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy) && !nexttodoor(sx, sy))
@@ -841,7 +841,7 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                         levl[sx][sy].typ = POOL;
                         levl[sx][sy].subtyp = 0;
                         levl[sx][sy].floortyp = location_type_definitions[POOL].initial_floor_type;
-                        levl[sx][sy].floorsubtyp = 0;
+                        levl[sx][sy].floorsubtyp = get_initial_location_subtype(levl[sx][sy].floortyp);
                         if (!eelct || !rn2(4))
                         {
                             /* mkclass() won't do, as we might get kraken */

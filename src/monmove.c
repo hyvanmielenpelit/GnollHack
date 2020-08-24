@@ -1963,8 +1963,8 @@ dissolve_bars(x, y)
 register int x, y;
 {
     boolean floor_is_room = (Is_special(&u.uz) || *in_rooms(x, y, 0));
-    levl[x][y].typ = floor_is_room ? ROOM : CORR;
-    levl[x][y].subtyp = floor_is_room ? get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL) : 0;
+    levl[x][y].typ = levl[x][y].floortyp ? levl[x][y].floortyp : floor_is_room ? ROOM : CORR;
+    levl[x][y].subtyp = levl[x][y].floorsubtyp ? levl[x][y].floorsubtyp : floor_is_room ? get_initial_location_subtype(ROOM) : 0;
     levl[x][y].flags = 0;
     newsym(x, y);
 }
