@@ -292,7 +292,7 @@ boolean flag;
         lev1flags |= DB_LAVA;
 
     full_location_transform(x, y, lev1typ, 0, lev1flags, 0, 0, levl[x][y].typ, levl[x][y].subtyp, FALSE, lev1horizontal, FALSE);
-    full_location_transform(x2, y2, lev2typ, 0, lev2flags, 0, 0, ROOM, 0, FALSE, lev2horizontal, FALSE);
+    full_location_transform(x2, y2, lev2typ, 0, lev2flags, 0, 0, ROOM, get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), FALSE, lev2horizontal, FALSE);
 
     return  TRUE;
 }
@@ -1010,7 +1010,9 @@ boolean is_disintegrated;
         else
             You_hear("a loud *CRASH*!");
 
-        full_location_transform(x, y, ((lev1->drawbridgemask& DB_ICE) ? ICE : ROOM), 0, ((lev1->drawbridgemask & DB_ICE) ? ICED_MOAT : 0), 0, 0, lev1->floortyp, lev1->floorsubtyp, FALSE, FALSE, FALSE);
+        int trtyp = ((lev1->drawbridgemask & DB_ICE) ? ICE : ROOM);
+        int trsubtyp = get_location_subtype_by_category(trtyp, 0);
+        full_location_transform(x, y, trtyp, trsubtyp, ((lev1->drawbridgemask & DB_ICE) ? ICED_MOAT : 0), 0, 0, lev1->floortyp, lev1->floorsubtyp, FALSE, FALSE, FALSE);
     }
     wake_nearto(x, y, 500);
     full_location_transform(x2, y2, DOOR, 0, D_PORTCULLIS, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lev2->horizontal, FALSE);

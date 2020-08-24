@@ -1716,7 +1716,7 @@ uchar* tilemapflags;
                 const char* position_names[MAX_POSITIONS_PER_ENLARGEMENT] = { "top-left", "top", "top-right", "left", "right" };
 
                 int position = -1;
-                for (int k = 0; k < MAX_ENLARGEMENT_POSITIONS; k++) /* position number */
+                for (int k = 0; k < TOTAL_ENLARGEMENT_POSITIONS; k++) /* position number */
                 {
                     if (enlargements[i].position2tile[k] == j)
                     {

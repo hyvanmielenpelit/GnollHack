@@ -72,7 +72,7 @@ boolean waslit, rockit;
     unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* fake out saved state */
-    create_simple_location(x, y, (rockit ? STONE : ROOM), (rockit ? 0 : rn2(4)), 0, 0, rockit ? CORR : 0, 0, FALSE);
+    create_simple_location(x, y, (rockit ? STONE : ROOM), (rockit ? 0 : get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL)), 0, 0, rockit ? CORR : 0, 0, FALSE);
     lev->seenv = 0;
     //lev->doormask = 0;
     if (dist < 3)
@@ -132,7 +132,7 @@ register boolean rockit;
     if (!rockit && levl[u.ux][u.uy].typ == CORR)
     {
         levl[u.ux][u.uy].typ = ROOM; /* flags for CORR already 0 */
-        levl[u.ux][u.uy].subtyp = rn2(4);
+        levl[u.ux][u.uy].subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
         if (waslit)
             levl[u.ux][u.uy].waslit = TRUE;
         newsym(u.ux, u.uy); /* in case player is invisible */
@@ -433,7 +433,7 @@ dig(VOID_ARGS)
             {
                 digtxt = "You cut down the tree.";
 				struct mkroom* r = which_room(dpx, dpy);
-                create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? rn2(3) : rn2(4), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
+                create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL) : get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
 
 				/* Wood */
 				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, dpx, dpy, FALSE, FALSE);
@@ -482,7 +482,7 @@ dig(VOID_ARGS)
             if (level.flags.is_maze_lev)
             {
                 ltype = ROOM;
-                lsubtype = rn2(4);
+                lsubtype = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
             } 
             else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
             {
@@ -1061,7 +1061,7 @@ coord *cc;
         break;
     }
     del_engr_at(dig_x, dig_y);
-    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : ROOM, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : rn2(4), 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
+    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : ROOM, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
     return;
 }
 
@@ -1562,7 +1562,7 @@ register struct monst *mtmp;
 
         if (level.flags.is_maze_lev)
         {
-            ltype = ROOM, lsubtype = rn2(4), lflags = 0;
+            ltype = ROOM, lsubtype = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), lflags = 0;
         } 
         else if (level.flags.is_cavernous_lev
                    && !in_town(mtmp->mx, mtmp->my))
@@ -1584,9 +1584,9 @@ register struct monst *mtmp;
         if(here->floortyp)
             ltype = here->floortyp, lsubtype = here->floorsubtyp;
         else if (r && r->orig_rtype == GARDEN)
-            ltype = GRASS, lsubtype = rn2(3);
+            ltype = GRASS, lsubtype = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
 		else
-            ltype = ROOM, lsubtype = rn2(4);
+            ltype = ROOM, lsubtype = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
 
         create_simple_location(mtmp->mx, mtmp->my, ltype, lsubtype, 0, back_to_broken_glyph(mtmp->mx, mtmp->my), 0, 0, FALSE);
 
@@ -1827,7 +1827,7 @@ struct obj* origobj;
                         add_damage(zx, zy, SHOP_WALL_COST);
                         shopwall = TRUE;
                     }
-                    create_simple_location(zx, zy, ROOM, rn2(4), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+                    create_simple_location(zx, zy, ROOM, get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)

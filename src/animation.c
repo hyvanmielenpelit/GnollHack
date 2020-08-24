@@ -1326,7 +1326,7 @@ int
 get_animation_frame_with_tile(animidx, tileidx)
 int animidx, tileidx;
 {
-    for (int i = 0; i < MAX_ANIMATION_FRAMES; i++)
+    for (int i = 0; i < TOTAL_ANIMATION_FRAMES; i++)
     {
         if (animations[animidx].frame2tile[i] == tileidx)
             return i;

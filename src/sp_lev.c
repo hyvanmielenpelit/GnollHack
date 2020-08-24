@@ -761,7 +761,7 @@ remove_boundary_syms()
                 if ((levl[x][y].typ == CROSSWALL) && SpLev_Map[x][y])
                 {
                     levl[x][y].typ = ROOM;
-                    levl[x][y].subtyp = rn2(4);
+                    levl[x][y].subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
                     levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
                     levl[x][y].floorsubtyp = 0;
                 }
@@ -2526,6 +2526,7 @@ schar ftyp, btyp;
         if (crm->typ == btyp) {
             if (ftyp != CORR || rn2(100)) {
                 crm->typ = ftyp;
+                crm->subtyp = get_location_subtype_by_category(ftyp, ftyp == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ftyp == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0);
                 if (nxcor && !rn2(50))
                     (void) mksobj_at(BOULDER, xx, yy, TRUE, FALSE);
             } else {
@@ -5334,9 +5335,9 @@ struct sp_coder *coder;
     if (!IS_DOOR(levl[x][y].typ)) 
     {
         levl[x][y].typ = OV_i(ftyp);
-        levl[x][y].subtyp = (levl[x][y].typ == ROOM ? rn2(4) : levl[x][y].typ == GRASS ? rn2(3) : 0);
+        levl[x][y].subtyp = (levl[x][y].typ == ROOM ? get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL) : levl[x][y].typ == GRASS ? get_location_subtype_by_category(GRASS, level.flags.swampy ? GRASS_CATEGORY_SWAMPY : GRASS_CATEGORY_NORMAL) : 0);
         levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_location_subtype_by_category(levl[x][y].floortyp, 0);
         levl[x][y].flags = 0;
     }
 
@@ -5355,7 +5356,7 @@ struct sp_coder *coder;
         levl[x][y].typ = OV_i(ftyp);
         levl[x][y].subtyp = 0;
         levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
-        levl[x][y].floorsubtyp = 0;
+        levl[x][y].floorsubtyp = get_location_subtype_by_category(levl[x][y].floortyp, 0);
         levl[x][y].flags = 0;
     }
 
@@ -5585,14 +5586,23 @@ struct sp_coder *coder;
                 if (mptyp == FOUNTAIN && level.flags.fountain_on_grass)
                 {
                     levl[x][y].floortyp = GRASS;
-                    levl[x][y].floorsubtyp = rn2(3);
+                    levl[x][y].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
                 }
                 else if ((mptyp == FOUNTAIN || mptyp == TREE) && level.flags.fountain_on_ground)
+                {
                     levl[x][y].floortyp = GROUND;
+                    levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                }
                 else if (mptyp == THRONE && level.flags.throne_on_ground)
+                {
                     levl[x][y].floortyp = GROUND;
+                    levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
+                }
                 else
+                {
                     levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
+                    levl[x][y].floorsubtyp = get_location_subtype_by_category(location_type_definitions[levl[x][y].typ].initial_floor_type, 0);
+                }
 
                 levl[x][y].lit = FALSE;
                 /* clear out levl: load_common_data may set them */

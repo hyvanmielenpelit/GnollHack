@@ -541,7 +541,7 @@ xchar x, y;
         if (level.flags.is_maze_lev) 
         {
             ltype = ROOM;
-            lsubtype = rn2(4);
+            lsubtype = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
         }
         else if (level.flags.is_cavernous_lev && !in_town(x, y))
         {
@@ -556,7 +556,7 @@ xchar x, y;
 
     } else if (IS_TREE(lev->typ)) {
         digtxt = "chew through the tree.";
-        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, lev->floorsubtyp ? lev->floorsubtyp : rn2(3), 0, back_to_broken_glyph(x, y), 0, 0, FALSE);
+        create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, lev->floorsubtyp ? lev->floorsubtyp : get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL), 0, back_to_broken_glyph(x, y), 0, 0, FALSE);
     } else if (lev->typ == IRONBARS) {
         digtxt = "eat through the bars.";
         dissolve_bars(x, y);

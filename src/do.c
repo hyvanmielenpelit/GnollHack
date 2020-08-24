@@ -3374,7 +3374,7 @@ boolean pushing;
 				levl[rx][ry].drawbridgemask |= DB_FLOOR;
 			}
 			else
-				create_basic_floor_location(rx, ry, GROUND, 0, 0, FALSE);
+				create_basic_floor_location(rx, ry, GROUND, get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL), 0, FALSE);
                 
 			//levl[rx][ry].typ = ROOM, levl[rx][ry].flags = 0;
 
@@ -3695,7 +3695,7 @@ polymorph_sink()
 		else
 		{
 			sym = S_room;
-			create_basic_floor_location(u.ux, u.uy, ROOM, rn2(4), 0, FALSE);
+			create_basic_floor_location(u.ux, u.uy, ROOM, get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), 0, FALSE);
 		}
         make_grave(u.ux, u.uy, (char *) 0);
         if (levl[u.ux][u.uy].typ == GRAVE)

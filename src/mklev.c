@@ -172,7 +172,7 @@ boolean is_room;
             for (y = lowy; y <= hiy; y++)
             {
                 lev->typ = ROOM;
-                lev->subtyp = rn2(4);
+                lev->subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
                 lev++;
             }
         }
@@ -765,9 +765,9 @@ makelevel()
             for (int x = 1; x < COLNO; x++)
                 for (int y = 0; y < ROWNO; y++)
                     if (levl[x][y].typ == ROOM)
-                        levl[x][y].typ = GROUND, levl[x][y].subtyp = 0;
+                        levl[x][y].typ = GROUND, levl[x][y].subtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
                     else if (levl[x][y].floortyp == ROOM)
-                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = 0;
+                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
 #endif
             return;
         } 
@@ -2215,7 +2215,7 @@ int dist;
         if (is_pool(x, y))
             break;
         lev->typ = ROOM;
-        lev->subtyp = rn2(4);
+        lev->subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
         ttmp = maketrap(x, y, FIRE_TRAP, NON_PM, MKTRAP_NO_FLAGS);
         if (ttmp)
             ttmp->tseen = TRUE;
@@ -2225,7 +2225,7 @@ int dist;
     case 3:
     case 6: /* unlit room locations */
         lev->typ = ROOM;
-        lev->subtyp = rn2(4);
+        lev->subtyp = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
         break;
     case 4: /* pools (aka a wide moat) */
     case 5:

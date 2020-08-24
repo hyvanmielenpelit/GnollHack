@@ -252,22 +252,51 @@ struct location_type_definition {
 
 extern struct location_type_definition location_type_definitions[MAX_TYPE];
 
+struct category_definition {
+    int first_subtype;
+    int number_of_subtypes;
+};
+
+enum grass_categories {
+    GRASS_CATEGORY_NORMAL = 0,
+    GRASS_CATEGORY_SWAMPY,
+    MAX_GRASS_CATEGORIES
+};
+
+extern struct category_definition ground_category_definitions[MAX_GRASS_CATEGORIES];
 
 enum grass_subtypes {
     GRASS_SUBTYPE_NORMAL = 0,
     GRASS_SUBTYPE_NORMAL_VARIATION_1,
     GRASS_SUBTYPE_NORMAL_VARIATION_2,
-    GRASS_SUBTYPE_NORMAL_VARIATION_3,
+    GRASS_SUBTYPE_SWAMPY,
     MAX_GRASS_SUBTYPES
 };
+
+enum ground_categories {
+    GROUND_CATEGORY_NORMAL = 0,
+    GROUND_CATEGORY_SWAMPY,
+    MAX_GROUND_CATEGORIES
+};
+
+extern struct category_definition ground_category_definitions[MAX_GROUND_CATEGORIES];
 
 enum ground_subtypes {
     GROUND_SUBTYPE_NORMAL = 0,
     GROUND_SUBTYPE_NORMAL_VARIATION_1,
     GROUND_SUBTYPE_NORMAL_VARIATION_2,
-    GROUND_SUBTYPE_NORMAL_VARIATION_3,
+    GROUND_SUBTYPE_SWAMPY,
     MAX_GROUND_SUBTYPES
 };
+
+enum floor_categories {
+    FLOOR_CATEGORY_NORMAL = 0,
+    FLOOR_CATEGORY_MARBLE,
+    FLOOR_CATEGORY_PARQUET,
+    MAX_FLOOR_CATEGORIES
+};
+
+extern struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES];
 
 enum floor_subtypes {
     FLOOR_SUBTYPE_NORMAL = 0,

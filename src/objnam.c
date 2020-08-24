@@ -4371,24 +4371,28 @@ struct obj *no_wish;
         p = eos(bp);
         if (!BSTRCMPI(bp, p - 8, "fountain")) 
         {
+            int lsubtype = 0;
             uchar lflags = 0;
             boolean lhorizontal = 0;
             if (!strncmpi(bp, "enchanted magic ", 16))
+            {
                 lhorizontal = 1;
+                lsubtype = FOUNTAIN_MAGIC;
+            }
 			if (!strncmpi(bp, "magic ", 6))
-                lhorizontal |= FOUNTAIN_MAGIC; /* does nothing */
-			if (!strncmpi(bp, "healing ", 8))
-                lhorizontal |= FOUNTAIN_HEALING;
-			if (!strncmpi(bp, "mana ", 5))
-                lhorizontal |= FOUNTAIN_MANA;
+                lsubtype = FOUNTAIN_MAGIC;
+            if (!strncmpi(bp, "healing ", 8))
+                lsubtype = FOUNTAIN_HEALING;
+            if (!strncmpi(bp, "mana ", 5))
+                lsubtype = FOUNTAIN_MANA;
 			if (!strncmpi(bp, "power ", 6))
-                lhorizontal |= FOUNTAIN_POWER;
+                lsubtype = FOUNTAIN_POWER;
 			if (!strncmpi(bp, "water ", 6))
-                lhorizontal |= FOUNTAIN_WATER;
+                lsubtype = FOUNTAIN_WATER;
 			if (!strncmpi(bp, "poison ", 7))
-                lhorizontal |= FOUNTAIN_POISON;
+                lsubtype = FOUNTAIN_POISON;
             
-            full_location_transform(x, y, FOUNTAIN, 0, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : rn2(4), FALSE, lhorizontal, FALSE);
+            full_location_transform(x, y, FOUNTAIN, lsubtype, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), FALSE, lhorizontal, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
 			pline("A %s.", ftyp > 0 ? fountain_type_text(ftyp) : lev->blessedftn ? "enchanted fountain" : "magic fountain");

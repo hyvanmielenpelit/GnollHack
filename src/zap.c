@@ -8440,9 +8440,9 @@ short exploding_wand_typ;
             if (levl[x][y].floortyp)
                 ltype = levl[x][y].floortyp, lsubtype = levl[x][y].floorsubtyp;
             else if (r && r->orig_rtype == GARDEN)
-                ltype = GRASS, lsubtype = rn2(3);
+                ltype = GRASS, lsubtype = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
             else
-                ltype = ROOM, lsubtype = rn2(4);
+                ltype = ROOM, lsubtype = get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL);
             create_simple_location(x, y, ltype, lsubtype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);

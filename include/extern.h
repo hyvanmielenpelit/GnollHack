@@ -2509,6 +2509,7 @@ E void FDECL(genl_outrip, (winid, int, time_t));
 /* ### rm.c ### */
 E void NDECL(init_rm);
 E enum obj_material_types FDECL(get_location_type_material, (int, int));
+E int FDECL(get_location_subtype_by_category, (int, int));
 
 /* ### rnd.c ### */
 

@@ -221,13 +221,13 @@ gottype:
     sroom->rtype = SHOPBASE + i;
 
     /* Change floor type */
-    enum floor_subtypes subtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
+    enum floor_categories category = !rn2(2) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
     for (x = sroom->lx; x <= sroom->hx; x++)
         for (y = sroom->ly; y <= sroom->hy; y++)
             if (levl[x][y].typ == ROOM)
-                levl[x][y].subtyp = subtype;
+                levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
             else if (levl[x][y].floortyp == ROOM)
-                levl[x][y].floorsubtyp = subtype;
+                levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
 
     /* set room bits before stocking the shop */
 #ifdef SPECIALIZATION
@@ -297,13 +297,13 @@ mkdesertedshop()
 
     /* Change floor */
     int x, y;
-    enum floor_subtypes subtype = !rn2(2) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
+    enum floor_categories category = !rn2(2) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
     for (x = sroom->lx; x <= sroom->hx; x++)
         for (y = sroom->ly; y <= sroom->hy; y++)
             if (levl[x][y].typ == ROOM)
-                levl[x][y].subtyp = subtype;
+                levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
             else if (levl[x][y].floortyp == ROOM)
-                levl[x][y].floorsubtyp = subtype;
+                levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
 
 	/* set room bits before stocking the shop */
 	topologize(sroom);
@@ -405,9 +405,9 @@ struct mkroom *sroom;
                 if (!sroom->irregular || (sroom->irregular && levl[x][y].roomno == rmno))
                 {
                     if (levl[x][y].typ == ROOM)
-                        levl[x][y].typ = GROUND, levl[x][y].subtyp = 0;
+                        levl[x][y].typ = GROUND, levl[x][y].subtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
                     else if (levl[x][y].floortyp == ROOM)
-                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = 0;
+                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = get_location_subtype_by_category(GROUND, GROUND_CATEGORY_NORMAL);
                 }
         break;
     case COURT:
@@ -826,12 +826,12 @@ mkswamp() /* Michiel Huisjes & Fred de Wilde */
                 if (IS_FLOOR(levl[sx][sy].typ))
                 {
                     levl[sx][sy].typ = GRASS;
-                    levl[sx][sy].subtyp = rn2(3);
+                    levl[sx][sy].subtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
                 }
                 else
                 {
                     levl[sx][sy].floortyp = GRASS;
-                    levl[sx][sy].floorsubtyp = rn2(3);
+                    levl[sx][sy].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
                 }
 
                 if (!OBJ_AT(sx, sy) && !MON_AT(sx, sy) && !t_at(sx, sy) && !nexttodoor(sx, sy))
@@ -909,12 +909,12 @@ mkgarden()
 			{
 				levl[sx][sy].typ = TREE;
                 levl[sx][sy].floortyp = GRASS;
-                levl[sx][sy].floorsubtyp = rn2(3);
+                levl[sx][sy].floorsubtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
             }
 			else
 			{
 				levl[sx][sy].typ = GRASS;
-                levl[sx][sy].subtyp = rn2(3);
+                levl[sx][sy].subtyp = get_location_subtype_by_category(GRASS, GRASS_CATEGORY_NORMAL);
                 /* Buried items */
 				if (!rn2(5))
 				{
@@ -1322,13 +1322,13 @@ mktemple()
 
 #if 0
      /* Change floor type */
-    enum floor_subtypes subtype = FLOOR_SUBTYPE_MARBLE;
+    enum floor_categories category = !rn2(2) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
     for (int x = sroom->lx; x <= sroom->hx; x++)
         for (int y = sroom->ly - 1; y <= sroom->hy; y++)
             if (levl[x][y].typ == ROOM)
-                levl[x][y].subtyp = subtype;
+                levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
             else if (levl[x][y].floortyp == ROOM)
-                levl[x][y].floorsubtyp = subtype;
+                levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
 #endif
 
     shrine_spot = shrine_pos((int) ((sroom - rooms) + ROOMOFFSET));
@@ -1450,13 +1450,13 @@ mknpcroom()
     /* Change floor type */
     if (npc_subtype_definitions[npctype].general_flags & (NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_MARBLE_FLOOR))
     {
-        enum floor_subtypes subtype = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_PARQUET_FLOOR) ? FLOOR_SUBTYPE_PARQUET : FLOOR_SUBTYPE_MARBLE;
+        enum floor_categories category = (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_PARQUET_FLOOR) ? FLOOR_CATEGORY_PARQUET : FLOOR_CATEGORY_MARBLE;
         for (int x = sroom->lx; x <= sroom->hx; x++)
             for (int y = sroom->ly - 1; y <= sroom->hy; y++)
                 if (levl[x][y].typ == ROOM)
-                    levl[x][y].subtyp = subtype;
+                    levl[x][y].subtyp = get_location_subtype_by_category(ROOM, category);
                 else if (levl[x][y].floortyp == ROOM)
-                    levl[x][y].floorsubtyp = subtype;
+                    levl[x][y].floorsubtyp = get_location_subtype_by_category(ROOM, category);
 
     }
 

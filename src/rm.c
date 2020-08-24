@@ -47,6 +47,27 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"UNEXPLORED",      S_unexplored,0,     MAT_NONE,    LOCATION_SOUNDSET_NONE}
 };
 
+
+struct category_definition grass_category_definitions[MAX_GRASS_CATEGORIES] =
+{
+    { GRASS_SUBTYPE_NORMAL, 3},
+    { GRASS_SUBTYPE_SWAMPY, 1},
+};
+
+struct category_definition ground_category_definitions[MAX_GROUND_CATEGORIES] =
+{
+    { GROUND_SUBTYPE_NORMAL, 1},
+    { GROUND_SUBTYPE_SWAMPY, 1},
+};
+
+struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES] =
+{
+    { FLOOR_SUBTYPE_NORMAL, 4},
+    { FLOOR_SUBTYPE_MARBLE, 1},
+    { FLOOR_SUBTYPE_PARQUET, 1},
+};
+
+
 /* force linkage */
 void
 init_rm()
@@ -84,6 +105,48 @@ int typ, subtyp;
     }
 
     return material;
+}
+
+int
+get_location_subtype_by_category(ltype, category_id)
+int ltype;
+int category_id;
+{
+    struct category_definition* cat_def = 0;
+    int cat_size = 0;
+
+    if (ltype == GRASS)
+    {
+        cat_def = grass_category_definitions;
+        cat_size = MAX_GRASS_CATEGORIES;
+    }
+    else if (ltype == GROUND)
+    {
+        cat_def = ground_category_definitions;
+        cat_size = MAX_GROUND_CATEGORIES;
+    }
+    else if (ltype == ROOM)
+    {
+        cat_def = floor_category_definitions;
+        cat_size = MAX_FLOOR_CATEGORIES;
+    }
+
+    if (cat_def == 0)
+        return 0;
+
+    if (category_id < 0 || category_id >= cat_size)
+        return 0;
+
+    int first_st = cat_def[category_id].first_subtype;
+    int num_st = cat_def[category_id].number_of_subtypes;
+
+    if (num_st <= 0)
+        return 0;
+    else if (num_st == 1)
+        return max(0, first_st);
+    else
+        return max(0, first_st) + rn2(num_st);
+
 }
 
 /* rm.c */
