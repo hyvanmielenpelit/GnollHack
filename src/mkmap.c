@@ -91,12 +91,14 @@ schar bg_typ, fg_typ;
             case 1:
             case 2:
                 levl[i][j].typ = bg_typ;
+                levl[i][j].subtyp = get_initial_location_subtype(bg_typ);
                 break;
             case 5:
             case 6:
             case 7:
             case 8:
                 levl[i][j].typ = fg_typ;
+                levl[i][j].subtyp = get_initial_location_subtype(fg_typ);
                 break;
             default:
                 break;
@@ -127,7 +129,10 @@ schar bg_typ, fg_typ;
 
     for (i = 2; i <= WIDTH; i++)
         for (j = 1; j < HEIGHT; j++)
+        {
             levl[i][j].typ = new_loc(i, j);
+            levl[i][j].subtyp = get_initial_location_subtype(levl[i][j].typ);
+        }
 }
 
 STATIC_OVL void
@@ -151,7 +156,10 @@ schar bg_typ, fg_typ;
 
     for (i = 2; i <= WIDTH; i++)
         for (j = 1; j < HEIGHT; j++)
+        {
             levl[i][j].typ = new_loc(i, j);
+            levl[i][j].subtyp = get_initial_location_subtype(levl[i][j].typ);
+        }
 }
 
 /*
@@ -315,6 +323,7 @@ schar bg_typ, fg_typ;
                             if ((int) levl[sx][sy].roomno
                                 == nroom + ROOMOFFSET) {
                                 levl[sx][sy].typ = bg_typ;
+                                levl[sx][sy].subtyp = get_initial_location_subtype(bg_typ);
                                 levl[sx][sy].roomno = NO_ROOM;
                             }
                 }
