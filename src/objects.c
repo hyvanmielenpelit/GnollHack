@@ -2994,7 +2994,7 @@ SPELL("negate magic resistance", "dark", None, "Cuts magic resistance of the tar
 SPELL("forbid summoning",		"oval-patterned", None, "The target cannot use summoning abilities",
 	P_ABJURATION_SPELL,			5, 1,			 0, 6, 75, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 10, 6, 25, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("cancellation",     "shining", None, "Prohibits the target from using magic or magical attacks",
-	P_ABJURATION_SPELL,	        5,  3,			 0, 3, 30, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 2, 4, 0, S1_NO_SOMATIC_COMPONENT | S1_SPELL_BYPASSES_MAGIC_RESISTANCE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	P_ABJURATION_SPELL,	        5,  3,			 0, 5, 50, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 2, 4, 0, S1_NO_SOMATIC_COMPONENT | S1_SPELL_BYPASSES_MAGIC_RESISTANCE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("disjunction",     "scintillating", "some long-forgotten arcane magic", "Prohibits the target from using magic or magical attacks",
 	P_ABJURATION_SPELL,	        2,  8,			 0, 10, 300, A_MAX_INT_WIS, 8, 0, 100, 0, 1, IMMEDIATE, 0, 0, 0, 0, 2, 20, 40, S1_NO_SOMATIC_COMPONENT | S1_SPELL_BYPASSES_MAGIC_RESISTANCE | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("silence",     "tree-patterned", None, "Prohibits the target from making noises and casting spells",
