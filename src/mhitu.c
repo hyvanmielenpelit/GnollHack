@@ -1477,10 +1477,10 @@ struct monst *mon;
 			if (objects[o->otyp].oc_flags & O1_EROSION_DOES_NOT_AFFECT_MC)
 				item_mc_bonus += objects[o->otyp].oc_magic_cancellation;
 			else
-				item_mc_bonus += max(0, objects[o->otyp].oc_magic_cancellation - greatest_erosion(o) / 2);
+				item_mc_bonus += max(0, objects[o->otyp].oc_magic_cancellation - greatest_erosion(o) / 3);
 
 			if (o->oclass == ARMOR_CLASS || o->oclass == MISCELLANEOUS_CLASS || (objects[o->otyp].oc_flags & O1_IS_ARMOR_WHEN_WIELDED) || (objects[o->otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
-				item_mc_bonus += o->enchantment / 2;
+				item_mc_bonus += o->enchantment / 3;
 		}
 
 		if ((worn || (!worn && (objects[otyp].oc_pflags & P1_ATTRIBUTE_BONUS_APPLIES_WHEN_CARRIED)))

@@ -1338,15 +1338,21 @@ int pm;
 		int percent = 1;
 
 		if (ptr->mlet == S_NYMPH)
-			percent = 10;
+			percent = 30;
         else if (ptr->mlet == S_GIANT)
+            percent = 50;
+        else if (ptr->mlet == S_OGRE)
+            percent = 30;
+        else if (ptr->mlet == S_SNAKE)
+            percent = 10;
+        else if (ptr->mlet == S_YETI)
             percent = 25;
         else if (ptr == &mons[PM_FLOATING_EYE])
 			percent = 100;
         else if (is_mind_flayer(ptr))
-            percent = (ptr == &mons[PM_MASTER_MIND_FLAYER] ? 15 : 10);
-        else /* chance is 10% for most of the time, and a bit less at early levels */
-			percent = min(10, max(1, mdifficulty / 2 - 1));
+            percent = 30;
+        else /* chance is 15% for most of the time, and a bit less at early levels */
+			percent = min(30, max(1, mdifficulty));
 
         if (conveys_STR && rn2(100) < percent) 
         {
@@ -1421,19 +1427,32 @@ int pm;
 
 		/* if something was chosen, give it now (givit() might fail) */
         if (tmp == -1)
-            gainstr((struct obj *) 0, 0, TRUE);
-		else if (tmp == -2)
-			(void)adjattrib(A_DEX, 1, -1);
-		else if (tmp == -3)
-			(void)adjattrib(A_CON, 1, -1);
-		else if (tmp == -4)
-			(void)adjattrib(A_INT, 1, -1);
-		else if (tmp == -5)
-			(void)adjattrib(A_WIS, 1, -1);
-		else if (tmp == -6)
-			(void)adjattrib(A_CHA, 1, -1);
-		else if (tmp > 0)
+            gainstr((struct obj*)0, 0, TRUE);
+        else if (tmp == -2)
+            (void)adjattrib(A_DEX, 1, -1);
+        else if (tmp == -3)
+            (void)adjattrib(A_CON, 1, -1);
+        else if (tmp == -4)
+            (void)adjattrib(A_INT, 1, -1);
+        else if (tmp == -5)
+            (void)adjattrib(A_WIS, 1, -1);
+        else if (tmp == -6)
+            (void)adjattrib(A_CHA, 1, -1);
+        else if (tmp > 0)
             givit(tmp, ptr);
+        else if (conveys_STR && !rn2(3))
+            You_feel("momentarily pumped up, but then the feeling passes.");
+        else if (conveys_DEX && !rn2(3))
+            You_feel("more flexible for a moment, but then the feeling passes.");
+        else if (conveys_CON && !rn2(3))
+            You_feel("your stamina is momentarily increased, but then the feeling passes.");
+        else if (conveys_INT && !rn2(3))
+            pline("That made your brain work a bit faster for a moment.");
+        else if (conveys_WIS && !rn2(3))
+            You_feel("that flavor gave you more perspective on the world for a moment.");
+        else if (conveys_CHA && !rn2(3))
+            You_feel("that had beneficial effect on your skin.");
+
     } /* check_intrinsics */
 
     if (catch_lycanthropy >= LOW_PM && !Lycanthropy_resistance) {

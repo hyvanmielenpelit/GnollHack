@@ -427,6 +427,9 @@ struct symdef_cmap {
     short broken_animation[CMAP_TYPE_MAX];
     short broken_enlargement[CMAP_TYPE_MAX];
     short broken_replacement[CMAP_TYPE_MAX];
+
+    boolean included_in_cmap[CMAP_TYPE_MAX];
+    uchar base_cmap[CMAP_TYPE_MAX];
 };
 
 
@@ -447,6 +450,9 @@ struct symdef_cmap_variation {
     short broken_animation[CMAP_TYPE_MAX];
     short broken_enlargement[CMAP_TYPE_MAX];
     short broken_replacement[CMAP_TYPE_MAX];
+
+    boolean included_in_cmap[CMAP_TYPE_MAX];
+    uchar base_cmap[CMAP_TYPE_MAX];
 };
 
 /* Variation definitions */

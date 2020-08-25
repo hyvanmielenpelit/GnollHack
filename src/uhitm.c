@@ -908,7 +908,7 @@ boolean* obj_destroyed;
     boolean result, anger_guards;
 
     anger_guards = (is_peaceful(mon)
-                    && (mon->ispriest || mon->isshk || is_watch(mon->data)));
+                    && (mon->ispriest || mon->isshk || mon->issmith || mon->isnpc || is_watch(mon->data)));
     result = hmon_hitmon(mon, obj, thrown, dieroll, obj_destroyed);
     if (mon->ispriest && !rn2(2))
         ghod_hitsu(mon);

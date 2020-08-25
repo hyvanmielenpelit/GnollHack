@@ -27,7 +27,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "geologist",
         "workshop",
         6, 0,
-        8, 1000, 7000,
+        10, 1000, 15000,
         NPC_SERVICE_BUY_GEMS_AND_STONES | NPC_SERVICE_IDENTIFY_GEMS_AND_STONES,
         NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON | NPC_FLAGS_DOUBLE_MONEY_IN_HELL
     },
