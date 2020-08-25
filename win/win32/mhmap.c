@@ -25,7 +25,7 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((MAX_POSITIONS_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1)
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1)
 
 
 /* draw order definition */
@@ -936,7 +936,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     else
         data->draw_order[0].draw_to_buffer = 0;
 
-    struct draw_order_definition* draw_order = data->draw_order; // [(MAX_POSITIONS_PER_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
+    struct draw_order_definition* draw_order = data->draw_order; // [(NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1] = { 0 };
 
     /* Create DIB Section for piling up, darkening, and otherwise manipulating individual tiles */
     HDC hDCcopy = CreateCompatibleDC(data->backBufferDC);
@@ -965,7 +965,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     for (int draw_index = 0; draw_index < DRAW_ORDER_SIZE; draw_index++)
     {
-        //int z_order_array[MAX_POSITIONS_PER_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
+        //int z_order_array[NUM_POSITIONS_IN_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
         //for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
         //{
         boolean skip_darkening = FALSE;
@@ -1222,20 +1222,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         && anim_frame_idx < enlargements[tile2enlargement[ntile]].number_of_animation_frames
                                         )
                                     {
-                                        addedindex = anim_frame_idx * enlargements[tile2enlargement[ntile]].number_of_positions;
+                                        addedindex = anim_frame_idx * enlargements[tile2enlargement[ntile]].number_of_enlargement_tiles;
                                     }
                                     else if (main_tile_idx == 0
                                         && anim_frame_idx > 0
                                         && anim_frame_idx <= enlargements[tile2enlargement[ntile]].number_of_animation_frames)
                                     {
-                                        addedindex = (anim_frame_idx - 1) * enlargements[tile2enlargement[ntile]].number_of_positions;
+                                        addedindex = (anim_frame_idx - 1) * enlargements[tile2enlargement[ntile]].number_of_enlargement_tiles;
                                     }
                                     else if (main_tile_idx == enlargements[tile2enlargement[ntile]].number_of_animation_frames
                                         && anim_frame_idx >= 0
                                         && anim_frame_idx < enlargements[tile2enlargement[ntile]].number_of_animation_frames
                                         )
                                     {
-                                        addedindex = anim_frame_idx * enlargements[tile2enlargement[ntile]].number_of_positions;
+                                        addedindex = anim_frame_idx * enlargements[tile2enlargement[ntile]].number_of_enlargement_tiles;
                                     }
                                 }
                                 int enl_glyph = enl_tile_idx + addedindex + enlargements[tile2enlargement[ntile]].glyph_offset + GLYPH_ENLARGEMENT_OFF;
@@ -1749,7 +1749,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 {
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
-                    if (enlargement_idx > 0 && enlargements[enlargement_idx].number_of_positions > 3)
+                    if (enlargement_idx > 0 && enlargements[enlargement_idx].number_of_enlargement_tiles > 3)
                     {
                         int mglyph = MAIN_TILE_MARK + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
@@ -2554,7 +2554,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
             {
                 int enl_x = -1;
                 int enl_y = -1;
-                for (int i = 0; i < MAX_POSITIONS_PER_ENLARGEMENT; i++)
+                for (int i = 0; i < NUM_POSITIONS_IN_ENLARGEMENT; i++)
                 {
                     if (enlargements[enlarg].position2tile[i] == -1)
                         continue;

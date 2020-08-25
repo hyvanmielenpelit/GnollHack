@@ -1240,7 +1240,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         tileDC, t_x, t_y, TILE_X, TILE_Y, SRCCOPY);
 
                 /* Enlargement tiles */
-                for (int idx = 0; idx < MAX_POSITIONS_PER_ENLARGEMENT; idx++)
+                for (int idx = 0; idx < NUM_POSITIONS_IN_ENLARGEMENT; idx++)
                 {
                     if (enl_height == 1 && idx < 3)
                         continue;
