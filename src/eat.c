@@ -1351,7 +1351,7 @@ int pm;
 			percent = 100;
         else if (is_mind_flayer(ptr))
             percent = 30;
-        else /* chance is 15% for most of the time, and a bit less at early levels */
+        else
 			percent = min(30, max(1, mdifficulty));
 
         if (conveys_STR && rn2(100) < percent) 
