@@ -788,23 +788,23 @@ uchar* tilemapflags;
         int base_variation_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
         int num_cmaps = min(CMAP_TYPE_MAX, max(1, tsd->number_of_cmaps));
 
-        for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
+        for (int tileset_cmap_idx = 0; tileset_cmap_idx < num_cmaps; tileset_cmap_idx++)
         {
             char namebuf[BUFSZ];
-            if (tsd->cmap_names[cmap_idx] && strcmp(tsd->cmap_names[cmap_idx], ""))
-                Sprintf(namebuf, "%s", tsd->cmap_names[cmap_idx]);
+            if (tsd->cmap_names[tileset_cmap_idx] && strcmp(tsd->cmap_names[tileset_cmap_idx], ""))
+                Sprintf(namebuf, "%s", tsd->cmap_names[tileset_cmap_idx]);
             else
-                Sprintf(namebuf, "unnamed-cmap-%d", cmap_idx);
+                Sprintf(namebuf, "unnamed-cmap-%d", tileset_cmap_idx);
 
             for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
             {
-                if (cmap_idx > 0)
+                if (tileset_cmap_idx > 0)
                 {
-                    if (tsd->cmap_limitation_style[cmap_idx] == 1 && !defsyms[i].included_in_cmap[cmap_idx])
+                    if (tsd->cmap_limitation_style[tileset_cmap_idx] == 1 && !defsyms[i].included_in_default_tileset_cmap[tileset_cmap_idx])
                         continue;
-                    if (tsd->cmap_limitation_style[cmap_idx] == 2 && (i < S_vwall || i > S_trwall))
+                    if (tsd->cmap_limitation_style[tileset_cmap_idx] == 2 && (i < S_vwall || i > S_trwall))
                         continue;
-                    if (tsd->cmap_limitation_style[cmap_idx] == 3 && (i < S_stone || i > S_dnladder))
+                    if (tsd->cmap_limitation_style[tileset_cmap_idx] == 3 && (i < S_stone || i > S_dnladder))
                         continue;
                 }
 
@@ -815,7 +815,7 @@ uchar* tilemapflags;
                 {
                     Sprintf(buf, "%s,%s,%s,%s", tile_section_name, namebuf, get_cmap_tilename(i),
                         (defsyms[i].explanation && strcmp(defsyms[i].explanation, "")) ? defsyms[i].explanation : "no description");
-                    int enl_idx = (spset == 0 ? defsyms[i].enlargement[cmap_idx] : defsyms[i].broken_enlargement[cmap_idx]);
+                    int enl_idx = (spset == 0 ? defsyms[i].enlargement[tileset_cmap_idx] : defsyms[i].broken_enlargement[tileset_cmap_idx]);
                     if (enl_idx > 0)
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl_idx].width_in_tiles, enlargements[enl_idx].height_in_tiles, enlargements[enl_idx].main_tile_x_coordinate);
                     else
@@ -828,8 +828,8 @@ uchar* tilemapflags;
                     /* Go through all internal cmaps */
                     for (int k = 0; k < CMAP_TYPE_MAX; k++)
                     {
-                        /* Write this cmap_idx for all internal CMAPs it is used for */
-                        if (tsd->cmap_mapping[k] == cmap_idx)
+                        /* Write this tileset_cmap_idx for all internal CMAPs it is used for */
+                        if (tsd->cmap_mapping[k] == tileset_cmap_idx)
                         {
                             glyph_offset = base_glyph_offset + k * CMAP_TYPE_CHAR_NUM;
                             tilemaparray[i + glyph_offset] = tile_count;
@@ -841,23 +841,40 @@ uchar* tilemapflags;
                         }
                     }
 
-                    if (/*cmap_idx == 0 &&*/ num_cmaps > cmap_idx + 1)
+                    /*
+
+                        for (int k = 1; k < CMAP_TYPE_MAX; k++)
+                        {
+                            int tileset_cmap_idx2 = tsd->cmap_mapping[k];
+                            if (tileset_cmap_idx2 > 0 && tileset_cmap_idx2 != tileset_cmap_idx)
+                            {
+                                boolean included_in_this_tileset_cmap = defsym_variations[i].included_in_default_tileset_cmap[tileset_cmap_idx2];
+                                int base_tileset_cmap = defsym_variations[i].base_default_tileset_cmap[tileset_cmap_idx2];
+
+                    */
+                    if (num_cmaps > 1)
                     {
                         /* copy an out-limited tiles to all limited cmaps */
-                        for (int k = cmap_idx + 1; k < num_cmaps; k++)
+                        for (int k = 0; k < CMAP_TYPE_MAX; k++)
                         {
-                            if (
-                                (tsd->cmap_limitation_style[k] == 1 && !defsyms[i].included_in_cmap[k] && defsyms[i].base_cmap[k] == cmap_idx)
-                                || (tsd->cmap_limitation_style[k] == 2 && (i < S_vwall || i > S_trwall) && cmap_idx == 0)
-                                || (tsd->cmap_limitation_style[k] == 3 && (i < S_stone || i > S_dnladder) && cmap_idx == 0)
-                                )
+                            int tileset_cmap_idx2 = tsd->cmap_mapping[k];
+                            if (tileset_cmap_idx2 > 0 && tileset_cmap_idx2 != tileset_cmap_idx)
                             {
-                                int glyph_offset2 = base_glyph_offset + k * CMAP_TYPE_CHAR_NUM;
-                                tilemaparray[i + glyph_offset2] = tile_count;
-                                if (i == S_extra_boulder)
+                                boolean included_in_this_tileset_cmap = defsyms[i].included_in_default_tileset_cmap[tileset_cmap_idx2];
+                                int base_tileset_cmap = defsyms[i].base_default_tileset_cmap[tileset_cmap_idx2];
+                                if (
+                                    (tsd->cmap_limitation_style[tileset_cmap_idx2] == 1 && !included_in_this_tileset_cmap && base_tileset_cmap == tileset_cmap_idx)
+                                    || (tsd->cmap_limitation_style[tileset_cmap_idx2] == 2 && (i < S_vwall || i > S_trwall) && tileset_cmap_idx == 0)
+                                    || (tsd->cmap_limitation_style[tileset_cmap_idx2] == 3 && (i < S_stone || i > S_dnladder) && tileset_cmap_idx == 0)
+                                    )
                                 {
-                                    if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
-                                        tilemapflags[i + glyph_offset2] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                                    int glyph_offset2 = base_glyph_offset + k * CMAP_TYPE_CHAR_NUM;
+                                    tilemaparray[i + glyph_offset2] = tile_count;
+                                    if (i == S_extra_boulder)
+                                    {
+                                        if (objects[BOULDER].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                                            tilemapflags[i + glyph_offset2] |= GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                                    }
                                 }
                             }
                         }
@@ -874,23 +891,23 @@ uchar* tilemapflags;
         tile_section_name = (spset == 0 ? "cmap-variation" : "broken-cmap-variation");
         int base_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
         int num_cmaps = (min(CMAP_TYPE_MAX, max(1, tsd->number_of_cmaps)));
-        for (int cmap_idx = 0; cmap_idx < num_cmaps; cmap_idx++)
+        for (int tileset_cmap_idx = 0; tileset_cmap_idx < num_cmaps; tileset_cmap_idx++)
         {
             char namebuf[BUFSZ];
-            if (tsd->cmap_names[cmap_idx] && strcmp(tsd->cmap_names[cmap_idx], ""))
-                Sprintf(namebuf, "%s", tsd->cmap_names[cmap_idx]);
+            if (tsd->cmap_names[tileset_cmap_idx] && strcmp(tsd->cmap_names[tileset_cmap_idx], ""))
+                Sprintf(namebuf, "%s", tsd->cmap_names[tileset_cmap_idx]);
             else
-                Sprintf(namebuf, "unnamed-cmap-%d", cmap_idx);
+                Sprintf(namebuf, "unnamed-cmap-%d", tileset_cmap_idx);
 
             for (int i = 0; i < MAX_VARIATIONS; i++)
             {
-                if (cmap_idx > 0)
+                if (tileset_cmap_idx > 0)
                 {
-                    if (tsd->cmap_limitation_style[cmap_idx] == 1 && !defsym_variations[i].included_in_cmap[cmap_idx])
+                    if (tsd->cmap_limitation_style[tileset_cmap_idx] == 1 && !defsym_variations[i].included_in_default_tileset_cmap[tileset_cmap_idx])
                         continue;
-                    if (tsd->cmap_limitation_style[cmap_idx] == 2 && !is_wall_variation(i))
+                    if (tsd->cmap_limitation_style[tileset_cmap_idx] == 2 && !is_wall_variation(i))
                         continue;
-                    if (tsd->cmap_limitation_style[cmap_idx] == 3 && !is_base_cmap_variation(i))
+                    if (tsd->cmap_limitation_style[tileset_cmap_idx] == 3 && !is_base_cmap_variation(i))
                         continue;
                 }
 
@@ -901,7 +918,7 @@ uchar* tilemapflags;
                 {
                     Sprintf(buf, "%s,%s,%s", tile_section_name, namebuf,
                         (defsym_variations[i].variation_name && strcmp(defsym_variations[i].variation_name, "")) ? defsym_variations[i].variation_name : "no-variation-name");
-                    int enl_idx = (spset == 0 ? defsym_variations[i].enlargement[cmap_idx] : defsym_variations[i].broken_enlargement[cmap_idx]);
+                    int enl_idx = (spset == 0 ? defsym_variations[i].enlargement[tileset_cmap_idx] : defsym_variations[i].broken_enlargement[tileset_cmap_idx]);
                     if (enl_idx > 0)
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl_idx].width_in_tiles, enlargements[enl_idx].height_in_tiles, enlargements[enl_idx].main_tile_x_coordinate);
                     else
@@ -914,27 +931,34 @@ uchar* tilemapflags;
                     /* Go through all internal cmaps */
                     for (int k = 0; k < CMAP_TYPE_MAX; k++)
                     {
-                        /* Write this cmap_idx for all internal CMAPs it is used for */
-                        if (tsd->cmap_mapping[k] == cmap_idx)
+                        /* Write this tileset_cmap_idx for all internal CMAPs it is used for */
+                        if (tsd->cmap_mapping[k] == tileset_cmap_idx)
                         {
                             glyph_offset = base_glyph_offset + k * MAX_VARIATIONS;
                             tilemaparray[i + glyph_offset] = tile_count;
                         }
                     }
 
-                    if (/*cmap_idx == 0 &&*/ num_cmaps > cmap_idx + 1)
+                    if (num_cmaps > 1)
                     {
                         /* copy an out-limited tile to all limited cmaps */
-                        for (int k = cmap_idx + 1; k < num_cmaps; k++)
+                        for (int k = 0; k < CMAP_TYPE_MAX; k++)
                         {
-                            if (
-                                (tsd->cmap_limitation_style[k] == 1 && !defsym_variations[i].included_in_cmap[k] && defsym_variations[i].base_cmap[k] == cmap_idx)
-                                || (tsd->cmap_limitation_style[k] == 2 && !is_wall_variation(i) && cmap_idx == 0)
-                                || (tsd->cmap_limitation_style[k] == 3 && !is_base_cmap_variation(i) && cmap_idx == 0)
-                                )
+                            int tileset_cmap_idx2 = tsd->cmap_mapping[k];
+                            if (tileset_cmap_idx2 > 0 && tileset_cmap_idx2 != tileset_cmap_idx)
                             {
-                                int glyph_offset2 = base_glyph_offset + k * MAX_VARIATIONS;
-                                tilemaparray[i + glyph_offset2] = tile_count;
+                                boolean included_in_this_tileset_cmap = defsym_variations[i].included_in_default_tileset_cmap[tileset_cmap_idx2];
+                                int base_tileset_cmap = defsym_variations[i].base_default_tileset_cmap[tileset_cmap_idx2];
+
+                                if (
+                                    (tsd->cmap_limitation_style[tileset_cmap_idx2] == 1 && !included_in_this_tileset_cmap && base_tileset_cmap == tileset_cmap_idx)
+                                    || (tsd->cmap_limitation_style[tileset_cmap_idx2] == 2 && !is_wall_variation(i) && tileset_cmap_idx == 0)
+                                    || (tsd->cmap_limitation_style[tileset_cmap_idx2] == 3 && !is_base_cmap_variation(i) && tileset_cmap_idx == 0)
+                                    )
+                                {
+                                    int glyph_offset2 = base_glyph_offset + k * MAX_VARIATIONS;
+                                    tilemaparray[i + glyph_offset2] = tile_count;
+                                }
                             }
                         }
                     }

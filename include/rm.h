@@ -428,8 +428,8 @@ struct symdef_cmap {
     short broken_enlargement[CMAP_TYPE_MAX];
     short broken_replacement[CMAP_TYPE_MAX];
 
-    boolean included_in_cmap[CMAP_TYPE_MAX];
-    uchar base_cmap[CMAP_TYPE_MAX];
+    boolean included_in_default_tileset_cmap[CMAP_TYPE_MAX];    /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
+    uchar base_default_tileset_cmap[CMAP_TYPE_MAX];             /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
 };
 
 
@@ -451,8 +451,8 @@ struct symdef_cmap_variation {
     short broken_enlargement[CMAP_TYPE_MAX];
     short broken_replacement[CMAP_TYPE_MAX];
 
-    boolean included_in_cmap[CMAP_TYPE_MAX];
-    uchar base_cmap[CMAP_TYPE_MAX];
+    boolean included_in_default_tileset_cmap[CMAP_TYPE_MAX];    /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
+    uchar base_default_tileset_cmap[CMAP_TYPE_MAX];             /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
 };
 
 /* Variation definitions */
