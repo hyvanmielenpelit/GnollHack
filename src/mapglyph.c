@@ -430,7 +430,7 @@ normal_monster_here:
         {
             boolean ispet = (layers.layer_flags & LFLAGS_M_PET);
             boolean ispeaceful = (layers.layer_flags & LFLAGS_M_PEACEFUL);
-            boolean isdetected = (layers.layer_flags & LFLAGS_M_DETECTED);
+            boolean isdetected = ((layers.layer_flags & LFLAGS_M_DETECTED) || (def_monsyms[(int)mons[offset].mlet].sym == ' ' && (layers.layer_flags & LFLAGS_SHOWING_DETECTION)));
             boolean isridden = (layers.layer_flags & LFLAGS_M_RIDDEN);
             boolean issaddled = (layers.layer_flags & LFLAGS_M_SADDLED);
 
