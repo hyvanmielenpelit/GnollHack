@@ -2844,7 +2844,7 @@ SPELL("detect unseen",   "violet", None, "Enables the caster to see invisible mo
 SPELL("detect treasure",  "gray", None, "The caster senses the location of all objects on the level",
       P_DIVINATION_SPELL,		5,  5,			 0, 3, 20, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, CLR_GRAY, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("identify",         "bronze-plated", None, "Identifies an item",
-      P_DIVINATION_SPELL,		5,  1,			 0, 4, 30, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_COPPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+      P_DIVINATION_SPELL,		5,  1,			 0, 3, 20, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_COPPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("magic mapping",    "dusty", None, "The caster gains the knowledge of the map of the level",
       P_DIVINATION_SPELL,		5,  7,			 0, 6,100, A_MAX_INT_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERAL, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("telepathy",				"unnameable", None, "Grants the caster telepathy",
