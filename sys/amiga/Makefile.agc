@@ -298,7 +298,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)sanctum.lev	$(SLIB)soko1-1.lev	$(SLIB)soko1-2.lev \
 	$(SLIB)soko2-1.lev	$(SLIB)soko2-2.lev	$(SLIB)soko3-1.lev \
 	$(SLIB)soko3-2.lev	$(SLIB)soko4-1.lev	$(SLIB)soko4-2.lev \
-	$(SLIB)tower1.lev	$(SLIB)tower2.lev	$(SLIB)tower3.lev \
+	$(SLIB)tower1.lev	$(SLIB)tower2.lev	$(SLIB)tower3.lev	$(SLIB)treasure1.lev \
 	$(SLIB)valley.lev	$(SLIB)water.lev	$(SLIB)wizard1.lev \
 	$(SLIB)wizard2.lev	$(SLIB)wizard3.lev  $(SLIB)yeenoghu.lev \
 	$(SLIB)tarrasque.lev $(SLIB)mainfill.lev $(SLIB)hellfill.lev \
@@ -786,6 +786,10 @@ $(SLIB)bigrm-1.lev: $(DAT)bigroom.des $(SBIN)lev_comp
 BOVINE1= $(SLIB)bovine1.lev
 
 $(SLIB)bovine1.lev:	$(DAT)bovine.des $(SBIN)lev_comp
+
+MAIN1= $(SLIB)treasure1.lev
+
+$(SLIB)treasure1.lev:	$(DAT)main.des $(SBIN)lev_comp
 
 
 $(SLIB)castle.lev:  $(DAT)castle.des $(SBIN)lev_comp

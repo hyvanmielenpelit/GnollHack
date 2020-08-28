@@ -256,7 +256,7 @@ char **argv;
         ":dat:Priest.des",  ":dat:Ranger.des",   ":dat:Rogue.des",
         ":dat:Samurai.des", ":dat:Tourist.des",  ":dat:Valkyrie.des",
         ":dat:Wizard.des",  ":dat:bigroom.des",  ":dat:bovine.des",  ":dat:castle.des",
-        ":dat:endgame.des", ":dat:gehennom.des", ":dat:knox.des",
+        ":dat:endgame.des", ":dat:gehennom.des", ":dat:knox.des",    ":dat:main.des",
         ":dat:medusa.des",  ":dat:modron.des",  ":dat:mines.des",    ":dat:oracle.des",
         ":dat:sokoban.des", ":dat:tower.des",    ":dat:yendor.des",
 		":dat:modron.des",  ":dat:bovine.des"

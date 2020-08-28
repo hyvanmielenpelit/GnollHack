@@ -520,7 +520,7 @@ SPEC_LEVS = \
  juiblex.lev  knox.lev     medusa-1.lev medusa-2.lev minend-1.lev minend-2.lev \
  minend-3.lev minefill.lev minetn-1.lev minetn-2.lev minetn-3.lev minetn-4.lev \
  minetn-5.lev minetn-6.lev minetn-7.lev modron1.lev oracle.lev   orcus.lev    sanctum.lev \
- tarrasque.lev tower1.lev   tower2.lev   tower3.lev valley.lev   wizard1.lev  wizard2.lev \
+ tarrasque.lev tower1.lev   tower2.lev   tower3.lev treasure1.lev valley.lev   wizard1.lev  wizard2.lev \
  wizard3.lev  yeenoghu.lev mainfill.lev hellfill.lev astral.lev   air.lev earth.lev    fire.lev     water.lev \
  soko1-1.lev  soko1-2.lev  soko2-1.lev  soko2-2.lev  \
  soko3-1.lev  soko3-2.lev  soko4-1.lev  soko4-2.lev
@@ -1344,6 +1344,11 @@ $(GAMEDIR)\bovine1.lev : $(DAT)\bovine.des $(TEMP)\lev_comp.exe
 	$(TEMP)\lev_comp $(DAT)\bovine.des
 	$(CP) bovine?.lev $(GAMEDIR)
 	$(RM) bovine?.lev
+
+$(GAMEDIR)\treasure1.lev : $(DAT)\main.des $(TEMP)\lev_comp.exe
+	$(TEMP)\lev_comp $(DAT)\main.des
+	$(CP) treasure?.lev $(GAMEDIR)
+	$(RM) treasure?.lev
 
 $(GAMEDIR)\medusa-1.lev : $(DAT)\medusa.des $(TEMP)\lev_comp.exe
 	$(TEMP)\lev_comp $(DAT)\medusa.des

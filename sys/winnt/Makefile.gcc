@@ -764,7 +764,7 @@ recover: $(U)recover.exe
 	$(subst /,\,if exist $(DOC)/recover.txt copy $(DOC)/recover.txt $(GAMEDIR)/recover.txt)
 
 sp_lev.tag: utility.tag $(DAT)/bigroom.des  $(DAT)/bovine.des  $(DAT)/castle.des \
-	 $(DAT)/endgame.des $(DAT)/gehennom.des $(DAT)/knox.des   \
+	 $(DAT)/endgame.des $(DAT)/gehennom.des $(DAT)/knox.des   $(DAT)/main.des \
 	 $(DAT)/medusa.des  $(DAT)/modron.des  $(DAT)/oracle.des   $(DAT)/tower.des  \
 	 $(DAT)/yendor.des  $(DAT)/arch.des     $(DAT)/barb.des   \
 	 $(DAT)/caveman.des $(DAT)/healer.des   $(DAT)/knight.des \
@@ -777,6 +777,7 @@ sp_lev.tag: utility.tag $(DAT)/bigroom.des  $(DAT)/bovine.des  $(DAT)/castle.des
 	$(subst /,\,$(U)levcomp $(DAT)/endgame.des)
 	$(subst /,\,$(U)levcomp $(DAT)/gehennom.des)
 	$(subst /,\,$(U)levcomp $(DAT)/knox.des)
+	$(subst /,\,$(U)levcomp $(DAT)/main.des)
 	$(subst /,\,$(U)levcomp $(DAT)/mines.des)
 	$(subst /,\,$(U)levcomp $(DAT)/medusa.des)
 	$(subst /,\,$(U)levcomp $(DAT)/modron.des)

@@ -4310,10 +4310,13 @@ register struct monst *mtmp;
         || (sensemon(mtmp) && distu(mtmp->mx, mtmp->my) <= 2))
         return FALSE;
 
-    if (is_mimic(mtmp->data)) {
+    if (is_mimic(mtmp->data)) 
+    {
         set_mimic_sym(mtmp);
         return TRUE;
-    } else if (levl[mtmp->mx][mtmp->my].typ == ROOM) {
+    }
+    else if (levl[mtmp->mx][mtmp->my].typ == ROOM || levl[mtmp->mx][mtmp->my].typ == GRASS || levl[mtmp->mx][mtmp->my].typ == GROUND)
+    {
         mtmp->mundetected = 1;
         return TRUE;
     }

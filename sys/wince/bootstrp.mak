@@ -238,7 +238,7 @@ all :	$(INCL)\date.h	$(INCL)\onames.h $(INCL)\pm.h \
 	@echo Done!
 
 $(O)sp_lev.tag:  $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\castle.des \
-	$(DAT)\endgame.des $(DAT)\gehennom.des $(DAT)\knox.des   \
+	$(DAT)\endgame.des $(DAT)\gehennom.des $(DAT)\knox.des  $(DAT)\main.des \
 	$(DAT)\medusa.des  $(DAT)\modron.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
 	$(DAT)\caveman.des $(DAT)\healer.des   $(DAT)\knight.des \
@@ -252,6 +252,7 @@ $(O)sp_lev.tag:  $(DAT)\bigroom.des  $(DAT)\bovine.des  $(DAT)\castle.des \
 	$(U)lev_comp endgame.des
 	$(U)lev_comp gehennom.des
 	$(U)lev_comp knox.des
+	$(U)lev_comp main.des
 	$(U)lev_comp mines.des
 	$(U)lev_comp medusa.des
 	$(U)lev_comp modron.des

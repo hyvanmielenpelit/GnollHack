@@ -1232,6 +1232,7 @@
 				"$(NH_DAT_DIR)/castle.des",
 				"$(NH_DAT_DIR)/endgame.des",
 				"$(NH_DAT_DIR)/knox.des",
+				"$(NH_DAT_DIR)/main.des",
 				"$(NH_DAT_DIR)/medusa.des",
 				"$(NH_DAT_DIR)/mines.des",
 				"$(NH_DAT_DIR)/modron.des",
@@ -1248,7 +1249,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${NH_DAT_DIR}\n${NH_UTIL_DIR}/lev_comp bigroom.des\n${NH_UTIL_DIR}/lev_comp bovine.des\n${NH_UTIL_DIR}/lev_comp castle.des\n${NH_UTIL_DIR}/lev_comp endgame.des\n${NH_UTIL_DIR}/lev_comp gehennom.des\n${NH_UTIL_DIR}/lev_comp knox.des\n${NH_UTIL_DIR}/lev_comp medusa.des\n${NH_UTIL_DIR}/lev_comp mines.des\n${NH_UTIL_DIR}/lev_comp modron.des\n${NH_UTIL_DIR}/lev_comp oracle.des\n${NH_UTIL_DIR}/lev_comp sokoban.des\n${NH_UTIL_DIR}/lev_comp tower.des\n${NH_UTIL_DIR}/lev_comp yendor.des\ntouch spec_levs\n";
+			shellScript = "cd ${NH_DAT_DIR}\n${NH_UTIL_DIR}/lev_comp bigroom.des\n${NH_UTIL_DIR}/lev_comp bovine.des\n${NH_UTIL_DIR}/lev_comp castle.des\n${NH_UTIL_DIR}/lev_comp endgame.des\n${NH_UTIL_DIR}/lev_comp gehennom.des\n${NH_UTIL_DIR}/lev_comp knox.des\n${NH_UTIL_DIR}/lev_comp main.des\n${NH_UTIL_DIR}/lev_comp medusa.des\n${NH_UTIL_DIR}/lev_comp mines.des\n${NH_UTIL_DIR}/lev_comp modron.des\n${NH_UTIL_DIR}/lev_comp oracle.des\n${NH_UTIL_DIR}/lev_comp sokoban.des\n${NH_UTIL_DIR}/lev_comp tower.des\n${NH_UTIL_DIR}/lev_comp yendor.des\ntouch spec_levs\n";
 		};
 		317E7C4B21A35F0500F6E4E5 /* Copy makedefs */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1526,6 +1527,7 @@
 				"$(NH_DAT_DIR)/bigrm-9.lev",
 				"$(NH_DAT_DIR)/bogusmon",
 				"$(NH_DAT_DIR)/bovine1.lev",
+				"$(NH_DAT_DIR)/treasure1.lev",
 				"$(NH_DAT_DIR)/castle.lev",
 				"$(NH_DAT_DIR)/cmdhelp",
 				"$(NH_DAT_DIR)/data",

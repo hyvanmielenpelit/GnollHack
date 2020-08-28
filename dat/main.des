@@ -1,0 +1,162 @@
+# GnollHack 4.0	main.des	$NHDT-Date: 1432512783 2015/05/25 00:13:03 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $
+#	Copyright (c) 2020 by Janne Gustafsson
+# GnollHack may be freely redistributed.  See license for details.
+#
+
+#	The "fill" level for the main dungeon.
+#
+#	This level is used to fill out any levels not occupied by
+#	specific levels as defined below.
+#
+MAZE: "mainfill" , ' '
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
+NOMAP
+#
+STAIR: random, up
+STAIR: random, down
+#
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: '*', random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+OBJECT: random, random
+LOOP [1 + 1d2] {
+    IF [50%] {
+        IF [66%] {
+          IF [50%] {
+            OBJECT: ('%', "champignon"), random
+          } ELSE {
+            OBJECT: ('%', "chanterelle"), random
+          }
+        } ELSE {
+          IF [50%] {
+            OBJECT: ('%', "mana mushroom"), random
+          } ELSE {
+            OBJECT: ('%', "healing mushroom"), random
+          }
+        }
+    } ELSE {
+        IF [33%] {
+          IF [50%] {
+            OBJECT: ('%', "fly agaric"), random
+          } ELSE {
+            OBJECT: ('%', "panther cap"), random
+          }
+        } ELSE {
+          IF [40%] {
+            OBJECT: ('%', "death cap"), random
+          } ELSE {
+            OBJECT: ('%', "magic mushroom"), random
+          }
+        }
+      }
+    }
+
+[15%]: OBJECT: ('%', "penny bun"), random
+[10%]: OBJECT: ('%', "penny bun"), random
+
+#
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+MONSTER: random, random
+
+#
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+TRAP: random, random
+
+
+#
+# Treasure island guarded by a roper.
+#
+LEVEL: "treasure1"
+GEOMETRY:center,center
+MAP
+      ---S---     
+   ----.....----    
+  --...........-- 
+ --.....}}}.....-- 
+--....}}}}}}}....--
+|....}}}},}}}}....|
+|...}}},,,,,}}}...|
+|..}}},,,,,,,}}}..|
+S..}},,,,,,,,,}}..S
+|..}}},,,,,,,}}}..|
+|...}}},,,,,}}}...|
+|....}}}},}}}}....|
+--....}}}}}}}....--
+ --.....}}}.....-- 
+  --...........-- 
+   ----.....----    
+      ---S---     
+ENDMAP
+
+REGION:(00,00,18,16),lit,"ordinary"
+CONTAINER:('(',"chest"),buried,(09,08) {
+  OBJECT:('$',"gold piece"),quantity:1000
+  [50%]:OBJECT:'*'
+  [50%]:OBJECT:'*'
+  [50%]:OBJECT:'*'
+  IF [50%] {
+    OBJECT:(')',"sword of sharpness")
+  } ELSE {
+    OBJECT:(')',"sword of life stealing")
+  }
+  OBJECT:(')',"sword of sharpness")
+  [50%]:OBJECT:(')',"glass sword")
+  OBJECT:('[',"mithril full plate mail")
+}
+ENGRAVING: (09,08), engrave, "X"
+MONSTER: ('#', "roper"), (09,08), hostile, asleep
+MONSTER: ('F', "shrieker"), (05,08), hostile
+MONSTER: ('F', "shrieker"), (13,08), hostile
+MONSTER: ('F', "shrieker"), (09,05), hostile
+MONSTER: ('F', "shrieker"), (09,11), hostile
+MONSTER: ('j', "ochre jelly"), (10,08), hostile
+MONSTER: random, random
+MONSTER: random, random
+
+ROOM: "ordinary", random, random, random, random {
+  TRAP: random, random
+  STAIR: random, up
+}
+
+ROOM: "ordinary", random, random, random, random {
+  TRAP: random, random
+  STAIR: random, down
+}
+
+ROOM: "ordinary", random, random, random, random {
+  TRAP: random, random
+  MONSTER: random, random
+  OBJECT: random, random
+}
+
+ROOM: "ordinary", random, random, random, random {
+  TRAP: random, random
+  MONSTER: random, random
+  OBJECT: random, random
+}
+
+ROOM: "ordinary", random, random, random, random {
+  TRAP: random, random
+  MONSTER: random, random
+  OBJECT: random, random
+}
+
+RANDOM_CORRIDORS

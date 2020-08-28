@@ -42,7 +42,7 @@ $	spec_files = "AIR.LEV,DISPATER.LEV,ASTRAL.LEV,BAALZ.LEV,BIGRM-%.LEV," -
 		   + "SANCTUM.LEV,SOKO%-%.LEV,TOWER%.LEV,VALLEY.LEV," -
 		   + "WATER.LEV,WIZARD%.LEV,YEENOGHU.LEV"
 $	spec_input = "bigroom.des bovine.des castle.des endgame.des " -
-		   + "gehennom.des knox.des medusa.des mines.des modron.des " -
+		   + "gehennom.des knox.des main.des medusa.des mines.des modron.des " -
 		   + "oracle.des sokoban.des tower.des yendor.des"
 $	qstl_files = "%%%-GOAL.LEV,%%%-FIL%.LEV,%%%-LOCA.LEV,%%%-STRT.LEV"
 $	qstl_input = "Arch.des Barb.des Caveman.des Healer.des " -
