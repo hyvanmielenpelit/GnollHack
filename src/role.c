@@ -2754,6 +2754,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_FIRE:
         break;
     case ACTION_TILE_CAST:
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return TRUE;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;
