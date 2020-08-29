@@ -803,88 +803,88 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-down",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-down-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-down-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-down-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-down-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-up-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-up-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + 1 * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_vwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
+        S_hwall + 1 * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
     }, 
 };
 

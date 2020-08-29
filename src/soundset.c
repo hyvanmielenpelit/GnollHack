@@ -2186,6 +2186,10 @@ enum climbing_types climbingid;
 {
 	if (!mtmp)
 		return;
+
+    if (Deaf)
+        return;
+
 	boolean isyou = (mtmp == &youmonst);
     boolean isfemale = isyou ? (Upolyd ? u.mfemale : flags.female) : mtmp->female;
 
@@ -2388,6 +2392,9 @@ enum object_sound_types sound_type;
     if (!obj)
         return;
 
+    if (Deaf)
+        return;
+
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
     struct ghsound_immediate_info immediateinfo = { 0 };
@@ -2436,6 +2443,9 @@ enum object_sound_types sound_type;
     if (!obj || !isok(obj->ox, obj->oy))
         return;
 
+    if (Deaf)
+        return;
+
     struct ghsound_immediate_info immediateinfo = { 0 };
     enum floor_surface_types floorid = get_floor_surface_type(obj->ox, obj->oy);
     float weight = (float)obj->owt;
@@ -2480,6 +2490,9 @@ struct obj* obj;
 struct obj* container;
 {
     if (!obj || !container)
+        return;
+
+    if (Deaf)
         return;
 
     enum object_sound_types sound_type = OBJECT_SOUND_TYPE_DROP;
@@ -2529,6 +2542,9 @@ enum location_sound_types sound_type;
     if (!isok(x, y))
         return;
 
+    if (Deaf)
+        return;
+
     enum location_soundset_types lss = location_type_definitions[levl[x][y].typ].soundset;
     soundid = location_soundsets[lss].sounds[sound_type].ghsound;
     volume = location_soundsets[lss].sounds[sound_type].volume;
@@ -2560,6 +2576,9 @@ play_simple_player_sound(sound_type)
 enum monster_sound_types sound_type;
 {
     /* Do not use for hit sounds */
+
+    if (Deaf)
+        return;
 
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
@@ -2600,6 +2619,9 @@ enum monster_sound_types sound_type;
     boolean isyou = (mon == &youmonst);
 
     if (!mon)
+        return;
+
+    if (Deaf)
         return;
 
     enum ghsound_types soundid = GHSOUND_NONE;
@@ -2652,6 +2674,9 @@ enum object_sound_types sound_type;
     /* Do not use for hit sounds */
 
     if (!magr)
+        return;
+
+    if (Deaf)
         return;
 
     enum ghsound_types soundid = GHSOUND_NONE;
@@ -2867,6 +2892,9 @@ enum hmon_atkmode_types thrown;
     if (!magr || !surface_source_ptr)
         return;
 
+    if (Deaf)
+        return;
+
     boolean you_attack = (magr == &youmonst);
     boolean isfemale = you_attack ? (Upolyd ? u.mfemale : flags.female) : magr->female;
 
@@ -2940,6 +2968,9 @@ enum hmon_atkmode_types thrown;
     if (!surface_source_ptr || !obj)
         return;
 
+    if (Deaf)
+        return;
+
     struct monst* mdef = 0;
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
@@ -2997,6 +3028,9 @@ void
 play_sfx_sound(sfx_sound_id)
 enum sfx_sound_types sfx_sound_id;
 {
+    if (Deaf)
+        return;
+
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
 
@@ -3041,6 +3075,9 @@ int x, y;
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
         return;
 
+    if (Deaf)
+        return;
+
     enum ghsound_types soundid = GHSOUND_NONE;
     float volume = 1.0f;
 
@@ -3064,6 +3101,10 @@ int x, y;
 {
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
         return;
+
+    if (Deaf)
+        return;
+
     enum object_ray_soundset_types typ = ray_soundset_id;
     if (ray_soundsets[typ].sounds[ray_sound_type].ghsound == GHSOUND_NONE)
         return;
