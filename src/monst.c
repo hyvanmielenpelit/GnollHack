@@ -4136,12 +4136,12 @@ struct permonst _mons2[] = {
 		37, DRAGON_SILVER, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 
 	/*
-	* treants
+	* treants, ropers, and reapers
 	*/
     MON("treant", None, "slow-moving wise tree-like being", None, None, S_TREANT, LVL(9, 6, 0, 12, 50, 0), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 2, 8, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1400, 600, MS_SILENT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR18(00), 9, 18, 12, 18, 16),
+        SIZ(1400, 600, MS_SILENT, MZ_LARGE, 1, 0, MAT_WOOD), STATS(STR18(00), 9, 18, 12, 18, 16),
         MR_FIRE_VULNERABLITY,
         MR2_NONE, MC_WISDOM,
 		M1_THICK_HIDE,
@@ -4153,19 +4153,19 @@ struct permonst _mons2[] = {
         S_TREANT, LVL(12, 9, 0, 20, 80, -8), (G_GENO | 1),
         A(ATTK(AT_BITE, AD_PHYS, 5, 4, 0, 0), ATTK(AT_TENT, AD_DRST, 1, 4, 0, 0), ATTK(AT_TENT, AD_DRST, 1, 4, 0, 0),
             ATTK(AT_HUGS, AD_PHYS, 2, 4, 0, 0), ATTK(AT_TENT, AD_DRST, 1, 4, 0, 0), ATTK(AT_TENT, AD_DRST, 1, 4, 0, 0), 
-            ATTK(AT_HUGS, AD_PHYS, 2, 4, 0, 0), ATTK(AT_MAGC, AD_SPEL, 6, 6, 0, 0)),
-        SIZ(1200, 500, MS_SILENT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR18(00), 15, 17, 15, 14, 4),
+            ATTK(AT_HUGS, AD_PHYS, 2, 4, 0, 0), NO_ATTK),
+        SIZ(1200, 500, MS_SILENT, MZ_LARGE, 1, 0, MAT_WOOD), STATS(STR18(00), 15, 17, 15, 14, 4),
 		MR_ELEC | MR_FIRE_VULNERABLITY,
         MR2_COLD_RESISTANCE, MC_POISONOUS_CORPSE,
 		M1_THICK_HIDE | M1_HIDE | M1_ANIMAL | M1_NONECK | M1_CARNIVORE,
         M2_HOSTILE | M2_STALK,
         M3_INFRAVISION | M3_WAITFORU,
         M4_VEGAN_FOOD | M4_WOODEN, M5_NONE,
-        19, CLR_YELLOW, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
+        18, CLR_YELLOW, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
     MON("elder treant", None, "powerful slow-moving wise tree-like being with reflecting bark", None, None, S_TREANT, LVL(18, 6, -8, 20, 90, 0), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 3, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 3, 8, 0, 0), ATTK(AT_HUGS, AD_PHYS, 4, 8, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(1400, 600, MS_SILENT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR19(23), 9, 24, 14, 24, 20),
+        SIZ(1400, 600, MS_SILENT, MZ_LARGE, 1, 0, MAT_WOOD), STATS(STR19(23), 9, 24, 14, 24, 20),
 		MR_REFLECTING | MR_FIRE_VULNERABLITY,
         MR2_NONE, MC_WISDOM,
         M1_THICK_HIDE, 
@@ -4173,6 +4173,18 @@ struct permonst _mons2[] = {
 		M3_INFRAVISION, 
 		M4_VEGAN_FOOD | M4_WOODEN, M5_NONE,
         21, HI_LORD, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
+    MON("reaper", None, "malevolent magical tree-like creature that can cast spells", None, None, 
+        S_TREANT, LVL(20, 9, -4, 20, 80, -12), (G_GENO | 1),
+        A(ATTK(AT_BITE, AD_PHYS, 5, 6, 0, 0), ATTK(AT_TENT, AD_PHYS, 3, 6, 0, 0), ATTK(AT_TENT, AD_PHYS, 3, 6, 0, 0),
+            ATTK(AT_HUGS, AD_PHYS, 4, 6, 0, 0), ATTK(AT_MAGC, AD_SPEL, 8, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK),
+        SIZ(1300, 550, MS_SILENT, MZ_LARGE, 1, 0, MAT_WOOD), STATS(STR19(19), 16, 19, 19, 15, 5),
+		MR_FIRE_VULNERABLITY,
+        MR2_NONE, MC_NONE,
+		M1_THICK_HIDE | M1_ANIMAL | M1_NONECK | M1_CARNIVORE,
+        M2_HOSTILE | M2_STALK,
+        M3_INFRAVISION,
+        M4_VEGAN_FOOD | M4_WOODEN, M5_NONE,
+        24, CLR_BROWN, MONSTER_SOUNDSET_GENERAL, MONSTER_SOUNDSET_GENERAL),
 
 
     /*
