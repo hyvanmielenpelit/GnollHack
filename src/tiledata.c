@@ -20,10 +20,10 @@ NEARDATA struct tileset_definition default_tileset_definition =
     {TRUE, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, 1, 2,
     2,
     2,
-    1,
-    {"dungeon-normal", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    5,
+    {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
+    {0, 1, 2, 0, 4, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0},
+    {0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     0, 0, 3
 };
 

@@ -108,12 +108,13 @@ ENDMAP
 
 REGION:(00,00,18,16),lit,"ordinary"
 CONTAINER:('(',"chest"),buried,(09,08) {
-  OBJECT:('$',"gold piece"),quantity:1000
+  OBJECT:('$',"gold piece"),quantity:3000
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
   OBJECT:class_treasure_weapon
   OBJECT:class_treasure_armor
+  OBJECT:('/',"cold")
   [50%]:OBJECT:(')',"glass sword")
 }
 ENGRAVING: (09,08), engrave, "X"
