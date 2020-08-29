@@ -112,14 +112,9 @@ CONTAINER:('(',"chest"),buried,(09,08) {
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
-  IF [50%] {
-    OBJECT:(')',"sword of sharpness")
-  } ELSE {
-    OBJECT:(')',"sword of life stealing")
-  }
-  OBJECT:(')',"sword of sharpness")
+  OBJECT:class_treasure_weapon
+  OBJECT:class_treasure_armor
   [50%]:OBJECT:(')',"glass sword")
-  OBJECT:('[',"mithril full plate mail")
 }
 ENGRAVING: (09,08), engrave, "X"
 MONSTER: ('#', "roper"), (09,08), hostile, asleep

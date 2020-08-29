@@ -513,6 +513,12 @@ struct lc_breakdef {
     int break_depth;
 };
 
+enum object_special_create_types {
+    OBJECT_SPECIAL_CREATE_TYPE_RANDOM = -1,
+    OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_WEAPON = -2,
+    OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_ARMOR = -3
+};
+
 /*
  * Quick! Avert your eyes while you still have a chance!
  */
