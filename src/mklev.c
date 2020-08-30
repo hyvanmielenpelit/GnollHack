@@ -605,11 +605,19 @@ int trap_type;
 						dosdoor(xx, yy, aroom, rn2(5) ? SDOOR : DOOR, 0);
 
 				}
-                else {
+                else
+                {
                     /* inaccessible niches occasionally have iron bars */
-                    if (!rn2(5) && IS_WALL(levl[xx][yy].typ)) {
+                    if (!rn2(3) && IS_WALL(levl[xx][yy].typ)) 
+                    {
                         levl[xx][yy].typ = IRONBARS;
                         /* HWALL .horizontal value retained */
+                        if (levl[xx][yy].horizontal && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
+                        {
+                            levl[xx][yy].floortyp = levl[xx][yy - 1].typ;
+                            levl[xx][yy].floorsubtyp = get_initial_location_subtype(levl[xx][yy].floortyp);
+                        }
+
                         if (rn2(3))
                             (void) mkcorpstat(CORPSE, (struct monst *) 0,
                                               mkclass(S_HUMAN, 0), xx,
