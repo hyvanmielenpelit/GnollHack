@@ -269,6 +269,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Muffled Cracking", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Muffled Crash", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Muffled Splat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Cast", 1.0f },
 };
 
 #undef NoSound

@@ -1747,12 +1747,13 @@ boolean atme;
 	else
 		spellcooldownleft(spell) = 0;
 
-	update_u_action(ACTION_TILE_CAST);
-
 	//Now check if successful
     chance = percent_success(spell);
-    if (confused || (rnd(100) > chance)) {
-        You("fail to cast the spell correctly.");
+    if (confused || (rnd(100) > chance)) 
+	{
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
+		You("fail to cast the spell correctly.");
 		deduct_mana_cost(denergy / 2);
         context.botl = 1;
 		update_u_action(ACTION_TILE_NO_ACTION);
@@ -1975,12 +1976,16 @@ boolean atme;
 			{
                 /* healing and extra healing are actually potion effects,
                    but they've been extended to take a direction like wands */
-                if (role_skill >= P_SKILLED)
+				if (role_skill >= P_SKILLED)
                     pseudo->blessed = 1;
             }
+
             if (atme) 
 			{
-                u.dx = u.dy = u.dz = 0;
+				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+				update_u_action(ACTION_TILE_CAST);
+
+				u.dx = u.dy = u.dz = 0;
             } 
 			else if (!getdir((char *) 0))
 			{
@@ -1995,9 +2000,13 @@ boolean atme;
                  */
                 pline_The("magical energy is released!");
             }
+
             if (!u.dx && !u.dy && !u.dz)
 			{
-                if ((damage = zapyourself(pseudo, TRUE)) != 0)
+				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+				update_u_action(ACTION_TILE_CAST);
+
+				if ((damage = zapyourself(pseudo, TRUE)) != 0)
 				{
                     char buf[BUFSZ];
 
@@ -2008,6 +2017,8 @@ boolean atme;
 			else
 			{
 				update_u_facing(TRUE);
+				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+				update_u_action(ACTION_TILE_CAST);
 
 				if (otyp == SPE_METEOR_SWARM)
 				{
@@ -2024,8 +2035,15 @@ boolean atme;
 					weffects(pseudo);
 
 			}
-        } else
-            weffects(pseudo);
+        } 
+		else
+		{
+			/* No dir */
+			play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+			update_u_action(ACTION_TILE_CAST);
+			weffects(pseudo);
+		}
+
         update_inventory(); /* spell may modify inventory */
         break;
 
@@ -2056,7 +2074,9 @@ boolean atme;
 	case SPE_DETECT_TRAPS:
 	case SPE_STINKING_CLOUD:
 	case SPE_CREATE_MONSTER:
-        (void) seffects(pseudo, &effect_happened);
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
+		(void) seffects(pseudo, &effect_happened);
         break;
 
     /* these are all duplicates of potion effects */
@@ -2070,19 +2090,27 @@ boolean atme;
             pseudo->blessed = 1;
     /*FALLTHRU*/
     case SPE_INVISIBILITY:
-        (void) peffects(pseudo);
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
+		(void) peffects(pseudo);
         break;
     /* end of potion-like spells */
 
 	case SPE_CREATE_FAMILIAR:
-        (void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
+		(void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
 	case SPE_CONGREGATE:
 	case SPE_SUMMONING_CALL:
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
 		use_magic_whistle((struct obj*) 0);
 		break;
 	case SPE_CLAIRVOYANCE:
-        if (!Blocks_Clairvoyance) {
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
+		if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
                 pseudo->blessed = 1; /* detect monsters as well as map */
             do_vicinity_map(pseudo);
@@ -2091,9 +2119,13 @@ boolean atme;
             You("sense a pointy hat on top of your %s.", body_part(HEAD));
         break;
 	case SPE_MINOR_CONSULTATION:
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
 		outrumor(1, BY_SPELL);
 		break;
 	case SPE_MAJOR_CONSULTATION:
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
 		outoracle(FALSE, 2);
 		break;
 	case SPE_PROTECTION:
@@ -2124,11 +2156,15 @@ boolean atme;
 	case SPE_MASS_CONFLICT:
 	case SPE_GLOBE_OF_INVULNERABILITY:
 	case SPE_DIVINE_INTERVENTION:
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
 		You("successfully cast \"%s\".", spellname(spell));
 		addspellintrinsictimeout(otyp);
 		break;
 	case SPE_JUMPING:
-        if (!jump(max(role_skill, 1)))
+		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+		update_u_action(ACTION_TILE_CAST);
+		if (!jump(max(role_skill, 1)))
             pline1(nothing_happens);
         break;
 	case SPE_COLD_ENCHANT_ITEM:
@@ -2148,11 +2184,14 @@ boolean atme;
 		otmp = getobj(enchant_objects, buf, 0, "");
 		if (!otmp || inaccessible_equipment(otmp, buf, FALSE))
 		{
-			update_u_action(ACTION_TILE_NO_ACTION);
 			return 0;
 		}
 
-		if (otmp && otmp != &zeroobj) {
+		if (otmp && otmp != &zeroobj) 
+		{
+			play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
+			update_u_action(ACTION_TILE_CAST);
+
 			switch (otyp)
 			{
 			case SPE_DEATH_ENCHANT_ITEM:
@@ -2245,7 +2284,6 @@ boolean atme;
 	default:
         impossible("Unknown spell %d attempted.", spell);
         obfree(pseudo, (struct obj *) 0);
-		update_u_action(ACTION_TILE_NO_ACTION);
 		return 0;
     }
 
