@@ -205,6 +205,7 @@ enum ghsound_types {
 	GHSOUND_MUFFLED_CRACKING,
 	GHSOUND_MUFFLED_CRASH,
 	GHSOUND_MUFFLED_SPLAT,
+	GHSOUND_SKILL_ADVANCED,
 	GHSOUND_GENERIC_CAST,
 	MAX_GHSOUNDS
 };
@@ -336,6 +337,7 @@ enum sfx_sound_types {
 	SFX_MUFFLED_CRACKING,
 	SFX_MUFFLED_CRASH,
 	SFX_MUFFLED_SPLAT,
+	SFX_SKILL_ADVANCED,
 	MAX_SFX_SOUND_TYPES
 };
 
@@ -687,6 +689,7 @@ extern struct region_soundset_definition region_soundsets[MAX_REGION_SOUNDSETS];
 struct effect_sound_definition {
 	const char* sound_name;
 	struct ghsound_info sound;
+	boolean affected_by_deafness;
 };
 
 extern struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES];

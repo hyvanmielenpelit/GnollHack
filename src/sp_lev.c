@@ -5638,7 +5638,8 @@ struct sp_coder *coder;
                  *  Set secret doors to closed (why not trapped too?).  Set
                  *  the horizontal bit.
                  */
-                if (levl[x][y].typ == SDOOR || IS_DOOR(levl[x][y].typ)) {
+                if (levl[x][y].typ == SDOOR || IS_DOOR(levl[x][y].typ)) 
+                {
                     if (levl[x][y].typ == SDOOR)
                         levl[x][y].doormask = D_CLOSED;
                     /*
@@ -5649,9 +5650,24 @@ struct sp_coder *coder;
                     if (x != xstart && (IS_WALL(levl[x - 1][y].typ)
                                         || levl[x - 1][y].horizontal))
                         levl[x][y].horizontal = 1;
-                } else if (levl[x][y].typ == HWALL
-                           || levl[x][y].typ == IRONBARS)
+                } 
+                else if (levl[x][y].typ == HWALL)
                     levl[x][y].horizontal = 1;
+                else if (levl[x][y].typ == IRONBARS)
+                {
+                    if(!isok(x, y - 1) || !IS_FLOOR(levl[x][y - 1].typ))
+                        levl[x][y].horizontal = 0;
+                    else
+                    {
+                        levl[x][y].horizontal = 1;
+                        if (isok(x, y - 1) && IS_FLOOR(levl[x][y - 1].typ))
+                        {
+                            levl[x][y].floortyp = levl[x][y - 1].typ;
+                            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+                        }
+
+                    }
+                }
                 else if (levl[x][y].typ == LAVAPOOL)
                     levl[x][y].lit = 1;
                 else if (splev_init_present && levl[x][y].typ == ICE)

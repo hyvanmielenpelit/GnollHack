@@ -539,7 +539,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "iron-bar-replacement",
+    { "dungeon-normal-iron-bar-replacement",
       DUNGEON_NORMAL_IRON_BAR_REPLACEMENT_TILES, DUNGEON_NORMAL_IRON_BAR_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
       REPLACEMENT_ACTION_LOCATION_HORIZONTAL,

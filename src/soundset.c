@@ -1438,351 +1438,443 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
 {
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f}, 
+        FALSE
     },
     {
         "read",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        TRUE
     },
     {
         "quaff",
-        {GHSOUND_SFX_QUAFF, 1.0f}
+        {GHSOUND_SFX_QUAFF, 1.0f},
+        TRUE
     },
     {
         "door open",
-        {GHSOUND_DOOR_OPEN, 1.0f}
+        {GHSOUND_DOOR_OPEN, 1.0f},
+        TRUE
     },
     {
         "door close",
-        {GHSOUND_DOOR_CLOSE, 1.0f}
+        {GHSOUND_DOOR_CLOSE, 1.0f},
+        TRUE
     },
     {
         "door unlock",
-        {GHSOUND_DOOR_UNLOCK, 1.0f}
+        {GHSOUND_DOOR_UNLOCK, 1.0f},
+        TRUE
     },
     {
         "door lock",
-        {GHSOUND_DOOR_LOCK, 1.0f}
+        {GHSOUND_DOOR_LOCK, 1.0f},
+        TRUE
     },
     {
         "door resists",
-        {GHSOUND_DOOR_RESISTS, 1.0f}
+        {GHSOUND_DOOR_RESISTS, 1.0f},
+        TRUE
     },
     {
         "door try locked",
-        {GHSOUND_DOOR_TRY_LOCKED, 1.0f}
+        {GHSOUND_DOOR_TRY_LOCKED, 1.0f},
+        TRUE
     },
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        TRUE
     },
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        TRUE
     },
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        TRUE
     },
     {
         "",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        TRUE
     },
     {
         "shield effect",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        FALSE
     },
     {
         "talk effect",
-        {GHSOUND_NONE, 0.0f}
+        {GHSOUND_NONE, 0.0f},
+        FALSE
     },
     {
         "push boulder",
-        {GHSOUND_PUSH_BOULDER, 1.0f}
+        {GHSOUND_PUSH_BOULDER, 1.0f},
+        TRUE
     },
     {
         "paralyzed",
-        {GHSOUND_CAUSE_PARALYSIS, 1.0f}
+        {GHSOUND_CAUSE_PARALYSIS, 1.0f},
+        FALSE
     },
     {
         "sleeping",
-        {GHSOUND_CAUSE_SLEEPING, 1.0f}
+        {GHSOUND_CAUSE_SLEEPING, 1.0f},
+        FALSE
     },
     {
         "desecrate altar",
-        {GHSOUND_DESECRATE_ALTAR, 1.0f}
+        {GHSOUND_DESECRATE_ALTAR, 1.0f},
+        FALSE
     },
     {
         "summon demon",
-        {GHSOUND_SUMMON_DEMON, 1.0f}
+        {GHSOUND_SUMMON_DEMON, 1.0f},
+        FALSE
     },
     {
         "sacrifice pet",
-        {GHSOUND_SACRIFICE_PET, 1.0f}
+        {GHSOUND_SACRIFICE_PET, 1.0f},
+        FALSE
     },
     {
         "sacrifice coaligned unicorn",
-        {GHSOUND_SACRIFICE_COALIGNED_UNICORN, 1.0f}
+        {GHSOUND_SACRIFICE_COALIGNED_UNICORN, 1.0f},
+        FALSE
     },
     {
         "altar add alignment",
-        {GHSOUND_ALTAR_ADD_ALIGNMENT, 1.0f}
+        {GHSOUND_ALTAR_ADD_ALIGNMENT, 1.0f},
+        FALSE
     },
     {
         "altar thunderclap",
-        {GHSOUND_ALTAR_THUNDERCLAP, 1.0f}
+        {GHSOUND_ALTAR_THUNDERCLAP, 1.0f},
+        FALSE
     },
     {
         "altar charged air",
-        {GHSOUND_ALTAR_CHARGED_AIR, 1.0f}
+        {GHSOUND_ALTAR_CHARGED_AIR, 1.0f},
+        FALSE
     },
     {
         "altar accepts sacrifice",
-        {GHSOUND_ALTAR_ANGRY_ACCEPTS_SACRIFICE, 1.0f}
+        {GHSOUND_ALTAR_ANGRY_ACCEPTS_SACRIFICE, 1.0f},
+        FALSE
     },
     {
         "altar rejects sacrifice",
-        {GHSOUND_ALTAR_ANGRY_REJECTS_SACRIFICE, 1.0f}
+        {GHSOUND_ALTAR_ANGRY_REJECTS_SACRIFICE, 1.0f},
+        FALSE
     },
     {
         "altar power increase",
-        {GHSOUND_ALTAR_POWER_INCREASE, 1.0f}
+        {GHSOUND_ALTAR_POWER_INCREASE, 1.0f},
+        FALSE
     },
     {
         "altar power decrease",
-        {GHSOUND_ALTAR_POWER_DECREASE, 1.0f}
+        {GHSOUND_ALTAR_POWER_DECREASE, 1.0f},
+        FALSE
     },
     {
         "altar god mollified",
-        {GHSOUND_ALTAR_GOD_MOLLIFIED, 1.0f}
+        {GHSOUND_ALTAR_GOD_MOLLIFIED, 1.0f},
+        FALSE
     },
     {
         "altar inadequacy",
-        {GHSOUND_ALTAR_INADEQUACY, 1.0f}
+        {GHSOUND_ALTAR_INADEQUACY, 1.0f},
+        FALSE
     },
     {
         "altar absolved",
-        {GHSOUND_ALTAR_ABSOLVED, 1.0f}
+        {GHSOUND_ALTAR_ABSOLVED, 1.0f},
+        FALSE
     },
     {
         "altar hopeful feeling",
-        {GHSOUND_ALTAR_HOPEFUL_FEELING, 1.0f}
+        {GHSOUND_ALTAR_HOPEFUL_FEELING, 1.0f},
+        FALSE
     },
     {
         "altar reconciliation",
-        {GHSOUND_ALTAR_RECONCILIATION, 1.0f}
+        {GHSOUND_ALTAR_RECONCILIATION, 1.0f},
+        FALSE
     },
     {
         "altar gift",
-        {GHSOUND_ALTAR_GIFT, 1.0f}
+        {GHSOUND_ALTAR_GIFT, 1.0f},
+        FALSE
     },
     {
         "altar four-leaf clover",
-        {GHSOUND_ALTAR_FOUR_LEAF_CLOVER, 1.0f}
+        {GHSOUND_ALTAR_FOUR_LEAF_CLOVER, 1.0f},
+        FALSE
     },
     {
         "aura glow",
-        {GHSOUND_AURA_GLOW, 1.0f}
+        {GHSOUND_AURA_GLOW, 1.0f},
+        FALSE
     },
     {
         "altar burst of flame",
-        {GHSOUND_ALTAR_BURST_OF_FLAME, 1.0f}
+        {GHSOUND_ALTAR_BURST_OF_FLAME, 1.0f},
+        FALSE
     },
     {
         "altar offering vanish",
-        {GHSOUND_ALTAR_OFFERING_VANISH, 1.0f}
+        {GHSOUND_ALTAR_OFFERING_VANISH, 1.0f},
+        FALSE
     },
     {
         "pray fail",
-        {GHSOUND_PRAY_FAIL, 1.0f}
+        {GHSOUND_PRAY_FAIL, 1.0f},
+        FALSE
     },
     {
         "pray pleased",
-        {GHSOUND_PRAY_PLEASED, 1.0f}
+        {GHSOUND_PRAY_PLEASED, 1.0f},
+        FALSE
     },
     {
         "pray fix all troubles",
-        {GHSOUND_PRAY_FIX_ALL_TROUBLES, 1.0f}
+        {GHSOUND_PRAY_FIX_ALL_TROUBLES, 1.0f},
+        FALSE
     },
     {
         "pray fix one trouble",
-        {GHSOUND_PRAY_FIX_ONE_TROUBLE, 1.0f}
+        {GHSOUND_PRAY_FIX_ONE_TROUBLE, 1.0f},
+        FALSE
     },
     {
         "pray repair",
-        {GHSOUND_PRAY_REPAIR, 1.0f}
+        {GHSOUND_PRAY_REPAIR, 1.0f},
+        FALSE
     },
     {
         "pray healing",
-        {GHSOUND_PRAY_HEALING, 1.0f}
+        {GHSOUND_PRAY_HEALING, 1.0f},
+        FALSE
     },
     {
         "pray uncurse",
-        {GHSOUND_PRAY_UNCURSE, 1.0f}
+        {GHSOUND_PRAY_UNCURSE, 1.0f},
+        FALSE
     },
     {
         "pray gift",
-        {GHSOUND_PRAY_GIFT, 1.0f}
+        {GHSOUND_PRAY_GIFT, 1.0f},
+        FALSE
     },
     {
         "pray crowning",
-        {GHSOUND_PRAY_CROWNING, 1.0f}
+        {GHSOUND_PRAY_CROWNING, 1.0f},
+        FALSE
     },
     {
         "pray spellbook",
-        {GHSOUND_PRAY_SPELLBOOK, 1.0f}
+        {GHSOUND_PRAY_SPELLBOOK, 1.0f},
+        FALSE
     },
     {
         "pray bless water",
-        {GHSOUND_PRAY_BLESS_WATER, 1.0f}
+        {GHSOUND_PRAY_BLESS_WATER, 1.0f},
+        FALSE
     },
     {
         "pray curse water",
-        {GHSOUND_PRAY_CURSE_WATER, 1.0f}
+        {GHSOUND_PRAY_CURSE_WATER, 1.0f},
+        FALSE
     },
     {
         "pray shimmering light",
-        {GHSOUND_PRAY_SHIMMERING_LIGHT, 1.0f}
+        {GHSOUND_PRAY_SHIMMERING_LIGHT, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_SUCCESS",
-        {GHSOUND_ENCHANT_ITEM_SUCCESS, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_BLESSED_SUCCESS",
-        {GHSOUND_ENCHANT_ITEM_BLESSED_SUCCESS, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_BLESSED_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_UNCURSE_AND_OTHER",
-        {GHSOUND_ENCHANT_ITEM_UNCURSE_AND_OTHER, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_UNCURSE_AND_OTHER, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_NEGATIVE",
-        {GHSOUND_ENCHANT_ITEM_NEGATIVE, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_NEGATIVE, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIOLENT_GLOW",
-        {GHSOUND_ENCHANT_ITEM_VIOLENT_GLOW, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_VIOLENT_GLOW, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIBRATE_WARNING",
-        {GHSOUND_ENCHANT_ITEM_VIBRATE_WARNING, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_VIBRATE_WARNING, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_VIBRATE_AND_DESTROY",
-        {GHSOUND_ENCHANT_ITEM_VIBRATE_AND_DESTROY, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_VIBRATE_AND_DESTROY, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_SPECIAL_SUCCESS",
-        {GHSOUND_ENCHANT_ITEM_SPECIAL_SUCCESS, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_SPECIAL_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_SPECIAL_NEGATIVE",
-        {GHSOUND_ENCHANT_ITEM_SPECIAL_NEGATIVE, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_SPECIAL_NEGATIVE, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_ENCHANT_ITEM_GENERAL_FAIL",
-        {GHSOUND_ENCHANT_ITEM_GENERAL_FAIL, 1.0f}
+        {GHSOUND_ENCHANT_ITEM_GENERAL_FAIL, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_HANDS_ITCH",
-        {GHSOUND_HANDS_ITCH, 1.0f}
+        {GHSOUND_HANDS_ITCH, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_PROTECT_ITEM_SUCCESS",
-        {GHSOUND_PROTECT_ITEM_SUCCESS, 1.0f}
+        {GHSOUND_PROTECT_ITEM_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_PROTECT_ITEM_FAIL",
-        {GHSOUND_PROTECT_ITEM_FAIL, 1.0f}
+        {GHSOUND_PROTECT_ITEM_FAIL, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_REPAIR_ITEM_SUCCESS",
-        {GHSOUND_REPAIR_ITEM_SUCCESS, 1.0f}
+        {GHSOUND_REPAIR_ITEM_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_REPAIR_ITEM_FAIL",
-        {GHSOUND_REPAIR_ITEM_FAIL, 1.0f}
+        {GHSOUND_REPAIR_ITEM_FAIL, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_BLESS_ITEM_SUCCESS",
-        {GHSOUND_BLESS_ITEM_SUCCESS, 1.0f}
+        {GHSOUND_BLESS_ITEM_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_UNCURSE_ITEM_SUCCESS",
-        {GHSOUND_UNCURSE_ITEM_SUCCESS, 1.0f}
+        {GHSOUND_UNCURSE_ITEM_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_CURSE_ITEM_SUCCESS",
-        {GHSOUND_CURSE_ITEM_SUCCESS, 1.0f}
+        {GHSOUND_CURSE_ITEM_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_UNBLESS_ITEM_SUCCESS",
-        {GHSOUND_UNBLESS_ITEM_SUCCESS, 1.0f}
+        {GHSOUND_UNBLESS_ITEM_SUCCESS, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_DISINTEGRATE",
-        {GHSOUND_DISINTEGRATE, 1.0f}
+        {GHSOUND_DISINTEGRATE, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_LIFE_SAVED",
-        {GHSOUND_LIFE_SAVED, 1.0f}
+        {GHSOUND_LIFE_SAVED, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_HEALING",
-        {GHSOUND_HEALING, 1.0f}
+        {GHSOUND_HEALING, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_FULL_HEALING",
-        {GHSOUND_FULL_HEALING, 1.0f}
+        {GHSOUND_FULL_HEALING, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_CURE_DISEASE",
-        {GHSOUND_CURE_DISEASE, 1.0f}
+        {GHSOUND_CURE_DISEASE, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_CURE_AILMENT",
-        {GHSOUND_CURE_AILMENT, 1.0f}
+        {GHSOUND_CURE_AILMENT, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_GAIN_ENERGY",
-        {GHSOUND_GAIN_ENERGY, 1.0f}
+        {GHSOUND_GAIN_ENERGY, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_FULL_ENERGY",
-        {GHSOUND_FULL_ENERGY, 1.0f}
+        {GHSOUND_FULL_ENERGY, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_GAIN_LEVEL",
-        {GHSOUND_GAIN_LEVEL, 1.0f}
+        {GHSOUND_GAIN_LEVEL, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_GAIN_SKILL",
-        {GHSOUND_GAIN_SKILL, 1.0f}
+        {GHSOUND_GAIN_SKILL, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_LOSE_LEVEL",
-        {GHSOUND_LOSE_LEVEL, 1.0f}
+        {GHSOUND_LOSE_LEVEL, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_LOSE_ENERGY",
-        {GHSOUND_LOSE_ENERGY, 1.0f}
+        {GHSOUND_LOSE_ENERGY, 1.0f},
+        FALSE
     },
     {
         "GHSOUND_MUFFLED_SHATTER",
-        {GHSOUND_MUFFLED_SHATTER, 1.0f}
+        {GHSOUND_MUFFLED_SHATTER, 1.0f},
+        TRUE
     },
     {
         "GHSOUND_MUFFLED_CRACKING",
-        {GHSOUND_MUFFLED_CRACKING, 1.0f}
+        {GHSOUND_MUFFLED_CRACKING, 1.0f},
+        TRUE
     },
     {
         "GHSOUND_MUFFLED_CRASH",
-        {GHSOUND_MUFFLED_CRASH, 1.0f}
+        {GHSOUND_MUFFLED_CRASH, 1.0f},
+        TRUE
     },
     {
         "GHSOUND_MUFFLED_SPLAT",
-        {GHSOUND_MUFFLED_SPLAT, 1.0f}
+        {GHSOUND_MUFFLED_SPLAT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_SKILL_ADVANCED",
+        {GHSOUND_SKILL_ADVANCED, 1.0f},
+        FALSE
     },
 };
 
@@ -3028,7 +3120,7 @@ void
 play_sfx_sound(sfx_sound_id)
 enum sfx_sound_types sfx_sound_id;
 {
-    if (Deaf)
+    if (Deaf && sfx_sounds[sfx_sound_id].affected_by_deafness)
         return;
 
     enum ghsound_types soundid = GHSOUND_NONE;
@@ -3075,7 +3167,7 @@ int x, y;
     if (!isok(x, y) || hearing_array[x][y] == 0.0f)
         return;
 
-    if (Deaf)
+    if (Deaf && sfx_sounds[sfx_sound_id].affected_by_deafness)
         return;
 
     enum ghsound_types soundid = GHSOUND_NONE;

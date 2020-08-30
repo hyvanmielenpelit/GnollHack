@@ -609,6 +609,7 @@ int trap_type;
                     /* inaccessible niches occasionally have iron bars */
                     if (!rn2(5) && IS_WALL(levl[xx][yy].typ)) {
                         levl[xx][yy].typ = IRONBARS;
+                        /* HWALL .horizontal value retained */
                         if (rn2(3))
                             (void) mkcorpstat(CORPSE, (struct monst *) 0,
                                               mkclass(S_HUMAN, 0), xx,
