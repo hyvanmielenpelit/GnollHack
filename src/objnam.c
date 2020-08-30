@@ -4454,7 +4454,7 @@ struct obj *no_wish;
 
         if (!BSTRCMPI(bp, p - 5, "grave")
             || !BSTRCMPI(bp, p - 9, "headstone")) {
-            make_grave(x, y, (char *) 0);
+            make_grave(x, y, (char *) 0, FALSE);
             pline("%s.", IS_GRAVE(lev->typ) ? "A grave"
                                             : "Can't place a grave here");
             newsym(x, y);

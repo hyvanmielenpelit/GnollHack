@@ -1112,7 +1112,7 @@ boolean silently;
         gy = rooms[EGD(grd)->vroom].ly + rn2(2);
         Sprintf(buf, "To Croesus: here's the gold recovered from %s the %s.",
                 plname, pm_monster_name(&mons[u.umonster], flags.female));
-        make_grave(gx, gy, buf);
+        make_grave(gx, gy, buf, TRUE);
     }
     for (coins = invent; coins; coins = nextcoins) {
         nextcoins = coins->nobj;

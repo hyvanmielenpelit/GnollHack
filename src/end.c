@@ -1414,7 +1414,7 @@ int how;
 		corpse->nknown = 1;
         Sprintf(pbuf, "%s, ", plname);
         formatkiller(eos(pbuf), sizeof pbuf - strlen(pbuf), how, TRUE);
-        make_grave(u.ux, u.uy, pbuf);
+        make_grave(u.ux, u.uy, pbuf, TRUE);
     }
     pbuf[0] = '\0'; /* clear grave text; also lint suppression */
 

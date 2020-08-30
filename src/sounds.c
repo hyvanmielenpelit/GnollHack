@@ -67,10 +67,10 @@ STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
 STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, const char*, int, char*));
-STATIC_DCL int FDECL(general_service_query, (struct monst*, void (*)(struct monst*), const char*, int, char*));
-STATIC_DCL void FDECL(repair_armor_func, (struct monst*));
-STATIC_DCL void FDECL(repair_weapon_func, (struct monst*));
-STATIC_DCL void FDECL(refill_lantern_func, (struct monst*));
+STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int, char*));
+STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
+STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
+STATIC_DCL int FDECL(refill_lantern_func, (struct monst*));
 
 extern const struct shclass shtypes[]; /* defined in shknam.c */
 
@@ -4153,9 +4153,6 @@ struct monst* mtmp;
 	}
 
 
-	money2mon(mtmp, (long)u_pay);
-	context.botl = 1;
-
 	int otyp = SPE_CURSE;
 
 	switch (priest_action) {
@@ -4173,8 +4170,16 @@ struct monst* mtmp;
 	pseudo->blessed = pseudo->cursed = 0;
 	pseudo->quan = 20L; /* do not let useup get it */
 	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
-	seffects(pseudo);
+	boolean effect_happened = 0;
+	(void)seffects(pseudo, &effect_happened);
 	obfree(pseudo, (struct obj*)0);
+
+	if (effect_happened)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
+
 	/* gnostic handled in seffects */
 
 	return 1;
@@ -4589,14 +4594,17 @@ struct monst* mtmp;
 		break;
 	}
 
-	money2mon(mtmp, (long)u_pay);
-	context.botl = 1;
-
 	context.shop_identify_type = ESHK(mtmp)->shoptype - SHOPBASE + 1; // shtypes[ESHK(mtmp)->shoptype - SHOPBASE].symb;
 
-	identify_pack(1, FALSE);
+	int res = identify_pack(1, FALSE);
 
 	context.shop_identify_type = 0;
+
+	if (res)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
 
 	return 1; 
 }
@@ -5019,14 +5027,17 @@ struct monst* mtmp;
 		break;
 	}
 
-	money2mon(mtmp, (long)u_pay);
-	context.botl = 1;
-
 	context.npc_identify_type = 1;
 
-	identify_pack(1, FALSE);
+	int res = identify_pack(1, FALSE);
 
 	context.npc_identify_type = 0;
+
+	if (res)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
 
 	return 1;
 }
@@ -5320,14 +5331,17 @@ char* no_mood_string;
 	}
 
 
-	money2mon(mtmp, (long)u_pay);
-	context.botl = 1;
-
 	struct obj* pseudo = mksobj(service_spell_id, FALSE, FALSE, FALSE);
 	pseudo->blessed = pseudo->cursed = 0;
 	pseudo->quan = 20L; /* do not let useup get it */
 	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
-	seffects(pseudo);
+	boolean effect_happened = 0;
+	(void)seffects(pseudo, &effect_happened);
+	if (effect_happened)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
 	obfree(pseudo, (struct obj*)0);
 	/* gnostic handled in seffects */
 
@@ -5338,7 +5352,7 @@ STATIC_OVL int
 general_service_query(mtmp, service_func, service_verb, service_cost, no_mood_string)
 struct monst* mtmp;
 int service_cost;
-void (*service_func)(struct monst*);
+int (*service_func)(struct monst*);
 const char* service_verb;
 char* no_mood_string;
 {
@@ -5374,16 +5388,17 @@ char* no_mood_string;
 		break;
 	}
 
-
-	money2mon(mtmp, (long)u_pay);
-	context.botl = 1;
-
-	service_func(mtmp);
+	int res = service_func(mtmp);
+	if (res)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
 
 	return 1;
 }
 
-STATIC_OVL void
+STATIC_OVL int
 repair_armor_func(mtmp)
 struct monst* mtmp;
 {
@@ -5391,7 +5406,7 @@ struct monst* mtmp;
 	struct obj* otmp = getobj(repair_armor_objects, "repair", 0, "");
 
 	if (!otmp)
-		return;
+		return 0;
 
 	pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
 
@@ -5399,13 +5414,13 @@ struct monst* mtmp;
 	{
 		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, this is not an armor I can repair.");
-		return;
+		return 0;
 	}
 	else if (otmp && !erosion_matters(otmp))
 	{
 		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, I couldn't make this any better than before.");
-		return;
+		return 0;
 	}
 
 	play_sfx_sound(SFX_REPAIR_ITEM_SUCCESS);
@@ -5423,10 +5438,10 @@ struct monst* mtmp;
 	}
 	update_inventory();
 	verbalize("Thank you for using my services.");
-
+	return 1;
 }
 
-STATIC_OVL void
+STATIC_OVL int
 repair_weapon_func(mtmp)
 struct monst* mtmp;
 {
@@ -5434,7 +5449,7 @@ struct monst* mtmp;
 	struct obj* otmp = getobj(repair_weapon_objects, "repair", 0, "");
 
 	if (!otmp)
-		return;
+		return 0;
 
 	pline("%s says: \"Let's have a look at %s.\"", Monnam(mtmp), yname(otmp));
 
@@ -5443,13 +5458,13 @@ struct monst* mtmp;
 	{
 		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, this is not a weapon I can repair.");
-		return;
+		return 0;
 	}
 	else if (otmp && !erosion_matters(otmp))
 	{
 		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, I couldn't make this any better than before.");
-		return;
+		return 0;
 	}
 
 	play_sfx_sound(SFX_REPAIR_ITEM_SUCCESS);
@@ -5467,9 +5482,10 @@ struct monst* mtmp;
 	}
 	update_inventory();
 	verbalize("Thank you for using my services.");
+	return 1;
 }
 
-STATIC_OVL void
+STATIC_OVL int
 refill_lantern_func(mtmp)
 struct monst* mtmp;
 {
@@ -5477,20 +5493,20 @@ struct monst* mtmp;
 	struct obj* otmp = getobj(refill_lantern_objects, "refill", 0, "");
 
 	if (!otmp)
-		return;
+		return 0;
 
 	/* Check if the selection is appropriate */
 	if (otmp && !is_refillable_with_oil(otmp))
 	{
 		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, this is not an item that I can fill with oil.");
-		return;
+		return 0;
 	}
 	else if (otmp && otmp->age > 1500L)
 	{
 		play_sfx_sound(SFX_REPAIR_ITEM_FAIL);
 		verbalize("Sorry, %s %s already full.", yname(otmp), otense(otmp, "are"));
-		return;
+		return 0;
 	}
 
 	if (otmp->lamplit)
@@ -5512,6 +5528,7 @@ struct monst* mtmp;
 	update_inventory();
 
 	verbalize("Thank you for using my services.");
+	return 1;
 }
 
 /*sounds.c*/

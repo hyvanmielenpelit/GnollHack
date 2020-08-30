@@ -1327,9 +1327,10 @@ struct engr *ep;
  * The caller is responsible for newsym(x, y).
  */
 void
-make_grave(x, y, str)
+make_grave(x, y, str, in_mklev)
 int x, y;
 const char *str;
+boolean in_mklev;
 {
     char buf[BUFSZ];
 
@@ -1338,7 +1339,27 @@ const char *str;
         return;
 
     /* Make the grave */
-    create_simple_location(x, y, GRAVE, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == GRAVE ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
+    if (in_mklev)
+    {
+        if (IS_FLOOR(levl[x][y].typ))
+        {
+            levl[x][y].floortyp = levl[x][y].typ;
+            levl[x][y].floorsubtyp = levl[x][y].subtyp;
+        }
+        else if(!IS_FLOOR(levl[x][y].floortyp))
+        {
+            levl[x][y].floortyp = location_type_definitions[GRAVE].initial_floor_type;
+            levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+        }
+
+        levl[x][y].typ = GRAVE;
+        levl[x][y].subtyp = 0;
+        levl[x][y].flags = 0;
+    }
+    else
+    {
+        create_simple_location(x, y, GRAVE, 0, 0, 0, levl[x][y].typ == GRAVE ? levl[x][y].floortyp : levl[x][y].typ, levl[x][y].typ == GRAVE ? levl[x][y].floorsubtyp : levl[x][y].subtyp, FALSE);
+    }
 
     /* Engrave the headstone */
     del_engr_at(x, y);

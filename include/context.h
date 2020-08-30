@@ -195,6 +195,7 @@ struct context_info
     uchar action_animation_x;
     uchar action_animation_y;
     uchar action_animation_frame;
+    boolean force_allow_keyboard_commands;
 };
 
 extern NEARDATA struct context_info context;

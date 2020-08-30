@@ -578,10 +578,7 @@ struct monst* oracl;
 {
 	long umoney;
 	int u_pay;
-	//int unid_cnt = count_unidentified(invent);
 	int minor_id_cost = max(1, (int)((150 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
-	//int major_id_cost = minor_id_cost * 3;
-	//int oracleaction = 0;
 	char qbuf[QBUFSZ];
 
 	multi = 0;
@@ -614,44 +611,16 @@ struct monst* oracl;
 			return 0;
 		}
 		u_pay = minor_id_cost;
-		//oracleaction = 3;
-		break;
-/*
-	case 'n':
-		Sprintf(qbuf, "\"Then dost thou desire an improved one?\" (%d %s)",
-			major_id_cost, currency((long)major_id_cost));
-		if (yn_query(qbuf) != 'y')
-			return 0;
-		if (umoney < (long)major_id_cost) {
-			You("don't have enough money for that!");
-			return 0;
-		}
-		u_pay = major_id_cost;
-		oracleaction = 4;
-		break;
-*/
-	}
-
-	money2mon(oracl, (long)u_pay);
-	context.botl = 1;
-	identify_pack(1, FALSE);
-
-	/*
-	int majoridnum = rn1(2, 4);
-	if (!rn2(4))
-		majoridnum = 0;
-
-	switch (oracleaction) {
-	case 3:
-		identify_pack(1, FALSE);
-		break;
-	case 4:
-		identify_pack(majoridnum, FALSE);
-		break;
-	default:
 		break;
 	}
-	*/
+
+	int res = identify_pack(1, FALSE);
+
+    if (res)
+    {
+        money2mon(oracl, (long)u_pay);
+        context.botl = 1;
+    }
 
 	return 1;
 }

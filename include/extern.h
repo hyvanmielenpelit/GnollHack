@@ -937,7 +937,7 @@ E void FDECL(rest_engravings, (int));
 E void FDECL(engr_stats, (const char *, char *, long *, size_t *));
 E void FDECL(del_engr, (struct engr *));
 E void FDECL(rloc_engr, (struct engr *));
-E void FDECL(make_grave, (int, int, const char *));
+E void FDECL(make_grave, (int, int, const char *, boolean));
 
 /* ### exper.c ### */
 
@@ -1224,7 +1224,7 @@ E int FDECL(askchain, (struct obj **, const char *, int, int (*)(OBJ_P),
 E void FDECL(fully_identify_obj, (struct obj *));
 E int FDECL(identify, (struct obj *));
 E int FDECL(count_unidentified, (struct obj *));
-E void FDECL(identify_pack, (int, BOOLEAN_P));
+E int FDECL(identify_pack, (int, BOOLEAN_P));
 E void NDECL(learn_unseen_invent);
 E void FDECL(prinv, (const char *, struct obj *, long));
 E char *FDECL(xprname,
@@ -2433,7 +2433,7 @@ E void FDECL(forget_objects, (int));
 E void FDECL(forget_levels, (int));
 E void NDECL(forget_traps);
 E void FDECL(forget_map, (int));
-E int FDECL(seffects, (struct obj *));
+E int FDECL(seffects, (struct obj *, boolean*));
 E void FDECL(drop_boulder_on_player,
              (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(drop_boulder_on_monster, (int, int, BOOLEAN_P, BOOLEAN_P));

@@ -301,7 +301,7 @@ dosit()
                 if (invent)
 				{
                     /* rn2(5) agrees w/seffects() */
-					identify_pack(rn2(5), FALSE);
+					(void)identify_pack(rn2(5), FALSE);
                 }
                 break;
             case 13:

@@ -37,7 +37,7 @@ STATIC_DCL char FDECL(display_used_invlets, (CHAR_P));
 STATIC_DCL boolean FDECL(this_type_only, (struct obj *));
 STATIC_DCL void NDECL(dounpaid);
 STATIC_DCL struct obj *FDECL(find_unpaid, (struct obj *, struct obj **));
-STATIC_DCL void FDECL(menu_identify, (int));
+STATIC_DCL int FDECL(menu_identify, (int));
 STATIC_DCL boolean FDECL(tool_in_use, (struct obj *));
 STATIC_DCL char FDECL(obj_to_let, (struct obj *));
 
@@ -3052,7 +3052,7 @@ struct obj *otmp;
 }
 
 /* menu of unidentified objects; select and identify up to id_limit of them */
-STATIC_OVL void
+STATIC_OVL int
 menu_identify(id_limit)
 int id_limit;
 {
@@ -3060,6 +3060,7 @@ int id_limit;
     menu_item *pick_list;
     int n, i, first = 1, tryct = 5;
     char buf[BUFSZ];
+    int res = 0;
     /* assumptions:  id_limit > 0 and at least one unID'd item is present */
 
     while (id_limit) 
@@ -3076,7 +3077,7 @@ int id_limit;
             if (n > id_limit)
                 n = id_limit;
             for (i = 0; i < n; i++, id_limit--)
-                (void) identify(pick_list[i].item.a_obj);
+                res += identify(pick_list[i].item.a_obj);
             free((genericptr_t) pick_list);
             mark_synch(); /* Before we loop to pop open another menu */
             first = 0;
@@ -3099,6 +3100,7 @@ int id_limit;
             pline("Choose an item; use ESC to decline.");
         }
     }
+    return res;
 }
 /* count the unidentified items */
 int
@@ -3115,13 +3117,15 @@ struct obj *objchn;
 }
 
 /* dialog with user to identify a given number of items; 0 means all */
-void
+/* returns the number of items identified */
+int
 identify_pack(id_limit, learning_id)
 int id_limit;
 boolean learning_id; /* true if we just read unknown identify scroll */
 {
     struct obj *obj;
     int n, unid_cnt = count_unidentified(invent);
+    int res = 0;
 
     if (!unid_cnt)
 	{
@@ -3136,7 +3140,7 @@ boolean learning_id; /* true if we just read unknown identify scroll */
 		{
             if (not_fully_identified(obj)) 
 			{
-                (void) identify(obj);
+                res += identify(obj);
                 if (unid_cnt == 1)
                     break;
             }
@@ -3153,12 +3157,16 @@ boolean learning_id; /* true if we just read unknown identify scroll */
                             (unsigned *) 0, 0);
                 if (n < 0)
                     break; /* quit or no eligible items */
+                else
+                    res += n;
+
             } while ((id_limit -= n) > 0);
 
-        if (n == 0 || n < -1)
-            menu_identify(id_limit);
+            if (n == 0 || n < -1)
+                res += menu_identify(id_limit);
     }
     update_inventory();
+    return res;
 }
 
 /* called when regaining sight; mark inventory objects which were picked
@@ -3597,7 +3605,7 @@ nextclass:
             for (i = 0; i < n; ++i) {
                 otmp = selected[i].item.a_obj;
                 if (otmp == &wizid_fakeobj) {
-					identify_pack(0, FALSE);
+					(void)identify_pack(0, FALSE);
                 } else {
                     if (not_fully_identified(otmp))
                         (void) identify(otmp);

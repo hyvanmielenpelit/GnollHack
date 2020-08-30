@@ -3697,7 +3697,7 @@ polymorph_sink()
 			sym = S_room;
 			create_basic_floor_location(u.ux, u.uy, ROOM, get_location_subtype_by_category(ROOM, FLOOR_CATEGORY_NORMAL), 0, FALSE);
 		}
-        make_grave(u.ux, u.uy, (char *) 0);
+        make_grave(u.ux, u.uy, (char *) 0, FALSE);
         if (levl[u.ux][u.uy].typ == GRAVE)
             sym = S_grave;
         break;

@@ -4569,7 +4569,7 @@ register struct obj *obj;
 				pline("This is a wand of identify.");
 
 			known = TRUE;
-			identify_pack(1, FALSE);
+			(void)identify_pack(1, FALSE);
 		}
 		else
 		{

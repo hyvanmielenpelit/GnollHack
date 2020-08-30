@@ -2422,7 +2422,8 @@ struct obj *obj;
 			struct obj pseudo;
             pseudo = zeroobj; /* neither cursed nor blessed, zero oextra too */
             pseudo.otyp = SCR_TAMING;
-            (void) seffects(&pseudo);
+			boolean effect_happened = 0;
+            (void) seffects(&pseudo, &effect_happened);
 			break;
         }
         case ARTINVOKE_HEALING:

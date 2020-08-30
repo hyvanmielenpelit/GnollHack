@@ -426,7 +426,8 @@ doread()
                       silently ? "misunderstand" : "mispronounce");
         }
     }
-    if (!seffects(scroll)) {
+    boolean effect_happened = 0;
+    if (!seffects(scroll, &effect_happened)) {
         if (!objects[scroll->otyp].oc_name_known) {
             if (known)
                 learnscroll(scroll);
@@ -1499,8 +1500,9 @@ int state;
 /* scroll effects; return 1 if we use up the scroll and possibly make it
    become discovered, 0 if caller should take care of those side-effects */
 int
-seffects(sobj)
+seffects(sobj, effect_happened_ptr)
 struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
+boolean *effect_happened_ptr;
 {
     int cval, otyp = sobj->otyp;
     boolean confused = (Confusion != 0), sblessed = sobj->blessed,
@@ -1553,8 +1555,11 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		if (otyp == SPE_PROTECT_ARMOR || otyp == SPE_ENCHANT_ARMOR)
 		{
 			otmp = getobj(enchant_armor_objects, otyp == SPE_ENCHANT_ARMOR ? "enchant" : "protect", 0, "");
-			if (!otmp)
-				return 0;
+            if (!otmp)
+            {
+                *effect_happened_ptr = 0;
+                return 0;
+            }
 
 			if(otmp && otmp->oclass != ARMOR_CLASS)
 			{
@@ -1994,8 +1999,11 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 		if (otyp == SPE_PROTECT_WEAPON || otyp == SPE_ENCHANT_WEAPON)
 		{
 			otmp = getobj(enchant_weapon_objects, otyp == SPE_ENCHANT_WEAPON ? "enchant" : "protect", 0, "");
-			if (!otmp)
-				return 0;
+            if (!otmp)
+            {
+                *effect_happened_ptr = 0;
+                return 0;
+            }
 
             /* Check if the selection is not an appropriate weapon */
 			if (otmp && 
@@ -2350,7 +2358,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
         }
 		if (invent && !confused)
 		{
-            identify_pack(cval, !already_known);
+            (void)identify_pack(cval, !already_known);
         } 
 		else if (otyp == SPE_IDENTIFY) 
 		{
@@ -2540,7 +2548,10 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
             const char enchant_accessory_objects[] = { ALL_CLASSES, RING_CLASS, MISCELLANEOUS_CLASS, 0 };
             otmp = getobj(enchant_accessory_objects, "enchant", 0, "");
             if (!otmp)
+            {
+                *effect_happened_ptr = 0;
                 return 0;
+            }
 
             if (otmp && ((otmp->oclass != RING_CLASS && otmp->oclass != MISCELLANEOUS_CLASS) || objects[otmp->otyp].oc_enchantable == ENCHTYPE_NO_ENCHANTMENT))
             {
@@ -2872,6 +2883,9 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
     /* if sobj is gone, we've already called useup() above and the
        update_inventory() that it performs might have come too soon
        (before charging an item, for instance) */
+
+    *effect_happened_ptr = 1;
+
     if (!sobj)
         update_inventory();
     return sobj ? 0 : 1;

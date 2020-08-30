@@ -1576,6 +1576,7 @@ boolean atme;
     boolean confused = (Confusion != 0);
     boolean physical_damage = FALSE;
     struct obj *pseudo;
+	boolean effect_happened = 1;
     //coord cc;
 
     /*
@@ -2055,7 +2056,7 @@ boolean atme;
 	case SPE_DETECT_TRAPS:
 	case SPE_STINKING_CLOUD:
 	case SPE_CREATE_MONSTER:
-        (void) seffects(pseudo);
+        (void) seffects(pseudo, &effect_happened);
         break;
 
     /* these are all duplicates of potion effects */
@@ -2259,7 +2260,7 @@ boolean atme;
 	if (pointsmultiplier > 0)
 		use_skill(skill, (spellev(spell) + 2) * pointsmultiplier);
 
-	int result = 1;
+	int result = effect_happened;
 	if (pseudo->otyp > STRANGE_OBJECT && objects[pseudo->otyp].oc_spell_flags & S1_DOES_NOT_TAKE_A_TURN)
 		result = 0;
 

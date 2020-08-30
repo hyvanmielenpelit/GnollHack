@@ -3900,10 +3900,10 @@ struct sp_coder *coder;
 
         switch (OV_i(typ)) {
         case 2:
-            make_grave(x, y, OV_s(txt));
+            make_grave(x, y, OV_s(txt), TRUE);
             break;
         case 1:
-            make_grave(x, y, NULL);
+            make_grave(x, y, NULL, TRUE);
             break;
         default:
             del_engr_at(x, y);

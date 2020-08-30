@@ -293,6 +293,6 @@ extern COLORREF message_fg_color;
     ((mode) != MAP_MODE_TILES && (mode) != MAP_MODE_TILES_FIT_TO_SCREEN)
 
 
-extern boolean in_wait_loop;
+extern boolean disallow_keyboard_commands_in_wait_loop;
 
 #endif /* WINMS_H */

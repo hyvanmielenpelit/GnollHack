@@ -225,14 +225,14 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_MSNH_COMMAND:
-        if (in_wait_loop)
+        if (disallow_keyboard_commands_in_wait_loop && !context.force_allow_keyboard_commands)
             return 0;
 
         onMSNHCommand(hWnd, wParam, lParam);
         break;
 
     case WM_KEYDOWN: {
-        if (in_wait_loop)
+        if (disallow_keyboard_commands_in_wait_loop && !context.force_allow_keyboard_commands)
             return 0;
 
         /* translate arrow keys into GnollHack commands */
@@ -425,7 +425,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_SYSCHAR: /* Alt-char pressed */
     {
-        if (in_wait_loop)
+        if (disallow_keyboard_commands_in_wait_loop && !context.force_allow_keyboard_commands)
             return 0;
 
         /*
@@ -446,7 +446,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     } break;
 
     case WM_COMMAND:
-        if (in_wait_loop)
+        if (disallow_keyboard_commands_in_wait_loop && !context.force_allow_keyboard_commands)
             return 0;
 
         /* process commands - menu commands mostly */

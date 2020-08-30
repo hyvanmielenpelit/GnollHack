@@ -2066,7 +2066,7 @@ struct mkroom *croom;
     } while (occupied(m.x, m.y) || bydoor(m.x, m.y));
 
     /* Put a grave at <m.x,m.y> */
-    make_grave(m.x, m.y, dobell ? "Saved by the bell!" : (char *) 0);
+    make_grave(m.x, m.y, dobell ? "Saved by the bell!" : (char *) 0, TRUE);
 
     /* Possibly fill it with objects */
     if (!rn2(3)) {

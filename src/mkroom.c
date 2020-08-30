@@ -591,7 +591,7 @@ struct mkroom *sroom;
                     (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
                                      TRUE, FALSE);
                 if (!rn2(5))
-                    make_grave(sx, sy, (char *) 0);
+                    make_grave(sx, sy, (char *) 0, TRUE);
                 break;
             case BEEHIVE:
                 if (!rn2(3))
