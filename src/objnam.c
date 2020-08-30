@@ -131,7 +131,7 @@ const char* tool_type_names[MAX_TOOL_TYPES] = {
 };
 
 const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL_PERCENTAGES] = {
-    "100% less 5% per hit dice"
+    "100% less 5% per hit die"
 };
 
 /* "an uncursed greased partly eaten guardian naga hatchling [corpse]" */
