@@ -1835,7 +1835,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
     }
     else 
     {
-        if (flags.search_box_traps && check_all_box_traps(FALSE) == 1)
+        if (flags.search_box_traps && aflag == 0 && check_all_box_traps(FALSE) == 1)
             return 1;
 
 		int fund = 0;
