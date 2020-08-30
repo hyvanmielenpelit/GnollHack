@@ -478,7 +478,7 @@ struct objclass {
 	int oc_wldice, oc_wldam, oc_wldmgplus;	/* large monster damage, also used for duration for spells */
 	int oc_extra_damagetype;				/* Type of extra damage caused by the (magic) weapon */
 	int oc_wedice, oc_wedam, oc_wedmgplus;	/* extra damage used as a special effect influenced by target permissions mask */
-	unsigned long oc_aflags;				/* attack related flags, e.g. whether the attack is vorpal */
+	unsigned long oc_aflags, oc_aflags2;	/* attack related flags, e.g. whether the attack is vorpal */
 
 /* Attack flags for weapons, armor, weapon-like tools, and miscellaneous items */
 #define A1_NONE														0x00000000UL
@@ -490,34 +490,32 @@ struct objclass {
 #define A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
 		/* lethal damage is of extra damage type; note that normal critical strike always follows extra_damagetype */
 #define A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK (A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK | A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)  
-#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS						0x00000010UL  /* successful critical strike causes lethal damage */
-#define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS					0x00000020UL  /* successful critical strike causes lethal damage */
-#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000040UL  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
-#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL					0x00000080UL  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
+#define A1_DEADLY_CRITICAL_STRIKE_ONE_FOURTH_MAX_HP_DAMAGE_TO_UNIQUE_MONSTERS 0x00000010UL  /* Unique monsters suffer damage equal to 25% of their hit points instead of being slain */
+#define A1_CRITICAL_STRIKE_DISRESPECTS_TARGETS						0x00000020UL  
+#define A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS					0x00000040UL  
+#define A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES	0x00000080UL  /* All other special types use critical strike probability instead of being certain or using their own standard probability */
+#define A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL					0x00000100UL  /* The number specified by oc_critical_strike_percentage is a die roll on d20 (X or less, e.g., 1 = 5% chance or 2 = 10% chance on any attack regardless of actual hit chance) */
 
-#define A1_WOUNDING													0x00000100UL  /* extra damage caused is permanent damage */
-#define A1_WOUNDING_DISRESPECTS_TARGETS								0x00000200UL  /* successful critical strike causes lethal damage */
-#define A1_WOUNDING_DISRESPECTS_CHARACTERS							0x00000400UL  /* successful critical strike causes lethal damage */
+#define A1_WOUNDING													0x00000200UL  /* extra damage caused is permanent damage */
+#define A1_WOUNDING_DISRESPECTS_TARGETS								0x00000400UL  
+#define A1_WOUNDING_DISRESPECTS_CHARACTERS							0x00000800UL  
 
-#define A1_LIFE_LEECH												0x00000800UL  /* heals hit points equal to the extra damage caused */
-#define A1_LIFE_LEECH_DISRESPECTS_TARGETS							0x00001000UL  /* successful critical strike causes lethal damage */
-#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS						0x00002000UL  /* successful critical strike causes lethal damage */
+#define A1_LIFE_LEECH												0x00001000UL  /* heals hit points equal to the extra damage caused */
+#define A1_LIFE_LEECH_DISRESPECTS_TARGETS							0x00002000UL  
+#define A1_LIFE_LEECH_DISRESPECTS_CHARACTERS						0x00004000UL  
 
-#define A1_SHARPNESS												0x00004000UL	/* 3/20 chance of the monster losing 15% of maximum hit points */
-#define A1_VORPAL													0x00008000UL	/* 1/20 chance of the monster being beheaded */
+#define A1_SHARPNESS												0x00008000UL	/* 3/20 chance of the monster losing 15% of maximum hit points */
+#define A1_VORPAL													0x00010000UL	/* 1/20 chance of the monster being beheaded */
 #define A1_BISECT (A1_SHARPNESS | A1_VORPAL)										/* 1/20 chance of a small monster being bisected and a big monster losing 50% of maximum hit points */
 #define A1_SVB_MASK (A1_SHARPNESS | A1_VORPAL)
-#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS							0x00010000UL
-#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS						0x00020000UL
+#define A1_VORPAL_LIKE_DISRESPECTS_TARGETS							0x00020000UL
+#define A1_VORPAL_LIKE_DISRESPECTS_CHARACTERS						0x00040000UL
 
-#define A1_LEVEL_DRAIN												0x00040000UL  /* drains a level from monsters */
-#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS							0x00080000UL  
-#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS						0x00100000UL  
-
-/* Extra weapon options */
-#define A1_STUN														0x00200000UL  /* stuns target, not implemented */
-#define A1_HITS_ADJACENT_SQUARES									0x00400000UL  /* like Cleaver */
-#define A1_REQUIRES_AND_EXPENDS_A_CHARGE							0x00800000UL  /* Nine lives stealer */
+#define A1_LEVEL_DRAIN												0x00080000UL  /* drains a level from monsters */
+#define A1_LEVEL_DRAIN_DISRESPECTS_TARGETS							0x00100000UL  
+#define A1_LEVEL_DRAIN_DISRESPECTS_CHARACTERS						0x00200000UL  
+/* free bit */
+/* free bit */
 
 /* General */
 #define A1_MAGIC_RESISTANCE_PROTECTS								0x01000000UL
@@ -530,7 +528,14 @@ struct objclass {
 #define A1_ITEM_VANISHES_ONLY_IF_PERMITTED_TARGET					0x80000000UL
 
 
+/* More attack flags */
+#define A2_NONE														0x00000000UL
+#define A2_HITS_ADJACENT_SQUARES									0x00000001UL  /* like Cleaver */
+#define A2_REQUIRES_AND_EXPENDS_A_CHARGE							0x00000002UL  /* Nine lives stealer */
+
+
 #define oc_spell_flags oc_aflags
+#define oc_spell_flags2 oc_aflags2
 
 /* Spell flags for spells, scrolls, potions, spell-like tools, and wands */
 #define S1_NONE									0x00000000UL
@@ -543,6 +548,7 @@ struct objclass {
 #define S1_NO_VERBAL_COMPONENT					0x00000040UL
 #define S1_DOES_NOT_TAKE_A_TURN					0x00000080UL
 
+#define S2_NONE									0x00000000UL
 
 	int oc_hitbonus;						/* weapons: "to hit" bonus */
 	int oc_mc_adjustment;					/* weapons: adjustment to any MC checks; spells and wands: MC adjustment */
@@ -693,6 +699,7 @@ struct objclass {
 	unsigned long oc_power_permissions; /* roles, races, genders, and alignments that the item's powers are conferred to */
 	unsigned long oc_target_permissions; /* symbol, M1 flag, M2 flag, M3 flag, etc. for which extra damage is deal to */
 	int oc_critical_strike_percentage;	/* percentage to be used with A1_CRITICAL_STRIKE; can be used for other purposes for a S1_ flag, too */
+
 	int oc_multigen_type;				/* class number multi multigen_type */
 	int oc_tile_floor_height;			/* (scaled) height of the item tile in pixels when it appears on the floor */
 	enum object_soundset_types oc_soundset;
@@ -929,6 +936,15 @@ struct objclass {
 #define ALL_TARGETS				0x00000000UL
 
 };
+
+/* Special values for critical_strike_percentage */
+enum critical_strike_special_percentage_type {
+	CRITICAL_STRIKE_SPECIAL_PERCENTAGE_HIT_DICE_SAVES = -1,	/* Chance is 100% - 5% x Hit Dice */
+};
+
+#define MAX_CRITICAL_STRIKE_SPECIAL_PERCENTAGES (-1 * CRITICAL_STRIKE_SPECIAL_PERCENTAGE_HIT_DICE_SAVES)
+
+extern const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL_PERCENTAGES];
 
 struct class_sym {
     char sym;

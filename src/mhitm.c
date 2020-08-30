@@ -1819,20 +1819,23 @@ register struct obj* omonwep;
     if (!damage)
         return res;
 
+    int crit_strike_probability = get_critical_strike_percentage_chance(mweapon, mdef, magr);
+    int crit_strike_die_roll_threshold = crit_strike_probability / 5;
+
 	/* Wounding */
 	if (mweapon && !uses_spell_flags && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_WOUNDING) &&
 		eligible_for_extra_damage(mweapon, mdef, magr) && !is_rider(mdef->data)
 		&& (
-		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
-			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+			((objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= crit_strike_die_roll_threshold)
 				||
-				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+				(!(objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& critstrikeroll < crit_strike_probability))
 			)
 			||
-			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 				&& 1)
 			)
 		)
@@ -1856,16 +1859,16 @@ register struct obj* omonwep;
 	if (mweapon && !uses_spell_flags && !isdisintegrated && (objects[mweapon->otyp].oc_aflags & A1_LIFE_LEECH) && eligible_for_extra_damage(mweapon, mdef, magr)
 		&& !is_rider(mdef->data) && !is_not_living(mdef->data)
 		&& (
-		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+		((objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
-			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+			((objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+				&& dieroll <= crit_strike_die_roll_threshold)
 				||
-				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+				(!(objects[mweapon->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+					&& critstrikeroll < crit_strike_probability))
 			)
 			||
-			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
+			(!(objects[mweapon->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 				&& 1)
 			)
 		)

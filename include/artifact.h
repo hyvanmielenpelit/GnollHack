@@ -55,8 +55,8 @@
 #define SPFX_NONE				0x00000000UL  /* No special effects, just a bonus */
 #define SPFX_DEATH_RES			0x00000001UL  /* Death resistance */
 #define SPFX_DRAIN_RES			0x00000002UL  /* Drain resistance */
-/* free bit */
-/* free bit */
+#define SPFX_UNDEAD_WARNING		0x00000004UL  /* Item warns you of undead */
+#define SPFX_DEMON_WARNING		0x00000008UL  /* Item warns you of demons */
 #define SPFX_ANTIMAGIC			0x00000010UL  /* Antimagic */
 #define SPFX_WARN_OF_MON		0x00000020UL  /* Item warns you of a specific monster type; also always flickers */
 #define SPFX_SEARCH				0x00000040UL  /* Helps searching */

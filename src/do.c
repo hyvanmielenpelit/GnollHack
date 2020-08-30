@@ -1860,13 +1860,19 @@ register struct obj* obj;
 				powercnt++;
 				int critchance = objects[otyp].oc_critical_strike_percentage;
 				char chancebuf[BUFSZ] = "";
-				Sprintf(chancebuf, " at %d%% chance", critchance);
+				if (critchance < 0)
+				{
+					Sprintf(chancebuf, " at chance equal to %s", critical_strike_special_percentage_names[min(MAX_CRITICAL_STRIKE_SPECIAL_PERCENTAGES, -1 * critchance) - 1]);
+				}
+				else
+					Sprintf(chancebuf, " at %d%% chance", critchance);
+
 				if((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DISINTEGRATION_ATTACK)
 					Sprintf(buf, " %2d - Disintegrates the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
 				else if ((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
 					Sprintf(buf, " %2d - Slays the target on hit%s", powercnt, critchance < 100 ? chancebuf : "");
 				else
-					Sprintf(buf, " %2d - Causes lethal %s damage to the target %s", powercnt,
+					Sprintf(buf, " %2d - Causes lethal %s damage%s", powercnt,
 						get_damage_type_text((objects[otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_USES_EXTRA_DAMAGE_TYPE) ? objects[otyp].oc_extra_damagetype : AD_PHYS), 
 						critchance < 100 ? chancebuf : "");
 				txt = buf;

@@ -504,6 +504,19 @@ int use_type;
 }
 
 int
+get_critical_strike_percentage_chance(weapon, mon, mattacker)
+struct obj* weapon;
+struct monst* mon, mattacker;
+{
+    boolean youdefend = (mon == &youmonst);
+    int crit_strike_probability = !weapon ? 0 :
+        objects[weapon->otyp].oc_critical_strike_percentage == CRITICAL_STRIKE_SPECIAL_PERCENTAGE_HIT_DICE_SAVES ? max(5, 100 - 5 * (youdefend ? u.ulevel : mon ? mon->m_lev : 0)) :
+        objects[weapon->otyp].oc_critical_strike_percentage;
+
+    return crit_strike_probability;
+}
+
+int
 weapon_extra_dmg_value(otmp, mon, mattacker, basedmg)
 struct obj* otmp;
 struct monst* mon;
@@ -521,6 +534,10 @@ int basedmg;
 	boolean extra_is_critical = FALSE;
 	boolean criticalstrikesucceeded = FALSE;
 
+    int crit_strike_probability = get_critical_strike_percentage_chance(otmp, mon, mattacker);
+    int crit_strike_die_roll_threshold = crit_strike_probability / 5;
+
+
 	if ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE) && !(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_IS_DEADLY))
 	{
 		extra_is_critical = TRUE;
@@ -529,7 +546,7 @@ int basedmg;
 			&& ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(mattacker, otmp))
 			)
 		{
-			if (rn2(100) < objects[otmp->otyp].oc_critical_strike_percentage)
+			if (rn2(100) < crit_strike_probability)
 				criticalstrikesucceeded = TRUE;
 		}
 	}

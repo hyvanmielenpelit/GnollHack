@@ -1724,6 +1724,9 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		//(void) Mb_hit(magr, mdef, otmp, &totaldamagedone, dieroll, vis, hittee);
 	}
 
+	int crit_strike_probability = get_critical_strike_percentage_chance(otmp, mdef, magr);
+	int crit_strike_die_roll_threshold = crit_strike_probability / 5;
+
 	/* We really want "on a natural 20" but GnollHack does it in */
 	/* reverse from AD&D. */
 	if ((objects[otmp->otyp].oc_aflags & A1_SVB_MASK) == A1_BISECT && !(youdefend ? Bisection_resistance : has_bisection_resistance(mdef)))
@@ -1735,10 +1738,10 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			  ((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			   && (
 				   ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL) 
-					   && dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+					   && dieroll <= crit_strike_die_roll_threshold)
 				   ||
 				   (!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL) 
-					   && criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+					   && criticalstrikeroll < crit_strike_probability))
 				  )
 			 ||
 			 (!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES) 
@@ -1863,10 +1866,10 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 				&& (
 				((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+					&& dieroll <= crit_strike_die_roll_threshold)
 					||
 					(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-						&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+						&& criticalstrikeroll < crit_strike_probability))
 				)
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -1940,10 +1943,10 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 		((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
 			((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& (dieroll <= objects[otmp->otyp].oc_critical_strike_percentage || has_vorpal_vulnerability(mdef->data)))
+				&& (dieroll <= crit_strike_die_roll_threshold || has_vorpal_vulnerability(mdef->data)))
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& (criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage || has_vorpal_vulnerability(mdef->data))))
+					&& (criticalstrikeroll < crit_strike_probability || has_vorpal_vulnerability(mdef->data))))
 			)
 			||
 			(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -2036,10 +2039,10 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			((objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 				&& (
 				((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& dieroll <= objects[otmp->otyp].oc_critical_strike_percentage)
+					&& dieroll <= crit_strike_die_roll_threshold)
 					||
 					(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-						&& criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage))
+						&& criticalstrikeroll < crit_strike_probability))
 				)
 				||
 				(!(objects[otmp->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -2102,11 +2105,19 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 			&& ((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_DISRESPECTS_CHARACTERS) || !inappropriate_monster_character_type(magr, otmp))
 			)
 		{
-			if (criticalstrikeroll < objects[otmp->otyp].oc_critical_strike_percentage 
-				&& (!(objects[otmp->otyp].oc_aflags & A1_REQUIRES_AND_EXPENDS_A_CHARGE) || ((objects[otmp->otyp].oc_aflags & A1_REQUIRES_AND_EXPENDS_A_CHARGE) && otmp->charges > 0)))
+			if (
+				(
+					((objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+						&& dieroll <= crit_strike_die_roll_threshold)
+					||
+					(!(objects[otmp->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
+						&& criticalstrikeroll < crit_strike_probability)
+				)
+				&& (!(objects[otmp->otyp].oc_aflags2 & A2_REQUIRES_AND_EXPENDS_A_CHARGE) || ((objects[otmp->otyp].oc_aflags2 & A2_REQUIRES_AND_EXPENDS_A_CHARGE) && otmp->charges > 0))
+				)
 			{
 				/* Expend a charge */
-				if ((objects[otmp->otyp].oc_aflags & A1_REQUIRES_AND_EXPENDS_A_CHARGE) && otmp->charges > 0)
+				if ((objects[otmp->otyp].oc_aflags2 & A2_REQUIRES_AND_EXPENDS_A_CHARGE) && otmp->charges > 0)
 				{
 					consume_obj_charge(otmp, TRUE);
 				}
@@ -2223,8 +2234,15 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 								if ((otmp2 = which_armor(mdef, W_ARMO)) != 0)
 									m_useup(mdef, otmp2);
 
-								lethaldamage = TRUE;
-								isdisintegrated = TRUE;
+								if ((mdef->data->geno & G_UNIQ) && (objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ONE_FOURTH_MAX_HP_DAMAGE_TO_UNIQUE_MONSTERS))
+								{
+									totaldamagedone += mdef->mhpmax / 4;
+								}
+								else
+								{
+									lethaldamage = TRUE;
+									isdisintegrated = TRUE;
+								}
 							}
 						}
 						else
@@ -2274,40 +2292,55 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 					}
 					else if ((objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ATTACK_TYPE_MASK) == A1_DEADLY_CRITICAL_STRIKE_IS_DEATH_ATTACK)
 					{
-						lethaldamage = TRUE;
-						if (!youdefend)
+						if ((mdef->data->geno & G_UNIQ) && (objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ONE_FOURTH_MAX_HP_DAMAGE_TO_UNIQUE_MONSTERS))
 						{
-							if (check_rider_death_absorption(mdef, The(xname(otmp))))
-							{
-								lethaldamage = FALSE;
-								totaldamagedone = 0;
-							}
-							else
-							{
-								pline("%s hits %s. The magic is deadly...", The(xname(otmp)), mon_nam(mdef));
-							}
+							totaldamagedone += mdef->mhpmax / 4;
 						}
 						else
 						{
-							pline("%s hits you. The magic is deadly...", The(xname(otmp)));
+
+							lethaldamage = TRUE;
+							if (!youdefend)
+							{
+								if (check_rider_death_absorption(mdef, The(xname(otmp))))
+								{
+									lethaldamage = FALSE;
+									totaldamagedone = 0;
+								}
+								else
+								{
+									pline("%s hits %s. The magic is deadly...", The(xname(otmp)), mon_nam(mdef));
+								}
+							}
+							else
+							{
+								pline("%s hits you. The magic is deadly...", The(xname(otmp)));
+							}
 						}
 					}
 					else
 					{
-						lethaldamage = TRUE;
-						if (!youdefend)
+						if ((mdef->data->geno & G_UNIQ) && (objects[otmp->otyp].oc_aflags & A1_DEADLY_CRITICAL_STRIKE_ONE_FOURTH_MAX_HP_DAMAGE_TO_UNIQUE_MONSTERS))
 						{
-							if (is_living(mdef->data))
-								pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
-							else
-								pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
+							totaldamagedone += mdef->mhpmax / 4;
 						}
 						else
 						{
-							if (is_living(mdef->data))
-								pline("%s strikes you dead!", The(xname(otmp)));
+							lethaldamage = TRUE;
+							if (!youdefend)
+							{
+								if (is_living(mdef->data))
+									pline("%s strikes %s dead!", The(xname(otmp)), mon_nam(mdef));
+								else
+									pline("%s strikes %s down!", The(xname(otmp)), mon_nam(mdef));
+							}
 							else
-								pline("%s strikes you down!", The(xname(otmp)));
+							{
+								if (is_living(mdef->data))
+									pline("%s strikes you dead!", The(xname(otmp)));
+								else
+									pline("%s strikes you down!", The(xname(otmp)));
+							}
 						}
 					}
 				}
@@ -3088,6 +3121,8 @@ static const struct abil2spfx_tag {
 	{ WARNING, SPFX_WARNING },
 	{ WARN_ORC, SPFX_ORC_WARNING },
 	{ WARN_ELF, SPFX_ELF_WARNING },
+	{ WARN_DEMON, SPFX_DEMON_WARNING },
+	{ WARN_UNDEAD, SPFX_UNDEAD_WARNING },
 	{ TITAN_STRENGTH, SPFX_STR_25 },
 	{ DIVINE_DEXTERITY, SPFX_DEX_25 },
 	{ DIVINE_ENDURANCE, SPFX_CON_25 },

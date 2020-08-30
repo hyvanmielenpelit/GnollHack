@@ -2845,6 +2845,8 @@ register struct obj* omonwep;
 #endif
 
 	int permdmg2 = 0;
+    int crit_strike_probability = get_critical_strike_percentage_chance(omonwep, &youmonst, mtmp);
+    int crit_strike_die_roll_threshold = crit_strike_probability / 5;
 
 	/* Wounding */
 	if (mattk->aatyp == AT_WEAP && omonwep && !uses_spell_flags && (objects[omonwep->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(omonwep, &youmonst, mtmp)
@@ -2852,10 +2854,10 @@ register struct obj* omonwep;
 		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
 			((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= objects[omonwep->otyp].oc_critical_strike_percentage)
+				&& dieroll <= crit_strike_die_roll_threshold)
 				||
 				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < objects[omonwep->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < crit_strike_probability))
 			)
 			||
 			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -2880,10 +2882,10 @@ register struct obj* omonwep;
 		((objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
 			((objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= objects[omonwep->otyp].oc_critical_strike_percentage)
+				&& dieroll <= crit_strike_die_roll_threshold)
 				||
 				(!(objects[omonwep->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < objects[omonwep->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < crit_strike_probability))
 			)
 			||
 			(!(objects[omonwep->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)

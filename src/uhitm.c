@@ -802,7 +802,7 @@ struct attack *uattk;
 		int mhit = (tmp > dieroll || u.uswallow);
 		boolean uses_spell_flags = wep ? object_uses_spellbook_wand_flags_and_properties(wep) : FALSE;
 
-		if (wep && !uses_spell_flags &&((objects[wep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (wep->oartifact && artifact_has_flag(wep, AF_HITS_ADJACENT_SQUARES)))
+		if (wep && !uses_spell_flags &&((objects[wep->otyp].oc_aflags2 & A2_HITS_ADJACENT_SQUARES) || (wep->oartifact && artifact_has_flag(wep, AF_HITS_ADJACENT_SQUARES)))
 			&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 		{
 			malive = hitum_cleave(mon, uattk, wep);
@@ -868,7 +868,7 @@ struct attack *uattk;
 			int mhit = (tmp > dieroll || u.uswallow);
 			boolean uses_spell_flags = wep ? object_uses_spellbook_wand_flags_and_properties(wep) : FALSE;
 
-			if (wep && !uses_spell_flags && ((objects[wep->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES) || (wep->oartifact && artifact_has_flag(wep, AF_HITS_ADJACENT_SQUARES)))
+			if (wep && !uses_spell_flags && ((objects[wep->otyp].oc_aflags2 & A2_HITS_ADJACENT_SQUARES) || (wep->oartifact && artifact_has_flag(wep, AF_HITS_ADJACENT_SQUARES)))
 				&& !u.uswallow && !u.ustuck && !NODIAG(u.umonnum))
 			{
 				malive = hitum_cleave(mon, uattk, wep);
@@ -1174,7 +1174,7 @@ boolean* obj_destroyed;
 					/* Cleaver can hit up to three targets at once so don't
 					   let it also hit from behind or shatter foes' weapons */
 					|| (hand_to_hand && obj->oartifact && artifact_has_flag(obj, AF_HITS_ADJACENT_SQUARES))
-					|| (hand_to_hand && (objects[obj->otyp].oc_aflags & A1_HITS_ADJACENT_SQUARES))
+					|| (hand_to_hand && (objects[obj->otyp].oc_aflags2 & A2_HITS_ADJACENT_SQUARES))
 					)
 				{
 					; /* no special bonuses */
@@ -2052,6 +2052,9 @@ boolean* obj_destroyed;
 
 	boolean uses_spell_flags = obj ? object_uses_spellbook_wand_flags_and_properties(obj) : FALSE;
 
+	int crit_strike_probability = get_critical_strike_percentage_chance(obj, mon, &youmonst);
+	int crit_strike_die_roll_threshold = crit_strike_probability / 5;
+
 	/* Wounding */
 	if (obj && !uses_spell_flags && (objects[obj->otyp].oc_aflags & A1_WOUNDING) && eligible_for_extra_damage(obj, mon, &youmonst)
 		&& !is_rider(mon->data)
@@ -2059,10 +2062,10 @@ boolean* obj_destroyed;
 		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
 			((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= objects[obj->otyp].oc_critical_strike_percentage)
+				&& dieroll <= crit_strike_die_roll_threshold)
 				||
 				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < objects[obj->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < crit_strike_probability))
 			)
 			||
 			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
@@ -2101,10 +2104,10 @@ boolean* obj_destroyed;
 		((objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)
 			&& (
 			((objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-				&& dieroll <= objects[obj->otyp].oc_critical_strike_percentage)
+				&& dieroll <= crit_strike_die_roll_threshold)
 				||
 				(!(objects[obj->otyp].oc_aflags & A1_CRITICAL_STRIKE_PERCENTAGE_IS_A_DIE_ROLL)
-					&& critstrikeroll < objects[obj->otyp].oc_critical_strike_percentage))
+					&& critstrikeroll < crit_strike_probability))
 			)
 			||
 			(!(objects[obj->otyp].oc_aflags & A1_USE_CRITICAL_STRIKE_PERCENTAGE_FOR_SPECIAL_ATTACK_TYPES)

@@ -130,6 +130,9 @@ const char* tool_type_names[MAX_TOOL_TYPES] = {
     "candle", "lamp", "lantern", "whistle", "flute", "harp", "drum", "saw", "jar", "can", "grail"
 };
 
+const char* critical_strike_special_percentage_names[MAX_CRITICAL_STRIKE_SPECIAL_PERCENTAGES] = {
+    "100% less 5% per hit dice"
+};
 
 /* "an uncursed greased partly eaten guardian naga hatchling [corpse]" */
 #define PREFIX 80 /* (56) */
