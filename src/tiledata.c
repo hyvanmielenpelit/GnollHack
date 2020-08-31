@@ -1118,7 +1118,7 @@ uchar* tilemapflags;
         {
             const char* swallow_direction_name_array[MAX_SWALLOW_CHARS] = {
                     "top-left", "top-center", "top-right",
-                    "middle-left", "middle-right",
+                    "middle-left", "middle-center", "middle-right",
                     "bottom-left", "bottom-center", "bottom-right" };
 
             if (tsd->swallow_tile_style == 0)

@@ -1533,27 +1533,29 @@ int first;
     {
         if (left_ok)
             show_glyph_on_layer_and_ascii(u.ux - 1, u.uy - 1,
-                       swallow_to_glyph(swallower, S_sw_tl), LAYER_GENERAL_EFFECT);
-        show_glyph_on_layer_and_ascii(u.ux, u.uy - 1, swallow_to_glyph(swallower, S_sw_tc), LAYER_GENERAL_EFFECT);
+                       swallow_to_glyph(swallower, S_sw_tl), LAYER_FEATURE);
+        show_glyph_on_layer_and_ascii(u.ux, u.uy - 1, swallow_to_glyph(swallower, S_sw_tc), LAYER_FEATURE);
         if (rght_ok)
             show_glyph_on_layer_and_ascii(u.ux + 1, u.uy - 1,
-                       swallow_to_glyph(swallower, S_sw_tr), LAYER_GENERAL_EFFECT);
+                       swallow_to_glyph(swallower, S_sw_tr), LAYER_FEATURE);
     }
 
     if (left_ok)
-        show_glyph_on_layer_and_ascii(u.ux - 1, u.uy, swallow_to_glyph(swallower, S_sw_ml), LAYER_GENERAL_EFFECT);
+        show_glyph_on_layer_and_ascii(u.ux - 1, u.uy, swallow_to_glyph(swallower, S_sw_ml), LAYER_FEATURE);
+
+    show_glyph_on_layer(u.ux, u.uy, swallow_to_glyph(swallower, S_sw_mc), LAYER_FEATURE);
     display_self();
     if (rght_ok)
-        show_glyph_on_layer_and_ascii(u.ux + 1, u.uy, swallow_to_glyph(swallower, S_sw_mr), LAYER_GENERAL_EFFECT);
+        show_glyph_on_layer_and_ascii(u.ux + 1, u.uy, swallow_to_glyph(swallower, S_sw_mr), LAYER_FEATURE);
 
     if (isok(u.ux, u.uy + 1)) {
         if (left_ok)
             show_glyph_on_layer_and_ascii(u.ux - 1, u.uy + 1,
-                       swallow_to_glyph(swallower, S_sw_bl), LAYER_GENERAL_EFFECT);
-        show_glyph_on_layer_and_ascii(u.ux, u.uy + 1, swallow_to_glyph(swallower, S_sw_bc), LAYER_GENERAL_EFFECT);
+                       swallow_to_glyph(swallower, S_sw_bl), LAYER_FEATURE);
+        show_glyph_on_layer_and_ascii(u.ux, u.uy + 1, swallow_to_glyph(swallower, S_sw_bc), LAYER_FEATURE);
         if (rght_ok)
             show_glyph_on_layer_and_ascii(u.ux + 1, u.uy + 1,
-                       swallow_to_glyph(swallower, S_sw_br), LAYER_GENERAL_EFFECT);
+                       swallow_to_glyph(swallower, S_sw_br), LAYER_FEATURE);
     }
 
     /* Update the swallowed position. */
@@ -2901,7 +2903,7 @@ int loc;
         impossible("swallow_to_glyph: bad swallow location");
         loc = S_sw_br;
     }
-    return ((int) (what_mon(mnum, rn2_on_display_rng) * MAX_SWALLOW_CHARS) |
+    return ((int) (what_mon(mnum, rn2_on_display_rng) * MAX_SWALLOW_CHARS) +
             (loc - S_sw_tl)) + GLYPH_SWALLOW_OFF;
 }
 

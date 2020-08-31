@@ -1112,6 +1112,7 @@ struct symparse loadsyms[] = {
     { SYM_PCHAR, S_sw_tc, "S_sw_tc" },
     { SYM_PCHAR, S_sw_tr, "S_sw_tr" },
     { SYM_PCHAR, S_sw_ml, "S_sw_ml" },
+    { SYM_PCHAR, S_sw_mc, "S_sw_mc" },
     { SYM_PCHAR, S_sw_mr, "S_sw_mr" },
     { SYM_PCHAR, S_sw_bl, "S_sw_bl" },
     { SYM_PCHAR, S_sw_bc, "S_sw_bc" },

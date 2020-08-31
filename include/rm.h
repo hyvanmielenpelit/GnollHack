@@ -123,32 +123,33 @@ enum screen_symbols {
     S_sw_tl     = 80+12, /* swallow top left [1]             */
     S_sw_tc     = 81+12, /* swallow top center [2]    Order: */
     S_sw_tr     = 82+12, /* swallow top right [3]            */
-    S_sw_ml     = 83+12, /* swallow middle left [4]   1 2 3  */
-    S_sw_mr     = 84+12, /* swallow middle right [6]  4 5 6  */
-    S_sw_bl     = 85+12, /* swallow bottom left [7]   7 8 9  */
-    S_sw_bc     = 86+12, /* swallow bottom center [8]        */
-    S_sw_br     = 87+12, /* swallow bottom right [9]         */
+    S_sw_ml     = 83+12, /* swallow middle left [4]          */
+    S_sw_mc     = 84+12, /* swallow middle center [5] 1 2 3  */
+    S_sw_mr     = 85+12, /* swallow middle right [6]  4 5 6  */
+    S_sw_bl     = 86+12, /* swallow bottom left [7]   7 8 9  */
+    S_sw_bc     = 87+12, /* swallow bottom center [8]        */
+    S_sw_br     = 88+12, /* swallow bottom right [9]         */
 
-    S_explode1  = 88+12, /* explosion top left               */
-    S_explode2  = 89+12, /* explosion top center             */
-    S_explode3  = 90+12, /* explosion top right        Ex.   */
-    S_explode4  = 91+12, /* explosion middle left            */
-    S_explode5  = 92+12, /* explosion middle center    /-\   */
-    S_explode6  = 93+12, /* explosion middle right     |@|   */
-    S_explode7  = 94+12, /* explosion bottom left      \-/   */
-    S_explode8  = 95+12, /* explosion bottom center          */
-    S_explode9  = 96+12, /* explosion bottom right           */
+    S_explode1  = 89+12, /* explosion top left               */
+    S_explode2  = 90+12, /* explosion top center             */
+    S_explode3  = 91+12, /* explosion top right        Ex.   */
+    S_explode4  = 92+12, /* explosion middle left            */
+    S_explode5  = 93+12, /* explosion middle center    /-\   */
+    S_explode6  = 94+12, /* explosion middle right     |@|   */
+    S_explode7  = 95+12, /* explosion bottom left      \-/   */
+    S_explode8  = 96+12, /* explosion bottom center          */
+    S_explode9  = 97+12, /* explosion bottom right           */
 
 /* end effects */
 
-    MAX_CMAPPED_CHARS   = 109  /* maximum number of mapped characters */
+    MAX_CMAPPED_CHARS   = 110  /* maximum number of mapped characters */
 };
 
 #define MAX_DUNGEON_CHARS (S_water - S_unexplored + 1) /* mapped dungeon characters */
 #define MAX_TRAP_CHARS (S_vibrating_square - S_arrow_trap + 1) /* trap chars */
 #define MAX_EFFECT_CHARS (S_explode9 - S_vbeam + 1) /* mapped effects characters */
 #define MAX_EXPLOSION_CHARS 9 /* number of explosion characters */
-#define MAX_SWALLOW_CHARS 8 /* number of swallow characters */
+#define MAX_SWALLOW_CHARS 9 /* number of swallow characters */
 #define MAX_ZAP_CHARS 4 /* number of zap characters */
 
 #define DARKROOMSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkroom)

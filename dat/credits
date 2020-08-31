@@ -3,16 +3,19 @@
 
                               DEVELOPMENT
 
-Game Design:                   Tommi Gustafsson, Janne Gustafsson 
-Programming, GnollHack:        Janne Gustafsson
-Programming, TilesetCompiler:  Tommi Gustafsson
-Tile Graphics, Monsters:       Riikka Laakkonen
-Tile Graphics, Dungeon:        Anu Kogger
-Tile Graphics, Additional:     Jenni Berg
-Tile Graphics, Management:     Mikko Kangas
-Audio Effects:                 Elina Palmroos
-Improved TTY Player:           Olli Lounela
-Playtesting:                   Tommi Gustafsson, Mikko Kangas
+Game Design:     Tommi Gustafsson, Janne Gustafsson 
+Programming:     Janne Gustafsson (GnollHack, GnollHackW)
+                 Tommi Gustafsson (Tileset Compiler, Dgamelaunch mod)  
+Tile Graphics:   Riikka Laakkonen (Players, monsters, dungeon features)
+                 Anu Kogger (Dungeon floors and walls)
+                 Markus Turunen (Player animations)
+                 Janne Rajamäki (Varius corpses)
+                 Janne Gustafsson (Various UI icons)
+Contributors:    Mikko Kangas (Graphics management)
+                 Elina Palmroos (Various audio files)
+                 Olli Lounela (Improved TTY Player)
+                 Jenni Berg (Graphics assistance)
+Playtesting:     Tommi Gustafsson, Mikko Kangas
 
 
                            EXTERNAL SOFTWARE
