@@ -16,17 +16,7 @@
 #endif
 
 #ifdef TEXTCOLOR
-static const int explcolors[] = {
-    CLR_BLACK,   /* dark    */
-    CLR_GREEN,   /* noxious */
-    CLR_BROWN,   /* muddy   */
-    CLR_BLUE,    /* wet     */
-    CLR_MAGENTA, /* magical */
-    CLR_ORANGE,  /* fiery   */
-    CLR_WHITE,   /* frosty  */
-};
-
-#define zap_color(n) color = iflags.use_color ? zapcolors[n] : NO_COLOR
+#define zap_color(n) color = iflags.use_color ? zap_type_definitions[n].color : NO_COLOR
 #define cmap_color(n,cmap_type_index) color = iflags.use_color ? defsyms[n].color[cmap_type_index] : NO_COLOR
 #define cmap_variation_color(n,cmap_type_index) color = iflags.use_color ? defsym_variations[n].color[cmap_type_index] : NO_COLOR
 #define obj_color(n) color = iflags.use_color ? objects[n].oc_color : NO_COLOR
@@ -36,7 +26,7 @@ static const int explcolors[] = {
 #define pet_color(n) color = iflags.use_color ? mons[n].mcolor : NO_COLOR
 #define warn_color(n) \
     color = iflags.use_color ? def_warnsyms[n].color : NO_COLOR
-#define explode_color(n) color = iflags.use_color ? explcolors[n] : NO_COLOR
+#define explode_color(n) color = iflags.use_color ? explosion_type_definitions[n].color : NO_COLOR
 
 #else /* no text color */
 

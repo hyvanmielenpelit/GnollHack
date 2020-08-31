@@ -176,23 +176,29 @@ NEARDATA struct obj
     *thrownobj = 0,     /* object in flight due to throwing */
     *kickedobj = 0;     /* object in flight due to kicking */
 
-#ifdef TEXTCOLOR
-/*
- *  This must be the same order as used for buzz() in zap.c.
- */
-const int zapcolors[NUM_ZAP] = {
-    HI_ZAP,     /* 0 - missile */
-    CLR_ORANGE, /* 1 - fire */
-    CLR_WHITE,  /* 2 - frost */
-    HI_ZAP,     /* 3 - sleep */
-    CLR_BLACK,  /* 4 - disintegration */
-    CLR_WHITE,  /* 5 - lightning */
-    CLR_YELLOW, /* 6 - poison gas */
-    CLR_GREEN,  /* 7 - acid */
-	CLR_GRAY,   /* 8 - death */
-	CLR_BROWN   /* 9 - petrification */
+struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
+    {"magic", HI_ZAP, NO_ANIMATION},
+    {"fire", CLR_ORANGE, NO_ANIMATION},
+    {"frost", CLR_WHITE, NO_ANIMATION},
+    {"sleep", HI_ZAP, NO_ANIMATION},
+    {"disintegration", CLR_BLACK, NO_ANIMATION},
+    {"lightning", CLR_WHITE, NO_ANIMATION},
+    {"poison", CLR_YELLOW, NO_ANIMATION},
+    {"acid", CLR_GREEN, NO_ANIMATION},
+    {"death", CLR_GRAY, NO_ANIMATION},
+    {"petrification", CLR_BROWN, NO_ANIMATION}
 };
-#endif /* text color */
+
+struct explosion_type_definition explosion_type_definitions[EXPL_MAX] = {
+    {"dark", CLR_BLACK, NO_ANIMATION},
+    {"noxious", CLR_GREEN, NO_ANIMATION},
+    {"muddy", CLR_BROWN, NO_ANIMATION },
+    {"wet", CLR_BLUE, NO_ANIMATION},
+    {"magical", CLR_MAGENTA, NO_ANIMATION},
+    {"fiery", CLR_ORANGE, NO_ANIMATION},
+    {"frosty", CLR_WHITE, NO_ANIMATION}
+};
+
 
 const int shield_static[SHIELD_COUNT] = {
     S_ss1, S_ss2, S_ss3, S_ss2, S_ss1, S_ss2, S_ss4, /* 7 per row */

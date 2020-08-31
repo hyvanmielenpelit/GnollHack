@@ -255,9 +255,6 @@ E const int talk_static[];
 E NEARDATA struct spell spl_book[]; /* sized in decl.c */
 
 #include "color.h"
-#ifdef TEXTCOLOR
-E const int zapcolors[];
-#endif
 
 E const struct class_sym def_oc_syms[MAX_OBJECT_CLASSES]; /* default class symbols */
 E uchar oc_syms[MAX_OBJECT_CLASSES];                      /* current class symbols */
@@ -273,6 +270,36 @@ E NEARDATA struct obj *invent, *uarm, *uarmc, *uarmh, *uarms, *uarmg, *uarmf,
 	*uskin, *uamul, *uleft, *uright, *ublindf, *uwep, *uswapwep, *uswapwep2, *uquiver;
 
 #define uwep2 uarms
+
+struct zap_type_definition {
+    const char* name;
+    const int color;
+    short animation;
+};
+
+#define NUM_ZAP 10 /* number of zap beam types */
+
+E NEARDATA struct zap_type_definition zap_type_definitions[NUM_ZAP];
+
+/* Macros for explosion types */
+enum explosion_types {
+    EXPL_DARK = 0,
+    EXPL_NOXIOUS = 1,
+    EXPL_MUDDY = 2,
+    EXPL_WET = 3,
+    EXPL_MAGICAL = 4,
+    EXPL_FIERY = 5,
+    EXPL_FROSTY = 6,
+    EXPL_MAX = 7
+};
+
+struct explosion_type_definition {
+    const char* name;
+    const int color;
+    short animation;
+};
+
+E NEARDATA struct explosion_type_definition explosion_type_definitions[EXPL_MAX];
 
 E NEARDATA struct obj *uchain; /* defined only when punished */
 E NEARDATA struct obj *uball;

@@ -252,22 +252,6 @@ enum hmon_atkmode_types {
 	HMON_GOLF    = 5  /* alternate ranged */
 };
 
-/* Macros for explosion types */
-enum explosion_types {
-    EXPL_DARK = 0,
-    EXPL_NOXIOUS = 1,
-    EXPL_MUDDY = 2,
-    EXPL_WET = 3,
-    EXPL_MAGICAL = 4,
-    EXPL_FIERY = 5,
-    EXPL_FROSTY = 6,
-    EXPL_MAX = 7
-};
-
-static const char* explosion_type_names[EXPL_MAX] = {
-    "dark", "noxious", "muddy", "wet", "magical", "fiery", "frosty"
-};
-
 /* sortloot() return type; needed before extern.h */
 struct sortloot_item {
     struct obj *obj;

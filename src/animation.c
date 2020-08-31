@@ -8,6 +8,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     { "", 0,
       0, 0, 
       0,
+      0,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
@@ -16,6 +17,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "handcrafted-candle-lit-animation", HANDCRAFTED_CANDLE_ANIMATION_TILES,
       HANDCRAFTED_CANDLE_ANIMATION_FRAMES, HANDCRAFTED_CANDLE_ANIMATION_OFF, 
+      1, 
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -25,6 +27,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "elf_wizard_female_cast-animation", PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_TILES,
       PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -34,6 +37,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "brass-lantern-lit-animation", BRASS_LANTERN_LIT_ANIMATION_TILES,
       BRASS_LANTERN_LIT_ANIMATION_FRAMES, BRASS_LANTERN_LIT_ANIMATION_OFF, 3,
+      1,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
@@ -42,6 +46,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "lawful-altar-animation", LAWFUL_ALTAR_ANIMATION_TILES,
       LAWFUL_ALTAR_ANIMATION_FRAMES, LAWFUL_ALTAR_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -51,6 +56,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "neutral-altar-animation", NEUTRAL_ALTAR_ANIMATION_TILES,
       NEUTRAL_ALTAR_ANIMATION_FRAMES, NEUTRAL_ALTAR_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -60,6 +66,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "chaotic-altar-animation", CHAOTIC_ALTAR_ANIMATION_TILES,
       CHAOTIC_ALTAR_ANIMATION_FRAMES, CHAOTIC_ALTAR_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -69,6 +76,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "altar-of-moloch-animation", ALTAR_OF_MOLOCH_ANIMATION_TILES,
       ALTAR_OF_MOLOCH_ANIMATION_FRAMES, ALTAR_OF_MOLOCH_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -78,6 +86,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "high-altar-animation", HIGH_ALTAR_ANIMATION_TILES,
       HIGH_ALTAR_ANIMATION_FRAMES, HIGH_ALTAR_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -87,6 +96,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "look-cursor-animation", LOOK_CURSOR_ANIMATION_TILES,
       LOOK_CURSOR_ANIMATION_FRAMES, LOOK_CURSOR_ANIMATION_OFF, 
+      1,
       7,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -96,6 +106,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "kobold-animation", KOBOLD_ANIMATION_TILES,
       KOBOLD_ANIMATION_FRAMES, KOBOLD_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -105,6 +116,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "large-kobold-animation", LARGE_KOBOLD_ANIMATION_TILES,
       LARGE_KOBOLD_ANIMATION_FRAMES, LARGE_KOBOLD_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -114,6 +126,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "kobold-lord-animation", KOBOLD_LORD_ANIMATION_TILES,
       KOBOLD_LORD_ANIMATION_FRAMES, KOBOLD_LORD_ANIMATION_OFF,
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -124,6 +137,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     { "elf-wizard-female-kick-animation", PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_TILES,
       PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_KICK_ANIMATION_OFF, 
       1,
+      1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
@@ -133,6 +147,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     { "dracolich-attack-animation", DRACOLICH_ATTACK_ANIMATION_TILES,
       DRACOLICH_ATTACK_ANIMATION_FRAMES, DRACOLICH_ATTACK_ANIMATION_OFF, 
       1,
+      1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
@@ -141,6 +156,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "magic-fountain-animation", MAGIC_FOUNTAIN_ANIMATION_TILES,
         MAGIC_FOUNTAIN_ANIMATION_FRAMES, MAGIC_FOUNTAIN_ANIMATION_OFF, 
+        1,
         2,
         ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
@@ -150,6 +166,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "fountain-of-healing-animation", FOUNTAIN_OF_HEALING_ANIMATION_TILES,
         FOUNTAIN_OF_HEALING_ANIMATION_FRAMES, FOUNTAIN_OF_HEALING_ANIMATION_OFF, 
+        1,
         2,
         ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
@@ -159,6 +176,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "fountain-of-mana-animation", FOUNTAIN_OF_MANA_ANIMATION_TILES,
         FOUNTAIN_OF_MANA_ANIMATION_FRAMES, FOUNTAIN_OF_MANA_ANIMATION_OFF, 
+        1,
         2,
         ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
@@ -168,6 +186,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "fountain-of-power-animation", FOUNTAIN_OF_POWER_ANIMATION_TILES,
         FOUNTAIN_OF_POWER_ANIMATION_FRAMES, FOUNTAIN_OF_POWER_ANIMATION_OFF, 
+        1,
         2,
         ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
@@ -177,6 +196,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "fountain-of-poison-animation", FOUNTAIN_OF_MANA_ANIMATION_TILES,
         FOUNTAIN_OF_MANA_ANIMATION_FRAMES, FOUNTAIN_OF_MANA_ANIMATION_OFF, 
+        1,
         2,
         ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
@@ -186,6 +206,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "fountain-of-water-animation", FOUNTAIN_OF_WATER_ANIMATION_TILES,
         FOUNTAIN_OF_WATER_ANIMATION_FRAMES, FOUNTAIN_OF_WATER_ANIMATION_OFF, 
+        1,
         2,
         ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
@@ -196,6 +217,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     { "human-knight-female-attack-animation", HUMAN_KNIGHT_FEMALE_ATTACK_ANIMATION_TILES,
       HUMAN_KNIGHT_FEMALE_ATTACK_ANIMATION_FRAMES, HUMAN_KNIGHT_FEMALE_ATTACK_ANIMATION_OFF, 
       1,
+      1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
@@ -205,6 +227,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     { "human-knight-female-kick-animation", HUMAN_KNIGHT_FEMALE_KICK_ANIMATION_TILES,
         HUMAN_KNIGHT_FEMALE_KICK_ANIMATION_FRAMES, HUMAN_KNIGHT_FEMALE_KICK_ANIMATION_OFF, 
         1,
+        1,
         ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
         { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
@@ -213,6 +236,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
     { "human-knight-female-cast-animation", HUMAN_KNIGHT_FEMALE_CAST_ANIMATION_TILES,
         HUMAN_KNIGHT_FEMALE_CAST_ANIMATION_FRAMES, HUMAN_KNIGHT_FEMALE_CAST_ANIMATION_OFF,
+        1,
         2,
         ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
@@ -220,8 +244,19 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
         { HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dust-vortex-swallow-animation", DUST_VORTEX_SWALLOW_ANIMATION_TILES,
+      DUST_VORTEX_SWALLOW_ANIMATION_FRAMES, DUST_VORTEX_SWALLOW_ANIMATION_OFF,
+      MAX_SWALLOW_CHARS,
+      3,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", TWISTED_CANDLE_ANIMATION_TILES,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 
+      1,
       3,
       ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
@@ -1277,8 +1312,9 @@ struct rm* lev;
 }
 
 short
-maybe_get_animated_tile(ntile, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
+maybe_get_animated_tile(ntile, tile_animation_idx, play_type, interval_counter, frame_idx_ptr, main_tile_idx_ptr, mapAnimated, autodraw_ptr)
 short ntile;
+int tile_animation_idx;
 enum animation_play_types play_type;
 unsigned long interval_counter;
 int *frame_idx_ptr, *main_tile_idx_ptr;
@@ -1333,7 +1369,8 @@ enum autodraw_types* autodraw_ptr;
             if (autodraw_ptr)
                 *autodraw_ptr = animations[animation_idx].frame_autodraw[animation_frame_index];
 
-            int animation_glyph = (int)animation_frame_index + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
+            int tile_anim_idx = (tile_animation_idx < 0 || tile_animation_idx >= animations[animation_idx].number_of_tile_animations ? 0 : tile_animation_idx);
+            int animation_glyph = (int)animation_frame_index + tile_anim_idx * animations[animation_idx].number_of_frames + animations[animation_idx].glyph_offset + GLYPH_ANIMATION_OFF;
             short res = glyph2tile[animation_glyph]; /* animated version selected */
             return res;
         }
@@ -1343,7 +1380,33 @@ enum autodraw_types* autodraw_ptr;
 }
 
 
+int
+get_tile_animation_index_from_glyph(glyph)
+int glyph;
+{
+    int absglyph = abs(glyph);
+    if (glyph_is_swallow(absglyph))
+    {
+        int glyph_idx = absglyph - GLYPH_SWALLOW_OFF;
+        int char_idx = glyph_idx % MAX_SWALLOW_CHARS;
+        return char_idx;
+    }
+    else if (glyph_is_explosion(absglyph))
+    {
+        int glyph_idx = absglyph - GLYPH_EXPLODE_OFF;
+        int char_idx = glyph_idx % MAX_EXPLOSION_CHARS;
+        return char_idx;
+    }
+    else if (glyph_is_zap(absglyph))
+    {
+        int glyph_idx = absglyph - GLYPH_ZAP_OFF;
+        int char_idx = glyph_idx % MAX_ZAP_CHARS;
+        return char_idx;
+    }
+    else
+        return 0;
 
+}
 
 short
 get_player_enlargement(action, roleidx, raceidx, genderidx, alignmentidx, levelidx)
@@ -1460,6 +1523,27 @@ short animidx;
                 }
             }
         }
+    }
+
+    /* Explosion */
+    for (int i = 0; i < EXPL_MAX; i++)
+    {
+        if (explosion_type_definitions[i].animation == animidx)
+            return glyph2tile[i * MAX_EXPLOSION_CHARS + GLYPH_EXPLODE_OFF];
+    }
+
+    /* Zap */
+    for (int i = 0; i < NUM_ZAP; i++)
+    {
+        if (zap_type_definitions[i].animation == animidx)
+            return glyph2tile[i * MAX_ZAP_CHARS + GLYPH_ZAP_OFF];
+    }
+
+    /* Swallow */
+    for (int i = 0; i < NUM_MONSTERS; i++)
+    {
+        if (mons[i].animation.swallow == animidx || mons[i].female_animation.swallow == animidx)
+            return glyph2tile[i * MAX_SWALLOW_CHARS + GLYPH_SWALLOW_OFF];
     }
 
     /* Cursors */

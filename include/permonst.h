@@ -32,6 +32,7 @@ struct action_info
     short actions[MAX_ACTION_TILES];
     short statue;
     short corpse;
+    short swallow;
 };
 
 /*	Weight of some bodies

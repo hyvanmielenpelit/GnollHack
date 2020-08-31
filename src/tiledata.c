@@ -1020,10 +1020,12 @@ uchar* tilemapflags;
                 for (int i = 0; i < MAX_EXPLOSION_CHARS; i++)
                 {
                     const char* explosion_direction_name = explosion_direction_name_array[i];
+                    int x_coord = i % 3;
+                    int y_coord = i / 3;
 
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s,1,1,0\n", tile_section_name, set_name, explosion_direction_name);
+                        Sprintf(buf, "%s,%s,generic,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, explosion_direction_name, x_coord, y_coord);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
@@ -1041,13 +1043,15 @@ uchar* tilemapflags;
             {
                 for (int j = 0; j < EXPL_MAX; j++)
                 {
-                    const char* explosion_name = explosion_type_names[j];
+                    const char* explosion_name = explosion_type_definitions[j].name;
                     for (int i = 0; i < MAX_EXPLOSION_CHARS; i++)
                     {
                         const char* explosion_direction_name = explosion_direction_name_array[i];
+                        int x_coord = i % 3;
+                        int y_coord = i / 3;
                         if (process_style == 0)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, explosion_name, explosion_direction_name);
+                            Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, explosion_name, explosion_direction_name, x_coord, y_coord);
                             (void)write(fd, buf, strlen(buf));
                         }
                         else if (process_style == 1)
@@ -1070,9 +1074,11 @@ uchar* tilemapflags;
                 for (int i = 0; i < MAX_ZAP_CHARS; i++)
                 {
                     const char* zap_direction_name = zap_direction_name_array[i];
+                    int x_coord = i % 2;
+                    int y_coord = i / 2;
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s,1,1,0\n", tile_section_name, set_name, zap_direction_name);
+                        Sprintf(buf, "%s,%s,generic,%s,%d,%d,2,2,1,1,0\n", tile_section_name, set_name, zap_direction_name, x_coord, y_coord);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
@@ -1090,18 +1096,16 @@ uchar* tilemapflags;
             {
                 for (int j = 0; j < NUM_ZAP; j++)
                 {
-                    const char* zap_name_array[NUM_ZAP] = {
-                        "magic", "fire", "frost", "sleep", "disintegration",
-                        "lightning", "poison", "acid", "death",
-                        "petrification" };
-                    const char* zap_name = zap_name_array[j];
+                    const char* zap_name = zap_type_definitions[j].name;
 
                     for (int i = 0; i < MAX_ZAP_CHARS; i++)
                     {
                         const char* zap_direction_name = zap_direction_name_array[i];
+                        int x_coord = i % 2;
+                        int y_coord = i / 2;
                         if (process_style == 0)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, zap_name, zap_direction_name);
+                            Sprintf(buf, "%s,%s,%s,%s,%d,%d,2,2,1,1,0\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord);
                             (void)write(fd, buf, strlen(buf));
                         }
                         else if (process_style == 1)
@@ -1126,9 +1130,11 @@ uchar* tilemapflags;
                 for (int i = 0; i < MAX_SWALLOW_CHARS; i++)
                 {
                     const char* swallow_direction_name = swallow_direction_name_array[i];
+                    int x_coord = i % 3;
+                    int y_coord = i / 3;
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s,1,1,0\n", tile_section_name, set_name, swallow_direction_name);
+                        Sprintf(buf, "%s,%s,generic,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, swallow_direction_name, x_coord, y_coord);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
@@ -1156,9 +1162,11 @@ uchar* tilemapflags;
                     for (int i = 0; i < MAX_SWALLOW_CHARS; i++)
                     {
                         const char* swallow_direction_name = swallow_direction_name_array[i];
+                        int x_coord = i % 3;
+                        int y_coord = i / 3;
                         if (process_style == 0)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,1,1,0\n", tile_section_name, set_name, mons[j].mname, swallow_direction_name);
+                            Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, mons[j].mname, swallow_direction_name, x_coord, y_coord);
                             (void)write(fd, buf, strlen(buf));
                         }
                         else if (process_style == 1)
@@ -1617,35 +1625,40 @@ uchar* tilemapflags;
     for (int i = 1; i <= NUM_ANIMATIONS; i++)  /* animation number, starts at 1 */
     {
         short base_tile = get_animation_base_tile(i);
-        for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
+        int contained_anims = max(1, animations[i].number_of_tile_animations);
+        for (int m = 0; m < contained_anims; m++)
         {
-            if (process_style == 0)
+            for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
             {
-                Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name, 
-                    animations[i].animation_name ? animations[i].animation_name : "unknown animation",
-                    j,
-                    base_tile
-                );
-                int enl = animations[i].tile_enlargement[j];
-                if (enl > 0)
-                    Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
-                else
-                    Sprintf(eos(buf), ",1,1,0");
-                Sprintf(eos(buf), "\n");
-                (void)write(fd, buf, strlen(buf));
-            }
-            else if (process_style == 1)
-            {
-                glyph_offset = GLYPH_ANIMATION_OFF;
-                for (int k = 0; k < min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION); k++)  /* frame number */
+                if (process_style == 0)
                 {
-                    if(animations[i].frame2tile[k] == j)
-                        tilemaparray[k + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = tile_count;
-                    else if (animations[i].frame2tile[k] == -1)
-                        tilemaparray[k + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = base_tile;
+                    Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name,
+                        animations[i].animation_name ? animations[i].animation_name : "unknown animation",
+                        j,
+                        base_tile + m
+                    );
+                    int enl = animations[i].tile_enlargement[j];
+                    if (enl > 0)
+                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
+                    else
+                        Sprintf(eos(buf), ",1,1,0");
+                    Sprintf(eos(buf), "\n");
+                    (void)write(fd, buf, strlen(buf));
                 }
+                else if (process_style == 1)
+                {
+                    glyph_offset = GLYPH_ANIMATION_OFF;
+                    int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
+                    for (int k = 0; k < n_frames; k++)  /* frame number */
+                    {
+                        if (animations[i].frame2tile[k] == j)
+                            tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = tile_count;
+                        else if (animations[i].frame2tile[k] == -1)
+                            tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = base_tile;
+                    }
+                }
+                tile_count++;
             }
-            tile_count++;
         }
     }
 
@@ -2039,6 +2052,57 @@ uchar* tilemapflags;
                             }
                         }
                     }
+                }
+            }
+        }
+
+        /* Explosion */
+        for (int i = 0; i < EXPL_MAX; i++)
+        {
+            if (explosion_type_definitions[i].animation)
+            {
+                for (int j = 0; j < MAX_EXPLOSION_CHARS; j++)
+                {
+                    int glyph = j + i * MAX_EXPLOSION_CHARS + GLYPH_EXPLODE_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = explosion_type_definitions[i].animation;
+                }
+            }
+        }
+
+        /* Zap */
+        for (int i = 0; i < NUM_ZAP; i++)
+        {
+            if (zap_type_definitions[i].animation)
+            {
+                for (int j = 0; j < MAX_ZAP_CHARS; j++)
+                {
+                    int glyph = j + i * MAX_ZAP_CHARS + GLYPH_ZAP_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = zap_type_definitions[i].animation;
+                }
+            }
+        }
+
+        /* Swallow */
+        for (int i = 0; i < NUM_MONSTERS; i++)
+        {
+            if (mons[i].animation.swallow)
+            {
+                for (int j = 0; j < MAX_SWALLOW_CHARS; j++)
+                {
+                    int glyph = j + i * MAX_SWALLOW_CHARS + GLYPH_SWALLOW_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = mons[i].animation.swallow;
+                }
+            }
+            if (mons[i].female_animation.swallow)
+            {
+                for (int j = 0; j < MAX_SWALLOW_CHARS; j++)
+                {
+                    int glyph = j + i * MAX_SWALLOW_CHARS + GLYPH_SWALLOW_OFF;
+                    short tile = glyph2tile[glyph];
+                    tile2animation[tile] = mons[i].female_animation.swallow;
                 }
             }
         }
