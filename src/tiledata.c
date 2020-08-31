@@ -1637,7 +1637,7 @@ uchar* tilemapflags;
                         j,
                         base_tile + m
                     );
-                    int enl = animations[i].tile_enlargement[j];
+                    int enl = animations[i].tile_enlargement;
                     if (enl > 0)
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
                     else
@@ -2331,11 +2331,11 @@ uchar* tilemapflags;
             for (int j = 0; j < max(0, min(MAX_FRAMES_PER_ANIMATION, animations[i].number_of_frames)); j++)
             {
                 char animation_tile_glyph_index = animations[i].frame2tile[j];
-                if (animation_tile_glyph_index >= 0 && animations[i].tile_enlargement[animation_tile_glyph_index])
+                if (animation_tile_glyph_index >= 0 && animations[i].tile_enlargement)
                 {
                     int glyph = (int)animation_tile_glyph_index + animations[i].glyph_offset + GLYPH_ANIMATION_OFF;
                     short tile = glyph2tile[glyph];
-                    tile2enlargement[tile] = animations[i].tile_enlargement[animation_tile_glyph_index];
+                    tile2enlargement[tile] = animations[i].tile_enlargement;
                 }
             }
         }
