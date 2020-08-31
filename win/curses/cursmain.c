@@ -92,6 +92,7 @@ struct window_procs curses_procs = {
     genl_set_effect_ambient_volume,
     genl_play_ghsound_music,
     genl_play_ghsound_level_ambient,
+    genl_play_ghsound_environment_ambient,
     genl_adjust_ghsound_general_volumes,
     genl_add_ambient_ghsound,
     genl_delete_ambient_ghsound,

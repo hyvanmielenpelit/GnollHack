@@ -11,6 +11,7 @@ extern boolean NDECL(close_fmod_studio);
 
 extern boolean FDECL(fmod_play_music, (struct ghsound_music_info));
 extern boolean FDECL(fmod_play_level_ambient_sound, (struct ghsound_level_ambient_info));
+extern boolean FDECL(fmod_play_environment_ambient_sound, (struct ghsound_environment_ambient_info));
 extern boolean FDECL(fmod_play_occupation_ambient_sound, (struct ghsound_occupation_ambient_info));
 extern boolean FDECL(fmod_play_effect_ambient_sound, (struct ghsound_effect_ambient_info));
 extern boolean FDECL(fmod_set_effect_ambient_volume, (struct effect_ambient_volume_info));

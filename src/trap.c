@@ -3426,6 +3426,7 @@ domagictrap()
             You_hear("a deafening roar!");
             incr_itimeout(&HDeaf, rn1(20, 30));
             context.botl = context.botlx = TRUE;
+            play_environment_ambient_sounds();
         } 
         else
         {
@@ -3433,6 +3434,7 @@ domagictrap()
             You_feel("rankled.");
             incr_itimeout(&HDeaf, rn1(5, 15));
             context.botl = context.botlx = TRUE;
+            play_environment_ambient_sounds();
         }
         while (cnt--)
             (void) makemon((struct permonst *) 0, u.ux, u.uy, NO_MM_FLAGS);
@@ -4164,6 +4166,7 @@ crawl:
         You("find yourself back %s.",
             Is_waterlevel(&u.uz) ? "in an air bubble" : "on land");
     }
+    play_environment_ambient_sounds();
     return TRUE;
 }
 

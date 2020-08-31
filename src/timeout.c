@@ -435,7 +435,10 @@ stoned_dialogue()
         break;
     case 2: /* turned to stone */
         if ((HDeaf & TIMEOUT) > 0L && (HDeaf & TIMEOUT) < 5L)
+        {
             set_itimeout(&HDeaf, 5L); /* avoid Hear_again at tail end */
+            play_environment_ambient_sounds();
+        }
         /* if also vomiting or turning into slime, stop those (no messages) */
         if (Vomiting)
             make_vomiting(0L, FALSE);
@@ -638,7 +641,10 @@ slime_dialogue()
         break;
     case 2L: /* skin begins to peel */
         if ((HDeaf & TIMEOUT) > 0L && (HDeaf & TIMEOUT) < 5L)
+        {
             set_itimeout(&HDeaf, 5L); /* avoid Hear_again at tail end */
+            play_environment_ambient_sounds();
+        }
         break;
     case 1L: /* turning into slime */
         /* if also turning to stone, stop doing that (no message) */
@@ -2930,6 +2936,7 @@ do_storms()
         pline("Kaboom!!!  Boom!!  Boom!!");
         incr_itimeout(&HDeaf, rn1(20, 30));
         context.botl = context.botlx = TRUE;
+        play_environment_ambient_sounds();
         if (!u.uinvulnerable) {
             stop_occupation();
             nomul(-3);

@@ -3320,7 +3320,7 @@ int final;
 	}
 	if (Airless_environment)
 	{
-		Strcpy(buf, "in an airless enviroment");
+		Strcpy(buf, "in an airless environment");
 			if (wizard)
 				Sprintf(eos(buf), " (%ld)", (HAirless_environment & TIMEOUT));
 			you_are(buf, from_what(AIRLESS_ENVIRONMENT));

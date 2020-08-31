@@ -1154,7 +1154,7 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_SHORE_TILE:
         {
             int above_y = y - 1;
-            if (!isok(x, above_y) || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) 
+            if (Underwater || !isok(x, above_y) || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored) 
                 || IS_POOL(levl[x][above_y].typ) || levl[x][above_y].typ == ICE || levl[x][above_y].typ == LAVAPOOL || levl[x][above_y].typ == UNEXPLORED)
             {
                 /* No action */

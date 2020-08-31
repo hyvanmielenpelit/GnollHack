@@ -1524,6 +1524,7 @@ domove_core()
     }
     if (u.uswallow) 
 	{
+        update_u_facing(TRUE);
         u.dx = u.dy = 0;
         u.ux = x = u.ustuck->mx;
         u.uy = y = u.ustuck->my;
@@ -2331,6 +2332,7 @@ boolean newspot;             /* true if called by spoteffects */
                 docrt();
                 vision_full_recalc = 1;
             }
+            play_environment_ambient_sounds();
         }
     }
 
@@ -2680,6 +2682,7 @@ register boolean newlev;
     move_update(newlev);
     update_game_music();
     play_level_ambient_sounds();
+    play_environment_ambient_sounds();
 
     if (*u.ushops0)
         u_left_shop(u.ushops_left, newlev);

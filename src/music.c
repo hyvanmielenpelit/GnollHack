@@ -666,6 +666,7 @@ struct obj *instr;
         if (!mundane) {
             You("beat a deafening row!");
             incr_itimeout(&HDeaf, rn1(20, 30));
+            play_environment_ambient_sounds();
             exercise(A_WIS, FALSE);
         } else
             You("%s %s.",

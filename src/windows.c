@@ -272,6 +272,13 @@ struct ghsound_level_ambient_info info;
 }
 
 void
+genl_play_ghsound_environment_ambient(info)
+struct ghsound_environment_ambient_info info;
+{
+    return;
+}
+
+void
 genl_adjust_ghsound_general_volumes(VOID_ARGS)
 {
     return;

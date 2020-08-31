@@ -2764,6 +2764,7 @@ E double FDECL(service_cost_charisma_adjustment, (int));
 E void NDECL(update_game_music);
 E void NDECL(stop_music);
 E void NDECL(play_level_ambient_sounds);
+E void NDECL(play_environment_ambient_sounds);
 E enum floor_surface_types FDECL(get_floor_surface_type, (int, int));
 E void FDECL(play_movement_sound, (struct monst*, enum climbing_types));
 E void FDECL(play_object_floor_sound, (struct obj*, enum object_sound_types));
@@ -2821,6 +2822,7 @@ E enum ghsound_types FDECL(get_level_music, (struct d_level*));
 E enum ghsound_types FDECL(get_room_music, (struct mkroom*));
 E enum ghsound_types FDECL(get_level_ambient_sounds, (struct d_level*));
 E enum ghsound_types FDECL(get_room_ambient_sounds, (struct mkroom*));
+E enum ghsound_types NDECL(get_environment_ambient_sounds);
 
 /* ### sys.c ### */
 
@@ -3458,6 +3460,7 @@ E void FDECL(genl_play_ghsound_occupation_ambient, (struct ghsound_occupation_am
 E void FDECL(genl_play_ghsound_effect_ambient, (struct ghsound_effect_ambient_info));
 E void FDECL(genl_set_effect_ambient_volume, (struct effect_ambient_volume_info));
 E void FDECL(genl_play_ghsound_level_ambient, (struct ghsound_level_ambient_info));
+E void FDECL(genl_play_ghsound_environment_ambient, (struct ghsound_environment_ambient_info));
 
 E void FDECL(genl_play_ghsound_music, (struct ghsound_music_info));
 E void FDECL(genl_play_immediate_ghsound, (struct ghsound_immediate_info));

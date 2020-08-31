@@ -1561,6 +1561,8 @@ int first;
     /* Update the swallowed position. */
     lastx = u.ux;
     lasty = u.uy;
+
+    play_environment_ambient_sounds();
 }
 
 void
@@ -1628,6 +1630,8 @@ int mode;
             }
     lastx = u.ux;
     lasty = u.uy;
+
+    play_environment_ambient_sounds();
 }
 
 /*

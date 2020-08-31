@@ -128,6 +128,7 @@ struct window_procs mswin_procs = {
     mswin_set_effect_ambient_volume,
     mswin_play_ghsound_music,
     mswin_play_ghsound_level_ambient,
+    mswin_play_ghsound_environment_ambient,
     mswin_adjust_ghsound_general_volumes,
     mswin_add_ambient_ghsound,
     mswin_delete_ambient_ghsound,
@@ -3348,6 +3349,15 @@ mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info)
     if (!fmod_play_level_ambient_sound(info))
     {
         impossible("Cannot play level ambient sound!");
+    }
+}
+
+void
+mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info)
+{
+    if (!fmod_play_environment_ambient_sound(info))
+    {
+        impossible("Cannot play environment ambient sound!");
     }
 }
 

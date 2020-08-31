@@ -225,6 +225,7 @@ void mswin_play_ghsound_effect_ambient(struct ghsound_effect_ambient_info info);
 void mswin_set_effect_ambient_volume(struct effect_ambient_volume_info info);
 void mswin_play_ghsound_music(struct ghsound_music_info info);
 void mswin_play_ghsound_level_ambient(struct ghsound_level_ambient_info info);
+void mswin_play_ghsound_environment_ambient(struct ghsound_environment_ambient_info info);
 void mswin_adjust_ghsound_general_volumes(VOID_ARGS);
 void mswin_add_ambient_ghsound(struct soundsource_t* soundsource);
 void mswin_delete_ambient_ghsound(struct soundsource_t* soundsource);

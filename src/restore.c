@@ -1028,6 +1028,7 @@ register int fd;
 
     /* Play ambient sounds for the dungeon; check_special_room will play music */
     play_level_ambient_sounds();
+    play_environment_ambient_sounds();
 
     /* Success! */
     welcome(FALSE);

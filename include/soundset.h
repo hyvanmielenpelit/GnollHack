@@ -207,6 +207,9 @@ enum ghsound_types {
 	GHSOUND_MUFFLED_SPLAT,
 	GHSOUND_SKILL_ADVANCED,
 	GHSOUND_GENERIC_CAST,
+	GHSOUND_DEAF_AMBIENT,
+	GHSOUND_UNDERWATER_AMBIENT,
+	GHSOUND_DUST_VORTEX_SWALLOW_AMBIENT,
 	MAX_GHSOUNDS
 };
 
@@ -367,6 +370,11 @@ struct ghsound_music_info {
 };
 
 struct ghsound_level_ambient_info {
+	enum ghsound_types ghsound;
+	float volume;
+};
+
+struct ghsound_environment_ambient_info {
 	enum ghsound_types ghsound;
 	float volume;
 };
@@ -565,6 +573,7 @@ extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
 /* MONSTER SOUNDSETS */
 enum monster_sound_types {
 	MONSTER_SOUND_TYPE_AMBIENT = 0,
+	MONSTER_SOUND_TYPE_SWALLOW_AMBIENT,
 	MONSTER_SOUND_TYPE_COUGH,
 	MONSTER_SOUND_TYPE_PUSH_EFFORT,
 	MONSTER_SOUND_TYPE_YELP,

@@ -613,7 +613,8 @@ boolean talk;
     {
 		context.botl = context.botlx = TRUE;
         update_hearing_array_and_ambient_sounds();
-		if (talk)
+        play_environment_ambient_sounds();
+        if (talk)
             You(old ? "can hear again." : "are unable to hear anything.");
     }
 }

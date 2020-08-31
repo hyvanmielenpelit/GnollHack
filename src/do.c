@@ -3418,7 +3418,8 @@ boolean pushing;
                 u.uinwater = 0;
                 docrt();
                 vision_full_recalc = 1;
-                You("find yourself on dry land again!");
+				play_environment_ambient_sounds();
+				You("find yourself on dry land again!");
             } else if (lava && distu(rx, ry) <= 2) {
                 int dmg;
                 You("are hit by molten %s%c",

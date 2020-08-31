@@ -8231,6 +8231,7 @@ short exploding_wand_typ;
                         u.uundetected = 0;
                         docrt();
                         vision_full_recalc = 1;
+                        play_environment_ambient_sounds();
                     } else if (u.utrap && u.utraptype == TT_LAVA) {
                         if (Passes_walls) {
                             You("pass through the now-solid rock.");
