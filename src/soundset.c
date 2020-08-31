@@ -1896,10 +1896,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of fire",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_FIRE_AMBIENT, 1.0f},
+            {GHSOUND_RAY_FIRE_CREATE, 100.0f},
+            {GHSOUND_RAY_FIRE_DESTROY, 10.0f},
+            {GHSOUND_RAY_FIRE_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1909,10 +1909,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of frost",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_COLD_AMBIENT, 1.0f},
+            {GHSOUND_RAY_COLD_CREATE, 100.0f},
+            {GHSOUND_RAY_COLD_DESTROY, 10.0f},
+            {GHSOUND_RAY_COLD_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1987,10 +1987,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of death",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_DEATH_AMBIENT, 1.0f},
+            {GHSOUND_RAY_DEATH_CREATE, 100.0f},
+            {GHSOUND_RAY_DEATH_DESTROY, 10.0f},
+            {GHSOUND_RAY_DEATH_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -2026,10 +2026,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "explosion of fire",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_FIRE_AMBIENT, 1.0f},
+            {GHSOUND_RAY_FIRE_CREATE, 100.0f},
+            {GHSOUND_RAY_FIRE_DESTROY, 10.0f},
+            {GHSOUND_RAY_FIRE_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -2039,10 +2039,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "explosion of frost",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_COLD_AMBIENT, 1.0f},
+            {GHSOUND_RAY_COLD_CREATE, 100.0f},
+            {GHSOUND_RAY_COLD_DESTROY, 10.0f},
+            {GHSOUND_RAY_COLD_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -2117,10 +2117,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "explosion of death",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_DEATH_AMBIENT, 1.0f},
+            {GHSOUND_RAY_DEATH_CREATE, 100.0f},
+            {GHSOUND_RAY_DEATH_DESTROY, 10.0f},
+            {GHSOUND_RAY_DEATH_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -2156,10 +2156,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "generic object ray soundset",
         {
-            {GHSOUND_RAY_ELEC_AMBIENT, 1.0f},
-            {GHSOUND_RAY_ELEC_CREATE, 100.0f},
-            {GHSOUND_RAY_ELEC_DESTROY, 10.0f},
-            {GHSOUND_RAY_ELEC_BOUNCE, 100.0f},
+            {GHSOUND_GENERAL_SPELL_AMBIENT, 1.0f},
+            {GHSOUND_GENERAL_SPELL_CREATE, 100.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},

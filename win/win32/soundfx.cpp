@@ -276,6 +276,21 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/Ambience/Environment/Underwater", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Fire/Ray Fire Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Fire/Ray Fire Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Fire/Ray Fire Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Fire/Ray Fire Bounce" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Cold/Ray Cold Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Cold/Ray Cold Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Cold/Ray Cold Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Cold/Ray Cold Bounce" , 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Ray/Death/Ray Death Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Death/Ray Death Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Death/Ray Death Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Death/Ray Death Bounce" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/General Spell/General Spell Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/General Spell/General Spell Create" , 1.0f },
 };
 
 #undef NoSound
