@@ -121,6 +121,9 @@ boolean only_if_injured; /* determines whether maxhp <= 5 matters */
     hplim = 15 * u.ulevel;
     if (maxhp > hplim)
         maxhp = hplim;
+
+    divisor = 3;
+#if 0
     /* 7 used to be the unconditional divisor */
     switch (xlev_to_rank(u.ulevel)) { /* maps 1..30 into 0..8 */
     case 0:
@@ -143,6 +146,8 @@ boolean only_if_injured; /* determines whether maxhp <= 5 matters */
         divisor = 9;
         break; /* explvl 30+ */
     }
+#endif
+
     /* 5 is a magic number in TROUBLE_HIT handling below */
     return (boolean) (curhp <= 5 || curhp * divisor <= maxhp);
 }

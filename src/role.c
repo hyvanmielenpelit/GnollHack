@@ -385,7 +385,7 @@ const struct Role roles[] = {
             {0, 0, 0,  0,  0, 0, 0}, /* P_TRANSMUTATION_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_ENCHANTMENT_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_CONJURATION_SPELL */
-            {0, 0, 0,  0,  0, 0, 0}, /* P_CELESTIAL_SPELL */
+            {0, 0, 5, 14,  0, 0, 0}, /* P_CELESTIAL_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NATURE_SPELL */
             {0, 0, 0,  0,  0, 0, 0}, /* P_NECROMANCY_SPELL */
 

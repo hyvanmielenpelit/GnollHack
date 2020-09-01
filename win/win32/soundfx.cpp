@@ -275,7 +275,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ambience/Environment/Deaf", 0.4f },
 
     { SOUND_BANK_MASTER, "event:/Ambience/Environment/Underwater", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 0.5f },
     { SOUND_BANK_MASTER, "event:/Ray/Fire/Ray Fire Ambient" , 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/Fire/Ray Fire Create" , 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/Fire/Ray Fire Destroy" , 1.0f },
