@@ -1978,12 +1978,12 @@ armorymon()
         if (u.ualign.type == A_CHAOTIC)
         {
             /* Dwarfs and gnomes for chaotic */
-            mndx = ldif >= 9 ? PM_DWARF_LORD : ldif >= 4 ? PM_DWARF : PM_GNOME;
-            if (ldif <= 3 && !rn2(3))
+            mndx = ldif >= 9 ? PM_DWARF_LORD : ldif >= 5 ? PM_DWARF : PM_GNOME;
+            if (ldif <= 3 && !rn2(6))
                 mndx = PM_DWARF;
-            else if (ldif >= 4 && !rn2(3))
+            else if (ldif >= 5 && !rn2(4))
                 mndx = PM_DWARF_LORD;
-            else if (ldif >= 8 && !rn2(3))
+            else if (ldif >= 9 && !rn2(4))
                 mndx = PM_DWARF_KING;
         }
         else
@@ -1992,21 +1992,21 @@ armorymon()
             if (ldif >= 10 || !rn2(2))
             {
                 mndx = ldif >= 10 ? PM_GNOLL_LORD : ldif >= 4 ? PM_GNOLL : PM_GOBLIN;
-                if (ldif <= 3 && !rn2(3))
+                if (ldif <= 3 && !rn2(6))
                     mndx = PM_GNOLL;
-                else if (ldif < 10 && ldif >= 5 && !rn2(3))
+                else if (ldif <= 10 && ldif >= 7 && !rn2(4))
                     mndx = PM_GNOLL_LORD;
-                else if (ldif >= 10 && !rn2(4))
+                else if (ldif >= 11 && !rn2(4))
                     mndx = PM_GNOLL_KING;
             }
             else
             {
                 mndx = ldif >= 8 ? PM_BUGBEAR : ldif >= 4 ? PM_HOBGOBLIN : PM_GOBLIN;
-                if (ldif <= 3 && !rn2(3))
+                if (ldif <= 3 && !rn2(6))
                     mndx = PM_HOBGOBLIN;
-                else if (ldif < 8 && ldif >= 4 && !rn2(3))
+                else if (ldif < 8 && ldif >= 4 && !rn2(4))
                     mndx = PM_BUGBEAR;
-                else if (ldif >= 7 && !rn2(3))
+                else if (ldif >= 7 && !rn2(4))
                     mndx = PM_OGRE;
             }
         }
