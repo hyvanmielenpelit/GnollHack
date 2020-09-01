@@ -190,13 +190,13 @@ struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
 };
 
 struct explosion_type_definition explosion_type_definitions[EXPL_MAX] = {
-    {"dark", CLR_BLACK, NO_ANIMATION},
-    {"noxious", CLR_GREEN, NO_ANIMATION},
-    {"muddy", CLR_BROWN, NO_ANIMATION },
-    {"wet", CLR_BLUE, NO_ANIMATION},
-    {"magical", CLR_MAGENTA, NO_ANIMATION},
-    {"fiery", CLR_ORANGE, FIERY_EXPLOSION_ANIMATION},
-    {"frosty", CLR_WHITE, NO_ANIMATION}
+    {"dark", CLR_BLACK, NO_ANIMATION, SFX_EXPLOSION_DARK},
+    {"noxious", CLR_GREEN, NO_ANIMATION, SFX_EXPLOSION_NOXIOUS},
+    {"muddy", CLR_BROWN, NO_ANIMATION, SFX_EXPLOSION_MUDDY },
+    {"wet", CLR_BLUE, NO_ANIMATION, SFX_EXPLOSION_WET},
+    {"magical", CLR_MAGENTA, NO_ANIMATION, SFX_EXPLOSION_MAGICAL},
+    {"fiery", CLR_ORANGE, FIERY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FIERY},
+    {"frosty", CLR_WHITE, NO_ANIMATION, SFX_EXPLOSION_FROSTY}
 };
 
 

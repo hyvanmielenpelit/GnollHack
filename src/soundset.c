@@ -1876,7 +1876,43 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_SKILL_ADVANCED, 1.0f},
         FALSE
     },
+    {
+        "GHSOUND_EXPLOSION_DARK",
+        {GHSOUND_EXPLOSION_DARK, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_EXPLOSION_NOXIOUS",
+        {GHSOUND_EXPLOSION_NOXIOUS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_EXPLOSION_MUDDY",
+        {GHSOUND_EXPLOSION_MUDDY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_EXPLOSION_WET",
+        {GHSOUND_EXPLOSION_WET, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_EXPLOSION_MAGICAL",
+        {GHSOUND_EXPLOSION_MAGICAL, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_EXPLOSION_FIERY",
+        {GHSOUND_EXPLOSION_FIERY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_EXPLOSION_FROSTY",
+        {GHSOUND_EXPLOSION_FROSTY, 1.0f},
+        TRUE
+    },
 };
+
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {

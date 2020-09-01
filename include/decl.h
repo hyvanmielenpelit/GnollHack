@@ -297,6 +297,7 @@ struct explosion_type_definition {
     const char* name;
     const int color;
     short animation;
+    enum sfx_sound_types sfx;
 };
 
 E NEARDATA struct explosion_type_definition explosion_type_definitions[EXPL_MAX];

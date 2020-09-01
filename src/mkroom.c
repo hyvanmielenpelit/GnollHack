@@ -649,7 +649,7 @@ struct mkroom *sroom;
                                 middlebox = box;
                         }
 
-                        int nobj = rnd(5) + (rn2(3) ? 1 : 0);
+                        int nobj = rnd(4) + (rn2(3) ? 1 : 0);
                         for (int i = 0; i < nobj; i++)
                         {
                             struct obj* item = 0;

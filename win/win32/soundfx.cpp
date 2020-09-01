@@ -318,6 +318,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ray/Petrification/Ray Petrification Destroy" , 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/Petrification/Ray Petrification Bounce" , 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Dark" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Noxious" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Muddy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Wet" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Magical" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Fiery" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Explosion/Explosion Frosty" , 1.0f },
 };
 
 #undef NoSound

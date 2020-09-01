@@ -256,12 +256,15 @@ int expltype;
                 any_shield = TRUE;
         }
 
+    play_sfx_sound_at_location(explosion_type_definitions[expltype].sfx, x, y);
+
     if (visible) {
         /* Start the explosion */
         int framenum = 1;
         context.explosion_animation_counter = 0;
         enum animation_types anim = explosion_type_definitions[expltype].animation;
-        if (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
+        boolean playing_anim = (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY);
+        if (playing_anim)
         {
             framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
         }
@@ -279,7 +282,7 @@ int expltype;
                     starting = 0;
                 }
 
-            if (anim > 0)
+            if (playing_anim)
             {
                 flush_screen(0);
                 delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
