@@ -892,7 +892,7 @@
 //                          : NO_GLYPH)
 
 #define glyph_to_swallow(glyph) \
-    (glyph_is_swallow(glyph) ? (((abs(glyph)) - GLYPH_SWALLOW_OFF) & 0x7) : 0)
+    (glyph_is_swallow(glyph) ? (((abs(glyph)) - GLYPH_SWALLOW_OFF) % MAX_SWALLOW_CHARS) : 0)
 #define glyph_to_warning(glyph) \
     (glyph_is_warning(glyph) ? ((abs(glyph)) - GLYPH_WARNING_OFF) : NO_GLYPH);
 

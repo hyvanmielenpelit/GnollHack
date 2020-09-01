@@ -219,20 +219,20 @@ unsigned long *ospecial;
     else if ((offset = (glyph - GLYPH_SWALLOW_OFF)) >= 0) 
     { /* swallow */
         /* see swallow_to_glyph() in display.c */
-        idx = (S_sw_tl + (offset & 0x7)) + SYM_OFF_P;
+        idx = (S_sw_tl + (offset % MAX_SWALLOW_CHARS)) + SYM_OFF_P;
         if (has_rogue_color && iflags.use_color)
             color = NO_COLOR;
         else
-            mon_color(offset >> 3);
+            mon_color(offset / MAX_SWALLOW_CHARS);
     }
     else if ((offset = (glyph - GLYPH_ZAP_OFF)) >= 0)
     { /* zap beam */
         /* see zapdir_to_glyph() in display.c */
-        idx = (S_vbeam + (offset & 0x3)) + SYM_OFF_P;
+        idx = (S_vbeam + (offset % MAX_ZAP_CHARS)) + SYM_OFF_P;
         if (has_rogue_color && iflags.use_color)
             color = NO_COLOR;
         else
-            zap_color((offset >> 2));
+            zap_color(offset / MAX_ZAP_CHARS);
     } 
     else if ((offset = (glyph - GLYPH_EXPLODE_OFF)) >= 0)
     { /* explosion */
