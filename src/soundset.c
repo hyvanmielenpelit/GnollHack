@@ -1883,10 +1883,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of magic missiles",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_MAGIC_MISSILE_AMBIENT, 1.0f},
+            {GHSOUND_RAY_MAGIC_MISSILE_CREATE, 100.0f},
+            {GHSOUND_RAY_MAGIC_MISSILE_DESTROY, 10.0f},
+            {GHSOUND_RAY_MAGIC_MISSILE_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1922,10 +1922,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of sleep",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_SLEEP_AMBIENT, 1.0f},
+            {GHSOUND_RAY_SLEEP_CREATE, 100.0f},
+            {GHSOUND_RAY_SLEEP_DESTROY, 10.0f},
+            {GHSOUND_RAY_SLEEP_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1935,10 +1935,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of disintegration",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_DISINTEGRATION_AMBIENT, 1.0f},
+            {GHSOUND_RAY_DISINTEGRATION_CREATE, 100.0f},
+            {GHSOUND_RAY_DISINTEGRATION_DESTROY, 10.0f},
+            {GHSOUND_RAY_DISINTEGRATION_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1961,10 +1961,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of poison gas",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_POISON_GAS_AMBIENT, 1.0f},
+            {GHSOUND_RAY_POISON_GAS_CREATE, 100.0f},
+            {GHSOUND_RAY_POISON_GAS_DESTROY, 10.0f},
+            {GHSOUND_RAY_POISON_GAS_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1974,10 +1974,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of acid",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_ACID_AMBIENT, 1.0f},
+            {GHSOUND_RAY_ACID_CREATE, 100.0f},
+            {GHSOUND_RAY_ACID_DESTROY, 10.0f},
+            {GHSOUND_RAY_ACID_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -2000,10 +2000,10 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
     {
         "ray of petrification",
         {
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_RAY_PETRIFICATION_AMBIENT, 1.0f},
+            {GHSOUND_RAY_PETRIFICATION_CREATE, 100.0f},
+            {GHSOUND_RAY_PETRIFICATION_DESTROY, 10.0f},
+            {GHSOUND_RAY_PETRIFICATION_BOUNCE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},

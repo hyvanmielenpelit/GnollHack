@@ -291,6 +291,33 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Ray/Death/Ray Death Bounce" , 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/General Spell/General Spell Ambient" , 1.0f },
     { SOUND_BANK_MASTER, "event:/Ray/General Spell/General Spell Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Magic Missile/Ray Magic Missile Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Magic Missile/Ray Magic Missile Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Magic Missile/Ray Magic Missile Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Magic Missile/Ray Magic Missile Bounce" , 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Ray/Disintegration/Ray Disintegration Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Disintegration/Ray Disintegration Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Disintegration/Ray Disintegration Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Disintegration/Ray Disintegration Bounce" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Sleep/Ray Sleep Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Sleep/Ray Sleep Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Sleep/Ray Sleep Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Sleep/Ray Sleep Bounce" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Poison Gas/Ray Poison Gas Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Poison Gas/Ray Poison Gas Create" , 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Ray/Poison Gas/Ray Poison Gas Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Poison Gas/Ray Poison Gas Bounce" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Acid/Ray Acid Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Acid/Ray Acid Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Acid/Ray Acid Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Acid/Ray Acid Bounce" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Petrification/Ray Petrification Ambient" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Petrification/Ray Petrification Create" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Petrification/Ray Petrification Destroy" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Petrification/Ray Petrification Bounce" , 1.0f },
+
 };
 
 #undef NoSound

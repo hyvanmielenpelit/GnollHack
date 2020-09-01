@@ -24,7 +24,7 @@ NEARDATA struct tileset_definition default_tileset_definition =
     {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
     {0, 1, 2, 0, 4, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0},
     {0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    0, 0, 3
+    1, 1, 3
 };
 
 NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
