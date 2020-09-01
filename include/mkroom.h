@@ -64,6 +64,7 @@ enum roomtype_types {
 	GARDEN,     /* contains, trees, garden gnomes, herbs, and some possibly angry humanoids etc. */
 	MORGUE,     /* contains corpses, undead and ghosts */
     BARRACKS,   /* contains soldiers and their gear */
+    ARMORY,     /* contains weapons and armors and some guards */
     ZOO,        /* floor covered with treasure and monsters */
     DELPHI,     /* contains Oracle and peripherals */
     TEMPLE,     /* contains a shrine */

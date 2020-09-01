@@ -314,6 +314,7 @@ dosounds()
             }
         }
     }
+
     if (level.flags.has_barracks && !rn2(200)) {
         static const char *const barracks_msg[4] = {
             "blades being honed.", "loud snoring.", "dice being thrown.",
@@ -333,7 +334,27 @@ dosounds()
             }
         }
     }
-    if (level.flags.has_zoo && !rn2(200)) {
+
+	if (level.flags.has_armory && !rn2(200)) {
+		static const char* const armory_msg[4] = {
+			"swords being unsheated.", "armors being worn.", "weapons being assembled.",
+			"Master Chief!",
+		};
+		int count = 0;
+
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+			if (DEADMONSTER(mtmp))
+				continue;
+			if (mon_in_room(mtmp, ARMORY)
+				/* sleeping implies not-yet-disturbed (usually) */
+				&& (is_sleeping(mtmp) || ++count > 5)) {
+				You_hear1(armory_msg[rn2(3) + hallu]);
+				return;
+			}
+		}
+	}   
+
+	if (level.flags.has_zoo && !rn2(200)) {
         static const char *const zoo_msg[3] = {
             "a sound reminiscent of an elephant stepping on a peanut.",
             "a sound reminiscent of a seal barking.", "Doctor Dolittle!",

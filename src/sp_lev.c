@@ -2756,6 +2756,7 @@ boolean prefilled;
         case LEPREHALL:
         case MORGUE:
         case BARRACKS:
+        case ARMORY:
             fill_zoo(croom);
             break;
 		}
@@ -2781,6 +2782,9 @@ boolean prefilled;
 		break;
 	case BARRACKS:
         level.flags.has_barracks = TRUE;
+        break;
+    case ARMORY:
+        level.flags.has_armory = TRUE;
         break;
     case TEMPLE:
         level.flags.has_temple = TRUE;

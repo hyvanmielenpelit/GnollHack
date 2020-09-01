@@ -191,6 +191,7 @@ static struct {
 	{ "garden", GARDEN },
 	{ "morgue", MORGUE },
     { "barracks", BARRACKS },
+    { "armory", ARMORY },
     { "zoo", ZOO },
     { "delphi", DELPHI },
     { "temple", TEMPLE },

@@ -706,6 +706,7 @@ clear_level_structures()
 	level.flags.has_dragonlair = 0;
 	level.flags.has_garden = 0;
 	level.flags.has_barracks = 0;
+    level.flags.has_armory = 0;
     level.flags.has_temple = 0;
     level.flags.has_smithy = 0;
     level.flags.has_npc_room = 0;
@@ -940,7 +941,11 @@ makelevel()
 		if (u_depth >= 2 && u_depth < depth(&medusa_level) && !rn2(6))
 			(void)mkroom(GARDEN);
 
-	}
+        boolean armoryok = (context.made_armory_box_count < 5 ? (u_depth <= 2 ? !rn2(3) : !rn2(2)) : !rn2(6));
+
+        if (u_depth >= 2 && u_depth < depth(&medusa_level) && armoryok)
+            (void)mkroom(ARMORY);
+    }
 
 
  skip0:

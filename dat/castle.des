@@ -241,7 +241,7 @@ REGION:(02,13,06,14),lit,"ordinary"
 REGION:(56,13,60,14),lit,"ordinary"
 #   Barracks
 REGION:(16,05,25,06),lit,"barracks"
-REGION:(16,10,25,11),lit,"barracks"
+REGION:(16,10,25,11),lit,"armory"
 #   Hallways
 REGION:(08,03,54,03),unlit,"ordinary"
 REGION:(08,13,54,13),unlit,"ordinary"

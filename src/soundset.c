@@ -4617,6 +4617,8 @@ struct mkroom* room;
             break;
         case BARRACKS:
             break;
+        case ARMORY:
+            break;
         case ZOO:
             break;
         case DELPHI:
@@ -4698,6 +4700,8 @@ struct mkroom* room;
         res = GHSOUND_MORGUE;
         break;
     case BARRACKS:
+        break;
+    case ARMORY:
         break;
     case ZOO:
         break;

@@ -2753,6 +2753,9 @@ register boolean newlev;
             else
                 You("enter an abandoned barracks.");
             break;
+        case ARMORY:
+            You("enter an armory!");
+            break;
         case DELPHI: {
             struct monst *oracle = monstinroom(&mons[PM_ORACLE], roomno);
             if (oracle) {
@@ -2810,6 +2813,9 @@ register boolean newlev;
                     break;
                 case BARRACKS:
                     level.flags.has_barracks = 0;
+                    break;
+                case ARMORY:
+                    level.flags.has_armory = 0;
                     break;
                 case TEMPLE:
                     level.flags.has_temple = 0;

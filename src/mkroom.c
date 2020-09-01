@@ -29,6 +29,7 @@ STATIC_DCL coord* FDECL(anvil_pos, (int));
 STATIC_DCL struct permonst *NDECL(morguemon);
 STATIC_DCL struct permonst *FDECL(librarymon, (int));
 STATIC_DCL struct permonst *NDECL(squadmon);
+STATIC_DCL struct permonst* NDECL(armorymon);
 STATIC_DCL void FDECL(save_room, (int, struct mkroom *));
 STATIC_DCL void FDECL(rest_room, (int, struct mkroom *));
 
@@ -75,6 +76,9 @@ int roomtype;
             break;
         case BARRACKS:
 			return mkzoo(BARRACKS);
+            break;
+        case ARMORY:
+            return mkzoo(ARMORY);
             break;
         case SWAMP:
             return mkswamp();
@@ -144,6 +148,9 @@ mkshop()
             if (*ep == 's' || *ep == 'S') {
 				return mkzoo(BARRACKS);
 			}
+            if (*ep == 'r' || *ep == 'R') {
+                return mkzoo(ARMORY);
+            }
             if (*ep == 'a' || *ep == 'A') {
 				return mkzoo(ANTHOLE);
 			}
@@ -393,7 +400,12 @@ struct mkroom *sroom;
 	register int roll = rn2(4);
 	int hd = level_difficulty();
 	struct permonst* mainlibrarymonst;
-
+    boolean special_item_created = FALSE;
+    int special_item_chance = 0;
+    struct obj* firstbox = 0;;
+    struct obj* middlebox = 0;
+    struct obj* lastbox = 0;
+    boolean anvil_created = FALSE;
 
     sh = sroom->fdoor;
     switch (type)
@@ -506,7 +518,12 @@ struct mkroom *sroom;
     case LEPREHALL:
         goldlim = 500 * level_difficulty();
         break;
+    case ARMORY:
+        special_item_created = FALSE;
+        special_item_chance = depth(&u.uz) * 2;
+        break;
     }
+
 
     for (sx = sroom->lx; sx <= sroom->hx; sx++)
         for (sy = sroom->ly; sy <= sroom->hy; sy++) 
@@ -530,7 +547,7 @@ struct mkroom *sroom;
             if (type == COURT && IS_THRONE(levl[sx][sy].typ))
                 continue;
 
-			if (type == LIBRARY && rn2(2)) //LIBRARY gets only one monster in 2 squares, objects in every square
+			if ((type == LIBRARY || (type == ARMORY && depth(&u.uz) < depth(&medusa_level))) && rn2(2)) //LIBRARY and ARMORY before Medusa level get only one monster in 2 squares, objects in every square
 			{
 				mon = (struct monst*) 0; //No monster
 			}
@@ -540,6 +557,8 @@ struct mkroom *sroom;
                            ? courtmon()
                            : (type == BARRACKS)
                               ? squadmon()
+                           : (type == ARMORY)
+                              ? armorymon()
                               : (type == MORGUE)
                                  ? morguemon()
                               : (type == LIBRARY)
@@ -571,6 +590,10 @@ struct mkroom *sroom;
                     set_malign(mon);
                 }
             }
+
+            if (!IS_FLOOR(levl[sx][sy].typ))
+                continue;
+
             switch (type) {
             case ZOO:
             case LEPREHALL:
@@ -609,6 +632,52 @@ struct mkroom *sroom;
                     (void) mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
                                      TRUE, FALSE);
                 break;
+            case ARMORY:
+                if (!rn2(5))
+                {
+                    struct obj* box = mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
+                        FALSE, FALSE);
+
+                    if (box)
+                    {
+                        lastbox = box;
+                        if (!firstbox)
+                            firstbox = box;
+                        else
+                        {
+                            if (!rn2(2))
+                                middlebox = box;
+                        }
+
+                        int nobj = rnd(4) + (rn2(3) ? 1 : 0);
+                        for (int i = 0; i < nobj; i++)
+                        {
+                            struct obj* item = 0;
+                            item = mkobj(!rn2(2) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
+
+                            if (item)
+                            {
+                                add_to_container(box, item);
+                                box->owt = weight(box);
+                            }
+                        }
+                        make_engr_at(sx, sy, "Gilthoniel", 0L, ENGRAVE);
+                        context.made_armory_box_count++;
+                    }
+                }
+                else if (!rn2(20))
+                {
+                    /* Some anvils to add to the atmosphere */
+                    if (IS_FLOOR(levl[sx][sy].typ))
+                    {
+                        levl[sx][sy].floortyp = levl[sx][sy].typ;
+                        levl[sx][sy].floorsubtyp = levl[sx][sy].subtyp;
+                        levl[sx][sy].typ = ANVIL;
+                        levl[sx][sy].subtyp = 0;
+                        anvil_created = TRUE;
+                    }
+                }
+                break;
             case COCKNEST:
                 if (!rn2(3)) {
                     struct obj *sobj = mk_tt_object(STATUE, sx, sy);
@@ -627,6 +696,9 @@ struct mkroom *sroom;
                 break;
             }
         }
+
+
+
     switch (type) {
     case COURT: {
         struct obj *chest, *gold;
@@ -645,6 +717,35 @@ struct mkroom *sroom;
     }
     case BARRACKS:
         level.flags.has_barracks = 1;
+        break;
+    case ARMORY:
+        if (!special_item_created && rn2(100) < special_item_chance)
+        {
+            struct obj* item = mk_artifact((struct obj*)0, A_NONE, FALSE);
+            if (item && lastbox && firstbox)
+            {
+                struct obj* box = !middlebox || rn2(3) ? (!rn2(2) ? firstbox : lastbox) : middlebox;
+                add_to_container(box, item);
+                box->owt = weight(box);
+            }
+        }
+        if (!anvil_created)
+        {
+            for (int try_count = 0; try_count < 20; try_count++)
+            {
+                (void)somexy(sroom, &mm);
+                if (IS_FLOOR(levl[mm.x][mm.y].typ) && !OBJ_AT(mm.x, mm.y))
+                {
+                    levl[mm.x][mm.y].floortyp = levl[mm.x][mm.y].typ;
+                    levl[mm.x][mm.y].floorsubtyp = levl[mm.x][mm.y].subtyp;
+                    levl[mm.x][mm.y].typ = ANVIL;
+                    levl[mm.x][mm.y].subtyp = 0;
+                    break;
+                }
+            }
+
+        }
+        level.flags.has_armory = 1;
         break;
     case ZOO:
         level.flags.has_zoo = 1;
@@ -1847,6 +1948,74 @@ gotone:
         return &mons[mndx];
     else
         return (struct permonst *) 0;
+}
+
+/* return armory monster types. */
+STATIC_OVL struct permonst*
+armorymon()
+{
+    int ldif = level_difficulty();
+    int mndx = 0;
+    if (depth(&u.uz) >= depth(&medusa_level))
+    {
+        return squadmon();
+    }
+    else if (ldif >= 16 || (ldif >= 13 && rn2(3)))
+    {
+        /* Soldiers */
+        mndx = PM_SOLDIER;
+        if (!rn2(3))
+        {
+            mndx = PM_SERGEANT;
+            if(ldif >= 13 && !rn2(2))
+                mndx = PM_LIEUTENANT;
+            else if (ldif >= 16 && !rn2(2))
+                mndx = PM_CAPTAIN;
+        }
+    }
+    else
+    {
+        if (u.ualign.type == A_CHAOTIC)
+        {
+            /* Dwarfs and gnomes for chaotic */
+            mndx = ldif >= 9 ? PM_DWARF_LORD : ldif >= 4 ? PM_DWARF : PM_GNOME;
+            if (ldif <= 3 && !rn2(3))
+                mndx = PM_DWARF;
+            else if (ldif >= 4 && !rn2(3))
+                mndx = PM_DWARF_LORD;
+            else if (ldif >= 8 && !rn2(3))
+                mndx = PM_DWARF_KING;
+        }
+        else
+        {
+            /* Goblins or gnolls for non-chaotic */
+            if (ldif >= 10 || !rn2(2))
+            {
+                mndx = ldif >= 10 ? PM_GNOLL_LORD : ldif >= 4 ? PM_GNOLL : PM_GOBLIN;
+                if (ldif <= 3 && !rn2(3))
+                    mndx = PM_GNOLL;
+                else if (ldif < 10 && ldif >= 5 && !rn2(3))
+                    mndx = PM_GNOLL_LORD;
+                else if (ldif >= 10 && !rn2(4))
+                    mndx = PM_GNOLL_KING;
+            }
+            else
+            {
+                mndx = ldif >= 8 ? PM_BUGBEAR : ldif >= 4 ? PM_HOBGOBLIN : PM_GOBLIN;
+                if (ldif <= 3 && !rn2(3))
+                    mndx = PM_HOBGOBLIN;
+                else if (ldif < 8 && ldif >= 4 && !rn2(3))
+                    mndx = PM_BUGBEAR;
+                else if (ldif >= 7 && !rn2(3))
+                    mndx = PM_OGRE;
+            }
+        }
+    }
+
+    if (!(mvitals[mndx].mvflags & G_GONE))
+        return &mons[mndx];
+    else
+        return (struct permonst*)0;
 }
 
 /*
