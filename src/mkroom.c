@@ -649,11 +649,11 @@ struct mkroom *sroom;
                                 middlebox = box;
                         }
 
-                        int nobj = rnd(4) + (rn2(3) ? 1 : 0);
+                        int nobj = rnd(5) + (rn2(3) ? 1 : 0);
                         for (int i = 0; i < nobj; i++)
                         {
                             struct obj* item = 0;
-                            item = mkobj(rn2(3) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
+                            item = mkobj(rn2(4) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
 
                             if (item)
                             {
