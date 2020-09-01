@@ -394,12 +394,7 @@ enum cmap_types {
     CMAP_TYPE_MAX = 16
 };
 
-
-static const char* cmap_type_names[CMAP_TYPE_MAX] = {
-    "normal", "gnomish mines", "gehennom",  "ludious", "undead", "swamp", "gehennom alternative", "modron",
-    "bovine", "sokoban",       "cityscape", "sewers",  "maze",   "tower", "caverns",              "astral"
-};
-
+extern const char* cmap_type_names[CMAP_TYPE_MAX];
 
 struct symdef {
     uchar sym;

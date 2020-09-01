@@ -4,6 +4,12 @@
 
 #include "hack.h"
 
+const char* cmap_type_names[CMAP_TYPE_MAX] = {
+    "normal", "gnomish mines", "gehennom",  "ludious", "undead", "swamp", "gehennom alternative", "modron",
+    "bovine", "sokoban",       "cityscape", "sewers",  "maze",   "tower", "caverns",              "astral"
+};
+
+
 NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"STONE",           S_stone,    CORR,   MAT_MINERAL, LOCATION_SOUNDSET_NONE},
     {"VWALL",           S_vwall,    ROOM,   MAT_MINERAL, LOCATION_SOUNDSET_NONE},
