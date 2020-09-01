@@ -653,7 +653,7 @@ struct mkroom *sroom;
                         for (int i = 0; i < nobj; i++)
                         {
                             struct obj* item = 0;
-                            item = mkobj(!rn2(2) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
+                            item = mkobj(rn2(3) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
 
                             if (item)
                             {
@@ -1954,13 +1954,13 @@ gotone:
 STATIC_OVL struct permonst*
 armorymon()
 {
-    int ldif = level_difficulty();
+    int ldif = depth(&u.uz);
     int mndx = 0;
     if (depth(&u.uz) >= depth(&medusa_level))
     {
         return squadmon();
     }
-    else if (ldif >= 16 || (ldif >= 13 && rn2(3)))
+    else if (ldif >= 13 && rn2(2))
     {
         /* Soldiers */
         mndx = PM_SOLDIER;
@@ -1978,10 +1978,10 @@ armorymon()
         if (u.ualign.type == A_CHAOTIC)
         {
             /* Dwarfs and gnomes for chaotic */
-            mndx = ldif >= 9 ? PM_DWARF_LORD : ldif >= 5 ? PM_DWARF : PM_GNOME;
+            mndx = ldif >= 11 ? PM_DWARF_LORD : ldif >= 6 ? PM_DWARF : (!rn2(2) ? PM_GNOME : PM_HOBBIT);
             if (ldif <= 3 && !rn2(6))
                 mndx = PM_DWARF;
-            else if (ldif >= 5 && !rn2(4))
+            else if (ldif >= 6 && !rn2(5))
                 mndx = PM_DWARF_LORD;
             else if (ldif >= 9 && !rn2(4))
                 mndx = PM_DWARF_KING;
@@ -1989,25 +1989,35 @@ armorymon()
         else
         {
             /* Goblins or gnolls for non-chaotic */
-            if (ldif >= 10 || !rn2(2))
+            if (ldif >= 11 || !rn2(2))
             {
-                mndx = ldif >= 10 ? PM_GNOLL_LORD : ldif >= 4 ? PM_GNOLL : PM_GOBLIN;
+                mndx = ldif >= 12 ? PM_GNOLL_LORD : ldif >= 6 ? PM_GNOLL : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
                 if (ldif <= 3 && !rn2(6))
                     mndx = PM_GNOLL;
-                else if (ldif <= 10 && ldif >= 7 && !rn2(4))
+                else if (ldif <= 10 && ldif >= 6 && !rn2(6))
                     mndx = PM_GNOLL_LORD;
-                else if (ldif >= 11 && !rn2(4))
+                else if (ldif >= 12 && !rn2(6))
                     mndx = PM_GNOLL_KING;
+                else if (ldif >= 14 && !rn2(6))
+                    mndx = PM_FLIND;
+                else if (ldif >= 20 && !rn2(6))
+                    mndx = PM_FLIND_LORD;
             }
             else
             {
-                mndx = ldif >= 8 ? PM_BUGBEAR : ldif >= 4 ? PM_HOBGOBLIN : PM_GOBLIN;
+                mndx = ldif >= 13 ? PM_OGRE : ldif >= 9 ? PM_BUGBEAR : ldif >= 5 ? PM_HOBGOBLIN : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
                 if (ldif <= 3 && !rn2(6))
                     mndx = PM_HOBGOBLIN;
-                else if (ldif < 8 && ldif >= 4 && !rn2(4))
+                else if (ldif < 9 && ldif >= 5 && !rn2(6))
                     mndx = PM_BUGBEAR;
-                else if (ldif >= 7 && !rn2(4))
+                else if (ldif >= 7 && !rn2(6))
                     mndx = PM_OGRE;
+                else if (ldif >= 10 && !rn2(6))
+                    mndx = PM_OGRE_LORD;
+                else if (ldif >= 13 && !rn2(6))
+                    mndx = PM_OGRE_OVERLORD;
+                else if (ldif >= 23 && !rn2(6))
+                    mndx = PM_OGRE_KING;
             }
         }
     }
