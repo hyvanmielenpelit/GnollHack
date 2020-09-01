@@ -4807,7 +4807,8 @@ enum action_tile_types action;
 			context.action_animation_y = u.uy;
 			context.action_animation_counter = 0;
 			newsym(u.ux, u.uy);
-			for (int frame = 0; frame < animations[anim].number_of_frames; frame++)
+			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+			for (int frame = 0; frame < framenum; frame++)
 			{
 				force_redraw_at(u.ux, u.uy);
 				flush_screen(0);

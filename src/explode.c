@@ -258,15 +258,15 @@ int expltype;
 
     if (visible) {
         /* Start the explosion */
-        int anim_frames = 1;
+        int framenum = 1;
         context.explosion_animation_counter = 0;
         enum animation_types anim = explosion_type_definitions[expltype].animation;
         if (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
         {
-            anim_frames = animations[anim].number_of_frames;
+            framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
         }
 
-        for (int anim_idx = 0; anim_idx < anim_frames; anim_idx++)
+        for (int frame_idx = 0; frame_idx < framenum; frame_idx++)
         {
             for (i = 0; i < 3; i++)
                 for (j = 0; j < 3; j++) {
