@@ -258,15 +258,35 @@ int expltype;
 
     if (visible) {
         /* Start the explosion */
-        for (i = 0; i < 3; i++)
-            for (j = 0; j < 3; j++) {
-                if (explmask[i][j] == 2)
-                    continue;
-                tmp_at(starting ? DISP_BEAM : DISP_CHANGE,
-                       explosion_to_glyph(expltype, explosion[i][j]));
-                tmp_at(i + x - 1, j + y - 1);
-                starting = 0;
+        int anim_frames = 1;
+        context.explosion_animation_counter = 0;
+        enum animation_types anim = explosion_type_definitions[expltype].animation;
+        if (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
+        {
+            anim_frames = animations[anim].number_of_frames;
+        }
+
+        for (int anim_idx = 0; anim_idx < anim_frames; anim_idx++)
+        {
+            for (i = 0; i < 3; i++)
+                for (j = 0; j < 3; j++) {
+                    if (explmask[i][j] == 2)
+                        continue;
+                    tmp_at(starting ? DISP_BEAM : DISP_CHANGE,
+                        explosion_to_glyph(expltype, explosion[i][j]));
+                    tmp_at(i + x - 1, j + y - 1);
+                    force_redraw_at(i + x - 1, j + y - 1);
+                    starting = 0;
+                }
+
+            if (anim > 0)
+            {
+                flush_screen(0);
+                delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
+                context.explosion_animation_counter += animations[anim].intervals_between_frames;
             }
+        }
+
         curs_on_u(); /* will flush screen and output */
 
         if (any_shield && flags.sparkle) { /* simulate shield effect */
@@ -301,6 +321,7 @@ int expltype;
         }
 
         tmp_at(DISP_END, 0); /* clear the explosion */
+        context.explosion_animation_counter = 0;
     } else {
         if (olet == MON_EXPLODE) {
             str = "explosion";

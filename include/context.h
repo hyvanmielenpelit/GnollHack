@@ -194,7 +194,8 @@ struct context_info
     enum layer_types action_animation_layer;
     uchar action_animation_x;
     uchar action_animation_y;
-    uchar action_animation_frame;
+    uchar action_animation_counter;
+    uchar explosion_animation_counter;
     boolean force_allow_keyboard_commands;
 };
 

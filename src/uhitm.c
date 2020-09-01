@@ -4805,19 +4805,19 @@ enum action_tile_types action;
 			context.action_animation_layer = LAYER_MONSTER;
 			context.action_animation_x = u.ux;
 			context.action_animation_y = u.uy;
-			context.action_animation_frame = 0;
+			context.action_animation_counter = 0;
 			newsym(u.ux, u.uy);
 			for (int frame = 0; frame < animations[anim].number_of_frames; frame++)
 			{
 				force_redraw_at(u.ux, u.uy);
 				flush_screen(0);
 				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-				context.action_animation_frame += animations[anim].intervals_between_frames;
+				context.action_animation_counter += animations[anim].intervals_between_frames;
 			}
 			context.action_animation_layer = 0;
 			context.action_animation_x = 0;
 			context.action_animation_y = 0;
-			context.action_animation_frame = 0;
+			context.action_animation_counter = 0;
 		}
 		else
 		{
@@ -4860,7 +4860,7 @@ enum action_tile_types action;
 			context.action_animation_layer = LAYER_MONSTER;
 			context.action_animation_x = mtmp->mx;
 			context.action_animation_y = mtmp->my;
-			context.action_animation_frame = 0;
+			context.action_animation_counter = 0;
 			newsym(mtmp->mx, mtmp->my);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
 			for (int frame = 0; frame < framenum; frame++)
@@ -4868,12 +4868,12 @@ enum action_tile_types action;
 				force_redraw_at(mtmp->mx, mtmp->my);
 				flush_screen(0);
 				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-				context.action_animation_frame += animations[anim].intervals_between_frames;
+				context.action_animation_counter += animations[anim].intervals_between_frames;
 			}
 			context.action_animation_layer = 0;
 			context.action_animation_x = 0;
 			context.action_animation_y = 0;
-			context.action_animation_frame = 0;
+			context.action_animation_counter = 0;
 		}
 		else
 		{

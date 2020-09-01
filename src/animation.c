@@ -264,6 +264,16 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "fiery-explosion-animation", FIERY_EXPLOSION_ANIMATION_TILES,
+      FIERY_EXPLOSION_ANIMATION_FRAMES, FIERY_EXPLOSION_ANIMATION_OFF,
+      MAX_EXPLOSION_CHARS,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", TWISTED_CANDLE_ANIMATION_TILES,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 
       1,
@@ -1378,7 +1388,7 @@ enum autodraw_types* autodraw_ptr;
         if (frame_idx_ptr)
             *frame_idx_ptr = current_animation_frame;
 
-        if (current_animation_frame > main_tile_frame_position) /* 0 is the original picture */
+        if (current_animation_frame != main_tile_frame_position) /* 0 is the original picture */
         {
             char animation_frame_index = current_animation_frame - animation_tile_offset;
             if (animation_frame_index >= animations[animation_idx].number_of_frames)

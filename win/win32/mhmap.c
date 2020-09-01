@@ -1203,7 +1203,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, obj_to_replacement_info(otmp_round), &autodraw);
                     if(context.action_animation_layer == base_layer && context.action_animation_x == enl_i && context.action_animation_y == enl_j)
-                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                    else if (glyph_is_explosion(glyph))
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     
@@ -2532,7 +2534,9 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 enum autodraw_types autodraw = AUTODRAW_NONE;
                 int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
                 if (context.action_animation_layer == layer_idx && context.action_animation_x == x && context.action_animation_y == y)
-                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_frame, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                else if (glyph_is_explosion(glyph))
+                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 enlarg = tile2enlargement[ntile];

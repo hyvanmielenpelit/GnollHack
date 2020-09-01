@@ -195,7 +195,7 @@ struct explosion_type_definition explosion_type_definitions[EXPL_MAX] = {
     {"muddy", CLR_BROWN, NO_ANIMATION },
     {"wet", CLR_BLUE, NO_ANIMATION},
     {"magical", CLR_MAGENTA, NO_ANIMATION},
-    {"fiery", CLR_ORANGE, NO_ANIMATION},
+    {"fiery", CLR_ORANGE, FIERY_EXPLOSION_ANIMATION},
     {"frosty", CLR_WHITE, NO_ANIMATION}
 };
 
