@@ -555,7 +555,10 @@ enum object_sound_types {
 	OBJECT_SOUND_TYPE_READ,
 
 	/* General */
-	OBJECT_SOUND_TYPE_BREAK,			/* Sound upon breaking the item */
+	OBJECT_SOUND_TYPE_BREAK,			/* Sound upon breaking the item (with physical force) */
+	OBJECT_SOUND_TYPE_BURNT,			/* Sound upon breaking the item with fire (boil, burn, etc.) */
+	OBJECT_SOUND_TYPE_FROZEN,			/* Sound upon breaking the item with cold */
+	OBJECT_SOUND_TYPE_ELECTROCUTED,		/* Sound upon breaking the item with electricity */
 	OBJECT_SOUND_TYPE_DISCARD,			/* Sound upon discarding a tin */
 	OBJECT_SOUND_TYPE_SPARKS_FLY,		/* Sound when you hit and sparks fly */
 	OBJECT_SOUND_TYPE_PUSH,				/* Sound upon pushing the item on the ground */
@@ -587,17 +590,9 @@ enum object_occupation_types {
 	MAX_OBJECT_OCCUPATION_TYPES
 };
 
-struct object_soundset_definition {
-	const char* soundset_name;
-	struct ghsound_info sounds[MAX_OBJECT_SOUND_TYPES];
-	enum soundsource_ambient_subtypes ambient_subtype;
-	enum occupation_soundset_types occupation_soundsets[MAX_OBJECT_OCCUPATION_TYPES];
-	enum object_ray_soundset_types ray_soundset;
-};
-
 enum object_soundset_types {
 	OBJECT_SOUNDSET_NONE = 0,
-	OBJECT_SOUNDSET_GENERAL,
+	OBJECT_SOUNDSET_GENERIC,
 	OBJECT_SOUNDSET_CANDLE,
 	OBJECT_SOUNDSET_QUARTERSTAFF,
 	OBJECT_SOUNDSET_BOW,
@@ -616,6 +611,15 @@ enum object_soundset_types {
 	OBJECT_SOUNDSET_BOULDER,
 	OBJECT_SOUNDSET_CAMERA,
 	MAX_OBJECT_SOUNDSETS
+};
+
+struct object_soundset_definition {
+	const char* soundset_name;
+	enum object_soundset_types base_soundset;
+	struct ghsound_info sounds[MAX_OBJECT_SOUND_TYPES];
+	enum soundsource_ambient_subtypes ambient_subtype;
+	enum occupation_soundset_types occupation_soundsets[MAX_OBJECT_OCCUPATION_TYPES];
+	enum object_ray_soundset_types ray_soundset;
 };
 
 extern struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS];
@@ -637,8 +641,22 @@ enum monster_sound_types {
 	MAX_MONSTER_SOUND_TYPES
 };
 
+enum monster_soundset_types {
+	MONSTER_SOUNDSET_NONE = 0,
+	MONSTER_SOUNDSET_GENERIC,
+	MONSTER_SOUNDSET_GOBLIN,
+	MONSTER_SOUNDSET_DRAGON,
+	MONSTER_SOUNDSET_DRACOLICH,
+	MONSTER_SOUNDSET_BEE,
+	MONSTER_SOUNDSET_HORSE,
+	MONSTER_SOUNDSET_DOG,
+	MONSTER_SOUNDSET_CAT,
+	MAX_MONSTER_SOUNDSETS
+};
+
 struct monster_soundset_definition {
 	const char* soundset_name;
+	enum monster_soundset_types base_soundset;
 
 	/* General */
 	struct ghsound_info sounds[MAX_MONSTER_SOUND_TYPES];
@@ -649,19 +667,6 @@ struct monster_soundset_definition {
 
 #define BAREHANDED_ATTACK_NUMBER 0
 #define BAREFOOTED_ATTACK_NUMBER NATTK
-};
-
-enum monster_soundset_types {
-	MONSTER_SOUNDSET_NONE = 0,
-	MONSTER_SOUNDSET_GENERAL,
-	MONSTER_SOUNDSET_GOBLIN,
-	MONSTER_SOUNDSET_DRAGON,
-	MONSTER_SOUNDSET_DRACOLICH,
-	MONSTER_SOUNDSET_BEE,
-	MONSTER_SOUNDSET_HORSE,
-	MONSTER_SOUNDSET_DOG,
-	MONSTER_SOUNDSET_CAT,
-	MAX_MONSTER_SOUNDSETS
 };
 
 extern struct monster_soundset_definition monster_soundsets[MAX_MONSTER_SOUNDSETS];
@@ -675,8 +680,16 @@ enum player_attack_soundset_types {
 	MAX_PLAYER_ATTACK_SOUNDSETS
 };
 
+enum player_soundset_types {
+	PLAYER_SOUNDSET_NONE = 0,
+	PLAYER_SOUNDSET_GENERAL,
+	PLAYER_SOUNDSET_FEMALE_ELVEN_WIZARD,
+	MAX_PLAYER_SOUNDSETS
+};
+
 struct player_soundset_definition {
 	const char* soundset_name;
+	enum player_soundset_types base_soundset;
 
 	/* Overrides monster-specific values */
 	struct ghsound_info sounds[MAX_MONSTER_SOUND_TYPES];
@@ -684,13 +697,6 @@ struct player_soundset_definition {
 
 	/* Bare-handed and kick soundsets */
 	enum object_soundset_types attack_soundsets[MAX_PLAYER_ATTACK_SOUNDSETS];
-};
-
-enum player_soundset_types {
-	PLAYER_SOUNDSET_NONE = 0,
-	PLAYER_SOUNDSET_GENERAL,
-	PLAYER_SOUNDSET_FEMALE_ELVEN_WIZARD,
-	MAX_PLAYER_SOUNDSETS
 };
 
 extern struct player_soundset_definition player_soundsets[MAX_PLAYER_SOUNDSETS];

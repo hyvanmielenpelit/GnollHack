@@ -3327,7 +3327,10 @@ struct obj *tstone;
 
     if (tstone->otyp == TOUCHSTONE && tstone->cursed
         && obj->oclass == GEM_CLASS && !is_graystone(obj)
-        && !obj_resists(obj, 80, 100)) {
+        && !obj_resists(obj, 80, 100)) 
+    {
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
+        
         if (Blind)
             pline("You feel something shatter.");
         else if (Hallucination)
@@ -4440,6 +4443,7 @@ struct obj *obj;
     else if (objects[obj->otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
         hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 
     switch (obj->otyp) {
     case WAN_WISHING:

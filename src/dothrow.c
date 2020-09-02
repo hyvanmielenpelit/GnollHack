@@ -2644,6 +2644,8 @@ boolean from_invent;
 {
     boolean fracture = FALSE;
 
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
+
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case MIRROR:
 	case MAGIC_MIRROR:
