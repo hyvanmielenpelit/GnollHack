@@ -40,6 +40,7 @@ struct layer_info {
     struct obj* memory_objchn;     /* Pointer to the location's first memory object*/
 
     int damage_displayed;
+    int special_monster_layer_height;
 
 };
 
@@ -69,6 +70,7 @@ struct layer_info {
 
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_O_PILE               0x00100000UL
+#define LFLAGS_O_IN_PIT             0x00200000UL
 /* free for another obj flag */
 #define LFLAGS_O_MASK               0x00300000UL
 

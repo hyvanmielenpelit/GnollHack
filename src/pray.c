@@ -2579,20 +2579,7 @@ dosacrifice()
                 otmp = mk_artifact((struct obj *) 0, a_align(u.ux, u.uy), urole.rolenum == ROLE_MONK ? TRUE : FALSE);
                 if (!otmp)
                 {
-                    /* Non-artifact replacement in the case an artifact couldn't be made (most likely a case for monk) */
-                    int repl_otyp = ACURR(A_STR) < STR19(19) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) && !carrying(BELT_OF_STONE_GIANT_STRENGTH) && !carrying(BELT_OF_FIRE_GIANT_STRENGTH) && !carrying(BELT_OF_FROST_GIANT_STRENGTH) && !carrying(BELT_OF_HILL_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH :
-                        !EReflecting && !rn2(2) && !carrying(BRACERS_OF_REFLECTION) && !carrying(AMULET_OF_REFLECTION) ? BRACERS_OF_REFLECTION :
-                        !EAntimagic && !rn2(2) && !carrying(CLOAK_OF_MAGIC_RESISTANCE) ? CLOAK_OF_MAGIC_RESISTANCE :
-                        !EVery_fast && !rn2(2) && !carrying(GLOVES_OF_HASTE) && !carrying(SPEED_BOOTS) ? (!rn2(2) ? GLOVES_OF_HASTE : SPEED_BOOTS) :
-                        !ELifesaved && !rn2(2) && !carrying(AMULET_OF_LIFE_SAVING) ? AMULET_OF_LIFE_SAVING :
-                        !EFlying && !rn2(2) && !carrying(WINGS_OF_FLYING) ? WINGS_OF_FLYING :
-                        !EDeath_resistance && !rn2(2) && !carrying(RIN_PROTECTION_FROM_UNDEATH) && !carrying(AMULET_VERSUS_UNDEATH) && !carrying(GOWN_OF_THE_ARCHBISHOPS) ? RIN_PROTECTION_FROM_UNDEATH :
-                        ACURR(A_STR) < STR19(24) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH : !rn2(2) ? (!rn2(2) ? WAN_DEATH : WAN_DISINTEGRATION) :
-                        !rn2(2) ? MAGIC_MARKER :
-                        !rn2(2) ? POT_GAIN_LEVEL :
-                        !rn2(2) ? POT_LIGHTNING_SPEED : POT_GREATER_REGENERATION;
-
-                    otmp = mksobj(repl_otyp, TRUE, FALSE, 2);
+                    otmp = mksobj(get_artifact_replacement_item_otyp(), TRUE, FALSE, 2);
                     if (otmp)
                     {
                         if (otmp->cursed)
@@ -2709,6 +2696,24 @@ dosacrifice()
 	return 1;
 }
 
+int
+get_artifact_replacement_item_otyp()
+{
+    /* Non-artifact replacement in the case an artifact couldn't be made (most likely a case for monk) */
+    int repl_otyp = ACURR(A_STR) < STR19(19) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) && !carrying(BELT_OF_STONE_GIANT_STRENGTH) && !carrying(BELT_OF_FIRE_GIANT_STRENGTH) && !carrying(BELT_OF_FROST_GIANT_STRENGTH) && !carrying(BELT_OF_HILL_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH :
+        !EReflecting && !rn2(2) && !carrying(BRACERS_OF_REFLECTION) && !carrying(AMULET_OF_REFLECTION) ? BRACERS_OF_REFLECTION :
+        !EAntimagic && !rn2(2) && !carrying(CLOAK_OF_MAGIC_RESISTANCE) ? CLOAK_OF_MAGIC_RESISTANCE :
+        !EVery_fast && !rn2(2) && !carrying(GLOVES_OF_HASTE) && !carrying(SPEED_BOOTS) ? (!rn2(2) ? GLOVES_OF_HASTE : SPEED_BOOTS) :
+        !ELifesaved && !rn2(2) && !carrying(AMULET_OF_LIFE_SAVING) ? AMULET_OF_LIFE_SAVING :
+        !EFlying && !rn2(2) && !carrying(WINGS_OF_FLYING) ? WINGS_OF_FLYING :
+        !EDeath_resistance && !rn2(2) && !carrying(RIN_PROTECTION_FROM_UNDEATH) && !carrying(AMULET_VERSUS_UNDEATH) && !carrying(GOWN_OF_THE_ARCHBISHOPS) ? RIN_PROTECTION_FROM_UNDEATH :
+        ACURR(A_STR) < STR19(24) && !rn2(2) && !carrying(BELT_OF_STORM_GIANT_STRENGTH) ? BELT_OF_STORM_GIANT_STRENGTH : !rn2(2) ? (!rn2(2) ? WAN_DEATH : WAN_DISINTEGRATION) :
+        !rn2(2) ? MAGIC_MARKER :
+        !rn2(2) ? POT_GAIN_LEVEL :
+        !rn2(2) ? POT_LIGHTNING_SPEED : POT_GREATER_REGENERATION;
+
+    return repl_otyp;
+}
 /* determine prayer results in advance; also used for enlightenment */
 boolean
 can_pray(praying)

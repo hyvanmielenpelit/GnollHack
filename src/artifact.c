@@ -153,7 +153,7 @@ boolean nonweaponsonly; /* for monks */
         if (!by_align) {
             /* looking for a particular type of item; not producing a
                divine gift so we don't care about role's first choice */
-            if (a->otyp == o_typ)
+            if (a->otyp == o_typ || o_typ == 0)
                 eligible[n++] = m;
             continue; /* move on to next possibility */
         }
@@ -206,7 +206,7 @@ boolean nonweaponsonly; /* for monks */
         a = &artilist[m];
 
         /* make an appropriate object if necessary, then christen it */
-        if (by_align)
+        if (by_align || !otmp)
             otmp = mksobj((int) a->otyp, TRUE, FALSE, FALSE);
 
         if (otmp) 

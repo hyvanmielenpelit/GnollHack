@@ -242,6 +242,19 @@ MONSTER:('m',"giant mimic"),$place[2],m_feature "fountain"
 MONSTER:('m',"giant mimic"),$place[3],m_feature "fountain"
 # The demon of the swamp
 MONSTER:('&',"Juiblex"),(25,08)
+CONTAINER:('(',"oilskin sack"),buried,(25,08) {
+   OBJECT:('$',"gold piece"),quantity:(7000+(6d1000))
+   [25%]:OBJECT:artifact
+   OBJECT:random_contents
+   OBJECT:random_contents
+   OBJECT:random_contents
+   [50%]:OBJECT:')'
+   [50%]:OBJECT:'*'
+   [50%]:OBJECT:'*'
+   [25%]:OBJECT:'!'
+   [25%]:OBJECT:'?'
+}
+
 # And a couple demons
 MONSTER:('i',"lemure"),(43,08)
 MONSTER:('i',"lemure"),(44,08)
@@ -450,8 +463,23 @@ OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
 OBJECT:random,random
+
 # The resident nasty
 MONSTER:('&',"Orcus"),(33,15)
+CONTAINER:('(',"chest"),trapped,locked,(33,15) {
+   OBJECT:('$',"gold piece"),quantity:(12000+(6d1000))
+   [25%]:OBJECT:artifact
+   OBJECT:random_contents
+   OBJECT:random_contents
+   OBJECT:random_contents
+   [50%]:OBJECT:')'
+   [50%]:OBJECT:'*'
+   [50%]:OBJECT:'*'
+   [25%]:OBJECT:'!'
+   [25%]:OBJECT:'?'
+}
+ENGRAVING:(33,15),burn,"Morgoth"
+
 # And its preferred companions
 MONSTER:('z',"human zombie"),(32,15)
 MONSTER:(' ',"shade"),(32,14)
@@ -490,6 +518,8 @@ MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
 MONSTER:random,random
+
+
 #
 # The Dispater Level
 #
@@ -526,7 +556,22 @@ NON_DIGGABLE:(00,00,20,11)
 # Entire main area
 REGION:(01,01,20,10),unlit,"ordinary"
 # The fellow in residence
+
 MONSTER:('&',"Dispater"),(12,07)
+CONTAINER:('(',"chest"),trapped,locked,(12,07) {
+   OBJECT:('$',"gold piece"), quantity:(12000+(6d1000))
+   [25%]:OBJECT:artifact
+   OBJECT:random_contents
+   OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+   [50%]:OBJECT:')'
+   [50%]:OBJECT:'*'
+   [50%]:OBJECT:'*'
+   [25%]:OBJECT:'!'
+   [25%]:OBJECT:'?'
+}
+ENGRAVING:(12,07),burn,"Morgoth"
+
 # Some random weapons and armor.
 OBJECT:'[',random
 OBJECT:'[',random
@@ -613,6 +658,20 @@ IF [50%] {
 }
 # The fellow in residence
 MONSTER:('&',"Baalzebub"),(35,06)
+CONTAINER:('(',"chest"),trapped,locked,(35,06) {
+   OBJECT:('$',"gold piece"), quantity:(17000+(6d1000))
+   [25%]:OBJECT:artifact
+   OBJECT:random_contents
+   OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+   [50%]:OBJECT:')'
+   [50%]:OBJECT:'*'
+   [50%]:OBJECT:'*'
+   [25%]:OBJECT:'!'
+   [25%]:OBJECT:'?'
+}
+ENGRAVING:(35,06),burn,"Morgoth"
+
 # Some random weapons and armor.
 OBJECT:'[',random
 OBJECT:'[',random

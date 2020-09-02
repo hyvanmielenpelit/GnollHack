@@ -108,14 +108,18 @@ ENDMAP
 
 REGION:(00,00,18,16),lit,"ordinary"
 CONTAINER:('(',"chest"),buried,(09,08) {
-  OBJECT:('$',"gold piece"),quantity:3000
+  OBJECT:('$',"gold piece"),quantity:(2500+(2d500))
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
-  OBJECT:class_treasure_weapon
+  IF [75%] {
+    OBJECT:class_artifact
+  } ELSE {
+    OBJECT:class_treasure_weapon
+  }
   OBJECT:class_treasure_armor
   OBJECT:('/',"cold")
-  [50%]:OBJECT:(')',"glass sword")
+  [25%]:OBJECT:(')',"glass sword")
 }
 ENGRAVING: (09,08), engrave, "X"
 MONSTER: ('#', "roper"), (09,08), hostile, asleep

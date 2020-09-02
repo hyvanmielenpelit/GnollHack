@@ -456,6 +456,8 @@ E void FDECL(show_glyph_ascii, (int, int, int));
 E void FDECL(show_glyph_on_layer_and_ascii, (int, int, int, enum layer_types));
 E void FDECL(clear_glyph_buffer_at, (int, int));
 E void FDECL(show_monster_glyph_with_extra_info, (int, int, int, struct monst*, unsigned long, int));
+E void FDECL(clear_monster_layer_at, (int, int));
+E void FDECL(clear_monster_layer_memory_at, (int, int));
 E void FDECL(show_extra_info, (int, int, unsigned long, int));
 E void FDECL(clear_layer_info, (struct layer_info*));
 E void FDECL(clear_all_glyphs_at, (int, int));
@@ -2343,6 +2345,7 @@ E const char *FDECL(align_gtitle, (ALIGNTYP_P));
 E void FDECL(altar_wrath, (int, int));
 E int NDECL(absolution_spell);
 E int NDECL(wiz_crown);
+E int NDECL(get_artifact_replacement_item_otyp);
 
 
 /* ### priest.c ### */

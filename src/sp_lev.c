@@ -1963,25 +1963,53 @@ struct mkroom *croom;
 
     if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_ARMOR)
     {
-    /* class armor treasure */
-    if (Role_if(PM_WIZARD))
-        otmp = mksobj_at(!rn2(2) ? BRACERS_OF_DEFENSE : ROBE_OF_PROTECTION, x, y, TRUE, !named);
-    else if (Role_if(PM_MONK))
-        otmp = mksobj_at(!rn2(2) ? ROBE_OF_PROTECTION : CLOAK_OF_MAGIC_RESISTANCE, x, y, TRUE, !named);
-    else
-        otmp = mksobj_at(!rn2(2) ? MITHRIL_FULL_PLATE_MAIL : ADAMANTIUM_FULL_PLATE_MAIL, x, y, TRUE, !named);
+        /* class armor treasure */
+        if (Role_if(PM_WIZARD))
+            otmp = mksobj_at(!rn2(2) ? BRACERS_OF_DEFENSE : ROBE_OF_PROTECTION, x, y, TRUE, !named);
+        else if (Role_if(PM_MONK))
+            otmp = mksobj_at(!rn2(2) ? ROBE_OF_PROTECTION : CLOAK_OF_MAGIC_RESISTANCE, x, y, TRUE, !named);
+        else
+            otmp = mksobj_at(!rn2(2) ? MITHRIL_FULL_PLATE_MAIL : ADAMANTIUM_FULL_PLATE_MAIL, x, y, TRUE, !named);
     }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_WEAPON)
     {
-    /* class weapon treasure */
-    if (Role_if(PM_WIZARD))
-        otmp = mksobj_at(!rn2(2) ? STAFF_OF_FROST : STAFF_OF_THE_MAGI, x, y, TRUE, !named);
-    else if (Role_if(PM_MONK))
-        otmp = mksobj_at(!rn2(2) ? BELT_OF_FIRE_GIANT_STRENGTH : GLOVES_OF_HASTE, x, y, TRUE, !named);
-    else if (Role_if(PM_PRIEST))
-        otmp = mksobj_at(u.ualign.type == A_CHAOTIC ? MACE_OF_DEATH : MACE_OF_DISRUPTION, x, y, TRUE, !named);
-    else
-        otmp = mksobj_at(!rn2(2) ? SWORD_OF_LIFE_STEALING : SWORD_OF_SHARPNESS, x, y, TRUE, !named);
+        /* class weapon treasure */
+        if (Role_if(PM_WIZARD))
+            otmp = mksobj_at(!rn2(2) ? STAFF_OF_FROST : STAFF_OF_THE_MAGI, x, y, TRUE, !named);
+        else if (Role_if(PM_MONK))
+            otmp = mksobj_at(!rn2(2) ? BELT_OF_FIRE_GIANT_STRENGTH : GLOVES_OF_HASTE, x, y, TRUE, !named);
+        else if (Role_if(PM_PRIEST))
+            otmp = mksobj_at(u.ualign.type == A_CHAOTIC ? MACE_OF_DEATH : MACE_OF_DISRUPTION, x, y, TRUE, !named);
+        else
+            otmp = mksobj_at(!rn2(2) ? SWORD_OF_LIFE_STEALING : SWORD_OF_SHARPNESS, x, y, TRUE, !named);
+    }
+    else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_ARTIFACT)
+    {
+        otmp = mk_artifact((struct obj*)0, (aligntyp)A_NONE, FALSE);
+        if(otmp)
+            place_object(otmp, x, y);
+        else
+            otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
+    }
+    else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_CLASS_ARTIFACT)
+    {
+        otmp = mk_artifact((struct obj*)0, (aligntyp)A_NONE, Role_if(PM_MONK) ? TRUE : FALSE);
+        if (otmp)
+            place_object(otmp, x, y);
+        else
+        {
+            otmp = mksobj_at(get_artifact_replacement_item_otyp(), x, y, TRUE, TRUE);
+            if (!otmp)
+                otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
+        }
+    }
+    else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_RANDOM_CONTENTS)
+    {
+        otmp = mkobj(RANDOM_CLASS, !named, TRUE);
+        if (otmp)
+            place_object(otmp, x, y);
+        else
+            otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
     }
     else if (!c)
         otmp = mkobj_at(RANDOM_CLASS, x, y, !named);

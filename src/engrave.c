@@ -20,7 +20,7 @@ char *outbuf;
     if (!rn2(10))
     {
         /* Somebody has tried to protect himself or herself with Elbereth */
-        strcpy(outbuf, "Elbereth");
+        strcpy(outbuf, Elbereth_word);
     }
     else
     {
@@ -417,7 +417,7 @@ xchar e_type;
     ep->engr_txt = (char *) (ep + 1);
     Strcpy(ep->engr_txt, s);
     /* engraving Elbereth shows wisdom */
-    if (!in_mklev && (!strcmp(s, "Elbereth") || !strcmp(s, "Gilthoniel")))
+    if (!in_mklev && (!strcmp(s, Elbereth_word) || !strcmp(s, Gilthoniel_word)))
         exercise(A_WIS, TRUE);
     ep->engr_time = e_time;
     ep->engr_type = e_type > 0 ? e_type : rnd(N_ENGRAVE - 1);

@@ -4012,7 +4012,7 @@ setmangry(mtmp, via_attack)
 struct monst *mtmp;
 boolean via_attack;
 {
-    if (via_attack && sengr_at("Elbereth", u.ux, u.uy, TRUE)
+    if (via_attack && sengr_at(Elbereth_word, u.ux, u.uy, TRUE)
         /* only hypocritical if monster is vulnerable to Elbereth (or
            peaceful--not vulnerable but attacking it is hypocritical) */
         && (onscary(u.ux, u.uy, mtmp) || is_peaceful(mtmp))) {

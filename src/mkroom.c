@@ -375,10 +375,10 @@ int x,y;
 		: (i > 4) ? PM_GNOLL_KING
 		: (i > 2) ? PM_DWARF_KING
         : PM_GNOME_KING;
-    struct monst *mon = makemon(&mons[pm], x, y, NO_MM_FLAGS);
+    struct monst *mon = makemon(&mons[pm], x, y, MM_WAITFORU);
 
     if (mon) {
-        mon->msleeping = 1;
+        //mon->msleeping = 1;
         mon->mpeaceful = 0;
         set_malign(mon);
         /* Give him a sceptre to pound in judgment */
@@ -578,12 +578,12 @@ struct mkroom *sroom;
                                              : (type == ANTHOLE)
                                                  ? antholemon()
                                                  : (struct permonst *) 0,
-                          sx, sy, MM_ASLEEP);
+                          sx, sy, MM_WAITFORU);
 			}
 
 			if (mon)
 			{
-                mon->msleeping = 1;
+                //mon->msleeping = 1;
                 if (type == COURT && is_peaceful(mon))
 				{
                     mon->mpeaceful = 0;
@@ -661,7 +661,7 @@ struct mkroom *sroom;
                                 box->owt = weight(box);
                             }
                         }
-                        make_engr_at(sx, sy, "Gilthoniel", 0L, ENGRAVE);
+                        make_engr_at(sx, sy, Gilthoniel_word, 0L, ENGRAVE);
                         context.made_armory_box_count++;
                     }
                 }
@@ -1179,10 +1179,8 @@ mkgarden()
                          level_difficulty() >= mons[PM_OGRE_LORD].difficulty && !rn2(4) ? PM_OGRE_LORD :
                         (level_difficulty() >= mons[PM_OGRE].difficulty && !rn2(4)) || level_difficulty() >= (mons[PM_OGRE].difficulty + 5) ? PM_OGRE :
                         (level_difficulty() >= mons[PM_BUGBEAR].difficulty && !rn2(4)) || level_difficulty() >= 7 ? PM_BUGBEAR :
-                        PM_HOBGOBLIN]) : pm, sx, sy, NO_MM_FLAGS);
+                        PM_HOBGOBLIN]) : pm, sx, sy, MM_ASLEEP);
 
-					if(mon)
-						mon->msleeping = 1;
 				}
 			}
 
@@ -1262,9 +1260,7 @@ mkdragonlair()
 		{
 			if(dragons[i] > 0)
 			{
-				struct monst* mon = makemon(&mons[dragons[i]], sx, sy, NO_MM_FLAGS);
-				if(mon)
-					mon->msleeping = 1;
+				struct monst* mon = makemon(&mons[dragons[i]], sx, sy, !rn2(2) ? MM_ASLEEP | MM_WAITFORU : MM_WAITFORU);
 			}
 
 			struct obj* otmp = mksobj_at(GOLD_PIECE, sx, sy, FALSE, FALSE);
@@ -1989,7 +1985,7 @@ armorymon()
         else
         {
             /* Goblins or gnolls for non-chaotic */
-            if (ldif >= 11 || !rn2(2))
+            if (!Race_if(PM_GNOLL) && (ldif >= 11 || !rn2(2)))
             {
                 mndx = ldif >= 12 ? PM_GNOLL_LORD : ldif >= 6 ? PM_GNOLL : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
                 if (ldif <= 3 && !rn2(6))

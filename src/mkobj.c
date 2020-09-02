@@ -262,20 +262,28 @@ boolean artif;
 int mkobj_type;
 {
     int tprob;
+    int i = 0;
 
-    if (oclass == RANDOM_CLASS) {
-        const struct icp *iprobs = Is_rogue_level(&u.uz)
-                                   ? (const struct icp *) rogueprobs
-                                   : Inhell ? (const struct icp *) hellprobs
-                                            : (const struct icp *) mkobjprobs;
+    for (int try_ct = 0; try_ct < 20; try_ct++)
+    {
+        if (oclass == RANDOM_CLASS) {
+            const struct icp* iprobs = Is_rogue_level(&u.uz)
+                ? (const struct icp*)rogueprobs
+                : Inhell ? (const struct icp*)hellprobs
+                : (const struct icp*)mkobjprobs;
 
-        for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
-            ;
-        oclass = iprobs->iclass;
+            for (tprob = rnd(100); (tprob -= iprobs->iprob) > 0; iprobs++)
+                ;
+            oclass = iprobs->iclass;
+        }
+
+        i = random_objectid_from_class(oclass);
+
+        if (mkobj_type == 1 && (objects[i].oc_flags & O2_CONTAINER)) /* No containers in containers */
+            continue;
+        else
+            break;
     }
-
-	int i = random_objectid_from_class(oclass);
-
     return mksobj(i, TRUE, artif, mkobj_type);
 }
 

@@ -364,6 +364,10 @@ boolean add_detection_mark;
     register int glyph = obj_to_glyph(obj, newsym_rn2);
     boolean draw_in_front = is_obj_drawn_in_front(obj);
     enum layer_types layer = draw_in_front ? LAYER_COVER_OBJECT : LAYER_OBJECT;
+    boolean in_pit = FALSE;
+    struct trap* t = 0;
+    if (isok(x, y) && (t = t_at(x, y)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
+        in_pit = TRUE;
 
     /* Save this object's glyph for showing in object pile */
     obj->glyph = glyph;
@@ -380,6 +384,8 @@ boolean add_detection_mark;
         }
         levl[x][y].hero_memory_layers.glyph = new_glyph;
         levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_glyph;
+        if (in_pit)
+            levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_IN_PIT;
 
         struct obj* memobj = o_on_memory(obj->o_id, levl[x][y].hero_memory_layers.memory_objchn);
         if (!chain_check || (chain_check && !memobj))
@@ -398,6 +404,8 @@ boolean add_detection_mark;
     {
         show_glyph_ascii(x, y, glyph);
         show_glyph_on_layer(x, y, glyph, layer);
+        if(in_pit)
+            add_glyph_buffer_layer_flags(x, y, LFLAGS_O_IN_PIT);
     }
 }
 
@@ -435,9 +443,9 @@ register xchar x, y;
         {
             levl[x][y].hero_memory_layers.glyph = GLYPH_INVISIBLE;
             levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = GLYPH_INVISIBLE;
+            levl[x][y].hero_memory_layers.special_monster_layer_height = 0;;
         }
-        show_glyph_ascii(x, y, GLYPH_INVISIBLE);
-        show_glyph_on_layer(x, y, GLYPH_INVISIBLE, LAYER_MONSTER);
+        show_monster_glyph_with_extra_info(x, y, GLYPH_INVISIBLE, (struct monst*)0, 0UL, 0);
     }
 }
 
@@ -447,7 +455,7 @@ int x, y;
 {
     if (isok(x,y) && glyph_is_invisible(levl[x][y].hero_memory_layers.glyph)) 
     {
-        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
+        clear_monster_layer_memory_at(x, y);
         unmap_object(x, y);
         newsym(x, y);
         return TRUE;
@@ -605,7 +613,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
             /*FALLTHRU*/
         case M_AP_NOTHING:
             show_monster_glyph_with_extra_info(x, y, any_mon_to_glyph(mon, newsym_rn2),  mon, 0UL, 0);
-            levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH; /* Clear monster memory */
+            clear_monster_layer_memory_at(x, y);
             break;
 
         case M_AP_FURNITURE: {
@@ -679,7 +687,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
 
         case M_AP_MONSTER:
             show_monster_glyph_with_extra_info(x, y, any_monnum_to_glyph(mon->female, what_mon((int)mon->mappearance, rn2_on_display_rng)), mon, 0UL, 0 );
-            levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH; /* Clear monster memory */
+            clear_monster_layer_memory_at(x, y);
             break;
         }
     }
@@ -720,7 +728,7 @@ xchar worm_tail;            /* mon is actually a worm tail */
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
         show_monster_glyph_with_extra_info(x, y, num, worm_tail ? (struct monst*)0 : mon, extra_flags, 0);
-        levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH; /* Clear monster memory */
+        clear_monster_layer_memory_at(x, y);
     }
 }
 
@@ -758,8 +766,7 @@ register struct monst *mon;
     if (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
         unmap_object(x, y);
 
-    show_glyph_ascii(x, y, glyph);
-    show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
+    show_monster_glyph_with_extra_info(x, y, glyph, (struct monst*)0, 0UL, 0);
 }
 
 int
@@ -990,8 +997,8 @@ xchar x, y;
 
     /* Monster layer */
     /* Clear out hero memory in the case nothing's found below */
-    levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
-    
+    clear_monster_layer_memory_at(x, y);
+
     /* draw monster on top if we can sense it */
     if ((mon = m_at(x, y)) != 0)
     {
@@ -1201,9 +1208,9 @@ int damage_shown;
                 /* Clear hero memory of any (invisible) monster from layer */
                 if (level.flags.hero_memory)
                 {
-                    lev->hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
-                    show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
+                    clear_monster_layer_memory_at(x, y);
                 }
+                clear_monster_layer_at(x, y);
             }
 //            else
 //                _map_location(x, y, 1); /* map the location */
@@ -2213,6 +2220,27 @@ unsigned long removed_flags;
 }
 
 void
+clear_monster_layer_memory_at(x, y)
+int x, y;
+{
+    levl[x][y].hero_memory_layers.layer_glyphs[LAYER_MONSTER] = NO_GLYPH;
+    levl[x][y].hero_memory_layers.special_monster_layer_height = 0;
+}
+
+
+void
+clear_monster_layer_at(x, y)
+int x, y;
+{
+    show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
+    show_extra_info(x, y, 0UL, 0); /* clears layer flags */
+
+    gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
+    gbuf[y][x].layers.special_monster_layer_height = 0;
+}
+
+
+void
 show_monster_glyph_with_extra_info(x, y, glyph,  mtmp, disp_flags, damage_displayed)
 int x, y, glyph;
 struct monst* mtmp;
@@ -2226,6 +2254,30 @@ int damage_displayed;
         show_extra_info(x, y, disp_flags, damage_displayed); /* clears layer flags */
 
         gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
+        gbuf[y][x].layers.special_monster_layer_height = 0;
+
+        if (disp_flags & LFLAGS_M_YOU)
+        {
+            if (u.utrap)
+            {
+                if (u.utraptype == TT_PIT || u.utraptype == TT_LAVA)
+                {
+                    gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
+                }
+                else if (mtmp->mprops[LEVITATION] != 0)
+                {
+                    gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
+                }
+            }
+        }
+        else if (mtmp)
+        {
+            struct trap* t = 0;
+            if (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
+                gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
+            else if (mtmp->mprops[LEVITATION] != 0)
+                gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
+        }
 
         if (mtmp)
         {
@@ -2281,6 +2333,7 @@ boolean remove;
         else if (glyph_is_monster(glyph) || glyph_is_invisible(glyph) || glyph_is_warning(glyph)) /* includes also players */
         {
             gbuf[y][x].layers.layer_glyphs[LAYER_MONSTER] = remove ? NO_GLYPH : glyph;
+            gbuf[y][x].layers.special_monster_layer_height = 0;
             gbuf[y][x].layers.layer_flags &= ~LFLAGS_M_MASK;
             gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
         }

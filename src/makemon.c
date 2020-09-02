@@ -2574,6 +2574,8 @@ int level_limit;
         if (ptr->mflags3 & (M3_WAITMASK | M3_COVETOUS))
             mtmp->mstrategy |= STRAT_APPEARMSG;
     }
+    else if (mmflags & MM_WAITFORU)
+        mtmp->mstrategy |= STRAT_WAITFORU;
 
     if (allow_minvent && migrating_objs)
         deliver_obj_to_mon(mtmp, 1, DF_NONE); /* in case of waiting items */

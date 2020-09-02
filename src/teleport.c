@@ -207,25 +207,25 @@ int x1, y1, x2, y2;
                                 dndest.nhy)
             && !within_bounded_area(x2, y2, dndest.nlx, dndest.nly,
                                     dndest.nhx, dndest.nhy))
-            return FALSE;
+            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
         /* and if outside, can't teleport inside */
         if (!within_bounded_area(x1, y1, dndest.nlx, dndest.nly, dndest.nhx,
                                  dndest.nhy)
             && within_bounded_area(x2, y2, dndest.nlx, dndest.nly, dndest.nhx,
                                    dndest.nhy))
-            return FALSE;
+            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
     }
     if (updest.nlx > 0) { /* ditto */
         if (within_bounded_area(x1, y1, updest.nlx, updest.nly, updest.nhx,
                                 updest.nhy)
             && !within_bounded_area(x2, y2, updest.nlx, updest.nly,
                                     updest.nhx, updest.nhy))
-            return FALSE;
+            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
         if (!within_bounded_area(x1, y1, updest.nlx, updest.nly, updest.nhx,
                                  updest.nhy)
             && within_bounded_area(x2, y2, updest.nlx, updest.nly, updest.nhx,
                                    updest.nhy))
-            return FALSE;
+            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
     }
     return TRUE;
 }
@@ -968,14 +968,14 @@ boolean iscontrolled;
                             as getlin()'s preloaded default answer */
             getlin(qbuf, buf);
             if (!strcmp(buf, "\033")) { /* cancelled */
-                if (Confusion && rnl(5)) {
+                if (teletype != 1 && Confusion && rnl(5)) {
                     pline("Oops...");
                     goto random_levtport;
                 }
                 return;
             } else if (!strcmp(buf, "*")) {
                 goto random_levtport;
-            } else if (Confusion && rnl(5)) {
+            } else if (teletype != 1 && Confusion && rnl(5)) {
                 pline("Oops...");
                 goto random_levtport;
             }

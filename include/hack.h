@@ -341,7 +341,7 @@ extern short tile2enlargement[MAX_GLYPH];
 #define MM_ADJACENTOK				0x00000010UL /* it is acceptable to use adjacent coordinates */
 #define MM_ANGRY					0x00000020UL /* monster is created angry */
 #define MM_NONAME					0x00000040UL /* monster is not christened */
-/* free bit */
+#define MM_WAITFORU					0x00000080UL /* set WAITFORU strategy for monster */
 #define MM_EGD						0x00000100UL /* add egd structure */
 #define MM_EPRI						0x00000200UL /* add epri structure */
 #define MM_ESMI						0x00000400UL /* add esmi structure */
@@ -685,6 +685,9 @@ static const char empty_string[] = "";
 #define MOUSE_SCREEN_SCALE_ADJUSTMENT_STEP 0.05
 #define MIN_PREF_SCREEN_SCALE 10
 #define MAX_PREF_SCREEN_SCALE 200
+#define SPECIAL_HEIGHT_IN_PIT -32
+#define SPECIAL_HEIGHT_LEVITATION 16
+
 
 #define ANIMATION_FRAME_INTERVAL 25 /* in milliseconds */
 #define ITEM_PICKUP_DROP_DELAY 75 /* in milliseconds */
@@ -700,7 +703,7 @@ static const char empty_string[] = "";
           NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \
-        0UL, (genericptr_t)0, (struct obj*)0, 0 \
+        0UL, (genericptr_t)0, (struct obj*)0, 0, 0 \
     }
 
 #define nul_layerinfo empty_layerinfo(S_unexplored)
@@ -712,6 +715,9 @@ static const char empty_string[] = "";
 /* some math */
 #define absd(x) (x > 0.0 ? x : -x)
 
+#define Elbereth_word "Elbereth"
+#define Gilthoniel_word "Gilthoniel"
+#define Morgoth_word "Morgoth"
 
 #if defined(BSD) || defined(ULTRIX)
 #define readLenType int
