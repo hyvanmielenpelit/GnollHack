@@ -279,7 +279,7 @@ int mkobj_type;
 
         i = random_objectid_from_class(oclass);
 
-        if (mkobj_type == 1 && (objects[i].oc_flags & O2_CONTAINER)) /* No containers in containers */
+        if (mkobj_type == 1 && (objects[i].oc_flags2 & O2_CONTAINER)) /* No containers in containers */
             continue;
         else
             break;
