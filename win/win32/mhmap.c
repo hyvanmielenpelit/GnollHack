@@ -1933,6 +1933,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if (!isyou && mtmp->mspec_used)
                                         display_this_status_mark = TRUE;
                                     break;
+                                case STATUS_MARK_TRAPPED:
+                                    if ((isyou && u.utrap) || (!isyou && mtmp->mtrapped))
+                                        display_this_status_mark = TRUE;
+                                    break;
                                 default:
                                     break;
                                 }

@@ -88,6 +88,7 @@ enum game_ui_status_mark_types
     STATUS_MARK_LOW_HP,
     STATUS_MARK_CRITICAL_HP,
     STATUS_MARK_SPEC_USED,
+    STATUS_MARK_TRAPPED,
     MAX_STATUS_MARKS
 };
 
