@@ -686,7 +686,7 @@ static const char empty_string[] = "";
 #define MIN_PREF_SCREEN_SCALE 10
 #define MAX_PREF_SCREEN_SCALE 200
 #define SPECIAL_HEIGHT_IN_PIT -32
-#define SPECIAL_HEIGHT_LEVITATION 16
+#define SPECIAL_HEIGHT_LEVITATION 32
 #define PIT_BOTTOM_BORDER 2
 
 #define ANIMATION_FRAME_INTERVAL 25 /* in milliseconds */

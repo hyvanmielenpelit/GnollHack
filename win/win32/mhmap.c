@@ -25,13 +25,14 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1) + 1)
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2) + 1)
 
 
 /* draw order definition */
 struct draw_order_definition {
     enum layer_types layer;
     int enlargement_index;
+    int tile_movement_index;
     uchar draw_to_buffer;
 };
 
@@ -963,6 +964,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
     double y_scaling_factor = ((double)data->yBackTile / (double)TILE_Y);
 
+    if (i == u.ux && j == u.uy - 2)
+        isyou = isyou;
+
     for (int draw_index = 0; draw_index < DRAW_ORDER_SIZE; draw_index++)
     {
         //int z_order_array[NUM_POSITIONS_IN_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
@@ -974,65 +978,61 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
             layer_rounds = MAX_SHOWN_OBJECTS;
 
-        /*
-            boolean no_enlargements = FALSE;
-            if (base_layer == LAYER_FLOOR)
-                no_enlargements = TRUE;
-        */
-
         /* Drawing order from back to front */
-        int enlarg_idx = draw_order[draw_index].enlargement_index; //-1;
-                
-            /*
-            if (no_enlargements)
-            {
-                if (running_index > 0)
-                    continue;
-            }
-            else
-            {
-                enlarg_idx = z_order_array[running_index];
-            }
-            */
+        int enlarg_idx = draw_order[draw_index].enlargement_index;
+        int tile_move_idx = draw_order[draw_index].tile_movement_index;
 
             /* Set coordinates */
             if (enlarg_idx == -1)
             {
                 enl_i = darkening_i = i;
-                enl_j = darkening_j = j;
+                enl_j = darkening_j = j + tile_move_idx;
             }
             else if (enlarg_idx == 0)
             {
                 enl_i = darkening_i = i - 1;
-                enl_j = darkening_j = j;
+                enl_j = darkening_j = j + tile_move_idx;
             }
             else if (enlarg_idx == 1)
             {
                 enl_i = darkening_i = i + 1;
-                enl_j = darkening_j = j;
+                enl_j = darkening_j = j + tile_move_idx;
             }
             else if (enlarg_idx == 2)
             {
                 enl_i = i - 1;
-                enl_j = j + 1;
+                enl_j = j + 1 + tile_move_idx;
                 darkening_i = i;
-                darkening_j = j + 1;
+                darkening_j = j + 1 + tile_move_idx;
             }
             else if (enlarg_idx == 3)
             {
                 enl_i = darkening_i = i;
-                enl_j = darkening_j = j + 1;
+                enl_j = darkening_j = j + 1 + tile_move_idx;
             }
             else if (enlarg_idx == 4)
             {
                 enl_i = i + 1;
-                enl_j = j + 1;
+                enl_j = j + 1 + tile_move_idx;
                 darkening_i = i;
-                darkening_j = j + 1;
+                darkening_j = j + 1 + tile_move_idx;
             }
 
             if (enlarg_idx >= 0 && !isok(enl_i, enl_j))
                 continue;
+
+            int monster_layer_height = data->map[enl_i][enl_j].special_monster_layer_height;
+            if (base_layer == LAYER_MONSTER)
+            {
+                if (monster_layer_height == 0 && draw_order[draw_index].tile_movement_index != 0)
+                    continue;
+                if (monster_layer_height < 0 && draw_order[draw_index].tile_movement_index == 1)
+                    continue;
+                if (monster_layer_height < 0 && draw_order[draw_index].tile_movement_index == -1 && enlarg_idx <= 1)
+                    continue;
+                if (monster_layer_height > 0 && draw_order[draw_index].tile_movement_index == -1)
+                    continue;
+            }
 
             genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
             struct monst* m_here = m_at(enl_i, enl_j);
@@ -1051,7 +1051,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         || data->map[relevant_i][relevant_j].glyph == S_unexplored
                         || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
                         || (base_layer == LAYER_MONSTER && ((isyou && u.utrap && u.utraptype == TT_PIT) 
-                            || (!isyou && mtmp && mtmp->mtrapped && (trap_here = t_at(enl_i, enl_j)) != 0 && (trap_here->ttyp == PIT || trap_here->ttyp == SPIKED_PIT))))
+                        || (!isyou && mtmp && mtmp->mtrapped && (trap_here = t_at(enl_i, enl_j)) != 0 && (trap_here->ttyp == PIT || trap_here->ttyp == SPIKED_PIT))))
                         )
                         side_not_ok = TRUE;
 
@@ -1079,7 +1079,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
             boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
             boolean objects_in_pit = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_IN_PIT);
-            int monster_layer_height = data->map[enl_i][enl_j].special_monster_layer_height;
 
             /* Object mimic handling */
             boolean has_obj_mimic = FALSE;
@@ -1250,10 +1249,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 ntile = glyph2tile[enl_glyph]; /* replace */
                             }
                             else
+                            {
                                 skip_drawing = TRUE;
+                            }
                         }
                         else
+                        {
                             skip_drawing = TRUE;
+                        }
                     }
                     else
                     {
@@ -1347,21 +1350,59 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                         else if (base_layer == LAYER_MONSTER)
                         {
-                            /* For all normal items, we use only lower part of the tile */
-                            if (monster_layer_height > 0)
+                            if (draw_order[draw_index].tile_movement_index == 0)
                             {
-                                source_top_added = monster_layer_height;
-                                source_height_deducted = monster_layer_height;
-                                dest_top_added = 0;
-                                dest_height_deducted = (int)(applicable_scaling_factor_y * monster_layer_height);
+                                if (monster_layer_height > 0)
+                                {
+                                    source_top_added = monster_layer_height;
+                                    source_height_deducted = monster_layer_height;
+                                    dest_top_added = 0;
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * monster_layer_height);
+                                }
+                                else if (monster_layer_height < 0)
+                                {
+                                    source_top_added = 0;
+                                    source_height_deducted = abs(monster_layer_height) - PIT_BOTTOM_BORDER;
+                                    dest_top_added = (int)(applicable_scaling_factor_y * ((double)abs(monster_layer_height) - (double)PIT_BOTTOM_BORDER));
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)(abs(monster_layer_height) - PIT_BOTTOM_BORDER)));
+                                }
                             }
-                            else if (monster_layer_height < 0)
+                            else if (draw_order[draw_index].tile_movement_index == -1)
                             {
-                                source_top_added = 0;
-                                source_height_deducted = abs(monster_layer_height) + PIT_BOTTOM_BORDER;
-                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)abs(monster_layer_height) - (double)PIT_BOTTOM_BORDER));
-                                dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)abs(monster_layer_height)));
+                                if (monster_layer_height > 0)
+                                {
+                                    source_top_added = 0;
+                                    source_height_deducted = TILE_Y - monster_layer_height;
+                                    dest_top_added = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
+                                }
+                                else if (monster_layer_height < 0)
+                                {
+                                    source_top_added = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
+                                    source_height_deducted = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
+                                    dest_top_added = 0;
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (double)(TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER)));
+                                }
+
                             }
+                            else if (draw_order[draw_index].tile_movement_index == 1)
+                            {
+                                if (monster_layer_height > 0)
+                                {
+                                    source_top_added = 0;
+                                    source_height_deducted = TILE_Y - monster_layer_height;
+                                    dest_top_added = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
+                                }
+                                else if (monster_layer_height < 0)
+                                {
+                                    source_top_added = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
+                                    source_height_deducted = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
+                                    dest_top_added = 0;
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (double)(TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER)));
+                                }
+                            }
+
                         }
                         /* Scale object to be of oc_tile_floor_height height */
                         if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
@@ -1379,6 +1420,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
                         }
 
+                        if (source_top_added > TILE_Y)
+                            source_top_added = source_top_added;
 
                         /*
                         StretchBlt(hDCcopy, 0, dest_top_added,
@@ -1774,7 +1817,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
 
                 /* Draw main tile markers, status marks and condition marks */
-                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER && enlarg_idx == -1)
+                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER && enlarg_idx == -1 && tile_move_idx == 0)
                 {
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
@@ -2399,9 +2442,12 @@ static void setDrawOrder(PNHMapWindow data)
     /* First, draw floors, no enlargements here */
     data->draw_order[draw_count].enlargement_index = -1;
     data->draw_order[draw_count].layer = LAYER_FLOOR;
+    data->draw_order[draw_count].tile_movement_index = 0;
     draw_count++;
 
     int same_level_z_order_array[3] = { 0, 1, -1 };
+    int different_level_z_order_array[3] = { 2, 4, 3 };
+
     /* Second, draw other layers on the same y */
     for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
     {
@@ -2409,7 +2455,21 @@ static void setDrawOrder(PNHMapWindow data)
         {
             data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
             data->draw_order[draw_count].layer = layer_idx;
+            data->draw_order[draw_count].tile_movement_index = 0;
             draw_count++;
+
+            if (layer_idx == LAYER_MONSTER)
+            {
+                data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
+                data->draw_order[draw_count].layer = layer_idx;
+                data->draw_order[draw_count].tile_movement_index = -1;
+                draw_count++;
+
+                data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
+                data->draw_order[draw_count].layer = layer_idx;
+                data->draw_order[draw_count].tile_movement_index = 1;
+                draw_count++;
+            }
         }
     }
     /* Mark to be drawn to back buffer and darkened if needed */
@@ -2418,14 +2478,27 @@ static void setDrawOrder(PNHMapWindow data)
     data->draw_order[draw_count - 1].draw_to_buffer = 1;
 
     /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
-    int different_level_z_order_array[3] = { 2, 4, 3 };
     for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
     {
         for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
         {
             data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
             data->draw_order[draw_count].layer = layer_idx;
+            data->draw_order[draw_count].tile_movement_index = 0;
             draw_count++;
+
+            if (layer_idx == LAYER_MONSTER)
+            {
+                data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+                data->draw_order[draw_count].layer = layer_idx;
+                data->draw_order[draw_count].tile_movement_index = 1;
+                draw_count++;
+
+                data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+                data->draw_order[draw_count].layer = layer_idx;
+                data->draw_order[draw_count].tile_movement_index = -1;
+                draw_count++;
+            }
         }
     }
     /* Mark to be drawn to back buffer and darkened if needed */
@@ -2572,8 +2645,13 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 enlarg = tile2enlargement[ntile];
             }
 
-            if (layer_idx == LAYER_MONSTER)
-                layer_idx = layer_idx;
+            int monster_layer_height = data->map[x][y].special_monster_layer_height;
+            if (monster_layer_height > 0 && isok(x, y - 1) && data->mapDirty[x][y - 1] == FALSE)
+            {
+                data->mapDirty[x][y - 1] = TRUE;
+                nhcoord2display(data, x, y - 1, &rt);
+                InvalidateRect(data->hWnd, &rt, FALSE);
+            }
 
             if (enlarg > 0)
             {
@@ -2600,6 +2678,19 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     {
                         data->mapDirty[enl_x][enl_y] = TRUE;
                         nhcoord2display(data, enl_x, enl_y, &rt);
+                        InvalidateRect(data->hWnd, &rt, FALSE);
+                    }
+
+                    if (monster_layer_height > 0 && isok(enl_x, enl_y - 1) && data->mapDirty[enl_x][enl_y - 1] == FALSE)
+                    {
+                        data->mapDirty[enl_x][enl_y - 1] = TRUE;
+                        nhcoord2display(data, enl_x, enl_y - 1, &rt);
+                        InvalidateRect(data->hWnd, &rt, FALSE);
+                    }
+                    else if (monster_layer_height < 0 && isok(enl_x, min(y, enl_y + 1)) && data->mapDirty[enl_x][min(y, enl_y + 1)] == FALSE)
+                    {
+                        data->mapDirty[enl_x][min(y, enl_y + 1)] = TRUE;
+                        nhcoord2display(data, enl_x, min(y, enl_y + 1), &rt);
                         InvalidateRect(data->hWnd, &rt, FALSE);
                     }
                 }
