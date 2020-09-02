@@ -1074,7 +1074,7 @@ char* outbuf5;
             if (is_paralyzed(mtmp))
                 strcat(tempbuf, " Paral");
 
-            if (mtmp->mspec_used)
+            if (any_spec_used(mtmp))
                 strcat(tempbuf, " SpecUnav");
 
             changepartyline();

@@ -236,6 +236,9 @@ struct monst {
 
 #define DEADMONSTER(mon) ((mon)->mhp < 1)
 #define is_starting_pet(mon) ((mon)->m_id == context.startingpet_mid)
+#define any_spec_used(mon) ((mon)->mspec_used || (mon)->mmagespell_used || (mon)->mmageintermediate_used || (mon)->mmageultimate_used \
+  || (mon)->mmageultimate_used || (mon)->mclericintermediate_used || (mon)->mclericultimate_used || (mon)->mdemonsummon_used \
+  || (mon)->mspecialsummon_used || (mon)->mspecialsummon2_used)
 
 #define cursed_items_are_positive_mon(mon) \
 	(cursed_items_are_positive((mon)->data) || ((mon)->cham >= LOW_PM && cursed_items_are_positive(&mons[(mon)->cham])))

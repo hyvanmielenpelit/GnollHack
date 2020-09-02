@@ -1901,7 +1901,9 @@ struct mkroom *croom;
             mtmp->mtrapseen = m->seentraps;
         if (m->female)
             mtmp->female = 1;
-		if (m->cancelled)
+        if (m->waitforu)
+            mtmp->mstrategy |= STRAT_WAITFORU;
+        if (m->cancelled)
 		{
 			mtmp->mprops[CANCELLED] = m->cancelled;
 		}
@@ -3348,6 +3350,7 @@ struct sp_coder *coder;
     tmpmons.confused = 0;
     tmpmons.seentraps = 0;
     tmpmons.has_invent = 0;
+    tmpmons.waitforu = 0;
 
     if (!OV_pop_i(has_inv))
         return;
@@ -3389,6 +3392,10 @@ struct sp_coder *coder;
         case SP_M_V_FEMALE:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpmons.female = OV_i(parm);
+            break;
+        case SP_M_V_WAITFORU:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpmons.waitforu = OV_i(parm);
             break;
         case SP_M_V_INVIS:
             if (OV_typ(parm) == SPOVAR_INT)

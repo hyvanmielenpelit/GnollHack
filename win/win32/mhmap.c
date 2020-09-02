@@ -1930,7 +1930,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     break;
                                 }
                                 case STATUS_MARK_SPEC_USED:
-                                    if (!isyou && mtmp->mspec_used)
+                                    if (!isyou && ispet && any_spec_used(mtmp))
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_TRAPPED:

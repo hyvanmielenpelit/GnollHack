@@ -208,7 +208,7 @@ extern char curr_token[512];
 %token	<i> FOR_ID TO_ID
 %token	<i> SWITCH_ID CASE_ID BREAK_ID DEFAULT_ID
 %token	<i> ERODED_ID TRAPPED_STATE RECHARGED_ID INVIS_ID GREASED_ID
-%token	<i> FEMALE_ID CANCELLED_ID REVIVED_ID AVENGE_ID FLEEING_ID BLINDED_ID
+%token	<i> FEMALE_ID WAITFORU_ID CANCELLED_ID REVIVED_ID AVENGE_ID FLEEING_ID BLINDED_ID
 %token	<i> PARALYZED_ID STUNNED_ID CONFUSED_ID SEENTRAPS_ID ALL_ID
 %token	<i> MONTYPE_ID
 %token	<i> GRAVE_ID ERODEPROOF_ID
@@ -1459,7 +1459,7 @@ monster_infos	: /* nothing */
 
 		      set_opvar_int(stopit, SP_M_V_END);
 		      add_opcode(splev, SPO_PUSH, stopit);
-		      $$ = 0x0000;
+		      $$ = 0x00000000;
 		  }
 		| monster_infos ',' monster_info
 		  {
@@ -1472,87 +1472,92 @@ monster_infos	: /* nothing */
 monster_info	: string_expr
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_M_V_NAME));
-		      $$ = 0x0001;
+		      $$ = 0x00000001;
 		  }
 		| MON_ATTITUDE
 		  {
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) $<i>1, SP_M_V_PEACEFUL));
-		      $$ = 0x0002;
+		      $$ = 0x00000002;
 		  }
 		| MON_ALERTNESS
 		  {
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) $<i>1, SP_M_V_ASLEEP));
-		      $$ = 0x0004;
+		      $$ = 0x00000004;
 		  }
 		| alignment_prfx
 		  {
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) $1, SP_M_V_ALIGN));
-		      $$ = 0x0008;
+		      $$ = 0x00000008;
 		  }
 		| MON_APPEARANCE string_expr
 		  {
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) $<i>1, SP_M_V_APPEAR));
-		      $$ = 0x0010;
+		      $$ = 0x00000010;
 		  }
 		| FEMALE_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_FEMALE));
-		      $$ = 0x0020;
+		      $$ = 0x00000020;
 		  }
 		| INVIS_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_INVIS));
-		      $$ = 0x0040;
+		      $$ = 0x00000040;
 		  }
 		| CANCELLED_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_CANCELLED));
-		      $$ = 0x0080;
+		      $$ = 0x00000080;
 		  }
 		| REVIVED_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_REVIVED));
-		      $$ = 0x0100;
+		      $$ = 0x00000100;
 		  }
 		| AVENGE_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_AVENGE));
-		      $$ = 0x0200;
+		      $$ = 0x00000200;
 		  }
 		| FLEEING_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_M_V_FLEEING));
-		      $$ = 0x0400;
+		      $$ = 0x00000400;
 		  }
 		| BLINDED_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_M_V_BLINDED));
-		      $$ = 0x0800;
+		      $$ = 0x00000800;
 		  }
 		| PARALYZED_ID ':' integer_or_var
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_M_V_PARALYZED));
-		      $$ = 0x1000;
+		      $$ = 0x00001000;
 		  }
 		| STUNNED_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_STUNNED));
-		      $$ = 0x2000;
+		      $$ = 0x00002000;
 		  }
 		| CONFUSED_ID
 		  {
 		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_CONFUSED));
-		      $$ = 0x4000;
+		      $$ = 0x00004000;
 		  }
 		| SEENTRAPS_ID ':' seen_trap_mask
 		  {
 		      add_opvars(splev, "ii",
 				 VA_PASS2((int) $3, SP_M_V_SEENTRAPS));
-		      $$ = 0x8000;
+		      $$ = 0x00008000;
+		  }
+		| WAITFORU_ID
+		  {
+		      add_opvars(splev, "ii", VA_PASS2(1, SP_M_V_WAITFORU));
+		      $$ = 0x00010000;
 		  }
 		;
 

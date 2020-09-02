@@ -234,6 +234,7 @@ paralyzed	ST_RET(PARALYZED_ID);
 stunned		ST_RET(STUNNED_ID);
 confused	ST_RET(CONFUSED_ID);
 seen_traps	ST_RET(SEENTRAPS_ID);
+waitforu	ST_RET(WAITFORU_ID);
 all		ST_RET(ALL_ID);
 horizontal	ST_RETF((yylval.i=1), HORIZ_OR_VERT);
 vertical	{ savetoken(yytext); yylval.i=2; return HORIZ_OR_VERT; }
