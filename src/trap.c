@@ -3038,6 +3038,7 @@ boolean byplayer;
 void
 float_up()
 {
+    play_movement_sound(&youmonst, CLIMBING_TYPE_STAIRS_UP);
     context.botl = context.botlx = TRUE;
     if (u.utrap) {
         if (u.utraptype == TT_PIT) {
@@ -3127,6 +3128,8 @@ long hmask, emask; /* might cancel timeout */
     d_level current_dungeon_level;
     boolean no_msg = FALSE;
 
+    play_movement_sound(&youmonst, CLIMBING_TYPE_STAIRS_DOWN);
+
     HLevitation &= ~hmask;
     ELevitation &= ~emask;
     if (Levitation)
@@ -3161,6 +3164,7 @@ long hmask, emask; /* might cancel timeout */
             return 1;
         }
     }
+
     if (u.uswallow) {
         You("float down, but you are still %s.",
             is_animal(u.ustuck->data) ? "swallowed" : "engulfed");

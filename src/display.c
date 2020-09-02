@@ -2140,7 +2140,7 @@ int damage_displayed;
         change_layer_damage_displayed(x, y, damage_displayed);
 
         unsigned long old_flags = gbuf[y][x].layers.layer_flags;
-        gbuf[y][x].layers.layer_flags = disp_flags;
+        gbuf[y][x].layers.layer_flags |= disp_flags;
         if (old_flags != gbuf[y][x].layers.layer_flags)
         {
             gbuf[y][x].new = 1;
@@ -2227,13 +2227,34 @@ int x, y;
     levl[x][y].hero_memory_layers.special_monster_layer_height = 0;
 }
 
+void
+clear_monster_extra_info(x, y)
+int x, y;
+{
+    if (isok(x, y))
+    {
+        change_layer_damage_displayed(x, y, 0);
+
+        unsigned long old_flags = gbuf[y][x].layers.layer_flags;
+        gbuf[y][x].layers.layer_flags &= ~(LFLAGS_M_MASK);
+        if (old_flags != gbuf[y][x].layers.layer_flags)
+        {
+            gbuf[y][x].new = 1;
+            if (gbuf_start[y] > x)
+                gbuf_start[y] = x;
+            if (gbuf_stop[y] < x)
+                gbuf_stop[y] = x;
+        }
+    }
+}
+
 
 void
 clear_monster_layer_at(x, y)
 int x, y;
 {
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
-    show_extra_info(x, y, 0UL, 0); /* clears layer flags */
+    clear_monster_extra_info(x, y);
 
     gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
     gbuf[y][x].layers.special_monster_layer_height = 0;
@@ -2251,7 +2272,8 @@ int damage_displayed;
     {
         show_glyph_ascii(x, y, glyph);
         show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
-        show_extra_info(x, y, disp_flags, damage_displayed); /* clears layer flags */
+        clear_monster_extra_info(x, y);
+        show_extra_info(x, y, disp_flags, damage_displayed);
 
         gbuf[y][x].layers.monster_comp_ptr = (genericptr_t)0;
         gbuf[y][x].layers.special_monster_layer_height = 0;
@@ -2264,10 +2286,10 @@ int damage_displayed;
                 {
                     gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
                 }
-                else if (mtmp->mprops[LEVITATION] != 0)
-                {
-                    gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
-                }
+            }
+            else if (Levitation)
+            {
+                gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
             }
         }
         else if (mtmp)

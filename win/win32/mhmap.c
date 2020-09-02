@@ -1034,6 +1034,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             if (enlarg_idx >= 0 && !isok(enl_i, enl_j))
                 continue;
 
+            genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
+            struct monst* m_here = m_at(enl_i, enl_j);
+            struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
+            struct trap* trap_here = 0;
+
             if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
                 if (1)
@@ -1045,6 +1050,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                         || data->map[relevant_i][relevant_j].glyph == S_unexplored
                         || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
+                        || (base_layer == LAYER_MONSTER && ((isyou && u.utrap && u.utraptype == TT_PIT) 
+                            || (!isyou && mtmp && mtmp->mtrapped && (trap_here = t_at(enl_i, enl_j)) != 0 && (trap_here->ttyp == PIT || trap_here->ttyp == SPIKED_PIT))))
                         )
                         side_not_ok = TRUE;
 
@@ -1068,13 +1075,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
             }
 
-            genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
-            struct monst* m_here = m_at(enl_i, enl_j);
-            struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
-
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
             boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
+            boolean objects_in_pit = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_IN_PIT);
+            int monster_layer_height = data->map[enl_i][enl_j].special_monster_layer_height;
 
             /* Object mimic handling */
             boolean has_obj_mimic = FALSE;
@@ -1324,7 +1329,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 /* Leave a little room for monster feet if not cover object */
                                 if (base_layer == LAYER_OBJECT)
-                                    dest_top_added += (int)(applicable_scaling_factor_y * (-8.0));
+                                    dest_top_added += (int)(applicable_scaling_factor_y * (objects_in_pit ? -PIT_BOTTOM_BORDER : -8.0));
 
                                 /* Pile the objects in order with two pixels in between */
                                 if (layer_rounds > 1)
@@ -1333,10 +1338,31 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 }
 
                                 if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && !showing_detection)
+                                {
                                     obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
+                                }
+                                if (otmp_round && !showing_detection && objects_in_pit)
+                                    obj_scaling_factor *= 0.75;
                             }
                         }
-
+                        else if (base_layer == LAYER_MONSTER)
+                        {
+                            /* For all normal items, we use only lower part of the tile */
+                            if (monster_layer_height > 0)
+                            {
+                                source_top_added = monster_layer_height;
+                                source_height_deducted = monster_layer_height;
+                                dest_top_added = 0;
+                                dest_height_deducted = (int)(applicable_scaling_factor_y * monster_layer_height);
+                            }
+                            else if (monster_layer_height < 0)
+                            {
+                                source_top_added = 0;
+                                source_height_deducted = abs(monster_layer_height) + PIT_BOTTOM_BORDER;
+                                dest_top_added = (int)(applicable_scaling_factor_y * ((double)abs(monster_layer_height) - (double)PIT_BOTTOM_BORDER));
+                                dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)abs(monster_layer_height)));
+                            }
+                        }
                         /* Scale object to be of oc_tile_floor_height height */
                         if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
                         {
