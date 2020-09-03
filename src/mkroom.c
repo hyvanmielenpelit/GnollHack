@@ -1974,10 +1974,10 @@ armorymon()
         if (u.ualign.type == A_CHAOTIC)
         {
             /* Dwarfs and gnomes for chaotic */
-            mndx = ldif >= 11 ? PM_DWARF_LORD : ldif >= 6 ? PM_DWARF : (!rn2(2) ? PM_GNOME : PM_HOBBIT);
+            mndx = ldif >= 11 ? PM_DWARF_LORD : ldif >= 7 ? PM_DWARF : ldif >= 5 ? (!rn2(2) ? PM_DWARF : PM_GNOME) : (!rn2(2) ? PM_GNOME : PM_HOBBIT);
             if (ldif <= 3 && !rn2(6))
                 mndx = PM_DWARF;
-            else if (ldif >= 6 && !rn2(5))
+            else if (ldif < 11 && ldif >= 6 && !rn2(5))
                 mndx = PM_DWARF_LORD;
             else if (ldif >= 9 && !rn2(4))
                 mndx = PM_DWARF_KING;
@@ -1987,10 +1987,10 @@ armorymon()
             /* Goblins or gnolls for non-chaotic */
             if (!Race_if(PM_GNOLL) && (ldif >= 11 || !rn2(2)))
             {
-                mndx = ldif >= 12 ? PM_GNOLL_LORD : ldif >= 6 ? PM_GNOLL : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
+                mndx = ldif >= 12 ? PM_GNOLL_LORD : ldif >= 7 ? PM_GNOLL : ldif >= 5 ? (rn2(2) ? PM_GNOLL : PM_GOBLIN) : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
                 if (ldif <= 3 && !rn2(6))
                     mndx = PM_GNOLL;
-                else if (ldif <= 10 && ldif >= 6 && !rn2(6))
+                else if (ldif < 12 && ldif >= 6 && !rn2(6))
                     mndx = PM_GNOLL_LORD;
                 else if (ldif >= 12 && !rn2(6))
                     mndx = PM_GNOLL_KING;
@@ -2001,12 +2001,12 @@ armorymon()
             }
             else
             {
-                mndx = ldif >= 13 ? PM_OGRE : ldif >= 9 ? PM_BUGBEAR : ldif >= 5 ? PM_HOBGOBLIN : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
+                mndx = ldif >= 13 ? PM_OGRE : ldif >= 9 ? PM_BUGBEAR : ldif >= 7 ? PM_HOBGOBLIN : ldif >= 5 ? (rn2(2) ? PM_HOBGOBLIN : PM_GOBLIN) : (rn2(3) ? PM_GOBLIN : PM_GIANT_RAT);
                 if (ldif <= 3 && !rn2(6))
                     mndx = PM_HOBGOBLIN;
                 else if (ldif < 9 && ldif >= 5 && !rn2(6))
                     mndx = PM_BUGBEAR;
-                else if (ldif >= 7 && !rn2(6))
+                else if (ldif < 13 && ldif >= 7 && !rn2(6))
                     mndx = PM_OGRE;
                 else if (ldif >= 10 && !rn2(6))
                     mndx = PM_OGRE_LORD;
