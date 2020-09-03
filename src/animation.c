@@ -1033,7 +1033,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_FIRE:
         break;
-    case ACTION_TILE_CAST:
+    case ACTION_TILE_CAST_NODIR:
+        break;
+    case ACTION_TILE_CAST_DIR:
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;
@@ -1077,11 +1079,13 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_FIRE:
         break;
-    case ACTION_TILE_CAST:
+    case ACTION_TILE_CAST_NODIR:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
             return PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
+        break;
+    case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && genderidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION;
         break;
@@ -1460,7 +1464,9 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_FIRE:
         break;
-    case ACTION_TILE_CAST:
+    case ACTION_TILE_CAST_NODIR:
+        break;
+    case ACTION_TILE_CAST_DIR:
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;

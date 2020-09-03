@@ -103,7 +103,7 @@ uchar* tilemapflags;
     tile_section_name = "monsters";
     
     /* spsets must be in same order as enum action_tile_types */
-    const char* monster_set_name_array[MAX_ACTION_TILES + 2] = { "normal", "attack", "throw", "fire", "cast", "special-attack", "kick", "passive-defense", "defend", "receive-damage", "item-use", "door-use", "death", "statue", "body" };
+    const char* monster_set_name_array[MAX_ACTION_TILES + 2] = { "normal", "attack", "throw", "fire", "cast-nodir", "cast-dir", "special-attack", "kick", "passive-defense", "defend", "receive-damage", "item-use", "door-use", "death", "statue", "body" };
 
     for (int gender = 0; gender <= 1; gender++)
     {
@@ -216,7 +216,7 @@ uchar* tilemapflags;
                         else if (spset == ACTION_TILE_ATTACK)
                         {
                             /* Write these again if we get here */
-                            enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
+                            enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
                             for (int idx = 0; idx < 6; idx++)
                             {
                                 enum action_tile_types action = action_array[idx];
@@ -226,7 +226,7 @@ uchar* tilemapflags;
                         }
                         else if (spset == ACTION_TILE_DOOR_USE)
                         {
-                            enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                            enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
                             for (int idx = 0; idx < 3; idx++)
                             {
                                 enum action_tile_types action = action_array[idx];
@@ -252,7 +252,7 @@ uchar* tilemapflags;
                     else if (spset == ACTION_TILE_ATTACK)
                     {
                         /* Write these again if we get here */
-                        enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
+                        enum action_tile_types action_array[6] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK, ACTION_TILE_ITEM_USE };
                         for (int idx = 0; idx < 6; idx++)
                         {
                             enum action_tile_types action = action_array[idx];
@@ -262,7 +262,7 @@ uchar* tilemapflags;
                     }
                     else if (spset == ACTION_TILE_DOOR_USE)
                     {
-                        enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                        enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
                         for (int idx = 0; idx < 3; idx++)
                         {
                             enum action_tile_types action = action_array[idx];
@@ -1215,7 +1215,7 @@ uchar* tilemapflags;
 
     /* Player tiles */
     tile_section_name = "player";
-    const char* player_set_name_array[MAX_ACTION_TILES] = { "normal", "attack", "throw", "fire", "cast", "special-attack", "kick", "passive-defense", "defend", "receive-damage", "item-use", "door-use", "death" };
+    const char* player_set_name_array[MAX_ACTION_TILES] = { "normal", "attack", "throw", "fire", "cast-nodir", "cast-dir", "special-attack", "kick", "passive-defense", "defend", "receive-damage", "item-use", "door-use", "death" };
 
     /* Initialize glyphs first with monster tiles */
     for (enum action_tile_types spset = 0; spset < MAX_ACTION_TILES; spset++)
@@ -1294,7 +1294,7 @@ uchar* tilemapflags;
                                     }
                                     else if (spset == ACTION_TILE_ATTACK)
                                     {
-                                        enum action_tile_types action_array[5] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
+                                        enum action_tile_types action_array[5] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
                                         for (int idx = 0; idx < 5; idx++)
                                         {
                                             enum action_tile_types action = action_array[idx];
@@ -1307,7 +1307,7 @@ uchar* tilemapflags;
                                     }
                                     else if (spset == ACTION_TILE_DOOR_USE)
                                     {
-                                        enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                                        enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
                                         for (int idx = 0; idx < 3; idx++)
                                         {
                                             enum action_tile_types action = action_array[idx];
@@ -1375,7 +1375,7 @@ uchar* tilemapflags;
                                     }
                                     else if (spset == ACTION_TILE_ATTACK)
                                     {
-                                        enum action_tile_types action_array[5] = {ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
+                                        enum action_tile_types action_array[5] = {ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
                                         for (int idx = 0; idx < 5; idx++)
                                         {
                                             enum action_tile_types action = action_array[idx];
@@ -1388,7 +1388,7 @@ uchar* tilemapflags;
                                     }
                                     else if (spset == ACTION_TILE_DOOR_USE)
                                     {
-                                        enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                                        enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
                                         for (int idx = 0; idx < 3; idx++)
                                         {
                                             enum action_tile_types action = action_array[idx];
@@ -1465,7 +1465,7 @@ uchar* tilemapflags;
                                             }
                                             else if (spset == ACTION_TILE_ATTACK)
                                             {
-                                                enum action_tile_types action_array[5] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
+                                                enum action_tile_types action_array[5] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
                                                 for (int idx = 0; idx < 5; idx++)
                                                 {
                                                     enum action_tile_types action = action_array[idx];
@@ -1478,7 +1478,7 @@ uchar* tilemapflags;
                                             }
                                             else if (spset == ACTION_TILE_DOOR_USE)
                                             {
-                                                enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                                                enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
                                                 for (int idx = 0; idx < 3; idx++)
                                                 {
                                                     enum action_tile_types action = action_array[idx];
@@ -1509,7 +1509,7 @@ uchar* tilemapflags;
                                         }
                                         else if (spset == ACTION_TILE_ATTACK)
                                         {
-                                            enum action_tile_types action_array[5] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
+                                            enum action_tile_types action_array[5] = { ACTION_TILE_THROW, ACTION_TILE_FIRE, ACTION_TILE_CAST_DIR, ACTION_TILE_SPECIAL_ATTACK, ACTION_TILE_KICK };
                                             for (int idx = 0; idx < 5; idx++)
                                             {
                                                 enum action_tile_types action = action_array[idx];
@@ -1522,7 +1522,7 @@ uchar* tilemapflags;
                                         }
                                         else if (spset == ACTION_TILE_DOOR_USE)
                                         {
-                                            enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST, ACTION_TILE_ITEM_USE };
+                                            enum action_tile_types action_array[3] = { ACTION_TILE_THROW, ACTION_TILE_CAST_DIR, ACTION_TILE_ITEM_USE };
                                             for (int idx = 0; idx < 3; idx++)
                                             {
                                                 enum action_tile_types action = action_array[idx];

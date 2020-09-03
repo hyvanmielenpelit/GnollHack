@@ -297,20 +297,20 @@
 #define M5_ATTACK_TILE			    0x00000001UL
 #define M5_THROW_TILE			    0x00000002UL
 #define M5_FIRE_TILE			    0x00000004UL
-#define M5_CAST_TILE			    0x00000008UL
-#define M5_SPECIAL_ATTACK_TILE      0x00000010UL
-#define M5_KICK_TILE                0x00000020UL
-#define M5_PASSIVE_DEFENSE_TILE     0x00000040UL
-#define M5_DEFEND_TILE              0x00000080UL
-#define M5_RECEIVE_DAMAGE_TILE      0x00000100UL
-#define M5_ITEM_USE_TILE			0x00000200UL
-#define M5_DOOR_USE_TILE			0x00000400UL
-#define M5_DEATH_TILE			    0x00000800UL
+#define M5_CAST_NODIR_TILE		    0x00000008UL
+#define M5_CAST_DIR_TILE		    0x00000010UL
+#define M5_SPECIAL_ATTACK_TILE      0x00000020UL
+#define M5_KICK_TILE                0x00000040UL
+#define M5_PASSIVE_DEFENSE_TILE     0x00000080UL
+#define M5_DEFEND_TILE              0x00000100UL
+#define M5_RECEIVE_DAMAGE_TILE      0x00000200UL
+#define M5_ITEM_USE_TILE			0x00000400UL
+#define M5_DOOR_USE_TILE			0x00000800UL
+#define M5_DEATH_TILE			    0x00001000UL
 /* Other tile flags */
-#define M5_STATUE_TILE			    0x00001000UL /* Unused so far */
-#define M5_CORPSE_TILE			    0x00002000UL
-#define M5_FEMALE_TILE		        0x00004000UL
-/* free bit */
+#define M5_STATUE_TILE			    0x00002000UL /* Unused so far */
+#define M5_CORPSE_TILE			    0x00004000UL
+#define M5_FEMALE_TILE		        0x00008000UL
 
 /* Remaining bits are normal monster flags */
 #define M5_ESCHEWS_CURSED_ITEMS     0x00010000UL
@@ -319,7 +319,7 @@
 #define M5_HATES_LIGHT              0x00080000UL /* Gremlin only */
 #define M5_HATES_SILVER             0x00100000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
 #define M5_SHADE                    0x00200000UL /* Shade only */
-#define M5_TELEPORT_HEAL_TACTICS           0x00400000UL /* Arch-lich and Wizard of Yendor */
+#define M5_TELEPORT_HEAL_TACTICS    0x00400000UL /* Arch-lich and Wizard of Yendor */
 
 
 #define MZ_TINY 0          /* < 2' */

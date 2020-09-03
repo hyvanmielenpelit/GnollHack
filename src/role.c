@@ -2661,7 +2661,8 @@ u_to_glyph()
                 u.action == ACTION_TILE_ATTACK ? (flags.female ? female_attacking_monnum_to_glyph(u.umonnum) : attacking_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_THROW ? (flags.female ? female_throwing_monnum_to_glyph(u.umonnum) : throwing_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_FIRE ? (flags.female ? female_firing_monnum_to_glyph(u.umonnum) : firing_monnum_to_glyph(u.umonnum))
-                : u.action == ACTION_TILE_CAST ? (flags.female ? female_casting_monnum_to_glyph(u.umonnum) : casting_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_CAST_NODIR ? (flags.female ? female_nodir_casting_monnum_to_glyph(u.umonnum) : nodir_casting_monnum_to_glyph(u.umonnum))
+                : u.action == ACTION_TILE_CAST_DIR ? (flags.female ? female_dir_casting_monnum_to_glyph(u.umonnum) : dir_casting_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_SPECIAL_ATTACK ? (flags.female ? female_special_attacking_monnum_to_glyph(u.umonnum) : special_attacking_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_KICK ? (flags.female ? female_kicking_monnum_to_glyph(u.umonnum) : kicking_monnum_to_glyph(u.umonnum))
                 : u.action == ACTION_TILE_PASSIVE_DEFENSE ? (flags.female ? female_passive_defense_monnum_to_glyph(u.umonnum) : passive_defense_monnum_to_glyph(u.umonnum))
@@ -2683,7 +2684,8 @@ u_to_glyph()
         u.action == ACTION_TILE_ATTACK ? GLYPH_PLAYER_ATTACK_OFF 
         : u.action == ACTION_TILE_THROW ? GLYPH_PLAYER_THROW_OFF
         : u.action == ACTION_TILE_FIRE ? GLYPH_PLAYER_FIRE_OFF
-        : u.action == ACTION_TILE_CAST ? GLYPH_PLAYER_CAST_OFF
+        : u.action == ACTION_TILE_CAST_NODIR ? GLYPH_PLAYER_CAST_NODIR_OFF
+        : u.action == ACTION_TILE_CAST_DIR ? GLYPH_PLAYER_CAST_DIR_OFF
         : u.action == ACTION_TILE_SPECIAL_ATTACK ? GLYPH_PLAYER_SPECIAL_ATTACK_OFF
         : u.action == ACTION_TILE_KICK ? GLYPH_PLAYER_KICK_OFF
         : u.action == ACTION_TILE_PASSIVE_DEFENSE ? GLYPH_PLAYER_PASSIVE_DEFENSE_OFF
@@ -2753,9 +2755,11 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         break;
     case ACTION_TILE_FIRE:
         break;
-    case ACTION_TILE_CAST:
+    case ACTION_TILE_CAST_NODIR:
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return TRUE;
+        break;
+    case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && genderidx == A_CHAOTIC + 1)
             return TRUE;
         break;
@@ -2948,9 +2952,15 @@ fire_glyph_to_player_mon(int glyph)
 }
 
 int
-cast_glyph_to_player_mon(int glyph)
+nodir_cast_glyph_to_player_mon(int glyph)
 {
-    return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_OFF + GLYPH_PLAYER_OFF);
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_NODIR_OFF + GLYPH_PLAYER_OFF);
+}
+
+int
+dir_cast_glyph_to_player_mon(int glyph)
+{
+    return glyph_to_player_mon(glyph - GLYPH_PLAYER_CAST_DIR_OFF + GLYPH_PLAYER_OFF);
 }
 
 int

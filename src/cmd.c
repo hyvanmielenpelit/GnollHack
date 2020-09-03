@@ -2062,8 +2062,11 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_FIRE_OFF:
                 header = "MON_FIRE_OFF";
                 break;
-            case GLYPH_CAST_OFF:
-                header = "MON_CAST_OFF";
+            case GLYPH_CAST_NODIR_OFF:
+                header = "MON_CAST_NODIR_OFF";
+                break;
+            case GLYPH_CAST_DIR_OFF:
+                header = "MON_CAST_DIR_OFF";
                 break;
             case GLYPH_SPECIAL_ATTACK_OFF:
                 header = "MON_SPECIAL_ATTACK_OFF";
@@ -2106,8 +2109,11 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_FEMALE_FIRE_OFF:
                 header = "MON_FEMALE_FIRE_OFF";
                 break;
-            case GLYPH_FEMALE_CAST_OFF:
-                header = "MON_FEMALE_CAST_OFF";
+            case GLYPH_FEMALE_CAST_NODIR_OFF:
+                header = "MON_FEMALE_CAST_NODIR_OFF";
+                break;
+            case GLYPH_FEMALE_CAST_DIR_OFF:
+                header = "MON_FEMALE_CAST_DIR_OFF";
                 break;
             case GLYPH_FEMALE_SPECIAL_ATTACK_OFF:
                 header = "MON_FEMALE_SPECIAL_ATTACK_OFF";
@@ -2181,8 +2187,11 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
             case GLYPH_PLAYER_FIRE_OFF:
                 header = "PLAYER_FIRE_OFF";
                 break;
-            case GLYPH_PLAYER_CAST_OFF:
-                header = "PLAYER_CAST_OFF";
+            case GLYPH_PLAYER_CAST_NODIR_OFF:
+                header = "PLAYER_CAST_NODIR_OFF";
+                break;
+            case GLYPH_PLAYER_CAST_DIR_OFF:
+                header = "PLAYER_CAST_DIR_OFF";
                 break;
             case GLYPH_PLAYER_SPECIAL_ATTACK_OFF:
                 header = "PLAYER_SPECIAL_ATTACK_OFF";

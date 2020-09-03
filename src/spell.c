@@ -1752,7 +1752,7 @@ boolean atme;
     if (confused || (rnd(100) > chance)) 
 	{
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		You("fail to cast the spell correctly.");
 		deduct_mana_cost(denergy / 2);
         context.botl = 1;
@@ -1982,9 +1982,6 @@ boolean atme;
 
             if (atme) 
 			{
-				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-				update_u_action(ACTION_TILE_CAST);
-
 				u.dx = u.dy = u.dz = 0;
             } 
 			else if (!getdir((char *) 0))
@@ -2004,7 +2001,7 @@ boolean atme;
             if (!u.dx && !u.dy && !u.dz)
 			{
 				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-				update_u_action(ACTION_TILE_CAST);
+				update_u_action(ACTION_TILE_CAST_NODIR);
 
 				if ((damage = zapyourself(pseudo, TRUE)) != 0)
 				{
@@ -2018,7 +2015,7 @@ boolean atme;
 			{
 				update_u_facing(TRUE);
 				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-				update_u_action(ACTION_TILE_CAST);
+				update_u_action(ACTION_TILE_CAST_DIR);
 
 				if (otyp == SPE_METEOR_SWARM)
 				{
@@ -2040,7 +2037,7 @@ boolean atme;
 		{
 			/* No dir */
 			play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-			update_u_action(ACTION_TILE_CAST);
+			update_u_action(ACTION_TILE_CAST_NODIR);
 			weffects(pseudo);
 		}
 
@@ -2075,7 +2072,7 @@ boolean atme;
 	case SPE_STINKING_CLOUD:
 	case SPE_CREATE_MONSTER:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		(void) seffects(pseudo, &effect_happened);
         break;
 
@@ -2091,25 +2088,25 @@ boolean atme;
     /*FALLTHRU*/
     case SPE_INVISIBILITY:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		(void) peffects(pseudo);
         break;
     /* end of potion-like spells */
 
 	case SPE_CREATE_FAMILIAR:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		(void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
 	case SPE_CONGREGATE:
 	case SPE_SUMMONING_CALL:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		use_magic_whistle((struct obj*) 0);
 		break;
 	case SPE_CLAIRVOYANCE:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
                 pseudo->blessed = 1; /* detect monsters as well as map */
@@ -2120,12 +2117,12 @@ boolean atme;
         break;
 	case SPE_MINOR_CONSULTATION:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		outrumor(1, BY_SPELL);
 		break;
 	case SPE_MAJOR_CONSULTATION:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		outoracle(FALSE, 2);
 		break;
 	case SPE_PROTECTION:
@@ -2157,13 +2154,13 @@ boolean atme;
 	case SPE_GLOBE_OF_INVULNERABILITY:
 	case SPE_DIVINE_INTERVENTION:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		You("successfully cast \"%s\".", spellname(spell));
 		addspellintrinsictimeout(otyp);
 		break;
 	case SPE_JUMPING:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		update_u_action(ACTION_TILE_CAST);
+		update_u_action(ACTION_TILE_CAST_NODIR);
 		if (!jump(max(role_skill, 1)))
             pline1(nothing_happens);
         break;
@@ -2190,7 +2187,7 @@ boolean atme;
 		if (otmp && otmp != &zeroobj) 
 		{
 			play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-			update_u_action(ACTION_TILE_CAST);
+			update_u_action(ACTION_TILE_CAST_NODIR);
 
 			switch (otyp)
 			{

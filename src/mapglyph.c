@@ -93,7 +93,8 @@ unsigned long *ospecial;
         || (offset = (glyph - GLYPH_PLAYER_ITEM_USE_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_KICK_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF)) >= 0
-        || (offset = (glyph - GLYPH_PLAYER_CAST_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_CAST_NODIR_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_CAST_DIR_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_FIRE_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_THROW_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_ATTACK_OFF)) >= 0
@@ -389,7 +390,8 @@ unsigned long *ospecial;
     || (offset = (glyph - GLYPH_FEMALE_ITEM_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_SPECIAL_ATTACK_OFF)) >= 0
-    || (offset = (glyph - GLYPH_FEMALE_CAST_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_CAST_NODIR_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_CAST_DIR_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_FIRE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_THROW_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_ATTACK_OFF)) >= 0
@@ -405,7 +407,8 @@ unsigned long *ospecial;
     || (offset = (glyph - GLYPH_ITEM_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_SPECIAL_ATTACK_OFF)) >= 0
-    || (offset = (glyph - GLYPH_CAST_OFF)) >= 0
+    || (offset = (glyph - GLYPH_CAST_NODIR_OFF)) >= 0
+    || (offset = (glyph - GLYPH_CAST_DIR_OFF)) >= 0
     || (offset = (glyph - GLYPH_FIRE_OFF)) >= 0
     || (offset = (glyph - GLYPH_THROW_OFF)) >= 0
     || (offset = (glyph - GLYPH_ATTACK_OFF)) >= 0

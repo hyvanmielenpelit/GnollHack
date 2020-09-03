@@ -919,12 +919,16 @@ register struct monst *mtmp;
         case AT_MAGC:
 			if(!is_cancelled(mtmp) && !is_silenced(mtmp))
 			{
-                update_m_action(mtmp, ACTION_TILE_CAST);
                 if (range2)
-					sum[i] = buzzmu(mtmp, mattk);
-				else
-					sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                {
+                    update_m_action(mtmp, ACTION_TILE_CAST_DIR);
+                    sum[i] = buzzmu(mtmp, mattk);
+                    update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                }
+                else
+                {
+                    sum[i] = castmu(mtmp, mattk, TRUE, foundyou);
+                }
             }
             break;
 
@@ -933,7 +937,7 @@ register struct monst *mtmp;
 			{
                 if (!mtmp->mdemonsummon_used && mattk->adtyp == AD_DMNS)
 				{
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special demon handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -958,7 +962,7 @@ register struct monst *mtmp;
                 }
 				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_LYCA)
 				{
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special lycanthrope handling code */
 					if ((mtmp->cham == NON_PM) && is_were(mdat) && !range2) 
                     {
@@ -1022,7 +1026,7 @@ register struct monst *mtmp;
 				}
 				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_GNOL)
 				{
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1047,7 +1051,7 @@ register struct monst *mtmp;
 				}
 				else if (!mtmp->mspecialsummon2_used && mattk->adtyp == AD_GHUL)
 				{
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special ghoul handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1069,7 +1073,7 @@ register struct monst *mtmp;
 				}
 				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_BISN)
 				{
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
                     /*  Special bison handling code */
 				    if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1092,7 +1096,7 @@ register struct monst *mtmp;
 				}
 				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_UNDO)
 				{
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
 					/*  Special gnoll handling code */
 					if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
@@ -1115,7 +1119,7 @@ register struct monst *mtmp;
 				}
 				else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_MINO)
 				{
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
                     if ((mtmp->cham == NON_PM) && !range2)
                     { //Chameleons do not summon, others only in close range
 						int chance = mattk->mcadj;
@@ -1138,7 +1142,7 @@ register struct monst *mtmp;
 				}
                 else if (!mtmp->mspecialsummon_used && mattk->adtyp == AD_GDRA)
                 {
-                    update_m_action(mtmp, ACTION_TILE_CAST);
+                    update_m_action(mtmp, ACTION_TILE_CAST_NODIR);
                     if ((mtmp->cham == NON_PM) && !range2) 
                     { //Chameleons do not summon, others only in close range
                         int chance = mattk->mcadj;

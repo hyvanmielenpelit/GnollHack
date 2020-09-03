@@ -688,7 +688,7 @@ register struct monst *magr, *mdef;
             if (!monnear(magr, mdef->mx, mdef->my))
             {
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-                update_m_action(magr, ACTION_TILE_CAST);
+                update_m_action(magr, ACTION_TILE_CAST_DIR);
                 strike = buzzmm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
 

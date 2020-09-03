@@ -258,9 +258,13 @@ boolean foundyou;
             return 0;
     }
 
+    boolean nodirspell = is_undirected_spell(mattk->adtyp, spellnum);
     unsigned short* appr_spec_ptr = &mtmp->mspec_used;
     boolean is_ultimate = FALSE;
     boolean is_intermediate = FALSE;
+
+    update_m_action(mtmp, nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR);
+
     if (mattk->adtyp == AD_SPEL)
     {
         if (is_ultimate = is_ultimate_spell(mattk->adtyp, spellnum))
@@ -283,7 +287,8 @@ boolean foundyou;
     /* monster unable to cast spells? */
     if (is_cancelled(mtmp) || is_silenced(mtmp) || *appr_spec_ptr > 0 || !ml)
     {
-        cursetxt(mtmp, is_undirected_spell(mattk->adtyp, spellnum));
+        cursetxt(mtmp, nodirspell);
+        update_m_action(mtmp, ACTION_TILE_NO_ACTION);
         return (0);
     }
 
@@ -299,6 +304,7 @@ boolean foundyou;
               canseemon(mtmp) ? Monnam(mtmp) : "Something",
               levl[mtmp->mux][mtmp->muy].typ == WATER ? "empty water"
                                                       : "thin air");
+        update_m_action(mtmp, ACTION_TILE_NO_ACTION);
         return (0);
     }
 
@@ -316,6 +322,8 @@ boolean foundyou;
     if (rn2(100) < failchance) {//(rn2(ml * 10) < (is_confused(mtmp) ? 100 : 20)) { /* fumbled attack */
         if (canseemon(mtmp) && !Deaf)
             pline_The("air crackles around %s.", mon_nam(mtmp));
+
+        update_m_action(mtmp, ACTION_TILE_NO_ACTION);
         return (0);
     }
     if (canspotmon(mtmp) || !is_undirected_spell(mattk->adtyp, spellnum))
@@ -345,6 +353,8 @@ boolean foundyou;
             impossible(
               "%s casting non-hand-to-hand version of hand-to-hand spell %d?",
                        Monnam(mtmp), mattk->adtyp);
+
+            update_m_action(mtmp, ACTION_TILE_NO_ACTION);
             return (0);
         }
     } 
@@ -391,6 +401,8 @@ boolean foundyou;
     }
     if (damage > 0)
         mdamageu(mtmp, damage, TRUE);
+
+    update_m_action(mtmp, ACTION_TILE_NO_ACTION);
     return (ret);
 }
 
