@@ -2760,6 +2760,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         break;
     case ACTION_TILE_CAST_DIR:
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return TRUE;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && genderidx == A_CHAOTIC + 1)
             return TRUE;
         break;

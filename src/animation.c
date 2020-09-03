@@ -1088,6 +1088,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_CAST_DIR:
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && genderidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION;
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
+            return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
         break;

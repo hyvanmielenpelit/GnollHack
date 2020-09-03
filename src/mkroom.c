@@ -406,6 +406,8 @@ struct mkroom *sroom;
     struct obj* middlebox = 0;
     struct obj* lastbox = 0;
     boolean anvil_created = FALSE;
+    int box_one_in_chance = 5;
+    int mon_one_in_chance = 1;
 
     sh = sroom->fdoor;
     switch (type)
@@ -440,7 +442,7 @@ struct mkroom *sroom;
         mk_zoo_thronemon(tx, ty);
         break;
 	case LIBRARY:
-
+        mon_one_in_chance = 2;
 		if (hd <= 9)
 		{
 			if (roll <= 1)
@@ -521,6 +523,14 @@ struct mkroom *sroom;
     case ARMORY:
         special_item_created = FALSE;
         special_item_chance = depth(&u.uz) * 2;
+        box_one_in_chance = max(3, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 5);
+        if (depth(&u.uz) < depth(&oracle_level))
+            mon_one_in_chance = max(2, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 8);
+        else if (depth(&u.uz) > depth(&medusa_level))
+            mon_one_in_chance = 1;
+        else
+            mon_one_in_chance = 2;
+
         break;
     }
 
@@ -547,7 +557,7 @@ struct mkroom *sroom;
             if (type == COURT && IS_THRONE(levl[sx][sy].typ))
                 continue;
 
-			if ((type == LIBRARY || (type == ARMORY && depth(&u.uz) < depth(&medusa_level))) && rn2(2)) //LIBRARY and ARMORY before Medusa level get only one monster in 2 squares, objects in every square
+			if (mon_one_in_chance > 1 && rn2(mon_one_in_chance))
 			{
 				mon = (struct monst*) 0; //No monster
 			}
@@ -633,7 +643,7 @@ struct mkroom *sroom;
                                      TRUE, FALSE);
                 break;
             case ARMORY:
-                if (!rn2(5))
+                if (!rn2(box_one_in_chance))
                 {
                     struct obj* box = mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
                         FALSE, FALSE);
