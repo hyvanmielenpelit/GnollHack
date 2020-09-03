@@ -1032,6 +1032,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* m_here = m_at(enl_i, enl_j);
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
             struct trap* trap_here = 0;
+            boolean is_enl_you = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_YOU);
 
             if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
@@ -1044,8 +1045,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         || (IS_DOOR(level.locations[relevant_i][relevant_j].typ) && (level.locations[relevant_i][relevant_j].doormask & (D_CLOSED | D_LOCKED)))
                         || data->map[relevant_i][relevant_j].glyph == S_unexplored
                         || (data->map[relevant_i][relevant_j].glyph == NO_GLYPH && data->map[relevant_i][relevant_j].bkglyph == NO_GLYPH)
-                        || (base_layer == LAYER_MONSTER && ((isyou && u.utrap && u.utraptype == TT_PIT) 
-                        || (!isyou && mtmp && mtmp->mtrapped && (trap_here = t_at(enl_i, enl_j)) != 0 && (trap_here->ttyp == PIT || trap_here->ttyp == SPIKED_PIT))))
+  //                      || (base_layer == LAYER_MONSTER && ((is_enl_you && u.utrap && u.utraptype == TT_PIT)
+  //                      || (!is_enl_you && mtmp && mtmp->mtrapped && (trap_here = t_at(enl_i, enl_j)) != 0 && (trap_here->ttyp == PIT || trap_here->ttyp == SPIKED_PIT))))
                         )
                         side_not_ok = TRUE;
 
