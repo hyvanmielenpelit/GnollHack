@@ -2373,7 +2373,8 @@ static void setGlyph(PNHMapWindow data, int i, int j, struct layer_info layers)
     }
 
     if ((data->map[i][j].glyph != layers.glyph) || (data->map[i][j].glyph != layers.bkglyph) || layer_different
-        || data->map[i][j].layer_flags != layers.layer_flags || data->map[i][j].damage_displayed != layers.damage_displayed
+        || data->map[i][j].layer_flags != layers.layer_flags || data->map[i][j].damage_displayed != layers.damage_displayed 
+        || data->map[i][j].special_monster_layer_height != layers.special_monster_layer_height
         )
     {
         dirty(data, i, j, TRUE);
