@@ -1277,6 +1277,7 @@ int after; /* this is extra fast monster movement */
     int chi = -1, nidist, ndist;
     coord poss[9];
     long info[9], allowflags;
+    struct obj* cursedobj[9] = { 0 };
 #define GDIST(x, y) (dist2(x, y, gx, gy))
 
     /*
@@ -1310,6 +1311,7 @@ int after; /* this is extra fast monster movement */
     nix = omx; /* set before newdogpos */
     niy = omy;
     cursemsg[0] = FALSE; /* lint suppression */
+    cursedobj[0] = 0;
     info[0] = 0;         /* ditto */
 
     if (has_edog)
@@ -1403,6 +1405,7 @@ int after; /* this is extra fast monster movement */
         nx = poss[i].x;
         ny = poss[i].y;
         cursemsg[i] = FALSE;
+        cursedobj[i] = 0;
 
         /* if leashed, we drag him along. */
         if (mtmp->mleashed && distu(nx, ny) > 4)
@@ -1498,18 +1501,22 @@ int after; /* this is extra fast monster movement */
                 if (obj->blessed && mon_eschews_blessed(mtmp)) /* animals and angels eschew cursed objects */
                 {
                     cursemsg[i] = TRUE;
+                    cursedobj[i] = obj;
                 }
                 else if (objects[obj->otyp].oc_material == MAT_SILVER && mon_eschews_silver(mtmp))
                 {
                     cursemsg[i] = TRUE;
+                    cursedobj[i] = obj;
                 }
                 else if (obj->cursed && mon_eschews_cursed(mtmp))
 				{
                     cursemsg[i] = TRUE;
-                } 
+                    cursedobj[i] = obj;
+                }
                 else if (obj_sheds_light(obj) && mon_eschews_light(mtmp))
                 {
                     cursemsg[i] = TRUE;
+                    cursedobj[i] = obj;
                 }
                 else if ((foodtyp = dogfood(mtmp, obj)) < MANFOOD && !onnopickup(nx, ny, mtmp) && dog_wants_to_eat(mtmp) &&
                     (!EDOG(mtmp)->chastised || (EDOG(mtmp)->chastised && !(obj->unpaid || (obj->where == OBJ_FLOOR && !obj->no_charge && costly_spot(obj->ox, obj->oy)))))
@@ -1522,6 +1529,7 @@ int after; /* this is extra fast monster movement */
                     chi = i;
                     do_eat = TRUE;
                     cursemsg[i] = FALSE; /* not reluctant */
+                    cursedobj[i] = 0;
                     goto newdogpos;
                 }
             }
@@ -1656,13 +1664,15 @@ newdogpos:
 
 			if (cursemsg[chi] && (wasseen || canseemon(mtmp))) 
 			{
+#if 0
 				/* describe top item of pile, not necessarily cursed item itself;
 				   don't use glyph_at() here--it would return the pet but we want
 				   to know whether an object is remembered at this map location */
 				struct obj *o = (!Hallucination && level.flags.hero_memory
 								 && glyph_is_object(levl[nix][niy].hero_memory_layers.glyph))
 								   ? vobj_at(nix, niy) : 0;
-				const char *what = o ? distant_name(o, doname) : something;
+#endif
+				const char *what = cursedobj[chi] ? distant_name(cursedobj[chi], doname) : something;
 
                 play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_WARN_CURSED);
 				pline("%s %s reluctantly over %s.", noit_Monnam(mtmp),
