@@ -1615,16 +1615,18 @@ int skill;
 	  *  master -> grand master  4
 	  */
 	if (skill == P_BARE_HANDED_COMBAT)
-		return (tmp + 1) / 2;
+		return max(1, (tmp + 1) / 2);
 
 	if (skill == P_MARTIAL_ARTS)
-		return (tmp + 4) / 2;
+		return max(1, (tmp + 4) / 2);
 
+    if (skill == P_TWO_WEAPON_COMBAT)
+        return max(1, (tmp + 1) / 2);
 
 //	if (skill <= P_LAST_WEAPON || skill == P_TWO_WEAPON_COMBAT)
  //       return tmp;
 
-	return tmp;
+	return max(1, tmp);
 
     /* Fewer slots used up for unarmed or martial.
      *  unskilled -> basic      1
