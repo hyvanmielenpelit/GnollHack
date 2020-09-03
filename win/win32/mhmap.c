@@ -926,7 +926,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean enlarged = FALSE;
     short position_index = 0;
 
-    /* running index and enlarg_index form an u around the main tile X = -1:
+    /* enlarg_index form an u around the main tile X = -1:
      * 0 X 1
      * 2 3 4
     */
@@ -964,14 +964,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
     double y_scaling_factor = ((double)data->yBackTile / (double)TILE_Y);
 
-    if (i == u.ux && j == u.uy - 2)
-        isyou = isyou;
-
     for (int draw_index = 0; draw_index < DRAW_ORDER_SIZE; draw_index++)
     {
-        //int z_order_array[NUM_POSITIONS_IN_ENLARGEMENT + 1] = { 0, 1, -1, 2, 4, 3 };
-        //for (int layer_idx = LAYER_FLOOR; layer_idx < MAX_LAYERS; layer_idx++)
-        //{
         boolean skip_darkening = FALSE;
         enum layer_types base_layer = draw_order[draw_index].layer; //layer_idx; // layer_array[layer_idx];
         int layer_rounds = 1;
@@ -1105,9 +1099,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     mimic_obj.nexthere = otmp;
                     otmp = &mimic_obj;
                 }
-
-                //                if (covers_objects(enl_i, enl_j))
-//                    break; /* next layer, nothing to draw here */
 
                 int objcnt = 0;
                 for (struct obj* otmp2 = otmp; otmp2; otmp2 = otmp2->nexthere)
@@ -1344,6 +1335,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
                                 }
+
                                 if (otmp_round && !showing_detection && objects_in_pit)
                                     obj_scaling_factor *= 0.75;
                             }
@@ -1369,14 +1361,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                             else if (draw_order[draw_index].tile_movement_index == -1)
                             {
-                                if (monster_layer_height > 0)
-                                {
-                                    source_top_added = 0;
-                                    source_height_deducted = TILE_Y - monster_layer_height;
-                                    dest_top_added = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
-                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
-                                }
-                                else if (monster_layer_height < 0)
+                                if (monster_layer_height < 0)
                                 {
                                     source_top_added = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
                                     source_height_deducted = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
@@ -1394,16 +1379,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     dest_top_added = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
                                     dest_height_deducted = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
                                 }
-                                else if (monster_layer_height < 0)
-                                {
-                                    source_top_added = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
-                                    source_height_deducted = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
-                                    dest_top_added = 0;
-                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (double)(TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER)));
-                                }
                             }
-
                         }
+
                         /* Scale object to be of oc_tile_floor_height height */
                         if ((is_obj_missile || is_object) && obj_scaling_factor != 1.0)
                         {
@@ -1419,9 +1397,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             dest_left_added += (int)(applicable_scaling_factor_x * (((double)GetNHApp()->mapTile_X - scaled_width) / 2.0));
                             dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
                         }
-
-                        if (source_top_added > TILE_Y)
-                            source_top_added = source_top_added;
 
                         /*
                         StretchBlt(hDCcopy, 0, dest_top_added,
