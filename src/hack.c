@@ -1698,7 +1698,7 @@ domove_core()
 				}
 			}
 			else if(trap && trap->tseen && trap->ttyp != STATUE_TRAP && trap->ttyp != VIBRATING_SQUARE
-                && !((is_hole(trap->ttyp) || is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP) && (Flying || Levitation) && !Sokoban)
+                && !((is_hole(trap->ttyp) || is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP || trap->ttyp == SQKY_BOARD) && (Flying || Levitation) && !Sokoban)
                 && !(trap->ttyp == PIT && has_pitwalk(youmonst.data))
                 )
 			{

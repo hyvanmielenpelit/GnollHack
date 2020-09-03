@@ -1399,12 +1399,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
                         }
 
-                        /*
-                        StretchBlt(hDCcopy, 0, dest_top_added,
-                            GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
-                            t_x, t_y, multiplier * GetNHApp()->mapTile_X,
-                            GetNHApp()->mapTile_Y, SRCCOPY);
-                        */
                         if (opaque_background_drawn)
                         {
                             if (print_first_directly_to_map)
@@ -1438,16 +1432,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 if (dest_left_added != 0 || dest_top_added != 0 || dest_width_deducted != 0 || dest_height_deducted != 0)
                                 {
-                                    /*
-                                    RECT fillrect = { 0 };
-                                    fillrect.top = 0;
-                                    fillrect.left = 0;
-                                    fillrect.bottom = GetNHApp()->mapTile_Y;
-                                    fillrect.right = GetNHApp()->mapTile_X;
-                                    HBRUSH fillbrush = CreateSolidBrush(TILE_BK_COLOR);
-                                    FillRect(hDCcopy, rect, fillbrush);
-                                    */
-
                                     LONG width = GetNHApp()->mapTile_X;
                                     LONG height = GetNHApp()->mapTile_Y;
 
@@ -1852,14 +1836,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
 
-                            /*
-                            SetStretchBltMode(data->backBufferDC, COLORONCOLOR);
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                hDCcopy, 0, 0,
-                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
-                                t_y, GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-                            */
                             (*GetNHApp()->lpfnTransparentBlt)(
                                 data->backBufferDC, rect->left, rect->top,
                                 data->xBackTile, data->yBackTile, data->tileDC, t_x,
@@ -2011,13 +1987,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
                                     target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                    /*
-                                    (*GetNHApp()->lpfnTransparentBlt)(
-                                        hDCcopy, unscaled_left, unscaled_top,
-                                        unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC, source_rt.left,
-                                        source_rt.top, source_rt.right - source_rt.left,
-                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
-                                    */
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, target_rt.left, target_rt.top,
                                         target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
@@ -2128,17 +2097,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 FillRect(data->backBufferDC, &frame_rect, hbr_background);
                                 FrameRect(data->backBufferDC, &frame_rect, hbr_frame);
 
-#if 0
-                                RECT frame_rect = { 0 };
-                                frame_rect.left = unscaled_left - 1;
-                                frame_rect.right = unscaled_right + 1;
-                                frame_rect.top = unscaled_top - 1;
-                                frame_rect.bottom = unscaled_bottom + 1;
-
-                                FillRect(hDCcopy, &frame_rect, hbr_background);
-                                FrameRect(hDCcopy, &frame_rect, hbr_frame);
-#endif
-
                                 /* Now the actual picture */
                                 RECT source_rt = { 0 };
                                 source_rt.left = c_x;
@@ -2197,20 +2155,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         even_smaller_rect.right = even_smaller_rect.left + (int)(fraction * (double)(smaller_rect.right - (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0) - even_smaller_rect.left));
                         FillRect(data->backBufferDC, &smaller_rect, hbr_dark);
                         FillRect(data->backBufferDC, &even_smaller_rect, hbr_light);
-#if 0
-                        RECT smaller_rect, even_smaller_rect;
-                        smaller_rect.bottom = GetNHApp()->mapTile_Y;
-                        smaller_rect.top = max(1, (GetNHApp()->mapTile_X * 11) / 12); // -max(1, (rect->bottom - rect->top) / 12);
-                        smaller_rect.left = 0; // rect->left;
-                        smaller_rect.right = GetNHApp()->mapTile_X; // rect->right;
-                        even_smaller_rect.bottom = smaller_rect.bottom - (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
-                        even_smaller_rect.top = smaller_rect.top + (smaller_rect.top <= smaller_rect.bottom - 3 ? 1 : 0);
-                        even_smaller_rect.left = smaller_rect.left + (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0);
-                        even_smaller_rect.right = even_smaller_rect.left + (int)(fraction * (double)(smaller_rect.right - (smaller_rect.left <= smaller_rect.right - 3 ? 1 : 0) - even_smaller_rect.left));
-                        FillRect(hDCcopy, &smaller_rect, hbr_dark);
-                        FillRect(hDCcopy, &even_smaller_rect, hbr_light);
-#endif
-
                     }
 
 
@@ -2437,14 +2381,16 @@ static void setDrawOrder(PNHMapWindow data)
 
             if (layer_idx == LAYER_MONSTER)
             {
-                data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
+                /* These are in fact not drawn */
+                data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
                 data->draw_order[draw_count].tile_movement_index = -1;
                 draw_count++;
 
+                /* These are drawn at the same time as lower positioned tiles */
                 data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
-                data->draw_order[draw_count].tile_movement_index = 1;
+                data->draw_order[draw_count].tile_movement_index = -1;
                 draw_count++;
             }
         }
@@ -2466,14 +2412,15 @@ static void setDrawOrder(PNHMapWindow data)
 
             if (layer_idx == LAYER_MONSTER)
             {
+                /* These two are drawn at the same time as the higher positioned tiles */
                 data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
                 data->draw_order[draw_count].tile_movement_index = 1;
                 draw_count++;
 
-                data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+                data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
-                data->draw_order[draw_count].tile_movement_index = -1;
+                data->draw_order[draw_count].tile_movement_index = 1;
                 draw_count++;
             }
         }
