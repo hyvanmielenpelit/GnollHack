@@ -569,6 +569,8 @@ struct proto_dungeon *pd;
     new_level->dlevel.dnum = dgn;
     new_level->dlevel.dlevel = 0; /* for now */
 
+    new_level->flags.has_tileset = 0;
+    new_level->flags.tileset = 0;
     new_level->flags.town = !!(tlevel->flags & TOWN);
     new_level->flags.hellish = !!(tlevel->flags & HELLISH);
     new_level->flags.maze_like = !!(tlevel->flags & MAZELIKE);
@@ -830,6 +832,8 @@ init_dungeons()
             dungeons[i].dunlev_ureached = 0;
         }
 
+        dungeons[i].flags.has_tileset = 0;
+        dungeons[i].flags.tileset = 0;
         dungeons[i].flags.hellish = !!(pd.tmpdungeon[i].flags & HELLISH);
         dungeons[i].flags.maze_like = !!(pd.tmpdungeon[i].flags & MAZELIKE);
         dungeons[i].flags.rogue_like = !!(pd.tmpdungeon[i].flags & ROGUELIKE);

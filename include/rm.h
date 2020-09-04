@@ -821,9 +821,12 @@ struct cemetery {
 };
 
 struct levelflags {
+    uchar tileset;
     uchar nfountains; /* number of fountains on level */
     uchar nsinks;     /* number of sinks on the level */
     /* Several flags that give hints about what's on the level */
+    Bitfield(has_tileset, 1);
+
     Bitfield(has_shop, 1);
     Bitfield(has_vault, 1);
     Bitfield(has_zoo, 1);

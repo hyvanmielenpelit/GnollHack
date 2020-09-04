@@ -694,6 +694,8 @@ clear_level_structures()
     level.damagelist = (struct damage *) 0;
     level.bonesinfo = (struct cemetery *) 0;
 
+    level.flags.has_tileset = 0;
+    level.flags.tileset = 0;
     level.flags.nfountains = 0;
     level.flags.nsinks = 0;
     level.flags.has_shop = 0;

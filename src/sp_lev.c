@@ -107,6 +107,7 @@ STATIC_DCL void FDECL(spo_monster, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_object, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
+STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_engraving, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_mineralize, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_room, (struct sp_coder *));
@@ -3685,6 +3686,31 @@ struct sp_coder *coder;
 }
 
 void
+spo_tileset(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_tileset";
+    struct opvar* tilesetdata;
+    long tilesetid = 0;
+
+    if (!OV_pop_i(tilesetdata))
+        return;
+    tilesetid = OV_i(tilesetdata);
+
+    if (tilesetid < 0 || tilesetid >= CMAP_TYPE_MAX)
+    {
+        level.flags.has_tileset = 0;
+        level.flags.tileset = 0;
+    }
+    else
+    {
+        level.flags.has_tileset = 1;
+        level.flags.tileset = tilesetid;
+    }
+    opvar_free(tilesetdata);
+}
+
+void
 spo_initlevel(coder)
 struct sp_coder *coder;
 {
@@ -6114,6 +6140,9 @@ sp_lev *lvl;
             break;
         case SPO_INITLEVEL:
             spo_initlevel(coder);
+            break;
+        case SPO_TILESET:
+            spo_tileset(coder);
             break;
         case SPO_ENGRAVING:
             spo_engraving(coder);

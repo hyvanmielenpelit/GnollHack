@@ -189,7 +189,7 @@ extern char curr_token[512];
 %token	<i> CHAR INTEGER BOOLEAN PERCENT SPERCENT
 %token	<i> MINUS_INTEGER PLUS_INTEGER
 %token	<i> MAZE_GRID_ID SOLID_FILL_ID MINES_ID ROGUELEV_ID
-%token	<i> MESSAGE_ID MAZE_ID LEVEL_ID LEV_INIT_ID GEOMETRY_ID NOMAP_ID
+%token	<i> MESSAGE_ID MAZE_ID LEVEL_ID LEV_INIT_ID TILESET_ID GEOMETRY_ID NOMAP_ID
 %token	<i> OBJECT_ID COBJECT_ID MONSTER_ID TRAP_ID DOOR_ID DRAWBRIDGE_ID
 %token	<i> object_ID monster_ID terrain_ID
 %token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID FILLING IRREGULAR JOINED
@@ -199,7 +199,7 @@ extern char curr_token[512];
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
-%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE
+%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE 
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
 %token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID
@@ -396,6 +396,12 @@ lev_init	: LEV_INIT_ID ':' SOLID_FILL_ID ',' terrain_type
 		  }
 		;
 
+tileset_detail : TILESET_ID ':' tileset_number
+		  {
+		      add_opvars(splev, "io", VA_PASS2((int)$<i>3, SPO_TILESET));
+		  }
+		;
+
 opt_limited	: /* nothing */
 		  {
 		      $$ = 0;
@@ -471,6 +477,7 @@ stmt_block	: '{' levstatements '}'
 
 levstatement 	: message
 		| lev_init
+		| tileset_detail
 		| altar_detail
 		| anvil_detail
 		| npc_detail
@@ -2643,6 +2650,10 @@ dice		: DICE
 		      add_opvars(splev, "iio",
 				 VA_PASS3($1.num, $1.die, SPO_DICE));
 		  }
+		;
+
+tileset_number : CMAP_TYPE
+		| INTEGER
 		;
 
 all_integers	: MINUS_INTEGER

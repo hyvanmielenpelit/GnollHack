@@ -124,6 +124,7 @@ enum opcode_defs {
     SPO_RETURN,
     SPO_INITLEVEL,
     SPO_LEVEL_FLAGS,
+    SPO_TILESET,
     SPO_VAR_INIT, /* variable_name data */
     SPO_SHUFFLE_ARRAY,
     SPO_DICE,

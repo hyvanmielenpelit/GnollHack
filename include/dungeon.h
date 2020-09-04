@@ -7,6 +7,8 @@
 #define DUNGEON_H
 
 typedef struct d_flags {     /* dungeon/level type flags */
+    uchar tileset;
+    Bitfield(has_tileset, 1); 
     Bitfield(town, 1);       /* is this a town? (levels only) */
     Bitfield(hellish, 1);    /* is this part of hell? */
     Bitfield(maze_like, 1);  /* is this a maze? */

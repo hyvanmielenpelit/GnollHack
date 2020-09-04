@@ -3885,8 +3885,10 @@ struct rm *lev;
 int
 get_current_cmap_type_index()
 {
-    if (In_mines(&u.uz))
-        return CMAP_GNOMISH_MINES;
+    if (level.flags.has_tileset)
+        return level.flags.tileset;
+    else if (dungeons[u.uz.dnum].flags.has_tileset)
+        return dungeons[u.uz.dnum].flags.tileset;
     else if (Is_knox(&u.uz))
         return CMAP_FORT_LUDIOUS;
     else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz))
