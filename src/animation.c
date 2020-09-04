@@ -388,6 +388,20 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "pony-enlargement", 0, 0,
+      PONY_ENLARGEMENT_TILES, PONY_ENLARGEMENT_OFF,
+      2, 1, 0,
+      { -1, -1, -1, -1, 0 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "pony-statue-enlargement", 0, 0,
+      PONY_STATUE_ENLARGEMENT_TILES, PONY_STATUE_ENLARGEMENT_OFF,
+      2, 1, 0,
+      { -1, -1, -1, -1, 0 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "dracolich-attack-enlargement",
       DRACOLICH_ATTACK_ANIMATION_TILES, DRACOLICH_ATTACK_ANIMATION_FRAMES,
       DRACOLICH_ATTACK_ENLARGEMENT_TILES, DRACOLICH_ATTACK_ENLARGEMENT_OFF,

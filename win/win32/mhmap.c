@@ -2526,6 +2526,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
         for (int layer_round = 0; layer_round < layer_rounds; layer_round++)
         {            
             int enlarg = 0;
+            boolean flipped = 0;
             if (layer_idx == LAYER_OBJECT || layer_idx == LAYER_COVER_OBJECT)
             {
                 if (usePrinted)
@@ -2554,7 +2555,9 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
             else
             {
                 int anim_frame_idx = -1, main_tile_idx = -1;
-                int glyph = abs(data->map[x][y].layer_glyphs[layer_idx]);
+                int signed_glyph = data->map[x][y].layer_glyphs[layer_idx];
+                int glyph = abs(signed_glyph);
+                flipped = (signed_glyph < 0);
                 int ntile = glyph2tile[glyph];
                 boolean mapanimateddummy = 0;
                 struct replacement_info info = { 0 };
@@ -2586,12 +2589,14 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     if (enlargements[enlarg].position2tile[i] == -1)
                         continue;
 
+                    int pos_mult = flipped ? -1 : 1;
+
                     if (i <= 2)
-                        enl_x = x + i - 1;
+                        enl_x = x + pos_mult * (i - 1);
                     else if (i == 3)
-                        enl_x = x - 1;
+                        enl_x = x - pos_mult;
                     else if (i == 4)
-                        enl_x = x + 1;
+                        enl_x = x + pos_mult;
 
                     if (i <= 2)
                         enl_y = y - 1;
