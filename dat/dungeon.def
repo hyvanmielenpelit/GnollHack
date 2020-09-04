@@ -68,7 +68,7 @@ CHAINLEVEL:	"wizard2" "X" "wizard1" + (1, 0)
 CHAINLEVEL:	"wizard3" "Y" "wizard1" + (2, 0)
 LEVEL:		"orcus" "O" @ (10, 6)
 LEVEL:		"yeenoghu" "Z" @ (-12, 9)
-LEVEL:		"tarrasque" "T" @ (-9, 6)
+LEVEL:		"tarrasque" "U" @ (-9, 6)
 LEVEL:		"fakewiz1" "F" @ (-6,4)
 LEVEL:		"fakewiz2" "G" @ (-6,4)
 
@@ -132,7 +132,7 @@ LEVEL:		"modron1" "M" @ (-1, 0)
 DUNGEON:	"Hellish Pastures" "B" (1, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	chaotic
-LEVEL:		"bovine1" "B" @ (-1, 0)
+LEVEL:		"bovine1" "C" @ (-1, 0)
 
 #
 #	Vlad's Tower

@@ -43,7 +43,7 @@ E int FDECL(get_player_action_glyph_offset, (enum action_tile_types));
 E int FDECL(get_monster_action_glyph_offset, (enum action_tile_types, int));
 
 E short FDECL(maybe_get_replaced_tile, (short, int, int, struct replacement_info, enum autodraw_types*));
-E short FDECL(maybe_get_animated_tile, (short, enum animation_play_types, int, unsigned long, int*, int*, boolean*, enum autodraw_types*));
+E short FDECL(maybe_get_animated_tile, (short, int, enum animation_play_types, unsigned long, int*, int*, boolean*, enum autodraw_types*));
 E int FDECL(get_tile_animation_index_from_glyph, (int));
 E short FDECL(get_replacement_base_tile, (short));
 E short FDECL(get_animation_base_tile, (short));
