@@ -331,7 +331,7 @@ map_object(obj, show)
 register struct obj* obj;
 register int show;
 {
-    map_object_core(obj, show, TRUE, FALSE);
+    map_object_core(obj, show, TRUE, FALSE, FALSE);
 }
 
 void
@@ -339,7 +339,7 @@ map_object_for_detection(obj, show)
 register struct obj* obj;
 register int show;
 {
-    map_object_core(obj, show, TRUE, TRUE);
+    map_object_core(obj, show, TRUE, TRUE, FALSE);
 }
 
 void
@@ -347,15 +347,25 @@ map_object_no_chain_check(obj, show)
 register struct obj* obj;
 register int show;
 {
-    map_object_core(obj, show, FALSE, FALSE);
+    map_object_core(obj, show, FALSE, FALSE, FALSE);
 }
 
 void
-map_object_core(obj, show, chain_check, add_detection_mark)
+map_object_no_chain_check_choose_ascii(obj, show, exclude_ascii)
+register struct obj* obj;
+register int show;
+boolean exclude_ascii;
+{
+    map_object_core(obj, show, FALSE, FALSE, exclude_ascii);
+}
+
+void
+map_object_core(obj, show, chain_check, add_detection_mark, exclude_ascii)
 register struct obj *obj;
 register int show;
 boolean chain_check;
 boolean add_detection_mark;
+boolean exclude_ascii;
 {
     if (!obj)
         return;
@@ -382,7 +392,9 @@ boolean add_detection_mark;
         {
             new_glyph = random_obj_to_glyph(newsym_rn2);
         }
-        levl[x][y].hero_memory_layers.glyph = new_glyph;
+        if (!exclude_ascii)
+            levl[x][y].hero_memory_layers.glyph = new_glyph;
+
         levl[x][y].hero_memory_layers.layer_glyphs[layer] = new_glyph;
         if (in_pit)
             levl[x][y].hero_memory_layers.layer_flags |= LFLAGS_O_IN_PIT;
@@ -402,7 +414,9 @@ boolean add_detection_mark;
 
     if (show)
     {
-        show_glyph_ascii(x, y, glyph);
+        if(!exclude_ascii)
+            show_glyph_ascii(x, y, glyph);
+
         show_glyph_on_layer(x, y, glyph, layer);
         if(in_pit)
             add_glyph_buffer_layer_flags(x, y, LFLAGS_O_IN_PIT);
@@ -555,10 +569,17 @@ int x, y, show;
     {
         boolean show_first_object_layer = show;
         boolean show_first_cover_layer = show;
+        boolean first = TRUE;
+
         for (obj = vobj_at(x, y); obj; obj = obj->nexthere)
         {
             boolean draw_in_front = is_obj_drawn_in_front(obj);
-            map_object_no_chain_check(obj, draw_in_front ? show_first_cover_layer : show_first_object_layer);
+            boolean show = (draw_in_front ? show_first_cover_layer : show_first_object_layer);
+            map_object_no_chain_check_choose_ascii(obj, show, !first);
+
+            if(show)
+                first = FALSE;
+
             if (draw_in_front)
                 show_first_cover_layer = FALSE;
             else
@@ -1110,7 +1131,7 @@ int damage_shown;
     if (u.uswallow)
     {
         if (x == u.ux && y == u.uy)
-            display_self_with_extra_info(disp_flags, damage_shown);
+            display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, FALSE);
         return;
     }
 
@@ -1162,9 +1183,9 @@ int damage_shown;
                hero can't see him/herself, then show self if appropriate */
             map_location(x, y, !see_self);
 #endif
-
+            boolean location_has_boulder = (sobj_at(BOULDER, x, y) != 0);
             if (see_self)
-                display_self_with_extra_info(disp_flags, damage_shown);
+                display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, location_has_boulder);
         }
         else
         {
@@ -1237,7 +1258,7 @@ int damage_shown;
 
             /* Monster layer */
             if (canspotself())
-                display_self_with_extra_info(disp_flags, damage_shown);
+                display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, FALSE);
         }
         else
         {
@@ -2262,15 +2283,28 @@ int x, y;
 
 
 void
-show_monster_glyph_with_extra_info(x, y, glyph,  mtmp, disp_flags, damage_displayed)
+show_monster_glyph_with_extra_info(x, y, glyph, mtmp, disp_flags, damage_displayed)
 int x, y, glyph;
 struct monst* mtmp;
 unsigned long disp_flags;
 int damage_displayed;
 {
+    show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph, mtmp, disp_flags, damage_displayed, FALSE);
+}
+
+void
+show_monster_glyph_with_extra_info_choose_ascii(x, y, glyph,  mtmp, disp_flags, damage_displayed, exclude_ascii)
+int x, y, glyph;
+struct monst* mtmp;
+unsigned long disp_flags;
+int damage_displayed;
+boolean exclude_ascii;
+{
     if (isok(x, y))
     {
-        show_glyph_ascii(x, y, glyph);
+        if(!exclude_ascii)
+            show_glyph_ascii(x, y, glyph);
+
         show_glyph_on_layer(x, y, glyph, LAYER_MONSTER);
         clear_monster_extra_info(x, y);
         show_extra_info(x, y, disp_flags, damage_displayed);
@@ -3937,12 +3971,13 @@ int dx, dy;
 
 
 void
-display_self_with_extra_info(displayed_flags, dmg_received)
+display_self_with_extra_info_choose_ascii(displayed_flags, dmg_received, exclude_ascii)
 unsigned long displayed_flags;
 int dmg_received;
+boolean exclude_ascii;
 {
 
-    show_monster_glyph_with_extra_info(u.ux, u.uy,
+    show_monster_glyph_with_extra_info_choose_ascii(u.ux, u.uy,
         maybe_display_usteed((U_AP_TYPE == M_AP_NOTHING)
             ? u_to_glyph() /*hero_glyph*/
             : (U_AP_TYPE == M_AP_FURNITURE)
@@ -3954,7 +3989,7 @@ int dmg_received;
         ),
         u.usteed,
         displayed_flags | LFLAGS_M_YOU | (u.usteed && mon_visible(u.usteed) ? LFLAGS_M_RIDDEN : 0UL) | (u.usteed && mon_visible(u.usteed) && (u.usteed->worn_item_flags & W_SADDLE) ? LFLAGS_M_SADDLED : 0UL),
-        dmg_received);
+        dmg_received, exclude_ascii);
 
 }
 
