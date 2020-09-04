@@ -329,7 +329,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Statue Becomes Alive", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Was Hiding", 0.5f },
 
-    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Piercer Drops", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Piercer Drops", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Trap Found" , 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Hidden Door Found", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Unearthed Object Found", 0.3f },
