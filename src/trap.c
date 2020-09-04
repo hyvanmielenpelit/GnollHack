@@ -619,48 +619,59 @@ int *fail_reason;
     static const char historic_statue_is_gone[] =
         "that the historic statue is now gone";
 
-    if (cant_revive(&mnum, TRUE, statue)) {
+    if (cant_revive(&mnum, TRUE, statue)) 
+    {
         /* mnum has changed; we won't be animating this statue as itself */
         if (mnum != PM_DOPPELGANGER)
             mptr = &mons[mnum];
         use_saved_traits = FALSE;
-    } else if (is_golem(mptr) && cause == ANIMATE_SPELL) {
+    } 
+    else if (is_golem(mptr) && cause == ANIMATE_SPELL)
+    {
         /* statue of any golem hit by stone-to-flesh becomes flesh golem */
         golem_xform = (mptr != &mons[PM_FLESH_GOLEM]);
         mnum = PM_FLESH_GOLEM;
         mptr = &mons[PM_FLESH_GOLEM];
         use_saved_traits = (has_omonst(statue) && !golem_xform);
-    } else {
+    } 
+    else 
+    {
         use_saved_traits = has_omonst(statue);
     }
 
-    if (use_saved_traits) {
+    if (use_saved_traits) 
+    {
         /* restore a petrified monster */
         cc.x = x, cc.y = y;
         mon = montraits(statue, &cc, (cause == ANIMATE_SPELL), -1);
         if (mon && mon->mtame && !mon->isminion)
             wary_dog(mon, TRUE);
-    } else {
+    }
+    else 
+    {
         /* statues of unique monsters from bones or wishing end
            up here (cant_revive() sets mnum to be doppelganger;
            mptr reflects the original form for use by newcham()) */
         if ((mnum == PM_DOPPELGANGER && mptr != &mons[PM_DOPPELGANGER])
             /* block quest guards from other roles */
             || (mptr->msound == MS_GUARDIAN
-                && quest_info(MS_GUARDIAN) != mnum)) {
+                && quest_info(MS_GUARDIAN) != mnum)) 
+        {
             mon = makemon(&mons[PM_DOPPELGANGER], x, y,
                           MM_NO_MONSTER_INVENTORY | MM_NOCOUNTBIRTH | MM_ADJACENTOK);
             /* if hero has protection from shape changers, cham field will
                be NON_PM; otherwise, set form to match the statue */
             if (mon && mon->cham >= LOW_PM)
                 (void) newcham(mon, mptr, FALSE, FALSE);
-        } else
+        } 
+        else
             mon = makemon(mptr, x, y, (cause == ANIMATE_SPELL)
                                           ? (MM_NO_MONSTER_INVENTORY | MM_ADJACENTOK)
                                           : MM_NO_MONSTER_INVENTORY);
     }
 
-    if (!mon) {
+    if (!mon) 
+    {
         if (fail_reason)
             *fail_reason = unique_corpstat(&mons[statue->corpsenm])
                                ? AS_MON_IS_UNIQUE
@@ -693,13 +704,17 @@ int *fail_reason;
     else
         mon->mundetected = FALSE;
     mon->msleeping = 0;
-    if (cause == ANIMATE_NORMAL || cause == ANIMATE_SHATTER) {
+    if (cause == ANIMATE_NORMAL || cause == ANIMATE_SHATTER)
+    {
         /* trap always releases hostile monster */
         mon->mtame = 0; /* (might be petrified pet tossed onto trap) */
         mon->mpeaceful = 0;
 		mon->ispartymember = FALSE;
 		set_malign(mon);
     }
+
+    if (isok(mon->mx, mon->my))
+        newsym(mon->mx, mon->my);
 
     comes_to_life = !canspotmon(mon)
                         ? "disappears"
@@ -708,7 +723,8 @@ int *fail_reason;
                               : (is_not_living(mon->data) || is_vampshifter(mon))
                                     ? "moves"
                                     : "comes to life";
-    if ((x == u.ux && y == u.uy) || cause == ANIMATE_SPELL) {
+    if ((x == u.ux && y == u.uy) || cause == ANIMATE_SPELL) 
+    {
         play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
         /* "the|your|Manlobbi's statue [of a wombat]" */
         shkp = shop_keeper(*in_rooms(mon->mx, mon->my, SHOPBASE));
@@ -722,10 +738,14 @@ int *fail_reason;
                    ? xname(statue)
                    : "statue");
         pline("%s %s!", upstart(statuename), comes_to_life);
-    } else if (Hallucination) { /* They don't know it's a statue */
+    } 
+    else if (Hallucination) 
+    { /* They don't know it's a statue */
         play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
         pline_The("%s suddenly seems more animated.", rndmonnam((char *) 0));
-    } else if (cause == ANIMATE_SHATTER) {
+    } 
+    else if (cause == ANIMATE_SHATTER) 
+    {
         play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
         if (cansee(x, y))
             Sprintf(statuename, "%s%s", shk_your(tmpbuf, statue),
@@ -734,7 +754,9 @@ int *fail_reason;
             Strcpy(statuename, "a statue");
         pline("Instead of shattering, %s suddenly %s!", statuename,
               comes_to_life);
-    } else { /* cause == ANIMATE_NORMAL */
+    } 
+    else 
+    { /* cause == ANIMATE_NORMAL */
         play_sfx_sound(SFX_TRAP_FOUND);
         You("find %s posing as a statue.",
             canspotmon(mon) ? a_monnam(mon) : something);
@@ -745,7 +767,8 @@ int *fail_reason;
 
     /* if this isn't caused by a monster using a wand of striking,
        there might be consequences for the hero */
-    if (!context.mon_moving) {
+    if (!context.mon_moving) 
+    {
         /* if statue is owned by a shop, hero will have to pay for it;
            stolen_value gives a message (about debt or use of credit)
            which refers to "it" so needs to follow a message describing
@@ -763,7 +786,9 @@ int *fail_reason;
             You_feel("guilty %s.", historic_statue_is_gone);
             adjalign(-1);
         }
-    } else {
+    } 
+    else 
+    {
         if (historic && cansee(x, y))
             You_feel("regret %s.", historic_statue_is_gone);
         /* no alignment penalty */
@@ -775,6 +800,7 @@ int *fail_reason;
         (void) mpickobj(mon, item);
     }
     m_dowear(mon, TRUE);
+
     /* in case statue is wielded and hero zaps stone-to-flesh at self */
     if (statue->owornmask)
         remove_worn_item(statue, TRUE);
