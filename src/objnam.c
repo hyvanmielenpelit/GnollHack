@@ -1895,6 +1895,10 @@ struct obj *otmp;
 	if (context.shop_identify_type > 0 && !is_shop_item_type(otmp, context.shop_identify_type - 1))
 		return FALSE;
 
+    /* Smith */
+    if (context.npc_identify_type == -1 && (!is_weapon(otmp) && !otmp->oclass == ARMOR_CLASS))
+        return FALSE;
+
     if (context.npc_identify_type > 0 && !is_npc_item_identification_type(otmp, context.npc_identify_type))
         return FALSE;
 

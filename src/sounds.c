@@ -57,6 +57,7 @@ STATIC_DCL int FDECL(do_chat_smith_repair_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_armor, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_protect_weapon, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
+STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
@@ -2340,6 +2341,19 @@ dochat()
 
 		if (is_peaceful(mtmp) && mtmp->mextra && ESMI(mtmp) &&!mtmp->mrevived) /* no mrivived here to prevent abuse*/
 		{
+			strcpy(available_chat_list[chatnum].name, "Identify a weapon or armor");
+			available_chat_list[chatnum].function_ptr = &do_chat_smith_identify;
+			available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+			any = zeroany;
+			any.a_char = available_chat_list[chatnum].charnum;
+
+			add_menu(win, NO_GLYPH, &any,
+				any.a_char, 0, ATR_NONE,
+				available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+			chatnum++;
+
 			Sprintf(available_chat_list[chatnum].name, "Ask for armor enchantment");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_armor;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
@@ -4853,6 +4867,58 @@ struct monst* mtmp;
 	return general_service_query(mtmp, refill_lantern_func, "refill a lamp or lantern", cost, "refilling a lamp or lantern");
 }
 
+STATIC_OVL int
+do_chat_smith_identify(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->mextra || !mtmp->mextra->esmi)
+		return 0;
+
+	long umoney;
+	int u_pay;
+	int minor_id_cost = max(1, (int)((double)(75 + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney) {
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to identify a weapon or armor?\" (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)minor_id_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = minor_id_cost;
+		break;
+	}
+
+	context.npc_identify_type = -1; /* Smith */
+
+	int res = identify_pack(1, FALSE);
+
+	context.npc_identify_type = 0;
+
+	if (res)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
+
+	return 1;
+}
 
 boolean
 is_npc_item_identification_type(otmp, npc_identification_type_index)
