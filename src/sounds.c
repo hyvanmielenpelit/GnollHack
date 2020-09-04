@@ -2003,7 +2003,7 @@ dochat()
 		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
 		)
 	{
-		strcpy(available_chat_list[chatnum].name, "Ask if able to join the party");
+		strcpy(available_chat_list[chatnum].name, "Suggest joining the party");
 		available_chat_list[chatnum].function_ptr = &do_chat_join_party;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2016,7 +2016,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask to explain current statistics");
+		strcpy(available_chat_list[chatnum].name, "Explain current statistics");
 		available_chat_list[chatnum].function_ptr = &do_chat_explain_statistics;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2034,7 +2034,7 @@ dochat()
 	/* Oracle */
 	if (is_peaceful(mtmp) && msound == MS_ORACLE)
 	{
-		strcpy(available_chat_list[chatnum].name, "Ask for a consultation");
+		strcpy(available_chat_list[chatnum].name, "Consultation");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_consult;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2047,7 +2047,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for identification of an item");
+		strcpy(available_chat_list[chatnum].name, "Identify an item");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_identify;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2060,7 +2060,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for enlightenment");
+		strcpy(available_chat_list[chatnum].name, "Enlightenment");
 		available_chat_list[chatnum].function_ptr = &do_chat_oracle_enlightenment;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2077,7 +2077,7 @@ dochat()
 	/* Priest */
 	if (is_peaceful(mtmp) && (msound == MS_PRIEST || mtmp->ispriest))
 	{
-		strcpy(available_chat_list[chatnum].name, "Ask for standard healing");
+		strcpy(available_chat_list[chatnum].name, "Standard healing");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2090,7 +2090,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for full healing");
+		strcpy(available_chat_list[chatnum].name, "Full healing");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_full_healing;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2103,7 +2103,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for curing sickness");
+		strcpy(available_chat_list[chatnum].name, "Cure sickness");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_cure_sickness;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2116,7 +2116,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for blessing or cursing an item");
+		strcpy(available_chat_list[chatnum].name, "Bless or curse an item");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_blesscurse;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2129,7 +2129,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for divination");
+		strcpy(available_chat_list[chatnum].name, "Divination");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_divination;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2161,7 +2161,7 @@ dochat()
 	else if (is_peaceful(mtmp) && is_priest(mtmp->data) && msound != MS_ORACLE)
 	{
 		/* Non-priest monster priests here */
-		strcpy(available_chat_list[chatnum].name, "Ask for healing");
+		strcpy(available_chat_list[chatnum].name, "Healing");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_normal_healing;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2174,7 +2174,7 @@ dochat()
 
 		chatnum++;
 
-		strcpy(available_chat_list[chatnum].name, "Ask for curing sickness");
+		strcpy(available_chat_list[chatnum].name, "Cure sickness");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_cure_sickness;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2188,7 +2188,7 @@ dochat()
 		chatnum++;
 
 
-		strcpy(available_chat_list[chatnum].name, "Ask for divination");
+		strcpy(available_chat_list[chatnum].name, "Divination");
 		available_chat_list[chatnum].function_ptr = &do_chat_priest_divination;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2305,7 +2305,7 @@ dochat()
 			   (not angry) and able (not asleep) to speak and the position
 			   contains any objects other than just gold.
 			*/
-			strcpy(available_chat_list[chatnum].name, "Ask for quotation of items");
+			strcpy(available_chat_list[chatnum].name, "Quote items");
 			available_chat_list[chatnum].function_ptr = &do_chat_shk_pricequote;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2354,7 +2354,7 @@ dochat()
 
 			chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for armor enchantment");
+			Sprintf(available_chat_list[chatnum].name, "Enchant an armor");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_armor;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2367,7 +2367,7 @@ dochat()
 
 			chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for weapon enchantment");
+			Sprintf(available_chat_list[chatnum].name, "Enchant a weapon");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_enchant_weapon;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2380,7 +2380,7 @@ dochat()
 
 			chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for armor repair");
+			Sprintf(available_chat_list[chatnum].name, "Repair a piece of armor");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_repair_armor;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2393,7 +2393,7 @@ dochat()
 
 			chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for weapon repair");
+			Sprintf(available_chat_list[chatnum].name, "Repair a weapon");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_repair_weapon;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2406,7 +2406,7 @@ dochat()
 
 			chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for armor protection");
+			Sprintf(available_chat_list[chatnum].name, "Protect a piece of armor");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_armor;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2419,7 +2419,7 @@ dochat()
 
 			chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for weapon protection");
+			Sprintf(available_chat_list[chatnum].name, "Protect a weapon");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_protect_weapon;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2432,7 +2432,7 @@ dochat()
 
 			chatnum++;
 
-			Sprintf(available_chat_list[chatnum].name, "Ask for oil refill for a lamp or lantern");
+			Sprintf(available_chat_list[chatnum].name, "Refill oil for a lamp or lantern");
 			available_chat_list[chatnum].function_ptr = &do_chat_smith_refill_lantern;
 			available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2472,7 +2472,7 @@ dochat()
 		{
 			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_ENCHANT_ACCESSORY)
 			{
-				Sprintf(available_chat_list[chatnum].name, "Ask for accessory enchantment");
+				Sprintf(available_chat_list[chatnum].name, "Enchant an accessory");
 				available_chat_list[chatnum].function_ptr = &do_chat_npc_enchant_accessory;
 				available_chat_list[chatnum].charnum = 'a' + chatnum;
 
@@ -2489,7 +2489,7 @@ dochat()
 
 			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_RECHARGING)
 			{
-				Sprintf(available_chat_list[chatnum].name, "Ask for recharging an item");
+				Sprintf(available_chat_list[chatnum].name, "Recharge an item");
 				available_chat_list[chatnum].function_ptr = &do_chat_npc_recharge;
 				available_chat_list[chatnum].charnum = 'a' + chatnum;
 
