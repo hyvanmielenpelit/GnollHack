@@ -4880,6 +4880,8 @@ struct sp_coder* coder;
         subtyp = rn2(MAX_FOUNTAIN_SUBTYPES);
 
     selection_iterate2(sel, sel_set_feature2, (genericptr_t)&typ, (genericptr_t)&subtyp);
+
+    opvar_free(subtyp_opvar);
     opvar_free(sel);
 
 }
@@ -4916,6 +4918,7 @@ struct sp_coder* coder;
 
     create_npc(&tmpnpc, coder->croom);
 
+    opvar_free(typ);
     opvar_free(acoord);
 }
 
