@@ -106,8 +106,8 @@ char *outbuf;
     struct obj *otmp;
     boolean fakeobj, isyou = (mon == &youmonst);
     int x = isyou ? u.ux : mon->mx, y = isyou ? u.uy : mon->my,
-        glyph = (level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
-                                                    : glyph_at(x, y);
+        glyph = abs((level.flags.hero_memory && !isyou) ? levl[x][y].hero_memory_layers.glyph
+                                                    : glyph_at(x, y));
 
     *outbuf = '\0';
     if (M_AP_TYPE(mon) == M_AP_FURNITURE
@@ -914,7 +914,7 @@ struct permonst **for_supplement;
         unsigned long os;
 
         struct layer_info layers = layers_at(cc.x, cc.y);
-        glyph = layers.glyph;
+        glyph = abs(layers.glyph);
         /* Convert glyph at selected position to a symbol for use below. */
         (void) mapglyph(layers, &sym, &oc, &os, cc.x, cc.y);
 

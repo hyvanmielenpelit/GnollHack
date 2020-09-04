@@ -1109,7 +1109,7 @@ struct obj *otmp;
             for (x = 1; x < COLNO; x++) {
                 for (y = 0; y < ROWNO; y++) 
                 {
-                    if (levl[x][y].hero_memory_layers.glyph == GLYPH_INVISIBLE) 
+                    if (glyph_is_invisible(levl[x][y].hero_memory_layers.glyph))
                     {
                         unmap_object(x, y);
                         newsym(x, y);

@@ -3440,7 +3440,8 @@ struct layer_info layers;
     int color;
     unsigned long special;
 
-    int glyph = layers.glyph;
+    int signed_glyph = layers.glyph;
+    int glyph = abs(signed_glyph);
 
     HUPSKIP();
 #ifdef CLIPPING
