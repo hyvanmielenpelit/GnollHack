@@ -3893,7 +3893,7 @@ get_current_cmap_type_index()
         return CMAP_GNOMISH_MINES;
     else if (Is_knox(&u.uz))
         return CMAP_FORT_LUDIOUS;
-    else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz))
+    else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz) || In_V_tower(&u.uz))
         return CMAP_UNDEAD_STYLE;
     else if (Is_medusa_level(&u.uz) || Is_juiblex_level(&u.uz))
         return CMAP_SWAMP_STYLE;
@@ -3903,7 +3903,7 @@ get_current_cmap_type_index()
         return CMAP_BOVINE;
     else if (In_sokoban(&u.uz))
         return CMAP_SOKOBAN;
-    else if (In_V_tower(&u.uz) || On_W_tower_level(&u.uz))
+    else if (On_W_tower_level(&u.uz))
         return CMAP_TOWER;
     else if (Is_astralevel(&u.uz))
         return CMAP_ASTRAL;
