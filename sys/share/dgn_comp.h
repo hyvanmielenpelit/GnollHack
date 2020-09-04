@@ -52,14 +52,16 @@
      DESCRIPTION = 268,
      DESCRIPTOR = 269,
      LEVELDESC = 270,
-     ALIGNMENT = 271,
-     LEVALIGN = 272,
-     ENTRY = 273,
-     STAIR = 274,
-     NO_UP = 275,
-     NO_DOWN = 276,
-     PORTAL = 277,
-     STRING = 278
+     TILESET_ID = 271,
+     ALIGNMENT = 272,
+     LEVALIGN = 273,
+     ENTRY = 274,
+     STAIR = 275,
+     NO_UP = 276,
+     NO_DOWN = 277,
+     PORTAL = 278,
+     CMAP_TYPE = 279,
+     STRING = 280
    };
 #endif
 
@@ -70,7 +72,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 67 "dgn_comp.y"
+#line 68 "dgn_comp.y"
 
 	int	i;
 	char*	str;
@@ -78,7 +80,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 82 "dgn_comp.tab.h"
+#line 84 "dgn_comp.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

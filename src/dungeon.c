@@ -569,8 +569,8 @@ struct proto_dungeon *pd;
     new_level->dlevel.dnum = dgn;
     new_level->dlevel.dlevel = 0; /* for now */
 
-    new_level->flags.has_tileset = 0;
-    new_level->flags.tileset = 0;
+    new_level->flags.has_tileset = 0; /* Set later in level file */
+    new_level->flags.tileset = 0;  /* Set later in level file */
     new_level->flags.town = !!(tlevel->flags & TOWN);
     new_level->flags.hellish = !!(tlevel->flags & HELLISH);
     new_level->flags.maze_like = !!(tlevel->flags & MAZELIKE);
@@ -792,11 +792,15 @@ init_dungeons()
 		panic("init_dungeons: too many dungeons");
 		return;
 	}
-    for (i = 0; i < n_dgns; i++) {
+
+    for (i = 0; i < n_dgns; i++)
+    {
         Fread((genericptr_t) &pd.tmpdungeon[i], sizeof(struct tmpdungeon), 1,
               dgn_file);
+
         if (!wizard && pd.tmpdungeon[i].chance
-            && (pd.tmpdungeon[i].chance <= rn2(100))) {
+            && (pd.tmpdungeon[i].chance <= rn2(100))) 
+        {
             int j;
 
             /* skip over any levels or branches */
@@ -822,18 +826,21 @@ init_dungeons()
         else
             dungeons[i].num_dunlevs = (xchar) pd.tmpdungeon[i].lev.base;
 
-        if (!i) {
+        if (!i) 
+        {
             dungeons[i].ledger_start = 0;
             dungeons[i].depth_start = 1;
             dungeons[i].dunlev_ureached = 1;
-        } else {
+        } 
+        else 
+        {
             dungeons[i].ledger_start =
                 dungeons[i - 1].ledger_start + dungeons[i - 1].num_dunlevs;
             dungeons[i].dunlev_ureached = 0;
         }
 
-        dungeons[i].flags.has_tileset = 0;
-        dungeons[i].flags.tileset = 0;
+        dungeons[i].flags.has_tileset = !!pd.tmpdungeon[i].has_tileset;
+        dungeons[i].flags.tileset = pd.tmpdungeon[i].tileset;
         dungeons[i].flags.hellish = !!(pd.tmpdungeon[i].flags & HELLISH);
         dungeons[i].flags.maze_like = !!(pd.tmpdungeon[i].flags & MAZELIKE);
         dungeons[i].flags.rogue_like = !!(pd.tmpdungeon[i].flags & ROGUELIKE);

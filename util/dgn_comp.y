@@ -25,6 +25,7 @@
 #include "config.h"
 #include "date.h"
 #include "dgn_file.h"
+#include "hack.h"
 
 void FDECL(yyerror, (const char *));
 void FDECL(yywarning, (const char *));
@@ -71,8 +72,8 @@ extern FILE *yyin, *yyout;	/* from dgn_lex.c */
 
 %token	<i>	INTEGER
 %token	<i>	A_DUNGEON BRANCH CHBRANCH LEVEL RNDLEVEL CHLEVEL RNDCHLEVEL
-%token	<i>	UP_OR_DOWN PROTOFILE DESCRIPTION DESCRIPTOR LEVELDESC
-%token	<i>	ALIGNMENT LEVALIGN ENTRY STAIR NO_UP NO_DOWN PORTAL
+%token	<i>	UP_OR_DOWN PROTOFILE DESCRIPTION DESCRIPTOR LEVELDESC TILESET_ID
+%token	<i>	ALIGNMENT LEVALIGN ENTRY STAIR NO_UP NO_DOWN PORTAL CMAP_TYPE
 %token	<str>	STRING
 %type	<i>	optional_int direction branch_type bones_tag
 %start	file
@@ -144,6 +145,16 @@ desc		: DESCRIPTION ':' DESCRIPTOR
 			    yyerror("Illegal alignment - ignoring!");
 			else
 			    tmpdungeon[n_dgns].flags |= $<i>3 ;
+		  }
+		| TILESET_ID ':' tileset_number
+		  {
+			if($<i>3 && ($<i>3 < 0 || $<i>3 >= CMAP_TYPE_MAX))
+			    yyerror("Illegal tileset - ignoring!");
+			else
+			{
+			    tmpdungeon[n_dgns].has_tileset = 1;
+			    tmpdungeon[n_dgns].tileset = $<i>3 ;
+			}
 		  }
 		;
 
@@ -364,6 +375,12 @@ bones_tag	: STRING
 		  }
 		;
 
+tileset_number : CMAP_TYPE
+| INTEGER
+;
+
+
+
 /*
  *	acouple rules:
  *
@@ -451,6 +468,8 @@ init_dungeon()
 	tmpdungeon[n_dgns].levels = 0;
 	tmpdungeon[n_dgns].branches = 0;
 	tmpdungeon[n_dgns].entry_lev = 0;
+	tmpdungeon[n_dgns].has_tileset = 0;
+	tmpdungeon[n_dgns].tileset = 0;
 }
 
 void
