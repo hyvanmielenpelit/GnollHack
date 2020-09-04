@@ -325,6 +325,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Magical" , 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Fiery" , 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Frosty" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Surprise Attack" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Statue Becomes Alive" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Was Hiding" , 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Piercer Drops" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Trap Found" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Hidden Door Found" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Unearthed Object Found" , 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/You Surprise Monster" , 1.0f },
 };
 
 #undef NoSound

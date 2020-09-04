@@ -189,7 +189,8 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
         if (!((Blind ? (Blind_telepat || Unblind_telepat) : Unblind_telepat) || Detect_monsters)) {
             struct obj *obj;
 
-            if (!Blind && Hallucination)
+			play_sfx_sound(SFX_WAS_HIDING);
+			if (!Blind && Hallucination)
                 pline("A %s %s appeared!",
                       is_tame(mtmp) ? "tame" : "wild", l_monnam(mtmp));
             else if (Blind || (is_pool(mtmp->mx, mtmp->my) && !Underwater))

@@ -523,7 +523,10 @@ register struct obj *obj;
 
         if (mtmp->mundetected) {
             if (!canspotmon(mtmp))
+            {
+                play_sfx_sound(SFX_WAS_HIDING);
                 There("is %s hidden there.", mnm);
+            }
             mtmp->mundetected = 0;
             newsym(mtmp->mx, mtmp->my);
         } else if (mtmp->mappearance) {

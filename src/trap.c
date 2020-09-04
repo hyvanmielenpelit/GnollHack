@@ -709,6 +709,7 @@ int *fail_reason;
                                     ? "moves"
                                     : "comes to life";
     if ((x == u.ux && y == u.uy) || cause == ANIMATE_SPELL) {
+        play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
         /* "the|your|Manlobbi's statue [of a wombat]" */
         shkp = shop_keeper(*in_rooms(mon->mx, mon->my, SHOPBASE));
         Sprintf(statuename, "%s%s", shk_your(tmpbuf, statue),
@@ -722,8 +723,10 @@ int *fail_reason;
                    : "statue");
         pline("%s %s!", upstart(statuename), comes_to_life);
     } else if (Hallucination) { /* They don't know it's a statue */
+        play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
         pline_The("%s suddenly seems more animated.", rndmonnam((char *) 0));
     } else if (cause == ANIMATE_SHATTER) {
+        play_sfx_sound(SFX_STATUE_BECOMES_ALIVE);
         if (cansee(x, y))
             Sprintf(statuename, "%s%s", shk_your(tmpbuf, statue),
                     xname(statue));
@@ -732,6 +735,7 @@ int *fail_reason;
         pline("Instead of shattering, %s suddenly %s!", statuename,
               comes_to_life);
     } else { /* cause == ANIMATE_NORMAL */
+        play_sfx_sound(SFX_TRAP_FOUND);
         You("find %s posing as a statue.",
             canspotmon(mon) ? a_monnam(mon) : something);
         if (!canspotmon(mon) && Blind)
@@ -5185,6 +5189,7 @@ boolean force;
          && (force || (!confused && rn2(MAXULEV - u.ulevel + 11) < 10)))
         || (!force && confused && !rn2(3)))
     {
+        play_sfx_sound(SFX_TRAP_FOUND);
         You("find a trap on the door!");
         exercise(A_WIS, TRUE);
 
@@ -5310,6 +5315,7 @@ boolean force;
             && rn2(MAXULEV + 1 - u.ulevel) < (MAXULEV / 3))))
         || (!force && confused && !rn2(3)))
     {
+        play_sfx_sound(SFX_TRAP_FOUND);
         You("find a trap on %s!", the(xname(otmp)));
         if (!confused)
             exercise(A_WIS, TRUE);

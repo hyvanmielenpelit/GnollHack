@@ -1999,6 +1999,46 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_EXPLOSION_FROSTY, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_SURPRISE_ATTACK",
+        {GHSOUND_SURPRISE_ATTACK, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_STATUE_BECOMES_ALIVE",
+        {GHSOUND_STATUE_BECOMES_ALIVE, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_WAS_HIDING",
+        {GHSOUND_WAS_HIDING, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_PIERCER_DROPS",
+        {GHSOUND_PIERCER_DROPS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_TRAP_FOUND",
+        {GHSOUND_TRAP_FOUND, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_HIDDEN_DOOR_FOUND",
+        {GHSOUND_HIDDEN_DOOR_FOUND, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_UNEARTHED_OBJECT_FOUND",
+        {GHSOUND_UNEARTHED_OBJECT_FOUND, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_YOU_SURPRISE_MONSTER",
+        {GHSOUND_YOU_SURPRISE_MONSTER, 1.0f},
+        FALSE
+    },
 };
 
 

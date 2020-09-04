@@ -573,6 +573,8 @@ register struct monst *mtmp;
                         if (obj->otyp == EGG)
                             obj->speflags = 0;
                     }
+
+                    play_sfx_sound(SFX_WAS_HIDING);
                     /* note that m_monnam() overrides hallucination, which is
                        what we want when message is from mtmp's perspective */
                     if (youmonst.data->mlet == S_EEL
@@ -1676,6 +1678,7 @@ register struct obj* omonwep;
                 else
                     what = doname(obj);
 
+                play_sfx_sound(SFX_WAS_HIDING);
                 pline("%s was hidden under %s!", Amonnam(mtmp), what);
             }
             newsym(mtmp->mx, mtmp->my);

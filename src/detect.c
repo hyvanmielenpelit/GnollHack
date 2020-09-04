@@ -1748,6 +1748,7 @@ struct trap *trap;
         cleared = TRUE;
     }
 
+    play_sfx_sound(SFX_TRAP_FOUND);
     You("find %s.", an(get_trap_explanation(trap)));
 
     if (cleared) {
@@ -1874,7 +1875,8 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 						exercise(A_WIS, TRUE);
 						nomul(0);
 						feel_location(x, y); /* make sure it shows up */
-						You("find a hidden door.");
+                        play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
+                        You("find a hidden door.");
 					} 
 					else if (levl[x][y].typ == SCORR) 
 					{
@@ -1885,6 +1887,7 @@ register int aflag; /* intrinsic autosearch vs explicit searching */
 						exercise(A_WIS, TRUE);
 						nomul(0);
 						feel_newsym(x, y); /* make sure it shows up */
+                        play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
                         You("find a hidden passage.");
 					}
 					else

@@ -2477,6 +2477,7 @@ boolean pick;
         mtmp->mundetected = mtmp->msleeping = 0;
         switch (mtmp->data->mlet) {
         case S_PIERCER:
+            play_sfx_sound(SFX_PIERCER_DROPS);
             pline("%s suddenly drops from the %s!", Amonnam(mtmp),
                   ceiling(u.ux, u.uy));
             if (is_tame(mtmp)) { /* jumps to greet you, not attack */
@@ -2498,15 +2499,23 @@ boolean pick;
             break;
         default: /* monster surprises you. */
             if (is_tame(mtmp))
+            {
                 pline("%s jumps near you from the %s.", Amonnam(mtmp),
-                      ceiling(u.ux, u.uy));
-            else if (is_peaceful(mtmp)) {
+                    ceiling(u.ux, u.uy));
+            }
+            else if (is_peaceful(mtmp)) 
+            {
+                play_sfx_sound(SFX_YOU_SURPRISE_MONSTER);
                 You("surprise %s!",
                     Blind && !sensemon(mtmp) ? something : a_monnam(mtmp));
                 mtmp->mpeaceful = 0;
                 newsym(mtmp->mx, mtmp->my);
-            } else
+            }
+            else
+            {
+                play_sfx_sound(SFX_SURPRISE_ATTACK);
                 pline("%s attacks you by surprise!", Amonnam(mtmp));
+            }
             break;
         }
         mnexto(mtmp); /* have to move the monster */

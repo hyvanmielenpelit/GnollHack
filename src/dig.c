@@ -2443,9 +2443,11 @@ boolean verbose, buriedsearchableonly;
         if (otmp->ox == x && otmp->oy == y && (!buriedsearchableonly || (buriedsearchableonly && is_otyp_buried_searchable(otmp->otyp))))
 		{
 			cnt++;
-			if (verbose)
-				pline("%s %s %s%s.", is_you ? "You" : Monnam(mtmp), is_you ? "find" : "finds", doname(otmp), buriedsearchableonly ? " buried close to the surface of the ground" : "");
-
+            if (verbose)
+            {
+                play_sfx_sound_at_location(SFX_UNEARTHED_OBJECT_FOUND, x, y);
+                pline("%s %s %s%s.", is_you ? "You" : Monnam(mtmp), is_you ? "find" : "finds", doname(otmp), buriedsearchableonly ? " buried close to the surface of the ground" : "");
+            }
 			if (bball && otmp == bball
                 && u.utrap && u.utraptype == TT_BURIEDBALL) 
 			{
