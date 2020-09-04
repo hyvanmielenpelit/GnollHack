@@ -506,7 +506,7 @@ int use_type;
 int
 get_critical_strike_percentage_chance(weapon, mon, mattacker)
 struct obj* weapon;
-struct monst* mon, mattacker;
+struct monst *mon, *mattacker;
 {
     boolean youdefend = (mon == &youmonst);
     int crit_strike_probability = !weapon ? 0 :
