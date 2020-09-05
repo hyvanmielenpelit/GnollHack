@@ -183,6 +183,7 @@ struct monst *mon;
                 EMIN(mtmp)->renegade =
                     (atyp != u.ualign.type) ^ !is_peaceful(mtmp);
             }
+			play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
 			if(canseemon(mtmp))
 			{ 
 				if (is_demon(ptr))
@@ -433,13 +434,22 @@ yacc_bison_summon()
 	if (result > 0 && canseemonnumber > 0)
 	{
 		if (result == 1 && mtmp)
+		{
+			play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp->mx, mtmp->my);
 			pline("%s appears in a cloud of smoke!", Amonnam(mtmp));
+		}
 		else
 		{
 			if (canseemonnumber == 1 && mtmp2)
+			{
+				play_sfx_sound_at_location(SFX_SUMMON_DEMON, mtmp2->mx, mtmp2->my);
 				pline("%s appears in a cloud of smoke!", Amonnam(mtmp2));
+			}
 			else
+			{
+				play_sfx_sound(SFX_SUMMON_DEMON);
 				pline("%s bison appear in a cloud of smoke!", numberword);
+			}
 		}
 	}
 

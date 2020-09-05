@@ -2690,6 +2690,7 @@ struct obj *obj;
 				}
 				mon->mprops[SUMMON_FORBIDDEN] |= M_INTRINSIC_ACQUIRED;
 
+				play_sfx_sound_at_location(SFX_SUMMON_DEMON, mon->mx, mon->my);
 				pline("%s appears in a puff of smoke!", Amonnam(mon));
 			}
 			else

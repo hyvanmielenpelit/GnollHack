@@ -9385,7 +9385,8 @@ int spl_otyp;
 		(void)tamedog(mon, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
 		mon->summonduration = d(objects[spl_otyp].oc_spell_dur_dice, objects[spl_otyp].oc_spell_dur_diesize) + objects[spl_otyp].oc_spell_dur_plus;
 		begin_summontimer(mon);
-		pline("%s appears before you in a puff of smoke!", Amonnam(mon));
+        play_sfx_sound_at_location(SFX_SUMMON_DEMON, mon->mx, mon->my);
+        pline("%s appears before you in a puff of smoke!", Amonnam(mon));
 	}
 
 }

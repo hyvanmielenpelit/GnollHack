@@ -2498,6 +2498,7 @@ demonpet()
 		dtmp->summonduration = d(objects[SPE_SUMMON_DEMON].oc_spell_dur_dice, objects[SPE_SUMMON_DEMON].oc_spell_dur_diesize) + objects[SPE_SUMMON_DEMON].oc_spell_dur_plus;
 		begin_summontimer(dtmp);
 
+		play_sfx_sound_at_location(SFX_SUMMON_DEMON, dtmp->mx, dtmp->my);
 		if (canseemon(dtmp))
 		{
 			if (is_demon(dtmp->data))

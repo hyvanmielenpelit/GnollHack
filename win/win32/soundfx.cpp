@@ -325,7 +325,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Magical", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Fiery", 1.0f },
     { SOUND_BANK_MASTER, "event:/Explosion/Explosion Frosty", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Surprise Attack", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Surprise Attack", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Statue Becomes Alive", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Was Hiding", 0.5f },
 
