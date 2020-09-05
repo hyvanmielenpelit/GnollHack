@@ -717,6 +717,20 @@ extcmd_via_menu()
 }
 #endif /* TTY_GRAPHICS */
 
+
+#define MAXABILITYNUM 128
+#define MAXNAMELENGTH 80
+
+struct available_ability
+{
+    char name[MAXNAMELENGTH];
+    int (*function_ptr)();
+    int (*function_mtmp_ptr)(struct monst*);
+    struct monst* target_mtmp;
+};
+
+static struct available_ability available_ability_list[MAXABILITYNUM] = { { 0 } };
+
 int
 doability(VOID_ARGS)
 {
@@ -731,18 +745,6 @@ doability(VOID_ARGS)
 	start_menu(win);
 		
 
-#define MAXABILITYNUM 52
-#define MAXNAMELENGTH 80
-
-	struct available_ability 
-	{
-		int charnum;
-		char name[MAXNAMELENGTH];
-		int (*function_ptr)();
-        int (*function_mtmp_ptr)(struct monst*);
-        struct monst* target_mtmp;
-	};
-	struct available_ability available_ability_list[MAXABILITYNUM] = { { 0 } };
 	int abilitynum = 0;
 
 	/* CHARACTER ABILITY INFORMATION */
@@ -753,13 +755,12 @@ doability(VOID_ARGS)
 
 	strcpy(available_ability_list[abilitynum].name, "Statistics [you]");
 	available_ability_list[abilitynum].function_ptr = &docharacterstatistics;
-	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 	any = zeroany;
-	any.a_char = available_ability_list[abilitynum].charnum;
+	any.a_int = abilitynum + 1;
 
 	add_menu(win, NO_GLYPH, &any,
-		any.a_char, 0, ATR_NONE,
+		0, 0, ATR_NONE,
 		available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 	abilitynum++;
@@ -767,13 +768,12 @@ doability(VOID_ARGS)
 
 	strcpy(available_ability_list[abilitynum].name, "Attributes [attributes]");
 	available_ability_list[abilitynum].function_ptr = &doattributes;
-	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 	any = zeroany;
-	any.a_char = available_ability_list[abilitynum].charnum;
+    any.a_int = abilitynum + 1;
 
 	add_menu(win, NO_GLYPH, &any,
-		any.a_char, 0, ATR_NONE,
+		0, 0, ATR_NONE,
 		available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 	abilitynum++;
@@ -782,13 +782,12 @@ doability(VOID_ARGS)
     {
         strcpy(available_ability_list[abilitynum].name, "Polymorphed form");
         available_ability_list[abilitynum].function_ptr = &dopolyformstatistics;
-        available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
         any = zeroany;
-        any.a_char = available_ability_list[abilitynum].charnum;
+        any.a_int = abilitynum + 1;
 
         add_menu(win, NO_GLYPH, &any,
-            any.a_char, 0, ATR_NONE,
+            0, 0, ATR_NONE,
             available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
         abilitynum++;
@@ -803,13 +802,12 @@ doability(VOID_ARGS)
 	/* Ride */
 	strcpy(available_ability_list[abilitynum].name, "Ride");
 	available_ability_list[abilitynum].function_ptr = &doride;
-	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 	any = zeroany;
-	any.a_char = available_ability_list[abilitynum].charnum;
+    any.a_int = abilitynum + 1;
 
 	add_menu(win, NO_GLYPH, &any,
-		any.a_char, 0, ATR_NONE,
+		0, 0, ATR_NONE,
 		available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 	abilitynum++;
@@ -817,13 +815,12 @@ doability(VOID_ARGS)
 	/* Untrap */
 	strcpy(available_ability_list[abilitynum].name, "Untrap");
 	available_ability_list[abilitynum].function_ptr = &dountrap;
-	available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 	any = zeroany;
-	any.a_char = available_ability_list[abilitynum].charnum;
+    any.a_int = abilitynum + 1;
 
 	add_menu(win, NO_GLYPH, &any,
-		any.a_char, 0, ATR_NONE,
+		0, 0, ATR_NONE,
 		available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 	abilitynum++;
@@ -854,13 +851,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Use breath weapon");
 			available_ability_list[abilitynum].function_ptr = &dobreathe;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -870,13 +866,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Spit");
 			available_ability_list[abilitynum].function_ptr = &dospit;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -886,13 +881,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Remove chained items");
 			available_ability_list[abilitynum].function_ptr = &doremove;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -904,13 +898,13 @@ doability(VOID_ARGS)
 			Sprintf(gazebuf, "Gaze%s", youmonst.data->mlet == S_EYE ? " with central eye" : "");
 			strcpy(available_ability_list[abilitynum].name, gazebuf);
 			available_ability_list[abilitynum].function_ptr = &dogaze;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
+
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -920,13 +914,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Gaze with one or more eyestalks");
 			available_ability_list[abilitynum].function_ptr = &doeyestalk;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -936,13 +929,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Summon monsters");
 			available_ability_list[abilitynum].function_ptr = &dosummon;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -952,13 +944,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Spin web");
 			available_ability_list[abilitynum].function_ptr = &dospinweb;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -968,13 +959,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Hide");
 			available_ability_list[abilitynum].function_ptr = &dohide;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -984,13 +974,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Project a mind blast");
 			available_ability_list[abilitynum].function_ptr = &domindblast;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -1000,13 +989,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Dry a fountain");
 			available_ability_list[abilitynum].function_ptr = &dodryfountain;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -1016,13 +1004,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Use your horn");
 			available_ability_list[abilitynum].function_ptr = &douseunicornhorn;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -1032,13 +1019,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Shriek");
 			available_ability_list[abilitynum].function_ptr = &doshriek;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -1048,13 +1034,12 @@ doability(VOID_ARGS)
 		{
 			strcpy(available_ability_list[abilitynum].name, "Assume another form");
 			available_ability_list[abilitynum].function_ptr = &dopoly;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -1064,13 +1049,12 @@ doability(VOID_ARGS)
 		{
 			Sprintf(available_ability_list[abilitynum].name, "%s an egg", eggs_in_water(youmonst.data) ? "Spawn" : "Lay");
 			available_ability_list[abilitynum].function_ptr = &dolayegg;
-			available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
 			any = zeroany;
-			any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
 			add_menu(win, NO_GLYPH, &any,
-				any.a_char, 0, ATR_NONE,
+				0, 0, ATR_NONE,
 				available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
 			abilitynum++;
@@ -1096,13 +1080,12 @@ doability(VOID_ARGS)
                 strcpy(available_ability_list[abilitynum].name, "Command steed to use breath weapon");
 
             available_ability_list[abilitynum].function_ptr = &dosteedbreathe;
-            available_ability_list[abilitynum].charnum = 'a' + abilitynum;
 
             any = zeroany;
-            any.a_char = available_ability_list[abilitynum].charnum;
+            any.a_int = abilitynum + 1;
 
             add_menu(win, NO_GLYPH, &any,
-                any.a_char, 0, ATR_NONE,
+                0, 0, ATR_NONE,
                 available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
             abilitynum++;
@@ -1162,13 +1145,12 @@ doability(VOID_ARGS)
                 Sprintf(available_ability_list[abilitynum].name, "%s", namebuf);
                 available_ability_list[abilitynum].function_mtmp_ptr = &doviewpetstatistics;
                 available_ability_list[abilitynum].target_mtmp = mtmp;
-                available_ability_list[abilitynum].charnum = ('a' + abilitynum > 'z') ? ('A' + 'a' + abilitynum - ('z' + 1)) : ('a' + abilitynum);
 
                 any = zeroany;
-                any.a_char = available_ability_list[abilitynum].charnum;
+                any.a_int = abilitynum + 1;
 
                 add_menu(win, NO_GLYPH, &any,
-                    any.a_char, 0, ATR_NONE,
+                    0, 0, ATR_NONE,
                     available_ability_list[abilitynum].name, MENU_UNSELECTED);
 
                 abilitynum++;
@@ -1191,29 +1173,20 @@ doability(VOID_ARGS)
 
 	if (select_menu(win, PICK_ONE, &pick_list) > 0) 
 	{
-		i = pick_list->item.a_char;
+		i = pick_list->item.a_int;
 		free((genericptr_t)pick_list);
 	}
 	destroy_nhwindow(win);
 
-	if (i == '\0')
+	if (i == '\0' || i > abilitynum || i < 1)
 		return 0;
 
 	int res = 0;
-	for (int j = 0; j < abilitynum; j++)
-	{
-		if (available_ability_list[j].charnum == i)
-		{
-            if (i != '\0')
-            {
-                if(available_ability_list[j].function_mtmp_ptr && available_ability_list[j].target_mtmp)
-                    res = (available_ability_list[j].function_mtmp_ptr)(available_ability_list[j].target_mtmp);
-                else if(available_ability_list[j].function_ptr)
-                    res = (available_ability_list[j].function_ptr)();
-            }
-			break;
-		}
-	}
+    int j = i - 1;
+    if (available_ability_list[j].function_mtmp_ptr && available_ability_list[j].target_mtmp)
+        res = (available_ability_list[j].function_mtmp_ptr)(available_ability_list[j].target_mtmp);
+    else if (available_ability_list[j].function_ptr)
+        res = (available_ability_list[j].function_ptr)();
 
 #undef MAXNAMELENGTH
 #undef MAXABILITYNUM
