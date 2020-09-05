@@ -490,7 +490,7 @@ doconsult(oracl)
 struct monst *oracl;
 {
     long umoney;
-	int u_pay, minor_cost = 50, major_cost = 500 + 50 * u.ulevel;
+	int u_pay, minor_cost = max(1, (int)(25.0 * service_cost_charisma_adjustment(ACURR(A_CHA)))), major_cost = max(1, (int)((double)(250 + 25 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	int unid_cnt = count_unidentified(invent);
 	int oracleaction = 0;
 	int add_xpts;
@@ -499,28 +499,36 @@ struct monst *oracl;
 	multi = 0;
     umoney = money_cnt(invent);
 
-    if (!oracl) {
+    if (!oracl)
+    {
         There("is no one here to consult.");
         return 0;
-    } else if (!is_peaceful(oracl)) {
+    }
+    else if (!is_peaceful(oracl)) 
+    {
         pline("%s is in no mood for consultations.", Monnam(oracl));
         return 0;
-    } else if (!umoney) {
+    }
+    else if (!umoney) 
+    {
         You("have no money.");
         return 0;
     }
 
 	Sprintf(qbuf, "\"Wilt thou settle for a minor consultation?\" (%d %s)",
 		minor_cost, currency((long)minor_cost));
-	switch (ynq(qbuf)) {
+	switch (ynq(qbuf)) 
+    {
 	default:
 	case 'q':
 		return 0;
 	case 'y':
-		if (umoney < (long)minor_cost) {
+		if (umoney < (long)minor_cost) 
+        {
 			You("don't even have enough money for that!");
 			return 0;
 		}
+
 		u_pay = minor_cost;
 		oracleaction = 1;
 		break;
@@ -543,7 +551,8 @@ struct monst *oracl;
 
 	boolean cheapskate;
 
-	switch (oracleaction) {
+	switch (oracleaction) 
+    {
 	case 1:
 		outrumor(1, BY_ORACLE);
 		if (!u.uevent.minor_oracle)
@@ -557,6 +566,7 @@ struct monst *oracl;
 		outoracle(cheapskate, 1);
 		if (!cheapskate && !u.uevent.major_oracle)
 			add_xpts = u_pay / (u.uevent.minor_oracle ? 25 : 10);
+
 		/* ~100 pts if very 1st, ~40 pts if minor already done */
 		u.uevent.major_oracle = TRUE;
 		exercise(A_WIS, !cheapskate);
@@ -565,7 +575,8 @@ struct monst *oracl;
 		break;
 	}
 
-	if (add_xpts) {
+	if (add_xpts) 
+    {
         more_experienced(add_xpts, u_pay / 50);
         newexplevel();
     }
@@ -578,35 +589,41 @@ struct monst* oracl;
 {
 	long umoney;
 	int u_pay;
-	int minor_id_cost = max(1, (int)((150 + 10 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
+	int minor_id_cost = max(1, (int)((double)(150 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA)))) ; // 175 + 15 * u.ulevel;
 	char qbuf[QBUFSZ];
 
 	multi = 0;
 	umoney = money_cnt(invent);
 
 
-	if (!oracl) {
+	if (!oracl) 
+    {
 		There("is no one here to identify items.");
 		return 0;
 	}
-	else if (!is_peaceful(oracl)) {
+	else if (!is_peaceful(oracl)) 
+    {
 		pline("%s is in no mood for identification.", Monnam(oracl));
 		return 0;
 	}
-	else if (!umoney) {
+	else if (!umoney) 
+    {
 		You("have no money.");
 		return 0;
 	}
 
 	Sprintf(qbuf, "\"Dost thou desire an identification?\" (%d %s)",
 		minor_id_cost, currency((long)minor_id_cost));
-	switch (ynq(qbuf)) {
+
+	switch (ynq(qbuf)) 
+    {
 	default:
 	case 'n':
 	case 'q':
 		return 0;
 	case 'y':
-		if (umoney < (long)minor_id_cost) {
+		if (umoney < (long)minor_id_cost) 
+        {
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -630,7 +647,7 @@ do_oracle_enlightenment(oracl)
 struct monst* oracl;
 {
 	long umoney;
-	int u_pay, enl_cost = max(1, (int)((objects[POT_ENLIGHTENMENT].oc_cost + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int u_pay, enl_cost = max(1, (int)((double)(objects[POT_ENLIGHTENMENT].oc_cost + 5 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	char qbuf[QBUFSZ];
 
 	multi = 0;

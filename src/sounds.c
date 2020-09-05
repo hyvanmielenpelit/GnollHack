@@ -2003,7 +2003,7 @@ dochat()
 		&& !(msound == MS_LEADER || msound == MS_GUARDIAN || msound == MS_NEMESIS)
 		)
 	{
-		strcpy(available_chat_list[chatnum].name, "Suggest joining the party");
+		strcpy(available_chat_list[chatnum].name, "Ask for joining the party");
 		available_chat_list[chatnum].function_ptr = &do_chat_join_party;
 		available_chat_list[chatnum].charnum = 'a' + chatnum;
 
