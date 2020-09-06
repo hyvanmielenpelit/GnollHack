@@ -1685,7 +1685,7 @@ wiz_map_levltyp(VOID_ARGS)
         /* [dungeon branch features currently omitted] */
         /* special level features */
         if (slev) {
-            Sprintf(eos(dsc), " \"%s\"", slev->proto);
+            Sprintf(eos(dsc), " \"%s\"", slev->name);
             /* special level flags (note: dungeon.def doesn't set `maze'
                or `hell' for any specific levels so those never show up) */
             if (slev->flags.maze_like)

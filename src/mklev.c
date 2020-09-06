@@ -944,8 +944,7 @@ makelevel()
 			(void)mkroom(GARDEN);
 
         boolean armoryok = (context.made_armory_box_count < 5 ? !rn2(2) : !rn2(6));
-
-        if (u_depth >= 3 && u_depth < depth(&medusa_level) && armoryok)
+        if (u_depth >= 4 && u_depth < depth(&medusa_level) && armoryok)
             (void)mkroom(ARMORY);
     }
 

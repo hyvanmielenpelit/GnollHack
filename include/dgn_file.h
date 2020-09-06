@@ -28,7 +28,8 @@ struct tmpdungeon {
 };
 
 struct tmplevel {
-    char name[24];
+    char name[64];
+    char protoname[24];
     struct couple lev;
     int chance, rndlevs, chain, flags;
     char boneschar;

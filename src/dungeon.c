@@ -564,7 +564,8 @@ struct proto_dungeon *pd;
         (s_level *) alloc(sizeof(s_level));
     (void) memset((genericptr_t)new_level, 0, sizeof(s_level));
     /* load new level with data */
-    Strcpy(new_level->proto, tlevel->name);
+    Strcpy(new_level->name, tlevel->name);
+    Strcpy(new_level->proto, tlevel->protoname);
     new_level->boneid = tlevel->boneschar;
     new_level->dlevel.dnum = dgn;
     new_level->dlevel.dlevel = 0; /* for now */
@@ -1976,7 +1977,7 @@ xchar *rdgn;
 
             Sprintf(buf, "%c %s: %d",
                     chr_u_on_lvl(&slev->dlevel),
-                    slev->proto, depth(&slev->dlevel));
+                    slev->name, depth(&slev->dlevel));
             if (Is_stronghold(&slev->dlevel))
                 Sprintf(eos(buf), " (tune %s)", tune);
             if (bymenu)
@@ -3060,7 +3061,7 @@ boolean printdun;
         s_level *slev;
 
         if ((slev = Is_special(&mptr->lev)) != 0)
-            Sprintf(eos(buf), " [%s]", slev->proto);
+            Sprintf(eos(buf), " [%s]", slev->name);
     }
     /* [perhaps print custom annotation on its own line when it's long] */
     if (mptr->custom)

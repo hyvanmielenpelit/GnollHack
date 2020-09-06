@@ -4,18 +4,18 @@ DUNGEON:	"The Dungeons of Doom" "D" (29, 3)
 TILESET:    dungeons_of_doom
 ALIGNMENT:	unaligned
 BRANCH:		"The Gnomish Mines" @ (2, 3)
-LEVEL:		"rogue" "R" @ (15, 4)
+LEVEL:		"Rogue Level" "rogue" "R" @ (15, 4)
 LEVELDESC:	roguelike
-LEVEL:		"oracle" "O" @ (5, 5)
+LEVEL:		"Oracle" "oracle" "O" @ (5, 5)
 LEVALIGN:	neutral
 CHAINBRANCH:	"Sokoban" "oracle" + (1, 0) up
-RNDLEVEL:	"bigrm" "B" @ (10, 3) 40 10
-LEVEL:		"treasure1" "none" @ (9, 5)
+RNDLEVEL:	"Big Room" "bigrm" "B" @ (10, 3) 40 10
+LEVEL:		"Treasure Island" "treasure1" "none" @ (9, 5)
 CHAINBRANCH:	"The Quest" "oracle" + (6, 2) portal
 BRANCH:		"Fort Ludios" @ (18, 4) portal
-RNDLEVEL:	"medusa" "none" @ (-3, 1) 4
+RNDLEVEL:	"Medusa's Island" "medusa" "none" @ (-3, 1) 4
 LEVALIGN:	chaotic
-LEVEL:		"castle" "none" @ (-1, 0)
+LEVEL:		"Underground Castle" "castle" "none" @ (-1, 0)
 CHAINBRANCH:	"Gehennom" "castle" + (0, 0) no_down
 BRANCH:		"The Elemental Planes" @ (1, 0) no_down up
 
@@ -25,60 +25,61 @@ DESCRIPTION:	mazelike
 DESCRIPTION:	hellish
 ALIGNMENT:	noalign
 BRANCH:		"Vlad's Tower" @ (10, 5) up
-LEVEL:		"valley" "V" @ (1, 0)
-LEVEL:		"sanctum" "none" @ (-1, 0)
+LEVEL:		"Valley of the Dead" "valley" "V" @ (1, 0)
+LEVEL:		"Moloch's Sanctum" "sanctum" "none" @ (-1, 0)
 BRANCH:		"Plane of the Modron" @ (2, 2) portal
 BRANCH:		"Hellish Pastures" @ (8, 10) portal
-LEVEL:		"juiblex" "J" @ (5, 4)
-LEVEL:		"baalz" "B" @ (6, 4)
-LEVEL:		"dispater" "A" @ (2, 6)
-LEVEL:		"wizard1" "none" @ (11, 6)
-CHAINLEVEL:	"wizard2" "X" "wizard1" + (1, 0)
-CHAINLEVEL:	"wizard3" "Y" "wizard1" + (2, 0)
-LEVEL:		"orcus" "O" @ (10, 6)
-LEVEL:		"yeenoghu" "Z" @ (-12, 9)
-LEVEL:		"tarrasque" "U" @ (-9, 6)
-LEVEL:		"fakewiz1" "F" @ (-6,4)
-LEVEL:		"fakewiz2" "G" @ (-6,4)
+LEVEL:		"Juiblex's Realm" "juiblex" "J" @ (5, 4)
+LEVEL:		"Maladomini" "baalz" "B" @ (6, 4)
+LEVEL:		"Dis" "dispater" "A" @ (2, 6)
+LEVEL:		"Wizard's Tower, Top Level" "wizard1" "none" @ (11, 6)
+CHAINLEVEL:	"Wizard's Tower, Middle Level" "wizard2" "X" "wizard1" + (1, 0)
+CHAINLEVEL:	"Wizard's Tower, Bottom Level" "wizard3" "Y" "wizard1" + (2, 0)
+LEVEL:		"Orcus Town" "orcus" "O" @ (10, 6)
+LEVEL:		"Yeenoughu's Domain" "yeenoghu" "Z" @ (-12, 9)
+LEVEL:		"Lair of Tarrasque" "tarrasque" "U" @ (-9, 6)
+LEVEL:		"First Fake Wizard Tower" "fakewiz1" "F" @ (-6,4)
+LEVEL:		"Second Fake Wizard Tower" "fakewiz2" "G" @ (-6,4)
 
 DUNGEON:	"The Gnomish Mines" "M" (8, 2)
 TILESET:    gnomish_mines
 ALIGNMENT:	lawful
 DESCRIPTION:	mazelike
-RNDLEVEL:	"minetn" "T" @ (3, 2) 7
+RNDLEVEL:	"Mine Town" "minetn" "T" @ (3, 2) 7
 LEVELDESC:	town
-RNDLEVEL:	"minend" "E" @ (-1, 0) 3
+RNDLEVEL:	"Mine's End" "minend" "E" @ (-1, 0) 3
 
 DUNGEON:	"The Quest" "Q" (5, 2)
-LEVEL:	"x-strt" "none" @ (1, 1)
-LEVEL:	"x-loca" "L" @ (3, 1)
-LEVEL:	"x-goal" "none" @ (-1, 0)
+LEVEL:	"Starting Level" "x-strt" "none" @ (1, 1)
+LEVEL:	"Intermediate Level" "x-loca" "L" @ (3, 1)
+LEVEL:	"Final Level" "x-goal" "none" @ (-1, 0)
 
 DUNGEON:		"Sokoban" "none" (4, 0)
 TILESET:        sokoban
 DESCRIPTION:    mazelike
 ALIGNMENT:      neutral
 ENTRY:          -1
-RNDLEVEL:		"soko1" "none" @ (1, 0) 2
-RNDLEVEL:		"soko2" "none" @ (2, 0) 2
-RNDLEVEL:		"soko3" "none" @ (3, 0) 2
-RNDLEVEL:		"soko4" "none" @ (4, 0) 2
+RNDLEVEL:		"Top Level" "soko1" "none" @ (1, 0) 2
+RNDLEVEL:		"Higher Middle Level" "soko2" "none" @ (2, 0) 2
+RNDLEVEL:		"Lower Middle Level" "soko3" "none" @ (3, 0) 2
+RNDLEVEL:		"Bottom Level" "soko4" "none" @ (4, 0) 2
 
 DUNGEON:	"Fort Ludios" "K" (1, 0)
 TILESET:    dungeons_of_doom
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
-LEVEL:		"knox" "K" @ (-1, 0)
+LEVEL:		"Fort Ludious" "knox" "K" @ (-1, 0)
 
 DUNGEON:	"Plane of the Modron" "M" (1, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
-LEVEL:		"modron1" "M" @ (-1, 0)
+LEVEL:		"Mechanus" "modron1" "M" @ (-1, 0)
 
 DUNGEON:	"Hellish Pastures" "B" (1, 0)
 DESCRIPTION:	mazelike
+DESCRIPTION:	hellish
 ALIGNMENT:	chaotic
-LEVEL:		"bovine1" "C" @ (-1, 0)
+LEVEL:		"Barn from Hell" "bovine1" "C" @ (-1, 0)
 
 DUNGEON:	"Vlad's Tower" "T" (3, 0)
 TILESET:    undead_style
@@ -86,17 +87,17 @@ PROTOFILE:	"tower"
 DESCRIPTION:	mazelike
 ALIGNMENT:	chaotic
 ENTRY:		-1
-LEVEL:		"tower1" "none" @ (1, 0)
-LEVEL:		"tower2" "none" @ (2, 0)
-LEVEL:		"tower3" "none" @ (3, 0)
+LEVEL:		"Top Level" "tower1" "none" @ (1, 0)
+LEVEL:		"Middle Level" "tower2" "none" @ (2, 0)
+LEVEL:		"Bottom Level" "tower3" "none" @ (3, 0)
 
 DUNGEON:	"The Elemental Planes" "E" (6, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 ENTRY:		-2
-LEVEL:		"astral" "none" @ (1, 0)
-LEVEL:		"water"  "none" @ (2, 0)
-LEVEL:		"fire"   "none" @ (3, 0)
-LEVEL:		"air"    "none" @ (4, 0)
-LEVEL:		"earth"  "none" @ (5, 0)
-LEVEL:		"dummy"  "none" @ (6, 0)
+LEVEL:		"Astral Plane" "astral" "none" @ (1, 0)
+LEVEL:		"Elemental Plane of Water" "water"  "none" @ (2, 0)
+LEVEL:		"Elemental Plane of Fire" "fire"   "none" @ (3, 0)
+LEVEL:		"Elemental Plane of Air" "air"    "none" @ (4, 0)
+LEVEL:		"Elemental Plane of Earth" "earth"  "none" @ (5, 0)
+LEVEL:		"Prime Material Plane" "dummy"  "none" @ (6, 0)

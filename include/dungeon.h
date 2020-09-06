@@ -25,6 +25,7 @@ typedef struct d_level { /* basic dungeon level element */
 typedef struct s_level { /* special dungeon level element */
     struct s_level *next;
     d_level dlevel; /* dungeon & level numbers */
+    char name[64]; /* Name displayed whenever relevant */
     char proto[15]; /* name of prototype file (eg. "tower") */
     char boneid;    /* character to id level in bones files */
     uchar rndlevs;  /* no. of randomly available similar levels */

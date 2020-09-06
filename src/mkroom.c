@@ -523,7 +523,7 @@ struct mkroom *sroom;
     case ARMORY:
         special_item_created = FALSE;
         special_item_chance = depth(&u.uz) * 2;
-        box_one_in_chance = max(3, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 5);
+        box_one_in_chance = max(3, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 4);
         if (depth(&u.uz) < depth(&oracle_level))
             mon_one_in_chance = max(2, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 8);
         else if (depth(&u.uz) > depth(&medusa_level))

@@ -172,51 +172,59 @@ levels		: level1
 		| chlevel2
 		;
 
-level1		: LEVEL ':' STRING bones_tag '@' acouple
+level1		: LEVEL ':' STRING STRING bones_tag '@' acouple
 		  {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
 			tmplevel[n_levs].lev.base = couple.base;
 			tmplevel[n_levs].lev.rand = couple.rand;
 			tmpdungeon[n_dgns].levels++;
 			Free($3);
+			Free($4);
 		  }
-		| RNDLEVEL ':' STRING bones_tag '@' acouple INTEGER
+		| RNDLEVEL ':' STRING STRING bones_tag '@' acouple INTEGER
 		  {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
 			tmplevel[n_levs].lev.base = couple.base;
 			tmplevel[n_levs].lev.rand = couple.rand;
-			tmplevel[n_levs].rndlevs = $7;
-			tmpdungeon[n_dgns].levels++;
-			Free($3);
-		  }
-		;
-
-level2		: LEVEL ':' STRING bones_tag '@' acouple INTEGER
-		  {
-			init_level();
-			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
-			tmplevel[n_levs].lev.base = couple.base;
-			tmplevel[n_levs].lev.rand = couple.rand;
-			tmplevel[n_levs].chance = $7;
-			tmpdungeon[n_dgns].levels++;
-			Free($3);
-		  }
-		| RNDLEVEL ':' STRING bones_tag '@' acouple INTEGER INTEGER
-		  {
-			init_level();
-			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
-			tmplevel[n_levs].lev.base = couple.base;
-			tmplevel[n_levs].lev.rand = couple.rand;
-			tmplevel[n_levs].chance = $7;
 			tmplevel[n_levs].rndlevs = $8;
 			tmpdungeon[n_dgns].levels++;
 			Free($3);
+			Free($4);
+		  }
+		;
+
+level2		: LEVEL ':' STRING STRING bones_tag '@' acouple INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $8;
+			tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($4);
+		  }
+		| RNDLEVEL ':' STRING STRING bones_tag '@' acouple INTEGER INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $8;
+			tmplevel[n_levs].rndlevs = $9;
+			tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($4);
 		  }
 		;
 
@@ -236,63 +244,71 @@ levdesc		: LEVELDESC ':' DESCRIPTOR
 		  }
 		;
 
-chlevel1	: CHLEVEL ':' STRING bones_tag STRING '+' rcouple
+chlevel1	: CHLEVEL ':' STRING STRING bones_tag STRING '+' rcouple
 		  {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
-			tmplevel[n_levs].chain = getchain($5);
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
+			tmplevel[n_levs].chain = getchain($6);
 			tmplevel[n_levs].lev.base = couple.base;
 			tmplevel[n_levs].lev.rand = couple.rand;
 			if(!check_level()) n_levs--;
 			else tmpdungeon[n_dgns].levels++;
 			Free($3);
-			Free($5);
+			Free($4);
+			Free($6);
 		  }
-		| RNDCHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER
+		| RNDCHLEVEL ':' STRING STRING bones_tag STRING '+' rcouple INTEGER
 		  {
 			init_level();
 			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
-			tmplevel[n_levs].chain = getchain($5);
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
+			tmplevel[n_levs].chain = getchain($6);
 			tmplevel[n_levs].lev.base = couple.base;
 			tmplevel[n_levs].lev.rand = couple.rand;
-			tmplevel[n_levs].rndlevs = $8;
-			if(!check_level()) n_levs--;
-			else tmpdungeon[n_dgns].levels++;
-			Free($3);
-			Free($5);
-		  }
-		;
-
-chlevel2	: CHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER
-		  {
-			init_level();
-			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
-			tmplevel[n_levs].chain = getchain($5);
-			tmplevel[n_levs].lev.base = couple.base;
-			tmplevel[n_levs].lev.rand = couple.rand;
-			tmplevel[n_levs].chance = $8;
-			if(!check_level()) n_levs--;
-			else tmpdungeon[n_dgns].levels++;
-			Free($3);
-			Free($5);
-		  }
-		| RNDCHLEVEL ':' STRING bones_tag STRING '+' rcouple INTEGER INTEGER
-		  {
-			init_level();
-			Strcpy(tmplevel[n_levs].name, $3);
-			tmplevel[n_levs].boneschar = (char)$4;
-			tmplevel[n_levs].chain = getchain($5);
-			tmplevel[n_levs].lev.base = couple.base;
-			tmplevel[n_levs].lev.rand = couple.rand;
-			tmplevel[n_levs].chance = $8;
 			tmplevel[n_levs].rndlevs = $9;
 			if(!check_level()) n_levs--;
 			else tmpdungeon[n_dgns].levels++;
 			Free($3);
-			Free($5);
+			Free($4);
+			Free($6);
+		  }
+		;
+
+chlevel2	: CHLEVEL ':' STRING STRING bones_tag STRING '+' rcouple INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
+			tmplevel[n_levs].chain = getchain($6);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $9;
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($4);
+			Free($6);
+		  }
+		| RNDCHLEVEL ':' STRING STRING bones_tag STRING '+' rcouple INTEGER INTEGER
+		  {
+			init_level();
+			Strcpy(tmplevel[n_levs].name, $3);
+			Strcpy(tmplevel[n_levs].protoname, $4);
+			tmplevel[n_levs].boneschar = (char)$5;
+			tmplevel[n_levs].chain = getchain($6);
+			tmplevel[n_levs].lev.base = couple.base;
+			tmplevel[n_levs].lev.rand = couple.rand;
+			tmplevel[n_levs].chance = $9;
+			tmplevel[n_levs].rndlevs = $10;
+			if(!check_level()) n_levs--;
+			else tmpdungeon[n_dgns].levels++;
+			Free($3);
+			Free($4);
+			Free($6);
 		  }
 		;
 
@@ -486,6 +502,7 @@ init_level()
 	tmplevel[n_levs].rndlevs = 0;
 	tmplevel[n_levs].flags = 0;
 	Strcpy(tmplevel[n_levs].name, "");
+	Strcpy(tmplevel[n_levs].protoname, "");
 	tmplevel[n_levs].chain = -1;
 }
 
@@ -512,7 +529,7 @@ getchain(s)
 	if(strlen(s)) {
 
 	    for(i = n_levs - tmpdungeon[n_dgns].levels + 1; i <= n_levs; i++)
-		if(!strcmp(tmplevel[i].name, s)) return i;
+		if(!strcmp(tmplevel[i].protoname, s)) return i;
 
 	    yyerror("Can't locate the specified chain level.");
 	    return(-2);
@@ -577,8 +594,8 @@ check_level()
 	}
 
 	for(i = 0; i < n_levs; i++)
-	    if(!strcmp(tmplevel[i].name, tmplevel[n_levs].name)) {
-		yyerror("Duplicate level name.");
+	    if(!strcmp(tmplevel[i].protoname, tmplevel[n_levs].protoname)) {
+		yyerror("Duplicate level protoname.");
 		return(0);
 	    }
 
