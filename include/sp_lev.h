@@ -123,7 +123,6 @@ enum opcode_defs {
     SPO_CALL,
     SPO_RETURN,
     SPO_INITLEVEL,
-    SPO_MAPNAME,
     SPO_LEVEL_FLAGS,
     SPO_TILESET,
     SPO_VAR_INIT, /* variable_name data */

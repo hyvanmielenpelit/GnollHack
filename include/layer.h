@@ -9,14 +9,14 @@
 enum layer_types
 {
     LAYER_FLOOR = 0,
-    LAYER_FLOOR_DOODAD,   /* Doodads underneath features and trapds */
+    LAYER_FLOOR_DOODAD,   /* Doodads underneath features and traps */
     LAYER_FEATURE,
     LAYER_TRAP,
     LAYER_FEATURE_DOODAD, /* Doodads above features and traps */
     LAYER_OBJECT,
     LAYER_MONSTER,
-    LAYER_MISSILE,
     LAYER_MONSTER_EFFECT,
+    LAYER_MISSILE,
     LAYER_COVER_OBJECT,
     LAYER_COVER_FEATURE,
     LAYER_ENVIRONMENT,

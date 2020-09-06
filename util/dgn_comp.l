@@ -106,11 +106,11 @@ noalign         { yylval.i=D_ALIGN_NONE ; return(DESCRIPTOR); }
 lawful          { yylval.i=D_ALIGN_LAWFUL ; return(DESCRIPTOR); }
 neutral         { yylval.i=D_ALIGN_NEUTRAL ; return(DESCRIPTOR); }
 chaotic         { yylval.i=D_ALIGN_CHAOTIC ; return(DESCRIPTOR); }
-dungeons_of_doom 	{ yylval.i=CMAP_NORMAL; return CMAP_TYPE; }
-gnomish_mines 		{ yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
-gehennom 			{ yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
-undead_style 		{ yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
-sokoban 			{ yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
+dungeons_of_doom_tileset 	{ yylval.i=CMAP_NORMAL; return CMAP_TYPE; }
+gnomish_mines_tileset 		{ yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
+gehennom_tileset 			{ yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
+undead_tileset 				{ yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
+sokoban_tileset 			{ yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 BRANCH		return(BRANCH);
 CHAINBRANCH	return(CHBRANCH);
 LEVEL		return(LEVEL);
