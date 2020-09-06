@@ -1058,6 +1058,7 @@ unsigned trflags;
         trap->once = 1;
         seetrap(trap);
         otmp = t_missile(get_shooting_trap_object(trap), trap);
+        play_sfx_sound(SFX_ARROW_TRAP_FIRE);
         pline("%s shoots out at you!", An(cxname_singular(otmp)));
         if (u.usteed && !rn2(2) && steedintrap(trap, otmp))
         {
@@ -1085,6 +1086,7 @@ unsigned trflags;
         }
         trap->once = 1;
         seetrap(trap);
+        play_sfx_sound(SFX_DART_TRAP_FIRE);
         pline("A little dart shoots out at you!");
         otmp = t_missile(get_shooting_trap_object(trap), trap);
         if (!rn2(6))
@@ -1118,7 +1120,8 @@ unsigned trflags;
         break;
 
     case ROCKTRAP:
-        if (trap->once && trap->tseen && !rn2(15)) 
+        play_sfx_sound(SFX_FALLING_ROCK_TRAP_TRIGGER);
+        if (trap->once && trap->tseen && !rn2(15))
         {
             pline("A trap door in %s opens, but nothing falls out!",
                   the(ceiling(u.ux, u.uy)));
@@ -1172,6 +1175,7 @@ unsigned trflags;
         } 
         else 
         {
+            play_sfx_sound(SFX_SQUEAKY_BOARD);
             seetrap(trap);
             pline("A board beneath you %s%s%s.",
                   Deaf ? "vibrates" : "squeaks ",
@@ -1344,7 +1348,10 @@ unsigned trflags;
                        !plunged ? "fall" : (Flying ? "dive" : "plunge"));
             }
             if (*verbbuf)
+            {
+                play_sfx_sound(SFX_FALL_INTO_PIT);
                 You("%s into %s pit!", verbbuf, a_your[trap->madeby_u]);
+            }
         }
         /* wumpus reference */
         if (Role_if(PM_RANGER) && !trap->madeby_u && !trap->once
@@ -1357,6 +1364,7 @@ unsigned trflags;
         if (ttype == SPIKED_PIT) {
             const char *predicament = "on a set of sharp iron spikes";
 
+            play_sfx_sound(SFX_LAND_ON_SPIKES);
             if (u.usteed) {
                 pline("%s %s %s!",
                       upstart(x_monnam(u.usteed, steed_article, "poor",
@@ -1425,6 +1433,7 @@ unsigned trflags;
                        defsyms[trap_to_defsym(ttype)].explanation);
             break; /* don't activate it after all */
         }
+        play_sfx_sound(ttype == HOLE ? SFX_HOLE_OPENS : SFX_TRAP_DOOR_OPENS);
         fall_through(TRUE);
         break;
 
@@ -1661,6 +1670,7 @@ unsigned trflags;
     case ROLLING_BOULDER_TRAP: {
         int style = ROLL | (trap->tseen ? LAUNCH_KNOWN : 0);
 
+        play_sfx_sound(SFX_ROLLING_BOOULDER_TRAP_TRIGGER);
         feeltrap(trap);
         pline("Click!  You trigger a rolling boulder trap!");
         if (!launch_obj(BOULDER, trap->launch.x, trap->launch.y,

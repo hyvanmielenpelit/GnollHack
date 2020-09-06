@@ -331,9 +331,18 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
 
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Piercer Drops", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Trap Found" , 0.3f },
-    { SOUND_BANK_MASTER, "event:/SFX/General/Hidden Door Found", 0.3f },
-    { SOUND_BANK_MASTER, "event:/SFX/General/Unearthed Object Found", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Hidden Door Found", 0.2f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Unearthed Object Found", 0.2f },
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/You Surprise Monster", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Arrow Trap Fire", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Dart Trap Fire", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Hole Opens", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Trap Door Opens", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Fall into Pit", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Land on Spikes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Squeaky Board", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Falling Rock Trap Trigger", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Rolling Boulder Trap Trigger", 1.0f },
 };
 
 #undef NoSound

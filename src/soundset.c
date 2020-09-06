@@ -2039,7 +2039,53 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_YOU_SURPRISE_MONSTER, 1.0f},
         FALSE
     },
+    {
+        "GHSOUND_ARROW_TRAP_FIRE",
+        {GHSOUND_ARROW_TRAP_FIRE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_DART_TRAP_FIRE",
+        {GHSOUND_DART_TRAP_FIRE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_HOLE_OPENS",
+        {GHSOUND_HOLE_OPENS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_TRAP_DOOR_OPENS",
+        {GHSOUND_TRAP_DOOR_OPENS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_FALL_INTO_PIT",
+        {GHSOUND_FALL_INTO_PIT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LAND_ON_SPIKES",
+        {GHSOUND_LAND_ON_SPIKES, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_SQUEAKY_BOARD",
+        {GHSOUND_SQUEAKY_BOARD, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_FALLING_ROCK_TRAP_TRIGGER",
+        {GHSOUND_FALLING_ROCK_TRAP_TRIGGER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_ROLLING_BOOULDER_TRAP_TRIGGER",
+        {GHSOUND_ROLLING_BOOULDER_TRAP_TRIGGER, 1.0f},
+        TRUE
+    },
 };
+
 
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
