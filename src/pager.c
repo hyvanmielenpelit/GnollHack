@@ -918,7 +918,8 @@ struct permonst **for_supplement;
         /* Convert glyph at selected position to a symbol for use below. */
         (void) mapglyph(layers, &sym, &oc, &os, cc.x, cc.y);
 
-        Sprintf(prefix, "%s - ", encglyph(glyph));
+        Sprintf(prefix, "%c - ", sym);
+        //Sprintf(prefix, "%s - ", encglyph(glyph));
     }
     else
         Sprintf(prefix, "%c - ", sym);

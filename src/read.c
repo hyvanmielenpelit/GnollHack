@@ -26,6 +26,7 @@ STATIC_DCL void FDECL(forget_objclass, (int));
 #endif
 STATIC_DCL void FDECL(randomize, (int *, int));
 STATIC_DCL void FDECL(forget, (int));
+STATIC_DCL boolean FDECL(get_valid_targeted_position, (int, int));
 STATIC_DCL boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
 STATIC_DCL boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));
 STATIC_PTR void FDECL(display_stinking_cloud_positions, (int));
@@ -1452,6 +1453,14 @@ struct monst* origmonst;
     return 0;
 }
 
+STATIC_OVL boolean
+get_valid_targeted_position(x, y, otyp)
+int x, y, otyp;
+{
+    return (!(!isok(x, y) || !cansee(x, y)
+        || !ACCESSIBLE(levl[x][y].typ)
+        || distu(x, y) > objects[otyp].oc_spell_range * objects[otyp].oc_spell_range));
+}
 
 STATIC_OVL boolean
 get_valid_stinking_cloud_pos(x,y)
@@ -2854,7 +2863,28 @@ boolean *effect_happened_ptr;
         }
         punish(sobj);
         break;
-	case SPE_STINKING_CLOUD:
+    case SPE_FLAME_STRIKE:
+    {
+        coord cc;
+        known = TRUE;
+        pline("Where do you want to center the flame strike?");
+        cc.x = u.ux;
+        cc.y = u.uy;
+        getpos_sethilite(display_stinking_cloud_positions,
+            get_valid_stinking_cloud_pos);
+        if (getpos(&cc, TRUE, "the desired position", CURSOR_STYLE_SPELL_CURSOR) < 0) {
+            pline1(Never_mind);
+            break;
+        }
+        if (!get_valid_targeted_position(cc.x, cc.y, otyp))
+        {
+            pline("The target is invalid. The spell fizzles out with no effect.");
+            break;
+        }
+        (void)explode(cc.x, cc.y, RAY_FIRE, d(6, 6), otyp, SPBOOK_CLASS, EXPL_FIERY);
+        break;
+    }
+    case SPE_STINKING_CLOUD:
 	case SCR_STINKING_CLOUD: {
         coord cc;
 

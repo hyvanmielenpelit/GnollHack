@@ -2069,6 +2069,7 @@ boolean atme;
 	case SPE_HOLY_WORD:
 	case SPE_MAGIC_MAPPING:
 	case SPE_DETECT_TRAPS:
+	case SPE_FLAME_STRIKE:
 	case SPE_STINKING_CLOUD:
 	case SPE_CREATE_MONSTER:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);

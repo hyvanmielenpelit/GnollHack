@@ -999,7 +999,7 @@ NEARDATA struct permonst mons[] = {
         M1_BREATHLESS | M1_NOHANDS,
         M2_DOMESTIC | M2_NEUTER | M2_PEACEFUL,
         M3_NONLIVING,
-        M4_VEGAN_FOOD | M4_PACKMULE | M4_WOODEN, M5_ESCHEWS_CURSED_ITEMS,
+        M4_VEGAN_FOOD | M4_PACKMULE | M4_WOODEN, M5_ESCHEWS_CURSED_ITEMS | M5_ATTACK_TILE,
         4, HI_DOMESTIC, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("medium luggage", None, "medium-sized travelling trunk made of sapient pearwood", None, None, S_MIMIC, LVL(4, 18, 5, 0, 0, 0), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
