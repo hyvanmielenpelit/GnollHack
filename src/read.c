@@ -2767,8 +2767,6 @@ boolean *effect_happened_ptr;
 
         cc.x = u.ux;
         cc.y = u.uy;
-        cval = bcsign(sobj);
-        dam = (2 * (rn1(3, 3) + 2 * cval) + 1) / 3;
         useup(sobj);
         sobj = 0; /* it's gone */
         if (!already_known)
@@ -2815,7 +2813,7 @@ boolean *effect_happened_ptr;
                 burn_away_slime();
             }
         }
-        explode(cc.x, cc.y, 11, dam, otyp, SCROLL_CLASS, EXPL_FIERY);
+        explode(cc.x, cc.y, 11, 1, 2, (4 * bcsign(sobj) + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
         break;
     }
     case SCR_EARTH:
@@ -2881,7 +2879,7 @@ boolean *effect_happened_ptr;
             pline("The target is invalid. The spell fizzles out with no effect.");
             break;
         }
-        (void)explode(cc.x, cc.y, RAY_FIRE, d(6, 6), otyp, SPBOOK_CLASS, EXPL_FIERY);
+        (void)explode(cc.x, cc.y, RAY_FIRE, 6, 6, 0, otyp, SPBOOK_CLASS, EXPL_FIERY);
         break;
     }
     case SPE_STINKING_CLOUD:

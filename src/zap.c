@@ -4875,35 +4875,35 @@ boolean ordinary;
         break;
 	case SPE_FIREBALL:
 		You("explode a fireball on top of yourself!");
-        explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FIERY);
+        explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
         break;
 	case SPE_FIRE_STORM:
 		You("conjure a fire storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FIERY);
+		explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_METEOR_SWARM:
 		pline("A meteor shoots at you!");
-		explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FIERY);
+		explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FIERY);
 		break;
 	case SPE_ICE_STORM:
 		You("conjure an ice storm on top of yourself!");
-		explode(u.ux, u.uy, RAY_FIRE, basedmg, obj->otyp, obj->oclass, EXPL_FROSTY);
+		explode(u.ux, u.uy, RAY_FIRE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_FROSTY);
 		break;
 	case SPE_MAGICAL_IMPLOSION:
 		You("engulf yourself in a magical implosion!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_MAGIC_STORM:
 		You("conjure a storm of arcane magic on top of yourself!");
-		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_MAGIC_MISSILE, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_THUNDERSTORM:
 		You("conjure a thunderstorm on top of yourself!");
-		explode(u.ux, u.uy, RAY_LIGHTNING, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_LIGHTNING, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_DEATHSPELL:
 		You("conjure a death field on top of yourself!");
-		explode(u.ux, u.uy, RAY_DEATH, basedmg, obj->otyp, obj->oclass, EXPL_MAGICAL);
+		explode(u.ux, u.uy, RAY_DEATH, objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize, objects[obj->otyp].oc_spell_dmg_plus, obj->otyp, obj->oclass, EXPL_MAGICAL);
 		break;
 	case SPE_FIRE_BOLT:
 	case WAN_FIRE:
@@ -7966,12 +7966,6 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
 	if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
 	{
-		int damage = 0;
-		if (origobj)
-			damage = d(objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam) + objects[origobj->otyp].oc_wsdice;
-		else
-			damage = d(dmgdice, dicesize) + dmgplus;
-
 		int expltype = 0;
 		switch (abstype)
 		{
@@ -8003,8 +7997,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
 			oclass = origobj->oclass;
 		}
 
-		explode(sx, sy, type, damage, otyp, oclass, expltype);
-	}
+        if (origobj)
+            explode(sx, sy, type, objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam, objects[origobj->otyp].oc_wsdice, otyp, oclass, expltype);
+        else
+            explode(sx, sy, type, dmgdice, dicesize, dmgplus, otyp, oclass, expltype);
+    }
     if (shopdamage)
         pay_for_damage(abstype == ZT_FIRE
                           ? "burn away"

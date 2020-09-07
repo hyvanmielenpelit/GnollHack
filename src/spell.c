@@ -1805,7 +1805,7 @@ boolean atme;
 
                     explode(u.dx, u.dy,
                             objects[otyp].oc_dir_subtype,
-							d(objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize) + objects[otyp].oc_spell_dmg_plus,
+							objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize, objects[otyp].oc_spell_dmg_plus,
 							otyp, 0,
                             subdirtype2explosiontype(objects[otyp].oc_dir_subtype));
                 }
@@ -4326,7 +4326,7 @@ int spell;
 			//One more damage
 			Your("concoction explodes in a large ball of fire!");
 			losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
-			explode(u.ux, u.uy, RAY_FIRE, 1, 0, 0, EXPL_FIERY);
+			explode(u.ux, u.uy, RAY_FIRE, 0, 0, 1, 0, 0, EXPL_FIERY);
 		}
 		else
 		{

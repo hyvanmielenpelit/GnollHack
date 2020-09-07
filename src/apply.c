@@ -4379,7 +4379,7 @@ struct obj *obj;
     static const char nothing_else_happens[] = "But nothing else happens...";
     register int i, x, y;
     register struct monst *mon;
-	int dmg;
+	int dmg_n = 0, dmg_d = 6;
 	double damage = 0;
     boolean affects_objects;
     boolean shop_damage = FALSE;
@@ -4433,7 +4433,7 @@ struct obj *obj;
 
     obj->ox = u.ux;
     obj->oy = u.uy;
-    dmg = obj->charges * 4;
+    dmg_n = obj->charges;
     affects_objects = FALSE;
 
     uchar hit_only_one = 1;
@@ -4464,7 +4464,7 @@ struct obj *obj;
     case WAN_DEATH:
 	case WAN_DISINTEGRATION:
 	case WAN_LIGHTNING:
-        dmg *= 4;
+        dmg_n *= 4;
         goto wanexpl;
     case WAN_FIRE:
         expltype = EXPL_FIERY;
@@ -4472,17 +4472,18 @@ struct obj *obj;
     case WAN_COLD:
         if (expltype == EXPL_MAGICAL)
             expltype = EXPL_FROSTY;
-        dmg *= 2;
+        dmg_n *= 2;
         /*FALLTHRU*/
     case WAN_MAGIC_MISSILE:
     wanexpl:
-        explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, dmg, obj->otyp, WAND_CLASS, expltype);
+        explode(u.ux, u.uy, objects[obj->otyp].oc_dir_subtype, dmg_n, dmg_d, 0, obj->otyp, WAND_CLASS, expltype);
         makeknown(obj->otyp); /* explode describes the effect */
         goto discard_broken_wand;
     case WAN_STRIKING:
         /* we want this before the explosion instead of at the very end */
         pline("A wall of force smashes down around you!");
-        dmg = d(1 + obj->charges, 6); /* normally 2d12 */
+        dmg_n = 1 + obj->charges;
+        dmg_d = 6; /* normally 2d12 */
         /*FALLTHRU*/
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
@@ -4499,7 +4500,7 @@ struct obj *obj;
     /* [TODO?  This really ought to prevent the explosion from being
        fatal so that we never leave a bones file where none of the
        surrounding targets (or underlying objects) got affected yet.] */
-    explode(obj->ox, obj->oy, objects[obj->otyp].oc_dir == RAY && objects[obj->otyp].oc_dir_subtype <= RAY_WND_PETRIFICATION ? objects[obj->otyp].oc_dir_subtype : 0, rnd(dmg), obj->otyp, WAND_CLASS,
+    explode(obj->ox, obj->oy, objects[obj->otyp].oc_dir == RAY && objects[obj->otyp].oc_dir_subtype <= RAY_WND_PETRIFICATION ? objects[obj->otyp].oc_dir_subtype : 0, dmg_n, dmg_d, 0, obj->otyp, WAND_CLASS,
             EXPL_MAGICAL);
 
     /* prepare for potential feedback from polymorph... */

@@ -181,7 +181,7 @@ int
 d(n, x)
 register int n, x;
 {
-    if (x <= 0)
+    if (n <= 0 || x <= 0)
         return 0;
 
     register int tmp = n;

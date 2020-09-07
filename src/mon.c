@@ -3292,7 +3292,12 @@ boolean was_swallowed; /* digestion */
 
             Sprintf(killer.name, "%s explosion", s_suffix(mon_monster_name(mon)));
             killer.format = KILLED_BY_AN;
-            explode(mon->mx, mon->my, -1, tmp, 0, MON_EXPLODE, EXPL_NOXIOUS);
+            
+            if (mdat->mattk[i].damn)
+                explode(mon->mx, mon->my, -1, (int)mdat->mattk[i].damn, (int)mdat->mattk[i].damd, 0, 0, MON_EXPLODE, EXPL_NOXIOUS);
+            else if (mdat->mattk[i].damd)
+                explode(mon->mx, mon->my, -1, (int)mdat->mlevel + 1, (int)mdat->mattk[i].damd, 0, 0, MON_EXPLODE, EXPL_NOXIOUS);
+
             killer.name[0] = '\0';
             killer.format = 0;
             return FALSE;

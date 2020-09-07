@@ -25,10 +25,10 @@ static int explosion[3][3] = { { S_explode1, S_explode4, S_explode7 },
  *      that Half_physical_damage only affects the damage applied to the hero.
  */
 void
-explode(x, y, type, dam, objtype, olet, expltype)
+explode(x, y, type, dmg_n, dmg_d, dmg_p, objtype, olet, expltype)
 int x, y;
 int type; /* the same as in zap.c; passes -(wand typ) for some WAND_CLASS */
-int dam;
+int dmg_n, dmg_d, dmg_p;
 int objtype;
 char olet;
 int expltype;
@@ -48,7 +48,6 @@ int expltype;
     coord grabxy;
     char hallu_buf[BUFSZ], killr_buf[BUFSZ];
     short exploding_wand_typ = objtype;
-
 
     /* muse_unslime: SCR_FIRE */
     if (expltype < 0) {
@@ -141,8 +140,8 @@ int expltype;
             return;
         }
 	}
-
-	double damu = adjust_damage(dam, (struct monst*)0, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
+    int damui = max(0, d(dmg_n, dmg_d) + dmg_p);
+	double damu = adjust_damage(damui, (struct monst*)0, &youmonst, adtyp, olet < MAX_OBJECT_CLASSES ? ADFLAGS_SPELL_DAMAGE : ADFLAGS_NONE);
 	if (olet == WAND_CLASS)
 	{
 		switch (Role_switch)
@@ -334,7 +333,7 @@ int expltype;
             You_hear("a blast.");
     }
 
-    if (dam || instadeath)
+    if (((dmg_n > 0 && dmg_d > 0) || dmg_p > 0) || instadeath)
         for (i = 0; i < 3; i++)
             for (j = 0; j < 3; j++) {
                 if (explmask[i][j] == 2)
@@ -438,7 +437,8 @@ int expltype;
                 idamnonres += adjust_damage(destroy_mitem(mtmp, WAND_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
                 idamnonres += adjust_damage(destroy_mitem(mtmp, RING_CLASS, (int) adtyp), (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
-				double ddam = adjust_damage(dam, (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
+                int ddami = max(0, d(dmg_n, dmg_d) + dmg_p);
+                double ddam = adjust_damage(ddami, (struct monst*)0, mtmp, adtyp, ADFLAGS_NONE);
 
                 if (explmask[i][j] == 1) 
 				{
@@ -484,8 +484,14 @@ int expltype;
 						mtmp->mhp = 0;
 					else
 					{
+                        int hp_before = mtmp->mhp;
 						deduct_monster_hp(mtmp, mdam + idamres + idamnonres);
-						//mtmp->mhp -= mdam;
+                        int hp_after = mtmp->mhp;
+                        int damage_dealt = hp_before - hp_after;
+                        if (damage_dealt > 0)
+                            pline("%s sustains %d damage!", Monnam(mtmp), damage_dealt);
+
+                        //mtmp->mhp -= mdam;
 						//mtmp->mhp -= (idamres + idamnonres);
 					}
                 }
@@ -586,7 +592,12 @@ int expltype;
 					damu = (double)u.uhp + 1;
 			}
 
+            int hp_before = Upolyd ? u.mh : u.uhp;
 			deduct_player_hp(damu);
+            int hp_after = Upolyd ? u.mh : u.uhp;
+            int damage_dealt = hp_before - hp_after;
+            if (damage_dealt > 0)
+                You("sustain %d damage!", damage_dealt);
         }
 
         if (u.uhp <= 0 || (Upolyd && u.mh <= 0)) 
@@ -644,7 +655,7 @@ int expltype;
     }
 
     /* explosions are noisy */
-    i = dam * dam;
+    i = damui * damui;
     if (i < 50)
         i = 50; /* in case random damage is very small */
     if (inside_engulfer)
@@ -861,11 +872,9 @@ splatter_burning_oil(x, y, diluted_oil)
 int x, y;
 boolean diluted_oil;
 {
-    int dmg = d(diluted_oil ? 3 : 4, 4);
-
 /* ZT_SPELL(ZT_FIRE) = ZT_SPELL(AD_FIRE-1) = 10+(2-1) = 11 */
 #define ZT_SPELL_O_FIRE 11 /* value kludge, see zap.c */
-    explode(x, y, ZT_SPELL_O_FIRE, dmg, 0, BURNING_OIL, EXPL_FIERY);
+    explode(x, y, ZT_SPELL_O_FIRE, diluted_oil ? 3 : 4, 4, 0, 0, BURNING_OIL, EXPL_FIERY);
 }
 
 /* lit potion of oil is exploding; extinguish it as a light source before
