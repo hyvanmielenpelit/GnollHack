@@ -7,6 +7,7 @@
 
 #include "soundset.h"
 #include "lev.h"
+#include "general.h"
 
 #define E extern
 

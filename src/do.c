@@ -4202,6 +4202,7 @@ struct obj *obj;
         for (contents = obj->cobj; contents; contents = contents->nobj)
             obj_no_longer_held(contents);
     }
+#if 0
     switch (obj->otyp) {
     case CRYSKNIFE:
         /* Normal crysknife reverts to worm tooth when not held by hero
@@ -4219,6 +4220,7 @@ struct obj *obj;
         }
         break;
     }
+#endif
 }
 
 /* 'D' command: drop several things */

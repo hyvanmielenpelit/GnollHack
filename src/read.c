@@ -26,7 +26,7 @@ STATIC_DCL void FDECL(forget_objclass, (int));
 #endif
 STATIC_DCL void FDECL(randomize, (int *, int));
 STATIC_DCL void FDECL(forget, (int));
-STATIC_DCL boolean FDECL(get_valid_targeted_position, (int, int));
+STATIC_DCL boolean FDECL(get_valid_targeted_position, (int, int, int));
 STATIC_DCL boolean FDECL(get_valid_stinking_cloud_pos, (int, int));
 STATIC_DCL boolean FDECL(is_valid_stinking_cloud_pos, (int, int, BOOLEAN_P));
 STATIC_PTR void FDECL(display_stinking_cloud_positions, (int));
@@ -2763,7 +2763,7 @@ boolean *effect_happened_ptr;
 		break;
 	case SCR_FIRE: {
         coord cc;
-        int dam;
+        boolean increased_damage = FALSE;
 
         cc.x = u.ux;
         cc.y = u.uy;
@@ -2794,9 +2794,9 @@ boolean *effect_happened_ptr;
             pline_The("%s around you vaporizes violently!", hliquid("water"));
         } else {
             if (sblessed) {
+                increased_damage = TRUE;
                 if (!already_known)
                     pline("This is a scroll of fire!");
-                dam *= 5;
                 pline("Where do you want to center the explosion?");
                 getpos_sethilite(display_stinking_cloud_positions,
                                  get_valid_stinking_cloud_pos);
@@ -2813,7 +2813,12 @@ boolean *effect_happened_ptr;
                 burn_away_slime();
             }
         }
-        explode(cc.x, cc.y, 11, 1, 2, (4 * bcsign(sobj) + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
+
+        if (increased_damage)
+            explode(cc.x, cc.y, 11, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_FIERY);
+        else
+            explode(cc.x, cc.y, 11, 1, 2, (4 * bcsign(sobj) + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
+
         break;
     }
     case SCR_EARTH:

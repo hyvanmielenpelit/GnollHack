@@ -228,19 +228,8 @@ typedef struct strbuf {
 #include "context.h"
 #include "decl.h"
 #include "timeout.h"
+#include "general.h"
 
-NEARDATA extern coord bhitpos; /* place where throw or zap hits or stops */
-
-/* types of calls to bhit() */
-enum bhit_call_types {
-    ZAPPED_WAND   = 0,
-    THROWN_WEAPON = 1,
-    THROWN_TETHERED_WEAPON = 2,
-    KICKED_WEAPON = 3,
-    FLASHED_LIGHT = 4,
-    INVIS_BEAM    = 5,
-	GOLF_SWING	  = 6
-};
 
 /* attack mode for hmon() */
 enum hmon_atkmode_types {

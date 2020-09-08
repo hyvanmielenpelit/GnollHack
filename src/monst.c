@@ -10,6 +10,7 @@
 #include "animation.h"
 #include "soundset.h"
 #include "objclass.h"
+#include "general.h"
 
 #define NO_ATTK { 0, 0, 0, 0, 0 }
 #define NO_ACTION_SUBINFO {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}

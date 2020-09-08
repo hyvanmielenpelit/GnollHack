@@ -269,6 +269,7 @@
     <ClInclude Include="$(IncDir)layer.h" />
     <ClInclude Include="$(IncDir)soundset.h" />
     <ClInclude Include="$(IncDir)action.h" />
+    <ClInclude Include="$(IncDir)general.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(WinWin32Dir)NetHack.rc" />

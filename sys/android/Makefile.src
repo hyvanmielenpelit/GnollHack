@@ -365,7 +365,7 @@ CSOURCES = $(HACKCSRC) $(SYSSRC) $(WINCSRC) $(GENCSRC)
 HACKINCL = action.h align.h amiconf.h androidconf.h animation.h artifact.h artilist.h attrib.h beconf.h \
 	botl.h color.h config.h config1.h context.h coord.h decl.h def_os2.h \
 	display.h dlb.h dungeon.h encounter.h engrave.h extern.h flag.h fountain.h func_tab.h \
-	global.h hack.h layer.h lev.h lint.h macconf.h matcomps.h mextra.h mfndpos.h micro.h \
+	general.h global.h hack.h layer.h lev.h lint.h macconf.h matcomps.h mextra.h mfndpos.h micro.h \
 	mkroom.h \
 	monattk.h mondata.h monflag.h monst.h monsym.h npc.h obj.h objclass.h \
 	os2conf.h patchlevel.h pcconf.h permonst.h prop.h rect.h region.h rm.h soundset.h \
@@ -588,7 +588,7 @@ $(HACK_H): ../include/hack.h $(CONFIG_H) ../include/lint.h ../include/align.h \
 		../include/flag.h ../include/rm.h ../include/vision.h \
 		../include/display.h ../include/engrave.h ../include/rect.h \
 		../include/region.h ../include/winprocs.h ../include/botl.h \
-		../include/sys.h ../include/wintty.h ../include/trampoli.h ../include/npc.h
+		../include/sys.h ../include/wintty.h ../include/trampoli.h ../include/npc.h ../include/general.h
 	touch $(HACK_H)
 #
 tos.o: ../sys/atari/tos.c $(HACK_H) ../include/tcap.h

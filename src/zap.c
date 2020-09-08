@@ -290,10 +290,29 @@ struct monst* origmonst;
 		}
 		/* resist deals the damage and displays the damage dealt */
 		Your("freezing touch sears %s!", mon_nam(mtmp));
-		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_COLD, TELL);
+		(void)check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL);
 		learn_it = TRUE;
 		break;
-	case SPE_TOUCH_OF_DEATH:
+    case SPE_SUNLIGHT_BEAM:
+        res = 1;
+        reveal_invis = TRUE;
+        if (disguised_mimic)
+            seemimic(mtmp);
+        dmg = d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
+
+        if (is_undead(mtmp->data) || is_demon(mtmp->data) || is_vampshifter(mtmp) || hates_light(mtmp->data))
+        {
+            /* resist deals the damage and displays the damage dealt */
+            pline("The sunlight beam sears %s!", mon_nam(mtmp));
+            (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
+            learn_it = TRUE;
+        }
+        else
+        {
+            pline("%s is unaffected by the sunlight beam!", Monnam(mtmp));
+        }
+        break;
+    case SPE_TOUCH_OF_DEATH:
 		res = 1;
 		reveal_invis = TRUE;
 		You("reach out with your deadly touch...");
@@ -3371,7 +3390,8 @@ struct monst* origmonst;
 		case SPE_POWER_WORD_KILL:
 		case SPE_POWER_WORD_STUN:
 		case SPE_POWER_WORD_BLIND:
-			//Effect moved to resurrection
+        case SPE_SUNLIGHT_BEAM:
+            //Effect moved to resurrection
             break;
 		case WAN_RESURRECTION:
 		case SPE_RESURRECTION:
@@ -5196,7 +5216,18 @@ boolean ordinary;
 		make_blinded((Blinded & TIMEOUT) + duration, (boolean)!Blind);
 		break;
 	}
-	case WAN_DISINTEGRATION:
+    case SPE_SUNLIGHT_BEAM:
+        learn_it = TRUE;
+        damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_CLRC, ADFLAGS_SPELL_DAMAGE);
+        if (is_undead(youmonst.data) || is_demon(youmonst.data) || hates_light(youmonst.data)) {
+            pline("Idiot!  You've shot yourself with a sunlight beam!");
+        }
+        else {
+            pline_The("sunlight beam has no effect on you.");
+            damage = 0;
+        }
+        break;
+    case WAN_DISINTEGRATION:
 		damage = 0;
 		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable)
 		{
@@ -5613,7 +5644,8 @@ struct obj *obj; /* wand or spell */
 	case SPE_POWER_WORD_KILL:
 	case SPE_POWER_WORD_STUN:
 	case SPE_POWER_WORD_BLIND:
-	case SPE_MAGIC_ARROW:
+    case SPE_SUNLIGHT_BEAM:
+    case SPE_MAGIC_ARROW:
     case SPE_ARROW_OF_DIANA:
     case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
@@ -6109,7 +6141,7 @@ struct obj *obj;
             else if (objects[otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
                 hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
-			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+			(void) bhit(u.dx, u.dy, range, radius, objects[otyp].oc_dir_subtype > 0 ? objects[otyp].oc_dir_subtype : ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 

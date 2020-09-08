@@ -43,6 +43,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 #include "monsym.h"
 #include "animation.h"
 #include "soundset.h"
+#include "general.h"
 
 #else /* !OBJECTS_PASS_2_ */
 /* second pass */
@@ -2799,15 +2800,17 @@ SPELL("summon ancient gold dragon",	  "celestial", "some aeon-old prayer", "Summ
 	P_CELESTIAL_SPELL,					3,  5,	         0, 12, 750, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("heavenly army",	  "angelic", "some aeon-old prayer", "Summons 2d4 angelic beings for a duration",
 	P_CELESTIAL_SPELL,					2,  5,		   300, 12, 750, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 8, 8, 888, S1_NO_SOMATIC_COMPONENT | S1_SPELLBOOK_MUST_BE_READ_TO_IDENTIFY, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+SPELL("sunlight beam",   "sun-patterned", None, "Causes 12d6 damage to demons and undead",
+	P_CELESTIAL_SPELL,				    4,  4,	         0,  4,  30, A_WIS, 18, 0, 100, 0, 1, IMMEDIATE, FLASHED_LIGHT, 12, 6, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 
 SPELL("stick to snake",	  "stick-patterned", None, "Summons a permanent snake",
-	P_NATURE_SPELL,				 5,  1,		   0, 0, 7, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	P_NATURE_SPELL,				 4,  1,		   0, 0, 7, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("create wood golem", "wooden", None, "Creates a permanent wood golem",
-	P_NATURE_SPELL,		 5,   4,	           0, 1, 10, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	P_NATURE_SPELL,		         4,   4,	           0, 1, 10, A_MAX_WIS_CHA, 0, 0, 100, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("stick to cobra",	  "snake-patterned", None, "Summons a permanent cobra",
-	P_NATURE_SPELL,				 5,  1,		   0, 2, 15, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	P_NATURE_SPELL,				 4,  1,		   0, 2, 15, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("stick to python",	  "topaz-studded", None, "Summons a permanent python",
-	P_NATURE_SPELL,				 5,  1,		   0, 3, 20, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	P_NATURE_SPELL,				 4,  1,		   0, 3, 20, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("stick to boa",	  "jade-studded", None, "Summons a permanent boa constrictor",
 	P_NATURE_SPELL,				 5,  1,		   0, 5, 50, A_MAX_WIS_CHA, 0, 0, 200, 0, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, S1_NO_SOMATIC_COMPONENT, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 SPELL("barkskin",       "emerald-studded", None, "Gives +7 bonus to MC",

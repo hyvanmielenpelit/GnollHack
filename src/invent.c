@@ -1550,7 +1550,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
         obj->dknown = 1; /* maximize mergibility */
     if (obj->oartifact) {
         /* place_object may change these */
-        boolean crysknife = (obj->otyp == CRYSKNIFE);
+        //boolean crysknife = (obj->otyp == CRYSKNIFE);
         int oerode = obj->oerodeproof;
         boolean wasUpolyd = Upolyd;
 
@@ -1571,10 +1571,12 @@ const char *drop_fmt, *drop_arg, *hold_msg;
             return obj;
         }
         obj_extract_self(obj);
+#if 0
         if (crysknife) {
             obj->otyp = CRYSKNIFE;
             obj->oerodeproof = oerode;
         }
+#endif
     }
     if (Fumbling) {
         obj->nomerge = 1;

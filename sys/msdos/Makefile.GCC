@@ -388,7 +388,7 @@ HACK_H	   = $(CONFIG_H)	$(INCL)/context.h  $(DUNGEON_H)	       \
 	     $(INCL)/flag.h     $(RM_H)		   $(INCL)/vision.h    \
 	     $(INCL)/wintype.h  $(INCL)/engrave.h  $(INCL)/rect.h      \
 	     $(INCL)/trampoli.h $(INCL)/hack.h     $(REGION_H)	       \
-	     $(INCL)/sys.h      $(INCL)/npc.h
+	     $(INCL)/sys.h      $(INCL)/npc.h      $(INCL)/general.h
 DLB_H      = $(INCL)/dlb.h
 
 ifeq ($(SUPPRESS_GRAPHICS),Y)

@@ -514,6 +514,8 @@ struct early_opt {
     boolean valallowed;
 };
 
+NEARDATA extern coord bhitpos; /* place where throw or zap hits or stops */
+
 #undef E
 
 #endif /* DECL_H */

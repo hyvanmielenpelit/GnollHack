@@ -2141,11 +2141,14 @@ register struct monst *shkp; /* if angry, impose a surcharge */
             divisor *= 3L;
         }
     }
+
+#if 0
     if (uarmh && uarmh->otyp == DUNCE_CAP)
         multiplier *= 4L, divisor *= 3L;
     else if ((Role_if(PM_TOURIST) && u.ulevel < (MAXULEV / 2))
              || (uarmu && !uarm && !uarmo && !uarmc)) /* touristy shirt visible */
         multiplier *= 4L, divisor *= 3L;
+#endif
 
     if (ACURR(A_CHA) > 18)
         divisor *= 2L;
@@ -2347,12 +2350,14 @@ register struct monst * mtmp;
 {
     long tmp = getprice(obj, TRUE) * obj->quan, multiplier = 1L, divisor = 1L;
 
+#if 0
     if (uarmh && uarmh->otyp == DUNCE_CAP)
         divisor *= 3L;
     else if ((Role_if(PM_TOURIST) && u.ulevel < (MAXULEV / 2))
              || (uarmu && !uarm && !uarmo && !uarmc)) /* touristy shirt visible */
         divisor *= 3L;
     else
+#endif
         divisor *= 2L;
 
     /* shopkeeper may notice if the player isn't very knowledgeable -
