@@ -408,6 +408,8 @@ struct mkroom *sroom;
     boolean anvil_created = FALSE;
     int box_one_in_chance = 5;
     int mon_one_in_chance = 1;
+    int box_count = 0;
+    int box_threshold = 5;
 
     sh = sroom->fdoor;
     switch (type)
@@ -523,9 +525,10 @@ struct mkroom *sroom;
     case ARMORY:
         special_item_created = FALSE;
         special_item_chance = depth(&u.uz) * 2;
+        box_threshold = min(5, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 2);
         box_one_in_chance = max(3, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 4);
         if (depth(&u.uz) < depth(&oracle_level))
-            mon_one_in_chance = max(2, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 8);
+            mon_one_in_chance = max(2, (sroom->hx - sroom->lx) * (sroom->hy - sroom->ly) / 12);
         else if (depth(&u.uz) > depth(&medusa_level))
             mon_one_in_chance = 1;
         else
@@ -643,13 +646,14 @@ struct mkroom *sroom;
                                      TRUE, FALSE);
                 break;
             case ARMORY:
-                if (!rn2(box_one_in_chance))
+                if (!rn2(box_one_in_chance * (box_count >= box_threshold ? 2 : 1)))
                 {
                     struct obj* box = mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
                         FALSE, FALSE);
 
                     if (box)
                     {
+                        box_count++;
                         lastbox = box;
                         if (!firstbox)
                             firstbox = box;
@@ -663,7 +667,7 @@ struct mkroom *sroom;
                         for (int i = 0; i < nobj; i++)
                         {
                             struct obj* item = 0;
-                            item = mkobj(rn2(4) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
+                            item = mkobj(rn2(5) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
 
                             if (item)
                             {
@@ -671,7 +675,7 @@ struct mkroom *sroom;
                                 box->owt = weight(box);
                             }
                         }
-                        make_engr_at(sx, sy, Gilthoniel_word, 0L, ENGRAVE);
+                        make_engr_at(sx, sy, Inhell ? Morgoth_word : Gilthoniel_word, 0L, ENGRAVE);
                         context.made_armory_box_count++;
                     }
                 }
@@ -729,10 +733,50 @@ struct mkroom *sroom;
         level.flags.has_barracks = 1;
         break;
     case ARMORY:
-        if (!special_item_created && rn2(100) < special_item_chance)
+        if (!box_count)
+        {
+            for (int try_count = 0; try_count < 20; try_count++)
+            {
+                (void)somexy(sroom, &mm);
+                if (IS_FLOOR(levl[mm.x][mm.y].typ) && !OBJ_AT(mm.x, mm.y))
+                {
+                    struct obj* box = mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, mm.x, mm.y,
+                        FALSE, FALSE);
+
+                    if (box)
+                    {
+                        lastbox = box;
+                        if (!firstbox)
+                            firstbox = box;
+                        else
+                        {
+                            if (!rn2(2))
+                                middlebox = box;
+                        }
+
+                        int nobj = rnd(4) + (rn2(3) ? 1 : 0);
+                        for (int i = 0; i < nobj; i++)
+                        {
+                            struct obj* item = 0;
+                            item = mkobj(rn2(5) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
+
+                            if (item)
+                            {
+                                add_to_container(box, item);
+                                box->owt = weight(box);
+                            }
+                        }
+                        make_engr_at(mm.x, mm.y, Inhell ? Morgoth_word : Gilthoniel_word, 0L, ENGRAVE);
+                        context.made_armory_box_count++;
+                    }
+                    break;
+                }
+            }
+        }
+        if (!special_item_created && lastbox && firstbox && rn2(100) < special_item_chance)
         {
             struct obj* item = mk_artifact((struct obj*)0, A_NONE, FALSE);
-            if (item && lastbox && firstbox)
+            if (item)
             {
                 struct obj* box = !middlebox || rn2(3) ? (!rn2(2) ? firstbox : lastbox) : middlebox;
                 add_to_container(box, item);
@@ -753,7 +797,6 @@ struct mkroom *sroom;
                     break;
                 }
             }
-
         }
         level.flags.has_armory = 1;
         break;
