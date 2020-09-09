@@ -483,6 +483,25 @@ enum replacement_types
 extern NEARDATA struct replacement_definition replacements[];
 
 
+/* Special effects */
+enum special_effect_types
+{
+    SPECIAL_EFFECT_TELEPORT_OUT = 0,
+    SPECIAL_EFFECT_TELEPORT_IN,
+    MAX_SPECIAL_EFFECTS
+};
+
+struct special_effect_definition {
+    const char* name;
+    int display_time; /* in milliseconds, 0 indicates delay_output */
+    enum replacement_types replacement;
+    enum animation_types animation;
+    enum enlargement_types enlargement;
+};
+
+extern NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS];
+
+
 /* Game cursor types */
 enum game_cursor_types
 {
@@ -501,14 +520,14 @@ enum game_cursor_types
 };
 
 struct game_cursor_definition {
-    char* game_cursor_name;
+    const char* name;
     enum replacement_types replacement;
     enum animation_types animation;
     enum enlargement_types enlargement;
 };
 
 
-extern NEARDATA struct game_cursor_definition game_cursors[];
+extern NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS];
 
 
 

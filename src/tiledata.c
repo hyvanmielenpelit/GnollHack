@@ -1547,19 +1547,35 @@ uchar* tilemapflags;
 
     /* User interface tiles */
     tile_section_name = "user-interface";
-    set_name = "cursor";
+    set_name = "special-effect";
 
+    for (int i = 0; i < MAX_SPECIAL_EFFECTS; i++)
+    {
+        if (process_style == 0)
+        {
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, special_effects[i].name);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_SPECIAL_EFFECT_OFF;
+            tilemaparray[i + glyph_offset] = tile_count;
+        }
+        tile_count++;
+    }
+
+    set_name = "cursor";
     for (int i = 0; i < MAX_CURSORS; i++)
     {
         if (process_style == 0)
         {
-            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, game_cursors[i].game_cursor_name);
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, game_cursors[i].name);
             (void)write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
             glyph_offset = GLYPH_CURSOR_OFF;
-            tilemaparray[i + GLYPH_CURSOR_OFF] = tile_count;
+            tilemaparray[i + glyph_offset] = tile_count;
         }
         tile_count++;
     }
@@ -1889,6 +1905,17 @@ uchar* tilemapflags;
             }
         }
 
+        /* Special Effects */
+        for (int i = 0; i < MAX_SPECIAL_EFFECTS; i++)
+        {
+            if (special_effects[i].replacement)
+            {
+                int glyph = i + GLYPH_SPECIAL_EFFECT_OFF;
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = special_effects[i].replacement;
+            }
+        }
+
         /* Cursors */
         for (int i = 0; i < MAX_CURSORS; i++)
         {
@@ -2107,6 +2134,17 @@ uchar* tilemapflags;
             }
         }
 
+        /* Special Effects */
+        for (int i = 0; i < MAX_SPECIAL_EFFECTS; i++)
+        {
+            if (special_effects[i].animation)
+            {
+                int glyph = i + GLYPH_SPECIAL_EFFECT_OFF;
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = special_effects[i].animation;
+            }
+        }
+
         /* Cursors */
         for (int i = 0; i < MAX_CURSORS; i++)
         {
@@ -2285,6 +2323,17 @@ uchar* tilemapflags;
                         }
                     }
                 }
+            }
+        }
+
+        /* Special Effects */
+        for (int i = 0; i < MAX_SPECIAL_EFFECTS; i++)
+        {
+            if (special_effects[i].enlargement)
+            {
+                int glyph = i + GLYPH_SPECIAL_EFFECT_OFF;
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = special_effects[i].enlargement;
             }
         }
 

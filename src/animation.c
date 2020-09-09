@@ -1073,6 +1073,14 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
 };
 
 
+/* Special Effects */
+NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
+{
+    {"teleport-out", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"teleport-in", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+};
+
+
 /* Game Cursors */
 NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS] =
 {
@@ -1704,6 +1712,13 @@ short animidx;
             return glyph2tile[i * MAX_SWALLOW_CHARS + GLYPH_SWALLOW_OFF];
     }
 
+    /* Special Effects */
+    for (enum special_effect_types i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
+    {
+        if (special_effects[i].animation == animidx)
+            return glyph2tile[i + GLYPH_SPECIAL_EFFECT_OFF];
+    }
+
     /* Cursors */
     for (enum game_cursor_types i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
     {
@@ -1804,6 +1819,12 @@ short enlidx, enl_anim_tile_idx;
                 }
             }
         }
+    }
+
+    for (enum special_effect_types i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
+    {
+        if (special_effects[i].enlargement == enlidx)
+            return glyph2tile[i + GLYPH_SPECIAL_EFFECT_OFF];
     }
 
     for (enum game_cursor_types i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
@@ -1930,6 +1951,12 @@ short replacement_idx;
         }
     }
 
+    for (enum special_effect_types i = SPECIAL_EFFECT_TELEPORT_OUT; i < MAX_SPECIAL_EFFECTS; i++)
+    {
+        if (special_effects[i].replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_SPECIAL_EFFECT_OFF];
+    }
+
     for (enum game_cursor_types i = CURSOR_STYLE_GENERIC_CURSOR; i < MAX_CURSORS; i++)
     {
         if (game_cursors[i].replacement == replacement_idx)
@@ -1946,6 +1973,45 @@ short replacement_idx;
 }
 
 
+void
+play_special_effect_at(sp_effect, layer, x, y)
+enum special_effect_types sp_effect;
+enum layer_types layer;
+int x, y;
+{
+    if (iflags.using_gui_tiles)
+    {
+        context.force_allow_keyboard_commands = TRUE;
+        show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
+        enum animation_types anim = special_effects[sp_effect].animation;
+        if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
+        {
+            context.special_effect_animation_counter = 0;
+            int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+            for (int frame = 0; frame < framenum; frame++)
+            {
+                force_redraw_at(x, y);
+                flush_screen(0);
+                delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
+                context.special_effect_animation_counter += animations[anim].intervals_between_frames;
+            }
+            context.special_effect_animation_counter = 0;
+        }
+        else
+        {
+            force_redraw_at(x, y);
+            flush_screen(0);
+            if(special_effects[sp_effect].display_time > 0)
+                delay_output_milliseconds(special_effects[sp_effect].display_time);
+            else
+                adjusted_delay_output();
+        }
+        show_glyph_on_layer(x, y, NO_GLYPH, layer);
+        force_redraw_at(x, y);
+        flush_screen(0);
+        context.force_allow_keyboard_commands = FALSE;
+    }
+}
 
 
 /* animation.c */

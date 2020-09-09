@@ -2084,6 +2084,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_ROLLING_BOOULDER_TRAP_TRIGGER, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_TELEPORT",
+        {GHSOUND_TELEPORT, 1.0f},
+        TRUE
+    },
 };
 
 

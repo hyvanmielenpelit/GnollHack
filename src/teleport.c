@@ -405,7 +405,10 @@ vault_tele()
     coord c;
 
     if (croom && somexy(croom, &c) && teleok(c.x, c.y, FALSE)) {
+        play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
         teleds(c.x, c.y, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
         return;
     }
     tele();
@@ -520,7 +523,11 @@ boolean iscontrolled;
                 /* for scroll, discover it regardless of destination */
                 if (scroll)
                     learnscroll(scroll);
+
+                play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
                 teleds(cc.x, cc.y, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
                 return TRUE;
             }
             pline("Sorry...");
@@ -536,7 +543,10 @@ boolean iscontrolled;
     }
 
     telescroll = scroll;
+    play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
     (void) safe_teleds(FALSE);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
     /* teleds() will leave telescroll intact iff random destination
        is far enough away for scroll discovery to be warranted */
     if (telescroll)
@@ -615,7 +625,10 @@ int y;
     			pline("%s light envelops %s!", portal_color, yname(otmp));
 			pline("You feel your essence unsolidifying...");
 			pline("You reemerge at a new location!");
+            play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
             teleds(nux, nuy, TRUE);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
             if (otmp && ttmp->tflags == 0)
             {
                 pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
