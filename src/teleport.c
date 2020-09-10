@@ -406,9 +406,9 @@ vault_tele()
 
     if (croom && somexy(croom, &c) && teleok(c.x, c.y, FALSE)) {
         play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
         teleds(c.x, c.y, FALSE);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
         return;
     }
     tele();
@@ -525,9 +525,9 @@ boolean iscontrolled;
                     learnscroll(scroll);
 
                 play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
                 teleds(cc.x, cc.y, FALSE);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
                 return TRUE;
             }
             pline("Sorry...");
@@ -544,9 +544,9 @@ boolean iscontrolled;
 
     telescroll = scroll;
     play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
     (void) safe_teleds(FALSE);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
     /* teleds() will leave telescroll intact iff random destination
        is far enough away for scroll discovery to be warranted */
     if (telescroll)
@@ -634,9 +634,9 @@ int y;
 			pline("You feel your essence unsolidifying...");
 			pline("You reemerge at a new location!");
             play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
             teleds(nux, nuy, TRUE);
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
             if (otmp && ttmp->tflags == 0)
             {
                 pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));

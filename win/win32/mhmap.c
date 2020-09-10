@@ -25,7 +25,7 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2) + 1)
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1)
 
 
 /* draw order definition */
@@ -1016,7 +1016,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 continue;
 
             int monster_layer_height = data->map[enl_i][enl_j].special_monster_layer_height;
-            if (base_layer == LAYER_MONSTER)
+            if (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT)
             {
                 if (monster_layer_height == 0 && draw_order[draw_index].tile_movement_index != 0)
                     continue;
@@ -1341,7 +1341,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     obj_scaling_factor *= 0.75;
                             }
                         }
-                        else if (base_layer == LAYER_MONSTER)
+                        else if (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT)
                         {
                             if (draw_order[draw_index].tile_movement_index == 0)
                             {
@@ -2379,7 +2379,7 @@ static void setDrawOrder(PNHMapWindow data)
             data->draw_order[draw_count].tile_movement_index = 0;
             draw_count++;
 
-            if (layer_idx == LAYER_MONSTER)
+            if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
             {
                 /* These are in fact not drawn */
                 data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
@@ -2410,7 +2410,7 @@ static void setDrawOrder(PNHMapWindow data)
             data->draw_order[draw_count].tile_movement_index = 0;
             draw_count++;
 
-            if (layer_idx == LAYER_MONSTER)
+            if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
             {
                 /* These two are drawn at the same time as the higher positioned tiles */
                 data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
