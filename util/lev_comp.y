@@ -199,7 +199,7 @@ extern char curr_token[512];
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
-%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE 
+%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
 %token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID
@@ -251,7 +251,7 @@ extern char curr_token[512];
 %type	<i> object_infos object_info monster_infos monster_info
 %type	<i> levstatements stmt_block region_detail_end
 %type	<i> engraving_type flag_list roomregionflag roomregionflags
-%type	<i> optroomregionflags
+%type	<i> optroomregionflags floortype optfloortype
 %type	<i> humidity_flags
 %type	<i> comparestmt encodecoord encoderegion mapchar
 %type	<i> seen_trap_mask
@@ -1268,13 +1268,13 @@ room_begin      : room_type opt_percent ',' light_state
                   }
                 ;
 
-subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags
+subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloortype
 		  {
 		      long rflags = $8;
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      add_opvars(splev, "iiiiiiio",
-				 VA_PASS8(rflags, ERR, ERR,
+		      add_opvars(splev, "iiiiiiiio",
+				 VA_PASS9($<i>9, rflags, ERR, ERR,
 					  $5.x, $5.y, $7.width, $7.height,
 					  SPO_SUBROOM));
 		      break_stmt_start();
@@ -1286,13 +1286,13 @@ subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomreg
 		  }
 		;
 
-room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags
+room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloortype
 		  {
 		      long rflags = $8;
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      add_opvars(splev, "iiiiiiio",
-				 VA_PASS8(rflags,
+		      add_opvars(splev, "iiiiiiiio",
+				 VA_PASS9($<i>9, rflags,
 					  $7.x, $7.y, $5.x, $5.y,
 					  $9.width, $9.height, SPO_ROOM));
 		      break_stmt_start();
@@ -2081,6 +2081,22 @@ roomregionflag : FILLING
 		| JOINED
 		  {
 		      $$ = ($1 << 2);
+		  }
+		;
+
+optfloortype : /* empty */
+		  {
+			$$ = -1;
+		  }
+		| FLOOR_TYPE_ID ':' floortype
+		  {
+			$$ = $3;
+		  }
+		;
+
+floortype : FLOOR_TYPE
+		  {
+		      $$ = $1;
 		  }
 		;
 

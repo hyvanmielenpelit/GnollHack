@@ -68,7 +68,7 @@ STATIC_DCL void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
 STATIC_DCL void FDECL(get_free_room_loc, (schar *, schar *,
                                           struct mkroom *, packed_coord));
 STATIC_DCL boolean FDECL(create_subroom, (struct mkroom *, XCHAR_P, XCHAR_P,
-                                          XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P));
+                                          XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(create_door, (room_door *, struct mkroom *));
 STATIC_DCL void FDECL(create_trap, (spltrap *, struct mkroom *));
 STATIC_DCL int FDECL(noncoalignment, (ALIGNTYP_P));
@@ -1192,11 +1192,12 @@ chk:
  * This is still very incomplete...
  */
 boolean
-create_room(x, y, w, h, xal, yal, rtype, rlit)
+create_room(x, y, w, h, xal, yal, rtype, rlit, floorcategory)
 xchar x, y;
 xchar w, h;
 xchar xal, yal;
 xchar rtype, rlit;
+int floorcategory;
 {
     xchar xabs = 0, yabs = 0;
     int wtmp, htmp, xaltmp, yaltmp, xtmp, ytmp;
@@ -1351,7 +1352,7 @@ xchar rtype, rlit;
     if (!vault) {
         smeq[nroom] = nroom;
         add_room(xabs, yabs, xabs + wtmp - 1, yabs + htmp - 1, rlit, rtype,
-                 FALSE);
+                 FALSE, floorcategory);
     } else {
         rooms[nroom].lx = xabs;
         rooms[nroom].ly = yabs;
@@ -1364,11 +1365,12 @@ xchar rtype, rlit;
  * x & y are relative to the parent room.
  */
 STATIC_OVL boolean
-create_subroom(proom, x, y, w, h, rtype, rlit)
+create_subroom(proom, x, y, w, h, rtype, rlit, floorcategory)
 struct mkroom *proom;
 xchar x, y;
 xchar w, h;
 xchar rtype, rlit;
+int floorcategory;
 {
     xchar width, height;
 
@@ -1402,7 +1404,7 @@ xchar rtype, rlit;
     if (rlit == -1)
         rlit = (rnd(1 + abs(depth(&u.uz))) < 11 && rn2(77)) ? TRUE : FALSE;
     add_subroom(proom, proom->lx + x, proom->ly + y, proom->lx + x + w - 1,
-                proom->ly + y + h - 1, rlit, rtype, FALSE);
+                proom->ly + y + h - 1, rlit, rtype, FALSE, floorcategory);
     return TRUE;
 }
 
@@ -2845,11 +2847,11 @@ struct mkroom *mkr;
 
     if (mkr) {
         aroom = &subrooms[nsubroom];
-        okroom = create_subroom(mkr, r->x, r->y, r->w, r->h, rtype, r->rlit);
+        okroom = create_subroom(mkr, r->x, r->y, r->w, r->h, rtype, r->rlit, r->floortype);
     } else {
         aroom = &rooms[nroom];
         okroom = create_room(r->x, r->y, r->w, r->h, r->xalign, r->yalign,
-                             rtype, r->rlit);
+                             rtype, r->rlit, r->floortype);
     }
 
     if (okroom) {
@@ -3801,12 +3803,12 @@ struct sp_coder *coder;
 		return;
     } else {
         struct opvar *rflags, *h, *w, *yalign, *xalign, *y, *x, *rlit,
-            *chance, *rtype;
+            *chance, *rtype, *floortype;
         room tmproom;
         struct mkroom *tmpcr;
 
         if (!OV_pop_i(h) || !OV_pop_i(w) || !OV_pop_i(y) || !OV_pop_i(x)
-            || !OV_pop_i(yalign) || !OV_pop_i(xalign) || !OV_pop_i(rflags)
+            || !OV_pop_i(yalign) || !OV_pop_i(xalign) || !OV_pop_i(rflags) || !OV_pop_i(floortype)
             || !OV_pop_i(rlit) || !OV_pop_i(chance) || !OV_pop_i(rtype))
             return;
 
@@ -3822,6 +3824,7 @@ struct sp_coder *coder;
         tmproom.filled = (OV_i(rflags) & (1 << 0));
         /*tmproom.irregular = (OV_i(rflags) & (1 << 1));*/
         tmproom.joined = !(OV_i(rflags) & (1 << 2));
+        tmproom.floortype = OV_i(floortype);
 
         opvar_free(x);
         opvar_free(y);
@@ -3830,6 +3833,7 @@ struct sp_coder *coder;
         opvar_free(xalign);
         opvar_free(yalign);
         opvar_free(rtype);
+        opvar_free(floortype);
         opvar_free(chance);
         opvar_free(rlit);
         opvar_free(rflags);
@@ -5359,11 +5363,11 @@ struct sp_coder *coder;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
         flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, OV_i(rlit), TRUE);
-        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE);
+        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, 0);
         troom->rlit = OV_i(rlit);
         troom->irregular = TRUE;
     } else {
-        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE);
+        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, 0);
 #ifdef SPECIALIZATION
         topologize(troom, FALSE); /* set roomno */
 #else

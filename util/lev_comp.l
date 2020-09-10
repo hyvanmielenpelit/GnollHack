@@ -136,6 +136,7 @@ MAZE		ST_RET(MAZE_ID);
 LEVEL		ST_RET(LEVEL_ID);
 INIT_MAP	ST_RET(LEV_INIT_ID);
 TILESET	    ST_RET(TILESET_ID);
+floortype	ST_RET(FLOOR_TYPE_ID);
 mazegrid	ST_RET(MAZE_GRID_ID);
 solidfill	ST_RET(SOLID_FILL_ID);
 mines		ST_RET(MINES_ID);
@@ -320,6 +321,9 @@ gehennom_tileset { savetoken(yytext); yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; 
 undead_tileset { savetoken(yytext); yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
 sokoban_tileset { savetoken(yytext); yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 astral_tileset { savetoken(yytext); yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
+floor_normal { savetoken(yytext); yylval.i=FLOOR_CATEGORY_NORMAL; return FLOOR_TYPE; }
+floor_marble { savetoken(yytext); yylval.i=FLOOR_CATEGORY_MARBLE; return FLOOR_TYPE; }
+floor_parquet { savetoken(yytext); yylval.i=FLOOR_CATEGORY_PARQUET; return FLOOR_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }

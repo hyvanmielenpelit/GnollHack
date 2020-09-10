@@ -1514,9 +1514,9 @@ E void FDECL(gain_guardian_angel, (BOOLEAN_P));
 E int FDECL(do_comp, (genericptr_t, genericptr_t));
 #endif
 E void NDECL(sort_rooms);
-E void FDECL(add_room, (int, int, int, int, BOOLEAN_P, SCHAR_P, BOOLEAN_P));
+E void FDECL(add_room, (int, int, int, int, BOOLEAN_P, SCHAR_P, BOOLEAN_P, int));
 E void FDECL(add_subroom, (struct mkroom *, int, int, int, int, BOOLEAN_P,
-                           SCHAR_P, BOOLEAN_P));
+                           SCHAR_P, BOOLEAN_P, int));
 E void NDECL(makecorridors);
 E void FDECL(add_door, (int, int, struct mkroom *));
 E void NDECL(mklev);
@@ -2855,7 +2855,7 @@ E int FDECL(assign_soundcard, (char *));
 
 E boolean FDECL(check_room, (xchar *, xchar *, xchar *, xchar *, BOOLEAN_P));
 E boolean FDECL(create_room, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P,
-                              XCHAR_P, XCHAR_P, XCHAR_P));
+                              XCHAR_P, XCHAR_P, XCHAR_P, int));
 E void FDECL(create_secret_door, (struct mkroom *, XCHAR_P));
 E boolean
 FDECL(dig_corridor, (coord *, coord *, BOOLEAN_P, SCHAR_P, SCHAR_P));
