@@ -2089,9 +2089,172 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_TELEPORT, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_BEAR_TRAP_CLOSES",
+        {GHSOUND_BEAR_TRAP_CLOSES, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_ENVELOPED_IN_CLOUD_OF_GAS",
+        {GHSOUND_ENVELOPED_IN_CLOUD_OF_GAS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_GUSH_OF_WATER_HITS",
+        {GHSOUND_GUSH_OF_WATER_HITS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_STEAMY_BUBBLES",
+        {GHSOUND_STEAMY_BUBBLES, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_TOWER_OF_FLAME_ERUPTS",
+        {GHSOUND_TOWER_OF_FLAME_ERUPTS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_TELEPORT_TRAP_ACTIVATE",
+        {GHSOUND_TELEPORT_TRAP_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_TELEPORT_TRAP_ACTIVATE",
+        {GHSOUND_LEVEL_TELEPORT_TRAP_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_TELEPORT",
+        {GHSOUND_LEVEL_TELEPORT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_SHUDDER_FOR_MOMENT",
+        {GHSOUND_SHUDDER_FOR_MOMENT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_WRENCHING_SENSATION",
+        {GHSOUND_WRENCHING_SENSATION, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_BURN_SPIDER_WEB",
+        {GHSOUND_BURN_SPIDER_WEB, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_CAUGHT_IN_WEB",
+        {GHSOUND_CAUGHT_IN_WEB, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_TEAR_THROUGH_WEB",
+        {GHSOUND_TEAR_THROUGH_WEB, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_FLASH_AND_ROAR",
+        {GHSOUND_FLASH_AND_ROAR, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_SHIVER_RUNS_DOWN_SPINE",
+        {GHSOUND_SHIVER_RUNS_DOWN_SPINE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_DISTANT_HOWLING",
+        {GHSOUND_DISTANT_HOWLING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_MAGIC_TRAP_WEIRD_EFFECT",
+        {GHSOUND_MAGIC_TRAP_WEIRD_EFFECT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_PACK_SHAKING",
+        {GHSOUND_PACK_SHAKING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_TAMING",
+        {GHSOUND_TAMING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_MAGIC_TRAP_ACTIVATE",
+        {GHSOUND_MAGIC_TRAP_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_ANTI_MAGIC_TRAP_ACTIVATE",
+        {GHSOUND_ANTI_MAGIC_TRAP_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LAND_MINE_ACTIVATE",
+        {GHSOUND_LAND_MINE_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_POLYMORPH_ACTIVATE",
+        {GHSOUND_POLYMORPH_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_MAGIC_PORTAL_ACTIVATE",
+        {GHSOUND_MAGIC_PORTAL_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_AT_VIBRATING_SQUARE",
+        {GHSOUND_AT_VIBRATING_SQUARE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_MODRON_GLIMMER_SURROUNDS",
+        {GHSOUND_MODRON_GLIMMER_SURROUNDS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_MODRON_TELEPORT_SUCCESS",
+        {GHSOUND_MODRON_TELEPORT_SUCCESS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_DRAIN_ENERGY",
+        {GHSOUND_DRAIN_ENERGY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_FEELING_LETHARGIC",
+        {GHSOUND_FEELING_LETHARGIC, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_YOU_RUST",
+        {GHSOUND_YOU_RUST, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_YOU_SPLIT",
+        {GHSOUND_YOU_SPLIT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_ROCK_HITS_HARD_HELMET",
+        {GHSOUND_ROCK_HITS_HARD_HELMET, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_ROCK_HITS_YOU_ON_HEAD",
+        {GHSOUND_ROCK_HITS_YOU_ON_HEAD, 1.0f},
+        TRUE
+    },
 };
-
-
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {

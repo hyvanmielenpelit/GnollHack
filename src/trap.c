@@ -901,6 +901,8 @@ struct trap *trap;
 
         if (flaming(mptr) || has_acidic_corpse(mptr)) {
             if (domsg) {
+                play_sfx_sound(SFX_BURN_SPIDER_WEB);
+
                 if (isyou)
                     You("%s %s spider web!",
                         (flaming(mptr)) ? "burn" : "dissolve",
@@ -1143,14 +1145,20 @@ unsigned trflags;
             {
                 if (is_metallic(uarmh)) 
                 {
+                    play_sfx_sound(SFX_ROCK_HITS_HARD_HELMET);
                     pline("Fortunately, you are wearing a hard helmet.");
                     dmg = 2;
                 } 
-                else if (flags.verbose) 
+                else 
                 {
-                    pline("%s does not protect you.", Yname2(uarmh));
+                    play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
+                    if (flags.verbose)
+                        pline("%s does not protect you.", Yname2(uarmh));
                 }
             }
+            else
+                play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
+
             if (!Blind)
                 otmp->dknown = 1;
             stackobj(otmp);
@@ -1192,6 +1200,7 @@ unsigned trflags;
             break;
         feeltrap(trap);
 
+        play_sfx_sound(SFX_BEAR_TRAP_CLOSES);
         if (amorphous(youmonst.data) || is_whirly(youmonst.data)
             || unsolid(youmonst.data) || noncorporeal(youmonst.data))
         {
@@ -1230,7 +1239,8 @@ unsigned trflags;
 
     case SLP_GAS_TRAP:
         seetrap(trap);
-        if (Sleep_resistance || has_innate_breathless(youmonst.data)) 
+        play_sfx_sound(SFX_ENVELOPED_IN_CLOUD_OF_GAS);
+        if (Sleep_resistance || has_innate_breathless(youmonst.data))
         {
             You("are enveloped in a cloud of gas!");
         } 
@@ -1251,7 +1261,8 @@ unsigned trflags;
          * first rustable one or the body, we take whatever we get,
          * even if it is not rustable.
          */
-        switch (rn2(5)) 
+        play_sfx_sound(SFX_GUSH_OF_WATER_HITS);
+        switch (rn2(5))
         {
         case 0:
             pline("%s you on the %s!", A_gush_of_water_hits, body_part(HEAD));
@@ -1293,11 +1304,13 @@ unsigned trflags;
         {
             int dam = u.mhmax;
 
+            play_sfx_sound(SFX_YOU_RUST);
             You("are covered with rust!");
             losehp(adjust_damage(dam, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "rusting away", KILLED_BY);
         }
         else if (u.umonnum == PM_GREMLIN && rn2(3))
         {
+            play_sfx_sound(SFX_YOU_SPLIT);
             (void) split_mon(&youmonst, (struct monst *) 0);
         }
 
@@ -1460,6 +1473,7 @@ unsigned trflags;
         if (webmsgok) {
             char verbbuf[BUFSZ];
 
+            play_sfx_sound(SFX_CAUGHT_IN_WEB);
             if (forcetrap || viasitting) {
                 Strcpy(verbbuf, "are caught by");
             } else if (u.usteed) {
@@ -1524,7 +1538,10 @@ unsigned trflags;
             else {
                 tim = 0;
                 if (webmsgok)
+                {
+                    play_sfx_sound(SFX_TEAR_THROUGH_WEB);
                     You("tear through %s web!", a_your[trap->madeby_u]);
+                }
                 deltrap(trap);
                 newsym(u.ux, u.uy); /* get rid of trap symbol */
             }
@@ -1538,8 +1555,10 @@ unsigned trflags;
 
     case MAGIC_TRAP: /* A magic trap. */
         seetrap(trap);
-        if (!rn2(30)) 
+        play_sfx_sound(SFX_MAGIC_TRAP_ACTIVATE);
+        if (!rn2(30))
         {
+            play_sfx_sound(SFX_EXPLOSION_MAGICAL);
             deltrap(trap);
             newsym(u.ux, u.uy); /* update position */
             You("are caught in a magical explosion!");
@@ -1558,6 +1577,7 @@ unsigned trflags;
 
     case ANTI_MAGIC_TRAP:
         seetrap(trap);
+        play_sfx_sound(SFX_ANTI_MAGIC_TRAP_ACTIVATE);
         /* hero without magic resistance loses spell energy,
            hero with magic resistance takes damage instead;
            possibly non-intuitive but useful for play balance */
@@ -1579,6 +1599,7 @@ unsigned trflags;
             if (Passes_walls)
                 dmgval2 = (dmgval2 + 3) / 4;
 
+            play_sfx_sound(SFX_FEELING_LETHARGIC);
             You_feel((dmgval2 >= hp) ? "unbearably torpid!"
                                      : (dmgval2 >= hp / 4) ? "very lethargic."
                                                            : "sluggish.");
@@ -1591,6 +1612,8 @@ unsigned trflags;
         char verbbuf[BUFSZ];
 
         seetrap(trap);
+        play_sfx_sound(SFX_POLYMORPH_ACTIVATE);
+
         if (viasitting)
             Strcpy(verbbuf, "trigger"); /* follows "You sit down." */
         else if (u.usteed)
@@ -1643,6 +1666,7 @@ unsigned trflags;
             if (recursive_mine)
                 break;
             feeltrap(trap);
+            play_sfx_sound(SFX_LAND_MINE_ACTIVATE);
             pline("KAABLAMM!!!  You triggered %s land mine!",
                   a_your[trap->madeby_u]);
             if (u.usteed)
@@ -3374,6 +3398,7 @@ struct obj *box; /* null for floor trap */
      */
 
     if ((box && !carried(box)) ? is_pool(box->ox, box->oy) : Underwater) {
+        play_sfx_sound(SFX_STEAMY_BUBBLES);
         pline("A cascade of steamy bubbles erupts from %s!",
               the(box ? xname(box) : surface(u.ux, u.uy)));
         if (Fire_immunity)
@@ -3382,6 +3407,7 @@ struct obj *box; /* null for floor trap */
             losehp(adjust_damage(rnd(3), (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), "boiling water", KILLED_BY);
         return;
     }
+    play_sfx_sound(SFX_TOWER_OF_FLAME_ERUPTS);
     pline("A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
           the(box ? xname(box) : surface(u.ux, u.uy)));
     if (Fire_immunity) {
@@ -3453,6 +3479,7 @@ domagictrap()
         /* Most of the time, it creates some monsters. */
         int cnt = rnd(4);
 
+        play_sfx_sound(SFX_FLASH_AND_ROAR);
         /* blindness effects */
         if (!resists_blnd(&youmonst) && !Flash_resistance)
         {
@@ -3499,13 +3526,16 @@ domagictrap()
 
         /* odd feelings */
         case 13:
+            play_sfx_sound(SFX_SHIVER_RUNS_DOWN_SPINE);
             pline("A shiver runs up and down your %s!", body_part(SPINE));
             break;
         case 14:
+            play_sfx_sound(SFX_DISTANT_HOWLING);
             You_hear(Hallucination ? "the moon howling at you."
                                    : "distant howling.");
             break;
         case 15:
+            play_sfx_sound(SFX_MAGIC_TRAP_WEIRD_EFFECT);
             if (on_level(&u.uz, &qstart_level))
                 You_feel(
                     "%slike the prodigal son.",
@@ -3521,12 +3551,15 @@ domagictrap()
                               : "your distant homeland");
             break;
         case 16:
+            play_sfx_sound(SFX_PACK_SHAKING);
             Your("pack shakes violently!");
             break;
         case 17:
+            play_sfx_sound(SFX_MAGIC_TRAP_WEIRD_EFFECT);
             You(Hallucination ? "smell hamburgers." : "smell charred flesh.");
             break;
         case 18:
+            play_sfx_sound(SFX_MAGIC_TRAP_WEIRD_EFFECT);
             You_feel("tired.");
             break;
 
@@ -3534,6 +3567,8 @@ domagictrap()
         case 19: { /* tame nearby monsters */
             int i, j;
             struct monst *mtmp;
+
+            play_sfx_sound(SFX_TAMING);
 
             (void) adjattrib(A_CHA, 1, FALSE);
             for (i = -1; i <= 1; i++)
@@ -3550,6 +3585,8 @@ domagictrap()
         case 20: { /* uncurse stuff */
             struct obj pseudo;
             long save_conf = HConfusion;
+
+            play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
 
             pseudo = zeroobj; /* neither cursed nor blessed,
                                  and zero out oextra */
@@ -4218,7 +4255,8 @@ void
 drain_en(n)
 int n;
 {
-    if (!u.uenmax) 
+    play_sfx_sound(SFX_DRAIN_ENERGY);
+    if (!u.uenmax)
 	{
         /* energy is completely gone */
         You_feel("momentarily lethargic.");

@@ -592,11 +592,18 @@ int y;
 
 	if (!otmp && ttmp->tflags == 0)
 	{
-		if (mtmp == &youmonst)
-			pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
-		else if (canseemon(mtmp))
-			pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
-		return FALSE;
+        if (mtmp == &youmonst)
+        {
+            play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
+            pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
+        }
+        else
+        {
+            play_sfx_sound_at_location(SFX_MODRON_GLIMMER_SURROUNDS, mtmp->mx, mtmp->my);
+            if (canseemon(mtmp))
+                pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
+        }
+        return FALSE;
 	}
 
 	/* Now do the teleport */
@@ -621,6 +628,7 @@ int y;
 	{
 		if (mtmp == &youmonst || mtmp == u.usteed)
 		{
+            play_sfx_sound(SFX_MODRON_TELEPORT_SUCCESS);
             if(otmp && ttmp->tflags == 0)
     			pline("%s light envelops %s!", portal_color, yname(otmp));
 			pline("You feel your essence unsolidifying...");
@@ -642,8 +650,9 @@ int y;
             strcpy(colorbuf, portal_color);
             *colorbuf = lowc(*colorbuf);
 
-			rloc_to(mtmp, nux, nuy);
-			pline("%s disappears in a flash of %s light.", Monnam(mtmp), colorbuf);
+            play_sfx_sound_at_location(SFX_MODRON_TELEPORT_SUCCESS, mtmp->mx, mtmp->my);
+            rloc_to(mtmp, nux, nuy);
+            pline("%s disappears in a flash of %s light.", Monnam(mtmp), colorbuf);
             if (otmp && ttmp->tflags == 0)
             {
                 m_useup(mtmp, otmp);
@@ -654,10 +663,17 @@ int y;
 	}
     else
 	{
-		if (mtmp == &youmonst)
-			pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
-		else if (canseemon(mtmp))
-			pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
+        if (mtmp == &youmonst)
+        {
+            play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
+            pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
+        }
+        else
+        {
+            play_sfx_sound_at_location(SFX_MODRON_GLIMMER_SURROUNDS, mtmp->mx, mtmp->my);
+            if(canseemon(mtmp))
+                pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
+        }
 		return FALSE;
 	}
 	return FALSE;
@@ -927,6 +943,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
     }
     else 
     {
+        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
         You("%s", shudder_for_moment);
         return 0;
     }
@@ -1030,6 +1047,8 @@ boolean iscontrolled;
                 goto random_levtport;
             if (ynq("Go to Nowhere.  Are you sure?") != 'y')
                 return;
+
+            play_sfx_sound(SFX_LEVEL_TELEPORT);
             You("%s in agony as your body begins to warp...",
                 is_silent(youmonst.data) ? "writhe" : "scream");
             display_nhwindow(WIN_MESSAGE, FALSE);
@@ -1050,6 +1069,7 @@ boolean iscontrolled;
          * we let negative values requests fall into the "heaven" loop.
          */
         if (Is_knox(&u.uz) && newlev > 0 && !force_dest) {
+            play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
             You1(shudder_for_moment);
             return;
         }
@@ -1077,6 +1097,7 @@ random_levtport:
 
         if (newlev == depth(&u.uz))
 		{
+            play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
             You1(shudder_for_moment);
             return;
         }
@@ -1086,6 +1107,7 @@ random_levtport:
         buried_ball_to_punishment();
 
     if (!next_to_u() && !force_dest) {
+        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
         You1(shudder_for_moment);
         return;
     }
@@ -1098,6 +1120,7 @@ random_levtport:
         }
         newlevel.dnum = u.uz.dnum;
         newlevel.dlevel = llimit + newlev;
+        play_sfx_sound(SFX_LEVEL_TELEPORT);
         schedule_goto(&newlevel, FALSE, FALSE, 0, (char *) 0, (char *) 0);
         return;
     }
@@ -1106,6 +1129,8 @@ random_levtport:
 
     if (iflags.debug_fuzzer && newlev < 0)
         goto random_levtport;
+
+    play_sfx_sound(SFX_LEVEL_TELEPORT);
     if (newlev < 0 && !force_dest) {
         if (*u.ushops0) {
             /* take unpaid inventory items off of shop bills */
@@ -1208,6 +1233,7 @@ register struct trap *ttmp;
         buried_ball_to_punishment();
 
     if (!next_to_u()) {
+        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
         You1(shudder_for_moment);
         return;
     }
@@ -1217,6 +1243,7 @@ register struct trap *ttmp;
     if (!on_level(&u.uz, &u.uz0))
         return;
 
+    play_sfx_sound(SFX_MAGIC_PORTAL_ACTIVATE);
     You("activated a magic portal!");
 
     /* prevent the poor shnook, whose amulet was stolen while in
@@ -1238,11 +1265,14 @@ void
 tele_trap(trap)
 struct trap *trap;
 {
+    play_sfx_sound(SFX_TELEPORT_TRAP_ACTIVATE);
     if (In_endgame(&u.uz) || Antimagic) {
+        play_sfx_sound(SFX_WRENCHING_SENSATION);
         if (Antimagic)
             u_shieldeff();
         You_feel("a wrenching sensation.");
     } else if (!next_to_u()) {
+        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
         You1(shudder_for_moment);
     } else if (trap->once) {
         deltrap(trap);
@@ -1265,12 +1295,15 @@ unsigned trflags;
         Sprintf(verbbuf, "%s onto",
                 Levitation ? (const char *) "float"
                            : locomotion(youmonst.data, "step"));
+
+    play_sfx_sound(SFX_LEVEL_TELEPORT_TRAP_ACTIVATE);
     You("%s a level teleport trap!", verbbuf);
 
     if (Antimagic) {
         u_shieldeff();
     }
     if (Antimagic || In_endgame(&u.uz)) {
+        play_sfx_sound(SFX_WRENCHING_SENSATION);
         You_feel("a wrenching sensation.");
         return;
     }

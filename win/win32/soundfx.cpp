@@ -65,6 +65,7 @@ struct ghsound_eventmapping {
 
 const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "" , 0.0f },
+
     { SOUND_BANK_MASTER, "event:/Music/Music-Splash", 0.5f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Player-Selection", 0.3f},
     { SOUND_BANK_MASTER, "event:/Music/Music-Intro", 0.1f},
@@ -339,11 +340,48 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Hole Opens", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Trap Door Opens", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Fall into Pit", 0.3f },
+
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Land on Spikes", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Squeaky Board", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Falling Rock Trap Trigger", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Rolling Boulder Trap Trigger", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Teleport", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Bear Trap Closes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Enveloped in Cloud of Gas", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Gush of Water Hits", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Steamy Bubbles", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Tower of Flame Erupts", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Teleport Trap Activate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Level Teleport Trap Activate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Level Teleport", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Shudder for Moment", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Wrenching Sensation", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Burn Spider Web", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Caught in Web", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Tear through Web", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Flash and Roar", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Shiver Runs Down Spine", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Distant Howling", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Magic Trap Weird Effect", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Pack Shaking", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Taming", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Magic Trap Activate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Anti Magic Trap Activate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Land Mine Activate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Polymorph Trap Activate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Magic Portal Activate", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Vibrating Square/Vibrating Square Ambient", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Modron Glimmer Surrounds", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Modron Teleport Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Drain Energy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Feeling Lethargic", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/You Rust", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/You Split", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Rock Hits Hard Helmet", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Rock Hits You on Head", 1.0f },
 };
 
 #undef NoSound
