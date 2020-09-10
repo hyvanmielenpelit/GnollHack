@@ -656,7 +656,7 @@ struct objclass {
 #define oc_spell_range oc_oc5			/* books: spell range */
 #define oc_spell_radius oc_oc6			/* books: spell radius */
 #define oc_spell_skill_chance oc_oc7	/* books: % chance of gaining skill points upon casting, also % multiplier for mixing */
-/* oc_oc8 unused */
+#define oc_spell_bhit_type oc_oc8		/* books: for immediate spells, whether bhit_type is something else than ZAPPED_WAND */
 #define oc_spell_saving_throw_adjustment oc_mc_adjustment	/* books: spell saving throw adjustment */
 #define oc_spell_dmg_dice oc_wsdice		/* books: spell damage no of dice */
 #define oc_spell_dmg_diesize oc_wsdam	/* books: spell damage size of dice */
@@ -739,6 +739,8 @@ struct objclass {
 #define IMMEDIATE_ACID_BEAM -18 
 #define IMMEDIATE_DEATH_BEAM -19 
 #define IMMEDIATE_PETRIFICATION_BEAM -20 
+
+#define IMMEDIATE_FLASHED_LIGHT -21 
 
 #define RAY_MAGIC_MISSILE 10 
 #define RAY_FIRE 11 

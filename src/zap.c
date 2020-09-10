@@ -6173,7 +6173,7 @@ struct obj *obj;
             else if (objects[otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
                 hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
-			(void) bhit(u.dx, u.dy, range, radius, objects[otyp].oc_dir_subtype > 0 ? objects[otyp].oc_dir_subtype : ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags& S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+			(void) bhit(u.dx, u.dy, range, radius, objects[otyp].oc_spell_bhit_type, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 
@@ -6491,7 +6491,12 @@ boolean stop_at_first_hit_object;
 		{
 			tmp_at(DISP_FLASH, obj_to_missile_glyph(&dispobj, get_missile_index(ddx, ddy), rn2_on_display_rng));
 		}
-		else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
+        else if (displayedobjtype == IMMEDIATE_FLASHED_LIGHT)
+        {
+            tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
+            zapped_wand_beam = TRUE;
+        }
+        else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
 		{
 			tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11));
 			zapped_wand_beam = TRUE;
