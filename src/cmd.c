@@ -1934,7 +1934,7 @@ wiz_save_monsters(VOID_ARGS) /* Save a csv file for monsters */
 			Sprintf(buf, ",%d,%d,",
 				mons[i].difficulty, mons[i].mcolor);
 			(void)write(fd, buf, strlen(buf));
-			Sprintf(buf, ",%d,%d,%d,%d,%d\n",
+			Sprintf(buf, ",%d,%d,%d,%d,%0.1f\n",
 				strength_tohit_bonus(mons[i].str), strength_damage_bonus(mons[i].str), dexterity_tohit_bonus(mons[i].dex), dexterity_ac_bonus(mons[i].dex),constitution_hp_bonus(mons[i].con));
 			(void)write(fd, buf, strlen(buf));
 
@@ -3209,9 +3209,9 @@ int mode, final, attrindx;
 	}
 	else if (attrindx == A_CON)
 	{
-		int hpbonus = constitution_hp_bonus(ACURR(A_CON));
+		double hpbonus = constitution_hp_bonus(ACURR(A_CON));
 
-		Sprintf(eos(valubuf), ": %s%d HP %s per level",
+		Sprintf(eos(valubuf), ": %s%0.1f HP %s per level",
 			hpbonus >= 0 ? "+" : "", hpbonus, hpbonus >= 0 ? "bonus" : "penalty");
 	}
 

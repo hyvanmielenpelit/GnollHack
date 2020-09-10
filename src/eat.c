@@ -1338,19 +1338,19 @@ int pm;
 		int percent = 1;
 
 		if (ptr->mlet == S_NYMPH)
-			percent = 30;
+			percent = 25;
         else if (ptr->mlet == S_GIANT)
             percent = 50;
         else if (ptr->mlet == S_OGRE)
-            percent = 30;
+            percent = 25;
         else if (ptr->mlet == S_SNAKE)
             percent = 10;
         else if (ptr->mlet == S_YETI)
-            percent = 25;
+            percent = 20;
         else if (ptr == &mons[PM_FLOATING_EYE])
 			percent = 100;
         else if (is_mind_flayer(ptr))
-            percent = 30;
+            percent = 25;
         else
 			percent = min(30, max(1, mdifficulty));
 

@@ -3697,7 +3697,7 @@ struct sp_coder* coder;
         return;
     tilesetid = OV_i(tilesetdata);
 
-    if (tilesetid < 0 || tilesetid >= CMAP_TYPE_MAX)
+    if (tilesetid < 0 || tilesetid >= MAX_CMAP_TYPES)
     {
         level.flags.has_tileset = 0;
         level.flags.tileset = 0;

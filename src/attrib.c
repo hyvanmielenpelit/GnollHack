@@ -1811,7 +1811,7 @@ struct monst* mon;
 {
 	boolean is_you = (mon == &youmonst);
 	int basehp = is_you ? u.ubasehpmax : mon->mbasehpmax;
-	int baseadj = constitution_hp_bonus(M_ACURR(mon, A_CON)) * (is_you ? u.ulevel : mon->m_lev);
+	int baseadj = (int)(constitution_hp_bonus(M_ACURR(mon, A_CON)) * (double)(is_you ? u.ulevel : mon->m_lev));
 	int adj = baseadj;
 	int otyp = 0;
 	struct obj* uitem;
@@ -1835,7 +1835,7 @@ struct monst* mon;
 					)
 				)
 			{
-				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) || 
+				int multiplier = ((objects[otyp].oc_pflags & P1_CURSED_ITEM_YIELDS_NEGATIVE) && uitem->cursed) ||
 					(objects[otyp].oc_pflags & P1_HP_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS) && inappr ? -1 : 1;
 				if (objects[otyp].oc_pflags & P1_HP_PERCENTAGE_BONUS)
 					adj += multiplier * (objects[otyp].oc_hp_bonus * (basehp + baseadj)) / 100;

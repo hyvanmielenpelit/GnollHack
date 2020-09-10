@@ -318,6 +318,7 @@ gnomish_mines_tileset { savetoken(yytext); yylval.i=CMAP_GNOMISH_MINES; return C
 gehennom_tileset { savetoken(yytext); yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
 undead_tileset { savetoken(yytext); yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
 sokoban_tileset { savetoken(yytext); yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
+astral_tileset { savetoken(yytext); yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }

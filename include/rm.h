@@ -391,10 +391,10 @@ enum cmap_types {
     CMAP_TOWER = 13,
     CMAP_CAVERNS = 14,
     CMAP_ASTRAL = 15,
-    CMAP_TYPE_MAX = 16
+    MAX_CMAP_TYPES = 16
 };
 
-extern const char* cmap_type_names[CMAP_TYPE_MAX];
+extern const char* cmap_type_names[MAX_CMAP_TYPES];
 
 struct symdef {
     uchar sym;
@@ -414,18 +414,18 @@ struct symdef_cmap {
     int variations;
     int variation_offset;
 #ifdef TEXTCOLOR
-    uchar color[CMAP_TYPE_MAX];
+    uchar color[MAX_CMAP_TYPES];
 #endif
-    short stand_animation[CMAP_TYPE_MAX];
-    short enlargement[CMAP_TYPE_MAX];
-    short replacement[CMAP_TYPE_MAX];
+    short stand_animation[MAX_CMAP_TYPES];
+    short enlargement[MAX_CMAP_TYPES];
+    short replacement[MAX_CMAP_TYPES];
 
-    short broken_animation[CMAP_TYPE_MAX];
-    short broken_enlargement[CMAP_TYPE_MAX];
-    short broken_replacement[CMAP_TYPE_MAX];
+    short broken_animation[MAX_CMAP_TYPES];
+    short broken_enlargement[MAX_CMAP_TYPES];
+    short broken_replacement[MAX_CMAP_TYPES];
 
-    boolean included_in_default_tileset_cmap[CMAP_TYPE_MAX];    /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
-    uchar base_default_tileset_cmap[CMAP_TYPE_MAX];             /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
+    boolean included_in_default_tileset_cmap[MAX_CMAP_TYPES];    /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
+    uchar base_default_tileset_cmap[MAX_CMAP_TYPES];             /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
 };
 
 
@@ -437,18 +437,18 @@ struct symdef_cmap_variation {
     boolean has_broken_tile;
 
 #ifdef TEXTCOLOR
-    uchar color[CMAP_TYPE_MAX];
+    uchar color[MAX_CMAP_TYPES];
 #endif
-    short stand_animation[CMAP_TYPE_MAX];
-    short enlargement[CMAP_TYPE_MAX];
-    short replacement[CMAP_TYPE_MAX];
+    short stand_animation[MAX_CMAP_TYPES];
+    short enlargement[MAX_CMAP_TYPES];
+    short replacement[MAX_CMAP_TYPES];
 
-    short broken_animation[CMAP_TYPE_MAX];
-    short broken_enlargement[CMAP_TYPE_MAX];
-    short broken_replacement[CMAP_TYPE_MAX];
+    short broken_animation[MAX_CMAP_TYPES];
+    short broken_enlargement[MAX_CMAP_TYPES];
+    short broken_replacement[MAX_CMAP_TYPES];
 
-    boolean included_in_default_tileset_cmap[CMAP_TYPE_MAX];    /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
-    uchar base_default_tileset_cmap[CMAP_TYPE_MAX];             /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
+    boolean included_in_default_tileset_cmap[MAX_CMAP_TYPES];    /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
+    uchar base_default_tileset_cmap[MAX_CMAP_TYPES];             /* Note that these go according to the numbering of cmaps in default_tileset, not internal cmaps */
 };
 
 /* Variation definitions */

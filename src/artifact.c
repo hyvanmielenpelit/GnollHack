@@ -1576,9 +1576,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
             }
 			else 
 			{
-                int drain = monhp_per_lvl(mdef);
+                int drain = monbasehp_per_lvl(mdef);
 
-                *dmgptr += (double)drain;
+                *dmgptr += (double)drain + monhpadj_per_lvl(mdef);
                 mdef->mbasehpmax -= drain;
                 mdef->m_lev--;
 				update_mon_maxhp(mdef);
@@ -2072,10 +2072,11 @@ int* adtyp_ptr; /* return value is the type of damage caused */
 				else 
 				{
 					*adtyp_ptr = AD_DRLI;
-					int drain = monhp_per_lvl(mdef);
-					totaldamagedone += drain;
+					int drain = monbasehp_per_lvl(mdef);
+					int drain2 = (int)monhpadj_per_lvl(mdef);
+					totaldamagedone += drain + drain2;
 					mdef->mbasehpmax -= drain;
-					mdef->mhpmax -= drain;
+					mdef->mhpmax -= (drain + drain2);
 					if (mdef->mhpmax < 1)
 						mdef->mhpmax = 1, lethaldamage = TRUE;
 					mdef->m_lev--;

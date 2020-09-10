@@ -1063,37 +1063,42 @@ cure_sickness_here:
             wake = FALSE;
         break;
     case SPE_DRAIN_LEVEL:
-		res = 1;
-		if (disguised_mimic)
+    {
+        res = 1;
+        if (disguised_mimic)
             seemimic(mtmp);
-        
-		dmg = monhp_per_lvl(mtmp);
-        
-		if (resists_drli(mtmp)) 
-		{
-            m_shieldeff(mtmp);
-        } 
-		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp)) 
-		{
-			double damage = adjust_damage(dmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
 
-			deduct_monster_hp(mtmp, damage);
-            mtmp->mbasehpmax -= (int)floor(damage);
-			update_mon_maxhp(mtmp);
+        int basedmg = monbasehp_per_lvl(mtmp);
+        dmg = basedmg + (int)monhpadj_per_lvl(mtmp);
+
+        if (resists_drli(mtmp))
+        {
+            m_shieldeff(mtmp);
+        }
+        else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, 0, dmg, AD_DRLI, NOTELL) && !DEADMONSTER(mtmp))
+        {
+            double damage = adjust_damage(dmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
+            double bdamage = adjust_damage(basedmg, origmonst, mtmp, AD_DRLI, ADFLAGS_SPELL_DAMAGE);
+
+            deduct_monster_hp(mtmp, damage);
+            mtmp->mbasehpmax -= (int)floor(bdamage);
+            mtmp->mhpmax -= (int)floor(damage);
 
             /* die if already level 0, regardless of hit points */
-            if (DEADMONSTER(mtmp) || mtmp->mhpmax <= 0 || mtmp->m_lev < 1) 
-			{
+            if (DEADMONSTER(mtmp) || mtmp->mhpmax <= 0 || mtmp->m_lev < 1)
+            {
                 killed(mtmp);
-            } 
-			else 
-			{
+            }
+            else
+            {
                 mtmp->m_lev--;
                 if (canseemon(mtmp))
                     pline("%s suddenly seems weaker!", Monnam(mtmp));
             }
+            update_mon_maxhp(mtmp);
         }
         break;
+    }
     case WAN_NOTHING:
         wake = FALSE;
         break;

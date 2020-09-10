@@ -1005,88 +1005,88 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-down",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-down-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-down-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-up-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-left-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-down-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-down-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-up-right",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     },
     {
         "gnomish-mines-wall-autodraw-down-up-left",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
-        S_vwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF
+        S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     }, 
 };
 
@@ -1670,7 +1670,7 @@ short animidx;
             return glyph2tile[i + GLYPH_OBJ_OFF];
     }
 
-    for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
+    for (int cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
     {
         for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
         {
@@ -1712,7 +1712,7 @@ short animidx;
     }
 
     /* Explosion */
-    for (int i = 0; i < EXPL_MAX; i++)
+    for (int i = 0; i < MAX_EXPLOSIONS; i++)
     {
         if (explosion_type_definitions[i].animation == animidx)
             return glyph2tile[i * MAX_EXPLOSION_CHARS + GLYPH_EXPLODE_OFF];
@@ -1800,7 +1800,7 @@ short enlidx, enl_anim_tile_idx;
             return glyph2tile[i + GLYPH_OBJ_OFF];
     }
 
-    for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
+    for (int cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
     {
 
         for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
@@ -1930,7 +1930,7 @@ short replacement_idx;
             return glyph2tile[i + GLYPH_OBJ_OFF];
     }
 
-    for (int cmap_idx = 0; cmap_idx < CMAP_TYPE_MAX; cmap_idx++)
+    for (int cmap_idx = 0; cmap_idx < MAX_CMAP_TYPES; cmap_idx++)
     {
         for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
         {

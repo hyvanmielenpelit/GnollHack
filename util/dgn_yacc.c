@@ -1579,7 +1579,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 150 "dgn_comp.y"
     {
-			if((yyvsp[(3) - (3)].i) && ((yyvsp[(3) - (3)].i) < 0 || (yyvsp[(3) - (3)].i) >= CMAP_TYPE_MAX))
+			if((yyvsp[(3) - (3)].i) && ((yyvsp[(3) - (3)].i) < 0 || (yyvsp[(3) - (3)].i) >= MAX_CMAP_TYPES))
 			    yyerror("Illegal tileset - ignoring!");
 			else
 			{

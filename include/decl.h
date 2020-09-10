@@ -290,7 +290,7 @@ enum explosion_types {
     EXPL_MAGICAL = 4,
     EXPL_FIERY = 5,
     EXPL_FROSTY = 6,
-    EXPL_MAX = 7
+    MAX_EXPLOSIONS = 7
 };
 
 struct explosion_type_definition {
@@ -300,7 +300,7 @@ struct explosion_type_definition {
     enum sfx_sound_types sfx;
 };
 
-E NEARDATA struct explosion_type_definition explosion_type_definitions[EXPL_MAX];
+E NEARDATA struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS];
 
 E NEARDATA struct obj *uchain; /* defined only when punished */
 E NEARDATA struct obj *uball;

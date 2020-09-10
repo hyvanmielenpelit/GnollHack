@@ -1227,17 +1227,24 @@ struct obj *otmp;
         {      /* If blessed, increase all; if not, try up to */
             int itmp; /* 6 times to find one which can be increased. */
             int added_abilities = 0;
+            int prev_ability = -1;
+            int abilities_to_increase = (otmp->blessed ? 2 : 1);
             i = -1;   /* increment to 0 */
-            for (ii = A_MAX; ii > 0; ii--) 
-            {
-                i = rn2(A_MAX); // (otmp->blessed ? i + 1 : rn2(A_MAX));
-                /* only give "your X is already as high as it can get"
-                   message on last attempt (except blessed potions) */
-                itmp = (ii == 1 ? 0 : -1); // (otmp->blessed || ii == 1) ? 0 : -1;
-                if (adjattrib(i, 1, itmp))
-                    added_abilities++;
 
-                if (added_abilities >= (otmp->blessed ? 2 : 1))
+            for (int cnt = 0; cnt < 10; cnt++)
+            {
+                do
+                {
+                    i = rn2(A_MAX);
+                } 
+                while (i == prev_ability);
+
+                if (adjattrib(i, 1, -1))
+                {
+                    prev_ability = i;
+                    added_abilities++;
+                }
+                if (added_abilities >= abilities_to_increase)
                     break;
             }
         }

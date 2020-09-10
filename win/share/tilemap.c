@@ -179,7 +179,7 @@ int set, entry;
     /* explosions */
     tilenum = MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS;
     i = entry - tilenum;
-    if (i < (MAX_EXPLOSION_CHARS * EXPL_MAX)) {
+    if (i < (MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS)) {
         if (set == OTH_GLYPH) {
             static const char *explosion_types[] = {
                 /* hack.h */
@@ -191,7 +191,7 @@ int set, entry;
             return buf;
         }
     }
-    tilenum += (MAX_EXPLOSION_CHARS * EXPL_MAX);
+    tilenum += (MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS);
 
     i = entry - tilenum;
     if (i < (MAX_ZAP_CHARS* NUM_ZAP)) {
@@ -328,7 +328,7 @@ init_tilemap()
     }
     lastobjtile = tilenum - 1;
 
-    for(int j = 0; j < CMAP_TYPE_MAX; j++)
+    for(int j = 0; j < MAX_CMAP_TYPES; j++)
     {
         for (i = 0; i < (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS); i++) {
             tilemap[GLYPH_CMAP_OFF + i] = tilenum;
@@ -343,7 +343,7 @@ init_tilemap()
         }
     }
 
-    for (i = 0; i < (MAX_EXPLOSION_CHARS * EXPL_MAX); i++) {
+    for (i = 0; i < (MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS); i++) {
         tilemap[GLYPH_EXPLODE_OFF + i] = tilenum;
         tilenum++;
         while (conditionals[condnum].sequence == OTH_GLYPH

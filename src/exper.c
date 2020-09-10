@@ -372,7 +372,8 @@ const char *drainer; /* cause of death, if drain should be fatal */
     play_sfx_sound(SFX_LOSE_LEVEL);
     if (u.ulevel > 1)
     {
-        pline("%s level %d.", Goodbye(), u.ulevel--);
+        pline("%s level %d.", Goodbye(), u.ulevel);
+        u.ulevel--;
         /* remove intrinsic abilities */
         adjabil(u.ulevel + 1, u.ulevel);
         reset_rndmonst(NON_PM); /* new monster selection */
@@ -413,7 +414,7 @@ const char *drainer; /* cause of death, if drain should be fatal */
         u.uexp = newuexp(u.ulevel) - 1;
 
     if (Upolyd) {
-        num = monhp_per_lvl(&youmonst);
+        num = monbasehp_per_lvl(&youmonst);
         u.basemhmax -= num;
         u.mh -= num;
 		updatemaxhp();
@@ -455,7 +456,7 @@ boolean incr; /* true iff via incremental experience growth */
     /* increase hit points (when polymorphed, do monster form first
        in order to retain normal human/whatever increase for later) */
     if (Upolyd) {
-        hpinc = monhp_per_lvl(&youmonst);
+        hpinc = monbasehp_per_lvl(&youmonst);
         u.basemhmax += hpinc;
         u.mh += hpinc;
 	}

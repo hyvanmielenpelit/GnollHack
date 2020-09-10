@@ -189,7 +189,7 @@ struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
     {"petrification", CLR_BROWN, NO_ANIMATION}
 };
 
-struct explosion_type_definition explosion_type_definitions[EXPL_MAX] = {
+struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
     {"dark", CLR_BLACK, NO_ANIMATION, SFX_EXPLOSION_DARK},
     {"noxious", CLR_GREEN, NO_ANIMATION, SFX_EXPLOSION_NOXIOUS},
     {"muddy", CLR_BROWN, NO_ANIMATION, SFX_EXPLOSION_MUDDY },

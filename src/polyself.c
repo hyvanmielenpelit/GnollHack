@@ -863,17 +863,20 @@ int mntmp;
      */
     mlvl = (int) mons[mntmp].mlevel;
 	int hp = 1;
-    if (youmonst.data->mlet == S_DRAGON && mntmp >= PM_GRAY_DRAGON) {
-        hp= (In_endgame(&u.uz) ? (8 * mlvl) : (d(mlvl, 8))) + constitution_hp_bonus(ACURR(A_CON)) * mlvl;
+    if (youmonst.data->mlet == S_DRAGON && mntmp >= PM_GRAY_DRAGON) 
+    {
+        hp = (int)((In_endgame(&u.uz) ? (8.0 * (double)mlvl) : ((double)d(mlvl, 8))) + constitution_hp_bonus(ACURR(A_CON)) * (double)mlvl);
 //    } else if (is_golem(youmonst.data)) {
 //        hp = golemhp(mntmp);
-    } else {
+    } 
+    else
+    {
         if (!mlvl)
 		{
-            hp = rnd(4) + constitution_hp_bonus(ACURR(A_CON)) / 2;
+            hp = rnd(4) + (int)(constitution_hp_bonus(ACURR(A_CON)) / 2.0);
 		}
 		else
-            hp = d(mlvl, 8) + constitution_hp_bonus(ACURR(A_CON)) * mlvl;
+            hp = d(mlvl, 8) + (int)(constitution_hp_bonus(ACURR(A_CON)) * (double)mlvl);
         /*
         if (is_home_elemental(&mons[mntmp]))
             hp *= 2;

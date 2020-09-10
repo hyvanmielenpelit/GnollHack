@@ -2873,8 +2873,8 @@ nhglyph2charcolor(short g, uchar *ch, int *color)
      } 
      else if ((offset = (g - GLYPH_CMAP_OFF)) >= 0) 
      { /* cmap */
-        int cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
-        int idx = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM + SYM_OFF_P;
+        int cmap_type_idx = offset / NUM_CMAP_TYPE_CHARS;
+        int idx = offset - cmap_type_idx * NUM_CMAP_TYPE_CHARS + SYM_OFF_P;
         *ch = showsyms[idx];
         cmap_color(offset, cmap_type_idx);
      } 

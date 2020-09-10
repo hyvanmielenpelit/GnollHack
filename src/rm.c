@@ -4,7 +4,7 @@
 
 #include "hack.h"
 
-const char* cmap_type_names[CMAP_TYPE_MAX] = {
+const char* cmap_type_names[MAX_CMAP_TYPES] = {
     "normal", "gnomish mines", "gehennom",  "ludious", "undead", "swamp", "gehennom alternative", "modron",
     "bovine", "sokoban",       "cityscape", "sewers",  "maze",   "tower", "caverns",              "astral"
 };

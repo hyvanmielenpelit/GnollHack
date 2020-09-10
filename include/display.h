@@ -249,12 +249,12 @@
  *
  * cmap         One for each entry in the character map for each dungeon type. 
  *              The character map is the dungeon features and other miscellaneous things.
- *              Count: MAX_CMAPPED_CHARS * CMAP_TYPE_MAX
+ *              Count: MAX_CMAPPED_CHARS * MAX_CMAP_TYPES
  *
  * explosions   A set of nine for each of the following seven explosion types:
  *                   dark, noxious, muddy, wet, magical, fiery, frosty.
  *              The nine positions represent those surrounding the hero.
- *              Count: MAX_EXPLOSION_CHARS * EXPL_MAX (EXPL_MAX is defined in hack.h)
+ *              Count: MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS (MAX_EXPLOSIONS is defined in hack.h)
  *
  * zap beam     A set of four (there are four directions) for each beam type.
  *              The beam type is shifted over 2 positions and the direction
@@ -284,7 +284,7 @@
  */
 #define NUM_PLAYER_GLYPH_LEVELS 1
 #define NUM_PLAYER_CHARACTERS NUM_ROLES * NUM_RACES * 2 * 3 * NUM_PLAYER_GLYPH_LEVELS
-#define CMAP_TYPE_CHAR_NUM (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS - MAX_SWALLOW_CHARS)
+#define NUM_CMAP_TYPE_CHARS (MAX_CMAPPED_CHARS - MAX_EXPLOSION_CHARS - MAX_SWALLOW_CHARS)
 #define NUM_INVIS_GLYPHS 1
 #define NUM_MISSILE_DIRS 8
 
@@ -320,11 +320,11 @@
 #define GLYPH_OBJ_OFF     (NUM_INVIS_GLYPHS + GLYPH_INVIS_OFF)
 #define GLYPH_OBJ_MISSILE_OFF    (NUM_OBJECTS + GLYPH_OBJ_OFF)
 #define GLYPH_CMAP_OFF    (NUM_OBJECTS * NUM_MISSILE_DIRS + GLYPH_OBJ_MISSILE_OFF)
-#define GLYPH_BROKEN_CMAP_OFF    (CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX + GLYPH_CMAP_OFF)
-#define GLYPH_CMAP_VARIATION_OFF    (CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX + GLYPH_BROKEN_CMAP_OFF)
-#define GLYPH_BROKEN_CMAP_VARIATION_OFF (MAX_VARIATIONS * CMAP_TYPE_MAX  + GLYPH_CMAP_VARIATION_OFF)
-#define GLYPH_EXPLODE_OFF (MAX_VARIATIONS * CMAP_TYPE_MAX  + GLYPH_BROKEN_CMAP_VARIATION_OFF)
-#define GLYPH_ZAP_OFF     ((MAX_EXPLOSION_CHARS * EXPL_MAX) + GLYPH_EXPLODE_OFF)
+#define GLYPH_BROKEN_CMAP_OFF    (NUM_CMAP_TYPE_CHARS * MAX_CMAP_TYPES + GLYPH_CMAP_OFF)
+#define GLYPH_CMAP_VARIATION_OFF    (NUM_CMAP_TYPE_CHARS * MAX_CMAP_TYPES + GLYPH_BROKEN_CMAP_OFF)
+#define GLYPH_BROKEN_CMAP_VARIATION_OFF (MAX_VARIATIONS * MAX_CMAP_TYPES  + GLYPH_CMAP_VARIATION_OFF)
+#define GLYPH_EXPLODE_OFF (MAX_VARIATIONS * MAX_CMAP_TYPES  + GLYPH_BROKEN_CMAP_VARIATION_OFF)
+#define GLYPH_ZAP_OFF     ((MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS) + GLYPH_EXPLODE_OFF)
 #define GLYPH_SWALLOW_OFF ((NUM_ZAP * MAX_ZAP_CHARS) + GLYPH_ZAP_OFF)
 #define GLYPH_WARNING_OFF ((NUM_MONSTERS * MAX_SWALLOW_CHARS) + GLYPH_SWALLOW_OFF)
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
@@ -486,8 +486,8 @@
 
 #define base_cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + GLYPH_CMAP_OFF)
 #define base_cmap_variation_to_glyph(var_idx) ((int) (var_idx) + GLYPH_CMAP_VARIATION_OFF)
-#define cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF)
-#define broken_cmap_to_glyph(bcmap_idx) ((int) (bcmap_idx) + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM + GLYPH_BROKEN_CMAP_OFF)
+#define cmap_to_glyph(cmap_idx) ((int) (cmap_idx) + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF)
+#define broken_cmap_to_glyph(bcmap_idx) ((int) (bcmap_idx) + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF)
 #define cmap_variation_to_glyph(var_idx) ((int) (var_idx)+ get_current_cmap_type_index() * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF)
 #define broken_cmap_variation_to_glyph(var_idx) ((int) (var_idx)+ get_current_cmap_type_index() * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF)
 
@@ -670,19 +670,19 @@
     ((abs(glyph)) >= GLYPH_ARTIFACT_MISSILE_OFF && (abs(glyph)) < (GLYPH_ARTIFACT_MISSILE_OFF + NUM_ARTIFACTS * NUM_MISSILE_DIRS))
 
 #define glyph_is_cmap(glyph) \
-    ((abs(glyph)) >= GLYPH_CMAP_OFF && (abs(glyph)) < (GLYPH_CMAP_OFF + CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX))
+    ((abs(glyph)) >= GLYPH_CMAP_OFF && (abs(glyph)) < (GLYPH_CMAP_OFF + NUM_CMAP_TYPE_CHARS * MAX_CMAP_TYPES))
 #define glyph_is_broken_cmap(glyph) \
-    ((abs(glyph)) >= GLYPH_BROKEN_CMAP_OFF && (abs(glyph)) < (GLYPH_BROKEN_CMAP_OFF + CMAP_TYPE_CHAR_NUM * CMAP_TYPE_MAX))
+    ((abs(glyph)) >= GLYPH_BROKEN_CMAP_OFF && (abs(glyph)) < (GLYPH_BROKEN_CMAP_OFF + NUM_CMAP_TYPE_CHARS * MAX_CMAP_TYPES))
 #define glyph_is_cmap_variation(glyph) \
-    ((abs(glyph)) >= GLYPH_CMAP_VARIATION_OFF && (abs(glyph)) < (GLYPH_CMAP_VARIATION_OFF + MAX_VARIATIONS * CMAP_TYPE_MAX))
+    ((abs(glyph)) >= GLYPH_CMAP_VARIATION_OFF && (abs(glyph)) < (GLYPH_CMAP_VARIATION_OFF + MAX_VARIATIONS * MAX_CMAP_TYPES))
 #define glyph_is_broken_cmap_variation(glyph) \
-    ((abs(glyph)) >= GLYPH_BROKEN_CMAP_VARIATION_OFF && (abs(glyph)) < (GLYPH_BROKEN_CMAP_VARIATION_OFF + MAX_VARIATIONS * CMAP_TYPE_MAX))
+    ((abs(glyph)) >= GLYPH_BROKEN_CMAP_VARIATION_OFF && (abs(glyph)) < (GLYPH_BROKEN_CMAP_VARIATION_OFF + MAX_VARIATIONS * MAX_CMAP_TYPES))
 #define glyph_is_cmap_or_cmap_variation(glyph) \
     (glyph_is_cmap(glyph) || glyph_is_broken_cmap(glyph) || glyph_is_cmap_variation(glyph) || glyph_is_broken_cmap_variation(glyph))
 
 #define glyph_is_explosion(glyph)   \
     ((abs(glyph)) >= GLYPH_EXPLODE_OFF \
-     && (abs(glyph)) < (GLYPH_EXPLODE_OFF + (MAX_EXPLOSION_CHARS * EXPL_MAX)))
+     && (abs(glyph)) < (GLYPH_EXPLODE_OFF + (MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS)))
 #define glyph_is_zap(glyph)   \
     ((abs(glyph)) >= GLYPH_ZAP_OFF \
      && (abs(glyph)) < (GLYPH_ZAP_OFF + (NUM_ZAP * MAX_ZAP_CHARS)))
@@ -694,8 +694,8 @@
      && (abs(glyph)) < (GLYPH_WARNING_OFF + WARNCOUNT))
 
 #define glyph_is_cmap_boulder(glyph) \
-    ((glyph_is_cmap(glyph) && (((abs(glyph)) - GLYPH_CMAP_OFF) % CMAP_TYPE_CHAR_NUM) == S_extra_boulder) \
-     || (glyph_is_cmap_variation(glyph) && defsym_variations[max(0, (((abs(glyph)) - GLYPH_CMAP_VARIATION_OFF) % CMAP_TYPE_CHAR_NUM))].base_screen_symbol == S_extra_boulder)  \
+    ((glyph_is_cmap(glyph) && (((abs(glyph)) - GLYPH_CMAP_OFF) % NUM_CMAP_TYPE_CHARS) == S_extra_boulder) \
+     || (glyph_is_cmap_variation(glyph) && defsym_variations[max(0, (((abs(glyph)) - GLYPH_CMAP_VARIATION_OFF) % NUM_CMAP_TYPE_CHARS))].base_screen_symbol == S_extra_boulder)  \
     )
 
 /* Note: excludes missiles */
@@ -890,10 +890,10 @@
 
 
 #define glyph_to_cmap(glyph) \
-    (glyph_is_cmap(glyph) ? (abs(glyph) < GLYPH_CMAP_OFF + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM ? (abs(glyph)) - GLYPH_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF) : S_unexplored)
+    (glyph_is_cmap(glyph) ? (abs(glyph) < GLYPH_CMAP_OFF + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS ? (abs(glyph)) - GLYPH_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_CMAP_OFF) : S_unexplored)
 
 #define glyph_to_broken_cmap(glyph) \
-    (glyph_is_broken_cmap(glyph) ? (abs(glyph) < GLYPH_BROKEN_CMAP_OFF + get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM ? (abs(glyph)) - GLYPH_BROKEN_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_BROKEN_CMAP_OFF) : S_unexplored)
+    (glyph_is_broken_cmap(glyph) ? (abs(glyph) < GLYPH_BROKEN_CMAP_OFF + get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS ? (abs(glyph)) - GLYPH_BROKEN_CMAP_OFF : (abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_BROKEN_CMAP_OFF) : S_unexplored)
 
 #define glyph_to_cmap_variation(glyph) \
     (glyph_is_cmap_variation(glyph) ? (abs(glyph) < GLYPH_CMAP_VARIATION_OFF + get_current_cmap_type_index() * MAX_VARIATIONS ? (abs(glyph)) - GLYPH_CMAP_VARIATION_OFF : (abs(glyph)) - get_current_cmap_type_index() * MAX_VARIATIONS - GLYPH_CMAP_VARIATION_OFF) : 0)
@@ -914,7 +914,7 @@
 
 #define glyph_to_trap(glyph) \
     (glyph_is_trap(glyph) ? (glyph_is_cmap(glyph) ? defsym_to_trap(generic_glyph_to_cmap(glyph)) : glyph_is_broken_cmap(glyph) ? defsym_to_trap(glyph_to_broken_cmap(glyph)) : glyph_is_cmap_variation(glyph) ? defsym_to_trap(defsym_variations[glyph_to_cmap_variation(glyph)].base_screen_symbol) : glyph_is_broken_cmap_variation(glyph) ? defsym_to_trap(defsym_variations[glyph_to_broken_cmap_variation(glyph)].base_screen_symbol) : NO_TRAP) : NO_TRAP)
-//      ((int) defsym_to_trap((abs(glyph)) - get_current_cmap_type_index() * CMAP_TYPE_CHAR_NUM - GLYPH_CMAP_OFF)) \
+//      ((int) defsym_to_trap((abs(glyph)) - get_current_cmap_type_index() * NUM_CMAP_TYPE_CHARS - GLYPH_CMAP_OFF)) \
 //                          : NO_GLYPH)
 
 #define glyph_to_swallow(glyph) \

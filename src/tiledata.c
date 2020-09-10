@@ -786,7 +786,7 @@ uchar* tilemapflags;
         tile_section_name = (spset == 0 ? "cmap" : "broken-cmap");
         int base_glyph_offset = (spset == 0 ? GLYPH_CMAP_OFF : GLYPH_BROKEN_CMAP_OFF);
         int base_variation_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
-        int num_cmaps = min(CMAP_TYPE_MAX, max(1, tsd->number_of_cmaps));
+        int num_cmaps = min(MAX_CMAP_TYPES, max(1, tsd->number_of_cmaps));
 
         for (int tileset_cmap_idx = 0; tileset_cmap_idx < num_cmaps; tileset_cmap_idx++)
         {
@@ -796,7 +796,7 @@ uchar* tilemapflags;
             else
                 Sprintf(namebuf, "unnamed-cmap-%d", tileset_cmap_idx);
 
-            for (int i = 0; i < CMAP_TYPE_CHAR_NUM; i++)
+            for (int i = 0; i < NUM_CMAP_TYPE_CHARS; i++)
             {
                 if (tileset_cmap_idx > 0)
                 {
@@ -826,12 +826,12 @@ uchar* tilemapflags;
                 else if (process_style == 1)
                 {
                     /* Go through all internal cmaps */
-                    for (int k = 0; k < CMAP_TYPE_MAX; k++)
+                    for (int k = 0; k < MAX_CMAP_TYPES; k++)
                     {
                         /* Write this tileset_cmap_idx for all internal CMAPs it is used for */
                         if (tsd->cmap_mapping[k] == tileset_cmap_idx)
                         {
-                            glyph_offset = base_glyph_offset + k * CMAP_TYPE_CHAR_NUM;
+                            glyph_offset = base_glyph_offset + k * NUM_CMAP_TYPE_CHARS;
                             tilemaparray[i + glyph_offset] = tile_count;
                             if (i == S_extra_boulder)
                             {
@@ -843,7 +843,7 @@ uchar* tilemapflags;
 
                     /*
 
-                        for (int k = 1; k < CMAP_TYPE_MAX; k++)
+                        for (int k = 1; k < MAX_CMAP_TYPES; k++)
                         {
                             int tileset_cmap_idx2 = tsd->cmap_mapping[k];
                             if (tileset_cmap_idx2 > 0 && tileset_cmap_idx2 != tileset_cmap_idx)
@@ -855,7 +855,7 @@ uchar* tilemapflags;
                     if (num_cmaps > 1)
                     {
                         /* copy an out-limited tiles to all limited cmaps */
-                        for (int k = 0; k < CMAP_TYPE_MAX; k++)
+                        for (int k = 0; k < MAX_CMAP_TYPES; k++)
                         {
                             int tileset_cmap_idx2 = tsd->cmap_mapping[k];
                             if (tileset_cmap_idx2 > 0 && tileset_cmap_idx2 != tileset_cmap_idx)
@@ -868,7 +868,7 @@ uchar* tilemapflags;
                                     || (tsd->cmap_limitation_style[tileset_cmap_idx2] == 3 && (i < S_stone || i > S_dnladder) && tileset_cmap_idx == 0)
                                     )
                                 {
-                                    int glyph_offset2 = base_glyph_offset + k * CMAP_TYPE_CHAR_NUM;
+                                    int glyph_offset2 = base_glyph_offset + k * NUM_CMAP_TYPE_CHARS;
                                     tilemaparray[i + glyph_offset2] = tile_count;
                                     if (i == S_extra_boulder)
                                     {
@@ -890,7 +890,7 @@ uchar* tilemapflags;
     {
         tile_section_name = (spset == 0 ? "cmap-variation" : "broken-cmap-variation");
         int base_glyph_offset = (spset == 0 ? GLYPH_CMAP_VARIATION_OFF : GLYPH_BROKEN_CMAP_VARIATION_OFF);
-        int num_cmaps = (min(CMAP_TYPE_MAX, max(1, tsd->number_of_cmaps)));
+        int num_cmaps = (min(MAX_CMAP_TYPES, max(1, tsd->number_of_cmaps)));
         for (int tileset_cmap_idx = 0; tileset_cmap_idx < num_cmaps; tileset_cmap_idx++)
         {
             char namebuf[BUFSZ];
@@ -929,7 +929,7 @@ uchar* tilemapflags;
                 else if (process_style == 1)
                 {
                     /* Go through all internal cmaps */
-                    for (int k = 0; k < CMAP_TYPE_MAX; k++)
+                    for (int k = 0; k < MAX_CMAP_TYPES; k++)
                     {
                         /* Write this tileset_cmap_idx for all internal CMAPs it is used for */
                         if (tsd->cmap_mapping[k] == tileset_cmap_idx)
@@ -942,7 +942,7 @@ uchar* tilemapflags;
                     if (num_cmaps > 1)
                     {
                         /* copy an out-limited tile to all limited cmaps */
-                        for (int k = 0; k < CMAP_TYPE_MAX; k++)
+                        for (int k = 0; k < MAX_CMAP_TYPES; k++)
                         {
                             int tileset_cmap_idx2 = tsd->cmap_mapping[k];
                             if (tileset_cmap_idx2 > 0 && tileset_cmap_idx2 != tileset_cmap_idx)
@@ -1030,7 +1030,7 @@ uchar* tilemapflags;
                     }
                     else if (process_style == 1)
                     {
-                        for (int j = 0; j < EXPL_MAX; j++)
+                        for (int j = 0; j < MAX_EXPLOSIONS; j++)
                         {
                             glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
                             tilemaparray[i + glyph_offset] = tile_count;
@@ -1041,7 +1041,7 @@ uchar* tilemapflags;
             }
             else
             {
-                for (int j = 0; j < EXPL_MAX; j++)
+                for (int j = 0; j < MAX_EXPLOSIONS; j++)
                 {
                     const char* explosion_name = explosion_type_definitions[j].name;
                     for (int i = 0; i < MAX_EXPLOSION_CHARS; i++)
@@ -1838,19 +1838,19 @@ uchar* tilemapflags;
         }
 
         /* CMAP */
-        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        for (int cmap_type_idx = 0; cmap_type_idx < MAX_CMAP_TYPES; cmap_type_idx++)
         {
             for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
             {
                 if (defsyms[i].replacement[cmap_type_idx])
                 {
-                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF;
+                    int glyph = i + cmap_type_idx * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF;
                     short tile = glyph2tile[glyph];
                     tile2replacement[tile] = defsyms[i].replacement[cmap_type_idx];
                 }
                 if (defsyms[i].broken_replacement[cmap_type_idx])
                 {
-                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_BROKEN_CMAP_OFF;
+                    int glyph = i + cmap_type_idx * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF;
                     short tile = glyph2tile[glyph];
                     tile2replacement[tile] = defsyms[i].broken_replacement[cmap_type_idx];
                 }
@@ -1858,7 +1858,7 @@ uchar* tilemapflags;
         }
 
         /* CMAP Variation */
-        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        for (int cmap_type_idx = 0; cmap_type_idx < MAX_CMAP_TYPES; cmap_type_idx++)
         {
             for (int i = 0; i < MAX_VARIATIONS; i++)
             {
@@ -2016,19 +2016,19 @@ uchar* tilemapflags;
         }
 
         /* CMAP */
-        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        for (int cmap_type_idx = 0; cmap_type_idx < MAX_CMAP_TYPES; cmap_type_idx++)
         {
             for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
             {
                 if (defsyms[i].stand_animation[cmap_type_idx])
                 {
-                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF;
+                    int glyph = i + cmap_type_idx * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF;
                     short tile = glyph2tile[glyph];
                     tile2animation[tile] = defsyms[i].stand_animation[cmap_type_idx];
                 }
                 if (defsyms[i].broken_animation[cmap_type_idx])
                 {
-                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_BROKEN_CMAP_OFF;
+                    int glyph = i + cmap_type_idx * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF;
                     short tile = glyph2tile[glyph];
                     tile2animation[tile] = defsyms[i].broken_animation[cmap_type_idx];
                 }
@@ -2036,7 +2036,7 @@ uchar* tilemapflags;
         }
 
         /* CMAP Variation */
-        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        for (int cmap_type_idx = 0; cmap_type_idx < MAX_CMAP_TYPES; cmap_type_idx++)
         {
             for (int i = 0; i < MAX_VARIATIONS; i++)
             {
@@ -2084,7 +2084,7 @@ uchar* tilemapflags;
         }
 
         /* Explosion */
-        for (int i = 0; i < EXPL_MAX; i++)
+        for (int i = 0; i < MAX_EXPLOSIONS; i++)
         {
             if (explosion_type_definitions[i].animation)
             {
@@ -2259,19 +2259,19 @@ uchar* tilemapflags;
         }
 
         /* CMAP */
-        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        for (int cmap_type_idx = 0; cmap_type_idx < MAX_CMAP_TYPES; cmap_type_idx++)
         {
             for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
             {
                 if (defsyms[i].enlargement[cmap_type_idx])
                 {
-                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_CMAP_OFF;
+                    int glyph = i + cmap_type_idx * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF;
                     short tile = glyph2tile[glyph];
                     tile2enlargement[tile] = defsyms[i].enlargement[cmap_type_idx];
                 }
                 if (defsyms[i].broken_enlargement[cmap_type_idx])
                 {
-                    int glyph = i + cmap_type_idx * CMAP_TYPE_CHAR_NUM + GLYPH_BROKEN_CMAP_OFF;
+                    int glyph = i + cmap_type_idx * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF;
                     short tile = glyph2tile[glyph];
                     tile2enlargement[tile] = defsyms[i].broken_enlargement[cmap_type_idx];
                 }
@@ -2279,7 +2279,7 @@ uchar* tilemapflags;
         }
 
         /* CMAP Variation */
-        for (int cmap_type_idx = 0; cmap_type_idx < CMAP_TYPE_MAX; cmap_type_idx++)
+        for (int cmap_type_idx = 0; cmap_type_idx < MAX_CMAP_TYPES; cmap_type_idx++)
         {
             for (int i = 0; i < MAX_VARIATIONS; i++)
             {

@@ -1927,33 +1927,71 @@ boolean ghostly;
 }
 
 /* amount of HP to lose from level drain (or gain from Stormbringer) */
-int
+double
 monhp_per_lvl(mon)
 struct monst *mon;
 {
     struct permonst *ptr = mon->data;
-    int hp = rnd(8) + constitution_hp_bonus(m_acurr(mon, A_CON)); /* default is d8 */
+    double hp = (double)rnd(8) + constitution_hp_bonus(m_acurr(mon, A_CON)); /* default is d8 */
+
+	if (!mon->m_lev) 
+    {
+        /* level 0 monsters use 1d4 instead of Nd8 */
+        hp = rnd(4) + (int)(constitution_hp_bonus(m_acurr(mon, A_CON)) / 2.0);
+    }
+
+	if (hp < 1)
+		hp = 1;
+
+    return hp;
+}
+
+int
+monbasehp_per_lvl(mon)
+struct monst* mon;
+{
+    struct permonst* ptr = mon->data;
+    int hp = rnd(8); /* default is d8 */
 
 #if 0
     /* like newmonhp, but home elementals are ignored, riders use normal d8 */
     if (is_golem(ptr)) {
         /* draining usually won't be applicable for these critters */
-        hp = golemhp(monsndx(ptr)) / (int) ptr->mlevel;
-//    } else if (ptr->mlevel > MAX_MONSTER_LEVEL) {
-        /* arbitrary; such monsters won't be involved in draining anyway */
-//        hp = 4 + rnd(4); /* 5..8 */
-//    } else if (ptr->mlet == S_DRAGON && monsndx(ptr) >= PM_GRAY_DRAGON) {
-        /* adult dragons; newmonhp() uses In_endgame(&u.uz) ? 8 : 4 + rnd(4)
-         */
-//        hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* 4..8 */
-    } else 
-#endif		
-	if (!mon->m_lev) {
-        /* level 0 monsters use 1d4 instead of Nd8 */
-        hp = rnd(4) + constitution_hp_bonus(m_acurr(mon, A_CON)) / 2;
+        hp = golemhp(monsndx(ptr)) / (int)ptr->mlevel;
+        //    } else if (ptr->mlevel > MAX_MONSTER_LEVEL) {
+                /* arbitrary; such monsters won't be involved in draining anyway */
+        //        hp = 4 + rnd(4); /* 5..8 */
+        //    } else if (ptr->mlet == S_DRAGON && monsndx(ptr) >= PM_GRAY_DRAGON) {
+                /* adult dragons; newmonhp() uses In_endgame(&u.uz) ? 8 : 4 + rnd(4)
+                 */
+                 //        hp = rnd(8) + constitution_hp_bonus(mon->mcon); /* 4..8 */
     }
-	if (hp < 1)
-		hp = 1;
+    else
+#endif		
+        if (!mon->m_lev) {
+            /* level 0 monsters use 1d4 instead of Nd8 */
+            hp = rnd(4);
+        }
+    if (hp < 1)
+        hp = 1;
+
+    return hp;
+}
+
+double
+monhpadj_per_lvl(mon)
+struct monst* mon;
+{
+    struct permonst* ptr = mon->data;
+    double hp = constitution_hp_bonus(m_acurr(mon, A_CON)); /* default is d8 */
+	
+    if (!mon->m_lev) {
+        /* level 0 monsters use 1d4 instead of Nd8 */
+        hp = constitution_hp_bonus(m_acurr(mon, A_CON)) / 2;
+    }
+
+    if (hp < 0)
+        hp = 0;
 
     return hp;
 }

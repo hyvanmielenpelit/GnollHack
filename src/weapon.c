@@ -1447,10 +1447,10 @@ int dex;
 	return max(-3, (min(25, dex) - 9) / 2);
 }
 
-int constitution_hp_bonus(con)
+double constitution_hp_bonus(con)
 int con;
 {
-	return  max(-2, (min(25, con) - 7) / 2);
+	return  max(-2.0, (double)(min(25, con) - 7) / 2.0);
 }
 
 

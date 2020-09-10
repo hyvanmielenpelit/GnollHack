@@ -17,9 +17,9 @@ struct tileset_definition {
     uchar swallow_tile_style;    /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
 
     uchar number_of_cmaps;       /* 0 = 1 = one set ... X = X sets */
-    char* cmap_names[CMAP_TYPE_MAX]; /* names of the cmaps of this tileset */
-    uchar cmap_mapping[CMAP_TYPE_MAX]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps, e.g., 0 means that this tileset's cmap 0 is being used for GnollHack's internal cmap in question */
-    uchar cmap_limitation_style[CMAP_TYPE_MAX]; /* (not applicable for cmap 0) 0 = cmap has a full character set, 1 = has tiles marked in defsyms and defsym_variations arrays, base cmap also marked in those arrays (must be lower number than the current cmap), OBSOLETE: 2 = cmap has only wall tiles, base cmap is 0, 3 = cmap is a base cmap: it has all tiles between S_stone and S_dnladder, base cmap is 0 */
+    char* cmap_names[MAX_CMAP_TYPES]; /* names of the cmaps of this tileset */
+    uchar cmap_mapping[MAX_CMAP_TYPES]; /* mapping from the tilemaps's cmaps to GnollHack's internal cmaps, e.g., 0 means that this tileset's cmap 0 is being used for GnollHack's internal cmap in question */
+    uchar cmap_limitation_style[MAX_CMAP_TYPES]; /* (not applicable for cmap 0) 0 = cmap has a full character set, 1 = has tiles marked in defsyms and defsym_variations arrays, base cmap also marked in those arrays (must be lower number than the current cmap), OBSOLETE: 2 = cmap has only wall tiles, base cmap is 0, 3 = cmap is a base cmap: it has all tiles between S_stone and S_dnladder, base cmap is 0 */
     boolean has_all_explode_tiles; /* 0 = one set of explode tiles, 1 = separate explode tile for each case  */
     boolean has_all_zap_tiles; /* 0 = one set of zap tiles, 1 = separate zap tile for each case  */
     uchar player_tile_style; /* 0 = use base role monster tile,

@@ -148,7 +148,7 @@ desc		: DESCRIPTION ':' DESCRIPTOR
 		  }
 		| TILESET_ID ':' tileset_number
 		  {
-			if($<i>3 && ($<i>3 < 0 || $<i>3 >= CMAP_TYPE_MAX))
+			if($<i>3 && ($<i>3 < 0 || $<i>3 >= MAX_CMAP_TYPES))
 			    yyerror("Illegal tileset - ignoring!");
 			else
 			{

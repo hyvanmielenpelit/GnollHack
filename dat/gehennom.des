@@ -6,6 +6,7 @@
 
 MAZE: "valley", ' '
 FLAGS: noteleport,hardfloor,nommap
+TILESET: undead_tileset
 GEOMETRY:center,center
 MAP
 ----------------------------------------------------------------------------
@@ -361,6 +362,7 @@ TRAP:"magic",random
 #
 MAZE:"orcus",' '
 FLAGS: noteleport,shortsighted
+TILESET: undead_tileset
 GEOMETRY:right,center
 # A ghost town
 MAP
@@ -883,6 +885,7 @@ TRAP: "fire", random
 #
 MAZE:"sanctum", ' '
 FLAGS: noteleport,hardfloor,nommap
+TILESET: undead_tileset
 # This is outside the main map, below, so we must do it before adding
 # that map and anchoring coordinates to it. This extends the invisible
 # barrier up to the top row, which falls outside the drawn map.

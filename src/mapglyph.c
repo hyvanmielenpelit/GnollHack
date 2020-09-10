@@ -262,8 +262,8 @@ unsigned long *ospecial;
         }
         else
         {
-            cmap_type_idx = offset / CMAP_TYPE_CHAR_NUM;
-            cmap_offset = offset - cmap_type_idx * CMAP_TYPE_CHAR_NUM;
+            cmap_type_idx = offset / NUM_CMAP_TYPE_CHARS;
+            cmap_offset = offset - cmap_type_idx * NUM_CMAP_TYPE_CHARS;
             idx = cmap_offset + SYM_OFF_P;
         }
 
