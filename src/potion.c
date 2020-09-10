@@ -1294,7 +1294,7 @@ struct obj *otmp;
     case POT_FIRE_IMMUNITY:
         if (!Fire_immunity)
         {
-            You("feel protected from fire.");
+            You("feel fully protected from fire.");
         }
         else
         {
@@ -1307,7 +1307,7 @@ struct obj *otmp;
     case POT_COLD_IMMUNITY:
         if (!Cold_immunity)
         {
-            You("feel protected from cold.");
+            You("feel fully protected from cold.");
         }
         else
         {
@@ -1316,6 +1316,19 @@ struct obj *otmp;
         }
         exercise(A_WIS, TRUE);
         incr_itimeout(&HCold_immunity, duration);
+        break;
+    case POT_SHOCK_IMMUNITY:
+        if (!Shock_immunity)
+        {
+            You("feel fully protected from electricity.");
+        }
+        else
+        {
+            You("feel a bit more protected from electricity.");
+            unkn++;
+        }
+        exercise(A_WIS, TRUE);
+        incr_itimeout(&HShock_immunity, duration);
         break;
     case POT_HEROISM:
     case POT_SUPER_HEROISM:
@@ -2394,6 +2407,12 @@ struct obj *obj;
         if (!Cold_immunity)
             You("feel a bit more cold-protected now.");
         incr_itimeout(&HCold_immunity, duration);
+        exercise(A_WIS, TRUE);
+        break;
+    case POT_SHOCK_IMMUNITY:
+        if (!Shock_immunity)
+            You("feel a bit more electricity-protected now.");
+        incr_itimeout(&HShock_immunity, duration);
         exercise(A_WIS, TRUE);
         break;
     case POT_HEROISM:
