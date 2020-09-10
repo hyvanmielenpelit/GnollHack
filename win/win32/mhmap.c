@@ -2017,9 +2017,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int condition_bit = 1 << cond;
                                 unsigned long m_conditions = get_m_condition_bits(mtmp);
 
+#if 0
                                 if (!ispet && !isyou)
                                     m_conditions &= ~(BL_MASK_CONF | BL_MASK_STUN | BL_MASK_HALLU | BL_MASK_FEARFUL | BL_MASK_SLEEPING
                                         | BL_MASK_PARALYZED | BL_MASK_SLIME | BL_MASK_STONE | BL_MASK_STRNGL | BL_MASK_SUFFOC);
+#endif
 
                                 if (m_conditions & condition_bit)
                                 {

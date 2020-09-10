@@ -464,7 +464,8 @@ struct monst* origmonst;
 		else if (!check_ability_resistance_success(mtmp, A_CON, save_adj))
 		{
 			increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		break;
 	case SPE_POWER_WORD_BLIND:
 		res = 1;
@@ -483,7 +484,8 @@ struct monst* origmonst;
 		else if (!check_ability_resistance_success(mtmp, A_CON, save_adj))
 		{
 			increase_mon_property_verbosely(mtmp, BLINDED, duration);
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		break;
 	case WAN_SLOW_MONSTER:
     case SPE_SLOW_MONSTER:
@@ -499,10 +501,13 @@ struct monst* origmonst;
                 pline("A huge hole opens up...");
                 expels(mtmp, mtmp->data, TRUE);
             }
+            else
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         }
         break;
 	case SPE_HASTE_MONSTER:
 		increase_mon_property_verbosely(mtmp, VERY_FAST, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
 		break;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
@@ -518,7 +523,9 @@ struct monst* origmonst;
 				pline("A huge hole opens up...");
 				expels(mtmp, mtmp->data, TRUE);
 			}
-		}
+            else
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		else
 		{
 			m_shieldeff(mtmp);
@@ -542,6 +549,8 @@ struct monst* origmonst;
                 pline("A huge hole opens up...");
                 expels(mtmp, mtmp->data, TRUE);
             }
+            else
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         }
         else
         {
@@ -555,6 +564,7 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
         boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         if (visible_effect)
             makeknown(WAN_SPEED_MONSTER);
         m_dowear(mtmp, FALSE); /* might want speed boots */
@@ -567,7 +577,8 @@ struct monst* origmonst;
 		if (!check_ability_resistance_success(mtmp, A_CHA, save_adj))
 		{
 			increase_mon_property_verbosely(mtmp, SILENCED, duration);
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		break;
 	case WAN_UNDEAD_TURNING:
     case SPE_TURN_UNDEAD:
@@ -580,6 +591,7 @@ struct monst* origmonst;
             (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
             if (!DEADMONSTER(mtmp))
                 monflee(mtmp, duration, FALSE, TRUE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         }
         break;
 	case SPE_FEAR:
@@ -587,7 +599,8 @@ struct monst* origmonst;
 		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_ability_resistance_success(mtmp, A_WIS, save_adj))
 		{
 			make_mon_fearful(mtmp, duration);
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		break;
 	case WAN_RESURRECTION:
 	case SPE_RESURRECTION:
@@ -611,7 +624,8 @@ struct monst* origmonst;
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
 			}
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		break;
 	case SPE_BANISH_DEMON:
 		wake = FALSE;
@@ -627,16 +641,19 @@ struct monst* origmonst;
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
 			}
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		break;
 	case SPE_CHARM_MONSTER:
 	case SPE_DOMINATE_MONSTER:
 		res = 1;
 		helpful_gesture = (maybe_tame(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
-		break;
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        break;
     case SPE_CONTROL_UNDEAD:
         res = 1;
         helpful_gesture = (maybe_controlled(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         break;
     case WAN_POLYMORPH:
     case SPE_POLYMORPH:
@@ -671,7 +688,7 @@ struct monst* origmonst;
             /* natural shapechangers aren't affected by system shock
                (unless protection from shapechangers is interfering
                with their metabolism...) */
-            if (mtmp->cham == NON_PM && !rn2(25)) 
+            if (mtmp->cham == NON_PM && !rn2(25))
 			{
                 if (canseemon(mtmp)) 
 				{
@@ -708,6 +725,7 @@ struct monst* origmonst;
                    for all long worms on the level */
                 context.bypasses = TRUE;
             }
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         }
         break;
     case WAN_CANCELLATION:
@@ -719,6 +737,7 @@ struct monst* origmonst;
         {
             (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
             (void)nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         }
         break;
     case SPE_DISJUNCTION:
