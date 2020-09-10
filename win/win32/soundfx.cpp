@@ -345,7 +345,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Squeaky Board", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Falling Rock Trap Trigger", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Rolling Boulder Trap Trigger", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/General/Teleport", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Teleport", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Bear Trap Closes", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Enveloped in Cloud of Gas", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Gush of Water Hits", 1.0f },

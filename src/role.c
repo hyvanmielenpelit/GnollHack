@@ -2780,6 +2780,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && genderidx == A_CHAOTIC + 1)
             return TRUE;
+        if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
+            return TRUE;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
