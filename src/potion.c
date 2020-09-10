@@ -1225,7 +1225,6 @@ struct obj *otmp;
         } 
         else 
         {      /* If blessed, increase all; if not, try up to */
-            int itmp; /* 6 times to find one which can be increased. */
             int added_abilities = 0;
             int prev_ability = -1;
             int abilities_to_increase = (otmp->blessed ? 2 : 1);
@@ -1239,6 +1238,10 @@ struct obj *otmp;
                 } 
                 while (i == prev_ability);
 
+                /* On tenth try, give STR if that's not maxed out */
+                if (cnt == 9 && ABASE(A_STR) < ATTRMAX(A_STR) && prev_ability != A_STR)
+                    i = A_STR;
+
                 if (adjattrib(i, 1, -1))
                 {
                     prev_ability = i;
@@ -1247,6 +1250,9 @@ struct obj *otmp;
                 if (added_abilities >= abilities_to_increase)
                     break;
             }
+
+            if (added_abilities == 0)
+                You_feel("a bit more competent for a moment, but then the feeling subsides.");
         }
         break;
     case POT_SPEED:

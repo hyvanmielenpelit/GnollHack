@@ -200,7 +200,7 @@ extern char curr_token[512];
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
 %token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE 
-%token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS
+%token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
 %token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID
 %token	<i> EXIT_ID SHUFFLE_ID
@@ -478,6 +478,7 @@ stmt_block	: '{' levstatements '}'
 levstatement 	: message
 		| lev_init
 		| tileset_detail
+		| subtype_detail
 		| altar_detail
 		| anvil_detail
 		| npc_detail
@@ -1969,6 +1970,12 @@ altar_detail	: ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type
 anvil_detail : ANVIL_ID ':' coord_or_var
 		  {
 		      add_opvars(splev, "o", VA_PASS1(SPO_ANVIL));
+		  }
+		;
+
+subtype_detail : SUBTYPE_ID ':' ter_selection ',' INTEGER
+		  {
+		      add_opvars(splev, "io", VA_PASS2((int)$5, SPO_SUBTYPE));
 		  }
 		;
 

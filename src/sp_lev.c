@@ -150,11 +150,13 @@ STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
 STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_subtype, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_replace_terrain, (struct sp_coder *));
@@ -4778,6 +4780,14 @@ genericptr_t arg, arg2;
 }
 
 void
+sel_set_subtype(x, y, arg)
+int x, y;
+genericptr_t arg;
+{
+    levl[x][y].subtyp = (*(int*)arg);
+}
+
+void
 sel_set_door(dx, dy, arg)
 int dx, dy;
 genericptr_t arg;
@@ -4902,6 +4912,26 @@ struct sp_coder* coder;
 
     opvar_free(acoord);
 }
+
+void
+spo_subtype(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_subtype";
+    struct opvar* sel;
+    struct opvar* subtyp_opvar;
+    int subtyp;
+
+    if (!OV_pop_i(subtyp_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
+        return;
+
+    subtyp = OV_i(subtyp_opvar);
+    selection_iterate(sel, sel_set_subtype, (genericptr_t)&subtyp);
+
+    opvar_free(subtyp_opvar);
+    opvar_free(sel);
+}
+
 
 void spo_npc(coder)
 struct sp_coder* coder;
