@@ -2881,18 +2881,28 @@ region *tmpregion;
     int lowy = tmpregion->y1;
     int lowx = tmpregion->x1, hix = tmpregion->x2;
 
-    if (litstate) {
+    if (litstate) 
+    {
         /* adjust region size for walls, but only if lighted */
         lowx = max(lowx - 1, 1);
         hix = min(hix + 1, COLNO - 1);
         lowy = max(lowy - 1, 0);
         hiy = min(hiy + 1, ROWNO - 1);
     }
-    for (x = lowx; x <= hix; x++) {
+
+    for (x = lowx; x <= hix; x++) 
+    {
         lev = &levl[x][lowy];
-        for (y = lowy; y <= hiy; y++) {
+        for (y = lowy; y <= hiy; y++)
+        {
             if (lev->typ != LAVAPOOL) /* this overrides normal lighting */
                 lev->lit = litstate;
+
+            if (lev->typ == ROOM && tmpregion->floortype >= 0 && tmpregion->floortype < MAX_FLOOR_CATEGORIES) /* Adjust floor categories, too */
+            {
+                lev->subtyp = get_location_subtype_by_category(lev->typ, tmpregion->floortype);
+            }
+
             lev++;
         }
     }
@@ -5296,12 +5306,12 @@ spo_region(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_region";
-    struct opvar *rtype, *rlit, *rflags, *area;
+    struct opvar *rtype, *rlit, *rflags, *area, *floortype;
     xchar dx1, dy1, dx2, dy2;
     register struct mkroom *troom;
     boolean prefilled, room_not_needed, irregular, joined;
 
-    if (!OV_pop_i(rflags) || !OV_pop_i(rtype) || !OV_pop_i(rlit)
+    if (!OV_pop_i(floortype) || !OV_pop_i(rflags) || !OV_pop_i(rtype) || !OV_pop_i(rlit)
         || !OV_pop_r(area))
         return;
 
@@ -5336,6 +5346,7 @@ struct sp_coder *coder;
         if (!room_not_needed)
             impossible("Too many rooms on new level!");
         tmpregion.rlit = OV_i(rlit);
+        tmpregion.floortype = OV_i(floortype);
         tmpregion.x1 = dx1;
         tmpregion.y1 = dy1;
         tmpregion.x2 = dx2;
@@ -5346,6 +5357,7 @@ struct sp_coder *coder;
         opvar_free(rflags);
         opvar_free(rlit);
         opvar_free(rtype);
+        opvar_free(floortype);
 
         return;
     }
@@ -5358,16 +5370,19 @@ struct sp_coder *coder;
 
     troom->needjoining = joined;
 
-    if (irregular) {
+    if (irregular) 
+    {
         min_rx = max_rx = dx1;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
         flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, OV_i(rlit), TRUE);
-        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, 0);
+        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, OV_i(floortype));
         troom->rlit = OV_i(rlit);
         troom->irregular = TRUE;
-    } else {
-        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, 0);
+    }
+    else 
+    {
+        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, OV_i(floortype));
 #ifdef SPECIALIZATION
         topologize(troom, FALSE); /* set roomno */
 #else
@@ -5375,10 +5390,12 @@ struct sp_coder *coder;
 #endif
     }
 
-    if (!room_not_needed) {
+    if (!room_not_needed)
+    {
         if (coder->n_subroom > 1)
             impossible("region as subroom");
-        else {
+        else
+        {
             coder->tmproomlist[coder->n_subroom] = troom;
             coder->failed_room[coder->n_subroom] = FALSE;
             coder->n_subroom++;
@@ -5389,6 +5406,7 @@ struct sp_coder *coder;
     opvar_free(rflags);
     opvar_free(rlit);
     opvar_free(rtype);
+    opvar_free(floortype);
 }
 
 void

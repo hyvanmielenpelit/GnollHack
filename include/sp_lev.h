@@ -421,7 +421,7 @@ typedef struct {
 
 typedef struct {
     xchar x1, y1, x2, y2;
-    xchar rtype, rlit, rirreg;
+    xchar rtype, rlit, rirreg, floortype;
 } region;
 
 typedef struct {

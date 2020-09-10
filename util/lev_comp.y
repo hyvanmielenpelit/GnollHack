@@ -1926,7 +1926,7 @@ passwall_detail : NON_PASSWALL_ID ':' region_or_var
 		  }
 		;
 
-region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags
+region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloortype
 		  {
 		      long irr;
 		      long rt = $7;
@@ -1935,8 +1935,8 @@ region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroo
 		      if (rflags == -1) rflags = (1 << 0);
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
 		      irr = ((rflags & 2) != 0);
-		      add_opvars(splev, "iiio",
-				 VA_PASS4((long)$5, rt, rflags, SPO_REGION));
+		      add_opvars(splev, "iiiio",
+				 VA_PASS5((long)$5, rt, rflags, $<i>9, SPO_REGION));
 		      $<i>$ = (irr || (rflags & 1) || rt != OROOM);
 		      break_stmt_start();
 		  }
