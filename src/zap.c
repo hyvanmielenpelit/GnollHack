@@ -6660,7 +6660,7 @@ boolean stop_at_first_hit_object;
 		{
             notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
 
-            if (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM)
+            if (obj && (weapon == ZAPPED_WAND || weapon == FLASHED_LIGHT || weapon == INVIS_BEAM))
                 play_immediate_ray_sound_at_location(object_soundsets[objects[obj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
 
             if (weapon == FLASHED_LIGHT) 

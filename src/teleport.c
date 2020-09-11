@@ -1524,6 +1524,8 @@ int in_sight;
 
     if (tele_restrict(mtmp))
         return;
+
+    play_sfx_sound_at_location(SFX_TELEPORT_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
     if (teleport_pet(mtmp, FALSE)) {
         /* save name with pre-movement visibility */
         monname = Monnam(mtmp);
@@ -1532,6 +1534,8 @@ int in_sight;
          * wise the monster will be stuck there, since
          * the guard isn't going to come for it...
          */
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         if (trap->once)
             mvault_tele(mtmp);
         else
@@ -1543,6 +1547,7 @@ int in_sight;
             else
                 pline("%s suddenly disappears!", monname);
             seetrap(trap);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         }
     }
 }

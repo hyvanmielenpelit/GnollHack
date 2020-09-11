@@ -26,6 +26,7 @@ struct monst *mtmp;
 {
     if (flags.verbose)
 	{
+        play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my);
         if (cansee(mtmp->mx, mtmp->my) && !Unaware)
             pline("KABOOM!!  You see a door explode.");
         else if (!Deaf)
@@ -1794,6 +1795,7 @@ register int after;
                     {
                         if (flags.verbose) 
                         {
+                            play_sfx_sound_at_location(SFX_OPEN_DOOR, mtmp->mx, mtmp->my);
                             if (observeit)
                                 pline("%s opens a door.", Monnam(mtmp));
                             else if (canseeit)
@@ -1820,6 +1822,7 @@ register int after;
                     {
                         if (flags.verbose) 
                         {
+                            play_simple_location_sound(mtmp->mx, mtmp->my, LOCATION_SOUND_TYPE_BREAK);
                             if (observeit)
                                 pline("%s smashes down a door.",
                                       Monnam(mtmp));

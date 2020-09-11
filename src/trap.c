@@ -1052,6 +1052,7 @@ unsigned trflags;
 	{
     case ARROW_TRAP:
         if (trap->once && trap->tseen && !rn2(15)) {
+            play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
             You_hear("a loud click!");
             deltrap(trap);
             newsym(u.ux, u.uy);
@@ -1081,6 +1082,7 @@ unsigned trflags;
 
     case DART_TRAP:
         if (trap->once && trap->tseen && !rn2(15)) {
+            play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
             You_hear("a soft click.");
             deltrap(trap);
             newsym(u.ux, u.uy);
@@ -1239,6 +1241,7 @@ unsigned trflags;
 
     case SLP_GAS_TRAP:
         seetrap(trap);
+        play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
         play_sfx_sound(SFX_ENVELOPED_IN_CLOUD_OF_GAS);
         if (Sleep_resistance || has_innate_breathless(youmonst.data))
         {
@@ -1261,6 +1264,7 @@ unsigned trflags;
          * first rustable one or the body, we take whatever we get,
          * even if it is not rustable.
          */
+        play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
         play_sfx_sound(SFX_GUSH_OF_WATER_HITS);
         switch (rn2(5))
         {
@@ -1318,6 +1322,7 @@ unsigned trflags;
 
     case FIRE_TRAP:
         seetrap(trap);
+        play_sfx_sound(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE);
         dofiretrap((struct obj *) 0);
         break;
 
@@ -1550,6 +1555,7 @@ unsigned trflags;
         break;
 
     case STATUE_TRAP:
+        play_sfx_sound(SFX_GENERIC_MAGICAL_TRAP_ACTIVATE);
         (void) activate_statue_trap(trap, u.ux, u.uy, FALSE);
         break;
 
@@ -1708,6 +1714,7 @@ unsigned trflags;
 
     case MAGIC_PORTAL:
         feeltrap(trap);
+        play_sfx_sound(SFX_GENERIC_MAGICAL_TRAP_ACTIVATE);
         domagicportal(trap);
         break;
 
@@ -1720,6 +1727,7 @@ unsigned trflags;
 	case MODRON_PORTAL:
     {
         feeltrap(trap);
+        play_sfx_sound(SFX_GENERIC_MAGICAL_TRAP_ACTIVATE);
 
         int tx = u.ux + 7;
         int ty = u.uy;
@@ -1978,6 +1986,7 @@ int style;
         obj_extract_self(singleobj);
     }
     newsym(x1, y1);
+
     /* in case you're using a pick-axe to chop the boulder that's being
        launched (perhaps a monster triggered it), destroy context so that
        next dig attempt never thinks you're resuming previous effort */
@@ -1992,6 +2001,12 @@ int style;
     bhitpos.y = y1;
     dx = sgn(x2 - x1);
     dy = sgn(y2 - y1);
+
+    if (singleobj)
+    {
+        play_immediate_ray_sound_at_location(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_CREATE, bhitpos.x, bhitpos.y);
+        start_ambient_ray_sound_at_location(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset, bhitpos.x, bhitpos.y);
+    }
     switch (style) {
     case ROLL | LAUNCH_UNSEEN:
         if (otyp == BOULDER) {
@@ -2040,6 +2055,10 @@ int style;
 
         bhitpos.x += dx;
         bhitpos.y += dy;
+
+        if (singleobj)
+            update_ambient_ray_sound_to_location(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset, bhitpos.x, bhitpos.y);
+
         t = t_at(bhitpos.x, bhitpos.y);
 
         if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != 0) {
@@ -2054,6 +2073,8 @@ int style;
                     break;
                 }
             }
+            if (singleobj)
+                play_immediate_ray_sound_at_location(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
             if (ohitmon(mtmp, singleobj, (style == ROLL) ? -1 : dist,
                         FALSE)) {
                 used_up = TRUE;
@@ -2063,6 +2084,8 @@ int style;
         } else if (bhitpos.x == u.ux && bhitpos.y == u.uy) {
             if (multi)
                 nomul(0);
+            if(singleobj)
+                play_immediate_ray_sound_at_location(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_HIT_MONSTER, bhitpos.x, bhitpos.y);
             if (thitu(10 + singleobj->enchantment, weapon_total_dmg_value(singleobj, &youmonst, (struct monst*)0, 1),
                       &singleobj, (char *) 0))
                 stop_occupation();
@@ -2190,6 +2213,11 @@ int style;
         }
     }
     tmp_at(DISP_END, 0);
+    if (singleobj)
+    {
+        play_immediate_ray_sound_at_location(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset, RAY_SOUND_TYPE_DESTROY, bhitpos.x, bhitpos.y);
+        stop_ambient_ray_sound(object_soundsets[objects[singleobj->otyp].oc_soundset].ray_soundset);
+    }
     launch_drop_spot((struct obj *) 0, 0, 0);
     if (!used_up) {
         singleobj->otrapped = 0;
@@ -2423,6 +2451,7 @@ register struct monst *mtmp;
         switch (tt) {
         case ARROW_TRAP:
             if (trap->once && trap->tseen && !rn2(15)) {
+                play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
                 if (in_sight && see_it)
                     pline("%s triggers a trap but nothing happens.",
                           Monnam(mtmp));
@@ -2430,6 +2459,7 @@ register struct monst *mtmp;
                 newsym(mtmp->mx, mtmp->my);
                 break;
             }
+            play_sfx_sound_at_location(SFX_ARROW_TRAP_FIRE, mtmp->mx, mtmp->my);
             trap->once = 1;
             otmp = t_missile(get_shooting_trap_object(trap), trap);
             if (in_sight)
@@ -2439,6 +2469,7 @@ register struct monst *mtmp;
             break;
         case DART_TRAP:
             if (trap->once && trap->tseen && !rn2(15)) {
+                play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
                 if (in_sight && see_it)
                     pline("%s triggers a trap but nothing happens.",
                           Monnam(mtmp));
@@ -2446,6 +2477,7 @@ register struct monst *mtmp;
                 newsym(mtmp->mx, mtmp->my);
                 break;
             }
+            play_sfx_sound_at_location(SFX_DART_TRAP_FIRE, mtmp->mx, mtmp->my);
             trap->once = 1;
             otmp = t_missile(get_shooting_trap_object(trap), trap);
             if (!rn2(6))
@@ -2456,6 +2488,7 @@ register struct monst *mtmp;
                 trapkilled = TRUE;
             break;
         case ROCKTRAP:
+            play_sfx_sound_at_location(SFX_FALLING_ROCK_TRAP_TRIGGER, mtmp->mx, mtmp->my);
             if (trap->once && trap->tseen && !rn2(15)) {
                 if (in_sight && see_it)
                     pline(
@@ -2476,6 +2509,7 @@ register struct monst *mtmp;
             if (is_flyer(mptr))
                 break;
             /* stepped on a squeaky board */
+            play_sfx_sound_at_location(SFX_SQUEAKY_BOARD, mtmp->mx, mtmp->my);
             if (in_sight) {
                 if (!Deaf) {
                     pline("A board beneath %s squeaks %s loudly.",
@@ -2498,6 +2532,7 @@ register struct monst *mtmp;
             wake_nearto(mtmp->mx, mtmp->my, 40);
             break;
         case BEAR_TRAP:
+            play_sfx_sound_at_location(SFX_BEAR_TRAP_CLOSES, mtmp->mx, mtmp->my);
             if (mptr->msize > MZ_SMALL && !amorphous(mptr) && !is_flyer(mptr)
                 && !is_whirly(mptr) && !unsolid(mptr)) {
                 mtmp->mtrapped = 1;
@@ -2520,6 +2555,8 @@ register struct monst *mtmp;
                 trapkilled = thitm(0, mtmp, (struct obj *) 0, d(2, 4), FALSE);
             break;
         case SLP_GAS_TRAP:
+            play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+            play_sfx_sound_at_location(SFX_ENVELOPED_IN_CLOUD_OF_GAS, mtmp->mx, mtmp->my);
             if (!resists_sleep(mtmp) && !has_innate_breathless(mptr) && mon_can_move(mtmp)) {
                 if (sleep_monst(mtmp, (struct obj*)0, rn1(7,8), -100, FALSE) && in_sight) {
                     pline("%s suddenly falls asleep!", Monnam(mtmp));
@@ -2529,6 +2566,8 @@ register struct monst *mtmp;
             break;
         case RUST_TRAP: {
             struct obj *target;
+            play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+            play_sfx_sound_at_location(SFX_GUSH_OF_WATER_HITS, mtmp->mx, mtmp->my);
 
             if (in_sight)
                 seetrap(trap);
@@ -2592,6 +2631,8 @@ register struct monst *mtmp;
         } /* RUST_TRAP */
         case FIRE_TRAP:
         mfiretrap:
+            play_sfx_sound_at_location(SFX_GENERIC_PHYSICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
+            play_sfx_sound_at_location(SFX_TOWER_OF_FLAME_ERUPTS, mtmp->mx, mtmp->my);
             if (in_sight)
                 pline("A %s erupts from the %s under %s!", tower_of_flame,
                       surface(mtmp->mx, mtmp->my), mon_nam(mtmp));
@@ -2658,6 +2699,7 @@ register struct monst *mtmp;
             break;
         case PIT:
         case SPIKED_PIT:
+            play_sfx_sound_at_location(SFX_FALL_INTO_PIT, mtmp->mx, mtmp->my);
             fallverb = "falls";
             if (is_flyer(mptr) || is_floater(mptr)
                 || (mtmp->wormno && count_wsegs(mtmp) > 5)
@@ -2690,10 +2732,10 @@ register struct monst *mtmp;
                 trapkilled = TRUE;
             break;
         case HOLE:
-        case TRAPDOOR:
+        case TRAPDOOR: {
             if (!Can_fall_thru(&u.uz)) {
                 impossible("mintrap: %ss cannot exist on this level.",
-                           defsyms[trap_to_defsym(tt)].explanation);
+                    defsyms[trap_to_defsym(tt)].explanation);
                 break; /* don't activate it after all */
             }
             if (is_flyer(mptr) || is_floater(mptr) || mptr == &mons[PM_WUMPUS]
@@ -2705,11 +2747,11 @@ register struct monst *mtmp;
                         seetrap(trap);
                         if (tt == TRAPDOOR)
                             pline(
-                            "A trap door opens, but %s doesn't fall through.",
-                                  mon_nam(mtmp));
+                                "A trap door opens, but %s doesn't fall through.",
+                                mon_nam(mtmp));
                         else /* (tt == HOLE) */
                             pline("%s doesn't fall through the hole.",
-                                  Monnam(mtmp));
+                                Monnam(mtmp));
                     }
                     break; /* inescapable = FALSE; */
                 }
@@ -2720,14 +2762,23 @@ register struct monst *mtmp;
                         in_sight = FALSE;
                         seetrap(trap);
                     }
-                } else
+                }
+                else
                     break;
             }
-            /*FALLTHRU*/
+            int mlev_res;
+
+            play_sfx_sound_at_location(tt == TRAPDOOR ? SFX_TRAP_DOOR_OPENS : SFX_HOLE_OPENS, mtmp->mx, mtmp->my);
+            mlev_res = mlevel_tele_trap(mtmp, trap, inescapable, in_sight);
+            if (mlev_res)
+                return mlev_res;
+            break;
+        }
         case LEVEL_TELEP:
         case MAGIC_PORTAL: {
             int mlev_res;
 
+            play_sfx_sound_at_location(tt == MAGIC_PORTAL ? SFX_MAGIC_PORTAL_ACTIVATE : SFX_LEVEL_TELEPORT_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             mlev_res = mlevel_tele_trap(mtmp, trap, inescapable, in_sight);
             if (mlev_res)
                 return mlev_res;
@@ -2796,11 +2847,13 @@ register struct monst *mtmp;
         case STATUE_TRAP:
             break;
         case MAGIC_TRAP:
+            play_sfx_sound_at_location(SFX_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             /* A magic trap.  Monsters usually immune. */
             if (!rn2(21))
                 goto mfiretrap;
             break;
         case ANTI_MAGIC_TRAP:
+            play_sfx_sound_at_location(SFX_ANTI_MAGIC_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             /* similar to hero's case, more or less */
             if (!resists_magic(mtmp)) { /* lose spell energy */
                 if (!is_cancelled(mtmp) && (attacktype(mptr, AT_MAGC)
@@ -2865,8 +2918,13 @@ register struct monst *mtmp;
                       !Deaf ? "KAABLAMM!!!  " : "", Monnam(mtmp),
                       a_your[trap->madeby_u]);
             }
+
+            play_sfx_sound_at_location(SFX_LAND_MINE_ACTIVATE, mtmp->mx, mtmp->my);
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, mtmp->mx, mtmp->my);
+
             if (!in_sight && !Deaf)
                 pline("Kaablamm!  You hear an explosion in the distance!");
+
             blow_up_landmine(trap);
             /* explosion might have destroyed a drawbridge; don't
                dish out more damage if monster is already dead */
@@ -2888,6 +2946,7 @@ register struct monst *mtmp;
             }
             break;
         case POLY_TRAP:
+            play_sfx_sound_at_location(SFX_POLYMORPH_ACTIVATE, mtmp->mx, mtmp->my);
             if (resists_magic(mtmp)) {
                 m_shieldeff(mtmp);
             } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, NOTELL)) {
@@ -2900,6 +2959,8 @@ register struct monst *mtmp;
             break;
         case ROLLING_BOULDER_TRAP:
             if (!is_flyer(mptr)) {
+                play_sfx_sound_at_location(SFX_ROLLING_BOOULDER_TRAP_TRIGGER, mtmp->mx, mtmp->my);
+
                 int style = ROLL | (in_sight ? 0 : LAUNCH_UNSEEN);
 
                 newsym(mtmp->mx, mtmp->my);
@@ -2947,6 +3008,7 @@ register struct monst *mtmp;
             break;
 		case MODRON_PORTAL:
         {
+            play_sfx_sound_at_location(SFX_GENERIC_MAGICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
             int tx = mtmp->mx + 7;
             int ty = mtmp->my;
             if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL)

@@ -1210,7 +1210,7 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             OCCUPATION_SOUNDSET_GENERIC_HITTING_DOOR,
             OCCUPATION_SOUNDSET_GENERIC_CUTTING_TREE
         },
-        OBJECT_RAY_SOUNDSET_NONE
+        OBJECT_RAY_SOUNDSET_ROLLING_BOULDER
     },
     {
         "camera",
@@ -2259,6 +2259,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_GENERAL_GAIN_ABILITY_SPELL, 0.5f},
         TRUE
     },
+    {
+        "GHSOUND_GENERIC_PHYSICAL_TRAP_ACTIVATE",
+        {GHSOUND_GENERIC_PHYSICAL_TRAP_ACTIVATE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_GENERIC_MAGICAL_TRAP_ACTIVATE",
+        {GHSOUND_GENERIC_MAGICAL_TRAP_ACTIVATE, 1.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
@@ -2558,6 +2568,19 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
             {GHSOUND_NONE, 100.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+    {
+        "rolling boulder",
+        {
+            {GHSOUND_ROLLING_BOULDER_AMBIENT, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STAFF_HIT, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         }
