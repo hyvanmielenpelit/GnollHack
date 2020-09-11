@@ -164,8 +164,11 @@ int
 get_initial_location_subtype(ltype)
 int ltype;
 {
-    return get_location_subtype_by_category(ltype, 
-        ltype == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0
+    if (ltype == FOUNTAIN)
+        return FOUNTAIN_MAGIC + rn2(MAX_FOUNTAIN_SUBTYPES - FOUNTAIN_MAGIC);
+    else
+        return get_location_subtype_by_category(ltype, 
+            ltype == GRASS && level.flags.swampy ? GRASS_CATEGORY_SWAMPY : ltype == GROUND && level.flags.swampy ? GROUND_CATEGORY_SWAMPY : 0
     );
 }
 
