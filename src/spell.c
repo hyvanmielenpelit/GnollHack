@@ -2160,6 +2160,7 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		You("successfully cast \"%s\".", spellname(spell));
 		addspellintrinsictimeout(otyp);
+		play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
 		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
 		break;
 	case SPE_JUMPING:

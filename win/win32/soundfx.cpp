@@ -382,6 +382,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/You Split", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Rock Hits Hard Helmet", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Rock Hits You on Head", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/General/Gain Intrinsic", 0.5f },
 };
 
 #undef NoSound

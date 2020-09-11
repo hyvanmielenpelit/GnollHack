@@ -2254,6 +2254,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_ROCK_HITS_YOU_ON_HEAD, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_GENERAL_GAIN_ABILITY_SPELL",
+        {GHSOUND_GENERAL_GAIN_ABILITY_SPELL, 0.5f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
