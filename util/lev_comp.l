@@ -165,6 +165,7 @@ PORTAL		ST_RET(PORTAL_ID);
 TELEPORT_REGION	ST_RET(TELEPRT_ID);
 BRANCH		ST_RET(BRANCH_ID);
 FOUNTAIN	ST_RET(FOUNTAIN_ID);
+FLOOR	    ST_RET(FLOOR_ID);
 THRONE	    ST_RET(THRONE_ID);
 MODRON_PORTAL	ST_RET(MODRON_PORTAL_ID);
 SINK		ST_RET(SINK_ID);
@@ -325,6 +326,14 @@ astral_tileset { savetoken(yytext); yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 floor_normal { savetoken(yytext); yylval.i=FLOOR_CATEGORY_NORMAL; return FLOOR_TYPE; }
 floor_marble { savetoken(yytext); yylval.i=FLOOR_CATEGORY_MARBLE; return FLOOR_TYPE; }
 floor_parquet { savetoken(yytext); yylval.i=FLOOR_CATEGORY_PARQUET; return FLOOR_TYPE; }
+grass_normal { savetoken(yytext); yylval.i=GRASS_CATEGORY_NORMAL; return FLOOR_TYPE; }
+grass_swampy { savetoken(yytext); yylval.i=GRASS_CATEGORY_SWAMPY; return FLOOR_TYPE; }
+ground_normal { savetoken(yytext); yylval.i=GROUND_CATEGORY_NORMAL; return FLOOR_TYPE; }
+ground_swampy { savetoken(yytext); yylval.i=GROUND_CATEGORY_SWAMPY; return FLOOR_TYPE; }
+location_floor { savetoken(yytext); yylval.i=ROOM; return FLOOR_MAIN_TYPE; }
+location_corridor { savetoken(yytext); yylval.i=CORR; return FLOOR_MAIN_TYPE; }
+location_grass { savetoken(yytext); yylval.i=GRASS; return FLOOR_MAIN_TYPE; }
+location_ground { savetoken(yytext); yylval.i=GROUND; return FLOOR_MAIN_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }

@@ -199,7 +199,7 @@ extern char curr_token[512];
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
-%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID
+%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID FLOOR_ID FLOOR_MAIN_TYPE
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
 %token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID
@@ -479,6 +479,7 @@ levstatement 	: message
 		| lev_init
 		| tileset_detail
 		| subtype_detail
+		| floor_detail
 		| altar_detail
 		| anvil_detail
 		| npc_detail
@@ -1970,6 +1971,12 @@ altar_detail	: ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type
 anvil_detail : ANVIL_ID ':' coord_or_var
 		  {
 		      add_opvars(splev, "o", VA_PASS1(SPO_ANVIL));
+		  }
+		;
+
+floor_detail : FLOOR_ID ':' ter_selection ',' FLOOR_MAIN_TYPE ',' FLOOR_TYPE
+		  {
+		      add_opvars(splev, "iio", VA_PASS3((int)$7, (int)$5, SPO_FLOOR));
 		  }
 		;
 

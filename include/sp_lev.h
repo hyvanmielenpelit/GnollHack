@@ -72,6 +72,7 @@ enum opcode_defs {
     SPO_LADDER,
     SPO_ALTAR,
     SPO_ANVIL,
+    SPO_FLOOR,
     SPO_SUBTYPE,
     SPO_NPC,
     SPO_FOUNTAIN,

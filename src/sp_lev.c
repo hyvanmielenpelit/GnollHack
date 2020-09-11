@@ -150,12 +150,14 @@ STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
 STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_anvil, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_floor, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_subtype, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_npc, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_terrain, (struct sp_coder *));
@@ -4794,6 +4796,15 @@ genericptr_t arg, arg2;
 }
 
 void
+sel_set_floor(x, y, arg, arg2)
+int x, y;
+genericptr_t arg, arg2;
+{
+    levl[x][y].floortyp = *(int*)arg;
+    levl[x][y].floorsubtyp = get_location_subtype_by_category(*(int*)arg, *(int*)arg2);
+}
+
+void
 sel_set_subtype(x, y, arg)
 int x, y;
 genericptr_t arg;
@@ -4926,6 +4937,28 @@ struct sp_coder* coder;
 
     opvar_free(acoord);
 }
+
+void
+spo_floor(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_floor";
+    struct opvar* sel;
+    struct opvar* category_opvar, *typ_opvar;
+    int typ, category;
+
+    if (!OV_pop_i(typ_opvar) || !OV_pop_i(category_opvar) || !OV_pop_typ(sel, SPOVAR_SEL))
+        return;
+
+    typ = OV_i(typ_opvar);
+    category = OV_i(category_opvar);
+    selection_iterate2(sel, sel_set_floor, (genericptr_t)&typ, (genericptr_t)&category);
+
+    opvar_free(typ_opvar);
+    opvar_free(category_opvar);
+    opvar_free(sel);
+}
+
 
 void
 spo_subtype(coder)
@@ -6247,6 +6280,12 @@ sp_lev *lvl;
             break;
         case SPO_ANVIL:
             spo_anvil(coder);
+            break;
+        case SPO_FLOOR:
+            spo_floor(coder);
+            break;
+        case SPO_SUBTYPE:
+            spo_subtype(coder);
             break;
         case SPO_NPC:
             spo_npc(coder);
