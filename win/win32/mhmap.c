@@ -970,7 +970,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         enum layer_types base_layer = draw_order[draw_index].layer; //layer_idx; // layer_array[layer_idx];
         int layer_rounds = 1;
         if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
+        {
+            if (u.uswallow)
+                continue;
+
             layer_rounds = MAX_SHOWN_OBJECTS;
+        }
 
         /* Drawing order from back to front */
         int enlarg_idx = draw_order[draw_index].enlargement_index;

@@ -1151,7 +1151,10 @@ drinksink()
         floating_above("sink");
         return;
     }
-    switch (rn2(20)) {
+	
+	play_sfx_sound(SFX_QUAFF);
+	
+	switch (rn2(20)) {
     case 0:
         You("take a sip of very cold %s.", hliquid("water"));
         break;
