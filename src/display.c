@@ -1455,8 +1455,8 @@ int x, y;
                 /* backtrack */
                 for (i = tglyph->sidx - 1; i > 0; i--) {
                     newsym(tglyph->saved[i].x, tglyph->saved[i].y);
-                    show_glyph(tglyph->saved[i - 1].x,
-                               tglyph->saved[i - 1].y, tglyph->glyph);
+                    show_glyph_on_layer_and_ascii(tglyph->saved[i - 1].x,
+                               tglyph->saved[i - 1].y, tglyph->glyph, LAYER_MISSILE);
                     flush_screen(0);   /* make sure it shows up */
                     adjusted_delay_output();
                 }
@@ -1495,7 +1495,7 @@ int x, y;
 
                 px = tglyph->saved[tglyph->sidx-1].x;
                 py = tglyph->saved[tglyph->sidx-1].y;
-                show_glyph(px, py, tether_glyph(px, py));
+                show_glyph_on_layer_and_ascii(px, py, tether_glyph(px, py), LAYER_MISSILE);
             }
             /* save pos for later use or erasure */
             tglyph->saved[tglyph->sidx].x = x;
@@ -1513,7 +1513,7 @@ int x, y;
             tglyph->sidx = 1;
         }
 
-        show_glyph(x, y, tglyph->glyph); /* show it */
+        show_glyph_on_layer_and_ascii(x, y, tglyph->glyph, LAYER_MISSILE); /* show it */
         flush_screen(0);                 /* make sure it shows up */
         break;
     } /* end case */
