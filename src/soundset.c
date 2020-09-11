@@ -3809,6 +3809,26 @@ enum occupation_sound_types sound_type;
     play_immediate_ghsound(info);
 }
 
+void
+play_occupation_immediate_sound_at_location(object_soundset_id, occupation_type, sound_type, x, y)
+enum object_soundset_types object_soundset_id;
+enum object_occupation_types occupation_type;
+enum occupation_sound_types sound_type;
+int x, y;
+{
+
+    if (!isok(x, y) || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == GHSOUND_NONE)
+        return;
+
+    float hearing_volume = hearing_array[x][y];
+    struct ghsound_immediate_info info = { 0 };
+    info.ghsound = occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound;
+    info.volume = min(1.0f, occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].volume * hearing_volume);
+    
+    if(info.volume > 0.0f)
+        play_immediate_ghsound(info);
+}
+
 enum player_soundset_types
 get_player_soundset()
 {

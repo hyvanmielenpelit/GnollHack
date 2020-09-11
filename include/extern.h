@@ -2803,6 +2803,7 @@ E void FDECL(stop_ambient_ray_sound, (int));
 E void FDECL(start_occupation_ambient_sound, (enum object_soundset_types, enum object_occupation_types));
 E void FDECL(stop_occupation_ambient_sound, (enum object_soundset_types, enum object_occupation_types));
 E void FDECL(play_occupation_immediate_sound, (enum object_soundset_types, enum object_occupation_types, enum occupation_sound_types));
+E void FDECL(play_occupation_immediate_sound_at_location, (enum object_soundset_types, enum object_occupation_types, enum occupation_sound_types, int, int));
 E enum player_soundset_types NDECL(get_player_soundset);
 E void NDECL(dosetsoundvolume);
 E void FDECL(update_hearing_array, (int));

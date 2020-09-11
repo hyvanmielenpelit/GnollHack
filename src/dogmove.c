@@ -317,8 +317,14 @@ boolean devour;
     /* food items are eaten one at a time; entire stack for other stuff */
     if (obj->quan > 1L && obj->oclass == FOOD_CLASS)
         obj = splitobj(obj, 1L);
+    
     if (obj->unpaid)
         iflags.suppress_price++;
+
+    if(obj)
+        play_occupation_immediate_sound_at_location(objects[obj->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START, x, y);
+
+
     if (is_pool(x, y) && !Underwater)
 	{
         /* Don't print obj */
@@ -792,10 +798,14 @@ int udist;
 							if (carryamt != obj->quan)
 								otmp = splitobj(obj, carryamt);
 
-							if (cansee(omx, omy) && flags.verbose)
-								pline("%s picks up %s.", Monnam(mtmp),
-									  distant_name(otmp, doname));
-							
+                            if (flags.verbose)
+                            {
+                                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_PICK_UP);
+
+                                if(cansee(omx, omy))
+                                    pline("%s picks up %s.", Monnam(mtmp), distant_name(otmp, doname));
+                            }
+
 							obj_extract_self(otmp);
 							newsym(omx, omy);
 							(void) mpickobj(mtmp, otmp);

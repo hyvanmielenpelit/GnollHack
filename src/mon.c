@@ -2161,15 +2161,23 @@ register const char *str;
                 continue;
             /* handle cases where the critter can only get some */
             otmp3 = otmp;
+
             if (carryamt != otmp->quan) 
 			{
                 otmp3 = splitobj(otmp, carryamt);
             }
-            if (cansee(mtmp->mx, mtmp->my) && flags.verbose)
-                pline("%s picks up %s.", Monnam(mtmp),
-                      (distu(mtmp->mx, mtmp->my) <= 5)
-                          ? doname(otmp3)
-                          : distant_name(otmp3, doname));
+
+            if (flags.verbose)
+            {
+                play_simple_object_sound(otmp3, OBJECT_SOUND_TYPE_PICK_UP);
+
+                if (cansee(mtmp->mx, mtmp->my))
+                    pline("%s picks up %s.", Monnam(mtmp),
+                        (distu(mtmp->mx, mtmp->my) <= 5)
+                        ? doname(otmp3)
+                        : distant_name(otmp3, doname));
+            }
+
             obj_extract_self(otmp3);      /* remove from floor */
             (void) mpickobj(mtmp, otmp3); /* may merge and free otmp3 */
             m_dowear(mtmp, FALSE);

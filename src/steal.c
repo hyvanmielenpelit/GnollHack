@@ -720,8 +720,14 @@ boolean verbosely;
         obj->owornmask = 0L;
     }
     /* obj_no_longer_held(obj); -- done by place_object */
-    if (verbosely && cansee(omx, omy))
-        pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));
+    if (verbosely)
+    {
+        play_object_floor_sound(obj, OBJECT_SOUND_TYPE_DROP);
+
+        if(cansee(omx, omy))
+            pline("%s drops %s.", Monnam(mon), distant_name(obj, doname));
+    }
+
     if (!flooreffects(obj, omx, omy, "fall")) 
     {
         place_object(obj, omx, omy);
