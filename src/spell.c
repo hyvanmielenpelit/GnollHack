@@ -2116,7 +2116,8 @@ boolean atme;
         /* at present, only one thing blocks clairvoyance */
         } else if (uarmh && uarmh->otyp == CORNUTHAUM)
             You("sense a pointy hat on top of your %s.", body_part(HEAD));
-        break;
+		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+		break;
 	case SPE_MINOR_CONSULTATION:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
 		update_u_action(ACTION_TILE_CAST_NODIR);
@@ -2159,6 +2160,7 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		You("successfully cast \"%s\".", spellname(spell));
 		addspellintrinsictimeout(otyp);
+		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
 		break;
 	case SPE_JUMPING:
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);

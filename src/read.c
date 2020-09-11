@@ -546,6 +546,7 @@ boolean verbose;
 
     register int n;
     boolean is_cursed, is_blessed;
+    boolean play_effect = FALSE;
 
     is_cursed = curse_bless < 0;
     is_blessed = curse_bless > 0;
@@ -578,7 +579,10 @@ boolean verbose;
             {
                 obj->charges = lim;
                 if (verbose)
+                {
                     p_glow2(obj, NH_BLUE);
+                    play_effect = TRUE;
+                }
             }
             else if (obj->charges < lim)
             {
@@ -586,7 +590,10 @@ boolean verbose;
                 if (obj->charges > lim)
                     obj->charges = lim;
                 if (verbose)
+                {
                     p_glow1(obj);
+                    play_effect = TRUE;
+                }
             }
             update_inventory();
         }
@@ -654,6 +661,8 @@ boolean verbose;
                     p_glow2(obj, NH_BLUE);
                 else
                     p_glow1(obj);
+
+                play_effect = TRUE;
             }
 #if 0 /*[shop price doesn't vary by charge count]*/
             /* update shop bill to reflect new higher price */
@@ -691,9 +700,16 @@ boolean verbose;
             if (is_cursed)
                 strip_charges(obj, verbose);
             else if (is_blessed)
+            {
                 obj->charges += rnd(3);
+                play_effect = TRUE;
+            }
             else
+            {
                 obj->charges += 1;
+                play_effect = TRUE;
+            }
+
             if (obj->charges > 5)
                 obj->charges = 5;
             break;
@@ -732,7 +748,10 @@ boolean verbose;
                         obj->charges += n;
                 }
                 if (verbose)
+                {
                     p_glow2(obj, NH_BLUE);
+                    play_effect = TRUE;
+                }
             }
             else
             {
@@ -748,7 +767,10 @@ boolean verbose;
                         obj->charges += n;
                 }
                 if (verbose)
+                {
                     p_glow2(obj, NH_WHITE);
+                    play_effect = TRUE;
+                }
             }
             break;
         }
@@ -789,7 +811,10 @@ boolean verbose;
             {
                 obj->charges = lim;
                 if (verbose)
+                {
                     p_glow2(obj, NH_BLUE);
+                    play_effect = TRUE;
+                }
             }
             else
             {
@@ -797,7 +822,10 @@ boolean verbose;
                 {
                     obj->charges++;
                     if (verbose)
+                    {
                         p_glow1(obj);
+                        play_effect = TRUE;
+                    }
                 }
                 else
                     pline1(nothing_happens);
@@ -821,7 +849,10 @@ boolean verbose;
                 if (obj->charges > lim)
                     obj->charges = lim;
                 if (verbose)
+                {
                     p_glow2(obj, NH_BLUE);
+                    play_effect = TRUE;
+                }
             }
             else
             {
@@ -829,7 +860,10 @@ boolean verbose;
                 if (obj->charges > 50)
                     obj->charges = 50;
                 if (verbose)
+                {
                     p_glow1(obj);
+                    play_effect = TRUE;
+                }
             }
             break;
         }
@@ -846,7 +880,10 @@ boolean verbose;
                 if (obj->charges > lim)
                     obj->charges = lim;
                 if (verbose)
+                {
                     p_glow2(obj, NH_BLUE);
+                    play_effect = TRUE;
+                }
             }
             else
             {
@@ -854,7 +891,10 @@ boolean verbose;
                 if (obj->charges > lim)
                     obj->charges = lim;
                 if (verbose)
+                {
                     p_glow1(obj);
+                    play_effect = TRUE;
+                }
             }
             break;
         }
@@ -872,7 +912,10 @@ boolean verbose;
                 if (obj->charges > lim)
                     obj->charges = lim;
                 if (verbose)
+                {
                     p_glow2(obj, NH_BLUE);
+                    play_effect = TRUE;
+                }
             }
             else
             {
@@ -880,7 +923,10 @@ boolean verbose;
                 if (obj->charges > lim)
                     obj->charges = lim;
                 if (verbose)
+                {
                     p_glow1(obj);
+                    play_effect = TRUE;
+                }
             }
             break;
         }
@@ -921,7 +967,10 @@ boolean verbose;
 				{
 					obj->charges = lim;
                     if (verbose)
+                    {
                         p_glow2(obj, NH_BLUE);
+                        play_effect = TRUE;
+                    }
 				}
 				else if (obj->charges < lim)
 				{
@@ -929,7 +978,10 @@ boolean verbose;
 					if (obj->charges > lim)
 						obj->charges = lim;
                     if (verbose)
+                    {
                         p_glow1(obj);
+                        play_effect = TRUE;
+                    }
 				}
 			}
 			else
@@ -974,7 +1026,10 @@ boolean verbose;
                 {
                     obj->charges = lim;
                     if (verbose)
+                    {
                         p_glow2(obj, NH_BLUE);
+                        play_effect = TRUE;
+                    }
                 }
                 else if (obj->charges < lim)
                 {
@@ -982,7 +1037,10 @@ boolean verbose;
                     if (obj->charges > lim)
                         obj->charges = lim;
                     if (verbose)
+                    {
                         p_glow1(obj);
+                        play_effect = TRUE;
+                    }
                 }
                 update_inventory();
             }
@@ -1030,6 +1088,7 @@ boolean verbose;
                 if (verbose)
                 {
                     pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
+                    play_effect = TRUE;
                 }
                 update_inventory();
             }
@@ -1049,6 +1108,12 @@ boolean verbose;
     not_chargable:
         if (verbose)
             You("have a feeling of loss.");
+    }
+
+    if (play_effect)
+    {
+        if (obj->where == OBJ_INVENT)
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
     }
 }
 
@@ -1384,7 +1449,9 @@ struct monst* origmonst;
 			{
 				pline("%s is unaffected!", Monnam(mtmp));
 			}
-		}
+            else
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        }
 		else
 		{
 			m_shieldeff(mtmp);
@@ -1592,7 +1659,8 @@ boolean *effect_happened_ptr;
 			sobj = 0; /* useup() in strange_feeling() */
 			exercise(A_CON, !scursed);
 			exercise(A_STR, !scursed);
-			break;
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            break;
 		}
 		if ((!is_serviced_spell && confused) || otyp == SPE_PROTECT_ARMOR || otyp == SCR_PROTECT_ARMOR) {
 			old_erodeproof = (otmp->oerodeproof != 0);
@@ -1625,7 +1693,8 @@ boolean *effect_happened_ptr;
 				costly_alteration(otmp, COST_DEGRD);
 			}
 			otmp->oerodeproof = new_erodeproof ? 1 : 0;
-			break;
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            break;
 		}
 
         int max_ench = get_obj_max_enchantment(otmp);
@@ -1681,7 +1750,8 @@ boolean *effect_happened_ptr;
 			setworn(otmp, W_ARM);
 			if (otmp->unpaid)
 				alter_cost(otmp, 0L); /* shop bill */
-			break;
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            break;
 		}
 
         if(s == 0)
@@ -1724,6 +1794,8 @@ boolean *effect_happened_ptr;
 			if (s > 0 && otmp->unpaid)
 				alter_cost(otmp, 0L);
 		}
+
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
 
         if (otmp->enchantment > max_ench)
         {
@@ -1800,7 +1872,8 @@ boolean *effect_happened_ptr;
 			if (!HConfusion)
 				You_feel("confused.");
 			make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        }
 		else if (confused) 
         {
 			if (!sblessed) 
@@ -1809,14 +1882,16 @@ boolean *effect_happened_ptr;
 					Blind ? "tingle" : "glow ",
 					Blind ? "" : hcolor(NH_PURPLE));
 				make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
-			}
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            }
 			else 
             {
 				pline("A %s%s surrounds your %s.",
 					Blind ? "" : hcolor(NH_RED),
 					Blind ? "faint buzz" : " glow", body_part(HEAD));
 				make_confused(0L, TRUE);
-			}
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            }
 		}
 		else
         {
@@ -1827,7 +1902,8 @@ boolean *effect_happened_ptr;
 					Blind ? (const char*) "tingle" : hcolor(NH_RED),
 					u.umconf ? " even more" : "");
 				u.umconf++;
-			}
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            }
 			else 
             {
 				if (Blind)
@@ -1842,7 +1918,9 @@ boolean *effect_happened_ptr;
 					u.umconf++;
 				else
 					u.umconf += rn1(8, 2);
-			}
+
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            }
 		}
 		break;
 	case SCR_SCARE_MONSTER:
@@ -1974,7 +2052,8 @@ boolean *effect_happened_ptr;
 					}
 				}
 			}
-		}
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        }
 		if (Punished && !confused)
 			unpunish();
 		if (u.utrap && u.utraptype == TT_BURIEDBALL) 
@@ -2085,7 +2164,8 @@ boolean *effect_happened_ptr;
 				costly_alteration(otmp, COST_DEGRD);
 			}
 			otmp->oerodeproof = new_erodeproof ? 1 : 0;
-			break;
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            break;
 		}
 		
         /* Blanket selection for protect weapon */
@@ -2109,7 +2189,9 @@ boolean *effect_happened_ptr;
 			: (otmp->enchantment >= special_threshold) ? !rn2(special_chance)
 			: sblessed ? rnd(2): 1))
 			sobj = 0; /* nothing enchanted: strange_feeling -> useup */
-		break;
+        
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        break;
 	}
 	case SCR_CONFLICT:
         if (!Conflict)
@@ -2118,6 +2200,7 @@ boolean *effect_happened_ptr;
             known = TRUE;
         }
         incr_itimeout(&HConflict, d(10, 6) + 240);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
         break;
     case SCR_TAMING:
 	case SPE_SPHERE_OF_CHARMING:
@@ -2201,8 +2284,9 @@ boolean *effect_happened_ptr;
 							{
 								pline("%s falls asleep!", Monnam(mtmp));
 								vis_results += res;
-							}
-						}
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+                            }
+                        }
 						results += res;
 					}
 				}
@@ -2265,7 +2349,8 @@ boolean *effect_happened_ptr;
 							if (!mindless(mtmp->data) && !resists_paralysis(mtmp))
 							{
 								increase_mon_property_verbosely(mtmp, PARALYZED, duration);
-								res = 1;
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+                                res = 1;
 							}
 						}
 						if(res == 0 && mtmp->m_lev < u.ulevel)
@@ -2273,7 +2358,8 @@ boolean *effect_happened_ptr;
 							if(haseyes(mtmp->data) && !resists_blnd(mtmp))
 							{
 								increase_mon_property_verbosely(mtmp, BLINDED, duration);
-								res = 1;
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+                                res = 1;
 							}
 						}
 						if (res == 0)
@@ -2281,7 +2367,8 @@ boolean *effect_happened_ptr;
 							if (!mindless(mtmp->data) && !is_stunned(mtmp))
 							{
 								increase_mon_property_verbosely(mtmp, STUNNED, 20 + rnd(20));
-								res = 1;
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+                                res = 1;
 							}
 						}
 					}
@@ -2498,7 +2585,8 @@ boolean *effect_happened_ptr;
 					/* finally, change curse/bless state */
                     play_sfx_sound(soundid);
                     (*func)(otmp);
-				}
+                    play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+                }
 				update_inventory();
 			}
 		}
@@ -2548,7 +2636,9 @@ boolean *effect_happened_ptr;
         }
         otmp = getobj(all_count, "charge", 0, "");
         if (otmp)
+        {
             recharge(otmp, scursed ? -1 : sblessed ? 1 : 0, TRUE);
+        }
         break;
 	case SCR_ENCHANT_ACCESSORY:
         otmp = (struct obj*)0;
@@ -2582,7 +2672,8 @@ boolean *effect_happened_ptr;
 			    Your("head spins.");
 			    make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;
 			    context.botl = context.botlx = 1;
-			    break;
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+                break;
 		    }
 		    boolean rightok = uright && objects[uright->otyp].oc_enchantable;
 		    boolean leftok = uleft && objects[uleft->otyp].oc_enchantable;
@@ -2666,8 +2757,11 @@ boolean *effect_happened_ptr;
 
 		if (otmp)
 		{
-            if(otmp->oclass == RING_CLASS)
-    			enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0);
+            if (otmp->oclass == RING_CLASS)
+            {
+                enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            }
             else
             {
                 /* misc items and other enchantable accessories are enchanted like armors */
@@ -2742,6 +2836,7 @@ boolean *effect_happened_ptr;
         else
             pline("Thinking of Maud you forget everything else.");
         exercise(A_WIS, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
         break;
 	case SCR_RETRAINING:
 		known = TRUE;
@@ -2760,7 +2855,9 @@ boolean *effect_happened_ptr;
 			You("wonder if Maud wanted you to learn something.");
 		else
 			pline("Your mind releases itself from the skills you've learned.");
-		break;
+
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        break;
 	case SCR_FIRE: {
         coord cc;
         boolean increased_damage = FALSE;
@@ -2865,6 +2962,7 @@ boolean *effect_happened_ptr;
             break;
         }
         punish(sobj);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
         break;
     case SPE_FLAME_STRIKE:
     {
