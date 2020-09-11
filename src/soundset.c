@@ -1574,8 +1574,8 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         TRUE
     },
     {
-        "",
-        {GHSOUND_NONE, 0.0f},
+        "camera click",
+        {GHSOUND_CAMERA_FLASH_CREATE, 1.0f},
         TRUE
     },
     {
@@ -2567,9 +2567,9 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         "camera",
         {
             {GHSOUND_CAMERA_FLASH_AMBIENT, 100.0f},
-            {GHSOUND_CAMERA_FLASH_CREATE, 1.0f},
-            {GHSOUND_NONE, 10.0f},
-            {GHSOUND_NONE, 100.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},

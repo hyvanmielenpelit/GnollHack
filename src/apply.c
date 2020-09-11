@@ -213,6 +213,8 @@ struct obj *obj;
         return 1;
     }
     consume_obj_charge(obj, TRUE);
+
+    play_sfx_sound(SFX_CAMERA_CLICK);
     update_u_action(ACTION_TILE_ITEM_USE);
 
     if (obj->cursed && !rn2(2)) {
