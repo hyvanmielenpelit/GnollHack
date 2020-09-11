@@ -314,6 +314,26 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       ORC_ROGUE_FEMALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-tourist-male-attack-animation", HUMAN_TOURIST_MALE_ATTACK_ANIMATION_TILES,
+      HUMAN_TOURIST_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_TOURIST_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      HUMAN_TOURIST_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-tourist-male-kick-animation", HUMAN_TOURIST_MALE_KICK_ANIMATION_TILES,
+      HUMAN_TOURIST_MALE_KICK_ANIMATION_FRAMES, HUMAN_TOURIST_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      HUMAN_TOURIST_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "dust-vortex-swallow-animation", DUST_VORTEX_SWALLOW_ANIMATION_TILES,
       DUST_VORTEX_SWALLOW_ANIMATION_FRAMES, DUST_VORTEX_SWALLOW_ANIMATION_OFF,
       MAX_SWALLOW_CHARS,
@@ -488,7 +508,23 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "pony-enlargement", 0, 0,
+      { "human-tourist-male-attack-enlargement",
+        HUMAN_TOURIST_MALE_ATTACK_ANIMATION_TILES, HUMAN_TOURIST_MALE_ATTACK_ANIMATION_FRAMES,
+        HUMAN_TOURIST_MALE_ATTACK_ENLARGEMENT_TILES, HUMAN_TOURIST_MALE_ATTACK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-tourist-male-kick-enlargement",
+        HUMAN_TOURIST_MALE_KICK_ANIMATION_TILES, HUMAN_TOURIST_MALE_KICK_ANIMATION_FRAMES,
+        HUMAN_TOURIST_MALE_KICK_ENLARGEMENT_TILES, HUMAN_TOURIST_MALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "pony-enlargement", 0, 0,
       PONY_ENLARGEMENT_TILES, PONY_ENLARGEMENT_OFF,
       2, 1, 0,
       { -1, -1, -1, -1, 0 },
@@ -1219,6 +1255,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
             return ORC_ROGUE_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && genderidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION;
         break;
@@ -1251,6 +1289,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return ELF_PRIEST_MALE_CHAOTIC_KICK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
             return ORC_ROGUE_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_TOURIST_MALE_KICK_ANIMATION;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;

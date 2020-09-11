@@ -1144,7 +1144,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 glyph = abs(signed_glyph);
 
-
                 /* Kludge for the time being */
                 if (base_layer == LAYER_FLOOR && glyph == NO_GLYPH)
                     glyph = cmap_to_glyph(S_unexplored);
