@@ -1439,6 +1439,7 @@ boolean telekinesis;
 		   we aren't limited by the 52 item limit for it, but caller and
 		   "grandcaller" aren't prepared to skip stuff and then pickup
 		   just gold, so the best we can do here is vary the message */
+        play_ui_sound(UI_SOUND_KNAPSACK_FULL);
 		Your("knapsack cannot accommodate any more items%s.",
 			/* floor follows by nexthere, otherwise container so by nobj */
 			nxtobj(obj, GOLD_PIECE, (boolean)(obj->where == OBJ_FLOOR))

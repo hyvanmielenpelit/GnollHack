@@ -2849,7 +2849,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 addinv(mongold);
                 Your("purse feels heavier.");
             } else {
-                You("grab %s's gold, but find no room in your knapsack.",
+				play_ui_sound(UI_SOUND_KNAPSACK_FULL);
+				You("grab %s's gold, but find no room in your knapsack.",
                     mon_nam(mdef));
                 dropy(mongold);
             }

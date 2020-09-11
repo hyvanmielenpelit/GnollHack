@@ -1518,7 +1518,11 @@ NEARDATA struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES] =
     {
         "",
         {GHSOUND_NONE, 0.0f}
-    }
+    },
+    {
+        "knapsack-full",
+        {GHSOUND_KNAPSACK_FULL, 1.0f}
+    },
 };
 
 
