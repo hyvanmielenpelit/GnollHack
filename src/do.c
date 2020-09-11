@@ -3681,7 +3681,7 @@ polymorph_sink()
     default:
     case 0:
         sym = S_fountain;
-		create_simple_location(u.ux, u.uy, FOUNTAIN, 0, rn2(6), 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
+		create_simple_location(u.ux, u.uy, FOUNTAIN, 0, rn2(MAX_FOUNTAIN_SUBTYPES), 0, levl[u.ux][u.uy].floortyp, levl[u.ux][u.uy].floorsubtyp, FALSE);
 		if (sinklooted)
 			SET_FOUNTAIN_LOOTED(u.ux, u.uy);
 		break;

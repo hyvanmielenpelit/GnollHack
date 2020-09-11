@@ -213,6 +213,7 @@ struct obj *obj;
         return 1;
     }
     consume_obj_charge(obj, TRUE);
+    update_u_action(ACTION_TILE_ITEM_USE);
 
     if (obj->cursed && !rn2(2)) {
         (void) zapyourself(obj, TRUE);
@@ -230,6 +231,7 @@ struct obj *obj;
         obj->ox = u.ux, obj->oy = u.uy;
         (void) flash_hits_mon(mtmp, obj);
     }
+    update_u_action(ACTION_TILE_NO_ACTION);
     return 1;
 }
 

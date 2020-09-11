@@ -1979,7 +1979,7 @@ struct mkroom *croom;
     }
 
     levl[m.x][m.y].typ = FOUNTAIN;
-    levl[m.x][m.y].subtyp = rn2(6);
+    levl[m.x][m.y].subtyp = 1 + rn2(MAX_FOUNTAIN_SUBTYPES - 1); /* No natural fountains normally */
     levl[m.x][m.y].fountainmask = 0;
 //    levl[m.x][m.y].fountainmask &= ~FOUNTAIN_TYPE_MASK;
 //	levl[m.x][m.y].fountainmask |= rn2(6);

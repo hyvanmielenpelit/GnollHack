@@ -4386,7 +4386,9 @@ struct obj *no_wish;
                 lhorizontal = 1;
                 lsubtype = FOUNTAIN_MAGIC;
             }
-			if (!strncmpi(bp, "magic ", 6))
+            if (!strncmpi(bp, "natural ", 7))
+                lsubtype = FOUNTAIN_NATURAL;
+            if (!strncmpi(bp, "magic ", 6))
                 lsubtype = FOUNTAIN_MAGIC;
             if (!strncmpi(bp, "healing ", 8))
                 lsubtype = FOUNTAIN_HEALING;
@@ -4402,7 +4404,7 @@ struct obj *no_wish;
             full_location_transform(x, y, FOUNTAIN, lsubtype, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : get_initial_location_subtype(ROOM), FALSE, lhorizontal, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
-			pline("A %s.", ftyp > 0 ? fountain_type_text(ftyp) : lev->blessedftn ? "enchanted fountain" : "magic fountain");
+			pline("A %s.", ftyp == FOUNTAIN_MAGIC && lev->blessedftn ? "enchanted fountain" : fountain_type_text(ftyp));
             newsym(x, y);
             return (struct obj *) &zeroobj;
         }

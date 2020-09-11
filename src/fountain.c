@@ -238,6 +238,8 @@ drinkfountain()
         return;
     }
 
+	play_sfx_sound(SFX_QUAFF);
+
 	if (ftyp == FOUNTAIN_HEALING || ftyp == FOUNTAIN_POWER)
 	{
 		healup(d(6 + 2 * fountain_blessed, 4), fountain_blessed ? 1 : 0,
@@ -296,12 +298,24 @@ drinkfountain()
 
 	if (ftyp == FOUNTAIN_WATER)
 	{
-		pline_The("tasty spring water refreshes you.");
+		pline_The("tasty water refreshes you.");
 		u.uhunger += rnd(10); /* don't choke on water */
 		update_hunger_status(FALSE);
 		if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
 		{
 			pline("That was a fountain of spring water.");
+			SET_FOUNTAIN_KNOWN(u.ux, u.uy);
+		}
+	}
+
+	if (ftyp == FOUNTAIN_NATURAL)
+	{
+		pline_The("tasty spring water refreshes you.");
+		u.uhunger += rnd(10); /* don't choke on water */
+		update_hunger_status(FALSE);
+		if (!FOUNTAIN_IS_KNOWN(u.ux, u.uy))
+		{
+			pline("That was a natural spring.");
 			SET_FOUNTAIN_KNOWN(u.ux, u.uy);
 		}
 	}
@@ -326,7 +340,7 @@ drinkfountain()
 	}
 
 	/* Exit if not normal NetHack / magic fountain */
-	if (ftyp > FOUNTAIN_MAGIC)
+	if (ftyp != FOUNTAIN_MAGIC)
 	{
 		dryup(u.ux, u.uy, TRUE);
 		return;
@@ -826,6 +840,13 @@ register struct obj *obj;
 			nodryup = TRUE;
 		}
 	}
+	else if (ftyp == FOUNTAIN_NATURAL)
+	{
+		if (!rn2(8))
+		{ /* no dryup */
+			nodryup = TRUE;
+		}
+	}
 	else if (ftyp == FOUNTAIN_POISON)
 	{
 		int oldotyp = obj->otyp;
@@ -1080,6 +1101,9 @@ int ftyp;
 {
 	switch (ftyp)
 	{
+	case FOUNTAIN_NATURAL:
+		return "natural fountain";
+		break;
 	case FOUNTAIN_MAGIC:
 		return "magic fountain";
 		break;
@@ -1093,7 +1117,7 @@ int ftyp;
 		return "fountain of power";
 		break;
 	case FOUNTAIN_WATER:
-		return "fountain of spring water";
+		return "fountain of water";
 		break;
 	case FOUNTAIN_POISON:
 		return "fountain of poison";
@@ -1111,7 +1135,7 @@ int x, y;
     if (cansee(x, y) || (x == u.ux && y == u.uy))
         pline_The("pipes break!  Water spurts out!");
 
-	create_simple_location(x, y, FOUNTAIN, 0, FOUNTAIN_WATER, back_to_broken_glyph(x, y), levl[x][y].floortyp, levl[x][y].floorsubtyp, FALSE);
+	create_simple_location(x, y, FOUNTAIN, 0, FOUNTAIN_NATURAL, 0 /*back_to_broken_glyph(x, y)*/, levl[x][y].floortyp, levl[x][y].floorsubtyp, FALSE);
     SET_FOUNTAIN_LOOTED(x, y);
     newsym(x, y);
 }
@@ -1235,8 +1259,8 @@ init_fountains()
 		context.used_fountain_subtype[i] = i;
 	}
 
-	/* Water always looks like water, so it is not shuffled */
-	for (int i = 0; i < LAST_SHUFFLED_FOUNTAIN - 1; i++)
+	/* Water always looks like water, so it is not shuffled (the same for natural) */
+	for (int i = FOUNTAIN_MAGIC; i < LAST_SHUFFLED_FOUNTAIN - 1; i++)
 	{
 		int new_i = i + rn2(LAST_SHUFFLED_FOUNTAIN - i);
 		int saved_value = context.used_fountain_subtype[i];

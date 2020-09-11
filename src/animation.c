@@ -1299,6 +1299,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_RECEIVE_DAMAGE:
         break;
     case ACTION_TILE_ITEM_USE:
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
         break;
     case ACTION_TILE_DOOR_USE:
         break;

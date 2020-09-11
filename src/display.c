@@ -2862,8 +2862,14 @@ xchar x, y;
     case FOUNTAIN:
     {
         int ftyp = levl[x][y].subtyp; // (levl[x][y].fountainmask& FOUNTAIN_TYPE_MASK);
-        is_variation = TRUE;
-        idx = context.used_fountain_subtype[ftyp] + defsyms[S_fountain].variation_offset;
+        if (ftyp > 0)
+        {
+            is_variation = TRUE;
+            idx = context.used_fountain_subtype[ftyp] - 1 + defsyms[S_fountain].variation_offset;
+        }
+        else
+            idx = S_fountain;
+
         break;
     }
     case SINK:

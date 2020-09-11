@@ -6192,7 +6192,7 @@ struct obj *obj;
             else if (objects[otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
                 hit_only_one = 4; /* 2- 6 targets based on BUC status */
 
-			(void) bhit(u.dx, u.dy, range, radius, objects[otyp].oc_spell_bhit_type, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
+			(void) bhit(u.dx, u.dy, range, radius, ZAPPED_WAND, bhitm, bhito, &obj, &youmonst, hit_only_one, !!(objects[otyp].oc_spell_flags & S1_SPELL_STOPS_AT_FIRST_HIT_OBJECT));
         }
         zapwrapup(); /* give feedback for obj_zapped */
 

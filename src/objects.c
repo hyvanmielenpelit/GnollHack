@@ -2591,12 +2591,12 @@ SCROLL("blank paper", "unlabeled", None, 0,  25,  60, S1_NONE, O1_NONE, O2_NONE,
      * out in the process, allowing more than 52 spells be known but keeping
      * only 52 be castable at any given time.]
      */
-#define SPELL(name,desc,contentdesc,itemdesc,skill,prob,learndelay,cooldown,level,manacost,attr,range,radius,skillchance,savingthrowadj,mgc,dir,dirsubtype,bhittype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,color,height,soundset,flags,flags2,flags3,flags4)  \
+#define SPELL(name,desc,contentdesc,itemdesc,skill,prob,learndelay,cooldown,level,manacost,attr,range,radius,skillchance,savingthrowadj,mgc,dir,dirsubtype,extraspelldata,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,color,height,soundset,flags,flags2,flags3,flags4)  \
     OBJECT(OBJ(name, desc, contentdesc, itemdesc, 0, 0, 0),                                           \
            BITS(0, 0, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, dir, 0, skill, MAT_PAPER),       \
            0, 0, 0, P1_NONE, SPBOOK_CLASS, prob, MULTIGEN_SINGLE, learndelay, 50, (level + 2) * 50 + (level + 1) * (level + 1) * 5,               \
            0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, S2_NONE, 0, \
-		   0, savingthrowadj, 0, 0, cooldown, level, manacost, attr, range, radius, skillchance, bhittype, \
+		   0, savingthrowadj, 0, 0, cooldown, level, manacost, attr, range, radius, skillchance, extraspelldata, \
 		   20, color, height,soundset, \
            dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3, flags4)
 /* Spellbook description normally refers to book covers (primarily color).
@@ -3077,7 +3077,7 @@ OBJECT(OBJ("Book of the Dead", "papyrus", None, None, 0, 0, 0),
            BITS(0, 0, 1, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, 0, P_NONE, metal),    \
            0, 0, 0, P1_NONE, WAND_CLASS, prob, MULTIGEN_SINGLE, 0, 6, cost, \
 		   0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, S2_NONE, 0, \
-		   0, 0, 0, 0, 0, 0, 0, 0, range, radius, 0, ZAPPED_WAND, \
+		   0, 0, 0, 0, 0, 0, 0, 0, range, radius, 0, 0, \
 		   30, color, height,soundset, \
            dirsubtype, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, flags, flags2, flags3, flags4)
 WAND("light",           "glass", None, CHARGED_WAND_NORMAL_NODIR, RECHARGING_WAND_GENERAL, 45, 100, 1, NODIR, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),

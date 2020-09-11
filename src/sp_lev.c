@@ -4901,7 +4901,7 @@ struct sp_coder* coder;
     int subtyp = OV_i(subtyp_opvar);
     
     if (subtyp >= MAX_FOUNTAIN_SUBTYPES || subtyp < 0)
-        subtyp = rn2(MAX_FOUNTAIN_SUBTYPES);
+        subtyp = 1 + rn2(MAX_FOUNTAIN_SUBTYPES - 1); /* Natural fountain does not appear randomly */
 
     selection_iterate2(sel, sel_set_feature2, (genericptr_t)&typ, (genericptr_t)&subtyp);
 

@@ -614,7 +614,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {FOUNTAIN_OF_POISON_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },      /* fountain */
-       { S_fountain, "fountain-of-spring-water", "", "", TRUE,     
+       { S_fountain, "fountain-of-water", "", "", TRUE,     
             { C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE), C(CLR_BRIGHT_BLUE) }, 
             {FOUNTAIN_OF_WATER_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
