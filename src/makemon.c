@@ -527,7 +527,8 @@ register struct monst *mtmp;
 			int weaptype = !rn2(3) || is_lord(ptr) || is_prince(ptr) ? SWORD_OF_HOLY_VENGEANCE : !rn2(3) ? LONG_SWORD : SILVER_LONG_SWORD;
 			int artifacttype = 0;
 			
-			if (!rn2(4))
+#if 0
+            if (!rn2(4))
 			{
 				switch (rn2(2))
 				{
@@ -543,6 +544,7 @@ register struct monst *mtmp;
 					break;
 				}
 			}
+#endif
 
             otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
 
@@ -551,7 +553,7 @@ register struct monst *mtmp;
                 otmp = oname(otmp, artiname(artifacttype));
 
             if (otmp->oartifact == 0)
-                otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
+                otmp->exceptionality = is_prince(ptr) || is_lord(ptr) || !rn2(4) ? EXCEPTIONALITY_CELESTIAL : !rn2(3) ? EXCEPTIONALITY_ELITE : !rn2(2) ? EXCEPTIONALITY_EXCEPTIONAL : 0;
             
             if (otmp->oartifact == 0 && weaptype != SWORD_OF_HOLY_VENGEANCE)
 				otmp->elemental_enchantment = FIRE_ENCHANTMENT;
@@ -825,27 +827,27 @@ register struct monst *mtmp;
         case PM_BALROG:
 		{
 			otmp = mksobj(BULLWHIP, TRUE, FALSE, FALSE);
-			spe2 = rnd(4);
+			spe2 = rnd(5);
 			otmp->enchantment = max(otmp->enchantment, spe2);
 			otmp->elemental_enchantment = FIRE_ENCHANTMENT;
-            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+            otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
             (void)mpickobj(mtmp, otmp);
 
 			if (rn2(2))
 			{
 				otmp = mksobj(BROADSWORD, TRUE, FALSE, FALSE);
-				spe2 = rnd(2);
+				spe2 = rnd(4);
 				otmp->enchantment = max(otmp->enchantment, spe2);
 				otmp->elemental_enchantment = FIRE_ENCHANTMENT;
-                otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
                 (void)mpickobj(mtmp, otmp);
 			}
 			else
 			{
 				otmp = mksobj(AXE, TRUE, FALSE, FALSE);
-				spe2 = 1 + rnd(2);
+				spe2 = 1 + rnd(4);
 				otmp->enchantment = max(otmp->enchantment, spe2);
-                otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
                 (void)mpickobj(mtmp, otmp);
 			}
 			break;
@@ -887,14 +889,14 @@ register struct monst *mtmp;
             curse(otmp);
             spe2 = 0 + rnd(3);
             otmp->enchantment = max(otmp->enchantment, spe2);
-            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+            otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
             (void)mpickobj(mtmp, otmp);
 
             otmp = mksobj(JAGGED_TOOTHED_CLUB, FALSE, FALSE, FALSE);
             curse(otmp);
             spe2 = 0 + rnd(3);
             otmp->enchantment = max(otmp->enchantment, spe2);
-            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+            otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
             (void)mpickobj(mtmp, otmp);
 			break;
 		case PM_DISPATER:
@@ -904,7 +906,7 @@ register struct monst *mtmp;
 			otmp = mksobj(TRIPLE_HEADED_FLAIL_OF_YEENOGHU, FALSE, FALSE, FALSE);
 			curse(otmp);
 			otmp->oerodeproof = TRUE;
-			spe2 = 1 + rnd(3);
+			spe2 = 1 + rnd(4);
 			otmp->enchantment = max(otmp->enchantment, spe2);
             otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
             (void)mpickobj(mtmp, otmp);

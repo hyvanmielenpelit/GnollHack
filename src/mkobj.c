@@ -1173,7 +1173,7 @@ int mkobj_type;
                     }
                     else if (Inhell)
                     {
-                        if (!rn2(6) && !objects[otmp->otyp].oc_material != MAT_SILVER)
+                        if (!rn2(10) && !objects[otmp->otyp].oc_material != MAT_SILVER)
                             otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
                         else if (!rn2(4))
                             otmp->exceptionality = EXCEPTIONALITY_ELITE;

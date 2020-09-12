@@ -3400,12 +3400,24 @@ boolean shk_buying;
 {
     register long tmp = (long) objects[obj->otyp].oc_cost;
 
-    if (obj->oartifact) {
+    if (obj->oartifact)
+    {
         tmp = arti_cost(obj);
         if (shk_buying)
             tmp /= 4;
     }
-    switch (obj->oclass) {
+    else
+    {
+        if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+            tmp *= 2;
+        else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
+            tmp *= 3;
+        else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
+            tmp *= 4;
+    }
+
+    switch (obj->oclass)
+    {
     case FOOD_CLASS:
         /* simpler hunger check, (2-4)*cost */
         if (u.uhs >= HUNGRY && !shk_buying)
@@ -3432,6 +3444,7 @@ boolean shk_buying;
             tmp /= 2L;
         break;
     }
+
     return tmp;
 }
 
