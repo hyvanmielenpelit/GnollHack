@@ -2199,10 +2199,10 @@ int x1, y1, x2, y2;
     struct engr *ep;
 
     if (can_reach_floor(TRUE)) {
-        if ((ep = engr_at(x1, y1)) && ep->engr_type != HEADSTONE && !sengr_at(Gilthoniel_word, x1, y1, TRUE) && !sengr_at(Morgoth_word, x1, y1, TRUE))
+        if ((ep = engr_at(x1, y1)) && !(ep->engr_type == HEADSTONE || sengr_at(Gilthoniel_word, x1, y1, TRUE)  || sengr_at(Morgoth_word, x1, y1, TRUE)))
             wipe_engr_at(x1, y1, rnd(5), FALSE);
         if ((x2 != x1 || y2 != y1)
-                && (ep = engr_at(x2, y2)) && ep->engr_type != HEADSTONE && !sengr_at(Gilthoniel_word, x2, y2, TRUE) && !sengr_at(Morgoth_word, x2, y2, TRUE))
+                && (ep = engr_at(x2, y2)) && !(ep->engr_type == HEADSTONE || sengr_at(Gilthoniel_word, x2, y2, TRUE) || sengr_at(Morgoth_word, x2, y2, TRUE)))
             wipe_engr_at(x2, y2, rnd(5), FALSE);
     }
 }

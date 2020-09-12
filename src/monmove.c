@@ -716,7 +716,7 @@ register struct monst *mtmp;
 
     /* not frozen or sleeping: wipe out texts written in the dust */
 	struct engr* ep = engr_at(mtmp->mx, mtmp->my);
-	if(ep && ep->engr_type != HEADSTONE && !sengr_at(Gilthoniel_word, mtmp->mx, mtmp->my, TRUE) && !sengr_at(Morgoth_word, mtmp->mx, mtmp->my, TRUE))
+	if(ep && !(ep->engr_type == HEADSTONE || sengr_at(Gilthoniel_word, mtmp->mx, mtmp->my, TRUE) || sengr_at(Morgoth_word, mtmp->mx, mtmp->my, TRUE)))
 	    wipe_engr_at(mtmp->mx, mtmp->my, 1, FALSE);
 
     /* some monsters teleport */
