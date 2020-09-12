@@ -6549,7 +6549,7 @@ boolean stop_at_first_hit_object;
 
     if (weapon == FLASHED_LIGHT) 
     {
-        tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
+        tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy));
     } 
     else if (weapon == THROWN_TETHERED_WEAPON && obj) 
     {
@@ -6570,7 +6570,7 @@ boolean stop_at_first_hit_object;
 		}
         else if (displayedobjtype == IMMEDIATE_FLASHED_LIGHT)
         {
-            tmp_at(DISP_BEAM, cmap_to_glyph(S_flashbeam));
+            tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy));
             zapped_wand_beam = TRUE;
         }
         else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
@@ -7008,14 +7008,15 @@ int dx, dy;
 
     bhitpos.x = u.ux;
     bhitpos.y = u.uy;
-    boom = counterclockwise ? S_boomleft : S_boomright;
+    int boomstart = counterclockwise ? S_boom_ml - S_boom_tl : S_boom_mr - S_boom_tl;
+    boom = S_boom_tl + boomstart;
     for (i = 0; i < 8; i++)
         if (xdir[i] == dx && ydir[i] == dy)
             break;
     tmp_at(DISP_FLASH, cmap_to_glyph(boom));
     for (ct = 0; ct < 10; ct++) {
         i = (i + 8) % 8;                          /* 0..7 (8 -> 0, -1 -> 7) */
-        boom = (S_boomleft + S_boomright - boom); /* toggle */
+        boom = S_boom_tl + (counterclockwise ? ((8 + boomstart - i) % 8) : ((boomstart + i) % 8)); /* toggle */
         tmp_at(DISP_CHANGE, cmap_to_glyph(boom)); /* change glyph */
         dx = xdir[i];
         dy = ydir[i];

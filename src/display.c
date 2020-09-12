@@ -3047,9 +3047,18 @@ int beam_type;
         impossible("zapdir_to_glyph:  illegal beam type");
         beam_type = 0;
     }
-    int zapdir_glyph_index = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
+    int zapdir_glyph_index = dir_to_beam_index(dx, dy);
 
     return ((int) ((beam_type << 2) | zapdir_glyph_index)) + GLYPH_ZAP_OFF;
+}
+
+int
+dir_to_beam_index(dx, dy)
+register int dx, dy;
+{
+    int dir_glyph_index = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
+
+    return dir_glyph_index;
 }
 
 /*

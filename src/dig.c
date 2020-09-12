@@ -1748,7 +1748,7 @@ struct obj* origobj;
         }
     }
     digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
-    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_digbeam));
+    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy));
     while (--digdepth >= 0) 
     {
         if (!isok(zx, zy))
@@ -1993,7 +1993,7 @@ struct obj* origobj;
 	zx = u.ux + u.dx;
 	zy = u.uy + u.dy;
 	digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
-	tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_digbeam));
+	tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy));
 
 	while (--digdepth >= 0)
 	{
