@@ -125,6 +125,7 @@ FOUNTAIN:(25,09),fountain_poison
 
 # the altar's defiled; useful for BUC but never coaligned
 ALTAR:(20,13),noalign,shrine
+FLOOR:fillrect(18,11,21,14),location_floor,floor_marble
 
 # smithy
 ANVIL:(13,13)
@@ -141,6 +142,9 @@ DOOR:random,(9,10)
 DOOR:random,(15,13)
 DOOR:random,(25,13)
 DOOR:random,(31,11)
+FLOOR:fillrect(04,04,06,07),location_floor,floor_parquet
+FLOOR:fillrect(08,11,10,14),location_floor,floor_parquet
+FLOOR:fillrect(26,04,28,07),location_floor,floor_parquet
 
 # knock a few holes in the shop interior walls
 REPLACE_TERRAIN:(07,04,11,06),'|',':',18%
@@ -159,11 +163,13 @@ OBJECT:('%',"corpse"),$place[1],montype:"shopkeeper"
 OBJECT:('%',"corpse"),$place[2],montype:"shopkeeper"
 OBJECT:('%',"corpse"),$place[3],montype:"shopkeeper"
 OBJECT:('%',"corpse"),$place[4],montype:"shopkeeper"
+OBJECT:('%',"corpse"),$place[5],montype:"dwarven geologist"
 OBJECT:('%',"corpse"),random,montype:"watchman"
 OBJECT:('%',"corpse"),random,montype:"watchman"
 OBJECT:('%',"corpse"),random,montype:"watchman"
 OBJECT:('%',"corpse"),random,montype:"watchman"
 OBJECT:('%',"corpse"),random,montype:"watch captain"
+OBJECT:('%',"corpse"),(14,13),montype:"smith"
 
 # Rubble!
 LOOP [9 + 2d5] {
@@ -187,6 +193,24 @@ OBJECT:('/',"striking"),$place[3],uncursed,0
 OBJECT:('/',"striking"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[0],uncursed,0
+
+CONTAINER:('(',"chest"),locked,(20,14) {
+  OBJECT:('$',"gold piece"),quantity:(1000+(2d500))
+  [50%]:OBJECT:'*'
+  [50%]:OBJECT:'*'
+  [50%]:OBJECT:'*'
+  [50%]:OBJECT:'*'
+  OBJECT:orc_artifact
+  OBJECT:random_contents
+  OBJECT:')'
+  [50%]:OBJECT:')'
+  [50%]:OBJECT:')'
+  OBJECT:'['
+  [50%]:OBJECT:'['
+  [50%]:OBJECT:'['
+  [20%]:OBJECT:class_treasure_weapon
+  [20%]:OBJECT:class_treasure_armor
+}
 
 # the Orcish Army
 
@@ -861,7 +885,7 @@ SUBROOM: "tool shop" [30%], lit, (25,2), (3,3) floortype:floor_parquet {
   ROOMDOOR: false, closed, west, random
 }
 
-SUBROOM: "temple", lit, (24,6), (4,4) {
+SUBROOM: "temple", lit, (24,6), (4,4) floortype:floor_marble {
   ROOMDOOR: false, closed, west, random
   ALTAR:(02,01),align[0],shrine
   MONSTER: ('g', "gnomish wizard"), random

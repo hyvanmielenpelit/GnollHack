@@ -2012,6 +2012,27 @@ struct mkroom *croom;
                 otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
         }
     }
+    else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_ORC_ARTIFACT)
+    {
+        if (!exist_artifact(ORNAMENTAL_ORCISH_DAGGER, artiname(ART_GRIMTOOTH)) && rn2(3))
+        {
+            otmp = mksobj(ORNAMENTAL_ORCISH_DAGGER, FALSE, FALSE, FALSE);
+            otmp = oname(otmp, artiname(ART_GRIMTOOTH));
+            otmp->enchantment = 3 + rnd(4);
+        }
+        else
+        {
+            otmp = mksobj(!rn2(10) ? SWORD_OF_UNHOLY_DESECRATION : !rn2(2) ? SWORD_OF_WOUNDING : MACE_OF_DEATH, FALSE, FALSE, FALSE);
+            otmp->enchantment = 2 + rnd(3);
+        }
+
+        if (otmp)
+            place_object(otmp, x, y);
+        else
+        {
+            otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
+        }
+    }
     else if (o->class == OBJECT_SPECIAL_CREATE_TYPE_RANDOM_CONTENTS)
     {
         otmp = mkobj(RANDOM_CLASS, !named, TRUE);

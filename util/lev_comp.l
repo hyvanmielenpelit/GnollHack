@@ -316,6 +316,7 @@ class_treasure_weapon { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_C
 class_treasure_armor { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_CLASS_TREASURE_ARMOR; return SPECIAL_OBJECT_TYPE; }
 artifact { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_ARTIFACT; return SPECIAL_OBJECT_TYPE; }
 class_artifact { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_CLASS_ARTIFACT; return SPECIAL_OBJECT_TYPE; }
+orc_artifact { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_ORC_ARTIFACT; return SPECIAL_OBJECT_TYPE; }
 random_contents { savetoken(yytext); yylval.i=OBJECT_SPECIAL_CREATE_TYPE_RANDOM_CONTENTS; return SPECIAL_OBJECT_TYPE; }
 dungeons_of_doom_tileset { savetoken(yytext); yylval.i=CMAP_NORMAL; return CMAP_TYPE; }
 gnomish_mines_tileset { savetoken(yytext); yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
