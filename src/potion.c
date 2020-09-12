@@ -1776,56 +1776,83 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
 #define COST_none (-1)
     int costchange = COST_none;
     boolean altfmt = FALSE, res = FALSE;
+    enum sfx_sound_types sfxsound = 0;
 
     if (!potion || potion->otyp != POT_WATER)
         return FALSE;
 
-    if (potion->blessed) {
-        if (targobj->cursed) {
+    if (potion->blessed) 
+    {
+        if (targobj->cursed) 
+        {
             func = uncurse;
             glowcolor = NH_AMBER;
             costchange = COST_UNCURS;
-        } else if (!targobj->blessed) {
+            sfxsound = SFX_UNCURSE_ITEM_SUCCESS;
+        } 
+        else if (!targobj->blessed)
+        {
             func = bless;
             glowcolor = NH_LIGHT_BLUE;
             costchange = COST_alter;
             altfmt = TRUE; /* "with a <color> aura" */
+            sfxsound = SFX_BLESS_ITEM_SUCCESS;
         }
-    } else if (potion->cursed) {
-        if (targobj->blessed) {
+    }
+    else if (potion->cursed) 
+    {
+        if (targobj->blessed)
+        {
             func = unbless;
             glowcolor = "brown";
             costchange = COST_UNBLSS;
-        } else if (!targobj->cursed) {
+            sfxsound = SFX_UNBLESS_ITEM_SUCCESS;
+        } 
+        else if (!targobj->cursed) 
+        {
             func = curse;
             glowcolor = NH_BLACK;
             costchange = COST_alter;
             altfmt = TRUE;
+            sfxsound = SFX_CURSE_ITEM_SUCCESS;
         }
-    } else {
+    } 
+    else 
+    {
         /* dipping into uncursed water; carried() check skips steed saddle */
-        if (carried(targobj)) {
+        if (carried(targobj)) 
+        {
             if (water_damage(targobj, 0, TRUE) != ER_NOTHING)
                 res = TRUE;
         }
     }
-    if (func) {
+
+    if (func) 
+    {
         /* give feedback before altering the target object;
            this used to set obj->bknown even when not seeing
            the effect; now hero has to see the glow, and bknown
            is cleared instead of set if perception is distorted */
-        if (useeit) {
+        if (useeit)
+        {
+            if(sfxsound > 0)
+                play_sfx_sound(sfxsound);
+
             glowcolor = hcolor(glowcolor);
+
             if (altfmt)
                 pline("%s with %s aura.", objphrase, an(glowcolor));
             else
                 pline("%s %s.", objphrase, glowcolor);
+
             iflags.last_msg = PLNMSG_OBJ_GLOWS;
             targobj->bknown = !Hallucination;
         }
+
         /* potions of water are the only shop goods whose price depends
            on their curse/bless state */
-        if (targobj->unpaid && targobj->otyp == POT_WATER) {
+        if (targobj->unpaid && targobj->otyp == POT_WATER) 
+        {
             if (costchange == COST_alter)
                 /* added blessing or cursing; update shop
                    bill to reflect item's new higher price */
@@ -1835,6 +1862,7 @@ const char *objphrase; /* "Your widget glows" or "Steed's saddle glows" */
                    degraded it, now you'll have to buy it... */
                 costly_alteration(targobj, costchange);
         }
+
         /* finally, change curse/bless state */
         (*func)(targobj);
         res = TRUE;
