@@ -5031,6 +5031,8 @@ struct ext_func_tab extcmdlist[] = {
             dozoomout, IFBURIED | AUTOCOMPLETE },
     { M(','), "zoommini", "zoom map to fit to screen",
             dozoommini, IFBURIED | AUTOCOMPLETE },
+    { C(','), "zoomhalf", "zoom map out to 50% of normal",
+            dozoomhalf, IFBURIED | AUTOCOMPLETE },
 #endif
 
 #ifdef DEBUG
@@ -5144,10 +5146,14 @@ commands_init()
     (void) bind_key(M('n'), "name");
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
+
+#ifdef USE_TILES
     (void) bind_key(C('0'), "zoommini");
     (void) bind_key(C('1'), "zoomnormal");
+    (void) bind_key(C('.'), "zoomnormal");
     (void) bind_key(C('+'), "zoomin");
     (void) bind_key(C('-'), "zoomout");
+#endif
 
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
@@ -7702,6 +7708,17 @@ dozoommini(VOID_ARGS)
 
     return 0;
 }
+
+int
+dozoomhalf(VOID_ARGS)
+{
+    flags.screen_scale_adjustment = -0.5;
+
+    stretch_window();
+
+    return 0;
+}
+
 
 void
 zoomtoscale(scale)

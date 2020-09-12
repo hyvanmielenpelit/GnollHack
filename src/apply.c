@@ -4963,6 +4963,7 @@ doapply()
 		case JAR_OF_EXTRA_HEALING_SALVE:
         case JAR_OF_GREATER_HEALING_SALVE:
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+        case JAR_OF_MEDICINAL_SALVE:
             res = use_salve(obj);
             break;
         case GRAIL_OF_HEALING:

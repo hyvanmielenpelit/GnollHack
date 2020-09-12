@@ -322,6 +322,7 @@ E boolean FDECL(paranoid_query, (BOOLEAN_P, const char *));
 E boolean FDECL(object_stats_known, (struct obj*));
 E int NDECL(dozoomnormal);
 E int NDECL(dozoommini);
+E int NDECL(dozoomhalf);
 E void FDECL(zoomtoscale, (double));
 
 /* ### dbridge.c ### */

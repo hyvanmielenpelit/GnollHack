@@ -5000,7 +5000,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((1500 + 75 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, "enchant an accessory", cost, "enchanting an accessory");
 }
 
@@ -5011,7 +5011,7 @@ struct monst* mtmp;
 	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
 		return 0;
 
-	int cost = max(1, (int)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
 	return spell_service_query(mtmp, SCR_CHARGING, "recharge an item", cost, "recharging an item");
 }
 

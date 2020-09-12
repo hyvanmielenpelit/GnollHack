@@ -838,7 +838,8 @@ struct monst* origmonst;
             mdrop_obj(mtmp, obj, FALSE);
         }
         break;
-	case SPE_CURE_SICKNESS:
+    case JAR_OF_MEDICINAL_SALVE:
+    case SPE_CURE_SICKNESS:
 	{
 cure_sickness_here:
         res = 1;
@@ -3664,7 +3665,8 @@ struct monst* origmonst;
 		case SPE_CURE_SICKNESS:
 		case SPE_CURE_PETRIFICATION:
 		case SPE_MINOR_HEALING:
-		case JAR_OF_EXTRA_HEALING_SALVE:
+        case JAR_OF_MEDICINAL_SALVE:
+        case JAR_OF_EXTRA_HEALING_SALVE:
         case JAR_OF_GREATER_HEALING_SALVE:
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case GRAIL_OF_HEALING:
@@ -5430,7 +5432,8 @@ boolean ordinary;
         healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
         break;
-	case SPE_CURE_SICKNESS:
+    case JAR_OF_MEDICINAL_SALVE:
+    case SPE_CURE_SICKNESS:
         play_sfx_sound(SFX_CURE_DISEASE);
         if (Sick || FoodPoisoned || MummyRot)
 			You("are no longer ill.");
@@ -5713,7 +5716,8 @@ struct obj *obj; /* wand or spell */
 	case SPE_CURE_SICKNESS:
 	case SPE_CURE_PETRIFICATION:
 	case SPE_MINOR_HEALING:
-	case JAR_OF_EXTRA_HEALING_SALVE:
+    case JAR_OF_MEDICINAL_SALVE:
+    case JAR_OF_EXTRA_HEALING_SALVE:
     case JAR_OF_GREATER_HEALING_SALVE:
     case JAR_OF_PRODIGIOUS_HEALING_SALVE:
     case GRAIL_OF_HEALING:

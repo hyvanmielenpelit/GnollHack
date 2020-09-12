@@ -389,24 +389,34 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             ZeroMemory(kbd_state, sizeof(kbd_state));
             (void)GetKeyboardState(kbd_state);
 
-            if(kbd_state[VK_CONTROL] >= 128 && kbd_state['0'] >= 128)
+            if(kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state['0'] >= 128)
             { 
                 NHEVENT_KBD(C('0'));
                 return 0;
             }
-            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state['1'] >= 128)
+            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state['1'] >= 128)
             {
                 NHEVENT_KBD(C('1'));
                 return 0;
             }
-            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_OEM_PLUS] >= 128)
+            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state[VK_OEM_PLUS] >= 128)
             {
                 NHEVENT_KBD(C('+'));
                 return 0;
             }
-            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_OEM_MINUS] >= 128)
+            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state[VK_OEM_MINUS] >= 128)
             {
                 NHEVENT_KBD(C('-'));
+                return 0;
+            }
+            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state[VK_OEM_COMMA] >= 128)
+            {
+                NHEVENT_KBD(C(','));
+                return 0;
+            }
+            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state[VK_OEM_PERIOD] >= 128)
+            {
+                NHEVENT_KBD(C('.'));
                 return 0;
             }
             else if (ToAscii((UINT)wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0))

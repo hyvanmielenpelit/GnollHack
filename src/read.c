@@ -302,7 +302,7 @@ doread()
               (flags.verbose || Blind) ? "." : "");
         u.uconduct.literate++;
         return 1;
-    } else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE || scroll->otyp == JAR_OF_GREATER_HEALING_SALVE || scroll->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || scroll->otyp == GRAIL_OF_HEALING) {
+    } else if (scroll->otyp == CAN_OF_GREASE || scroll->otyp == JAR_OF_MEDICINAL_SALVE || scroll->otyp == JAR_OF_EXTRA_HEALING_SALVE || scroll->otyp == JAR_OF_GREATER_HEALING_SALVE || scroll->otyp == JAR_OF_PRODIGIOUS_HEALING_SALVE || scroll->otyp == GRAIL_OF_HEALING) {
         pline("This %s has no label.", singular(scroll, xname));
         return 0;
     } else if (scroll->otyp == MAGIC_MARKER) {

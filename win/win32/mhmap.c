@@ -317,7 +317,7 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
 
         if (flags.screen_scale_adjustment == -1.0)
             flags.screen_scale_adjustment = data->frontScale - 1.0;
-    } 
+    }
     else 
     {
         if (bText) 
