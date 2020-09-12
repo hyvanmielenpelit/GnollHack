@@ -211,6 +211,7 @@ CONTAINER:('(',"chest"),locked,(20,14) {
   [20%]:OBJECT:class_treasure_weapon
   [20%]:OBJECT:class_treasure_armor
 }
+ENGRAVING:(20,14),engrave,"Gilthoniel"
 
 # the Orcish Army
 

@@ -1944,9 +1944,9 @@ region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroo
 		  region_detail_end
 		  {
 		      break_stmt_end(splev);
-		      if ( $<i>9 ) {
+		      if ( $<i>10 ) {
 			  add_opcode(splev, SPO_ENDROOM, NULL);
-		      } else if ( $<i>10 )
+		      } else if ( $<i>11 )
 			  lc_error("Cannot use lev statements in non-permanent REGION");
 		  }
 		;

@@ -4933,9 +4933,9 @@ yyreduce:
 #line 1945 "lev_comp.y"
     {
 		      break_stmt_end(splev);
-		      if ( (yyvsp[(9) - (11)].i) ) {
+		      if ( (yyvsp[(10) - (11)].i) ) {
 			  add_opcode(splev, SPO_ENDROOM, NULL);
-		      } else if ( (yyvsp[(10) - (11)].i) )
+		      } else if ( (yyvsp[(11) - (11)].i) )
 			  lc_error("Cannot use lev statements in non-permanent REGION");
 		  ;}
     break;

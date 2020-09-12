@@ -186,6 +186,21 @@ int floorcategory;
             wallification(lowx - 1, lowy - 1, hix + 1, hiy + 1);
         }
     }
+    else
+    {
+        if (floorcategory >= 0 && floorcategory < MAX_FLOOR_CATEGORIES)
+        {
+            for (x = lowx; x <= hix; x++) {
+                lev = &levl[x][lowy];
+                for (y = lowy; y <= hiy; y++)
+                {
+                    if(lev->typ == ROOM)
+                        lev->subtyp = get_location_subtype_by_category(lev->typ, floorcategory);
+                    lev++;
+                }
+            }
+        }
+    }
 }
 
 void
