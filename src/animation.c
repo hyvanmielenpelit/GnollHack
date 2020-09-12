@@ -400,6 +400,20 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "balrog-enlargement", 0, 0,
+      BALROG_ENLARGEMENT_TILES, BALROG_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "balrog-statue-enlargement", 0, 0,
+      BALROG_STATUE_ENLARGEMENT_TILES, BALROG_STATUE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "tree-enlargement", 0, 0,
       TREE_ENLARGEMENT_TILES, TREE_ENLARGEMENT_OFF,
       3, 2, 0,
