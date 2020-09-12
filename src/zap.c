@@ -2877,7 +2877,10 @@ int id;
 	if (obj->elemental_enchantment > 0)
 		otmp->elemental_enchantment = 0; //Special enchantments do not get passed at the moment
 
-	if (id == STRANGE_OBJECT && obj->otyp == CORPSE) 
+    if (obj->exceptionality > 0)
+        otmp->exceptionality = 0; //Special crafting do not get passed at the moment
+    
+    if (id == STRANGE_OBJECT && obj->otyp == CORPSE)
     {
         /* turn crocodile corpses into shoes */
         if (obj->corpsenm == PM_CROCODILE) 

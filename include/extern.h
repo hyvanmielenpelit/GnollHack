@@ -167,6 +167,7 @@ E int FDECL(stone_luck, (BOOLEAN_P));
 E boolean FDECL(object_uses_spellbook_wand_flags_and_properties, (struct obj*));
 E boolean FDECL(inappropriate_character_type, (struct obj*));
 E boolean FDECL(inappropriate_monster_character_type, (struct monst*, struct obj*));
+E boolean FDECL(inappropriate_exceptionality, (struct monst*, struct obj*));
 E void NDECL(update_extrinsics);
 E void NDECL(set_moreluck);
 E void NDECL(restore_attrib);
@@ -1440,7 +1441,7 @@ E int FDECL(bagotricks, (struct obj *, BOOLEAN_P, int *));
 E boolean FDECL(propagate, (int, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(usmellmon, (struct permonst *));
 E boolean FDECL(wrong_elem_type, (struct permonst*));
-E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, int));
+E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, int, int));
 E boolean FDECL(randomize_monster_gender, (struct permonst*));
 
 /* ### mapglyph.c ### */

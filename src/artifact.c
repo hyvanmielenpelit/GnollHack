@@ -214,7 +214,30 @@ boolean nonweaponsonly; /* for monks */
             otmp = oname(otmp, a->name);
             otmp->oartifact = m;
             artiexist[m] = TRUE;
-        }
+			
+			if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_CELESTIAL)
+			{
+				otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
+			}
+			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_PRIMORDIAL)
+			{
+				otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+			}
+			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_INFERNAL)
+			{
+				otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+			}
+			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_ELITE)
+			{
+				otmp->exceptionality = EXCEPTIONALITY_ELITE;
+			}
+			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_EXCEPTIONAL)
+			{
+				otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+			}
+			else
+				otmp->exceptionality = EXCEPTIONALITY_NORMAL;
+		}
     } 
 	else 
 	{
@@ -292,10 +315,34 @@ boolean mod;
 				{
 					if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
 						otmp->nknown = TRUE;
+
 					if (is_quest_artifact(otmp))
 					{
 						otmp->nknown = TRUE;
 					}
+
+					if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_CELESTIAL)
+					{
+						otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
+					}
+					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_PRIMORDIAL)
+					{
+						otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+					}
+					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_INFERNAL)
+					{
+						otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+					}
+					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_ELITE)
+					{
+						otmp->exceptionality = EXCEPTIONALITY_ELITE;
+					}
+					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_EXCEPTIONAL)
+					{
+						otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+					}
+					else
+						otmp->exceptionality = EXCEPTIONALITY_NORMAL;
 				}
                 break;
             }
@@ -681,10 +728,10 @@ struct monst *mon;
 		return 1;
 
 	register const struct artifact* oart = get_artifact(obj);
-	boolean badclass = FALSE, badalign = FALSE, badappropriate = FALSE, self_willed, yours;
+	boolean badclass = FALSE, badalign = FALSE, badappropriate = FALSE, badexceptional = FALSE, self_willed, yours;
 
 	touch_blasted = FALSE;
-	if (!oart && !(objects[obj->otyp].oc_flags3 & O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS))
+	if (!oart && !(objects[obj->otyp].oc_flags3 & O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS) && obj->exceptionality < EXCEPTIONALITY_CELESTIAL)
 		return 1;
 
 	yours = (mon == &youmonst);
@@ -729,7 +776,10 @@ struct monst *mon;
 	if (objects[obj->otyp].oc_flags3 & O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS)
 		badappropriate = inappropriate_monster_character_type(mon, obj);
 	
-	if (badappropriate || (((badclass || badalign) && self_willed)
+	if (obj->exceptionality >= EXCEPTIONALITY_CELESTIAL)
+		badexceptional = inappropriate_exceptionality(mon, obj);
+
+	if (badappropriate || badexceptional ||  (((badclass || badalign) && self_willed)
 			|| (badalign && (!yours || !rn2(4)))))
 	{
 			int dmg = 0, tmp = 0;
@@ -744,7 +794,7 @@ struct monst *mon;
 				You("are shocked by %s enchantment!", s_suffix(the(xname(obj))));
 
 			touch_blasted = TRUE;
-			if (badappropriate)
+			if (badappropriate || badexceptional)
 				dmg = weapon_total_dmg_value(obj, &youmonst, &youmonst, 0);
 			if(badclass || badalign)
 				dmg += d((Antimagic_or_resistance ? 2 : 4), (self_willed ? 10 : 4));

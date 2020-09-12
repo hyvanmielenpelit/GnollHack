@@ -620,6 +620,20 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
                 Strcat(buf, "death-magical ");
         }
 
+        if (known)
+        {
+            if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+                Strcat(buf, "exceptional ");
+            else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
+                Strcat(buf, "elite ");
+            else if (obj->exceptionality == EXCEPTIONALITY_CELESTIAL)
+                Strcat(buf, "celestial ");
+            else if (obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
+                Strcat(buf, "primoridial ");
+            else if (obj->exceptionality == EXCEPTIONALITY_INFERNAL)
+                Strcat(buf, "infernal ");
+        }
+
         if (obj->oclass == MISCELLANEOUS_CLASS && (
             objects[obj->otyp].oc_subtyp == MISC_EARRINGS
             || objects[obj->otyp].oc_subtyp == MISC_EYEGLASSES
@@ -1147,7 +1161,7 @@ unsigned doname_flags;
 			weightlast = (doname_flags & DONAME_WITH_WEIGHT_LAST) != 0,
 			loadstonecorrectly = (doname_flags & DONAME_LOADSTONE_CORRECTLY) != 0;
 	boolean known, dknown, cknown, bknown, lknown;
-    int omndx = obj->corpsenm, isenchanted = 0;
+    int omndx = obj->corpsenm, isenchanted = 0, isexceptional = 0;
     char prefix[PREFIX];
     char tmpbuf[PREFIX + 1]; /* for when we have to add something at
                                 the start of prefix instead of the
@@ -1190,6 +1204,28 @@ unsigned doname_flags;
 		bp += 14;
 		isenchanted = obj->elemental_enchantment;
 	}
+
+
+    if (!strncmp(bp, "exceptional ", 12) && obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL) {
+        bp += 12;
+        isexceptional = obj->exceptionality;
+    }
+    else if (!strncmp(bp, "elite ", 6) && obj->exceptionality == EXCEPTIONALITY_ELITE) {
+        bp += 6;
+        isexceptional = obj->exceptionality;
+    }
+    else if (!strncmp(bp, "celestial ", 10) && obj->exceptionality == EXCEPTIONALITY_CELESTIAL) {
+        bp += 10;
+        isexceptional = obj->exceptionality;
+    }
+    else if (!strncmp(bp, "primordial ", 11) && obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL) {
+        bp += 11;
+        isexceptional = obj->exceptionality;
+    }
+    else if (!strncmp(bp, "infernal ", 9) && obj->exceptionality == EXCEPTIONALITY_INFERNAL) {
+        bp += 9;
+        isexceptional = obj->exceptionality;
+    }
 
 
     if (obj->quan != 1L) {
@@ -1428,12 +1464,35 @@ weapon_here:
 				break;
 			}
 		}
-		add_erosion_words(obj, prefix);
+        if (isexceptional && !(obj_is_pname(obj) || the_unique_obj(obj)))
+        {
+            switch (isexceptional)
+            {
+            case EXCEPTIONALITY_EXCEPTIONAL:
+                Strcat(prefix, "exceptional ");
+                break;
+            case EXCEPTIONALITY_ELITE:
+                Strcat(prefix, "elite ");
+                break;
+            case EXCEPTIONALITY_CELESTIAL:
+                Strcat(prefix, "celestial ");
+                break;
+            case EXCEPTIONALITY_PRIMORDIAL:
+                Strcat(prefix, "primordial ");
+                break;
+            case EXCEPTIONALITY_INFERNAL:
+                Strcat(prefix, "infernal ");
+                break;
+            default:
+                break;
+            }
+        }
+        add_erosion_words(obj, prefix);
         if (known) {
             Strcat(prefix, sitoa(obj->enchantment));
             Strcat(prefix, " ");
         }
-		break;
+        break;
     case TOOL_CLASS:
 		if (isenchanted)
 		{
@@ -1455,7 +1514,30 @@ weapon_here:
 				break;
 			}
 		}
-		if (obj->owornmask & (W_BLINDFOLD | W_SADDLE)) { /* blindfold */
+        if (isexceptional && !(obj_is_pname(obj) || the_unique_obj(obj)))
+        {
+            switch (isexceptional)
+            {
+            case EXCEPTIONALITY_EXCEPTIONAL:
+                Strcat(prefix, "exceptional ");
+                break;
+            case EXCEPTIONALITY_ELITE:
+                Strcat(prefix, "elite ");
+                break;
+            case EXCEPTIONALITY_CELESTIAL:
+                Strcat(prefix, "celestial ");
+                break;
+            case EXCEPTIONALITY_PRIMORDIAL:
+                Strcat(prefix, "primordial ");
+                break;
+            case EXCEPTIONALITY_INFERNAL:
+                Strcat(prefix, "infernal ");
+                break;
+            default:
+                break;
+            }
+        }
+        if (obj->owornmask & (W_BLINDFOLD | W_SADDLE)) { /* blindfold */
             Strcat(bp, " (being worn)");
             break;
         }
@@ -1555,7 +1637,7 @@ weapon_here:
             Strcat(bp, " (chained to you)");
         break;
     case GEM_CLASS:
-        if (objects[obj->otyp].oc_enchantable && (obj->enchantment != 0 || obj->elemental_enchantment != 0))
+        if (objects[obj->otyp].oc_enchantable && (obj->enchantment != 0 || obj->elemental_enchantment != 0 || obj->exceptionality != 0))
             goto weapon_here;
         break;
     }
@@ -3566,7 +3648,7 @@ struct obj *no_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -3592,7 +3674,7 @@ struct obj *no_wish;
 	boolean isartifact = FALSE;
 
     cnt = enchantment = charges = chargesfound = spesgn = typ = 0;
-    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment =
+    very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
         locked = unlocked = broken = 0;
@@ -3694,7 +3776,27 @@ struct obj *no_wish;
 		{
 			elemental_enchantment = DEATH_ENCHANTMENT;
 		}
-		else if (!strncmpi(bp, "trapped ", l = 8)) {
+        else if (!strncmpi(bp, "exceptional ", l = 12))
+        {
+            exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+        }
+        else if (!strncmpi(bp, "elite ", l = 6))
+        {
+            exceptionality = EXCEPTIONALITY_ELITE;
+        }
+        else if (!strncmpi(bp, "celestial ", l = 10))
+        {
+            exceptionality = EXCEPTIONALITY_CELESTIAL;
+        }
+        else if (!strncmpi(bp, "primoridal ", l = 11))
+        {
+            exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+        }
+        else if (!strncmpi(bp, "infernal ", l = 9))
+        {
+            exceptionality = EXCEPTIONALITY_INFERNAL;
+        }
+        else if (!strncmpi(bp, "trapped ", l = 8)) {
             trapped = 0; /* undo any previous "untrapped" */
             if (wizard)
                 trapped = 1;
@@ -4798,17 +4900,27 @@ struct obj *no_wish;
         if (Is_box(otmp) || typ == TIN)
             otmp->otrapped = (trapped == 1);
     }
-	/* set special enchantment */
-	if (elemental_enchantment) {
-		if (otmp->oclass == WEAPON_CLASS)
+
+	/* set elemental enchantment */
+	if (elemental_enchantment) 
+    {
+		if (is_elemental_enchantable(otmp))
 			if(Luck >= 0)
 				otmp->elemental_enchantment = elemental_enchantment;
-			else
-				otmp->elemental_enchantment = 0;
-		if(otmp->elemental_enchantment == DEATH_ENCHANTMENT && !is_death_enchantable(otmp))
+
+        if(otmp->elemental_enchantment == DEATH_ENCHANTMENT && !is_death_enchantable(otmp))
 			otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
 	}
-	/* empty for containers rather than for tins */
+
+    /* set exceptionality */
+    if (exceptionality)
+    {
+        if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
+            if (Luck >= 0)
+                otmp->exceptionality = exceptionality;
+    }
+
+    /* empty for containers rather than for tins */
     if (contents == CONTAINER_EMPTY) {
         if (otmp->otyp == BAG_OF_TRICKS || otmp->otyp == HORN_OF_PLENTY) {
             if (otmp->charges > 0)

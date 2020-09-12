@@ -1033,7 +1033,73 @@ struct obj* uitem;
 }
 
 
+boolean
+inappropriate_exceptionality(monster, uitem)
+struct monst* monster;
+struct obj* uitem;
+{
+	if (!uitem || !monster)
+		return TRUE;
 
+	if (uitem->exceptionality < EXCEPTIONALITY_CELESTIAL)
+		return FALSE;
+
+	boolean isyou = (monster == &youmonst);
+
+	if (uitem->exceptionality == EXCEPTIONALITY_CELESTIAL)
+	{
+		if (isyou)
+		{
+			if (u.ualign.type == A_LAWFUL)
+				return FALSE;
+			else
+				return TRUE;
+		}
+		else
+		{
+			if(monster->data->maligntyp > 0)
+				return FALSE;
+			else
+				return TRUE;
+		}
+	}
+	else if (uitem->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
+	{
+		if (isyou)
+		{
+			if (u.ualign.type == A_NEUTRAL)
+				return FALSE;
+			else
+				return TRUE;
+		}
+		else
+		{
+			if (monster->data->maligntyp == 0)
+				return FALSE;
+			else
+				return TRUE;
+		}
+	}
+	else if (uitem->exceptionality == EXCEPTIONALITY_INFERNAL)
+	{
+		if (isyou)
+		{
+			if (u.ualign.type == A_CHAOTIC)
+				return FALSE;
+			else
+				return TRUE;
+		}
+		else
+		{
+			if (monster->data->maligntyp < 0)
+				return FALSE;
+			else
+				return TRUE;
+		}
+	}
+
+	return FALSE;
+}
 
 /* there has just been an inventory change affecting a luck-granting item */
 /* OBSOLETE --JG */

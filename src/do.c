@@ -1039,6 +1039,23 @@ register struct obj* obj;
 		}
 
 
+		if (obj->known && obj->exceptionality)
+		{
+			Sprintf(buf, "Quality:                %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal (quadruple base damage)" :
+				"Unknown qualilty"
+			);
+
+			wep_avg_dmg *= obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? 2.0 :
+				obj->exceptionality == EXCEPTIONALITY_ELITE ? 3.0 : 4.0;
+
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
 
 		if (stats_known
 			&& ((objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0) || objects[otyp].oc_wedmgplus != 0))

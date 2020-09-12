@@ -1076,7 +1076,8 @@ int mkobj_type;
     otmp->cknown = 0;
 	otmp->corpsenm = NON_PM;
 	otmp->elemental_enchantment = 0;
-	otmp->cooldownleft = 0;
+    otmp->exceptionality = 0;
+    otmp->cooldownleft = 0;
     otmp->repowerleft = 0;
     otmp->blessed = 0;
     otmp->lamplit = 0;
@@ -1099,11 +1100,16 @@ int mkobj_type;
 			{
                 otmp->enchantment = rne(3);
                 otmp->blessed = rn2(2);
-            } else if (!rn2(10) || is_cursed_magic_item(otmp)) {
+            } 
+            else if (!rn2(10) || is_cursed_magic_item(otmp)) 
+            {
                 curse(otmp);
                 otmp->enchantment = -rne(3);
-            } else
+            } 
+            else
                 blessorcurse(otmp, 10);
+
+
             if (is_poisonable(otmp) && !rn2(100) && !(objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED))
                 otmp->opoisoned = 1;
 			else if (is_elemental_enchantable(otmp) && ((objects[otmp->otyp].oc_flags2 & O2_GENERATED_DEATH_OR_COLD_ENCHANTED) || (is_multigen(otmp) ? !rn2(40) : !rn2(160))))
@@ -1131,10 +1137,78 @@ int mkobj_type;
 
 			if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE, FALSE);
+
+            if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
+            {
+                if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_CELESTIAL)
+                {
+                    otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
+                }
+                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_PRIMORDIAL)
+                {
+                    otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+                }
+                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_INFERNAL)
+                {
+                    otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                }
+                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_ELITE)
+                {
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                }
+                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_EXCEPTIONAL)
+                {
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                }
+                else
+                {
+                    if (In_endgame(&u.uz))
+                    {
+                        if (!rn2(4))
+                            otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                        else if (!rn2(3))
+                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                        else if (!rn2(2))
+                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                    }
+                    else if (Inhell)
+                    {
+                        if (!rn2(6) && !objects[otmp->otyp].oc_material != MAT_SILVER)
+                            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                        else if (!rn2(4))
+                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                        else if (!rn2(2))
+                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                    }
+                    else if (depth(&u.uz) > 20)
+                    {
+                        if (!rn2(30))
+                            otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                        else if (!rn2(6))
+                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                        else if (!rn2(3))
+                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                    }
+                    else if (depth(&u.uz) > 10)
+                    {
+                        if (!rn2(30))
+                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                        else if (!rn2(4))
+                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                    }
+                    else
+                    {
+                        if (!rn2(20))
+                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                    }
+                }
+            }
+
 			break;
 		case FOOD_CLASS:
             otmp->oeaten = 0;
-            switch (otmp->otyp) {
+            switch (otmp->otyp) 
+            {
             case CORPSE:
                 /* possibly overridden by mkcorpstat() */
                 tryct = 50;
@@ -1142,7 +1216,8 @@ int mkobj_type;
                     otmp->corpsenm = undead_to_corpse(rndmonnum());
                 while ((mvitals[otmp->corpsenm].mvflags & G_NOCORPSE)
                        && (--tryct > 0));
-                if (tryct == 0) {
+                if (tryct == 0)
+                {
                     /* perhaps rndmonnum() only wants to make G_NOCORPSE
                        monsters on this level; create an adventurer's
                        corpse instead, then */
@@ -1153,9 +1228,11 @@ int mkobj_type;
             case EGG:
                 otmp->corpsenm = NON_PM; /* generic egg */
                 if (!rn2(3))
-                    for (tryct = 200; tryct > 0; --tryct) {
+                    for (tryct = 200; tryct > 0; --tryct)
+                    {
                         mndx = can_be_hatched(rndmonnum());
-                        if (mndx != NON_PM && !dead_species(mndx, TRUE)) {
+                        if (mndx != NON_PM && !dead_species(mndx, TRUE))
+                        {
                             otmp->corpsenm = mndx; /* typed egg */
                             break;
                         }
@@ -1167,10 +1244,12 @@ int mkobj_type;
                 if (!rn2(6))
                     set_tin_variety(otmp, SPINACH_TIN);
                 else
-                    for (tryct = 200; tryct > 0; --tryct) {
+                    for (tryct = 200; tryct > 0; --tryct) 
+                    {
                         mndx = undead_to_corpse(rndmonnum());
                         if (mons[mndx].cnutrit
-                            && !(mvitals[mndx].mvflags & G_NOCORPSE)) {
+                            && !(mvitals[mndx].mvflags & G_NOCORPSE))
+                        {
                             otmp->corpsenm = mndx;
                             set_tin_variety(otmp, RANDOM_TIN);
                             break;
@@ -1186,14 +1265,18 @@ int mkobj_type;
                 otmp->quan = (long) rnd(2);
                 break;
             }
-            if (Is_pudding(otmp)) {
+            if (Is_pudding(otmp)) 
+            {
                 otmp->globby = 1;
                 otmp->known = otmp->dknown = 1;
                 otmp->corpsenm = PM_GRAY_OOZE
                                  + (otmp->otyp - GLOB_OF_GRAY_OOZE);
-            } else {
+            } 
+            else 
+            {
                 if (otmp->otyp != CORPSE && otmp->otyp != MEAT_RING
-                    && otmp->otyp != KELP_FROND && !rn2(6)) {
+                    && otmp->otyp != KELP_FROND && !rn2(6)) 
+                {
                     otmp->quan = 2L;
                 }
             }
@@ -1210,7 +1293,8 @@ int mkobj_type;
                 otmp->quan = 1L;
             break;
         case TOOL_CLASS:
-            switch (otmp->otyp) {
+            switch (otmp->otyp) 
+            {
             case TALLOW_CANDLE:
             case WAX_CANDLE:
 				otmp->special_quality = 1;
@@ -1290,10 +1374,13 @@ int mkobj_type;
         case AMULET_CLASS:
             if (otmp->otyp == AMULET_OF_YENDOR)
                 context.made_amulet = TRUE;
-            if (rn2(10) && (is_cursed_magic_item(otmp))) {
+            if (rn2(10) && (is_cursed_magic_item(otmp))) 
+            {
                 curse(otmp);
-            } else
+            }
+            else
                 blessorcurse(otmp, 10);
+
             break;
 		case REAGENT_CLASS:
 		case VENOM_CLASS:
@@ -1313,16 +1400,22 @@ int mkobj_type;
             break;
         case ARMOR_CLASS:
             if (rn2(10)
-                && (is_cursed_magic_item(otmp) || !rn2(11))) {
+                && (is_cursed_magic_item(otmp) || !rn2(11))) 
+            {
                 curse(otmp);
                 otmp->enchantment = -rne(3);
-            } else if (!rn2(10)) {
+            } 
+            else if (!rn2(10)) 
+            {
                 otmp->blessed = (objects[otmp->otyp].oc_flags2 & O2_GENERATED_BLESSED) ? 1 : rn2(2);
                 otmp->enchantment = rne(3);
-            } else
+            } 
+            else
                 blessorcurse(otmp, 10);
+
             if (artif && !rn2(40))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE, FALSE);
+
             /* simulate lacquered armor for samurai */
             if (Role_if(PM_SAMURAI) && otmp->otyp == SPLINT_MAIL
                 && (moves <= 1 || In_quest(&u.uz))) {

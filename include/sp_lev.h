@@ -390,6 +390,7 @@ typedef struct {
     short lit;
     short eroded, locked, trapped, recharged, invis, greased, broken;
 	int elemental_enchantment;
+    int exceptionality;
 } object;
 
 typedef struct {

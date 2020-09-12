@@ -389,16 +389,23 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
 			tmp += 0;
 		else
 		{ 
-			if (bigmonst(ptr)) {
-				if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
-					tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
-				tmp += objects[otyp].oc_wldmgplus;
-			}
-			else {
-				if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
-					tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
-				tmp += objects[otyp].oc_wsdmgplus;
-			}
+            int exceptionality_rounds = otmp->exceptionality == EXCEPTIONALITY_NORMAL ? 1 :
+                otmp->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? 2 :
+                otmp->exceptionality == EXCEPTIONALITY_ELITE ? 3 : 4;
+
+            for (int exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
+            {
+                if (bigmonst(ptr)) {
+                    if (objects[otyp].oc_wldam > 0 && objects[otyp].oc_wldice > 0)
+                        tmp += d(objects[otyp].oc_wldice, objects[otyp].oc_wldam);
+                    tmp += objects[otyp].oc_wldmgplus;
+                }
+                else {
+                    if (objects[otyp].oc_wsdam > 0 && objects[otyp].oc_wsdice > 0)
+                        tmp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+                    tmp += objects[otyp].oc_wsdmgplus;
+                }
+            }
 
             int applicable_enchantment = otmp->enchantment;
             if (use_type == 1)
@@ -945,8 +952,8 @@ static const NEARDATA short hwep[] =
 	SWORD_OF_DRAGON_SLAYING, SWORD_OF_GIANT_SLAYING, SWORD_OF_TROLL_SLAYING, MACE_OF_DISRUPTION, MACE_OF_GREATER_DISRUPTION,
 	SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER, MORNING_STAR_OF_TROLL_SLAYING, RUNED_FLAIL,
 	CORPSE, /* cockatrice corpse */
-	TRIPLE_HEADED_FLAIL, HUGE_INFERNAL_BARDICHE, INFERNAL_AXE, BROADSWORD, SILVER_LONG_SWORD, SILVER_SABER, INFERNAL_JAGGED_TOOTHED_CLUB,
-	INFERNAL_ANCUS, DOUBLE_HEADED_FLAIL,
+	TRIPLE_HEADED_FLAIL, BROADSWORD, SILVER_LONG_SWORD, SILVER_SABER, JAGGED_TOOTHED_CLUB, BARDICHE,
+	ANCUS, DOUBLE_HEADED_FLAIL,
 	SILVER_MACE, SILVER_SPEAR, 
 	DWARVISH_MATTOCK, TWO_HANDED_SWORD, BATTLE_AXE,
     KATANA, UNICORN_HORN, CRYSKNIFE, TRIDENT, LONG_SWORD, ELVEN_BROADSWORD,

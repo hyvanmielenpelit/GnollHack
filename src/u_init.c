@@ -12,6 +12,7 @@ struct trobj {
 	Bitfield(trquan, 6);
 	Bitfield(trbless, 2);
 	int elemental_enchantment;
+	int exceptionality;
 };
 
 STATIC_DCL void FDECL(ini_inv, (struct trobj *));
@@ -31,288 +32,288 @@ STATIC_DCL struct obj* FDECL(mk_obj_in_container_known, (struct obj*, int));
 
 static struct trobj Archeologist[] = {
     /* if adventure has a name...  idea from tan@uvm-gen */
-    { BULLWHIP, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { LEATHER_JACKET, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ HAND_CROSSBOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-	{ CROSSBOW_BOLT, 0, WEAPON_CLASS, 15, UNDEF_BLESS, 0 },
-	{ CROSSBOW_BOLT, 0, WEAPON_CLASS, 6, UNDEF_BLESS, LIGHTNING_ENCHANTMENT },
-	{ FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
-	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, 0, 0 },
-	{ PICK_AXE, 2, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-    { TINNING_KIT, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ WAN_DIGGING, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
-	{ TOUCHSTONE, 0, GEM_CLASS, 1, 0, 0 },
-    { BACKPACK, 0, TOOL_CLASS, 1, 0, 0 },
-    { 0, 0, 0, 0, 0, 0 }
+    { BULLWHIP, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { LEATHER_JACKET, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ HAND_CROSSBOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ CROSSBOW_BOLT, 0, WEAPON_CLASS, 15, UNDEF_BLESS, 0, 0 },
+	{ CROSSBOW_BOLT, 0, WEAPON_CLASS, 6, UNDEF_BLESS, LIGHTNING_ENCHANTMENT, 0 },
+	{ FEDORA, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0, 0 },
+	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, 0, 0, 0 },
+	{ PICK_AXE, 2, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { TINNING_KIT, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ WAN_DIGGING, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ TOUCHSTONE, 0, GEM_CLASS, 1, 0, 0, 0 },
+    { BACKPACK, 0, TOOL_CLASS, 1, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Barbarian[] = {
 #define B_MAJOR 0 /* two-handed sword or battle-axe  */
 #define B_MINOR 1 /* matched with axe or short sword */
-    { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { AXE, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { RING_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
-    { 0, 0, 0, 0, 0, 0 }
+    { TWO_HANDED_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { AXE, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { RING_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Cave_man[] = {
 #define C_AMMO 2
-    { CLUB, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { SLING, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS, 0 },
-    { STONE_PEBBLE, 0, GEM_CLASS, 3, 0, 0 },             /* yields 18..33 */
-	{ UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, UNDEF_BLESS, 0 },
-	{ SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ FOOD_RATION, 0, FOOD_CLASS, 3, 0 },
-	{ LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { 0, 0, 0, 0, 0, 0 }
+    { CLUB, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { SLING, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { FLINT, 0, GEM_CLASS, 15, UNDEF_BLESS, 0, 0 },
+    { STONE_PEBBLE, 0, GEM_CLASS, 3, 0, 0, 0 },             /* yields 18..33 */
+	{ UNDEF_TYP, UNDEF_SPE, AMULET_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ SACK, UNDEF_SPE, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ FOOD_RATION, 0, FOOD_CLASS, 3, 0, 0 },
+	{ LEATHER_ARMOR, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0 }
 };
 
 static struct trobj Healer[] = {
-    { SCALPEL, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { LEATHER_GLOVES, 3, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ BEAK_MASK_OF_SICKNESS_RESISTANCE, 0, MISCELLANEOUS_CLASS, 1, UNDEF_BLESS, 0 },
-	{ LEATHER_HAT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ STETHOSCOPE, 0, TOOL_CLASS, 1, 0 },
-    { POT_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0 },
-    { POT_EXTRA_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0 },
-	{ JAR_OF_EXTRA_HEALING_SALVE, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ JAR_OF_MEDICINAL_SALVE, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ WAN_PROBING, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
-	{ WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
+    { SCALPEL, 3, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { LEATHER_GLOVES, 3, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ BEAK_MASK_OF_SICKNESS_RESISTANCE, 0, MISCELLANEOUS_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ LEATHER_HAT, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ STETHOSCOPE, 0, TOOL_CLASS, 1, 0, 0 },
+    { POT_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0, 0 },
+    { POT_EXTRA_HEALING, 0, POTION_CLASS, 4, UNDEF_BLESS, 0, 0 },
+	{ JAR_OF_EXTRA_HEALING_SALVE, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ JAR_OF_MEDICINAL_SALVE, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ WAN_PROBING, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ WAN_SLEEP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0, 0 },
     /* always blessed, so it's guaranteed readable */
-	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ SPE_EXTRA_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ SPE_CURE_SICKNESS, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ GINSENG_ROOT, 0, REAGENT_CLASS, 4, 0, 0 },
-	{ CLOVE_OF_GARLIC, 0, REAGENT_CLASS, 2, 0, 0 },
-	{ APPLE, 0, FOOD_CLASS, 5, 0, 0 },
-	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ SPE_EXTRA_HEALING, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ SPE_CURE_SICKNESS, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ GINSENG_ROOT, 0, REAGENT_CLASS, 4, 0, 0, 0 },
+	{ CLOVE_OF_GARLIC, 0, REAGENT_CLASS, 2, 0, 0, 0 },
+	{ APPLE, 0, FOOD_CLASS, 5, 0, 0, 0 },
+	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 
 static struct trobj Knight[] = {
-    { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { RING_MAIL, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { APPLE, 0, FOOD_CLASS, 2, 0, 0 },
-    { CARROT, 0, FOOD_CLASS, 2, 0, 0 },
-	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+    { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { LANCE, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { RING_MAIL, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { HELMET, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { APPLE, 0, FOOD_CLASS, 2, 0, 0, 0 },
+    { CARROT, 0, FOOD_CLASS, 2, 0, 0, 0 },
+	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Monk[] = {
 #define M_FOOD_SPELLBOOK 8
-	{ LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-    { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS, 0 },
-    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
-    { APPLE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
-    { ORANGE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
-	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0 },
-	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ SPE_CREATE_FOOD, 0, SPBOOK_CLASS, 1, 1, 0 },
+	{ LEATHER_GLOVES, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { POT_HEALING, 0, POTION_CLASS, 3, UNDEF_BLESS, 0, 0 },
+    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0, 0 },
+    { APPLE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { ORANGE, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ HANDFUL_OF_NUTS, 0, FOOD_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ SPE_CREATE_FOOD, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
 	/* Yes, we know fortune cookies aren't really from China.  They were
      * invented by George Jung in Los Angeles, California, USA in 1916.
      */
-    { FORTUNE_COOKIE, 0, FOOD_CLASS, 3, UNDEF_BLESS, 0 },
-	{ ORIENTAL_SILK_SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+    { FORTUNE_COOKIE, 0, FOOD_CLASS, 3, UNDEF_BLESS, 0, 0 },
+	{ ORIENTAL_SILK_SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Priest[] = {
-	{ BANDED_MAIL, 0, ARMOR_CLASS, 1, 1, 0 },
-	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, 1, 0 },
-	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 }, //Blessed holy symbol is even more powerful
-	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0 }, /* holy water */
-	{ CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0 },
-	{ SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0 },
-	{ GINSENG_ROOT, 0, REAGENT_CLASS, 2, 0, 0 },
-	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ SPE_CONGREGATE, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0 },
-	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+	{ BANDED_MAIL, 0, ARMOR_CLASS, 1, 1, 0, 0 },
+	{ CLERICAL_GOWN, 0, ARMOR_CLASS, 1, 1, 0, 0 },
+	{ HOLY_SYMBOL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 }, //Blessed holy symbol is even more powerful
+	{ POT_WATER, 0, POTION_CLASS, 4, 1, 0, 0 }, /* holy water */
+	{ CLOVE_OF_GARLIC, 0, FOOD_CLASS, 1, 0, 0, 0 },
+	{ SPRIG_OF_WOLFSBANE, 0, FOOD_CLASS, 1, 0, 0, 0 },
+	{ GINSENG_ROOT, 0, REAGENT_CLASS, 2, 0, 0, 0 },
+	{ SPE_MINOR_HEALING, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ SPE_HEALING, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ SPE_CONGREGATE, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 2, UNDEF_BLESS, 0, 0 },
+	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Ranger[] = {
 #define RAN_BOW 1
 #define RAN_ONE_ARROWS 2
 #define RAN_ZERO_ARROWS 3
-	{ DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-	{ SHORT_BOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { ARROW, 1, WEAPON_CLASS, 15, UNDEF_BLESS, 0 },
-    { ARROW, 0, WEAPON_CLASS, 25, UNDEF_BLESS, 0 },
-	{ LEATHER_BRACERS, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-	{ CLOAK_OF_PROTECTION, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ BACKPACK, 0, TOOL_CLASS, 1, 0, 0 },
-	{ CRAM_RATION, 0, FOOD_CLASS, 4, 0, 0 },
-    { 0, 0, 0, 0, 0, 0 }
+	{ DAGGER, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ SHORT_BOW, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { ARROW, 1, WEAPON_CLASS, 15, UNDEF_BLESS, 0, 0 },
+    { ARROW, 0, WEAPON_CLASS, 25, UNDEF_BLESS, 0, 0 },
+	{ LEATHER_BRACERS, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ CLOAK_OF_PROTECTION, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ BACKPACK, 0, TOOL_CLASS, 1, 0, 0, 0 },
+	{ CRAM_RATION, 0, FOOD_CLASS, 4, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Rogue[] = {
 #define R_DAGGERS 1
-    { SHORT_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { DAGGER, 0, WEAPON_CLASS, 5, 0 }, /* quan is variable */
-	{ HAND_CROSSBOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-	{ CROSSBOW_BOLT, 1, WEAPON_CLASS, 15, UNDEF_BLESS, 0 },
-	{ LEATHER_ARMOR, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ COTTON_HOOD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ POT_POISON, 0, POTION_CLASS, 1, 0, 0 },
-    { LOCK_PICK, 0, TOOL_CLASS, 1, 0, 0 },
-    { BAG_OF_TREASURE_HAULING, 0, TOOL_CLASS, 1, 0, 0 },
-    { 0, 0, 0, 0, 0, 0 }
+    { SHORT_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { DAGGER, 0, WEAPON_CLASS, 5, 0, 0 }, /* quan is variable */
+	{ HAND_CROSSBOW, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ CROSSBOW_BOLT, 1, WEAPON_CLASS, 15, UNDEF_BLESS, 0, 0 },
+	{ LEATHER_ARMOR, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ COTTON_HOOD, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ POT_POISON, 0, POTION_CLASS, 1, 0, 0, 0 },
+    { LOCK_PICK, 0, TOOL_CLASS, 1, 0, 0, 0 },
+    { BAG_OF_TREASURE_HAULING, 0, TOOL_CLASS, 1, 0, 0, 0 },
+    { 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Samurai[] = {
 #define S_ARROWS 3
-    { KATANA, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { SHORT_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 }, /* wakizashi */
-    { YUMI, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { YA, 0, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* variable quan */
-    { SPLINT_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ ORIENTAL_SILK_SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+    { KATANA, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { SHORT_SWORD, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 }, /* wakizashi */
+    { YUMI, 0, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { YA, 0, WEAPON_CLASS, 25, UNDEF_BLESS, 0, 0 }, /* variable quan */
+    { SPLINT_MAIL, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ ORIENTAL_SILK_SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Tourist[] = {
 #define T_DARTS 0
-	{ DART, 3, WEAPON_CLASS, 25, UNDEF_BLESS, 0 }, /* quan is variable */
-	{ GOLF_CLUB, 3, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0 },
-    { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0 },
-    { HAWAIIAN_SHIRT, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0 },
-	{ WAN_TELEPORTATION, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
-	{ RIN_TELEPORT_CONTROL, UNDEF_SPE, RING_CLASS, 1, UNDEF_BLESS, 0 },
-	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0 },
-	{ SUNGLASSES, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+	{ DART, 3, WEAPON_CLASS, 25, UNDEF_BLESS, 0, 0 }, /* quan is variable */
+	{ GOLF_CLUB, 3, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ POT_EXTRA_HEALING, 0, POTION_CLASS, 2, UNDEF_BLESS, 0, 0 },
+    { SCR_MAGIC_MAPPING, 0, SCROLL_CLASS, 4, UNDEF_BLESS, 0, 0 },
+    { HAWAIIAN_SHIRT, 2, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ LEATHER_SANDALS, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ EXPENSIVE_CAMERA, UNDEF_SPE, TOOL_CLASS, 1, 0, 0, 0 },
+	{ WAN_TELEPORTATION, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ RIN_TELEPORT_CONTROL, UNDEF_SPE, RING_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ CREDIT_CARD, 0, TOOL_CLASS, 1, 0, 0, 0 },
+	{ SUNGLASSES, 0, MISCELLANEOUS_CLASS, 1, 0, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 10, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj TouristMale[] = {
-	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ EXPENSIVE_WATCH, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+	{ LEATHER_BAG, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ EXPENSIVE_WATCH, 0, MISCELLANEOUS_CLASS, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj TouristFemale[] = {
-	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0 },
-	{ GOLDEN_EARRINGS, 0, MISCELLANEOUS_CLASS, 1, 0, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+	{ EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0, 0 },
+	{ GOLDEN_EARRINGS, 0, MISCELLANEOUS_CLASS, 1, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
-    { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0 },
-    { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS, COLD_ENCHANTMENT },
-    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0 },
-	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+    { LONG_SWORD, 1, WEAPON_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { DAGGER, 0, WEAPON_CLASS, 1, UNDEF_BLESS, COLD_ENCHANTMENT, 0 },
+    { FOOD_RATION, 0, FOOD_CLASS, 1, 0, 0, 0 },
+	{ SACK, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj Wizard[] = 
 {
-    { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 1, 0 },
-	{ CLOAK_OF_MAGIC_RESISTANCE, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
-    { UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0 },
-    { UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
-    { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
-	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+    { QUARTERSTAFF, 1, WEAPON_CLASS, 1, 1, 0, 0 },
+	{ CLOAK_OF_MAGIC_RESISTANCE, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0, 0 },
+    { UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0, 0 },
+    { UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0, 0 },
+    { UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0, 0 },
+	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 static struct trobj WizardAlternate[] = 
 {
-	{ STAFF_OF_FIRE, 1, WEAPON_CLASS, 1, 1, 0 },
-	{ LEATHER_CLOAK, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0 },
-	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0 },
-	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0 },
-	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0 },
-	{ 0, 0, 0, 0, 0, 0 }
+	{ STAFF_OF_FIRE, 1, WEAPON_CLASS, 1, 1, 0, 0 },
+	{ LEATHER_CLOAK, 0, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ ROBE, 1, ARMOR_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ BAG_OF_WIZARDRY, 0, TOOL_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, WAND_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, RING_CLASS, 2, UNDEF_BLESS, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, POTION_CLASS, 3, UNDEF_BLESS, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SCROLL_CLASS, 3, UNDEF_BLESS, 0, 0 },
+	{ SPE_MAGIC_ARROW, 0, SPBOOK_CLASS, 1, 1, 0, 0 },
+	{ UNDEF_TYP, UNDEF_SPE, SPBOOK_CLASS, 1, UNDEF_BLESS, 0, 0 },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 
 /*
  *      Optional extra inventory items.
  */
 
-static struct trobj ExpensiveHandbag[] = { { EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0 },
-									{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0, 0 },
-                                    { 0, 0, 0, 0, 0, 0 } };
+static struct trobj ExpensiveHandbag[] = { { EXPENSIVE_HANDBAG, 0, TOOL_CLASS, 1, 0, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Tinopener[] = { { TIN_OPENER, 0, TOOL_CLASS, 1, 0, 0, 0 },
+                                    { 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj Magicmarker[] = { { MAGIC_MARKER, UNDEF_SPE, TOOL_CLASS,
-                                        1, 0, 0 },
-                                      { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0, 0 },
-                               { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0, 0 },
-                                    { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Instrument[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0, 0 },
-                                     { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Xtra_food[] = { { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 2, 0, 0 },
-                                    { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Leash[] = { { LEASH, 0, TOOL_CLASS, 1, 0, 0 },
-                                { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Towel[] = { { TOWEL, 0, TOOL_CLASS, 1, 0, 0 },
-                                { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0, 0 },
-                                  { 0, 0, 0, 0, 0, 0 } };
-static struct trobj OreDetection[] = { { WAN_ORE_DETECTION, UNDEF_SPE, WAND_CLASS, 1, 0, 0 },
-								  { 0, 0, 0, 0, 0, 0 } };
-static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0 },
-                                { 0, 0, 0, 0, 0, 0 } };
+                                        1, 0, 0, 0 },
+                                      { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Lamp[] = { { OIL_LAMP, 1, TOOL_CLASS, 1, 0, 0, 0 },
+                               { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Blindfold[] = { { BLINDFOLD, 0, TOOL_CLASS, 1, 0, 0, 0 },
+                                    { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Instrument[] = { { WOODEN_FLUTE, 0, TOOL_CLASS, 1, 0, 0, 0 },
+                                     { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Xtra_food[] = { { UNDEF_TYP, UNDEF_SPE, FOOD_CLASS, 2, 0, 0, 0 },
+                                    { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Leash[] = { { LEASH, 0, TOOL_CLASS, 1, 0, 0, 0 },
+                                { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Towel[] = { { TOWEL, 0, TOOL_CLASS, 1, 0, 0, 0 },
+                                { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Wishing[] = { { WAN_WISHING, 3, WAND_CLASS, 1, 0, 0, 0 },
+                                  { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj OreDetection[] = { { WAN_ORE_DETECTION, UNDEF_SPE, WAND_CLASS, 1, 0, 0, 0 },
+								  { 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj Money[] = { { GOLD_PIECE, 0, COIN_CLASS, 1, 0, 0, 0 },
+                                { 0, 0, 0, 0, 0, 0, 0 } };
 
 static struct trobj DeathQuarrel[] = { { BONE_QUARREL, 0, WEAPON_CLASS,
-										1, 0, DEATH_ENCHANTMENT },
-								{ 0, 0, 0, 0, 0, 0 } };
+										1, 0, DEATH_ENCHANTMENT, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj LightningQuarrel[] = { { GNOLLISH_QUARREL, 0, WEAPON_CLASS,
-										2, 0, LIGHTNING_ENCHANTMENT },
-								{ 0, 0, 0, 0, 0, 0 } };
+										2, 0, LIGHTNING_ENCHANTMENT, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj LightningArrow[] = { { ARROW, 0, WEAPON_CLASS,
-										2, 0, LIGHTNING_ENCHANTMENT },
-								{ 0, 0, 0, 0, 0, 0 } };
+										2, 0, LIGHTNING_ENCHANTMENT, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj LightningElvenArrow[] = { { ELVEN_ARROW, 0, WEAPON_CLASS,
-										2, 0, LIGHTNING_ENCHANTMENT },
-								{ 0, 0, 0, 0, 0, 0 } };
+										2, 0, LIGHTNING_ENCHANTMENT, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
 static struct trobj LightningOrcishArrow[] = { { ORCISH_ARROW, 0, WEAPON_CLASS,
-										2, 0, LIGHTNING_ENCHANTMENT },
-								{ 0, 0, 0, 0, 0, 0 } };
+										2, 0, LIGHTNING_ENCHANTMENT, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
 
-static struct trobj PriestSilverMace[] = { { SILVER_MACE, 2, WEAPON_CLASS, 1, 1, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestNormalMace[] = { { MACE, 3, WEAPON_CLASS, 1, 1, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestLawfulSummonSpell[] = { { SPE_CELESTIAL_DOVE, 0, SPBOOK_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestNeutralSummonSpell[] = { { SPE_STICK_TO_SNAKE, 0, SPBOOK_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestChaoticSummonSpell[] = { { SPE_RAISE_MINOR_ZOMBIE, 0, SPBOOK_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj KnightSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj KnightSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 1, ARMOR_CLASS, 1, 1, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 1, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj ValkyrieSpikedShield[] = { { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj ValkyrieSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 3, ARMOR_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj KnightLeatherGloves[] = { { LEATHER_GLOVES, 0, ARMOR_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj KnightSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLASS, 1, 0, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj PriestSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLASS, 1, 1, 0 },
-								{ 0, 0, 0, 0, 0, 0 } };
-static struct trobj ScrollOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 1, 0, 0 },
-									{ 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestSilverMace[] = { { SILVER_MACE, 2, WEAPON_CLASS, 1, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestNormalMace[] = { { MACE, 3, WEAPON_CLASS, 1, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestLawfulSummonSpell[] = { { SPE_CELESTIAL_DOVE, 0, SPBOOK_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestNeutralSummonSpell[] = { { SPE_STICK_TO_SNAKE, 0, SPBOOK_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestChaoticSummonSpell[] = { { SPE_RAISE_MINOR_ZOMBIE, 0, SPBOOK_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightSmallShield[] = { { SMALL_SHIELD, 0, ARMOR_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestSmallShield[] = { { SMALL_SHIELD, 1, ARMOR_CLASS, 1, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 0, ARMOR_CLASS, 1, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj ValkyrieSpikedShield[] = { { SPIKED_SHIELD, 3, ARMOR_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj ValkyrieSpikedSilverShield[] = { { SPIKED_SILVER_SHIELD, 3, ARMOR_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightLeatherGloves[] = { { LEATHER_GLOVES, 0, ARMOR_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj KnightSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLASS, 1, 0, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj PriestSilverGauntlets[] = { { SILVER_GAUNTLETS, 0, ARMOR_CLASS, 1, 1, 0, 0 },
+								{ 0, 0, 0, 0, 0, 0, 0 } };
+static struct trobj ScrollOfIdentify[] = { { SCR_IDENTIFY, 0, SCROLL_CLASS, 1, 0, 0, 0 },
+									{ 0, 0, 0, 0, 0, 0, 0 } };
 
 /* race-based substitutions for initial inventory;
    the weaker cloak for elven rangers is intentional--they shoot better */
@@ -1892,6 +1893,8 @@ register struct trobj *trop;
 				if(is_ammo(obj))
 					obj->quan += rnd(2);
 			}
+			if (trop->exceptionality > 0)
+				obj->exceptionality = trop->exceptionality;
 		}
         /* defined after setting otyp+quan + blessedness */
         obj->owt = weight(obj);

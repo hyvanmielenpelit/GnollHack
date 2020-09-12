@@ -109,7 +109,8 @@ struct obj {
 /* or accidental tripped rolling boulder trap */
 #define opoisoned otrapped /* object (weapon) is coated with poison */
 
-	char elemental_enchantment; /* cold, fire, lightning, or deathly */
+    char exceptionality; /* exceptional, elite, etc. weapon */
+    char elemental_enchantment; /* cold, fire, lightning, or deathly */
 
 #define COLD_ENCHANTMENT 1
 #define FIRE_ENCHANTMENT 2
@@ -163,6 +164,15 @@ struct obj {
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))
 
+enum exceptionality_types {
+    EXCEPTIONALITY_NORMAL = 0,
+    EXCEPTIONALITY_EXCEPTIONAL,
+    EXCEPTIONALITY_ELITE,
+    EXCEPTIONALITY_CELESTIAL,
+    EXCEPTIONALITY_PRIMORDIAL,
+    EXCEPTIONALITY_INFERNAL,
+    MAX_EXCEPTIONALITY_TYPES
+};
 
 /* property blocking */
 /* This only allows for one blocking item per property */
@@ -278,9 +288,16 @@ struct obj {
 	(objects[(otyp)].oc_flags3 & O3_ELEMENTAL_ENCHANTABLE)
 
 /* Unusual definition to account for weapons appropriately */
-#define is_elemental_enchantable(o)	 (((o)->oclass == WEAPON_CLASS && !is_launcher(o)) || is_otyp_elemental_enchantable((o)->otyp))
+#define is_elemental_enchantable(o)	 ((is_weapon(o) && !is_launcher(o)) || is_otyp_elemental_enchantable((o)->otyp))
 
 #define is_death_enchantable(otmp) (material_definitions[objects[(otmp)->otyp].oc_material].death_enchantable != 0)
+
+#define can_otyp_have_exceptionality(otyp)     \
+	(objects[(otyp)].oc_flags4 & O4_CAN_HAVE_EXCEPTIONALITY)
+
+/* Unusual definition to account for weapons appropriately */
+#define can_have_exceptionality(o)	 (is_weapon(o) || can_otyp_have_exceptionality((o)->otyp))
+
 
 #define is_cursed_magic_item(otmp)                                            \
 	(objects[(otmp)->otyp].oc_flags2 & O2_CURSED_MAGIC_ITEM)
@@ -418,10 +435,10 @@ struct obj {
 #define is_modron_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_MODRON_ITEM) != 0)
 
 /* Demon gear */
-#define is_demon_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_DEMON_ITEM) != 0)
+#define is_demon_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_DEMON_ITEM) != 0 || (otmp)->exceptionality == EXCEPTIONALITY_INFERNAL)
 
 /* Angel gear */
-#define is_angel_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0)
+#define is_angel_obj(otmp) ((objects[(otmp)->otyp].oc_flags2 & O2_ANGEL_ITEM) != 0 || (otmp)->exceptionality == EXCEPTIONALITY_CELESTIAL)
 
 
 /* Light sources */
