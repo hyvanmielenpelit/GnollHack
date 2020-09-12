@@ -269,12 +269,12 @@ boolean firing;
         }
         freeinv(otmp);
         throwit(otmp, wep_mask);
-		if (context.multishot_target_killed == TRUE)
+        update_u_action(ACTION_TILE_NO_ACTION);
+        if (context.multishot_target_killed == TRUE)
 		{
 			context.multishot_target_killed = FALSE;
 			break;
 		}
-        update_u_action(ACTION_TILE_NO_ACTION);
     }
     m_shot.n = m_shot.i = 0;
     m_shot.o = STRANGE_OBJECT;
