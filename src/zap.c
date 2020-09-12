@@ -33,7 +33,9 @@ STATIC_DCL boolean FDECL(zap_steed, (struct obj *));
 STATIC_DCL void FDECL(skiprange, (int, int *, int *));
 STATIC_DCL int FDECL(zap_hit, (int, int, struct obj*, struct monst*));
 STATIC_DCL void FDECL(backfire, (struct obj *));
-STATIC_DCL int FDECL(spell_hit_bonus, (int));
+STATIC_DCL int FDECL(m_spell_hit_skill_bonus, (struct monst*, int));
+STATIC_DCL int FDECL(m_spell_hit_dex_bonus, (struct monst*, int));
+STATIC_DCL int FDECL(m_wand_hit_skill_bonus, (struct monst*, int));
 STATIC_DCL void FDECL(wishcmdassist, (int));
 
 #define ZT_MAGIC_MISSILE (AD_MAGM - 1)
@@ -6297,13 +6299,29 @@ int subdir;
  * spell class and dexterity.
  */
 STATIC_OVL int
-spell_hit_bonus(otyp)
+m_spell_hit_skill_bonus(mtmp, otyp)
+struct monst* mtmp;
 int otyp;
 {
-    int hit_bon = 0;
-    int dex = ACURR(A_DEX);
+    if (!mtmp)
+        return 0;
 
-    switch (P_SKILL_LEVEL(spell_skilltype(otyp))) {
+    int hit_bon = 0;
+    int skill_level = P_ISRESTRICTED;
+
+    if(mtmp == &youmonst)
+        skill_level = P_SKILL_LEVEL(spell_skilltype(otyp));
+    else
+    {
+        if(is_prince(mtmp->data))
+            skill_level = P_EXPERT;
+        else if (is_lord(mtmp->data))
+            skill_level = P_SKILLED;
+        else
+            skill_level = P_UNSKILLED;
+    }
+
+    switch (skill_level) {
     case P_ISRESTRICTED:
     case P_UNSKILLED:
         hit_bon = 0;
@@ -6325,6 +6343,20 @@ int otyp;
         break;
     }
 
+    return hit_bon;
+}
+
+STATIC_OVL int
+m_spell_hit_dex_bonus(mtmp, otyp)
+struct monst* mtmp;
+int otyp;
+{
+    if (!mtmp)
+        return 0;
+
+    int hit_bon = 0;
+    int dex = M_ACURR(mtmp, A_DEX);
+
     if (dex < 4)
         hit_bon -= 3;
     else if (dex < 6)
@@ -6339,6 +6371,32 @@ int otyp;
         hit_bon += dex - 14;
 
     return hit_bon;
+}
+
+STATIC_OVL int
+m_wand_hit_skill_bonus(mtmp, otyp)
+struct monst* mtmp;
+int otyp;
+{
+    if (!mtmp || objects[otyp].oc_class != WAND_CLASS)
+        return 0;
+
+    int hit_bon = 0;
+    int skill_level = P_ISRESTRICTED;
+
+    if (mtmp == &youmonst)
+        skill_level = P_SKILL_LEVEL(P_WAND);
+    else
+    {
+        if (is_prince(mtmp->data))
+            skill_level = P_EXPERT;
+        else if (is_lord(mtmp->data))
+            skill_level = P_SKILLED;
+        else
+            skill_level = P_UNSKILLED;
+    }
+
+    return wand_skill_hit_bonus(skill_level);
 }
 
 const char *
@@ -7531,8 +7589,9 @@ struct obj* origobj;
 struct monst* origmonst;
 {
     int chance = rn2(20);
-    int spell_bonus = origobj ? spell_hit_bonus(origobj->otyp) : 0; /* Seems to apply for both wands (DEX only) and spells */
-	int wand_bonus = origobj && origmonst && origmonst == &youmonst && origobj->oclass == WAND_CLASS ? wand_skill_hit_bonus(P_SKILL_LEVEL(P_WAND)) : 0; /* And extra bonus for wands */
+    int dex_bonus = origobj ? m_spell_hit_dex_bonus(origmonst, origobj->otyp) : 0;
+    int spell_bonus = origobj && origobj->oclass == SPBOOK_CLASS ? m_spell_hit_skill_bonus(origmonst, origobj->otyp) : 0;
+    int wand_bonus = origobj && origobj->oclass == WAND_CLASS ? m_wand_hit_skill_bonus(origmonst, origobj->otyp) : 0;
 	int accuracy_bonus = type >=0 ? u.uhitinc : 0;
 
     /* small chance for naked target to avoid being hit */
@@ -7542,7 +7601,7 @@ struct monst* origmonst;
     /* very high armor protection does not achieve invulnerability */
     ac = AC_VALUE(ac);
 
-    return (7 - chance < ac + spell_bonus + wand_bonus + accuracy_bonus);
+    return (7 - chance < ac + dex_bonus + spell_bonus + wand_bonus + accuracy_bonus);
 }
 
 boolean
