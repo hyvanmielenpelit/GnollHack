@@ -3518,8 +3518,10 @@ int xtra_prob; /* to force 0% random generation items to also be considered */
         if (wishymatch(name, zn, TRUE)
             || ((zn = OBJ_DESCR(objects[i])) != 0
                 && wishymatch(name, zn, FALSE))
-            || ((zn = objects[i].oc_uname) != 0
-                && wishymatch(name, zn, FALSE))) {
+//            || ((zn = objects[i].oc_uname) != 0
+//                && wishymatch(name, zn, FALSE))
+            ) 
+        {
             validobjs[n++] = (short) i;
             maxprob += (objects[i].oc_prob + xtra_prob);
         }
