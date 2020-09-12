@@ -3,6 +3,7 @@
 /* GnollHack may be freely redistributed.  See license for details. */
 
 #include "layer.h"
+#include "general.h"
 
 #ifndef MHGnollHackMessages_H
 #define MHGnollHackMessages_H

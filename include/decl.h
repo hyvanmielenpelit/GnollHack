@@ -6,6 +6,7 @@
 #ifndef DECL_H
 #define DECL_H
 
+#include "general.h"
 #include "soundset.h"
 
 #define E extern
@@ -249,7 +250,6 @@ E NEARDATA boolean in_steed_dismounting;
 E NEARDATA boolean has_strong_rngseed;
 
 E const int shield_static[];
-E const int talk_static[];
 
 #include "spell.h"
 E NEARDATA struct spell spl_book[]; /* sized in decl.c */

@@ -17,6 +17,24 @@ enum bhit_call_types {
     GOLF_SWING = 6
 };
 
+/* Total number of cmap indices in the shield_static[] array. */
+#define SHIELD_COUNT 21
+
+
+/* Various info structs */
+struct replacement_info {
+    struct obj* object;
+};
+
+
+struct extended_menu_info {
+    struct obj* object;
+    int color;
+    unsigned long menu_flags;
+};
+
+
+
 
 #endif /* GENERAL_H */
 

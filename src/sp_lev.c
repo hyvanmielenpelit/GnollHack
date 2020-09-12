@@ -4800,8 +4800,19 @@ sel_set_floor(x, y, arg, arg2)
 int x, y;
 genericptr_t arg, arg2;
 {
-    levl[x][y].floortyp = *(int*)arg;
-    levl[x][y].floorsubtyp = get_location_subtype_by_category(*(int*)arg, *(int*)arg2);
+    if (IS_FLOOR(levl[x][y].typ))
+    {
+        /* Command can change a floor tile set earlier to another type, in order to ease the re-flooring rooms */
+        levl[x][y].typ = *(int*)arg;
+        levl[x][y].subtyp = get_location_subtype_by_category(*(int*)arg, *(int*)arg2);
+        levl[x][y].floortyp = 0;
+        levl[x][y].floorsubtyp = 0;
+    }
+    else
+    {
+        levl[x][y].floortyp = *(int*)arg;
+        levl[x][y].floorsubtyp = get_location_subtype_by_category(*(int*)arg, *(int*)arg2);
+    }
 }
 
 void

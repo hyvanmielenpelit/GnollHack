@@ -18,7 +18,9 @@
 #ifndef LAYER_H
 #include "layer.h"
 #endif
-
+#ifndef GENERAL_H
+#include "general.h"
+#endif
 /*
  * vobj_at()
  *
@@ -219,11 +221,6 @@
 #define DISP_END     (-7) /* Clean up. */
 #define DISP_FREEMEM (-8) /* Free all memory during exit only. */
 #define DISP_BEAM_DIG (-9) /* Keep all glyphs showing & clean up at end. */
-
-/* Total number of cmap indices in the shield_static[] array. */
-#define SHIELD_COUNT 21
-/* Total number of object indices in the talk_static[] array. */
-#define TALK_COUNT 21
 
 #define BACKTRACK (-1)    /* flag for DISP_END to display each prior location */
 

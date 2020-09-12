@@ -25,6 +25,10 @@
 #include "layer.h"
 #endif 
 
+#ifndef GENERAL_H
+#include "general.h"
+#endif 
+
 #define CONTEXTVERBSZ 30
 
 /*

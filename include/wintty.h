@@ -4,6 +4,7 @@
 
 #include "layer.h"
 #include "obj.h"
+#include "general.h"
 
 #ifndef WINTTY_H
 #define WINTTY_H

@@ -1333,7 +1333,7 @@ xchar x, y;
 			if (showmon)
 				newsym(x, y); /* restore the old information */
 			else
-				show_glyph(x, y, cmap_to_glyph(S_talkeffect)); /* talk_static[i]*/
+				show_glyph(x, y, cmap_to_glyph(S_talkeffect));
 			flush_screen(1); /* make sure the glyph shows up */
             adjusted_delay_output();
             adjusted_delay_output();

@@ -9,6 +9,7 @@
 #include "layer.h"
 #include "obj.h"
 #include "lev.h"
+#include "general.h"
 
 /* NB: this MUST match chain_procs below */
 struct window_procs {

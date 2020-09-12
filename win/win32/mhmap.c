@@ -17,6 +17,7 @@
 #include "layer.h"
 #include "artifact.h"
 #include "artilist.h"
+#include "general.h"
 
 #define NHMAP_FONT_NAME TEXT("Terminal")
 #define NHMAP_TTFONT_NAME TEXT("Consolas")

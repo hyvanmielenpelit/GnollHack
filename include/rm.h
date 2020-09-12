@@ -8,6 +8,7 @@
 
 #include "layer.h"
 #include "soundset.h"
+#include "general.h"
 
 
  /*

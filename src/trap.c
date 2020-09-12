@@ -5271,6 +5271,7 @@ boolean force;
                     switch (ynq(qbuf)) 
                     {
                     case 'q':
+                        nomul(0);
                         return 0;
                     case 'n':
                         continue;
@@ -5412,6 +5413,7 @@ boolean force;
                     switch (ynq(qbuf))
                     {
                     case 'q':
+                        nomul(0);
                         return 0;
                     case 'n':
                         continue;

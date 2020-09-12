@@ -82,24 +82,7 @@ struct layer_info {
 #define LFLAGS_SHOWING_MEMORY       0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */
 #define LFLAGS_SHOWING_DETECTION    0x02000000UL /* Do not darken */
 
-/* reserved for waslit flag */
 /* free bits */
-
-#define CMAP_FLAG_FEATURE_LAYER 0x00
-#define CMAP_FLAG_FLOOR_LAYER 0x01
-
-
-
-struct replacement_info {
-    struct obj* object;
-};
-
-
-struct extended_menu_info {
-    struct obj* object;
-    int color;
-    unsigned long menu_flags;
-};
 
 
 #endif /* LAYER_H */

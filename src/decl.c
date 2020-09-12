@@ -192,7 +192,7 @@ struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
 struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
     {"dark", CLR_BLACK, NO_ANIMATION, SFX_EXPLOSION_DARK},
     {"noxious", CLR_GREEN, NO_ANIMATION, SFX_EXPLOSION_NOXIOUS},
-    {"muddy", CLR_BROWN, NO_ANIMATION, SFX_EXPLOSION_MUDDY },
+    {"muddy", CLR_BROWN, NO_ANIMATION, SFX_EXPLOSION_MUDDY},
     {"wet", CLR_BLUE, NO_ANIMATION, SFX_EXPLOSION_WET},
     {"magical", CLR_MAGENTA, NO_ANIMATION, SFX_EXPLOSION_MAGICAL},
     {"fiery", CLR_ORANGE, FIERY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FIERY},
@@ -204,12 +204,6 @@ const int shield_static[SHIELD_COUNT] = {
     S_ss1, S_ss2, S_ss3, S_ss2, S_ss1, S_ss2, S_ss4, /* 7 per row */
     S_ss1, S_ss2, S_ss3, S_ss2, S_ss1, S_ss2, S_ss4,
     S_ss1, S_ss2, S_ss3, S_ss2, S_ss1, S_ss2, S_ss4,
-};
-
-const int talk_static[TALK_COUNT] = {
-	SCR_BLANK_PAPER, POT_WATER, AMULET_OF_ESP, POT_HALLUCINATION, SCR_BLANK_PAPER, POT_OIL, AMULET_OF_ESP, /* 7 per row */
-	SCR_BLANK_PAPER, POT_WATER, AMULET_OF_ESP, POT_HALLUCINATION, SCR_BLANK_PAPER, POT_OIL, AMULET_OF_ESP,
-	SCR_BLANK_PAPER, POT_WATER, AMULET_OF_ESP, POT_HALLUCINATION, SCR_BLANK_PAPER, POT_OIL, AMULET_OF_ESP,
 };
 
 

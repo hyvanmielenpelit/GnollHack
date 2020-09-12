@@ -313,13 +313,18 @@
 #define M5_FEMALE_TILE		        0x00008000UL
 
 /* Remaining bits are normal monster flags */
-#define M5_ESCHEWS_CURSED_ITEMS     0x00010000UL
-#define M5_ESCHEWS_BLESSED_ITEMS    0x00020000UL
-#define M5_ESCHEWS_SILVER_ITEMS     0x00040000UL
-#define M5_HATES_LIGHT              0x00080000UL /* Gremlin only */
-#define M5_HATES_SILVER             0x00100000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
-#define M5_SHADE                    0x00200000UL /* Shade only */
-#define M5_TELEPORT_HEAL_TACTICS    0x00400000UL /* Arch-lich and Wizard of Yendor */
+#define M5_FULL_SIZED_CORPSE_TILE        0x00010000UL
+#define M5_FULL_SIZED_FEMALE_CORPSE_TILE 0x00020000UL
+/* free bit */
+/* free bit */
+
+#define M5_ESCHEWS_CURSED_ITEMS     0x00100000UL
+#define M5_ESCHEWS_BLESSED_ITEMS    0x00200000UL
+#define M5_ESCHEWS_SILVER_ITEMS     0x00400000UL
+#define M5_HATES_LIGHT              0x00800000UL /* Gremlin only */
+#define M5_HATES_SILVER             0x01000000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
+#define M5_SHADE                    0x02000000UL /* Shade only */
+#define M5_TELEPORT_HEAL_TACTICS    0x04000000UL /* Arch-lich and Wizard of Yendor */
 
 
 #define MZ_TINY 0          /* < 2' */

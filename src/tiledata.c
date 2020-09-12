@@ -142,10 +142,19 @@ uchar* tilemapflags;
                     if (tsd->corpse_tile_style == 2 && !(mons[i].mflags5 & M5_CORPSE_TILE))
                         continue;
 
-                    if (objects[CORPSE].oc_flags4 & O4_FULL_SIZED_BITMAP)
-                        fullsizedflag = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                    fullsizedflag = 0;
+
+                    if (mons[i].mflags5 & M5_CORPSE_TILE)
+                    {
+                        if ((gender == 0 && (mons[i].mflags5 & M5_FULL_SIZED_CORPSE_TILE)) 
+                            || (gender == 1 && (mons[i].mflags5 & M5_FULL_SIZED_FEMALE_CORPSE_TILE)))
+                            fullsizedflag = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                    }
                     else
-                        fullsizedflag = 0;
+                    {
+                        if (objects[CORPSE].oc_flags4 & O4_FULL_SIZED_BITMAP)
+                            fullsizedflag = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
+                    }
                 }
 
                 if (spset > ACTION_TILE_NO_ACTION && spset < MAX_ACTION_TILES)
@@ -157,6 +166,7 @@ uchar* tilemapflags;
 
                 if (spset == MAX_ACTION_TILES)
                 {
+                    /* Statues should always be full-sized similar to monsters */
                     if (objects[STATUE].oc_flags4 & O4_FULL_SIZED_BITMAP)
                         fullsizedflag = GLYPH_TILE_FLAG_FULL_SIZED_ITEM;
                     else
