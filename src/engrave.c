@@ -301,7 +301,7 @@ int cnt;
     if (can_reach_floor(TRUE))
     {
         struct engr* ep;
-        if ((ep = engr_at(u.ux, u.uy)) && ep->engr_type != HEADSTONE && !sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) && !sengr_at(Morgoth_word, u.ux, u.uy, TRUE))
+        if ((ep = engr_at(u.ux, u.uy)) && !(ep->engr_type == HEADSTONE || sengr_at(Gilthoniel_word, u.ux, u.uy, TRUE) || sengr_at(Morgoth_word, u.ux, u.uy, TRUE)))
             wipe_engr_at(u.ux, u.uy, cnt, FALSE);
 
     }

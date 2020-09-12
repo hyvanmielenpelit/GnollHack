@@ -5,7 +5,7 @@
 
 #include "hack.h"
 
-STATIC_DCL boolean FDECL(tele_jump_ok, (int, int, int, int));
+STATIC_DCL boolean FDECL(tele_jump_ok, (int, int, int, int, boolean));
 STATIC_DCL boolean FDECL(teleok, (int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(vault_tele);
 STATIC_DCL boolean FDECL(rloc_pos_ok, (int, int, struct monst *));
@@ -196,8 +196,9 @@ full:
  * only for explicitly chosen destinations.)
  */
 STATIC_OVL boolean
-tele_jump_ok(x1, y1, x2, y2)
+tele_jump_ok(x1, y1, x2, y2, isyou)
 int x1, y1, x2, y2;
+boolean isyou;
 {
     if (!isok(x2, y2))
         return FALSE;
@@ -207,25 +208,25 @@ int x1, y1, x2, y2;
                                 dndest.nhy)
             && !within_bounded_area(x2, y2, dndest.nlx, dndest.nly,
                                     dndest.nhx, dndest.nhy))
-            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
+            return (isyou && wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
         /* and if outside, can't teleport inside */
         if (!within_bounded_area(x1, y1, dndest.nlx, dndest.nly, dndest.nhx,
                                  dndest.nhy)
             && within_bounded_area(x2, y2, dndest.nlx, dndest.nly, dndest.nhx,
                                    dndest.nhy))
-            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
+            return (isyou && wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
     }
     if (updest.nlx > 0) { /* ditto */
         if (within_bounded_area(x1, y1, updest.nlx, updest.nly, updest.nhx,
                                 updest.nhy)
             && !within_bounded_area(x2, y2, updest.nlx, updest.nly,
                                     updest.nhx, updest.nhy))
-            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
+            return (isyou && wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
         if (!within_bounded_area(x1, y1, updest.nlx, updest.nly, updest.nhx,
                                  updest.nhy)
             && within_bounded_area(x2, y2, updest.nlx, updest.nly, updest.nhx,
                                    updest.nhy))
-            return (wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
+            return (isyou && wizard && (yn_query("Your teleport destination is restricted. Continue?") == 'y')) ? TRUE : FALSE;
     }
     return TRUE;
 }
@@ -245,7 +246,7 @@ boolean trapok;
 	}
 	if (!goodpos(x, y, &youmonst, 0))
         return FALSE;
-    if (!tele_jump_ok(u.ux, u.uy, x, y))
+    if (!tele_jump_ok(u.ux, u.uy, x, y, TRUE))
         return FALSE;
     if (!in_out_region(x, y))
         return FALSE;
@@ -565,6 +566,7 @@ int y;
 	if (!mtmp)
 		return FALSE;
 
+    boolean isyou = (mtmp == &youmonst);
     const char* portal_color = 
         ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_SPHERICAL ? "Red" :
         ttmp->tsubtyp == MODRON_PORTAL_SUBTYPE_CYLINDRICAL ? "Green" :
@@ -585,14 +587,14 @@ int y;
 
     struct obj* otmp = (struct obj*)0;
 
-    if (mtmp == &youmonst)
+    if (isyou)
 		otmp = carrying(portal_object);
 	else
 		otmp = m_carrying(mtmp, portal_object);
 
 	if (!otmp && ttmp->tflags == 0)
 	{
-        if (mtmp == &youmonst)
+        if (isyou)
         {
             play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
             pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
@@ -609,7 +611,7 @@ int y;
 	/* Now do the teleport */
 	int nux= x, nuy = y;
 	int tcnt = 0;
-	if(!teleok(x, y, FALSE))
+	if(isyou ? !teleok(x, y, FALSE) : !rloc_pos_ok(x, y, mtmp))
 	{
 		do {
 			if (tcnt < 50)
@@ -622,11 +624,12 @@ int y;
 				nux = x - 2 + rn2(5);
 				nuy = y - 2 + rn2(5);
 			}
-		} while (!goodpos(nux, nuy, mtmp, 0) || !teleok(nux, nuy, (boolean)(tcnt > 200)) && ++tcnt <= 400);
+		} while ((isyou ? !teleok(x, y, (tcnt >= 200)) : !rloc_pos_ok(x, y, mtmp)) && ++tcnt <= 400);
 	}
+
 	if (tcnt <= 400)
 	{
-		if (mtmp == &youmonst || mtmp == u.usteed)
+		if (isyou || mtmp == u.usteed)
 		{
             play_sfx_sound(SFX_MODRON_TELEPORT_SUCCESS);
             if(otmp && ttmp->tflags == 0)
@@ -663,7 +666,7 @@ int y;
 	}
     else
 	{
-        if (mtmp == &youmonst)
+        if (isyou)
         {
             play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
             pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
@@ -1372,7 +1375,7 @@ struct monst *mtmp;
                 return FALSE;
         }
         /* current location is <xx,yy> */
-        if (!tele_jump_ok(xx, yy, x, y))
+        if (!tele_jump_ok(xx, yy, x, y, FALSE))
             return FALSE;
     }
     /* <x,y> is ok */
