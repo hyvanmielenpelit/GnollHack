@@ -389,9 +389,7 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
 			tmp += 0;
 		else
 		{ 
-            int exceptionality_rounds = otmp->exceptionality == EXCEPTIONALITY_NORMAL ? 1 :
-                otmp->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? 2 :
-                otmp->exceptionality == EXCEPTIONALITY_ELITE ? 3 : 4;
+            int exceptionality_rounds = get_exceptionality_multiplier(otmp->exceptionality);
 
             for (int exp_round = 0; exp_round < exceptionality_rounds; exp_round++)
             {
@@ -2846,6 +2844,21 @@ boolean nextlevel;
     }
 
     return res;
+}
+
+int
+get_exceptionality_multiplier(exceptionality)
+int exceptionality;
+{
+    if (exceptionality <= EXCEPTIONALITY_NORMAL || exceptionality >= MAX_EXCEPTIONALITY_TYPES)
+        return 1;
+    else if (exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
+        return 2;
+    else if (exceptionality == EXCEPTIONALITY_ELITE)
+        return 3;
+    else
+        return 4;
+
 }
 
 /*weapon.c*/

@@ -1048,6 +1048,9 @@ struct obj* uitem;
 
 	if (uitem->exceptionality == EXCEPTIONALITY_CELESTIAL)
 	{
+		if (is_angel(monster->data))
+			return FALSE;
+
 		if (isyou)
 		{
 			if (u.ualign.type == A_LAWFUL)
@@ -1065,6 +1068,9 @@ struct obj* uitem;
 	}
 	else if (uitem->exceptionality == EXCEPTIONALITY_PRIMORDIAL)
 	{
+		if (monster->data->mlet == S_ELEMENTAL)
+			return FALSE;
+
 		if (isyou)
 		{
 			if (u.ualign.type == A_NEUTRAL)
@@ -1082,9 +1088,12 @@ struct obj* uitem;
 	}
 	else if (uitem->exceptionality == EXCEPTIONALITY_INFERNAL)
 	{
+		if (is_demon(monster->data) || is_undead(monster->data))
+			return FALSE;
+
 		if (isyou)
 		{
-			if (u.ualign.type == A_CHAOTIC)
+			if (u.ualign.type == A_CHAOTIC || is_demon(youmonst.data))
 				return FALSE;
 			else
 				return TRUE;

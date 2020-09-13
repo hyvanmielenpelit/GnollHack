@@ -3604,9 +3604,9 @@ struct monst *mtmp;
     if (mtmp->ispriest || mtmp->isminion) 
     {
         /* some monsters have individual alignments; check them */
-        if (mtmp->ispriest && EPRI(mtmp))
+        if (mtmp->ispriest && has_epri(mtmp))
             mal = EPRI(mtmp)->shralign;
-        else if (mtmp->isminion && EMIN(mtmp))
+        else if (mtmp->isminion && has_emin(mtmp))
             mal = EMIN(mtmp)->min_align;
         /* unless alignment is none, set mal to -5,0,5 */
         /* (see align.h for valid aligntyp values)     */

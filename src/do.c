@@ -918,6 +918,25 @@ register struct obj* obj;
 
 		}
 
+
+		int exceptionality_multiplier = 1;
+
+		if (obj->known && obj->exceptionality)
+		{
+			Sprintf(buf, "Quality:                %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
+				obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal (quadruple base damage)" :
+				"Unknown qualilty"
+			);
+
+			exceptionality_multiplier = get_exceptionality_multiplier(obj->exceptionality);
+
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+
 		boolean printmaindmgtype = FALSE;
 
 		/* Damage - Small */
@@ -929,7 +948,7 @@ register struct obj* obj;
 			if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
 			{
 				maindiceprinted = TRUE;
-				Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+				Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice * exceptionality_multiplier, objects[otyp].oc_wsdam);
 				Strcat(buf, plusbuf);
 			}
 
@@ -940,7 +959,7 @@ register struct obj* obj;
 					Sprintf(plusbuf, "+");
 					Strcat(buf, plusbuf);
 				}
-				Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus);
+				Sprintf(plusbuf, "%d", objects[otyp].oc_wsdmgplus * exceptionality_multiplier);
 				Strcat(buf, plusbuf);
 			}
 
@@ -981,7 +1000,7 @@ register struct obj* obj;
 			if (objects[otyp].oc_wldice > 0 && objects[otyp].oc_wldam > 0)
 			{
 				maindiceprinted = TRUE;
-				Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wldice, objects[otyp].oc_wldam);
+				Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wldice * exceptionality_multiplier, objects[otyp].oc_wldam);
 				Strcat(buf, plusbuf);
 			}
 
@@ -992,7 +1011,7 @@ register struct obj* obj;
 					Sprintf(plusbuf, "+");
 					Strcat(buf, plusbuf);
 				}
-				Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus);
+				Sprintf(plusbuf, "%d", objects[otyp].oc_wldmgplus * exceptionality_multiplier);
 				Strcat(buf, plusbuf);
 			}
 			if (stats_known && (objects[otyp].oc_aflags & A1_DEALS_DOUBLE_DAMAGE_TO_PERMITTED_TARGETS))
@@ -1020,7 +1039,9 @@ register struct obj* obj;
 			putstr(datawin, 0, txt);
 		}
 
-		wep_avg_dmg += 0.5 * ((double)objects[otyp].oc_wsdice * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus + objects[otyp].oc_wldice * (1.0 + (double)objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus);
+		wep_avg_dmg += 0.5 * ((double)objects[otyp].oc_wsdice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wsdam) / 2.0 + (double)objects[otyp].oc_wsdmgplus * (double)exceptionality_multiplier
+			+ objects[otyp].oc_wldice * (double)exceptionality_multiplier * (1.0 + (double)objects[otyp].oc_wldam) / 2.0 + (double)objects[otyp].oc_wldmgplus * (double)exceptionality_multiplier);
+		
 		if (wep_avg_dmg < 0)
 			wep_avg_dmg = 0;
 
@@ -1037,25 +1058,6 @@ register struct obj* obj;
 				putstr(datawin, 0, txt);
 			}
 		}
-
-
-		if (obj->known && obj->exceptionality)
-		{
-			Sprintf(buf, "Quality:                %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
-				obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :
-				obj->exceptionality == EXCEPTIONALITY_CELESTIAL ? "Celestial (quadruple base damage)" :
-				obj->exceptionality == EXCEPTIONALITY_PRIMORDIAL ? "Primordial (quadruple base damage)" :
-				obj->exceptionality == EXCEPTIONALITY_INFERNAL ? "Infernal (quadruple base damage)" :
-				"Unknown qualilty"
-			);
-
-			wep_avg_dmg *= obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? 2.0 :
-				obj->exceptionality == EXCEPTIONALITY_ELITE ? 3.0 : 4.0;
-
-			txt = buf;
-			putstr(datawin, 0, txt);
-		}
-
 
 		if (stats_known
 			&& ((objects[otyp].oc_wedice > 0 && objects[otyp].oc_wedam > 0) || objects[otyp].oc_wedmgplus != 0))
