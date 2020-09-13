@@ -1278,14 +1278,9 @@ u_ranged_strdex_to_hit_bonus()
 	int sbon = 0;
 	int str = ACURR(A_STR), dex = ACURR(A_DEX);
 
-	//    if (Upolyd)
-	//        return (adj_lev(&mons[u.umonnum]) - 3);
+    /* This is double the normal dexterity hit bonus, since strength does not count here */
+	sbon += dexterity_ranged_tohit_bonus(dex);
 
-	sbon += dexterity_tohit_bonus(dex);
-
-	/* Game tuning kludge: make it a bit easier for a low level character to
-	 * hit */
-	sbon += (u.ulevel < 3) ? 1 : 0;
 	return sbon;
 }
 
@@ -1433,7 +1428,7 @@ struct monst* mon;
 
 	if (mon)
 	{
-		bonus += dexterity_tohit_bonus(m_acurr(mon, A_DEX));
+		bonus += dexterity_ranged_tohit_bonus(m_acurr(mon, A_DEX));
 	}
 	return bonus;
 
@@ -1450,6 +1445,12 @@ int dexterity_tohit_bonus(dex)
 int dex;
 {
 	return max(-3, (min(25, dex) - 9) / 2);
+}
+
+int dexterity_ranged_tohit_bonus(dex)
+int dex;
+{
+    return max(-6, (min(25, dex) - 9));
 }
 
 double constitution_hp_bonus(con)

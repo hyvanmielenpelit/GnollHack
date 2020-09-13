@@ -55,8 +55,8 @@ const struct Role roles[] = {
       MH_HUMAN | MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL
           | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 7, 10, 10, 7, 7, 7 },
-      { 20, 20, 20, 10, 20, 10 },
+      {  7, 10, 10, 12,  7,  7 },
+      { 20, 20, 20, 20, 20, 10 },
       /* Init   Lower  Higher */
       { 11, 0, 0, 8, 1, 0 }, /* Hit points */
       { 2, 2, 2, 2, 2, 2 }, /* Energy 1d3+1*/
@@ -278,7 +278,7 @@ const struct Role roles[] = {
       ART_STAFF_OF_AESCULAPIUS,
       MH_HUMAN | MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 7, 7, 13, 7, 11, 16 },
+      {  7,  7, 13,  7, 11, 16 },
       { 15, 20, 20, 15, 25, 5 },
       /* Init   Lower  Higher */
       { 11, 0, 0, 7, 1, 0 }, /* Hit points */
@@ -351,7 +351,7 @@ const struct Role roles[] = {
       ART_MAGIC_MIRROR_OF_MERLIN,
       MH_HUMAN | MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL,
       /* Str Int Wis Dex Con Cha */
-      { 15, 7, 12, 8, 14, 17 },
+      { 15,  7, 12,  8, 14, 17 },
       { 30, 15, 15, 10, 20, 10 },
       /* Init   Lower  Higher */
       { 15, 0, 0, 11, 2, 1 }, /* Hit points */
@@ -431,7 +431,7 @@ const struct Role roles[] = {
       MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
           | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 10, 7, 10, 10, 10, 10 },
+      { 10,  7, 10, 10, 10, 10 },
       { 20, 10, 20, 20, 20, 15 },
       /* Init   Lower  Higher */
       { 12, 0, 0, 8, 1, 1 }, /* Hit points */
@@ -505,7 +505,7 @@ const struct Role roles[] = {
       MH_HUMAN | MH_ELF | MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL
           | ROLE_CHAOTIC | ROLE_ALIGNMENT_TILES,
       /* Str Int Wis Dex Con Cha */
-      { 7, 7, 10, 7, 7, 7 },
+      { 7,   7, 13,  7,  7,  7 },
       { 15, 10, 30, 15, 20, 10 },
       /* Init   Lower  Higher */
       { 12, 0, 0, 7, 1, 0 }, /* Hit points */
@@ -580,7 +580,7 @@ const struct Role roles[] = {
       ART_MASTER_KEY_OF_THIEVERY,
       MH_HUMAN | MH_ORC | MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7, 7, 7, 10, 7, 6 },
+      { 7,   7,  7, 15,  7,  6 },
       { 20, 10, 10, 30, 20, 10 },
       /* Init   Lower  Higher */
       { 10, 0, 0, 8, 1, 0 }, /* Hit points */
@@ -668,8 +668,8 @@ const struct Role roles[] = {
       MH_HUMAN | MH_ELF | MH_GNOLL | MH_ORC | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 13,  9,  9,  9, 13, 12 },
-      { 30, 10, 10, 20, 20, 10 },
+      { 13,  9,  9, 13, 13, 12 },
+      { 30, 10, 10, 30, 20, 10 },
       /* Init   Lower  Higher */
       { 13, 0, 0, 9, 1, 0 }, /* Hit points */
       { 2, 1, 1, 2, 1, 2 },  /* Energy 1d3*/
@@ -741,7 +741,7 @@ const struct Role roles[] = {
       ART_TSURUGI_OF_MURAMASA,
       MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL,
       /* Str Int Wis Dex Con Cha */
-      { 10, 8, 7, 10, 17, 6 },
+      { 10,  8, 7, 10, 17, 6 },
       { 30, 10, 8, 30, 14, 8 },
       /* Init   Lower  Higher */
       { 13, 0, 0, 9, 1, 1 }, /* Hit points */
@@ -814,7 +814,7 @@ const struct Role roles[] = {
       ART_YENDORIAN_EXPRESS_CARD,
       MH_HUMAN | ROLE_MALE | ROLE_FEMALE | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 7, 10, 6, 7, 7, 10 },
+      { 7,  10,  6,  7,  7, 10 },
       { 15, 10, 10, 15, 30, 20 },
       /* Init   Lower  Higher */
       { 12, 0, 0, 6, 0, 1 }, /* Hit points */
@@ -887,7 +887,7 @@ const struct Role roles[] = {
       ART_ORB_OF_FATE,
       MH_HUMAN | MH_DWARF | ROLE_FEMALE | ROLE_LAWFUL | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      { 10, 7, 7, 7, 10, 7 },
+      { 10, 7, 7,  7, 10, 7 },
       { 30, 6, 7, 20, 30, 7 },
       /* Init   Lower  Higher */
       { 14, 0, 0, 10, 2, 0 }, /* Hit points */
@@ -962,7 +962,7 @@ const struct Role roles[] = {
       MH_HUMAN | MH_ELF | MH_ORC | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7, 10, 7, 7, 7, 7 },
+      {  7, 13,  7,  7,  7,  7 },
       { 10, 30, 10, 20, 20, 10 },
       /* Init   Lower  Higher */
       { 10, 0, 0, 6, 0, 1 }, /* Hit points */

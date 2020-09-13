@@ -3383,6 +3383,7 @@ E int FDECL(strength_damage_bonus, (int));
 E int FDECL(strength_tohit_bonus, (int));
 E int FDECL(dexterity_ac_bonus, (int));
 E int FDECL(dexterity_tohit_bonus, (int));
+E int FDECL(dexterity_ranged_tohit_bonus, (int));
 E double FDECL(constitution_hp_bonus, (int));
 E void FDECL(wet_a_towel, (struct obj *, int, BOOLEAN_P));
 E void FDECL(dry_a_towel, (struct obj *, int, BOOLEAN_P));

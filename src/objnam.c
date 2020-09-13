@@ -4847,8 +4847,27 @@ struct obj *no_wish;
     if (exceptionality)
     {
         if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
-            if (Luck >= 0)
+        {
+            if(wizard || exceptionality <= EXCEPTIONALITY_EXCEPTIONAL)
                 otmp->exceptionality = exceptionality;
+            else
+            {
+                if (exceptionality >= EXCEPTIONALITY_CELESTIAL)
+                {
+                    if(!rn2(4) && Luck >= 0)
+                        otmp->exceptionality = exceptionality;
+                    else
+                        otmp->exceptionality = EXCEPTIONALITY_NORMAL;
+                }
+                else if (exceptionality == EXCEPTIONALITY_ELITE)
+                {
+                    if (rn2(5) && Luck >= 0)
+                        otmp->exceptionality = exceptionality;
+                    else
+                        otmp->exceptionality = EXCEPTIONALITY_NORMAL;
+                }
+            }
+        }
     }
 
     /* empty for containers rather than for tins */
