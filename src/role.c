@@ -55,7 +55,7 @@ const struct Role roles[] = {
       MH_HUMAN | MH_DWARF | ROLE_MALE | ROLE_FEMALE | ROLE_LAWFUL
           | ROLE_NEUTRAL,
       /* Str Int Wis Dex Con Cha */
-      {  7, 10, 10, 12,  7,  7 },
+      {  7, 10, 10, 13,  7,  7 },
       { 20, 20, 20, 20, 20, 10 },
       /* Init   Lower  Higher */
       { 11, 0, 0, 8, 1, 0 }, /* Hit points */
@@ -580,7 +580,7 @@ const struct Role roles[] = {
       ART_MASTER_KEY_OF_THIEVERY,
       MH_HUMAN | MH_ORC | MH_GNOLL | ROLE_MALE | ROLE_FEMALE | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 7,   7,  7, 15,  7,  6 },
+      { 7,   7,  7, 16,  7,  6 },
       { 20, 10, 10, 30, 20, 10 },
       /* Init   Lower  Higher */
       { 10, 0, 0, 8, 1, 0 }, /* Hit points */
@@ -668,7 +668,7 @@ const struct Role roles[] = {
       MH_HUMAN | MH_ELF | MH_GNOLL | MH_ORC | ROLE_MALE | ROLE_FEMALE
           | ROLE_NEUTRAL | ROLE_CHAOTIC,
       /* Str Int Wis Dex Con Cha */
-      { 13,  9,  9, 13, 13, 12 },
+      { 13,  9,  9, 14, 13, 12 },
       { 30, 10, 10, 30, 20, 10 },
       /* Init   Lower  Higher */
       { 13, 0, 0, 9, 1, 0 }, /* Hit points */
