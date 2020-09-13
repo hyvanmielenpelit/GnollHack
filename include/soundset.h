@@ -2,6 +2,7 @@
  * soundset.h
  * Copyright (c) Janne Gustafsson, 2020
  */
+#include "general.h"
 #include "action.h" 
 
 #ifndef SOUNDSET_H
@@ -625,8 +626,8 @@ struct ray_soundset_definition {
 };
 
 enum object_ray_soundset_types {
-	/* 0...NRAYS-1 normal ray, NRAYS...2NRAYS-1 explosion */
-	OBJECT_RAY_SOUNDSET_NONE = 2 * NRAYS,
+	/* 0...NUM_ZAP-1 normal ray, NUM_ZAP...2NUM_ZAP-1 explosion */
+	OBJECT_RAY_SOUNDSET_NONE = 2 * NUM_ZAP,
 	OBJECT_RAY_SOUNDSET_GENERIC,
 	OBJECT_RAY_SOUNDSET_CAMERA,
 	OBJECT_RAY_SOUNDSET_ROLLING_BOULDER,

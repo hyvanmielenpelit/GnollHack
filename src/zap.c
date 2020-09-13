@@ -7798,7 +7798,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	boolean isexplosioneffect = FALSE;
 	if (origobj && objects[origobj->otyp].oc_aflags & S1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
 		isexplosioneffect = TRUE;
-    int soundset_id = abstype % NRAYS + (isexplosioneffect ? NRAYS : 0);
+    int soundset_id = abstype % NUM_ZAP + (isexplosioneffect ? NUM_ZAP : 0);
 	fltxt = flash_types[(type <= -40) ? abstype : abs(type)];
 
     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_CREATE, sx, sy);

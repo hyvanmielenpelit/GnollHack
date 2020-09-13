@@ -3709,7 +3709,7 @@ int x, y;
 
 void
 start_ambient_ray_sound_at_location(ray_type, x, y)
-int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
+int ray_type; /* 0...NUM_ZAP normal ray, NUM_ZAP...2NUM_ZAP-1 explosion effect */
 int x, y;
 {
     int typ = ray_type;
@@ -3729,7 +3729,7 @@ int x, y;
 
 void
 update_ambient_ray_sound_to_location(ray_type, x, y)
-int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
+int ray_type; /* 0...NUM_ZAP normal ray, NUM_ZAP...2NUM_ZAP-1 explosion effect */
 int x, y;
 {
     int typ = ray_type;
@@ -3748,7 +3748,7 @@ int x, y;
 
 void
 stop_ambient_ray_sound(ray_type)
-int ray_type; /* 0...NRAYS normal ray, NRAYS...2NRAYS-1 explosion effect */
+int ray_type; /* 0...NUM_ZAP normal ray, NUM_ZAP...2NUM_ZAP-1 explosion effect */
 {
     int typ = ray_type;
 

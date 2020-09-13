@@ -277,8 +277,6 @@ struct zap_type_definition {
     short animation;
 };
 
-#define NUM_ZAP 10 /* number of zap beam types */
-
 E NEARDATA struct zap_type_definition zap_type_definitions[NUM_ZAP];
 
 /* Macros for explosion types */

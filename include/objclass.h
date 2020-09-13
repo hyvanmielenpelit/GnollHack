@@ -3,6 +3,7 @@
 /*-Copyright (c) Pasi Kallinen, 2018. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
+#include "general.h"
 #include "action.h"
 #include "soundset.h"
 
