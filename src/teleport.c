@@ -1827,6 +1827,7 @@ boolean give_feedback;
         {
             (void)rloc(mtmp, TRUE);
         }
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         return TRUE;
     }
 }

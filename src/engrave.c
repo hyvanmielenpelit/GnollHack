@@ -782,6 +782,7 @@ doengrave()
                 break;
             case WAN_TELEPORTATION:
                 if (oep && oep->engr_type != HEADSTONE) {
+                    play_sfx_sound(SFX_TELEPORT);
                     if (!Blind)
                         pline_The("engraving on the %s vanishes!",
                                   surface(u.ux, u.uy));

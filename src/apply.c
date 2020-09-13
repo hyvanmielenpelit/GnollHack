@@ -3223,6 +3223,7 @@ struct obj* obj;
                 char tbuf[BUFSIZ];
                 strcpy(tbuf, Tobjnam(otmp, "vanish"));
                 boolean stillexists = rloco(otmp);
+                play_sfx_sound(SFX_TELEPORT);
                 pline("%s from your person%s.", tbuf, !stillexists ? "" :
                     otmp->ox == u.ux && otmp->oy == u.uy ? " and then appears at your feet" : 
                     cansee(otmp->ox, otmp->oy) && dist2(u.ux, u.uy, otmp->ox, otmp->oy) <= 9 ? " and then appears near you" : 
