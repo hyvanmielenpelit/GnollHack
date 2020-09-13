@@ -1167,7 +1167,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 
 		 */
 
-#define SPECIAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
+#define GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)                   \
     OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                       \
            BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, blk, 0, 0, sub, skill, metal),  \
@@ -1180,7 +1180,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 
 #define ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)                   \
-		SPECIAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,ENCHTYPE_GENERAL_ARMOR,prob,delay,wt,  \
+		GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,ENCHTYPE_GENERAL_ARMOR,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 #define HELM(name,desc,kn,mgc,power,power2,power3,pflags,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, prob, delay, wt,  \
@@ -1208,13 +1208,13 @@ BOW("Galadhrim bow", "ornamental long bow",
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_BRACERS, P_NONE, metal, c, height,soundset, flags, flags2, flags3,flags4, powconfermask)
 
 /* note: acbon = 10 - ac used in ARMOR, i.e., 1 gives -1 AC bonus to the player */
-#define WEAPONSHIELD(name,desc,kn,mgc,prob,wt,cost,\
+#define WEAPONSHIELD(name,desc,kn,mgc,prob,wt,cost,enchtype,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 			power,power2,power3,pflags,typ,skill,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_ARMOR, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
+           BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,\
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
@@ -1222,13 +1222,13 @@ BOW("Galadhrim bow", "ornamental long bow",
 		   0, 0, 0, 0, \
 		   powconfermask,permittedtargets, O1_IS_WEAPON_WHEN_WIELDED | flags, flags2, flags3, flags4)
 
-#define WEAPONBOOTS(name,desc,kn,mgc,delay,prob,wt,cost,\
+#define WEAPONBOOTS(name,desc,kn,mgc,delay,prob,wt,cost,enchtype,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 			power,power2,power3,pflags,typ,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_ARMOR, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
+           BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
@@ -1236,13 +1236,13 @@ BOW("Galadhrim bow", "ornamental long bow",
 		   0, 0, 0, 0, \
 		   powconfermask,permittedtargets, flags, flags2, flags3, flags4)
 
-#define WEAPONGLOVES(name,desc,kn,mgc,delay,prob,wt,cost,\
+#define WEAPONGLOVES(name,desc,kn,mgc,delay,prob,wt,cost,enchtype,\
 			dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct, \
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 			power,power2,power3,pflags,typ,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
     OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
-           BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_ARMOR, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, metal),  \
+           BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
 		   hitbon, mcadj, 0, throwrange, acbon, mcbon, manabon, hpbon, bonusattrs, attrbonus, splcastpen, multicount, \
@@ -1252,8 +1252,8 @@ BOW("Galadhrim bow", "ornamental long bow",
 
 
 /* helmets */
-SPECIAL_ARMOR("elven leather helm", "leather hat",
-    0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR,
+GENERAL_ARMOR("elven leather helm", "leather hat",
+    0, 0, 0, NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR,
 	6, 1,  3,  8,  9, 0, 0, 0, 0, 0, 0, ARM_HELM, P_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 HELM("cotton hood", None,
@@ -1292,10 +1292,10 @@ HELM("crown of rulership", "ornamental crown", //ENDMARKER FOR SHUFFLED CROWNS &
     0, 1, NO_POWER, NO_POWER, NO_POWER, P1_NONE,
 	2, 1, 20, 5000, 10, 0, 0, 0, BONUS_TO_CHA | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, 24, 0, MAT_GOLD, HI_GOLD, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPECIAL_ARMOR("cornuthaum", "blue conical hat", //STARTMARKER FOR CONICAL HATS
+GENERAL_ARMOR("cornuthaum", "blue conical hat", //STARTMARKER FOR CONICAL HATS
     0, 1, 0, CLAIRVOYANT, BLOCKS_CLAIRVOYANCE, NO_POWER, 
 	P1_ATTRIBUTE_BONUS_NEGATIVE_TO_INAPPROPRIATE_CHARACTERS | P1_POWER_2_APPLIES_TO_INAPPROPRIATE_CHARACTERS_ONLY, 
-	ENCHTYPE_SPECIAL_ARMOR,
+	ENCHTYPE_ELVEN_ARMOR,
 	3, 1, 4, 80, 10, 1, 0, 0, BONUS_TO_CHA | IGNORE_ENCHANTMENT, 1, 0, 
 	ARM_HELM, P_NONE, MAT_CLOTH, CLR_BLUE, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ROLE_WIZARD),
@@ -1413,8 +1413,8 @@ ARMOR("gnollish bone mail", "crude bone armor",
       0, 0, 1,			 0, 0, 0, P1_NONE, 10, 5, 420, 100,  5, 3, 0, 0, 0, 0, 9, ARM_SUIT, P_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ARMOR("dwarvish mithril-coat", None,
       1, 0, 0,			 0, 0, 0, P1_NONE, 10, 1, 250, 750,  4, 6, 0, 0, 0, 0, 3, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPECIAL_ARMOR("elven mithril-coat", None,
-      1, 0, 0,			 0, 0, 0, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 2, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+GENERAL_ARMOR("elven mithril-coat", None,
+      1, 0, 0,			 0, 0, 0, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 15, 1, 150, 250,  5, 4, 0, 0, 0, 0, 2, ARM_SUIT, P_NONE, MAT_MITHRIL, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 ARMOR("chain mail", None,
       1, 0, 0,			 0, 0, 0, P1_NONE, 30, 5, 480,  75,  5, 3, 0, 0, 0, 0, 8, ARM_SUIT, P_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 ARMOR("orcish chain mail", "crude chain mail",
@@ -1453,8 +1453,8 @@ ARMOR("T-shirt", "old T-shirt",//ENDMARKER 1 & 2
 
 
 /* cloaks */
-SPECIAL_ARMOR("elven cloak", "faded pall",
-      0, 1,        0, STEALTH, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 8,  0, 10, 60,  9, 2, 0, 0, 0, 0, 0, ARM_CLOAK, P_NONE, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+GENERAL_ARMOR("elven cloak", "faded pall",
+      0, 1,        0, STEALTH, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 8,  0, 10, 60,  9, 2, 0, 0, 0, 0, 0, ARM_CLOAK, P_NONE, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 CLOAK("orcish cloak", "coarse mantelet",
       0, 0,				 0, 0, 0, P1_NONE, 8,  0, 10, 40, 10, 1, 0, 0, 0, 0, 0, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 CLOAK("dwarvish cloak", "hooded cloak",
@@ -1532,8 +1532,8 @@ BRACERS("bracers against magic missiles", "ornamental bracers",//ENDMARKER 1 & 2
 /* shields */
 SHIELD("small shield", None,
        1, 0, 0,          0, 0, 0, P1_NONE, 6, 0,  80,  3, 9, 0, 0, 0, 0, 0, 3, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPECIAL_ARMOR("elven shield", "blue and green shield",
-       0, 0, 0,          NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 2, 0,  140,  7, 8, 0, 0, 0, 0, 0, 2, ARM_SHIELD, P_NONE, MAT_WOOD, CLR_GREEN, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
+GENERAL_ARMOR("elven shield", "blue and green shield",
+       0, 0, 0,          NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 2, 0,  140,  7, 8, 0, 0, 0, 0, 0, 2, ARM_SHIELD, P_NONE, MAT_WOOD, CLR_GREEN, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 SHIELD("Uruk-hai shield", "white-handed shield",
        0, 0, 0,          0, 0, 0, P1_NONE, 2, 0,  120,  7, 9, 0, 0, 0, 0, 0, 4, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_ORCISH_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 SHIELD("orcish shield", "red-eyed shield",
@@ -1546,13 +1546,13 @@ SHIELD("shield of reflection", "polished silver shield",
        0, 1, 0, REFLECTING, 0, 0, P1_NONE, 3, 0, 70, 750, 8, 0, 0, 0, 0, 0,  5, MAT_SILVER, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_RUST_RESISTANT | O1_CORROSION_RESISTANT, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 
 WEAPONSHIELD("spiked shield", None,
-	1, 0, 5, 130, 50, 
+	1, 0, 5, 130, 50, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, PIERCE, P_SPEAR, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONSHIELD("spiked silver shield", None,
-	1, 0, 2, 130, 500, 
+	1, 0, 2, 130, 500, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 6, 0, 1, 6, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, P1_NONE, PIERCE, P_SPEAR, MAT_SILVER, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
@@ -1573,7 +1573,7 @@ GLOVES("gloves of haste", "brown gloves",
 GLOVES("gloves of spell casting", "deerskin gloves",
        0, 1,		0, 0, 0, P1_MANA_PERCENTAGE_BONUS, 8, 1, 10, 100, 9, 0, 20, 0, BONUS_TO_SPELL_CASTING, 16, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
-	0, 1, 1, 8, 30, 100,
+	0, 1, 1, 8, 30, 100, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, STR18(100), 2, 0,
 	0, 0, 0, P1_NONE, WHACK, MAT_IRON, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC,
@@ -1581,7 +1581,7 @@ WEAPONGLOVES("gauntlets of ogre power", "riding gloves",
 GLOVES("gauntlets of dexterity", "fencing gloves",
        0, 1,        0, 0, 0, P1_NONE, 8, 1, 10, 100, 9, 0, 0, 0, BONUS_TO_DEX, 0, 0, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets of Yin and Yang */
-	0, 1, 1, 0, 10, 1000,
+	0, 1, 1, 0, 10, 1000, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, BONUS_TO_STR | SETS_FIXED_ATTRIBUTE | IGNORE_ENCHANTMENT, STR19(19), 0, 0,
 	VERY_FAST, FREE_ACTION, NO_POWER, P1_NONE, WHACK, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC,
@@ -1593,19 +1593,19 @@ WEAPONGLOVES("gauntlets of balance", "runed gloves", /* Base item for Gauntlets 
 
 /* without shuffled appearances */
 WEAPONGLOVES("spiked gauntlets", None,
-	1, 0, 1, 5, 30, 30,
+	1, 0, 1, 5, 30, 30, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0,
 	0, 0, 0, P1_NONE, PIERCE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONGLOVES("silver gauntlets", None,
-	1, 0, 1, 5, 30, 300,
+	1, 0, 1, 5, 30, 300, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 2, 0, 1, 2, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 0,
 	0, 0, 0, P1_NONE, WHACK, MAT_SILVER, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONGLOVES("spiked silver gauntlets", None,
-	1, 0, 1, 2, 30, 500,
+	1, 0, 1, 2, 30, 500, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 4, 0, 1, 4, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, 0, 0, 3, 0,
 	0, 0, 0, P1_NONE, PIERCE, MAT_SILVER, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
@@ -1621,7 +1621,7 @@ BOOTS("low boots", "walking shoes",
 //BOOTS("iron shoes", "hard shoes",
 //      0, 0,          0, 0, 0, 7, 2, 60, 16, 8, 0, 0, 0, 0, 0, 2, MAT_IRON, HI_METAL, 0, O1_NONE, O2_DWARVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 WEAPONBOOTS("iron shoes", "hard shoes",
-	0, 0, 2, 7, 60, 16,
+	0, 0, 2, 7, 60, 16, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
@@ -1647,9 +1647,9 @@ BOOTS("speed boots", "combat boots",
 	VERY_FAST, NO_POWER, NO_POWER, P1_NONE, 10, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0,
 	MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPECIAL_ARMOR("Galadhrim boots", "runed boots",
+GENERAL_ARMOR("Galadhrim boots", "runed boots",
     0, 1, 0, 
-	NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 10, 2, 20, 50, 9, 0, 0, 0, BONUS_TO_DEX | SETS_FIXED_ATTRIBUTE, 20, 0,
+	NO_POWER, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 10, 2, 20, 50, 9, 0, 0, 0, BONUS_TO_DEX | SETS_FIXED_ATTRIBUTE, 20, 0,
 	ARM_BOOTS, P_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 BOOTS("water walking boots", "jungle boots",
@@ -1662,13 +1662,13 @@ BOOTS("jumping boots", "hiking boots",
 	JUMPING, NO_POWER, NO_POWER, P1_NONE, 10, 2, 30, 50, 9, 0, 0, 0, 0, 0, 0,
 	MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPECIAL_ARMOR("elven boots", "mud boots",
+GENERAL_ARMOR("elven boots", "mud boots",
     0, 1, 0, 
-	STEALTH, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_SPECIAL_ARMOR, 10, 2, 20,  8, 9, 0, 0, 0, 0, 0, 0, 
+	STEALTH, NO_POWER, NO_POWER, P1_NONE, ENCHTYPE_ELVEN_ARMOR, 10, 2, 20,  8, 9, 0, 0, 0, 0, 0, 0, 
 	ARM_BOOTS, P_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_ELVEN_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
 WEAPONBOOTS("kicking boots", "buckled boots",
-	0, 1, 2, 12, 60, 50,
+	0, 1, 2, 12, 60, 50, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 7, 0, 1, 7, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
 	MAGICAL_KICKING, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_IRON, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC,
@@ -1688,19 +1688,19 @@ BOOTS("levitation boots", "snow boots",
 
 /* more without shuffled appearances */
 WEAPONBOOTS("spiked boots", None,
-	1, 0, 2, 5, 60, 20,
+	1, 0, 2, 5, 60, 20, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONBOOTS("silver shoes", None,
-	1, 0, 2, 4, 60, 200,
+	1, 0, 2, 4, 60, 200, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 3, 0, 1, 3, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 1, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, WHACK, MAT_SILVER, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
 WEAPONBOOTS("spiked silver boots", None,
-	1, 0, 2, 2, 60, 400,
+	1, 0, 2, 2, 60, 400, ENCHTYPE_GENERAL_ARMOR,
 	AD_PHYS, 1, 5, 0, 1, 5, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, PIERCE, MAT_SILVER, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC,
@@ -1716,7 +1716,7 @@ WEAPONBOOTS("spiked silver boots", None,
 #undef GLOVES
 #undef BOOTS
 #undef ARMOR
-#undef SPECIAL_ARMOR
+#undef GENERAL_ARMOR
 #undef WEAPONSHIELD
 #undef WEAPONGLOVES
 #undef WEAPONBOOTS

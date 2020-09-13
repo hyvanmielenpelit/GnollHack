@@ -1180,25 +1180,27 @@ int mkobj_type;
                         else if (!rn2(2))
                             otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
                     }
-                    else if (depth(&u.uz) > 20)
+                    else if (depth(&u.uz) >= 20)
                     {
-                        if (!rn2(30))
+                        if (!rn2(Is_stronghold(&u.uz) ? 20 :  40))
                             otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
                         else if (!rn2(6))
                             otmp->exceptionality = EXCEPTIONALITY_ELITE;
                         else if (!rn2(3))
                             otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
                     }
-                    else if (depth(&u.uz) > 10)
+                    else if (depth(&u.uz) >= 10)
                     {
-                        if (!rn2(30))
+                        if (!rn2(20))
                             otmp->exceptionality = EXCEPTIONALITY_ELITE;
                         else if (!rn2(4))
                             otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
                     }
                     else
                     {
-                        if (!rn2(20))
+                        if (!rn2(100))
+                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                        else if (!rn2(20))
                             otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
                     }
                 }
@@ -1906,7 +1908,7 @@ int spe_type_index;
     case ENCHTYPE_PROJECTILE_ALWAYS_START_0:
         initspe = 0;
         break;
-    case ENCHTYPE_SPECIAL_ARMOR:
+    case ENCHTYPE_ELVEN_ARMOR:
         initspe = Inhell ? rne(5) : rne(4);
         break;
     case ENCHTYPE_ALWAYS_1:
@@ -1982,7 +1984,7 @@ int spe_type_index;
     case ENCHTYPE_GENERAL_ARMOR_ALWAYS_START_0:
         maxspe = 3;
         break;
-    case ENCHTYPE_SPECIAL_ARMOR:
+    case ENCHTYPE_ELVEN_ARMOR:
         maxspe = 5;
         break;
     case ENCHTYPE_ALWAYS_1:
