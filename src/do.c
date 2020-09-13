@@ -2946,7 +2946,14 @@ register struct obj* obj;
 		)
 	{
 		int powercnt = 0;
-		Sprintf(buf, "Weapon statistics:");
+
+		if(is_boots(obj))
+			Sprintf(buf, "Statistics in kicking:");
+		else if (is_gloves(obj))
+			Sprintf(buf, "Statistics in bare-handed combat:");
+		else
+			Sprintf(buf, "Weapon statistics:");
+
 		txt = buf;
 		putstr(datawin, 0, txt);
 

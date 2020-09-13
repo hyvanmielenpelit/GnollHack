@@ -3473,6 +3473,9 @@ static const struct alt_spellings {
     { "prodigious healing salve", JAR_OF_PRODIGIOUS_HEALING_SALVE },
     { "medicinal salve", JAR_OF_MEDICINAL_SALVE },
     { "medical salve", JAR_OF_MEDICINAL_SALVE },
+    { "jar of medical salve", JAR_OF_MEDICINAL_SALVE },
+    { "galadhrim bow", GALADHRIM_BOW },
+    { "galadhrim boots", GALADHRIM_BOOTS },
     { (const char *) 0, 0 },
 };
 
