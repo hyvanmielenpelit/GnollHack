@@ -1229,6 +1229,7 @@ register struct monst *mtmp;
                from lava, just from water */
             if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
 			{
+                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
                 if (rloc(mtmp, TRUE))
                     return 0;
             }
@@ -1284,10 +1285,13 @@ register struct monst *mtmp;
         if (!is_clinger(mtmp->data) && !is_swimmer(mtmp->data)
             && !amphibious(mtmp->data)) 
 		{
+            play_sfx_sound_at_location(SFX_FALL_INTO_PIT, mtmp->mx, mtmp->my);
+
             /* like hero with teleport intrinsic or spell, teleport away
                if possible */
             if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
 			{
+                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
                 if (rloc(mtmp, TRUE))
                     return 0;
             }

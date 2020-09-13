@@ -388,6 +388,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Generic Magical Activate", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Effect/Rolling Boulder", 1.0f },
     { SOUND_BANK_MASTER, "event:/UI/Knapsack Full", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Environment/Fall into Water", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Pet in Way", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Pet Does Not Move", 1.0f },
 };
 
 #undef NoSound

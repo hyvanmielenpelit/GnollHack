@@ -1801,21 +1801,34 @@ boolean give_feedback;
 {
     coord cc;
 
-    if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) {
+    if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
+    {
         if (give_feedback)
             pline("%s resists your magic!", Monnam(mtmp));
         return FALSE;
-    } else if (level.flags.noteleport && u.uswallow && mtmp == u.ustuck) {
-        if (give_feedback)
-            You("are no longer inside %s!", mon_nam(mtmp));
-        unstuck(mtmp);
-        (void) rloc(mtmp, TRUE);
-    } else if (is_rider(mtmp->data) && rn2(13)
-               && enexto(&cc, u.ux, u.uy, mtmp->data))
-        rloc_to(mtmp, cc.x, cc.y);
+    }
     else
-        (void) rloc(mtmp, TRUE);
-    return TRUE;
+    {
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        if (level.flags.noteleport && u.uswallow && mtmp == u.ustuck)
+        {
+            if (give_feedback)
+                You("are no longer inside %s!", mon_nam(mtmp));
+            unstuck(mtmp);
+            (void)rloc(mtmp, TRUE);
+        }
+        else if (is_rider(mtmp->data) && rn2(13)
+            && enexto(&cc, u.ux, u.uy, mtmp->data))
+        {
+            rloc_to(mtmp, cc.x, cc.y);
+        }
+        else
+        {
+            (void)rloc(mtmp, TRUE);
+        }
+        return TRUE;
+    }
 }
 
 /*teleport.c*/

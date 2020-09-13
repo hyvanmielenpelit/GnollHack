@@ -5496,7 +5496,7 @@ long timeout UNUSED;
         char *monname = Monnam(mtmp);
 
         if (rloc(mtmp, TRUE)) {
-            if (notice_it && !canseemon(mtmp))
+			if (notice_it && !canseemon(mtmp))
                 pline("%s vanishes.", monname);
             else if (!notice_it && canseemon(mtmp))
                 pline("%s appears.", Monnam(mtmp)); /* not pre-rloc monname */

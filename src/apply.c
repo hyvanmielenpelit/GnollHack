@@ -1186,7 +1186,10 @@ struct obj *obj;
         freeinv(obj);
         (void) mpickobj(mtmp, obj);
         if (!tele_restrict(mtmp))
-            (void) rloc(mtmp, TRUE);
+        {
+            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+            (void)rloc(mtmp, TRUE);
+        }
     } else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
                && (!is_invisible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) {
         boolean do_react = TRUE;

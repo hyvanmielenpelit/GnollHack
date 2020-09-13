@@ -2433,7 +2433,10 @@ register struct obj* omonwep;
                       ? "brags about the goods some dungeon explorer provided"
                   : "makes some remarks about how difficult theft is lately");
             if (!tele_restrict(mtmp))
-                (void) rloc(mtmp, TRUE);
+            {
+                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+                (void)rloc(mtmp, TRUE);
+            }
             return 3;
         } 
 		else if (nymphcancelled || resists_charm(&youmonst) || Charm_resistance) 
@@ -2446,7 +2449,10 @@ register struct obj* omonwep;
             if (rn2(3)) 
 			{
                 if (!tele_restrict(mtmp))
-                    (void) rloc(mtmp, TRUE);
+                {
+                    play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+                    (void)rloc(mtmp, TRUE);
+                }
                 return 3;
             }
             break;
@@ -2459,7 +2465,10 @@ register struct obj* omonwep;
             break;
         default:
             if (!is_animal(mtmp->data) && !tele_restrict(mtmp))
-                (void) rloc(mtmp, TRUE);
+            {
+                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+                (void)rloc(mtmp, TRUE);
+            }
             if (is_animal(mtmp->data) && *buf) {
                 if (canseemon(mtmp))
                     pline("%s tries to %s away with %s.", Monnam(mtmp),
@@ -2629,7 +2638,10 @@ register struct obj* omonwep;
 			else if (!rn2(33))
 			{
                 if (!tele_restrict(mtmp))
-                    (void) rloc(mtmp, TRUE);
+                {
+                    play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+                    (void)rloc(mtmp, TRUE);
+                }
                 monflee(mtmp, d(3, 6), TRUE, FALSE);
                 return 3;
             }
@@ -4053,7 +4065,10 @@ struct monst *mon;
         /* else no regret message if can't see or hear seducer */
 
         if (!tele_restrict(mon))
-            (void) rloc(mon, TRUE);
+        {
+            play_sfx_sound_at_location(SFX_TELEPORT, mon->mx, mon->my);
+            (void)rloc(mon, TRUE);
+        }
         return 1;
     }
     if (u.ualign.type == A_CHAOTIC)
@@ -4189,7 +4204,10 @@ struct monst *mon;
     if (!rn2(25))
         mon->mspec_used = max(mon->mspec_used, 10 + rnd(40)); // increase_mon_property(mon, CANCELLED, 10 + rnd(40)); /* monster is worn out */
     if (!tele_restrict(mon))
-        (void) rloc(mon, TRUE);
+    {
+        play_sfx_sound_at_location(SFX_TELEPORT, mon->mx, mon->my);
+        (void)rloc(mon, TRUE);
+    }
     return 1;
 }
 

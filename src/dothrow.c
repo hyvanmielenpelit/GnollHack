@@ -2542,7 +2542,10 @@ register struct obj *obj;
 	change_luck(luck_change, TRUE);
 
     if (!tele_restrict(mon))
-        (void) rloc(mon, TRUE);
+    {
+        play_sfx_sound_at_location(SFX_TELEPORT, mon->mx, mon->my);
+        (void)rloc(mon, TRUE);
+    }
     return ret;
 }
 

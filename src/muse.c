@@ -755,6 +755,7 @@ struct monst *mtmp;
         }
         if (oseen && how)
             makeknown(how);
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         (void) rloc(mtmp, TRUE);
         return 2;
     case MUSE_WAN_TELEPORTATION:

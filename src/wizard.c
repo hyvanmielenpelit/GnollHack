@@ -382,7 +382,10 @@ register struct monst *mtmp;
             || (mtmp->iswiz && !sx && !mon_has_amulet(mtmp)))
 		{
             if (!rn2(3 + mtmp->mhp / 10))
-                (void) rloc(mtmp, TRUE);
+            {
+                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+                (void)rloc(mtmp, TRUE);
+            }
         }
 		else if (sx && (mtmp->mx != sx || mtmp->my != sy))
 		{

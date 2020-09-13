@@ -4173,6 +4173,7 @@ drown()
     }
 
     if (!u.uinwater) {
+        play_sfx_sound(SFX_FALL_INTO_WATER);
         You("%s into the %s%c", Is_waterlevel(&u.uz) ? "plunge" : "fall",
             hliquid("water"),
             Amphibious || Swimming ? '.' : '!');

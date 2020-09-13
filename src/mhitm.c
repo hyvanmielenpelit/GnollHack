@@ -1421,6 +1421,7 @@ register struct obj* omonwep;
             if (vis && wasseen)
                 Strcpy(mdef_Monnam, Monnam(mdef));
             mdef->mstrategy &= ~STRAT_WAITFORU;
+            play_sfx_sound_at_location(SFX_TELEPORT, mdef->mx, mdef->my);
             (void) rloc(mdef, TRUE);
 
             if (vis && wasseen && !canspotmon(mdef) && mdef != u.usteed)
@@ -1619,6 +1620,7 @@ register struct obj* omonwep;
         if (!tele_restrict(magr)) 
         {
             boolean couldspot = canspotmon(magr);
+            play_sfx_sound_at_location(SFX_TELEPORT, magr->mx, magr->my);
             (void) rloc(magr, TRUE);
             if (vis && couldspot && !canspotmon(magr))
                 pline("%s suddenly disappears!", buf);
@@ -1694,6 +1696,7 @@ register struct obj* omonwep;
             {
                 boolean couldspot = canspotmon(magr);
 
+                play_sfx_sound_at_location(SFX_TELEPORT, magr->mx, magr->my);
                 (void) rloc(magr, TRUE);
                 if (vis && couldspot && !canspotmon(magr))
                     pline("%s suddenly disappears!", buf);

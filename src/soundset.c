@@ -2273,6 +2273,21 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_GENERIC_MAGICAL_TRAP_ACTIVATE, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_FALL_INTO_WATER",
+        {GHSOUND_FALL_INTO_WATER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_PET_IN_WAY",
+        {GHSOUND_PET_IN_WAY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_PET_DOES_NOT_MOVE",
+        {GHSOUND_PET_DOES_NOT_MOVE, 1.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

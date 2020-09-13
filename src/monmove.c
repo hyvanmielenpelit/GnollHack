@@ -723,6 +723,7 @@ register struct monst *mtmp;
     if (is_fleeing(mtmp) && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
         && !level.flags.noteleport)
 	{
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         (void) rloc(mtmp, TRUE);
         return 0;
     }
@@ -1267,7 +1268,10 @@ register int after;
         && !tele_restrict(mtmp)) 
     {
         if (mtmp->mhp < 7 || is_peaceful(mtmp) || rn2(2))
-            (void) rloc(mtmp, TRUE);
+        {
+            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+            (void)rloc(mtmp, TRUE);
+        }
         else
             mnexto(mtmp);
         mmoved = 1;
@@ -1665,6 +1669,7 @@ register int after;
     {
         if (is_unicorn(ptr) && rn2(2) && !tele_restrict(mtmp)) 
         {
+            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
             (void) rloc(mtmp, TRUE);
             return 1;
         }

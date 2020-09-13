@@ -739,8 +739,11 @@ struct monst *mtmp;
     if (youmonst.data->mlet == S_DEMON) { /* Won't blackmail their own. */
         pline("%s says, \"Good hunting, %s.\"", Amonnam(mtmp),
               flags.female ? "Sister" : "Brother");
-        if (!tele_restrict(mtmp))
-            (void) rloc(mtmp, TRUE);
+		if (!tele_restrict(mtmp))
+		{
+			play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+			(void)rloc(mtmp, TRUE);
+		}
         return 1;
 	}
 	else if (mtmp->data == &mons[PM_YEENOGHU] && maybe_polyd(is_gnoll(youmonst.data), Race_if(PM_GNOLL)))

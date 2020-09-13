@@ -131,7 +131,10 @@ register struct monst *mtmp;
               (Levitation || Flying) ? "beneath" : "between", whose, what);
         if (!ygold || !rn2(5)) {
             if (!tele_restrict(mtmp))
-                (void) rloc(mtmp, TRUE);
+            {
+                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+                (void)rloc(mtmp, TRUE);
+            }
             monflee(mtmp, 0, FALSE, FALSE);
         }
     } else if (ygold) {
@@ -147,7 +150,10 @@ register struct monst *mtmp;
         add_to_minv(mtmp, ygold);
         Your("purse feels lighter.");
         if (!tele_restrict(mtmp))
-            (void) rloc(mtmp, TRUE);
+        {
+            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+            (void)rloc(mtmp, TRUE);
+        }
         monflee(mtmp, 0, FALSE, FALSE);
         context.botl = 1;
     }
@@ -180,7 +186,10 @@ stealarm(VOID_ARGS)
                        so we don't set mavenge bit here. */
                     monflee(mtmp, 0, FALSE, FALSE);
                     if (!tele_restrict(mtmp))
-                        (void) rloc(mtmp, TRUE);
+                    {
+                        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+                        (void)rloc(mtmp, TRUE);
+                    }
                     break;
                 }
             }
@@ -638,7 +647,10 @@ struct monst *mtmp;
         (void) mpickobj(mtmp, otmp); /* could merge and free otmp but won't */
         pline("%s steals %s!", Monnam(mtmp), buf);
         if (has_teleportation(mtmp) && !tele_restrict(mtmp))
-            (void) rloc(mtmp, TRUE);
+        {
+            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+            (void)rloc(mtmp, TRUE);
+        }
     }
 }
 

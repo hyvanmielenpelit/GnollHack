@@ -473,6 +473,7 @@ register struct monst *mtmp;
                 monflee(mtmp, rnd(6), FALSE, FALSE);
                 Strcpy(buf, y_monnam(mtmp));
                 buf[0] = highc(buf[0]);
+				play_sfx_sound(SFX_PET_IN_WAY);
                 You("stop.  %s is in the way!", buf);
                 context.travel = context.travel1 = context.mv = context.run
                     = 0;
@@ -480,7 +481,8 @@ register struct monst *mtmp;
             } 
 			else if ((!mon_can_move(mtmp) || (mtmp->data->mmove == 0)) && rn2(6)) 
 			{
-                pline("%s doesn't seem to move!", Monnam(mtmp));
+				play_sfx_sound(SFX_PET_DOES_NOT_MOVE);
+				pline("%s doesn't seem to move!", Monnam(mtmp));
                 context.travel = context.travel1 = context.mv = context.run
                     = 0;
                 return TRUE;
