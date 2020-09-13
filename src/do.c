@@ -1335,8 +1335,8 @@ register struct obj* obj;
 		if (obj->oclass == WEAPON_CLASS || is_weptool(obj))
 		{
 			int enchplus = obj->enchantment;
-			int tohitplus = is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
-			int dmgplus = is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
+			int tohitplus = enchplus; // is_launcher(obj) ? (enchplus + 1 * sgn(enchplus)) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 0) / 2 : enchplus;
+			int dmgplus = enchplus; //  is_launcher(obj) ? (enchplus + 0) / 2 : (throwing_weapon(obj) || is_ammo(obj)) ? (enchplus + 1 * sgn(enchplus)) / 2 : enchplus;
 
 			wep_avg_dmg += (double)dmgplus;
 			if (wep_avg_dmg < 0)
@@ -1357,8 +1357,8 @@ register struct obj* obj;
 			Sprintf(eos(bonusbuf), " (%s%d to AC and %s%d to MC)",
 				obj->enchantment <= 0 ? "+" : "",
 				-obj->enchantment,
-				obj->enchantment / 2 >= 0 ? "+" : "",
-				obj->enchantment / 2
+				obj->enchantment / 3 >= 0 ? "+" : "",
+				obj->enchantment / 3
 			);
 		}
 		else if(affectsac && !(objects[otyp].oc_flags & O1_ENCHANTMENT_DOES_NOT_AFFECT_AC))
@@ -1371,9 +1371,9 @@ register struct obj* obj;
 		else if (affectsmc || (objects[otyp].oc_flags & O1_ENCHANTMENT_AFFECTS_MC))
 		{
 			Sprintf(eos(bonusbuf), " (%s%d %s to MC)",
-				obj->enchantment / 2 >= 0 ? "+" : "",
-				obj->enchantment / 2,
-				obj->enchantment / 2 >= 0 ? "bonus" : "penalty");
+				obj->enchantment / 3 >= 0 ? "+" : "",
+				obj->enchantment / 3,
+				obj->enchantment / 3 >= 0 ? "bonus" : "penalty");
 		}
 
 		Sprintf(buf, "Enchantment status:     %s%d%s", obj->enchantment >= 0 ? "+" : "", obj->enchantment, bonusbuf);	

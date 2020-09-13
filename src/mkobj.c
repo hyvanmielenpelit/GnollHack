@@ -1878,7 +1878,7 @@ struct obj* otmp;
 	int max_spe = get_max_enchantment(objects[otmp->otyp].oc_enchantable);
 
 	/* Extra modifications */
-    if (is_weapon(otmp) && bimanual(otmp) && !is_launcher(otmp))
+    if ((objects[otmp->otyp].oc_enchantable == ENCHTYPE_GENERAL_WEAPON || objects[otmp->otyp].oc_enchantable == ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0) && is_weapon(otmp) && bimanual(otmp) && !is_launcher(otmp))
         max_spe *= 2;
 
 	return max_spe;
@@ -1903,6 +1903,7 @@ int spe_type_index;
         break;
     case ENCHTYPE_GENERAL_WEAPON_ALWAYS_START_0:
     case ENCHTYPE_GENERAL_ARMOR_ALWAYS_START_0:
+    case ENCHTYPE_PROJECTILE_ALWAYS_START_0:
         initspe = 0;
         break;
     case ENCHTYPE_SPECIAL_ARMOR:
@@ -1938,7 +1939,25 @@ int spe_type_index;
 	case ENCHTYPE_RING_POWER:
 		initspe = rnd(3);
 		break;
-	}
+    case ENCHTYPE_PROJECTILE:
+        initspe = Inhell ? rne(4) : rne(3);
+        break;
+    case ENCHTYPE_THROWN_WEAPON:
+        initspe = Inhell ? rne(7) : rne(4);
+        break;
+    case ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON:
+        initspe = Inhell ? rne(7) : rne(4);
+        break;
+    case ENCHTYPE_TWO_HANDED_MELEE_WEAPON:
+        initspe = Inhell ? rne(12) : rne(7);
+        break;
+    case ENCHTYPE_SINGLE_HANDED_LAUNCHER:
+        initspe = Inhell ? rne(4) : rne(3);
+        break;
+    case ENCHTYPE_TWO_HANDED_LAUNCHER:
+        initspe = Inhell ? rne(5) : rne(3);
+        break;
+    }
 
 	return initspe;
 }
@@ -1993,8 +2012,28 @@ int spe_type_index;
 	case ENCHTYPE_MISCELLANEOUS_NORMAL:
 		maxspe = 7;
 		break;
-
-	}
+    case ENCHTYPE_PROJECTILE:
+        maxspe = 5;
+        break;
+    case ENCHTYPE_THROWN_WEAPON:
+        maxspe = 10;
+        break;
+    case ENCHTYPE_SINGLE_HANDED_MELEE_WEAPON:
+        maxspe = 10;
+        break;
+    case ENCHTYPE_TWO_HANDED_MELEE_WEAPON:
+        maxspe = 15;
+        break;
+    case ENCHTYPE_SINGLE_HANDED_LAUNCHER:
+        maxspe = 5;
+        break;
+    case ENCHTYPE_TWO_HANDED_LAUNCHER:
+        maxspe = 7;
+        break;
+    case ENCHTYPE_PROJECTILE_ALWAYS_START_0:
+        maxspe = 5;
+        break;
+    }
 
 	return maxspe;
 }

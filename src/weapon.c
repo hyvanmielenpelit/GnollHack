@@ -262,7 +262,7 @@ int basehitval(otmp, mon, mattacker, use_type)
 struct obj* otmp;
 struct monst* mon;
 struct monst* mattacker;
-int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
+int use_type; // OBSOLETE: /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
 {
 	if (!otmp || !mon)
 		return 0;
@@ -272,10 +272,12 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
 	boolean Is_worn_gauntlets = is_gloves(otmp) && (otmp->owornmask & W_ARMG);
 
     int applicable_enchantment = otmp->enchantment;
+#if 0
     if (use_type == 1)
         applicable_enchantment = (applicable_enchantment + 0) / 2;
     else if (use_type == 2)
         applicable_enchantment = (applicable_enchantment + 1 * sgn(applicable_enchantment)) / 2;
+#endif
 
 	if(mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
 	{ 
@@ -365,7 +367,7 @@ weapon_dmg_value(otmp, mon, mattacker, use_type)
 struct obj *otmp;
 struct monst *mon;
 struct monst* mattacker;
-int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
+int use_type; //OBSOLETE /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon or missile (half, +1 damage has priority), 2 = launcher (half, +1 to-hit has priority) */
 {
 	if (!otmp || !mon)
 		return 0;
@@ -406,10 +408,12 @@ int use_type; /* 0 = Melee weapon (full enchantment bonuses), 1 = thrown weapon 
             }
 
             int applicable_enchantment = otmp->enchantment;
+#if 0
             if (use_type == 1)
                 applicable_enchantment = (applicable_enchantment + 1 * sgn(applicable_enchantment)) / 2;
             else if(use_type == 2)
                 applicable_enchantment = (applicable_enchantment + 0) / 2;
+#endif
 
 			if (mattacker && cursed_items_are_positive_mon(mattacker) && otmp->cursed)
 				tmp += abs(applicable_enchantment);
