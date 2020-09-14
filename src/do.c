@@ -921,7 +921,7 @@ register struct obj* obj;
 
 		int exceptionality_multiplier = 1;
 
-		if (obj->known && obj->exceptionality)
+		if (obj->exceptionality)
 		{
 			Sprintf(buf, "Quality:                %s", obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL ? "Exceptional (double base damage)" :
 				obj->exceptionality == EXCEPTIONALITY_ELITE ? "Elite (triple base damage)" :

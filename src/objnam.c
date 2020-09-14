@@ -632,7 +632,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->special_quality < 3) ? "moist " : "wet ");
 
-        if (known)
+        if (dknown)
         {
             if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
                 Strcat(buf, "exceptional ");

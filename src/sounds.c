@@ -185,21 +185,29 @@ dosounds()
                     != (ROOM_INDEX(sroom) + ROOMOFFSET))
 #endif /* AZTEC_C_WORKAROUND */
                 {
-                    if (gold_in_vault)
-                        You_hear(!hallu
-                                     ? "someone counting money."
-                                     : "the quarterback calling the play.");
-                    else
-                        You_hear("someone searching.");
+					if (gold_in_vault)
+					{
+						play_sfx_sound(!hallu ? SFX_LEVEL_SOMEONE_COUNTING_MONEY : SFX_LEVEL_QUARTERBACK_CALLING_PLAY);
+						You_hear(!hallu
+							? "someone counting money."
+							: "the quarterback calling the play.");
+					}
+					else
+					{
+						play_sfx_sound(SFX_LEVEL_SOMEONE_SEARCHING);
+						You_hear("someone searching.");
+					}
                     break;
                 }
             }
                 /*FALLTHRU*/
             case 0:
-                You_hear("the footsteps of a guard on patrol.");
+				play_sfx_sound(SFX_LEVEL_FOOTSTEPS_OF_GUARD_PATROL);
+				You_hear("the footsteps of a guard on patrol.");
                 break;
             case 2:
-                You_hear("Ebenezer Scrooge!");
+				play_sfx_sound(SFX_LEVEL_EBENEZER_SCROOGE);
+				You_hear("Ebenezer Scrooge!");
                 break;
             }
         return;
@@ -216,13 +224,16 @@ dosounds()
                 switch (rn2(2) + hallu) 
 				{
                 case 0:
-                    You_hear("a low buzzing.");
+					play_sfx_sound(SFX_LEVEL_LOW_BUZZING);
+					You_hear("a low buzzing.");
                     break;
                 case 1:
-                    You_hear("an angry drone.");
+					play_sfx_sound(SFX_LEVEL_ANGRY_DRONE);
+					You_hear("an angry drone.");
                     break;
                 case 2:
-                    You_hear("bees in your %sbonnet!",
+					play_sfx_sound(SFX_LEVEL_BEES_IN_BONNET);
+					You_hear("bees in your %sbonnet!",
                              uarmh ? "" : "(nonexistent) ");
                     break;
                 }
@@ -247,9 +258,11 @@ dosounds()
 					You("suddenly realize it is quiter than usual.");
 					break;
 				case 1:
+					play_sfx_sound(SFX_LEVEL_SOMEONE_DEMANDING_QUIETNESS);
 					You_hear("somebody demanding quietness.");
 					break;
 				case 2:
+					play_sfx_sound(SFX_LEVEL_PAGES_TURNING_IN_HEAD);
 					You_hear("pages turning in your head.");
 					break;
 				}
@@ -276,12 +289,19 @@ dosounds()
 						You_hear("coins being assembled.");
 					break;
 				case 1:
-					if(is_sleeping(mtmp))
+					if (is_sleeping(mtmp))
+					{
+						play_sfx_sound(SFX_LEVEL_LOUD_DRAGON_SNORING);
 						You_hear("loud snoring.");
+					}
 					else
+					{
+						play_sfx_sound(SFX_LEVEL_LOUD_DRAGON_ROAR);
 						You_hear("a loud roar.");
+					}
 					break;
 				case 2:
+					play_sfx_sound(SFX_LEVEL_SOMEONE_CLAIMING_TO_BE_FIRE_AND_DEATH);
 					You_hear("somebody claiming to be fire and death.");
 					break;
 				}
@@ -321,6 +341,10 @@ dosounds()
             "blades being honed.", "loud snoring.", "dice being thrown.",
             "General MacArthur!",
         };
+        static enum sfx_sound_types barracks_sound[4] = {
+            SFX_LEVEL_BLADES_BEING_HONED, SFX_LEVEL_LOUD_HUMAN_SNORING, SFX_LEVEL_DICE_BEING_THROWN,
+			SFX_LEVEL_GENERAL_MCARTHUR,
+        };
         int count = 0;
 
         for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -329,8 +353,12 @@ dosounds()
             if (is_mercenary(mtmp->data)
                 && mon_in_room(mtmp, BARRACKS)
                 /* sleeping implies not-yet-disturbed (usually) */
-                && (is_sleeping(mtmp) || ++count > 5)) {
-                You_hear1(barracks_msg[rn2(3) + hallu]);
+                && (is_sleeping(mtmp) || ++count > 5)) 
+			{
+				int roll = rn2(3) + hallu;
+
+				play_sfx_sound(barracks_sound[roll]);
+				You_hear1(barracks_msg[roll]);
                 return;
             }
         }
@@ -341,6 +369,12 @@ dosounds()
 			"swords being unsheated.", "armors being worn.", "weapons being assembled.",
 			"Master Chief!",
 		};
+
+		static enum sfx_sound_types armory_sound[4] = {
+			SFX_LEVEL_SWORDS_BEING_UNSHEATED, SFX_LEVEL_ARMORS_BEING_WORN, SFX_LEVEL_WEAPONS_BEING_ASSEMBLED,
+			SFX_LEVEL_MASTER_CHIEF,
+		};
+
 		int count = 0;
 
 		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
@@ -348,8 +382,11 @@ dosounds()
 				continue;
 			if (mon_in_room(mtmp, ARMORY)
 				/* sleeping implies not-yet-disturbed (usually) */
-				&& (is_sleeping(mtmp) || ++count > 5)) {
-				You_hear1(armory_msg[rn2(3) + hallu]);
+				&& (is_sleeping(mtmp) || ++count > 5))
+			{
+				int roll = rn2(3) + hallu;
+				play_sfx_sound(armory_sound[roll]);
+				You_hear1(armory_msg[roll]);
 				return;
 			}
 		}
@@ -360,12 +397,18 @@ dosounds()
             "a sound reminiscent of an elephant stepping on a peanut.",
             "a sound reminiscent of a seal barking.", "Doctor Dolittle!",
         };
-        for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
+		static enum sfx_sound_types zoo_sound[3] = {
+			SFX_LEVEL_ELEPHANT_STEPPING_ON_PEANUT, SFX_LEVEL_SEAL_BREAKING, SFX_LEVEL_DOCTOR_DOLITTLE,
+		};
+		for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
             if (DEADMONSTER(mtmp))
                 continue;
             if ((is_sleeping(mtmp) || is_animal(mtmp->data))
-                && mon_in_room(mtmp, ZOO)) {
-                You_hear1(zoo_msg[rn2(2) + hallu]);
+                && mon_in_room(mtmp, ZOO))
+			{
+				int roll = rn2(2) + hallu;
+				play_sfx_sound(zoo_sound[roll]);
+				You_hear1(zoo_msg[roll]);
                 return;
             }
         }
@@ -382,7 +425,12 @@ dosounds()
                 "someone cursing shoplifters.",
                 "the chime of a cash register.", "Neiman and Marcus arguing!",
             };
-            You_hear1(shop_msg[rn2(2) + hallu]);
+			static enum sfx_sound_types shop_sound[3] = {
+				SFX_LEVEL_SOMEONE_CURSING_SHOPLIFTERS, SFX_LEVEL_CHIME_OF_CASH_REGISTER, SFX_LEVEL_NEIMAN_AND_MARCUS_ARGUING,
+			};
+			int roll = rn2(2) + hallu;
+			play_sfx_sound(shop_sound[roll]);
+			You_hear1(shop_msg[roll]);
         }
         return;
     }
@@ -401,7 +449,10 @@ dosounds()
 					if (!rn2(2))
 						pline("For a moment, you thought you heard someone cursing.");
 					else
+					{
+						play_sfx_sound(SFX_LEVEL_FAINT_CHIME);
 						You("hear a faint chime but then it fades.");
+					}
 				}
 				return;
 			}
@@ -432,28 +483,36 @@ dosounds()
                priest and the altar must not be directly visible (we don't
                care if telepathy or extended detection reveals that the
                priest is not currently standing on the altar; he's mobile). */
-            static const char *const temple_msg[] = {
+            static const char *const temple_msg[4] = {
                 "*someone praising %s.", "*someone beseeching %s.",
                 "#an animal carcass being offered in sacrifice.",
                 "*a strident plea for donations.",
             };
-            const char *msg;
+			static enum sfx_sound_types temple_sound[4] = {
+				SFX_LEVEL_SOMEONE_PRAISING_GOD, SFX_LEVEL_SOMEONE_BESEECHING, SFX_LEVEL_ANIMAL_CARCASS_BEING_OFFERED, SFX_LEVEL_PLEA_FOR_DONATIONS
+			};
+			const char *msg;
             int trycount = 0, ax = EPRI(mtmp)->shrpos.x,
                 ay = EPRI(mtmp)->shrpos.y;
             boolean speechless = (mtmp->data->msound <= MS_ANIMAL),
                     in_sight = canseemon(mtmp) || cansee(ax, ay);
 
+			int roll = 0;
             do {
-                msg = temple_msg[rn2(SIZE(temple_msg) - 1 + hallu)];
+				roll = rn2(3 + hallu);
+                msg = temple_msg[roll];
                 if (index(msg, '*') && speechless)
                     continue;
                 if (index(msg, '#') && in_sight)
                     continue;
                 break; /* msg is acceptable */
             } while (++trycount < 50);
+
             while (!letter(*msg))
                 ++msg; /* skip control flags */
-            if (index(msg, '%'))
+
+			play_sfx_sound(temple_sound[roll]);
+			if (index(msg, '%'))
                 You_hear(msg, halu_gname(EPRI(mtmp)->shralign));
             else
                 You_hear1(msg);
@@ -476,13 +535,17 @@ dosounds()
 		}
 		if (mtmp)
 		{
-			static const char* const smithy_msg[] = {
+			static const char* const smithy_msg[3] = {
 				"iron being forged.", "loud clanging.",
 				"water being vaporized.",
 			};
-			const char* msg;
-			msg = smithy_msg[rn2(SIZE(smithy_msg))];
-			You_hear1(msg);
+			static enum sfx_sound_types smithy_sound[3] = {
+				SFX_LEVEL_IRON_BEING_FORGED, SFX_LEVEL_LOUD_CLANGING, SFX_LEVEL_WATER_BEING_VAPORIZED,
+			};
+
+			int roll = rn2(3);
+			play_sfx_sound(smithy_sound[roll]);
+			You_hear1(smithy_msg[roll]);
 			return;
 		}
 	}
@@ -502,13 +565,16 @@ dosounds()
 		}
 		if (mtmp)
 		{
-			static const char* const npc_msg[] = {
+			static const char* const npc_msg[3] = {
 				"somebody mumbling.", "distant chitchat.",
 				"footsteps at a distance.",
 			};
-			const char* msg;
-			msg = npc_msg[rn2(SIZE(npc_msg))];
-			You_hear1(msg);
+			static enum sfx_sound_types npc_sound[3] = {
+				SFX_LEVEL_SOMEONE_MUMBLING, SFX_LEVEL_DISTANT_CHITCHAT, SFX_LEVEL_FOOTSTEPS_AT_DISTANCE,
+			};
+			int roll = rn2(3);
+			play_sfx_sound(npc_sound[roll]);
+			You_hear1(npc_msg[roll]);
 			return;
 		}
 	}
@@ -531,7 +597,13 @@ dosounds()
                 "someone say \"No more woodchucks!\"",
                 "a loud ZOT!" /* both rec.humor.oracle */
             };
-            You_hear1(ora_msg[rn2(3) + hallu * 2]);
+			static enum sfx_sound_types ora_sound[5] = {
+				SFX_LEVEL_STRANGE_WIND, SFX_LEVEL_CONVULSIVE_RAVINGS, SFX_LEVEL_SNORING_SNAKES,
+				SFX_LEVEL_NO_MORE_WOODCHUCKS, SFX_LEVEL_LOUD_ZOT,
+			};
+			int roll = rn2(3) + hallu * 2;
+			play_sfx_sound(ora_sound[roll]);
+			You_hear1(ora_msg[roll]);
         }
         return;
     }

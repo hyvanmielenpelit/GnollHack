@@ -2288,6 +2288,296 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_PET_DOES_NOT_MOVE, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_LEVEL_BUBBLING_WATER",
+        {GHSOUND_LEVEL_BUBBLING_WATER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_WATER_FALLING_ON_COINS",
+        {GHSOUND_LEVEL_WATER_FALLING_ON_COINS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SPLASHING_OF_NAIAD",
+        {GHSOUND_LEVEL_SPLASHING_OF_NAIAD, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SODA_FOUNTAIN",
+        {GHSOUND_LEVEL_SODA_FOUNTAIN, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SLOW_DRIP",
+        {GHSOUND_LEVEL_SLOW_DRIP, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_GURGLING_NOISE",
+        {GHSOUND_LEVEL_GURGLING_NOISE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_DISHES_BEING_WASHED",
+        {GHSOUND_LEVEL_DISHES_BEING_WASHED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_COURTLY_CONVERSATION",
+        {GHSOUND_LEVEL_COURTLY_CONVERSATION, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SCEPTRE_POUNDED",
+        {GHSOUND_LEVEL_SCEPTRE_POUNDED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_OFF_WITH_HEAD",
+        {GHSOUND_LEVEL_OFF_WITH_HEAD, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_QUEENS_CATS",
+        {GHSOUND_LEVEL_QUEENS_CATS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_MOSQUITOES",
+        {GHSOUND_LEVEL_MOSQUITOES, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_MARSH_GAS",
+        {GHSOUND_LEVEL_MARSH_GAS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_DONALD_DUCK",
+        {GHSOUND_LEVEL_DONALD_DUCK, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_COUNTING_MONEY",
+        {GHSOUND_LEVEL_SOMEONE_COUNTING_MONEY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_QUARTERBACK_CALLING_PLAY",
+        {GHSOUND_LEVEL_QUARTERBACK_CALLING_PLAY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_SEARCHING",
+        {GHSOUND_LEVEL_SOMEONE_SEARCHING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_FOOTSTEPS_OF_GUARD_PATROL",
+        {GHSOUND_LEVEL_FOOTSTEPS_OF_GUARD_PATROL, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_EBENEZER_SCROOGE",
+        {GHSOUND_LEVEL_EBENEZER_SCROOGE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_LOW_BUZZING",
+        {GHSOUND_LEVEL_LOW_BUZZING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_ANGRY_DRONE",
+        {GHSOUND_LEVEL_ANGRY_DRONE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_BEES_IN_BONNET",
+        {GHSOUND_LEVEL_BEES_IN_BONNET, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_DEMANDING_QUIETNESS",
+        {GHSOUND_LEVEL_SOMEONE_DEMANDING_QUIETNESS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_PAGES_TURNING_IN_HEAD",
+        {GHSOUND_LEVEL_PAGES_TURNING_IN_HEAD, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_COINS_BEING_ASSEMBLED",
+        {GHSOUND_LEVEL_COINS_BEING_ASSEMBLED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_LOUD_DRAGON_SNORING",
+        {GHSOUND_LEVEL_LOUD_DRAGON_SNORING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_LOUD_ROAR",
+        {GHSOUND_LEVEL_LOUD_ROAR, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_CLAIMING_TO_BE_FIRE_AND_DEATH",
+        {GHSOUND_LEVEL_SOMEONE_CLAIMING_TO_BE_FIRE_AND_DEATH, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_BLADES_BEING_HONED",
+        {GHSOUND_LEVEL_BLADES_BEING_HONED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_LOUD_HUMAN_SNORING",
+        {GHSOUND_LEVEL_LOUD_HUMAN_SNORING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_DICE_BEING_THROWN",
+        {GHSOUND_LEVEL_DICE_BEING_THROWN, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_GENERAL_MCARTHUR",
+        {GHSOUND_LEVEL_GENERAL_MCARTHUR, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_ELEPHANT_STEPPING_ON_PEANUT",
+        {GHSOUND_LEVEL_ELEPHANT_STEPPING_ON_PEANUT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SEAL_BREAKING",
+        {GHSOUND_LEVEL_SEAL_BREAKING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_DOCTOR_DOLITTLE",
+        {GHSOUND_LEVEL_DOCTOR_DOLITTLE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_CURSING_SHOPLIFTERS",
+        {GHSOUND_LEVEL_SOMEONE_CURSING_SHOPLIFTERS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_CHIME_OF_CASH_REGISTER",
+        {GHSOUND_LEVEL_CHIME_OF_CASH_REGISTER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_NEIMAN_AND_MARCUS_ARGUING",
+        {GHSOUND_LEVEL_NEIMAN_AND_MARCUS_ARGUING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_FAINT_CHIME",
+        {GHSOUND_LEVEL_FAINT_CHIME, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_PRAISING_GOD",
+        {GHSOUND_LEVEL_SOMEONE_PRAISING_GOD, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_BESEECHING",
+        {GHSOUND_LEVEL_SOMEONE_BESEECHING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_ANIMAL_CARCASS_BEING_OFFERED",
+        {GHSOUND_LEVEL_ANIMAL_CARCASS_BEING_OFFERED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_PLEA_FOR_DONATIONS",
+        {GHSOUND_LEVEL_PLEA_FOR_DONATIONS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_IRON_BEING_FORGED",
+        {GHSOUND_LEVEL_IRON_BEING_FORGED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_LOUD_CLANGING",
+        {GHSOUND_LEVEL_LOUD_CLANGING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_WATER_BEING_VAPORIZED",
+        {GHSOUND_LEVEL_WATER_BEING_VAPORIZED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SOMEONE_MUMBLING",
+        {GHSOUND_LEVEL_SOMEONE_MUMBLING, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_DISTANT_CHITCHAT",
+        {GHSOUND_LEVEL_DISTANT_CHITCHAT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_FOOTSTEPS_AT_DISTANCE",
+        {GHSOUND_LEVEL_FOOTSTEPS_AT_DISTANCE, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_STRANGE_WIND",
+        {GHSOUND_LEVEL_STRANGE_WIND, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_CONVULSIVE_RAVINGS",
+        {GHSOUND_LEVEL_CONVULSIVE_RAVINGS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SNORING_SNAKES",
+        {GHSOUND_LEVEL_SNORING_SNAKES, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_NO_MORE_WOODCHUCKS",
+        {GHSOUND_LEVEL_NO_MORE_WOODCHUCKS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_LOUD_ZOT",
+        {GHSOUND_LEVEL_LOUD_ZOT, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_SWORDS_BEING_UNSHEATED",
+        {GHSOUND_LEVEL_SWORDS_BEING_UNSHEATED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_ARMORS_BEING_WORN",
+        {GHSOUND_LEVEL_ARMORS_BEING_WORN, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_WEAPONS_BEING_ASSEMBLED",
+        {GHSOUND_LEVEL_WEAPONS_BEING_ASSEMBLED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVEL_MASTER_CHIEF",
+        {GHSOUND_LEVEL_MASTER_CHIEF, 1.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

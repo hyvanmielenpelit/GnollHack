@@ -3658,7 +3658,7 @@ struct sp_coder *coder;
             break;
         case SP_O_V_SPEFLAGS:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpobj.speflags = OV_i(parm);
+                tmpobj.speflags = (unsigned long)OV_i(parm);
             break;
         case SP_O_V_ELEMENTAL_ENCHANTMENT:
             if (OV_typ(parm) == SPOVAR_INT)
