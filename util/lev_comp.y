@@ -200,6 +200,8 @@ extern char curr_token[512];
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
 %token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID FLOOR_ID FLOOR_MAIN_TYPE
+%token	<i> ELEMENTAL_ENCHANTMENT_TYPE EXCEPTIONALITY_TYPE EXCEPTIONALITY_ID ELEMENTAL_ENCHANTMENT_ID ENCHANTMENT_ID
+%token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
 %token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID
@@ -1728,6 +1730,36 @@ object_info	: CURSE_TYPE
 		  {
 		      add_opvars(splev, "i", VA_PASS1(SP_O_V_COORD));
 		      $$ = 0x4000;
+		  }
+		| ELEMENTAL_ENCHANTMENT_ID ':' ELEMENTAL_ENCHANTMENT_TYPE
+		  {
+		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_ELEMENTAL_ENCHANTMENT));
+		      $$ = 0x8000;
+		  }
+		| EXCEPTIONALITY_ID ':' EXCEPTIONALITY_TYPE
+		  {
+		      add_opvars(splev, "ii", VA_PASS2((int)$<i>3, SP_O_V_EXCEPTIONALITY));
+		      $$ = 0x10000;
+		  }
+		| ENCHANTMENT_ID ':' integer_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_O_V_ENCHANTMENT));
+		      $$ = 0x20000;
+		  }
+		| CHARGES_ID ':' integer_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_O_V_CHARGES));
+		      $$ = 0x40000;
+		  }
+		| SPECIAL_QUALITY_ID ':' integer_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_O_V_SPECIAL_QUALITY));
+		      $$ = 0x80000;
+		  }
+		| SPEFLAGS_ID ':' integer_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_O_V_SPEFLAGS));
+		      $$ = 0x100000;
 		  }
 		;
 

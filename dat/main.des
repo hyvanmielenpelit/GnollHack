@@ -112,14 +112,18 @@ CONTAINER:('(',"chest"),buried,(09,08) {
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
-  IF [75%] {
-    OBJECT:class_artifact
+  OBJECT:class_artifact
+  IF [35%] {
+    IF [50%] {
+      OBJECT:')', exceptionality:elite, enchantment:5, elemental_enchantment:freezing
+    } ELSE {
+      OBJECT:class_treasure_weapon
+    }
   } ELSE {
-    OBJECT:class_treasure_weapon
+    [25%]:OBJECT:(')',"glass sword")
   }
   OBJECT:class_treasure_armor
   OBJECT:('/',"cold")
-  [25%]:OBJECT:(')',"glass sword")
 }
 ENGRAVING: (09,08), engrave, "X"
 MONSTER: ('#', "roper"), (09,08), hostile, asleep

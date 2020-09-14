@@ -2125,10 +2125,14 @@ struct mkroom *croom;
     }
     if (o->trapped == 0 || o->trapped == 1)
         otmp->otrapped = o->trapped;
-	if (o->elemental_enchantment > 0)
+	if (o->elemental_enchantment >= 0)
 		otmp->elemental_enchantment = o->elemental_enchantment;
-    if (o->exceptionality > 0)
+    if (o->exceptionality >= 0)
         otmp->exceptionality = o->exceptionality;
+    if (o->special_quality != -127)
+        otmp->special_quality = o->special_quality;
+    if (o->speflags > 0)
+        otmp->speflags = o->speflags;
     if (o->greased)
         otmp->greased = 1;
 #ifdef INVISIBLE_OBJECTS
@@ -3527,8 +3531,11 @@ struct sp_coder *coder;
     struct opvar *id, *containment;
     object tmpobj;
 
-    tmpobj.enchantment = -127;
-    tmpobj.curse_state = -1;
+    tmpobj.enchantment = -127; /* random */
+    tmpobj.charges = -127; /* random */
+    tmpobj.special_quality = -127; /* random */
+    tmpobj.speflags = 0;
+    tmpobj.curse_state = -1; /* random */
     tmpobj.corpsenm = NON_PM;
     tmpobj.name.str = (char *) 0;
     tmpobj.quan = -1;
@@ -3537,8 +3544,8 @@ struct sp_coder *coder;
     tmpobj.eroded = 0;
     tmpobj.locked = 0;
     tmpobj.trapped = -1;
-	tmpobj.elemental_enchantment = 0;
-    tmpobj.exceptionality = 0;
+	tmpobj.elemental_enchantment = -1; /* random */
+    tmpobj.exceptionality = -1;  /* random */
     tmpobj.recharged = 0;
     tmpobj.invis = 0;
     tmpobj.greased = 0;
@@ -3636,6 +3643,30 @@ struct sp_coder *coder;
             if (OV_typ(parm) != SPOVAR_COORD)
                 panic("no coord for obj?");
             tmpobj.coord = OV_i(parm);
+            break;
+        case SP_O_V_ENCHANTMENT:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.enchantment = OV_i(parm);
+            break;
+        case SP_O_V_CHARGES:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.charges = OV_i(parm);
+            break;
+        case SP_O_V_SPECIAL_QUALITY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.special_quality = OV_i(parm);
+            break;
+        case SP_O_V_SPEFLAGS:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.speflags = OV_i(parm);
+            break;
+        case SP_O_V_ELEMENTAL_ENCHANTMENT:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.elemental_enchantment = OV_i(parm);
+            break;
+        case SP_O_V_EXCEPTIONALITY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.exceptionality = OV_i(parm);
             break;
         case SP_O_V_END:
             nparams = SP_O_V_END + 1;

@@ -220,6 +220,12 @@ solid		{ savetoken(yytext); yylval.i=SOLID;  return HUMIDITY_TYPE; }
 any		{ savetoken(yytext); yylval.i=ANY_LOC;  return HUMIDITY_TYPE; }
 levregion	ST_RET(LEV);
 quantity	ST_RET(QUANTITY_ID);
+elemental_enchantment	ST_RET(ELEMENTAL_ENCHANTMENT_ID);
+exceptionality	ST_RET(EXCEPTIONALITY_ID);
+enchantment	ST_RET(ENCHANTMENT_ID);
+charges	    ST_RET(CHARGES_ID);
+special_quality	ST_RET(SPECIAL_QUALITY_ID);
+speflags	ST_RET(SPEFLAGS_ID);
 buried		ST_RET(BURIED_ID);
 eroded		ST_RET(ERODED_ID);
 erodeproof	ST_RET(ERODEPROOF_ID);
@@ -335,6 +341,16 @@ location_floor { savetoken(yytext); yylval.i=ROOM; return FLOOR_MAIN_TYPE; }
 location_corridor { savetoken(yytext); yylval.i=CORR; return FLOOR_MAIN_TYPE; }
 location_grass { savetoken(yytext); yylval.i=GRASS; return FLOOR_MAIN_TYPE; }
 location_ground { savetoken(yytext); yylval.i=GROUND; return FLOOR_MAIN_TYPE; }
+flaming { savetoken(yytext); yylval.i=FIRE_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
+freezing { savetoken(yytext); yylval.i=COLD_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
+electrified { savetoken(yytext); yylval.i=LIGHTNING_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
+death-magical { savetoken(yytext); yylval.i=DEATH_ENCHANTMENT; return ELEMENTAL_ENCHANTMENT_TYPE; }
+normal_exceptionality { savetoken(yytext); yylval.i=EXCEPTIONALITY_NORMAL; return EXCEPTIONALITY_TYPE; }
+exceptional { savetoken(yytext); yylval.i=EXCEPTIONALITY_EXCEPTIONAL; return EXCEPTIONALITY_TYPE; }
+elite { savetoken(yytext); yylval.i=EXCEPTIONALITY_ELITE; return EXCEPTIONALITY_TYPE; }
+celestial { savetoken(yytext); yylval.i=EXCEPTIONALITY_CELESTIAL; return EXCEPTIONALITY_TYPE; }
+primordial { savetoken(yytext); yylval.i=EXCEPTIONALITY_PRIMORDIAL; return EXCEPTIONALITY_TYPE; }
+infernal { savetoken(yytext); yylval.i=EXCEPTIONALITY_INFERNAL; return EXCEPTIONALITY_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }
