@@ -5222,14 +5222,22 @@ sell_to_npc(obj, mtmp)
 struct obj* obj;
 struct monst* mtmp;
 {
-	if (!mtmp || !has_enpc(mtmp))
-		return 0;
-
 	if (!obj)
 		return 0;
 
+	struct obj *otmp = 0;
+	int res = 0;
+	if (!mtmp || !has_enpc(mtmp))
+	{
+		res = 0;
+		goto merge_obj_back;
+	}
+
 	if (!canletgo(obj, "let go"))
-		return 0;
+	{
+		res = 0;
+		goto merge_obj_back;
+	}
 
 	if (obj == uwep) 
 	{
@@ -5256,11 +5264,17 @@ struct monst* mtmp;
 	boolean isgold = (obj->oclass == COIN_CLASS);
 
 	if (!in_his_npc_room(mtmp))
-		return 0;
+	{
+		res = 0;
+		goto merge_obj_back;
+	}
 
 	if (container)
-		return 0; /* NPCs do not currently buy containers */
-
+	{
+		/* NPCs do not currently buy containers */
+		res = 0;
+		goto merge_obj_back;
+	}
 	saleitem = ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE : FALSE;
 
 	if (!isgold && saleitem)
@@ -5272,7 +5286,8 @@ struct monst* mtmp;
 	if (!isgold && offer == 0L) 
 	{
 		pline("%s seems uninterested.", Monnam(mtmp));
-		return 1;
+		res = 1;
+		goto merge_obj_back;
 	}
 
 	if (!saleitem
@@ -5280,7 +5295,8 @@ struct monst* mtmp;
 		|| offer == 0L) 
 	{
 		pline("%s seems uninterested.", Monnam(mtmp));
-		return 1;
+		res = 1;
+		goto merge_obj_back;
 	}
 
 	shkmoney = money_cnt(mtmp->minvent);
@@ -5323,6 +5339,7 @@ struct monst* mtmp;
 
 				(void)mpickobj(mtmp, obj);
 				money2u(mtmp, offer);
+				return 1;
 			}
 			break;
 		default:
@@ -5330,7 +5347,24 @@ struct monst* mtmp;
 		}
 	}
 
-	return 1;
+	/* Merge item back */
+merge_obj_back:
+	if (obj->where == OBJ_INVENT)
+	{
+		for (otmp = invent; otmp; otmp = otmp->nobj)
+			if (merged(&otmp, &obj)) 
+			{
+				obj = otmp;
+				if (!obj)
+				{
+					panic("sell_to_npc: null obj after merge");
+					return res;
+				}
+				break;
+			}
+	}
+
+	return res;
 }
 
 

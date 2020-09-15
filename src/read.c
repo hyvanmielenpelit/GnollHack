@@ -2111,14 +2111,22 @@ boolean *effect_happened_ptr;
         else
         {
             /* Select weapon randomly from left and right hands */
-            if(!uarms || !is_weapon(uarms))
+            if(uwep && is_weapon(uwep) && uwep->oclass != ARMOR_CLASS && (!uarms || (!is_weapon(uarms) || uarms->oclass == ARMOR_CLASS)))
                 otmp = uwep;
-            else if((!uwep || !is_weapon(uwep)) && uarms && is_weapon(uarms))
+            else if((!uwep || (!is_weapon(uwep) || uwep->oclass == ARMOR_CLASS)) && uarms && is_weapon(uarms) && uarms->oclass != ARMOR_CLASS)
                 otmp = uarms;
-            else if (uwep && is_weapon(uwep) && uarms && is_weapon(uarms))
+            else if (uwep && is_weapon(uwep) && uwep->oclass != ARMOR_CLASS && uarms && is_weapon(uarms) && uarms->oclass != ARMOR_CLASS)
                 otmp = !rn2(2) ? uwep : uarms;
             else
-                otmp = uwep; /* Maybe null or not a weapon */
+                otmp = 0;
+
+            if (!otmp)
+            {
+                play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
+                Your("%s tingle for a moment.", makeplural(body_part(FINGER)));
+                sobj = 0;
+                break;
+            }
         }
 
         /* Check for successful protect weapon */
@@ -2444,7 +2452,8 @@ boolean *effect_happened_ptr;
             (void) learnscrolltyp(SCR_IDENTIFY);
         /*FALLTHRU*/
     case SPE_IDENTIFY:
-        cval = 1;
+        cval = (otyp == SPE_IDENTIFY ? 1 : sblessed ? 3 : scursed ? 1 : 2);
+#if 0
         if (sblessed || (!scursed && !rn2(5)))
 		{
 			cval = rnd(3); //rn2(5);
@@ -2452,6 +2461,7 @@ boolean *effect_happened_ptr;
             if (cval == 1 && sblessed && Luck > 0)
                 ++cval;
         }
+#endif
 		if (invent && !confused)
 		{
             (void)identify_pack(cval, !already_known);

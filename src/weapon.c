@@ -761,23 +761,38 @@ long silverhit;
 }
 
 STATIC_DCL struct obj *FDECL(oselect, (struct monst *, int));
+STATIC_DCL struct obj* FDECL(oselect_with_exceptionality, (struct monst*, int, int));
 #define Oselect(x)                      \
     if ((otmp = oselect(mtmp, x)) != 0) \
         return otmp;
 
+#define Oselect_with_exceptionality(x, e)                      \
+    if ((otmp = oselect_with_exceptionality(mtmp, x, e)) != 0) \
+        return otmp;
+
+STATIC_OVL struct obj*
+oselect(mtmp, otyp)
+struct monst* mtmp;
+int otyp;
+{
+    return oselect_with_exceptionality(mtmp, otyp, -1);
+}
+
 STATIC_OVL struct obj *
-oselect(mtmp, x)
+oselect_with_exceptionality(mtmp, otyp, exceptionality)
 struct monst *mtmp;
-int x;
+int otyp, exceptionality;
 {
     struct obj *otmp;
 
     for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-        if (otmp->otyp == x
+        if (otmp->otyp == otyp && (exceptionality < 0 || otmp->exceptionality == exceptionality)
             /* never select non-cockatrice corpses */
-            && !((x == CORPSE || x == EGG)
+            && !((otyp == CORPSE || otyp == EGG)
                  && !touch_petrifies(&mons[otmp->corpsenm]))
-            && (!otmp->oartifact || touch_artifact(otmp, mtmp)))
+            && (!otmp->oartifact || touch_artifact(otmp, mtmp))
+            && !inappropriate_exceptionality(mtmp, otmp)
+            )
             return otmp;
     }
     return (struct obj *) 0;
@@ -785,14 +800,14 @@ int x;
 
 /* TODO: have monsters use aklys' throw-and-return */
 static NEARDATA const int rwep[] = {
-    DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN,
+    DWARVISH_SPEAR, SILVER_SPEAR, ELVEN_SPEAR, SPEAR, ORCISH_SPEAR, JAVELIN_OF_RETURNING, JAVELIN,
     SHURIKEN, YA, SILVER_ARROW, ELVEN_ARROW, ARROW, ORCISH_ARROW,
-    CROSSBOW_BOLT, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, KNIFE,
+    CROSSBOW_BOLT, SILVER_DAGGER, ELVEN_DAGGER, DAGGER, ORCISH_DAGGER, BONE_DAGGER, KNIFE,
     FLINT, ROCK, STONE_PEBBLE, CLAY_PEBBLE, LOADSTONE, LUCKSTONE, DART,
     /* BOOMERANG, */ CREAM_PIE
 };
 
-static NEARDATA const int pwep[] = { HALBERD,       BARDICHE, SPETUM,
+static NEARDATA const int pwep[] = { POLEARM_OF_REACH,  HALBERD,  BARDICHE, SPETUM,
                                      BILL_GUISARME, VOULGE,   RANSEUR,
                                      GUISARME,      GLAIVE,   LUCERN_HAMMER,
                                      BEC_DE_CORBIN, FAUCHARD, PARTISAN,
@@ -831,21 +846,28 @@ register struct monst *mtmp;
     /* NO_WEAPON_WANTED means we already tried to wield and failed */
     mweponly = (mwelded(mwep, mtmp) && mtmp->weapon_strategy == NO_WEAPON_WANTED);
     if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) <= 13
-        && couldsee(mtmp->mx, mtmp->my)) {
-        for (i = 0; i < SIZE(pwep); i++) {
-            /* Only strong monsters can wield big (esp. long) weapons.
-             * Big weapon is basically the same as bimanual.
-             * All monsters can wield the remaining weapons.
-             */
-            if ((((strongmonst(mtmp->data) || mtmp->data->str >= 14)
-                  && (mtmp->worn_item_flags & W_ARMS) == 0)
-                 || !objects[pwep[i]].oc_bimanual)
-                && (objects[pwep[i]].oc_material != MAT_SILVER
-                    || !mon_hates_silver(mtmp))) {
-                if ((otmp = oselect(mtmp, pwep[i])) != 0
-                    && (otmp == mwep || !mweponly)) {
-                    propellor = otmp; /* force the monster to wield it */
-                    return otmp;
+        && couldsee(mtmp->mx, mtmp->my)) 
+    {
+        for (int exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
+        {
+            for (i = 0; i < SIZE(pwep); i++) 
+            {
+                /* Only strong monsters can wield big (esp. long) weapons.
+                 * Big weapon is basically the same as bimanual.
+                 * All monsters can wield the remaining weapons.
+                 */
+                if ((((strongmonst(mtmp->data) || mtmp->data->str >= 14)
+                      && (mtmp->worn_item_flags & W_ARMS) == 0)
+                     || !objects[pwep[i]].oc_bimanual)
+                    && (objects[pwep[i]].oc_material != MAT_SILVER
+                        || !mon_hates_silver(mtmp))) 
+                {
+                    if ((otmp = oselect_with_exceptionality(mtmp, pwep[i], exc)) != 0
+                        && (otmp == mwep || !mweponly)) 
+                    {
+                        propellor = otmp; /* force the monster to wield it */
+                        return otmp;
+                    }
                 }
             }
         }
@@ -855,80 +877,89 @@ register struct monst *mtmp;
      * other than these two specific cases, always select the
      * most potent ranged weapon to hand.
      */
-    for (i = 0; i < SIZE(rwep); i++) {
-        int prop;
+    for (int exc = MAX_EXCEPTIONALITY_TYPES; exc >= 0; exc--)
+    {
+        for (i = 0; i < SIZE(rwep); i++)
+        {
+            int prop;
+            struct obj* otmp2 = 0;
+            /* shooting gems from slings; this goes just before the darts */
+            /* (shooting rocks is already handled via the rwep[] ordering) */
+            if (rwep[i] == DART && !likes_gems(mtmp->data)
+                && (otmp2 = m_carrying(mtmp, SLING)) != 0 && otmp2->exceptionality == exc && !inappropriate_exceptionality(mtmp, otmp2)) { /* propellor */
+                for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
+                    if (otmp->oclass == GEM_CLASS
+                        && (!(objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) || !otmp->cursed))
+                    {
+                        propellor = otmp2;
+                        return otmp;
+                    }
+            }
 
-        /* shooting gems from slings; this goes just before the darts */
-        /* (shooting rocks is already handled via the rwep[] ordering) */
-        if (rwep[i] == DART && !likes_gems(mtmp->data)
-            && m_carrying(mtmp, SLING)) { /* propellor */
-            for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj)
-                if (otmp->oclass == GEM_CLASS
-                    && (!(objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) || !otmp->cursed)) {
-                    propellor = m_carrying(mtmp, SLING);
-                    return otmp;
+            /* KMH -- This belongs here so darts will work */
+            propellor = (struct obj*)&zeroobj;
+
+            prop = objects[rwep[i]].oc_skill;
+            if (prop < 0) {
+                switch (-prop) {
+                case P_BOW:
+                    propellor = oselect_with_exceptionality(mtmp, GALADHRIM_BOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, YUMI, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, COMPOSITE_LONG_BOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, ELVEN_LONG_BOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, LONG_BOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, COMPOSITE_SHORT_BOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, SHORT_BOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, ORCISH_SHORT_BOW, exc);
+                    break;
+                case P_SLING:
+                    propellor = oselect_with_exceptionality(mtmp, SLING, exc);
+                    break;
+                case P_CROSSBOW:
+                    propellor = oselect_with_exceptionality(mtmp, REPEATING_HEAVY_CROSSBOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, HEAVY_CROSSBOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, REPEATING_CROSSBOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, CROSSBOW, exc);
+                    if (!propellor)
+                        propellor = oselect_with_exceptionality(mtmp, HAND_CROSSBOW, exc);
                 }
-        }
-
-        /* KMH -- This belongs here so darts will work */
-        propellor = (struct obj *) &zeroobj;
-
-        prop = objects[rwep[i]].oc_skill;
-        if (prop < 0) {
-            switch (-prop) {
-            case P_BOW:
-                propellor = oselect(mtmp, YUMI);
-				if (!propellor)
-					propellor = oselect(mtmp, COMPOSITE_LONG_BOW);
-				if (!propellor)
-                    propellor = oselect(mtmp, ELVEN_LONG_BOW);
-				if (!propellor)
-					propellor = oselect(mtmp, LONG_BOW);
-				if (!propellor)
-					propellor = oselect(mtmp, COMPOSITE_SHORT_BOW);
-				if (!propellor)
-                    propellor = oselect(mtmp, SHORT_BOW);
-                if (!propellor)
-                    propellor = oselect(mtmp, ORCISH_SHORT_BOW);
-                break;
-            case P_SLING:
-                propellor = oselect(mtmp, SLING);
-                break;
-            case P_CROSSBOW:
-				propellor = oselect(mtmp, HEAVY_CROSSBOW);
-				if (!propellor)
-					propellor = oselect(mtmp, REPEATING_CROSSBOW);
-				if (!propellor)
-					propellor = oselect(mtmp, CROSSBOW);
-				if (!propellor)
-					propellor = oselect(mtmp, HAND_CROSSBOW);
-			}
-            if ((otmp = MON_WEP(mtmp)) && mwelded(otmp, mtmp) && otmp != propellor
-                && mtmp->weapon_strategy == NO_WEAPON_WANTED)
-                propellor = 0;
-        }
-        /* propellor = obj, propellor to use
-         * propellor = &zeroobj, doesn't need a propellor
-         * propellor = 0, needed one and didn't have one
-         */
-        if (propellor != 0) {
-            /* Note: cannot use m_carrying for loadstones, since it will
-             * always select the first object of a type, and maybe the
-             * monster is carrying two but only the first is unthrowable.
+                if ((otmp = MON_WEP(mtmp)) && mwelded(otmp, mtmp) && otmp != propellor
+                    && mtmp->weapon_strategy == NO_WEAPON_WANTED)
+                    propellor = 0;
+            }
+            /* propellor = obj, propellor to use
+             * propellor = &zeroobj, doesn't need a propellor
+             * propellor = 0, needed one and didn't have one
              */
-            if (!(objects[rwep[i]].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)) {
-                /* Don't throw a cursed weapon-in-hand or an artifact */
-                if ((otmp = oselect(mtmp, rwep[i])) && !otmp->oartifact
-                    && !(otmp == MON_WEP(mtmp) && mwelded(otmp, mtmp)))
-                    return otmp;
-            } else
-                for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
-                    if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed)
+            if (propellor != 0) {
+                /* Note: cannot use m_carrying for loadstones, since it will
+                 * always select the first object of a type, and maybe the
+                 * monster is carrying two but only the first is unthrowable.
+                 */
+                if (!(objects[rwep[i]].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED)) {
+                    /* Don't throw a cursed weapon-in-hand or an artifact */
+                    if ((otmp = oselect_with_exceptionality(mtmp, rwep[i], exc)) && !otmp->oartifact
+                        && !(otmp == MON_WEP(mtmp) && mwelded(otmp, mtmp)))
                         return otmp;
                 }
+                else
+                    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
+                        if ((objects[otmp->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && !otmp->cursed && otmp->exceptionality == exc && !inappropriate_exceptionality(mtmp, otmp))
+                            return otmp;
+                    }
+            }
         }
     }
-
     /* failure */
     return (struct obj *) 0;
 }
@@ -950,9 +981,10 @@ struct obj *obj;
 static const NEARDATA short hwep[] = 
 {
 	BLACK_BLADE_OF_DISINTEGRATION, GLASS_SWORD, VORPAL_SWORD, BATTLE_AXE_OF_CLEAVING, SWORD_OF_SHARPNESS, MORGUL_BLADE,
-    TSURUGI, TRIPLE_HEADED_FLAIL_OF_YEENOGHU, RUNESWORD, MACE_OF_DEATH, SWORD_OF_DEFENSE, SWORD_OF_WOUNDING, SWORD_OF_LIFE_STEALING,
-	SWORD_OF_DRAGON_SLAYING, SWORD_OF_GIANT_SLAYING, SWORD_OF_TROLL_SLAYING, MACE_OF_DISRUPTION, MACE_OF_GREATER_DISRUPTION,
-	SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER, MORNING_STAR_OF_TROLL_SLAYING, RUNED_FLAIL,
+    TSURUGI, TRIPLE_HEADED_FLAIL_OF_YEENOGHU, RUNESWORD,  RUNED_FLAIL, MACE_OF_GREATER_DISRUPTION, MACE_OF_DEATH, SWORD_OF_LIFE_STEALING, 
+    SCIMITAR_OF_SPEED, SWORD_OF_DEFENSE, SWORD_OF_WOUNDING,
+	SWORD_OF_DRAGON_SLAYING, SWORD_OF_GIANT_SLAYING, SWORD_OF_TROLL_SLAYING, MACE_OF_DISRUPTION, 
+	SWORD_OF_HOLY_VENGEANCE, SWORD_OF_UNHOLY_DESECRATION,  ELVEN_RUNEDAGGER, MORNING_STAR_OF_TROLL_SLAYING,
 	CORPSE, /* cockatrice corpse */
 	TRIPLE_HEADED_FLAIL, BROADSWORD, SILVER_LONG_SWORD, SILVER_SABER, JAGGED_TOOTHED_CLUB, BARDICHE,
 	ANCUS, DOUBLE_HEADED_FLAIL,
@@ -986,20 +1018,23 @@ register struct monst *mtmp;
             return otmp;
     }
 
-    if (is_giant(mtmp->data)) /* giants just love to use clubs */
-        Oselect(CLUB);
+//    if (is_giant(mtmp->data)) /* giants just love to use clubs */
+//        Oselect(CLUB);
 
     /* only strong monsters can wield big (esp. long) weapons */
     /* big weapon is basically the same as bimanual */
     /* all monsters can wield the remaining weapons */
-    for (i = 0; i < SIZE(hwep); i++) {
-        if (hwep[i] == CORPSE && !(mtmp->worn_item_flags & W_ARMG)
-            && !resists_ston(mtmp))
-            continue;
-        if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
-            && (objects[hwep[i]].oc_material != MAT_SILVER
-                || !mon_hates_silver(mtmp)))
-            Oselect(hwep[i]);
+    for (int exc = MAX_EXCEPTIONALITY_TYPES - 1; exc >= 0; exc--)
+    {
+        for (i = 0; i < SIZE(hwep); i++) {
+            if (hwep[i] == CORPSE && !(mtmp->worn_item_flags & W_ARMG)
+                && !resists_ston(mtmp))
+                continue;
+            if (((strong && !wearing_shield) || !objects[hwep[i]].oc_bimanual)
+                && (objects[hwep[i]].oc_material != MAT_SILVER
+                    || !mon_hates_silver(mtmp)))
+                Oselect_with_exceptionality(hwep[i], exc);
+        }
     }
 
     /* failure */

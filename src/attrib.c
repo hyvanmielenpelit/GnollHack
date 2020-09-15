@@ -1051,6 +1051,9 @@ struct obj* uitem;
 		if (is_angel(monster->data))
 			return FALSE;
 
+		if (is_demon(monster->data) || is_undead(monster->data))
+			return TRUE;
+
 		if (isyou)
 		{
 			if (u.ualign.type == A_LAWFUL)
@@ -1091,9 +1094,12 @@ struct obj* uitem;
 		if (is_demon(monster->data) || is_undead(monster->data))
 			return FALSE;
 
+		if (is_angel(monster->data))
+			return TRUE;
+
 		if (isyou)
 		{
-			if (u.ualign.type == A_CHAOTIC || is_demon(youmonst.data))
+			if (u.ualign.type == A_CHAOTIC || is_demon(youmonst.data) || is_undead(youmonst.data))
 				return FALSE;
 			else
 				return TRUE;
