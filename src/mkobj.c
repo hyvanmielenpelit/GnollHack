@@ -1138,74 +1138,6 @@ int mkobj_type;
 			if (artif && !rn2(20))
                 otmp = mk_artifact(otmp, (aligntyp) A_NONE, FALSE);
 
-            if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
-            {
-                if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_CELESTIAL)
-                {
-                    otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
-                }
-                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_PRIMORDIAL)
-                {
-                    otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
-                }
-                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_INFERNAL)
-                {
-                    otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-                }
-                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_ELITE)
-                {
-                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                }
-                else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_EXCEPTIONAL)
-                {
-                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-                }
-                else
-                {
-                    if (In_endgame(&u.uz))
-                    {
-                        if (!rn2(4))
-                            otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                        else if (!rn2(3))
-                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                        else if (!rn2(2))
-                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-                    }
-                    else if (Inhell)
-                    {
-                        if (!rn2(10) && !objects[otmp->otyp].oc_material != MAT_SILVER)
-                            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-                        else if (!rn2(4))
-                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                        else if (!rn2(2))
-                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-                    }
-                    else if (depth(&u.uz) >= 20)
-                    {
-                        if (!rn2(Is_stronghold(&u.uz) ? 20 :  40))
-                            otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
-                        else if (!rn2(6))
-                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                        else if (!rn2(3))
-                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-                    }
-                    else if (depth(&u.uz) >= 10)
-                    {
-                        if (!rn2(20))
-                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                        else if (!rn2(4))
-                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-                    }
-                    else
-                    {
-                        if (!rn2(100))
-                            otmp->exceptionality = EXCEPTIONALITY_ELITE;
-                        else if (!rn2(20))
-                            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-                    }
-                }
-            }
-
 			break;
 		case FOOD_CLASS:
             otmp->oeaten = 0;
@@ -1543,6 +1475,74 @@ int mkobj_type;
 	else if (is_obj_generated_cursed(otmp))
 		curse(otmp);
 
+    /* Exceptionality */
+    if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
+    {
+        if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_CELESTIAL)
+        {
+            otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
+        }
+        else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_PRIMORDIAL)
+        {
+            otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
+        }
+        else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_INFERNAL)
+        {
+            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+        }
+        else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_ELITE)
+        {
+            otmp->exceptionality = EXCEPTIONALITY_ELITE;
+        }
+        else if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_EXCEPTIONAL)
+        {
+            otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+        }
+        else
+        {
+            if (In_endgame(&u.uz))
+            {
+                if (!rn2(4))
+                    otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                else if (!rn2(3))
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                else if (!rn2(2))
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
+            else if (Inhell)
+            {
+                if (!rn2(10) && !objects[otmp->otyp].oc_material != MAT_SILVER)
+                    otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                else if (!rn2(4))
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                else if (!rn2(2))
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
+            else if (depth(&u.uz) >= 20)
+            {
+                if (!rn2(Is_stronghold(&u.uz) ? 20 : 40))
+                    otmp->exceptionality = (!rn2(3) && !objects[otmp->otyp].oc_material != MAT_SILVER ? EXCEPTIONALITY_INFERNAL : !rn2(2) ? EXCEPTIONALITY_PRIMORDIAL : EXCEPTIONALITY_CELESTIAL);
+                else if (!rn2(6))
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                else if (!rn2(3))
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
+            else if (depth(&u.uz) >= 10)
+            {
+                if (!rn2(20))
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                else if (!rn2(4))
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
+            else
+            {
+                if (!rn2(100))
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                else if (!rn2(20))
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+            }
+        }
+    }
 
     /* some things must get done (corpsenm, timers) even if init = 0 */
     switch ((otmp->oclass == POTION_CLASS && otmp->otyp != POT_OIL)

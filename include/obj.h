@@ -544,7 +544,7 @@ enum exceptionality_types {
      ((objects[otyp].oc_flags4 & O4_DRAWN_IN_FRONT))
 
 #define is_obj_drawn_in_front(obj) \
-    is_otyp_drawn_in_front((obj)->otyp)
+    (is_otyp_drawn_in_front((obj)->otyp) && (obj)->ox == u.ux && (obj)->oy == u.uy)
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */
