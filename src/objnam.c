@@ -3953,8 +3953,9 @@ struct obj *no_wish;
          */
         if (!strstri(bp, " guano") // rule out bat guano
 			&& !strstri(bp, "wand ") && !strstri(bp, "spellbook ") && !strstri(bp, "bracers ")
-			&& !strstri(bp, "sword ") && !strstri(bp, "dagger ") && !strstri(bp, "arrow ")
-			&& !strstri(bp, "axe ") && !strstri(bp, "bolt ") && !strstri(bp, "quarrel ")
+			&& !strstri(bp, "sword ") && !strstri(bp, "dagger ") && !strstri(bp, "arrow ") && !strstri(bp, "arrows ")
+			&& !strstri(bp, "axe ") && !strstri(bp, "bolt ") && !strstri(bp, "quarrel ") && !strstri(bp, "sling-bullet ")
+            && !strstri(bp, "bolts ") && !strstri(bp, "quarrels ") && !strstri(bp, "sling-bullets ")
 			&& !strstri(bp, "mace ") && !strstri(bp, "flail ") && !strstri(bp, "hammer ") && !strstri(bp, "morning star ")
 			&& !strstri(bp, "staff ") && !strstri(bp, "bow ") && !strstri(bp, "crossbow ")
 			&& !strstri(bp, "robe ") && !strstri(bp, "cloak ") && !strstri(bp, "gloves ")
