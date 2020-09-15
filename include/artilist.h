@@ -84,9 +84,8 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      if the wielder is a Valkyrie wearing Gauntlets of Power.
      */
     A("Mjollnir", "shining runed war hammer", "massive hammer", HEAVY_WAR_HAMMER, WAR_HAMMER, /* Mjo:llnir */
-	   (AF_RESTR | AF_FAMOUS), SPFX_NONE, SPFX_NONE, 0, 
-		AF2_GENERATED_ELITE,
-	   1, 5, 0, ELEC(1, 30), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
+	   (AF_RESTR | AF_FAMOUS), AF2_GENERATED_ELITE, SPFX_NONE, SPFX_NONE, 0,
+	   1, 5, 0, ELEC(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, 
 	  NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 

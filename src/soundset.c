@@ -3125,7 +3125,7 @@ enum climbing_types climbingid;
         soundid = object_soundsets[oss].sounds[sound_type].ghsound;
         volume = object_soundsets[oss].sounds[sound_type].volume;
 
-        if (is_flyer(mtmp->data) || mtmp->mprops[FLYING] != 0)
+        if (is_flying(mtmp))
         {
             sound_type = OBJECT_SOUND_TYPE_FLY;
             struct obj* otmp = what_gives_monster(mtmp, FLYING);
@@ -3141,7 +3141,7 @@ enum climbing_types climbingid;
                 volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
-        else if (is_flyer(mtmp->data) || mtmp->mprops[LEVITATION] != 0)
+        else if (is_levitating(mtmp))
         {
             sound_type = OBJECT_SOUND_TYPE_LEVITATION;
             struct obj* otmp = what_gives_monster(mtmp, LEVITATION);
@@ -3157,7 +3157,7 @@ enum climbing_types climbingid;
                 volume = object_soundsets[oss].sounds[sound_type].volume;
             }
         }
-        else if ((is_swimmer(mtmp->data) || amphibious(mtmp->data) || mtmp->mprops[SWIMMING] != 0) && floorid == FLOOR_SURFACE_LIQUID)
+        else if ((has_swimming(mtmp) || amphibious(mtmp->data)) && floorid == FLOOR_SURFACE_LIQUID)
         {
             sound_type = OBJECT_SOUND_TYPE_SWIM;
             struct obj* otmp = what_gives_monster(mtmp, SWIMMING);

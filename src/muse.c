@@ -842,7 +842,7 @@ struct monst *mtmp;
             pline("%s has made a hole in the %s.", Monnam(mtmp),
                   surface(mtmp->mx, mtmp->my));
             pline("%s %s through...", Monnam(mtmp),
-                  is_flyer(mtmp->data) ? "dives" : "falls");
+                  is_flying(mtmp) ? "dives" : "falls");
         } else if (!Deaf)
             You_hear("%s crash through the %s.", something,
                      surface(mtmp->mx, mtmp->my));
@@ -1308,7 +1308,7 @@ struct monst *mtmp;
             }
         }
         nomore(MUSE_WAN_STRIKING);
-        if (obj->otyp == WAN_STRIKING && obj->charges > 0 && !magic_missile_resistant_skip && !antimagic_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, FALSE, M_RAY_RANGE))
+        if (obj->otyp == WAN_STRIKING && obj->charges > 0 && !magic_missile_resistant_skip && !level_skip_weak_wand && lined_up(mtmp, TRUE, AD_MAGM, FALSE, M_RAY_RANGE))
 		{
             m.offensive = obj;
             m.has_offense = MUSE_WAN_STRIKING;
@@ -1415,7 +1415,7 @@ register struct monst* origmonst;
 		{
             if (zap_oseen)
                 makeknown(WAN_STRIKING);
-            if (Magic_missile_immunity || Antimagic_or_resistance) 
+            if (Magic_missile_immunity || Invulnerable) 
 			{
                 u_shieldeff();
                 pline("Boing!");
@@ -1431,7 +1431,7 @@ register struct monst* origmonst;
             stop_occupation();
             nomul(0);
         } 
-		else if (is_mon_immune_to_magic_missile(mtmp) || resists_magic(mtmp))
+		else if (is_mon_immune_to_magic_missile(mtmp) || has_invulnerable(mtmp))
 		{
             m_shieldeff(mtmp);
             pline("Boing!");
@@ -1440,7 +1440,7 @@ register struct monst* origmonst;
 		{
             tmp = d(2, 12);
             hit("wand", mtmp, exclam(tmp), 0, ""); //Do not tell the damage here, since resist will
-            (void) check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, tmp, AD_MAGM, TELL);
+            (void) inflict_spell_damage(mtmp, otmp, tmp, AD_MAGM, TELL);
             if (cansee(mtmp->mx, mtmp->my) && zap_oseen)
                 makeknown(WAN_STRIKING);
         } 

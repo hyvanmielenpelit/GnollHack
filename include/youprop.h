@@ -460,8 +460,7 @@
 /* BFlying has I_SPECIAL set if levitating or trapped in the floor or both,
    FROM_ACQUIRED set if inside solid rock (or in water on Plane of Water) */
 #define Flying                                                      \
-    ((HFlying || EFlying || (u.usteed && is_flyer(u.usteed->data))) \
-     && !Blocks_Flying)
+    (((HFlying || EFlying) && !Blocks_Flying) || (u.usteed && is_flying(u.usteed)))
 /* May touch surface; does not override any others */
 
 #define HWwalking u.uprops[WATER_WALKING].intrinsic

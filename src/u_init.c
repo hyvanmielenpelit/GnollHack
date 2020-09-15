@@ -771,7 +771,7 @@ static const struct def_skill Skill_V_Max[] = {
     { P_AXE, P_GRAND_MASTER },
     { P_PICK_AXE, P_MASTER },
     { P_SWORD, P_GRAND_MASTER },
-    { P_BLUDGEONING_WEAPON, P_EXPERT },
+    { P_BLUDGEONING_WEAPON, P_GRAND_MASTER },
     { P_QUARTERSTAFF, P_EXPERT },
     { P_POLEARM, P_MASTER },
     { P_SPEAR, P_MASTER },

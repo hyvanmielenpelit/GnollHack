@@ -2506,7 +2506,7 @@ register struct monst *mtmp;
                 trapkilled = TRUE;
             break;
         case SQKY_BOARD:
-            if (is_flyer(mptr))
+            if (is_flying(mtmp) || is_levitating(mtmp))
                 break;
             /* stepped on a squeaky board */
             play_sfx_sound_at_location(SFX_SQUEAKY_BOARD, mtmp->mx, mtmp->my);
@@ -2533,7 +2533,7 @@ register struct monst *mtmp;
             break;
         case BEAR_TRAP:
             play_sfx_sound_at_location(SFX_BEAR_TRAP_CLOSES, mtmp->mx, mtmp->my);
-            if (mptr->msize > MZ_SMALL && !amorphous(mptr) && !is_flyer(mptr)
+            if (mptr->msize > MZ_SMALL && !amorphous(mptr) && !(is_flying(mtmp) || is_levitating(mtmp))
                 && !is_whirly(mptr) && !unsolid(mptr)) {
                 mtmp->mtrapped = 1;
                 if (in_sight) {
@@ -2701,7 +2701,7 @@ register struct monst *mtmp;
         case SPIKED_PIT:
             play_sfx_sound_at_location(SFX_FALL_INTO_PIT, mtmp->mx, mtmp->my);
             fallverb = "falls";
-            if (is_flyer(mptr) || is_floater(mptr)
+            if (is_flying(mtmp) || is_levitating(mtmp)
                 || (mtmp->wormno && count_wsegs(mtmp) > 5)
                 || is_clinger(mptr)) {
                 if (force_mintrap && !Sokoban) {
@@ -2738,7 +2738,7 @@ register struct monst *mtmp;
                     defsyms[trap_to_defsym(tt)].explanation);
                 break; /* don't activate it after all */
             }
-            if (is_flyer(mptr) || is_floater(mptr) || mptr == &mons[PM_WUMPUS]
+            if (is_flying(mtmp) || is_levitating(mtmp) || mptr == &mons[PM_WUMPUS]
                 || (mtmp->wormno && count_wsegs(mtmp) > 5)
                 || mptr->msize >= MZ_HUGE) {
                 if (force_mintrap && !Sokoban) {
@@ -2897,7 +2897,7 @@ register struct monst *mtmp;
         case LANDMINE:
             if (rn2(3))
                 break; /* monsters usually don't set it off */
-            if (is_flyer(mptr)) {
+            if (is_flying(mtmp) || is_levitating(mtmp)) {
                 boolean already_seen = trap->tseen;
 
                 if (in_sight && !already_seen) {
@@ -2958,7 +2958,7 @@ register struct monst *mtmp;
             }
             break;
         case ROLLING_BOULDER_TRAP:
-            if (!is_flyer(mptr)) {
+            if (!(is_flying(mtmp) || is_levitating(mtmp))) {
                 play_sfx_sound_at_location(SFX_ROLLING_BOOULDER_TRAP_TRIGGER, mtmp->mx, mtmp->my);
 
                 int style = ROLL | (in_sight ? 0 : LAUNCH_UNSEEN);
@@ -2986,7 +2986,7 @@ register struct monst *mtmp;
                     char buf[BUFSZ], *p, *monnm = mon_nam(mtmp);
 
                     if (nolimbs(mtmp->data)
-                        || is_floater(mtmp->data) || is_flyer(mtmp->data)) {
+                        || is_flying(mtmp) || is_levitating(mtmp)) {
                         /* just "beneath <mon>" */
                         Strcpy(buf, monnm);
                     } else {
@@ -3214,7 +3214,7 @@ float_up()
     } else {
         You("start to float in the air!");
     }
-    if (u.usteed && !is_floater(u.usteed->data) && !is_flyer(u.usteed->data)) {
+    if (u.usteed && !is_levitating(u.usteed) && !is_flying(u.usteed)) {
         if (Lev_at_will) {
             pline("%s magically floats up!", Monnam(u.usteed));
         } else {
@@ -3360,8 +3360,8 @@ long hmask, emask; /* might cancel timeout */
                     if (u.usteed)
                         dismount_steed(DISMOUNT_FELL);
                     selftouch("As you fall, you");
-                } else if (u.usteed && (is_floater(u.usteed->data)
-                                        || is_flyer(u.usteed->data))) {
+                } else if (u.usteed && (is_levitating(u.usteed)
+                                        || is_flying(u.usteed))) {
                     You("settle more firmly in the saddle.");
                 } else if (Hallucination) {
                     pline("Bummer!  You've %s.",

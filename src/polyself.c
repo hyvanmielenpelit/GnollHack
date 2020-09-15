@@ -141,7 +141,7 @@ set_uasmon()
 	PROPSET(HALLUC_RES, dmgtype(mdat, AD_HALU));
 	PROPSET(INFRAVISION, infravision(Upolyd ? mdat : &mons[urace.monsternum]));
 	PROPSET(LEVITATION, is_floater(mdat));
-	PROPSET(FLYING, (is_flyer(mdat) && !is_floater(mdat)));
+	PROPSET(FLYING, (is_flyer(mdat)));
 	PROPSET(SWIMMING, is_swimmer(mdat));
 	PROPSET(PASSES_WALLS, passes_walls(mdat));
 #undef PROPSET

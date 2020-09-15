@@ -441,13 +441,13 @@
 
 /* flying and levitation */
 #define has_levitation(mon) \
-	has_property(mon, LEVITATION)
+	(has_property(mon, LEVITATION) || is_floater(mon->data))
 
 #define has_levitation_control(mon) \
 	(has_innate_levitation_control((mon)->data) || has_property(mon, LEVITATION_CONTROL))
 
 #define has_flying(mon) \
-	has_innate_or_property(mon, FLYING)
+	(has_innate_or_property(mon, FLYING) || is_flyer((mon)->data))
 
 #define has_blocks_levitation(mon) \
 	has_property(mon, BLOCKS_LEVITATION)
@@ -464,6 +464,8 @@
 #define mon_can_reach_floor(mon) \
 	(!is_levitating(mon) || Is_airlevel(&u.uz)|| Is_waterlevel(&u.uz))
 
+#define has_swimming(mon) \
+	(has_innate_or_property(mon, SWIMMING) || is_swimmer((mon)->data))
 
 
 /* invisibility */

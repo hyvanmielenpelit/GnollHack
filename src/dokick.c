@@ -319,7 +319,7 @@ xchar x, y;
     setmangry(mon, TRUE);
 
     if (Levitation && !rn2(3) && verysmall(mon->data)
-        && !is_flyer(mon->data)) {
+        && !is_flying(mon)) {
         pline("Floating in the air, you miss wildly!");
         exercise(A_DEX, FALSE);
         (void) passive(mon, uarmf, FALSE, 1, AT_KICK, FALSE);
@@ -466,9 +466,9 @@ xchar x, y;
 						pline("%s %s, %s evading your %skick.", Monnam(mon),
 							(!level.flags.noteleport && has_teleportation(mon))
 							? "teleports"
-							: is_floater(mon->data)
+							: is_levitating(mon)
 							? "floats"
-							: is_flyer(mon->data) ? "swoops"
+							: is_flying(mon) ? "swoops"
 							: (nolimbs(mon->data)
 								|| slithy(mon->data))
 							? "slides"

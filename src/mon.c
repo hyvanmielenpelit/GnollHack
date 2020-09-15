@@ -1165,11 +1165,11 @@ register struct monst *mtmp;
 
     /* [what about ceiling clingers?] */
     inpool = (is_pool(mtmp->mx, mtmp->my)
-              && (!(is_flyer(mtmp->data) || is_floater(mtmp->data))
+              && (!(is_flying(mtmp) || is_levitating(mtmp))
                   /* there's no "above the surface" on the plane of water */
                   || Is_waterlevel(&u.uz)));
     inlava = (is_lava(mtmp->mx, mtmp->my)
-              && !(is_flyer(mtmp->data) || is_floater(mtmp->data)));
+              && !(is_flying(mtmp) || is_levitating(mtmp)));
     infountain = IS_FOUNTAIN(levl[mtmp->mx][mtmp->my].typ);
 
     /* Flying and levitation keeps our steed out of the liquid
@@ -1647,7 +1647,7 @@ update_monster_timouts()
 						{
 							if (nolimbs(mtmp->data) || slithy(mtmp->data))
 								pline("Suddenly, %s stumbles.", mon_nam(mtmp));
-							else if (unsolid(mtmp->data) || noncorporeal(mtmp->data) || is_flyer(mtmp->data) || is_floater(mtmp->data))
+							else if (unsolid(mtmp->data) || noncorporeal(mtmp->data) || is_flying(mtmp) || is_levitating(mtmp))
 								pline("Suddenly, %s seems highly unstable.", mon_nam(mtmp));
 							else
 								pline("Suddenly, %s trips over %s feet.", mon_nam(mtmp), mhis(mtmp));
@@ -2367,9 +2367,9 @@ long flag;
 
     nodiag = NODIAG(mdat - mons);
     wantpool = mdat->mlet == S_EEL;
-    poolok = (((is_flyer(mdat) || is_clinger(mdat)) && !Is_waterlevel(&u.uz))
+    poolok = (((is_flying(mon) || is_levitating(mon) || is_clinger(mdat)) && !Is_waterlevel(&u.uz))
               || (is_swimmer(mdat) && !wantpool));
-    lavaok = (is_flyer(mdat) || is_clinger(mdat) || likes_lava(mdat));
+    lavaok = (is_flying(mon) || is_levitating(mon) || is_clinger(mdat) || likes_lava(mdat));
     thrudoor = ((flag & (ALLOW_WALL | BUSTDOOR)) != 0L);
     poisongas_ok = ((is_not_living(mdat) || is_vampshifter(mon)
                      || has_innate_breathless(mdat)) || resists_poison(mon));
@@ -2582,18 +2582,18 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && ttmp->ttyp != VIBRATING_SQUARE
                         && ttmp->ttyp != MODRON_PORTAL
                         && ((!is_pit(ttmp->ttyp)) /* exclude/include pits for flyers/nonflyers */
-							|| (!has_pitwalk(mdat) && !is_flyer(mdat) && !is_floater(mdat)
+							|| (!has_pitwalk(mdat) && !(is_flying(mon) || is_levitating(mon))
 								&& !is_clinger(mdat)) || Sokoban)
 						&& ((!is_hole(ttmp->ttyp)) /* exclude/include holes or flyers/nonflyers */
-                            || (!is_flyer(mdat) && !is_floater(mdat)
+                            || (!(is_flying(mon) || is_levitating(mon))
                                 && !is_clinger(mdat)) || Sokoban)
                         && (ttmp->ttyp != SLP_GAS_TRAP || !resists_sleep(mon))
                         && (ttmp->ttyp != BEAR_TRAP
                             || (mdat->msize > MZ_SMALL && !amorphous(mdat)
-                                && !is_flyer(mdat) && !is_floater(mdat)
+                                && !(is_flying(mon) || is_levitating(mon))
                                 && !is_whirly(mdat) && !unsolid(mdat)))
                         && (ttmp->ttyp != FIRE_TRAP || !is_mon_immune_to_fire(mon))
-                        && (ttmp->ttyp != SQKY_BOARD || !is_flyer(mdat))
+                        && (ttmp->ttyp != SQKY_BOARD || !(is_flying(mon) || is_levitating(mon)))
                         && (ttmp->ttyp != WEB
                             || (!amorphous(mdat) && !webmaker(mdat)
                                 && !is_whirly(mdat) && !unsolid(mdat)))
@@ -3818,7 +3818,7 @@ struct monst *mtmp;
                              (SUPPRESS_SADDLE | SUPPRESS_HALLUCINATION
                               | SUPPRESS_INVISIBLE | SUPPRESS_IT), FALSE),
                     amorphous(mtmp->data) ? "coalesces on the"
-                       : is_flyer(mtmp->data) ? "drops to the"
+                       : is_flying(mtmp) ? "drops to the"
                           : "writhes on the",
                     surface(x,y));
             mtmp->mcanmove = 1;
