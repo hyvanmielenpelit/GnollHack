@@ -164,16 +164,6 @@ struct obj {
 
 #define newobj() (struct obj *) alloc(sizeof(struct obj))
 
-enum exceptionality_types {
-    EXCEPTIONALITY_NORMAL = 0,
-    EXCEPTIONALITY_EXCEPTIONAL,
-    EXCEPTIONALITY_ELITE,
-    EXCEPTIONALITY_CELESTIAL,
-    EXCEPTIONALITY_PRIMORDIAL,
-    EXCEPTIONALITY_INFERNAL,
-    MAX_EXCEPTIONALITY_TYPES
-};
-
 /* property blocking */
 /* This only allows for one blocking item per property */
 #define w_blocks(o, m) \

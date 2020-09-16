@@ -680,7 +680,7 @@ maybe_create_ringwraith()
                     ringwraith = christen_monst(ringwraith, "Witch-King of Angmar");
                     ringwraith->u_know_mname = TRUE; /* He's famous -- JG */
                     ringwraith->leaves_no_corpse = TRUE;
-                    mongets(ringwraith, CROWN_OF_RULERSHIP);
+                    (void)mongets(ringwraith, CROWN_OF_RULERSHIP);
                     context.made_witch_king = TRUE;
                 }
 

@@ -565,17 +565,17 @@ int trap_type;
 						{
 							context.made_orc_and_a_pie = TRUE;
 							if (!m_carrying(mon, ORCISH_CHAIN_MAIL))
-								mongets(mon, ORCISH_CHAIN_MAIL);
+								(void)mongets(mon, ORCISH_CHAIN_MAIL);
 							if (!m_carrying(mon, ORCISH_HELM))
-								mongets(mon, ORCISH_HELM);
+                                (void)mongets(mon, ORCISH_HELM);
 							if (!m_carrying(mon, ORCISH_CLOAK))
-								mongets(mon, ORCISH_CLOAK);
+                                (void)mongets(mon, ORCISH_CLOAK);
 							if (!m_carrying(mon, ORCISH_DAGGER))
-								mongets(mon, ORCISH_DAGGER);
+                                (void)mongets(mon, ORCISH_DAGGER);
 							if (!m_carrying(mon, ORCISH_SHIELD))
-								mongets(mon, ORCISH_SHIELD);
+                                (void)mongets(mon, ORCISH_SHIELD);
 							if (!m_carrying(mon, ORCISH_SHORT_SWORD))
-								mongets(mon, ORCISH_SHORT_SWORD);
+                                (void)mongets(mon, ORCISH_SHORT_SWORD);
 							m_dowear(mon, TRUE);
 							struct obj* box = mksobj_at(LARGE_BOX, xx, yy + dy, FALSE, FALSE);
 							struct obj* pie = mksobj(CREAM_PIE, FALSE, FALSE, FALSE);

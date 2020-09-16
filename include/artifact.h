@@ -6,6 +6,9 @@
 #ifndef ARTIFACT_H
 #define ARTIFACT_H
 
+#include "general.h"
+#include "soundset.h"
+
 /* general and attack-based flags */
 #define AF_NONE		0x00000000UL  /* no special effects, just a bonus */
 #define AF_NOGEN	0x00000001UL  /* item is special, bequeathed by gods */
@@ -49,11 +52,6 @@
 #define AF2_MISSILE_TILE					0x00000001UL  
 #define AF2_SINGLE_MISSILE_TILE				0x00000002UL  
 #define AF2_APPLICABLE_AS_AXE				0x00000010UL  
-#define AF2_GENERATED_CELESTIAL				0x00000020UL  
-#define AF2_GENERATED_PRIMORDIAL			0x00000040UL  
-#define AF2_GENERATED_INFERNAL				0x00000080UL  
-#define AF2_GENERATED_ELITE					0x00000100UL  
-#define AF2_GENERATED_EXCEPTIONAL			0x00000200UL  
 
 
 /* wielded or carried special effects */
@@ -100,6 +98,7 @@ struct artifact {
 	const char *name;
 	const char* desc;	   /* unidentified name */
 	const char* hit_desc;  /* description used in artifact_hit: e.g., massive hammer, ice-cold blade, etc. */
+	enum exceptionality_types exceptionality;
 	unsigned long aflags;  /* artifact flags */
 	unsigned long aflags2; /* artifact flags2 */
 	unsigned long spfx;    /* special effect from wielding/wearing */

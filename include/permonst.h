@@ -3,11 +3,12 @@
 /*-Copyright (c) Kenneth Lorber, Kensington, Maryland, 2015. */
 /* GnollHack may be freely redistributed.  See license for details. */
 
-#include "animation.h"
-#include "soundset.h"
-
 #ifndef PERMONST_H
 #define PERMONST_H
+
+#include "action.h"
+#include "general.h"
+#include "soundset.h"
 
 /*	This structure covers all attack forms.
  *	aatyp is the gross attack type (eg. claw, bite, breath, ...)

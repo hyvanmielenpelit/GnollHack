@@ -214,29 +214,7 @@ boolean nonweaponsonly; /* for monks */
             otmp = oname(otmp, a->name);
             otmp->oartifact = m;
             artiexist[m] = TRUE;
-			
-			if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_CELESTIAL)
-			{
-				otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
-			}
-			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_PRIMORDIAL)
-			{
-				otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
-			}
-			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_INFERNAL)
-			{
-				otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-			}
-			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_ELITE)
-			{
-				otmp->exceptionality = EXCEPTIONALITY_ELITE;
-			}
-			else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_EXCEPTIONAL)
-			{
-				otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-			}
-			else
-				otmp->exceptionality = EXCEPTIONALITY_NORMAL;
+			otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
 		}
     } 
 	else 
@@ -304,7 +282,8 @@ boolean mod;
 
     if (otmp && *name)
         for (a = artilist + 1; a->otyp; a++)
-            if (a->otyp == otmp->otyp && !strcmp(a->name, name)) {
+            if (a->otyp == otmp->otyp && !strcmp(a->name, name)) 
+			{
                 register int m = (int) (a - artilist);
                 otmp->oartifact = (char) (mod ? m : 0);
                 otmp->age = 0;
@@ -313,36 +292,13 @@ boolean mod;
                 artiexist[m] = mod;
 				if (otmp->oartifact)
 				{
+					otmp->exceptionality = artilist[otmp->oartifact].exceptionality;
+
 					if (artilist[otmp->oartifact].aflags & AF_FAMOUS)
 						otmp->nknown = TRUE;
 
 					if (is_quest_artifact(otmp))
-					{
 						otmp->nknown = TRUE;
-					}
-
-					if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_CELESTIAL)
-					{
-						otmp->exceptionality = EXCEPTIONALITY_CELESTIAL;
-					}
-					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_PRIMORDIAL)
-					{
-						otmp->exceptionality = EXCEPTIONALITY_PRIMORDIAL;
-					}
-					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_INFERNAL)
-					{
-						otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-					}
-					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_ELITE)
-					{
-						otmp->exceptionality = EXCEPTIONALITY_ELITE;
-					}
-					else if (artilist[otmp->oartifact].aflags2 & AF2_GENERATED_EXCEPTIONAL)
-					{
-						otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
-					}
-					else
-						otmp->exceptionality = EXCEPTIONALITY_NORMAL;
 				}
                 break;
             }

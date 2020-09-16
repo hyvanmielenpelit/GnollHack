@@ -1067,33 +1067,33 @@ register struct monst *mtmp;
 			}
 
 			if (mac < -1 && rn2(5))
-				mac += 7 + mongets(mtmp, (rn2(5)) ? PLATE_MAIL
+				mac += 7 + mongets_return_enchantment(mtmp, (rn2(5)) ? PLATE_MAIL
 					: CRYSTAL_PLATE_MAIL);
 			else if (mac < 3 && rn2(5))
 				mac +=
-				6 + mongets(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
+				6 + mongets_return_enchantment(mtmp, (rn2(3)) ? SPLINT_MAIL : BANDED_MAIL);
 			else if (rn2(5))
-				mac += 3 + mongets(mtmp, (rn2(3)) ? RING_MAIL
+				mac += 3 + mongets_return_enchantment(mtmp, (rn2(3)) ? RING_MAIL
 					: STUDDED_LEATHER_ARMOR);
 			else
-				mac += 2 + mongets(mtmp, LEATHER_ARMOR);
+				mac += 2 + mongets_return_enchantment(mtmp, LEATHER_ARMOR);
 
 			if (mac < 10 && rn2(3))
-				mac += 1 + mongets(mtmp, HELMET);
+				mac += 1 + mongets_return_enchantment(mtmp, HELMET);
 			else if (mac < 10 && rn2(2))
-				mac += 1 + mongets(mtmp, DENTED_POT);
+				mac += 1 + mongets_return_enchantment(mtmp, DENTED_POT);
 			if (mac < 10 && rn2(3))
-				mac += 1 + mongets(mtmp, SMALL_SHIELD);
+				mac += 1 + mongets_return_enchantment(mtmp, SMALL_SHIELD);
 			else if (mac < 10 && rn2(2))
-				mac += 2 + mongets(mtmp, LARGE_SHIELD);
+				mac += 2 + mongets_return_enchantment(mtmp, LARGE_SHIELD);
 			if (mac < 10 && rn2(3))
-				mac += 1 + mongets(mtmp, LOW_BOOTS);
+				mac += 1 + mongets_return_enchantment(mtmp, LOW_BOOTS);
 			else if (mac < 10 && rn2(2))
-				mac += 2 + mongets(mtmp, HIGH_BOOTS);
+				mac += 2 + mongets_return_enchantment(mtmp, HIGH_BOOTS);
 			if (mac < 10 && rn2(3))
-				mac += 1 + mongets(mtmp, LEATHER_GLOVES);
+				mac += 1 + mongets_return_enchantment(mtmp, LEATHER_GLOVES);
 			else if (mac < 10 && rn2(2))
-				mac += 1 + mongets(mtmp, LEATHER_CLOAK);
+				mac += 1 + mongets_return_enchantment(mtmp, LEATHER_CLOAK);
 
 			nhUse(mac); /* suppress 'dead increment' from static analyzer */
 
@@ -3414,57 +3414,135 @@ int oldtype, newtype;
 }
 
 int
+mongets_return_enchantment(mtmp, otyp)
+register struct monst* mtmp;
+int otyp;
+{
+    struct obj* otmp = mongets(mtmp, otyp);
+    if (!otmp)
+        return 0;
+    else
+        return otmp->enchantment;
+}
+
+struct obj*
 mongets(mtmp, otyp)
 register struct monst *mtmp;
 int otyp;
 {
     register struct obj *otmp;
-    int enchantment;
-
     if (!otyp)
-        return 0;
+        return (struct obj*)0;
+
     otmp = mksobj(otyp, TRUE, FALSE, FALSE);
-    if (otmp) {
-        if (mtmp->data->mlet == S_DEMON) {
+    if (otmp) 
+    {
+        if (mtmp->data->mlet == S_DEMON) 
+        {
             /* demons never get blessed objects */
             if (otmp->blessed)
                 curse(otmp);
-        } else if (is_lminion(mtmp)) {
+        } 
+        else if (is_lminion(mtmp)) 
+        {
             /* lawful minions don't get cursed, bad, or rusting objects */
             otmp->cursed = FALSE;
             if (otmp->enchantment < 0)
                 otmp->enchantment = 0;
             otmp->oerodeproof = TRUE;
-        } else if (is_mplayer(mtmp->data) && is_sword(otmp)) {
+        } 
+        else if (is_mplayer(mtmp->data) && is_sword(otmp)) 
+        {
             otmp->enchantment = (3 + rn2(4));
         }
 
-        if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
+        if (otmp->otyp == CANDELABRUM_OF_INVOCATION)
+        {
             otmp->enchantment = 0;
 			otmp->special_quality = 0;
 			otmp->age = 0L;
             otmp->lamplit = FALSE;
             otmp->blessed = otmp->cursed = FALSE;
-        } else if (otmp->otyp == BELL_OF_OPENING) {
+        }
+        else if (otmp->otyp == BELL_OF_OPENING)
+        {
             otmp->blessed = otmp->cursed = FALSE;
-        } else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) {
+        } 
+        else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD)
+        {
             otmp->blessed = FALSE;
             otmp->cursed = TRUE;
         }
 
-        /* leaders don't tolerate inferior quality battle gear */
-        if (is_prince(mtmp->data)) {
-            if (otmp->oclass == WEAPON_CLASS && otmp->enchantment < 1)
+        /* leaders and boss monsters don't tolerate inferior quality battle gear */
+        if (mtmp->data->msound == MS_NEMESIS)
+        {
+            if (is_weapon(otmp))
+            {
+                if (can_have_exceptionality(otmp) && otmp->oartifact == 0 && otmp->exceptionality < EXCEPTIONALITY_ELITE)
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                if (otmp->enchantment < 2)
+                    otmp->enchantment = 2;
+            }
+
+            if (otmp->oclass == ARMOR_CLASS && otmp->enchantment < 1)
                 otmp->enchantment = 1;
-            else if (otmp->oclass == ARMOR_CLASS && otmp->enchantment < 0)
+        }
+        else if (is_demon(mtmp->data) && (is_prince(mtmp->data) || is_lord(mtmp->data)))
+        {
+            if (is_weapon(otmp))
+            {
+                if (can_have_exceptionality(otmp) && otmp->oartifact == 0 && otmp->exceptionality != EXCEPTIONALITY_INFERNAL)
+                    otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                if (otmp->enchantment < 3)
+                    otmp->enchantment = 3;
+            }
+
+            if (otmp->oclass == ARMOR_CLASS && otmp->enchantment < 2)
+                otmp->enchantment = 2;
+        }
+        else if (mtmp->data->geno & G_UNIQ)
+        {
+            if (is_weapon(otmp))
+            {
+                if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
+                {
+                    if (mtmp->m_lev >= 30 && mtmp->data->maligntyp < 0 && Inhell && otmp->exceptionality != EXCEPTIONALITY_INFERNAL)
+                        otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
+                    else if (mtmp->m_lev >= 20 && otmp->exceptionality < EXCEPTIONALITY_ELITE)
+                        otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                    else if (mtmp->m_lev >= 10 && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                        otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                }
+                if (mtmp->m_lev >= 30 && otmp->enchantment < 3)
+                    otmp->enchantment = 3;
+                else if (mtmp->m_lev >= 20 && otmp->enchantment < 2)
+                    otmp->enchantment = 2;
+                else if (mtmp->m_lev >= 10 && otmp->enchantment < 1)
+                    otmp->enchantment = 1;
+            }
+
+            if (otmp->oclass == ARMOR_CLASS && otmp->enchantment < 0)
+                otmp->enchantment = 0;
+        }
+        else if (is_prince(mtmp->data))
+        {
+            if (is_weapon(otmp))
+            {
+                if (can_have_exceptionality(otmp) && otmp->oartifact == 0 && otmp->exceptionality < EXCEPTIONALITY_EXCEPTIONAL)
+                    otmp->exceptionality = EXCEPTIONALITY_EXCEPTIONAL;
+                if (otmp->enchantment < 1)
+                    otmp->enchantment = 1;
+            }
+
+            if (otmp->oclass == ARMOR_CLASS && otmp->enchantment < 0)
                 otmp->enchantment = 0;
         }
 
-        enchantment = otmp->enchantment;
         (void) mpickobj(mtmp, otmp); /* might free otmp */
-        return enchantment;
     }
-    return 0;
+
+    return otmp;
 }
 
 struct obj*
