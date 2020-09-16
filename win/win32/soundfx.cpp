@@ -451,7 +451,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Level/Oracle/No More Woodchucks", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Level/Oracle/Loud Zot", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Sword Being Unsheated", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Swords Being Unsheated", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Armors Being Worn", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Weapons Being Assembled", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Master Chief", 1.0f },

@@ -834,7 +834,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
       REPLACEMENT_ACTION_SHORE_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -844,7 +844,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
       REPLACEMENT_ACTION_SHORE_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -854,7 +854,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
       REPLACEMENT_ACTION_SHORE_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -1571,7 +1571,11 @@ struct rm* lev;
 {
     int typ = 0, suntyp = 0;
 
-    if (lev->typ == LAVAPOOL)
+    if (lev->typ == DRAWBRIDGE_DOWN)
+    {
+        return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 3;
+    }
+    else if (lev->typ == LAVAPOOL)
     {
         return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 2;
     }
