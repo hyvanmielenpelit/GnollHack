@@ -2578,6 +2578,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_LEVEL_MASTER_CHIEF, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_LIGHTNING_STRIKES",
+        {GHSOUND_LIGHTNING_STRIKES, 10.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

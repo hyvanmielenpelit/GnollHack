@@ -455,6 +455,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Armors Being Worn", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Weapons Being Assembled", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Master Chief", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Lightning Strikes", 1.0f },
 };
 
 #undef NoSound

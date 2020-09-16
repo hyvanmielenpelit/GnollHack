@@ -1373,13 +1373,18 @@ int dieroll; /* needed for Magicbane and vorpal blades */
     }
     if (artifact_attack_type(AD_ELEC, otmp))
 	{
-        if (realizes_damage)
+		if (spec_dbon_applies)
+			play_sfx_sound_at_location(SFX_LIGHTNING_STRIKES, mdef->mx, mdef->my);
+
+		if (realizes_damage)
             pline_The("%s hits%s %s%c", artifact_hit_desc,
                       !spec_dbon_applies ? "" : "!  Lightning strikes",
                       hittee, !spec_dbon_applies ? '.' : '!');
-        if (spec_dbon_applies)
-            wake_nearto(mdef->mx, mdef->my, 4 * 4);
-        if (!rn2(5))
+
+		if (spec_dbon_applies)
+			wake_nearto(mdef->mx, mdef->my, 4 * 4);
+
+		if (!rn2(5))
             (void) destroy_mitem(mdef, RING_CLASS, AD_ELEC);
         if (!rn2(5))
             (void) destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
