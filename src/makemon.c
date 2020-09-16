@@ -1012,14 +1012,30 @@ register struct monst *mtmp;
      */
 	switch (ptr->mlet) 
 	{
+    case S_ANGEL:
+        if (is_steed(mtmp->data) && !rn2(4)) /* Ki-rin */
+        {
+            otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
+            if (otmp)
+                put_saddle_on_mon(otmp, mtmp);
+        }
+        break;
     case S_DRAGON:
         if (monsndx(ptr) == PM_BAHAMUT)
             (void)mon_gets_noinit_item(mtmp, FORTUNE_COOKIE, 8);
         break;
     case S_DOG:
-		if(!rn2(7))
+        if (is_steed(mtmp->data) && !rn2(4)) /* Warg */
+        {
+            otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
+            if (otmp)
+                put_saddle_on_mon(otmp, mtmp);
+        }
+        
+        if(!rn2(7))
 			(void)mon_gets_noinit_item(mtmp, BONE, 1);
-		break;
+        
+        break;
 	case S_HUMAN:
 		if (is_mercenary(ptr)) {
 			register int mac;
@@ -1513,10 +1529,11 @@ register struct monst *mtmp;
 		mkmonmoney(mtmp, (long)d(level_difficulty(), 30));
 		break;
     case S_UNICORN:
-        if (is_domestic(mtmp->data) && !rn2(4))
+        if (is_steed(mtmp->data) && is_domestic(mtmp->data) && !rn2(4))
         {
-            (void)mongets(mtmp, SADDLE);
-            m_dowear(mtmp, TRUE);
+            otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
+            if(otmp)
+                put_saddle_on_mon(otmp, mtmp);
         }
         break;
     case S_DEMON:
@@ -2282,40 +2299,56 @@ int level_limit;
             return (struct monst *) 0;
         x = cc.x;
         y = cc.y;
-    } else if (byyou && !in_mklev) {
+    } 
+    else if (byyou && !in_mklev) 
+    {
         coord bypos;
 
-        if (enexto_core(&bypos, u.ux, u.uy, ptr, gpflags)) {
+        if (enexto_core(&bypos, u.ux, u.uy, ptr, gpflags)) 
+        {
             x = bypos.x;
             y = bypos.y;
-        } else
+        }
+        else
             return (struct monst *) 0;
     }
 
     /* Does monster already exist at the position? */
-    if (MON_AT(x, y)) {
-        if ((mmflags & MM_ADJACENTOK) != 0) {
+    if (MON_AT(x, y)) 
+    {
+        if ((mmflags & MM_ADJACENTOK) != 0) 
+        {
             coord bypos;
-            if (enexto_core(&bypos, x, y, ptr, gpflags)) {
+            if (enexto_core(&bypos, x, y, ptr, gpflags)) 
+            {
                 x = bypos.x;
                 y = bypos.y;
-            } else
+            } 
+            else
                 return (struct monst *) 0;
-        } else
+
+        } 
+        else
             return (struct monst *) 0;
     }
 
-    if (ptr) {
+    if (ptr)
+    {
         mndx = monsndx(ptr);
+
         /* if you are to make a specific monster and it has
            already been genocided, return */
         if (mvitals[mndx].mvflags & G_GENOD)
             return (struct monst *) 0;
-        if (wizard && (mvitals[mndx].mvflags & G_EXTINCT)) {
+
+        if (wizard && (mvitals[mndx].mvflags & G_EXTINCT)) 
+        {
             debugpline1("Explicitly creating extinct monster %s.",
                         mons[mndx].mname);
         }
-    } else {
+    } 
+    else 
+    {
         /* make a random (common) monster that can survive here.
          * (the special levels ask for random monsters at specific
          * positions, causing mass drowning on the medusa level,
@@ -2338,9 +2371,12 @@ int level_limit;
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
 //					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER] || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN]))
                      || !goodpos(x, y, &fakemon, gpflags)));
+
         mndx = monsndx(ptr);
     }
+
     (void) propagate(mndx, countbirth, FALSE);
+
     mtmp = newmonst();
     *mtmp = zeromonst; /* clear all entries in structure */
 
@@ -2365,6 +2401,7 @@ int level_limit;
     mtmp->m_id = context.ident++;
     if (!mtmp->m_id)
         mtmp->m_id = context.ident++; /* ident overflowed */
+
     set_mon_data(mtmp, ptr); /* mtmp->data = ptr; */
     if (ptr->msound == MS_LEADER && quest_info(MS_LEADER) == mndx)
         quest_status.leader_m_id = mtmp->m_id;
@@ -2447,9 +2484,11 @@ int level_limit;
 
     if ((In_sokoban(&u.uz) && !mindless(ptr)) || (ptr->mflags3 & M3_KNOWS_PITS_AND_HOLES)) /* know about traps here */
         mtmp->mtrapseen = (1L << (PIT - 1)) | (1L << (HOLE - 1));
+
     /* quest leader and nemesis both know about all trap types */
     if (ptr->msound == MS_LEADER || ptr->msound == MS_NEMESIS)
         mtmp->mtrapseen = ~0;
+
 	if (ptr->mflags3 & M3_KNOWS_TRAPS)
 		mtmp->mtrapseen = ~0;
 
@@ -2457,7 +2496,8 @@ int level_limit;
     mtmp->mcanmove = mtmp->mwantstomove = mtmp->mwantstodrop = TRUE;
     mtmp->mpeaceful = (mmflags & MM_ANGRY) ? FALSE : peace_minded(ptr);
 
-    switch (ptr->mlet) {
+    switch (ptr->mlet) 
+    {
     case S_MIMIC:
         if(is_mimic(ptr))
             set_mimic_sym(mtmp);
@@ -2496,19 +2536,24 @@ int level_limit;
 			mtmp->mprops[VERY_FAST] |= M_INTRINSIC_ACQUIRED;
         break;
     }
+
     if ((ct = emitted_light_range(mtmp->data)) != 0)
         new_light_source(mtmp->mx, mtmp->my, ct, LS_MONSTER,
                          monst_to_any(mtmp));
+
     if ((ct = mon_ambient_sound(mtmp->data)) != 0)
         new_sound_source(mtmp->mx, mtmp->my, ct, (double)mon_ambient_volume(mtmp->data), SOUNDSOURCE_MONSTER, mon_ambient_subtype(mtmp->data),
             monst_to_any(mtmp));
+
     mitem = 0; /* extra inventory item for this monster */
 
     if (mndx == PM_VLAD_THE_IMPALER)
         mitem = CANDELABRUM_OF_INVOCATION;
     mtmp->cham = NON_PM; /* default is "not a shapechanger" */
+
     if (!Protection_from_shape_changers
-        && (mcham = pm_to_cham(mndx)) != NON_PM) {
+        && (mcham = pm_to_cham(mndx)) != NON_PM) 
+    {
         /* this is a shapechanger after all */
         mtmp->cham = mcham;
         /* Vlad stays in his normal shape so he can carry the Candelabrum */
@@ -2520,30 +2565,44 @@ int level_limit;
                Let newcham() pick the shape. */
             && newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
             allow_minvent = FALSE;
-    } else if (mndx == PM_WIZARD_OF_YENDOR) {
+    }
+    else if (mndx == PM_WIZARD_OF_YENDOR) 
+    {
         mtmp->iswiz = TRUE;
         context.no_of_wizards++;
         if (context.no_of_wizards == 1 && Is_earthlevel(&u.uz))
             mitem = SPE_DIG;
-    } else if (mndx == PM_GHOST && !(mmflags & MM_NONAME)) {
+    } 
+    else if (mndx == PM_GHOST && !(mmflags & MM_NONAME)) 
+    {
         mtmp = christen_monst(mtmp, rndghostname());
-    } else if (mndx == PM_CROESUS) {
+    } 
+    else if (mndx == PM_CROESUS) 
+    {
         mitem = TWO_HANDED_SWORD;
-    } else if (ptr->msound == MS_NEMESIS) {
+    }
+    else if (ptr->msound == MS_NEMESIS)
+    {
         mitem = BELL_OF_OPENING;
-    } else if (mndx == PM_PESTILENCE) {
+    } else if (mndx == PM_PESTILENCE) 
+    {
         mitem = POT_SICKNESS;
     }
+
     if (mitem && allow_minvent)
         (void) mongets(mtmp, mitem);
 
-    if (in_mklev) {
+    if (in_mklev) 
+    {
         if ((/* is_ndemon(ptr) ||*/ mndx == PM_WUMPUS
              || mndx == PM_LONG_WORM || mndx == PM_GIANT_EEL)
             && !u.uhave.amulet && rn2(5))
             mtmp->msleeping = TRUE;
-    } else {
-        if (byyou) {
+    } 
+    else 
+    {
+        if (byyou) 
+        {
             newsym(mtmp->mx, mtmp->my);
             set_apparxy(mtmp);
         }
@@ -2576,13 +2635,15 @@ int level_limit;
         if (count_wsegs(mtmp))
             place_worm_tail_randomly(mtmp, x, y);
     }
+
     /* it's possible to create an ordinary monster of some special
        types; make sure their extended data is initialized to
        something sensible if caller hasn't specified MM_EPRI|MM_EMIN
        (when they're specified, caller intends to handle this itself) */
     if ((mndx == PM_ALIGNED_PRIEST || mndx == PM_HIGH_PRIEST)
             ? !(mmflags & (MM_EPRI | MM_EMIN))
-            : (mndx == PM_ANGEL && !(mmflags & MM_EMIN) && !rn2(3))) {
+            : (mndx == PM_ANGEL && !(mmflags & MM_EMIN) && !rn2(3)))
+    {
         struct emin *eminp;
         newemin(mtmp);
         eminp = EMIN(mtmp);
@@ -2594,11 +2655,16 @@ int level_limit;
                               ? !eminp->renegade
                               : eminp->renegade;
     }
+
     set_malign(mtmp); /* having finished peaceful changes */
+
     if (anymon && !(mmflags & MM_NOGRP) && 0) { //Small and large groups deactivated due to new encounter system -- JG
-        if ((ptr->geno & G_SGROUP) && rn2(2)) {
+        if ((ptr->geno & G_SGROUP) && rn2(2)) 
+        {
             m_initsgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
-        } else if (ptr->geno & G_LGROUP) {
+        } 
+        else if (ptr->geno & G_LGROUP)
+        {
             if (rn2(3))
                 m_initlgrp(mtmp, mtmp->mx, mtmp->my, mmflags);
             else
@@ -2606,27 +2672,33 @@ int level_limit;
         }
     }
 
-    if (allow_minvent) {
+    m_init_background(mtmp);
+
+    if (allow_minvent)
+    {
         if (is_armed(ptr))
             m_initweap(mtmp); /* equip with weapons / armor */
         m_initinv(mtmp); /* add on a few special items incl. more armor */
         m_dowear(mtmp, TRUE);
 
-		m_init_background(mtmp);
-
         if (!rn2(100) && is_domestic(ptr)
-            && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) {
+            && can_saddle(mtmp) && !which_armor(mtmp, W_SADDLE)) 
+        {
             struct obj *otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
             put_saddle_on_mon(otmp, mtmp);
         }
 
-    } else {
+    }
+    else
+    {
         /* no initial inventory is allowed */
         if (mtmp->minvent)
             discard_minvent(mtmp);
         mtmp->minvent = (struct obj *) 0; /* caller expects this */
     }
-    if (ptr->mflags3 && !(mmflags & MM_NOWAIT)) {
+
+    if (ptr->mflags3 && !(mmflags & MM_NOWAIT)) 
+    {
         if (ptr->mflags3 & M3_WAITFORU)
             mtmp->mstrategy |= STRAT_WAITFORU;
         if (ptr->mflags3 & M3_CLOSE)

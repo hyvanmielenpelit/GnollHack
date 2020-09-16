@@ -64,7 +64,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
     A("", None, None, STRANGE_OBJECT, STRANGE_OBJECT, EXCEPTIONALITY_NORMAL, AF_NONE, AF2_NONE, SPFX_NONE, SPFX_NONE, 0, 0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE,
       NON_PM, NON_PM, 0L, NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
-    A("Excalibur", "gold-hilted runed long sword", None,  LONG_SWORD, LONG_SWORD,
+    A("Excalibur", "gold-hilted long sword", None,  LONG_SWORD, LONG_SWORD,
 	  EXCEPTIONALITY_ELITE,
   	  AF_NOGEN | AF_RESTR | AF_INTEL | AF_FAMOUS | AF_MONSTERS_CAN_TRACK_ARTIFACT | AF_ANGERS_DEMONS,
 	  AF2_NONE,
@@ -86,7 +86,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      Mjollnir will return to the hand of the wielder when thrown
      *      if the wielder is a Valkyrie wearing Gauntlets of Power.
      */
-    A("Mjollnir", "shining runed war hammer", "massive hammer", HEAVY_WAR_HAMMER, WAR_HAMMER, /* Mjo:llnir */
+    A("Mjollnir", "runed war hammer", "massive hammer", HEAVY_WAR_HAMMER, WAR_HAMMER, /* Mjo:llnir */
 	   EXCEPTIONALITY_ELITE, (AF_RESTR | AF_FAMOUS), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 	   1, 5, 0, ELEC(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
       A_NEUTRAL, PM_VALKYRIE, NON_PM, 4000L, 
@@ -115,13 +115,13 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
      *      EWarn_of_mon for all monsters that have the M2_value flag.
      *      Sting and Orcrist will warn of M2_ORC monsters.
      */
-    A("Orcrist", "ornate runed broadsword", None, ELVEN_BROADSWORD, ELVEN_BROADSWORD, 
+    A("Orcrist", "runed broadsword", None, ELVEN_BROADSWORD, ELVEN_BROADSWORD, 
 	  EXCEPTIONALITY_EXCEPTIONAL, (AF_DFLAG2 | AF_FLICKERS), AF2_NONE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
 	  1, 5, 0, PHYS(ARTDMG_TRIPLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0,
 	  A_CHAOTIC, NON_PM, PM_ELF, 2000L,
       CLR_BRIGHT_BLUE, NO_COLOR, 0, OBJECT_SOUNDSET_NONE), /* bright blue is actually light blue */
 
-    A("Sting", "ornate runed dagger", None, ELVEN_RUNEDAGGER, ELVEN_DAGGER, 
+    A("Sting", "runed dagger", None, ELVEN_RUNEDAGGER, ELVEN_DAGGER, 
 		 EXCEPTIONALITY_EXCEPTIONAL, (AF_DFLAG2 | AF_FLICKERS), AF2_MISSILE_TILE, SPFX_ORC_WARNING, SPFX_NONE, M2_ORC,
 		 1, 5, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_CHAOTIC, NON_PM, PM_ELF, 1000L, CLR_BRIGHT_BLUE, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
     /*
@@ -133,17 +133,17 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		1, 3, 0, STUN(1, 10), ANTIMAGIC, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, PM_WIZARD, NON_PM, 3500L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Frost Brand", "iron-hilted runed long sword", "ice-cold blade", LONG_SWORD, LONG_SWORD, 
+	A("Frost Brand", "iron-hilted long sword", "ice-cold blade", LONG_SWORD, LONG_SWORD, 
 		EXCEPTIONALITY_EXCEPTIONAL, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, COLD(ARTDMG_DOUBLE_DAMAGE, 0), COLD_IMMUNITY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 3000L,
 		NO_COLOR, CLR_WHITE, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Fire Brand", "copper-hilted runed long sword", "fiery blade", LONG_SWORD, LONG_SWORD, 
+	A("Fire Brand", "copper-hilted long sword", "fiery blade", LONG_SWORD, LONG_SWORD, 
 		EXCEPTIONALITY_EXCEPTIONAL, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, FIRE(ARTDMG_DOUBLE_DAMAGE, 0), FIRE_IMMUNITY, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 3000L,
 		NO_COLOR, CLR_RED, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Dragonbane", "mithril-hilted runed broadsword", None, SWORD_OF_DRAGON_SLAYING, BROADSWORD,
+	A("Dragonbane", "mithril-hilted broadsword", None, SWORD_OF_DRAGON_SLAYING, BROADSWORD,
 		EXCEPTIONALITY_EXCEPTIONAL, (AF_RESTR | AF_DCLAS | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_REFLECT, SPFX_NONE, S_DRAGON,
 		1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 500L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
@@ -180,17 +180,17 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		1, 5, 0, PHYS(1, 20), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 500L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Crossbow of the Gnoll Lords", "runed repeating heavy crossbow", None, REPEATING_HEAVY_CROSSBOW, REPEATING_HEAVY_CROSSBOW, 
+	A("Crossbow of the Gnoll Lords", "ornate repeating heavy crossbow", None, REPEATING_HEAVY_CROSSBOW, REPEATING_HEAVY_CROSSBOW, 
 		EXCEPTIONALITY_EXCEPTIONAL, (AF_RESTR | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED), AF2_NONE, SPFX_STLTH, SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 5), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, PM_GNOLL, 2000L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Howling Flail", "gold-hilted runed flail", None, RUNED_FLAIL, FLAIL, 
+	A("Howling Flail", "runed flail", None, RUNED_FLAIL, FLAIL, 
 		EXCEPTIONALITY_ELITE, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED | AF_INVOKE_MAY_DRAIN_LIFE), AF2_NONE, SPFX_LUCK | SPFX_CHA_25, SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 10), NO_POWER, NO_POWER, ARTINVOKE_TAMING, 0, 0, 0, 0, 200, A_CHAOTIC, NON_PM, PM_GNOLL, 6000L,
 		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Luck Blade", "bright runed broadsword", None, SWORD_OF_LUCKINESS, LONG_SWORD, 
+	A("Luck Blade", "ornate broadsword", None, SWORD_OF_LUCKINESS, LONG_SWORD, 
 		EXCEPTIONALITY_EXCEPTIONAL, (AF_RESTR | AF_NAME_KNOWN_WHEN_INVOKED | AF_NO_WISH | AF_INVOKE_EXPENDS_CHARGE), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYS(1, 5), NO_POWER, NO_POWER, ARTINVOKE_WISHING, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 6000L, /* Note: Base item gives luck already */
 		NO_COLOR, HI_METAL, 0, OBJECT_SOUNDSET_NONE),
@@ -210,7 +210,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 	 *      2) doesn't give unusual message for 2-headed monsters (but
 	 *      allowing those at all causes more problems than worth the effort).
 	 */
-	A("Vorpal Blade", "immaculate runed long sword", "Vorpal Blade", LONG_SWORD, LONG_SWORD, 
+	A("Vorpal Blade", "runed long sword", "Vorpal Blade", LONG_SWORD, LONG_SWORD, 
 		EXCEPTIONALITY_ELITE, (AF_RESTR | AF_BEHEAD), AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		1, 5, 0, PHYSI(0, 0, 1), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NEUTRAL, NON_PM, NON_PM, 4000L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
@@ -222,12 +222,12 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 	 *                      --Koko, Lord high executioner of Titipu
 	 *                        (From Sir W.S. Gilbert's "The Mikado")
 	 */
-	A("Snickersnee", "gold-hilted runed katana", None, KATANA, KATANA, 
+	A("Snickersnee", "gold-hilted katana", None, KATANA, KATANA, 
 		EXCEPTIONALITY_EXCEPTIONAL, AF_RESTR, AF2_NONE, SPFX_NONE, SPFX_NONE, 0,
 		0, 0, 0, PHYS(ARTDMG_DOUBLE_DAMAGE, 0), NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, PM_SAMURAI, NON_PM, 1200L,
 		NO_COLOR, HI_GOLD, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Sunsword", "glowing runed long sword", None, LONG_SWORD, LONG_SWORD, 
+	A("Sunsword", "glowing long sword", None, LONG_SWORD, LONG_SWORD, 
 		EXCEPTIONALITY_EXCEPTIONAL, (AF_RESTR | AF_DFLAG2 | AF_NAME_KNOWN_WHEN_WORN_OR_WIELDED | AF_ANGERS_DEMONS | AF_SHINES_MAGICAL_LIGHT),
 		AF2_NONE, SPFX_NONE, SPFX_NONE, M2_UNDEAD | M2_DEMON,
 		1, 5, 0, PHYS(ARTDMG_QUADRUPLE_DAMAGE, 0), FLASH_RESISTANCE, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 1500L,
@@ -251,7 +251,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		1, 5, 0, PHYSI(1, 5, 5), SICK_RESISTANCE, NO_POWER, ARTINVOKE_AIR_ELEMENTAL_SUMMON, 6, 6, 200, 50, 500, A_LAWFUL, PM_SAMURAI, NON_PM, 3000L,
 		NO_COLOR, NO_COLOR, 0, OBJECT_SOUNDSET_NONE),
 
-	A("Mace of Saint Cuthbert", "rugged wooden mace", None, MACE_OF_GREATER_DISRUPTION, MACE_OF_GREATER_DISRUPTION,
+	A("Mace of Saint Cuthbert", "wooden mace", None, MACE_OF_GREATER_DISRUPTION, MACE_OF_GREATER_DISRUPTION,
 		EXCEPTIONALITY_CELESTIAL, AF_RESTR | AF_ANGERS_DEMONS | AF_DFLAG2, AF2_NONE, SPFX_DEMON_WARNING | SPFX_UNDEAD_WARNING, SPFX_NONE, M2_DEMON | M2_UNDEAD,
 		1, 5, 5, PHYSI(1, 20, 5), FREE_ACTION, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_LAWFUL, NON_PM, NON_PM, 2000L,
 		NO_COLOR, HI_WOOD, 0, OBJECT_SOUNDSET_NONE),

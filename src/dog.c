@@ -87,8 +87,10 @@ boolean quietly;
     struct monst *mtmp = 0;
     int chance, trycnt = 100;
 
-    do {
-        if (otmp) { /* figurine; otherwise spell */
+    do 
+    {
+        if (otmp)
+        { /* figurine; otherwise spell */
             int mndx = otmp->corpsenm;
 
             pm = &mons[mndx];
@@ -96,18 +98,24 @@ boolean quietly;
                maximum number of the target critter created--unless
                it has a special limit (erinys, Nazgul) */
             if ((mvitals[mndx].mvflags & G_EXTINCT)
-                && mbirth_limit(mndx) != MAXMONNO) {
+                && mbirth_limit(mndx) != MAXMONNO)
+            {
                 if (!quietly)
                     /* have just been given "You <do something with>
                        the figurine and it transforms." message */
                     pline("... into a pile of dust.");
                 break; /* mtmp is null */
             }
-        } else if (!rn2(3)) {
+        } 
+        else if (!rn2(3))
+        {
             pm = &mons[pet_type()];
-        } else {
+        }
+        else 
+        {
             pm = rndmonst();
-            if (!pm) {
+            if (!pm)
+            {
                 if (!quietly)
                     There("seems to be nothing available for a familiar.");
                 break;
@@ -115,7 +123,8 @@ boolean quietly;
         }
 
         mtmp = makemon(pm, x, y, MM_EDOG | MM_IGNOREWATER | MM_NO_MONSTER_INVENTORY | MM_NO_DIFFICULTY_HP_CHANGE);
-        if (otmp && !mtmp) { /* monster was genocided or square occupied */
+        if (otmp && !mtmp)
+        { /* monster was genocided or square occupied */
             if (!quietly)
                 pline_The("figurine writhes and then shatters into pieces!");
             break;
@@ -130,14 +139,18 @@ boolean quietly;
 
     initedog(mtmp, TRUE);
     mtmp->msleeping = 0;
-    if (otmp) { /* figurine; resulting monster might not become a pet */
+
+    if (otmp)
+    { /* figurine; resulting monster might not become a pet */
         chance = rn2(10); /* 0==tame, 1==peaceful, 2==hostile */
         if (chance > 2)
             chance = otmp->blessed ? 0 : !otmp->cursed ? 1 : 2;
         /* 0,1,2:  b=80%,10,10; nc=10%,80,10; c=10%,10,80 */
-        if (chance > 0) {
+        if (chance > 0)
+        {
             mtmp->mtame = 0;   /* not tame after all */
-            if (chance == 2) { /* hostile (cursed figurine) */
+            if (chance == 2)
+            { /* hostile (cursed figurine) */
                 if (!quietly)
                     You("get a bad feeling about this.");
                 mtmp->mpeaceful = 0;
@@ -234,7 +247,7 @@ makedog()
         }
     }
 
-    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_DIFFICULTY_HP_CHANGE);
+    mtmp = makemon(&mons[pettype], u.ux, u.uy, MM_EDOG | MM_NORMAL_HIT_DICE | MM_NO_MONSTER_INVENTORY | MM_NO_DIFFICULTY_HP_CHANGE);
 
     if (!mtmp)
         return ((struct monst *) 0); /* pets were genocided */
@@ -246,8 +259,10 @@ makedog()
     }
 
 	context.startingpet_mid = mtmp->m_id;
+
     /* Horses and rams already wear a saddle */
-    if ((pettype == PM_PONY || pettype == PM_RAM )&& !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE))) {
+    if ((pettype == PM_PONY || pettype == PM_RAM ) && !!(otmp = mksobj(SADDLE, TRUE, FALSE, FALSE)))
+    {
         otmp->dknown = otmp->bknown = otmp->rknown = otmp->nknown = 1;
         put_saddle_on_mon(otmp, mtmp);
     }
