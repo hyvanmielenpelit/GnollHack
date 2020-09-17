@@ -1331,7 +1331,7 @@ NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS] =
 
 
 
-STATIC_DCL int FDECL(get_shore_tile_index, (struct rm*));
+STATIC_DCL int FDECL(get_shore_tile_index, (struct rm* , struct rm*));
 STATIC_DCL int FDECL(get_solid_floor_tile_index, (struct rm*));
 STATIC_DCL int FDECL(get_shore_and_floor_adjusted_tile_index, (struct rm*, struct rm*, struct rm*, struct rm*));
 
@@ -1540,12 +1540,10 @@ enum autodraw_types* autodraw_ptr;
         {
             int above_y = y - 1;
             int floortype = IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp;
-            int above_floortype = !isok(x, above_y) ? 0 : IS_FLOOR(levl[x][above_y].typ) ? levl[x][above_y].typ : levl[x][above_y].floortyp;
 
-            if (Underwater || !isok(x, above_y) || levl[x][above_y].typ == levl[x][y].typ || levl[x][above_y].floortyp == levl[x][y].typ
-                || levl[x][above_y].floortyp == levl[x][y].floortyp
+            if (Underwater || !isok(x, above_y)
                 || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
-                || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(levl[x][y].typ) && (IS_ROCK(levl[x][above_y].typ ))))
+                || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(floortype) && (IS_ROCK(levl[x][above_y].typ))))
             {
                 /* No action */
             }
@@ -1556,7 +1554,10 @@ enum autodraw_types* autodraw_ptr;
 
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
-                int tileidx = get_shore_tile_index(&levl[x][above_y]);
+                int tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
+                if (tileidx < 0)
+                    return ntile;
+
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
                 return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
@@ -1579,9 +1580,11 @@ enum autodraw_types* autodraw_ptr;
 
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
+
                 int tileidx = 0;
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
+
                 return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
 
@@ -1748,56 +1751,106 @@ enum autodraw_types* autodraw_ptr;
 }
 
 STATIC_OVL int
-get_shore_tile_index(lev)
-struct rm* lev;
+get_shore_tile_index(mainlev, lev)
+struct rm* mainlev, *lev;
 {
+    int mainlev_is_pool_ice_or_lava = (mainlev && (IS_POOL(mainlev) || mainlev->typ == ICE || mainlev->typ == LAVAPOOL));
     if (lev->typ == DRAWBRIDGE_DOWN)
     {
         return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 3;
     }
     else if (lev->typ == LAVAPOOL)
     {
-        return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 2;
+        if(mainlev->typ == LAVAPOOL)
+            return -1;
+        else
+            return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 2;
     }
     else if (lev->typ == ICE)
     {
-        return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 1;
+        if (mainlev->typ == ICE)
+            return -1;
+        else
+            return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 1;
     }
-    else if (lev->typ == POOL || lev->typ == MOAT || lev->typ == WATER || lev->typ == DRAWBRIDGE_UP)
+    else if (IS_POOL(lev->typ))
     {
-        return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES;
+        if (IS_POOL(mainlev->typ))
+            return -1;
+        else
+            return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES;
     }
     else if (lev->typ == CORR)
     {
-        return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
+        if ((!mainlev_is_pool_ice_or_lava && mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (!mainlev_is_pool_ice_or_lava && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
     }
     else if (lev->floortyp == CORR)
     {
-        return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
+        if ((!mainlev_is_pool_ice_or_lava && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (!mainlev_is_pool_ice_or_lava && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
     }
     else if (lev->typ == GROUND)
     {
-        return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
+        if ((mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
     }
     else if (lev->floortyp == GROUND)
     {
-        return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
+        if ((IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
     }
     else if (lev->typ == GRASS)
     {
-        return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES;
+        if ((mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES;
     }
     else if (lev->floortyp == GRASS)
     {
-        return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES;
+        if ((IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES;
     }
     else if (lev->typ == ROOM)
     {
-        return get_location_category(lev->typ, lev->subtyp);
+        if ((mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->typ, lev->subtyp);
     }
     else if (lev->floortyp == ROOM)
     {
-        return get_location_category(lev->floortyp, lev->floorsubtyp);
+        if ((IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            )
+            return -1;
+        else
+            return get_location_category(lev->floortyp, lev->floorsubtyp);
     }
 
     return 0;
