@@ -5874,7 +5874,7 @@ struct sp_coder *coder;
                     levl[x][y].horizontal = 1;
                 else if (levl[x][y].typ == IRONBARS)
                 {
-                    if(!isok(x, y - 1) || !IS_FLOOR(levl[x][y - 1].typ))
+                    if(!isok(x, y - 1) || IS_ROCK(levl[x][y - 1].typ))
                         levl[x][y].horizontal = 0;
                     else
                     {

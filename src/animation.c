@@ -587,6 +587,13 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "dungeon-normal-smaller-upstairs-enlargement", 0, 0,
+      DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_OFF,
+      1, 2, 0,
+      { -1, 0, -1, -1, -1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "dracolich-attack-enlargement",
       DRACOLICH_ATTACK_ANIMATION_TILES, DRACOLICH_ATTACK_ANIMATION_FRAMES,
       DRACOLICH_ATTACK_ENLARGEMENT_TILES, DRACOLICH_ATTACK_ENLARGEMENT_OFF,
@@ -879,6 +886,16 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dungeon-normal-grass-swampy-replacement",
+      DUNGEON_NORMAL_GRASS_SWAMPY_REPLACEMENT_TILES, DUNGEON_NORMAL_GRASS_SWAMPY_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_SHORE_TILE,
+      AUTODRAW_NONE,
+      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "dungeon-normal-ground-replacement",
       DUNGEON_NORMAL_GROUND_REPLACEMENT_TILES, DUNGEON_NORMAL_GROUND_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
@@ -892,19 +909,19 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
     { "dungeon-normal-stairs-up-replacement",
       DUNGEON_NORMAL_STAIRS_UP_REPLACEMENT_TILES, DUNGEON_NORMAL_STAIRS_UP_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
-      REPLACEMENT_ACTION_SHORE_TILE,
+      REPLACEMENT_ACTION_SHORE_ADJUSTED_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "smaller", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "dungeon-normal-stairs-down-replacement",
       DUNGEON_NORMAL_STAIRS_DOWN_REPLACEMENT_TILES, DUNGEON_NORMAL_STAIRS_DOWN_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
-      REPLACEMENT_ACTION_SHORE_TILE,
+      REPLACEMENT_ACTION_SHORE_AND_FLOOR_ADJUSTED_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "room", "parquet", "marble", "grass", "grass-swampy", "ground", "ground-swampy", "corridor", "smaller-room", "smaller-parquet", "smaller-marble", "smaller-grass", "smaller-grass-swampy", "smaller-ground", "smaller-ground-swampy", "smaller-corridor", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -912,9 +929,9 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
     { "dungeon-normal-trapdoor-replacement",
       DUNGEON_NORMAL_TRAPDOOR_REPLACEMENT_TILES, DUNGEON_NORMAL_TRAPDOOR_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
-      REPLACEMENT_ACTION_SHORE_TILE,
+      REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "floor-room", "floor-parquet", "floor-marble", "floor-grass", "floor-grass-swampy", "floor-ground", "floor-ground-swampy", "floor-corridor", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -922,9 +939,9 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
     { "dungeon-normal-hole-replacement",
       DUNGEON_NORMAL_HOLE_REPLACEMENT_TILES, DUNGEON_NORMAL_HOLE_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
-      REPLACEMENT_ACTION_SHORE_TILE,
+      REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "floor-room", "floor-parquet", "floor-marble", "floor-grass", "floor-grass-swampy", "floor-ground", "floor-ground-swampy", "floor-corridor", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -932,9 +949,9 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
     { "dungeon-normal-pit-replacement",
       DUNGEON_NORMAL_PIT_REPLACEMENT_TILES, DUNGEON_NORMAL_PIT_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
-      REPLACEMENT_ACTION_SHORE_TILE,
+      REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "floor-room", "floor-parquet", "floor-marble", "floor-grass", "floor-grass-swampy", "floor-ground", "floor-ground-swampy", "floor-corridor", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -942,9 +959,9 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
     { "dungeon-normal-spiked-pit-replacement",
       DUNGEON_NORMAL_SPIKED_PIT_REPLACEMENT_TILES, DUNGEON_NORMAL_SPIKED_PIT_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_TOP,
-      REPLACEMENT_ACTION_SHORE_TILE,
+      REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE,
       AUTODRAW_NONE,
-      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "floor-room", "floor-parquet", "floor-marble", "floor-grass", "floor-grass-swampy", "floor-ground", "floor-ground-swampy", "floor-corridor", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -1315,6 +1332,8 @@ NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS] =
 
 
 STATIC_DCL int FDECL(get_shore_tile_index, (struct rm*));
+STATIC_DCL int FDECL(get_solid_floor_tile_index, (struct rm*));
+STATIC_DCL int FDECL(get_shore_and_floor_adjusted_tile_index, (struct rm*, struct rm*, struct rm*, struct rm*));
 
 
 void
@@ -1520,8 +1539,13 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_SHORE_TILE:
         {
             int above_y = y - 1;
-            if (Underwater || !isok(x, above_y) || levl[x][above_y].typ == levl[x][y].typ || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
-                || levl[x][above_y].typ == UNEXPLORED)
+            int floortype = IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp;
+            int above_floortype = !isok(x, above_y) ? 0 : IS_FLOOR(levl[x][above_y].typ) ? levl[x][above_y].typ : levl[x][above_y].floortyp;
+
+            if (Underwater || !isok(x, above_y) || levl[x][above_y].typ == levl[x][y].typ || levl[x][above_y].floortyp == levl[x][y].typ
+                || levl[x][above_y].floortyp == levl[x][y].floortyp
+                || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+                || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(levl[x][y].typ) && (IS_ROCK(levl[x][above_y].typ ))))
             {
                 /* No action */
             }
@@ -1538,6 +1562,74 @@ enum autodraw_types* autodraw_ptr;
                 return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
 
+            break;
+        }
+        case REPLACEMENT_ACTION_SHORE_ADJUSTED_TILE:
+        {
+            int above_y = y - 1;
+            if (Underwater || !isok(x, above_y) || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+                || levl[x][above_y].typ == UNEXPLORED)
+            {
+                /* No action */
+            }
+            else if (levl[x][above_y].typ == DRAWBRIDGE_DOWN || levl[x][above_y].typ == LAVAPOOL || levl[x][above_y].typ == LAVAPOOL || levl[x][above_y].typ == POOL || levl[x][above_y].typ == MOAT || levl[x][above_y].typ == WATER || levl[x][above_y].typ == DRAWBRIDGE_UP)
+            {
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+                int tileidx = 0;
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
+                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+
+            break;
+        }        
+        case REPLACEMENT_ACTION_FLOOR_ADJUSTED_TILE:
+        {
+            if (Underwater || levl[x][y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+                || !IS_SOLID_FLOOR(levl[x][y].floortyp))
+            {
+                /* No action */
+            }
+            else
+            {
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+                int tileidx = get_solid_floor_tile_index(&levl[x][y]);
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
+                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_SHORE_AND_FLOOR_ADJUSTED_TILE:
+        {
+            int above_y = y - 1;
+            int left_x = x - 1;
+            int right_x = x + 1;
+            if (Underwater || levl[x][y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+                || !IS_SOLID_FLOOR(levl[x][y].floortyp))
+            {
+                /* No action */
+            }
+            else
+            {
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+                int tileidx = get_shore_and_floor_adjusted_tile_index(&levl[x][y], isok(x, above_y) ? &levl[x][above_y] : 0, isok(left_x, y) ? &levl[left_x][y] : 0, isok(right_x, y) ? &levl[right_x][y] : 0);
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[tileidx];
+                return glyph2tile[tileidx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
             break;
         }
         case REPLACEMENT_ACTION_OBJECT_LIT:
@@ -1659,8 +1751,6 @@ STATIC_OVL int
 get_shore_tile_index(lev)
 struct rm* lev;
 {
-    int typ = 0, suntyp = 0;
-
     if (lev->typ == DRAWBRIDGE_DOWN)
     {
         return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 3;
@@ -1711,6 +1801,99 @@ struct rm* lev;
     }
 
     return 0;
+}
+
+
+STATIC_OVL int
+get_solid_floor_tile_index(lev)
+struct rm* lev;
+{
+    if (lev->typ == CORR)
+    {
+        return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
+    }
+    else if (lev->floortyp == CORR)
+    {
+        return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
+    }
+    else if (lev->typ == GROUND)
+    {
+        return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
+    }
+    else if (lev->floortyp == GROUND)
+    {
+        return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
+    }
+    else if (lev->typ == GRASS)
+    {
+        return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES;
+    }
+    else if (lev->floortyp == GRASS)
+    {
+        return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES;
+    }
+    else if (lev->typ == ROOM)
+    {
+        return get_location_category(lev->typ, lev->subtyp);
+    }
+    else if (lev->floortyp == ROOM)
+    {
+        return get_location_category(lev->floortyp, lev->floorsubtyp);
+    }
+
+    return 0;
+}
+
+STATIC_OVL int
+get_shore_and_floor_adjusted_tile_index(lev, above_lev, left_lev, right_lev)
+struct rm *lev, *above_lev, *left_lev, *right_lev;
+{
+    int typ = 0;
+
+
+    if (lev->typ == CORR)
+    {
+        typ = get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
+    }
+    else if (lev->floortyp == CORR)
+    {
+        typ = get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
+    }
+    else if (lev->typ == GROUND)
+    {
+        typ = get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
+    }
+    else if (lev->floortyp == GROUND)
+    {
+        typ = get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
+    }
+    else if (lev->typ == GRASS)
+    {
+        typ = get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES;
+    }
+    else if (lev->floortyp == GRASS)
+    {
+        typ = get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES;
+    }
+    else if (lev->typ == ROOM)
+    {
+        typ = get_location_category(lev->typ, lev->subtyp);
+    }
+    else if (lev->floortyp == ROOM)
+    {
+        typ = get_location_category(lev->floortyp, lev->floorsubtyp);
+    }
+
+    if ((above_lev && (IS_POOL(above_lev->typ) || above_lev->typ == LAVAPOOL || above_lev->typ == ICE))
+        || (left_lev && (IS_POOL(left_lev->typ) || left_lev->typ == LAVAPOOL || left_lev->typ == ICE))
+        || (right_lev && (IS_POOL(right_lev->typ) || right_lev->typ == LAVAPOOL || right_lev->typ == ICE))
+        )
+    {
+        /* Pick smaller version */
+        typ += MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES;
+    }
+
+    return typ;
 }
 
 short

@@ -385,6 +385,7 @@ enum arrow_trap_subtypes_types
 
  /* Location types for which floortyp is zero */
 #define IS_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND  || (typ) == UNEXPLORED || (typ) == AIR )
+#define IS_SOLID_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND)
 
 /* Character maps for various dungeons */
 enum cmap_types {
