@@ -859,6 +859,16 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dungeon-normal-ground-replacement",
+      DUNGEON_NORMAL_GROUND_REPLACEMENT_TILES, DUNGEON_NORMAL_GROUND_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_SHORE_TILE,
+      AUTODRAW_NONE,
+      { "shore-room", "shore-parquet", "shore-marble", "shore-grass", "shore-grass-swampy", "shore-ground", "shore-ground-swampy", "shore-corridor", "shore-water", "shore-ice", "shore-lava", "shore-drawbridge-down", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "gnomish-mines-stone-replacement",
       GNOMISH_MINES_STONE_REPLACEMENT_TILES, GNOMISH_MINES_STONE_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
