@@ -224,6 +224,7 @@ boolean purify;
     boolean controllable_poly = Polymorph_control && !(Stunned || Unaware);
 
     if (purify) {
+        play_sfx_sound(SFX_CURE_DISEASE);
         You_feel("purified.");
         set_ulycn(NON_PM); /* cure lycanthropy */
     }

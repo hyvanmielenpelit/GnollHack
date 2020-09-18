@@ -398,9 +398,11 @@ int trouble;
 
     switch (trouble) {
     case TROUBLE_STONED:
+        play_sfx_sound(SFX_CURE_AILMENT);
         make_stoned(0L, "You feel more limber.", 0, (char *) 0);
         break;
     case TROUBLE_SLIMED:
+        play_sfx_sound(SFX_CURE_AILMENT);
         make_slimed(0L, "The slime disappears.");
         break;
     case TROUBLE_STRANGLED:
@@ -427,14 +429,17 @@ int trouble;
         context.botl = context.botlx = 1;
         break;
     case TROUBLE_SICK:
+        play_sfx_sound(SFX_CURE_DISEASE);
         You_feel("better.");
         make_sick(0L, (char *) 0, FALSE);
 		break;
 	case TROUBLE_FOOD_POISONED:
-		You_feel("better.");
+        play_sfx_sound(SFX_CURE_DISEASE);
+        You_feel("better.");
 		make_food_poisoned(0L, (char*)0, FALSE);
 		break;
     case TROUBLE_MUMMY_ROT:
+        play_sfx_sound(SFX_CURE_DISEASE);
         You_feel("better.");
         make_mummy_rotted(0L, (char*)0, FALSE);
         break;
@@ -446,6 +451,7 @@ int trouble;
         /* "fix all troubles" will keep trying if hero has
            5 or less hit points, so make sure they're always
            boosted to be more than that */
+        play_sfx_sound(SFX_FULL_HEALING);
         You_feel("much better.");
         if (Upolyd) {
             u.basemhmax += rnd(5);
@@ -463,6 +469,7 @@ int trouble;
         context.botl = 1;
         break;
     case TROUBLE_COLLAPSING:
+        play_sfx_sound(SFX_GAIN_ABILITY);
         /* override Fixed_abil; uncurse that if feasible */
         You_feel("%sstronger.",
                  (AMAX(A_STR) - ABASE(A_STR) > 6) ? "much " : "");
@@ -537,11 +544,13 @@ int trouble;
 			umisc5->otyp == EYEGLASSES_OF_HALLUCINATION ? umisc5 : (struct obj*)0);
 		goto decurse;
 	case TROUBLE_LYCANTHROPE:
+        play_sfx_sound(SFX_CURE_DISEASE);
         you_unwere(TRUE);
         break;
     /*
      */
     case TROUBLE_PUNISHED:
+        play_sfx_sound(SFX_BLESS_ITEM_SUCCESS);
         Your("chain disappears.");
         if (u.utrap && u.utraptype == TT_BURIEDBALL)
             buried_ball_to_freedom();
@@ -563,7 +572,8 @@ int trouble;
 		/*NOTREACHED*/
 		break;
 	case TROUBLE_TELEPORTITIS:
-		You_feel("much more composed.");
+        play_sfx_sound(SFX_CURE_AILMENT);
+        You_feel("much more composed.");
 		u.uprops[TELEPORT].intrinsic = (u.uprops[TELEPORT].intrinsic & TIMEOUT);
 		break;
 	case TROUBLE_CURSED_ITEMS:
@@ -584,6 +594,7 @@ int trouble;
             iflags.last_msg = PLNMSG_OBJ_GLOWS;
             otmp->bknown = !Hallucination;
         }
+        play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
         uncurse(otmp);
         update_inventory();
         break;
@@ -593,6 +604,9 @@ int trouble;
             pline("There's a tiger in your tank.");
         else
             You_feel("in good health again.");
+
+        play_sfx_sound(SFX_RESTORE_ABILITY);
+
         for (i = 0; i < A_MAX; i++) {
             if (ABASE(i) < AMAX(i)) {
                 ABASE(i) = AMAX(i);
@@ -612,32 +626,40 @@ int trouble;
                 eyes = makeplural(eyes);
             Sprintf(msgbuf, "Your %s %s better", eyes, vtense(eyes, "feel"));
             u.ucreamed = 0;
+            play_sfx_sound(SFX_CURE_AILMENT);
             make_blinded(0L, FALSE);
         }
         if (cure_deaf) {
             make_deaf(0L, FALSE);
             if (!Deaf)
+            {
                 Sprintf(eos(msgbuf), "%s can hear again",
                         !*msgbuf ? "You" : " and you");
+            }
         }
         if (*msgbuf)
             pline("%s.", msgbuf);
         break;
     }
     case TROUBLE_WOUNDED_LEGS:
+        play_sfx_sound(SFX_CURE_AILMENT);
         heal_legs(0);
         break;
     case TROUBLE_STUNNED:
+        play_sfx_sound(SFX_CURE_AILMENT);
         make_stunned(0L, TRUE);
         break;
     case TROUBLE_CONFUSED:
+        play_sfx_sound(SFX_CURE_AILMENT);
         make_confused(0L, TRUE);
         break;
     case TROUBLE_HALLUCINATION:
+        play_sfx_sound(SFX_CURE_AILMENT);
         pline("Looks like you are back in Kansas.");
         (void) make_hallucinated(0L, FALSE, 0L);
         break;
     case TROUBLE_SADDLE:
+        play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
         otmp = which_armor(u.usteed, W_SADDLE);
         if (!Blind) {
             pline("%s %s.", Yobjnam2(otmp, "softly glow"), hcolor(NH_AMBER));

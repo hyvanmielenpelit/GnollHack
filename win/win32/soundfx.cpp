@@ -456,6 +456,30 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Weapons Being Assembled", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Armory/Master Chief", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Lightning Strikes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Stoning", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Sliming", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Strangulation", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Suffocation", 0.5f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Food Poisoning", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Terminal Illness", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Blindness", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Confusion", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Stun", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Hallucination", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Slow", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Paralysis", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Fear", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Sleep", 0.5f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Cancellation", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Silence", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Grab", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Mummy Rot", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/Condition/Acquired/Lycanthropy", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Gain Ability", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Lose Ability", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Restore Ability", 0.5f },
 };
 
 #undef NoSound

@@ -1869,8 +1869,11 @@ boolean *effect_happened_ptr;
 	case SPE_CONFUSE_MONSTER:
 		if (youmonst.data->mlet != S_HUMAN || scursed) 
         {
-			if (!HConfusion)
-				You_feel("confused.");
+            if (!HConfusion)
+            {
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+                You_feel("confused.");
+            }
 			make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
             play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
         }
@@ -1881,7 +1884,8 @@ boolean *effect_happened_ptr;
 				Your("%s begin to %s%s.", makeplural(body_part(HAND)),
 					Blind ? "tingle" : "glow ",
 					Blind ? "" : hcolor(NH_PURPLE));
-				make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+                make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
             }
 			else 
@@ -2792,6 +2796,7 @@ boolean *effect_happened_ptr;
             else
                 Your("%s spins in bewilderment.", body_part(HEAD));
             make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             break;
         }
         if (sblessed) {
@@ -2809,6 +2814,7 @@ boolean *effect_happened_ptr;
         if (level.flags.nommap) {
             Your("%s spins as %s blocks the spell!", body_part(HEAD),
                  something);
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
             break;
         }
@@ -2826,7 +2832,8 @@ boolean *effect_happened_ptr;
 		if (level.flags.nommap) {
 			Your("%s spins as %s blocks the spell!", body_part(HEAD),
 				something);
-			make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+            make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
 			break;
 		}
 		if(trap_detect(sobj) == 0) //Something was detected

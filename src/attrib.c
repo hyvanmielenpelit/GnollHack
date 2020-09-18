@@ -321,8 +321,12 @@ boolean givemsg;
         else
             num = 1;
     }
-    (void) adjattrib(A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num,
-                     givemsg ? -1 : 1);
+
+	if (adjattrib(A_STR, (otmp && otmp->cursed) ? -num : (otmp && otmp->blessed) ? num + rn2(2) : num,
+		givemsg ? -1 : 1) == 1 && givemsg)
+	{
+		play_sfx_sound(SFX_GAIN_ABILITY);
+	}
 }
 
 /* may kill you; cause may be poison or monster like 'a' */
@@ -345,7 +349,8 @@ register int num;
 			updatemaxhp();
         }
     }
-    (void) adjattrib(A_STR, -num, 1);
+	if(adjattrib(A_STR, -num, 1) == 1)
+		play_sfx_sound(SFX_LOSE_ABILITY);
 }
 
 
@@ -449,7 +454,10 @@ int poison_strength;   /* d6 per level damage*/
 
 		/* check that a stat change was made */
 		if (adjattrib(typ, -loss, 1))
+		{
+			play_sfx_sound(SFX_LOSE_ABILITY);
 			poisontell(typ, TRUE);
+		}
 		//u.uhp = -1;
         context.botl = TRUE;
     } 
@@ -467,7 +475,10 @@ int poison_strength;   /* d6 per level damage*/
 			loss = (thrown_weapon || !fatal) ? 1 : d(1, 3); /* was rn1(3,3) */
 			/* check that a stat change was made */
 			if (adjattrib(typ, -loss, 1))
+			{
+				play_sfx_sound(SFX_LOSE_ABILITY);
 				poisontell(typ, TRUE);
+			}
 		}
     }
 
@@ -1355,7 +1366,8 @@ exerchk()
                 goto nextattrib;
 
             debugpline1("exerchk: changing %d.", i);
-            if (adjattrib(i, mod_val, -1)) {
+            if (adjattrib(i, mod_val, -1)) 
+			{
                 debugpline1("exerchk: changed %d.", i);
                 /* if you actually changed an attrib - zero accumulation */
                 AEXE(i) = ax = 0;

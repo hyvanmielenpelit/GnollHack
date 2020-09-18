@@ -836,7 +836,7 @@ int mntmp;
                     (char *) 0);
     }
     if (Sick_resistance && (Sick || FoodPoisoned || MummyRot)) {
-		if(Sick)
+        if(Sick)
 	        make_sick(0L, (char *) 0, FALSE);
 		if (FoodPoisoned)
 			make_food_poisoned(0L, (char*)0, FALSE);

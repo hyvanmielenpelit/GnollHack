@@ -610,7 +610,10 @@ register struct monst *mtmp;
             pline("Wait, %s!  That's a %s named %s!", m_monnam(mtmp),
                 mon_monster_name(&youmonst), plname);
         if (sticky)
+        {
+            play_sfx_sound(SFX_ACQUIRE_GRAB);
             u.ustuck = mtmp;
+        }
         youmonst.m_ap_type = M_AP_NOTHING;
         youmonst.mappearance = 0;
         newsym(u.ux, u.uy);
@@ -1203,6 +1206,7 @@ struct monst *mtmp;
         return FALSE;
     } else
 	{
+        play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
         make_sick(Sick ? Sick / 3L + 1L : (long) rn1(ACURR(A_CON), 20),
                   mon_monster_name(mtmp), TRUE);
         return TRUE;
@@ -1219,6 +1223,7 @@ struct monst* mtmp;
     }
     else
     {
+        play_sfx_sound(SFX_CATCH_MUMMY_ROT);
         make_mummy_rotted(-1L, mon_monster_name(mtmp), TRUE);
         return TRUE;
     }
@@ -1816,7 +1821,8 @@ register struct obj* omonwep;
 				}
 				else
 				{
-					u.ustuck = mtmp;
+                    play_sfx_sound(SFX_ACQUIRE_GRAB);
+                    u.ustuck = mtmp;
 					if (damagedealt > 0)
 						pline("%s grabs you%s! You sustain %d damage.", Monnam(mtmp), (hug_throttles(mtmp->data) && has_neck(youmonst.data)) ? " by the throat" : "", damagedealt);
 					else
@@ -2305,7 +2311,10 @@ register struct obj* omonwep;
     case AD_STCK:
         hitmsg(mtmp, mattk, damagedealt);
         if (!is_cancelled(mtmp) && !u.ustuck && !sticks(youmonst.data))
+        {
+            play_sfx_sound(SFX_ACQUIRE_GRAB);
             u.ustuck = mtmp;
+        }
         break;
     case AD_WRAP:
         if ((!is_cancelled(mtmp) || u.ustuck == mtmp) && !sticks(youmonst.data)) 
@@ -2331,6 +2340,7 @@ register struct obj* omonwep;
 					else if (is_constrictor(mtmp->data))
 						pline("%s is constricting you to death!", Monnam(mtmp));
 
+                    play_sfx_sound(SFX_ACQUIRE_GRAB);
                     u.ustuck = mtmp;
 
                     update_extrinsics();
@@ -2387,6 +2397,7 @@ register struct obj* omonwep;
         if (uncancelled /* && !rn2(4)*/ && u.ulycn == NON_PM
             && !Protection_from_shape_changers && !Lycanthropy_resistance)
 		{
+            play_sfx_sound(SFX_CATCH_LYCANTHROPY);
             You_feel("feverish.");
             exercise(A_CON, FALSE);
             set_ulycn(monsndx(mdat));
@@ -2613,7 +2624,9 @@ register struct obj* omonwep;
 				healamount = u.uhp - starthp;
 			}
 
-			if(healamount > 0)
+            play_sfx_sound(SFX_HEALING);
+            
+            if(healamount > 0)
 				pline("%s hits you for %d healing!", Monnam(mtmp), healamount);
 			else
 				pline("%s hits you but nothing happens.", Monnam(mtmp));
@@ -2688,7 +2701,9 @@ register struct obj* omonwep;
 			damage /= 2;
 			damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
 			hitmsg(mtmp, mattk, damagedealt);
-			make_stunned((HStun & TIMEOUT) + (long) ceil(damage * 2), TRUE);
+            if (!Stunned)
+                play_sfx_sound(SFX_ACQUIRE_STUN);
+            make_stunned((HStun & TIMEOUT) + (long) ceil(damage * 2), TRUE);
         } 
 		else
 			hitmsg(mtmp, mattk, damagedealt);
@@ -2735,6 +2750,10 @@ register struct obj* omonwep;
                 You("are getting even more confused.");
             else
                 You("are getting confused.");
+
+            if (!Confusion)
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+
             make_confused(itimeout_incr(HConfusion, (int)ceil(damage)), FALSE);
         }
 		damage = 0;
@@ -3507,6 +3526,8 @@ boolean ufound;
                 kill_agr = FALSE; /* already killed (maybe lifesaved) */
                 chg =
                     make_hallucinated(HHallucination + (long)basedmg, FALSE, 0L);
+                if(chg)
+                    play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
                 You("%s.", chg ? "are freaked out" : "seem unaffected");
             }
             break;
@@ -3621,6 +3642,8 @@ struct attack *mattk;
                     pline("%s gaze confuses you!", s_suffix(Monnam(mtmp)));
                 else
                     You("are getting more and more confused.");
+                if (!Confusion)
+                    play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 make_confused(itimeout_incr(HConfusion, conf), FALSE);
                 stop_occupation();
             }
@@ -3643,7 +3666,9 @@ struct attack *mattk;
 					int stun = d(2, 6);
 
 					mtmp->mspec_used = mtmp->mspec_used + (stun + rn2(6));
-					make_stunned((HStun & TIMEOUT) + (long)stun, TRUE);
+                    if (!Stunned)
+                        play_sfx_sound(SFX_ACQUIRE_STUN);
+                    make_stunned((HStun & TIMEOUT) + (long)stun, TRUE);
 					stop_occupation();
 				}
 				else
@@ -3675,6 +3700,8 @@ struct attack *mattk;
 				blnd += mattk->damp;
 
                 You("are blinded by %s radiance!", s_suffix(mon_nam(mtmp)));
+                if (!Blind)
+                    play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
                 make_blinded((long) blnd, FALSE);
                 stop_occupation();
                 /* not blind at this point implies you're wearing
@@ -4088,6 +4115,7 @@ struct monst *mon;
               noit_Monnam(mon));
         switch (rn2(5)) {
         case 0:
+            play_sfx_sound(SFX_LOSE_ENERGY);
             You_feel("drained of energy.");
             u.uen = 0;
             u.ubaseenmax -= rnd(Half_physical_damage ? 5 : 10);
@@ -4097,12 +4125,14 @@ struct monst *mon;
                 u.uenmax = 0;
             break;
         case 1:
+            play_sfx_sound(SFX_LOSE_ABILITY);
             You("are down in the dumps.");
             (void) adjattrib(A_CON, -1, TRUE);
             exercise(A_CON, FALSE);
             context.botl = 1;
             break;
         case 2:
+            play_sfx_sound(SFX_LOSE_ABILITY);
             Your("senses are dulled.");
             (void) adjattrib(A_WIS, -1, TRUE);
             exercise(A_WIS, FALSE);

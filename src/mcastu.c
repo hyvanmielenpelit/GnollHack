@@ -604,13 +604,18 @@ int spellnum;
         if (Antimagic_or_resistance || Free_action || Invulnerable) {
             u_shieldeff();
             if (!Stunned)
+            {
+                play_sfx_sound(SFX_ACQUIRE_STUN);
                 You_feel("momentarily disoriented.");
+            }
             make_stunned(1L, FALSE);
         } else {
             You(Stunned ? "struggle to keep your balance." : "reel...");
             int stun_duration = d(ACURR(A_DEX) < 12 ? 6 : 4, 4);
             if (Half_spell_damage)
 				stun_duration = (stun_duration + 1) / 2;
+            if (!Stunned)
+                play_sfx_sound(SFX_ACQUIRE_STUN);
             make_stunned((HStun & TIMEOUT) + (long)stun_duration, FALSE);
         }
         damage = 0;
@@ -875,6 +880,8 @@ int spellnum;
 			int duration = (int) mtmp->m_lev;
             if (Half_spell_damage)
 				duration = (duration + 1) / 2;
+            if (!Confusion)
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, duration), TRUE);
             if (Hallucination)
                 You_feel("%s!", oldprop ? "trippier" : "trippy");

@@ -192,10 +192,12 @@ dosit()
             switch (rnd(13)) 
 			{
             case 1:
+                play_sfx_sound(SFX_LOSE_ABILITY);
                 (void) adjattrib(rn2(A_MAX), -rn1(4, 3), FALSE);
                 losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "cursed throne", KILLED_BY_AN);
                 break;
             case 2:
+                play_sfx_sound(SFX_GAIN_ABILITY);
                 (void) adjattrib(rn2(A_MAX), 1, FALSE);
                 break;
             case 3:
@@ -206,6 +208,7 @@ dosit()
                 exercise(A_CON, FALSE);
                 break;
             case 4:
+                play_sfx_sound(SFX_HEALING);
                 You_feel("much, much better!");
                 if (Upolyd) {
                     if (u.mh >= (u.mhmax - 5))
@@ -272,6 +275,7 @@ dosit()
 				{
                     if (level.flags.nommap) {
                         pline("A terrible drone fills your head!");
+                        play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                         make_confused(itimeout_incr(HConfusion, rnd(30)), FALSE);
                     } else {
                         pline("An image forms in your mind.");
@@ -290,8 +294,10 @@ dosit()
 				{
                     You_feel("threatened.");
                     aggravate();
-                } else
+                } 
+                else
 				{
+                    play_sfx_sound(SFX_WRENCHING_SENSATION);
                     You_feel("a wrenching sensation.");
                     tele(); /* teleport him */
                 }
@@ -306,6 +312,7 @@ dosit()
                 break;
             case 13:
                 Your("mind turns into a pretzel!");
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 make_confused(itimeout_incr(HConfusion, rnd(7) + 15),
                               FALSE);
                 break;

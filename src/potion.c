@@ -818,6 +818,7 @@ struct obj *otmp;
             break;
         } else {
             /* unlike unicorn horn, overrides Fixed_abil */
+            play_sfx_sound(SFX_RESTORE_ABILITY);
             pline("Wow!  This makes you feel %s!",
                   (otmp->blessed)
                       ? (unfixable_trouble_count(FALSE) ? "better" : "great")
@@ -854,8 +855,14 @@ struct obj *otmp;
     case POT_HALLUCINATION:
         if (Hallucination || Halluc_resistance)
             nothing++;
-        (void) make_hallucinated(itimeout_incr(HHallucination, duration),
-                                 TRUE, 0L);
+        else
+            play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
+
+        if (!Halluc_resistance)
+        {
+            (void)make_hallucinated(itimeout_incr(HHallucination, duration),
+                TRUE, 0L);
+        }
         break;
     case POT_WATER:
         if (!otmp->blessed && !otmp->cursed) {
@@ -895,6 +902,7 @@ struct obj *otmp;
         {
             if (otmp->blessed) 
             {
+                play_sfx_sound(SFX_CURE_DISEASE);
                 You_feel("full of awe.");
                 make_sick(0L, (char *) 0, TRUE);
 				make_food_poisoned(0L, (char*)0, TRUE);
@@ -926,7 +934,11 @@ struct obj *otmp;
               otmp->odiluted ? "watered down " : "",
               Hallucination ? "dandelion wine" : "liquid fire");
         if (!otmp->blessed)
+        {
+            if(!Confusion)
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, duration), FALSE);
+        }
         /* the whiskey makes us feel better */
         if (!otmp->odiluted)
             healup(1, 0, FALSE, FALSE, FALSE, FALSE, FALSE);
@@ -957,6 +969,7 @@ struct obj *otmp;
         {
             if (otmp->blessed)
             {
+                play_sfx_sound(SFX_GAIN_ABILITY);
                 (void) adjattrib(A_INT, 1, FALSE);
                 (void) adjattrib(A_WIS, 1, FALSE);
             }
@@ -1057,9 +1070,12 @@ struct obj *otmp;
 		u.uhunger += nutrition / (otmp->odiluted ? 2 : 1);
 		update_hunger_status(FALSE);
 
-		if (!otmp->odiluted)
-			make_confused(itimeout_incr(HConfusion, duration), FALSE);
-
+        if (!otmp->odiluted)
+        {
+            if(!Confusion)
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+            make_confused(itimeout_incr(HConfusion, duration), FALSE);
+        }
 		break;
 	case POT_PARALYSIS:
         if (Free_action) {
@@ -1206,6 +1222,7 @@ struct obj *otmp;
 		break;
 	case POT_CONFUSION:
         if (!Confusion) {
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             if (Hallucination) {
                 pline("What a trippy feeling!");
                 unkn++;
@@ -1256,7 +1273,10 @@ struct obj *otmp;
             if (added_abilities == 0)
                 You_feel("a bit more competent for a moment, but then the feeling subsides.");
             else
+            {
+                play_sfx_sound(SFX_GAIN_ABILITY);
                 play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            }
         }
         break;
     case POT_SPEED:
@@ -2275,7 +2295,7 @@ void
 potionbreathe(obj)
 struct obj *obj;
 {
-    int i, ii, isdone, kn = 0;
+    int i, ii, kn = 0;
     boolean cureblind = FALSE;
 
     if (obj->oclass != POTION_CLASS)
@@ -2311,18 +2331,22 @@ struct obj *obj;
         } 
         else 
         {
-            i = rn2(A_MAX); /* start at a random point */
-            for (isdone = ii = 0; !isdone && ii < A_MAX; ii++) 
+            if (obj->blessed && !Fixed_abil)
             {
-                if (ABASE(i) < AMAX(i)) 
+                boolean restored = FALSE;
+                for (int trycnt = 0; trycnt < 10; trycnt++)
                 {
-                    ABASE(i)++;
-                    /* only first found if not blessed */
-                    isdone = !(obj->blessed);
-                    context.botl = 1;
+                    i = rn2(A_MAX); /* start at a random point */
+                    if (ABASE(i) < AMAX(i))
+                    {
+                        ABASE(i)++;
+                        context.botl = 1;
+                        restored = TRUE;
+                        break;
+                    }
                 }
-                if (++i >= A_MAX)
-                    i = 0;
+                if(restored)
+                    play_sfx_sound(SFX_RESTORE_ABILITY);
             }
         }
         break;
@@ -2385,8 +2409,11 @@ struct obj *obj;
         You("have a momentary vision.");
         break;
 	case POT_BOOZE:
-		if (!Confusion)
-			You_feel("somewhat dizzy.");
+        if (!Confusion)
+        {
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+            You_feel("somewhat dizzy.");
+        }
 		make_confused(itimeout_incr(HConfusion, duration), FALSE);
 		break;
 	case POT_URINE:
@@ -2399,7 +2426,10 @@ struct obj *obj;
 		break;
 	case POT_CONFUSION:
         if (!Confusion)
+        {
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             You_feel("somewhat dizzy.");
+        }
         make_confused(itimeout_incr(HConfusion, duration), FALSE);
         break;
     case POT_INVISIBILITY:

@@ -628,11 +628,15 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 
 		//REDUCE INTELLIGENCE
 		int adjresult = adjattrib(A_INT, -int_loss, FALSE);
-		forget_levels(25);  /* lose memory of 25% of levels */
+        
+        forget_levels(25);  /* lose memory of 25% of levels */
 		forget_objects(25); /* lose memory of 25% of objects */
 
 		if(!Fixed_abil)
 			You("lose %d intelligence %s!", int_loss, int_loss > 1 ? "points" : "point");
+
+        if (adjresult == 1 && !Fixed_abil)
+            play_sfx_sound(SFX_LOSE_ABILITY);
 
 		if (adjresult >= 2)
 		{
@@ -1200,9 +1204,13 @@ int pm;
     case PM_YELLOW_LIGHT:
 	case PM_HELL_BAT:
 	case PM_GIANT_BAT:
+        if (!Stunned)
+            play_sfx_sound(SFX_ACQUIRE_STUN);
         make_stunned((HStun & TIMEOUT) + 30L, FALSE);
         /*FALLTHRU*/
     case PM_BAT:
+        if (!Stunned)
+            play_sfx_sound(SFX_ACQUIRE_STUN);
         make_stunned((HStun & TIMEOUT) + 30L, FALSE);
         break;
 	case PM_CHAOS_MIMIC:
@@ -1307,21 +1315,22 @@ int pm;
 
     /* Possibly convey an intrinsic */
     if (check_intrinsics)
-	{
-        struct permonst *ptr = &mons[pm];
+    {
+        struct permonst* ptr = &mons[pm];
         boolean conveys_STR = conveys_strength(ptr);
-		boolean conveys_DEX = conveys_dexterity(ptr);
-		boolean conveys_CON = conveys_constitution(ptr);
-		boolean conveys_INT = conveys_intelligence(ptr);
-		boolean conveys_WIS = conveys_wisdom(ptr);
-		boolean conveys_CHA = conveys_charisma(ptr);
-		int i, count;
+        boolean conveys_DEX = conveys_dexterity(ptr);
+        boolean conveys_CON = conveys_constitution(ptr);
+        boolean conveys_INT = conveys_intelligence(ptr);
+        boolean conveys_WIS = conveys_wisdom(ptr);
+        boolean conveys_CHA = conveys_charisma(ptr);
+        int i, count;
 
-        if (has_hallucinating_corpse(ptr)) 
-		{
+        if (has_hallucinating_corpse(ptr))
+        {
             pline("Oh wow!  Great stuff!");
-            (void) make_hallucinated((HHallucination & TIMEOUT) + 200L, FALSE,
-                                     0L);
+            play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
+            (void)make_hallucinated((HHallucination & TIMEOUT) + 200L, FALSE,
+                0L);
         }
 
         /* Check the monster for all of the intrinsics.  If this
@@ -1334,11 +1343,11 @@ int pm;
         count = 0; /* number of possible intrinsics */
         tmp = 0;   /* which one we will try to give */
 
-		int mdifficulty = ptr->difficulty;
-		int percent = 1;
+        int mdifficulty = ptr->difficulty;
+        int percent = 1;
 
-		if (ptr->mlet == S_NYMPH)
-			percent = 25;
+        if (ptr->mlet == S_NYMPH)
+            percent = 25;
         else if (ptr->mlet == S_GIANT)
             percent = 50;
         else if (ptr->mlet == S_OGRE)
@@ -1348,70 +1357,70 @@ int pm;
         else if (ptr->mlet == S_YETI)
             percent = 20;
         else if (ptr == &mons[PM_FLOATING_EYE])
-			percent = 100;
+            percent = 100;
         else if (is_mind_flayer(ptr))
             percent = 25;
         else
-			percent = min(30, max(1, mdifficulty));
+            percent = min(30, max(1, mdifficulty));
 
-        if (conveys_STR && rn2(100) < percent) 
+        if (conveys_STR && rn2(100) < percent)
         {
             count = 1;
             tmp = -1; /* use -1 as fake prop index for STR */
             debugpline1("\"Intrinsic\" strength, %d", tmp);
         }
 
-		if (conveys_DEX && rn2(100) < percent) {
-			if (count == 0 || !rn2(2))
-			{
-				count = 1;
-				tmp = -2;
-				debugpline1("\"Intrinsic\" dexterity, %d", tmp);
-			}
-		}
+        if (conveys_DEX && rn2(100) < percent) {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -2;
+                debugpline1("\"Intrinsic\" dexterity, %d", tmp);
+            }
+        }
 
-		if (conveys_CON && rn2(100) < percent)
-		{
-			if (count == 0 || !rn2(2))
-			{
-				count = 1;
-				tmp = -3;
-				debugpline1("\"Intrinsic\" constitution, %d", tmp);
-			}
-		}
+        if (conveys_CON && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -3;
+                debugpline1("\"Intrinsic\" constitution, %d", tmp);
+            }
+        }
 
-		if (conveys_INT && rn2(100) < percent)
-		{
-			if (count == 0 || !rn2(2))
-			{
-				count = 1;
-				tmp = -4;
-				debugpline1("\"Intrinsic\" intelligence, %d", tmp);
-			}
-		}
-		
-		if (conveys_WIS && rn2(100) < percent)
-		{
-			if (count == 0 || !rn2(2))
-			{
-				count = 1;
-				tmp = -5;
-				debugpline1("\"Intrinsic\" wisdom, %d", tmp);
-			}
-		}
+        if (conveys_INT && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -4;
+                debugpline1("\"Intrinsic\" intelligence, %d", tmp);
+            }
+        }
 
-		if (conveys_CHA && rn2(100) < percent)
-		{
-			if (count == 0 || !rn2(2))
-			{
-				count = 1;
-				tmp = -6;
-				debugpline1("\"Intrinsic\" charisma, %d", tmp);
-			}
-		}
+        if (conveys_WIS && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -5;
+                debugpline1("\"Intrinsic\" wisdom, %d", tmp);
+            }
+        }
 
-		
-		for (i = 1; i <= LAST_PROP; i++) {
+        if (conveys_CHA && rn2(100) < percent)
+        {
+            if (count == 0 || !rn2(2))
+            {
+                count = 1;
+                tmp = -6;
+                debugpline1("\"Intrinsic\" charisma, %d", tmp);
+            }
+        }
+
+
+        for (i = 1; i <= LAST_PROP; i++) {
             if (!intrinsic_possible(i, ptr))
                 continue;
             ++count;
@@ -1425,19 +1434,34 @@ int pm;
             }
         }
 
-		/* if something was chosen, give it now (givit() might fail) */
+        /* if something was chosen, give it now (givit() might fail) */
         if (tmp == -1)
             gainstr((struct obj*)0, 0, TRUE);
         else if (tmp == -2)
+        {
+            play_sfx_sound(SFX_GAIN_ABILITY);
             (void)adjattrib(A_DEX, 1, -1);
+        }
         else if (tmp == -3)
+        {
+            play_sfx_sound(SFX_GAIN_ABILITY);
             (void)adjattrib(A_CON, 1, -1);
+        }
         else if (tmp == -4)
+        {
+            play_sfx_sound(SFX_GAIN_ABILITY);
             (void)adjattrib(A_INT, 1, -1);
+        }
         else if (tmp == -5)
+        {
+            play_sfx_sound(SFX_GAIN_ABILITY);
             (void)adjattrib(A_WIS, 1, -1);
+        }
         else if (tmp == -6)
+        {
+            play_sfx_sound(SFX_GAIN_ABILITY);
             (void)adjattrib(A_CHA, 1, -1);
+        }
         else if (tmp > 0)
             givit(tmp, ptr);
         else if (conveys_STR && !rn2(3))
@@ -1881,6 +1905,9 @@ struct obj *obj;
             You_feel("rather trippy.");
         else
             You_feel("rather %s.", body_part(LIGHT_HEADED));
+
+        if (!Confusion)
+            play_sfx_sound(SFX_ACQUIRE_CONFUSION);
         make_confused(itimeout_incr(HConfusion, d(2, 4)), FALSE);
     } 
     else if (!rn2(4) && !Blind) 
@@ -1995,6 +2022,7 @@ struct obj *otmp;
             /* make sure new ill doesn't result in improvement */
             if (Sick && (sick_time > Sick))
                 sick_time = (Sick > 1L) ? Sick - 1L : 1L;
+            play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
             make_sick(sick_time, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
 
             (void)touchfood(otmp);
@@ -2011,6 +2039,7 @@ struct obj *otmp;
         else
         {
             play_occupation_immediate_sound(objects[otmp->otyp].oc_soundset, OCCUPATION_EATING, OCCUPATION_SOUND_TYPE_START);
+            play_sfx_sound(SFX_CATCH_MUMMY_ROT);
             make_mummy_rotted(-1L, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
 
             (void)touchfood(otmp);
@@ -2030,6 +2059,7 @@ struct obj *otmp;
         pline("Ecch - that must have been poisonous!");
         if (!Poison_resistance)
         {
+            play_sfx_sound(SFX_LOSE_ABILITY);
             losestr(rnd(4));
             losehp(adjust_damage(rnd(15), (struct monst*)0, &youmonst, AD_DRST, ADFLAGS_NONE), !glob ? "poisonous corpse" : "poisonous glob",
                    KILLED_BY_AN);
@@ -2401,39 +2431,60 @@ struct obj *otmp;
         case RIN_GAIN_STRENGTH:
             accessory_has_effect(otmp);
             if (adjattrib(A_STR, otmp->enchantment, -1))
+            {
+                play_sfx_sound(otmp->enchantment >= 0 ? SFX_GAIN_ABILITY : SFX_LOSE_ABILITY);
                 makeknown(typ);
+            }
             break;
 		case RIN_GAIN_DEXTERITY:
 			accessory_has_effect(otmp);
 			if (adjattrib(A_DEX, otmp->enchantment, -1))
-				makeknown(typ);
-			break;
+            {
+                play_sfx_sound(otmp->enchantment >= 0 ? SFX_GAIN_ABILITY : SFX_LOSE_ABILITY);
+                makeknown(typ);
+            }
+            break;
 		case RIN_GAIN_CONSTITUTION:
             accessory_has_effect(otmp);
             if (adjattrib(A_CON, otmp->enchantment, -1))
+            {
+                play_sfx_sound(otmp->enchantment >= 0 ? SFX_GAIN_ABILITY : SFX_LOSE_ABILITY);
                 makeknown(typ);
+            }
             break;
 		case RIN_GAIN_INTELLIGENCE:
 			accessory_has_effect(otmp);
 			if (adjattrib(A_INT, otmp->enchantment, -1))
-				makeknown(typ);
-			break;
+            {
+                play_sfx_sound(otmp->enchantment >= 0 ? SFX_GAIN_ABILITY : SFX_LOSE_ABILITY);
+                makeknown(typ);
+            }
+            break;
 		case RIN_GAIN_WISDOM:
 			accessory_has_effect(otmp);
 			if (adjattrib(A_WIS, otmp->enchantment, -1))
-				makeknown(typ);
-			break;
+            {
+                play_sfx_sound(otmp->enchantment >= 0 ? SFX_GAIN_ABILITY : SFX_LOSE_ABILITY);
+                makeknown(typ);
+            }
+            break;
 		case RIN_ADORNMENT:
 			accessory_has_effect(otmp);
-			if (adjattrib(A_CHA, otmp->enchantment, -1))
-				makeknown(typ);
+            if (adjattrib(A_CHA, otmp->enchantment, -1))
+            {
+                play_sfx_sound(otmp->enchantment >= 0 ? SFX_GAIN_ABILITY : SFX_LOSE_ABILITY);
+                makeknown(typ);
+            }
 			break;
 		case RIN_POWER:
 			accessory_has_effect(otmp);
-			if (adjattrib(A_STR, otmp->enchantment, -1) || adjattrib(A_DEX, otmp->enchantment, -1) 
-				|| adjattrib(A_CON, otmp->enchantment, -1) || adjattrib(A_INT, otmp->enchantment, -1) 
-				|| adjattrib(A_WIS, otmp->enchantment, -1) || adjattrib(A_CHA, otmp->enchantment, -1))
-				makeknown(typ);
+            if (adjattrib(A_STR, otmp->enchantment, -1) || adjattrib(A_DEX, otmp->enchantment, -1)
+                || adjattrib(A_CON, otmp->enchantment, -1) || adjattrib(A_INT, otmp->enchantment, -1)
+                || adjattrib(A_WIS, otmp->enchantment, -1) || adjattrib(A_CHA, otmp->enchantment, -1))
+            {
+                play_sfx_sound(otmp->enchantment >= 0 ? SFX_GAIN_ABILITY : SFX_LOSE_ABILITY);
+                makeknown(typ);
+            }
 			break;
 		case RIN_INCREASE_ACCURACY:
             accessory_has_effect(otmp);
@@ -2694,28 +2745,33 @@ struct obj *otmp;
 		if (otmp->otyp == BANANA)
 			pline("That made you feel like a monkey!");
 
-		(void)adjattrib(A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
-			TRUE ? -1 : 1);
-		break;
+		if(adjattrib(A_DEX, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1))
+            play_sfx_sound(SFX_GAIN_ABILITY);
+        break;
 	case EDIBLEFX_GAIN_CONSTITUTION:
-		(void)adjattrib(A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
-			TRUE ? -1 : 1);
-		break;
+		if(adjattrib(A_CON, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1))
+            play_sfx_sound(SFX_GAIN_ABILITY);
+        break;
 	case EDIBLEFX_GAIN_INTELLIGENCE:
-		(void)adjattrib(A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
-			TRUE ? -1 : 1);
-		break;
+		if(adjattrib(A_INT, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1))
+            play_sfx_sound(SFX_GAIN_ABILITY);
+        break;
 	case EDIBLEFX_GAIN_WISDOM:
-		(void)adjattrib(A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
-			TRUE ? -1 : 1);
-		break;
+		if(adjattrib(A_WIS, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1))
+            play_sfx_sound(SFX_GAIN_ABILITY);
+        break;
 	case EDIBLEFX_GAIN_CHARISMA:
 		if (otmp->otyp == AVOCADO)
 			pline("That made you feel like a hipster!");
 
-		(void)adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
-			TRUE ? -1 : 1);
-		break;
+		if(adjattrib(A_CHA, (otmp && otmp->cursed) ? -1 : (otmp && otmp->blessed) ? rnd(2) : 1,
+			TRUE ? -1 : 1))
+            play_sfx_sound(SFX_GAIN_ABILITY);
+        break;
 	case EDIBLEFX_RESTORE_ABILITY:
 	{
 		int otyp = POT_RESTORE_ABILITY;
@@ -2753,15 +2809,32 @@ struct obj *otmp;
         }
         break;
     case EDIBLEFX_CURE_SICKNESS:
+    {
+        boolean cured = FALSE;
         if (Sick && !otmp->cursed)
-            make_sick(0L, (char *) 0, TRUE);
-		if (FoodPoisoned && !otmp->cursed)
-			make_food_poisoned(0L, (char*)0, TRUE);
+        {
+            cured = TRUE;
+            make_sick(0L, (char*)0, TRUE);
+        }
+        if (FoodPoisoned && !otmp->cursed)
+        {
+            cured = TRUE;
+            make_food_poisoned(0L, (char*)0, TRUE);
+        }
         if (MummyRot && !otmp->cursed)
+        {
+            cured = TRUE;
             make_mummy_rotted(0L, (char*)0, TRUE);
+        }
         if (Vomiting && !otmp->cursed)
+        {
+            cured = TRUE;
             make_vomiting(0L, TRUE);
+        }
+        if(cured)
+            play_sfx_sound(SFX_CURE_DISEASE);
         break;
+    }
     case EDIBLEFX_APPLE:
         if (otmp->cursed && !Sleep_resistance) {
             /* Snow White; 'poisoned' applies to [a subset of] weapons,
@@ -3069,6 +3142,8 @@ doeat()
         pline("Ulch - that %s was rustproofed!", xname(otmp));
         /* The regurgitated object's rustproofing is gone now */
         otmp->oerodeproof = 0;
+        if (!Stunned)
+            play_sfx_sound(SFX_ACQUIRE_STUN);
         make_stunned((HStun & TIMEOUT) + (long) rn2(10), TRUE);
         /*
          * We don't expect rust monsters to be wielding welded weapons
@@ -3342,7 +3417,10 @@ doeat()
 			int duration = d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus;
 
 			if(duration > 0)
-				(void)make_hallucinated(itimeout_incr(HHallucination, duration), TRUE, 0L);
+            {
+                play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
+                (void)make_hallucinated(itimeout_incr(HHallucination, duration), TRUE, 0L);
+            }
 
 			consume_oeaten(otmp, 2); /* oeaten >>= 2 */
 		}

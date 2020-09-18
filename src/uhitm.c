@@ -150,8 +150,11 @@ struct obj *wep; /* uwep for attack(), null for kick_monster() */
         if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
             /* applied pole-arm attack is too far to get stuck */
             && distu(mtmp->mx, mtmp->my) <= 2) {
-            if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
-                u.ustuck = mtmp;
+			if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
+			{
+				play_sfx_sound(SFX_ACQUIRE_GRAB);
+				u.ustuck = mtmp;
+			}
         }
         /* #H7329 - if hero is on engraved "Elbereth", this will end up
          * assessing an alignment penalty and removing the engraving
@@ -3014,7 +3017,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
                 if (m_slips_free(mdef, mattk)) {
                     damage = 0;
                 } else {
-                    You("swing yourself around %s!", mon_nam(mdef));
+					play_sfx_sound(SFX_ACQUIRE_GRAB);
+					You("swing yourself around %s!", mon_nam(mdef));
                     u.ustuck = mdef;
                 }
             } else if (u.ustuck == mdef) {
@@ -3877,7 +3881,8 @@ register struct monst *mon;
                 if (u.ustuck && u.ustuck != mon)
                     uunstick();
                 You("grab %s!", mon_nam(mon));
-                u.ustuck = mon;
+				play_sfx_sound(SFX_ACQUIRE_GRAB);
+				u.ustuck = mon;
                 if (silverhit && flags.verbose)
                     silver_sears(&youmonst, mon, silverhit);
                 sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg);
@@ -4323,15 +4328,21 @@ struct monst *mtmp;
 {
     const char *fmt = "Wait!  That's %s!", *generic = "a monster", *what = 0;
 
-    if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
-        u.ustuck = mtmp;
+	if (!u.ustuck && !is_fleeing(mtmp) && dmgtype(mtmp->data, AD_STCK))
+	{
+		play_sfx_sound(SFX_ACQUIRE_GRAB);
+		u.ustuck = mtmp;
+	}
 
-    if (Blind) {
+    if (Blind) 
+	{
         if (!(Blind_telepat || Unblind_telepat || Detect_monsters))
             what = generic; /* with default fmt */
         else if (M_AP_TYPE(mtmp) == M_AP_MONSTER)
             what = a_monnam(mtmp); /* differs from what was sensed */
-    } else {
+    } 
+	else 
+	{
         int glyph = levl[u.ux + u.dx][u.uy + u.dy].hero_memory_layers.glyph;
 
         if (glyph_is_cmap_or_cmap_variation(glyph) && (generic_glyph_to_cmap(glyph) == S_hcdoor

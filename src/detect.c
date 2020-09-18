@@ -1197,6 +1197,8 @@ struct obj **optr;
             break;
         case 2:
             pline("%s you!", Tobjnam(obj, "confuse"));
+            if (!Confusion)
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
             make_confused(itimeout_incr(HConfusion, rnd(100)), FALSE);
             break;
         case 3:
@@ -1214,6 +1216,8 @@ struct obj **optr;
             }
             break;
         case 4:
+            if (!Hallucination)
+                play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
             pline("%s your mind!", Tobjnam(obj, "zap"));
             (void) make_hallucinated(
                 (HHallucination & TIMEOUT) + (long) rnd(100), FALSE, 0L);

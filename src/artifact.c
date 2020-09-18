@@ -1244,10 +1244,18 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     /* stun if that was selected and a worse effect didn't occur */
     if (do_stun) {
 		if (youdefend)
-			make_stunned(((HStun & TIMEOUT) + 3L), FALSE);
+		{
+			if (!Stunned)
+				play_sfx_sound(SFX_ACQUIRE_STUN);
+			make_stunned(((HStun& TIMEOUT) + 3L), FALSE);
+		}
 		else
-			(void)increase_mon_property_verbosely(mdef, STUNNED, 3);
+		{
+			if (!is_stunned(mdef))
+				play_sfx_sound(SFX_ACQUIRE_STUN);
 
+			(void)increase_mon_property_verbosely(mdef, STUNNED, 3);
+		}
 		/* avoid extra stun message below if we used mb_verb["stun"] above */
         if (attack_indx == MB_INDEX_STUN)
             do_stun = FALSE;
@@ -1255,10 +1263,18 @@ char *hittee;              /* target's name: "you" or mon_nam(mdef) */
     /* lastly, all this magic can be confusing... */
     do_confuse = !rn2(12);
     if (do_confuse) {
-        if (youdefend)
-            make_confused(itimeout_incr(HConfusion, 4L), FALSE);
-        else
+		if (youdefend)
+		{
+			if (!Confusion)
+				play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+			make_confused(itimeout_incr(HConfusion, 4L), FALSE);
+		}
+		else
+		{
+			if (!is_confused(mdef))
+				play_sfx_sound(SFX_ACQUIRE_CONFUSION);
 			(void)increase_mon_property_verbosely(mdef, CONFUSION, 4);
+		}
 	}
 
     /* now give message(s) describing side-effects;
@@ -2475,6 +2491,7 @@ struct obj *obj;
 		{
 			int healamt = (u.uhpmax + 1 - u.uhp) / 2;
             long creamed = (long) u.ucreamed;
+			play_sfx_sound(SFX_HEALING);
 
             if (Upolyd)
                 healamt = (u.mhmax + 1 - u.mh) / 2;

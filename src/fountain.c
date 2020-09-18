@@ -351,7 +351,8 @@ drinkfountain()
 	{
         int i, ii, littleluck = (u.uluck < 4);
 
-        pline("Wow!  The water makes you feel great!");
+		play_sfx_sound(SFX_RESTORE_ABILITY);
+		pline("Wow!  The water makes you feel great!");
         /* blessed restore ability */
         for (ii = 0; ii < A_MAX; ii++)
             if (ABASE(ii) < AMAX(ii)) {

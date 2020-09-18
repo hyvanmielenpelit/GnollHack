@@ -2583,6 +2583,116 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_LIGHTNING_STRIKES, 10.0f},
         TRUE
     },
+    {
+        "GHSOUND_START_STONING",
+        {GHSOUND_START_STONING, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_START_SLIMING",
+        {GHSOUND_START_SLIMING, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_START_STRANGULATION",
+        {GHSOUND_START_STRANGULATION, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_START_SUFFOCATION",
+        {GHSOUND_START_SUFFOCATION, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_CATCH_FOOD_POISONING",
+        {GHSOUND_CATCH_FOOD_POISONING, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_CATCH_TERMINAL_ILLNESS",
+        {GHSOUND_CATCH_TERMINAL_ILLNESS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_BLINDNESS",
+        {GHSOUND_ACQUIRE_BLINDNESS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_CONFUSION",
+        {GHSOUND_ACQUIRE_CONFUSION, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_STUN",
+        {GHSOUND_ACQUIRE_STUN, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_HALLUCINATION",
+        {GHSOUND_ACQUIRE_HALLUCINATION, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_SLOW",
+        {GHSOUND_ACQUIRE_SLOW, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_PARALYSIS",
+        {GHSOUND_ACQUIRE_PARALYSIS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_FEAR",
+        {GHSOUND_ACQUIRE_FEAR, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_SLEEP",
+        {GHSOUND_ACQUIRE_SLEEP, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_CANCELLATION",
+        {GHSOUND_ACQUIRE_CANCELLATION, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_SILENCE",
+        {GHSOUND_ACQUIRE_SILENCE, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ACQUIRE_GRAB",
+        {GHSOUND_ACQUIRE_GRAB, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_CATCH_MUMMY_ROT",
+        {GHSOUND_CATCH_MUMMY_ROT, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_CATCH_LYCANTHROPY",
+        {GHSOUND_CATCH_LYCANTHROPY, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_GAIN_ABILITY",
+        {GHSOUND_GAIN_ABILITY, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_LOSE_ABILITY",
+        {GHSOUND_LOSE_ABILITY, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_RESTORE_ABILITY",
+        {GHSOUND_RESTORE_ABILITY, 1.0f},
+        FALSE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

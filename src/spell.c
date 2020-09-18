@@ -108,7 +108,8 @@ struct obj *bp;
         break;
     case 4:
         pline("These runes were just too much to comprehend.");
-        make_confused(itimeout_incr(HConfusion, rn1(7, 16)), FALSE);
+		play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+		make_confused(itimeout_incr(HConfusion, rn1(7, 16)), FALSE);
         break;
     case 5:
         pline_The("book was coated with contact poison!");
@@ -375,6 +376,7 @@ learn(VOID_ARGS)
 		else if (!book->blessed && !rn2(2))
 		{
 			pline("These runes were just too much to comprehend.");
+			play_sfx_sound(SFX_ACQUIRE_CONFUSION);
 			make_confused(itimeout_incr(HConfusion, rnd(4) + 5), FALSE);
 		}
 		else
@@ -1034,21 +1036,25 @@ int spell;
     case 1:
     case 2:
     case 3:
-        make_confused(old_conf + duration, FALSE); /* 40% */
+		play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+		make_confused(old_conf + duration, FALSE); /* 40% */
         break;
     case 4:
     case 5:
     case 6:
-        make_confused(old_conf + 2L * duration / 3L, FALSE); /* 30% */
+		play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+		make_confused(old_conf + 2L * duration / 3L, FALSE); /* 30% */
         make_stunned(old_stun + duration / 3L, FALSE);
         break;
     case 7:
     case 8:
-        make_stunned(old_stun + 2L * duration / 3L, FALSE); /* 20% */
+		play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+		make_stunned(old_stun + 2L * duration / 3L, FALSE); /* 20% */
         make_confused(old_conf + duration / 3L, FALSE);
         break;
     case 9:
-        make_stunned(old_stun + duration, FALSE); /* 10% */
+		play_sfx_sound(SFX_ACQUIRE_STUN);
+		make_stunned(old_stun + duration, FALSE); /* 10% */
         break;
     }
     return;

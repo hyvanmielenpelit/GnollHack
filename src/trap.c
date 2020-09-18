@@ -5854,6 +5854,7 @@ boolean disarm;
                                           : Blind ? " and get dizzy"
                                                   : " and your vision blurs");
             }
+            play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
             make_stunned((HStun & TIMEOUT) + (long) rn1(7, 16), FALSE);
             (void) make_hallucinated(
                 (HHallucination & TIMEOUT) + (long) rn1(5, 16), FALSE, 0L);

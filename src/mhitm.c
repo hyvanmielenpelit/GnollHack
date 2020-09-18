@@ -1771,6 +1771,7 @@ register struct obj* omonwep;
             break; /* physical damage only */
         if (!slimeproof(pd)) 
 		{
+            play_sfx_sound_at_location(SFX_START_SLIMING, mdef->mx, mdef->my);
 			start_delayed_sliming(mdef, FALSE);
 #if 0
             if (!munslime(mdef, FALSE) && !DEADMONSTER(mdef)) {
@@ -1805,13 +1806,15 @@ register struct obj* omonwep;
 	case AD_DISE:
 		if (!resists_sickness(mdef) && !cancelled)
 		{
-			set_mon_property_verbosely(mdef, SICK, 
+            play_sfx_sound_at_location(SFX_CATCH_TERMINAL_ILLNESS, mdef->mx, mdef->my);
+            set_mon_property_verbosely(mdef, SICK,
 				is_sick(mdef) ? max(1, (get_mon_property(mdef, SICK) + 1) / 3) : rn1(M_ACURR(mdef, A_CON), 20));
 		}
 		break;
     case AD_ROTS:
         if (!resists_sickness(mdef) && !cancelled)
         {
+            play_sfx_sound_at_location(SFX_CATCH_MUMMY_ROT, mdef->mx, mdef->my);
             set_mon_property_verbosely(mdef, MUMMY_ROT, -1L);
         }
         break;

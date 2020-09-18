@@ -1083,6 +1083,8 @@ struct obj *obj;
                 You("don't have a reflection.");
             else if (u.umonnum == PM_UMBER_HULK) {
                 pline("Huh?  That doesn't look like you!");
+                if (!Confusion)
+                    play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 make_confused(itimeout_incr(HConfusion, d(3, 4)), FALSE);
             } else if (Hallucination)
                 You(look_str, hcolor((char *) 0));
@@ -2447,26 +2449,38 @@ struct obj *obj;
 
         switch (rn2(13) / 2) { /* case 6 is half as likely as the others */
         case 0:
+            if(!Sick)
+                play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
             make_sick((Sick & TIMEOUT) ? (Sick & TIMEOUT) / 3L + 1L
                                        : (long) rn1(ACURR(A_CON), 20),
                       xname(obj), TRUE);
             break;
         case 1:
+            if(!Blind)
+                play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
             make_blinded((Blinded & TIMEOUT) + lcount, TRUE);
             break;
         case 2:
             if (!Confusion)
+            {
                 You("suddenly feel %s.",
                     Hallucination ? "trippy" : "confused");
+                play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+            }
             make_confused(itimeout_incr(HConfusion, lcount), TRUE);
             break;
         case 3:
+            if(!Stunned)
+                play_sfx_sound(SFX_ACQUIRE_STUN);
             make_stunned((HStun & TIMEOUT) + lcount, TRUE);
             break;
         case 4:
+            play_sfx_sound(SFX_LOSE_ABILITY);
             (void) adjattrib(rn2(A_MAX), -1, FALSE);
             break;
         case 5:
+            if (!Hallucination)
+                play_sfx_sound(SFX_ACQUIRE_HALLUCINATION);
             (void) make_hallucinated((HHallucination & TIMEOUT) + lcount,
                                      TRUE, 0L);
             break;
@@ -2572,30 +2586,37 @@ struct obj *obj;
 
         switch (idx) {
         case prop2trbl(SICK):
+            play_sfx_sound(SFX_CURE_DISEASE);
             make_sick(0L, (char *) 0, TRUE);
             did_prop++;
             break;
 		case prop2trbl(FOOD_POISONED):
-			make_food_poisoned(0L, (char*)0, TRUE);
+            play_sfx_sound(SFX_CURE_DISEASE);
+            make_food_poisoned(0L, (char*)0, TRUE);
 			did_prop++;
 			break;
         case prop2trbl(MUMMY_ROT):
+            play_sfx_sound(SFX_CURE_DISEASE);
             make_mummy_rotted(0L, (char*)0, TRUE);
             did_prop++;
             break;
         case prop2trbl(BLINDED):
+            play_sfx_sound(SFX_CURE_AILMENT);
             make_blinded((long) u.ucreamed, TRUE);
             did_prop++;
             break;
         case prop2trbl(HALLUC):
+            play_sfx_sound(SFX_CURE_AILMENT);
             (void) make_hallucinated(0L, TRUE, 0L);
             did_prop++;
             break;
         case prop2trbl(VOMITING):
+            play_sfx_sound(SFX_CURE_DISEASE);
             make_vomiting(0L, TRUE);
             did_prop++;
             break;
         case prop2trbl(CONFUSION):
+            play_sfx_sound(SFX_CURE_AILMENT);
             make_confused(0L, TRUE);
             did_prop++;
             break;
@@ -2604,6 +2625,7 @@ struct obj *obj;
             did_prop++;
             break;
         case prop2trbl(DEAF):
+            play_sfx_sound(SFX_CURE_AILMENT);
             make_deaf(0L, TRUE);
             did_prop++;
             break;
@@ -2624,10 +2646,13 @@ struct obj *obj;
     if (did_attr || did_prop)
         context.botl = TRUE;
     if (did_attr)
+    {
+        play_sfx_sound(SFX_RESTORE_ABILITY);
         pline("This makes you feel %s!",
-              (did_prop + did_attr) == (trouble_count + unfixable_trbl)
-                  ? "great"
-                  : "better");
+            (did_prop + did_attr) == (trouble_count + unfixable_trbl)
+            ? "great"
+            : "better");
+    }
     else if (!did_prop)
         pline("Nothing seems to happen.");
 
