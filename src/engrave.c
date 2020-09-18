@@ -1203,6 +1203,7 @@ doengrave()
     if (post_engr_text[0])
         pline("%s", post_engr_text);
     if (doblind && !resists_blnd(&youmonst) && !Flash_resistance) {
+        play_sfx_sound(SFX_BLINDING_FLASH);
         You("are blinded by the flash!");
         make_blinded((long) rnd(50), FALSE);
         if (!Blind)

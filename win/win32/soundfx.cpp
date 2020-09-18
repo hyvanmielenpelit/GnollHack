@@ -480,6 +480,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Gain Ability", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Lose Ability", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Restore Ability", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Blinding Flash", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Clerical Monster/Scales Cover Eyes", 1.0f },
 };
 
 #undef NoSound

@@ -839,6 +839,7 @@ int spellnum;
         if (!Blinded) 
         {
             int num_eyes = eyecount(youmonst.data);
+            play_sfx_sound(SFX_SCALES_COVER_EYES);
             pline("Scales cover your %s!", (num_eyes == 1)
                                                ? body_part(EYE)
                                                : makeplural(body_part(EYE)));
@@ -854,18 +855,22 @@ int spellnum;
             u_shieldeff();
             if (multi >= 0)
                 You("stiffen briefly.");
-            nomul(-1);
-            multi_reason = "paralyzed by a monster";
-        } 
+            //nomul(-1);
+            //multi_reason = "paralyzed by a monster";
+        }
 		else 
 		{
-            if (multi >= 0)
+            if (!Paralyzed)
+            {
+                play_sfx_sound(SFX_ACQUIRE_PARALYSIS);
                 You("are frozen in place!");
+            }
             int duration = 4 + (int) mtmp->m_lev;
             if (Half_spell_damage)
 				duration = (duration + 1) / 2;
-            nomul(-duration);
-            multi_reason = "paralyzed by a monster";
+//            nomul(-duration);
+//            multi_reason = "paralyzed by a monster";
+            incr_itimeout(&HParalyzed, duration);
         }
         nomovemsg = 0;
         damage = 0;

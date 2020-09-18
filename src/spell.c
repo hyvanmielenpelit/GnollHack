@@ -101,14 +101,17 @@ struct obj *bp;
         aggravate();
         break;
     case 2:
-        make_blinded(Blinded + rn1(100, 250), TRUE);
+		if (!Blinded)
+			play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
+		make_blinded(Blinded + rn1(100, 250), TRUE);
         break;
     case 3:
         take_gold();
         break;
     case 4:
         pline("These runes were just too much to comprehend.");
-		play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+		if (!Confusion)
+			play_sfx_sound(SFX_ACQUIRE_CONFUSION);
 		make_confused(itimeout_incr(HConfusion, rn1(7, 16)), FALSE);
         break;
     case 5:

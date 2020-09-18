@@ -5254,12 +5254,16 @@ boolean ordinary;
 		break;
 	case SPE_POWER_WORD_STUN:
 	{
-		make_stunned((HStun & TIMEOUT) + duration, TRUE);
+        if (!Stunned)
+            play_sfx_sound(SFX_ACQUIRE_STUN);
+        make_stunned((HStun & TIMEOUT) + duration, TRUE);
 		break;
 	}
 	case SPE_POWER_WORD_BLIND:
 	{
-		make_blinded((Blinded & TIMEOUT) + duration, (boolean)!Blind);
+        if (!Blinded)
+            play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
+        make_blinded((Blinded & TIMEOUT) + duration, (boolean)!Blind);
 		break;
 	}
     case SPE_SUNLIGHT_BEAM:
@@ -5636,6 +5640,8 @@ flashburn(duration)
 long duration;
 {
     if (!resists_blnd(&youmonst) && !Flash_resistance) {
+        if (!Blinded)
+            play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
         You(are_blinded_by_the_flash);
         make_blinded(duration, FALSE);
         if (!Blind)

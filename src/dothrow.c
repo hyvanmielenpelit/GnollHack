@@ -1501,6 +1501,8 @@ boolean hitsroof;
                 if (otyp == BLINDING_VENOM && !Blind)
                     pline("It blinds you!");
                 u.ucreamed += blindinc;
+                if (!Blinded)
+                    play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
                 make_blinded(Blinded + (long) blindinc, FALSE);
                 if (!Blind)
                     Your1(vision_clears);

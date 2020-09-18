@@ -264,6 +264,8 @@ dosit()
                 verbalize(
                  "A curse upon thee for sitting upon this most holy throne!");
                 if (Luck > 0) {
+                    if(!Blinded)
+                        play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
                     make_blinded(Blinded + rn1(100, 250), TRUE);
                     change_luck((Luck > 1) ? -rnd(2) : -1, TRUE);
                 } 

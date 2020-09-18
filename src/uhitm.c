@@ -2988,7 +2988,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             damage = 0;
             if (!Unchanging && pd == &mons[PM_GREEN_SLIME]) {
                 if (!Slimed) {
-                    You("suck in some slime and don't feel very well.");
+					play_sfx_sound(SFX_START_SLIMING);
+					You("suck in some slime and don't feel very well.");
                     make_slimed(10L, (char *) 0);
                 }
             }
@@ -3392,7 +3393,8 @@ register struct attack *mattk;
                                 The(mon_monster_name(mdef)));
                         if (!Unchanging)
 						{
-                            make_slimed(5L, (char *) 0);
+							play_sfx_sound(SFX_START_SLIMING);
+							make_slimed(5L, (char *) 0);
                         }
                     } 
 					else

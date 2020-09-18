@@ -810,6 +810,7 @@ register int pm;
     }
     case PM_GREEN_SLIME:
         if (!Slimed && !Unchanging && !slimeproof(youmonst.data)) {
+            play_sfx_sound(SFX_START_SLIMING);
             You("don't feel very well.");
             make_slimed(10L, (char *) 0);
             delayed_killer(SLIMED, KILLED_BY_AN, "");
@@ -832,6 +833,10 @@ fix_petrification()
                 ACURR(A_CHA) > 15 ? "fine " : "");
     else
         Strcpy(buf, "You feel limber!");
+
+    if (Stoned)
+        play_sfx_sound(SFX_CURE_AILMENT);
+
     make_stoned(0L, buf, 0, (char *) 0);
 }
 
@@ -1915,6 +1920,8 @@ struct obj *obj;
         pline("Everything suddenly goes dark.");
         /* hero is not Blind, but Blinded timer might be nonzero if
            blindness is being overridden by the Eyes of the Overworld */
+        if (!Blinded)
+            play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
         make_blinded((Blinded & TIMEOUT) + (long) d(2, 10), FALSE);
         if (!Blind)
             Your1(vision_clears);
@@ -1995,6 +2002,10 @@ struct obj *otmp;
             /* make sure new ill doesn't result in improvement */
             if (FoodPoisoned && (sick_time > FoodPoisoned))
                 sick_time = (FoodPoisoned > 1L) ? FoodPoisoned - 1L : 1L;
+
+            if(!FoodPoisoned)
+                play_sfx_sound(SFX_CATCH_FOOD_POISONING);
+
             make_food_poisoned(sick_time, corpse_xname(otmp, "rotted", CXN_NORMAL),
                       TRUE);
 
@@ -2022,7 +2033,10 @@ struct obj *otmp;
             /* make sure new ill doesn't result in improvement */
             if (Sick && (sick_time > Sick))
                 sick_time = (Sick > 1L) ? Sick - 1L : 1L;
-            play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
+
+            if (!Sick)
+                play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
+
             make_sick(sick_time, corpse_xname(otmp, "", CXN_NORMAL), TRUE);
 
             (void)touchfood(otmp);
@@ -2691,12 +2705,19 @@ struct obj *otmp;
 	{
     case EDIBLEFX_CURE_LYCANTHROPY:
         if (u.ulycn >= LOW_PM || is_were(youmonst.data))
+        {
+            play_sfx_sound(SFX_CURE_DISEASE);
             you_unwere(TRUE);
+        }
         break;
     case EDIBLEFX_CURE_BLINDNESS:
         if (!u.uswallow
             || !attacktype_fordmg(u.ustuck->data, AT_ENGL, AD_BLND))
-            make_blinded((long) u.ucreamed, TRUE);
+        {
+            if (Blinded)
+                play_sfx_sound(SFX_CURE_AILMENT);
+            make_blinded((long)u.ucreamed, TRUE);
+        }
         break;
     case EDIBLEFX_READ_FORTUNE:
         outrumor(bcsign(otmp), BY_COOKIE);
@@ -2846,6 +2867,9 @@ struct obj *otmp;
                 You("fall asleep.");
             else
                 You_hear("sinister laughter as you fall asleep...");
+
+            if(!Sleeping)
+                play_sfx_sound(SFX_ACQUIRE_SLEEP);
             fall_asleep(-rn1(6, 15), TRUE);
         }
         break;
@@ -3365,6 +3389,10 @@ doeat()
 				/* make sure new ill doesn't result in improvement */
 				if (FoodPoisoned && (sick_time > FoodPoisoned))
 					sick_time = (FoodPoisoned > 1L) ? FoodPoisoned - 1L : 1L;
+
+                if (!FoodPoisoned)
+                    play_sfx_sound(SFX_CATCH_FOOD_POISONING);
+
 				make_food_poisoned(sick_time, doname(otmp), TRUE);
 			}
 			if (carried(otmp))

@@ -1205,6 +1205,9 @@ struct obj **optr;
             if (!resists_blnd(&youmonst)) 
 			{
                 pline("%s your vision!", Tobjnam(obj, "damage"));
+                if(!Blinded)
+                    play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
+
                 make_blinded((Blinded & TIMEOUT) + (long) rnd(100), FALSE);
                 if (!Blind)
                     Your1(vision_clears);

@@ -1204,8 +1204,10 @@ struct monst *mtmp;
     if (Sick_resistance) {
         You_feel("a slight illness.");
         return FALSE;
-    } else
+    } 
+    else
 	{
+        /* Sound is played always to indicate reduced timer */
         play_sfx_sound(SFX_CATCH_TERMINAL_ILLNESS);
         make_sick(Sick ? Sick / 3L + 1L : (long) rn1(ACURR(A_CON), 20),
                   mon_monster_name(mtmp), TRUE);
@@ -1223,7 +1225,8 @@ struct monst* mtmp;
     }
     else
     {
-        play_sfx_sound(SFX_CATCH_MUMMY_ROT);
+        if(!MummyRot)
+            play_sfx_sound(SFX_CATCH_MUMMY_ROT);
         make_mummy_rotted(-1L, mon_monster_name(mtmp), TRUE);
         return TRUE;
     }
@@ -2123,7 +2126,10 @@ register struct obj* omonwep;
         if (can_blnd(mtmp, &youmonst, mattk->aatyp, (struct obj *) 0))
 		{
             if (!Blind)
+            {
+                play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
                 pline("%s blinds you!", Monnam(mtmp));
+            }
             make_blinded(Blinded + (long)ceil(damage), FALSE);
             if (!Blind)
                 Your1(vision_clears);
@@ -2823,7 +2829,8 @@ register struct obj* omonwep;
 			damage = 0;
         } else if (!Slimed) {
 			hitmsg(mtmp, mattk, damagedealt);
-			You("don't feel very well.");
+            play_sfx_sound(SFX_START_SLIMING);
+            You("don't feel very well.");
             make_slimed(10L, (char *) 0);
             delayed_killer(SLIMED, KILLED_BY_AN, mon_monster_name(mtmp));
 		}
@@ -3318,8 +3325,10 @@ struct attack *mattk;
         }
         break;
     case AD_BLND:
-        if (can_blnd(mtmp, &youmonst, mattk->aatyp, (struct obj *) 0)) {
-            if (!Blind) {
+        if (can_blnd(mtmp, &youmonst, mattk->aatyp, (struct obj *) 0)) 
+        {
+            if (!Blind) 
+            {
                 long was_blinded = Blinded;
 
                 if (!Blinded)
@@ -3327,14 +3336,18 @@ struct attack *mattk;
                 make_blinded((long)ceil(damage), FALSE);
                 if (!was_blinded && !Blind)
                     Your1(vision_clears);
-            } else
+            }
+            else
+            {
                 /* keep him blind until disgorged */
                 make_blinded(Blinded + 1, FALSE);
+            }
         }
         damage = 0;
         break;
     case AD_ELEC:
-        if (!is_cancelled(mtmp) && rn2(2)) {
+        if (!is_cancelled(mtmp) && rn2(2)) 
+        {
             pline_The("air around you crackles with electricity.");
             if (Shock_immunity || Invulnerable) {
                 u_shieldeff();
@@ -3502,6 +3515,7 @@ boolean ufound;
                 /* sometimes you're affected even if it's invisible */
                 if (mon_visible(mtmp) || (rnd(basedmg /= 2) > u.ulevel)) 
 				{
+                    play_sfx_sound(SFX_BLINDING_FLASH);
                     You("are blinded by a blast of light!");
                     make_blinded((long)basedmg, FALSE);
                     if (!Blind)

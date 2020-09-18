@@ -1179,7 +1179,10 @@ struct obj *otmp;
                         (otmp->fromsink) ? "contaminated tap water"
                                          : "contaminated potion");
 
-				make_food_poisoned(FoodPoisoned ? FoodPoisoned / 3L + 1L : (long)rn1(ACURR(max(2, A_CON)), 20),
+                if (!FoodPoisoned)
+                    play_sfx_sound(SFX_CATCH_FOOD_POISONING);
+                
+                make_food_poisoned(FoodPoisoned ? FoodPoisoned / 3L + 1L : (long)rn1(ACURR(max(2, A_CON)), 20),
 					contaminant, TRUE);
 
 				exercise(A_CON, FALSE);
@@ -1416,6 +1419,8 @@ struct obj *otmp;
     case POT_BLINDNESS:
         if (Blind)
             nothing++;
+        else
+            play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
         make_blinded(itimeout_incr(Blinded, duration), (boolean) !Blind);
         break;
     case POT_GAIN_LEVEL:
@@ -2295,7 +2300,7 @@ void
 potionbreathe(obj)
 struct obj *obj;
 {
-    int i, ii, kn = 0;
+    int i, kn = 0;
     boolean cureblind = FALSE;
 
     if (obj->oclass != POTION_CLASS)
@@ -2529,9 +2534,11 @@ struct obj *obj;
 	{
 		boolean was_blind = Blind;
         make_blinded(itimeout_incr(Blinded, duration), FALSE);
-		if (Blind && !Unaware) {
+		if (Blind && !Unaware && !was_blind) 
+        {
 			kn++;
-			pline("It suddenly gets dark.");
+            play_sfx_sound(SFX_ACQUIRE_BLINDNESS);
+            pline("It suddenly gets dark.");
 		}
 		//if (!Blind && !Unaware)
         //    Your1(vision_clears);
