@@ -3775,6 +3775,7 @@ static struct condition_t {
 	{ BL_MASK_CANCELLED,{ "Cancl",    "Cnl",   "Cl"  } },
 	{ BL_MASK_SILENCED, { "Silent",   "Sil",   "Si"  } },
     { BL_MASK_ROT,      { "Rot",      "Rot",   "Rt"  } },
+    { BL_MASK_LYCANTHROPY,{ "Lyca",   "Lyc",   "Ly"  } },
 };
 static const char *encvals[3][6] = {
     { "", "Burdened", "Stressed", "Strained", "Overtaxed", "Overloaded" },
@@ -4896,8 +4897,9 @@ render_status(VOID_ARGS)
 }
 
 static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
-                                 "Blind", "Hallu", "Stoned", "Slime", "Sleep",
-                                 "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav", "Rot" };
+                                        "Blind", "Hallu", "Stoned", "Slime", "Sleep",
+                                        "Paral", "Stun", "Slow", "Strgnl", "Suffoc", 
+                                        "SpecUnav", "Rot", "Lyca" };
 
 STATIC_OVL
 void
@@ -4908,10 +4910,12 @@ int* y_ptr;
 {
     int status_colors[] = { CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW,
                             CLR_YELLOW, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_ORANGE,
-                            CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_RED };
+                            CLR_ORANGE, CLR_ORANGE, CLR_YELLOW, CLR_ORANGE, CLR_ORANGE, 
+                            CLR_YELLOW, CLR_RED, CLR_YELLOW, };
     int status_attrmask[] = { ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
                               ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE,
-                              ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, ATR_NONE, ATR_NONE };
+                              ATR_NONE, ATR_NONE, ATR_NONE, ATR_INVERSE, ATR_INVERSE, 
+                              ATR_NONE, ATR_NONE, ATR_NONE };
 
 
     int no_of_statuses = SIZE(status_strings);

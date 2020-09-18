@@ -994,8 +994,9 @@ boolean border;
 
 
 static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
-                                    "Blind", "Hallu", "Stoned", "Slime", "Sleep",
-                                    "Paral", "Stun", "Slow", "Strgnl", "Suffoc", "SpecUnav", "Rot" };
+                                        "Blind", "Hallu", "Stoned", "Slime", "Sleep",
+                                        "Paral", "Stun", "Slow", "Strgnl", "Suffoc", 
+                                        "SpecUnav", "Rot", "Lyca" };
 
 STATIC_OVL
 void
@@ -1008,10 +1009,12 @@ int* y_ptr;
 {
     int status_colors[] = { CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW,
                             CLR_YELLOW, CLR_YELLOW, CLR_RED, CLR_RED, CLR_RED,
-                            CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_YELLOW, CLR_RED };
+                            CLR_RED, CLR_RED, CLR_RED, CLR_RED, CLR_RED, 
+                            CLR_YELLOW, CLR_RED, CLR_YELLOW };
     int status_attrmask[] = { A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL,
                               A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL,
-                              A_NORMAL, A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, A_NORMAL, A_NORMAL };
+                              A_NORMAL, A_NORMAL, A_NORMAL, A_REVERSE, A_REVERSE, 
+                              A_NORMAL, A_NORMAL, A_NORMAL };
 
     int no_of_statuses = SIZE(status_strings);
 
@@ -1887,7 +1890,8 @@ static const struct statcolor default_colors[] = {
     {"Hallu", CLR_BRIGHT_BLUE},
     {"Ill", CLR_BRIGHT_MAGENTA},
     {"FoodPois", CLR_BRIGHT_MAGENTA},
-    {"Rot", CLR_BRIGHT_MAGENTA},
+    {"Rot", CLR_ORANGE},
+    {"Lyca", CLR_ORANGE},
     {"Slime", CLR_BRIGHT_MAGENTA},
     {NULL, NULL, NO_COLOR},
 };
@@ -2656,6 +2660,7 @@ curses_add_statuses(WINDOW *win, boolean align_right,
     statprob("Ill",      Sick);
     statprob("FoodPois", FoodPoisoned);
     statprob("Rot",      MummyRot);
+    statprob("Lyca",     u.ulycn >= LOW_PM);
     statprob("Slime",    Slimed);
 
     /* Encumbrance */

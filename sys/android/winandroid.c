@@ -211,7 +211,7 @@ static unsigned long* cond_hilites;
 static unsigned long active_conditions;
 static const char* cond_names[] = {
 	"Stone", "Slime", "Strngl", "Suffoc", "FoodPois", "TermIll", "Blind",
-	"Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot",
+	"Deaf", "Stun", "Conf", "Hallu", "Lev", "Fly", "Ride", "Slow", "Paral", "Fear", "Sleep", "Cancl", "Silent", "Grab", "Rot", "Lyca"
 };
 
 

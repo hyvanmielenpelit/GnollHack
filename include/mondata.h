@@ -698,7 +698,8 @@
 #define is_reflecting(mon) \
 	(has_innate((mon)->data, MR_REFLECTING) || has_property(mon, REFLECTING))
 #define resists_drain(mon) \
-    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RESISTANCE) ||  is_not_living((mon)->data) || is_were((mon)->data) || is_demon((mon)->data) || is_vampshifter(mon))
+    (has_innate((mon)->data, MR_DRAIN) || has_property(mon, DRAIN_RESISTANCE) ||  is_not_living((mon)->data) || is_were((mon)->data) || \
+     is_demon((mon)->data) || is_vampshifter(mon) || ((mon) == &youmonst && u.ulycn >= LOW_PM))
 #define resists_flash(mon) \
     (has_innate((mon)->data, MR_FLASH) || has_property(mon, FLASH_RESISTANCE) || is_blinded(mon) || !haseyes((mon)->data) )
 #define resists_sickness(mon) \
@@ -812,9 +813,7 @@
 #define can_speak_language(ptr) ((ptr)->msound >= MS_LAUGH || (ptr)->msound == MS_ORC || is_speaking_monster(ptr))
 
 /* Overall resistances */
-#define resists_drli(mon) \
-  (is_undead((mon)->data) || is_demon((mon)->data) || is_were((mon)->data) \
-	|| ((mon) == &youmonst && u.ulycn >= LOW_PM) || is_vampshifter(mon) || resists_drain(mon))
+#define resists_drli(mon) resists_drain(mon)
 
 #define resists_blnd(mon) \
 	(((mon) == &youmonst && (Blind || Unaware || Flash_resistance)) || (is_blinded(mon) \

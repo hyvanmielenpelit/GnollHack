@@ -2014,13 +2014,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             max_fitted_rows = (TILE_Y - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
 
                             /* Number is the same as condition bits */
+                            unsigned long m_conditions = get_m_condition_bits(mtmp);
                             for (int cond = 0; cond < ui_tile_component_array[CONDITION_MARKS].number; cond++)
                             {
                                 if (condition_count >= max_fitted_rows)
                                     break;
 
                                 int condition_bit = 1 << cond;
-                                unsigned long m_conditions = get_m_condition_bits(mtmp);
 
 #if 0
                                 if (!ispet && !isyou)

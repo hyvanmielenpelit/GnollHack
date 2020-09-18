@@ -233,6 +233,8 @@ boolean purify;
         rehumanize();
     else if (is_were(youmonst.data) && !u.mtimedone)
         u.mtimedone = rn1(200, 200); /* 40% of initial were change */
+
+    context.botl = context.botlx = 1;
 }
 
 /* lycanthropy is being caught or cured, but no shape change is involved */
@@ -243,6 +245,8 @@ int which;
     u.ulycn = which;
     /* add or remove lycanthrope's innate intrinsics (Drain_resistance) */
     set_uasmon();
+
+    context.botl = context.botlx = 1;
 }
 
 /*were.c*/

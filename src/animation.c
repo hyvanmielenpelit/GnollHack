@@ -1754,7 +1754,7 @@ STATIC_OVL int
 get_shore_tile_index(mainlev, lev)
 struct rm* mainlev, *lev;
 {
-    int mainlev_is_pool_ice_or_lava = (mainlev && (IS_POOL(mainlev) || mainlev->typ == ICE || mainlev->typ == LAVAPOOL));
+    int mainlev_is_pool_ice_or_lava = (mainlev && (IS_POOL(mainlev->typ) || mainlev->typ == ICE || mainlev->typ == LAVAPOOL));
     if (lev->typ == DRAWBRIDGE_DOWN)
     {
         return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 3;

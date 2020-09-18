@@ -69,20 +69,21 @@
 #define F_FOODPOIS 23
 #define F_TERMILL  24
 #define F_ROT      25
+#define F_LYCANTHROPY 26
 
-#define F_HUNGER   26
-#define F_ENCUMBER 27
-#define F_LEV      28
-#define F_FLY      29
-#define F_RIDE     30
+#define F_HUNGER   27
+#define F_ENCUMBER 28
+#define F_LEV      29
+#define F_FLY      30
+#define F_RIDE     31
 
-#define F_BLIND    31
-#define F_DEAF     32
-#define F_STUN     33
-#define F_CONF     34
-#define F_HALLU    35
+#define F_BLIND    32
+#define F_DEAF     33
+#define F_STUN     34
+#define F_CONF     35
+#define F_HALLU    36
 
-#define NUM_STATS 36
+#define NUM_STATS 37
 
 static void FDECL(update_fancy_status, (struct xwindow *));
 static void FDECL(update_fancy_status_field, (int));
@@ -385,6 +386,7 @@ unsigned long *colormasks;
             MaybeDisplayCond(BL_MASK_SILENCED, colormasks, "Silent");
             MaybeDisplayCond(BL_MASK_GRAB, colormasks, "Grab");
             MaybeDisplayCond(BL_MASK_ROT, colormasks, "Rot");
+            MaybeDisplayCond(BL_MASK_LYCANTHROPY, colormasks, "Lyca");
         } else {
             label = X11_status_labels[fld];
             text = status_vals[fld];
@@ -559,6 +561,7 @@ unsigned long *colormasks UNUSED;
         { BL_MASK_FOODPOIS, F_FOODPOIS },
         { BL_MASK_TERMILL, F_TERMILL },
         { BL_MASK_ROT, F_ROT },
+        { BL_MASK_LYCANTHROPY, F_LYCANTHROPY },
         { BL_MASK_BLIND, F_BLIND },
         { BL_MASK_DEAF, F_DEAF },
         { BL_MASK_STUN, F_STUN },

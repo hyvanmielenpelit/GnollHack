@@ -2934,7 +2934,8 @@ static mswin_condition_field _condition_fields[BL_MASK_BITS] = {
 	{ BL_MASK_CANCELLED, "Cancl" },
 	{ BL_MASK_SILENCED, "Silent" },
     { BL_MASK_GRAB, "Grab" },
-    { BL_MASK_ROT, "Rot" }
+    { BL_MASK_ROT, "Rot" },
+    { BL_MASK_LYCANTHROPY, "Lyca" },
 };
 
 

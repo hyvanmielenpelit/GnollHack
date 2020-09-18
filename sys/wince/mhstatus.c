@@ -267,6 +267,8 @@ FormatStatusString(char *text, int format)
         Sprintf(nb = eos(nb), " FoodPois");
     if (MummyRot)
         Sprintf(nb = eos(nb), " Rot");
+    if (u.ulycn >= LOW_PM)
+        Sprintf(nb = eos(nb), " Lyca");
     if (Blind)
         Sprintf(nb = eos(nb), " Blind");
     if (Stunned)
