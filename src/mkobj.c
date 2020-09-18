@@ -424,7 +424,8 @@ struct obj *box;
 	case EXPENSIVE_HANDBAG:
 	case BAG_OF_WIZARDRY:
 	case BAG_OF_TREASURE_HAULING:
-		/* initial inventory: sack starts out empty */
+    case BAG_OF_THE_GLUTTON:
+        /* initial inventory: sack starts out empty */
         if (moves <= 1 && !in_mklev) {
             n = 0;
             break;
@@ -1271,7 +1272,8 @@ int mkobj_type;
 			case BAG_OF_HOLDING:
 			case BAG_OF_WIZARDRY:
 			case BAG_OF_TREASURE_HAULING:
-				mkbox_cnts(otmp);
+            case BAG_OF_THE_GLUTTON:
+                mkbox_cnts(otmp);
 				break;
             case EXPENSIVE_CAMERA:
             case TINNING_KIT:
@@ -2602,7 +2604,12 @@ register struct obj *obj;
 					))
 				cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 63) / 64)
 				: ((weight(contents) + 31) / 32);
-			else
+            else if (obj->otyp == BAG_OF_THE_GLUTTON
+                && (contents->oclass == POTION_CLASS || is_obj_normally_edible(contents)
+                    ))
+                cwt += obj->cursed ? (weight(contents) * 2) : obj->blessed ? ((weight(contents) + 19) / 20)
+                : ((weight(contents) + 9) / 10);
+            else
 				cwt += weight(contents);
 		}
         /*

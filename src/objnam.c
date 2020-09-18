@@ -1909,7 +1909,7 @@ struct obj *otmp;
 		return FALSE;
 
     /* Smith */
-    if (context.npc_identify_type == -1 && (!is_weapon(otmp) && !otmp->oclass == ARMOR_CLASS))
+    if (context.npc_identify_type == -1 && !(is_weapon(otmp) || otmp->oclass == ARMOR_CLASS))
         return FALSE;
 
     if (context.npc_identify_type > 0 && !is_npc_item_identification_type(otmp, context.npc_identify_type))
@@ -3476,6 +3476,7 @@ static const struct alt_spellings {
     { "jar of medical salve", JAR_OF_MEDICINAL_SALVE },
     { "galadhrim bow", GALADHRIM_BOW },
     { "galadhrim boots", GALADHRIM_BOOTS },
+    { "bag of gluttony", BAG_OF_THE_GLUTTON },
     { (const char *) 0, 0 },
 };
 
