@@ -2083,7 +2083,7 @@ NEARDATA struct permonst mons[] = {
     MON("phoenix", None, "large flaming eagle-like bird that can come back to life", None, None, S_BAT, LVL(20, 20, -3, 10, 50, 7), (G_GENO | 2),
         A(ATTK(AT_BITE, AD_FIRE, 2, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0),
             ATTK(AT_PASV, AD_FIRE, 6, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
-        SIZ(2500, 500, MS_SQAWK, MZ_LARGE, 1, 2, MAT_FLESH), STATS(19, 17, 19, 17, 17, 17), 
+        SIZ(2000, 400, MS_SQAWK, MZ_LARGE, 1, 2, MAT_FLESH), STATS(19, 17, 19, 17, 17, 17), 
         MR_FIRE, 
         MR2_COLD_RESISTANCE, MC_FIRE,
         M1_FLY | M1_ANIMAL | M1_NOHANDS | M1_CARNIVORE,

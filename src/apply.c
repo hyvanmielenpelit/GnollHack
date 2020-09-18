@@ -4143,23 +4143,33 @@ struct obj *obj;
     context.polearm.hitmon = (struct monst *) 0;
     /* Attack the monster there */
     bhitpos = cc;
-    if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != (struct monst *) 0) {
+    if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != (struct monst *) 0) 
+    {
         if (attack_checks(mtmp, uwep))
             return res;
         if (overexertion())
             return 1; /* burn nutrition; maybe pass out */
+
+        play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
         context.polearm.hitmon = mtmp;
         check_caitiff(mtmp);
         notonhead = (bhitpos.x != mtmp->mx || bhitpos.y != mtmp->my);
         (void) thitmonst(mtmp, uwep, FALSE);
-    } else if (glyph_is_any_statue(glyph) /* might be hallucinatory */
-               && sobj_at(STATUE, bhitpos.x, bhitpos.y)) {
+    } 
+    else if (glyph_is_any_statue(glyph) /* might be hallucinatory */
+               && sobj_at(STATUE, bhitpos.x, bhitpos.y)) 
+    {
+        play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+
         struct trap *t = t_at(bhitpos.x, bhitpos.y);
 
         if (t && t->ttyp == STATUE_TRAP
-            && activate_statue_trap(t, t->tx, t->ty, FALSE)) {
+            && activate_statue_trap(t, t->tx, t->ty, FALSE)) 
+        {
             ; /* feedback has been give by animate_statue() */
-        } else {
+        } 
+        else 
+        {
             /* Since statues look like monsters now, we say something
                different from "you miss" or "there's nobody there".
                Note:  we only do this when a statue is displayed here,
@@ -4168,7 +4178,11 @@ struct obj *obj;
             pline("Thump!  Your blow bounces harmlessly off the statue.");
             wake_nearto(bhitpos.x, bhitpos.y, 25);
         }
-    } else {
+    } 
+    else 
+    {
+        play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+
         /* no monster here and no statue seen or remembered here */
         (void) unmap_invisible(bhitpos.x, bhitpos.y);
         You("miss; there is no one there to hit.");

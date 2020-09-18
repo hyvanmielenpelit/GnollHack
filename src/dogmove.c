@@ -648,11 +648,11 @@ dog_hunger(mtmp, edog)
 struct monst *mtmp;
 struct edog *edog;
 {
-	if (!mtmp)
+	if (!mtmp || !edog)
 		return FALSE;
 
-	/* Nonliving creatures do not get hungry */
-	if (is_not_living(mtmp->data))
+	/* Nonliving and angelic creatures do not get hungry */
+	if (is_not_living(mtmp->data) || is_angel(mtmp->data))
 	{
 		edog->hungrytime = monstermoves + 500;
 		return FALSE;
@@ -832,6 +832,9 @@ dog_wants_to_eat(mtmp)
 struct monst* mtmp;
 {
     if(!mtmp || !mtmp->mextra || !EDOG(mtmp))
+        return FALSE;
+
+    if (is_not_living(mtmp->data) || is_angel(mtmp->data))
         return FALSE;
 
     return (EDOG(mtmp)->hungrytime < monstermoves + 3000); /* twice the satiated amount for the player for convenience */
