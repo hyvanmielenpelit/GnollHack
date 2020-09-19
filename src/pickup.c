@@ -2995,6 +2995,10 @@ boolean more_containers; /* True iff #loot multiple and this isn't last one */
 			"pick up and put in");
 		pickup_and_loot_in = FALSE;
 	}
+    else if (pickup_and_loot_in && !able_to_loot(u.ux, u.uy, TRUE))
+    {
+        pickup_and_loot_in = FALSE;
+    }
 
     /*
      * Gone: being nice about only selecting food if we know we are
