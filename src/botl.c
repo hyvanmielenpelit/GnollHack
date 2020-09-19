@@ -1084,7 +1084,7 @@ char* outbuf5;
                 strcat(tempbuf, " Paral");
 
             if (any_spec_used(mtmp))
-                strcat(tempbuf, " SpecUnav");
+                strcat(tempbuf, " Cooldown");
 
             changepartyline();
             strcat(targetbuf, tempbuf);

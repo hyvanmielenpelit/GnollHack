@@ -996,7 +996,7 @@ boolean border;
 static const char* status_strings[] = { "Hungry", "Weak", "TermIll", "FoodPois", "Conf",
                                         "Blind", "Hallu", "Stoned", "Slime", "Sleep",
                                         "Paral", "Stun", "Slow", "Strgnl", "Suffoc", 
-                                        "SpecUnav", "Rot", "Lyca" };
+                                        "Cooldown", "Rot", "Lyca" };
 
 STATIC_OVL
 void
