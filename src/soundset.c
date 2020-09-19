@@ -1523,6 +1523,18 @@ NEARDATA struct effect_sound_definition ui_sounds[MAX_UI_SOUND_TYPES] =
         "knapsack-full",
         {GHSOUND_KNAPSACK_FULL, 1.0f}
     },
+    {
+        "weapon-swapped",
+        {GHSOUND_WEAPON_SWAPPED, 1.0f}
+    },
+    {
+        "start-two-weapon-combat",
+        {GHSOUND_START_TWO_WEAPON_COMBAT, 1.0f}
+    },
+    {
+        "stop-two-weapon-combat",
+        {GHSOUND_STOP_TWO_WEAPON_COMBAT, 1.0f}
+    },
 };
 
 
@@ -2696,11 +2708,41 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_BLINDING_FLASH",
         {GHSOUND_BLINDING_FLASH, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_SCALES_COVER_EYES",
         {GHSOUND_SCALES_COVER_EYES, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ELECTRIC_SHOCK",
+        {GHSOUND_ELECTRIC_SHOCK, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_MALIGNANT_AURA_RESISTED",
+        {GHSOUND_MALIGNANT_AURA_RESISTED, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_MALIGNANT_AURA_SURROUNDS",
+        {GHSOUND_MALIGNANT_AURA_SURROUNDS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_ITEM_RESISTS_NEGATIVE_EFFECT",
+        {GHSOUND_ITEM_RESISTS_NEGATIVE_EFFECT, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_SUMMON_MONSTER",
+        {GHSOUND_SUMMON_MONSTER, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_VANISHES_IN_PUFF_OF_SMOKE",
+        {GHSOUND_VANISHES_IN_PUFF_OF_SMOKE, 1.0f},
         FALSE
     },
 };

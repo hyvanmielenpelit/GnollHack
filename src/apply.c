@@ -1983,6 +1983,7 @@ dorub()
             makeknown(MAGIC_LAMP);
             update_inventory();
         } else if (rn2(2)) {
+            play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
             You("%s smoke.", !Blind ? "see a puff of" : "smell");
         } else
             pline1(nothing_happens);

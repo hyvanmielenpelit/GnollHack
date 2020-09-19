@@ -625,6 +625,8 @@ long mask;
 		return 0;
 	}
 
+	play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
+
 	/* Unwield your current secondary weapon */
 	oldwep = wep;
 	oldswap = swapwep;
@@ -739,6 +741,8 @@ doswapweapon()
 			return 0;
 		}
 
+		play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
+
 		/* Unwield your current secondary weapon */
 		oldwep = uwep;
 		oldswap = uswapwep;
@@ -807,6 +811,8 @@ doswapweapon()
 			You("are already empty %s.", body_part(HANDED));
 			return 0;
 		}
+
+		play_ui_sound(UI_SOUND_WEAPON_SWAPPED);
 
 		/* Unwield your current secondary weapon */
 		oldwep = uwep;
@@ -1394,7 +1400,9 @@ dotwoweapon()
     /* You can always toggle it off */
     if (u.twoweap) 
 	{
-        //You("switch to your primary weapon.");
+		play_ui_sound(UI_SOUND_STOP_TWO_WEAPON_COMBAT);
+
+		//You("switch to your primary weapon.");
 		You("stop two-weapon fighting.");
         u.twoweap = 0;
 		update_hand_unweapon(2);
@@ -1404,6 +1412,8 @@ dotwoweapon()
     }
 	else
 	{
+		play_ui_sound(UI_SOUND_START_TWO_WEAPON_COMBAT);
+
 		/* May we use two weapons? */
 		/* if (can_twoweapon())*/
         /* Success! */
@@ -1485,7 +1495,8 @@ void
 untwoweapon()
 {
     if (u.twoweap) {
-        You("can no longer use two weapons at once.");
+		play_ui_sound(UI_SOUND_STOP_TWO_WEAPON_COMBAT);
+		You("can no longer use two weapons at once.");
         u.twoweap = FALSE;
         update_inventory();
     }

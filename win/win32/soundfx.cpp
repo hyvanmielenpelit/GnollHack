@@ -482,6 +482,16 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Restore Ability", 0.5f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Blinding Flash", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Clerical Monster/Scales Cover Eyes", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/General/Weapon Swapped", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Start Two Weapon Combat", 0.4f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Stop Two Weapon Combat", 0.4f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Electric Shock", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Malignant Aura Resisted", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Malignant Aura Surrounds", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Item Resists Negative Effect", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Summon Monster", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Vanishes in Puff of Smoke", 1.0f },
 };
 
 #undef NoSound

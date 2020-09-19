@@ -201,6 +201,7 @@ dosit()
                 (void) adjattrib(rn2(A_MAX), 1, FALSE);
                 break;
             case 3:
+                play_sfx_sound(SFX_ELECTRIC_SHOCK);
                 pline("A%s electric shock shoots through your body!",
                       (Shock_immunity) ? "n" : " massive");
                 losehp(adjust_damage(Shock_immunity ? rnd(6) : rnd(30), (struct monst*)0, &youmonst, AD_ELEC, ADFLAGS_NONE), "electric chair",
@@ -244,6 +245,7 @@ dosit()
                 int cnt = rnd(10);
 
                 /* Magical voice not affected by deafness */
+                play_sfx_sound(SFX_SUMMON_MONSTER);
                 pline("A voice echoes:");
                 verbalize("Thy audience hath been summoned, %s!",
                           flags.female ? "Dame" : "Sire");
@@ -313,8 +315,8 @@ dosit()
                 }
                 break;
             case 13:
-                Your("mind turns into a pretzel!");
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
+                Your("mind turns into a pretzel!");
                 make_confused(itimeout_incr(HConfusion, rnd(7) + 15),
                               FALSE);
                 break;
@@ -332,6 +334,7 @@ dosit()
 
         if (!rn2(3) && IS_THRONE(levl[u.ux][u.uy].typ))
 		{
+            play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
             /* may have teleported */
             create_basic_floor_location(u.ux, u.uy, levl[u.ux][u.uy].floortyp ? levl[u.ux][u.uy].floortyp : ROOM, 0, 0, TRUE);
             pline_The("throne vanishes in a puff of logic.");
@@ -356,18 +359,21 @@ rndcurse()
 
     if (((uwep && uwep->oartifact && artifact_has_flag(uwep, AF_MAGIC_ABSORBING)) || (uarms && uarms->oartifact && artifact_has_flag(uarms, AF_MAGIC_ABSORBING))) && rn2(20)) 
     {
+        play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
         You(mal_aura, "the magic-absorbing blade");
         return;
     }
 	
 	if (Curse_resistance)
 	{
-		You_feel("a malignant aura around you, but it quickly dissipates.");
+        play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
+        You_feel("a malignant aura around you, but it quickly dissipates.");
 		return;
 	}
 
     if (antimagicsuccess)
 	{
+        play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
         u_shieldeff();
         You(mal_aura, "you");
     }
@@ -396,14 +402,21 @@ rndcurse()
 
             if (otmp->oartifact && artifact_has_flag(otmp, AF_INTEL)
                 && rn2(10) < 8) {
+                play_sfx_sound(SFX_ITEM_RESISTS_NEGATIVE_EFFECT);
                 pline("%s!", Tobjnam(otmp, "resist"));
                 continue;
             }
 
             if (otmp->blessed)
+            {
+                play_sfx_sound(SFX_UNBLESS_ITEM_SUCCESS);
                 unbless(otmp);
+            }
             else
+            {
+                play_sfx_sound(SFX_CURSE_ITEM_SUCCESS);
                 curse(otmp);
+            }
         }
         update_inventory();
     }
@@ -412,9 +425,15 @@ rndcurse()
     if (u.usteed && !rn2(4) && (otmp = which_armor(u.usteed, W_SADDLE)) != 0
         && !otmp->cursed) { /* skip if already cursed */
         if (otmp->blessed)
+        {
+            play_sfx_sound(SFX_UNBLESS_ITEM_SUCCESS);
             unbless(otmp);
+        }
         else
+        {
+            play_sfx_sound(SFX_CURSE_ITEM_SUCCESS);
             curse(otmp);
+        }
         if (!Blind) {
             pline("%s %s.", Yobjnam2(otmp, "glow"),
                   hcolor(otmp->cursed ? NH_BLACK : (const char *) "brown"));

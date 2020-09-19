@@ -1824,7 +1824,7 @@ boolean* obj_destroyed;
 		{
 			pline("%s shatters on impact!", Yname2(obj));
 			/* (must be either primary or secondary weapon to get here) */
-			u.twoweap = FALSE; /* untwoweapon() is too verbose here */
+			//u.twoweap = FALSE; /* untwoweapon() is too verbose here */
 			if (obj == uwep)
 				uwepgone(); /* set unweapon */
 			if (obj == uarms)

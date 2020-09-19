@@ -2529,7 +2529,8 @@ struct obj *obj;
             if (epboost) {
                 u.uen += epboost;
                 context.botl = TRUE;
-                You_feel("re-energized.");
+				play_sfx_sound(SFX_GAIN_ENERGY);
+				You_feel("re-energized.");
             } else
                 goto nothing_special;
 			break;
