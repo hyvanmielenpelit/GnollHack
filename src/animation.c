@@ -1523,12 +1523,13 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-data_to_replacement_info(signed_glyph, otmp)
-int signed_glyph;
+data_to_replacement_info(signed_glyph, layer, otmp)
+int signed_glyph, layer;
 struct obj* otmp;
 {
     struct replacement_info info = { 0 };
     info.signed_glyph = signed_glyph;
+    info.layer = layer;
     info.object = otmp;
 
     return info;
@@ -1581,10 +1582,11 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_SHORE_TILE:
         {
             int above_y = y - 1;
-            int floortype = IS_FLOOR(levl[x][y].typ) ? levl[x][y].typ : levl[x][y].floortyp;
+            int floortype = IS_FLOOR(levl[x][y].typ) || IS_POOL(levl[x][y].typ) || levl[x][y].typ == LAVAPOOL || levl[x][y].typ == ICE ? levl[x][y].typ : levl[x][y].floortyp;
 
-            if (Underwater || !isok(x, above_y)
-                || levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored)
+            if (Underwater || !isok(x, above_y) 
+                || (levl[x][y].typ == levl[x][above_y].typ && get_location_category(levl[x][y].typ, levl[x][y].subtyp) == get_location_category(levl[x][above_y].typ, levl[x][above_y].subtyp))
+                || (level.flags.hero_memory && levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored))
                 || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(floortype) && (IS_ROCK(levl[x][above_y].typ))))
             {
                 /* No action */
@@ -1596,6 +1598,7 @@ enum autodraw_types* autodraw_ptr;
 
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
+
                 int tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
                 if (tileidx < 0)
                     return ntile;
@@ -1820,12 +1823,12 @@ struct rm* mainlev, *lev;
         if (IS_POOL(mainlev->typ))
             return -1;
         else
-            return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES;
+            return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 0;
     }
     else if (lev->typ == CORR)
     {
         if ((!mainlev_is_pool_ice_or_lava && mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
-            || (!mainlev_is_pool_ice_or_lava && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
             )
             return -1;
         else
@@ -1833,8 +1836,8 @@ struct rm* mainlev, *lev;
     }
     else if (lev->floortyp == CORR)
     {
-        if ((!mainlev_is_pool_ice_or_lava && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
-            || (!mainlev_is_pool_ice_or_lava && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+        if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             )
             return -1;
         else
@@ -1842,8 +1845,8 @@ struct rm* mainlev, *lev;
     }
     else if (lev->typ == GROUND)
     {
-        if ((mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
-            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+        if ((!mainlev_is_pool_ice_or_lava &&  mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
             )
             return -1;
         else
@@ -1851,8 +1854,8 @@ struct rm* mainlev, *lev;
     }
     else if (lev->floortyp == GROUND)
     {
-        if ((IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
-            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+        if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             )
             return -1;
         else
@@ -1860,8 +1863,8 @@ struct rm* mainlev, *lev;
     }
     else if (lev->typ == GRASS)
     {
-        if ((mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
-            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+        if ((!mainlev_is_pool_ice_or_lava && mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
             )
             return -1;
         else
@@ -1869,8 +1872,8 @@ struct rm* mainlev, *lev;
     }
     else if (lev->floortyp == GRASS)
     {
-        if ((IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
-            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+        if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             )
             return -1;
         else
@@ -1878,8 +1881,8 @@ struct rm* mainlev, *lev;
     }
     else if (lev->typ == ROOM)
     {
-        if ((mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
-            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
+        if ((!mainlev_is_pool_ice_or_lava && mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))
             )
             return -1;
         else
@@ -1887,8 +1890,8 @@ struct rm* mainlev, *lev;
     }
     else if (lev->floortyp == ROOM)
     {
-        if ((IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
-            || (IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+        if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
+            || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             )
             return -1;
         else

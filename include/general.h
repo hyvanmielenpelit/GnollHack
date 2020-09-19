@@ -25,7 +25,8 @@ enum bhit_call_types {
 /* Various structs used in function inputs */
 struct replacement_info {
 	int signed_glyph;
-    struct obj* object;
+	int layer;
+	struct obj* object;
 };
 
 struct extended_menu_info {

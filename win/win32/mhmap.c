@@ -1202,7 +1202,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, otmp_round), &autodraw);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round), &autodraw);
                     if(context.action_animation_layer == base_layer && context.action_animation_x == enl_i && context.action_animation_y == enl_j)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (glyph_is_explosion(glyph))
@@ -2080,7 +2080,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
-                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, otmp_round), (enum auto_drawtypes*)0);
+                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round), (enum auto_drawtypes*)0);
                                 mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);
@@ -2567,7 +2567,6 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 flipped = (signed_glyph < 0);
                 int ntile = glyph2tile[glyph];
                 boolean mapanimateddummy = 0;
-                struct replacement_info info = { 0 };
                 enum autodraw_types autodraw = AUTODRAW_NONE;
                 int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
                 if (context.action_animation_layer == layer_idx && context.action_animation_x == x && context.action_animation_y == y)
