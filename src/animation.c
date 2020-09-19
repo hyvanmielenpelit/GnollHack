@@ -334,6 +334,26 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       HUMAN_TOURIST_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "elf-ranger-male-fire-animation", ELF_RANGER_MALE_FIRE_ANIMATION_TILES,
+      ELF_RANGER_MALE_FIRE_ANIMATION_FRAMES, ELF_RANGER_MALE_FIRE_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      ELF_RANGER_MALE_FIRE_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "elf-ranger-male-kick-animation", ELF_RANGER_MALE_KICK_ANIMATION_TILES,
+      ELF_RANGER_MALE_KICK_ANIMATION_FRAMES, ELF_RANGER_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      ELF_RANGER_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "dust-vortex-swallow-animation", DUST_VORTEX_SWALLOW_ANIMATION_TILES,
       DUST_VORTEX_SWALLOW_ANIMATION_FRAMES, DUST_VORTEX_SWALLOW_ANIMATION_OFF,
       MAX_SWALLOW_CHARS,
@@ -545,7 +565,23 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-    { "pony-enlargement", 0, 0,
+      { "elf-ranger-male-fire-enlargement",
+        ELF_RANGER_MALE_FIRE_ANIMATION_TILES, ELF_RANGER_MALE_FIRE_ANIMATION_FRAMES,
+        ELF_RANGER_MALE_FIRE_ENLARGEMENT_TILES, ELF_RANGER_MALE_FIRE_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "elf-ranger-male-kick-enlargement",
+        ELF_RANGER_MALE_KICK_ANIMATION_TILES, ELF_RANGER_MALE_KICK_ANIMATION_FRAMES,
+        ELF_RANGER_MALE_KICK_ENLARGEMENT_TILES, ELF_RANGER_MALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "pony-enlargement", 0, 0,
       PONY_ENLARGEMENT_TILES, PONY_ENLARGEMENT_OFF,
       2, 1, 0,
       { -1, -1, -1, -1, 0 },
@@ -1431,6 +1467,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_THROW:
         break;
     case ACTION_TILE_FIRE:
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+            return ELF_RANGER_MALE_FIRE_ANIMATION;
         break;
     case ACTION_TILE_CAST_NODIR:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
@@ -1459,6 +1497,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return ORC_ROGUE_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_TOURIST_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+            return ELF_RANGER_MALE_KICK_ANIMATION;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
@@ -1483,10 +1523,12 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
 }
 
 struct replacement_info
-obj_to_replacement_info(otmp)
+data_to_replacement_info(signed_glyph, otmp)
+int signed_glyph;
 struct obj* otmp;
 {
     struct replacement_info info = { 0 };
+    info.signed_glyph = signed_glyph;
     info.object = otmp;
 
     return info;
