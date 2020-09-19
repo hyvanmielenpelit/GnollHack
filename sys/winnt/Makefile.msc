@@ -1320,6 +1320,7 @@ spotless: clean
 	if exist $(DAT)\knox.lev	 del $(DAT)\knox.lev
 	if exist $(DAT)\medusa-?.lev	 del $(DAT)\medusa-?.lev
 	if exist $(DAT)\mine*.lev	 del $(DAT)\mine*.lev
+	if exist $(DAT)\minotaur.lev  del $(DAT)\minotaur.lev
 	if exist $(DAT)\modron?.lev	 del $(DAT)\modron?.lev
 	if exist $(DAT)\options		 del $(DAT)\options
 	if exist $(DAT)\ttyoptions	 del $(DAT)\ttyoptions

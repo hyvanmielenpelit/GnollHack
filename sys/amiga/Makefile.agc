@@ -293,7 +293,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)fakewiz1.lev	$(SLIB)fakewiz2.lev	$(SLIB)fire.lev \
 	$(SLIB)juiblex.lev	$(SLIB)knox.lev		$(SLIB)medusa-1.lev \
 	$(SLIB)medusa-2.lev	$(SLIB)minend-1.lev	$(SLIB)minend-2.lev \
-	$(SLIB)minetn-1.lev	$(SLIB)minetn-2.lev	$(SLIB)minefill.lev	$(SLIB)modron1.lev \
+	$(SLIB)minetn-1.lev	$(SLIB)minetn-2.lev	$(SLIB)minefill.lev	$(SLIB)minotaur.lev $(SLIB)modron1.lev \
 	$(SLIB)options		$(SLIB)oracle.lev	$(SLIB)orcus.lev \
 	$(SLIB)sanctum.lev	$(SLIB)soko1-1.lev	$(SLIB)soko1-2.lev \
 	$(SLIB)soko2-1.lev	$(SLIB)soko2-2.lev	$(SLIB)soko3-1.lev \
@@ -787,9 +787,10 @@ BOVINE1= $(SLIB)bovine1.lev
 
 $(SLIB)bovine1.lev:	$(DAT)bovine.des $(SBIN)lev_comp
 
-MAIN1= $(SLIB)treasure1.lev
+MAIN1= $(SLIB)treasure1.lev $(SLIB)minotaur.lev
 
 $(SLIB)treasure1.lev:	$(DAT)main.des $(SBIN)lev_comp
+$(SLIB)minotaur.lev:    $(DAT)main.des $(SBIN)lev_comp
 
 
 $(SLIB)castle.lev:  $(DAT)castle.des $(SBIN)lev_comp
@@ -806,6 +807,7 @@ $(GEHENNOM1):	$(SLIB)valley.lev
 $(SLIB)valley.lev:	$(DAT)gehennom.des $(SBIN)lev_comp
 
 $(SLIB)knox.lev: $(DAT)knox.des $(SBIN)lev_comp
+
 
 MINES1= $(SLIB)minend-1.lev $(SLIB)minend-2.lev $(SLIB)minetn-1.lev $(SLIB)minetn-2.lev
 $(MINES1): $(SLIB)minefill.lev

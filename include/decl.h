@@ -54,6 +54,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_bigroom_level; /* unused */
     d_level d_rogue_level;
     d_level d_medusa_level;
+    d_level d_minotaur_level;
     d_level d_stronghold_level;
     d_level d_valley_level;
     d_level d_wiz1_level;
@@ -91,6 +92,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define bigroom_level           (dungeon_topology.d_bigroom_level)
 #define rogue_level             (dungeon_topology.d_rogue_level)
 #define medusa_level            (dungeon_topology.d_medusa_level)
+#define minotaur_level          (dungeon_topology.d_minotaur_level)
 #define stronghold_level        (dungeon_topology.d_stronghold_level)
 #define valley_level            (dungeon_topology.d_valley_level)
 #define wiz1_level              (dungeon_topology.d_wiz1_level)

@@ -1275,6 +1275,7 @@ ifneq "$(W_DAT)" ""
 	if exist $(W_DAT)\knox.lev	   del $(W_DAT)\knox.lev
 	if exist $(W_DAT)\medusa-?.lev	   del $(W_DAT)\medusa-?.lev
 	if exist $(W_DAT)\mine*.lev	   del $(W_DAT)\mine*.lev
+	if exist $(W_DAT)\minotaur.lev	   del $(W_DAT)\minotaur.lev
 	if exist $(W_DAT)\modron?.lev	   del $(W_DAT)\modron?.lev
 	if exist $(W_DAT)\options          del $(W_DAT)\options
 	if exist $(W_DAT)\ttyoptions	   del $(W_DAT)\ttyoptions

@@ -164,3 +164,87 @@ ROOM: "ordinary", random, random, random, random {
 }
 
 RANDOM_CORRIDORS
+
+
+#
+# The Minotaur Maze
+#
+MAZE:"minotaur",' '
+
+# Minotaur's Lair
+GEOMETRY:left,center
+MAP
+----------   
+|........|   
+|........|   
+|........+.  
+|........|...
+--S-------.  
+ENDMAP
+STAIR:levregion(35,00,50,06),levregion(01,07,70,20),up
+BRANCH:levregion(01,00,70,06),levregion(01,07,70,20)
+TELEPORT_REGION:levregion(01,00,70,06),levregion(01,07,70,20)
+
+# Stairs down
+STAIR:(03,03),down
+# Entire main area
+REGION:(01,01,08,04),unlit,"ordinary"
+# Broken door
+DOOR:broken,(09,03)
+
+# The minotaur in residence, although probably wondering in the maze
+MONSTER:('H',"minotaur"),(04,03)
+CONTAINER:('(',"chest"),trapped,locked,(01,03) {
+   OBJECT:('$',"gold piece"), quantity:(1000+(2d500))
+   [10%]:OBJECT:artifact
+   OBJECT:random_contents
+   OBJECT:random_contents
+   [50%]:OBJECT:random_contents
+}
+ENGRAVING:(01,03),engrave,"Gilthoniel"
+
+# Remains of heroes
+OBJECT:('9',"bone"), random
+OBJECT:('9',"bone"), random
+OBJECT:('9',"bone"), random
+OBJECT:('9',"bone"), random
+OBJECT:('9',"bone"), random
+OBJECT:('9',"human skull"), random
+OBJECT:('9',"human skull"), random
+OBJECT:('9',"human skull"), random
+OBJECT:('9',"human skull"), random
+OBJECT:('9',"human skull"), random
+OBJECT:('9',"clump of bat guano"), random
+OBJECT:('9',"clump of bat guano"), random
+OBJECT:('9',"clump of bat guano"), random
+OBJECT:('9',"clump of bat guano"), random
+OBJECT:('9',"clump of bat guano"), random
+OBJECT:random, random
+OBJECT:random, random
+OBJECT:random, random
+OBJECT:random, random
+OBJECT:random, random
+
+# A more recent hero corpse
+IF [50%] {
+  OBJECT:('%',"corpse"),random,montype:"knight"
+}
+ELSE {
+  OBJECT:('%',"corpse"),random,montype:"barbarian"
+}
+
+GEOMETRY:right,center
+MAP
+-------
+|.....|
++.....|
+|.....|
+-------
+ENDMAP
+# Non diggable walls
+MAZEWALK:(00,02),west
+DOOR:closed,(00,02)
+REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
+NPC:npc_geologist,(02,03)
+
+
