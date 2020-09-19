@@ -3986,15 +3986,16 @@ enum hmon_atkmode_types thrown;
         enum object_soundset_types oss = monster_soundsets[mss].attack_soundsets[attack_number];
         soundid = object_soundsets[oss].sounds[sound_type].ghsound;
         volume = object_soundsets[oss].sounds[sound_type].volume;
-        /* Hit sound is based on the defender's location */
-        if (isok(defx, defy))
-        {
-            float hearing = hearing_array[defx][defy];
-            if (hearing == 0.0f)
-                return;
-            else
-                volume *= hearing_array[defx][defy];
-        }
+    }
+
+    /* Hit sound is based on the defender's location */
+    if (isok(defx, defy) && you_attack)
+    {
+        float hearing = hearing_array[defx][defy];
+        if (hearing == 0.0f)
+            return;
+        else
+            volume *= hearing_array[defx][defy];
     }
 
     enum hit_surface_types surfaceid = get_hit_surface_type(surface_type, surface_source_ptr);
@@ -4518,14 +4519,17 @@ int radius;
         multiplier = curr_factor / prev_factor;
     }
 
-	struct monst* mtmp;
-	if (IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
+	struct monst* mtmp = m_at(x, y);
+	if ((IS_ROCK(levl[x][y].typ) && !IS_TREE(levl[x][y].typ))
+        || (mtmp && is_lightblocker_mappear(mtmp)))
 	{
-		/* Nothing */
-	}
-	else if ((mtmp = m_at(x, y)) && is_lightblocker_mappear(mtmp))
-	{
-		/* Nothing */
+        if (mtmp)
+        {
+            /* Make sure that monsters walking through in walls etc. produce a sound when hit etc. */
+            float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (2.0f)));
+            if (new_hearing > hearing_array[x][y])
+                hearing_array[x][y] = new_hearing;
+        }
 	}
 	else if (IS_DOOR(levl[x][y].typ) && (levl[x][y].doormask != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
 	{
