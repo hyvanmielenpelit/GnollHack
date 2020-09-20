@@ -5936,7 +5936,7 @@ char *buf;
         if(flags.delay_output_time > 0)
             Sprintf(buf, "%d milliseconds", flags.delay_output_time);
         else
-            Sprintf(buf, "%s", defopt);
+            Sprintf(buf, "%s, %d milliseconds", defopt, ANIMATION_FRAME_INTERVAL);
     }
     else if (!strcmp(optname, "align"))
         Sprintf(buf, "%s", rolestring(flags.initalign, aligns, adj));

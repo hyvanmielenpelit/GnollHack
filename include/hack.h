@@ -679,6 +679,7 @@ static const char empty_string[] = "";
 #define PIT_BOTTOM_BORDER 2
 
 #define ANIMATION_FRAME_INTERVAL 25 /* in milliseconds */
+#define DELAY_OUTPUT_INTERVAL 50 /* in milliseconds */
 #define ITEM_PICKUP_DROP_DELAY 75 /* in milliseconds */
 
 /* Some general definitions for graphics and sounds */

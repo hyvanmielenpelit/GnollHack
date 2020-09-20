@@ -199,9 +199,14 @@ struct context_info
     enum layer_types action_animation_layer;
     uchar action_animation_x;
     uchar action_animation_y;
+    boolean action_animation_counter_on;
+    boolean explosion_animation_counter_on;
+    boolean special_effect_animation_counter_on;
     unsigned long action_animation_counter;
     unsigned long explosion_animation_counter;
     unsigned long special_effect_animation_counter;
+    unsigned long milliseconds_to_wait_until_action;
+    unsigned long milliseconds_to_wait_until_end;
     boolean force_allow_keyboard_commands;
 };
 

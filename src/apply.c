@@ -214,8 +214,9 @@ struct obj *obj;
     }
     consume_obj_charge(obj, TRUE);
 
-    play_sfx_sound(SFX_CAMERA_CLICK);
     update_u_action(ACTION_TILE_ITEM_USE);
+    play_sfx_sound(SFX_CAMERA_CLICK);
+    wait_until_action();
 
     if (obj->cursed && !rn2(2)) {
         (void) zapyourself(obj, TRUE);

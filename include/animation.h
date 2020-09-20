@@ -94,6 +94,8 @@ struct animation_definition {
     enum main_tile_use_types main_tile_use_style; /* 0 = play as first tile and frame, 1 = play as last tile and frame, 2 = ignore */
     enum autodraw_types  main_tile_autodraw;
     char frame2tile[MAX_FRAMES_PER_ANIMATION];
+    char sound_play_frame;
+    char action_execution_frame;
     short tile_enlargement; /* Animations always use the same single enlargement */
     enum autodraw_types frame_autodraw[MAX_FRAMES_PER_ANIMATION];
 };

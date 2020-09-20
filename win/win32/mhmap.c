@@ -670,6 +670,30 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         else
             data->interval_counter++;
 
+        if (context.action_animation_counter_on)
+        {
+            if (context.action_animation_counter >= 0xCFFFFFFFUL)
+                context.action_animation_counter = 0UL;
+            else
+                context.action_animation_counter++;
+        }
+
+        if (context.explosion_animation_counter_on)
+        {
+            if (context.explosion_animation_counter >= 0xCFFFFFFFUL)
+                context.explosion_animation_counter = 0UL;
+            else
+                context.explosion_animation_counter++;
+        }
+
+        if (context.special_effect_animation_counter_on)
+        {
+            if (context.special_effect_animation_counter >= 0xCFFFFFFFUL)
+                context.special_effect_animation_counter = 0UL;
+            else
+                context.special_effect_animation_counter++;
+        }
+
         for (int x = 1; x < COLNO; x++)
             for (int y = 0; y < ROWNO; y++) {
                 if(data->mapAnimated[x][y])

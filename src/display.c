@@ -4013,6 +4013,7 @@ u_shieldeff()
 {
     enum action_tile_types action_before = u.action;
     update_u_action(ACTION_TILE_DEFEND);
+    wait_until_action();
     shieldeff(u.ux, u.uy);
     update_u_action(action_before);
 }
@@ -4023,6 +4024,7 @@ struct monst* mon;
 {
     enum action_tile_types action_before = mon->action;
     update_m_action(mon, ACTION_TILE_DEFEND);
+    wait_until_action();
     shieldeff(mon->mx, mon->my);
     update_m_action(mon, action_before);
 }

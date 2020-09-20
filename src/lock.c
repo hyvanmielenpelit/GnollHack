@@ -381,6 +381,7 @@ struct obj *pick;
         return PICKLOCK_DID_NOTHING;
 
     update_u_action(ACTION_TILE_DOOR_USE);
+    wait_until_action();
     if (cc.x == u.ux && cc.y == u.uy) { /* pick lock on a container */
         const char *verb;
         char qsfx[QBUFSZ];
@@ -780,7 +781,8 @@ int x, y;
         default:
             mesg = " is locked";
             update_u_action(ACTION_TILE_DOOR_USE);
-			locked = TRUE;
+            wait_until_action();
+            locked = TRUE;
 			break;
         }
         pline("This %s%s.", door_name, mesg);
@@ -805,6 +807,7 @@ int x, y;
 
     /* door is known to be CLOSED */
     update_u_action(ACTION_TILE_DOOR_USE);
+    wait_until_action();
     if (rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
         play_sfx_sound(SFX_OPEN_DOOR);
         pline_The("%s opens.", door_name);
@@ -949,6 +952,7 @@ doclose()
             return res;
         }
         update_u_action(ACTION_TILE_DOOR_USE);
+        wait_until_action();
         if (u.usteed
             || rn2(25) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
             play_sfx_sound(SFX_CLOSE_DOOR);

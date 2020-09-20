@@ -1872,7 +1872,7 @@ mswin_delay_output()
 {
     logDebug("mswin_delay_output()\n");
     //Sleep(50);
-    mswin_wait_loop(50);
+    mswin_wait_loop(DELAY_OUTPUT_INTERVAL);
 }
 
 void

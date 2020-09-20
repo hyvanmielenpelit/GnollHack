@@ -1138,8 +1138,9 @@ int how;
 
     if (how < PANICKED)
     {
-        play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
         update_u_action(ACTION_TILE_DEATH);
+        play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
+        wait_until_action();
     }
 
     /* Avoid killed by "a" burning or "a" starvation */

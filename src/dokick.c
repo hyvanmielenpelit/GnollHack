@@ -367,8 +367,9 @@ xchar x, y;
             if (uattk->aatyp != AT_KICK)
                 continue;
 
-            play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
             update_u_action(ACTION_TILE_KICK);
+            play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+            wait_until_action();
 
             kickdieroll = rnd(20);
             specialdmg = special_dmgval(&youmonst, mon, W_ARMF, (long *) 0);
@@ -411,8 +412,9 @@ xchar x, y;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-        play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
         update_u_action(ACTION_TILE_KICK);
+        play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+        wait_until_action();
 
         char strikebuf[BUFSIZ] = "";
 		Sprintf(strikebuf, "You attack");
@@ -1184,8 +1186,9 @@ dokick() {
             }
             /*FALLTHRU*/
         default:
-            play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
             update_u_action(ACTION_TILE_KICK);
+            play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+            wait_until_action();
             play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(u.ustuck), NATTK, uarmf, 0.0, HMON_MELEE);
             Your("feeble kick has no effect.");
             break;
@@ -1197,8 +1200,9 @@ dokick() {
 	{
         /* must be Passes_walls */
         struct trap* t = t_at(u.ux, u.uy);
-        play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
         update_u_action(ACTION_TILE_KICK);
+        play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+        wait_until_action();
         You("kick at the side of the pit.");
         if (t)
             play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_TRAP, trap_to_any(t), BAREFOOTED_ATTACK_NUMBER, uarmf, 5.0, HMON_MELEE);
@@ -1300,8 +1304,9 @@ dokick() {
         return 1;
     }
 
-    play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
     update_u_action(ACTION_TILE_KICK);
+    play_monster_simple_weapon_sound(&youmonst, BAREFOOTED_ATTACK_NUMBER, uarmf, OBJECT_SOUND_TYPE_SWING_MELEE);
+    wait_until_action();
 
     (void) unmap_invisible(x, y);
     if (is_pool(x, y) ^ !!u.uinwater) {

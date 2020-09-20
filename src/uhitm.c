@@ -788,8 +788,9 @@ struct attack *uattk;
 
 	for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 	{
-		play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
 		update_u_action(ACTION_TILE_ATTACK);
+		play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
+		wait_until_action();
 
 		char strikebuf[BUFSIZ] = "";
 		if (uwep)
@@ -826,7 +827,7 @@ struct attack *uattk;
 			(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 		}
 
-		update_u_action(FALSE);
+		update_u_action(ACTION_TILE_NO_ACTION);
 
 		if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 			break;
@@ -855,8 +856,9 @@ struct attack *uattk;
 
 		for (int strike2index = 0; strike2index < multistrike2; strike2index++)
 		{
+			update_u_action(ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
-			update_u_action(TRUE);
+			wait_until_action();
 
 			char strikebuf[BUFSIZ] = "";
 			if (uarms)
@@ -3607,8 +3609,9 @@ register struct monst *mon;
 
 			for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
-				play_monster_simple_weapon_sound(&youmonst, i, weapon, OBJECT_SOUND_TYPE_SWING_MELEE);
 				update_u_action(ACTION_TILE_ATTACK);
+				play_monster_simple_weapon_sound(&youmonst, i, weapon, OBJECT_SOUND_TYPE_SWING_MELEE);
+				wait_until_action();
 
 				char strikebuf[BUFSIZ] = "";
 				if (weapon)
@@ -3669,8 +3672,9 @@ register struct monst *mon;
 			}
 			/*FALLTHRU*/
 		case AT_SMMN:
-			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(ACTION_TILE_ATTACK);
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			wait_until_action();
 			sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
 			update_u_action(ACTION_TILE_NO_ACTION);
 			break;
@@ -3683,8 +3687,9 @@ register struct monst *mon;
 		case AT_TAIL:
 		case AT_TENT:
         /*weaponless:*/
-			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(ACTION_TILE_ATTACK);
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			wait_until_action();
 			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
                                    &attknum, &armorpenalty);
             dieroll = rnd(20);
@@ -3791,8 +3796,9 @@ register struct monst *mon;
 
         case AT_HUGS: 
 		{
-			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(ACTION_TILE_ATTACK);
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			wait_until_action();
 			int specialdmg;
             long silverhit = 0L;
             boolean byhand = hug_throttles(&mons[u.umonnum]), /* rope golem */
@@ -3894,8 +3900,9 @@ register struct monst *mon;
         }
 
         case AT_EXPL: /* automatic hit if next to */
-			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(ACTION_TILE_ATTACK);
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			wait_until_action();
 			dhit = -1;
             wakeup(mon, TRUE);
             sum[i] = explum(mon, mattk);
@@ -3903,8 +3910,9 @@ register struct monst *mon;
 			break;
 
         case AT_ENGL:
-			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			update_u_action(ACTION_TILE_ATTACK);
+			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+			wait_until_action();
 			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0, &attknum, &armorpenalty);
 
             if ((dhit = (tmp > rnd(20 + i))))
@@ -4018,6 +4026,7 @@ boolean wep_was_destroyed;
 	enum action_tile_types action_before = mon->action;
 	update_m_action(mon, ACTION_TILE_PASSIVE_DEFENSE);
 	play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
+	wait_until_action();
 
     /*  These affect you even if they just died.
      */
@@ -4812,7 +4821,22 @@ update_u_action(action)
 enum action_tile_types action;
 {
 	enum action_tile_types action_before = u.action;
+	if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
+	{
+		if (context.milliseconds_to_wait_until_end > 0)
+		{
+			delay_output_milliseconds(context.milliseconds_to_wait_until_end);
+			context.milliseconds_to_wait_until_end = 0UL;
+		}
+		context.action_animation_layer = 0;
+		context.action_animation_x = 0;
+		context.action_animation_y = 0;
+		context.action_animation_counter = 0;
+		context.action_animation_counter_on = FALSE;
+	}
+
 	u.action = action;
+
 	if (iflags.using_gui_tiles && action_before != u.action)
 	{
 		context.force_allow_keyboard_commands = TRUE;
@@ -4820,33 +4844,58 @@ enum action_tile_types action;
 		if (u.action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY && !u.usteed)
 		{
+			context.milliseconds_to_wait_until_action = 0UL;
+			context.milliseconds_to_wait_until_end = 0UL;
 			context.action_animation_layer = LAYER_MONSTER;
 			context.action_animation_x = u.ux;
 			context.action_animation_y = u.uy;
 			context.action_animation_counter = 0;
+			context.action_animation_counter_on = TRUE;
 			newsym(u.ux, u.uy);
+			force_redraw_at(u.ux, u.uy);
+			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+			if (animations[anim].sound_play_frame <= -1)
+			{
+				//delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames* framenum);
+				context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+			}
+			else
+			{
+				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+				if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
+				{
+					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+					if (animations[anim].action_execution_frame < framenum)
+						context.milliseconds_to_wait_until_end = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+				}
+				else
+				{
+					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+					context.milliseconds_to_wait_until_end = 0UL;
+				}
+			}
+#if 0
 			for (int frame = 0; frame < framenum; frame++)
 			{
 				force_redraw_at(u.ux, u.uy);
 				flush_screen(0);
 				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-				context.action_animation_counter += animations[anim].intervals_between_frames;
+				//context.action_animation_counter += animations[anim].intervals_between_frames;
 			}
-			context.action_animation_layer = 0;
-			context.action_animation_x = 0;
-			context.action_animation_y = 0;
-			context.action_animation_counter = 0;
+#endif
 		}
 		else
 		{
 			newsym(u.ux, u.uy);
 			flush_screen(1);
-			adjusted_delay_output();
+			context.milliseconds_to_wait_until_action = DELAY_OUTPUT_INTERVAL;
+			//adjusted_delay_output();
 			if (u.action != ACTION_TILE_NO_ACTION)
 			{
-				adjusted_delay_output();
-				adjusted_delay_output();
+				context.milliseconds_to_wait_until_action *= 3;
+				//adjusted_delay_output();
+				//adjusted_delay_output();
 			}
 		}
 		context.force_allow_keyboard_commands = FALSE;
@@ -4868,6 +4917,20 @@ enum action_tile_types action;
 	}
 
 	enum action_tile_types action_before = mtmp->action;
+	if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
+	{
+		if (context.milliseconds_to_wait_until_end > 0)
+		{
+			delay_output_milliseconds(context.milliseconds_to_wait_until_end);
+			context.milliseconds_to_wait_until_end = 0UL;
+		}
+		context.action_animation_layer = 0;
+		context.action_animation_x = 0;
+		context.action_animation_y = 0;
+		context.action_animation_counter = 0;
+		context.action_animation_counter_on = FALSE;
+	}
+
 	mtmp->action = action;
 
 	if (iflags.using_gui_tiles && canseemon(mtmp) && action_before != mtmp->action)
@@ -4876,38 +4939,77 @@ enum action_tile_types action;
 		if (mtmp->action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
 		{
+			context.milliseconds_to_wait_until_action = 0UL;
+			context.milliseconds_to_wait_until_end = 0UL;
 			context.action_animation_layer = LAYER_MONSTER;
 			context.action_animation_x = mtmp->mx;
 			context.action_animation_y = mtmp->my;
 			context.action_animation_counter = 0;
+			context.action_animation_counter_on = TRUE;
 			newsym(mtmp->mx, mtmp->my);
+			force_redraw_at(mtmp->mx, mtmp->my);
+			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+			if (animations[anim].sound_play_frame <= -1)
+			{
+				//delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames* framenum);
+				context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+			}
+			else
+			{
+				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+				if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
+				{
+					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+					if (animations[anim].action_execution_frame < framenum)
+						context.milliseconds_to_wait_until_end = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+				}
+				else
+				{
+					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+					context.milliseconds_to_wait_until_end = 0UL;
+				}
+			}
+#if 0
 			for (int frame = 0; frame < framenum; frame++)
 			{
 				force_redraw_at(mtmp->mx, mtmp->my);
 				flush_screen(0);
 				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-				context.action_animation_counter += animations[anim].intervals_between_frames;
+				//context.action_animation_counter += animations[anim].intervals_between_frames;
 			}
+#endif
 			context.action_animation_layer = 0;
 			context.action_animation_x = 0;
 			context.action_animation_y = 0;
 			context.action_animation_counter = 0;
+			context.action_animation_counter_on = FALSE;
 		}
 		else
 		{
 			newsym(mtmp->mx, mtmp->my);
 			flush_screen(0);
-			adjusted_delay_output();
+			context.milliseconds_to_wait_until_action = DELAY_OUTPUT_INTERVAL;
+			//adjusted_delay_output();
 			if (mtmp->action != ACTION_TILE_NO_ACTION)
 			{
-				adjusted_delay_output();
-				adjusted_delay_output();
+				context.milliseconds_to_wait_until_action *= 3;
+				//adjusted_delay_output();
+				//adjusted_delay_output();
 			}
 		}
 	}
 }
 
+void 
+wait_until_action()
+{
+	if (context.milliseconds_to_wait_until_action > 0UL)
+	{
+		delay_output_milliseconds(context.milliseconds_to_wait_until_action);
+		context.milliseconds_to_wait_until_action = 0UL;
+	}
+}
 
 void
 display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags)
@@ -4926,6 +5028,7 @@ unsigned long extra_flags;
 
 	enum action_tile_types action_before = is_you ? u.action : mon->action;
 	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
+	wait_until_action();
 	newsym_with_extra_info(x, y, flags, damage_shown);
 	flush_screen(is_you);
 	adjusted_delay_output();

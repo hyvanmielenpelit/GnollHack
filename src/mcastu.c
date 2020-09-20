@@ -264,6 +264,7 @@ boolean foundyou;
     boolean is_intermediate = FALSE;
 
     update_m_action(mtmp, nodirspell ? ACTION_TILE_CAST_NODIR : ACTION_TILE_CAST_DIR);
+    wait_until_action();
 
     if (mattk->adtyp == AD_SPEL)
     {
