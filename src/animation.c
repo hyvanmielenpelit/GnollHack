@@ -2556,7 +2556,7 @@ boolean force_visibility;
             {
                 force_redraw_at(x, y);
                 flush_screen(0);
-                delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
+                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
                 context.special_effect_animation_counter += animations[anim].intervals_between_frames;
             }
             context.special_effect_animation_counter = 0;

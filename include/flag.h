@@ -30,7 +30,7 @@ struct flag {
     boolean dark_room; /* show shadows in lit rooms */
     boolean debug;     /* in debugging mode */
 #define wizard flags.debug
-    int delay_output_time; /* custom delay time in milliseconds. If 0, then the default 50 milliseconds is used */
+    int animation_frame_interval_in_milliseconds; /* custom animation frame interval in milliseconds. If 0, then the default at 25 milliseconds is used. Delay output is twice this amount, defaulting at 50 milliseconds */
     boolean end_own; /* list all own scores */
     boolean explore; /* in exploration mode */
     boolean female;  /* initial selection */

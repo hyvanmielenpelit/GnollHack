@@ -1762,7 +1762,7 @@ boolean atme;
 	{
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		You("fail to cast the spell correctly.");
 		deduct_mana_cost(denergy / 2);
         context.botl = 1;
@@ -2013,7 +2013,7 @@ boolean atme;
 			{
 				update_u_action(ACTION_TILE_CAST_NODIR);
 				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-				wait_until_action();
+				u_wait_until_action();
 
 				if ((damage = zapyourself(pseudo, TRUE)) != 0)
 				{
@@ -2028,7 +2028,7 @@ boolean atme;
 				update_u_facing(TRUE);
 				update_u_action(ACTION_TILE_CAST_DIR);
 				play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-				wait_until_action();
+				u_wait_until_action();
 
 				if (otyp == SPE_METEOR_SWARM)
 				{
@@ -2051,7 +2051,7 @@ boolean atme;
 			/* No dir */
 			update_u_action(ACTION_TILE_CAST_NODIR);
 			play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-			wait_until_action();
+			u_wait_until_action();
 			weffects(pseudo);
 		}
 
@@ -2088,7 +2088,7 @@ boolean atme;
 	case SPE_CREATE_MONSTER:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		(void) seffects(pseudo, &effect_happened);
         break;
 
@@ -2105,7 +2105,7 @@ boolean atme;
     case SPE_INVISIBILITY:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		(void) peffects(pseudo);
         break;
     /* end of potion-like spells */
@@ -2113,20 +2113,20 @@ boolean atme;
 	case SPE_CREATE_FAMILIAR:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		(void) make_familiar((struct obj *) 0, u.ux, u.uy, FALSE);
         break;
 	case SPE_CONGREGATE:
 	case SPE_SUMMONING_CALL:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		use_magic_whistle((struct obj*) 0);
 		break;
 	case SPE_CLAIRVOYANCE:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
                 pseudo->blessed = 1; /* detect monsters as well as map */
@@ -2139,13 +2139,13 @@ boolean atme;
 	case SPE_MINOR_CONSULTATION:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		outrumor(1, BY_SPELL);
 		break;
 	case SPE_MAJOR_CONSULTATION:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		outoracle(FALSE, 2);
 		break;
 	case SPE_PROTECTION:
@@ -2178,7 +2178,7 @@ boolean atme;
 	case SPE_DIVINE_INTERVENTION:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		You("successfully cast \"%s\".", spellname(spell));
 		addspellintrinsictimeout(otyp);
 		play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
@@ -2187,7 +2187,7 @@ boolean atme;
 	case SPE_JUMPING:
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-		wait_until_action();
+		u_wait_until_action();
 		if (!jump(max(role_skill, 1)))
             pline1(nothing_happens);
         break;
@@ -2215,7 +2215,7 @@ boolean atme;
 		{
 			update_u_action(ACTION_TILE_CAST_NODIR);
 			play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
-			wait_until_action();
+			u_wait_until_action();
 
 			switch (otyp)
 			{

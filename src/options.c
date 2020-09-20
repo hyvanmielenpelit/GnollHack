@@ -3960,7 +3960,7 @@ boolean tinitial, tfrom_file;
         }
         else
         {
-            flags.delay_output_time = itmp;
+            flags.animation_frame_interval_in_milliseconds = itmp;
             need_set_animation_timer = TRUE;
         }
         return retval;
@@ -5074,7 +5074,7 @@ doset() /* changing options via menu by Per Liboriussen */
 
     if (need_set_animation_timer)
     {
-        set_animation_timer(flags.delay_output_time <= 0 ? ANIMATION_FRAME_INTERVAL : flags.delay_output_time);
+        set_animation_timer(flags.animation_frame_interval_in_milliseconds <= 0 ? ANIMATION_FRAME_INTERVAL : flags.animation_frame_interval_in_milliseconds);
     }
 
     return 0;
@@ -5943,8 +5943,8 @@ char *buf;
     }
     else if (!strcmp(optname, "animation_interval"))
     {
-        if(flags.delay_output_time > 0)
-            Sprintf(buf, "%d milliseconds", flags.delay_output_time);
+        if(flags.animation_frame_interval_in_milliseconds > 0)
+            Sprintf(buf, "%d milliseconds", flags.animation_frame_interval_in_milliseconds);
         else
             Sprintf(buf, "%s, %d milliseconds", defopt, ANIMATION_FRAME_INTERVAL);
     }

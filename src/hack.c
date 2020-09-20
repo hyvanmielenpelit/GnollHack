@@ -1923,7 +1923,7 @@ domove_core()
 
         update_u_action(ACTION_TILE_ATTACK);
         play_monster_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_SWING_MELEE);
-        wait_until_action();
+        u_wait_until_action();
 
         You("%s%s %s.",
             !(boulder || solid) ? "" : !explo ? "harmlessly " : "futilely ",
@@ -3532,9 +3532,9 @@ get_cmap_or_cmap_variation_glyph_explanation(int glyph)
 void
 adjusted_delay_output()
 {
-    if (flags.delay_output_time > 0)
+    if (flags.animation_frame_interval_in_milliseconds > 0)
     {
-        delay_output_milliseconds(flags.delay_output_time);
+        delay_output_milliseconds(flags.animation_frame_interval_in_milliseconds * DELAY_OUTPUT_INTERVAL_IN_FRAMES);
     }
     else
     {

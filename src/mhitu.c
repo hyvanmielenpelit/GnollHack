@@ -4366,7 +4366,7 @@ struct attack *mattk;
     enum action_tile_types action_before = u.action;
     update_u_action(ACTION_TILE_PASSIVE_DEFENSE);
     play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-    wait_until_action();
+    u_wait_until_action();
 
     /* These affect the enemy even if you were "killed" (rehumanized) */
     switch (oldu_mattk->adtyp)

@@ -790,7 +790,7 @@ struct attack *uattk;
 	{
 		update_u_action(ACTION_TILE_ATTACK);
 		play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
-		wait_until_action();
+		u_wait_until_action();
 
 		char strikebuf[BUFSIZ] = "";
 		if (uwep)
@@ -858,7 +858,7 @@ struct attack *uattk;
 		{
 			update_u_action(ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, 0, wep, OBJECT_SOUND_TYPE_SWING_MELEE);
-			wait_until_action();
+			u_wait_until_action();
 
 			char strikebuf[BUFSIZ] = "";
 			if (uarms)
@@ -3611,7 +3611,7 @@ register struct monst *mon;
 			{
 				update_u_action(ACTION_TILE_ATTACK);
 				play_monster_simple_weapon_sound(&youmonst, i, weapon, OBJECT_SOUND_TYPE_SWING_MELEE);
-				wait_until_action();
+				u_wait_until_action();
 
 				char strikebuf[BUFSIZ] = "";
 				if (weapon)
@@ -3674,7 +3674,7 @@ register struct monst *mon;
 		case AT_SMMN:
 			update_u_action(ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-			wait_until_action();
+			u_wait_until_action();
 			sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
 			update_u_action(ACTION_TILE_NO_ACTION);
 			break;
@@ -3689,7 +3689,7 @@ register struct monst *mon;
         /*weaponless:*/
 			update_u_action(ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-			wait_until_action();
+			u_wait_until_action();
 			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0,
                                    &attknum, &armorpenalty);
             dieroll = rnd(20);
@@ -3798,7 +3798,7 @@ register struct monst *mon;
 		{
 			update_u_action(ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-			wait_until_action();
+			u_wait_until_action();
 			int specialdmg;
             long silverhit = 0L;
             boolean byhand = hug_throttles(&mons[u.umonnum]), /* rope golem */
@@ -3902,7 +3902,7 @@ register struct monst *mon;
         case AT_EXPL: /* automatic hit if next to */
 			update_u_action(ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-			wait_until_action();
+			u_wait_until_action();
 			dhit = -1;
             wakeup(mon, TRUE);
             sum[i] = explum(mon, mattk);
@@ -3912,7 +3912,7 @@ register struct monst *mon;
         case AT_ENGL:
 			update_u_action(ACTION_TILE_ATTACK);
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-			wait_until_action();
+			u_wait_until_action();
 			tmp = find_roll_to_hit(mon, mattk->aatyp, (struct obj *) 0, &attknum, &armorpenalty);
 
             if ((dhit = (tmp > rnd(20 + i))))
@@ -4823,17 +4823,20 @@ enum action_tile_types action;
 	enum action_tile_types action_before = u.action;
 	if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
 	{
-		if (context.milliseconds_to_wait_until_end > 0)
+		if (context.u_milliseconds_to_wait_until_end > 0)
 		{
-			delay_output_milliseconds(context.milliseconds_to_wait_until_end);
-			context.milliseconds_to_wait_until_end = 0UL;
+			delay_output_milliseconds(context.u_milliseconds_to_wait_until_end);
+			context.u_milliseconds_to_wait_until_end = 0UL;
 		}
-		context.action_animation_layer = 0;
-		context.action_animation_x = 0;
-		context.action_animation_y = 0;
-		context.action_animation_counter = 0;
-		context.action_animation_counter_on = FALSE;
 	}
+
+	context.u_milliseconds_to_wait_until_action = 0UL;
+	context.u_milliseconds_to_wait_until_end = 0UL;
+	context.u_action_animation_layer = 0;
+	context.u_action_animation_x = 0;
+	context.u_action_animation_y = 0;
+	context.u_action_animation_counter = 0;
+	context.u_action_animation_counter_on = FALSE;
 
 	u.action = action;
 
@@ -4844,35 +4847,33 @@ enum action_tile_types action;
 		if (u.action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY && !u.usteed)
 		{
-			context.milliseconds_to_wait_until_action = 0UL;
-			context.milliseconds_to_wait_until_end = 0UL;
-			context.action_animation_layer = LAYER_MONSTER;
-			context.action_animation_x = u.ux;
-			context.action_animation_y = u.uy;
-			context.action_animation_counter = 0;
-			context.action_animation_counter_on = TRUE;
+			context.u_action_animation_layer = LAYER_MONSTER;
+			context.u_action_animation_x = u.ux;
+			context.u_action_animation_y = u.uy;
+			context.u_action_animation_counter = 0;
+			context.u_action_animation_counter_on = TRUE;
 			newsym(u.ux, u.uy);
 			force_redraw_at(u.ux, u.uy);
 			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
 			if (animations[anim].sound_play_frame <= -1)
 			{
-				//delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames* framenum);
-				context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+				//delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames* framenum);
+				context.u_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
 			}
 			else
 			{
-				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+				delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
 				if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
 				{
-					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+					context.u_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
 					if (animations[anim].action_execution_frame < framenum)
-						context.milliseconds_to_wait_until_end = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+						context.u_milliseconds_to_wait_until_end = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
 				}
 				else
 				{
-					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
-					context.milliseconds_to_wait_until_end = 0UL;
+					context.u_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+					context.u_milliseconds_to_wait_until_end = 0UL;
 				}
 			}
 #if 0
@@ -4880,8 +4881,8 @@ enum action_tile_types action;
 			{
 				force_redraw_at(u.ux, u.uy);
 				flush_screen(0);
-				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-				//context.action_animation_counter += animations[anim].intervals_between_frames;
+				delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
+				//context.u_action_animation_counter += animations[anim].intervals_between_frames;
 			}
 #endif
 		}
@@ -4889,11 +4890,11 @@ enum action_tile_types action;
 		{
 			newsym(u.ux, u.uy);
 			flush_screen(1);
-			context.milliseconds_to_wait_until_action = DELAY_OUTPUT_INTERVAL;
+			context.u_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
 			if (u.action != ACTION_TILE_NO_ACTION)
 			{
-				context.milliseconds_to_wait_until_action *= 3;
+				context.u_milliseconds_to_wait_until_action *= 3;
 				//adjusted_delay_output();
 				//adjusted_delay_output();
 			}
@@ -4924,12 +4925,15 @@ enum action_tile_types action;
 			delay_output_milliseconds(context.m_milliseconds_to_wait_until_end);
 			context.m_milliseconds_to_wait_until_end = 0UL;
 		}
-		context.m_action_animation_layer = 0;
-		context.m_action_animation_x = 0;
-		context.m_action_animation_y = 0;
-		context.m_action_animation_counter = 0;
-		context.m_action_animation_counter_on = FALSE;
 	}
+
+	context.m_milliseconds_to_wait_until_action = 0UL;
+	context.m_milliseconds_to_wait_until_end = 0UL;
+	context.m_action_animation_layer = 0;
+	context.m_action_animation_x = 0;
+	context.m_action_animation_y = 0;
+	context.m_action_animation_counter = 0;
+	context.m_action_animation_counter_on = FALSE;
 
 	mtmp->action = action;
 
@@ -4939,8 +4943,6 @@ enum action_tile_types action;
 		if (mtmp->action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
 		{
-			context.m_milliseconds_to_wait_until_action = 0UL;
-			context.m_milliseconds_to_wait_until_end = 0UL;
 			context.m_action_animation_layer = LAYER_MONSTER;
 			context.m_action_animation_x = mtmp->mx;
 			context.m_action_animation_y = mtmp->my;
@@ -4952,21 +4954,21 @@ enum action_tile_types action;
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
 			if (animations[anim].sound_play_frame <= -1)
 			{
-				//delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames* framenum);
-				context.m_milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+				//delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames* framenum);
+				context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
 			}
 			else
 			{
-				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+				delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
 				if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
 				{
-					context.m_milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+					context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
 					if (animations[anim].action_execution_frame < framenum)
-						context.m_milliseconds_to_wait_until_end = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+						context.m_milliseconds_to_wait_until_end = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
 				}
 				else
 				{
-					context.m_milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+					context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
 					context.m_milliseconds_to_wait_until_end = 0UL;
 				}
 			}
@@ -4975,8 +4977,8 @@ enum action_tile_types action;
 			{
 				force_redraw_at(mtmp->mx, mtmp->my);
 				flush_screen(0);
-				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-				//context.action_animation_counter += animations[anim].intervals_between_frames;
+				delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
+				//context.u_action_animation_counter += animations[anim].intervals_between_frames;
 			}
 #endif
 		}
@@ -4984,7 +4986,7 @@ enum action_tile_types action;
 		{
 			newsym(mtmp->mx, mtmp->my);
 			flush_screen(0);
-			context.m_milliseconds_to_wait_until_action = DELAY_OUTPUT_INTERVAL;
+			context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
 			if (mtmp->action != ACTION_TILE_NO_ACTION)
 			{
@@ -4997,12 +4999,12 @@ enum action_tile_types action;
 }
 
 void 
-wait_until_action()
+u_wait_until_action()
 {
-	if (context.milliseconds_to_wait_until_action > 0UL)
+	if (context.u_milliseconds_to_wait_until_action > 0UL)
 	{
-		delay_output_milliseconds(context.milliseconds_to_wait_until_action);
-		context.milliseconds_to_wait_until_action = 0UL;
+		delay_output_milliseconds(context.u_milliseconds_to_wait_until_action);
+		context.u_milliseconds_to_wait_until_action = 0UL;
 	}
 }
 

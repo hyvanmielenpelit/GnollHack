@@ -4013,7 +4013,7 @@ u_shieldeff()
 {
     enum action_tile_types action_before = u.action;
     update_u_action(ACTION_TILE_DEFEND);
-    wait_until_action();
+    u_wait_until_action();
     shieldeff(u.ux, u.uy);
     update_u_action(action_before);
 }

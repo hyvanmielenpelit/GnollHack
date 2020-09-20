@@ -257,7 +257,7 @@ boolean firing;
         else
             play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_THROW);
 
-        wait_until_action();
+        u_wait_until_action();
 
         context.multishot_target_killed = FALSE;
         /* split this object off from its slot if necessary */

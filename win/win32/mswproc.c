@@ -1873,7 +1873,7 @@ mswin_delay_output()
 {
     logDebug("mswin_delay_output()\n");
     //Sleep(50);
-    mswin_wait_loop(DELAY_OUTPUT_INTERVAL);
+    mswin_wait_loop((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES);
 }
 
 void
@@ -2235,18 +2235,18 @@ mswin_wait_loop(int milliseconds)
     disallow_keyboard_commands_in_wait_loop = FALSE;
 
     /* Reduce animation ending counters */
-    if (context.action_animation_counter_on && context.milliseconds_to_wait_until_action == 0UL && context.milliseconds_to_wait_until_end > 0UL)
+    if (context.u_action_animation_counter_on && context.u_milliseconds_to_wait_until_action == 0UL && context.u_milliseconds_to_wait_until_end > 0UL)
     {
-        if (context.milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
-            context.milliseconds_to_wait_until_end = 1UL; /* Handle turn off elsewhere */
+        if (context.u_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.u_milliseconds_to_wait_until_end = 0UL;
         else
-            context.milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+            context.u_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
     }
 
     if (context.m_action_animation_counter_on && context.m_milliseconds_to_wait_until_action == 0UL && context.m_milliseconds_to_wait_until_end > 0UL)
     {
         if (context.m_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
-            context.m_milliseconds_to_wait_until_end = 1UL; /* Handle turn off elsewhere */
+            context.m_milliseconds_to_wait_until_end = 0UL;
         else
             context.m_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
     }

@@ -216,7 +216,7 @@ struct obj *obj;
 
     update_u_action(ACTION_TILE_ITEM_USE);
     play_sfx_sound(SFX_CAMERA_CLICK);
-    wait_until_action();
+    u_wait_until_action();
 
     if (obj->cursed && !rn2(2)) {
         (void) zapyourself(obj, TRUE);
@@ -3688,7 +3688,7 @@ struct obj *obj;
     } else if ((!u.dx && !u.dy) || (u.dz > 0)) {
         update_u_action(ACTION_TILE_ATTACK);
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
-        wait_until_action();
+        u_wait_until_action();
 
         int dam;
 
@@ -3803,7 +3803,7 @@ struct obj *obj;
 
             update_u_action(ACTION_TILE_ATTACK);
             play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
-            wait_until_action();
+            u_wait_until_action();
 
             Strcpy(onambuf, cxname(otmp));
             if (gotit) {
@@ -3905,7 +3905,7 @@ struct obj *obj;
         /* it must be air -- water checked above */
         update_u_action(ACTION_TILE_ATTACK);
         play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
-        wait_until_action();
+        u_wait_until_action();
 
         You("snap your whip through thin air.");
 
