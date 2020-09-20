@@ -1504,10 +1504,14 @@ int x, y;
         } else {                /* DISP_FLASH/ALWAYS */
             if (tglyph->sidx) { /* not first call, so reset previous pos */
                 newsym(tglyph->saved[0].x, tglyph->saved[0].y);
+                force_redraw_at(tglyph->saved[0].x, tglyph->saved[0].y);
                 tglyph->sidx = 0; /* display is presently up to date */
             }
             if (!cansee(x, y) && tglyph->style != DISP_ALWAYS)
+            {
+                flush_screen(0);                 /* make sure it shows up */
                 break;
+            }
             tglyph->saved[0].x = x;
             tglyph->saved[0].y = y;
             tglyph->sidx = 1;
