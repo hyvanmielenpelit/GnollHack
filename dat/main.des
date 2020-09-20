@@ -192,7 +192,7 @@ REGION:(01,01,08,04),unlit,"ordinary"
 # Broken door
 DOOR:broken,(09,03)
 
-# The minotaur in residence, although probably wondering in the maze
+# The minotaur in residence, although probably wandering in the maze
 MONSTER:('H',"minotaur"),(04,03)
 CONTAINER:('(',"chest"),trapped,locked,(01,03) {
    OBJECT:('$',"gold piece"), quantity:(1000+(2d500))
@@ -241,7 +241,7 @@ MAP
 |.....|
 -------
 ENDMAP
-# Non diggable walls
+
 MAZEWALK:(00,02),west
 DOOR:closed,(00,02)
 REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
