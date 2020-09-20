@@ -305,7 +305,7 @@ static struct Comp_Opt {
                * a different format */
     int optflags;
 } compopt[] = {
-    { "active_animation_interval", "frame interval for active animations in milliseconds", 3, SET_IN_GAME },
+    { "animation_interval", "animation frame interval in milliseconds", 3, SET_IN_GAME },
     { "align", "your starting alignment (lawful, neutral, or chaotic)", 8,
       DISP_IN_GAME },
     { "align_message", "message window alignment", 20, DISP_IN_GAME }, /*WC*/
@@ -525,6 +525,7 @@ extern struct symparse loadsyms[];
 static boolean need_redraw; /* for doset() */
 static boolean need_set_sound_volume; /* for doset() */
 static boolean need_update_inventory; /* for doset() */
+static boolean need_set_animation_timer;
 
 #if defined(TOS) && defined(TEXTCOLOR)
 extern boolean colors_changed;  /* in tos.c */
@@ -3935,8 +3936,8 @@ boolean tinitial, tfrom_file;
     }
 
     /* This is in fact milliseconds in delay_output, which slows down the game, not just any animation */
-    fullname = "active_animation_interval";
-    if (match_optname(opts, fullname, 25, TRUE))
+    fullname = "animation_interval";
+    if (match_optname(opts, fullname, 17, TRUE))
     {
         int itmp = 0;
 
@@ -3960,6 +3961,7 @@ boolean tinitial, tfrom_file;
         else
         {
             flags.delay_output_time = itmp;
+            need_set_animation_timer = TRUE;
         }
         return retval;
     }
@@ -4973,9 +4975,12 @@ doset() /* changing options via menu by Per Liboriussen */
         doset_add_menu(tmpwin, fqn_prefix_names[i], 0);
 #endif
     end_menu(tmpwin, "Set what options?");
+    
     need_redraw = FALSE;
     need_set_sound_volume = FALSE;
     need_update_inventory = FALSE;
+    need_set_animation_timer = FALSE;
+
     if ((pick_cnt = select_menu(tmpwin, PICK_ANY, &pick_list)) > 0) {
         /*
          * Walk down the selection list and either invert the booleans
@@ -5065,6 +5070,11 @@ doset() /* changing options via menu by Per Liboriussen */
     if (need_update_inventory)
     {
         update_inventory();
+    }
+
+    if (need_set_animation_timer)
+    {
+        set_animation_timer(flags.delay_output_time <= 0 ? ANIMATION_FRAME_INTERVAL : flags.delay_output_time);
     }
 
     return 0;
@@ -5931,7 +5941,7 @@ char *buf;
                     : (which == ALIGN_RIGHT) ? "right"
                       : defopt);
     }
-    else if (!strcmp(optname, "active_animation_interval"))
+    else if (!strcmp(optname, "animation_interval"))
     {
         if(flags.delay_output_time > 0)
             Sprintf(buf, "%d milliseconds", flags.delay_output_time);

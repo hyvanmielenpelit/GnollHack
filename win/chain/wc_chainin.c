@@ -575,6 +575,7 @@ struct window_procs chainin_procs = {
     chainin_status_update,
     chainin_can_suspend,
     genl_stretch_window,
+    genl_set_animation_timer,
     genl_open_special_view,
     genl_stop_all_sounds,
     genl_play_immediate_ghsound,

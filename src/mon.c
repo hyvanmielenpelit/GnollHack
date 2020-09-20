@@ -3177,7 +3177,7 @@ register struct monst *mtmp;
 
 
     update_m_action(mtmp, ACTION_TILE_DEATH);
-    wait_until_action();
+    m_wait_until_action();
 
     /* Player is thrown from his steed when it dies */
     if (mtmp == u.usteed)

@@ -120,6 +120,7 @@ struct window_procs mswin_procs = {
     mswin_status_update,
     genl_can_suspend_yes,
     mswin_stretch_window,
+    mswin_set_animation_timer,
     mswin_open_special_view,
     mswin_stop_all_sounds,
     mswin_play_immediate_ghsound,
@@ -2233,6 +2234,22 @@ mswin_wait_loop(int milliseconds)
 
     disallow_keyboard_commands_in_wait_loop = FALSE;
 
+    /* Reduce animation ending counters */
+    if (context.action_animation_counter_on && context.milliseconds_to_wait_until_end > 0UL)
+    {
+        if (context.milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.milliseconds_to_wait_until_end = 1UL; /* Handle turn off elsewhere */
+        else
+            context.milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+    }
+
+    if (context.m_action_animation_counter_on && context.m_milliseconds_to_wait_until_end > 0UL)
+    {
+        if (context.m_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.m_milliseconds_to_wait_until_end = 1UL; /* Handle turn off elsewhere */
+        else
+            context.m_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+    }
 }
 
 /* clean up and quit */
@@ -3280,6 +3297,19 @@ mswin_stretch_window(void)
         data.y = GetNHApp()->mapTile_Y;
         SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
             (WPARAM)MSNH_MSG_STRETCH_MAP, (LPARAM)&data);
+    }
+}
+
+void
+mswin_set_animation_timer(unsigned int interval)
+{
+    if (GetNHApp()->windowlist[WIN_MAP].win != NULL) {
+        UINT data;
+
+        ZeroMemory(&data, sizeof(data));
+        data = interval;
+        SendMessage(GetNHApp()->windowlist[WIN_MAP].win, WM_MSNH_COMMAND,
+            (WPARAM)MSNH_MSG_SET_ANIMATION_TIMER, (LPARAM)&data);
     }
 }
 

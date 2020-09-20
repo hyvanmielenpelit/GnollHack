@@ -4026,7 +4026,7 @@ boolean wep_was_destroyed;
 	enum action_tile_types action_before = mon->action;
 	update_m_action(mon, ACTION_TILE_PASSIVE_DEFENSE);
 	play_monster_simple_weapon_sound(mon, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-	wait_until_action();
+	m_wait_until_action();
 
     /*  These affect you even if they just died.
      */
@@ -4919,16 +4919,16 @@ enum action_tile_types action;
 	enum action_tile_types action_before = mtmp->action;
 	if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
 	{
-		if (context.milliseconds_to_wait_until_end > 0)
+		if (context.m_milliseconds_to_wait_until_end > 0)
 		{
-			delay_output_milliseconds(context.milliseconds_to_wait_until_end);
-			context.milliseconds_to_wait_until_end = 0UL;
+			delay_output_milliseconds(context.m_milliseconds_to_wait_until_end);
+			context.m_milliseconds_to_wait_until_end = 0UL;
 		}
-		context.action_animation_layer = 0;
-		context.action_animation_x = 0;
-		context.action_animation_y = 0;
-		context.action_animation_counter = 0;
-		context.action_animation_counter_on = FALSE;
+		context.m_action_animation_layer = 0;
+		context.m_action_animation_x = 0;
+		context.m_action_animation_y = 0;
+		context.m_action_animation_counter = 0;
+		context.m_action_animation_counter_on = FALSE;
 	}
 
 	mtmp->action = action;
@@ -4939,13 +4939,13 @@ enum action_tile_types action;
 		if (mtmp->action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
 		{
-			context.milliseconds_to_wait_until_action = 0UL;
-			context.milliseconds_to_wait_until_end = 0UL;
-			context.action_animation_layer = LAYER_MONSTER;
-			context.action_animation_x = mtmp->mx;
-			context.action_animation_y = mtmp->my;
-			context.action_animation_counter = 0;
-			context.action_animation_counter_on = TRUE;
+			context.m_milliseconds_to_wait_until_action = 0UL;
+			context.m_milliseconds_to_wait_until_end = 0UL;
+			context.m_action_animation_layer = LAYER_MONSTER;
+			context.m_action_animation_x = mtmp->mx;
+			context.m_action_animation_y = mtmp->my;
+			context.m_action_animation_counter = 0;
+			context.m_action_animation_counter_on = TRUE;
 			newsym(mtmp->mx, mtmp->my);
 			force_redraw_at(mtmp->mx, mtmp->my);
 			flush_screen(0);
@@ -4953,21 +4953,21 @@ enum action_tile_types action;
 			if (animations[anim].sound_play_frame <= -1)
 			{
 				//delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames* framenum);
-				context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+				context.m_milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
 			}
 			else
 			{
 				delay_output_milliseconds((flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL)* animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
 				if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
 				{
-					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+					context.m_milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
 					if (animations[anim].action_execution_frame < framenum)
-						context.milliseconds_to_wait_until_end = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+						context.m_milliseconds_to_wait_until_end = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
 				}
 				else
 				{
-					context.milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
-					context.milliseconds_to_wait_until_end = 0UL;
+					context.m_milliseconds_to_wait_until_action = (flags.delay_output_time > 0 ? flags.delay_output_time : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+					context.m_milliseconds_to_wait_until_end = 0UL;
 				}
 			}
 #if 0
@@ -4979,21 +4979,16 @@ enum action_tile_types action;
 				//context.action_animation_counter += animations[anim].intervals_between_frames;
 			}
 #endif
-			context.action_animation_layer = 0;
-			context.action_animation_x = 0;
-			context.action_animation_y = 0;
-			context.action_animation_counter = 0;
-			context.action_animation_counter_on = FALSE;
 		}
 		else
 		{
 			newsym(mtmp->mx, mtmp->my);
 			flush_screen(0);
-			context.milliseconds_to_wait_until_action = DELAY_OUTPUT_INTERVAL;
+			context.m_milliseconds_to_wait_until_action = DELAY_OUTPUT_INTERVAL;
 			//adjusted_delay_output();
 			if (mtmp->action != ACTION_TILE_NO_ACTION)
 			{
-				context.milliseconds_to_wait_until_action *= 3;
+				context.m_milliseconds_to_wait_until_action *= 3;
 				//adjusted_delay_output();
 				//adjusted_delay_output();
 			}
@@ -5012,6 +5007,17 @@ wait_until_action()
 }
 
 void
+m_wait_until_action()
+{
+	if (context.m_milliseconds_to_wait_until_action > 0UL)
+	{
+		delay_output_milliseconds(context.m_milliseconds_to_wait_until_action);
+		context.m_milliseconds_to_wait_until_action = 0UL;
+	}
+}
+
+
+void
 display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags)
 struct monst* mon;
 int x, y;
@@ -5028,7 +5034,7 @@ unsigned long extra_flags;
 
 	enum action_tile_types action_before = is_you ? u.action : mon->action;
 	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
-	wait_until_action();
+	m_wait_until_action();
 	newsym_with_extra_info(x, y, flags, damage_shown);
 	flush_screen(is_you);
 	adjusted_delay_output();

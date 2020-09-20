@@ -478,7 +478,7 @@ register struct monst *magr, *mdef;
 
             update_m_action(magr, mattk->aatyp == AT_KICK ? ACTION_TILE_KICK : ACTION_TILE_ATTACK);
             play_monster_simple_weapon_sound(magr, i, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
-            wait_until_action();
+            m_wait_until_action();
             for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 			{
 				boolean endforloop = FALSE;
@@ -593,7 +593,7 @@ register struct monst *magr, *mdef;
         case AT_HUGS: /* automatic if prev two attacks succeed */
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-            wait_until_action();
+            m_wait_until_action();
             strike = (i >= 2 && res[i - 1] == MM_HIT && res[i - 2] == MM_HIT);
             if (strike)
                 res[i] = hitmm(magr, mdef, mattk, (struct obj*)0);
@@ -605,7 +605,7 @@ register struct monst *magr, *mdef;
             strike = 0;
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-            wait_until_action();
+            m_wait_until_action();
             res[i] = gazemm(magr, mdef, mattk);
             update_m_action(magr, ACTION_TILE_NO_ACTION);
             break;
@@ -639,7 +639,7 @@ register struct monst *magr, *mdef;
             /* Engulfing attacks are directed at the hero if possible. -dlc */
             update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-            wait_until_action();
+            m_wait_until_action();
             if (u.uswallow && magr == u.ustuck)
                 strike = 0;
             else if ((strike = (tmp > rnd(20 + i))) != 0)
@@ -654,7 +654,7 @@ register struct monst *magr, *mdef;
 			{
                 update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-                wait_until_action();
+                m_wait_until_action();
                 strike = breamm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
 
@@ -676,7 +676,7 @@ register struct monst *magr, *mdef;
             {
                 update_m_action(magr, ACTION_TILE_SPECIAL_ATTACK);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-                wait_until_action();
+                m_wait_until_action();
                 strike = eyesmm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
             }
@@ -695,7 +695,7 @@ register struct monst *magr, *mdef;
             {
                 update_m_action(magr, ACTION_TILE_CAST_DIR);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-                wait_until_action();
+                m_wait_until_action();
                 strike = buzzmm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
 
@@ -715,7 +715,7 @@ register struct monst *magr, *mdef;
             if (!monnear(magr, mdef->mx, mdef->my)) {
                 update_m_action(magr, ACTION_TILE_FIRE);
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-                wait_until_action();
+                m_wait_until_action();
                 strike = spitmm(magr, mattk, mdef);
                 update_m_action(magr, ACTION_TILE_NO_ACTION);
 
@@ -2167,7 +2167,7 @@ int mdead;
     enum action_tile_types action_before = mdef->action;
     update_m_action(mdef, ACTION_TILE_PASSIVE_DEFENSE);
     play_monster_simple_weapon_sound(mdef, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
-    wait_until_action();
+    m_wait_until_action();
 
     /* These affect the enemy even if defender killed */
     switch (mddat->mattk[i].adtyp) 

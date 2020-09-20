@@ -4024,7 +4024,7 @@ struct monst* mon;
 {
     enum action_tile_types action_before = mon->action;
     update_m_action(mon, ACTION_TILE_DEFEND);
-    wait_until_action();
+    m_wait_until_action();
     shieldeff(mon->mx, mon->my);
     update_m_action(mon, action_before);
 }

@@ -134,6 +134,7 @@ struct window_procs tty_procs = {
 #endif
     genl_can_suspend_yes,
     genl_stretch_window,
+    genl_set_animation_timer,
     genl_open_special_view,
     genl_stop_all_sounds,
     genl_play_immediate_ghsound,

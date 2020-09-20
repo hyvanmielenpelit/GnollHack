@@ -3147,6 +3147,7 @@ E void FDECL(display_being_hit, (struct monst*, int, int, enum game_ui_tile_type
 E void FDECL(display_u_being_hit, (enum game_ui_tile_types, int, unsigned long));
 E void FDECL(display_m_being_hit, (struct monst*, enum game_ui_tile_types, int, unsigned long));
 E void NDECL(wait_until_action);
+E void NDECL(m_wait_until_action);
 
 /* ### unixmain.c ### */
 
@@ -3462,7 +3463,6 @@ void NDECL(commit_windowchain);
 #endif
 E boolean NDECL(genl_can_suspend_no);
 E boolean NDECL(genl_can_suspend_yes);
-E void NDECL(genl_stretch_window);
 E char FDECL(genl_message_menu, (CHAR_P, int, const char *));
 E void FDECL(genl_preference_update, (const char *));
 E char *FDECL(genl_getmsghistory, (BOOLEAN_P));
@@ -3476,6 +3476,8 @@ E void FDECL(genl_status_enablefield,
              (int, const char *, const char *, BOOLEAN_P));
 E void FDECL(genl_status_update, (int, genericptr_t, int, int, int, unsigned long *));
 
+E void NDECL(genl_stretch_window);
+E void FDECL(genl_set_animation_timer, (unsigned int));
 E void FDECL(genl_open_special_view, (struct special_view_info));
 E void FDECL(genl_stop_all_sounds, (struct stop_all_info));
 E void FDECL(genl_play_ghsound_occupation_ambient, (struct ghsound_occupation_ambient_info));

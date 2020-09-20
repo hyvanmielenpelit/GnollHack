@@ -397,7 +397,7 @@ struct obj *otmp, *mwep;
             play_monster_simple_weapon_sound(mtmp, 0, mwep, OBJECT_SOUND_TYPE_FIRE);
         else
             play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_THROW);
-        wait_until_action();
+        m_wait_until_action();
 
         m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), dm, otmp);
         /* conceptually all N missiles are in flight at once, but
@@ -1626,7 +1626,7 @@ struct monst *mtmp;
 
         update_m_action(mtmp, ACTION_TILE_ATTACK);
         play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_SWING_MELEE);
-        wait_until_action();
+        m_wait_until_action();
 
         if (canseemon(mtmp)) {
             onm = xname(otmp);

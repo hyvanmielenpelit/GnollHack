@@ -12,6 +12,7 @@
 COLORREF nhcolor_to_RGB(int c);
 HWND mswin_init_map_window(void);
 void mswin_map_stretch(HWND hWnd, LPSIZE lpsz, BOOL redraw);
+void mswin_set_window_timer(HWND hWnd, UINT interval);
 int mswin_map_mode(HWND hWnd, int mode);
 
 

@@ -216,6 +216,13 @@ genl_stretch_window(VOID_ARGS)
 }
 
 void
+genl_set_animation_timer(interval)
+unsigned int interval;
+{
+    return;
+}
+
+void
 genl_open_special_view(info)
 struct special_view_info info;
 {
