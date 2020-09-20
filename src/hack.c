@@ -1921,9 +1921,15 @@ domove_core()
             Strcpy(buf, "thin air");
         }
 
+        update_u_action(ACTION_TILE_ATTACK);
+        play_monster_simple_weapon_sound(&youmonst, 0, uwep, OBJECT_SOUND_TYPE_SWING_MELEE);
+        wait_until_action();
+
         You("%s%s %s.",
             !(boulder || solid) ? "" : !explo ? "harmlessly " : "futilely ",
             explo ? "explode at" : "attack", buf);
+
+        update_u_action(ACTION_TILE_NO_ACTION);
 
         nomul(0);
         if (explo) 

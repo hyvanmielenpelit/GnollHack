@@ -3652,8 +3652,10 @@ struct obj *obj;
             confdir();
         rx = u.ux + u.dx;
         ry = u.uy + u.dy;
-        if (!isok(rx, ry)) {
+        if (!isok(rx, ry)) 
+        {
             You("miss.");
+            update_u_action(ACTION_TILE_NO_ACTION);
             return res;
         }
         mtmp = m_at(rx, ry);
@@ -3684,12 +3686,17 @@ struct obj *obj;
         You("flick a bug off of the %s.", ceiling(u.ux, u.uy));
 
     } else if ((!u.dx && !u.dy) || (u.dz > 0)) {
+        update_u_action(ACTION_TILE_ATTACK);
+        play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+        wait_until_action();
+
         int dam;
 
         /* Sometimes you hit your steed by mistake */
         if (u.usteed && !rn2(proficient + 2)) {
             You("whip %s!", mon_nam(u.usteed));
             kick_steed();
+            update_u_action(ACTION_TILE_NO_ACTION);
             return 1;
         }
         if (Levitation || u.usteed) {
@@ -3697,6 +3704,7 @@ struct obj *obj;
             otmp = level.objects[u.ux][u.uy];
             if (otmp && otmp->otyp == CORPSE && otmp->corpsenm == PM_HORSE) {
                 pline("Why beat a dead horse?");
+                update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;
             }
             if (otmp && proficient) {
@@ -3704,6 +3712,7 @@ struct obj *obj;
                     an(singular(otmp, xname)), surface(u.ux, u.uy));
                 if (rnl(6) || pickup_object(otmp, 1L, TRUE) < 1)
                     pline1(msg_slipsfree);
+                update_u_action(ACTION_TILE_NO_ACTION);
                 return 1;
             }
         }
@@ -3713,6 +3722,7 @@ struct obj *obj;
         You("hit your %s with your bullwhip.", body_part(FOOT));
         Sprintf(buf, "killed %sself with %s bullwhip", uhim(), uhis());
         losehp(adjust_damage(dam, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
+        update_u_action(ACTION_TILE_NO_ACTION);
         return 1;
 
     } else if ((Fumbling || Glib) && !rn2(5)) {
@@ -3743,7 +3753,9 @@ struct obj *obj;
                 wrapped_what = strcpy(buf, mon_nam(mtmp));
             } else if (proficient) {
                 if (attack(mtmp))
+                {
                     return 1;
+                }
                 else
                     pline1(msg_snap);
             }
@@ -3788,6 +3800,10 @@ struct obj *obj;
             char onambuf[BUFSZ];
             const char *mon_hand;
             boolean gotit = proficient && (!Fumbling || !rn2(10));
+
+            update_u_action(ACTION_TILE_ATTACK);
+            play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+            wait_until_action();
 
             Strcpy(onambuf, cxname(otmp));
             if (gotit) {
@@ -3868,6 +3884,7 @@ struct obj *obj;
                 pline1(msg_slipsfree);
             }
             wakeup(mtmp, TRUE);
+            update_u_action(ACTION_TILE_NO_ACTION);
         } else {
             if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
                 && !sensemon(mtmp))
@@ -3876,7 +3893,9 @@ struct obj *obj;
                 You("flick your bullwhip towards %s.", mon_nam(mtmp));
             if (proficient) {
                 if (attack(mtmp))
+                {
                     return 1;
+                }
                 else
                     pline1(msg_snap);
             }
@@ -3884,7 +3903,13 @@ struct obj *obj;
 
     } else if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) {
         /* it must be air -- water checked above */
+        update_u_action(ACTION_TILE_ATTACK);
+        play_monster_simple_weapon_sound(&youmonst, 0, obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+        wait_until_action();
+
         You("snap your whip through thin air.");
+
+        update_u_action(ACTION_TILE_NO_ACTION);
 
     } else {
         pline1(msg_snap);

@@ -242,7 +242,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      -1, -1,
+      4, 7,
       HUMAN_KNIGHT_FEMALE_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -253,7 +253,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
         ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
         { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-        -1, -1,
+        2, 7,
         HUMAN_KNIGHT_FEMALE_KICK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -352,7 +352,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-      -1, -1,
+      6, 9,
       HUMAN_TOURIST_MALE_ATTACK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -2082,7 +2082,7 @@ enum autodraw_types* autodraw_ptr;
         
         /* Separately played animations are played only once, and once the numframes is exceeded, the animation stops */
         if (play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY 
-            && (interval_counter / (unsigned long)animations[animation_idx].intervals_between_frames) >= (char)numframes)
+            && (interval_counter / (unsigned long)animations[animation_idx].intervals_between_frames) >= numframes)
             return ntile;
 
         if (current_animation_frame != main_tile_frame_position) /* 0 is the original picture */
