@@ -3403,7 +3403,7 @@ boolean pushing;
 			if (ltyp == DRAWBRIDGE_UP)
 			{
 				levl[rx][ry].drawbridgemask &= ~DB_UNDER; /* clear lava */
-				levl[rx][ry].drawbridgemask |= DB_FLOOR;
+				levl[rx][ry].drawbridgemask |= DB_GROUND;
 			}
 			else
 				create_basic_floor_location(rx, ry, GROUND, get_location_subtype_by_category(GROUND, GROUND_CATEGORY_SWAMPY), 0, FALSE);

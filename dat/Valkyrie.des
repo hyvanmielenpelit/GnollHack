@@ -123,6 +123,7 @@ ENDMAP
 REGION:(00,00,39,12),lit,"ordinary"
 # Stairs
 STAIR:(48,14),up
+FLOOR:(48,14),location_ground,ground_normal
 STAIR:(20,06),down
 # Non diggable walls
 NON_DIGGABLE:(00,00,39,12)
@@ -214,6 +215,7 @@ REGION:(00,00,34,16),lit,"ordinary"
 # Stairs
 # Note:  The up stairs are *intentionally* off of the map.
 STAIR:(45,10),up
+FLOOR:(45,10),location_ground,ground_normal
 # Non diggable walls
 NON_DIGGABLE:(00,00,34,16)
 # Drawbridges; northern one opens from the south (portcullis) to further

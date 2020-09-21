@@ -642,7 +642,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 #define DB_MOAT 0
 #define DB_LAVA 4
 #define DB_ICE 8
-#define DB_FLOOR 16
+#define DB_GROUND 16
 #define DB_UNDER 28 /* mask for underneath */
 
 /*

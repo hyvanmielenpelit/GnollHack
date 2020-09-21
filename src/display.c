@@ -2940,8 +2940,8 @@ xchar x, y;
         case DB_ICE:
             idx = S_ice;
             break;
-        case DB_FLOOR:
-            idx = S_room;
+        case DB_GROUND:
+            idx = S_ground; //  S_room;
             break;
         default:
             impossible("Strange db-under: %d",
@@ -3196,8 +3196,8 @@ xchar x, y;
         case DB_ICE:
             idx = S_ice;
             break;
-        case DB_FLOOR:
-            idx = /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
+        case DB_GROUND:
+            idx = S_ground; // /* ptr->waslit ? */ S_room /*: DARKROOMSYM*/;
             break;
         default:
             impossible("Strange db-under: %d",

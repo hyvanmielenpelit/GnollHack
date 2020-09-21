@@ -8363,12 +8363,12 @@ short exploding_wand_typ;
                 rangemod -= 3;
                 if (lev->typ == DRAWBRIDGE_UP) {
                     lev->drawbridgemask &= ~DB_UNDER; /* clear lava */
-                    lev->drawbridgemask |= (lava ? DB_FLOOR : DB_ICE);
+                    lev->drawbridgemask |= (lava ? DB_GROUND : DB_ICE);
                 } else {
                     lev->icedpool = lava ? 0
                                          : (lev->typ == POOL) ? ICED_POOL
                                                               : ICED_MOAT;
-                    lev->typ = lava ? ROOM : ICE;
+                    lev->typ = lava ? GROUND : ICE;
                     lev->subtyp = 0;
                 }
                 bury_objs(x, y);

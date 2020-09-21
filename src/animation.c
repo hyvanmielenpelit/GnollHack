@@ -1843,21 +1843,21 @@ struct rm* mainlev, *lev;
     {
         return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 3;
     }
-    else if (lev->typ == LAVAPOOL)
+    else if (lev->typ == LAVAPOOL || (lev->typ == DRAWBRIDGE_UP && lev->flags & DB_LAVA))
     {
         if(mainlev->typ == LAVAPOOL)
             return -1;
         else
             return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 2;
     }
-    else if (lev->typ == ICE)
+    else if (lev->typ == ICE || (lev->typ == DRAWBRIDGE_UP && lev->flags & DB_ICE))
     {
         if (mainlev->typ == ICE)
             return -1;
         else
             return MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 1;
     }
-    else if (IS_POOL(lev->typ))
+    else if ((IS_POOL(lev->typ) && lev->typ != DRAWBRIDGE_UP) || (lev->typ == DRAWBRIDGE_UP && (lev->flags & DB_UNDER) == DB_MOAT))
     {
         if (IS_POOL(mainlev->typ))
             return -1;
@@ -1882,7 +1882,7 @@ struct rm* mainlev, *lev;
         else
             return get_location_category(lev->floortyp, lev->floorsubtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
     }
-    else if (lev->typ == GROUND)
+    else if (lev->typ == GROUND || (lev->typ == DRAWBRIDGE_UP && lev->flags & DB_GROUND))
     {
         if ((!mainlev_is_pool_ice_or_lava &&  mainlev->typ == lev->typ && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->typ, lev->subtyp))
             || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->typ && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->typ, lev->subtyp))

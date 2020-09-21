@@ -757,6 +757,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
     }
 }
+
 /*-----------------------------------------------------------------------------*/
 void
 LayoutMenu(HWND hWnd)
