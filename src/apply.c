@@ -2511,7 +2511,7 @@ struct obj *obj;
         prop_trouble(SICK);
 	if (TimedTrouble(FoodPoisoned))
 		prop_trouble(FOOD_POISONED);
-    if (TimedTrouble(MummyRot))
+    if (MummyRot)
         prop_trouble(MUMMY_ROT);
     if (TimedTrouble(Blinded) > (long) u.ucreamed
         && !(u.uswallow
