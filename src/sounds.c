@@ -60,7 +60,9 @@ STATIC_DCL int FDECL(do_chat_smith_refill_lantern, (struct monst*));
 STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
 STATIC_OVL int FDECL(sell_to_npc, (struct obj*, struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
@@ -2610,6 +2612,43 @@ dochat()
 
 				chatnum++;
 			}
+
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_SPELLBOOKS)
+			{
+				char sbuf[BUFSIZ];
+				Sprintf(sbuf, "Sell spellbooks to %s", mon_nam(mtmp));
+				strcpy(available_chat_list[chatnum].name, sbuf);
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_spellbooks;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
+
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
+
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS)
+			{
+				char sbuf[BUFSIZ];
+				Sprintf(sbuf, "Identify accessories and charged items");
+				strcpy(available_chat_list[chatnum].name, sbuf);
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_accessories_and_charged_items;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
+
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
+
 		}
 
 	}
@@ -5007,6 +5046,13 @@ int npc_identification_type_index;
 		else
 			return FALSE;
 	}
+	else if (npc_identification_type_index == 2)
+	{
+		if (otmp->oclass == RING_CLASS || otmp->oclass == MISCELLANEOUS_CLASS || objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
+			return TRUE;
+		else
+			return FALSE;
+	}
 
 	return TRUE;
 }
@@ -5218,6 +5264,75 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+do_chat_npc_sell_spellbooks(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !has_enpc(mtmp))
+		return 0;
+
+	const char sell_types[] = { ALLOW_COUNT, SPBOOK_CLASS, 0 };
+	int result, i = (invent) ? 0 : (SIZE(sell_types) - 1);
+
+	result = sell_to_npc(getobj(&sell_types[i], "sell", 3, ""), mtmp);
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_npc_identify_accessories_and_charged_items(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !has_enpc(mtmp))
+		return 0;
+
+	long umoney;
+	int u_pay;
+	int minor_id_cost = max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney) {
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to identify an accessory or a charged item?\" (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)minor_id_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = minor_id_cost;
+		break;
+	}
+
+	context.npc_identify_type = 2;
+
+	int res = identify_pack(1, FALSE);
+
+	context.npc_identify_type = 0;
+
+	if (res)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
+
+	return 1;
+}
+
+
+STATIC_OVL int
 sell_to_npc(obj, mtmp)
 struct obj* obj;
 struct monst* mtmp;
@@ -5275,7 +5390,9 @@ struct monst* mtmp;
 		res = 0;
 		goto merge_obj_back;
 	}
-	saleitem = ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE : FALSE;
+	saleitem = ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE : 
+		ENPC(mtmp)->npc_typ == NPC_ARTIFICER && obj->oclass == SPBOOK_CLASS ? TRUE :
+		FALSE;
 
 	if (!isgold && saleitem)
 		ltmp = set_cost(obj, mtmp);

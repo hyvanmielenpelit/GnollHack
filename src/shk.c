@@ -3409,11 +3409,11 @@ boolean shk_buying;
     else
     {
         if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
-            tmp *= 2;
+            tmp *= 5;
         else if (obj->exceptionality == EXCEPTIONALITY_ELITE)
-            tmp *= 3;
+            tmp *= 20;
         else if (obj->exceptionality > EXCEPTIONALITY_ELITE)
-            tmp *= 4;
+            tmp *= 50;
     }
 
     switch (obj->oclass)
