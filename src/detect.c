@@ -1327,7 +1327,7 @@ struct obj **optr;
             free((genericptr_t)selected);
         }
         else
-            return;
+            ch = '\033';
     }
     else
     {
