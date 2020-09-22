@@ -1279,7 +1279,61 @@ struct obj **optr;
     /* read a single character */
     if (flags.verbose)
         You("may look for an object or monster symbol.");
-    ch = yn_function("What do you look for?", (char *) 0, '\0');
+
+    if (iflags.using_gui_tiles)
+    {
+        winid tmpwin;
+        menu_item* selected;
+        anything any;
+        int n, choice;
+
+        tmpwin = create_nhwindow(NHW_MENU);
+        start_menu(tmpwin);
+        any = zeroany; /* zero out all bits */
+
+        for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
+        {
+            if (strcmp(def_monsyms[k].explain, ""))
+            {
+                any.a_int = k + 1;
+                add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym == ' ' ? ',' : def_monsyms[k].sym, 0, ATR_NONE, def_monsyms[k].explain, MENU_UNSELECTED);
+            }
+        }
+        for (int k = 0; k < MAX_OBJECT_CLASSES; k++)
+        {
+            if (strcmp(def_oc_syms[k].explain, "") && def_oc_syms[k].sym != ILLOBJ_SYM && def_oc_syms[k].sym != '\0')
+            {
+                any.a_int = -(k + 1);
+                add_menu(tmpwin, NO_GLYPH, &any, def_oc_syms[k].sym, 0, ATR_NONE, def_oc_syms[k].explain, MENU_UNSELECTED);
+            }
+        }
+        end_menu(tmpwin, "What do you look for?");
+        n = select_menu(tmpwin, PICK_ONE, &selected);
+        destroy_nhwindow(tmpwin);
+        if (n > 0) {
+            if (selected[0].item.a_int > 0)
+            {
+                choice = selected[0].item.a_int - 1;
+                ch = def_monsyms[choice].sym;
+            }
+            else if (selected[0].item.a_int < 0)
+            {
+                choice = -selected[0].item.a_int - 1;
+                ch = def_oc_syms[choice].sym;
+            }
+            else
+                ch = '\033';
+            /* skip preselected entry if we have more than one item chosen */
+            free((genericptr_t)selected);
+        }
+        else
+            return;
+    }
+    else
+    {
+        ch = yn_function("What do you look for?", (char*)0, '\0');
+    }
+
     /* Don't filter out ' ' here; it has a use */
     if ((ch != def_monsyms[S_GHOST].sym) && index(quitchars, ch)) {
         if (flags.verbose)
