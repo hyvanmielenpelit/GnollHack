@@ -3362,9 +3362,46 @@ do_class_genocide()
             return;
         }
         do {
-            getlin("What class of monsters do you wish to genocide?", buf);
-            (void) mungspaces(buf);
-        } while (!*buf);
+            if (iflags.using_gui_tiles || !strcmpi(buf, "?"))
+            {
+                winid tmpwin;
+                menu_item* selected;
+                anything any;
+                int n, choice;
+
+                tmpwin = create_nhwindow(NHW_MENU);
+                start_menu(tmpwin);
+                any = zeroany; /* zero out all bits */
+
+                for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
+                {
+                    if (strcmp(def_monsyms[k].explain, "") && def_monsyms[k].sym != ' ' && def_monsyms[k].sym != DEF_GHOST)
+                    {
+                        any.a_int = k + 1;
+                        add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym, 0, ATR_NONE, def_monsyms[k].explain, MENU_UNSELECTED);
+                    }
+                }
+                end_menu(tmpwin, "What class of monsters do you wish to genocide?");
+                n = select_menu(tmpwin, PICK_ONE, &selected);
+                destroy_nhwindow(tmpwin);
+                if (n > 0) {
+                    choice = selected[0].item.a_int - 1;
+                    /* skip preselected entry if we have more than one item chosen */
+                    free((genericptr_t)selected);
+                    buf[0] = def_monsyms[choice].sym;
+                    buf[1] = '\0';
+                }
+                else
+                    return;
+            }
+            else
+            {
+                getlin("What class of monsters do you wish to genocide?", buf);
+                (void)mungspaces(buf);
+            }
+        } while (!*buf || *buf == '?');
+
+
         /* choosing "none" preserves genocideless conduct */
         if (*buf == '\033' || !strcmpi(buf, "none")
             || !strcmpi(buf, "nothing"))
