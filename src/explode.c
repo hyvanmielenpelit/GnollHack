@@ -161,14 +161,18 @@ int expltype;
 	}
     any_shield = visible = FALSE;
     for (i = 0; i < 3; i++)
-        for (j = 0; j < 3; j++) {
-            if (!isok(i + x - 1, j + y - 1)) {
+        for (j = 0; j < 3; j++) 
+        {
+            if (!isok(i + x - 1, j + y - 1)) 
+            {
                 explmask[i][j] = 2;
                 continue;
-            } else
+            } 
+            else
                 explmask[i][j] = 0;
 
-            if (i + x - 1 == u.ux && j + y - 1 == u.uy) {
+            if (i + x - 1 == u.ux && j + y - 1 == u.uy) 
+            {
                 switch (adtyp) {
                 case AD_PHYS:
                     explmask[i][j] = 0;
@@ -209,11 +213,13 @@ int expltype;
             mtmp = m_at(i + x - 1, j + y - 1);
             if (!mtmp && i + x - 1 == u.ux && j + y - 1 == u.uy)
                 mtmp = u.usteed;
-            if (mtmp) {
+            if (mtmp) 
+            {
                 if (DEADMONSTER(mtmp))
                     explmask[i][j] = 2;
                 else
-                    switch (adtyp) {
+                    switch (adtyp)
+                    {
                     case AD_PHYS:
                         break;
                     case AD_MAGM:
@@ -245,6 +251,7 @@ int expltype;
                         break;
                     }
             }
+
             if (mtmp && cansee(i + x - 1, j + y - 1) && !canspotmon(mtmp))
                 map_invisible(i + x - 1, j + y - 1);
             else if (!mtmp)
@@ -255,46 +262,74 @@ int expltype;
                 any_shield = TRUE;
         }
 
-    play_sfx_sound_at_location(explosion_type_definitions[expltype].sfx, x, y);
-
-    if (visible) {
+    if (visible)
+    {
         /* Start the explosion */
         int framenum = 1;
         context.explosion_animation_counter = 0;
+        context.explosion_animation_counter_on = FALSE;
+        context.expl_milliseconds_to_wait_until_action = 0;
+        context.expl_milliseconds_to_wait_until_end = 0;
         enum animation_types anim = explosion_type_definitions[expltype].animation;
         boolean playing_anim = (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY);
         if (playing_anim)
         {
             framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+            context.explosion_animation_counter_on = TRUE;
         }
 
-        for (int frame_idx = 0; frame_idx < framenum; frame_idx++)
-        {
-            for (i = 0; i < 3; i++)
-                for (j = 0; j < 3; j++) {
-                    if (explmask[i][j] == 2)
-                        continue;
-                    tmp_at(starting ? DISP_BEAM : DISP_CHANGE,
-                        explosion_to_glyph(expltype, explosion[i][j]));
-                    tmp_at(i + x - 1, j + y - 1);
-                    force_redraw_at(i + x - 1, j + y - 1);
-                    starting = 0;
-                }
-
-            if (playing_anim)
+        for (i = 0; i < 3; i++)
+            for (j = 0; j < 3; j++) 
             {
-                flush_screen(0);
-                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-                context.explosion_animation_counter += animations[anim].intervals_between_frames;
+                if (explmask[i][j] == 2)
+                    continue;
+                tmp_at(starting ? DISP_BEAM : DISP_CHANGE,
+                    explosion_to_glyph(expltype, explosion[i][j]));
+                tmp_at(i + x - 1, j + y - 1);
+                force_redraw_at(i + x - 1, j + y - 1);
+                starting = 0;
+            }
+
+        if (playing_anim)
+        {
+#if 0
+            flush_screen(0);
+            delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
+            context.explosion_animation_counter += animations[anim].intervals_between_frames;
+#endif
+
+            if (animations[anim].sound_play_frame <= -1)
+            {
+                context.expl_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+            }
+            else
+            {
+                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
+                {
+                    context.expl_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+                    if (animations[anim].action_execution_frame < framenum)
+                        context.expl_milliseconds_to_wait_until_end = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+                }
+                else
+                {
+                    context.expl_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+                    context.expl_milliseconds_to_wait_until_end = 0UL;
+                }
             }
         }
 
         curs_on_u(); /* will flush screen and output */
+        play_sfx_sound_at_location(explosion_type_definitions[expltype].sfx, x, y);
+        explosion_wait_until_action();
 
-        if (any_shield && flags.sparkle) { /* simulate shield effect */
-            for (k = 0; k < SHIELD_COUNT; k++) {
+        if (any_shield && flags.sparkle) 
+        { /* simulate shield effect */
+            for (k = 0; k < SHIELD_COUNT; k++) 
+            {
                 for (i = 0; i < 3; i++)
-                    for (j = 0; j < 3; j++) {
+                    for (j = 0; j < 3; j++) 
+                    {
                         if (explmask[i][j] == 1)
                             /*
                              * Bypass tmp_at() and send the shield glyphs
@@ -310,22 +345,30 @@ int expltype;
 
             /* Cover last shield glyph with blast symbol. */
             for (i = 0; i < 3; i++)
-                for (j = 0; j < 3; j++) {
+                for (j = 0; j < 3; j++) 
+                {
                     if (explmask[i][j] == 1)
                         show_glyph(
                             i + x - 1, j + y - 1,
                             explosion_to_glyph(expltype, explosion[i][j]));
                 }
 
-        } else { /* delay a little bit. */
+        } 
+        else 
+        { /* delay a little bit. */
             adjusted_delay_output();
             adjusted_delay_output();
         }
 
+        explosion_wait_until_end();
+
         tmp_at(DISP_END, 0); /* clear the explosion */
-        context.explosion_animation_counter = 0;
-    } else {
-        if (olet == MON_EXPLODE) {
+    }
+    else 
+    {
+        play_sfx_sound_at_location(explosion_type_definitions[expltype].sfx, x, y);
+        if (olet == MON_EXPLODE) 
+        {
             str = "explosion";
             generic = TRUE;
         }
@@ -335,7 +378,8 @@ int expltype;
 
     if (((dmg_n > 0 && dmg_d > 0) || dmg_p > 0) || instadeath)
         for (i = 0; i < 3; i++)
-            for (j = 0; j < 3; j++) {
+            for (j = 0; j < 3; j++) 
+            {
                 if (explmask[i][j] == 2)
                     continue;
                 if (i + x - 1 == u.ux && j + y - 1 == u.uy)
@@ -354,22 +398,27 @@ int expltype;
                     mtmp = u.usteed;
                 if (!mtmp)
                     continue;
-                if (do_hallu) {
+                if (do_hallu) 
+                {
                     /* replace "gas spore" with a different description
                        for each target (we can't distinguish personal names
                        like "Barney" here in order to suppress "the" below,
                        so avoid any which begins with a capital letter) */
-                    do {
+                    do 
+                    {
                         Sprintf(hallu_buf, "%s explosion",
                                 s_suffix(rndmonnam((char *) 0)));
                     } while (*hallu_buf != lowc(*hallu_buf));
                     str = hallu_buf;
                 }
-                if (u.uswallow && mtmp == u.ustuck) {
+                if (u.uswallow && mtmp == u.ustuck) 
+                {
                     const char *adj = (char *) 0;
 
-                    if (is_animal(u.ustuck->data)) {
-                        switch (adtyp) {
+                    if (is_animal(u.ustuck->data))
+                    {
+                        switch (adtyp) 
+                        {
                         case AD_FIRE:
                             adj = "heartburn";
                             break;
@@ -396,8 +445,11 @@ int expltype;
                             break;
                         }
                         pline("%s gets %s!", Monnam(u.ustuck), adj);
-                    } else {
-                        switch (adtyp) {
+                    }
+                    else 
+                    {
+                        switch (adtyp)
+                        {
                         case AD_FIRE:
                             adj = "toasted";
                             break;
@@ -425,7 +477,9 @@ int expltype;
                         }
                         pline("%s gets slightly %s!", Monnam(u.ustuck), adj);
                     }
-                } else if (cansee(i + x - 1, j + y - 1)) {
+                } 
+                else if (cansee(i + x - 1, j + y - 1))
+                {
                     if (mtmp->m_ap_type)
                         seemimic(mtmp);
                     pline("%s is caught in the %s!", Monnam(mtmp), str);
@@ -903,7 +957,7 @@ explosion_wait_until_action()
 }
 
 void
-explosion_effect_wait_until_end()
+explosion_wait_until_end()
 {
     if (context.expl_milliseconds_to_wait_until_end > 0)
     {
@@ -911,6 +965,8 @@ explosion_effect_wait_until_end()
         context.expl_milliseconds_to_wait_until_end = 0UL;
     }
     context.explosion_animation_counter_on = FALSE;
+    context.expl_milliseconds_to_wait_until_action = 0UL;
+    context.explosion_animation_counter = 0;
 }
 
 /*explode.c*/

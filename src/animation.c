@@ -2666,6 +2666,7 @@ int spef_number;
     }
 
     context.special_effect_animation_counter_on[spef_number] = FALSE;
+    context.special_effect_animation_counter[spef_number] = 0UL;
     context.spef_milliseconds_to_wait_until_action[spef_number] = 0UL;
 
     if (isok(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number]))
