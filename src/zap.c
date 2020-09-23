@@ -465,8 +465,10 @@ struct monst* origmonst;
 		}
 		else if (!check_ability_resistance_success(mtmp, A_CON, save_adj))
 		{
-			increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
+            increase_mon_property_verbosely(mtmp, STUNNED, 10 + rnd(10));
+            special_effect_wait_until_end(0);
         }
 		break;
 	case SPE_POWER_WORD_BLIND:
@@ -485,8 +487,10 @@ struct monst* origmonst;
 		}
 		else if (!check_ability_resistance_success(mtmp, A_CON, save_adj))
 		{
-			increase_mon_property_verbosely(mtmp, BLINDED, duration);
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
+            increase_mon_property_verbosely(mtmp, BLINDED, duration);
+            special_effect_wait_until_end(0);
         }
 		break;
 	case WAN_SLOW_MONSTER:
@@ -504,12 +508,18 @@ struct monst* origmonst;
                 expels(mtmp, mtmp->data, TRUE);
             }
             else
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            {
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+            }
         }
         break;
 	case SPE_HASTE_MONSTER:
-		increase_mon_property_verbosely(mtmp, VERY_FAST, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        increase_mon_property_verbosely(mtmp, VERY_FAST, otmp->oclass == WAND_CLASS ? rn1(10, 100 + 60 * bcsign(otmp)) : duration);
+        special_effect_wait_until_end(0);
 		break;
 	case SPE_HOLD_MONSTER:
 	case SPE_MASS_HOLD:
@@ -526,7 +536,11 @@ struct monst* origmonst;
 				expels(mtmp, mtmp->data, TRUE);
 			}
             else
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            {
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+            }
         }
 		else
 		{
@@ -552,7 +566,11 @@ struct monst* origmonst;
                 expels(mtmp, mtmp->data, TRUE);
             }
             else
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            {
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+            }
         }
         else
         {
@@ -565,21 +583,25 @@ struct monst* origmonst;
         res = 1;
         if (disguised_mimic)
             seemimic(mtmp);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         boolean visible_effect = increase_mon_property_verbosely(mtmp, VERY_FAST, 150 + rnd(50));
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
         if (visible_effect)
             makeknown(WAN_SPEED_MONSTER);
         m_dowear(mtmp, FALSE); /* might want speed boots */
         if (is_tame(mtmp))
             helpful_gesture = TRUE;
+        special_effect_wait_until_end(0);
         break;
     }
 	case SPE_SILENCE:
 		res = 1;
 		if (!check_ability_resistance_success(mtmp, A_CHA, save_adj))
 		{
-			increase_mon_property_verbosely(mtmp, SILENCED, duration);
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
+            increase_mon_property_verbosely(mtmp, SILENCED, duration);
+            special_effect_wait_until_end(0);
         }
 		break;
 	case WAN_UNDEAD_TURNING:
@@ -590,18 +612,22 @@ struct monst* origmonst;
             reveal_invis = TRUE;
             wake = TRUE;
             context.bypasses = TRUE; /* for make_corpse() */
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
             (void)inflict_spell_damage(mtmp, otmp, dmg, AD_CLRC, TELL);
             if (!DEADMONSTER(mtmp))
                 monflee(mtmp, duration, FALSE, TRUE);
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_end(0);
         }
         break;
 	case SPE_FEAR:
 		res = 1;
 		if (!DEADMONSTER(mtmp) && !resists_fear(mtmp) && !check_ability_resistance_success(mtmp, A_WIS, save_adj))
 		{
-			make_mon_fearful(mtmp, duration);
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
+            make_mon_fearful(mtmp, duration);
+            special_effect_wait_until_end(0);
         }
 		break;
 	case WAN_RESURRECTION:
@@ -621,12 +647,14 @@ struct monst* origmonst;
 			wake = TRUE;
 			dmg = max(mtmp->mhp, dmg);
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE)) 
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
+            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
 			{
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
 			}
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_end(0);
         }
 		break;
 	case SPE_BANISH_DEMON:
@@ -638,24 +666,30 @@ struct monst* origmonst;
 			wake = TRUE;
 			dmg = max(mtmp->mhp, dmg);
 			context.bypasses = TRUE; /* for make_corpse() */
-			if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
+            if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, TRUE, dmg, AD_CLRC, TELL_LETHAL_STYLE))
 			{
 				if (!DEADMONSTER(mtmp))
 					monflee(mtmp, duration, FALSE, TRUE);
 			}
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_end(0);
         }
 		break;
 	case SPE_CHARM_MONSTER:
 	case SPE_DOMINATE_MONSTER:
 		res = 1;
-		helpful_gesture = (maybe_tame(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        helpful_gesture = (maybe_tame(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
+        special_effect_wait_until_end(0);
         break;
     case SPE_CONTROL_UNDEAD:
         res = 1;
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
         helpful_gesture = (maybe_controlled(mtmp, otmp, &youmonst) == 1 || is_tame(mtmp));
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case WAN_POLYMORPH:
     case SPE_POLYMORPH:
@@ -726,8 +760,10 @@ struct monst* origmonst;
                    bypass cleanup also clears mon->mextra->mcorpsenm
                    for all long worms on the level */
                 context.bypasses = TRUE;
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
             }
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         }
         break;
     case WAN_CANCELLATION:
@@ -737,9 +773,11 @@ struct monst* origmonst;
             seemimic(mtmp);
         if (!has_cancellation_resistance(mtmp))
         {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
             (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
             (void)nonadditive_increase_mon_property_verbosely(mtmp, CANCELLATION_RESISTANCE, 10);
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_end(0);
         }
         break;
     case SPE_DISJUNCTION:
@@ -748,8 +786,10 @@ struct monst* origmonst;
             seemimic(mtmp);
         if (!has_cancellation_resistance(mtmp))
         {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(0);
             (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_end(0);
         }
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
@@ -758,8 +798,10 @@ struct monst* origmonst;
 	case SPE_NEGATE_MAGIC_RESISTANCE:
 	case SPE_FORBID_SUMMONING:
 		res = 1;
-		(void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        (void)add_temporary_property(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        special_effect_wait_until_end(0);
         break;
 	case WAN_TELEPORTATION:
     case SPE_TELEPORT_MONSTER:
@@ -775,8 +817,10 @@ struct monst* origmonst;
         if (disguised_mimic)
             seemimic(mtmp);
 		
-		increase_mon_property_verbosely(mtmp, INVISIBILITY, 100 + rn2(50));
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        increase_mon_property_verbosely(mtmp, INVISIBILITY, 100 + rn2(50));
+        special_effect_wait_until_end(0);
 
 		if (!oldinvis && knowninvisible(mtmp)) {
             reveal_invis = TRUE;
@@ -841,45 +885,52 @@ struct monst* origmonst;
     case JAR_OF_MEDICINAL_SALVE:
     case SPE_CURE_SICKNESS:
 	{
-cure_sickness_here:
         res = 1;
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
-        boolean was_sick = is_sick(mtmp);
-		boolean had_sick = !!mtmp->mprops[SICK];
-		mtmp->mprops[SICK] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+        special_effect_wait_until_action(0);
 
-		boolean was_food_poisoned = is_food_poisoned(mtmp);
-		boolean had_food_poisoned = !!mtmp->mprops[FOOD_POISONED];
-        mtmp->mprops[FOOD_POISONED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+    cure_sickness_here:
+        {
+            boolean was_sick = is_sick(mtmp);
+            boolean had_sick = !!mtmp->mprops[SICK];
+            mtmp->mprops[SICK] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
-		boolean was_turning_into_slime = is_turning_into_slime(mtmp);
-		boolean had_slimed = !!mtmp->mprops[SLIMED];
-		mtmp->mprops[SLIMED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+            boolean was_food_poisoned = is_food_poisoned(mtmp);
+            boolean had_food_poisoned = !!mtmp->mprops[FOOD_POISONED];
+            mtmp->mprops[FOOD_POISONED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
-        boolean was_mummy_rotted = is_mummy_rotted(mtmp);
-        boolean had_mummy_rot = !!mtmp->mprops[MUMMY_ROT];
-        mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
+            boolean was_turning_into_slime = is_turning_into_slime(mtmp);
+            boolean had_slimed = !!mtmp->mprops[SLIMED];
+            mtmp->mprops[SLIMED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
-		if (!is_sick(mtmp) && !is_food_poisoned(mtmp) && !is_turning_into_slime(mtmp) && !is_mummy_rotted(mtmp) && (was_sick || was_food_poisoned || was_turning_into_slime || was_mummy_rotted))
-			pline("%s looks much better!", Monnam(mtmp));
-		else if (!has_sick(mtmp) && had_sick)
-			pline("%s is cured of its terminal illness!", Monnam(mtmp));
-		else if (!has_food_poisoned(mtmp) && had_food_poisoned)
-			pline("%s is cured of its food poisoning!", Monnam(mtmp));
-        else if (!has_mummy_rot(mtmp) && had_mummy_rot)
-            pline("%s is cured of its mummy rot!", Monnam(mtmp));
-        else if (!has_slimed(mtmp) && had_slimed)
-			pline("%s is cured of its sliming!", Monnam(mtmp));
-		else if(!surpress_noeffect_message)
-			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
+            boolean was_mummy_rotted = is_mummy_rotted(mtmp);
+            boolean had_mummy_rot = !!mtmp->mprops[MUMMY_ROT];
+            mtmp->mprops[MUMMY_ROT] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            if (!is_sick(mtmp) && !is_food_poisoned(mtmp) && !is_turning_into_slime(mtmp) && !is_mummy_rotted(mtmp) && (was_sick || was_food_poisoned || was_turning_into_slime || was_mummy_rotted))
+                pline("%s looks much better!", Monnam(mtmp));
+            else if (!has_sick(mtmp) && had_sick)
+                pline("%s is cured of its terminal illness!", Monnam(mtmp));
+            else if (!has_food_poisoned(mtmp) && had_food_poisoned)
+                pline("%s is cured of its food poisoning!", Monnam(mtmp));
+            else if (!has_mummy_rot(mtmp) && had_mummy_rot)
+                pline("%s is cured of its mummy rot!", Monnam(mtmp));
+            else if (!has_slimed(mtmp) && had_slimed)
+                pline("%s is cured of its sliming!", Monnam(mtmp));
+            else if (!surpress_noeffect_message)
+                pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
+        }
+        special_effect_wait_until_end(0);
+
         break;
 	}
 	case SPE_CURE_BLINDNESS:
 	{
         res = 1;
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
+        special_effect_wait_until_action(0);
         boolean was_blinded = is_blinded(mtmp);
 		boolean had_blinded = !!mtmp->mprops[BLINDED];
 		mtmp->mprops[BLINDED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
@@ -890,13 +941,15 @@ cure_sickness_here:
 		else
 			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_end(0);
         break;
 	}
 	case SPE_CURE_PETRIFICATION:
 	{
         res = 1;
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
+        special_effect_wait_until_action(0);
         boolean was_stoning = is_stoning(mtmp);
 		boolean had_stoned = !!mtmp->mprops[STONED];
 		mtmp->mprops[STONED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
@@ -906,7 +959,7 @@ cure_sickness_here:
 			pline("%s is cured of its petrification!", Monnam(mtmp));
 		else
 			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_end(0);
         break;
 	}
 	case JAR_OF_EXTRA_HEALING_SALVE:
@@ -945,17 +998,21 @@ cure_sickness_here:
         }
         else if (mtmp->data != &mons[PM_PESTILENCE] && is_living(mtmp->data))
         {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
             wake = FALSE; /* wakeup() makes the target angry */
             if (otyp == SPE_FULL_HEALING)
             {
                 play_sfx_sound_at_location(SFX_FULL_HEALING, mtmp->mx, mtmp->my);
+                special_effect_wait_until_action(0);
                 mtmp->mhp = mtmp->mhpmax;
             }
             else
             {
                 play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
+                special_effect_wait_until_action(0);
                 mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
             }
+
             if (mtmp->mhp > mtmp->mhpmax)
                 mtmp->mhp = mtmp->mhpmax;
 
@@ -1011,8 +1068,8 @@ cure_sickness_here:
                 surpress_noeffect_message = TRUE;
                 goto cure_sickness_here;
             }
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
 
+            special_effect_wait_until_end(0);
         }
 		else if (mtmp->data == &mons[PM_PESTILENCE])
 		{ /* Pestilence */
@@ -1033,7 +1090,9 @@ cure_sickness_here:
 		{
 			wake = FALSE; /* wakeup() makes the target angry */
 
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
             play_sfx_sound_at_location(SFX_HEALING, mtmp->mx, mtmp->my);
+            special_effect_wait_until_action(0);
             mtmp->mhp += d(objects[otyp].oc_wsdice, objects[otyp].oc_wsdam) + objects[otyp].oc_wsdmgplus;
 
 			if (mtmp->mhp > mtmp->mhpmax)
@@ -1057,7 +1116,7 @@ cure_sickness_here:
 					pline("%s looks %s.", Monnam(mtmp),
 						otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much better" : "better");
 			}
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_end(0);
         }
 		else
 		{ /* Non-undead */
@@ -1076,9 +1135,11 @@ cure_sickness_here:
 		/* [wakeup() doesn't rouse victims of temporary sleep,
            so it's okay to leave `wake' set to TRUE here] */
         reveal_invis = TRUE;
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
         if (sleep_monst(mtmp, otmp, d(1 + otmp->charges, 8), 0, TRUE))
             slept_monst(mtmp);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_end(0);
         if (!Blind)
             learn_it = TRUE;
         break;
@@ -5351,7 +5412,9 @@ boolean ordinary;
 		if(is_living(youmonst.data))
 		{
 			//learn_it = TRUE; /* (no effect for spells...) */
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_HEALING);
+            special_effect_wait_until_action(0);
             healup(basedmg, 0,
                 obj->otyp == GRAIL_OF_HEALING, 
                 (obj->blessed || (obj->otyp != SPE_HEALING && obj->otyp != SPE_MINOR_HEALING)),
@@ -5365,8 +5428,6 @@ boolean ordinary;
 				obj->otyp == SPE_EXTRA_HEALING || obj->otyp == JAR_OF_EXTRA_HEALING_SALVE ? "much " :
 				"");
 
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
-
             if (obj->otyp == GRAIL_OF_HEALING)
             {
                 if (Stoned)
@@ -5375,6 +5436,8 @@ boolean ordinary;
                 if (Slimed)
                     make_slimed(0L, (char*)0);
             }
+            special_effect_wait_until_end(0);
+
         }
 		else
 			You_feel("no different than before.");
@@ -5383,29 +5446,36 @@ boolean ordinary;
 	case SPE_FULL_HEALING:
         if (is_living(youmonst.data))
         {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_FULL_HEALING);
+            special_effect_wait_until_action(0);
             learn_it = TRUE; /* (no effect for spells...) */
             healup(1000, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
             You_feel("completely healed.");
+            special_effect_wait_until_end(0);
         }
         else
             You_feel("no different than before.");
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+
         damage = 0;
         break;
     case GRAIL_OF_HEALING:
         if (is_undead(youmonst.data) || is_demon(youmonst.data))
         {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            special_effect_wait_until_action(0);
             pline("The liquid burns inside you!");
             u.uen = 0;
             losehp(adjust_damage(d(48, 6), (struct monst*)0, &youmonst, AD_CLRC, ADFLAGS_NONE), "drinking from Holy Grail", KILLED_BY_AN);
             context.botl = 1;
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            special_effect_wait_until_end(0);
         }
         else if (is_living(youmonst.data))
         {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_FULL_HEALING);
+            special_effect_wait_until_action(0);
             learn_it = TRUE;
             healup(basedmg, 0, TRUE, TRUE, TRUE, TRUE, TRUE);
             You_feel("truly completely healed.");
@@ -5428,7 +5498,7 @@ boolean ordinary;
             else if (u.uen <= 0)
                 u.uen = 0;
             context.botl = 1;
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            special_effect_wait_until_end(0);
         }
         else
             You_feel("no different than before.");
@@ -5436,36 +5506,44 @@ boolean ordinary;
         damage = 0;
         break;
     case SPE_CURE_BLINDNESS:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_CURE_AILMENT);
+        special_effect_wait_until_action(0);
         healup(0, 0, FALSE, TRUE, FALSE, FALSE, FALSE);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case JAR_OF_MEDICINAL_SALVE:
     case SPE_CURE_SICKNESS:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_CURE_DISEASE);
+        special_effect_wait_until_action(0);
         if (Sick || FoodPoisoned || MummyRot)
 			You("are no longer ill.");
 		if (Slimed)
 			make_slimed(0L, "The slime disappears!");
 		healup(0, 0, TRUE, FALSE, FALSE, FALSE, FALSE);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
 	case SPE_CURE_PETRIFICATION:
         if (Stoned)
         {
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            special_effect_wait_until_action(0);
             fix_petrification();
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            special_effect_wait_until_end(0);
         }
 		break;
 	case SPE_REPLENISH_UNDEATH:
 	case SPE_GREATER_UNDEATH_REPLENISHMENT:
 		if (is_undead(youmonst.data))
 		{
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_HEALING);
+            special_effect_wait_until_action(0);
             learn_it = TRUE; /* (no effect for spells...) */
 			healup(basedmg, 0, FALSE, (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), (obj->blessed || obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT), FALSE, FALSE);
 			You_feel("%sbetter.", obj->otyp == SPE_GREATER_UNDEATH_REPLENISHMENT ? "much " : "");
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            special_effect_wait_until_end(0);
         }
 		else
 			You_feel("no different than before.");
@@ -5539,6 +5617,9 @@ boolean ordinary;
 		struct obj *otmp, *onxt;
         boolean didmerge;
 
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
+
         if (u.umonnum == PM_STONE_GOLEM) {
             learn_it = TRUE;
             (void) polymon(PM_FLESH_GOLEM);
@@ -5568,7 +5649,8 @@ boolean ordinary;
                     }
         } while (didmerge);
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
+
         break;
     }
     default:

@@ -205,15 +205,22 @@ struct context_info
     boolean u_action_animation_counter_on;
     boolean m_action_animation_counter_on;
     boolean explosion_animation_counter_on;
-    boolean special_effect_animation_counter_on;
+    boolean special_effect_animation_counter_on[MAX_PLAYED_SPECIAL_EFFECTS];
     unsigned long u_action_animation_counter;
     unsigned long m_action_animation_counter;
     unsigned long explosion_animation_counter;
-    unsigned long special_effect_animation_counter;
+    unsigned long special_effect_animation_counter[MAX_PLAYED_SPECIAL_EFFECTS];
     unsigned long u_milliseconds_to_wait_until_action;
     unsigned long u_milliseconds_to_wait_until_end;
     unsigned long m_milliseconds_to_wait_until_action;
     unsigned long m_milliseconds_to_wait_until_end;
+    enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
+    uchar spef_action_animation_x[MAX_PLAYED_SPECIAL_EFFECTS];
+    uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
+    unsigned long spef_milliseconds_to_wait_until_action[MAX_PLAYED_SPECIAL_EFFECTS];
+    unsigned long spef_milliseconds_to_wait_until_end[MAX_PLAYED_SPECIAL_EFFECTS];
+    unsigned long expl_milliseconds_to_wait_until_action;
+    unsigned long expl_milliseconds_to_wait_until_end;
     boolean force_allow_keyboard_commands;
 };
 

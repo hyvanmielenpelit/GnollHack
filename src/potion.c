@@ -818,7 +818,9 @@ struct obj *otmp;
             break;
         } else {
             /* unlike unicorn horn, overrides Fixed_abil */
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_RESTORE_ABILITY);
+            special_effect_wait_until_action(0);
             pline("Wow!  This makes you feel %s!",
                   (otmp->blessed)
                       ? (unfixable_trouble_count(FALSE) ? "better" : "great")
@@ -849,7 +851,7 @@ struct obj *otmp;
                     pluslvl(FALSE);
                 } while (u.ulevel < u.ulevelmax && otmp->blessed);
             }
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+            special_effect_wait_until_end(0);
         }
         break;
     case POT_HALLUCINATION:
@@ -998,10 +1000,11 @@ struct obj *otmp;
             self_invis_message();
         }
 
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(&HInvis, duration);
-
         newsym(u.ux, u.uy); /* update position */
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
 
         if (otmp->cursed)
 		{
@@ -1277,8 +1280,10 @@ struct obj *otmp;
                 You_feel("a bit more competent for a moment, but then the feeling subsides.");
             else
             {
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
                 play_sfx_sound(SFX_GAIN_ABILITY);
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
             }
         }
         break;
@@ -1303,8 +1308,10 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_DEX, TRUE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_LIGHTNING_SPEED ? &HLightning_fast : otmp->otyp == POT_GREATER_SPEED ? &HSuper_fast : &HUltra_fast, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
 	case POT_MAGIC_RESISTANCE:
 		if (!Antimagic)
@@ -1317,8 +1324,10 @@ struct obj *otmp;
 			unkn++;
 		}
 		exercise(A_WIS, TRUE);
-		incr_itimeout(&HAntimagic, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
+        incr_itimeout(&HAntimagic, duration);
+        special_effect_wait_until_end(0);
         break;
     case POT_TITAN_STRENGTH:
         if (!Titan_strength)
@@ -1331,8 +1340,10 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_WIS, TRUE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(&HTitan_strength, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_FIRE_IMMUNITY:
         if (!Fire_immunity)
@@ -1345,8 +1356,10 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_WIS, TRUE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(&HFire_immunity, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_COLD_IMMUNITY:
         if (!Cold_immunity)
@@ -1359,8 +1372,10 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_WIS, TRUE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(&HCold_immunity, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_SHOCK_IMMUNITY:
         if (!Shock_immunity)
@@ -1373,11 +1388,15 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_WIS, TRUE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(&HShock_immunity, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_HEROISM:
     case POT_SUPER_HEROISM:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         if (otmp->otyp == POT_HEROISM ? (!Heroism && !Super_heroism) : !Super_heroism)
         {
             You("feel %sheroic.", otmp->otyp == POT_SUPER_HEROISM ? "super " : "");
@@ -1389,7 +1408,7 @@ struct obj *otmp;
         }
         exercise(A_WIS, TRUE);
         incr_itimeout(otmp->otyp == POT_HEROISM ? &HHeroism : &HSuper_heroism, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_LESSER_REGENERATION:
     case POT_REGENERATION:
@@ -1404,17 +1423,21 @@ struct obj *otmp;
             unkn++;
         }
         exercise(A_WIS, TRUE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_GREATER_REGENERATION ? &HDivine_regeneration : otmp->otyp == POT_REGENERATION ? &HRapidest_regeneration : &HRapider_regeneration, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_LESSER_REJUVENATION:
     case POT_REJUVENATION:
     case POT_GREATER_REJUVENATION:
         You_feel("rejuvenated.");
         exercise(A_WIS, TRUE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_regeneration : &HRapid_regeneration, duration);
         incr_itimeout(otmp->otyp == POT_GREATER_REJUVENATION ? &HRapidest_energy_regeneration : otmp->otyp == POT_REJUVENATION ? &HRapider_energy_regeneration : &HRapid_energy_regeneration, duration);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_BLINDNESS:
         if (Blind)
@@ -1456,44 +1479,56 @@ struct obj *otmp;
                 You("have an uneasy feeling.");
             break;
         }
+
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
+
         pluslvl(FALSE);
         /* blessed potions place you at a random spot in the
            middle of the new level instead of the low point */
         if (otmp->blessed)
             u.uexp = rndexp(TRUE);
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_HEALING:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_HEALING);
+        special_effect_wait_until_action(0);
         You_feel("better.");
         healup(duration, otmp->blessed ? extra_data1 : 0,
                !!otmp->blessed, !otmp->cursed, FALSE, FALSE, FALSE);
         exercise(A_CON, TRUE);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_EXTRA_HEALING:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_HEALING);
+        special_effect_wait_until_action(0);
         You_feel("much better.");
         healup(duration,
                otmp->blessed ? extra_data1 : 0, !otmp->cursed,
                TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
         exercise(A_CON, TRUE);
         exercise(A_STR, TRUE);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
 	case POT_GREATER_HEALING:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_HEALING);
+        special_effect_wait_until_action(0);
         You_feel("much, much better.");
 		healup(duration,
 			otmp->blessed ? extra_data1 : 0, !otmp->cursed,
 			TRUE, !otmp->cursed, otmp->blessed, !otmp->cursed);
 		exercise(A_CON, TRUE);
 		exercise(A_STR, TRUE);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
 	case POT_FULL_HEALING:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound(SFX_FULL_HEALING);
+        special_effect_wait_until_action(0);
         You_feel("completely healed.");
         healup(duration, otmp->blessed ? extra_data1 : 0, !otmp->cursed, TRUE, !otmp->cursed, !otmp->cursed, !otmp->cursed);
         /* Restore one lost level if blessed */
@@ -1505,7 +1540,7 @@ struct obj *otmp;
         }
         exercise(A_STR, TRUE);
         exercise(A_CON, TRUE);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
         break;
     case POT_LEVITATION:
     case SPE_LEVITATION:
@@ -1578,6 +1613,8 @@ struct obj *otmp;
 	case POT_GAIN_ENERGY:
 	{ /* M. Stephenson */
         int num = 0, numxtra = 0;
+        
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
 
         if (otmp->cursed)
             You_feel("lackluster.");
@@ -1627,6 +1664,9 @@ struct obj *otmp;
         {
             play_sfx_sound(otmp->otyp == POT_FULL_ENERGY ? SFX_FULL_ENERGY : SFX_GAIN_ENERGY);
         }
+
+        special_effect_wait_until_action(0);
+
 		u.uen += num;
 
 		updatemaxen();
@@ -1638,7 +1678,8 @@ struct obj *otmp;
             u.uen = 0;
         context.botl = 1;
         exercise(A_WIS, TRUE);
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_end(0);
+
         break;
     }
     case POT_OIL: { /* P. Winner */
@@ -1685,12 +1726,14 @@ struct obj *otmp;
         unkn++; /* holy/unholy water can burn like acid too */
         break;
     case POT_POLYMORPH:
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         You_feel("a little %s.", Hallucination ? "normal" : "strange");
         if (!Unchanging)
         {
             polyself(0);
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
         }
+        special_effect_wait_until_end(0);
         break;
     default:
         impossible("What a funny potion! (%u)", otmp->otyp);

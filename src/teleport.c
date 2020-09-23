@@ -406,10 +406,14 @@ vault_tele()
     coord c;
 
     if (croom && somexy(croom, &c) && teleok(c.x, c.y, FALSE)) {
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(0);
         teleds(c.x, c.y, FALSE);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+        special_effect_wait_until_action(1);
+        special_effect_wait_until_end(0);
+        special_effect_wait_until_end(1);
         return;
     }
     tele();
@@ -525,10 +529,14 @@ boolean iscontrolled;
                 if (scroll)
                     learnscroll(scroll);
 
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
                 play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+                special_effect_wait_until_action(0);
                 teleds(cc.x, cc.y, FALSE);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+                special_effect_wait_until_action(1);
+                special_effect_wait_until_end(0);
+                special_effect_wait_until_end(1);
                 return TRUE;
             }
             pline("Sorry...");
@@ -544,10 +552,14 @@ boolean iscontrolled;
     }
 
     telescroll = scroll;
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
     play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+    special_effect_wait_until_action(0);
     (void) safe_teleds(FALSE);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+    special_effect_wait_until_action(1);
+    special_effect_wait_until_end(0);
+    special_effect_wait_until_end(1);
     /* teleds() will leave telescroll intact iff random destination
        is far enough away for scroll discovery to be warranted */
     if (telescroll)
@@ -636,10 +648,14 @@ int y;
     			pline("%s light envelops %s!", portal_color, yname(otmp));
 			pline("You feel your essence unsolidifying...");
 			pline("You reemerge at a new location!");
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
             play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+            special_effect_wait_until_action(0);
             teleds(nux, nuy, TRUE);
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+            special_effect_wait_until_action(1);
+            special_effect_wait_until_end(0);
+            special_effect_wait_until_end(1);
             if (otmp && ttmp->tflags == 0)
             {
                 pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
@@ -1537,21 +1553,24 @@ int in_sight;
          * wise the monster will be stuck there, since
          * the guard isn't going to come for it...
          */
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
         if (trap->once)
             mvault_tele(mtmp);
         else
             (void) rloc(mtmp, TRUE);
 
         if (in_sight) {
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_action(1);
             if (canseemon(mtmp))
                 pline("%s seems disoriented.", monname);
             else
                 pline("%s suddenly disappears!", monname);
             seetrap(trap);
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+            special_effect_wait_until_end(1);
         }
+        special_effect_wait_until_end(0);
     }
 }
 
@@ -1809,8 +1828,9 @@ boolean give_feedback;
     }
     else
     {
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
         if (level.flags.noteleport && u.uswallow && mtmp == u.ustuck)
         {
             if (give_feedback)
@@ -1827,7 +1847,10 @@ boolean give_feedback;
         {
             (void)rloc(mtmp, TRUE);
         }
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(1);
+        special_effect_wait_until_end(0);
+        special_effect_wait_until_end(1);
         return TRUE;
     }
 }

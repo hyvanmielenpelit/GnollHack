@@ -662,6 +662,6 @@ struct game_cursor_definition {
 
 extern NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS];
 
-
+#define MAX_PLAYED_SPECIAL_EFFECTS 4
 
 #endif /* ANIMATION_H */

@@ -892,4 +892,25 @@ int x, y;
     splatter_burning_oil(x, y, diluted_oil);
 }
 
+void
+explosion_wait_until_action()
+{
+    if (context.expl_milliseconds_to_wait_until_action > 0UL)
+    {
+        delay_output_milliseconds(context.expl_milliseconds_to_wait_until_action);
+        context.expl_milliseconds_to_wait_until_action = 0UL;
+    }
+}
+
+void
+explosion_effect_wait_until_end()
+{
+    if (context.expl_milliseconds_to_wait_until_end > 0)
+    {
+        delay_output_milliseconds(context.expl_milliseconds_to_wait_until_end);
+        context.expl_milliseconds_to_wait_until_end = 0UL;
+    }
+    context.explosion_animation_counter_on = FALSE;
+}
+
 /*explode.c*/

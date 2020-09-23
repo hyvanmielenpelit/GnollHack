@@ -51,8 +51,9 @@ E short FDECL(get_animation_base_tile, (short));
 E short FDECL(get_enlargement_base_tile, (short, short));
 E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*));
 E int FDECL(get_animation_frame_with_tile, (int, int));
-E void FDECL(play_special_effect_at, (enum special_effect_types, enum layer_types, int, int, boolean));
-
+E void FDECL(play_special_effect_at, (enum special_effect_types, enum layer_types, int, int, int, boolean));
+E void FDECL(special_effect_wait_until_action, (int));
+E void FDECL(special_effect_wait_until_end, (int));
 
 /* ### apply.c ### */
 
@@ -972,6 +973,8 @@ E void FDECL(explode, (int, int, int, int, int, int, int, CHAR_P, int));
 E long FDECL(scatter, (int, int, int, unsigned int, struct obj *));
 E void FDECL(splatter_burning_oil, (int, int, BOOLEAN_P));
 E void FDECL(explode_oil, (struct obj *, int, int));
+E void NDECL(explosion_wait_until_action);
+E void NDECL(explosion_wait_until_end);
 
 /* ### extralev.c ### */
 

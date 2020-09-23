@@ -756,10 +756,14 @@ struct monst *mtmp;
         if (oseen && how)
             makeknown(how);
 
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
         (void) rloc(mtmp, TRUE);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(1);
+        special_effect_wait_until_end(0);
+        special_effect_wait_until_end(1);
         return 2;
     case MUSE_WAN_TELEPORTATION:
         zap_oseen = oseen;

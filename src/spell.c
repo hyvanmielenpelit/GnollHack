@@ -2127,6 +2127,8 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
 		u_wait_until_action();
+		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+		special_effect_wait_until_action(0);
 		if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
                 pseudo->blessed = 1; /* detect monsters as well as map */
@@ -2134,7 +2136,7 @@ boolean atme;
         /* at present, only one thing blocks clairvoyance */
         } else if (uarmh && uarmh->otyp == CORNUTHAUM)
             You("sense a pointy hat on top of your %s.", body_part(HEAD));
-		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+		special_effect_wait_until_end(0);
 		break;
 	case SPE_MINOR_CONSULTATION:
 		update_u_action(ACTION_TILE_CAST_NODIR);
@@ -2179,10 +2181,12 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
 		u_wait_until_action();
+		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+		play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
+		special_effect_wait_until_action(0);
 		You("successfully cast \"%s\".", spellname(spell));
 		addspellintrinsictimeout(otyp);
-		play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
-		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, u.ux, u.uy, FALSE);
+		special_effect_wait_until_end(0);
 		break;
 	case SPE_JUMPING:
 		update_u_action(ACTION_TILE_CAST_NODIR);

@@ -2579,21 +2579,48 @@ short replacement_idx;
 
 
 void
-play_special_effect_at(sp_effect, layer, x, y, force_visibility)
+play_special_effect_at(sp_effect, layer, spef_number, x, y, force_visibility)
 enum special_effect_types sp_effect;
 enum layer_types layer;
-int x, y;
+int spef_number, x, y;
 boolean force_visibility;
 {
-    if (iflags.using_gui_tiles && isok(x, y) && (force_visibility || cansee(x, y)))
+    if (iflags.using_gui_tiles && isok(x, y) && spef_number >= 0 && spef_number < MAX_PLAYED_SPECIAL_EFFECTS && (force_visibility || cansee(x, y)))
     {
+        context.spef_milliseconds_to_wait_until_action[spef_number] = 0;
+        context.spef_milliseconds_to_wait_until_end[spef_number] = 0;
         context.force_allow_keyboard_commands = TRUE;
         show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
         enum animation_types anim = special_effects[sp_effect].animation;
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
         {
-            context.special_effect_animation_counter = 0;
+            context.spef_action_animation_layer[spef_number] = layer;
+            context.spef_action_animation_x[spef_number] = x;
+            context.spef_action_animation_y[spef_number] = y;
+            context.special_effect_animation_counter[spef_number] = 0;
+            context.special_effect_animation_counter_on[spef_number] = TRUE;
             int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+            if (animations[anim].sound_play_frame <= -1)
+            {
+                context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * framenum;
+            }
+            else
+            {
+                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
+                {
+                    context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
+                    if (animations[anim].action_execution_frame < framenum)
+                        context.spef_milliseconds_to_wait_until_end[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].action_execution_frame);
+                }
+                else
+                {
+                    context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (framenum - animations[anim].sound_play_frame);
+                    context.spef_milliseconds_to_wait_until_end[spef_number] = 0UL;
+                }
+            }
+
+#if 0
             for (int frame = 0; frame < framenum; frame++)
             {
                 force_redraw_at(x, y);
@@ -2602,23 +2629,53 @@ boolean force_visibility;
                 context.special_effect_animation_counter += animations[anim].intervals_between_frames;
             }
             context.special_effect_animation_counter = 0;
+#endif
         }
         else
         {
             force_redraw_at(x, y);
             flush_screen(0);
+
             if(special_effects[sp_effect].display_time > 0)
-                delay_output_milliseconds(special_effects[sp_effect].display_time);
+                context.spef_milliseconds_to_wait_until_action[spef_number] = special_effects[sp_effect].display_time;
             else
-                adjusted_delay_output();
+                context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
         }
-        show_glyph_on_layer(x, y, NO_GLYPH, layer);
-        force_redraw_at(x, y);
-        flush_screen(0);
-        context.force_allow_keyboard_commands = FALSE;
     }
 }
 
+void
+special_effect_wait_until_action(spef_number)
+int spef_number;
+{
+    if (context.spef_milliseconds_to_wait_until_action[spef_number] > 0UL)
+    {
+        delay_output_milliseconds(context.spef_milliseconds_to_wait_until_action[spef_number]);
+        context.spef_milliseconds_to_wait_until_action[spef_number] = 0UL;
+    }
+}
+
+void
+special_effect_wait_until_end(spef_number)
+int spef_number;
+{
+    if (context.spef_milliseconds_to_wait_until_end[spef_number] > 0)
+    {
+        delay_output_milliseconds(context.spef_milliseconds_to_wait_until_end[spef_number]);
+        context.spef_milliseconds_to_wait_until_end[spef_number] = 0UL;
+    }
+
+    context.special_effect_animation_counter_on[spef_number] = FALSE;
+    context.spef_milliseconds_to_wait_until_action[spef_number] = 0UL;
+
+    if (isok(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number]))
+    {
+        show_glyph_on_layer(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number], NO_GLYPH, context.spef_action_animation_layer[spef_number]);
+        force_redraw_at(context.spef_action_animation_x[spef_number], context.spef_action_animation_y[spef_number]);
+        flush_screen(0);
+    }
+    context.force_allow_keyboard_commands = FALSE;
+}
 
 /* animation.c */
 

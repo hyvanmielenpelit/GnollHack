@@ -699,12 +699,15 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 context.explosion_animation_counter++;
         }
 
-        if (context.special_effect_animation_counter_on)
+        for (int spef_idx = 0; spef_idx < MAX_PLAYED_SPECIAL_EFFECTS; spef_idx++)
         {
-            if (context.special_effect_animation_counter >= 0xCFFFFFFFUL)
-                context.special_effect_animation_counter = 0UL;
-            else
-                context.special_effect_animation_counter++;
+            if (context.special_effect_animation_counter_on[spef_idx])
+            {
+                if (context.special_effect_animation_counter[spef_idx] >= 0xCFFFFFFFUL)
+                    context.special_effect_animation_counter[spef_idx] = 0UL;
+                else
+                    (context.special_effect_animation_counter[spef_idx])++;
+            }
         }
 
         for (int x = 1; x < COLNO; x++)
