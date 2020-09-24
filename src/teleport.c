@@ -1209,11 +1209,16 @@ random_levtport:
         /* [dlevel used to be set to 1, but it doesn't make sense to
             teleport out of the dungeon and float or fly down to the
             surface but then actually arrive back inside the dungeon] */
-    } else if (u.uz.dnum == medusa_level.dnum
+    } else if (u.uz.dnum == main_dungeon_dnum
                && newlev >= dungeons[u.uz.dnum].depth_start
-                                + dunlevs_in_dungeon(&u.uz)) {
+                                + dunlevs_in_dungeon(&u.uz)) 
+    {
         if (!(wizard && force_dest))
-            find_hell(&newlevel);
+        {
+            get_level_in_dungeon(&newlevel, newlev, gehennom_dnum);
+            if(!find_mapseen(&newlevel))
+                find_hell(&newlevel);
+        }
     } else {
         /* if invocation did not yet occur, teleporting into
          * the last level of Gehennom is forbidden.

@@ -63,7 +63,6 @@ STATIC_DCL void FDECL(print_branch, (winid, int, int, int, BOOLEAN_P,
                                      struct lchoice *));
 STATIC_DCL mapseen *FDECL(load_mapseen, (int));
 STATIC_DCL void FDECL(save_mapseen, (int, mapseen *));
-STATIC_DCL mapseen *FDECL(find_mapseen, (d_level *));
 STATIC_DCL mapseen *FDECL(find_mapseen_by_str, (const char *));
 STATIC_DCL void FDECL(print_mapseen, (winid, mapseen *, int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(interest_mapseen, (mapseen *));
@@ -998,6 +997,8 @@ init_dungeons()
     /*
      *  I hate hardwiring these names. :-(
      */
+    main_dungeon_dnum = dname_to_dnum("The Dungeons of Doom");
+    gehennom_dnum = dname_to_dnum("Gehennom");
     quest_dnum = dname_to_dnum("The Quest");
     sokoban_dnum = dname_to_dnum("Sokoban");
     mines_dnum = dname_to_dnum("The Gnomish Mines");
@@ -1394,13 +1395,23 @@ d_level *lev;
  * "down" is confined to the current dungeon.  At present, level teleport
  * in dungeons that build up is confined within them.
  */
+
 void
 get_level(newlevel, levnum)
 d_level *newlevel;
 int levnum;
 {
-    branch *br;
     xchar dgn = u.uz.dnum;
+    get_level_in_dungeon(newlevel, levnum, dgn);
+}
+
+void
+get_level_in_dungeon(newlevel, levnum, dgn)
+d_level *newlevel;
+int levnum;
+xchar dgn;
+{
+    branch *br;
 
     if (levnum <= 0) {
         /* can only currently happen in endgame */
@@ -2170,7 +2181,7 @@ donamelevel()
 }
 
 /* find the particular mapseen object in the chain; may return null */
-STATIC_OVL mapseen *
+mapseen *
 find_mapseen(lev)
 d_level *lev;
 {

@@ -808,6 +808,7 @@ E void NDECL(u_on_upstairs);
 E void NDECL(u_on_dnstairs);
 E boolean FDECL(On_stairs, (XCHAR_P, XCHAR_P));
 E void FDECL(get_level, (d_level *, int));
+E void FDECL(get_level_in_dungeon, (d_level*, int, xchar));
 E boolean FDECL(Is_botlevel, (d_level *));
 E boolean FDECL(Can_fall_thru, (d_level *));
 E boolean FDECL(Can_dig_down, (d_level *));
@@ -846,6 +847,7 @@ E void FDECL(recbranch_mapseen, (d_level *, d_level *));
 E void FDECL(overview_stats, (winid, const char *, long *, size_t *));
 E void FDECL(remdun_mapseen, (int));
 E const char *FDECL(endgamelevelname, (char *, int));
+E mapseen* FDECL(find_mapseen, (d_level*));
 
 /* ### eat.c ### */
 
