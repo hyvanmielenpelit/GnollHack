@@ -17,7 +17,7 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         "artificer",
         "laboratory",
         8, 0,
-        10, 100, 5000,
+        5, 1000, 7500,
         NPC_SERVICE_ENCHANT_ACCESSORY | NPC_SERVICE_RECHARGING | NPC_SERVICE_IDENTIFY_ACCESSORIES_AND_CHARGED_ITEMS | NPC_SERVICE_BUY_SPELLBOOKS,
         NPC_FLAGS_PARQUET_FLOOR | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
     },

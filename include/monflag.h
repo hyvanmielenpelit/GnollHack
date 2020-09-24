@@ -312,12 +312,13 @@
 #define M5_CORPSE_TILE			    0x00004000UL
 #define M5_FEMALE_TILE		        0x00008000UL
 
-/* Remaining bits are normal monster flags */
+/* Some special tile flags */
 #define M5_FULL_SIZED_CORPSE_TILE        0x00010000UL
 #define M5_FULL_SIZED_FEMALE_CORPSE_TILE 0x00020000UL
 /* free bit */
 /* free bit */
 
+/* Remaining bits are normal monster flags */
 #define M5_ESCHEWS_CURSED_ITEMS     0x00100000UL
 #define M5_ESCHEWS_BLESSED_ITEMS    0x00200000UL
 #define M5_ESCHEWS_SILVER_ITEMS     0x00400000UL
