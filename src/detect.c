@@ -1291,6 +1291,24 @@ struct obj **optr;
         start_menu(tmpwin);
         any = zeroany; /* zero out all bits */
 
+        for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
+        {
+            if (strcmp(def_monsyms[k].explain, ""))
+            {
+                any.a_int = k + 1;
+                add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym == ' ' ? ',' : def_monsyms[k].sym, 0, ATR_NONE, def_monsyms[k].explain, MENU_UNSELECTED);
+            }
+        }
+        for (int k = 0; k < MAX_OBJECT_CLASSES; k++)
+        {
+            if (strcmp(def_oc_syms[k].explain, "") && def_oc_syms[k].sym != ILLOBJ_SYM && def_oc_syms[k].sym != '\0')
+            {
+                any.a_int = -(k + 1);
+                add_menu(tmpwin, NO_GLYPH, &any, def_oc_syms[k].sym, 0, ATR_NONE, def_oc_syms[k].explain, MENU_UNSELECTED);
+            }
+        }
+
+        /* Cmap, which sometimes do not work */
         any.a_int = MAX_MONSTER_CLASSES + S_arrow_trap + 1;
         add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_arrow_trap].sym, 0, ATR_NONE, "traps", MENU_UNSELECTED);
         any.a_int = MAX_MONSTER_CLASSES + S_throne + 1;
@@ -1310,22 +1328,7 @@ struct obj **optr;
         any.a_int = MAX_MONSTER_CLASSES + S_grave + 1;
         add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_grave].sym, 0, ATR_NONE, "graves", MENU_UNSELECTED);
 
-        for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
-        {
-            if (strcmp(def_monsyms[k].explain, ""))
-            {
-                any.a_int = k + 1;
-                add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym == ' ' ? ',' : def_monsyms[k].sym, 0, ATR_NONE, def_monsyms[k].explain, MENU_UNSELECTED);
-            }
-        }
-        for (int k = 0; k < MAX_OBJECT_CLASSES; k++)
-        {
-            if (strcmp(def_oc_syms[k].explain, "") && def_oc_syms[k].sym != ILLOBJ_SYM && def_oc_syms[k].sym != '\0')
-            {
-                any.a_int = -(k + 1);
-                add_menu(tmpwin, NO_GLYPH, &any, def_oc_syms[k].sym, 0, ATR_NONE, def_oc_syms[k].explain, MENU_UNSELECTED);
-            }
-        }
+
         end_menu(tmpwin, "What do you look for?");
         n = select_menu(tmpwin, PICK_ONE, &selected);
         destroy_nhwindow(tmpwin);
