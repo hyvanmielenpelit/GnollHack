@@ -1291,6 +1291,25 @@ struct obj **optr;
         start_menu(tmpwin);
         any = zeroany; /* zero out all bits */
 
+        any.a_int = MAX_MONSTER_CLASSES + S_arrow_trap + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_arrow_trap].sym, 0, ATR_NONE, "traps", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_throne + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_throne].sym, 0, ATR_NONE, "thrones", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_altar + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_altar].sym, 0, ATR_NONE, "altars and anvils", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_dnstair + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_dnstair].sym, 0, ATR_NONE, "stairs and ladders down", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_upstair + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_upstair].sym, 0, ATR_NONE, "stairs and ladders up", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_tree + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_tree].sym, 0, ATR_NONE, "trees and sinks", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_fountain + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_fountain].sym, 0, ATR_NONE, "fountains", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_pool + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_pool].sym, 0, ATR_NONE, "water or lava", MENU_UNSELECTED);
+        any.a_int = MAX_MONSTER_CLASSES + S_grave + 1;
+        add_menu(tmpwin, NO_GLYPH, &any, defsyms[S_grave].sym, 0, ATR_NONE, "graves", MENU_UNSELECTED);
+
         for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
         {
             if (strcmp(def_monsyms[k].explain, ""))
@@ -1311,7 +1330,12 @@ struct obj **optr;
         n = select_menu(tmpwin, PICK_ONE, &selected);
         destroy_nhwindow(tmpwin);
         if (n > 0) {
-            if (selected[0].item.a_int > 0)
+            if (selected[0].item.a_int > MAX_MONSTER_CLASSES)
+            {
+                choice = selected[0].item.a_int - MAX_MONSTER_CLASSES - 1;
+                ch = defsyms[choice].sym;
+            }
+            else if (selected[0].item.a_int > 0)
             {
                 choice = selected[0].item.a_int - 1;
                 ch = def_monsyms[choice].sym;

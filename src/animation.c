@@ -454,6 +454,17 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       -1, -1,
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "vibrating-square-animation", VIBRATING_SQUARE_ANIMATION_TILES,
+        VIBRATING_SQUARE_ANIMATION_FRAMES, VIBRATING_SQUARE_ANIMATION_OFF,
+        1,
+        2,
+        ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        -1, -1,
+        NO_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 };
 
@@ -2587,16 +2598,19 @@ boolean force_visibility;
 {
     if (iflags.using_gui_tiles && isok(x, y) && spef_number >= 0 && spef_number < MAX_PLAYED_SPECIAL_EFFECTS && (force_visibility || cansee(x, y)))
     {
+        context.spef_action_animation_layer[spef_number] = layer;
+        context.spef_action_animation_x[spef_number] = x;
+        context.spef_action_animation_y[spef_number] = y;
         context.spef_milliseconds_to_wait_until_action[spef_number] = 0;
         context.spef_milliseconds_to_wait_until_end[spef_number] = 0;
         context.force_allow_keyboard_commands = TRUE;
         show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
+        force_redraw_at(x, y);
+        flush_screen(0);
+
         enum animation_types anim = special_effects[sp_effect].animation;
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
         {
-            context.spef_action_animation_layer[spef_number] = layer;
-            context.spef_action_animation_x[spef_number] = x;
-            context.spef_action_animation_y[spef_number] = y;
             context.special_effect_animation_counter[spef_number] = 0;
             context.special_effect_animation_counter_on[spef_number] = TRUE;
             int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -2633,9 +2647,6 @@ boolean force_visibility;
         }
         else
         {
-            force_redraw_at(x, y);
-            flush_screen(0);
-
             if(special_effects[sp_effect].display_time > 0)
                 context.spef_milliseconds_to_wait_until_action[spef_number] = special_effects[sp_effect].display_time;
             else
