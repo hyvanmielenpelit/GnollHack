@@ -7,6 +7,7 @@
 
 extern boolean notonhead; /* for long worms */
 
+STATIC_DCL int FDECL(use_cubic_gate, (struct obj*));
 STATIC_DCL int FDECL(use_salve, (struct obj*));
 STATIC_DCL int FDECL(use_camera, (struct obj *));
 STATIC_DCL int FDECL(use_towel, (struct obj *));
@@ -54,6 +55,22 @@ void FDECL(amii_speaker, (struct obj *, char *, int));
 
 static const char no_elbow_room[] =
     "don't have enough elbow-room to maneuver.";
+
+STATIC_OVL int
+use_cubic_gate(obj)
+struct obj* obj;
+{
+    if (obj->charges <= 0)
+    {
+        pline(nothing_happens);
+        return 1;
+    }
+
+    consume_obj_charge(obj, TRUE);
+    level_tele(0, FALSE);
+    makeknown(obj->otyp);
+    return 1;
+}
 
 STATIC_OVL int
 use_salve(obj)
@@ -5054,6 +5071,9 @@ doapply()
 		case TOUCHSTONE:
 			use_stone(obj);
 			break;
+        case CUBIC_GATE:
+            res = use_cubic_gate(obj);
+            break;
 		default:
 			/* Pole-type-weapons can strike at a distance */
 			if (is_appliable_pole_type_weapon(obj))

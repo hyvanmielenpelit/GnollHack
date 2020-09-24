@@ -1644,11 +1644,13 @@ unsigned trflags;
         }
         break;
     }
-    case LANDMINE: {
+    case LANDMINE: 
+    {
         unsigned steed_mid = 0;
         struct obj *saddle = 0;
 
-        if ((Levitation || Flying) && !forcetrap) {
+        if ((Levitation || Flying) && !forcetrap) 
+        {
             if (!already_seen && rn2(3))
                 break;
             feeltrap(trap);
@@ -1662,7 +1664,9 @@ unsigned trflags;
                               : "The air currents set",
                   already_seen ? a_your[trap->madeby_u] : "",
                   already_seen ? " land mine" : "it");
-        } else {
+        } 
+        else 
+        {
             /* prevent landmine from killing steed, throwing you to
              * the ground, and you being affected again by the same
              * mine because it hasn't been deleted yet
@@ -1697,17 +1701,30 @@ unsigned trflags;
         break;
     }
 
-    case ROLLING_BOULDER_TRAP: {
-        int style = ROLL | (trap->tseen ? LAUNCH_KNOWN : 0);
+    case ROLLING_BOULDER_TRAP: 
+    {
+        if ((Levitation || Flying) && !forcetrap) 
+        {
+            if (!already_seen && rn2(3))
+                break;
+            feeltrap(trap);
+            pline("%s %s hidden in the floor below you.",
+                already_seen ? "There is" : "You discover",
+                trap->madeby_u ? "your rolling boulder trap" : "a rolling boulder trap");
+        }
+        else
+        {
+            int style = ROLL | (trap->tseen ? LAUNCH_KNOWN : 0);
 
-        play_sfx_sound(SFX_ROLLING_BOOULDER_TRAP_TRIGGER);
-        feeltrap(trap);
-        pline("Click!  You trigger a rolling boulder trap!");
-        if (!launch_obj(BOULDER, trap->launch.x, trap->launch.y,
-                        trap->launch2.x, trap->launch2.y, style)) {
-            deltrap(trap);
-            newsym(u.ux, u.uy); /* get rid of trap symbol */
-            pline("Fortunately for you, no boulder was released.");
+            play_sfx_sound(SFX_ROLLING_BOOULDER_TRAP_TRIGGER);
+            feeltrap(trap);
+            pline("Click!  You trigger a rolling boulder trap!");
+            if (!launch_obj(BOULDER, trap->launch.x, trap->launch.y,
+                trap->launch2.x, trap->launch2.y, style)) {
+                deltrap(trap);
+                newsym(u.ux, u.uy); /* get rid of trap symbol */
+                pline("Fortunately for you, no boulder was released.");
+            }
         }
         break;
     }
@@ -3472,12 +3489,17 @@ struct obj *box; /* null for floor trap */
     play_sfx_sound(SFX_TOWER_OF_FLAME_ERUPTS);
     pline("A %s %s from %s!", tower_of_flame, box ? "bursts" : "erupts",
           the(box ? xname(box) : surface(u.ux, u.uy)));
-    if (Fire_immunity) {
+
+    if (Fire_immunity) 
+    {
         u_shieldeff();
-        num = rn2(2);
-    } else if (Upolyd) {
-        num = d(2, 4);
-        switch (u.umonnum) {
+        num = 0;
+    }
+    else if (Upolyd) 
+    {
+        num = d(20, 6);
+        switch (u.umonnum) 
+        {
         case PM_PAPER_GOLEM:
             alt = u.mhmax;
             break;
@@ -3496,33 +3518,43 @@ struct obj *box; /* null for floor trap */
         }
         if (alt > num)
             num = alt;
+#if 0
 		if (u.mhmax > mons[u.umonnum].mlevel)
 		{
 			u.basemhmax -= rn2(min(u.mhmax, num + 1));
 			updatemaxhp();
 			context.botl = 1;
 		}
-    } else {
-        num = d(2, 4);
+#endif
+    }
+    else 
+    {
+        num = d(20, 6);
+#if 0
 		if (u.uhpmax > u.ulevel)
 		{
 			u.ubasehpmax -= rn2(min(u.uhpmax, num + 1));
 			updatemaxhp();
 			context.botl = 1;
 		}
-
+#endif
     }
-    if (!num)
+
+    double damage = adjust_damage(num, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE);
+    if (damage <= 0.0)
         You("are uninjured.");
     else
-        losehp(adjust_damage(num, (struct monst*)0, &youmonst, AD_FIRE, ADFLAGS_NONE), tower_of_flame, KILLED_BY_AN); /* fire damage */
+        losehp(damage, tower_of_flame, KILLED_BY_AN); /* fire damage */
+
     burn_away_slime();
 
-    if (burnarmor(&youmonst) || rn2(3)) {
+    if (burnarmor(&youmonst) || rn2(3)) 
+    {
         destroy_item(SCROLL_CLASS, AD_FIRE);
         destroy_item(SPBOOK_CLASS, AD_FIRE);
         destroy_item(POTION_CLASS, AD_FIRE);
     }
+
     if (!box && burn_floor_objects(u.ux, u.uy, see_it, TRUE) && !see_it)
         You("smell paper burning.");
     if (is_ice(u.ux, u.uy))
