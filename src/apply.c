@@ -8,7 +8,6 @@
 extern boolean notonhead; /* for long worms */
 
 STATIC_DCL int FDECL(use_cubic_gate, (struct obj*));
-STATIC_DCL int FDECL(use_salve, (struct obj*));
 STATIC_DCL int FDECL(use_camera, (struct obj *));
 STATIC_DCL int FDECL(use_towel, (struct obj *));
 STATIC_DCL boolean FDECL(its_dead, (int, int, int *));
@@ -72,9 +71,10 @@ struct obj* obj;
     return 1;
 }
 
-STATIC_OVL int
-use_salve(obj)
+int
+use_salve(obj, drink_yourself)
 struct obj* obj;
+boolean drink_yourself;
 {
 	if (obj->charges <= 0)
 	{
@@ -88,7 +88,9 @@ struct obj* obj;
 		return 0;
 	}
 
-	if (!getdir((char*)0))
+    if (drink_yourself)
+        u.dx = u.dy = u.dz = 0;
+    else if (!getdir((char*)0))
 		return 0;
 
     update_u_facing(TRUE);
@@ -97,7 +99,7 @@ struct obj* obj;
 
 	const char* healing_salve = "healing salve";
     const char* red_liquid = "red liquid";
-    const char* contents = objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR ? healing_salve : red_liquid;
+    const char* contents = obj->otyp == JAR_OF_BASILISK_BLOOD ? "basilisk blood" : objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR ? healing_salve : red_liquid;
 
 	if (u.dz) 
 	{
@@ -106,7 +108,10 @@ struct obj* obj;
 	}
 	else if (!u.dx && !u.dy) 
 	{
-		You("apply some %s on yourself.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
+        if(drink_yourself)
+            You("drink some %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
+        else
+    		You("apply some %s on yourself.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
 		(void)zapyourself(obj, TRUE);
 	}
 	else
@@ -5052,7 +5057,8 @@ doapply()
         case JAR_OF_GREATER_HEALING_SALVE:
         case JAR_OF_PRODIGIOUS_HEALING_SALVE:
         case JAR_OF_MEDICINAL_SALVE:
-            res = use_salve(obj);
+        case JAR_OF_BASILISK_BLOOD:
+            res = use_salve(obj, FALSE);
             break;
         case GRAIL_OF_HEALING:
             res = use_grail(obj, FALSE);

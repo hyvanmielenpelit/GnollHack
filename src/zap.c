@@ -944,8 +944,9 @@ struct monst* origmonst;
         special_effect_wait_until_end(0);
         break;
 	}
-	case SPE_CURE_PETRIFICATION:
-	{
+    case SPE_CURE_PETRIFICATION:
+cure_petrification_here:
+    {
         res = 1;
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_CURE_AILMENT, mtmp->mx, mtmp->my);
@@ -1143,6 +1144,7 @@ struct monst* origmonst;
         if (!Blind)
             learn_it = TRUE;
         break;
+    case JAR_OF_BASILISK_BLOOD:
     case SPE_STONE_TO_FLESH:
 		res = 1;
 		if (monsndx(mtmp->data) == PM_STONE_GOLEM) {
@@ -1158,6 +1160,8 @@ struct monst* origmonst;
             }
         } else
             wake = FALSE;
+        if (otyp == JAR_OF_BASILISK_BLOOD)
+            goto cure_petrification_here;
         break;
     case SPE_DRAIN_LEVEL:
     {
@@ -3751,6 +3755,7 @@ struct monst* origmonst;
 		case SPE_GAZE_OF_PETRIFICATION:
 			res = 0;
             break;
+        case JAR_OF_BASILISK_BLOOD:
         case SPE_STONE_TO_FLESH:
             res = stone_to_flesh_obj(obj);
             break;
@@ -5612,10 +5617,11 @@ boolean ordinary;
 		enlightenment(MAGICENLIGHTENMENT, ENL_GAMEINPROGRESS);
 		break;
     }
+    case JAR_OF_BASILISK_BLOOD:
     case SPE_STONE_TO_FLESH: {
 		damage = 0;
-		struct obj *otmp, *onxt;
-        boolean didmerge;
+		//struct obj *otmp, *onxt;
+        //boolean didmerge;
 
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
@@ -5628,6 +5634,7 @@ boolean ordinary;
             learn_it = TRUE;
             fix_petrification(); /* saved! */
         }
+#if 0
         /* but at a cost.. */
         for (otmp = invent; otmp; otmp = onxt) {
             onxt = otmp->nobj;
@@ -5648,6 +5655,7 @@ boolean ordinary;
                         break;
                     }
         } while (didmerge);
+#endif
 
         special_effect_wait_until_end(0);
 
@@ -5812,6 +5820,7 @@ struct obj *obj; /* wand or spell */
     case JAR_OF_EXTRA_HEALING_SALVE:
     case JAR_OF_GREATER_HEALING_SALVE:
     case JAR_OF_PRODIGIOUS_HEALING_SALVE:
+    case JAR_OF_BASILISK_BLOOD:
     case GRAIL_OF_HEALING:
     case SPE_HEALING:
     case SPE_EXTRA_HEALING:

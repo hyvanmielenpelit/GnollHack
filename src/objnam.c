@@ -3359,7 +3359,7 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "flute", TOOL_CLASS, WOODEN_FLUTE, MAGIC_FLUTE },
 	{ "harp", TOOL_CLASS, WOODEN_HARP, MAGIC_HARP },
 	{ "drum", TOOL_CLASS, LEATHER_DRUM, DRUM_OF_EARTHQUAKE },
-	{ "jar", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_PRODIGIOUS_HEALING_SALVE },
+	{ "jar", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_BASILISK_BLOOD },
 	{ "salve", TOOL_CLASS, JAR_OF_EXTRA_HEALING_SALVE, JAR_OF_PRODIGIOUS_HEALING_SALVE },
 };
 
@@ -3474,6 +3474,7 @@ static const struct alt_spellings {
     { "medicinal salve", JAR_OF_MEDICINAL_SALVE },
     { "medical salve", JAR_OF_MEDICINAL_SALVE },
     { "jar of medical salve", JAR_OF_MEDICINAL_SALVE },
+    { "basilisk blood", JAR_OF_BASILISK_BLOOD },
     { "galadhrim bow", GALADHRIM_BOW },
     { "galadhrim boots", GALADHRIM_BOOTS },
     { "bag of gluttony", BAG_OF_THE_GLUTTON },

@@ -89,6 +89,7 @@ E int FDECL(count_other_containers, (struct obj*, struct obj*, struct obj**, boo
 E struct obj* FDECL(select_other_container, (struct obj*, struct obj*, boolean));
 E void FDECL(get_pole_type_weapon_min_max_distances, (struct obj*, struct monst*, int*, int*));
 E int FDECL(use_grail, (struct obj*, boolean));
+E int FDECL(use_salve, (struct obj*, boolean));
 
 
 /* ### artifact.c ### */

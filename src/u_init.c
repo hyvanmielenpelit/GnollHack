@@ -1033,6 +1033,7 @@ u_init()
 		knows_object(JAR_OF_EXTRA_HEALING_SALVE);
 		knows_object(JAR_OF_GREATER_HEALING_SALVE);
 		knows_object(JAR_OF_PRODIGIOUS_HEALING_SALVE);
+		knows_object(JAR_OF_BASILISK_BLOOD);
 		break;
     case PM_KNIGHT:
         ini_inv(Knight);
