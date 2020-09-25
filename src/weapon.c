@@ -1891,8 +1891,8 @@ enhance_weapon_skill()
 		char headerbuf[BUFSZ] = "";
 		any = zeroany;
 		prefix =
-			(to_advance + eventually_advance + maxxed_cnt > 0)
-			? "    "
+            (to_advance + eventually_advance + maxxed_cnt > 0)
+			? (iflags.menu_tab_sep ? "  " : "    ")
 			: "";
 
 		if (speedy /*wizard*/)
@@ -1992,19 +1992,19 @@ enhance_weapon_skill()
 #ifdef ANDROID
                     prefix = "  * ";
 #else
-                    prefix = "  * ";
+                    prefix = iflags.menu_tab_sep ? "* " : "  * ";
 #endif
                 else if (peaked_skill(i))
 #ifdef ANDROID
                     prefix = "  # ";
 #else
-                    prefix = "  # ";
+                    prefix = iflags.menu_tab_sep ? "# " : "  # ";
 #endif
                 else
 #ifdef ANDROID
                     prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "  " : "";
 #else
-                    prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "    " : "";
+                    prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? (iflags.menu_tab_sep ? "  " : "    ") : "";
 #endif
                 (void)skill_level_name(i, sklnambuf, FALSE);
                 char skillmaxbuf[BUFSZ] = "";

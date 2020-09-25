@@ -1060,7 +1060,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     PNHMenuItem item;
     PNHMenuWindow data;
     TEXTMETRIC tm;
-    HGDIOBJ saveFont;
+    HGDIOBJ saveFont, normalFont;
     HDC tileDC;
     short ntile;
     int t_x, t_y;
@@ -1070,7 +1070,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     COLORREF OldBg, OldFg, NewBg;
     char *p, *p1;
     int column;
-    int spacing = 0;
+    int spacing = 0, BoldAverageCharWidth = 0, BoldOverhang = 0;
 
     int color = NO_COLOR, attr;
     boolean menucolr = FALSE;
@@ -1089,8 +1089,16 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     item = &data->menu.items[lpdis->itemID];
 
     tileDC = CreateCompatibleDC(lpdis->hDC);
+    cached_font* nfont = mswin_get_font(NHW_MENU, ATR_BOLD, lpdis->hDC, FALSE);
+    saveFont = SelectObject(lpdis->hDC, nfont->hFont);
+
+    GetTextMetrics(lpdis->hDC, &tm);
+    spacing = tm.tmAveCharWidth;
+    BoldAverageCharWidth = tm.tmAveCharWidth;
+    BoldOverhang = tm.tmOverhang;
+
     cached_font* font = mswin_get_font(NHW_MENU, item->attr, lpdis->hDC, FALSE);
-    saveFont = SelectObject(lpdis->hDC, font->hFont);
+    normalFont = SelectObject(lpdis->hDC, font->hFont);
     NewBg = menu_bg_brush ? menu_bg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU);
     OldBg = SetBkColor(lpdis->hDC, NewBg);
     OldFg = SetTextColor(lpdis->hDC,
@@ -1100,7 +1108,6 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
     );
 
     GetTextMetrics(lpdis->hDC, &tm);
-    spacing = tm.tmAveCharWidth;
 
     int row_height = lpdis->rcItem.bottom - lpdis->rcItem.top - 2;
 
@@ -1173,9 +1180,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             DrawText(lpdis->hDC, NH_A2W(buf, wbuf, 2), 1, &drawRect,
                      DT_LEFT | DT_VCENTER | DT_SINGLELINE | DT_NOPREFIX);
         }
-        x += tm.tmAveCharWidth + tm.tmOverhang + spacing;
+        x += BoldAverageCharWidth + BoldOverhang + spacing;
     } else {
-        x += checkXScaled + tm.tmAveCharWidth + tm.tmOverhang + 2 * spacing;
+        x += checkXScaled + BoldAverageCharWidth + BoldOverhang + 2 * spacing;
     }
 
     /* print glyph if present */
@@ -1368,11 +1375,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
             }
 
             SetRect(&drawRect, x, lpdis->rcItem.top,
-                    min(x + tm.tmAveCharWidth, lpdis->rcItem.right),
+                    min(x + BoldAverageCharWidth, lpdis->rcItem.right),
                     lpdis->rcItem.bottom);
             DrawText(lpdis->hDC, NH_A2W(sel_ind, wbuf, BUFSZ), 1, &drawRect,
                      DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-            x += tm.tmAveCharWidth;
+            x += BoldAverageCharWidth;
         }
     }
     else 
@@ -1380,6 +1387,8 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         /* no glyph - need to adjust so help window won't look to cramped */
         if (!IS_MAP_ASCII(iflags.wc_map_mode)) 
             x += tileXScaled;
+        else
+            x += BoldAverageCharWidth;
     }
 
     x += spacing;

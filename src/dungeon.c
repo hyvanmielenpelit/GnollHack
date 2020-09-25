@@ -1847,7 +1847,10 @@ boolean unreachable;
     if (unreachable) {
         /* not selectable, but still consumes next menuletter;
            prepend padding in place of missing menu selector */
-        Sprintf(tmpbuf, "    %s", entry);
+        if(iflags.menu_tab_sep)
+            Sprintf(tmpbuf, "%s", entry);
+        else
+            Sprintf(tmpbuf, "    %s", entry);
         entry = tmpbuf;
     } else {
         any.a_int = lchoices->idx + 1;
