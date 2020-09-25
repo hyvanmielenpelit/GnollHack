@@ -4751,9 +4751,14 @@ struct trap *ttmp;
     int fails = try_disarm(ttmp, FALSE);
 
     if (fails < 2)
+    {
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
+    }
 
     /* ok, disarm it. */
+
+    play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
 
     /* untrap the monster, if any.
        There's no need for a cockatrice test, only the trap is touched */
@@ -4786,9 +4791,14 @@ struct trap* ttmp;
 {
 	int fails = try_disarm(ttmp, FALSE);
 
-	if (fails < 2)
-		return fails;
-	You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
+    if (fails < 2)
+    {
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
+        return fails;
+    }
+
+    play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
+    You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
 	
 	/* Skills gained */
 	int skillgained = 5;
@@ -4926,7 +4936,12 @@ struct trap *ttmp;
     int fails = try_disarm(ttmp, FALSE);
 
     if (fails < 2)
+    {
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
+    }
+
+    play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
     You("disarm %s land mine.", the_your[ttmp->madeby_u]);
     cnv_trap_obj(LAND_MINE, 1, ttmp, FALSE);
 
@@ -4971,9 +4986,14 @@ struct trap *ttmp;
     }
 #endif
 	fails = try_disarm(ttmp, FALSE);
-	if (fails < 2)
-		return fails;
-	You("repair the squeaky board."); /* no madeby_u */
+    if (fails < 2)
+    {
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
+        return fails;
+    }
+
+    play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
+    You("repair the squeaky board."); /* no madeby_u */
     deltrap(ttmp);
     newsym(u.ux + u.dx, u.uy + u.dy);
 
@@ -4994,7 +5014,12 @@ int otyp;
     int fails = try_disarm(ttmp, FALSE);
 
     if (fails < 2)
+    {
+        play_sfx_sound(SFX_DISARM_TRAP_FAIL);
         return fails;
+    }
+
+    play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
     You("disarm %s %s.", the_your[ttmp->madeby_u], get_trap_explanation(ttmp));
     cnv_trap_obj(otyp, 50 - rnl(50), ttmp, FALSE);
 
@@ -5274,18 +5299,21 @@ boolean force;
                 case SPIKED_PIT:
                     if (here) 
                     {
+                        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
                         You("are already on the edge of the pit.");
                         return 0;
                     }
 
                     if (!mtmp)
                     {
+                        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
                         pline("Try filling the pit instead.");
                         return 0;
                     }
 
                     return help_monster_out(mtmp, ttmp);
                 default:
+                    play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
                     You("cannot disable %s trap.", !here ? "that" : "this");
                     return 0;
                 }
@@ -5337,7 +5365,10 @@ boolean force;
     if (!IS_DOOR(levl[x][y].typ)) 
     {
         if (!trap_skipped)
+        {
+            play_sfx_sound(SFX_NO_TRAPS_FOUND);
             You("know of no traps there.");
+        }
         return 0;
     }
 
@@ -5345,12 +5376,15 @@ boolean force;
     {
     case D_NODOOR:
     case D_PORTCULLIS:
+        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
         You("%s no door there.", Blind ? "feel" : "see");
         return 0;
     case D_ISOPEN:
+        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
         pline("This door is safely open.");
         return 0;
     case D_BROKEN:
+        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
         pline("This door is broken.");
         return 0;
     }
@@ -5373,6 +5407,7 @@ boolean force;
             if (!force && (confused || Fumbling
                            || rnd(75 + level_difficulty() / 2) > ch)) 
             {
+                play_sfx_sound(SFX_DISARM_TRAP_FAIL);
                 You("set it off!");
                 b_trapped("door", FINGER);
                 levl[x][y].doormask = D_NODOOR;
@@ -5384,17 +5419,21 @@ boolean force;
             } 
             else 
             {
+                play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
                 You("disarm it!");
                 levl[x][y].doormask &= ~D_TRAPPED;
             }
         } 
         else
+        {
+            play_sfx_sound(SFX_NO_TRAPS_FOUND);
             pline("This door was not trapped.");
-
+        }
         return 1;
     } 
     else 
     {
+        play_sfx_sound(SFX_NO_TRAPS_FOUND);
         You("find no traps on the door.");
         return 1;
     }
@@ -5511,10 +5550,12 @@ boolean force;
                 || rnd(75 + level_difficulty() / 2)
             > ch))
             {
+                play_sfx_sound(SFX_DISARM_TRAP_FAIL);
                 (void)chest_trap(otmp, FINGER, TRUE);
             }
             else
             {
+                play_sfx_sound(SFX_DISARM_TRAP_SUCCESS);
                 You("disarm it!");
                 otmp->otrapped = 0;
             }
@@ -5526,6 +5567,7 @@ boolean force;
     }
     else
     {
+        play_sfx_sound(SFX_NO_TRAPS_FOUND);
         You("find no traps on %s.", the(xname(otmp)));
         return 1;
     }
@@ -5722,6 +5764,7 @@ boolean disarm;
     register struct obj *otmp = obj, *otmp2;
     char buf[80];
     const char *msg;
+    enum sfx_sound_types sfx = 0;
     coord cc;
 
     if (get_obj_location(obj, &cc.x, &cc.y, 0)) /* might be carried */
@@ -5729,33 +5772,42 @@ boolean disarm;
 
     otmp->otrapped = 0; /* trap is one-shot; clear flag first in case
                            chest kills you and ends up in bones file */
+    play_sfx_sound(SFX_CHEST_TRAP_TRIGGER);
     You(disarm ? "set it off!" : "trigger a trap!");
     display_nhwindow(WIN_MESSAGE, FALSE);
-    if (Luck > -13 && rn2(13 + Luck) > 7) { /* saved by luck */
+
+    if (Luck > -13 && rn2(13 + Luck) > 7) 
+    { /* saved by luck */
         /* trap went off, but good luck prevents damage */
-        switch (rn2(13)) {
+        switch (rn2(13))
+        {
         case 12:
         case 11:
             msg = "explosive charge is a dud";
+            sfx = 0;
             break;
         case 10:
         case 9:
             msg = "electric charge is grounded";
+            sfx = 0;
             break;
         case 8:
         case 7:
             msg = "flame fizzles out";
+            sfx = SFX_TRAP_FLAME_FIZZLES_OUT;
             break;
         case 6:
         case 5:
         case 4:
             msg = "poisoned needle misses";
+            sfx = SFX_TRAP_NEEDLE_MISSES;
             break;
         case 3:
         case 2:
         case 1:
         case 0:
             msg = "gas cloud blows away";
+            sfx = SFX_TRAP_CLOUD_BLOWS_AWAY;
             break;
         default:
             impossible("chest disarm bug");
@@ -5763,8 +5815,15 @@ boolean disarm;
             break;
         }
         if (msg)
+        {
+            if(sfx > 0)
+                play_sfx_sound_at_location(sfx, obj->ox, obj->oy);
             pline("But luckily the %s!", msg);
-    } else {
+
+        }
+    }
+    else
+    {
         switch (rn2(20) ? ((Luck >= 13) ? 0 : rn2(13 - Luck)) : rn2(26)) {
         case 25:
         case 24:
@@ -5783,6 +5842,7 @@ boolean disarm;
             insider = (*u.ushops && inside_shop(u.ux, u.uy)
                        && *in_rooms(ox, oy, SHOPBASE) == *u.ushops);
 
+            play_sfx_sound_at_location(SFX_EXPLOSION_FIERY, ox, oy);
             pline("%s!", Tobjnam(obj, "explode"));
             Sprintf(buf, "exploding %s", xname(obj));
 
@@ -5823,6 +5883,7 @@ boolean disarm;
         case 19:
         case 18:
         case 17:
+            play_sfx_sound_at_location(SFX_EXPLOSION_NOXIOUS, obj->ox, obj->oy);
             pline("A cloud of noxious gas billows from %s.", the(xname(obj)));
             poisoned("gas cloud", A_STR, "cloud of poison gas", 0, FALSE, 2);
             exercise(A_CON, FALSE);
@@ -5831,6 +5892,7 @@ boolean disarm;
         case 15:
         case 14:
         case 13:
+            play_sfx_sound(SFX_TRAP_NEEDLE_PRICKS);
             You_feel("a needle prick your %s.", body_part(bodypart));
             poisoned("needle", A_CON, "poisoned needle", 0, FALSE, 2);
             exercise(A_CON, FALSE);
@@ -5846,6 +5908,7 @@ boolean disarm;
         case 6: {
             int dmg;
 
+            play_sfx_sound(SFX_ELECTRIC_SHOCK);
             You("are jolted by a surge of electricity!");
             if (Shock_immunity) {
                 u_shieldeff();
@@ -5862,11 +5925,17 @@ boolean disarm;
         case 5:
         case 4:
         case 3:
-            if (!Free_action) {
+            if (!Free_action) 
+            {
+                play_sfx_sound(SFX_CAUSE_PARALYSIS);
+                incr_itimeout(&HParalyzed, d(5, 6));
+                context.botl = context.botlx = 1;
                 pline("Suddenly you are frozen in place!");
+#if 0
                 nomul(-d(5, 6));
                 multi_reason = "frozen by a trap";
                 exercise(A_DEX, FALSE);
+#endif
                 nomovemsg = You_can_move_again;
             } else
                 You("momentarily stiffen.");
@@ -6089,6 +6158,7 @@ int bodypart;
     int lvl = level_difficulty(),
         dmg = rnd(5 + (lvl < 5 ? lvl : 2 + lvl / 2));
 
+    play_sfx_sound(SFX_EXPLOSION_FIERY);
     pline("KABOOM!!  %s was booby-trapped!", The(item));
     wake_nearby();
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "explosion", KILLED_BY_AN);

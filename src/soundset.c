@@ -2745,6 +2745,56 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_VANISHES_IN_PUFF_OF_SMOKE, 1.0f},
         FALSE
     },
+    {
+        "GHSOUND_DISARM_TRAP_SUCCESS",
+        {GHSOUND_DISARM_TRAP_SUCCESS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_DISARM_TRAP_FAIL",
+        {GHSOUND_DISARM_TRAP_FAIL, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_NO_TRAPS_FOUND",
+        {GHSOUND_NO_TRAPS_FOUND, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_CANNOT_DISARM_TRAP",
+        {GHSOUND_CANNOT_DISARM_TRAP, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_STUMBLE_ON_MIMIC",
+        {GHSOUND_STUMBLE_ON_MIMIC, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_CHEST_TRAP_TRIGGER",
+        {GHSOUND_CHEST_TRAP_TRIGGER, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_TRAP_FLAME_FIZZLES_OUT",
+        {GHSOUND_TRAP_FLAME_FIZZLES_OUT, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_TRAP_NEEDLE_MISSES",
+        {GHSOUND_TRAP_NEEDLE_MISSES, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_TRAP_CLOUD_BLOWS_AWAY",
+        {GHSOUND_TRAP_CLOUD_BLOWS_AWAY, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_TRAP_NEEDLE_PRICKS",
+        {GHSOUND_TRAP_NEEDLE_PRICKS, 1.0f},
+        FALSE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

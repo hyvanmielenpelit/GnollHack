@@ -492,6 +492,17 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Resists Negative Effect", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Summon Monster", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Vanishes in Puff of Smoke", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Disarm Trap Success", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Disarm Trap Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/No Traps Found", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Cannot Disarm Trap", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Special Attack/Stumble on Mimic", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Chest Trap Trigger", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Flame Fizzles Out", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Needle Misses", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Cloud Blows Away", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Needle Pricks", 1.0f },
 };
 
 #undef NoSound

@@ -4369,8 +4369,12 @@ struct monst *mtmp;
         else
             what = a_monnam(mtmp);
     }
+
     if (what)
-        pline(fmt, what);
+	{ 
+		play_sfx_sound(SFX_STUMBLE_ON_MIMIC);
+		pline(fmt, what);
+	}
 
     wakeup(mtmp, FALSE); /* clears mimicking */
     /* if hero is blind, wakeup() won't display the monster even though
