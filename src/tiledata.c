@@ -9,9 +9,9 @@
 #ifdef USE_TILES
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
 uchar glyphtileflags[MAX_GLYPH] = { 0 }; /* specifies how to use the tile and operations applied to the tile before use */
-short tile2replacement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
-short tile2animation[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
-short tile2enlargement[MAX_GLYPH] = { 0 }; /* maximum of one tile per glyph */
+short tile2replacement[MAX_TILES] = { 0 };
+short tile2animation[MAX_TILES] = { 0 };
+short tile2enlargement[MAX_TILES] = { 0 };
 #endif
 
 NEARDATA struct tileset_definition default_tileset_definition =
@@ -22,7 +22,7 @@ NEARDATA struct tileset_definition default_tileset_definition =
     2,
     5,
     {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0, (char*)0},
-    {0, 1, 2, 0, 4, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0},
+    {0, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     1, 1, 3
 };

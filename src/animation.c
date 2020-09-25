@@ -718,7 +718,28 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "dracolich-attack-enlargement",
+      { "dungeon-undead-upstairs-enlargement", 0, 0,
+        DUNGEON_UNDEAD_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_UNDEAD_UPSTAIRS_ENLARGEMENT_OFF,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "dungeon-undead-branch-upstairs-enlargement", 0, 0,
+        DUNGEON_UNDEAD_BRANCH_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_UNDEAD_BRANCH_UPSTAIRS_ENLARGEMENT_OFF,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "dungeon-undead-special-branch-upstairs-enlargement", 0, 0,
+        DUNGEON_UNDEAD_SPECIAL_BRANCH_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_UNDEAD_SPECIAL_BRANCH_UPSTAIRS_ENLARGEMENT_OFF,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "dracolich-attack-enlargement",
       DRACOLICH_ATTACK_ANIMATION_TILES, DRACOLICH_ATTACK_ANIMATION_FRAMES,
       DRACOLICH_ATTACK_ENLARGEMENT_TILES, DRACOLICH_ATTACK_ENLARGEMENT_OFF,
       3, 2, 0,
@@ -1230,7 +1251,126 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-
+    { "dungeon-undead-vwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_DOWN,
+      { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-crwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_ALL,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-trwall-replacement",
+        0, 0,
+        REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+        REPLACEMENT_ACTION_AUTODRAW,
+        AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_DOWN_RIGHT,
+        { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-tlwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_LEFT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_DOWN_LEFT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-tuwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_LEFT_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-tdwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_DOWN_LEFT_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-hwall-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_LEFT_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-tlcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_BELOW | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_DOWN_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-trcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_DOWN_LEFT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-blcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP | REPLACEMENT_EVENT_UPDATE_FROM_RIGHT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_RIGHT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-brcorn-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_UPDATE_FROM_LEFT | REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_LEFT,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dungeon-undead-iron-bar-replacement",
+      DUNGEON_UNDEAD_IRON_BAR_REPLACEMENT_TILES, DUNGEON_UNDEAD_IRON_BAR_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_LOCATION_HORIZONTAL,
+      AUTODRAW_NONE,
+      { "horizontal", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "brass-lantern-replacement",
       BRASS_LANTERN_LIT_TILES, BRASS_LANTERN_LIT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
@@ -1424,6 +1564,97 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
     }, 
+
+    {
+        "dungeon-undead-wall-autodraw-all",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-left-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-up-down",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-up-down-left",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-up-down-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-up-left-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-down-left-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-down-down-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-down-down-left",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-down-up-right",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "dungeon-undead-wall-autodraw-down-up-left",
+        AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+        AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
+        0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
+        S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+
+
 };
 
 
@@ -2402,19 +2633,20 @@ short enlidx, enl_anim_tile_idx;
         for (int i = 0; i < MAX_CMAPPED_CHARS; i++)
         {
             if (defsyms[i].enlargement[cmap_idx] == enlidx)
-                return glyph2tile[i + GLYPH_CMAP_OFF];
+                return glyph2tile[i + cmap_idx * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF];
             if (defsyms[i].broken_enlargement[cmap_idx] == enlidx)
-                return glyph2tile[i + GLYPH_BROKEN_CMAP_OFF];
+                return glyph2tile[i + cmap_idx * NUM_CMAP_TYPE_CHARS + GLYPH_BROKEN_CMAP_OFF];
         }
 
         for (int i = 0; i < MAX_VARIATIONS; i++)
         {
             if (defsym_variations[i].enlargement[cmap_idx] == enlidx)
-                return glyph2tile[i + GLYPH_CMAP_VARIATION_OFF];
+                return glyph2tile[i + cmap_idx * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF];
             if (defsym_variations[i].broken_enlargement[cmap_idx] == enlidx)
-                return glyph2tile[i + GLYPH_BROKEN_CMAP_VARIATION_OFF];
+                return glyph2tile[i + cmap_idx * MAX_VARIATIONS + GLYPH_BROKEN_CMAP_VARIATION_OFF];
         }
     }
+
     for (int roleidx = 0; roleidx < NUM_ROLES; roleidx++)
     {
         for (int raceidx = 0; raceidx < NUM_RACES; raceidx++)

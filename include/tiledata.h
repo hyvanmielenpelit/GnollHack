@@ -5,6 +5,8 @@
 #ifndef TILEDATA_H
 #define TILEDATA_H
 
+#define MAX_TILES 32000
+
 struct tileset_definition {
     uchar female_tile_style;     /* 0 = use base monster, 1 = separate female tile for each monster, 2 = indicated monsters with M5_FEMALE_TILE */
    
