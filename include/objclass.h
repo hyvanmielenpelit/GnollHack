@@ -310,7 +310,8 @@ enum charged_init_types {
 	CHARGED_1D6_3 = 26,
 	CHARGED_2D6_8 = 27,
 	CHARGED_HOLY_GRAIL = 28,
-	CHARGED_UNICORN_HORN = 29
+	CHARGED_UNICORN_HORN = 29,
+	CHARGED_1D4_4 = 30
 };
 
 enum recharging_types {

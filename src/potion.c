@@ -702,8 +702,10 @@ dodrink()
         switch (otmp->otyp)
         {
         case GRAIL_OF_HEALING:
+            play_sfx_sound(SFX_QUAFF);
             return use_grail(otmp, TRUE);
         case JAR_OF_BASILISK_BLOOD:
+            play_sfx_sound(SFX_QUAFF);
             return use_salve(otmp, TRUE);
         default:
             pline("That's a silly thing to drink!");
