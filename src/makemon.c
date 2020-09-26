@@ -904,14 +904,24 @@ register struct monst *mtmp;
             (void) mongets(mtmp, WAN_STRIKING);
             break;
         case PM_YEENOGHU:
-			otmp = mksobj(TRIPLE_HEADED_FLAIL_OF_YEENOGHU, TRUE, FALSE, FALSE);
-			curse(otmp);
-			otmp->oerodeproof = TRUE;
-			spe2 = 1 + rnd(4);
-			otmp->enchantment = max(otmp->enchantment, spe2);
-            otmp->exceptionality = EXCEPTIONALITY_INFERNAL;
-            (void)mpickobj(mtmp, otmp);
-			break;
+        {
+            int weaptype = TRIPLE_HEADED_FLAIL;
+            int artifacttype = ART_TRIPLE_HEADED_FLAIL_OF_YEENOGHU;
+            otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
+
+            if (otmp)
+                otmp = oname(otmp, artiname(artifacttype));
+
+            if (otmp)
+            {
+                curse(otmp);
+                otmp->oerodeproof = TRUE;
+                spe2 = 1 + rnd(4);
+                otmp->enchantment = max(otmp->enchantment, spe2);
+                (void)mpickobj(mtmp, otmp);
+            }
+            break;
+        }
 		case PM_BAPHOMET:
 			/* Baphomet's bardiche */
 			otmp = mksobj(BARDICHE, TRUE, FALSE, FALSE);
@@ -1802,7 +1812,7 @@ register struct monst *mtmp;
     if (ptr == &mons[PM_SOLDIER] && rn2(13))
         return;
 
-    if ((int) mtmp->m_lev > rn2(50))
+    if (!rn2(2) && (int) mtmp->m_lev > rn2(50))
         (void) mongets(mtmp, rnd_defensive_item(mtmp));
     if ((int) mtmp->m_lev > rn2(100))
         (void) mongets(mtmp, rnd_misc_item(mtmp));

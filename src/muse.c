@@ -1141,21 +1141,25 @@ struct monst *mtmp;
     struct permonst *pm = mtmp->data;
     int difficulty = mons[(monsndx(pm))].difficulty;
     int trycnt = 0;
+    int roll = 0;
 
     if (is_animal(pm) || attacktype(pm, AT_EXPL) || mindless(mtmp->data)
         || pm->mlet == S_GHOST || pm->mlet == S_KOP)
         return 0;
- try_again:
-    switch (rn2(8 + (difficulty > 3) + (difficulty > 6) + (difficulty > 8))) {
+try_again:
+    roll = rn2(8 + (difficulty > 3) + (difficulty > 6) + (difficulty > 8));
+    switch (roll) {
+    case 6:
     case 9:
         if (level.flags.noteleport && ++trycnt < 2)
             goto try_again;
-        if (!rn2(3))
+        if (roll >= 9 ? 1 : !rn2(3))
             return WAN_TELEPORTATION;
         /*FALLTHRU*/
     case 0:
-    case 1:
         return SCR_TELEPORTATION;
+    case 1:
+        return POT_HEALING; /* One scroll of teleportation changed to potion of healing */
     case 8:
     case 10:
         if (!rn2(3))
@@ -1168,10 +1172,7 @@ struct monst *mtmp;
     case 4:
         return POT_EXTRA_HEALING;
     case 5:
-        return POT_GREATER_HEALING;
-    case 6:
-        return (mtmp->data != &mons[PM_PESTILENCE]) ? POT_FULL_HEALING
-                                                    : POT_SICKNESS;
+        return (mtmp->data != &mons[PM_PESTILENCE]) ? (rn2(3) ? POT_GREATER_HEALING : POT_FULL_HEALING) : POT_SICKNESS;
     case 7:
         if (is_floater(pm) || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
             return 0;
@@ -1847,9 +1848,11 @@ struct monst *mtmp;
 #define MUSE_POLY_TRAP 4
 #define MUSE_WAN_POLYMORPH 5
 #define MUSE_POT_SPEED 6
-#define MUSE_WAN_SPEED_MONSTER 7
-#define MUSE_BULLWHIP 8
-#define MUSE_POT_POLYMORPH 9
+#define MUSE_POT_GREATER_SPEED 7
+#define MUSE_POT_LIGHTNING_SPEED 8
+#define MUSE_WAN_SPEED_MONSTER 9
+#define MUSE_BULLWHIP 10
+#define MUSE_POT_POLYMORPH 11
 
 boolean
 find_misc(mtmp)
@@ -1953,14 +1956,24 @@ struct monst *mtmp;
         }
         nomore(MUSE_WAN_SPEED_MONSTER);
         if (obj->otyp == WAN_SPEED_MONSTER && obj->charges > 0
-            && !has_very_fast(mtmp) && !mtmp->isgd) {
+            && !has_very_fast(mtmp) && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
             m.misc = obj;
             m.has_misc = MUSE_WAN_SPEED_MONSTER;
         }
         nomore(MUSE_POT_SPEED);
-        if (obj->otyp == POT_SPEED && !has_very_fast(mtmp) && !mtmp->isgd) {
+        if (obj->otyp == POT_SPEED && !has_ultra_fast(mtmp) && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
             m.misc = obj;
             m.has_misc = MUSE_POT_SPEED;
+        }
+        nomore(MUSE_POT_GREATER_SPEED);
+        if (obj->otyp == POT_GREATER_SPEED && !has_super_fast(mtmp) && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_GREATER_SPEED;
+        }
+        nomore(MUSE_POT_LIGHTNING_SPEED);
+        if (obj->otyp == POT_LIGHTNING_SPEED && !has_lightning_fast(mtmp) && !mtmp->isgd) {
+            m.misc = obj;
+            m.has_misc = MUSE_POT_LIGHTNING_SPEED;
         }
         nomore(MUSE_WAN_POLYMORPH);
         if (obj->otyp == WAN_POLYMORPH && obj->charges > 0
@@ -2104,6 +2117,20 @@ struct monst *mtmp;
 		mquaffmsg(mtmp, otmp);
         (void)increase_mon_property_verbosely(mtmp, ULTRA_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
 		m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_GREATER_SPEED:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        (void)increase_mon_property_verbosely(mtmp, SUPER_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+        m_useup(mtmp, otmp);
+        return 2;
+    case MUSE_POT_LIGHTNING_SPEED:
+        if (!otmp)
+            return 2;
+        mquaffmsg(mtmp, otmp);
+        (void)increase_mon_property_verbosely(mtmp, LIGHTNING_FAST, rn1(10, 100 + 60 * bcsign(otmp)));
+        m_useup(mtmp, otmp);
         return 2;
     case MUSE_WAN_POLYMORPH:
 		if (!otmp)
