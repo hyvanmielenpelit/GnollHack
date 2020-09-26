@@ -4813,6 +4813,7 @@ boolean at_stairs, falling, portal;
     if (new_ledger <= 0)
         done(ESCAPED); /* in fact < 0 is impossible */
 
+#if 0
     /* If you have the amulet and are trying to get out of Gehennom,
      * going up a set of stairs sometimes does some very strange things!
      * Biased against law and towards chaos.  (The chance to be sent
@@ -4854,6 +4855,7 @@ boolean at_stairs, falling, portal;
                 at_stairs = at_ladder = FALSE;
         }
     }
+#endif
 
     /* Prevent the player from going past the first quest level unless
      * (s)he has been given the go-ahead by the leader.

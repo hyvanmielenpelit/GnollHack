@@ -1157,23 +1157,23 @@ register struct monst *mtmp;
 		}
         else if (ptr == &mons[PM_ARCHMAGE]) 
         {
-            if (!rn2(2))
+            if (!rn2(10))
                 (void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
-            else if (!rn2(2))
+            else if (!rn2(4))
                 (void)mongets(mtmp, !rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : !rn2(2) ? ROBE_OF_PROTECTION : ROBE_OF_EYES);
             else
                 (void)mongets(mtmp, ROBE);
 
-            if(!rn2(2))
+            if(!rn2(4))
                 (void)mongets(mtmp, BRACERS_OF_DEFENSE);
-            else if (!rn2(2))
+            else if (!rn2(4))
                 (void)mongets(mtmp, !rn2(2) ? BRACERS_OF_REFLECTION : !rn2(2) ? BRACERS_OF_SPELL_CASTING : BRACERS_AGAINST_MAGIC_MISSILES);
             else
                 (void)mongets(mtmp, LEATHER_BRACERS);
 
-            if (!rn2(2))
+            if (!rn2(4))
                 (void)mongets(mtmp, STAFF_OF_THE_MAGI);
-            else if(!rn2(2))
+            else if(!rn2(4))
                 (void)mongets(mtmp, !rn2(2) ? STAFF_OF_FIRE : !rn2(2) ? STAFF_OF_THUNDER_AND_LIGHTNING : STAFF_OF_FROST);
             else
                 (void)mongets(mtmp, QUARTERSTAFF);
@@ -1294,10 +1294,13 @@ register struct monst *mtmp;
 		break;
 	case S_VAMPIRE:
 		if (ptr == &mons[PM_VAMPIRE_MAGE]) {
-			if (!rnd(7))
+			if (!rn2(7))
 				(void)mongets(mtmp, RIN_REPLENISHMENT);
-			if (!rnd(20))
+
+			if (!rn2(50))
 				(void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
+            else if (!rn2(4))
+                (void)mongets(mtmp, rn2(5) ? ROBE : rn2(2) ? ROBE_OF_MAGIC_RESISTANCE : ROBE_OF_PROTECTION);
 
             if (!rn2(4))
                 (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
@@ -1334,11 +1337,11 @@ register struct monst *mtmp;
 		}
 
 		//Bracers
-		if (!rn2(4))
-			(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_AGAINST_MAGIC_MISSILES);
+		if (!rn2(10))
+			(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : rn2(2) ? BRACERS_AGAINST_MAGIC_MISSILES : LEATHER_BRACERS);
 
 		//Ring
-		if (!rn2(4))
+		if (!rn2(10))
 			(void)mongets(mtmp, RIN_REPLENISHMENT);
 
         //Potion of gain energy
@@ -1365,9 +1368,15 @@ register struct monst *mtmp;
 		}
 
 		//Possibly robes
-		if (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH])
-			if (!rn2(3))
-				(void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
+        if (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH])
+        {
+            if (!rn2(20))
+                (void)mongets(mtmp, !rn2(2) ? ROBE_OF_THE_ARCHMAGI : ROBE_OF_MAGIC_RESISTANCE);
+            else
+                (void)mongets(mtmp, rn2(5) ? ROBE : ROBE_OF_PROTECTION);
+
+        } else if(!rn2(4))
+            (void)mongets(mtmp, rn2(20) ? ROBE : ROBE_OF_PROTECTION);
 
 		if (!rn2(4))
 			(void)mongetsgold(mtmp, 100 + rn2(701));
@@ -1379,11 +1388,11 @@ register struct monst *mtmp;
 		if (ptr == &mons[PM_ILLITHILICH])
 		{
 			//Bracers
-			if (!rn2(4))
-				(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : BRACERS_AGAINST_MAGIC_MISSILES);
+			if (!rn2(7))
+				(void)mongets(mtmp, rn2(2) ? BRACERS_OF_DEFENSE : rn2(2) ? BRACERS_AGAINST_MAGIC_MISSILES : LEATHER_BRACERS);
 
 			//Ring
-			if (!rn2(4))
+			if (!rn2(7))
 				(void)mongets(mtmp, RIN_REPLENISHMENT);
 
 			//Reagents

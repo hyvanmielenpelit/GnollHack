@@ -952,6 +952,7 @@ struct monst *mtmp;
         m_flee(mtmp);
         if (ledger_no(&u.uz) == 1)
             goto escape; /* impossible; level 1 upstairs are SSTAIRS */
+#if 0
         if (Inhell && mon_has_amulet(mtmp) && !rn2(4)
             && (dunlev(&u.uz) < dunlevs_in_dungeon(&u.uz) - 3)) {
             if (vismon)
@@ -972,6 +973,13 @@ struct monst *mtmp;
             migrate_to_level(mtmp, ledger_no(&u.uz) - 1, MIGR_STAIRS_DOWN,
                              (coord *) 0);
         }
+#endif
+        if (vismon)
+            pline("%s escapes upstairs!", Monnam(mtmp));
+        play_movement_sound(mtmp, CLIMBING_TYPE_STAIRS_UP);
+        migrate_to_level(mtmp, ledger_no(&u.uz) - 1, MIGR_STAIRS_DOWN,
+            (coord*)0);
+
         return 2;
     case MUSE_DOWNSTAIRS:
         m_flee(mtmp);
