@@ -361,12 +361,13 @@ register struct monst *mtmp;
         }
         case PM_STORM_GIANT:
         {
-            otmp = mksobj(JAVELIN, FALSE, FALSE, FALSE);
+            otmp = mksobj(JAVELIN, TRUE, FALSE, FALSE);
             if (otmp) 
             {
                 otmp->elemental_enchantment = LIGHTNING_ENCHANTMENT;
                 otmp->enchantment = rn2(4);
                 otmp->quan = rnd(6);
+                otmp->blessed = 0;
                 otmp->cursed = 0;
                 otmp->owt = weight(otmp);
                 (void)mpickobj(mtmp, otmp);
@@ -453,7 +454,7 @@ register struct monst *mtmp;
             }
         } else if (ptr->msound == MS_PRIEST
                    || quest_mon_represents_role(ptr, PM_PRIEST)) {
-            otmp = mksobj(MACE, FALSE, FALSE, FALSE);
+            otmp = mksobj(MACE, TRUE, FALSE, FALSE);
             if (otmp) {
                 otmp->enchantment = rnd(3);
                 if (!rn2(2))
@@ -591,7 +592,7 @@ register struct monst *mtmp;
 
 				}
 
-				otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+				otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 
 				/* maybe make it special */
 				if (artifacttype > 0)
@@ -809,7 +810,7 @@ register struct monst *mtmp;
 				default:
 					break;
 				}
-				otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+				otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 
 				/* maybe make it special */
 				if (artifacttype > 0 && !rn2(40))
@@ -857,7 +858,7 @@ register struct monst *mtmp;
 			//(void) mongets(mtmp, WAN_DEATH); /* the Wand of Orcus */
 			int weaptype = MACE_OF_THE_UNDERWORLD;
 			int artifacttype = ART_WAND_OF_ORCUS;
-			otmp = mksobj(weaptype, FALSE, FALSE, FALSE);
+			otmp = mksobj(weaptype, TRUE, FALSE, FALSE);
 
             if(otmp)
     			otmp = oname(otmp, artiname(artifacttype));
@@ -885,14 +886,14 @@ register struct monst *mtmp;
 			(void)mongets(mtmp, !rn2(5) ? LONG_SWORD : !rn2(4) ? SCIMITAR : !rn2(3) ? SHORT_SWORD : !rn2(2) ? DAGGER : AXE);
 			break;
 		case PM_PIT_FIEND:
-            otmp = mksobj(ANCUS, FALSE, FALSE, FALSE);
+            otmp = mksobj(ANCUS, TRUE, FALSE, FALSE);
             curse(otmp);
             spe2 = 0 + rnd(3);
             otmp->enchantment = max(otmp->enchantment, spe2);
             otmp->exceptionality = !rn2(3) ? EXCEPTIONALITY_INFERNAL : EXCEPTIONALITY_ELITE;
             (void)mpickobj(mtmp, otmp);
 
-            otmp = mksobj(JAGGED_TOOTHED_CLUB, FALSE, FALSE, FALSE);
+            otmp = mksobj(JAGGED_TOOTHED_CLUB, TRUE, FALSE, FALSE);
             curse(otmp);
             spe2 = 0 + rnd(3);
             otmp->enchantment = max(otmp->enchantment, spe2);
@@ -903,7 +904,7 @@ register struct monst *mtmp;
             (void) mongets(mtmp, WAN_STRIKING);
             break;
         case PM_YEENOGHU:
-			otmp = mksobj(TRIPLE_HEADED_FLAIL_OF_YEENOGHU, FALSE, FALSE, FALSE);
+			otmp = mksobj(TRIPLE_HEADED_FLAIL_OF_YEENOGHU, TRUE, FALSE, FALSE);
 			curse(otmp);
 			otmp->oerodeproof = TRUE;
 			spe2 = 1 + rnd(4);
@@ -913,7 +914,7 @@ register struct monst *mtmp;
 			break;
 		case PM_BAPHOMET:
 			/* Baphomet's bardiche */
-			otmp = mksobj(BARDICHE, FALSE, FALSE, FALSE);
+			otmp = mksobj(BARDICHE, TRUE, FALSE, FALSE);
 			curse(otmp);
 			otmp->oerodeproof = TRUE;
 			spe2 = 3 + rnd(7);
@@ -1298,7 +1299,10 @@ register struct monst *mtmp;
 			if (!rnd(20))
 				(void)mongets(mtmp, ROBE_OF_THE_ARCHMAGI);
 
-			//Reagents
+            if (!rn2(4))
+                (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+            
+            //Reagents
 			n = rnd(4);
 			for (int i = 0; i < n; i++)
 			{
@@ -1337,7 +1341,11 @@ register struct monst *mtmp;
 		if (!rn2(4))
 			(void)mongets(mtmp, RIN_REPLENISHMENT);
 
-		//Reagents
+        //Potion of gain energy
+        if (!rn2(3))
+            (void)mongets(mtmp, !rn2(4) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+
+        //Reagents
 		n = rnd(3) + (ptr == &mons[PM_MASTER_LICH] || ptr == &mons[PM_ARCH_LICH] ? 2 : 0); //1...3 + 2
 		for (int i = 0; i < n; i++)
 			(void)mongets(mtmp, randomreagent(TRUE, 2));
@@ -1481,7 +1489,10 @@ register struct monst *mtmp;
 
 		if (ptr == &mons[PM_KOBOLD_SHAMAN])
 		{
-			/* Some random reagants */
+            if (!rn2(6))
+                (void)mongets(mtmp, !rn2(50) ? POT_FULL_ENERGY : !rn2(10) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+            
+            /* Some random reagants */
 			int n = rn2(3);
 			for (int i = 0; i < n; i++)
 				(void)mongets(mtmp, randomreagent(TRUE, 0));
@@ -1606,7 +1617,10 @@ register struct monst *mtmp;
 
 		if (ptr == &mons[PM_ORC_SHAMAN])
 		{
-			if (!rn2(2))
+            if (!rn2(5))
+                (void)mongets(mtmp, !rn2(30) ? POT_FULL_ENERGY : !rn2(8) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+
+            if (!rn2(2))
 			{
 				otmp = mkobj(SPBOOK_CLASS, FALSE, FALSE);
 				(void)mpickobj(mtmp, otmp);
@@ -1626,6 +1640,10 @@ register struct monst *mtmp;
 		}
 		else if (ptr == &mons[PM_GNOLL_WARDEN] || ptr == &mons[PM_GNOLL_SUPREME_WARDEN])
 		{
+                //Potion of gain energy
+                if (!rn2(3))
+                    (void)mongets(mtmp, !rn2(10) ? POT_FULL_ENERGY : !rn2(4) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+
 				int n = rn2(3);
 				for (int i = 0; i < n; i++)
 					(void)mongets(mtmp, randomreagent(FALSE, 0));
@@ -1675,7 +1693,7 @@ register struct monst *mtmp;
 
 			if (mtmp->mnum == PM_GNOMISH_WIZARD)
 			{
-				if (!rn2(5))
+                if (!rn2(5))
 				{
 					if (!rn2(20))
 						(void)mongets(mtmp, !rn2(2) ? CORNUTHAUM : DUNCE_CAP);
@@ -1714,7 +1732,11 @@ register struct monst *mtmp;
 				(void)mpickobj(mtmp, otmp);
 			}
 
-			if (!rn2(6))
+            //Potion of gain energy
+            if (!rn2(5))
+                (void)mongets(mtmp, !rn2(20) ? POT_FULL_ENERGY : !rn2(7) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+
+            if (!rn2(6))
 				(void)mongets(mtmp, WAN_CREATE_MONSTER);
 		}
 		if (!rn2((In_mines(&u.uz) && in_mklev) ? 20 : 60)) 
@@ -1735,7 +1757,20 @@ register struct monst *mtmp;
 				ptr == &mons[PM_OGRE_MAGE] ? 100 + rn2(201) :
 				ptr == &mons[PM_OGRE_LORD] ? 50 + rn2(101) :
 				25 + rn2(51));
-		break;
+
+        //Potion of gain energy
+        if (ptr == &mons[PM_OGRE_MAGE])
+        {
+            if (!rn2(4))
+                (void)mongets(mtmp, !rn2(5) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+        }
+        else if (ptr == &mons[PM_OGRE_ARCHMAGE])
+        {
+            if (!rn2(3))
+                (void)mongets(mtmp, !rn2(3) ? POT_FULL_ENERGY : !rn2(2) ? POT_GREATER_ENERGY : POT_GAIN_ENERGY);
+        }
+
+        break;
     default:
         break;
     }

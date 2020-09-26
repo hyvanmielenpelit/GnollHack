@@ -1139,7 +1139,6 @@ struct monst *mtmp;
         return 0;
  try_again:
     switch (rn2(8 + (difficulty > 3) + (difficulty > 6) + (difficulty > 8))) {
-    case 6:
     case 9:
         if (level.flags.noteleport && ++trycnt < 2)
             goto try_again;
@@ -1161,6 +1160,8 @@ struct monst *mtmp;
     case 4:
         return POT_EXTRA_HEALING;
     case 5:
+        return POT_GREATER_HEALING;
+    case 6:
         return (mtmp->data != &mons[PM_PESTILENCE]) ? POT_FULL_HEALING
                                                     : POT_SICKNESS;
     case 7:

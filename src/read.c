@@ -1033,7 +1033,7 @@ boolean verbose;
                 }
                 else if (obj->charges < lim)
                 {
-                    obj->charges++;
+                    obj->charges += 3 + rnd(4);
                     if (obj->charges > lim)
                         obj->charges = lim;
                     if (verbose)

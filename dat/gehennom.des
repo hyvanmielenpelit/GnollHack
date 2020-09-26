@@ -468,7 +468,7 @@ OBJECT:random,random
 
 # The resident nasty
 MONSTER:('&',"Orcus"),(33,15)
-CONTAINER:('(',"chest"),trapped,locked,(33,15) {
+CONTAINER:('(',"chest"),trapped,locked,(32,15) {
    OBJECT:('$',"gold piece"),quantity:(12000+(6d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
@@ -480,7 +480,7 @@ CONTAINER:('(',"chest"),trapped,locked,(33,15) {
    [25%]:OBJECT:'!'
    [25%]:OBJECT:'?'
 }
-ENGRAVING:(33,15),burn,"Morgoth"
+ENGRAVING:(32,15),burn,"Morgoth"
 
 # And its preferred companions
 MONSTER:('z',"human zombie"),(32,15)
