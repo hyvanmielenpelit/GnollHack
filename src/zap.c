@@ -954,10 +954,16 @@ cure_petrification_here:
         boolean was_stoning = is_stoning(mtmp);
 		boolean had_stoned = !!mtmp->mprops[STONED];
 		mtmp->mprops[STONED] &= ~(M_INTRINSIC_ACQUIRED | M_TIMEOUT);
-		if (!is_stoning(mtmp) && was_stoning)
-			pline("%s stops solidifying!", Monnam(mtmp));
-		else if (!mtmp->mprops[STONED] && had_stoned)
-			pline("%s is cured of its petrification!", Monnam(mtmp));
+        if (!is_stoning(mtmp) && was_stoning)
+        {
+            learn_it = TRUE;
+            pline("%s stops solidifying!", Monnam(mtmp));
+        }
+        else if (!mtmp->mprops[STONED] && had_stoned)
+        {
+            learn_it = TRUE;
+            pline("%s is cured of its petrification!", Monnam(mtmp));
+        }
 		else
 			pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
         special_effect_wait_until_end(0);
@@ -3757,6 +3763,7 @@ struct monst* origmonst;
             break;
         case JAR_OF_BASILISK_BLOOD:
         case SPE_STONE_TO_FLESH:
+            learn_it = TRUE;
             res = stone_to_flesh_obj(obj);
             break;
         default:

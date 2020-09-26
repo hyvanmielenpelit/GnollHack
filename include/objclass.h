@@ -973,7 +973,8 @@ struct class_sym {
 struct objdescr {
     const char *oc_name;  /* actual name */
     const char *oc_descr; /* description when name unknown */
-	const char* oc_content_description; /* description of contents (spellbooks) */
+	const char* oc_content_name; /* true description of contents (jars) */
+	const char* oc_content_description; /* unknown description of contents (spellbooks, jars) */
 	const char* oc_item_description; /* description of the item */
 	short stand_animation;
 	short enlargement;
@@ -1062,7 +1063,9 @@ struct fruit {
 #define OBJ_NAME(obj) (obj_descr[(obj).oc_name_idx].oc_name)
 #define OBJ_DESCR(obj) (obj_descr[(obj).oc_descr_idx].oc_descr)
 
-#define OBJ_CONTENT_DESC(otyp) (obj_descr[is_otyp_content_description_shuffled(otyp) ?  objects[(otyp)].oc_descr_idx :objects[(otyp)].oc_name_idx].oc_content_description)
+#define OBJ_CONTENT_NAME(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_content_name)
+#define OBJ_CONTENT_DESC(otyp) (obj_descr[is_otyp_content_description_shuffled(otyp) ? objects[(otyp)].oc_descr_idx : objects[(otyp)].oc_name_idx].oc_content_description)
+
 #define OBJ_ITEM_DESC(otyp) (obj_descr[objects[(otyp)].oc_name_idx].oc_item_description)
 
 #define OBJ_STAND_ANIMATION(otyp) (obj_descr[objects[(otyp)].oc_descr_idx].stand_animation)

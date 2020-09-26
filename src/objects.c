@@ -63,7 +63,7 @@ struct monst { struct monst *dummy; };  /* lint: struct obj's union */
 
 #ifndef OBJECTS_PASS_2_
 /* first pass -- object descriptive text */
-#define OBJ(name,desc,contentdesc,itemdesc,stand_anim,enlarge,replacement)  name, desc, contentdesc, itemdesc, stand_anim, enlarge, replacement
+#define OBJ(name,desc,contentname,contentdesc,itemdesc,stand_anim,enlarge,replacement)  name, desc, contentname, contentdesc, itemdesc, stand_anim, enlarge, replacement
 #define OBJECT(obj,bits,prp1,prp2,prp3,pflags,sym,prob,multigen,dly,wt,cost, \
                dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,  hitbon,mcadj,fixdmgbon,range,  oc1,oc2,oc3,oc4,oc5,oc6,oc7,oc8,  nut,color,height,soundset,  dirsubtype,materials,cooldown,level,  powconfermask,permittedtargets,flags,flags2,flags3,flags4)  { obj }
 #define None (char *) 0 /* less visual distraction for 'no description' */
@@ -86,7 +86,7 @@ NEARDATA struct objclass objects[] =
 #endif
 {
 	/* dummy object[0] -- description [2nd arg] *must* be NULL */
-	OBJECT(OBJ("strange object", None, None, None, 0, 0, 0), \
+	OBJECT(OBJ("strange object", None, None, None, None, 0, 0, 0), \
 		   BITS(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, P_NONE, 0), \
 		   NO_POWER, NO_POWER, NO_POWER, P1_NONE, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
@@ -101,7 +101,7 @@ NEARDATA struct objclass objects[] =
 				hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 				power,power2,power3,pflags,typ,sub,skill,metal,color,height,soundset,\
 				flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
-	    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
+	    OBJECT(OBJ(name,desc, None, None, None, 0, 0, 0),                                         \
 	           BITS(nmkn, mrg, 1, 0, mgc, enchtype, charged, recharging, 0, 0, bi, 0, typ, sub, skill, metal),  \
 	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
 			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -122,7 +122,7 @@ NEARDATA struct objclass objects[] =
 				flags,flags2,flags3,flags4,powconfermask,permittedtargets)
 
 	#define PROJECTILE(name,desc,  nmkn,mgc,prob,multigen,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,  hitbon,mcadj,  metal,sub,launcher_skill,skill,color,height,soundset,  flags,flags2,flags3,flags4, permittedtargets) \
-	    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),   \
+	    OBJECT(OBJ(name,desc, None, None, None, 0, 0, 0),   \
 	           BITS(nmkn, 1, 1, 0, mgc, ENCHTYPE_PROJECTILE, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, PIERCE, sub, skill, metal), \
 	           NO_POWER, NO_POWER, NO_POWER, P1_NONE, WEAPON_CLASS, prob, multigen, 0, wt, cost, \
 			   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -133,7 +133,7 @@ NEARDATA struct objclass objects[] =
 
 
 	#define BOW(name,desc,  nmkn,mgc,bi,prob,multigen,enchtype,wt,cost,  dmgtype,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,edmgtype,edice,edam,edmgplus,aflags,aflags2,critpct,hitbon,mcadj,fixeddmgbon,launchrange,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,power,power2,power3,pflags,metal,sub,skill,color,height,soundset,flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
-	    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
+	    OBJECT(OBJ(name,desc, None, None, None, 0, 0, 0),                                         \
 	           BITS(nmkn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, bi, 0, WHACK, sub, skill, metal),      \
 	           power, power2, power3, pflags, WEAPON_CLASS, prob, multigen, 0, wt, cost,                            \
 	           dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -1188,7 +1188,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 
 #define GENERAL_ARMOR(name,desc,kn,mgc,blk,power,power2,power3,pflags,enchtype,prob,delay,wt,  \
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)                   \
-    OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                       \
+    OBJECT(OBJ(name, desc, None, None, None, 0, 0, 0),                                       \
            BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, blk, 0, 0, sub, skill, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost,                     \
            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
@@ -1232,7 +1232,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 			power,power2,power3,pflags,typ,skill,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
-    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
+    OBJECT(OBJ(name,desc, None, None, None, 0, 0, 0),                                         \
            BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_SHIELD, skill, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,\
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -1246,7 +1246,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 			power,power2,power3,pflags,typ,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
-    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
+    OBJECT(OBJ(name,desc, None, None, None, 0, 0, 0),                                         \
            BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_BOOTS, P_MARTIAL_ARTS, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -1260,7 +1260,7 @@ BOW("Galadhrim bow", "ornamental long bow",
 			hitbon,mcadj,throwrange,acbon,mcbon,manabon,hpbon,bonusattrs,attrbonus,splcastpen,multicount,\
 			power,power2,power3,pflags,typ,metal,color,height,soundset,\
 			flags,flags2,flags3,flags4,powconfermask,permittedtargets) \
-    OBJECT(OBJ(name,desc, None, None, 0, 0, 0),                                         \
+    OBJECT(OBJ(name,desc, None, None, None, 0, 0, 0),                                         \
            BITS(kn, 0, 1, 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, typ, ARM_GLOVES, P_BARE_HANDED_COMBAT, metal),  \
            power, power2, power3, pflags, ARMOR_CLASS, prob, MULTIGEN_SINGLE, delay, wt, cost, \
 		   dmgtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, edmgtype, edice, edam, edmgplus, aflags, aflags2, critpct, \
@@ -1742,7 +1742,7 @@ WEAPONBOOTS("spiked silver boots", None,
 
 /* rings ... */
 #define CHARGEDRING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,chargetype,recharging,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                         \
+    OBJECT(OBJ(name, desc, None, None, None, 0, 0, 0),                                         \
            BITS(0, 0, ench == ENCHTYPE_NO_ENCHANTMENT && chargetype == CHARGED_NOT_CHARGED  ? 0 : 1 , 0, mgc, ench, chargetype, recharging, 0, 0, 0,                    \
                 HARDGEM(mohs), 0, 0, P_NONE, metal),                     \
            power, power2, power3, pflags, RING_CLASS, prob, MULTIGEN_SINGLE, 0, 1, cost,  \
@@ -1860,7 +1860,7 @@ CHARGEDRING("seven charges", "ornate silver", /* Base item for the Ring of Confl
 
 /* amulets ... - THE Amulet comes last because it is special */
 #define AMULET(name,desc,prob,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                          \
+    OBJECT(OBJ(name, desc, None, None, None, 0, 0, 0),                                          \
            BITS(0, 0, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MAT_IRON),        \
            power, power2, power3, pflags, AMULET_CLASS, prob, MULTIGEN_SINGLE, 0, 5, 150, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
@@ -1886,14 +1886,14 @@ AMULET("amulet",					"cylindrical",  0,  NO_POWER, NO_POWER, NO_POWER, P1_NONE, 
  * description shuffling stops when a non-magic amulet is encountered
  */
 OBJECT(OBJ("cheap plastic imitation of the Amulet of Yendor",
-           "Amulet of Yendor", None, None, 0, 0, 0),
+           "Amulet of Yendor", None, None, None, 0, 0, 0),
        BITS(0, 0, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, 0, MAT_PLASTIC),
        0, 0, 0, P1_NONE, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   1, HI_METAL, 24, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
 OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
-           "Amulet of Yendor", None, None, 0, 0, 0),
+           "Amulet of Yendor", None, None, None, 0, 0, 0),
        BITS(0, 0, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 1, 1, 0, 0, 0, 0, 0, MAT_MITHRIL),
        0, 0, 0, P1_NONE, AMULET_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 30000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -1903,7 +1903,7 @@ OBJECT(OBJ("Amulet of Yendor", /* note: description == name */
 
 /* miscellaneous (magic) items */
 #define MISCELLANEOUSITEM(name,desc,sub,itemdesc,kn,magic,mergeable,spetype,charged,recharging,prob,cost,wt,power,power2,power3,pflags,manabonus,hpbonus,bonusattrs,attrbonus,splcastpen,nut,material,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, itemdesc, 0, 0, 0),                                          \
+    OBJECT(OBJ(name, desc, None, None, itemdesc, 0, 0, 0),                                          \
            BITS(kn, mergeable, charged || spetype ? 1 : 0, 0, magic, spetype, charged, recharging, 0, 0, 0, 0, 0, sub, 0, material),        \
            power, power2, power3, pflags, MISCELLANEOUS_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost,  \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
@@ -2080,33 +2080,33 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 
 /* tools ... */
 /* tools with weapon characteristics come last */
-#define GENERAL_TOOL(name,desc,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, contentdesc, itemdesc, stand_anim, enl, repl),                                           \
+#define GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
+    OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, stand_anim, enl, repl),                                           \
            BITS(kn, mrg, charged || spetype ? 1 : 0, 0, mgc, spetype, charged, recharging, 0, 0, 0, 0, 0, subtype, P_NONE, mat), \
            power1, power2, power3, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, splcastpen, 0, \
 		   wt, color, height,soundset, \
            0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
-#define TOOL(name,desc,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
-   GENERAL_TOOL(name,desc,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask)
+#define TOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
+   GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 
-#define SPELLTOOL(name,desc,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4) \
-    OBJECT(OBJ(name, desc, contentdesc, itemdesc, 0, 0, 0),                                           \
+#define SPELLTOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4) \
+    OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, 0, 0, 0),                                           \
            BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, P_NONE, mat), \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, color, height,soundset, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4)
 #define CONTAINER(name,desc,itemdesc,subtype,stand_anim, enl, repl,kn,mgc,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, itemdesc, stand_anim, enl, repl),                                           \
+    OBJECT(OBJ(name, desc, None, None, itemdesc, stand_anim, enl, repl),                                           \
            BITS(kn, 0, charged ? 1 : 0, 1, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, 0, subtype, P_NONE, mat),   \
            0, 0, 0, pflags,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattr, attrbonus, 0, 0, \
 		   wt, color, height,soundset, 0, 0, cooldown, 0, powconfermask, ALL_TARGETS, flags, O2_CONTAINER | flags2, flags3, flags4)
 #define WEPTOOL(name,desc,itemdesc,kn,mgc,bi,prob,wt,cost, dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, aflags2, critpct, hitbon,splcastpen,sub,skill,cooldown,mat,clr,height,soundset,flags,flags2,flags3,flags4,powconfermask,permittedtargets)\
-    OBJECT(OBJ(name, desc, None, itemdesc, 0, 0, 0),                                           \
+    OBJECT(OBJ(name, desc, None, None, itemdesc, 0, 0, 0),                                           \
            BITS(kn, 0, 1, 0, mgc, ENCHTYPE_GENERAL_WEAPON, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, bi, 0, hitbon, sub, skill, mat),    \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   dmgtype, sdice, sdiesize, sdmgplus, ldice, ldiesize, ldmgplus, edmgtype, edice, ediesize, edmgplus, aflags, aflags2, critpct, \
@@ -2161,128 +2161,128 @@ CONTAINER("quiver of infinite arrows", "cylindrical bag", None, TOOLTYPE_BAG, NO
 #undef CONTAINER
 
 /* lock opening tools */
-TOOL("skeleton key",       "key", None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 70,  2, 10, 0, 0, 0, 0, 0, 0,
+TOOL("skeleton key",       "key", None, None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 70,  2, 10, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("master key",		   "key", None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 2, 10, 0, 0, 0, 0, 0, 0, /* base item for master key of thievery */
+TOOL("master key",		   "key", None, None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 2, 10, 0, 0, 0, 0, 0, 0, /* base item for master key of thievery */
 	ENHANCED_UNTRAP, NO_POWER, NO_POWER, P1_POWER_1_APPLIES_WHEN_CARRIED, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NONE, PERMITTED_ROLE_ROGUE),
-TOOL("lock pick",           None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 55,  2, 20, 0, 0, 0, 0, 0, 0,
+TOOL("lock pick",           None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 55,  2, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("credit card",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,  1, 10, 0, 0, 0, 0, 0, 0,
+TOOL("credit card",         None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,  1, 10, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_READABLE, O4_NONE, PERMITTED_ALL),
 
 /* light sources */
-TOOL("tallow candle",   "old-fashioned candle", None, None, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 18,  1, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("tallow candle",   "old-fashioned candle", None, None, None, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 18,  1, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, PERMITTED_ALL),
-GENERAL_TOOL("wax candle",      "twisted candle", None, None, NO_ANIMATION, NO_ENLARGEMENT, TWISTED_CANDLE_LIT_REPLACEMENT, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 9,  1, 20, 0, 0, 0, 0, 0, 0,
+GENERAL_TOOL("wax candle",      "twisted candle", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, TWISTED_CANDLE_LIT_REPLACEMENT, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 9,  1, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, PERMITTED_ALL), //ENDMARKER
-GENERAL_TOOL("magic candle",	"handcrafted candle", None, None, NO_ANIMATION, NO_ENLARGEMENT, HANDCRAFTED_CANDLE_LIT_REPLACEMENT, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 3,  1, 20, 0, 0, 0, 0, 0, 0,
+GENERAL_TOOL("magic candle",	"handcrafted candle", None, None, None, NO_ANIMATION, NO_ENLARGEMENT, HANDCRAFTED_CANDLE_LIT_REPLACEMENT, TOOLTYPE_CANDLE, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 3,  1, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WAX, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_CANDLE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE, PERMITTED_ALL),
-GENERAL_TOOL("brass lantern",       None, None, None, NO_ANIMATION, NO_ENLARGEMENT, BRASS_LANTERN_LIT_REPLACEMENT, TOOLTYPE_LANTERN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 30, 30, 12, 0, 0, 0, 0, 0, 0,
+GENERAL_TOOL("brass lantern",       None, None, None, None, NO_ANIMATION, NO_ENLARGEMENT, BRASS_LANTERN_LIT_REPLACEMENT, TOOLTYPE_LANTERN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 30, 30, 12, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_NONE, PERMITTED_ALL),
-TOOL("oil lamp",          "antiquated brass lamp", None, None, TOOLTYPE_LAMP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 40, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("oil lamp",          "antiquated brass lamp", None, None, None, TOOLTYPE_LAMP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 40, 20, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE | O3_REFILLABLE_WITH_OIL, O4_NONE, PERMITTED_ALL),
-TOOL("magic lamp",        "oriental brass lamp", None, None, TOOLTYPE_LAMP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 20, 50, 0, 0, 0, 0, 0, 0,
+TOOL("magic lamp",        "oriental brass lamp", None, None, None, TOOLTYPE_LAMP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 15, 20, 50, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE | O3_REFILLABLE_WITH_OIL /*intentionally not O3_IGNITABLE*/, O4_NONE, PERMITTED_ALL), //ENDMARKER
 
 /* other tools */
-TOOL("expensive camera",    None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_CAMERA, 10, 12,200, 0, 0, 0, 0, 0, 0,
+TOOL("expensive camera",    None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_CAMERA, 10, 12,200, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_BLACK, 0, OBJECT_SOUNDSET_CAMERA, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("mirror",   "looking glass", None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25, 13, 10, 0, 0, 0, 0, 0, 0,
+TOOL("mirror",   "looking glass", None, None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25, 13, 10, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, PERMITTED_ALL),
-TOOL("magic mirror", "looking glass", None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 13, 10, 0, 0, 0, 0, 0, 0, /* Base item for The Magic Mirror of Merlin */
+TOOL("magic mirror", "looking glass", None, None, None, TOOLTYPE_GENERAL, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 13, 10, 0, 0, 0, 0, 0, 0, /* Base item for The Magic Mirror of Merlin */
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, PERMITTED_ALL),
-TOOL("holy symbol", "religious symbol", None, "Religious symbol that can be applied to turn undead", TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15, RECHARGING_HOLY_SYMBOL, 10, 10,100, 0, 0, 0, 0, 0, 0,
+TOOL("holy symbol", "religious symbol", None, None, "Religious symbol that can be applied to turn undead", TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15, RECHARGING_HOLY_SYMBOL, 10, 10,100, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_SILVER, HI_SILVER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_SPECIAL_PRAYING_ITEM, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("crystal ball", "glass orb", None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_CRYSTAL_BALL, RECHARGING_CRYSTAL_BALL, 15, 100, 60, 100, 0, 0, 0, 0, 0,
+TOOL("crystal ball", "glass orb", None, None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_CRYSTAL_BALL, RECHARGING_CRYSTAL_BALL, 15, 100, 60, 100, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_INVOKABLE, O4_NONE, PERMITTED_ALL),
-TOOL("blindfold",           None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 50, 2, 20, 0, 0, 0, 0, 0, 0,
+TOOL("blindfold",           None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 50, 2, 20, 0, 0, 0, 0, 0, 0,
 	BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, MAT_CLOTH, CLR_BLACK, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("towel",               None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 35, 2, 50, 0, 0, 0, 0, 0, 0,
+TOOL("towel",               None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 35, 2, 50, 0, 0, 0, 0, 0, 0,
 	BLINDFOLDED, NO_POWER, NO_POWER, P1_NONE, MAT_CLOTH, CLR_MAGENTA, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("saddle",              None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,200,150, 0, 0, 0, 0, 0, 0,
+TOOL("saddle",              None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 10,200,150, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("leash",               None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 20, 12, 20, 0, 0, 0, 0, 0, 0,
+TOOL("leash",               None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 20, 12, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("stethoscope",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25,  4, 75, 0, 0, 0, 0, 0, 0,
+TOOL("stethoscope",         None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 25,  4, 75, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("tinning kit",         None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 13,100, 30, 0, 0, 0, 0, 0, 0,
+TOOL("tinning kit",         None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 13,100, 30, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("tin opener",          None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 13,  4, 30, 0, 0, 0, 0, 0, 0,
+TOOL("tin opener",          None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 13,  4, 30, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("can of grease",       "metal can", "viscous fluid", None, TOOLTYPE_CAN, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_CAN_OF_GREASE, RECHARGING_CAN_OF_GREASE, 15, 15, 20, 0, 0, 0, 0, 0, 0,
+TOOL("can of grease",       "metal can", "grease", "viscous fluid", None, TOOLTYPE_CAN, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_CAN_OF_GREASE, RECHARGING_CAN_OF_GREASE, 15, 15, 20, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE, PERMITTED_ALL),
-TOOL("figurine",            None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 50, 80, 0, 0, 0, 0, 0, 0,
+TOOL("figurine",            None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 50, 80, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MINERAL, HI_MINERAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION, O4_NONE, PERMITTED_ALL),
         /* FIGURINE REMOVED FROM THE GAME -- JG -- monster type specified by obj->corpsenm */
-TOOL("magic marker",        None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 25,  2, 50, 0, 0, 0, 0, 0, 0,
+TOOL("magic marker",        None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_MAGIC_MARKER, RECHARGING_MAGIC_MARKER, 25,  2, 50, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_PLASTIC, CLR_RED, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_READABLE, O4_NONE, PERMITTED_ALL),
-TOOL("cubic gate",        "small runed cube", None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_2D6_8, RECHARGING_TOOL_GENERAL, 10,  3, 250, 0, 0, 0, 0, 0, 0,
+TOOL("cubic gate",        "small runed cube", None, None, None, TOOLTYPE_GENERAL, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_2D6_8, RECHARGING_TOOL_GENERAL, 10,  3, 250, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_MINERAL, CLR_GRAY, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 
 /* traps */
-TOOL("land mine",           None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 300,180, 0, 0, 0, 0, 0, 0,
+TOOL("land mine",           None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 300,180, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, CLR_RED, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("beartrap",            None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 200, 60, 0, 0, 0, 0, 0, 0,
+TOOL("beartrap",            None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 200, 60, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_IRON, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 
 /* instruments;
    "If tin whistles are made out of tin, what do they make foghorns out of?" */
-TOOL("tin whistle",    "old whistle", None, None, TOOLTYPE_WHISTLE, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 74, 2, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("tin whistle",    "old whistle", None, None, None, TOOLTYPE_WHISTLE, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 74, 2, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("magic whistle",  "shiny whistle", None, None, TOOLTYPE_WHISTLE, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 45, 2, 10, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("magic whistle",  "shiny whistle", None, None, None, TOOLTYPE_WHISTLE, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 45, 2, 10, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_METAL, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("wooden flute",     "oak flute", None, None, TOOLTYPE_FLUTE, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 6, 5, 12, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("wooden flute",     "oak flute", None, None, None, TOOLTYPE_FLUTE, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 6, 5, 12, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("magic flute",      "blackwood flute", None, None, TOOLTYPE_FLUTE, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 5, 36, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("magic flute",      "blackwood flute", None, None, None, TOOLTYPE_FLUTE, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 5, 36, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("brass horn",       None, None, None, TOOLTYPE_HORN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT, 5, 18, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR HORN WISH CLASS
+TOOL("brass horn",       None, None, None, None, TOOLTYPE_HORN, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT, 5, 18, 10, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR HORN WISH CLASS
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, CLR_YELLOW, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("tooled horn",       "arched horn", None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15, RECHARGING_MUSICAL_INSTRUMENT, 5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR SHUFFLED HORNS
+TOOL("tooled horn",       "arched horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_1D15_15, RECHARGING_MUSICAL_INSTRUMENT, 5, 18, 15, 0, 0, 0, 0, 0, 0, //STARTMARKER FOR SHUFFLED HORNS
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPELLTOOL("frost horn",   "spiral horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELLTOOL("fire horn",    "curved horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
-SPELLTOOL("horn of chaos", "polished horn", None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_2D6_8, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, NODIR, 0, 0, 0, 0, 1, 10, 70, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-TOOL("horn of plenty",    "twisted horn", None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_BAG_OF_TRICKS, RECHARGING_TOOL_SPECIAL_MAGICAL, 3, 18, 50, 300, 0, 0, 0, 0, 0,
+SPELLTOOL("frost horn",   "spiral horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_COLD, 6, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_COLD_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
+SPELLTOOL("fire horn",    "curved horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_1D30_30, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, RAY, RAY_WND_FIRE, 6, 6, 0, 0, 0, 0, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_FIRE_RESISTANT, O2_NONE, O3_NONE, O4_NONE),
+SPELLTOOL("horn of chaos", "polished horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, CHARGED_2D6_8, RECHARGING_MUSICAL_INSTRUMENT, 3, 18, 50, NODIR, 0, 0, 0, 0, 1, 10, 70, 0, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+TOOL("horn of plenty",    "twisted horn", None, None, None, TOOLTYPE_HORN, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_BAG_OF_TRICKS, RECHARGING_TOOL_SPECIAL_MAGICAL, 3, 18, 50, 300, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_BONE, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),//ENDMARKER FOR HORNS
         /* horn, but not an instrument */
-TOOL("wooden harp",       "ornamental harp", None, None, TOOLTYPE_HARP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT, 4, 30, 50, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("wooden harp",       "ornamental harp", None, None, None, TOOLTYPE_HARP, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT, 4, 30, 50, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("magic harp",        "runed harp", None, None, TOOLTYPE_HARP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 30, 50, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("magic harp",        "runed harp", None, None, None, TOOLTYPE_HARP, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 30, 50, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_WOOD, HI_WOOD, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("bell",                None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT,  3, 30, 50, 0, 0, 0, 0, 0, 0,
+TOOL("bell",                None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_MUSICAL_INSTRUMENT,  3, 30, 50, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, HI_COPPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("bugle",               None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 10, 15, 0, 0, 0, 0, 0, 0,
+TOOL("bugle",               None, None, None, None, TOOLTYPE_GENERAL, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 10, 15, 0, 0, 0, 0, 0, 0,
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_COPPER, HI_COPPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("leather drum",      "old drum", None, None, TOOLTYPE_DRUM, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 25, 25, 0, 0, 0, 0, 0, 0, //STARTMARKER
+TOOL("leather drum",      "old drum", None, None, None, TOOLTYPE_DRUM, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 4, 25, 25, 0, 0, 0, 0, 0, 0, //STARTMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-TOOL("drum of earthquake","antiquated drum", None, None, TOOLTYPE_DRUM, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
+TOOL("drum of earthquake","antiquated drum", None, None, None, TOOLTYPE_DRUM, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPELLTOOL("jar of extra healing salve", "glass jar", "yellow ointment", "Heals a target for 12d6 hit points", 
+SPELLTOOL("jar of extra healing salve", "glass jar", "healing salve", "yellow ointment", "Heals a target for 12d6 hit points", 
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL, //STARTMARKER for jars and salves and shuffled jars
 	20, 15, 150, TOUCH, 0, 12, 6, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE),
-SPELLTOOL("jar of greater healing salve", "crystal jar", "purple ointment", "Heals a target for 24d6 hit points", 
+SPELLTOOL("jar of greater healing salve", "crystal jar", "healing salve", "purple ointment", "Heals a target for 24d6 hit points",
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,
 	10, 15, 300, TOUCH, 0, 24, 6, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE),
-SPELLTOOL("jar of medicinal salve", "crystalline jar", "white ointment", "Cures a target from sickness", 
+SPELLTOOL("jar of medicinal salve", "crystalline jar", "medicinal salve", "white ointment", "Cures a target from sickness",
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_6, RECHARGING_TOOL_GENERAL,
 	20, 15, 150, TOUCH, 0, 0, 0, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE),
-SPELLTOOL("jar of prodigious healing salve", "transparent jar", "violet ointment", "Heals a target for 48d6 hit points", 
+SPELLTOOL("jar of prodigious healing salve", "transparent jar", "healing salve", "violet ointment", "Heals a target for 48d6 hit points",
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,  //ENDMARKER for salves and shuffled jars
 	5, 15, 500, TOUCH, 0, 48, 6, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE), // Endmarker for jars
-SPELLTOOL("jar of basilisk blood", "ornamental jar", "crimson liquid", "Cures a target from petrification", 
+SPELLTOOL("jar of basilisk blood", "ornamental jar", "basilisk blood", "crimson liquid", "Cures a target from petrification",
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D4_4, RECHARGING_TOOL_GENERAL,
 	15, 15, 150, TOUCH, 0, 0, 0, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_QUAFFABLE, O4_NONE),
-SPELLTOOL("grail of healing", "wooden grail", "red liquid", "Heals a target for 1000 hit points and 500 mana", 
+SPELLTOOL("grail of healing", "wooden grail", "sacred wine", "red liquid", "Heals a target for 1000 hit points and 500 mana", 
 	TOOLTYPE_GRAIL, 0, 0, 1, CHARGED_HOLY_GRAIL, RECHARGING_HOLY_GRAIL,  //Base item for Holy Grail
 	0, 15, 1000, TOUCH, 0, 0, 0, 1000, 0, 0, 0, 0, MAT_WOOD, CLR_BROWN, 0, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_NO_WISH | O3_NO_GENERATION | O3_QUAFFABLE, O4_NONE),
@@ -2320,7 +2320,7 @@ WEPTOOL("unicorn horn", None, None,
 	O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL, ALL_TARGETS),
         /* 3.4.1: unicorn horn left classified as "magic" */
 #endif
-OBJECT(OBJ("unicorn horn", None, None, None, 0, 0, 0),
+OBJECT(OBJ("unicorn horn", None, None, None, None, 0, 0, 0),
        BITS(1, 0, 1, 0, 1, ENCHTYPE_GENERAL_WEAPON, CHARGED_HORN_NORMAL, RECHARGING_UNICORN_HORN, 0, 0, 0, 0, 0, TOOLTYPE_HORN, P_SPEAR, MAT_BONE),
        NO_POWER, NO_POWER, NO_POWER, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 100,
 	   AD_PHYS, 1, 12, 0, 1, 12, 0, AD_PHYS, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -2330,13 +2330,13 @@ OBJECT(OBJ("unicorn horn", None, None, None, 0, 0, 0),
 /* two unique tools;
  * not artifacts, despite the comment which used to be here
  */
-OBJECT(OBJ("Candelabrum of Invocation", "candelabrum", None, None, 0, 0, 0),
+OBJECT(OBJ("Candelabrum of Invocation", "candelabrum", None, None, None, 0, 0, 0),
        BITS(0, 0, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 1, 1, 0, 0, 0, TOOLTYPE_CANDELABRUM, P_NONE, MAT_GOLD),
        0, 0, 0, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   200, HI_GOLD, 32, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_INDESTRUCTIBLE, O2_NONE, O3_IGNITABLE | O3_RELATIVE_AGE, O4_NONE),
-OBJECT(OBJ("Bell of Opening", "silver bell", None, None, 0, 0, 0),
+OBJECT(OBJ("Bell of Opening", "silver bell", None, None, None, 0, 0, 0),
        BITS(0, 0, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_ALWAYS_3, RECHARGING_BELL_OF_OPENING, 1, 1, 0, 0, 0, TOOLTYPE_BELL, P_NONE, MAT_SILVER),
        0, 0, 0, P1_NONE, TOOL_CLASS, 0, MULTIGEN_SINGLE, 0, 10, 5000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -2350,7 +2350,7 @@ OBJECT(OBJ("Bell of Opening", "silver bell", None, None, 0, 0, 0),
 
 /* Comestibles ... */
 #define FOOD(name, desc, itemdesc, sub, known, prob, multigen, delay, wt, uses_known, material, ediblesubtype, edibleeffect, acquireprob, durdice, durdiesize, durplus, nutrition, color, height,soundset, flags, flags2, flags3,flags4, powconfermask)         \
-    OBJECT(OBJ(name, desc, None, itemdesc, 0, 0, 0),                                     \
+    OBJECT(OBJ(name, desc, None, None, itemdesc, 0, 0, 0),                                     \
            BITS(known, 1, uses_known, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, sub, P_NONE, material), \
 		   0, 0, 0, 0, FOOD_CLASS, prob, multigen, delay, wt, nutrition / 20 + 5,  \
 		   0, 0, 0, 0, durdice, durdiesize, durplus, 0, 0, 0, 0, A1_NONE, A2_NONE, acquireprob, \
@@ -2387,7 +2387,7 @@ FOOD("huge chunk of meat",	None, None, FOODTYPE_MEAT, 1,
 	0, MULTIGEN_SINGLE, 20, 400, 0, MAT_FLESH, EDIBLETYPE_NORMAL, EDIBLEFX_NO_EFFECT, 0, 0, 0, 0, 
 	2000, CLR_BROWN, 48, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 /* special case because it's not mergable */
-OBJECT(OBJ("meat ring", None, None, None, 0, 0, 0),
+OBJECT(OBJ("meat ring", None, None, None, None, 0, 0, 0),
        BITS(1, 0, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, FOODTYPE_MEAT, 0, MAT_FLESH),
        0, 0, 0, P1_NONE, FOOD_CLASS, 0, MULTIGEN_SINGLE, 1, 5, 1,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -2539,7 +2539,7 @@ FOOD("tin", None, None, FOODTYPE_TIN, 1,
 
 /* potions ... */
 #define POTION(name,desc,itemdesc,mgc,power1,power2,power3,prob,cost,breathe_n,breathe_d,breathe_p,breathe_pbuc,normal_n,normal_d,normal_p,normal_pbuc,nut_n,nut_d,nut_p,nut_pbuc,extra1,breathe_dicebuc,normal_dicebuc,color,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, itemdesc, 0, 0, 0),                                           \
+    OBJECT(OBJ(name, desc, None, None, itemdesc, 0, 0, 0),                                           \
            BITS(0, 1, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MAT_GLASS),      \
            power1, power2, power3, P1_NONE, POTION_CLASS, prob, MULTIGEN_SINGLE, 0, 12, cost,  \
 		   0, breathe_n,breathe_d,breathe_p, normal_n,normal_d,normal_p, 0, nut_n, nut_d, nut_p, A1_NONE, A2_NONE, 0, \
@@ -2629,7 +2629,7 @@ POTION("urine",           "pale yellow", None, 0, NO_POWER, NO_POWER, NO_POWER, 
 
 /* scrolls ... */
 #define SCROLL(name,text,itemdesc,mgc,prob,cost,sflags,flags,flags2,flags3,flags4,powconfermask)   \
-    OBJECT(OBJ(name, text, None, itemdesc, 0, 0, 0),   \
+    OBJECT(OBJ(name, text, None, None, itemdesc, 0, 0, 0),   \
            BITS(0, 1, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MAT_PAPER),    \
            0, 0, 0, P1_NONE, SCROLL_CLASS, prob, MULTIGEN_SINGLE, 0, 4, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, sflags, S2_NONE, 0, \
@@ -2707,7 +2707,7 @@ SCROLL("blank paper", "unlabeled", None, 0,  25,  60, S1_NONE, O1_NONE, O2_NONE,
      * only 52 be castable at any given time.]
      */
 #define SPELL(name,desc,contentdesc,itemdesc,skill,prob,learndelay,cooldown,level,manacost,attr,range,radius,skillchance,savingthrowadj,mgc,dir,dirsubtype,extraspelldata,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,color,height,soundset,flags,flags2,flags3,flags4)  \
-    OBJECT(OBJ(name, desc, contentdesc, itemdesc, 0, 0, 0),                                           \
+    OBJECT(OBJ(name, desc, None, contentdesc, itemdesc, 0, 0, 0),                                           \
            BITS(0, 0, 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, dir, 0, skill, MAT_PAPER),       \
            0, 0, 0, P1_NONE, SPBOOK_CLASS, prob, MULTIGEN_SINGLE, learndelay, 50, (level + 2) * 50 + (level + 1) * (level + 1) * 5,               \
            0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, S2_NONE, 0, \
@@ -3171,14 +3171,14 @@ SPELL("control undead",   "tombstone-patterned", None, "Takes the control of tar
  */
 SPELL("blank paper", "plain", None, None, P_NONE, 18, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, HI_PAPER, 0, OBJECT_SOUNDSET_GENERIC, O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_READABLE, O4_NONE),
 /* tribute book for 3.6 */
-OBJECT(OBJ("novel", "paperback", None, None, 0, 0, 0),
+OBJECT(OBJ("novel", "paperback", None, None, None, 0, 0, 0),
        BITS(0, 0, 1, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MAT_PAPER),
        0, 0, 0, P1_NONE, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 20,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
 	   20, CLR_BRIGHT_BLUE, 0, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NON_SPELL_SPELLBOOK, O2_NONE, O3_READABLE, O4_NONE),
 /* a special, one of a kind, spellbook */
-OBJECT(OBJ("Book of the Dead", "papyrus", None, None, 0, 0, 0),
+OBJECT(OBJ("Book of the Dead", "papyrus", None, None, None, 0, 0, 0),
        BITS(0, 0, 1, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 1, 1, 0, 0, 0, 0, P_NONE, MAT_PAPER),
        0, 0, 0, P1_NONE, SPBOOK_CLASS, 0, MULTIGEN_SINGLE, 0, 20, 10000,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, S1_NONE, S2_NONE, 0,
@@ -3188,7 +3188,7 @@ OBJECT(OBJ("Book of the Dead", "papyrus", None, None, 0, 0, 0),
 
 /* wands ... */
 #define WAND(name,typ,itemdesc,charged,recharging,prob,cost,mgc,dir,dirsubtype,range,radius,sdice,sdam,sdmgplus,ldice,ldam,ldmgplus,sflags,metal,color,height,soundset,flags,flags2,flags3,flags4) \
-    OBJECT(OBJ(name, typ, None, itemdesc, 0, 0, 0),                                             \
+    OBJECT(OBJ(name, typ, None, None, itemdesc, 0, 0, 0),                                             \
            BITS(0, 0, 1, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, 0, P_NONE, metal),    \
            0, 0, 0, P1_NONE, WAND_CLASS, prob, MULTIGEN_SINGLE, 0, 6, cost, \
 		   0, sdice,sdam,sdmgplus,ldice,ldam,ldmgplus, 0, 0, 0, 0, sflags, S2_NONE, 0, \
@@ -3236,7 +3236,7 @@ WAND(None,            "jeweled", None, CHARGED_WAND_NORMAL_DIR, RECHARGING_WAND_
 
 /* coins ... - so far, gold is all there is */
 #define COIN(name,prob,metal,worth) \
-    OBJECT(OBJ(name, None, None, None, 0, 0, COIN_REPLACEMENT),                                       \
+    OBJECT(OBJ(name, None, None, None, None, 0, 0, COIN_REPLACEMENT),                                       \
            BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, metal),    \
            0, 0, 0, P1_NONE, COIN_CLASS, prob, MULTIGEN_SINGLE, 0, 1, worth, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
@@ -3247,7 +3247,7 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
 
 /* gems ... - includes stones and rocks but not boulders */
 #define GEM(name,desc,prob,wt,gval,nutr,mohs,glass,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                             \
+    OBJECT(OBJ(name, desc, None, None, None, 0, 0, 0),                                             \
            BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0,                              \
                 HARDGEM(mohs), 0, WEP_SLING_BULLET, -P_SLING, glass),                     \
            0, 0, 0, P1_NONE, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, 1, gval, \
@@ -3256,7 +3256,7 @@ COIN("gold piece", 1000, MAT_GOLD, 1),
 		   nutr, color, height,soundset, \
            WEP_SLING, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
 #define ROCK(name,desc,power1,power2,power3,pflags,kn,prob,wt,gval, enchtype, sdice, sdam, splus, ldice, ldam, lplus, mgc,nutr,mohs,glass,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
-    OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                            \
+    OBJECT(OBJ(name, desc, None, None, None, 0, 0, 0),                                            \
            BITS(kn, 1, (enchtype > 0 ? 1 : 0), 0, mgc, enchtype, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0,                           \
                 HARDGEM(mohs), 0, WEP_SLING_BULLET, -P_SLING, glass), \
            power1, power2, power3, pflags, GEM_CLASS, prob, MULTIGEN_SINGLE, 0, wt, gval, \
@@ -3401,25 +3401,25 @@ ROCK("nugget of mithril ore", None,		//Ore endmarker
  * Boulders weigh more than MAX_CARR_CAP; statues use corpsenm to take
  * on a specific type and may act as containers (both affect weight).
  */
-OBJECT(OBJ("boulder", None, None, None, 0, 0, 0),
+OBJECT(OBJ("boulder", None, None, None, None, 0, 0, 0),
        BITS(1, 0, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 1, 0, 0, 0, P_NONE, MAT_MINERAL),
 	   0, 0, 0, P1_NONE, ROCK_CLASS, 100, MULTIGEN_SINGLE, 0, 8000, 0,
 	   AD_PHYS, 2, 6, 8, 2, 6, 8, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   2000, HI_MINERAL, 0, OBJECT_SOUNDSET_BOULDER, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP | O4_DRAWN_IN_FRONT),
-OBJECT(OBJ("statue", None, None, None, 0, 0, 0),
+OBJECT(OBJ("statue", None, None, None, None, 0, 0, 0),
        BITS(1, 0, 0, 1, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, MAT_MINERAL),
 	   0, 0, 0, P1_NONE, ROCK_CLASS, 900, MULTIGEN_SINGLE, 0, 4000, 0,
 	   AD_PHYS, 1, 20, 0, 1, 20, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   2500, CLR_WHITE, 0, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_FULL_SIZED_BITMAP),
-OBJECT(OBJ("heavy iron ball", None, None, None, 0, 0, 0),
+OBJECT(OBJ("heavy iron ball", None, None, None, None, 0, 0, 0),
        BITS(1, 0, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, WHACK, 0, P_NONE, MAT_IRON),
 	   0, 0, 0, P1_NONE, BALL_CLASS, 1000, MULTIGEN_SINGLE, 0, 800, 10,
 	   AD_PHYS, 1, 25, 0, 1, 25, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	  200, HI_METAL, 0, OBJECT_SOUNDSET_GENERIC, 0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_THROWN_WEAPON_ONLY, O2_NONE, O3_NONE, O4_NONE),
-OBJECT(OBJ("iron chain", None, None, None, 0, 0, 0),
+OBJECT(OBJ("iron chain", None, None, None, None, 0, 0, 0),
        BITS(1, 0, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, WHACK, 0, P_NONE, MAT_IRON),
 	   0, 0, 0, P1_NONE, CHAIN_CLASS, 1000, MULTIGEN_SINGLE, 0, 240, 0,
 	   AD_PHYS, 1, 4, 0, 1, 4, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -3429,14 +3429,14 @@ OBJECT(OBJ("iron chain", None, None, None, 0, 0, 0),
 /* Venom is normally a transitory missile (spit by various creatures)
  * but can be wished for in wizard mode so could occur in bones data.
  */
-OBJECT(OBJ("blinding venom", "splash of venom", None, None, 0, 0, 0),
+OBJECT(OBJ("blinding venom", "splash of venom", None, None, None, 0, 0, 0),
        BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 1, 0, 0, 0, 0, P_NONE, MAT_LIQUID),
 	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   0, HI_ORGANIC, 0, OBJECT_SOUNDSET_GENERIC,
 	   0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-OBJECT(OBJ("acid venom", "splash of venom", None, None, 0, 0, 0),
+OBJECT(OBJ("acid venom", "splash of venom", None, None, None, 0, 0, 0),
        BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 1, 0, 0, 0, 0, P_NONE, MAT_LIQUID),
 	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   AD_PHYS, 2, 6, 0, 2, 6, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
@@ -3447,7 +3447,7 @@ OBJECT(OBJ("acid venom", "splash of venom", None, None, 0, 0, 0),
 
 /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
 #define REAGENT(name, desc, known, prob, multigen, eatdelay, wt, cost, material, ediblesubtype, edibleeffect, ediblechance, nutrition, color, height,soundset, flags, flags2, flags3,flags4, powconfermask)         \
-    OBJECT(OBJ(name, desc, None, None, 0, 0, 0),                                      \
+    OBJECT(OBJ(name, desc, None, None, None, 0, 0, 0),                                      \
            BITS(known, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, material), \
 		   0, 0, 0, P1_NONE, REAGENT_CLASS, prob, multigen, eatdelay, wt, cost, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, ediblechance, \
@@ -3481,7 +3481,7 @@ OBJECT(OBJ("acid venom", "splash of venom", None, None, 0, 0, 0),
 #undef REAGENT
 
 /* fencepost, the deadly Array Terminator -- name [1st arg] *must* be NULL */
-OBJECT(OBJ(None, None, None, None, 0, 0, 0),
+OBJECT(OBJ(None, None, None, None, None, 0, 0, 0),
        BITS(0, 0, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 0, 0, 0, 0, 0, P_NONE, 0),
 	   0, 0, 0, P1_NONE, ILLOBJ_CLASS, 0, MULTIGEN_SINGLE, 0, 0, 0, \
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \

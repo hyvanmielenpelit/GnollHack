@@ -97,21 +97,19 @@ boolean drink_yourself;
 
 	consume_obj_charge(obj, TRUE);
 
-	const char* healing_salve = "healing salve";
-    const char* red_liquid = "red liquid";
-    const char* contents = obj->otyp == JAR_OF_BASILISK_BLOOD ? "basilisk blood" : objects[obj->otyp].oc_subtyp == TOOLTYPE_JAR ? healing_salve : red_liquid;
+    const char* contents = (objects[obj->otyp].oc_name_known && OBJ_CONTENT_NAME(obj->otyp) != 0 ? OBJ_CONTENT_NAME(obj->otyp) : OBJ_CONTENT_DESC(obj->otyp) != 0 ? OBJ_CONTENT_DESC(obj->otyp) : "unknown contents");
 
 	if (u.dz) 
 	{
-		You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp),
+		You("throw some %s on the %s.", contents,
 			(u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
 	}
 	else if (!u.dx && !u.dy) 
 	{
         if(drink_yourself)
-            You("drink some %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
+            You("drink some %s.", contents);
         else
-    		You("apply some %s on yourself.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
+    		You("apply some %s on yourself.", contents);
 		(void)zapyourself(obj, TRUE);
 	}
 	else
@@ -121,20 +119,28 @@ boolean drink_yourself;
 			struct monst* mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
 			if (mtmp)
 			{
-				You("apply some %s on %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), mon_nam(mtmp));
+				You("apply some %s on %s.", contents, mon_nam(mtmp));
 			}
 			else if(IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
 			{
-				You("throw some %s on the wall.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
+				You("throw some %s on the wall.", contents);
 			}
 			else
 			{
 				const char* dfeat = dfeature_at(u.ux + u.dx, u.uy + u.dy);
-				You("throw some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
+                if (OBJ_AT(u.ux + u.dx, u.uy + u.dy))
+                {
+                    if(level.objects[u.ux + u.dx][u.uy + u.dy]->nexthere == 0)
+                        You("throw some %s on the %s.", contents, cxname(level.objects[u.ux + u.dx][u.uy + u.dy]));
+                    else
+                        You("throw some %s on the items on the %s.", contents, dfeat ? dfeat : "floor");
+                }
+                else
+    				You("throw some %s on the %s.", contents, dfeat ? dfeat : "floor");
 			}
 		}
 		else
-			You("throw some %s away.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
+			You("throw some %s away.", contents);
 
 		weffects(obj);
 	}
