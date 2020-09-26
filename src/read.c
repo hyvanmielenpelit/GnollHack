@@ -3237,6 +3237,7 @@ int chg; /* recharging */
         n = 2; /* arbitrary minimum */
     /* size of damage dice */
     switch (obj->otyp) {
+    case WAN_DISJUNCTION:
     case WAN_WISHING:
         k = 12;
         break;

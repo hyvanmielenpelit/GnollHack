@@ -3178,7 +3178,8 @@ struct obj* obj;
 					pline("%s for a while, but that's about it.", Tobjnam(otmp, "vibrate"));
 				}
 				break;
-			case WAN_CANCELLATION:
+            case WAN_DISJUNCTION:
+            case WAN_CANCELLATION:
 				if (objects[otmp->otyp].oc_magic || otmp->enchantment != 0 || otmp->charges > (otmp->oclass == WAND_CLASS ? -1 : 0) || otmp->elemental_enchantment > 0 || otmp->blessed || otmp->cursed)
 				{
 					suggestnamingwand = TRUE;
@@ -4503,6 +4504,9 @@ struct obj *obj;
     } else if (ACURR(A_STR) < (is_fragile ? 5 : 10)) {
         You("don't have the strength to break %s!", yname(obj));
         return 0;
+    } else if (obj->oartifact > 0) {
+        pline("%s is too hard to break!", Yname2(obj));
+        return 0;
     }
     pline("Raising %s high above your %s, you %s it in two!", yname(obj),
           body_part(HEAD), is_fragile ? "snap" : "break");
@@ -4587,6 +4591,7 @@ struct obj *obj;
         dmg_n = 1 + obj->charges;
         dmg_d = 6; /* normally 2d12 */
         /*FALLTHRU*/
+    case WAN_DISJUNCTION:
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
     case WAN_TELEPORTATION:

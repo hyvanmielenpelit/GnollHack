@@ -489,7 +489,7 @@ struct obj *box;
 					otmp->speflags = 0;
 					otmp->owt = weight(otmp);
                 } else
-                    while (otmp->otyp == WAN_CANCELLATION)
+                    while (otmp->otyp == WAN_CANCELLATION || otmp->otyp == WAN_DISJUNCTION)
                         otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
             }
         }

@@ -725,6 +725,49 @@ update_extrinsics()
 	//Add then extrinsics from all carried items
 	for (uitem = invent; uitem; uitem = uitem->nobj)
 	{
+		long bit = 0;
+		if (uitem == uarm)
+			bit = W_ARM;
+		else if (uitem == uarmc)
+			bit = W_ARMC;
+		else if (uitem == uarmh)
+			bit = W_ARMH;
+		else if (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
+			bit = W_ARMS;
+		else if (uitem == uarmg)
+			bit = W_ARMG;
+		else if (uitem == uarmf)
+			bit = W_ARMF;
+		else if (uitem == uarmu)
+			bit = W_ARMU;
+		else if (uitem == uarmo)
+			bit = W_ARMO;
+		else if (uitem == uarmb)
+			bit = W_ARMB;
+		else if (uitem == umisc)
+			bit = W_MISC;
+		else if (uitem == umisc2)
+			bit = W_MISC2;
+		else if (uitem == umisc3)
+			bit = W_MISC3;
+		else if (uitem == umisc4)
+			bit = W_MISC4;
+		else if (uitem == umisc5)
+			bit = W_MISC5;
+		else if (uitem == uamul)
+			bit = W_AMUL;
+		else if (uitem == uright)
+			bit = W_RINGR;
+		else if (uitem == uleft)
+			bit = W_RINGL;
+		else if (uitem == ublindf)
+			bit = W_BLINDFOLD;
+		else if (uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
+			bit = W_WEP;
+		else
+			bit = W_CARRIED;
+
+		/* Normal items */
 		if (!object_uses_spellbook_wand_flags_and_properties(uitem))
 		{
 			int otyp = uitem->otyp;
@@ -733,48 +776,6 @@ update_extrinsics()
 			{
 				inappr = TRUE;
 			}
-			long bit = 0;
-			if (uitem == uarm)
-				bit = W_ARM;
-			else if (uitem == uarmc)
-				bit = W_ARMC;
-			else if (uitem == uarmh)
-				bit = W_ARMH;
-			else if (uitem == uarms && (is_shield(uitem) || is_weapon(uitem)))
-				bit = W_ARMS;
-			else if (uitem == uarmg)
-				bit = W_ARMG;
-			else if (uitem == uarmf)
-				bit = W_ARMF;
-			else if (uitem == uarmu)
-				bit = W_ARMU;
-			else if (uitem == uarmo)
-				bit = W_ARMO;
-			else if (uitem == uarmb)
-				bit = W_ARMB;
-			else if (uitem == umisc)
-				bit = W_MISC;
-			else if (uitem == umisc2)
-				bit = W_MISC2;
-			else if (uitem == umisc3)
-				bit = W_MISC3;
-			else if (uitem == umisc4)
-				bit = W_MISC4;
-			else if (uitem == umisc5)
-				bit = W_MISC5;
-			else if (uitem == uamul)
-				bit = W_AMUL;
-			else if (uitem == uright)
-				bit = W_RINGR;
-			else if (uitem == uleft)
-				bit = W_RINGL;
-			else if (uitem == ublindf)
-				bit = W_BLINDFOLD;
-			else if (uitem == uwep && (is_shield(uitem) || is_weapon(uitem)))
-				bit = W_WEP;
-			else
-				bit = W_CARRIED;
-
 			/* Properties conferred by item */
 			if (objects[otyp].oc_oprop >= 0 
 				&& (bit != W_CARRIED || (bit == W_CARRIED && (objects[otyp].oc_pflags & P1_POWER_1_APPLIES_WHEN_CARRIED)))
@@ -799,24 +800,6 @@ update_extrinsics()
 				))
 				u.uprops[objects[otyp].oc_oprop3].extrinsic |= bit;//W_CARRIED;
 
-			/* add wielded / worn artifact intrinsics */
-			if (uitem->oartifact && bit != W_CARRIED)
-				set_artifact_intrinsic(uitem, bit);
-
-			/* add artifact carried and invoked intrinsics */
-			if (uitem->oartifact)
-			{
-				set_artifact_intrinsic(uitem, W_ARTIFACT_CARRIED);
-
-				/* Invoked property if any */
-				if (artilist[uitem->oartifact].inv_prop > 0 && artilist[uitem->oartifact].inv_prop <= LAST_PROP && uitem->invokeon)
-				{
-					u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTIFACT_INVOKED;
-				}
-			}
-
-
-
 #if 0
 			int p = 0;
 			/* Properties blocked by item */
@@ -825,6 +808,22 @@ update_extrinsics()
 #endif
 		}
 
+		/* Artifacts include all items, also wands and spellbooks */
+		/* add wielded / worn artifact intrinsics */
+		if (uitem->oartifact && bit != W_CARRIED)
+			set_artifact_intrinsic(uitem, bit);
+
+		/* add artifact carried and invoked intrinsics */
+		if (uitem->oartifact)
+		{
+			set_artifact_intrinsic(uitem, W_ARTIFACT_CARRIED);
+
+			/* Invoked property if any */
+			if (artilist[uitem->oartifact].inv_prop > 0 && artilist[uitem->oartifact].inv_prop <= LAST_PROP && uitem->invokeon)
+			{
+				u.uprops[artilist[uitem->oartifact].inv_prop].extrinsic |= W_ARTIFACT_INVOKED;
+			}
+		}
 	}
 
 	/* Check environment */

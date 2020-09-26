@@ -1480,7 +1480,14 @@ int spell;
 	/* Flags */
 	if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 	{
-		Sprintf(buf, "Other:        %s", "Bypasses magic resistance");
+		Sprintf(buf, "Other:        %s", "Bypasses magic resistance for non-unique monsters");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
+	{
+		Sprintf(buf, "Other:        %s", "Bypasses magic resistance for unique monsters");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}

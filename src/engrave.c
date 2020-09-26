@@ -771,6 +771,7 @@ doengrave()
                 if (!oep || (oep->engr_type != BURN))
                     break;
                 /*FALLTHRU*/
+            case WAN_DISJUNCTION:
             case WAN_CANCELLATION:
             case WAN_MAKE_INVISIBLE:
                 if (oep && oep->engr_type != HEADSTONE) {

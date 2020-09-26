@@ -780,17 +780,16 @@ struct monst* origmonst;
             special_effect_wait_until_end(0);
         }
         break;
+    case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
         res = 1;
 		if (disguised_mimic)
             seemimic(mtmp);
-        if (!has_cancellation_resistance(mtmp))
-        {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
-            special_effect_wait_until_action(0);
-            (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
-            special_effect_wait_until_end(0);
-        }
+        /* Unaffected by cancellation resistance */
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        (void)cancel_monst(mtmp, otmp, TRUE, TRUE, FALSE, d(objects[otmp->otyp].oc_spell_dur_dice, objects[otmp->otyp].oc_spell_dur_diesize) + objects[otmp->otyp].oc_spell_dur_plus);
+        special_effect_wait_until_end(0);
         break;
 	case SPE_LOWER_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
@@ -2449,7 +2448,7 @@ register struct obj *obj;
 		|| (otyp == POT_WATER && (obj->blessed || obj->cursed))) 
 	{
         
-		if (otyp != WAN_CANCELLATION /* can't cancel cancellation */) 
+		if (otyp != WAN_CANCELLATION && otyp != WAN_DISJUNCTION /* can't cancel cancellation */)
 		{
             costly_alteration(obj, COST_CANCEL);
 			obj->charges = (obj->oclass == WAND_CLASS) ? -1 : 0;
@@ -3475,6 +3474,7 @@ struct monst* origmonst;
             break;
         case WAN_CANCELLATION:
         case SPE_CANCELLATION:
+        case WAN_DISJUNCTION:
         case SPE_DISJUNCTION:
             res = 1;
 			cancel_item(obj);
@@ -5121,10 +5121,11 @@ boolean ordinary;
 
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
+    case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
         damage = 0;
 		(void) cancel_monst(&youmonst, obj, TRUE, TRUE, TRUE, d(objects[obj->otyp].oc_spell_dur_dice, objects[obj->otyp].oc_spell_dur_diesize) + objects[obj->otyp].oc_spell_dur_plus);
-        if (obj->otyp != SPE_DISJUNCTION)
+        if (obj->otyp != SPE_DISJUNCTION && obj->otyp != WAN_DISJUNCTION)
             set_itimeout(&HCancellation_resistance, max(HCancellation_resistance & TIMEOUT, 10));
         break;
 
@@ -5787,6 +5788,7 @@ struct obj *obj; /* wand or spell */
 	case WAN_MAKE_INVISIBLE:
     case WAN_CANCELLATION:
     case SPE_CANCELLATION:
+    case WAN_DISJUNCTION:
     case SPE_DISJUNCTION:
     case SPE_LOWER_MAGIC_RESISTANCE:
 	case SPE_DIMINISH_MAGIC_RESISTANCE:
@@ -6188,6 +6190,7 @@ struct obj *obj; /* wand or spell */
                 break;
             case WAN_CANCELLATION:
             case SPE_CANCELLATION:
+            case WAN_DISJUNCTION:
             case SPE_DISJUNCTION:
             case WAN_MAKE_INVISIBLE:
                 del_engr(e);
@@ -9188,6 +9191,9 @@ struct obj* otmp;
 boolean resisting_halves_damage;
 int dmg, adtyp, tell;
 {
+    if (!mtmp)
+        return FALSE;
+
     boolean resisted;
     //int alev, dlev;
 	char oclass = ILLOBJ_CLASS;
@@ -9202,7 +9208,9 @@ int dmg, adtyp, tell;
 	if (oclass == RING_CLASS && !dmg && !tell && is_mplayer(mtmp->data))
         return 1;
 
-	if (otmp && (oclass == SPBOOK_CLASS || oclass == WAND_CLASS) && objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+	if (otmp && (oclass == SPBOOK_CLASS || oclass == WAND_CLASS) 
+        && (objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE) 
+        && (!(mtmp->data->geno & G_UNIQ) || (objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)))
 		resisted = FALSE;
 	else
 	{
@@ -9269,7 +9277,16 @@ int dmg, adtyp, tell;
 		else if (threequartersmr)
 			applicable_mr = max(0, mtmp->data->mr - 25);
 
-		if (applicable_mr == 0)
+#if 0
+        if (otmp && (oclass == SPBOOK_CLASS || oclass == WAND_CLASS))
+        {
+            if ((objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+                && (mtmp->data->geno & G_UNIQ) && !(objects[otmp->otyp].oc_aflags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE))
+                applicable_mr = max(0, applicable_mr - mtmp->data->mr / 2);
+        }
+#endif
+
+		if (applicable_mr <= 0)
 			resisted = FALSE;
 		else
 			resisted = (rn2(100) < applicable_mr);  //(rn2(100 + alev - dlev) < applicable_mr);
