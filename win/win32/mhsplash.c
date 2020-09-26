@@ -134,6 +134,11 @@ mswin_display_splash_window(BOOL show_ver)
 		return;
 	}
 
+    struct ghsound_music_info info = { 0 };
+    info.ghsound = GHSOUND_MUSIC_SPLASH;
+    info.volume = 1.0f;
+    mswin_play_ghsound_music(info);
+
     MonitorInfo monitorInfo;
     win10_monitor_info(hWnd, &monitorInfo);
 

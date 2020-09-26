@@ -553,6 +553,41 @@ extern "C"
         return TRUE;
     }
 
+    boolean
+    load_fmod_bank_from_resource(HINSTANCE hInstance, int rid)
+    {
+        FMOD_RESULT       result;
+        FMOD::Studio::Bank* bank = 0;
+
+        HRSRC res = FindResource(hInstance, MAKEINTRESOURCE(rid), RT_RCDATA);
+
+        if (res)
+        {
+            HGLOBAL mem = LoadResource(hInstance, res);
+            void* data = LockResource(mem);
+            size_t len = SizeofResource(hInstance, res);
+
+            result = fmod_studio_system->loadBankMemory((const char*)data, (int)len, FMOD_STUDIO_LOAD_MEMORY, FMOD_STUDIO_LOAD_BANK_NORMAL, &bank);
+            if (result != FMOD_OK)
+                return FALSE;
+        }
+
+        return TRUE;
+    }
+
+    boolean
+    load_fmod_bank_from_file(HINSTANCE hInstance, char* filename)
+    {
+        FMOD_RESULT       result;
+        FMOD::Studio::Bank* bank = 0;
+
+        result = fmod_studio_system->loadBankFile(filename, FMOD_STUDIO_LOAD_BANK_NORMAL, &bank);
+        if (result != FMOD_OK)
+            return FALSE;
+
+        return TRUE;
+    }
+
     void
     close_fmod_studio()
     {

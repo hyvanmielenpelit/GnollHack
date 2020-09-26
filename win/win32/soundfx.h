@@ -7,6 +7,8 @@
 
 extern boolean NDECL(initialize_fmod_studio);
 extern boolean NDECL(load_fmod_banks);
+extern boolean FDECL(load_fmod_bank_from_resource, (HINSTANCE, int));
+extern boolean FDECL(load_fmod_bank_from_file, (HINSTANCE, char*));
 extern boolean NDECL(close_fmod_studio);
 
 extern boolean FDECL(fmod_play_music, (struct ghsound_music_info));

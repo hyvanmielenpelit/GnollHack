@@ -268,6 +268,31 @@ mswin_init_nhwindows(int *argc, char **argv)
     mswin_color_from_string(iflags.wc_backgrnd_text, &text_bg_brush,
                             &text_bg_color);
 
+    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
+    int rid[2] = { IDR_RCDATA_MASTER, IDR_RCDATA_STRINGS };
+    char* bfilename[2] = { 0, 0 };
+    bfilename[0] = iflags.wc2_master_bank_file;
+    bfilename[1] = iflags.wc2_master_strings_bank_file;
+    for (int i = 0; i < 2; i++)
+    {
+        if (bfilename[i])
+        {
+            if (!load_fmod_bank_from_file(hInstance, bfilename[i]))
+            {
+                impossible("cannot load FMOD sound bank %d from file", i);
+                /* Continue to loading from resource */
+            }
+            else
+                continue;
+        }
+
+        if (!load_fmod_bank_from_resource(hInstance, rid[i]))
+        {
+            panic("cannot load FMOD sound bank %d from resource", i);
+            return;
+        }
+    }
+
     if (iflags.wc_splash_screen)
         mswin_display_splash_window(FALSE);
 

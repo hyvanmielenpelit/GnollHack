@@ -200,11 +200,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         panic("cannot initialize FMOD studio");
         return 0;
     }
-    if (!load_fmod_banks())
-    {
-        panic("cannot load FMOD sound banks");
-        return 0;
-    }
 
     // init controls
     if (FAILED(GetComCtlVersion(&major, &minor))) {
@@ -270,10 +265,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     GUILaunched = 1;
     iflags.using_gui_tiles = TRUE; /* Default is TRUE (mode 0) until set to a different value */
     iflags.using_gui_sounds = TRUE;
-    struct ghsound_music_info info = { 0 };
-    info.ghsound = GHSOUND_MUSIC_SPLASH;
-    info.volume = 1.0f;
-    mswin_play_ghsound_music(info);
+
 
     /* let main do the argument processing */
     (void) main(argc, argv);

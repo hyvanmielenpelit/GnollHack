@@ -18,7 +18,9 @@
 # Use the IBM character set rather than just plain ascii characters
 # for tty window-port.
 OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:4
-OPTIONS=tile_file:gnollhack_64x96_custom.png
+#OPTIONS=tile_file:gnollhack_64x96_custom.png
+#OPTIONS=master_bank_file:Custom_Master.bank
+#OPTIONS=master_strings_bank_file:Custom_Master.strings.bank
 
 # Here is a suggested symbol set from Michael Feir, 
 # for use by blind NetHack players
