@@ -2476,6 +2476,14 @@ mapseen *mptr;
        sparse once the rest of the dungeon has been flagged as unreachable */
     if (In_endgame(&u.uz))
         return (boolean) In_endgame(&mptr->lev);
+
+    /* List all special levels in Gehennom */
+    if (Inhell || Is_medusa_level(&mptr->lev))
+    {
+        if (Is_special(&mptr->lev))
+            return TRUE;
+    }
+
     /* level is of interest if it has non-zero feature count or known bones
        or user annotation or known connection to another dungeon branch
        or is the furthest level reached in its branch */
@@ -3072,7 +3080,7 @@ boolean printdun;
         Sprintf(buf, "%sLevel %d:", TAB, i);
 
     /* wizmode prints out proto dungeon names for clarity */
-    if (wizard) {
+    if (wizard && !Inhell && !Is_medusa_level(&mptr->lev)) {
         s_level *slev;
 
         if ((slev = Is_special(&mptr->lev)) != 0)
@@ -3168,6 +3176,14 @@ boolean printdun;
     } else if (mptr->flags.msanctum) {
         Sprintf(buf, "%sMoloch's Sanctum.", PREFIX);
     }
+    else if (Inhell || Is_medusa_level(&mptr->lev))
+    {
+        /* Assume the special levels in Hell are distinctive enough */
+        s_level* slev;
+        if ((slev = Is_special(&mptr->lev)) != 0)
+            Sprintf(buf, "%s%s.", PREFIX, slev->name);
+    }
+
     if (*buf)
         putstr(win, 0, buf);
     /* quest entrance is not mutually-exclusive with bigroom or rogue level */
