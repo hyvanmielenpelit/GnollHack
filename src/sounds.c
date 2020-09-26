@@ -66,10 +66,11 @@ STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
 STATIC_OVL int FDECL(sell_to_npc, (struct obj*, struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_blessed_recharge, (struct monst*));
 STATIC_DCL int FDECL(do_chat_watchman_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_quest_chat, (struct monst*));
 STATIC_DCL int FDECL(mon_in_room, (struct monst *, int));
-STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, const char*, int, char*));
+STATIC_DCL int FDECL(spell_service_query, (struct monst*, int, int, const char*, int, char*));
 STATIC_DCL int FDECL(general_service_query, (struct monst*, int (*)(struct monst*), const char*, int, char*));
 STATIC_DCL int FDECL(repair_armor_func, (struct monst*));
 STATIC_DCL int FDECL(repair_weapon_func, (struct monst*));
@@ -2577,6 +2578,22 @@ dochat()
 				chatnum++;
 			}
 
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BLESSED_RECHARGING)
+			{
+				Sprintf(available_chat_list[chatnum].name, "Fully recharge an item");
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_blessed_recharge;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
+
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
+
 			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_GEMS_AND_STONES)
 			{
 				char sbuf[BUFSIZ];
@@ -4908,7 +4925,7 @@ struct monst* mtmp;
 		return 0;
 
 	int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));	
-	return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, "enchant an armor", cost, "enchanting an armor");
+	return spell_service_query(mtmp, SPE_ENCHANT_ARMOR, 0, "enchant an armor", cost, "enchanting an armor");
 }
 
 STATIC_OVL int
@@ -4919,7 +4936,7 @@ struct monst* mtmp;
 		return 0;
 
 	int cost = max(1, (int)((1000 + 50 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, "enchant a weapon", cost, "enchanting a weapon");
+	return spell_service_query(mtmp, SPE_ENCHANT_WEAPON, 0, "enchant a weapon", cost, "enchanting a weapon");
 }
 
 STATIC_OVL int
@@ -4953,7 +4970,7 @@ struct monst* mtmp;
 		return 0;
 
 	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	return spell_service_query(mtmp, SPE_PROTECT_ARMOR, "protect an armor", cost, "protecting an armor");
+	return spell_service_query(mtmp, SPE_PROTECT_ARMOR, 0, "protect an armor", cost, "protecting an armor");
 }
 
 STATIC_OVL int
@@ -4964,7 +4981,7 @@ struct monst* mtmp;
 		return 0;
 
 	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	return spell_service_query(mtmp, SPE_PROTECT_WEAPON, "protect a weapon", cost, "protecting a weapon");
+	return spell_service_query(mtmp, SPE_PROTECT_WEAPON, 0, "protect a weapon", cost, "protecting a weapon");
 }
 
 STATIC_OVL int
@@ -5119,7 +5136,7 @@ struct monst* mtmp;
 		return 0;
 
 	int cost = max(1, (int)((1500 + 75 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, "enchant an accessory", cost, "enchanting an accessory");
+	return spell_service_query(mtmp, SCR_ENCHANT_ACCESSORY, 0, "enchant an accessory", cost, "enchanting an accessory");
 }
 
 STATIC_OVL int
@@ -5130,7 +5147,19 @@ struct monst* mtmp;
 		return 0;
 
 	int cost = max(1, (int)((2000 + 100 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
-	return spell_service_query(mtmp, SCR_CHARGING, "recharge an item", cost, "recharging an item");
+	return spell_service_query(mtmp, SCR_CHARGING, 0, "recharge an item", cost, "recharging an item");
+}
+
+
+STATIC_OVL int
+do_chat_npc_blessed_recharge(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+		return 0;
+
+	int cost = max(1, (int)((4000 + 200 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	return spell_service_query(mtmp, SCR_CHARGING, 1, "fully recharge an item", cost, "fully recharging an item");
 }
 
 
@@ -5602,9 +5631,9 @@ const char *msg;
 
 
 STATIC_OVL int
-spell_service_query(mtmp, service_spell_id, service_verb, service_cost, no_mood_string)
+spell_service_query(mtmp, service_spell_id, buc, service_verb, service_cost, no_mood_string)
 struct monst* mtmp;
-int service_spell_id, service_cost;
+int service_spell_id, buc, service_cost;
 const char* service_verb;
 char* no_mood_string;
 {
@@ -5642,7 +5671,13 @@ char* no_mood_string;
 
 
 	struct obj* pseudo = mksobj(service_spell_id, FALSE, FALSE, FALSE);
-	pseudo->blessed = pseudo->cursed = 0;
+	if(buc > 0)
+		pseudo->blessed = 1, pseudo->cursed = 0;
+	else if (buc == 0)
+		pseudo->blessed = 0, pseudo->cursed = 0;
+	else if (buc < 0)
+		pseudo->blessed = 0, pseudo->cursed = 1;
+
 	pseudo->quan = 20L; /* do not let useup get it */
 	pseudo->speflags = SPEFLAGS_SERVICED_SPELL;
 	boolean effect_happened = 0;
