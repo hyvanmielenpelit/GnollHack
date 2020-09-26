@@ -2286,7 +2286,6 @@ initMapTiles(void)
 {
     HBITMAP hBmp;
     BITMAP bm;
-    TCHAR wbuf[MAX_PATH];
     DWORD errcode;
     int tl_num;
     SIZE map_size;
@@ -2297,9 +2296,8 @@ initMapTiles(void)
         return TRUE;
 
     /* load bitmap */
-    hBmp = LoadImage(GetNHApp()->hApp,
-                     NH_A2W(iflags.wc_tile_file, wbuf, MAX_PATH),
-                     IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+    hBmp = LoadPNGFromFile(iflags.wc_tile_file, TILE_BK_COLOR);
+
     if (hBmp == NULL) {
         char errmsg[BUFSZ];
 

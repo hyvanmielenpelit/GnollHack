@@ -9,6 +9,7 @@ extern void NDECL(StartGdiplus);
 extern void NDECL(StopGdiplus);
 extern HBITMAP FDECL(LoadPNGFromResource, (HINSTANCE, int, COLORREF));
 extern HBITMAP FDECL(LoadPNGFromResourceStandalone, (HINSTANCE, int, COLORREF)); /* Starts and stops GDI+ */
+extern HBITMAP FDECL(LoadPNGFromFile, (char*, COLORREF));
 extern void FDECL(AddFontToGdiPlus, (void*, size_t));
 extern void FDECL(DrawTextToRectangle, (HDC, char*, RECT*, char*, float, int, COLORREF, double));
 

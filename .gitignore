@@ -36,6 +36,7 @@ win/win32/vs2017/default.nh
 *.mp3
 *.ogg
 *.bank
+*.psd
 
 # User-specific files
 *.suo

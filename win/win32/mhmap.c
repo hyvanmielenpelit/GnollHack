@@ -990,14 +990,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     HDC hDCcopy = CreateCompatibleDC(data->backBufferDC);
 
     unsigned char* lpBitmapBitsCopy;
-    LONG bmpWidth = GetNHApp()->mapTile_X;
-    LONG bmpHeight = GetNHApp()->mapTile_Y;
+    LONG tileWidth = GetNHApp()->mapTile_X;
+    LONG tileHeight = GetNHApp()->mapTile_Y;
 
     BITMAPINFO binfo;
     ZeroMemory(&binfo, sizeof(BITMAPINFO));
     binfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    binfo.bmiHeader.biWidth = bmpWidth;
-    binfo.bmiHeader.biHeight = bmpHeight;
+    binfo.bmiHeader.biWidth = tileWidth;
+    binfo.bmiHeader.biHeight = tileHeight;
     binfo.bmiHeader.biPlanes = 1;
     binfo.bmiHeader.biBitCount = 32;
 
@@ -1008,8 +1008,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
     boolean opaque_background_drawn = FALSE;
     boolean print_first_directly_to_map = TRUE;
-    double x_scaling_factor = ((double)data->xBackTile / (double)TILE_X);
-    double y_scaling_factor = ((double)data->yBackTile / (double)TILE_Y);
+    double x_scaling_factor = ((double)data->xBackTile / (double)tileWidth);
+    double y_scaling_factor = ((double)data->yBackTile / (double)tileHeight);
 
     for (int draw_index = 0; draw_index < DRAW_ORDER_SIZE; draw_index++)
     {
@@ -1337,14 +1337,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     if (!skip_drawing)
                     {
-                        //int dest_top_added = move_obj_to_middle || layer_rounds == 1 ? 0 :(int)(((double)(rect->bottom - rect->top)/((double)TILE_Y / 2.0)) * -1.0 * (double)(MAX_LAYERS - 1 - layer_round) * 2.0);
+                        //int dest_top_added = move_obj_to_middle || layer_rounds == 1 ? 0 :(int)(((double)(rect->bottom - rect->top)/((double)tileHeight / 2.0)) * -1.0 * (double)(MAX_LAYERS - 1 - layer_round) * 2.0);
                         int dest_top_added = 0;
                         int dest_height_deducted = 0;
                         int dest_left_added = 0;
                         int dest_width_deducted = 0;
                         int source_top_added = 0;
                         int source_height_deducted = 0;
-                        t_x = TILEBMP_X(ntile) + (flip_glyph ? TILE_X - 1 : 0);
+                        t_x = TILEBMP_X(ntile) + (flip_glyph ? tileWidth - 1 : 0);
                         t_y = TILEBMP_Y(ntile);
                         if (layer_round > 0)
                             layer_round = layer_round;
@@ -1375,8 +1375,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (move_obj_to_middle)
                             {
                                 /* Take lower part only */
-                                source_top_added = TILE_Y / 2;
-                                source_height_deducted = TILE_Y / 2;
+                                source_top_added = tileHeight / 2;
+                                source_height_deducted = tileHeight / 2;
                                 dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 4.0));
                                 dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
                             }
@@ -1388,8 +1388,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (!full_sized_item)
                             {
                                 /* For all normal items, we use only lower part of the tile */
-                                source_top_added = TILE_Y / 2;
-                                source_height_deducted = TILE_Y / 2;
+                                source_top_added = tileHeight / 2;
+                                source_height_deducted = tileHeight / 2;
                                 dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
                                 dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
 
@@ -1435,10 +1435,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 if (monster_layer_height < 0)
                                 {
-                                    source_top_added = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
-                                    source_height_deducted = TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
+                                    source_top_added = tileHeight - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
+                                    source_height_deducted = tileHeight - (abs(monster_layer_height) - PIT_BOTTOM_BORDER);
                                     dest_top_added = 0;
-                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (double)(TILE_Y - (abs(monster_layer_height) - PIT_BOTTOM_BORDER)));
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (double)(tileHeight - (abs(monster_layer_height) - PIT_BOTTOM_BORDER)));
                                 }
 
                             }
@@ -1447,9 +1447,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (monster_layer_height > 0)
                                 {
                                     source_top_added = 0;
-                                    source_height_deducted = TILE_Y - monster_layer_height;
-                                    dest_top_added = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
-                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (TILE_Y - monster_layer_height));
+                                    source_height_deducted = tileHeight - monster_layer_height;
+                                    dest_top_added = (int)(applicable_scaling_factor_y * (tileHeight - monster_layer_height));
+                                    dest_height_deducted = (int)(applicable_scaling_factor_y * (tileHeight - monster_layer_height));
                                 }
                             }
                         }
@@ -1621,7 +1621,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     else
                                                     {
                                                         source_rt.top = at_y + 18;
-                                                        source_rt.bottom = at_y + TILE_Y;
+                                                        source_rt.bottom = at_y + tileHeight;
                                                     }
                                                     break;
                                                 case 1: /* right */
@@ -1632,7 +1632,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                         at_x = TILEBMP_X(atile);
                                                         at_y = TILEBMP_Y(atile);
                                                     }
-                                                    source_rt.right = at_x + TILE_X;
+                                                    source_rt.right = at_x + tileWidth;
                                                     source_rt.left = source_rt.right - 12;
                                                     if (corner == 0)
                                                     {
@@ -1642,7 +1642,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     else
                                                     {
                                                         source_rt.top = at_y + 18;
-                                                        source_rt.bottom = at_y + TILE_Y;
+                                                        source_rt.bottom = at_y + tileHeight;
                                                     }
                                                     break;
                                                 case 2: /* up */
@@ -1656,12 +1656,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     if (corner == 0)
                                                     {
                                                         source_rt.left = at_x;
-                                                        source_rt.right = at_x + TILE_X / 2;
+                                                        source_rt.right = at_x + tileWidth / 2;
                                                     }
                                                     else
                                                     {
-                                                        source_rt.left = at_x + TILE_X / 2;
-                                                        source_rt.right = at_x + TILE_X;
+                                                        source_rt.left = at_x + tileWidth / 2;
+                                                        source_rt.right = at_x + tileWidth;
                                                     }
                                                     source_rt.top = at_y;
                                                     source_rt.bottom = source_rt.top + 12;
@@ -1677,15 +1677,15 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     if (corner == 0)
                                                     {
                                                         source_rt.left = at_x;
-                                                        source_rt.right = at_x + TILE_X / 2;
+                                                        source_rt.right = at_x + tileWidth / 2;
                                                     }
                                                     else
                                                     {
-                                                        source_rt.left = at_x + TILE_X / 2;
-                                                        source_rt.right = at_x + TILE_X;
+                                                        source_rt.left = at_x + tileWidth / 2;
+                                                        source_rt.right = at_x + tileWidth;
                                                     }
                                                     source_rt.top = at_y + 12;
-                                                    source_rt.bottom = at_y + TILE_Y;
+                                                    source_rt.bottom = at_y + tileHeight;
                                                     break;
                                                 default:
                                                     break;
@@ -1695,10 +1695,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                                 if (print_first_directly_to_map)
                                                 {
-                                                    target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.left - at_x));
-                                                    target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)TILE_X) * (double)(source_rt.right - at_x));
-                                                    target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.top - at_y));
-                                                    target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)TILE_Y) * (double)(source_rt.bottom - at_y));
+                                                    target_rt.left = rect->left + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.left - at_x));
+                                                    target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - at_x));
+                                                    target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.top - at_y));
+                                                    target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - at_y));
                                                     
                                                     (*GetNHApp()->lpfnTransparentBlt)(
                                                         data->backBufferDC, target_rt.left, target_rt.top,
@@ -1927,8 +1927,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int mtile = glyph2tile[mglyph];
                             int ct_x = TILEBMP_X(mtile);
                             int ct_y = TILEBMP_Y(mtile);
-                            int tiles_per_row = TILE_X / ui_tile_component_array[STATUS_MARKS].width;
-                            int max_fitted_rows = (TILE_Y - 4) / (ui_tile_component_array[STATUS_MARKS].height + 2);
+                            int tiles_per_row = tileWidth / ui_tile_component_array[STATUS_MARKS].width;
+                            int max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[STATUS_MARKS].height + 2);
 
                             for (enum game_ui_status_mark_types status_mark = STATUS_MARK_PET; status_mark < min(MAX_STATUS_MARKS, ui_tile_component_array[STATUS_MARKS].number); status_mark++)
                             {
@@ -2047,7 +2047,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
 
                                     /* Define draw location in target */
-                                    int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
+                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
                                     int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
@@ -2076,8 +2076,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             mtile = glyph2tile[mglyph];
                             ct_x = TILEBMP_X(mtile);
                             ct_y = TILEBMP_Y(mtile);
-                            tiles_per_row = TILE_X / ui_tile_component_array[CONDITION_MARKS].width;
-                            max_fitted_rows = (TILE_Y - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
+                            tiles_per_row = tileWidth / ui_tile_component_array[CONDITION_MARKS].width;
+                            max_fitted_rows = (tileHeight - 4) / (ui_tile_component_array[CONDITION_MARKS].height + 2);
 
                             /* Number is the same as condition bits */
                             unsigned long m_conditions = get_m_condition_bits(mtmp);
@@ -2108,7 +2108,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
 
                                     /* Define draw location in target */
-                                    int unscaled_left = TILE_X - 2 - ui_tile_component_array[CONDITION_MARKS].width;
+                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
                                     int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
                                     int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
@@ -2152,9 +2152,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int c_y = TILEBMP_Y(mtile);
                                 /* Define draw location in target */
                                 int unscaled_left = 3;
-                                int unscaled_right = unscaled_left + TILE_X / 2;
+                                int unscaled_right = unscaled_left + tileWidth / 2;
                                 int unscaled_top = 3;
-                                int unscaled_bottom = unscaled_top + TILE_Y / 2;
+                                int unscaled_bottom = unscaled_top + tileHeight / 2;
 
 
                                 /* Frame and background first */
@@ -2173,9 +2173,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 /* Now the actual picture */
                                 RECT source_rt = { 0 };
                                 source_rt.left = c_x;
-                                source_rt.right = c_x + TILE_X;
+                                source_rt.right = c_x + tileWidth;
                                 source_rt.top = c_y;
-                                source_rt.bottom = c_y + TILE_Y;
+                                source_rt.bottom = c_y + tileHeight;
 
                                 RECT target_rt = { 0 };
                                 target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
@@ -2188,14 +2188,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 /*
                                 (*GetNHApp()->lpfnTransparentBlt)(
                                     hDCcopy, unscaled_left, unscaled_top,
-                                    unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC, source_rt.left + (flip_rider ? TILE_X - 1 : 0),
+                                    unscaled_right - unscaled_left, unscaled_bottom - unscaled_top, data->tileDC, source_rt.left + (flip_rider ? tileWidth - 1 : 0),
                                     source_rt.top, multiplier * (source_rt.right - source_rt.left),
                                     source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                 */
 
                                 (*GetNHApp()->lpfnTransparentBlt)(
                                     data->backBufferDC, target_rt.left, target_rt.top,
-                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left + (flip_rider ? TILE_X - 1 : 0),
+                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left + (flip_rider ? tileWidth - 1 : 0),
                                     source_rt.top, multiplier * (source_rt.right - source_rt.left),
                                     source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                             }

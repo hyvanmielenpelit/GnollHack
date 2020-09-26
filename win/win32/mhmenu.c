@@ -720,7 +720,7 @@ onMSNHCommand(HWND hWnd, WPARAM wParam, LPARAM lParam)
         /* calculate new menu width */
         data->menu.menu_cx =
             max(data->menu.menu_cx,
-                CHECK_WIDTH + TILE_X + menuitemwidth
+                CHECK_WIDTH + GetNHApp()->mapTile_X + menuitemwidth
                     + (tm.tmAveCharWidth + tm.tmOverhang) * 12);
 
         /* increment size */
@@ -1121,8 +1121,13 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
         checkYScaled = (int)(scaling_factor * (double)checkYScaled);
     }
 
-    int tileXScaled = (int)(MENU_TILE_X * monitorScale);
-    int tileYScaled = (int)(MENU_TILE_Y * monitorScale);
+    int tileWidth = GetNHApp()->mapTile_X;
+    int tileHeight = GetNHApp()->mapTile_Y;
+    int menuTileWidth = GetNHApp()->mapTile_X;
+    int menuTileHeight = GetNHApp()->mapTile_Y / 2;
+
+    int tileXScaled = (int)(menuTileWidth * monitorScale);
+    int tileYScaled = (int)(menuTileHeight * monitorScale);
 
     if (tileYScaled > row_height)
     {
@@ -1222,9 +1227,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 HDC hDCMem = CreateCompatibleDC(tileDC);
 
-                int width = TILE_X * enl_width;
-                int height = TILE_Y * enl_height;
-                t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
+                int width = tileWidth * enl_width;
+                int height = tileHeight * enl_height;
+                t_x = TILEBMP_X(ntile) + (flip_tile ? tileWidth - 1 : 0);
                 t_y = TILEBMP_Y(ntile);
 
                 unsigned char* lpBitmapBits;
@@ -1242,11 +1247,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                 /* Main tile */
                 if(flip_tile)
-                    StretchBlt(hDCMem, (enl_width - 1 - enl_x) * TILE_X, TILE_Y * (enl_height - 1), TILE_X, TILE_Y,
-                        tileDC, t_x, t_y, -TILE_X, TILE_Y, SRCCOPY);
+                    StretchBlt(hDCMem, (enl_width - 1 - enl_x) * tileWidth, tileHeight * (enl_height - 1), tileWidth, tileHeight,
+                        tileDC, t_x, t_y, -tileWidth, tileHeight, SRCCOPY);
                 else
-                    StretchBlt(hDCMem, enl_x* TILE_X, TILE_Y* (enl_height - 1), TILE_X, TILE_Y,
-                        tileDC, t_x, t_y, TILE_X, TILE_Y, SRCCOPY);
+                    StretchBlt(hDCMem, enl_x * tileWidth, tileHeight * (enl_height - 1), tileWidth, tileHeight,
+                        tileDC, t_x, t_y, tileWidth, tileHeight, SRCCOPY);
 
                 /* Enlargement tiles */
                 for (int idx = 0; idx < NUM_POSITIONS_IN_ENLARGEMENT; idx++)
@@ -1265,35 +1270,35 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     {
                         int glyph = enltile + enlargements[enlargement_idx].glyph_offset + GLYPH_ENLARGEMENT_OFF;
                         short etile = glyph2tile[glyph];
-                        t_x = TILEBMP_X(etile) + (flip_tile ? TILE_X - 1 : 0);
+                        t_x = TILEBMP_X(etile) + (flip_tile ? tileWidth - 1 : 0);
                         t_y = TILEBMP_Y(etile);
                         int target_x = 0;
                         int target_y = 0;
 
                         if (enl_height == 2)
                         {
-                            target_y = idx < 3 ? 0 : TILE_Y;
+                            target_y = idx < 3 ? 0 : tileHeight;
                         }
 
                         if (enl_width == 2 && enl_x == 0)
                         {
-                            target_x = idx == 1 ? 0 : TILE_X;
+                            target_x = idx == 1 ? 0 : tileWidth;
                         }
                         else if (enl_width == 2 && enl_x == 1)
                         {
-                            target_x = idx == 1 ? TILE_X : 0;
+                            target_x = idx == 1 ? tileWidth : 0;
                         }
                         else if (enl_width == 3)
                         {
-                            target_x = idx == 0 || idx == 3 ? 0 : idx == 1 ? TILE_X : 2 * TILE_X;
+                            target_x = idx == 0 || idx == 3 ? 0 : idx == 1 ? tileWidth : 2 * tileWidth;
                         }
 
                         if (flip_tile)
-                            StretchBlt(hDCMem, (enl_width - 1) * TILE_X - target_x, target_y, TILE_X, TILE_Y,
-                                tileDC, t_x, t_y, -TILE_X, TILE_Y, SRCCOPY);
+                            StretchBlt(hDCMem, (enl_width - 1) * tileWidth - target_x, target_y, tileWidth, tileHeight,
+                                tileDC, t_x, t_y, -tileWidth, tileHeight, SRCCOPY);
                         else
-                            StretchBlt(hDCMem, target_x, target_y, TILE_X, TILE_Y,
-                                tileDC, t_x, t_y, TILE_X, TILE_Y, SRCCOPY);
+                            StretchBlt(hDCMem, target_x, target_y, tileWidth, tileHeight,
+                                tileDC, t_x, t_y, tileWidth, tileHeight, SRCCOPY);
                     }
                 }
 
@@ -1328,11 +1333,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 }
                 else
                 {
-                    source_top_added = TILE_Y / 2;
-                    source_height_deducted = TILE_Y / 2;
+                    source_top_added = tileHeight / 2;
+                    source_height_deducted = tileHeight / 2;
                 }
 
-                t_x = TILEBMP_X(ntile) + (flip_tile ? TILE_X - 1 : 0);
+                t_x = TILEBMP_X(ntile) + (flip_tile ? tileWidth - 1 : 0);
                 //((ntile % GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_X);
                 t_y = TILEBMP_Y(ntile) + source_top_added; /* Use lower part of the tile only */
                     //(ntile / GetNHApp()->mapTilesPerLine) * GetNHApp()->mapTile_Y;
@@ -1345,7 +1350,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     /* using original GnollHack tiles - apply image transparently */
                     (*GetNHApp()->lpfnTransparentBlt)(lpdis->hDC, x + x_added, y,
                         applied_tileXScaled, tileYScaled,
-                        tileDC, t_x, t_y, multiplier * TILE_X, TILE_Y - source_height_deducted, /* Use lower part of the tile only */
+                        tileDC, t_x, t_y, multiplier * tileWidth, tileHeight - source_height_deducted, /* Use lower part of the tile only */
                         TILE_BK_COLOR);
                 }
                 else
