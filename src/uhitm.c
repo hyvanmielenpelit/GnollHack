@@ -4836,9 +4836,6 @@ enum action_tile_types action;
 
 	context.u_milliseconds_to_wait_until_action = 0UL;
 	context.u_milliseconds_to_wait_until_end = 0UL;
-	context.u_action_animation_layer = 0;
-	context.u_action_animation_x = 0;
-	context.u_action_animation_y = 0;
 	context.u_action_animation_counter = 0;
 	context.u_action_animation_counter_on = FALSE;
 
@@ -4851,9 +4848,6 @@ enum action_tile_types action;
 		if (u.action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY && !u.usteed)
 		{
-			context.u_action_animation_layer = LAYER_MONSTER;
-			context.u_action_animation_x = u.ux;
-			context.u_action_animation_y = u.uy;
 			context.u_action_animation_counter = 0;
 			context.u_action_animation_counter_on = TRUE;
 			newsym(u.ux, u.uy);
@@ -4933,7 +4927,6 @@ enum action_tile_types action;
 
 	context.m_milliseconds_to_wait_until_action = 0UL;
 	context.m_milliseconds_to_wait_until_end = 0UL;
-	context.m_action_animation_layer = 0;
 	context.m_action_animation_x = 0;
 	context.m_action_animation_y = 0;
 	context.m_action_animation_counter = 0;
@@ -4947,7 +4940,6 @@ enum action_tile_types action;
 		if (mtmp->action != ACTION_TILE_NO_ACTION && anim > 0
 			&& animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
 		{
-			context.m_action_animation_layer = LAYER_MONSTER;
 			context.m_action_animation_x = mtmp->mx;
 			context.m_action_animation_y = mtmp->my;
 			context.m_action_animation_counter = 0;

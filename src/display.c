@@ -2401,7 +2401,7 @@ boolean remove;
         {
             int obj_idx = glyph_to_obj(glyph);
 
-            if (is_otyp_drawn_in_front(obj_idx))
+            if (is_otyp_drawn_in_front(obj_idx, x, y))
                 gbuf[y][x].layers.layer_glyphs[LAYER_COVER_OBJECT] = remove ? NO_GLYPH : glyph;
             else
                 gbuf[y][x].layers.layer_glyphs[LAYER_OBJECT] = remove ? NO_GLYPH : glyph;

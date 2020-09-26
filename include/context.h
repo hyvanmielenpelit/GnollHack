@@ -196,10 +196,6 @@ struct context_info
     struct tribute_info tribute;
     struct novel_tracking novel;
     uchar used_fountain_subtype[MAX_FOUNTAIN_SUBTYPES];
-    enum layer_types u_action_animation_layer;
-    uchar u_action_animation_x;
-    uchar u_action_animation_y;
-    enum layer_types m_action_animation_layer;
     uchar m_action_animation_x;
     uchar m_action_animation_y;
     boolean u_action_animation_counter_on;

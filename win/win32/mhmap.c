@@ -1249,15 +1249,33 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
                     ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round), &autodraw);
-                    if(context.u_action_animation_counter_on && context.u_action_animation_layer == base_layer && context.u_action_animation_x == enl_i && context.u_action_animation_y == enl_j)
+                    if(context.u_action_animation_counter_on && base_layer == LAYER_MONSTER && enl_i == u.ux && enl_j == u.uy)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
-                    else if (context.m_action_animation_counter_on && context.m_action_animation_layer == base_layer && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
+                    else if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (glyph_is_explosion(glyph))
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else
-                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
-                    
+                    {
+                        /* Check for special effect animations */
+                        boolean spef_found = FALSE;
+                        for (int spef_idx = 0; spef_idx < MAX_PLAYED_SPECIAL_EFFECTS; spef_idx++)
+                        {
+                            if (context.special_effect_animation_counter_on[spef_idx]
+                                && base_layer == context.spef_action_animation_layer[spef_idx]
+                                && enl_i == context.spef_action_animation_x[spef_idx]
+                                && enl_j == context.spef_action_animation_y[spef_idx])
+                            {
+                                ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.special_effect_animation_counter[spef_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                                spef_found = TRUE;
+                                break;
+                            }
+                        }
+    
+                        /* Otherwise, normal animation check */
+                        if(!spef_found)
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                    }
                     if (enlarg_idx >= 0)
                     {
                         if (tile2enlargement[ntile] > 0)
@@ -2617,14 +2635,33 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                 boolean mapanimateddummy = 0;
                 enum autodraw_types autodraw = AUTODRAW_NONE;
                 int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
-                if (context.u_action_animation_counter_on && context.u_action_animation_layer == layer_idx && context.u_action_animation_x == x && context.u_action_animation_y == y)
+                if (context.u_action_animation_counter_on && layer_idx == LAYER_MONSTER && x == u.ux && y == u.uy)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
-                else if (context.m_action_animation_counter_on && context.m_action_animation_layer == layer_idx && context.m_action_animation_x == x && context.m_action_animation_y == y)
+                else if (context.m_action_animation_counter_on && layer_idx == LAYER_MONSTER && context.m_action_animation_x == x && context.m_action_animation_y == y)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else if (glyph_is_explosion(glyph))
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else
-                    ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                {
+                    /* Check for special effect animations */
+                    boolean spef_found = FALSE;
+                    for (int spef_idx = 0; spef_idx < MAX_PLAYED_SPECIAL_EFFECTS; spef_idx++)
+                    {
+                        if (context.special_effect_animation_counter_on[spef_idx]
+                            && layer_idx == context.spef_action_animation_layer[spef_idx]
+                            && x == context.spef_action_animation_x[spef_idx]
+                            && y == context.spef_action_animation_y[spef_idx])
+                        {
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.special_effect_animation_counter[spef_idx], &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                            spef_found = TRUE;
+                            break;
+                        }
+                    }
+
+                    /* Otherwise, normal animation check */
+                    if (!spef_found)
+                        ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                }
                 enlarg = tile2enlargement[ntile];
             }
 

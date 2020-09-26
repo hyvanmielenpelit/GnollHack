@@ -530,11 +530,11 @@ struct obj {
 #define has_otyp_missile_tile(otyp)                                 \
     ((objects[otyp].oc_flags4 & O4_MISSILE_TILE) != 0)
 
-#define is_otyp_drawn_in_front(otyp) \
-     ((objects[otyp].oc_flags4 & O4_DRAWN_IN_FRONT))
+#define is_otyp_drawn_in_front(otyp, tx, ty) \
+     ((objects[otyp].oc_flags4 & O4_DRAWN_IN_FRONT) && (tx) == u.ux && (ty) == u.uy)
 
 #define is_obj_drawn_in_front(obj) \
-    (is_otyp_drawn_in_front((obj)->otyp) && (obj)->ox == u.ux && (obj)->oy == u.uy)
+    (is_otyp_drawn_in_front((obj)->otyp, (obj)->ox, (obj)->oy))
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */
