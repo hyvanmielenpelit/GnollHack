@@ -2006,10 +2006,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if ((isyou && !flags.show_tile_u_hp_bar) || (ispet && !flags.show_tile_pet_hp_bar))
                                     {
                                         int relevant_hp_max = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
-                                        int low_threshold = min(relevant_hp_max / 2, max(4, relevant_hp_max / 4));
+                                        int low_threshold = min(relevant_hp_max / 2, max(4, relevant_hp_max / 3));
                                         if (relevant_hp_max < 4)
                                             low_threshold = 0;
-                                        int critical_threshold = max(1, min(relevant_hp_max / 5, max(4, relevant_hp_max / 10)));
+                                        int critical_threshold = max(1, min(relevant_hp_max / 4, max(4, relevant_hp_max / 6)));
                                         if (relevant_hp_max < 2)
                                             critical_threshold = 0;
 
