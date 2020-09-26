@@ -2806,6 +2806,7 @@ do_objs()
         sumerr = TRUE;
     }
 
+    Fprintf(ofp, "#define\tLAST_SHUFFLED_WAND\t(GOLD_PIECE - 1)\n");
     Fprintf(ofp, "#define\tLAST_GEM\t(JADE)\n");
     Fprintf(ofp, "#define\tMAXSPELL\t%d\n", nspell + 1);
     Fprintf(ofp, "#define\tNUM_OBJECTS\t%d\n", i);

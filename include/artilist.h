@@ -278,7 +278,7 @@ STATIC_OVL NEARDATA struct artifact artilist[] = {
 		NO_COLOR, CLR_RED, 0, OBJECT_SOUNDSET_NONE),
 
 	/* Other non-weapon artifacts */
-    A("Rod of Disjunction", "black metal", None, WAN_DISJUNCTION, WAN_CANCELLATION, (AF_RESTR | AF_FAMOUS),
+    A("Rod of Disjunction", "black metal", None, WAN_DISJUNCTION, WAN_DISJUNCTION, (AF_RESTR | AF_FAMOUS),
 		EXCEPTIONALITY_NORMAL, AF2_NONE, SPFX_NONE, SPFX_ANTIMAGIC, 0,
 		0, 0, 0, NO_ATTK, NO_POWER, NO_POWER, NO_POWER, 0, 0, 0, 0, 0, A_NONE, NON_PM, NON_PM, 3000L,
 		NO_COLOR, CLR_BLACK, 0, OBJECT_SOUNDSET_NONE),

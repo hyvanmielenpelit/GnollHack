@@ -1235,22 +1235,22 @@ register struct obj* obj;
 	{
 		if (stats_known)
 		{
-			if (objects[otyp].oc_wsdice > 0 || objects[otyp].oc_wsdam > 0 || objects[otyp].oc_wsdmgplus > 0)
+			if (objects[otyp].oc_spell_dmg_dice > 0 || objects[otyp].oc_spell_dmg_diesize > 0 || objects[otyp].oc_spell_dmg_plus != 0)
 			{
 				boolean maindiceprinted = FALSE;
 				char plusbuf[BUFSZ];
 				Sprintf(buf, "Wand effect damage:     ");
 
-				if (objects[otyp].oc_wsdice > 0 && objects[otyp].oc_wsdam > 0)
+				if (objects[otyp].oc_spell_dmg_dice > 0 && objects[otyp].oc_spell_dmg_diesize > 0)
 				{
 					maindiceprinted = TRUE;
-					Sprintf(plusbuf, "%dd%d", objects[otyp].oc_wsdice, objects[otyp].oc_wsdam);
+					Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dmg_dice, objects[otyp].oc_spell_dmg_diesize);
 					Strcat(buf, plusbuf);
 				}
 
-				if (objects[otyp].oc_wsdmgplus != 0)
+				if (objects[otyp].oc_spell_dmg_plus != 0)
 				{
-					if (maindiceprinted && objects[otyp].oc_wsdmgplus > 0)
+					if (maindiceprinted && objects[otyp].oc_spell_dmg_plus > 0)
 					{
 						Sprintf(plusbuf, "+");
 						Strcat(buf, plusbuf);
@@ -1262,6 +1262,36 @@ register struct obj* obj;
 				putstr(datawin, 0, txt);
 
 			}
+			if (objects[otyp].oc_spell_dur_dice > 0 || objects[otyp].oc_spell_dur_diesize > 0 || objects[otyp].oc_spell_dur_plus != 0)
+			{
+				boolean maindiceprinted = FALSE;
+				char plusbuf[BUFSZ];
+				Sprintf(buf, "Wand effect duration:   ");
+
+				if (objects[otyp].oc_spell_dur_dice > 0 && objects[otyp].oc_spell_dur_diesize > 0)
+				{
+					maindiceprinted = TRUE;
+					Sprintf(plusbuf, "%dd%d", objects[otyp].oc_spell_dur_dice, objects[otyp].oc_spell_dur_diesize);
+					Strcat(buf, plusbuf);
+				}
+
+				if (objects[otyp].oc_spell_dur_plus != 0)
+				{
+					if (maindiceprinted && objects[otyp].oc_spell_dur_plus > 0)
+					{
+						Sprintf(plusbuf, "+");
+						Strcat(buf, plusbuf);
+					}
+					Sprintf(plusbuf, "%d", objects[otyp].oc_spell_dur_plus);
+					Strcat(buf, plusbuf);
+				}
+
+				Sprintf(plusbuf, " round%s", (objects[otyp].oc_spell_dur_dice == 0 && objects[otyp].oc_spell_dur_diesize == 0 && objects[otyp].oc_spell_dur_plus == 1) ? "" : "s");
+				Strcat(buf, plusbuf);
+
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
 			if (objects[otyp].oc_spell_range > 0)
 			{
 				Sprintf(buf, "Wand effect range:      %d'", objects[otyp].oc_spell_range * 5);
@@ -1271,6 +1301,16 @@ register struct obj* obj;
 			if (objects[otyp].oc_spell_radius > 0)
 			{
 				Sprintf(buf, "Wand effect radius:     %d'", objects[otyp].oc_spell_radius * 5);
+				txt = buf;
+				putstr(datawin, 0, txt);
+			}
+			/* Flags */
+			if (objects[otyp].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
+			{
+				if(objects[otyp].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
+					Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for all monsters");
+				else
+					Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for non-unique monsters");
 				txt = buf;
 				putstr(datawin, 0, txt);
 			}
@@ -1385,6 +1425,7 @@ register struct obj* obj;
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
+
 
 	if ((obj->oeroded || obj->oeroded2 || (obj->rknown && obj->oerodeproof)))
 	{
@@ -2392,18 +2433,19 @@ register struct obj* obj;
 
 
 	/* Description */
-	if (stats_known && OBJ_ITEM_DESC(otyp) && !(obj->oartifact && obj->nknown))
+	if (stats_known && OBJ_ITEM_DESC(otyp) /* && !(obj->oartifact && obj->nknown) */)
 	{
+#if 0
 		/* One empty line here */
 		strcpy(buf, "");
 		txt = buf;
 		putstr(datawin, 0, txt);
-
+#endif
 		strcpy(buf, "Description:");
 		txt = buf;
 		putstr(datawin, 0, txt);
 
-		strcpy(buf, OBJ_ITEM_DESC(otyp));
+		Sprintf(buf, "  %s", OBJ_ITEM_DESC(otyp));
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}

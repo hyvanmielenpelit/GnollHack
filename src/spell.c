@@ -1480,14 +1480,10 @@ int spell;
 	/* Flags */
 	if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_MAGIC_RESISTANCE)
 	{
-		Sprintf(buf, "Other:        %s", "Bypasses magic resistance for non-unique monsters");
-		txt = buf;
-		putstr(datawin, 0, txt);
-	}
-
-	if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
-	{
-		Sprintf(buf, "Other:        %s", "Bypasses magic resistance for unique monsters");
+		if (objects[booktype].oc_spell_flags & S1_SPELL_BYPASSES_UNIQUE_MONSTER_MAGIC_RESISTANCE)
+			Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for all monsters");
+		else
+			Sprintf(buf, "Other:                  %s", "Bypasses magic resistance for non-unique monsters");
 		txt = buf;
 		putstr(datawin, 0, txt);
 	}
@@ -1543,15 +1539,16 @@ int spell;
 	/* Description*/
 	if (OBJ_ITEM_DESC(booktype))
 	{
+#if 0
 		/* One empty line here */
 		strcpy(buf, "");
 		txt = buf;
 		putstr(datawin, 0, txt);
-
+#endif
 		strcpy(buf, "Description:");
 		txt = buf;
 		putstr(datawin, 0, txt);
-		strcpy(buf, OBJ_ITEM_DESC(booktype));
+		Sprintf(buf, "  %s", OBJ_ITEM_DESC(booktype));
 		txt = buf;
 		putstr(datawin, 0, txt);
 
