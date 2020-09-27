@@ -2800,6 +2800,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_BLASTED_BY_POWER, 1.0f},
         FALSE
     },
+    {
+        "GHSOUND_IDENTIFY_SUCCESS",
+        {GHSOUND_IDENTIFY_SUCCESS, 1.0f},
+        FALSE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

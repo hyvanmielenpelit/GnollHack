@@ -3076,6 +3076,7 @@ int id_limit;
 
         if (n > 0)
 		{
+            play_sfx_sound(SFX_IDENTIFY_SUCCESS);
             if (n > id_limit)
                 n = id_limit;
             for (i = 0; i < n; i++, id_limit--)
@@ -3136,6 +3137,7 @@ boolean learning_id; /* true if we just read unknown identify scroll */
     } 
 	else if (!id_limit || id_limit >= unid_cnt)
 	{
+        play_sfx_sound(SFX_IDENTIFY_SUCCESS);
         /* identify everything */
         /* TODO:  use fully_identify_obj and cornline/menu/whatever here */
         for (obj = invent; obj; obj = obj->nobj) 
@@ -3160,7 +3162,10 @@ boolean learning_id; /* true if we just read unknown identify scroll */
                 if (n < 0)
                     break; /* quit or no eligible items */
                 else
+                {
+                    play_sfx_sound(SFX_IDENTIFY_SUCCESS);
                     res += n;
+                }
 
             } while ((id_limit -= n) > 0);
 
