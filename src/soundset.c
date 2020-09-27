@@ -2718,7 +2718,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_ELECTRIC_SHOCK",
         {GHSOUND_ELECTRIC_SHOCK, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_MALIGNANT_AURA_RESISTED",
@@ -2743,7 +2743,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_VANISHES_IN_PUFF_OF_SMOKE",
         {GHSOUND_VANISHES_IN_PUFF_OF_SMOKE, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_DISARM_TRAP_SUCCESS",
@@ -2773,38 +2773,64 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_CHEST_TRAP_TRIGGER",
         {GHSOUND_CHEST_TRAP_TRIGGER, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_TRAP_FLAME_FIZZLES_OUT",
         {GHSOUND_TRAP_FLAME_FIZZLES_OUT, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_TRAP_NEEDLE_MISSES",
         {GHSOUND_TRAP_NEEDLE_MISSES, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_TRAP_CLOUD_BLOWS_AWAY",
         {GHSOUND_TRAP_CLOUD_BLOWS_AWAY, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_TRAP_NEEDLE_PRICKS",
         {GHSOUND_TRAP_NEEDLE_PRICKS, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_BLASTED_BY_POWER",
         {GHSOUND_BLASTED_BY_POWER, 1.0f},
-        FALSE
+        TRUE
     },
     {
         "GHSOUND_IDENTIFY_SUCCESS",
         {GHSOUND_IDENTIFY_SUCCESS, 1.0f},
         FALSE
     },
+    {
+        "GHSOUND_RECHARGE_SUCCESS",
+        {GHSOUND_RECHARGE_SUCCESS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_BLESSED_RECHARGE_SUCCESS",
+        {GHSOUND_BLESSED_RECHARGE_SUCCESS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_STRIP_CHARGES",
+        {GHSOUND_STRIP_CHARGES, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_CHARGES_AT_MAXIMUM",
+        {GHSOUND_CHARGES_AT_MAXIMUM, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_RECHARGE_FAIL",
+        {GHSOUND_RECHARGE_FAIL, 1.0f},
+        FALSE
+    },
+
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

@@ -504,7 +504,12 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Blasted by Power", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Action/Read", 0.5f },
-    { SOUND_BANK_MASTER, "event:/SFX/Spell/Scroll/Identify Success", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Identify Success", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Recharge/Recharge Success", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Recharge/Blessed Recharge Success", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Recharge/Strip Charges", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Recharge/Charges at Maximum", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Spell/Recharge/Recharge Fail", 0.3f },
 };
 
 

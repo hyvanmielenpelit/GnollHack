@@ -491,7 +491,10 @@ boolean verbose;
 	{
         /* order matters: message, shop handling, actual transformation */
         if (verbose)
+        {
+            play_sfx_sound(SFX_STRIP_CHARGES);
             pline("%s briefly.", Yobjnam2(obj, "vibrate"));
+        }
         costly_alteration(obj, COST_UNCHRG);
         obj->charges = 0;
 //        if (obj->otyp == OIL_LAMP || obj->otyp == BRASS_LANTERN)
@@ -575,8 +578,10 @@ boolean verbose;
             strip_charges(obj, verbose);
             update_inventory();
         }
-        else if (obj->charges > lim)
+        else if (obj->charges >= lim)
         {
+            if (verbose)
+                play_sfx_sound(SFX_CHARGES_AT_MAXIMUM);
             obj->charges = lim;
             update_inventory();
         }
@@ -589,6 +594,7 @@ boolean verbose;
                 obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                     p_glow2(obj, NH_BLUE);
                     play_effect = TRUE;
                 }
@@ -600,6 +606,7 @@ boolean verbose;
                     obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
                     p_glow1(obj);
                     play_effect = TRUE;
                 }
@@ -666,6 +673,11 @@ boolean verbose;
             }
             if (verbose)
             {
+                if(is_blessed)
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
+                else
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
+
                 if (obj->charges >= lim)
                     p_glow2(obj, NH_BLUE);
                 else
@@ -710,11 +722,15 @@ boolean verbose;
                 strip_charges(obj, verbose);
             else if (is_blessed)
             {
+                if (verbose)
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                 obj->charges += rnd(3);
                 play_effect = TRUE;
             }
             else
             {
+                if (verbose)
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
                 obj->charges += 1;
                 play_effect = TRUE;
             }
@@ -743,6 +759,7 @@ boolean verbose;
             }
             else if (is_blessed)
             {
+
                 n = rn1(16, 15); /* 15..30 */
                 if (obj->charges + n <= (lim * 1) / 2)
                     obj->charges = (lim * 1) / 2;
@@ -758,6 +775,7 @@ boolean verbose;
                 }
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                     p_glow2(obj, NH_BLUE);
                     play_effect = TRUE;
                 }
@@ -777,6 +795,7 @@ boolean verbose;
                 }
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
                     p_glow2(obj, NH_WHITE);
                     play_effect = TRUE;
                 }
@@ -821,6 +840,7 @@ boolean verbose;
                 obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                     p_glow2(obj, NH_BLUE);
                     play_effect = TRUE;
                 }
@@ -832,6 +852,7 @@ boolean verbose;
                     obj->charges++;
                     if (verbose)
                     {
+                        play_sfx_sound(SFX_RECHARGE_SUCCESS);
                         p_glow1(obj);
                         play_effect = TRUE;
                     }
@@ -859,6 +880,7 @@ boolean verbose;
                     obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                     p_glow2(obj, NH_BLUE);
                     play_effect = TRUE;
                 }
@@ -870,6 +892,7 @@ boolean verbose;
                     obj->charges = 50;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
                     p_glow1(obj);
                     play_effect = TRUE;
                 }
@@ -890,6 +913,7 @@ boolean verbose;
                     obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                     p_glow2(obj, NH_BLUE);
                     play_effect = TRUE;
                 }
@@ -901,6 +925,7 @@ boolean verbose;
                     obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
                     p_glow1(obj);
                     play_effect = TRUE;
                 }
@@ -922,6 +947,7 @@ boolean verbose;
                     obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                     p_glow2(obj, NH_BLUE);
                     play_effect = TRUE;
                 }
@@ -933,6 +959,7 @@ boolean verbose;
                     obj->charges = lim;
                 if (verbose)
                 {
+                    play_sfx_sound(SFX_RECHARGE_SUCCESS);
                     p_glow1(obj);
                     play_effect = TRUE;
                 }
@@ -966,7 +993,10 @@ boolean verbose;
 				int dmg = d(3, 9);
 				obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
                 if (verbose)
+                {
+                    play_sfx_sound(SFX_EXPLOSION_MAGICAL);
                     pline("%s %s explodes!", Yname2(obj), expltext);
+                }
 				losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_NONE), "exploding sword", KILLED_BY_AN);
 				useup(obj);
 			}
@@ -977,6 +1007,7 @@ boolean verbose;
 					obj->charges = lim;
                     if (verbose)
                     {
+                        play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                         p_glow2(obj, NH_BLUE);
                         play_effect = TRUE;
                     }
@@ -988,6 +1019,7 @@ boolean verbose;
 						obj->charges = lim;
                     if (verbose)
                     {
+                        play_sfx_sound(SFX_RECHARGE_SUCCESS);
                         p_glow1(obj);
                         play_effect = TRUE;
                     }
@@ -1025,6 +1057,8 @@ boolean verbose;
 
             if (obj->charges > lim)
             {
+                if(verbose)
+                    play_sfx_sound(SFX_CHARGES_AT_MAXIMUM);
                 obj->charges = lim;
                 update_inventory();
                 break;
@@ -1036,6 +1070,7 @@ boolean verbose;
                     obj->charges = lim;
                     if (verbose)
                     {
+                        play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
                         p_glow2(obj, NH_BLUE);
                         play_effect = TRUE;
                     }
@@ -1047,6 +1082,7 @@ boolean verbose;
                         obj->charges = lim;
                     if (verbose)
                     {
+                        play_sfx_sound(SFX_RECHARGE_SUCCESS);
                         p_glow1(obj);
                         play_effect = TRUE;
                     }
@@ -1096,6 +1132,11 @@ boolean verbose;
 
                 if (verbose)
                 {
+                    if(is_blessed)
+                        play_sfx_sound(SFX_BLESSED_RECHARGE_SUCCESS);
+                    else
+                        play_sfx_sound(SFX_RECHARGE_SUCCESS);
+
                     pline("%s itself with %s.", Tobjnam(obj, "fill"), OBJ_CONTENT_DESC(obj->otyp));
                     play_effect = TRUE;
                 }
@@ -1116,7 +1157,10 @@ boolean verbose;
 	{
     not_chargable:
         if (verbose)
+        {
+            play_sfx_sound(SFX_RECHARGE_FAIL);
             You("have a feeling of loss.");
+        }
     }
 
     if (play_effect)
@@ -3274,6 +3318,7 @@ int chg; /* recharging */
     /* inflict damage and destroy the wand */
     dmg = d(n, k);
     obj->in_use = TRUE; /* in case losehp() is fatal (or --More--^C) */
+    play_sfx_sound(SFX_EXPLOSION_MAGICAL);
     pline("%s %s explodes!", Yname2(obj), expl);
     losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_MAGM, ADFLAGS_SPELL_DAMAGE), "exploding wand", KILLED_BY_AN);
     useup(obj);
