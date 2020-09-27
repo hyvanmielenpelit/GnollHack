@@ -687,7 +687,7 @@ struct monst *mon;
 	boolean badclass = FALSE, badalign = FALSE, badappropriate = FALSE, badexceptional = FALSE, self_willed, yours;
 
 	touch_blasted = FALSE;
-	if (!oart && !(objects[obj->otyp].oc_flags3 & O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS) && obj->exceptionality < EXCEPTIONALITY_CELESTIAL)
+	if (!oart && !(objects[obj->otyp].oc_flags4 & O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS) && obj->exceptionality < EXCEPTIONALITY_CELESTIAL)
 		return 1;
 
 	yours = (mon == &youmonst);
@@ -729,7 +729,7 @@ struct monst *mon;
 			badalign = bane_applies(oart, mon);
 	}
 
-	if (objects[obj->otyp].oc_flags3 & O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS)
+	if (objects[obj->otyp].oc_flags4 & O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS)
 		badappropriate = inappropriate_monster_character_type(mon, obj);
 	
 	if (obj->exceptionality >= EXCEPTIONALITY_CELESTIAL)
@@ -744,6 +744,8 @@ struct monst *mon;
 
 			if (!yours)
 				return 0;
+
+			play_sfx_sound(SFX_BLASTED_BY_POWER);
 			if(oart)
 				You("are blasted by %s power!", s_suffix(the(xname(obj))));
 			else
@@ -3490,11 +3492,13 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
     if (touch_artifact(obj, &youmonst)) {
         char buf[BUFSZ];
 		double damage = 0;
-        boolean ag = (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver),
-                bane = bane_applies(get_artifact(obj), &youmonst);
+		boolean ag = (objects[obj->otyp].oc_material == MAT_SILVER && Hate_silver),
+			bane = bane_applies(get_artifact(obj), &youmonst),
+			inappr_character = ((objects[obj->otyp].oc_flags4 & O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE) != 0 && inappropriate_monster_character_type(&youmonst, obj)),
+			inappr_exceptionality = inappropriate_exceptionality(&youmonst, obj);
 
         /* nothing else to do if hero can successfully handle this object */
-        if (!ag && !bane)
+        if (!ag && !bane && !inappr_exceptionality && !inappr_character)
             return 1;
 
         /* hero can't handle this object, but didn't get touch_artifact()'s
@@ -3509,6 +3513,10 @@ boolean loseit;    /* whether to drop it if hero can longer touch it */
                 damage = adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
             if (bane)
 				damage += adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
+			if (inappr_character)
+				damage += adjust_damage(rnd(5), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
+			if (inappr_exceptionality)
+				damage += adjust_damage(rnd(5), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE);
 			Sprintf(buf, "handling %s", killer_xname(obj));
             losehp(damage, buf, KILLED_BY);
             exercise(A_CON, FALSE);

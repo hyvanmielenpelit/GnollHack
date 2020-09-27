@@ -320,7 +320,12 @@ doread()
             You("feel the embossed words:");
         else if (flags.verbose)
             You("read:");
-        pline("\"1 Zorkmid.  857 GUE.  In Frobs We Trust.\"");
+        
+        if(Hallucination)
+            pline("\"1 Zorkmid.  857 GUE.  In Frobs We Trust.\"");
+        else
+            pline("\"1 Yendorian Gold Coin.  Treasury of Yendor.\"");
+
         u.uconduct.literate++;
         return 1;
     } else if (scroll->oartifact == ART_ORB_OF_FATE) {
@@ -411,6 +416,10 @@ doread()
         nodisappear = (scroll->otyp == SCR_FIRE
                        || (scroll->otyp == SCR_REMOVE_CURSE
                            && scroll->cursed));
+
+        if (!silently)
+            play_sfx_sound(SFX_READ);
+
         if (Blind)
             pline(nodisappear
                       ? "You %s the formula on the scroll."

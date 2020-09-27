@@ -501,6 +501,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Needle Misses", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Cloud Blows Away", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Needle Pricks", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Blasted by Power", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Action/Read", 1.0f },
 };
 
 

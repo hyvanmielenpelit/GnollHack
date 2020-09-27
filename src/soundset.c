@@ -1547,7 +1547,7 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     },
     {
         "read",
-        {GHSOUND_NONE, 0.0f},
+        {GHSOUND_SFX_READ, 1.0f},
         TRUE
     },
     {
@@ -2793,6 +2793,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_TRAP_NEEDLE_PRICKS",
         {GHSOUND_TRAP_NEEDLE_PRICKS, 1.0f},
+        FALSE
+    },
+    {
+        "GHSOUND_BLASTED_BY_POWER",
+        {GHSOUND_BLASTED_BY_POWER, 1.0f},
         FALSE
     },
 };

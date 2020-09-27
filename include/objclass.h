@@ -866,7 +866,7 @@ struct objclass {
 
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000200UL  /* wielding or wearing prohibits the revival of permitted targets */
 #define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000400UL  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
-#define O3_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS	0x00000800UL	/* deals damage when wielded like artifacts */
+/* free bit */
 
 #define O3_INVOKABLE								0x00001000UL	/* can be invoked using invoke command */
 #define O3_APPLIABLE								0x00002000UL	/* can be applied as a tool */
@@ -905,7 +905,8 @@ struct objclass {
 #define O4_GENERATED_CELESTIAL		0x00000080UL
 #define O4_GENERATED_PRIMORDIAL 	0x00000100UL
 #define O4_GENERATED_INFERNAL    	0x00000200UL
-
+#define O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00000400UL	/* deals damage when wielded like artifacts */
+#define O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE			0x00000800UL
 
 /* flag values for CONFERS_POWERS_TO_SPECIFIED_CHARACTERS_ONLY in nonspell_oc7 */
 #define PERMITTED_ALL				0x00000000UL
