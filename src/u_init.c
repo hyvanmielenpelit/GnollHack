@@ -881,6 +881,13 @@ props_init()
 	context.properties[MUMMY_ROT].recurring_constant = 50;
 	context.properties[MUMMY_ROT].recurring_random = 50;
 
+	/* Buff tile definitions */
+	context.first_buff = CONFLICT;
+	context.last_buff = CRAZED;
+	context.properties[CONFLICT].show_buff = TRUE;
+	strcpy(context.properties[CONFLICT].prop_tile_name, "conflict");
+	context.properties[CRAZED].show_buff = TRUE;
+	strcpy(context.properties[CRAZED].prop_tile_name, "crazed");
 }
 
 void

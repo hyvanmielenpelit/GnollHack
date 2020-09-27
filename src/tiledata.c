@@ -1616,6 +1616,37 @@ uchar* tilemapflags;
         tile_count++;
     }
 
+    set_name = "buff";
+    for (int i = 0; i < MAX_BUFF_TILES; i++)
+    {
+        if (process_style == 0)
+        {
+            int smalltilenum = (i < MAX_BUFF_TILES - 1 ? BUFFS_PER_TILE : LAST_PROP % BUFFS_PER_TILE);
+            Sprintf(buf, "%s,%s,tile-%d,%d,%d,%d", tile_section_name, set_name,
+                i,
+                smalltilenum,
+                BUFF_WIDTH,
+                BUFF_HEIGHT
+            );
+            for (int j = 0; j < smalltilenum; j++)
+            {
+                int propidx = i * BUFFS_PER_TILE + j + 1;
+                if(context.properties[propidx].show_buff && context.properties[propidx].prop_tile_name && strcmp(context.properties[propidx].prop_tile_name, ""))
+                    Sprintf(eos(buf), ",%s", context.properties[propidx].prop_tile_name);
+                else
+                    Sprintf(eos(buf), ",%s", "no_buff");
+            }
+            Sprintf(eos(buf), "\n");
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_BUFF_OFF;
+            tilemaparray[i + GLYPH_BUFF_OFF] = tile_count;
+        }
+        tile_count++;
+    }
+
     /* Replacement tiles */
     tile_section_name = "replacement";
     for (int i = 1; i <= NUM_REPLACEMENTS; i++)  /* replacement number, starts at 1 */
@@ -1948,6 +1979,7 @@ uchar* tilemapflags;
             }
         }
 
+        /* Buffs have no replacements currently */
 
 
         /*
@@ -2177,6 +2209,8 @@ uchar* tilemapflags;
             }
         }
 
+        /* Buffs have no animations currently */
+
 
         /* Replacements */
         for (int i = 1; i <= NUM_REPLACEMENTS; i++)
@@ -2368,6 +2402,9 @@ uchar* tilemapflags;
                 tile2enlargement[tile] = ui_tile_component_array[i].enlargement;
             }
         }
+
+        /* Buffs have no enlargements */
+
 
         /* Replacements */
         for (int i = 1; i <= NUM_REPLACEMENTS; i++)

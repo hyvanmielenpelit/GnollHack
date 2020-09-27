@@ -1916,7 +1916,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                     }
 
-                    /* Conditions and status marks */
+                    /* Conditions, status marks, and buffs */
                     int condition_count = 0;
                     if (glyph_is_monster(monster_glyph) && mtmp)
                     {
@@ -2037,20 +2037,20 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int within_tile_x = status_mark % tiles_per_row;
                                     int within_tile_y = status_mark / tiles_per_row;
-                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[CONDITION_MARKS].width;
-                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[CONDITION_MARKS].height;
+                                    int c_x = ct_x + within_tile_x * ui_tile_component_array[STATUS_MARKS].width;
+                                    int c_y = ct_y + within_tile_y * ui_tile_component_array[STATUS_MARKS].height;
 
                                     RECT source_rt = { 0 };
                                     source_rt.left = c_x;
-                                    source_rt.right = c_x + ui_tile_component_array[CONDITION_MARKS].width;
+                                    source_rt.right = c_x + ui_tile_component_array[STATUS_MARKS].width;
                                     source_rt.top = c_y;
-                                    source_rt.bottom = c_y + ui_tile_component_array[CONDITION_MARKS].height;
+                                    source_rt.bottom = c_y + ui_tile_component_array[STATUS_MARKS].height;
 
                                     /* Define draw location in target */
-                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[CONDITION_MARKS].width;
-                                    int unscaled_right = unscaled_left + ui_tile_component_array[CONDITION_MARKS].width;
-                                    int unscaled_top = 2 + (2 + ui_tile_component_array[CONDITION_MARKS].width) * condition_count;
-                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[CONDITION_MARKS].height;
+                                    int unscaled_left = tileWidth - 2 - ui_tile_component_array[STATUS_MARKS].width;
+                                    int unscaled_right = unscaled_left + ui_tile_component_array[STATUS_MARKS].width;
+                                    int unscaled_top = 2 + (2 + ui_tile_component_array[STATUS_MARKS].width) * condition_count;
+                                    int unscaled_bottom = unscaled_top + ui_tile_component_array[STATUS_MARKS].height;
 
                                     RECT target_rt = { 0 };
                                     target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
@@ -2126,6 +2126,58 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         source_rt.top, source_rt.right - source_rt.left,
                                         source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                     */
+
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        data->backBufferDC, target_rt.left, target_rt.top,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        source_rt.top, source_rt.right - source_rt.left,
+                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                                    condition_count++;
+                                }
+                            }
+
+                            /* Buffs */
+                            for (int propidx = context.first_buff; propidx <= context.last_buff; propidx++)
+                            {
+                                if (!context.properties[propidx].show_buff)
+                                    continue;
+
+                                mglyph = (propidx - 1) / BUFFS_PER_TILE + GLYPH_BUFF_OFF;
+                                mtile = glyph2tile[mglyph];
+                                ct_x = TILEBMP_X(mtile);
+                                ct_y = TILEBMP_Y(mtile);
+                                tiles_per_row = tileWidth / BUFF_WIDTH;
+                                max_fitted_rows = (tileHeight - 4) / (BUFF_HEIGHT + 2);
+
+                                if (condition_count >= max_fitted_rows)
+                                    break;
+
+                                if (isyou ? (u.uprops[propidx].intrinsic & TIMEOUT) != 0 : (mtmp->mprops[propidx] & M_TIMEOUT) != 0)
+                                {
+                                    int smalltileidx = (propidx - 1) % BUFFS_PER_TILE;
+                                    int within_tile_x = smalltileidx % tiles_per_row;
+                                    int within_tile_y = smalltileidx / tiles_per_row;
+                                    int c_x = ct_x + within_tile_x * BUFF_WIDTH;
+                                    int c_y = ct_y + within_tile_y * BUFF_HEIGHT;
+
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = c_x;
+                                    source_rt.right = c_x + BUFF_WIDTH;
+                                    source_rt.top = c_y;
+                                    source_rt.bottom = c_y + BUFF_HEIGHT;
+
+                                    /* Define draw location in target */
+                                    int unscaled_left = tileWidth - 2 - BUFF_WIDTH;
+                                    int unscaled_right = unscaled_left + BUFF_WIDTH;
+                                    int unscaled_top = 2 + (2 + BUFF_WIDTH) * condition_count;
+                                    int unscaled_bottom = unscaled_top + BUFF_HEIGHT;
+
+                                    RECT target_rt = { 0 };
+                                    target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
+                                    target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
+                                    target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
+                                    target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
 
                                     (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, target_rt.left, target_rt.top,

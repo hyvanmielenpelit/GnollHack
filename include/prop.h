@@ -267,9 +267,13 @@ struct prop {
 };
 
 struct prop_info {
-	boolean recurring;			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
-	int recurring_constant;
+    Bitfield(recurring, 1);			/* Is property recurring? EProperty causes timeout in HProperty to increase by recurring_constant + rnd(recurring_random) */
+    Bitfield(show_buff, 1);
+
+    int recurring_constant;
 	int recurring_random;
+
+    char prop_tile_name[24];
 };
 
 /*** Definitions for backwards compatibility ***/

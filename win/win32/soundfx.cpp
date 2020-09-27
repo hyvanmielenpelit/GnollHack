@@ -61,8 +61,6 @@ struct ghsound_eventmapping {
 };
 
 
-#define NoSound { SOUND_BANK_NONE,  "", 0.0f}
-
 const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_NONE, "" , 0.0f },
 
@@ -504,8 +502,6 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Cloud Blows Away", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Needle Pricks", 1.0f },
 };
-
-#undef NoSound
 
 
 extern "C" 
