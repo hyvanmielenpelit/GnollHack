@@ -46,7 +46,7 @@ enum prop_types {
     SLEEPY            = 27,
     HUNGER            = 28,
     /* Vision and senses */
-    SEE_INVISIBLE  = 29,
+    SEE_INVISIBLE     = 29,
     TELEPAT           = 30,  /* Blind telepathy is now its own property type*/
     WARNING           = 31,
     WARN_OF_MON       = 32,  /* Obsolete -- JG */
@@ -273,7 +273,7 @@ struct prop_info {
     int recurring_constant;
 	int recurring_random;
 
-    char prop_tile_name[24];
+    char prop_tile_name[40];
 };
 
 /*** Definitions for backwards compatibility ***/

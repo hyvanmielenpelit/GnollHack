@@ -2138,9 +2138,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
 
                             /* Buffs */
-                            for (int propidx = context.first_buff; propidx <= context.last_buff; propidx++)
+                            for (int propidx = 1; propidx <= LAST_PROP; propidx++)
                             {
                                 if (!context.properties[propidx].show_buff)
+                                    continue;
+
+                                if (isyou ? (u.uprops[propidx].intrinsic & TIMEOUT) == 0 : (mtmp->mprops[propidx] & M_TIMEOUT) == 0)
                                     continue;
 
                                 mglyph = (propidx - 1) / BUFFS_PER_TILE + GLYPH_BUFF_OFF;
@@ -2153,40 +2156,37 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (condition_count >= max_fitted_rows)
                                     break;
 
-                                if (isyou ? (u.uprops[propidx].intrinsic & TIMEOUT) != 0 : (mtmp->mprops[propidx] & M_TIMEOUT) != 0)
-                                {
-                                    int smalltileidx = (propidx - 1) % BUFFS_PER_TILE;
-                                    int within_tile_x = smalltileidx % tiles_per_row;
-                                    int within_tile_y = smalltileidx / tiles_per_row;
-                                    int c_x = ct_x + within_tile_x * BUFF_WIDTH;
-                                    int c_y = ct_y + within_tile_y * BUFF_HEIGHT;
+                                int smalltileidx = (propidx - 1) % BUFFS_PER_TILE;
+                                int within_tile_x = smalltileidx % tiles_per_row;
+                                int within_tile_y = smalltileidx / tiles_per_row;
+                                int c_x = ct_x + within_tile_x * BUFF_WIDTH;
+                                int c_y = ct_y + within_tile_y * BUFF_HEIGHT;
 
-                                    RECT source_rt = { 0 };
-                                    source_rt.left = c_x;
-                                    source_rt.right = c_x + BUFF_WIDTH;
-                                    source_rt.top = c_y;
-                                    source_rt.bottom = c_y + BUFF_HEIGHT;
+                                RECT source_rt = { 0 };
+                                source_rt.left = c_x;
+                                source_rt.right = c_x + BUFF_WIDTH;
+                                source_rt.top = c_y;
+                                source_rt.bottom = c_y + BUFF_HEIGHT;
 
-                                    /* Define draw location in target */
-                                    int unscaled_left = tileWidth - 2 - BUFF_WIDTH;
-                                    int unscaled_right = unscaled_left + BUFF_WIDTH;
-                                    int unscaled_top = 2 + (2 + BUFF_WIDTH) * condition_count;
-                                    int unscaled_bottom = unscaled_top + BUFF_HEIGHT;
+                                /* Define draw location in target */
+                                int unscaled_left = tileWidth - 2 - BUFF_WIDTH;
+                                int unscaled_right = unscaled_left + BUFF_WIDTH;
+                                int unscaled_top = 2 + (2 + BUFF_WIDTH) * condition_count;
+                                int unscaled_bottom = unscaled_top + BUFF_HEIGHT;
 
-                                    RECT target_rt = { 0 };
-                                    target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
-                                    target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
-                                    target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
-                                    target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
+                                RECT target_rt = { 0 };
+                                target_rt.left = rect->left + (int)(x_scaling_factor * (double)unscaled_left);
+                                target_rt.right = rect->left + (int)(x_scaling_factor * (double)unscaled_right);
+                                target_rt.top = rect->top + (int)(y_scaling_factor * (double)unscaled_top);
+                                target_rt.bottom = rect->top + (int)(y_scaling_factor * (double)unscaled_bottom);
 
-                                    (*GetNHApp()->lpfnTransparentBlt)(
-                                        data->backBufferDC, target_rt.left, target_rt.top,
-                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
-                                        source_rt.top, source_rt.right - source_rt.left,
-                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                (*GetNHApp()->lpfnTransparentBlt)(
+                                    data->backBufferDC, target_rt.left, target_rt.top,
+                                    target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                    source_rt.top, source_rt.right - source_rt.left,
+                                    source_rt.bottom - source_rt.top, TILE_BK_COLOR);
 
-                                    condition_count++;
-                                }
+                                condition_count++;
                             }
 
                             /* Steed mark (you as small) */
