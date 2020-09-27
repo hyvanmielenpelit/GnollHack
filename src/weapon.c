@@ -1892,26 +1892,26 @@ enhance_weapon_skill()
 		any = zeroany;
 		prefix =
             (to_advance + eventually_advance + maxxed_cnt > 0)
-			? (iflags.menu_tab_sep ? "  " : "    ")
+			? (iflags.menu_tab_sep ? "" : "    ")
 			: "";
 
 		if (speedy /*wizard*/)
 		{
 			if (!iflags.menu_tab_sep)
-				Sprintf(headerbuf, " %s%-*s %-12s %-12s %5s (%s)", prefix,
-					longest, "Skill", "Current", "Maximum", "Point",
+				Sprintf(headerbuf, " %s%-*s %-12s %-1s %-12s %5s (%s)", prefix,
+					longest, "Skill", "Current", ">", "Maximum", "Point",
 					"Next");
 			else
-				Sprintf(headerbuf, " %s%s\t%s\t%s\t%5s (%4s)", prefix, "Skill", "Current", "Maximum", "Point",
+				Sprintf(headerbuf, " %s%s\t%s\t%s\t%s\t%5s (%4s)", prefix, "Skill", "Current", ">", "Maximum", "Point",
 					"Next");
 		}
 		else
 		{
 			if (!iflags.menu_tab_sep)
-				Sprintf(headerbuf, " %s %-*s %-12s %-12s %s %s ", prefix, longest, "Skill", "Current", "Maximum", "  Bonuses   ", 
+                Sprintf(headerbuf, " %s %-*s %-12s %-1s %-12s %s %s ", prefix, longest, "Skill", "Current", ">", "Maximum", "  Bonuses   ",
 					to_advance + eventually_advance > 0 ? "  Advanced  " : "");
 			else
-				Sprintf(headerbuf, " %s%s\t%s\t%s\t%s\t%s", prefix, "Skill", "Current", "Maximum", "Bonuses", 
+				Sprintf(headerbuf, " %s%s\t%s\t%s\t%s\t%s\t%s", prefix, "Skill", "Current", ">", "Maximum", "Bonuses",
 					to_advance + eventually_advance > 0 ? "Next level" : "");
 		}
 
@@ -2004,26 +2004,32 @@ enhance_weapon_skill()
 #ifdef ANDROID
                     prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? "  " : "";
 #else
-                    prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? (iflags.menu_tab_sep ? "  " : "    ") : "";
+                    prefix = (to_advance + eventually_advance + maxxed_cnt > 0) ? (iflags.menu_tab_sep ? "" : "    ") : "";
 #endif
                 (void)skill_level_name(i, sklnambuf, FALSE);
-                char skillmaxbuf[BUFSZ] = "";
+                char skillmaxbuf[BUFSZ];
                 (void)skill_level_name(i, skillmaxbuf, TRUE);
 
-                char skillnamebuf[BUFSZ] = "";
+                char skillnamebuf[BUFSZ];
                 strcpy(skillnamebuf, P_NAME(i));
                 *skillnamebuf = highc(*skillnamebuf);
 
+                int skill_slots_needed = slots_required(i);
+                char skillslotbuf[BUFSZ];
+                if (P_SKILL_LEVEL(i) >= P_MAX_SKILL_LEVEL(i))
+                    strcpy(skillslotbuf, "-");
+                else
+                    Sprintf(skillslotbuf, "%d", skill_slots_needed);
 
                 if (speedy /*wizard*/)
                 {
                     if (!iflags.menu_tab_sep)
-                        Sprintf(buf, " %s%-*s %-12s %-12s %5d (%d)", prefix,
-                            longest, skillnamebuf, sklnambuf, skillmaxbuf, P_ADVANCE(i),
+                        Sprintf(buf, " %s%-*s %-12s %-1s %-12s %5d (%d)", prefix,
+                            longest, skillnamebuf, sklnambuf, skillslotbuf, skillmaxbuf, P_ADVANCE(i),
                             practice_needed_to_advance(i, P_SKILL_LEVEL(i)));
                     else
-                        Sprintf(buf, " %s%s\t%s\t%s\t%5d (%d)", prefix, skillnamebuf,
-                            sklnambuf, skillmaxbuf, P_ADVANCE(i),
+                        Sprintf(buf, " %s%s\t%s\t%s\t%s\t%5d (%d)", prefix, skillnamebuf,
+                            sklnambuf, skillslotbuf, skillmaxbuf, P_ADVANCE(i),
                             practice_needed_to_advance(i, P_SKILL_LEVEL(i)));
                 }
                 else
@@ -2147,11 +2153,11 @@ enhance_weapon_skill()
                         }
                     }
                     if (!iflags.menu_tab_sep)
-                        Sprintf(buf, " %s %-*s %-12s %-12s %-12s %s", prefix, longest,
-                            skillnamebuf, sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
+                        Sprintf(buf, " %s %-*s %-12s %-1s %-12s %-12s %s", prefix, longest,
+                            skillnamebuf, sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                     else
-                        Sprintf(buf, " %s%s\t%s\t%s\t%s\t%s", prefix, skillnamebuf,
-                            sklnambuf, skillmaxbuf, bonusbuf, nextbonusbuf);
+                        Sprintf(buf, " %s%s\t%s\t%s\t%s\t%s\t%s", prefix, skillnamebuf,
+                            sklnambuf, skillslotbuf, skillmaxbuf, bonusbuf, nextbonusbuf);
                 }
                 any.a_int = can_advance(i, speedy) ? i + 1 : 0;
                 add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, buf,
