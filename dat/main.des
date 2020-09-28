@@ -85,6 +85,7 @@ TRAP: random, random
 # Treasure island guarded by a roper.
 #
 LEVEL: "treasure1"
+NAMING:"Curios island room",name_revealed_never
 GEOMETRY:center,center
 MAP
       ---S---     
@@ -107,6 +108,11 @@ S..}},,T,,,T,,}}..S
 ENDMAP
 
 REGION:(00,00,18,16),lit,"ordinary"
+SPECIAL_REGION:(06,00,12,16),region_special_level_seen
+SPECIAL_REGION:(03,01,15,15),region_special_level_seen
+SPECIAL_REGION:(02,02,16,14),region_special_level_seen
+SPECIAL_REGION:(01,03,17,13),region_special_level_seen
+SPECIAL_REGION:(00,04,18,12),region_special_level_seen
 CONTAINER:('(',"chest"),buried,(09,08) {
   OBJECT:('$',"gold piece"),quantity:(4000+(4d500))
   [50%]:OBJECT:'*'
@@ -126,6 +132,7 @@ CONTAINER:('(',"chest"),buried,(09,08) {
   OBJECT:('/',"cold")
 }
 ENGRAVING: (09,08), engrave, "X"
+SPECIAL_REGION:(09,08,09,08),region_special_level_true_nature_revealed
 MONSTER: ('#', "roper"), (09,08), hostile, asleep
 MONSTER: ('F', "shrieker"), (05,08), hostile
 MONSTER: ('F', "shrieker"), (13,08), hostile

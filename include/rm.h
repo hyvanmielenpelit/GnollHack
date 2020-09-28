@@ -835,6 +835,11 @@ struct cemetery {
 };
 
 struct levelflags {
+    char special_description[BUFSZ];
+    enum special_level_naming_types special_naming_reveal_type;
+    int special_naming_seen_monster_type;
+    int special_naming_seen_monster_class;
+
     uchar tileset;
     uchar nfountains; /* number of fountains on level */
     uchar nsinks;     /* number of sinks on the level */
@@ -898,10 +903,6 @@ typedef struct {
     struct damage *damagelist;
     struct cemetery *bonesinfo;
     struct levelflags flags;
-    char special_description[BUFSZ];
-    enum special_level_naming_types special_naming_reveal_type;
-    int special_naming_seen_monster_type;
-    int special_naming_seen_monster_class;
 } dlevel_t;
 
 extern schar lastseentyp[COLNO][ROWNO]; /* last seen/touched dungeon typ */

@@ -1491,6 +1491,8 @@ do_mapping()
     register int zx, zy;
     boolean unconstrained;
 
+    set_special_level_seen(&u.uz, FALSE);
+
     unconstrained = unconstrain_map();
     for (zx = 1; zx < COLNO; zx++)
         for (zy = 0; zy < ROWNO; zy++)

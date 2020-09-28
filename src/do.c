@@ -5233,15 +5233,9 @@ boolean at_stairs, falling, portal;
 		}
 	}
 
-	if (level.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL)
+	if (level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL)
 	{
-		mapseen* mptr = find_mapseen(&u.uz0);
-		if (mptr)
-		{
-			mptr->flags.special_level = 1;
-			mptr->flags.special_level_true_nature_known = 1;
-			strcpy(mptr->special_description, level.special_description);
-		}
+		set_special_level_seen(&u.uz0, TRUE);
 	}
 
     assign_level(&u.uz0, &u.uz); /* reset u.uz0 */

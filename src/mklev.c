@@ -745,10 +745,10 @@ clear_level_structures()
     level.flags.corrmaze = 0;
     level.flags.throne_on_ground = 0;
     level.flags.no_special_level_naming_checks = 0;
-    level.special_naming_reveal_type = SPECIAL_LEVEL_NAMING_REVEALED_NEVER;
-    level.special_naming_seen_monster_type = NON_PM;
-    level.special_naming_seen_monster_class = 0;
-    strcpy(level.special_description, "");
+    strcpy(level.flags.special_description, "");
+    level.flags.special_naming_reveal_type = SPECIAL_LEVEL_NAMING_REVEALED_NEVER;
+    level.flags.special_naming_seen_monster_type = NON_PM;
+    level.flags.special_naming_seen_monster_class = 0;
 
     nroom = 0;
     rooms[0].hx = -1;

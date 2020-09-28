@@ -1085,10 +1085,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
             struct trap* trap_here = 0;
             boolean is_enl_you = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_YOU);
+            struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
+            boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
+            boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
+            boolean objects_in_pit = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_IN_PIT);
 
             if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
-                if (1)
+                if (!showing_detection)
                 {
                     int relevant_i = i;
                     int relevant_j = enl_j;
@@ -1121,11 +1125,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         continue;
                 }
             }
-
-            struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
-            boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
-            boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
-            boolean objects_in_pit = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_IN_PIT);
 
             /* Object mimic handling */
             boolean has_obj_mimic = FALSE;

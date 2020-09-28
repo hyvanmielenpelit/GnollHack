@@ -1963,7 +1963,7 @@ passwall_detail : NON_PASSWALL_ID ':' region_or_var
 
 naming_detail : NAMING_ID ':' STRING ',' NAMING_TYPE
 		  {
-		      add_opvars(splev, "isMo", VA_PASS4($<i>5, $3, -1, SPO_NAMING));
+		      add_opvars(splev, "Miso", VA_PASS4(-1, $<i>5, $3, SPO_NAMING));
 		  }
 		| NAMING_ID ':' STRING ',' NAMING_TYPE ',' MONTYPE_ID ':' monster_or_var
 		  {

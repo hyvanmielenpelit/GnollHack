@@ -850,6 +850,7 @@ E void FDECL(remdun_mapseen, (int));
 E const char *FDECL(endgamelevelname, (char *, int));
 E mapseen* FDECL(find_mapseen, (d_level*));
 E void FDECL(check_special_level_naming_by_mon, (struct monst*));
+E void FDECL(set_special_level_seen, (d_level*, boolean));
 
 /* ### eat.c ### */
 

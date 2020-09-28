@@ -231,6 +231,7 @@ typedef struct mapseen {
         Bitfield(shoptype, 5);
     } feat;
     struct mapseen_flags {
+        char special_description[BUFSZ];
         Bitfield(unreachable, 1); /* can't get back to this level */
         Bitfield(forgot, 1);      /* player has forgotten about this level */
         Bitfield(knownbones, 1);  /* player aware of bones */
@@ -252,7 +253,6 @@ typedef struct mapseen {
         Bitfield(quest_summons, 1); /* heard summons from leader */
         Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
     } flags;
-    char special_description[40];
     /* custom naming */
     char *custom;
     size_t custom_lth;

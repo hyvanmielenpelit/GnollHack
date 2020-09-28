@@ -5018,7 +5018,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 1965 "lev_comp.y"
     {
-		      add_opvars(splev, "isMo", VA_PASS4((yyvsp[(5) - (5)].i), (yyvsp[(3) - (5)].map), -1, SPO_NAMING));
+		      add_opvars(splev, "Miso", VA_PASS4(-1, (yyvsp[(5) - (5)].i), (yyvsp[(3) - (5)].map), SPO_NAMING));
 		  ;}
     break;
 

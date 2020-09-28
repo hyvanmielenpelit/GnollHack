@@ -5558,13 +5558,13 @@ struct sp_coder* coder;
     mnum = SP_MONST_PM(OV_i(montype_opvar));
     mclass = SP_MONST_CLASS(OV_i(montype_opvar));
 
-    strcpy(level.special_description, OV_s(name_opvar));
+    strcpy(level.flags.special_description, OV_s(name_opvar));
 
     int typ;
     typ = OV_i(typ_opvar);
-    level.special_naming_reveal_type = typ;
-    level.special_naming_seen_monster_type = mnum;
-    level.special_naming_seen_monster_class = mclass;
+    level.flags.special_naming_reveal_type = typ;
+    level.flags.special_naming_seen_monster_type = mnum;
+    level.flags.special_naming_seen_monster_class = mclass;
 
     opvar_free(typ_opvar);
     opvar_free(montype_opvar);

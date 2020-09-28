@@ -2771,7 +2771,6 @@ recalc_mapseen()
             mptr->flags.knownbones = 1;
         }
 
-    strcpy(mptr->special_description, level.special_description);
 }
 
 /*ARGUSED*/
@@ -3176,10 +3175,10 @@ boolean printdun;
         s_level* slev;
         if ((slev = Is_special(&mptr->lev)) != 0)
         {
-            if(mptr->flags.special_level_true_nature_known || !strcmp(mptr->special_description, ""))
+            if(mptr->flags.special_level_true_nature_known || !strcmp(mptr->flags.special_description, ""))
                 Sprintf(buf, "%s%s.", PREFIX, slev->name);
             else
-                Sprintf(buf, "%s%s.", PREFIX, mptr->special_description);
+                Sprintf(buf, "%s%s.", PREFIX, mptr->flags.special_description);
         }
     }
 
@@ -3248,21 +3247,36 @@ struct monst* mon;
     if (!mon)
         return;
 
-    if (!level.flags.no_special_level_naming_checks && Is_special(&u.uz) &&
-        (level.special_naming_seen_monster_type >= LOW_PM && level.special_naming_seen_monster_type == mon->mnum)
-        || (level.special_naming_seen_monster_type == NON_PM && level.special_naming_seen_monster_class > 0 && level.special_naming_seen_monster_class == mon->data->mlet)
+    if (!level.flags.no_special_level_naming_checks && Is_special(&u.uz) && level.flags.special_naming_reveal_type == SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER &&
+        (level.flags.special_naming_seen_monster_type >= LOW_PM && level.flags.special_naming_seen_monster_type == mon->mnum)
+        || (level.flags.special_naming_seen_monster_type == NON_PM && level.flags.special_naming_seen_monster_class > 0 && level.flags.special_naming_seen_monster_class == mon->data->mlet)
         )
     {
-        mapseen* mptr = find_mapseen(&u.uz);
-
-        if (mptr)
-        {
-            mptr->flags.special_level = 1;
-            mptr->flags.special_level_true_nature_known = 1;
-            strcpy(mptr->special_description, level.special_description);
-        }
-        level.flags.no_special_level_naming_checks = 1;
+        set_special_level_seen(&u.uz, TRUE);
     }
+}
+
+void
+set_special_level_seen(lvl, set_also_true_nature_known)
+d_level* lvl;
+boolean set_also_true_nature_known;
+{
+    mapseen* mptr = find_mapseen(lvl);
+
+    if (!mptr)
+        return;
+
+    if (Is_special(lvl))
+    {
+        mptr->flags.special_level = 1;
+        strcpy(mptr->flags.special_description, level.flags.special_description);
+        if (set_also_true_nature_known)
+        {
+            mptr->flags.special_level_true_nature_known = 1;
+            level.flags.no_special_level_naming_checks = 1;
+        }
+    }
+
 }
 
 /*dungeon.c*/

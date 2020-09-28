@@ -1254,17 +1254,7 @@ genericptr_t p2;
 {
     if (p2 == (genericptr_t)0) /* You */
     { 
-        mapseen* mptr = find_mapseen(&u.uz);
-
-        if (!mptr)
-            return FALSE;
-
-        if (Is_special(&u.uz))
-        {
-            mptr->flags.special_level = 1;
-            strcpy(mptr->special_description, level.special_description);
-        }
-
+        set_special_level_seen(&u.uz, FALSE);
         return TRUE;
     }
     return FALSE;
@@ -1278,18 +1268,7 @@ genericptr_t p2;
 {
     if (p2 == (genericptr_t)0) /* You */
     {
-        mapseen* mptr = find_mapseen(&u.uz);
-
-        if (!mptr)
-            return FALSE;
-
-        if (Is_special(&u.uz))
-        {
-            mptr->flags.special_level = 1;
-            mptr->flags.special_level_true_nature_known = 1;
-            strcpy(mptr->special_description, level.special_description);
-        }
-
+        set_special_level_seen(&u.uz, TRUE);
         return TRUE;
     }
     return FALSE;
