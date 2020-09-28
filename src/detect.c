@@ -78,7 +78,7 @@ struct monst *mtmp;
 boolean showtail;
 {
     show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my, any_mon_to_glyph(mtmp, newsym_rn2), mtmp, 0UL, 0);
-
+    check_special_level_naming_by_mon(mtmp);
 #if 0
     if (def_monsyms[(int) mtmp->data->mlet].sym == ' ')
         show_monster_glyph_with_extra_info(mtmp->mx, mtmp->my,

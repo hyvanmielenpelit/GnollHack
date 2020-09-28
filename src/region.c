@@ -15,8 +15,8 @@ static NhRegion **regions;
 static int n_regions = 0;
 static int max_regions = 0;
 
-#define NO_CALLBACK (-1)
-
+boolean FDECL(enter_special_level_seen, (genericptr, genericptr));
+boolean FDECL(enter_special_level_true_nature_revealed, (genericptr, genericptr));
 boolean FDECL(inside_gas_cloud, (genericptr, genericptr));
 boolean FDECL(expire_gas_cloud, (genericptr, genericptr));
 boolean FDECL(inside_rect, (NhRect *, int, int));
@@ -45,28 +45,24 @@ NhRegion *FDECL(create_force_field, (XCHAR_P,XCHAR_P,int,long));
 
 STATIC_DCL void FDECL(reset_region_mids, (NhRegion *));
 
-static callback_proc callbacks[] = {
-#define INSIDE_GAS_CLOUD 0
-    inside_gas_cloud,
-#define EXPIRE_GAS_CLOUD 1
-    expire_gas_cloud
-};
-
 struct region_type_definition region_type_definitions[MAX_REGION_TYPES] =
 {
-    {"general",                 REGION_BASETYPE_GENERAL, FALSE, AD_PHYS, FALSE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"poison gas",              REGION_BASETYPE_GAS, TRUE,  AD_DRST, TRUE, S_poisoncloud, 0, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_POISON_GAS, 0UL },
-    {"smoke",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, TRUE, S_cloud, 0, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
-    {"cloud",                   REGION_BASETYPE_GAS, FALSE,  AD_PHYS, TRUE, S_cloud, 0, TRUE,   FALSE,  FALSE,  TRUE,   TRUE,   FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
-    {"fire",                    REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_FIRE, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
-    {"lightning",               REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_ELEC, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
-    {"frost",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_COLD, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"death",                   REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DRAY, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"annihilation",            REGION_BASETYPE_ELEMENTAL_EFFECT, TRUE, AD_DISN, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   TRUE,   FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
-    {"magical darkness",        REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, TRUE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
-    {"magical silence",         REGION_BASETYPE_MAGICAL_EFFECT, FALSE, AD_PHYS, TRUE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  TRUE,   FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"transparent force field", REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, TRUE, S_unexplored, 0, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
-    {"opaque force field",      REGION_BASETYPE_FORCEFIELD, FALSE, AD_PHYS, TRUE, S_unexplored, 0, TRUE,   TRUE,   FALSE,  FALSE,  FALSE,  FALSE,  TRUE,   0, REGION_SOUNDSET_NONE, 0UL }
+    {"general",                 REGION_BASETYPE_GENERAL, 0, 0, 0, 0, 0, 0, FALSE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"message",                 REGION_BASETYPE_GENERAL, 0, 0, 0, 0, 0, 0, FALSE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"special level seen",      REGION_BASETYPE_GENERAL, 0, 0, 0, enter_special_level_seen, 0, 0, FALSE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"sp.lvl true nature rev.", REGION_BASETYPE_GENERAL, 0, 0, 0, enter_special_level_true_nature_revealed, 0, 0, FALSE, S_unexplored, 0, FALSE,  FALSE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"poison gas",              REGION_BASETYPE_GAS, inside_gas_cloud, expire_gas_cloud, 0, 0, 0, 0, TRUE, S_poisoncloud, 0, TRUE,   FALSE, TRUE,   0, REGION_SOUNDSET_POISON_GAS, 0UL },
+    {"smoke",                   REGION_BASETYPE_GAS, 0, 0, 0, 0, 0, 0, TRUE, S_cloud, 0, TRUE,   FALSE, TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
+    {"cloud",                   REGION_BASETYPE_GAS, 0, 0, 0, 0, 0, 0, TRUE, S_cloud, 0, TRUE,   FALSE, TRUE,   0, REGION_SOUNDSET_NONE, 0UL },
+    {"fire",                    REGION_BASETYPE_ELEMENTAL_EFFECT, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, TRUE,   TRUE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
+    {"lightning",               REGION_BASETYPE_ELEMENTAL_EFFECT, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, TRUE,   TRUE,  FALSE,  1, REGION_SOUNDSET_NONE, 0UL },
+    {"frost",                   REGION_BASETYPE_ELEMENTAL_EFFECT, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, TRUE,   TRUE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"death",                   REGION_BASETYPE_ELEMENTAL_EFFECT, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, TRUE,   TRUE,  FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"annihilation",            REGION_BASETYPE_ELEMENTAL_EFFECT, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, TRUE,   TRUE,  FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
+    {"magical darkness",        REGION_BASETYPE_MAGICAL_EFFECT, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, FALSE,  FALSE,   FALSE, -1, REGION_SOUNDSET_NONE, 0UL },
+    {"magical silence",         REGION_BASETYPE_MAGICAL_EFFECT, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, FALSE,  FALSE,   FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"transparent force field", REGION_BASETYPE_FORCEFIELD, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, TRUE,   TRUE,   FALSE,  0, REGION_SOUNDSET_NONE, 0UL },
+    {"opaque force field",      REGION_BASETYPE_FORCEFIELD, 0, 0, 0, 0, 0, 0, TRUE, S_unexplored, 0, TRUE,   TRUE,   TRUE,   0, REGION_SOUNDSET_NONE, 0UL }
 };
 
 
@@ -134,18 +130,12 @@ int nrect;
             reg->bounding_box.hy = rects[i].hy;
         reg->rects[i] = rects[i];
     }
-    reg->ttl = -1L; /* Defaults */
+    reg->time_to_live = -1L; /* Defaults */
     reg->attach_2_u = FALSE;
     reg->attach_2_m = 0;
     /* reg->attach_2_o = NULL; */
     reg->enter_msg = (const char *) 0;
     reg->leave_msg = (const char *) 0;
-    reg->expire_f = NO_CALLBACK;
-    reg->enter_f = NO_CALLBACK;
-    reg->can_enter_f = NO_CALLBACK;
-    reg->leave_f = NO_CALLBACK;
-    reg->can_leave_f = NO_CALLBACK;
-    reg->inside_f = NO_CALLBACK;
     clear_hero_inside(reg);
     clear_heros_fault(reg);
     reg->n_monst = 0;
@@ -266,15 +256,10 @@ NhRegion *reg;
     NhRegion *ret_reg;
 
     ret_reg = create_region(reg->typ, reg->rects, reg->nrects);
-    ret_reg->ttl = reg->ttl;
+    ret_reg->time_to_live = reg->time_to_live;
     ret_reg->attach_2_u = reg->attach_2_u;
     ret_reg->attach_2_m = reg->attach_2_m;
  /* ret_reg->attach_2_o = reg->attach_2_o; */
-    ret_reg->expire_f = reg->expire_f;
-    ret_reg->enter_f = reg->enter_f;
-    ret_reg->can_enter_f = reg->can_enter_f;
-    ret_reg->leave_f = reg->leave_f;
-    ret_reg->can_leave_f = reg->can_leave_f;
     ret_reg->player_flags = reg->player_flags; /* set/clear_hero_inside,&c*/
     ret_reg->n_monst = reg->n_monst;
     if (reg->n_monst > 0) {
@@ -366,7 +351,7 @@ NhRegion *reg;
         }
 
     /* Check for player now... */
-    if (inside_region(reg, u.ux, u.uy))
+    if (!in_mklev && inside_region(reg, u.ux, u.uy))
         set_hero_inside(reg);
     else
         clear_hero_inside(reg);
@@ -388,7 +373,7 @@ NhRegion *reg;
         return;
 
     /* Update screen if necessary */
-    reg->ttl = -2L; /* for visible_region_at */
+    reg->time_to_live = -2L; /* for visible_region_at */
     if (reg->visible)
         for (x = reg->bounding_box.lx; x <= reg->bounding_box.hx; x++)
             for (y = reg->bounding_box.ly; y <= reg->bounding_box.hy; y++)
@@ -434,14 +419,14 @@ void
 run_regions()
 {
     register int i, j, k;
-    int f_indx;
+//    int f_indx;
 
     /* End of life ? */
     /* Do it backward because the array will be modified */
     for (i = n_regions - 1; i >= 0; i--) {
-        if (regions[i]->ttl == 0L) {
-            if ((f_indx = regions[i]->expire_f) == NO_CALLBACK
-                || (*callbacks[f_indx])(regions[i], (genericptr_t) 0))
+        if (regions[i]->time_to_live == 0L) {
+            if (!region_type_definitions[regions[i]->typ].expire_proc
+                || (*region_type_definitions[regions[i]->typ].expire_proc)(regions[i], (genericptr_t)0))
                 remove_region(regions[i]);
         }
     }
@@ -449,20 +434,20 @@ run_regions()
     /* Process remaining regions */
     for (i = 0; i < n_regions; i++) {
         /* Make the region age */
-        if (regions[i]->ttl > 0L)
-            regions[i]->ttl--;
+        if (regions[i]->time_to_live > 0L)
+            regions[i]->time_to_live--;
         /* Check if player is inside region */
-        f_indx = regions[i]->inside_f;
-        if (f_indx != NO_CALLBACK && hero_inside(regions[i]))
-            (void) (*callbacks[f_indx])(regions[i], (genericptr_t) 0);
+        //f_indx = regions[i]->inside_f;
+        if (region_type_definitions[regions[i]->typ].inside_proc && hero_inside(regions[i]))
+            (void) (*region_type_definitions[regions[i]->typ].inside_proc)(regions[i], (genericptr_t) 0);
         /* Check if any monster is inside region */
-        if (f_indx != NO_CALLBACK) {
+        if (region_type_definitions[regions[i]->typ].inside_proc) {
             for (j = 0; j < regions[i]->n_monst; j++) {
                 struct monst *mtmp =
                     find_mid(regions[i]->monsters[j], FM_FMON);
 
                 if (!mtmp || DEADMONSTER(mtmp)
-                    || (*callbacks[f_indx])(regions[i], mtmp)) {
+                    || (*region_type_definitions[regions[i]->typ].inside_proc)(regions[i], mtmp)) {
                     /* The monster died, remove it from list */
                     k = (regions[i]->n_monst -= 1);
                     regions[i]->monsters[j] = regions[i]->monsters[k];
@@ -481,19 +466,19 @@ boolean
 in_out_region(x, y)
 xchar x, y;
 {
-    int i, f_indx;
+    int i; // , f_indx;
 
     /* First check if we can do the move */
     for (i = 0; i < n_regions; i++) {
         if (inside_region(regions[i], x, y) && !hero_inside(regions[i])
             && !regions[i]->attach_2_u) {
-            if ((f_indx = regions[i]->can_enter_f) != NO_CALLBACK)
-                if (!(*callbacks[f_indx])(regions[i], (genericptr_t) 0))
+            if (region_type_definitions[regions[i]->typ].can_enter_proc)
+                if (!(*region_type_definitions[regions[i]->typ].can_enter_proc)(regions[i], (genericptr_t) 0))
                     return FALSE;
         } else if (hero_inside(regions[i]) && !inside_region(regions[i], x, y)
                    && !regions[i]->attach_2_u) {
-            if ((f_indx = regions[i]->can_leave_f) != NO_CALLBACK)
-                if (!(*callbacks[f_indx])(regions[i], (genericptr_t) 0))
+            if (region_type_definitions[regions[i]->typ].can_leave_proc)
+                if (!(*region_type_definitions[regions[i]->typ].can_leave_proc)(regions[i], (genericptr_t) 0))
                     return FALSE;
         }
     }
@@ -505,8 +490,8 @@ xchar x, y;
             clear_hero_inside(regions[i]);
             if (regions[i]->leave_msg != (const char *) 0)
                 pline1(regions[i]->leave_msg);
-            if ((f_indx = regions[i]->leave_f) != NO_CALLBACK)
-                (void) (*callbacks[f_indx])(regions[i], (genericptr_t) 0);
+            if (region_type_definitions[regions[i]->typ].leave_proc)
+                (void) (*region_type_definitions[regions[i]->typ].leave_proc)(regions[i], (genericptr_t) 0);
         }
 
     /* Callbacks for the regions we do enter */
@@ -516,8 +501,8 @@ xchar x, y;
             set_hero_inside(regions[i]);
             if (regions[i]->enter_msg != (const char *) 0)
                 pline1(regions[i]->enter_msg);
-            if ((f_indx = regions[i]->enter_f) != NO_CALLBACK)
-                (void) (*callbacks[f_indx])(regions[i], (genericptr_t) 0);
+            if (region_type_definitions[regions[i]->typ].enter_proc)
+                (void) (*region_type_definitions[regions[i]->typ].enter_proc)(regions[i], (genericptr_t) 0);
         }
     return TRUE;
 }
@@ -530,20 +515,20 @@ m_in_out_region(mon, x, y)
 struct monst *mon;
 xchar x, y;
 {
-    int i, f_indx;
+    int i; // , f_indx;
 
     /* First check if we can do the move */
     for (i = 0; i < n_regions; i++) {
         if (inside_region(regions[i], x, y) && !mon_in_region(regions[i], mon)
             && regions[i]->attach_2_m != mon->m_id) {
-            if ((f_indx = regions[i]->can_enter_f) != NO_CALLBACK)
-                if (!(*callbacks[f_indx])(regions[i], mon))
+            if (region_type_definitions[regions[i]->typ].can_enter_proc)
+                if (!(*region_type_definitions[regions[i]->typ].can_enter_proc)(regions[i], mon))
                     return FALSE;
         } else if (mon_in_region(regions[i], mon)
                    && !inside_region(regions[i], x, y)
                    && regions[i]->attach_2_m != mon->m_id) {
-            if ((f_indx = regions[i]->can_leave_f) != NO_CALLBACK)
-                if (!(*callbacks[f_indx])(regions[i], mon))
+            if (region_type_definitions[regions[i]->typ].can_leave_proc)
+                if (!(*region_type_definitions[regions[i]->typ].can_leave_proc)(regions[i], mon))
                     return FALSE;
         }
     }
@@ -554,8 +539,8 @@ xchar x, y;
             && regions[i]->attach_2_m != mon->m_id
             && !inside_region(regions[i], x, y)) {
             remove_mon_from_reg(regions[i], mon);
-            if ((f_indx = regions[i]->leave_f) != NO_CALLBACK)
-                (void) (*callbacks[f_indx])(regions[i], mon);
+            if (region_type_definitions[regions[i]->typ].leave_proc)
+                (void) (*region_type_definitions[regions[i]->typ].leave_proc)(regions[i], mon);
         }
 
     /* Callbacks for the regions we do enter */
@@ -563,8 +548,8 @@ xchar x, y;
         if (!hero_inside(regions[i]) && !regions[i]->attach_2_u
             && inside_region(regions[i], x, y)) {
             add_mon_to_reg(regions[i], mon);
-            if ((f_indx = regions[i]->enter_f) != NO_CALLBACK)
-                (void) (*callbacks[f_indx])(regions[i], mon);
+            if (region_type_definitions[regions[i]->typ].enter_proc)
+                (void) (*region_type_definitions[regions[i]->typ].enter_proc)(regions[i], mon);
         }
     return TRUE;
 }
@@ -653,7 +638,7 @@ xchar x, y;
 
     for (i = 0; i < n_regions; i++)
         if (inside_region(regions[i], x, y) && regions[i]->visible
-            && regions[i]->ttl != -2L)
+            && regions[i]->time_to_live != -2L)
             return regions[i];
     return (NhRegion *) 0;
 }
@@ -703,13 +688,7 @@ int mode;
         bwrite(fd, (genericptr_t) &n, sizeof n);
         if (n > 0)
             bwrite(fd, (genericptr_t) regions[i]->leave_msg, n);
-        bwrite(fd, (genericptr_t) &regions[i]->ttl, sizeof(long));
-        bwrite(fd, (genericptr_t) &regions[i]->expire_f, sizeof(short));
-        bwrite(fd, (genericptr_t) &regions[i]->can_enter_f, sizeof(short));
-        bwrite(fd, (genericptr_t) &regions[i]->enter_f, sizeof(short));
-        bwrite(fd, (genericptr_t) &regions[i]->can_leave_f, sizeof(short));
-        bwrite(fd, (genericptr_t) &regions[i]->leave_f, sizeof(short));
-        bwrite(fd, (genericptr_t) &regions[i]->inside_f, sizeof(short));
+        bwrite(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(long));
         bwrite(fd, (genericptr_t) &regions[i]->player_flags,
                sizeof(unsigned int));
         bwrite(fd, (genericptr_t) &regions[i]->n_monst, sizeof(short));
@@ -785,17 +764,11 @@ boolean ghostly; /* If a bones file restore */
         } else
             regions[i]->leave_msg = (const char *) 0;
 
-        mread(fd, (genericptr_t) &regions[i]->ttl, sizeof(long));
+        mread(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(long));
         /* check for expired region */
-        if (regions[i]->ttl >= 0L)
-            regions[i]->ttl =
-                (regions[i]->ttl > tmstamp) ? regions[i]->ttl - tmstamp : 0L;
-        mread(fd, (genericptr_t) &regions[i]->expire_f, sizeof(short));
-        mread(fd, (genericptr_t) &regions[i]->can_enter_f, sizeof(short));
-        mread(fd, (genericptr_t) &regions[i]->enter_f, sizeof(short));
-        mread(fd, (genericptr_t) &regions[i]->can_leave_f, sizeof(short));
-        mread(fd, (genericptr_t) &regions[i]->leave_f, sizeof(short));
-        mread(fd, (genericptr_t) &regions[i]->inside_f, sizeof(short));
+        if (regions[i]->time_to_live >= 0L)
+            regions[i]->time_to_live =
+                (regions[i]->time_to_live > tmstamp) ? regions[i]->time_to_live - tmstamp : 0L;
         mread(fd, (genericptr_t) &regions[i]->player_flags,
               sizeof(unsigned int));
         if (ghostly) { /* settings pertained to old player */
@@ -827,7 +800,7 @@ boolean ghostly; /* If a bones file restore */
     /* remove expired regions, do not trigger the expire_f callback (yet!);
        also update monster lists if this data is coming from a bones file */
     for (i = n_regions - 1; i >= 0; i--)
-        if (regions[i]->ttl == 0L)
+        if (regions[i]->time_to_live == 0L)
             remove_region(regions[i]);
         else if (ghostly && regions[i]->n_monst > 0)
             reset_region_mids(regions[i]);
@@ -908,7 +881,7 @@ const char *msg_leave;
     tmprect.hx = x + w;
     tmprect.hy = y + h;
     add_rect_to_reg(reg, &tmprect);
-    reg->ttl = -1L;
+    reg->time_to_live = -1L;
     return reg;
 }
 
@@ -942,10 +915,10 @@ genericptr_t p2;
 }
 
 NhRegion *
-create_force_field(x, y, radius, ttl)
+create_force_field(x, y, radius, time_to_live)
 xchar x, y;
 int radius;
-long ttl;
+long time_to_live;
 {
     int i;
     NhRegion *ff;
@@ -965,11 +938,9 @@ long ttl;
         tmprect.ly++;
         tmprect.hy--;
     }
-    ff->ttl = ttl;
+    ff->time_to_live = time_to_live;
     if (!in_mklev && !context.mon_moving)
         set_heros_fault(ff); /* assume player has created it */
- /* ff->can_enter_f = enter_force_field; */
- /* ff->can_leave_f = enter_force_field; */
     add_region(ff);
     return ff;
 }
@@ -1000,7 +971,7 @@ genericptr_t p2 UNUSED;
     if (reg->dmg_adjustment >= 0.5)
     { /* Do it twice */
         reg->dmg_adjustment /= 2.0;
-        reg->ttl = 2L; /* Here's the trick : reset ttl */
+        reg->time_to_live = 2L; /* Here's the trick : reset time_to_live */
         return FALSE;  /* THEN return FALSE, means "still there" */
     }
     return TRUE; /* OK, it's gone, you can free it! */
@@ -1130,11 +1101,9 @@ int dmg_dice, dmg_diesize, dmg_plus;
         tmprect.ly++;
         tmprect.hy--;
     }
-    cloud->ttl = rn1(3, 4);
+    cloud->time_to_live = rn1(3, 4);
     if (!in_mklev && !context.mon_moving)
         set_heros_fault(cloud); /* assume player has created it */
-    cloud->inside_f = INSIDE_GAS_CLOUD;
-    cloud->expire_f = EXPIRE_GAS_CLOUD;
     cloud->arg = zeroany; /* Unused */
     cloud->dmg_dice = dmg_dice;
     cloud->dmg_diesize = dmg_diesize;
@@ -1144,19 +1113,37 @@ int dmg_dice, dmg_diesize, dmg_plus;
     return cloud;
 }
 
+NhRegion*
+create_simple_permanent_region(x1, y1, x2, y2, type)
+xchar x1, y1, x2, y2;
+enum region_types type;
+{
+    NhRegion* reg;
+    NhRect tmprect;
+
+    reg = create_region(type, (NhRect*)0, 0);
+    tmprect.lx = x1;
+    tmprect.hx = x2;
+    tmprect.ly = y1;
+    tmprect.hy = y2;
+    add_rect_to_reg(reg, &tmprect);
+    reg->arg = zeroany; /* Unused */
+    add_region(reg);
+    return reg;
+}
+
 /* for checking troubles during prayer; is hero at risk? */
 boolean
 region_danger()
 {
-    int i, f_indx, n = 0;
+    int i, n = 0; //f_indx, 
 
     for (i = 0; i < n_regions; i++) {
         /* only care about regions that hero is in */
         if (!hero_inside(regions[i]))
             continue;
-        f_indx = regions[i]->inside_f;
         /* the only type of region we understand is gas_cloud */
-        if (f_indx == INSIDE_GAS_CLOUD) {
+        if (regions[i]->typ == REGION_POISON_GAS) {
             /* completely harmless if you don't need to breathe */
             if (is_not_living(youmonst.data) || Breathless)
                 continue;
@@ -1176,16 +1163,16 @@ void
 region_safety()
 {
     NhRegion *r = 0;
-    int i, f_indx, n = 0;
+    int i, n = 0; //f_indx, 
 
     for (i = 0; i < n_regions; i++) {
         /* only care about regions that hero is in */
         if (!hero_inside(regions[i]))
             continue;
-        f_indx = regions[i]->inside_f;
+
         /* the only type of region we understand is gas_cloud */
-        if (f_indx == INSIDE_GAS_CLOUD) {
-            if (!n++ && regions[i]->ttl >= 0)
+        if (regions[i]->typ == REGION_POISON_GAS) {
+            if (!n++ && regions[i]->time_to_live >= 0)
                 r = regions[i];
         }
     }
@@ -1260,4 +1247,51 @@ char** cs_rows;
     }
 }
 
+boolean
+enter_special_level_seen(p1, p2)
+genericptr_t p1;
+genericptr_t p2;
+{
+    if (p2 == (genericptr_t)0) /* You */
+    { 
+        mapseen* mptr = find_mapseen(&u.uz);
+
+        if (!mptr)
+            return FALSE;
+
+        if (Is_special(&u.uz))
+        {
+            mptr->flags.special_level = 1;
+            strcpy(mptr->special_description, level.special_description);
+        }
+
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
+boolean
+enter_special_level_true_nature_revealed(p1, p2)
+genericptr_t p1;
+genericptr_t p2;
+{
+    if (p2 == (genericptr_t)0) /* You */
+    {
+        mapseen* mptr = find_mapseen(&u.uz);
+
+        if (!mptr)
+            return FALSE;
+
+        if (Is_special(&u.uz))
+        {
+            mptr->flags.special_level = 1;
+            mptr->flags.special_level_true_nature_known = 1;
+            strcpy(mptr->special_description, level.special_description);
+        }
+
+        return TRUE;
+    }
+    return FALSE;
+}
 /*region.c*/

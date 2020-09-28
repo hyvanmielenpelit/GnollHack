@@ -23,6 +23,9 @@ typedef boolean FDECL((*callback_proc), (genericptr_t, genericptr_t));
 
 enum region_types {
     REGION_GENERAL = 0, /* Normal region */
+    REGION_MESSAGE,
+    REGION_SPECIAL_LEVEL_SEEN,
+    REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED,
     REGION_POISON_GAS,
     REGION_SMOKE,
     REGION_CLOUD,
@@ -50,17 +53,17 @@ enum region_base_types {
 struct region_type_definition {
     const char* name;
     enum region_base_types base_type;
-    boolean causes_damage;
-    int damage_type;
+    callback_proc inside_proc;
+    callback_proc expire_proc;
+    callback_proc can_enter_proc;
+    callback_proc enter_proc;
+    callback_proc can_leave_proc;
+    callback_proc leave_proc;
     boolean visible;
     int screen_symbol;
     int variation;
     boolean sensed_blind_at_location;
     boolean sensed_by_touching_around;
-    boolean touch_causes_effect;
-    boolean accessible;
-    boolean causes_blindness;
-    boolean causes_silence;
     boolean blocks_vision;
     xchar is_light_source;
     enum region_soundset_types soundset;
@@ -86,16 +89,7 @@ typedef struct nhregion {
     /*struct obj *attach_2_o;*/ /* Region attached to object ? UNUSED YET */
     const char *enter_msg;      /* Message when entering */
     const char *leave_msg;      /* Message when leaving */
-    long ttl;                   /* Time to live. -1 is forever */
-    short expire_f;            /* Function to call when region's ttl expire */
-    short can_enter_f;         /* Function to call to check whether the player
-                                  can, or can not, enter the region */
-    short enter_f;             /* Function to call when the player enters*/
-    short can_leave_f;         /* Function to call to check whether the player
-                                  can, or can not, leave the region */
-    short leave_f;             /* Function to call when the player leaves */
-    short inside_f;            /* Function to call every turn if player's
-                                  inside */
+    long time_to_live;          /* Time to live. -1 is forever */
     unsigned int player_flags; /* (see above) */
     unsigned int *monsters;    /* Monsters currently inside this region */
     short n_monst;             /* Number of monsters inside this region */

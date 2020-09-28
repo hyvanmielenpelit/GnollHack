@@ -849,6 +849,7 @@ E void FDECL(overview_stats, (winid, const char *, long *, size_t *));
 E void FDECL(remdun_mapseen, (int));
 E const char *FDECL(endgamelevelname, (char *, int));
 E mapseen* FDECL(find_mapseen, (d_level*));
+E void FDECL(check_special_level_naming_by_mon, (struct monst*));
 
 /* ### eat.c ### */
 
@@ -2498,6 +2499,7 @@ E void FDECL(save_regions, (int, int));
 E void FDECL(rest_regions, (int, BOOLEAN_P));
 E void FDECL(region_stats, (const char *, char *, long *, size_t *));
 E NhRegion *FDECL(create_gas_cloud, (XCHAR_P, XCHAR_P, enum region_types, int, int, int, int));
+E NhRegion* FDECL(create_simple_permanent_region, (XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, enum region_types));
 E boolean NDECL(region_danger);
 E void NDECL(region_safety);
 E struct nhregion* FDECL(find_rid, (int));

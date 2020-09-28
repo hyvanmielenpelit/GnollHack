@@ -7,6 +7,7 @@
 MAZE: "valley", ' '
 FLAGS: noteleport,hardfloor,nommap
 TILESET: undead_tileset
+NAMING:"A valley of the dead", name_revealed_on_arrival
 GEOMETRY:center,center
 MAP
 ----------------------------------------------------------------------------
@@ -71,6 +72,7 @@ ALTAR:(03,10),noalign,shrine
 
 # Non diggable walls - everywhere!
 NON_DIGGABLE:(00,00,75,19)
+SPECIAL_REGION:(00,00,75,19),region_special_level_seen
 
 # Objects
 # **LOTS** of dead bodies (all human).
@@ -180,6 +182,7 @@ MONSTER:'z',random
 MAZE:"juiblex",' '
 FLAGS:noteleport,shortsighted,swampy
 INIT_MAP:mines,',','}',true,true,unlit,false
+NAMING:"Abysmal swamp", name_revealed_seeing_monster, montype:"Juiblex"
 # guarantee at least one open spot to ensure successful stair placement
 GEOMETRY:left,bottom
 MAP
@@ -230,6 +233,7 @@ SHUFFLE: $place
 
 # Dungeon description
 REGION:(00,00,50,17),unlit,"swamp"
+SPECIAL_REGION:(00,00,50,17),region_special_level_seen
 MAZEWALK:(00,09),west
 MAZEWALK:(50,08),east
 STAIR:levregion(01,00,11,20),(0,0,50,17),down
@@ -363,6 +367,7 @@ TRAP:"magic",random
 MAZE:"orcus",' '
 FLAGS: noteleport,shortsighted
 TILESET: undead_tileset
+NAMING:"A town of the dead", name_revealed_seeing_monster, montype:"Orcus"
 GEOMETRY:right,center
 # A ghost town
 MAP
@@ -387,6 +392,7 @@ ENDMAP
 MAZEWALK:(00,06),west
 # Entire main area
 REGION:(01,00,44,16),unlit,"ordinary"
+SPECIAL_REGION:(01,00,44,16),region_special_level_seen
 STAIR:(33,15),down
 STAIR:levregion(01,00,12,20),levregion(20,01,70,20),up
 BRANCH:levregion(01,00,12,20),levregion(20,01,70,20)
@@ -527,6 +533,7 @@ MONSTER:random,random
 #
 MAZE:"dispater",' '
 FLAGS: noteleport
+NAMING:"A hellish castle", name_revealed_seeing_monster, montype:"Dispater"
 # First part
 GEOMETRY:half-left,center
 MAP
@@ -557,6 +564,8 @@ STAIR:(13,07),down
 NON_DIGGABLE:(00,00,20,11)
 # Entire main area
 REGION:(01,01,20,10),unlit,"ordinary"
+SPECIAL_REGION:(01,01,20,10),region_special_level_seen
+
 # The fellow in residence
 
 MONSTER:('&',"Dispater"),(12,07)
@@ -613,6 +622,8 @@ ENDMAP
 MAZEWALK:(32,02),east
 # Non diggable walls
 NON_DIGGABLE:(00,00,32,04)
+SPECIAL_REGION:(00,00,32,04),region_special_level_seen
+
 DOOR:closed,(32,02)
 MONSTER:'&',random
 MONSTER:'&',random
@@ -626,6 +637,7 @@ TRAP:"magic", random
 #
 MAZE:"baalz",' '
 FLAGS: noteleport,corrmaze
+NAMING:"A hellish mansion", name_revealed_seeing_monster, montype:"Baalzebub"
 GEOMETRY:right,center
 # the two pools are fakes used to mark spots which need special wall fixups
 # the two iron bars are eyes and spots to their left will be made diggable
@@ -649,6 +661,8 @@ BRANCH:levregion(01,00,15,20),levregion(15,1,70,16)
 TELEPORT_REGION:levregion(01,00,15,20),levregion(15,1,70,16)
 # this actually leaves the farthest right column diggable
 NON_DIGGABLE:(00,00,47,12)
+SPECIAL_REGION:(00,00,47,12),region_special_level_seen
+
 MAZEWALK:(00,06),west
 STAIR:(44,06),down
 DOOR:locked,(00,06)
@@ -708,6 +722,7 @@ MONSTER:'V',random
 #
 MAZE:"yeenoghu",' '
 FLAGS: noteleport
+NAMING:"A hellish stronghold", name_revealed_seeing_monster, montype:"Yeenoghu"
 # First part
 GEOMETRY:center,center
 MAP
@@ -741,6 +756,8 @@ ANVIL:(16,10)
 
 # Non diggable walls
 NON_DIGGABLE:(00,00,20,11)
+SPECIAL_REGION:(00,00,20,11),region_special_level_seen
+
 MAZEWALK:(00,06),west
 # Entire main area
 REGION:(01,01,20,10),unlit,"ordinary"
@@ -793,6 +810,7 @@ MONSTER:('T',"thoul"),random
 #
 MAZE: "tarrasque" , ' '
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
+NAMING:"Hellish caverns with many bodies", name_revealed_seeing_monster, montype:"Tarrasque"
 NOMAP
 #
 STAIR: random, up

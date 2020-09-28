@@ -166,6 +166,8 @@ STATIC_DCL boolean FDECL(generate_way_out_method, (int, int, struct opvar *));
 STATIC_DCL void NDECL(ensure_way_out);
 STATIC_DCL void FDECL(spo_levregion, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_region, (struct sp_coder *));
+STATIC_DCL void FDECL(spo_special_region, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_naming, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_drawbridge, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_mazewalk, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_wall_property, (struct sp_coder *));
@@ -5509,6 +5511,67 @@ struct sp_coder *coder;
 }
 
 void
+spo_special_region(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_special_region";
+    struct opvar* rtype, * area;
+    xchar dx1, dy1, dx2, dy2;
+    int typ;
+
+    if (!OV_pop_i(rtype) || !OV_pop_r(area))
+        return;
+
+    dx1 = SP_REGION_X1(OV_i(area));
+    dy1 = SP_REGION_Y1(OV_i(area));
+    dx2 = SP_REGION_X2(OV_i(area));
+    dy2 = SP_REGION_Y2(OV_i(area));
+    typ = OV_i(rtype);
+
+    get_location(&dx1, &dy1, ANY_LOC, (struct mkroom*)0);
+    get_location(&dx2, &dy2, ANY_LOC, (struct mkroom*)0);
+
+    create_simple_permanent_region(dx1, dy1, dx2, dy2, typ);
+
+    opvar_free(area);
+    opvar_free(rtype);
+}
+
+void
+spo_naming(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_naming";
+    struct opvar* typ_opvar, *montype_opvar, *name_opvar;
+    short mnum;
+    xchar mclass;
+
+    if (!OV_pop_s(name_opvar))
+        return;
+
+    if (!OV_pop_i(typ_opvar))
+        return;
+
+    if (!OV_pop_typ(montype_opvar, SPOVAR_MONST))
+        return;
+
+    mnum = SP_MONST_PM(OV_i(montype_opvar));
+    mclass = SP_MONST_CLASS(OV_i(montype_opvar));
+
+    strcpy(level.special_description, OV_s(name_opvar));
+
+    int typ;
+    typ = OV_i(typ_opvar);
+    level.special_naming_reveal_type = typ;
+    level.special_naming_seen_monster_type = mnum;
+    level.special_naming_seen_monster_class = mclass;
+
+    opvar_free(typ_opvar);
+    opvar_free(montype_opvar);
+    opvar_free(name_opvar);
+}
+
+void
 spo_drawbridge(coder)
 struct sp_coder *coder;
 {
@@ -6379,6 +6442,12 @@ sp_lev *lvl;
             break;
         case SPO_REGION:
             spo_region(coder);
+            break;
+        case SPO_SPECIAL_REGION:
+            spo_special_region(coder);
+            break;
+        case SPO_NAMING:
+            spo_naming(coder);
             break;
         case SPO_DRAWBRIDGE:
             spo_drawbridge(coder);

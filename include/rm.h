@@ -878,6 +878,7 @@ struct levelflags {
     Bitfield(throne_on_ground, 1); /* Throne symbols on special level maps are on ground  */
     Bitfield(fountain_on_grass, 1); /* Fountain symbols on special level maps are on grass */
     Bitfield(fountain_on_ground, 1); /* Fountain and tree symbols on special level maps are on ground */
+    Bitfield(no_special_level_naming_checks, 1);
 };
 
 typedef struct {
@@ -897,6 +898,10 @@ typedef struct {
     struct damage *damagelist;
     struct cemetery *bonesinfo;
     struct levelflags flags;
+    char special_description[BUFSZ];
+    enum special_level_naming_types special_naming_reveal_type;
+    int special_naming_seen_monster_type;
+    int special_naming_seen_monster_class;
 } dlevel_t;
 
 extern schar lastseentyp[COLNO][ROWNO]; /* last seen/touched dungeon typ */

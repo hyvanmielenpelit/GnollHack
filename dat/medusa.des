@@ -8,6 +8,7 @@
 
 MAZE:"medusa-1",'}'
 FLAGS: noteleport,swampy
+NAMING:"Islands",name_revealed_seeing_monster,montype:"Medusa"
 GEOMETRY:center,center
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -37,6 +38,7 @@ REGION:(00,00,74,19),lit,"ordinary"
 REGION:(31,07,45,07),unlit,"ordinary"
 REGION:(35,09,41,10),unlit,"ordinary",unfilled
 REGION:(31,12,45,12),unlit,"ordinary"
+SPECIAL_REGION:(00,00,74,19),region_special_level_seen
 # Teleport: down to up stairs island, up to Medusa's island
 TELEPORT_REGION:(01,01,05,17),(0,0,0,0),down
 TELEPORT_REGION:(26,04,50,15),(0,0,0,0),up
@@ -158,6 +160,7 @@ MONSTER:random,random
 
 MAZE:"medusa-2",'}'
 FLAGS: noteleport,swampy
+NAMING:"Islands",name_revealed_seeing_monster,montype:"Medusa"
 GEOMETRY:center,center
 MAP
 }}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
@@ -187,6 +190,8 @@ REGION:(02,03,05,16),unlit,"ordinary"
 REGION:(61,03,72,16),unlit,"ordinary",unfilled,irregular
 REGION:(71,08,72,11),unlit,"ordinary"
 REGION:(67,08,69,11),lit,"ordinary"
+SPECIAL_REGION:(00,00,74,19),region_special_level_seen
+
 # Teleport: down to up stairs island, up to Medusa's island
 TELEPORT_REGION:(02,03,05,16),(0,0,0,0),down
 TELEPORT_REGION:(61,03,72,16),(0,0,0,0),up
@@ -319,6 +324,7 @@ MONSTER:random,random
 LEVEL:"medusa-3"
 FLAGS: noteleport,mazelevel,shortsighted,swampy
 INIT_MAP:solidfill,'}'
+NAMING:"Islands",name_revealed_seeing_monster,montype:"Medusa"
 GEOMETRY:center,center
 #
 # Here you disturb ravens nesting in the trees.
@@ -352,6 +358,8 @@ REGION:(49,14,51,16),random,"ordinary",unfilled
 REGION:(07,05,09,07),unlit,"ordinary"
 REGION:(65,04,67,06),unlit,"ordinary"
 REGION:(45,14,47,16),unlit,"ordinary"
+SPECIAL_REGION:(00,00,74,19),region_special_level_seen
+
 # Non diggable walls
 # 4th room has diggable walls as Medusa is never placed there
 NON_DIGGABLE:(06,04,10,08)
@@ -464,6 +472,7 @@ LOOP [30] {
 LEVEL:"medusa-4"
 FLAGS: noteleport,mazelevel,swampy
 INIT_MAP:solidfill,'}'
+NAMING:"Islands",name_revealed_seeing_monster,montype:"Medusa"
 GEOMETRY:center,center
 #
 # Here the Medusa rules some slithery monsters from her 'palace', with
@@ -498,6 +507,7 @@ SHUFFLE: $place
 #
 REGION:(00,00,74,19),lit,"ordinary"
 REGION:(13,03,18,13),lit,"ordinary",unfilled
+SPECIAL_REGION:(00,00,74,19),region_special_level_seen
 #
 TELEPORT_REGION:(64,01,74,17),(0,0,0,0),down
 TELEPORT_REGION:(02,02,18,13),(0,0,0,0),up

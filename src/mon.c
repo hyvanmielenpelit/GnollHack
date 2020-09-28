@@ -3587,6 +3587,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 			pline("%s is %s!", bp,
 				is_not_living(mtmp->data) ? "destroyed" : "killed");
 		}
+
 	}
 
     if (mtmp->mtrapped && (t = t_at(x, y)) != 0
@@ -3637,7 +3638,7 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
 	{
 		ESHK(mtmp)->debit += shkmoney;
 	}
-	
+
 	if (!DEADMONSTER(mtmp)) { /* monster lifesaved */
         /* Cannot put the non-visible lifesaving message in
          * lifesaved_monster() since the message appears only when _you_
@@ -3648,6 +3649,8 @@ int xkill_flags; /* 1: suppress message, 2: suppress corpse, 4: pacifist */
             pline("Maybe not...");
         return;
     }
+
+    check_special_level_naming_by_mon(mtmp);
 
     mdat = mtmp->data; /* note: mondead can change mtmp->data */
     mndx = monsndx(mdat);

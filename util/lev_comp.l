@@ -156,6 +156,8 @@ DRAWBRIDGE	ST_RET(DRAWBRIDGE_ID);
 MAZEWALK	ST_RET(MAZEWALK_ID);
 WALLIFY		ST_RET(WALLIFY_ID);
 REGION		ST_RET(REGION_ID);
+SPECIAL_REGION		ST_RET(SPECIAL_REGION_ID);
+NAMING		ST_RET(NAMING_ID);
 ALTAR		ST_RET(ALTAR_ID);
 ANVIL		ST_RET(ANVIL_ID);
 NPC		    ST_RET(NPC_ID);
@@ -351,6 +353,12 @@ elite { savetoken(yytext); yylval.i=EXCEPTIONALITY_ELITE; return EXCEPTIONALITY_
 celestial { savetoken(yytext); yylval.i=EXCEPTIONALITY_CELESTIAL; return EXCEPTIONALITY_TYPE; }
 primordial { savetoken(yytext); yylval.i=EXCEPTIONALITY_PRIMORDIAL; return EXCEPTIONALITY_TYPE; }
 infernal { savetoken(yytext); yylval.i=EXCEPTIONALITY_INFERNAL; return EXCEPTIONALITY_TYPE; }
+region_general { savetoken(yytext); yylval.i=REGION_GENERAL; return SPECIAL_REGION_TYPE; }
+region_special_level_seen { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_SEEN; return SPECIAL_REGION_TYPE; }
+region_special_level_true_nature_revealed { savetoken(yytext); yylval.i=REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED; return SPECIAL_REGION_TYPE; }
+name_revealed_never { savetoken(yytext); yylval.i=SPECIAL_LEVEL_NAMING_REVEALED_NEVER; return NAMING_TYPE; }
+name_revealed_on_arrival { savetoken(yytext); yylval.i=SPECIAL_LEVEL_NAMING_REVEALED_ON_ARRIVAL; return NAMING_TYPE; }
+name_revealed_seeing_monster { savetoken(yytext); yylval.i=SPECIAL_LEVEL_NAMING_REVEALED_ON_SEEING_MONSTER; return NAMING_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }

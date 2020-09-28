@@ -4967,7 +4967,8 @@ int fd;
         mread(fd, (genericptr_t)ss, sizeof(sound_source));
         ss->next = sound_base;
         sound_base = ss;
-        add_ambient_ghsound(ss);
+        if(add_ambient_ghsound != 0)
+            add_ambient_ghsound(ss);
     }
 }
 

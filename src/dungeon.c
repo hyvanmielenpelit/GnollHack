@@ -2460,7 +2460,7 @@ mapseen *mptr;
         return FALSE;
     /* level is of interest if it has an auto-generated annotation */
     if (mptr->flags.oracle || mptr->flags.bigroom || mptr->flags.roguelevel
-        || mptr->flags.castle || mptr->flags.valley || mptr->flags.msanctum
+        || mptr->flags.castle || mptr->flags.valley || mptr->flags.msanctum || mptr->flags.special_level
         || mptr->flags.quest_summons || mptr->flags.questing)
         return TRUE;
     /* when in Sokoban, list all sokoban levels visited; when not in it,
@@ -2476,13 +2476,6 @@ mapseen *mptr;
        sparse once the rest of the dungeon has been flagged as unreachable */
     if (In_endgame(&u.uz))
         return (boolean) In_endgame(&mptr->lev);
-
-    /* List all special levels in Gehennom */
-    if (Inhell || Is_medusa_level(&mptr->lev))
-    {
-        if (Is_special(&mptr->lev))
-            return TRUE;
-    }
 
     /* level is of interest if it has non-zero feature count or known bones
        or user annotation or known connection to another dungeon branch
@@ -2542,7 +2535,7 @@ recalc_mapseen()
     mptr->flags.roguelevel = Is_rogue_level(&u.uz);
     mptr->flags.oracle = 0; /* recalculated during room traversal below */
     mptr->flags.castletune = 0;
-    /* flags.castle, flags.valley, flags.msanctum retain previous value */
+    /* flags.castle, flags.valley, flags.msanctum, mptr->flags.special_level retain previous value */
     mptr->flags.forgot = 0;
     /* flags.quest_summons disabled once quest finished */
     mptr->flags.quest_summons = (at_dgn_entrance("The Quest")
@@ -2777,6 +2770,8 @@ recalc_mapseen()
             bp->bonesknown = TRUE;
             mptr->flags.knownbones = 1;
         }
+
+    strcpy(mptr->special_description, level.special_description);
 }
 
 /*ARGUSED*/
@@ -3080,10 +3075,10 @@ boolean printdun;
         Sprintf(buf, "%sLevel %d:", TAB, i);
 
     /* wizmode prints out proto dungeon names for clarity */
-    if (wizard && !Inhell && !Is_medusa_level(&mptr->lev)) {
+    if (wizard) {
         s_level *slev;
 
-        if ((slev = Is_special(&mptr->lev)) != 0)
+        if ((slev = Is_special(&mptr->lev)) != 0 && !mptr->flags.special_level_true_nature_known)
             Sprintf(eos(buf), " [%s]", slev->name);
     }
     /* [perhaps print custom annotation on its own line when it's long] */
@@ -3176,12 +3171,16 @@ boolean printdun;
     } else if (mptr->flags.msanctum) {
         Sprintf(buf, "%sMoloch's Sanctum.", PREFIX);
     }
-    else if (Inhell || Is_medusa_level(&mptr->lev))
+    else if (mptr->flags.special_level) //(Inhell || Is_medusa_level(&mptr->lev))
     {
-        /* Assume the special levels in Hell are distinctive enough */
         s_level* slev;
         if ((slev = Is_special(&mptr->lev)) != 0)
-            Sprintf(buf, "%s%s.", PREFIX, slev->name);
+        {
+            if(mptr->flags.special_level_true_nature_known || !strcmp(mptr->special_description, ""))
+                Sprintf(buf, "%s%s.", PREFIX, slev->name);
+            else
+                Sprintf(buf, "%s%s.", PREFIX, mptr->special_description);
+        }
     }
 
     if (*buf)
@@ -3239,6 +3238,30 @@ boolean printdun;
                 }
             }
         }
+    }
+}
+
+void
+check_special_level_naming_by_mon(mon)
+struct monst* mon;
+{
+    if (!mon)
+        return;
+
+    if (!level.flags.no_special_level_naming_checks && Is_special(&u.uz) &&
+        (level.special_naming_seen_monster_type >= LOW_PM && level.special_naming_seen_monster_type == mon->mnum)
+        || (level.special_naming_seen_monster_type == NON_PM && level.special_naming_seen_monster_class > 0 && level.special_naming_seen_monster_class == mon->data->mlet)
+        )
+    {
+        mapseen* mptr = find_mapseen(&u.uz);
+
+        if (mptr)
+        {
+            mptr->flags.special_level = 1;
+            mptr->flags.special_level_true_nature_known = 1;
+            strcpy(mptr->special_description, level.special_description);
+        }
+        level.flags.no_special_level_naming_checks = 1;
     }
 }
 

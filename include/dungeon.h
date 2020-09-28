@@ -244,12 +244,15 @@ typedef struct mapseen {
         Bitfield(msanctum, 1);
         Bitfield(ludios, 1);
         Bitfield(roguelevel, 1);
+        Bitfield(special_level, 1);
+        Bitfield(special_level_true_nature_known, 1);
         /* quest annotations: quest_summons is for main dungeon level
            with entry portal and is reset once quest has been finished;
            questing is for quest home (level 1) */
         Bitfield(quest_summons, 1); /* heard summons from leader */
         Bitfield(questing, 1); /* quest leader has unlocked quest stairs */
     } flags;
+    char special_description[40];
     /* custom naming */
     char *custom;
     size_t custom_lth;

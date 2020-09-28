@@ -192,7 +192,7 @@ extern char curr_token[512];
 %token	<i> MESSAGE_ID MAZE_ID LEVEL_ID LEV_INIT_ID TILESET_ID GEOMETRY_ID NOMAP_ID
 %token	<i> OBJECT_ID COBJECT_ID MONSTER_ID TRAP_ID DOOR_ID DRAWBRIDGE_ID
 %token	<i> object_ID monster_ID terrain_ID
-%token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID FILLING IRREGULAR JOINED
+%token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID SPECIAL_REGION_ID SPECIAL_REGION_TYPE NAMING_ID NAMING_TYPE FILLING IRREGULAR JOINED
 %token	<i> ALTAR_ID ANVIL_ID NPC_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID
 %token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV MINERALIZE_ID
 %token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID MODRON_PORTAL_ID POOL_ID SINK_ID NONE
@@ -517,6 +517,8 @@ levstatement 	: message
 		| pool_detail
 		| portal_region
 		| random_corridors
+		| naming_detail
+		| special_region_detail
 		| region_detail
 		| room_def
 		| subroom_def
@@ -1956,6 +1958,22 @@ diggable_detail : NON_DIGGABLE_ID ':' region_or_var
 passwall_detail : NON_PASSWALL_ID ':' region_or_var
 		  {
 		      add_opvars(splev, "o", VA_PASS1(SPO_NON_PASSWALL));
+		  }
+		;
+
+naming_detail : NAMING_ID ':' STRING ',' NAMING_TYPE
+		  {
+		      add_opvars(splev, "isMo", VA_PASS4($<i>5, $3, -1, SPO_NAMING));
+		  }
+		| NAMING_ID ':' STRING ',' NAMING_TYPE ',' MONTYPE_ID ':' monster_or_var
+		  {
+		      add_opvars(splev, "iso", VA_PASS3($<i>5, $3, SPO_NAMING));
+		  }
+		;
+
+special_region_detail : SPECIAL_REGION_ID ':' region_or_var ',' SPECIAL_REGION_TYPE
+		  {
+		      add_opvars(splev, "io", VA_PASS2($<i>5, SPO_SPECIAL_REGION));
 		  }
 		;
 

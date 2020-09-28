@@ -1215,6 +1215,9 @@ int damage_shown;
                 display_monster(x, y, mon,
                     see_it ? PHYSICALLY_SEEN : DETECTED,
                     worm_tail);
+
+                check_special_level_naming_by_mon(mon);
+
             }
             else if (mon && mon_warning(mon) && !is_worm_tail(mon))
             {
@@ -1283,7 +1286,9 @@ int damage_shown;
                    This also gets rid of any invisibility glyph. */
                 display_monster(x, y, mon, see_it ? 0 : DETECTED,
                                 is_worm_tail(mon) ? TRUE : FALSE);
-            } 
+
+                check_special_level_naming_by_mon(mon);
+            }
             else if (mon && mon_warning(mon) && !is_worm_tail(mon)) 
             {
                 display_warning(mon);
