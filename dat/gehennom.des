@@ -233,7 +233,7 @@ SHUFFLE: $place
 
 # Dungeon description
 REGION:(00,00,50,17),unlit,"swamp"
-SPECIAL_REGION:(00,00,50,17),region_special_level_seen
+SPECIAL_LEVREGION:levregion(01,00,79,20),region_special_level_seen
 MAZEWALK:(00,09),west
 MAZEWALK:(50,08),east
 STAIR:levregion(01,00,11,20),(0,0,50,17),down

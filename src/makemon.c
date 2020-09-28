@@ -208,9 +208,6 @@ register struct monst* mtmp;
 	if (is_gnome(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
 		christen_monst(mtmp, upstart(randomize_gnome_name(mnamebuf)));
 
-    if (is_demon(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
-        christen_monst(mtmp, upstart(randomize_demon_name(mnamebuf)));
-
     if (is_undead(mtmp->data) && (mtmp->data->mlet == S_LICH || mtmp->data == &mons[PM_ILLITHILICH] || mtmp->data == &mons[PM_VAMPIRE_MAGE]) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
         christen_monst(mtmp, upstart(randomize_undead_spellcaster_name(mnamebuf)));
 
@@ -224,6 +221,10 @@ register struct monst* mtmp;
 		else
 			christen_monst(mtmp, upstart(randomize_gnoll_name(mnamebuf)));
 	}
+
+    if (is_demon(mtmp->data) && !(mtmp->data->geno & G_UNIQ) && !has_mname(mtmp))
+        christen_monst(mtmp, upstart(randomize_demon_name(mnamebuf)));
+
 	if (is_human(mtmp->data) && !has_mname(mtmp))
 	{
 		if(mtmp->female)

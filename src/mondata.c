@@ -1235,9 +1235,15 @@ struct monst *mtmp;
     /* Wizard with Amulet won't bother trying to follow across levels */
     if (mtmp->iswiz && mon_has_amulet(mtmp))
         return FALSE;
+
+    /* Special NPCs do not follow you */
+    if (mtmp->isshk || mtmp->ispriest || mtmp->isnpc || mtmp->issmith)
+        return FALSE;
+    
     /* some monsters will follow even while intending to flee from you */
     if (is_tame(mtmp) || mtmp->iswiz || is_fshk(mtmp))
         return TRUE;
+
     /* stalking types follow, but won't when fleeing unless you hold
        the Amulet */
     return (boolean) ((mtmp->data->mflags2 & M2_STALK)

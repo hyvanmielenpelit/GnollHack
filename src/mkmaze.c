@@ -549,6 +549,12 @@ fixup_special()
             }
             /* place_lregion gets called from goto_level() */
             break;
+        case LR_SPECIAL_MAP_SEEN:
+            create_simple_permanent_region(r->inarea.x1, r->inarea.y1, r->inarea.x2, r->inarea.y2, REGION_SPECIAL_LEVEL_SEEN);
+            break;
+        case LR_SPECIAL_MAP_NAME_REVEALED:
+            create_simple_permanent_region(r->inarea.x1, r->inarea.y1, r->inarea.x2, r->inarea.y2, REGION_SPECIAL_LEVEL_TRUE_NATURE_REVEALED);
+            break;
         }
 
         if (r->rname.str)
