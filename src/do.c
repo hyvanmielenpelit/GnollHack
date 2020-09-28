@@ -4872,6 +4872,9 @@ boolean at_stairs, falling, portal;
     if (u.utrap && u.utraptype == TT_BURIEDBALL)
         buried_ball_to_punishment(); /* (before we save/leave old level) */
 
+	/* Player leaves all regions */
+	(void)in_out_region(-1, -1);
+
     fd = currentlevel_rewrite();
     if (fd < 0)
         return;

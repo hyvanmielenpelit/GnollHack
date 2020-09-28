@@ -136,6 +136,14 @@ int nrect;
     /* reg->attach_2_o = NULL; */
     reg->enter_msg = (const char *) 0;
     reg->leave_msg = (const char *) 0;
+    reg->enter_msg_is_on = FALSE;
+    reg->leave_msg_is_on = FALSE;
+    reg->inside_proc_is_on = (region_type_definitions[typ].inside_proc != 0);
+    reg->expire_proc_is_on = (region_type_definitions[typ].expire_proc != 0);
+    reg->can_enter_proc_is_on = (region_type_definitions[typ].can_enter_proc != 0);
+    reg->enter_proc_is_on = (region_type_definitions[typ].enter_proc != 0);
+    reg->can_leave_proc_is_on = (region_type_definitions[typ].can_leave_proc != 0);
+    reg->leave_proc_is_on = (region_type_definitions[typ].leave_proc != 0);
     clear_hero_inside(reg);
     clear_heros_fault(reg);
     reg->n_monst = 0;
@@ -472,12 +480,12 @@ xchar x, y;
     for (i = 0; i < n_regions; i++) {
         if (inside_region(regions[i], x, y) && !hero_inside(regions[i])
             && !regions[i]->attach_2_u) {
-            if (region_type_definitions[regions[i]->typ].can_enter_proc)
+            if (regions[i]->can_enter_proc_is_on && region_type_definitions[regions[i]->typ].can_enter_proc)
                 if (!(*region_type_definitions[regions[i]->typ].can_enter_proc)(regions[i], (genericptr_t) 0))
                     return FALSE;
         } else if (hero_inside(regions[i]) && !inside_region(regions[i], x, y)
                    && !regions[i]->attach_2_u) {
-            if (region_type_definitions[regions[i]->typ].can_leave_proc)
+            if (regions[i]->can_leave_proc_is_on && region_type_definitions[regions[i]->typ].can_leave_proc)
                 if (!(*region_type_definitions[regions[i]->typ].can_leave_proc)(regions[i], (genericptr_t) 0))
                     return FALSE;
         }
@@ -488,9 +496,9 @@ xchar x, y;
         if (hero_inside(regions[i]) && !regions[i]->attach_2_u
             && !inside_region(regions[i], x, y)) {
             clear_hero_inside(regions[i]);
-            if (regions[i]->leave_msg != (const char *) 0)
+            if (regions[i]->leave_msg_is_on && regions[i]->leave_msg != (const char *) 0)
                 pline1(regions[i]->leave_msg);
-            if (region_type_definitions[regions[i]->typ].leave_proc)
+            if (regions[i]->leave_proc_is_on && region_type_definitions[regions[i]->typ].leave_proc)
                 (void) (*region_type_definitions[regions[i]->typ].leave_proc)(regions[i], (genericptr_t) 0);
         }
 
@@ -499,9 +507,9 @@ xchar x, y;
         if (!hero_inside(regions[i]) && !regions[i]->attach_2_u
             && inside_region(regions[i], x, y)) {
             set_hero_inside(regions[i]);
-            if (regions[i]->enter_msg != (const char *) 0)
+            if (regions[i]->enter_msg_is_on && regions[i]->enter_msg != (const char *) 0)
                 pline1(regions[i]->enter_msg);
-            if (region_type_definitions[regions[i]->typ].enter_proc)
+            if (regions[i]->enter_proc_is_on && region_type_definitions[regions[i]->typ].enter_proc)
                 (void) (*region_type_definitions[regions[i]->typ].enter_proc)(regions[i], (genericptr_t) 0);
         }
     return TRUE;
@@ -688,6 +696,14 @@ int mode;
         bwrite(fd, (genericptr_t) &n, sizeof n);
         if (n > 0)
             bwrite(fd, (genericptr_t) regions[i]->leave_msg, n);
+        bwrite(fd, (genericptr_t)&regions[i]->enter_msg_is_on, sizeof(boolean));
+        bwrite(fd, (genericptr_t)&regions[i]->leave_msg_is_on, sizeof(boolean));
+        bwrite(fd, (genericptr_t)&regions[i]->inside_proc_is_on, sizeof(boolean));
+        bwrite(fd, (genericptr_t)&regions[i]->expire_proc_is_on, sizeof(boolean));
+        bwrite(fd, (genericptr_t)&regions[i]->can_enter_proc_is_on, sizeof(boolean));
+        bwrite(fd, (genericptr_t)&regions[i]->enter_proc_is_on, sizeof(boolean));
+        bwrite(fd, (genericptr_t)&regions[i]->can_leave_proc_is_on, sizeof(boolean));
+        bwrite(fd, (genericptr_t)&regions[i]->leave_proc_is_on, sizeof(boolean));
         bwrite(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(long));
         bwrite(fd, (genericptr_t) &regions[i]->player_flags,
                sizeof(unsigned int));
@@ -763,6 +779,15 @@ boolean ghostly; /* If a bones file restore */
             regions[i]->leave_msg = (const char *) msg_buf;
         } else
             regions[i]->leave_msg = (const char *) 0;
+
+        mread(fd, (genericptr_t)&regions[i]->enter_msg_is_on, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->leave_msg_is_on, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->inside_proc_is_on, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->expire_proc_is_on, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->can_enter_proc_is_on, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->enter_proc_is_on, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->can_leave_proc_is_on, sizeof(boolean));
+        mread(fd, (genericptr_t)&regions[i]->leave_proc_is_on, sizeof(boolean));
 
         mread(fd, (genericptr_t) &regions[i]->time_to_live, sizeof(long));
         /* check for expired region */
@@ -873,9 +898,18 @@ const char *msg_leave;
     NhRegion *reg = create_region(REGION_GENERAL, (NhRect *) 0, 0);
 
     if (msg_enter)
+    {
         reg->enter_msg = dupstr(msg_enter);
+        reg->enter_msg_is_on = TRUE;
+    }
+    
     if (msg_leave)
+    {
         reg->leave_msg = dupstr(msg_leave);
+        reg->leave_msg_is_on = TRUE;
+
+    }
+
     tmprect.lx = x;
     tmprect.ly = y;
     tmprect.hx = x + w;
@@ -1252,9 +1286,13 @@ enter_special_level_seen(p1, p2)
 genericptr_t p1;
 genericptr_t p2;
 {
+    NhRegion* reg;
+    reg = (NhRegion*)p1;
+
     if (p2 == (genericptr_t)0) /* You */
     { 
         set_special_level_seen(&u.uz, FALSE);
+        reg->enter_proc_is_on = FALSE;
         return TRUE;
     }
     return FALSE;
@@ -1266,11 +1304,16 @@ enter_special_level_true_nature_revealed(p1, p2)
 genericptr_t p1;
 genericptr_t p2;
 {
+    NhRegion* reg;
+    reg = (NhRegion*)p1;
+
     if (p2 == (genericptr_t)0) /* You */
     {
         set_special_level_seen(&u.uz, TRUE);
+        reg->enter_proc_is_on = FALSE;
         return TRUE;
     }
     return FALSE;
 }
+
 /*region.c*/

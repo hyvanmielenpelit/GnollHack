@@ -89,6 +89,14 @@ typedef struct nhregion {
     /*struct obj *attach_2_o;*/ /* Region attached to object ? UNUSED YET */
     const char *enter_msg;      /* Message when entering */
     const char *leave_msg;      /* Message when leaving */
+    boolean enter_msg_is_on;
+    boolean leave_msg_is_on;
+    boolean inside_proc_is_on;
+    boolean expire_proc_is_on;
+    boolean can_enter_proc_is_on;
+    boolean enter_proc_is_on;
+    boolean can_leave_proc_is_on;
+    boolean leave_proc_is_on;
     long time_to_live;          /* Time to live. -1 is forever */
     unsigned int player_flags; /* (see above) */
     unsigned int *monsters;    /* Monsters currently inside this region */
