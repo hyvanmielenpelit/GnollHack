@@ -85,7 +85,7 @@ TRAP: random, random
 # Treasure island guarded by a roper.
 #
 LEVEL: "treasure1"
-NAMING:"Curios island room",name_revealed_never
+NAMING:"Curious island room",name_revealed_never
 GEOMETRY:center,center
 MAP
       ---S---     
