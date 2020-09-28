@@ -3738,6 +3738,8 @@ struct sp_coder *coder;
         level.flags.fountain_on_grass = 1;
     if (lflags & FOUNTAIN_ON_GROUND)
         level.flags.fountain_on_ground = 1;
+    if (lflags & MAPPING_DOES_NOT_REVEAL_SPECIAL)
+        level.flags.mapping_does_not_reveal_special = 1;
     if (lflags & MAZELEVEL)
         level.flags.is_maze_lev = 1;
     if (lflags & PREMAPPED)

@@ -377,6 +377,7 @@ swampy	    { savetoken(yytext); yylval.i=SWAMPY; return FLAG_TYPE; } /* JPG */
 throne_on_ground { savetoken(yytext); yylval.i=THRONE_ON_GROUND; return FLAG_TYPE; } /* JPG */
 fountain_on_grass { savetoken(yytext); yylval.i=FOUNTAIN_ON_GRASS; return FLAG_TYPE; } /* JPG */
 fountain_on_ground { savetoken(yytext); yylval.i=FOUNTAIN_ON_GROUND; return FLAG_TYPE; } /* JPG */
+mapping_does_not_reveal_special { savetoken(yytext); yylval.i=MAPPING_DOES_NOT_REVEAL_SPECIAL; return FLAG_TYPE; } /* JPG */
 shortsighted	{ savetoken(yytext); yylval.i=SHORTSIGHTED; return FLAG_TYPE; }
 mazelevel	{ savetoken(yytext); yylval.i=MAZELEVEL; return FLAG_TYPE; }
 premapped	{ savetoken(yytext); yylval.i=PREMAPPED; return FLAG_TYPE; }

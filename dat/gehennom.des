@@ -809,8 +809,9 @@ MONSTER:('T',"thoul"),random
 # The Tarrasque Level
 #
 MAZE: "tarrasque" , ' '
+FLAGS:mapping_does_not_reveal_special
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
-NAMING:"Hellish caverns with many bodies", name_revealed_seeing_monster, montype:"Tarrasque"
+NAMING:"Many corpses littered around", name_revealed_seeing_monster, montype:"Tarrasque"
 NOMAP
 #
 STAIR: random, up

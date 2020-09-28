@@ -3175,9 +3175,9 @@ boolean printdun;
         s_level* slev;
         if ((slev = Is_special(&mptr->lev)) != 0)
         {
-            if(mptr->flags.special_level_true_nature_known || !strcmp(mptr->flags.special_description, ""))
+            if(mptr->flags.special_level_true_nature_known)
                 Sprintf(buf, "%s%s.", PREFIX, slev->name);
-            else
+            else if(strcmp(mptr->flags.special_description, ""))
                 Sprintf(buf, "%s%s.", PREFIX, mptr->flags.special_description);
         }
     }

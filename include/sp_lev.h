@@ -34,6 +34,7 @@
 #define THRONE_ON_GROUND 0x00004000L
 #define FOUNTAIN_ON_GRASS 0x00008000L
 #define FOUNTAIN_ON_GROUND 0x00010000L
+#define MAPPING_DOES_NOT_REVEAL_SPECIAL 0x00020000L
 
 /* different level layout initializers */
 enum lvlinit_types {
