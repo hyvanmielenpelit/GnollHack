@@ -529,13 +529,13 @@ xchar x, y;
     for (i = 0; i < n_regions; i++) {
         if (inside_region(regions[i], x, y) && !mon_in_region(regions[i], mon)
             && regions[i]->attach_2_m != mon->m_id) {
-            if (region_type_definitions[regions[i]->typ].can_enter_proc)
+            if (regions[i]->can_enter_proc_is_on && region_type_definitions[regions[i]->typ].can_enter_proc)
                 if (!(*region_type_definitions[regions[i]->typ].can_enter_proc)(regions[i], mon))
                     return FALSE;
         } else if (mon_in_region(regions[i], mon)
                    && !inside_region(regions[i], x, y)
                    && regions[i]->attach_2_m != mon->m_id) {
-            if (region_type_definitions[regions[i]->typ].can_leave_proc)
+            if (regions[i]->can_leave_proc_is_on && region_type_definitions[regions[i]->typ].can_leave_proc)
                 if (!(*region_type_definitions[regions[i]->typ].can_leave_proc)(regions[i], mon))
                     return FALSE;
         }
@@ -547,16 +547,17 @@ xchar x, y;
             && regions[i]->attach_2_m != mon->m_id
             && !inside_region(regions[i], x, y)) {
             remove_mon_from_reg(regions[i], mon);
-            if (region_type_definitions[regions[i]->typ].leave_proc)
+            if (regions[i]->leave_proc_is_on && region_type_definitions[regions[i]->typ].leave_proc)
                 (void) (*region_type_definitions[regions[i]->typ].leave_proc)(regions[i], mon);
         }
 
     /* Callbacks for the regions we do enter */
     for (i = 0; i < n_regions; i++)
-        if (!hero_inside(regions[i]) && !regions[i]->attach_2_u
+        if (!mon_in_region(regions[i], mon) 
+            && regions[i]->attach_2_m != mon->m_id
             && inside_region(regions[i], x, y)) {
             add_mon_to_reg(regions[i], mon);
-            if (region_type_definitions[regions[i]->typ].enter_proc)
+            if (regions[i]->enter_proc_is_on && region_type_definitions[regions[i]->typ].enter_proc)
                 (void) (*region_type_definitions[regions[i]->typ].enter_proc)(regions[i], mon);
         }
     return TRUE;
