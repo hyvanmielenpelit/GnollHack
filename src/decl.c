@@ -183,8 +183,8 @@ struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
     {"sleep", HI_ZAP, NO_ANIMATION},
     {"disintegration", CLR_BLACK, NO_ANIMATION},
     {"lightning", CLR_WHITE, NO_ANIMATION},
-    {"poison", CLR_YELLOW, NO_ANIMATION},
-    {"acid", CLR_GREEN, NO_ANIMATION},
+    {"poison", CLR_GREEN, NO_ANIMATION},
+    {"acid", CLR_YELLOW, NO_ANIMATION},
     {"death", CLR_GRAY, NO_ANIMATION},
     {"petrification", CLR_BROWN, NO_ANIMATION}
 };
