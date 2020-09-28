@@ -2736,12 +2736,6 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     if (action == ACTION_TILE_NO_ACTION)
         return TRUE;
 
-    /* Test cases */
-    if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
-        return TRUE;  //(action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
-    else if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)
-        return TRUE;  //(action != ACTION_TILE_PASSIVE_DEFENSE && action != ACTION_TILE_DEFEND && action != ACTION_TILE_RECEIVE_DAMAGE);
-
     /* Real cases */
     switch (action)
     {
