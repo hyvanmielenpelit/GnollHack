@@ -487,6 +487,12 @@ struct obj {
 #define is_ore(obj)                                 \
     (is_ore_otyp((obj)->otyp))
 
+/* other */
+#define is_otyp_key(otyp)                                 \
+    ((objects[(otyp)].oc_flags2 & O2_KEY) != 0)
+#define is_key(obj)                                 \
+    (is_otyp_key((obj)->otyp))
+
 /* misc helpers, simple enough to be macros */
 #define is_flimsy(otmp)                           \
     (objects[(otmp)->otyp].oc_material <= MAT_LEATHER \

@@ -364,6 +364,7 @@ typedef struct {
 
 typedef struct {
     xchar wall, pos, secret, mask;
+    int key_otyp, key_special_quality;
 } room_door;
 
 typedef struct {

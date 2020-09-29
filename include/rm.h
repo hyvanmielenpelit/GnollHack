@@ -356,6 +356,7 @@ enum arrow_trap_subtypes_types
 
 struct door_subtype_definition {
     const char* description;
+    const char* short_description;
     enum obj_material_types material;
     enum location_soundset_types soundset;
     unsigned long flags;
@@ -717,6 +718,9 @@ struct rm {
 
     int floor_doodad;        /* a floor doodad layer glyph: previously broken typ, etc., which appears on the broken feature layer above the floor layer */
     int feature_doodad;      /* a feature doodad layer glyph, which appears on the doodad layer above the dungeon feature */
+
+    short key_otyp;            /* For doors, the otyp that unlocks the door */
+    short special_quality;     /* For doors, the special quality of the key that unlocks the door */
 
     uchar seenv;             /* seen vector */
     uchar flags;			 /* extra information for typ */

@@ -196,7 +196,7 @@ extern char curr_token[512];
 %token	<i> ALTAR_ID ANVIL_ID NPC_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID
 %token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV MINERALIZE_ID
 %token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID MODRON_PORTAL_ID POOL_ID SINK_ID NONE
-%token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE
+%token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE KEY_TYPE
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
 %token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID FLOOR_ID FLOOR_MAIN_TYPE
@@ -1379,14 +1379,29 @@ door_detail	: ROOMDOOR_ID ':' secret ',' door_state ',' door_wall ',' door_pos
 			if ($7 == ERR && $9 != ERR) {
 			    lc_error("If the door wall is random, so must be its pos!");
 			} else {
-			    add_opvars(splev, "iiiio",
-				       VA_PASS5((long)$9, (long)$5, (long)$3,
-						(long)$7, SPO_ROOM_DOOR));
+			    add_opvars(splev, "iiiiiio",
+				       VA_PASS7((long)$9, (long)$5, (long)$3,
+						(long)$7, 0, 0, SPO_ROOM_DOOR));
 			}
 		  }
+		| ROOMDOOR_ID ':' secret ',' door_state ',' door_wall ',' door_pos ',' KEY_TYPE ',' INTEGER
+		  {
+			/* ERR means random here */
+			if ($7 == ERR && $9 != ERR) {
+			    lc_error("If the door wall is random, so must be its pos!");
+			} else {
+			    add_opvars(splev, "iiiiiio",
+				       VA_PASS7((long)$9, (long)$5, (long)$3,
+						(long)$7, $<i>11, $<i>13, SPO_ROOM_DOOR));
+			}
+		  }		
 		| DOOR_ID ':' door_state ',' ter_selection
 		  {
-		      add_opvars(splev, "io", VA_PASS2((long)$3, SPO_DOOR));
+		      add_opvars(splev, "iiio", VA_PASS4((long)$3, 0, 0, SPO_DOOR));
+		  }
+		| DOOR_ID ':' door_state ',' ter_selection ',' KEY_TYPE ',' INTEGER
+		  {
+		      add_opvars(splev, "iiio", VA_PASS4((long)$3, $<i>7, $<i>9, SPO_DOOR));
 		  }
 		;
 

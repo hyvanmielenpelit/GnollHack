@@ -9,6 +9,7 @@
 STATIC_VAR NEARDATA struct xlock_s {
     struct rm *door;
     struct obj *box;
+    struct obj* key;
     int picktyp, /* key|pick|card for unlock, sharp vs blunt for #force */
         chance, usedtime;
     boolean magic_key;
@@ -77,12 +78,37 @@ lock_action()
 STATIC_PTR int
 picklock(VOID_ARGS)
 {
+    boolean key_found = FALSE;
+    for(struct obj* otmp = invent; otmp; otmp = otmp->nobj)
+        if (otmp == xlock.key)
+        {
+            key_found = TRUE;
+            break;
+        }
+
+    if (!key_found)
+        return ((xlock.usedtime = 0)); /* They key has been lost */
+
     if (xlock.box) 
     {
         if (xlock.box->where != OBJ_FLOOR
             || xlock.box->ox != u.ux || xlock.box->oy != u.uy) 
         {
             return ((xlock.usedtime = 0)); /* you or it moved */
+        }
+        if ((xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == SKELETON_KEY)
+            && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
+        {
+            //nothing, normal case
+        }
+        else if (xlock.box->keyotyp != xlock.key->otyp || xlock.box->special_quality != xlock.key->special_quality)
+        {
+            play_sfx_sound(SFX_DOOR_TRY_LOCKED);
+            if(xlock.box->keyotyp == MAGIC_KEY)
+                pline("%s is magically locked.", The(cxname(xlock.box)));
+            else
+                pline("%s does not match the lock on the %s.", The(cxname(xlock.key)), cxname(xlock.box));
+            return ((xlock.usedtime = 0));
         }
     } 
     else 
@@ -104,6 +130,21 @@ picklock(VOID_ARGS)
             return ((xlock.usedtime = 0));
         case D_PORTCULLIS:
             You("cannot lock a portcullis.");
+            return ((xlock.usedtime = 0));
+        }
+
+        if ((xlock.door->key_otyp == STRANGE_OBJECT || xlock.door->key_otyp == SKELETON_KEY)
+            && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
+        {
+            //nothing, normal case
+        }
+        else if (xlock.door->key_otyp != xlock.key->otyp || xlock.door->special_quality != xlock.key->special_quality)
+        {
+            play_sfx_sound(SFX_DOOR_TRY_LOCKED);
+            if (xlock.door->key_otyp == MAGIC_KEY)
+                pline("The door is magically locked.");
+            else
+                pline("%s does not match the lock on the door.", The(cxname(xlock.key)));
             return ((xlock.usedtime = 0));
         }
     }
@@ -326,13 +367,14 @@ int
 pick_lock(pick)
 struct obj *pick;
 {
-    int picktyp, c, ch;
+    int picktyp, special_quality, c, ch;
     coord cc;
     struct rm *door;
     struct obj *otmp;
     char qbuf[QBUFSZ];
 
     picktyp = pick->otyp;
+    special_quality = pick->special_quality;
 
     /* check whether we're resuming an interrupted previous attempt */
     if (xlock.usedtime && picktyp == xlock.picktyp) {
@@ -371,7 +413,7 @@ struct obj *pick;
 
     if (picktyp != LOCK_PICK
         && picktyp != CREDIT_CARD
-        && picktyp != SKELETON_KEY) {
+        && !is_otyp_key(picktyp)) {
         impossible("picking lock with object %d?", picktyp);
         return PICKLOCK_DID_NOTHING;
     }
@@ -563,6 +605,7 @@ struct obj *pick;
     context.move = 0;
     xlock.chance = ch;
     xlock.picktyp = picktyp;
+    xlock.key = pick;
     xlock.magic_key = is_magic_key(&youmonst, pick);
     xlock.usedtime = 0;
     set_occupation(picklock, lock_action(), objects[pick->otyp].oc_soundset, OCCUPATION_PICKING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
@@ -982,10 +1025,13 @@ struct obj *obj, *otmp; /* obj *is* a box */
     switch (otmp->otyp) {
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
-        if (!obj->olocked) { /* lock it; fix if broken */
+        if (!obj->olocked && (obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)) { /* lock it; fix if broken */
+            play_sfx_sound_at_location(SFX_WIZARD_LOCK_KLUNK, obj->ox, obj->oy);
             pline("Klunk!");
             obj->olocked = 1;
             obj->obroken = 0;
+            obj->keyotyp = MAGIC_KEY;
+            obj->special_quality = 0;
             if (Role_if(PM_WIZARD))
                 obj->lknown = 1;
             else
@@ -997,13 +1043,17 @@ struct obj *obj, *otmp; /* obj *is* a box */
     case WAN_OPENING:
     case SPE_KNOCK:
         if (obj->olocked) { /* unlock; couldn't be broken */
-            pline("Klick!");
-            obj->olocked = 0;
-            res = 1;
-            if (Role_if(PM_WIZARD))
-                obj->lknown = 1;
-            else
-                obj->lknown = 0;
+            if ((obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0))
+            {
+                play_sfx_sound_at_location(SFX_KNOCK_KLICK, obj->ox, obj->oy);
+                pline("Klick!");
+                obj->olocked = 0;
+                res = 1;
+                if (Role_if(PM_WIZARD))
+                    obj->lknown = 1;
+                else
+                    obj->lknown = 0;
+            }
         } else /* silently fix if broken */
             obj->obroken = 0;
         newsym(obj->ox, obj->oy);
@@ -1057,6 +1107,7 @@ int x, y;
     switch (otmp->otyp) {
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
+    {
         if (door->doormask & D_PORTCULLIS)
             return FALSE;
 
@@ -1092,15 +1143,26 @@ int x, y;
             return FALSE;
         }
 
+        boolean can_lock = (door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
+
         switch (door->doormask & ~D_TRAPPED) {
         case D_CLOSED:
-            msg = "The door locks!";
+            if(can_lock)
+                msg = "The door locks!";
+            else
+                msg = "The door creaks for a while!";
             break;
         case D_ISOPEN:
-            msg = "The door swings shut, and locks!";
+            if (can_lock)
+                msg = "The door swings shut, and locks!";
+            else
+                msg = "The door swings shut!";
             break;
         case D_BROKEN:
-            msg = "The broken door reassembles and locks!";
+            if (can_lock)
+                msg = "The broken door reassembles and locks!";
+            else
+                msg = "The broken door reassembles!";
             break;
         case D_NODOOR:
             msg =
@@ -1115,17 +1177,29 @@ int x, y;
             break;
         }
         block_vision_and_hearing_at_point(x, y);
-        door->doormask = D_LOCKED | (door->doormask & D_TRAPPED);
+        if (can_lock)
+        {
+            door->doormask = D_LOCKED | (door->doormask & D_TRAPPED);
+            door->key_otyp = MAGIC_KEY;
+            door->special_quality = 0;
+        }
+        else
+            door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
         newsym(x, y);
         break;
+    }
     case WAN_OPENING:
     case SPE_KNOCK:
-        if (door->doormask & D_LOCKED) {
+    {
+        boolean can_open = (door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
+        if (can_open && (door->doormask & D_LOCKED)) {
             msg = "The door unlocks!";
             door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
-        } else
+        }
+        else
             res = FALSE;
         break;
+    }
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
         if (door->doormask & (D_LOCKED | D_CLOSED)) {

@@ -20,6 +20,7 @@
 
 typedef void FDECL((*select_iter_func), (int, int, genericptr));
 typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
+typedef void FDECL((*select_iter_func3), (int, int, genericptr, genericptr, genericptr));
 
 extern void FDECL(mkmap, (lev_init *));
 
@@ -147,12 +148,14 @@ STATIC_DCL void FDECL(selection_iterate, (struct opvar *, select_iter_func,
                                           genericptr_t));
 STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
     genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
+    genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t));
-STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t));
+STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
@@ -1537,6 +1540,8 @@ struct mkroom *broom;
     levl[x][y].floortyp = location_type_definitions[typ].initial_floor_type;
     levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     levl[x][y].doormask = dd->mask;
+    levl[x][y].key_otyp = dd->key_otyp;
+    levl[x][y].special_quality = dd->key_special_quality;
 }
 
 /*
@@ -4765,6 +4770,21 @@ genericptr_t arg, arg2;
                 (*func)(x, y, arg, arg2);
 }
 
+void
+selection_iterate3(ov, func, arg, arg2, arg3)
+struct opvar* ov;
+select_iter_func3 func;
+genericptr_t arg, arg2, arg3;
+{
+    int x, y;
+
+    /* yes, this is very naive, but it's not _that_ expensive. */
+    for (x = 0; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+            if (selection_getpoint(x, y, ov))
+                (*func)(x, y, arg, arg2, arg3);
+}
+
 
 void
 sel_set_ter(x, y, arg)
@@ -4883,11 +4903,13 @@ genericptr_t arg;
 }
 
 void
-sel_set_door(dx, dy, arg)
+sel_set_door(dx, dy, arg, arg2, arg3)
 int dx, dy;
-genericptr_t arg;
+genericptr_t arg, arg2, arg3;
 {
     xchar typ = *(xchar *) arg;
+    long key_otyp = *(long*)arg2;
+    long key_spe_quality = *(long*)arg3;
     xchar x = dx, y = dy;
     int settyp = (typ & D_SECRET) ? SDOOR : DOOR;
 
@@ -4916,6 +4938,8 @@ genericptr_t arg;
     }
     set_door_orientation(x, y); /* set/clear levl[x][y].horizontal */
     levl[x][y].doormask = typ;
+    levl[x][y].key_otyp = key_otyp;
+    levl[x][y].special_quality = key_spe_quality;
     SpLev_Map[x][y] = 1;
 }
 
@@ -4924,16 +4948,21 @@ spo_door(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_door";
-    struct opvar *msk, *sel;
+    struct opvar *msk, *sel, *kotyp_opvar, *kspeq_opvar;
     xchar typ;
+    long kotyp, kspeq;
 
-    if (!OV_pop_i(msk) || !OV_pop_typ(sel, SPOVAR_SEL))
+    if (!OV_pop_i(kspeq_opvar) || !OV_pop_i(kotyp_opvar) || !OV_pop_i(msk) || !OV_pop_typ(sel, SPOVAR_SEL))
         return;
 
     typ = OV_i(msk) == -1 ? rnddoor() : (xchar) OV_i(msk);
+    kotyp = OV_i(kotyp_opvar);
+    kspeq = OV_i(kspeq_opvar);
 
-    selection_iterate(sel, sel_set_door, (genericptr_t) &typ);
+    selection_iterate3(sel, sel_set_door, (genericptr_t) &typ, (genericptr_t)&kotyp, (genericptr_t)&kspeq);
 
+    opvar_free(kotyp_opvar);
+    opvar_free(kspeq_opvar);
     opvar_free(sel);
     opvar_free(msk);
 }
@@ -5715,10 +5744,10 @@ spo_room_door(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_room_door";
-    struct opvar *wall, *secret, *mask, *pos;
+    struct opvar *wall, *secret, *mask, *pos, *key_otyp_opvar, * key_spe_quality_opvar;
     room_door tmpd;
 
-    if (!OV_pop_i(wall) || !OV_pop_i(secret) || !OV_pop_i(mask)
+    if (!OV_pop_i(key_spe_quality_opvar) || !OV_pop_i(key_otyp_opvar) || !OV_pop_i(wall) || !OV_pop_i(secret) || !OV_pop_i(mask)
         || !OV_pop_i(pos) || !coder->croom)
         return;
 
@@ -5726,9 +5755,13 @@ struct sp_coder *coder;
     tmpd.mask = OV_i(mask);
     tmpd.pos = OV_i(pos);
     tmpd.wall = OV_i(wall);
+    tmpd.key_otyp = OV_i(key_otyp_opvar);
+    tmpd.key_special_quality = OV_i(key_spe_quality_opvar);
 
     create_door(&tmpd, coder->croom);
 
+    opvar_free(key_spe_quality_opvar);
+    opvar_free(key_otyp_opvar);
     opvar_free(wall);
     opvar_free(secret);
     opvar_free(mask);

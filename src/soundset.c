@@ -2830,6 +2830,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_RECHARGE_FAIL, 1.0f},
         FALSE
     },
+    {
+        "GHSOUND_WIZARD_LOCK_KLUNK",
+        {GHSOUND_WIZARD_LOCK_KLUNK, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_KNOCK_KLICK",
+        {GHSOUND_KNOCK_KLICK, 1.0f},
+        TRUE
+    },
 
 };
 

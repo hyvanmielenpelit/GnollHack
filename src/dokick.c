@@ -868,7 +868,9 @@ boolean is_golf_swing;
             pline("THUD!");
         container_impact_dmg(kickedobj, x, y);
         if (kickedobj->olocked) {
-            if (!rn2(5) || (martial() && !rn2(2))) {
+            if ((!rn2(5) || (martial() && !rn2(2)))
+                && (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == SKELETON_KEY)
+                ) {
                 play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_BREAK_LOCK_CONTAINER);
                 You("break open the lock!");
                 breakchestlock(kickedobj, FALSE);
@@ -1682,7 +1684,9 @@ dokick() {
 
     /* door is known to be CLOSED or LOCKED */
     play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
-    if (rnl(35) < avrg_attrib + (!martial() ? 0 : ACURR(A_DEX)))
+    boolean roll_success = (rnl(35) < avrg_attrib + (!martial() ? 0 : ACURR(A_DEX)));
+    if (roll_success &&
+        (maploc->key_otyp == STRANGE_OBJECT || maploc->key_otyp == SKELETON_KEY))
     {
         boolean shopdoor = *in_rooms(x, y, SHOPBASE) ? TRUE : FALSE;
 
@@ -1752,6 +1756,8 @@ dokick() {
         exercise(A_STR, TRUE);
         play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
         pline("WHAMMM!!!");
+        if(roll_success)
+            pline("A magical force prevents your kick from breaking the door.");
         if (in_town(x, y))
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             {

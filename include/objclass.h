@@ -843,7 +843,7 @@ struct objclass {
 #define O2_FLIMSY				0x01000000UL
 
 #define O2_SPECIAL_PRAYING_ITEM 0x02000000UL
-	/* free bit */
+#define O2_KEY					0x04000000UL
 	/* free bit */
 
 #define O2_GENERATED_DEATH_OR_COLD_ENCHANTED 0x10000000UL			/* if deathenchantable item, then death, otherwise lightning*/
