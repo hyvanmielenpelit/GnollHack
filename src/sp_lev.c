@@ -1934,7 +1934,7 @@ struct mkroom *croom;
         }
         if (m->paralyzed)
 		{
-			mtmp->mprops[PARALYZED] |= (m->blinded & M_TIMEOUT);
+			mtmp->mprops[PARALYZED] |= (m->paralyzed & M_TIMEOUT);
         }
         if (m->fleeing) 
 		{

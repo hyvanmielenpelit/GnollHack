@@ -3,15 +3,14 @@
 
 #include "hack.h"
 
-STATIC_DCL int FDECL(cost, (struct obj *));
 STATIC_DCL boolean FDECL(label_known, (int, struct obj *));
 STATIC_DCL char *FDECL(new_book_description, (int, char *));
 
 /*
  * returns basecost of a scroll or a spellbook
  */
-STATIC_OVL int
-cost(otmp)
+int
+ink_cost(otmp)
 register struct obj *otmp;
 {
     if (otmp->oclass == SPBOOK_CLASS)
@@ -237,7 +236,7 @@ found:
     check_unpaid(pen);
 
     /* see if there's enough ink */
-    basecost = cost(new_obj);
+    basecost = ink_cost(new_obj);
     if (pen->charges < basecost / 2) {
         Your("marker is too dry to write that!");
         obfree(new_obj, (struct obj *) 0);

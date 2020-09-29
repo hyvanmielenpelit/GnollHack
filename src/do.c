@@ -797,6 +797,14 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
+	if (objects[obj->otyp].oc_name_known && (objects[obj->otyp].oc_class == SPBOOK_CLASS || objects[obj->otyp].oc_class == SCROLL_CLASS))
+	{
+		int ink = ink_cost(obj);
+		Sprintf(buf, "Base write cost:        %d charge%s", ink, plur(ink));
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
 	boolean weapon_stats_shown = FALSE;
 
 	if (!uses_spell_flags && (is_weapon(obj) || ((is_gloves(obj) || is_boots(obj)) && stats_known) || objects[obj->otyp].oc_class == GEM_CLASS))

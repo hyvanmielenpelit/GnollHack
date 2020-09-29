@@ -3596,6 +3596,7 @@ E boolean FDECL(set_mon_property_b, (struct monst*, int, int, BOOLEAN_P));
 /* ### write.c ### */
 
 E int FDECL(dowrite, (struct obj *));
+E int FDECL(ink_cost, (struct obj*));
 
 /* ### zap.c ### */
 
