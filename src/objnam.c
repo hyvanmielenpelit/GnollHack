@@ -631,7 +631,15 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
             Strcpy(buf, "pair of ");
         else if (is_wet_towel(obj))
             Strcpy(buf, (obj->special_quality < 3) ? "moist " : "wet ");
-
+        else if (is_key(obj) && obj->special_quality > 0)
+        {
+            const char* desc = get_key_special_quality_description(obj);
+            if (desc && strcmp(desc, ""))
+            {
+                Strcpy(buf, desc);
+                Strcat(buf, " ");
+            }
+        }
         if (dknown)
         {
             if (obj->exceptionality == EXCEPTIONALITY_EXCEPTIONAL)
@@ -1281,9 +1289,32 @@ unsigned doname_flags;
                "not capable of being locked" */
             Strcat(prefix, "broken ");
         else if (obj->olocked)
-            Strcat(prefix, "locked ");
+        {
+            if(obj->keyotyp == MAGIC_KEY)
+                Strcat(prefix, "magically locked ");
+            else
+                Strcat(prefix, "locked ");
+        }
         else
             Strcat(prefix, "unlocked ");
+    }
+
+    if (Is_box(obj))
+    {
+        const char* desc = get_key_special_quality_description(obj);
+        if (obj->special_quality > 0 && desc && strcmp(desc, ""))
+        {
+            Sprintf(eos(bp), " with %s lock", an(desc));
+        }
+        else
+        {
+            if (obj->keyotyp == ORNAMENTAL_KEY)
+                Sprintf(eos(bp), " with an ornamental lock");
+            else if (obj->keyotyp == GEOMETRIC_KEY)
+                Sprintf(eos(bp), " with a geometric lock");
+            else if (obj->keyotyp == MAGIC_KEY)
+                Sprintf(eos(bp), " with a magic lock");
+        }
     }
 
     if (obj->greased)
@@ -4702,10 +4733,11 @@ struct obj *no_wish;
         if (wetness)
             otmp->special_quality = wetness;
         break;
+    case SKELETON_KEY:
+        break;
     case SLIME_MOLD:
         otmp->special_quality = ftype;
     /* Fall through */
-    case SKELETON_KEY:
     case CHEST:
     case LARGE_BOX:
     case HEAVY_IRON_BALL:
@@ -5220,4 +5252,83 @@ const char *lastR;
     return qbuf;
 }
 
+
+const char*
+get_key_special_quality_description(obj)
+struct obj* obj;
+{
+    if (!obj || !(is_key(obj) || Is_box(obj)) || obj->special_quality == 0)
+        return "";
+
+    int otyp = is_key(obj) ? obj->otyp : Is_box(obj) ? obj->keyotyp : 0;
+    int sq = obj->special_quality;
+
+    return get_key_special_quality_description_by_otyp(otyp, sq);
+}
+
+const char*
+get_key_special_quality_description_by_otyp(otyp, sq)
+int otyp, sq;
+{
+    switch (otyp)
+    {
+    case SKELETON_KEY:
+        break;
+    case MAGIC_KEY:
+    {
+        switch (sq)
+        {
+        case 0:
+            return "magic";
+        case 1:
+            return "enchanted";
+        }
+        break;
+    }
+    case GEOMETRIC_KEY:
+    {
+        switch (sq)
+        {
+        case 1:
+            return "spherical";
+        case 2:
+            return "linear";
+        case 3:
+            return "triangular";
+        case 4:
+            return "square";
+        case 5:
+            return "pentagonal";
+        case 6:
+            return "hexagonal";
+        case 7:
+            return "septagonal";
+        case 8:
+            return "octagonal";
+        }
+        break;
+    }
+    case ORNAMENTAL_KEY:
+    {
+        switch (sq)
+        {
+        case 1:
+            return "green";
+        case 2:
+            return "blue";
+        case 3:
+            return "red";
+        case 4:
+            return "white";
+        case 5:
+            return "black";
+        case 6:
+            return "yellow";
+        }
+        break;
+    }
+    }
+
+    return "";
+}
 /*objnam.c*/

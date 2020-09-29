@@ -2100,6 +2100,8 @@ E char *FDECL(safe_qbuf, (char *, const char *, const char *, struct obj *,
                           char *(*)(OBJ_P), char *(*)(OBJ_P), const char *));
 E int FDECL(shiny_obj, (CHAR_P));
 E void FDECL(add_erosion_words, (struct obj*, char*));
+E const char* FDECL(get_key_special_quality_description, (struct obj*));
+E const char* FDECL(get_key_special_quality_description_by_otyp, (int, int));
 
 
 /* ### options.c ### */

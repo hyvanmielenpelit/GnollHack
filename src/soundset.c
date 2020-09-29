@@ -4090,7 +4090,7 @@ enum hmon_atkmode_types thrown;
     }
 
     /* Hit sound is based on the defender's location */
-    if (isok(defx, defy) && you_attack)
+    if (isok(defx, defy))
     {
         float hearing = hearing_array[defx][defy];
         if (hearing == 0.0f)

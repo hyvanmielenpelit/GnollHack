@@ -3675,6 +3675,10 @@ struct sp_coder *coder;
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.exceptionality = OV_i(parm);
             break;
+        case SP_O_V_KEY_TYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.keyotyp = OV_i(parm);
+            break;
         case SP_O_V_END:
             nparams = SP_O_V_END + 1;
             break;

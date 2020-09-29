@@ -499,7 +499,10 @@ struct obj *pick;
                     ch = 75 + ACURR(A_DEX);
                     break;
                 default:
-                    ch = 0;
+                    if(is_otyp_key(picktyp))
+                        ch = 75 + ACURR(A_DEX);
+                    else
+                        ch = 0;
                 }
                 if (otmp->cursed)
                     ch /= 2;
@@ -596,7 +599,10 @@ struct obj *pick;
                 ch = 70 + ACURR(A_DEX);
                 break;
             default:
-                ch = 0;
+                if(is_otyp_key(picktyp))
+                    ch = 70 + ACURR(A_DEX);
+                else
+                    ch = 0;
             }
             xlock.door = door;
             xlock.box = 0;

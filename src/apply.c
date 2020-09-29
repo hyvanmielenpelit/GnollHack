@@ -4882,6 +4882,10 @@ doapply()
 		/* Regular containers */
 		res = use_container(&obj, 1, FALSE);
 	}
+    else if (is_key(obj))
+    {
+        res = (pick_lock(obj) != 0);
+    }
 	else
 	{
 		/* All others */

@@ -202,6 +202,7 @@ enum sp_obj_var_flags {
     SP_O_V_SPEFLAGS,
     SP_O_V_ELEMENTAL_ENCHANTMENT,
     SP_O_V_EXCEPTIONALITY,
+    SP_O_V_KEY_TYPE,
 
     SP_O_V_END
 };
