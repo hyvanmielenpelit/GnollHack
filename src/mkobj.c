@@ -1570,7 +1570,7 @@ int mkobj_type;
         otmp->age = MAX_OIL_IN_FLASK; /* amount of oil */
         /*FALLTHRU*/
     case POT_WATER: /* POTION_CLASS */
-        otmp->fromsink = 0; /* overloads corpsenm, which was set to NON_PM */
+        otmp->speflags &= ~(SPEFLAGS_FROM_SINK); /* overloads corpsenm, which was set to NON_PM */
         break;
     case LEASH:
         otmp->leashmon = 0; /* overloads corpsenm, which was set to NON_PM */

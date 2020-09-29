@@ -65,6 +65,10 @@ struct obj {
 #define SPEFLAGS_CORPSE_ON_ICE				0x00000040UL
 #define SPEFLAGS_DETECTED   				0x00000080UL
 #define SPEFLAGS_SERVICED_SPELL     		0x00000100UL
+#define SPEFLAGS_MINES_PRIZE     		    0x00000200UL
+#define SPEFLAGS_SOKO_PRIZE1     		    0x00000400UL
+#define SPEFLAGS_SOKO_PRIZE2     		    0x00000800UL
+#define SPEFLAGS_FROM_SINK     		        0x00001000UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
@@ -143,9 +147,8 @@ struct obj {
 
     int corpsenm;         /* type of corpse is mons[corpsenm] */
 #define leashmon corpsenm /* gets m_id of attached pet */
-#define fromsink corpsenm /* a potion from a sink */
 #define novelidx corpsenm /* 3.6 tribute - the index of the novel title */
-#define record_achieve_special corpsenm
+#define keyotyp corpsenm  /* otyp of the key capable of locking / unlocking the chest (0 = SKELETON_KEY). Special_quality additionally defines the type of the key (its matching special_quality) */
     int usecount;           /* overloaded for various things that tally */
 #define spestudied usecount /* # of times a spellbook has been studied */
     unsigned oeaten;        /* nutrition left in food, if partly eaten */
@@ -538,17 +541,15 @@ struct obj {
 
 /* 'PRIZE' values override obj->corpsenm so prizes mustn't be object types
    which use that field for monster type (or other overloaded purpose) */
-#define MINES_PRIZE 1
-#define SOKO_PRIZE1 2
-#define SOKO_PRIZE2 3
+
 #define is_mines_prize(o) \
     ((o)->otyp == iflags.mines_prize_type                \
-     && (o)->record_achieve_special == MINES_PRIZE)
+     && ((o)->speflags & SPEFLAGS_MINES_PRIZE) != 0)
 #define is_soko_prize(o) \
     (((o)->otyp == iflags.soko_prize_type1               \
-      && (o)->record_achieve_special == SOKO_PRIZE1)     \
+      && ((o)->speflags & SPEFLAGS_SOKO_PRIZE1) != 0)     \
      || ((o)->otyp == iflags.soko_prize_type2            \
-         && (o)->record_achieve_special == SOKO_PRIZE2))
+         && ((o)->speflags & SPEFLAGS_SOKO_PRIZE2) != 0))
 
 /* true for gems/rocks that should have " stone" appended to their names */
 #define GemStone(typ)                                                  \

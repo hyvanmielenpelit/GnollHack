@@ -1165,7 +1165,6 @@ struct obj *otmp;
             pline("(But in fact it was mildly stale %s.)", fruitname(TRUE));
             if (!Role_if(PM_HEALER) && !Sick_resistance)
 			{
-                /* NB: blessed otmp->fromsink is not possible */
                 losehp(adjust_damage(1, (struct monst*)0, &youmonst, AD_DISE, ADFLAGS_NONE), "mildly contaminated potion", KILLED_BY_AN);
             }
         }
@@ -1183,7 +1182,7 @@ struct obj *otmp;
 
                 Sprintf(contaminant, "%s%s",
                         (Sick_resistance) ? "mildly " : "",
-                        (otmp->fromsink) ? "contaminated tap water"
+                        (otmp->speflags & SPEFLAGS_FROM_SINK) ? "contaminated tap water"
                                          : "contaminated potion");
 
                 if (!FoodPoisoned)

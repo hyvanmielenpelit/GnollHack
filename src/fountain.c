@@ -1194,7 +1194,7 @@ drinksink()
               Blind ? "odd" : hcolor(OBJ_DESCR(objects[otmp->otyp])));
         otmp->dknown = !(Blind || Hallucination);
         otmp->quan++;       /* Avoid panic upon useup() */
-        otmp->fromsink = 1; /* kludge for docall() */
+        otmp->speflags |= SPEFLAGS_FROM_SINK; /* kludge for docall() */
         (void) dopotion(otmp);
         obfree(otmp, (struct obj *) 0);
         break;

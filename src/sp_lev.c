@@ -2254,7 +2254,7 @@ struct mkroom *croom;
            might be short-circuited if a monster brings object to hero) */
         if (Is_mineend_level(&u.uz)) {
             if (otmp->otyp == iflags.mines_prize_type) {
-                otmp->record_achieve_special = MINES_PRIZE;
+                otmp->speflags |= SPEFLAGS_MINES_PRIZE;
                 /* prevent stacking; cleared when achievement is recorded */
                 otmp->nomerge = 1;
                 if (++mines_prize_count > 1)
@@ -2262,12 +2262,12 @@ struct mkroom *croom;
             }
         } else if (Is_sokoend_level(&u.uz)) {
             if (otmp->otyp == iflags.soko_prize_type1) {
-                otmp->record_achieve_special = SOKO_PRIZE1;
+                otmp->speflags |= SPEFLAGS_SOKO_PRIZE1;
                 otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
                 if (++soko_prize_count > 1)
                     impossible(prize_warning, "sokoban end");
             } else if (otmp->otyp == iflags.soko_prize_type2) {
-                otmp->record_achieve_special = SOKO_PRIZE2;
+                otmp->speflags |= SPEFLAGS_SOKO_PRIZE2;
                 otmp->nomerge = 1; /* redundant; Sokoban prizes don't stack */
                 if (++soko_prize_count > 1)
                     impossible(prize_warning, "sokoban end");

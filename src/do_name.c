@@ -1641,7 +1641,7 @@ struct obj *obj;
     if (!obj->dknown)
         return; /* probably blind */
 
-    if (obj->oclass == POTION_CLASS && obj->fromsink)
+    if (obj->oclass == POTION_CLASS && (obj->speflags & SPEFLAGS_FROM_SINK))
         /* kludge, meaning it's sink water */
         Sprintf(qbuf, "Call a stream of %s fluid:",
                 OBJ_DESCR(objects[obj->otyp]));

@@ -355,11 +355,7 @@ enum arrow_trap_subtypes_types
 };
 
 struct door_subtype_definition {
-    const char* name;
-    const char* lock_adjective;
-    int applicable_key;
-    int applicable_special_quality;
-    int variation;
+    const char* description;
     enum obj_material_types material;
     enum location_soundset_types soundset;
     unsigned long flags;
@@ -371,8 +367,9 @@ struct door_subtype_definition {
 #define DSTFLAGS_MASTER_KEY_OPENS   0x00000004
 #define DSTFLAGS_BLOCKS_VISION      0x00000008
 #define DSTFLAGS_BLOCKS_SOUND       0x00000010
-#define DSTFLAGS_BROKEN_BY_KICKING  0x00000020
-#define DSTFLAGS_INDESTRUCTIBLE     0x00000040
+#define DSTFLAGS_BLOCKS_PROJECTILES 0x00000020
+#define DSTFLAGS_BROKEN_BY_KICKING  0x00000040
+#define DSTFLAGS_INDESTRUCTIBLE     0x00000080
 
 enum door_subtypes_types
 {
@@ -383,30 +380,15 @@ enum door_subtypes_types
     DOOR_SUBTYPE_IRON_BARS,
     DOOR_SUBTYPE_MAGIC,
     DOOR_SUBTYPE_MAGIC_WINDOWED,
-    DOOR_SUBTYPE_MODRON_SPHERICAL,
-    DOOR_SUBTYPE_MODRON_LINEAR,
-    DOOR_SUBTYPE_MODRON_TRIANGULAR,
-    DOOR_SUBTYPE_MODRON_SQUARE,
-    DOOR_SUBTYPE_MODRON_PENTAGON,
-    DOOR_SUBTYPE_MODRON_HEXAGON,
-    DOOR_SUBTYPE_MODRON_OCTAGON,
-    DOOR_SUBTYPE_REINFORCED_BRONZE,
-    DOOR_SUBTYPE_REINFORCED_SILVER,
-    DOOR_SUBTYPE_REINFORCED_GOLD,
-    DOOR_SUBTYPE_REINFORCED_PLATINUM,
-    DOOR_SUBTYPE_STONE_STONE,
-    DOOR_SUBTYPE_STONE_SAPPHIRE,
-    DOOR_SUBTYPE_STONE_RUBY,
-    DOOR_SUBTYPE_STONE_EMERALD,
-    DOOR_SUBTYPE_STONE_DIAMOND,
-    DOOR_SUBTYPE_LEVERED_WOODEN,
-    DOOR_SUBTYPE_LEVERED_IRON,
-    DOOR_SUBTYPE_LEVERED_ALIEN,
-    DOOR_SUBTYPE_LEVERED_STONE,
-    DOOR_SUBTYPE_LEVERED_MASSIVE_GATE,
+    DOOR_SUBTYPE_MODRON,
+    DOOR_SUBTYPE_REINFORCED,
+    DOOR_SUBTYPE_STONE,
+    DOOR_SUBTYPE_MASSIVE_GATE,
+    DOOR_SUBTYPE_PORTCULLIS,
     MAX_DOOR_SUBTYPES
 };
 
+extern struct door_subtype_definition door_subtype_defintions[MAX_DOOR_SUBTYPES];
 
 /*
  * Avoid using the level types in inequalities:

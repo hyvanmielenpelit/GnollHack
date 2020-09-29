@@ -170,7 +170,7 @@ boolean restore;
                            && !Is_sokoend_level(&u.uz))) {
                 /* "special prize" in this game becomes ordinary object
                    if loaded into another game */
-                otmp->record_achieve_special = NON_PM;
+                otmp->speflags &= ~(SPEFLAGS_MINES_PRIZE | SPEFLAGS_SOKO_PRIZE1 | SPEFLAGS_SOKO_PRIZE2);
             } else if (otmp->otyp == AMULET_OF_YENDOR) {
                 /* no longer the real Amulet */
                 otmp->otyp = FAKE_AMULET_OF_YENDOR;
