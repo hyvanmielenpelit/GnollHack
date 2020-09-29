@@ -2301,6 +2301,10 @@ int magic; /* 0=Physical, otherwise skill level */
     {
         coord uc;
         int range, temp;
+        u.dx = cc.x - u.ux;
+        u.dy = cc.y - u.uy;
+        update_u_facing(TRUE);
+        play_sfx_sound(SFX_JUMP);
 
         if (u.utrap)
             switch (u.utraptype) 

@@ -512,6 +512,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Recharge/Recharge Fail", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Wizard Lock Klunk", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Knock Klick", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Jump", 1.0f },
 };
 
 
