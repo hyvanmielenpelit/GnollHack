@@ -1,6 +1,6 @@
 /*
  * npc.h
- * Copyright 2020 by Janne Gustafsson
+ * Copyright (c) Janne Gustafsson, 2020
  */
 #ifndef NPC_H
 #define NPC_H

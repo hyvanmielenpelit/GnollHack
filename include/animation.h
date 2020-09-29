@@ -1,6 +1,6 @@
 /*
  * animation.h
- * Copyright 2020 by Janne Gustafsson
+ * Copyright (c) Janne Gustafsson, 2020
  */
 #include "general.h"
 #include "action.h"
