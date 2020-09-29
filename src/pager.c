@@ -600,7 +600,7 @@ char *buf, *monbuf;
             strcpy(buf, explanation); // defsyms[cmap].explanation);
             if (gl >= S_vodoor && gl <= S_hoportcullis && levl[x][y].typ == DOOR)
             {
-                const char* desc = get_key_special_quality_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality);
+                const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality);
                 if (desc && strcmp(desc, ""))
                 {
                     Sprintf(eos(buf), " with %s lock", an(desc));

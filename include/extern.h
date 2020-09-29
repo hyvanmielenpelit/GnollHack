@@ -2102,7 +2102,8 @@ E int FDECL(shiny_obj, (CHAR_P));
 E void FDECL(add_erosion_words, (struct obj*, char*));
 E const char* FDECL(get_key_special_quality_description, (struct obj*));
 E const char* FDECL(get_key_special_quality_description_by_otyp, (int, int));
-
+E const char* FDECL(get_lock_description_by_otyp, (int, int));
+E boolean FDECL(find_key_otyp_by_description, (char*, int*, int*));
 
 /* ### options.c ### */
 

@@ -1301,19 +1301,10 @@ unsigned doname_flags;
 
     if (Is_box(obj))
     {
-        const char* desc = get_key_special_quality_description(obj);
-        if (obj->special_quality > 0 && desc && strcmp(desc, ""))
+        const char* desc = get_lock_description_by_otyp(obj->keyotyp, obj->special_quality);
+        if (desc && strcmp(desc, ""))
         {
             Sprintf(eos(bp), " with %s lock", an(desc));
-        }
-        else
-        {
-            if (obj->keyotyp == ORNAMENTAL_KEY)
-                Sprintf(eos(bp), " with an ornamental lock");
-            else if (obj->keyotyp == GEOMETRIC_KEY)
-                Sprintf(eos(bp), " with a geometric lock");
-            else if (obj->keyotyp == MAGIC_KEY)
-                Sprintf(eos(bp), " with a magic lock");
         }
     }
 
@@ -3615,7 +3606,7 @@ struct obj *no_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, key_special_quality, key_otyp;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -3644,7 +3635,7 @@ struct obj *no_wish;
     very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
-        locked = unlocked = broken = 0;
+        locked = unlocked = broken = key_special_quality = key_otyp = 0;
     tvariety = RANDOM_TIN;
     mntmp = NON_PM;
 #define CONTAINER_UNDEFINED 0
@@ -3824,8 +3815,13 @@ struct obj *no_wish;
                 break;
             /* "very large " had "very " peeled off on previous iteration */
             gsize = (very != 1) ? 3 : 4;
-        } else
-            break;
+        }
+        else
+        {
+            int foundkey = find_key_otyp_by_description(bp, &key_otyp , &key_special_quality);
+            if(!foundkey)
+                break;
+        }
         bp += l;
     }
     if (!cnt)
@@ -4719,6 +4715,11 @@ struct obj *no_wish;
 
 
 	/* set special_quality */
+    if (is_otyp_key(typ) && typ == key_otyp)
+    {
+        otmp->special_quality = key_special_quality;
+    }
+
     switch (typ) {
     case TIN:
         if (contents == CONTAINER_EMPTY) {
@@ -5266,69 +5267,77 @@ struct obj* obj;
     return get_key_special_quality_description_by_otyp(otyp, sq);
 }
 
+
+struct key_special_description {
+    int otyp;
+    int special_quality;
+    const char* description;
+};
+
+struct key_special_description key_special_descriptions[] =
+{
+    {MAGIC_KEY, 1, "enchanted"},
+    {GEOMETRIC_KEY, 1, "spherical"},
+    {GEOMETRIC_KEY, 2, "linear"},
+    {GEOMETRIC_KEY, 3, "triangular"},
+    {GEOMETRIC_KEY, 4, "square"},
+    {GEOMETRIC_KEY, 5, "pentagonal"},
+    {GEOMETRIC_KEY, 6, "hexagonal"},
+    {GEOMETRIC_KEY, 7, "septagonal"},
+    {GEOMETRIC_KEY, 8, "octagonal"},
+    {ORNAMENTAL_KEY, 1, "runed"},
+    {ORNAMENTAL_KEY, 2, "decorated"},
+    {ORNAMENTAL_KEY, 3, "skull-headed"},
+    {0, 0, 0}
+};
+
+boolean
+find_key_otyp_by_description(inbuf, otyp_ptr, sq_ptr)
+char * inbuf;
+int *otyp_ptr, *sq_ptr;
+{
+    if (strstr(inbuf, " key") == 0)
+        return FALSE;
+
+    for (int i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
+    {
+        char buf[BUFSZ];
+        size_t ln = 0;
+        strcpy(buf, key_special_descriptions[i].description);
+        Strcat(buf, " ");
+        ln = strlen(buf);
+        if (!strncmpi(inbuf, buf, ln) && strstr(inbuf, OBJ_NAME(objects[key_special_descriptions[i].otyp])) != 0)
+        {
+            *otyp_ptr = key_special_descriptions[i].otyp;
+            *sq_ptr = key_special_descriptions[i].special_quality;
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 const char*
 get_key_special_quality_description_by_otyp(otyp, sq)
 int otyp, sq;
 {
-    switch (otyp)
-    {
-    case SKELETON_KEY:
-        break;
-    case MAGIC_KEY:
-    {
-        switch (sq)
-        {
-        case 0:
-            return "magic";
-        case 1:
-            return "enchanted";
-        }
-        break;
-    }
-    case GEOMETRIC_KEY:
-    {
-        switch (sq)
-        {
-        case 1:
-            return "spherical";
-        case 2:
-            return "linear";
-        case 3:
-            return "triangular";
-        case 4:
-            return "square";
-        case 5:
-            return "pentagonal";
-        case 6:
-            return "hexagonal";
-        case 7:
-            return "septagonal";
-        case 8:
-            return "octagonal";
-        }
-        break;
-    }
-    case ORNAMENTAL_KEY:
-    {
-        switch (sq)
-        {
-        case 1:
-            return "green";
-        case 2:
-            return "blue";
-        case 3:
-            return "red";
-        case 4:
-            return "white";
-        case 5:
-            return "black";
-        case 6:
-            return "yellow";
-        }
-        break;
-    }
-    }
+    for (int i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
+        if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq)
+            return key_special_descriptions[i].description;
 
     return "";
 }
+
+const char*
+get_lock_description_by_otyp(otyp, sq)
+int otyp, sq;
+{
+    if (!is_otyp_key(otyp))
+        return "";
+
+    if (sq > 0)
+        return get_key_special_quality_description_by_otyp(otyp, sq);
+    else
+        return OBJ_CONTENT_NAME(otyp);
+}
+
 /*objnam.c*/

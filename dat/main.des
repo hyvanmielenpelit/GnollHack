@@ -250,5 +250,16 @@ MAP
 ENDMAP
 
 MAZEWALK:(00,02),west
+#DOOR:locked,(00,02),key_geometric,2
 REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
 NPC:npc_geologist,(02,03)
+
+#CONTAINER:('(',"chest"),locked,keytype:key_ornamental,special_quality:2,(03,03) {
+#   OBJECT:('$',"gold piece"), quantity:(1000+(2d500))
+#   OBJECT:random_contents
+#   OBJECT:random_contents
+#   [50%]:OBJECT:random_contents
+#}
+
+#OBJECT:('(',"ornamental key"),special_quality:2,(04,02)
+#OBJECT:('(',"geometric key"),special_quality:2,(04,02)
