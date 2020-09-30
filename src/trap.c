@@ -4893,7 +4893,7 @@ struct trap* ttmp;
 		genotyp = random_objectid_from_class(WAND_CLASS);
 		break;
 	case LEVEL_TELEP:
-		genotyp = WAN_TELEPORTATION;
+		genotyp = CUBIC_GATE;
 		break;
 	case ANTI_MAGIC_TRAP:
 		genotyp = POT_MAGIC_RESISTANCE;

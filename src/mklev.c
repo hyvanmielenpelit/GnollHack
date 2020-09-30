@@ -1056,7 +1056,7 @@ makelevel()
         if (x <= 1)
             x = 2;
         while (!rn2(x) && !startingroom)
-            mktrap(0, 0, croom, (coord *) 0);
+            (void)mktrap(0, 0, croom, (coord *) 0);
         if (!rn2(3))
             (void) mkgold(0L, somex(croom), somey(croom));
         if (Is_rogue_level(&u.uz))
@@ -1603,20 +1603,20 @@ register xchar x, y;
 
 /* make a trap somewhere (in croom if mazeflag = 0 && !tm) */
 /* if tm != null, make trap at that location */
-void
+struct trap*
 mktrap(num, mazeflag, croom, tm)
 int num, mazeflag;
 struct mkroom *croom;
 coord *tm;
 {
     register int kind;
-    struct trap *t;
+    struct trap *t = 0;
     unsigned lvl = level_difficulty();
     coord m;
 
     /* no traps in pools */
     if (tm && is_pool(tm->x, tm->y))
-        return;
+        return (struct trap*)0;
 
     if (num > 0 && num < TRAPNUM) {
         kind = num;
@@ -1714,11 +1714,11 @@ coord *tm;
 
         do {
             if (++tryct > 200)
-                return;
+                return (struct trap*)0;
             if (mazeflag)
                 mazexy(&m);
             else if (!somexy(croom, &m))
-                return;
+                return (struct trap*)0;
         } while (occupied(m.x, m.y)
                  || (avoid_boulder && sobj_at(BOULDER, m.x, m.y)));
     }
@@ -1883,6 +1883,7 @@ coord *tm;
 				otmp->age -= 51; /* died too long ago to eat */
 		}
     }
+    return t;
 }
 
 void

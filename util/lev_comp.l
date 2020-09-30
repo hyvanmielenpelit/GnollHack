@@ -166,6 +166,7 @@ NPC		    ST_RET(NPC_ID);
 LADDER		ST_RET(LADDER_ID);
 STAIR		ST_RET(STAIR_ID);
 PORTAL		ST_RET(PORTAL_ID);
+LEVER		ST_RET(LEVER_ID);
 TELEPORT_REGION	ST_RET(TELEPRT_ID);
 BRANCH		ST_RET(BRANCH_ID);
 FOUNTAIN	ST_RET(FOUNTAIN_ID);
@@ -202,6 +203,10 @@ DEFAULT		ST_RET(DEFAULT_ID);
 FUNCTION	ST_RET(FUNCTION_ID);
 SHUFFLE		ST_RET(SHUFFLE_ID);
 montype		ST_RET(MONTYPE_ID);
+objtype		ST_RET(OBJTYPE_ID);
+target		ST_RET(TARGET_ID);
+tertype		ST_RET(TERTYPE_ID);
+tertype2	ST_RET(TERTYPE2_ID);
 selection	ST_RET(selection_ID);
 rect		ST_RET(rect_ID);
 fillrect	ST_RET(fillrect_ID);
@@ -249,6 +254,8 @@ stunned		ST_RET(STUNNED_ID);
 confused	ST_RET(CONFUSED_ID);
 seen_traps	ST_RET(SEENTRAPS_ID);
 waitforu	ST_RET(WAITFORU_ID);
+switchable	ST_RET(SWITCHABLE_ID);
+continuously_usable	ST_RET(CONTINUOUSLY_USABLE_ID);
 all		ST_RET(ALL_ID);
 horizontal	ST_RETF((yylval.i=1), HORIZ_OR_VERT);
 vertical	{ savetoken(yytext); yylval.i=2; return HORIZ_OR_VERT; }
@@ -366,6 +373,23 @@ key_skeleton  { savetoken(yytext); yylval.i=SKELETON_KEY; return KEY_TYPE; }
 key_magic  { savetoken(yytext); yylval.i=MAGIC_KEY; return KEY_TYPE; }
 key_geometric  { savetoken(yytext); yylval.i=GEOMETRIC_KEY; return KEY_TYPE; }
 key_ornamental  { savetoken(yytext); yylval.i=ORNAMENTAL_KEY; return KEY_TYPE; }
+key_bronze  { savetoken(yytext); yylval.i=BRONZE_KEY; return KEY_TYPE; }
+key_silver  { savetoken(yytext); yylval.i=SILVER_KEY; return KEY_TYPE; }
+key_gold  { savetoken(yytext); yylval.i=GOLD_KEY; return KEY_TYPE; }
+key_platinum  { savetoken(yytext); yylval.i=PLATINUM_KEY; return KEY_TYPE; }
+key_mithril  { savetoken(yytext); yylval.i=MITHRIL_KEY; return KEY_TYPE; }
+key_orichalcum  { savetoken(yytext); yylval.i=ORICHALCUM_KEY; return KEY_TYPE; }
+key_adamantium  { savetoken(yytext); yylval.i=ADAMANTIUM_KEY; return KEY_TYPE; }
+key_nolock  { savetoken(yytext); yylval.i=NUM_OBJECTS; return KEY_TYPE; }
+lever_effect_none { savetoken(yytext); yylval.i=LEVER_EFFECT_NONE; return LEVER_EFFECT_TYPE; }
+lever_effect_open_door { savetoken(yytext); yylval.i=LEVER_EFFECT_OPEN_DOOR; return LEVER_EFFECT_TYPE; }
+lever_effect_lock_door { savetoken(yytext); yylval.i=LEVER_EFFECT_LOCK_DOOR; return LEVER_EFFECT_TYPE; }
+lever_effect_open_lock_door { savetoken(yytext); yylval.i=LEVER_EFFECT_OPEN_LOCK_DOOR; return LEVER_EFFECT_TYPE; }
+lever_effect_create_closed_door { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_CLOSED_DOOR; return LEVER_EFFECT_TYPE; }
+lever_effect_create_location { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_LOCATION_TYPE; return LEVER_EFFECT_TYPE; }
+lever_effect_create_uncreate_location { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE; return LEVER_EFFECT_TYPE; }
+lever_effect_create_object { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_OBJECT; return LEVER_EFFECT_TYPE; }
+lever_effect_create_monster { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_MONSTER; return LEVER_EFFECT_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }

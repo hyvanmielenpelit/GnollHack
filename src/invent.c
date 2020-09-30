@@ -4380,32 +4380,47 @@ dfeature_at(x, y)
 int x, y;
 {
     struct rm *lev = &levl[x][y];
-    int ltyp = lev->typ, cmap = -1;
+    int ltyp = lev->typ, cmap = -1, altcmap = -1;
     const char *dfeature = 0;
     static char altbuf[BUFSZ];
 
     if (IS_DOOR(ltyp)) {
         switch (lev->doormask) {
         case D_NODOOR:
-            cmap = S_ndoor;
+            altcmap = S_ndoor;
             break; /* "doorway" */
         case D_ISOPEN:
-            cmap = S_vodoor;
+            altcmap = S_vodoor;
             break; /* "open door" */
         case D_BROKEN:
-            cmap = S_vbdoor;
+            altcmap = S_vbdoor;
             break; /* "broken door" */
         case D_PORTCULLIS:
-            cmap = S_voportcullis;
+            altcmap = S_voportcullis;
             break; /* "open portcullis" */
         default:
-            cmap = S_vcdoor;
+            altcmap = S_vcdoor;
             break; /* "closed door" */
         }
+
+        if (altcmap > -1)
+        {
+            strcpy(altbuf, defsyms[altcmap].explanation);
+            const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality);
+            if (desc && strcmp(desc, ""))
+            {
+                if (!strcmp(desc, "no"))
+                    Sprintf(eos(altbuf), " with no lock");
+                else
+                    Sprintf(eos(altbuf), " with %s lock", an(desc));
+            }
+            dfeature = altbuf;
+        }
+
         /* override door description for open drawbridge */
         if (is_drawbridge_wall(x, y) >= 0)
             dfeature = "open drawbridge portcullis", cmap = -1;
-    } 
+    }
 	else if (IS_FOUNTAIN(ltyp))
 		dfeature = get_fountain_name(x, y); //cmap = S_fountain; /* "fountain" */
     else if (IS_THRONE(ltyp))
@@ -4548,8 +4563,19 @@ boolean picked_some;
         return !!Blind;
     }
     if (!skip_objects && (trap = t_at(u.ux, u.uy)) && trap->tseen)
-        There("is %s here.",
-              an(get_trap_explanation(trap)));
+    {
+        char buf[BUFSZ];
+        strcpy(buf, "");
+        if (trap && trap->ttyp == LEVER && (trap->tflags & TRAPFLAGS_SWITCHABLE_BETWEEN_STATES))
+        {
+            if ((trap->tflags & TRAPFLAGS_STATE_MASK) > 0UL)
+                Sprintf(buf, " turned left");
+            else
+                Sprintf(buf, " turned right");
+        }
+        There("is %s%s here.",
+            an(get_trap_explanation(trap)), buf);
+    }
 
     otmp = level.objects[u.ux][u.uy];
     dfeature = dfeature_at(u.ux, u.uy);

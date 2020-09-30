@@ -82,6 +82,7 @@ enum opcode_defs {
     SPO_SINK,
     SPO_POOL,
     SPO_TRAP,
+    SPO_LEVER,
     SPO_GOLD,
     SPO_CORRIDOR,
     SPO_LEVREGION,
@@ -205,6 +206,20 @@ enum sp_obj_var_flags {
     SP_O_V_KEY_TYPE,
 
     SP_O_V_END
+};
+
+/* OBJECT */
+enum sp_lever_var_flags {
+    SP_L_V_ACTIVE = 0,
+    SP_L_V_SWITCHABLE,
+    SP_L_V_CONTINUOUS,
+    SP_L_V_MONSTER,
+    SP_L_V_OBJECT,
+    SP_L_V_TERRAIN,
+    SP_L_V_TERRAIN2,
+    SP_L_V_COORD,
+
+    SP_L_V_END
 };
 
 /* When creating objects, we need to know whether
@@ -372,6 +387,16 @@ typedef struct {
     packed_coord coord;
     xchar x, y, type;
 } spltrap;
+
+typedef struct {
+    packed_coord coord;
+    packed_coord target_coord;
+    int lever_effect;
+    long effect_parameter1;
+    long effect_parameter2;
+    unsigned long effect_flags;
+    unsigned long lever_flags;
+} spllever;
 
 typedef struct {
     Str_or_Len name, appear_as;

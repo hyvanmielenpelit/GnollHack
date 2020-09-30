@@ -5720,14 +5720,140 @@ struct trap* lever;
     else
     {
         play_sfx_sound_at_location(SFX_LEVER_SWITCH_SUCCESS, lever->tx, lever->ty);
-        lever->tflags |= TRAPFLAGS_ACTIVATED;
         lever->activation_count++;
         You("pull the lever.");
     }
     newsym(lever->tx, lever->ty);
 
     /* Lever effect here */
+    int target_x = lever->launch.x;
+    int target_y = lever->launch.y;
+    switch (lever->lever_effect)
+    {
+    case LEVER_EFFECT_OPEN_DOOR:
+    {
+        if (isok(target_x, target_y) && IS_DOOR(levl[target_x][target_y].typ) && levl[target_x][target_y].doormask & (D_CLOSED | D_LOCKED))
+        {
+            levl[target_x][target_y].doormask &= ~(D_CLOSED | D_LOCKED);
+            levl[target_x][target_y].doormask |= D_ISOPEN;
+        }
+        break;
+    }
+    case LEVER_EFFECT_LOCK_DOOR:
+    {
+        if (isok(target_x, target_y) && IS_DOOR(levl[target_x][target_y].typ) && levl[target_x][target_y].doormask & (D_CLOSED | D_ISOPEN))
+        {
+            levl[target_x][target_y].doormask &= ~(D_CLOSED | D_ISOPEN);
+            levl[target_x][target_y].doormask |= D_LOCKED;
+        }
+        break;
+    }
+    case LEVER_EFFECT_OPEN_LOCK_DOOR:
+    {
+        if (isok(target_x, target_y) && IS_DOOR(levl[target_x][target_y].typ))
+        {
+            if (levl[target_x][target_y].doormask & (D_CLOSED | D_ISOPEN) && (lever->tflags & TRAPFLAGS_STATE_MASK) == 0)
+            {
+                levl[target_x][target_y].doormask &= ~(D_CLOSED | D_ISOPEN);
+                levl[target_x][target_y].doormask |= D_LOCKED;
+            }
+            else if (levl[target_x][target_y].doormask & (D_CLOSED | D_LOCKED) && (lever->tflags & TRAPFLAGS_STATE_MASK) > 0)
+            {
+                levl[target_x][target_y].doormask &= ~(D_CLOSED | D_LOCKED);
+                levl[target_x][target_y].doormask |= D_ISOPEN;
+            }
+        }
+        break;
+    }
+    case LEVER_EFFECT_CREATE_CLOSED_DOOR:
+    {
+        if(isok(target_x, target_y) && IS_ROCK(levl[target_x][target_y].typ))
+            create_simple_location(target_x, target_y, DOOR, 0, D_CLOSED, 0, levl[target_x][target_y].floortyp, levl[target_x][target_y].floorsubtyp, TRUE);
+        break;
+    }
+    case LEVER_EFFECT_CREATE_LOCATION_TYPE:
+    {
+        int loctyp = (int)lever->effect_param1;
+        int locsubtyp = (int)lever->effect_param2;
+        int locflags = (uchar)lever->effect_flags;
+        if (isok(target_x, target_y) && loctyp >= 0 && loctyp < MAX_TYPE)
+            create_simple_location(target_x, target_y, loctyp, locsubtyp, locflags, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+        break;
+    }
+    case LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE:
+    {
+        int loctyp = (int)lever->effect_param1;
+        int loctyp2 = (int)lever->effect_param2;
+        if (isok(target_x, target_y))
+        {
+            if (loctyp2 >= 0 && loctyp2 < MAX_TYPE && (lever->tflags & TRAPFLAGS_STATE_MASK) == 0)
+            {
+                create_simple_location(target_x, target_y, loctyp2, 0, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+            }
+            else if (loctyp >= 0 && loctyp < MAX_TYPE && (lever->tflags & TRAPFLAGS_STATE_MASK) > 0)
+            {
+                create_simple_location(target_x, target_y, loctyp, 0, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+            }
+        }
+        break;
+    }
+    case LEVER_EFFECT_CREATE_OBJECT:
+    {
+        struct obj* otmp = 0;
+        if(isok(target_x, target_y))
+        { 
+            if (lever->effect_param1 > STRANGE_OBJECT && lever->effect_param1 < NUM_OBJECTS)
+            {
+                otmp = mksobj_at((int)lever->effect_param1, target_x, target_y, TRUE, FALSE);
+            }
+            else if (lever->effect_param2 >= 0)
+            {
+                otmp = mkobj_at((char)lever->effect_param2, target_x, target_y, TRUE);
+            }
+        }
+        if (otmp)
+        {
+            play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
+            if (cansee(target_x, target_y))
+            {
+                pline("%s in a puff of smoke!", upstart(aobjnam(otmp, "appear")));
+            }
+        }
 
+        break;
+    }
+    case LEVER_EFFECT_CREATE_MONSTER:
+    {
+        if (isok(target_x, target_y))
+        {
+            struct monst* mtmp = 0;
+            if (lever->effect_param1 > NON_PM && lever->effect_param1 < NUM_MONSTERS)
+            {
+                mtmp = makemon(&mons[lever->effect_param1], target_x, target_y, lever->effect_flags | MM_ADJACENTOK);
+            }
+            else if (lever->effect_param2 >= 0)
+            {
+                mtmp = makemon(lever->effect_param2 == 0 ? (struct permonst*)0 : mkclass((char)lever->effect_param2, 0), target_x, target_y, lever->effect_flags | MM_ADJACENTOK);
+            }
+            if (mtmp)
+            {
+                play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
+                if (canseemon(mtmp))
+                {
+                    pline("%s appears in a puff of smoke!", Amonnam(mtmp));
+                }
+            }
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    if (!(lever->tflags & TRAPFLAGS_SWITCHABLE_BETWEEN_STATES))
+    {
+        pline("The lever springs back to its original posiotion.");
+    }
     return 1;
 }
 

@@ -77,6 +77,7 @@ STATIC_DCL boolean FDECL(m_bad_boulder_spot, (int, int));
 STATIC_DCL int FDECL(pm_to_humidity, (struct permonst *));
 STATIC_DCL void FDECL(create_monster, (monster *, struct mkroom *));
 STATIC_DCL void FDECL(create_object, (object *, struct mkroom *));
+STATIC_DCL void FDECL(create_lever, (spllever*, struct mkroom*));
 STATIC_DCL void FDECL(create_altar, (altar *, struct mkroom *));
 STATIC_DCL void FDECL(create_anvil, (anvil*, struct mkroom*));
 STATIC_DCL void FDECL(create_modron_portal, (modron_portal*, struct mkroom*));
@@ -106,6 +107,7 @@ STATIC_DCL void FDECL(spo_pop_container, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_message, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_monster, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_object, (struct sp_coder *));
+STATIC_DCL void FDECL(spo_lever, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
@@ -1626,7 +1628,7 @@ struct mkroom *croom;
     tm.x = x;
     tm.y = y;
 
-    mktrap(t->type, 1, (struct mkroom *) 0, &tm);
+    (void)mktrap(t->type, 1, (struct mkroom *) 0, &tm);
 }
 
 /*
@@ -2300,6 +2302,52 @@ struct mkroom *croom;
     }
 }
 
+/*
+ * Create an object in a room.
+ */
+STATIC_OVL void
+create_lever(lever, croom)
+spllever* lever;
+struct mkroom* croom;
+{
+    schar x = -1, y = -1;
+    schar t_x = -1, t_y = -1;
+
+    get_location_coord(&t_x, &t_y, ANY_LOC, croom, lever->target_coord);
+
+    if (croom)
+        get_free_room_loc(&x, &y, croom, lever->coord);
+    else {
+        int trycnt = 0;
+        do {
+            get_location_coord(&x, &y, DRY, croom, lever->coord);
+        } while ((levl[x][y].typ == STAIRS || levl[x][y].typ == LADDER)
+            && ++trycnt <= 100);
+        if (trycnt > 100)
+            return;
+    }
+
+    coord tm;
+    tm.x = x;
+    tm.y = y;
+
+    struct trap* lvr = mktrap(LEVER, 1, (struct mkroom*)0, &tm);
+    if (lvr)
+    {
+        lvr->lever_effect = lever->lever_effect;
+        lvr->effect_param1 = lever->effect_parameter1;
+        lvr->effect_param2 = lever->effect_parameter2;
+        lvr->effect_flags = lever->effect_flags;
+        lvr->tflags = lever->lever_flags;
+
+        coord tm2;
+        tm2.x = t_x;
+        tm2.y = t_y;
+
+        lvr->launch = tm2;
+    }
+
+}
 /*
  * Create an altar in a room.
  */
@@ -3719,6 +3767,115 @@ struct sp_coder *coder;
     opvar_free(varparam);
     opvar_free(id);
     opvar_free(containment);
+}
+
+void
+spo_lever(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_lever";
+    int nparams = 0;
+    struct opvar* varparam, *effect_type_opvar, *coord_opvar;
+    spllever tmplever = { 0 };
+
+    if (!OV_pop_i(effect_type_opvar))
+        return;
+
+    tmplever.lever_effect = OV_i(effect_type_opvar);
+
+    if (!OV_pop_i(varparam))
+        return;
+
+    while ((nparams++ < (SP_L_V_END + 1)) && varparam && (OV_typ(varparam) == SPOVAR_INT)
+        && (OV_i(varparam) >= 0) && (OV_i(varparam) < SP_L_V_END))
+    {
+        struct opvar* parm;
+
+        OV_pop(parm);
+        switch (OV_i(varparam))
+        {
+        case SP_L_V_MONSTER:
+            if (OV_typ(parm) == SPOVAR_MONST) {
+                char monclass = SP_MONST_CLASS(OV_i(parm));
+                int monid = SP_MONST_PM(OV_i(parm));
+
+                if (monid >= LOW_PM && monid < NUM_MONSTERS) {
+                    tmplever.effect_parameter1 = monid;
+                    break; /* we're done! */
+                }
+                else {
+                    tmplever.effect_parameter1 = NON_PM;
+                }
+            }
+            break;
+        case SP_L_V_OBJECT:
+            if (OV_typ(parm) == SPOVAR_OBJ) {
+                char objclass = SP_OBJ_CLASS(OV_i(parm));
+                int otyp = SP_OBJ_TYP(OV_i(parm));
+
+                if (otyp > STRANGE_OBJECT && otyp < NUM_OBJECTS) {
+                    tmplever.effect_parameter1 = otyp;
+                    break; /* we're done! */
+                }
+                else {
+                    tmplever.effect_parameter1 = STRANGE_OBJECT;
+                }
+            }
+            break;
+        case SP_L_V_TERRAIN:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_parameter1 = OV_i(parm);
+            break;
+        case SP_L_V_TERRAIN2:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_parameter2 = OV_i(parm);
+            break;
+        case SP_L_V_ACTIVE:
+            if (OV_typ(parm) == SPOVAR_INT && OV_i(parm) == 1)
+                tmplever.lever_flags |= TRAPFLAGS_ACTIVATED;
+            break;
+
+        case SP_L_V_CONTINUOUS:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.lever_flags |= TRAPFLAGS_CONTINUOUSLY_SWITCHABLE;
+            break;
+
+        case SP_L_V_SWITCHABLE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.lever_flags |= TRAPFLAGS_SWITCHABLE_BETWEEN_STATES;
+            break;
+
+        case SP_L_V_COORD:
+            if (OV_typ(parm) != SPOVAR_COORD)
+                panic("no target coord for a lever?");
+            tmplever.target_coord = OV_i(parm);
+            break;
+
+        case SP_L_V_END:
+            nparams = SP_L_V_END + 1;
+            break;
+        default:
+            impossible("LEVER with unknown variable param type!");
+            break;
+        }
+        opvar_free(parm);
+        if (OV_i(varparam) != SP_L_V_END) {
+            opvar_free(varparam);
+            OV_pop(varparam);
+        }
+    }
+
+    if (!OV_pop_c(coord_opvar))
+        return;
+
+    tmplever.coord = OV_i(coord_opvar);
+
+    create_lever(&tmplever, coder->croom);
+
+    opvar_free(varparam);
+    opvar_free(effect_type_opvar);
+    opvar_free(coord_opvar);
+
 }
 
 void
@@ -6393,6 +6550,9 @@ sp_lev *lvl;
             break;
         case SPO_OBJECT:
             spo_object(coder);
+            break;
+        case SPO_LEVER:
+            spo_lever(coder);
             break;
         case SPO_LEVEL_FLAGS:
             spo_level_flags(coder);

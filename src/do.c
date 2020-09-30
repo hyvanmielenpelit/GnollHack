@@ -5765,11 +5765,12 @@ xchar x, y;
 }
 
 void
-full_location_transform(x, y, type, subtype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, donewsym)
+full_location_transform(x, y, type, subtype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, key_otyp, special_quality, donewsym)
 xchar x, y;
 int type, subtype, feature_doodad, floor_doodad, floortype;
 uchar location_flags;
 boolean facing_right, horizontal, donewsym;
+short key_otyp, special_quality;
 {
 	delete_location(x, y);
 	levl[x][y].typ = type;
@@ -5781,6 +5782,8 @@ boolean facing_right, horizontal, donewsym;
 	levl[x][y].floorsubtyp = floorsubtype;
 	levl[x][y].facing_right = facing_right;
 	levl[x][y].horizontal = horizontal;
+	levl[x][y].key_otyp = key_otyp;
+	levl[x][y].special_quality = special_quality;
 	maybe_create_location_light_and_sound_sources(x, y);
 
 	if (levl[x][y].typ == FOUNTAIN)
@@ -5799,7 +5802,7 @@ int type, subtype, floor_doodad, floortype, floorsubtype;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, 0, 0, donewsym);
 }
 
 void
@@ -5812,7 +5815,7 @@ boolean donewsym;
 	if (!isok(x, y))
 		return;
 
-	full_location_transform(x, y, type, subtype, location_flags, 0, 0, 0, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, subtype, location_flags, 0, 0, 0, 0, FALSE, FALSE, 0, 0, donewsym);
 }
 
 void
@@ -5822,7 +5825,7 @@ int type, subtype, floor_doodad;
 uchar location_flags;
 boolean donewsym;
 {
-	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, 0, 0, FALSE, FALSE, donewsym);
+	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, 0, 0, FALSE, FALSE, 0, 0, donewsym);
 }
 
 

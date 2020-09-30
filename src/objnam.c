@@ -1304,7 +1304,10 @@ unsigned doname_flags;
         const char* desc = get_lock_description_by_otyp(obj->keyotyp, obj->special_quality);
         if (desc && strcmp(desc, ""))
         {
-            Sprintf(eos(bp), " with %s lock", an(desc));
+            if (!strcmp(desc, "no"))
+                Sprintf(eos(bp), " with no lock");
+            else
+                Sprintf(eos(bp), " with %s lock", an(desc));
         }
     }
 
@@ -3606,7 +3609,7 @@ struct obj *no_wish;
     int blessed, uncursed, iscursed, ispoisoned, isgreased;
     int eroded, eroded2, erodeproof, locked, unlocked, broken;
     int halfeaten, mntmp, contents;
-    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, key_special_quality, key_otyp;
+    int islit, unlabeled, ishistoric, isdiluted, trapped, elemental_enchantment, exceptionality, key_special_quality, key_otyp, is_switchable;
     int tmp, tinv, tvariety;
     int wetness, gsize = 0;
     struct fruit *f;
@@ -3635,7 +3638,7 @@ struct obj *no_wish;
     very = rechrg = blessed = uncursed = iscursed = ispoisoned = elemental_enchantment = exceptionality =
         isgreased = eroded = eroded2 = erodeproof = halfeaten =
         islit = unlabeled = ishistoric = isdiluted = trapped =
-        locked = unlocked = broken = key_special_quality = key_otyp = 0;
+        locked = unlocked = broken = key_special_quality = key_otyp = is_switchable = 0;
     tvariety = RANDOM_TIN;
     mntmp = NON_PM;
 #define CONTAINER_UNDEFINED 0
@@ -3789,6 +3792,8 @@ struct obj *no_wish;
             halfeaten = 1;
         } else if (!strncmpi(bp, "historic ", l = 9)) {
             ishistoric = 1;
+        } else if (!strncmpi(bp, "switchable ", l = 11)) {
+            is_switchable = 1;
         } else if (!strncmpi(bp, "diluted ", l = 8)) {
             isdiluted = 1;
         } else if (!strncmpi(bp, "empty ", l = 6)) {
@@ -4435,6 +4440,17 @@ struct obj *no_wish;
                 trap = ROCKTRAP;
             if ((t = maketrap(x, y, trap, NON_PM, MKTRAP_NO_FLAGS)) != 0) {
                 trap = t->ttyp;
+                if (trap == LEVER && is_switchable)
+                {
+                    t->tflags |= TRAPFLAGS_SWITCHABLE_BETWEEN_STATES | TRAPFLAGS_CONTINUOUSLY_SWITCHABLE;
+                    /* Test stuff */
+                    t->lever_effect = LEVER_EFFECT_CREATE_MONSTER;
+                    t->effect_param1 = PM_ETTIN_ZOMBIE;
+                    t->effect_param2 = 0;
+                    t->effect_flags = 0UL;
+                    t->launch.x = x - 1;
+                    t->launch.y = y;
+                }
                 tname = defsyms[trap_to_defsym(trap)].explanation;
                 pline("%s%s.", An(tname),
                       (trap != MAGIC_PORTAL) ? "" : " to nowhere");
@@ -4472,7 +4488,7 @@ struct obj *no_wish;
 			if (!strncmpi(bp, "poison ", 7))
                 lsubtype = FOUNTAIN_POISON;
             
-            full_location_transform(x, y, FOUNTAIN, lsubtype, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : get_initial_location_subtype(ROOM), FALSE, lhorizontal, FALSE);
+            full_location_transform(x, y, FOUNTAIN, lsubtype, lflags, 0, 0, IS_FLOOR(lev->typ) ? lev->typ : ROOM, IS_FLOOR(lev->typ) ? lev->subtyp : get_initial_location_subtype(ROOM), FALSE, lhorizontal, 0, 0, FALSE);
 
             int ftyp = lev->subtyp; // (lev->fountainmask & FOUNTAIN_TYPE_MASK);
 			pline("A %s.", ftyp == FOUNTAIN_MAGIC && lev->blessedftn ? "enchanted fountain" : fountain_type_text(ftyp));
@@ -5284,7 +5300,7 @@ struct key_special_description key_special_descriptions[] =
     {GEOMETRIC_KEY, 4, "square"},
     {GEOMETRIC_KEY, 5, "pentagonal"},
     {GEOMETRIC_KEY, 6, "hexagonal"},
-    {GEOMETRIC_KEY, 7, "septagonal"},
+    {GEOMETRIC_KEY, 7, "heptagonal"},
     {GEOMETRIC_KEY, 8, "octagonal"},
     {ORNAMENTAL_KEY, 1, "runed"},
     {ORNAMENTAL_KEY, 2, "decorated"},
@@ -5332,6 +5348,11 @@ const char*
 get_lock_description_by_otyp(otyp, sq)
 int otyp, sq;
 {
+    if (otyp >= NUM_OBJECTS) /* No lock, STRANGE_OBJECT indicates normal door */
+    {
+        return "no";
+    }
+
     if (!is_otyp_key(otyp))
         return "";
 

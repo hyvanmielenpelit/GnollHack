@@ -1144,7 +1144,7 @@ const char *s;
         (void) mkgold(0L, mm.x, mm.y);
     }
     for (x = rn1(6, 7); x; x--)
-        mktrap(0, 1, (struct mkroom *) 0, (coord *) 0);
+        (void)mktrap(0, 1, (struct mkroom *) 0, (coord *) 0);
 }
 
 #ifdef MICRO

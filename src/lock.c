@@ -104,7 +104,9 @@ picklock(VOID_ARGS)
         else if (xlock.box->keyotyp != xlock.key->otyp || xlock.box->special_quality != xlock.key->special_quality)
         {
             play_sfx_sound(SFX_DOOR_TRY_LOCKED);
-            if(xlock.box->keyotyp == MAGIC_KEY)
+            if (xlock.box->keyotyp == NUM_OBJECTS)
+                pline("%s is locked but it has no observable lock.", The(cxname(xlock.box)));
+            else if(xlock.box->keyotyp == MAGIC_KEY)
                 pline("%s is magically locked.", The(cxname(xlock.box)));
             else
                 pline("%s does not match the lock on the %s.", The(cxname(xlock.key)), cxname(xlock.box));
@@ -141,7 +143,9 @@ picklock(VOID_ARGS)
         else if (xlock.door->key_otyp != xlock.key->otyp || xlock.door->special_quality != xlock.key->special_quality)
         {
             play_sfx_sound(SFX_DOOR_TRY_LOCKED);
-            if (xlock.door->key_otyp == MAGIC_KEY)
+            if (xlock.door->key_otyp == NUM_OBJECTS)
+                pline("The door is locked but it has no observable lock.");
+            else if (xlock.door->key_otyp == MAGIC_KEY)
                 pline("The door is magically locked.");
             else
                 pline("%s does not match the lock on the door.", The(cxname(xlock.key)));
@@ -287,6 +291,12 @@ forcelock(VOID_ARGS)
     if ((xlock.box->ox != u.ux) || (xlock.box->oy != u.uy))
         return ((xlock.usedtime = 0)); /* you or it moved */
 
+    if (xlock.box->keyotyp == NUM_OBJECTS)
+    {
+        pline("%s has no observable lock to force.", The(cxname(xlock.box)));
+        return ((xlock.usedtime = 0));
+    }
+
     if (xlock.usedtime++ >= 50 || !uwep || (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data))) {
         You("give up your attempt to force the lock.");
         if (xlock.usedtime >= 50) /* you made the effort */
@@ -312,6 +322,20 @@ forcelock(VOID_ARGS)
 
     if (rn2(100) >= xlock.chance)
         return 1; /* still busy */
+
+    if (xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == SKELETON_KEY)
+    {
+        //nothing, normal case
+    }
+    else if (xlock.box->keyotyp != xlock.key->otyp || xlock.box->special_quality != xlock.key->special_quality)
+    {
+        if (xlock.box->keyotyp == MAGIC_KEY)
+            You("fail to force the magic lock on the %s.", cxname(xlock.box));
+        else
+            You("fail to force the lock on the %s.", cxname(xlock.box));
+
+        return 0;
+    }
 
     You("succeed in forcing the lock.");
     exercise(xlock.picktyp ? A_DEX : A_STR, TRUE);

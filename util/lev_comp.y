@@ -196,7 +196,7 @@ extern char curr_token[512];
 %token	<i> ALTAR_ID ANVIL_ID NPC_ID LADDER_ID STAIR_ID NON_DIGGABLE_ID NON_PASSWALL_ID ROOM_ID
 %token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV MINERALIZE_ID
 %token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID THRONE_ID MODRON_PORTAL_ID POOL_ID SINK_ID NONE
-%token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE KEY_TYPE KEYTYPE_ID
+%token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE KEY_TYPE KEYTYPE_ID LEVER_ID
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
 %token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID FLOOR_ID FLOOR_MAIN_TYPE
@@ -212,7 +212,7 @@ extern char curr_token[512];
 %token	<i> ERODED_ID TRAPPED_STATE RECHARGED_ID INVIS_ID GREASED_ID
 %token	<i> FEMALE_ID WAITFORU_ID CANCELLED_ID REVIVED_ID AVENGE_ID FLEEING_ID BLINDED_ID
 %token	<i> PARALYZED_ID STUNNED_ID CONFUSED_ID SEENTRAPS_ID ALL_ID
-%token	<i> MONTYPE_ID
+%token	<i> MONTYPE_ID OBJTYPE_ID TERTYPE_ID TERTYPE2_ID LEVER_EFFECT_TYPE SWITCHABLE_ID CONTINUOUSLY_USABLE_ID TARGET_ID
 %token	<i> GRAVE_ID ERODEPROOF_ID
 %token	<i> FUNCTION_ID
 %token	<i> MSG_OUTPUT_TYPE
@@ -509,6 +509,7 @@ levstatement 	: message
 		| function_define
 		| function_call
 		| ladder_detail
+		| lever_detail
 		| map_definition
 		| mazewalk_detail
 		| monster_detail
@@ -1930,6 +1931,72 @@ throne_detail : THRONE_ID ':' ter_selection
 modron_portal_detail : MODRON_PORTAL_ID ':' coord_or_var ',' '(' all_integers ',' all_integers ')' ',' MODRON_PORTAL_TYPE ',' ACTIVE_OR_INACTIVE
 		  {
 		      add_opvars(splev, "iiiio", VA_PASS5((int)$<i>6, (int)$<i>8, (int) $<i>11, (int) $<i>13, SPO_MODRON_PORTAL));
+		  }
+		;
+
+lever_detail : LEVER_ID ':' coord_or_var ',' LEVER_EFFECT_TYPE lever_infos
+		  {
+		      add_opvars(splev, "io", VA_PASS2((int) $<i>5, SPO_LEVER));
+		  }
+		;
+
+lever_infos	: /* nothing */
+		  {
+		      struct opvar *stopit = New(struct opvar);
+		      set_opvar_int(stopit, SP_L_V_END);
+		      add_opcode(splev, SPO_PUSH, stopit);
+		      $<i>$ = 0x00;
+		  }
+		| lever_infos ',' lever_info
+		  {
+		      if (( $<i>1 & $<i>3 ))
+			  lc_error("LEVER extra info '%s' defined twice.", curr_token);
+		      $<i>$ = ( $<i>1 | $<i>3 );
+		  }
+		;
+
+lever_info	: ACTIVE_OR_INACTIVE
+		  {	
+		      add_opvars(splev, "ii",
+				 VA_PASS2((int) $<i>1, SP_L_V_ACTIVE));
+		      $<i>$ = 0x0001;
+		  }
+		| MONTYPE_ID ':' monster_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_L_V_MONSTER));
+		      $<i>$ = 0x0002;
+		  }
+		| OBJTYPE_ID ':' object_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_L_V_OBJECT));
+		      $<i>$ = 0x0004;
+		  }
+		| TERTYPE_ID ':' terrain_type
+		  {
+		      add_opvars(splev, "ii", VA_PASS2((int)$3.ter, SP_L_V_TERRAIN));
+		      $<i>$ = 0x0008;
+		  }
+		| TERTYPE2_ID ':' terrain_type
+		  {
+		      add_opvars(splev, "ii", VA_PASS2((int)$3.ter, SP_L_V_TERRAIN2));
+		      $<i>$ = 0x0010;
+		  }
+	     | SWITCHABLE_ID
+		  {	
+		      add_opvars(splev, "ii",
+				 VA_PASS2(1, SP_L_V_SWITCHABLE));
+		      $<i>$ = 0x0020;
+		  }
+	     | CONTINUOUSLY_USABLE_ID
+		  {	
+		      add_opvars(splev, "ii",
+				 VA_PASS2(1, SP_L_V_CONTINUOUS));
+		      $<i>$ = 0x0040;
+		  }
+		| TARGET_ID ':' coord_or_var
+		  {
+		      add_opvars(splev, "i", VA_PASS1(SP_L_V_COORD));
+		      $<i>$ = 0x0080;
 		  }
 		;
 

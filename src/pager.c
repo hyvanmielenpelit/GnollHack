@@ -526,6 +526,19 @@ char *buf, *monbuf;
             Strcpy(buf, "trapped door"); /* not "trap door"... */
         else
             Strcpy(buf, tsubtyp ? defsym_variations[max(0, tsubtyp - 1 + defsyms[trap_to_defsym(tnum)].variation_offset)].explanation : defsyms[trap_to_defsym(tnum)].explanation);
+
+        if (tnum == LEVER && !Hallucination)
+        {
+            struct trap* ttmp = t_at(x, y);
+            if (ttmp && ttmp->ttyp == LEVER && (ttmp->tflags & TRAPFLAGS_SWITCHABLE_BETWEEN_STATES))
+            {
+                if ((ttmp->tflags & TRAPFLAGS_STATE_MASK) > 0UL)
+                    Sprintf(eos(buf), " turned left");
+                else
+                    Sprintf(eos(buf), " turned right");
+            }
+        }
+
     }
     else if (glyph_is_warning(glyph))
     {
@@ -598,12 +611,15 @@ char *buf, *monbuf;
                 explanation = get_cmap_or_cmap_variation_glyph_explanation(glyph);
 
             strcpy(buf, explanation); // defsyms[cmap].explanation);
-            if (gl >= S_vodoor && gl <= S_hoportcullis && levl[x][y].typ == DOOR)
+            if (is_cmap_door(gl) && levl[x][y].typ == DOOR)
             {
                 const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality);
                 if (desc && strcmp(desc, ""))
                 {
-                    Sprintf(eos(buf), " with %s lock", an(desc));
+                    if(!strcmp(desc, "no"))
+                        Sprintf(eos(buf), " with no lock");
+                    else
+                        Sprintf(eos(buf), " with %s lock", an(desc));
                 }
             }
             break;

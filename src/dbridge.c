@@ -291,8 +291,8 @@ boolean flag;
     if (lava)
         lev1flags |= DB_LAVA;
 
-    full_location_transform(x, y, lev1typ, 0, lev1flags, 0, 0, levl[x][y].typ, levl[x][y].subtyp, FALSE, lev1horizontal, FALSE);
-    full_location_transform(x2, y2, lev2typ, 0, lev2flags, 0, 0, ROOM, get_initial_location_subtype(ROOM), FALSE, lev2horizontal, FALSE);
+    full_location_transform(x, y, lev1typ, 0, lev1flags, 0, 0, levl[x][y].typ, levl[x][y].subtyp, FALSE, lev1horizontal, 0, 0, FALSE);
+    full_location_transform(x2, y2, lev2typ, 0, lev2flags, 0, 0, ROOM, get_initial_location_subtype(ROOM), FALSE, lev2horizontal, 0, 0, FALSE);
 
     return  TRUE;
 }
@@ -862,7 +862,7 @@ int x, y;
     else /* "5 gears turn" for castle drawbridge tune */
         You_hear("chains rattling and gears turning.");
 
-    full_location_transform(x, y, DRAWBRIDGE_UP, lev1->subtyp, lev1->flags, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->facing_right, lev1->horizontal, FALSE);
+    full_location_transform(x, y, DRAWBRIDGE_UP, lev1->subtyp, lev1->flags, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->facing_right, lev1->horizontal, 0, 0, FALSE);
 
     lev2 = &levl[x2][y2];
     boolean lhoriz = FALSE;
@@ -876,7 +876,7 @@ int x, y;
         lhoriz = FALSE;
         break;
     }
-    full_location_transform(x2, y2, DBWALL, 0, W_NONDIGGABLE, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lhoriz, FALSE);
+    full_location_transform(x2, y2, DBWALL, 0, W_NONDIGGABLE, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lhoriz, 0, 0, FALSE);
 
     set_entity(x, y, &(occupants[0]));
     set_entity(x2, y2, &(occupants[1]));
@@ -924,9 +924,9 @@ int x, y;
     else /* "5 gears turn" for castle drawbridge tune */
         You_hear("gears turning and chains rattling.");
 
-    full_location_transform(x, y, DRAWBRIDGE_DOWN, lev1->flags, lev1->subtyp, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->facing_right, lev1->horizontal, FALSE);
+    full_location_transform(x, y, DRAWBRIDGE_DOWN, lev1->flags, lev1->subtyp, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->facing_right, lev1->horizontal, 0, 0, FALSE);
     lev2 = &levl[x2][y2];
-    full_location_transform(x2, y2, DOOR, 0, D_PORTCULLIS, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lev2->horizontal, FALSE);
+    full_location_transform(x2, y2, DOOR, 0, D_PORTCULLIS, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lev2->horizontal, 0, 0, FALSE);
 
     set_entity(x, y, &(occupants[0]));
     set_entity(x2, y2, &(occupants[1]));
@@ -998,7 +998,7 @@ boolean is_disintegrated;
                     You_hear("a loud *SPLASH*!");
             }
         }
-        full_location_transform(x, y, lava ? LAVAPOOL : MOAT, 0, 0, 0, 0, lev1->floortyp, lev1->floorsubtyp, FALSE, FALSE, FALSE);
+        full_location_transform(x, y, lava ? LAVAPOOL : MOAT, 0, 0, 0, 0, lev1->floortyp, lev1->floorsubtyp, FALSE, FALSE, 0, 0, FALSE);
         if ((otmp2 = sobj_at(BOULDER, x, y)) != 0)
         {
             obj_extract_self(otmp2);
@@ -1012,10 +1012,10 @@ boolean is_disintegrated;
 
         int trtyp = ((lev1->drawbridgemask & DB_ICE) ? ICE : ROOM);
         int trsubtyp = get_initial_location_subtype(trtyp);
-        full_location_transform(x, y, trtyp, trsubtyp, ((lev1->drawbridgemask & DB_ICE) ? ICED_MOAT : 0), 0, 0, lev1->floortyp, lev1->floorsubtyp, FALSE, FALSE, FALSE);
+        full_location_transform(x, y, trtyp, trsubtyp, ((lev1->drawbridgemask & DB_ICE) ? ICED_MOAT : 0), 0, 0, lev1->floortyp, lev1->floorsubtyp, FALSE, FALSE, 0, 0, FALSE);
     }
     wake_nearto(x, y, 500);
-    full_location_transform(x2, y2, DOOR, 0, D_PORTCULLIS, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lev2->horizontal, FALSE);
+    full_location_transform(x2, y2, DOOR, 0, D_PORTCULLIS, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lev2->horizontal, 0, 0, FALSE);
     if ((t = t_at(x, y)) != 0)
         deltrap(t);
     if ((t = t_at(x2, y2)) != 0)

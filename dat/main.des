@@ -263,3 +263,5 @@ NPC:npc_geologist,(02,03)
 
 #OBJECT:('(',"ornamental key"),special_quality:2,(04,02)
 #OBJECT:('(',"geometric key"),special_quality:2,(04,02)
+
+LEVER:(01,01),lever_effect_create_monster,target:(02,02),continuously_usable,switchable,montype:"goblin"

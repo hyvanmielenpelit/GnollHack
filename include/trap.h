@@ -8,6 +8,20 @@
 #ifndef TRAP_H
 #define TRAP_H
 
+enum lever_effect_types {
+    LEVER_EFFECT_NONE = 0,
+    LEVER_EFFECT_OPEN_DOOR,
+    LEVER_EFFECT_LOCK_DOOR,
+    LEVER_EFFECT_OPEN_LOCK_DOOR,
+    LEVER_EFFECT_CREATE_CLOSED_DOOR,
+    LEVER_EFFECT_CREATE_LOCATION_TYPE,
+    LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE,
+    LEVER_EFFECT_CREATE_OBJECT,
+    LEVER_EFFECT_CREATE_MONSTER,
+    MAX_LEVER_EFFECT_TYPES
+};
+
+
 union vlaunchinfo {
     short v_launch_otyp; /* type of object to be triggered */
     coord v_launch2;     /* secondary launch point (for boulders) */
@@ -22,6 +36,10 @@ struct trap {
     coord launch;
     uchar ttyp;
     uchar tsubtyp;
+    enum lever_effect_types lever_effect;
+    long effect_param1;
+    long effect_param2;
+    unsigned long effect_flags;
     unsigned long tflags;
     unsigned long activation_count;
     Bitfield(tseen, 1);
