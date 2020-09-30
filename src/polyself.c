@@ -1668,58 +1668,62 @@ dospinweb()
     }
     exercise(A_DEX, TRUE);
     if (ttmp) {
-        switch (ttmp->ttyp) {
-        case PIT:
-        case SPIKED_PIT:
-            You("spin a web, covering up the pit.");
-            deltrap(ttmp);
-            bury_objs(u.ux, u.uy);
-            newsym(u.ux, u.uy);
-            return 1;
-        case SQKY_BOARD:
-            pline_The("squeaky board is muffled.");
-            deltrap(ttmp);
-            newsym(u.ux, u.uy);
-            return 1;
-        case TELEP_TRAP:
-        case LEVEL_TELEP:
-        case MAGIC_PORTAL:
-		case MODRON_PORTAL:
-        case VIBRATING_SQUARE:
+        if(trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
+        {
             Your("webbing vanishes!");
             return 0;
-        case WEB:
-            You("make the web thicker.");
-            return 1;
-        case HOLE:
-        case TRAPDOOR:
-            You("web over the %s.",
-                (ttmp->ttyp == TRAPDOOR) ? "trap door" : "hole");
-            deltrap(ttmp);
-            newsym(u.ux, u.uy);
-            return 1;
-        case ROLLING_BOULDER_TRAP:
-            You("spin a web, jamming the trigger.");
-            deltrap(ttmp);
-            newsym(u.ux, u.uy);
-            return 1;
-        case ARROW_TRAP:
-        case DART_TRAP:
-        case BEAR_TRAP:
-        case ROCKTRAP:
-        case FIRE_TRAP:
-        case LANDMINE:
-        case SLP_GAS_TRAP:
-        case RUST_TRAP:
-        case MAGIC_TRAP:
-        case ANTI_MAGIC_TRAP:
-        case POLY_TRAP:
-            You("have triggered a trap!");
-            dotrap(ttmp, 0);
-            return 1;
-        default:
-            impossible("Webbing over trap type %d?", ttmp->ttyp);
-            return 0;
+        }
+        else
+        {
+            switch (ttmp->ttyp) {
+            case PIT:
+            case SPIKED_PIT:
+                You("spin a web, covering up the pit.");
+                deltrap(ttmp);
+                bury_objs(u.ux, u.uy);
+                newsym(u.ux, u.uy);
+                return 1;
+            case SQKY_BOARD:
+                pline_The("squeaky board is muffled.");
+                deltrap(ttmp);
+                newsym(u.ux, u.uy);
+                return 1;
+            case TELEP_TRAP:
+            case LEVEL_TELEP:
+                Your("webbing vanishes!");
+                return 0;
+            case WEB:
+                You("make the web thicker.");
+                return 1;
+            case HOLE:
+            case TRAPDOOR:
+                You("web over the %s.", trap_type_definitions[ttmp->ttyp].type_name);
+                deltrap(ttmp);
+                newsym(u.ux, u.uy);
+                return 1;
+            case ROLLING_BOULDER_TRAP:
+                You("spin a web, jamming the trigger.");
+                deltrap(ttmp);
+                newsym(u.ux, u.uy);
+                return 1;
+            case ARROW_TRAP:
+            case DART_TRAP:
+            case BEAR_TRAP:
+            case ROCKTRAP:
+            case FIRE_TRAP:
+            case LANDMINE:
+            case SLP_GAS_TRAP:
+            case RUST_TRAP:
+            case MAGIC_TRAP:
+            case ANTI_MAGIC_TRAP:
+            case POLY_TRAP:
+                You("have triggered a trap!");
+                dotrap(ttmp, 0);
+                return 1;
+            default:
+                impossible("Webbing over trap type %d?", ttmp->ttyp);
+                return 0;
+            }
         }
     } else if (On_stairs(u.ux, u.uy)) {
         /* cop out: don't let them hide the stairs */

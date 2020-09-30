@@ -513,6 +513,11 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Wizard Lock Klunk", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Knock Klick", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Jump", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Lever Switch Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Lever Switch Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Lever Switch On Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Trap/Lever Switch Off Success", 1.0f },
 };
 
 

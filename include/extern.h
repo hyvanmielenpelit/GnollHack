@@ -90,7 +90,8 @@ E struct obj* FDECL(select_other_container, (struct obj*, struct obj*, boolean))
 E void FDECL(get_pole_type_weapon_min_max_distances, (struct obj*, struct monst*, int*, int*));
 E int FDECL(use_grail, (struct obj*, boolean));
 E int FDECL(use_salve, (struct obj*, boolean));
-
+E int NDECL(floorapply);
+E int FDECL(use_lever, (struct trap*));
 
 /* ### artifact.c ### */
 
@@ -1542,7 +1543,7 @@ E boolean FDECL(occupied, (XCHAR_P, XCHAR_P));
 E int FDECL(okdoor, (XCHAR_P, XCHAR_P));
 E void FDECL(dodoor, (int, int, struct mkroom *));
 E void FDECL(mktrap, (int, int, struct mkroom *, coord *));
-E void FDECL(mkmodronportal, (int, coord*, coord*, uchar));
+E void FDECL(mkmodronportal, (int, coord*, coord*, unsigned long));
 E void FDECL(mkstairs, (XCHAR_P, XCHAR_P, CHAR_P, struct mkroom *));
 E void NDECL(mkinvokearea);
 E void FDECL(mineralize, (int, int, int, int, BOOLEAN_P));

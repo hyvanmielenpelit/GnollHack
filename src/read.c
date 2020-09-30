@@ -1356,7 +1356,7 @@ forget_traps()
 
     /* forget all traps (except the one the hero is in :-) */
     for (trap = ftrap; trap; trap = trap->ntrap)
-        if ((trap->tx != u.ux || trap->ty != u.uy) && (trap->ttyp != HOLE))
+        if ((trap->tx != u.ux || trap->ty != u.uy) && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_VISIBLE_AT_START))
             trap->tseen = 0;
 }
 

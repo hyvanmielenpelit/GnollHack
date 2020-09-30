@@ -6949,11 +6949,14 @@ int x, y;
         add_herecmd_menuitem(win, dosearch, "Search for secret doors"), ++K;
 
     if ((ttmp = t_at(x, y)) != 0 && ttmp->tseen) {
-        add_herecmd_menuitem(win, doidtrap, "Examine trap"), ++K;
-        if (ttmp->ttyp != VIBRATING_SQUARE 
-            && ttmp->ttyp != MODRON_PORTAL
-            )
-            add_herecmd_menuitem(win, dountrap, "Attempt to disarm trap"), ++K;
+        char tbuf[BUFSZ];
+        Sprintf(tbuf, "Examine %s", trap_type_definitions[ttmp->ttyp].type_name);
+        add_herecmd_menuitem(win, doidtrap, tbuf), ++K;
+        if (!(trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_DISARMABLE))
+        {
+            Sprintf(tbuf, "Attempt to disarm the %s", trap_type_definitions[ttmp->ttyp].type_name);
+            add_herecmd_menuitem(win, dountrap, tbuf), ++K;
+        }
     }
 
     mtmp = m_at(x, y);

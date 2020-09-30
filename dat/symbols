@@ -581,6 +581,7 @@ start: Blank
         S_vcdoor: \032
         S_venom: \032
         S_modron_portal: \032
+        S_lever: \032
         S_vibrating_square: \032
         S_vodbridge: \032
         S_vodoor: \032

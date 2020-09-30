@@ -52,6 +52,40 @@ STATIC_VAR const char *const blindgas[6] = { "humid",   "odorless",
                                              "pungent", "chilling",
                                              "acrid",   "biting" };
 
+/* Note these names are not currently being used, instead use the explanations in defsyms and defsym_variations */
+struct trap_type_definition trap_type_definitions[TRAPNUM] = {
+    {"", "", "", MAT_NONE, TRAPDEF_FLAGS_NONE},
+    {"arrow trap", "trap", "", MAT_METAL, TRAPDEF_FLAGS_NONE},
+    {"dart trap", "trap", "", MAT_METAL, TRAPDEF_FLAGS_NONE},
+    {"falling rock trap", "trap", "", MAT_MINERAL, TRAPDEF_FLAGS_NONE},
+    {"squeaky board", "trap", "", MAT_WOOD, TRAPDEF_FLAGS_NONE},
+    {"bear trap", "trap", "", MAT_METAL, TRAPDEF_FLAGS_NONE},
+    {"land mine", "mine", "", MAT_MINERAL, TRAPDEF_FLAGS_NONE},
+    {"rolling boulder trap", "trap", "", MAT_MINERAL, TRAPDEF_FLAGS_NONE},
+    {"sleep gas trap", "trap", "", MAT_MINERAL, TRAPDEF_FLAGS_NONE},
+    {"rust trap", "trap", "", MAT_MINERAL, TRAPDEF_FLAGS_NONE},
+    {"fire trap", "trap", "", MAT_MINERAL, TRAPDEF_FLAGS_NONE},
+    {"pit", "trap", "", MAT_MINERAL, TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"spiked pit", "trap", "", MAT_MINERAL, TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"hole", "hole", "", MAT_MINERAL, TRAPDEF_FLAGS_VISIBLE_AT_START | TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"trap door", "trap door", "", MAT_MINERAL, TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"teleport trap", "trap", "", MAT_ENERGY, TRAPDEF_FLAGS_NONE},
+    {"level teleport trap", "trap", "", MAT_ENERGY, TRAPDEF_FLAGS_NONE},
+    {"magic portal", "portal", "", MAT_ENERGY,
+        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"web", "web", "", MAT_ORGANIC, TRAPDEF_FLAGS_NONE},
+    {"statue", "statue", "", MAT_MINERAL, TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS },
+    {"magic trap", "trap", "", MAT_ENERGY, TRAPDEF_FLAGS_NONE},
+    {"anti-magic trap", "trap", "", MAT_ENERGY, TRAPDEF_FLAGS_NO_TRY_ESCAPE },
+    {"polymorph trap", "trap", "", MAT_ENERGY, TRAPDEF_FLAGS_NONE},
+    {"geometric magic portal", "portal", "", MAT_ENERGY,
+        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"lever", "lever", "pull", MAT_WOOD,
+        TRAPDEF_FLAGS_APPLIABLE | TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_VISIBLE_AT_START | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_NOT_DISARMABLE},
+    {"vibrating square", "vibrating square", "", MAT_MINERAL,
+        TRAPDEF_FLAGS_NO_TRY_ESCAPE | TRAPDEF_FLAGS_TELEOK | TRAPDEF_FLAGS_NOT_OVERRIDEN | TRAPDEF_FLAGS_NOT_GENERATED | TRAPDEF_FLAGS_NO_STEP_CONFIRMATION | TRAPDEF_FLAGS_IGNORED_BY_MONSTERS | TRAPDEF_FLAGS_NOT_DISARMABLE}
+};
+
 /* called when you're hit by fire (dofiretrap,buzz,zapyourself,explode);
    returns TRUE if hit on torso */
 boolean
@@ -334,9 +368,7 @@ long flags;
     struct rm *lev = &levl[x][y];
 
     if ((ttmp = t_at(x, y)) != 0) {
-        if (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE
-            || ttmp->ttyp == MODRON_PORTAL
-            )
+        if (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
             return (struct trap *) 0;
         oldplace = TRUE;
         if (u.utrap && x == u.ux && y == u.uy
@@ -364,14 +396,17 @@ long flags;
     ttmp->dst.dnum = ttmp->dst.dlevel = -1;
     ttmp->madeby_u = 0;
     ttmp->once = 0;
-    ttmp->tseen = (typ == HOLE); /* hide non-holes */
+    ttmp->tseen = (trap_type_definitions[typ].tdflags & TRAPDEF_FLAGS_VISIBLE_AT_START);
     ttmp->ttyp = typ;
     ttmp->tsubtyp = 0;
     ttmp->tflags = 0;
+    ttmp->activation_count = 0;
 
     switch (typ) {
     case ARROW_TRAP:
         ttmp->tsubtyp = rn2(2);
+        break;
+    case LEVER:
         break;
     case SQKY_BOARD: {
         int tavail[12], tpick[12], tcnt = 0, k;
@@ -1023,9 +1058,8 @@ unsigned trflags;
             return;
         }
 
-        if (!Fumbling && ttype != MAGIC_PORTAL && ttype != VIBRATING_SQUARE
-            && ttype != MODRON_PORTAL
-            && ttype != ANTI_MAGIC_TRAP && !forcebungle && !plunged
+        if (!Fumbling && !(trap_type_definitions[ttype].tdflags & TRAPDEF_FLAGS_NO_TRY_ESCAPE) 
+            && !forcebungle && !plunged
             && !conj_pit && !adj_pit
             && (!rn2(5) || (is_pit(ttype)
                             && is_clinger(youmonst.data))))
@@ -1769,6 +1803,8 @@ unsigned trflags;
         (void)modronportaltele(trap, &youmonst, tx, ty);
         break;
     }
+    case LEVER:
+        break;
     default:
         feeltrap(trap);
         impossible("You hit a trap of type %u", trap->ttyp);
@@ -1903,6 +1939,7 @@ struct trap *trap;
             trap->ttyp = PIT;       /* explosion creates a pit */
             trap->tsubtyp = 0;
             trap->tflags = 0;
+            trap->activation_count = 0;
             trap->madeby_u = FALSE; /* resulting pit isn't yours */
             seetrap(trap);          /* and it isn't concealed */
         }
@@ -2422,6 +2459,7 @@ register struct monst *mtmp;
                 trap->ttyp = PIT;
                 trap->tsubtyp = 0;
                 trap->tflags = 0;
+                trap->activation_count = 0;
                 mtmp->meating = 5;
             }
         }
@@ -3049,6 +3087,8 @@ register struct monst *mtmp;
             modronportaltele(trap, mtmp, tx, ty);
             break;
         }
+        case LEVER:
+            break;
         default:
             impossible("Some monster encountered a strange trap of type %d.",
                        tt);
@@ -4887,35 +4927,7 @@ struct trap* ttmp;
 	return 1;
 }
 
-    /* Note these names are not currently being used, instead use the explanations in defsyms and defsym_variations */
-	struct trap_type_definition trap_type_definitions[TRAPNUM] = {
-                   {"", MAT_MINERAL},
-                   {"arrow trap", MAT_METAL},
-                   {"dart trap", MAT_METAL},
-                   {"falling rock trap", MAT_MINERAL},
-                   {"squeaky board", MAT_WOOD},
-                   {"bear trap", MAT_METAL},
-                   {"land mine", MAT_MINERAL},
-                   {"rolling boulder trap", MAT_MINERAL},
-                   {"sleep gas trap", MAT_MINERAL},
-                   {"rust trap", MAT_MINERAL},
-                   {"fire trap", MAT_MINERAL},
-                   {"pit", MAT_MINERAL},
-                   {"spiked pit", MAT_MINERAL},
-                   {"hole", MAT_MINERAL},
-                   {"trap door", MAT_MINERAL},
-                   {"teleport trap", MAT_ENERGY},
-                   {"level teleport trap", MAT_ENERGY},
-                   {"magic portal", MAT_ENERGY},
-                   {"web", MAT_ORGANIC},
-                   {"statue", MAT_MINERAL},
-                   {"magic trap", MAT_ENERGY},
-                   {"anti-magic trap", MAT_ENERGY},
-                   {"polymorph trap", MAT_ENERGY},
-                   {"geomteric magic portal", MAT_ENERGY},
-                   {"vibrating square", MAT_MINERAL}
-    };
-
+ 
 /*
  * Find the type of a trap in the table, knowing its name.
  */
@@ -5269,53 +5281,61 @@ boolean force;
                     stumble_onto_mimic(mtmp);
                     return 1;
                 }
-
-                switch (ttmp->ttyp) 
+                if (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_DISARMABLE)
                 {
-                case BEAR_TRAP:
-                case WEB:
-                    return disarm_holdingtrap(ttmp);
-                case LANDMINE:
-                    return disarm_landmine(ttmp);
-                case SQKY_BOARD:
-                    return disarm_squeaky_board(ttmp);
-                case DART_TRAP:
-                    return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
-                case ARROW_TRAP:
-                    return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
-				case ROCKTRAP:
-                    return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
-                case ROLLING_BOULDER_TRAP:
-				case ANTI_MAGIC_TRAP:
-				case POLY_TRAP:
-				case TELEP_TRAP:
-				case LEVEL_TELEP:
-				case RUST_TRAP:
-				case FIRE_TRAP:
-				case SLP_GAS_TRAP:
-				case MAGIC_TRAP:
-					return disarm_magical_trap(ttmp);
-				case PIT:
-                case SPIKED_PIT:
-                    if (here) 
-                    {
-                        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
-                        You("are already on the edge of the pit.");
-                        return 0;
-                    }
-
-                    if (!mtmp)
-                    {
-                        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
-                        pline("Try filling the pit instead.");
-                        return 0;
-                    }
-
-                    return help_monster_out(mtmp, ttmp);
-                default:
                     play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
-                    You("cannot disable %s trap.", !here ? "that" : "this");
+                    You("cannot disarm %s.", an(trap_type_definitions[ttmp->ttyp].name));
                     return 0;
+                }
+                else
+                {
+                    switch (ttmp->ttyp)
+                    {
+                    case BEAR_TRAP:
+                    case WEB:
+                        return disarm_holdingtrap(ttmp);
+                    case LANDMINE:
+                        return disarm_landmine(ttmp);
+                    case SQKY_BOARD:
+                        return disarm_squeaky_board(ttmp);
+                    case DART_TRAP:
+                        return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
+                    case ARROW_TRAP:
+                        return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
+                    case ROCKTRAP:
+                        return disarm_shooting_trap(ttmp, get_shooting_trap_object(ttmp));
+                    case ROLLING_BOULDER_TRAP:
+                    case ANTI_MAGIC_TRAP:
+                    case POLY_TRAP:
+                    case TELEP_TRAP:
+                    case LEVEL_TELEP:
+                    case RUST_TRAP:
+                    case FIRE_TRAP:
+                    case SLP_GAS_TRAP:
+                    case MAGIC_TRAP:
+                        return disarm_magical_trap(ttmp);
+                    case PIT:
+                    case SPIKED_PIT:
+                        if (here)
+                        {
+                            play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
+                            You("are already on the edge of the pit.");
+                            return 0;
+                        }
+
+                        if (!mtmp)
+                        {
+                            play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
+                            pline("Try filling the pit instead.");
+                            return 0;
+                        }
+
+                        return help_monster_out(mtmp, ttmp);
+                    default:
+                        play_sfx_sound(SFX_CANNOT_DISARM_TRAP);
+                        You("cannot disable %s trap.", !here ? "that" : "this");
+                        return 0;
+                    }
                 }
             }
         } /* end if */

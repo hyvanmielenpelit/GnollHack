@@ -4438,6 +4438,7 @@ struct obj *no_wish;
                 tname = defsyms[trap_to_defsym(trap)].explanation;
                 pline("%s%s.", An(tname),
                       (trap != MAGIC_PORTAL) ? "" : " to nowhere");
+                newsym(x, y);
             } else
                 pline("Creation of %s failed.", an(tname));
             return (struct obj *) &zeroobj;

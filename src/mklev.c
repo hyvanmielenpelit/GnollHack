@@ -1651,52 +1651,55 @@ coord *tm;
         do {
             kind = rnd(TRAPNUM - 1);
             /* reject "too hard" traps */
-            switch (kind) {
-			case MODRON_PORTAL:
-            case MAGIC_PORTAL:
-            case VIBRATING_SQUARE:
+            if (trap_type_definitions[kind].tdflags & TRAPDEF_FLAGS_NOT_GENERATED)
+            {
                 kind = NO_TRAP;
-                break;
-            case ROLLING_BOULDER_TRAP:
-            case SLP_GAS_TRAP:
-                if (lvl < 2)
-                    kind = NO_TRAP;
-                break;
-            case LEVEL_TELEP:
-                if (lvl < 5 || level.flags.noteleport)
-                    kind = NO_TRAP;
-                break;
-            case SPIKED_PIT:
-                if (lvl < 5)
-                    kind = NO_TRAP;
-                break;
-            case LANDMINE:
-                if (lvl < 6)
-                    kind = NO_TRAP;
-                break;
-            case WEB:
-                if (lvl < 7)
-                    kind = NO_TRAP;
-                break;
-            case STATUE_TRAP:
-            case POLY_TRAP:
-                if (lvl < 8)
-                    kind = NO_TRAP;
-                break;
-            case FIRE_TRAP:
-                if (!Inhell)
-                    kind = NO_TRAP;
-                break;
-            case TELEP_TRAP:
-                if (level.flags.noteleport)
-                    kind = NO_TRAP;
-                break;
-            case HOLE:
-                /* make these much less often than other traps */
-                if (rn2(7))
-                    kind = NO_TRAP;
-                break;
             }
+            else
+            {
+                switch (kind) {
+                case ROLLING_BOULDER_TRAP:
+                case SLP_GAS_TRAP:
+                    if (lvl < 2)
+                        kind = NO_TRAP;
+                    break;
+                case LEVEL_TELEP:
+                    if (lvl < 5 || level.flags.noteleport)
+                        kind = NO_TRAP;
+                    break;
+                case SPIKED_PIT:
+                    if (lvl < 5)
+                        kind = NO_TRAP;
+                    break;
+                case LANDMINE:
+                    if (lvl < 6)
+                        kind = NO_TRAP;
+                    break;
+                case WEB:
+                    if (lvl < 7)
+                        kind = NO_TRAP;
+                    break;
+                case STATUE_TRAP:
+                case POLY_TRAP:
+                    if (lvl < 8)
+                        kind = NO_TRAP;
+                    break;
+                case FIRE_TRAP:
+                    if (!Inhell)
+                        kind = NO_TRAP;
+                    break;
+                case TELEP_TRAP:
+                    if (level.flags.noteleport)
+                        kind = NO_TRAP;
+                    break;
+                case HOLE:
+                    /* make these much less often than other traps */
+                    if (rn2(7))
+                        kind = NO_TRAP;
+                    break;
+                }
+            }
+
         } while (kind == NO_TRAP);
     }
 
@@ -1887,7 +1890,7 @@ mkmodronportal(subtyp, tm, portal_tm, portal_flags)
 int subtyp;
 coord* tm;
 coord* portal_tm;
-uchar portal_flags;
+unsigned long portal_flags;
 {
     struct trap* t;
 
@@ -1906,7 +1909,8 @@ uchar portal_flags;
         t->launch = *portal_tm;
         t->tsubtyp = subtyp;
         t->tflags = portal_flags;
-        if (t->tflags & 1)
+        t->activation_count = 0;
+        if (t->tflags & TRAPFLAGS_ACTIVATED)
         {
             t->tseen = TRUE;
         }

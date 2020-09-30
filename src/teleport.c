@@ -240,7 +240,7 @@ boolean trapok;
 		/* allow teleportation onto vibrating square, it's not a real trap */
 		struct trap* trap = t_at(x, y);
 
-		if (trap && trap->ttyp != VIBRATING_SQUARE
+		if (trap && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_TELEOK)
             )
 			return FALSE;
 	}
@@ -604,7 +604,7 @@ int y;
 	else
 		otmp = m_carrying(mtmp, portal_object);
 
-	if (!otmp && ttmp->tflags == 0)
+	if (!otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
 	{
         if (isyou)
         {
@@ -644,7 +644,7 @@ int y;
 		if (isyou || mtmp == u.usteed)
 		{
             play_sfx_sound(SFX_MODRON_TELEPORT_SUCCESS);
-            if(otmp && ttmp->tflags == 0)
+            if(otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
     			pline("%s light envelops %s!", portal_color, yname(otmp));
 			pline("You feel your essence unsolidifying...");
 			pline("You reemerge at a new location!");
@@ -656,11 +656,12 @@ int y;
             special_effect_wait_until_action(1);
             special_effect_wait_until_end(0);
             special_effect_wait_until_end(1);
-            if (otmp && ttmp->tflags == 0)
+            if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
             {
                 pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
                 useup(otmp);
-                ttmp->tflags = 1;
+                ttmp->tflags |= TRAPFLAGS_ACTIVATED;
+                ttmp->activation_count++;
             }
 		}
 		else
@@ -672,10 +673,11 @@ int y;
             play_sfx_sound_at_location(SFX_MODRON_TELEPORT_SUCCESS, mtmp->mx, mtmp->my);
             rloc_to(mtmp, nux, nuy);
             pline("%s disappears in a flash of %s light.", Monnam(mtmp), colorbuf);
-            if (otmp && ttmp->tflags == 0)
+            if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
             {
                 m_useup(mtmp, otmp);
-                ttmp->tflags = 1;
+                ttmp->tflags |= TRAPFLAGS_ACTIVATED;
+                ttmp->activation_count++;
             }
         }
 		return TRUE;
@@ -1605,8 +1607,7 @@ int in_sight;
             else if (Is_botlevel(&u.uz))
             {
                 if (in_sight && trap->tseen)
-                    pline("%s avoids the %s.", Monnam(mtmp),
-                          (tt == HOLE) ? "hole" : "trap");
+                    pline("%s avoids the %s.", Monnam(mtmp), trap_type_definitions[tt].type_name);
                 return 0;
             } 
             else

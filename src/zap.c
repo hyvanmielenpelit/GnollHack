@@ -6126,6 +6126,7 @@ struct obj *obj; /* wand or spell */
                 ttmp->ttyp = HOLE;
                 ttmp->tsubtyp = 0;
                 ttmp->tflags = 0;
+                ttmp->activation_count = 0;
                 ttmp->tseen = 1;
                 newsym(x, y);
                 /* might fall down hole */
@@ -6135,6 +6136,7 @@ struct obj *obj; /* wand or spell */
                 ttmp->ttyp = TRAPDOOR;
                 ttmp->tsubtyp = 0;
                 ttmp->tflags = 0;
+                ttmp->activation_count = 0;
                 if (Blind || !ttmp->tseen) {
                     pline("Some %s swirls beneath you.",
                           is_ice(x, y) ? "frost" : "dust");

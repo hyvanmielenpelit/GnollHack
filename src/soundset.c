@@ -2845,6 +2845,26 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_JUMP, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_LEVER_SWITCH_FAIL",
+        {GHSOUND_LEVER_SWITCH_FAIL, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVER_SWITCH_SUCCESS",
+        {GHSOUND_LEVER_SWITCH_SUCCESS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVER_SWITCH_ON_SUCCESS",
+        {GHSOUND_LEVER_SWITCH_ON_SUCCESS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_LEVER_SWITCH_OFF_SUCCESS",
+        {GHSOUND_LEVER_SWITCH_OFF_SUCCESS, 1.0f},
+        TRUE
+    },
 
 };
 

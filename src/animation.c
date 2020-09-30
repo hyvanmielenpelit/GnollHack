@@ -1167,6 +1167,16 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dungeon-normal-lever-replacement",
+      DUNGEON_NORMAL_LEVER_REPLACEMENT_TILES, DUNGEON_NORMAL_LEVER_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_UPDATE_FROM_TOP,
+      REPLACEMENT_ACTION_LEVER_STATE,
+      AUTODRAW_NONE,
+      { "activated", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "gnomish-mines-stone-replacement",
       GNOMISH_MINES_STONE_REPLACEMENT_TILES, GNOMISH_MINES_STONE_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
@@ -2123,6 +2133,26 @@ enum autodraw_types* autodraw_ptr;
             }
             break;
         }
+        case REPLACEMENT_ACTION_LEVER_STATE:
+        {
+            struct trap* ttmp = 0;
+            unsigned long leverstate = 0UL;
+            if (isok(x, y) && (ttmp = t_at(x, y)) != 0 && ttmp->ttyp == LEVER && (leverstate = ttmp->tflags & TRAPFLAGS_STATE_MASK) > 0)
+            {
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
+                int glyph_idx = max(0, min((int)replacements[replacement_idx].number_of_tiles, (int)leverstate) - 1);
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[glyph_idx];
+
+                return glyph2tile[glyph_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }        
         case REPLACEMENT_ACTION_COIN_QUANTITY:
         {
             if (!otmp)

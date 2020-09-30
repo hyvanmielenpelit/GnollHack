@@ -228,10 +228,8 @@ int x, y;
         return FALSE;
     } else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
-               || (ttmp
-                   && (ttmp->ttyp == MAGIC_PORTAL
-                       || ttmp->ttyp == VIBRATING_SQUARE || ttmp->ttyp == MODRON_PORTAL
-                       || (!Can_dig_down(&u.uz) && !levl[x][y].candig)))) {
+               || (ttmp && (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
+               || (!Can_dig_down(&u.uz) && !levl[x][y].candig))) {
         if (verbose)
             pline_The("%s here is too hard to %s.", surface(x, y), verb);
         return FALSE;
@@ -883,8 +881,8 @@ coord *cc;
     lev = &levl[dig_x][dig_y];
     nohole = (!Can_dig_down(&u.uz) && !lev->candig);
 
-    if ((ttmp && (ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == MODRON_PORTAL
-                  || ttmp->ttyp == VIBRATING_SQUARE || nohole))
+    if ((ttmp && (ttmp && (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)))
+        || nohole
         || (IS_ROCK(lev->typ) && lev->typ != SDOOR
             && (lev->wall_info & W_NONDIGGABLE) != 0)) {
         pline_The("%s %shere is too hard to dig in.", surface(dig_x, dig_y),
@@ -919,6 +917,7 @@ coord *cc;
             ttmp->ttyp = PIT; /* crush spikes */
             ttmp->tsubtyp = 0;
             ttmp->tflags = 0;
+            ttmp->activation_count = 0;
         } else {
             /*
              * digging makes a hole, but the boulder immediately

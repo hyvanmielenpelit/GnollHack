@@ -928,9 +928,8 @@ struct monst *mtmp;
 
             Mnam = Monnam(mtmp);
             play_sfx_sound_at_location((t->ttyp == TRAPDOOR) ? SFX_TRAP_DOOR_OPENS : SFX_HOLE_OPENS, trapx, trapy);
-            pline("%s %s into a %s!", Mnam,
-                  vtense(Mnam, locomotion(mtmp->data, "jump")),
-                  (t->ttyp == TRAPDOOR) ? "trap door" : "hole");
+            pline("%s %s into %s!", Mnam,
+                  vtense(Mnam, locomotion(mtmp->data, "jump")), an(trap_type_definitions[t->ttyp].type_name));
             if (levl[trapx][trapy].typ == SCORR) {
                 levl[trapx][trapy].typ = CORR;
                 unblock_vision_and_hearing_at_point(trapx, trapy);

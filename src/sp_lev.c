@@ -894,27 +894,31 @@ rndtrap()
 
     do {
         rtrap = rnd(TRAPNUM - 1);
-        switch (rtrap) {
-        case HOLE: /* no random holes on special levels */
-        case MODRON_PORTAL:
-        case VIBRATING_SQUARE:
-        case MAGIC_PORTAL:
+        if (trap_type_definitions[rtrap].tdflags & TRAPDEF_FLAGS_NOT_GENERATED)
+        {
             rtrap = NO_TRAP;
-            break;
-        case TRAPDOOR:
-            if (!Can_dig_down(&u.uz))
+        }
+        else
+        {
+            switch (rtrap) {
+            case HOLE: /* no random holes on special levels */
                 rtrap = NO_TRAP;
-            break;
-        case LEVEL_TELEP:
-        case TELEP_TRAP:
-            if (level.flags.noteleport)
-                rtrap = NO_TRAP;
-            break;
-        case ROLLING_BOULDER_TRAP:
-        case ROCKTRAP:
-            if (In_endgame(&u.uz))
-                rtrap = NO_TRAP;
-            break;
+                break;
+            case TRAPDOOR:
+                if (!Can_dig_down(&u.uz))
+                    rtrap = NO_TRAP;
+                break;
+            case LEVEL_TELEP:
+            case TELEP_TRAP:
+                if (level.flags.noteleport)
+                    rtrap = NO_TRAP;
+                break;
+            case ROLLING_BOULDER_TRAP:
+            case ROCKTRAP:
+                if (In_endgame(&u.uz))
+                    rtrap = NO_TRAP;
+                break;
+            }
         }
     } while (rtrap == NO_TRAP);
     return rtrap;
@@ -2461,7 +2465,7 @@ struct mkroom* croom;
 {
     schar x = -1, y = -1;
     coord tm, portal_tm;
-    uchar pflags = a->activated;
+    unsigned long pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
 
     if (croom)
         get_free_room_loc(&x, &y, croom, a->coord);
@@ -5330,8 +5334,7 @@ ensure_way_out()
         selection_floodfill(ov, xdnladder, ydnladder, TRUE);
 
     while (ttmp) {
-        if ((ttmp->ttyp == MAGIC_PORTAL || ttmp->ttyp == VIBRATING_SQUARE 
-             || ttmp->ttyp == MODRON_PORTAL
+        if (((trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
             || is_hole(ttmp->ttyp))
             && !selection_getpoint(ttmp->tx, ttmp->ty, ov))
             selection_floodfill(ov, ttmp->tx, ttmp->ty, TRUE);

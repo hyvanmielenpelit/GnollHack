@@ -614,6 +614,7 @@ struct {
 {S_anti_magic_trap,      "anti magic trap", "anti-magic field"},
 {S_polymorph_trap,       "polymorph trap", "polymorph trap"},
 {S_modron_portal,        "modron magic portal", "modron magic portal"},
+{S_lever,                "lever", "lever"},
 {S_vibrating_square,     "vibrating square", "vibrating square"},
 {S_vbeam,    "vertical beam", "cmap 65"},
 {S_hbeam,    "horizontal beam", "cmap 66"},

@@ -2578,9 +2578,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
 					/* The if excludes the types of the traps the mon should not care about */
                     if ((ttmp->ttyp != RUST_TRAP
                          || is_iron(mdat))
-                        && ttmp->ttyp != STATUE_TRAP
-                        && ttmp->ttyp != VIBRATING_SQUARE
-                        && ttmp->ttyp != MODRON_PORTAL
+                        && !(trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_IGNORED_BY_MONSTERS)
                         && ((!is_pit(ttmp->ttyp)) /* exclude/include pits for flyers/nonflyers */
 							|| (!has_pitwalk(mdat) && !(is_flying(mon) || is_levitating(mon))
 								&& !is_clinger(mdat)) || Sokoban)

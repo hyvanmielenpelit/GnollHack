@@ -22,7 +22,8 @@ struct trap {
     coord launch;
     uchar ttyp;
     uchar tsubtyp;
-    uchar tflags;
+    unsigned long tflags;
+    unsigned long activation_count;
     Bitfield(tseen, 1);
     Bitfield(once, 1);
     Bitfield(madeby_u, 1); /* So monsters may take offence when you trap
@@ -38,6 +39,13 @@ struct trap {
 #define conjoined vl.v_conjoined
 #define tnote vl.v_tnote
 };
+
+#define TRAPFLAGS_NONE                      0x00000000UL
+#define TRAPFLAGS_ACTIVATED                 0x00000001UL  /* Trap is in the activated state */
+/* Three more bit for possible trap states */
+#define TRAPFLAGS_STATE_MASK                0x0000000FUL  /* Bit mask for trap states */
+#define TRAPFLAGS_CONTINUOUSLY_SWITCHABLE   0x00000010UL  /* Can be switched many times by apply */
+#define TRAPFLAGS_SWITCHABLE_BETWEEN_STATES 0x00000020UL  /* Switching changes the state of the trap */
 
 extern struct trap *ftrap;
 #define newtrap() (struct trap *) alloc(sizeof(struct trap))
@@ -81,15 +89,31 @@ enum trap_types {
     ANTI_MAGIC_TRAP = 21,
     POLY_TRAP    = 22,
 	MODRON_PORTAL = 23,
-    VIBRATING_SQUARE = 24,
+    LEVER = 24,
+    VIBRATING_SQUARE = 25,
 
-    TRAPNUM      = 25
+    TRAPNUM      = 26
 };
 
 struct trap_type_definition {
     const char* name;
+    const char* type_name;
+    const char* apply_verb;
     enum obj_material_types material;
+    unsigned long tdflags;
 };
+
+#define TRAPDEF_FLAGS_NONE                      0x00000000UL
+#define TRAPDEF_FLAGS_VISIBLE_AT_START          0x00000001UL
+#define TRAPDEF_FLAGS_NOT_GENERATED             0x00000002UL
+#define TRAPDEF_FLAGS_NOT_OVERRIDEN             0x00000004UL
+#define TRAPDEF_FLAGS_NOT_DISARMABLE            0x00000008UL
+#define TRAPDEF_FLAGS_NO_STEP_CONFIRMATION      0x00000010UL
+#define TRAPDEF_FLAGS_IGNORED_BY_MONSTERS       0x00000020UL
+#define TRAPDEF_FLAGS_TELEOK                    0x00000040UL
+#define TRAPDEF_FLAGS_NO_TRY_ESCAPE             0x00000080UL
+#define TRAPDEF_FLAGS_APPLIABLE                 0x00000100UL
+
 
 extern struct trap_type_definition trap_type_definitions[TRAPNUM];
 

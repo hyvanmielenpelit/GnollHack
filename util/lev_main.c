@@ -172,6 +172,7 @@ static struct {
                    { "anti magic", ANTI_MAGIC_TRAP },
                    { "polymorph", POLY_TRAP },
                    { "modron portal", MODRON_PORTAL },
+                   { "lever", LEVER },
                    { "vibrating square", VIBRATING_SQUARE },
                    { 0, 0 } };
 

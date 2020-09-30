@@ -266,7 +266,7 @@ moverock()
                                                 : "fall"),
                               (ttmp->ttyp == TRAPDOOR) ? "" : " into",
                               otense(otmp, "plug"),
-                              (ttmp->ttyp == TRAPDOOR) ? "trap door" : "hole",
+                              trap_type_definitions[ttmp->ttyp].name,
                               surface(rx, ry));
                     deltrap(ttmp);
                     delobj(otmp);
@@ -1697,7 +1697,7 @@ domove_core()
 					}
 				}
 			}
-			else if(trap && trap->tseen && trap->ttyp != STATUE_TRAP && trap->ttyp != VIBRATING_SQUARE
+			else if(trap && trap->tseen && !(trap_type_definitions[trap->ttyp].tdflags & TRAPDEF_FLAGS_NO_STEP_CONFIRMATION)
                 && !((is_hole(trap->ttyp) || is_pit(trap->ttyp) || trap->ttyp == BEAR_TRAP || trap->ttyp == SQKY_BOARD) && (Flying || Levitation) && !Sokoban)
                 && !(trap->ttyp == PIT && has_pitwalk(youmonst.data))
                 )

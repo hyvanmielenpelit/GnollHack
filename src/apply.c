@@ -4857,6 +4857,12 @@ doapply()
     if (check_capacity((char *) 0))
         return 0;
 
+    int fres = 0;
+    if ((fres = floorapply()) > -1) /* -1 = nothing to floor apply or selected not to do it */
+    {
+        return fres;
+    }
+
     setapplyclasses(class_list); /* tools[] */
     obj = getobj(class_list, "use or apply", 0, "");
     if (!obj)
@@ -5655,6 +5661,74 @@ struct obj* obj;
 thump:
 	pline("Thump!");
 	return 1;
+}
+
+/* -1 to continue to inventory, 0 = did not take a turn, 1 = take a turn */
+int
+floorapply()
+{
+    register struct trap* ttmp = t_at(u.ux, u.uy);
+    char qbuf[QBUFSZ];
+    char c;
+    int res = -1;
+
+    if (!ttmp || !(trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_APPLIABLE))
+        return -1;
+
+    /* "There is <an object> here; <verb> it?" or
+        "There are <N objects> here; <verb> one?" */
+    Sprintf(qbuf, "There is %s here; %s it?", an(trap_type_definitions[ttmp->ttyp].name), trap_type_definitions[ttmp->ttyp].apply_verb);
+    if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y')
+    {
+        res = use_lever(ttmp);
+    }
+    else if (c == 'q')
+        return 0;
+
+    return res;
+}
+
+int use_lever(lever)
+struct trap* lever;
+{
+    if (!lever)
+        return 0;
+
+    if (lever->activation_count > 0 && !(lever->tflags & TRAPFLAGS_CONTINUOUSLY_SWITCHABLE))
+    {
+        play_sfx_sound_at_location(SFX_LEVER_SWITCH_FAIL, lever->tx, lever->ty);
+        pline("The lever does not move.");
+        return 1;
+    }
+
+    if (lever->tflags & TRAPFLAGS_SWITCHABLE_BETWEEN_STATES)
+    {
+        lever->activation_count++;
+        if (lever->tflags & TRAPFLAGS_ACTIVATED)
+        {
+            play_sfx_sound_at_location(SFX_LEVER_SWITCH_OFF_SUCCESS, lever->tx, lever->ty);
+            lever->tflags &= ~TRAPFLAGS_ACTIVATED;
+            You("pull the lever right.");
+        }
+        else
+        {
+            play_sfx_sound_at_location(SFX_LEVER_SWITCH_ON_SUCCESS, lever->tx, lever->ty);
+            lever->tflags |= TRAPFLAGS_ACTIVATED;
+            You("pull the lever left.");
+        }
+    }
+    else
+    {
+        play_sfx_sound_at_location(SFX_LEVER_SWITCH_SUCCESS, lever->tx, lever->ty);
+        lever->tflags |= TRAPFLAGS_ACTIVATED;
+        lever->activation_count++;
+        You("pull the lever.");
+    }
+    newsym(lever->tx, lever->ty);
+
+    /* Lever effect here */
+
+    return 1;
 }
 
 /*apply.c*/
