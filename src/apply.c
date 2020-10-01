@@ -5736,6 +5736,9 @@ struct trap* lever;
         {
             levl[target_x][target_y].doormask &= ~(D_CLOSED | D_LOCKED);
             levl[target_x][target_y].doormask |= D_ISOPEN;
+            unblock_vision_and_hearing_at_point(target_x, target_y);
+            play_sfx_sound_at_location(SFX_OPEN_DOOR, target_x, target_y);
+            newsym(target_x, target_y);
         }
         break;
     }
@@ -5745,6 +5748,9 @@ struct trap* lever;
         {
             levl[target_x][target_y].doormask &= ~(D_CLOSED | D_ISOPEN);
             levl[target_x][target_y].doormask |= D_LOCKED;
+            block_vision_and_hearing_at_point(target_x, target_y);
+            play_sfx_sound_at_location(SFX_LOCK_DOOR, target_x, target_y);
+            newsym(target_x, target_y);
         }
         break;
     }
@@ -5756,19 +5762,27 @@ struct trap* lever;
             {
                 levl[target_x][target_y].doormask &= ~(D_CLOSED | D_ISOPEN);
                 levl[target_x][target_y].doormask |= D_LOCKED;
+                block_vision_and_hearing_at_point(target_x, target_y);
+                play_sfx_sound_at_location(SFX_LOCK_DOOR, target_x, target_y);
             }
             else if (levl[target_x][target_y].doormask & (D_CLOSED | D_LOCKED) && (lever->tflags & TRAPFLAGS_STATE_MASK) > 0)
             {
                 levl[target_x][target_y].doormask &= ~(D_CLOSED | D_LOCKED);
                 levl[target_x][target_y].doormask |= D_ISOPEN;
+                unblock_vision_and_hearing_at_point(target_x, target_y);
+                play_sfx_sound_at_location(SFX_OPEN_DOOR, target_x, target_y);
             }
+            newsym(target_x, target_y);
         }
         break;
     }
     case LEVER_EFFECT_CREATE_CLOSED_DOOR:
     {
-        if(isok(target_x, target_y) && IS_ROCK(levl[target_x][target_y].typ))
+        if (isok(target_x, target_y) && IS_ROCK(levl[target_x][target_y].typ))
+        {
             create_simple_location(target_x, target_y, DOOR, 0, D_CLOSED, 0, levl[target_x][target_y].floortyp, levl[target_x][target_y].floorsubtyp, TRUE);
+            play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
+        }
         break;
     }
     case LEVER_EFFECT_CREATE_LOCATION_TYPE:
@@ -5777,7 +5791,10 @@ struct trap* lever;
         int locsubtyp = (int)lever->effect_param2;
         int locflags = (uchar)lever->effect_flags;
         if (isok(target_x, target_y) && loctyp >= 0 && loctyp < MAX_TYPE)
+        {
             create_simple_location(target_x, target_y, loctyp, locsubtyp, locflags, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+            play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
+        }
         break;
     }
     case LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE:
@@ -5794,7 +5811,30 @@ struct trap* lever;
             {
                 create_simple_location(target_x, target_y, loctyp, 0, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
             }
+            play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
         }
+        break;
+    }
+    case LEVER_EFFECT_CREATE_TRAP:
+    {
+        struct trap* t = 0;
+        if (isok(target_x, target_y))
+        {
+            if (lever->effect_param2 > NO_TRAP && lever->effect_param2 < TRAPNUM)
+            {
+                t = maketrap(target_x, target_y, (int)lever->effect_param2, (int)lever->effect_param1, lever->effect_flags);
+            }
+        }
+        if (t)
+        {
+            play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
+            newsym(target_x, target_y);
+            if (cansee(target_x, target_y) && (t->tseen || t->ttyp == STATUE_TRAP))
+            {
+                pline("%s appears in a puff of smoke!", t->ttyp == STATUE_TRAP ? "A statue" : An(get_trap_explanation(t)));
+            }
+        }
+
         break;
     }
     case LEVER_EFFECT_CREATE_OBJECT:

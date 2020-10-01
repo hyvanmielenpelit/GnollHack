@@ -16,6 +16,7 @@ enum lever_effect_types {
     LEVER_EFFECT_CREATE_CLOSED_DOOR,
     LEVER_EFFECT_CREATE_LOCATION_TYPE,
     LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE,
+    LEVER_EFFECT_CREATE_TRAP,
     LEVER_EFFECT_CREATE_OBJECT,
     LEVER_EFFECT_CREATE_MONSTER,
     MAX_LEVER_EFFECT_TYPES
@@ -138,8 +139,8 @@ extern struct trap_type_definition trap_type_definitions[TRAPNUM];
 #define is_pit(ttyp) ((ttyp) == PIT || (ttyp) == SPIKED_PIT)
 #define is_hole(ttyp)  ((ttyp) == HOLE || (ttyp) == TRAPDOOR)
 
-#define MKTRAP_NO_FLAGS					0x00000000L
-#define MKTRAPFLAG_GARDEN_GNOME_ITEMS	0x00000001L
+#define MKTRAP_NO_FLAGS					0x00000000UL
+#define MKTRAPFLAG_GARDEN_GNOME_ITEMS	0x00000001UL
 
 
 #endif /* TRAP_H */

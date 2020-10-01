@@ -204,9 +204,11 @@ FUNCTION	ST_RET(FUNCTION_ID);
 SHUFFLE		ST_RET(SHUFFLE_ID);
 montype		ST_RET(MONTYPE_ID);
 objtype		ST_RET(OBJTYPE_ID);
+traptype	ST_RET(TRAPTYPE_ID);
 target		ST_RET(TARGET_ID);
 tertype		ST_RET(TERTYPE_ID);
 tertype2	ST_RET(TERTYPE2_ID);
+effect_flags	ST_RET(EFFECT_FLAG_ID);
 selection	ST_RET(selection_ID);
 rect		ST_RET(rect_ID);
 fillrect	ST_RET(fillrect_ID);
@@ -388,6 +390,7 @@ lever_effect_open_lock_door { savetoken(yytext); yylval.i=LEVER_EFFECT_OPEN_LOCK
 lever_effect_create_closed_door { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_CLOSED_DOOR; return LEVER_EFFECT_TYPE; }
 lever_effect_create_location { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_LOCATION_TYPE; return LEVER_EFFECT_TYPE; }
 lever_effect_create_uncreate_location { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE; return LEVER_EFFECT_TYPE; }
+lever_effect_create_trap { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_TRAP; return LEVER_EFFECT_TYPE; }
 lever_effect_create_object { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_OBJECT; return LEVER_EFFECT_TYPE; }
 lever_effect_create_monster { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_MONSTER; return LEVER_EFFECT_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }

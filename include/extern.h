@@ -3068,7 +3068,7 @@ E coord *FDECL(gettrack, (int, int));
 E boolean FDECL(burnarmor, (struct monst *));
 E int FDECL(erode_obj, (struct obj *, const char *, int, int));
 E boolean FDECL(grease_protect, (struct obj *, const char *, struct monst *));
-E struct trap *FDECL(maketrap, (int, int, int, int, long));
+E struct trap *FDECL(maketrap, (int, int, int, int, unsigned long));
 E void FDECL(fall_through, (BOOLEAN_P));
 E struct monst *FDECL(animate_statue,
                       (struct obj *, XCHAR_P, XCHAR_P, int, int *));

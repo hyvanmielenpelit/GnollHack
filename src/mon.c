@@ -2355,7 +2355,7 @@ long flag;
     uchar ntyp;
     uchar nowtyp;
     boolean wantpool, poolok, lavaok, nodiag;
-    boolean rockok = FALSE, treeok = FALSE, thrudoor;
+    boolean rockok = FALSE, treeok = FALSE, thrudoor, wallwalk;
     int maxx, maxy;
     boolean poisongas_ok, in_poisongas;
     NhRegion *gas_reg;
@@ -2370,7 +2370,8 @@ long flag;
     poolok = (((is_flying(mon) || is_levitating(mon) || is_clinger(mdat)) && !Is_waterlevel(&u.uz))
               || (is_swimmer(mdat) && !wantpool));
     lavaok = (is_flying(mon) || is_levitating(mon) || is_clinger(mdat) || likes_lava(mdat));
-    thrudoor = ((flag & (ALLOW_WALL | BUSTDOOR)) != 0L);
+    wallwalk = ((flag & (ALLOW_WALL)) != 0L);
+    thrudoor = ((flag & (BUSTDOOR)) != 0L);
     poisongas_ok = ((is_not_living(mdat) || is_vampshifter(mon)
                      || has_innate_breathless(mdat)) || resists_poison(mon));
     in_poisongas = ((gas_reg = visible_region_at(x,y)) != 0
@@ -2432,10 +2433,12 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && (dmgtype(mdat, AD_RUST)
                             || dmgtype(mdat, AD_CORR)))))
                 continue;
-            if (IS_DOOR(ntyp) && !(amorphous(mdat) || can_fog(mon))
-                && (((levl[nx][ny].doormask & D_CLOSED) && !(flag & OPENDOOR))
-                    || ((levl[nx][ny].doormask & D_LOCKED)
-                        && !(flag & UNLOCKDOOR))) && !thrudoor)
+            if (IS_DOOR(ntyp)
+                && (levl[nx][ny].key_otyp != STRANGE_OBJECT && levl[nx][ny].key_otyp != SKELETON_KEY)
+                    || (!(amorphous(mdat) || can_fog(mon))
+                    && (((levl[nx][ny].doormask & D_CLOSED) && !(flag & OPENDOOR))
+                        || ((levl[nx][ny].doormask & D_LOCKED)
+                            && !(flag & UNLOCKDOOR))) && !thrudoor && !wallwalk))
                 continue;
             /* avoid poison gas? */
             if (!poisongas_ok && !in_poisongas

@@ -2337,6 +2337,8 @@ struct mkroom* croom;
         lvr->lever_effect = lever->lever_effect;
         lvr->effect_param1 = lever->effect_parameter1;
         lvr->effect_param2 = lever->effect_parameter2;
+        if(lvr->lever_effect == LEVER_EFFECT_CREATE_TRAP)
+            lvr->effect_param2 = lever->effect_trap_creation_type; /* Override monster class */
         lvr->effect_flags = lever->effect_flags;
         lvr->tflags = lever->lever_flags;
 
@@ -3822,6 +3824,10 @@ struct sp_coder* coder;
                 }
             }
             break;
+        case SP_L_V_TRAP:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_trap_creation_type = OV_i(parm);
+            break;
         case SP_L_V_TERRAIN:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmplever.effect_parameter1 = OV_i(parm);
@@ -3843,6 +3849,11 @@ struct sp_coder* coder;
         case SP_L_V_SWITCHABLE:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmplever.lever_flags |= TRAPFLAGS_SWITCHABLE_BETWEEN_STATES;
+            break;
+
+        case SP_L_V_EFFECT_FLAG:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_flags = OV_i(parm);
             break;
 
         case SP_L_V_COORD:

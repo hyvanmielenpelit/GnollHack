@@ -250,6 +250,7 @@ MAP
 ENDMAP
 
 MAZEWALK:(00,02),west
+DOOR:closed,(00,02)
 #DOOR:locked,(00,02),key_geometric,2
 REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
 NPC:npc_geologist,(02,03)
@@ -264,4 +265,4 @@ NPC:npc_geologist,(02,03)
 #OBJECT:('(',"ornamental key"),special_quality:2,(04,02)
 #OBJECT:('(',"geometric key"),special_quality:2,(04,02)
 
-LEVER:(01,01),lever_effect_create_monster,target:(02,02),continuously_usable,switchable,montype:"goblin"
+#LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"statue",montype:"ettin"

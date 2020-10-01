@@ -215,8 +215,10 @@ enum sp_lever_var_flags {
     SP_L_V_CONTINUOUS,
     SP_L_V_MONSTER,
     SP_L_V_OBJECT,
+    SP_L_V_TRAP,
     SP_L_V_TERRAIN,
     SP_L_V_TERRAIN2,
+    SP_L_V_EFFECT_FLAG,
     SP_L_V_COORD,
 
     SP_L_V_END
@@ -394,6 +396,7 @@ typedef struct {
     int lever_effect;
     long effect_parameter1;
     long effect_parameter2;
+    long effect_trap_creation_type;
     unsigned long effect_flags;
     unsigned long lever_flags;
 } spllever;

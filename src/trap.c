@@ -360,7 +360,7 @@ struct monst *victim;
 struct trap *
 maketrap(x, y, typ, permonstid, flags)
 int x, y, typ, permonstid;
-long flags;
+unsigned long flags;
 {
     static union vlaunchinfo zero_vl;
     boolean oldplace;
