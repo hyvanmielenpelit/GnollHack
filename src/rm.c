@@ -78,7 +78,7 @@ struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES] =
     { FLOOR_SUBTYPE_PARQUET, 1},
 };
 
-struct door_subtype_definition door_subtype_defintions[MAX_DOOR_SUBTYPES] =
+struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
 {
     {"wooden door",          "door", MAT_WOOD, LOCATION_SOUNDSET_NONE, DSTFLAGS_CREDIT_CARD_OPENS | DSTFLAGS_LOCK_PICK_OPENS | DSTFLAGS_MASTER_KEY_OPENS | DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES | DSTFLAGS_BROKEN_BY_KICKING},
     {"windowed wooden door", "door", MAT_WOOD, LOCATION_SOUNDSET_NONE, DSTFLAGS_CREDIT_CARD_OPENS | DSTFLAGS_LOCK_PICK_OPENS | DSTFLAGS_MASTER_KEY_OPENS | DSTFLAGS_BROKEN_BY_KICKING },

@@ -808,7 +808,7 @@ int x, y;
         res = 1;
 
     door = &levl[cc.x][cc.y];
-    const char* door_name = (door && (door->doormask & D_PORTCULLIS)) ? "portcullis" : "door";
+    const char* door_name = (door && (door->doormask & D_PORTCULLIS)) ? "portcullis" : door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door_subtype_definitions[door->subtyp].description : "door";
     portcullis = (is_drawbridge_wall(cc.x, cc.y) >= 0);
     if (Blind) {
         int oldglyph = door->hero_memory_layers.glyph;
@@ -1012,10 +1012,10 @@ doclose()
     } else if (obstructed(x, y, FALSE)) {
         return res;
     } else if (door->doormask == D_BROKEN) {
-        pline("This door is broken.");
+        pline("This %s is broken.", door_subtype_definitions[door->subtyp].description);
         return res;
     } else if (door->doormask & (D_CLOSED | D_LOCKED)) {
-        pline("This door is already closed.");
+        pline("This %s is already closed.", door_subtype_definitions[door->subtyp].description);
         return res;
     }
 
@@ -1029,14 +1029,14 @@ doclose()
         if (u.usteed
             || rn2(25) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
             play_sfx_sound(SFX_CLOSE_DOOR);
-            pline_The("door closes.");
+            pline_The("%s closes.", door_subtype_definitions[door->subtyp].description);
             door->doormask = D_CLOSED;
             feel_newsym(x, y); /* the hero knows she closed it */
             block_vision_and_hearing_at_point(x, y); /* vision:  no longer see there */
         } else {
             exercise(A_STR, TRUE);
             play_sfx_sound(SFX_DOOR_RESISTS);
-            pline_The("door resists!");
+            pline_The("%s resists!", door_subtype_definitions[door->subtyp].description);
         }
         update_u_action(ACTION_TILE_NO_ACTION);
     }
@@ -1110,6 +1110,7 @@ int x, y;
     boolean res = TRUE;
     int loudness = 0;
     const char *msg = (const char *) 0;
+    const char* doormsg = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door_subtype_definitions[door->subtyp].description : "door";
     const char *dustcloud = "A cloud of dust";
     const char *quickly_dissipates = "quickly dissipates";
     boolean mysterywand = (otmp->oclass == WAND_CLASS && !otmp->dknown);
@@ -1178,28 +1179,30 @@ int x, y;
         switch (door->doormask & ~D_TRAPPED) {
         case D_CLOSED:
             if(can_lock)
-                msg = "The door locks!";
+                msg = "The %s locks!";
             else
-                msg = "The door creaks for a while!";
+                msg = "The %s creaks for a while!";
             break;
         case D_ISOPEN:
             if (can_lock)
-                msg = "The door swings shut, and locks!";
+                msg = "The %s swings shut, and locks!";
             else
-                msg = "The door swings shut!";
+                msg = "The %s swings shut!";
             break;
         case D_BROKEN:
             if (can_lock)
-                msg = "The broken door reassembles and locks!";
+                msg = "The broken %s reassembles and locks!";
             else
-                msg = "The broken door reassembles!";
+                msg = "The broken %s reassembles!";
             break;
         case D_NODOOR:
             msg =
-               "A cloud of dust springs up and assembles itself into a door!";
+               "A cloud of dust springs up and assembles itself into %s!";
+            doormsg = doormsg ? an(doormsg) : "";
             break;
         case D_PORTCULLIS:
             msg = "";
+            doormsg = "";
             /* Not reached */
             break;
         default:
@@ -1223,7 +1226,7 @@ int x, y;
     {
         boolean can_open = (door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
         if (can_open && (door->doormask & D_LOCKED)) {
-            msg = "The door unlocks!";
+            msg = "The %s unlocks!";
             door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
         }
         else
@@ -1268,8 +1271,9 @@ int x, y;
         impossible("magic (%d) attempted on door.", otmp->otyp);
         break;
     }
-    if (msg && cansee(x, y))
-        pline1(msg);
+    if (msg && strcmp(msg, "") && doormsg && cansee(x, y))
+        pline(msg, doormsg);
+
     if (loudness > 0) {
         /* door was destroyed */
         wake_nearto(x, y, loudness);

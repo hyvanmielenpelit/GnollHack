@@ -5759,6 +5759,8 @@ xchar x, y;
 	levl[x][y].subtyp = 0;
 	levl[x][y].floor_doodad = 0;
 	levl[x][y].feature_doodad = 0;
+	levl[x][y].key_otyp = 0;
+	levl[x][y].special_quality = 0;
 	levl[x][y].floortyp = 0;
 	levl[x][y].facing_right = 0;
 	levl[x][y].horizontal = 0;

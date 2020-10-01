@@ -5341,7 +5341,7 @@ const char*
 get_lock_description_by_otyp(otyp, sq)
 int otyp, sq;
 {
-    if (otyp >= NUM_OBJECTS) /* No lock, STRANGE_OBJECT indicates normal door */
+    if (otyp < 0 || otyp >= NUM_OBJECTS) /* No lock, STRANGE_OBJECT indicates normal door */
     {
         return "no";
     }

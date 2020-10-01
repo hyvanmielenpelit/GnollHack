@@ -4380,7 +4380,7 @@ dfeature_at(x, y)
 int x, y;
 {
     struct rm *lev = &levl[x][y];
-    int ltyp = lev->typ, cmap = -1, altcmap = -1;
+    int ltyp = lev->typ, lsubtyp = lev->subtyp, cmap = -1, altcmap = -1;
     const char *dfeature = 0;
     static char altbuf[BUFSZ];
 
@@ -4405,7 +4405,10 @@ int x, y;
 
         if (altcmap > -1)
         {
-            strcpy(altbuf, defsyms[altcmap].explanation);
+            if(lsubtyp > 0)
+                strcpy(altbuf, defsym_variations[lsubtyp - 1 + defsyms[altcmap].variation_offset].explanation);
+            else
+                strcpy(altbuf, defsyms[altcmap].explanation);
             const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality);
             if (desc && strcmp(desc, ""))
             {

@@ -390,7 +390,7 @@ enum door_subtypes_types
     MAX_DOOR_SUBTYPES
 };
 
-extern struct door_subtype_definition door_subtype_defintions[MAX_DOOR_SUBTYPES];
+extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES];
 
 /*
  * Avoid using the level types in inequalities:
