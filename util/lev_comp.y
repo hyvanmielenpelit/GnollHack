@@ -204,7 +204,7 @@ extern char curr_token[512];
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID
 %token	<i> MON_APPEARANCE ROOMDOOR_ID IF_ID ELSE_ID
-%token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID
+%token	<i> TERRAIN_ID HORIZ_OR_VERT REPLACE_TERRAIN_ID LOCATION_SUBTYPE_ID DOOR_SUBTYPE
 %token	<i> EXIT_ID SHUFFLE_ID
 %token	<i> QUANTITY_ID BURIED_ID LOOP_ID
 %token	<i> FOR_ID TO_ID
@@ -1374,35 +1374,20 @@ room_size	: '(' INTEGER ',' INTEGER ')'
 		  }
 		;
 
-door_detail	: ROOMDOOR_ID ':' secret ',' door_state ',' door_wall ',' door_pos
+door_detail	: ROOMDOOR_ID ':' secret ',' door_state ',' door_wall ',' door_pos door_infos
 		  {
 			/* ERR means random here */
 			if ($7 == ERR && $9 != ERR) {
 			    lc_error("If the door wall is random, so must be its pos!");
 			} else {
-			    add_opvars(splev, "iiiiiio",
-				       VA_PASS7((long)$9, (long)$5, (long)$3,
-						(long)$7, 0, 0, SPO_ROOM_DOOR));
+			    add_opvars(splev, "iiiio",
+				       VA_PASS5((long)$9, (long)$5, (long)$3,
+						(long)$7, SPO_ROOM_DOOR));
 			}
 		  }
-		| ROOMDOOR_ID ':' secret ',' door_state ',' door_wall ',' door_pos ',' KEY_TYPE ',' INTEGER
+		| DOOR_ID ':' door_state ',' ter_selection door_infos
 		  {
-			/* ERR means random here */
-			if ($7 == ERR && $9 != ERR) {
-			    lc_error("If the door wall is random, so must be its pos!");
-			} else {
-			    add_opvars(splev, "iiiiiio",
-				       VA_PASS7((long)$9, (long)$5, (long)$3,
-						(long)$7, $<i>11, $<i>13, SPO_ROOM_DOOR));
-			}
-		  }		
-		| DOOR_ID ':' door_state ',' ter_selection
-		  {
-		      add_opvars(splev, "iiio", VA_PASS4((long)$3, 0, 0, SPO_DOOR));
-		  }
-		| DOOR_ID ':' door_state ',' ter_selection ',' KEY_TYPE ',' INTEGER
-		  {
-		      add_opvars(splev, "iiio", VA_PASS4((long)$3, $<i>7, $<i>9, SPO_DOOR));
+		      add_opvars(splev, "io", VA_PASS2((long)$3, SPO_DOOR));
 		  }
 		;
 
@@ -1427,6 +1412,39 @@ dir_list	: DIRECTION
 door_pos	: INTEGER
 		| RANDOM_TYPE
 		;
+
+door_infos	: /* nothing */
+		  {
+		      struct opvar *stopit = New(struct opvar);
+		      set_opvar_int(stopit, SP_D_V_END);
+		      add_opcode(splev, SPO_PUSH, stopit);
+		      $<i>$ = 0x00;
+		  }
+		| door_infos ',' door_info
+		  {
+		      if (( $<i>1 & $<i>3 ))
+			  lc_error("DOOR extra info '%s' defined twice.", curr_token);
+		      $<i>$ = ( $<i>1 | $<i>3 );
+		  }
+		;
+
+door_info	: LOCATION_SUBTYPE_ID ':' DOOR_SUBTYPE
+		  {	
+		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_D_V_SUBTYPE));
+		      $<i>$ = 0x0001;
+		  }
+		| KEYTYPE_ID ':' KEY_TYPE
+		  {
+		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_D_V_KEY_TYPE));
+		      $<i>$ = 0x0002;
+		  }
+		| SPECIAL_QUALITY_ID ':' INTEGER
+		  {
+		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_D_V_SPECIAL_QUALITY));
+		      $<i>$ = 0x0004;
+		  }
+		;
+
 
 map_definition	: NOMAP_ID
 		  {

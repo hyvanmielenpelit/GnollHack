@@ -208,7 +208,7 @@ enum sp_obj_var_flags {
     SP_O_V_END
 };
 
-/* OBJECT */
+/* LEVER */
 enum sp_lever_var_flags {
     SP_L_V_ACTIVE = 0,
     SP_L_V_SWITCHABLE,
@@ -224,6 +224,16 @@ enum sp_lever_var_flags {
 
     SP_L_V_END
 };
+
+/* DOOR */
+enum sp_door_var_flags {
+    SP_D_V_SUBTYPE = 0,
+    SP_D_V_KEY_TYPE,
+    SP_D_V_SPECIAL_QUALITY,
+
+    SP_D_V_END
+};
+
 
 /* When creating objects, we need to know whether
  * it's a container and/or contents.
@@ -383,7 +393,7 @@ typedef struct {
 
 typedef struct {
     xchar wall, pos, secret, mask;
-    int key_otyp, key_special_quality;
+    int key_otyp, key_special_quality, subtype;
 } room_door;
 
 typedef struct {

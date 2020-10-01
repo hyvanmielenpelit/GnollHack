@@ -250,7 +250,7 @@ MAP
 ENDMAP
 
 MAZEWALK:(00,02),west
-DOOR:closed,(00,02)
+DOOR:closed,(00,02),subtype:door_magic
 #DOOR:locked,(00,02),key_geometric,2
 REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
 NPC:npc_geologist,(02,03)

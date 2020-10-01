@@ -2825,18 +2825,35 @@ xchar x, y;
             goto stone_here;
         break;
     case DOOR:
+    {
+        int sym_idx = S_ndoor;
+        int subtyp = ptr->subtyp;
+
         if (ptr->doormask) {
             if (ptr->doormask & D_BROKEN)
-                idx = (ptr->horizontal) ? S_hbdoor : S_vbdoor;
+                sym_idx = (ptr->horizontal) ? S_hbdoor : S_vbdoor;
             else if (ptr->doormask & D_ISOPEN)
-                idx = (ptr->horizontal) ? S_hodoor : S_vodoor;
+                sym_idx = (ptr->horizontal) ? S_hodoor : S_vodoor;
             else if (ptr->doormask & D_PORTCULLIS)
-                idx = (ptr->horizontal) ? S_hoportcullis : S_voportcullis;
+                sym_idx = (ptr->horizontal) ? S_hoportcullis : S_voportcullis;
             else /* else is closed */
-                idx = (ptr->horizontal) ? S_hcdoor : S_vcdoor;
-        } else
-            idx = S_ndoor;
+                sym_idx = (ptr->horizontal) ? S_hcdoor : S_vcdoor;
+        }
+        else
+            sym_idx = S_ndoor;
+
+        if (subtyp == 0)
+        {
+            idx = sym_idx;
+        }
+        else
+        {
+            is_variation = TRUE;
+            int var_offset = defsyms[sym_idx].variation_offset;
+            idx = var_offset + subtyp - 1;
+        }
         break;
+    }
     case IRONBARS:
         idx = S_bars;
         break;

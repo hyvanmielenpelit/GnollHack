@@ -21,6 +21,7 @@
 typedef void FDECL((*select_iter_func), (int, int, genericptr));
 typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
 typedef void FDECL((*select_iter_func3), (int, int, genericptr, genericptr, genericptr));
+typedef void FDECL((*select_iter_func4), (int, int, genericptr, genericptr, genericptr, genericptr));
 
 extern void FDECL(mkmap, (lev_init *));
 
@@ -152,12 +153,14 @@ STATIC_DCL void FDECL(selection_iterate2, (struct opvar*, select_iter_func2,
     genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
     genericptr_t, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(selection_iterate4, (struct opvar*, select_iter_func4,
+    genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t));
-STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
@@ -2303,7 +2306,7 @@ struct mkroom *croom;
 }
 
 /*
- * Create an object in a room.
+ * Create a lever in a room.
  */
 STATIC_OVL void
 create_lever(lever, croom)
@@ -4967,6 +4970,22 @@ genericptr_t arg, arg2, arg3;
                 (*func)(x, y, arg, arg2, arg3);
 }
 
+void
+selection_iterate4(ov, func, arg, arg2, arg3, arg4)
+struct opvar* ov;
+select_iter_func4 func;
+genericptr_t arg, arg2, arg3, arg4;
+{
+    int x, y;
+
+    /* yes, this is very naive, but it's not _that_ expensive. */
+    for (x = 0; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+            if (selection_getpoint(x, y, ov))
+                (*func)(x, y, arg, arg2, arg3, arg4);
+}
+
+
 
 void
 sel_set_ter(x, y, arg)
@@ -5085,13 +5104,14 @@ genericptr_t arg;
 }
 
 void
-sel_set_door(dx, dy, arg, arg2, arg3)
+sel_set_door(dx, dy, arg, arg2, arg3, arg4)
 int dx, dy;
-genericptr_t arg, arg2, arg3;
+genericptr_t arg, arg2, arg3, arg4;
 {
     xchar typ = *(xchar *) arg;
-    long key_otyp = *(long*)arg2;
-    long key_spe_quality = *(long*)arg3;
+    xchar subtyp = *(xchar*)arg2;
+    long key_otyp = *(long*)arg3;
+    long key_spe_quality = *(long*)arg4;
     xchar x = dx, y = dy;
     int settyp = (typ & D_SECRET) ? SDOOR : DOOR;
 
@@ -5109,7 +5129,6 @@ genericptr_t arg, arg2, arg3;
         }
 
         levl[x][y].typ = settyp;
-        levl[x][y].subtyp = 0;
     }
 
     if (typ & D_SECRET) 
@@ -5119,6 +5138,7 @@ genericptr_t arg, arg2, arg3;
             typ = D_CLOSED;
     }
     set_door_orientation(x, y); /* set/clear levl[x][y].horizontal */
+    levl[x][y].subtyp = subtyp;
     levl[x][y].doormask = typ;
     levl[x][y].key_otyp = key_otyp;
     levl[x][y].special_quality = key_spe_quality;
@@ -5130,21 +5150,61 @@ spo_door(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_door";
-    struct opvar *msk, *sel, *kotyp_opvar, *kspeq_opvar;
-    xchar typ;
-    long kotyp, kspeq;
+    struct opvar *msk, *sel;
+    struct opvar* varparam;
+    xchar typ = 0, subtyp = 0;
+    long kotyp = 0, kspeq = 0;
+    int nparams = 0;
 
-    if (!OV_pop_i(kspeq_opvar) || !OV_pop_i(kotyp_opvar) || !OV_pop_i(msk) || !OV_pop_typ(sel, SPOVAR_SEL))
+    if (!OV_pop_i(msk))
+        return;
+
+    if (!OV_pop_i(varparam))
+        return;
+
+    while ((nparams++ < (SP_D_V_END + 1)) && varparam && (OV_typ(varparam) == SPOVAR_INT)
+        && (OV_i(varparam) >= 0) && (OV_i(varparam) < SP_D_V_END))
+    {
+        struct opvar* parm;
+
+        OV_pop(parm);
+        switch (OV_i(varparam))
+        {
+        case SP_D_V_SUBTYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                subtyp = OV_i(parm);
+            break;
+        case SP_D_V_KEY_TYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                kotyp = OV_i(parm);
+            break;
+        case SP_D_V_SPECIAL_QUALITY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                kspeq = OV_i(parm);
+            break;
+
+        case SP_D_V_END:
+            nparams = SP_D_V_END + 1;
+            break;
+        default:
+            impossible("DOOR with unknown variable param type!");
+            break;
+        }
+        opvar_free(parm);
+        if (OV_i(varparam) != SP_D_V_END) {
+            opvar_free(varparam);
+            OV_pop(varparam);
+        }
+    }
+
+    if (!OV_pop_typ(sel, SPOVAR_SEL))
         return;
 
     typ = OV_i(msk) == -1 ? rnddoor() : (xchar) OV_i(msk);
-    kotyp = OV_i(kotyp_opvar);
-    kspeq = OV_i(kspeq_opvar);
 
-    selection_iterate3(sel, sel_set_door, (genericptr_t) &typ, (genericptr_t)&kotyp, (genericptr_t)&kspeq);
+    selection_iterate4(sel, sel_set_door, (genericptr_t) &typ, (genericptr_t)&subtyp, (genericptr_t)&kotyp, (genericptr_t)&kspeq);
 
-    opvar_free(kotyp_opvar);
-    opvar_free(kspeq_opvar);
+    opvar_free(varparam);
     opvar_free(sel);
     opvar_free(msk);
 }
@@ -5925,24 +5985,60 @@ spo_room_door(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_room_door";
-    struct opvar *wall, *secret, *mask, *pos, *key_otyp_opvar, * key_spe_quality_opvar;
+    struct opvar *wall, *secret, *mask, *pos, *varparam;
+    int nparams = 0;
     room_door tmpd;
 
-    if (!OV_pop_i(key_spe_quality_opvar) || !OV_pop_i(key_otyp_opvar) || !OV_pop_i(wall) || !OV_pop_i(secret) || !OV_pop_i(mask)
+    if (!OV_pop_i(wall) || !OV_pop_i(secret) || !OV_pop_i(mask)
         || !OV_pop_i(pos) || !coder->croom)
         return;
+
+    if (!OV_pop_i(varparam))
+        return;
+
+    while ((nparams++ < (SP_D_V_END + 1)) && varparam && (OV_typ(varparam) == SPOVAR_INT)
+        && (OV_i(varparam) >= 0) && (OV_i(varparam) < SP_D_V_END))
+    {
+        struct opvar* parm;
+
+        OV_pop(parm);
+        switch (OV_i(varparam))
+        {
+        case SP_D_V_SUBTYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpd.subtype = OV_i(parm);
+            break;
+        case SP_D_V_KEY_TYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpd.key_otyp = OV_i(parm);
+            break;
+        case SP_D_V_SPECIAL_QUALITY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpd.key_special_quality = OV_i(parm);
+            break;
+
+        case SP_D_V_END:
+            nparams = SP_D_V_END + 1;
+            break;
+        default:
+            impossible("DOOR in ROOM_DOOR with unknown variable param type!");
+            break;
+        }
+        opvar_free(parm);
+        if (OV_i(varparam) != SP_D_V_END) {
+            opvar_free(varparam);
+            OV_pop(varparam);
+        }
+    }
 
     tmpd.secret = OV_i(secret);
     tmpd.mask = OV_i(mask);
     tmpd.pos = OV_i(pos);
     tmpd.wall = OV_i(wall);
-    tmpd.key_otyp = OV_i(key_otyp_opvar);
-    tmpd.key_special_quality = OV_i(key_spe_quality_opvar);
 
     create_door(&tmpd, coder->croom);
 
-    opvar_free(key_spe_quality_opvar);
-    opvar_free(key_otyp_opvar);
+    opvar_free(varparam);
     opvar_free(wall);
     opvar_free(secret);
     opvar_free(mask);

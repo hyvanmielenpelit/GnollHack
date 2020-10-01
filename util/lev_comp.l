@@ -258,6 +258,7 @@ seen_traps	ST_RET(SEENTRAPS_ID);
 waitforu	ST_RET(WAITFORU_ID);
 switchable	ST_RET(SWITCHABLE_ID);
 continuously_usable	ST_RET(CONTINUOUSLY_USABLE_ID);
+subtype		ST_RET(LOCATION_SUBTYPE_ID);
 all		ST_RET(ALL_ID);
 horizontal	ST_RETF((yylval.i=1), HORIZ_OR_VERT);
 vertical	{ savetoken(yytext); yylval.i=2; return HORIZ_OR_VERT; }
@@ -393,6 +394,18 @@ lever_effect_create_uncreate_location { savetoken(yytext); yylval.i=LEVER_EFFECT
 lever_effect_create_trap { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_TRAP; return LEVER_EFFECT_TYPE; }
 lever_effect_create_object { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_OBJECT; return LEVER_EFFECT_TYPE; }
 lever_effect_create_monster { savetoken(yytext); yylval.i=LEVER_EFFECT_CREATE_MONSTER; return LEVER_EFFECT_TYPE; }
+door_wooden { savetoken(yytext); yylval.i=DOOR_SUBTYPE_WOODEN; return DOOR_SUBTYPE; }
+door_wooden_windowed { savetoken(yytext); yylval.i=DOOR_SUBTYPE_WOODEN_WINDOWED; return DOOR_SUBTYPE; }
+door_iron { savetoken(yytext); yylval.i=DOOR_SUBTYPE_IRON; return DOOR_SUBTYPE; }
+door_iron_windowed { savetoken(yytext); yylval.i=DOOR_SUBTYPE_IRON_WINDOWED; return DOOR_SUBTYPE; }
+door_iron_bars { savetoken(yytext); yylval.i=DOOR_SUBTYPE_IRON_BARS; return DOOR_SUBTYPE; }
+door_magic { savetoken(yytext); yylval.i=DOOR_SUBTYPE_MAGIC; return DOOR_SUBTYPE; }
+door_magic_windowed { savetoken(yytext); yylval.i=DOOR_SUBTYPE_MAGIC_WINDOWED; return DOOR_SUBTYPE; }
+door_modron { savetoken(yytext); yylval.i=DOOR_SUBTYPE_MODRON; return DOOR_SUBTYPE; }
+door_reinforced { savetoken(yytext); yylval.i=DOOR_SUBTYPE_REINFORCED; return DOOR_SUBTYPE; }
+door_stone { savetoken(yytext); yylval.i=DOOR_SUBTYPE_STONE; return DOOR_SUBTYPE; }
+door_gate { savetoken(yytext); yylval.i=DOOR_SUBTYPE_MASSIVE_GATE; return DOOR_SUBTYPE; }
+door_portcullis { savetoken(yytext); yylval.i=DOOR_SUBTYPE_PORTCULLIS; return DOOR_SUBTYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }
