@@ -2008,6 +2008,11 @@ lever_info	: ACTIVE_OR_INACTIVE
 		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_EFFECT_FLAG));
 		      $<i>$ = 0x0200;
 		  }
+		| SPECIAL_QUALITY_ID ':' INTEGER
+		  {
+		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_SPECIAL_QUALITY));
+		      $<i>$ = 0x0400;
+		  }
 		;
 
 sink_detail : SINK_ID ':' ter_selection

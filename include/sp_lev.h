@@ -218,6 +218,7 @@ enum sp_lever_var_flags {
     SP_L_V_TRAP,
     SP_L_V_TERRAIN,
     SP_L_V_TERRAIN2,
+    SP_L_V_SPECIAL_QUALITY,
     SP_L_V_EFFECT_FLAG,
     SP_L_V_COORD,
 
@@ -397,6 +398,7 @@ typedef struct {
     long effect_parameter1;
     long effect_parameter2;
     long effect_trap_creation_type;
+    long effect_special_quality;
     unsigned long effect_flags;
     unsigned long lever_flags;
 } spllever;

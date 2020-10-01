@@ -5845,6 +5845,8 @@ struct trap* lever;
             if (lever->effect_param1 > STRANGE_OBJECT && lever->effect_param1 < NUM_OBJECTS)
             {
                 otmp = mksobj_at((int)lever->effect_param1, target_x, target_y, TRUE, FALSE);
+                if (otmp)
+                    otmp->special_quality = (short)lever->effect_param2;
             }
             else if (lever->effect_param2 >= 0)
             {
@@ -5854,6 +5856,7 @@ struct trap* lever;
         if (otmp)
         {
             play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
+            newsym(otmp->ox, otmp->oy);
             if (cansee(target_x, target_y))
             {
                 pline("%s in a puff of smoke!", upstart(aobjnam(otmp, "appear")));
@@ -5878,6 +5881,7 @@ struct trap* lever;
             if (mtmp)
             {
                 play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
+                newsym(mtmp->mx, mtmp->my);
                 if (canseemon(mtmp))
                 {
                     pline("%s appears in a puff of smoke!", Amonnam(mtmp));
@@ -5892,7 +5896,7 @@ struct trap* lever;
 
     if (!(lever->tflags & TRAPFLAGS_SWITCHABLE_BETWEEN_STATES))
     {
-        pline("The lever springs back to its original posiotion.");
+        pline("The lever springs back to its original position.");
     }
     return 1;
 }

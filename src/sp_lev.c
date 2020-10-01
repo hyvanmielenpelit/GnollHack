@@ -2339,6 +2339,8 @@ struct mkroom* croom;
         lvr->effect_param2 = lever->effect_parameter2;
         if(lvr->lever_effect == LEVER_EFFECT_CREATE_TRAP)
             lvr->effect_param2 = lever->effect_trap_creation_type; /* Override monster class */
+        else if (lvr->lever_effect == LEVER_EFFECT_CREATE_OBJECT && lvr->effect_param1 > STRANGE_OBJECT && lvr->effect_param1 < NUM_OBJECTS)
+            lvr->effect_param2 = lever->effect_special_quality; /* Override object class */
         lvr->effect_flags = lever->effect_flags;
         lvr->tflags = lever->lever_flags;
 
@@ -3827,6 +3829,10 @@ struct sp_coder* coder;
         case SP_L_V_TRAP:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmplever.effect_trap_creation_type = OV_i(parm);
+            break;
+        case SP_L_V_SPECIAL_QUALITY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_special_quality = OV_i(parm);
             break;
         case SP_L_V_TERRAIN:
             if (OV_typ(parm) == SPOVAR_INT)
