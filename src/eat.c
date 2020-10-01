@@ -3599,6 +3599,10 @@ gethungry()
         && !Slow_digestion)
         u.uhunger--; /* ordinary food consumption */
 
+    /* Now hunger is doubly fast, used to be just even turns --JG */
+    if (Hunger)
+        u.uhunger--;
+
     if (moves % 2)
     { /* odd turns */
         /* Regeneration uses up food, unless due to an artifact */
@@ -3607,11 +3611,9 @@ gethungry()
             u.uhunger--;
         if (near_capacity() > SLT_ENCUMBER)
             u.uhunger--;
-    } 
+    }
     else 
     { /* even turns */
-        if (Hunger)
-            u.uhunger--;
         /* Conflict uses up food too */
         if (HConflict || (EConflict & (~W_ARTIFACT_INVOKED)))
             u.uhunger--;
