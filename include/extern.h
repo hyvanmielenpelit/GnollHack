@@ -2540,6 +2540,25 @@ E enum obj_material_types FDECL(get_location_type_material, (int, int));
 E int FDECL(get_location_subtype_by_category, (int, int));
 E int FDECL(get_initial_location_subtype, (int));
 E int FDECL(get_location_category, (int, int));
+E const char* FDECL(get_door_name_at, (xchar, xchar));
+E const char* FDECL(get_door_name_at_ptr, (struct rm*));
+E const char* FDECL(get_short_door_name_at, (xchar, xchar));
+E const char* FDECL(get_short_door_name_at_ptr, (struct rm*));
+E boolean FDECL(m_can_destroy_door, (struct monst*, struct rm*, boolean));
+E boolean FDECL(is_door_indestructible_at, (xchar, xchar));
+E boolean FDECL(is_door_indestructible_at_ptr, (struct rm*));
+E boolean FDECL(is_door_diggable_at, (xchar, xchar));
+E boolean FDECL(is_door_diggable_at_ptr, (struct rm*));
+E boolean FDECL(is_door_kickable_at, (xchar, xchar));
+E boolean FDECL(is_door_kickable_at_ptr, (struct rm*));
+E boolean FDECL(is_door_destroyed_by_booby_trap_at, (xchar, xchar));
+E boolean FDECL(is_door_destroyed_by_booby_trap_at_ptr, (struct rm*));
+E boolean FDECL(is_door_destroyed_by_striking_at, (xchar, xchar));
+E boolean FDECL(is_door_destroyed_by_striking_at_ptr, (struct rm*));
+E boolean FDECL(is_door_destroyed_by_monsters_at, (xchar, xchar));
+E boolean FDECL(is_door_destroyed_by_monsters_at_ptr, (struct rm*));
+E boolean FDECL(door_blocks_vision_at, (xchar, xchar));
+E boolean FDECL(door_blocks_vision_at_ptr, (struct rm*));
 
 /* ### rnd.c ### */
 

@@ -80,17 +80,17 @@ struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES] =
 
 struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
 {
-    {"wooden door",          "door", MAT_WOOD, LOCATION_SOUNDSET_NONE, DSTFLAGS_CREDIT_CARD_OPENS | DSTFLAGS_LOCK_PICK_OPENS | DSTFLAGS_MASTER_KEY_OPENS | DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES | DSTFLAGS_BROKEN_BY_KICKING},
-    {"windowed wooden door", "door", MAT_WOOD, LOCATION_SOUNDSET_NONE, DSTFLAGS_CREDIT_CARD_OPENS | DSTFLAGS_LOCK_PICK_OPENS | DSTFLAGS_MASTER_KEY_OPENS | DSTFLAGS_BROKEN_BY_KICKING },
-    {"iron door",            "door", MAT_IRON, LOCATION_SOUNDSET_NONE, DSTFLAGS_CREDIT_CARD_OPENS | DSTFLAGS_LOCK_PICK_OPENS | DSTFLAGS_MASTER_KEY_OPENS | DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"windowed iron door",   "door", MAT_IRON, LOCATION_SOUNDSET_NONE, DSTFLAGS_CREDIT_CARD_OPENS | DSTFLAGS_LOCK_PICK_OPENS | DSTFLAGS_MASTER_KEY_OPENS },
-    {"iron bar door",        "door", MAT_IRON, LOCATION_SOUNDSET_NONE, DSTFLAGS_CREDIT_CARD_OPENS | DSTFLAGS_LOCK_PICK_OPENS | DSTFLAGS_MASTER_KEY_OPENS },
-    {"magic door",           "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_MASTER_KEY_OPENS | DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"windowed magic door",  "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_MASTER_KEY_OPENS},
-    {"alien door",           "door", MAT_MODRONITE, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"reinforced door",      "door", MAT_METAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"stone door",           "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"massive gate",         "gate", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_BLOCKS_VISION | DSTFLAGS_BLOCKS_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"wooden door",          "door", MAT_WOOD, LOCATION_SOUNDSET_NONE, DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES | DSTFLAGS_BROKEN_BY_STRONG_MONSTERS | DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_KICKING | DSTFLAGS_BROKEN_BY_STRIKING },
+    {"windowed wooden door", "door", MAT_WOOD, LOCATION_SOUNDSET_NONE, DSTFLAGS_BROKEN_BY_STRONG_MONSTERS | DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_KICKING | DSTFLAGS_BROKEN_BY_STRIKING },
+    {"iron door",            "door", MAT_IRON, LOCATION_SOUNDSET_NONE, DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"windowed iron door",   "door", MAT_IRON, LOCATION_SOUNDSET_NONE, DSTFLAGS_NONE },
+    {"iron bar door",        "door", MAT_IRON, LOCATION_SOUNDSET_NONE, DSTFLAGS_NONE },
+    {"magic door",           "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"windowed magic door",  "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE },
+    {"alien door",           "door", MAT_MODRONITE, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"reinforced door",      "door", MAT_METAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"stone door",           "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_STRIKING | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"massive gate",         "gate", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
     {"portcullis",           "portcullis", MAT_METAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_NONE},
 };
 
@@ -227,5 +227,315 @@ int typ, subtyp;
     }
 
     return 0;
+}
+
+const char*
+get_door_name_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return "illegal door location";
+
+    struct rm* door = &levl[x][y];
+    return  get_door_name_at_ptr(door);
+
+}
+
+const char*
+get_door_name_at_ptr(door)
+struct rm* door;
+{
+    if (!door)
+        return "no door pointer";
+
+    if (door->typ == SDOOR)
+        return "secret door";
+    else if (!IS_DOOR(door->typ))
+        return "not a door";
+
+    if (door->subtyp < 0 || door->subtyp >= MAX_DOOR_SUBTYPES)
+        return "door";
+    else
+        return door_subtype_definitions[door->subtyp].description;
+}
+
+const char*
+get_short_door_name_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return "illegal door location";
+
+    struct rm* door = &levl[x][y];
+    return  get_short_door_name_at_ptr(door);
+
+}
+
+const char*
+get_short_door_name_at_ptr(door)
+struct rm* door;
+{
+    if (!door)
+        return "no door pointer";
+
+    if(door->typ == SDOOR)
+        return "secret door";
+    else if(!IS_DOOR(door->typ))
+        return "not a door";
+
+    if (door->subtyp < 0 || door->subtyp >= MAX_DOOR_SUBTYPES)
+        return "door";
+    else
+        return door_subtype_definitions[door->subtyp].short_description;
+}
+
+boolean
+m_can_destroy_door(mtmp, door, include_eating)
+struct monst* mtmp;
+struct rm* door;
+boolean include_eating;
+{
+    if (!mtmp || !door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+        return FALSE;
+
+    if (include_eating && metallivorous(mtmp->data)
+        && (door_subtype_definitions[subtyp].material == MAT_METAL || door_subtype_definitions[subtyp].material == MAT_IRON))
+        return TRUE;
+
+    if (include_eating && tunnels(mtmp->data) && !needspick(mtmp->data)
+        && (door_subtype_definitions[subtyp].flags & DSTFLAGS_BROKEN_BY_DIGGING)
+        && (door_subtype_definitions[subtyp].material == MAT_MINERAL))
+        return TRUE;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_BROKEN_BY_STRONG_MONSTERS)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+is_door_indestructible_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_indestructible_at_ptr(door);
+
+}
+
+
+boolean
+is_door_indestructible_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >=0  && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+is_door_diggable_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_diggable_at_ptr(door);
+
+}
+
+
+boolean
+is_door_diggable_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+        return FALSE;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_BROKEN_BY_DIGGING)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+is_door_kickable_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_kickable_at_ptr(door);
+
+}
+
+
+boolean
+is_door_kickable_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+        return FALSE;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_BROKEN_BY_KICKING)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+is_door_destroyed_by_booby_trap_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_destroyed_by_booby_trap_at_ptr(door);
+
+}
+
+
+boolean
+is_door_destroyed_by_booby_trap_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+        return FALSE;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_BROKEN_BY_BEING_BOOBY_TRAPPED)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+is_door_destroyed_by_striking_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_destroyed_by_striking_at_ptr(door);
+
+}
+
+
+boolean
+is_door_destroyed_by_striking_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+        return FALSE;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_BROKEN_BY_STRIKING)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+is_door_destroyed_by_monsters_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_destroyed_by_monsters_at_ptr(door);
+
+}
+
+
+boolean
+is_door_destroyed_by_monsters_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+        return FALSE;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_BROKEN_BY_STRONG_MONSTERS)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+door_blocks_vision_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  door_blocks_vision_at_ptr(door);
+
+}
+
+
+boolean
+door_blocks_vision_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+
+    /* Secret doors always block vision */
+    if (door->typ == SDOOR)
+        return TRUE;
+
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
+        return TRUE;
+    else
+        return FALSE;
+
 }
 /* rm.c */

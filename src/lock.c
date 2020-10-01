@@ -204,7 +204,7 @@ picklock(VOID_ARGS)
             
         if (xlock.door->doormask & D_TRAPPED)
         {
-            b_trapped("door", FINGER);
+            b_trapped(get_door_name_at_ptr(xlock.door), FINGER);
             xlock.door->doormask = D_NODOOR;
             unblock_vision_and_hearing_at_point(u.ux + u.dx, u.uy + u.dy);
             if (*in_rooms(u.ux + u.dx, u.uy + u.dy, SHOPBASE))
@@ -808,7 +808,7 @@ int x, y;
         res = 1;
 
     door = &levl[cc.x][cc.y];
-    const char* door_name = (door && (door->doormask & D_PORTCULLIS)) ? "portcullis" : door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door_subtype_definitions[door->subtyp].description : "door";
+    const char* door_name = (door && (door->doormask & D_PORTCULLIS)) ? "portcullis" : get_door_name_at_ptr(door);
     portcullis = (is_drawbridge_wall(cc.x, cc.y) >= 0);
     if (Blind) {
         int oldglyph = door->hero_memory_layers.glyph;
@@ -1012,10 +1012,10 @@ doclose()
     } else if (obstructed(x, y, FALSE)) {
         return res;
     } else if (door->doormask == D_BROKEN) {
-        pline("This %s is broken.", door_subtype_definitions[door->subtyp].description);
+        pline("This %s is broken.", get_door_name_at_ptr(door));
         return res;
     } else if (door->doormask & (D_CLOSED | D_LOCKED)) {
-        pline("This %s is already closed.", door_subtype_definitions[door->subtyp].description);
+        pline("This %s is already closed.", get_door_name_at_ptr(door));
         return res;
     }
 
@@ -1029,14 +1029,15 @@ doclose()
         if (u.usteed
             || rn2(25) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
             play_sfx_sound(SFX_CLOSE_DOOR);
-            pline_The("%s closes.", door_subtype_definitions[door->subtyp].description);
+            pline_The("%s closes.", get_door_name_at_ptr(door));
             door->doormask = D_CLOSED;
             feel_newsym(x, y); /* the hero knows she closed it */
-            block_vision_and_hearing_at_point(x, y); /* vision:  no longer see there */
+            if(door_blocks_vision_at_ptr(door))
+                block_vision_and_hearing_at_point(x, y); /* vision:  no longer see there */
         } else {
             exercise(A_STR, TRUE);
             play_sfx_sound(SFX_DOOR_RESISTS);
-            pline_The("%s resists!", door_subtype_definitions[door->subtyp].description);
+            pline_The("%s resists!", get_door_name_at_ptr(door));
         }
         update_u_action(ACTION_TILE_NO_ACTION);
     }
@@ -1209,7 +1210,8 @@ int x, y;
             res = FALSE;
             break;
         }
-        block_vision_and_hearing_at_point(x, y);
+        if(door_blocks_vision_at_ptr(door))
+            block_vision_and_hearing_at_point(x, y);
         if (can_lock)
         {
             door->doormask = D_LOCKED | (door->doormask & D_TRAPPED);
@@ -1235,8 +1237,10 @@ int x, y;
     }
     case WAN_STRIKING:
     case SPE_FORCE_BOLT:
-        if (door->doormask & (D_LOCKED | D_CLOSED)) {
-            if (door->doormask & D_TRAPPED) {
+        if (door->doormask & (D_LOCKED | D_CLOSED)) 
+        {
+            if (door->doormask & D_TRAPPED)
+            {
                 if (MON_AT(x, y))
                     (void) mb_trapped(m_at(x, y));
                 else if (flags.verbose) {
@@ -1245,25 +1249,40 @@ int x, y;
                     else
                         You_hear("a distant explosion.");
                 }
-                door->doormask = D_NODOOR;
-                unblock_vision_and_hearing_at_point(x, y);
-                newsym(x, y);
+                if (is_door_destroyed_by_booby_trap_at_ptr(door))
+                {
+                    door->doormask = D_NODOOR;
+                    unblock_vision_and_hearing_at_point(x, y);
+                    newsym(x, y);
+                }
                 loudness = 40;
                 break;
             }
-            door->doormask = D_BROKEN;
-            if (flags.verbose) {
-                if (cansee(x, y))
-                    pline_The("door crashes open!");
-                else
-                    You_hear("a crashing sound.");
+            if (is_door_destroyed_by_striking_at(x, y))
+            {
+                door->doormask = D_BROKEN;
+                if (flags.verbose) {
+                    if (cansee(x, y))
+                        pline_The("door crashes open!");
+                    else
+                        You_hear("a crashing sound.");
+                }
+                unblock_vision_and_hearing_at_point(x, y);
+                newsym(x, y);
+                /* force vision recalc before printing more messages */
+                if (vision_full_recalc)
+                    vision_recalc(0);
+                loudness = 20;
             }
-            unblock_vision_and_hearing_at_point(x, y);
-            newsym(x, y);
-            /* force vision recalc before printing more messages */
-            if (vision_full_recalc)
-                vision_recalc(0);
-            loudness = 20;
+            else
+            {
+                if (flags.verbose) {
+                    if (cansee(x, y))
+                        pline_The("%s resists!", get_door_name_at(x, y));
+                    else
+                        You_hear("a loud bang.");
+                }
+            }
         } else
             res = FALSE;
         break;

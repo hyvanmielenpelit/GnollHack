@@ -363,15 +363,15 @@ struct door_subtype_definition {
     unsigned long flags;
 };
 
-#define DSTFLAGS_NONE               0x00000000
-#define DSTFLAGS_CREDIT_CARD_OPENS  0x00000001
-#define DSTFLAGS_LOCK_PICK_OPENS    0x00000002
-#define DSTFLAGS_MASTER_KEY_OPENS   0x00000004
-#define DSTFLAGS_BLOCKS_VISION      0x00000008
-#define DSTFLAGS_BLOCKS_SOUND       0x00000010
-#define DSTFLAGS_BLOCKS_PROJECTILES 0x00000020
-#define DSTFLAGS_BROKEN_BY_KICKING  0x00000040
-#define DSTFLAGS_INDESTRUCTIBLE     0x00000080
+#define DSTFLAGS_NONE                                       0x00000000
+#define DSTFLAGS_BLOCKS_VISION_AND_SOUND                    0x00000001
+#define DSTFLAGS_BLOCKS_PROJECTILES                         0x00000002
+#define DSTFLAGS_BROKEN_BY_KICKING                          0x00000004 /* Cannot be kicked */
+#define DSTFLAGS_BROKEN_BY_DIGGING                          0x00000008 /* Cannot be destroyed by digging */
+#define DSTFLAGS_BROKEN_BY_STRONG_MONSTERS                  0x00000010 /* Cannot be destroyed by large monsters */
+#define DSTFLAGS_BROKEN_BY_STRIKING                         0x00000020 /* Cannot be destroyed by large monsters */
+#define DSTFLAGS_BROKEN_BY_BEING_BOOBY_TRAPPED              0x00000040 /* Booby traps destroy the door */
+#define DSTFLAGS_INDESTRUCTIBLE                             0x00000080 /* Not destroyed by anything, not even by being booby trapped */
 
 enum door_subtypes_types
 {
@@ -401,6 +401,7 @@ extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES
 #define IS_STWALL(typ) ((typ) <= DBWALL && (typ) >= (STONE)) /* STONE <= (typ) <= DBWALL */
 #define IS_ROCK(typ) ((typ) < POOL)      /* absolutely nonaccessible */
 #define IS_DOOR(typ) ((typ) == DOOR)
+#define IS_DOOR_OR_SDOOR(typ) ((typ) == DOOR || (typ) == SDOOR)
 #define IS_DOORJOIN(typ) (IS_ROCK(typ) || (typ) == IRONBARS)
 #define IS_TREE(typ)                                            \
     ((typ) == TREE || (level.flags.arboreal && (typ) == UNEXPLORED))

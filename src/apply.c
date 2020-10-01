@@ -5736,7 +5736,8 @@ struct trap* lever;
         {
             levl[target_x][target_y].doormask &= ~(D_CLOSED | D_LOCKED);
             levl[target_x][target_y].doormask |= D_ISOPEN;
-            unblock_vision_and_hearing_at_point(target_x, target_y);
+            if (door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
+                unblock_vision_and_hearing_at_point(target_x, target_y);
             play_sfx_sound_at_location(SFX_OPEN_DOOR, target_x, target_y);
             newsym(target_x, target_y);
         }
@@ -5748,7 +5749,8 @@ struct trap* lever;
         {
             levl[target_x][target_y].doormask &= ~(D_CLOSED | D_ISOPEN);
             levl[target_x][target_y].doormask |= D_LOCKED;
-            block_vision_and_hearing_at_point(target_x, target_y);
+            if(door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
+                block_vision_and_hearing_at_point(target_x, target_y);
             play_sfx_sound_at_location(SFX_LOCK_DOOR, target_x, target_y);
             newsym(target_x, target_y);
         }
@@ -5762,14 +5764,16 @@ struct trap* lever;
             {
                 levl[target_x][target_y].doormask &= ~(D_CLOSED | D_ISOPEN);
                 levl[target_x][target_y].doormask |= D_LOCKED;
-                block_vision_and_hearing_at_point(target_x, target_y);
+                if (door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
+                    block_vision_and_hearing_at_point(target_x, target_y);
                 play_sfx_sound_at_location(SFX_LOCK_DOOR, target_x, target_y);
             }
             else if (levl[target_x][target_y].doormask & (D_CLOSED | D_LOCKED) && (lever->tflags & TRAPFLAGS_STATE_MASK) > 0)
             {
                 levl[target_x][target_y].doormask &= ~(D_CLOSED | D_LOCKED);
                 levl[target_x][target_y].doormask |= D_ISOPEN;
-                unblock_vision_and_hearing_at_point(target_x, target_y);
+                if (door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
+                    unblock_vision_and_hearing_at_point(target_x, target_y);
                 play_sfx_sound_at_location(SFX_OPEN_DOOR, target_x, target_y);
             }
             newsym(target_x, target_y);

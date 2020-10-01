@@ -1338,7 +1338,7 @@ dokick() {
     {
         if (maploc->typ == SDOOR) 
         {
-            if (!Levitation && rn2(30) < avrg_attrib)
+            if (is_door_kickable_at_ptr(maploc) && !Levitation && rn2(30) < avrg_attrib)
             {
                 play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 cvt_sdoor_to_door(x, y); /* ->typ = DOOR */
@@ -1352,7 +1352,7 @@ dokick() {
                 if (maploc->doormask & D_TRAPPED)
                 {
                     maploc->doormask = D_NODOOR;
-                    b_trapped("door", FOOT);
+                    b_trapped(get_door_name_at_ptr(maploc), FOOT);
                 }
                 else if (maploc->doormask != D_NODOOR && maploc->doormask != D_PORTCULLIS
                            && !(maploc->doormask & D_LOCKED))
@@ -1367,7 +1367,10 @@ dokick() {
                 return 1;
             } 
             else
+            {
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 goto ouch;
+            }
         }
         if (maploc->typ == SCORR) 
         {
@@ -1383,7 +1386,10 @@ dokick() {
                 return 1;
             } 
             else
+            {
+                play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
                 goto ouch;
+            }
         }
         if (IS_THRONE(maploc->typ)) 
         {
@@ -1685,8 +1691,7 @@ dokick() {
     /* door is known to be CLOSED or LOCKED */
     play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(x, y), NATTK, (struct obj*)0, 5.0, HMON_MELEE);
     boolean roll_success = (rnl(35) < avrg_attrib + (!martial() ? 0 : ACURR(A_DEX)));
-    if (roll_success &&
-        (maploc->key_otyp == STRANGE_OBJECT || maploc->key_otyp == SKELETON_KEY))
+    if (roll_success && is_door_kickable_at_ptr(maploc))
     {
         boolean shopdoor = *in_rooms(x, y, SHOPBASE) ? TRUE : FALSE;
 
@@ -1694,22 +1699,25 @@ dokick() {
         if (maploc->doormask & D_TRAPPED) 
         {
             if (flags.verbose)
-                You("kick the door.");
+                You("kick the %s.", get_door_name_at(x, y));
             exercise(A_STR, FALSE);
-            maploc->doormask = D_NODOOR;
-            b_trapped("door", FOOT);
+            b_trapped(get_door_name_at_ptr(maploc), FOOT);
 
-			if(!rn2(2))
-			{
-				struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
-				otmp->quan = 1;
-				otmp->owt = weight(otmp);
-			}
+            if (!is_door_indestructible_at_ptr(maploc))
+            {
+                maploc->doormask = D_NODOOR;
+                if (!rn2(2))
+                {
+                    struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
+                    otmp->quan = 1;
+                    otmp->owt = weight(otmp);
+                }
+            }
         }
-        else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor) 
+        else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor)
         {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
-            pline("As you kick the door, it shatters to pieces!");
+            pline("As you kick the %s, it shatters to pieces!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);
             maploc->doormask = D_NODOOR;
 
@@ -1721,7 +1729,7 @@ dokick() {
         else
         {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
-            pline("As you kick the door, it crashes open!");
+            pline("As you kick the %s, it crashes open!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);
             maploc->doormask = D_BROKEN;
         }
@@ -1757,7 +1765,7 @@ dokick() {
         play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
         pline("WHAMMM!!!");
         if(roll_success)
-            pline("A magical force prevents your kick from breaking the door.");
+            pline("The %s feels too hard to be broken by kicking.", get_door_name_at(x, y));
         if (in_town(x, y))
             for (mtmp = fmon; mtmp; mtmp = mtmp->nmon)
             {

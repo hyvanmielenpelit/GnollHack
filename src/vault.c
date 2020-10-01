@@ -97,7 +97,7 @@ boolean forceshow;
                 blackout(fcx, fcy);
         }
         map_location(fcx, fcy, 1); /* bypass vision */
-        if (!ACCESSIBLE(lev->typ))
+        if (/*!ACCESSIBLE(lev->typ) &&*/ does_block(fcx, fcy, lev))
             block_vision_and_hearing_at_point(fcx, fcy);
         vision_full_recalc = 1;
         egrd->fcbeg++;

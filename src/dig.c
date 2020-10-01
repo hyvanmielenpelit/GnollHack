@@ -229,6 +229,7 @@ int x, y;
     } else if ((IS_ROCK(levl[x][y].typ) && levl[x][y].typ != SDOOR
                 && (levl[x][y].wall_info & W_NONDIGGABLE) != 0)
                || (ttmp && (trap_type_definitions[ttmp->ttyp].tdflags & TRAPDEF_FLAGS_NOT_OVERRIDEN)
+               || (IS_DOOR_OR_SDOOR(levl[x][y].typ) && !is_door_diggable_at(x, y))
                || (!Can_dig_down(&u.uz) && !levl[x][y].candig))) {
         if (verbose)
             pline_The("%s here is too hard to %s.", surface(x, y), verb);
@@ -269,10 +270,13 @@ dig(VOID_ARGS)
                                   : (distu(dpx, dpy) > 2))))
         return 0;
 
-    if (context.digging.down) {
+    if (context.digging.down)
+    {
         if (!dig_check(BY_YOU, TRUE, u.ux, u.uy))
             return 0;
-    } else { /* !context.digging.down */
+    } 
+    else 
+    { /* !context.digging.down */
         if (IS_TREE(lev->typ) && !may_dig(dpx, dpy)
             && dig_typ(wep, dpx, dpy) == DIGTYP_TREE) {
             pline("This tree seems to be petrified.");
@@ -283,6 +287,15 @@ dig(VOID_ARGS)
             pline("This %s is too hard to %s.",
                   is_db_wall(dpx, dpy) ? "drawbridge" : "wall", verb);
             return 0;
+        }
+        if (IS_DOOR_OR_SDOOR(lev->typ))
+        {
+            if (!m_can_destroy_door(&youmonst, lev, FALSE) || !is_door_diggable_at_ptr(lev))
+            {
+                pline("This %s is too hard to %s.",
+                    get_door_name_at_ptr(lev), verb);
+                return 0;
+            }
         }
     }
     if (Fumbling && !rn2(3)) {
@@ -542,9 +555,12 @@ dig(VOID_ARGS)
         }
         if (IS_DOOR(lev->typ) && (lev->doormask & D_TRAPPED)) 
         {
-            lev->doormask = D_NODOOR;
-            b_trapped("door", 0);
-            newsym(dpx, dpy);
+            b_trapped(get_door_name_at_ptr(lev), 0);
+            if (is_door_destroyed_by_booby_trap_at_ptr(lev))
+            {
+                lev->doormask = D_NODOOR;
+                newsym(dpx, dpy);
+            }
         }
     cleanup:
         context.digging.lastdigtime = moves;
@@ -1508,11 +1524,17 @@ register struct monst *mtmp;
 
     /* Eats away door if present & closed or locked */
     if (closed_door(mtmp->mx, mtmp->my)) {
+        if (!m_can_destroy_door(mtmp, here, TRUE) || !is_door_diggable_at_ptr(here))
+            return FALSE;
+
         if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
             add_damage(mtmp->mx, mtmp->my, 0L);
         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
         if (here->doormask & D_TRAPPED) {
-            here->doormask = D_NODOOR;
+            if (is_door_destroyed_by_booby_trap_at_ptr(here))
+            {
+                here->doormask = D_NODOOR;
+            }
             if (mb_trapped(mtmp)) { /* mtmp is killed */
                 newsym(mtmp->mx, mtmp->my);
                 return TRUE;
@@ -1797,20 +1819,23 @@ struct obj* origobj;
                 break;
             }
         } 
-        else if (closed_door(zx, zy) || room->typ == SDOOR) 
+        else if ((closed_door(zx, zy) || room->typ == SDOOR)) 
         {
-            if (*in_rooms(zx, zy, SHOPBASE))
+            if (is_door_diggable_at_ptr(room))
             {
-                add_damage(zx, zy, SHOP_DOOR_COST);
-                shopdoor = TRUE;
+                if (*in_rooms(zx, zy, SHOPBASE))
+                {
+                    add_damage(zx, zy, SHOP_DOOR_COST);
+                    shopdoor = TRUE;
+                }
+                if (room->typ == SDOOR)
+                    transform_location_type(zx, zy, DOOR, 0);  /* doormask set below */
+                else if (cansee(zx, zy))
+                    pline_The("%s is razed!", get_door_name_at_ptr(room));
+                watch_dig((struct monst*)0, zx, zy, TRUE);
+                room->doormask = D_NODOOR;
+                unblock_vision_and_hearing_at_point(zx, zy); /* vision */
             }
-            if (room->typ == SDOOR)
-                transform_location_type(zx, zy, DOOR, 0);  /* doormask set below */
-            else if (cansee(zx, zy))
-                pline_The("door is razed!");
-            watch_dig((struct monst *) 0, zx, zy, TRUE);
-            room->doormask = D_NODOOR;
-            unblock_vision_and_hearing_at_point(zx, zy); /* vision */
             digdepth -= 2;
             if (maze_dig)
                 break;

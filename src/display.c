@@ -2842,7 +2842,7 @@ xchar x, y;
         else
             sym_idx = S_ndoor;
 
-        if (subtyp == 0)
+        if (subtyp == 0 || sym_idx == S_ndoor)
         {
             idx = sym_idx;
         }

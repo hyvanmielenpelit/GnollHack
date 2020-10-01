@@ -2434,7 +2434,7 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                             || dmgtype(mdat, AD_CORR)))))
                 continue;
             if (IS_DOOR(ntyp)
-                && (levl[nx][ny].key_otyp != STRANGE_OBJECT && levl[nx][ny].key_otyp != SKELETON_KEY)
+                && (!is_door_destroyed_by_monsters_at(nx, ny))
                     || (!(amorphous(mdat) || can_fog(mon))
                     && (((levl[nx][ny].doormask & D_CLOSED) && !(flag & OPENDOOR))
                         || ((levl[nx][ny].doormask & D_LOCKED)

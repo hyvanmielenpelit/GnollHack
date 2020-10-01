@@ -1763,9 +1763,12 @@ register int after;
                 {
                     if (btrapped) 
                     {
-                        here->doormask = D_NODOOR;
-                        newsym(mtmp->mx, mtmp->my);
-                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                        if (is_door_destroyed_by_booby_trap_at_ptr(here))
+                        {
+                            here->doormask = D_NODOOR;
+                            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                            newsym(mtmp->mx, mtmp->my);
+                        }
                         if (mb_trapped(mtmp))
                             return 2;
                     }
@@ -1790,9 +1793,12 @@ register int after;
                 {
                     if (btrapped) 
                     {
-                        here->doormask = D_NODOOR;
-                        newsym(mtmp->mx, mtmp->my);
-                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                        if (is_door_destroyed_by_booby_trap_at_ptr(here))
+                        {
+                            here->doormask = D_NODOOR;
+                            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                            newsym(mtmp->mx, mtmp->my);
+                        }
                         if (mb_trapped(mtmp))
                             return 2;
                     } 
@@ -1815,22 +1821,28 @@ register int after;
                 } 
                 else if (here->doormask & (D_LOCKED | D_CLOSED))
                 {
+                    boolean door_intact = TRUE;
                     /* mfndpos guarantees this must be a doorbuster */
                     if (btrapped) {
-                        here->doormask = D_NODOOR;
-                        newsym(mtmp->mx, mtmp->my);
-                        unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                        if (is_door_destroyed_by_booby_trap_at_ptr(here))
+                        {
+                            here->doormask = D_NODOOR;
+                            unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                            newsym(mtmp->mx, mtmp->my);
+                            door_intact = FALSE;
+                        }
                         if (mb_trapped(mtmp))
                             return 2;
                     }
-                    else
+
+                    if (door_intact && is_door_destroyed_by_monsters_at_ptr(here))
                     {
-                        if (flags.verbose) 
+                        if (flags.verbose)
                         {
                             play_simple_location_sound(mtmp->mx, mtmp->my, LOCATION_SOUND_TYPE_BREAK);
                             if (observeit)
                                 pline("%s smashes down a door.",
-                                      Monnam(mtmp));
+                                    Monnam(mtmp));
                             else if (canseeit)
                                 You_see("a door crash open.");
                             else if (!Deaf)
@@ -1842,9 +1854,10 @@ register int after;
                             here->doormask = D_BROKEN;
                         /* newsym(mtmp->mx, mtmp->my); */  /* done below */
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
+                        door_intact = FALSE;
                     }
                     /* if it's a shop door, schedule repair */
-                    if (*in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
+                    if (!door_intact && *in_rooms(mtmp->mx, mtmp->my, SHOPBASE))
                         add_damage(mtmp->mx, mtmp->my, 0L);
                 }
             } 

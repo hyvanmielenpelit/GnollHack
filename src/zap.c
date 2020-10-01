@@ -8604,41 +8604,59 @@ short exploding_wand_typ;
         rangemod = -1000;
         switch (abstype) {
         case ZT_FIRE:
-            new_doormask = D_NODOOR;
-            see_txt = "The door is consumed in flames!";
-            sense_txt = "smell smoke.";
+            if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
+            {
+                new_doormask = D_NODOOR;
+                see_txt = "The door is consumed in flames!";
+                sense_txt = "smell smoke.";
+            }
             break;
         case ZT_COLD:
-            new_doormask = D_NODOOR;
-            see_txt = "The door freezes and shatters!";
-            sense_txt = "feel cold.";
+            if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
+            {
+                new_doormask = D_NODOOR;
+                see_txt = "The door freezes and shatters!";
+                sense_txt = "feel cold.";
+            }
             break;
         case ZT_DISINTEGRATION:
-            new_doormask = D_NODOOR;
-            see_txt = "The door disintegrates!";
-            hear_txt = "crashing wood.";
+            if (!is_door_indestructible_at_ptr(lev))
+            {
+                new_doormask = D_NODOOR;
+                see_txt = "The door disintegrates!";
+                hear_txt = "crashing wood.";
+            }
             break;
 		case ZT_DEATH:
-			new_doormask = D_BROKEN;
-			see_txt = "The door withers away!";
-			sense_txt = "feel death lurking nearby.";
+            if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
+            {
+                new_doormask = D_BROKEN;
+                see_txt = "The door withers away!";
+                sense_txt = "feel death lurking nearby.";
+            }
 			break;
 		case ZT_PETRIFICATION:
-			new_doormask = D_NODOOR;
-			see_txt = "The door petrifies and shatters!";
-			sense_txt = "hear stone cracking.";
+            if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
+            {
+                new_doormask = D_NODOOR;
+                see_txt = "The door petrifies and shatters!";
+                sense_txt = "hear stone cracking.";
+            }
 			break;
 		case ZT_LIGHTNING:
-            new_doormask = D_BROKEN;
-            see_txt = "The door splinters!";
-            hear_txt = "crackling.";
-			createsplinters = TRUE;
+            if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
+            {
+                new_doormask = D_BROKEN;
+                see_txt = "The door splinters!";
+                hear_txt = "crackling.";
+                createsplinters = TRUE;
+            }
             break;
         default:
 //        def_case:
             if (exploding_wand_typ > 0) {
                 /* Magical explosion from misc exploding wand */
-                if (exploding_wand_typ == WAN_STRIKING) {
+                if (exploding_wand_typ == WAN_STRIKING && !is_door_destroyed_by_striking_at_ptr(lev)) {
                     new_doormask = D_BROKEN;
                     see_txt = "The door crashes open!";
                     sense_txt = "feel a burst of cool air.";

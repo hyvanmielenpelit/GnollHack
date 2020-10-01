@@ -451,13 +451,16 @@ xchar x, y;
     if (!boulder
         && ((IS_ROCK(lev->typ) && !may_dig(x, y))
             /* may_dig() checks W_NONDIGGABLE but doesn't handle iron bars */
-            || (lev->typ == IRONBARS && (lev->wall_info & W_NONDIGGABLE)))) {
+            || (lev->typ == IRONBARS && (lev->wall_info & W_NONDIGGABLE))
+            || (IS_DOOR_OR_SDOOR(lev->typ) && !is_door_diggable_at_ptr(lev))
+            )) {
         You("hurt your teeth on the %s.",
             (lev->typ == IRONBARS)
                 ? "bars"
                 : IS_TREE(lev->typ)
                     ? "tree"
-                    : "hard stone");
+                    : IS_DOOR(lev->typ) ? get_door_name_at_ptr(lev)
+                        : "hard stone");
         nomul(0);
         return 1;
     } else if (context.digging.pos.x != x || context.digging.pos.y != y
@@ -519,7 +522,7 @@ xchar x, y;
          *
          *  [perhaps use does_block() below (from vision.c)]
          */
-        if (IS_ROCK(lev->typ) || closed_door(x, y)
+        if (IS_ROCK(lev->typ) || (closed_door(x, y) && door_blocks_vision_at(x, y))
             || sobj_at(BOULDER, x, y)) {
             block_vision_and_hearing_at_point(x, y); /* delobj will unblock the point */
             /* reset dig state */
@@ -528,7 +531,8 @@ xchar x, y;
             return 1;
         }
 
-    } else if (IS_WALL(lev->typ))
+    }
+    else if (IS_WALL(lev->typ))
     {
         if (*in_rooms(x, y, SHOPBASE)) {
             add_damage(x, y, SHOP_WALL_DMG);
@@ -578,7 +582,7 @@ xchar x, y;
         }
         if (lev->doormask & D_TRAPPED) {
             lev->doormask = D_NODOOR;
-            b_trapped("door", 0);
+            b_trapped(get_door_name_at_ptr(lev), 0);
         } else {
             digtxt = "chew through the door.";
             lev->doormask = D_BROKEN;
