@@ -206,6 +206,7 @@ CONTAINER:('(',"chest"),trapped,locked,(01,03) {
    [10%]:OBJECT:artifact
    OBJECT:random_contents
    OBJECT:random_contents
+   OBJECT:('(',"magic key")
    [50%]:OBJECT:random_contents
 }
 ENGRAVING:(01,03),engrave,"Gilthoniel"
@@ -250,8 +251,7 @@ MAP
 ENDMAP
 
 MAZEWALK:(00,02),west
-DOOR:closed,(00,02),subtype:door_magic
-#DOOR:locked,(00,02),key_geometric,2
+DOOR:locked,(00,02),subtype:door_magic_windowed,keytype:key_magic
 REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
 NPC:npc_geologist,(02,03)
 

@@ -869,7 +869,7 @@ boolean is_golf_swing;
         container_impact_dmg(kickedobj, x, y);
         if (kickedobj->olocked) {
             if ((!rn2(5) || (martial() && !rn2(2)))
-                && (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == SKELETON_KEY)
+                && (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
                 ) {
                 play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_BREAK_LOCK_CONTAINER);
                 You("break open the lock!");

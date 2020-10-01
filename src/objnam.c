@@ -5341,10 +5341,13 @@ const char*
 get_lock_description_by_otyp(otyp, sq)
 int otyp, sq;
 {
-    if (otyp < 0 || otyp >= NUM_OBJECTS) /* No lock, STRANGE_OBJECT indicates normal door */
+    if (otyp < NON_PM || otyp >= NUM_OBJECTS) /* No lock, STRANGE_OBJECT indicates normal door */
     {
         return "no";
     }
+
+    if (otyp == NON_PM)
+        otyp = 0;
 
     if (!is_otyp_key(otyp))
         return "";

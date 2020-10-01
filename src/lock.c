@@ -96,7 +96,7 @@ picklock(VOID_ARGS)
         {
             return ((xlock.usedtime = 0)); /* you or it moved */
         }
-        if ((xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == SKELETON_KEY)
+        if ((xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == NON_PM || xlock.box->keyotyp == SKELETON_KEY)
             && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
         {
             //nothing, normal case
@@ -323,7 +323,7 @@ forcelock(VOID_ARGS)
     if (rn2(100) >= xlock.chance)
         return 1; /* still busy */
 
-    if (xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == SKELETON_KEY)
+    if (xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == NON_PM || xlock.box->keyotyp == SKELETON_KEY)
     {
         //nothing, normal case
     }
@@ -1056,7 +1056,7 @@ struct obj *obj, *otmp; /* obj *is* a box */
     switch (otmp->otyp) {
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
-        if (!obj->olocked && (obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)) { /* lock it; fix if broken */
+        if (!obj->olocked && (obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == NON_PM || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)) { /* lock it; fix if broken */
             play_sfx_sound_at_location(SFX_WIZARD_LOCK_KLUNK, obj->ox, obj->oy);
             pline("Klunk!");
             obj->olocked = 1;
@@ -1074,7 +1074,7 @@ struct obj *obj, *otmp; /* obj *is* a box */
     case WAN_OPENING:
     case SPE_KNOCK:
         if (obj->olocked) { /* unlock; couldn't be broken */
-            if ((obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0))
+            if ((obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == NON_PM || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0))
             {
                 play_sfx_sound_at_location(SFX_KNOCK_KLICK, obj->ox, obj->oy);
                 pline("Klick!");
