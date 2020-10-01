@@ -265,5 +265,5 @@ NPC:npc_geologist,(02,03)
 #OBJECT:('(',"ornamental key"),special_quality:2,(04,02)
 #OBJECT:('(',"geometric key"),special_quality:2,(04,02)
 
-#LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"statue",montype:"ettin"
+#LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"modron portal",subtype:octahedral
 #LEVER:(01,01),lever_effect_create_object,target:(02,02),switchable,continuously_usable,objtype:"geometric key",special_quality:3

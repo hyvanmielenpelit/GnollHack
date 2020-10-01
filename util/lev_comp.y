@@ -1946,9 +1946,9 @@ throne_detail : THRONE_ID ':' ter_selection
 		  }
 		;
 
-modron_portal_detail : MODRON_PORTAL_ID ':' coord_or_var ',' '(' all_integers ',' all_integers ')' ',' MODRON_PORTAL_TYPE ',' ACTIVE_OR_INACTIVE
+modron_portal_detail : MODRON_PORTAL_ID ':' coord_or_var ',' TARGET_ID ':' coord_or_var ',' MODRON_PORTAL_TYPE ',' ACTIVE_OR_INACTIVE
 		  {
-		      add_opvars(splev, "iiiio", VA_PASS5((int)$<i>6, (int)$<i>8, (int) $<i>11, (int) $<i>13, SPO_MODRON_PORTAL));
+		      add_opvars(splev, "iio", VA_PASS3((int) $<i>9, (int) $<i>11, SPO_MODRON_PORTAL));
 		  }
 		;
 
@@ -2021,17 +2021,30 @@ lever_info	: ACTIVE_OR_INACTIVE
 		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_TRAP));
 		      $<i>$ = 0x0100;
 		  }
+		| LOCATION_SUBTYPE_ID ':' valid_subtype
+		  {
+		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_SUBTYPE));
+		      $<i>$ = 0x0200;
+		  }
+		| FLOOR_TYPE_ID ':' floortype
+		  {
+		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_CATEGORY));
+		      $<i>$ = 0x0400;
+		  }
 		| EFFECT_FLAG_ID ':' INTEGER
 		  {
 		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_EFFECT_FLAG));
-		      $<i>$ = 0x0200;
+		      $<i>$ = 0x0800;
 		  }
 		| SPECIAL_QUALITY_ID ':' INTEGER
 		  {
 		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_L_V_SPECIAL_QUALITY));
-		      $<i>$ = 0x0400;
+		      $<i>$ = 0x1000;
 		  }
 		;
+
+valid_subtype : INTEGER | MODRON_PORTAL_TYPE | DOOR_SUBTYPE | FOUNTAIN_TYPE
+        ;
 
 sink_detail : SINK_ID ':' ter_selection
 		  {

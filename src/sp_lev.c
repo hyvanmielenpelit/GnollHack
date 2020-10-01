@@ -2340,12 +2340,45 @@ struct mkroom* croom;
         lvr->lever_effect = lever->lever_effect;
         lvr->effect_param1 = lever->effect_parameter1;
         lvr->effect_param2 = lever->effect_parameter2;
-        if(lvr->lever_effect == LEVER_EFFECT_CREATE_TRAP)
-            lvr->effect_param2 = lever->effect_trap_creation_type; /* Override monster class */
-        else if (lvr->lever_effect == LEVER_EFFECT_CREATE_OBJECT && lvr->effect_param1 > STRANGE_OBJECT && lvr->effect_param1 < NUM_OBJECTS)
-            lvr->effect_param2 = lever->effect_special_quality; /* Override object class */
+        lvr->effect_param3 = lever->effect_parameter3;
+        lvr->effect_param4 = lever->effect_parameter4;
         lvr->effect_flags = lever->effect_flags;
         lvr->tflags = lever->lever_flags;
+
+        if (lvr->lever_effect == LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE)
+        {
+            if (IS_FLOOR((int)lvr->effect_param1))
+            {
+                lvr->effect_param2 = get_location_subtype_by_category((int)lvr->effect_param1, (int)lever->effect_category);
+            }
+            else
+            {
+                lvr->effect_param2 = lever->effect_subtype;
+            }
+            if (IS_FLOOR((int)lvr->effect_param3))
+            {
+                lvr->effect_param3 = get_location_subtype_by_category((int)lvr->effect_param3, (int)lever->effect_category);
+            }
+            else
+            {
+                lvr->effect_param3 = lever->effect_subtype;
+            }
+        }
+        else if (lvr->lever_effect == LEVER_EFFECT_CREATE_LOCATION_TYPE)
+        {
+            if (IS_FLOOR((int)lvr->effect_param1))
+            {
+                lvr->effect_param2 = get_location_subtype_by_category((int)lvr->effect_param1, (int)lever->effect_category);
+            }
+            else
+            {
+                lvr->effect_param2 = lever->effect_subtype;
+            }
+        }
+        else if (lvr->lever_effect == LEVER_EFFECT_CREATE_TRAP)
+        {
+            lvr->effect_param4 = lever->effect_subtype;
+        }
 
         coord tm2;
         tm2.x = t_x;
@@ -2519,6 +2552,7 @@ modron_portal* a;
 struct mkroom* croom;
 {
     schar x = -1, y = -1;
+    schar t_x = -1, t_y = -1;
     coord tm, portal_tm;
     unsigned long pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
 
@@ -2537,11 +2571,12 @@ struct mkroom* croom;
             return;
     }
 
+    get_location_coord(&t_x, &t_y, ANY_LOC, croom, a->t_coord);
+
     tm.x = x;
     tm.y = y;
-
-    portal_tm.x = tm.x + a->t_x;
-    portal_tm.y = tm.y + a->t_y;
+    portal_tm.x = t_x;
+    portal_tm.y = t_y;
 
     mkmodronportal(a->typ, &tm, &portal_tm, pflags);
 }
@@ -3808,10 +3843,12 @@ struct sp_coder* coder;
 
                 if (monid >= LOW_PM && monid < NUM_MONSTERS) {
                     tmplever.effect_parameter1 = monid;
+                    tmplever.effect_parameter2 = monclass;
                     break; /* we're done! */
                 }
                 else {
                     tmplever.effect_parameter1 = NON_PM;
+                    tmplever.effect_parameter2 = monclass;
                 }
             }
             break;
@@ -3822,20 +3859,30 @@ struct sp_coder* coder;
 
                 if (otyp > STRANGE_OBJECT && otyp < NUM_OBJECTS) {
                     tmplever.effect_parameter1 = otyp;
+                    tmplever.effect_parameter2 = objclass;
                     break; /* we're done! */
                 }
                 else {
                     tmplever.effect_parameter1 = STRANGE_OBJECT;
+                    tmplever.effect_parameter2 = objclass;
                 }
             }
             break;
         case SP_L_V_TRAP:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmplever.effect_trap_creation_type = OV_i(parm);
+                tmplever.effect_parameter3 = OV_i(parm);
             break;
         case SP_L_V_SPECIAL_QUALITY:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmplever.effect_special_quality = OV_i(parm);
+                tmplever.effect_parameter4 = OV_i(parm);
+            break;
+        case SP_L_V_SUBTYPE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_subtype = OV_i(parm);
+            break;
+        case SP_L_V_CATEGORY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmplever.effect_category = OV_i(parm);
             break;
         case SP_L_V_TERRAIN:
             if (OV_typ(parm) == SPOVAR_INT)
@@ -3843,7 +3890,7 @@ struct sp_coder* coder;
             break;
         case SP_L_V_TERRAIN2:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmplever.effect_parameter2 = OV_i(parm);
+                tmplever.effect_parameter3 = OV_i(parm);
             break;
         case SP_L_V_ACTIVE:
             if (OV_typ(parm) == SPOVAR_INT && OV_i(parm) == 1)
@@ -5344,20 +5391,14 @@ void spo_modron_portal(coder)
 struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_modron_portal";
-    struct opvar* acoord, *t_x, * t_y, *activated, *typ;
+    struct opvar* acoord, *tcoord, *activated, *typ;
     modron_portal tmpportal;
-    schar x, y;
 
-    if (!OV_pop_i(activated) || !OV_pop_i(typ) || !OV_pop_i(t_y) || !OV_pop_i(t_x) || !OV_pop_c(acoord))
+    if (!OV_pop_i(activated) || !OV_pop_i(typ) || !OV_pop_c(tcoord) || !OV_pop_c(acoord))
         return;
 
-    get_location_coord(&x, &y, ANY_LOC, coder->croom, OV_i(acoord));
-
     tmpportal.coord = OV_i(acoord);
-    tmpportal.x = x;
-    tmpportal.y = y;
-    tmpportal.t_x = OV_i(t_x);
-    tmpportal.t_y = OV_i(t_y);
+    tmpportal.t_coord = OV_i(tcoord);
     tmpportal.typ = OV_i(typ);
     tmpportal.activated = OV_i(activated);
 
@@ -5365,8 +5406,7 @@ struct sp_coder* coder;
 
     opvar_free(activated);
     opvar_free(typ);
-    opvar_free(t_x);
-    opvar_free(t_y);
+    opvar_free(tcoord);
     opvar_free(acoord);
 }
 

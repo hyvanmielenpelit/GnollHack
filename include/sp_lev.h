@@ -219,6 +219,8 @@ enum sp_lever_var_flags {
     SP_L_V_TERRAIN,
     SP_L_V_TERRAIN2,
     SP_L_V_SPECIAL_QUALITY,
+    SP_L_V_SUBTYPE,
+    SP_L_V_CATEGORY,
     SP_L_V_EFFECT_FLAG,
     SP_L_V_COORD,
 
@@ -407,8 +409,10 @@ typedef struct {
     int lever_effect;
     long effect_parameter1;
     long effect_parameter2;
-    long effect_trap_creation_type;
-    long effect_special_quality;
+    long effect_parameter3;
+    long effect_parameter4;
+    long effect_subtype;
+    long effect_category;
     unsigned long effect_flags;
     unsigned long lever_flags;
 } spllever;
@@ -466,8 +470,6 @@ typedef struct {
 typedef struct {
     packed_coord coord;
     packed_coord t_coord;
-    xchar x, y;
-    xchar t_x, t_y;
     uchar typ;
     boolean activated;
 } modron_portal;

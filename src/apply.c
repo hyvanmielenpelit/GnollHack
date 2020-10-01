@@ -5800,16 +5800,18 @@ struct trap* lever;
     case LEVER_EFFECT_CREATE_UNCREATE_LOCATION_TYPE:
     {
         int loctyp = (int)lever->effect_param1;
-        int loctyp2 = (int)lever->effect_param2;
+        int locsubtyp = (int)lever->effect_param2;
+        int loctyp2 = (int)lever->effect_param3;
+        int locsubtyp2 = (int)lever->effect_param4;
         if (isok(target_x, target_y))
         {
             if (loctyp2 >= 0 && loctyp2 < MAX_TYPE && (lever->tflags & TRAPFLAGS_STATE_MASK) == 0)
             {
-                create_simple_location(target_x, target_y, loctyp2, 0, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+                create_simple_location(target_x, target_y, loctyp2, locsubtyp2, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
             }
             else if (loctyp >= 0 && loctyp < MAX_TYPE && (lever->tflags & TRAPFLAGS_STATE_MASK) > 0)
             {
-                create_simple_location(target_x, target_y, loctyp, 0, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
+                create_simple_location(target_x, target_y, loctyp, locsubtyp, 0, 0, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floortyp, IS_FLOOR(loctyp) ? 0 : levl[target_x][target_y].floorsubtyp, TRUE);
             }
             play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
         }
@@ -5820,13 +5822,21 @@ struct trap* lever;
         struct trap* t = 0;
         if (isok(target_x, target_y))
         {
-            if (lever->effect_param2 > NO_TRAP && lever->effect_param2 < TRAPNUM)
+            if (lever->effect_param3 > NO_TRAP && lever->effect_param3 < TRAPNUM)
             {
-                t = maketrap(target_x, target_y, (int)lever->effect_param2, (int)lever->effect_param1, lever->effect_flags);
+                int montyp = (int)lever->effect_param1;
+                if (lever->effect_param3 == STATUE_TRAP && montyp == NON_PM && (char)lever->effect_param2 > 0)
+                {
+                    struct permonst* pm = mkclass((char)lever->effect_param2, 0);
+                    if(pm)
+                        montyp = monsndx(pm);
+                }
+                t = maketrap(target_x, target_y, (int)lever->effect_param3, montyp, lever->effect_flags);
             }
         }
         if (t)
         {
+            t->tsubtyp = (uchar)lever->effect_param4;
             play_sfx_sound_at_location(SFX_SUMMON_MONSTER, target_x, target_y);
             newsym(target_x, target_y);
             if (cansee(target_x, target_y) && (t->tseen || t->ttyp == STATUE_TRAP))
@@ -5846,7 +5856,7 @@ struct trap* lever;
             {
                 otmp = mksobj_at((int)lever->effect_param1, target_x, target_y, TRUE, FALSE);
                 if (otmp)
-                    otmp->special_quality = (short)lever->effect_param2;
+                    otmp->special_quality = (short)lever->effect_param4;
             }
             else if (lever->effect_param2 >= 0)
             {

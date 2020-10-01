@@ -4443,13 +4443,6 @@ struct obj *no_wish;
                 if (trap == LEVER && is_switchable)
                 {
                     t->tflags |= TRAPFLAGS_SWITCHABLE_BETWEEN_STATES | TRAPFLAGS_CONTINUOUSLY_SWITCHABLE;
-                    /* Test stuff */
-                    t->lever_effect = LEVER_EFFECT_CREATE_MONSTER;
-                    t->effect_param1 = PM_ETTIN_ZOMBIE;
-                    t->effect_param2 = 0;
-                    t->effect_flags = 0UL;
-                    t->launch.x = x - 1;
-                    t->launch.y = y;
                 }
                 tname = defsyms[trap_to_defsym(trap)].explanation;
                 pline("%s%s.", An(tname),

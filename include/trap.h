@@ -40,6 +40,8 @@ struct trap {
     enum lever_effect_types lever_effect;
     long effect_param1;
     long effect_param2;
+    long effect_param3;
+    long effect_param4;
     unsigned long effect_flags;
     unsigned long tflags;
     unsigned long activation_count;
