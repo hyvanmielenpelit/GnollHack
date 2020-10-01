@@ -2215,15 +2215,15 @@ wiz_save_glyph2tiles(VOID_ARGS) /* Save a csv file for tile data */
 
 /* temporary? hack, since level type codes aren't the same as screen
    symbols and only the latter have easily accessible descriptions */
-static const char *levltyp[] = {
+static const char *levltyp[MAX_TYPE + 2] = {
     "stone", "vertical wall", "horizontal wall", "top-left corner wall",
     "top-right corner wall", "bottom-left corner wall",
     "bottom-right corner wall", "cross wall", "tee-up wall", "tee-down wall",
     "tee-left wall", "tee-right wall", "drawbridge wall", "tree",
     "secret door", "secret corridor", "pool", "moat", "water",
     "drawbridge up", "lava pool", "iron bars", "door", "corridor", "room",
-    "stairs", "ladder", "fountain", "throne", "sink", "grave", "altar", "ice",
-    "drawbridge down", "air", "cloud",
+    "stairs", "ladder", "fountain", "throne", "sink", "grave", "anvil", "altar", "ice",
+    "drawbridge down", "air", "cloud", "grass", "ground", "unexplored",
     /* not a real terrain type, but used for undiggable stone
        by wiz_map_levltyp() */
     "unreachable/undiggable",
