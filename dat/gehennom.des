@@ -474,7 +474,10 @@ OBJECT:random,random
 
 # The resident nasty
 MONSTER:('&',"Orcus"),(33,15)
-CONTAINER:('(',"chest"),trapped,locked,(32,15) {
+{
+  OBJECT:('(',"ornamental key"),special_quality:4
+}
+CONTAINER:('(',"chest"),trapped,locked,(32,15),keytype:('(',"ornamental key"),special_quality:4 {
    OBJECT:('$',"gold piece"),quantity:(12000+(6d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
@@ -568,8 +571,10 @@ SPECIAL_REGION:(01,01,20,10),region_special_level_seen
 
 # The fellow in residence
 
-MONSTER:('&',"Dispater"),(12,07)
-CONTAINER:('(',"chest"),trapped,locked,(12,07) {
+MONSTER:('&',"Dispater"),(12,07) {
+   OBJECT:('(',"ornamental key"),special_quality:3
+}
+CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),special_quality:3 {
    OBJECT:('$',"gold piece"), quantity:(12000+(6d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
@@ -673,8 +678,10 @@ IF [50%] {
    TERRAIN:(29,07),'S'
 }
 # The fellow in residence
-MONSTER:('&',"Baalzebub"),(35,06)
-CONTAINER:('(',"chest"),trapped,locked,(35,06) {
+MONSTER:('&',"Baalzebub"),(35,06) {
+  OBJECT:('(',"ornamental key"),special_quality:5
+}
+CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5 {
    OBJECT:('$',"gold piece"), quantity:(17000+(6d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
@@ -744,11 +751,12 @@ BRANCH:levregion(01,00,6,20),levregion(6,1,70,16)
 TELEPORT_REGION:levregion(01,00,6,20),levregion(6,1,70,16)
 #
 STAIR:(10,06),down
-DOOR:locked,(00,06),subtype:door_black_gate
-DOOR:closed,(04,08),subtype:door_obsidian
-DOOR:closed,(16,08),subtype:door_obsidian
-DOOR:closed,(08,02),subtype:door_obsidian
-DOOR:closed,(12,02),subtype:door_obsidian
+DOOR:closed,(00,06),subtype:door_black_gate
+# One door happens to be unlocked
+DOOR:closed,(04,08),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
+DOOR:locked,(16,08),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
+DOOR:locked,(08,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
+DOOR:locked,(12,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
 
 # Smithy
 REGION:(13,09,19,10),lit,"smithy"
@@ -762,7 +770,9 @@ MAZEWALK:(00,06),west
 # Entire main area
 REGION:(01,01,20,10),unlit,"ordinary"
 # The fellow in residence
-MONSTER:('&',"Yeenoghu"),(10,06)
+MONSTER:('&',"Yeenoghu"),(10,06) {
+  OBJECT:('(',"ornamental key"),special_quality:6
+}
 # Some random weapons and armor.
 OBJECT:'[',random
 OBJECT:'[',random

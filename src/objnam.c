@@ -5268,10 +5268,10 @@ const char*
 get_key_special_quality_description(obj)
 struct obj* obj;
 {
-    if (!obj || !(is_key(obj) || Is_box(obj)) || obj->special_quality == 0)
+    if (!obj || !is_key(obj) || obj->special_quality == 0)
         return "";
 
-    int otyp = is_key(obj) ? obj->otyp : Is_box(obj) ? obj->keyotyp : 0;
+    int otyp = is_key(obj) ? obj->otyp : 0;
     int sq = obj->special_quality;
 
     return get_key_special_quality_description_by_otyp(otyp, sq);
@@ -5282,26 +5282,30 @@ struct key_special_description {
     int otyp;
     int special_quality;
     const char* description;
+    const char* lock_description;
 };
 
 struct key_special_description key_special_descriptions[] =
 {
-    {MAGIC_KEY, 1, "enchanted"},
-    {MAGIC_KEY, 2, "scintillating"},
-    {MAGIC_KEY, 3, "glowing"},
-    {MAGIC_KEY, 4, "shining"},
-    {MAGIC_KEY, 5, "iridescent"},
-    {GEOMETRIC_KEY, 1, "spherical"},
-    {GEOMETRIC_KEY, 2, "linear"},
-    {GEOMETRIC_KEY, 3, "triangular"},
-    {GEOMETRIC_KEY, 4, "square"},
-    {GEOMETRIC_KEY, 5, "pentagonal"},
-    {GEOMETRIC_KEY, 6, "hexagonal"},
-    {GEOMETRIC_KEY, 7, "heptagonal"},
-    {GEOMETRIC_KEY, 8, "octagonal"},
-    {ORNAMENTAL_KEY, 1, "runed"},
-    {ORNAMENTAL_KEY, 2, "decorated"},
-    {ORNAMENTAL_KEY, 3, "skull-headed"},
+    {MAGIC_KEY, 1, "enchanted", "enchanted"},
+    {MAGIC_KEY, 2, "scintillating", "scintillating"},
+    {MAGIC_KEY, 3, "glowing", "glowing"},
+    {MAGIC_KEY, 4, "shining", "shining"},
+    {MAGIC_KEY, 5, "iridescent", "iridescent"},
+    {GEOMETRIC_KEY, 1, "spherical", "spherical"},
+    {GEOMETRIC_KEY, 2, "linear", "linear"},
+    {GEOMETRIC_KEY, 3, "triangular", "triangular"},
+    {GEOMETRIC_KEY, 4, "square", "square"},
+    {GEOMETRIC_KEY, 5, "pentagonal", "pentagonal"},
+    {GEOMETRIC_KEY, 6, "hexagonal", "hexagonal"},
+    {GEOMETRIC_KEY, 7, "heptagonal", "heptagonal"},
+    {GEOMETRIC_KEY, 8, "octagonal", "octagonal"},
+    {ORNAMENTAL_KEY, 1, "runed", "runed"},
+    {ORNAMENTAL_KEY, 2, "decorated", "decorated"},
+    {ORNAMENTAL_KEY, 3, "grim", "grim"},         /* Dispater */
+    {ORNAMENTAL_KEY, 4, "skull-headed", "skull-shaped"}, /* Orcus */
+    {ORNAMENTAL_KEY, 5, "fly-shaped", "fly-shaped"},   /* Baalzebub */
+    {ORNAMENTAL_KEY, 6, "hyena-headed", "hyena-shaped"}, /* Yeenoghu */
     {0, 0, 0}
 };
 
@@ -5361,7 +5365,13 @@ boolean normally_without_lock;
         return "";
 
     if (sq > 0)
-        return get_key_special_quality_description_by_otyp(otyp, sq);
+    {
+        for (int i = 0; key_special_descriptions[i].otyp > STRANGE_OBJECT; i++)
+            if (key_special_descriptions[i].otyp == otyp && key_special_descriptions[i].special_quality == sq)
+                return key_special_descriptions[i].lock_description;
+
+        return "";
+    }
     else
         return OBJ_CONTENT_NAME(otyp);
 }
