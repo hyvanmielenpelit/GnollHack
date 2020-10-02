@@ -1301,7 +1301,7 @@ unsigned doname_flags;
 
     if (Is_box(obj))
     {
-        const char* desc = get_lock_description_by_otyp(obj->keyotyp, obj->special_quality);
+        const char* desc = get_lock_description_by_otyp(obj->keyotyp, obj->special_quality, FALSE);
         if (desc && strcmp(desc, ""))
         {
             if (!strcmp(desc, "no"))
@@ -5338,12 +5338,16 @@ int otyp, sq;
 }
 
 const char*
-get_lock_description_by_otyp(otyp, sq)
+get_lock_description_by_otyp(otyp, sq, normally_without_lock)
 int otyp, sq;
+boolean normally_without_lock;
 {
     if (otyp < NON_PM || otyp >= NUM_OBJECTS) /* No lock, STRANGE_OBJECT indicates normal door */
     {
-        return "no";
+        if (normally_without_lock)
+            return "";
+        else
+            return "no";
     }
 
     if (otyp == NON_PM)

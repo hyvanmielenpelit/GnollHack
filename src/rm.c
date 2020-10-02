@@ -87,11 +87,11 @@ struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
     {"iron bar door",        "door", MAT_IRON, LOCATION_SOUNDSET_NONE, DSTFLAGS_NONE },
     {"magic door",           "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
     {"windowed magic door",  "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE },
-    {"alien door",           "door", MAT_MODRONITE, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"alien door",           "door", MAT_MODRONITE, LOCATION_SOUNDSET_NONE, DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT | DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
     {"reinforced door",      "door", MAT_METAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_INDESTRUCTIBLE | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"stone door",           "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_STRIKING | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"massive gate",         "gate", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
-    {"portcullis",           "portcullis", MAT_METAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_NONE},
+    {"stone door",           "door", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT | DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_STRIKING | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"massive gate",         "gate", MAT_MINERAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT | DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES},
+    {"portcullis",           "portcullis", MAT_METAL, LOCATION_SOUNDSET_NONE, DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT},
 };
 
 /* force linkage */
@@ -538,4 +538,33 @@ struct rm* door;
         return FALSE;
 
 }
+
+boolean
+is_door_normally_without_lock_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return TRUE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_normally_without_lock_at_ptr(door);
+
+}
+
+
+boolean
+is_door_normally_without_lock_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return TRUE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
 /* rm.c */

@@ -2103,7 +2103,7 @@ E int FDECL(shiny_obj, (CHAR_P));
 E void FDECL(add_erosion_words, (struct obj*, char*));
 E const char* FDECL(get_key_special_quality_description, (struct obj*));
 E const char* FDECL(get_key_special_quality_description_by_otyp, (int, int));
-E const char* FDECL(get_lock_description_by_otyp, (int, int));
+E const char* FDECL(get_lock_description_by_otyp, (int, int, boolean));
 E boolean FDECL(find_key_otyp_by_description, (char*, int*, int*));
 
 /* ### options.c ### */
@@ -2559,6 +2559,8 @@ E boolean FDECL(is_door_destroyed_by_monsters_at, (xchar, xchar));
 E boolean FDECL(is_door_destroyed_by_monsters_at_ptr, (struct rm*));
 E boolean FDECL(door_blocks_vision_at, (xchar, xchar));
 E boolean FDECL(door_blocks_vision_at_ptr, (struct rm*));
+E boolean FDECL(is_door_normally_without_lock_at, (xchar, xchar));
+E boolean FDECL(is_door_normally_without_lock_at_ptr, (struct rm*));
 
 /* ### rnd.c ### */
 

@@ -372,6 +372,7 @@ struct door_subtype_definition {
 #define DSTFLAGS_BROKEN_BY_STRIKING                         0x00000020 /* Cannot be destroyed by large monsters */
 #define DSTFLAGS_BROKEN_BY_BEING_BOOBY_TRAPPED              0x00000040 /* Booby traps destroy the door */
 #define DSTFLAGS_INDESTRUCTIBLE                             0x00000080 /* Not destroyed by anything, not even by being booby trapped */
+#define DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT             0x00000100 /* If no lock, nothing is printed, with normal lock, tells that has a metal lock */
 
 enum door_subtypes_types
 {

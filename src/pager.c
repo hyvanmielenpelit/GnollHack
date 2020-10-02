@@ -611,9 +611,9 @@ char *buf, *monbuf;
                 explanation = get_cmap_or_cmap_variation_glyph_explanation(glyph);
 
             strcpy(buf, explanation); // defsyms[cmap].explanation);
-            if (is_cmap_door(gl) && levl[x][y].typ == DOOR)
+            if (is_cmap_door(gl) && IS_DOOR(levl[x][y].typ))
             {
-                const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality);
+                const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
                 if (desc && strcmp(desc, ""))
                 {
                     if(!strcmp(desc, "no"))
