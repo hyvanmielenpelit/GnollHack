@@ -168,6 +168,9 @@ struct obj* launcher;
 	if (!ammo && !launcher)
 		return 0;
 
+    return m_weapon_range(&youmonst, ammo, launcher);
+
+#if 0
 	int baserange = 0, range = 0;
 	boolean thrown = TRUE;
 
@@ -249,10 +252,98 @@ struct obj* launcher;
 
 
 	return range;
+#endif
 }
 
 
+int
+m_weapon_range(mtmp, ammo, launcher)
+struct monst* mtmp;
+struct obj* ammo;
+struct obj* launcher;
+{
+    if (!mtmp)
+        return 0;
 
+    if (!ammo && !launcher)
+        return 0;
+
+    int baserange = 0, range = 0;
+    boolean thrown = TRUE;
+    boolean is_you = (mtmp == &youmonst);
+    boolean curstr = M_ACURRSTR(mtmp);
+
+    /* Ammunition range */
+    if (!ammo && launcher && is_launcher(launcher)) {
+        if (objects[launcher->otyp].oc_range > 0)
+            baserange = objects[launcher->otyp].oc_range;										/* Crossbows and the like */
+        else if (objects[launcher->otyp].oc_range < 0)
+            baserange = max(1, (int)((curstr * -objects[launcher->otyp].oc_range) / 100));		/* Bows */
+
+        /* No more info supplied */
+        range = baserange;
+    }
+    else if (ammo && is_ammo(ammo) && launcher && ammo_and_launcher(ammo, launcher)) {
+        thrown = FALSE;
+        if (objects[launcher->otyp].oc_range > 0)
+            baserange = objects[launcher->otyp].oc_range;										/* Crossbows and the like */
+        else if (objects[launcher->otyp].oc_range < 0)
+            baserange = max(1, (int)((curstr * -objects[launcher->otyp].oc_range) / 100));		/* Bows */
+
+        range = baserange;
+        if (!(objects[launcher->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE || objects[ammo->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE))
+            range = range - (int)(ammo->owt / 100);
+    }
+    else if (ammo) //Normal thrown weapons are half distance
+    {
+        boolean overriden = FALSE;
+
+        /* oc_range can be used to override usual throwing range for non-launchers */
+        if (!is_launcher(ammo) && objects[ammo->otyp].oc_range != 0)
+        {
+            overriden = TRUE;
+            if (objects[ammo->otyp].oc_range > 0)
+                baserange = objects[ammo->otyp].oc_range;										/* Crossbows and the like */
+            else if (objects[ammo->otyp].oc_range < 0)
+                baserange = max(1, (int)((curstr * -objects[ammo->otyp].oc_range) / 100));		/* Bows */
+        }
+
+        if (!overriden)
+        {
+            if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
+                baserange = (int)(curstr / 2);
+            else
+                baserange = (int)(curstr / 3);
+        }
+
+        //Weight of the object reduces range
+        if (objects[ammo->otyp].oc_flags & O1_WEIGHT_DOES_NOT_REDUCE_RANGE)
+            range = baserange;
+        else
+        {
+            if (objects[ammo->otyp].oc_flags & O1_THROWN_WEAPON_ONLY)
+                range = baserange - (int)(ammo->owt / 100);
+            else
+                range = baserange - (int)(ammo->owt / 40);
+        }
+    }
+
+    if (is_you)
+    {
+        if (ammo && uball && ammo == uball) {
+            if (u.ustuck || (u.utrap && u.utraptype == TT_INFLOOR))
+                range = 1;
+            else if (range >= 5)
+                range = 5;
+        }
+    }
+
+    if (range < 1)
+        range = 1;
+
+
+    return range;
+}
 
 /*
  *      weapon_to_hit_value returns an integer representing the "to hit" bonuses

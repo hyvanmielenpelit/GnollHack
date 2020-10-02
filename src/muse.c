@@ -1247,7 +1247,7 @@ struct monst *mtmp;
         && !uarms && !uarmg && !uarmc && !uarmf)
         return FALSE;
     /* all offensive items require orthogonal or diagonal targetting */
-    if (!lined_up(mtmp, FALSE, 0, FALSE, M_SHOOT_RANGE))
+    if (!lined_up(mtmp, FALSE, 0, FALSE, M_LINEUP_RANGE))
         return FALSE;
 
 #define nomore(x)       if (m.has_offense == x) continue;

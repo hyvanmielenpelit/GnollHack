@@ -3391,6 +3391,7 @@ E int FDECL(vms_get_saved_games, (const char *, char ***));
 /* ### weapon.c ### */
 
 E const char *FDECL(weapon_descr, (struct obj *));
+E int FDECL(m_weapon_range, (struct monst*, struct obj*, struct obj*));
 E int FDECL(weapon_range, (struct obj*, struct obj*));
 E int FDECL(basehitval, (struct obj*, struct monst*, struct monst*, int));
 E int FDECL(weapon_to_hit_value, (struct obj *, struct monst *, struct monst*, int));

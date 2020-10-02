@@ -348,14 +348,14 @@ struct obj *otmp, *mwep;
 
     struct monst *mtarg = target;
 
-	//This is monster's weapon range -- looks like unlimited
-    int dm = distmin(mtmp->mx, mtmp->my,
-                     mtarg ? mtarg->mx : mtmp->mux,
-                     mtarg ? mtarg->my : mtmp->muy),
-        multishot = monmulti(mtmp, otmp, mwep);
-        /*
-         * Caller must have called linedup() to set up tbx, tby.
-         */
+    int weprange = m_weapon_range(mtmp, otmp, mwep);
+    int multishot = monmulti(mtmp, otmp, mwep);
+    /* int dm = distmin(mtmp->mx, mtmp->my,
+        mtarg ? mtarg->mx : mtmp->mux,
+        mtarg ? mtarg->my : mtmp->muy);*/
+    /*
+    * Caller must have called linedup() to set up tbx, tby.
+    */
 
     if (canseemon(mtmp)) 
     {
@@ -399,7 +399,7 @@ struct obj *otmp, *mwep;
             play_monster_simple_weapon_sound(mtmp, 0, otmp, OBJECT_SOUND_TYPE_THROW);
         m_wait_until_action();
 
-        m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), dm, otmp);
+        m_throw(mtmp, mtmp->mx, mtmp->my, sgn(tbx), sgn(tby), weprange, otmp);
         /* conceptually all N missiles are in flight at once, but
            if mtmp gets killed (shot kills adjacent gas spore and
            triggers explosion, perhaps), inventory will be dropped
@@ -1133,8 +1133,9 @@ struct monst *mtmp, *mtarg;
     y = mtmp->my;
 
     mwep = MON_WEP(mtmp); /* wielded weapon */
+    int weprange = m_weapon_range(mtmp, otmp, mwep);
 
-    if (!ispole && m_lined_up(mtarg, mtmp, TRUE, AD_PHYS, FALSE, M_SHOOT_RANGE))
+    if (!ispole && m_lined_up(mtarg, mtmp, TRUE, AD_PHYS, FALSE, weprange))
 	{
         int chance = max(M_SHOOT_CHANCE_RANGE - distmin(x, y, mtarg->mx, mtarg->my), 1);
 
@@ -1228,7 +1229,7 @@ struct attack  *mattk;
     /* if new breath types are added, change AD_ACID to max type */
     int typ = get_ray_adtyp(mattk->adtyp); // Does not include death ray
 
-    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
+    if (m_lined_up(mtarg, mtmp, TRUE, typ, TRUE, M_BREATH_WEAPON_RANGE))
 	{
         update_m_facing(mtmp, mtarg->mx - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
@@ -1667,12 +1668,13 @@ struct monst *mtmp;
      * going away, you are probably hurt or running.  Give
      * chase, but if you are getting too far away, throw.
      */
-    if (!lined_up(mtmp, TRUE, AD_PHYS, FALSE, M_SHOOT_RANGE)
+    mwep = MON_WEP(mtmp); /* wielded weapon */
+    int weprange = m_weapon_range(mtmp, otmp, mwep);
+    if (!lined_up(mtmp, TRUE, AD_PHYS, FALSE, weprange)
         || (URETREATING(x, y)
             && rn2(max(1, M_SHOOT_CHANCE_RANGE - distmin(x, y, mtmp->mux, mtmp->muy)))))
         return;
 
-    mwep = MON_WEP(mtmp); /* wielded weapon */
     monshoot(mtmp, otmp, mwep); /* multishot shooting or throwing */
     nomul(0);
 }
@@ -1780,7 +1782,7 @@ struct attack* mattk;
 	/* if new breath types are added, change AD_ACID to max type */
 	int typ = get_ray_adtyp(mattk->adtyp); //NOTE: Does not include death ray
 
-	if (lined_up(mtmp, TRUE, typ, TRUE, M_RAY_RANGE))
+	if (lined_up(mtmp, TRUE, typ, TRUE, M_BREATH_WEAPON_RANGE))
 	{
         update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
         if (is_cancelled(mtmp))
@@ -1844,7 +1846,7 @@ int range;
 		return FALSE;
 
 	if ((!tbx || !tby || abs(tbx) == abs(tby)) /* straight line or diagonal */
-		&& distmin(tbx, tby, 0, 0) < range
+		&& dist2(tbx, tby, 0, 0) <= range * range
 		)
 	{
 		boolean path_clear_base = (ax == u.ux && ay == u.uy) ? (boolean)couldsee(bx, by)
