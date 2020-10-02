@@ -555,9 +555,9 @@ BRANCH:levregion(01,00,6,20),levregion(6,1,70,16)
 TELEPORT_REGION:levregion(01,00,6,20),levregion(6,1,70,16)
 
 # Doors
-DOOR:closed,(04,03)
-DOOR:locked,(18,04)
-DOOR:closed,(18,08)
+DOOR:closed,(04,03),subtype:door_obsidian
+DOOR:locked,(18,04),subtype:door_obsidian
+DOOR:closed,(18,08),subtype:door_obsidian
 #
 STAIR:(13,07),down
 # Non diggable walls
@@ -624,7 +624,7 @@ MAZEWALK:(32,02),east
 NON_DIGGABLE:(00,00,32,04)
 SPECIAL_REGION:(00,00,32,04),region_special_level_seen
 
-DOOR:closed,(32,02)
+DOOR:closed,(32,02),subtype:door_black_gate
 MONSTER:'&',random
 MONSTER:'&',random
 MONSTER:'&',random
@@ -665,7 +665,7 @@ SPECIAL_REGION:(00,00,47,12),region_special_level_seen
 
 MAZEWALK:(00,06),west
 STAIR:(44,06),down
-DOOR:locked,(00,06)
+DOOR:locked,(00,06),subtype:door_black_gate
 IF [50%] {
    TERRAIN:(34,08),'-'
    TERRAIN:(34,04),'S'
@@ -744,11 +744,11 @@ BRANCH:levregion(01,00,6,20),levregion(6,1,70,16)
 TELEPORT_REGION:levregion(01,00,6,20),levregion(6,1,70,16)
 #
 STAIR:(10,06),down
-DOOR:locked,(00,06)
-DOOR:closed,(04,08)
-DOOR:closed,(16,08)
-DOOR:closed,(08,02)
-DOOR:closed,(12,02)
+DOOR:locked,(00,06),subtype:door_black_gate
+DOOR:closed,(04,08),subtype:door_obsidian
+DOOR:closed,(16,08),subtype:door_obsidian
+DOOR:closed,(08,02),subtype:door_obsidian
+DOOR:closed,(12,02),subtype:door_obsidian
 
 # Smithy
 REGION:(13,09,19,10),lit,"smithy"

@@ -803,7 +803,7 @@ MONSTER: ('@', "watch captain"), random, peaceful
 # "Bazaar Town" by Kelly Bailey
 #
 LEVEL: "minetn-7"
-ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) {
+ROOM: "ordinary" , lit, (3,3), (center,center), (30,15) floormaintype:location_ground {
 FOUNTAIN: (12, 07),fountain_healing
 FOUNTAIN: (11, 13),fountain_water
 
@@ -907,22 +907,22 @@ MONSTER:('Y',"monkey"),random
 
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }

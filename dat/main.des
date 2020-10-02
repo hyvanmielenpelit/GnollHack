@@ -251,6 +251,7 @@ MAP
 ENDMAP
 
 MAZEWALK:(00,02),west
+NON_DIGGABLE:(00,00,06,04)
 DOOR:locked,(00,02),subtype:door_magic_windowed,keytype:key_magic
 REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
 NPC:npc_geologist,(02,03)

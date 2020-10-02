@@ -148,6 +148,7 @@ ENGRAVING:$place[0],burn,"Gilthoniel"
 # The treasure of the lord
 CONTAINER:('(',"chest"),trapped,locked,(37,08) {
     OBJECT:artifact
+    OBJECT:('(',"skeleton key")
     OBJECT:('$',"gold piece"), quantity:(500+(3d1000))
     [50%]:OBJECT:random_contents
     [50%]:OBJECT:random_contents
