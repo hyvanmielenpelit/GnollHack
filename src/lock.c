@@ -106,8 +106,6 @@ picklock(VOID_ARGS)
             play_sfx_sound(SFX_DOOR_TRY_LOCKED);
             if (xlock.box->keyotyp == NUM_OBJECTS)
                 pline("%s is locked but it has no observable lock.", The(cxname(xlock.box)));
-            else if(xlock.box->keyotyp == MAGIC_KEY)
-                pline("%s is magically locked.", The(cxname(xlock.box)));
             else
                 pline("%s does not match the lock on the %s.", The(cxname(xlock.key)), cxname(xlock.box));
             return ((xlock.usedtime = 0));
@@ -145,8 +143,6 @@ picklock(VOID_ARGS)
             play_sfx_sound(SFX_DOOR_TRY_LOCKED);
             if (xlock.door->key_otyp == NUM_OBJECTS)
                 pline("The door is locked but it has no observable lock.");
-            else if (xlock.door->key_otyp == MAGIC_KEY)
-                pline("The door is magically locked.");
             else
                 pline("%s does not match the lock on the door.", The(cxname(xlock.key)));
             return ((xlock.usedtime = 0));

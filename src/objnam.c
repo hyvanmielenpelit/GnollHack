@@ -1290,10 +1290,7 @@ unsigned doname_flags;
             Strcat(prefix, "broken ");
         else if (obj->olocked)
         {
-            if(obj->keyotyp == MAGIC_KEY)
-                Strcat(prefix, "magically locked ");
-            else
-                Strcat(prefix, "locked ");
+            Strcat(prefix, "locked ");
         }
         else
             Strcat(prefix, "unlocked ");
