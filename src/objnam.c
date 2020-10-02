@@ -5287,6 +5287,10 @@ struct key_special_description {
 struct key_special_description key_special_descriptions[] =
 {
     {MAGIC_KEY, 1, "enchanted"},
+    {MAGIC_KEY, 2, "scintillating"},
+    {MAGIC_KEY, 3, "glowing"},
+    {MAGIC_KEY, 4, "shining"},
+    {MAGIC_KEY, 5, "iridescent"},
     {GEOMETRIC_KEY, 1, "spherical"},
     {GEOMETRIC_KEY, 2, "linear"},
     {GEOMETRIC_KEY, 3, "triangular"},

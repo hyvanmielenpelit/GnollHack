@@ -252,7 +252,7 @@ WALLIFY
 # "Town Square"
 #
 LEVEL: "minetn-2"
-ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) {
+ROOM: "ordinary" , lit, (3,3), (center,center), (31,15) floormaintype:location_ground {
 FOUNTAIN: (17, 5),fountain_healing
 FOUNTAIN: (13, 8),fountain_water
 
@@ -341,22 +341,22 @@ MONSTER: ('@', "watch captain"), random, peaceful
 
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }
@@ -368,7 +368,7 @@ RANDOM_CORRIDORS
 # "Alley Town"
 #
 LEVEL: "minetn-3"
-ROOM: "ordinary",lit,(3,3),(center,center),(31,15) {
+ROOM: "ordinary",lit,(3,3),(center,center),(31,15) floormaintype:location_ground {
 FOUNTAIN:(01,06),fountain_healing
 FOUNTAIN:(29,13),fountain_water
 
@@ -452,22 +452,22 @@ MONSTER: ('@', "watch captain"), random, peaceful
 
 }
 
-ROOM: "ordinary", random, random, random, random {
+ROOM: "ordinary", random, random, random, random floormaintype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }
@@ -479,7 +479,7 @@ RANDOM_CORRIDORS
 # "College Town"
 #
 LEVEL: "minetn-4"
-ROOM: "ordinary",lit,(3,3),(center,center),(30,15) {
+ROOM: "ordinary",lit,(3,3),(center,center),(30,15) floormaintype:location_ground {
 FOUNTAIN:(08,07),fountain_healing
 FOUNTAIN:(18,07),fountain_water
 
@@ -550,22 +550,22 @@ MONSTER: ('@', "watch captain"), random, peaceful
 
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   STAIR: random, up
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   STAIR: random, down
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
   MONSTER: ('g', "gnome"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   MONSTER: ('h', "dwarf"), random
 }
 
-ROOM: "ordinary" , random, random, random, random {
+ROOM: "ordinary" , random, random, random, random floormaintype:location_ground {
   TRAP: random, random
   MONSTER: ('g', "gnome"), random
 }

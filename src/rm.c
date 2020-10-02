@@ -161,7 +161,7 @@ int category_id;
         return 0;
 
     if (category_id < 0 || category_id >= cat_size)
-        return 0;
+        category_id = 0; /* Default to normal if illegal category */
 
     int first_st = cat_def[category_id].first_subtype;
     int num_st = cat_def[category_id].number_of_subtypes;

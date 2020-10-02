@@ -28,14 +28,14 @@ STATIC_DCL void FDECL(dosdoor, (XCHAR_P, XCHAR_P, struct mkroom *, int, uchar));
 STATIC_DCL void FDECL(join, (int, int, BOOLEAN_P));
 STATIC_DCL void FDECL(do_room_or_subroom, (struct mkroom *, int, int,
                                            int, int, BOOLEAN_P,
-                                           SCHAR_P, BOOLEAN_P, int, BOOLEAN_P));
+                                           SCHAR_P, BOOLEAN_P, int, int, BOOLEAN_P));
 STATIC_DCL void NDECL(makerooms);
 STATIC_DCL void FDECL(finddpos, (coord *, XCHAR_P, XCHAR_P,
                                  XCHAR_P, XCHAR_P));
 STATIC_DCL void FDECL(mkinvpos, (XCHAR_P, XCHAR_P, int));
 STATIC_DCL void FDECL(mk_knox_portal, (XCHAR_P, XCHAR_P));
 
-#define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, 0)
+#define create_vault() create_room(-1, -1, 2, 2, -1, -1, VAULT, TRUE, ROOM, 0)
 #define init_vault() vault_x = -1
 #define do_vault() (vault_x != -1)
 static xchar vault_x, vault_y;
@@ -108,7 +108,7 @@ sort_rooms()
 }
 
 STATIC_OVL void
-do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floorcategory, is_room)
+do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorcategory, is_room)
 register struct mkroom *croom;
 int lowx, lowy;
 register int hix, hiy;
@@ -116,7 +116,7 @@ boolean lit;
 schar rtype;
 boolean special;
 boolean is_room;
-int floorcategory;
+int floortyp, floorcategory;
 {
     register int x, y;
     struct rm *lev;
@@ -172,7 +172,7 @@ int floorcategory;
             lev = &levl[x][lowy];
             for (y = lowy; y <= hiy; y++)
             {
-                lev->typ = ROOM;
+                lev->typ = IS_FLOOR(floortyp) ? floortyp : ROOM;
                 lev->subtyp = floorcategory >= 0 && floorcategory < MAX_FLOOR_CATEGORIES ? get_location_subtype_by_category(lev->typ, floorcategory) : get_initial_location_subtype(lev->typ);
                 lev++;
             }
@@ -204,17 +204,17 @@ int floorcategory;
 }
 
 void
-add_room(lowx, lowy, hix, hiy, lit, rtype, special, floorcategory)
+add_room(lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorcategory)
 int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
-int floorcategory;
+int floortyp, floorcategory;
 {
     register struct mkroom *croom;
 
     croom = &rooms[nroom];
-    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floorcategory,
+    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorcategory,
                        (boolean) TRUE);
     croom++;
     croom->hx = -1;
@@ -222,18 +222,18 @@ int floorcategory;
 }
 
 void
-add_subroom(proom, lowx, lowy, hix, hiy, lit, rtype, special, floorcategory)
+add_subroom(proom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorcategory)
 struct mkroom *proom;
 int lowx, lowy, hix, hiy;
 boolean lit;
 schar rtype;
 boolean special;
-int floorcategory;
+int floortyp, floorcategory;
 {
     register struct mkroom *croom;
 
     croom = &subrooms[nsubroom];
-    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floorcategory,
+    do_room_or_subroom(croom, lowx, lowy, hix, hiy, lit, rtype, special, floortyp, floorcategory,
                        (boolean) FALSE);
     proom->sbrooms[proom->nsubrooms++] = croom;
     croom++;
@@ -256,7 +256,7 @@ makerooms()
                 vault_y = rooms[nroom].ly;
                 rooms[nroom].hx = -1;
             }
-        } else if (!create_room(-1, -1, -1, -1, -1, -1, OROOM, -1, 0))
+        } else if (!create_room(-1, -1, -1, -1, -1, -1, OROOM, -1, ROOM, 0))
             return;
     }
     return;
@@ -896,7 +896,7 @@ makelevel()
         if (check_room(&vault_x, &w, &vault_y, &h, TRUE)) {
  fill_vault:
             add_room(vault_x, vault_y, vault_x + w, vault_y + h, TRUE, VAULT,
-                     FALSE, 0);
+                     FALSE, ROOM, 0);
             level.flags.has_vault = 1;
             ++room_threshold;
             fill_room(&rooms[nroom - 1], FALSE);

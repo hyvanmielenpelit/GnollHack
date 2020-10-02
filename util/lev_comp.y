@@ -199,7 +199,7 @@ extern char curr_token[512];
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE KEY_TYPE KEYTYPE_ID LEVER_ID
 %token	<i> DIRECTION RANDOM_TYPE RANDOM_TYPE_BRACKET A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN ACTIVE_OR_INACTIVE
-%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID FLOOR_ID FLOOR_MAIN_TYPE
+%token	<i> MODRON_PORTAL_TYPE NPC_TYPE FOUNTAIN_TYPE SPECIAL_OBJECT_TYPE CMAP_TYPE FLOOR_TYPE FLOOR_TYPE_ID FLOOR_ID FLOOR_MAIN_TYPE FLOOR_MAIN_TYPE_ID
 %token	<i> ELEMENTAL_ENCHANTMENT_TYPE EXCEPTIONALITY_TYPE EXCEPTIONALITY_ID ELEMENTAL_ENCHANTMENT_ID ENCHANTMENT_ID
 %token	<i> CHARGES_ID SPECIAL_QUALITY_ID SPEFLAGS_ID
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS SUBTYPE_ID
@@ -253,7 +253,7 @@ extern char curr_token[512];
 %type	<i> object_infos object_info monster_infos monster_info
 %type	<i> levstatements stmt_block region_detail_end
 %type	<i> engraving_type flag_list roomregionflag roomregionflags
-%type	<i> optroomregionflags floortype optfloortype
+%type	<i> optroomregionflags floortype optfloortype floormaintype optfloormaintype
 %type	<i> humidity_flags
 %type	<i> comparestmt encodecoord encoderegion mapchar
 %type	<i> seen_trap_mask
@@ -1275,13 +1275,18 @@ room_begin      : room_type opt_percent ',' light_state
                   }
                 ;
 
-subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloortype
+subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloormaintype optfloortype
 		  {
 		      long rflags = $8;
+		      long flmt = (long)$<i>9;
+		      long flt = (long)$<i>10;
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      add_opvars(splev, "iiiiiiiio",
-				 VA_PASS9($<i>9, rflags, ERR, ERR,
+		      if (flmt == -1) flmt = ROOM;
+		      if (flt == -1) flt = 0;
+
+		      add_opvars(splev, "iiiiiiiiio",
+				 VA_PASS10(flt, flmt, rflags, ERR, ERR,
 					  $5.x, $5.y, $7.width, $7.height,
 					  SPO_SUBROOM));
 		      break_stmt_start();
@@ -1293,13 +1298,16 @@ subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomreg
 		  }
 		;
 
-room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloortype
+room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloormaintype optfloortype
 		  {
-		      long rflags = $8;
+		      long rflags = $10;
+		      long flmt = (long)$<i>11;
+		      long flt = (long)$<i>12;
 
 		      if (rflags == -1) rflags = (1 << 0);
-		      add_opvars(splev, "iiiiiiiio",
-				 VA_PASS9($<i>9, rflags,
+
+		      add_opvars(splev, "iiiiiiiiio",
+				 VA_PASS10(flt, flmt, rflags,
 					  $7.x, $7.y, $5.x, $5.y,
 					  $9.width, $9.height, SPO_ROOM));
 		      break_stmt_start();
@@ -2121,27 +2129,34 @@ special_levregion_detail : SPECIAL_LEVREGION_ID ':' lev_region ',' SPECIAL_REGIO
 		  }
 		;
 
-region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloortype
+region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloormaintype optfloortype
 		  {
 		      long irr;
 		      long rt = $7;
 		      long rflags = $8;
+		      long flmt = (long)$<i>9;
+		      long flt = (long)$<i>10;
 
 		      if (rflags == -1) rflags = (1 << 0);
+		      if (flmt == -1) flmt = ROOM;
+		      if (flt == -1) flt = 0;
+
 		      if (!(rflags & 1)) rt += MAXRTYPE+1;
 		      irr = ((rflags & 2) != 0);
-		      add_opvars(splev, "iiiio",
-				 VA_PASS5((long)$5, rt, rflags, $<i>9, SPO_REGION));
+		      add_opvars(splev, "iiiiio",
+				 VA_PASS6((long)$5, rt, rflags, flmt, flt, SPO_REGION));
 		      $<i>$ = (irr || (rflags & 1) || rt != OROOM);
 		      break_stmt_start();
 		  }
 		  region_detail_end
 		  {
 		      break_stmt_end(splev);
-		      if ( $<i>10 ) {
 			  add_opcode(splev, SPO_ENDROOM, NULL);
-		      } else if ( $<i>11 )
-			  lc_error("Cannot use lev statements in non-permanent REGION");
+		      /*if ( $<i>9 ||  $<i>10 ||  $<i>11 ) {
+			  	add_opcode(splev, SPO_ENDROOM, NULL);
+		       } else if ( $<i>12 )
+			  	lc_error("Cannot use lev statements in non-permanent REGION");
+		      */
 		  }
 		;
 
@@ -2285,19 +2300,35 @@ roomregionflag : FILLING
 		  }
 		;
 
+optfloormaintype : /* empty */
+		  {
+			$<i>$ = ROOM;
+		  }
+		| FLOOR_MAIN_TYPE_ID ':' floormaintype
+		  {
+			$<i>$ = $<i>3;
+		  }
+		;
+
+floormaintype : FLOOR_MAIN_TYPE
+		  {
+		      $<i>$ = $<i>1;
+		  }
+		;
+
 optfloortype : /* empty */
 		  {
-			$$ = -1;
+			$<i>$ = 0;
 		  }
 		| FLOOR_TYPE_ID ':' floortype
 		  {
-			$$ = $3;
+			$<i>$ = $<i>3;
 		  }
 		;
 
 floortype : FLOOR_TYPE
 		  {
-		      $$ = $1;
+		      $<i>$ = $<i>1;
 		  }
 		;
 
