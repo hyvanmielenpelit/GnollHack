@@ -5271,7 +5271,7 @@ struct obj* obj;
     if (!obj || !is_key(obj) || obj->special_quality == 0)
         return "";
 
-    int otyp = is_key(obj) ? obj->otyp : 0;
+    int otyp = obj->otyp;
     int sq = obj->special_quality;
 
     return get_key_special_quality_description_by_otyp(otyp, sq);
