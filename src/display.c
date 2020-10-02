@@ -1275,6 +1275,8 @@ int damage_shown;
             {
                 show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }
+            /* Add layer flags from memory */
+            add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
 
             /* Monster layer */
             if ((mon = m_at(x, y)) != 0 && 
