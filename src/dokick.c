@@ -868,14 +868,19 @@ boolean is_golf_swing;
             pline("THUD!");
         container_impact_dmg(kickedobj, x, y);
         if (kickedobj->olocked) {
-            if ((!rn2(5) || (martial() && !rn2(2)))
-                && (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
-                ) {
-                play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_BREAK_LOCK_CONTAINER);
-                You("break open the lock!");
-                breakchestlock(kickedobj, FALSE);
-                if (otrp)
-                    (void) chest_trap(kickedobj, LEG, FALSE);
+            if (!rn2(5) || (martial() && !rn2(2))) {
+                if (kickedobj->keyotyp == STRANGE_OBJECT || kickedobj->keyotyp == NON_PM || kickedobj->keyotyp == SKELETON_KEY)
+                {
+                    play_simple_object_sound(kickedobj, OBJECT_SOUND_TYPE_BREAK_LOCK_CONTAINER);
+                    You("break open the lock!");
+                    breakchestlock(kickedobj, FALSE);
+                    if (otrp)
+                        (void) chest_trap(kickedobj, LEG, FALSE);
+                }
+                else
+                {
+                    pline("It feels that the lock of %s cannot be broken by kicking.", the(cxname(kickedobj)));
+                }
                 return 1;
             }
         } else {

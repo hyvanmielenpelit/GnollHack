@@ -326,7 +326,7 @@ int force;
                      * exploding wand of digging if you alter this sequence.
                      */
                     filltype = fillholetyp(x, y, FALSE);
-                    if (filltype != ROOM) {
+                    if (!IS_FLOOR(filltype)) {
                         delete_location(x, y);
                         levl[x][y].typ = filltype; /* flags set via doormask */
                         liquid_flow(x, y, filltype, chasm, (char *) 0);

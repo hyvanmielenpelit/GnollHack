@@ -31,7 +31,7 @@ rm_waslit()
 {
     register xchar x, y;
 
-    if (levl[u.ux][u.uy].typ == ROOM && levl[u.ux][u.uy].waslit)
+    if (IS_FLOOR(levl[u.ux][u.uy].typ) && levl[u.ux][u.uy].waslit)
         return TRUE;
     for (x = u.ux - 2; x < u.ux + 3; x++)
         for (y = u.uy - 1; y < u.uy + 2; y++)
@@ -66,13 +66,13 @@ boolean waslit, rockit;
         if ((mtmp = m_at(x, y)) != 0) /* make sure crucial monsters survive */
             if (!passes_walls(mtmp->data))
                 (void) rloc(mtmp, TRUE);
-    } else if (lev->typ == ROOM)
+    } else if (IS_FLOOR(lev->typ))
         return;
 
     unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* fake out saved state */
-    create_simple_location(x, y, (rockit ? STONE : ROOM), (rockit ? 0 : get_initial_location_subtype(ROOM)), 0, 0, rockit ? CORR : 0, 0, FALSE);
+    create_simple_location(x, y, (rockit ? STONE : GROUND), (rockit ? 0 : get_initial_location_subtype(GROUND)), 0, 0, rockit ? CORR : 0, 0, FALSE);
     lev->seenv = 0;
     //lev->doormask = 0;
     if (dist < 3)
@@ -131,8 +131,8 @@ register boolean rockit;
 
     if (!rockit && levl[u.ux][u.uy].typ == CORR)
     {
-        levl[u.ux][u.uy].typ = ROOM; /* flags for CORR already 0 */
-        levl[u.ux][u.uy].subtyp = get_initial_location_subtype(ROOM);
+        levl[u.ux][u.uy].typ = GROUND; /* flags for CORR already 0 */
+        levl[u.ux][u.uy].subtyp = get_initial_location_subtype(GROUND);
         if (waslit)
             levl[u.ux][u.uy].waslit = TRUE;
         newsym(u.ux, u.uy); /* in case player is invisible */
@@ -492,8 +492,8 @@ dig(VOID_ARGS)
             uchar lflags = 0;
             if (level.flags.is_maze_lev)
             {
-                ltype = ROOM;
-                lsubtype = get_initial_location_subtype(ROOM);
+                ltype = CORR; // ROOM;
+                lsubtype = get_initial_location_subtype(ltype);
             } 
             else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
             {
@@ -605,7 +605,7 @@ holetime()
     return ((250 - context.digging.effort) / 20);
 }
 
-/* Return typ of liquid to fill a hole with, or ROOM, if no liquid nearby */
+/* Return typ of liquid to fill a hole with, or GROUND, if no liquid nearby */
 schar
 fillholetyp(x, y, fill_if_any)
 int x, y;
@@ -640,7 +640,7 @@ boolean fill_if_any; /* force filling if it exists at all */
     else if (levl[x][y].floortyp)
         return levl[x][y].floortyp;
     else
-        return ROOM;
+        return GROUND;
 }
 
 void
@@ -954,7 +954,7 @@ coord *cc;
         /* dig "pit" and let fluid flow in (if possible) */
         typ = fillholetyp(dig_x, dig_y, FALSE);
 
-        if (typ == ROOM) {
+        if (IS_FLOOR(typ)) {
             /*
              * We can't dig a hole here since that will destroy
              * the drawbridge.  The following is a cop-out. --dlc
@@ -986,7 +986,7 @@ coord *cc;
         typ = fillholetyp(dig_x, dig_y, FALSE);
 
         lev->flags = 0;
-        if (typ != ROOM)
+        if (!IS_FLOOR(typ))
         {
             create_basic_floor_location(dig_x, dig_y, typ, 0, 0, FALSE);
             liquid_flow(dig_x, dig_y, typ, ttmp,
@@ -1076,7 +1076,7 @@ coord *cc;
         break;
     }
     del_engr_at(dig_x, dig_y);
-    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : ROOM, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
+    create_simple_location(dig_x, dig_y, levl[dig_x][dig_y].floortyp ? levl[dig_x][dig_y].floortyp : GROUND, levl[dig_x][dig_y].floorsubtyp ? levl[dig_x][dig_y].floorsubtyp : get_initial_location_subtype(GROUND), 0, back_to_broken_glyph(dig_x, dig_y), 0, 0, TRUE);
     return;
 }
 
@@ -1583,7 +1583,7 @@ register struct monst *mtmp;
 
         if (level.flags.is_maze_lev)
         {
-            ltype = ROOM, lsubtype = get_initial_location_subtype(ROOM), lflags = 0;
+            ltype = CORR, lsubtype = get_initial_location_subtype(CORR), lflags = 0; //ROOM
         } 
         else if (level.flags.is_cavernous_lev
                    && !in_town(mtmp->mx, mtmp->my))
@@ -1842,7 +1842,11 @@ struct obj* origobj;
         } 
         else if (maze_dig) 
         {
-            if (IS_WALL(room->typ)) 
+            int ltype = 0;
+            int lsubtype = 0;
+            uchar lflags = 0;
+
+            if (IS_WALL(room->typ))
             {
                 if (!(room->wall_info & W_NONDIGGABLE)) 
                 {
@@ -1851,7 +1855,10 @@ struct obj* origobj;
                         add_damage(zx, zy, SHOP_WALL_COST);
                         shopwall = TRUE;
                     }
-                    create_simple_location(zx, zy, ROOM, get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+
+                    ltype = CORR;
+
+                    create_simple_location(zx, zy, ltype, get_initial_location_subtype(ltype), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1861,7 +1868,7 @@ struct obj* origobj;
             else if (IS_TREE(room->typ)) { /* check trees before stone */
                 if (!(room->wall_info & W_NONDIGGABLE)) 
                 {
-                    create_simple_location(zx, zy, room->floortyp ? room->floortyp : ROOM, room->floorsubtyp ? room->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+                    create_simple_location(zx, zy, room->floortyp ? room->floortyp : GROUND, room->floorsubtyp ? room->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 }
                 else if (!Blind)
@@ -1933,7 +1940,7 @@ struct obj* origobj;
         if (ttmp && is_pit(ttmp->ttyp)) {
             schar filltyp = fillholetyp(ttmp->tx, ttmp->ty, TRUE);
 
-            if (filltyp != ROOM)
+            if (!IS_FLOOR(filltyp))
                 pit_flow(ttmp, filltyp);
         }
     }
@@ -1986,7 +1993,7 @@ struct obj* origobj;
 				}
 				else
 				{ // Leave no pits, evaporation gives a walkable route
-                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
                     if (lev->typ == MOAT)
 					{
 						struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
@@ -1997,7 +2004,7 @@ struct obj* origobj;
 						msgtxt = "The water evaporates.";
 				}
 				Norep("%s", msgtxt);
-				if (lev->typ == ROOM)
+				if (IS_FLOOR(lev->typ))
 					newsym(zx, zy);
 			}
 			else if (IS_FOUNTAIN(lev->typ))
@@ -2071,7 +2078,7 @@ struct obj* origobj;
 			else
 			{ // Leave no pits, evaporation gives a walkable route
 				digdepth -= 1;
-                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : ROOM, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
+                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
                 if (lev->typ == MOAT)
 				{
 					struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
@@ -2082,7 +2089,7 @@ struct obj* origobj;
 					msgtxt = "The water evaporates.";
 			}
 			Norep("%s", msgtxt);
-			if (lev->typ == ROOM)
+			if (IS_FLOOR(lev->typ))
 				newsym(zx, zy);
 		}
 		else if (IS_FOUNTAIN(lev->typ))
@@ -2214,7 +2221,7 @@ pit_flow(trap, filltyp)
 struct trap *trap;
 schar filltyp;
 {
-    if (trap && filltyp != ROOM && is_pit(trap->ttyp)) {
+    if (trap && !IS_FLOOR(filltyp) && is_pit(trap->ttyp)) {
         struct trap t;
         int idx;
 

@@ -91,6 +91,7 @@ LEVEL: "minetn-1"
 FLAGS:mazelevel
 INIT_MAP:mines,':',' ',true,true,random,true
 GEOMETRY:center,center
+#1234567890123456789012345678901234567890
 MAP
 :::::::::::::::::::::::::::::::::::::
 :----------------F------------------:
@@ -118,6 +119,10 @@ TELEPORT_REGION:levregion(01,01,20,19),levregion(20,00,70,19)
 REGION:(00,00,36,16),lit,"ordinary"
 STAIR:levregion(01,03,20,19),(00,00,36,15),up
 STAIR:levregion(61,03,75,19),(00,00,36,15),down
+FLOOR:fillrect(01,01,35,01),location_ground,ground_normal
+FLOOR:fillrect(01,01,35,01),location_ground,ground_normal
+FLOOR:fillrect(01,01,01,17),location_ground,ground_normal
+FLOOR:fillrect(35,01,35,17),location_ground,ground_normal
 
 # shame we can't make polluted fountains -- now we can -JG
 FOUNTAIN:(16,09),fountain_poison
@@ -125,7 +130,7 @@ FOUNTAIN:(25,09),fountain_poison
 
 # the altar's defiled; useful for BUC but never coaligned
 ALTAR:(20,13),noalign,shrine
-FLOOR:fillrect(18,11,21,14),location_floor,floor_marble
+FLOOR:fillrect(18,11,22,14),location_floor,floor_marble
 
 # smithy
 ANVIL:(13,13)
@@ -194,7 +199,7 @@ OBJECT:('/',"striking"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[0],uncursed,0
 
-CONTAINER:('(',"chest"),locked,(20,14) {
+CONTAINER:('(',"chest"),locked,(20,14),keytype:('(',"bronze key") {
   OBJECT:('$',"gold piece"),quantity:(1000+(2d500))
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
@@ -217,6 +222,10 @@ ENGRAVING:(20,14),engrave,"Gilthoniel"
 
 $inside = selection: floodfill(18,8)
 $near_temple = selection: filter(fillrect(17,8, 23,14), $inside)
+
+MONSTER: ('o', "orc shaman"), rndcoord($near_temple), hostile {
+    OBJECT:('(',"bronze key")
+}
 
 LOOP [5 + 1d10] {
     IF [50%] {

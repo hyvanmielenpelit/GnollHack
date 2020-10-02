@@ -3770,8 +3770,18 @@ struct sp_coder *coder;
                 tmpobj.exceptionality = OV_i(parm);
             break;
         case SP_O_V_KEY_TYPE:
-            if (OV_typ(parm) == SPOVAR_INT)
-                tmpobj.keyotyp = OV_i(parm);
+            if (OV_typ(parm) == SPOVAR_OBJ) {
+                char objclass = SP_OBJ_CLASS(OV_i(parm));
+                int otyp = SP_OBJ_TYP(OV_i(parm));
+
+                if (otyp > STRANGE_OBJECT && otyp < NUM_OBJECTS) {
+                    tmpobj.keyotyp = is_otyp_key(otyp) ? otyp : STRANGE_OBJECT;
+                    break; /* we're done! */
+                }
+                else {
+                    tmpobj.keyotyp = STRANGE_OBJECT;
+                }
+            }
             break;
         case SP_O_V_END:
             nparams = SP_O_V_END + 1;
@@ -5226,8 +5236,18 @@ struct sp_coder *coder;
                 subtyp = OV_i(parm);
             break;
         case SP_D_V_KEY_TYPE:
-            if (OV_typ(parm) == SPOVAR_INT)
-                kotyp = OV_i(parm);
+            if (OV_typ(parm) == SPOVAR_OBJ) {
+                char objclass = SP_OBJ_CLASS(OV_i(parm));
+                int otyp = SP_OBJ_TYP(OV_i(parm));
+
+                if (otyp > STRANGE_OBJECT && otyp < NUM_OBJECTS) {
+                    kotyp = is_otyp_key(otyp) ? otyp : STRANGE_OBJECT;
+                    break; /* we're done! */
+                }
+                else {
+                    kotyp = STRANGE_OBJECT;
+                }
+            }
             break;
         case SP_D_V_SPECIAL_QUALITY:
             if (OV_typ(parm) == SPOVAR_INT)

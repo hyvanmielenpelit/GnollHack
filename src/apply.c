@@ -4641,7 +4641,7 @@ struct obj *obj;
                  * drum of earthquake if you alter this sequence.
                  */
                 typ = fillholetyp(x, y, FALSE);
-                if (typ != ROOM) {
+                if (!IS_FLOOR(typ)) {
                     levl[x][y].typ = typ, levl[x][y].flags = 0;
                     liquid_flow(x, y, typ, t_at(x, y),
                                 fillmsg
