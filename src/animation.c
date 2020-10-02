@@ -323,6 +323,28 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
         DWARF_KNIGHT_FEMALE_KICK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "orc-barbarian-male-attack-animation", ORC_BARBARIAN_MALE_ATTACK_ANIMATION_TILES,
+      ORC_BARBARIAN_MALE_ATTACK_ANIMATION_FRAMES, ORC_BARBARIAN_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      6, 8,
+      ORC_BARBARIAN_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "orc-barbarian-male-kick-animation", ORC_BARBARIAN_MALE_KICK_ANIMATION_TILES,
+      ORC_BARBARIAN_MALE_KICK_ANIMATION_FRAMES, ORC_BARBARIAN_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      3, 6,
+      ORC_BARBARIAN_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "orc-rogue-female-attack-animation", ORC_ROGUE_FEMALE_ATTACK_ANIMATION_TILES,
       ORC_ROGUE_FEMALE_ATTACK_ANIMATION_FRAMES, ORC_ROGUE_FEMALE_ATTACK_ANIMATION_OFF,
       1,
@@ -605,6 +627,22 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
+    { "orc-barbarian-male-attack-enlargement",
+      ORC_BARBARIAN_MALE_ATTACK_ANIMATION_TILES, ORC_BARBARIAN_MALE_ATTACK_ANIMATION_FRAMES,
+      ORC_BARBARIAN_MALE_ATTACK_ENLARGEMENT_TILES, ORC_BARBARIAN_MALE_ATTACK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "orc-barbarian-male-kick-enlargement",
+      ORC_BARBARIAN_MALE_KICK_ANIMATION_TILES, ORC_BARBARIAN_MALE_KICK_ANIMATION_FRAMES,
+      ORC_BARBARIAN_MALE_KICK_ENLARGEMENT_TILES, ORC_BARBARIAN_MALE_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
     { "orc-rogue-female-attack-enlargement",
       ORC_ROGUE_FEMALE_ATTACK_ANIMATION_TILES, ORC_ROGUE_FEMALE_ATTACK_ANIMATION_FRAMES,
       ORC_ROGUE_FEMALE_ATTACK_ENLARGEMENT_TILES, ORC_ROGUE_FEMALE_ATTACK_ENLARGEMENT_OFF,
@@ -767,7 +805,49 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
-    { "dungeon-normal-smaller-upstairs-enlargement", 0, 0,
+      { "ram-enlargement", 0, 0,
+      RAM_ENLARGEMENT_TILES, RAM_ENLARGEMENT_OFF,
+      2, 1, 0,
+      { -1, -1, -1, -1, 0 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+      },
+      { "ram-statue-enlargement", 0, 0,
+        RAM_STATUE_ENLARGEMENT_TILES, RAM_STATUE_ENLARGEMENT_OFF,
+        2, 1, 0,
+        { -1, -1, -1, -1, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "horse-enlargement", 0, 0,
+        LARGE_RAM_ENLARGEMENT_TILES, LARGE_RAM_ENLARGEMENT_OFF,
+        2, 1, 0,
+        { -1, -1, -1, -1, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "large-ram-statue-enlargement", 0, 0,
+        LARGE_RAM_STATUE_ENLARGEMENT_TILES, LARGE_RAM_STATUE_ENLARGEMENT_OFF,
+        2, 1, 0,
+        { -1, -1, -1, -1, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "warram-enlargement", 0, 0,
+        WARRAM_ENLARGEMENT_TILES, WARRAM_ENLARGEMENT_OFF,
+        2, 1, 0,
+        { -1, -1, -1, -1, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "warram-statue-enlargement", 0, 0,
+        WARRAM_STATUE_ENLARGEMENT_TILES, WARRAM_STATUE_ENLARGEMENT_OFF,
+        2, 1, 0,
+        { -1, -1, -1, -1, 0 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "dungeon-normal-smaller-upstairs-enlargement", 0, 0,
       DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_OFF,
       1, 2, 0,
       { -1, 0, -1, -1, -1 },
@@ -1854,6 +1934,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
             return ORC_ROGUE_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_BARBARIAN && raceidx == RACE_ORC && genderidx == GENDER_MALE)
+            return ORC_BARBARIAN_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
@@ -1892,6 +1974,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return ELF_PRIEST_MALE_CHAOTIC_KICK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
             return ORC_ROGUE_FEMALE_KICK_ANIMATION;
+        if (roleidx == ROLE_BARBARIAN && raceidx == RACE_ORC && genderidx == GENDER_MALE)
+            return ORC_BARBARIAN_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_TOURIST_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)

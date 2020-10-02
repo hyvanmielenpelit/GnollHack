@@ -1462,7 +1462,7 @@ NEARDATA struct permonst mons[] = {
     /*
      * unicorns and horses
      */
-    MON("ram", None, "male sheep with a butt attack", None, None, S_UNICORN, LVL(3, 16, 6, 0, 0, 0), (G_GENO | 2),
+    ENLARGED_MON("ram", None, "male sheep with a butt attack", None, None, S_UNICORN, LVL(3, 16, 6, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BUTT, AD_PHYS, 2, 6, 0, 0), NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1300, 250, MS_BLEAT, MZ_MEDIUM, 1, 0, MAT_FLESH), STATS(15, 9, 15, 2, 1, 2), 
@@ -1472,8 +1472,10 @@ NEARDATA struct permonst mons[] = {
         M2_WANDER | M2_DOMESTIC | M2_MALE,
         M3_INFRAVISIBLE,
         M4_NONE, M5_NONE,
-		5, CLR_RED, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE),
-    ENLARGED_MON("pony", None, "small odd-toed ungulate", None, None, S_UNICORN, LVL(3, 16, 6, 0, 0, 0), (G_GENO | 2),
+		5, CLR_RED, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE,
+        ACTION_INFO(RAM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RAM_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(RAM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RAM_STATUE_ENLARGEMENT, 0, 0)),
+     ENLARGED_MON("pony", None, "small odd-toed ungulate", None, None, S_UNICORN, LVL(3, 16, 6, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_KICK, AD_PHYS, 1, 6, 0, 0), ATTK(AT_BITE, AD_PHYS, 1, 2, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1300, 250, MS_NEIGH, MZ_MEDIUM, 1, 0, MAT_FLESH), STATS(18, 9, 15, 2, 2, 2), 
@@ -1512,7 +1514,7 @@ NEARDATA struct permonst mons[] = {
 		8, CLR_BROWN, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE,
         ACTION_INFO(HORSE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HORSE_STATUE_ENLARGEMENT, 0, 0),
         ACTION_INFO(HORSE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, HORSE_STATUE_ENLARGEMENT, 0, 0)),
-    MON("large ram", None, "male sheep with a strong butt attack", None, None, S_UNICORN, LVL(5, 20, 5, 0, 0, 0), (G_GENO | 2),
+    ENLARGED_MON("large ram", None, "male sheep with a strong butt attack", None, None, S_UNICORN, LVL(5, 20, 5, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BUTT, AD_PHYS, 2, 8, 0, 0), NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1500, 300, MS_BLEAT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(18, 13, 16, 2, 1, 2),
@@ -1522,7 +1524,9 @@ NEARDATA struct permonst mons[] = {
         M2_WANDER | M2_DOMESTIC | M2_MALE,
         M3_INFRAVISIBLE, 
         M4_NONE, M5_NONE, 
-		9, CLR_RED, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE),
+		9, CLR_RED, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE,
+        ACTION_INFO(LARGE_RAM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, LARGE_RAM_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(LARGE_RAM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, LARGE_RAM_STATUE_ENLARGEMENT, 0, 0)),
     ENLARGED_MON("white unicorn", None, "powerful white horse with a single straight horn", None, None, S_UNICORN, LVL(4, 24, 2, 10, 70, 7), (G_GENO | 2),
         A(ATTK(AT_BUTT, AD_PHYS, 1, 12, 0, 0), ATTK(AT_KICK, AD_PHYS, 1, 6, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1575,7 +1579,7 @@ NEARDATA struct permonst mons[] = {
 		11, CLR_BROWN, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE,
         ACTION_INFO(WARHORSE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WARHORSE_STATUE_ENLARGEMENT, 0, 0),
         ACTION_INFO(WARHORSE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WARHORSE_STATUE_ENLARGEMENT, 0, 0)),
-    MON("warram", None, "male sheep that can cause massive damage by butting", None, None, S_UNICORN, LVL(7, 24, 4, 0, 0, 0), (G_GENO | 2),
+    ENLARGED_MON("warram", None, "male sheep that can cause massive damage by butting", None, None, S_UNICORN, LVL(7, 24, 4, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_BUTT, AD_PHYS, 2, 10, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(1800, 350, MS_BLEAT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR18(51), 13, 18, 2, 1, 2),
@@ -1585,7 +1589,10 @@ NEARDATA struct permonst mons[] = {
         M2_WANDER | M2_DOMESTIC | M2_MALE, 
         M3_INFRAVISIBLE, 
         M4_BRAVE, M5_NONE,
-		13, CLR_RED, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE),
+		13, CLR_RED, MONSTER_SOUNDSET_HORSE, MONSTER_SOUNDSET_HORSE,
+        ACTION_INFO(WARRAM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WARRAM_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(WARRAM_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, WARRAM_STATUE_ENLARGEMENT, 0, 0)),
+
     /*
      * vortices
      */
