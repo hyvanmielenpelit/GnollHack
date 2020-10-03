@@ -23,8 +23,7 @@ NEARDATA struct tileset_definition default_tileset_definition =
     2,
     {TRUE, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, 1, 2,
     2,
-    2,
-    1, 1, 3
+    3
 };
 
 NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
@@ -977,52 +976,25 @@ uchar* tilemapflags;
                     "middle-left", "middle-center", "middle-right",
                     "bottom-left", "bottom-center", "bottom-right" };
 
-            if (tsd->has_all_explode_tiles == 0)
+            for (int j = 0; j < MAX_EXPLOSIONS; j++)
             {
+                const char* explosion_name = explosion_type_definitions[j].name;
                 for (int i = 0; i < MAX_EXPLOSION_CHARS; i++)
                 {
                     const char* explosion_direction_name = explosion_direction_name_array[i];
                     int x_coord = i % 3;
                     int y_coord = i / 3;
-
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, explosion_direction_name, x_coord, y_coord);
+                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, explosion_name, explosion_direction_name, x_coord, y_coord);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
-                        for (int j = 0; j < MAX_EXPLOSIONS; j++)
-                        {
-                            glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
-                            tilemaparray[i + glyph_offset] = tile_count;
-                        }
+                        glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
+                        tilemaparray[i + glyph_offset] = tile_count;
                     }
                     tile_count++;
-                }
-            }
-            else
-            {
-                for (int j = 0; j < MAX_EXPLOSIONS; j++)
-                {
-                    const char* explosion_name = explosion_type_definitions[j].name;
-                    for (int i = 0; i < MAX_EXPLOSION_CHARS; i++)
-                    {
-                        const char* explosion_direction_name = explosion_direction_name_array[i];
-                        int x_coord = i % 3;
-                        int y_coord = i / 3;
-                        if (process_style == 0)
-                        {
-                            Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, explosion_name, explosion_direction_name, x_coord, y_coord);
-                            (void)write(fd, buf, strlen(buf));
-                        }
-                        else if (process_style == 1)
-                        {
-                            glyph_offset = GLYPH_EXPLODE_OFF + MAX_EXPLOSION_CHARS * j;
-                            tilemaparray[i + glyph_offset] = tile_count;
-                        }
-                        tile_count++;
-                    }
                 }
             }
         }
@@ -1031,8 +1003,10 @@ uchar* tilemapflags;
             const char* zap_direction_name_array[MAX_ZAP_CHARS] = {
                 "vertical", "horizontal", "diagonal-top-left-to-bottom-right", "diagonal-bottom-left-to-top-right" };
 
-            if (tsd->has_all_zap_tiles == 0)
+            for (int j = 0; j < NUM_ZAP; j++)
             {
+                const char* zap_name = zap_type_definitions[j].name;
+
                 for (int i = 0; i < MAX_ZAP_CHARS; i++)
                 {
                     const char* zap_direction_name = zap_direction_name_array[i];
@@ -1040,43 +1014,15 @@ uchar* tilemapflags;
                     int y_coord = i / 2;
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s,%d,%d,2,2,1,1,0\n", tile_section_name, set_name, zap_direction_name, x_coord, y_coord);
+                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,2,2,1,1,0\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
-                        for (int j = 0; j < NUM_ZAP; j++)
-                        {
-                            glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
-                            tilemaparray[i + glyph_offset] = tile_count;
-                        }
+                        glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
+                        tilemaparray[i + glyph_offset] = tile_count;
                     }
                     tile_count++;
-                }
-            }
-            else
-            {
-                for (int j = 0; j < NUM_ZAP; j++)
-                {
-                    const char* zap_name = zap_type_definitions[j].name;
-
-                    for (int i = 0; i < MAX_ZAP_CHARS; i++)
-                    {
-                        const char* zap_direction_name = zap_direction_name_array[i];
-                        int x_coord = i % 2;
-                        int y_coord = i / 2;
-                        if (process_style == 0)
-                        {
-                            Sprintf(buf, "%s,%s,%s,%s,%d,%d,2,2,1,1,0\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord);
-                            (void)write(fd, buf, strlen(buf));
-                        }
-                        else if (process_style == 1)
-                        {
-                            glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
-                            tilemaparray[i + glyph_offset] = tile_count;
-                        }
-                        tile_count++;
-                    }
                 }
             }
         }
@@ -1087,8 +1033,12 @@ uchar* tilemapflags;
                     "middle-left", "middle-center", "middle-right",
                     "bottom-left", "bottom-center", "bottom-right" };
 
-            if (tsd->swallow_tile_style == 0)
+            boolean first_found = FALSE;
+            for (int j = 0; j < NUM_MONSTERS; j++)
             {
+                if (!attacktype(&mons[j], AT_ENGL))
+                    continue;
+
                 for (int i = 0; i < MAX_SWALLOW_CHARS; i++)
                 {
                     const char* swallow_direction_name = swallow_direction_name_array[i];
@@ -1096,60 +1046,27 @@ uchar* tilemapflags;
                     int y_coord = i / 3;
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,generic,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, swallow_direction_name, x_coord, y_coord);
+                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, mons[j].mname, swallow_direction_name, x_coord, y_coord);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
-                        for (int j = 0; j < NUM_MONSTERS; j++)
-                        {
-                            glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
-                            tilemaparray[i + glyph_offset] = tile_count;
-                        }
+                        glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
+                        tilemaparray[i + glyph_offset] = tile_count;
                     }
                     tile_count++;
                 }
-            }
-            else
-            {
-                boolean first_found = FALSE;
-                for (int j = 0; j < NUM_MONSTERS; j++)
+
+                /* Write the first found swallow tile set for all monsters, just in case */
+                if (!first_found && process_style == 1)
                 {
-                    if (tsd->swallow_tile_style == 2)
+                    first_found = TRUE;
+                    for (int k = 0; k < NUM_MONSTERS; k++)
                     {
-                        if (!attacktype(&mons[j], AT_ENGL))
-                            continue;
-                    }
-
-                    for (int i = 0; i < MAX_SWALLOW_CHARS; i++)
-                    {
-                        const char* swallow_direction_name = swallow_direction_name_array[i];
-                        int x_coord = i % 3;
-                        int y_coord = i / 3;
-                        if (process_style == 0)
+                        for (int m = 0; m < MAX_SWALLOW_CHARS; m++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, mons[j].mname, swallow_direction_name, x_coord, y_coord);
-                            (void)write(fd, buf, strlen(buf));
-                        }
-                        else if (process_style == 1)
-                        {
-                            glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * j;
-                            tilemaparray[i + glyph_offset] = tile_count;
-                        }
-                        tile_count++;
-                    }
-
-                    /* Write the first found swallow tile set for all monsters, just in case */
-                    if (tsd->swallow_tile_style == 2 && !first_found && process_style == 1)
-                    {
-                        first_found = TRUE;
-                        for (int k = 0; k < NUM_MONSTERS; k++)
-                        {
-                            for (int m = 0; m < MAX_SWALLOW_CHARS; m++)
-                            {
-                                glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * k;
-                                tilemaparray[m + glyph_offset] = tile_count - MAX_SWALLOW_CHARS + m;
-                            }
+                            glyph_offset = GLYPH_SWALLOW_OFF + MAX_SWALLOW_CHARS * k;
+                            tilemaparray[m + glyph_offset] = tile_count - MAX_SWALLOW_CHARS + m;
                         }
                     }
                 }
