@@ -3042,7 +3042,7 @@ boolean *effect_happened_ptr;
         if (increased_damage)
             explode(cc.x, cc.y, 11, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_FIERY);
         else
-            explode(cc.x, cc.y, 11, 1, 2, (4 * bcsign(sobj) + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
+            explode(cc.x, cc.y, 11, 1, 2, (4 * sblessed + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
 
         break;
     }

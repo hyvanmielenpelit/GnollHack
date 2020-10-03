@@ -205,9 +205,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_BURNT_GENERIC, 0.0f},
-            {GHSOUND_FROZEN_GENERIC, 0.0f},
-            {GHSOUND_ELECTROCUTED_GENERIC, 0.0f},
+            {GHSOUND_BURNT_GENERIC, 1.0f},
+            {GHSOUND_FROZEN_GENERIC, 1.0f},
+            {GHSOUND_ELECTROCUTED_GENERIC, 1.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -2909,13 +2909,13 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         TRUE
     },
     {
-        "GHSOUND_DOOR_PETRIFY",
-        {GHSOUND_DOOR_PETRIFY, 4.0f},
+        "GHSOUND_PETRIFY",
+        {GHSOUND_PETRIFY, 5.0f},
         TRUE
     },
     {
         "GHSOUND_ELECTRICITY_HITS_DOOR",
-        {GHSOUND_ELECTRICITY_HITS_DOOR, 1.0f},
+        {GHSOUND_ELECTRICITY_HITS_DOOR, 10.0f},
         TRUE
     },
 };

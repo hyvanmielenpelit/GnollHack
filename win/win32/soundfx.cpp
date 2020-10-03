@@ -536,9 +536,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Petrify", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Door/Electricity Hits Door", 1.0f },
 
-    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Burnt", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Frozen", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Electrocuted", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Burnt", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Frozen", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Electrocuted", 1.0f },
 
 };
 
