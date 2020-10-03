@@ -116,8 +116,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Human/Barehanded/Human Barehanded Hit" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Human Kick Swing" , 1.0f},
     { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Human Kick Hit" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Wham" , 1.0f},
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Break" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/SFX/Location/Door Wham" , 1.0f},
+    { SOUND_BANK_MASTER, "event:/SFX/Location/Door Break" , 1.0f},
 
     { SOUND_BANK_MASTER, "event:/SFX/Door/Door Open" , 0.1f},
     { SOUND_BANK_MASTER, "event:/SFX/Door/Door Close" , 0.5f},
@@ -518,6 +518,19 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Lever Switch Success", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Lever Switch On Success", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Lever Switch Off Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Digging Beam/Digging Beam Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Digging Beam/Digging Beam Create", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Digging Beam/Digging Beam Destroy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Digging Beam/Digging Beam Hit Location", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Evaporation Beam/Evaporation Beam Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Evaporation Beam/Evaporation Beam Create", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Ray/Evaporation Beam/Evaporation Beam Destroy", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Ray/Evaporation Beam/Evaporation Beam Hit Location", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Wall Glows Then Fades", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Tree/Tree Break", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Stone/Stone Break", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Water/Water Break", 1.0f },
 };
 
 

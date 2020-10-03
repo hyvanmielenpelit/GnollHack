@@ -1447,6 +1447,7 @@ boolean hitsroof;
         if (breaktest(obj))
         {
             pline("%s hits the %s.", Doname2(obj), ceiling(u.ux, u.uy));
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
             breakmsg(obj, !Blind);
             breakobj(obj, u.ux, u.uy, TRUE, TRUE);
             return FALSE;
@@ -1478,6 +1479,7 @@ boolean hitsroof;
                     && can_blnd(&youmonst, &youmonst, AT_WEAP, obj))
                        ? rnd(25)
                        : 0;
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
         breakmsg(obj, !Blind);
         breakobj(obj, u.ux, u.uy, TRUE, TRUE);
         obj = 0; /* it's now gone */
@@ -1952,6 +1954,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             tmp_at(bhitpos.x, bhitpos.y);
             adjusted_delay_output();
             tmp_at(DISP_END, 0);
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
             breakmsg(obj, cansee(bhitpos.x, bhitpos.y));
             breakobj(obj, bhitpos.x, bhitpos.y, TRUE, TRUE);
             thrownobj = (struct obj *) 0;
@@ -2594,6 +2597,7 @@ boolean from_invent; /* thrown or dropped by player; maybe on shop bill */
 
     if (!breaktest(obj))
         return 0;
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
     breakmsg(obj, in_view);
     breakobj(obj, x, y, TRUE, from_invent);
     return 1;
@@ -2613,6 +2617,7 @@ xchar x, y; /* object location (ox, oy may not be right) */
 
     if (!breaktest(obj))
         return 0;
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
     breakmsg(obj, in_view);
     breakobj(obj, x, y, FALSE, FALSE);
     return 1;
@@ -2649,8 +2654,6 @@ boolean hero_caused; /* is this the hero's fault? */
 boolean from_invent;
 {
     boolean fracture = FALSE;
-
-    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {
     case MIRROR:

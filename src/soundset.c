@@ -1436,7 +1436,7 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f}
+            {GHSOUND_STONE_BREAK, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -1464,6 +1464,33 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DOOR_WHAM, 1.0f},
             {GHSOUND_DOOR_BREAK, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "tree",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_TREE_BREAK, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "stone",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STONE_BREAK, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "water",
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_WATER_BREAK, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -2865,6 +2892,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_LEVER_SWITCH_OFF_SUCCESS, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_WALL_GLOWS_THEN_FADES",
+        {GHSOUND_WALL_GLOWS_THEN_FADES, 1.0f},
+        TRUE
+    },
 
 };
 
@@ -3182,6 +3214,33 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
             {GHSOUND_NONE, 0.0f}
         }
     },
+    {
+        "digging beam",
+        {
+            {GHSOUND_BEAM_DIGGING_AMBIENT, 1.0f},
+            {GHSOUND_BEAM_DIGGING_CREATE, 100.0f},
+            {GHSOUND_BEAM_DIGGING_DESTROY, 10.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_BEAM_DIGGING_HIT_LOCATION, 10.0f}
+        }
+    }, 
+    {
+        "evaportation beam",
+        {
+            {GHSOUND_BEAM_EVAPORATION_AMBIENT, 1.0f},
+            {GHSOUND_BEAM_EVAPORATION_CREATE, 100.0f},
+            {GHSOUND_BEAM_EVAPORATION_DESTROY, 10.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_BEAM_EVAPORATION_HIT_LOCATION, 10.0f}
+        }
+    },
+
 };
 
 

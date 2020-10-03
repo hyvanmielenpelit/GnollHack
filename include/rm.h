@@ -448,8 +448,6 @@ enum cmap_types {
     MAX_CMAP_TYPES = 16
 };
 
-extern const char* cmap_type_names[MAX_CMAP_TYPES];
-
 struct symdef {
     uchar sym;
     const char* explanation;

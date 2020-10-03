@@ -3466,7 +3466,9 @@ struct monst* origmonst;
                         : !hero_breaks(obj, obj->ox, obj->oy, FALSE))
                     maybelearnit = FALSE; /* nothing broke */
                 else
-                    newsym_force(oox,ooy);
+                {
+                    newsym_force(oox, ooy);
+                }
                 res = 0;
             }
             if (maybelearnit)
@@ -8776,6 +8778,8 @@ register struct obj *obj; /* no texts here! */
     }
     if (by_you && obj->otyp == BOULDER)
         sokoban_guilt();
+
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 
     obj->otyp = ROCK;
     obj->oclass = GEM_CLASS;

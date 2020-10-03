@@ -1721,6 +1721,7 @@ dokick() {
         }
         else if (ACURR(A_STR) > 18 && !rn2(5) && !shopdoor)
         {
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline("As you kick the %s, it shatters to pieces!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);
@@ -1733,6 +1734,7 @@ dokick() {
         } 
         else
         {
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_WHAM);
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline("As you kick the %s, it crashes open!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);

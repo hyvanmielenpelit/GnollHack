@@ -426,22 +426,25 @@ dig(VOID_ARGS)
         else if (lev->typ == STONE || lev->typ == SCORR
                    || IS_TREE(lev->typ)) 
         {
-            if (Is_earthlevel(&u.uz)) 
+            if (Is_earthlevel(&u.uz))
             {
                 if (wep->blessed && !rn2(3)) 
                 {
+                    play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                     mkcavearea(FALSE);
                     goto cleanup;
                 } 
                 else if ((wep->cursed && !rn2(4))
                            || (!wep->blessed && !rn2(6))) 
                 {
+                    play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                     mkcavearea(TRUE);
                     goto cleanup;
                 }
             }
             if (IS_TREE(lev->typ))
             {
+                play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You cut down the tree.";
 				struct mkroom* r = which_room(dpx, dpy);
                 create_simple_location(dpx, dpy, lev->floortyp ? lev->floortyp : r && r->orig_rtype == GARDEN ? GRASS : ROOM, lev->floorsubtyp ? lev->floorsubtyp : r && r->orig_rtype == GARDEN ? get_initial_location_subtype(GRASS) : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(dpx, dpy), 0, 0, FALSE);
@@ -476,6 +479,7 @@ dig(VOID_ARGS)
             }
             else 
             {
+                play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You succeed in cutting away some rock.";
                 create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, 0, 0, FALSE);
             }
@@ -503,12 +507,14 @@ dig(VOID_ARGS)
             {
                 ltype = DOOR, lflags = D_NODOOR;
             }
+            play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
             create_simple_location(dpx, dpy, ltype, lsubtype, lflags, back_to_broken_glyph(dpx, dpy), !IS_FLOOR(ltype)? lev->floortyp : 0, !IS_FLOOR(ltype) ? lev->floorsubtyp : 0, FALSE);
 
             digtxt = "You make an opening in the wall.";
         } 
         else if (lev->typ == SDOOR) 
         {
+            play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
             cvt_sdoor_to_door(dpx, dpy); /* ->typ = DOOR */
             digtxt = "You break through a secret door!";
             if (!(lev->doormask & D_TRAPPED))
@@ -516,6 +522,7 @@ dig(VOID_ARGS)
         } 
         else if (closed_door(dpx, dpy))
         {
+            play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
             digtxt = "You break through the door.";
             if (shopedge)
             {
@@ -1229,7 +1236,7 @@ struct obj *obj;
         ry = u.uy + u.dy;
         if (!isok(rx, ry))
 		{
-            play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
+            play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
             pline("Clash!");
             return 1;
         }
@@ -1298,7 +1305,7 @@ struct obj *obj;
                        && !conjoined_pits(trap, trap_with_u, FALSE)) 
 			{
                 int idx;
-                play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
+                play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
 
                 for (idx = 0; idx < 8; idx++) 
 				{
@@ -1312,7 +1319,7 @@ struct obj *obj;
                     trap_with_u->conjoined |= (1 << idx);
                     trap->conjoined |= (1 << adjidx);
                     pline("You clear some debris from between the pits.");
-                    play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_FINISH);
+                    play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_FINISH);
                 }
             } 
 			else if (u.utrap && u.utraptype == TT_PIT
@@ -1321,7 +1328,7 @@ struct obj *obj;
                 play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
                 You("swing %s, but the rubble has no place to go.",
                     yobjnam(obj, (char *) 0));
-                play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
+                play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
             } 
 			else 
 			{
@@ -1706,6 +1713,8 @@ struct obj* origobj;
      * 3.6.0: from a PIT: dig one adjacent pit.
      */
 
+    play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_CREATE, u.ux, u.uy);
+
     if (u.uswallow) {
         mtmp = u.ustuck;
 
@@ -1727,12 +1736,16 @@ struct obj* origobj;
             {
                 int dmg;
                 if (On_stairs(u.ux, u.uy))
+                {
+                    play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_BOUNCE, u.ux, u.uy);
                     pline_The("beam bounces off the %s and hits the %s.",
-                              (u.ux == xdnladder || u.ux == xupladder)
-                                  ? "ladder"
-                                  : "stairs",
-                              ceiling(u.ux, u.uy));
+                        (u.ux == xdnladder || u.ux == xupladder)
+                        ? "ladder"
+                        : "stairs",
+                        ceiling(u.ux, u.uy));
+                }
                 You("loosen a rock from the %s.", ceiling(u.ux, u.uy));
+                play_sfx_sound(SFX_ROCK_HITS_YOU_ON_HEAD);
                 pline("It falls on your %s!", body_part(HEAD));
                 dmg = rnd((uarmh && is_metallic(uarmh)) ? 2 : 6);
                 losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "falling rock", KILLED_BY_AN);
@@ -1768,14 +1781,18 @@ struct obj* origobj;
             /* diridx is valid if < 8 */
         }
     }
-    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
+
+    start_ambient_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, zx, zy);
     tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy));
-    while (--digdepth >= 0) 
+
+    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
+    while (--digdepth >= 0)
     {
         if (!isok(zx, zy))
             break;
         room = &levl[zx][zy];
         tmp_at(zx, zy);
+        update_ambient_ray_sound_to_location(OBJECT_RAY_SOUNDSET_DIGBEAM, zx, zy);
         adjusted_delay_output(); /* wait a little bit */
 
         if (pitdig) 
@@ -1796,6 +1813,7 @@ struct obj* origobj;
                             pline1(buf);
                     } else {
                         /* this can also result in a pool at zx,zy */
+                        play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
                         dighole(TRUE, TRUE, &cc);
                         adjpit = t_at(zx, zy);
                     }
@@ -1828,6 +1846,7 @@ struct obj* origobj;
                     add_damage(zx, zy, SHOP_DOOR_COST);
                     shopdoor = TRUE;
                 }
+                play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                 if (room->typ == SDOOR)
                     transform_location_type(zx, zy, DOOR, 0);  /* doormask set below */
                 else if (cansee(zx, zy))
@@ -1835,6 +1854,12 @@ struct obj* origobj;
                 watch_dig((struct monst*)0, zx, zy, TRUE);
                 room->doormask = D_NODOOR;
                 unblock_vision_and_hearing_at_point(zx, zy); /* vision */
+            }
+            else
+            {
+                play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
+                pline_The("%s glows then fades.", get_door_name_at_ptr(room));
+                break;
             }
             digdepth -= 2;
             if (maze_dig)
@@ -1848,48 +1873,63 @@ struct obj* origobj;
 
             if (IS_WALL(room->typ))
             {
-                if (!(room->wall_info & W_NONDIGGABLE)) 
+                play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
+                if (!(room->wall_info & W_NONDIGGABLE))
                 {
-                    if (*in_rooms(zx, zy, SHOPBASE)) 
+                    if (*in_rooms(zx, zy, SHOPBASE))
                     {
                         add_damage(zx, zy, SHOP_WALL_COST);
                         shopwall = TRUE;
                     }
 
                     ltype = CORR;
-
+                    play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                     create_simple_location(zx, zy, ltype, get_initial_location_subtype(ltype), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
+                {
+                    play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
                     pline_The("wall glows then fades.");
+                }
                 break;
             } 
-            else if (IS_TREE(room->typ)) { /* check trees before stone */
-                if (!(room->wall_info & W_NONDIGGABLE)) 
+            else if (IS_TREE(room->typ)) 
+            { /* check trees before stone */
+                play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
+                if (!(room->wall_info & W_NONDIGGABLE))
                 {
+                    play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                     create_simple_location(zx, zy, room->floortyp ? room->floortyp : GROUND, room->floorsubtyp ? room->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 }
                 else if (!Blind)
+                {
+                    play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
                     pline_The("tree shudders but is unharmed.");
+                }
                 break;
             }
             else if (room->typ == STONE || room->typ == SCORR)
             {
+                play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
+                    play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
                     create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : CORR, 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
+                {
+                    play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
                     pline_The("rock glows then fades.");
-
+                }
                 break;
             }
         } 
         else if (IS_ROCK(room->typ)) 
         {
+            play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             if (!may_dig(zx, zy))
                 break;
 
@@ -1926,6 +1966,7 @@ struct obj* origobj;
                 ltype = CORR;
                 digdepth--;
             }
+            play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
             create_simple_location(zx, zy, ltype, lsubtype, lflags, back_to_broken_glyph(zx, zy), !IS_FLOOR(ltype) ? room->floortyp : 0, !IS_FLOOR(ltype) ? room->floorsubtyp : 0, FALSE);
             unblock_vision_and_hearing_at_point(zx, zy); /* vision */
         }
@@ -1933,6 +1974,8 @@ struct obj* origobj;
         zy += u.dy;
     }                    /* while */
     tmp_at(DISP_END, 0); /* closing call */
+    stop_ambient_ray_sound(OBJECT_RAY_SOUNDSET_DIGBEAM);
+    play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, RAY_SOUND_TYPE_DESTROY, zx, zy);
 
     if (pitflow && isok(flow_x, flow_y)) {
         struct trap *ttmp = t_at(flow_x, flow_y);
@@ -1958,7 +2001,9 @@ struct obj* origobj;
 	struct monst* mtmp;
 	int zx, zy, digdepth;
 
-	if (u.uswallow) {
+    play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_CREATE, u.ux, u.uy);
+
+    if (u.uswallow) {
 		mtmp = u.ustuck;
 
 		if (!is_whirly(mtmp->data)) {
@@ -1979,12 +2024,15 @@ struct obj* origobj;
 
 		if (Is_waterlevel(&u.uz) || u.dz < 0)
 		{
-			pline("Nothing happens.");
+            pline("Nothing happens.");
 		}
 		else
 		{
-			if (is_pool(zx, zy)) {
-				const char* msgtxt = "You hear hissing gas.";
+			if (is_pool(zx, zy)) 
+            {
+                play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
+                const char* msgtxt = "You hear hissing gas.";
+                play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
 
 				if (lev->typ == DRAWBRIDGE_UP)
 				{
@@ -2009,7 +2057,9 @@ struct obj* origobj;
 			}
 			else if (IS_FOUNTAIN(lev->typ))
 			{
-				/* replace the fountain with ordinary floor */
+                play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
+                play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
+                /* replace the fountain with ordinary floor */
                 create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
 				if (see_it)
 					pline_The("fountain dries up!");
@@ -2023,10 +2073,12 @@ struct obj* origobj;
 	/* normal case: evaporating across the level */
 	zx = u.ux + u.dx;
 	zy = u.uy + u.dy;
-	digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
-	tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy));
 
-	while (--digdepth >= 0)
+    start_ambient_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, zx, zy);
+    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy));
+
+    digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
+    while (--digdepth >= 0)
 	{
 		if (!isok(zx, zy))
 			break;
@@ -2043,7 +2095,8 @@ struct obj* origobj;
 		{
 			if (is_watery(mtmp->data))
 			{
-				mtmp->mhp = 0;
+                play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_MONSTER, zx, zy);
+                mtmp->mhp = 0;
 				if (DEADMONSTER(mtmp))
 					killed(mtmp);
 			}
@@ -2055,7 +2108,9 @@ struct obj* origobj;
 			otmp2 = otmp->nexthere;
 			if(otmp->oclass == POTION_CLASS)
 			{
-				if(see_it)
+                play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_OBJECT, zx, zy);
+                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
+                if(see_it)
 					pline("%s!", Tobjnam(otmp, "evaporate"));
 
 				delobj(otmp);
@@ -2068,6 +2123,8 @@ struct obj* origobj;
 		}
 		else if (is_pool(zx, zy)) {
 			const char* msgtxt = "You hear hissing gas.";
+            play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
+            play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
 
 			if (lev->typ == DRAWBRIDGE_UP || (Is_waterlevel(&u.uz)))
 			{
@@ -2095,6 +2152,8 @@ struct obj* origobj;
 		else if (IS_FOUNTAIN(lev->typ))
 		{
 			/* replace the fountain with ordinary floor */
+            play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
+            play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
             create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
 			if (see_it)
 				pline_The("fountain dries up!");
@@ -2105,7 +2164,8 @@ struct obj* origobj;
 
 		if (IS_ROCK(lev->typ))
 		{
-			if (!IS_TREE(lev->typ) || lev->typ == SDOOR){
+            play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
+            if (!IS_TREE(lev->typ) || lev->typ == SDOOR){
 				break;
 			}
 		}
@@ -2113,6 +2173,8 @@ struct obj* origobj;
 		zy += u.dy;
 	}                    /* while */
 	tmp_at(DISP_END, 0); /* closing call */
+    stop_ambient_ray_sound(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM);
+    play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_DESTROY, zx, zy);
 
 	return;
 }
