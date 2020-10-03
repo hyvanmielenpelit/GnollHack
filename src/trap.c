@@ -3875,7 +3875,7 @@ xchar x, y;
        note: potions are glass so fall through to fire_damage() and boil */
     if (melts_in_lava(obj)
         && ocls != SCROLL_CLASS && ocls != SPBOOK_CLASS
-        && !is_otyp_indestructible(otyp)
+        && !is_obj_indestructible(obj)
 		&& !oresist_fire(obj)
         /* assumes oerodeproof isn't overloaded for some other purpose on
            non-eroding items */

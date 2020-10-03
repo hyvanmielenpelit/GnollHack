@@ -204,6 +204,7 @@ enum sp_obj_var_flags {
     SP_O_V_ELEMENTAL_ENCHANTMENT,
     SP_O_V_EXCEPTIONALITY,
     SP_O_V_KEY_TYPE,
+    SP_O_V_INDESTRUCTIBLE,
 
     SP_O_V_END
 };
@@ -443,7 +444,7 @@ typedef struct {
     int quan;
     short buried;
     short lit;
-    short eroded, locked, trapped, recharged, invis, greased, broken;
+    short eroded, locked, trapped, recharged, invis, greased, broken, indestructible;
 	int elemental_enchantment;
     int exceptionality;
 } object;

@@ -2080,6 +2080,10 @@ struct mkroom *croom;
             otmp = mkobj_at(oclass, x, y, !named);
     }
 
+    /* Set these first, and then everything else that might affect speflags */
+    if (o->speflags > 0)
+        otmp->speflags = o->speflags;
+
 	if (o->enchantment != -127) /* That means NOT RANDOM! */
 	{
 		if(otmp->oclass == WAND_CLASS || objects[otmp->otyp].oc_charged)
@@ -2147,8 +2151,8 @@ struct mkroom *croom;
         otmp->exceptionality = o->exceptionality;
     if (o->special_quality != -127)
         otmp->special_quality = o->special_quality;
-    if (o->speflags > 0)
-        otmp->speflags = o->speflags;
+    if(o->indestructible)
+        otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE;
     if (o->greased)
         otmp->greased = 1;
 #ifdef INVISIBLE_OBJECTS
@@ -3768,6 +3772,10 @@ struct sp_coder *coder;
         case SP_O_V_EXCEPTIONALITY:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.exceptionality = OV_i(parm);
+            break;
+        case SP_O_V_INDESTRUCTIBLE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.indestructible = OV_i(parm);
             break;
         case SP_O_V_KEY_TYPE:
             if (OV_typ(parm) == SPOVAR_OBJ) {

@@ -69,6 +69,7 @@ struct obj {
 #define SPEFLAGS_SOKO_PRIZE1     		    0x00000400UL
 #define SPEFLAGS_SOKO_PRIZE2     		    0x00000800UL
 #define SPEFLAGS_FROM_SINK     		        0x00001000UL
+#define SPEFLAGS_INDESTRUCTIBLE     		0x00002000UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
@@ -212,7 +213,7 @@ struct obj {
 #define is_obj_invokable(otmp) is_otyp_invokable((otmp)->otyp)
 
 #define is_otyp_indestructible(otyp) ((objects[(otyp)].oc_flags & O1_INDESTRUCTIBLE) != 0)
-#define is_obj_indestructible(otmp) is_otyp_indestructible((otmp)->otyp)
+#define is_obj_indestructible(o) (is_otyp_indestructible((o)->otyp) || ((o)->speflags & SPEFLAGS_INDESTRUCTIBLE) != 0)
 
 #define is_blade(otmp)                           \
     ((otmp)->oclass == WEAPON_CLASS                \
