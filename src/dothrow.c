@@ -1565,6 +1565,7 @@ boolean hitsroof;
  petrify:
             killer.format = KILLED_BY;
             Strcpy(killer.name, "elementary physics"); /* "what goes up..." */
+            play_sfx_sound(SFX_PETRIFY);
             You("turn to stone.");
             if (obj)
                 dropy(obj); /* bypass most of hitfloor() */

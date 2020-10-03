@@ -3108,6 +3108,7 @@ const char *str;
         return;
     if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
         return;
+    play_sfx_sound(SFX_PETRIFY);
     You("turn to stone...");
     killer.format = KILLED_BY;
     if (str != killer.name)
@@ -3133,6 +3134,7 @@ boolean byplayer;
        intrinsic speed (comparable to similar effect on the hero) */
 	/* message is not here, since instapetrify */
 
+    play_sfx_sound_at_location(SFX_PETRIFY, mon->mx, mon->my);
     if (cansee(mon->mx, mon->my))
         pline("%s turns to stone.", Monnam(mon));
     if (byplayer) {
@@ -3780,6 +3782,7 @@ xchar x, y;
             || (is_flammable(obj) && obj->oerodeproof))
             return FALSE;
         /* Container is burnt up - dump contents out */
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         if (in_sight)
             pline("%s catches fire and burns.", Yname2(obj));
         if (Has_contents(obj)) {
@@ -3811,6 +3814,8 @@ xchar x, y;
             return FALSE;
         }
         dindx = (obj->oclass == SCROLL_CLASS) ? 3 : 4;
+
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         if (in_sight)
             pline("%s %s.", Yname2(obj),
                   destroy_strings[dindx][(obj->quan > 1L)]);
@@ -3818,6 +3823,7 @@ xchar x, y;
         delobj(obj);
         return TRUE;
     } else if (obj->oclass == POTION_CLASS) {
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         dindx = (obj->otyp != POT_OIL) ? 1 : 2;
         if (in_sight)
             pline("%s %s.", Yname2(obj),

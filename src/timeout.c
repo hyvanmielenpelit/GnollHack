@@ -853,7 +853,8 @@ nh_timeout()
 				}
 				dealloc_killer(kptr);
 				/* (unlike sliming, you aren't changing form here) */
-				done(STONING);
+                play_sfx_sound(SFX_PETRIFY);
+                done(STONING);
 				break;
 			case SLIMED:
 				slimed_to_death(kptr); /* done(TURNED_SLIME) */

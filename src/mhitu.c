@@ -3641,6 +3641,7 @@ struct attack *mattk;
                           Monnam(mtmp), mhis(mtmp));
                 break;
             }
+            play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
             if (useeit)
                 pline("%s is turned to stone!", Monnam(mtmp));
             stoned = TRUE;
@@ -3656,6 +3657,7 @@ struct attack *mattk;
             stop_occupation();
             if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
                 break;
+            play_sfx_sound(SFX_PETRIFY);
             You("turn to stone...");
             killer.format = KILLED_BY;
             Strcpy(killer.name, mon_monster_name(mtmp));
@@ -4415,6 +4417,7 @@ struct attack *mattk;
                 update_u_action(action_before);
                 return 1;
             }
+            play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
             pline("%s turns to stone!", Monnam(mtmp));
             stoned = 1;
             xkilled(mtmp, XKILL_NOMSG);

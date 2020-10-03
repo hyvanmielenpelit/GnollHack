@@ -410,7 +410,8 @@ struct monst* origmonst;
 					stop_occupation();
 					if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
 						break;
-					You("turn to stone...");
+                    play_sfx_sound(SFX_PETRIFY);
+                    You("turn to stone...");
 					killer.format = KILLED_BY;
 					Strcpy(killer.name, mon_monster_name(mtmp));
 					done(STONING);
@@ -8600,6 +8601,8 @@ short exploding_wand_typ;
     if (closed_door(x, y)) 
     {
         int new_doormask = -1;
+        int new_door_subtype = -1;
+        enum sfx_sound_types sfx_sound = 0;
 		boolean createsplinters = FALSE;
         const char *see_txt = 0, *sense_txt = 0, *hear_txt = 0;
 
@@ -8611,6 +8614,7 @@ short exploding_wand_typ;
                 new_doormask = D_NODOOR;
                 see_txt = "The door is consumed in flames!";
                 sense_txt = "smell smoke.";
+                sfx_sound = SFX_DOOR_CONSUMED_IN_FLAMES;
             }
             break;
         case ZT_COLD:
@@ -8619,6 +8623,7 @@ short exploding_wand_typ;
                 new_doormask = D_NODOOR;
                 see_txt = "The door freezes and shatters!";
                 sense_txt = "feel cold.";
+                sfx_sound = SFX_DOOR_FREEZES_AND_SHATTERS;
             }
             break;
         case ZT_DISINTEGRATION:
@@ -8627,6 +8632,7 @@ short exploding_wand_typ;
                 new_doormask = D_NODOOR;
                 see_txt = "The door disintegrates!";
                 hear_txt = "crashing wood.";
+                sfx_sound = SFX_DISINTEGRATE;
             }
             break;
 		case ZT_DEATH:
@@ -8640,9 +8646,11 @@ short exploding_wand_typ;
 		case ZT_PETRIFICATION:
             if (door_subtype_definitions[lev->subtyp].material == MAT_WOOD && !is_door_indestructible_at_ptr(lev))
             {
-                new_doormask = D_NODOOR;
-                see_txt = "The door petrifies and shatters!";
+                //new_doormask = D_NODOOR;
+                see_txt = "The door petrifies!";
                 sense_txt = "hear stone cracking.";
+                new_door_subtype = DOOR_SUBTYPE_STONE;
+                sfx_sound = SFX_PETRIFY;
             }
 			break;
 		case ZT_LIGHTNING:
@@ -8652,11 +8660,13 @@ short exploding_wand_typ;
                 see_txt = "The door splinters!";
                 hear_txt = "crackling.";
                 createsplinters = TRUE;
+                sfx_sound = SFX_ELECTRICITY_HITS_DOOR;
             }
             break;
         default:
 //        def_case:
-            if (exploding_wand_typ > 0) {
+            if (exploding_wand_typ > 0) 
+            {
                 /* Magical explosion from misc exploding wand */
                 if (exploding_wand_typ == WAN_STRIKING && !is_door_destroyed_by_striking_at_ptr(lev)) {
                     new_doormask = D_BROKEN;
@@ -8665,7 +8675,8 @@ short exploding_wand_typ;
                     break;
                 }
             }
-            if (see_it) {
+            if (see_it) 
+            {
                 /* "the door absorbs the blast" would be
                    inaccurate for an exploding wand since
                    other adjacent locations still get hit */
@@ -8678,22 +8689,43 @@ short exploding_wand_typ;
                 You_feel("vibrations.");
             break;
         }
-        if (new_doormask >= 0) { /* door gets broken */
-            if (*in_rooms(x, y, SHOPBASE)) {
+
+        if (new_doormask >= 0 || new_door_subtype >= 0)
+        { /* door gets broken */
+            if (sfx_sound > 0)
+                play_sfx_sound_at_location(sfx_sound, x, y);
+            
+            if (new_doormask == D_BROKEN)
+                play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
+
+            if (new_doormask >= 0  && *in_rooms(x, y, SHOPBASE))
+            {
                 if (type >= 0) {
                     add_damage(x, y, SHOP_DOOR_COST);
                     *shopdamage = TRUE;
                 } else /* caused by monster */
                     add_damage(x, y, 0L);
             }
-            lev->doormask = new_doormask;
-            unblock_vision_and_hearing_at_point(x, y); /* vision */
-            if (see_it) {
+            if (new_doormask >= 0)
+            {
+                lev->doormask = new_doormask;
+                unblock_vision_and_hearing_at_point(x, y); /* vision */
+            }
+            if (new_door_subtype >= 0)
+            {
+                lev->subtyp = new_door_subtype;
+            }
+
+            if (see_it)
+            {
                 pline1(see_txt);
                 newsym(x, y);
-            } else if (sense_txt) {
+            }
+            else if (sense_txt) 
+            {
                 You1(sense_txt);
-            } else if (hear_txt)
+            } 
+            else if (hear_txt)
                 You_hear1(hear_txt);
 
 			if (createsplinters)
@@ -8703,7 +8735,8 @@ short exploding_wand_typ;
 				otmp->owt = weight(otmp);
 			}
 
-            if (picking_at(x, y)) {
+            if (picking_at(x, y)) 
+            {
                 stop_occupation();
                 reset_pick();
             }
@@ -8970,6 +9003,13 @@ boolean forcedestroy;
                 : ((cnt < quan) ? "Some of your"                 /* n of N */
                                 : (quan == 2L) ? "Both of your"  /* 2 of 2 */
                                                : "All of your"); /* N of N */
+
+        play_simple_object_sound(obj, 
+            dmgtyp == AD_FIRE ? OBJECT_SOUND_TYPE_BURNT : 
+            dmgtyp == AD_COLD ? OBJECT_SOUND_TYPE_FROZEN : 
+            dmgtyp == AD_ELEC ? OBJECT_SOUND_TYPE_ELECTROCUTED : 
+            OBJECT_SOUND_TYPE_BREAK);
+
         pline("%s %s %s!", mult, xname(obj),
               destroy_strings[dindx][(cnt > 1L)]);
         if (osym == POTION_CLASS && dmgtyp != AD_COLD) {

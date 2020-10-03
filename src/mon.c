@@ -1942,6 +1942,7 @@ register struct monst *mtmp;
                             mon_to_stone(mtmp);
                             ptr = mtmp->data;
                         } else if (!resists_ston(mtmp)) {
+                            play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
                             if (canseemon(mtmp))
                                 pline("%s turns to stone!", Monnam(mtmp));
                             monstone(mtmp);

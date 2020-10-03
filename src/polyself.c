@@ -1990,7 +1990,8 @@ dogaze()
 							pline("Gazing at the awake %s is not a very good idea.",
 								l_monnam(mtmp));
 							/* as if gazing at a sleeping anything is fruitful... */
-							You("turn to stone...");
+                            play_sfx_sound(SFX_PETRIFY);
+                            You("turn to stone...");
 							killer.format = KILLED_BY;
 							Strcpy(killer.name, "deliberately meeting Medusa's gaze");
 							done(STONING);

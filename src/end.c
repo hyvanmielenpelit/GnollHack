@@ -428,6 +428,8 @@ int how;
             mimicker = (M_AP_TYPE(mtmp) == M_AP_MONSTER),
             imitator = (mptr != champtr || mimicker);
 
+    if(how == STONING)
+        play_sfx_sound(SFX_PETRIFY);
     You((how == STONING) ? "turn to stone..." : "die...");
     mark_synch(); /* flush buffered screen output */
     buf[0] = '\0';
@@ -1139,7 +1141,8 @@ int how;
     if (how < PANICKED)
     {
         update_u_action(ACTION_TILE_DEATH);
-        play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
+        if(how != STONING)
+            play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_DEATH);
         u_wait_until_action();
     }
 

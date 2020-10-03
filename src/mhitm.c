@@ -880,6 +880,7 @@ struct attack *mattk;
                 }
                 return MM_MISS;
             }
+            play_sfx_sound_at_location(SFX_PETRIFY, magr->mx, magr->my);
             if (canseemon(magr))
                 pline("%s is turned to stone!", Monnam(magr));
             monstone(magr);
@@ -1403,7 +1404,9 @@ register struct obj* omonwep;
 			/* Medusa's gaze is instapetrify */
 			if (mattk->aatyp == AT_GAZE)
 			{
-				if (vis && canseemon(mdef))
+                if(vis)
+                    play_sfx_sound_at_location(SFX_PETRIFY, magr->mx, magr->my);
+                if (vis && canseemon(mdef))
 					pline("%s turns to stone!", Monnam(mdef));
 				monstone(mdef);
 

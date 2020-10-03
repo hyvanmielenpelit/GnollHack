@@ -542,6 +542,9 @@ double *dmg_p; /* for dishing out extra damage in lieu of Int loss */
 		{
             /* no need to check for poly_when_stoned or Stone_resistance;
                mind flayers don't have those capabilities */
+            if(visflag)
+                play_sfx_sound_at_location(SFX_PETRIFY, magr->mx, magr->my);
+
             if (visflag && canseemon(magr))
                 pline("%s turns to stone!", Monnam(magr));
             monstone(magr);
@@ -758,6 +761,7 @@ register int pm;
                  && polymon(PM_STONE_GOLEM))) {
             Sprintf(killer.name, "tasting %s meat", pm_common_name(&mons[pm]));
             killer.format = KILLED_BY;
+            play_sfx_sound(SFX_PETRIFY);
             You("turn to stone.");
             done(STONING);
             if (context.victual.piece)

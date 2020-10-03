@@ -802,6 +802,7 @@ int ttyp;
                 else if (!madeby_u)
                     pay_for_damage("dig into", TRUE);
 
+                play_sfx_sound(SFX_TRAP_DOOR_OPENS);
                 You("fall through...");
                 /* Earlier checks must ensure that the destination
                  * level exists and is in the present dungeon.
@@ -841,6 +842,7 @@ int ttyp;
                     }
                     if (mtmp->isshk)
                         make_angry_shk(mtmp, 0, 0);
+                    play_sfx_sound_at_location(SFX_TRAP_DOOR_OPENS, mtmp->mx, mtmp->my);
                     migrate_to_level(mtmp, ledger_no(&tolevel),
                                      MIGR_RANDOM, (coord *) 0);
                 }

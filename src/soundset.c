@@ -205,9 +205,9 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_BURNT_GENERIC, 0.0f},
+            {GHSOUND_FROZEN_GENERIC, 0.0f},
+            {GHSOUND_ELECTROCUTED_GENERIC, 0.0f},
             {GHSOUND_DISCARD_GENERIC, 1.0f},
             {GHSOUND_SPARKS_FLY_GENERIC, 1.0f},
             {GHSOUND_NONE, 0.0f},
@@ -2897,7 +2897,27 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_WALL_GLOWS_THEN_FADES, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_DOOR_CONSUMED_IN_FLAMES",
+        {GHSOUND_DOOR_CONSUMED_IN_FLAMES, 1.0f},
+        TRUE
+    },
 
+    {
+        "GHSOUND_DOOR_FREEZES_AND_SHATTERS",
+        {GHSOUND_DOOR_FREEZES_AND_SHATTERS, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_DOOR_PETRIFY",
+        {GHSOUND_DOOR_PETRIFY, 4.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_ELECTRICITY_HITS_DOOR",
+        {GHSOUND_ELECTRICITY_HITS_DOOR, 1.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
@@ -3790,7 +3810,17 @@ enum location_sound_types sound_type;
     if (Deaf)
         return;
 
-    enum location_soundset_types lss = location_type_definitions[levl[x][y].typ].soundset;
+    int ltyp = levl[x][y].typ;
+    int lsubtyp = levl[x][y].subtyp;
+
+    enum location_soundset_types lss = 0;
+
+    /* Doors use subtype soundsets rather than location soundset */
+    if (IS_DOOR_OR_SDOOR(ltyp) && lsubtyp >= 0 && lsubtyp < MAX_DOOR_SUBTYPES)
+        lss = door_subtype_definitions[lsubtyp].soundset;
+    else
+        lss = location_type_definitions[ltyp].soundset;
+
     soundid = location_soundsets[lss].sounds[sound_type].ghsound;
     volume = location_soundsets[lss].sounds[sound_type].volume;
 
@@ -4494,12 +4524,15 @@ dosetsoundvolume()
 	adjust_ghsound_general_volumes();
 }
 
+static float prev_hearing_array[COLNO][ROWNO];
+
 void
 update_hearing_array(mode)
 int mode; /* 0 = normal, 1 = clear */
 {
 	/* Clear array*/
 	memset(hearing_array, 0, sizeof(hearing_array));
+    memset(prev_hearing_array, 0, sizeof(prev_hearing_array));
 
 	/* Can't hear anything */
 	if (Deaf || mode == 1)
@@ -4508,7 +4541,7 @@ int mode; /* 0 = normal, 1 = clear */
 	int hear_distance = get_max_hearing_distance();
 
 	/* Fill the array */
-	hearing_array[u.ux][u.uy] = 1.0f;
+	hearing_array[u.ux][u.uy] = prev_hearing_array[u.ux][u.uy] = 1.0f;
 
 	for (int r = 1; r <= hear_distance; r++)
 	{
@@ -4566,12 +4599,12 @@ int mode; /* 0 = normal, 1 = clear */
 					/* Take maximum from above or below from the previous round */
 					for (int prev_x = max(x_min_adjusted + 1, x - 1); prev_x <= min(x_max_adjusted - 1, x + 1); prev_x++)
 					{
-						maximum = max(maximum, hearing_array[prev_x][prev_y]);
+						maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
 					}
 	
 					/* Take also previous from the same line */
 					if(x > x_min_adjusted)
-						maximum = max(maximum, hearing_array[x - 1][y]);
+						maximum = max(maximum, prev_hearing_array[x - 1][y]);
 
 					prev_hearing = maximum;
 				}
@@ -4617,12 +4650,12 @@ int mode; /* 0 = normal, 1 = clear */
 					float maximum = 0.0f;
 					for (int prev_y = max(y_min_adjusted + 1, y - 1); prev_y <= min(y_max_adjusted - 1, y + 1); prev_y++)
 					{
-						maximum = max(maximum, hearing_array[prev_x][prev_y]);
+						maximum = max(maximum, prev_hearing_array[prev_x][prev_y]);
 					}
 
 					/* Take also previous from the same line */
 					if (y > y_min_adjusted)
-						maximum = max(maximum, hearing_array[x][y - 1]);
+						maximum = max(maximum, prev_hearing_array[x][y - 1]);
 
 					prev_hearing = maximum;
 				}
@@ -4651,8 +4684,8 @@ int mode; /* 0 = normal, 1 = clear */
 
 			for (int y = y_max_adjusted - 1 ; y >= y_min_adjusted; y--)
 			{
-				if(hearing_array[x][y + 1] > 0.0f)
-					set_hearing_array(x, y, hearing_array[x][y + 1], r);
+				if(prev_hearing_array[x][y + 1] > 0.0f)
+					set_hearing_array(x, y, prev_hearing_array[x][y + 1], r);
 			}
 		}
 
@@ -4668,8 +4701,8 @@ int mode; /* 0 = normal, 1 = clear */
 
 			for (int x = x_max_adjusted - 1; x >= x_min_adjusted; x--)
 			{
-				if (hearing_array[x + 1][y] > 0.0f)
-					set_hearing_array(x, y, hearing_array[x + 1][y], r);
+				if (prev_hearing_array[x + 1][y] > 0.0f)
+					set_hearing_array(x, y, prev_hearing_array[x + 1][y], r);
 			}
 		}
 	}
@@ -4686,6 +4719,7 @@ int radius;
     if (radius <= 0)
     {
         hearing_array[x][y] = 1.0f;
+        prev_hearing_array[x][y] = 1.0f;
         return;
     }
     else if (radius == 1)
@@ -4706,23 +4740,32 @@ int radius;
         if (mtmp)
         {
             /* Make sure that monsters walking through in walls etc. produce a sound when hit etc. */
-            float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (2.0f)));
+            float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (20.0f)));
+            float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing)));
+            if (new_prev_hearing > prev_hearing_array[x][y])
+                prev_hearing_array[x][y] = new_prev_hearing;
             if (new_hearing > hearing_array[x][y])
                 hearing_array[x][y] = new_hearing;
         }
 	}
 	else if (IS_DOOR(levl[x][y].typ) && (levl[x][y].doormask != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
 	{
-		float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (10.0f)));
-		if(new_hearing > hearing_array[x][y])
+        float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (10.0f)));
+        float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing)));
+        if (new_prev_hearing > prev_hearing_array[x][y])
+            prev_hearing_array[x][y] = new_prev_hearing;
+        if(new_hearing > hearing_array[x][y])
 			hearing_array[x][y] = new_hearing;
 	}
 	else
 	{
-		float new_hearing = (float)max(0.0f, min(1.0f, multiplier * (float)prev_hearing));
-		if (new_hearing > hearing_array[x][y])
-			hearing_array[x][y] = new_hearing;
-	}
+		float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * (float)prev_hearing));
+        float new_hearing = (float)max(0.0f, min(1.0f, multiplier * (float)prev_hearing));
+        if (new_prev_hearing > prev_hearing_array[x][y])
+			prev_hearing_array[x][y] = new_prev_hearing;
+        if (new_hearing > hearing_array[x][y])
+            hearing_array[x][y] = new_hearing;
+    }
 
 }
 
