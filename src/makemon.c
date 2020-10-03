@@ -732,20 +732,29 @@ register struct monst *mtmp;
         break;
     case S_TROLL:
         if (!rn2(2))
+        {
+            struct obj* weap = 0;
             switch (rn2(4)) {
             case 0:
-                (void) mongets(mtmp, RANSEUR);
+                weap = mongets(mtmp, RANSEUR);
                 break;
             case 1:
-                (void) mongets(mtmp, PARTISAN);
+                weap = mongets(mtmp, PARTISAN);
                 break;
             case 2:
-                (void) mongets(mtmp, GLAIVE);
+                weap = mongets(mtmp, GLAIVE);
                 break;
             case 3:
-                (void) mongets(mtmp, SPETUM);
+                weap = mongets(mtmp, SPETUM);
                 break;
             }
+
+            /* Ice trolls get enchanted weapons */
+            if (mm == PM_ICE_TROLL && weap && is_elemental_enchantable(weap) && weap->elemental_enchantment == 0 && !rn2(2))
+            {
+                weap->elemental_enchantment = COLD_ENCHANTMENT;
+            }
+        }
         break;
     case S_KOBOLD:
         if (!rn2(4))
