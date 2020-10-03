@@ -11,17 +11,18 @@
 #define BUFF_HEIGHT 16
 
 struct tileset_definition {
+    const char* cmap_names[MAX_CMAP_TYPES]; /* names of the cmaps in GnollHack */
+    double you_darkening[MAX_CMAP_TYPES]; /* 0.0 is default */
+    double lit_darkening[MAX_CMAP_TYPES]; /* 0.0 is default */
+    double nonlit_darkening[MAX_CMAP_TYPES]; /* 0.0 is default */
+
     uchar female_tile_style;     /* 0 = use base monster, 1 = separate female tile for each monster, 2 = indicated monsters with M5_FEMALE_TILE */
-   
     uchar action_tile_style[MAX_ACTION_TILES];     /* 0 = use normal monster variation, 1 = separate tile for each monster, 2 = monsters with M5_XXXX_TILE have attack tiles */
     uchar statue_tile_style;    /* 0 = has one generic statue tile only (regardless of female style), 1 = separate statue tile for each monster, (2 = monsters marked with M5_STATUE_TILE have body tiles)  */
     uchar corpse_tile_style;       /* 0 = has one generic corpse tile only (regardless of female style), 1 = separate corpse tile for each monster, 2 = monsters marked with M5_CORPSE_TILE have body tiles */
-
     uchar missile_tile_style;    /* 0 = no missile tiles, 1 = has missile inventory tiles for all objects, 2 = has missile tiles for each object marked with O4_MISSILE_TILE  */
-
     uchar swallow_tile_style;    /*  0 = one set of swallow tiles, 1 = separate set for all monsters, 2 = one set for each monster with swallow attack */
 
-    const char* cmap_names[MAX_CMAP_TYPES]; /* names of the cmaps in GnollHack */
     boolean has_all_explode_tiles; /* 0 = one set of explode tiles, 1 = separate explode tile for each case  */
     boolean has_all_zap_tiles; /* 0 = one set of zap tiles, 1 = separate zap tile for each case  */
     uchar player_tile_style; /* 0 = use base role monster tile,

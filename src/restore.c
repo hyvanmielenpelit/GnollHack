@@ -630,7 +630,7 @@ unsigned int *stuckid, *steedid;
 
     init_tiledata();
 #ifdef USE_TILES
-    process_tiledata(&default_tileset_definition, 1, (const char*)0, glyph2tile, glyphtileflags);
+    process_tiledata(1, (const char*)0, glyph2tile, glyphtileflags);
 #endif
 
     *newgamecontext = context; /* copy statically init'd context */

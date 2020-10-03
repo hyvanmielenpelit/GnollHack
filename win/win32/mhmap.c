@@ -957,6 +957,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
     boolean flip_glyph = FALSE;
     data->mapAnimated[i][j] = FALSE;
 
+    int current_cmap = get_current_cmap_type_index();
     boolean ispet = !!(data->map[i][j].layer_flags & LFLAGS_M_PET);
     boolean ispeaceful = !!(data->map[i][j].layer_flags & LFLAGS_M_PEACEFUL);
     boolean isyou = !!(data->map[i][j].layer_flags & LFLAGS_M_YOU);
@@ -1746,14 +1747,27 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 double multiplier = 1.0;
                                 if (isyou)
                                 {
-                                    multiplier *= 0.85;
+                                    if(default_tileset_definition.you_darkening[current_cmap] > 0.0)
+                                        multiplier *= default_tileset_definition.you_darkening[current_cmap];
+                                    else
+                                        multiplier *= 0.85;
                                 }
                                 else
                                 {
-                                    if(!levl[enl_i][enl_j].waslit)
-                                        multiplier *= 0.35;
+                                    if (!levl[enl_i][enl_j].waslit)
+                                    {
+                                        if (default_tileset_definition.nonlit_darkening[current_cmap] > 0.0)
+                                            multiplier *= default_tileset_definition.nonlit_darkening[current_cmap];
+                                        else
+                                            multiplier *= 0.35;
+                                    }
                                     else
-                                        multiplier *= 0.65;
+                                    {
+                                        if (default_tileset_definition.lit_darkening[current_cmap] > 0.0)
+                                            multiplier *= default_tileset_definition.lit_darkening[current_cmap];
+                                        else
+                                            multiplier *= 0.65;
+                                    }
                                 }
 
 

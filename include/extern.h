@@ -3014,7 +3014,7 @@ E void FDECL(substitute_tiles, (d_level *));
 /* ### tiledata.c ###*/
 E void NDECL(init_tiledata);
 E boolean FDECL(has_generic_player_action_tile, (enum action_tile_types action));
-E int FDECL(process_tiledata, (struct tileset_definition*, int, const char*, short*, uchar*));
+E int FDECL(process_tiledata, (int, const char*, short*, uchar*));
 
 /* ### timeout.c ### */
 

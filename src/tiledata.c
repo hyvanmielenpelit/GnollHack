@@ -16,11 +16,14 @@ short tile2enlargement[MAX_TILES] = { 0 };
 
 NEARDATA struct tileset_definition default_tileset_definition =
 {
+    {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", "cmap-5", "cmap-6", "cmap-7", "cmap-8", "cmap-9", "cmap-10", "cmap-11", "cmap-12", "cmap-13", "cmap-14", "cmap-15"},
+    {0.0, 0.90, 0.0, 0.90, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+    {0.0, 0.75, 0.0, 0.75, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+    {0.0, 0.50, 0.0, 0.50, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
     2,
     {TRUE, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, 1, 2,
     2,
     2,
-    {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", "cmap-5", "cmap-6", "cmap-7", "cmap-8", "cmap-9", "cmap-10", "cmap-11", "cmap-12", "cmap-13", "cmap-14", "cmap-15"},
     1, 1, 3
 };
 
@@ -69,13 +72,13 @@ init_tiledata()
 }
 
 int
-process_tiledata(tsd, process_style, save_file_name, tilemaparray, tilemapflags) /* Save tile data / read tile data / count tiles */
-struct tileset_definition* tsd;
+process_tiledata(process_style, save_file_name, tilemaparray, tilemapflags) /* Save tile data / read tile data / count tiles */
 int process_style;  /* 0 = save data to file, 1 = read data from file, 2 = count tiles */
 const char* save_file_name;
 short* tilemaparray;
 uchar* tilemapflags;
 {
+    struct tileset_definition* tsd = &default_tileset_definition;
     const char* fq_save = save_file_name;
     const char* tile_section_name;
     const char* set_name;

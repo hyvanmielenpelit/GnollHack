@@ -1956,10 +1956,9 @@ wiz_save_tiledata(VOID_ARGS) /* Save a csv file for tile data */
 #ifdef USE_TILES
     if (wizard)
     {
-        struct tileset_definition* tsd = &default_tileset_definition;
         const char* fq_save = "tile_definition.csv";
         pline("Starting writing %s...", fq_save);
-        int cnt = process_tiledata(tsd, 0, fq_save, (short*)0, (uchar*)0);
+        int cnt = process_tiledata(0, fq_save, (short*)0, (uchar*)0);
         pline("Done writing %s. %d tiles written.", fq_save, cnt);
     }
     else
@@ -1975,8 +1974,7 @@ wiz_count_tiles(VOID_ARGS) /* Save a csv file for tile data */
 #ifdef USE_TILES
     if (wizard)
     {
-        struct tileset_definition* tsd = &default_tileset_definition;
-        int cnt = process_tiledata(tsd, 2, (const char*)0, (short*)0, (uchar*)0);
+        int cnt = process_tiledata(2, (const char*)0, (short*)0, (uchar*)0);
         pline("There are %d tiles.", cnt);
     }
     else

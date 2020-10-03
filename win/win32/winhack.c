@@ -168,7 +168,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     //StopGdiplus();
 
     /* Process tiledata */
-    int total_tiles = process_tiledata(&default_tileset_definition, 2, (const char*)0, (short*)0, (uchar*)0);
+    int total_tiles = process_tiledata(2, (const char*)0, (short*)0, (uchar*)0);
     int tiles_per_line = (int)ceil(sqrt(1.5 * ((double)total_tiles)));
     if (tiles_per_line % 3)
         tiles_per_line += (3 - (tiles_per_line % 3));
