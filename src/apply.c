@@ -3229,7 +3229,8 @@ struct obj* obj;
 				if (otmp->owornmask)
 					remove_worn_item(otmp, TRUE);
 
-				pline("%s disintegrated!", Yobjnam2(otmp, "are"));
+                play_sfx_sound(SFX_DISINTEGRATE);
+                pline("%s disintegrated!", Yobjnam2(otmp, "are"));
 				wandknown = TRUE;
 				//Destroy item;
 				useupall(otmp);

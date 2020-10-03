@@ -5389,7 +5389,8 @@ boolean ordinary;
 		learn_it = TRUE;
 		Sprintf(killer.name, "shot %sself with a disintegration ray", uhim());
 		killer.format = NO_KILLER_PREFIX;
-		You("irradiate yourself with disintegration field!");
+        play_sfx_sound(SFX_DISINTEGRATE);
+        You("irradiate yourself with disintegration field!");
 		You("are disintegrated.");
         display_u_being_hit(HIT_DISINTEGRATED, 0, LFLAGS_M_DISINTEGRATED);
 		/* when killed by disintegration breath, don't leave corpse */
@@ -7738,7 +7739,8 @@ const char* fltxt;
 			if(fltxt && strcmp(fltxt, ""))
 				hit(fltxt, mon, ".", -1, "");
 
-			pline("%s disintegrates.", Monnam(mon));
+            play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
+            pline("%s disintegrates.", Monnam(mon));
 			pline("%s body reintegrates before your %s!",
 				s_suffix(Monnam(mon)),
 				(eyecount(youmonst.data) == 1)
@@ -8091,6 +8093,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 						else 
 						{
                             /* some armor was destroyed; no damage done */
+                            play_sfx_sound_at_location(SFX_DISINTEGRATE, mon->mx, mon->my);
                             if (canseemon(mon))
                                 pline("%s %s is disintegrated!",
                                       s_suffix(Monnam(mon)),
@@ -8759,6 +8762,7 @@ short exploding_wand_typ;
                 ltype = GRASS, lsubtype = get_initial_location_subtype(GRASS);
             else
                 ltype = ROOM, lsubtype = get_initial_location_subtype(ROOM);
+            play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
             create_simple_location(x, y, ltype, lsubtype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
             newsym(x, y);

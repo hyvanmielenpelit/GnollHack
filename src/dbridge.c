@@ -978,6 +978,7 @@ boolean is_disintegrated;
 
         if (is_disintegrated)
         {
+            play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
             if (cansee(x, y) || cansee(x2, y2))
                 pline_The("drawbridge disintegrates!");
         }
