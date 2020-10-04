@@ -112,6 +112,7 @@ STATIC_DCL void FDECL(spo_lever, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_boundary_type, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_engraving, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_mineralize, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_room, (struct sp_coder *));
@@ -775,7 +776,7 @@ remove_boundary_syms()
             for (y = 0; y < y_maze_max; y++)
                 if ((levl[x][y].typ == CROSSWALL) && SpLev_Map[x][y])
                 {
-                    levl[x][y].typ = ROOM;
+                    levl[x][y].typ = IS_FLOOR(level.flags.boundary_type) ? level.flags.boundary_type : ROOM;
                     levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
                     levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
                     levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
@@ -4041,6 +4042,29 @@ struct sp_coder* coder;
 }
 
 void
+spo_boundary_type(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_boundary_type";
+    struct opvar* bt_opvar;
+    long boundary_location_type = 0;
+
+    if (!OV_pop_i(bt_opvar))
+        return;
+    boundary_location_type = OV_i(bt_opvar);
+
+    if (boundary_location_type < 0 || boundary_location_type >= MAX_TYPE || !IS_FLOOR(boundary_location_type))
+    {
+        level.flags.boundary_type = ROOM;
+    }
+    else
+    {
+        level.flags.boundary_type = (int)boundary_location_type;
+    }
+    opvar_free(bt_opvar);
+}
+
+void
 spo_initlevel(coder)
 struct sp_coder *coder;
 {
@@ -6750,6 +6774,9 @@ sp_lev *lvl;
             break;
         case SPO_TILESET:
             spo_tileset(coder);
+            break;
+        case SPO_BOUNDARY_TYPE:
+            spo_boundary_type(coder);
             break;
         case SPO_ENGRAVING:
             spo_engraving(coder);

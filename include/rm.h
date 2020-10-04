@@ -891,6 +891,7 @@ struct levelflags {
     enum special_level_naming_types special_naming_reveal_type;
     int special_naming_seen_monster_type;
     int special_naming_seen_monster_class;
+    int boundary_type; /* floor style to replace boundary tiles */
 
     uchar tileset;
     uchar nfountains; /* number of fountains on level */

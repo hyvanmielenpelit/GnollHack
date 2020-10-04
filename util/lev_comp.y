@@ -189,7 +189,7 @@ extern char curr_token[512];
 %token	<i> CHAR INTEGER BOOLEAN PERCENT SPERCENT
 %token	<i> MINUS_INTEGER PLUS_INTEGER
 %token	<i> MAZE_GRID_ID SOLID_FILL_ID MINES_ID ROGUELEV_ID
-%token	<i> MESSAGE_ID MAZE_ID LEVEL_ID LEV_INIT_ID TILESET_ID GEOMETRY_ID NOMAP_ID
+%token	<i> MESSAGE_ID MAZE_ID LEVEL_ID LEV_INIT_ID TILESET_ID GEOMETRY_ID NOMAP_ID BOUNDARY_TYPE_ID
 %token	<i> OBJECT_ID COBJECT_ID MONSTER_ID TRAP_ID DOOR_ID DRAWBRIDGE_ID
 %token	<i> object_ID monster_ID terrain_ID
 %token	<i> MAZEWALK_ID WALLIFY_ID REGION_ID SPECIAL_REGION_ID SPECIAL_LEVREGION_ID SPECIAL_REGION_TYPE NAMING_ID NAMING_TYPE FILLING IRREGULAR JOINED
@@ -404,6 +404,12 @@ tileset_detail : TILESET_ID ':' tileset_number
 		  }
 		;
 
+boundary_type_detail : BOUNDARY_TYPE_ID ':' FLOOR_MAIN_TYPE
+		  {
+		      add_opvars(splev, "io", VA_PASS2((int)$<i>3, SPO_BOUNDARY_TYPE));
+		  }
+		;
+
 opt_limited	: /* nothing */
 		  {
 		      $$ = 0;
@@ -480,6 +486,7 @@ stmt_block	: '{' levstatements '}'
 levstatement 	: message
 		| lev_init
 		| tileset_detail
+		| boundary_type_detail
 		| subtype_detail
 		| floor_detail
 		| altar_detail
