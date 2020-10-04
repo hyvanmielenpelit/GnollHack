@@ -10,6 +10,7 @@
 #
 MAZE: "Cav-strt",' '
 FLAGS: noteleport,hardfloor
+TILESET:gnomish_mines_tileset
 BOUNDARY_TYPE:location_ground
 GEOMETRY:center,center
 MAP
@@ -98,6 +99,7 @@ WALLIFY
 
 MAZE: "Cav-loca",' '
 FLAGS: hardfloor
+TILESET:gnomish_mines_tileset
 BOUNDARY_TYPE:location_ground
 GEOMETRY:center,center
 MAP
@@ -194,6 +196,7 @@ WALLIFY
 #
 
 MAZE: "Cav-goal", ' '
+TILESET:gnomish_mines_tileset
 GEOMETRY:center,center
 MAP
                                                                             
@@ -256,7 +259,8 @@ WALLIFY
 #
 
 MAZE: "Cav-fila" , ' '
-INIT_MAP: mines, '.' , ' ' , true , true , random , true
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
+TILESET:gnomish_mines_tileset
 NOMAP
 #
 STAIR: random, up
@@ -284,7 +288,8 @@ MONSTER: 'h', random, hostile
 MONSTER: ('H', "hill giant"), random, hostile
 
 MAZE: "Cav-filb" , ' '
-INIT_MAP: mines, '.' , ' ' , true , true , random , true
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
+TILESET:gnomish_mines_tileset
 NOMAP
 #
 STAIR: random, up
