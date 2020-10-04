@@ -210,6 +210,7 @@ boolean isyou;
                 return;
         }
         /* replace the fountain with ordinary floor */
+		play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_DRY_UP);
 		create_simple_location(x, y, levl[x][y].floortyp ? levl[x][y].floortyp : ROOM, levl[x][y].floorsubtyp ? levl[x][y].floorsubtyp : 0, 0, back_to_broken_glyph(x, y), 0, 0, TRUE);
         if (cansee(x, y))
             pline_The("fountain dries up!");

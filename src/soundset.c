@@ -1640,7 +1640,53 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_WATER_DRIES_UP, 0.0f}
+            {GHSOUND_WATER_DRIES_UP, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "ice",
+        LOCATION_SOUNDSET_GENERAL,
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_ICE_MELTS, 1.0f},
+            {GHSOUND_ICE_MELTS, 1.0f},
+            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_ICE_MELTS, 1.0f},
+            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_ICE_MELTS, 1.0f}
+        },
+        SOUNDSOURCE_AMBIENT_GENERAL
+    },
+    {
+        "lava",
+        LOCATION_SOUNDSET_GENERAL,
+        {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_LAVA_HARDENS, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_LAVA_HARDENS, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_LAVA_HARDENS, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_LAVA_HARDENS, 1.0f},
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -5990,7 +6036,11 @@ struct d_level* dlvl;
     int dnum = dlvl->dnum;
 
 
-    if (Is_valley(dlvl))
+    if (Is_airlevel(dlvl))
+        return GHSOUND_AIR_LEVEL_AMBIENT;
+    else if (Is_waterlevel(dlvl))
+        return GHSOUND_WATER_LEVEL_AMBIENT;
+    else if (Is_valley(dlvl))
         return GHSOUND_GEHENNOM_VALLEY_AMBIENT;
     else
         return GHSOUND_NONE;

@@ -2060,7 +2060,7 @@ struct obj* origobj;
 			else if (IS_FOUNTAIN(lev->typ))
 			{
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
-                play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
+                play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
                 /* replace the fountain with ordinary floor */
                 create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
 				if (see_it)
@@ -2155,7 +2155,7 @@ struct obj* origobj;
 		{
 			/* replace the fountain with ordinary floor */
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
-            play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
+            play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
             create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
 			if (see_it)
 				pline_The("fountain dries up!");

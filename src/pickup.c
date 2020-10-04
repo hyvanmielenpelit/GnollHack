@@ -1750,7 +1750,9 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
 
     if (!cobj)
         return 0;
-    if (cobj->olocked) {
+    if (cobj->olocked)
+    {
+        play_simple_object_sound(cobj, OBJECT_SOUND_TYPE_TRY_LOCKED_CONTAINER);
         if (ccount < 2)
             pline("%s locked.",
                   cobj->lknown ? "It is" : "Hmmm, it turns out to be");
@@ -1768,6 +1770,7 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
 #endif
 
     if (cobj->otyp == BAG_OF_TRICKS) {
+        play_sfx_sound(SFX_SURPRISE_ATTACK);
         You("carefully open %s...", the(xname(cobj)));
         pline("It develops a huge set of teeth and bites you!");
         losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "carnivorous bag", KILLED_BY_AN);

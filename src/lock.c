@@ -104,7 +104,7 @@ picklock(VOID_ARGS)
         }
         else if (xlock.box->keyotyp != xlock.key->otyp || xlock.box->special_quality != xlock.key->special_quality)
         {
-            play_simple_object_sound(xlock.box, OBJECT_SOUND_TYPE_TRY_LOCKED_CONTAINER);
+            play_sfx_sound(SFX_KEY_DOES_NOT_FIT);
             if (xlock.box->keyotyp == NUM_OBJECTS)
                 pline("%s is locked but it has no observable lock.", The(cxname(xlock.box)));
             else

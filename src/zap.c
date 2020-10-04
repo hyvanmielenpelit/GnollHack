@@ -8426,15 +8426,18 @@ short exploding_wand_typ;
                 newsym(x, y);
         }
         if (is_ice(x, y)) {
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
             melt_ice(x, y, (char *) 0);
         } else if (is_pool(x, y)) {
             const char *msgtxt = "You hear hissing gas.";
 
             if (lev->typ != POOL) { /* MOAT or DRAWBRIDGE_UP */
+                play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_LITTLE_BURNT);
                 if (see_it)
                     msgtxt = "Some water evaporates.";
             } else {
                 rangemod -= 3;
+                play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
                 create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
                 t = maketrap(x, y, PIT, NON_PM, MKTRAP_NO_FLAGS);
                 if (t)
@@ -8446,6 +8449,7 @@ short exploding_wand_typ;
             if (lev->typ == ROOM)
                 newsym(x, y);
         } else if (IS_FOUNTAIN(lev->typ)) {
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
             if (see_it)
                 pline("Steam billows from the fountain.");
             rangemod -= 1;
@@ -8467,7 +8471,7 @@ short exploding_wand_typ;
                 rangemod -= 1000; /* stop */
             } else {
                 char buf[BUFSZ];
-
+                play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_FROZEN);
                 Strcpy(buf, waterbody_name(x, y)); /* for MOAT */
                 rangemod -= 3;
                 if (lev->typ == DRAWBRIDGE_UP) {
