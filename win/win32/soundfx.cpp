@@ -555,16 +555,6 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 0.06f },
 };
 
-/*
-    GHSOUND_FOUNTAIN_DRIES_UP,
-    GHSOUND_SOME_WATER_EVAPORATES,
-    GHSOUND_WATER_IS_FROZEN,
-    GHSOUND_WATER_GROUNDS_ELECTRICITY,
-    GHSOUND_WATER_BOILS,
-    GHSOUND_WATER_DRIES_UP,
-    GHSOUND_CHEST_TRY_LOCKED,
-    GHSOUND_CHEST_RESISTS_OPEN,
-*/
 extern "C" 
 {
     boolean
