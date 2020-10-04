@@ -8656,10 +8656,6 @@ short exploding_wand_typ;
                 sense_txt = "hear stone cracking.";
                 new_door_subtype = DOOR_SUBTYPE_STONE;
                 sfx_sound = SFX_PETRIFY;
-                if ((door_subtype_definitions[lev->subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) == 0 && (door_subtype_definitions[new_door_subtype].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) != 0)
-                    block_point = TRUE;
-                if ((door_subtype_definitions[lev->subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) != 0 && (door_subtype_definitions[new_door_subtype].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) == 0)
-                    unblock_point = TRUE;
             }
 			break;
 		case ZT_LIGHTNING:
@@ -8715,12 +8711,19 @@ short exploding_wand_typ;
                 } else /* caused by monster */
                     add_damage(x, y, 0L);
             }
+
             if (new_doormask >= 0)
             {
                 lev->doormask = new_doormask;
             }
+
             if (new_door_subtype >= 0)
             {
+                if ((door_subtype_definitions[lev->subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) == 0 && (door_subtype_definitions[new_door_subtype].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) != 0)
+                    block_point = TRUE;
+                if ((door_subtype_definitions[lev->subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) != 0 && (door_subtype_definitions[new_door_subtype].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) == 0)
+                    unblock_point = TRUE;
+
                 lev->subtyp = new_door_subtype;
             }
 
