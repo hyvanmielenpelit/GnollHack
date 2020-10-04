@@ -763,8 +763,6 @@ boolean via_disintegration;
 {
     if (via_disintegration)
         play_sfx_sound(SFX_DISINTEGRATE);
-    else
-        play_sfx_sound(SFX_DOOR_CONSUMED_IN_FLAMES);
 
     You("%s!", !via_disintegration ? "fry to a crisp"
                                    : "disintegrate into a pile of dust");

@@ -1806,7 +1806,7 @@ register int after;
                     {
                         if (flags.verbose) 
                         {
-                            play_sfx_sound_at_location(SFX_OPEN_DOOR, mtmp->mx, mtmp->my);
+                            play_simple_location_sound(mtmp->mx, mtmp->my, LOCATION_SOUND_TYPE_OPEN);
                             if (observeit)
                                 pline("%s opens a door.", Monnam(mtmp));
                             else if (canseeit)

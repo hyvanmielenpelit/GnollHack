@@ -5739,7 +5739,7 @@ struct trap* lever;
             levl[target_x][target_y].doormask |= D_ISOPEN;
             if (door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
                 unblock_vision_and_hearing_at_point(target_x, target_y);
-            play_sfx_sound_at_location(SFX_OPEN_DOOR, target_x, target_y);
+            play_simple_location_sound(target_x, target_y, LOCATION_SOUND_TYPE_OPEN);
             newsym(target_x, target_y);
         }
         break;
@@ -5752,7 +5752,7 @@ struct trap* lever;
             levl[target_x][target_y].doormask |= D_LOCKED;
             if(door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
                 block_vision_and_hearing_at_point(target_x, target_y);
-            play_sfx_sound_at_location(SFX_LOCK_DOOR, target_x, target_y);
+            play_simple_location_sound(target_x, target_y, LOCATION_SOUND_TYPE_LOCK);
             newsym(target_x, target_y);
         }
         break;
@@ -5767,7 +5767,7 @@ struct trap* lever;
                 levl[target_x][target_y].doormask |= D_LOCKED;
                 if (door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
                     block_vision_and_hearing_at_point(target_x, target_y);
-                play_sfx_sound_at_location(SFX_LOCK_DOOR, target_x, target_y);
+                play_simple_location_sound(target_x, target_y, LOCATION_SOUND_TYPE_LOCK);
             }
             else if (levl[target_x][target_y].doormask & (D_CLOSED | D_LOCKED) && (lever->tflags & TRAPFLAGS_STATE_MASK) > 0)
             {
@@ -5775,7 +5775,7 @@ struct trap* lever;
                 levl[target_x][target_y].doormask |= D_ISOPEN;
                 if (door_subtype_definitions[levl[target_x][target_y].subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND)
                     unblock_vision_and_hearing_at_point(target_x, target_y);
-                play_sfx_sound_at_location(SFX_OPEN_DOOR, target_x, target_y);
+                play_simple_location_sound(target_x, target_y, LOCATION_SOUND_TYPE_OPEN);
             }
             newsym(target_x, target_y);
         }

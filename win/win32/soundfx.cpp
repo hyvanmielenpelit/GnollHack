@@ -116,15 +116,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Human/Barehanded/Human Barehanded Hit", 1.0f},
     { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Human Kick Swing", 1.0f},
     { SOUND_BANK_MASTER, "event:/Monster/Human/Barefooted/Human Kick Hit", 1.0f},
-    { SOUND_BANK_MASTER, "event:/Location/Door/Door Wham", 1.0f},
-    { SOUND_BANK_MASTER, "event:/Location/Door/Door Break", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Wham", 1.0f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Break", 1.0f},
 
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Open", 0.1f},
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Close", 0.5f},
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Unlock", 0.5f},
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Lock", 0.5f},
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Resists", 0.5f},
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Try Locked", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Open", 0.1f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Close", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Unlock", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Lock", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Resists", 0.5f},
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Try Locked", 0.5f},
     { SOUND_BANK_MASTER, "event:/Object/Tool/Chest/Chest Unlock", 0.5f},
     { SOUND_BANK_MASTER, "event:/Object/Tool/Chest/Chest Lock", 0.5f},
     { SOUND_BANK_MASTER, "event:/Object/Weapon/Crossbow/Crossbow Fire", 1.0f},
@@ -531,17 +531,36 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Location/Tree/Tree Break", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Stone/Stone Break", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Water/Water Break", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Consumed in Flames", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Door Freezes and Shatters", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Door/Door Consumed in Flames", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Door/Door Freezes and Shatters", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Petrify", 1.0f },
-    { SOUND_BANK_MASTER, "event:/SFX/Door/Electricity Hits Door", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Door/Electricity Hits Door", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Burnt", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Frozen", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Electrocuted", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Fountain/Fountain Dries Up", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Water/Some Water Evaporates", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Water/Water is Frozen", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Water/Water Grounds Electricity", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Water/Water Boils", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Water/Water Dries Up", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Chest/Chest Try Locked", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/Object/Tool/Chest/Chest Resists Open", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Key Does Not Fit", 1.0f },
 };
 
+/*
+    GHSOUND_FOUNTAIN_DRIES_UP,
+    GHSOUND_SOME_WATER_EVAPORATES,
+    GHSOUND_WATER_IS_FROZEN,
+    GHSOUND_WATER_GROUNDS_ELECTRICITY,
+    GHSOUND_WATER_BOILS,
+    GHSOUND_WATER_DRIES_UP,
+    GHSOUND_CHEST_TRY_LOCKED,
+    GHSOUND_CHEST_RESISTS_OPEN,
+*/
 extern "C" 
 {
     boolean

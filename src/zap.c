@@ -8608,7 +8608,8 @@ short exploding_wand_typ;
         boolean block_point = FALSE;
         boolean unblock_point = FALSE;
         enum sfx_sound_types sfx_sound = 0;
-		boolean createsplinters = FALSE;
+        enum location_sound_types break_sound = LOCATION_SOUND_TYPE_BREAK;
+        boolean createsplinters = FALSE;
         const char *see_txt = 0, *sense_txt = 0, *hear_txt = 0;
 
         rangemod = -1000;
@@ -8619,7 +8620,7 @@ short exploding_wand_typ;
                 new_doormask = D_NODOOR;
                 see_txt = "The door is consumed in flames!";
                 sense_txt = "smell smoke.";
-                sfx_sound = SFX_DOOR_CONSUMED_IN_FLAMES;
+                break_sound = LOCATION_SOUND_TYPE_BURNT;
             }
             break;
         case ZT_COLD:
@@ -8628,7 +8629,7 @@ short exploding_wand_typ;
                 new_doormask = D_NODOOR;
                 see_txt = "The door freezes and shatters!";
                 sense_txt = "feel cold.";
-                sfx_sound = SFX_DOOR_FREEZES_AND_SHATTERS;
+                break_sound = LOCATION_SOUND_TYPE_FROZEN;
             }
             break;
         case ZT_DISINTEGRATION:
@@ -8665,7 +8666,7 @@ short exploding_wand_typ;
                 see_txt = "The door splinters!";
                 hear_txt = "crackling.";
                 createsplinters = TRUE;
-                sfx_sound = SFX_ELECTRICITY_HITS_DOOR;
+                break_sound = LOCATION_SOUND_TYPE_ELECTROCUTED;
             }
             break;
         default:
@@ -8700,8 +8701,8 @@ short exploding_wand_typ;
             if (sfx_sound > 0)
                 play_sfx_sound_at_location(sfx_sound, x, y);
             
-            if (new_doormask == D_BROKEN)
-                play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
+            if (sfx_sound == 0)
+                play_simple_location_sound(x, y, break_sound);
 
             if (new_doormask >= 0  && *in_rooms(x, y, SHOPBASE))
             {

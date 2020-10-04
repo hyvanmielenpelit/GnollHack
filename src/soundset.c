@@ -141,6 +141,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -187,6 +189,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -265,6 +269,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -310,6 +316,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -387,6 +395,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -432,6 +442,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -509,6 +521,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -554,6 +568,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_SWORD_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -631,6 +647,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -676,6 +694,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_DAGGER_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -753,6 +773,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -798,6 +820,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -875,6 +899,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -920,6 +946,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -997,6 +1025,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1048,6 +1078,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_CHEST_LOCK, 1.0f},
             {GHSOUND_CHEST_BREAK_LOCK, 1.0f},
             {GHSOUND_CHEST_LID_SLAM, 1.0f},
+            {GHSOUND_CHEST_RESISTS_OPEN, 1.0f},
+            {GHSOUND_CHEST_TRY_LOCKED, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1103,6 +1135,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_PICKUP_COINS, 1.0f},
             {GHSOUND_DROP_COINS, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1180,6 +1214,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
 
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1225,6 +1261,8 @@ NEARDATA struct object_soundset_definition object_soundsets[MAX_OBJECT_SOUNDSETS
 
             {GHSOUND_GENERIC_ITEM_PICK_UP, 1.0f},
             {GHSOUND_GENERIC_ITEM_DROP, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -1424,7 +1462,21 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
 {
     {
         "",
+        LOCATION_SOUNDSET_NONE,
         {
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
@@ -1433,26 +1485,68 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
     },
     {
         "general",
+        LOCATION_SOUNDSET_NONE,
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_STONE_BREAK, 1.0f}
+            {GHSOUND_STONE_BREAK, 1.0f},
+            {GHSOUND_DOOR_CONSUMED_IN_FLAMES, 1.0f},
+            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_ELECTRICITY_HITS_DOOR, 1.0f},
+            {GHSOUND_SOME_WATER_EVAPORATES, 1.0f},
+            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_DOOR_OPEN, 1.0f},
+            {GHSOUND_DOOR_CLOSE, 1.0f},
+            {GHSOUND_DOOR_UNLOCK, 1.0f},
+            {GHSOUND_DOOR_LOCK, 1.0f},
+            {GHSOUND_DOOR_RESISTS, 1.0f},
+            {GHSOUND_DOOR_TRY_LOCKED, 1.0f},
+            {GHSOUND_FOUNTAIN_DRIES_UP, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "fountain",
+        LOCATION_SOUNDSET_GENERAL,
         {
             {GHSOUND_FOUNTAIN, 0.75f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f}
+            {GHSOUND_STONE_BREAK, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_FOUNTAIN_DRIES_UP, 1.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "altar",
+        LOCATION_SOUNDSET_GENERAL,
         {
             {GHSOUND_FIRE, 0.5f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_STONE_BREAK, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
         },
@@ -1460,37 +1554,93 @@ NEARDATA struct location_soundset_definition location_soundsets[MAX_LOCATION_SOU
     },
     {
         "door",
+        LOCATION_SOUNDSET_GENERAL,
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_DOOR_WHAM, 1.0f},
-            {GHSOUND_DOOR_BREAK, 1.0f}
+            {GHSOUND_DOOR_BREAK, 1.0f},
+            {GHSOUND_DOOR_CONSUMED_IN_FLAMES, 1.0f},
+            {GHSOUND_DOOR_FREEZES_AND_SHATTERS, 1.0f},
+            {GHSOUND_ELECTRICITY_HITS_DOOR, 1.0f},
+            {GHSOUND_SOME_WATER_EVAPORATES, 1.0f},
+            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_DOOR_OPEN, 1.0f},
+            {GHSOUND_DOOR_CLOSE, 1.0f},
+            {GHSOUND_DOOR_UNLOCK, 1.0f},
+            {GHSOUND_DOOR_LOCK, 1.0f},
+            {GHSOUND_DOOR_RESISTS, 1.0f},
+            {GHSOUND_DOOR_TRY_LOCKED, 1.0f},
+            {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "tree",
+        LOCATION_SOUNDSET_GENERAL,
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_TREE_BREAK, 1.0f}
+            {GHSOUND_TREE_BREAK, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "stone",
+        LOCATION_SOUNDSET_GENERAL,
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_STONE_BREAK, 1.0f}
+            {GHSOUND_STONE_BREAK, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
     {
         "water",
+        LOCATION_SOUNDSET_GENERAL,
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
-            {GHSOUND_WATER_BREAK, 1.0f}
+            {GHSOUND_WATER_BREAK, 1.0f},
+            {GHSOUND_WATER_BOILS, 1.0f},
+            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_SOME_WATER_EVAPORATES, 1.0f},
+            {GHSOUND_WATER_IS_FROZEN, 1.0f},
+            {GHSOUND_WATER_GROUNDS_ELECTRICITY, 1.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_WATER_DRIES_UP, 0.0f}
         },
         SOUNDSOURCE_AMBIENT_GENERAL
     },
@@ -1580,36 +1730,6 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "quaff",
         {GHSOUND_SFX_QUAFF, 1.0f},
-        TRUE
-    },
-    {
-        "door open",
-        {GHSOUND_DOOR_OPEN, 1.0f},
-        TRUE
-    },
-    {
-        "door close",
-        {GHSOUND_DOOR_CLOSE, 1.0f},
-        TRUE
-    },
-    {
-        "door unlock",
-        {GHSOUND_DOOR_UNLOCK, 1.0f},
-        TRUE
-    },
-    {
-        "door lock",
-        {GHSOUND_DOOR_LOCK, 1.0f},
-        TRUE
-    },
-    {
-        "door resists",
-        {GHSOUND_DOOR_RESISTS, 1.0f},
-        TRUE
-    },
-    {
-        "door try locked",
-        {GHSOUND_DOOR_TRY_LOCKED, 1.0f},
         TRUE
     },
     {
@@ -2898,24 +3018,13 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         TRUE
     },
     {
-        "GHSOUND_DOOR_CONSUMED_IN_FLAMES",
-        {GHSOUND_DOOR_CONSUMED_IN_FLAMES, 1.0f},
-        TRUE
-    },
-
-    {
-        "GHSOUND_DOOR_FREEZES_AND_SHATTERS",
-        {GHSOUND_DOOR_FREEZES_AND_SHATTERS, 1.0f},
-        TRUE
-    },
-    {
         "GHSOUND_PETRIFY",
         {GHSOUND_PETRIFY, 5.0f},
         TRUE
     },
     {
-        "GHSOUND_ELECTRICITY_HITS_DOOR",
-        {GHSOUND_ELECTRICITY_HITS_DOOR, 10.0f},
+        "GHSOUND_KEY_DOES_NOT_FIT",
+        {GHSOUND_KEY_DOES_NOT_FIT, 5.0f},
         TRUE
     },
 };
@@ -3655,6 +3764,33 @@ float* volume_ptr;
 
 
 void
+set_simple_location_sound_id_and_volume(lss, sound_type, sound_id_ptr, volume_ptr)
+enum location_soundset_types lss;
+enum location_sound_types sound_type;
+enum ghsound_types* sound_id_ptr;
+float* volume_ptr;
+{
+    if (!sound_id_ptr || !volume_ptr)
+        return;
+
+    enum ghsound_types soundid = location_soundsets[lss].sounds[sound_type].ghsound;
+    float volume = location_soundsets[lss].sounds[sound_type].volume;
+
+    if (soundid != GHSOUND_NONE || volume != 0.0f || location_soundsets[lss].base_soundset == LOCATION_SOUNDSET_NONE || location_soundsets[lss].base_soundset == lss)
+    {
+        *sound_id_ptr = soundid;
+        *volume_ptr = volume;
+    }
+    else
+    {
+        enum location_soundset_types base_lss = location_soundsets[lss].base_soundset;
+        set_simple_location_sound_id_and_volume(base_lss, sound_type, sound_id_ptr, volume_ptr);
+    }
+}
+
+
+
+void
 set_simple_player_sound_id_and_volume(pss, sound_type, sound_id_ptr, volume_ptr)
 enum player_soundset_types pss;
 enum monster_sound_types sound_type;
@@ -3795,6 +3931,7 @@ struct obj* container;
         play_immediate_ghsound(immediateinfo);
 }
 
+
 void
 play_simple_location_sound(x, y, sound_type)
 xchar x, y;
@@ -3821,8 +3958,9 @@ enum location_sound_types sound_type;
     else
         lss = location_type_definitions[ltyp].soundset;
 
-    soundid = location_soundsets[lss].sounds[sound_type].ghsound;
-    volume = location_soundsets[lss].sounds[sound_type].volume;
+    set_simple_location_sound_id_and_volume(lss, sound_type, &soundid, &volume);
+    //soundid = location_soundsets[lss].sounds[sound_type].ghsound;
+    //volume = location_soundsets[lss].sounds[sound_type].volume;
 
     /* Move one square towards the player, since the square itself may be rock etc. */
     xchar hear_x = x + sgn(u.ux - x);
