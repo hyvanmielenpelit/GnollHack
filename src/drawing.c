@@ -684,7 +684,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },      /* modron portal */
 
-       { S_hodoor, "vopen-wooden-windowed-door",   "open windowed door", "", FALSE,
+       { S_hodoor, "vopen-windowed-wooden-door",   "open windowed door", "", FALSE,
             { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -740,7 +740,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },      /* vodoor */
 
-       { S_hodoor, "hopen-wooden-windowed-door",   "open windowed door", "", FALSE,
+       { S_hodoor, "hopen-windowed-wooden-door",   "open windowed door", "", FALSE,
             { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -796,7 +796,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },      /* hodoor */
 
-       { S_vcdoor, "vclosed-wooden-windowed-door",   "closed windowed door", "", FALSE,
+       { S_vcdoor, "vclosed-windowed-wooden-door",   "closed windowed door", "", FALSE,
             { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -852,7 +852,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },      /* vcdoor */
 
-       { S_hcdoor, "hclosed-wooden-windowed-door",   "closed windowed door", "", FALSE,
+       { S_hcdoor, "hclosed-windowed-wooden-door",   "closed windowed door", "", FALSE,
             { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -908,7 +908,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },      /* hcdoor */
 
-       { S_vbdoor, "vbroken-wooden-windowed-door",   "broken windowed door", "", FALSE,
+       { S_vbdoor, "vbroken-windowed-wooden-door",   "broken windowed door", "", FALSE,
             { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -964,7 +964,7 @@ const struct symdef_cmap_variation defsym_variations[MAX_VARIATIONS] =
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} },      /* vbdoor */
 
-       { S_hbdoor, "hbroken-wooden-windowed-door",   "broken windowed door", "", FALSE,
+       { S_hbdoor, "hbroken-windowed-wooden-door",   "broken windowed door", "", FALSE,
             { C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN), C(CLR_BROWN) },
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} , {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
