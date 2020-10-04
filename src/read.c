@@ -1642,7 +1642,7 @@ struct obj *sobj; /* scroll, or fake spellbook object for scroll-like spell */
 boolean *effect_happened_ptr;
 {
     int cval, otyp = sobj->otyp;
-    boolean confused = (Confusion != 0), sblessed = sobj->blessed,
+    boolean confused = (Confusion != 0), sblessed = sobj->blessed, sbcsign = bcsign(sobj),
             scursed = sobj->cursed, already_known, old_erodeproof,
             new_erodeproof;
     struct obj *otmp;
@@ -3042,7 +3042,7 @@ boolean *effect_happened_ptr;
         if (increased_damage)
             explode(cc.x, cc.y, 11, 5, 6, 10, otyp, SCROLL_CLASS, EXPL_FIERY);
         else
-            explode(cc.x, cc.y, 11, 1, 2, (4 * sblessed + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
+            explode(cc.x, cc.y, 11, 1, 2, (4 * sbcsign + 2) / 3, otyp, SCROLL_CLASS, EXPL_FIERY);
 
         break;
     }
