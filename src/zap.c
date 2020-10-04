@@ -8605,6 +8605,8 @@ short exploding_wand_typ;
     {
         int new_doormask = -1;
         int new_door_subtype = -1;
+        boolean block_point = FALSE;
+        boolean unblock_point = FALSE;
         enum sfx_sound_types sfx_sound = 0;
 		boolean createsplinters = FALSE;
         const char *see_txt = 0, *sense_txt = 0, *hear_txt = 0;
@@ -8654,6 +8656,10 @@ short exploding_wand_typ;
                 sense_txt = "hear stone cracking.";
                 new_door_subtype = DOOR_SUBTYPE_STONE;
                 sfx_sound = SFX_PETRIFY;
+                if ((door_subtype_definitions[lev->subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) == 0 && (door_subtype_definitions[new_door_subtype].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) != 0)
+                    block_point = TRUE;
+                if ((door_subtype_definitions[lev->subtyp].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) != 0 && (door_subtype_definitions[new_door_subtype].flags & DSTFLAGS_BLOCKS_VISION_AND_SOUND) == 0)
+                    unblock_point = TRUE;
             }
 			break;
 		case ZT_LIGHTNING:
@@ -8712,12 +8718,17 @@ short exploding_wand_typ;
             if (new_doormask >= 0)
             {
                 lev->doormask = new_doormask;
-                unblock_vision_and_hearing_at_point(x, y); /* vision */
             }
             if (new_door_subtype >= 0)
             {
                 lev->subtyp = new_door_subtype;
             }
+
+            if(new_doormask >= 0 || unblock_point)
+                unblock_vision_and_hearing_at_point(x, y); /* vision */
+            
+            if (block_point)
+                block_vision_and_hearing_at_point(x, y); /* vision */
 
             if (see_it)
             {
