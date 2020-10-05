@@ -3968,12 +3968,8 @@ get_current_cmap_type_index()
         return dungeons[u.uz.dnum].flags.tileset;
     else if (In_mines(&u.uz))
         return CMAP_GNOMISH_MINES;
-    else if (Is_knox(&u.uz))
-        return CMAP_FORT_LUDIOUS;
     else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz) || In_V_tower(&u.uz))
         return CMAP_UNDEAD_STYLE;
-    else if (Is_medusa_level(&u.uz) || Is_juiblex_level(&u.uz))
-        return CMAP_SWAMP_STYLE;
     else if (Is_modron_level(&u.uz))
         return CMAP_MODRON;
     else if (Is_bovine_level(&u.uz))

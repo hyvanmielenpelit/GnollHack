@@ -111,6 +111,7 @@ gnomish_mines_tileset 		{ yylval.i=CMAP_GNOMISH_MINES; return CMAP_TYPE; }
 gehennom_tileset 			{ yylval.i=CMAP_GEHENNOM; return CMAP_TYPE; }
 undead_tileset 				{ yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE; }
 sokoban_tileset 			{ yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
+elemental_tileset 			{ yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 astral_tileset 				{ yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
 BRANCH		return(BRANCH);
 CHAINBRANCH	return(CHBRANCH);

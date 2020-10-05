@@ -163,6 +163,7 @@ LEVEL:		"Bottom Level" "tower3" "none" @ (3, 0)
 #	[Note: the name "dummy" is checked for in init_dungeons().]
 #
 DUNGEON:	"The Elemental Planes" "E" (6, 0)
+TILESET:    elemental_tileset
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 ENTRY:		-2

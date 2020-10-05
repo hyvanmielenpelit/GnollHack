@@ -16,10 +16,10 @@ short tile2enlargement[MAX_TILES] = { 0 };
 
 NEARDATA struct tileset_definition default_tileset_definition =
 {
-    {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", "cmap-5", "cmap-6", "cmap-7", "cmap-8", "cmap-9", "cmap-10", "cmap-11", "cmap-12", "cmap-13", "cmap-14", "cmap-15"},
-    {0.0, 0.90, 0.0, 0.90, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-    {0.0, 0.75, 0.0, 0.75, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-    {0.0, 0.50, 0.0, 0.50, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+    {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", "elemental-planes", "astral", "cmap-7", "cmap-8", "cmap-9", "cmap-10", "cmap-11", "cmap-12", "cmap-13", "cmap-14", "cmap-15"},
+    {0.0, 0.90, 0.0, 0.90, 0.0, 0.95, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+    {0.0, 0.75, 0.0, 0.75, 0.0, 0.85, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
+    {0.0, 0.50, 0.0, 0.50, 0.0, 0.70, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
     2,
     {TRUE, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, 1, 2,
     2,

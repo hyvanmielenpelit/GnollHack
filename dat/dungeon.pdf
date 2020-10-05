@@ -94,6 +94,7 @@ LEVEL:		"Middle Level" "tower2" "none" @ (2, 0)
 LEVEL:		"Bottom Level" "tower3" "none" @ (3, 0)
 
 DUNGEON:	"The Elemental Planes" "E" (6, 0)
+TILESET:    elemental_tileset
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 ENTRY:		-2

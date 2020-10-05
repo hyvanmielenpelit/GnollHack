@@ -3033,10 +3033,12 @@ region *tmpregion;
             if (lev->typ != LAVAPOOL) /* this overrides normal lighting */
                 lev->lit = litstate;
 
+#if 0
             if (lev->typ == ROOM && tmpregion->floortype >= 0 && tmpregion->floortype < MAX_FLOOR_CATEGORIES) /* Adjust floor categories, too */
             {
                 lev->subtyp = get_location_subtype_by_category(lev->typ, tmpregion->floortype);
             }
+#endif
 
             lev++;
         }

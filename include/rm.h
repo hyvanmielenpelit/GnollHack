@@ -434,8 +434,8 @@ enum cmap_types {
     CMAP_GEHENNOM = 2,
     CMAP_UNDEAD_STYLE = 3,
     CMAP_SOKOBAN = 4,
-    CMAP_FORT_LUDIOUS = 5,
-    CMAP_SWAMP_STYLE = 6,
+    CMAP_ELEMENTAL_PLANES = 5,
+    CMAP_ASTRAL = 6,
     CMAP_GEHENNOM_ALTERNATIVE = 7,
     CMAP_MODRON = 8,
     CMAP_BOVINE = 9,
@@ -444,7 +444,7 @@ enum cmap_types {
     CMAP_MAZE = 12,
     CMAP_TOWER = 13,
     CMAP_CAVERNS = 14,
-    CMAP_ASTRAL = 15,
+    CMAP_EXTRA = 15,
     MAX_CMAP_TYPES = 16
 };
 

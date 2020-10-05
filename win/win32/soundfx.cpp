@@ -552,7 +552,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Location/Ice/Ice Melts", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Lava/Lava Hardens", 1.0f },
     { SOUND_BANK_MASTER, "event:/Ambience/Environment/Underwater", 0.2f },
-    { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 0.06f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 0.04f },
 };
 
 extern "C" 
