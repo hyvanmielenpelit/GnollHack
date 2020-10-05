@@ -118,7 +118,7 @@ picklock(VOID_ARGS)
         {
             return ((xlock.usedtime = 0)); /* you moved */
         }
-        switch (xlock.door->doormask) 
+        switch ((xlock.door->doormask & D_MASK)) 
         {
         case D_NODOOR:
             pline("This doorway has no door.");
@@ -198,21 +198,22 @@ picklock(VOID_ARGS)
     You("succeed in %s.", lock_action());
     if (xlock.door) 
     {
-        play_simple_location_sound(xlock.x, xlock.y, xlock.door->doormask& D_LOCKED ? LOCATION_SOUND_TYPE_UNLOCK : LOCATION_SOUND_TYPE_LOCK);
+        play_simple_location_sound(xlock.x, xlock.y, xlock.door->doormask & D_LOCKED ? LOCATION_SOUND_TYPE_UNLOCK : LOCATION_SOUND_TYPE_LOCK);
             
+        xlock.door->doormask &= ~D_MASK;
         if (xlock.door->doormask & D_TRAPPED)
         {
             b_trapped(get_door_name_at_ptr(xlock.door), FINGER);
-            xlock.door->doormask = D_NODOOR;
+            xlock.door->doormask |= D_NODOOR;
             unblock_vision_and_hearing_at_point(u.ux + u.dx, u.uy + u.dy);
             if (*in_rooms(u.ux + u.dx, u.uy + u.dy, SHOPBASE))
                 add_damage(u.ux + u.dx, u.uy + u.dy, SHOP_DOOR_COST);
             newsym(u.ux + u.dx, u.uy + u.dy);
         }
         else if (xlock.door->doormask & D_LOCKED)
-            xlock.door->doormask = D_CLOSED;
+            xlock.door->doormask |= D_CLOSED;
         else
-            xlock.door->doormask = D_LOCKED;
+            xlock.door->doormask |= D_LOCKED;
     } 
     else 
     {
@@ -578,7 +579,7 @@ struct obj *pick;
             update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
-        switch (door->doormask) {
+        switch ((door->doormask & D_MASK)) {
         case D_NODOOR:
             pline("This doorway has no door.");
             update_u_action(ACTION_TILE_NO_ACTION);
@@ -843,7 +844,7 @@ int x, y;
         const char *mesg;
 		boolean locked = FALSE;
 
-        switch (door->doormask) {
+        switch (door->doormask & D_MASK) {
         case D_BROKEN:
             mesg = " is broken";
             break;
@@ -889,13 +890,14 @@ int x, y;
     if (rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
         play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_OPEN);
         pline_The("%s opens.", door_name);
+        door->doormask &= ~D_MASK;
         if (door->doormask & D_TRAPPED) {
             b_trapped(door_name, FINGER);
-            door->doormask = D_NODOOR;
+            door->doormask |= D_NODOOR;
             if (*in_rooms(cc.x, cc.y, SHOPBASE))
                 add_damage(cc.x, cc.y, SHOP_DOOR_COST);
         } else
-            door->doormask = D_ISOPEN;
+            door->doormask |= D_ISOPEN;
         feel_newsym(cc.x, cc.y); /* the hero knows she opened it */
         unblock_vision_and_hearing_at_point(cc.x, cc.y); /* vision: new see through there */
     } else {
@@ -1008,12 +1010,12 @@ doclose()
         return res;
     }
 
-    if (door->doormask == D_NODOOR)
+    if ((door->doormask & D_MASK) == D_NODOOR)
     {
         pline("This doorway has no door.");
         return res;
     } 
-    else if (door->doormask == D_PORTCULLIS) 
+    else if ((door->doormask & D_MASK) == D_PORTCULLIS)
     {
         pline("This portcullis can be closed only by lifting the drawbridge.");
         return res;
@@ -1022,18 +1024,18 @@ doclose()
     {
         return res;
     } 
-    else if (door->doormask == D_BROKEN) 
+    else if ((door->doormask & D_MASK) == D_BROKEN) 
     {
         pline("This %s is broken.", get_door_name_at_ptr(door));
         return res;
     } 
-    else if (door->doormask & (D_CLOSED | D_LOCKED)) 
+    else if ((door->doormask & D_MASK) & (D_CLOSED | D_LOCKED))
     {
         pline("This %s is already closed.", get_door_name_at_ptr(door));
         return res;
     }
 
-    if (door->doormask == D_ISOPEN) 
+    if ((door->doormask & D_MASK) == D_ISOPEN)
     {
         if (verysmall(youmonst.data) && !u.usteed) 
         {
@@ -1046,7 +1048,8 @@ doclose()
             || rn2(25) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_CLOSE);
             pline_The("%s closes.", get_door_name_at_ptr(door));
-            door->doormask = D_CLOSED;
+            door->doormask &= ~D_MASK;
+            door->doormask |= D_CLOSED;
             feel_newsym(x, y); /* the hero knows she closed it */
             if(door_blocks_vision_at_ptr(door))
                 block_vision_and_hearing_at_point(x, y); /* vision:  no longer see there */
@@ -1158,7 +1161,7 @@ int x, y;
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
     {
-        if (door->doormask & D_PORTCULLIS)
+        if ((door->doormask & D_MASK) & D_PORTCULLIS)
             return FALSE;
 
         if (Is_rogue_level(&u.uz)) {
@@ -1175,7 +1178,9 @@ int x, y;
                 return FALSE;
             }
             block_vision_and_hearing_at_point(x, y);
-            door->typ = SDOOR, door->doormask = D_NODOOR;
+            door->typ = SDOOR;
+            door->doormask &= ~D_MASK;
+            door->doormask |= D_NODOOR;
             if (vis)
                 pline_The("doorway vanishes!");
             newsym(x, y);
@@ -1195,7 +1200,8 @@ int x, y;
 
         boolean can_lock = (door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
 
-        switch (door->doormask & ~D_TRAPPED) {
+        switch ((door->doormask & ~D_TRAPPED) & D_MASK) 
+        {
         case D_CLOSED:
             if(can_lock)
                 msg = "The %s locks!";
@@ -1232,12 +1238,17 @@ int x, y;
             block_vision_and_hearing_at_point(x, y);
         if (can_lock)
         {
-            door->doormask = D_LOCKED | (door->doormask & D_TRAPPED);
+            door->doormask &= ~D_MASK;
+            door->doormask |= D_LOCKED | (door->doormask & D_TRAPPED);
             door->key_otyp = MAGIC_KEY;
             door->special_quality = 0;
         }
         else
-            door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
+        {
+            door->doormask &= ~D_MASK;
+            door->doormask |= D_CLOSED | (door->doormask & D_TRAPPED);
+
+        }
         newsym(x, y);
         break;
     }
@@ -1247,7 +1258,8 @@ int x, y;
         boolean can_open = (door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
         if (can_open && (door->doormask & D_LOCKED)) {
             msg = "The %s unlocks!";
-            door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
+            door->doormask &= ~D_MASK;
+            door->doormask |= D_CLOSED | (door->doormask & D_TRAPPED);
         }
         else
             res = FALSE;
@@ -1269,7 +1281,8 @@ int x, y;
                 }
                 if (is_door_destroyed_by_booby_trap_at_ptr(door))
                 {
-                    door->doormask = D_NODOOR;
+                    door->doormask &= ~D_MASK;
+                    door->doormask |= D_NODOOR;
                     unblock_vision_and_hearing_at_point(x, y);
                     newsym(x, y);
                 }
@@ -1278,7 +1291,8 @@ int x, y;
             }
             if (is_door_destroyed_by_striking_at(x, y))
             {
-                door->doormask = D_BROKEN;
+                door->doormask &= ~D_MASK;
+                door->doormask |= D_BROKEN;
                 if (flags.verbose) {
                     if (cansee(x, y))
                         pline_The("door crashes open!");

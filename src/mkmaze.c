@@ -1179,6 +1179,7 @@ schar typ;
         if (!IS_DOOR(levl[x][y].typ)) {
             /* might still be on edge of MAP, so don't overwrite */
             levl[x][y].typ = typ;
+            levl[x][y].subtyp = 0;
             levl[x][y].flags = 0;
         }
         q = 0;
@@ -1220,6 +1221,7 @@ schar typ;
     if (!IS_DOOR(levl[x][y].typ)) {
         /* might still be on edge of MAP, so don't overwrite */
         levl[x][y].typ = typ;
+        levl[x][y].subtyp = 0;
         levl[x][y].flags = 0;
     }
 

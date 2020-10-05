@@ -4932,7 +4932,7 @@ int radius;
                 hearing_array[x][y] = new_hearing;
         }
 	}
-	else if (IS_DOOR(levl[x][y].typ) && (levl[x][y].doormask != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
+	else if (IS_DOOR(levl[x][y].typ) && ((levl[x][y].doormask & D_MASK) != 0 && (levl[x][y].doormask & (D_NODOOR | D_ISOPEN | D_BROKEN)) == 0))
 	{
         float new_prev_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing) / (10.0f)));
         float new_hearing = (float)max(0.0f, min(1.0f, multiplier * ((float)prev_hearing)));

@@ -437,15 +437,16 @@ int force;
                         newsym(x, y);
                     break;
                 case DOOR: /* Make the door collapse */
-                    if (levl[x][y].doormask == D_NODOOR)
+                    if ((levl[x][y].doormask & D_MASK) == D_NODOOR)
                         goto do_pit;
-                    if (levl[x][y].doormask == D_PORTCULLIS)
+                    if ((levl[x][y].doormask & D_MASK) == D_PORTCULLIS)
                         break;
                     if (cansee(x, y))
                         pline_The("door collapses.");
                     if (*in_rooms(x, y, SHOPBASE))
                         add_damage(x, y, 0L);
-                    levl[x][y].doormask = D_NODOOR;
+                    levl[x][y].doormask &= ~D_MASK;
+                    levl[x][y].doormask |= D_NODOOR;
                     unblock_vision_and_hearing_at_point(x, y);
                     newsym(x, y);
                     break;

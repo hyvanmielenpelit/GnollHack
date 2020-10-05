@@ -1759,13 +1759,14 @@ register int after;
                               (ptr == &mons[PM_FOG_CLOUD]
                                || ptr->mlet == S_LIGHT) ? "flows" : "oozes");
                 } 
-                else if (here->doormask & D_LOCKED && can_unlock) 
+                else if ((here->doormask & D_LOCKED) != 0 && can_unlock) 
                 {
                     if (btrapped) 
                     {
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
-                            here->doormask = D_NODOOR;
+                            here->doormask &= ~D_MASK;
+                            here->doormask |= D_NODOOR;
                             unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                             newsym(mtmp->mx, mtmp->my);
                         }
@@ -1784,18 +1785,20 @@ register int after;
                             else if (!Deaf)
                                 You_hear("a door unlock and open.");
                         }
-                        here->doormask = D_ISOPEN;
+                        here->doormask &= ~D_MASK;
+                        here->doormask |= D_ISOPEN;
                         /* newsym(mtmp->mx, mtmp->my); */
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                     }
                 } 
-                else if (here->doormask == D_CLOSED && can_open) 
+                else if ((here->doormask & D_CLOSED) != 0 && can_open) 
                 {
                     if (btrapped) 
                     {
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
-                            here->doormask = D_NODOOR;
+                            here->doormask &= ~D_MASK;
+                            here->doormask |= D_NODOOR;
                             unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                             newsym(mtmp->mx, mtmp->my);
                         }
@@ -1814,7 +1817,8 @@ register int after;
                             else if (!Deaf)
                                 You_hear("a door open.");
                         }
-                        here->doormask = D_ISOPEN;
+                        here->doormask &= ~D_MASK;
+                        here->doormask |= D_ISOPEN;
                         /* newsym(mtmp->mx, mtmp->my); */  /* done below */
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                     }
@@ -1826,7 +1830,8 @@ register int after;
                     if (btrapped) {
                         if (is_door_destroyed_by_booby_trap_at_ptr(here))
                         {
-                            here->doormask = D_NODOOR;
+                            here->doormask &= ~D_MASK;
+                            here->doormask |= D_NODOOR;
                             unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                             newsym(mtmp->mx, mtmp->my);
                             door_intact = FALSE;
@@ -1848,10 +1853,11 @@ register int after;
                             else if (!Deaf)
                                 You_hear("a door crash open.");
                         }
+                        here->doormask &= ~D_MASK;
                         if ((here->doormask & D_LOCKED) != 0 && !rn2(2))
-                            here->doormask = D_NODOOR;
+                            here->doormask |= D_NODOOR;
                         else
-                            here->doormask = D_BROKEN;
+                            here->doormask |= D_BROKEN;
                         /* newsym(mtmp->mx, mtmp->my); */  /* done below */
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         door_intact = FALSE;

@@ -3733,7 +3733,7 @@ boolean catchup; /* restoring a level */
     }
     if (IS_ROOM(tmp_dam->typ)
         || (tmp_dam->typ == levl[x][y].typ
-            && (!IS_DOOR(tmp_dam->typ) || levl[x][y].doormask > D_BROKEN)))
+            && (!IS_DOOR(tmp_dam->typ) || (levl[x][y].doormask & D_MASK) > D_BROKEN)))
         /* no terrain fix necessary (trap removal or manually repaired) */
         return disposition;
 
@@ -4745,7 +4745,7 @@ register xchar x, y;
     register struct monst *shkp;
 
     if (!(IS_DOOR(levl[u.ux][u.uy].typ)
-          && levl[u.ux][u.uy].doormask == D_BROKEN))
+          && (levl[u.ux][u.uy].doormask & D_MASK) == D_BROKEN))
         return FALSE;
 
     roomno = *in_rooms(x, y, SHOPBASE);

@@ -518,7 +518,10 @@ dig(VOID_ARGS)
             cvt_sdoor_to_door(dpx, dpy); /* ->typ = DOOR */
             digtxt = "You break through a secret door!";
             if (!(lev->doormask & D_TRAPPED))
-                lev->doormask = D_BROKEN;
+            {
+                lev->doormask &= ~D_MASK;
+                lev->doormask |= D_BROKEN;
+            }
         } 
         else if (closed_door(dpx, dpy))
         {
@@ -530,7 +533,10 @@ dig(VOID_ARGS)
                 dmgtxt = "break";
             }
             if (!(lev->doormask & D_TRAPPED))
-                lev->doormask = D_BROKEN;
+            {
+                lev->doormask &= ~D_MASK;
+                lev->doormask |= D_BROKEN;
+            }
         } else
             return 0; /* statue or boulder got taken */
 
@@ -565,7 +571,8 @@ dig(VOID_ARGS)
             b_trapped(get_door_name_at_ptr(lev), 0);
             if (is_door_destroyed_by_booby_trap_at_ptr(lev))
             {
-                lev->doormask = D_NODOOR;
+                lev->doormask &= ~D_MASK;
+                lev->doormask |= D_NODOOR;
                 newsym(dpx, dpy);
             }
         }
@@ -1542,7 +1549,8 @@ register struct monst *mtmp;
         if (here->doormask & D_TRAPPED) {
             if (is_door_destroyed_by_booby_trap_at_ptr(here))
             {
-                here->doormask = D_NODOOR;
+                here->doormask &= ~D_MASK;
+                here->doormask |= D_NODOOR;
             }
             if (mb_trapped(mtmp)) { /* mtmp is killed */
                 newsym(mtmp->mx, mtmp->my);
@@ -1551,7 +1559,8 @@ register struct monst *mtmp;
         } else {
             if (!rn2(3) && flags.verbose) /* not too often.. */
                 draft_message(TRUE); /* "You feel an unexpected draft." */
-            here->doormask = D_BROKEN;
+            here->doormask &= ~D_MASK;
+            here->doormask |= D_BROKEN;
         }
         newsym(mtmp->mx, mtmp->my);
         return FALSE;
@@ -1849,12 +1858,13 @@ struct obj* origobj;
                     shopdoor = TRUE;
                 }
                 play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
+                int otherflags = room->doormask & ~D_MASK;
                 if (room->typ == SDOOR)
                     transform_location_type(zx, zy, DOOR, 0);  /* doormask set below */
                 else if (cansee(zx, zy))
                     pline_The("%s is razed!", get_door_name_at_ptr(room));
                 watch_dig((struct monst*)0, zx, zy, TRUE);
-                room->doormask = D_NODOOR;
+                room->doormask |= (D_NODOOR | otherflags);
                 unblock_vision_and_hearing_at_point(zx, zy); /* vision */
             }
             else

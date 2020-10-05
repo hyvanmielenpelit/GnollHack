@@ -570,7 +570,7 @@ char *buf, *monbuf;
         case S_ndoor:
             if (is_drawbridge_wall(x, y) >= 0)
                 Strcpy(buf, "open drawbridge portcullis");
-            else if ((levl[x][y].doormask & ~D_TRAPPED) == D_BROKEN)
+            else if (((levl[x][y].doormask & ~D_TRAPPED) & D_MASK) == D_BROKEN)
                 Strcpy(buf, "broken door");
             else
                 Strcpy(buf, "doorway");

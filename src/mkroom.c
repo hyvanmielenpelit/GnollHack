@@ -1590,8 +1590,11 @@ mknpcroom()
             int doory = doors[sroom->fdoor + i].y;
             if (isok(doorx, doory) && levl[doorx][doory].typ == DOOR)
             {
-                if (levl[doorx][doory].doormask == D_NODOOR || levl[doorx][doory].doormask == D_BROKEN)
-                    levl[doorx][doory].doormask = D_CLOSED;
+                if ((levl[doorx][doory].doormask & D_MASK) == D_NODOOR || (levl[doorx][doory].doormask & D_MASK) == D_BROKEN)
+                {
+                    levl[doorx][doory].doormask &= ~D_MASK;
+                    levl[doorx][doory].doormask |= D_CLOSED;
+                }
             }
         }
     }

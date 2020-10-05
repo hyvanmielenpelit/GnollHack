@@ -1350,21 +1350,25 @@ dokick() {
                 pline("Crash!  %s a secret door!",
                       /* don't "kick open" when it's locked
                          unless it also happens to be trapped */
-                      (maploc->doormask & (D_LOCKED | D_TRAPPED)) == D_LOCKED
+                      ((maploc->doormask & (D_LOCKED | D_TRAPPED)) & D_MASK) == D_LOCKED
                           ? "Your kick uncovers"
                           : "You kick open");
                 exercise(A_DEX, TRUE);
                 if (maploc->doormask & D_TRAPPED)
                 {
-                    maploc->doormask = D_NODOOR;
+                    maploc->doormask &= ~D_MASK;
+                    maploc->doormask |= D_NODOOR;
                     b_trapped(get_door_name_at_ptr(maploc), FOOT);
                 }
-                else if (maploc->doormask != D_NODOOR && maploc->doormask != D_PORTCULLIS
-                           && !(maploc->doormask & D_LOCKED))
-                    maploc->doormask = D_ISOPEN;
+                else if ((maploc->doormask & D_MASK) != D_NODOOR && (maploc->doormask & D_MASK) != D_PORTCULLIS
+                    && !(maploc->doormask & D_LOCKED))
+                {
+                    maploc->doormask &= ~D_MASK;
+                    maploc->doormask |= D_ISOPEN;
+                }
                 feel_newsym(x, y); /* we know it's gone */
-                if (maploc->doormask == D_ISOPEN
-                    || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS)
+                if ((maploc->doormask & D_MASK) == D_ISOPEN
+                    || (maploc->doormask & D_MASK) == D_NODOOR || (maploc->doormask & D_MASK) == D_PORTCULLIS)
                     unblock_vision_and_hearing_at_point(x, y); /* vision */
 
                 update_hearing_array_and_ambient_sounds_if_point_within_hearing_range(x, y);
@@ -1401,7 +1405,7 @@ dokick() {
             register int i;
             if (Levitation)
                 goto dumb;
-            if ((Luck < 0 || maploc->doormask) && !rn2(3)) 
+            if ((Luck < 0 || maploc->flags) && !rn2(3)) 
             {
                 create_basic_floor_location(x, y, maploc->floortyp ? maploc->floortyp : ROOM, maploc->floorsubtyp ? maploc->floorsubtyp : 0, 0, FALSE);
                 (void) mkgold((long) rnd(200), x, y);
@@ -1668,8 +1672,8 @@ dokick() {
         goto dumb;
     }
 
-    if (maploc->doormask == D_ISOPEN || maploc->doormask == D_BROKEN
-        || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS) {
+    if ((maploc->doormask & D_MASK) == D_ISOPEN || (maploc->doormask & D_MASK) == D_BROKEN
+        || (maploc->doormask & D_MASK) == D_NODOOR || (maploc->doormask & D_MASK) == D_PORTCULLIS) {
  dumb:
         exercise(A_DEX, FALSE);
         if (martial() || ACURR(A_DEX) >= 16 || rn2(3)) {
@@ -1710,7 +1714,8 @@ dokick() {
 
             if (!is_door_indestructible_at_ptr(maploc))
             {
-                maploc->doormask = D_NODOOR;
+                maploc->doormask &= ~D_MASK;
+                maploc->doormask |= D_NODOOR;
                 if (!rn2(2))
                 {
                     struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
@@ -1725,7 +1730,8 @@ dokick() {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline("As you kick the %s, it shatters to pieces!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);
-            maploc->doormask = D_NODOOR;
+            maploc->doormask &= ~D_MASK;
+            maploc->doormask |= D_NODOOR;
 
 			struct obj* otmp = mksobj_at(PIECE_OF_WOOD, x, y, FALSE, FALSE);
 			otmp->quan = 1;
@@ -1738,7 +1744,8 @@ dokick() {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BREAK);
             pline("As you kick the %s, it crashes open!", get_door_name_at(x, y));
             exercise(A_STR, TRUE);
-            maploc->doormask = D_BROKEN;
+            maploc->doormask &= ~D_MASK;
+            maploc->doormask |= D_BROKEN;
         }
 
         feel_newsym(x, y); /* we know we broke it */

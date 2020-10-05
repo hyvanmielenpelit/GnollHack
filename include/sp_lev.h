@@ -234,6 +234,7 @@ enum sp_door_var_flags {
     SP_D_V_SUBTYPE = 0,
     SP_D_V_KEY_TYPE,
     SP_D_V_SPECIAL_QUALITY,
+    SP_D_V_INDESTRUCTIBLE,
 
     SP_D_V_END
 };
@@ -396,7 +397,8 @@ typedef struct {
 } lev_init;
 
 typedef struct {
-    xchar wall, pos, secret, mask;
+    xchar wall, pos, secret, indestr;
+    unsigned short mask;
     int key_otyp, key_special_quality, subtype;
 } room_door;
 

@@ -333,7 +333,8 @@ struct rm* door;
         return FALSE;
 
     enum door_subtypes_types subtyp = door->subtyp >=0  && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
-    if (door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE)
+    if ((door_subtype_definitions[subtyp].flags & DSTFLAGS_INDESTRUCTIBLE) != 0
+        || (door->flags & L_INDESTRUCTIBLE) != 0)
         return TRUE;
     else
         return FALSE;

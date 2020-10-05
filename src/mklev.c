@@ -706,6 +706,7 @@ clear_level_structures()
             level.monsters[x][y] = (struct monst *) 0;
         }
     }
+
     level.objlist = (struct obj *) 0;
     level.buriedobjlist = (struct obj *) 0;
     level.monlist = (struct monst *) 0;

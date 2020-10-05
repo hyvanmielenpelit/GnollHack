@@ -629,6 +629,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 #define D_TRAPPED 16
 #define D_SECRET 32 /* only used by sp_lev.c, NOT in rm-struct */
 #define D_PORTCULLIS 64 /* this is an open portcullis, similar to D_NODOOR */
+#define D_MASK 0xFF
 
 /*
  * Some altars are considered as shrines, so we need a flag.
@@ -714,6 +715,11 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 #define ICED_MOAT 16
 
 /*
+ * General flags for all locations
+ */
+#define L_INDESTRUCTIBLE 0x0100  /* Currently used just for doors */
+
+/*
  * The structure describing a coordinate position.
  * Before adding fields, remember that this will significantly affect
  * the size of temporary files and save files.
@@ -735,7 +741,7 @@ struct rm {
     short special_quality;     /* For doors, the special quality of the key that unlocks the door */
 
     uchar seenv;             /* seen vector */
-    uchar flags;			 /* extra information for typ */
+    unsigned short flags;			 /* extra information for typ */
     Bitfield(horizontal, 1); /* wall/door/etc is horiz. (more typ info) */
     Bitfield(lit, 1);        /* speed hack for lit rooms */
     Bitfield(waslit, 1);     /* remember if a location was lit */

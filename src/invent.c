@@ -4385,7 +4385,7 @@ int x, y;
     static char altbuf[BUFSZ];
 
     if (IS_DOOR(ltyp)) {
-        switch (lev->doormask) {
+        switch ((lev->doormask & D_MASK)) {
         case D_NODOOR:
             altcmap = S_ndoor;
             break; /* "doorway" */

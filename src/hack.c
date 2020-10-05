@@ -567,11 +567,13 @@ xchar x, y;
     } else if (lev->typ == SDOOR) 
     {
         if (lev->doormask & D_TRAPPED) {
-            lev->doormask = D_NODOOR;
+            lev->doormask &= ~D_MASK;
+            lev->doormask |= D_NODOOR;
             b_trapped("secret door", 0);
         } else {
             digtxt = "chew through the secret door.";
-            lev->doormask = D_BROKEN;
+            lev->doormask &= ~D_MASK;
+            lev->doormask |= D_BROKEN;
         }
         transform_location_type(x, y, DOOR, 0);
 
@@ -581,11 +583,13 @@ xchar x, y;
             dmgtxt = "break";
         }
         if (lev->doormask & D_TRAPPED) {
-            lev->doormask = D_NODOOR;
+            lev->doormask &= ~D_MASK;
+            lev->doormask |= D_NODOOR;
             b_trapped(get_door_name_at_ptr(lev), 0);
         } else {
             digtxt = "chew through the door.";
-            lev->doormask = D_BROKEN;
+            lev->doormask &= ~D_MASK;
+            lev->doormask |= D_BROKEN;
         }
 
     } else { /* STONE or SCORR */
@@ -3153,7 +3157,7 @@ int x, y;
        we treat them as if their non-existant doors were actually present */
     if (Is_rogue_level(&u.uz))
         return FALSE;
-    return !(lev_p->doormask & ~(D_NODOOR | D_BROKEN | D_PORTCULLIS));
+    return !((lev_p->doormask & D_MASK) & ~(D_NODOOR | D_BROKEN | D_PORTCULLIS));
 }
 
 /* used by drown() to check whether hero can crawl from water to <x,y> */

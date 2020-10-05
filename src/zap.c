@@ -7002,7 +7002,7 @@ boolean stop_at_first_hit_object;
                     if (cansee(bhitpos.x, bhitpos.y)
                         || (obj->otyp == WAN_STRIKING && !Deaf))
                         learnwand(obj);
-                    if (levl[bhitpos.x][bhitpos.y].doormask == D_BROKEN
+                    if ((levl[bhitpos.x][bhitpos.y].doormask & D_MASK) == D_BROKEN
                         && *in_rooms(bhitpos.x, bhitpos.y, SHOPBASE))
 					{
                         shopdoor = TRUE;
@@ -8719,7 +8719,8 @@ short exploding_wand_typ;
 
             if (new_doormask >= 0)
             {
-                lev->doormask = new_doormask;
+                lev->doormask &= ~D_MASK;
+                lev->doormask |= new_doormask;
             }
 
             if (new_door_subtype >= 0)

@@ -924,7 +924,7 @@ int x, y;
     else /* "5 gears turn" for castle drawbridge tune */
         You_hear("gears turning and chains rattling.");
 
-    full_location_transform(x, y, DRAWBRIDGE_DOWN, lev1->flags, lev1->subtyp, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->facing_right, lev1->horizontal, 0, 0, FALSE);
+    full_location_transform(x, y, DRAWBRIDGE_DOWN, lev1->subtyp, lev1->flags, 0, 0, lev1->floortyp, lev1->floorsubtyp, lev1->facing_right, lev1->horizontal, 0, 0, FALSE);
     lev2 = &levl[x2][y2];
     full_location_transform(x2, y2, DOOR, 0, D_PORTCULLIS, 0, 0, lev2->floortyp, lev2->floorsubtyp, lev2->facing_right, lev2->horizontal, 0, 0, FALSE);
 

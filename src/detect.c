@@ -1642,7 +1642,6 @@ int x, y;
 {
     struct rm* lev = &levl[x][y];
     int newmask = lev->doormask & ~WM_MASK;
-
     if (Is_rogue_level(&u.uz))
         /* rogue didn't have doors, only doorways */
         newmask = D_NODOOR;
@@ -1651,6 +1650,8 @@ int x, y;
         if (!(newmask & D_LOCKED))
         newmask |= D_CLOSED;
 
+    /* Add other flags than door mask */
+    newmask |= (lev->doormask & ~D_MASK);
     transform_location_type_and_flags(x, y, DOOR, newmask, 0);
 }
 
@@ -1742,9 +1743,14 @@ genericptr_t num;
                       cansee(zx, zy) ? "see" : (!Deaf ? "hear"
                                                       : "feel the shock of"));
             wake_nearto(zx, zy, 11 * 11);
-            levl[zx][zy].doormask = D_NODOOR;
-        } else
-            levl[zx][zy].doormask = D_ISOPEN;
+            levl[zx][zy].doormask &= ~D_MASK;
+            levl[zx][zy].doormask |= D_NODOOR;
+        }
+        else
+        {
+            levl[zx][zy].doormask &= ~D_MASK;
+            levl[zx][zy].doormask |= D_ISOPEN;
+        }
         unblock_vision_and_hearing_at_point(zx, zy);
         newsym(zx, zy);
         (*num_p)++;

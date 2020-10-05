@@ -22,6 +22,7 @@ typedef void FDECL((*select_iter_func), (int, int, genericptr));
 typedef void FDECL((*select_iter_func2), (int, int, genericptr, genericptr));
 typedef void FDECL((*select_iter_func3), (int, int, genericptr, genericptr, genericptr));
 typedef void FDECL((*select_iter_func4), (int, int, genericptr, genericptr, genericptr, genericptr));
+typedef void FDECL((*select_iter_func5), (int, int, genericptr, genericptr, genericptr, genericptr, genericptr));
 
 extern void FDECL(mkmap, (lev_init *));
 
@@ -156,12 +157,14 @@ STATIC_DCL void FDECL(selection_iterate3, (struct opvar*, select_iter_func3,
     genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(selection_iterate4, (struct opvar*, select_iter_func4,
     genericptr_t, genericptr_t, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(selection_iterate5, (struct opvar*, select_iter_func5,
+    genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_ter, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature, (int, int, genericptr_t));
 STATIC_DCL void FDECL(sel_set_feature2, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_floor, (int, int, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(sel_set_subtype, (int, int, genericptr_t));
-STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
+STATIC_DCL void FDECL(sel_set_door, (int, int, genericptr_t, genericptr_t, genericptr_t, genericptr_t, genericptr_t));
 STATIC_DCL void FDECL(spo_door, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_feature, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_fountain, (struct sp_coder*));
@@ -1544,12 +1547,15 @@ struct mkroom *broom;
         levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
     }
 #endif
+    unsigned short dflags = dd->mask; /* Normal doormask */
+    if (dd->indestr)
+        dflags |= L_INDESTRUCTIBLE;
 
     levl[x][y].typ = typ;
     levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
     levl[x][y].floortyp = location_type_definitions[typ].initial_floor_type;
     levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
-    levl[x][y].doormask = dd->mask;
+    levl[x][y].doormask = dflags;
     levl[x][y].key_otyp = dd->key_otyp;
     levl[x][y].special_quality = dd->key_special_quality;
 }
@@ -5080,6 +5086,20 @@ genericptr_t arg, arg2, arg3, arg4;
                 (*func)(x, y, arg, arg2, arg3, arg4);
 }
 
+void
+selection_iterate5(ov, func, arg, arg2, arg3, arg4, arg5)
+struct opvar* ov;
+select_iter_func5 func;
+genericptr_t arg, arg2, arg3, arg4;
+{
+    int x, y;
+
+    /* yes, this is very naive, but it's not _that_ expensive. */
+    for (x = 0; x < COLNO; x++)
+        for (y = 0; y < ROWNO; y++)
+            if (selection_getpoint(x, y, ov))
+                (*func)(x, y, arg, arg2, arg3, arg4, arg4);
+}
 
 
 void
@@ -5199,14 +5219,16 @@ genericptr_t arg;
 }
 
 void
-sel_set_door(dx, dy, arg, arg2, arg3, arg4)
+sel_set_door(dx, dy, arg, arg2, arg3, arg4, arg5)
 int dx, dy;
-genericptr_t arg, arg2, arg3, arg4;
+genericptr_t arg, arg2, arg3, arg4, arg5;
 {
     xchar typ = *(xchar *) arg;
     xchar subtyp = *(xchar*)arg2;
     long key_otyp = *(long*)arg3;
     long key_spe_quality = *(long*)arg4;
+    xchar indestr = *(xchar*)arg5;
+
     xchar x = dx, y = dy;
     int settyp = (typ & D_SECRET) ? SDOOR : DOOR;
 
@@ -5232,6 +5254,10 @@ genericptr_t arg, arg2, arg3, arg4;
         if (typ < D_CLOSED)
             typ = D_CLOSED;
     }
+
+    if(indestr)
+        typ |= L_INDESTRUCTIBLE;
+
     set_door_orientation(x, y); /* set/clear levl[x][y].horizontal */
     levl[x][y].subtyp = subtyp;
     levl[x][y].doormask = typ;
@@ -5247,7 +5273,7 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_door";
     struct opvar *msk, *sel;
     struct opvar* varparam;
-    xchar typ = 0, subtyp = 0;
+    xchar typ = 0, subtyp = 0, indestr = 0;
     long kotyp = 0, kspeq = 0;
     int nparams = 0;
 
@@ -5288,6 +5314,11 @@ struct sp_coder *coder;
                 kspeq = OV_i(parm);
             break;
 
+        case SP_D_V_INDESTRUCTIBLE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                indestr = OV_i(parm);
+            break;
+
         case SP_D_V_END:
             nparams = SP_D_V_END + 1;
             break;
@@ -5307,7 +5338,7 @@ struct sp_coder *coder;
 
     typ = OV_i(msk) == -1 ? rnddoor() : (xchar) OV_i(msk);
 
-    selection_iterate4(sel, sel_set_door, (genericptr_t) &typ, (genericptr_t)&subtyp, (genericptr_t)&kotyp, (genericptr_t)&kspeq);
+    selection_iterate5(sel, sel_set_door, (genericptr_t) &typ, (genericptr_t)&subtyp, (genericptr_t)&kotyp, (genericptr_t)&kspeq, (genericptr_t)&indestr);
 
     opvar_free(varparam);
     opvar_free(sel);
@@ -6088,7 +6119,7 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_room_door";
     struct opvar *wall, *secret, *mask, *pos, *varparam;
     int nparams = 0;
-    room_door tmpd;
+    room_door tmpd = { 0 };
 
     if (!OV_pop_i(wall) || !OV_pop_i(secret) || !OV_pop_i(mask)
         || !OV_pop_i(pos) || !coder->croom)
@@ -6117,6 +6148,10 @@ struct sp_coder *coder;
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpd.key_special_quality = OV_i(parm);
             break;
+        case SP_D_V_INDESTRUCTIBLE:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpd.indestr = OV_i(parm);
+            break;
 
         case SP_D_V_END:
             nparams = SP_D_V_END + 1;
@@ -6133,7 +6168,7 @@ struct sp_coder *coder;
     }
 
     tmpd.secret = OV_i(secret);
-    tmpd.mask = OV_i(mask);
+    tmpd.mask = (unsigned short)OV_i(mask);
     tmpd.pos = OV_i(pos);
     tmpd.wall = OV_i(wall);
 

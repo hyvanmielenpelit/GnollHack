@@ -889,9 +889,10 @@ boolean deserted;
 	/* make sure no doorways without doors, and no trapped doors, in shops */
     sx = doors[sroom->fdoor].x;
     sy = doors[sroom->fdoor].y;
-    if (levl[sx][sy].doormask == D_NODOOR && (!deserted || !rn2(2)))
+    if ((levl[sx][sy].doormask & D_MASK) == D_NODOOR && (!deserted || !rn2(2)))
 	{
-        levl[sx][sy].doormask = D_ISOPEN;
+        levl[sx][sy].doormask &= ~D_MASK;
+        levl[sx][sy].doormask |= D_ISOPEN;
         newsym(sx, sy);
     }
     if (levl[sx][sy].typ == SDOOR) {
@@ -899,9 +900,9 @@ boolean deserted;
         newsym(sx, sy);
     }
     if (levl[sx][sy].doormask & D_TRAPPED)
-        levl[sx][sy].doormask = deserted? D_ISOPEN : D_LOCKED;
+        levl[sx][sy].doormask = deserted ? D_ISOPEN : D_LOCKED; /* Deletes trapped */
 
-    if (levl[sx][sy].doormask == D_LOCKED) {
+    if ((levl[sx][sy].doormask & D_MASK) == D_LOCKED) {
         register int m = sx, n = sy;
 
         if (inside_shop(sx + 1, sy))

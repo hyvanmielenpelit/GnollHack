@@ -2831,7 +2831,7 @@ xchar x, y;
         int sym_idx = S_ndoor;
         int subtyp = ptr->subtyp;
 
-        if (ptr->doormask) {
+        if ((ptr->doormask & D_MASK)) {
             if (ptr->doormask & D_BROKEN)
                 sym_idx = (ptr->horizontal) ? S_hbdoor : S_vbdoor;
             else if (ptr->doormask & D_ISOPEN)

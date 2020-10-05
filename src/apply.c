@@ -5647,7 +5647,7 @@ struct obj* obj;
 		goto dumb;
 	}
 
-	if (maploc->doormask == D_ISOPEN || maploc->doormask == D_BROKEN || maploc->doormask == D_NODOOR || maploc->doormask == D_PORTCULLIS)
+	if ((maploc->doormask & D_MASK) == D_ISOPEN || (maploc->doormask & D_MASK) == D_BROKEN || (maploc->doormask & D_MASK) == D_NODOOR || (maploc->doormask & D_MASK) == D_PORTCULLIS)
 	{
 	dumb:
 		You("swing at empty space.");

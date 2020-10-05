@@ -5770,7 +5770,7 @@ void
 full_location_transform(x, y, type, subtype, location_flags, feature_doodad, floor_doodad, floortype, floorsubtype, facing_right, horizontal, key_otyp, special_quality, donewsym)
 xchar x, y;
 int type, subtype, feature_doodad, floor_doodad, floortype;
-uchar location_flags;
+unsigned short location_flags;
 boolean facing_right, horizontal, donewsym;
 short key_otyp, special_quality;
 {
@@ -5801,7 +5801,7 @@ void
 create_simple_location(x, y, type, subtype, location_flags, floor_doodad, floortype, floorsubtype, donewsym)
 xchar x, y;
 int type, subtype, floor_doodad, floortype, floorsubtype;
-uchar location_flags;
+unsigned short location_flags;
 boolean donewsym;
 {
 	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, floortype, floorsubtype, FALSE, FALSE, 0, 0, donewsym);
@@ -5811,7 +5811,7 @@ void
 create_basic_floor_location(x, y, type, subtype, location_flags, donewsym)
 xchar x, y;
 int type, subtype;
-uchar location_flags;
+unsigned short location_flags;
 boolean donewsym;
 {
 	if (!isok(x, y))
@@ -5824,7 +5824,7 @@ void
 create_doodad_floor_location(x, y, type, location_flags, subtype, floor_doodad, donewsym)
 xchar x, y;
 int type, subtype, floor_doodad;
-uchar location_flags;
+unsigned short location_flags;
 boolean donewsym;
 {
 	full_location_transform(x, y, type, subtype, location_flags, 0, floor_doodad, 0, 0, FALSE, FALSE, 0, 0, donewsym);
@@ -5879,7 +5879,7 @@ void
 transform_location_type_and_flags(x, y, type, location_flags, subtype)
 xchar x, y;
 int type, subtype;
-uchar location_flags;
+unsigned short location_flags;
 {
 	levl[x][y].flags = location_flags;
 	transform_location_type(x, y, type, subtype); /* Does not clear flags */
@@ -5889,7 +5889,7 @@ void
 transform_location_type_and_flags_and_set_broken(x, y, type, location_flags, subtype, floor_doodad)
 xchar x, y;
 int type, subtype, floor_doodad;
-uchar location_flags;
+unsigned short location_flags;
 {
 	levl[x][y].flags = location_flags;
 	levl[x][y].floor_doodad = floor_doodad;

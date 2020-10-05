@@ -1458,6 +1458,11 @@ door_info	: LOCATION_SUBTYPE_ID ':' DOOR_SUBTYPE
 		      add_opvars(splev, "ii", VA_PASS2($<i>3, SP_D_V_SPECIAL_QUALITY));
 		      $<i>$ = 0x0004;
 		  }
+		| INDESTRUCTIBLE_ID
+		  {
+		      add_opvars(splev, "ii", VA_PASS2(1, SP_D_V_INDESTRUCTIBLE));
+		      $<i>$ = 0x0008;
+		  }
 		;
 
 

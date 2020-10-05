@@ -1921,7 +1921,10 @@ struct trap *trap;
     del_engr_at(x, y);
     wake_nearto(x, y, 400);
     if (IS_DOOR(lev->typ) && is_door_destroyed_by_booby_trap_at_ptr(lev))
-        lev->doormask = D_BROKEN;
+    {
+        lev->doormask &= ~D_MASK;
+        lev->doormask |= D_BROKEN;
+    }
     /* destroy drawbridge if present */
     if (lev->typ == DRAWBRIDGE_DOWN || is_drawbridge_wall(x, y) >= 0) {
         dbx = x, dby = y;
@@ -2246,7 +2249,8 @@ int style;
         if (otyp == BOULDER && closed_door(bhitpos.x, bhitpos.y) && is_door_destroyed_by_striking_at(bhitpos.x, bhitpos.y)) {
             if (cansee(bhitpos.x, bhitpos.y))
                 pline_The("boulder crashes through a door.");
-            levl[bhitpos.x][bhitpos.y].doormask = D_BROKEN;
+            levl[bhitpos.x][bhitpos.y].doormask &= ~D_MASK;
+            levl[bhitpos.x][bhitpos.y].doormask |= D_BROKEN;
             if (dist)
                 unblock_vision_and_hearing_at_point(bhitpos.x, bhitpos.y);
         }
@@ -5398,7 +5402,7 @@ boolean force;
         return 0;
     }
 
-    switch (levl[x][y].doormask) 
+    switch ((levl[x][y].doormask & D_MASK)) 
     {
     case D_NODOOR:
     case D_PORTCULLIS:
@@ -5415,7 +5419,7 @@ boolean force;
         return 0;
     }
 
-    if (((levl[x][y].doormask & D_TRAPPED) != 0
+    if ((((levl[x][y].doormask & D_TRAPPED) & D_MASK) != 0
          && (force || (!confused && rn2(MAXULEV - u.ulevel + 11) < 10)))
         || (!force && confused && !rn2(3)))
     {
@@ -5436,7 +5440,8 @@ boolean force;
                 play_sfx_sound(SFX_DISARM_TRAP_FAIL);
                 You("set it off!");
                 b_trapped(get_short_door_name_at(x, y), FINGER);
-                levl[x][y].doormask = D_NODOOR;
+                levl[x][y].doormask &= ~D_MASK;
+                levl[x][y].doormask |= D_NODOOR;
                 unblock_vision_and_hearing_at_point(x, y);
                 newsym(x, y);
                 /* (probably ought to charge for this damage...) */
