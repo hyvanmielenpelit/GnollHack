@@ -311,7 +311,6 @@ boolean sanctum; /* is it the seat of the high priest? */
         EPRI(priest)->shrpos.y = sy;
         assign_level(&(EPRI(priest)->shrlevel), lvl);
         priest->mtrapseen = ~0; /* traps are known */
-        priest->mpeaceful = 1;
         priest->ispriest = 1;
         priest->isminion = 0;
         priest->msleeping = 0;
@@ -319,13 +318,32 @@ boolean sanctum; /* is it the seat of the high priest? */
 
         /* now his/her goodies... */
         if (sanctum && EPRI(priest)->shralign == A_NONE
-            && on_level(&sanctum_level, &u.uz)) {
+            && on_level(&sanctum_level, &u.uz)) 
+        {
+            priest->mpeaceful = 0;
             (void) mongets(priest, AMULET_OF_YENDOR);
+
+            otmp = mongets(priest, YELLOW_DRAGON_SCALE_MAIL);
+            otmp->enchantment = max(otmp->enchantment, rnd(3) + 2);
+            otmp = mongets(priest, BRACERS_OF_REFLECTION);
+            otmp->enchantment = max(otmp->enchantment, rnd(3) + 1);
+            otmp = mongets(priest, CLOAK_OF_MAGIC_RESISTANCE);
+            otmp->enchantment = max(otmp->enchantment, rnd(2) + 1);
+            otmp = mongets(priest, SPEED_BOOTS);
+            otmp->enchantment = max(otmp->enchantment, rnd(2) + 2);
+
+            m_dowear(priest, TRUE);
         }
-        /* 2 to 4 spellbooks */
-        for (cnt = rn1(3, 2); cnt > 0; --cnt) {
-            (void) mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));
+        else
+        {
+            priest->mpeaceful = 1;
+
+            /* 2 to 4 spellbooks */
+            for (cnt = rn1(3, 2); cnt > 0; --cnt) {
+                (void)mpickobj(priest, mkobj(SPBOOK_CLASS, FALSE, FALSE));
+            }
         }
+
         /* robe [via makemon()] */
         if (rn2(2) && (otmp = which_armor(priest, W_ARMC)) != 0) {
             if (p_coaligned(priest))
@@ -333,6 +351,7 @@ boolean sanctum; /* is it the seat of the high priest? */
             else
                 curse(otmp);
         }
+        newsym(priest->mx, priest->my);
     }
 }
 

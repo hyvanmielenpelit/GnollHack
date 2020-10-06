@@ -7906,6 +7906,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     const char *fltxt;
     struct obj *otmp;
 	int zaptype = 0;
+    struct obj origobj_copy = origobj ? *origobj : zeroobj; /* Informatin copied here in the case origobj gets destroyed during buzz */
 
 	zaptype = abstype;
 
@@ -7924,7 +7925,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
         if (type < 0)
             return;
-		damage = zhitm(u.ustuck, type, origobj, origmonst, dmgdice, dicesize, dmgplus, &otmp);
+		damage = zhitm(u.ustuck, type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, &otmp);
 
         if (!u.ustuck)
             u.uswallow = 0;
@@ -7946,7 +7947,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     }
     if (type < 0)
         newsym(u.ux, u.uy);
-    range = (!origobj || objects[origobj->otyp].oc_spell_range <= 0) ? rn1(7, 7) : objects[origobj->otyp].oc_spell_range;
+    range = (!origobj || objects[origobj_copy.otyp].oc_spell_range <= 0) ? rn1(7, 7) : objects[origobj_copy.otyp].oc_spell_range;
     if (dx == 0 && dy == 0)
         range = 1;
     save_bhitpos = bhitpos;
@@ -8004,7 +8005,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             
 			notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
             
-			if (zap_hit(find_mac(mon), type, origobj, origmonst))
+			if (zap_hit(find_mac(mon), type, &origobj_copy, origmonst))
 			{
                 if (mon_reflects(mon, (char *) 0)) 
 				{
@@ -8028,7 +8029,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					
 					/* Ray does damage and actually reduces mon's hit points */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, mon->mx, mon->my);
-                    double damage = zhitm(mon, type, origobj, origmonst, dmgdice, dicesize, dmgplus, &otmp);
+                    double damage = zhitm(mon, type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, &otmp);
 
 					/* Rider non-disintegration */
                     if (abstype == ZT_DISINTEGRATION && check_rider_disintegration(mon, fltxt))
@@ -8142,7 +8143,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 } 
                 else 
                 {
-                    zhitu(type, origobj, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
+                    zhitu(type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
             } 
 			else if (!Blind) 
@@ -8158,7 +8159,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 				if (origobj)
 				{
 					int dam = 0;
-					dam = d(objects[origobj->otyp].oc_spell_dmg_dice, objects[origobj->otyp].oc_spell_dmg_diesize) + objects[origobj->otyp].oc_spell_dmg_plus; //Same for small and big
+					dam = d(objects[origobj_copy.otyp].oc_spell_dmg_dice, objects[origobj_copy.otyp].oc_spell_dmg_diesize) + objects[origobj_copy.otyp].oc_spell_dmg_plus; //Same for small and big
 						
 					(void) flashburn((long)dam);
 				}
@@ -8264,12 +8265,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
 		int oclass = 0;
 		if (origobj)
 		{
-			otyp = origobj->otyp;
-			oclass = origobj->oclass;
+			otyp = origobj_copy.otyp;
+			oclass = origobj_copy.oclass;
 		}
 
         if (origobj)
-            explode(sx, sy, type, objects[origobj->otyp].oc_wsdice, objects[origobj->otyp].oc_wsdam, objects[origobj->otyp].oc_wsdice, otyp, oclass, expltype);
+            explode(sx, sy, type, objects[origobj_copy.otyp].oc_wsdice, objects[origobj_copy.otyp].oc_wsdam, objects[origobj_copy.otyp].oc_wsdice, otyp, oclass, expltype);
         else
             explode(sx, sy, type, dmgdice, dicesize, dmgplus, otyp, oclass, expltype);
     }

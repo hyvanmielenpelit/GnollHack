@@ -457,9 +457,17 @@ register struct monst *mtmp;
                    || quest_mon_represents_role(ptr, PM_PRIEST)) {
             otmp = mksobj(MACE, TRUE, FALSE, FALSE);
             if (otmp) {
-                otmp->enchantment = rnd(3);
-                if (!rn2(2))
-                    curse(otmp);
+                if (has_epri(mtmp) && mm == PM_HIGH_PRIEST)
+                {
+                    otmp->enchantment = max(otmp->enchantment, rnd(5) + 5);
+                    otmp->exceptionality = EXCEPTIONALITY_ELITE;
+                }
+                else
+                {
+                    otmp->enchantment = rnd(3);
+                    if (!rn2(2))
+                        curse(otmp);
+                }
                 (void) mpickobj(mtmp, otmp);
             }
         } else if (mm == PM_NINJA) { /* extra quest villains */
@@ -1203,11 +1211,19 @@ register struct monst *mtmp;
         }
         else if (ptr->msound == MS_PRIEST
 			|| quest_mon_represents_role(ptr, PM_PRIEST)) {
-			(void)mongets(mtmp, rn2(7) ? ROBE
-				: rn2(3) ? CLOAK_OF_PROTECTION
-				: CLOAK_OF_MAGIC_RESISTANCE);
-			(void)mongets(mtmp, SMALL_SHIELD);
-			mkmonmoney(mtmp, (long)rn1(10, 20));
+            if (ptr == &mons[PM_HIGH_PRIEST])
+            {
+                otmp = mongets(mtmp, ROBE_OF_STARRY_WISDOM);
+                otmp->enchantment = max(otmp->enchantment, rn2(3));
+            }
+            else
+            {
+                (void)mongets(mtmp, rn2(7) ? ROBE
+                    : rn2(3) ? CLOAK_OF_PROTECTION
+                    : CLOAK_OF_MAGIC_RESISTANCE);
+                (void)mongets(mtmp, SMALL_SHIELD);
+                mkmonmoney(mtmp, (long)rn1(10, 20));
+            }
 		}
 		else if (quest_mon_represents_role(ptr, PM_MONK)) {
 			(void)mongets(mtmp, rn2(11) ? ROBE : CLOAK_OF_MAGIC_RESISTANCE);
