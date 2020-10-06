@@ -1913,7 +1913,7 @@ struct obj* origobj;
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
-                    create_simple_location(zx, zy, room->floortyp ? room->floortyp : GROUND, room->floorsubtyp ? room->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
+                    create_simple_location(zx, zy, room->floortyp ? room->floortyp : GROUND, room->floortyp ? room->floorsubtyp : get_initial_location_subtype(GROUND), 0, back_to_broken_glyph(zx, zy), 0, 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 }
                 else if (!Blind)
@@ -2057,7 +2057,7 @@ struct obj* origobj;
 				}
 				else
 				{ // Leave no pits, evaporation gives a walkable route
-                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
                     if (lev->typ == MOAT)
 					{
 						struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
@@ -2076,7 +2076,7 @@ struct obj* origobj;
                 play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
                 play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
                 /* replace the fountain with ordinary floor */
-                create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
+                create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
 				if (see_it)
 					pline_The("fountain dries up!");
 				/* The location is seen if the hero/monster is invisible
@@ -2151,7 +2151,7 @@ struct obj* origobj;
 			else
 			{ // Leave no pits, evaporation gives a walkable route
 				digdepth -= 1;
-                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floorsubtyp ? levl[zx][zy].floorsubtyp : 0, 0, FALSE);
+                create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : GROUND, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(GROUND), 0, FALSE);
                 if (lev->typ == MOAT)
 				{
 					struct trap* t = maketrap(zx, zy, PIT, NON_PM, MKTRAP_NO_FLAGS);
@@ -2170,7 +2170,7 @@ struct obj* origobj;
 			/* replace the fountain with ordinary floor */
             play_immediate_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, RAY_SOUND_TYPE_HIT_LOCATION, zx, zy);
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_DRY_UP);
-            create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
+            create_simple_location(zx, zy, lev->floortyp ? lev->floortyp : ROOM, lev->floortyp ? lev->floorsubtyp : get_initial_location_subtype(ROOM), 0, back_to_broken_glyph(zx, zy), 0, 0, TRUE);
 			if (see_it)
 				pline_The("fountain dries up!");
 			/* The location is seen if the hero/monster is invisible
