@@ -554,6 +554,7 @@ int trap_type;
                 dosdoor(xx, yy, aroom, SDOOR, 0);
             } else {
                 rm->typ = CORR;
+                rm->subtyp = get_initial_location_subtype(rm->typ);
                 if (rn2(7))
 				{
 					int u_depth = depth(&u.uz);

@@ -154,7 +154,12 @@ int x1, y1, x2, y2;
                     && is_solid(x - 1, y + 1) && is_solid(x, y - 1)
                     && is_solid(x, y + 1) && is_solid(x + 1, y - 1)
                     && is_solid(x + 1, y) && is_solid(x + 1, y + 1))
+                {
                     lev->typ = STONE;
+                    lev->subtyp = get_initial_location_subtype(lev->typ);
+                    lev->floortyp = location_type_definitions[lev->typ].initial_floor_type;
+                    lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+                }
             }
         }
 }
@@ -887,6 +892,9 @@ xchar typ;
                     dir = dirok[rn2(idx)];
                     mz_move(dx, dy, dir);
                     levl[dx][dy].typ = typ;
+                    levl[dx][dy].subtyp = get_initial_location_subtype(levl[dx][dy].typ);
+                    levl[dx][dy].floortyp = location_type_definitions[levl[dx][dy].typ].initial_floor_type;
+                    levl[dx][dy].floorsubtyp = get_initial_location_subtype(levl[dx][dy].floortyp);
                 }
             }
 }
@@ -924,11 +932,21 @@ int wallthick;
     if (level.flags.corrmaze)
         for (x = 2; x < (rdx * 2); x++)
             for (y = 2; y < (rdy * 2); y++)
+            {
                 levl[x][y].typ = STONE;
+                levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
+                levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
+                levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+            }
     else
         for (x = 2; x <= (rdx * 2); x++)
             for (y = 2; y <= (rdy * 2); y++)
+            {
                 levl[x][y].typ = ((x % 2) && (y % 2)) ? STONE : HWALL;
+                levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
+                levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
+                levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
+            }
 
     /* set upper bounds for maze0xy and walkfrom */
     x_maze_max = (rdx * 2);
@@ -1221,7 +1239,9 @@ schar typ;
     if (!IS_DOOR(levl[x][y].typ)) {
         /* might still be on edge of MAP, so don't overwrite */
         levl[x][y].typ = typ;
-        levl[x][y].subtyp = 0;
+        levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
+        levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
         levl[x][y].flags = 0;
     }
 
@@ -1235,6 +1255,9 @@ schar typ;
         dir = dirs[rn2(q)];
         mz_move(x, y, dir);
         levl[x][y].typ = typ;
+        levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
+        levl[x][y].floortyp = location_type_definitions[levl[x][y].typ].initial_floor_type;
+        levl[x][y].floorsubtyp = get_initial_location_subtype(levl[x][y].floortyp);
         mz_move(x, y, dir);
         walkfrom(x, y, typ);
     }

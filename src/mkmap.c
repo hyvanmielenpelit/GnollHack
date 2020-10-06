@@ -283,7 +283,7 @@ wallify_map()
                             else
                                 levl[x][y].typ = VWALL;
 
-                            levl[x][y].subtyp = 0;
+                            levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
                         }
             }
 }

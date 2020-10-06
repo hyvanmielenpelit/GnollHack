@@ -279,6 +279,15 @@ enum corridor_categories {
 
 extern struct category_definition corridor_category_definitions[MAX_CORRIDOR_CATEGORIES];
 
+enum corridor_subtypes {
+    CORRIDOR_SUBTYPE_NORMAL = 0,
+    CORRIDOR_SUBTYPE_NORMAL_VARIATION_1,
+    CORRIDOR_SUBTYPE_NORMAL_VARIATION_2,
+    CORRIDOR_SUBTYPE_NORMAL_VARIATION_3,
+    MAX_CORRIDOR_SUBTYPES
+};
+
+
 
 enum grass_categories {
     GRASS_CATEGORY_NORMAL = 0,
@@ -308,6 +317,7 @@ enum ground_subtypes {
     GROUND_SUBTYPE_NORMAL = 0,
     GROUND_SUBTYPE_NORMAL_VARIATION_1,
     GROUND_SUBTYPE_NORMAL_VARIATION_2,
+    GROUND_SUBTYPE_NORMAL_VARIATION_3,
     GROUND_SUBTYPE_SWAMPY,
     MAX_GROUND_SUBTYPES
 };
@@ -329,11 +339,6 @@ enum floor_subtypes {
     FLOOR_SUBTYPE_MARBLE,
     FLOOR_SUBTYPE_PARQUET,
     MAX_FLOOR_SUBTYPES
-};
-
-enum corridor_subtypes {
-    CORRIDOR_SUBTYPE_NORMAL = 0,
-    MAX_CORRIDOR_SUBTYPES
 };
 
 enum modron_portal_subtypes {
@@ -516,7 +521,10 @@ struct symdef_cmap_variation {
 #define GROUND_VARIATION_OFFSET (GRASS_VARIATIONS + GRASS_VARIATION_OFFSET)
 #define GROUND_VARIATIONS (MAX_GROUND_SUBTYPES - 1)
 
-#define STAIRCASE_UP_VARIATION_OFFSET (GROUND_VARIATIONS + GROUND_VARIATION_OFFSET)
+#define CORRIDOR_VARIATION_OFFSET (GROUND_VARIATIONS + GROUND_VARIATION_OFFSET)
+#define CORRIDOR_VARIATIONS (MAX_CORRIDOR_SUBTYPES - 1)
+
+#define STAIRCASE_UP_VARIATION_OFFSET (CORRIDOR_VARIATIONS + CORRIDOR_VARIATION_OFFSET)
 enum staircase_variation_types
 {
     BRANCH_STAIRCASE = 0,
@@ -763,6 +771,11 @@ struct rm {
                 if(IS_FLOOR(levl[(x)][(y)].typ)) {                \
                      levl[(x)][(y)].floortyp = levl[(x)][(y)].typ; \
                      levl[(x)][(y)].floorsubtyp = levl[(x)][(y)].subtyp; \
+                }                                                 \
+                else if(!IS_FLOOR(levl[(x)][(y)].floortyp))       \
+                {                                                 \
+                     levl[(x)][(y)].floortyp = location_type_definitions[levl[(x)][(y)].typ].initial_floor_type; \
+                     levl[(x)][(y)].floorsubtyp = get_initial_location_subtype(levl[(x)][(y)].floortyp);         \
                 }                                                 \
                 levl[(x)][(y)].typ = (ttyp);                      \
                 levl[(x)][(y)].subtyp = get_initial_location_subtype(ttyp); \

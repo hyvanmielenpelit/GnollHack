@@ -50,7 +50,7 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
 
 struct category_definition corridor_category_definitions[MAX_CORRIDOR_CATEGORIES] =
 {
-    { CORRIDOR_SUBTYPE_NORMAL, 1},
+    { CORRIDOR_SUBTYPE_NORMAL, 4},
 };
 
 struct category_definition grass_category_definitions[MAX_GRASS_CATEGORIES] =
@@ -61,7 +61,7 @@ struct category_definition grass_category_definitions[MAX_GRASS_CATEGORIES] =
 
 struct category_definition ground_category_definitions[MAX_GROUND_CATEGORIES] =
 {
-    { GROUND_SUBTYPE_NORMAL, 1},
+    { GROUND_SUBTYPE_NORMAL, 4},
     { GROUND_SUBTYPE_SWAMPY, 1},
 };
 
@@ -149,6 +149,11 @@ int category_id;
     {
         cat_def = floor_category_definitions;
         cat_size = MAX_FLOOR_CATEGORIES;
+    }
+    else if (ltype == CORR)
+    {
+        cat_def = corridor_category_definitions;
+        cat_size = MAX_CORRIDOR_CATEGORIES;
     }
 
     if (cat_def == 0)

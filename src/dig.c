@@ -72,7 +72,7 @@ boolean waslit, rockit;
     unblock_vision_and_hearing_at_point(x, y); /* make sure vision knows this location is open */
 
     /* fake out saved state */
-    create_simple_location(x, y, (rockit ? STONE : GROUND), (rockit ? 0 : get_initial_location_subtype(GROUND)), 0, 0, rockit ? CORR : 0, 0, FALSE);
+    create_simple_location(x, y, (rockit ? STONE : GROUND), (rockit ? 0 : get_initial_location_subtype(GROUND)), 0, 0, rockit ? CORR : 0, rockit ? get_initial_location_subtype(CORR) : 0, FALSE);
     lev->seenv = 0;
     //lev->doormask = 0;
     if (dist < 3)
@@ -481,7 +481,7 @@ dig(VOID_ARGS)
             {
                 play_simple_location_sound(dpx, dpy, LOCATION_SOUND_TYPE_BREAK);
                 digtxt = "You succeed in cutting away some rock.";
-                create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, 0, 0, FALSE);
+                create_basic_floor_location(dpx, dpy, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floortyp : CORR, levl[dpx][dpy].floortyp ? levl[dpx][dpy].floorsubtyp : get_initial_location_subtype(levl[dpx][dpy].floortyp), 0, FALSE);
             }
         } 
         else if (IS_WALL(lev->typ)) 
@@ -502,6 +502,7 @@ dig(VOID_ARGS)
             else if (level.flags.is_cavernous_lev && !in_town(dpx, dpy)) 
             {
                 ltype = CORR;
+                lsubtype = get_initial_location_subtype(ltype);
             }
             else 
             {
@@ -1567,7 +1568,7 @@ register struct monst *mtmp;
     } 
     else if (here->typ == SCORR) 
     {
-        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, 0, FALSE);
+        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floorsubtyp : get_initial_location_subtype(CORR), 0, FALSE);
         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my);
         newsym(mtmp->mx, mtmp->my);
         draft_message(FALSE); /* "You feel a draft." */
@@ -1606,7 +1607,7 @@ register struct monst *mtmp;
         else if (level.flags.is_cavernous_lev
                    && !in_town(mtmp->mx, mtmp->my))
         {
-            ltype = CORR, lflags = 0;
+            ltype = CORR, lsubtype = get_initial_location_subtype(CORR), lflags = 0;
         } 
         else 
         {
@@ -1641,7 +1642,7 @@ register struct monst *mtmp;
     }
     else
     {
-        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, 0, 0, FALSE);
+        create_basic_floor_location(mtmp->mx, mtmp->my, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floortyp : CORR, levl[mtmp->mx][mtmp->my].floortyp ? levl[mtmp->mx][mtmp->my].floorsubtyp : get_initial_location_subtype(CORR), 0, FALSE);
 
         if (pile && pile < 5)
             (void) mksobj_at((pile == 1) ? BOULDER : ROCK, mtmp->mx, mtmp->my,
@@ -1928,7 +1929,8 @@ struct obj* origobj;
                 if (!(room->wall_info & W_NONDIGGABLE))
                 {
                     play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
-                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : CORR, 0, 0, FALSE);
+                    struct rm* lev = &levl[zx][zy];
+                    create_basic_floor_location(zx, zy, levl[zx][zy].floortyp ? levl[zx][zy].floortyp : CORR, levl[zx][zy].floortyp ? levl[zx][zy].floorsubtyp : get_initial_location_subtype(CORR), 0, FALSE);
                     unblock_vision_and_hearing_at_point(zx, zy); /* vision */
                 } 
                 else if (!Blind)
@@ -1960,6 +1962,7 @@ struct obj* origobj;
                 if (level.flags.is_cavernous_lev && !in_town(zx, zy)) 
                 {
                     ltype = CORR;
+                    lsubtype = get_initial_location_subtype(CORR);
                 } 
                 else 
                 {
@@ -1976,6 +1979,7 @@ struct obj* origobj;
             else 
             { /* IS_ROCK but not IS_WALL or SDOOR */
                 ltype = CORR;
+                lsubtype = get_initial_location_subtype(CORR);
                 digdepth--;
             }
             play_simple_location_sound(zx, zy, LOCATION_SOUND_TYPE_BREAK);
