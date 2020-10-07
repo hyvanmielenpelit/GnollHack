@@ -467,9 +467,9 @@ extern struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES
 #define IS_AIR(typ) ((typ) == AIR || (typ) == CLOUD)
 #define IS_SOFT(typ) ((typ) == AIR || (typ) == CLOUD || IS_POOL(typ))
 
- /* Location types for which floortyp is zero */
-#define IS_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND  || (typ) == UNEXPLORED || (typ) == AIR )
 #define IS_SOLID_FLOOR(typ) ((typ) == ROOM || (typ) == CORR || (typ) == GRASS || (typ) == GROUND)
+ /* Location types for which floortyp is zero */
+#define IS_FLOOR(typ) (IS_SOLID_FLOOR(typ) || IS_AIR(typ) || (typ) == UNEXPLORED)
 
 /* Character maps for various dungeons */
 enum cmap_types {

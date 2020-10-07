@@ -67,10 +67,10 @@ struct trap {
 #define TRAPFLAGS_STATE_MASK                    0x0000000FUL  /* Bit mask for trap states */
 #define TRAPFLAGS_CONTINUOUSLY_SWITCHABLE       0x00000010UL  /* Can be switched many times by apply */
 #define TRAPFLAGS_SWITCHABLE_BETWEEN_STATES     0x00000020UL  /* Switching changes the state of the trap */
-#define TRAPFLAGS_MODRON_LEVEL_TELEPORTER       0x00000040UL
-#define TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN    0x00000080UL
-#define TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP      0x00000100UL
-#define TRAPFLAGS_MODRON_LEVEL_TELEPORT_NO_OTHER_END 0x00000200UL
+#define TRAPFLAGS_LEVEL_TELEPORTER              0x00000040UL  /* Magic portal will teleport between levels instead of branches; modron portal instead of around the level*/
+#define TRAPFLAGS_LEVEL_TELEPORT_DOWN           0x00000080UL  /* Level teleports down instead of defining a destination */
+#define TRAPFLAGS_LEVEL_TELEPORT_UP             0x00000100UL  /* Level teleports up instead of defining a destination */
+#define TRAPFLAGS_LEVEL_TELEPORT_NO_OTHER_END   0x00000200UL  /* Level teleport location at destination is random instead of a portal at the other end */
 
 extern struct trap *ftrap;
 #define newtrap() (struct trap *) alloc(sizeof(struct trap))

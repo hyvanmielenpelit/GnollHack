@@ -619,15 +619,15 @@ struct monst* mtmp;
 	}
 
 	/* Now do the teleport */
-    if (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORTER)
+    if (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORTER)
     {
         d_level destination = { 0 };
-        if (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN)
+        if (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN)
         {
             destination.dnum = u.uz.dnum;
             destination.dlevel = u.uz.dlevel + 1;
         }
-        else if (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP)
+        else if (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP)
         {
             destination.dnum = u.uz.dnum;
             destination.dlevel = u.uz.dlevel - 1;
@@ -1345,9 +1345,9 @@ register struct trap *ttmp;
     }
 
     int portal_flags = (ttmp->ttyp == MODRON_PORTAL ? 
-        ((ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_NO_OTHER_END) != 0 ? 4 : 
-            (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP) != 0 ? 3 : 
-            (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN) != 0 ? 2 : 4) : 1);
+        ((ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_NO_OTHER_END) != 0 ? 4 : 
+            (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP) != 0 ? 3 : 
+            (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN) != 0 ? 2 : 4) : 1);
 
     target_level = ttmp->dst;
     schedule_goto(&target_level, FALSE, FALSE, portal_flags,
@@ -1683,7 +1683,7 @@ int in_sight;
                 get_level(&tolevel, depth(&u.uz) + 1);
             }
         }
-        else if (tt == MAGIC_PORTAL) 
+        else if (tt == MAGIC_PORTAL || tt == MODRON_PORTAL)
         {
             if (In_endgame(&u.uz)
                 && (mon_has_amulet(mtmp) || is_home_elemental(mtmp->data))) 
@@ -1696,10 +1696,29 @@ int in_sight;
             } 
             else
             {
+                if (tt == MODRON_PORTAL)
+                {
+                    if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN)
+                    {
+                        trap->dst.dlevel = u.uz.dlevel + 1;
+                        trap->dst.dnum = u.uz.dnum;
+                        migrate_typ = MIGR_MODRON_PORTAL_UP;
+                    }
+                    else if (trap->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP)
+                    {
+                        trap->dst.dlevel = u.uz.dlevel - 1;
+                        trap->dst.dnum = u.uz.dnum;
+                        migrate_typ = MIGR_MODRON_PORTAL_DOWN;
+                    }
+                    else
+                        migrate_typ = MIGR_RANDOM;
+                }
+                else
+                    migrate_typ = MIGR_PORTAL;
                 assign_level(&tolevel, &trap->dst);
-                migrate_typ = MIGR_PORTAL;
             }
-        } else if (tt == LEVEL_TELEP || tt == NO_TRAP)
+        } 
+        else if (tt == LEVEL_TELEP || tt == NO_TRAP)
         {
             int nlev;
 

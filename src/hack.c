@@ -1540,7 +1540,7 @@ domove_core()
     } 
 	else
 	{
-        if (Is_airlevel(&u.uz) && rn2(4) && !Levitation && !Flying) {
+        if ((Is_airlevel(&u.uz) || levl[u.ux][u.uy].typ == AIR || levl[u.ux][u.uy].typ == CLOUD) && rn2(4) && !Levitation && !Flying) {
             switch (rn2(3)) {
             case 0:
                 You("tumble in place.");

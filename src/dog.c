@@ -482,6 +482,34 @@ boolean with_you;
     case MIGR_SSTAIRS:
         xlocale = sstairs.sx, ylocale = sstairs.sy;
         break;
+    case MIGR_MODRON_PORTAL_UP:
+        xlocale = 0, ylocale = 0;
+        for (t = ftrap; t; t = t->ntrap)
+            if (t->ttyp == MODRON_PORTAL && (t->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP))
+                break;
+        if (t)
+        {
+            xlocale = t->tx, ylocale = t->ty;
+        }
+        else
+        {
+            impossible("mon_arrive: no corresponding portal?");
+        }
+        break;
+    case MIGR_MODRON_PORTAL_DOWN:
+        xlocale = 0, ylocale = 0;
+        for (t = ftrap; t; t = t->ntrap)
+            if (t->ttyp == MODRON_PORTAL && (t->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN))
+                break;
+        if (t)
+        {
+            xlocale = t->tx, ylocale = t->ty;
+        }
+        else
+        {
+            impossible("mon_arrive: no corresponding portal?");
+        }
+        break;
     case MIGR_PORTAL:
         if (In_endgame(&u.uz)) 
         {

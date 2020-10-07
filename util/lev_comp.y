@@ -383,7 +383,7 @@ lev_init	: LEV_INIT_ID ':' SOLID_FILL_ID ',' terrain_type
 			  lc_error("INIT_MAP: Invalid foreground type.");
 		      if (bg == INVALID_TYPE || bg >= MAX_TYPE)
 			  lc_error("INIT_MAP: Invalid background type.");
-		      if (joined && fg != CORR && fg != ROOM && fg != GRASS && fg != GROUND)
+		      if (joined && fg != CORR && fg != ROOM && fg != GRASS && fg != GROUND && fg != AIR && fg != CLOUD)
 			  lc_error("INIT_MAP: Invalid foreground type for joined map.");
 
 		      if (filling == INVALID_TYPE)

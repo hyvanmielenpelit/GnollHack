@@ -2570,14 +2570,14 @@ struct mkroom* croom;
     unsigned long pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
     if (a->level_teleporter)
     {
-        pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORTER;
+        pflags |= TRAPFLAGS_LEVEL_TELEPORTER;
         if (a->tele_direction < 0)
-            pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP;
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_UP;
         else if (a->tele_direction > 0)
-            pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN;
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_DOWN;
 
         if (a->end_type != 0)
-            pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_NO_OTHER_END;
+            pflags |= TRAPFLAGS_LEVEL_TELEPORT_NO_OTHER_END;
     }
 
     if (croom)

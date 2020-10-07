@@ -41,7 +41,7 @@ NEARDATA struct location_type_definition location_type_definitions[MAX_TYPE] = {
     {"ICE",             S_ice,      GROUND, MAT_ICE,     LOCATION_SOUNDSET_ICE},
     {"DRAWBRIDGE_DOWN", S_vodbridge,GROUND, MAT_WOOD,    LOCATION_SOUNDSET_GENERAL},
     {"AIR",             S_air,      0,      MAT_AIR,     LOCATION_SOUNDSET_NONE},
-    {"CLOUD",           S_cloud,    AIR,    MAT_AIR,     LOCATION_SOUNDSET_NONE},
+    {"CLOUD",           S_cloud,    0,      MAT_AIR,     LOCATION_SOUNDSET_NONE},
     {"GRASS",           S_grass,    0,      MAT_VEGGY,   LOCATION_SOUNDSET_NONE},
     {"GROUND",          S_ground,   0,      MAT_SOIL,    LOCATION_SOUNDSET_NONE},
     {"UNEXPLORED",      S_unexplored,0,     MAT_NONE,    LOCATION_SOUNDSET_NONE}

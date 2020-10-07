@@ -5024,8 +5024,8 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 		register struct trap* ttrap;
 
 		for (ttrap = ftrap; ttrap; ttrap = ttrap->ntrap)
-			if ((portal == 2 && ttrap->ttyp == MODRON_PORTAL && (ttrap->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP))
-				|| (portal == 3 && ttrap->ttyp == MODRON_PORTAL && (ttrap->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN))
+			if ((portal == 2 && ttrap->ttyp == MODRON_PORTAL && (ttrap->tflags & TRAPFLAGS_LEVEL_TELEPORT_UP))
+				|| (portal == 3 && ttrap->ttyp == MODRON_PORTAL && (ttrap->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN))
 				)
 				break;
 

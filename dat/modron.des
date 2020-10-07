@@ -324,11 +324,35 @@ OBJECT:('9',"modronite icosahedron")
 #
 # Quartons
 #
-MAZE:"modron2",' '
+MAZE:"modron2",'A'
 FLAGS: noteleport
-INIT_MAP: mines, ':' , ' ' , true , true , random , true
-NOMAP
-MODRON_PORTAL:random,level_teleporter,teleport_up,matching_portal,octahedral,inactive
+INIT_MAP: mines, 'C' , 'A' , true , true , random , true
+GEOMETRY:center,center
+MAP
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAA::::::::::::::::::::::::::::::::::::::::::AAA
+AA::::::::::::::::::::::::::::::::::::::::::::AA
+AA:::------------------+-------------------:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::+....................................+:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::|....................................|:::AA
+AA:::-------------------+------------------:::AA
+AA::::::::::::::::::::::::::::::::::::::::::::AA
+AAA::::::::::::::::::::::::::::::::::::::::::AAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ENDMAP
+
+MODRON_PORTAL:(20,10),level_teleporter,teleport_up,matching_portal,octahedral,inactive
 
 #
 # Tertians
