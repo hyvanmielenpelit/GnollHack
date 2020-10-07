@@ -110,6 +110,8 @@ STATIC_DCL void FDECL(spo_message, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_monster, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_object, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_lever, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_modron_portal, (struct sp_coder*));
+STATIC_DCL void FDECL(spo_modron_level_teleporter, (struct sp_coder*));
 STATIC_DCL void FDECL(spo_level_flags, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_initlevel, (struct sp_coder *));
 STATIC_DCL void FDECL(spo_tileset, (struct sp_coder*));
@@ -2566,6 +2568,14 @@ struct mkroom* croom;
     schar t_x = -1, t_y = -1;
     coord tm, portal_tm;
     unsigned long pflags = a->activated ? TRAPFLAGS_ACTIVATED : TRAPFLAGS_NONE;
+    if (a->level_teleporter)
+    {
+        pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORTER;
+        if (a->tele_direction == -1)
+            pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP;
+        else if (a->tele_direction == 1)
+            pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN;
+    }
 
     if (croom)
         get_free_room_loc(&x, &y, croom, a->coord);
@@ -5490,12 +5500,40 @@ struct sp_coder* coder;
     tmpportal.t_coord = OV_i(tcoord);
     tmpportal.typ = OV_i(typ);
     tmpportal.activated = OV_i(activated);
+    tmpportal.level_teleporter = FALSE;
+    tmpportal.tele_direction = 0;
 
     create_modron_portal(&tmpportal, coder->croom);
 
     opvar_free(activated);
     opvar_free(typ);
     opvar_free(tcoord);
+    opvar_free(acoord);
+}
+
+void spo_modron_level_teleporter(coder)
+struct sp_coder* coder;
+{
+    static const char nhFunc[] = "spo_modron_level_teleporter";
+    struct opvar* acoord, *activated, *typ, *dir;
+    modron_portal tmpportal;
+
+    if (!OV_pop_i(activated) || !OV_pop_i(typ) || !OV_pop_i(dir) || !OV_pop_c(acoord))
+        return;
+
+    int tele_dir = OV_i(dir);
+    tmpportal.coord = OV_i(acoord);
+    tmpportal.t_coord = 0L;
+    tmpportal.typ = OV_i(typ);
+    tmpportal.activated = OV_i(activated);
+    tmpportal.level_teleporter = TRUE;
+    tmpportal.tele_direction = tele_dir;
+
+    create_modron_portal(&tmpportal, coder->croom);
+
+    opvar_free(activated);
+    opvar_free(typ);
+    opvar_free(dir);
     opvar_free(acoord);
 }
 
@@ -6875,6 +6913,9 @@ sp_lev *lvl;
             break;
         case SPO_MODRON_PORTAL:
             spo_modron_portal(coder);
+            break;
+        case SPO_MODRON_LEVEL_TELEPORTER:
+            spo_modron_level_teleporter(coder);
             break;
         case SPO_TRAP:
             spo_trap(coder);

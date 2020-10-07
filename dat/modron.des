@@ -1,6 +1,10 @@
-# GnollHack 4.0	modron1.des	$NHDT-Date: 1547343821 2019/01/13 01:43:41 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.13 $
+# GnollHack 4.0	modron.des	$NHDT-Date: 1547343821 2019/01/13 01:43:41 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.13 $
 #	Copyright (c) 2019-2020 by Janne Gustafsson
 # GnollHack may be freely redistributed.  See license for details.
+#
+
+#
+# Quintons
 #
 MAZE:"modron1",' '
 FLAGS: noteleport
@@ -314,3 +318,36 @@ OBJECT:('9',"modronite icosahedron")
 [50%]: OBJECT: '/'
 [50%]: OBJECT: '*'
 }
+
+
+#
+# Quartons
+#
+MAZE:"modron2",' '
+FLAGS: noteleport
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
+NOMAP
+
+#
+# Tertians
+#
+MAZE:"modron3",' '
+FLAGS: noteleport
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
+NOMAP
+
+#
+# Secundus
+#
+MAZE:"modron4",' '
+FLAGS: noteleport
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
+NOMAP
+
+#
+# Primus
+#
+MAZE:"modron5",' '
+FLAGS: noteleport
+INIT_MAP: mines, ':' , ' ' , true , true , random , true
+NOMAP

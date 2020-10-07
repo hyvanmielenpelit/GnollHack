@@ -71,10 +71,14 @@ DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
 LEVEL:		"Fort Ludious" "knox" "K" @ (-1, 0)
 
-DUNGEON:	"Plane of the Modron" "M" (1, 0)
+DUNGEON:	"Plane of the Modron" "M" (5, 0)
 DESCRIPTION:	mazelike
 ALIGNMENT:	unaligned
-LEVEL:		"Mechanus" "modron1" "M" @ (-1, 0)
+LEVEL:		"Pentanus" "modron1" "M" @ (1, 0)
+LEVEL:		"Tetranus" "modron2" "M" @ (2, 0)
+LEVEL:		"Trinus" "modron3" "M" @ (3, 0)
+LEVEL:		"Duonus" "modron4" "M" @ (4, 0)
+LEVEL:		"Mononus" "modron5" "M" @ (5, 0)
 
 DUNGEON:	"Hellish Pastures" "B" (1, 0)
 TILESET:    gehennom_tileset

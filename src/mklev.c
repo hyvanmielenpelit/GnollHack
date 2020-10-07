@@ -1898,7 +1898,7 @@ coord *tm;
 }
 
 void
-mkmodronportal(subtyp, tm, portal_tm, portal_flags)
+mkmodronportal(subtyp, tm, portal_tm, dest, portal_flags)
 int subtyp;
 coord* tm;
 coord* portal_tm;

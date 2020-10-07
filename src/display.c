@@ -3982,7 +3982,7 @@ get_current_cmap_type_index()
         return CMAP_GNOMISH_MINES;
     else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz) || In_V_tower(&u.uz))
         return CMAP_UNDEAD_STYLE;
-    else if (Is_modron_level(&u.uz))
+    else if (In_modron_level(&u.uz))
         return CMAP_MODRON;
     else if (Is_bovine_level(&u.uz))
         return CMAP_BOVINE;

@@ -97,6 +97,10 @@
     <Levfiles Include = "medusa-4.lev"/>
     <Levfiles Include = "minotaur.lev"/>
     <Levfiles Include = "modron1.lev"/>
+    <Levfiles Include = "modron2.lev"/>
+    <Levfiles Include = "modron3.lev"/>
+    <Levfiles Include = "modron4.lev"/>
+    <Levfiles Include = "modron5.lev"/>
     <Levfiles Include = "oracle.lev"/>
     <Levfiles Include = "soko1-1.lev"/>
     <Levfiles Include = "soko1-2.lev"/>

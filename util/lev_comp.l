@@ -247,7 +247,8 @@ not_trapped { savetoken(yytext); yylval.i=0; return TRAPPED_STATE; }
 recharged	ST_RET(RECHARGED_ID);
 invisible	ST_RET(INVIS_ID);
 greased		ST_RET(GREASED_ID);
-indestructible	ST_RET(INDESTRUCTIBLE_ID);
+indestructible    ST_RET(INDESTRUCTIBLE_ID);
+level_teleporter  ST_RET(LEVEL_TELEPORTER_ID);
 female		ST_RET(FEMALE_ID);
 cancelled	ST_RET(CANCELLED_ID);
 revived		ST_RET(REVIVED_ID);
@@ -398,6 +399,8 @@ door_reinforced { savetoken(yytext); yylval.i=DOOR_SUBTYPE_REINFORCED; return DO
 door_stone { savetoken(yytext); yylval.i=DOOR_SUBTYPE_STONE; return DOOR_SUBTYPE; }
 door_obsidian { savetoken(yytext); yylval.i=DOOR_SUBTYPE_OBSIDIAN; return DOOR_SUBTYPE; }
 door_black_gate { savetoken(yytext); yylval.i=DOOR_SUBTYPE_BLACK_GATE; return DOOR_SUBTYPE; }
+teleport_up    { savetoken(yytext); yylval.i=-1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
+teleport_down  { savetoken(yytext); yylval.i=1; return LEVEL_TELEPORT_DIRECTION_TYPE; }
 false		{ savetoken(yytext); yylval.i=0; return BOOLEAN; }
 true		{ savetoken(yytext); yylval.i=1; return BOOLEAN; }
 dust		{ savetoken(yytext); yylval.i=DUST; return ENGRAVING_TYPE; }

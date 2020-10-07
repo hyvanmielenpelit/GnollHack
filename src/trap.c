@@ -1779,28 +1779,7 @@ unsigned trflags;
     {
         feeltrap(trap);
         play_sfx_sound(SFX_GENERIC_MAGICAL_TRAP_ACTIVATE);
-
-        int tx = u.ux + 7;
-        int ty = u.uy;
-        if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL)
-        {
-            tx = u.ux - 4, ty = u.uy;
-        }
-        else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_CUBICAL)
-        {
-            tx = u.ux, ty = u.uy + 4;
-        }
-        else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL)
-        {
-            tx = u.ux, ty = u.uy - 4;
-        }
-
-        if (isok(trap->launch.x, trap->launch.y))
-        {
-            tx = trap->launch.x;
-            ty = trap->launch.y;
-        }
-        (void)modronportaltele(trap, &youmonst, tx, ty);
+        (void)modronportaltele(trap, &youmonst);
         break;
     }
     case LEVER:
@@ -3068,27 +3047,7 @@ register struct monst *mtmp;
 		case MODRON_PORTAL:
         {
             play_sfx_sound_at_location(SFX_GENERIC_MAGICAL_TRAP_ACTIVATE, mtmp->mx, mtmp->my);
-            int tx = mtmp->mx + 7;
-            int ty = mtmp->my;
-            if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_TETRAHEDRAL)
-            {
-                tx = mtmp->mx - 4, ty = mtmp->my;
-            }
-            else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_CUBICAL)
-            {
-                tx = mtmp->mx, ty = mtmp->my + 4;
-            }
-            else if (trap->tsubtyp == MODRON_PORTAL_SUBTYPE_DODECAHEDRAL)
-            {
-                tx = mtmp->mx, ty = mtmp->my - 4;
-            }
-
-            if (isok(trap->launch.x, trap->launch.y))
-            {
-                tx = trap->launch.x;
-                ty = trap->launch.y;
-            }
-            modronportaltele(trap, mtmp, tx, ty);
+            modronportaltele(trap, mtmp);
             break;
         }
         case LEVER:

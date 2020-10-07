@@ -500,7 +500,8 @@ INSTDUNGEONFILES1= \
 	$(SLIB)fakewiz1.lev	$(SLIB)fakewiz2.lev	$(SLIB)fire.lev \
 	$(SLIB)juiblex.lev	$(SLIB)knox.lev		$(SLIB)medusa-1.lev \
 	$(SLIB)medusa-2.lev	$(SLIB)minend-1.lev	$(SLIB)minend-2.lev \
-	$(SLIB)minetn-1.lev	$(SLIB)minetn-2.lev	$(SLIB)minefill.lev	$(SLIB)minotaur.lev $(SLIB)modron1.lev \
+	$(SLIB)minetn-1.lev	$(SLIB)minetn-2.lev	$(SLIB)minefill.lev	$(SLIB)minotaur.lev \
+	$(SLIB)modron1.lev  $(SLIB)modron2.lev  $(SLIB)modron3.lev  $(SLIB)modron4.lev  $(SLIB)modron5.lev\
 	$(SLIB)options		$(SLIB)oracle.lev	$(SLIB)orcus.lev \
 	$(SLIB)sanctum.lev	$(SLIB)soko1-1.lev	$(SLIB)soko1-2.lev \
 	$(SLIB)soko2-1.lev	$(SLIB)soko2-2.lev	$(SLIB)soko3-1.lev \
@@ -1130,9 +1131,10 @@ $(SLIB)medusa-2.lev:	$(DAT)medusa.des $(SBIN)lev_comp
 #SFD_INSTEAD $(SBIN)lev_comp $(DAT)medusa.des
 #none
 
-MODRON1= $(SLIB)modron1.lev
+MODRON1= $(SLIB)modron1.lev $(SLIB)modron2.lev $(SLIB)modron3.lev $(SLIB)modron4.lev
+$(MODRON1): $(SLIB)modron5.lev
 
-$(SLIB)modron1.lev:	$(DAT)modron.des $(SBIN)lev_comp
+$(SLIB)modron5.lev:	$(DAT)modron.des $(SBIN)lev_comp
 #SFD_INSTEAD $(SBIN)lev_comp $(DAT)modron.des
 #none
 

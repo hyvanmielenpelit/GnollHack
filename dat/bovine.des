@@ -30,9 +30,15 @@ MAP
 ENDMAP
 # Dungeon Description
 REGION:(00,00,46,15),lit,"ordinary"
-# Doors
 ## Portal arrival point; just about anywhere on the right hand side of the map
 BRANCH:levregion(51,2,77,18),(0,0,26,15)
+# Doors
+DOOR:closed,(04,02)
+DOOR:closed,(04,13)
+DOOR:closed,(15,02)
+DOOR:closed,(15,13)
+DOOR:closed,(21,06)
+DOOR:closed,(21,10)
 # Yacc
 MONSTER:('&',"Yacc"),(06,08)
 # The treasure of Yacc

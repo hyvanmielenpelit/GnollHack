@@ -79,6 +79,7 @@ enum opcode_defs {
     SPO_FOUNTAIN,
     SPO_THRONE,
     SPO_MODRON_PORTAL,
+    SPO_MODRON_LEVEL_TELEPORTER,
     SPO_SINK,
     SPO_POOL,
     SPO_TRAP,
@@ -476,6 +477,8 @@ typedef struct {
     packed_coord t_coord;
     uchar typ;
     boolean activated;
+    boolean level_teleporter;
+    int tele_direction;
 } modron_portal;
 
 typedef struct {

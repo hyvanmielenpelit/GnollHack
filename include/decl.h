@@ -79,8 +79,12 @@ E struct dgn_topology { /* special dungeon levels for speed */
 	xchar d_mines_dnum, d_quest_dnum;
 	d_level d_qstart_level, d_qlocate_level, d_nemesis_level;
     d_level d_knox_level;
-	d_level d_modron_level;
-	xchar d_modron_dnum;
+	d_level d_quinton_modron_level;
+    d_level d_quarton_modron_level;
+    d_level d_tertian_modron_level;
+    d_level d_secundus_modron_level;
+    d_level d_primus_modron_level;
+    xchar d_modron_dnum;
     d_level d_bovine_level;
     xchar d_bovine_dnum;
     d_level d_minetown_level;
@@ -123,7 +127,11 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define qlocate_level           (dungeon_topology.d_qlocate_level)
 #define nemesis_level           (dungeon_topology.d_nemesis_level)
 #define knox_level              (dungeon_topology.d_knox_level)
-#define modron_level            (dungeon_topology.d_modron_level)
+#define quinton_modron_level    (dungeon_topology.d_quinton_modron_level)
+#define quarton_modron_level    (dungeon_topology.d_quarton_modron_level)
+#define tertian_modron_level    (dungeon_topology.d_tertian_modron_level)
+#define secundus_modron_level   (dungeon_topology.d_secundus_modron_level)
+#define primus_modron_level     (dungeon_topology.d_primus_modron_level)
 #define modron_dnum             (dungeon_topology.d_modron_dnum)
 #define bovine_level            (dungeon_topology.d_bovine_level)
 #define bovine_dnum             (dungeon_topology.d_bovine_dnum)

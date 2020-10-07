@@ -178,6 +178,10 @@ read 'File' (1162,"Wiz-goal.lev") "Wiz-goal.lev";
 read 'File' (1163,"Wiz-loca.lev") "Wiz-loca.lev";
 read 'File' (1164,"Wiz-strt.lev") "Wiz-strt.lev";
 read 'File' (1165,"minotaur.lev") "minotaur.lev";
+read 'File' (1166,"modron2.lev")  "modron2.lev";
+read 'File' (1167,"modron3.lev")  "modron3.lev";
+read 'File' (1168,"modron4.lev")  "modron4.lev";
+read 'File' (1169,"modron5.lev")  "modron5.lev";
 
 #else
 read 'File' (1000,"cmdhelp") ":dat:cmdhelp";
@@ -246,11 +250,11 @@ read 'File' (1063,"wizard2.lev") ":lib:wizard2.lev";
 read 'File' (1064,"wizard3.lev") ":lib:wizard3.lev";
 read 'File' (1065,"yeenoghu.lev") ":lib:yeenoghu.lev";
 read 'File' (1066,"tarrasque.lev") ":lib:tarrasque.lev";
-read 'File' (1067,"mainfill.lev") "mainfill.lev";
-read 'File' (1068,"hellfill.lev") "hellfill.lev";
-read 'File' (1069,"modron1.lev") "modron1.lev";
-read 'File' (1070,"bovine1.lev") "bovine1.lev";
-read 'File' (1071,"treasure1.lev") "treasure1.lev";
+read 'File' (1067,"mainfill.lev") ":lib:mainfill.lev";
+read 'File' (1068,"hellfill.lev") ":lib:hellfill.lev";
+read 'File' (1069,"modron1.lev") ":lib:modron1.lev";
+read 'File' (1070,"bovine1.lev") ":lib:bovine1.lev";
+read 'File' (1071,"treasure1.lev") ":lib:treasure1.lev";
 read 'File' (1100,"Arc-fila.lev") ":lib:Arc-fila.lev";
 read 'File' (1101,"Arc-filb.lev") ":lib:Arc-filb.lev";
 read 'File' (1102,"Arc-goal.lev") ":lib:Arc-goal.lev";
@@ -317,4 +321,8 @@ read 'File' (1162,"Wiz-goal.lev") ":lib:Wiz-goal.lev";
 read 'File' (1163,"Wiz-loca.lev") ":lib:Wiz-loca.lev";
 read 'File' (1164,"Wiz-strt.lev") ":lib:Wiz-strt.lev";
 read 'File' (1165,"minotaur.lev") ":lib:minotaur.lev";
+read 'File' (1166,"modron2.lev")  ":lib:modron2.lev";
+read 'File' (1167,"modron3.lev")  ":lib:modron3.lev";
+read 'File' (1168,"modron4.lev")  ":lib:modron4.lev";
+read 'File' (1169,"modron5.lev")  ":lib:modron5.lev";
 #endif

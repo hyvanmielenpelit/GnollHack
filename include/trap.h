@@ -61,12 +61,15 @@ struct trap {
 #define tnote vl.v_tnote
 };
 
-#define TRAPFLAGS_NONE                      0x00000000UL
-#define TRAPFLAGS_ACTIVATED                 0x00000001UL  /* Trap is in the activated state */
+#define TRAPFLAGS_NONE                          0x00000000UL
+#define TRAPFLAGS_ACTIVATED                     0x00000001UL  /* Trap is in the activated state */
 /* Three more bit for possible trap states */
-#define TRAPFLAGS_STATE_MASK                0x0000000FUL  /* Bit mask for trap states */
-#define TRAPFLAGS_CONTINUOUSLY_SWITCHABLE   0x00000010UL  /* Can be switched many times by apply */
-#define TRAPFLAGS_SWITCHABLE_BETWEEN_STATES 0x00000020UL  /* Switching changes the state of the trap */
+#define TRAPFLAGS_STATE_MASK                    0x0000000FUL  /* Bit mask for trap states */
+#define TRAPFLAGS_CONTINUOUSLY_SWITCHABLE       0x00000010UL  /* Can be switched many times by apply */
+#define TRAPFLAGS_SWITCHABLE_BETWEEN_STATES     0x00000020UL  /* Switching changes the state of the trap */
+#define TRAPFLAGS_MODRON_LEVEL_TELEPORTER       0x00000040UL
+#define TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN    0x00000080UL
+#define TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP      0x00000100UL
 
 extern struct trap *ftrap;
 #define newtrap() (struct trap *) alloc(sizeof(struct trap))

@@ -5231,7 +5231,7 @@ boolean at_stairs, falling, portal;
             }
         }
 
-		if (!Is_modron_level(&u.uz0) && !u.uevent.modron_portal_hint && at_dgn_entrance("Plane of the Modron"))
+		if (!In_modron_level(&u.uz0) && !u.uevent.modron_portal_hint && at_dgn_entrance("Plane of the Modron"))
 		{
 			u.uevent.modron_portal_hint = 1;
 			You("suddenly feel that angles are here straighter than normal, but then the feeling subsides.");

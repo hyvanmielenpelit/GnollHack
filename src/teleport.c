@@ -569,13 +569,11 @@ boolean iscontrolled;
 }
 
 boolean
-modronportaltele(ttmp, mtmp, x, y)
+modronportaltele(ttmp, mtmp)
 struct trap* ttmp;
 struct monst* mtmp;
-int x;
-int y;
 {
-	if (!mtmp)
+	if (!ttmp || !mtmp)
 		return FALSE;
 
     boolean isyou = (mtmp == &youmonst);
@@ -621,82 +619,111 @@ int y;
 	}
 
 	/* Now do the teleport */
-	int nux= x, nuy = y;
-	int tcnt = 0;
-	if(isyou ? !teleok(x, y, FALSE) : !rloc_pos_ok(x, y, mtmp))
-	{
-		do {
-			if (tcnt < 50)
-			{
-				nux = x - 1 + rn2(3);
-				nuy = y - 1 + rn2(3);
-			}
-			else
-			{
-				nux = x - 2 + rn2(5);
-				nuy = y - 2 + rn2(5);
-			}
-		} while ((isyou ? !teleok(x, y, (tcnt >= 200)) : !rloc_pos_ok(x, y, mtmp)) && ++tcnt <= 400);
-	}
-
-	if (tcnt <= 400)
-	{
-		if (isyou || mtmp == u.usteed)
-		{
-            play_sfx_sound(SFX_MODRON_TELEPORT_SUCCESS);
-            if(otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
-    			pline("%s light envelops %s!", portal_color, yname(otmp));
-			pline("You feel your essence unsolidifying...");
-			pline("You reemerge at a new location!");
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
-            play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-            special_effect_wait_until_action(0);
-            teleds(nux, nuy, TRUE);
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
-            special_effect_wait_until_action(1);
-            special_effect_wait_until_end(0);
-            special_effect_wait_until_end(1);
-            if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
-            {
-                pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
-                useup(otmp);
-                ttmp->tflags |= TRAPFLAGS_ACTIVATED;
-                ttmp->activation_count++;
-            }
-		}
-		else
-		{
-            char colorbuf[BUFSZ];
-            strcpy(colorbuf, portal_color);
-            *colorbuf = lowc(*colorbuf);
-
-            play_sfx_sound_at_location(SFX_MODRON_TELEPORT_SUCCESS, mtmp->mx, mtmp->my);
-            rloc_to(mtmp, nux, nuy);
-            pline("%s disappears in a flash of %s light.", Monnam(mtmp), colorbuf);
-            if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
-            {
-                m_useup(mtmp, otmp);
-                ttmp->tflags |= TRAPFLAGS_ACTIVATED;
-                ttmp->activation_count++;
-            }
-        }
-		return TRUE;
-	}
-    else
-	{
-        if (isyou)
+    if (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORTER)
+    {
+        d_level destination = { 0 };
+        if (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN)
         {
-            play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
-            pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
+            destination.dnum = u.uz.dnum;
+            destination.dlevel = u.uz.dlevel + 1;
+        }
+        else if (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP)
+        {
+            destination.dnum = u.uz.dnum;
+            destination.dlevel = u.uz.dlevel - 1;
         }
         else
         {
-            play_sfx_sound_at_location(SFX_MODRON_GLIMMER_SURROUNDS, mtmp->mx, mtmp->my);
-            if(canseemon(mtmp))
-                pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
+            destination = ttmp->dst;
         }
-		return FALSE;
-	}
+        domagicportal(ttmp);
+    }
+    else
+    {
+	    int x = ttmp->launch.x, y = ttmp->launch.y;
+        int tcnt = 0;
+        if (!isok(x, y))
+        {
+            /* Arbitrary */
+            x = u.ux;
+            y = u.uy + 1;
+        }
+        int nux = x, nuy = y;
+        if(isyou ? !teleok(x, y, FALSE) : !rloc_pos_ok(x, y, mtmp))
+	    {
+		    do {
+			    if (tcnt < 50)
+			    {
+				    nux = x - 1 + rn2(3);
+				    nuy = y - 1 + rn2(3);
+			    }
+			    else
+			    {
+				    nux = x - 2 + rn2(5);
+				    nuy = y - 2 + rn2(5);
+			    }
+		    } while ((isyou ? !teleok(x, y, (tcnt >= 200)) : !rloc_pos_ok(x, y, mtmp)) && ++tcnt <= 400);
+	    }
+
+	    if (tcnt <= 400)
+	    {
+		    if (isyou || mtmp == u.usteed)
+		    {
+                play_sfx_sound(SFX_MODRON_TELEPORT_SUCCESS);
+                if(otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
+    			    pline("%s light envelops %s!", portal_color, yname(otmp));
+			    pline("You feel your essence unsolidifying...");
+			    pline("You reemerge at a new location!");
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
+                special_effect_wait_until_action(0);
+                teleds(nux, nuy, TRUE);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+                special_effect_wait_until_action(1);
+                special_effect_wait_until_end(0);
+                special_effect_wait_until_end(1);
+                if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
+                {
+                    pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
+                    useup(otmp);
+                    ttmp->tflags |= TRAPFLAGS_ACTIVATED;
+                    ttmp->activation_count++;
+                }
+		    }
+		    else
+		    {
+                char colorbuf[BUFSZ];
+                strcpy(colorbuf, portal_color);
+                *colorbuf = lowc(*colorbuf);
+
+                play_sfx_sound_at_location(SFX_MODRON_TELEPORT_SUCCESS, mtmp->mx, mtmp->my);
+                rloc_to(mtmp, nux, nuy);
+                pline("%s disappears in a flash of %s light.", Monnam(mtmp), colorbuf);
+                if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
+                {
+                    m_useup(mtmp, otmp);
+                    ttmp->tflags |= TRAPFLAGS_ACTIVATED;
+                    ttmp->activation_count++;
+                }
+            }
+		    return TRUE;
+	    }
+        else
+	    {
+            if (isyou)
+            {
+                play_sfx_sound(SFX_MODRON_GLIMMER_SURROUNDS);
+                pline("%s glimmer surrounds you for a while but nothing else happens.", portal_color);
+            }
+            else
+            {
+                play_sfx_sound_at_location(SFX_MODRON_GLIMMER_SURROUNDS, mtmp->mx, mtmp->my);
+                if(canseemon(mtmp))
+                    pline("%s glimmer flashes around %s.", portal_color, mon_nam(mtmp));
+            }
+		    return FALSE;
+	    }
+    }
 	return FALSE;
 }
 

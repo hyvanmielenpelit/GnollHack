@@ -2989,7 +2989,7 @@ E void NDECL(tele);
 E void NDECL(controlled_teleportation);
 E void NDECL(wiztele);
 E boolean FDECL(scrolltele, (struct obj *, BOOLEAN_P, BOOLEAN_P));
-E boolean FDECL(modronportaltele, (struct trap*, struct monst*, int, int));
+E boolean FDECL(modronportaltele, (struct trap*, struct monst*));
 E int NDECL(dotelecmd);
 E int FDECL(dotele, (BOOLEAN_P));
 E void FDECL(level_tele, (int, BOOLEAN_P));
