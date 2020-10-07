@@ -479,6 +479,7 @@ typedef struct {
     boolean activated;
     boolean level_teleporter;
     int tele_direction;
+    boolean end_type;
 } modron_portal;
 
 typedef struct {

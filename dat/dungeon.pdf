@@ -77,7 +77,7 @@ ALIGNMENT:	unaligned
 LEVEL:		"Pentanus" "modron1" "M" @ (1, 0)
 LEVEL:		"Tetranus" "modron2" "M" @ (2, 0)
 LEVEL:		"Trinus" "modron3" "M" @ (3, 0)
-LEVEL:		"Duonus" "modron4" "M" @ (4, 0)
+LEVEL:		"Dinus" "modron4" "M" @ (4, 0)
 LEVEL:		"Mononus" "modron5" "M" @ (5, 0)
 
 DUNGEON:	"Hellish Pastures" "B" (1, 0)

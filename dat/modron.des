@@ -44,6 +44,7 @@ TELEPORT_REGION:(01,07,05,11),(0,0,0,0),down
 # The special entrace portal
 MODRON_PORTAL:(05,09),target:(09,09),octahedral,inactive
 MODRON_PORTAL:(08,09),target:(04,09),tetrahedral,inactive
+MODRON_PORTAL:(05,07),level_teleporter,teleport_down,matching_portal,tetrahedral,inactive
 
 
 # Dead adventurers
@@ -327,6 +328,7 @@ MAZE:"modron2",' '
 FLAGS: noteleport
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
+MODRON_PORTAL:random,level_teleporter,teleport_up,matching_portal,octahedral,inactive
 
 #
 # Tertians

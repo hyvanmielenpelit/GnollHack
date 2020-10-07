@@ -70,6 +70,7 @@ struct trap {
 #define TRAPFLAGS_MODRON_LEVEL_TELEPORTER       0x00000040UL
 #define TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN    0x00000080UL
 #define TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP      0x00000100UL
+#define TRAPFLAGS_MODRON_LEVEL_TELEPORT_NO_OTHER_END 0x00000200UL
 
 extern struct trap *ftrap;
 #define newtrap() (struct trap *) alloc(sizeof(struct trap))

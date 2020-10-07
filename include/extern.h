@@ -533,7 +533,7 @@ E int NDECL(doup);
 E void NDECL(save_currentstate);
 #endif
 E void FDECL(u_collide_m, (struct monst *));
-E void FDECL(goto_level, (d_level *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
+E void FDECL(goto_level, (d_level *, BOOLEAN_P, BOOLEAN_P, xchar));
 E void FDECL(schedule_goto, (d_level *, BOOLEAN_P, BOOLEAN_P, int,
                              const char *, const char *));
 E void NDECL(deferred_goto);

@@ -4795,7 +4795,8 @@ struct monst *mtmp;
 void
 goto_level(newlevel, at_stairs, falling, portal)
 d_level *newlevel;
-boolean at_stairs, falling, portal;
+boolean at_stairs, falling;
+xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = Modron portal up (find portal down), 4 = Modron portal (random destinatioN) */
 {
     int fd, l_idx;
     xchar new_ledger;
@@ -5000,7 +5001,8 @@ boolean at_stairs, falling, portal;
     vision_full_recalc = 0; /* don't let that reenable vision yet */
     flush_screen(-1);       /* ensure all map flushes are postponed */
 
-    if (portal && !In_endgame(&u.uz)) {
+    if (portal == 1 && !In_endgame(&u.uz)) 
+	{
         /* find the portal on the new level */
         register struct trap *ttrap;
 
@@ -5015,7 +5017,28 @@ boolean at_stairs, falling, portal;
 		}
         seetrap(ttrap);
         u_on_newpos(ttrap->tx, ttrap->ty);
-    } else if (at_stairs && !In_endgame(&u.uz)) {
+    } 
+	else if ((portal == 2 || portal == 3) && !In_endgame(&u.uz))
+	{
+		/* find the portal on the new level */
+		register struct trap* ttrap;
+
+		for (ttrap = ftrap; ttrap; ttrap = ttrap->ntrap)
+			if ((portal == 2 && ttrap->ttyp == MODRON_PORTAL && (ttrap->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP))
+				|| (portal == 3 && ttrap->ttyp == MODRON_PORTAL && (ttrap->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN))
+				)
+				break;
+
+		if (!ttrap)
+		{
+			panic("goto_level: no corresponding portal!");
+			return;
+		}
+		seetrap(ttrap);
+		u_on_newpos(ttrap->tx, ttrap->ty);
+	}
+	else if (at_stairs && !In_endgame(&u.uz))
+	{
         if (up) {
             if (at_ladder)
                 u_on_newpos(xdnladder, ydnladder);
@@ -5299,9 +5322,15 @@ const char *pre_msg, *post_msg;
         typmask |= 1;
     if (falling)
         typmask |= 2;
-    if (portal_flag)
+    if (portal_flag == 1)
         typmask |= 4;
-    if (portal_flag < 0)
+	else if (portal_flag == 2)
+		typmask |= 8;
+	else if (portal_flag == 3)
+		typmask |= 16;
+	else if (portal_flag == 4)
+		typmask |= 32;
+	if (portal_flag < 0)
         typmask |= 0200; /* flag for portal removal */
     u.utotype = typmask;
     /* destination level */
@@ -5324,7 +5353,8 @@ deferred_goto()
         assign_level(&dest, &u.utolev);
         if (dfr_pre_msg)
             pline1(dfr_pre_msg);
-        goto_level(&dest, !!(typmask & 1), !!(typmask & 2), !!(typmask & 4));
+		xchar portal_flag = (typmask & 4) ? 1 : (typmask & 8) ? 2 : (typmask & 16) ? 3 : (typmask & 32) ? 4 : 0;
+        goto_level(&dest, !!(typmask & 1), !!(typmask & 2), portal_flag);
         if (typmask & 0200) { /* remove portal */
             struct trap *t = t_at(u.ux, u.uy);
 

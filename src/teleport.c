@@ -636,7 +636,40 @@ struct monst* mtmp;
         {
             destination = ttmp->dst;
         }
-        domagicportal(ttmp);
+
+        ttmp->dst = destination;
+
+        if (isyou || mtmp == u.usteed)
+        {
+            if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
+                pline("%s light envelops %s!", portal_color, yname(otmp));
+
+            domagicportal(ttmp);
+
+            if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
+            {
+                pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
+                if (mtmp == u.usteed)
+                    m_useup(mtmp, otmp);
+                else
+                    useup(otmp);
+                ttmp->tflags |= TRAPFLAGS_ACTIVATED;
+                ttmp->activation_count++;
+            }
+        }
+        else
+        {
+            (void)mlevel_tele_trap(mtmp, ttmp, TRUE, canseemon(mtmp));
+
+            if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
+            {
+                m_useup(mtmp, otmp);
+                ttmp->tflags |= TRAPFLAGS_ACTIVATED;
+                ttmp->activation_count++;
+            }
+        }
+
+        return TRUE;
     }
     else
     {
@@ -685,7 +718,10 @@ struct monst* mtmp;
                 if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
                 {
                     pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
-                    useup(otmp);
+                    if(mtmp == u.usteed)
+                        m_useup(mtmp, otmp);
+                    else
+                        useup(otmp);
                     ttmp->tflags |= TRAPFLAGS_ACTIVATED;
                     ttmp->activation_count++;
                 }
@@ -1308,8 +1344,13 @@ register struct trap *ttmp;
         return;
     }
 
+    int portal_flags = (ttmp->ttyp == MODRON_PORTAL ? 
+        ((ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_NO_OTHER_END) != 0 ? 4 : 
+            (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP) != 0 ? 3 : 
+            (ttmp->tflags & TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN) != 0 ? 2 : 4) : 1);
+
     target_level = ttmp->dst;
-    schedule_goto(&target_level, FALSE, FALSE, 1,
+    schedule_goto(&target_level, FALSE, FALSE, portal_flags,
                   "You feel dizzy for a moment, but the sensation passes.",
                   (char *) 0);
 }

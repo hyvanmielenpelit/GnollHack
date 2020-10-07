@@ -2571,10 +2571,13 @@ struct mkroom* croom;
     if (a->level_teleporter)
     {
         pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORTER;
-        if (a->tele_direction == -1)
+        if (a->tele_direction < 0)
             pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_UP;
-        else if (a->tele_direction == 1)
+        else if (a->tele_direction > 0)
             pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_DOWN;
+
+        if (a->end_type != 0)
+            pflags |= TRAPFLAGS_MODRON_LEVEL_TELEPORT_NO_OTHER_END;
     }
 
     if (croom)
@@ -2584,7 +2587,7 @@ struct mkroom* croom;
         int trycnt = 0;
         do 
         {
-            get_location_coord(&x, &y, ANY_LOC, croom, a->coord);
+            get_location_coord(&x, &y, DRY, croom, a->coord);
         } while ((levl[x][y].typ == STAIRS || levl[x][y].typ == LADDER)
             && ++trycnt <= 100);
 
@@ -5502,6 +5505,7 @@ struct sp_coder* coder;
     tmpportal.activated = OV_i(activated);
     tmpportal.level_teleporter = FALSE;
     tmpportal.tele_direction = 0;
+    tmpportal.end_type = FALSE;
 
     create_modron_portal(&tmpportal, coder->croom);
 
@@ -5515,10 +5519,10 @@ void spo_modron_level_teleporter(coder)
 struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_modron_level_teleporter";
-    struct opvar* acoord, *activated, *typ, *dir;
+    struct opvar* acoord, *activated, *typ, *dir, *endt;
     modron_portal tmpportal;
 
-    if (!OV_pop_i(activated) || !OV_pop_i(typ) || !OV_pop_i(dir) || !OV_pop_c(acoord))
+    if (!OV_pop_i(activated) || !OV_pop_i(typ) || !OV_pop_i(endt) || !OV_pop_i(dir) || !OV_pop_c(acoord))
         return;
 
     int tele_dir = OV_i(dir);
@@ -5528,12 +5532,14 @@ struct sp_coder* coder;
     tmpportal.activated = OV_i(activated);
     tmpportal.level_teleporter = TRUE;
     tmpportal.tele_direction = tele_dir;
+    tmpportal.end_type = OV_i(endt);
 
     create_modron_portal(&tmpportal, coder->croom);
 
     opvar_free(activated);
     opvar_free(typ);
     opvar_free(dir);
+    opvar_free(endt);
     opvar_free(acoord);
 }
 
