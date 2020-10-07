@@ -2726,6 +2726,12 @@ xchar x, y;
     stone_here:
         {
             idx = S_stone;
+            if (ptr->subtyp > 0)
+            {
+                is_variation = TRUE;
+                int var_offset = defsyms[idx].variation_offset;
+                idx = var_offset + ptr->subtyp - 1;
+            }
         }
     }
     break;

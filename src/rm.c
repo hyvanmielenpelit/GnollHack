@@ -72,6 +72,12 @@ struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES] =
     { FLOOR_SUBTYPE_PARQUET, 1},
 };
 
+struct category_definition stone_category_definitions[MAX_STONE_CATEGORIES] =
+{
+    { STONE_SUBTYPE_NORMAL, 4},
+};
+
+
 struct door_subtype_definition door_subtype_definitions[MAX_DOOR_SUBTYPES] =
 {
     {"wooden door",          "door", MAT_WOOD, LOCATION_SOUNDSET_DOOR, DSTFLAGS_BLOCKS_VISION_AND_SOUND | DSTFLAGS_BLOCKS_PROJECTILES | DSTFLAGS_BROKEN_BY_STRONG_MONSTERS | DSTFLAGS_BROKEN_BY_DIGGING | DSTFLAGS_BROKEN_BY_KICKING | DSTFLAGS_BROKEN_BY_STRIKING },
@@ -155,6 +161,11 @@ int category_id;
         cat_def = corridor_category_definitions;
         cat_size = MAX_CORRIDOR_CATEGORIES;
     }
+    else if (ltype == STONE)
+    {
+        cat_def = stone_category_definitions;
+        cat_size = MAX_STONE_CATEGORIES;
+    }
 
     if (cat_def == 0)
         return 0;
@@ -212,6 +223,11 @@ int typ, subtyp;
     {
         cat_def = floor_category_definitions;
         num_cats = MAX_FLOOR_CATEGORIES;
+    }
+    else if (typ == STONE)
+    {
+        cat_def = stone_category_definitions;
+        num_cats = MAX_STONE_CATEGORIES;
     }
 
     if (cat_def == 0)

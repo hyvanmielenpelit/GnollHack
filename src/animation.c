@@ -1262,7 +1262,7 @@ NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
       REPLACEMENT_EVENT_UPDATE_FROM_BELOW,
       REPLACEMENT_ACTION_BOTTOM_TILE,
       AUTODRAW_NONE,
-      { "bottom-end", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { "bottom-end", "bottom-end-variation-1", "bottom-end-variation-2", "bottom-end-variation-3", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -2055,10 +2055,15 @@ enum autodraw_types* autodraw_ptr;
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
 
-                /* Return the first tile with index 0 */
+                /* Return the tile based on stone's subtyp (i.e., take the right variation) */
+                int repl_idx = min(replacements[replacement_idx].number_of_tiles - 1, levl[x][y].subtyp);
+
+                if (x == u.ux && y == u.uy - 1)
+                    x = x;
+
                 if (autodraw_ptr)
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
-                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+                return glyph2tile[repl_idx + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
 
             break;

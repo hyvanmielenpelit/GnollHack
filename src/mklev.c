@@ -161,11 +161,13 @@ int floortyp, floorcategory;
         for (x = lowx - 1; x <= hix + 1; x++)
             for (y = lowy - 1; y <= hiy + 1; y += (hiy - lowy + 2)) {
                 levl[x][y].typ = HWALL;
+                levl[x][y].subtyp = levl[x][y].subtyp; /* Retain the subtyp setting from stone */
                 levl[x][y].horizontal = 1; /* For open/secret doors. */
             }
         for (x = lowx - 1; x <= hix + 1; x += (hix - lowx + 2))
             for (y = lowy; y <= hiy; y++) {
                 levl[x][y].typ = VWALL;
+                levl[x][y].subtyp = levl[x][y].subtyp; /* Retain the subtyp setting from stone */
                 levl[x][y].horizontal = 0; /* For open/secret doors. */
             }
         for (x = lowx; x <= hix; x++) {
@@ -182,6 +184,11 @@ int floortyp, floorcategory;
             levl[hix + 1][lowy - 1].typ = TRCORNER;
             levl[lowx - 1][hiy + 1].typ = BLCORNER;
             levl[hix + 1][hiy + 1].typ = BRCORNER;
+
+            levl[lowx - 1][lowy - 1].subtyp = levl[lowx - 1][lowy - 1].subtyp; /* Retain the subtyp setting from stone */
+            levl[hix + 1][lowy - 1].subtyp = levl[hix + 1][lowy - 1].subtyp; /* Retain the subtyp setting from stone */
+            levl[lowx - 1][hiy + 1].subtyp = levl[lowx - 1][hiy + 1].subtyp; /* Retain the subtyp setting from stone */
+            levl[hix + 1][hiy + 1].subtyp = levl[hix + 1][hiy + 1].subtyp; /* Retain the subtyp setting from stone */
         } else { /* a subroom */
             wallification(lowx - 1, lowy - 1, hix + 1, hiy + 1);
         }
@@ -414,6 +421,7 @@ uchar dmask;
     if (!IS_WALL(levl[x][y].typ)) /* avoid SDOORs on already made doors */
         type = DOOR;
     levl[x][y].typ = type;
+    levl[x][y].subtyp = 0;
     if (type == DOOR) {
 		if (dmask != 0)
 		{
@@ -630,6 +638,7 @@ int trap_type;
                     if (!rn2(3) && IS_WALL(levl[xx][yy].typ)) 
                     {
                         levl[xx][yy].typ = IRONBARS;
+                        levl[xx][yy].subtyp = 0;
                         /* HWALL .horizontal value retained */
                         if (levl[xx][yy].horizontal && isok(xx, yy - 1) && IS_FLOOR(levl[xx][yy - 1].typ))
                         {
@@ -785,6 +794,13 @@ makelevel()
     oinit(); /* assign level dependent obj probabilities */
     clear_level_structures();
 
+    /* Since all is set to STONE, set first its variations */
+    /* NOTE: Subsequently, it is important to always set subtyp to right value! It may not be 0 by default */
+    for (int x = 1; x < COLNO; x++)
+        for (int y = 0; y < ROWNO; y++)
+            if (levl[x][y].typ == STONE) /* Paranoid check */
+                levl[x][y].subtyp = get_initial_location_subtype(STONE);
+
     {
         register s_level *slev = Is_special(&u.uz);
 
@@ -802,14 +818,6 @@ makelevel()
         else if (In_mines(&u.uz))
         {
             makemaz("minefill");
-#if 0
-            for (int x = 1; x < COLNO; x++)
-                for (int y = 0; y < ROWNO; y++)
-                    if (levl[x][y].typ == ROOM)
-                        levl[x][y].typ = GROUND, levl[x][y].subtyp = get_initial_location_subtype(GROUND);
-                    else if (levl[x][y].floortyp == ROOM)
-                        levl[x][y].floortyp = GROUND, levl[x][y].floorsubtyp = get_initial_location_subtype(GROUND);
-#endif
             return;
         } 
         else if (In_quest(&u.uz))
