@@ -2726,11 +2726,12 @@ xchar x, y;
     stone_here:
         {
             idx = S_stone;
-            if (ptr->subtyp > 0)
-            {
+            int used_subtyp = (ptr->typ == STONE ? ptr->subtyp : (ptr->subtyp % NUM_NORMAL_STONE_SUBTYPES));
+            if (used_subtyp > 0)
+            { /* Walls use also stone subtypes if looked from outside, but they can have a larger subtype than what is possible for walls */
                 is_variation = TRUE;
                 int var_offset = defsyms[idx].variation_offset;
-                idx = var_offset + ptr->subtyp - 1;
+                idx = var_offset + used_subtyp - 1;
             }
         }
     }
@@ -2784,7 +2785,12 @@ xchar x, y;
 
         hwall_here:
             {
-                /* Code selecting a variation */
+                if (ptr->subtyp > 0)
+                {
+                    is_variation = TRUE;
+                    int var_offset = defsyms[idx].variation_offset;
+                    idx = var_offset + ptr->subtyp - 1;
+                }
             }
         }
         else

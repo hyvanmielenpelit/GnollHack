@@ -72,9 +72,15 @@ struct category_definition floor_category_definitions[MAX_FLOOR_CATEGORIES] =
     { FLOOR_SUBTYPE_PARQUET, 1},
 };
 
+
 struct category_definition stone_category_definitions[MAX_STONE_CATEGORIES] =
 {
-    { STONE_SUBTYPE_NORMAL, 4},
+    { STONE_SUBTYPE_NORMAL, NUM_NORMAL_STONE_SUBTYPES},
+};
+
+struct category_definition wall_category_definitions[MAX_WALL_CATEGORIES] =
+{
+    { WALL_SUBTYPE_STONE, NUM_NORMAL_STONE_SUBTYPES}, /* Must be aligned with stone normal category */
 };
 
 
@@ -166,6 +172,11 @@ int category_id;
         cat_def = stone_category_definitions;
         cat_size = MAX_STONE_CATEGORIES;
     }
+    else if (IS_WALL(ltype))
+    {
+        cat_def = wall_category_definitions;
+        cat_size = MAX_WALL_CATEGORIES;
+    }
 
     if (cat_def == 0)
         return 0;
@@ -228,6 +239,11 @@ int typ, subtyp;
     {
         cat_def = stone_category_definitions;
         num_cats = MAX_STONE_CATEGORIES;
+    }
+    else if (IS_WALL(typ))
+    {
+        cat_def = wall_category_definitions;
+        num_cats = MAX_WALL_CATEGORIES;
     }
 
     if (cat_def == 0)

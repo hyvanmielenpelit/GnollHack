@@ -272,6 +272,8 @@ struct category_definition {
     int number_of_subtypes;
 };
 
+/* Floor subtypes and categories */
+
 enum corridor_categories {
     CORRIDOR_CATEGORY_NORMAL = 0,
     MAX_CORRIDOR_CATEGORIES
@@ -341,6 +343,10 @@ enum floor_subtypes {
     MAX_FLOOR_SUBTYPES
 };
 
+
+/* Stone and wall subtypes and categories */
+#define NUM_NORMAL_STONE_SUBTYPES 4
+
 enum stone_categories {
     STONE_CATEGORY_NORMAL = 0,
     MAX_STONE_CATEGORIES
@@ -356,6 +362,24 @@ enum stone_subtypes {
     MAX_STONE_SUBTYPES
 };
 
+
+enum wall_categories {
+    WALL_CATEGORY_STONE = 0,
+    MAX_WALL_CATEGORIES
+};
+
+extern struct category_definition wall_category_definitions[MAX_WALL_CATEGORIES];
+
+enum wall_subtypes {
+    WALL_SUBTYPE_STONE = 0,
+    WALL_SUBTYPE_STONE_VARIATION_1,
+    WALL_SUBTYPE_STONE_VARIATION_2,
+    WALL_SUBTYPE_STONE_VARIATION_3,
+    MAX_WALL_SUBTYPES
+};
+
+
+/* Other subtypes */
 enum modron_portal_subtypes {
     MODRON_PORTAL_SUBTYPE_BASE = 0, /* Indicates use of base cmap */
     MODRON_PORTAL_SUBTYPE_SPHERICAL,
@@ -530,7 +554,10 @@ struct symdef_cmap_variation {
 #define STONE_VARIATION_OFFSET (CRWALL_VARIATIONS + CRWALL_VARIATION_OFFSET)
 #define STONE_VARIATIONS (MAX_STONE_SUBTYPES - 1)
 
-#define FLOOR_VARIATION_OFFSET (STONE_VARIATIONS + STONE_VARIATION_OFFSET)
+#define HWALL_VARIATION_OFFSET (STONE_VARIATIONS + STONE_VARIATION_OFFSET)
+#define HWALL_VARIATIONS (MAX_WALL_SUBTYPES - 1)
+
+#define FLOOR_VARIATION_OFFSET (HWALL_VARIATIONS + HWALL_VARIATION_OFFSET)
 #define FLOOR_VARIATIONS (MAX_FLOOR_SUBTYPES - 1)
 
 #define GRASS_VARIATION_OFFSET (FLOOR_VARIATIONS + FLOOR_VARIATION_OFFSET)
