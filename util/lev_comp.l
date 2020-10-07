@@ -348,6 +348,7 @@ undead_tileset { savetoken(yytext); yylval.i=CMAP_UNDEAD_STYLE; return CMAP_TYPE
 sokoban_tileset { savetoken(yytext); yylval.i=CMAP_SOKOBAN; return CMAP_TYPE; }
 elemental_tileset { savetoken(yytext); yylval.i=CMAP_ELEMENTAL_PLANES; return CMAP_TYPE; }
 astral_tileset { savetoken(yytext); yylval.i=CMAP_ASTRAL; return CMAP_TYPE; }
+gehennom_cavernous_tileset { savetoken(yytext); yylval.i=CMAP_GEHENNOM_CAVERNOUS; return CMAP_TYPE; }
 floor_normal { savetoken(yytext); yylval.i=FLOOR_CATEGORY_NORMAL; return FLOOR_TYPE; }
 floor_marble { savetoken(yytext); yylval.i=FLOOR_CATEGORY_MARBLE; return FLOOR_TYPE; }
 floor_parquet { savetoken(yytext); yylval.i=FLOOR_CATEGORY_PARQUET; return FLOOR_TYPE; }

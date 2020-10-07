@@ -6,6 +6,9 @@
 #include "artifact.h"
 #include "artilist.h"
 
+STATIC_DCL void FDECL(set_base_tileset_cmap, (int*, int, int));
+STATIC_DCL void FDECL(set_base_tileset_cmap_variation, (int*, int, int));
+
 #ifdef USE_TILES
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
 uchar glyphtileflags[MAX_GLYPH] = { 0 }; /* specifies how to use the tile and operations applied to the tile before use */
@@ -16,7 +19,7 @@ short tile2enlargement[MAX_TILES] = { 0 };
 
 NEARDATA struct tileset_definition default_tileset_definition =
 {
-    {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", "elemental-planes", "astral", "cmap-7", "cmap-8", "cmap-9", "cmap-10", "cmap-11", "cmap-12", "cmap-13", "cmap-14", "cmap-15"},
+    {"dungeon-normal", "gnomish-mines", "gehennom", "dungeon-undead", "sokoban", "elemental-planes", "astral", "gehennom-cavernous", "cmap-8", "cmap-9", "cmap-10", "cmap-11", "cmap-12", "cmap-13", "cmap-14", "cmap-15"},
     {0.0, 0.90, 0.0, 0.90, 0.0, 0.95, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
     {0.0, 0.75, 0.0, 0.75, 0.0, 0.85, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
     {0.0, 0.50, 0.0, 0.50, 0.0, 0.70, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
@@ -843,7 +846,8 @@ uchar* tilemapflags;
                         if (tileset_cmap_idx2 != tileset_cmap_idx)
                         {
                             boolean included_in_this_tileset_cmap = defsyms[i].included_in_cmap[tileset_cmap_idx2];
-                            int base_tileset_cmap = defsyms[i].base_cmap[tileset_cmap_idx2];
+                            int base_tileset_cmap = 0; // defsyms[i].base_cmap[tileset_cmap_idx2];
+                            set_base_tileset_cmap(&base_tileset_cmap, i, tileset_cmap_idx2);
                             if (
                                 (!included_in_this_tileset_cmap && base_tileset_cmap == tileset_cmap_idx)
                                 )
@@ -912,7 +916,8 @@ uchar* tilemapflags;
                         if (tileset_cmap_idx2 != tileset_cmap_idx)
                         {
                             boolean included_in_this_tileset_cmap = defsym_variations[i].included_in_cmap[tileset_cmap_idx2];
-                            int base_tileset_cmap = defsym_variations[i].base_cmap[tileset_cmap_idx2];
+                            int base_tileset_cmap = 0; //defsym_variations[i].base_cmap[tileset_cmap_idx2]
+                            set_base_tileset_cmap_variation(&base_tileset_cmap, i, tileset_cmap_idx2);
 
                             if (
                                 (!included_in_this_tileset_cmap && base_tileset_cmap == tileset_cmap_idx)
@@ -2309,5 +2314,46 @@ uchar* tilemapflags;
     return tile_count;
 }
 
+STATIC_OVL void
+set_base_tileset_cmap(dest_var_ptr, sym_idx, cmap_idx)
+int* dest_var_ptr;
+int sym_idx, cmap_idx;
+{
+    if (!dest_var_ptr)
+        return;
+
+    if (defsyms[sym_idx].included_in_cmap[cmap_idx])
+    {
+        *dest_var_ptr = defsyms[sym_idx].base_cmap[cmap_idx];
+    }
+    else
+    {
+        if(defsyms[sym_idx].base_cmap[cmap_idx] != cmap_idx)
+            set_base_tileset_cmap(dest_var_ptr, sym_idx, defsyms[sym_idx].base_cmap[cmap_idx]);
+        else
+            *dest_var_ptr = defsyms[sym_idx].base_cmap[0];
+    }
+}
+
+STATIC_OVL void
+set_base_tileset_cmap_variation(dest_var_ptr, sym_idx, cmap_idx)
+int* dest_var_ptr;
+int sym_idx, cmap_idx;
+{
+    if (!dest_var_ptr)
+        return;
+
+    if (defsym_variations[sym_idx].included_in_cmap[cmap_idx])
+    {
+        *dest_var_ptr = defsym_variations[sym_idx].base_cmap[cmap_idx];
+    }
+    else
+    {
+        if (defsym_variations[sym_idx].base_cmap[cmap_idx] != cmap_idx)
+            set_base_tileset_cmap_variation(dest_var_ptr, sym_idx, defsym_variations[sym_idx].base_cmap[cmap_idx]);
+        else
+            *dest_var_ptr = defsym_variations[sym_idx].base_cmap[0];
+    }
+}
 
 /*tiledata.c*/
