@@ -576,6 +576,7 @@ struct replacement_definition {
     short tile_animation[MAX_TILES_PER_REPLACEMENT];
     short tile_enlargement[MAX_TILES_PER_REPLACEMENT];
     enum autodraw_types tile_autodraw[MAX_TILES_PER_REPLACEMENT];
+    unsigned long tile_flags[MAX_TILES_PER_REPLACEMENT];
 };
 
 #define REPLACEMENT_EVENT_NO_EVENT              0x00000000UL
@@ -584,6 +585,7 @@ struct replacement_definition {
 #define REPLACEMENT_EVENT_UPDATE_FROM_LEFT      0x00000004UL
 #define REPLACEMENT_EVENT_UPDATE_FROM_RIGHT     0x00000008UL
 
+#define RTF_SKIP   0x00000001UL
 
 enum replacement_types
 {
