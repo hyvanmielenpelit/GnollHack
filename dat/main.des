@@ -256,15 +256,3 @@ DOOR:locked,(00,02),subtype:door_magic_windowed,keytype:('(',"magic key")
 REGION:(01,01,05,03),lit,"npcroom" floortype:floor_parquet
 NPC:npc_geologist,(02,03)
 
-#CONTAINER:('(',"chest"),locked,keytype:('(',"ornamental key"),special_quality:2,(03,03) {
-#   OBJECT:('$',"gold piece"), quantity:(1000+(2d500))
-#   OBJECT:random_contents
-#   OBJECT:random_contents
-#   [50%]:OBJECT:random_contents
-#}
-
-#OBJECT:('(',"ornamental key"),special_quality:2,(04,02)
-#OBJECT:('(',"geometric key"),special_quality:2,(04,02)
-
-#LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"modron portal",subtype:octahedral
-#LEVER:(01,01),lever_effect_create_object,target:(02,02),switchable,continuously_usable,objtype:"geometric key",special_quality:3

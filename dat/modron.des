@@ -155,7 +155,15 @@ NOMAP
 MODRON_PORTAL:random,level_teleporter,teleport_up,matching_portal,spherical,inactive
 
 MONSTER:('M',"Modron Primus"),random,waitforu,hostile {
+        OBJECT:('(', "geometric key"),special_quality:8
+        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
+}
+
+CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,random {
         OBJECT:artifact
         OBJECT:('+', "call hierarch modron")
-        OBJECT:('*', "dilithium crystal"),quantity:(2+(1d3))
+        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
 }
+
+#LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"modron portal",subtype:octahedral
+#LEVER:(01,01),lever_effect_create_object,target:(02,02),switchable,continuously_usable,objtype:"geometric key",special_quality:3
