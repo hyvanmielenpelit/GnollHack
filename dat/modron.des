@@ -4,7 +4,7 @@
 #
 
 #
-# Quintons
+# Pemptonus
 #
 MAZE:"modron1",' '
 FLAGS: noteleport
@@ -322,40 +322,52 @@ OBJECT:('9',"modronite icosahedron")
 
 
 #
-# Quartons
+# Tetartonus
 #
 MAZE:"modron2",'A'
 FLAGS: noteleport
 INIT_MAP: mines, 'C' , 'A' , true , true , random , true
 GEOMETRY:center,center
+#         1         2         3         4         5 
+#123456789012345678901234567890123456789012345678901234567890
 MAP
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAA::::::::::::::::::::::::::::::::::::::::::AAA
-AA::::::::::::::::::::::::::::::::::::::::::::AA
-AA:::------------------+-------------------:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::+....................................+:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::|....................................|:::AA
-AA:::-------------------+------------------:::AA
-AA::::::::::::::::::::::::::::::::::::::::::::AA
-AAA::::::::::::::::::::::::::::::::::::::::::AAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
+AAAAA:::::::::::::::::::::::::::::::::::::::AAAAA
+AAA::-------:::::::::::::::::::::::::-------::AAA
+AA:::|.....|:::::::::::::::::::::::::|.....|:::AA
+A::::|.....|-------------------------|.....|::::A
+A::::|.....+............|............+.....|::::A
+A::::-------.........-------.........-------::::A
+::::::::|............|.....|............|::::::::
+::::::::+............+.....+............+::::::::
+::::::::|............|.....|............|::::::::
+A::::-------.........-------.........-------::::A
+A::::|.....+............|............+.....|::::A
+A::::|.....|-------------------------|.....|::::A
+A::::|.....|:::::::::::::::::::::::::|.....|::::A
+AA:::-------:::::::::::::::::::::::::-------:::AA
+AAA:::::::::::::::::::::::::::::::::::::::::::AAA
+AAAAA:::::::::::::::::::::::::::::::::::::::AAAAA
+AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ENDMAP
 
-MODRON_PORTAL:(20,10),level_teleporter,teleport_up,matching_portal,octahedral,inactive
+REGION:(00,00,47,19),lit,"ordinary"
+MONSTER:('M',"modron quarton"),(08,06),waitforu,hostile
+MONSTER:('M',"modron quarton"),(40,06),waitforu,hostile
+MONSTER:('M',"modron quarton"),(08,14),waitforu,hostile
+MONSTER:('M',"modron quarton"),(40,14),waitforu,hostile
+
+# Portal room
+MODRON_PORTAL:(24,09),level_teleporter,teleport_up,matching_portal,tetrahedral,active
+MONSTER:('M',"modron quadrone"),(22,09),hostile
+MONSTER:('M',"modron quadrone"),(26,09),hostile
+MONSTER:('M',"modron quadrone"),(22,11),hostile
+MONSTER:('M',"modron quadrone"),(26,11),hostile
 
 #
-# Tertians
+# Tritonus
 #
 MAZE:"modron3",' '
 FLAGS: noteleport
@@ -363,7 +375,7 @@ INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
 
 #
-# Secundus
+# Deuteronus
 #
 MAZE:"modron4",' '
 FLAGS: noteleport
@@ -371,7 +383,7 @@ INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP
 
 #
-# Primus
+# Protonus
 #
 MAZE:"modron5",' '
 FLAGS: noteleport

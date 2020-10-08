@@ -1853,11 +1853,16 @@ register int after;
                             else if (!Deaf)
                                 You_hear("a door crash open.");
                         }
-                        here->doormask &= ~D_MASK;
                         if ((here->doormask & D_LOCKED) != 0 && !rn2(2))
+                        {
+                            here->doormask &= ~D_MASK;
                             here->doormask |= D_NODOOR;
+                        }
                         else
+                        {
+                            here->doormask &= ~D_MASK;
                             here->doormask |= D_BROKEN;
+                        }
                         /* newsym(mtmp->mx, mtmp->my); */  /* done below */
                         unblock_vision_and_hearing_at_point(mtmp->mx, mtmp->my); /* vision */
                         door_intact = FALSE;

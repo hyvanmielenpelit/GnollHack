@@ -3477,11 +3477,19 @@ play_level_ambient_sounds()
     }
     else
     {
-        struct mkroom* room_ptr = which_room(u.ux, u.uy);
-        if (!room_ptr)
-            lainfo.ghsound = get_level_ambient_sounds(&u.uz);
+        /* First special square ambients, if any, otherwise a room or level ambient */
+        if (In_modron_level(&u.uz) && (levl[u.ux][u.uy].typ == AIR || levl[u.ux][u.uy].typ == CLOUD))
+        {
+            lainfo.ghsound = GHSOUND_AIR_LEVEL_AMBIENT;
+        }
         else
-            lainfo.ghsound = get_room_ambient_sounds(room_ptr);
+        {
+            struct mkroom* room_ptr = which_room(u.ux, u.uy);
+            if (!room_ptr)
+                lainfo.ghsound = get_level_ambient_sounds(&u.uz);
+            else
+                lainfo.ghsound = get_room_ambient_sounds(room_ptr);
+        }
     }
 
     /* play_ghsound_level_ambient will check if the ambient sound is currently playing and then do nothing if this is the case */

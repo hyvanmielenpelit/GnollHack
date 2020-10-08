@@ -2785,7 +2785,7 @@ xchar x, y;
 
         hwall_here:
             {
-                if (ptr->subtyp > 0)
+                if (idx == S_hwall && ptr->subtyp > 0)
                 {
                     is_variation = TRUE;
                     int var_offset = defsyms[idx].variation_offset;
@@ -2798,6 +2798,23 @@ xchar x, y;
         break;
     }
     case VWALL:
+        if (ptr->seenv)
+        {
+            idx = wall_angle(ptr);
+
+            if (idx == S_hwall)
+                goto hwall_here;
+
+            if (idx == S_vwall && ptr->subtyp > 0)
+            {
+                is_variation = TRUE;
+                int var_offset = defsyms[idx].variation_offset;
+                idx = var_offset + ptr->subtyp - 1;
+            }
+        }
+        else
+            goto stone_here;
+        break;
     case TLCORNER:
     case TRCORNER:
     case CROSSWALL:
@@ -2814,26 +2831,6 @@ xchar x, y;
 
             if (idx == S_hwall)
                 goto hwall_here;
-
-#if 0
-            if (idx != S_tuwall && idx != S_blcorn && idx != S_brcorn)
-            {
-                int below_y = y + 1;
-                if (!isok(x, below_y) || (IS_ROCK(levl[x][below_y].typ) && !IS_TREE(levl[x][below_y].typ)) 
-                    || levl[x][below_y].typ == DOOR || levl[x][below_y].typ == UNEXPLORED 
-                    || (levl[x][y].seenv & (SV4 | SV5 | SV6)) == 0)
-                    ; /* idx is ok */
-                else
-                {
-                    /* Use bottom end */
-                    is_variation = TRUE;
-                    int var_idx = GWALL_BOTTOM_END;
-                    int sym_idx = idx;
-                    int var_offset = defsyms[sym_idx].variation_offset;
-                    idx = var_offset + var_idx;
-                }
-            }
-#endif
         }
         else
             goto stone_here;

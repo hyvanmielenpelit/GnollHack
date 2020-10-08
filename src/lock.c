@@ -200,7 +200,6 @@ picklock(VOID_ARGS)
     {
         play_simple_location_sound(xlock.x, xlock.y, xlock.door->doormask & D_LOCKED ? LOCATION_SOUND_TYPE_UNLOCK : LOCATION_SOUND_TYPE_LOCK);
             
-        xlock.door->doormask &= ~D_MASK;
         if (xlock.door->doormask & D_TRAPPED)
         {
             b_trapped(get_door_name_at_ptr(xlock.door), FINGER);
@@ -211,9 +210,15 @@ picklock(VOID_ARGS)
             newsym(u.ux + u.dx, u.uy + u.dy);
         }
         else if (xlock.door->doormask & D_LOCKED)
+        {
+            xlock.door->doormask &= ~D_MASK;
             xlock.door->doormask |= D_CLOSED;
+        }
         else
+        {
+            xlock.door->doormask &= ~D_MASK;
             xlock.door->doormask |= D_LOCKED;
+        }
     } 
     else 
     {
@@ -887,20 +892,25 @@ int x, y;
     /* door is known to be CLOSED */
     update_u_action(ACTION_TILE_DOOR_USE);
     u_wait_until_action();
-    if (rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) {
+    if (rnl(20) < (ACURRSTR + ACURR(A_DEX) + ACURR(A_CON)) / 3) 
+    {
         play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_OPEN);
         pline_The("%s opens.", door_name);
-        door->doormask &= ~D_MASK;
-        if (door->doormask & D_TRAPPED) {
+        if (door->doormask & D_TRAPPED) 
+        {
             b_trapped(door_name, FINGER);
+            door->doormask &= ~D_MASK;
             door->doormask |= D_NODOOR;
             if (*in_rooms(cc.x, cc.y, SHOPBASE))
                 add_damage(cc.x, cc.y, SHOP_DOOR_COST);
-        } else
+        } 
+        else
             door->doormask |= D_ISOPEN;
         feel_newsym(cc.x, cc.y); /* the hero knows she opened it */
         unblock_vision_and_hearing_at_point(cc.x, cc.y); /* vision: new see through there */
-    } else {
+    }
+    else 
+    {
         exercise(A_STR, TRUE);
         play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_RESISTS_OPEN);
         pline_The("%s resists!", door_name);

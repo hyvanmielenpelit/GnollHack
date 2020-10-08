@@ -453,7 +453,8 @@ xchar x, y;
             /* may_dig() checks W_NONDIGGABLE but doesn't handle iron bars */
             || (lev->typ == IRONBARS && (lev->wall_info & W_NONDIGGABLE))
             || (IS_DOOR_OR_SDOOR(lev->typ) && !is_door_diggable_at_ptr(lev))
-            )) {
+            )) 
+    {
         You("hurt your teeth on the %s.",
             (lev->typ == IRONBARS)
                 ? "bars"
@@ -463,8 +464,10 @@ xchar x, y;
                         : "hard stone");
         nomul(0);
         return 1;
-    } else if (context.digging.pos.x != x || context.digging.pos.y != y
-               || !on_level(&context.digging.level, &u.uz)) {
+    } 
+    else if (context.digging.pos.x != x || context.digging.pos.y != y
+               || !on_level(&context.digging.level, &u.uz)) 
+    {
         context.digging.down = FALSE;
         context.digging.chew = TRUE;
         context.digging.warned = FALSE;
@@ -489,7 +492,9 @@ xchar x, y;
                             : "door");
         watch_dig((struct monst *) 0, x, y, FALSE);
         return 1;
-    } else if ((context.digging.effort += (30 + u.ubasedaminc + u.udaminc)) <= 100) {
+    }
+    else if ((context.digging.effort += (30 + u.ubasedaminc + u.udaminc)) <= 100)
+    {
         if (flags.verbose)
             You("%s chewing on the %s.",
                 context.digging.chew ? "continue" : "begin",
@@ -511,7 +516,8 @@ xchar x, y;
     u.uconduct.food++;
     u.uhunger += rnd(20);
 
-    if (boulder) {
+    if (boulder) 
+    {
         delobj(boulder);         /* boulder goes bye-bye */
         You("eat the boulder."); /* yum */
 
@@ -523,7 +529,8 @@ xchar x, y;
          *  [perhaps use does_block() below (from vision.c)]
          */
         if (IS_ROCK(lev->typ) || (closed_door(x, y) && door_blocks_vision_at(x, y))
-            || sobj_at(BOULDER, x, y)) {
+            || sobj_at(BOULDER, x, y)) 
+        {
             block_vision_and_hearing_at_point(x, y); /* delobj will unblock the point */
             /* reset dig state */
             (void) memset((genericptr_t) &context.digging, 0,
@@ -534,7 +541,8 @@ xchar x, y;
     }
     else if (IS_WALL(lev->typ))
     {
-        if (*in_rooms(x, y, SHOPBASE)) {
+        if (*in_rooms(x, y, SHOPBASE))
+        {
             add_damage(x, y, SHOP_WALL_DMG);
             dmgtxt = "damage";
         }
@@ -558,41 +566,56 @@ xchar x, y;
         }
         create_simple_location(x, y, ltype, lsubtype, lflags, back_to_broken_glyph(x, y), lev->floortyp, lev->floorsubtyp, FALSE);
 
-    } else if (IS_TREE(lev->typ)) {
+    }
+    else if (IS_TREE(lev->typ))
+    {
         digtxt = "chew through the tree.";
         create_simple_location(x, y, lev->floortyp ? lev->floortyp : GRASS, lev->floorsubtyp ? lev->floorsubtyp : get_initial_location_subtype(GRASS), 0, back_to_broken_glyph(x, y), 0, 0, FALSE);
-    } else if (lev->typ == IRONBARS) {
+    } else if (lev->typ == IRONBARS) 
+    {
         digtxt = "eat through the bars.";
         dissolve_bars(x, y);
-    } else if (lev->typ == SDOOR) 
+    } 
+    else if (lev->typ == SDOOR) 
     {
-        if (lev->doormask & D_TRAPPED) {
+        if (lev->doormask & D_TRAPPED) 
+        {
             lev->doormask &= ~D_MASK;
             lev->doormask |= D_NODOOR;
             b_trapped("secret door", 0);
-        } else {
+        }
+        else 
+        {
             digtxt = "chew through the secret door.";
             lev->doormask &= ~D_MASK;
             lev->doormask |= D_BROKEN;
         }
         transform_location_type(x, y, DOOR, 0);
 
-    } else if (IS_DOOR(lev->typ)) {
-        if (*in_rooms(x, y, SHOPBASE)) {
+    } 
+    else if (IS_DOOR(lev->typ)) 
+    {
+        if (*in_rooms(x, y, SHOPBASE)) 
+        {
             add_damage(x, y, SHOP_DOOR_COST);
             dmgtxt = "break";
         }
-        if (lev->doormask & D_TRAPPED) {
+        if (lev->doormask & D_TRAPPED) 
+        {
             lev->doormask &= ~D_MASK;
             lev->doormask |= D_NODOOR;
             b_trapped(get_door_name_at_ptr(lev), 0);
-        } else {
+        } 
+        else 
+        {
             digtxt = "chew through the door.";
             lev->doormask &= ~D_MASK;
             lev->doormask |= D_BROKEN;
         }
 
-    } else { /* STONE or SCORR */
+    }
+    else 
+    { /* STONE or SCORR */
         digtxt = "chew a passage through the rock.";
         lev->typ = CORR;
     }
