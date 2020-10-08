@@ -905,7 +905,10 @@ int x, y;
                 add_damage(cc.x, cc.y, SHOP_DOOR_COST);
         } 
         else
+        {
+            door->doormask &= ~D_MASK;
             door->doormask |= D_ISOPEN;
+        }
         feel_newsym(cc.x, cc.y); /* the hero knows she opened it */
         unblock_vision_and_hearing_at_point(cc.x, cc.y); /* vision: new see through there */
     }
