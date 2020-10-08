@@ -5034,6 +5034,8 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 			panic("goto_level: no corresponding portal!");
 			return;
 		}
+		/* Activate the other end */
+		ttrap->tflags |= TRAPFLAGS_ACTIVATED;
 		seetrap(ttrap);
 		u_on_newpos(ttrap->tx, ttrap->ty);
 	}

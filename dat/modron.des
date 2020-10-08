@@ -334,8 +334,9 @@ MAP
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
 AAAAA:::::::::::::::::::::::::::::::::::::::AAAAA
-AAA::-------:::::::::::::::::::::::::-------::AAA
-AA:::|.....|:::::::::::::::::::::::::|.....|:::AA
+AAA:::::::::::::::::::::::::::::::::::::::::::AAA
+AA:::-------:::::::::::::::::::::::::-------:::AA
+A::::|.....|:::::::::::::::::::::::::|.....|::::A
 A::::|.....|-------------------------|.....|::::A
 A::::|.....+............|............+.....|::::A
 A::::-------.........-------.........-------::::A
@@ -353,18 +354,30 @@ AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ENDMAP
 
-REGION:(00,00,47,19),lit,"ordinary"
-MONSTER:('M',"modron quarton"),(08,06),waitforu,hostile
-MONSTER:('M',"modron quarton"),(40,06),waitforu,hostile
-MONSTER:('M',"modron quarton"),(08,14),waitforu,hostile
-MONSTER:('M',"modron quarton"),(40,14),waitforu,hostile
+REGION:(00,00,47,20),lit,"ordinary"
+NON_DIGGABLE:(00,00,47,20)
+TELEPORT_REGION:(22,09,24,11),(0,0,0,0),up
+TELEPORT_REGION:(22,09,24,11),(0,0,0,0),down
+
+MONSTER:('M',"modron quarton"),(08,07),waitforu,hostile {
+        OBJECT:('(', "geometric key"),special_quality:3
+}
+MONSTER:('M',"modron quarton"),(40,07),waitforu,hostile {
+        OBJECT:('=', "free action")
+}
+MONSTER:('M',"modron quarton"),(08,15),waitforu,hostile {
+    OBJECT:('=', "teleport control")
+}
+MONSTER:('M',"modron quarton"),(40,15),waitforu,hostile {
+    OBJECT:('*', "dilithium crystal"),quantity:(1d3)
+}
 
 # Portal room
-MODRON_PORTAL:(24,09),level_teleporter,teleport_up,matching_portal,tetrahedral,active
-MONSTER:('M',"modron quadrone"),(22,09),hostile
-MONSTER:('M',"modron quadrone"),(26,09),hostile
-MONSTER:('M',"modron quadrone"),(22,11),hostile
-MONSTER:('M',"modron quadrone"),(26,11),hostile
+MODRON_PORTAL:(24,10),level_teleporter,teleport_up,matching_portal,tetrahedral,inactive
+MONSTER:('M',"modron quadrone"),(22,09),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(26,09),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(22,11),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(26,11),waitforu,hostile
 
 #
 # Tritonus
