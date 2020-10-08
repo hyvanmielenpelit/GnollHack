@@ -7,40 +7,99 @@
 #
 # Pemptonus
 #
-MAZE:"modron1",' '
+MAZE:"modron1",'A'
 FLAGS: noteleport
-INIT_MAP: mines, ':' , ' ' , true , true , random , true
-NOMAP
+INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
+GEOMETRY:center,center
+#         1         2         3         4         5 
+#123456789012345678901234567890123456789012345678901234567890
+MAP
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAA:::::::::::::::::AAAAAAAAAAAAA
+AAAAAAAAA:::::::::-------:::::::::AAAAAAAAA
+AAAAAA:::::::::----.....----:::::::::AAAAAA
+AAAA::::::::----..|.....|..----::::::::AAAA
+AAA::::::----.....|.....|.....----::::::AAA
+AA::::----..|.....|--+--|.....|..----::::AA
+A::----.....|--+---.....---+--|.....----::A
+A::+........|.................|........+::A
+A::--|......+.................+......|--::A
+A::::---------+-...........-+---------::::A
+AA:::::|.......|-----+-----|.......|:::::AA
+AA:::::---.....|...........|.....---:::::AA
+AAA::::::|.....|...........|.....|::::::AAA
+AAAA:::::---...|...........|...---:::::AAAA
+AAAAAA:::::|-------------------|:::::AAAAAA
+AAAAAAAAA:::::::::::::::::::::::::AAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ENDMAP
 
-MODRON_PORTAL:random,level_teleporter,teleport_down,matching_portal,cubical,inactive
+# Portal arrival point
+BRANCH:(15,05,15,05),(0,0,0,0)
+REGION:(00,00,42,17),lit,"ordinary"
+NON_DIGGABLE:(00,00,42,17)
+TELEPORT_REGION:(13,05,17,06),(0,0,0,0),up
+TELEPORT_REGION:(13,05,17,06),(0,0,0,0),down
 
-MONSTER:('M',"modron quinton"),random,waitforu,hostile {
+DOOR:closed,(12,09),subtype:door_modron
+DOOR:closed,(15,07),subtype:door_modron
+DOOR:closed,(21,06),subtype:door_modron
+DOOR:closed,(14,10),subtype:door_modron
+DOOR:closed,(28,10),subtype:door_modron
+DOOR:closed,(30,09),subtype:door_modron
+DOOR:closed,(03,08),subtype:door_modron
+DOOR:closed,(39,08),subtype:door_modron
+
+MONSTER:('M',"modron pentadrone"),(18,09),hostile
+MONSTER:('M',"modron pentadrone"),(24,09),hostile
+
+# Teleport down
+DOOR:locked,(27,07),subtype:door_modron,keytype:"geometric key",special_quality:4
+MODRON_PORTAL:(27,05),level_teleporter,teleport_down,matching_portal,cubical,inactive
+
+# Big room
+DOOR:locked,(21,11),subtype:door_magic,keytype:"magic key"
+MONSTER:('M',"modron quadrone"),(26,12),hostile
+MONSTER:('M',"modron quadrone"),(26,14),hostile
+MONSTER:('M',"modron quadrone"),(16,12),hostile
+MONSTER:('M',"modron quadrone"),(16,14),hostile
+CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:5,(21,13) {
+        OBJECT:('(', "magic key")
+        OBJECT:('(', "magic key")
+        OBJECT:('/', "identify")
+        OBJECT:('*', "dilithium crystal"),quantity:(1d2)
+}
+
+
+MONSTER:('M',"modron quinton"),(21,04),waitforu,hostile {
         OBJECT:('(', "geometric key"),special_quality:4
 }
 
-MONSTER:('M',"modron quinton"),random,waitforu,hostile {
-    OBJECT:('*', "dilithium crystal"),quantity:(1d2)
+MONSTER:('M',"modron quinton"),(08,08),waitforu,hostile {
+    OBJECT:('(', "magic key")
 }
 
-MONSTER:('M',"modron quinton"),random,waitforu,hostile {
-    OBJECT:('/', "identify")
+MONSTER:('M',"modron quinton"),(33,08),waitforu,hostile {
+    OBJECT:('(', "geometric key"),special_quality:5
 }
 
-MONSTER:('M',"modron quinton"),random,waitforu,hostile {
+MONSTER:('M',"modron quinton"),(11,12),waitforu,hostile {
     OBJECT:('9', "modronite cube")
 }
 
-MONSTER:('M',"modron quinton"),random,waitforu,hostile {
+MONSTER:('M',"modron quinton"),(31,12),waitforu,hostile {
     OBJECT:('=', "free action")
 }
 
+MONSTER:('M',"modron monodrone"),(17,04),hostile
+MONSTER:('M',"modron duodrone"),(17,05),hostile
 
 #
 # Tetartonus
 #
 MAZE:"modron2",'A'
 FLAGS: noteleport
-INIT_MAP: mines, 'C' , 'A' , true , true , random , true
+INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5 
 #123456789012345678901234567890123456789012345678901234567890
@@ -68,22 +127,38 @@ AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ENDMAP
 
-REGION:(00,00,47,20),lit,"ordinary"
-NON_DIGGABLE:(00,00,47,20)
+REGION:(00,00,48,20),lit,"ordinary"
+NON_DIGGABLE:(00,00,48,20)
 TELEPORT_REGION:(20,02,28,07),(0,0,0,0),up
 TELEPORT_REGION:(20,02,28,07),(0,0,0,0),down
 
+DOOR:closed,(24,08),subtype:door_modron
+DOOR:closed,(11,07),subtype:door_modron
+DOOR:closed,(37,07),subtype:door_modron
+DOOR:closed,(08,10),subtype:door_modron
+DOOR:closed,(40,10),subtype:door_modron
+DOOR:closed,(11,13),subtype:door_modron
+DOOR:closed,(37,13),subtype:door_modron
+DOOR:locked,(21,10),subtype:door_magic_windowed,keytype:"magic key"
+DOOR:locked,(27,10),subtype:door_magic_windowed,keytype:"magic key"
+
+ALTAR:(24,10),neutral,altar
+
 MONSTER:('M',"modron quarton"),(08,07),waitforu,hostile {
-        OBJECT:('(', "geometric key"),special_quality:3
+    OBJECT:('(', "geometric key"),special_quality:3
+    OBJECT:('*', "dilithium crystal"),quantity:(1d2)
 }
 MONSTER:('M',"modron quarton"),(40,07),waitforu,hostile {
-        OBJECT:('9', "modronite tetrahedron")
+    OBJECT:('9', "modronite tetrahedron")
+    OBJECT:('*', "dilithium crystal"),quantity:(1d2)
 }
 MONSTER:('M',"modron quarton"),(08,15),waitforu,hostile {
-    OBJECT:('(', "cubic gate")
+    OBJECT:('(', "magic key")
+    OBJECT:('*', "dilithium crystal"),quantity:(1d2)
 }
 MONSTER:('M',"modron quarton"),(40,15),waitforu,hostile {
-    OBJECT:('*', "dilithium crystal"),quantity:(1d3)
+    OBJECT:('(', "magic key")
+    OBJECT:('*', "dilithium crystal"),quantity:(1d2)
 }
 
 # Portal ROOMS
@@ -99,38 +174,109 @@ MONSTER:('M',"modron quadrone"),(26,09),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(22,11),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(26,11),waitforu,hostile
 
+
 #
 # Tritonus
 #
-MAZE:"modron3",' '
+MAZE:"modron3",'A'
 FLAGS: noteleport
-INIT_MAP: mines, ':' , ' ' , true , true , random , true
-NOMAP
-MODRON_PORTAL:random,level_teleporter,teleport_up,matching_portal,tetrahedral,inactive
-MODRON_PORTAL:random,level_teleporter,teleport_down,matching_portal,cylindrical,inactive
+INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
+GEOMETRY:center,center
+#         1         2         3         4         5 
+#123456789012345678901234567890123456789012345678901234567890
+MAP
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAA:::::::::::::AAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAA::::::::::---::::::::::AAAAAAAAAAAAAA
+AAAAAAAAAA::::::::::::---.---::::::::::::AAAAAAAAAA
+AAAAAAA:::::::::::::---..\..---:::::::::::::AAAAAAA
+AAAAA:::::::::::::---.|.....|.---:::::::::::::AAAAA
+AAAA::::::::::::---...+.....+...---::::::::::::AAAA
+AAA:::::::::::---.....---+---.....---:::::::::::AAA
+AA::::::::::-----+-----.....-----+-----::::::::::AA
+AA::::::::---.....|...|.....|...|.....---::::::::AA
+A:::::::---.......|...+.....+...|.......---:::::::A
+A:::::---.........-----.....-----.........---:::::A
+A:::---.\.........S..|.......|..S.........\.---:::A
+A:-----------------+-----------+-----------------:A
+AA:::::::::::::::::::::::::::::::::::::::::::::::AA
+AAAAA::::::::::::::::::.....::::::::::::::::::AAAAA
+AAAAAAAAA::::::::::::::.....::::::::::::::AAAAAAAAA
+AAAAAAAAAAAAAA:::::::::.....:::::::::AAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAA:::::::::::::AAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ENDMAP
 
-MONSTER:('M',"modron tertian"),random,waitforu,hostile {
+REGION:(00,00,50,19),lit,"ordinary"
+NON_DIGGABLE:(00,00,50,19)
+TELEPORT_REGION:(19,09,21,10),(0,0,0,0),up
+TELEPORT_REGION:(19,09,21,10),(0,0,0,0),down
+
+MODRON_PORTAL:(20,09),level_teleporter,teleport_up,matching_portal,tetrahedral,inactive
+MODRON_PORTAL:(30,09),level_teleporter,teleport_down,matching_portal,cylindrical,inactive
+
+DOOR:closed,(25,07),subtype:door_modron
+DOOR:closed,(22,10),subtype:door_modron
+DOOR:closed,(19,13),subtype:door_modron
+DOOR:closed,(31,13),subtype:door_modron
+DOOR:closed,(17,08),subtype:door_modron
+DOOR:closed,(33,08),subtype:door_modron
+DOOR:closed,(22,06),subtype:door_modron
+DOOR:closed,(28,06),subtype:door_modron
+
+DOOR:locked,(28,10),subtype:door_modron,keytype:"geometric key",special_quality:2
+
+MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile {
         OBJECT:('8', "wings of flying")
-        OBJECT:('(', "geometric key"),special_quality:1
 }
+MONSTER:('M',"modron tridrone"),(24,05),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(26,05),waitforu,hostile
 
-MONSTER:('M',"modron tertian"),random,waitforu,hostile {
+MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile {
         OBJECT:('9', "modronite monopole")
-        OBJECT:('(', "magic marker")
 }
+MONSTER:('M',"modron tridrone"),(11,11),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(12,12),waitforu,hostile
 
-MONSTER:('M',"modron tertian"),random,waitforu,hostile {
+MONSTER:('M',"modron tertian"),(40,12),waitforu,hostile {
         OBJECT:('(', "geometric key"),special_quality:2
-        OBJECT:('=', "teleport control")
+}
+MONSTER:('M',"modron tridrone"),(39,11),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(38,12),waitforu,hostile
+
+MONSTER:('M',"modron pentadrone"),(20,07),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(40,07),waitforu,hostile
+
+MONSTER:('M',"modron tridrone"),(23,08),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(25,08),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(27,08),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(23,12),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(25,12),waitforu,hostile
+MONSTER:('M',"modron tridrone"),(27,12),waitforu,hostile
+
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(20,12) {
+        OBJECT:('(', "magic marker")
+        OBJECT:('*', "dilithium crystal"),quantity:(1d2)
 }
 
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12) {
+        OBJECT:('=', "teleport control")
+        OBJECT:('*', "dilithium crystal"),quantity:(1d2)
+}
+
+
+# Secret altar
+ALTAR:(25,16),law,altar
+OBJECT:('(', "cubic gate"), (25,16)
+MONSTER:('M',"modron pentadrone"),(24,16),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(26,16),waitforu,hostile
 
 #
 # Deuteronus
 #
 MAZE:"modron4",' '
 FLAGS: noteleport
-INIT_MAP: mines, ':' , ' ' , true , true , random , true
+INIT_MAP: mines, ':' , ' ' , true , true , lit , true
 NOMAP
 MODRON_PORTAL:random,level_teleporter,teleport_up,matching_portal,cylindrical,inactive
 MODRON_PORTAL:random,level_teleporter,teleport_down,matching_portal,spherical,inactive
@@ -150,7 +296,7 @@ MONSTER:('M',"modron secundus"),random,waitforu,hostile {
 #
 MAZE:"modron5",' '
 FLAGS: noteleport
-INIT_MAP: mines, ':' , ' ' , true , true , random , true
+INIT_MAP: mines, ':' , ' ' , true , true , lit , true
 NOMAP
 MODRON_PORTAL:random,level_teleporter,teleport_up,matching_portal,spherical,inactive
 
@@ -161,6 +307,9 @@ MONSTER:('M',"Modron Primus"),random,waitforu,hostile {
 
 CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,random {
         OBJECT:artifact
+        OBJECT:class_artifact
+        OBJECT:class_treasure_weapon
+        OBJECT:class_treasure_armor
         OBJECT:('+', "call hierarch modron")
         OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
 }
