@@ -1432,7 +1432,7 @@ register int after;
                             && (!is_unicorn(ptr)
                                 || objects[otmp->otyp].oc_material == MAT_GEMSTONE)
                             /* Don't get stuck circling an Elbereth or Gilthoniel */
-                            && !onnopickup(xx, yy, mtmp)) 
+                            && !onnopickup(xx, yy, mtmp) && !is_obj_no_pickup(otmp)) 
 						{
                             minr = distmin(omx, omy, xx, yy);
                             oomx = min(COLNO - 1, omx + minr);

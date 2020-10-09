@@ -71,6 +71,7 @@ struct obj {
 #define SPEFLAGS_FROM_SINK     		        0x00001000UL
 #define SPEFLAGS_INDESTRUCTIBLE     		0x00002000UL
 #define SPEFLAGS_USES_UP_KEY         		0x00004000UL
+#define SPEFLAGS_NO_PICKUP           		0x00008000UL  /* Monster will not pick up this item */
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */
@@ -215,6 +216,9 @@ struct obj {
 
 #define is_otyp_indestructible(otyp) ((objects[(otyp)].oc_flags & O1_INDESTRUCTIBLE) != 0)
 #define is_obj_indestructible(o) (is_otyp_indestructible((o)->otyp) || ((o)->speflags & SPEFLAGS_INDESTRUCTIBLE) != 0)
+
+#define is_otyp_no_pickup(otyp) ((objects[(otyp)].oc_flags3 & O3_NO_PICKUP) != 0)
+#define is_obj_no_pickup(o) (is_otyp_no_pickup((o)->otyp) || ((o)->speflags & SPEFLAGS_NO_PICKUP) != 0)
 
 #define is_blade(otmp)                           \
     ((otmp)->oclass == WEAPON_CLASS                \

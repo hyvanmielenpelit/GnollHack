@@ -1887,7 +1887,11 @@ register struct monst *mtmp;
 
     /* Eats topmost metal object if it is there */
     for (otmp = level.objects[mtmp->mx][mtmp->my]; otmp;
-         otmp = otmp->nexthere) {
+         otmp = otmp->nexthere) 
+    {
+        if (is_obj_no_pickup(otmp))
+            continue;
+
         /* Don't eat indigestible/choking/inappropriate objects */
         if ((mtmp->data == &mons[PM_RUST_MONSTER] && !is_rustprone(otmp))
             || (otmp->otyp == AMULET_OF_STRANGULATION)
@@ -1988,6 +1992,9 @@ struct monst *mtmp;
        [despite comment at top, doesn't assume that eater is a g.cube] */
     for (otmp = level.objects[mtmp->mx][mtmp->my]; otmp; otmp = otmp2) {
         otmp2 = otmp->nexthere;
+
+        if (is_obj_no_pickup(otmp))
+            continue;
 
         /* touch sensitive items */
         if (otmp->otyp == CORPSE && is_rider(&mons[otmp->corpsenm])) {
@@ -2117,6 +2124,8 @@ register struct monst *mtmp;
 		return;
 
     if ((gold = g_at(mtmp->mx, mtmp->my)) != 0) {
+        if (is_obj_no_pickup(gold))
+            return;
         mat_idx = objects[gold->otyp].oc_material;
         obj_extract_self(gold);
         add_to_minv(mtmp, gold);
@@ -2157,9 +2166,14 @@ register const char *str;
                 && otmp->corpsenm != PM_LIZARD
                 && !has_acidic_corpse(&mons[otmp->corpsenm]))
                 continue;
+
+            if (is_obj_no_pickup(otmp))
+                continue;
+
             if (!touch_artifact(otmp, mtmp))
                 continue;
-			carryamt = can_carry(mtmp, otmp);
+
+            carryamt = can_carry(mtmp, otmp);
             if (carryamt == 0)
                 continue;
             if (is_pool(mtmp->mx, mtmp->my))

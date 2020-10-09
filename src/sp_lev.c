@@ -2163,6 +2163,8 @@ struct mkroom *croom;
         otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE;
     if (o->uses_up_key)
         otmp->speflags |= SPEFLAGS_USES_UP_KEY;
+    if (o->no_pickup)
+        otmp->speflags |= SPEFLAGS_NO_PICKUP;
     if (o->greased)
         otmp->greased = 1;
 #ifdef INVISIBLE_OBJECTS
@@ -3681,6 +3683,7 @@ struct sp_coder *coder;
     tmpobj.coord = SP_COORD_PACK_RANDOM(0);
     tmpobj.indestructible = 0;
     tmpobj.uses_up_key = 0;
+    tmpobj.no_pickup = 0;
 
     if (!OV_pop_i(containment))
         return;
@@ -3805,6 +3808,10 @@ struct sp_coder *coder;
         case SP_O_V_USES_UP_KEY:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.uses_up_key = OV_i(parm);
+            break;
+        case SP_O_V_NO_PICKUP:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.no_pickup = OV_i(parm);
             break;
         case SP_O_V_KEY_TYPE:
             if (OV_typ(parm) == SPOVAR_OBJ) {

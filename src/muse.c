@@ -2314,6 +2314,9 @@ struct obj *obj;
 {
     int typ = obj->otyp;
 
+    if (is_obj_no_pickup(obj))
+        FALSE;
+
     if (is_animal(mon->data) || mindless(mon->data)
         || mon->data == &mons[PM_GHOST]) /* don't loot bones piles */
         return FALSE;

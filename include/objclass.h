@@ -866,7 +866,8 @@ struct objclass {
 
 #define O3_PREVENTS_REVIVAL_OF_PERMITTED_TARGETS	0x00000200UL  /* wielding or wearing prohibits the revival of permitted targets */
 #define O3_PREVENTS_SUMMONING_BY_PERMITTED_TARGETS	0x00000400UL  /* wielding or wearing prohibits AD_XXXX-type innate summoning by permitted targets; the target can still summon using spells */
-/* free bit */
+
+#define O3_NO_PICKUP								0x00000800UL  /* monsters do not pick up this item type */
 
 #define O3_INVOKABLE								0x00001000UL	/* can be invoked using invoke command */
 #define O3_APPLIABLE								0x00002000UL	/* can be applied as a tool */
