@@ -240,6 +240,7 @@ enum sp_door_var_flags {
     SP_D_V_INDESTRUCTIBLE,
     SP_D_V_SECRET_DOOR,
     SP_D_V_USES_UP_KEY,
+    SP_D_V_NON_PASSDOOR,
 
     SP_D_V_END
 };

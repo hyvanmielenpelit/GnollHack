@@ -417,6 +417,7 @@ struct door_subtype_definition {
 #define DSTFLAGS_BROKEN_BY_BEING_BOOBY_TRAPPED              0x00000040 /* Booby traps destroy the door */
 #define DSTFLAGS_INDESTRUCTIBLE                             0x00000080 /* Not destroyed by anything, not even by being booby trapped */
 #define DSTFLAGS_NO_LOCK_DESCRIPTION_IS_DEFAULT             0x00000100 /* If no lock, nothing is printed, with normal lock, tells that has a metal lock */
+#define DSTFLAGS_NONPASSABLE                                0x00000200 /* Cannot be walked through with wallwalk */
 
 enum door_subtypes_types
 {
@@ -775,6 +776,7 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
  */
 #define L_INDESTRUCTIBLE    0x0100  /* Currently used just for doors */
 #define L_USES_UP_KEY       0x0200  /* Currently used just for doors */
+#define L_NON_PASSDOOR      0x0400  /* Currently used just for doors */
 
 
 /*

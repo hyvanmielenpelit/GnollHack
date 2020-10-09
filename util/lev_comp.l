@@ -263,6 +263,7 @@ waitforu	ST_RET(WAITFORU_ID);
 switchable	ST_RET(SWITCHABLE_ID);
 secret_door	ST_RET(SECRET_DOOR_ID);
 uses_up_key	ST_RET(USES_UP_KEY_ID);
+non_passdoor ST_RET(NON_PASSDOOR_ID);
 continuously_usable	ST_RET(CONTINUOUSLY_USABLE_ID);
 subtype		ST_RET(LOCATION_SUBTYPE_ID);
 all		ST_RET(ALL_ID);

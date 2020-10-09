@@ -745,8 +745,8 @@ boolean
 may_passwall(x, y)
 register xchar x, y;
 {
-    return (boolean) !(IS_STWALL(levl[x][y].typ)
-                       && (levl[x][y].wall_info & W_NONPASSWALL));
+    return (boolean) !((IS_STWALL(levl[x][y].typ)
+                       && (levl[x][y].wall_info & W_NONPASSWALL)));
 }
 
 boolean
@@ -895,11 +895,11 @@ int mode;
         {
             if (Blind && mode == DO_MOVE)
                 feel_location(x, y);
-            if (Passes_walls)
+            if (Passes_walls && !is_door_nonpassable_at_ptr(tmpr))
             {
                 ; /* do nothing */
             }
-            else if (can_ooze(&youmonst)) 
+            else if (can_ooze(&youmonst) && !is_door_nonpassable_at_ptr(tmpr))
             {
                 if (mode == DO_MOVE)
                     You("ooze under the door.");
@@ -910,7 +910,7 @@ int mode;
                     pline("There is an obstacle there.");
                 return FALSE;
             }
-            else if (tunnels(youmonst.data) && !needspick(youmonst.data))
+            else if (tunnels(youmonst.data) && !needspick(youmonst.data) && !is_door_indestructible_at_ptr(tmpr))
             {
                 /* Eat the door. */
                 if (mode == DO_MOVE && still_chewing(x, y))

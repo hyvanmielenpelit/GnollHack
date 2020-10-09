@@ -5112,7 +5112,7 @@ void
 selection_iterate5(ov, func, arg, arg2, arg3, arg4, arg5)
 struct opvar* ov;
 select_iter_func5 func;
-genericptr_t arg, arg2, arg3, arg4;
+genericptr_t arg, arg2, arg3, arg4, arg5;
 {
     int x, y;
 
@@ -5120,7 +5120,7 @@ genericptr_t arg, arg2, arg3, arg4;
     for (x = 0; x < COLNO; x++)
         for (y = 0; y < ROWNO; y++)
             if (selection_getpoint(x, y, ov))
-                (*func)(x, y, arg, arg2, arg3, arg4, arg4);
+                (*func)(x, y, arg, arg2, arg3, arg4, arg5);
 }
 
 
@@ -5356,6 +5356,11 @@ struct sp_coder *coder;
         case SP_D_V_USES_UP_KEY:
             if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
                 dflags |= L_USES_UP_KEY;
+            break;
+
+        case SP_D_V_NON_PASSDOOR:
+            if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
+                dflags |= L_NON_PASSDOOR;
             break;
 
         case SP_D_V_END:
@@ -6232,6 +6237,10 @@ struct sp_coder *coder;
         case SP_D_V_USES_UP_KEY:
             if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
                 tmpd.dflags |= L_USES_UP_KEY;
+            break;
+        case SP_D_V_NON_PASSDOOR:
+            if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
+                tmpd.dflags |= L_NON_PASSDOOR;
             break;
 
         case SP_D_V_END:

@@ -379,6 +379,35 @@ struct rm* door;
 }
 
 boolean
+is_door_nonpassable_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  is_door_nonpassable_at_ptr(door);
+
+}
+
+
+boolean
+is_door_nonpassable_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    enum door_subtypes_types subtyp = door->subtyp >= 0 && door->subtyp < MAX_DOOR_SUBTYPES ? door->subtyp : 0;
+    if ((door_subtype_definitions[subtyp].flags & DSTFLAGS_NONPASSABLE) != 0
+        || (door->flags & L_NON_PASSDOOR) != 0)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
 is_door_diggable_at(x, y)
 xchar x, y;
 {
