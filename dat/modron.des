@@ -8,7 +8,7 @@
 # Pemptonus
 #
 MAZE:"modron1",'A'
-FLAGS: noteleport
+FLAGS: noteleport, no_map_padding
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5 
@@ -98,7 +98,7 @@ MONSTER:('M',"modron duodrone"),(17,05),hostile
 # Tetartonus
 #
 MAZE:"modron2",'A'
-FLAGS: noteleport
+FLAGS: noteleport, no_map_padding
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5 
@@ -179,7 +179,7 @@ MONSTER:('M',"modron quadrone"),(26,11),waitforu,hostile
 # Tritonus
 #
 MAZE:"modron3",'A'
-FLAGS: noteleport
+FLAGS: noteleport, no_map_padding
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5 

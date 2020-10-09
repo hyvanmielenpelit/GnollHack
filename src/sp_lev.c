@@ -4033,6 +4033,8 @@ struct sp_coder *coder;
         level.flags.corrmaze = TRUE;
     if (lflags & CHECK_INACCESSIBLES)
         coder->check_inaccessibles = TRUE;
+    if (lflags & NO_MAP_PADDING)
+        coder->no_map_padding = TRUE;
 
     opvar_free(flagdata);
 }
@@ -6307,16 +6309,16 @@ struct sp_coder *coder;
     case 1:
         switch ((int) halign) {
         case LEFT:
-            xstart = splev_init_present ? 1 : 3;
+            xstart = coder->no_map_padding ? 1 : splev_init_present ? 1 : 3;
             break;
         case H_LEFT:
-            xstart = 2 + ((x_maze_max - 2 - xsize) / 4);
+            xstart = (coder->no_map_padding ? 1 : 2) + ((x_maze_max - (coder->no_map_padding ? 1 : 2) - xsize) / 4);
             break;
         case CENTER:
-            xstart = 2 + ((x_maze_max - 2 - xsize) / 2);
+            xstart = (coder->no_map_padding ? 1 : 2) + ((x_maze_max - (coder->no_map_padding ? 1 : 2) - xsize) / 2);
             break;
         case H_RIGHT:
-            xstart = 2 + ((x_maze_max - 2 - xsize) * 3 / 4);
+            xstart = (coder->no_map_padding ? 1 : 2) + ((x_maze_max - (coder->no_map_padding ? 1 : 2) - xsize) * 3 / 4);
             break;
         case RIGHT:
             xstart = x_maze_max - xsize - 1;
@@ -6324,10 +6326,10 @@ struct sp_coder *coder;
         }
         switch ((int) valign) {
         case TOP:
-            ystart = 3;
+            ystart = coder->no_map_padding ? 0 : 3;
             break;
         case CENTER:
-            ystart = 2 + ((y_maze_max - 2 - ysize) / 2);
+            ystart = (coder->no_map_padding ? 0 : 2) + ((y_maze_max - (coder->no_map_padding ? 0 : 2) - ysize) / 2);
             break;
         case BOTTOM:
             ystart = y_maze_max - ysize - 1;
@@ -6743,6 +6745,7 @@ sp_lev *lvl;
     coder->premapped = FALSE;
     coder->solidify = FALSE;
     coder->check_inaccessibles = FALSE;
+    coder->no_map_padding = FALSE;
     coder->croom = NULL;
     coder->n_subroom = 1;
     coder->exit_script = FALSE;

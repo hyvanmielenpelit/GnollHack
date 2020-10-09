@@ -29,12 +29,13 @@
 #define ICEDPOOLS       0x00000200L  /* for ice locations: ICED_POOL vs ICED_MOAT */
 #define SOLIDIFY        0x00000400L  /* outer areas are nondiggable & nonpasswall */
 #define CORRMAZE        0x00000800L  /* for maze levels only */
-#define CHECK_INACCESSIBLES 0x00001000L /* check for inaccessible areas and generate ways to escape from them */
-#define SWAMPY          0x00002000L
-#define THRONE_ON_GROUND 0x00004000L
-#define FOUNTAIN_ON_GRASS 0x00008000L
-#define FOUNTAIN_ON_GROUND 0x00010000L
-#define MAPPING_DOES_NOT_REVEAL_SPECIAL 0x00020000L
+#define CHECK_INACCESSIBLES                 0x00001000L /* check for inaccessible areas and generate ways to escape from them */
+#define SWAMPY                              0x00002000L
+#define THRONE_ON_GROUND                    0x00004000L
+#define FOUNTAIN_ON_GRASS                   0x00008000L
+#define FOUNTAIN_ON_GROUND                  0x00010000L
+#define MAPPING_DOES_NOT_REVEAL_SPECIAL     0x00020000L
+#define NO_MAP_PADDING                      0x00040000L
 
 /* different level layout initializers */
 enum lvlinit_types {
@@ -350,6 +351,7 @@ struct sp_coder {
     boolean exit_script;
     int lvl_is_joined;
     boolean check_inaccessibles;
+    boolean no_map_padding;
 
     int opcode;          /* current opcode */
     struct opvar *opdat; /* current push data (req. opcode == SPO_PUSH) */
