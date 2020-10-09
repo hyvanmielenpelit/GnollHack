@@ -773,7 +773,9 @@ extern struct symsetentry symset[NUM_GRAPHICS]; /* from drawing.c */
 /*
  * General flags for all locations
  */
-#define L_INDESTRUCTIBLE 0x0100  /* Currently used just for doors */
+#define L_INDESTRUCTIBLE    0x0100  /* Currently used just for doors */
+#define L_USES_UP_KEY       0x0200  /* Currently used just for doors */
+
 
 /*
  * The structure describing a coordinate position.

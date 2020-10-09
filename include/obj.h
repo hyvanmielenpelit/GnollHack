@@ -70,6 +70,7 @@ struct obj {
 #define SPEFLAGS_SOKO_PRIZE2     		    0x00000800UL
 #define SPEFLAGS_FROM_SINK     		        0x00001000UL
 #define SPEFLAGS_INDESTRUCTIBLE     		0x00002000UL
+#define SPEFLAGS_USES_UP_KEY         		0x00004000UL
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */

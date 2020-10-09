@@ -199,7 +199,18 @@ picklock(VOID_ARGS)
     if (xlock.door) 
     {
         play_simple_location_sound(xlock.x, xlock.y, xlock.door->doormask & D_LOCKED ? LOCATION_SOUND_TYPE_UNLOCK : LOCATION_SOUND_TYPE_LOCK);
-            
+        
+        if ((xlock.door->doormask & D_LOCKED) && (xlock.door->doormask & L_USES_UP_KEY) && xlock.key && !is_obj_indestructible(xlock.key) && !xlock.key->oartifact)
+        {
+            if (xlock.key->quan > 1)
+                pline("One of %s vanishes.", yname(xlock.key));
+            else
+                pline("%s.", Yobjnam2(xlock.key, "vanish"));
+
+            useup(xlock.key);
+            xlock.key = 0;
+        }
+
         if (xlock.door->doormask & D_TRAPPED)
         {
             b_trapped(get_door_name_at_ptr(xlock.door), FINGER);
@@ -223,6 +234,18 @@ picklock(VOID_ARGS)
     else 
     {
         play_simple_object_sound(xlock.box, xlock.box->olocked ? OBJECT_SOUND_TYPE_UNLOCK_CONTAINER : OBJECT_SOUND_TYPE_LOCK_CONTAINER);
+        
+        if (xlock.box->olocked && (xlock.box->speflags & SPEFLAGS_USES_UP_KEY) && xlock.key && !is_obj_indestructible(xlock.key) && !xlock.key->oartifact)
+        {
+            if (xlock.key->quan > 1)
+                pline("One of %s vanishes.", yname(xlock.key));
+            else
+                pline("%s.", Yobjnam2(xlock.key, "vanish"));
+
+            useup(xlock.key);
+            xlock.key = 0;
+        }
+
         xlock.box->olocked = !xlock.box->olocked;
         xlock.box->lknown = 1;
         newsym(xlock.box->ox, xlock.box->oy);
@@ -896,6 +919,7 @@ int x, y;
     {
         play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_OPEN);
         pline_The("%s opens.", door_name);
+
         if (door->doormask & D_TRAPPED) 
         {
             b_trapped(door_name, FINGER);
@@ -1156,7 +1180,7 @@ int x, y;
         case SPE_KNOCK:
         case WAN_STRIKING:
         case SPE_FORCE_BOLT:
-            transform_location_type_and_flags(x, y, DOOR, D_CLOSED | (door->doormask & D_TRAPPED), 0);
+            transform_location_type_and_flags(x, y, DOOR, door->subtyp, D_CLOSED | (door->doormask & D_TRAPPED));
             newsym(x, y);
             if (cansee(x, y))
                 pline("A door appears in the wall!");

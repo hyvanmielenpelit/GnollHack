@@ -555,8 +555,8 @@ E void FDECL(create_simple_location, (xchar, xchar, int, int, unsigned short, in
 E void FDECL(create_basic_floor_location, (xchar, xchar, int, int, unsigned short, boolean));
 E void FDECL(create_doodad_floor_location, (xchar, xchar, int, unsigned short, int, int, boolean));
 E void FDECL(transform_location_type, (xchar, xchar, int, int));
-E void FDECL(transform_location_type_and_flags, (xchar, xchar, int, unsigned short, int));
-E void FDECL(transform_location_type_and_flags_and_set_broken, (xchar, xchar, int, unsigned short, int, int));
+E void FDECL(transform_location_type_and_flags, (xchar, xchar, int, int, unsigned short));
+E void FDECL(transform_location_type_and_flags_and_set_broken, (xchar, xchar, int, int, unsigned short, int));
 
 /* ### do_name.c ### */
 

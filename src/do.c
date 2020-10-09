@@ -5908,7 +5908,7 @@ int type, subtype;
 }
 
 void
-transform_location_type_and_flags(x, y, type, location_flags, subtype)
+transform_location_type_and_flags(x, y, type, subtype, location_flags)
 xchar x, y;
 int type, subtype;
 unsigned short location_flags;
@@ -5918,7 +5918,7 @@ unsigned short location_flags;
 }
 
 void
-transform_location_type_and_flags_and_set_broken(x, y, type, location_flags, subtype, floor_doodad)
+transform_location_type_and_flags_and_set_broken(x, y, type, subtype, location_flags, floor_doodad)
 xchar x, y;
 int type, subtype, floor_doodad;
 unsigned short location_flags;

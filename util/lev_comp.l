@@ -261,6 +261,8 @@ confused	ST_RET(CONFUSED_ID);
 seen_traps	ST_RET(SEENTRAPS_ID);
 waitforu	ST_RET(WAITFORU_ID);
 switchable	ST_RET(SWITCHABLE_ID);
+secret_door	ST_RET(SECRET_DOOR_ID);
+uses_up_key	ST_RET(USES_UP_KEY_ID);
 continuously_usable	ST_RET(CONTINUOUSLY_USABLE_ID);
 subtype		ST_RET(LOCATION_SUBTYPE_ID);
 all		ST_RET(ALL_ID);

@@ -208,6 +208,7 @@ enum sp_obj_var_flags {
     SP_O_V_EXCEPTIONALITY,
     SP_O_V_KEY_TYPE,
     SP_O_V_INDESTRUCTIBLE,
+    SP_O_V_USES_UP_KEY,
 
     SP_O_V_END
 };
@@ -237,6 +238,8 @@ enum sp_door_var_flags {
     SP_D_V_KEY_TYPE,
     SP_D_V_SPECIAL_QUALITY,
     SP_D_V_INDESTRUCTIBLE,
+    SP_D_V_SECRET_DOOR,
+    SP_D_V_USES_UP_KEY,
 
     SP_D_V_END
 };
@@ -400,8 +403,9 @@ typedef struct {
 } lev_init;
 
 typedef struct {
-    xchar wall, pos, secret, indestr;
+    xchar wall, pos, secret;
     unsigned short mask;
+    unsigned short dflags;
     int key_otyp, key_special_quality, subtype;
 } room_door;
 
@@ -450,7 +454,7 @@ typedef struct {
     int quan;
     short buried;
     short lit;
-    short eroded, locked, trapped, recharged, invis, greased, broken, indestructible;
+    short eroded, locked, trapped, recharged, invis, greased, broken, indestructible, uses_up_key;
 	int elemental_enchantment;
     int exceptionality;
 } object;

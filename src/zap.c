@@ -8568,7 +8568,7 @@ short exploding_wand_typ;
                 }
                 else 
                 {
-                    transform_location_type_and_flags(x, y, DOOR, D_NODOOR, 0);
+                    transform_location_type_and_flags(x, y, DOOR, 0, D_NODOOR);
                     //lev->typ = DOOR, lev->doormask = D_NODOOR;
                     if (see_it)
                         newsym(x, y);

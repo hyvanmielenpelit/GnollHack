@@ -1550,8 +1550,7 @@ struct mkroom *broom;
     }
 #endif
     unsigned short dflags = dd->mask; /* Normal doormask */
-    if (dd->indestr)
-        dflags |= L_INDESTRUCTIBLE;
+    dflags |= dd->dflags;
 
     levl[x][y].typ = typ;
     levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
@@ -2162,6 +2161,8 @@ struct mkroom *croom;
         otmp->special_quality = o->special_quality;
     if(o->indestructible)
         otmp->speflags |= SPEFLAGS_INDESTRUCTIBLE;
+    if (o->uses_up_key)
+        otmp->speflags |= SPEFLAGS_USES_UP_KEY;
     if (o->greased)
         otmp->greased = 1;
 #ifdef INVISIBLE_OBJECTS
@@ -3678,6 +3679,8 @@ struct sp_coder *coder;
     tmpobj.greased = 0;
     tmpobj.broken = 0;
     tmpobj.coord = SP_COORD_PACK_RANDOM(0);
+    tmpobj.indestructible = 0;
+    tmpobj.uses_up_key = 0;
 
     if (!OV_pop_i(containment))
         return;
@@ -3798,6 +3801,10 @@ struct sp_coder *coder;
         case SP_O_V_INDESTRUCTIBLE:
             if (OV_typ(parm) == SPOVAR_INT)
                 tmpobj.indestructible = OV_i(parm);
+            break;
+        case SP_O_V_USES_UP_KEY:
+            if (OV_typ(parm) == SPOVAR_INT)
+                tmpobj.uses_up_key = OV_i(parm);
             break;
         case SP_O_V_KEY_TYPE:
             if (OV_typ(parm) == SPOVAR_OBJ) {
@@ -5238,21 +5245,26 @@ sel_set_door(dx, dy, arg, arg2, arg3, arg4, arg5)
 int dx, dy;
 genericptr_t arg, arg2, arg3, arg4, arg5;
 {
-    xchar typ = *(xchar *) arg;
-    xchar subtyp = *(xchar*)arg2;
+    unsigned short dmask = *(unsigned short*) arg;
+    int subtyp = *(int*)arg2;
     long key_otyp = *(long*)arg3;
     long key_spe_quality = *(long*)arg4;
-    xchar indestr = *(xchar*)arg5;
+    unsigned short dflags = *(unsigned short*)arg5;
 
     xchar x = dx, y = dy;
-    int settyp = (typ & D_SECRET) ? SDOOR : DOOR;
+    int settyp = (dmask & D_SECRET) ? SDOOR : DOOR;
 
-    if (!IS_DOOR(levl[x][y].typ) && levl[x][y].typ != SDOOR)
+    if (levl[x][y].typ != settyp)
     {
         if (IS_FLOOR(levl[x][y].typ))
         {
             levl[x][y].floortyp = levl[x][y].typ;
             levl[x][y].floorsubtyp = levl[x][y].subtyp;
+        }
+        else if (IS_FLOOR(levl[x][y].floortyp))
+        {
+            levl[x][y].floortyp = levl[x][y].floortyp;
+            levl[x][y].floorsubtyp = levl[x][y].floorsubtyp;
         }
         else
         {
@@ -5263,19 +5275,18 @@ genericptr_t arg, arg2, arg3, arg4, arg5;
         levl[x][y].typ = settyp;
     }
 
-    if (typ & D_SECRET) 
+    if (dmask & D_SECRET)
     {
-        typ &= ~D_SECRET;
-        if (typ < D_CLOSED)
-            typ = D_CLOSED;
+        dmask &= ~D_SECRET;
+        if (dmask < D_CLOSED)
+            dmask = D_CLOSED;
     }
 
-    if(indestr)
-        typ |= L_INDESTRUCTIBLE;
+    dmask |= dflags;
 
     set_door_orientation(x, y); /* set/clear levl[x][y].horizontal */
     levl[x][y].subtyp = subtyp;
-    levl[x][y].doormask = typ;
+    levl[x][y].doormask = dmask;
     levl[x][y].key_otyp = key_otyp;
     levl[x][y].special_quality = key_spe_quality;
     SpLev_Map[x][y] = 1;
@@ -5288,7 +5299,10 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_door";
     struct opvar *msk, *sel;
     struct opvar* varparam;
-    xchar typ = 0, subtyp = 0, indestr = 0;
+    unsigned short dmask = 0;
+    int subtyp = 0;
+    unsigned short dflags = 0;
+    xchar secret = 0;
     long kotyp = 0, kspeq = 0;
     int nparams = 0;
 
@@ -5330,8 +5344,18 @@ struct sp_coder *coder;
             break;
 
         case SP_D_V_INDESTRUCTIBLE:
+            if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
+                dflags |= L_INDESTRUCTIBLE;
+            break;
+
+        case SP_D_V_SECRET_DOOR:
             if (OV_typ(parm) == SPOVAR_INT)
-                indestr = OV_i(parm);
+                secret = OV_i(parm);
+            break;
+
+        case SP_D_V_USES_UP_KEY:
+            if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
+                dflags |= L_USES_UP_KEY;
             break;
 
         case SP_D_V_END:
@@ -5351,9 +5375,11 @@ struct sp_coder *coder;
     if (!OV_pop_typ(sel, SPOVAR_SEL))
         return;
 
-    typ = OV_i(msk) == -1 ? rnddoor() : (xchar) OV_i(msk);
+    dmask = OV_i(msk) == -1 ? rnddoor() : (xchar) OV_i(msk);
+    if (secret)
+        dmask |= D_SECRET;
 
-    selection_iterate5(sel, sel_set_door, (genericptr_t) &typ, (genericptr_t)&subtyp, (genericptr_t)&kotyp, (genericptr_t)&kspeq, (genericptr_t)&indestr);
+    selection_iterate5(sel, sel_set_door, (genericptr_t) &dmask, (genericptr_t)&subtyp, (genericptr_t)&kotyp, (genericptr_t)&kspeq, (genericptr_t)&dflags);
 
     opvar_free(varparam);
     opvar_free(sel);
@@ -6165,6 +6191,7 @@ struct sp_coder *coder;
     static const char nhFunc[] = "spo_room_door";
     struct opvar *wall, *secret, *mask, *pos, *varparam;
     int nparams = 0;
+    xchar secret_door_var = 0;
     room_door tmpd = { 0 };
 
     if (!OV_pop_i(wall) || !OV_pop_i(secret) || !OV_pop_i(mask)
@@ -6195,8 +6222,16 @@ struct sp_coder *coder;
                 tmpd.key_special_quality = OV_i(parm);
             break;
         case SP_D_V_INDESTRUCTIBLE:
+            if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
+                tmpd.dflags |= L_INDESTRUCTIBLE;
+            break;
+        case SP_D_V_SECRET_DOOR:
             if (OV_typ(parm) == SPOVAR_INT)
-                tmpd.indestr = OV_i(parm);
+                secret_door_var = OV_i(parm);
+            break;
+        case SP_D_V_USES_UP_KEY:
+            if (OV_typ(parm) == SPOVAR_INT && OV_i(parm))
+                tmpd.dflags |= L_USES_UP_KEY;
             break;
 
         case SP_D_V_END:
@@ -6213,7 +6248,7 @@ struct sp_coder *coder;
         }
     }
 
-    tmpd.secret = OV_i(secret);
+    tmpd.secret = (OV_i(secret) || secret_door_var);
     tmpd.mask = (unsigned short)OV_i(mask);
     tmpd.pos = OV_i(pos);
     tmpd.wall = OV_i(wall);

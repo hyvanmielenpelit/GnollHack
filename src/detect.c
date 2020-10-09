@@ -1646,13 +1646,14 @@ int x, y;
         /* rogue didn't have doors, only doorways */
         newmask = D_NODOOR;
     else
+    {
         /* newly exposed door is closed */
         if (!(newmask & D_LOCKED))
-        newmask |= D_CLOSED;
-
+            newmask |= D_CLOSED;
+    }
     /* Add other flags than door mask */
     newmask |= (lev->doormask & ~D_MASK);
-    transform_location_type_and_flags(x, y, DOOR, newmask, 0);
+    transform_location_type_and_flags(x, y, DOOR, lev->subtyp, newmask);
 }
 
 STATIC_PTR void
