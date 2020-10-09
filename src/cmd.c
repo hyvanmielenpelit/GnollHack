@@ -4844,8 +4844,12 @@ struct ext_func_tab extcmdlist[] = {
 			doattributes, IFBURIED | AUTOCOMPLETE },
 	{ '@', "autopickup", "toggle the pickup option on/off",
             dotogglepickup, IFBURIED },
+#ifdef USE_TILES
     { M('b'), "bars", "toggle tile hit point bars on/off",
             dotogglehpbars, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+    { M('*'), "targeting", "toggle tile targeting graphics on/off",
+            dotogglebigmonstertargeting, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+#endif
     { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU },
     { 'c', "close", "close a door", doclose },
 	{ 'C', "chat", "talk to someone", dotalk, IFBURIED | AUTOCOMPLETE },
@@ -4867,7 +4871,7 @@ struct ext_func_tab extcmdlist[] = {
             enter_explore_mode, IFBURIED },
     { 'f', "fire", "fire ammunition from quiver", dofire },
 	{ M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
-	{ ';', "glance", "show what type of thing a map symbol corresponds to",
+    { ';', "glance", "show what type of thing a map symbol corresponds to",
             doquickwhatis, IFBURIED | GENERALCMD },
 	{ M('h'), "handedness", "toggle swap weapon handedness",
 			doswaphandedness, IFBURIED | AUTOCOMPLETE | INCMDMENU },
@@ -5157,7 +5161,11 @@ commands_init()
     (void) bind_key(M('O'), "overview");
     (void) bind_key(M('1'), "handedness");
 	(void) bind_key(M('2'), "twoweapon");
+#ifdef USE_TILES
     (void) bind_key(M('3'), "bars");
+    (void) bind_key(M('4'), "targeting");
+    (void) bind_key(M(':'), "targeting");
+#endif
 
     /* wait_on_space */
     (void) bind_key(' ',    "wait");

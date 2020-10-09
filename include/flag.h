@@ -67,6 +67,7 @@ struct flag {
     boolean show_cursor_on_u; /* force show cursor on you even with tiles */
     boolean force_paint_at_cursor; /* force paint at cursor (normally, because the cursor appears on you) */
     enum game_cursor_types active_cursor_style;
+    boolean show_tile_big_monster_target; /* show your hp bar on tiles */
     boolean show_tile_mon_hp_bar; /* show mon hp bar on tiles */
     boolean show_tile_pet_hp_bar; /* show pet hp bar on tiles */
     boolean show_tile_u_hp_bar; /* show your hp bar on tiles */

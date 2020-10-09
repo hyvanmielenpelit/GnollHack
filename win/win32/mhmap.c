@@ -1865,7 +1865,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 {
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
-                    if (enlargement_idx > 0 && enlargements[enlargement_idx].number_of_enlargement_tiles > 3)
+                    if (flags.show_tile_big_monster_target && enlargement_idx > 0 && enlargements[enlargement_idx].number_of_enlargement_tiles >= 1)
                     {
                         int mglyph = MAIN_TILE_MARK + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];

@@ -5765,6 +5765,23 @@ dotogglehpbars()
 	return 0;
 }
 
+int
+dotogglebigmonstertargeting()
+{
+	boolean current_flag = flags.show_tile_big_monster_target;
+
+	flags.show_tile_big_monster_target = !current_flag;
+
+	for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
+	{
+		if (canseemon(mtmp))
+			newsym(mtmp->mx, mtmp->my);
+	}
+	flush_screen(1);
+	//	redraw_map();
+
+	return 0;
+}
 
 void
 delete_location(x, y)
