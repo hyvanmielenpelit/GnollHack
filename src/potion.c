@@ -1050,6 +1050,7 @@ struct obj *otmp;
         set_mimic_blocking(); /* do special mimic handling */
         see_monsters();       /* see invisible monsters */
         newsym(u.ux, u.uy);   /* see yourself! */
+        flush_screen(1);
         if (msg && !Blind) {  /* Blind possible if polymorphed */
             You("can see through yourself, but you are visible!");
             unkn--;

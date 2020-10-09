@@ -199,7 +199,7 @@ OBJECT:('/',"striking"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[4],uncursed,0
 OBJECT:('/',"magic missile"),$place[0],uncursed,0
 
-CONTAINER:('(',"chest"),locked,(20,14),keytype:('(',"bronze key") {
+CONTAINER:('(',"chest"),locked,(20,14),keytype:('(',"bronze key"),no_pickup {
   OBJECT:('$',"gold piece"),quantity:(1000+(2d500))
   [50%]:OBJECT:'*'
   [50%]:OBJECT:'*'
@@ -216,7 +216,7 @@ CONTAINER:('(',"chest"),locked,(20,14),keytype:('(',"bronze key") {
   [20%]:OBJECT:class_treasure_weapon
   [20%]:OBJECT:class_treasure_armor
 }
-ENGRAVING:(20,14),engrave,"Gilthoniel"
+#ENGRAVING:(20,14),engrave,"Gilthoniel"
 
 # the Orcish Army
 

@@ -5774,7 +5774,7 @@ dotogglebigmonstertargeting()
 
 	for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)
 	{
-		if (canseemon(mtmp))
+		//if (canseemon(mtmp))
 			newsym(mtmp->mx, mtmp->my);
 	}
 	flush_screen(1);

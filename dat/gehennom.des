@@ -477,7 +477,7 @@ MONSTER:('&',"Orcus"),(33,15)
 {
   OBJECT:('(',"ornamental key"),special_quality:4
 }
-CONTAINER:('(',"chest"),trapped,locked,(32,15),keytype:('(',"ornamental key"),special_quality:4 {
+CONTAINER:('(',"chest"),trapped,locked,(32,15),keytype:('(',"ornamental key"),special_quality:4,no_pickup {
    OBJECT:('$',"gold piece"),quantity:(12000+(6d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
@@ -489,7 +489,7 @@ CONTAINER:('(',"chest"),trapped,locked,(32,15),keytype:('(',"ornamental key"),sp
    [25%]:OBJECT:'!'
    [25%]:OBJECT:'?'
 }
-ENGRAVING:(32,15),burn,"Morgoth"
+#ENGRAVING:(32,15),burn,"Morgoth"
 
 # And its preferred companions
 MONSTER:('z',"human zombie"),(32,15)
@@ -574,7 +574,7 @@ SPECIAL_REGION:(01,01,20,10),region_special_level_seen
 MONSTER:('&',"Dispater"),(12,07) {
    OBJECT:('(',"ornamental key"),special_quality:3
 }
-CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),special_quality:3 {
+CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),special_quality:3,no_pickup {
    OBJECT:('$',"gold piece"), quantity:(12000+(6d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
@@ -586,7 +586,7 @@ CONTAINER:('(',"chest"),trapped,locked,(12,07),keytype:('(',"ornamental key"),sp
    [25%]:OBJECT:'!'
    [25%]:OBJECT:'?'
 }
-ENGRAVING:(12,07),burn,"Morgoth"
+#ENGRAVING:(12,07),burn,"Morgoth"
 
 # Some random weapons and armor.
 OBJECT:'[',random
@@ -681,7 +681,7 @@ IF [50%] {
 MONSTER:('&',"Baalzebub"),(35,06) {
   OBJECT:('(',"ornamental key"),special_quality:5
 }
-CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5 {
+CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),special_quality:5,no_pickup {
    OBJECT:('$',"gold piece"), quantity:(17000+(6d1000))
    [25%]:OBJECT:artifact
    OBJECT:random_contents
@@ -693,7 +693,7 @@ CONTAINER:('(',"chest"),trapped,locked,(35,06),keytype:('(',"ornamental key"),sp
    [25%]:OBJECT:'!'
    [25%]:OBJECT:'?'
 }
-ENGRAVING:(35,06),burn,"Morgoth"
+#ENGRAVING:(35,06),burn,"Morgoth"
 
 # Some random weapons and armor.
 OBJECT:'[',random

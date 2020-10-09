@@ -71,7 +71,7 @@ struct obj {
 #define SPEFLAGS_FROM_SINK     		        0x00001000UL
 #define SPEFLAGS_INDESTRUCTIBLE     		0x00002000UL
 #define SPEFLAGS_USES_UP_KEY         		0x00004000UL
-#define SPEFLAGS_NO_PICKUP           		0x00008000UL  /* Monster will not pick up this item */
+#define SPEFLAGS_NO_PICKUP           		0x00008000UL  /* Monsters will not pick up this item */
 
     char oclass;    /* object class */
     char invlet;    /* designation in inventory */

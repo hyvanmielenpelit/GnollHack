@@ -5020,7 +5020,7 @@ struct permonst _mons2[] = {
         M3_INFRAVISIBLE | M3_SPEAKING, 
 		M4_NONE, M5_NONE, 
 		9, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("Tarrasque", "great reptilian punisher", "colossal magical beast with regeneration, reflecting carapace, and teeth as sharp as sword of sharpness", None, None, 
+    ENLARGED_MON("Tarrasque", "great reptilian punisher", "colossal magical beast with regeneration, reflecting carapace, and teeth as sharp as sword of sharpness", None, None, 
         S_DEMON, LVL(60, 9, -15, 30, 0, 0), (G_NOGEN | G_UNIQ),
         A(ATTK(AT_BITE, AD_SHRP, 5, 10, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 12, 0, 0),
             ATTK(AT_CLAW, AD_PHYS, 1, 12, 0, 0), ATTK(AT_TAIL, AD_PHYS, 2, 12, 0, 0), ATTK(AT_BUTT, AD_PHYS, 2, 10, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK),
@@ -5031,7 +5031,9 @@ struct permonst _mons2[] = {
         M2_HOSTILE | M2_NOPOLY,
         M3_REGENERATES_LOST_BODY_PARTS | M3_REVIVES_FROM_DEAD,
         M4_BRAVE | M4_FEARLESS | M4_BLOODLUST, M5_NONE,
-		60, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		60, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC,
+        ACTION_INFO(TARRASQUE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TARRASQUE_STATUE_ENLARGEMENT, 0, 0),
+        ACTION_INFO(TARRASQUE_ENLARGEMENT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, TARRASQUE_STATUE_ENLARGEMENT, 0, 0)),
     /*
      * sea monsters
      */
