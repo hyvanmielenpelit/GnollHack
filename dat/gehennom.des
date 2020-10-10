@@ -881,7 +881,7 @@ LOOP [1d4] {
     }
 
 #
-MONSTER: ('&', "Tarrasque"), random
+MONSTER: ('T', "Tarrasque"), random
 MONSTER: ('&', "balrog"), random
 MONSTER: ('&', "marilith"), random
 MONSTER: ('&', "nalfeshnee"), random

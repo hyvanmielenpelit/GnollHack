@@ -739,7 +739,7 @@ register struct monst *mtmp;
 		}
         break;
     case S_TROLL:
-        if (!rn2(2))
+        if (humanoid(mtmp->data) && !rn2(2))
         {
             struct obj* weap = 0;
             switch (rn2(4)) {
