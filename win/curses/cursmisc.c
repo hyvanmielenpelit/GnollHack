@@ -457,15 +457,15 @@ curses_convert_glyph(int ch, int glyph)
 
     /* Save some processing time by returning if the glyph represents
        an object that we don't have custom characters for */
-    if (!glyph_is_cmap(glyph)) {
+    if (!glyph_is_cmap_or_cmap_variation(glyph)) {
         return ch;
     }
 
-    symbol = glyph_to_cmap(glyph);
+    symbol = generic_glyph_to_cmap(glyph);
 
     /* If user selected a custom character for this object, don't
        override this. */
-    if (((glyph_is_cmap(glyph)) && (ch != showsyms[symbol]))) {
+    if (((glyph_is_cmap_or_cmap_variation(glyph)) && (ch != showsyms[symbol]))) {
         return ch;
     }
 
