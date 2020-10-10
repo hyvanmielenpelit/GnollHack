@@ -2183,12 +2183,14 @@ enum autodraw_types* autodraw_ptr;
         case REPLACEMENT_ACTION_SHORE_TILE:
         {
             int above_y = y - 1;
+            int below_y = y + 1;
             int floortype = IS_FLOOR(levl[x][y].typ) || IS_POOL(levl[x][y].typ) || levl[x][y].typ == LAVAPOOL || levl[x][y].typ == ICE ? levl[x][y].typ : levl[x][y].floortyp;
+            boolean is_water_or_air_level = (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz));
 
-            if (Underwater || !isok(x, above_y) || ((Is_airlevel(&u.uz) || Is_waterlevel(&u.uz)) && !cansee(x,y))
+            if (!(is_water_or_air_level && info.layer == LAYER_FLOOR) && (Underwater || !isok(x, above_y)
                 || (levl[x][y].typ == levl[x][above_y].typ && get_location_category(levl[x][y].typ, levl[x][y].subtyp) == get_location_category(levl[x][above_y].typ, levl[x][above_y].subtyp))
                 || (level.flags.hero_memory && levl[x][above_y].hero_memory_layers.glyph == cmap_to_glyph(S_unexplored))
-                || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(floortype) && (IS_ROCK(levl[x][above_y].typ))))
+                || levl[x][above_y].typ == UNEXPLORED || (IS_SOLID_FLOOR(floortype) && (IS_ROCK(levl[x][above_y].typ)))))
             {
                 /* No action */
             }
@@ -2200,7 +2202,31 @@ enum autodraw_types* autodraw_ptr;
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;
 
-                int tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
+                int tileidx = -1;
+                /* Kludge for water and air levels */
+                if (is_water_or_air_level && info.layer == LAYER_FLOOR)
+                {
+                    struct layer_info this_l = layers_at(x, y);
+                    struct layer_info above_l = layers_at(x, above_y);
+                    int this_g = this_l.layer_glyphs[info.layer];
+                    int above_g = above_l.layer_glyphs[info.layer];
+                    int this_cmap = generic_glyph_to_cmap(this_g);
+                    int above_cmap = generic_glyph_to_cmap(above_g);
+                    if (this_cmap == above_cmap)
+                        return ntile;
+
+                    if (above_cmap == S_water && this_cmap != S_water)
+                        tileidx = MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 6;
+                    else if (above_cmap == S_cloud && this_cmap != S_cloud)
+                        tileidx = MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 5;
+                    else if (above_cmap == S_air && this_cmap != S_air)
+                        tileidx = MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 4;
+                    else
+                        tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
+                }
+                else
+                    tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
+
                 if (tileidx < 0 || tileidx >= MAX_TILES_PER_REPLACEMENT || (replacements[replacement_idx].tile_flags[tileidx] & RTF_SKIP))
                     return ntile;
 
