@@ -1013,43 +1013,56 @@ const char *s;
     s_level *sp = Is_special(&u.uz);
     coord mm;
 
-    if (*s) {
+    if (*s) 
+    {
         if (sp && sp->rndlevs)
             Sprintf(protofile, "%s-%d", s, rnd((int) sp->rndlevs));
         else
             Strcpy(protofile, s);
-    } else if (*(dungeons[u.uz.dnum].proto)) {
-        if (dunlevs_in_dungeon(&u.uz) > 1) {
+    }
+    else if (*(dungeons[u.uz.dnum].proto)) 
+    {
+        if (dunlevs_in_dungeon(&u.uz) > 1) 
+        {
             if (sp && sp->rndlevs)
                 Sprintf(protofile, "%s%d-%d", dungeons[u.uz.dnum].proto,
                         dunlev(&u.uz), rnd((int) sp->rndlevs));
             else
                 Sprintf(protofile, "%s%d", dungeons[u.uz.dnum].proto,
                         dunlev(&u.uz));
-        } else if (sp && sp->rndlevs) {
+        } 
+        else if (sp && sp->rndlevs)
+        {
             Sprintf(protofile, "%s-%d", dungeons[u.uz.dnum].proto,
                     rnd((int) sp->rndlevs));
-        } else
+        } 
+        else
             Strcpy(protofile, dungeons[u.uz.dnum].proto);
 
-    } else
+    } 
+    else
         Strcpy(protofile, "");
 
     /* SPLEVTYPE format is "level-choice,level-choice"... */
-    if (wizard && *protofile && sp && sp->rndlevs) {
+    if (wizard && *protofile && sp && sp->rndlevs) 
+    {
         char *ep = getenv("SPLEVTYPE"); /* not nh_getenv */
         if (ep) {
             /* rindex always succeeds due to code in prior block */
             int len = (int) ((rindex(protofile, '-') - protofile) + 1);
 
-            while (ep && *ep) {
-                if (!strncmp(ep, protofile, len)) {
+            while (ep && *ep) 
+            {
+                if (!strncmp(ep, protofile, len)) 
+                {
                     int pick = atoi(ep + len);
                     /* use choice only if valid */
                     if (pick > 0 && pick <= (int) sp->rndlevs)
                         Sprintf(protofile + len, "%d", pick);
                     break;
-                } else {
+                } 
+                else 
+                {
                     ep = index(ep, ',');
                     if (ep)
                         ++ep;
@@ -1058,10 +1071,12 @@ const char *s;
         }
     }
 
-    if (*protofile) {
+    if (*protofile) 
+    {
         check_ransacked(protofile);
         Strcat(protofile, LEV_EXT);
-        if (load_special(protofile)) {
+        if (load_special(protofile))
+        {
             /* some levels can end up with monsters
                on dead mon list, including light source monsters */
             dmonsfree();
@@ -1073,10 +1088,14 @@ const char *s;
     level.flags.is_maze_lev = TRUE;
     level.flags.corrmaze = !rn2(3);
 
-    if (!Invocation_lev(&u.uz) && Inhell && rn2(2)) {
-        int corrscale = rnd(3); //rnd(4)
-        create_maze(corrscale, 1 /*rnd(4)-corrscale*/);
-    } else {
+    if (!Invocation_lev(&u.uz) && Inhell && rn2(2))
+    {
+        int corrscale = 1 + rnd(2);//rnd(4)
+        int wallscale = 1; //rnd(4)-corrscale
+        create_maze(corrscale, wallscale);
+    }
+    else 
+    {
         create_maze(1,1);
     }
 
@@ -1085,10 +1104,13 @@ const char *s;
 
     mazexy(&mm);
     mkstairs(mm.x, mm.y, 1, (struct mkroom *) 0); /* up */
-    if (!Invocation_lev(&u.uz)) {
+    if (!Invocation_lev(&u.uz)) 
+    {
         mazexy(&mm);
         mkstairs(mm.x, mm.y, 0, (struct mkroom *) 0); /* down */
-    } else { /* choose "vibrating square" location */
+    }
+    else 
+    { /* choose "vibrating square" location */
 #define x_maze_min 2
 #define y_maze_min 2
 /*
@@ -1108,20 +1130,25 @@ const char *s;
             y_range = y_maze_max - y_maze_min - 2 * INVPOS_Y_MARGIN - 1;
 
         if (x_range <= INVPOS_X_MARGIN || y_range <= INVPOS_Y_MARGIN
-            || (x_range * y_range) <= (INVPOS_DISTANCE * INVPOS_DISTANCE)) {
+            || (x_range * y_range) <= (INVPOS_DISTANCE * INVPOS_DISTANCE)) 
+        {
             debugpline2("inv_pos: maze is too small! (%d x %d)",
                         x_maze_max, y_maze_max);
         }
+
         inv_pos.x = inv_pos.y = 0; /*{occupied() => invocation_pos()}*/
-        do {
+        do 
+        {
             x = rn1(x_range, x_maze_min + INVPOS_X_MARGIN + 1);
             y = rn1(y_range, y_maze_min + INVPOS_Y_MARGIN + 1);
             /* we don't want it to be too near the stairs, nor
                to be on a spot that's already in use (wall|trap) */
-        } while (x == xupstair || y == yupstair /*(direct line)*/
+        } 
+        while (x == xupstair || y == yupstair /*(direct line)*/
                  || abs(x - xupstair) == abs(y - yupstair)
                  || distmin(x, y, xupstair, yupstair) <= INVPOS_DISTANCE
                  || !SPACE_POS(levl[x][y].typ) || occupied(x, y));
+
         inv_pos.x = x;
         inv_pos.y = y;
         maketrap(inv_pos.x, inv_pos.y, VIBRATING_SQUARE, NON_PM, MKTRAP_NO_FLAGS);
@@ -1141,23 +1168,28 @@ const char *s;
     /* place branch stair or portal */
     place_branch(Is_branchlev(&u.uz), 0, 0);
 
-    for (x = rn1(8, 11); x; x--) {
+    for (x = rn1(8, 11); x; x--)
+    {
         mazexy(&mm);
         (void) mkobj_at(rn2(2) ? GEM_CLASS : 0, mm.x, mm.y, TRUE);
     }
-    for (x = rn1(10, 2); x; x--) {
+    for (x = rn1(10, 2); x; x--) 
+    {
         mazexy(&mm);
         (void) mksobj_at(BOULDER, mm.x, mm.y, TRUE, FALSE);
     }
-    for (x = rnd(2); x; x--) {
+    for (x = rnd(2); x; x--) 
+    {
         mazexy(&mm);
         (void) makemon(&mons[PM_MINOTAUR], mm.x, mm.y, NO_MM_FLAGS);
     }
-    for (x = rn1(5, 7); x; x--) {
+    for (x = rn1(5, 7); x; x--) 
+    {
         mazexy(&mm);
         (void) makemon((struct permonst *) 0, mm.x, mm.y, NO_MM_FLAGS);
     }
-    for (x = rn1(6, 7); x; x--) {
+    for (x = rn1(6, 7); x; x--) 
+    {
         mazexy(&mm);
         (void) mkgold(0L, mm.x, mm.y);
     }
