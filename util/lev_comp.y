@@ -2158,10 +2158,12 @@ passwall_detail : NON_PASSWALL_ID ':' region_or_var
 naming_detail : NAMING_ID ':' STRING ',' NAMING_TYPE
 		  {
 		      add_opvars(splev, "Miso", VA_PASS4(-1, $<i>5, $3, SPO_NAMING));
+		      Free($3);
 		  }
 		| NAMING_ID ':' STRING ',' NAMING_TYPE ',' MONTYPE_ID ':' monster_or_var
 		  {
 		      add_opvars(splev, "iso", VA_PASS3($<i>5, $3, SPO_NAMING));
+		      Free($3);
 		  }
 		;
 
