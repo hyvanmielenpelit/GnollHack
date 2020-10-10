@@ -1478,7 +1478,7 @@ int mkobj_type;
 		curse(otmp);
 
     /* Exceptionality */
-    if (can_have_exceptionality(otmp) && otmp->oartifact == 0)
+    if (can_have_exceptionality(otmp) && !(objects[otmp->otyp].oc_flags4 & O4_NEVER_GENERATED_WITH_EXCEPTIONALITY) && otmp->oartifact == 0)
     {
         if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_CELESTIAL)
         {
