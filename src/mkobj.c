@@ -1043,6 +1043,7 @@ static const char dknowns[] = { WAND_CLASS,   RING_CLASS, POTION_CLASS, ARMOR_CL
                                 WEAPON_CLASS, TOOL_CLASS, FOOD_CLASS, 0 };
 
 /* mksobj(): create a specific type of object */
+/* mkobj_type = 0 making contents on the floor, = 1 making box contents, = 2 wishing */
 struct obj *
 mksobj(otyp, init, artif, mkobj_type)
 int otyp;
@@ -1478,7 +1479,7 @@ int mkobj_type;
 		curse(otmp);
 
     /* Exceptionality */
-    if (can_have_exceptionality(otmp) && !(objects[otmp->otyp].oc_flags4 & O4_NEVER_GENERATED_WITH_EXCEPTIONALITY) && otmp->oartifact == 0)
+    if (can_have_exceptionality(otmp) && !(objects[otmp->otyp].oc_flags4 & O4_NEVER_GENERATED_WITH_EXCEPTIONALITY) && mkobj_type < 2 && otmp->oartifact == 0)
     {
         if (objects[otmp->otyp].oc_flags4 & O4_GENERATED_CELESTIAL)
         {
