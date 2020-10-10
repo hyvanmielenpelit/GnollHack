@@ -2215,11 +2215,11 @@ enum autodraw_types* autodraw_ptr;
                     if (this_cmap == above_cmap)
                         return ntile;
 
-                    if (above_cmap == S_water && this_cmap != S_water)
+                    if (above_cmap == S_water)
                         tileidx = MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 6;
-                    else if (above_cmap == S_cloud && this_cmap != S_cloud)
+                    else if (above_cmap == S_cloud)
                         tileidx = MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 5;
-                    else if (above_cmap == S_air && this_cmap != S_air)
+                    else if (above_cmap == S_air)
                         tileidx = MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES + MAX_CORRIDOR_CATEGORIES + 4;
                     else
                         tileidx = get_shore_tile_index(&levl[x][y], &levl[x][above_y]);
