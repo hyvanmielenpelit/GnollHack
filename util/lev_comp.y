@@ -1913,6 +1913,12 @@ wallify_detail	: WALLIFY_ID
 		  {
 		      add_opvars(splev, "io", VA_PASS2(1, SPO_WALLIFY));
 		  }
+		| WALLIFY_ID ':' ALL_ID
+		  {
+		      add_opvars(splev, "rio",
+				 VA_PASS3(SP_REGION_PACK(-1,-1,-1,-1),
+					  2, SPO_WALLIFY));
+		  }
 		;
 
 ladder_detail	: LADDER_ID ':' coord_or_var ',' UP_OR_DOWN

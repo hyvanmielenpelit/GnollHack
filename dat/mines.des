@@ -943,6 +943,7 @@ RANDOM_CORRIDORS
 # "Mimic of the Mines"
 #
 MAZE: "minend-1", ' '
+FLAGS:fountain_on_ground
 GEOMETRY:center,center
 #1234567890123456789012345678901234567890123456789012345678901234567890
 MAP
@@ -1068,6 +1069,7 @@ MONSTER:'h',random
 # "Gnome King's Wine Cellar"
 #
 MAZE: "minend-2", ' '
+FLAGS:fountain_on_ground
 GEOMETRY:center,center
 MAP
 ---------------------------------------------------------------------------

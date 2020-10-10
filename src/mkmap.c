@@ -14,7 +14,6 @@ STATIC_DCL schar FDECL(get_map, (int, int, SCHAR_P));
 STATIC_DCL void FDECL(pass_one, (SCHAR_P, SCHAR_P));
 STATIC_DCL void FDECL(pass_two, (SCHAR_P, SCHAR_P));
 STATIC_DCL void FDECL(pass_three, (SCHAR_P, SCHAR_P));
-STATIC_DCL void NDECL(wallify_map);
 STATIC_DCL void FDECL(join_map, (SCHAR_P, SCHAR_P));
 STATIC_DCL void FDECL(finish_map,
                       (SCHAR_P, SCHAR_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
@@ -262,8 +261,8 @@ boolean anyroom;
  * If we have drawn a map without walls, this allows us to
  * auto-magically wallify it.  Taken from lev_main.c.
  */
-STATIC_OVL void
-wallify_map()
+void
+wallify_entire_map()
 {
     int x, y, xx, yy;
 
@@ -273,17 +272,15 @@ wallify_map()
 			{
                 for (yy = y - 1; yy <= y + 1; yy++)
                     for (xx = x - 1; xx <= x + 1; xx++)
-                        if (isok(xx, yy) && (levl[xx][yy].typ == ROOM || levl[xx][yy].typ == GRASS || levl[xx][yy].typ == GROUND))
+                        if (isok(xx, yy) && (IS_ROOM(levl[xx][yy].typ) || levl[xx][yy].typ == CORR))
 						{
-                            levl[xx][yy].floortyp = levl[xx][yy].typ;
-                            levl[xx][yy].floorsubtyp = levl[xx][yy].subtyp;
-
                             if (yy != y)
                                 levl[x][y].typ = HWALL;
                             else
                                 levl[x][y].typ = VWALL;
 
-                            levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
+                            /* Keep stone subtyp */
+                            //levl[x][y].subtyp = get_initial_location_subtype(levl[x][y].typ);
                         }
             }
 }
@@ -370,7 +367,7 @@ boolean lit, walled, icedpools;
     int i, j;
 
     if (walled)
-        wallify_map();
+        wallify_entire_map();
 
     if (lit) {
         for (i = 1; i < COLNO; i++)

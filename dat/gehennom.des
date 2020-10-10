@@ -4,6 +4,11 @@
 # NetHack may be freely redistributed.  See license for details.
 #
 
+########################
+#
+# Valley of the Dead
+#
+########################
 MAZE: "valley", ' '
 FLAGS: noteleport,hardfloor,nommap
 TILESET: undead_tileset
@@ -176,9 +181,12 @@ MONSTER:'z',random
 MONSTER:'z',random
 MONSTER:'z',random
 MONSTER:'z',random
+
+########################
 #
-# The Juiblex level
+# The Juiblex Level
 #
+########################
 MAZE:"juiblex",' '
 FLAGS:noteleport,shortsighted,swampy
 INIT_MAP:mines,',','}',true,true,unlit,false
@@ -361,9 +369,13 @@ TRAP:"anti magic",random
 TRAP:"anti magic",random
 TRAP:"magic",random
 TRAP:"magic",random
+
+
+########################
 #
 # The Orcus Level
 #
+########################
 MAZE:"orcus",' '
 FLAGS: noteleport,shortsighted
 TILESET: undead_tileset
@@ -531,9 +543,11 @@ MONSTER:random,random
 MONSTER:random,random
 
 
+########################
 #
 # The Dispater Level
 #
+########################
 MAZE:"dispater",' '
 FLAGS: noteleport
 NAMING:"A hellish castle", name_revealed_seeing_monster, montype:"Dispater"
@@ -637,9 +651,11 @@ TRAP:"anti magic", random
 TRAP:"fire", random
 TRAP:"magic", random
 
+########################
 #
-# The Baalzebub level
+# The Baalzebub Level
 #
+########################
 MAZE:"baalz",' '
 FLAGS: noteleport,corrmaze
 NAMING:"A hellish mansion", name_revealed_seeing_monster, montype:"Baalzebub"
@@ -724,9 +740,11 @@ MONSTER:'V',random
 MONSTER:'V',random
 MONSTER:'V',random
 
+########################
 #
 # The Yeenoghu Level
 #
+########################
 MAZE:"yeenoghu",' '
 FLAGS: noteleport
 NAMING:"A hellish stronghold", name_revealed_seeing_monster, montype:"Yeenoghu"
@@ -909,9 +927,11 @@ TRAP: "fire", random
 TRAP: "fire", random
 TRAP: "fire", random
 
+########################
 #
 # The Sanctum Level
 #
+########################
 MAZE:"sanctum", ' '
 FLAGS: noteleport,hardfloor,nommap
 TILESET: undead_tileset
@@ -1041,11 +1061,14 @@ STAIR:(63,15),up
 TELEPORT_REGION:levregion(54,1,79,18),(0,0,0,0),down
 
 
+#############################################################
+#
 #	The "fill" level for the Gehennom.
 #
 #	This level is used to fill out any levels not occupied by
 #	specific levels as defined below.
 #
+#############################################################
 MAZE: "hellfill" , ' '
 INIT_MAP: mines, ':' , ' ' , true , true , random , true
 NOMAP

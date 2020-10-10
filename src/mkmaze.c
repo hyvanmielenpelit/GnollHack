@@ -1074,8 +1074,8 @@ const char *s;
     level.flags.corrmaze = !rn2(3);
 
     if (!Invocation_lev(&u.uz) && Inhell && rn2(2)) {
-        int corrscale = rnd(4);
-        create_maze(corrscale,rnd(4)-corrscale);
+        int corrscale = rnd(3); //rnd(4)
+        create_maze(corrscale, 1 /*rnd(4)-corrscale*/);
     } else {
         create_maze(1,1);
     }

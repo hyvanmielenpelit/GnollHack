@@ -3087,9 +3087,11 @@ int x1, y1, x2, y2;
             hi_xx = (x < x2) ? x + 1 : x2;
             for (yy = lo_yy; yy <= hi_yy; yy++)
                 for (xx = lo_xx; xx <= hi_xx; xx++)
-                    if (IS_ROOM(levl[xx][yy].typ)
-                        || levl[xx][yy].typ == CROSSWALL) {
+                    if (IS_ROOM(levl[xx][yy].typ) || levl[xx][yy].typ == CORR
+                        || levl[xx][yy].typ == CROSSWALL) 
+                    {
                         levl[x][y].typ = (yy != y) ? HWALL : VWALL;
+                        /* Keep stone subtyp */
                         yy = hi_yy; /* end `yy' loop */
                         break;      /* end `xx' loop */
                     }
@@ -6315,6 +6317,11 @@ struct sp_coder *coder;
         if (!OV_pop_typ(r, SPOVAR_SEL))
             return;
         selection_iterate(r, sel_set_wallify, NULL);
+        break;
+    case 2:
+        if (!OV_pop_r(r))
+            return;
+        wallify_entire_map();
         break;
     }
     opvar_free(r);
