@@ -315,8 +315,8 @@ NON_PASSWALL:(00,00,72,16)
 TELEPORT_REGION:(37,07,42,09),(0,0,0,0),up
 TELEPORT_REGION:(37,07,42,09),(0,0,0,0),down
 
-MODRON_PORTAL:(33,08),level_teleporter,teleport_up,matching_portal,cylindrical,inactive
-MODRON_PORTAL:(39,08),level_teleporter,teleport_down,matching_portal,spherical,inactive
+MODRON_PORTAL:(33,08),level_teleporter,teleport_down,matching_portal,spherical,inactive
+MODRON_PORTAL:(39,08),level_teleporter,teleport_up,matching_portal,cylindrical,inactive
 
 MONSTER:('M',"modron pentadrone"),(46,08),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(44,07),waitforu,hostile
