@@ -921,11 +921,15 @@ int x, y;
         return res;
     }
 
-    if (!(door->doormask & D_CLOSED)) {
+    if (!(door->doormask & D_CLOSED)) 
+    {
         const char *mesg;
 		boolean locked = FALSE;
+        char lbuf[BUFSZ];
+        strcpy(lbuf, "");
 
-        switch (door->doormask & D_MASK) {
+        switch (door->doormask & D_MASK) 
+        {
         case D_BROKEN:
             mesg = " is broken";
             break;
@@ -940,12 +944,13 @@ int x, y;
             break;
         default:
             mesg = " is locked";
+            print_lock_with_buf(lbuf, door->key_otyp, door->special_quality, is_door_normally_without_lock_at(cc.x, cc.y));
             update_u_action(ACTION_TILE_DOOR_USE);
             u_wait_until_action();
             locked = TRUE;
 			break;
         }
-        pline("This %s%s.", door_name, mesg);
+        pline("This %s%s%s.", door_name, mesg, lbuf);
 #ifdef ANDROID
 		if (locked && flags.autokick) {
 			autokick();

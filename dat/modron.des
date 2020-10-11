@@ -397,13 +397,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAA:::::AAAAAAAAAAAAAA
 AAAAAAAAA::::::---::::::AAAAAAAAA
 AAAAA:::::------.------:::::AAAAA
-AAA:::-----..+...|.+..-----:::AAA
+AAA:::-----..+.....|..-----:::AAA
 AA::---...+..-------..+...---::AA
 A::--|....---|.....|---....|--::A
 A::|.+....|..+..\..+..|....+.|::A
 A::--|....---|.....|---....|--::A
 AA::---...+..---+---..+...---::AA
-AAA:::-----..+...+.+..-----:::AAA
+AAA:::-----..+.....+..-----:::AAA
 AAAAA:::::------.------:::::AAAAA
 AAAAAAAAA::::::-+-::::::AAAAAAAAA
 AAAAAAAAAAAAAA:::::AAAAAAAAAAAAAA
@@ -413,24 +413,22 @@ ENDMAP
 REGION:(00,00,32,14),lit,"ordinary"
 NON_DIGGABLE:(00,00,32,14)
 NON_PASSWALL:(00,00,32,14)
-TELEPORT_REGION:(14,04,16,04),(0,0,0,0),up
-TELEPORT_REGION:(14,04,16,04),(0,0,0,0),down
+TELEPORT_REGION:(14,04,18,04),(0,0,0,0),up
+TELEPORT_REGION:(14,04,18,04),(0,0,0,0),down
 
-DOOR:locked,(05,07),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:locked,(27,07),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:locked,(05,07),subtype:door_magic,keytype:"magic key",special_quality:1,secret_door
+DOOR:locked,(27,07),subtype:door_magic,keytype:"magic key",special_quality:1,secret_door
 DOOR:locked,(16,12),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:closed,(13,07),subtype:door_modron,keytype:"magic key",special_quality:1,secret_door
-DOOR:closed,(19,07),subtype:door_modron,keytype:"magic key",special_quality:1,secret_door
+DOOR:locked,(13,07),subtype:door_modron,keytype:"geometric key",special_quality:8,non_passdoor,secret_door
+DOOR:locked,(19,07),subtype:door_modron,keytype:"geometric key",special_quality:5,non_passdoor,secret_door
 DOOR:locked,(16,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 DOOR:closed,(13,04),subtype:door_modron
-DOOR:closed,(19,04),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:locked,(13,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
-DOOR:closed,(17,10),subtype:door_modron,secret_door
-DOOR:closed,(19,10),subtype:door_modron
+DOOR:locked,(19,10),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:locked,(10,05),subtype:door_modron,keytype:"geometric key",special_quality:4,non_passdoor
 DOOR:locked,(10,09),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
 DOOR:closed,(22,09),subtype:door_modron
-DOOR:closed,(22,05),subtype:door_modron,secret_door
+DOOR:closed,(22,05),subtype:door_modron
 
 MODRON_PORTAL:(16,03),level_teleporter,teleport_up,matching_portal,spherical,inactive
 
@@ -470,19 +468,21 @@ MONSTER:('M',"modron pentadrone"),(25,06),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(25,07),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(25,08),waitforu,hostile
 
+# Local resident
 MONSTER:('M',"Modron Primus"),(16,07),waitforu,hostile {
         OBJECT:('(', "geometric key"),special_quality:8
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
+        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
 }
 
-CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,(11,07) {
+# Treasures
+CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,(11,07),no_pickup {
         OBJECT:artifact
         OBJECT:class_artifact
-        OBJECT:class_treasure_weapon
-        OBJECT:class_treasure_armor
         OBJECT:('+', "call hierarch modron")
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
 }
+OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2)),(21,07)
+OBJECT:class_treasure_armor,(04,07)
+OBJECT:class_treasure_weapon,(28,07)
 
 #LEVER:(01,01),lever_effect_create_trap,target:(02,02),switchable,continuously_usable,traptype:"modron portal",subtype:octahedral
 #LEVER:(01,01),lever_effect_create_object,target:(02,02),switchable,continuously_usable,objtype:"geometric key",special_quality:3

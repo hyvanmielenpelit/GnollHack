@@ -4409,14 +4409,8 @@ int x, y;
                 strcpy(altbuf, defsym_variations[lsubtyp - 1 + defsyms[altcmap].variation_offset].explanation);
             else
                 strcpy(altbuf, defsyms[altcmap].explanation);
-            const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
-            if (desc && strcmp(desc, ""))
-            {
-                if (!strcmp(desc, "no"))
-                    Sprintf(eos(altbuf), " with no lock");
-                else
-                    Sprintf(eos(altbuf), " with %s lock", an(desc));
-            }
+
+            print_lock_with_buf(eos(altbuf), levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
             dfeature = altbuf;
         }
 

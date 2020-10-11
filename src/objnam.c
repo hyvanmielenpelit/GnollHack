@@ -1298,14 +1298,7 @@ unsigned doname_flags;
 
     if (Is_box(obj))
     {
-        const char* desc = get_lock_description_by_otyp(obj->keyotyp, obj->special_quality, FALSE);
-        if (desc && strcmp(desc, ""))
-        {
-            if (!strcmp(desc, "no"))
-                Sprintf(eos(bp), " with no lock");
-            else
-                Sprintf(eos(bp), " with %s lock", an(desc));
-        }
+        print_lock_with_buf(eos(bp), obj->keyotyp, obj->special_quality, FALSE);
     }
 
     if (obj->greased)
@@ -3658,7 +3651,9 @@ struct obj *no_wish;
     /* save the [nearly] unmodified choice string */
     Strcpy(fruitbuf, bp);
 
-    for (;;) {
+    int foundkey = FALSE;
+    for (;;) 
+    {
         register int l;
 
         if (!bp || !*bp)
@@ -3820,14 +3815,20 @@ struct obj *no_wish;
         }
         else
         {
-            int foundkey = find_key_otyp_by_description(bp, &key_otyp , &key_special_quality);
-            if(!foundkey)
-                break;
+            foundkey = find_key_otyp_by_description(bp, &key_otyp , &key_special_quality);
+            break;
         }
         bp += l;
     }
     if (!cnt)
         cnt = 1; /* will be changed to 2 if makesingular() changes string */
+
+    if (foundkey)
+    {
+        typ = key_otyp;
+        goto typfnd;
+    }
+
     if (strlen(bp) > 1 && (p = rindex(bp, '(')) != 0) {
         boolean keeptrailingchars = TRUE;
 
@@ -5371,6 +5372,25 @@ boolean normally_without_lock;
     }
     else
         return OBJ_CONTENT_NAME(otyp);
+}
+
+void
+print_lock_with_buf(lbuf, key_otyp, special_quality, normally_without_lock)
+char* lbuf;
+int key_otyp, special_quality;
+boolean normally_without_lock;
+{
+    if (!lbuf)
+        return;
+
+    const char* ldesc = get_lock_description_by_otyp(key_otyp, special_quality, normally_without_lock);
+    if (ldesc && strcmp(ldesc, ""))
+    {
+        if (!strcmp(ldesc, "no"))
+            Sprintf(lbuf, " with no lock");
+        else
+            Sprintf(lbuf, " with %s lock", an(ldesc));
+    }
 }
 
 /*objnam.c*/

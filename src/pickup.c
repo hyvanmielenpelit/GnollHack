@@ -1757,13 +1757,18 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
     if (cobj->olocked)
     {
         play_simple_object_sound(cobj, OBJECT_SOUND_TYPE_TRY_LOCKED_CONTAINER);
+        char lbuf[BUFSZ];
+        strcpy(lbuf, "");
+        print_lock_with_buf(lbuf, cobj->keyotyp, cobj->special_quality, FALSE);
+
         if (ccount < 2)
-            pline("%s locked.",
-                  cobj->lknown ? "It is" : "Hmmm, it turns out to be");
+            pline("%s locked%s.",
+                  cobj->lknown ? "It is" : "Hmmm, it turns out to be", lbuf);
         else if (cobj->lknown)
-            pline("%s is locked.", The(xname(cobj)));
+            pline("%s is locked%s.", The(xname(cobj)), lbuf);
         else
-            pline("Hmmm, %s turns out to be locked.", the(xname(cobj)));
+            pline("Hmmm, %s turns out to be locked%s.", the(xname(cobj)), lbuf);
+
         cobj->lknown = 1;
 
         if (flags.autounlock && (cobj->keyotyp == 0 || cobj->keyotyp == SKELETON_KEY || cobj->keyotyp == NON_PM) && cobj->special_quality == 0

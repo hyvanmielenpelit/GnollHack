@@ -613,14 +613,7 @@ char *buf, *monbuf;
             strcpy(buf, explanation); // defsyms[cmap].explanation);
             if (is_cmap_door(gl) && IS_DOOR(levl[x][y].typ))
             {
-                const char* desc = get_lock_description_by_otyp(levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
-                if (desc && strcmp(desc, ""))
-                {
-                    if(!strcmp(desc, "no"))
-                        Sprintf(eos(buf), " with no lock");
-                    else
-                        Sprintf(eos(buf), " with %s lock", an(desc));
-                }
+                print_lock_with_buf(eos(buf), levl[x][y].key_otyp, levl[x][y].special_quality, is_door_normally_without_lock_at(x, y));
             }
             break;
         }
