@@ -3083,6 +3083,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_GENOCIDE, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_ITEM_CRUMBLES_TO_DUST",
+        {GHSOUND_ITEM_CRUMBLES_TO_DUST, 1.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

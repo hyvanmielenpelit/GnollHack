@@ -2680,43 +2680,50 @@ register struct obj *atmp;
     if (DESTROY_ARM(uarmc)) {
         if (donning(otmp))
             cancel_don();
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your("%s crumbles and turns to dust!", cloak_simple_name(uarmc));
         (void) Cloak_off();
         useup(otmp);
 	} else if (DESTROY_ARM(uarmo)) {
 		if (donning(otmp))
 			cancel_don();
-		Your("%s crumbles and turns to dust!", robe_simple_name(uarmc));
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
+        Your("%s crumbles and turns to dust!", robe_simple_name(uarmc));
 		(void)Robe_off();
 		useup(otmp);
 	} else if (DESTROY_ARM(uarm)) {
         if (donning(otmp))
             cancel_don();
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your("armor turns to dust and falls to the %s!", surface(u.ux, u.uy));
         (void) Armor_gone();
         useup(otmp);
     } else if (DESTROY_ARM(uarmu)) {
         if (donning(otmp))
             cancel_don();
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your("shirt crumbles into tiny threads and falls apart!");
         (void) Shirt_off();
         useup(otmp);
     } else if (DESTROY_ARM(uarmh)) {
         if (donning(otmp))
             cancel_don();
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your("%s turns to dust and is blown away!", helm_simple_name(uarmh));
         (void) Helmet_off();
         useup(otmp);
 	} else if (DESTROY_ARM(uarmb)) {
 		if (donning(otmp))
 			cancel_don();
-		Your("bracers vanish!");
+        play_sfx_sound(SFX_ITEM_VANISHES);
+        Your("bracers vanish!");
 		(void)Bracers_off();
 		useup(otmp);
 		selftouch("You");
 	} else if (DESTROY_ARM(uarmg)) {
         if (donning(otmp))
             cancel_don();
+        play_sfx_sound(SFX_ITEM_VANISHES);
         Your("gloves vanish!");
         (void) Gloves_off();
         useup(otmp);
@@ -2724,6 +2731,7 @@ register struct obj *atmp;
     } else if (DESTROY_ARM(uarmf)) {
         if (donning(otmp))
             cancel_don();
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your("boots disintegrate!");
         (void) Boots_off();
         useup(otmp);
@@ -2731,6 +2739,7 @@ register struct obj *atmp;
 	else if (DESTROY_ARM(uarms) && is_shield(otmp)) {
         if (donning(otmp))
             cancel_don();
+        play_sfx_sound(SFX_ITEM_CRUMBLES_TO_DUST);
         Your("shield crumbles away!");
         (void) Shield_off();
         useup(otmp);

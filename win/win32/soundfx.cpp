@@ -555,6 +555,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Dust Vortex/Swallow Ambient", 0.04f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Vanishes", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Genocide", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Item Crumbles To Dust", 1.0f },
 };
 
 extern "C" 
