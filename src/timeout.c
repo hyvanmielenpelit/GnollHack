@@ -1151,7 +1151,8 @@ nh_timeout()
 				/* must be declining to die in explore|wizard mode;
 				   treat like being cured of strangulation by prayer */
 				if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
-					Your("amulet vanishes!");
+                    play_sfx_sound(SFX_ITEM_VANISHES);
+                    Your("amulet vanishes!");
 					useup(uamul);
 				}
 				break;
@@ -1417,8 +1418,11 @@ nh_timeout()
 					You_feel("less able to breathe in water.");
 				break;
 			case DISPLACED:
-				if (!Displaced)
-					Your("mirror image vanishes.");
+                if (!Displaced)
+                {
+                    play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+                    Your("mirror image vanishes.");
+                }
 				break;
 			case CONFLICT:
 				if (!Conflict)
@@ -2839,7 +2843,8 @@ long timeout;
 	if (!mon || (mon && DEADMONSTER(mon)))
 		return;
 
-	if (canseemon(mon)) {
+    play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
+    if (canseemon(mon)) {
 		pline("%s vanishes in a puff of smoke!", Monnam(mon));
 	}
 

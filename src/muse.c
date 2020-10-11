@@ -126,6 +126,7 @@ struct obj *obj;
                     newsym(mtmp->mx, mtmp->my);
                 } else {
                     verbalize("It is about time.");
+                    play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
                     if (vis)
                         pline("%s vanishes.", Monnam(mtmp));
                     mongone(mtmp);

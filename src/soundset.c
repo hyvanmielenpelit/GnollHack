@@ -3073,6 +3073,16 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_KEY_DOES_NOT_FIT, 5.0f},
         TRUE
     },
+    {
+        "GHSOUND_ITEM_VANISHES",
+        {GHSOUND_ITEM_VANISHES, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_GENOCIDE",
+        {GHSOUND_GENOCIDE, 1.0f},
+        TRUE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

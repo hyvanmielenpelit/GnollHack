@@ -406,7 +406,9 @@ int trouble;
         make_slimed(0L, "The slime disappears.");
         break;
     case TROUBLE_STRANGLED:
-        if (uamul && uamul->otyp == AMULET_OF_STRANGULATION) {
+        if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
+        {
+            play_sfx_sound(SFX_ITEM_VANISHES);
             Your("amulet vanishes!");
             useup(uamul);
         }

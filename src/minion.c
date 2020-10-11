@@ -762,17 +762,20 @@ struct monst *mtmp;
 			/* give a wish and discard the monster (mtmp set to null) */
 			mongrantswish(&mtmp);
 			//mongrantswish removes the monster (calls mongone)
+			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
 			pline("The demon lord laughs, then vanishes.");
 			return 1;
 		}
 		if (u.ualign.type != A_LAWFUL)
 		{
 			verbalize("You have not pleased me! Prove your allegiance to the Abyss, and you shall be rewarded.");
+			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
 			pline("%s scowls at you, then vanishes.", Amonnam(mtmp));
 		}
 		else
 		{
 			verbalize("Your ways displease me. Follow the path of the Abyss, and you shall be rewarded.");
+			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
 			pline("%s scowls at you menacingly, then vanishes.", Amonnam(mtmp));
 		}
 	}
@@ -781,9 +784,11 @@ struct monst *mtmp;
 		//Demon lords and princes get angry for all but devout (and some random less devout) chaotic characters
 		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !rnl(4))))
 		{
+			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
 			pline("%s laughs menacingly, then vanishes.",
 				Amonnam(mtmp));
-		} else 
+		} 
+		else 
 		{
 			pline("Seeing you, %s gets angry...", Amonnam(mtmp));
 			mtmp->mpeaceful = 0;
@@ -805,7 +810,9 @@ struct monst *mtmp;
 			set_malign(mtmp);
 			newsym(mtmp->mx, mtmp->my);
 			return 0;
-		} else {
+		}
+		else 
+		{
 			/* make sure that the demand is unmeetable if the monster
 			   has the Amulet, preventing monster from being satisfied
 			   and removed from the game (along with said Amulet...) */
@@ -820,14 +827,21 @@ struct monst *mtmp;
 			verbalize("For your life, we, %s, demand a gift of %ld %s.", Amonnam(mtmp), demand,
 				  currency(demand));
 
-			if ((offer = bribe(mtmp)) >= demand) {
+			if ((offer = bribe(mtmp)) >= demand) 
+			{
+				play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
 				pline("%s vanishes, laughing about cowardly mortals.",
 					  Amonnam(mtmp));
-			} else if (offer > 0L
-					   && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) {
+			} 
+			else if (offer > 0L
+					   && (long) rnd(5 * ACURR(A_CHA)) > (demand - offer)) 
+			{
+				play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
 				pline("%s scowls at you menacingly, then vanishes.",
 					  Amonnam(mtmp));
-			} else {
+			} 
+			else 
+			{
 				pline("%s gets angry...", Amonnam(mtmp));
 				mtmp->mpeaceful = 0;
 				set_malign(mtmp);
@@ -960,12 +974,17 @@ struct monst *mon; /* if null, angel hasn't been created yet */
     int i;
 
     if (mon) {
-        if (canspotmon(mon)) {
-            if (!Deaf) {
+        if (canspotmon(mon)) 
+		{
+            if (!Deaf) 
+			{
                 pline("%s rebukes you, saying:", Monnam(mon));
                 verbalize("Since you desire conflict, have some more!");
-            } else {
-                pline("%s vanishes!", Monnam(mon));
+            } 
+			else 
+			{
+				play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mon->mx, mon->my);
+				pline("%s vanishes!", Monnam(mon));
             }
         }
         mongone(mon);

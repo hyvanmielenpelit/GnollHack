@@ -202,6 +202,7 @@ picklock(VOID_ARGS)
         
         if ((xlock.door->doormask & D_LOCKED) && (xlock.door->doormask & L_USES_UP_KEY) && xlock.key && !is_obj_indestructible(xlock.key) && !xlock.key->oartifact)
         {
+            play_sfx_sound(SFX_ITEM_VANISHES);
             if (xlock.key->quan > 1)
                 pline("One of %s vanishes.", yname(xlock.key));
             else
@@ -237,6 +238,7 @@ picklock(VOID_ARGS)
         
         if (xlock.box->olocked && (xlock.box->speflags & SPEFLAGS_USES_UP_KEY) && xlock.key && !is_obj_indestructible(xlock.key) && !xlock.key->oartifact)
         {
+            play_sfx_sound(SFX_ITEM_VANISHES);
             if (xlock.key->quan > 1)
                 pline("One of %s vanishes.", yname(xlock.key));
             else
@@ -1286,7 +1288,11 @@ int x, y;
             door->doormask &= ~D_MASK;
             door->doormask |= D_NODOOR;
             if (vis)
+            {
+                play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);
                 pline_The("doorway vanishes!");
+
+            }
             newsym(x, y);
             return TRUE;
         }

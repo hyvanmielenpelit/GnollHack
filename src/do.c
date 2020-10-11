@@ -3787,9 +3787,11 @@ polymorph_sink()
        so can feel the outcome even if we can't directly see it */
     if (levl[u.ux][u.uy].typ != ROOM)
         pline_The("sink transforms into %s!", an(defsyms[sym].explanation));
-    else
-        pline_The("sink vanishes.");
-
+	else
+	{
+		play_sfx_sound(SFX_VANISHES_IN_PUFF_OF_SMOKE);
+		pline_The("sink vanishes.");
+	}
     newsym(u.ux, u.uy);
 }
 

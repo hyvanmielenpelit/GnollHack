@@ -807,6 +807,7 @@ boolean is_mon_dead;
     /* vault guard's and Gehennom special monster gold goes away rather than be dropped... */
     if ((mtmp->isgd || ((mtmp->issmith || mtmp->ispriest || mtmp->isshk || mtmp->isnpc) /*&& Inhell*/)) && (otmp = findgold(mtmp->minvent)) != 0)
     {
+        play_sfx_sound_at_location(SFX_ITEM_VANISHES, mtmp->mx, mtmp->my);
         if (canspotmon(mtmp))
             pline("%s gold %s.", s_suffix(Monnam(mtmp)),
                   canseemon(mtmp) ? "vanishes" : "seems to vanish");

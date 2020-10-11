@@ -2146,7 +2146,8 @@ boolean *effect_happened_ptr;
 		if (u.utrap && u.utraptype == TT_BURIEDBALL) 
         {
 			buried_ball_to_freedom();
-			pline_The("clasp on your %s vanishes.", body_part(LEG));
+            play_sfx_sound(SFX_ITEM_VANISHES);
+            pline_The("clasp on your %s vanishes.", body_part(LEG));
 		}
 		update_inventory();
 		break;
@@ -3471,12 +3472,16 @@ do_class_genocide()
     char buf[BUFSZ] = DUMMY;
     boolean gameover = FALSE; /* true iff killed self */
 
-    for (j = 0;; j++) {
-        if (j >= 5) {
+    for (j = 0;; j++) 
+    {
+        if (j >= 5)
+        {
             pline1(thats_enough_tries);
             return;
         }
-        do {
+
+        do
+        {
             if (iflags.using_gui_tiles || !strcmpi(buf, "?"))
             {
                 winid tmpwin;
@@ -3503,7 +3508,8 @@ do_class_genocide()
                 end_menu(tmpwin, "What class of monsters do you wish to genocide?");
                 n = select_menu(tmpwin, PICK_ONE, &selected);
                 destroy_nhwindow(tmpwin);
-                if (n > 0) {
+                if (n > 0)
+                {
                     choice = selected[0].item.a_int - 1;
                     /* skip preselected entry if we have more than one item chosen */
                     free((genericptr_t)selected);
@@ -3518,7 +3524,8 @@ do_class_genocide()
                 getlin("What class of monsters do you wish to genocide?", buf);
                 (void)mungspaces(buf);
             }
-        } while (!*buf || *buf == '?');
+        } 
+        while (!*buf || *buf == '?');
 
 
         /* choosing "none" preserves genocideless conduct */
@@ -3530,8 +3537,11 @@ do_class_genocide()
         if (class == 0 && (i = name_to_mon(buf)) != NON_PM)
             class = mons[i].mlet;
         immunecnt = gonecnt = goodcnt = 0;
-        for (i = LOW_PM; i < NUM_MONSTERS; i++) {
-            if (mons[i].mlet == class) {
+
+        for (i = LOW_PM; i < NUM_MONSTERS; i++) 
+        {
+            if (mons[i].mlet == class) 
+            {
                 if (!(mons[i].geno & G_GENO))
                     immunecnt++;
                 else if (mvitals[i].mvflags & G_GENOD)
@@ -3541,7 +3551,8 @@ do_class_genocide()
             }
         }
         if (!goodcnt && class != mons[urole.monsternum].mlet
-            && class != mons[urace.monsternum].mlet) {
+            && class != mons[urace.monsternum].mlet)
+        {
             if (gonecnt)
                 pline("All such monsters are already nonexistent.");
             else if (immunecnt || class == S_invisible)
@@ -3550,23 +3561,29 @@ do_class_genocide()
                 register struct monst *mtmp, *mtmp2;
 
                 gonecnt = 0;
-                for (mtmp = fmon; mtmp; mtmp = mtmp2) {
+                for (mtmp = fmon; mtmp; mtmp = mtmp2) 
+                {
                     mtmp2 = mtmp->nmon;
                     if (DEADMONSTER(mtmp))
                         continue;
                     mongone(mtmp);
                     gonecnt++;
                 }
+                play_sfx_sound(SFX_GENOCIDE);
                 pline("Eliminated %d monster%s.", gonecnt, plur(gonecnt));
                 return;
-            } else
+            }
+            else
                 pline("That %s does not represent any monster.",
                       strlen(buf) == 1 ? "symbol" : "response");
             continue;
         }
 
-        for (i = LOW_PM; i < NUM_MONSTERS; i++) {
-            if (mons[i].mlet == class) {
+        boolean sound_played = FALSE;
+        for (i = LOW_PM; i < NUM_MONSTERS; i++) 
+        {
+            if (mons[i].mlet == class)
+            {
                 char nam[BUFSZ];
 
                 Strcpy(nam, makeplural(mons[i].mname));
@@ -3575,18 +3592,26 @@ do_class_genocide()
                  */
                 if (Your_Own_Role(i) || Your_Own_Race(i)
                     || ((mons[i].geno & G_GENO)
-                        && !(mvitals[i].mvflags & G_GENOD))) {
+                        && !(mvitals[i].mvflags & G_GENOD))) 
+                {
                     /* This check must be first since player monsters might
                      * have G_GENOD or !G_GENO.
                      */
+                    if (!sound_played)
+                    {
+                        play_sfx_sound(SFX_GENOCIDE);
+                        sound_played = TRUE;
+                    }
                     mvitals[i].mvflags |= (G_GENOD | G_NOCORPSE);
                     reset_rndmonst(i);
                     kill_genocided_monsters();
                     update_inventory(); /* eggs & tins */
                     pline("Wiped out all %s.", nam);
-                    if (Upolyd && i == u.umonnum) {
+                    if (Upolyd && i == u.umonnum) 
+                    {
                         u.mh = -1;
-                        if (Unchanging) {
+                        if (Unchanging)
+                        {
                             if (!feel_dead++)
                                 You("die.");
                             /* finish genociding this class of
@@ -3598,21 +3623,29 @@ do_class_genocide()
                     /* Self-genocide if it matches either your race
                        or role.  Assumption:  male and female forms
                        share same monster class. */
-                    if (i == urole.monsternum || i == urace.monsternum) {
+                    if (i == urole.monsternum || i == urace.monsternum) 
+                    {
                         u.uhp = -1;
-                        if (Upolyd) {
+                        if (Upolyd) 
+                        {
                             if (!feel_dead++)
                                 You_feel("%s inside.", udeadinside());
-                        } else {
+                        } 
+                        else 
+                        {
                             if (!feel_dead++)
                                 You("die.");
                             gameover = TRUE;
                         }
                     }
-                } else if (mvitals[i].mvflags & G_GENOD) {
+                } 
+                else if (mvitals[i].mvflags & G_GENOD)
+                {
                     if (!gameover)
                         pline("All %s are already nonexistent.", nam);
-                } else if (!gameover) {
+                } 
+                else if (!gameover) 
+                {
                     /* suppress feedback about quest beings except
                        for those applicable to our own role */
                     if ((mons[i].msound != MS_LEADER
@@ -3624,7 +3657,8 @@ do_class_genocide()
                         /* non-leader/nemesis/guardian role-specific monster
                            */
                         && (i != PM_NINJA /* nuisance */
-                            || Role_if(PM_SAMURAI))) {
+                            || Role_if(PM_SAMURAI)))
+                    {
                         boolean named, uniq;
 
                         named = is_mname_proper_name(&mons[i]) ? TRUE : FALSE;
@@ -3640,7 +3674,9 @@ do_class_genocide()
                 }
             }
         }
-        if (gameover || u.uhp == -1) {
+        
+        if (gameover || u.uhp == -1)
+        {
             killer.format = KILLED_BY_AN;
             Strcpy(killer.name, "scroll of genocide");
             if (gameover)
@@ -3667,14 +3703,19 @@ int how;
     register struct permonst *ptr;
     const char *which;
 
-    if (how & PLAYER) {
+    if (how & PLAYER)
+    {
         mndx = u.umonster; /* non-polymorphed mon num */
         ptr = &mons[mndx];
         Strcpy(buf, ptr->mname);
         killplayer++;
-    } else {
-        for (i = 0;; i++) {
-            if (i >= 5) {
+    } 
+    else 
+    {
+        for (i = 0;; i++) 
+        {
+            if (i >= 5)
+            {
                 /* cursed effect => no free pass (unless rndmonst() fails) */
                 if (!(how & REALLY) && (ptr = rndmonst()) != 0)
                     break;
@@ -3687,7 +3728,8 @@ int how;
             (void) mungspaces(buf);
             /* choosing "none" preserves genocideless conduct */
             if (*buf == '\033' || !strcmpi(buf, "none")
-                || !strcmpi(buf, "nothing")) {
+                || !strcmpi(buf, "nothing")) 
+            {
                 /* ... but no free pass if cursed */
                 if (!(how & REALLY) && (ptr = rndmonst()) != 0)
                     break; /* remaining checks don't apply */
@@ -3696,7 +3738,8 @@ int how;
             }
 
             mndx = name_to_mon(buf);
-            if (mndx == NON_PM || (mvitals[mndx].mvflags & G_GENOD)) {
+            if (mndx == NON_PM || (mvitals[mndx].mvflags & G_GENOD))
+            {
                 pline("Such creatures %s exist in this world.",
                       (mndx == NON_PM) ? "do not" : "no longer");
                 continue;
@@ -3705,7 +3748,8 @@ int how;
             /* Although "genus" is Latin for race, the hero benefits
              * from both race and role; thus genocide affects either.
              */
-            if (Your_Own_Role(mndx) || Your_Own_Race(mndx)) {
+            if (Your_Own_Role(mndx) || Your_Own_Race(mndx))
+            {
                 killplayer++;
                 break;
             }
@@ -3714,8 +3758,10 @@ int how;
             if (is_demon(ptr))
                 adjalign(sgn(u.ualign.type));
 
-            if (!(ptr->geno & G_GENO)) {
-                if (!Deaf) {
+            if (!(ptr->geno & G_GENO))
+            {
+                if (!Deaf) 
+                {
                     /* FIXME: unconditional "caverns" will be silly in some
                      * circumstances.  Who's speaking?  Divine pronouncements
                      * aren't supposed to be hampered by deafness....
@@ -3735,20 +3781,28 @@ int how;
     }
 
     which = "all ";
-    if (Hallucination) {
+    if (Hallucination) 
+    {
         if (Upolyd)
             Strcpy(buf, youmonst.data->mname);
-        else {
+        else 
+        {
             Strcpy(buf, (flags.female && urole.name.f) ? urole.name.f
                                                        : urole.name.m);
             buf[0] = lowc(buf[0]);
         }
-    } else {
+    }
+    else 
+    {
         Strcpy(buf, ptr->mname); /* make sure we have standard singular */
         if ((ptr->geno & G_UNIQ) && ptr != &mons[PM_HIGH_PRIEST])
             which = !is_mname_proper_name(ptr) ? "the " : "";
     }
-    if (how & REALLY) {
+
+    if (how & REALLY) 
+    {
+        play_sfx_sound(SFX_GENOCIDE);
+
         /* setting no-corpse affects wishing and random tin generation */
         mvitals[mndx].mvflags |= (G_GENOD | G_NOCORPSE);
         pline("Wiped out %s%s.", which,
@@ -3757,14 +3811,19 @@ int how;
         if (killplayer) 
         {
             u.uhp = -1;
-            if (how & PLAYER) {
+            if (how & PLAYER)
+            {
                 killer.format = KILLED_BY;
                 Strcpy(killer.name, "genocidal confusion");
-            } else if (how & ONTHRONE) {
+            }
+            else if (how & ONTHRONE) 
+            {
                 /* player selected while on a throne */
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "imperious order");
-            } else { /* selected player deliberately, not confused */
+            }
+            else 
+            { /* selected player deliberately, not confused */
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "scroll of genocide");
             }
@@ -3772,36 +3831,47 @@ int how;
             /* Polymorphed characters will die as soon as they're rehumanized.
              */
             /* KMH -- Unchanging prevents rehumanization */
-            if (Upolyd && ptr != youmonst.data) {
+            if (Upolyd && ptr != youmonst.data) 
+            {
                 delayed_killer(POLYMORPH, killer.format, killer.name);
                 You_feel("%s inside.", udeadinside());
-            } else
+            } 
+            else
                 done(GENOCIDED);
-        } else if (ptr == youmonst.data) {
+        } 
+        else if (ptr == youmonst.data) 
+        {
             rehumanize();
         }
         reset_rndmonst(mndx);
         kill_genocided_monsters();
         update_inventory(); /* in case identified eggs were affected */
-    } else {
+    }
+    else 
+    {
         int cnt = 0, census = monster_census(FALSE);
 
         if (!(mons[mndx].geno & G_UNIQ)
             && !(mvitals[mndx].mvflags & (G_GENOD | G_EXTINCT)))
-            for (i = rn1(3, 4); i > 0; i--) {
+            for (i = rn1(3, 4); i > 0; i--)
+            {
                 if (!makemon(ptr, u.ux, u.uy, MM_NO_MONSTER_INVENTORY))
                     break; /* couldn't make one */
                 ++cnt;
                 if (mvitals[mndx].mvflags & G_EXTINCT)
                     break; /* just made last one */
             }
-        if (cnt) {
+
+        if (cnt) 
+        {
             /* accumulated 'cnt' doesn't take groups into account;
                assume bringing in new mon(s) didn't remove any old ones */
+            play_sfx_sound(SFX_SUMMON_MONSTER);
             cnt = monster_census(FALSE) - census;
             pline("Sent in %s%s.", (cnt > 1) ? "some " : "",
                   (cnt > 1) ? makeplural(buf) : an(buf));
-        } else
+        }
+        else
             pline1(nothing_happens);
     }
 }

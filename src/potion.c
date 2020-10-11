@@ -3346,6 +3346,7 @@ struct obj *obj;
         break;
     case 3:
         verbalize("It is about time!");
+        play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
         if (canspotmon(mtmp))
             pline("%s vanishes.", Monnam(mtmp));
         mongone(mtmp);
