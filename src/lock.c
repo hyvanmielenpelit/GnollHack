@@ -498,12 +498,13 @@ boolean is_auto;
     struct obj* otmp;
     char qbuf[QBUFSZ];
     char kbuf[BUFSZ];
-    strcpy(kbuf, "");
-    if (is_auto)
-        Sprintf(kbuf, " with %s", yname(pick));
 
     if (!pick || !isok(x, y))
         return 0;
+
+    strcpy(kbuf, "");
+    if (is_auto)
+        Sprintf(kbuf, " with %s", yname(pick));
 
     ch = 0;
     cc.x = x;
