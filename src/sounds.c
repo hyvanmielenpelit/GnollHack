@@ -1119,6 +1119,7 @@ register struct monst *mtmp;
         static const char *const laugh_msg[4] = {
             "giggles.", "chuckles.", "snickers.", "laughs.",
         };
+		play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
         pline_msg = laugh_msg[rn2(4)];
     } break;
     case MS_MUMBLE:

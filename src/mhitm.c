@@ -1600,6 +1600,7 @@ register struct obj* omonwep;
 
             if (!Deaf && !is_silenced(magr)) 
             {
+                play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_LAUGHTER);
                 if (!vis)
                     You_hear("laughter.");
                 else if (canseemon(magr))

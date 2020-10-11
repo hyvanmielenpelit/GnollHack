@@ -3977,7 +3977,7 @@ get_current_cmap_type_index()
         return dungeons[u.uz.dnum].flags.tileset;
     else if (In_mines(&u.uz))
         return CMAP_GNOMISH_MINES;
-    else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz) || In_V_tower(&u.uz))
+    else if (Is_valley(&u.uz) || Is_orcus_level(&u.uz) || Is_sanctum(&u.uz) || In_V_tower(&u.uz))
         return CMAP_UNDEAD_STYLE;
     else if (In_modron_level(&u.uz))
         return CMAP_MODRON;
@@ -3989,8 +3989,8 @@ get_current_cmap_type_index()
         return CMAP_TOWER;
     else if (Is_astralevel(&u.uz))
         return CMAP_ASTRAL;
-    else if (Is_sanctum(&u.uz))
-        return CMAP_NORMAL;
+    else if (In_endgame(&u.uz))
+        return CMAP_ASTRAL;
     else if (Inhell)
         return CMAP_GEHENNOM;
     else

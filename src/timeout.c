@@ -2164,6 +2164,7 @@ slip_or_trip()
 STATIC_OVL void
 laugh_uncontrollably()
 {
+    play_simple_player_sound(MONSTER_SOUND_TYPE_LAUGHTER);
 	switch (rn2(4)) {
 		case 1:
 			You("start laughing uncontrollably.");

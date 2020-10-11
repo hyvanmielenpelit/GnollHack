@@ -73,7 +73,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
     d_level d_fire_level;
     d_level d_air_level;
     d_level d_astral_level;
-    xchar d_main_dungeon_dnum, d_gehennom_dnum;
+    xchar d_main_dungeon_dnum, d_gehennom_dnum, d_endgame_dnum;
     xchar d_tower_dnum;
     xchar d_sokoban_dnum;
 	xchar d_mines_dnum, d_quest_dnum;
@@ -122,6 +122,7 @@ E struct dgn_topology { /* special dungeon levels for speed */
 #define tower_dnum              (dungeon_topology.d_tower_dnum)
 #define sokoban_dnum            (dungeon_topology.d_sokoban_dnum)
 #define mines_dnum              (dungeon_topology.d_mines_dnum)
+#define endgame_dnum            (dungeon_topology.d_endgame_dnum)
 #define quest_dnum              (dungeon_topology.d_quest_dnum)
 #define qstart_level            (dungeon_topology.d_qstart_level)
 #define qlocate_level           (dungeon_topology.d_qlocate_level)

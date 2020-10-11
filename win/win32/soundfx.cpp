@@ -556,6 +556,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Vanishes", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Genocide", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Item Crumbles To Dust", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Laughter", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Evil Laughter", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Demonic Laughter", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Warn Cursed", 0.5f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Sinister Laughter", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Maniacal Laughter", 1.0f },
 };
 
 extern "C" 

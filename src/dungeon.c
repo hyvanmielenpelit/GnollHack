@@ -1009,7 +1009,8 @@ init_dungeons()
     tower_dnum = dname_to_dnum("Vlad's Tower");
 	modron_dnum = dname_to_dnum("Plane of the Modron");
     bovine_dnum = dname_to_dnum("Hellish Pastures");
-
+    endgame_dnum = dname_to_dnum("The Elemental Planes");
+    
     /* one special fixup for dummy surface level */
     if ((x = find_level("dummy")) != 0) {
         i = x->dlevel.dnum;

@@ -1133,8 +1133,11 @@ register struct monst *mtmp;
                         }
 						else
 						{
-							if ((!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_DEATH) && !m_carrying(mtmp, WAN_DEATH))) && !is_silenced(mtmp) && !Deaf)
-								pline("%s laughs at you!", Monnam(mtmp));
+                            if ((!rn2(2) || !canseemon(mtmp) || (!m_carrying(mtmp, MACE_OF_DEATH) && !m_carrying(mtmp, WAN_DEATH))) && !is_silenced(mtmp) && !Deaf)
+                            {
+                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+                                pline("%s laughs at you!", Monnam(mtmp));
+                            }
 							else if(canseemon(mtmp) && (m_carrying(mtmp, MACE_OF_DEATH) || m_carrying(mtmp, WAN_DEATH)))
 								pline("%s swings his wand menacingly.", Monnam(mtmp));
 						}
@@ -1159,8 +1162,11 @@ register struct monst *mtmp;
 						{
 							if (!rn2(2))
 								pline("%s curses at you!", Monnam(mtmp));
-							else
-								pline("%s laughs menacingly.", Monnam(mtmp));
+                            else
+                            {
+                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+                                pline("%s laughs menacingly.", Monnam(mtmp));
+                            }
 						}
 					}
 				}
@@ -2706,6 +2712,7 @@ register struct obj* omonwep;
 		{
             if (!Deaf) 
 			{
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
                 if (Blind)
                     You_hear("laughter.");
                 else

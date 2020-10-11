@@ -2870,7 +2870,10 @@ struct obj *otmp;
             else if (Deaf || !flags.acoustics)
                 You("fall asleep.");
             else
+            {
+                play_sfx_sound(SFX_SINISTER_LAUGHTER);
                 You_hear("sinister laughter as you fall asleep...");
+            }
 
             if(!Sleeping)
                 play_sfx_sound(SFX_ACQUIRE_SLEEP);

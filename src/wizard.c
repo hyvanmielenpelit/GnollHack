@@ -911,9 +911,14 @@ register struct monst *mtmp;
 {
     if (Deaf)
         return;
-    if (mtmp->iswiz) {
+    if (mtmp->iswiz)
+    {
         if (!rn2(5)) /* typical bad guy action */
+        {
+            play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
             pline("%s laughs fiendishly.", Monnam(mtmp));
+
+        }
         else if (u.uhave.amulet && !rn2(SIZE(random_insult)))
             verbalize("Relinquish the amulet, %s!",
                       random_insult[rn2(SIZE(random_insult))]);
@@ -927,11 +932,15 @@ register struct monst *mtmp;
             verbalize("%s %s!",
                       random_malediction[rn2(SIZE(random_malediction))],
                       random_insult[rn2(SIZE(random_insult))]);
-    } else if (is_lminion(mtmp)
-               && !(mtmp->isminion && EMIN(mtmp)->renegade)) {
+    } 
+    else if (is_lminion(mtmp)
+               && !(mtmp->isminion && EMIN(mtmp)->renegade)) 
+    {
         com_pager(rn2(QTN_ANGELIC - 1 + (Hallucination ? 1 : 0))
                   + QT_ANGELIC);
-    } else {
+    } 
+    else 
+    {
         if (!rn2(is_minion(mtmp->data) ? 100 : 5))
             pline("%s casts aspersions on your ancestry.", Monnam(mtmp));
         else

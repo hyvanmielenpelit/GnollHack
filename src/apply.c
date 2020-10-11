@@ -1371,6 +1371,7 @@ struct monst* origmonst;
 		{
             if (canseemon(mtmp))
             {
+                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
                 if (!Deaf)
                     pline("%s laughs at your feeble attempt.", Monnam(mtmp));
                 else

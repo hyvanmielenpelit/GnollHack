@@ -1763,7 +1763,7 @@ wiz_map_levltyp(VOID_ARGS)
         if (On_W_tower_level(&u.uz))
             Strcat(dsc, " tower");
         /* append a branch identifier for completeness' sake */
-        if (u.uz.dnum == 0)
+        if (u.uz.dnum == main_dungeon_dnum)
             Strcat(dsc, " dungeon");
         else if (u.uz.dnum == mines_dnum)
             Strcat(dsc, " mines");
@@ -1773,7 +1773,7 @@ wiz_map_levltyp(VOID_ARGS)
             Strcat(dsc, " quest");
 		else if (Is_knox(&u.uz))
             Strcat(dsc, " ludios");
-        else if (u.uz.dnum == 1)
+        else if (u.uz.dnum == gehennom_dnum)
             Strcat(dsc, " gehennom");
         else if (u.uz.dnum == tower_dnum)
             Strcat(dsc, " vlad");

@@ -763,6 +763,7 @@ struct monst *mtmp;
 			mongrantswish(&mtmp);
 			//mongrantswish removes the monster (calls mongone)
 			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+			play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
 			pline("The demon lord laughs, then vanishes.");
 			return 1;
 		}
@@ -785,6 +786,7 @@ struct monst *mtmp;
 		if ((u.ualign.type == A_CHAOTIC && (u.ualign.record >= 14 || !rnl(4))))
 		{
 			play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+			play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
 			pline("%s laughs menacingly, then vanishes.",
 				Amonnam(mtmp));
 		} 
@@ -830,6 +832,7 @@ struct monst *mtmp;
 			if ((offer = bribe(mtmp)) >= demand) 
 			{
 				play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, mtmp->mx, mtmp->my);
+				play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
 				pline("%s vanishes, laughing about cowardly mortals.",
 					  Amonnam(mtmp));
 			} 

@@ -1630,13 +1630,16 @@ update_monster_timouts()
 						if (canseemon(mtmp))
 						{
 							char laughbuf[BUFSZ] = "";
-							if(!has_head(mtmp->data) || rn2(2))
+                            if(!has_head(mtmp->data) || rn2(2))
 								Sprintf(laughbuf, "out loud");
 							else
 								Sprintf(laughbuf, "%s head off", mhis(mtmp));
 
-							if (is_speaking_monster(mtmp->data))
-								pline("Suddenly, %s laughs %s.", mon_nam(mtmp), laughbuf);
+                            if (is_speaking_monster(mtmp->data))
+                            {
+                                play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_LAUGHTER);
+                                pline("Suddenly, %s laughs %s.", mon_nam(mtmp), laughbuf);
+                            }
 							else
 								pline("Suddenly, %s looks absolutely hilarious.", mon_nam(mtmp));
 						}

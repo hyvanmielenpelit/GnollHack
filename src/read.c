@@ -2037,10 +2037,15 @@ boolean *effect_happened_ptr;
 					ct++; /* pets don't laugh at you */
 			}
 		}
-		if (otyp == SCR_SCARE_MONSTER)
-			You_hear("%s %s.", (confused || scursed) ? "sad wailing"
-				: "maniacal laughter",
-				!ct ? "in the distance" : "close by");
+        if (otyp == SCR_SCARE_MONSTER)
+        {
+            if(!(confused || scursed))
+                play_sfx_sound(SFX_MANIACAL_LAUGHTER);
+
+            You_hear("%s %s.", (confused || scursed) ? "sad wailing"
+                : "maniacal laughter",
+                !ct ? "in the distance" : "close by");
+        }
 		else if (!ct)
 			pline("Nothing much seems to happen.");
 
