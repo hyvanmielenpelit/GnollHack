@@ -2030,7 +2030,7 @@ boolean ask;
                 nkilled = mvitals[i].died;
                 mlet = mons[i].mlet;
                 if (class_header && mlet != prev_mlet) {
-                    Strcpy(buf, def_monsyms[(int) mlet].explain);
+                    Strcpy(buf, def_monsyms[(int) mlet].name);
                     putstr(klwin, ask ? 0 : iflags.menu_headings,
                            upstart(buf));
                     prev_mlet = mlet;

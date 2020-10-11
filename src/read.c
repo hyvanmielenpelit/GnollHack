@@ -3488,12 +3488,16 @@ do_class_genocide()
                 start_menu(tmpwin);
                 any = zeroany; /* zero out all bits */
 
+                char cbuf[BUFSZ];
+                strcpy(cbuf, "");
                 for (int k = 0; k < MAX_MONSTER_CLASSES; k++)
                 {
-                    if (strcmp(def_monsyms[k].explain, "") && def_monsyms[k].sym != ' ' && def_monsyms[k].sym != DEF_GHOST)
+                    strcpy(cbuf, def_monsyms[k].name);
+                    if (strcmp(cbuf, "") && def_monsyms[k].sym != ' ' && def_monsyms[k].sym != DEF_GHOST)
                     {
+                        *cbuf = highc(*cbuf);
                         any.a_int = k + 1;
-                        add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym, 0, ATR_NONE, def_monsyms[k].explain, MENU_UNSELECTED);
+                        add_menu(tmpwin, NO_GLYPH, &any, def_monsyms[k].sym, 0, ATR_NONE, cbuf, MENU_UNSELECTED);
                     }
                 }
                 end_menu(tmpwin, "What class of monsters do you wish to genocide?");

@@ -2242,11 +2242,11 @@ register struct obj* obj;
 				else if (objects[otyp].oc_target_permissions > 0 && objects[otyp].oc_target_permissions < MAX_MONSTER_CLASSES)
 				{
 					char monsymbuf[BUFSZ];
-					strcpy(monsymbuf, def_monsyms[objects[otyp].oc_target_permissions].explain);
+					strcpy(monsymbuf, def_monsyms[objects[otyp].oc_target_permissions].name);
 					*monsymbuf = highc(*monsymbuf);
 
 					powercnt++;
-					Sprintf(buf, " %2d - %s", powercnt, makeplural(monsymbuf));
+					Sprintf(buf, " %2d - %s", powercnt, monsymbuf);
 					txt = buf;
 					putstr(datawin, 0, txt);
 				}
@@ -2917,9 +2917,6 @@ register struct obj* obj;
 			{
 				strcpy(endbuf, pm_common_name(&mons[artilist[obj->oartifact].mtype]));
 			}
-			else if (artilist[obj->oartifact].aflags & AF_DFLAG1)
-			{
-			}
 			else if (artilist[obj->oartifact].aflags & (AF_DFLAG1 | AF_DFLAG2))
 			{
 				char affectbuf[BUFSZ];
@@ -2968,9 +2965,9 @@ register struct obj* obj;
 
 				strcpy(endbuf, affectbuf);
 			}
-			else if (artilist[obj->oartifact].aflags & AF_DCLAS && artilist[obj->oartifact].mtype < MAX_MONSTER_CLASSES)
+			else if ((artilist[obj->oartifact].aflags & AF_DCLAS) && artilist[obj->oartifact].mtype < MAX_MONSTER_CLASSES)
 			{
-				strcpy(endbuf, def_monsyms[artilist[obj->oartifact].mtype].explain);
+				strcpy(endbuf, def_monsyms[artilist[obj->oartifact].mtype].name);
 			}
 			else if (artilist[obj->oartifact].aflags & AF_DALIGN)
 			{
