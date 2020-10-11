@@ -171,5 +171,10 @@ enum special_level_naming_types {
 	MAX_SPECIAL_LEVEL_NAMING_TYPES
 };
 
+
+#define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
+#define PICKLOCK_DID_NOTHING 0          /* no time passes */
+#define PICKLOCK_DID_SOMETHING 1
+
 #endif /* GENERAL_H */
 

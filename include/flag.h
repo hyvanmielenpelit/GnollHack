@@ -23,7 +23,8 @@ struct flag {
 #ifdef ANDROID
 	boolean  autokick;	/* Automatically kick doors and force locks */
 #endif
-	boolean beginner;
+    boolean autounlock;   /* unlock doors and boxes whenever you find them being locked */
+    boolean beginner;
     boolean biff;      /* enable checking for mail */
     boolean bones;     /* allow saving/loading bones */
     boolean confirm;   /* confirm before hitting tame monsters */

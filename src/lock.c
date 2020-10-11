@@ -88,7 +88,7 @@ picklock(VOID_ARGS)
         }
 
     if (!key_found)
-        return ((xlock.usedtime = 0)); /* They key has been lost */
+        return ((xlock.usedtime = 0)); /* The key has been lost */
 
     if (xlock.box) 
     {
@@ -409,29 +409,24 @@ struct obj *container; /* passed from obfree() */
    previous attempt then it costs hero a move even if nothing ultimately
    happens; when told "can't do that" before being asked for direction
    or player cancels with ESC while giving direction, it doesn't */
-#define PICKLOCK_LEARNED_SOMETHING (-1) /* time passes */
-#define PICKLOCK_DID_NOTHING 0          /* no time passes */
-#define PICKLOCK_DID_SOMETHING 1
 
 /* player is applying a key, lock pick, or credit card */
 int
 pick_lock(pick)
 struct obj *pick;
 {
-    int picktyp, special_quality, c, ch;
+    int picktyp;
     coord cc;
-    struct rm *door;
-    struct obj *otmp;
-    char qbuf[QBUFSZ];
 
     picktyp = pick->otyp;
-    special_quality = pick->special_quality;
 
     /* check whether we're resuming an interrupted previous attempt */
-    if (xlock.usedtime && picktyp == xlock.picktyp) {
+    if (xlock.usedtime && picktyp == xlock.picktyp) 
+    {
         static char no_longer[] = "Unfortunately, you can no longer %s %s.";
 
-        if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
+        if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) 
+        {
             const char *what = (picktyp == LOCK_PICK) ? "pick" : "key";
 
             if (picktyp == CREDIT_CARD)
@@ -439,11 +434,15 @@ struct obj *pick;
             pline(no_longer, "hold the", what);
             reset_pick();
             return PICKLOCK_LEARNED_SOMETHING;
-        } else if (u.uswallow || (xlock.box && !can_reach_floor(TRUE))) {
+        }
+        else if (u.uswallow || (xlock.box && !can_reach_floor(TRUE))) 
+        {
             pline(no_longer, "reach the", "lock");
             reset_pick();
             return PICKLOCK_LEARNED_SOMETHING;
-        } else {
+        } 
+        else 
+        {
             const char *action = lock_action();
 
             You("resume your attempt at %s.", action);
@@ -453,10 +452,13 @@ struct obj *pick;
         }
     }
 
-    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
+    if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) 
+    {
         You_cant("hold %s -- you have no hands!", doname(pick));
         return PICKLOCK_DID_NOTHING;
-    } else if (u.uswallow) {
+    }
+    else if (u.uswallow)
+    {
         You_cant("%sunlock %s.", (picktyp == CREDIT_CARD) ? "" : "lock or ",
                  mon_nam(u.ustuck));
         return PICKLOCK_DID_NOTHING;
@@ -464,46 +466,86 @@ struct obj *pick;
 
     if (picktyp != LOCK_PICK
         && picktyp != CREDIT_CARD
-        && !is_otyp_key(picktyp)) {
+        && !is_otyp_key(picktyp)) 
+    {
         impossible("picking lock with object %d?", picktyp);
         return PICKLOCK_DID_NOTHING;
     }
-    ch = 0; /* lint suppression */
 
     if (!get_adjacent_loc((char *) 0, "Invalid location!", u.ux, u.uy, &cc))
         return PICKLOCK_DID_NOTHING;
 
     update_u_action(ACTION_TILE_DOOR_USE);
     u_wait_until_action();
-    if (cc.x == u.ux && cc.y == u.uy) { /* pick lock on a container */
-        const char *verb;
+
+    int res = pick_lock_core(pick, cc.x, cc.y, FALSE);
+
+    update_u_action(ACTION_TILE_NO_ACTION);
+    return res;
+}
+
+int
+pick_lock_core(pick, x, y, is_auto)
+struct obj* pick;
+int x, y;
+boolean is_auto;
+{
+    int picktyp, special_quality, c, ch;
+    coord cc;
+    struct rm* door;
+    struct obj* otmp;
+    char qbuf[QBUFSZ];
+    char kbuf[BUFSZ];
+    strcpy(kbuf, "");
+    if (is_auto)
+        Sprintf(kbuf, " with %s", yname(pick));
+
+    if (!pick || !isok(x, y))
+        return 0;
+
+    ch = 0;
+    cc.x = x;
+    cc.y = y;
+    picktyp = pick->otyp;
+    special_quality = pick->special_quality;
+
+    if (cc.x == u.ux && cc.y == u.uy) 
+    { /* pick lock on a container */
+        const char* verb;
         char qsfx[QBUFSZ];
         boolean it;
         int count;
 
-        if (u.dz < 0) {
-            There("isn't any sort of lock up %s.",
-                  Levitation ? "here" : "there");
-            update_u_action(ACTION_TILE_NO_ACTION);
+        if (u.dz < 0) 
+        {
+            if (!is_auto)
+                There("isn't any sort of lock up %s.",
+                Levitation ? "here" : "there");
             return PICKLOCK_LEARNED_SOMETHING;
-        } else if (is_lava(u.ux, u.uy)) {
-            pline("Doing that would probably melt %s.", yname(pick));
-            update_u_action(ACTION_TILE_NO_ACTION);
+        }
+        else if (is_lava(u.ux, u.uy))
+        {
+            if (!is_auto)
+                pline("Doing that would probably melt %s.", yname(pick));
             return PICKLOCK_LEARNED_SOMETHING;
-        } else if (is_pool(u.ux, u.uy) && !Underwater) {
-            pline_The("%s has no lock.", hliquid("water"));
-            update_u_action(ACTION_TILE_NO_ACTION);
+        }
+        else if (is_pool(u.ux, u.uy) && !Underwater) 
+        {
+            if (!is_auto)
+                pline_The("%s has no lock.", hliquid("water"));
             return PICKLOCK_LEARNED_SOMETHING;
         }
 
         count = 0;
         c = 'n'; /* in case there are no boxes here */
         for (otmp = level.objects[cc.x][cc.y]; otmp; otmp = otmp->nexthere)
-            if (Is_box(otmp)) {
+            if (Is_box(otmp))
+            {
                 ++count;
-                if (!can_reach_floor(TRUE)) {
-                    You_cant("reach %s from up here.", the(xname(otmp)));
-                    update_u_action(ACTION_TILE_NO_ACTION);
+                if (!can_reach_floor(TRUE)) 
+                {
+                    if(!is_auto)
+                        You_cant("reach %s from up here.", the(xname(otmp)));
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
                 it = 0;
@@ -517,9 +559,9 @@ struct obj *pick;
                     verb = "pick";
 
                 /* "There is <a box> here; <verb> <it|its lock>?" */
-                Sprintf(qsfx, " here; %s %s?", verb, it ? "it" : "its lock");
-                (void) safe_qbuf(qbuf, "There is ", qsfx, otmp, doname,
-                                 ansimpleoname, "a box");
+                Sprintf(qsfx, " here; %s %s%s?", verb, it ? "it" : "its lock", kbuf);
+                (void)safe_qbuf(qbuf, "There is ", qsfx, otmp, doname,
+                    ansimpleoname, "a box");
                 otmp->lknown = 1;
 
                 c = ynq(qbuf);
@@ -528,18 +570,21 @@ struct obj *pick;
                 if (c == 'n')
                     continue;
 
-                if (otmp->obroken) {
+                if (otmp->obroken) 
+                {
                     You_cant("fix its broken lock with %s.", doname(pick));
-                    update_u_action(ACTION_TILE_NO_ACTION);
-                    return PICKLOCK_LEARNED_SOMETHING;
-                } else if (picktyp == CREDIT_CARD && !otmp->olocked) {
-                    /* credit cards are only good for unlocking */
-                    You_cant("do that with %s.",
-                             an(simple_typename(picktyp)));
-                    update_u_action(ACTION_TILE_NO_ACTION);
                     return PICKLOCK_LEARNED_SOMETHING;
                 }
-                switch (picktyp) {
+                else if (picktyp == CREDIT_CARD && !otmp->olocked) 
+                {
+                    /* credit cards are only good for unlocking */
+                    You_cant("do that with %s.",
+                        an(simple_typename(picktyp)));
+                    return PICKLOCK_LEARNED_SOMETHING;
+                }
+                
+                switch (picktyp) 
+                {
                 case CREDIT_CARD:
                     ch = ACURR(A_DEX) + 20 * Role_if(PM_ROGUE);
                     break;
@@ -550,7 +595,7 @@ struct obj *pick;
                     ch = 75 + ACURR(A_DEX);
                     break;
                 default:
-                    if(is_otyp_key(picktyp))
+                    if (is_otyp_key(picktyp))
                         ch = 75 + ACURR(A_DEX);
                     else
                         ch = 0;
@@ -564,84 +609,89 @@ struct obj *pick;
                 xlock.y = 0;
                 break;
             }
-        if (c != 'y') {
+
+        if (c != 'y') 
+        {
             if (!count)
                 There("doesn't seem to be any sort of lock here.");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING; /* decided against all boxes */
         }
-    } else { /* pick the lock in a door */
-        struct monst *mtmp;
+    }
+    else 
+    { /* pick the lock in a door */
+        struct monst* mtmp;
 
-        if (u.utrap && u.utraptype == TT_PIT) {
+        if (u.utrap && u.utraptype == TT_PIT) 
+        {
             You_cant("reach over the edge of the pit.");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
 
         door = &levl[cc.x][cc.y];
         mtmp = m_at(cc.x, cc.y);
         if (mtmp && canseemon(mtmp) && M_AP_TYPE(mtmp) != M_AP_FURNITURE
-            && M_AP_TYPE(mtmp) != M_AP_OBJECT) {
+            && M_AP_TYPE(mtmp) != M_AP_OBJECT) 
+        {
             if (picktyp == CREDIT_CARD
                 && (mtmp->isshk || mtmp->data == &mons[PM_ORACLE]))
                 verbalize("No checks, no credit, no problem.");
             else
                 pline("I don't think %s would appreciate that.",
-                      mon_nam(mtmp));
-            update_u_action(ACTION_TILE_NO_ACTION);
+                    mon_nam(mtmp));
             return PICKLOCK_LEARNED_SOMETHING;
-        } else if (mtmp && is_door_mappear(mtmp)) {
+        }
+        else if (mtmp && is_door_mappear(mtmp)) 
+        {
             /* "The door actually was a <mimic>!" */
             stumble_onto_mimic(mtmp);
             /* mimic might keep the key (50% chance, 10% for PYEC or MKoT) */
             maybe_absorb_item(mtmp, pick, 50, 10);
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
-        if (!IS_DOOR(door->typ)) {
+
+        if (!IS_DOOR(door->typ)) 
+        {
             if (is_drawbridge_wall(cc.x, cc.y) >= 0)
                 You("%s no lock on the drawbridge.", Blind ? "feel" : "see");
             else
                 You("%s no door there.", Blind ? "feel" : "see");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         }
-        switch ((door->doormask & D_MASK)) {
+
+        switch ((door->doormask & D_MASK)) 
+        {
         case D_NODOOR:
             pline("This doorway has no door.");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         case D_ISOPEN:
             You("cannot lock an open door.");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         case D_BROKEN:
             pline("This door is broken.");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         case D_PORTCULLIS:
             pline("There is no lock on the portcullis.");
-            update_u_action(ACTION_TILE_NO_ACTION);
             return PICKLOCK_LEARNED_SOMETHING;
         default:
             /* credit cards are only good for unlocking */
-            if (picktyp == CREDIT_CARD && !(door->doormask & D_LOCKED)) {
+            if (picktyp == CREDIT_CARD && !(door->doormask & D_LOCKED)) 
+            {
                 You_cant("lock a door with a credit card.");
-                update_u_action(ACTION_TILE_NO_ACTION);
                 return PICKLOCK_LEARNED_SOMETHING;
             }
 
-            Sprintf(qbuf, "%s it?",
-                    (door->doormask & D_LOCKED) ? "Unlock" : "Lock");
+            Sprintf(qbuf, "%s it%s?",
+                (door->doormask & D_LOCKED) ? "Unlock" : "Lock", kbuf);
 
             c = yn_query(qbuf);
+
             if (c == 'n')
             {
-                update_u_action(ACTION_TILE_NO_ACTION);
                 return 0;
             }
-            switch (picktyp) {
+
+            switch (picktyp) 
+            {
             case CREDIT_CARD:
                 ch = 2 * ACURR(A_DEX) + 20 * Role_if(PM_ROGUE);
                 break;
@@ -652,7 +702,7 @@ struct obj *pick;
                 ch = 70 + ACURR(A_DEX);
                 break;
             default:
-                if(is_otyp_key(picktyp))
+                if (is_otyp_key(picktyp))
                     ch = 70 + ACURR(A_DEX);
                 else
                     ch = 0;
@@ -670,7 +720,6 @@ struct obj *pick;
     xlock.magic_key = is_magic_key(&youmonst, pick);
     xlock.usedtime = 0;
     set_occupation(picklock, lock_action(), objects[pick->otyp].oc_soundset, OCCUPATION_PICKING_LOCK, OCCUPATION_SOUND_TYPE_START, 0);
-    update_u_action(ACTION_TILE_NO_ACTION);
     return PICKLOCK_DID_SOMETHING;
 }
 
@@ -800,10 +849,11 @@ int x, y;
 int
 doopen()
 {
-    return doopen_indir(0, 0);
+    return !!doopen_indir(0, 0);
 }
 
 /* try to open a door in direction u.dx/u.dy */
+/* 0 = open fails, 1 = open succeeded, 2 = started picking the lock */
 int
 doopen_indir(x, y)
 int x, y;
@@ -902,7 +952,24 @@ int x, y;
         {
             play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_TRY_LOCKED);
             update_u_action(ACTION_TILE_NO_ACTION);
-
+            if (flags.autounlock && (door->key_otyp == 0 || door->key_otyp == SKELETON_KEY) && door->special_quality == 0)
+            {
+                struct obj* carried_key = 0;
+                if ((carried_key = carrying(SKELETON_KEY)) != 0
+                    || (carried_key = carrying(LOCK_PICK)) != 0
+                    || (carried_key = carrying(CREDIT_CARD)) != 0
+                    )
+                {
+                    if (carried_key)
+                    {
+                        int pick_res = pick_lock_core(carried_key, x, y, TRUE);
+                        if (pick_res == PICKLOCK_DID_SOMETHING)
+                            res = 2;
+                        else if(pick_res == PICKLOCK_LEARNED_SOMETHING)
+                            res = 1;
+                    }
+                }
+            }
         }
         return res;
     }

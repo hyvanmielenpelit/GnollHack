@@ -921,13 +921,22 @@ int mode;
                 if (mode == DO_MOVE)
                 {
                     if (amorphous(youmonst.data))
-                        You(
-   "try to ooze under the door, but can't squeeze your possessions through.");
+                        You("try to ooze under the door, but can't squeeze your possessions through.");
+
                     if (flags.autoopen && !context.run && !Confusion
                         && !Stunned && !Fumbling)
                     {
-                        context.door_opened = context.move =
-                            doopen_indir(x, y);
+                        int open_res = doopen_indir(x, y);
+                        if (!open_res)
+                            context.door_opened = context.move = 0;
+                        else if (open_res == 1)
+                            context.door_opened = context.move = 1;
+                        else if (open_res == 2)
+                        {
+                            context.door_opened = 1; /* Make sure nomul is not called, since the player started picking the lock */
+                            context.move = 0; /* But movement stops */
+                        }
+
                     }
                     else if (x == ux || y == uy) 
                     {
@@ -951,6 +960,7 @@ int mode;
                 } 
                 else if (mode == TEST_TRAV || mode == TEST_TRAP)
                     goto testdiag;
+
                 return FALSE;
             }
         }

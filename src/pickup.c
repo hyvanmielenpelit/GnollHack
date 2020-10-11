@@ -1746,10 +1746,14 @@ do_loot_cont(cobjp, cindex, ccount)
 struct obj **cobjp;
 int cindex, ccount; /* index of this container (1..N), number of them (N) */
 {
+    if (!cobjp)
+        return 0;
+
     struct obj *cobj = *cobjp;
 
     if (!cobj)
         return 0;
+
     if (cobj->olocked)
     {
         play_simple_object_sound(cobj, OBJECT_SOUND_TYPE_TRY_LOCKED_CONTAINER);
@@ -1761,8 +1765,30 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
         else
             pline("Hmmm, %s turns out to be locked.", the(xname(cobj)));
         cobj->lknown = 1;
+
+        if (flags.autounlock && (cobj->keyotyp == 0 || cobj->keyotyp == SKELETON_KEY || cobj->keyotyp == NON_PM) && cobj->special_quality == 0
+            && cobj->where == OBJ_FLOOR && cobj->ox == u.ux && cobj->oy == u.uy)
+        {
+            struct obj* carried_key = 0;
+            if ((carried_key = carrying(SKELETON_KEY)) != 0
+                || (carried_key = carrying(LOCK_PICK)) != 0
+                || (carried_key = carrying(CREDIT_CARD)) != 0
+                )
+            {
+                if (carried_key)
+                {
+                    int pick_res = pick_lock_core(carried_key, u.ux, u.uy, TRUE);
+                    if (pick_res == PICKLOCK_DID_SOMETHING)
+                        return 1;
+                    else if (pick_res == PICKLOCK_LEARNED_SOMETHING)
+                        return 1;
+                }
+            }
+        }
+
         return 0;
     }
+
     cobj->lknown = 1;
 #ifdef ANDROID
 	if (flags.autokick && can_try_force())
