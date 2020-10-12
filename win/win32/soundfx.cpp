@@ -663,7 +663,7 @@ extern "C"
         FMOD_RESULT result;
 
         enum ghsound_types soundid = info.ghsound;
-        if (soundid == GHSOUND_NONE)
+        if (soundid <= GHSOUND_NONE || soundid >= MAX_GHSOUNDS)
         {
             if (musicInstances[0].eventInstance && musicInstances[0].normalVolume > 0.0f)
             {
@@ -787,7 +787,7 @@ extern "C"
 
         enum ghsound_types soundid = info.ghsound;
 
-        if (soundid == GHSOUND_NONE)
+        if (soundid <= GHSOUND_NONE || soundid >= MAX_GHSOUNDS)
         {
             if (levelAmbientInstances[0].eventInstance && levelAmbientInstances[0].normalVolume > 0.0f)
             {
@@ -912,7 +912,7 @@ extern "C"
 
         enum ghsound_types soundid = info.ghsound;
 
-        if (soundid == GHSOUND_NONE)
+        if (soundid <= GHSOUND_NONE || soundid >= MAX_GHSOUNDS)
         {
             if (environmentAmbientInstances[0].eventInstance && environmentAmbientInstances[0].normalVolume > 0.0f)
             {
@@ -1037,7 +1037,7 @@ extern "C"
 
         enum ghsound_types soundid = info.ghsound;
 
-        if (soundid == GHSOUND_NONE)
+        if (soundid <= GHSOUND_NONE || soundid >= MAX_GHSOUNDS)
         {
             if (occupationAmbientInstances[0].eventInstance && occupationAmbientInstances[0].normalVolume > 0.0f)
             {
@@ -1203,7 +1203,7 @@ extern "C"
 
         enum ghsound_types soundid = info.ghsound;
 
-        if (soundid == GHSOUND_NONE)
+        if (soundid <= GHSOUND_NONE || soundid >= MAX_GHSOUNDS)
         {
             if (effectAmbientInstances[0].eventInstance)
             {
