@@ -391,7 +391,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE, 
         M3_INFRAVISIBLE,
         M4_SMELLS_BURIED_SEARCHABLE, 
-        M5_LAUGHS_RANDOMLY,
+        M5_MAKES_SOUND_RANDOMLY,
         6, CLR_ORANGE, MONSTER_SOUNDSET_HYENA, MONSTER_SOUNDSET_HYENA),
     MON("wolf", None, "large canine", None, None, S_DOG, LVL(5, 12, 4, 0, 0, 0), (G_GENO | G_SGROUP | 2),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,

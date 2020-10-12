@@ -104,9 +104,9 @@ struct monst* mon;
 	if (!mon || DEADMONSTER(mon) || !mon_can_move(mon) || is_tame(mon) || is_fleeing(mon))
 		return;
 
-    if (laughs_randomly(mon->data) && !rn2(10))
+    if (makes_sound_randomly(mon->data) && !rn2(10))
     {
-        play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_LAUGHTER);
+        play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_RANDOM_SOUND);
         //if (canseemon(mon))
         //    pline("%s laughs.", Monnam(mon));
     }

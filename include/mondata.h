@@ -173,7 +173,7 @@
 #define is_shade(ptr) (((ptr)->mflags5 & M5_SHADE) != 0)
 #define is_special_silver_hater(ptr) (((ptr)->mflags5 & M5_HATES_SILVER) != 0)
 #define is_teleport_heal_caster(ptr) (((ptr)->mflags5 & M5_TELEPORT_HEAL_TACTICS) != 0)
-#define laughs_randomly(ptr) (((ptr)->mflags5 & M5_LAUGHS_RANDOMLY) != 0)
+#define makes_sound_randomly(ptr) (((ptr)->mflags5 & M5_MAKES_SOUND_RANDOMLY) != 0)
 
 /* combinations */
 #define is_not_living(ptr) \
