@@ -3987,6 +3987,28 @@ float* volume_ptr;
     }
 }
 
+enum ghsound_types 
+get_monster_ambient_sound_id(mss)
+enum monster_soundset_types mss;
+{
+    enum ghsound_types sound_id = GHSOUND_NONE;
+    float volume = 0.0f;
+    set_simple_monster_sound_id_and_volume(mss, MONSTER_SOUND_TYPE_AMBIENT, &sound_id, &volume);
+
+    return sound_id;
+}
+
+float
+get_monster_ambient_sound_volume(mss)
+enum monster_soundset_types mss;
+{
+    enum ghsound_types sound_id = GHSOUND_NONE;
+    float volume = 0.0f;
+    set_simple_monster_sound_id_and_volume(mss, MONSTER_SOUND_TYPE_AMBIENT, &sound_id, &volume);
+
+    return volume;
+}
+
 void
 play_object_floor_sound(obj, sound_type)
 struct obj* obj;

@@ -2884,6 +2884,8 @@ E enum ghsound_types FDECL(get_room_music, (struct mkroom*));
 E enum ghsound_types FDECL(get_level_ambient_sounds, (struct d_level*));
 E enum ghsound_types FDECL(get_room_ambient_sounds, (struct mkroom*));
 E enum ghsound_types NDECL(get_environment_ambient_sounds);
+E enum ghsound_types FDECL(get_monster_ambient_sound_id, (enum monster_soundset_types));
+E float FDECL(get_monster_ambient_sound_volume, (enum monster_soundset_types));
 
 /* ### sys.c ### */
 
