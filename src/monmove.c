@@ -101,11 +101,21 @@ void
 check_mon_talk(mon)
 struct monst* mon;
 {
-	if (!mon || DEADMONSTER(mon) || !is_speaking_monster(mon->data) || mindless(mon->data) 
-		|| is_stunned(mon) || is_confused(mon) || !mon_can_move(mon) || is_tame(mon))
+	if (!mon || DEADMONSTER(mon) || !mon_can_move(mon) || is_tame(mon) || is_fleeing(mon))
 		return;
 
-	boolean mon_talked = FALSE;
+    if (laughs_randomly(mon->data) && !rn2(7))
+    {
+        play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_LAUGHTER);
+        //if (canseemon(mon))
+        //    pline("%s laughs.", Monnam(mon));
+    }
+
+    if (!is_speaking_monster(mon->data) || mindless(mon->data)
+        || is_stunned(mon) || is_confused(mon))
+        return;
+
+    boolean mon_talked = FALSE;
 
 	if (!context.mon_talking)
 	{
