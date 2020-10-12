@@ -1771,13 +1771,14 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
 
         cobj->lknown = 1;
 
-        if (flags.autounlock && (cobj->keyotyp == 0 || cobj->keyotyp == SKELETON_KEY || cobj->keyotyp == NON_PM) && cobj->special_quality == 0
+        if (flags.autounlock && has_box_normal_lock(cobj)
             && cobj->where == OBJ_FLOOR && cobj->ox == u.ux && cobj->oy == u.uy)
         {
             struct obj* carried_key = 0;
             if ((carried_key = carrying(SKELETON_KEY)) != 0
                 || (carried_key = carrying(LOCK_PICK)) != 0
                 || (carried_key = carrying(CREDIT_CARD)) != 0
+                || (carried_key = carrying(MASTER_KEY)) != 0
                 )
             {
                 if (carried_key)

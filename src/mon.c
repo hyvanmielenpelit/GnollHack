@@ -2451,13 +2451,18 @@ nexttry: /* eels prefer the water, but if there is no water nearby,
                         && (dmgtype(mdat, AD_RUST)
                             || dmgtype(mdat, AD_CORR)))))
                 continue;
-            if (IS_DOOR(ntyp)
-                && (!is_door_destroyed_by_monsters_at(nx, ny))
-                    || (!(amorphous(mdat) || can_fog(mon))
-                    && (((levl[nx][ny].doormask & D_CLOSED) && !(flag & OPENDOOR))
-                        || ((levl[nx][ny].doormask & D_LOCKED)
-                            && !(flag & UNLOCKDOOR))) && !thrudoor && !wallwalk))
+
+            boolean can_squeeze_through = (amorphous(mdat) || can_fog(mon)) && !is_door_nonpassable_at(nx, ny);
+            boolean cannot_open_closed_door = (!(levl[nx][ny].doormask & D_CLOSED) || ((levl[nx][ny].doormask & D_CLOSED) && !(flag & OPENDOOR)));
+            boolean cannot_unlock_locked_door = (!(levl[nx][ny].doormask & D_LOCKED) || ((levl[nx][ny].doormask & D_LOCKED) && !((flag & UNLOCKDOOR) && has_door_normal_lock_at(nx, ny))));
+            boolean can_break_door = thrudoor && is_door_destroyed_by_monsters_at(nx, ny);
+            boolean can_walk_thru_door = wallwalk && is_door_nonpassable_at(nx, ny);
+
+            if (IS_DOOR(ntyp) && levl[nx][ny].doormask & (D_CLOSED | D_LOCKED) && !can_squeeze_through && cannot_open_closed_door && cannot_unlock_locked_door
+                && !can_break_door && !can_walk_thru_door
+                )
                 continue;
+
             /* avoid poison gas? */
             if (!poisongas_ok && !in_poisongas
                 && (gas_reg = visible_region_at(nx,ny)) != 0

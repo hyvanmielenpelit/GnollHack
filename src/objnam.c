@@ -5348,6 +5348,9 @@ get_lock_description_by_otyp(otyp, sq, normally_without_lock)
 int otyp, sq;
 boolean normally_without_lock;
 {
+    if (Blind)
+        return "";
+
     if (otyp < NON_PM || otyp >= NUM_OBJECTS) /* No lock, STRANGE_OBJECT indicates normal door */
     {
         if (normally_without_lock)

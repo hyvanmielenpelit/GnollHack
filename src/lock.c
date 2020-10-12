@@ -97,7 +97,7 @@ picklock(VOID_ARGS)
         {
             return ((xlock.usedtime = 0)); /* you or it moved */
         }
-        if ((xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == NON_PM || xlock.box->keyotyp == SKELETON_KEY)
+        if (has_box_normal_lock(xlock.box)
             && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
         {
             //nothing, normal case
@@ -134,7 +134,7 @@ picklock(VOID_ARGS)
             return ((xlock.usedtime = 0));
         }
 
-        if ((xlock.door->key_otyp == STRANGE_OBJECT || xlock.door->key_otyp == SKELETON_KEY)
+        if (has_door_normal_lock_at_ptr(xlock.door)
             && (xlock.picktyp == SKELETON_KEY || xlock.picktyp == CREDIT_CARD || xlock.picktyp == LOCK_PICK))
         {
             //nothing, normal case
@@ -352,7 +352,7 @@ forcelock(VOID_ARGS)
     if (rn2(100) >= xlock.chance)
         return 1; /* still busy */
 
-    if (xlock.box->keyotyp == STRANGE_OBJECT || xlock.box->keyotyp == NON_PM || xlock.box->keyotyp == SKELETON_KEY)
+    if (has_box_normal_lock(xlock.box))
     {
         //nothing, normal case
     }
@@ -960,12 +960,13 @@ int x, y;
         {
             play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_TRY_LOCKED);
             update_u_action(ACTION_TILE_NO_ACTION);
-            if (flags.autounlock && (door->key_otyp == 0 || door->key_otyp == SKELETON_KEY) && door->special_quality == 0)
+            if (flags.autounlock && has_door_normal_lock_at_ptr(door))
             {
                 struct obj* carried_key = 0;
                 if ((carried_key = carrying(SKELETON_KEY)) != 0
                     || (carried_key = carrying(LOCK_PICK)) != 0
                     || (carried_key = carrying(CREDIT_CARD)) != 0
+                    || (carried_key = carrying(MASTER_KEY)) != 0
                     )
                 {
                     if (carried_key)
@@ -1189,7 +1190,8 @@ struct obj *obj, *otmp; /* obj *is* a box */
     switch (otmp->otyp) {
     case WAN_LOCKING:
     case SPE_WIZARD_LOCK:
-        if (!obj->olocked && (obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == NON_PM || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)) { /* lock it; fix if broken */
+        if (!obj->olocked && (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0)))
+        { /* lock it; fix if broken */
             play_sfx_sound_at_location(SFX_WIZARD_LOCK_KLUNK, obj->ox, obj->oy);
             pline("Klunk!");
             obj->olocked = 1;
@@ -1207,7 +1209,7 @@ struct obj *obj, *otmp; /* obj *is* a box */
     case WAN_OPENING:
     case SPE_KNOCK:
         if (obj->olocked) { /* unlock; couldn't be broken */
-            if ((obj->keyotyp == STRANGE_OBJECT || obj->keyotyp == NON_PM || obj->keyotyp == SKELETON_KEY) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0))
+            if (has_box_normal_lock(obj) || (obj->keyotyp == MAGIC_KEY && obj->special_quality == 0))
             {
                 play_sfx_sound_at_location(SFX_KNOCK_KLICK, obj->ox, obj->oy);
                 pline("Klick!");
@@ -1314,7 +1316,7 @@ int x, y;
             return FALSE;
         }
 
-        boolean can_lock = (door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
+        boolean can_lock = (has_door_normal_lock_at_ptr(door) || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
 
         switch ((door->doormask & ~D_TRAPPED) & D_MASK) 
         {
@@ -1371,7 +1373,7 @@ int x, y;
     case WAN_OPENING:
     case SPE_KNOCK:
     {
-        boolean can_open = (door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
+        boolean can_open = (has_door_normal_lock_at_ptr(door) || (door->key_otyp == MAGIC_KEY && door->special_quality == 0));
         if (can_open && (door->doormask & D_LOCKED)) {
             msg = "The %s unlocks!";
             door->doormask &= ~D_MASK;

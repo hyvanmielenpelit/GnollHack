@@ -408,6 +408,47 @@ struct rm* door;
 }
 
 boolean
+has_door_normal_lock_at(x, y)
+xchar x, y;
+{
+    if (!isok(x, y))
+        return FALSE;
+
+    struct rm* door = &levl[x][y];
+    return  has_door_normal_lock_at_ptr(door);
+
+}
+
+
+boolean
+has_door_normal_lock_at_ptr(door)
+struct rm* door;
+{
+    if (!door || !IS_DOOR_OR_SDOOR(door->typ))
+        return FALSE;
+
+    if ((door->key_otyp == STRANGE_OBJECT || door->key_otyp == SKELETON_KEY) && door->special_quality == 0)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
+has_box_normal_lock(box)
+struct obj* box;
+{
+    if (!box || !Is_box(box))
+        return FALSE;
+
+    if ((box->keyotyp == STRANGE_OBJECT || box->keyotyp == NON_PM || box->keyotyp == SKELETON_KEY) && box->special_quality == 0)
+        return TRUE;
+    else
+        return FALSE;
+
+}
+
+boolean
 is_door_diggable_at(x, y)
 xchar x, y;
 {
