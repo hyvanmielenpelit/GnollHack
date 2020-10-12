@@ -853,6 +853,8 @@ register struct monst *mtmp;
 	if (is_silenced(mtmp))
 		msound = MS_SILENT;
 
+	play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_CHAT);
+
     switch (msound) {
 	case MS_SILENT:
 		pline_msg = "does not respond.";

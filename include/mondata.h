@@ -787,7 +787,7 @@
 #define is_mind_flayer(ptr) (((ptr)->mflags2 & M2_MIND_FLAYER) != 0)
 #define is_mimic(ptr) (((ptr)->mflags2 & M2_MIMIC) != 0)
 #define is_vampire(ptr) ((ptr)->mlet == S_VAMPIRE)
-#define mon_ambient_sound(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound)
+#define mon_ambient_sound(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? GHSOUND_NONE : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound < MAX_GHSOUNDS ? monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].ghsound : GHSOUND_NONE)
 #define mon_ambient_volume(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? 0 : monster_soundsets[(ptr)->soundset].sounds[MONSTER_SOUND_TYPE_AMBIENT].volume)
 #define mon_ambient_subtype(ptr) ((ptr)->soundset <= MONSTER_SOUNDSET_NONE ? SOUNDSOURCE_AMBIENT_GENERAL : monster_soundsets[(ptr)->soundset].ambient_subtype)
 

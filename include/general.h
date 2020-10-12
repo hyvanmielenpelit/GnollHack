@@ -6,6 +6,12 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
+/*
+ * This is a general header file for enums and structs used in arguments of global functions and
+ * for general constants, enums, and structs with no better place
+ *
+ */
+
  /* types of calls to bhit() */
 enum bhit_call_types {
     ZAPPED_WAND = 0,
@@ -21,8 +27,6 @@ enum bhit_call_types {
 #define NATTK 8	         /* Maximum number of attacks per monster */
 #define NUM_ZAP 10       /* Number of zap beam types */
 
-
-/* Various structs used in function inputs */
 struct replacement_info {
 	int signed_glyph;
 	int layer;
@@ -35,12 +39,6 @@ struct extended_menu_info {
     unsigned long menu_flags;
 };
 
-/*	Max # of attacks for any given monster. -- Moved here from permonst.h --JG
- */
-
- /* [misnamed] definition of a type of object; many objects are composites
-	(liquid potion inside glass bottle, metal arrowhead on wooden shaft)
-	and object definitions only specify one type on a< best-fit basis */
 enum obj_material_types {
 	MAT_NONE = 0,
 	MAT_LIQUID = 1, /* currently only for venom */  /* Organics start here */

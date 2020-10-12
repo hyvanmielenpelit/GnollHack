@@ -564,6 +564,15 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Sinister Laughter", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Maniacal Laughter", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Hyena/Hyena Laughter", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Laughter", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Ram/Ram Laughter", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Horse/Horse Chat", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Ram/Ram Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Ram/Ram Death", 1.0f },
 };
 
 extern "C" 
