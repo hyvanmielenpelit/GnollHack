@@ -2988,8 +2988,8 @@
 
                The default name of the configuration file varies on differ-
           ent  operating  systems.   On   MS-DOS   and   Windows,   it   is
-          "defaults.nh"  in the same folder as nethack.exe or nethackW.exe.
-          On UNIX, Linux, and Mac OS X it is  ".nethackrc"  in  the  user's
+          "defaults.gnh"  in the same folder as nethack.exe or nethackW.exe.
+          On UNIX, Linux, and Mac OS X it is  ".gnollhackrc"  in  the  user's
           home directory.  The file may not exist, but it is a normal ASCII
           text file and can be created with any text editor.
 
@@ -5403,7 +5403,7 @@
           the program's only parameter.
 
                While it is not difficult for experienced users to edit  the
-          defaults.nh  file  to accomplish this, novices may find this task
+          defaults.gnh  file  to accomplish this, novices may find this task
 
 
           NetHack 3.6                                           May 7, 2019

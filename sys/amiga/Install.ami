@@ -83,7 +83,7 @@ II.C. The Amiga NetHack CLI Front End
 II.D. Amiga-Specific Information for NetHack
 
     There are several options that are unique to the Amiga version of
-    NetHack that may be specified in the NetHack.cnf file or on an
+    NetHack that may be specified in the GnollHack.cnf file or on an
     OPTIONS line:
 
     altmeta     allows the ALT keys to function as META keys.  The default
@@ -138,7 +138,7 @@ Hard Disk Installation:
     Be sure that the file 8 ends up in NetHack:hack/8. 
       
 Configuration
-    Using your favorite text editor, edit NetHack:NetHack.cnf to match
+    Using your favorite text editor, edit NetHack:GnollHack.cnf to match
     your system.
 
     Create the save file directory (makedir NetHack:save) and the levels file
@@ -151,7 +151,7 @@ Configuration
 III.B. File Location Table
 NetHack:
 	amii.hlp	Guidebook.txt	hack.font
-	license		credits     NetHack		NetHack.cnf
+	license		credits     NetHack		GnollHack.cnf
 	NetHack.txt	nhdat		nhsdat
 	record		Recover		Recover.txt
 	logfile (optional, but useful)
@@ -176,7 +176,7 @@ IV. BBS Interface
     NetHack at the same time).
 
     To set up NetHack for use with a BBS, set OPTIONS=windowtype:tty
-    and unset DUNGEONS, TRAPS, and EFFECTS in NetHack.cnf.  Configure
+    and unset DUNGEONS, TRAPS, and EFFECTS in GnollHack.cnf.  Configure
     the BBS to expect I/O through stdin and stdout, and have NetHack
     invoked as:
        HackCLI :uid -u uname options...

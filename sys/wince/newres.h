@@ -1,6 +1,6 @@
-/* NetHack 3.6  newres.h       $NHDT-Date: 1524689383 2018/04/25 20:49:43 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.3 $ */
+/* GnollHack 4.0  newres.h       $NHDT-Date: 1524689383 2018/04/25 20:49:43 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.3 $ */
 /*      Copyright (c) 2003 by Michael Allison              */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef __NEWRES_H__
 #define __NEWRES_H__

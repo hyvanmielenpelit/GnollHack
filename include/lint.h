@@ -1,6 +1,6 @@
-/* NetHack 3.6	lint.h	$NHDT-Date: 1524689514 2018/04/25 20:51:54 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.5 $ */
+/* GnollHack 4.0	lint.h	$NHDT-Date: 1524689514 2018/04/25 20:51:54 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.5 $ */
 /*      Copyright (c) 2016 by Robert Patrick Rankin               */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Hacks to suppress compiler warnings.  Use with caution.

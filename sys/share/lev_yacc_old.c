@@ -11,9 +11,9 @@
 #define yyerrok (yyerrflag=0)
 #define YYRECOVERING (yyerrflag!=0)
 #define YYPREFIX "yy"
-/* NetHack 3.6  lev_comp.y	$NHDT-Date: 1551901401 2019/03/06 19:43:21 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
+/* GnollHack 4.0  lev_comp.y	$NHDT-Date: 1551901401 2019/03/06 19:43:21 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.26 $ */
 /*      Copyright (c) 1989 by Jean-Christophe Collet */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file contains the Level Compiler code

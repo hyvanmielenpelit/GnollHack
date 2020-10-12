@@ -1,6 +1,6 @@
-/* NetHack 3.6	winos.h	$NHDT-Date: 1524321419 2018/04/21 14:36:59 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
+/* GnollHack 4.0	winos.h	$NHDT-Date: 1524321419 2018/04/21 14:36:59 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (c) NetHack PC Development Team 2018 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WINOS_H
 #define WINOS_H

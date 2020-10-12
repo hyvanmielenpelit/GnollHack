@@ -1,6 +1,6 @@
-/* NetHack 3.6	Window.c	$NHDT-Date: 1432512808 2015/05/25 00:13:28 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
+/* GnollHack 4.0	Window.c	$NHDT-Date: 1432512808 2015/05/25 00:13:28 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
 /* Copyright (c) Dean Luick, 1992				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Data structures and support routines for the Window widget.  This is a

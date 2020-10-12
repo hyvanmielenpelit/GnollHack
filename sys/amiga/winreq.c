@@ -1,6 +1,6 @@
-/* NetHack 3.6	winreq.c	$NHDT-Date: 1432512796 2015/05/25 00:13:16 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0	winreq.c	$NHDT-Date: 1432512796 2015/05/25 00:13:16 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) Gregg Wonderly, Naperville, Illinois,  1991,1992,1993. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "NH:sys/amiga/windefs.h"
 #include "NH:sys/amiga/winext.h"
@@ -193,7 +193,7 @@ EditColor()
 
                     fp = fopen(configfile, "r");
                     if (!fp) {
-                        pline("can't find NetHack.cnf");
+                        pline("can't find GnollHack.cnf");
                         break;
                     }
 
@@ -799,7 +799,7 @@ amii_setpens(int count)
                amii_numcolors * sizeof(amii_initmap[0]));
     }
 
-    /* If the pens are set in NetHack.cnf, we can get called before
+    /* If the pens are set in GnollHack.cnf, we can get called before
      * HackScreen has been opened.
      */
     if (HackScreen != NULL) {

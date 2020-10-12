@@ -1,6 +1,6 @@
-/* NetHack 3.6	mail.h	$NHDT-Date: 1524689515 2018/04/25 20:51:55 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.9 $ */
+/* GnollHack 4.0	mail.h	$NHDT-Date: 1524689515 2018/04/25 20:51:55 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.9 $ */
 /*      Copyright (c) 2015 by Kenneth Lorber              */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* used by ckmailstatus() to pass information to the mail-daemon in newmail()
  */

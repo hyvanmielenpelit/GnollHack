@@ -1,6 +1,6 @@
-/* NetHack 3.6	mhstatus.c	$NHDT-Date: 1432512798 2015/05/25 00:13:18 $  $NHDT-Branch: master $:$NHDT-Revision: 1.17 $ */
+/* GnollHack 4.0	mhstatus.c	$NHDT-Date: 1432512798 2015/05/25 00:13:18 $  $NHDT-Branch: master $:$NHDT-Revision: 1.17 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "winMS.h"
 #include "mhstatus.h"

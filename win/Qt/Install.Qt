@@ -2,7 +2,7 @@ Installing NetHack with a Qt or KDE interface
 ---------------------------------------------
 $NHDT-Date: 1524689332 2018/04/25 20:48:52 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.11 $
 # Copyright (c) 2004 by Warwick Allison
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 This document describes the installation of NetHack with a Qt interface
 on UNIX/X11 or Mac OS X. This code should also work with Qt/Windows, but
@@ -46,7 +46,7 @@ To use this code on UNIX (not Mac OS X):
    5. Follow all the instructions in ../../sys/unix/Install.unx for
       the remainder of the installation process.
 
-   6. Consider adding the lines below to your .nethackrc, as they are
+   6. Consider adding the lines below to your .gnollhackrc, as they are
       likely to give the best interface for this window port:
 
         OPTIONS=name:player,number_pad,menustyle:partial,!time,showexp

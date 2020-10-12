@@ -1,6 +1,6 @@
-/* NetHack 3.6	mttymain.c	$NHDT-Date: 1554215928 2019/04/02 14:38:48 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.13 $ */
+/* GnollHack 4.0	mttymain.c	$NHDT-Date: 1554215928 2019/04/02 14:38:48 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.13 $ */
 /* Copyright (c) Jon W{tte, 1993					*/
-/* NetHack may be freely redistributed.  See license for details.	*/
+/* GnollHack may be freely redistributed.  See license for details.	*/
 
 #include "hack.h"
 #include "macwin.h"

@@ -18,9 +18,9 @@ essential information about playing GnollHack. It can be found in the
 same directory as your GnollHack executable.
 
 The GnollHack for Windows port supports some additional or enhanced 
-commands as well as some defaults.nh file options specific to 
+commands as well as some defaults.gnh file options specific to 
 configuration choices used during the building of GnollHack for 
-Windows. Listed below are those commands and defaults.nh file 
+Windows. Listed below are those commands and defaults.gnh file 
 options. 
 
 Some options are applicable only to the "Graphical Interface." 
@@ -148,19 +148,19 @@ Map Window options:
 
     tile_height    Used with tile_file to specify the height of each 
                    tile in pixels. This option may only be specified
-                   in the defaults.nh config file.
+                   in the defaults.gnh config file.
                    Default: [16] 
 
     tile_width     Used with tile_file to specify the width of each 
                    tile in pixels. This option may only be specified
-                   in the defaults.nh config file. 
+                   in the defaults.gnh config file. 
                    Default: [16]
 
 Other Window options:
 
     windowcolors   Specifies the colors for various windows
                    This option may only be specified in the
-                   defaults.nh config file and has the following
+                   defaults.gnh config file and has the following
                    format:
                        window-type foreground/background
                    Notes:

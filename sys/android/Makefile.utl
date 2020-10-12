@@ -1,5 +1,5 @@
 #	Makefile for NetHack's utility programs.
-# NetHack 3.6  Makefile.utl	$NHDT-Date: 1449386560 2015/12/06 07:22:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.27 $
+# GnollHack 4.0  Makefile.utl	$NHDT-Date: 1449386560 2015/12/06 07:22:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.27 $
 
 # Root of source tree:
 NHSROOT=..

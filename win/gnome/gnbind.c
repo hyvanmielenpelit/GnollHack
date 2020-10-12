@@ -1,6 +1,6 @@
-/* NetHack 3.6	gnbind.c	$NHDT-Date: 1450453305 2015/12/18 15:41:45 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.33 $ */
+/* GnollHack 4.0	gnbind.c	$NHDT-Date: 1450453305 2015/12/18 15:41:45 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.33 $ */
 /* Copyright (C) 1998 by Erik Andersen <andersee@debian.org> */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file implements the interface between the window port specific

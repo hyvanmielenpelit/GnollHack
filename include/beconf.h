@@ -1,6 +1,6 @@
-/* NetHack 3.6	beconf.h	$NHDT-Date: 1432512783 2015/05/25 00:13:03 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0	beconf.h	$NHDT-Date: 1432512783 2015/05/25 00:13:03 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) Dean Luick 1996.	*/
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* Configuration for Be Inc.'s BeOS */
 

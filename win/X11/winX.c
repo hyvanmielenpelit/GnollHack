@@ -1,6 +1,6 @@
-/* NetHack 3.6	winX.c	$NHDT-Date: 1552441031 2019/03/13 01:37:11 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.73 $ */
+/* GnollHack 4.0	winX.c	$NHDT-Date: 1552441031 2019/03/13 01:37:11 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.73 $ */
 /* Copyright (c) Dean Luick, 1992                                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * "Main" file for the X window-port.  This contains most of the interface

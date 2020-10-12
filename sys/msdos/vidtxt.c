@@ -1,4 +1,4 @@
-/* NetHack 3.6	vidtxt.c	$NHDT-Date: 1457207043 2016/03/05 19:44:03 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.11 $ */
+/* GnollHack 4.0	vidtxt.c	$NHDT-Date: 1457207043 2016/03/05 19:44:03 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.11 $ */
 /*   Copyright (c) NetHack PC Development Team 1993                 */
 /*   NetHack may be freely redistributed.  See license for details. */
 /*                                                                  */

@@ -1,7 +1,7 @@
-/* NetHack 3.6	winami.c	$NHDT-Date: 1501981093 2017/08/06 00:58:13 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.20 $ */
+/* GnollHack 4.0	winami.c	$NHDT-Date: 1501981093 2017/08/06 00:58:13 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.20 $ */
 /* Copyright (c) Gregg Wonderly, Naperville, Illinois,  1991,1992,1993,1996.
  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "NH:sys/amiga/windefs.h"
 #include "NH:sys/amiga/winext.h"
@@ -119,7 +119,7 @@ struct window_procs amiv_procs = {
 };
 
 unsigned short amii_initmap[AMII_MAXCOLORS];
-/* Default pens used unless user overides in nethack.cnf. */
+/* Default pens used unless user overides in gnollhack.cnf. */
 unsigned short amii_init_map[AMII_MAXCOLORS] = {
     0x0000, /* color #0  C_BLACK    */
     0x0FFF, /* color #1  C_WHITE    */

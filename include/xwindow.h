@@ -1,6 +1,6 @@
-/* NetHack 3.6	xwindow.h	$NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0	xwindow.h	$NHDT-Date: 1432512775 2015/05/25 00:12:55 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) Dean Luick, 1992				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef _xwindow_h
 #define _xwindow_h

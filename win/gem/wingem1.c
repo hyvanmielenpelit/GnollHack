@@ -1,6 +1,6 @@
-/* NetHack 3.6	wingem1.c	$NHDT-Date: 1433806613 2015/06/08 23:36:53 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
+/* GnollHack 4.0	wingem1.c	$NHDT-Date: 1433806613 2015/06/08 23:36:53 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
 /* Copyright (c) Christian Bressler 1999 	  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #define __TCC_COMPAT__
 

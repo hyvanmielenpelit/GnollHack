@@ -1,6 +1,6 @@
-/* NetHack 3.6	console.rc	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	console.rc	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Yitzhak Sapir, 2002. 					*/
-/* NetHack may be freely redistributed.  See license for details. 	*/
+/* GnollHack may be freely redistributed.  See license for details. 	*/
 
 #include "windows.h"
 

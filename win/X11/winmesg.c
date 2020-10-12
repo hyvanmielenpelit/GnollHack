@@ -1,6 +1,6 @@
-/* NetHack 3.6	winmesg.c	$NHDT-Date: 1454811935 2016/02/07 02:25:35 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	winmesg.c	$NHDT-Date: 1454811935 2016/02/07 02:25:35 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Dean Luick, 1992				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Message window routines.

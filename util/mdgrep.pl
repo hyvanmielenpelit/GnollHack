@@ -1,7 +1,7 @@
 #!perl
-# NetHack 3.6  mdgrep.pl  $NHDT-Date: 1524684408 2018/04/25 19:26:48 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.16 $
+# GnollHack 4.0  mdgrep.pl  $NHDT-Date: 1524684408 2018/04/25 19:26:48 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.16 $
 # Copyright (c) Kenneth Lorber, Kensington, Maryland
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 # MAKEDEFS:
 @commands = qw/grep/;

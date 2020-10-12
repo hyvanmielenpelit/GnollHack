@@ -1,4 +1,4 @@
-/* NetHack 3.6	tile2bin.c	$NHDT-Date: 1457207041 2016/03/05 19:44:01 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.9 $ */
+/* GnollHack 4.0	tile2bin.c	$NHDT-Date: 1457207041 2016/03/05 19:44:01 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.9 $ */
 /*   Copyright (c) NetHack PC Development Team 1993, 1994, 1995     */
 /*   NetHack may be freely redistributed.  See license for details. */
 

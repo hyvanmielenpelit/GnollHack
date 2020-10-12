@@ -1,7 +1,7 @@
-/* NetHack 3.6	gr_rect.c	$NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
+/* GnollHack 4.0	gr_rect.c	$NHDT-Date: 1432512810 2015/05/25 00:13:30 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
  */
 /* Copyright (c) Christian Bressler, 2001 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 /* This is an almost exact copy of qt_clust.cpp */
 /* gr_rect.c */
 #include <stdlib.h>

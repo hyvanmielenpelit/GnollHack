@@ -1,6 +1,6 @@
-/* NetHack 3.6	winmisc.c	$NHDT-Date: 1554135506 2019/04/01 16:18:26 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.44 $ */
+/* GnollHack 4.0	winmisc.c	$NHDT-Date: 1554135506 2019/04/01 16:18:26 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.44 $ */
 /* Copyright (c) Dean Luick, 1992                                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Misc. popup windows: player selection and extended commands.

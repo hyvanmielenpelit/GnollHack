@@ -1,6 +1,6 @@
-/* NetHack 3.6	nh32icon	$NHDT-Date: 1446457887 2015/11/02 09:51:27 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	nh32icon	$NHDT-Date: 1446457887 2015/11/02 09:51:27 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /*	Copyright (C) 1993,1995,2015 by Robert Patrick Rankin		*/
-/* NetHack may be freely redistributed.  See license for details.	*/
+/* GnollHack may be freely redistributed.  See license for details.	*/
 
 /*	32x32 X11 icon for NetHack.					*/
 

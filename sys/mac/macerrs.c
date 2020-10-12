@@ -1,6 +1,6 @@
-/* NetHack 3.6	macerrs.c	$NHDT-Date: 1432512797 2015/05/25 00:13:17 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	macerrs.c	$NHDT-Date: 1432512797 2015/05/25 00:13:17 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Michael Hamel, 1991 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #if defined(macintosh) && defined(__SC__) && !defined(__FAR_CODE__)
 /* this needs to be resident always */

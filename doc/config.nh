@@ -1,6 +1,6 @@
-# NetHack 3.6  config.nh       $NHDT-Date: 1524689547 2018/04/25 20:52:27 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.1 $
+# GnollHack 4.0  config.nh       $NHDT-Date: 1524689547 2018/04/25 20:52:27 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.1 $
 # Copyright (c) 2016 by Pasi Kallinen
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 # Sample config file for NetHack 3.6
 #
 # A '#' at the beginning of a line means the rest of the line is a comment.
@@ -9,10 +9,10 @@
 # playing.
 #
 # Copy the contents of this file into
-# * defaults.nh, same folder as nethack.exe or nethackW.exe (DOS, Windows)
-# * ~/.nethackrc (Unix, linux, Mac OS X)
+# * defaults.gnh, same folder as nethack.exe or nethackW.exe (DOS, Windows)
+# * ~/.gnollhackrc (Unix, linux, Mac OS X)
 # * "NetHack Defaults" on pre-OSX Mac and BeOS
-# * NetHack.cnf on Amiga, Atari, OS/2, and VMS
+# * GnollHack.cnf on Amiga, Atari, OS/2, and VMS
 #
 # To change the configuration, comment out the unwanted lines, and
 # uncomment the configuration you want.

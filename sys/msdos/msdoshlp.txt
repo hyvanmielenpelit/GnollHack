@@ -9,11 +9,11 @@ information about playing NetHack.  It can be found in the same
 directory as your NetHack executable.
 
 The MSDOS port of NetHack supports some additional or enhanced commands
-as well as some defaults.nh file options specific to configuration choices 
+as well as some defaults.gnh file options specific to configuration choices 
 used during the building of PC NetHack.  Listed below are those commands
-and defaults.nh file options.
+and defaults.gnh file options.
 
-Recognized MSDOS specific defaults.nh entries are outlined below.
+Recognized MSDOS specific defaults.gnh entries are outlined below.
 
 Boolean Options:
 
@@ -40,10 +40,10 @@ OPTIONS=!color
 		for monochromes has failed.  The color support
 		stuff is active in video.c, but may be (will have
 		to be) overridden by adding an OPTIONS=nocolor to
-		defaults.nh.
+		defaults.gnh.
 
 OPTIONS=VIDEO
-		(defaults.nh only)
+		(defaults.gnh only)
 
 		ie: OPTIONS=video:autodetect
 
@@ -63,7 +63,7 @@ OPTIONS=VIDEO
                            the specified video hardware is not present.	
 
 OPTIONS=VIDEOSHADES
-		(defaults.nh only)
+		(defaults.gnh only)
 		Players may wish to add this option because one of their
 		shades of gray is difficult to read on their video
 		display hardware.  Allows a level of intensity to be
@@ -98,7 +98,7 @@ OPTIONS=VIDEOSHADES
 		3.1.2, it was mapped to dark (as above).
 
 OPTIONS=VIDEOCOLORS
-		(defaults.nh only)
+		(defaults.gnh only)
 		This option is only provided because some people on
 		r.g.r.n mentioned how they liked to modify the color
 		values from the default ANSI.SYS behaviour, and were

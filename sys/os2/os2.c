@@ -1,4 +1,4 @@
-/* NetHack 3.6	os2.c	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
+/* GnollHack 4.0	os2.c	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.9 $ */
 /*	Copyright (c) Timo Hakulinen, 1990, 1991, 1992, 1993, 1996. */
 /*	NetHack may be freely redistributed.  See license for details. */
 

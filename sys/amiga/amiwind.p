@@ -1,6 +1,6 @@
-/* NetHack 3.6	amiwind.p	$NHDT-Date: 1432512795 2015/05/25 00:13:15 $  $NHDT-Branch: master $:$NHDT-Revision: 1.6 $ */
+/* GnollHack 4.0	amiwind.p	$NHDT-Date: 1432512795 2015/05/25 00:13:15 $  $NHDT-Branch: master $:$NHDT-Revision: 1.6 $ */
 /*   Copyright (c) Gregg Wonderly, Naperville, IL, 1992, 1993	  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* amiwind.c */
 #ifdef	INTUI_NEW_LOOK

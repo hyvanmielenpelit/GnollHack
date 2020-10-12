@@ -1,6 +1,6 @@
-/* NetHack 3.6	winami.p	$NHDT-Date: 1433806595 2015/06/08 23:36:35 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
+/* GnollHack 4.0	winami.p	$NHDT-Date: 1433806595 2015/06/08 23:36:35 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
 /*    Copyright (c) Gregg Wonderly, Naperville, IL, 1992, 1993	 */
-/* NetHack may be freely redistributed. See license for details. */
+/* GnollHack may be freely redistributed. See license for details. */
 /* winami.c */
 void FDECL(amii_raw_print, (const char *));
 void FDECL(amii_raw_print_bold, (const char *));

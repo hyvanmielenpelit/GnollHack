@@ -1,6 +1,6 @@
 /*	SCCS Id: @(#)androidconf.h	3.4	2011/03/31	*/
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1990, 1991, 1992, 1993. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifdef ANDROID
 #ifndef ANDROIDCONF_H
@@ -28,7 +28,7 @@
 #define DUMPLOG_FILE        "%n.%d.dumplog.txt"
 #endif
 
-#define CONFIG_FILE "defaults.nh"
+#define CONFIG_FILE "defaults.gnh"
 
 //#undef MAIL
 //#undef DEF_PAGER

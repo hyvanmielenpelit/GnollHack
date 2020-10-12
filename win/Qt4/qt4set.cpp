@@ -68,7 +68,7 @@ NetHackQtSettings::NetHackQtSettings(int w, int h) :
     tileheight.setValue(settings.value("tileheight", 16).toInt());
     default_fontsize = settings.value("fontsize", 2).toInt();
 
-    // Tile/font sizes read from .nethackrc
+    // Tile/font sizes read from .gnollhackrc
     if (qt_tilewidth != NULL) {
 	tilewidth.setValue(atoi(qt_tilewidth));
 	delete[] qt_tilewidth;

@@ -1,4 +1,4 @@
-# NetHack 3.6	Makefile.msc	$NHDT-Date: 1554784482 2019/04/09 04:34:42 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.153 $ */
+# GnollHack 4.0	Makefile.msc	$NHDT-Date: 1554784482 2019/04/09 04:34:42 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.153 $ */
 #       Copyright (c) NetHack PC Development Team 1993-2019
 #
 #==============================================================================
@@ -687,7 +687,7 @@ $(O)install.tag: 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
 	if exist $(DOC)\nethack.txt copy $(DOC)\nethack.txt $(GAMEDIR)\NetHack.txt
 	@if exist $(GAMEDIR)\NetHack.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHack.PDB to conserve space
 	@if exist $(GAMEDIR)\NetHackW.PDB echo NOTE: You may want to remove $(GAMEDIR:\=/)/NetHackW.PDB to conserve space
-	-if not exist $(GAMEDIR)\defaults.nh copy $(MSWSYS)\defaults.nh   $(GAMEDIR)\defaults.nh
+	-if not exist $(GAMEDIR)\defaults.gnh copy $(MSWSYS)\defaults.gnh   $(GAMEDIR)\defaults.gnh
 	-if not exist $(GAMEDIR)\record. goto>$(GAMEDIR)\record.
 	echo install done > $@
 

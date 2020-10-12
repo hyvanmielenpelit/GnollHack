@@ -1,4 +1,4 @@
-# NetHack 3.6	Makefile.MSC	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.21 $
+# GnollHack 4.0	Makefile.MSC	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.21 $
 #	Copyright (c) NetHack PC Development Team 1997 - 2012.
 #	PC NetHack 3.4x Makefile for MSC V1.52c (16 bit compiler)
 #
@@ -405,7 +405,7 @@ $(O)install.tag: 	$(DAT)\data	$(DAT)\rumors	 $(DAT)\dungeon \
 	if exist $(DAT)\symbols copy $(DAT)\symbols $(GAMEDIR)
 	copy $(SSHR)\termcap	  $(GAMEDIR)
 	copy *.tib                $(GAMEDIR)
-	copy $(SSHR)\NetHack.cnf  $(GAMEDIR)\defaults.nh
+	copy $(SSHR)\GnollHack.cnf  $(GAMEDIR)\defaults.gnh
 	copy $(MSYS)\NHAccess.nh  $(GAMEDIR)
 	copy $(U)recover.exe          $(GAMEDIR)
 	if exist $(DOC)\guideb*.txt copy $(DOC)\guideb*.txt $(GAMEDIR)

@@ -1,6 +1,6 @@
 /*	SCCS Id: @(#)qt_clust.cpp	3.4	1999/11/19	*/
 /* Copyright (c) Warwick Allison, 1999. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 #include "qt4clust.h"
 
 static void include(QRect& r, const QRect& rect)

@@ -1,7 +1,7 @@
-/* NetHack 3.6	gnmap.c	$NHDT-Date: 1432512806 2015/05/25 00:13:26 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	gnmap.c	$NHDT-Date: 1432512806 2015/05/25 00:13:26 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (C) 1998 by Erik Andersen <andersee@debian.org> */
 /* Copyright (C) 1998 by Anthony Taylor <tonyt@ptialaska.net> */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "gnmap.h"
 #include "gnglyph.h"

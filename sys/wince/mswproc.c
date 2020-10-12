@@ -1,6 +1,6 @@
-/* NetHack 3.6	mswproc.c	$NHDT-Date: 1433806606 2015/06/08 23:36:46 $  $NHDT-Branch: master $:$NHDT-Revision: 1.60 $ */
+/* GnollHack 4.0	mswproc.c	$NHDT-Date: 1433806606 2015/06/08 23:36:46 $  $NHDT-Branch: master $:$NHDT-Revision: 1.60 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file implements the interface between the window port specific

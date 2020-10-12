@@ -1,7 +1,7 @@
-/* NetHack 3.6	unixconf.h	$NHDT-Date: 1555361298 2019/04/15 20:48:18 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.42 $ */
+/* GnollHack 4.0	unixconf.h	$NHDT-Date: 1555361298 2019/04/15 20:48:18 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.42 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifdef UNIX
 #ifndef UNIXCONF_H

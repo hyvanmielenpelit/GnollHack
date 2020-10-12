@@ -1,6 +1,6 @@
 #	NetHack Makefile.
 # Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1991,1992,1993,1996.
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 ###
 ### INTRODUCTION
@@ -512,7 +512,7 @@ INSTDUNGEONFILES1= \
 	$(SLIB)tarrasque.lev $(SLIB)mainfill.lev $(SLIB)hellfill.lev \
 	$(XDFILES)
 
-INSTDUNGEONFILES= $(NETHACK)NetHack.cnf $(INSTDUNGEONFILES1)
+INSTDUNGEONFILES= $(NETHACK)GnollHack.cnf $(INSTDUNGEONFILES1)
 
 
 INSTDATAFILES= \
@@ -1295,9 +1295,9 @@ $(NETHACK)record:
 $(SLIB)wizhelp: $(DAT)wizhelp
 	copy $(DAT)wizhelp $@
 
-# Create the directories here because NetHack.cnf puts them there by default
-$(NETHACK)NetHack.cnf:  $(AMI)NetHack.cnf
-	copy $(AMI)NetHack.cnf $@
+# Create the directories here because GnollHack.cnf puts them there by default
+$(NETHACK)GnollHack.cnf:  $(AMI)GnollHack.cnf
+	copy $(AMI)GnollHack.cnf $@
 	-makedir $(NETHACK)save
 	-makedir $(NETHACK)levels
 

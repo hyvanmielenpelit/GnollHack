@@ -1,7 +1,7 @@
-/* NetHack 3.6	winfuncs.c	$NHDT-Date: 1553895320 2019/03/29 21:35:20 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.16 $ */
+/* GnollHack 4.0	winfuncs.c	$NHDT-Date: 1553895320 2019/03/29 21:35:20 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.16 $ */
 /* Copyright (c) Gregg Wonderly, Naperville, Illinois,  1991,1992,1993,1996.
  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "NH:sys/amiga/windefs.h"
 #include "NH:sys/amiga/winext.h"

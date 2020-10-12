@@ -1,6 +1,6 @@
-/* NetHack 3.6	cvtsnd.c	$NHDT-Date: 1432512794 2015/05/25 00:13:14 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
+/* GnollHack 4.0	cvtsnd.c	$NHDT-Date: 1432512794 2015/05/25 00:13:14 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
 /* 	Copyright (c) 1995, Andrew Church, Olney, Maryland        */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include <stdio.h>
 #include <stdlib.h>

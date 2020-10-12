@@ -1,6 +1,6 @@
-/* NetHack 3.6	msdos.c	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
+/* GnollHack 4.0	msdos.c	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.11 $ */
 /* Copyright (c) NetHack PC Development Team 1990 */
-/* NetHack may be freely redistributed.  See license for details.         */
+/* GnollHack may be freely redistributed.  See license for details.         */
 
 /*
  *  MSDOS system functions.

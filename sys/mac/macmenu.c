@@ -1,6 +1,6 @@
-/* NetHack 3.6	macmenu.c	$NHDT-Date: 1432512797 2015/05/25 00:13:17 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
+/* GnollHack 4.0	macmenu.c	$NHDT-Date: 1432512797 2015/05/25 00:13:17 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $ */
 /*      Copyright (c) Macintosh NetHack Port Team, 1993.          */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /****************************************\
  * Extended Macintosh menu support

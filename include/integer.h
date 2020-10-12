@@ -1,6 +1,6 @@
-/* NetHack 3.6	integer.h	$NHDT-Date: 1551901047 2019/03/06 19:37:27 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.7 $ */
+/* GnollHack 4.0	integer.h	$NHDT-Date: 1551901047 2019/03/06 19:37:27 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.7 $ */
 /*      Copyright (c) 2016 by Michael Allison          */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* integer.h -- provide sized integer types
  *

@@ -96,7 +96,7 @@
     should have been made, double check with Makefile.dat.
 
 10. Go to the src\atari directory.  Copy atari.cnf to your game directory
-    as NetHack.cnf. Edit it to reflect your particular setup and personal
+    as GnollHack.cnf. Edit it to reflect your particular setup and personal
     preferences, following the comments.
 
     If you compiled in the TERMLIB feature, also move the "termcap" file to

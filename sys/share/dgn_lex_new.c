@@ -483,10 +483,10 @@ char *yytext;
 #line 1 "dgn_comp.l"
 #define INITIAL 0
 #line 2 "dgn_comp.l"
-/* NetHack 3.6  dgn_comp.l	$NHDT-Date: 1455415007 2016/02/14 01:56:47 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.13 $ */
+/* GnollHack 4.0  dgn_comp.l	$NHDT-Date: 1455415007 2016/02/14 01:56:47 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.13 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
 /*	Copyright (c) 1990 by M. Stephenson	     */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #define DGN_COMP
 

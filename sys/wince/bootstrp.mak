@@ -1,4 +1,4 @@
-# NetHack 3.6	bootstrp.mak	$NHDT-Date: 1432512801 2015/05/25 00:13:21 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $
+# GnollHack 4.0	bootstrp.mak	$NHDT-Date: 1432512801 2015/05/25 00:13:21 $  $NHDT-Branch: master $:$NHDT-Revision: 1.13 $
 #       Copyright (c) Michael Allison
 #
 #       NetHack Windows CE bootstrap file for MS Visual C++ V6.x and 

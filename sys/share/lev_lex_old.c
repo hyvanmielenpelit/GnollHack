@@ -1024,9 +1024,9 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-/* NetHack 3.6  lev_comp.l	$NHDT-Date: 1543372935 2018/11/28 02:42:15 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
+/* GnollHack 4.0  lev_comp.l	$NHDT-Date: 1543372935 2018/11/28 02:42:15 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.29 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #define LEV_LEX_C
 

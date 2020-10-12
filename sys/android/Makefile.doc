@@ -1,5 +1,5 @@
 #	NetHack Makefile.
-# NetHack 3.6  Makefile.doc	$NHDT-Date: 1432512789 2015/05/25 00:13:09 $  $NHDT-Branch: master $:$NHDT-Revision: 1.14 $
+# GnollHack 4.0  Makefile.doc	$NHDT-Date: 1432512789 2015/05/25 00:13:09 $  $NHDT-Branch: master $:$NHDT-Revision: 1.14 $
 
 # Root of source tree:
 NHSROOT=..

@@ -1,6 +1,6 @@
-/* NetHack 3.6	amitty.c	$NHDT-Date: 1432512795 2015/05/25 00:13:15 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
+/* GnollHack 4.0	amitty.c	$NHDT-Date: 1432512795 2015/05/25 00:13:15 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
 /*    Copyright (c) Kenneth Lorber, Bethesda, Maryland 1993,1996  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* TTY-specific code for the Amiga
  * This is still experimental.

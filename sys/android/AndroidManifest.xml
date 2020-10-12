@@ -19,7 +19,7 @@
 		android:allowBackup="true">
 		<activity
 			android:name="com.tbd.forkfront.ForkFront"
-			android:label="NetHack"
+			android:label="GnollHack"
 			android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
 			android:launchMode="singleTask"
 			android:configChanges="mcc|mnc|locale|keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout|fontScale">

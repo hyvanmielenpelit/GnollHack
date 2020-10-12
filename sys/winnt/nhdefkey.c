@@ -8,10 +8,10 @@
  * Alternative keystroke handlers can be built using the
  * entry points in this file as a template.
  *
- * Use the defaults.nh "altkeyhandler" option to set a
+ * Use the defaults.gnh "altkeyhandler" option to set a
  * different dll name (without the ".DLL" extension) to
  * get different processing. Ensure that the dll referenced
- * in defaults.nh exists in the same directory as GnollHack in
+ * in defaults.gnh exists in the same directory as GnollHack in
  * order for it to load successfully.
  *
  */

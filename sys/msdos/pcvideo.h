@@ -1,4 +1,4 @@
-/* NetHack 3.6	pcvideo.h	$NHDT-Date: 1457207040 2016/03/05 19:44:00 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.9 $ */
+/* GnollHack 4.0	pcvideo.h	$NHDT-Date: 1457207040 2016/03/05 19:44:00 $  $NHDT-Branch: chasonr $:$NHDT-Revision: 1.9 $ */
 /*   Copyright (c) NetHack PC Development Team 1993, 1994           */
 /*   NetHack may be freely redistributed.  See license for details. */
 /*                                                                  */
@@ -143,7 +143,7 @@ struct overview_planar_cell_struct {
  * Do not change the values below.
  * These are the color mappings defined by the particular video
  * hardware/mode.  You can rearrange the NetHack color mappings at
- * run-time via the defaults.nh "videocolors" and "videoshades"
+ * run-time via the defaults.gnh "videocolors" and "videoshades"
  * settings.
  *
  */

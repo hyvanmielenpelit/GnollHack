@@ -1,7 +1,7 @@
-/* NetHack 0.1	weapon.c	$NHDT-Date: 1548209744 2019/01/23 02:15:44 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.69 $ */
+/* GnollHack 4.0	weapon.c	$NHDT-Date: 1548209744 2019/01/23 02:15:44 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.69 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Robert Patrick Rankin, 2011. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *      This module contains code for calculation of "to hit" and damage

@@ -48,7 +48,7 @@
  * The Finnish keyboard patch
  * ==========================
  *
- * This patch adds the "subkeyvalue" option to the defaults.nh file.  The
+ * This patch adds the "subkeyvalue" option to the defaults.gnh file.  The
  * user can then add OPTIONS=sukeyvalue:171/92, for instance, to replace
  * the 171 character with 92, which is \.  This works, once properly
  * configured, but places too much burden on the user.  It also bars the

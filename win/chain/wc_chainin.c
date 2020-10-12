@@ -1,6 +1,6 @@
-/* NetHack 3.6	wc_chainin.c	$NHDT-Date: 1433806610 2015/06/08 23:36:50 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
+/* GnollHack 4.0	wc_chainin.c	$NHDT-Date: 1433806610 2015/06/08 23:36:50 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
 /* Copyright (c) Kenneth Lorber, 2012				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* -chainin is an internal processor that changes the flow from window_procs
  * to chain_procs. */

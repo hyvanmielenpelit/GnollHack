@@ -1,4 +1,4 @@
-# NetHack 3.6	Makefile.os2	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.19 $
+# GnollHack 4.0	Makefile.os2	$NHDT-Date: 1432512793 2015/05/25 00:13:13 $  $NHDT-Branch: master $:$NHDT-Revision: 1.19 $
 #	OS/2 NetHack 3.6 Makefile for OS/2 versions 1.x and 2.x
 #	Copyright (C) 1990, 1991, 1992, 1993, 1996 Timo Hakulinen
 #
@@ -1255,7 +1255,7 @@ $(OBJ)\wintty.o  : $(WIN)\$(CB) $(HACK_H) $(INCL)\tcap.h $(INCL)\date.h
 
 dat :	spec_lev help_fil $(GAMEDIR)\dungeon $(GAMEDIR)\data $(GAMEDIR)\rumors \
 	$(GAMEDIR)\oracles $(GAMEDIR)\quest.dat	$(GAMEDIR)\$(GAME).ico \
-	$(GAMEDIR)\$(GAME).cmd $(GAMEDIR)\nethack.cnf $(GAMEDIR)\nhdat \
+	$(GAMEDIR)\$(GAME).cmd $(GAMEDIR)\gnollhack.cnf $(GAMEDIR)\nhdat \
 	$(WINX11VARDAT)
 
 help_fil : $(GAMEDIR)\cmdhelp $(GAMEDIR)\help $(GAMEDIR)\hh $(GAMEDIR)\history \
@@ -1488,8 +1488,8 @@ cmd_act :
 #	NetHack configuration file.  Will not overwrite an existing file.
 #
 
-$(GAMEDIR)\nethack.cnf :
-	$(CP) $(SSYS)\nethack.cnf $(GAMEDIR)
+$(GAMEDIR)\gnollhack.cnf :
+	$(CP) $(SSYS)\gnollhack.cnf $(GAMEDIR)
 
 #
 #	Documentation.

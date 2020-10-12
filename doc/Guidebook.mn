@@ -2601,7 +2601,7 @@ for system administrators.
 Using a configuration file
 .pg
 .\" hw: don't hyphenate file names
-.hw .nethackrc defaults.nh nethack.exe nethackW.exe
+.hw .gnollhackrc defaults.gnh nethack.exe nethackW.exe
 The default name of the configuration file varies on different
 operating systems.
 On MS-DOS and Windows, it is \(lqdefaults.nh\(rq
@@ -2609,7 +2609,7 @@ in the same folder as nethack.exe or nethackW.exe.
 On
 .UX ,
 Linux,
-and Mac OS X it is \(lq.nethackrc\(rq in the user's home directory.
+and Mac OS X it is \(lq.gnollhackrc\(rq in the user's home directory.
 The file may not exist, but it is a normal ASCII text file and
 can be created with any text editor.
 .pg

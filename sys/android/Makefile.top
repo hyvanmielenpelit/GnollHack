@@ -1,5 +1,5 @@
 #	NetHack Makefile.
-# NetHack 3.6  Makefile.top	$NHDT-Date: 1447844578 2015/11/18 11:02:58 $  $NHDT-Branch: master $:$NHDT-Revision: 1.32 $
+# GnollHack 4.0  Makefile.top	$NHDT-Date: 1447844578 2015/11/18 11:02:58 $  $NHDT-Branch: master $:$NHDT-Revision: 1.32 $
 
 # Root of source tree:
 NHSROOT=.
@@ -275,7 +275,7 @@ install: rootcheck $(GAME) recover $(VARDAT) dungeon spec_levs
 #	chmod $(VARDIRPERM) $(VARDIR) $(VARDIR)/save
 # set up the game files
 	( $(MAKE) dofiles )
-	( cd $(INSTDIR) ; cp ../../defaults.nh ./ )
+	( cd $(INSTDIR) ; cp ../../defaults.gnh ./ )
 # set up some additional files
 #	touch $(VARDIR)/perm $(VARDIR)/record $(VARDIR)/logfile $(VARDIR)/xlogfile
 #	-( cd $(VARDIR) ; $(CHOWN) $(GAMEUID) perm record logfile xlogfile ; \

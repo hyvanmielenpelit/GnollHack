@@ -1,7 +1,7 @@
-/* NetHack 3.6	amiwind.c	$NHDT-Date: 1432512794 2015/05/25 00:13:14 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	amiwind.c	$NHDT-Date: 1432512794 2015/05/25 00:13:14 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /*    Copyright (c) Olaf Seibert (KosmoSoft), 1989, 1992	  */
 /*    Copyright (c) Kenneth Lorber, Bethesda, Maryland 1993,1996  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "NH:sys/amiga/windefs.h"
 #include "NH:sys/amiga/winext.h"

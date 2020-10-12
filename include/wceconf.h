@@ -1,6 +1,6 @@
-/* NetHack 3.6	wceconf.h	$NHDT-Date: 1432512776 2015/05/25 00:12:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.22 $ */
+/* GnollHack 4.0	wceconf.h	$NHDT-Date: 1432512776 2015/05/25 00:12:56 $  $NHDT-Branch: master $:$NHDT-Revision: 1.22 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WCECONF_H
 #define WCECONF_H

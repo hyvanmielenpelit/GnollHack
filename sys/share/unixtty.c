@@ -1,7 +1,7 @@
-/* NetHack 3.6	unixtty.c	$NHDT-Date: 1548372343 2019/01/24 23:25:43 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
+/* GnollHack 4.0	unixtty.c	$NHDT-Date: 1548372343 2019/01/24 23:25:43 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Michael Allison, 2006. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /* tty.c - (Unix) version */
 

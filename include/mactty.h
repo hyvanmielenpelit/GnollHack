@@ -1,6 +1,6 @@
-/* NetHack 3.6	mactty.h	$NHDT-Date: 1447755970 2015/11/17 10:26:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0	mactty.h	$NHDT-Date: 1447755970 2015/11/17 10:26:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) Jon W{tte 1993.                                        */
-/* NetHack may be freely redistributed.  See license for details.       */
+/* GnollHack may be freely redistributed.  See license for details.       */
 
 /*
  * This header is the supported external interface for the "tty" window

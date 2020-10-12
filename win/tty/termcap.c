@@ -1,7 +1,7 @@
-/* NetHack 3.6	termcap.c	$NHDT-Date: 1554841008 2019/04/09 20:16:48 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $ */
+/* GnollHack 4.0	termcap.c	$NHDT-Date: 1554841008 2019/04/09 20:16:48 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.30 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Pasi Kallinen, 2018. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

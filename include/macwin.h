@@ -1,7 +1,7 @@
-/* NetHack 3.6	macwin.h	$NHDT-Date: 1447755970 2015/11/17 10:26:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	macwin.h	$NHDT-Date: 1447755970 2015/11/17 10:26:10 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /*-Copyright (c) Kevin Hugo, 2003. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef MACWIN_H
 #define MACWIN_H

@@ -4,7 +4,7 @@
 	<string name="oldActivityName">NetHack</string>
 	<string name="nativeDataDir">nethackdir</string>
 	<string name="libraryName">nethack</string>
-	<string name="defaultsFile">defaults.nh</string>
+	<string name="defaultsFile">defaults.gnh</string>
 	<string name="defaultCmdPanel">menu ... # 20s . : ; , e d r z Z q t f w x i E Q P R W T o ^d ^p a A ^t D F p ^x ^o ?</string>
 	<bool name="useCP437Decoder">true</bool>
 	<bool name="hearseAvailable">true</bool>

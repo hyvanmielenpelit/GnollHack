@@ -1,6 +1,6 @@
-/* NetHack 3.6	def_os2.h	$NHDT-Date: 1432512782 2015/05/25 00:13:02 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0	def_os2.h	$NHDT-Date: 1432512782 2015/05/25 00:13:02 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) Timo Hakulinen, 1990, 1991, 1992, 1993.	  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *	Only a small portion of all OS/2 defines are needed, so the

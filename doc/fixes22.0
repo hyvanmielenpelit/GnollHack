@@ -7,7 +7,7 @@ Guidebook	A file for preparation using the "mn" macros supplied with
 		the 2.11 news release, as well as an ascii version of the
 		same. 
 
-NetHack.cnf	Sample configuration file for the PC. (creps@silver)
+GnollHack.cnf	Sample configuration file for the PC. (creps@silver)
 
 Makefiles	Corrected problem in which the linking was done on build and
 (unix/xenix)	on install. (Contributed by Janet Walz - walz@mimsy)
@@ -247,7 +247,7 @@ New Features
 	note: because of past problems, I ran the formatted version
 	through "col -b" before passing it on to remove ^H's, etc.  -br]
 
-	- A copy of "HACK.CNF" which has been renamed "NetHack.cnf" was
+	- A copy of "HACK.CNF" which has been renamed "GnollHack.cnf" was
 	supplied by Steve Creps. The file decl.c has been updated to reflect
 	this change.
 

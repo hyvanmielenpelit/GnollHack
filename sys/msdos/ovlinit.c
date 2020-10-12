@@ -1,6 +1,6 @@
-/* NetHack 3.6	ovlinit.c	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0	ovlinit.c	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) NetHack PC Development Team 1995                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include <dos.h>

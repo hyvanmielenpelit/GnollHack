@@ -1,6 +1,6 @@
-/* NetHack 3.6	winmap.c	$NHDT-Date: 1455389908 2016/02/13 18:58:28 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.29 $ */
+/* GnollHack 4.0	winmap.c	$NHDT-Date: 1455389908 2016/02/13 18:58:28 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.29 $ */
 /* Copyright (c) Dean Luick, 1992                                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * This file contains:

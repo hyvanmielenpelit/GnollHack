@@ -1,6 +1,6 @@
-# NetHack 3.6	Makefile.BC	$NHDT-Date: 1432512791 2015/05/25 00:13:11 $  $NHDT-Branch: master $:$NHDT-Revision: 1.17 $
+# GnollHack 4.0	Makefile.BC	$NHDT-Date: 1432512791 2015/05/25 00:13:11 $  $NHDT-Branch: master $:$NHDT-Revision: 1.17 $
 # Copyright (c) Yitzhak Sapir, 1999-2006.
-# NetHack may be freely distributed.  See license for details.
+# GnollHack may be freely distributed.  See license for details.
 #
 
 # PC NetHack 3.6 Makefile for Borland C++ 3.1 and 4.5.
@@ -162,7 +162,7 @@ SCHEMA	= 2
 #	VGA.
 #
 #	Note:  You can build NetHack with tile support and then choose
-#	whether to use it or not at runtime via the defaults.nh file option
+#	whether to use it or not at runtime via the defaults.gnh file option
 #	"video".
 #
 
@@ -954,7 +954,7 @@ install.tag: 	$(DAT)\data	$(DAT)\rumors	$(DAT)\dungeon \
 	if exist $(DOC)\guideb*.txt copy $(DOC)\guideb*.txt  $(GAMEDIR)
 	if exist $(DOC)\nethack.txt copy $(DOC)\nethack.txt  $(GAMEDIR)\NetHack.txt
 	if exist $(DOC)\recover.txt copy $(DOC)\recover.txt  $(GAMEDIR)
-	copy $(SYS)\NetHack.cnf   $(GAMEDIR)\defaults.nh
+	copy $(SYS)\GnollHack.cnf   $(GAMEDIR)\defaults.gnh
 	copy $(MSYS)\NHAccess.nh  $(GAMEDIR)
 	copy $(U)recover.exe  $(GAMEDIR)
 	if exist *.tib copy *.tib $(GAMEDIR)

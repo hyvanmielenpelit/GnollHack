@@ -1,6 +1,6 @@
-/* NetHack 3.6	vmsmail.c	$NHDT-Date: 1449801741 2015/12/11 02:42:21 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	vmsmail.c	$NHDT-Date: 1449801741 2015/12/11 02:42:21 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Robert Patrick Rankin, 1991.                     */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "config.h"
 #include "mail.h"

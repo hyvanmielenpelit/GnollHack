@@ -1,6 +1,6 @@
-/* NetHack 3.6	wintext.c	$NHDT-Date: 1552422654 2019/03/12 20:30:54 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.18 $ */
+/* GnollHack 4.0	wintext.c	$NHDT-Date: 1552422654 2019/03/12 20:30:54 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.18 $ */
 /* Copyright (c) Dean Luick, 1992				  */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * File for dealing with text windows.

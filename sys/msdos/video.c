@@ -1,4 +1,4 @@
-/* NetHack 3.6	video.c	$NHDT-Date: 1554215931 2019/04/02 14:38:51 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0	video.c	$NHDT-Date: 1554215931 2019/04/02 14:38:51 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.12 $ */
 /*   Copyright (c) NetHack PC Development Team 1993, 1994, 2001	    */
 /*   NetHack may be freely redistributed.  See license for details. */
 /*								    */
@@ -38,24 +38,24 @@
  *
  * Assumptions (94/04/23):
  *
- *   - Supported defaults.nh file video options:
+ *   - Supported defaults.gnh file video options:
  *
- *          If OPTIONS=video:autodetect is defined in defaults.nh then
+ *          If OPTIONS=video:autodetect is defined in defaults.gnh then
  *          check for a VGA video adapter.  If one is detected, then
  *          use the VGA code, otherwise resort to using the 'standard'
  *          video BIOS routines.
  *
- *          If OPTIONS=video:vga is defined in defaults.nh, then use
+ *          If OPTIONS=video:vga is defined in defaults.gnh, then use
  *          the VGA code.
  *
- *          If OPTIONS=video:default is defined in defaults.nh use the
+ *          If OPTIONS=video:default is defined in defaults.gnh use the
  *          'standard' video BIOS routines (in the overlaid version),
  *          or DJGPPFAST routines (under djgpp). This is equivalent to
  *          having no OPTIONS=video:xxxx entry at all.
  *
  * Notes (94/04/23):
  *
- *   - The handler for defaults.nh file entry:
+ *   - The handler for defaults.gnh file entry:
  *
  *           OPTIONS=video:xxxxx
  *
@@ -847,7 +847,7 @@ assign_videoshades(char *choiceptr)
 }
 
 /*
- * Process defaults.nh OPTIONS=videocolors:xxx
+ * Process defaults.gnh OPTIONS=videocolors:xxx
  * Left to right assignments for:
  *	red green brown blue magenta cyan orange br.green yellow
  *	br.blue br.mag br.cyan
@@ -860,7 +860,7 @@ assign_videocolors(char *colorvals)
     int i, icolor;
     uchar *tmpcolor;
 
-    init_ttycolor(); /* in case defaults.nh entry wasn't complete */
+    init_ttycolor(); /* in case defaults.gnh entry wasn't complete */
     i = strlen(colorvals);
     tmpcolor = (uchar *) alloc(i);
     (void) convert_uchars(colorvals, tmpcolor, i);
@@ -926,7 +926,7 @@ int size;
 #endif /* TEXTCOLOR */
 
 /*
- * Process defaults.nh OPTIONS=video:xxxx
+ * Process defaults.gnh OPTIONS=video:xxxx
  *
  *    where (current) legitimate values are:
  *

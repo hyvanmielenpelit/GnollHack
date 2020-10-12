@@ -1,6 +1,6 @@
-/* NetHack 3.6	pcsys.c	$NHDT-Date: 1524689500 2018/04/25 20:51:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.31 $ */
+/* GnollHack 4.0	pcsys.c	$NHDT-Date: 1524689500 2018/04/25 20:51:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.31 $ */
 /*      Copyright (c) 2012 by Michael Allison              */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *  System related functions for MSDOS, OS/2, TOS

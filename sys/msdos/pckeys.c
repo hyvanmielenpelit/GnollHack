@@ -1,6 +1,6 @@
-/* NetHack 3.6	pckeys.c	$NHDT-Date: 1501465420 2017/07/31 01:43:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.12 $ */
+/* GnollHack 4.0	pckeys.c	$NHDT-Date: 1501465420 2017/07/31 01:43:40 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.12 $ */
 /* Copyright (c) NetHack PC Development Team 1996                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *  MSDOS tile-specific key handling.

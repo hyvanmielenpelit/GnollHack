@@ -1,6 +1,6 @@
-/* NetHack 3.6	wingem.c	$NHDT-Date: 1450453304 2015/12/18 15:41:44 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.26 $ */
+/* GnollHack 4.0	wingem.c	$NHDT-Date: 1450453304 2015/12/18 15:41:44 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.26 $ */
 /* Copyright (c) Christian Bressler, 1999 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "func_tab.h"

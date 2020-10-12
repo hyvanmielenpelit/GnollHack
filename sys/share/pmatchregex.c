@@ -1,6 +1,6 @@
-/* NetHack 3.6  pmatchregex.c	$NHDT-Date: 1544482890 2018/12/10 23:01:30 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.2 $ */
+/* GnollHack 4.0  pmatchregex.c	$NHDT-Date: 1544482890 2018/12/10 23:01:30 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.2 $ */
 /* Copyright (c) Sean Hunt  2015.                                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 

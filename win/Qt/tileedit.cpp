@@ -1,6 +1,6 @@
-/* NetHack 3.6	tileedit.cpp	$NHDT-Date: 1524684508 2018/04/25 19:28:28 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	tileedit.cpp	$NHDT-Date: 1524684508 2018/04/25 19:28:28 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Warwick Allison, 1999. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 /*
 Build this little utility program if you want to use it to edit the tile
 files.  Move tileedit.cpp and tileedit.h to ../../util, add the

@@ -1,7 +1,7 @@
 %{
-/* NetHack 3.6  lev_comp.l	$NHDT-Date: 1543371690 2018/11/28 02:21:30 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
+/* GnollHack 4.0  lev_comp.l	$NHDT-Date: 1543371690 2018/11/28 02:21:30 $  $NHDT-Branch: NetHack-3.6.2-beta01 $:$NHDT-Revision: 1.25 $ */
 /*	Copyright (c) 1989 by Jean-Christophe Collet */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #define LEV_LEX_C
 

@@ -1,4 +1,4 @@
-/* NetHack 3.6	sound.c	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0	sound.c	$NHDT-Date: 1432512792 2015/05/25 00:13:12 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /*   Copyright (c) NetHack PC Development Team 1993,1995            */
 /*   NetHack may be freely redistributed.  See license for details. */
 /*                                                                  */

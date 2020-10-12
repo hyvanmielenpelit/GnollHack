@@ -1,6 +1,6 @@
-/* NetHack 3.6	winMS.h	$NHDT-Date: 1433806609 2015/06/08 23:36:49 $  $NHDT-Branch: master $:$NHDT-Revision: 1.29 $ */
+/* GnollHack 4.0	winMS.h	$NHDT-Date: 1433806609 2015/06/08 23:36:49 $  $NHDT-Branch: master $:$NHDT-Revision: 1.29 $ */
 /* Copyright (C) 2001 by Alex Kompel 	 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WINMS_H
 #define WINMS_H

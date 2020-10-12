@@ -1971,7 +1971,7 @@ const char *default_configfile =
     "GnollHack Defaults";
 #else
 #if defined(MSDOS) || defined(WIN32) || defined(ANDROID)
-    "defaults.nh";
+    "defaults.gnh";
 #else
     "GnollHack.cnf";
 #endif
@@ -1985,9 +1985,9 @@ char configfile[BUFSZ];
 /* conflict with speed-dial under windows
  * for XXX.cnf file so support of GnollHack.cnf
  * is for backward compatibility only.
- * Preferred name (and first tried) is now defaults.nh but
+ * Preferred name (and first tried) is now defaults.gnh but
  * the game will try the old name if there
- * is no defaults.nh.
+ * is no defaults.gnh.
  */
 const char *backward_compat_configfile = "GnollHack.cnf";
 #endif

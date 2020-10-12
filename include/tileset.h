@@ -1,6 +1,6 @@
-/* NetHack 3.6    tileset.h    $NHDT-Date: 1457207052 2016/03/05 19:44:12 $ $NHDT-Branch: chasonr $:$NHDT-Revision: 1.0 $ */
+/* GnollHack 4.0    tileset.h    $NHDT-Date: 1457207052 2016/03/05 19:44:12 $ $NHDT-Branch: chasonr $:$NHDT-Revision: 1.0 $ */
 /* Copyright (c) Ray Chason, 2016. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef TILESET_H
 #define TILESET_H

@@ -1,6 +1,6 @@
-/* NetHack 3.6	winX.h	$NHDT-Date: 1457079196 2016/03/04 08:13:16 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.23 $ */
+/* GnollHack 4.0	winX.h	$NHDT-Date: 1457079196 2016/03/04 08:13:16 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.23 $ */
 /* Copyright (c) Dean Luick, 1992                                 */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  * Definitions for the X11 window-port.  See doc/window.doc for details on

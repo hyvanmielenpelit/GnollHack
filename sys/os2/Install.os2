@@ -164,7 +164,7 @@
     fakewiz2.lev   fire.lev       help           hh             history
     juiblex.lev    knox.lev       license        credits        medusa-1.lev   medusa-2.lev
     minefill.lev   minend-1.lev   minend-2.lev   minetn-1.lev   minetn-2.lev
-    nethack.cmd    nethack.cnf    nethack.exe    nethack.ico    opthelp
+    nethack.cmd    gnollhack.cnf    nethack.exe    nethack.ico    opthelp
     options        oracle.lev     oracles        orcus.lev      quest.dat
     recover.exe    rumors         sanctum.lev    soko1-1.lev    soko1-2.lev
     soko2-1.lev    soko2-2.lev    soko3-1.lev    soko3-2.lev    soko4-1.lev
@@ -183,7 +183,7 @@
     are not overwritten.  Of course, old records from NetHack 3.1 and 3.2 are
     not worth keeping with 3.4, since these games are really quite different.
 
-    Edit file nethack.cnf in the game directory to reflect your particular
+    Edit file gnollhack.cnf in the game directory to reflect your particular
     setup and personal preferences, following the comments there.  More info
     about settable options can be found in the file opthelp and the guidebook.
 

@@ -1,6 +1,6 @@
-/* NetHack 3.6  mhcmd.h       $NHDT-Date: 1524689383 2018/04/25 20:49:43 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.2 $ */
+/* GnollHack 4.0  mhcmd.h       $NHDT-Date: 1524689383 2018/04/25 20:49:43 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.2 $ */
 /*      Copyright (c) 2002 by Michael Allison              */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef MSWINCMDWindow_h
 #define MSWINCMDWindow_h

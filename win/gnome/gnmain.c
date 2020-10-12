@@ -1,6 +1,6 @@
-/* NetHack 3.6	gnmain.c	$NHDT-Date: 1432512807 2015/05/25 00:13:27 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
+/* GnollHack 4.0	gnmain.c	$NHDT-Date: 1432512807 2015/05/25 00:13:27 $  $NHDT-Branch: master $:$NHDT-Revision: 1.15 $ */
 /* Copyright (C) 1998 by Erik Andersen <andersee@debian.org> */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "gnmain.h"
 #include "gnsignal.h"

@@ -1,6 +1,6 @@
-/* NetHack 3.6	bemain.c	$NHDT-Date: 1447844549 2015/11/18 11:02:29 $  $NHDT-Branch: master $:$NHDT-Revision: 1.18 $ */
+/* GnollHack 4.0	bemain.c	$NHDT-Date: 1447844549 2015/11/18 11:02:29 $  $NHDT-Branch: master $:$NHDT-Revision: 1.18 $ */
 /* Copyright (c) Dean Luick, 1996. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
 #include "dlb.h"

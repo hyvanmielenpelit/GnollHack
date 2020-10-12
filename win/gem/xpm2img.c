@@ -1,4 +1,4 @@
-/* NetHack 3.6	xpm2img.c	$NHDT-Date: 1432512809 2015/05/25 00:13:29 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
+/* GnollHack 4.0	xpm2img.c	$NHDT-Date: 1432512809 2015/05/25 00:13:29 $  $NHDT-Branch: master $:$NHDT-Revision: 1.7 $ */
 /*   Copyright (c) Christian Bressler 2002                 */
 /*   NetHack may be freely redistributed.  See license for details. */
 /* This is mainly a reworked tile2bmp.c + xpm2iff.c -- Marvin */

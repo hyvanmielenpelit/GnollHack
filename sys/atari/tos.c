@@ -1,5 +1,5 @@
-/* NetHack 3.6	tos.c	$NHDT-Date: 1501979358 2017/08/06 00:29:18 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.8 $ */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack 4.0	tos.c	$NHDT-Date: 1501979358 2017/08/06 00:29:18 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.8 $ */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 /*
  *  TOS system functions.

@@ -49,9 +49,9 @@ DESCRIPTION
        Because the option list can be very long (particularly when  specifying
        graphics  characters),  options may also be included in a configuration
        file.  The  default  is  located  in  your  home  directory  and  named
-       .nethackrc  on Unix systems.  On other systems, the default may be dif-
-       ferent,  usually  NetHack.cnf.   On  DOS  or  Windows,  the   name   is
-       defaults.nh,  while  on  the Macintosh or BeOS, it is NetHack Defaults.
+       .gnollhackrc  on Unix systems.  On other systems, the default may be dif-
+       ferent,  usually  GnollHack.cnf.   On  DOS  or  Windows,  the   name   is
+       defaults.gnh,  while  on  the Macintosh or BeOS, it is NetHack Defaults.
        The configuration file's location may be specified by setting  NETHACK-
        OPTIONS  to a string consisting of an @ character followed by the file-
        name.
@@ -134,7 +134,7 @@ AUTHORS
 FILES
        Run-time  configuration options were discussed above and use a platform
        specific name for a file in a platform specific  location.   For  Unix,
-       the name is '.nethackrc' in the user's home directory.
+       the name is '.gnollhackrc' in the user's home directory.
 
        All   other   files   are   in   the   playground  directory,  normally
        /usr/games/lib/nethackdir.  If DLB was defined during the compile,  the
@@ -200,7 +200,7 @@ ENVIRONMENT
        NETHACKOPTIONS          String predefining several NetHack
                                options.
 
-       If  the same option is specified in both NETHACKOPTIONS and .nethackrc,
+       If  the same option is specified in both NETHACKOPTIONS and .gnollhackrc,
        the value assigned in NETHACKOPTIONS takes precedence.
 
        SHOPTYPE and SPLEVTYPE can be used in debugging (wizard) mode.

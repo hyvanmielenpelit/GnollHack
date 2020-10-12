@@ -1,6 +1,6 @@
-# NetHack 3.6  defaults.nh       $NHDT-Date: 1524689357 2018/04/25 20:49:17 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.32 $
+# GnollHack 4.0  defaults.gnh       $NHDT-Date: 1524689357 2018/04/25 20:49:17 $  $NHDT-Branch: NetHack-3.6.0 $:$NHDT-Revision: 1.32 $
 # Copyright (c) 2006 by Michael Allison
-# NetHack may be freely redistributed.  See license for details.
+# GnollHack may be freely redistributed.  See license for details.
 
 # Sample config file for win32 NetHack
 # A '#' at the beginning of a line means the rest of the line is a comment.
@@ -18,6 +18,9 @@
 # Use the IBM character set rather than just plain ascii characters
 # for tty window-port.
 OPTIONS=symset:IBMGraphics_2,roguesymset:RogueEpyx,statuslines:4
+#OPTIONS=tile_file:gnollhack_64x96_custom.png
+#OPTIONS=master_bank_file:Custom_Master.bank
+#OPTIONS=master_strings_bank_file:Custom_Master.strings.bank
 
 # Here is a suggested symbol set from Michael Feir, 
 # for use by blind NetHack players

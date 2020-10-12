@@ -1,7 +1,7 @@
-/* NetHack 3.6	winami.h	$NHDT-Date: 1432512780 2015/05/25 00:13:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
+/* GnollHack 4.0	winami.h	$NHDT-Date: 1432512780 2015/05/25 00:13:00 $  $NHDT-Branch: master $:$NHDT-Revision: 1.8 $ */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1991. */
 /* Copyright (c) Gregg Wonderly, Naperville, Illinois, 1992, 1993. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #ifndef WINAMI_H
 #define WINAMI_H

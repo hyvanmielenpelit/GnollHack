@@ -1,6 +1,6 @@
-/* NetHack 3.6 wincurs.h */
+/* GnollHack 4.0 wincurs.h */
 /* Copyright (c) Karl Garrison, 2010. */
-/* NetHack may be freely redistributed.  See license for details. */
+/* GnollHack may be freely redistributed.  See license for details. */
 
 #include "layer.h"
 #include "obj.h"

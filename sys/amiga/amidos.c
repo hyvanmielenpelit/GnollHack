@@ -1,7 +1,7 @@
-/* NetHack 3.6	amidos.c	$NHDT-Date: 1432512796 2015/05/25 00:13:16 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
+/* GnollHack 4.0	amidos.c	$NHDT-Date: 1432512796 2015/05/25 00:13:16 $  $NHDT-Branch: master $:$NHDT-Revision: 1.10 $ */
 /* Copyright (c) Olaf Seibert, Nijmegen, The Netherlands, 1988,1990.    */
 /* Copyright (c) Kenneth Lorber, Bethesda, Maryland, 1991,1992,1993,1996.  */
-/* NetHack may be freely redistributed.  See license for details.	*/
+/* GnollHack may be freely redistributed.  See license for details.	*/
 
 /*
  * An assortment of imitations of cheap plastic MSDOS and Unix functions.
@@ -40,7 +40,7 @@ extern struct window_procs amii_procs;
 int Enable_Abort = 0; /* for stdio package */
 #endif
 
-/* Initial path, so we can find NetHack.cnf */
+/* Initial path, so we can find GnollHack.cnf */
 char PATH[PATHLEN] = "NetHack:";
 
 static boolean record_exists(void);
