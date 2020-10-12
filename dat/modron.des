@@ -37,7 +37,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ENDMAP
 
 # Portal arrival point
-BRANCH:(15,05,15,05),(0,0,0,0)
+BRANCH:(17,04,17,04),(0,0,0,0)
 REGION:(00,00,42,17),lit,"ordinary"
 NON_DIGGABLE:(00,00,42,17)
 NON_PASSWALL:(00,00,42,17)
@@ -53,25 +53,34 @@ DOOR:closed,(30,09),subtype:door_modron
 DOOR:closed,(03,08),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:closed,(39,08),subtype:door_modron,keytype:"magic key",secret_door
 
-MONSTER:('M',"modron pentadrone"),(18,09),hostile
-MONSTER:('M',"modron pentadrone"),(24,09),hostile
+# Portal room guards
+MONSTER:('M',"modron monodrone"),(14,06),hostile,waitforu
+MONSTER:('M',"modron duodrone"),(15,06),hostile,waitforu
+MONSTER:('M',"modron monodrone"),(16,06),hostile,waitforu
+
+# Central room guard
+MONSTER:('M',"modron pentadrone"),(21,09),hostile,waitforu
 
 # Teleport down
 DOOR:locked,(27,07),subtype:door_modron,keytype:"geometric key",special_quality:4,non_passdoor
-MODRON_PORTAL:(27,05),level_teleporter,teleport_down,matching_portal,cubical,inactive
+MODRON_PORTAL:(25,04),level_teleporter,teleport_down,matching_portal,cubical,inactive
+MONSTER:('M',"modron pentadrone"),(27,05),hostile,waitforu
+MONSTER:('M',"modron monodrone"),(26,06),hostile,waitforu
+MONSTER:('M',"modron duodrone"),(27,06),hostile,waitforu
+MONSTER:('M',"modron monodrone"),(28,06),hostile,waitforu
 
 # Big room
 DOOR:locked,(21,11),subtype:door_magic,keytype:"magic key"
-MONSTER:('M',"modron quadrone"),(26,12),hostile
-MONSTER:('M',"modron quadrone"),(26,14),hostile
-MONSTER:('M',"modron quadrone"),(16,12),hostile
-MONSTER:('M',"modron quadrone"),(16,14),hostile
+MONSTER:('M',"modron quadrone"),(26,12),hostile,waitforu
+MONSTER:('M',"modron quadrone"),(26,14),hostile,waitforu
+MONSTER:('M',"modron quadrone"),(16,12),hostile,waitforu
+MONSTER:('M',"modron quadrone"),(16,14),hostile,waitforu
 CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:5,(21,13),no_pickup {
         OBJECT:('/', "identify")
         OBJECT:('*', "dilithium crystal"),quantity:(1d2)
 }
 
-
+# Five quintons
 MONSTER:('M',"modron quinton"),(21,04),waitforu,hostile {
         OBJECT:('(', "geometric key"),special_quality:4
 }
@@ -92,8 +101,6 @@ MONSTER:('M',"modron quinton"),(31,12),waitforu,hostile {
     OBJECT:('=', "free action")
 }
 
-MONSTER:('M',"modron monodrone"),(17,04),hostile
-MONSTER:('M',"modron duodrone"),(17,05),hostile
 
 #############
 #
@@ -148,6 +155,7 @@ DOOR:locked,(27,10),subtype:door_magic,keytype:"magic key"
 
 ALTAR:(24,10),neutral,altar
 
+# Four quartons
 MONSTER:('M',"modron quarton"),(08,07),waitforu,hostile {
     OBJECT:('(', "geometric key"),special_quality:3
     OBJECT:('*', "dilithium crystal"),quantity:(1d2)
@@ -231,6 +239,7 @@ DOOR:closed,(28,06),subtype:door_modron
 
 DOOR:locked,(28,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
 
+# Three tertians and other modrons
 MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile {
         OBJECT:('8', "wings of flying")
 }
@@ -353,6 +362,7 @@ MONSTER:('M',"modron pentadrone"),(21,07),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(21,08),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(21,09),waitforu,hostile
 
+# Two secundi
 MONSTER:('M',"modron secundus"),(65,08),waitforu,hostile {
         OBJECT:('?', "charging"),quantity:(1+(1d2)),blessed
         OBJECT:('9', "modronite sphere")
@@ -468,7 +478,7 @@ MONSTER:('M',"modron pentadrone"),(25,06),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(25,07),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(25,08),waitforu,hostile
 
-# Local resident
+# Modron Primus, The One and The Prime
 MONSTER:('M',"Modron Primus"),(16,07),waitforu,hostile {
         OBJECT:('(', "geometric key"),special_quality:8
         OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
