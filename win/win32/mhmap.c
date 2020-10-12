@@ -2042,6 +2042,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if ((isyou && u.utrap) || (!isyou && mtmp->mtrapped))
                                         display_this_status_mark = TRUE;
                                     break;
+                                case STATUS_MARK_USTUCK:
+                                    if (mtmp == u.ustuck && !u.uswallow)
+                                        display_this_status_mark = TRUE;
+                                    break;
                                 default:
                                     break;
                                 }

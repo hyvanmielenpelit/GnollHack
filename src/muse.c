@@ -1174,6 +1174,8 @@ try_again:
     case 5:
         return (mtmp->data != &mons[PM_PESTILENCE]) ? (rn2(3) ? POT_GREATER_HEALING : POT_FULL_HEALING) : POT_SICKNESS;
     case 7:
+        if (level.flags.hardfloor && ++trycnt < 4)
+            goto try_again;
         if (is_floater(pm) || mtmp->isshk || mtmp->isgd || mtmp->ispriest || mtmp->issmith || mtmp->isnpc)
             return 0;
         else
