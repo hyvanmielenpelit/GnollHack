@@ -289,11 +289,12 @@ register struct monst *priest;
 
 /* exclusively for mktemple() */
 void
-priestini(lvl, sroom, sx, sy, sanctum)
+priestini(lvl, sroom, sx, sy, sanctum, mtype)
 d_level *lvl;
 struct mkroom *sroom;
 int sx, sy;
 boolean sanctum; /* is it the seat of the high priest? */
+int mtype;
 {
     struct monst *priest;
     struct obj *otmp;
@@ -302,8 +303,10 @@ boolean sanctum; /* is it the seat of the high priest? */
     if (MON_AT(sx + 1, sy))
         (void) rloc(m_at(sx + 1, sy), FALSE); /* insurance */
 
-    int montype = sanctum ? PM_HIGH_PRIEST : In_modron_level(&u.uz) ? PM_MONK : PM_ALIGNED_PRIEST;
+    int montype = mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE) ? mtype : sanctum ? PM_HIGH_PRIEST : In_modron_level(&u.uz) ? PM_MONK : PM_ALIGNED_PRIEST;
     priest = makemon(&mons[montype], sx + 1, sy, MM_EPRI);
+    if(!priest)
+        priest = makemon(&mons[sanctum ? PM_HIGH_PRIEST : PM_ALIGNED_PRIEST], sx + 1, sy, MM_EPRI);
 
     if (priest) {
         EPRI(priest)->shroom = (schar) ((sroom - rooms) + ROOMOFFSET);
@@ -410,11 +413,12 @@ register struct monst* smith;
 
 /* exclusively for mksmithy() */
 void
-smithini(lvl, sroom, sx, sy, smithtype)
+smithini(lvl, sroom, sx, sy, smithtype, mtype)
 d_level* lvl;
 struct mkroom* sroom;
 int sx, sy;
 int smithtype;
+int mtype;
 {
     struct monst* smith;
     int smith_loc_x = sx + 1;
@@ -443,8 +447,10 @@ int smithtype;
     if (MON_AT(smith_loc_x, smith_loc_y))
         (void)rloc(m_at(smith_loc_x, smith_loc_y), FALSE); /* insurance */
 
-    int smith_montype = Is_yeenoghu_level(&u.uz) ? PM_FLIND_LORD : In_modron_level(&u.uz) ? PM_MONK : PM_SMITH;
+    int smith_montype = mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE) ? mtype : Is_yeenoghu_level(&u.uz) ? PM_FLIND_LORD : In_modron_level(&u.uz) ? PM_MONK : PM_SMITH;
     smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI);
+    if(!smith)
+        smith = makemon(&mons[PM_SMITH], smith_loc_x, smith_loc_y, MM_ESMI); /* Fallback */
 
     if (smith) 
     {

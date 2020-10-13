@@ -471,17 +471,20 @@ typedef struct {
     xchar x, y;
     aligntyp align;
     xchar shrine;
+    int mtype;
 } altar;
 
 typedef struct {
     packed_coord coord;
     xchar x, y;
+    int mtype;
 } anvil;
 
 typedef struct {
     packed_coord coord;
     xchar x, y;
     uchar typ;
+    int mtype;
 } npc_create_info;
 
 
@@ -497,7 +500,7 @@ typedef struct {
 
 typedef struct {
     xchar x1, y1, x2, y2;
-    xchar rtype, rlit, rirreg, floormaintype, floortype;
+    xchar rtype, rlit, rirreg, floormaintype, floortype, mtype;
 } region;
 
 typedef struct {
@@ -536,7 +539,7 @@ typedef struct _room {
     Str_or_Len parent;
     xchar x, y, w, h;
     xchar xalign, yalign;
-    xchar rtype, chance, rlit, filled, joined, floormaintype, floortype;
+    xchar rtype, chance, rlit, filled, joined, floormaintype, floortype, mtype;
 } room;
 
 typedef struct {

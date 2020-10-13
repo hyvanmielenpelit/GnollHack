@@ -2470,7 +2470,7 @@ struct mkroom *croom;
         return;
 
     if (a->shrine) { /* Is it a shrine  or sanctum? */
-        priestini(&u.uz, croom, x, y, (a->shrine > 1));
+        priestini(&u.uz, croom, x, y, (a->shrine > 1), a->mtype);
         levl[x][y].altarmask |= AM_SHRINE;
         level.flags.has_temple = TRUE;
     }
@@ -2522,7 +2522,7 @@ struct mkroom* croom;
     if (!croom_is_smithy)
         return;
 
-    smithini(&u.uz, croom, x, y, 0);
+    smithini(&u.uz, croom, x, y, 0, a->mtype);
     level.flags.has_smithy = TRUE;
 }
 
@@ -2555,7 +2555,7 @@ struct mkroom* croom;
         return;
 
     int usedtyp = (a->typ >= 0 && a->typ < MAX_NPC_SUBTYPES ? a->typ : rn2(MAX_NPC_SUBTYPES));
-    npcini(&u.uz, croom, x, y, usedtyp);
+    npcini(&u.uz, croom, x, y, usedtyp, a->mtype);
     level.flags.has_npc_room = TRUE;
 }
 
@@ -4194,12 +4194,12 @@ struct sp_coder *coder;
 		return;
     } else {
         struct opvar *rflags, *h, *w, *yalign, *xalign, *y, *x, *rlit,
-            *chance, *rtype, *floortype, *floormaintype;
+            *chance, *rtype, *floortype, *floormaintype, *mtype;
         room tmproom;
         struct mkroom *tmpcr;
 
         if (!OV_pop_i(h) || !OV_pop_i(w) || !OV_pop_i(y) || !OV_pop_i(x)
-            || !OV_pop_i(yalign) || !OV_pop_i(xalign) || !OV_pop_i(rflags) || !OV_pop_i(floormaintype) || !OV_pop_i(floortype)
+            || !OV_pop_i(yalign) || !OV_pop_i(xalign) || !OV_pop_i(rflags) || !OV_pop_i(floormaintype) || !OV_pop_i(floortype) || !OV_pop(mtype)
             || !OV_pop_i(rlit) || !OV_pop_i(chance) || !OV_pop_i(rtype))
             return;
 
@@ -4219,6 +4219,21 @@ struct sp_coder *coder;
         tmproom.joined = !(OV_i(rflags) & (1 << 2));
         tmproom.floormaintype = flmt ? flmt : ROOM;
         tmproom.floortype = flt >= 0 ? flt : 0;
+        tmproom.mtype = NON_PM;
+        if (OV_typ(mtype) == SPOVAR_MONST)
+        {
+            char monclass = SP_MONST_CLASS(OV_i(mtype));
+            int monid = SP_MONST_PM(OV_i(mtype));
+
+            if (monid >= LOW_PM && monid < NUM_MONSTERS)
+            {
+                tmproom.mtype = monid;
+            }
+            else
+            {
+                tmproom.mtype = NON_PM;
+            }
+        }
 
         opvar_free(x);
         opvar_free(y);
@@ -4229,6 +4244,7 @@ struct sp_coder *coder;
         opvar_free(rtype);
         opvar_free(floormaintype);
         opvar_free(floortype);
+        opvar_free(mtype);
         opvar_free(chance);
         opvar_free(rlit);
         opvar_free(rflags);
@@ -4387,21 +4403,37 @@ spo_altar(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_altar";
-    struct opvar *al, *shrine, *acoord;
+    struct opvar *al, *shrine, *acoord, *mtype;
     altar tmpaltar;
 
-    if (!OV_pop_i(al) || !OV_pop_i(shrine) || !OV_pop_c(acoord))
+    if (!OV_pop_i(al) || !OV_pop_i(shrine) || !OV_pop(mtype) || !OV_pop_c(acoord))
         return;
 
     tmpaltar.coord = OV_i(acoord);
     tmpaltar.align = OV_i(al);
     tmpaltar.shrine = OV_i(shrine);
+    tmpaltar.mtype = NON_PM;
+    if (OV_typ(mtype) == SPOVAR_MONST) 
+    {
+        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        int monid = SP_MONST_PM(OV_i(mtype));
+
+        if (monid >= LOW_PM && monid < NUM_MONSTERS) 
+        {
+            tmpaltar.mtype = monid;
+        }
+        else 
+        {
+            tmpaltar.mtype = NON_PM;
+        }
+    }
 
     create_altar(&tmpaltar, coder->croom);
 
     opvar_free(acoord);
     opvar_free(shrine);
     opvar_free(al);
+    opvar_free(mtype);
 }
 
 void
@@ -5459,16 +5491,32 @@ void spo_anvil(coder)
 struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_anvil";
-    struct opvar* acoord;
+    struct opvar* acoord, *mtype;
     anvil tmpanvil;
 
-    if (!OV_pop_c(acoord))
+    if (!OV_pop(mtype) || !OV_pop_c(acoord))
         return;
 
     tmpanvil.coord = OV_i(acoord);
+    tmpanvil.mtype = NON_PM;
+    if (OV_typ(mtype) == SPOVAR_MONST)
+    {
+        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        int monid = SP_MONST_PM(OV_i(mtype));
+
+        if (monid >= LOW_PM && monid < NUM_MONSTERS)
+        {
+            tmpanvil.mtype = monid;
+        }
+        else
+        {
+            tmpanvil.mtype = NON_PM;
+        }
+    }
 
     create_anvil(&tmpanvil, coder->croom);
 
+    opvar_free(mtype);
     opvar_free(acoord);
 }
 
@@ -5518,17 +5566,33 @@ void spo_npc(coder)
 struct sp_coder* coder;
 {
     static const char nhFunc[] = "spo_npc";
-    struct opvar *acoord, *typ;
+    struct opvar *acoord, *typ, *mtype;
     npc_create_info tmpnpc;
 
-    if (!OV_pop_i(typ) || !OV_pop_c(acoord))
+    if (!OV_pop_i(typ) || !OV_pop(mtype) || !OV_pop_c(acoord))
         return;
 
     tmpnpc.coord = OV_i(acoord);
     tmpnpc.typ = OV_i(typ);
+    tmpnpc.mtype = NON_PM;
+    if (OV_typ(mtype) == SPOVAR_MONST)
+    {
+        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        int monid = SP_MONST_PM(OV_i(mtype));
+
+        if (monid >= LOW_PM && monid < NUM_MONSTERS)
+        {
+            tmpnpc.mtype = monid;
+        }
+        else
+        {
+            tmpnpc.mtype = NON_PM;
+        }
+    }
 
     create_npc(&tmpnpc, coder->croom);
 
+    opvar_free(mtype);
     opvar_free(typ);
     opvar_free(acoord);
 }
@@ -5896,12 +5960,13 @@ spo_region(coder)
 struct sp_coder *coder;
 {
     static const char nhFunc[] = "spo_region";
-    struct opvar *rtype, *rlit, *rflags, *area, *floormaintype, *floortype;
+    struct opvar *rtype, *rlit, *rflags, *area, *floormaintype, *floortype, *mtype;
     xchar dx1, dy1, dx2, dy2;
     register struct mkroom *troom;
     boolean prefilled, room_not_needed, irregular, joined;
+    int roommontype = NON_PM;
 
-    if (!OV_pop_i(floortype) || !OV_pop_i(floormaintype) || !OV_pop_i(rflags) || !OV_pop_i(rtype) || !OV_pop_i(rlit)
+    if (!OV_pop_i(floortype) || !OV_pop_i(floormaintype) || !OV_pop_i(rflags) || !OV_pop_i(rtype) || !OV_pop_i(rlit) || !OV_pop(mtype)
         || !OV_pop_r(area))
         return;
 
@@ -5927,6 +5992,21 @@ struct sp_coder *coder;
     get_location(&dx1, &dy1, ANY_LOC, (struct mkroom *) 0);
     get_location(&dx2, &dy2, ANY_LOC, (struct mkroom *) 0);
 
+    if (OV_typ(mtype) == SPOVAR_MONST)
+    {
+        char monclass = SP_MONST_CLASS(OV_i(mtype));
+        int monid = SP_MONST_PM(OV_i(mtype));
+
+        if (monid >= LOW_PM && monid < NUM_MONSTERS)
+        {
+            roommontype = monid;
+        }
+        else
+        {
+            roommontype = NON_PM;
+        }
+    }
+
     /* for an ordinary room, `prefilled' is a flag to force
        an actual room to be created (such rooms are used to
        control placement of migrating monster arrivals) */
@@ -5942,6 +6022,7 @@ struct sp_coder *coder;
         tmpregion.y1 = dy1;
         tmpregion.x2 = dx2;
         tmpregion.y2 = dy2;
+        tmpregion.mtype = NON_PM;
         light_region(&tmpregion);
 
         opvar_free(area);
@@ -5950,6 +6031,7 @@ struct sp_coder *coder;
         opvar_free(rtype);
         opvar_free(floortype);
         opvar_free(floormaintype);
+        opvar_free(mtype);
 
         return;
     }
@@ -6000,6 +6082,7 @@ struct sp_coder *coder;
     opvar_free(rtype);
     opvar_free(floortype);
     opvar_free(floormaintype);
+    opvar_free(mtype);
 }
 
 void

@@ -262,11 +262,12 @@ register char* array;
 
 /* exclusively for mknpcroom() */
 void
-npcini(lvl, sroom, sx, sy, npctype)
+npcini(lvl, sroom, sx, sy, npctype, mtype)
 d_level* lvl;
 struct mkroom* sroom;
 int sx, sy;
 int npctype;
+int mtype;
 {
     struct monst* npc;
     int npc_loc_x = sx;
@@ -296,49 +297,59 @@ int npctype;
         (void)rloc(m_at(npc_loc_x, npc_loc_y), FALSE); /* insurance */
 
     int npc_montype = npc_subtype_definitions[npctype].mnum;
-    if (Inhell)
+    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE))
     {
-        switch (npc_subtype_definitions[npctype].npc_gehennom_type)
+        npc_montype = mtype;
+    }
+    else
+    {
+        if (Inhell)
         {
-        case NPC_GEHENNOM_STANDARD:
-            break;
-        case NPC_GEHENNOM_UNDEAD_SPELLCASTER:
-            npc_montype = get_gehennom_undead_spellcaster(npc_montype);
-            break;
-        case NPC_GEHENNOM_DWARF_MUMMY:
-            if (!(mvitals[PM_GREATER_DWARVEN_MUMMY_GEOLOGIST].mvflags & G_GONE))
-                npc_montype = PM_GREATER_DWARVEN_MUMMY_GEOLOGIST;
-            else if (!(mvitals[PM_DWARF_MUMMY].mvflags & G_GONE))
-                npc_montype = PM_DWARF_MUMMY;
-            else if (!(mvitals[PM_DWARF_ZOMBIE].mvflags & G_GONE))
-                npc_montype = PM_DWARF_ZOMBIE;
-            else if (!(mvitals[PM_GHOST].mvflags & G_GONE))
-                npc_montype = PM_GHOST;
-            else if (!(mvitals[PM_PIT_FIEND].mvflags & G_GONE))
-                npc_montype = PM_PIT_FIEND;
-            break;
-        default:
-            break;
+            switch (npc_subtype_definitions[npctype].npc_gehennom_type)
+            {
+            case NPC_GEHENNOM_STANDARD:
+                break;
+            case NPC_GEHENNOM_UNDEAD_SPELLCASTER:
+                npc_montype = get_gehennom_undead_spellcaster(npc_montype);
+                break;
+            case NPC_GEHENNOM_DWARF_MUMMY:
+                if (!(mvitals[PM_GREATER_DWARVEN_MUMMY_GEOLOGIST].mvflags & G_GONE))
+                    npc_montype = PM_GREATER_DWARVEN_MUMMY_GEOLOGIST;
+                else if (!(mvitals[PM_DWARF_MUMMY].mvflags & G_GONE))
+                    npc_montype = PM_DWARF_MUMMY;
+                else if (!(mvitals[PM_DWARF_ZOMBIE].mvflags & G_GONE))
+                    npc_montype = PM_DWARF_ZOMBIE;
+                else if (!(mvitals[PM_GHOST].mvflags & G_GONE))
+                    npc_montype = PM_GHOST;
+                else if (!(mvitals[PM_PIT_FIEND].mvflags & G_GONE))
+                    npc_montype = PM_PIT_FIEND;
+                break;
+            default:
+                break;
+            }
+        }
+        else if (In_modron_level(&u.uz))
+        {
+            switch (npc_subtype_definitions[npctype].npc_modron_plane_type)
+            {
+            case NPC_MODRON_PLANE_STANDARD:
+                break;
+            case NPC_MODRON_PLANE_MONK:
+                npc_montype = PM_MONK;
+                break;
+            case NPC_MODRON_PLANE_ABBOT:
+                npc_montype = PM_ABBOT;
+                break;
+            default:
+                break;
+            }
         }
     }
-    else if (In_modron_level(&u.uz))
-    {
-        switch (npc_subtype_definitions[npctype].npc_modron_plane_type)
-        {
-        case NPC_MODRON_PLANE_STANDARD:
-            break;
-        case NPC_MODRON_PLANE_MONK:
-            npc_montype = PM_MONK;
-            break;
-        case NPC_MODRON_PLANE_ABBOT:
-            npc_montype = PM_ABBOT;
-            break;
-        default:
-            break;
-        }
-    }
-    npc = makemon(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC);
 
+    npc = makemon(&mons[npc_montype], npc_loc_x, npc_loc_y, MM_ENPC);
+    if(!npc)
+        npc = makemon(&mons[npc_subtype_definitions[npctype].mnum], npc_loc_x, npc_loc_y, MM_ENPC); /* Fallback */
+    
     if (npc)
     {
         ENPC(npc)->npc_room = (schar)((sroom - rooms) + ROOMOFFSET);

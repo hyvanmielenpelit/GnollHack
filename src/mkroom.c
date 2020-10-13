@@ -1491,7 +1491,7 @@ mktemple()
     lev->typ = ALTAR;
     lev->subtyp = 0;
     lev->altarmask = induced_align(80);
-    priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE);
+    priestini(&u.uz, sroom, shrine_spot->x, shrine_spot->y, FALSE, NON_PM);
     lev->altarmask |= AM_SHRINE;
     level.flags.has_temple = 1;
 	return 1;
@@ -1517,7 +1517,7 @@ mksmithy()
     lev = &levl[anvil_spot->x][anvil_spot->y];
     lev->typ = ANVIL;
     lev->subtyp = 0;
-    smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, 0);
+    smithini(&u.uz, sroom, anvil_spot->x, anvil_spot->y, 0, NON_PM);
     level.flags.has_smithy = 1;
 
     /* The smith has lights turned on */
@@ -1613,7 +1613,7 @@ mknpcroom()
 
     }
 
-    npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype);
+    npcini(&u.uz, sroom, somex(sroom), somey(sroom), npctype, NON_PM);
     level.flags.has_npc_room = 1;
 
     if (npc_subtype_definitions[npctype].general_flags & NPC_FLAGS_LIGHTS_ON)

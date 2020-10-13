@@ -302,8 +302,7 @@ DOOR:closed,(28,06),subtype:door_modron
 DOOR:locked,(28,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
 
 # Three tertians and other modrons
-MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile {
-}
+MONSTER:('M',"modron tertian"),(25,04),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(24,05),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(26,05),waitforu,hostile
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
@@ -314,16 +313,22 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
         OBJECT:random_contents
 }
 
-MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile {
+MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(07,12),no_pickup {
         OBJECT:('9', "modronite monopole")
-        OBJECT:('!', "full healing")
+        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron tridrone"),(11,11),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(12,12),waitforu,hostile
 
-MONSTER:('M',"modron tertian"),(40,12),waitforu,hostile {
+MONSTER:('M',"modron tertian"),(40,12),waitforu,hostile
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(43,12),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:2
-        OBJECT:('?', "create monster")
+        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
+        [50%]:OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron tridrone"),(39,11),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(38,12),waitforu,hostile
@@ -340,18 +345,16 @@ MONSTER:('M',"modron tridrone"),(27,12),waitforu,hostile
 
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(20,12),no_pickup {
         OBJECT:('(', "magic marker")
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
         OBJECT:('?', "enchant armor"),quantity:(1d2),blessed
         OBJECT:('!', "greater rejuvenation"),quantity:(1d2)
-        OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12),no_pickup {
         OBJECT:artifact
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
         OBJECT:('?', "enchant weapon"),quantity:(1d2),blessed
         OBJECT:('?', "conflict"),quantity:(1d2)
-        OBJECT:random_contents
+        [50%]:OBJECT:random_contents
 }
 
 
@@ -382,11 +385,11 @@ AAAAAAAAAA:::::::::T:::::::T::::|.......|::::T:::::::T:::::::::AAAAAAAAAA
 AAAAAA:::::::::T:::::::{::::::::.........::::::::{:::::::T:::::::::AAAAAA
 AAAA:::::::T:::::::T:::::::T::::-.-.-.-.-::::T:::::::T:::::::T:::::::AAAA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
-AA::----------F------------------F-----F-------------------F---------::AA
-A:::|.....|.......|.....+.....+.....|.....|.......+.....+.....|.....|:::A
-A:::|..\..+.......+.....|-----|.....|.....+.......|-----|.....+..\..+:::A
-A:::|.....|.......|.....+.....|.....|.....|.......+.....|.....|.....|:::A
-AA::----------F--------------+---F-----F-------------------F---------::AA
+AA::---------F-------------------F-----F-------------------F---------::AA
+A:::|...........+.....+.......|.....|.....|.......+.....+...........|:::A
+A:::|..\........|-----|.......+.....|.....+.......|-----|........\..+:::A
+A:::|...........+..|..+.......|.....|.....|.......+..|..+...........|:::A
+AA::---------F------+------------F-----F-------------------F---------::AA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
 AAAA:::::::T:::::::T:::::::T::::-.-.-.-.-::::T:::::::T:::::::T:::::::AAAA
 AAAAAA:::::::::T:::::::{::::::::.........::::::::{:::::::T:::::::::AAAAAA
@@ -443,7 +446,7 @@ MONSTER:('M',"modron pentadrone"),(21,11),waitforu,hostile
 
 # Two secundi
 MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(66,10),no_pickup {
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(54,11),no_pickup {
         OBJECT:('?', "charging"),quantity:(1+(1d2)),blessed
         OBJECT:('9', "modronite sphere")
         OBJECT:('(', "magic key"),special_quality:1
@@ -453,7 +456,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(66,10),no_pickup {
 }
 
 MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(06,10),no_pickup {
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(18,11),no_pickup {
         OBJECT:artifact
         OBJECT:('?', "conflict"),quantity:(1+(1d2)),blessed
         OBJECT:('(', "geometric key"),special_quality:1
@@ -465,14 +468,14 @@ DOOR:closed,(42,10),subtype:door_modron
 DOOR:closed,(50,09),subtype:door_modron
 DOOR:closed,(50,11),subtype:door_modron
 DOOR:closed,(56,09),subtype:door_modron
-DOOR:closed,(62,10),subtype:door_modron
+DOOR:locked,(56,11),subtype:door_modron,keytype:"magic key"
 DOOR:locked,(68,10),subtype:door_modron,keytype:"magic key"
 
-DOOR:locked,(29,12),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:closed,(10,10),subtype:door_modron
-DOOR:closed,(18,10),subtype:door_modron
-DOOR:closed,(24,09),subtype:door_modron
-DOOR:closed,(24,11),subtype:door_modron
+DOOR:locked,(20,12),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:closed,(16,09),subtype:door_modron
+DOOR:locked,(16,11),subtype:door_modron,keytype:"magic key"
+DOOR:closed,(22,09),subtype:door_modron
+DOOR:closed,(22,11),subtype:door_modron
 
 DOOR:locked,(30,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 

@@ -3142,7 +3142,7 @@ struct permonst _mons2[] = {
 
 	MON("modron tertian", None, "high-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(35, 19, -11, 16, 80, 0), G_NOGEN | G_MODRON | 1,
 		A(ATTK(AT_CLAW, AD_PHYS, 5, 4, 5, 0), ATTK(AT_CLAW, AD_PHYS, 5, 4, 5, 0), ATTK(AT_CLAW, AD_PHYS, 5, 4, 5, 0),
-			ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0), ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK),
+			ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(400, 0, MS_SILENT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR19(21), 21, 21, 21, 21, 21), 
         MR_SLEEP | MR_STONE | MR_DEATH | MR_DISINT, 
         MR2_NONE, 
@@ -3151,11 +3151,11 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON,
         M3_NONLIVING | M3_SPEAKING | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE,
-		65, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		45, CLR_RED, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 
 	MON("modron secundus", None, "second-highest-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(40, 20, -13, 18, 90, 0), G_NOGEN | G_MODRON | 1,
 		A(ATTK(AT_CLAW, AD_PHYS, 6, 4, 6, 0), ATTK(AT_CLAW, AD_PHYS, 6, 4, 6, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0),
-			ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
+            NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
 		SIZ(400, 0, MS_SILENT, MZ_LARGE, 1, 0, MAT_FLESH), STATS(STR19(22), 22, 22, 23, 23, 23), 
         MR_SLEEP | MR_STONE | MR_DEATH | MR_DISINT, 
         MR2_NONE, 
@@ -3164,7 +3164,7 @@ struct permonst _mons2[] = {
         M2_NEUTER | M2_HOSTILE | M2_MODRON, 
         M3_NONLIVING | M3_SPEAKING | M3_KNOWS_TRAPS,
         M4_NONE, M5_NONE,
-		75, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		50, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 
 	MON("Modron Primus", "The One and The Prime", "highest-ranking spell-casting hierarch modron", None, None, S_MODRON, LVL(45, 21, -15, 20, 100, 0), G_NOGEN | G_UNIQ,
 		A(ATTK(AT_CLAW, AD_PHYS, 12, 4, 12, 0), ATTK(AT_MAGC, AD_SPEL, 0, 0, 0, 0), ATTK(AT_MAGC, AD_CLRC, 0, 0, 0, 0),

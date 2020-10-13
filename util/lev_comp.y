@@ -253,7 +253,7 @@ extern char curr_token[512];
 %type	<i> object_infos object_info monster_infos monster_info
 %type	<i> levstatements stmt_block region_detail_end
 %type	<i> engraving_type flag_list roomregionflag roomregionflags
-%type	<i> optroomregionflags floortype optfloortype floormaintype optfloormaintype
+%type	<i> optroomregionflags floortype optfloortype floormaintype optfloormaintype optmontype
 %type	<i> humidity_flags
 %type	<i> comparestmt encodecoord encoderegion mapchar
 %type	<i> seen_trap_mask
@@ -1282,7 +1282,7 @@ room_begin      : room_type opt_percent ',' light_state
                   }
                 ;
 
-subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloormaintype optfloortype
+subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomregionflags optfloormaintype optfloortype optmontype
 		  {
 		      long rflags = $8;
 		      long flmt = (long)$<i>9;
@@ -1305,7 +1305,7 @@ subroom_def	: SUBROOM_ID ':' room_begin ',' subroom_pos ',' room_size optroomreg
 		  }
 		;
 
-room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloormaintype optfloortype
+room_def	: ROOM_ID ':' room_begin ',' room_pos ',' room_align ',' room_size optroomregionflags optfloormaintype optfloortype optmontype
 		  {
 		      long rflags = $10;
 		      long flmt = (long)$<i>11;
@@ -2183,7 +2183,7 @@ special_levregion_detail : SPECIAL_LEVREGION_ID ':' lev_region ',' SPECIAL_REGIO
 		  }
 		;
 
-region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloormaintype optfloortype
+region_detail	: REGION_ID ':' region_or_var ',' light_state ',' room_type optroomregionflags optfloormaintype optfloortype optmontype
 		  {
 		      long irr;
 		      long rt = $7;
@@ -2226,12 +2226,21 @@ region_detail_end : /* nothing */
 
 altar_detail	: ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type
 		  {
+		      add_opvars(splev, "Miio",
+				 VA_PASS4(-1, (long)$7, (long)$5, SPO_ALTAR));
+		  }
+		| ALTAR_ID ':' coord_or_var ',' alignment ',' altar_type ',' MONTYPE_ID ':' monster_or_var
+		  {
 		      add_opvars(splev, "iio",
 				 VA_PASS3((long)$7, (long)$5, SPO_ALTAR));
 		  }
 		;
 
 anvil_detail : ANVIL_ID ':' coord_or_var
+		  {
+		      add_opvars(splev, "Mo", VA_PASS2(-1, SPO_ANVIL));
+		  }
+		| ANVIL_ID ':' coord_or_var ',' MONTYPE_ID ':' monster_or_var
 		  {
 		      add_opvars(splev, "o", VA_PASS1(SPO_ANVIL));
 		  }
@@ -2250,6 +2259,10 @@ subtype_detail : SUBTYPE_ID ':' ter_selection ',' INTEGER
 		;
 
 npc_detail : NPC_ID ':' NPC_TYPE ',' coord_or_var
+		  {
+		      add_opvars(splev, "Mio", VA_PASS3(-1, (int)$3, SPO_NPC));
+		  }
+		|  NPC_ID ':' NPC_TYPE ',' coord_or_var ',' MONTYPE_ID ':' monster_or_var
 		  {
 		      add_opvars(splev, "io", VA_PASS2((int)$3, SPO_NPC));
 		  }
@@ -2385,6 +2398,18 @@ floortype : FLOOR_TYPE
 		      $<i>$ = $<i>1;
 		  }
 		;
+
+optmontype : /* empty */
+		  {
+			add_opvars(splev, "M", VA_PASS1(-1));
+			$<i>$ = -1;
+		  }
+		| MONTYPE_ID ':' monster_or_var
+		  {
+			$<i>$ = $<i>3;
+		  }
+		;
+
 
 door_state	: DOOR_STATE
 		| RANDOM_TYPE
