@@ -2125,8 +2125,25 @@ boolean *effect_happened_ptr;
 					/* water price varies by curse/bless status */
 					boolean shop_h2o = (obj->unpaid && obj->otyp == POT_WATER);
 
-					if (confused) {
-						blessorcurse(obj, 2);
+					if (confused) 
+                    {
+                        if (!(obj->blessed || obj->cursed))
+                        {
+                            if (!rn2(2)) 
+                            {
+                                if (!rn2(2))
+                                {
+                                    play_sfx_sound(SFX_CURSE_ITEM_SUCCESS);
+                                    curse(obj);
+                                }
+                                else 
+                                {
+                                    play_sfx_sound(SFX_BLESS_ITEM_SUCCESS);
+                                    bless(obj);
+                                }
+                            }
+                        }
+						//blessorcurse(obj, 2);
 						/* lose knowledge of this object's curse/bless
 						   state (even if it didn't actually change) */
 						obj->bknown = 0;
@@ -2140,6 +2157,7 @@ boolean *effect_happened_ptr;
                     {
 						if (shop_h2o)
 							costly_alteration(obj, COST_UNCURS);
+                        play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
 						uncurse(obj);
 					}
 				}
@@ -2307,7 +2325,7 @@ boolean *effect_happened_ptr;
         }
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
-        incr_itimeout(&HConflict, d(10, 6) + 240);
+        incr_itimeout(&HConflict, d(2, 10) + 140);
         special_effect_wait_until_end(0);
         break;
     case SCR_TAMING:

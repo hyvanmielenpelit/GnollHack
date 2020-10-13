@@ -140,15 +140,15 @@ AAAAA::::::::::::::-----F-----::::::::::::::AAAAA
 AAA::::::::::::::::|.........|::::::::::::::::AAA
 AA:::---F---:::T:::F.{.....{.F:::T:::---F---:::AA
 A::::|.....|:::::::|.........|:::::::|.....|::::A
-A::::F.....|---F---|.........|---F---|.....F::::A
+A::::F.....|---F---|----+----|---F---|.....F::::A
 A::::|.....+.......|.........|.......+.....|::::A
-A::::-------.......-----+-----.......-------::::A
-::::::::|............|.....|............|::::::::
-::T:::::+......{.....+.....+.....{......+:::::T::
-::::::::|............|.....|............|::::::::
-A::::-------.......-----+-----.......-------::::A
+A::::---F---.......|.-.-.-.-.|.......---F---::::A
+:::::::::::|.......|.........|.......|:::::::::::
+::::::::T::+...{...+.-.....-.+...{...+::T::::::::
+:::::::::::|.......|.........|.......|:::::::::::
+A::::---F---.......|.-.-.-.-.|.......---F---::::A
 A::::|.....+.......|.........|.......+.....|::::A
-A::::F.....|---F---|.........|---F---|.....F::::A
+A::::F.....|---F---|----+----|---F---|.....F::::A
 A::::|.....|:::::::|.........|:::::::|.....|::::A
 AA:::---F---:::T:::F.{.....{.F:::T:::---F---:::AA
 AAA::::::::::::::::|.........|::::::::::::::::AAA
@@ -160,27 +160,27 @@ ENDMAP
 REGION:(00,00,48,20),lit,"ordinary"
 NON_DIGGABLE:(00,00,48,20)
 NON_PASSWALL:(00,00,48,20)
-TELEPORT_REGION:(20,02,28,07),(0,0,0,0),up
-TELEPORT_REGION:(20,02,28,07),(0,0,0,0),down
+TELEPORT_REGION:(20,03,28,05),(0,0,0,0),up
+TELEPORT_REGION:(20,03,28,05),(0,0,0,0),down
 
-DOOR:locked,(24,08),subtype:door_modron,keytype:"geometric key",special_quality:4
+DOOR:locked,(24,06),subtype:door_modron,keytype:"geometric key",special_quality:4
 DOOR:closed,(11,07),subtype:door_modron
 DOOR:closed,(37,07),subtype:door_modron
-DOOR:locked,(08,10),subtype:door_magic,keytype:"magic key",secret_door
-DOOR:locked,(40,10),subtype:door_magic,keytype:"magic key",secret_door
+DOOR:locked,(11,10),subtype:door_magic,keytype:"magic key",secret_door
+DOOR:locked,(37,10),subtype:door_magic,keytype:"magic key",secret_door
 DOOR:closed,(11,13),subtype:door_modron
 DOOR:closed,(37,13),subtype:door_modron
-DOOR:locked,(21,10),subtype:door_magic,keytype:"magic key"
-DOOR:locked,(27,10),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(19,10),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(29,10),subtype:door_magic,keytype:"magic key"
 
 # Middle room
-REGION:(22,09,26,11),lit,"temple"
+REGION:(22,09,26,11),lit,"temple" floortype:floor_marble
 ALTAR:(24,10),neutral,shrine,montype:"monk"
 
-MONSTER:('M',"modron quadrone"),(22,09),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(26,09),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(22,11),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(26,11),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(20,07),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,07),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(20,13),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,13),waitforu,hostile
 
 
 # Four quartons and their quadrone bodyguards
@@ -215,7 +215,7 @@ CONTAINER:('(',"chest"),(42,15),no_pickup {
 }
 
 
-# Big room guards
+# Fountain room guards
 MONSTER:('M',"modron pentadrone"),(14,10),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(15,10),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(33,10),waitforu,hostile
@@ -223,11 +223,11 @@ MONSTER:('M',"modron pentadrone"),(34,10),waitforu,hostile
 
 # Portal Rooms
 # Up
-MODRON_PORTAL:(24,05),level_teleporter,teleport_up,matching_portal,cubical,inactive
+MODRON_PORTAL:(24,04),level_teleporter,teleport_up,matching_portal,cubical,inactive
 
 # Down
-DOOR:locked,(24,12),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
-MODRON_PORTAL:(24,15),level_teleporter,teleport_down,matching_portal,tetrahedral,inactive
+DOOR:locked,(24,14),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
+MODRON_PORTAL:(24,16),level_teleporter,teleport_down,matching_portal,tetrahedral,inactive
 
 MONSTER:('M',"modron quadrone"),(20,13),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(28,13),waitforu,hostile
@@ -429,9 +429,11 @@ MONSTER:('M',"modron pentadrone"),(26,10),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(26,11),waitforu,hostile
 
 # Two secundi
-MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(54,11),no_pickup {
+MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile {
         OBJECT:('(', "magic key"),special_quality:1
+}
+
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(54,11),no_pickup {
         OBJECT:('9', "modronite sphere")
         OBJECT:('?', "charging"),quantity:(1+(1d2)),blessed
         OBJECT:('!', "full healing")
@@ -439,7 +441,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(54,11),no_pickup {
 }
 
 MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(18,11),no_pickup {
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),special_quality:1,(18,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:1
         OBJECT:artifact
         OBJECT:('?', "conflict"),quantity:(1+(1d2)),blessed
@@ -451,12 +453,12 @@ DOOR:locked,(42,10),subtype:door_modron,keytype:"geometric key",special_quality:
 DOOR:closed,(50,09),subtype:door_modron
 DOOR:closed,(50,11),subtype:door_modron
 DOOR:closed,(56,09),subtype:door_modron
-DOOR:locked,(56,11),subtype:door_modron,keytype:"magic key"
+DOOR:locked,(56,11),subtype:door_modron,keytype:"magic key",special_quality:1
 DOOR:locked,(52,12),subtype:door_modron,keytype:"magic key",secret_door
 
 DOOR:locked,(20,12),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:closed,(16,09),subtype:door_modron
-DOOR:locked,(16,11),subtype:door_modron,keytype:"magic key"
+DOOR:locked,(16,11),subtype:door_modron,keytype:"magic key",special_quality:1
 DOOR:closed,(22,09),subtype:door_modron
 DOOR:closed,(22,11),subtype:door_modron
 DOOR:locked,(30,10),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor

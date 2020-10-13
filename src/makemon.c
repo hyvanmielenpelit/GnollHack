@@ -2887,8 +2887,12 @@ boolean neverask;
             x = c.x, y = c.y;
 
         mon = makemon(mptr, x, y, NO_MM_FLAGS);
-        if (mon && canspotmon(mon))
-            known = TRUE;
+        if (mon)
+        {
+            play_sfx_sound_at_location(SFX_SUMMON_MONSTER, mon->mx, mon->my);
+            if(canspotmon(mon))
+                known = TRUE;
+        }
     }
     return known;
 }
