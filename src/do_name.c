@@ -2500,6 +2500,23 @@ char* s;
 }
 
 char*
+randomize_modron_name(s)
+char* s;
+{
+    static const char* start[] = { "alph", "bet", "gamm", "thet", "kapp", "zet", "iot", "delt", "et", "sigm", "omeg", "ypsil", "omicr" };
+    static const char* v[] = { "a", "i", "o", "ati", "adri", "ahe" };
+    static const char* end[] = { "gon", "dron", "tron" };
+
+    if (s)
+    {
+        strcpy(s, "");
+        Sprintf(s, "%s%s%s", start[rn2(SIZE(start))], v[rn2(SIZE(v))],
+            end[rn2(SIZE(end))]);
+    }
+    return s;
+}
+
+char*
 randomize_gnoll_name(s)
 char* s;
 {

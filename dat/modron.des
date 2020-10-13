@@ -20,7 +20,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAA:::::::::::::::::AAAAAAAAAAAAA
 AAAAAAAAA:::::::::---F---:::::::::AAAAAAAAA
 AAAAAA::::T::::----.....----::::T::::AAAAAA
-AAAA:::T::::----..|..\..|..----::::T:::AAAA
+AAAA:::T::::----..|.....|..----::::T:::AAAA
 AAA::::::----.....|.....|.....----::::::AAA
 AA::::----..|.....|--+--|.....|..----::::AA
 A::----.....|--+---.....---+--|.....----::A
@@ -83,16 +83,15 @@ MONSTER:('M',"modron quadrone"),(16,14),hostile,waitforu
 CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:5,(21,13),no_pickup {
         OBJECT:('?', "conflict")
         OBJECT:('(', "jar of prodigious healing salve")
-        OBJECT:('*', "dilithium crystal"),quantity:(1d2)
+        OBJECT:('*', "dilithium crystal"),quantity:(1d3)
+        OBJECT:('=', "free action")
+        OBJECT:('!', "paralysis"),quantity:(1d3)
 }
 
 # Five quintons and their pentadrone bodyguards
-MONSTER:('M',"modron quinton"),(21,04),waitforu,hostile {
-        OBJECT:('(', "geometric key"),special_quality:4
-        OBJECT:('=', "free action")
-        OBJECT:('?', "create monster")
-}
-MONSTER:('M',"modron pentadrone"),(21,05),hostile,waitforu
+# Modron smith
+REGION:(19,03,23,05),lit,"smithy"
+ANVIL:(21,04),montype:"modron quinton"
 
 MONSTER:('M',"modron quinton"),(08,08),waitforu,hostile {
     OBJECT:('(', "magic key")
@@ -104,14 +103,12 @@ MONSTER:('M',"modron quinton"),(33,08),waitforu,hostile {
 }
 MONSTER:('M',"modron pentadrone"),(32,08),hostile,waitforu
 
-MONSTER:('M',"modron quinton"),(11,12),waitforu,hostile {
-    OBJECT:('!', "full healing")
-}
+MONSTER:('M',"modron quinton"),(11,12),waitforu,hostile
+
 MONSTER:('M',"modron pentadrone"),(12,11),hostile,waitforu
 CONTAINER:('(',"chest"),(08,11),no_pickup {
-        OBJECT:('!', "greater regeneration")
-        OBJECT:('/', "identify")
-        OBJECT:('*', "dilithium crystal")
+        OBJECT:('(', "geometric key"),special_quality:4
+        [50%]:OBJECT:('*', "dilithium crystal")
         [50%]:OBJECT:('?', "enchant weapon")
 }
 
@@ -120,8 +117,8 @@ MONSTER:('M',"modron pentadrone"),(30,11),hostile,waitforu
 CONTAINER:('(',"chest"),(34,11),no_pickup {
         OBJECT:('9', "modronite cube")
         OBJECT:('!', "full healing")
+        [50%]:OBJECT:('*', "dilithium crystal")
         [50%]:OBJECT:('?', "enchant accessory")
-        [25%]:OBJECT:('*', "dilithium crystal")
 }
 
 
@@ -141,7 +138,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
 AAAAA::::::::::::::-----F-----::::::::::::::AAAAA
 AAA::::::::::::::::|.........|::::::::::::::::AAA
-AA:::---F---:::T:::F.........F:::T:::---F---:::AA
+AA:::---F---:::T:::F.{.....{.F:::T:::---F---:::AA
 A::::|.....|:::::::|.........|:::::::|.....|::::A
 A::::F.....|---F---|.........|---F---|.....F::::A
 A::::|.....+.......|.........|.......+.....|::::A
@@ -173,8 +170,8 @@ DOOR:locked,(08,10),subtype:door_magic,keytype:"magic key",secret_door
 DOOR:locked,(40,10),subtype:door_magic,keytype:"magic key",secret_door
 DOOR:closed,(11,13),subtype:door_modron
 DOOR:closed,(37,13),subtype:door_modron
-DOOR:closed,(21,10),subtype:door_magic,keytype:"magic key"
-DOOR:closed,(27,10),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(21,10),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(27,10),subtype:door_magic,keytype:"magic key"
 
 REGION:(22,09,26,11),lit,"temple"
 ALTAR:(24,10),neutral,shrine,montype:"monk"
@@ -206,7 +203,6 @@ MONSTER:('M',"modron quadrone"),(39,13),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,14),waitforu,hostile
 CONTAINER:('(',"chest"),(42,15),no_pickup {
     OBJECT:('9', "modronite tetrahedron")
-    OBJECT:('/', "identify")
     OBJECT:('*', "dilithium crystal"),quantity:(1d2)
     [50%]:OBJECT:('?', "enchant weapon"),blessed
 }
@@ -276,7 +272,7 @@ MODRON_PORTAL:(20,09),level_teleporter,teleport_up,matching_portal,tetrahedral,i
 MODRON_PORTAL:(30,09),level_teleporter,teleport_down,matching_portal,cylindrical,inactive
 
 DOOR:closed,(25,07),subtype:door_modron
-DOOR:closed,(22,10),subtype:door_modron
+DOOR:locked,(22,10),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
 DOOR:locked,(19,13),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:locked,(31,13),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:locked,(17,08),subtype:door_modron,keytype:"magic key"
@@ -301,8 +297,8 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
 MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(07,12),no_pickup {
         OBJECT:('9', "modronite monopole")
+        OBJECT:('=', "teleport control")
         OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
-        [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron tridrone"),(11,11),waitforu,hostile
@@ -311,8 +307,8 @@ MONSTER:('M',"modron tridrone"),(12,12),waitforu,hostile
 MONSTER:('M',"modron tertian"),(40,12),waitforu,hostile
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(43,12),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:2
+        OBJECT:('/', "identify")
         OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
-        [50%]:OBJECT:random_contents
         [50%]:OBJECT:random_contents
 }
 MONSTER:('M',"modron tridrone"),(39,11),waitforu,hostile
@@ -345,7 +341,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12),no_pickup {
 
 # Secret temple
 REGION:(23,15,27,17),lit,"temple"
-ALTAR:(25,16),law,shrine,montype:"monk"
+ALTAR:(25,16),noalign,shrine,montype:"monk"
 OBJECT:('(', "cubic gate"),(25,16),no_pickup
 
 
@@ -372,9 +368,9 @@ AAAA:::::::T:::::::T:::::::T::::-.-.-.-.-::::T:::::::T:::::::T:::::::AAAA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
 AA::---------F-------------------F-----F-------------------F---------::AA
 A:::|...........+.....+.......|.....|.....|.......+.....+...........|:::A
-A:::|..\........|-----|.......+.....|.....+.......|-----|........\..+:::A
+A:::|..\........|-----|.......+.....|.....+.......|-----|........\..|:::A
 A:::|...........+..|..+.......|.....|.....|.......+..|..+...........|:::A
-AA::---------F------+------------F-----F-------------------F---------::AA
+AA::---------F------+------------F-----F------------+------F---------::AA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
 AAAA:::::::T:::::::T:::::::T::::-.-.-.-.-::::T:::::::T:::::::T:::::::AAAA
 AAAAAA:::::::::T:::::::{::::::::.........::::::::{:::::::T:::::::::AAAAAA
@@ -411,50 +407,45 @@ MONSTER:('M',"modron quadrone"),(59,09),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(59,10),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(59,11),waitforu,hostile
 
-MONSTER:('M',"modron quadrone"),(07,10),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(08,10),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(09,10),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(06,09),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(07,09),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(08,09),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(10,10),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(11,10),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(09,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(10,09),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(06,11),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(07,11),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(08,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(11,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(09,11),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(10,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(11,11),waitforu,hostile
 
-MONSTER:('M',"modron pentadrone"),(21,09),waitforu,hostile
-MONSTER:('M',"modron pentadrone"),(21,10),waitforu,hostile
-MONSTER:('M',"modron pentadrone"),(21,11),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(26,09),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(26,10),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(26,11),waitforu,hostile
 
 # Two secundi
 MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(54,11),no_pickup {
-        OBJECT:('?', "charging"),quantity:(1+(1d2)),blessed
-        OBJECT:('9', "modronite sphere")
         OBJECT:('(', "magic key"),special_quality:1
+        OBJECT:('9', "modronite sphere")
+        OBJECT:('?', "charging"),quantity:(1+(1d2)),blessed
         OBJECT:('!', "full healing")
-        OBJECT:('=', "teleport control")
         OBJECT:random_contents
 }
 
 MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(18,11),no_pickup {
+        OBJECT:('(', "geometric key"),special_quality:1
         OBJECT:artifact
         OBJECT:('?', "conflict"),quantity:(1+(1d2)),blessed
-        OBJECT:('(', "geometric key"),special_quality:1
-        OBJECT:('!', "full healing")
+        OBJECT:('!', "super-heroism")
         OBJECT:random_contents
 }
 
-DOOR:closed,(42,10),subtype:door_modron
+DOOR:locked,(42,10),subtype:door_modron,keytype:"geometric key",special_quality:2,non_passdoor
 DOOR:closed,(50,09),subtype:door_modron
 DOOR:closed,(50,11),subtype:door_modron
 DOOR:closed,(56,09),subtype:door_modron
 DOOR:locked,(56,11),subtype:door_modron,keytype:"magic key"
-DOOR:locked,(68,10),subtype:door_modron,keytype:"magic key"
+DOOR:locked,(52,12),subtype:door_modron,keytype:"magic key",secret_door
 
 DOOR:locked,(20,12),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:closed,(16,09),subtype:door_modron
@@ -464,10 +455,10 @@ DOOR:closed,(22,11),subtype:door_modron
 DOOR:locked,(30,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 
 REGION:(32,02,40,06),lit,"temple"
-ALTAR:(36,04),law,shrine,montype:"abbot"
+ALTAR:(36,04),chaos,shrine,montype:"monk"
 
 REGION:(32,14,40,18),lit,"temple"
-ALTAR:(36,16),law,shrine,montype:"abbot"
+ALTAR:(36,16),law,shrine,montype:"monk"
 
 
 #############

@@ -619,6 +619,7 @@ E char* FDECL(randomize_female_human_name, (char*));
 E char* FDECL(randomize_demon_name, (char*));
 E char* FDECL(randomize_undead_spellcaster_name, (char*));
 E char* FDECL(randomize_angel_name, (char*));
+E char* FDECL(randomize_modron_name, (char*));
 #ifdef ANDROID
 E void FDECL(and_getlin_log, (const char*, char*));
 #endif

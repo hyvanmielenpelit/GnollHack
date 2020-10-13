@@ -214,6 +214,9 @@ register struct monst* mtmp;
     if (mtmp->data == &mons[PM_ANGEL] || mtmp->data == &mons[PM_ALEAX] || mtmp->data == &mons[PM_ARCHON])
         christen_monst(mtmp, upstart(randomize_angel_name(mnamebuf)));
 
+    if (is_modron(mtmp->data))
+        christen_monst(mtmp, upstart(randomize_modron_name(mnamebuf)));
+
     if (is_gnoll(mtmp->data) && !has_mname(mtmp))
 	{
 		if (mtmp->data == &mons[PM_FLIND] || mtmp->data == &mons[PM_FLIND_LORD])

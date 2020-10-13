@@ -941,6 +941,21 @@ register struct monst *mtmp;
 			Sprintf(verbuf, "You rotten thief!");
 		verbl_msg = verbuf;
 		break;
+	case MS_MODRON:
+		if (is_peaceful(mtmp))
+		{
+			if (mtmp->isnpc && has_enpc(mtmp))
+				Sprintf(verbuf, "Welcome to my %s on the Plane of the Modron, adventurer!", npc_subtype_definitions[ENPC(mtmp)->npc_typ].room_name);
+			else if (mtmp->issmith)
+				Sprintf(verbuf, "Welcome to my smithy on the Plane of the Modron, adventurer!");
+			else
+				Sprintf(verbuf, "Welcome to the Plane of the Modron!");
+		}
+		else
+			Sprintf(verbuf, "Begone, you geometric anomaly!");
+
+		verbl_msg = verbuf;
+		break;
 	case MS_VAMPIRE: {
         /* vampire messages are varied by tameness, peacefulness, and time of
          * night */
