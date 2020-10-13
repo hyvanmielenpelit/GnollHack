@@ -302,7 +302,8 @@ boolean sanctum; /* is it the seat of the high priest? */
     if (MON_AT(sx + 1, sy))
         (void) rloc(m_at(sx + 1, sy), FALSE); /* insurance */
 
-    priest = makemon(&mons[sanctum ? PM_HIGH_PRIEST : PM_ALIGNED_PRIEST], sx + 1, sy, MM_EPRI);
+    int montype = sanctum ? PM_HIGH_PRIEST : In_modron_level(&u.uz) ? PM_MONK : PM_ALIGNED_PRIEST;
+    priest = makemon(&mons[montype], sx + 1, sy, MM_EPRI);
 
     if (priest) {
         EPRI(priest)->shroom = (schar) ((sroom - rooms) + ROOMOFFSET);
@@ -442,7 +443,7 @@ int smithtype;
     if (MON_AT(smith_loc_x, smith_loc_y))
         (void)rloc(m_at(smith_loc_x, smith_loc_y), FALSE); /* insurance */
 
-    int smith_montype = Is_yeenoghu_level(&u.uz) ? PM_FLIND_LORD : PM_SMITH;
+    int smith_montype = Is_yeenoghu_level(&u.uz) ? PM_FLIND_LORD : In_modron_level(&u.uz) ? PM_MONK : PM_SMITH;
     smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI);
 
     if (smith) 

@@ -585,7 +585,7 @@ RANDOM_CORRIDORS
 # "Grotto Town" by Kelly Bailey
 #
 MAZE: "minetn-5",' '
-FLAGS: fountain_on_ground
+FLAGS: fountain_on_ground,tree_on_ground
 GEOMETRY:center,center
 MAP
 -----         ---------                                                    
@@ -726,7 +726,7 @@ NPC:npc_geologist,(20,18)
 # "Bustling Town" by Kelly Bailey
 #
 MAZE: "minetn-6",' '
-FLAGS: inaccessibles,fountain_on_ground
+FLAGS: inaccessibles,fountain_on_ground,tree_on_ground
 INIT_MAP:mines,':','-',true,true,lit,true
 GEOMETRY:center,top
 MAP
@@ -943,7 +943,7 @@ RANDOM_CORRIDORS
 # "Mimic of the Mines"
 #
 MAZE: "minend-1", ' '
-FLAGS:fountain_on_ground
+FLAGS:fountain_on_ground,tree_on_ground
 GEOMETRY:center,center
 #1234567890123456789012345678901234567890123456789012345678901234567890
 MAP
@@ -1069,7 +1069,7 @@ MONSTER:'h',random
 # "Gnome King's Wine Cellar"
 #
 MAZE: "minend-2", ' '
-FLAGS:fountain_on_ground
+FLAGS:fountain_on_ground,tree_on_ground
 GEOMETRY:center,center
 MAP
 ---------------------------------------------------------------------------
@@ -1229,7 +1229,7 @@ MONSTER:'h',random
 # Relies on some very specific behavior of MAZEWALK.
 #
 MAZE:"minend-3",'-'
-FLAGS:nommap,fountain_on_ground
+FLAGS:nommap,fountain_on_ground,tree_on_ground
 GEOMETRY:center,bottom
 MAP
  - - - - - - - - - - -- -- - - : - - - - - - - - - -- - - -- - - - - : - - |

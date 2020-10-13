@@ -1004,9 +1004,6 @@ struct levelflags {
                                   normal mode descendant of such) */
     Bitfield(corrmaze, 1);     /* Whether corridors are used for the maze
                                   rather than ROOM */
-    Bitfield(throne_on_ground, 1); /* Throne symbols on special level maps are on ground  */
-    Bitfield(fountain_on_grass, 1); /* Fountain symbols on special level maps are on grass */
-    Bitfield(fountain_on_ground, 1); /* Fountain and tree symbols on special level maps are on ground */
     Bitfield(mapping_does_not_reveal_special, 1); /* Magic mapping does not reveal the special nature of the level */
     Bitfield(no_special_level_naming_checks, 1);
 };

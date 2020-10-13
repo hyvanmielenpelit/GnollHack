@@ -10,7 +10,7 @@
 #
 #############
 MAZE:"modron1",'A'
-FLAGS: noteleport,no_map_padding,hardfloor
+FLAGS: noteleport,no_map_padding,hardfloor,tree_on_ground
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5 
@@ -19,17 +19,17 @@ MAP
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAA:::::::::::::::::AAAAAAAAAAAAA
 AAAAAAAAA:::::::::---F---:::::::::AAAAAAAAA
-AAAAAA:::::::::----.....----:::::::::AAAAAA
-AAAA::::::::----..|..\..|..----::::::::AAAA
+AAAAAA::::T::::----.....----::::T::::AAAAAA
+AAAA:::T::::----..|..\..|..----::::T:::AAAA
 AAA::::::----.....|.....|.....----::::::AAA
 AA::::----..|.....|--+--|.....|..----::::AA
 A::----.....|--+---.....---+--|.....----::A
 A::+........|.................|........+::A
 A::--|......+.................+......|--::A
 A::::---------+-...........-+---------::::A
-AA:::::|.......|-----+-----|.......|:::::AA
+AA:T:::|.......|-----+-----|.......|:::T:AA
 AA:::::---.....|...........|.....---:::::AA
-AAA::::::|.....|...........|.....|::::::AAA
+AAA::T:::|.....|...........|.....|:::T::AAA
 AAAA:::::---...|...........|...---:::::AAAA
 AAAAAA:::::|------F-----F------|:::::AAAAAA
 AAAAAAAAA:::::::::::::::::::::::::AAAAAAAAA
@@ -131,7 +131,7 @@ CONTAINER:('(',"chest"),(34,11),no_pickup {
 #
 #############
 MAZE:"modron2",'A'
-FLAGS: noteleport,no_map_padding,hardfloor
+FLAGS: noteleport,no_map_padding,hardfloor,tree_on_ground
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5 
@@ -140,21 +140,21 @@ MAP
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
 AAAAA::::::::::::::-----F-----::::::::::::::AAAAA
-AAA:::::::::::,,,::|.........|::,,,:::::::::::AAA
-AA:::---F---::,T,::F.........F::,T,::---F---:::AA
-A::::|.....|::,,,::|.........|::,,,::|.....|::::A
+AAA::::::::::::::::|.........|::::::::::::::::AAA
+AA:::---F---:::T:::F.........F:::T:::---F---:::AA
+A::::|.....|:::::::|.........|:::::::|.....|::::A
 A::::F..{..|---F---|.........|---F---|..{..F::::A
 A::::|.....+.......|.........|.......+.....|::::A
 A::::-------.......-----+-----.......-------::::A
-:,,,::::|............|.....|............|::::,,,:
-:,T,::::+......{.....+.....+.....{......+::::,T,:
-:,,,::::|............|.....|............|::::,,,:
+::::::::|............|.....|............|::::::::
+::T:::::+......{.....+.....+.....{......+:::::T::
+::::::::|............|.....|............|::::::::
 A::::-------.......-----+-----.......-------::::A
 A::::|.....+.......|.........|.......+.....|::::A
 A::::F..{..|---F---|.........|---F---|..{..F::::A
-A::::|.....|::,,,::|.........|::,,,::|.....|::::A
-AA:::---F---::,T,::F.........F::,T,::---F---:::AA
-AAA:::::::::::,,,::|.........|::,,,:::::::::::AAA
+A::::|.....|:::::::|.........|:::::::|.....|::::A
+AA:::---F---:::T:::F.{.....{.F:::T:::---F---:::AA
+AAA::::::::::::::::|.........|::::::::::::::::AAA
 AAAAA::::::::::::::-----F-----::::::::::::::AAAAA
 AAAAAAAAA:::::::::::::::::::::::::::::::AAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -167,16 +167,17 @@ TELEPORT_REGION:(20,02,28,07),(0,0,0,0),up
 TELEPORT_REGION:(20,02,28,07),(0,0,0,0),down
 
 DOOR:closed,(24,08),subtype:door_modron
-DOOR:closed,(11,07),subtype:door_modron
-DOOR:closed,(37,07),subtype:door_modron
-DOOR:locked,(08,10),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:locked,(40,10),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:closed,(11,13),subtype:door_modron
-DOOR:closed,(37,13),subtype:door_modron
+DOOR:locked,(11,07),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(37,07),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(08,10),subtype:door_magic,keytype:"magic key",secret_door
+DOOR:locked,(40,10),subtype:door_magic,keytype:"magic key",secret_door
+DOOR:locked,(11,13),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(37,13),subtype:door_magic,keytype:"magic key"
 DOOR:locked,(21,10),subtype:door_magic,keytype:"magic key"
 DOOR:locked,(27,10),subtype:door_magic,keytype:"magic key"
 
-ALTAR:(24,10),neutral,altar
+REGION:(22,09,26,11),lit,"temple"
+ALTAR:(24,10),neutral,shrine
 
 # Four quartons and their quadrone bodyguards
 MONSTER:('M',"modron quarton"),(08,06),waitforu,hostile {
@@ -252,7 +253,7 @@ MONSTER:('M',"modron quadrone"),(26,11),waitforu,hostile
 #
 #############
 MAZE:"modron3",'A'
-FLAGS: noteleport,no_map_padding,hardfloor
+FLAGS: noteleport,no_map_padding,hardfloor,tree_on_ground
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5 
@@ -262,11 +263,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAA:::::::::::::AAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAA::::::::::---::::::::::AAAAAAAAAAAAAA
 AAAAAAAAAA::::::::::::---.---::::::::::::AAAAAAAAAA
-AAAAAAA:::::::::::::---..\..---:::::::::::::AAAAAAA
+AAAAAAA::::::T::::::---..\..---::::::T::::::AAAAAAA
 AAAAA:::::::::::::---.|.....|.---:::::::::::::AAAAA
 AAAA::::::::::::---...+.....+...---::::::::::::AAAA
 AAA:::::::::::---.....---+---.....---:::::::::::AAA
-AA::::::::::-----+-----.....-----+-----::::::::::AA
+AA::::T:::::-----+-----.....-----+-----:::::T::::AA
 AA::::::::---.....|...|.....|...|.....---::::::::AA
 A:::::::---.......|...+.....+...|.......---:::::::A
 A:::::---.........-----.....-----.........---:::::A
@@ -293,8 +294,8 @@ DOOR:closed,(25,07),subtype:door_modron
 DOOR:closed,(22,10),subtype:door_modron
 DOOR:locked,(19,13),subtype:door_modron,keytype:"magic key",secret_door
 DOOR:locked,(31,13),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:closed,(17,08),subtype:door_modron
-DOOR:closed,(33,08),subtype:door_modron
+DOOR:locked,(17,08),subtype:door_modron,keytype:"magic key"
+DOOR:locked,(33,08),subtype:door_modron,keytype:"magic key"
 DOOR:closed,(22,06),subtype:door_modron
 DOOR:closed,(28,06),subtype:door_modron
 
@@ -354,11 +355,10 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12),no_pickup {
 }
 
 
-# Secret altar
-ALTAR:(25,16),law,altar
+# Secret temple
+REGION:(23,15,27,17),lit,"temple"
+ALTAR:(25,16),law,shrine
 OBJECT:('(', "cubic gate"),(25,16),no_pickup
-MONSTER:('M',"modron pentadrone"),(24,16),waitforu,hostile
-MONSTER:('M',"modron pentadrone"),(26,16),waitforu,hostile
 
 
 
@@ -368,17 +368,19 @@ MONSTER:('M',"modron pentadrone"),(26,16),waitforu,hostile
 #
 ##############
 MAZE:"modron4",'A'
-FLAGS: noteleport,no_map_padding,hardfloor
+FLAGS: noteleport,no_map_padding,hardfloor,tree_on_ground,fountain_on_ground
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5         6         7
 #12345678901234567890123456789012345678901234567890123456789012345678901234567890
 MAP
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAA
-AAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::AAAAAAAAA
-AAAAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAA::::::::::::-.-.-.-.-::::::::::::AAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAA:::::::::T::::::::.........::::::::T:::::::::AAAAAAAAAAAAAA
+AAAAAAAAAA:::::::::T:::::::T::::|.......|::::T:::::::T:::::::::AAAAAAAAAA
+AAAAAA:::::::::T:::::::{::::::::.........::::::::{:::::::T:::::::::AAAAAA
+AAAA:::::::T:::::::T:::::::T::::-.-.-.-.-::::T:::::::T:::::::T:::::::AAAA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
 AA::----------F------------------F-----F-------------------F---------::AA
 A:::|.....|.......|.....+.....+.....|.....|.......+.....+.....|.....|:::A
@@ -386,60 +388,62 @@ A:::|..\..+.......+.....|-----|.....|.....+.......|-----|.....+..\..+:::A
 A:::|.....|.......|.....+.....|.....|.....|.......+.....|.....|.....|:::A
 AA::----------F--------------+---F-----F-------------------F---------::AA
 AAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAA
-AAAAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::AAAAA
-AAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::::::::AAAAAAAAA
-AAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAA
+AAAA:::::::T:::::::T:::::::T::::-.-.-.-.-::::T:::::::T:::::::T:::::::AAAA
+AAAAAA:::::::::T:::::::{::::::::.........::::::::{:::::::T:::::::::AAAAAA
+AAAAAAAAAA:::::::::T:::::::T::::|.......|::::T:::::::T:::::::::AAAAAAAAAA
+AAAAAAAAAAAAAA:::::::::T::::::::.........::::::::T:::::::::AAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAA::::::::::::-.-.-.-.-::::::::::::AAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ENDMAP
 
 REGION:(00,00,72,16),lit,"ordinary"
-NON_DIGGABLE:(00,00,72,16)
-NON_PASSWALL:(00,00,72,16)
-TELEPORT_REGION:(37,07,42,09),(0,0,0,0),up
-TELEPORT_REGION:(37,07,42,09),(0,0,0,0),down
+NON_DIGGABLE:(00,00,72,20)
+NON_PASSWALL:(00,00,72,20)
+TELEPORT_REGION:(37,09,42,11),(0,0,0,0),up
+TELEPORT_REGION:(37,09,42,11),(0,0,0,0),down
 
-MODRON_PORTAL:(33,08),level_teleporter,teleport_down,matching_portal,spherical,inactive
-MODRON_PORTAL:(39,08),level_teleporter,teleport_up,matching_portal,cylindrical,inactive
+MODRON_PORTAL:(33,10),level_teleporter,teleport_down,matching_portal,spherical,inactive
+MODRON_PORTAL:(39,10),level_teleporter,teleport_up,matching_portal,cylindrical,inactive
 
-MONSTER:('M',"modron pentadrone"),(46,08),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(44,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(45,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(46,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(47,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(48,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(46,09),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(46,10),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(44,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(45,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(46,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(47,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(48,09),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(46,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(44,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(45,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(46,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(47,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(48,11),waitforu,hostile
 
-MONSTER:('M',"modron quadrone"),(59,07),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(59,08),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(59,09),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(59,10),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(59,11),waitforu,hostile
 
-MONSTER:('M',"modron quadrone"),(07,08),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(08,08),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(09,08),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(06,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(07,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(08,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(09,07),waitforu,hostile
-MONSTER:('M',"modron duodrone"),(10,07),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(07,10),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(08,10),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(09,10),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(06,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(07,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(08,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(09,09),waitforu,hostile
 MONSTER:('M',"modron duodrone"),(10,09),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(06,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(07,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(08,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(09,11),waitforu,hostile
+MONSTER:('M',"modron duodrone"),(10,11),waitforu,hostile
 
-MONSTER:('M',"modron pentadrone"),(21,07),waitforu,hostile
-MONSTER:('M',"modron pentadrone"),(21,08),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(21,09),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(21,10),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(21,11),waitforu,hostile
 
 # Two secundi
-MONSTER:('M',"modron secundus"),(65,08),waitforu,hostile
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(66,08),no_pickup {
+MONSTER:('M',"modron secundus"),(65,10),waitforu,hostile
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(66,10),no_pickup {
         OBJECT:('?', "charging"),quantity:(1+(1d2)),blessed
         OBJECT:('9', "modronite sphere")
         OBJECT:('(', "magic key"),special_quality:1
@@ -448,8 +452,8 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(66,08),no_pickup {
         OBJECT:random_contents
 }
 
-MONSTER:('M',"modron secundus"),(07,08),waitforu,hostile
-CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(06,08),no_pickup {
+MONSTER:('M',"modron secundus"),(07,10),waitforu,hostile
+CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(06,10),no_pickup {
         OBJECT:artifact
         OBJECT:('?', "conflict"),quantity:(1+(1d2)),blessed
         OBJECT:('(', "geometric key"),special_quality:1
@@ -457,21 +461,26 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(06,08),no_pickup {
         OBJECT:random_contents
 }
 
-DOOR:closed,(42,08),subtype:door_modron
-DOOR:closed,(50,07),subtype:door_modron
+DOOR:closed,(42,10),subtype:door_modron
 DOOR:closed,(50,09),subtype:door_modron
-DOOR:closed,(56,07),subtype:door_modron
-DOOR:closed,(62,08),subtype:door_modron
-DOOR:locked,(68,08),subtype:door_modron,keytype:"magic key"
+DOOR:closed,(50,11),subtype:door_modron
+DOOR:closed,(56,09),subtype:door_modron
+DOOR:closed,(62,10),subtype:door_modron
+DOOR:locked,(68,10),subtype:door_modron,keytype:"magic key"
 
-DOOR:locked,(29,10),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:closed,(10,08),subtype:door_modron
-DOOR:closed,(18,08),subtype:door_modron
-DOOR:closed,(24,07),subtype:door_modron
+DOOR:locked,(29,12),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:closed,(10,10),subtype:door_modron
+DOOR:closed,(18,10),subtype:door_modron
 DOOR:closed,(24,09),subtype:door_modron
+DOOR:closed,(24,11),subtype:door_modron
 
-DOOR:locked,(30,07),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
+DOOR:locked,(30,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 
+REGION:(32,02,40,06),lit,"temple"
+ALTAR:(36,04),law,shrine
+
+REGION:(32,14,40,18),lit,"temple"
+ALTAR:(36,16),law,shrine
 
 
 #############
@@ -480,7 +489,7 @@ DOOR:locked,(30,07),subtype:door_modron,keytype:"geometric key",special_quality:
 #
 #############
 MAZE:"modron5",' '
-FLAGS: noteleport,no_map_padding,hardfloor
+FLAGS: noteleport,no_map_padding,hardfloor,tree_on_ground
 INIT_MAP: mines, 'C' , 'A' , true , true , lit , true
 GEOMETRY:center,center
 #         1         2         3         4         5         6         7

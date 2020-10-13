@@ -34,8 +34,9 @@
 #define THRONE_ON_GROUND                    0x00004000L
 #define FOUNTAIN_ON_GRASS                   0x00008000L
 #define FOUNTAIN_ON_GROUND                  0x00010000L
-#define MAPPING_DOES_NOT_REVEAL_SPECIAL     0x00020000L
-#define NO_MAP_PADDING                      0x00040000L
+#define TREE_ON_GROUND                      0x00020000L
+#define MAPPING_DOES_NOT_REVEAL_SPECIAL     0x00040000L
+#define NO_MAP_PADDING                      0x00080000L
 
 /* different level layout initializers */
 enum lvlinit_types {
@@ -357,6 +358,10 @@ struct sp_coder {
     int lvl_is_joined;
     boolean check_inaccessibles;
     boolean no_map_padding;
+    boolean throne_on_ground;
+    boolean fountain_on_ground;
+    boolean fountain_on_grass;
+    boolean tree_on_ground;
 
     int opcode;          /* current opcode */
     struct opvar *opdat; /* current push data (req. opcode == SPO_PUSH) */

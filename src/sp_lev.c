@@ -4026,11 +4026,13 @@ struct sp_coder *coder;
     if (lflags & SWAMPY)
         level.flags.swampy = 1;
     if (lflags & THRONE_ON_GROUND)
-        level.flags.throne_on_ground = 1;
+        coder->throne_on_ground = 1;
     if (lflags & FOUNTAIN_ON_GRASS)
-        level.flags.fountain_on_grass = 1;
+        coder->fountain_on_grass = 1;
     if (lflags & FOUNTAIN_ON_GROUND)
-        level.flags.fountain_on_ground = 1;
+        coder->fountain_on_ground = 1;
+    if (lflags & TREE_ON_GROUND)
+        coder->tree_on_ground = 1;
     if (lflags & MAPPING_DOES_NOT_REVEAL_SPECIAL)
         level.flags.mapping_does_not_reveal_special = 1;
     if (lflags & MAZELEVEL)
@@ -6440,17 +6442,22 @@ struct sp_coder *coder;
                 struct rm* lev = &levl[x][y];
                 lev->typ = mptyp;
                 lev->subtyp = get_initial_location_subtype(lev->typ);
-                if (mptyp == FOUNTAIN && level.flags.fountain_on_grass)
+                if (mptyp == FOUNTAIN && coder->fountain_on_grass)
                 {
                     lev->floortyp = GRASS;
                     lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
                 }
-                else if ((mptyp == FOUNTAIN || mptyp == TREE) && level.flags.fountain_on_ground)
+                else if (mptyp == FOUNTAIN && coder->fountain_on_ground)
                 {
                     lev->floortyp = GROUND;
                     lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
                 }
-                else if (mptyp == THRONE && level.flags.throne_on_ground)
+                else if (mptyp == TREE && coder->tree_on_ground)
+                {
+                    lev->floortyp = GROUND;
+                    lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
+                }
+                else if (mptyp == THRONE && coder->throne_on_ground)
                 {
                     lev->floortyp = GROUND;
                     lev->floorsubtyp = get_initial_location_subtype(lev->floortyp);
@@ -6803,6 +6810,10 @@ sp_lev *lvl;
     coder->premapped = FALSE;
     coder->solidify = FALSE;
     coder->check_inaccessibles = FALSE;
+    coder->fountain_on_grass = FALSE;
+    coder->fountain_on_ground = FALSE;
+    coder->tree_on_ground = FALSE;
+    coder->throne_on_ground = FALSE;
     coder->no_map_padding = FALSE;
     coder->croom = NULL;
     coder->n_subroom = 1;

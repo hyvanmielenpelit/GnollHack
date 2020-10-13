@@ -12,6 +12,13 @@ enum npc_gehennom_types {
     MAX_NPC_GEHENNOM_TYPES
 };
 
+enum npc_modron_plane_types {
+    NPC_MODRON_PLANE_STANDARD = 0,
+    NPC_MODRON_PLANE_MONK,
+    NPC_MODRON_PLANE_ABBOT,
+    MAX_NPC_MODRON_PLANE_TYPES
+};
+
 enum npc_subtypes {
     NPC_ARTIFICER = 0,
     NPC_GEOLOGIST,
@@ -21,6 +28,7 @@ enum npc_subtypes {
 struct npc_subtype_definition {
     int mnum;
     enum npc_gehennom_types npc_gehennom_type;
+    enum npc_modron_plane_types npc_modron_plane_type;
     const char* npc_role_name;
     const char* room_name;
     schar min_appearance_depth;

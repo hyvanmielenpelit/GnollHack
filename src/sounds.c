@@ -1213,7 +1213,14 @@ register struct monst *mtmp;
             case PM_TOURIST:
                 verbl_msg = "Aloha.";
                 break;
-            default:
+			case PM_ABBOT:
+			case PM_MONK:
+				if(In_modron_level(&u.uz))
+					pline_msg = "discusses the ways of the Modron.";
+				else
+					pline_msg = "advises you on meditation.";
+				break;
+			default:
                 pline_msg = "discusses dungeon exploration.";
                 break;
             }

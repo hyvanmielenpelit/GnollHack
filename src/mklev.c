@@ -754,9 +754,6 @@ clear_level_structures()
     level.flags.swampy = 0;
     level.flags.wizard_bones = 0;
     level.flags.corrmaze = 0;
-    level.flags.fountain_on_grass = 0;
-    level.flags.fountain_on_ground = 0;
-    level.flags.throne_on_ground = 0;
     level.flags.mapping_does_not_reveal_special = 0;
     level.flags.no_special_level_naming_checks = 0;
     strcpy(level.flags.special_description, "");
