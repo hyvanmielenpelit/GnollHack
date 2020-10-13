@@ -1265,7 +1265,7 @@ int damage_shown;
         }
         else
         {
-            /*** Show memory from floor to cover layer ***/
+            /*** Show memory from floor to environment layer ***/
             /* Ascii */
             show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
             add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
@@ -1986,6 +1986,7 @@ docrt()
             {
                 show_glyph_ascii(x, y, lev->hero_memory_layers.glyph);
                 add_glyph_buffer_layer_flags(x, y, LFLAGS_SHOWING_MEMORY);
+                add_glyph_buffer_layer_flags(x, y, lev->hero_memory_layers.layer_flags);
                 for (enum layer_types layer_idx = LAYER_FLOOR; layer_idx <= LAYER_GENERAL_UI; layer_idx++)
                     show_glyph_on_layer(x, y, lev->hero_memory_layers.layer_glyphs[layer_idx], layer_idx);
             }

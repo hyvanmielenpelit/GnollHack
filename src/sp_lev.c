@@ -2741,10 +2741,16 @@ schar ftyp, btyp;
             if (ftyp != CORR || rn2(100)) {
                 crm->typ = ftyp;
                 crm->subtyp = get_initial_location_subtype(ftyp);
+                if (IS_FLOOR(ftyp))
+                {
+                    crm->floortyp = 0;
+                    crm->subtyp = 0;
+                }
                 if (nxcor && !rn2(50))
                     (void) mksobj_at(BOULDER, xx, yy, TRUE, FALSE);
             } else {
                 crm->typ = SCORR;
+                crm->subtyp = get_initial_location_subtype(SCORR);
             }
         } else if (crm->typ != ftyp && crm->typ != SCORR) {
             /* strange ... */
@@ -4336,6 +4342,7 @@ struct sp_coder *coder;
     }
 
     levl[x][y].typ = LADDER;
+    levl[x][y].subtyp = 0;
     SpLev_Map[x][y] = 1;
     if (OV_i(up)) {
         xupladder = x;

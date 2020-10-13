@@ -1208,6 +1208,12 @@ boolean silently;
 		pline("Suddenly, you cannot see %s anymore!", savedname);
 	}
 
+	if (res)
+	{
+		newsym(mtmp->mx, mtmp->my);
+		flush_screen(0); /* Make sure you see the change immediately */
+	}
+
 	return res;
 }
 

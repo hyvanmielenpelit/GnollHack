@@ -2502,7 +2502,7 @@ struct rm* mainlev, *lev;
         else
             return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES + MAX_GROUND_CATEGORIES;
     }
-    else if (lev->floortyp == CORR)
+    else if (!IS_FLOOR(lev->typ) && lev->floortyp == CORR)
     {
         if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
@@ -2520,7 +2520,7 @@ struct rm* mainlev, *lev;
         else
             return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES + MAX_GRASS_CATEGORIES;
     }
-    else if (lev->floortyp == GROUND)
+    else if (!IS_FLOOR(lev->typ) && lev->floortyp == GROUND)
     {
         if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
@@ -2538,7 +2538,7 @@ struct rm* mainlev, *lev;
         else
             return get_location_category(lev->typ, lev->subtyp) + MAX_FLOOR_CATEGORIES;
     }
-    else if (lev->floortyp == GRASS)
+    else if (!IS_FLOOR(lev->typ) && lev->floortyp == GRASS)
     {
         if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
@@ -2556,7 +2556,7 @@ struct rm* mainlev, *lev;
         else
             return get_location_category(lev->typ, lev->subtyp);
     }
-    else if (lev->floortyp == ROOM)
+    else if (!IS_FLOOR(lev->typ) && lev->floortyp == ROOM)
     {
         if ((!mainlev_is_pool_ice_or_lava && IS_FURNITURE(lev->typ) && mainlev->typ == lev->floortyp && get_location_category(mainlev->typ, mainlev->subtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
             || (!mainlev_is_pool_ice_or_lava && IS_FURNITURE(mainlev->typ) && mainlev->floortyp == lev->floortyp && get_location_category(mainlev->floortyp, mainlev->floorsubtyp) == get_location_category(lev->floortyp, lev->floorsubtyp))
