@@ -6070,6 +6070,9 @@ struct mkroom* room;
                 case REAGENTSHOP:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
                     break;
+                case MODRONSHOP:
+                    res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
+                    break;
                 case FODDERSHOP:
                     res = GHSOUND_DUNGEON_NORMAL_MUSIC_SHOP_NORMAL;
                     break;
@@ -6242,6 +6245,8 @@ struct mkroom* room;
     case BOOKSHOP:
         break;
     case REAGENTSHOP:
+        break;
+    case MODRONSHOP:
         break;
     case FODDERSHOP:
         break;

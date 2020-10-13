@@ -81,8 +81,8 @@ MONSTER:('M',"modron quadrone"),(26,14),hostile,waitforu
 MONSTER:('M',"modron quadrone"),(16,12),hostile,waitforu
 MONSTER:('M',"modron quadrone"),(16,14),hostile,waitforu
 CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:5,(21,13),no_pickup {
-        OBJECT:class_treasure_weapon
-        OBJECT:('!', "greater speed")
+        OBJECT:('?', "conflict")
+        OBJECT:('(', "jar of prodigious healing salve")
         OBJECT:('*', "dilithium crystal"),quantity:(1d2)
 }
 
@@ -110,7 +110,7 @@ MONSTER:('M',"modron quinton"),(11,12),waitforu,hostile {
 MONSTER:('M',"modron pentadrone"),(12,11),hostile,waitforu
 CONTAINER:('(',"chest"),(08,11),no_pickup {
         OBJECT:('!', "greater regeneration")
-        OBJECT:('?', "conflict")
+        OBJECT:('/', "identify")
         OBJECT:('*', "dilithium crystal")
         [50%]:OBJECT:('?', "enchant weapon")
 }
@@ -143,7 +143,7 @@ AAAAA::::::::::::::-----F-----::::::::::::::AAAAA
 AAA::::::::::::::::|.........|::::::::::::::::AAA
 AA:::---F---:::T:::F.........F:::T:::---F---:::AA
 A::::|.....|:::::::|.........|:::::::|.....|::::A
-A::::F..{..|---F---|.........|---F---|..{..F::::A
+A::::F.....|---F---|.........|---F---|.....F::::A
 A::::|.....+.......|.........|.......+.....|::::A
 A::::-------.......-----+-----.......-------::::A
 ::::::::|............|.....|............|::::::::
@@ -151,7 +151,7 @@ A::::-------.......-----+-----.......-------::::A
 ::::::::|............|.....|............|::::::::
 A::::-------.......-----+-----.......-------::::A
 A::::|.....+.......|.........|.......+.....|::::A
-A::::F..{..|---F---|.........|---F---|..{..F::::A
+A::::F.....|---F---|.........|---F---|.....F::::A
 A::::|.....|:::::::|.........|:::::::|.....|::::A
 AA:::---F---:::T:::F.{.....{.F:::T:::---F---:::AA
 AAA::::::::::::::::|.........|::::::::::::::::AAA
@@ -166,20 +166,21 @@ NON_PASSWALL:(00,00,48,20)
 TELEPORT_REGION:(20,02,28,07),(0,0,0,0),up
 TELEPORT_REGION:(20,02,28,07),(0,0,0,0),down
 
-DOOR:closed,(24,08),subtype:door_modron
-DOOR:locked,(11,07),subtype:door_magic,keytype:"magic key"
-DOOR:locked,(37,07),subtype:door_magic,keytype:"magic key"
+DOOR:locked,(24,08),subtype:door_modron,keytype:"geometric key",special_quality:4
+DOOR:closed,(11,07),subtype:door_modron
+DOOR:closed,(37,07),subtype:door_modron
 DOOR:locked,(08,10),subtype:door_magic,keytype:"magic key",secret_door
 DOOR:locked,(40,10),subtype:door_magic,keytype:"magic key",secret_door
-DOOR:locked,(11,13),subtype:door_magic,keytype:"magic key"
-DOOR:locked,(37,13),subtype:door_magic,keytype:"magic key"
-DOOR:locked,(21,10),subtype:door_magic,keytype:"magic key"
-DOOR:locked,(27,10),subtype:door_magic,keytype:"magic key"
+DOOR:closed,(11,13),subtype:door_modron
+DOOR:closed,(37,13),subtype:door_modron
+DOOR:closed,(21,10),subtype:door_magic,keytype:"magic key"
+DOOR:closed,(27,10),subtype:door_magic,keytype:"magic key"
 
 REGION:(22,09,26,11),lit,"temple"
 ALTAR:(24,10),neutral,shrine,montype:"monk"
 
 # Four quartons and their quadrone bodyguards
+# Hostile quarton with a wand
 MONSTER:('M',"modron quarton"),(08,06),waitforu,hostile {
     OBJECT:('/', "create monster")
 }
@@ -187,41 +188,25 @@ MONSTER:('M',"modron quadrone"),(09,06),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(09,07),waitforu,hostile
 CONTAINER:('(',"chest"),(06,05),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:3
-        OBJECT:('!', "greater rejuvenation"),quantity:(1d2)
         OBJECT:('(', "horn of chaos")
         [50%]:OBJECT:('*', "dilithium crystal")
 }
 
-MONSTER:('M',"modron quarton"),(40,06),waitforu,hostile {
-    OBJECT:('!', "full healing")
-}
-MONSTER:('M',"modron quadrone"),(39,06),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(39,07),waitforu,hostile
-CONTAINER:('(',"chest"),(42,05),no_pickup {
-        OBJECT:('9', "modronite tetrahedron")
-        OBJECT:('/', "lightning")
-        OBJECT:('(', "jar of prodigious healing salve")
-        [50%]:OBJECT:('*', "dilithium crystal")
-}
 
-MONSTER:('M',"modron quarton"),(08,14),waitforu,hostile {
-    OBJECT:('?', "create monster")
-}
-MONSTER:('M',"modron quadrone"),(09,13),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(09,14),waitforu,hostile
-CONTAINER:('(',"chest"),(06,15),no_pickup {
-        OBJECT:('!', "lightning speed"),quantity:(1d2)
-        OBJECT:('/', "cold")
-        OBJECT:('*', "dilithium crystal"),quantity:(1d2)
-        [50%]:OBJECT:('?', "enchant armor"),blessed
-}
+# Warp engineer
+REGION:(38,05,42,07),lit,"npcroom"
+NPC:npc_warp_engineer,(40,06)
 
+# Shop
+REGION:(06,13,10,15),lit,"modron shop" montype:"modron quarton"
+
+# Hostile quarton
 MONSTER:('M',"modron quarton"),(40,14),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,13),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(39,14),waitforu,hostile
 CONTAINER:('(',"chest"),(42,15),no_pickup {
+    OBJECT:('9', "modronite tetrahedron")
     OBJECT:('/', "identify")
-    OBJECT:('?', "taming")
     OBJECT:('*', "dilithium crystal"),quantity:(1d2)
     [50%]:OBJECT:('?', "enchant weapon"),blessed
 }

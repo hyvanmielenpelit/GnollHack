@@ -2977,7 +2977,10 @@ int rtype;
 	case REAGENTSHOP:
 		str = "reagent shop";
 		break;
-	case FODDERSHOP:
+    case MODRONSHOP:
+        str = "alien shop";
+        break;
+    case FODDERSHOP:
         str = "health food store";
         break;
     case CANDLESHOP:

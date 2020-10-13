@@ -61,8 +61,11 @@ STATIC_DCL int FDECL(do_chat_smith_identify, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_reconciliation, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_gems_and_stones, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_identify_accessories_and_charged_items, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_identify_gems_stones_and_charged_items, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_gems_and_stones, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_sell_dilithium_crystals, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_sell_spellbooks, (struct monst*));
+STATIC_DCL int FDECL(do_chat_npc_branch_portal, (struct monst*));
 STATIC_OVL int FDECL(sell_to_npc, (struct obj*, struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_enchant_accessory, (struct monst*));
 STATIC_DCL int FDECL(do_chat_npc_recharge, (struct monst*));
@@ -2639,6 +2642,24 @@ dochat()
 				chatnum++;
 			}
 
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_DILITHIUM_CRYSTALS)
+			{
+				char sbuf[BUFSIZ];
+				Sprintf(sbuf, "Sell dilithium crystals to %s", mon_nam(mtmp));
+				strcpy(available_chat_list[chatnum].name, sbuf);
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_sell_dilithium_crystals;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
+
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
+
 			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BUY_SPELLBOOKS)
 			{
 				char sbuf[BUFSIZ];
@@ -2663,6 +2684,40 @@ dochat()
 				Sprintf(sbuf, "Identify accessories and charged items");
 				strcpy(available_chat_list[chatnum].name, sbuf);
 				available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_accessories_and_charged_items;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
+
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
+
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS)
+			{
+				char sbuf[BUFSIZ];
+				Sprintf(sbuf, "Identify gems, stones and charged items");
+				strcpy(available_chat_list[chatnum].name, sbuf);
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_identify_gems_stones_and_charged_items;
+				available_chat_list[chatnum].charnum = 'a' + chatnum;
+
+				any = zeroany;
+				any.a_char = available_chat_list[chatnum].charnum;
+
+				add_menu(win, NO_GLYPH, &any,
+					any.a_char, 0, ATR_NONE,
+					available_chat_list[chatnum].name, MENU_UNSELECTED);
+
+				chatnum++;
+			}
+
+			if (npc_subtype_definitions[ENPC(mtmp)->npc_typ].service_flags & NPC_SERVICE_BRANCH_PORTAL)
+			{
+				Sprintf(available_chat_list[chatnum].name, "Open a branch portal");
+				available_chat_list[chatnum].function_ptr = &do_chat_npc_branch_portal;
 				available_chat_list[chatnum].charnum = 'a' + chatnum;
 
 				any = zeroany;
@@ -2732,6 +2787,10 @@ dochat()
 			if (i != '\0')
 			{
 				res = (available_chat_list[j].function_ptr)(mtmp);
+
+				if (res == 2) /* Changed level or the like and mtmp does not exist anymore */
+					return 1;
+
 				if(mtmp->talkstate == 0)
 					mtmp->talkstate = 1;
 				mtmp->notalktimer = 100 + rnd(200);
@@ -2741,7 +2800,6 @@ dochat()
 	}
 
 	return res;
-
 }
 
 
@@ -5057,6 +5115,62 @@ struct monst* mtmp;
 	return 1;
 }
 
+STATIC_OVL int
+do_chat_npc_branch_portal(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !mtmp->isnpc || !mtmp->mextra || !ENPC(mtmp))
+		return 0;
+
+	int service_cost = max(1, (int)((500 + 25 * (double)u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+
+	long umoney = money_cnt(invent);
+	int u_pay;
+	int service_action = 0;
+	char qbuf[QBUFSZ];
+
+	if (!m_general_talk_check(mtmp, "opening a branch portal") || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney)
+	{
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to %s?\" (%d %s)", "open a branch portal", service_cost, currency((long)service_cost));
+	switch (ynq(qbuf))
+	{
+	default:
+	case 'n':
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)service_cost)
+		{
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = service_cost;
+		service_action = 1;
+		break;
+	}
+
+	money2mon(mtmp, (long)u_pay);
+	pline("%s opens a branch portal for you.", Monnam(mtmp));
+	int portal_res = create_portal();
+	if (!portal_res)
+	{
+		money2u(mtmp, (long)u_pay);
+		pline("Nevermind.");
+		return 0;
+	}
+	else
+		mtmp = 0;
+
+	/* Make sure mtmp is not used anywhere anymore; it is not invalid */
+	return 2; 
+}
+
 boolean
 is_npc_item_identification_type(otmp, npc_identification_type_index)
 struct obj* otmp;
@@ -5075,6 +5189,13 @@ int npc_identification_type_index;
 	else if (npc_identification_type_index == 2)
 	{
 		if (otmp->oclass == RING_CLASS || otmp->oclass == MISCELLANEOUS_CLASS || objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	else if (npc_identification_type_index == 3)
+	{
+		if (otmp->oclass == GEM_CLASS || objects[otmp->otyp].oc_charged > CHARGED_NOT_CHARGED)
 			return TRUE;
 		else
 			return FALSE;
@@ -5302,6 +5423,21 @@ struct monst* mtmp;
 }
 
 STATIC_OVL int
+do_chat_npc_sell_dilithium_crystals(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !has_enpc(mtmp))
+		return 0;
+
+	const char sell_types[] = { ALLOW_COUNT, GEM_CLASS, 0 };
+	int result, i = (invent) ? 0 : (SIZE(sell_types) - 1);
+
+	result = sell_to_npc(getobj(&sell_types[i], "sell", 3, ""), mtmp);
+
+	return 1;
+}
+
+STATIC_OVL int
 do_chat_npc_sell_spellbooks(mtmp)
 struct monst* mtmp;
 {
@@ -5355,6 +5491,59 @@ struct monst* mtmp;
 	}
 
 	context.npc_identify_type = 2;
+
+	int res = identify_pack(1, FALSE);
+
+	context.npc_identify_type = 0;
+
+	if (res)
+	{
+		money2mon(mtmp, (long)u_pay);
+		context.botl = 1;
+	}
+
+	return 1;
+}
+
+STATIC_OVL int
+do_chat_npc_identify_gems_stones_and_charged_items(mtmp)
+struct monst* mtmp;
+{
+	if (!mtmp || !has_enpc(mtmp))
+		return 0;
+
+	long umoney;
+	int u_pay;
+	int minor_id_cost = max(1, (int)((double)(100 + 10 * u.ulevel) * service_cost_charisma_adjustment(ACURR(A_CHA))));
+	char qbuf[QBUFSZ];
+
+	multi = 0;
+	umoney = money_cnt(invent);
+
+
+	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
+		return 0;
+	else if (!umoney) {
+		You("have no money.");
+		return 0;
+	}
+
+	Sprintf(qbuf, "\"Would you like to identify a gem, stone or a charged item?\" (%d %s)", minor_id_cost, currency((long)minor_id_cost));
+
+	switch (ynq(qbuf)) {
+	default:
+	case 'q':
+		return 0;
+	case 'y':
+		if (umoney < (long)minor_id_cost) {
+			You("don't have enough money for that!");
+			return 0;
+		}
+		u_pay = minor_id_cost;
+		break;
+	}
+
+	context.npc_identify_type = 3;
 
 	int res = identify_pack(1, FALSE);
 
@@ -5428,7 +5617,7 @@ struct monst* mtmp;
 		res = 0;
 		goto merge_obj_back;
 	}
-	saleitem = ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE : 
+	saleitem = ENPC(mtmp)->npc_typ == NPC_WARP_ENGINEER && obj->otyp == DILITHIUM_CRYSTAL ? TRUE : ENPC(mtmp)->npc_typ == NPC_GEOLOGIST && obj->oclass == GEM_CLASS ? TRUE :
 		ENPC(mtmp)->npc_typ == NPC_ARTIFICER && obj->oclass == SPBOOK_CLASS ? TRUE :
 		FALSE;
 
@@ -5884,5 +6073,7 @@ struct monst* mtmp;
 	verbalize("Thank you for using my services.");
 	return 1;
 }
+
+
 
 /*sounds.c*/

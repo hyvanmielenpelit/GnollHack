@@ -332,6 +332,7 @@ icosahedral { savetoken(yytext); yylval.i=MODRON_PORTAL_SUBTYPE_ICOSAHEDRAL; ret
 npc_random { savetoken(yytext); yylval.i=MAX_NPC_SUBTYPES; return NPC_TYPE; }
 npc_artificer { savetoken(yytext); yylval.i=NPC_ARTIFICER; return NPC_TYPE; }
 npc_geologist { savetoken(yytext); yylval.i=NPC_GEOLOGIST; return NPC_TYPE; }
+npc_warp_engineer { savetoken(yytext); yylval.i=NPC_WARP_ENGINEER; return NPC_TYPE; }
 fountain_natural { savetoken(yytext); yylval.i=FOUNTAIN_NATURAL; return FOUNTAIN_TYPE; }
 fountain_magic { savetoken(yytext); yylval.i=FOUNTAIN_MAGIC; return FOUNTAIN_TYPE; }
 fountain_healing { savetoken(yytext); yylval.i=FOUNTAIN_HEALING; return FOUNTAIN_TYPE; }

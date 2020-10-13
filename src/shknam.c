@@ -173,11 +173,19 @@ static const char *const shkgeneral[] = {
 };
 
 static const char* const shkreagents[] = {
-	/* AD&D mages and others*/
+	/* AD&D mages and others */
 	"Merlin",    "Mordenkainen", "Leomund",   "Rary",
 	"Bigby",     "Otiluke",  "Tenser", "Elminster",
 	"Bucknard",  "Drawmij",  "Nystul", "Otto",
 	"Gandalf",   "Saruman",     0
+};
+
+static const char* const shkmodron[] = {
+    /* Modron names */
+    "Alphadron",    "Betagon",    "Gammadron",   "Deltadron",
+    "Iotadron",     "Omegadron",  "Kappagon",    "Lambdadron",
+    "Zetadron",     "Omidron",    "Taudron",     "Psidron",
+    "Thetadron",    0
 };
 
 
@@ -385,7 +393,23 @@ const struct shclass shtypes[] = {
 		  { 0, 0 },
 		  { 0, 0 } },
 		shkreagents },
-	{ "health food store",
+    { "exquisite concoctions and recipes",
+        ILLOBJ_CLASS,
+        "a potion or scroll",
+        0,
+        D_SHOP,
+        { { 10, -POT_HEROISM },
+            { 10, -POT_SUPER_HEROISM },
+            { 10, -SCR_CONFLICT },
+            { 10, -SCR_TAMING },
+            { 10, -SCR_GENOCIDE },
+            { 10, -POT_LIGHTNING_SPEED },
+            { 10, -POT_GREATER_SPEED },
+            { 10, -POT_FULL_HEALING },
+            { 10, -POT_GREATER_REGENERATION },
+            { 10, -POT_GREATER_REJUVENATION } },
+        shkmodron },
+    { "health food store",
       FOOD_CLASS,
 	  "a health food item",
 	  2,
@@ -800,7 +824,7 @@ struct mkroom *sroom;
     eshkp->billct = eshkp->visitct = 0;
     eshkp->bill_p = (struct bill_x *) 0;
     eshkp->customer[0] = '\0';
-    mkmonmoney(shk, Inhell ? 10000L + 30L * (long)d(5, 100) : 1000L + 30L * (long) rnd(100)); /* initial capital */
+    mkmonmoney(shk, u.uz.dnum != main_dungeon_dnum ? 10000L + 30L * (long)d(5, 100) : 1000L + 30L * (long) rnd(100)); /* initial capital */
     if (shp->shknms == shkrings)
         (void) mongets(shk, TOUCHSTONE);
     nameshk(shk, shp->shknms);

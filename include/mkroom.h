@@ -86,7 +86,8 @@ enum roomtype_types {
     TOOLSHOP,
     BOOKSHOP,
 	REAGENTSHOP,
-	FODDERSHOP, /* health food store */
+    MODRONSHOP,
+    FODDERSHOP, /* health food store */
     CANDLESHOP
 };
 
