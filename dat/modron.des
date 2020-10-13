@@ -173,8 +173,15 @@ DOOR:closed,(37,13),subtype:door_modron
 DOOR:locked,(21,10),subtype:door_magic,keytype:"magic key"
 DOOR:locked,(27,10),subtype:door_magic,keytype:"magic key"
 
+# Middle room
 REGION:(22,09,26,11),lit,"temple"
 ALTAR:(24,10),neutral,shrine,montype:"monk"
+
+MONSTER:('M',"modron quadrone"),(22,09),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(26,09),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(22,11),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(26,11),waitforu,hostile
+
 
 # Four quartons and their quadrone bodyguards
 # Hostile quarton with a wand
@@ -222,10 +229,10 @@ MODRON_PORTAL:(24,05),level_teleporter,teleport_up,matching_portal,cubical,inact
 DOOR:locked,(24,12),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
 MODRON_PORTAL:(24,15),level_teleporter,teleport_down,matching_portal,tetrahedral,inactive
 
-MONSTER:('M',"modron quadrone"),(22,09),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(26,09),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(22,11),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(26,11),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(20,13),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,13),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(20,17),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,17),waitforu,hostile
 
 
 #############
@@ -297,7 +304,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(25,03),no_pickup {
 MONSTER:('M',"modron tertian"),(10,12),waitforu,hostile
 CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(07,12),no_pickup {
         OBJECT:('9', "modronite monopole")
-        OBJECT:('=', "teleport control")
+        OBJECT:('/', "cancellation")
         OBJECT:('*', "dilithium crystal"),quantity:(1+(1d2))
         [50%]:OBJECT:random_contents
 }
@@ -315,7 +322,7 @@ MONSTER:('M',"modron tridrone"),(39,11),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(38,12),waitforu,hostile
 
 MONSTER:('M',"modron pentadrone"),(20,07),waitforu,hostile
-MONSTER:('M',"modron pentadrone"),(40,07),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(30,07),waitforu,hostile
 
 MONSTER:('M',"modron tridrone"),(23,08),waitforu,hostile
 MONSTER:('M',"modron tridrone"),(25,08),waitforu,hostile
@@ -452,7 +459,7 @@ DOOR:closed,(16,09),subtype:door_modron
 DOOR:locked,(16,11),subtype:door_modron,keytype:"magic key"
 DOOR:closed,(22,09),subtype:door_modron
 DOOR:closed,(22,11),subtype:door_modron
-DOOR:locked,(30,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
+DOOR:locked,(30,10),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 
 REGION:(32,02,40,06),lit,"temple"
 ALTAR:(36,04),chaos,shrine,montype:"monk"
@@ -499,7 +506,7 @@ TELEPORT_REGION:(14,04,18,04),(0,0,0,0),down
 DOOR:locked,(05,07),subtype:door_magic,keytype:"magic key",special_quality:1,secret_door
 DOOR:locked,(27,07),subtype:door_magic,keytype:"magic key",special_quality:1,secret_door
 DOOR:locked,(16,12),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:locked,(13,07),subtype:door_modron,keytype:"geometric key",special_quality:8,non_passdoor,secret_door
+DOOR:locked,(13,07),subtype:door_modron,keytype:"geometric key",special_quality:5,non_passdoor,secret_door
 DOOR:locked,(19,07),subtype:door_modron,keytype:"geometric key",special_quality:5,non_passdoor,secret_door
 DOOR:locked,(16,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 DOOR:closed,(13,04),subtype:door_modron
@@ -561,7 +568,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,(
 }
 CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,(21,07),no_pickup {
         OBJECT:class_artifact
-        OBJECT:random_contents
+        OBJECT:('=', "teleport control")
         OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
 }
 OBJECT:class_treasure_armor,(04,07)
