@@ -303,7 +303,20 @@ int mtype;
     if (MON_AT(sx + 1, sy))
         (void) rloc(m_at(sx + 1, sy), FALSE); /* insurance */
 
-    int montype = mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE) ? mtype : sanctum ? PM_HIGH_PRIEST : In_modron_level(&u.uz) ? PM_MONK : PM_ALIGNED_PRIEST;
+    int montype = sanctum ? PM_HIGH_PRIEST : PM_ALIGNED_PRIEST;
+    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE))
+    {
+        montype = mtype;
+    }
+    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
+    {
+        montype = sroom->resident_mtype;
+    }
+    else
+    {
+        /* Nothing here currently */
+    }
+
     priest = makemon(&mons[montype], sx + 1, sy, MM_EPRI);
     if(!priest)
         priest = makemon(&mons[sanctum ? PM_HIGH_PRIEST : PM_ALIGNED_PRIEST], sx + 1, sy, MM_EPRI);
@@ -447,7 +460,23 @@ int mtype;
     if (MON_AT(smith_loc_x, smith_loc_y))
         (void)rloc(m_at(smith_loc_x, smith_loc_y), FALSE); /* insurance */
 
-    int smith_montype = mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE) ? mtype : Is_yeenoghu_level(&u.uz) ? PM_FLIND_LORD : In_modron_level(&u.uz) ? PM_MONK : PM_SMITH;
+    int smith_montype = PM_SMITH;
+    if (mtype > NON_PM && mtype < NUM_MONSTERS && !(mvitals[mtype].mvflags & G_GONE))
+    {
+        smith_montype = mtype;
+    }
+    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
+    {
+        smith_montype = sroom->resident_mtype;
+    }
+    else
+    {
+        if (Is_yeenoghu_level(&u.uz) && !(mvitals[PM_FLIND_LORD].mvflags & G_GONE))
+        {
+            smith_montype = PM_FLIND_LORD;
+        }
+    }
+
     smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI);
     if(!smith)
         smith = makemon(&mons[PM_SMITH], smith_loc_x, smith_loc_y, MM_ESMI); /* Fallback */

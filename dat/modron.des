@@ -177,7 +177,7 @@ DOOR:locked,(21,10),subtype:door_magic,keytype:"magic key"
 DOOR:locked,(27,10),subtype:door_magic,keytype:"magic key"
 
 REGION:(22,09,26,11),lit,"temple"
-ALTAR:(24,10),neutral,shrine
+ALTAR:(24,10),neutral,shrine,montype:"monk"
 
 # Four quartons and their quadrone bodyguards
 MONSTER:('M',"modron quarton"),(08,06),waitforu,hostile {
@@ -360,7 +360,7 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"magic key"),(30,12),no_pickup {
 
 # Secret temple
 REGION:(23,15,27,17),lit,"temple"
-ALTAR:(25,16),law,shrine
+ALTAR:(25,16),law,shrine,montype:"monk"
 OBJECT:('(', "cubic gate"),(25,16),no_pickup
 
 
@@ -476,14 +476,13 @@ DOOR:closed,(16,09),subtype:door_modron
 DOOR:locked,(16,11),subtype:door_modron,keytype:"magic key"
 DOOR:closed,(22,09),subtype:door_modron
 DOOR:closed,(22,11),subtype:door_modron
-
 DOOR:locked,(30,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
 
 REGION:(32,02,40,06),lit,"temple"
-ALTAR:(36,04),law,shrine
+ALTAR:(36,04),law,shrine,montype:"abbot"
 
 REGION:(32,14,40,18),lit,"temple"
-ALTAR:(36,16),law,shrine
+ALTAR:(36,16),law,shrine,montype:"abbot"
 
 
 #############

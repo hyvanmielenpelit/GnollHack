@@ -28,7 +28,6 @@ enum npc_subtypes {
 struct npc_subtype_definition {
     int mnum;
     enum npc_gehennom_types npc_gehennom_type;
-    enum npc_modron_plane_types npc_modron_plane_type;
     const char* npc_role_name;
     const char* room_name;
     schar min_appearance_depth;

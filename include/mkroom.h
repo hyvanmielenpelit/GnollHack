@@ -21,6 +21,7 @@ struct mkroom {
     boolean irregular;    /* true if room is non-rectangular */
     struct mkroom *sbrooms[MAX_SUBROOMS]; /* Subrooms pointers */
     struct monst *resident; /* priest/shopkeeper/guard for this room */
+    int resident_mtype;   /* Specific monster type for the resident, if any */
 };
 
 struct shclass {

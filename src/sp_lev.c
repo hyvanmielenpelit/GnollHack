@@ -71,7 +71,7 @@ STATIC_DCL void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
 STATIC_DCL void FDECL(get_free_room_loc, (schar *, schar *,
                                           struct mkroom *, packed_coord));
 STATIC_DCL boolean FDECL(create_subroom, (struct mkroom *, XCHAR_P, XCHAR_P,
-                                          XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, int));
+                                          XCHAR_P, XCHAR_P, XCHAR_P, XCHAR_P, int, int, int));
 STATIC_DCL void FDECL(create_door, (room_door *, struct mkroom *));
 STATIC_DCL void FDECL(create_trap, (spltrap *, struct mkroom *));
 STATIC_DCL int FDECL(noncoalignment, (ALIGNTYP_P));
@@ -1214,12 +1214,12 @@ chk:
  * This is still very incomplete...
  */
 boolean
-create_room(x, y, w, h, xal, yal, rtype, rlit, floortyp, floorcategory)
+create_room(x, y, w, h, xal, yal, rtype, rlit, floortyp, floorcategory, mtype)
 xchar x, y;
 xchar w, h;
 xchar xal, yal;
 xchar rtype, rlit;
-int floortyp, floorcategory;
+int floortyp, floorcategory, mtype;
 {
     xchar xabs = 0, yabs = 0;
     int wtmp, htmp, xaltmp, yaltmp, xtmp, ytmp;
@@ -1374,7 +1374,7 @@ int floortyp, floorcategory;
     if (!vault) {
         smeq[nroom] = nroom;
         add_room(xabs, yabs, xabs + wtmp - 1, yabs + htmp - 1, rlit, rtype,
-                 FALSE, IS_FLOOR(floortyp) ? floortyp : ROOM, floorcategory);
+                 FALSE, IS_FLOOR(floortyp) ? floortyp : ROOM, floorcategory, mtype);
     } else {
         rooms[nroom].lx = xabs;
         rooms[nroom].ly = yabs;
@@ -1387,12 +1387,12 @@ int floortyp, floorcategory;
  * x & y are relative to the parent room.
  */
 STATIC_OVL boolean
-create_subroom(proom, x, y, w, h, rtype, rlit, floortyp, floorcategory)
+create_subroom(proom, x, y, w, h, rtype, rlit, floortyp, floorcategory, mtype)
 struct mkroom *proom;
 xchar x, y;
 xchar w, h;
 xchar rtype, rlit;
-int floortyp, floorcategory;
+int floortyp, floorcategory, mtype;
 {
     xchar width, height;
 
@@ -1426,7 +1426,7 @@ int floortyp, floorcategory;
     if (rlit == -1)
         rlit = (rnd(1 + abs(depth(&u.uz))) < 11 && rn2(77)) ? TRUE : FALSE;
     add_subroom(proom, proom->lx + x, proom->ly + y, proom->lx + x + w - 1,
-                proom->ly + y + h - 1, rlit, rtype, FALSE, floortyp, floorcategory);
+                proom->ly + y + h - 1, rlit, rtype, FALSE, floortyp, floorcategory, mtype);
     return TRUE;
 }
 
@@ -3004,11 +3004,11 @@ struct mkroom *mkr;
 
     if (mkr) {
         aroom = &subrooms[nsubroom];
-        okroom = create_subroom(mkr, r->x, r->y, r->w, r->h, rtype, r->rlit, r->floormaintype, r->floortype);
+        okroom = create_subroom(mkr, r->x, r->y, r->w, r->h, rtype, r->rlit, r->floormaintype, r->floortype, r->mtype);
     } else {
         aroom = &rooms[nroom];
         okroom = create_room(r->x, r->y, r->w, r->h, r->xalign, r->yalign,
-                             rtype, r->rlit, r->floormaintype, r->floortype);
+                             rtype, r->rlit, r->floormaintype, r->floortype, r->mtype);
     }
 
     if (okroom) {
@@ -6050,13 +6050,13 @@ struct sp_coder *coder;
         min_ry = max_ry = dy1;
         smeq[nroom] = nroom;
         flood_fill_rm(dx1, dy1, nroom + ROOMOFFSET, OV_i(rlit), TRUE);
-        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, IS_FLOOR(OV_i(floormaintype)) ? OV_i(floormaintype) : ROOM, OV_i(floortype) >= 0 ? OV_i(floortype) : 0);
+        add_room(min_rx, min_ry, max_rx, max_ry, FALSE, OV_i(rtype), TRUE, IS_FLOOR(OV_i(floormaintype)) ? OV_i(floormaintype) : ROOM, OV_i(floortype) >= 0 ? OV_i(floortype) : 0, roommontype);
         troom->rlit = OV_i(rlit);
         troom->irregular = TRUE;
     }
     else 
     {
-        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, IS_FLOOR(OV_i(floormaintype)) ? OV_i(floormaintype) : ROOM, OV_i(floortype) >= 0 ? OV_i(floortype) : 0);
+        add_room(dx1, dy1, dx2, dy2, OV_i(rlit), OV_i(rtype), TRUE, IS_FLOOR(OV_i(floormaintype)) ? OV_i(floormaintype) : ROOM, OV_i(floortype) >= 0 ? OV_i(floortype) : 0, roommontype);
 #ifdef SPECIALIZATION
         topologize(troom, FALSE); /* set roomno */
 #else

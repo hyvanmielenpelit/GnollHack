@@ -14,7 +14,6 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
     {
         PM_ARCHMAGE,
         NPC_GEHENNOM_UNDEAD_SPELLCASTER,
-        NPC_MODRON_PLANE_ABBOT,
         "artificer",
         "laboratory",
         8, 0,
@@ -25,7 +24,6 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
     {
         PM_DWARVEN_GEOLOGIST,
         NPC_GEHENNOM_DWARF_MUMMY,
-        NPC_MODRON_PLANE_MONK,
         "geologist",
         "workshop",
         6, 0,
@@ -301,6 +299,10 @@ int mtype;
     {
         npc_montype = mtype;
     }
+    else if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
+    {
+        npc_montype = sroom->resident_mtype;
+    }
     else
     {
         if (Inhell)
@@ -323,22 +325,6 @@ int mtype;
                     npc_montype = PM_GHOST;
                 else if (!(mvitals[PM_PIT_FIEND].mvflags & G_GONE))
                     npc_montype = PM_PIT_FIEND;
-                break;
-            default:
-                break;
-            }
-        }
-        else if (In_modron_level(&u.uz))
-        {
-            switch (npc_subtype_definitions[npctype].npc_modron_plane_type)
-            {
-            case NPC_MODRON_PLANE_STANDARD:
-                break;
-            case NPC_MODRON_PLANE_MONK:
-                npc_montype = PM_MONK;
-                break;
-            case NPC_MODRON_PLANE_ABBOT:
-                npc_montype = PM_ABBOT;
                 break;
             default:
                 break;

@@ -764,14 +764,24 @@ struct mkroom *sroom;
 
     /* now initialize the shopkeeper monster structure */
     int shkomontype = PM_SHOPKEEPER;
-
-    if (Inhell)
+    if (sroom->resident_mtype > 0 && sroom->resident_mtype < NUM_MONSTERS && !(mvitals[sroom->resident_mtype].mvflags & G_GONE))
     {
-        shkomontype = get_gehennom_undead_spellcaster(shkomontype);
+        shkomontype = sroom->resident_mtype;
+    }
+    else
+    {
+        if (Inhell)
+        {
+            shkomontype = get_gehennom_undead_spellcaster(shkomontype);
+        }
     }
 
-    if (!(shk = makemon(&mons[shkomontype], sx, sy, MM_ESHK)))
-        return -1;
+    shk = makemon(&mons[shkomontype], sx, sy, MM_ESHK);
+    if (!shk)
+    {
+        if (!(shk = makemon(&mons[PM_SHOPKEEPER], sx, sy, MM_ESHK)))
+            return -1;
+    }
 
     eshkp = ESHK(shk); /* makemon(...,MM_ESHK) allocates this */
     shk->isshk = shk->mpeaceful = 1;
