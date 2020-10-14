@@ -327,7 +327,7 @@
 #define M5_HATES_SILVER             0x01000000UL /* In addition to lycanthropes, demons, and vampires, e.g. non-tengu imps and shade */
 #define M5_SHADE                    0x02000000UL /* Shade only */
 #define M5_TELEPORT_HEAL_TACTICS    0x04000000UL /* Arch-lich, Wizard of Yendor, Demogorgon, and various other monsters */
-#define M5_MAKES_SOUND_RANDOMLY          0x08000000UL
+#define M5_MAKES_SOUND_RANDOMLY     0x08000000UL
 
 #define MZ_TINY 0          /* < 2' */
 #define MZ_SMALL 1         /* 2-4' */

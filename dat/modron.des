@@ -179,6 +179,8 @@ ALTAR:(24,10),neutral,shrine,montype:"monk"
 
 MONSTER:('M',"modron quadrone"),(20,07),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(28,07),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(20,10),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,10),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(20,13),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(28,13),waitforu,hostile
 
@@ -216,21 +218,27 @@ CONTAINER:('(',"chest"),(42,15),no_pickup {
 
 
 # Fountain room guards
-MONSTER:('M',"modron pentadrone"),(14,10),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(15,09),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(15,10),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(15,11),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(33,09),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(33,10),waitforu,hostile
-MONSTER:('M',"modron pentadrone"),(34,10),waitforu,hostile
+MONSTER:('M',"modron pentadrone"),(33,11),waitforu,hostile
 
 # Portal Rooms
 # Up
 MODRON_PORTAL:(24,04),level_teleporter,teleport_up,matching_portal,cubical,inactive
+MONSTER:('M',"modron quadrone"),(20,03),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,03),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(20,05),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,05),waitforu,hostile
 
 # Down
 DOOR:locked,(24,14),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
 MODRON_PORTAL:(24,16),level_teleporter,teleport_down,matching_portal,tetrahedral,inactive
 
-MONSTER:('M',"modron quadrone"),(20,13),waitforu,hostile
-MONSTER:('M',"modron quadrone"),(28,13),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(20,15),waitforu,hostile
+MONSTER:('M',"modron quadrone"),(28,15),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(20,17),waitforu,hostile
 MONSTER:('M',"modron quadrone"),(28,17),waitforu,hostile
 
