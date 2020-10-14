@@ -892,7 +892,7 @@ unsigned cxn_flags; /* bitmask of CXN_xxx values */
         } else if (!dknown) {
             Strcpy(buf, "spellbook");
         } else if (nn) {
-            if (typ != SPE_BOOK_OF_THE_DEAD)
+            if (typ != SPE_BOOK_OF_THE_DEAD && typ != SPE_BOOK_OF_MODRON)
                 Strcpy(buf, "spellbook of ");
             Strcat(buf, actualn);
         } else if (un) {

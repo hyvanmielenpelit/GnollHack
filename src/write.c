@@ -216,7 +216,7 @@ found:
         You_cant("write that!");
         pline("It's obscene!");
         return 1;
-    } else if (i == SPE_BOOK_OF_THE_DEAD) {
+    } else if (i == SPE_BOOK_OF_THE_DEAD || i == SPE_BOOK_OF_MODRON) {
         pline("No mere dungeon adventurer could write that.");
         return 1;
     } else if (by_descr && paper->oclass == SPBOOK_CLASS

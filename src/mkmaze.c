@@ -1090,7 +1090,7 @@ const char *s;
 
     if (!Invocation_lev(&u.uz) && Inhell && rn2(2))
     {
-        int corrscale = 1 + rnd(2);//rnd(4)
+        int corrscale = 2; // 1+rnd(2);//rnd(4)
         int wallscale = 1; //rnd(4)-corrscale
         create_maze(corrscale, wallscale);
     }

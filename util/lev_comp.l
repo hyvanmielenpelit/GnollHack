@@ -211,6 +211,7 @@ target		ST_RET(TARGET_ID);
 tertype		ST_RET(TERTYPE_ID);
 tertype2	ST_RET(TERTYPE2_ID);
 effect_flags	ST_RET(EFFECT_FLAG_ID);
+artifact_name   ST_RET(ARTIFACT_NAME_ID)
 selection	ST_RET(selection_ID);
 rect		ST_RET(rect_ID);
 fillrect	ST_RET(fillrect_ID);

@@ -37,6 +37,7 @@ STATIC_DCL int FDECL(spell_let_to_idx, (CHAR_P));
 STATIC_DCL boolean FDECL(cursed_book, (struct obj * bp));
 STATIC_DCL boolean FDECL(confused_book, (struct obj *));
 STATIC_DCL void FDECL(deadbook, (struct obj *));
+STATIC_DCL void FDECL(modronbook, (struct obj*));
 STATIC_PTR int NDECL(learn);
 STATIC_DCL boolean NDECL(rejectcasting);
 STATIC_DCL boolean FDECL(reject_specific_spell_casting, (int));
@@ -155,7 +156,7 @@ struct obj *spellbook;
 {
     boolean gone = FALSE;
 
-    if (!rn2(3) && spellbook->otyp != SPE_BOOK_OF_THE_DEAD) {
+    if (!rn2(3) && spellbook->otyp != SPE_BOOK_OF_THE_DEAD && spellbook->otyp != SPE_BOOK_OF_MODRON) {
         spellbook->in_use = TRUE; /* in case called from learn */
         pline(
          "Being confused you have difficulties in controlling your actions.");
@@ -314,6 +315,27 @@ struct obj *book2;
     return;
 }
 
+/* special effects for The Prime Codex */
+STATIC_OVL void
+modronbook(book2)
+struct obj* book2;
+{
+	You("finish reading one paragraph of the Prime Codex...");
+	book2->aknown = book2->nknown = book2->dknown = 1;
+	makeknown(SPE_BOOK_OF_MODRON);
+
+	if (Hallucination || Stunned || Confusion)
+		pline("The machinations of the world suddenly starts to make a lot more sense to you.");
+	else
+		pline("The machinations of the world are a bit clearer to you now.");
+
+	(void)make_hallucinated(0L, TRUE, 0L);
+	make_stunned(0L, TRUE);
+	make_confused(0L, TRUE);
+}
+
+
+
 /* 'book' has just become cursed; if we're reading it and realize it is
    now cursed, interrupt */
 void
@@ -338,7 +360,7 @@ learn(VOID_ARGS)
     /* JDS: lenses give 50% faster reading; 33% smaller read time */
     if (context.spbook.delay && Enhanced_vision && rn2(2))
         context.spbook.delay++;
-    if (Confusion && book->otyp != SPE_BOOK_OF_THE_DEAD) 
+    if (Confusion && book->otyp != SPE_BOOK_OF_THE_DEAD && book->otyp != SPE_BOOK_OF_MODRON)
 	{ /* became confused while learning */
 		context.spbook.reading_result = READING_RESULT_CONFUSED;
 #if 0
@@ -366,6 +388,11 @@ learn(VOID_ARGS)
 	if (booktype == SPE_BOOK_OF_THE_DEAD) {
 		deadbook(book);
 		return 0;
+	}
+	else if (booktype == SPE_BOOK_OF_MODRON)
+	{
+		modronbook(book);
+		return 0 ;
 	}
 
 	/* Possible failures */
@@ -652,7 +679,7 @@ register struct obj *spellbook;
 
         /* Books are often wiser than their readers (Rus.) */
         spellbook->in_use = TRUE;
-        if (!spellbook->blessed && spellbook->otyp != SPE_BOOK_OF_THE_DEAD) {
+        if (!spellbook->blessed && spellbook->otyp != SPE_BOOK_OF_THE_DEAD && spellbook->otyp != SPE_BOOK_OF_MODRON) {
             if (spellbook->cursed)
 			{
                 too_hard = TRUE;
@@ -753,8 +780,9 @@ register struct obj *spellbook;
 //		if (perusetext)
 //			pline("The spellbook seems comprehensible enough.");
 
+		play_sfx_sound(SFX_READ);
 		You("begin to %s the runes.",
-			spellbook->otyp == SPE_BOOK_OF_THE_DEAD ? "recite" : "memorize");
+			spellbook->otyp == SPE_BOOK_OF_THE_DEAD ? "recite" : spellbook->otyp == SPE_BOOK_OF_MODRON ? "decipher" : "memorize");
     }
 
     context.spbook.book = spellbook;

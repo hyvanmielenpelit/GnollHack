@@ -571,15 +571,13 @@ MONSTER:('M',"Modron Primus"),(16,07),waitforu,hostile {
 }
 
 # Treasures
-CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,(11,07),no_pickup {
+CONTAINER:('(',"golden chest"),locked,keytype:('(',"geometric key"),special_quality:8,(11,07),no_pickup {
         OBJECT:artifact
-        OBJECT:('+', "call hierarch modron")
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
+        OBJECT:('*', "dilithium crystal"),quantity:(2+(2d3))
 }
-CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:8,(21,07),no_pickup {
-        OBJECT:class_artifact
-        OBJECT:('=', "teleport control")
-        OBJECT:('*', "dilithium crystal"),quantity:(1+(1d3))
+CONTAINER:('(',"golden chest"),locked,keytype:('(',"geometric key"),special_quality:8,(21,07),no_pickup {
+        OBJECT:('+', "Book of Modron"),name:"The Prime Codex"
+        OBJECT:('+', "call hierarch modron")
 }
 OBJECT:class_treasure_armor,(04,07)
 OBJECT:class_treasure_weapon,(28,07)

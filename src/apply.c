@@ -3057,7 +3057,7 @@ struct obj* obj;
 					prinv((char*)0, otmp, 0L);
 					//otmp->elemental_enchantment = COLD_ENCHANTMENT;
 				}
-				else if (otmp->oclass == POTION_CLASS)
+				else if (otmp->oclass == POTION_CLASS && !oresist_cold(otmp))
 				{
 					wandknown = TRUE;
 					destroy_one_item(otmp, otmp->oclass, AD_COLD, TRUE);
@@ -3125,7 +3125,7 @@ struct obj* obj;
 						prinv((char*)0, otmp, 0L);
 						//otmp->elemental_enchantment = FIRE_ENCHANTMENT;
 				}
-				else if (otmp->oclass == POTION_CLASS || otmp->oclass == SCROLL_CLASS || otmp->oclass == SPBOOK_CLASS)
+				else if ((otmp->oclass == POTION_CLASS || otmp->oclass == SCROLL_CLASS || otmp->oclass == SPBOOK_CLASS) && !oresist_fire(otmp))
 				{
 					wandknown = TRUE;
 					destroy_one_item(otmp, otmp->oclass, AD_FIRE, TRUE);
@@ -3158,7 +3158,7 @@ struct obj* obj;
                         LIGHTNING_ENCHANTMENT);
 					prinv((char*)0, otmp, 0L);
 				}
-				else if (otmp->oclass == RING_CLASS || otmp->oclass == WAND_CLASS)
+				else if ((otmp->oclass == RING_CLASS || otmp->oclass == WAND_CLASS) && !oresist_elec(otmp))
 				{
 					wandknown = TRUE;
 					destroy_one_item(otmp, otmp->oclass, AD_ELEC, TRUE);

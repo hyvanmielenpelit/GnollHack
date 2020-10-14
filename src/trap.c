@@ -234,6 +234,7 @@ int ef_flags;
         impossible("Invalid erosion type in erode_obj");
         return ER_NOTHING;
     }
+    
     erosion = is_primary ? otmp->oeroded : otmp->oeroded2;
 
     if (!ostr)
@@ -3718,8 +3719,10 @@ xchar x, y;
     if (catch_lit(obj))
         return FALSE;
 
-    if (Is_container(obj)) {
-        switch (obj->otyp) {
+    if (Is_container(obj))
+    {
+        switch (obj->otyp) 
+        {
 		case ICE_BOX:
             return FALSE; /* Immune */
 		case CHEST:
@@ -3742,10 +3745,12 @@ xchar x, y;
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         if (in_sight)
             pline("%s catches fire and burns.", Yname2(obj));
-        if (Has_contents(obj)) {
+        if (Has_contents(obj))
+        {
             if (in_sight)
                 pline("Its contents fall out.");
-            for (otmp = obj->cobj; otmp; otmp = ncobj) {
+            for (otmp = obj->cobj; otmp; otmp = ncobj) 
+            {
                 ncobj = otmp->nobj;
                 obj_extract_self(otmp);
                 if (!flooreffects(otmp, x, y, ""))
@@ -3755,21 +3760,28 @@ xchar x, y;
         setnotworn(obj);
         delobj(obj);
         return TRUE;
-    } else if (!force && (Luck + 5) > rn2(20)) {
+    } 
+    else if (!force && (Luck + 5) > rn2(20)) 
+    {
         /*  chance per item of sustaining damage:
           *     max luck (Luck==13):    10%
           *     avg luck (Luck==0):     75%
           *     awful luck (Luck<-4):  100%
           */
         return FALSE;
-    } else if (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS) {
-        if (obj->otyp == SCR_FIRE || obj->otyp == SPE_FIREBALL)
-            return FALSE;
-        if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
+    }
+    else if (obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS) 
+    {
+        if (obj->otyp == SPE_BOOK_OF_THE_DEAD) 
+        {
             if (in_sight)
                 pline("Smoke rises from %s.", the(xname(obj)));
             return FALSE;
         }
+
+        if (oresist_fire(obj))
+            return FALSE;
+
         dindx = (obj->oclass == SCROLL_CLASS) ? 3 : 4;
 
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
@@ -3779,7 +3791,9 @@ xchar x, y;
         setnotworn(obj);
         delobj(obj);
         return TRUE;
-    } else if (obj->oclass == POTION_CLASS) {
+    } 
+    else if (obj->oclass == POTION_CLASS)
+    {
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BURNT);
         dindx = (obj->otyp != POT_OIL) ? 1 : 2;
         if (in_sight)
@@ -3788,8 +3802,10 @@ xchar x, y;
         setnotworn(obj);
         delobj(obj);
         return TRUE;
-    } else if (erode_obj(obj, (char *) 0, ERODE_BURN, EF_DESTROY)
-               == ER_DESTROYED) {
+    }
+    else if (erode_obj(obj, (char *) 0, ERODE_BURN, EF_DESTROY)
+               == ER_DESTROYED)
+    {
         return TRUE;
     }
     return FALSE;
@@ -3986,6 +4002,11 @@ boolean force;
             || obj->otyp == SCR_MAIL
 #endif
            ) return 0;
+        else if (is_obj_indestructible(obj))
+        {
+            return 0;
+        }
+
         if (carried(obj))
             pline("Your %s %s.", ostr, vtense(ostr, "fade"));
 
@@ -4001,6 +4022,10 @@ boolean force;
         if (obj->otyp == SPE_BOOK_OF_THE_DEAD)
         {
             pline("Steam rises from %s.", the(xname(obj)));
+            return 0;
+        }
+        else if (is_obj_indestructible(obj))
+        {
             return 0;
         }
         else if (obj->otyp == SPE_BLANK_PAPER)

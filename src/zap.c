@@ -2464,7 +2464,7 @@ register struct obj *obj;
 			break;
         case SPBOOK_CLASS:
             if (otyp != SPE_CANCELLATION && otyp != SPE_NOVEL
-                && otyp != SPE_BOOK_OF_THE_DEAD) {
+                && otyp != SPE_BOOK_OF_THE_DEAD && otyp != SPE_BOOK_OF_MODRON) {
                 costly_alteration(obj, COST_CANCEL);
                 obj->otyp = SPE_BLANK_PAPER;
             }
@@ -9191,14 +9191,14 @@ int osym, dmgtyp;
                 skip++;
             break;
         case AD_FIRE:
-            if (oresist_fire(obj))
-                skip++;
             if (obj->otyp == SPE_BOOK_OF_THE_DEAD) {
                 skip++;
                 if (vis)
                     pline("%s glows a strange %s, but remains intact.",
                           The(distant_name(obj, xname)), hcolor("dark red"));
             }
+            if (oresist_fire(obj))
+                skip++;
             quan = obj->quan;
             switch (osym) {
             case POTION_CLASS:
