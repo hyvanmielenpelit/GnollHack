@@ -325,9 +325,9 @@ struct obj* book2;
 	makeknown(SPE_BOOK_OF_MODRON);
 
 	if (Hallucination || Stunned || Confusion)
-		pline("The machinations of the world suddenly starts to make a lot more sense to you.");
+		pline("The machinations of the multiverse suddenly start to make a lot more sense to you.");
 	else
-		pline("The machinations of the world are a bit clearer to you now.");
+		pline("The machinations of the multiverse are a bit clearer to you now.");
 
 	(void)make_hallucinated(0L, TRUE, 0L);
 	make_stunned(0L, TRUE);
