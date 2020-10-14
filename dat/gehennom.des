@@ -776,9 +776,9 @@ DOOR:locked,(16,08),subtype:door_obsidian,keytype:('(',"ornamental key"),special
 DOOR:locked,(08,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
 DOOR:locked,(12,02),subtype:door_obsidian,keytype:('(',"ornamental key"),special_quality:6
 
-# Smithy
-REGION:(13,09,19,10),lit,"smithy"
-ANVIL:(16,10)
+# Smithy - A flind lord with a backup type being pit fiend
+REGION:(13,09,19,10),lit,"smithy" montype:"pit fiend"
+ANVIL:(16,10),montype:"flind lord"
 
 # Non diggable walls
 NON_DIGGABLE:(00,00,20,11)

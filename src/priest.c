@@ -471,10 +471,7 @@ int mtype;
     }
     else
     {
-        if (Is_yeenoghu_level(&u.uz) && !(mvitals[PM_FLIND_LORD].mvflags & G_GONE))
-        {
-            smith_montype = PM_FLIND_LORD;
-        }
+        /* Nothing here */
     }
 
     smith = makemon(&mons[smith_montype], smith_loc_x, smith_loc_y, MM_ESMI);
