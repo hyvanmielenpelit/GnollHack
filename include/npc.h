@@ -56,6 +56,7 @@ extern struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES];
 #define NPC_FLAGS_DOORS_CLOSED              0x00000004UL
 #define NPC_FLAGS_LIGHTS_ON                 0x00000008UL
 #define NPC_FLAGS_DOUBLE_MONEY_IN_HELL      0x00000010UL
+#define NPC_FLAGS_NO_GENERATION             0x00000020UL
 
 
 

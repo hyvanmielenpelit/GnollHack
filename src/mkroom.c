@@ -1552,7 +1552,7 @@ mknpcroom()
     boolean is_npc_ok[MAX_NPC_SUBTYPES] = { 0 };
     for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
     {
-        is_npc_ok[i] = TRUE;
+        is_npc_ok[i] = !(npc_subtype_definitions[i].general_flags & NPC_FLAGS_NO_GENERATION);
         if(npc_subtype_definitions[i].min_appearance_depth > 0 && u_depth < npc_subtype_definitions[i].min_appearance_depth)
             is_npc_ok[i] = FALSE;
         if (npc_subtype_definitions[i].max_appearance_depth > 0 && u_depth > npc_subtype_definitions[i].max_appearance_depth)

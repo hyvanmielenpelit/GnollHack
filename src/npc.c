@@ -36,20 +36,20 @@ struct npc_subtype_definition npc_subtype_definitions[MAX_NPC_SUBTYPES] =
         NPC_GEHENNOM_STANDARD,
         "warp engineer",
         "engineering bay",
-        99, 0,
+        0, 0,
         10, 1000, 30000,
         NPC_SERVICE_BUY_DILITHIUM_CRYSTALS | NPC_SERVICE_IDENTIFY_GEMS_STONES_AND_CHARGED_ITEMS | NPC_SERVICE_RECHARGING | NPC_SERVICE_BLESSED_RECHARGING | NPC_SERVICE_BRANCH_PORTAL,
-        NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
+        NPC_FLAGS_NO_GENERATION | NPC_FLAGS_DOORS_CLOSED | NPC_FLAGS_LIGHTS_ON
     },
 };
 
 schar
 min_npc_appearance_depth()
 {
-    schar minlvl = 0;
+    schar minlvl = -1;
     for (int i = 0; i < MAX_NPC_SUBTYPES; i++)
     {
-        if (npc_subtype_definitions[i].min_appearance_depth > minlvl)
+        if (!(npc_subtype_definitions[i].general_flags & NPC_FLAGS_NO_GENERATION) && (minlvl < 0 || npc_subtype_definitions[i].min_appearance_depth < minlvl))
             minlvl = npc_subtype_definitions[i].min_appearance_depth;
     }
     return (int)minlvl;
