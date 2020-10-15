@@ -1912,16 +1912,13 @@ u_teleport_mon(mtmp, give_feedback)
 struct monst *mtmp;
 boolean give_feedback;
 {
+    if (!mtmp)
+        return FALSE;
+
     coord cc;
 
-    if (level.flags.noteleport)
-    {
-        if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
-        {
-            pline("A mysterious force prevents %s from teleporting!", mon_nam(mtmp));
-            return FALSE;
-        }
-    }
+    if(tele_restrict(mtmp))
+        return FALSE;
 
     if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
     {
