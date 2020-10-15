@@ -1920,10 +1920,7 @@ unsigned long portal_flags;
         t->tsubtyp = subtyp;
         t->tflags = portal_flags;
         t->activation_count = 0;
-        if (t->tflags & TRAPFLAGS_ACTIVATED)
-        {
-            t->tseen = TRUE;
-        }
+        t->tseen = TRUE;
     }
 }
 

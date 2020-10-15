@@ -486,7 +486,8 @@ boolean iscontrolled;
     /* Disable teleportation in stronghold && Vlad's Tower */
     if (level.flags.noteleport) 
 	{
-        if (!wizard) {
+        if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
+        {
             pline("A mysterious force prevents you from teleporting!");
             return TRUE;
         }
@@ -1912,6 +1913,15 @@ struct monst *mtmp;
 boolean give_feedback;
 {
     coord cc;
+
+    if (level.flags.noteleport)
+    {
+        if (!wizard || yn_query("Teleportation is not allowed on this level. Override?") != 'y') 
+        {
+            pline("A mysterious force prevents %s from teleporting!", mon_nam(mtmp));
+            return FALSE;
+        }
+    }
 
     if (mtmp->ispriest && *in_rooms(mtmp->mx, mtmp->my, TEMPLE)) 
     {

@@ -3492,7 +3492,8 @@ struct monst* origmonst;
         case WAN_TELEPORTATION:
         case SPE_TELEPORT_MONSTER:
 			res = 1;
-			(void) rloco(obj);
+            if(!level.flags.noteleport)
+    			(void) rloco(obj);
             break;
         case WAN_MAKE_INVISIBLE:
             break;
@@ -6203,7 +6204,8 @@ struct obj *obj; /* wand or spell */
                 break;
             case WAN_TELEPORTATION:
             case SPE_TELEPORT_MONSTER:
-                rloc_engr(e);
+                if(!level.flags.noteleport)
+                    rloc_engr(e);
                 break;
             case SPE_STONE_TO_FLESH:
                 if (e->engr_type == ENGRAVE) {

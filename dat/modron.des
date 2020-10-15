@@ -47,11 +47,11 @@ TELEPORT_REGION:(13,05,17,06),(0,0,0,0),down
 DOOR:closed,(12,09),subtype:door_modron
 DOOR:closed,(15,07),subtype:door_modron
 DOOR:closed,(21,06),subtype:door_modron
-DOOR:closed,(14,10),subtype:door_modron
-DOOR:closed,(28,10),subtype:door_modron
+DOOR:locked,(14,10),subtype:door_modron
+DOOR:locked,(28,10),subtype:door_modron
 DOOR:closed,(30,09),subtype:door_modron
-DOOR:locked,(03,08),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:locked,(39,08),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:closed,(03,08),subtype:door_modron,secret_door
+DOOR:closed,(39,08),subtype:door_modron,secret_door
 
 # Portal room guards
 MONSTER:('M',"modron monodrone"),(14,06),hostile,waitforu
@@ -89,22 +89,25 @@ CONTAINER:('(',"chest"),locked,keytype:('(',"geometric key"),special_quality:5,(
 }
 
 # Five quintons and their pentadrone bodyguards
-# Modron smith
+# 1: Modron smith
 REGION:(19,03,23,05),lit,"smithy"
 ANVIL:(21,04),montype:"modron quinton"
 
+# 2: Magic key  / treasure room door key holder
 MONSTER:('M',"modron quinton"),(08,08),waitforu,hostile {
     OBJECT:('(', "magic key")
 }
 MONSTER:('M',"modron pentadrone"),(09,08),hostile,waitforu
 
+# 3: Cube and normal key holder
 MONSTER:('M',"modron quinton"),(33,08),waitforu,hostile {
-    OBJECT:('(', "geometric key"),special_quality:5
+    OBJECT:('(', "skeleton key")
+    OBJECT:('9', "modronite cube")
 }
 MONSTER:('M',"modron pentadrone"),(32,08),hostile,waitforu
 
+# 4: Portal door key holder
 MONSTER:('M',"modron quinton"),(11,12),waitforu,hostile
-
 MONSTER:('M',"modron pentadrone"),(12,11),hostile,waitforu
 CONTAINER:('(',"chest"),(08,11),no_pickup {
         OBJECT:('(', "geometric key"),special_quality:4
@@ -112,10 +115,11 @@ CONTAINER:('(',"chest"),(08,11),no_pickup {
         [50%]:OBJECT:('?', "enchant weapon")
 }
 
+# 5: Treasure room chest key holder
 MONSTER:('M',"modron quinton"),(31,12),waitforu,hostile
 MONSTER:('M',"modron pentadrone"),(30,11),hostile,waitforu
 CONTAINER:('(',"chest"),(34,11),no_pickup {
-        OBJECT:('9', "modronite cube")
+        OBJECT:('(', "geometric key"),special_quality:5
         OBJECT:('!', "full healing")
         [50%]:OBJECT:('*', "dilithium crystal")
         [50%]:OBJECT:('?', "enchant accessory")
@@ -166,8 +170,8 @@ TELEPORT_REGION:(20,03,28,05),(0,0,0,0),down
 DOOR:locked,(24,06),subtype:door_modron,keytype:"geometric key",special_quality:4
 DOOR:closed,(11,07),subtype:door_modron
 DOOR:closed,(37,07),subtype:door_modron
-DOOR:locked,(11,10),subtype:door_magic,keytype:"magic key",secret_door
-DOOR:locked,(37,10),subtype:door_magic,keytype:"magic key",secret_door
+DOOR:closed,(11,10),subtype:door_modron,secret_door
+DOOR:closed,(37,10),subtype:door_modron,secret_door
 DOOR:closed,(11,13),subtype:door_modron
 DOOR:closed,(37,13),subtype:door_modron
 DOOR:locked,(19,10),subtype:door_magic,keytype:"magic key"
@@ -288,8 +292,8 @@ MODRON_PORTAL:(30,09),level_teleporter,teleport_down,matching_portal,cylindrical
 
 DOOR:closed,(25,07),subtype:door_modron
 DOOR:locked,(22,10),subtype:door_modron,keytype:"geometric key",special_quality:3,non_passdoor
-DOOR:locked,(19,13),subtype:door_modron,keytype:"magic key",secret_door
-DOOR:locked,(31,13),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:closed,(19,13),subtype:door_modron,secret_door
+DOOR:closed,(31,13),subtype:door_modron,secret_door
 DOOR:locked,(17,08),subtype:door_modron,keytype:"magic key"
 DOOR:locked,(33,08),subtype:door_modron,keytype:"magic key"
 DOOR:closed,(22,06),subtype:door_modron
@@ -462,9 +466,9 @@ DOOR:closed,(50,09),subtype:door_modron
 DOOR:closed,(50,11),subtype:door_modron
 DOOR:closed,(56,09),subtype:door_modron
 DOOR:locked,(56,11),subtype:door_modron,keytype:"magic key",special_quality:1
-DOOR:locked,(52,12),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:locked,(52,12),subtype:door_modron
 
-DOOR:locked,(20,12),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:locked,(20,12),subtype:door_modron
 DOOR:closed,(16,09),subtype:door_modron
 DOOR:locked,(16,11),subtype:door_modron,keytype:"magic key",special_quality:1
 DOOR:closed,(22,09),subtype:door_modron
@@ -492,7 +496,7 @@ GEOMETRY:center,center
 MAP
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAA:::::AAAAAAAAAAAAAA
-AAAAAAAAA::::::---::::::AAAAAAAAA
+AAAAAAAAA::::::-S-::::::AAAAAAAAA
 AAAAA:::::------.------:::::AAAAA
 AAA:::-----..+.....|..-----:::AAA
 AA::---...+..-------..+...---::AA
@@ -510,12 +514,12 @@ ENDMAP
 REGION:(00,00,32,14),lit,"ordinary"
 NON_DIGGABLE:(00,00,32,14)
 NON_PASSWALL:(00,00,32,14)
-TELEPORT_REGION:(14,04,18,04),(0,0,0,0),up
-TELEPORT_REGION:(14,04,18,04),(0,0,0,0),down
+TELEPORT_REGION:(14,03,18,04),(0,0,0,0),up
+TELEPORT_REGION:(14,03,18,04),(0,0,0,0),down
 
 DOOR:locked,(05,07),subtype:door_magic,keytype:"magic key",special_quality:1,secret_door
 DOOR:locked,(27,07),subtype:door_magic,keytype:"magic key",special_quality:1,secret_door
-DOOR:locked,(16,12),subtype:door_modron,keytype:"magic key",secret_door
+DOOR:locked,(16,12),subtype:door_modron,keytype:"geometric key",special_quality:8,secret_door,non_passdoor
 DOOR:locked,(13,07),subtype:door_modron,keytype:"geometric key",special_quality:5,non_passdoor,secret_door
 DOOR:locked,(19,07),subtype:door_modron,keytype:"geometric key",special_quality:5,non_passdoor,secret_door
 DOOR:locked,(16,09),subtype:door_modron,keytype:"geometric key",special_quality:1,non_passdoor
@@ -527,7 +531,7 @@ DOOR:locked,(10,09),subtype:door_modron,keytype:"geometric key",special_quality:
 DOOR:closed,(22,09),subtype:door_modron
 DOOR:closed,(22,05),subtype:door_modron
 
-MODRON_PORTAL:(16,03),level_teleporter,teleport_up,matching_portal,spherical,inactive
+MODRON_PORTAL:(18,04),level_teleporter,teleport_up,matching_portal,spherical,inactive
 
 MONSTER:('M',"modron monodrone"),(11,04),waitforu,hostile
 MONSTER:('M',"modron monodrone"),(11,05),waitforu,hostile
