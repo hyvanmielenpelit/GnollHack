@@ -63,7 +63,7 @@ struct layer_info {
 #define LFLAGS_M_CAITIFF            0x00004000UL
 #define LFLAGS_M_BACKSTAB           0x00008000UL
 #define LFLAGS_M_BREAK_WEAPON       0x00010000UL
-/* free for m_ flag */
+#define LFLAGS_M_WORM_TAIL          0x00020000UL
 /* free for m_ flag */
 /* free for m_ flag */
 #define LFLAGS_M_MASK               0x000FFFFFUL

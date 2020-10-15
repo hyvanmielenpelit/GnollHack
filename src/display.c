@@ -748,7 +748,10 @@ xchar worm_tail;            /* mon is actually a worm tail */
             else
                 num = any_mon_to_glyph(mon, rn2_on_display_rng);
         }
-        show_monster_glyph_with_extra_info(x, y, num, worm_tail ? (struct monst*)0 : mon, extra_flags, 0);
+        if (worm_tail)
+            extra_flags |= LFLAGS_M_WORM_TAIL;
+
+        show_monster_glyph_with_extra_info(x, y, num, /*worm_tail ? (struct monst*)0 :*/ mon, extra_flags, 0);
         clear_monster_layer_memory_at(x, y);
     }
 }

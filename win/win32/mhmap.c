@@ -1086,6 +1086,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
             struct trap* trap_here = 0;
             boolean is_enl_you = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_YOU);
+            boolean is_worm_tail = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_WORM_TAIL);
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
             boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
@@ -1860,8 +1861,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
                 }
 
-                /* Draw main tile markers, status marks and condition marks */
-                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER && enlarg_idx == -1 && tile_move_idx == 0)
+                /* Draw main tile marker  */
+                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER && enlarg_idx == -1 && tile_move_idx == 0 && !is_worm_tail)
                 {
                     /* Draw main tile marker for enlarged creatures */
                     int enlargement_idx = tile2enlargement[ntile];
@@ -1931,7 +1932,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     /* Conditions, status marks, and buffs */
                     int condition_count = 0;
-                    if (glyph_is_monster(monster_glyph) && mtmp)
+                    if (glyph_is_monster(monster_glyph) && mtmp && !is_worm_tail)
                     {
                         if (1)
                         {
@@ -2273,7 +2274,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
 
                     /* Draw hit point bars */
-                    if (mtmp && (
+                    if (mtmp && !is_worm_tail && (
                         (ispet && flags.show_tile_pet_hp_bar)
                         || (isyou && flags.show_tile_u_hp_bar)
                         || (!ispet && !isyou && flags.show_tile_mon_hp_bar && canspotmon(mtmp))
