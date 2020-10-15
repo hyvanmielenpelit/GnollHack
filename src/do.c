@@ -797,7 +797,7 @@ register struct obj* obj;
 	txt = buf;
 	putstr(datawin, 0, txt);
 
-	if (objects[obj->otyp].oc_name_known && (objects[obj->otyp].oc_class == SPBOOK_CLASS || objects[obj->otyp].oc_class == SCROLL_CLASS))
+	if (objects[obj->otyp].oc_name_known && obj->oartifact == 0 && !objects[obj->otyp].oc_unique && (objects[obj->otyp].oc_class == SPBOOK_CLASS || objects[obj->otyp].oc_class == SCROLL_CLASS))
 	{
 		int ink = ink_cost(obj);
 		Sprintf(buf, "Base write cost:        %d charge%s", ink, plur(ink));
