@@ -641,7 +641,7 @@ register struct obj* obj;
 	{
 		Sprintf(eos(buf), ": %s", buf3);
 	}
-	if (obj->nknown && obj->known && obj->oartifact)
+	if (obj->aknown && obj->oartifact)
 	{
 		Sprintf(eos(buf), " - Artifact");
 	}
