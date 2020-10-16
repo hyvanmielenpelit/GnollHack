@@ -6433,11 +6433,13 @@ register char *cmd;
         {
             if (!wizard && (tlist->flags & WIZMODECMD))
             {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_cant("do that!");
                 res = 0;
             }
             else if (u.uburied && !(tlist->flags & IFBURIED)) 
             {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_cant("do that while you are buried!");
                 res = 0;
             } 

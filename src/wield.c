@@ -1229,7 +1229,8 @@ const char *verb; /* "rub",&c */
         }
 		else 
 		{
-            You_cant("do that.");
+			play_sfx_sound(SFX_GENERAL_CANNOT);
+			You_cant("do that.");
         }
         return FALSE;
     }

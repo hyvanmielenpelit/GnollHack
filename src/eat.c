@@ -3142,11 +3142,14 @@ doeat()
      */
     if (!is_edible(otmp))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot eat that!");
         return 0;
-    } else if ((otmp->owornmask & (W_ARMOR | W_BLINDFOLD | W_AMUL | W_SADDLE)) != 0) 
+    }
+    else if ((otmp->owornmask & (W_ARMOR | W_BLINDFOLD | W_AMUL | W_SADDLE)) != 0) 
     {
         /* let them eat rings */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("eat %s you're wearing.", something);
         return 0;
     }
@@ -4013,6 +4016,7 @@ skipfloor:
                   verb, 0, "");
     if (corpsecheck && otmp && !(offering && otmp->oclass == AMULET_CLASS))
         if (otmp->otyp != CORPSE || (corpsecheck == 2 && !tinnable(otmp))) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_cant("%s that!", verb);
             return (struct obj *) 0;
         }

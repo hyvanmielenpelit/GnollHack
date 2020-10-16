@@ -2558,9 +2558,10 @@ struct obj *otmp;
     }
     if (s1)
         pline("Use the '%s' command to %s %s%s.", s1, s2,
-              !(is_plural(otmp) || pair_of(otmp)) ? "that" : "those", s3);
+            !(is_plural(otmp) || pair_of(otmp)) ? "that" : "those", s3);
     else
 #endif
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline(silly_thing_to, word);
 }
 

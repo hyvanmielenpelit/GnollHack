@@ -1798,7 +1798,8 @@ dogaze()
 
 	if (!u.dx && !u.dy && !u.dz)
 	{
-		You_cant("gaze at yourself.");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_cant("gaze at yourself.");
 		return 0;
 	}
 	else if (!u.dx && !u.dy && u.dz > 0)
@@ -2035,7 +2036,8 @@ doeyestalk()
 
 	if (!u.dx && !u.dy && !u.dz)
 	{
-		You_cant("gaze at yourself.");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_cant("gaze at yourself.");
 		return 0;
 	}
 

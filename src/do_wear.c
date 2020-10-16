@@ -1390,6 +1390,7 @@ STATIC_OVL void
 already_wearing2(cc1, cc2)
 const char *cc1, *cc2;
 {
+    play_sfx_sound(SFX_GENERAL_CANNOT);
     You_cant("wear %s because you're wearing %s there already.", cc1, cc2);
 }
 
@@ -1738,6 +1739,7 @@ struct obj *obj;
             }
         } else {
             /* neither armor nor accessory */
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_cant("wear that!");
             return 0;
         }

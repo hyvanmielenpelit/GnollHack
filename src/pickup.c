@@ -2113,6 +2113,7 @@ boolean *prev_loot;
 		{
             if (nolimbs(youmonst.data)) 
 			{
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_cant("do that without limbs."); /* not body_part(HAND) */
                 return 0;
             }

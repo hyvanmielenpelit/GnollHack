@@ -665,9 +665,11 @@ int *shotlimit_p; /* (see dothrow()) */
     multi = 0; /* reset; it's been used up */
 
     if (notake(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("are physically incapable of throwing or shooting anything.");
         return FALSE;
     } else if (nohands(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("throw or shoot without hands."); /* not body_part(HAND) */
         return FALSE;
         /*[what about !freehand(), aside from cursed missile launcher?]*/

@@ -360,6 +360,7 @@ doread()
         return 1;
     } else if (scroll->oclass != SCROLL_CLASS
                && scroll->oclass != SPBOOK_CLASS) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline(silly_thing_to, "read");
         return 0;
     } else if (Blind /*&& (scroll->otyp != SPE_BOOK_OF_THE_DEAD)*/) { //Not sure why Book of the Dead should be readable when blind --JG

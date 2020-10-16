@@ -3161,17 +3161,22 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_CANNOT_PAY",
         {GHSOUND_CANNOT_PAY, 1.0f},
-        TRUE
+        FALSE
     },
     {
         "GHSOUND_NOT_ENOUGH_MONEY",
         {GHSOUND_NOT_ENOUGH_MONEY, 1.0f},
-        TRUE
+        FALSE
     },
     {
         "GHSOUND_TRANSACT_SINGLE_ITEM",
         {GHSOUND_TRANSACT_SINGLE_ITEM, 1.0f},
         TRUE
+    },
+    {
+        "GHSOUND_GENERAL_CANNOT",
+        {GHSOUND_GENERAL_CANNOT, 1.0f},
+        FALSE
     },
 };
 

@@ -484,6 +484,7 @@ register struct obj *obj;
                             && !rn2(Role_if(PM_HEALER) ? 10 : 3));
 
     if (nohands(youmonst.data) && !is_telekinetic_operator(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have no hands!"); /* not `body_part(HAND)' */
         return 0;
     } else if (Deaf) {
@@ -2196,6 +2197,7 @@ int magic; /* 0=Physical, otherwise skill level */
     {
         /* normally (nolimbs || slithy) implies !Jumping,
            but that isn't necessarily the case for knights */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("jump; you have no legs!");
         return 0;
     } else if (!magic && !Jumping)
@@ -4505,6 +4507,7 @@ struct obj *obj;
         return 0;
 
     if (nohands(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("break %s without hands!", yname(obj));
         return 0;
     } else if (ACURR(A_STR) < (is_fragile ? 5 : 10)) {
@@ -4837,13 +4840,17 @@ dobreak()
 
 		if (nohands(youmonst.data)) 
 		{
+            play_sfx_sound(SFX_GENERAL_CANNOT);
 			You_cant("break %s without hands!", yname(obj));
 			return 0;
 		}
 		res = hero_breaks(obj, u.ux, u.uy, TRUE);
 	}
-	else
-		You("cannot break that!");
+    else
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("cannot break that!");
+    }
 
 	return res; 
 }

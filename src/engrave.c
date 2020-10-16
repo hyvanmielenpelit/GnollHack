@@ -535,21 +535,26 @@ doengrave()
         } else
             jello = TRUE;
     } else if (is_lava(u.ux, u.uy)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("write on the %s!", surface(u.ux, u.uy));
         return 0;
     } else if (is_pool(u.ux, u.uy) || IS_FOUNTAIN(levl[u.ux][u.uy].typ)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("write on the %s!", surface(u.ux, u.uy));
         return 0;
     }
     if (Is_airlevel(&u.uz) || Is_waterlevel(&u.uz) /* in bubble */) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("write in thin air!");
         return 0;
     } else if (!accessible(u.ux, u.uy)) {
         /* stone, tree, wall, secret corridor, pool, lava, bars */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("write here.");
         return 0;
     }
     if (cantwield(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("even hold anything!");
         return 0;
     }

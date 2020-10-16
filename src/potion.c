@@ -708,6 +708,7 @@ dodrink()
             play_sfx_sound(SFX_QUAFF);
             return use_salve(otmp, TRUE);
         default:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("That's a silly thing to drink!");
             return 0;
             break;

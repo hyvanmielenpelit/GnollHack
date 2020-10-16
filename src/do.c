@@ -4548,7 +4548,8 @@ dodown()
 			}
 			else
 			{
-                You_cant("go down here.");
+				play_sfx_sound(SFX_GENERAL_CANNOT);
+				You_cant("go down here.");
                 return 0;
             }
         }
@@ -4645,7 +4646,8 @@ doup()
         && (!xupladder || u.ux != xupladder || u.uy != yupladder)
         && (!sstairs.sx || u.ux != sstairs.sx || u.uy != sstairs.sy
             || !sstairs.up)) {
-        You_cant("go up here.");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You_cant("go up here.");
         return 0;
     }
     if (stucksteed(TRUE)) {
