@@ -4517,6 +4517,8 @@ struct obj *obj;
         pline("%s is too hard to break!", Yname2(obj));
         return 0;
     }
+
+    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
     pline("Raising %s high above your %s, you %s it in two!", yname(obj),
           body_part(HEAD), is_fragile ? "snap" : "break");
 
@@ -4560,8 +4562,6 @@ struct obj *obj;
         hit_only_one = 3; /* 1- 7 targets based on BUC status */
     else if (objects[obj->otyp].oc_dir == IMMEDIATE_TWO_TO_SIX_TARGETS)
         hit_only_one = 4; /* 2- 6 targets based on BUC status */
-
-    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 
     switch (obj->otyp) {
     case WAN_WISHING:

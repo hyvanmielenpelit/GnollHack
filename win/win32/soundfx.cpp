@@ -579,9 +579,13 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Commerce/Buy from Shopkeeper", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Commerce/Seems Uninterested", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Commerce/Cannot Pay", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/SFX/Commerce/Not Enough Money", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Commerce/Transact Single Item", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/You Cannot", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Wand/Generic/Wand Break", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Wand/Generic/Wand Pick Up", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Wand/Generic/Wand Drop", 1.0f },
 };
 
 extern "C" 
