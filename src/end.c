@@ -1956,7 +1956,7 @@ dovanquished()
     return 0;
 }
 
-/* #killedmonsters command */
+/* #killed command */
 int
 dokilledmonsters()
 {
@@ -1964,7 +1964,7 @@ dokilledmonsters()
 	return 0;
 }
 
-/* #killedmonsters command */
+/* #genocided command */
 int
 dogenocidedmonsters()
 {
