@@ -4847,8 +4847,6 @@ struct ext_func_tab extcmdlist[] = {
 #ifdef USE_TILES
     { M('b'), "bars", "toggle tile hit point bars on/off",
             dotogglehpbars, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-    { M('*'), "targeting", "toggle tile targeting graphics on/off",
-            dotogglebigmonstertargeting, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 #endif
     { C('b'), "break", "break something", dobreak, AUTOCOMPLETE | INCMDMENU },
     { 'c', "close", "close a door", doclose },
@@ -4864,7 +4862,7 @@ struct ext_func_tab extcmdlist[] = {
     { 'd', "drop", "drop an item", dodrop },
     { 'D', "droptype", "drop specific item types", doddrop },
     { 'e', "eat", "eat something", doeat },
-    { 'E', "engrave", "engrave writing on the floor", doengrave, INCMDMENU },
+    { 'E', "engrave", "engrave writing on the floor", doengrave, 0 },
     { '\0', "enhance", "advance or check weapon and spell skills",
             enhance_weapon_skill, IFBURIED | AUTOCOMPLETE },
 	{ M('e'), "exploremode", "enter explore (discovery) mode",
@@ -4873,7 +4871,9 @@ struct ext_func_tab extcmdlist[] = {
 	{ M('f'), "force", "force a lock", doforce, AUTOCOMPLETE | INCMDMENU },
     { ';', "glance", "show what type of thing a map symbol corresponds to",
             doquickwhatis, IFBURIED | GENERALCMD },
-	{ M('h'), "handedness", "toggle swap weapon handedness",
+    { '\0', "genocided", "list genocided monsters",
+            dogenocidedmonsters, IFBURIED | INCMDMENU },
+    { M('h'), "handedness", "toggle swap weapon handedness",
 			doswaphandedness, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 	{ '?', "help", "give a help message", dohelp, IFBURIED | GENERALCMD },
     { '\0', "herecmdmenu", "show menu of commands you can do here",
@@ -4905,7 +4905,7 @@ struct ext_func_tab extcmdlist[] = {
     { M('m'), "monster", "use monster ability or skill",
             doability, IFBURIED | AUTOCOMPLETE },
 	{ 'N', "name", "name a monster or an object",
-            docallcmd, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+            docallcmd, IFBURIED | AUTOCOMPLETE },
     { M('o'), "offer", "offer a sacrifice to the gods",
             dosacrifice, AUTOCOMPLETE | INCMDMENU },
     { 'o', "open", "open a door", doopen },
@@ -4976,6 +4976,10 @@ struct ext_func_tab extcmdlist[] = {
 
 	{ 'T', "takeoff", "take off one piece of armor", dotakeoff },
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
+#ifdef USE_TILES
+    { M('*'), "targeting", "toggle tile targeting graphics on/off",
+            dotogglebigmonstertargeting, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+#endif
     { C('t'), "teleport", "teleport around the level", dotelecmd, IFBURIED },
     { '\0', "terrain", "show map without obstructions",
             doterrain, IFBURIED | AUTOCOMPLETE },
@@ -5011,7 +5015,7 @@ struct ext_func_tab extcmdlist[] = {
 	{ 'w', "wield", "wield (put in use) a weapon", dowield },
     { M('w'), "wipe", "wipe off your face", dowipe, AUTOCOMPLETE | INCMDMENU },
 	{ 'x', "swap", "swap wielded and secondary weapons", doswapweapon_right_or_both, INCMDMENU },
-	{ M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+	{ M('x'), "examine", "describe an item", doitemdescriptions, IFBURIED | AUTOCOMPLETE },
 	{ M('y'), "you", "describe your character", docharacterstatistics, IFBURIED | AUTOCOMPLETE },
     { 'Y', "yell", "yell for your companions",
             doyell, IFBURIED | AUTOCOMPLETE | INCMDMENU },

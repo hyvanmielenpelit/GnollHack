@@ -1960,8 +1960,16 @@ dovanquished()
 int
 dokilledmonsters()
 {
-	list_vanquished('y', FALSE);
+	list_vanquished('b', FALSE);
 	return 0;
+}
+
+/* #killedmonsters command */
+int
+dogenocidedmonsters()
+{
+    list_genocided('a', FALSE);
+    return 0;
 }
 
 /* high priests aren't unique but are flagged as such to simplify something */
@@ -2008,7 +2016,7 @@ boolean ask;
                 : defquery;
         if (c == 'q')
             done_stopprint++;
-        if (c == 'y' || c == 'a') {
+        if (c == 'y' || c == 'a' || c == 'b') {
             if (c == 'a') { /* ask player to choose sort order */
                 /* choose value for vanq_sortmode via menu; ESC cancels list
                    of vanquished monsters but does not set 'done_stopprint' */
@@ -2089,8 +2097,8 @@ boolean ask;
             display_nhwindow(klwin, TRUE);
             destroy_nhwindow(klwin);
         }
-    } else if (defquery == 'a') {
-        /* #dovanquished rather than final disclosure, so pline() is ok */
+    } else if (defquery == 'a' || defquery == 'b') {
+        /* #dovanquished or #killed rather than final disclosure, so pline() is ok */
         pline("No creatures have been vanquished.");
 #ifdef DUMPLOG
     } else if (dumping) {
@@ -2150,29 +2158,37 @@ boolean ask;
     nextinct = num_extinct();
 
     /* genocided or extinct species list */
-    if (ngenocided != 0 || nextinct != 0) {
+    if (ngenocided != 0 || nextinct != 0) 
+    {
         Sprintf(buf, "Do you want a list of %sspecies%s%s?",
-                (nextinct && !ngenocided) ? "extinct " : "",
-                (ngenocided) ? " genocided" : "",
-                (nextinct && ngenocided) ? " and extinct" : "");
+            (nextinct && !ngenocided) ? "extinct " : "",
+            (ngenocided) ? " genocided" : "",
+            (nextinct && ngenocided) ? " and extinct" : "");
+        
         c = ask ? yn_function(buf, ynqchars, defquery) : defquery;
+        
         if (c == 'q')
             done_stopprint++;
-        if (c == 'y') {
+
+        if (c == 'y' || c == 'a') 
+        {
             klwin = create_nhwindow(NHW_MENU);
             Sprintf(buf, "%s%s species:",
-                    (ngenocided) ? "Genocided" : "Extinct",
-                    (nextinct && ngenocided) ? " or extinct" : "");
+                (ngenocided) ? "Genocided" : "Extinct",
+                (nextinct && ngenocided) ? " or extinct" : "");
             putstr(klwin, 0, buf);
             if (!dumping)
                 putstr(klwin, 0, "");
 
-            for (i = LOW_PM; i < NUM_MONSTERS; i++) {
+            for (i = LOW_PM; i < NUM_MONSTERS; i++) 
+            {
                 /* uniques can't be genocided but can become extinct;
                    however, they're never reported as extinct, so skip them */
                 if (UniqCritterIndx(i))
                     continue;
-                if (mvitals[i].mvflags & G_GONE) {
+
+                if (mvitals[i].mvflags & G_GONE) 
+                {
                     Sprintf(buf, " %s", makeplural(pm_common_name(&mons[i])));
                     /*
                      * "Extinct" is unfortunate terminology.  A species
@@ -2182,16 +2198,22 @@ boolean ask;
                      */
                     if ((mvitals[i].mvflags & G_GONE) == G_EXTINCT)
                         Strcat(buf, " (extinct)");
+
                     putstr(klwin, 0, buf);
                 }
             }
+
             if (!dumping)
                 putstr(klwin, 0, "");
-            if (ngenocided > 0) {
+
+            if (ngenocided > 0) 
+            {
                 Sprintf(buf, "%d species genocided.", ngenocided);
                 putstr(klwin, 0, buf);
             }
-            if (nextinct > 0) {
+
+            if (nextinct > 0) 
+            {
                 Sprintf(buf, "%d species extinct.", nextinct);
                 putstr(klwin, 0, buf);
             }
@@ -2199,8 +2221,14 @@ boolean ask;
             display_nhwindow(klwin, TRUE);
             destroy_nhwindow(klwin);
         }
+    }
+    else if (defquery == 'a')
+    {
+        pline("No species have been genocided or become extinct."); /* Game is still ongoing, so pline is ok */
 #ifdef DUMPLOG
-    } else if (dumping) {
+    } 
+    else if (dumping) 
+    {
         putstr(0, 0, "No species were genocided or became extinct.");
 #endif
     }

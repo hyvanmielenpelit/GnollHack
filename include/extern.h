@@ -919,6 +919,7 @@ E void FDECL(container_contents, (struct obj *, BOOLEAN_P,
 E void FDECL(nh_terminate, (int)) NORETURN;
 E int NDECL(dovanquished);
 E int NDECL(dokilledmonsters);
+E int NDECL(dogenocidedmonsters);
 E int NDECL(num_genocides);
 E void FDECL(delayed_killer, (int, int, const char *));
 E struct kinfo *FDECL(find_delayed_killer, (int));
