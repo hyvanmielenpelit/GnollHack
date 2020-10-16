@@ -4596,7 +4596,7 @@ struct obj *obj;
         pline("A wall of force smashes down around you!");
         dmg_n = 1 + obj->charges;
         dmg_d = 6; /* normally 2d12 */
-        /*FALLTHRU*/
+        goto wanexpl;
     case WAN_DISJUNCTION:
     case WAN_CANCELLATION:
     case WAN_POLYMORPH:
