@@ -3773,6 +3773,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)join_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -3785,10 +3786,12 @@ struct monst* mtmp;
 		if (success)
 		{
 			mtmp->ispartymember = TRUE;
+			play_sfx_sound(SFX_TAMING);
 			pline("%s joins your party!", Monnam(mtmp));
 		}
 		else if (!is_tame(mtmp))
 		{
+			play_sfx_sound(SFX_SURPRISE_ATTACK);
 			pline("%s takes your money but refuses join your party after all!", Monnam(mtmp));
 		}
 		return 1;
@@ -3844,10 +3847,12 @@ struct monst* mtmp;
 	case 'y':
 		if (umoney < (long)explain_cost)
 		{
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
 		u_pay = explain_cost;
+		play_sfx_sound(SFX_READ);
 		money2mon(mtmp, (long)u_pay);
 		context.botl = 1;
 		monsterdescription(mtmp);
@@ -4013,6 +4018,7 @@ struct monst* mtmp;
 						break;
 					case 'y':
 						if (umoney < (long)item_cost) {
+							play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 							You("don't have enough money for that!");
 							break; /* switch break */
 						}
@@ -4025,6 +4031,7 @@ struct monst* mtmp;
 				else
 				{
 					if (umoney < (long)item_cost) {
+						play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 						You("don't have enough money for %s!", cxname(item_to_buy));
 						if (buy_count > 0)
 							result = 1;
@@ -4038,6 +4045,7 @@ struct monst* mtmp;
 
 				if (bought)
 				{
+					play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
 					if (item_cost)
 						Sprintf(qbuf, "bought %s for %ld %s.", cxname(item_to_buy), item_cost, currency(item_cost));
 					else
@@ -4060,6 +4068,7 @@ struct monst* mtmp;
 
 		if (is_peaceful(mtmp) && buy_count > 0) 
 		{
+			play_sfx_sound(SFX_BUY_FROM_NPC);
 			if (!Deaf && (is_undead(mtmp->data) || is_demon(mtmp->data) || (mtmp->data->maligntyp < 0 && mtmp->data->difficulty > 10)))
 				verbalize("Use your purchase well!");
 			else if (!Deaf && is_speaking_monster(mtmp->data))
@@ -4364,6 +4373,7 @@ struct monst* mtmp;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -4375,6 +4385,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 			if (umoney < (long)bless_cost) {
+				play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 				You("don't have enough money for that!");
 				return 0;
 			}
@@ -4389,6 +4400,7 @@ struct monst* mtmp;
 			return 0;
 		if (umoney < (long)curse_cost)
 		{
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4444,6 +4456,7 @@ struct monst* mtmp;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -4456,6 +4469,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)extrahealing_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4491,6 +4505,7 @@ struct monst* mtmp;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -4503,6 +4518,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)fullhealing_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4538,6 +4554,7 @@ struct monst* mtmp;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -4550,6 +4567,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)cure_sickness_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4592,6 +4610,7 @@ struct monst* mtmp;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -4603,6 +4622,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)major_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4617,6 +4637,7 @@ struct monst* mtmp;
 			return 0;
 		if (umoney < (long)minor_cost)
 		{
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4697,6 +4718,7 @@ struct monst* mtmp;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -4709,6 +4731,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)divination_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4820,6 +4843,7 @@ struct monst* mtmp;
 	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
 	else if (!umoney) {
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -4832,6 +4856,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)minor_id_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4923,6 +4948,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)reconcile_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -4978,6 +5004,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)reconcile_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5096,6 +5123,7 @@ struct monst* mtmp;
 	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
 	else if (!umoney) {
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -5108,6 +5136,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)minor_id_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5148,6 +5177,7 @@ struct monst* mtmp;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -5162,6 +5192,7 @@ struct monst* mtmp;
 	case 'y':
 		if (umoney < (long)service_cost)
 		{
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5252,6 +5283,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)reconcile_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5265,6 +5297,7 @@ struct monst* mtmp;
 	mtmp->mpeaceful = 1;
 	newsym(mtmp->mx, mtmp->my);
 
+	play_sfx_sound(SFX_BUY_FROM_NPC);
 	if (is_peaceful(mtmp))
 		pline("\"That's a deal. Be more careful next time.\"");
 	else
@@ -5347,6 +5380,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)reconcile_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5359,6 +5393,7 @@ struct monst* mtmp;
 
 	pacify_guards();
 
+	play_sfx_sound(SFX_BUY_FROM_NPC);
 	if(is_peaceful(mtmp))
 		pline("\"Fine, it's alright now. Be more careful next time.\"");
 	else
@@ -5387,6 +5422,7 @@ struct monst* mtmp;
 	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
 	else if (!umoney) {
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -5399,6 +5435,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)minor_id_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5486,6 +5523,7 @@ struct monst* mtmp;
 	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
 	else if (!umoney) {
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -5498,6 +5536,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)minor_id_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5539,6 +5578,7 @@ struct monst* mtmp;
 	if (!m_general_talk_check(mtmp, "doing any services") || !m_speak_check(mtmp))
 		return 0;
 	else if (!umoney) {
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -5551,6 +5591,7 @@ struct monst* mtmp;
 		return 0;
 	case 'y':
 		if (umoney < (long)minor_id_cost) {
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5644,6 +5685,7 @@ struct monst* mtmp;
 	/* get one case out of the way: nothing to sell, and no gold */
 	if (!isgold && offer == 0L) 
 	{
+		play_sfx_sound(SFX_SEEMS_UNINTERESTED);
 		pline("%s seems uninterested.", Monnam(mtmp));
 		res = 1;
 		goto merge_obj_back;
@@ -5653,6 +5695,7 @@ struct monst* mtmp;
 		|| obj->oclass == BALL_CLASS || obj->oclass == CHAIN_CLASS
 		|| offer == 0L) 
 	{
+		play_sfx_sound(SFX_SEEMS_UNINTERESTED);
 		pline("%s seems uninterested.", Monnam(mtmp));
 		res = 1;
 		goto merge_obj_back;
@@ -5661,6 +5704,7 @@ struct monst* mtmp;
 	shkmoney = money_cnt(mtmp->minvent);
 	if (!shkmoney) 
 	{
+		play_sfx_sound(SFX_CANNOT_PAY);
 		pline("%s cannot pay you at present.", Monnam(mtmp));
 	}
 	else 
@@ -5691,6 +5735,7 @@ struct monst* mtmp;
 		case 'y':
 			if (release_item_from_hero_inventory(obj))
 			{
+				play_sfx_sound(SFX_SELL_TO_NPC);
 				You("sold %s for %ld gold piece%s to %s.", doname(obj), offer, plur(offer), mon_nam(mtmp));
 
 				if (*u.ushops || obj->unpaid)
@@ -5860,6 +5905,7 @@ char* no_mood_string;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -5874,6 +5920,7 @@ char* no_mood_string;
 	case 'y':
 		if (umoney < (long)service_cost) 
 		{
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}
@@ -5924,6 +5971,7 @@ char* no_mood_string;
 		return 0;
 	else if (!umoney)
 	{
+		play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 		You("have no money.");
 		return 0;
 	}
@@ -5938,6 +5986,7 @@ char* no_mood_string;
 	case 'y':
 		if (umoney < (long)service_cost)
 		{
+			play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
 			You("don't have enough money for that!");
 			return 0;
 		}

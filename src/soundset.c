@@ -3133,8 +3133,47 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_MANIACAL_LAUGHTER, 1.0f},
         TRUE
     },
+    {
+        "GHSOUND_SELL_TO_NPC",
+        {GHSOUND_SELL_TO_NPC, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_BUY_FROM_NPC",
+        {GHSOUND_BUY_FROM_NPC, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_SELL_TO_SHOPKEEPER",
+        {GHSOUND_SELL_TO_SHOPKEEPER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_BUY_FROM_SHOPKEEPER",
+        {GHSOUND_BUY_FROM_SHOPKEEPER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_SEEMS_UNINTERESTED",
+        {GHSOUND_SEEMS_UNINTERESTED, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_CANNOT_PAY",
+        {GHSOUND_CANNOT_PAY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_NOT_ENOUGH_MONEY",
+        {GHSOUND_NOT_ENOUGH_MONEY, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_TRANSACT_SINGLE_ITEM",
+        {GHSOUND_TRANSACT_SINGLE_ITEM, 1.0f},
+        TRUE
+    },
 };
-
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
 {

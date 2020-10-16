@@ -573,6 +573,14 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Dog/Dog Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Cat/Cat Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Ram/Ram Death", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Sell to NPC", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Buy from NPC", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Sell to Shopkeeper", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Buy from Shopkeeper", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Seems Uninterested", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Cannot Pay", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Not Enough Money", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Commerce/Transact Single Item", 1.0f },
 };
 
 extern "C" 

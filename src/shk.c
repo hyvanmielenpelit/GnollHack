@@ -1515,11 +1515,13 @@ dopay()
 
         umoney = money_cnt(invent);
         if (!umoney && !eshkp->credit) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You("%shave no money or credit%s.",
                 stashed_gold ? "seem to " : "", paid ? " left" : "");
             return 0;
         }
         if ((umoney + eshkp->credit) < cheapest_item(shkp)) {
+            play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
             You("don't have enough money to buy%s the item%s you picked.",
                 eshkp->billct > 1 ? " any of" : "", plur(eshkp->billct));
             if (stashed_gold)
@@ -1572,6 +1574,8 @@ dopay()
                         paid = TRUE;
                         if (itemize)
                             bot();
+                        if (iflags.using_gui_sounds)
+                            delay_output();
                         continue; /*break*/
                     case PAY_BUY:
                         paid = TRUE;
@@ -1579,6 +1583,8 @@ dopay()
                     }
                     if (itemize)
                         bot();
+                    if (iflags.using_gui_sounds)
+                        delay_output();
                     *bp = eshkp->bill_p[--eshkp->billct];
                 }
             }
@@ -1587,15 +1593,21 @@ dopay()
         if (!itemize)
             update_inventory(); /* Done in dopayobj() if itemize. */
     }
-    if (!ANGRY(shkp) && paid) {
+    if (!ANGRY(shkp) && paid) 
+    {
+        play_sfx_sound(SFX_BUY_FROM_SHOPKEEPER);
         if (!Deaf && !muteshk(shkp))
+        {
             verbalize("Thank you for shopping in %s %s!",
-                      s_suffix(shkname(shkp)),
-                      shtypes[eshkp->shoptype - SHOPBASE].name);
+                s_suffix(shkname(shkp)),
+                shtypes[eshkp->shoptype - SHOPBASE].name);
+        }
         else
+        {
             pline("%s nods appreciatively at you for shopping in %s %s!",
-                  Shknam(shkp), noit_mhis(shkp),
-                  shtypes[eshkp->shoptype - SHOPBASE].name);
+                Shknam(shkp), noit_mhis(shkp),
+                shtypes[eshkp->shoptype - SHOPBASE].name);
+        }
     }
     return 1;
 }
@@ -1625,6 +1637,7 @@ boolean itemize;
         return PAY_BUY;
     }
     if (itemize && umoney + ESHK(shkp)->credit == 0L) {
+        play_sfx_sound(SFX_NOT_ENOUGH_MONEY);
         You("%shave no money or credit left.",
             stashed_gold ? "seem to " : "");
         return PAY_BROKE;
@@ -1690,6 +1703,7 @@ boolean itemize;
     }
 
     pay(ltmp, shkp);
+    play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
     shk_names_obj(shkp, obj,
                   consumed ? "paid for %s at a cost of %ld gold piece%s.%s"
                            : "bought %s for %ld gold piece%s.%s",
@@ -3094,7 +3108,10 @@ xchar x, y;
 
         if (!unpaid && (sell_how != SELL_DONTSELL)
             && !special_stock(obj, shkp, FALSE))
+        {
+            play_sfx_sound(SFX_SEEMS_UNINTERESTED);
             pline("%s seems uninterested.", Shknam(shkp));
+        }
         return;
     }
 
@@ -3172,7 +3189,10 @@ xchar x, y;
         || obj->oclass == BALL_CLASS || obj->oclass == CHAIN_CLASS
         || offer == 0L || (obj->oclass == FOOD_CLASS && obj->oeaten)
         || (is_candle(obj)
-            && obj->age < 30L * (long) objects[obj->otyp].oc_cost)) {
+            && obj->age < 30L * (long) objects[obj->otyp].oc_cost)) 
+    {
+        play_sfx_sound(SFX_SEEMS_UNINTERESTED);
+
         pline("%s seems uninterested%s.", Shknam(shkp),
               cgold ? " in the rest" : "");
         if (container)
@@ -3189,6 +3209,7 @@ xchar x, y;
         if (sell_how == SELL_NORMAL || auto_credit) {
             c = sell_response = 'y';
         } else if (sell_response != 'n') {
+            play_sfx_sound(SFX_CANNOT_PAY);
             pline("%s cannot pay you at present.", Shknam(shkp));
             Sprintf(qbuf, "Will you accept %ld %s in credit for ", tmpcr,
                     currency(tmpcr));
@@ -3299,6 +3320,7 @@ xchar x, y;
                 obj->no_charge = 1;
             subfrombill(obj, shkp);
             pay(-offer, shkp);
+            play_sfx_sound(SFX_TRANSACT_SINGLE_ITEM);
             shk_names_obj(shkp, obj,
                           (sell_how != SELL_NORMAL)
                            ? ((!ltmp && cltmp && only_partially_your_contents)
