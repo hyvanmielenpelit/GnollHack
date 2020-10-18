@@ -586,6 +586,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Object/Wand/Generic/Wand Break", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Wand/Generic/Wand Pick Up", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Wand/Generic/Wand Drop", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Fog Cloud/Fog Cloud Swallow Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Jelly/Jelly Swallow Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Luggage/Luggage Swallow Ambient", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/General Swallow Ambient", 1.0f },
 };
 
 extern "C" 

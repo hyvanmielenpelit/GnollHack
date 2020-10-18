@@ -940,7 +940,7 @@ NEARDATA struct permonst mons[] = {
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NONECK
             | M1_MINDLESS | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_NONE, M4_VEGAN_FOOD, M5_PASSIVE_DEFENSE_TILE,
-		9, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		9, CLR_BROWN, MONSTER_SOUNDSET_JELLY, MONSTER_SOUNDSET_JELLY),
     /*
      * kobolds
      */
@@ -1014,7 +1014,7 @@ NEARDATA struct permonst mons[] = {
         M2_DOMESTIC | M2_NEUTER | M2_PEACEFUL,
         M3_NONLIVING,
         M4_VEGAN_FOOD | M4_PACKMULE | M4_WOODEN, M5_ESCHEWS_CURSED_ITEMS | M5_ATTACK_TILE,
-        4, HI_DOMESTIC, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        4, HI_DOMESTIC, MONSTER_SOUNDSET_LUGGAGE, MONSTER_SOUNDSET_LUGGAGE),
     MON("medium luggage", None, "medium-sized travelling trunk made of sapient pearwood", None, None, S_MIMIC, LVL(4, 18, 5, 0, 0, 0), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1025,7 +1025,7 @@ NEARDATA struct permonst mons[] = {
         M2_DOMESTIC | M2_NEUTER | M2_PEACEFUL,
         M3_NONLIVING,
         M4_VEGAN_FOOD | M4_PACKMULE | M4_WOODEN, M5_ESCHEWS_CURSED_ITEMS | M5_ATTACK_TILE,
-        5, HI_DOMESTIC, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        5, HI_DOMESTIC, MONSTER_SOUNDSET_LUGGAGE, MONSTER_SOUNDSET_LUGGAGE),
     MON("large luggage", None, "large travelling trunk made of sapient pearwood", None, None, S_MIMIC, LVL(6, 18, 4, 0, 0, 0), (G_NOGEN | G_NOCORPSE),
         A(ATTK(AT_BITE, AD_PHYS, 2, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
             NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1036,7 +1036,7 @@ NEARDATA struct permonst mons[] = {
         M2_DOMESTIC | M2_NEUTER | M2_PEACEFUL,
         M3_NONLIVING,
         M4_VEGAN_FOOD | M4_PACKMULE | M4_WOODEN, M5_ESCHEWS_CURSED_ITEMS | M5_ATTACK_TILE,
-        6, HI_DOMESTIC, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        6, HI_DOMESTIC, MONSTER_SOUNDSET_LUGGAGE, MONSTER_SOUNDSET_LUGGAGE),
     MON("large mimic", None, "creature capable of assuming sticking to opponents and the form of items and other objects", None, None, S_MIMIC, LVL(8, 3, 7, 4, 10, 0), (G_GENO | 1),
         A(ATTK(AT_CLAW, AD_STCK, 3, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1079,7 +1079,7 @@ NEARDATA struct permonst mons[] = {
         M2_DOMESTIC | M2_NEUTER | M2_PEACEFUL,
         M3_NONLIVING,
         M4_VEGAN_FOOD | M4_PACKMULE | M4_WOODEN | M4_BRAVE | M4_FEARLESS, M5_ESCHEWS_CURSED_ITEMS | M5_ATTACK_TILE,
-        20, HI_DOMESTIC, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+        20, HI_DOMESTIC, MONSTER_SOUNDSET_LUGGAGE, MONSTER_SOUNDSET_LUGGAGE),
     MON("chaos mimic", None, "abyssal variety of mimic capable of sticking to opponents and assuming the form of items and other objects", None, None, S_MIMIC, LVL(16, 12, -2, 12, 40, 0), (G_HELL | G_GENO | 1),
         A(ATTK(AT_CLAW, AD_STCK, 3, 10, 0, 0), ATTK(AT_CLAW, AD_STCK, 3, 10, 0, 0), ATTK(AT_CLAW, AD_STCK, 3, 10, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1453,7 +1453,7 @@ NEARDATA struct permonst mons[] = {
         MR2_NONE, MC_NONE,
         M1_HIDE | M1_FLY | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_NONECK | M1_CARNIVORE,
         M2_HOSTILE | M2_STALK, M3_NONE, M4_NONE, M5_NONE, 
-		8, CLR_GRAY, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		8, CLR_GRAY, MONSTER_SOUNDSET_GENERAL_SWALLOWER, MONSTER_SOUNDSET_GENERAL_SWALLOWER),
     MON("trapper", None, "monster that can engulf opponents", None, None, S_TRAPPER, LVL(12, 3, 3, 0, 0, 0), (G_GENO | 2),
         A(ATTK(AT_ENGL, AD_DGST, 2, 10, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1462,7 +1462,7 @@ NEARDATA struct permonst mons[] = {
         MR2_NONE, MC_NONE,
         M1_HIDE | M1_ANIMAL | M1_NOEYES | M1_NOLIMBS | M1_NONECK | M1_CARNIVORE,
         M2_HOSTILE | M2_STALK, M3_NONE, M4_NONE, M5_NONE, 
-		8, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		8, CLR_GREEN, MONSTER_SOUNDSET_GENERAL_SWALLOWER, MONSTER_SOUNDSET_GENERAL_SWALLOWER),
     /*
      * unicorns and horses
      */
@@ -1610,7 +1610,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER, 
         M3_NONLIVING, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		1, CLR_BROWN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC, 
+		1, CLR_BROWN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
         ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DUST_VORTEX_SWALLOW_ANIMATION), NO_ACTION_INFO),
     MON("fog cloud", None, "entity capable of engulfing opponents", None, None, S_VORTEX, LVL(3, 1, 0, 0, 0, 0), (G_GENO | G_NOCORPSE | 2),
         A(ATTK(AT_ENGL, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -1622,7 +1622,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER,
         M3_NONLIVING, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		2, CLR_GRAY, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		2, CLR_GRAY, MONSTER_SOUNDSET_FOG_CLOUD, MONSTER_SOUNDSET_FOG_CLOUD),
     MON("ice vortex", None, "entity with a cold attack capable of engulfing opponents", None, None, S_VORTEX, LVL(5, 20, 2, 15, 30, 0),
         (G_NOHELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_COLD, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -1634,7 +1634,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER, 
         M3_INFRAVISIBLE | M3_NONLIVING, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		7, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		7, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
     MON("steam vortex", None, "entity with a fire attack capable of engulfing opponents", None, None, S_VORTEX, LVL(7, 22, 2, 17, 30, 0),
         (G_HELL | G_GENO | G_NOCORPSE | 2),
         A(ATTK(AT_ENGL, AD_FIRE, 1, 8, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -1646,7 +1646,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER,
         M3_INFRAVISIBLE | M3_NONLIVING,
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		9, CLR_BLUE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		9, CLR_BLUE, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
     MON("fire vortex", None, "powerful entity with fire attacks capable of engulfing opponents", None, None, S_VORTEX, LVL(8, 22, 2, 18, 30, 0),
         (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_FIRE, 1, 10, 0, 0), ATTK(AT_PASV, AD_FIRE, 0, 4, 0, 0),
@@ -1658,7 +1658,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER, 
         M3_INFRAVISIBLE | M3_NONLIVING, 
         M4_VEGAN_FOOD | M4_FLAMING | M4_WHIRLY | M4_LIKES_FIRE, M5_PASSIVE_DEFENSE_TILE,
-		10, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		10, CLR_YELLOW, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
     MON("energy vortex", None, "powerful entity with electric and mana-draining attacks capable of engulfing opponents", None, None, S_VORTEX, LVL(6, 20, 2, 16, 30, 0),
         (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_ELEC, 1, 6, 0, 0), ATTK(AT_ENGL, AD_DREN, 2, 6, 0, 0),
@@ -1671,7 +1671,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER, 
         M3_NONLIVING,
         M4_VEGAN_FOOD | M4_WHIRLY, M5_PASSIVE_DEFENSE_TILE,
-		12, HI_ZAP, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		12, HI_ZAP, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
     /*
      * worms
      */
@@ -1718,7 +1718,7 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NASTY, 
         M3_NONE,
         M4_BRAVE, M5_NONE,
-		28, CLR_MAGENTA, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		28, CLR_MAGENTA, MONSTER_SOUNDSET_GENERAL_SWALLOWER, MONSTER_SOUNDSET_GENERAL_SWALLOWER),
     /*
      * xan, &c
      */
@@ -2633,7 +2633,7 @@ NEARDATA struct permonst mons[] = {
         M2_NEUTER, 
         M3_NONE, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		15, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		15, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
     MON("elder water elemental", None, "huge but slow animated body of water", None, None, S_ELEMENTAL, LVL(20, 6, -2, 18, 60, 0), (G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 6, 8, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2677,7 +2677,7 @@ NEARDATA struct permonst mons[] = {
         M2_NEUTER, 
         M3_NONE, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		23, CLR_CYAN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
+		23, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
     /*
      * Fungi
      */
@@ -4846,7 +4846,7 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_MALE,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISION, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_LORD, M5_NONE,
-		46, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_DEMON, MONSTER_SOUNDSET_DEMON),
+		46, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_JELLY, MONSTER_SOUNDSET_JELLY),
     MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghouls, gnolls, and other demons", None, None, S_DEMON, 
         LVL(44, 18, -10, 21, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
