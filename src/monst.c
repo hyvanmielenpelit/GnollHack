@@ -933,14 +933,16 @@ NEARDATA struct permonst mons[] = {
             | M1_MINDLESS | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_NONE, M4_VEGAN_FOOD, M5_PASSIVE_DEFENSE_TILE,
 		2, CLR_GREEN, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("ochre jelly", None, "powerful moving jelly with acid attacks that can engulf opponents", None, None, S_JELLY, LVL(6, 3, 8, 12, 20, 0), (G_GENO | 2),
+    ANIMATED_MON("ochre jelly", None, "powerful moving jelly with acid attacks that can engulf opponents", None, None, S_JELLY, LVL(6, 3, 8, 12, 20, 0), (G_GENO | 2),
         A(ATTK(AT_ENGL, AD_ACID, 3, 6, 0, 0), ATTK(AT_PASV, AD_ACID, 3, 6, 0, 0), NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(50, 20, MS_SILENT, MZ_MEDIUM, 0, 0, MAT_FLESH), STATS(15, 7, 15, 1, 1, 1), MR_ACID | MR_STONE, MR2_NONE, MC_ACIDIC_CORPSE,
         M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NONECK
             | M1_MINDLESS | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, M3_NONE, M4_VEGAN_FOOD, M5_PASSIVE_DEFENSE_TILE,
-		9, CLR_BROWN, MONSTER_SOUNDSET_JELLY, MONSTER_SOUNDSET_JELLY),
+		9, CLR_BROWN, MONSTER_SOUNDSET_JELLY, MONSTER_SOUNDSET_JELLY,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, OCHRE_JELLY_SWALLOW_ANIMATION), NO_ACTION_INFO),
+
     /*
      * kobolds
      */
@@ -1612,7 +1614,7 @@ NEARDATA struct permonst mons[] = {
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
 		1, CLR_BROWN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
         ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, DUST_VORTEX_SWALLOW_ANIMATION), NO_ACTION_INFO),
-    MON("fog cloud", None, "entity capable of engulfing opponents", None, None, S_VORTEX, LVL(3, 1, 0, 0, 0, 0), (G_GENO | G_NOCORPSE | 2),
+    ANIMATED_MON("fog cloud", None, "entity capable of engulfing opponents", None, None, S_VORTEX, LVL(3, 1, 0, 0, 0, 0), (G_GENO | G_NOCORPSE | 2),
         A(ATTK(AT_ENGL, AD_PHYS, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(0, 0, MS_SILENT, MZ_HUGE, 0, 0, MAT_AIR), STATS(9, 9, 9, 1, 1, 1),
@@ -1622,8 +1624,9 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER,
         M3_NONLIVING, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		2, CLR_GRAY, MONSTER_SOUNDSET_FOG_CLOUD, MONSTER_SOUNDSET_FOG_CLOUD),
-    MON("ice vortex", None, "entity with a cold attack capable of engulfing opponents", None, None, S_VORTEX, LVL(5, 20, 2, 15, 30, 0),
+		2, CLR_GRAY, MONSTER_SOUNDSET_FOG_CLOUD, MONSTER_SOUNDSET_FOG_CLOUD,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FOG_CLOUD_SWALLOW_ANIMATION), NO_ACTION_INFO),
+    ANIMATED_MON("ice vortex", None, "entity with a cold attack capable of engulfing opponents", None, None, S_VORTEX, LVL(5, 20, 2, 15, 30, 0),
         (G_NOHELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_COLD, 1, 6, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1634,8 +1637,9 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER, 
         M3_INFRAVISIBLE | M3_NONLIVING, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		7, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
-    MON("steam vortex", None, "entity with a fire attack capable of engulfing opponents", None, None, S_VORTEX, LVL(7, 22, 2, 17, 30, 0),
+		7, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ICE_VORTEX_SWALLOW_ANIMATION), NO_ACTION_INFO),
+    ANIMATED_MON("steam vortex", None, "entity with a fire attack capable of engulfing opponents", None, None, S_VORTEX, LVL(7, 22, 2, 17, 30, 0),
         (G_HELL | G_GENO | G_NOCORPSE | 2),
         A(ATTK(AT_ENGL, AD_FIRE, 1, 8, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1646,8 +1650,9 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER,
         M3_INFRAVISIBLE | M3_NONLIVING,
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		9, CLR_BLUE, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
-    MON("fire vortex", None, "powerful entity with fire attacks capable of engulfing opponents", None, None, S_VORTEX, LVL(8, 22, 2, 18, 30, 0),
+		9, CLR_BLUE, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, STEAM_VORTEX_SWALLOW_ANIMATION), NO_ACTION_INFO),
+    ANIMATED_MON("fire vortex", None, "powerful entity with fire attacks capable of engulfing opponents", None, None, S_VORTEX, LVL(8, 22, 2, 18, 30, 0),
         (G_HELL | G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_FIRE, 1, 10, 0, 0), ATTK(AT_PASV, AD_FIRE, 0, 4, 0, 0),
           NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1658,8 +1663,9 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER, 
         M3_INFRAVISIBLE | M3_NONLIVING, 
         M4_VEGAN_FOOD | M4_FLAMING | M4_WHIRLY | M4_LIKES_FIRE, M5_PASSIVE_DEFENSE_TILE,
-		10, CLR_YELLOW, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
-    MON("energy vortex", None, "powerful entity with electric and mana-draining attacks capable of engulfing opponents", None, None, S_VORTEX, LVL(6, 20, 2, 16, 30, 0),
+		10, CLR_YELLOW, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FIRE_VORTEX_SWALLOW_ANIMATION), NO_ACTION_INFO),
+    ANIMATED_MON("energy vortex", None, "powerful entity with electric and mana-draining attacks capable of engulfing opponents", None, None, S_VORTEX, LVL(6, 20, 2, 16, 30, 0),
         (G_GENO | G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_ELEC, 1, 6, 0, 0), ATTK(AT_ENGL, AD_DREN, 2, 6, 0, 0),
           ATTK(AT_PASV, AD_ELEC, 0, 4, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK),
@@ -1671,7 +1677,9 @@ NEARDATA struct permonst mons[] = {
         M2_HOSTILE | M2_NEUTER, 
         M3_NONLIVING,
         M4_VEGAN_FOOD | M4_WHIRLY, M5_PASSIVE_DEFENSE_TILE,
-		12, HI_ZAP, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
+		12, HI_ZAP, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ENERGY_VORTEX_SWALLOW_ANIMATION), NO_ACTION_INFO),
+
     /*
      * worms
      */
@@ -2623,7 +2631,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE, 
         M4_VEGAN_FOOD | M4_FLAMING | M4_LIKES_FIRE | M4_LIKES_LAVA, M5_PASSIVE_DEFENSE_TILE,
 		11, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("air elemental", None, "very fast animated body of air that can engulf opponents", None, None, S_ELEMENTAL, LVL(8, 36, 2, 12, 30, 0), (G_NOCORPSE | 1),
+    ANIMATED_MON("air elemental", None, "very fast animated body of air that can engulf opponents", None, None, S_ELEMENTAL, LVL(8, 36, 2, 12, 30, 0), (G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_PHYS, 1, 10, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(0, 0, MS_SILENT, MZ_HUGE, 0, 0, MAT_FLESH), STATS(18, 14, 18, 6, 2, 1), 
@@ -2633,7 +2641,8 @@ NEARDATA struct permonst mons[] = {
         M2_NEUTER, 
         M3_NONE, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		15, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
+		15, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, AIR_ELEMENTAL_SWALLOW_ANIMATION), NO_ACTION_INFO),
     MON("elder water elemental", None, "huge but slow animated body of water", None, None, S_ELEMENTAL, LVL(20, 6, -2, 18, 60, 0), (G_NOCORPSE | 1),
         A(ATTK(AT_CLAW, AD_PHYS, 6, 8, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
@@ -2667,7 +2676,7 @@ NEARDATA struct permonst mons[] = {
         M3_INFRAVISIBLE, 
         M4_VEGAN_FOOD | M4_FLAMING | M4_LIKES_FIRE | M4_LIKES_LAVA, M5_PASSIVE_DEFENSE_TILE,
 		20, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
-    MON("elder air elemental", None, "very fast huge animated body of air that can engulf opponents", None, None, S_ELEMENTAL, LVL(20, 36, -2, 18, 60, 0), (G_NOCORPSE | 1),
+    ANIMATED_MON("elder air elemental", None, "very fast huge animated body of air that can engulf opponents", None, None, S_ELEMENTAL, LVL(20, 36, -2, 18, 60, 0), (G_NOCORPSE | 1),
         A(ATTK(AT_ENGL, AD_PHYS, 2, 12, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
           NO_ATTK, NO_ATTK, NO_ATTK),
         SIZ(0, 0, MS_SILENT, MZ_HUGE, 0, 0, MAT_FLESH), STATS(STR19(19), 14, 20, 6, 12, 10), 
@@ -2677,7 +2686,9 @@ NEARDATA struct permonst mons[] = {
         M2_NEUTER, 
         M3_NONE, 
         M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
-		23, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX),
+		23, CLR_CYAN, MONSTER_SOUNDSET_VORTEX, MONSTER_SOUNDSET_VORTEX,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ELDER_AIR_ELEMENTAL_SWALLOW_ANIMATION), NO_ACTION_INFO),
+
     /*
      * Fungi
      */
@@ -4834,7 +4845,7 @@ struct permonst _mons2[] = {
      */
 
 	 /* Demon lords */
-	MON("Juiblex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", None, None, S_DEMON, 
+	ANIMATED_MON("Juiblex", "the Faceless Lord, Demon Lord of Slimes", "powerful demon lord capable of engulfing opponents and contracting deadly disease", None, None, S_DEMON, 
         LVL(48, 15, -7, 19, 65, -15), //STARTMARKER FOR DEMON LORDS
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
         A(ATTK(AT_ENGL, AD_DISE, 4, 10, 0, -12), ATTK(AT_SPIT, AD_ACID, 3, 6, 0, 0),
@@ -4846,7 +4857,8 @@ struct permonst _mons2[] = {
         M2_NOPOLY | M2_DEMON | M2_STALK | M2_HOSTILE | M2_NASTY | M2_MALE,
         M3_WAITFORU | M3_WANTSAMUL | M3_INFRAVISION, 
 		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS | M4_PROPER_NAME | M4_LORD, M5_NONE,
-		46, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_JELLY, MONSTER_SOUNDSET_JELLY),
+		46, CLR_BRIGHT_GREEN, MONSTER_SOUNDSET_JELLY, MONSTER_SOUNDSET_JELLY,
+        ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, JUIBLEX_SWALLOW_ANIMATION), NO_ACTION_INFO),
     MON("Yeenoghu", "Demon Lord of Gnolls", "powerful demon lord capable of paralyzing and confusing attacks, shooting magic missiles, and summoning ghouls, gnolls, and other demons", None, None, S_DEMON, 
         LVL(44, 18, -10, 21, 80, -15),
         (G_HELL | G_NOCORPSE | G_NOGEN | G_UNIQ),
