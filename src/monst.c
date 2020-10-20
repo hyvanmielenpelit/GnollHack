@@ -3885,7 +3885,7 @@ struct permonst _mons2[] = {
         M1_ANIMAL | M1_HERBIVORE | M1_CARNIVORE,
         M2_HOSTILE | M2_NASTY, 
         M3_INFRAVISIBLE | M3_HUG_HITS_IF_TWO_FIRST_ATTACKS_SUCCEEDED, 
-        M4_PAWED | M4_BEAR, M5_NONE,
+        M4_PAWED | M4_BEAR, M5_MAKES_SOUND_RANDOMLY,
 		16, CLR_BROWN, MONSTER_SOUNDSET_BEAR, MONSTER_SOUNDSET_BEAR),
     MON("owlbear shaman", None, "spell-casting owl-headed bear that can grab opponents", None, None, S_YETI, LVL(8, 12, 4, 6, 0, 0), (G_GENO | 3),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 8, 0, 0),
