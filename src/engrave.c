@@ -177,6 +177,7 @@ cant_reach_floor(x, y, up, check_pit)
 int x, y;
 boolean up, check_pit;
 {
+    play_sfx_sound(SFX_GENERAL_CANNOT);
     You("can't reach the %s.",
         up ? ceiling(x, y)
            : (check_pit && can_reach_floor(FALSE))
@@ -579,6 +580,7 @@ doengrave()
      * while both your hands are tied up.
      */
     if (!freehand() && otmp != uwep && !otmp->owornmask) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have no free %s to write with!", body_part(HAND));
         return 0;
     }
@@ -598,6 +600,7 @@ doengrave()
         return 0;
     }
     if (IS_ANVIL(levl[u.ux][u.uy].typ)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot scratch the anvil with %s.", writer);
         return 0;
     }
@@ -643,6 +646,7 @@ doengrave()
     /* Objects too large to engrave with */
     case BALL_CLASS:
     case ROCK_CLASS:
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("engrave with such a large object!");
         ptext = FALSE;
         break;
@@ -1096,6 +1100,12 @@ doengrave()
     /* A single `x' is the traditional signature of an illiterate person */
     if (len != 1 || (!index(ebuf, 'x') && !index(ebuf, 'X')))
         u.uconduct.literate++;
+
+    if (!otmp || otmp == &zeroobj)
+        play_monster_attack_floor_sound(&youmonst, 0, OBJECT_SOUND_TYPE_ENGRAVE);
+    else
+        play_object_floor_sound(otmp, OBJECT_SOUND_TYPE_ENGRAVE);
+
 
     /* Mix up engraving if surface or state of mind is unsound.
        Note: this won't add or remove any spaces. */

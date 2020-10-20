@@ -386,6 +386,8 @@ register struct monst *magr, *mdef;
 	int tmp2 = tmp;
 	int bite_butt_count = 0;
 
+    play_simple_monster_sound(magr, MONSTER_SOUND_TYPE_START_ATTACK);
+
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) 
     {

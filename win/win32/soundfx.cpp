@@ -590,6 +590,14 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Jelly/Jelly Swallow Ambient", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Luggage/Luggage Swallow Ambient", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Generic/General Swallow Ambient", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Engrave", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Gem/Generic/Stone Engrave", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Bear/Bear Howl in Anger", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Bear/Bear Grunt", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Bear/Bear Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Bear/Bear Laughter", 1.0f },
+
 };
 
 extern "C" 

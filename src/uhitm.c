@@ -3547,6 +3547,8 @@ register struct monst *mon;
     multi_claw = (multi_claw > 1); /* switch from count to yes/no */
 	int bite_butt_count = 0;
 
+	play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_START_ATTACK);
+
     for (i = 0; i < NATTK; i++) 
 	{
 		/* sum[i] = 0; -- now done above */

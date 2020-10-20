@@ -1261,7 +1261,10 @@ unsigned trflags;
                   body_part(FOOT));
             set_wounded_legs(rn2(2) ? RIGHT_SIDE : LEFT_SIDE, rn1(10, 10));
             if (is_bear(&mons[u.umonnum]))
+            {
+                play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_HOWL_IN_ANGER);
                 You("howl in anger!");
+            }
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "bear trap", KILLED_BY_AN);
         }
         exercise(A_DEX, FALSE);
@@ -2575,7 +2578,10 @@ register struct monst *mtmp;
                     seetrap(trap);
                 } else {
                     if (is_bear(mptr))
+                    {
+                        play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL_IN_ANGER);
                         You_hear("the roaring of an angry bear!");
+                    }
                 }
             } else if (force_mintrap) {
                 if (in_sight) {
@@ -2830,6 +2836,7 @@ register struct monst *mtmp;
             switch (monsndx(mptr)) {
             default:
                 if (is_bear(mptr) && !in_sight) {
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_HOWL_IN_ANGER);
                     You_hear("the roaring of a confused bear!");
                     mtmp->mtrapped = 1;
                     break;

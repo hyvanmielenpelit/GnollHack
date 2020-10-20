@@ -693,6 +693,8 @@ register struct monst *mtmp;
 	int weaponattackcount = 0;
 	int bite_butt_count = 0;
 
+    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_START_ATTACK);
+
     for (i = 0; i < NATTK; i++) 
 	{
 		tmp = tmp2; // Revert hit bonus to original value
@@ -1879,17 +1881,25 @@ register struct obj* omonwep;
 			{
 				exercise(A_STR, FALSE);
                 if (damagedealt > 0)
-					You("are being %s%s You sustain %d damage.", 
+                {
+                    You("are being %s%s You sustain %d damage.",
                         hug_throttles(mtmp->data) ? "choked" : "crushed",
                         is_constrictor(mtmp->data) ? " to death!" : ".",
                         damagedealt);
+                    display_u_being_hit(hug_throttles(mtmp->data) || is_constrictor(mtmp->data) ? HIT_STRANGLED : HIT_CRUSHED, damagedealt, 0UL);
+                }
                 else if (is_constrictor(mtmp->data))
+                {
                     pline("%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choking" : "constricting");
+                    display_u_being_hit(HIT_STRANGLED, damagedealt, 0UL);
+                }
                 else
-					You("are being %s%s.", hug_throttles(mtmp->data)
-						? "choked"
-						: "crushed", damage == 0 ? ", but sustain no damage" : "");
-                display_u_being_hit(HIT_STRANGLED, damagedealt, 0UL);
+                {
+                    You("are being %s%s.", hug_throttles(mtmp->data)
+                        ? "choked"
+                        : "crushed", damage == 0 ? ", but sustain no damage" : "");
+                    display_u_being_hit(hug_throttles(mtmp->data) ? HIT_STRANGLED : HIT_CRUSHED, damagedealt, 0UL);
+                }
             }
 		}
 		else
