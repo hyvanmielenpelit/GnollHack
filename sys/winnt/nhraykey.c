@@ -236,7 +236,23 @@ static const struct pad {
       { 'i', 'I', C('i') },    /* Ins */
       { '.', ':', ':' }        /* Del */
     },
-  numpad[PADKEYS] = {
+    gnhpad[PADKEYS] =
+    {
+      { 'y', 'Y', C('y') },    /* 7 */
+      { '8', M('8'), '8' },    /* 8 */
+      { 'u', 'U', C('u') },    /* 9 */
+      { 'm', C('p'), C('p') }, /* - */
+      { '4', M('4'), '4' },    /* 4 */
+      { '5', M('5'), '5' },    /* 5 */
+      { '6', M('6'), '6' },    /* 6 */
+      { '+', 'P', C('p') },    /* + */
+      { 'h', 'H', C('h') },    /* 1 */
+      { '2', M('2'), '2' },    /* 2 */
+      { 'j', 'J', C('j') },    /* 3 */
+      { '0', M('0'), '0' },    /* Ins */
+      { '.', ':', ':' }        /* Del */
+    },
+    numpad[PADKEYS] = {
       { '7', M('7'), '7' },    /* 7 */
       { '8', M('8'), '8' },    /* 8 */
       { '9', M('9'), '9' },    /* 9 */
@@ -339,7 +355,7 @@ int portdebug;
      */
     if (iskeypad(scan)) {
         ReadConsoleInput(hConIn, ir, 1, &count);
-        kpad = numberpad ? numpad : keypad;
+        kpad = numberpad == 2 ? gnhpad : numberpad ? numpad : keypad;
         if (shiftstate & SHIFT_PRESSED) {
             ch = kpad[scan - KEYPADLO].shift;
         } else if (shiftstate & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED)) {

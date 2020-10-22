@@ -2447,13 +2447,19 @@ boolean tinitial, tfrom_file;
         } else {
             int mode = atoi(op);
 
-            if (mode < -1 || mode > 4 || (mode == 0 && *op != '0')) {
+            if (mode < -2 || mode > 4 || (mode == 0 && *op != '0')) {
                 config_error_add("Illegal %s parameter '%s'", fullname, op);
                 return FALSE;
             } else if (mode <= 0) {
                 iflags.num_pad = FALSE;
+                iflags.num_pad_mode = 0;
+
                 /* German keyboard; y and z keys swapped */
-                iflags.num_pad_mode = (mode < 0); /* 0 or 1 */
+                if (mode == -1)
+                    iflags.num_pad_mode |= 1;
+                else if(mode == -2)
+                    iflags.num_pad_mode |= 4;
+
             } else {                              /* mode > 0 */
                 iflags.num_pad = TRUE;
                 iflags.num_pad_mode = 0;
@@ -5538,7 +5544,8 @@ boolean setinitial, setfromfile;
             " 0 (off)", " 1 (on)", " 2 (on, MSDOS compatible)",
             " 3 (on, phone-style digit layout)",
             " 4 (on, phone-style layout, MSDOS compatible)",
-            "-1 (off, 'z' to move upper-left, 'y' to zap wands)"
+            "-1 (off, 'z' to move upper-left, 'y' to zap wands)",
+            "-2 (off, diagonal movement with yuhj)"
         };
         menu_item *mode_pick = (menu_item *) 0;
 
@@ -5573,10 +5580,15 @@ boolean setinitial, setfromfile;
                 iflags.num_pad = TRUE;
                 iflags.num_pad_mode = 3;
                 break;
-            /* last menu choice: number_pad == -1 */
+            /* second last menu choice: number_pad == -1 */
             case 5:
                 iflags.num_pad = FALSE;
                 iflags.num_pad_mode = 1;
+                break;
+                /* last menu choice: number_pad == -2 */
+            case 6:
+                iflags.num_pad = FALSE;
+                iflags.num_pad_mode = 4;
                 break;
             }
             reset_commands(FALSE);
@@ -6136,11 +6148,12 @@ char *buf;
             "3=on, phone-style layout",
             "4=on, phone layout, MSDOS compatible",
             "-1=off, y & z swapped", /*[5]*/
+            "-2=off, yuhj diagonal movement", /*[6]*/
         };
         int indx = Cmd.num_pad
                        ? (Cmd.phone_layout ? (Cmd.pcHack_compat ? 4 : 3)
                                            : (Cmd.pcHack_compat ? 2 : 1))
-                       : Cmd.swap_yz ? 5 : 0;
+                       : (Cmd.gnh_layout ? 6 : Cmd.swap_yz ? 5 : 0);
 
         Strcpy(buf, numpadmodes[indx]);
     } else if (!strcmp(optname, "objects")) {

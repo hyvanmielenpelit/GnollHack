@@ -647,6 +647,7 @@ struct cmd {
     boolean pcHack_compat; /* for numpad:  affects 5, M-5, and M-0 */
     boolean phone_layout;  /* inverted keypad:  1,2,3 above, 7,8,9 below */
     boolean swap_yz;       /* QWERTZ keyboards; use z to move NW, y to zap */
+    boolean gnh_layout;    /* arrow keys for non-diagonal movement, yuhj for diagonal movement */
     char move_W, move_NW, move_N, move_NE, move_E, move_SE, move_S, move_SW;
     const char *dirchars;      /* current movement/direction characters */
     const char *alphadirchars; /* same as dirchars if !numpad */

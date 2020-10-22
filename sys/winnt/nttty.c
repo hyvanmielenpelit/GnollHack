@@ -470,7 +470,7 @@ int *x, *y, *mod;
     ch = (program_state.done_hup)
              ? '\033'
              : keyboard_handler.pCheckInput(
-                   console.hConIn, &ir, &count, iflags.num_pad, 1, mod, &cc);
+                   console.hConIn, &ir, &count, iflags.num_pad_mode & 4 ? 2 : iflags.num_pad, 1, mod, &cc);
     if (!ch) {
         *x = cc.x;
         *y = cc.y;

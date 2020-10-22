@@ -151,6 +151,22 @@ static const unsigned char
           { 'i', 'I', C('i') },    /* Ins */
           { '.', ':', ':' }        /* Del */
         },
+    gnhpad[KEY_LAST][3] =
+        {
+          { 'y', 'Y', C('y') },    /* 7 */
+          { '8', M('8'), '8' },    /* 8 */
+          { 'u', 'U', C('u') },    /* 9 */
+          { 'm', C('p'), C('p') }, /* - */
+          { '4', M('4'), '4' },    /* 4 */
+          { '5', M('5'), '5' },    /* 5 */
+          { '6', M('6'), '6' },    /* 6 */
+          { '+', 'P', C('p') },    /* + */
+          { 'h', 'H', C('h') },    /* 1 */
+          { '2', M('2'), '2' },    /* 2 */
+          { 'j', 'J', C('j') },    /* 3 */
+          { '0', M('0'), '0' },    /* Ins */
+          { '.', ':', ':' }        /* Del */
+        },
     numpad[KEY_LAST][3] = {
         { '7', M('7'), '7' },    /* 7 */
         { '8', M('8'), '8' },    /* 8 */
@@ -168,8 +184,8 @@ static const unsigned char
     };
 
 #define STATEON(x) ((GetKeyState(x) & 0xFFFE) != 0)
-#define KEYTABLE_REGULAR(x) ((iflags.num_pad ? numpad : keypad)[x][0])
-#define KEYTABLE_SHIFT(x) ((iflags.num_pad ? numpad : keypad)[x][1])
+#define KEYTABLE_REGULAR(x) ((iflags.num_pad ? numpad : iflags.num_pad_mode & 4 ? gnhpad : keypad)[x][0])
+#define KEYTABLE_SHIFT(x) ((iflags.num_pad ? numpad : iflags.num_pad_mode & 4 ? gnhpad : keypad)[x][1])
 #define KEYTABLE(x) \
     (STATEON(VK_SHIFT) ? KEYTABLE_SHIFT(x) : KEYTABLE_REGULAR(x))
 

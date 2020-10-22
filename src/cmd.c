@@ -4856,7 +4856,7 @@ struct ext_func_tab extcmdlist[] = {
 			docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
 	{ '\0' /*M('c')*/, "conduct", "list voluntary challenges you have maintained",
             doconduct, IFBURIED | AUTOCOMPLETE | INCMDMENU },
-	{ M('g'), "dig", "dig the ground", dodig, INCMDMENU },
+	{ C('g'), "dig", "dig the ground", dodig, INCMDMENU },
 	{ M('d'), "dip", "dip an object into something", dodip, AUTOCOMPLETE | INCMDMENU },
 	{ '>', "down", "go down a staircase", dodown },
     { 'd', "drop", "drop an item", dodrop },
@@ -5047,7 +5047,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif
     { C('e'), "wizdetect", "reveal hidden things within a small radius",
             wiz_detect, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { C('g'), "wizgenesis", "create a monster",
+    { C('m'), "wizgenesis", "create a monster",
             wiz_genesis, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { C('i'), "wizidentify", "identify all items in inventory",
             wiz_identify, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
@@ -6015,7 +6015,8 @@ boolean initial;
     static const char sdir[] = "hykulnjb><",
                       sdir_swap_yz[] = "hzkulnjb><",
                       ndir[] = "47896321><",
-                      ndir_phone_layout[] = "41236987><";
+                      ndir_phone_layout[] = "41236987><",
+                      gnhdir[] = "4y8u6j2h><";
     static const int ylist[] = {
         'y', 'Y', C('y'), M('y'), M('Y'), M(C('y'))
     };
@@ -6070,6 +6071,14 @@ boolean initial;
                 Cmd.commands[c + 1] = cmdtmp;          /* [z] = tmp */
             }
         }
+
+        flagtemp = (iflags.num_pad_mode & 4) ? !Cmd.num_pad : FALSE;
+        if (flagtemp != Cmd.gnh_layout)
+        {
+            Cmd.gnh_layout = flagtemp;
+            ++updated;
+        }
+
         /* MSDOS compatibility mode (only applicable for num_pad) */
         flagtemp = (iflags.num_pad_mode & 1) ? Cmd.num_pad : FALSE;
         if (flagtemp != Cmd.pcHack_compat) 
@@ -6107,7 +6116,7 @@ boolean initial;
     if (updated)
         Cmd.serialno++;
     Cmd.dirchars = !Cmd.num_pad
-                       ? (!Cmd.swap_yz ? sdir : sdir_swap_yz)
+                       ? (Cmd.gnh_layout ? gnhdir : (!Cmd.swap_yz ? sdir : sdir_swap_yz))
                        : (!Cmd.phone_layout ? ndir : ndir_phone_layout);
     Cmd.alphadirchars = !Cmd.num_pad ? Cmd.dirchars : sdir;
 
@@ -7341,7 +7350,7 @@ parse()
 #ifdef ALTMETA
     alt_esc = iflags.altmeta; /* readchar() hack */
 #endif
-    if (!Cmd.num_pad || (foo = readchar()) == Cmd.spkeys[NHKF_COUNT]) {
+    if (!Cmd.num_pad && !Cmd.gnh_layout || (foo = readchar()) == Cmd.spkeys[NHKF_COUNT]) {
         long tmpmulti = multi;
 
         foo = get_count((char *) 0, '\0', LARGEST_INT, &tmpmulti, FALSE);
