@@ -84,7 +84,7 @@ boolean
 digit(c)
 char c;
 {
-    return (boolean) ('0' <= c && c <= '9');
+    return !!('0' <= c && c <= '9');
 }
 
 /* is 'c' a letter?  note: '@' classed as letter */

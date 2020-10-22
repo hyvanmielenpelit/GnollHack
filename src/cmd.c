@@ -6367,13 +6367,20 @@ register char *cmd;
         }
         /*FALLTHRU*/
     default:
-        if (movecmd(*cmd)) { /* ordinary movement */
+        if (movecmd(*cmd))
+        { /* ordinary movement */
             context.run = 0; /* only matters here if it was 8 */
             domove_attempting |= DOMOVE_WALK;
-        } else if (movecmd(Cmd.num_pad ? unmeta(*cmd) : lowc(*cmd))) {
+        } 
+        else if (Cmd.gnh_layout ? ((!digit(*cmd) && movecmd(lowc(*cmd))) || (digit(unmeta(*cmd)) && movecmd(unmeta(*cmd)))) :
+            movecmd(Cmd.num_pad ? unmeta(*cmd) : lowc(*cmd))) 
+        {
             context.run = 1;
             domove_attempting |= DOMOVE_RUSH;
-        } else if (movecmd(unctrl(*cmd))) {
+        } 
+        else if (Cmd.gnh_layout ? (digit(unctrl(*cmd)) && movecmd(unctrl(*cmd))) :
+            movecmd(unctrl(*cmd))) 
+        {
             context.run = 3;
             domove_attempting |= DOMOVE_RUSH;
         }
@@ -6382,12 +6389,14 @@ register char *cmd;
 
     /* some special prefix handling */
     /* overload 'm' prefix to mean "request a menu" */
-    if (prefix_seen && cmd[0] == Cmd.spkeys[NHKF_REQMENU]) {
+    if (prefix_seen && cmd[0] == Cmd.spkeys[NHKF_REQMENU]) 
+    {
         /* (for func_tab cast, see below) */
         const struct ext_func_tab *ft = Cmd.commands[cmd[1] & 0xff];
         int NDECL((*func)) = ft ? ((struct ext_func_tab *) ft)->ef_funct : 0;
 
-        if (func && accept_menu_prefix(func)) {
+        if (func && accept_menu_prefix(func)) 
+        {
             iflags.menu_requested = TRUE;
             ++cmd;
         }
