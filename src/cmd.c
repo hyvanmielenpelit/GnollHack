@@ -4902,7 +4902,7 @@ struct ext_func_tab extcmdlist[] = {
     { '\0', "migratemons", "migrate N random monsters",
             wiz_migrate_mons, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
 #endif
-    { M('m'), "monster", "use monster ability or skill",
+    { '\0', "monster", "use monster ability or skill",
             doability, IFBURIED | AUTOCOMPLETE },
 	{ 'N', "name", "name a monster or an object",
             docallcmd, IFBURIED | AUTOCOMPLETE },
@@ -5037,7 +5037,7 @@ struct ext_func_tab extcmdlist[] = {
             dozoomout, IFBURIED | AUTOCOMPLETE },
     { M(','), "zoommini", "zoom map to fit to screen",
             dozoommini, IFBURIED | AUTOCOMPLETE },
-    { C(','), "zoomhalf", "zoom map out to 50% of normal",
+    { M('_'), "zoomhalf", "zoom map out to 50% of normal",
             dozoomhalf, IFBURIED | AUTOCOMPLETE },
 #endif
 
@@ -5047,7 +5047,7 @@ struct ext_func_tab extcmdlist[] = {
 #endif
     { C('e'), "wizdetect", "reveal hidden things within a small radius",
             wiz_detect, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
-    { C('m'), "wizgenesis", "create a monster",
+    { M('m'), "wizgenesis", "create a monster",
             wiz_genesis, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
     { C('i'), "wizidentify", "identify all items in inventory",
             wiz_identify, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
@@ -5153,7 +5153,7 @@ commands_init()
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
 
-#ifdef USE_TILES
+#if 0
     (void) bind_key(C('0'), "zoommini");
     (void) bind_key(C('1'), "zoomnormal");
     (void) bind_key(C('.'), "zoomnormal");
@@ -6430,7 +6430,7 @@ register char *cmd;
         /* don't report "unknown command" for change of heart... */
         bad_command = FALSE;
     }
-	else if (*cmd == ' ' || *cmd == '\n' || *cmd == '\r') // && !flags.rest_on_space)
+	else if (*cmd == ' ' || *cmd == 13) // && !flags.rest_on_space)
 	{
 		bad_command = FALSE;//TRUE; /* skip cmdlist[] loop */
 
@@ -7377,7 +7377,7 @@ parse()
     else
     {
         last_multi = multi;
-        if (foo != ' ' && foo != '\n' && foo != '\r')
+        if (foo != ' ' && foo != 13)
         {
             savech(0); /* reset input queue */
             savech((char)foo);
