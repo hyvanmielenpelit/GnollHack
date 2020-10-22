@@ -405,7 +405,6 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             ZeroMemory(kbd_state, sizeof(kbd_state));
             (void)GetKeyboardState(kbd_state);
 
-#if 0
             if(kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state['0'] >= 128)
             { 
                 NHEVENT_KBD(C('0'));
@@ -436,14 +435,7 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 NHEVENT_KBD(C('.'));
                 return 0;
             }
-            else 
-                if (kbd_state[VK_RETURN] >= 128)
-                {
-                    /* Prevent enter from working, so Ctrl-m works */
-                    return 0;
-                }
-#endif
-            if (ToAscii((UINT)wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0))
+            else if (ToAscii((UINT)wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0))
             {
                 NHEVENT_KBD(c & 0xFF);
                 return 0;

@@ -44,8 +44,8 @@ extern const char *enc_stat[]; /* encumbrance status from botl.c */
 #endif
 #endif
 
-#define CMD_TRAVEL (char) 0x90
-#define CMD_CLICKLOOK (char) 0x8F
+#define CMD_TRAVEL (char) 0xFC //0x90
+#define CMD_CLICKLOOK (char) 0xFD //0x8F
 
 #ifdef DEBUG
 extern int NDECL(wiz_debug_cmd_bury);
@@ -5037,7 +5037,7 @@ struct ext_func_tab extcmdlist[] = {
             dozoomout, IFBURIED | AUTOCOMPLETE },
     { M(','), "zoommini", "zoom map to fit to screen",
             dozoommini, IFBURIED | AUTOCOMPLETE },
-    { M('_'), "zoomhalf", "zoom map out to 50% of normal",
+    { C(','), "zoomhalf", "zoom map out to 50% of normal",
             dozoomhalf, IFBURIED | AUTOCOMPLETE },
 #endif
 
@@ -5153,13 +5153,11 @@ commands_init()
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
 
-#if 0
     (void) bind_key(C('0'), "zoommini");
     (void) bind_key(C('1'), "zoomnormal");
     (void) bind_key(C('.'), "zoomnormal");
     (void) bind_key(C('+'), "zoomin");
     (void) bind_key(C('-'), "zoomout");
-#endif
 
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
@@ -5810,7 +5808,7 @@ wiz_migrate_mons()
 }
 #endif
 
-#define unctrl(c) ((c) <= C('z') ? (0x60 | (c)) : (c))
+#define unctrl(c) ((((c) & 0xE0) == 0) ? (0x60 | (c)) : (((c) & 0x80) != 0 && ((c) & 0x40) == 0) ? (0x20 | (0x7f & (c))) : (c))
 #define unmeta(c) (0x7f & (c))
 
 struct {
@@ -6442,7 +6440,7 @@ register char *cmd;
         int res = 0, NDECL((*func));
 
         /* current - use *cmd to directly index cmdlist array */
-        if ((tlist = Cmd.commands[*cmd & 0xff]) != 0)
+        if ((tlist = Cmd.commands[(unsigned char)(*cmd & 0xff)]) != 0)
         {
             if (!wizard && (tlist->flags & WIZMODECMD))
             {
@@ -7340,7 +7338,7 @@ parse()
 #else
     static char in_line[COLNO];
 #endif
-    register int foo = 0;
+    /*register int*/ char foo = 0;
 
     iflags.in_parse = TRUE;
     multi = 0;
