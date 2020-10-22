@@ -531,10 +531,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Location/Tree/Tree Break", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Stone/Stone Break", 1.0f },
     { SOUND_BANK_MASTER, "event:/Location/Water/Water Break", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Location/Door/Door Consumed in Flames", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Location/Door/Door Freezes and Shatters", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Consumed in Flames", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Door Freezes and Shatters", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Petrify", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Location/Door/Electricity Hits Door", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Door/Generic/Electricity Hits Door", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Burnt", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Frozen", 1.0f },

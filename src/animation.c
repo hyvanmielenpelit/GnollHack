@@ -587,6 +587,17 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "fire-ray-animation", FIRE_RAY_ANIMATION_TILES,
+      FIRE_RAY_ANIMATION_FRAMES, FIRE_RAY_ANIMATION_OFF,
+      MAX_ZAP_CHARS,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 },
+      -1, -1,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "generic-spell-effect-animation", GENERIC_SPELL_EFFECT_ANIMATION_TILES,
       GENERIC_SPELL_EFFECT_ANIMATION_FRAMES, GENERIC_SPELL_EFFECT_ANIMATION_OFF,
       1,
@@ -3428,6 +3439,7 @@ int spef_number;
     }
     context.force_allow_keyboard_commands = FALSE;
 }
+
 
 /* animation.c */
 

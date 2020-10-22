@@ -178,7 +178,7 @@ NEARDATA struct obj
 
 struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
     {"magic", HI_ZAP, NO_ANIMATION},
-    {"fire", CLR_ORANGE, NO_ANIMATION},
+    {"fire", CLR_ORANGE, FIRE_RAY_ANIMATION},
     {"frost", CLR_WHITE, NO_ANIMATION},
     {"sleep", HI_ZAP, NO_ANIMATION},
     {"disintegration", CLR_BLACK, NO_ANIMATION},

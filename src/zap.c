@@ -7954,8 +7954,27 @@ boolean say; /* Announce out of sight hit/miss events if true */
         range = 1;
     save_bhitpos = bhitpos;
 
-    start_ambient_ray_sound_at_location(soundset_id, sx, sy);
+    /* Start the zap */
+    int framenum = 1;
+    int anim_ms = 0;
+    context.zap_milliseconds_to_wait_until_end = 0;
+    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    {
+        context.zap_animation_counter_on[i] = FALSE;
+        context.zap_animation_counter[i] = 0UL;
+        context.zap_animation_x[i] = 0;
+        context.zap_animation_y[i] = 0;
+    }
+    enum animation_types anim = zap_type_definitions[zaptype].animation;
+    boolean playing_anim = (iflags.using_gui_tiles && anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY);
+    if (playing_anim)
+    {
+        framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
+        anim_ms = framenum * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+    }
+    int zap_tile_count = 0;
 
+    start_ambient_ray_sound_at_location(soundset_id, sx, sy);
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
     while (range-- > 0)
 	{
@@ -7976,7 +7995,25 @@ boolean say; /* Announce out of sight hit/miss events if true */
             if (ZAP_POS(levl[sx][sy].typ)
                 || (isok(lsx, lsy) && cansee(lsx, lsy)))
             {
+                if (playing_anim)
+                {
+                    int used_count = zap_tile_count % MAX_PLAYED_SPECIAL_EFFECTS;
+                    int idx = 0;
+                    for (idx = 0; idx < used_count; idx++)
+                    {
+                        if (context.zap_animation_counter_on[idx] == TRUE && context.zap_animation_x[idx] == sx && context.zap_animation_y[idx] == sy)
+                            break;
+                    }
+                    context.zap_animation_x[idx] = sx;
+                    context.zap_animation_y[idx] = sy;
+                    context.zap_animation_counter[idx] = 0;
+                    context.zap_animation_counter_on[idx] = TRUE;
+                    context.zap_milliseconds_to_wait_until_end = anim_ms;
+
+                    zap_tile_count++;
+                }
                 tmp_at(sx, sy);
+                force_redraw_at(sx, sy);
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
             }
             adjusted_delay_output(); /* wait a little */
@@ -8234,9 +8271,21 @@ boolean say; /* Announce out of sight hit/miss events if true */
             }
         }
     }
+    if (context.zap_milliseconds_to_wait_until_end > 0)
+    {
+        delay_output_milliseconds(context.zap_milliseconds_to_wait_until_end);
+        context.zap_milliseconds_to_wait_until_end = 0UL;
+    }
     tmp_at(DISP_END, 0);
     stop_ambient_ray_sound(soundset_id);
     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_DESTROY, lsx, lsy);
+    for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
+    {
+        context.zap_animation_counter_on[i] = FALSE;
+        context.zap_animation_counter[i] = 0UL;
+        context.zap_animation_x[i] = 0;
+        context.zap_animation_y[i] = 0;
+    }
 
 	if (isexplosioneffect) //type == ZT_SPELL(ZT_FIRE))
 	{

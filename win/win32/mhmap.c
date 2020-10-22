@@ -710,6 +710,17 @@ MapWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
 
+        for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
+        {
+            if (context.zap_animation_counter_on[zap_anim_idx])
+            {
+                if (context.zap_animation_counter[zap_anim_idx] >= 0xCFFFFFFFUL)
+                    context.zap_animation_counter[zap_anim_idx] = 0UL;
+                else
+                    (context.zap_animation_counter[zap_anim_idx])++;
+            }
+        }
+
         for (int x = 1; x < COLNO; x++)
             for (int y = 0; y < ROWNO; y++) {
                 if(data->mapAnimated[x][y])
@@ -1256,6 +1267,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (glyph_is_explosion(glyph))
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                    else if (glyph_is_zap(glyph))
+                    {
+                        for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
+                        {
+                            if (context.zap_animation_counter_on[zap_anim_idx]
+                                && enl_i == context.zap_animation_x[zap_anim_idx]
+                                && enl_j == context.zap_animation_y[zap_anim_idx])
+                            {
+                                ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                                break;
+                            }
+                        }
+                    }
                     else
                     {
                         /* Check for special effect animations */
@@ -2711,6 +2735,19 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.m_action_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
                 else if (glyph_is_explosion(glyph))
                     ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                else if (glyph_is_zap(glyph))
+                {
+                    for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
+                    {
+                        if (context.zap_animation_counter_on[zap_anim_idx]
+                            && x == context.zap_animation_x[zap_anim_idx]
+                            && y == context.zap_animation_y[zap_anim_idx])
+                        {
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &mapanimateddummy, &autodraw);
+                            break;
+                        }
+                    }
+                }
                 else
                 {
                     /* Check for special effect animations */
