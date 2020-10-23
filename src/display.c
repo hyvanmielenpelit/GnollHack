@@ -1361,7 +1361,7 @@ int x, y;
     int tdx, tdy;
     tdx = u.ux - x;
     tdy = u.uy - y;
-    return zapdir_to_glyph(sgn(tdx),sgn(tdy), 2);
+    return zapdir_to_glyph(sgn(tdx),sgn(tdy), 2, FALSE, FALSE);
 }
 
 /*
@@ -3080,26 +3080,28 @@ int loc;
  *      /  S_rslant     (-1, 1) or ( 1,-1)
  */
 int
-zapdir_to_glyph(dx, dy, beam_type)
+zapdir_to_glyph(dx, dy, beam_type, is_reverse, is_bounce)
 register int dx, dy;
 int beam_type;
+boolean is_reverse, is_bounce;
 {
-    if (beam_type >= NUM_ZAP) {
+    if (beam_type >= MAX_ZAP_TYPES) {
         impossible("zapdir_to_glyph:  illegal beam type");
         beam_type = 0;
     }
-    int zapdir_glyph_index = dir_to_beam_index(dx, dy);
-
-    return ((int) ((beam_type << 2) | zapdir_glyph_index)) + GLYPH_ZAP_OFF;
+    int zapdir_glyph_index = dir_to_beam_index(dx, dy, is_reverse);
+    
+    return ((int) ((beam_type << 4) | (is_bounce ? 0x08 : 0x00) | zapdir_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
 int
-dir_to_beam_index(dx, dy)
+dir_to_beam_index(dx, dy, is_reverse)
 register int dx, dy;
+boolean is_reverse;
 {
     int dir_glyph_index = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
 
-    return dir_glyph_index;
+    return dir_glyph_index + (is_reverse ? 4 : 0);
 }
 
 /*

@@ -3504,7 +3504,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of magic missiles",
+        "blast of magic missiles",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3517,7 +3517,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of fire",
+        "blast of fire",
         {
             {GHSOUND_RAY_FIRE_AMBIENT, 1.0f},
             {GHSOUND_RAY_FIRE_CREATE, 100.0f},
@@ -3530,7 +3530,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of frost",
+        "blast of frost",
         {
             {GHSOUND_RAY_COLD_AMBIENT, 1.0f},
             {GHSOUND_RAY_COLD_CREATE, 100.0f},
@@ -3543,7 +3543,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of sleep",
+        "blast of sleep",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3556,7 +3556,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of disintegration",
+        "blast of disintegration",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3569,7 +3569,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of electricity",
+        "blast of electricity",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3582,7 +3582,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of poison gas",
+        "blast of poison gas",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3595,7 +3595,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of acid",
+        "blast of acid",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3608,7 +3608,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of death",
+        "blast of death",
         {
             {GHSOUND_RAY_DEATH_AMBIENT, 1.0f},
             {GHSOUND_RAY_DEATH_CREATE, 100.0f},
@@ -3621,7 +3621,7 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "explosion of petrification",
+        "blast of petrification",
         {
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f},
@@ -3633,6 +3633,46 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
             {GHSOUND_NONE, 0.0f}
         }
     },
+    {
+        "digging beam",
+        {
+            {GHSOUND_BEAM_DIGGING_AMBIENT, 1.0f},
+            {GHSOUND_BEAM_DIGGING_CREATE, 100.0f},
+            {GHSOUND_BEAM_DIGGING_DESTROY, 10.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_BEAM_DIGGING_HIT_LOCATION, 10.0f}
+        }
+    },
+    {
+        "evaportation beam",
+        {
+            {GHSOUND_BEAM_EVAPORATION_AMBIENT, 1.0f},
+            {GHSOUND_BEAM_EVAPORATION_CREATE, 100.0f},
+            {GHSOUND_BEAM_EVAPORATION_DESTROY, 10.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_BEAM_EVAPORATION_HIT_LOCATION, 10.0f}
+        }
+    },
+    {
+        "camera",
+        {
+            {GHSOUND_CAMERA_FLASH_AMBIENT, 100.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f},
+            {GHSOUND_NONE, 0.0f}
+        }
+    },
+
     {
         "no object ray soundset",
         {
@@ -3660,19 +3700,6 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
         }
     },
     {
-        "camera",
-        {
-            {GHSOUND_CAMERA_FLASH_AMBIENT, 100.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f}
-        }
-    },
-    {
         "rolling boulder",
         {
             {GHSOUND_ROLLING_BOULDER_AMBIENT, 1.0f},
@@ -3683,32 +3710,6 @@ struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =
             {GHSOUND_STAFF_HIT, 1.0f},
             {GHSOUND_NONE, 0.0f},
             {GHSOUND_NONE, 0.0f}
-        }
-    },
-    {
-        "digging beam",
-        {
-            {GHSOUND_BEAM_DIGGING_AMBIENT, 1.0f},
-            {GHSOUND_BEAM_DIGGING_CREATE, 100.0f},
-            {GHSOUND_BEAM_DIGGING_DESTROY, 10.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_BEAM_DIGGING_HIT_LOCATION, 10.0f}
-        }
-    }, 
-    {
-        "evaportation beam",
-        {
-            {GHSOUND_BEAM_EVAPORATION_AMBIENT, 1.0f},
-            {GHSOUND_BEAM_EVAPORATION_CREATE, 100.0f},
-            {GHSOUND_BEAM_EVAPORATION_DESTROY, 10.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_NONE, 0.0f},
-            {GHSOUND_BEAM_EVAPORATION_HIT_LOCATION, 10.0f}
         }
     },
 
@@ -4994,7 +4995,7 @@ int x, y;
 
 void
 start_ambient_ray_sound_at_location(ray_type, x, y)
-int ray_type; /* 0...NUM_ZAP normal ray, NUM_ZAP...2NUM_ZAP-1 explosion effect */
+int ray_type;
 int x, y;
 {
     int typ = ray_type;
@@ -5014,7 +5015,7 @@ int x, y;
 
 void
 update_ambient_ray_sound_to_location(ray_type, x, y)
-int ray_type; /* 0...NUM_ZAP normal ray, NUM_ZAP...2NUM_ZAP-1 explosion effect */
+int ray_type;
 int x, y;
 {
     int typ = ray_type;
@@ -5033,7 +5034,7 @@ int x, y;
 
 void
 stop_ambient_ray_sound(ray_type)
-int ray_type; /* 0...NUM_ZAP normal ray, NUM_ZAP...2NUM_ZAP-1 explosion effect */
+int ray_type;
 {
     int typ = ray_type;
 

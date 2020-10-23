@@ -587,6 +587,28 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "frosty-explosion-animation", FROSTY_EXPLOSION_ANIMATION_TILES,
+      FROSTY_EXPLOSION_ANIMATION_FRAMES, FROSTY_EXPLOSION_ANIMATION_OFF,
+      MAX_EXPLOSION_CHARS,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      -1, -1,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "noxious-explosion-animation", NOXIOUS_EXPLOSION_ANIMATION_TILES,
+      NOXIOUS_EXPLOSION_ANIMATION_FRAMES, NOXIOUS_EXPLOSION_ANIMATION_OFF,
+      MAX_EXPLOSION_CHARS,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      -1, -1,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "fire-ray-animation", FIRE_RAY_ANIMATION_TILES,
       FIRE_RAY_ANIMATION_FRAMES, FIRE_RAY_ANIMATION_OFF,
       MAX_ZAP_CHARS,
@@ -687,6 +709,20 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
     },
     { "tarrasque-statue-enlargement", 0, 0,
       TARRASQUE_STATUE_ENLARGEMENT_TILES, TARRASQUE_STATUE_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "marilith-enlargement", 0, 0,
+      MARILITH_ENLARGEMENT_TILES, MARILITH_ENLARGEMENT_OFF,
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "marilith-statue-enlargement", 0, 0,
+      MARILITH_STATUE_ENLARGEMENT_TILES, MARILITH_STATUE_ENLARGEMENT_OFF,
       3, 2, 0,
       { 0, 1, 2, 3, 4 },
       { 0, 0, 0, 0, 0 },
@@ -3065,7 +3101,7 @@ short animidx;
     }
 
     /* Zap */
-    for (int i = 0; i < NUM_ZAP; i++)
+    for (int i = 0; i < MAX_ZAP_TYPES; i++)
     {
         if (zap_type_definitions[i].animation == animidx)
             return glyph2tile[i * MAX_ZAP_CHARS + GLYPH_ZAP_OFF];

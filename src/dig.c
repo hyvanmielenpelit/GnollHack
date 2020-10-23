@@ -1795,7 +1795,7 @@ struct obj* origobj;
     }
 
     start_ambient_ray_sound_at_location(OBJECT_RAY_SOUNDSET_DIGBEAM, zx, zy);
-    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy));
+    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy, FALSE));
 
     digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
     while (--digdepth >= 0)
@@ -2090,8 +2090,8 @@ struct obj* origobj;
 	zx = u.ux + u.dx;
 	zy = u.uy + u.dy;
 
-    start_ambient_ray_sound_at_location(OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM, zx, zy);
-    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy));
+    start_ambient_ray_sound_at_location(ZAP_SPECIAL_EVAPORATION, zx, zy);
+    tmp_at(DISP_BEAM_DIG, cmap_to_glyph(S_vdigbeam) + dir_to_beam_index(u.dx, u.dy, FALSE));
 
     digdepth = (origobj && objects[origobj->otyp].oc_spell_range > 0) ? objects[origobj->otyp].oc_spell_range : rn1(18, 8);
     while (--digdepth >= 0)

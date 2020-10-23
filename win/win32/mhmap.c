@@ -1105,7 +1105,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
             if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
-                if (!showing_detection)
+                if (0 && !showing_detection)
                 {
                     int relevant_i = i;
                     int relevant_j = enl_j;

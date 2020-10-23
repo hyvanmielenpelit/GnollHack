@@ -176,7 +176,7 @@ NEARDATA struct obj
     *thrownobj = 0,     /* object in flight due to throwing */
     *kickedobj = 0;     /* object in flight due to kicking */
 
-struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
+struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
     {"magic", HI_ZAP, NO_ANIMATION},
     {"fire", CLR_ORANGE, FIRE_RAY_ANIMATION},
     {"frost", CLR_WHITE, NO_ANIMATION},
@@ -186,17 +186,32 @@ struct zap_type_definition zap_type_definitions[NUM_ZAP] = {
     {"poison", CLR_GREEN, NO_ANIMATION},
     {"acid", CLR_YELLOW, NO_ANIMATION},
     {"death", CLR_GRAY, NO_ANIMATION},
-    {"petrification", CLR_BROWN, NO_ANIMATION}
+    {"petrification", CLR_BROWN, NO_ANIMATION},
+
+    {"magic-breath", HI_ZAP, NO_ANIMATION},
+    {"fire-breath", CLR_ORANGE, FIRE_RAY_ANIMATION},
+    {"frost-breath", CLR_WHITE, NO_ANIMATION},
+    {"sleep-breath", HI_ZAP, NO_ANIMATION},
+    {"disintegration-breath", CLR_BLACK, NO_ANIMATION},
+    {"lightning-breath", CLR_WHITE, NO_ANIMATION},
+    {"poison-breath", CLR_GREEN, NO_ANIMATION},
+    {"acid-breath", CLR_YELLOW, NO_ANIMATION},
+    {"death-breath", CLR_GRAY, NO_ANIMATION},
+    {"petrification-breath", CLR_BROWN, NO_ANIMATION},
+
+    {"digging", CLR_GRAY, NO_ANIMATION},
+    {"evaporation", CLR_BLUE, NO_ANIMATION},
+    {"flashed-light", CLR_WHITE, NO_ANIMATION},
 };
 
 struct explosion_type_definition explosion_type_definitions[MAX_EXPLOSIONS] = {
     {"dark", CLR_BLACK, NO_ANIMATION, SFX_EXPLOSION_DARK},
-    {"noxious", CLR_GREEN, NO_ANIMATION, SFX_EXPLOSION_NOXIOUS},
+    {"noxious", CLR_GREEN, NOXIOUS_EXPLOSION_ANIMATION, SFX_EXPLOSION_NOXIOUS},
     {"muddy", CLR_BROWN, NO_ANIMATION, SFX_EXPLOSION_MUDDY},
     {"wet", CLR_BLUE, NO_ANIMATION, SFX_EXPLOSION_WET},
     {"magical", CLR_MAGENTA, MAGIC_EXPLOSION_ANIMATION, SFX_EXPLOSION_MAGICAL},
     {"fiery", CLR_ORANGE, FIERY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FIERY},
-    {"frosty", CLR_WHITE, NO_ANIMATION, SFX_EXPLOSION_FROSTY}
+    {"frosty", CLR_WHITE, FROSTY_EXPLOSION_ANIMATION, SFX_EXPLOSION_FROSTY}
 };
 
 

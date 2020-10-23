@@ -229,7 +229,7 @@ unsigned long *ospecial;
     else if ((offset = (glyph - GLYPH_ZAP_OFF)) >= 0)
     { /* zap beam */
         /* see zapdir_to_glyph() in display.c */
-        idx = (S_vbeam + (offset % MAX_ZAP_CHARS)) + SYM_OFF_P;
+        idx = (S_vbeam + (offset % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
         if (has_rogue_color && iflags.use_color)
             color = NO_COLOR;
         else

@@ -292,7 +292,7 @@ struct zap_type_definition {
     short animation;
 };
 
-E NEARDATA struct zap_type_definition zap_type_definitions[NUM_ZAP];
+E NEARDATA struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES];
 
 /* Macros for explosion types */
 enum explosion_types {

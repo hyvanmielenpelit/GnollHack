@@ -1006,9 +1006,13 @@ uchar* tilemapflags;
         else if (misc_idx == 2)
         {
             const char* zap_direction_name_array[MAX_ZAP_CHARS] = {
-                "vertical", "horizontal", "diagonal-top-left-to-bottom-right", "diagonal-bottom-left-to-top-right" };
+                "vertical", "horizontal", "diagonal-top-left-to-bottom-right", "diagonal-bottom-left-to-top-right",
+                "reverse-vertical", "reverse-horizontal", "reverse-diagonal-top-left-to-bottom-right", "reverse-diagonal-bottom-left-to-top-right",
+                "bounce-top", "bounce-right", "bounce-bottom", "bounce-left",
+                "reverse-bounce-top", "reverse-bounce-right", "reverse-bounce-bottom", "reverse-bounce-left",
+            };
 
-            for (int j = 0; j < NUM_ZAP; j++)
+            for (int j = 0; j < MAX_ZAP_TYPES; j++)
             {
                 const char* zap_name = zap_type_definitions[j].name;
 
@@ -1016,7 +1020,7 @@ uchar* tilemapflags;
                 {
                     const char* zap_direction_name = zap_direction_name_array[i];
                     int x_coord = i % 2;
-                    int y_coord = i / 2;
+                    int y_coord = (i / 2) % 2;
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%d,%d,2,2,1,1,0\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord);
@@ -2014,7 +2018,7 @@ uchar* tilemapflags;
         }
 
         /* Zap */
-        for (int i = 0; i < NUM_ZAP; i++)
+        for (int i = 0; i < MAX_ZAP_TYPES; i++)
         {
             if (zap_type_definitions[i].animation)
             {

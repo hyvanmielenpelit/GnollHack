@@ -25,7 +25,37 @@ enum bhit_call_types {
 
 #define SHIELD_COUNT 21  /* Total number of cmap indices in the shield_static[] array. */
 #define NATTK 8	         /* Maximum number of attacks per monster */
-#define NUM_ZAP 10       /* Number of zap beam types */
+
+enum zap_types {
+	ZAP_RAY_MAGIC_MISSILE = 0,
+	ZAP_RAY_FIRE,
+	ZAP_RAY_COLD,
+	ZAP_RAY_SLEEP,
+	ZAP_RAY_DISINTEGRATION,
+	ZAP_RAY_LIGHTNING,
+	ZAP_RAY_POISON_GAS,
+	ZAP_RAY_ACID,
+	ZAP_RAY_DEATH,
+	ZAP_RAY_PETRIFICATION,
+
+	ZAP_DRAGON_BREATH_MAGIC_MISSILE,
+	ZAP_DRAGON_BREATH_FIRE,
+	ZAP_DRAGON_BREATH_COLD,
+	ZAP_DRAGON_BREATH_SLEEP,
+	ZAP_DRAGON_BREATH_DISINTEGRATION,
+	ZAP_DRAGON_BREATH_LIGHTNING,
+	ZAP_DRAGON_BREATH_POISON_GAS,
+	ZAP_DRAGON_BREATH_ACID,
+	ZAP_DRAGON_BREATH_DEATH,
+	ZAP_DRAGON_BREATH_PETRIFICATION,
+
+	ZAP_SPECIAL_DIGGING,
+	ZAP_SPECIAL_EVAPORATION,
+	ZAP_SPECIAL_FLASHED_LIGHT,
+
+	MAX_ZAP_TYPES
+};
+#define NUM_ZAP 10       /* Number of basic zap beam types */
 
 struct replacement_info {
 	int signed_glyph;

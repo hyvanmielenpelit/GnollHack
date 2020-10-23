@@ -255,7 +255,7 @@
  *
  * zap beam     A set of four (there are four directions) for each beam type.
  *              The beam type is shifted over 2 positions and the direction
- *              is stored in the lower 2 bits.  Count: NUM_ZAP * MAX_ZAP_CHARS
+ *              is stored in the lower 2 bits.  Count: MAX_ZAP_TYPES * MAX_ZAP_CHARS
  *
  * swallow      A set of eight for each monster.  The eight positions rep-
  *              resent those surrounding the hero.  The monster number is
@@ -323,7 +323,7 @@
 #define GLYPH_BROKEN_CMAP_VARIATION_OFF (MAX_VARIATIONS * MAX_CMAP_TYPES  + GLYPH_CMAP_VARIATION_OFF)
 #define GLYPH_EXPLODE_OFF (MAX_VARIATIONS * MAX_CMAP_TYPES  + GLYPH_BROKEN_CMAP_VARIATION_OFF)
 #define GLYPH_ZAP_OFF     ((MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS) + GLYPH_EXPLODE_OFF)
-#define GLYPH_SWALLOW_OFF ((NUM_ZAP * MAX_ZAP_CHARS) + GLYPH_ZAP_OFF)
+#define GLYPH_SWALLOW_OFF ((MAX_ZAP_TYPES * MAX_ZAP_CHARS) + GLYPH_ZAP_OFF)
 #define GLYPH_WARNING_OFF ((NUM_MONSTERS * MAX_SWALLOW_CHARS) + GLYPH_SWALLOW_OFF)
 #define GLYPH_STATUE_OFF  (WARNCOUNT + GLYPH_WARNING_OFF)
 #define GLYPH_FEMALE_STATUE_OFF (NUM_MONSTERS + GLYPH_STATUE_OFF)
@@ -684,7 +684,7 @@
      && (abs(glyph)) < (GLYPH_EXPLODE_OFF + (MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS)))
 #define glyph_is_zap(glyph)   \
     ((abs(glyph)) >= GLYPH_ZAP_OFF \
-     && (abs(glyph)) < (GLYPH_ZAP_OFF + (NUM_ZAP * MAX_ZAP_CHARS)))
+     && (abs(glyph)) < (GLYPH_ZAP_OFF + (MAX_ZAP_TYPES * MAX_ZAP_CHARS)))
 #define glyph_is_swallow(glyph)   \
     ((abs(glyph)) >= GLYPH_SWALLOW_OFF \
      && (abs(glyph)) < (GLYPH_SWALLOW_OFF + (NUM_MONSTERS * MAX_SWALLOW_CHARS)))

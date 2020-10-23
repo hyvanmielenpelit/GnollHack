@@ -6672,7 +6672,7 @@ boolean stop_at_first_hit_object;
 
     if (weapon == FLASHED_LIGHT) 
     {
-        tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy));
+        tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy, FALSE));
     } 
     else if (weapon == THROWN_TETHERED_WEAPON && obj) 
     {
@@ -6693,17 +6693,17 @@ boolean stop_at_first_hit_object;
 		}
         else if (displayedobjtype == IMMEDIATE_FLASHED_LIGHT)
         {
-            tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy));
+            tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy, FALSE));
             zapped_wand_beam = TRUE;
         }
         else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
 		{
-			tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11));
+			tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11, FALSE, FALSE));
 			zapped_wand_beam = TRUE;
 		}
 		else if (displayedobjtype < STRANGE_OBJECT)
 		{
-			tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1));
+			tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1, FALSE, FALSE));
 		}
 	}
 
@@ -7975,7 +7975,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     int zap_tile_count = 0;
 
     start_ambient_ray_sound_at_location(soundset_id, sx, sy);
-    tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
+    tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype, FALSE, FALSE)); //abstype => zaptype
     while (range-- > 0)
 	{
         lsx = sx;
@@ -8267,7 +8267,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dx = -dx;
                     break;
                 }
-                tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));  //abstype changed to zaptype
+                tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype, FALSE, FALSE));  //abstype changed to zaptype
             }
         }
     }
