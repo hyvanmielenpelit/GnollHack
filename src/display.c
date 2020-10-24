@@ -1361,7 +1361,7 @@ int x, y;
     int tdx, tdy;
     tdx = u.ux - x;
     tdy = u.uy - y;
-    return zapdir_to_glyph(sgn(tdx),sgn(tdy), 2, FALSE, FALSE);
+    return zapdir_to_glyph(sgn(tdx),sgn(tdy), 2);
 }
 
 /*
@@ -3080,29 +3080,61 @@ int loc;
  *      /  S_rslant     (-1, 1) or ( 1,-1)
  */
 int
-zapdir_to_glyph(dx, dy, beam_type, is_reverse, is_bounce)
+zapdir_to_glyph(dx, dy, beam_type, is_bounce)
 register int dx, dy;
 int beam_type;
-boolean is_reverse, is_bounce;
 {
     if (beam_type >= MAX_ZAP_TYPES) {
         impossible("zapdir_to_glyph:  illegal beam type");
         beam_type = 0;
     }
-    int zapdir_glyph_index = dir_to_beam_index(dx, dy, is_reverse);
+    int zapdir_glyph_index = dir_to_beam_index(dx, dy);
     
-    return ((int) ((beam_type << 4) | (is_bounce ? 0x08 : 0x00) | zapdir_glyph_index)) + GLYPH_ZAP_OFF;
+    return ((int) ((beam_type << 4) | zapdir_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
 int
-dir_to_beam_index(dx, dy, is_reverse)
+dir_to_beam_index(dx, dy)
 register int dx, dy;
-boolean is_reverse;
 {
+    boolean is_reverse = (dy < 0 || (dy == 0 && dx > 0));
     int dir_glyph_index = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
 
     return dir_glyph_index + (is_reverse ? 4 : 0);
 }
+
+int
+zapbounce_to_glyph(orig_dx, orig_dy, new_dx, new_dy, beam_type)
+register int orig_dx, orig_dy, new_dx, new_dy;
+int beam_type;
+{
+    if (beam_type >= MAX_ZAP_TYPES) {
+        impossible("zapbounce_to_glyph:  illegal beam type");
+        beam_type = 0;
+    }
+
+    int zapbounce_glyph_index = 8;
+
+    if (orig_dx > 0 && orig_dy < 0 && new_dy > 0)
+        zapbounce_glyph_index += 0;
+    else if (orig_dx > 0 && orig_dy > 0 && new_dx < 0)
+        zapbounce_glyph_index += 1;
+    else if (orig_dx < 0 && orig_dy > 0 && new_dy < 0)
+        zapbounce_glyph_index += 2;
+    else if (orig_dx < 0 && orig_dy < 0 && new_dx > 0)
+        zapbounce_glyph_index += 3;
+    else if (orig_dx < 0 && orig_dy < 0 && new_dy > 0)
+        zapbounce_glyph_index += 4;
+    else if (orig_dx > 0 && orig_dy < 0 && new_dx < 0)
+        zapbounce_glyph_index += 5;
+    else if (orig_dx > 0 && orig_dy > 0 && new_dy < 0)
+        zapbounce_glyph_index += 6;
+    else if (orig_dx < 0 && orig_dy > 0 && new_dx > 0)
+        zapbounce_glyph_index += 7;
+
+    return ((int)((beam_type << 4) | zapbounce_glyph_index)) + GLYPH_ZAP_OFF;
+}
+
 
 /*
  * Utility routine for dowhatis() used to find out the glyph displayed at

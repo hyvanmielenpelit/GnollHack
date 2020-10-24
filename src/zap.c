@@ -6672,7 +6672,7 @@ boolean stop_at_first_hit_object;
 
     if (weapon == FLASHED_LIGHT) 
     {
-        tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy, FALSE));
+        tmp_at(DISP_BEAM, zapdir_to_glyph(ZAP_SPECIAL_FLASHED_LIGHT, ddx, ddy));
     } 
     else if (weapon == THROWN_TETHERED_WEAPON && obj) 
     {
@@ -6693,17 +6693,17 @@ boolean stop_at_first_hit_object;
 		}
         else if (displayedobjtype == IMMEDIATE_FLASHED_LIGHT)
         {
-            tmp_at(DISP_BEAM, cmap_to_glyph(S_vflashbeam) + dir_to_beam_index(ddx, ddy, FALSE));
+            tmp_at(DISP_BEAM, zapdir_to_glyph(ZAP_SPECIAL_FLASHED_LIGHT, ddx, ddy));
             zapped_wand_beam = TRUE;
         }
         else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
 		{
-			tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11, FALSE, FALSE));
+			tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 11));
 			zapped_wand_beam = TRUE;
 		}
 		else if (displayedobjtype < STRANGE_OBJECT)
 		{
-			tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1, FALSE, FALSE));
+			tmp_at(DISP_FLASH, zapdir_to_glyph(ddx, ddy, -displayedobjtype - 1));
 		}
 	}
 
@@ -7900,7 +7900,7 @@ register xchar sx, sy;
 register int dx, dy;
 boolean say; /* Announce out of sight hit/miss events if true */
 {
-    int range, abstype = abs(type) % 10;
+    int range, abstype = abs(type) % NUM_ZAP;
     register xchar lsx, lsy;
     struct monst *mon;
     coord save_bhitpos;
@@ -7910,13 +7910,13 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	int zaptype = 0;
     struct obj origobj_copy = origobj ? *origobj : zeroobj; /* Informatin copied here in the case origobj gets destroyed during buzz */
 
-	zaptype = abstype;
+	zaptype = abstype + (abs(type) >= 20 && abs(type) < 30 ? NUM_ZAP : 0); /* Breathing has a different glyph */
 
 	//Define if explosion effect
 	boolean isexplosioneffect = FALSE;
 	if (origobj && objects[origobj->otyp].oc_aflags & S1_SPELL_EXPLOSION_EFFECT) // (type == ZT_SPELL(ZT_FIRE));
 		isexplosioneffect = TRUE;
-    int soundset_id = abstype % NUM_ZAP + (isexplosioneffect ? NUM_ZAP : 0);
+    int soundset_id = zaptype;
 	fltxt = flash_types[(type <= -40) ? abstype : abs(type)];
 
     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_CREATE, sx, sy);
@@ -7975,7 +7975,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
     int zap_tile_count = 0;
 
     start_ambient_ray_sound_at_location(soundset_id, sx, sy);
-    tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype, FALSE, FALSE)); //abstype => zaptype
+    tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
     while (range-- > 0)
 	{
         lsx = sx;
@@ -7986,7 +7986,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
             goto make_bounce;
 
         mon = m_at(sx, sy);
-        if (cansee(sx, sy)) {
+        if (cansee(sx, sy))
+        {
             /* reveal/unreveal invisible monsters before tmp_at() */
             if (mon && !canspotmon(mon))
                 map_invisible(sx, sy);
@@ -8209,7 +8210,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
         }
 
         if (!ZAP_POS(levl[sx][sy].typ)
-            || (closed_door(sx, sy) && range >= 0)) {
+            || (closed_door(sx, sy) && range >= 0)) 
+        {
             int bounce, bchance;
             uchar rmn;
             boolean fireball = FALSE;
@@ -8223,13 +8225,17 @@ boolean say; /* Announce out of sight hit/miss events if true */
 			fireball = isexplosioneffect;
 
 			if ((--range > 0 && isok(lsx, lsy) && cansee(lsx, lsy))
-                || fireball) {
-                if (Is_airlevel(&u.uz)) { /* nothing to bounce off of */
+                || fireball)
+            {
+                if (Is_airlevel(&u.uz))
+                { /* nothing to bounce off of */
                     pline_The("%s vanishes into the aether!", fltxt);
 //                    if (fireball) //No need to do anything here
 //                        type = ZT_WAND(ZT_FIRE); /* skip pending fireball */
                     break;
-                } else if (fireball) {
+                }
+                else if (fireball) 
+                {
                     sx = lsx;
                     sy = lsy;
                     break; /* fireballs explode before the obstacle */
@@ -8240,10 +8246,16 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     pline_The("%s bounces!", fltxt);
                 }
             }
-            if (!dx || !dy || !rn2(bchance)) {
+
+            if (!dx || !dy || !rn2(bchance))
+            {
                 dx = -dx;
                 dy = -dy;
-            } else {
+                tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));
+            } 
+            else 
+            {
+                int orig_dx = dx, orig_dy = dy;
                 if (isok(sx, lsy) && ZAP_POS(rmn = levl[sx][lsy].typ)
                     && !closed_door(sx, lsy)
                     && (IS_ROOM(rmn) || (isok(sx + dx, lsy)
@@ -8256,7 +8268,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     if (!bounce || rn2(2))
                         bounce = 2;
 
-                switch (bounce) {
+                switch (bounce)
+                {
                 case 0:
                     dx = -dx;
                     /*FALLTHRU*/
@@ -8267,7 +8280,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dx = -dx;
                     break;
                 }
-                tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype, FALSE, FALSE));  //abstype changed to zaptype
+                tmp_at(DISP_CHANGE, zapbounce_to_glyph(orig_dx, orig_dy, dx, dy, zaptype));
+                tmp_at(sx, sy);
+                tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));  //abstype changed to zaptype
             }
         }
     }
