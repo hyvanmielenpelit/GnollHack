@@ -7995,6 +7995,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 map_invisible(sx, sy);
             else if (!mon)
                 (void) unmap_invisible(sx, sy);
+
             if (ZAP_POS(levl[sx][sy].typ)
                 || (isok(lsx, lsy) && cansee(lsx, lsy)))
             {
@@ -8147,6 +8148,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
 						if (start_petrification)
 							start_delayed_petrification(mon, TRUE);
 					}
+                    tmp_at(sx, sy);
+                    force_redraw_at(sx, sy);
+                    flush_screen(0);
                 }
                 range -= 2;
             } 

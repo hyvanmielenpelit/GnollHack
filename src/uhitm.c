@@ -4843,6 +4843,11 @@ enum action_tile_types action;
 
 	u.action = action;
 
+	struct layer_info layers = layers_at(u.ux, u.uy);
+	int missile_glyph = NO_GLYPH;
+	if (layers.layer_glyphs[LAYER_MISSILE] != 0 && layers.layer_glyphs[LAYER_MISSILE] != NO_GLYPH && (glyph_is_zap(layers.layer_glyphs[LAYER_MISSILE]) || glyph_is_missile(layers.layer_glyphs[LAYER_MISSILE])))
+		missile_glyph = layers.layer_glyphs[LAYER_MISSILE];
+
 	if (iflags.using_gui_tiles && action_before != u.action)
 	{
 		context.force_allow_keyboard_commands = TRUE;
@@ -4853,6 +4858,7 @@ enum action_tile_types action;
 			context.u_action_animation_counter = 0;
 			context.u_action_animation_counter_on = TRUE;
 			newsym(u.ux, u.uy);
+			add_glyph_to_layer(u.ux, u.uy, missile_glyph);
 			force_redraw_at(u.ux, u.uy);
 			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -4889,6 +4895,7 @@ enum action_tile_types action;
 		else
 		{
 			newsym(u.ux, u.uy);
+			add_glyph_to_layer(u.ux, u.uy, missile_glyph);
 			flush_screen(1);
 			context.u_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
@@ -4936,6 +4943,11 @@ enum action_tile_types action;
 
 	mtmp->action = action;
 
+	struct layer_info layers = layers_at(mtmp->mx, mtmp->my);
+	int missile_glyph = NO_GLYPH;
+	if (layers.layer_glyphs[LAYER_MISSILE] != 0 && layers.layer_glyphs[LAYER_MISSILE] != NO_GLYPH && (glyph_is_zap(layers.layer_glyphs[LAYER_MISSILE]) || glyph_is_missile(layers.layer_glyphs[LAYER_MISSILE])))
+		missile_glyph = layers.layer_glyphs[LAYER_MISSILE];
+
 	if (iflags.using_gui_tiles && canseemon(mtmp) && action_before != mtmp->action)
 	{
 		enum animation_types anim = mtmp->data->animation.actions[action];
@@ -4947,6 +4959,7 @@ enum action_tile_types action;
 			context.m_action_animation_counter = 0;
 			context.m_action_animation_counter_on = TRUE;
 			newsym(mtmp->mx, mtmp->my);
+			add_glyph_to_layer(mtmp->mx, mtmp->my, missile_glyph);
 			force_redraw_at(mtmp->mx, mtmp->my);
 			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -4983,6 +4996,7 @@ enum action_tile_types action;
 		else
 		{
 			newsym(mtmp->mx, mtmp->my);
+			add_glyph_to_layer(mtmp->mx, mtmp->my, missile_glyph);
 			flush_screen(0);
 			context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
@@ -5031,15 +5045,21 @@ unsigned long extra_flags;
 	boolean is_you = (x == u.ux && y == u.uy);
 	unsigned long hit_bits = ((unsigned long)(hit_symbol_shown - HIT_TILE)) << LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET;
 	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
+	struct layer_info layers = layers_at(x, y);
+	int missile_glyph = NO_GLYPH;
+	if (layers.layer_glyphs[LAYER_MISSILE] != 0 && layers.layer_glyphs[LAYER_MISSILE] != NO_GLYPH && (glyph_is_zap(layers.layer_glyphs[LAYER_MISSILE]) || glyph_is_missile(layers.layer_glyphs[LAYER_MISSILE])))
+		missile_glyph = layers.layer_glyphs[LAYER_MISSILE];
 
 	enum action_tile_types action_before = is_you ? u.action : mon->action;
 	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
 	m_wait_until_action();
 	newsym_with_extra_info(x, y, flags, damage_shown);
+	add_glyph_to_layer(x, y, missile_glyph);
 	flush_screen(is_you);
 	adjusted_delay_output();
 	update_m_action(mon, action_before);
 	newsym(x, y);
+	add_glyph_to_layer(x, y, missile_glyph);
 	flush_screen(is_you);
 }
 
