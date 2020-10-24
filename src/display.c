@@ -3080,7 +3080,7 @@ int loc;
  *      /  S_rslant     (-1, 1) or ( 1,-1)
  */
 int
-zapdir_to_glyph(dx, dy, beam_type, is_bounce)
+zapdir_to_glyph(dx, dy, beam_type)
 register int dx, dy;
 int beam_type;
 {
@@ -3097,7 +3097,7 @@ int
 dir_to_beam_index(dx, dy)
 register int dx, dy;
 {
-    boolean is_reverse = (dy < 0 || (dy == 0 && dx > 0));
+    boolean is_reverse = (dy > 0 || (dy == 0 && dx > 0));
     int dir_glyph_index = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;
 
     return dir_glyph_index + (is_reverse ? 4 : 0);

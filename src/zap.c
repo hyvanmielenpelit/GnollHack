@@ -6672,7 +6672,7 @@ boolean stop_at_first_hit_object;
 
     if (weapon == FLASHED_LIGHT) 
     {
-        tmp_at(DISP_BEAM, zapdir_to_glyph(ZAP_SPECIAL_FLASHED_LIGHT, ddx, ddy));
+        tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, ZAP_SPECIAL_FLASHED_LIGHT));
     } 
     else if (weapon == THROWN_TETHERED_WEAPON && obj) 
     {
@@ -6693,7 +6693,7 @@ boolean stop_at_first_hit_object;
 		}
         else if (displayedobjtype == IMMEDIATE_FLASHED_LIGHT)
         {
-            tmp_at(DISP_BEAM, zapdir_to_glyph(ZAP_SPECIAL_FLASHED_LIGHT, ddx, ddy));
+            tmp_at(DISP_BEAM, zapdir_to_glyph(ddx, ddy, ZAP_SPECIAL_FLASHED_LIGHT));
             zapped_wand_beam = TRUE;
         }
         else if (displayedobjtype <= IMMEDIATE_MAGIC_MISSILE_BEAM)
