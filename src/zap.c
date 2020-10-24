@@ -7976,12 +7976,14 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
     start_ambient_ray_sound_at_location(soundset_id, sx, sy);
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
+
     while (range-- > 0)
 	{
         lsx = sx;
         sx += dx;
         lsy = sy;
         sy += dy;
+
         if (!isok(sx, sy) || levl[sx][sy].typ == STONE)
             goto make_bounce;
 
@@ -8017,7 +8019,6 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 force_redraw_at(sx, sy);
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
             }
-            adjusted_delay_output(); /* wait a little */
         }
 
         /* hit() and miss() need bhitpos to match the target */
@@ -8212,17 +8213,19 @@ boolean say; /* Announce out of sight hit/miss events if true */
         if (!ZAP_POS(levl[sx][sy].typ)
             || (closed_door(sx, sy) && range >= 0)) 
         {
-            int bounce, bchance;
             uchar rmn;
             boolean fireball = FALSE;
+            int bchance = 0;
+            int bounce = 0;
 
         make_bounce:
-            bchance = (levl[sx][sy].typ == STONE) ? 10
+            bchance = (!isok(sx, sy) || levl[sx][sy].typ == STONE) ? 10
                 : (In_mines(&u.uz) && IS_WALL(levl[sx][sy].typ)) ? 20
                 : 75;
+
             bounce = 0;
-			// if(type == ZT_SPELL(ZT_FIRE));
-			fireball = isexplosioneffect;
+
+            fireball = isexplosioneffect;
 
 			if ((--range > 0 && isok(lsx, lsy) && cansee(lsx, lsy))
                 || fireball)
@@ -8285,6 +8288,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));  //abstype changed to zaptype
             }
         }
+
+        if(cansee(sx, sy))
+            adjusted_delay_output(); /* wait a little */
     }
     if (context.zap_milliseconds_to_wait_until_end > 0)
     {
