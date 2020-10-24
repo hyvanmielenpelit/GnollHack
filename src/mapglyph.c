@@ -233,7 +233,7 @@ unsigned long *ospecial;
         int zidx = (offset % MAX_ZAP_CHARS);
         if (zapnum == ZAP_SPECIAL_DIGGING || zapnum == ZAP_SPECIAL_EVAPORATION)
             idx = S_digbeam + SYM_OFF_P;
-        if (zapnum == ZAP_SPECIAL_FLASHED_LIGHT)
+        else if (zapnum == ZAP_SPECIAL_FLASHED_LIGHT)
             idx = S_flashbeam + SYM_OFF_P;
         else if(zidx < 2 * NUM_ASCII_ZAP_CHARS)
             idx = (S_vbeam + (zidx % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
