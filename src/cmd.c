@@ -7696,7 +7696,7 @@ dosh_core(VOID_ARGS)
 int
 dozoomnormal(VOID_ARGS)
 {
-    flags.screen_scale_adjustment = flags.preferred_screen_scale == 0 ? 0.0 
+    flags.screen_scale_adjustment = flags.preferred_screen_scale <= 0 ? 0.0 
         : max(MIN_SCREEN_SCALE_ADJUSTMENT, min(MAX_SCREEN_SCALE_ADJUSTMENT, (((double)flags.preferred_screen_scale) / 100.0 - 1.0) ));
 
     stretch_window();

@@ -6204,7 +6204,7 @@ char *buf;
         if (flags.preferred_screen_scale)
             Sprintf(buf, "%d", flags.preferred_screen_scale);
         else
-            Strcpy(buf, none);
+            Sprintf(buf, "%s, 100", defopt);
     } else if (!strcmp(optname, "race")) {
         Sprintf(buf, "%s", rolestring(flags.initrace, races, noun));
     } else if (!strcmp(optname, "roguesymset")) {
