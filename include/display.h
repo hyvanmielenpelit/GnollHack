@@ -21,6 +21,11 @@
 #ifndef GENERAL_H
 #include "general.h"
 #endif
+
+/* Flags for newsym */
+#define NEWSYM_FLAGS_NONE                       0x00000000UL
+#define NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH     0x00000001UL
+
 /*
  * vobj_at()
  *

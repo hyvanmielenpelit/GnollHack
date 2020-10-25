@@ -1269,6 +1269,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.explosion_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (glyph_is_zap(glyph))
                     {
+                        boolean zap_found = FALSE;
                         for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
                         {
                             if (context.zap_animation_counter_on[zap_anim_idx]
@@ -1276,9 +1277,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 && enl_j == context.zap_animation_y[zap_anim_idx])
                             {
                                 ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
+                                zap_found = TRUE;
                                 break;
                             }
                         }
+ 
+                        /* Otherwise, normal animation check */
+                        if (!zap_found)
+                            ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     }
                     else
                     {

@@ -8001,12 +8001,16 @@ boolean say; /* Announce out of sight hit/miss events if true */
             {
                 if (playing_anim)
                 {
-                    int used_count = zap_tile_count % MAX_PLAYED_SPECIAL_EFFECTS;
+                    int used_count = zap_tile_count % MAX_PLAYED_ZAP_ANIMATIONS;
                     int idx = 0;
+                    boolean use_old = FALSE;
                     for (idx = 0; idx < used_count; idx++)
                     {
                         if (context.zap_animation_counter_on[idx] == TRUE && context.zap_animation_x[idx] == sx && context.zap_animation_y[idx] == sy)
+                        {
+                            use_old = TRUE;
                             break;
+                        }
                     }
                     context.zap_animation_x[idx] = sx;
                     context.zap_animation_y[idx] = sy;
@@ -8014,7 +8018,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     context.zap_animation_counter_on[idx] = TRUE;
                     context.zap_milliseconds_to_wait_until_end = anim_ms;
 
-                    zap_tile_count++;
+                    if(!use_old)
+                        zap_tile_count++;
                 }
                 tmp_at(sx, sy);
                 force_redraw_at(sx, sy);

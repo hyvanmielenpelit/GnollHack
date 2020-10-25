@@ -1104,13 +1104,30 @@ void
 newsym(x, y)
 register int x, y;
 {
-    newsym_with_extra_info(x, y, 0UL, 0);
+    newsym_with_extra_info_and_flags(x, y, 0UL, 0, 0UL);
+}
+
+void
+newsym_with_flags(x, y, newsym_flags)
+register int x, y;
+unsigned long newsym_flags;
+{
+    newsym_with_extra_info_and_flags(x, y, 0UL, 0, newsym_flags);
 }
 
 void
 newsym_with_extra_info(x, y, disp_flags, damage_shown)
 register int x, y;
 unsigned long disp_flags;
+int damage_shown;
+{
+    newsym_with_extra_info_and_flags(x, y, disp_flags, damage_shown, 0UL);
+}
+
+void
+newsym_with_extra_info_and_flags(x, y, disp_flags, damage_shown, newsym_flags)
+register int x, y;
+unsigned long disp_flags, newsym_flags;
 int damage_shown;
 {
     if (!isok(x, y))
@@ -1129,6 +1146,10 @@ int damage_shown;
         return;
 #endif
 
+    struct layer_info layers = layers_at(x, y);
+    int missile_glyph = NO_GLYPH;
+    if (layers.layer_glyphs[LAYER_MISSILE] != 0 && layers.layer_glyphs[LAYER_MISSILE] != NO_GLYPH && (glyph_is_zap(layers.layer_glyphs[LAYER_MISSILE]) || glyph_is_missile(layers.layer_glyphs[LAYER_MISSILE])))
+        missile_glyph = layers.layer_glyphs[LAYER_MISSILE];
 
     /* only permit updating the hero when swallowed */
     if (u.uswallow)
@@ -1299,6 +1320,10 @@ int damage_shown;
                 display_warning(mon);
             }
         }
+    }
+    if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH)
+    {
+        add_glyph_to_layer(x, y, missile_glyph);
     }
 }
 
