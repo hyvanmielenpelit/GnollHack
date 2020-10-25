@@ -8292,8 +8292,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dx = -dx;
                     break;
                 }
-                tmp_at(DISP_CHANGE, zapbounce_to_glyph(orig_dx, orig_dy, dx, dy, zaptype));
-                tmp_at(sx, sy);
+
+                if (bounce)
+                {
+                    tmp_at(DISP_CHANGE, zapbounce_to_glyph(orig_dx, orig_dy, dx, dy, zaptype));
+                    tmp_at(sx, sy);
+                }
                 tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));  //abstype changed to zaptype
             }
         }
