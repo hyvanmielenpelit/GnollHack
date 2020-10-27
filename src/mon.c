@@ -1229,8 +1229,7 @@ register struct monst *mtmp;
                from lava, just from water */
             if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
 			{
-                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-                if (rloc(mtmp, TRUE))
+                if (rloc_with_effects(mtmp, TRUE))
                     return 0;
             }
             if (!is_mon_immune_to_fire(mtmp)) 
@@ -1291,8 +1290,7 @@ register struct monst *mtmp;
                if possible */
             if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
 			{
-                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-                if (rloc(mtmp, TRUE))
+                if (rloc_with_effects(mtmp, TRUE))
                     return 0;
             }
             if (cansee(mtmp->mx, mtmp->my)) 

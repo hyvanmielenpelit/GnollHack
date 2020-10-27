@@ -2999,8 +2999,8 @@ E boolean FDECL(goodpos, (int, int, struct monst *, unsigned long));
 E boolean FDECL(enexto, (coord *, XCHAR_P, XCHAR_P, struct permonst *));
 E boolean FDECL(enexto_core, (coord *, XCHAR_P, XCHAR_P,
                               struct permonst *, unsigned long));
-E void FDECL(teleds, (int, int, BOOLEAN_P));
-E boolean FDECL(safe_teleds, (BOOLEAN_P));
+E void FDECL(teleds, (int, int, BOOLEAN_P, BOOLEAN_P));
+E boolean FDECL(safe_teleds, (BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(teleport_pet, (struct monst *, BOOLEAN_P));
 E void NDECL(tele);
 E void NDECL(controlled_teleportation);
@@ -3015,6 +3015,7 @@ E void FDECL(tele_trap, (struct trap *));
 E void FDECL(level_tele_trap, (struct trap *, unsigned));
 E void FDECL(rloc_to, (struct monst *, int, int));
 E boolean FDECL(rloc, (struct monst *, BOOLEAN_P));
+E boolean FDECL(rloc_with_effects, (struct monst*, BOOLEAN_P));
 E boolean FDECL(tele_restrict, (struct monst *));
 E void FDECL(mtele_trap, (struct monst *, struct trap *, int));
 E int FDECL(mlevel_tele_trap, (struct monst *, struct trap *,

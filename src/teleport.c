@@ -254,12 +254,14 @@ boolean trapok;
 }
 
 void
-teleds(nux, nuy, allow_drag)
+teleds(nux, nuy, allow_drag, keep_effect_glyphs)
 register int nux, nuy;
-boolean allow_drag;
+boolean allow_drag, keep_effect_glyphs;
 {
     boolean ball_active, ball_still_in_range;
     struct monst *vault_guard = vault_occupied(u.urooms) ? findgd() : 0;
+    int x = nux, y = nuy;
+    struct layer_info layers = layers_at(x, y);
 
     if (u.utraptype == TT_BURIEDBALL) {
         /* unearth it */
@@ -343,7 +345,7 @@ boolean allow_drag;
      *  location.  Force a full vision recalculation because the hero
      *  is now in a new location.
      */
-    newsym(u.ux0, u.uy0);
+    newsym_with_flags(u.ux0, u.uy0, keep_effect_glyphs ? NEWSYM_FLAGS_KEEP_OLD_GENERAL_EFFECT_GLYPH | NEWSYM_FLAGS_KEEP_OLD_MONSTER_EFFECT_GLYPH : NEWSYM_FLAGS_NONE);
     see_monsters();
     vision_full_recalc = 1;
     nomul(0);
@@ -379,11 +381,19 @@ boolean allow_drag;
     /* possible shop entry message comes after guard's shrill whistle */
     spoteffects(TRUE);
     invocation_message();
+
+    if (keep_effect_glyphs)
+    {
+        show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_GENERAL_EFFECT], LAYER_GENERAL_EFFECT);
+        show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER_EFFECT], LAYER_MONSTER_EFFECT);
+        force_redraw_at(x, y);
+        flush_screen(0);
+    }
 }
 
 boolean
-safe_teleds(allow_drag)
-boolean allow_drag;
+safe_teleds(allow_drag, keep_effect_glyphs)
+boolean allow_drag, keep_effect_glyphs;
 {
     register int nux, nuy, tcnt = 0;
 
@@ -393,7 +403,7 @@ boolean allow_drag;
     } while (!teleok(nux, nuy, (boolean) (tcnt > 200)) && ++tcnt <= 400);
 
     if (tcnt <= 400) {
-        teleds(nux, nuy, allow_drag);
+        teleds(nux, nuy, allow_drag, keep_effect_glyphs);
         return TRUE;
     } else
         return FALSE;
@@ -409,9 +419,9 @@ vault_tele()
         play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
         special_effect_wait_until_action(0);
-        teleds(c.x, c.y, FALSE);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, c.x, c.y, FALSE);
         special_effect_wait_until_action(1);
+        teleds(c.x, c.y, FALSE, TRUE);
         special_effect_wait_until_end(0);
         special_effect_wait_until_end(1);
         return;
@@ -530,12 +540,15 @@ boolean iscontrolled;
                 if (scroll)
                     learnscroll(scroll);
 
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
                 play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
                 special_effect_wait_until_action(0);
-                teleds(cc.x, cc.y, FALSE);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+                show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+                force_redraw_at(u.ux, u.uy);
+                flush_screen(0);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, cc.x, cc.y, TRUE);
                 special_effect_wait_until_action(1);
+                teleds(cc.x, cc.y, FALSE, TRUE);
                 special_effect_wait_until_end(0);
                 special_effect_wait_until_end(1);
                 return TRUE;
@@ -556,7 +569,7 @@ boolean iscontrolled;
     play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
     play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
     special_effect_wait_until_action(0);
-    (void) safe_teleds(FALSE);
+    (void) safe_teleds(FALSE, TRUE);
     play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
     special_effect_wait_until_action(1);
     special_effect_wait_until_end(0);
@@ -711,9 +724,9 @@ struct monst* mtmp;
                 play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
                 play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
                 special_effect_wait_until_action(0);
-                teleds(nux, nuy, TRUE);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, nux, nuy, FALSE);
                 special_effect_wait_until_action(1);
+                teleds(nux, nuy, TRUE, TRUE);
                 special_effect_wait_until_end(0);
                 special_effect_wait_until_end(1);
                 if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
@@ -1491,49 +1504,51 @@ register int x, y;
     register int oldx = mtmp->mx, oldy = mtmp->my;
     boolean resident_shk = mtmp->isshk && inhishop(mtmp);
 
-    if (x == mtmp->mx && y == mtmp->my && m_at(x,y) == mtmp)
-        return; /* that was easy */
+if (x == mtmp->mx && y == mtmp->my && m_at(x, y) == mtmp)
+return; /* that was easy */
 
-    if (oldx) { /* "pick up" monster */
-        if (mtmp->wormno) {
-            remove_worm(mtmp);
-        } else {
-            remove_monster(oldx, oldy);
-            newsym(oldx, oldy); /* update old location */
-        }
+if (oldx) { /* "pick up" monster */
+    if (mtmp->wormno) {
+        remove_worm(mtmp);
     }
-
-    memset(mtmp->mtrack, 0, sizeof mtmp->mtrack);
-    place_monster(mtmp, x, y); /* put monster down */
-    update_monster_region(mtmp);
-
-    if (mtmp->wormno) /* now put down tail */
-        place_worm_tail_randomly(mtmp, x, y);
-
-    if (u.ustuck == mtmp) {
-        if (u.uswallow) {
-            u.ux = x;
-            u.uy = y;
-            docrt();
-        } else
-            u.ustuck = 0;
+    else {
+        remove_monster(oldx, oldy);
+        newsym(oldx, oldy); /* update old location */
     }
+}
 
-    newsym(x, y);      /* update new location */
-    set_apparxy(mtmp); /* orient monster */
+memset(mtmp->mtrack, 0, sizeof mtmp->mtrack);
+place_monster(mtmp, x, y); /* put monster down */
+update_monster_region(mtmp);
 
-    /* shopkeepers will only teleport if you zap them with a wand of
-       teleportation or if they've been transformed into a jumpy monster;
-       the latter only happens if you've attacked them with polymorph */
-    if (resident_shk && !inhishop(mtmp))
-        make_angry_shk(mtmp, oldx, oldy);
+if (mtmp->wormno) /* now put down tail */
+place_worm_tail_randomly(mtmp, x, y);
+
+if (u.ustuck == mtmp) {
+    if (u.uswallow) {
+        u.ux = x;
+        u.uy = y;
+        docrt();
+    }
+    else
+        u.ustuck = 0;
+}
+
+newsym(x, y);      /* update new location */
+set_apparxy(mtmp); /* orient monster */
+
+/* shopkeepers will only teleport if you zap them with a wand of
+   teleportation or if they've been transformed into a jumpy monster;
+   the latter only happens if you've attacked them with polymorph */
+if (resident_shk && !inhishop(mtmp))
+make_angry_shk(mtmp, oldx, oldy);
 }
 
 /* place a monster at a random location, typically due to teleport */
 /* return TRUE if successful, FALSE if not */
 boolean
 rloc(mtmp, suppress_impossible)
-struct monst *mtmp; /* mx==0 implies migrating monster arrival */
+struct monst* mtmp; /* mx==0 implies migrating monster arrival */
 boolean suppress_impossible;
 {
     register int x, y, trycount;
@@ -1562,7 +1577,7 @@ boolean suppress_impossible;
         x = rn1(COLNO - 3, 2);
         y = rn2(ROWNO);
         if ((trycount < 500) ? rloc_pos_ok(x, y, mtmp)
-                             : goodpos(x, y, mtmp, 0))
+            : goodpos(x, y, mtmp, 0))
             goto found_xy;
     } while (++trycount < 1000);
 
@@ -1582,6 +1597,42 @@ found_xy:
     return TRUE;
 }
 
+boolean
+rloc_with_effects(mtmp, suppress_impossible)
+struct monst* mtmp; /* mx==0 implies migrating monster arrival */
+boolean suppress_impossible;
+{
+    if (!mtmp)
+        return FALSE;
+
+    boolean res = FALSE;
+    boolean spef1ok = FALSE;
+    boolean spef2ok = FALSE;
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        spef1ok = TRUE;
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
+        force_redraw_at(mtmp->mx, mtmp->my);
+        flush_screen(0);
+    }
+    res = rloc(mtmp, suppress_impossible);
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        spef2ok = TRUE;
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(1);
+    }
+    if(spef1ok)
+        special_effect_wait_until_end(0);
+    if(spef2ok)
+        special_effect_wait_until_end(1);
+
+    return res;
+}
+
 STATIC_OVL void
 mvault_tele(mtmp)
 struct monst *mtmp;
@@ -1593,7 +1644,7 @@ struct monst *mtmp;
         rloc_to(mtmp, c.x, c.y);
         return;
     }
-    (void) rloc(mtmp, TRUE);
+    (void)rloc_with_effects(mtmp, TRUE);
 }
 
 boolean
@@ -1629,12 +1680,10 @@ int in_sight;
          * wise the monster will be stuck there, since
          * the guard isn't going to come for it...
          */
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
-        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         if (trap->once)
             mvault_tele(mtmp);
         else
-            (void) rloc(mtmp, TRUE);
+            (void)rloc_with_effects(mtmp, TRUE);
 
         if (in_sight) {
             play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);

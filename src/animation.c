@@ -631,6 +631,28 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "teleport-in-animation", TELEPORT_IN_ANIMATION_TILES,
+      TELEPORT_IN_ANIMATION_FRAMES, TELEPORT_IN_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      1, 4,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "teleport-out-animation", TELEPORT_OUT_ANIMATION_TILES,
+      TELEPORT_OUT_ANIMATION_FRAMES, TELEPORT_OUT_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      1, 4,
+      NO_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", TWISTED_CANDLE_ANIMATION_TILES,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 
       1,
@@ -2135,8 +2157,8 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
 /* Special Effects */
 NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
 {
-    {"teleport-out", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"teleport-in", 0, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"teleport-out", 0, NO_REPLACEMENT, TELEPORT_OUT_ANIMATION, NO_ENLARGEMENT},
+    {"teleport-in", 0, NO_REPLACEMENT, TELEPORT_IN_ANIMATION, NO_ENLARGEMENT },
     {"generic-spell", 150, NO_REPLACEMENT, GENERIC_SPELL_EFFECT_ANIMATION, NO_ENLARGEMENT },
 };
 
@@ -3392,8 +3414,6 @@ boolean force_visibility;
         context.spef_milliseconds_to_wait_until_end[spef_number] = 0;
         context.force_allow_keyboard_commands = TRUE;
         show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
-        force_redraw_at(x, y);
-        flush_screen(0);
 
         enum animation_types anim = special_effects[sp_effect].animation;
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
@@ -3439,6 +3459,9 @@ boolean force_visibility;
             else
                 context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
         }
+
+        force_redraw_at(x, y);
+        flush_screen(0);
     }
 }
 

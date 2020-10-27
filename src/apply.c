@@ -1219,8 +1219,7 @@ struct obj *obj;
         (void) mpickobj(mtmp, obj);
         if (!tele_restrict(mtmp))
         {
-            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-            (void)rloc(mtmp, TRUE);
+            (void)rloc_with_effects(mtmp, TRUE);
         }
     } else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
                && (!is_invisible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) {
@@ -2366,7 +2365,7 @@ int magic; /* 0=Physical, otherwise skill level */
          * and usually moves the ball if punished, but does not handle all
          * the effects of landing on the final position.
          */
-        teleds(cc.x, cc.y, FALSE);
+        teleds(cc.x, cc.y, FALSE, FALSE);
         sokoban_guilt();
         nomul(-1);
         multi_reason = "jumping around";
@@ -3812,7 +3811,7 @@ struct obj *obj;
             if (proficient && rn2(proficient + 2)) {
                 if (!mtmp || enexto(&cc, rx, ry, youmonst.data)) {
                     You("yank yourself out of the pit!");
-                    teleds(cc.x, cc.y, TRUE);
+                    teleds(cc.x, cc.y, TRUE, FALSE);
                     reset_utrap(TRUE);
                     vision_full_recalc = 1;
                 }

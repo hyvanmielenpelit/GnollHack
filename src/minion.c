@@ -741,8 +741,7 @@ struct monst *mtmp;
               flags.female ? "Sister" : "Brother");
 		if (!tele_restrict(mtmp))
 		{
-			play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-			(void)rloc(mtmp, TRUE);
+			(void)rloc_with_effects(mtmp, TRUE);
 		}
         return 1;
 	}

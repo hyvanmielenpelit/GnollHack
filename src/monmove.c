@@ -733,8 +733,7 @@ register struct monst *mtmp;
     if (is_fleeing(mtmp) && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
         && !level.flags.noteleport)
 	{
-        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-        (void) rloc(mtmp, TRUE);
+        (void) rloc_with_effects(mtmp, TRUE);
         return 0;
     }
     if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
@@ -796,7 +795,7 @@ register struct monst *mtmp;
 			{
                 /* "Good hunting, brother" */
                 if (!tele_restrict(mtmp))
-                    (void) rloc(mtmp, TRUE);
+                    (void)rloc_with_effects(mtmp, TRUE);
             }
 			else 
 			{
@@ -1279,8 +1278,7 @@ register int after;
     {
         if (mtmp->mhp < 7 || is_peaceful(mtmp) || rn2(2))
         {
-            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-            (void)rloc(mtmp, TRUE);
+            (void)rloc_with_effects(mtmp, TRUE);
         }
         else
             mnexto(mtmp);
@@ -1679,8 +1677,7 @@ register int after;
     {
         if (is_unicorn(ptr) && rn2(2) && !tele_restrict(mtmp)) 
         {
-            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-            (void) rloc(mtmp, TRUE);
+            (void)rloc_with_effects(mtmp, TRUE);
             return 1;
         }
         if (mtmp->wormno)

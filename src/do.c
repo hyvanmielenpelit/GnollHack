@@ -4858,7 +4858,7 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
 
             pline("A mysterious force momentarily surrounds you...");
             if (on_level(newlevel, &u.uz)) {
-                (void) safe_teleds(FALSE);
+                (void) safe_teleds(FALSE, FALSE);
                 (void) next_to_u();
                 return;
             } else
@@ -5588,7 +5588,7 @@ long timeout UNUSED;
         boolean notice_it = canseemon(mtmp); /* before rloc() */
         char *monname = Monnam(mtmp);
 
-        if (rloc(mtmp, TRUE)) {
+        if (rloc_with_effects(mtmp, TRUE)) {
 			if (notice_it && !canseemon(mtmp))
                 pline("%s vanishes.", monname);
             else if (!notice_it && canseemon(mtmp))

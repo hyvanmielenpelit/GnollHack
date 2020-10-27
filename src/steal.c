@@ -132,8 +132,7 @@ register struct monst *mtmp;
         if (!ygold || !rn2(5)) {
             if (!tele_restrict(mtmp))
             {
-                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-                (void)rloc(mtmp, TRUE);
+                (void)rloc_with_effects(mtmp, TRUE);
             }
             monflee(mtmp, 0, FALSE, FALSE);
         }
@@ -151,8 +150,7 @@ register struct monst *mtmp;
         Your("purse feels lighter.");
         if (!tele_restrict(mtmp))
         {
-            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-            (void)rloc(mtmp, TRUE);
+            (void)rloc_with_effects(mtmp, TRUE);
         }
         monflee(mtmp, 0, FALSE, FALSE);
         context.botl = 1;
@@ -187,8 +185,7 @@ stealarm(VOID_ARGS)
                     monflee(mtmp, 0, FALSE, FALSE);
                     if (!tele_restrict(mtmp))
                     {
-                        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-                        (void)rloc(mtmp, TRUE);
+                        (void)rloc_with_effects(mtmp, TRUE);
                     }
                     break;
                 }
@@ -648,8 +645,7 @@ struct monst *mtmp;
         pline("%s steals %s!", Monnam(mtmp), buf);
         if (has_teleportation(mtmp) && !tele_restrict(mtmp))
         {
-            play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-            (void)rloc(mtmp, TRUE);
+            (void)rloc_with_effects(mtmp, TRUE);
         }
     }
 }

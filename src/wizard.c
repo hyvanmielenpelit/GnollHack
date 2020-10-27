@@ -383,8 +383,7 @@ register struct monst *mtmp;
 		{
             if (!rn2(3 + mtmp->mhp / 10))
             {
-                play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-                (void)rloc(mtmp, TRUE);
+                (void)rloc_with_effects(mtmp, TRUE);
             }
         }
 		else if (sx && (mtmp->mx != sx || mtmp->my != sy))

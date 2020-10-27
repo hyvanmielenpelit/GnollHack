@@ -23,8 +23,10 @@
 #endif
 
 /* Flags for newsym */
-#define NEWSYM_FLAGS_NONE                       0x00000000UL
-#define NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH     0x00000001UL
+#define NEWSYM_FLAGS_NONE                               0x00000000UL
+#define NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH             0x00000001UL
+#define NEWSYM_FLAGS_KEEP_OLD_GENERAL_EFFECT_GLYPH      0x00000002UL
+#define NEWSYM_FLAGS_KEEP_OLD_MONSTER_EFFECT_GLYPH      0x00000004UL
 
 /*
  * vobj_at()

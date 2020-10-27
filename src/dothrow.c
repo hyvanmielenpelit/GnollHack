@@ -2552,8 +2552,7 @@ register struct obj *obj;
 
     if (!tele_restrict(mon))
     {
-        play_sfx_sound_at_location(SFX_TELEPORT, mon->mx, mon->my);
-        (void)rloc(mon, TRUE);
+        (void)rloc_with_effects(mon, TRUE);
     }
     return ret;
 }
