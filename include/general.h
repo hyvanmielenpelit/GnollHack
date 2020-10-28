@@ -12,7 +12,11 @@
  *
  */
 
- /* types of calls to bhit() */
+#define SHIELD_COUNT 21  /* Total number of cmap indices in the shield_static[] array. */
+#define NATTK 8	         /* Maximum number of attacks per monster */
+#define MAXNASTIES 10    /* more than this can be created */
+
+/* types of calls to bhit() */
 enum bhit_call_types {
     ZAPPED_WAND = 0,
     THROWN_WEAPON = 1,
@@ -22,9 +26,6 @@ enum bhit_call_types {
     INVIS_BEAM = 5,
     GOLF_SWING = 6
 };
-
-#define SHIELD_COUNT 21  /* Total number of cmap indices in the shield_static[] array. */
-#define NATTK 8	         /* Maximum number of attacks per monster */
 
 enum zap_types {
 	ZAP_RAY_MAGIC_MISSILE = 0,
@@ -55,7 +56,9 @@ enum zap_types {
 
 	MAX_ZAP_TYPES
 };
+
 #define NUM_ZAP 10       /* Number of basic zap beam types */
+
 
 struct replacement_info {
 	int signed_glyph;

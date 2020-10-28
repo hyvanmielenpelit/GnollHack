@@ -248,14 +248,13 @@ struct obj *book2;
     if (book2->cursed)
 	{
     raise_dead:
-
         You("raised the dead!");
         /* first maybe place a dangerous adversary */
         if (!rn2(3) && ((mtmp = makemon(&mons[PM_MASTER_LICH], u.ux, u.uy,
-                                        MM_NO_MONSTER_INVENTORY)) != 0
+                                        MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0
                         || (mtmp = makemon(&mons[PM_NALFESHNEE], u.ux, u.uy,
-                                           MM_NO_MONSTER_INVENTORY)) != 0)) {
-            mtmp->mpeaceful = 0;
+                                           MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)) {
+			mtmp->mpeaceful = 0;
             set_malign(mtmp);
 			newsym(mtmp->mx, mtmp->my);
 		}
@@ -264,7 +263,8 @@ struct obj *book2;
         /* last place some monsters around you */
         mm.x = u.ux;
         mm.y = u.uy;
-        mkundead(&mm, TRUE, MM_NO_MONSTER_INVENTORY);
+        mkundead(&mm, TRUE, MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION);
+
     } 
 	else if (book2->blessed)
 	{
@@ -2159,7 +2159,7 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
 		u_wait_until_action();
-		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
 		special_effect_wait_until_action(0);
 		if (!Blocks_Clairvoyance) {
             if (role_skill >= P_SKILLED)
@@ -2213,7 +2213,7 @@ boolean atme;
 		update_u_action(ACTION_TILE_CAST_NODIR);
 		play_simple_monster_sound(&youmonst, MONSTER_SOUND_TYPE_CAST);
 		u_wait_until_action();
-		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+		play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
 		play_sfx_sound_at_location(SFX_GENERAL_GAIN_ABILITY_SPELL, u.ux, u.uy);
 		special_effect_wait_until_action(0);
 		You("successfully cast \"%s\".", spellname(spell));

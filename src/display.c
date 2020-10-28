@@ -1151,6 +1151,10 @@ int damage_shown;
     if (layers.layer_glyphs[LAYER_MISSILE] != 0 && layers.layer_glyphs[LAYER_MISSILE] != NO_GLYPH /* && (glyph_is_zap(layers.layer_glyphs[LAYER_MISSILE]) || glyph_is_missile(layers.layer_glyphs[LAYER_MISSILE]))*/)
         missile_glyph = layers.layer_glyphs[LAYER_MISSILE];
 
+    int background_effect_glyph = NO_GLYPH;
+    if (layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != 0 && layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != NO_GLYPH)
+        background_effect_glyph = layers.layer_glyphs[LAYER_BACKGROUND_EFFECT];
+
     int general_effect_glyph = NO_GLYPH;
     if (layers.layer_glyphs[LAYER_GENERAL_EFFECT] != 0 && layers.layer_glyphs[LAYER_GENERAL_EFFECT] != NO_GLYPH)
         general_effect_glyph = layers.layer_glyphs[LAYER_GENERAL_EFFECT];
@@ -1340,6 +1344,10 @@ int damage_shown;
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MONSTER_EFFECT_GLYPH)
     {
         show_glyph_on_layer(x, y, monster_effect_glyph, LAYER_MONSTER_EFFECT);
+    }
+    if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_BACKGROUND_EFFECT_GLYPH)
+    {
+        show_glyph_on_layer(x, y, background_effect_glyph, LAYER_BACKGROUND_EFFECT);
     }
 }
 

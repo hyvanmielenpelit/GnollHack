@@ -513,7 +513,7 @@ clonewiz()
 {
     register struct monst *mtmp2;
 
-    if ((mtmp2 = makemon(&mons[PM_WIZARD_OF_YENDOR], u.ux, u.uy, NO_MM_FLAGS))
+    if ((mtmp2 = makemon(&mons[PM_WIZARD_OF_YENDOR], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END))
         != 0) {
         mtmp2->msleeping = mtmp2->mtame = mtmp2->mpeaceful = 0;
         if (!u.uhave.amulet && rn2(2)) { /* give clone a fake */
@@ -579,11 +579,10 @@ struct monst *summoner;
 	if (!summoner || is_cancelled(summoner) || has_summon_forbidden(summoner))
 		return 0;
 
-#define MAXNASTIES 10 /* more than this can be created */
-
     /* some candidates may be created in groups, so simple count
        of non-null makemon() return is inadequate */
     census = monster_census(FALSE);
+    context.makemon_spef_idx = 0;
 
     if (!rn2(20) && Inhell)
     {
@@ -663,14 +662,14 @@ struct monst *summoner;
 
             /* this honors genocide but overrides extinction; it ignores
                 inside-hell-only (G_HELL) & outside-hell-only (G_NOHELL) */
-            if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y, NO_MM_FLAGS)) != 0) 
+            if ((mtmp = makemon(&mons[makeindex], bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
                 mtmp->msleeping = mtmp->mpeaceful = mtmp->mtame = 0;
                 set_malign(mtmp);
                 newsym(mtmp->mx, mtmp->my);
             }
             else /* random monster to substitute for geno'd selection */
-                mtmp = makemon((struct permonst *) 0, bypos.x, bypos.y, NO_MM_FLAGS);
+                mtmp = makemon((struct permonst *) 0, bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
 
             if (mtmp)
             {
@@ -682,6 +681,7 @@ struct monst *summoner;
                 mtmp->mclericultimate_used = mtmp->mspec_used;
                 mtmp->mdemonsummon_used = 30;
                 mtmp->mspecialsummon_used = 30;
+                context.makemon_spef_idx++;
                 count++;
 
 #if 0
@@ -693,6 +693,7 @@ struct monst *summoner;
             }
         }
     }
+    makemon_animation_wait_until_end();
 
     if (count)
         count = monster_census(FALSE) - census;
@@ -753,9 +754,10 @@ struct monst* summoner;
         otherwise they'll appear around spot summoner thinks she's at */
     bypos.x = u.ux;
     bypos.y = u.uy;
+    context.makemon_spef_idx = 0;
     for (i = 1; i <= summon_num; i++)
     {
-        mtmp = makemon_limited((struct permonst*) 0, bypos.x, bypos.y, NO_MM_FLAGS, max(1, ml - 1));
+        mtmp = makemon_limited((struct permonst*) 0, bypos.x, bypos.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END, max(1, ml - 1));
 
         if (mtmp)
         {
@@ -776,6 +778,7 @@ struct monst* summoner;
             count++;
         }
     }
+    makemon_animation_wait_until_end();
 
     if (count)
         count = monster_census(FALSE) - census;
@@ -793,7 +796,7 @@ resurrect()
     if (!context.no_of_wizards) {
         /* make a new Wizard */
         verb = "kill";
-        mtmp = makemon(&mons[PM_WIZARD_OF_YENDOR], u.ux, u.uy, MM_NOWAIT);
+        mtmp = makemon(&mons[PM_WIZARD_OF_YENDOR], u.ux, u.uy, MM_NOWAIT | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_NASTY_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
         /* affects experience; he's not coming back from a corpse
            but is subject to repeated killing like a revived corpse */
         if (mtmp) mtmp->mrevived = 1;

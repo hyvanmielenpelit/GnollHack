@@ -4109,6 +4109,7 @@ coord *mm;
     k_cnt[2] = (cnt / 6);     /* maybe a lieutenant */
     k_cnt[3] = (cnt / 9);     /* and maybe a kaptain */
 
+    context.makemon_spef_idx = 0;
     for (k = 0; k < 4; k++) {
         if ((cnt = k_cnt[k]) == 0)
             break;
@@ -4118,8 +4119,14 @@ coord *mm;
 
         while (cnt--)
             if (enexto(mm, mm->x, mm->y, &mons[mndx]))
-                (void) makemon(&mons[mndx], mm->x, mm->y, NO_MM_FLAGS);
+            {
+                struct monst* mtmp = makemon(&mons[mndx], mm->x, mm->y, NO_MM_FLAGS);
+                if(mtmp)
+                    context.makemon_spef_idx++;
+            }
+
     }
+    makemon_animation_wait_until_end();
 }
 
 void

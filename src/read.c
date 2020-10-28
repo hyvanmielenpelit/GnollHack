@@ -1168,7 +1168,7 @@ boolean verbose;
     {
         if (obj->where == OBJ_INVENT)
         {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_action(0);
             special_effect_wait_until_end(0);
         }
@@ -1509,7 +1509,7 @@ struct monst* origmonst;
 			}
             else
             {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                 special_effect_wait_until_action(0);
                 special_effect_wait_until_end(0);
             }
@@ -1714,7 +1714,7 @@ boolean *effect_happened_ptr;
 
 	enchantarmor:
 		if (!otmp) {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_ENCHANT_ITEM_GENERAL_FAIL);
             special_effect_wait_until_end(0);
             strange_feeling(sobj, !Blind
@@ -1730,7 +1730,7 @@ boolean *effect_happened_ptr;
 			old_erodeproof = (otmp->oerodeproof != 0);
 			new_erodeproof = !scursed;
 			otmp->oerodeproof = 0; /* for messages */
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_PROTECT_ITEM_SUCCESS);
             special_effect_wait_until_action(0);
             if (Blind) {
@@ -1798,7 +1798,7 @@ boolean *effect_happened_ptr;
 
 		if (s >= 0 && is_dragon_scales(otmp)) 
         {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_ENCHANT_ITEM_SPECIAL_SUCCESS);
             special_effect_wait_until_action(0);
             /* dragon scales get turned into dragon scale mail */
@@ -1822,7 +1822,7 @@ boolean *effect_happened_ptr;
             break;
 		}
 
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
 
         if(s == 0)
             play_sfx_sound(SFX_ENCHANT_ITEM_VIOLENT_GLOW);
@@ -1942,7 +1942,7 @@ boolean *effect_happened_ptr;
 	case SPE_CONFUSE_MONSTER:
 		if (youmonst.data->mlet != S_HUMAN || scursed) 
         {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             if (!HConfusion)
             {
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
@@ -1956,7 +1956,7 @@ boolean *effect_happened_ptr;
         {
 			if (!sblessed) 
             {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 play_sfx_sound(SFX_ACQUIRE_CONFUSION);
                 special_effect_wait_until_action(0);
                 Your("%s begin to %s%s.", makeplural(body_part(HAND)),
@@ -1967,7 +1967,7 @@ boolean *effect_happened_ptr;
             }
 			else 
             {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
                 pline("A %s%s surrounds your %s.",
 					Blind ? "" : hcolor(NH_RED),
@@ -1980,7 +1980,7 @@ boolean *effect_happened_ptr;
         {
 			if (!sblessed) 
             {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
                 Your("%s%s %s%s.", makeplural(body_part(HAND)),
 					Blind ? "" : " begin to glow",
@@ -1991,7 +1991,7 @@ boolean *effect_happened_ptr;
             }
 			else 
             {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
                 if (Blind)
 					Your("%s tingle %s sharply.", makeplural(body_part(HAND)),
@@ -2075,7 +2075,7 @@ boolean *effect_happened_ptr;
 		}
 		else
         {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             special_effect_wait_until_end(0);
             for (obj = invent; obj; obj = obj->nobj)
             {
@@ -2247,7 +2247,7 @@ boolean *effect_happened_ptr;
 			&& erosion_matters(otmp) && is_weapon(otmp)
             )
         {
-            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
             play_sfx_sound(SFX_PROTECT_ITEM_SUCCESS);
             special_effect_wait_until_action(0);
 
@@ -2305,7 +2305,7 @@ boolean *effect_happened_ptr;
         boolean isweptwohanded = (otmp && bimanual(otmp));
         int special_threshold = isweptwohanded ? 24 : 12;
         int special_chance = max(1, otmp->enchantment / (isweptwohanded ? 2 : 1));
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
 
         /* Otherwise, enchant weapon */
@@ -2324,7 +2324,7 @@ boolean *effect_happened_ptr;
             You_feel("like a rabble-rouser.");
             known = TRUE;
         }
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         incr_itimeout(&HConflict, d(2, 10) + 140);
         special_effect_wait_until_end(0);
@@ -2411,7 +2411,7 @@ boolean *effect_happened_ptr;
 							{
 								pline("%s falls asleep!", Monnam(mtmp));
 								vis_results += res;
-                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
                                 special_effect_wait_until_end(0);
                             }
@@ -2477,7 +2477,7 @@ boolean *effect_happened_ptr;
 						{
 							if (!mindless(mtmp->data) && !resists_paralysis(mtmp))
 							{
-                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
                                 increase_mon_property_verbosely(mtmp, PARALYZED, duration);
                                 special_effect_wait_until_end(0);
@@ -2488,7 +2488,7 @@ boolean *effect_happened_ptr;
 						{
 							if(haseyes(mtmp->data) && !resists_blnd(mtmp))
 							{
-                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
                                 increase_mon_property_verbosely(mtmp, BLINDED, duration);
                                 special_effect_wait_until_end(0);
@@ -2499,7 +2499,7 @@ boolean *effect_happened_ptr;
 						{
 							if (!mindless(mtmp->data) && !is_stunned(mtmp))
 							{
-                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+                                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
                                 special_effect_wait_until_action(0);
                                 increase_mon_property_verbosely(mtmp, STUNNED, 20 + rnd(20));
                                 special_effect_wait_until_end(0);
@@ -2720,7 +2720,7 @@ boolean *effect_happened_ptr;
 							costly_alteration(otmp, costchange);
 					}
 					/* finally, change curse/bless state */
-                    play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+                    play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                     play_sfx_sound(soundid);
                     special_effect_wait_until_action(0);
 
@@ -2810,7 +2810,7 @@ boolean *effect_happened_ptr;
         {
             if (confused)
 		    {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
                 Your("head spins.");
 			    make_stunned((HStun& TIMEOUT) + rn1(scursed ? 90 : 40, 10), TRUE);;
@@ -2902,7 +2902,7 @@ boolean *effect_happened_ptr;
 		{
             if (otmp->oclass == RING_CLASS)
             {
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
                 special_effect_wait_until_action(0);
                 enchant_ring(otmp, scursed ? -1 : sblessed ? 1 : 0);
                 special_effect_wait_until_end(0);
@@ -2972,7 +2972,7 @@ boolean *effect_happened_ptr;
 		break;
 	case SCR_AMNESIA:
         known = TRUE;
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         forget((!sblessed ? ALL_SPELLS : 0)
                | (!confused || scursed ? ALL_MAP : 0));
@@ -2990,7 +2990,7 @@ boolean *effect_happened_ptr;
         break;
 	case SCR_RETRAINING:
 		known = TRUE;
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         
         int maxslots = u.max_weapon_slots;
@@ -3114,7 +3114,7 @@ boolean *effect_happened_ptr;
             You_feel("guilty.");
             break;
         }
-        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, LAYER_MONSTER_EFFECT, 0, u.ux, u.uy, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
         special_effect_wait_until_action(0);
         punish(sobj);
         special_effect_wait_until_end(0);
@@ -3875,16 +3875,19 @@ int how;
     {
         int cnt = 0, census = monster_census(FALSE);
 
+        context.makemon_spef_idx = 0;
         if (!(mons[mndx].geno & G_UNIQ)
             && !(mvitals[mndx].mvflags & (G_GENOD | G_EXTINCT)))
             for (i = rn1(3, 4); i > 0; i--)
             {
                 if (!makemon(ptr, u.ux, u.uy, MM_NO_MONSTER_INVENTORY))
                     break; /* couldn't make one */
+                context.makemon_spef_idx++;
                 ++cnt;
                 if (mvitals[mndx].mvflags & G_EXTINCT)
                     break; /* just made last one */
             }
+        makemon_animation_wait_until_end();
 
         if (cnt) 
         {
@@ -4106,6 +4109,7 @@ struct _create_particular_data *d;
         whichpm = &mons[d->which];
     }
 
+    context.makemon_spef_idx = 0;
     for (i = 0; i <= multi; i++)
     {
         if (d->monclass != MAX_MONSTER_CLASSES)
@@ -4113,7 +4117,7 @@ struct _create_particular_data *d;
         else if (d->randmonst)
             whichpm = rndmonst();
 
-        mtmp = makemon(whichpm, u.ux, u.uy, NO_MM_FLAGS);
+        mtmp = makemon(whichpm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 
         if (!mtmp)
         {
@@ -4123,6 +4127,7 @@ struct _create_particular_data *d;
             /* otherwise try again */
             continue;
         }
+        context.makemon_spef_idx++;
 
         /* 'is_FOO()' ought to be called 'always_FOO()' */
         if (d->fem != -1 && !is_male(mtmp->data) && !is_female(mtmp->data))
@@ -4168,6 +4173,7 @@ struct _create_particular_data *d;
 
         newsym(mtmp->mx, mtmp->my);
     }
+    makemon_animation_wait_until_end();
 
     return madeany;
 }

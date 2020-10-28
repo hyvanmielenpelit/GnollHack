@@ -83,7 +83,7 @@ struct obj *obj;
                     return 0;
                 mquaffmsg(mon, obj);
                 m_useup(mon, obj);
-                mtmp = makemon(&mons[PM_GHOST], cc.x, cc.y, NO_MM_FLAGS);
+                mtmp = makemon(&mons[PM_GHOST], cc.x, cc.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                 if (!mtmp) {
                     if (vis)
                         pline1(empty);
@@ -109,7 +109,7 @@ struct obj *obj;
                 return 0;
             mquaffmsg(mon, obj);
             m_useup(mon, obj);
-            mtmp = makemon(&mons[PM_DJINNI], cc.x, cc.y, NO_MM_FLAGS);
+            mtmp = makemon(&mons[PM_DJINNI], cc.x, cc.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
             if (!mtmp) {
                 if (vis)
                     pline1(empty);
@@ -872,7 +872,7 @@ struct monst *mtmp;
             return 0;
         mzapmsg(mtmp, otmp, FALSE);
         otmp->charges--;
-        mon = makemon((struct permonst *) 0, cc.x, cc.y, NO_MM_FLAGS);
+        mon = makemon((struct permonst *) 0, cc.x, cc.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
         if (mon && canspotmon(mon) && oseen)
             makeknown(WAN_CREATE_MONSTER);
         return 2;
@@ -895,15 +895,23 @@ struct monst *mtmp;
         else if (is_pool(mtmp->mx, mtmp->my))
             fish = &mons[u.uinwater ? PM_GIANT_EEL : PM_CROCODILE];
         mreadmsg(mtmp, otmp);
+
+        context.makemon_spef_idx = 0;
         while (cnt--) {
             /* `fish' potentially gives bias towards water locations;
                `pm' is what to actually create (0 => random) */
             if (!enexto(&cc, mtmp->mx, mtmp->my, fish))
                 break;
-            mon = makemon(pm, cc.x, cc.y, NO_MM_FLAGS);
-            if (mon && canspotmon(mon))
-                known = TRUE;
+            mon = makemon(pm, cc.x, cc.y, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+            if (mon)
+            {
+                context.makemon_spef_idx++;
+                if(canspotmon(mon))
+                    known = TRUE;
+            }
         }
+        makemon_animation_wait_until_end();
+
         /* The only case where we don't use oseen.  For wands, you
          * have to be able to see the monster zap the wand to know
          * what type it is.  For teleport scrolls, you have to see

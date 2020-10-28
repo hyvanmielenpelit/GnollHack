@@ -155,6 +155,7 @@ char *genbuf;
     *visible = 0;
     if (Protection_from_shape_changers && !yours)
         return 0;
+    context.makemon_spef_idx = 0;
     for (i = rnd(5); i > 0; i--) {
         switch (pm) {
         case PM_WERERAT:
@@ -185,9 +186,10 @@ char *genbuf;
         default:
             continue;
         }
-        mtmp = makemon(&mons[typ], u.ux, u.uy, NO_MM_FLAGS);
+        mtmp = makemon(&mons[typ], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
         if (mtmp)
         {
+            context.makemon_spef_idx++;
             total++;
             mtmp->mprops[SUMMON_FORBIDDEN] = 30;
             if (canseemon(mtmp))
@@ -196,6 +198,7 @@ char *genbuf;
         if (yours && mtmp)
             (void) tamedog(mtmp, (struct obj *) 0, TRUE, FALSE, 0, FALSE, FALSE);
     }
+    makemon_animation_wait_until_end();
     return total;
 }
 

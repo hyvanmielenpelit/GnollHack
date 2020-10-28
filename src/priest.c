@@ -753,7 +753,7 @@ int roomno;
                       make sure we give one the first time */
         }
         if (!rn2(5)
-            && (mtmp = makemon(&mons[PM_GHOST], u.ux, u.uy, NO_MM_FLAGS))
+            && (mtmp = makemon(&mons[PM_GHOST], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END))
                    != 0) {
             int ngen = mvitals[PM_GHOST].born;
             if (canspotmon(mtmp))

@@ -2452,10 +2452,43 @@ int level_limit;
                  /* in Sokoban, don't accept a giant on first try;
                     after that, boulder carriers are fair game */
                  && ((tryct == 1 && throws_rocks(ptr) && In_sokoban(&u.uz))
-//					 || (tryct <= 20 && In_mines(&u.uz) && (ptr == &mons[PM_MIND_FLAYER] || ptr == &mons[PM_MASTER_MIND_FLAYER] || ptr == &mons[PM_WINGED_GARGOYLE] || ptr == &mons[PM_GARGOYLE] || ptr == &mons[PM_GREMLIN]))
                      || !goodpos(x, y, &fakemon, gpflags)));
 
         mndx = monsndx(ptr);
+    }
+
+    /* Play animation */
+    enum special_effect_types spef_type = SPECIAL_EFFECT_SUMMON_MONSTER;
+    if (!in_mklev && (mmflags & MM_PLAY_SUMMON_ANIMATION))
+    {
+        unsigned long atype = (mmflags & MM_SUMMON_ANIMATION_TYPE_MASK);
+        enum sfx_sound_types sfxsound = SFX_SUMMON_MONSTER;
+        if (atype == MM_CHAOTIC_SUMMON_ANIMATION)
+        {
+            spef_type = SPECIAL_EFFECT_SUMMON_DEMON;
+            sfxsound = SFX_SUMMON_DEMON;
+        }
+        else if (atype == MM_LAWFUL_SUMMON_ANIMATION)
+            spef_type = SPECIAL_EFFECT_SUMMON_CELESTIAL;
+        else if (atype == MM_NEUTRAL_SUMMON_ANIMATION)
+            spef_type = SPECIAL_EFFECT_SUMMON_NATURE;
+        else if (atype == MM_SUMMON_MONSTER_ANIMATION)
+            spef_type = SPECIAL_EFFECT_SUMMON_NATURE;
+        else if (atype == MM_SUMMON_NASTY_ANIMATION)
+            spef_type = SPECIAL_EFFECT_SUMMON_NASTY;
+        else if (atype == MM_SUMMON_MONSTER_ANIMATION)
+            spef_type = SPECIAL_EFFECT_SUMMON_MONSTER;
+        else if (atype == MM_UNDEAD_SUMMON_ANIMATION)
+            spef_type = SPECIAL_EFFECT_SUMMON_UNDEAD;
+        else if (atype == MM_ANIMATE_DEAD_ANIMATION)
+            spef_type = SPECIAL_EFFECT_ANIMATE_DEAD;
+        else if (atype == MM_SUMMON_IN_SMOKE_ANIMATION)
+            spef_type = SPECIAL_EFFECT_SUMMON_IN_SMOKE;
+
+        play_special_effect_at(spef_type, context.makemon_spef_idx, x, y, FALSE);
+        if (mmflags & MM_PLAY_SUMMON_SOUND)
+            play_sfx_sound_at_location(sfxsound, x, y);
+        special_effect_wait_until_action(context.makemon_spef_idx);
     }
 
     (void) propagate(mndx, countbirth, FALSE);
@@ -2798,11 +2831,33 @@ int level_limit;
 
 	update_all_mon_statistics(mtmp, TRUE);
 
-	if (!in_mklev)
-        newsym(mtmp->mx, mtmp->my); /* make sure the mon shows up */
+    if (!in_mklev)
+    {
+        newsym_with_flags(mtmp->mx, mtmp->my, (mmflags & MM_PLAY_SUMMON_ANIMATION) ? NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS : NEWSYM_FLAGS_NONE); /* make sure the mon shows up */
 
+        if (mmflags & MM_ANIMATION_WAIT_UNTIL_END)
+        {
+            flush_screen(0);
+            special_effect_wait_until_end(context.makemon_spef_idx);
+        }
+    }
     return mtmp;
 }
+
+void
+makemon_animation_wait_until_end()
+{
+    int num = min(MAX_PLAYED_SPECIAL_EFFECTS, max(1, context.makemon_spef_idx));
+    for (int i = 0; i < num; i++)
+    {
+        if (context.special_effect_animation_counter_on[i])
+        {
+            special_effect_wait_until_end(i);
+        }
+    }
+    context.makemon_spef_idx = 0;
+}
+
 
 boolean
 randomize_monster_gender(ptr)

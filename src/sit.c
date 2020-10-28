@@ -249,8 +249,15 @@ dosit()
                 pline("A voice echoes:");
                 verbalize("Thy audience hath been summoned, %s!",
                           flags.female ? "Dame" : "Sire");
+                context.makemon_spef_idx = 0;
                 while (cnt--)
-                    (void) makemon(courtmon(), u.ux, u.uy, NO_MM_FLAGS);
+                {
+                    struct monst* mtmp = makemon(courtmon(), u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_IN_SMOKE_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
+                    if (mtmp)
+                        context.makemon_spef_idx++;
+
+                }
+                makemon_animation_wait_until_end();
                 break;
               }
             case 8:

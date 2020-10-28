@@ -1547,7 +1547,7 @@ struct obj **optr;
 
             mm.x = u.ux;
             mm.y = u.uy;
-            mkundead(&mm, FALSE, MM_NO_MONSTER_INVENTORY);
+            mkundead(&mm, FALSE, MM_NO_MONSTER_INVENTORY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION);
             wakem = TRUE;
 
         } else if (invoking) {

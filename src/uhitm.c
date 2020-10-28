@@ -2494,7 +2494,7 @@ demonpet()
 
     i = !rn2(6) ? ndemon(u.ualign.type) : NON_PM;
     pm = i != NON_PM ? &mons[i] : youmonst.data;
-	if ((dtmp = makemon(pm, u.ux, u.uy, NO_MM_FLAGS)) != 0)
+	if ((dtmp = makemon(pm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)
 	{
 		(void)tamedog(dtmp, (struct obj*) 0, TRUE, FALSE, 0, FALSE, FALSE);
 

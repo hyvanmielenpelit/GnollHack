@@ -2170,7 +2170,7 @@ dosacrifice()
                     demonless_msg = "blood coagulates";
                 }
 
-                if ((pm = dlord(altaralign)) != NON_PM && (dmon = makemon(&mons[pm], u.ux, u.uy, NO_MM_FLAGS)) != 0) 
+                if ((pm = dlord(altaralign)) != NON_PM && (dmon = makemon(&mons[pm], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_CHAOTIC_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END)) != 0)
                 {
                     play_sfx_sound(SFX_SUMMON_DEMON);
                     char dbuf[BUFSZ];

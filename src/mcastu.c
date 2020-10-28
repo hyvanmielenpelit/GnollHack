@@ -762,6 +762,7 @@ int spellnum;
 
         int difficulty = 0;
         int summon_quan = 0;
+        context.makemon_spef_idx = 0;
         for (i = 0; i < quan; i++)
         {
             if (i > 0 && difficulty >= mtmp->data->difficulty)
@@ -771,8 +772,9 @@ int spellnum;
                 break;
             
             if ((pm = mkclass(let, 0)) != 0
-                && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY)) != 0) 
+                && (mtmp2 = makemon(pm, bypos.x, bypos.y, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL))) != 0)
             {
+                context.makemon_spef_idx++;
                 success = TRUE;
                 mtmp2->msleeping = mtmp2->mpeaceful = mtmp2->mtame = 0;
 				if (!mtmp2->mtame)
@@ -782,6 +784,7 @@ int spellnum;
                 summon_quan++;
             }
         }
+        makemon_animation_wait_until_end();
 
         newseen = monster_census(TRUE);
 

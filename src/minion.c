@@ -58,6 +58,7 @@ struct monst *mon;
     int dtype = NON_PM, cnt = 0, result = 0, census;
     aligntyp atyp;
     struct monst *mtmp;
+	unsigned long mmanimtype = 0UL;
 
     if (mon) 
 	{
@@ -84,6 +85,8 @@ struct monst *mon;
 
 	if (ptr == &mons[PM_FLIND_LORD])
 	{
+		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+
 		dtype = (!rn2(80)) ? PM_YEENOGHU : (!rn2(40)) ? monsndx(ptr) : (!rn2(4)) ? ndemon(atyp) : PM_FLIND;
 		if (dtype == PM_YEENOGHU && (mvitals[PM_YEENOGHU].mvflags & G_GONE))
 			dtype = monsndx(ptr);
@@ -93,35 +96,44 @@ struct monst *mon;
 	}
 	else if (ptr == &mons[PM_YACC])
 	{
-		dtype = PM_HELL_BOVINE; 
+		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+
+		dtype = PM_HELL_BOVINE;
 		cnt = !rn2(2) ? 2 : 1;
 	}
 	else if (is_dprince(ptr) || (ptr == &mons[PM_WIZARD_OF_YENDOR]))
 	{
-        dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
+		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+		
+		dtype = (!rn2(20)) ? dlord(atyp) : ndemon(atyp); //(!rn2(50)) ? dprince(atyp) : 
         cnt = (!rn2(3) && is_ndemon(&mons[dtype])) ? rnd(2) + 1 : 1;
     }
 	else if (is_dlord(ptr))
 	{
-        dtype = (!rn2(80)) ? dprince(atyp) : (!rn2(40)) ? dlord(atyp)
+		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+		
+		dtype = (!rn2(80)) ? dprince(atyp) : (!rn2(40)) ? dlord(atyp)
                                                         : ndemon(atyp);
         cnt = (!rn2(4) && is_ndemon(&mons[dtype])) ? 2 : 1;
     } 
 	else if (is_ndemon(ptr)) 
 	{
-        dtype = (!rn2(80)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
+		mmanimtype = MM_CHAOTIC_SUMMON_ANIMATION;
+		dtype = (!rn2(80)) ? dlord(atyp) : (!rn2(6)) ? ndemon(atyp)
                                                      : monsndx(ptr);
         cnt = 1;
     }
 	else if (is_lminion(mon))
 	{
-        dtype = (is_lord(ptr) && !rn2(40))
+		mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
+		dtype = (is_lord(ptr) && !rn2(40))
                     ? llord()
                     : (is_lord(ptr) || !rn2(6)) ? lminion() : monsndx(ptr);
         cnt = (!rn2(4) && !is_lord(&mons[dtype])) ? 2 : 1;
     }
 	else if (ptr == &mons[PM_ANGEL])
 	{
+		mmanimtype = MM_LAWFUL_SUMMON_ANIMATION;
         /* non-lawful angels can also summon */
         if (!rn2(6))
 		{
@@ -164,11 +176,13 @@ struct monst *mon;
        count of non-null makemon() result is not sufficient */
     census = monster_census(FALSE);
 
-    while (cnt > 0)
+	context.makemon_spef_idx = 0;
+	while (cnt > 0)
 	{
-        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+        mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | mmanimtype | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
         if (mtmp) 
 		{
+			context.makemon_spef_idx++;
 			mtmp->mdemonsummon_used = 30;
 			mtmp->mspecialsummon_used = 30;
 			mtmp->mspecialsummon2_used = 30;
@@ -194,6 +208,7 @@ struct monst *mon;
 		}
         cnt--;
     }
+	makemon_animation_wait_until_end();
 
     /* how many monsters exist now compared to before? */
     if (result)
@@ -221,6 +236,7 @@ struct monst* summoner;
 
 	int canseemonnumber = 0;
 	struct monst* mtmp2 = (struct monst *) 0;
+	context.makemon_spef_idx = 0;
 
 	while (cnt > 0)
 	{
@@ -265,9 +281,10 @@ struct monst* summoner;
 			continue;
 		}
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
 		if (mtmp) 
 		{
+			context.makemon_spef_idx++;
 			result++;
 			mtmp->mdemonsummon_used = 30;
 			mtmp->mspecialsummon_used = 30;
@@ -281,6 +298,7 @@ struct monst* summoner;
 
 		cnt--;
 	}
+	makemon_animation_wait_until_end();
 
 	char numberword[BUFSZ] = "Some";
 	if(canseemonnumber >= 3)
@@ -327,6 +345,7 @@ struct monst* summoner;
 	int ghast_cnt = 0;
 	int thoul_cnt = 0;
 
+	context.makemon_spef_idx = 0;
 	while (cnt > 0)
 	{
 		dtype = !rn2(8) ? PM_THOUL : !rn2(2) ? PM_GHOUL : PM_GHAST;
@@ -337,9 +356,10 @@ struct monst* summoner;
 			break;
 		}
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, NO_MM_FLAGS);
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
 		if (mtmp) 
 		{
+			context.makemon_spef_idx++;
 			result++;
 			mtmp->mdemonsummon_used = 30;
 			mtmp->mspecialsummon_used = 30;
@@ -360,6 +380,7 @@ struct monst* summoner;
 		}
 		cnt--;
 	}
+	makemon_animation_wait_until_end();
 
 	char numberword[BUFSZ] = "Some";
 	if (canseemonnumber >= 3)
@@ -401,6 +422,7 @@ yacc_bison_summon()
 	int canseemonnumber = 0;
 	struct monst* mtmp2 = (struct monst*) 0;
 
+	context.makemon_spef_idx = 0;
 	while (cnt > 0)
 	{
 		dtype = PM_BISON;
@@ -411,9 +433,10 @@ yacc_bison_summon()
 			break;
 		}
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
 		if (mtmp)
 		{
+			context.makemon_spef_idx++;
 			result++;
 			mtmp->mdemonsummon_used = 30;
 			mtmp->mspecialsummon_used = 30;
@@ -426,6 +449,7 @@ yacc_bison_summon()
 		}
 		cnt--;
 	}
+	makemon_animation_wait_until_end();
 
 	char numberword[BUFSZ] = "Some";
 	if (canseemonnumber >= 3)
@@ -476,6 +500,7 @@ orcus_undead_summon()
 	int canseemonnumber = 0;
 	struct monst* mtmp2 = (struct monst*) 0;
 
+	context.makemon_spef_idx = 0;
 	while (cnt > 0) {
 		int roll = rn2(28);
 		dtype = NON_PM;
@@ -574,9 +599,10 @@ orcus_undead_summon()
 			continue;
 		}
 
-		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_EMIN);
+		mtmp = makemon(&mons[dtype], u.ux, u.uy, MM_ANGRY | MM_PLAY_SUMMON_ANIMATION | MM_UNDEAD_SUMMON_ANIMATION | (context.makemon_spef_idx == 0 ? MM_PLAY_SUMMON_SOUND : 0UL));
 		if (mtmp) 
 		{
+			context.makemon_spef_idx++;
 			result++;
 			mtmp->mdemonsummon_used = 30;
 			mtmp->mspecialsummon_used = 30;
@@ -590,6 +616,7 @@ orcus_undead_summon()
 
 		cnt--;
 	}
+	makemon_animation_wait_until_end();
 
 	char numberword[BUFSZ] = "Some";
 	if (canseemonnumber >= 3)
@@ -649,7 +676,7 @@ boolean talk;
     }
 	else if (mnum == PM_ANGEL) 
 	{
-        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN);
+        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
         if (mon)
 		{
             mon->isminion = 1;
@@ -662,7 +689,7 @@ boolean talk;
 	{
         /* This was mons[mnum].pxlth == 0 but is this restriction
            appropriate or necessary now that the structures are separate? */
-        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN);
+        mon = makemon(&mons[mnum], u.ux, u.uy, MM_EMIN | MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
         if (mon)
 		{
             mon->isminion = 1;
@@ -672,7 +699,7 @@ boolean talk;
     }
 	else
 	{
-        mon = makemon(&mons[mnum], u.ux, u.uy, NO_MM_FLAGS);
+        mon = makemon(&mons[mnum], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_LAWFUL_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
     }
 
     if (mon) 

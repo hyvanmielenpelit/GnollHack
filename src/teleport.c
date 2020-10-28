@@ -345,7 +345,7 @@ boolean allow_drag, keep_effect_glyphs;
      *  location.  Force a full vision recalculation because the hero
      *  is now in a new location.
      */
-    newsym_with_flags(u.ux0, u.uy0, keep_effect_glyphs ? NEWSYM_FLAGS_KEEP_OLD_GENERAL_EFFECT_GLYPH | NEWSYM_FLAGS_KEEP_OLD_MONSTER_EFFECT_GLYPH : NEWSYM_FLAGS_NONE);
+    newsym_with_flags(u.ux0, u.uy0, keep_effect_glyphs ? NEWSYM_FLAGS_KEEP_OLD_GENERAL_EFFECT_GLYPH | NEWSYM_FLAGS_KEEP_OLD_MONSTER_EFFECT_GLYPH | NEWSYM_FLAGS_KEEP_OLD_BACKGROUND_EFFECT_GLYPH : NEWSYM_FLAGS_NONE);
     see_monsters();
     vision_full_recalc = 1;
     nomul(0);
@@ -386,6 +386,7 @@ boolean allow_drag, keep_effect_glyphs;
     {
         show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_GENERAL_EFFECT], LAYER_GENERAL_EFFECT);
         show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_MONSTER_EFFECT], LAYER_MONSTER_EFFECT);
+        show_glyph_on_layer(x, y, layers.layer_glyphs[LAYER_BACKGROUND_EFFECT], LAYER_BACKGROUND_EFFECT);
         force_redraw_at(x, y);
         flush_screen(0);
     }
@@ -397,13 +398,13 @@ teleds_with_effects(nux, nuy, allow_drag, keep_effect_glyphs)
 register int nux, nuy;
 boolean allow_drag, keep_effect_glyphs;
 {
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, u.ux, u.uy, TRUE);
     play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
     special_effect_wait_until_action(0);
     show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
     force_redraw_at(u.ux, u.uy);
     flush_screen(0);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, nux, nuy, TRUE);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, nux, nuy, TRUE);
     special_effect_wait_until_action(1);
     teleds(nux, nuy, FALSE, TRUE);
     special_effect_wait_until_end(0);
@@ -432,11 +433,11 @@ boolean
 safe_teleds_with_effects(allow_drag, keep_effect_glyphs)
 boolean allow_drag, keep_effect_glyphs;
 {
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, u.ux, u.uy, FALSE);
     play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
     special_effect_wait_until_action(0);
     boolean res = safe_teleds(allow_drag, allow_drag);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, u.ux, u.uy, FALSE);
     special_effect_wait_until_action(1);
     special_effect_wait_until_end(0);
     special_effect_wait_until_end(1);
@@ -1150,7 +1151,7 @@ boolean iscontrolled;
             if (ynq("Go to Nowhere.  Are you sure?") != 'y')
                 return;
 
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, u.ux, u.uy, TRUE);
             play_sfx_sound(SFX_LEVEL_TELEPORT);
             special_effect_wait_until_action(0);
             You("%s in agony as your body begins to warp...",
@@ -1388,7 +1389,7 @@ int x, y;
 {
     boolean isyou = (x == u.ux && y == u.uy);
 
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, x, y, isyou);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, x, y, isyou);
     play_sfx_sound(SFX_LEVEL_TELEPORT);
     special_effect_wait_until_action(0);
     show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
@@ -1640,7 +1641,7 @@ boolean suppress_impossible;
     {
         spef1ok = TRUE;
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(0);
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
         force_redraw_at(mtmp->mx, mtmp->my);
@@ -1650,7 +1651,7 @@ boolean suppress_impossible;
     if (isok(mtmp->mx, mtmp->my))
     {
         spef2ok = TRUE;
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(1);
     }
     if(spef1ok)
@@ -1714,7 +1715,7 @@ int in_sight;
             (void)rloc_with_effects(mtmp, TRUE);
 
         if (in_sight) {
-            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);
             special_effect_wait_until_action(1);
             if (canseemon(mtmp))
                 pline("%s seems disoriented.", monname);
@@ -2006,7 +2007,7 @@ boolean give_feedback;
     }
     else
     {
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_MONSTER_EFFECT, 0, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
         if (level.flags.noteleport && u.uswallow && mtmp == u.ustuck)
@@ -2025,7 +2026,7 @@ boolean give_feedback;
         {
             (void)rloc(mtmp, TRUE);
         }
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_MONSTER_EFFECT, 1, mtmp->mx, mtmp->my, FALSE);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(1);
         special_effect_wait_until_end(0);
         special_effect_wait_until_end(1);

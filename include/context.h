@@ -223,6 +223,7 @@ struct context_info
     unsigned long expl_milliseconds_to_wait_until_action;
     unsigned long expl_milliseconds_to_wait_until_end;
     boolean force_allow_keyboard_commands;
+    int makemon_spef_idx;
 };
 
 extern NEARDATA struct context_info context;

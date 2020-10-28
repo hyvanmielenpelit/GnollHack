@@ -830,15 +830,23 @@ int mm_flags;
     struct permonst *mdat;
     struct obj *otmp;
     coord cc;
+    struct monst* mtmp;
 
+    context.makemon_spef_idx = 0;
     while (cnt--) {
         mdat = morguemon();
         if (mdat && enexto(&cc, mm->x, mm->y, mdat)
             && (!revive_corpses
                 || !(otmp = sobj_at(CORPSE, cc.x, cc.y))
                 || !revive(otmp, FALSE, -1, FALSE)))
-            (void) makemon(mdat, cc.x, cc.y, mm_flags);
+        {
+            mtmp = makemon(mdat, cc.x, cc.y, mm_flags);
+            if (mtmp)
+                context.makemon_spef_idx++;
+
+        }
     }
+    makemon_animation_wait_until_end();
     level.flags.graveyard = TRUE; /* reduced chance for undead corpse */
 }
 

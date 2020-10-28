@@ -13,6 +13,7 @@ enum layer_types
     LAYER_FEATURE,
     LAYER_TRAP,
     LAYER_FEATURE_DOODAD, /* Doodads above features and traps */
+    LAYER_BACKGROUND_EFFECT,
     LAYER_OBJECT,
     LAYER_MONSTER,
     LAYER_MISSILE,

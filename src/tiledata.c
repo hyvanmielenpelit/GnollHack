@@ -1527,7 +1527,7 @@ uchar* tilemapflags;
 
     /* Replacement tiles */
     tile_section_name = "replacement";
-    for (int i = 1; i <= NUM_REPLACEMENTS; i++)  /* replacement number, starts at 1 */
+    for (int i = 1; i < MAX_REPLACEMENTS; i++)  /* replacement number, starts at 1 */
     {
         short base_tile = get_replacement_base_tile(i);
         for (int j = 0; j < max(0, min(replacements[i].number_of_tiles, MAX_TILES_PER_REPLACEMENT)); j++) /* tile number */
@@ -1557,7 +1557,7 @@ uchar* tilemapflags;
 
     /* Animation tiles */
     tile_section_name = "animation";
-    for (int i = 1; i <= NUM_ANIMATIONS; i++)  /* animation number, starts at 1 */
+    for (int i = 1; i < MAX_ANIMATIONS; i++)  /* animation number, starts at 1 */
     {
         short base_tile = get_animation_base_tile(i);
         int contained_anims = max(1, animations[i].number_of_tile_animations);
@@ -1600,7 +1600,7 @@ uchar* tilemapflags;
 
     /* Enlargement tiles */
     tile_section_name = "enlargement";
-    for (int i = 1; i <= NUM_ENLARGEMENTS; i++)  /* enlargement number, starts at 1 */
+    for (int i = 1; i < MAX_ENLARGEMENTS; i++)  /* enlargement number, starts at 1 */
     {
         short enl_anim_tiles = enlargements[i].number_of_animation_tiles ? enlargements[i].number_of_animation_tiles : 1;
         for (int m = 0; m < enl_anim_tiles; m++)
@@ -2091,7 +2091,7 @@ uchar* tilemapflags;
 
 
         /* Replacements */
-        for (int i = 1; i <= NUM_REPLACEMENTS; i++)
+        for (int i = 1; i < MAX_REPLACEMENTS; i++)
         {
             for (int j = 0; j < replacements[i].number_of_tiles; j++)
             {
@@ -2285,7 +2285,7 @@ uchar* tilemapflags;
 
 
         /* Replacements */
-        for (int i = 1; i <= NUM_REPLACEMENTS; i++)
+        for (int i = 1; i < MAX_REPLACEMENTS; i++)
         {
             for (int j = 0; j < replacements[i].number_of_tiles; j++)
             {
@@ -2300,7 +2300,7 @@ uchar* tilemapflags;
         }
 
         /* Animations */
-        for (int i = 1; i <= NUM_ANIMATIONS; i++)
+        for (int i = 1; i < MAX_ANIMATIONS; i++)
         {
             for (int j = 0; j < max(0, min(MAX_FRAMES_PER_ANIMATION, animations[i].number_of_frames)); j++)
             {

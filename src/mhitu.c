@@ -1154,7 +1154,7 @@ register struct monst *mtmp;
 						int chance = mattk->mcadj;
 						if (!is_cancelled(mtmp) && !(mvitals[PM_MINOTAUR].mvflags & G_GONE) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
 						{
-							struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, NO_MM_FLAGS);
+							struct monst* mtmp2 = makemon(&mons[PM_MINOTAUR], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
 							if(mtmp2)
 								pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
 							sum[i] = 1;
@@ -1181,9 +1181,9 @@ register struct monst *mtmp;
                         int chance = mattk->mcadj;
                         if (!is_cancelled(mtmp) && !((mvitals[PM_ANCIENT_GOLD_DRAGON].mvflags & G_GONE) && (mvitals[PM_GOLD_DRAGON].mvflags & G_GONE)) && rn2(100) < chance && !item_prevents_summoning(mtmp->mnum))
                         {
-                            struct monst* mtmp2 = makemon(&mons[PM_ANCIENT_GOLD_DRAGON], u.ux, u.uy, NO_MM_FLAGS);
+                            struct monst* mtmp2 = makemon(&mons[PM_ANCIENT_GOLD_DRAGON], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
                             if (!mtmp2)
-                                 mtmp2 = makemon(&mons[PM_GOLD_DRAGON], u.ux, u.uy, NO_MM_FLAGS);
+                                 mtmp2 = makemon(&mons[PM_GOLD_DRAGON], u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION);
                             if (mtmp2)
                                 pline("%s summons %s.", Monnam(mtmp), a_monnam(mtmp2));
                             sum[i] = 1;

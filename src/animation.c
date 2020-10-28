@@ -3,7 +3,7 @@
  */
 #include "hack.h"
 
-NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
+NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
 {
     { "", 0,
       0, 0, 
@@ -653,6 +653,17 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "summon-demon-animation", SUMMON_DEMON_ANIMATION_TILES,
+      SUMMON_DEMON_ANIMATION_FRAMES, SUMMON_DEMON_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      6, 14,
+      SUMMON_DEMON_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "twisted-candle-lit-animation", TWISTED_CANDLE_ANIMATION_TILES,
       TWISTED_CANDLE_ANIMATION_FRAMES, TWISTED_CANDLE_ANIMATION_OFF, 
       1,
@@ -677,7 +688,7 @@ NEARDATA struct animation_definition animations[NUM_ANIMATIONS + 1] =
     },
 };
 
-NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
+NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
 {
     { "", 0, 0,
       0, 0,
@@ -1079,12 +1090,12 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
         { 0, 0, 0, 0, 0 }
       },
       { "dungeon-normal-smaller-upstairs-enlargement", 0, 0,
-      DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_OFF,
-      1, 2, 0,
-      { -1, 0, -1, -1, -1 },
-      { 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0 }
-    },
+        DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_NORMAL_SMALLER_UPSTAIRS_ENLARGEMENT_OFF,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
       { "dungeon-undead-upstairs-enlargement", 0, 0,
         DUNGEON_UNDEAD_UPSTAIRS_ENLARGEMENT_TILES, DUNGEON_UNDEAD_UPSTAIRS_ENLARGEMENT_OFF,
         1, 2, 0,
@@ -1107,16 +1118,24 @@ NEARDATA struct enlargement_definition enlargements[NUM_ENLARGEMENTS + 1] =
         { 0, 0, 0, 0, 0 }
       },
       { "dracolich-attack-enlargement",
-      DRACOLICH_ATTACK_ANIMATION_TILES, DRACOLICH_ATTACK_ANIMATION_FRAMES,
-      DRACOLICH_ATTACK_ENLARGEMENT_TILES, DRACOLICH_ATTACK_ENLARGEMENT_OFF,
-      3, 2, 0,
-      { 0, 1, 2, 3, 4 },
-      { 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0 }
-    },
+        DRACOLICH_ATTACK_ANIMATION_TILES, DRACOLICH_ATTACK_ANIMATION_FRAMES,
+        DRACOLICH_ATTACK_ENLARGEMENT_TILES, DRACOLICH_ATTACK_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "summon-demon-enlargement",
+        SUMMON_DEMON_ANIMATION_TILES, SUMMON_DEMON_ANIMATION_FRAMES,
+        SUMMON_DEMON_ENLARGEMENT_TILES, SUMMON_DEMON_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 };
 
-NEARDATA struct replacement_definition replacements[NUM_REPLACEMENTS + 1] =
+NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
 {
     { "",
       0, 0,
@@ -2157,9 +2176,17 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
 /* Special Effects */
 NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
 {
-    {"teleport-out", 0, NO_REPLACEMENT, TELEPORT_OUT_ANIMATION, NO_ENLARGEMENT},
-    {"teleport-in", 0, NO_REPLACEMENT, TELEPORT_IN_ANIMATION, NO_ENLARGEMENT },
-    {"generic-spell", 150, NO_REPLACEMENT, GENERIC_SPELL_EFFECT_ANIMATION, NO_ENLARGEMENT },
+    {"teleport-out",        0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, TELEPORT_OUT_ANIMATION, NO_ENLARGEMENT},
+    {"teleport-in",         0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, TELEPORT_IN_ANIMATION, NO_ENLARGEMENT },
+    {"generic-spell",       150,    LAYER_MONSTER_EFFECT, NO_REPLACEMENT, GENERIC_SPELL_EFFECT_ANIMATION, NO_ENLARGEMENT },
+    {"summon-demon",        0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
+    {"summon-celestial",    0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"summon-nature",       0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"summon-monster",      0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"summon-nasty",        0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"summon-undead",       0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"animate-dead",        0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"summon-in-smoke",     0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
 };
 
 
@@ -2176,7 +2203,7 @@ NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS] =
     {"grapple", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"spell", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
     {"pay", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
-    {"invisible", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT}
+    {"invisible", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
 
@@ -3158,7 +3185,7 @@ short animidx;
     }
 
     /* Replacement */
-    for (int i = 1; i <= NUM_REPLACEMENTS; i++)
+    for (int i = 1; i < MAX_REPLACEMENTS; i++)
     {
         for (int j = 0; j < replacements[i].number_of_tiles; j++)
         {
@@ -3266,7 +3293,7 @@ short enlidx, enl_anim_tile_idx;
 
 
     /* Replacement */
-    for (int i = 1; i <= NUM_REPLACEMENTS; i++)
+    for (int i = 1; i < MAX_REPLACEMENTS; i++)
     {
         for (int j = 0; j < replacements[i].number_of_tiles; j++)
         {
@@ -3276,7 +3303,7 @@ short enlidx, enl_anim_tile_idx;
     }
 
     /* Animation */
-    for (int i = 1; i <= NUM_ANIMATIONS; i++)
+    for (int i = 1; i < MAX_ANIMATIONS; i++)
     {
         for (int j = 0; j < animations[i].number_of_tiles; j++)
         {
@@ -3399,14 +3426,14 @@ short replacement_idx;
 
 
 void
-play_special_effect_at(sp_effect, layer, spef_number, x, y, force_visibility)
+play_special_effect_at(sp_effect, spef_number, x, y, force_visibility)
 enum special_effect_types sp_effect;
-enum layer_types layer;
 int spef_number, x, y;
 boolean force_visibility;
 {
     if (iflags.using_gui_tiles && isok(x, y) && spef_number >= 0 && spef_number < MAX_PLAYED_SPECIAL_EFFECTS && (force_visibility || cansee(x, y)))
     {
+        enum layer_types layer = special_effects[sp_effect].layer;
         context.spef_action_animation_layer[spef_number] = layer;
         context.spef_action_animation_x[spef_number] = x;
         context.spef_action_animation_y[spef_number] = y;
@@ -3414,6 +3441,8 @@ boolean force_visibility;
         context.spef_milliseconds_to_wait_until_end[spef_number] = 0;
         context.force_allow_keyboard_commands = TRUE;
         show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
+        force_redraw_at(x, y);
+        flush_screen(0);
 
         enum animation_types anim = special_effects[sp_effect].animation;
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)

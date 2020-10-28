@@ -51,7 +51,7 @@ E short FDECL(get_animation_base_tile, (short));
 E short FDECL(get_enlargement_base_tile, (short, short));
 E struct replacement_info FDECL(data_to_replacement_info, (int, int, struct obj*));
 E int FDECL(get_animation_frame_with_tile, (int, int));
-E void FDECL(play_special_effect_at, (enum special_effect_types, enum layer_types, int, int, int, boolean));
+E void FDECL(play_special_effect_at, (enum special_effect_types, int, int, int, boolean));
 E void FDECL(special_effect_wait_until_action, (int));
 E void FDECL(special_effect_wait_until_end, (int));
 
@@ -1460,6 +1460,8 @@ E boolean FDECL(usmellmon, (struct permonst *));
 E boolean FDECL(wrong_elem_type, (struct permonst*));
 E void FDECL(m_initthrow, (struct monst*, int, int, int, boolean, int, int));
 E boolean FDECL(randomize_monster_gender, (struct permonst*));
+E void NDECL(makemon_animation_wait_until_end);
+
 
 /* ### mapglyph.c ### */
 
