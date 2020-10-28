@@ -2612,6 +2612,7 @@ struct obj *obj;
 			}
 			if (!u.dx && !u.dy && !u.dz)
 			{
+				play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 				if ((damage = zapyourself(&pseudo, TRUE)) > 0)
 				{
 					char buf[BUFSZ];
@@ -2642,6 +2643,7 @@ struct obj *obj;
 			}
 			if (!u.dx && !u.dy && !u.dz) 
 			{
+				play_simple_object_sound(obj, OBJECT_SOUND_TYPE_INVOKE);
 				if ((damage = zapyourself(&pseudo, TRUE)) > 0)
 				{
 					char buf[BUFSZ];

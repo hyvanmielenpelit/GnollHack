@@ -576,6 +576,7 @@ struct obj *instr;
             pline("%s.", Tobjnam(instr, "vibrate"));
             break;
         } else if (!u.dx && !u.dy && !u.dz) {
+            play_simple_object_sound(instr, OBJECT_SOUND_TYPE_APPLY);
             if ((damage = zapyourself(instr, TRUE)) != 0) {
                 char buf[BUFSZ];
 

@@ -4861,11 +4861,15 @@ dozap()
         exercise(A_STR, FALSE);
         return taketurn;
     } else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char *) 0)) {
+        play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
         if (!Blind)
             pline("%s glows and fades.", The(xname(obj)));
         /* make him pay for knowing !NODIR */
     } else if (!u.dx && !u.dy && !u.dz
                && !(objects[obj->otyp].oc_dir == NODIR)) {
+
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
+
         if ((damage = zapyourself(obj, TRUE)) != 0) {
             char buf[BUFSZ];
 
@@ -4880,6 +4884,7 @@ dozap()
          * useup -> obfree -> dealloc_obj -> free(obj)
          */
         update_u_facing(TRUE);
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
 
         current_wand = obj;
         weffects(obj);
@@ -4899,6 +4904,9 @@ zapyourself(obj, ordinary)
 struct obj *obj;
 boolean ordinary;
 {
+    if (!obj)
+        return 0.0;
+
     boolean learn_it = FALSE;
     int meteors = 0;
 	int basedmg = d(objects[obj->otyp].oc_spell_dmg_dice, objects[obj->otyp].oc_spell_dmg_diesize) + objects[obj->otyp].oc_spell_dmg_plus;

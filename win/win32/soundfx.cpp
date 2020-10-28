@@ -598,6 +598,10 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Bear/Bear Chat", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Bear/Bear Laughter", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Human/Female/Push Effort", 0.25f },
+    { SOUND_BANK_MASTER, "event:/SFX/Action/Zap", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/General/Generic/Generic Zap", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Sink Clanking from Pipes", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Sink Snatches of Song", 1.0f },
 
 };
 

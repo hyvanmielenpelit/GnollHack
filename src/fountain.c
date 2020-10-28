@@ -1154,17 +1154,18 @@ drinksink()
         return;
     }
 	
-	play_sfx_sound(SFX_QUAFF);
-	
 	switch (rn2(20)) {
     case 0:
-        You("take a sip of very cold %s.", hliquid("water"));
+		play_sfx_sound(SFX_QUAFF);
+		You("take a sip of very cold %s.", hliquid("water"));
         break;
     case 1:
-        You("take a sip of very warm %s.", hliquid("water"));
+		play_sfx_sound(SFX_QUAFF);
+		You("take a sip of very warm %s.", hliquid("water"));
         break;
     case 2:
-        You("take a sip of scalding hot %s.", hliquid("water"));
+		play_sfx_sound(SFX_QUAFF);
+		You("take a sip of scalding hot %s.", hliquid("water"));
         if (Fire_immunity || Improved_fire_resistance || Fire_resistance)
             pline("It seems quite tasty.");
         else
@@ -1172,7 +1173,8 @@ drinksink()
         /* boiling water burns considered fire damage */
         break;
     case 3:
-        if (mvitals[PM_SEWER_RAT].mvflags & G_GONE)
+		play_sfx_sound(SFX_WAS_HIDING);
+		if (mvitals[PM_SEWER_RAT].mvflags & G_GONE)
             pline_The("sink seems quite dirty.");
         else {
             mtmp = makemon(&mons[PM_SEWER_RAT], u.ux, u.uy, NO_MM_FLAGS);
@@ -1200,7 +1202,8 @@ drinksink()
         obfree(otmp, (struct obj *) 0);
         break;
     case 5:
-        if (!(levl[u.ux][u.uy].looted & S_LRING)) {
+		play_sfx_sound(SFX_HIDDEN_DOOR_FOUND);
+		if (!(levl[u.ux][u.uy].looted & S_LRING)) {
             You("find a ring in the sink!");
             (void) mkobj_at(RING_CLASS, u.ux, u.uy, TRUE);
             levl[u.ux][u.uy].looted |= S_LRING;
@@ -1213,23 +1216,27 @@ drinksink()
         breaksink(u.ux, u.uy);
         break;
     case 7:
-        pline_The("%s moves as though of its own will!", hliquid("water"));
+		play_sfx_sound(SFX_WAS_HIDING);
+		pline_The("%s moves as though of its own will!", hliquid("water"));
         if ((mvitals[PM_WATER_ELEMENTAL].mvflags & G_GONE)
             || !makemon(&mons[PM_WATER_ELEMENTAL], u.ux, u.uy, NO_MM_FLAGS))
             pline("But it quiets down.");
         break;
     case 8:
-        pline("Yuk, this %s tastes awful.", hliquid("water"));
+		play_sfx_sound(SFX_QUAFF);
+		pline("Yuk, this %s tastes awful.", hliquid("water"));
         more_experienced(1, 0);
         newexplevel();
         break;
     case 9:
-        pline("Gaggg... this tastes like sewage!  You vomit.");
+		play_sfx_sound(SFX_QUAFF);
+		pline("Gaggg... this tastes like sewage!  You vomit.");
         morehungry(rn1(30 - ACURR(A_CON), 11));
         vomit();
         break;
     case 10:
-        pline("This %s contains toxic wastes!", hliquid("water"));
+		play_sfx_sound(SFX_QUAFF);
+		pline("This %s contains toxic wastes!", hliquid("water"));
         if (!Unchanging) {
             You("undergo a freakish metamorphosis!");
             polyself(0);
@@ -1237,10 +1244,12 @@ drinksink()
         break;
     /* more odd messages --JJB */
     case 11:
-        You_hear("clanking from the pipes...");
+		play_sfx_sound(SFX_SINK_CLANKING_FROM_PIPES);
+		You_hear("clanking from the pipes...");
         break;
     case 12:
-        You_hear("snatches of song from among the sewers...");
+		play_sfx_sound(SFX_SINK_SNATCHES_OF_SONG);
+		You_hear("snatches of song from among the sewers...");
         break;
     case 19:
         if (Hallucination) {
@@ -1249,7 +1258,8 @@ drinksink()
         }
         /*FALLTHRU*/
     default:
-        You("take a sip of %s %s.",
+		play_sfx_sound(SFX_QUAFF);
+		You("take a sip of %s %s.",
             rn2(3) ? (rn2(2) ? "cold" : "warm") : "hot",
             hliquid("water"));
     }

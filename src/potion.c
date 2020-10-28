@@ -702,10 +702,8 @@ dodrink()
         switch (otmp->otyp)
         {
         case GRAIL_OF_HEALING:
-            play_sfx_sound(SFX_QUAFF);
             return use_grail(otmp, TRUE);
         case JAR_OF_BASILISK_BLOOD:
-            play_sfx_sound(SFX_QUAFF);
             return use_salve(otmp, TRUE);
         default:
             play_sfx_sound(SFX_GENERAL_CANNOT);
@@ -771,7 +769,8 @@ struct obj *otmp;
 {
     int retval;
 
-    play_sfx_sound(SFX_QUAFF);
+    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_QUAFF);
+
     otmp->in_use = TRUE;
     nothing = unkn = 0;
     if ((retval = peffects(otmp)) >= 0)

@@ -780,7 +780,7 @@ register struct obj *spellbook;
 //		if (perusetext)
 //			pline("The spellbook seems comprehensible enough.");
 
-		play_sfx_sound(SFX_READ);
+		play_simple_object_sound(spellbook, OBJECT_SOUND_TYPE_READ);
 		You("begin to %s the runes.",
 			spellbook->otyp == SPE_BOOK_OF_THE_DEAD ? "recite" : spellbook->otyp == SPE_BOOK_OF_MODRON ? "decipher" : "memorize");
     }

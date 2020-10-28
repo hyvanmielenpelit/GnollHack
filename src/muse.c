@@ -176,6 +176,8 @@ boolean self;
 	if (!mtmp || !otmp)
 		return;
 
+    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_ZAP);
+
     if (!canseemon(mtmp)) {
         int range = couldsee(mtmp->mx, mtmp->my) /* 9 or 5 */
                        ? NEARBY_CUTOFF_RANGE_CAN_SEE : NEARBY_CUTOFF_RANGE_CANNOT_SEE;
@@ -220,7 +222,7 @@ struct obj *otmp;
     Strcpy(onambuf, singular(otmp, doname));
     Role_switch = saverole;
     otmp->bknown = savebknown;
-
+    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_READ);
     if (vismon)
         pline("%s reads %s!", Monnam(mtmp), onambuf);
     else
@@ -240,6 +242,8 @@ mquaffmsg(mtmp, otmp)
 struct monst *mtmp;
 struct obj *otmp;
 {
+    play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_QUAFF);
+
     if (canseemon(mtmp)) {
         otmp->dknown = 1;
         pline("%s drinks %s!", Monnam(mtmp), singular(otmp, doname));

@@ -419,7 +419,7 @@ doread()
                            && scroll->cursed));
 
         if (!silently)
-            play_sfx_sound(SFX_READ);
+            play_simple_object_sound(scroll, OBJECT_SOUND_TYPE_READ); // play_sfx_sound(SFX_READ);
 
         if (Blind)
             pline(nodisappear

@@ -106,10 +106,16 @@ boolean drink_yourself;
 	}
 	else if (!u.dx && !u.dy) 
 	{
-        if(drink_yourself)
+        if (drink_yourself)
+        {
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_QUAFF);
             You("drink some %s.", contents);
+        }
         else
-    		You("apply some %s on yourself.", contents);
+        {
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
+            You("apply some %s on yourself.", contents);
+        }
 		(void)zapyourself(obj, TRUE);
 	}
 	else
@@ -181,11 +187,13 @@ boolean drink_yourself;
 
     if (u.dz)
     {
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
         You("pour some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp),
             (u.dz > 0) ? surface(u.ux, u.uy) : ceiling(u.ux, u.uy));
     }
     else if (!u.dx && !u.dy)
     {
+        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_QUAFF);
         You("drink some %s from %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), the(cxname(obj)));
         (void)zapyourself(obj, TRUE);
     }
@@ -196,21 +204,26 @@ boolean drink_yourself;
             struct monst* mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
             if (mtmp)
             {
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
                 You("%s some %s %s %s.", is_tame(mtmp) ? "give" : "splash", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), is_tame(mtmp) ? "to" : "on", mon_nam(mtmp));
             }
             else if (IS_WALL(levl[u.ux + u.dx][u.uy + u.dy].typ))
             {
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
                 You("pour some %s on the wall.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp));
             }
             else
             {
+                play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
                 const char* dfeat = dfeature_at(u.ux + u.dx, u.uy + u.dy);
                 You("pour some %s on the %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), dfeat ? dfeat : "floor");
             }
         }
         else
+        {
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_APPLY);
             You("pour some %s out of %s.", objects[obj->otyp].oc_name_known ? contents : OBJ_CONTENT_DESC(obj->otyp), the(cxname(obj)));
-
+        }
         weffects(obj);
     }
 
@@ -3003,7 +3016,8 @@ struct obj* obj;
 			//Shoot accidently yourself!!
 
 			pline("The wand slips and you accidently zap yourself with it!");
-			return (zapyourself(obj, TRUE) > 0 ? 1 : 0);
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_ZAP);
+            return (zapyourself(obj, TRUE) > 0 ? 1 : 0);
 		}
 
 		//Normal effect
