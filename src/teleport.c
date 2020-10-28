@@ -1227,13 +1227,7 @@ random_levtport:
         }
         newlevel.dnum = u.uz.dnum;
         newlevel.dlevel = llimit + newlev;
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
-        play_sfx_sound(SFX_LEVEL_TELEPORT);
-        special_effect_wait_until_action(0);
-        show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
-        force_redraw_at(u.ux, u.uy);
-        flush_screen(0);
-        special_effect_wait_until_end(0);
+        level_teleport_effect_out(u.ux, u.uy);
         schedule_goto(&newlevel, FALSE, FALSE, TRUE, 0, (char *) 0, (char *) 0);
         return;
     }
@@ -1243,13 +1237,7 @@ random_levtport:
     if (iflags.debug_fuzzer && newlev < 0)
         goto random_levtport;
 
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
-    play_sfx_sound(SFX_LEVEL_TELEPORT);
-    special_effect_wait_until_action(0);
-    show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
-    force_redraw_at(u.ux, u.uy);
-    flush_screen(0);
-    special_effect_wait_until_end(0);
+    level_teleport_effect_out(u.ux, u.uy);
 
     if (newlev < 0 && !force_dest) {
         if (*u.ushops0) {
@@ -1387,17 +1375,26 @@ register struct trap *ttmp;
 
     target_level = ttmp->dst;
 
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
-    play_sfx_sound(SFX_LEVEL_TELEPORT);
-    special_effect_wait_until_action(0);
-    show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
-    force_redraw_at(u.ux, u.uy);
-    flush_screen(0);
-    special_effect_wait_until_end(0);
+    level_teleport_effect_out(u.ux, u.uy);
 
     schedule_goto(&target_level, FALSE, FALSE, TRUE, portal_flags,
                   "You feel dizzy for a moment, but the sensation passes.",
                   (char *) 0);
+}
+
+void
+level_teleport_effect_out(x, y)
+int x, y;
+{
+    boolean isyou = (x == u.ux && y == u.uy);
+
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, x, y, isyou);
+    play_sfx_sound(SFX_LEVEL_TELEPORT);
+    special_effect_wait_until_action(0);
+    show_glyph_on_layer(x, y, NO_GLYPH, LAYER_MONSTER);
+    force_redraw_at(x, y);
+    flush_screen(0);
+    special_effect_wait_until_end(0);
 }
 
 void
@@ -1848,6 +1845,7 @@ int in_sight;
             if (trap)
                 seetrap(trap);
         }
+        level_teleport_effect_out(mtmp->mx, mtmp->my);
         migrate_to_level(mtmp, ledger_no(&tolevel), migrate_typ, (coord *) 0);
         return 3; /* no longer on this level */
     }

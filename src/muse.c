@@ -807,6 +807,7 @@ struct monst *mtmp;
                 return 2;
             }
             get_level(&flev, nlev);
+            level_teleport_effect_out(mtmp->mx, mtmp->my);
             migrate_to_level(mtmp, ledger_no(&flev), MIGR_RANDOM,
                              (coord *) 0);
             if (oseen)
@@ -851,6 +852,7 @@ struct monst *mtmp;
             You_hear("%s crash through the %s.", something,
                      surface(mtmp->mx, mtmp->my));
         /* we made sure that there is a level for mtmp to go to */
+        play_sfx_sound_at_location(SFX_TRAP_DOOR_OPENS, mtmp->mx, mtmp->my);
         migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_RANDOM,
                          (coord *) 0);
         return 2;
@@ -944,6 +946,7 @@ struct monst *mtmp;
         if (mtmp->wormno)
             worm_move(mtmp);
         newsym(trapx, trapy);
+        play_sfx_sound_at_location(SFX_TRAP_DOOR_OPENS, mtmp->mx, mtmp->my);
         migrate_to_level(mtmp, ledger_no(&u.uz) + 1, MIGR_RANDOM,
                          (coord *) 0);
         return 2;

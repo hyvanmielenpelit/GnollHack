@@ -3013,6 +3013,7 @@ E int NDECL(dotelecmd);
 E int FDECL(dotele, (BOOLEAN_P));
 E void FDECL(level_tele, (int, BOOLEAN_P));
 E void FDECL(domagicportal, (struct trap *));
+E void FDECL(level_teleport_effect_out, (int, int));
 E void FDECL(tele_trap, (struct trap *));
 E void FDECL(level_tele_trap, (struct trap *, unsigned));
 E void FDECL(rloc_to, (struct monst *, int, int));
