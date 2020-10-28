@@ -712,6 +712,7 @@ struct monst *mtmp;
 
     switch (m.has_defense) {
     case MUSE_UNICORN_HORN:
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
         if (vismon) {
             if (otmp)
                 pline("%s uses a unicorn horn!", Monnam(mtmp));
@@ -729,6 +730,7 @@ struct monst *mtmp;
             impossible("No need for unicorn horn?");
         return 2;
     case MUSE_BUGLE:
+        play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_APPLY);
         if (vismon)
             pline("%s plays %s!", Monnam(mtmp), doname(otmp));
         else if (!Deaf)
