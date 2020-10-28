@@ -722,7 +722,7 @@ struct kinfo *kptr;
 }
 
 /* Intrinsic Passes_walls is temporary when your god is trying to fix
-   all troubles and then TROUBLE_STUCK_IN_WALL calls safe_teleds() but
+   all troubles and then TROUBLE_STUCK_IN_WALL calls _telesafe_teleds() but
    it can't find anywhere to place you.  If that happens you get a small
    value for (HPasses_walls & TIMEOUT) to move somewhere yourself.
    Message given is "you feel much slimmer" as a joke hint that you can

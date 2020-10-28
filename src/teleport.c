@@ -391,6 +391,25 @@ boolean allow_drag, keep_effect_glyphs;
     }
 }
 
+
+void
+teleds_with_effects(nux, nuy, allow_drag, keep_effect_glyphs)
+register int nux, nuy;
+boolean allow_drag, keep_effect_glyphs;
+{
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
+    play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
+    special_effect_wait_until_action(0);
+    show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+    force_redraw_at(u.ux, u.uy);
+    flush_screen(0);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, nux, nuy, TRUE);
+    special_effect_wait_until_action(1);
+    teleds(nux, nuy, FALSE, TRUE);
+    special_effect_wait_until_end(0);
+    special_effect_wait_until_end(1);
+}
+
 boolean
 safe_teleds(allow_drag, keep_effect_glyphs)
 boolean allow_drag, keep_effect_glyphs;
@@ -409,6 +428,22 @@ boolean allow_drag, keep_effect_glyphs;
         return FALSE;
 }
 
+boolean
+safe_teleds_with_effects(allow_drag, keep_effect_glyphs)
+boolean allow_drag, keep_effect_glyphs;
+{
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
+    play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
+    special_effect_wait_until_action(0);
+    boolean res = safe_teleds(allow_drag, allow_drag);
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
+    special_effect_wait_until_action(1);
+    special_effect_wait_until_end(0);
+    special_effect_wait_until_end(1);
+
+    return res;
+}
+
 STATIC_OVL void
 vault_tele()
 {
@@ -416,14 +451,7 @@ vault_tele()
     coord c;
 
     if (croom && somexy(croom, &c) && teleok(c.x, c.y, FALSE)) {
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
-        play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-        special_effect_wait_until_action(0);
-        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, c.x, c.y, FALSE);
-        special_effect_wait_until_action(1);
-        teleds(c.x, c.y, FALSE, TRUE);
-        special_effect_wait_until_end(0);
-        special_effect_wait_until_end(1);
+        teleds_with_effects(c.x, c.y, FALSE, TRUE);
         return;
     }
     tele();
@@ -540,17 +568,7 @@ boolean iscontrolled;
                 if (scroll)
                     learnscroll(scroll);
 
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
-                play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-                special_effect_wait_until_action(0);
-                show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
-                force_redraw_at(u.ux, u.uy);
-                flush_screen(0);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, cc.x, cc.y, TRUE);
-                special_effect_wait_until_action(1);
-                teleds(cc.x, cc.y, FALSE, TRUE);
-                special_effect_wait_until_end(0);
-                special_effect_wait_until_end(1);
+                teleds_with_effects(cc.x, cc.y, FALSE, TRUE);
                 return TRUE;
             }
             pline("Sorry...");
@@ -566,14 +584,7 @@ boolean iscontrolled;
     }
 
     telescroll = scroll;
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
-    play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-    special_effect_wait_until_action(0);
-    (void) safe_teleds(FALSE, TRUE);
-    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, u.ux, u.uy, FALSE);
-    special_effect_wait_until_action(1);
-    special_effect_wait_until_end(0);
-    special_effect_wait_until_end(1);
+    (void) safe_teleds_with_effects(FALSE, TRUE);
     /* teleds() will leave telescroll intact iff random destination
        is far enough away for scroll discovery to be warranted */
     if (telescroll)
@@ -721,14 +732,7 @@ struct monst* mtmp;
     			    pline("%s light envelops %s!", portal_color, yname(otmp));
 			    pline("You feel your essence unsolidifying...");
 			    pline("You reemerge at a new location!");
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, FALSE);
-                play_sfx_sound_at_location(SFX_TELEPORT, u.ux, u.uy);
-                special_effect_wait_until_action(0);
-                play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 1, nux, nuy, FALSE);
-                special_effect_wait_until_action(1);
-                teleds(nux, nuy, TRUE, TRUE);
-                special_effect_wait_until_end(0);
-                special_effect_wait_until_end(1);
+                teleds_with_effects(nux, nuy, TRUE, TRUE);
                 if (otmp && !(ttmp->tflags & TRAPFLAGS_ACTIVATED))
                 {
                     pline("%s%s has vanished!", otmp->quan > 1 ? "One of " : "", otmp->quan > 1 ? yname(otmp) : Yname2(otmp));
@@ -1146,10 +1150,15 @@ boolean iscontrolled;
             if (ynq("Go to Nowhere.  Are you sure?") != 'y')
                 return;
 
+            play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
             play_sfx_sound(SFX_LEVEL_TELEPORT);
+            special_effect_wait_until_action(0);
             You("%s in agony as your body begins to warp...",
                 is_silent(youmonst.data) ? "writhe" : "scream");
             display_nhwindow(WIN_MESSAGE, FALSE);
+            show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+            force_redraw_at(u.ux, u.uy);
+            flush_screen(0);
             You("cease to exist.");
             if (invent)
                 Your("possessions land on the %s with a thud.",
@@ -1218,8 +1227,14 @@ random_levtport:
         }
         newlevel.dnum = u.uz.dnum;
         newlevel.dlevel = llimit + newlev;
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
         play_sfx_sound(SFX_LEVEL_TELEPORT);
-        schedule_goto(&newlevel, FALSE, FALSE, 0, (char *) 0, (char *) 0);
+        special_effect_wait_until_action(0);
+        show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+        force_redraw_at(u.ux, u.uy);
+        flush_screen(0);
+        special_effect_wait_until_end(0);
+        schedule_goto(&newlevel, FALSE, FALSE, TRUE, 0, (char *) 0, (char *) 0);
         return;
     }
 
@@ -1228,7 +1243,14 @@ random_levtport:
     if (iflags.debug_fuzzer && newlev < 0)
         goto random_levtport;
 
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
     play_sfx_sound(SFX_LEVEL_TELEPORT);
+    special_effect_wait_until_action(0);
+    show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+    force_redraw_at(u.ux, u.uy);
+    flush_screen(0);
+    special_effect_wait_until_end(0);
+
     if (newlev < 0 && !force_dest) {
         if (*u.ushops0) {
             /* take unpaid inventory items off of shop bills */
@@ -1319,7 +1341,7 @@ random_levtport:
         if (!(wizard && force_dest))
             get_level(&newlevel, newlev);
     }
-    schedule_goto(&newlevel, FALSE, FALSE, 0, (char *) 0, (char *) 0);
+    schedule_goto(&newlevel, FALSE, FALSE, TRUE, 0, (char *) 0, (char *) 0);
     /* in case player just read a scroll and is about to be asked to
        call it something, we can't defer until the end of the turn */
     if (u.utotype && !context.mon_moving)
@@ -1364,7 +1386,16 @@ register struct trap *ttmp;
             (ttmp->tflags & TRAPFLAGS_LEVEL_TELEPORT_DOWN) != 0 ? 2 : 4) : 1);
 
     target_level = ttmp->dst;
-    schedule_goto(&target_level, FALSE, FALSE, portal_flags,
+
+    play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
+    play_sfx_sound(SFX_LEVEL_TELEPORT);
+    special_effect_wait_until_action(0);
+    show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+    force_redraw_at(u.ux, u.uy);
+    flush_screen(0);
+    special_effect_wait_until_end(0);
+
+    schedule_goto(&target_level, FALSE, FALSE, TRUE, portal_flags,
                   "You feel dizzy for a moment, but the sensation passes.",
                   (char *) 0);
 }

@@ -460,7 +460,7 @@ int xkill_flags, how;
                 if (enexto(&xy, etmp->ex, etmp->ey, etmp->edata)) {
                     pline("A %s force teleports you away...",
                           Hallucination ? "normal" : "strange");
-                    teleds(xy.x, xy.y, FALSE, FALSE);
+                    teleds_with_effects(xy.x, xy.y, FALSE, FALSE);
                 }
                 /* otherwise on top of the drawbridge is the
                  * only viable spot in the dungeon, so stay there

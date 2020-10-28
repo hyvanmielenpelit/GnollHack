@@ -537,7 +537,7 @@ E void NDECL(save_currentstate);
 #endif
 E void FDECL(u_collide_m, (struct monst *));
 E void FDECL(goto_level, (d_level *, BOOLEAN_P, BOOLEAN_P, xchar));
-E void FDECL(schedule_goto, (d_level *, BOOLEAN_P, BOOLEAN_P, int,
+E void FDECL(schedule_goto, (d_level *, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, long,
                              const char *, const char *));
 E void NDECL(deferred_goto);
 E boolean FDECL(revive_corpse, (struct obj *));
@@ -3001,6 +3001,8 @@ E boolean FDECL(enexto_core, (coord *, XCHAR_P, XCHAR_P,
                               struct permonst *, unsigned long));
 E void FDECL(teleds, (int, int, BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(safe_teleds, (BOOLEAN_P, BOOLEAN_P));
+E void FDECL(teleds_with_effects, (int, int, BOOLEAN_P, BOOLEAN_P));
+E boolean FDECL(safe_teleds_with_effects, (BOOLEAN_P, BOOLEAN_P));
 E boolean FDECL(teleport_pet, (struct monst *, BOOLEAN_P));
 E void NDECL(tele);
 E void NDECL(controlled_teleportation);

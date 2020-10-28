@@ -4953,6 +4953,8 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
     /* record this level transition as a potential seen branch unless using
      * some non-standard means of transportation (level teleport).
      */
+	boolean play_arrival_teleport_effect = !!(u.utotype & 0400);
+
     if ((at_stairs || falling || portal) && (u.uz.dnum != newlevel->dnum))
         recbranch_mapseen(&u.uz, newlevel);
     assign_level(&u.uz0, &u.uz);
@@ -5143,6 +5145,21 @@ xchar portal; /* 1 = Magic portal, 2 = Módron portal down (find portal up), 3 = 
      *  Move all plines beyond the screen reset.
      */
 
+	if (play_arrival_teleport_effect)
+	{
+		struct layer_info layers = layers_at(u.ux, u.uy);
+		show_glyph_on_layer(u.ux, u.uy, NO_GLYPH, LAYER_MONSTER);
+		force_redraw_at(u.ux, u.uy);
+		flush_screen(0);
+		play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, LAYER_GENERAL_EFFECT, 0, u.ux, u.uy, TRUE);
+		play_sfx_sound(SFX_LEVEL_TELEPORT);
+		special_effect_wait_until_action(0);
+		show_glyph_on_layer(u.ux, u.uy, layers.layer_glyphs[LAYER_MONSTER], LAYER_MONSTER);
+		force_redraw_at(u.ux, u.uy);
+		flush_screen(0);
+		special_effect_wait_until_end(0);
+	}
+
     /* special levels can have a custom arrival message */
     deliver_splev_message();
 
@@ -5312,10 +5329,10 @@ static char *dfr_pre_msg = 0,  /* pline() before level change */
 
 /* change levels at the end of this turn, after monsters finish moving */
 void
-schedule_goto(tolev, at_stairs, falling, portal_flag, pre_msg, post_msg)
+schedule_goto(tolev, at_stairs, falling, teleport, portal_flag, pre_msg, post_msg)
 d_level *tolev;
-boolean at_stairs, falling;
-int portal_flag;
+boolean at_stairs, falling, teleport;
+long portal_flag;
 const char *pre_msg, *post_msg;
 {
     int typmask = 0100; /* non-zero triggers `deferred_goto' */
@@ -5335,7 +5352,9 @@ const char *pre_msg, *post_msg;
 		typmask |= 32;
 	if (portal_flag < 0)
         typmask |= 0200; /* flag for portal removal */
-    u.utotype = typmask;
+	if (teleport)
+		typmask |= 0400; /* flag for teleport in effect on new level */
+	u.utotype = typmask;
     /* destination level */
     assign_level(&u.utolev, tolev);
 
