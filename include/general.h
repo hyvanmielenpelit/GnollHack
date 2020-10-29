@@ -13,6 +13,7 @@
  */
 
 #define SHIELD_COUNT 21  /* Total number of cmap indices in the shield_static[] array. */
+#define TALK_COUNT 10  
 #define NATTK 8	         /* Maximum number of attacks per monster */
 #define MAXNASTIES 10    /* more than this can be created */
 

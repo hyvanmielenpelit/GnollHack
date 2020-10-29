@@ -325,7 +325,8 @@ int expltype;
 
         if (any_shield && flags.sparkle) 
         { /* simulate shield effect */
-            for (k = 0; k < SHIELD_COUNT; k++) 
+            int rounds = flags.shield_effect_length > 0 && flags.shield_effect_length < SHIELD_COUNT ? flags.shield_effect_length : SHIELD_COUNT;
+            for (k = 0; k < rounds; k++)
             {
                 for (i = 0; i < 3; i++)
                     for (j = 0; j < 3; j++) 

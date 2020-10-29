@@ -74,7 +74,9 @@ struct flag {
     boolean show_tile_u_hp_bar; /* show your hp bar on tiles */
     boolean show_weight_summary; /* show weight summary */
     double screen_scale_adjustment; /* scale = 1.0 + screen_scale_adjustment */
-    int preferred_screen_scale; /* user set preference for screen scale 25...200 */
+    int preferred_screen_scale; /* user set preference for screen scale MIN_PREF_SCREEN_SCALE...MAX_PREF_SCREEN_SCALE */
+    int shield_effect_length;
+    int talk_effect_length;
     boolean showscore;       /* show score */
     boolean silent;          /* whether the bell rings or not */
     /* The story so far:

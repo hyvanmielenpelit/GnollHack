@@ -427,6 +427,8 @@ static struct Comp_Opt {
       20, DISP_IN_GAME }, /*WC*/
     { "scroll_margin", "scroll map when this far from the edge", 20,
       DISP_IN_GAME }, /*WC*/
+    { "shield_effect_length", "shield effect length", 3,
+      SET_IN_GAME },
     { "sortloot", "sort object selection lists by description", 4,
       SET_IN_GAME },
     { "sound_volume_ambient", "ambient volume", 3,
@@ -468,6 +470,8 @@ static struct Comp_Opt {
     { "subkeyvalue", "override keystroke value", 7, SET_IN_FILE },
 #endif
     { "suppress_alert", "suppress alerts about version-specific features", 8,
+      SET_IN_GAME },
+    { "talk_effect_length", "talk effect length", 3,
       SET_IN_GAME },
     /* term_cols,term_rows -> WC2_TERM_SIZE (6: room to format 1..32767) */
     { "term_cols", "number of columns", 6, SET_IN_FILE }, /*WC2*/
@@ -3969,6 +3973,64 @@ boolean tinitial, tfrom_file;
         return retval;
     }
 
+    fullname = "shield_effect_length";
+    if (match_optname(opts, fullname, 20, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = SHIELD_COUNT;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 1 || itmp > SHIELD_COUNT)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 1, SHIELD_COUNT);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.shield_effect_length = itmp;
+        }
+        return retval;
+    }
+
+    fullname = "talk_effect_length";
+    if (match_optname(opts, fullname, 18, TRUE))
+    {
+        int itmp = 0;
+
+        op = string_for_opt(opts, negated);
+        if (negated)
+        {
+            bad_negation(fullname, TRUE);
+            itmp = TALK_COUNT;
+            retval = FALSE;
+        }
+        else if (op)
+        {
+            itmp = atoi(op);
+        }
+
+        if (itmp < 1 || itmp > SHIELD_COUNT)
+        {
+            config_error_add("'%s' requires a value between %d and %d", fullname, 1, TALK_COUNT);
+            retval = FALSE;
+        }
+        else
+        {
+            flags.talk_effect_length = itmp;
+        }
+        return retval;
+    }
+
     /* This is in fact milliseconds in delay_output, which slows down the game, not just any animation */
     fullname = "animation_interval";
     if (match_optname(opts, fullname, 17, TRUE))
@@ -6205,6 +6267,16 @@ char *buf;
             Sprintf(buf, "%d", flags.preferred_screen_scale);
         else
             Sprintf(buf, "%s, 100", defopt);
+    } else if (!strcmp(optname, "shield_effect_length")) {
+        if (flags.shield_effect_length)
+            Sprintf(buf, "%d", flags.shield_effect_length);
+        else
+            Sprintf(buf, "%s, %d", defopt, SHIELD_COUNT);
+    } else if (!strcmp(optname, "talk_effect_length")) {
+        if (flags.talk_effect_length)
+            Sprintf(buf, "%d", flags.talk_effect_length);
+        else
+            Sprintf(buf, "%s, %d", defopt, TALK_COUNT);
     } else if (!strcmp(optname, "race")) {
         Sprintf(buf, "%s", rolestring(flags.initrace, races, noun));
     } else if (!strcmp(optname, "roguesymset")) {
@@ -6277,6 +6349,14 @@ char *buf;
             Sprintf(buf, "%d", flags.preferred_screen_scale);
         }
         /* else default to "unknown" */
+    }
+    else if (!strcmp(optname, "shield_effect_length"))
+    {
+        Sprintf(buf, "%d", flags.shield_effect_length);
+    }
+    else if (!strcmp(optname, "talk_effect_length"))
+    {
+        Sprintf(buf, "%d", flags.talk_effect_length);
     }
     else if (!strcmp(optname, "sound_volume_ambient"))
     {

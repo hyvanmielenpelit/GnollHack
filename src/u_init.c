@@ -890,6 +890,8 @@ props_init()
 	strcpy(context.properties[SHOCK_IMMUNITY].prop_tile_name, "shock-immunity");
 	context.properties[ACID_IMMUNITY].show_buff = TRUE;
 	strcpy(context.properties[ACID_IMMUNITY].prop_tile_name, "acid-immunity");
+	context.properties[STONE_RESISTANCE].show_buff = TRUE;
+	strcpy(context.properties[STONE_RESISTANCE].prop_tile_name, "stone-resistance");
 	context.properties[SLEEP_RESISTANCE].show_buff = TRUE;
 	strcpy(context.properties[SLEEP_RESISTANCE].prop_tile_name, "sleep-resistance");
 	context.properties[DEATH_RESISTANCE].show_buff = TRUE;
