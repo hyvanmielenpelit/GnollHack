@@ -2552,7 +2552,7 @@ register struct obj *obj;
 
     if (!tele_restrict(mon))
     {
-        (void)rloc_with_effects(mon, TRUE);
+        (void)rloc2(mon, TRUE, canspotmon(mon));
     }
     return ret;
 }

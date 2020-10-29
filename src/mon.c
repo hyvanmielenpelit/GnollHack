@@ -1229,7 +1229,7 @@ register struct monst *mtmp;
                from lava, just from water */
             if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
 			{
-                if (rloc_with_effects(mtmp, TRUE))
+                if (rloc2(mtmp, TRUE, canspotmon(mtmp)))
                     return 0;
             }
             if (!is_mon_immune_to_fire(mtmp)) 
@@ -1290,7 +1290,7 @@ register struct monst *mtmp;
                if possible */
             if (has_teleportation(mtmp) && !tele_restrict(mtmp)) 
 			{
-                if (rloc_with_effects(mtmp, TRUE))
+                if (rloc2(mtmp, TRUE, canspotmon(mtmp)))
                     return 0;
             }
             if (cansee(mtmp->mx, mtmp->my)) 
@@ -3892,19 +3892,47 @@ struct monst *mtmp;
 
 /* drop monster into "limbo" - that is, migrate to the current level */
 void
-m_into_limbo(mtmp)
+m_into_limbo(mtmp, has_effects)
 struct monst *mtmp;
+boolean has_effects;
 {
+    if (!mtmp)
+        return;
+
+    boolean res = FALSE;
+    boolean spef1ok = FALSE;
+    if (has_effects && isok(mtmp->mx, mtmp->my))
+    {
+        spef1ok = TRUE;
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
+        force_redraw_at(mtmp->mx, mtmp->my);
+        flush_screen(0);
+    }
+
     unstuck(mtmp);
     mdrop_special_objs(mtmp);
-    migrate_to_level(mtmp, ledger_no(&u.uz), MIGR_APPROX_XY, (coord *) 0);
+    migrate_to_level(mtmp, ledger_no(&u.uz), MIGR_APPROX_XY, (coord*)0);
+
+    if (spef1ok)
+        special_effect_wait_until_end(0);
 }
 
 /* make monster mtmp next to you (if possible);
    might place monst on far side of a wall or boulder */
 void
 mnexto(mtmp)
+struct monst* mtmp;
+{
+    mnexto2(mtmp, FALSE);
+}
+
+void
+mnexto2(mtmp, has_effects)
 struct monst *mtmp;
+boolean has_effects;
 {
     coord mm;
     boolean couldspot = canspotmon(mtmp);
@@ -3917,12 +3945,17 @@ struct monst *mtmp;
     }
 
     if (!enexto(&mm, u.ux, u.uy, mtmp->data)) {
-        m_into_limbo(mtmp);
+        m_into_limbo(mtmp, has_effects);
         return;
     }
     if (!isok(mm.x, mm.y))
         return;
-    rloc_to(mtmp, mm.x, mm.y);
+
+    if(has_effects)
+        rloc_to_with_effects(mtmp, mm.x, mm.y);
+    else
+        rloc_to(mtmp, mm.x, mm.y);
+
     if (!in_mklev && (mtmp->mstrategy & STRAT_APPEARMSG)) {
         mtmp->mstrategy &= ~STRAT_APPEARMSG; /* one chance only */
         if (!couldspot && canspotmon(mtmp))
@@ -3966,10 +3999,10 @@ struct monst *mtmp;
  * will be False on the nested call so there won't be any further recursion.
  */
 int
-mnearto(mtmp, x, y, move_other)
+mnearto(mtmp, x, y, move_other, has_effects)
 register struct monst *mtmp;
 xchar x, y;
-boolean move_other; /* make sure mtmp gets to x, y! so move m_at(x, y) */
+boolean move_other, has_effects; /* make sure mtmp gets to x, y! so move m_at(x, y) */
 {
     struct monst *othermon = (struct monst *) 0;
     xchar newx, newy;
@@ -4002,12 +4035,16 @@ boolean move_other; /* make sure mtmp gets to x, y! so move m_at(x, y) */
         newx = mm.x;
         newy = mm.y;
     }
-    rloc_to(mtmp, newx, newy);
+
+    if (has_effects)
+        rloc_to_with_effects(mtmp, newx, newy);
+    else
+        rloc_to(mtmp, newx, newy);
 
     if (move_other && othermon) {
         res = 2; /* moving another monster out of the way */
-        if (!mnearto(othermon, x, y, FALSE)) /* no 'move_other' this time */
-            m_into_limbo(othermon);
+        if (!mnearto(othermon, x, y, FALSE, has_effects)) /* no 'move_other' this time */
+            m_into_limbo(othermon, has_effects);
     }
 
     return res;

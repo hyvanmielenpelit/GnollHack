@@ -583,12 +583,12 @@ boolean with_you;
     mtmp->mx = 0; /*(already is 0)*/
     mtmp->my = xyflags;
     if (xlocale)
-        failed_to_place = !mnearto(mtmp, xlocale, ylocale, FALSE);
+        failed_to_place = !mnearto(mtmp, xlocale, ylocale, FALSE, FALSE);
     else
         failed_to_place = !rloc(mtmp, TRUE);
 
     if (failed_to_place)
-        m_into_limbo(mtmp); /* try again next time hero comes to this level */
+        m_into_limbo(mtmp, FALSE); /* try again next time hero comes to this level */
 }
 
 /* heal monster for time spent elsewhere */
@@ -1135,7 +1135,7 @@ boolean thrown;
 		/* worst case, at least it'll be peaceful. */
 		mtmp->mpeaceful = 1;
 		set_malign(mtmp);
-        newsym(mtmp->mx, mtmp->my);
+        newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
     }
 
     if (!forcetaming && thrown && flags.moonphase == FULL_MOON && night() && rn2(6) && obj
@@ -1232,7 +1232,7 @@ boolean thrown;
     }
     else if(is_tame(mtmp) && !was_tame)
 	{
-		newsym(mtmp->mx, mtmp->my);
+		newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
 		//if (context.game_difficulty != 0)
 		//	newmonhp(mtmp, mtmp->mnum, MM_NO_DIFFICULTY_HP_CHANGE | MM_ADJUST_HP_FROM_EXISTING);
 	}
@@ -1249,8 +1249,8 @@ boolean thrown;
         /* `obj' is now obsolete */
     }
 
-    newsym(mtmp->mx, mtmp->my);
-    if (attacktype(mtmp->data, AT_WEAP)) 
+    newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+    if (attacktype(mtmp->data, AT_WEAP))
 	{
         mtmp->weapon_strategy = NEED_HTH_WEAPON;
         (void) mon_wield_item(mtmp, FALSE);

@@ -667,12 +667,23 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
     { "summon-demon-animation", SUMMON_DEMON_ANIMATION_TILES,
       SUMMON_DEMON_ANIMATION_FRAMES, SUMMON_DEMON_ANIMATION_OFF,
       1,
-      1,
+      2,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       6, 14,
       SUMMON_DEMON_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "summon-celestial-animation", SUMMON_CELESTIAL_ANIMATION_TILES,
+      SUMMON_CELESTIAL_ANIMATION_FRAMES, SUMMON_CELESTIAL_ANIMATION_OFF,
+      1,
+      2,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      10, 17,
+      SUMMON_CELESTIAL_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "twisted-candle-lit-animation", TWISTED_CANDLE_ANIMATION_TILES,
@@ -1147,6 +1158,14 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { "summon-demon-enlargement",
         SUMMON_DEMON_ANIMATION_TILES, SUMMON_DEMON_ANIMATION_FRAMES,
         SUMMON_DEMON_ENLARGEMENT_TILES, SUMMON_DEMON_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "summon-celestial-enlargement",
+        SUMMON_CELESTIAL_ANIMATION_TILES, SUMMON_CELESTIAL_ANIMATION_FRAMES,
+        SUMMON_CELESTIAL_ENLARGEMENT_TILES, SUMMON_CELESTIAL_ENLARGEMENT_OFF,
         3, 1, 0,
         { -1, -1, -1, 0, 1 },
         { 0, 0, 0, 0, 0 },
@@ -2195,17 +2214,17 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
 /* Special Effects */
 NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS] =
 {
-    {"teleport-out",        0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, TELEPORT_OUT_ANIMATION, NO_ENLARGEMENT},
-    {"teleport-in",         0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, TELEPORT_IN_ANIMATION, NO_ENLARGEMENT },
-    {"generic-spell",       150,    LAYER_MONSTER_EFFECT, NO_REPLACEMENT, GENERIC_SPELL_EFFECT_ANIMATION, NO_ENLARGEMENT },
-    {"summon-demon",        0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
-    {"summon-celestial",    0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
-    {"summon-nature",       0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
-    {"summon-monster",      0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
-    {"summon-nasty",        0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
-    {"summon-undead",       0,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
-    {"animate-dead",        0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
-    {"summon-in-smoke",     0,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT },
+    {"teleport-out",        0, 0, 2,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, TELEPORT_OUT_ANIMATION, NO_ENLARGEMENT},
+    {"teleport-in",         0, 0, 2,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, TELEPORT_IN_ANIMATION, NO_ENLARGEMENT },
+    {"generic-spell",       0, 0, 6,      LAYER_MONSTER_EFFECT, NO_REPLACEMENT, GENERIC_SPELL_EFFECT_ANIMATION, NO_ENLARGEMENT },
+    {"summon-demon",        0, 0, 2,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
+    {"summon-celestial",    0, 0, 2,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SUMMON_CELESTIAL_ANIMATION, NO_ENLARGEMENT },
+    {"summon-nature",       0, 0, 2,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
+    {"summon-monster",      0, 0, 2,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
+    {"summon-nasty",        0, 0, 2,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
+    {"summon-undead",       0, 0, 2,      LAYER_BACKGROUND_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
+    {"animate-dead",        0, 0, 2,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
+    {"summon-in-smoke",     0, 0, 2,      LAYER_GENERAL_EFFECT, NO_REPLACEMENT, SUMMON_DEMON_ANIMATION, NO_ENLARGEMENT },
 };
 
 
@@ -3462,14 +3481,15 @@ boolean force_visibility;
         context.spef_milliseconds_to_wait_until_end[spef_number] = 0;
         context.force_allow_keyboard_commands = TRUE;
         show_glyph_on_layer(x, y, sp_effect + GLYPH_SPECIAL_EFFECT_OFF, layer);
-        force_redraw_at(x, y);
-        flush_screen(0);
 
         enum animation_types anim = special_effects[sp_effect].animation;
         if (anim > 0 && animations[anim].play_type == ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY)
         {
             context.special_effect_animation_counter[spef_number] = 0;
             context.special_effect_animation_counter_on[spef_number] = TRUE;
+            force_redraw_at(x, y);
+            flush_screen(0);
+
             int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
             if (animations[anim].sound_play_frame <= -1)
             {
@@ -3477,7 +3497,9 @@ boolean force_visibility;
             }
             else
             {
-                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+                if(animations[anim].sound_play_frame > 0)
+                    delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * animations[anim].sound_play_frame);
+  
                 if (animations[anim].action_execution_frame > animations[anim].sound_play_frame)
                 {
                     context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames * (animations[anim].action_execution_frame - animations[anim].sound_play_frame);
@@ -3490,28 +3512,17 @@ boolean force_visibility;
                     context.spef_milliseconds_to_wait_until_end[spef_number] = 0UL;
                 }
             }
-
-#if 0
-            for (int frame = 0; frame < framenum; frame++)
-            {
-                force_redraw_at(x, y);
-                flush_screen(0);
-                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * animations[anim].intervals_between_frames);
-                context.special_effect_animation_counter += animations[anim].intervals_between_frames;
-            }
-            context.special_effect_animation_counter = 0;
-#endif
         }
         else
         {
-            if(special_effects[sp_effect].display_time > 0)
-                context.spef_milliseconds_to_wait_until_action[spef_number] = special_effects[sp_effect].display_time;
-            else
-                context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
+            force_redraw_at(x, y);
+            flush_screen(0);
+            if(special_effects[sp_effect].frames_to_sound > 0)
+                delay_output_milliseconds((flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_to_sound);
+            context.spef_milliseconds_to_wait_until_action[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_from_sound_to_action;
+            context.spef_milliseconds_to_wait_until_end[spef_number] = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * special_effects[sp_effect].frames_from_action_to_end;
         }
 
-        force_redraw_at(x, y);
-        flush_screen(0);
     }
 }
 

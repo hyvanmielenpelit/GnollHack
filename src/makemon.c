@@ -2719,7 +2719,8 @@ int level_limit;
     {
         if (byyou) 
         {
-            newsym(mtmp->mx, mtmp->my);
+            newsym_with_flags(mtmp->mx, mtmp->my, (mmflags& MM_PLAY_SUMMON_ANIMATION) ? NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS : NEWSYM_FLAGS_NONE); /* make sure the mon shows up */
+            //newsym(mtmp->mx, mtmp->my);
             set_apparxy(mtmp);
         }
     }

@@ -367,7 +367,7 @@ d_level *lev;
             {
                 if (!rloc(mtmp, TRUE))
                 {
-                    m_into_limbo(mtmp);
+                    m_into_limbo(mtmp, FALSE);
                 }
             } 
             else
@@ -1989,7 +1989,7 @@ boolean ini;
             case CONS_MON: {
                 struct monst *mon = (struct monst *) cons->list;
 
-                (void) mnearto(mon, cons->x, cons->y, TRUE);
+                (void) mnearto(mon, cons->x, cons->y, TRUE, FALSE);
                 break;
             }
 

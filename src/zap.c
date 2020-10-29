@@ -3985,28 +3985,28 @@ register struct obj *obj;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_AIR_ELEMENTAL, "The air around you starts to swirl and forms into %s.", MM_NEUTRAL_SUMMON_ANIMATION, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_ANIMATE_EARTH:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz) || Is_airlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The earth near you starts to swirl and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_EARTH_ELEMENTAL, "The earth near you starts to swirl and forms into %s.", MM_NEUTRAL_SUMMON_ANIMATION, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_ANIMATE_FIRE:
 		known = TRUE;
 		if (Is_waterlevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_FIRE_ELEMENTAL, "A flickering flame appears out of thin air and forms into %s.", MM_NEUTRAL_SUMMON_ANIMATION, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_ANIMATE_WATER:
 		known = TRUE;
 		if (Inhell || Is_firelevel(&u.uz))
 			pline("Unfortunately, nothing happens.");
 		else
-			(void)summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", NO_MM_FLAGS, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
+			(void)summoncreature(obj->otyp, PM_WATER_ELEMENTAL, "Water condensates from thin air and forms into %s.", MM_NEUTRAL_SUMMON_ANIMATION, FALSE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_CREATE_GOLD_GOLEM:
 	case SPE_CREATE_GLASS_GOLEM:
@@ -4071,31 +4071,31 @@ register struct obj *obj;
 		(void)summoncreature(obj->otyp, (rn2(100) < (u.ulevel - 1) * 1) ? PM_MODRON_TERTIAN : (rn2(100) < (u.ulevel - 1) * 5) ? PM_MODRON_QUARTON : PM_MODRON_QUINTON, "%s appears in a cloud of smoke.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE);
 		break;
 	case SPE_STICK_TO_SNAKE:
-		mtmp = summoncreature(obj->otyp, PM_SNAKE, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_SNAKE, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED | MM_NEUTRAL_SUMMON_ANIMATION, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
 	case SPE_STICK_TO_COBRA:
-		mtmp = summoncreature(obj->otyp, PM_COBRA, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_COBRA, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED | MM_NEUTRAL_SUMMON_ANIMATION, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
     case SPE_STICK_TO_PYTHON:
-        mtmp = summoncreature(obj->otyp, PM_PYTHON, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_PYTHON, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED | MM_NEUTRAL_SUMMON_ANIMATION, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
         break;
     case SPE_STICK_TO_BOA:
-        mtmp = summoncreature(obj->otyp, PM_BOA_CONSTRICTOR, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_BOA_CONSTRICTOR, "You throw the stick you prepared in the front of you. It turns into %s!", MM_EMIN_COALIGNED | MM_NEUTRAL_SUMMON_ANIMATION, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
         break;
     case SPE_CELESTIAL_DOVE:
-        mtmp = summoncreature(obj->otyp, PM_CELESTIAL_DOVE, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_CELESTIAL_DOVE, "%s descends from the heavens.", MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
     case SPE_CELESTIAL_EAGLE:
-        mtmp = summoncreature(obj->otyp, PM_CELESTIAL_EAGLE, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_CELESTIAL_EAGLE, "%s descends from the heavens.", MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
     case SPE_SUMMON_PHOENIX:
-        mtmp = summoncreature(obj->otyp, PM_PHOENIX, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_PHOENIX, "%s descends from the heavens.", MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
     case SPE_SUMMON_GOLD_DRAGON:
-        mtmp = summoncreature(obj->otyp, PM_GOLD_DRAGON, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_GOLD_DRAGON, "%s descends from the heavens.", MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
     case SPE_SUMMON_ANCIENT_GOLD_DRAGON:
-        mtmp = summoncreature(obj->otyp, PM_ANCIENT_GOLD_DRAGON, "%s descends from the heavens.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_ANCIENT_GOLD_DRAGON, "%s descends from the heavens.", MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
     case SPE_CALL_BAHAMUT:
         known = TRUE;
@@ -4106,20 +4106,20 @@ register struct obj *obj;
         summonbahamut(obj->otyp);
         break;
     case SPE_SUMMON_TREANT:
-        mtmp = summoncreature(obj->otyp, PM_TREANT, "%s appears before you.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_TREANT, "%s appears before you.", MM_NEUTRAL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
     case SPE_SUMMON_ELDER_TREANT:
-        mtmp = summoncreature(obj->otyp, PM_ELDER_TREANT, "%s appears before you.", NO_MM_FLAGS, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+        mtmp = summoncreature(obj->otyp, PM_ELDER_TREANT, "%s appears before you.", MM_NEUTRAL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
         break;
     case SPE_GUARDIAN_ANGEL:
 		You("recite an ancient prayer to %s.", u_gname());
 		gain_guardian_angel(TRUE);
 		break;
 	case SPE_HEAVENLY_WARRIOR:
-		mtmp = summoncreature(obj->otyp, PM_ALEAX, "%s descends from the heavens.", MM_EMIN_COALIGNED, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_ALEAX, "%s descends from the heavens.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
 		break;
 	case SPE_DIVINE_MOUNT:
-		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", MM_EMIN_COALIGNED, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_KI_RIN, "%s appears before you.", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
 		if (mtmp)
 		{
 			otmp = mksobj(SADDLE, TRUE, FALSE, FALSE);
@@ -4150,7 +4150,7 @@ register struct obj *obj;
 				monstid = PM_ALEAX;
 				break;
 			}
-			mtmp = summoncreature(obj->otyp, monstid, "", MM_EMIN_COALIGNED, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
+			mtmp = summoncreature(obj->otyp, monstid, "", MM_EMIN_COALIGNED | MM_LAWFUL_SUMMON_ANIMATION, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE);
 			if (mtmp)
 			{
 				if (monstid == PM_ARCHON)
@@ -4241,7 +4241,7 @@ register struct obj *obj;
 		for (int n = d(1, 2); n > 0; n--)
 		{
 			monstid = pick_nasty(u.ulevel);
-			mtmp = summoncreature(obj->otyp, monstid, "", NO_MM_FLAGS, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
+			mtmp = summoncreature(obj->otyp, monstid, "", MM_SUMMON_NASTY_ANIMATION, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
 			if (mtmp)
 			{
 				monstcount++;
@@ -4266,19 +4266,19 @@ register struct obj *obj;
 		break;
 	}
 	case SPE_RAISE_SKELETON:
-		mtmp = summoncreature(obj->otyp, PM_SKELETON, "%s raises before you and is ready to serve you.", NO_MM_FLAGS, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_SKELETON, "%s raises before you and is ready to serve you.", MM_UNDEAD_SUMMON_ANIMATION, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
 	case SPE_RAISE_SKELETON_WARRIOR:
-		mtmp = summoncreature(obj->otyp, PM_SKELETON_WARRIOR, "%s raises before you and is ready to serve you.", NO_MM_FLAGS, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_SKELETON_WARRIOR, "%s raises before you and is ready to serve you.", MM_UNDEAD_SUMMON_ANIMATION, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
 	case SPE_RAISE_SKELETON_LORD:
-		mtmp = summoncreature(obj->otyp, PM_SKELETON_WARRIOR, "%s raises before you.", NO_MM_FLAGS, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_SKELETON_WARRIOR, "%s raises before you.", MM_UNDEAD_SUMMON_ANIMATION, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
 	case SPE_RAISE_SKELETON_KING:
-		mtmp = summoncreature(obj->otyp, PM_SKELETON_KING, "%s raises before you.", NO_MM_FLAGS, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_SKELETON_KING, "%s raises before you.", MM_UNDEAD_SUMMON_ANIMATION, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
 	case SPE_RAISE_GIANT_SKELETON:
-		mtmp = summoncreature(obj->otyp, PM_GIANT_SKELETON, "%s raises before you and is ready to serve you.", NO_MM_FLAGS, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
+		mtmp = summoncreature(obj->otyp, PM_GIANT_SKELETON, "%s raises before you and is ready to serve you.", MM_UNDEAD_SUMMON_ANIMATION, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE);
 		break;
 	case SPE_CALL_GHOUL:
 	{
@@ -4290,7 +4290,7 @@ register struct obj *obj;
 		for (int n = d(2, 4); n > 0; n--)
 		{
 			monstid = PM_GHOUL;
-			mtmp = summoncreature(obj->otyp, monstid, "", NO_MM_FLAGS, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
+			mtmp = summoncreature(obj->otyp, monstid, "", MM_UNDEAD_SUMMON_ANIMATION, TRUE, TRUE, TRUE, FALSE, TRUE, FALSE, FALSE);
 			if (mtmp)
 			{
 				monstcount++;
@@ -9791,7 +9791,7 @@ boolean faithful;
 {
 	struct monst* mon = (struct monst*)0;
 
-	mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_NO_DIFFICULTY_HP_CHANGE | MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | mmflags);
+	mon = makemon(&mons[monst_id], u.ux, u.uy, MM_NOCOUNTBIRTH | MM_NO_DIFFICULTY_HP_CHANGE | MM_PLAY_SUMMON_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | mmflags);
 	if (mon)
 	{
 		mon->issummoned = markassummoned;

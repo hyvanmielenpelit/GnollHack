@@ -707,7 +707,7 @@ struct obj *obj;
                 if (M_AP_TYPE(mtmp))
                     seemimic(mtmp);
                 omx = mtmp->mx, omy = mtmp->my;
-                mnexto(mtmp);
+                mnexto2(mtmp, TRUE);
                 if (mtmp->mx != omx || mtmp->my != omy) {
                     mtmp->mundetected = 0; /* reveal non-mimic hider */
 					selmon = mtmp;
@@ -1232,7 +1232,7 @@ struct obj *obj;
         (void) mpickobj(mtmp, obj);
         if (!tele_restrict(mtmp))
         {
-            (void)rloc_with_effects(mtmp, TRUE);
+            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
         }
     } else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
                && (!is_invisible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) {

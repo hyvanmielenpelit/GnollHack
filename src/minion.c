@@ -768,7 +768,7 @@ struct monst *mtmp;
               flags.female ? "Sister" : "Brother");
 		if (!tele_restrict(mtmp))
 		{
-			(void)rloc_with_effects(mtmp, TRUE);
+			(void)rloc2(mtmp, TRUE, canspotmon(mtmp));
 		}
         return 1;
 	}

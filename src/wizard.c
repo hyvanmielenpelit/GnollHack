@@ -383,14 +383,14 @@ register struct monst *mtmp;
 		{
             if (!rn2(3 + mtmp->mhp / 10))
             {
-                (void)rloc_with_effects(mtmp, TRUE);
+                (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
             }
         }
 		else if (sx && (mtmp->mx != sx || mtmp->my != sy))
 		{
-            if (!mnearto(mtmp, sx, sy, TRUE))
+            if (!mnearto(mtmp, sx, sy, TRUE, canspotmon(mtmp)))
 			{
-                m_into_limbo(mtmp);
+                m_into_limbo(mtmp, canspotmon(mtmp));
                 return 0;
             }
         }
@@ -407,7 +407,7 @@ register struct monst *mtmp;
 
     case STRAT_NONE: /* harass */
         if (!rn2(!is_fleeing(mtmp) ? 5 : 33))
-            mnexto(mtmp);
+            mnexto2(mtmp, canseemon(mtmp));
         return 0;
 
     default: /* kill, maim, pillage! */
@@ -423,7 +423,7 @@ register struct monst *mtmp;
         if ((u.ux == tx && u.uy == ty) || where == STRAT_PLAYER)
 		{
             /* player is standing on it (or has it) */
-            mnexto(mtmp);
+            mnexto2(mtmp, canseemon(mtmp));
             return 0;
         }
         if (where == STRAT_GROUND) {
@@ -449,14 +449,14 @@ register struct monst *mtmp;
 			{
                 /* a monster is standing on it - cause some trouble */
                 if (!rn2(5))
-                    mnexto(mtmp);
+                    mnexto2(mtmp, canspotmon(mtmp));
                 return 0;
             }
         } 
 		else 
 		{ /* a monster has it - 'port beside it. */
-            if (!mnearto(mtmp, tx, ty, FALSE))
-                m_into_limbo(mtmp);
+            if (!mnearto(mtmp, tx, ty, FALSE, canspotmon(mtmp)))
+                m_into_limbo(mtmp, canspotmon(mtmp));
             return 0;
         }
     }

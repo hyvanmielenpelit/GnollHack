@@ -646,7 +646,7 @@ int nx, ny;
         if (!Deaf)
             verbalize("Out of my way, scum!");
         if (!rloc(m_at(nx, ny), FALSE) || MON_AT(nx, ny))
-            m_into_limbo(m_at(nx, ny));
+            m_into_limbo(m_at(nx, ny), FALSE);
     }
 }
 

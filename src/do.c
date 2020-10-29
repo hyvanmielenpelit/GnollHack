@@ -4789,7 +4789,7 @@ struct monst *mtmp;
             pline("(monster in hero's way)");
         if (!rloc(mtmp, TRUE) || (mtmp = m_at(u.ux, u.uy)) != 0)
             /* no room to move it; send it away, to return later */
-            m_into_limbo(mtmp);
+            m_into_limbo(mtmp, FALSE);
     }
 }
 
@@ -5607,7 +5607,7 @@ long timeout UNUSED;
         boolean notice_it = canseemon(mtmp); /* before rloc() */
         char *monname = Monnam(mtmp);
 
-        if (rloc_with_effects(mtmp, TRUE)) {
+        if (rloc2(mtmp, TRUE, canspotmon(mtmp))) {
 			if (notice_it && !canseemon(mtmp))
                 pline("%s vanishes.", monname);
             else if (!notice_it && canseemon(mtmp))

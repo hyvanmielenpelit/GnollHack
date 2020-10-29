@@ -1533,44 +1533,44 @@ register int x, y;
     register int oldx = mtmp->mx, oldy = mtmp->my;
     boolean resident_shk = mtmp->isshk && inhishop(mtmp);
 
-if (x == mtmp->mx && y == mtmp->my && m_at(x, y) == mtmp)
-return; /* that was easy */
+    if (x == mtmp->mx && y == mtmp->my && m_at(x, y) == mtmp)
+    return; /* that was easy */
 
-if (oldx) { /* "pick up" monster */
-    if (mtmp->wormno) {
-        remove_worm(mtmp);
+    if (oldx) { /* "pick up" monster */
+        if (mtmp->wormno) {
+            remove_worm(mtmp);
+        }
+        else {
+            remove_monster(oldx, oldy);
+            newsym(oldx, oldy); /* update old location */
+        }
     }
-    else {
-        remove_monster(oldx, oldy);
-        newsym(oldx, oldy); /* update old location */
+
+    memset(mtmp->mtrack, 0, sizeof mtmp->mtrack);
+    place_monster(mtmp, x, y); /* put monster down */
+    update_monster_region(mtmp);
+
+    if (mtmp->wormno) /* now put down tail */
+    place_worm_tail_randomly(mtmp, x, y);
+
+    if (u.ustuck == mtmp) {
+        if (u.uswallow) {
+            u.ux = x;
+            u.uy = y;
+            docrt();
+        }
+        else
+            u.ustuck = 0;
     }
-}
 
-memset(mtmp->mtrack, 0, sizeof mtmp->mtrack);
-place_monster(mtmp, x, y); /* put monster down */
-update_monster_region(mtmp);
+    newsym(x, y);      /* update new location */
+    set_apparxy(mtmp); /* orient monster */
 
-if (mtmp->wormno) /* now put down tail */
-place_worm_tail_randomly(mtmp, x, y);
-
-if (u.ustuck == mtmp) {
-    if (u.uswallow) {
-        u.ux = x;
-        u.uy = y;
-        docrt();
-    }
-    else
-        u.ustuck = 0;
-}
-
-newsym(x, y);      /* update new location */
-set_apparxy(mtmp); /* orient monster */
-
-/* shopkeepers will only teleport if you zap them with a wand of
-   teleportation or if they've been transformed into a jumpy monster;
-   the latter only happens if you've attacked them with polymorph */
-if (resident_shk && !inhishop(mtmp))
-make_angry_shk(mtmp, oldx, oldy);
+    /* shopkeepers will only teleport if you zap them with a wand of
+       teleportation or if they've been transformed into a jumpy monster;
+       the latter only happens if you've attacked them with polymorph */
+    if (resident_shk && !inhishop(mtmp))
+    make_angry_shk(mtmp, oldx, oldy);
 }
 
 /* place a monster at a random location, typically due to teleport */
@@ -1662,6 +1662,51 @@ boolean suppress_impossible;
     return res;
 }
 
+boolean
+rloc2(mtmp, suppress_impossible, has_effects)
+struct monst* mtmp; /* mx==0 implies migrating monster arrival */
+boolean suppress_impossible, has_effects;
+{
+    if (has_effects)
+        return rloc_with_effects(mtmp, suppress_impossible);
+    else
+        return rloc(mtmp, suppress_impossible);
+}
+
+
+void
+rloc_to_with_effects(mtmp, x, y)
+struct monst* mtmp;
+register int x, y;
+{
+    if (!mtmp)
+        return;
+
+    boolean spef1ok = FALSE;
+    boolean spef2ok = FALSE;
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        spef1ok = TRUE;
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(0);
+        show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
+        force_redraw_at(mtmp->mx, mtmp->my);
+        flush_screen(0);
+    }
+    rloc_to(mtmp, x, y);
+    if (isok(mtmp->mx, mtmp->my))
+    {
+        spef2ok = TRUE;
+        play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);
+        special_effect_wait_until_action(1);
+    }
+    if (spef1ok)
+        special_effect_wait_until_end(0);
+    if (spef2ok)
+        special_effect_wait_until_end(1);
+}
+
 STATIC_OVL void
 mvault_tele(mtmp)
 struct monst *mtmp;
@@ -1673,7 +1718,7 @@ struct monst *mtmp;
         rloc_to(mtmp, c.x, c.y);
         return;
     }
-    (void)rloc_with_effects(mtmp, TRUE);
+    (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
 }
 
 boolean
@@ -1712,7 +1757,7 @@ int in_sight;
         if (trap->once)
             mvault_tele(mtmp);
         else
-            (void)rloc_with_effects(mtmp, TRUE);
+            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
 
         if (in_sight) {
             play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);

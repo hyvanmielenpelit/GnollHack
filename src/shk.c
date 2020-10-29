@@ -1052,7 +1052,7 @@ register boolean killkops;
 {
     register xchar x = ESHK(shkp)->shk.x, y = ESHK(shkp)->shk.y;
 
-    (void) mnearto(shkp, x, y, TRUE);
+    (void) mnearto(shkp, x, y, TRUE, FALSE);
     level.flags.has_shop = 1;
     if (killkops) {
         kops_gone(TRUE);
@@ -3486,7 +3486,7 @@ register xchar x, y;
         && dist2(shkp->mx, shkp->my, x, y) < 3
         /* if it is the shk's pos, you hit and anger him */
         && (shkp->mx != x || shkp->my != y)) {
-        if (mnearto(shkp, x, y, TRUE) == 2 && !Deaf && !muteshk(shkp))
+        if (mnearto(shkp, x, y, TRUE, FALSE) == 2 && !Deaf && !muteshk(shkp))
             verbalize("Out of my way, scum!");
         if (cansee(x, y)) {
             pline("%s nimbly%s catches %s.", Shknam(shkp),
@@ -4247,7 +4247,7 @@ boolean cant_mollify;
                 growl(shkp);
             }
         }
-        (void) mnearto(shkp, x, y, TRUE);
+        (void) mnearto(shkp, x, y, TRUE, FALSE);
     }
 
     if ((um_dist(x, y, 1) && !uinshp) || cant_mollify
