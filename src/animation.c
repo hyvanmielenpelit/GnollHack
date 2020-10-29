@@ -1171,6 +1171,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
+      { "bookshelf-enlargement", 0, 0,
+        BOOKSHELF_ENLARGEMENT_TILES, BOOKSHELF_ENLARGEMENT_OFF,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
 };
 
 NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
