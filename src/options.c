@@ -4019,7 +4019,7 @@ boolean tinitial, tfrom_file;
             itmp = atoi(op);
         }
 
-        if (itmp < 1 || itmp > SHIELD_COUNT)
+        if (itmp < 1 || itmp > TALK_COUNT)
         {
             config_error_add("'%s' requires a value between %d and %d", fullname, 1, TALK_COUNT);
             retval = FALSE;
