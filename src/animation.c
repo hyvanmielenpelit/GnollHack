@@ -268,6 +268,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "human-knight-male-attack-animation", HUMAN_KNIGHT_MALE_ATTACK_ANIMATION_TILES,
+      HUMAN_KNIGHT_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_KNIGHT_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      HUMAN_KNIGHT_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "elf-priest-male-chaotic-cast-animation", ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_TILES,
         ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_FRAMES, ELF_PRIEST_MALE_CHAOTIC_CAST_ANIMATION_OFF,
         1,
@@ -810,6 +821,14 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT_TILES, HUMAN_KNIGHT_FEMALE_CAST_ENLARGEMENT_OFF,
       1, 2, 0,
       { -1, 0, -1, -1, -1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "human-knight-male-attack-enlargement", 
+      HUMAN_KNIGHT_MALE_ATTACK_ANIMATION_TILES, HUMAN_KNIGHT_MALE_ATTACK_ANIMATION_FRAMES,
+      HUMAN_KNIGHT_MALE_ATTACK_ENLARGEMENT_TILES, HUMAN_KNIGHT_MALE_ATTACK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
@@ -2297,6 +2316,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
     case ACTION_TILE_ATTACK:
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)
             return HUMAN_KNIGHT_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_KNIGHT_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_ROGUE && raceidx == RACE_ORC && genderidx == GENDER_FEMALE)
