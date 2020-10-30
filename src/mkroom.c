@@ -648,7 +648,7 @@ struct mkroom *sroom;
             case ARMORY:
                 if (!rn2(box_one_in_chance * (box_count >= box_threshold ? 2 : 1)))
                 {
-                    struct obj* box = mksobj_at((rn2(3)) ? LARGE_BOX : CHEST, sx, sy,
+                    struct obj* box = mksobj_at(rn2(2) ? WEAPON_RACK : rn2(3) ? LARGE_BOX : CHEST, sx, sy,
                         FALSE, FALSE);
 
                     if (box)
@@ -667,7 +667,7 @@ struct mkroom *sroom;
                         for (int i = 0; i < nobj; i++)
                         {
                             struct obj* item = 0;
-                            item = mkobj(rn2(5) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
+                            item = mkobj(box->otyp == WEAPON_RACK || rn2(2) ? WEAPON_CLASS : ARMOR_CLASS, FALSE, FALSE);
 
                             if (item)
                             {
@@ -675,7 +675,8 @@ struct mkroom *sroom;
                                 box->owt = weight(box);
                             }
                         }
-                        make_engr_at(sx, sy, Inhell ? Morgoth_word : Gilthoniel_word, 0L, ENGRAVE);
+                        box->speflags |= SPEFLAGS_NO_PICKUP;
+                        //make_engr_at(sx, sy, Inhell ? Morgoth_word : Gilthoniel_word, 0L, ENGRAVE);
                         context.made_armory_box_count++;
                     }
                 }

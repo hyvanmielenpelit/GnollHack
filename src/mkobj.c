@@ -410,7 +410,10 @@ struct obj *box;
 	case BOOKSHELF:
 		n = (level_difficulty() >= 13) ? 7 : (level_difficulty() >= 10) ? 5 : 3;
 		break;
-	case CHEST:
+    case WEAPON_RACK:
+        n = 4;
+        break;
+    case CHEST:
         n = box->olocked ? 7 : 5;
         break;
     case LARGE_BOX:
@@ -459,7 +462,9 @@ struct obj *box;
 				otmp = mkobj(SCROLL_CLASS, FALSE, TRUE);
 			else
 				otmp = mkobj(SPBOOK_CLASS, FALSE, TRUE);
-		} else {
+        } else if (box->otyp == WEAPON_RACK) {
+            otmp = mkobj(WEAPON_CLASS, TRUE, TRUE);
+        } else {
             register int tprob;
             const struct icp *iprobs = boxiprobs;
 
@@ -873,8 +878,9 @@ register struct obj* otmp;
     dummy = newobj();
     *dummy = *otmp;
     dummy->nobj = (struct obj*)0; /* set nobj to zero; this is just a copy */
-    dummy->cobj = (struct obj*)0; /* set cobj to zero; this is just a copy */
-    dummy->nexthere = (struct obj*)0; /* set cobj to zero; this is just a copy */
+    dummy->cobj = (struct obj*)0;
+    add_memory_object_contents(dummy, otmp);
+    dummy->nexthere = (struct obj*)0;
     dummy->oextra = (struct oextra*)0;
     dummy->where = OBJ_FREE;
     dummy->o_id_memory = otmp->o_id;
@@ -914,6 +920,57 @@ register struct obj* otmp;
 }
 
 void
+add_memory_object_contents(memory_obj, orig_obj)
+struct obj* memory_obj, *orig_obj;
+{
+    if (!memory_obj || !orig_obj || !orig_obj->cobj)
+        return;
+
+    struct obj* dummy, otmp;
+
+    for (struct obj* otmp = orig_obj->cobj; otmp; otmp = otmp->nobj)
+    {
+        dummy = newobj();
+        *dummy = *otmp;
+        dummy->nobj = (struct obj*)0;
+        dummy->cobj = (struct obj*)0; /* no contains of containers in memory */
+        dummy->nexthere = (struct obj*)0;
+        dummy->oextra = (struct oextra*)0;
+        dummy->where = OBJ_CONTAINED;
+        dummy->ocontainer = memory_obj;
+        dummy->o_id_memory = otmp->o_id;
+        dummy->o_id = context.ident++;
+        if (!dummy->o_id)
+            dummy->o_id = context.ident++; /* ident overflowed */
+        dummy->timed = 0;
+        copy_oextra(dummy, otmp);
+        if (has_omid(dummy))
+            free_omid(dummy); /* only one association with m_id*/
+        dummy->owornmask = 0L; /* dummy object is not worn */
+
+        /* Add to cobj memory */
+        if (!memory_obj->cobj)
+        {
+            memory_obj->cobj = dummy;
+        }
+        else
+        {
+            /* Do for to preserve order */
+            // dummy->nexthere = level.locations[x][y].hero_memory_layers.memory_objchn;
+            // level.locations[x][y].hero_memory_layers.memory_objchn = dummy;
+            for (struct obj* last_obj = memory_obj->cobj; last_obj; last_obj = last_obj->nobj)
+            {
+                if (last_obj->nobj == (struct obj*)0)
+                {
+                    last_obj->nobj = dummy;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void
 add_to_memoryobjs(obj)
 struct obj* obj;
 {
@@ -933,9 +990,13 @@ struct obj* obj;
 void
 clear_memoryobjs()
 {
-    struct obj* obj;
+    struct obj* obj, *contained_obj;
     while ((obj = memoryobjs) != 0) {
         obj_extract_self(obj);
+        while ((contained_obj = obj->cobj) != 0) {
+            obj_extract_self(contained_obj);
+            dealloc_obj(contained_obj);
+        }
         dealloc_obj(obj);
     }
 
@@ -947,10 +1008,14 @@ int x, y;
 {
     if (isok(x, y))
     {
-        struct obj* obj;
+        struct obj* obj, * contained_obj;
         while ((obj = level.locations[x][y].hero_memory_layers.memory_objchn) != 0)
         {
             obj_extract_self(obj);
+            while ((contained_obj = obj->cobj) != 0) {
+                obj_extract_self(contained_obj);
+                dealloc_obj(contained_obj);
+            }
             dealloc_obj(obj);
         }
     }
@@ -1264,7 +1329,8 @@ int mkobj_type;
                 /*FALLTHRU*/
             case ICE_BOX:
 			case BOOKSHELF:
-			case SACK:
+            case WEAPON_RACK:
+            case SACK:
 			case BACKPACK:
 			case OILSKIN_SACK:
 			case LEATHER_BAG:

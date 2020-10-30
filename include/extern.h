@@ -1618,6 +1618,7 @@ E void FDECL(replace_object, (struct obj *, struct obj *));
 E struct obj *FDECL(unknwn_contnr_contents, (struct obj *));
 E void FDECL(bill_dummy_object, (struct obj *));
 E struct obj* FDECL(memory_dummy_object, (struct obj*));
+E void FDECL(add_memory_object_contents, (struct obj*, struct obj*));
 E void FDECL(add_to_memoryobjs, (struct obj*));
 E void NDECL(clear_memoryobjs);
 E void FDECL(clear_hero_object_memory_at, (int, int));
