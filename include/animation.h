@@ -47,21 +47,22 @@ enum autodraw_types
     AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_DOWN_LEFT,
     AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_RIGHT,
     AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_LEFT,
+    AUTODRAW_BOOKSHELF,
+    MAX_AUTODRAWS
 };
-
-#define NUM_AUTODRAWS AUTODRAW_DUNGEON_UNDEAD_REPLACE_WALL_ENDS_UP_LEFT
 
 enum autodraw_drawing_types
 {
     AUTODRAW_DRAW_GENERAL = 0,
-    AUTODRAW_DRAW_REPLACE_WALL_ENDS
+    AUTODRAW_DRAW_REPLACE_WALL_ENDS,
+    AUTODRAW_DRAW_BOOKSHELF_CONTENTS,
 };
 
 
 struct autodraw_definition {
     char* autodraw_name;
     enum autodraw_drawing_types draw_type;
-    char draw_directions;
+    unsigned char flags;
     int source_glyph;
     int source_glyph2;
     int source_glyph3;
@@ -774,6 +775,7 @@ enum replacement_types
     DUNGEON_UNDEAD_BRCORN_REPLACEMENT,
     DUNGEON_UNDEAD_IRON_BAR_REPLACEMENT,
     BRASS_LANTERN_LIT_REPLACEMENT,
+    BOOKSHELF_REPLACEMENT,
     MAX_REPLACEMENTS
 };
 

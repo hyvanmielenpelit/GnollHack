@@ -49,6 +49,7 @@ NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = 
     {"map-window-borders",      NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"menu-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"text-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
+    {"bookshelf-graphics",      NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
 };
 
 

@@ -63,6 +63,7 @@ enum game_ui_tile_types
     MAP_WINDOW_BORDERS,
     MENU_WINDOW_BORDERS,
     TEXT_WINDOW_BORDERS,
+    BOOKSHELF_GRAPHICS,
     MAX_UI_TILES
 };
 #define MAX_HIT_TILES 8 /* Acually with hit_tile there are 8 */

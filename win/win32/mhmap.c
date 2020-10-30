@@ -1572,7 +1572,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 for (int dir = 0; dir < 4; dir++)
                                 {
                                     char dir_bit = 1 << dir;
-                                    if (autodraws[autodraw].draw_directions & dir_bit)
+                                    if (autodraws[autodraw].flags & dir_bit)
                                     {
                                         int rx = 0;
                                         int ry = 0;
@@ -1730,7 +1730,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                     target_rt.right = rect->left + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - at_x));
                                                     target_rt.top = rect->top + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.top - at_y));
                                                     target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - at_y));
-                                                    
+
                                                     (*GetNHApp()->lpfnTransparentBlt)(
                                                         data->backBufferDC, target_rt.left, target_rt.top,
                                                         target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
@@ -1753,6 +1753,91 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             }
                                         }
                                     }
+                                }
+                            }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BOOKSHELF_CONTENTS && otmp_round)
+                            {
+                                int num_shelves = 4;
+                                int y_to_first_shelf = 43;
+                                int shelf_start = 8;
+                                int shelf_width = 50;
+                                int shelf_height = 10;
+                                int shelf_border_height = 2;
+                                int shelf_item_width = 5;
+                                int src_book_x = 0;
+                                int src_book_y = 0;
+                                int src_scroll_x = 5;
+                                int src_scroll_y = 0;
+                                int cnt = 0;
+                                int items_per_row = shelf_width / shelf_item_width;
+                                
+                                for (struct obj* contained_obj = otmp_round->cobj; contained_obj; contained_obj = contained_obj->nobj)
+                                {
+                                    int src_x = 0, src_y = 0;
+                                    int dest_x = 0, dest_y = 0;
+                                    if (contained_obj->oclass == SPBOOK_CLASS)
+                                    {
+                                        src_x = src_book_x;
+                                        src_y = src_book_y;
+                                    }
+                                    else if (contained_obj->oclass == SCROLL_CLASS)
+                                    {
+                                        src_x = src_scroll_x;
+                                        src_y = src_scroll_y;
+                                    }
+                                    else
+                                        continue;
+
+                                    int item_row = cnt / items_per_row;
+                                    int item_xpos = cnt % items_per_row;
+
+                                    if (item_row >= num_shelves)
+                                        break;
+
+                                    dest_y = y_to_first_shelf + item_row * (shelf_height + shelf_border_height);
+                                    dest_x = shelf_start + item_xpos * shelf_item_width;
+
+                                    int source_glyph = autodraws[autodraw].source_glyph;
+                                    int atile = glyph2tile[source_glyph];
+                                    int at_x = TILEBMP_X(atile);
+                                    int at_y = TILEBMP_Y(atile);
+
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = at_x + src_x;
+                                    source_rt.right = source_rt.left + shelf_item_width;
+                                    source_rt.top = at_y + src_y;
+                                    source_rt.bottom = source_rt.top + shelf_height;
+
+                                    RECT target_rt = { 0 };
+
+                                    if (print_first_directly_to_map)
+                                    {
+                                        target_rt.left = rect->left + dest_x;
+                                        target_rt.right = rect->left + dest_x + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - source_rt.left));
+                                        target_rt.top = rect->top + dest_y;
+                                        target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - source_rt.top));
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            data->backBufferDC, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+                                    else
+                                    {
+                                        target_rt.left = dest_x;
+                                        target_rt.right = dest_x + source_rt.right - source_rt.left;
+                                        target_rt.top = dest_y;
+                                        target_rt.bottom = dest_y + source_rt.bottom - source_rt.top;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCcopy, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+
+                                    cnt++;
                                 }
                             }
                         }

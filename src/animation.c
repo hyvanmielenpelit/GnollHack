@@ -1176,7 +1176,7 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         1, 2, 0,
         { -1, 0, -1, -1, -1 },
         { 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0 }
+        { 0, AUTODRAW_BOOKSHELF, 0, 0, 0 }
       },
 };
 
@@ -1941,10 +1941,21 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "bookshelf-enlargement-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_BOOKSHELF,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 
-NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
+NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
 {
     {"", 0, 0, 0, 0, 0},
     {
@@ -2212,6 +2223,14 @@ NEARDATA struct autodraw_definition autodraws[NUM_AUTODRAWS + 1] =
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
         S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+    },
+    {
+        "bookshelf-autodraw",
+        AUTODRAW_DRAW_BOOKSHELF_CONTENTS,
+        0,
+        BOOKSHELF_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
     },
 
 
