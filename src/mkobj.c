@@ -926,7 +926,7 @@ struct obj* memory_obj, *orig_obj;
     if (!memory_obj || !orig_obj || !orig_obj->cobj)
         return;
 
-    struct obj* dummy, otmp;
+    struct obj* dummy;
 
     for (struct obj* otmp = orig_obj->cobj; otmp; otmp = otmp->nobj)
     {
