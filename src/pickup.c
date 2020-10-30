@@ -1820,8 +1820,10 @@ int cindex, ccount; /* index of this container (1..N), number of them (N) */
 		return 1;
 	}
 
-    You("%s%s%s...", (!cobj->cknown || !cobj->lknown) ? "carefully " : "", (cobj->otyp == BOOKSHELF) ? "peek into " : "open ",
-        the(xname(cobj)));
+    if(!(objects[cobj->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE))
+        You("%s%s%s...", (!cobj->cknown || !cobj->lknown) ? "carefully " : "", (cobj->otyp == BOOKSHELF) ? "peek into " : "open ",
+            the(xname(cobj)));
+
     return use_container(cobjp, 0, (boolean) (cindex < ccount));
 }
 

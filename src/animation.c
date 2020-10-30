@@ -1178,6 +1178,13 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, AUTODRAW_BOOKSHELF, 0, 0, 0 }
       },
+      { "weapon-rack-enlargement", 0, 0,
+        WEAPON_RACK_ENLARGEMENT_TILES, WEAPON_RACK_ENLARGEMENT_OFF,
+        1, 2, 0,
+        { -1, 0, -1, -1, -1 },
+        { 0, 0, 0, 0, 0 },
+        { 0, AUTODRAW_WEAPON_RACK, 0, 0, 0 }
+      },
 };
 
 NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
@@ -2229,6 +2236,14 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DRAW_BOOKSHELF_CONTENTS,
         0,
         BOOKSHELF_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
+    {
+        "weapon-rack-autodraw",
+        AUTODRAW_DRAW_WEAPON_RACK_CONTENTS,
+        0,
+        0,
         0,
         0
     },

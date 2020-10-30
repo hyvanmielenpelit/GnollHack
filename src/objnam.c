@@ -4149,6 +4149,7 @@ struct obj *no_wish;
         && strncmpi(bp, "leather armor", 13)
         && strncmpi(bp, "tooled horn", 11)
         && strncmpi(bp, "food ration", 11)
+        && strncmpi(bp, "weapon rack", 11)
         && strncmpi(bp, "Ring of Three Wishes", 20)
         && strncmpi(bp, "ring of three wishes", 20)
         && strncmpi(bp, "Serpent Ring of Set", 19)

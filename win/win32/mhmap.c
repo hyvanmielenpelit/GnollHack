@@ -1815,7 +1815,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         target_rt.left = rect->left + dest_x;
                                         target_rt.right = rect->left + dest_x + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - source_rt.left));
                                         target_rt.top = rect->top + dest_y;
-                                        target_rt.bottom = rect->top + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - source_rt.top));
+                                        target_rt.bottom = rect->top + dest_y + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - source_rt.top));
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             data->backBufferDC, target_rt.left, target_rt.top,
@@ -1840,7 +1840,149 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     cnt++;
                                 }
                             }
-                        }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round)
+                            {
+                                int y_to_rack_top = 28;
+                                int rack_start = 0; /* Assume weapons are drawn reasonably well in the center */
+                                int rack_width = 48;
+                                int rack_height = TILE_Y - y_to_rack_top;
+                                int rack_item_width = 48;
+                                int rack_item_spacing = 6;
+
+                                int cnt = 0;
+
+                                for (struct obj* contained_obj = otmp_round->cobj; contained_obj; contained_obj = contained_obj->nobj)
+                                {
+                                    int src_x = 0, src_y = (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP ? 0 : TILE_Y / 2);
+                                    int dest_x = 0, dest_y = 0;
+                                    if (contained_obj->oclass != WEAPON_CLASS)
+                                        continue;
+
+                                    int item_xpos = cnt / 2 * rack_item_spacing;
+                                    if (item_xpos >= rack_width / 2)
+                                        break;
+
+                                    dest_y = y_to_rack_top;
+                                    dest_x = cnt % 2 == 0 ? rack_start + item_xpos : TILE_X - rack_item_width - rack_start - item_xpos;
+
+                                    int source_glyph = obj_to_glyph(contained_obj, rn2);
+                                    int atile = glyph2tile[source_glyph];
+                                    int at_x = TILEBMP_X(atile);
+                                    int at_y = TILEBMP_Y(atile);
+
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = at_x + src_x;
+                                    source_rt.right = source_rt.left + TILE_X;
+                                    source_rt.top = at_y + src_y;
+                                    source_rt.bottom = source_rt.top + (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP ? TILE_Y : TILE_Y / 2);
+
+                                    int rotated_width = source_rt.bottom - source_rt.top;
+                                    int rotated_height = source_rt.right - source_rt.left;
+
+                                    //HDC hDCrotate = CreateCompatibleDC(data->backBufferDC);
+                                    //HBITMAP hRotateBitmap = CreateCompatibleBitmap(hDCrotate, rotated_width, rotated_height);
+                                    //HGDIOBJ oldbmp = SelectObject(hDCrotate, hRotateBitmap);
+                                    POINT destPoints[3];
+
+                                    //Mapped point for source 0, 0
+                                    destPoints[0].x = 0;
+                                    destPoints[0].y = rotated_height;
+
+                                    //Mapped point for source TILE_X, 0
+                                    destPoints[1].x = rotated_width;
+                                    destPoints[1].y = rotated_height;
+
+                                    //Mapped point for source 0, TILE_Y
+                                    destPoints[2].x = 0;
+                                    destPoints[2].y = 0;
+
+                                    HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                                    unsigned char* lpBitmapBits;
+                                    LONG width = rotated_height;
+                                    LONG height = rotated_width;
+
+                                    BITMAPINFO bi;
+                                    ZeroMemory(&bi, sizeof(BITMAPINFO));
+                                    bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                    bi.bmiHeader.biWidth = width;
+                                    bi.bmiHeader.biHeight = height;
+                                    bi.bmiHeader.biPlanes = 1;
+                                    bi.bmiHeader.biBitCount = 32;
+
+                                    HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                                    HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+                                    StretchBlt(hDCMem, 0, 0, width, height,
+                                        data->tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
+
+                                    //PlgBlt(hDCrotate, destPoints, data->tileDC, source_rt.left, source_rt.top, source_rt.right - source_rt.left, source_rt.bottom - source_rt.top, NULL, 0, 0);
+                                    HDC hDCrotate = CreateCompatibleDC(data->backBufferDC);
+
+                                    unsigned char* lpRotatedBitmapBits;
+                                    BITMAPINFO bi2;
+                                    ZeroMemory(&bi2, sizeof(BITMAPINFO));
+                                    bi2.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                    bi2.bmiHeader.biWidth = rotated_width;
+                                    bi2.bmiHeader.biHeight = rotated_height;
+                                    bi2.bmiHeader.biPlanes = 1;
+                                    bi2.bmiHeader.biBitCount = 32;
+
+                                    HBITMAP hRotateBitmap = CreateDIBSection(hDCrotate, &bi2, DIB_RGB_COLORS, (VOID**)&lpRotatedBitmapBits, NULL, 0);
+                                    HGDIOBJ oldbmp2 = SelectObject(hDCrotate, hRotateBitmap);
+
+                                    int idx, orig_idx, x, y;
+                                    long* long_lpRotatedBitmapBits = (long*)lpRotatedBitmapBits;
+                                    long* long_lpBitmapBits = (long*)lpBitmapBits;
+                                    for (x = 0; x < rotated_width; x++)
+                                    {
+                                        for (y = 0; y < rotated_height; y++)
+                                        {
+                                            idx = y * rotated_width + x;
+                                            orig_idx = x * rotated_height + y;
+
+                                            long_lpRotatedBitmapBits[idx] = long_lpBitmapBits[orig_idx];
+                                        }
+                                    }
+
+                                    RECT target_rt = { 0 };
+
+                                    if (print_first_directly_to_map)
+                                    {
+                                        target_rt.left = rect->left + dest_x;
+                                        target_rt.right = rect->left + dest_x + rack_item_width;
+                                        target_rt.top = rect->top + dest_y;
+                                        target_rt.bottom = rect->top + dest_y + (rack_item_width * rotated_height) / rotated_width;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            data->backBufferDC, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, hDCrotate, 0,
+                                            0, rotated_width,
+                                            rotated_height, TILE_BK_COLOR);
+                                    }
+                                    else
+                                    {
+                                        target_rt.left = dest_x;
+                                        target_rt.right = dest_x + rack_item_width;
+                                        target_rt.top = dest_y;
+                                        target_rt.bottom = dest_y + (rack_item_width * rotated_height) / rotated_width;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCcopy, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, hDCrotate, 0,
+                                            0, rotated_width,
+                                            rotated_height, TILE_BK_COLOR);
+                                    }
+
+                                    SelectObject(hDCMem, oldbmp);
+                                    DeleteDC(hDCMem);
+                                    SelectObject(hDCrotate, oldbmp2);
+                                    DeleteDC(hDCrotate);
+                                    DeleteObject(hRotateBitmap);
+                                    DeleteObject(bitmap);
+
+                                    cnt++;
+                                }
+                            }                        }
                         /*
                          * AUTODRAW END
                          */
