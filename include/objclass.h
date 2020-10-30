@@ -909,6 +909,10 @@ struct objclass {
 #define O4_NEVER_GENERATED_WITH_EXCEPTIONALITY			0x00000400UL
 #define O4_DEALS_DAMAGE_TO_INAPPROPRIATE_CHARACTERS		0x00000800UL	/* deals damage when wielded like artifacts */
 #define O4_INAPPROPRIATE_CHARACTERS_CANT_HANDLE			0x00001000UL
+#define O4_CONTAINER_CONTENTS_VISIBLE					0x00002000UL	/* Can always see the contents */
+#define O4_CONTAINER_CONTENTS_USE_ON					0x00004000UL	/* Contents are put "on" the container rather than "in" the container  */
+#define O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS		0x00004000UL	/* Only books and scrolls fit in */
+#define O4_CONTAINER_ACCEPTS_ONLY_WEAPONS				0x00008000UL	/* Only weapon fit in */
 
 
 

@@ -1075,7 +1075,7 @@ int mkobj_type;
     if (!objects[otmp->otyp].oc_uses_known)
         otmp->known = 1;
     otmp->lknown = 0;
-    otmp->cknown = 0;
+    otmp->cknown = (objects[otmp->otyp].oc_flags4 & O4_CONTAINER_CONTENTS_VISIBLE) ? 1 : 0;
 	otmp->corpsenm = NON_PM;
 	otmp->elemental_enchantment = 0;
     otmp->exceptionality = 0;

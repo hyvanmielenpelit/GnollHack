@@ -2258,7 +2258,15 @@ register struct obj *obj;
         pline("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         return 0;
     }
-	else if (obj->otyp == AMULET_OF_YENDOR
+    else if (
+        ((objects[current_container->otyp].oc_flags4 & O4_CONTAINER_ACCEPTS_ONLY_SCROLLS_AND_BOOKS) && !(obj->oclass == SCROLL_CLASS || obj->oclass == SPBOOK_CLASS))
+        || ((objects[current_container->otyp].oc_flags4 & O4_CONTAINER_ACCEPTS_ONLY_WEAPONS) && !(obj->oclass == WEAPON_CLASS))
+        )
+    {
+        pline("%s is not made for holding %s.", The(cxname(current_container)), obj->quan > 1 ? cxname(obj) : makeplural(cxname(obj)));
+        return 0;
+    }
+    else if (obj->otyp == AMULET_OF_YENDOR
                || obj->otyp == CANDELABRUM_OF_INVOCATION
                || obj->otyp == BELL_OF_OPENING
                || obj->otyp == SPE_BOOK_OF_THE_DEAD)
