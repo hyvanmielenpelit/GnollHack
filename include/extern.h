@@ -2857,7 +2857,7 @@ E void FDECL(play_sfx_sound_at_location, (enum sfx_sound_types, int, int));
 E void FDECL(play_immediate_ray_sound_at_location, (int, enum ray_sound_types, int, int));
 E void FDECL(start_ambient_ray_sound_at_location, (int, int, int));
 E void FDECL(update_ambient_ray_sound_to_location, (int, int, int));
-E void FDECL(stop_ambient_ray_sound, (enum object_ray_soundset_types));
+E void FDECL(stop_ambient_ray_sound, (int));
 E void FDECL(start_occupation_ambient_sound, (enum object_soundset_types, enum object_occupation_types));
 E void FDECL(stop_occupation_ambient_sound, (enum object_soundset_types, enum object_occupation_types));
 E void FDECL(play_occupation_immediate_sound, (enum object_soundset_types, enum object_occupation_types, enum occupation_sound_types));

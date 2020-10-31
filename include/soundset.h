@@ -968,6 +968,8 @@ struct ray_soundset_definition {
 };
 
 enum object_ray_soundset_types {
+	/* Soundsets 0...19 are ray soundsets for wands and dragon breaths as per enum zap_types; 
+	   this is why the functions that would normally take in enum object_ray_soundset_types take in an int */
 	OBJECT_RAY_SOUNDSET_DIGBEAM = ZAP_SPECIAL_DIGGING,
 	OBJECT_RAY_SOUNDSET_EVAPORATION_BEAM = ZAP_SPECIAL_EVAPORATION,
 	OBJECT_RAY_SOUNDSET_CAMERA = ZAP_SPECIAL_FLASHED_LIGHT,

@@ -5072,7 +5072,7 @@ int x, y;
 
 void
 play_immediate_ray_sound_at_location(ray_soundset_id, ray_sound_type, x, y)
-enum object_ray_soundset_types ray_soundset_id;
+int ray_soundset_id;
 enum ray_sound_types ray_sound_type;
 int x, y;
 {
