@@ -5543,6 +5543,8 @@ boolean force;
     int ch = 0;
 
     play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
+    if (iflags.using_gui_sounds)
+        delay_output_milliseconds(10 * ANIMATION_FRAME_INTERVAL);
 
     if ((otmp->otrapped
         && (force || (!confused
