@@ -603,6 +603,21 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Sink Clanking from Pipes", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/SFX/General/Sink Snatches of Song", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Generic/Generic Bump Into", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Location/Door/Wooden/Wooden Door Bump Into", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Flounder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Flounder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Ouch", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Ouch", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Trip", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Trip", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Slip", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Slip", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Stumble", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Stumble", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Search", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Search", 1.0f },
 
 };
 

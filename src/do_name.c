@@ -594,6 +594,7 @@ int gloc;
 
     if (gcount < 2) { /* gcount always includes the hero */
         free((genericptr_t) garr);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot %s %s.",
             iflags.getloc_filter == GFILTER_VIEW ? "see" : "detect",
             gloc_descr[gloc][0]);
@@ -1274,6 +1275,7 @@ do_mname()
         if (u.usteed && canspotmon(u.usteed)) {
             mtmp = u.usteed;
         } else {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This %s creature is called %s and cannot be renamed.",
                   beautiful(), plname);
             return;

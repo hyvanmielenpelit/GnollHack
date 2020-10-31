@@ -121,15 +121,19 @@ picklock(VOID_ARGS)
         switch ((xlock.door->doormask & D_MASK)) 
         {
         case D_NODOOR:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This doorway has no door.");
             return ((xlock.usedtime = 0));
         case D_ISOPEN:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot lock an open door.");
             return ((xlock.usedtime = 0));
         case D_BROKEN:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This door is broken.");
             return ((xlock.usedtime = 0));
         case D_PORTCULLIS:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot lock a portcullis.");
             return ((xlock.usedtime = 0));
         }
@@ -664,15 +668,19 @@ boolean is_auto;
         switch ((door->doormask & D_MASK)) 
         {
         case D_NODOOR:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This doorway has no door.");
             return PICKLOCK_LEARNED_SOMETHING;
         case D_ISOPEN:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot lock an open door.");
             return PICKLOCK_LEARNED_SOMETHING;
         case D_BROKEN:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("This door is broken.");
             return PICKLOCK_LEARNED_SOMETHING;
         case D_PORTCULLIS:
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("There is no lock on the portcullis.");
             return PICKLOCK_LEARNED_SOMETHING;
         default:

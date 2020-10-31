@@ -2401,7 +2401,7 @@ create_level_sound_sources()
             double volume = 0.0f;
             enum soundsource_ambient_subtypes subtype = SOUNDSOURCE_AMBIENT_GENERAL;
             enum ghsound_types sound_type = get_location_ambient_sound_type(x, y, &volume, &subtype);
-            if (sound_type != GHSOUND_NONE)
+            if (sound_type != GHSOUND_NONE && sound_type < MAX_GHSOUNDS)
             {
                 anything id;
                 coord c;
@@ -2422,7 +2422,7 @@ xchar x, y;
     double volume = 0.0;
     enum soundsource_ambient_subtypes subtype = SOUNDSOURCE_AMBIENT_GENERAL;
     enum ghsound_types sound_type = get_location_ambient_sound_type(x, y, &volume, &subtype);
-    if (sound_type != GHSOUND_NONE)
+    if (sound_type != GHSOUND_NONE && sound_type < MAX_GHSOUNDS)
     {
         anything id;
         coord c;

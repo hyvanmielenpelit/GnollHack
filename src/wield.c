@@ -229,7 +229,8 @@ long mask;
     } 
 	else if (wepinotherhand && bimanual(wep)) 
 	{
-        You("cannot wield a two-handed %s while %s.",
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("cannot wield a two-handed %s while %s.",
             is_sword(wep) ? "sword" : wep->otyp == BATTLE_AXE ? "axe"
                                                               : "weapon", is_shield(wepinotherhand) ? "wearing a shield" : "wielding a weapon in the other hand");
     } 
@@ -428,6 +429,7 @@ dowield()
 		else if (uwep && !uarms) {
 			if (bimanual(uwep))
 			{
+				play_sfx_sound(SFX_GENERAL_CANNOT);
 				You("cannot wield another weapon while wielding a two-handed weapon.");
 				return 0;
 			}
@@ -436,6 +438,7 @@ dowield()
 		else if (uarms && !uwep) {
 			if (bimanual(uarms))
 			{
+				play_sfx_sound(SFX_GENERAL_CANNOT);
 				You("cannot wield another weapon while wielding a two-handed weapon.");
 				return 0;
 			}
@@ -487,6 +490,7 @@ dowield()
 		else if (wep == uquiver)
 			setuqwep((struct obj*) 0);
 		else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
+			play_sfx_sound(SFX_GENERAL_CANNOT);
 			You("cannot wield that!");
 			return 0;
 		}
@@ -535,6 +539,7 @@ dowield()
 		else if (wep == uquiver)
 			setuqwep((struct obj *) 0);
 		else if (wep->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
+			play_sfx_sound(SFX_GENERAL_CANNOT);
 			You("cannot wield that!");
 			return 0;
 		}
@@ -597,6 +602,7 @@ long mask;
 	multi = 0;
 	if (cantwield(youmonst.data)) 
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		pline("Don't be ridiculous!");
 		return 0;
 	}
@@ -609,12 +615,14 @@ long mask;
 
 	if (wep && bimanual(wep) && altswapwep)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot ready a two-handed weapon while having something already readied for the other %s.", body_part(HAND));
 		return 0;
 	}
 
 	if (wep && altwep && swapwep && bimanual(swapwep))
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot swap to a two-handed weapon while holding something in the other %s.", body_part(HAND));
 		return 0;
 	}
@@ -955,10 +963,12 @@ dowieldquiver()
         finish_splitting = TRUE;
     } else if (newquiver == uquiver) {
     already_quivered:
-        pline("That ammunition is already readied!");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		pline("That ammunition is already readied!");
         return 0;
     } else if (newquiver->owornmask & (W_ARMOR | W_ACCESSORY | W_SADDLE)) {
-        You("cannot ready that!");
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("cannot ready that!");
         return 0;
     }
 	else if (newquiver == uwep && uwep) {
@@ -1223,7 +1233,8 @@ const char *verb; /* "rub",&c */
                 hand = makeplural(hand);
             if (strstri(what, "pair of ") != 0)
                 more_than_1 = FALSE;
-            pline(
+			play_sfx_sound(SFX_GENERAL_CANNOT);
+			pline(
                "Since your weapon is welded to your %s, you cannot %s %s %s.",
                   hand, verb, more_than_1 ? "those" : "that", xname(obj));
         }
@@ -1244,7 +1255,8 @@ const char *verb; /* "rub",&c */
     /* check shield */
     if (uarms && bimanual(obj)) 
 	{
-        You("cannot %s a two-handed %s while %s.", verb,
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("cannot %s a two-handed %s while %s.", verb,
             (obj->oclass == WEAPON_CLASS) ? "weapon" : "tool", 
 			is_shield(obj) ? "wearing a shield" : is_weapon(obj) ? "wielding a weapon in the other hand" : "wielding an item in the other hand");
         return FALSE;

@@ -5542,6 +5542,8 @@ boolean force;
     boolean confused = (Confusion || Hallucination);
     int ch = 0;
 
+    play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
+
     if ((otmp->otrapped
         && (force || (!confused
             && rn2(MAXULEV + 1 - u.ulevel) < (MAXULEV / 3))))

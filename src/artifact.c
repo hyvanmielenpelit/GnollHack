@@ -2396,6 +2396,7 @@ doinvoke()
 
 	if (obj->repowerleft > 0)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot invoke %s before its has repowered itself.", the(cxname(obj)));
 		return 0;
 	}

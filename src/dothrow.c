@@ -82,6 +82,7 @@ boolean firing;
         return 1;
     }
     if (!u.dx && !u.dy && !u.dz) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot %s an object at yourself.", firing ? "fire" : "throw");
         return 0;
     }
@@ -854,6 +855,7 @@ dofire()
 
     if (obj && !ammo_and_launcher(obj, uwep))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot fire %s with %s.", an(cxname_singular(obj)), an(cxname_singular(uwep)));
         return 0;
     }
@@ -1066,6 +1068,8 @@ int x, y;
 
             if (odoor_diag)
                 You("hit the door edge!");
+
+            play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
             pline("Ouch!");
             if (IS_TREE(levl[x][y].typ))
                 s = "bumping into a tree";
@@ -1081,6 +1085,10 @@ int x, y;
 
         if (levl[x][y].typ == IRONBARS)
         {
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BUMP_INTO);
+            if (iflags.using_gui_sounds)
+                delay_output_milliseconds(2 * ANIMATION_FRAME_INTERVAL);
+            play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
             You("crash into some iron bars.  Ouch!");
             dmg = rnd(2 + *range);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "crashing into iron bars",
@@ -1091,6 +1099,10 @@ int x, y;
 
         if ((obj = sobj_at(BOULDER, x, y)) != 0) 
         {
+            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BUMP_INTO);
+            if (iflags.using_gui_sounds)
+                delay_output_milliseconds(2 * ANIMATION_FRAME_INTERVAL);
+            play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
             You("bump into a %s.  Ouch!", xname(obj));
             dmg = rnd(2 + *range);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "bumping into a boulder", KILLED_BY);
@@ -1101,6 +1113,7 @@ int x, y;
         if (!may_pass) 
         {
             /* did we hit a no-dig non-wall position? */
+            play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BUMP_INTO);
             You("smack into something!");
             dmg = rnd(2 + *range);
             losehp(adjust_damage(dmg, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "touching the edge of the universe",
@@ -1151,6 +1164,7 @@ int x, y;
             mnam = !strcmp(pronoun, "it") ? "something" : "someone";
         }
 
+        play_simple_monster_sound(mon, MONSTER_SOUND_TYPE_BUMP_INTO);
         if (!glyph_is_monster(glyph) && !glyph_is_invisible(glyph))
             You("find %s by bumping into %s.", mnam, pronoun);
         else
@@ -2813,6 +2827,7 @@ struct obj *obj;
     register struct monst *mon;
 
     if (!u.dx && !u.dy && !u.dz) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot throw gold at yourself.");
         return 0;
     }

@@ -2125,17 +2125,21 @@ slip_or_trip()
         if (on_foot) {
             switch (rn2(4)) {
             case 1:
+                play_simple_player_sound(MONSTER_SOUND_TYPE_TRIP);
                 You("trip over your own %s.",
                     Hallucination ? "elbow" : makeplural(body_part(FOOT)));
                 break;
             case 2:
+                play_simple_player_sound(MONSTER_SOUND_TYPE_SLIP);
                 You("slip %s.",
                     Hallucination ? "on a banana peel" : "and nearly fall");
                 break;
             case 3:
+                play_simple_player_sound(MONSTER_SOUND_TYPE_FLOUNDER);
                 You("flounder.");
                 break;
             default:
+                play_simple_player_sound(MONSTER_SOUND_TYPE_STUMBLE);
                 You("stumble.");
                 break;
             }

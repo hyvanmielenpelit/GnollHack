@@ -1443,8 +1443,11 @@ boolean noisy;
 
     if (welded(uwep, &youmonst) && bimanual(uwep) && (is_suit(otmp) || is_robe(otmp) || is_shirt(otmp))) {
         if (noisy)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot do that while holding your %s.",
                 is_sword(uwep) ? c_sword : c_weapon);
+        }
         return 0;
     }
 
@@ -1480,10 +1483,13 @@ boolean noisy;
 			err++;
         } else if (uwep && bimanual(uwep)) {
             if (noisy)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot wear a shield while wielding a two-handed %s.",
                     is_sword(uwep) ? c_sword : (uwep->otyp == BATTLE_AXE)
-                                                   ? c_axe
-                                                   : c_weapon);
+                    ? c_axe
+                    : c_weapon);
+            }
             err++;
         } else
             *mask = W_ARMS;
@@ -1530,8 +1536,11 @@ boolean noisy;
             err++;
         } else if (welded(uwep, &youmonst)) {
             if (noisy)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot wear gloves over your %s.",
                     is_sword(uwep) ? c_sword : c_weapon);
+            }
             err++;
         } else
             *mask = W_ARMG;
@@ -1582,16 +1591,25 @@ boolean noisy;
             *mask = W_ARMC;
     } else if (is_suit(otmp)) {
 		if (uarmc) {
-			if (noisy)
-				You("cannot wear armor over a %s.", cloak_simple_name(uarmc));
+            if (noisy)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                You("cannot wear armor over a %s.", cloak_simple_name(uarmc));
+            }
 			err++;
 		} else if (uarmo) {
             if (noisy)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot wear armor over a %s.", robe_simple_name(uarmo));
+            }
             err++;
         } else if (uarm) {
             if (noisy)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 already_wearing("some armor");
+            }
             err++;
         } else
             *mask = W_ARM;
@@ -1652,10 +1670,12 @@ struct obj *obj;
             int res = 0;
 
             if (nolimbs(youmonst.data) || nohands(youmonst.data)) {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot make the ring stick to your body.");
                 return 0;
             }
             if (uleft && uright) {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 There("are no more %s%s to fill.",
                       humanoid(youmonst.data) ? "ring-" : "",
                       makeplural(body_part(FINGER)));
@@ -1688,6 +1708,7 @@ struct obj *obj;
             if (uarmg && uarmg->cursed) {
                 res = !uarmg->bknown;
                 uarmg->bknown = 1;
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot remove your gloves to put on the ring.");
                 return res; /* uses move iff we learned gloves are cursed */
             }
@@ -1699,6 +1720,7 @@ struct obj *obj;
                     /* welded will set bknown */
                     if (bimanual(uwep))
                         hand = makeplural(hand);
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
                     You("cannot free your weapon %s to put on the ring.",
                         hand);
                     return res; /* uses move iff we learned weapon is cursed */
@@ -1722,7 +1744,8 @@ struct obj *obj;
 				return 0;
 			}
 			if (umisc && umisc2 && umisc3 && umisc4 && umisc5) {
-				You("cannot wear more than five miscellanous items.");
+                play_sfx_sound(SFX_GENERAL_CANNOT);
+                You("cannot wear more than five miscellanous items.");
 				return 0;
 			}
 		} else if (eyewear) {
@@ -2186,6 +2209,7 @@ register struct obj *otmp;
             why = uarmg;
         }
         if (why) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot %s to remove the ring.", buf);
             why->bknown = TRUE;
             return 0;
@@ -2236,6 +2260,7 @@ register struct obj *otmp;
             why = uwep;
         }
         if (why) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot %s to take off %s.", buf, the(xname(otmp)));
             why->bknown = TRUE;
             return 0;

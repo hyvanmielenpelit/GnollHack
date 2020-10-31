@@ -1543,6 +1543,7 @@ dosteedbreathe()
     
     if (!u.dx && !u.dy && !u.dz)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Your("steed cannot breathe at you!");
         return 0;
     }
@@ -1663,6 +1664,7 @@ dospinweb()
         return 0;
     }
     if (u.utrap) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot spin webs while stuck in a trap.");
         return 0;
     }
@@ -2023,7 +2025,8 @@ doeyestalk()
 		return 0;
 	}
 	else if (Cancelled) {
-		You("are cancelled and cannot use your eyestalks!");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("are cancelled and cannot use your eyestalks!");
 		return 0;
 	}
 	else if (Hallucination) {

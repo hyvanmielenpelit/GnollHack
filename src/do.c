@@ -4034,7 +4034,8 @@ const char *word;
                implicitly forced to be 1; replicate its kludge... */
             if (!strcmp(word, "throw") && obj->quan > 1L)
                 obj->corpsenm = 1;
-            pline("For some reason, you cannot %s%s %s%s!", word,
+			play_sfx_sound(SFX_GENERAL_CANNOT);
+			pline("For some reason, you cannot %s%s %s%s!", word,
                   obj->corpsenm ? " any of" : "", is_graystone(obj) ? "the stone" : "the item", plur(obj->quan));
         }
         obj->corpsenm = 0; /* reset */
@@ -4042,13 +4043,19 @@ const char *word;
         return FALSE;
     }
     if (obj->otyp == LEASH && obj->leashmon != 0) {
-        if (*word)
-            pline_The("leash is tied around your %s.", body_part(HAND));
+		if (*word)
+		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
+			pline_The("leash is tied around your %s.", body_part(HAND));
+		}
         return FALSE;
     }
     if (obj->owornmask & W_SADDLE) {
-        if (*word)
-            You("cannot %s %s you are sitting on.", word, something);
+		if (*word)
+		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
+			You("cannot %s %s you are sitting on.", word, something);
+		}
         return FALSE;
     }
     return TRUE;
@@ -4557,7 +4564,8 @@ dodown()
 
     if (u.ustuck)
 	{
-        You("are %s, and cannot go down.",
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("are %s, and cannot go down.",
             !u.uswallow ? "being held" : is_animal(u.ustuck->data)
                                              ? "swallowed"
                                              : "engulfed");
@@ -4654,7 +4662,8 @@ doup()
         return 0;
     }
     if (u.ustuck) {
-        You("are %s, and cannot go up.",
+		play_sfx_sound(SFX_GENERAL_CANNOT);
+		You("are %s, and cannot go up.",
             !u.uswallow ? "being held" : is_animal(u.ustuck->data)
                                              ? "swallowed"
                                              : "engulfed");

@@ -1876,31 +1876,16 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     source_rt.top = at_y + src_y;
                                     source_rt.bottom = source_rt.top + (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP ? TILE_Y : TILE_Y / 2);
 
-                                    int rotated_width = source_rt.bottom - source_rt.top;
-                                    int rotated_height = source_rt.right - source_rt.left;
-
-                                    //HDC hDCrotate = CreateCompatibleDC(data->backBufferDC);
-                                    //HBITMAP hRotateBitmap = CreateCompatibleBitmap(hDCrotate, rotated_width, rotated_height);
-                                    //HGDIOBJ oldbmp = SelectObject(hDCrotate, hRotateBitmap);
-                                    POINT destPoints[3];
-
-                                    //Mapped point for source 0, 0
-                                    destPoints[0].x = 0;
-                                    destPoints[0].y = rotated_height;
-
-                                    //Mapped point for source TILE_X, 0
-                                    destPoints[1].x = rotated_width;
-                                    destPoints[1].y = rotated_height;
-
-                                    //Mapped point for source 0, TILE_Y
-                                    destPoints[2].x = 0;
-                                    destPoints[2].y = 0;
+                                    int original_width = source_rt.right - source_rt.left;
+                                    int original_height = source_rt.bottom - source_rt.top;
+                                    int rotated_width = original_height;
+                                    int rotated_height = original_width;
 
                                     HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
 
                                     unsigned char* lpBitmapBits;
-                                    LONG width = rotated_height;
-                                    LONG height = rotated_width;
+                                    LONG width = (LONG)original_width;
+                                    LONG height = (LONG)original_height;
 
                                     BITMAPINFO bi;
                                     ZeroMemory(&bi, sizeof(BITMAPINFO));

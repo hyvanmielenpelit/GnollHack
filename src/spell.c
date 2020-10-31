@@ -887,6 +887,7 @@ int spell;
 		return TRUE;
 	}
 	else if (!(objects[spellbookid].oc_spell_flags & S1_NO_SOMATIC_COMPONENT) && u.uburied) {
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot cast a spell with a somatic component while being buried!");
 		return TRUE;
 	}
@@ -1154,6 +1155,7 @@ int spell;
 
 	if (spellknow(spell) <= 0)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot recall this spell anymore.");
 		return 0;
 	}
@@ -1638,11 +1640,13 @@ boolean atme;
 	}
 
 	if (spellamount(spell) == 0) {
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("do not have the spell's material components prepared.");
 		return 0; /* no time elapses */
 	}
 
 	if (spellcooldownleft(spell) > 0) {
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot cast the spell before the cooldown has expired.");
 		return 0; /* no time elapses */
 	}
@@ -1650,6 +1654,7 @@ boolean atme;
 	//This might happen with amnesia etc., the spells no longer "age"
 	if (spellknow(spell) <= 0)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot recall this spell anymore.");
 		return 0;
 	}
@@ -4153,18 +4158,21 @@ int spell;
 	//This might happen with amnesia etc., the spells no longer "age"
 	if (spellknow(spell) <= 0)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("cannot recall this spell or its material components anymore.");
 		return 0;
 	}
 
 	if (!spellmatcomp(spell))
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		pline("That spell does not require material components.");
 		return 0;
 	}
 
 	if (!invent)
 	{
+		play_sfx_sound(SFX_GENERAL_CANNOT);
 		You("have nothing to prepare spells with.");
 		return 0;
 	}

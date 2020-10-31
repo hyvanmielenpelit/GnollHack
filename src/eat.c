@@ -1814,6 +1814,7 @@ struct obj *otmp;
     } 
 	else if (!can_operate_objects(youmonst.data)) 
 	{ /* nohands || verysmall */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot handle the tin properly to open it.");
         return;
     } 

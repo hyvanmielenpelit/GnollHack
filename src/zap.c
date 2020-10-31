@@ -4842,12 +4842,14 @@ dozap()
 
 	if (obj->cooldownleft > 0)
 	{
-		You("cannot zap %s before its cooldown has expired.", the(cxname(obj)));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("cannot zap %s before its cooldown has expired.", the(cxname(obj)));
 		return 0;
 	}
 	else if (Cancelled)
 	{
-		Your("magic is not flowing properly to allow for using a wand.");
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        Your("magic is not flowing properly to allow for using a wand.");
 		return 0;
 	}
 

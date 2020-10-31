@@ -293,6 +293,7 @@ boolean force;      /* Quietly force this animal */
     otmp = which_armor(mtmp, W_SADDLE);
     if (!otmp)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s is not saddled.", Monnam(mtmp));
         return (FALSE);
     }
@@ -307,6 +308,7 @@ boolean force;      /* Quietly force this animal */
     }
     if (!is_tame(mtmp) || mtmp->isminion)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("I think %s would mind.", mon_nam(mtmp));
         return (FALSE);
     }
@@ -315,8 +317,11 @@ boolean force;      /* Quietly force this animal */
         struct trap *t = t_at(mtmp->mx, mtmp->my);
 
         if (t)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You_cant("mount %s while %s's trapped in %s.", mon_nam(mtmp),
-                 mhe(mtmp), an(get_trap_explanation(t)));
+                mhe(mtmp), an(get_trap_explanation(t)));
+        }
 
         return (FALSE);
     }
@@ -341,12 +346,14 @@ boolean force;      /* Quietly force this animal */
     }
     if (!force && Underwater && !is_swimmer(ptr))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("ride that creature while under %s.",
                  hliquid("water"));
         return (FALSE);
     }
     if (!can_saddle(mtmp) || !can_ride(mtmp))
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You_cant("ride such a creature.");
         return FALSE;
     }
@@ -355,6 +362,7 @@ boolean force;      /* Quietly force this animal */
     if (!force && !(is_flying(mtmp) || is_levitating(mtmp)) && Levitation
         && !Lev_at_will)
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot reach %s.", mon_nam(mtmp));
         return (FALSE);
     }

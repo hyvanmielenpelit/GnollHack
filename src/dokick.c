@@ -1077,11 +1077,13 @@ dokick() {
     kickobjnam[0] = '\0';
     if (nolimbs(youmonst.data) || slithy(youmonst.data)) 
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("have no legs to kick with.");
         no_kick = TRUE;
     }
 	else if (verysmall(youmonst.data))
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("are too small to do any kicking.");
         no_kick = TRUE;
     } 
@@ -1106,6 +1108,7 @@ dokick() {
 
         if (wl == BOTH_SIDES)
             bp = makeplural(bp);
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Your("%s%s %s in no shape for kicking.",
              (wl == LEFT_SIDE) ? "left " : (wl == RIGHT_SIDE) ? "right " : "",
              bp, (wl == BOTH_SIDES) ? "are" : "is");
@@ -1113,11 +1116,13 @@ dokick() {
     } 
 	else if (near_capacity() > SLT_ENCUMBER)
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Your("load is too heavy to balance yourself for a kick.");
         no_kick = TRUE;
     }
 	else if (youmonst.data->mlet == S_LIZARD) 
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Your("legs cannot kick effectively.");
         no_kick = TRUE;
     } 

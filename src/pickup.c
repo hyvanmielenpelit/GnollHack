@@ -1408,6 +1408,7 @@ boolean telekinesis;
     int result, old_wt, new_wt, prev_encumbr, next_encumbr;
 
     if (obj->otyp == BOULDER && Sokoban) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot get your %s around this %s.", body_part(HAND),
             xname(obj));
         return -1;
@@ -1711,13 +1712,16 @@ boolean looting; /* loot vs tip */
     } else if ((is_pool(x, y) && (looting || !Underwater)) || is_lava(x, y)) {
         /* at present, can't loot in water even when Underwater;
            can tip underwater, but not when over--or stuck in--lava */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot %s things that are deep in the %s.", verb,
             hliquid(is_lava(x, y) ? "lava" : "water"));
         return FALSE;
     } else if (nolimbs(youmonst.data)) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Without limbs, you cannot %s anything.", verb);
         return FALSE;
     } else if (looting && !freehand()) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("Without a free %s, you cannot loot anything.",
               body_part(HAND));
         return FALSE;
@@ -2240,22 +2244,26 @@ register struct obj *obj;
     } 
 	else if (obj == uball || obj == uchain) 
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("must be kidding.");
         return 0;
     }
 	else if (obj == current_container)
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("That would be an interesting topological exercise.");
         return 0;
     }
 	else if (obj->owornmask & (W_ARMOR | W_ACCESSORY)) 
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         Norep("You cannot %s %s you are wearing.",
               Icebox ? "refrigerate" : "stash", something);
         return 0;
     }
 	else if ((objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED) && obj->cursed) 
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         obj->bknown = 1;
         pline("%s%s won't leave your person.", is_graystone(obj) ? "The stone" : "The item", plur(obj->quan));
         return 0;
@@ -2265,6 +2273,7 @@ register struct obj *obj;
         || ((objects[current_container->otyp].oc_flags4 & O4_CONTAINER_ACCEPTS_ONLY_WEAPONS) && !(obj->oclass == WEAPON_CLASS))
         )
     {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s is not made for holding %s.", The(cxname(current_container)), obj->quan > 1 ? cxname(obj) : makeplural(cxname(obj)));
         return 0;
     }
@@ -2277,11 +2286,13 @@ register struct obj *obj;
          * steal them.  It also becomes a pain to check to see if someone
          * has the Amulet.  Ditto for the Candelabrum, the Bell and the Book.
          */
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s cannot be confined in such trappings.", The(xname(obj)));
         return 0;
     }
 	else if (obj->otyp == LEASH && obj->leashmon != 0)
 	{
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         pline("%s attached to your pet.", Tobjnam(obj, "are"));
         return 0;
     }

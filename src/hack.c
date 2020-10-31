@@ -846,7 +846,10 @@ int mode;
             if (!(Passes_walls || passes_bars(youmonst.data)))
             {
                 if (mode == DO_MOVE && iflags.mention_walls)
+                {
+                    play_sfx_sound(SFX_GENERAL_CANNOT);
                     You("cannot pass through the bars.");
+                }
                 return FALSE;
             }
         }
@@ -950,6 +953,10 @@ int mode;
                             }
                             else
                             {
+                                play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BUMP_INTO);
+                                if (iflags.using_gui_sounds)
+                                    delay_output_milliseconds(2 * ANIMATION_FRAME_INTERVAL);
+                                play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
                                 pline("Ouch!  You bump into a door.");
                                 exercise(A_DEX, FALSE);
                             }
@@ -991,15 +998,24 @@ int mode;
         {
         case 3:
             if (mode == DO_MOVE)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot pass that way.");
+            }
             return FALSE;
         case 2:
             if (mode == DO_MOVE)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("are carrying too much to get through.");
+            }
             return FALSE;
         case 1:
             if (mode == DO_MOVE)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 Your("body is too large to fit through.");
+            }
             return FALSE;
         default:
             break; /* can squeeze through */
@@ -1009,7 +1025,10 @@ int mode;
     {
         /* consecutive long worm segments are at <ux,y> and <x,uy> */
         if (mode == DO_MOVE)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("%s is in your way.", Monnam(m_at(ux, y)));
+        }
         return FALSE;
     }
 
@@ -3030,6 +3049,7 @@ lookaround()
     /* Grid bugs stop if trying to move diagonal, even if blind.  Maybe */
     /* they polymorphed while in the middle of a long move. */
     if (NODIAG(u.umonnum) && u.dx && u.dy) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot move diagonally.");
         nomul(0);
         return;

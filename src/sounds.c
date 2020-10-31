@@ -3333,10 +3333,12 @@ struct monst* mtmp;
 			{
 				if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
 				{
+					play_sfx_sound(SFX_GENERAL_CANNOT);
 					You("cannot give %s to %s. You are wearing it.", doname(otmp), mon_nam(mtmp));
 				}
 				else if (carryamt == 0 || carryamt < otmp->quan)
 				{
+					play_sfx_sound(SFX_GENERAL_CANNOT);
 					pline("%s cannot carry %s.", Monnam(mtmp), yname(otmp));
 				}
 				else
@@ -3444,6 +3446,7 @@ struct monst* mtmp;
 			{
 				if (otmp->owornmask & (W_ARMOR | W_ACCESSORY))
 				{
+					play_sfx_sound(SFX_GENERAL_CANNOT);
 					You("cannot pass %s over to %s. You are wearing it.", an(singular(otmp, cxname)), mon_nam(mtmp));
 				}
 				else

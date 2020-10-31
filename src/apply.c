@@ -2097,19 +2097,31 @@ boolean showmsg;
          * horse.  After all, what shape is the knight piece in chess?
          */
         if (showmsg)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("Illegal move!");
+        }
         return FALSE;
     } else if (distu(x, y) > (magic ? 6 + magic * 3 : 9)) {
         if (showmsg)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("Too far!");
+        }
         return FALSE;
     } else if (!isok(x, y)) {
         if (showmsg)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot jump there!");
+        }
         return FALSE;
     } else if (!cansee(x, y)) {
         if (showmsg)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot see where to land!");
+        }
         return FALSE;
     } else {
         coord uc, tc;
@@ -2141,14 +2153,20 @@ boolean showmsg;
             && (traj == jDiag
                 || ((traj & jHorz) != 0) == (lev->horizontal != 0))) {
             if (showmsg)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_cant("jump diagonally out of a doorway.");
+            }
             return FALSE;
         }
         uc.x = u.ux, uc.y = u.uy;
         tc.x = x, tc.y = y; /* target */
         if (!walk_path(&uc, &tc, check_jump, (genericptr_t) &traj)) {
             if (showmsg)
+            {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 There("is an obstacle preventing that jump.");
+            }
             return FALSE;
         }
     }
@@ -2328,6 +2346,7 @@ int magic; /* 0=Physical, otherwise skill level */
             {
                 long side = rn2(3) ? LEFT_SIDE : RIGHT_SIDE;
 
+                play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
                 You("rip yourself free of the bear trap!  Ouch!");
                 losehp(adjust_damage(rnd(10), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "jumping out of a bear trap",
                        KILLED_BY);
@@ -2416,6 +2435,7 @@ struct obj *obj;
     if (!(corpse = floorfood("tin", 2)))
         return;
     if (corpse->oeaten) {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
         You("cannot tin %s which is partly eaten.", something);
         return;
     }
@@ -2843,27 +2863,39 @@ boolean quietly;
 
     if (carried(obj) && u.uswallow) {
         if (!quietly)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("don't have enough room in here.");
+        }
         return FALSE;
     }
     x = cc ? cc->x : u.ux;
     y = cc ? cc->y : u.uy;
     if (!isok(x, y)) {
         if (!quietly)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot put the figurine there.");
+        }
         return FALSE;
     }
     if (IS_ROCK(levl[x][y].typ)
         && !(passes_walls(&mons[obj->corpsenm]) && may_passwall(x, y))) {
         if (!quietly)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot place a figurine in %s!",
                 IS_TREE(levl[x][y].typ) ? "a tree" : "solid rock");
+        }
         return FALSE;
     }
     if (sobj_at(BOULDER, x, y) && !passes_walls(&mons[obj->corpsenm])
         && !throws_rocks(&mons[obj->corpsenm])) {
         if (!quietly)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             You("cannot fit the figurine on the boulder.");
+        }
         return FALSE;
     }
     return TRUE;
@@ -3003,7 +3035,8 @@ struct obj* obj;
 
 		if (otmp == obj)
 		{
-			You("cannot use the wand on itself!");
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You("cannot use the wand on itself!");
 			return 0;
 		}
 
@@ -4892,7 +4925,8 @@ doapply()
 
 	if (obj->cooldownleft > 0)
 	{
-		You("cannot apply %s before its cooldown has expired.", the(cxname(obj)));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("cannot apply %s before its cooldown has expired.", the(cxname(obj)));
 		return 0;
 	}
 

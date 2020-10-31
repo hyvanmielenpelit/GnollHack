@@ -195,7 +195,8 @@ doread()
 	//Apply only to reading spellbooks, such as Book of the Dead
 	if (scroll->oclass == SPBOOK_CLASS && scroll->cooldownleft > 0)
 	{
-		You("cannot read %s before its cooldown has expired.", the(cxname(scroll)));
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You("cannot read %s before its cooldown has expired.", the(cxname(scroll)));
 		return 0;
 	}
 
@@ -371,6 +372,7 @@ doread()
         else if (!scroll->dknown)
             what = "formula on the scroll";
         if (what) {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
             pline("Being blind, you cannot read the %s.", what);
             return 0;
         }

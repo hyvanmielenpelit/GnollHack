@@ -89,6 +89,7 @@ dosit()
                 u.utrap++;
             } else if (u.utraptype == TT_PIT) {
                 if (trap && trap->ttyp == SPIKED_PIT) {
+                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
                     You("sit down on a spike.  Ouch!");
                     losehp(adjust_damage(rn2(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
                            "sitting on an iron spike", KILLED_BY);

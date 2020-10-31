@@ -1023,6 +1023,7 @@ doengrave()
                      */
                     eow = TRUE;
             } else if (type == DUST || type == MARK || type == ENGR_BLOOD) {
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You("cannot wipe out the message that is %s the %s here.",
                     oep->engr_type == BURN
                         ? (is_ice(u.ux, u.uy) ? "melted into" : "burned into")

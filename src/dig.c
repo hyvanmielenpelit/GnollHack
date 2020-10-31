@@ -309,8 +309,11 @@ dig(VOID_ARGS)
                     pline("%s and %s %s!", Yobjnam2(wep, "bounce"),
                           otense(wep, "hit"), mon_nam(u.usteed));
                 else
+                {
+                    play_simple_player_sound(MONSTER_SOUND_TYPE_OUCH);
                     pline("Ouch!  %s and %s you!", Yobjnam2(wep, "bounce"),
-                          otense(wep, "hit"));
+                        otense(wep, "hit"));
+                }
                 set_wounded_legs(RIGHT_SIDE, 5 + rnd(5));
             }
             break;
