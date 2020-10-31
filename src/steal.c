@@ -132,7 +132,7 @@ register struct monst *mtmp;
         if (!ygold || !rn2(5)) {
             if (!tele_restrict(mtmp))
             {
-                (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+                (void)rloc2(mtmp, TRUE, TRUE);
             }
             monflee(mtmp, 0, FALSE, FALSE);
         }
@@ -150,7 +150,7 @@ register struct monst *mtmp;
         Your("purse feels lighter.");
         if (!tele_restrict(mtmp))
         {
-            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+            (void)rloc2(mtmp, TRUE, TRUE);
         }
         monflee(mtmp, 0, FALSE, FALSE);
         context.botl = 1;
@@ -185,7 +185,7 @@ stealarm(VOID_ARGS)
                     monflee(mtmp, 0, FALSE, FALSE);
                     if (!tele_restrict(mtmp))
                     {
-                        (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+                        (void)rloc2(mtmp, TRUE, TRUE);
                     }
                     break;
                 }
@@ -645,7 +645,7 @@ struct monst *mtmp;
         pline("%s steals %s!", Monnam(mtmp), buf);
         if (has_teleportation(mtmp) && !tele_restrict(mtmp))
         {
-            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+            (void)rloc2(mtmp, TRUE, TRUE);
         }
     }
 }

@@ -1637,21 +1637,22 @@ boolean suppress_impossible;
     boolean res = FALSE;
     boolean spef1ok = FALSE;
     boolean spef2ok = FALSE;
-    if (isok(mtmp->mx, mtmp->my))
+    if (isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
     {
         spef1ok = TRUE;
-        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
         force_redraw_at(mtmp->mx, mtmp->my);
         flush_screen(0);
     }
     res = rloc(mtmp, suppress_impossible);
-    if (isok(mtmp->mx, mtmp->my))
+    if (isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
     {
         spef2ok = TRUE;
         play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(1);
     }
     if(spef1ok)
@@ -1684,7 +1685,7 @@ register int x, y;
 
     boolean spef1ok = FALSE;
     boolean spef2ok = FALSE;
-    if (isok(mtmp->mx, mtmp->my))
+    if (isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
     {
         spef1ok = TRUE;
         play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
@@ -1695,9 +1696,10 @@ register int x, y;
         flush_screen(0);
     }
     rloc_to(mtmp, x, y);
-    if (isok(mtmp->mx, mtmp->my))
+    if (isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
     {
         spef2ok = TRUE;
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);
         special_effect_wait_until_action(1);
     }
@@ -1718,7 +1720,7 @@ struct monst *mtmp;
         rloc_to(mtmp, c.x, c.y);
         return;
     }
-    (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+    (void)rloc2(mtmp, TRUE, TRUE);
 }
 
 boolean
@@ -1757,7 +1759,7 @@ int in_sight;
         if (trap->once)
             mvault_tele(mtmp);
         else
-            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+            (void)rloc2(mtmp, TRUE, TRUE);
 
         if (in_sight) {
             play_special_effect_at(SPECIAL_EFFECT_TELEPORT_IN, 1, mtmp->mx, mtmp->my, FALSE);

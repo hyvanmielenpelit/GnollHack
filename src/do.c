@@ -5616,7 +5616,7 @@ long timeout UNUSED;
         boolean notice_it = canseemon(mtmp); /* before rloc() */
         char *monname = Monnam(mtmp);
 
-        if (rloc2(mtmp, TRUE, canspotmon(mtmp))) {
+        if (rloc2(mtmp, TRUE, TRUE)) {
 			if (notice_it && !canseemon(mtmp))
                 pline("%s vanishes.", monname);
             else if (!notice_it && canseemon(mtmp))

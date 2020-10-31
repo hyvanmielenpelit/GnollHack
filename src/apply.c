@@ -1232,7 +1232,7 @@ struct obj *obj;
         (void) mpickobj(mtmp, obj);
         if (!tele_restrict(mtmp))
         {
-            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+            (void)rloc2(mtmp, TRUE, TRUE);
         }
     } else if (!is_unicorn(mtmp->data) && !humanoid(mtmp->data)
                && (!is_invisible(mtmp) || has_see_invisible(mtmp)) && rn2(5)) {

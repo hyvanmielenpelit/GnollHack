@@ -1434,7 +1434,7 @@ register struct obj* omonwep;
             if (vis && wasseen)
                 Strcpy(mdef_Monnam, Monnam(mdef));
             mdef->mstrategy &= ~STRAT_WAITFORU;
-            (void) rloc2(mdef, TRUE, wasseen);
+            (void) rloc2(mdef, TRUE, TRUE);
 
             if (vis && wasseen && !canspotmon(mdef) && mdef != u.usteed)
                 pline("%s suddenly disappears!", mdef_Monnam);
@@ -1633,7 +1633,7 @@ register struct obj* omonwep;
         if (!tele_restrict(magr)) 
         {
             boolean couldspot = canspotmon(magr);
-            (void) rloc2(magr, TRUE, canspotmon(magr));
+            (void) rloc2(magr, TRUE, TRUE);
             if (vis && couldspot && !canspotmon(magr))
                 pline("%s suddenly disappears!", buf);
         }
@@ -1708,7 +1708,7 @@ register struct obj* omonwep;
             {
                 boolean couldspot = canspotmon(magr);
 
-                (void) rloc2(magr, TRUE, couldspot);
+                (void) rloc2(magr, TRUE, TRUE);
                 if (vis && couldspot && !canspotmon(magr))
                     pline("%s suddenly disappears!", buf);
             }

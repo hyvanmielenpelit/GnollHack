@@ -733,7 +733,7 @@ register struct monst *mtmp;
     if (is_fleeing(mtmp) && !rn2(40) && has_teleportation(mtmp) && !mtmp->iswiz
         && !level.flags.noteleport)
 	{
-        (void) rloc2(mtmp, TRUE, canspotmon(mtmp));
+        (void) rloc2(mtmp, TRUE, TRUE);
         return 0;
     }
     if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
@@ -795,7 +795,7 @@ register struct monst *mtmp;
 			{
                 /* "Good hunting, brother" */
                 if (!tele_restrict(mtmp))
-                    (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+                    (void)rloc2(mtmp, TRUE, TRUE);
             }
 			else 
 			{
@@ -1278,10 +1278,10 @@ register int after;
     {
         if (mtmp->mhp < 7 || is_peaceful(mtmp) || rn2(2))
         {
-            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+            (void)rloc2(mtmp, TRUE, TRUE);
         }
         else
-            mnexto2(mtmp, canseemon(mtmp));
+            mnexto2(mtmp, TRUE);
 
         mmoved = 1;
         goto postmov;
@@ -1678,7 +1678,7 @@ register int after;
     {
         if (is_unicorn(ptr) && rn2(2) && !tele_restrict(mtmp)) 
         {
-            (void)rloc2(mtmp, TRUE, canspotmon(mtmp));
+            (void)rloc2(mtmp, TRUE, TRUE);
             return 1;
         }
         if (mtmp->wormno)

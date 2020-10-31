@@ -2566,7 +2566,7 @@ register struct obj *obj;
 
     if (!tele_restrict(mon))
     {
-        (void)rloc2(mon, TRUE, canspotmon(mon));
+        (void)rloc2(mon, TRUE, TRUE);
     }
     return ret;
 }
