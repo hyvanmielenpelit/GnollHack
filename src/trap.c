@@ -5381,7 +5381,12 @@ boolean force;
             return 1;
 
     } /* deal_with_floor_trap */
+
+      
     /* doors can be manipulated even while levitating/unskilled riding */
+    play_simple_player_sound(MONSTER_SOUND_TYPE_SEARCH);
+    if (iflags.using_gui_sounds)
+        delay_output_milliseconds(10 * ANIMATION_FRAME_INTERVAL);
 
     if (!IS_DOOR(levl[x][y].typ)) 
     {
