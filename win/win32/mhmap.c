@@ -1788,56 +1788,58 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     else
                                         continue;
 
-                                    int item_row = cnt / items_per_row;
-                                    int item_xpos = cnt % items_per_row;
-
-                                    if (item_row >= num_shelves)
-                                        break;
-
-                                    dest_y = y_to_first_shelf + item_row * (shelf_height + shelf_border_height);
-                                    dest_x = shelf_start + item_xpos * shelf_item_width;
-
-                                    int source_glyph = autodraws[autodraw].source_glyph;
-                                    int atile = glyph2tile[source_glyph];
-                                    int at_x = TILEBMP_X(atile);
-                                    int at_y = TILEBMP_Y(atile);
-
-                                    RECT source_rt = { 0 };
-                                    source_rt.left = at_x + src_x;
-                                    source_rt.right = source_rt.left + shelf_item_width;
-                                    source_rt.top = at_y + src_y;
-                                    source_rt.bottom = source_rt.top + shelf_height;
-
-                                    RECT target_rt = { 0 };
-
-                                    if (print_first_directly_to_map)
+                                    for (int item_idx = 0; item_idx < contained_obj->quan; item_idx++)
                                     {
-                                        target_rt.left = rect->left + dest_x;
-                                        target_rt.right = rect->left + dest_x + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - source_rt.left));
-                                        target_rt.top = rect->top + dest_y;
-                                        target_rt.bottom = rect->top + dest_y + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - source_rt.top));
+                                        int item_row = cnt / items_per_row;
+                                        int item_xpos = cnt % items_per_row;
 
-                                        (*GetNHApp()->lpfnTransparentBlt)(
-                                            data->backBufferDC, target_rt.left, target_rt.top,
-                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
-                                            source_rt.top, source_rt.right - source_rt.left,
-                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                        if (item_row >= num_shelves)
+                                            break;
+
+                                        dest_y = y_to_first_shelf + item_row * (shelf_height + shelf_border_height);
+                                        dest_x = shelf_start + item_xpos * shelf_item_width;
+
+                                        int source_glyph = autodraws[autodraw].source_glyph;
+                                        int atile = glyph2tile[source_glyph];
+                                        int at_x = TILEBMP_X(atile);
+                                        int at_y = TILEBMP_Y(atile);
+
+                                        RECT source_rt = { 0 };
+                                        source_rt.left = at_x + src_x;
+                                        source_rt.right = source_rt.left + shelf_item_width;
+                                        source_rt.top = at_y + src_y;
+                                        source_rt.bottom = source_rt.top + shelf_height;
+
+                                        RECT target_rt = { 0 };
+
+                                        if (print_first_directly_to_map)
+                                        {
+                                            target_rt.left = rect->left + dest_x;
+                                            target_rt.right = rect->left + dest_x + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - source_rt.left));
+                                            target_rt.top = rect->top + dest_y;
+                                            target_rt.bottom = rect->top + dest_y + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - source_rt.top));
+
+                                            (*GetNHApp()->lpfnTransparentBlt)(
+                                                data->backBufferDC, target_rt.left, target_rt.top,
+                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                source_rt.top, source_rt.right - source_rt.left,
+                                                source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                        }
+                                        else
+                                        {
+                                            target_rt.left = dest_x;
+                                            target_rt.right = dest_x + source_rt.right - source_rt.left;
+                                            target_rt.top = dest_y;
+                                            target_rt.bottom = dest_y + source_rt.bottom - source_rt.top;
+
+                                            (*GetNHApp()->lpfnTransparentBlt)(
+                                                hDCcopy, target_rt.left, target_rt.top,
+                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                                source_rt.top, source_rt.right - source_rt.left,
+                                                source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                        }
+                                        cnt++;
                                     }
-                                    else
-                                    {
-                                        target_rt.left = dest_x;
-                                        target_rt.right = dest_x + source_rt.right - source_rt.left;
-                                        target_rt.top = dest_y;
-                                        target_rt.bottom = dest_y + source_rt.bottom - source_rt.top;
-
-                                        (*GetNHApp()->lpfnTransparentBlt)(
-                                            hDCcopy, target_rt.left, target_rt.top,
-                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
-                                            source_rt.top, source_rt.right - source_rt.left,
-                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
-                                    }
-
-                                    cnt++;
                                 }
                             }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_WEAPON_RACK_CONTENTS && otmp_round)
@@ -1900,7 +1902,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     StretchBlt(hDCMem, 0, 0, width, height,
                                         data->tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
 
-                                    //PlgBlt(hDCrotate, destPoints, data->tileDC, source_rt.left, source_rt.top, source_rt.right - source_rt.left, source_rt.bottom - source_rt.top, NULL, 0, 0);
                                     HDC hDCrotate = CreateCompatibleDC(data->backBufferDC);
 
                                     unsigned char* lpRotatedBitmapBits;
