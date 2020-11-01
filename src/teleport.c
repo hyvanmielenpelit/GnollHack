@@ -1843,7 +1843,8 @@ int in_sight;
                     migrate_typ = MIGR_PORTAL;
                 assign_level(&tolevel, &trap->dst);
             }
-        } 
+            level_teleport_effect_out(mtmp->mx, mtmp->my);
+        }
         else if (tt == LEVEL_TELEP || tt == NO_TRAP)
         {
             int nlev;
@@ -1880,7 +1881,8 @@ int in_sight;
                 }
                 get_level(&tolevel, nlev);
             }
-        } 
+            level_teleport_effect_out(mtmp->mx, mtmp->my);
+        }
         else
         {
             impossible("mlevel_tele_trap: unexpected trap type (%d)", tt);
@@ -1893,7 +1895,6 @@ int in_sight;
             if (trap)
                 seetrap(trap);
         }
-        level_teleport_effect_out(mtmp->mx, mtmp->my);
         migrate_to_level(mtmp, ledger_no(&tolevel), migrate_typ, (coord *) 0);
         return 3; /* no longer on this level */
     }
