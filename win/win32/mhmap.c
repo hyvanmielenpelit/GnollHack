@@ -1848,7 +1848,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int rack_start = 0; /* Assume weapons are drawn reasonably well in the center */
                                 int rack_width = 48;
                                 int rack_height = TILE_Y - y_to_rack_top;
-                                int rack_item_width = 48;
                                 int rack_item_spacing = 6;
 
                                 int cnt = 0;
@@ -1857,6 +1856,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     int src_x = 0, src_y = (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
+                                    int item_width = objects[contained_obj->otyp].oc_tile_floor_height ? objects[contained_obj->otyp].oc_tile_floor_height : TILE_Y / 2;
+                                    int item_height = (item_width * TILE_Y) / TILE_X;
+                                    int padding = (TILE_Y / 2 - item_width) / 2;
+                                    int vertical_padding = (TILE_X - item_height) / 2;
                                     if (contained_obj->oclass != WEAPON_CLASS)
                                         continue;
 
@@ -1864,8 +1867,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if (item_xpos >= rack_width / 2)
                                         break;
 
-                                    dest_y = y_to_rack_top;
-                                    dest_x = cnt % 2 == 0 ? rack_start + item_xpos : TILE_X - rack_item_width - rack_start - item_xpos;
+                                    dest_y = y_to_rack_top + vertical_padding;;
+                                    dest_x = cnt % 2 == 0 ? rack_start + item_xpos + padding : TILE_X - item_width - rack_start - item_xpos - padding;
 
                                     int source_glyph = obj_to_glyph(contained_obj, rn2);
                                     int atile = glyph2tile[source_glyph];
@@ -1935,9 +1938,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if (print_first_directly_to_map)
                                     {
                                         target_rt.left = rect->left + dest_x;
-                                        target_rt.right = rect->left + dest_x + rack_item_width;
+                                        target_rt.right = rect->left + dest_x + item_width;
                                         target_rt.top = rect->top + dest_y;
-                                        target_rt.bottom = rect->top + dest_y + (rack_item_width * rotated_height) / rotated_width;
+                                        target_rt.bottom = rect->top + dest_y + (item_width * rotated_height) / rotated_width;
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             data->backBufferDC, target_rt.left, target_rt.top,
@@ -1948,9 +1951,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     else
                                     {
                                         target_rt.left = dest_x;
-                                        target_rt.right = dest_x + rack_item_width;
+                                        target_rt.right = dest_x + item_width;
                                         target_rt.top = dest_y;
-                                        target_rt.bottom = dest_y + (rack_item_width * rotated_height) / rotated_width;
+                                        target_rt.bottom = dest_y + (item_width * rotated_height) / rotated_width;
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             hDCcopy, target_rt.left, target_rt.top,
