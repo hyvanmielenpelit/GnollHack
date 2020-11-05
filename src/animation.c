@@ -1204,8 +1204,8 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
       { "summon-celestial-enlargement",
         SUMMON_CELESTIAL_ANIMATION_TILES, SUMMON_CELESTIAL_ANIMATION_FRAMES,
         SUMMON_CELESTIAL_ENLARGEMENT_TILES, SUMMON_CELESTIAL_ENLARGEMENT_OFF,
-        3, 1, 0,
-        { -1, -1, -1, 0, 1 },
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
