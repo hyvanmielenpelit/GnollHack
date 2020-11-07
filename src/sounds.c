@@ -1388,6 +1388,7 @@ doyell()
 
 	if (yell_check())
 	{
+		play_simple_player_sound(MONSTER_SOUND_TYPE_YELL);
 		wake_nearby();
 		boolean petfound = FALSE;
 		for (struct monst* mtmp = fmon; mtmp; mtmp = mtmp->nmon)

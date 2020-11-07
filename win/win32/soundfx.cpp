@@ -618,6 +618,8 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Stumble", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Search", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Search", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Male Yell", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Generic/Generic Female Yell", 1.0f },
 
 };
 
