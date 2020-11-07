@@ -331,7 +331,7 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
         }
         else 
         {
-            data->frontScale = /* data->monitorScale * */ (1.0 + flags.screen_scale_adjustment);
+            data->frontScale = data->monitorScale / 1.25 * (1.0 + flags.screen_scale_adjustment);
         }
 
     }
