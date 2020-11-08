@@ -5169,7 +5169,7 @@ int ray_type;
 int x, y;
 {
     int typ = ray_type;
-    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE || ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
         return;
 
     float hearing_volume = 0.0f;
@@ -5189,7 +5189,7 @@ int ray_type;
 int x, y;
 {
     int typ = ray_type;
-    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE || ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
         return;
 
     float hearing_volume = 0.0f;
@@ -5208,7 +5208,7 @@ int ray_type;
 {
     int typ = ray_type;
 
-    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+    if (ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE || ray_soundsets[typ].sounds[RAY_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
         return;
 
     struct effect_ambient_volume_info vinfo = { 0 };
@@ -5223,7 +5223,8 @@ start_occupation_ambient_sound(object_soundset_id, occupation_type)
 enum object_soundset_types object_soundset_id;
 enum object_occupation_types occupation_type;
 {
-    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE
+        || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
         return;
 
     struct ghsound_occupation_ambient_info info = { 0 };
@@ -5238,7 +5239,8 @@ stop_occupation_ambient_sound(object_soundset_id, occupation_type)
 enum object_soundset_types object_soundset_id;
 enum object_occupation_types occupation_type;
 {
-    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE)
+    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == GHSOUND_NONE
+        || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[OCCUPATION_SOUND_TYPE_AMBIENT].ghsound == MAX_GHSOUNDS)
         return;
 
     struct ghsound_occupation_ambient_info info = { 0 };
@@ -5255,7 +5257,8 @@ enum object_occupation_types occupation_type;
 enum occupation_sound_types sound_type;
 {
 
-    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == GHSOUND_NONE)
+    if (occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == GHSOUND_NONE
+        || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == MAX_GHSOUNDS)
         return;
 
     struct ghsound_immediate_info info = { 0 };
@@ -5273,7 +5276,8 @@ enum occupation_sound_types sound_type;
 int x, y;
 {
 
-    if (!isok(x, y) || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == GHSOUND_NONE)
+    if (!isok(x, y) || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == GHSOUND_NONE
+        || occupation_soundset_definitions[object_soundsets[object_soundset_id].occupation_soundsets[occupation_type]].sounds[sound_type].ghsound == MAX_GHSOUNDS)
         return;
 
     float hearing_volume = hearing_array[x][y];
@@ -6281,13 +6285,6 @@ double new_volume;
     impossible("obj_adjust_sound_volume: can't find %s", xname(obj));
 }
 
-
-/*
- * Start a burn timeout on the given object. If not "already lit" then
- * create a light source for the vision system.  There had better not
- * be a burn already running on the object.
- *
- */
 void
 begin_sound(obj, already_making_noise)
 struct obj* obj;
@@ -6324,8 +6321,9 @@ boolean already_making_noise;
     {
         xchar x, y;
         enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
-        enum ghsound_types ghsound = object_soundsets[objsoundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].ghsound;
-        float volume = object_soundsets[objsoundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].volume;
+        enum ghsound_types ghsound = GHSOUND_NONE; // object_soundsets[objsoundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].ghsound;
+        float volume = 0.0f; // object_soundsets[objsoundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].volume;
+        set_simple_object_sound_id_and_volume(objsoundset, OBJECT_SOUND_TYPE_AMBIENT, &ghsound, &volume);
         enum soundsource_ambient_subtypes subtype = object_soundsets[objsoundset].ambient_subtype;
 
         if (get_obj_location(obj, &x, &y, CONTAINED_TOO | BURIED_TOO))
@@ -6378,7 +6376,12 @@ struct obj* obj;
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return GHSOUND_NONE;
 
-    return object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].ghsound;
+    enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
+    enum ghsound_types ghsound = GHSOUND_NONE;
+    float volume = 0.0f;
+    set_simple_object_sound_id_and_volume(objsoundset, OBJECT_SOUND_TYPE_AMBIENT, &ghsound, &volume);
+
+    return ghsound; // object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].ghsound;
 }
 
 double
@@ -6388,7 +6391,12 @@ struct obj* obj;
     if (!obj || objects[obj->otyp].oc_soundset == OBJECT_SOUNDSET_NONE)
         return 0.0;
 
-    return (double)object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].volume;
+    enum object_soundset_types objsoundset = objects[obj->otyp].oc_soundset;
+    enum ghsound_types ghsound = GHSOUND_NONE;
+    float volume = 0.0f;
+    set_simple_object_sound_id_and_volume(objsoundset, OBJECT_SOUND_TYPE_AMBIENT, &ghsound, &volume);
+
+    return (double)volume; // object_soundsets[objects[obj->otyp].oc_soundset].sounds[OBJECT_SOUND_TYPE_AMBIENT].volume;
 }
 
 enum ghsound_types
@@ -6403,17 +6411,21 @@ enum soundsource_ambient_subtypes *subtype_ptr;
     struct rm* lev = &levl[x][y];
 
     enum location_soundset_types lsoundset = location_type_definitions[lev->typ].soundset;
-
     if (lsoundset == LOCATION_SOUNDSET_NONE)
         return GHSOUND_NONE;
 
+    enum ghsound_types ghsound = GHSOUND_NONE;
+    float volume = 0.0f;
+    set_simple_location_sound_id_and_volume(lsoundset, LOCATION_SOUND_TYPE_AMBIENT, &ghsound, &volume);
+
+
     if (volume_ptr)
-        *volume_ptr = (double)location_soundsets[lsoundset].sounds[LOCATION_SOUND_TYPE_AMBIENT].volume;
+        *volume_ptr = (double)volume; // location_soundsets[lsoundset].sounds[LOCATION_SOUND_TYPE_AMBIENT].volume;
 
     if (subtype_ptr)
         *subtype_ptr = location_soundsets[lsoundset].ambient_subtype;
 
-    return location_soundsets[lsoundset].sounds[LOCATION_SOUND_TYPE_AMBIENT].ghsound;
+    return ghsound; // location_soundsets[lsoundset].sounds[LOCATION_SOUND_TYPE_AMBIENT].ghsound;
 }
 
 enum ghsound_types
