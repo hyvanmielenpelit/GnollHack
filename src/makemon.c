@@ -2462,33 +2462,56 @@ int level_limit;
     if (!in_mklev && (mmflags & MM_PLAY_SUMMON_ANIMATION))
     {
         unsigned long atype = (mmflags & MM_SUMMON_ANIMATION_TYPE_MASK);
+        enum sfx_sound_types startsound = SFX_GENERAL_SUMMON_START;
         enum sfx_sound_types sfxsound = SFX_SUMMON_MONSTER;
         if (atype == MM_CHAOTIC_SUMMON_ANIMATION)
         {
             spef_type = SPECIAL_EFFECT_SUMMON_DEMON;
+            startsound = SFX_INFERNAL_SUMMON_START;
             sfxsound = SFX_SUMMON_DEMON;
         }
         else if (atype == MM_LAWFUL_SUMMON_ANIMATION)
+        {
+            startsound = SFX_CELESTIAL_SUMMON_START;
             spef_type = SPECIAL_EFFECT_SUMMON_CELESTIAL;
+        }
         else if (atype == MM_NEUTRAL_SUMMON_ANIMATION)
+        {
+            startsound = SFX_NEUTRAL_SUMMON_START;
             spef_type = SPECIAL_EFFECT_SUMMON_NATURE;
+        }
         else if (atype == MM_SUMMON_MONSTER_ANIMATION)
-            spef_type = SPECIAL_EFFECT_SUMMON_NATURE;
-        else if (atype == MM_SUMMON_NASTY_ANIMATION)
-            spef_type = SPECIAL_EFFECT_SUMMON_NASTY;
-        else if (atype == MM_SUMMON_MONSTER_ANIMATION)
+        {
+            startsound = SFX_GENERAL_SUMMON_START;
             spef_type = SPECIAL_EFFECT_SUMMON_MONSTER;
+        }
+        else if (atype == MM_SUMMON_NASTY_ANIMATION)
+        {
+            startsound = SFX_SUMMON_NASTY_START;
+            spef_type = SPECIAL_EFFECT_SUMMON_NASTY;
+        }
         else if (atype == MM_UNDEAD_SUMMON_ANIMATION)
+        {
+            startsound = SFX_SUMMON_UNDEAD_START;
             spef_type = SPECIAL_EFFECT_SUMMON_UNDEAD;
+        }
         else if (atype == MM_ANIMATE_DEAD_ANIMATION)
+        {
+            startsound = SFX_ANIMATE_DEAD_START;
             spef_type = SPECIAL_EFFECT_ANIMATE_DEAD;
+        }
         else if (atype == MM_SUMMON_IN_SMOKE_ANIMATION)
+        {
+            startsound = SFX_SMOKE_SUMMON_START;
             spef_type = SPECIAL_EFFECT_SUMMON_IN_SMOKE;
+        }
 
         play_special_effect_at(spef_type, context.makemon_spef_idx, x, y, FALSE);
         if (mmflags & MM_PLAY_SUMMON_SOUND)
-            play_sfx_sound_at_location(sfxsound, x, y);
+            play_sfx_sound_at_location(startsound, x, y);
         special_effect_wait_until_action(context.makemon_spef_idx);
+        if (mmflags & MM_PLAY_SUMMON_SOUND)
+            play_sfx_sound_at_location(sfxsound, x, y);
     }
 
     (void) propagate(mndx, countbirth, FALSE);
