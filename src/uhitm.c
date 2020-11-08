@@ -1697,11 +1697,14 @@ boolean* obj_destroyed;
 			/* defer "obj is no longer poisoned" until after hit message */
 			unpoisonmsg = TRUE;
 		}
+
 		if (resists_poison(mon))
 			needpoismsg = TRUE;
-
-		poisondamage = adjust_damage(d(2, 6), &youmonst, mon, AD_DRST, ADFLAGS_NONE);
-		damage += poisondamage;
+		else
+		{
+			poisondamage = adjust_damage(d(2, 6), &youmonst, mon, AD_DRST, ADFLAGS_NONE);
+			damage += poisondamage;
+		}
 	}
 
 	if (obj && obj->elemental_enchantment > 0 && !isdisintegrated)
@@ -1952,6 +1955,7 @@ boolean* obj_destroyed;
 		}
 	}
 
+	enum hit_tile_types hit_tile = skill_critical_success || strikefrombehind ? HIT_CRITICAL : poisondamage > 0 ? HIT_POISONED : HIT_TILE;
 	if (!hittxt) /* && (1 = 1 || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp)) */
 	{
 		const char* striketext = strikefrombehind ? "strike" : "hit";
@@ -1960,7 +1964,7 @@ boolean* obj_destroyed;
 		const char* critical_text = skill_critical_success ? " critically" : "";
 
 		if (thrown)
-			hit(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt, critical_text);
+			hit_with_hit_tile(mshot_xname(obj), mon, exclam(destroyed ? 100 : damagedealt), hide_damage_amount ? -1 : damagedealt, critical_text, hit_tile, FALSE);
 		else if (!hide_damage_amount && damagedealt > 0) 
 		{
 
@@ -1973,7 +1977,7 @@ boolean* obj_destroyed;
 					mon_nam(mon), critical_text, damagedealt, frombehindtext,
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 
-			display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
+			display_m_being_hit(mon, hit_tile, damagedealt, 0UL);
 		}
 		else 
 		{
@@ -1986,13 +1990,13 @@ boolean* obj_destroyed;
 					mon_nam(mon), critical_text,
 					canseemon(mon) && !strikefrombehind ? exclam(damagedealt) : strikemark);
 
-			display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
+			display_m_being_hit(mon, hit_tile, damagedealt, 0UL);
 		}
 	}
 	else if (hittxt && displaysustain && damagedealt > 0)
 	{
 		pline("%s sustains %d damage.", Monnam(mon), damagedealt);
-		display_m_being_hit(mon, HIT_TILE, damagedealt, 0UL);
+		display_m_being_hit(mon, hit_tile, damagedealt, 0UL);
 	}
 
 	if (silvermsg) 
@@ -3183,8 +3187,12 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     } 
 	else if (flags.verbose && damagedealt > 0)
 	{
-		if(skill_critical_success)
+		if (skill_critical_success)
+		{
+			if (hit_tile == HIT_TILE)
+				hit_tile = HIT_CRITICAL;
 			Your("critical strike inflicts %d damage!", damagedealt);
+		}
 		else
 			You("inflict %d damage.", damagedealt);
 		display_m_being_hit(mdef, hit_tile, damagedealt, 0UL);

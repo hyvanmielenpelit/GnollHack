@@ -1724,7 +1724,8 @@ register struct obj *obj;
     long savewornmask;
 
     savewornmask = obj->owornmask;
-    pline("%s welded to your %s%s!", Yobjnam2(obj, "are"), bimanual(obj) ? "" : savewornmask & W_WEP ? "right " : "left ",
+	play_sfx_sound(SFX_GENERAL_CANNOT);
+	pline("%s welded to your %s%s!", Yobjnam2(obj, "are"), bimanual(obj) ? "" : savewornmask & W_WEP ? "right " : "left ",
           bimanual(obj) ? (const char *) makeplural(body_part(HAND))
                         : body_part(HAND));
     obj->owornmask = savewornmask;

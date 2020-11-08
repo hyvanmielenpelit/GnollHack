@@ -559,17 +559,26 @@ boolean verbose;    /* give message(s) even when you can't see what happened */
 
 		damage = adjust_damage(dmg, (struct monst*)0, mtmp, objects[otmp->otyp].oc_damagetype, ADFLAGS_NONE);
 
+        enum hit_tile_types hit_tile = (otmp->opoisoned && is_poisonable(otmp) && !resists_poison(mtmp) ? HIT_POISONED : HIT_TILE);
+
         if (vis) 
 		{
             if (otmp->otyp == EGG)
+            {
+                display_m_being_hit(mtmp, hit_tile, 0, 0UL);
                 pline("Splat!  %s is hit with %s egg!", Monnam(mtmp),
-                      otmp->known ? an(corpse_monster_name(otmp)) : "an");
+                    otmp->known ? an(corpse_monster_name(otmp)) : "an");
+            }
             else
-                hit(distant_name(otmp, mshot_xname), mtmp, exclam((int)ceil(damage)), (int)ceil(damage), "");
+                hit_with_hit_tile(distant_name(otmp, mshot_xname), mtmp, exclam((int)ceil(damage)), (int)ceil(damage), "", hit_tile, FALSE);
         } 
-		else if (verbose && !target)
+        else if (verbose && !target)
+        {
+
+            display_m_being_hit(mtmp, hit_tile, 0, 0UL);
             pline("%s%s is hit%s", (otmp->otyp == EGG) ? "Splat!  " : "",
-                  Monnam(mtmp), exclam((int)ceil(damage)));
+                Monnam(mtmp), exclam((int)ceil(damage)));
+        }
 
         if (otmp->opoisoned && is_poisonable(otmp)) 
 		{
