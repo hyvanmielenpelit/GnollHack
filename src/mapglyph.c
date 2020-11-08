@@ -81,7 +81,7 @@ unsigned long *ospecial;
     if (glyph == MAX_GLYPH)
         glyph = cmap_to_glyph(S_unexplored);
 
-    if ((offset = (glyph - GLYPH_CURSOR_OFF)) >= 0 && glyph < MAX_GLYPH)
+    if ((offset = (glyph - GLYPH_SPECIAL_EFFECT_OFF)) >= 0 && glyph < MAX_GLYPH)
     {
         /* Should never arrive here, these are UI elements */
         idx = '_';

@@ -1085,6 +1085,7 @@ register struct obj* omonwep;
 	boolean hittxtalreadydisplayed = FALSE;
 	boolean objectshatters = FALSE;
 	int critstrikeroll = rn2(100);
+    enum hit_tile_types hit_tile = HIT_TILE;
 
 	int extratmp = 0;
 	double damage = 0;
@@ -1265,6 +1266,7 @@ register struct obj* omonwep;
 			damage = 0;
             break;
         }
+        hit_tile = HIT_ON_FIRE;
         if (vis && canseemon(mdef))
             pline("%s is %s!", Monnam(mdef), on_fire(pd, mattk));
         if (completelyburns(pd)) { /* paper golem or straw golem */
@@ -1296,6 +1298,7 @@ register struct obj* omonwep;
 			damage = 0;
             break;
         }
+        hit_tile = HIT_FROZEN;
         if (vis && canseemon(mdef))
             pline("%s is covered in frost!", Monnam(mdef));
         if (is_mon_immune_to_cold(mdef))
@@ -1315,7 +1318,8 @@ register struct obj* omonwep;
             break;
         }
         
-		if (vis && canseemon(mdef))
+        hit_tile = HIT_ELECTROCUTED;
+        if (vis && canseemon(mdef))
             pline("%s gets zapped!", Monnam(mdef));
         
 		damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), magr, mdef, AD_COLD, ADFLAGS_NONE);
@@ -1337,6 +1341,7 @@ register struct obj* omonwep;
             damage = 0;
             break;
         }
+        hit_tile = HIT_SPLASHED_ACID;
         if (is_mon_immune_to_acid(mdef))
         {
             if (vis && canseemon(mdef))
@@ -1403,6 +1408,7 @@ register struct obj* omonwep;
  do_stone:
 		if (!resists_ston(mdef))
 		{
+            display_m_being_hit(mdef, HIT_PETRIFIED, 0, 0UL);
 			/* Medusa's gaze is instapetrify */
 			if (mattk->aatyp == AT_GAZE)
 			{
@@ -1451,6 +1457,7 @@ register struct obj* omonwep;
         if (!cancelled && !is_sleeping(mdef)
             && sleep_monst(mdef, (struct obj *)0, rn1(3,8), mattk->mcadj, FALSE)) 
 		{
+            hit_tile = HIT_SLEEP;
             if (vis && canspotmon(mdef))
 			{
                 Strcpy(buf, Monnam(mdef));
@@ -1463,7 +1470,8 @@ register struct obj* omonwep;
     case AD_PLYS:
         if (!cancelled && !resists_paralysis(mdef))
 		{
-            if (vis && canspotmon(mdef) && !is_paralyzed(mdef)) 
+            hit_tile = HIT_PARALYZED;
+            if (vis && canspotmon(mdef) && !is_paralyzed(mdef))
 			{
                 Strcpy(buf, Monnam(mdef));
                 pline("%s is frozen by %s.", buf, mon_nam(magr));
@@ -1474,6 +1482,7 @@ register struct obj* omonwep;
     case AD_SHRP:
         if (rn2(100) < SHARPNESS_PERCENTAGE_CHANCE)
         {
+            hit_tile = HIT_CRITICAL;
             if (vis && canspotmon(mdef) && !is_paralyzed(mdef))
             {
                 pline("%s strike slices a part of %s off!", s_suffix(Monnam(magr)), mon_nam(mdef));
@@ -1641,6 +1650,7 @@ register struct obj* omonwep;
     case AD_DRLI:
         if (!cancelled && !resists_drli(mdef)) //!rn2(3) && 
 		{
+            hit_tile = HIT_DRAIN_LEVEL;
             int basehpdrain = d(2, 6);
             if (vis && canspotmon(mdef))
                 pline("%s suddenly seems weaker!", Monnam(mdef));
@@ -1726,6 +1736,7 @@ register struct obj* omonwep;
     case AD_DRCO:
         if (!cancelled && !rn2(2)) 
         {
+            hit_tile = HIT_POISONED;
             if (vis && canspotmon(magr))
                 pline("%s %s was poisoned!", s_suffix(Monnam(magr)),
                       mpoisons_subj(magr, mattk));
@@ -1782,6 +1793,7 @@ register struct obj* omonwep;
             break; /* physical damage only */
         if (!slimeproof(pd)) 
 		{
+            hit_tile = HIT_SLIMED;
             play_sfx_sound_at_location(SFX_START_SLIMING, mdef->mx, mdef->my);
 			start_delayed_sliming(mdef, FALSE);
 #if 0
@@ -1817,6 +1829,7 @@ register struct obj* omonwep;
 	case AD_DISE:
 		if (!resists_sickness(mdef) && !cancelled)
 		{
+            hit_tile = HIT_SICK;
             play_sfx_sound_at_location(SFX_CATCH_TERMINAL_ILLNESS, mdef->mx, mdef->my);
             set_mon_property_verbosely(mdef, SICK,
 				is_sick(mdef) ? max(1, (get_mon_property(mdef, SICK) + 1) / 3) : rn1(M_ACURR(mdef, A_CON), 20));
@@ -1825,6 +1838,7 @@ register struct obj* omonwep;
     case AD_ROTS:
         if (!resists_sickness(mdef) && !cancelled)
         {
+            hit_tile = HIT_SICK;
             play_sfx_sound_at_location(SFX_CATCH_MUMMY_ROT, mdef->mx, mdef->my);
             set_mon_property_verbosely(mdef, MUMMY_ROT, -1L);
         }
@@ -1998,7 +2012,7 @@ register struct obj* omonwep;
 	else if (vis && damagedealt > 0 && ((is_tame(mdef) && canspotmon(mdef)) || (is_tame(magr) && canspotmon(magr))))
 	{
 		pline("%s sustains %d damage!", Monnam(mdef), damagedealt);
-        display_m_being_hit(mdef, HIT_TILE, damagedealt, 0UL);
+        display_m_being_hit(mdef, hit_tile, damagedealt, 0UL);
     }
 
     return (res == MM_AGR_DIED) ? MM_AGR_DIED : MM_HIT;
@@ -2151,6 +2165,7 @@ int mdead;
     int i;
 	double damage = 0;
 	int basedmg = 0;
+    enum hit_tile_types hit_tile = HIT_TILE;
 
     for (i = 0;; i++) 
     {
@@ -2176,7 +2191,8 @@ int mdead;
     switch (mddat->mattk[i].adtyp) 
     {
     case AD_ACID:
-        if (mhit && !rn2(2)) 
+        hit_tile = HIT_SPLASHED_ACID;
+        if (mhit && !rn2(2))
         {
             Strcpy(buf, Monnam(magr));
             if (canseemon(magr))
@@ -2261,6 +2277,7 @@ int mdead;
             }
             return 1;
         case AD_COLD:
+            hit_tile = HIT_FROZEN;
             if (is_mon_immune_to_cold(magr))
             {
                 if (canseemon(magr)) 
@@ -2293,6 +2310,7 @@ int mdead;
             damage = 0;
             break;
         case AD_FIRE:
+            hit_tile = HIT_ON_FIRE;
             if (is_mon_immune_to_fire(magr))
             {
                 if (canseemon(magr)) 
@@ -2315,6 +2333,7 @@ int mdead;
 			}
             break;
         case AD_ELEC:
+            hit_tile = HIT_ELECTROCUTED;
             if (is_mon_immune_to_elec(magr))
             {
                 if (canseemon(magr)) {
@@ -2344,7 +2363,7 @@ assess_dmg:
         if (canseemon(magr) && damagedealt > 0)
         {
             pline("%s sustains %d damage!", Monnam(magr), damagedealt);
-            display_m_being_hit(magr, HIT_TILE, damagedealt, 0UL);
+            display_m_being_hit(magr, hit_tile, damagedealt, 0UL);
         }
 
 		if (magr->mhp <= 0)

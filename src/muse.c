@@ -2991,7 +2991,11 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
             mon->mspec_used = rn1(10, 5);
         /* -21 => monster's fire breath; 1 => # of damage dice */
 		damage = zhitm(mon, by_you ? 21 : -21, (struct obj*)0, mon, 1, 8, 0, &odummyp);
-    } 
+        if (damage == -1)
+        {
+            damage = 0;
+        }
+    }
     else if (otyp == SCR_FIRE) 
     {
         mreadmsg(mon, obj);
@@ -3023,6 +3027,10 @@ boolean by_you; /* true: if mon kills itself, hero gets credit/blame */
         obj->charges--;
         /* -1 => monster's wand of fire; 2 => # of damage dice */
         damage = zhitm(mon, by_you ? 1 : -1, (struct obj*)0, mon, 2, 8, 0, &odummyp);
+        if (damage == -1)
+        {
+            damage = 0;
+        }
     }
 
     if (damage > 0) 

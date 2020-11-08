@@ -45,28 +45,13 @@ struct ui_component_definition {
 enum game_ui_tile_types
 {
     DEATH_TILE = 0,
-    HIT_TILE,
-    HIT_POISONED,
-    HIT_DISINTEGRATED,
-    HIT_CRUSHED,
-    HIT_STRANGLED,
-    HIT_EXTRA_TILE_5,
-    HIT_EXTRA_TILE_6,
-    HIT_EXTRA_TILE_7,
-    GENERAL_UI_ELEMENTS,    /* Check box etc. */
-    STATUS_MARKS,   /* Pet mark, detection mark, ridden mark, pile mark, etc. */
-    CONDITION_MARKS,   /* One tile for each specified status (the same as on status line) */
+    GENERAL_UI_ELEMENTS,        /* Check box etc. */
+    STATUS_MARKS,               /* Pet mark, detection mark, ridden mark, pile mark, etc. */
+    CONDITION_MARKS,            /* One tile for each specified status (the same as on status line) */
     MAIN_TILE_MARK,
-    MAIN_WINDOW_BORDERS,
-    MESSAGE_WINDOW_BORDERS,
-    STATUS_WINDOW_BORDERS,
-    MAP_WINDOW_BORDERS,
-    MENU_WINDOW_BORDERS,
-    TEXT_WINDOW_BORDERS,
     BOOKSHELF_GRAPHICS,
     MAX_UI_TILES
 };
-#define MAX_HIT_TILES 8 /* Acually with hit_tile there are 8 */
 
 enum game_ui_status_mark_types
 {

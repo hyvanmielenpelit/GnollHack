@@ -2646,7 +2646,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	double damage = 0;
 	enum p_skills wtype = P_BARE_HANDED_COMBAT;
 	boolean incorrect_weapon_use = FALSE;
-	
+	enum hit_tile_types hit_tile = HIT_TILE;
+
 	/*  First determine the base damage done */
 	struct obj* mweapon = omonwep;
 	if (mweapon && mattk->aatyp == AT_WEAP)
@@ -2751,6 +2752,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             damage = 0;
             break;
         }
+		hit_tile = HIT_ON_FIRE;
         if (!Blind)
             pline("%s is %s!", Monnam(mdef), on_fire(pd, mattk));
         if (completelyburns(pd)) { /* paper golem or straw golem */
@@ -2788,7 +2790,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             break;
         }
 
-        if (!Blind)
+		hit_tile = HIT_FROZEN;
+		if (!Blind)
             pline("%s is covered in frost!", Monnam(mdef));
 
         if (is_mon_immune_to_cold(mdef)) 
@@ -2809,7 +2812,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             break;
         }
 
-        if (!Blind)
+		hit_tile = HIT_ELECTROCUTED;
+		if (!Blind)
             pline("%s is zapped!", Monnam(mdef));
 
         damage += adjust_damage(destroy_mitem(mdef, WAND_CLASS, AD_ELEC), &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
@@ -2828,10 +2832,12 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_ACID:
         if (is_mon_immune_to_acid(mdef))
             damage = 0;
-        break;
+		hit_tile = HIT_SPLASHED_ACID;
+		break;
     case AD_STON:
 		if (!negated && !resists_ston(mdef))
 		{
+			display_m_being_hit(mdef, HIT_PETRIFIED, 0, 0UL);
 			if (mattk->aatyp == AT_GAZE)
 				minstapetrify(mdef, TRUE);
 			else
@@ -2916,7 +2922,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_DRLI:
         if (!negated && !resists_drli(mdef)) //!rn2(3) && 
 		{
-            int xtmp = d(2, 6);
+			hit_tile = HIT_DRAIN_LEVEL;
+			int xtmp = d(2, 6);
 
             pline("%s suddenly seems weaker!", Monnam(mdef));
             mdef->mbasehpmax -= xtmp;
@@ -2966,14 +2973,15 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_DRCO:
         if (!negated && !rn2(2)) 
 		{
-            Your("%s was poisoned!", mpoisons_subj(&youmonst, mattk));
+			Your("%s was poisoned!", mpoisons_subj(&youmonst, mattk));
             if (resists_poison(mdef)) 
 			{
                 pline_The("poison doesn't seem to affect %s.", mon_nam(mdef));
             } 
 			else 
 			{
-                if (!rn2(10)) 
+				hit_tile = HIT_POISONED;
+				if (!rn2(10))
 				{
 					poisondamage = adjust_damage(d(6, 6) + 10, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE); // mdef->mhp;
                 } else
@@ -3044,7 +3052,8 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_PLYS:
         if (!negated && !resists_paralysis(mdef) && damage < ((double)mdef->mhp + ((double)mdef->mhp_fraction)/10000))
 		{
-            if (!Blind)
+			hit_tile = HIT_PARALYZED;
+			if (!Blind)
                 pline("%s is frozen by you!", Monnam(mdef));
             paralyze_monst(mdef, 2 + rnd(8), FALSE);
         }
@@ -3052,13 +3061,15 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	case AD_SHRP:
 		if (rn2(100) < SHARPNESS_PERCENTAGE_CHANCE)
 		{
+			hit_tile = HIT_CRITICAL;
 			damage += adjust_damage((mdef->mhpmax * SHARPNESS_MAX_HP_PERCENTAGE_DAMAGE) / 100, &youmonst, mdef, mattk->adtyp, ADFLAGS_NONE);
 		}
 		break;
 	case AD_SLEE:
         if (!negated && !mdef->msleeping && sleep_monst(mdef, (struct obj*)0, rn1(3,8), mattk->mcadj, FALSE)) 
 		{
-            if (!Blind)
+			hit_tile = HIT_SLEEP;
+			if (!Blind)
                 pline("%s is put to sleep by you!", Monnam(mdef));
             slept_monst(mdef);
         }
@@ -3068,7 +3079,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
             break; /* physical damage only */
         if (!rn2(4) && !slimeproof(pd))
 		{
-
+			hit_tile = HIT_SLIMED;
             if (!munslime(mdef, TRUE) && !DEADMONSTER(mdef)) {
                 /* this assumes newcham() won't fail; since hero has
                    a slime attack, green slimes haven't been geno'd */
@@ -3089,6 +3100,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
     case AD_SLOW:
         if (!negated) 
 		{
+			hit_tile = HIT_SLOW;
 			(void)set_mon_property_verbosely(mdef, SLOWED, max(mdef->mprops[SLOWED] & M_TIMEOUT, 20 + rnd(10)));
 		}
         break;
@@ -3175,7 +3187,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 			Your("critical strike inflicts %d damage!", damagedealt);
 		else
 			You("inflict %d damage.", damagedealt);
-		display_m_being_hit(mdef, HIT_TILE, damagedealt, 0UL);
+		display_m_being_hit(mdef, hit_tile, damagedealt, 0UL);
 	}
     return 1;
 }
@@ -4008,6 +4020,7 @@ boolean wep_was_destroyed;
     register struct permonst *ptr = mon->data;
     register int i, basedmg = 0;
 	double damage = 0;
+	enum hit_tile_types hit_tile = HIT_TILE;
 
     for (i = 0;; i++) 
 	{
@@ -4035,7 +4048,9 @@ boolean wep_was_destroyed;
     switch (ptr->mattk[i].adtyp)
 	{
     case AD_FIRE:
-        if (mhit && !is_cancelled(mon) && weapon)
+		if(!is_cancelled(mon))
+			hit_tile = HIT_ON_FIRE;
+		if (mhit && !is_cancelled(mon) && weapon)
 		{
             if (aatyp == AT_KICK)
 			{
@@ -4048,6 +4063,7 @@ boolean wep_was_destroyed;
         }
         break;
     case AD_ACID:
+		hit_tile = HIT_SPLASHED_ACID;
         if (mhit && rn2(2)) 
 		{
             if (Blind || !flags.verbose)
@@ -4057,7 +4073,8 @@ boolean wep_was_destroyed;
                     hliquid("acid"));
 
             if (!Acid_immunity && !Invulnerable)
-                mdamageu(mon, damage, TRUE);
+				mdamageu_with_hit_tile(mon, damage, TRUE, HIT_SPLASHED_ACID);
+
             if (!rn2(30))
                 erode_armor(&youmonst, ERODE_CORRODE);
         }
@@ -4090,7 +4107,8 @@ boolean wep_was_destroyed;
                 if (!Stone_resistance
                     && !(poly_when_stoned(youmonst.data)
                          && polymon(PM_STONE_GOLEM))) {
-                    done_in_by(mon, STONING); /* "You turn to stone..." */
+					display_u_being_hit(HIT_PETRIFIED, 0, 0UL);
+					done_in_by(mon, STONING); /* "You turn to stone..." */
 					update_m_action(mon, action_before);
 					return 2;
                 }
@@ -4205,8 +4223,9 @@ boolean wep_was_destroyed;
                     ugolemeffects(AD_COLD, damage);
                     break;
                 }
-                You("are suddenly very cold!");
-                mdamageu(mon, damage, TRUE);
+				hit_tile = HIT_FROZEN;
+				You("are suddenly very cold!");
+                mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile);
                 /* monster gets stronger with your heat! */
                 mon->mhp += (int)ceil(damage) / 2;
                 if (mon->mhpmax < mon->mhp)
@@ -4236,10 +4255,13 @@ boolean wep_was_destroyed;
                     break;
                 }
 				if (flaming(mon->data))
+				{
+					hit_tile = HIT_ON_FIRE;
 					You("are engulfed in %s flames!", s_suffix(mon_nam(mon)));
+				}
 				else
 					You("are suddenly very hot!");
-                mdamageu(mon, damage, TRUE); /* fire damage */
+                mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile); /* fire damage */
             }
             break;
         case AD_ELEC:
@@ -4250,8 +4272,9 @@ boolean wep_was_destroyed;
                 ugolemeffects(AD_ELEC, damage);
                 break;
             }
-            You("are jolted with electricity!");
-            mdamageu(mon, damage, TRUE);
+			hit_tile = HIT_ELECTROCUTED;
+			You("are jolted with electricity!");
+			mdamageu_with_hit_tile(mon, damage, TRUE, hit_tile);
             break;
         default:
             break;
@@ -4739,7 +4762,7 @@ double hp_d;
 
 
 	if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
-		newsym(u.ux, u.uy);
+		newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 
 	return *target_integer_part_ptr;
 }
@@ -4852,7 +4875,7 @@ enum action_tile_types action;
 		{
 			context.u_action_animation_counter = 0;
 			context.u_action_animation_counter_on = TRUE;
-			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH);
+			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(u.ux, u.uy);
 			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -4888,7 +4911,7 @@ enum action_tile_types action;
 		}
 		else
 		{
-			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH);
+			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			flush_screen(1);
 			context.u_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
@@ -4946,7 +4969,7 @@ enum action_tile_types action;
 			context.m_action_animation_y = mtmp->my;
 			context.m_action_animation_counter = 0;
 			context.m_action_animation_counter_on = TRUE;
-			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH);
+			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(mtmp->mx, mtmp->my);
 			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -4982,7 +5005,7 @@ enum action_tile_types action;
 		}
 		else
 		{
-			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH);
+			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			flush_screen(0);
 			context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
@@ -5021,7 +5044,7 @@ void
 display_being_hit(mon, x, y, hit_symbol_shown, damage_shown, extra_flags)
 struct monst* mon;
 int x, y;
-enum game_ui_tile_types hit_symbol_shown;
+enum hit_tile_types hit_symbol_shown;
 int damage_shown;
 unsigned long extra_flags;
 {
@@ -5033,9 +5056,10 @@ unsigned long extra_flags;
 	unsigned long flags = (LFLAGS_M_BEING_HIT | hit_bits | extra_flags);
 
 	enum action_tile_types action_before = is_you ? u.action : mon->action;
+	show_extra_info(x, y, flags, damage_shown);
 	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
 	m_wait_until_action();
-	newsym_with_extra_info_and_flags(x, y, flags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH);
+	//newsym_with_extra_info_and_flags(x, y, flags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	flush_screen(is_you);
 	adjusted_delay_output();
 	update_m_action(mon, action_before);
@@ -5045,7 +5069,7 @@ unsigned long extra_flags;
 
 void
 display_u_being_hit(hit_symbol_shown, damage_shown, extra_flags)
-enum game_ui_tile_types hit_symbol_shown;
+enum hit_tile_types hit_symbol_shown;
 int damage_shown;
 unsigned long extra_flags;
 {
@@ -5055,7 +5079,7 @@ unsigned long extra_flags;
 void
 display_m_being_hit(mon, hit_symbol_shown, damage_shown, extra_flags)
 struct monst* mon;
-enum game_ui_tile_types hit_symbol_shown;
+enum hit_tile_types hit_symbol_shown;
 int damage_shown;
 unsigned long extra_flags;
 {

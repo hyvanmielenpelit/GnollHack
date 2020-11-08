@@ -5403,7 +5403,7 @@ boolean ordinary;
         play_sfx_sound(SFX_DISINTEGRATE);
         You("irradiate yourself with disintegration field!");
 		You("are disintegrated.");
-        display_u_being_hit(HIT_DISINTEGRATED, 0, LFLAGS_M_DISINTEGRATED);
+        display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);
 		/* when killed by disintegration breath, don't leave corpse */
 		u.ugrave_arise = 3;
 		done(DIED);
@@ -6544,11 +6544,24 @@ int force;
 
 void
 hit(str, mtmp, force, damage, adjective)
+const char* str;
+struct monst* mtmp;
+const char* force; /* usually either "." or "!" */
+const char* adjective; /* usually either "" or " critically" */
+int damage;
+{
+    hit_with_hit_tile(str, mtmp, force, damage, adjective, HIT_TILE, FALSE);
+}
+
+void
+hit_with_hit_tile(str, mtmp, force, damage, adjective, hit_tile, show_hit_tile_always)
 const char *str;
 struct monst *mtmp;
 const char *force; /* usually either "." or "!" */
 const char* adjective; /* usually either "" or " critically" */
 int damage;
+enum hit_tile_types hit_tile;
+boolean show_hit_tile_always;
 {
     if ((!cansee(bhitpos.x, bhitpos.y) && !canspotmon(mtmp)
          && !(u.uswallow && mtmp == u.ustuck)) || !flags.verbose)
@@ -6562,8 +6575,8 @@ int damage;
 		else
 			pline("%s %s %s%s%s", The(str), vtense(str, "hit"), mon_nam(mtmp), adjective, force);
 
-    if(damage > 0)
-        display_m_being_hit(mtmp, HIT_TILE, damage, 0UL);
+    if(damage > 0 || show_hit_tile_always)
+        display_m_being_hit(mtmp, hit_tile, damage, 0UL);
 
 }
 
@@ -7212,6 +7225,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 	int dmg = 0;
     register int abstype = abs(type) % 10;
     boolean sho_shieldeff = FALSE;
+    boolean sho_hit_eff = TRUE;
     boolean spellcaster = is_hero_spell(type); /* maybe get a bonus! */
 	int duration = 0;
 	boolean magic_resistance_success = check_magic_resistance_and_inflict_damage(mon, origobj, type < ZT_SPELL(0) ? 12 : u.ulevel, 0, 0, NOTELL);
@@ -7238,6 +7252,7 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (is_mon_immune_to_magic_missile(mon))
 		{
             sho_shieldeff = TRUE;
+            sho_hit_eff = FALSE;
 			damage = 0;
             break;
         }
@@ -7251,7 +7266,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (is_mon_immune_to_fire(mon))
 		{
             sho_shieldeff = TRUE;
-			damage = 0;
+            sho_hit_eff = FALSE;
+            damage = 0;
 			break;
         }
 		/*
@@ -7276,7 +7292,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (is_mon_immune_to_cold(mon)) 
 		{
             sho_shieldeff = TRUE;
-			damage = 0;
+            sho_hit_eff = FALSE;
+            damage = 0;
 			break;
         }
 		/*
@@ -7291,14 +7308,15 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         break;
     case ZT_SLEEP:
 		damage = 0;
-        (void) sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, NOTELL); // Duration 0 = permanent sleep
+        sho_hit_eff = sleep_monst(mon, origobj, !origobj ? rn1(5, 8) : duration, 0, NOTELL); // Duration 0 = permanent sleep
         break;
     case ZT_DISINTEGRATION:  /* disintegration */
 		damage = 0;
 		if (resists_disint(mon)) // || (magic_resistance_success && !(abs(type) >= 20 && abs(type) <= 39)))
 		{
 			sho_shieldeff = TRUE;
-        } 
+            sho_hit_eff = FALSE;
+        }
 		else if (mon->worn_item_flags & W_ARMS)
 		{
             /* destroy shield; victim survives */
@@ -7336,7 +7354,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		{
 			/* similar to player */
 			sho_shieldeff = TRUE;
-			damage = 0;
+            sho_hit_eff = FALSE;
+            damage = 0;
 			break;
 		}
 		type = -1; /* so they don't get saving throws */
@@ -7347,7 +7366,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		{
 			/* similar to player */
 			sho_shieldeff = TRUE;
-			damage = 0;
+            sho_hit_eff = FALSE;
+            damage = 0;
 			break;
 		}
 		else
@@ -7358,7 +7378,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (is_mon_immune_to_elec(mon)) 
 		{
             sho_shieldeff = TRUE;
-			damage = 0;
+            sho_hit_eff = FALSE;
+            damage = 0;
             /* can still blind the monster */
 		}
 		/*
@@ -7383,7 +7404,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (resists_poison(mon)) 
 		{
             sho_shieldeff = TRUE;
-			damage = 0;
+            sho_hit_eff = FALSE;
+            damage = 0;
 			break;
         }
         //tmp = d(nd, 6);
@@ -7392,7 +7414,8 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
         if (is_mon_immune_to_acid(mon)) 
 		{
             sho_shieldeff = TRUE;
-			damage = 0;
+            sho_hit_eff = FALSE;
+            damage = 0;
 			break;
         }
         //tmp = d(nd, 6);
@@ -7404,8 +7427,6 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
     }
     if (sho_shieldeff)
         m_shieldeff(mon);
-//    if (is_hero_spell(type) && (Role_if(PM_KNIGHT) && u.uhave.questart))
-//        tmp *= 2;
     
 	if (damage == PETRIFICATION_DUMMY_DAMAGE) /* caller starts delayed petrification */
 		return damage;
@@ -7414,8 +7435,13 @@ struct obj **ootmp; /* to return worn armor for caller to disintegrate */
 		damage = 0; /* don't allow negative damage */
 
     debugpline3("zapped monster hp = %d (= %d - %d)", mon->mhp - (int)damage, mon->mhp, (int)damage);
-	deduct_monster_hp(mon, damage);
-    return damage;
+    if(damage > 0)
+    	deduct_monster_hp(mon, damage);
+
+    if (damage == 0 && !sho_hit_eff)
+        return -1;
+    else
+        return damage;
 }
 
 STATIC_OVL void
@@ -7428,6 +7454,7 @@ const char *fltxt;
 xchar sx, sy;
 {
     int dam = 0, abstyp = abs(type);
+    enum hit_tile_types hit_tile = HIT_TILE;
 
 	//Base damage here, set to zero, if not needed
 	if (origobj)
@@ -7455,6 +7482,7 @@ xchar sx, sy;
         }
         break;
     case ZT_FIRE:
+        hit_tile = HIT_ON_FIRE;
         if (Fire_immunity || Invulnerable)
 		{
             u_shieldeff(); // shieldeff(sx, sy);
@@ -7479,6 +7507,7 @@ xchar sx, sy;
         }
         break;
     case ZT_COLD:
+        hit_tile = HIT_FROZEN;
         if (Cold_immunity || Invulnerable)
 		{
             u_shieldeff(); // shieldeff(sx, sy);
@@ -7495,19 +7524,20 @@ xchar sx, sy;
         break;
     case ZT_SLEEP:
 		damage = 0;
-		if (Sleep_resistance)
+        if (Sleep_resistance)
 		{
             u_shieldeff();
             You("don't feel sleepy.");
         }
         else 
         {
+            display_u_being_hit(HIT_SLEEP, 0, 0UL);
             fall_asleep(-rn1(5, 8), TRUE); /* sleep ray */
         }
         break;
     case ZT_DISINTEGRATION:
 		damage = 0;
-		if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) // || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39))
+        if (Disint_resistance || noncorporeal(youmonst.data) || Invulnerable) // || (magic_resistance_success && !(abstyp >= 20 && abstyp <= 39))
 		{					// if (abstyp == ZT_BREATH(ZT_DISINTEGRATION)) {
             You("are not disintegrated.");
             break;
@@ -7540,6 +7570,7 @@ xchar sx, sy;
         Strcpy(killer.name, fltxt ? fltxt : "");
         /* when killed by disintegration attack, don't leave corpse */
         u.ugrave_arise = (abstyp % 10 == ZT_DISINTEGRATION) ? -3 : NON_PM;
+        display_u_being_hit(HIT_DISINTEGRATED, 0, 0UL);
         done(DIED);
         return; /* lifesaved */
 	case ZT_DEATH:
@@ -7561,7 +7592,8 @@ xchar sx, sy;
 #endif
 		killer.format = KILLED_BY_AN;
 		Strcpy(killer.name, fltxt ? fltxt : "");
-		done(DIED);
+        display_u_being_hit(HIT_DEATH, 0, 0UL);
+        done(DIED);
 		return; /* lifesaved */
 	case ZT_PETRIFICATION:
 		damage = 0;
@@ -7570,32 +7602,37 @@ xchar sx, sy;
             u_shieldeff(); // shieldeff(sx, sy);
 			You("aren't affected.");
 		}
-		else if (Stoned)
-		{
-			if ((Stoned & TIMEOUT) > 1)
-			{
-				Stoned = Stoned - 1;
-				You("feel a bit more stiff.");
-			}
-			else
-			{
-				You("aren't affected.");
-			}
-		}
-		else if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
-		{
-			//Nothing more
-		}
-		else
-		{
-			int kformat = KILLED_BY_AN;
-			char kname[BUFSZ];
-			Strcpy(kname, fltxt ? fltxt : "");
-			make_stoned(5L, (char*)0, kformat, kname);
-		}
+        else
+        {
+            display_u_being_hit(HIT_PETRIFIED, 0, 0UL);
+            if (Stoned)
+            {
+                if ((Stoned & TIMEOUT) > 1)
+                {
+                    Stoned = Stoned - 1;
+                    You("feel a bit more stiff.");
+                }
+                else
+                {
+                    You("aren't affected.");
+                }
+            }
+            else if (poly_when_stoned(youmonst.data) && polymon(PM_STONE_GOLEM))
+            {
+                //Nothing more
+            }
+            else
+            {
+                int kformat = KILLED_BY_AN;
+                char kname[BUFSZ];
+                Strcpy(kname, fltxt ? fltxt : "");
+                make_stoned(5L, (char*)0, kformat, kname);
+            }
+        }
 		return;
 	case ZT_LIGHTNING:
-        if (Shock_immunity || Invulnerable) 
+        hit_tile = HIT_ELECTROCUTED;
+        if (Shock_immunity || Invulnerable)
 		{
             u_shieldeff(); // shieldeff(sx, sy);
 			You("aren't affected.");
@@ -7617,6 +7654,7 @@ xchar sx, sy;
 		poisoned("blast", A_DEX, "poisoned blast", 15, FALSE, dmgdice ? dmgdice : 4);
         break;
     case ZT_ACID:
+        hit_tile = HIT_SPLASHED_ACID;
         if (Acid_immunity || Invulnerable)
 		{
             pline_The("%s doesn't hurt.", hliquid("acid"));
@@ -7648,8 +7686,11 @@ xchar sx, sy;
         losehp(damage, fltxt, KILLED_BY_AN);
         int hpafter = Upolyd ? u.mh : u.uhp;
         int damagedealt = hpbefore - hpafter;
-        if(damagedealt > 0)
+        if (damagedealt > 0)
+        {
             You("sustain %d damage!", damagedealt);
+            display_u_being_hit(hit_tile, damagedealt, 0UL);
+        }
     }
     return;
 }
@@ -7842,7 +7883,7 @@ const char *fltxt;
         if (!m_amulet)
         {
             pline("%s is disintegrated!", Monnam(mon));
-            display_m_being_hit(mon, HIT_DISINTEGRATED, 0, LFLAGS_M_DISINTEGRATED);
+            display_m_being_hit(mon, HIT_DISINTEGRATED, 0, 0UL);
         }
         else
             hit(fltxt, mon, "!", -1, "");
@@ -7938,6 +7979,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
         if (type < 0)
             return;
 		damage = zhitm(u.ustuck, type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, &otmp);
+        if (damage == -1)
+        {
+            damage = 0;
+        }
 
         if (!u.ustuck)
             u.uswallow = 0;
@@ -8087,6 +8132,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					/* Ray does damage and actually reduces mon's hit points */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, mon->mx, mon->my);
                     double damage = zhitm(mon, type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, &otmp);
+                    boolean show_hit_tile = TRUE;
+                    if (damage == -1)
+                    {
+                        damage = 0;
+                        show_hit_tile = FALSE;
+                    }
 
 					/* Rider non-disintegration */
                     if (abstype == ZT_DISINTEGRATION && check_rider_disintegration(mon, fltxt))
@@ -8146,7 +8197,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 						{
                             /* normal non-fatal hit text */
                             if (say || canseemon(mon))
-                                hit(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage), "");
+                                hit_with_hit_tile(fltxt, mon, exclam((int)ceil(damage)), (int)ceil(damage), "", get_hit_tile_by_adtyp(abstype + 1), show_hit_tile);
                         } 
 						else 
 						{
@@ -9504,7 +9555,8 @@ int dmg, adtyp, tell;
 
 	if (damage > 0) 
 	{
-		int hp_before = 0, hp_after = 0;
+        enum hit_tile_types hit_tile = get_hit_tile_by_adtyp(adtyp);
+        int hp_before = 0, hp_after = 0;
 		if (is_you)
 		{
 			boolean was_polyd = Upolyd;
@@ -9517,7 +9569,7 @@ int dmg, adtyp, tell;
 			if (tell && damagedealt > 0 && polyd_same && !(tell == TELL_LETHAL_STYLE && !resisted))
 			{//Lethal damage not shown, resisted though yes
 				You("sustain %d damage!", damagedealt);
-                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+                display_u_being_hit(hit_tile, damagedealt, 0UL);
             }
 		}
 		else
@@ -9530,7 +9582,7 @@ int dmg, adtyp, tell;
 			if (tell && damagedealt > 0 && !(tell == TELL_LETHAL_STYLE && !resisted))
 			{//Lethal damage not shown, resisted though yes
 				pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-                display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+                display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL);
             }
 
 			if (DEADMONSTER(mtmp))
@@ -9558,6 +9610,7 @@ int dmg, adtyp, tell;
 
     if (damage > 0)
     {
+        enum hit_tile_types hit_tile = get_hit_tile_by_adtyp(adtyp);
         int hp_before = 0, hp_after = 0;
         if (is_you)
         {
@@ -9571,7 +9624,7 @@ int dmg, adtyp, tell;
             if (tell == TELL && damagedealt > 0 && polyd_same)
             {//Lethal damage not shown
                 You("sustain %d damage!", damagedealt);
-                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+                display_u_being_hit(hit_tile, damagedealt, 0UL);
             }
         }
         else
@@ -9584,7 +9637,7 @@ int dmg, adtyp, tell;
             if (tell == TELL && damagedealt > 0)
             {//Lethal damage not shown
                 pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-                display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+                display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL);
             }
 
             if (DEADMONSTER(mtmp))

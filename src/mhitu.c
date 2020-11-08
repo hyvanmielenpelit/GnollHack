@@ -21,17 +21,18 @@ STATIC_DCL int FDECL(explmu, (struct monst *, struct attack *, BOOLEAN_P));
 STATIC_DCL void FDECL(missmu, (struct monst *, BOOLEAN_P, struct attack *));
 STATIC_DCL void FDECL(mswings, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(wildmiss, (struct monst *, struct attack *));
-STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *, int));
+STATIC_DCL void FDECL(hitmsg, (struct monst *, struct attack *, int, boolean));
 
 /* See comment in mhitm.c.  If we use this a lot it probably should be */
 /* changed to a parameter to mhitu. */
 static int dieroll;
 
 STATIC_OVL void
-hitmsg(mtmp, mattk, damage)
+hitmsg(mtmp, mattk, damage, display_hit_tile)
 struct monst *mtmp;
 struct attack *mattk;
 int damage;
+boolean display_hit_tile;
 {
     int compat;
     const char *pfmt = 0;
@@ -138,7 +139,11 @@ int damage;
 
             }
 		}
-        display_u_being_hit(HIT_TILE, damage, 0UL);
+        if (display_hit_tile)
+        {
+            enum hit_tile_types hit_tile = get_hit_tile_by_adtyp(mattk->adtyp);
+            display_u_being_hit(hit_tile, damage, 0UL);
+        }
     }
 }
 
@@ -1693,6 +1698,7 @@ register struct obj* omonwep;
 	boolean isdisintegrated = FALSE;
     boolean sharpness_effect = FALSE;
 	int critstrikeroll = rn2(100);
+    enum hit_tile_types hit_tile = HIT_TILE;
 
     if (!canspotmon(mtmp))
         map_invisible(mtmp->mx, mtmp->my);
@@ -1886,19 +1892,19 @@ register struct obj* omonwep;
                         hug_throttles(mtmp->data) ? "choked" : "crushed",
                         is_constrictor(mtmp->data) ? " to death!" : ".",
                         damagedealt);
-                    display_u_being_hit(hug_throttles(mtmp->data) || is_constrictor(mtmp->data) ? HIT_STRANGLED : HIT_CRUSHED, damagedealt, 0UL);
+                    display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                 }
                 else if (is_constrictor(mtmp->data))
                 {
                     pline("%s is %s you to death!", Monnam(mtmp), hug_throttles(mtmp->data) ? "choking" : "constricting");
-                    display_u_being_hit(HIT_STRANGLED, damagedealt, 0UL);
+                    display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                 }
                 else
                 {
                     You("are being %s%s.", hug_throttles(mtmp->data)
                         ? "choked"
                         : "crushed", damage == 0 ? ", but sustain no damage" : "");
-                    display_u_being_hit(hug_throttles(mtmp->data) ? HIT_STRANGLED : HIT_CRUSHED, damagedealt, 0UL);
+                    display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                 }
             }
 		}
@@ -1980,11 +1986,11 @@ register struct obj* omonwep;
 
 				//Finally, display damage caused
 				if (!hittxt)
-					hitmsg(mtmp, mattk, damagedealt);
+					hitmsg(mtmp, mattk, damagedealt, TRUE);
 				else if (displaysustain && damagedealt > 0)
 					You("sustain %d damage.", damagedealt);
 
-                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+                display_u_being_hit(isdisintegrated ? HIT_DISINTEGRATED : HIT_TILE, damagedealt, 0UL);
                 
                 /* Silver message immediately next */
 				if (silvermsg)
@@ -2035,7 +2041,7 @@ register struct obj* omonwep;
 			}
 			else if (mattk->aatyp != AT_TUCH || damagedealt != 0
 				|| mtmp != u.ustuck)
-				hitmsg(mtmp, mattk, damagedealt);
+				hitmsg(mtmp, mattk, damagedealt, TRUE);
 		}
 		break;
 	}
@@ -2043,27 +2049,38 @@ register struct obj* omonwep;
 		if (Sick_resistance)
 			damage = 0;
 		
-		hitmsg(mtmp, mattk, damage == 0 ? 0 : damagedealt);
+		hitmsg(mtmp, mattk, damage == 0 ? 0 : damagedealt, FALSE);
 
 		//Must now bypass your MC -- Demogorgon has high penalties for saving throw
-		if (!mcsuccess)
+		if (!mcsuccess && !Sick_resistance)
 		{
-			(void)diseasemu(mtmp);
-		}
-		break;
+            if (diseasemu(mtmp))
+                display_u_being_hit(HIT_SICK, damagedealt, 0UL);
+            else if(damage > 0)
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+        }
+        else if (damage > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+
+        break;
     case AD_ROTS:
         if (Sick_resistance)
             damage = 0;
 
-        hitmsg(mtmp, mattk, damage == 0 ? 0 : damagedealt);
+        hitmsg(mtmp, mattk, damage == 0 ? 0 : damagedealt, FALSE);
 
-        if (!mcsuccess)
+        if (!mcsuccess && !Sick_resistance)
         {
-            (void)mummyrotmu(mtmp);
+            if(mummyrotmu(mtmp))
+                display_u_being_hit(HIT_SICK, damagedealt, 0UL);
+            else if (damage > 0)
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         }
+        else if (damage > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         break;
     case AD_FIRE:
-		hitmsg(mtmp, mattk, -1);
+        hitmsg(mtmp, mattk, -1, TRUE);
 		if (uncancelled) {
             if (completelyburns(youmonst.data)) 
 			{ /* paper or straw golem */
@@ -2080,7 +2097,7 @@ register struct obj* omonwep;
 			else
 				pline("You're %s! You sustain %d damage.", on_fire(youmonst.data, mattk), damage == 0 ? 0 : damagedealt);
 
-            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            display_u_being_hit(HIT_ON_FIRE, damagedealt, 0UL);
 
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(SCROLL_CLASS, AD_FIRE);
@@ -2094,7 +2111,7 @@ register struct obj* omonwep;
 			damage = 0;
 		break;
     case AD_COLD:
-		hitmsg(mtmp, mattk, -1);
+        hitmsg(mtmp, mattk, -1, TRUE);
 		if (uncancelled) 
 		{
             if (Cold_immunity || damage == 0) 
@@ -2105,7 +2122,7 @@ register struct obj* omonwep;
 			else
 				pline("You're covered in frost! You sustain %d damage.", damage == 0 ? 0 : damagedealt);
 
-            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            display_u_being_hit(HIT_FROZEN, damagedealt, 0UL);
 
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(POTION_CLASS, AD_COLD);
@@ -2115,7 +2132,7 @@ register struct obj* omonwep;
 
 		break;
     case AD_ELEC:
-		hitmsg(mtmp, mattk, -1);
+        hitmsg(mtmp, mattk, -1, TRUE);
 		if (uncancelled)
 		{
             if (Shock_immunity || damage == 0) 
@@ -2127,7 +2144,7 @@ register struct obj* omonwep;
 			else
 				You("get zapped for %d damage!", damagedealt);
 
-            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            display_u_being_hit(HIT_ELECTROCUTED, damagedealt, 0UL);
 
             if ((int) mtmp->m_lev > rn2(20))
                 destroy_item(WAND_CLASS, AD_ELEC);
@@ -2138,11 +2155,12 @@ register struct obj* omonwep;
 			damage = 0;
 		break;
     case AD_SLEE:
-		hitmsg(mtmp, mattk, damagedealt);
+		hitmsg(mtmp, mattk, damagedealt, FALSE);
 		if (uncancelled && multi >= 0) 
 		{
             if (Sleep_resistance || check_ability_resistance_success(&youmonst, A_WIS, mattk->mcadj))
                 break;
+            display_u_being_hit(HIT_SLEEP, damagedealt, 0UL);
             fall_asleep(-rn1(3, 8), TRUE);
 			if (Sleeping)
 			{
@@ -2157,7 +2175,9 @@ register struct obj* omonwep;
 			}
 			set_itimeout(&HSleep_resistance, 20);
 		}
-		break;
+        else if(damagedealt > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+        break;
     case AD_BLND:
         if (can_blnd(mtmp, &youmonst, mattk->aatyp, (struct obj *) 0))
 		{
@@ -2181,17 +2201,20 @@ register struct obj* omonwep;
     case AD_DRCO:
         ptmp = A_CON;
  dopois:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (uncancelled && !rn2(2))
         {
+            display_u_being_hit(HIT_POISONED, damagedealt, 0UL);
             Sprintf(buf, "%s %s", s_suffix(Monnam(mtmp)),
                     mpoisons_subj(mtmp, mattk));
 
             poisoned(buf, ptmp, mon_monster_name(mtmp), mtmp->m_lev <= 8 ? 0 : 10, FALSE, mtmp->m_lev <= 2 ? 1 : mtmp->m_lev <= 5 ? 2 : 3);
         }
+        else if(damagedealt > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         break;
     case AD_DRIN:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (Brain_protection || !has_head(youmonst.data)) {
             You("don't seem harmed.");
             /* Not clear what to do for green slimes */
@@ -2223,16 +2246,19 @@ register struct obj* omonwep;
         /* adjattrib gives dunce cap message when appropriate */
         break;
     case AD_PLYS:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (uncancelled && multi >= 0) 
 		{
             if (Free_action) 
 			{
-				if(!HFree_action)
+                if (damagedealt > 0)
+                    display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+                if(!HFree_action)
 	                You("momentarily stiffen.");
             } 
 			else 
 			{
+                display_u_being_hit(HIT_PARALYZED, damagedealt, 0UL);
                 if (Blind)
                     You("are frozen!");
                 else
@@ -2250,20 +2276,28 @@ register struct obj* omonwep;
 				/* No new paralysis for a while */
 				set_itimeout(&HFree_action, 20);
             }
-        }
+        } else if(damagedealt > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         break;
     case AD_SHRP:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (sharpness_effect)
+        {
+            display_u_being_hit(HIT_CRITICAL, damagedealt, 0UL);
             pline("%s strike slices a part of you off!", s_suffix(Monnam(mtmp)));
+        } else if (damagedealt > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         break;
     case AD_DRLI:
-		hitmsg(mtmp, mattk, damagedealt);
+		hitmsg(mtmp, mattk, damagedealt, FALSE);
 		if (uncancelled && !Drain_resistance) //!rn2(3) && 
 		{
+            display_u_being_hit(HIT_DRAIN_LEVEL, damagedealt, 0UL);
             losexp("life drainage");
         }
-		break;
+        else if (damagedealt > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+        break;
     case AD_LEGS:
 	{
         long side = rn2(2) ? RIGHT_SIDE : LEFT_SIDE;
@@ -2313,19 +2347,20 @@ register struct obj* omonwep;
                 pline("%s pricks your %s %s for %d damage!", Monst_name, sidestr, leg, damagedealt);
 
             set_wounded_legs(side, rnd(60 - ACURR(A_DEX)));
-            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            display_u_being_hit(HIT_CRITICAL, damagedealt, 0UL);
             exercise(A_STR, FALSE);
             exercise(A_DEX, FALSE);
         }
         break;
     }
     case AD_STON: /* cockatrice */
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (!uncancelled) //Needs to bypass MC
 		{
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
             if (!Deaf)
                 You_hear("a cough from %s!", mon_nam(mtmp));
-        } 
+        }
 		else
 		{
             if (!Deaf)
@@ -2335,6 +2370,7 @@ register struct obj* omonwep;
                 && !(poly_when_stoned(youmonst.data)
                         && polymon(PM_STONE_GOLEM)))
 			{
+                display_u_being_hit(HIT_PETRIFIED, 0, 0UL);
                 int kformat = KILLED_BY_AN;
                 const char *kname = mon_monster_name(mtmp);
 
@@ -2348,10 +2384,12 @@ register struct obj* omonwep;
                 return 1;
                 /* done_in_by(mtmp, STONING); */
             }
+            else if (damagedealt > 0)
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         }
         break;
     case AD_STCK:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (!is_cancelled(mtmp) && !u.ustuck && !sticks(youmonst.data))
         {
             play_sfx_sound(SFX_ACQUIRE_GRAB);
@@ -2372,7 +2410,7 @@ register struct obj* omonwep;
                     if (damagedealt > 0)
                     {
                         pline("%s swings itself around you. You sustain %d damage!", Monnam(mtmp), damagedealt);
-                        display_u_being_hit(HIT_STRANGLED, damagedealt, 0UL);
+                        display_u_being_hit(HIT_CRUSHED, damagedealt, 0UL);
                     }
 					else
 						pline("%s swings itself around you!", Monnam(mtmp));
@@ -2435,19 +2473,21 @@ register struct obj* omonwep;
 			damage = 0;
         break;
     case AD_WERE:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (uncancelled /* && !rn2(4)*/ && u.ulycn == NON_PM
             && !Protection_from_shape_changers && !Lycanthropy_resistance)
 		{
+            display_u_being_hit(HIT_WERE, damagedealt, 0UL);
             play_sfx_sound(SFX_CATCH_LYCANTHROPY);
             You_feel("feverish.");
             exercise(A_CON, FALSE);
             set_ulycn(monsndx(mdat));
             retouch_equipment(2);
-        }
+        } else if (damagedealt > 0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         break;
     case AD_SGLD:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (youmonst.data->mlet == mdat->mlet)
             break;
         if (uncancelled)
@@ -2469,7 +2509,7 @@ register struct obj* omonwep;
 
         if (is_animal(mtmp->data))
 		{
-            hitmsg(mtmp, mattk, -1);
+            hitmsg(mtmp, mattk, -1, TRUE);
             if (nymphcancelled)
                 break;
             /* Continue below */
@@ -2530,7 +2570,7 @@ register struct obj* omonwep;
         break;
 	}
     case AD_SAMU:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         /* when the Wizard or quest nemesis hits, there's a 1/20 chance
            to steal a quest artifact (any, not just the one for the hero's
            own role) or the Amulet or one of the invocation tools */
@@ -2539,7 +2579,7 @@ register struct obj* omonwep;
         break;
 
     case AD_TLPT:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (uncancelled) 
 		{
             if (flags.verbose)
@@ -2589,7 +2629,7 @@ register struct obj* omonwep;
         }
         break;
     case AD_RUST:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (is_cancelled(mtmp))
             break;
         if (is_iron(youmonst.data)) {
@@ -2601,13 +2641,13 @@ register struct obj* omonwep;
         erode_armor(&youmonst, ERODE_RUST);
         break;
     case AD_CORR:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (is_cancelled(mtmp))
             break;
         erode_armor(&youmonst, ERODE_CORRODE);
         break;
     case AD_DCAY:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (is_cancelled(mtmp))
             break;
         if (u.umonnum == PM_WOOD_GOLEM || u.umonnum == PM_LEATHER_GOLEM) {
@@ -2623,7 +2663,8 @@ register struct obj* omonwep;
          * nurses don't heal those that cause petrification */
         if (is_cancelled(mtmp) || (Upolyd && touch_petrifies(youmonst.data)))
 		{
-            hitmsg(mtmp, mattk, damagedealt);
+            hitmsg(mtmp, mattk, damagedealt, FALSE);
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
             break;
         }
 
@@ -2662,9 +2703,8 @@ register struct obj* omonwep;
 				updatemaxhp();
 				healamount = u.uhp - starthp;
 			}
-
             play_sfx_sound(SFX_HEALING);
-            
+            display_u_being_hit(HIT_HEAL, healamount, 0UL);
             if(healamount > 0)
 				pline("%s hits you for %d healing!", Monnam(mtmp), healamount);
 			else
@@ -2706,12 +2746,15 @@ register struct obj* omonwep;
                     verbalize("Doc, I can't help you unless you cooperate.");
 				damage = 0;
             } 
-			else
-                hitmsg(mtmp, mattk, damagedealt);
+            else
+            {
+                hitmsg(mtmp, mattk, damagedealt, FALSE);
+                display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            }
         }
         break;
     case AD_CURS:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         if (!night() && mdat == &mons[PM_GREMLIN])
             break;
         if (!is_cancelled(mtmp) && !rn2(10)) 
@@ -2739,49 +2782,55 @@ register struct obj* omonwep;
 		{
 			damage /= 2;
 			damagedealt = (int)damage + ((damage - (double)((int)damage) - ((double)(Upolyd ? u.mh_fraction : u.uhp_fraction) / 10000)) > 0 ? 1 : 0);
-			hitmsg(mtmp, mattk, damagedealt);
+			hitmsg(mtmp, mattk, damagedealt, TRUE);
             if (!Stunned)
                 play_sfx_sound(SFX_ACQUIRE_STUN);
             make_stunned((HStun & TIMEOUT) + (long) ceil(damage * 2), TRUE);
         } 
 		else
-			hitmsg(mtmp, mattk, damagedealt);
+			hitmsg(mtmp, mattk, damagedealt, TRUE);
 
 		break;
     case AD_ACID:
-		if (!is_cancelled(mtmp) && !rn2(3))
-            if (Acid_immunity) 
-			{
-				hitmsg(mtmp, mattk, -1);
-				pline("You're covered in %s, but it seems harmless.",
-                      hliquid("acid"));
-				damage = 0;
-            } 
-			else 
-			{
-				hitmsg(mtmp, mattk, damagedealt);
-				pline("You're covered in %s!  It burns!", hliquid("acid"));
+        if (!is_cancelled(mtmp) && !rn2(3))
+        {
+            if (Acid_immunity)
+            {
+                hitmsg(mtmp, mattk, -1, TRUE);
+                pline("You're covered in %s, but it seems harmless.",
+                    hliquid("acid"));
+                damage = 0;
+            }
+            else
+            {
+                hitmsg(mtmp, mattk, damagedealt, TRUE);
+                pline("You're covered in %s!  It burns!", hliquid("acid"));
                 exercise(A_STR, FALSE);
             }
+        }
         else
 		{
-			hitmsg(mtmp, mattk, -1);
+			hitmsg(mtmp, mattk, -1, TRUE);
 			damage = 0;
 		}
 		break;
     case AD_SLOW:
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, FALSE);
         if (uncancelled && HFast)
+        {
+            display_u_being_hit(HIT_SLOW, damagedealt, 0UL);
             u_slow_down();
+        } else if (damagedealt >0)
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         break;
     case AD_DREN:
-        hitmsg(mtmp, mattk, -1);
+        hitmsg(mtmp, mattk, -1, TRUE);
         if (uncancelled)
             drain_en((int)ceil(damage));
 		damage = 0;
         break;
     case AD_CONF:
-        hitmsg(mtmp, mattk, -1);
+        hitmsg(mtmp, mattk, -1, TRUE);
         if (!is_cancelled(mtmp) && !mtmp->mspec_used)
 		{
             mtmp->mspec_used = mtmp->mspec_used + ((int)ceil(damage) + rn2(6));
@@ -2813,6 +2862,7 @@ register struct obj* omonwep;
 		case 17:
 			if (!Death_resistance) // && !check_magic_cancellation_success(&youmonst, mcadj)) 
 			{
+                display_u_being_hit(HIT_DEATH, damagedealt, 0UL);
                 killer.format = KILLED_BY_AN;
                 Strcpy(killer.name, "touch of death");
                 done(DIED);
@@ -2822,7 +2872,8 @@ register struct obj* omonwep;
             /*FALLTHRU*/
         default: /* case 16: ... case 5: */
             permdmg = 1; /* actual damage done below */
-			You_feel("your life force draining away... You lose %d hit points, some of them permanently.", damagedealt);
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+            You_feel("your life force draining away... You lose %d hit points, some of them permanently.", damagedealt);
 			break;
         case 4:
         case 3:
@@ -2839,41 +2890,50 @@ register struct obj* omonwep;
 	}
     case AD_PEST:
         pline("%s reaches out, and you feel fever and chills. You lose %d hit points.", Monnam(mtmp), damagedealt);
-		(void) diseasemu(mtmp); /* plus the normal damage */
+		if(diseasemu(mtmp)) /* plus the normal damage */
+            display_u_being_hit(HIT_SICK, damagedealt, 0UL);
+        else
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         break;
     case AD_FAMN:
         pline("%s reaches out, and your body shrivels. You lose %d hit points.", Monnam(mtmp), damagedealt);
         exercise(A_CON, FALSE);
         if (!is_fainted())
+        {
             morehungry(rn1(40, 40));
+            display_u_being_hit(HIT_FAMINE, damagedealt, 0UL);
+        }
+        else
+            display_u_being_hit(HIT_TILE, damagedealt, 0UL);
         /* plus the normal damage */
         break;
     case AD_SLIM:
         if (!uncancelled)
             break;
         if (flaming(youmonst.data)) {
-			hitmsg(mtmp, mattk, -1);
+			hitmsg(mtmp, mattk, -1, FALSE);
 			pline_The("slime burns away!");
             damage = 0;
         } else if (Unchanging || noncorporeal(youmonst.data)
                    || youmonst.data == &mons[PM_GREEN_SLIME]) {
-			hitmsg(mtmp, mattk, -1);
+			hitmsg(mtmp, mattk, -1, FALSE);
 			You("are unaffected.");
 			damage = 0;
         } else if (!Slimed) {
-			hitmsg(mtmp, mattk, damagedealt);
+			hitmsg(mtmp, mattk, damagedealt, TRUE);
             play_sfx_sound(SFX_START_SLIMING);
             You("don't feel very well.");
             make_slimed(10L, (char *) 0);
             delayed_killer(SLIMED, KILLED_BY_AN, mon_monster_name(mtmp));
 		}
 		else {
-			hitmsg(mtmp, mattk, damagedealt);
+			hitmsg(mtmp, mattk, damagedealt, TRUE);
 			pline("Yuck!");
-		}
+            hit_tile = HIT_SLIMED;
+        }
         break;
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
-        hitmsg(mtmp, mattk, damagedealt);
+        hitmsg(mtmp, mattk, damagedealt, TRUE);
         /* uncancelled is sufficient enough; please
            don't make this attack less frequent */
         if (uncancelled) {
@@ -3206,6 +3266,7 @@ struct attack *mattk;
     struct obj *otmp2;
     int i;
     boolean physical_damage = FALSE;
+    enum hit_tile_types hit_tile = HIT_TILE;
 
     if (!u.uswallow) { /* swallows you */
         int omx = mtmp->mx, omy = mtmp->my;
@@ -3345,6 +3406,7 @@ struct attack *mattk;
         }
         break;
     case AD_ACID:
+        hit_tile = HIT_SPLASHED_ACID;
         if (Acid_immunity || Invulnerable) 
 		{
             You("are covered with a seemingly harmless goo.");
@@ -3381,6 +3443,7 @@ struct attack *mattk;
     case AD_ELEC:
         if (!is_cancelled(mtmp) && rn2(2)) 
         {
+            hit_tile = HIT_ELECTROCUTED;
             pline_The("air around you crackles with electricity.");
             if (Shock_immunity || Invulnerable) {
                 u_shieldeff();
@@ -3393,6 +3456,7 @@ struct attack *mattk;
         break;
     case AD_COLD:
         if (!is_cancelled(mtmp) && rn2(2)) {
+            hit_tile = HIT_FROZEN;
             if (Cold_immunity || Invulnerable) {
                 u_shieldeff();
                 You_feel("mildly chilly.");
@@ -3405,6 +3469,7 @@ struct attack *mattk;
         break;
     case AD_FIRE:
         if (!is_cancelled(mtmp) && rn2(2)) {
+            hit_tile = HIT_ON_FIRE;
             if (Fire_immunity || Invulnerable) {
                 u_shieldeff();
                 You_feel("mildly hot.");
@@ -3436,7 +3501,7 @@ struct attack *mattk;
         break;
     }
 
-    mdamageu(mtmp, damage, TRUE);
+    mdamageu_with_hit_tile(mtmp, damage, TRUE, hit_tile);
 
     if (damage > 0)
         stop_occupation();
@@ -3492,7 +3557,7 @@ boolean ufound;
 
 		boolean not_affected = 0;
 
-        hitmsg(mtmp, mattk, -1);
+        hitmsg(mtmp, mattk, -1, TRUE);
 
         switch (mattk->adtyp)
 		{
@@ -3537,7 +3602,7 @@ boolean ufound;
 				if (Invulnerable)
 					tmp = 0;
 #endif
-				mdamageu(mtmp, damage, TRUE);
+				mdamageu_with_hit_tile(mtmp, damage, TRUE, get_hit_tile_by_adtyp(mattk->adtyp));
             }
             break;
 
@@ -3656,7 +3721,10 @@ struct attack *mattk;
             }
             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
             if (useeit)
+            {
+                display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL);
                 pline("%s is turned to stone!", Monnam(mtmp));
+            }
             stoned = TRUE;
             killed(mtmp);
 
@@ -3895,9 +3963,19 @@ struct attack *mattk;
 /* mtmp hits you for n points damage */
 void
 mdamageu(mtmp, n, verbose)
+struct monst* mtmp;
+double n;
+boolean verbose;
+{
+    mdamageu_with_hit_tile(mtmp, n, verbose, HIT_TILE);
+}
+    
+void
+mdamageu_with_hit_tile(mtmp, n, verbose, hit_tile)
 struct monst *mtmp;
 double n;
 boolean verbose;
+enum hit_tile_types hit_tile;
 {
 	int hp_before = Upolyd ? u.mh : u.uhp;
 	deduct_player_hp(n);
@@ -3907,7 +3985,7 @@ boolean verbose;
     if (verbose && damagedealt > 0)
     {
         You("sustain %d damage!", damagedealt);
-        display_u_being_hit(HIT_TILE, damagedealt, 0UL);
+        display_u_being_hit(hit_tile, damagedealt, 0UL);
     }
 	if (Upolyd) {
         if (u.mh < 1)
@@ -4354,6 +4432,7 @@ struct attack *mattk;
 	double damage = 0;
     struct attack *oldu_mattk = 0;
 	int damagedealt = 0;
+    enum hit_tile_types hit_tile = HIT_TILE;
 
     /*
      * mattk      == mtmp's attack that hit you;
@@ -4385,6 +4464,7 @@ struct attack *mattk;
     switch (oldu_mattk->adtyp)
 	{
     case AD_ACID:
+        hit_tile = HIT_SPLASHED_ACID;
         if (!rn2(2))
 		{
             pline("%s is splashed by %s%s!", Monnam(mtmp),
@@ -4430,6 +4510,7 @@ struct attack *mattk;
             }
             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
             pline("%s turns to stone!", Monnam(mtmp));
+            display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL);
             stoned = 1;
             xkilled(mtmp, XKILL_NOMSG);
             update_u_action(action_before);
@@ -4476,7 +4557,7 @@ struct attack *mattk;
         case AD_PLYS: /* Floating eye */
 		{
 			int paralyse_duration = (int)ceil(damage);
-			if (u.umonnum == PM_FLOATING_EYE)
+            if (u.umonnum == PM_FLOATING_EYE)
 			{
                 if (!rn2(20))
 					paralyse_duration = 24;
@@ -4491,6 +4572,7 @@ struct attack *mattk;
                         update_u_action(action_before);
                         if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))
                             return 1;
+                        hit_tile = HIT_PARALYZED;
                         pline("%s is frozen by your gaze!", Monnam(mtmp));
                         paralyze_monst(mtmp, paralyse_duration, FALSE);
                         return 3;
@@ -4499,6 +4581,7 @@ struct attack *mattk;
             } 
 			else 
 			{ /* gelatinous cube */
+                hit_tile = HIT_PARALYZED;
                 pline("%s is frozen by you.", Monnam(mtmp));
                 paralyze_monst(mtmp, paralyse_duration, FALSE);
                 update_u_action(action_before);
@@ -4515,6 +4598,7 @@ struct attack *mattk;
                 damage = 0;
                 break;
             }
+            hit_tile = HIT_FROZEN;
             pline("%s is suddenly very cold!", Monnam(mtmp));
             u.mh += (int)damage / 2;
             if (u.mh - u.mhmax > 0)
@@ -4544,7 +4628,8 @@ struct attack *mattk;
 				damage = 0;
                 break;
             }
-			if (flaming(youmonst.data))
+            hit_tile = HIT_ON_FIRE;
+            if (flaming(youmonst.data))
 				pline("%s is engulfed in your flames!", Monnam(mtmp));
 			else
 				pline("%s is suddenly very hot!", Monnam(mtmp));
@@ -4558,6 +4643,7 @@ struct attack *mattk;
 				damage = 0;
                 break;
             }
+            hit_tile = HIT_ELECTROCUTED;
             pline("%s is jolted with your electricity!", Monnam(mtmp));
             break;
         default:
@@ -4578,7 +4664,7 @@ assess_dmg:
     if (canseemon(mtmp) && damagedealt > 0)
     {
         pline("%s sustains %d damage!", Monnam(mtmp), damagedealt);
-        display_m_being_hit(mtmp, HIT_TILE, damagedealt, 0UL);
+        display_m_being_hit(mtmp, hit_tile, damagedealt, 0UL);
     }
 
     if (mtmp->mhp <= 0)
@@ -4664,5 +4750,61 @@ struct attack* attk;
 
     return 0; /* return the first attack as a base case to simplify use; one should never get here if properly used */
 }
+
+enum hit_tile_types
+get_hit_tile_by_adtyp(adtyp)
+int adtyp;
+{
+    enum hit_tile_types hit_tile = HIT_TILE;
+    switch (adtyp)
+    {
+    case AD_FIRE:
+        hit_tile = HIT_ON_FIRE;
+        break;
+    case AD_COLD:
+        hit_tile = HIT_FROZEN;
+        break;
+    case AD_ELEC:
+        hit_tile = HIT_ELECTROCUTED;
+        break;
+    case AD_ACID:
+        hit_tile = HIT_SPLASHED_ACID;
+        break;
+    case AD_DETH:
+    case AD_DRAY:
+        hit_tile = HIT_DEATH;
+        break;
+    case AD_STON:
+        hit_tile = HIT_PETRIFIED;
+        break;
+    case AD_DISN:
+        hit_tile = HIT_DISINTEGRATED;
+        break;
+    case AD_SLEE:
+        hit_tile = HIT_SLEEP;
+        break;
+    case AD_DRST:
+    case AD_DRCO:
+    case AD_DRDX:
+        hit_tile = HIT_POISONED;
+        break;
+    case AD_SLIM:
+        hit_tile = HIT_SLIMED;
+        break;
+    case AD_DISE:
+    case AD_PEST:
+        hit_tile = HIT_SICK;
+        break;
+    case AD_FAMN:
+        hit_tile = HIT_FAMINE;
+        break;
+    default:
+        break;
+    }
+
+    return hit_tile;
+}
+
+
 
 /*mhitu.c*/

@@ -57,16 +57,19 @@ struct layer_info {
 
 /* These are flags for showing extra stuff in graphical interfaces */
 #define LFLAGS_M_BEING_HIT          0x00000100UL
-#define LFLAGS_M_HIT_TILE_MASK      0x00000E00UL /* 3 bits indicating display of hit tile 0-7 */
+#define LFLAGS_M_HIT_TILE_MASK      0x00003E00UL /* 3 bits indicating display of hit tile 0-31 */
 #define LFLAGS_M_HIT_TILE_MASK_BIT_OFFSET 9 
-#define LFLAGS_M_DISINTEGRATED      0x00001000UL
-#define LFLAGS_M_PETRIFIED          0x00002000UL
-#define LFLAGS_M_CAITIFF            0x00004000UL
-#define LFLAGS_M_BACKSTAB           0x00008000UL
-#define LFLAGS_M_BREAK_WEAPON       0x00010000UL
-#define LFLAGS_M_WORM_TAIL          0x00020000UL
-/* free for m_ flag */
-/* free for m_ flag */
+/* hit_tile_bit 002 */
+/* hit_tile_bit 004 */
+/* hit_tile_bit 008 */
+/* hit_tile_bit 010 */
+/* hit_tile_bit 020 */
+/* free for m_ flag 040 */
+/* free for m_ flag 080 */
+/* free for m_ flag 100 */
+/* free for m_ flag 020 */
+/* free for m_ flag 040 */
+#define LFLAGS_M_WORM_TAIL          0x00080000UL
 #define LFLAGS_M_MASK               0x000FFFFFUL
 
 /* These are flags for showing extra stuff in graphical interfaces */

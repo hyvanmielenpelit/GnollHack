@@ -2323,8 +2323,31 @@ NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS] =
     {"invisible", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
 };
 
-
-
+/* Hit tile */
+NEARDATA struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES] =
+{
+    {"hit", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"poisoned", NO_REPLACEMENT, LOOK_CURSOR_ANIMATION, NO_ENLARGEMENT },
+    {"disintegrated", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"crushed", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"splashed-acid", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"on-fire", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"frozen", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"electrocuted", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"death", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"sleep", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"petrified", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"critical", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"flashed-light", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"paralyzed", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"slimed", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"sick", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"famine", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"heal", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"were", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"drain-level", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+    {"slow", NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT},
+};
 
 STATIC_DCL int FDECL(get_shore_tile_index, (struct rm* , struct rm*));
 STATIC_DCL int FDECL(get_solid_floor_tile_index, (struct rm*));
@@ -3300,6 +3323,13 @@ short animidx;
             return glyph2tile[i + GLYPH_CURSOR_OFF];
     }
 
+    /* Hit tiles */
+    for (enum hit_tile_types i = HIT_TILE; i < MAX_HIT_TILES; i++)
+    {
+        if (hit_tile_definitions[i].animation == animidx)
+            return glyph2tile[i + GLYPH_HIT_TILE_OFF];
+    }
+
     /* UI Tiles */
     for (enum game_ui_tile_types i = DEATH_TILE; i < MAX_UI_TILES; i++)
     {
@@ -3406,6 +3436,12 @@ short enlidx, enl_anim_tile_idx;
     {
         if (game_cursors[i].enlargement == enlidx)
             return glyph2tile[i + GLYPH_CURSOR_OFF];
+    }
+
+    for (enum hit_tile_types i = HIT_TILE; i < MAX_HIT_TILES; i++)
+    {
+        if (hit_tile_definitions[i].enlargement == enlidx)
+            return glyph2tile[i + GLYPH_HIT_TILE_OFF];
     }
 
     for (enum game_ui_tile_types i = DEATH_TILE; i < MAX_UI_TILES; i++)
@@ -3536,6 +3572,12 @@ short replacement_idx;
     {
         if (game_cursors[i].replacement == replacement_idx)
             return glyph2tile[i + GLYPH_CURSOR_OFF];
+    }
+
+    for (enum hit_tile_types i = HIT_TILE; i < MAX_HIT_TILES; i++)
+    {
+        if (hit_tile_definitions[i].replacement == replacement_idx)
+            return glyph2tile[i + GLYPH_HIT_TILE_OFF];
     }
 
     for (enum game_ui_tile_types i = DEATH_TILE; i < MAX_UI_TILES; i++)

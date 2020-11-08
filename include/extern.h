@@ -1504,10 +1504,13 @@ E int FDECL(magic_negation_percentage, (int));
 E boolean NDECL(gulp_blnd_check);
 E int FDECL(gazemu, (struct monst *, struct attack *));
 E void FDECL(mdamageu, (struct monst *, double, BOOLEAN_P));
+E void FDECL(mdamageu_with_hit_tile, (struct monst*, double, BOOLEAN_P, enum hit_tile_types));
 E int FDECL(could_seduce, (struct monst *, struct monst *, struct attack *));
 E int FDECL(doseduce, (struct monst *));
 E void FDECL(update_m_facing, (struct monst*, int, BOOLEAN_P));
 E int FDECL(get_pm_attack_index, (struct permonst*, struct attack*));
+E enum hit_tile_types FDECL(get_hit_tile_by_adtyp, (int));
+
 
 /* ### minion.c ### */
 
@@ -3205,9 +3208,9 @@ E void FDECL(get_game_difficulty_multipliers, (double*, double*));
 E void FDECL(update_u_facing, (uchar));
 E void FDECL(update_u_action, (enum action_tile_types));
 E void FDECL(update_m_action, (struct monst*, enum action_tile_types));
-E void FDECL(display_being_hit, (struct monst*, int, int, enum game_ui_tile_types, int, unsigned long));
-E void FDECL(display_u_being_hit, (enum game_ui_tile_types, int, unsigned long));
-E void FDECL(display_m_being_hit, (struct monst*, enum game_ui_tile_types, int, unsigned long));
+E void FDECL(display_being_hit, (struct monst*, int, int, enum hit_tile_types, int, unsigned long));
+E void FDECL(display_u_being_hit, (enum hit_tile_types, int, unsigned long));
+E void FDECL(display_m_being_hit, (struct monst*, enum hit_tile_types, int, unsigned long));
 E void NDECL(u_wait_until_action);
 E void NDECL(m_wait_until_action);
 
@@ -3693,6 +3696,7 @@ E void NDECL(zapwrapup);
 E void FDECL(weffects, (struct obj *));
 E const char *FDECL(exclam, (int force));
 E void FDECL(hit, (const char *, struct monst *, const char *, int, const char*));
+E void FDECL(hit_with_hit_tile, (const char*, struct monst*, const char*, int, const char*, enum hit_tile_types, boolean));
 E void FDECL(miss, (const char *, struct monst *));
 E struct monst *FDECL(bhit, (int, int, int, int, enum bhit_call_types,
                              int (*)(MONST_P, OBJ_P, MONST_P),

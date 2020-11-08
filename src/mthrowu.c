@@ -1789,10 +1789,10 @@ struct attack* mattk;
 		{
 			if (!Deaf) 
             {
-if (canseemon(mtmp))
-pline("%s coughs.", Monnam(mtmp));
-else
-You_hear("a cough.");
+                if (canseemon(mtmp))
+                pline("%s coughs.", Monnam(mtmp));
+                else
+                You_hear("a cough.");
 			}
 			return 0;
 		}

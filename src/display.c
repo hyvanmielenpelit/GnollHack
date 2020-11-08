@@ -1163,12 +1163,14 @@ int damage_shown;
     if (layers.layer_glyphs[LAYER_MONSTER_EFFECT] != 0 && layers.layer_glyphs[LAYER_MONSTER_EFFECT] != NO_GLYPH)
         monster_effect_glyph = layers.layer_glyphs[LAYER_MONSTER_EFFECT];
 
+    unsigned long old_flags = layers.layer_flags;
+
     /* only permit updating the hero when swallowed */
     if (u.uswallow)
     {
         if (x == u.ux && y == u.uy)
             display_self_with_extra_info_choose_ascii(disp_flags, damage_shown, FALSE);
-        return;
+        goto new_sym_end_here;
     }
 
     if (Underwater && !Is_waterlevel(&u.uz))
@@ -1176,7 +1178,7 @@ int damage_shown;
         /* when underwater, don't do anything unless <x,y> is an
            adjacent water or lava or ice position */
         if (!(is_pool_or_lava(x, y) || is_ice(x, y)) || distu(x, y) > 2)
-            return;
+            goto new_sym_end_here;
     }
 
     /* First, clear all glyphs in the glyph buffer */
@@ -1333,6 +1335,8 @@ int damage_shown;
             }
         }
     }
+
+new_sym_end_here:
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH)
     {
         show_glyph_on_layer(x, y, missile_glyph, LAYER_MISSILE);
@@ -1349,6 +1353,11 @@ int damage_shown;
     {
         show_glyph_on_layer(x, y, background_effect_glyph, LAYER_BACKGROUND_EFFECT);
     }
+    if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_FLAGS)
+    {
+        add_glyph_buffer_layer_flags(x, y, old_flags);
+    }
+
 }
 
 #undef is_worm_tail
@@ -2508,12 +2517,12 @@ int x, y, glyph;
          *  the definition.
          */
 
-        if (glyph >= GLYPH_CURSOR_OFF
+        if (glyph >= GLYPH_SPECIAL_EFFECT_OFF
             && glyph < MAX_GLYPH) { /* UI, animation, and other glyphs */
             text = "other glyph";
-            offset = glyph - GLYPH_CURSOR_OFF;
+            offset = glyph - GLYPH_SPECIAL_EFFECT_OFF;
         } else if (glyph >= GLYPH_PLAYER_ATTACK_OFF
-            && glyph < GLYPH_CURSOR_OFF) { /* a player character in action */
+            && glyph < GLYPH_SPECIAL_EFFECT_OFF) { /* a player character in action */
             text = "player character in action";
             offset = glyph - GLYPH_PLAYER_ATTACK_OFF;
         } else if (glyph >= GLYPH_PLAYER_OFF

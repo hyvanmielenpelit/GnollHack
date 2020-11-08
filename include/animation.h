@@ -931,23 +931,6 @@ struct special_effect_definition {
 extern NEARDATA struct special_effect_definition special_effects[MAX_SPECIAL_EFFECTS];
 
 
-/* Game cursor types */
-enum game_cursor_types
-{
-    CURSOR_STYLE_GENERIC_CURSOR = 0,
-    CURSOR_STYLE_LOOK_CURSOR,
-    CURSOR_STYLE_TRAVEL_CURSOR,
-    CURSOR_STYLE_NAME_CURSOR,
-    CURSOR_STYLE_TELEPORT_CURSOR,
-    CURSOR_STYLE_JUMP_CURSOR,
-    CURSOR_STYLE_POLEARM_CURSOR,
-    CURSOR_STYLE_GRAPPLE_CURSOR,
-    CURSOR_STYLE_SPELL_CURSOR,
-    CURSOR_STYLE_PAY_CURSOR,
-    CURSOR_STYLE_INVISIBLE,
-    MAX_CURSORS
-};
-
 struct game_cursor_definition {
     const char* name;
     enum replacement_types replacement;
@@ -957,6 +940,16 @@ struct game_cursor_definition {
 
 
 extern NEARDATA struct game_cursor_definition game_cursors[MAX_CURSORS];
+
+struct hit_tile_definition {
+    const char* name;
+    enum replacement_types replacement;
+    enum animation_types animation;
+    enum enlargement_types enlargement;
+};
+
+
+extern NEARDATA struct hit_tile_definition hit_tile_definitions[MAX_HIT_TILES];
 
 #define MAX_PLAYED_SPECIAL_EFFECTS 12  // Must be greater than or equal to MAXNASTIES
 #define MAX_PLAYED_ZAP_ANIMATIONS 16

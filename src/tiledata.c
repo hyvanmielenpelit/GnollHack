@@ -31,24 +31,10 @@ NEARDATA struct tileset_definition default_tileset_definition =
 
 NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES] = {
     {"death",                   NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"hit",                     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"poisoned",                NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"disintegrated",           NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"crushed",                 NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"strangled",               NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"extra-hit-tile-5",        NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"extra-hit-tile-6",        NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"extra-hit-tile-7",        NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"general-ui",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 3, 16, 16, {"checkbox-unchecked", "checkbox-checked", "checkbox-count", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"status",                  NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, MAX_STATUS_MARKS, 16, 16, {"petmark", "peacemark", "detectmark", "pilemark",  "hungry", "weak", "faint", "burdened",  "stressed", "strained", "overtaxed", "overloaded",  "two-weapon", "skill", "saddled", "low-hp",  "critical-hp", "spec-used", "trapped", "ustuck",  "", "", "", ""} },
     {"conditions",              NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, min(24, BL_MASK_BITS), 16, 16, {"", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"main_tile_mark",          NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"main-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"message-window-borders",  NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"status-window-borders",   NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"map-window-borders",      NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"menu-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
-    {"text-window-borders",     NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 6, 32, 32, {"top-left", "top", "middle-left", "middle-center",  "bottom-left",  "bottom-center", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
     {"bookshelf-graphics",      NO_REPLACEMENT, NO_ANIMATION, NO_ENLARGEMENT, 1, 64, 96, {"whole", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", "",  "", "", "", ""} },
 };
 
@@ -1469,6 +1455,22 @@ uchar* tilemapflags;
         tile_count++;
     }
 
+    set_name = "hit-tile";
+    for (int i = 0; i < MAX_HIT_TILES; i++)
+    {
+        if (process_style == 0)
+        {
+            Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, hit_tile_definitions[i].name);
+            (void)write(fd, buf, strlen(buf));
+        }
+        else if (process_style == 1)
+        {
+            glyph_offset = GLYPH_HIT_TILE_OFF;
+            tilemaparray[i + glyph_offset] = tile_count;
+        }
+        tile_count++;
+    }
+
     set_name = "ui-tile";
     for (int i = 0; i < MAX_UI_TILES; i++)
     {
@@ -1847,6 +1849,17 @@ uchar* tilemapflags;
             }
         }
 
+        /* Hit tiles */
+        for (int i = 0; i < MAX_HIT_TILES; i++)
+        {
+            if (hit_tile_definitions[i].replacement)
+            {
+                int glyph = i + GLYPH_HIT_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2replacement[tile] = hit_tile_definitions[i].replacement;
+            }
+        }
+
         /* UI Tiles */
         for (int i = 0; i < MAX_UI_TILES; i++)
         {
@@ -2077,6 +2090,17 @@ uchar* tilemapflags;
             }
         }
 
+        /* Hit tiles */
+        for (int i = 0; i < MAX_HIT_TILES; i++)
+        {
+            if (hit_tile_definitions[i].animation)
+            {
+                int glyph = i + GLYPH_HIT_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2animation[tile] = hit_tile_definitions[i].animation;
+            }
+        }
+
         /* UI Tiles */
         for (int i = 0; i < MAX_UI_TILES; i++)
         {
@@ -2268,6 +2292,17 @@ uchar* tilemapflags;
                 int glyph = i + GLYPH_CURSOR_OFF;
                 short tile = glyph2tile[glyph];
                 tile2enlargement[tile] = game_cursors[i].enlargement;
+            }
+        }
+
+        /* Hit tiles */
+        for (int i = 0; i < MAX_HIT_TILES; i++)
+        {
+            if (hit_tile_definitions[i].enlargement)
+            {
+                int glyph = i + GLYPH_HIT_TILE_OFF;
+                short tile = glyph2tile[glyph];
+                tile2enlargement[tile] = hit_tile_definitions[i].enlargement;
             }
         }
 
