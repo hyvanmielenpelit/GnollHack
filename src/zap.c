@@ -5127,6 +5127,7 @@ boolean ordinary;
 			damage = 0;
         } else {
 			pline("Idiot!  You've shot yourself!");
+            display_u_being_hit(HIT_TILE, 0, 0UL);
         }
         break;
 
@@ -5161,6 +5162,7 @@ boolean ordinary;
         if (!Drain_resistance) {
             learn_it = TRUE; /* (no effect for spells...) */
             losexp("life drainage");
+            display_u_being_hit(HIT_DRAIN_LEVEL, 0, 0UL);
         }
         damage = 0; /* No additional damage */
         break;
