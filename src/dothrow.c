@@ -271,7 +271,7 @@ boolean firing;
         }
         freeinv(otmp);
         throwit(otmp, wep_mask);
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
         if (context.multishot_target_killed == TRUE)
 		{
 			context.multishot_target_killed = FALSE;

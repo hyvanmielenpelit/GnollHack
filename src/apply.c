@@ -275,7 +275,7 @@ struct obj *obj;
         obj->ox = u.ux, obj->oy = u.uy;
         (void) flash_hits_mon(mtmp, obj);
     }
-    update_u_action(ACTION_TILE_NO_ACTION);
+    update_u_action_revert(ACTION_TILE_NO_ACTION);
     return 1;
 }
 
@@ -3738,7 +3738,7 @@ struct obj *obj;
         if (!isok(rx, ry)) 
         {
             You("miss.");
-            update_u_action(ACTION_TILE_NO_ACTION);
+            update_u_action_revert(ACTION_TILE_NO_ACTION);
             return res;
         }
         mtmp = m_at(rx, ry);
@@ -3779,7 +3779,7 @@ struct obj *obj;
         if (u.usteed && !rn2(proficient + 2)) {
             You("whip %s!", mon_nam(u.usteed));
             kick_steed();
-            update_u_action(ACTION_TILE_NO_ACTION);
+            update_u_action_revert(ACTION_TILE_NO_ACTION);
             return 1;
         }
         if (Levitation || u.usteed) {
@@ -3787,7 +3787,7 @@ struct obj *obj;
             otmp = level.objects[u.ux][u.uy];
             if (otmp && otmp->otyp == CORPSE && otmp->corpsenm == PM_HORSE) {
                 pline("Why beat a dead horse?");
-                update_u_action(ACTION_TILE_NO_ACTION);
+                update_u_action_revert(ACTION_TILE_NO_ACTION);
                 return 1;
             }
             if (otmp && proficient) {
@@ -3795,7 +3795,7 @@ struct obj *obj;
                     an(singular(otmp, xname)), surface(u.ux, u.uy));
                 if (rnl(6) || pickup_object(otmp, 1L, TRUE) < 1)
                     pline1(msg_slipsfree);
-                update_u_action(ACTION_TILE_NO_ACTION);
+                update_u_action_revert(ACTION_TILE_NO_ACTION);
                 return 1;
             }
         }
@@ -3805,7 +3805,7 @@ struct obj *obj;
         You("hit your %s with your bullwhip.", body_part(FOOT));
         Sprintf(buf, "killed %sself with %s bullwhip", uhim(), uhis());
         losehp(adjust_damage(dam, &youmonst, &youmonst, objects[obj->otyp].oc_damagetype, ADFLAGS_NONE), buf, NO_KILLER_PREFIX);
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
         return 1;
 
     } else if ((Fumbling || Glib) && !rn2(5)) {
@@ -3967,7 +3967,7 @@ struct obj *obj;
                 pline1(msg_slipsfree);
             }
             wakeup(mtmp, TRUE);
-            update_u_action(ACTION_TILE_NO_ACTION);
+            update_u_action_revert(ACTION_TILE_NO_ACTION);
         } else {
             if (M_AP_TYPE(mtmp) && !Protection_from_shape_changers
                 && !sensemon(mtmp))
@@ -3992,7 +3992,7 @@ struct obj *obj;
 
         You("snap your whip through thin air.");
 
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
 
     } else {
         pline1(msg_snap);

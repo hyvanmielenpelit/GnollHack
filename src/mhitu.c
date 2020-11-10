@@ -4505,7 +4505,7 @@ struct attack *mattk;
             if (poly_when_stoned(mtmp->data))
 			{
                 mon_to_stone(mtmp);
-                update_u_action(action_before);
+                update_u_action_core(action_before, 1);
                 return 1;
             }
             play_sfx_sound_at_location(SFX_PETRIFY, mtmp->mx, mtmp->my);
@@ -4513,12 +4513,12 @@ struct attack *mattk;
             display_m_being_hit(mtmp, HIT_PETRIFIED, 0, 0UL);
             stoned = 1;
             xkilled(mtmp, XKILL_NOMSG);
-            update_u_action(action_before);
+            update_u_action_core(action_before, 1);
             if (!DEADMONSTER(mtmp))
                 return 1;
             return 2;
         }
-        update_u_action(action_before);
+        update_u_action_core(action_before, 1);
         return 1;
     }
     case AD_ENCH: /* KMH -- remove enchantment (disenchanter) */
@@ -4529,7 +4529,7 @@ struct attack *mattk;
             (void) drain_item(mon_currwep, TRUE);
             /* No message */
         }
-        update_u_action(action_before);
+        update_u_action_core(action_before, 1);
         return 1;
     default:
         break;
@@ -4537,7 +4537,7 @@ struct attack *mattk;
 
     if (!Upolyd)
     {
-        update_u_action(action_before);
+        update_u_action_core(action_before, 1);
         return 1;
     }
 
@@ -4569,7 +4569,7 @@ struct attack *mattk;
                               mon_monster_name(&youmonst));
                     else
 					{
-                        update_u_action(action_before);
+                        update_u_action_core(action_before, 1);
                         if (mon_reflects(mtmp, "Your gaze is reflected by %s %s."))
                             return 1;
                         hit_tile = HIT_PARALYZED;
@@ -4584,7 +4584,7 @@ struct attack *mattk;
                 hit_tile = HIT_PARALYZED;
                 pline("%s is frozen by you.", Monnam(mtmp));
                 paralyze_monst(mtmp, paralyse_duration, FALSE);
-                update_u_action(action_before);
+                update_u_action_core(action_before, 1);
                 return 3;
             }
             return 1;
@@ -4671,12 +4671,12 @@ assess_dmg:
 	{
         pline("%s dies!", Monnam(mtmp));
         xkilled(mtmp, XKILL_NOMSG);
-        update_u_action(action_before);
+        update_u_action_core(action_before, 1);
         if (!DEADMONSTER(mtmp))
             return 1;
         return 2;
     }
-    update_u_action(action_before);
+    update_u_action_core(action_before, 1);
     return 1;
 }
 

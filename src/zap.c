@@ -5015,7 +5015,8 @@ boolean ordinary;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_ELEC, ADFLAGS_SPELL_DAMAGE);
 		if (!Shock_immunity && !Invulnerable) {
             You("shock yourself!");
-			exercise(A_CON, FALSE);
+            display_u_being_hit(HIT_ELECTROCUTED, 0, 0UL);
+            exercise(A_CON, FALSE);
         } else {
             u_shieldeff();
             You("zap yourself, but seem unharmed.");
@@ -5063,13 +5064,17 @@ boolean ordinary;
     case FIRE_HORN:
         learn_it = TRUE;
 		damage = adjust_damage(basedmg, &youmonst, &youmonst, AD_FIRE, ADFLAGS_SPELL_DAMAGE);
-		if (Fire_immunity || Invulnerable) {
+		if (Fire_immunity || Invulnerable) 
+        {
             u_shieldeff();
             You_feel("rather warm.");
             ugolemeffects(AD_FIRE, damage);
 			damage = 0;
-        } else {
+        }
+        else 
+        {
             pline("You've set yourself afire!");
+            display_u_being_hit(HIT_ON_FIRE, 0, 0UL);
         }
         burn_away_slime();
         (void) burnarmor(&youmonst);
@@ -5106,7 +5111,8 @@ boolean ordinary;
 			damage = 0;
         } else {
             You("imitate a popsicle!");
-		}
+            display_u_being_hit(HIT_FROZEN, 0, 0UL);
+        }
         destroy_item(POTION_CLASS, AD_COLD);
         break;
 

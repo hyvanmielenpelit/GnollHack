@@ -1989,7 +1989,7 @@ domove_core()
             !(boulder || solid) ? "" : !explo ? "harmlessly " : "futilely ",
             explo ? "explode at" : "attack", buf);
 
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
 
         nomul(0);
         if (explo) 

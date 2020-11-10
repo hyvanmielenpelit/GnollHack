@@ -486,7 +486,7 @@ struct obj *pick;
 
     int res = pick_lock_core(pick, cc.x, cc.y, FALSE);
 
-    update_u_action(ACTION_TILE_NO_ACTION);
+    update_u_action_revert(ACTION_TILE_NO_ACTION);
     return res;
 }
 
@@ -967,7 +967,7 @@ int x, y;
         if (locked)
         {
             play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_TRY_LOCKED);
-            update_u_action(ACTION_TILE_NO_ACTION);
+            update_u_action_revert(ACTION_TILE_NO_ACTION);
             if (flags.autounlock && has_door_normal_lock_at_ptr(door))
             {
                 struct obj* carried_key = 0;
@@ -1026,7 +1026,7 @@ int x, y;
         play_simple_location_sound(cc.x, cc.y, LOCATION_SOUND_TYPE_RESISTS_OPEN);
         pline_The("%s resists!", door_name);
     }
-    update_u_action(ACTION_TILE_NO_ACTION);
+    update_u_action_revert(ACTION_TILE_NO_ACTION);
 
     return 1;
 }
@@ -1181,7 +1181,7 @@ doclose()
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_RESISTS_OPEN);
             pline_The("%s resists!", get_door_name_at_ptr(door));
         }
-        update_u_action(ACTION_TILE_NO_ACTION);
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
     }
 
     return 1;

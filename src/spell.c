@@ -1803,7 +1803,7 @@ boolean atme;
 		You("fail to cast the spell correctly.");
 		deduct_mana_cost(denergy / 2);
         context.botl = 1;
-		update_u_action(ACTION_TILE_NO_ACTION);
+		update_u_action_revert(ACTION_TILE_NO_ACTION);
 		return 1;
     }
 
@@ -2369,7 +2369,7 @@ boolean atme;
 		result = 0;
 
     obfree(pseudo, (struct obj *) 0); /* now, get rid of it */
-	update_u_action(ACTION_TILE_NO_ACTION);
+	update_u_action_revert(ACTION_TILE_NO_ACTION);
 
     return result;
 }

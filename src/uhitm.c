@@ -827,7 +827,7 @@ struct attack *uattk;
 			(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 		}
 
-		update_u_action(ACTION_TILE_NO_ACTION);
+		update_u_action_revert(ACTION_TILE_NO_ACTION);
 
 		if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 			break;
@@ -895,7 +895,7 @@ struct attack *uattk;
 					(void)passive(mon, wep, mhit, malive, AT_WEAP, wep_was_destroyed);
 			}
 
-			update_u_action(ACTION_TILE_NO_ACTION);
+			update_u_action_revert(ACTION_TILE_NO_ACTION);
 
 			if (!malive || m_at(x, y) != mon || wep_was_destroyed)
 				break;
@@ -3672,7 +3672,7 @@ register struct monst *mon;
 				if (dhit && mattk->adtyp != AD_SPEL && mattk->adtyp != AD_PHYS)
 					sum[i] = damageum(mon, mattk, weapon, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
 
-				update_u_action(ACTION_TILE_NO_ACTION);
+				update_u_action_revert(ACTION_TILE_NO_ACTION);
 			}
             break;
         case AT_CLAW:
@@ -3698,7 +3698,7 @@ register struct monst *mon;
 			play_monster_simple_weapon_sound(&youmonst, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
 			u_wait_until_action();
 			sum[i] = damageum(mon, mattk, (struct obj*)0, 0); //SPECIAL EFFECTS ARE DONE HERE FOR SPECIALS AFTER HITUM
-			update_u_action(ACTION_TILE_NO_ACTION);
+			update_u_action_revert(ACTION_TILE_NO_ACTION);
 			break;
 
 		case AT_KICK:
@@ -3813,7 +3813,7 @@ register struct monst *mon;
             } else { /* !dhit */
                 missum(mon, mattk, (tmp + armorpenalty > dieroll));
             }
-			update_u_action(ACTION_TILE_NO_ACTION);
+			update_u_action_revert(ACTION_TILE_NO_ACTION);
 			break;
 
         case AT_HUGS: 
@@ -3840,7 +3840,7 @@ register struct monst *mon;
                     && !(sticks(u.ustuck->data) || u.uswallow))
                     uunstick();
 				
-				update_u_action(ACTION_TILE_NO_ACTION);
+				update_u_action_revert(ACTION_TILE_NO_ACTION);
 				continue; /* not 'break'; bypass passive counter-attack */
             }
             /* automatic if prev two attacks succeed, or if
@@ -3889,7 +3889,7 @@ register struct monst *mon;
                     Your("%s passes harmlessly through %s.",
                          verb, mon_nam(mon));
                 }
-				update_u_action(ACTION_TILE_NO_ACTION);
+				update_u_action_revert(ACTION_TILE_NO_ACTION);
 				break;
             }
             /* hug attack against ordinary foe */
@@ -3917,7 +3917,7 @@ register struct monst *mon;
                     silver_sears(&youmonst, mon, silverhit);
                 sum[i] = damageum(mon, mattk, (struct obj*)0, specialdmg);
             }
-			update_u_action(ACTION_TILE_NO_ACTION);
+			update_u_action_revert(ACTION_TILE_NO_ACTION);
 			break; /* AT_HUGS */
         }
 
@@ -3928,7 +3928,7 @@ register struct monst *mon;
 			dhit = -1;
             wakeup(mon, TRUE);
             sum[i] = explum(mon, mattk);
-			update_u_action(ACTION_TILE_NO_ACTION);
+			update_u_action_revert(ACTION_TILE_NO_ACTION);
 			break;
 
         case AT_ENGL:
@@ -3954,7 +3954,7 @@ register struct monst *mon;
             } else {
                 missum(mon, mattk, FALSE);
             }
-			update_u_action(ACTION_TILE_NO_ACTION);
+			update_u_action_revert(ACTION_TILE_NO_ACTION);
 			break;
 
         case AT_MAGC:
@@ -4117,7 +4117,7 @@ boolean wep_was_destroyed;
                          && polymon(PM_STONE_GOLEM))) {
 					display_u_being_hit(HIT_PETRIFIED, 0, 0UL);
 					done_in_by(mon, STONING); /* "You turn to stone..." */
-					update_m_action(mon, action_before);
+					update_m_action_core(mon, action_before, 0);
 					return 2;
                 }
             }
@@ -4288,7 +4288,7 @@ boolean wep_was_destroyed;
             break;
         }
     }
-	update_m_action(mon, action_before);
+	update_m_action_core(mon, action_before, 1);
 	return (malive | mhit);
 }
 
@@ -4857,6 +4857,30 @@ void
 update_u_action(action)
 enum action_tile_types action;
 {
+	update_u_action_core(action, 3);
+}
+
+void
+update_u_action_revert(action)
+enum action_tile_types action;
+{
+	update_u_action_core(action, 0);
+	u_wait_until_action();
+}
+
+void
+update_u_action_and_wait(action)
+enum action_tile_types action;
+{
+	update_u_action_core(action, 3);
+	u_wait_until_action();
+}
+
+void
+update_u_action_core(action, simple_wait_multiplier)
+enum action_tile_types action;
+unsigned long simple_wait_multiplier;
+{
 	enum action_tile_types action_before = u.action;
 	if (iflags.using_gui_tiles && action == ACTION_TILE_NO_ACTION)
 	{
@@ -4925,7 +4949,7 @@ enum action_tile_types action;
 			//adjusted_delay_output();
 			if (u.action != ACTION_TILE_NO_ACTION)
 			{
-				context.u_milliseconds_to_wait_until_action *= 3;
+				context.u_milliseconds_to_wait_until_action *= simple_wait_multiplier;
 				//adjusted_delay_output();
 				//adjusted_delay_output();
 			}
@@ -4939,12 +4963,47 @@ update_m_action(mtmp, action)
 struct monst* mtmp;
 enum action_tile_types action;
 {
+	update_m_action_core(mtmp, action, 3);
+}
+
+void
+update_m_action_revert(mtmp, action)
+struct monst* mtmp;
+enum action_tile_types action;
+{
+	update_m_action_core(mtmp, action, 0);
+	if(mtmp == &youmonst)
+		u_wait_until_action();
+	else
+		m_wait_until_action();
+}
+
+void
+update_m_action_and_wait(mtmp, action)
+struct monst* mtmp;
+enum action_tile_types action;
+{
+	update_m_action_core(mtmp, action, 3);
+	if (mtmp == &youmonst)
+		u_wait_until_action();
+	else
+		m_wait_until_action();
+}
+
+
+
+void
+update_m_action_core(mtmp, action, simple_wait_multiplier)
+struct monst* mtmp;
+enum action_tile_types action;
+unsigned long simple_wait_multiplier;
+{
 	if (!mtmp)
 		return;
 
 	if (mtmp == &youmonst)
 	{
-		update_u_action(action);
+		update_u_action_core(action, simple_wait_multiplier);
 		return;
 	}
 
@@ -5019,7 +5078,7 @@ enum action_tile_types action;
 			//adjusted_delay_output();
 			if (mtmp->action != ACTION_TILE_NO_ACTION)
 			{
-				context.m_milliseconds_to_wait_until_action *= 3;
+				context.m_milliseconds_to_wait_until_action *= simple_wait_multiplier;
 				//adjusted_delay_output();
 				//adjusted_delay_output();
 			}
@@ -5066,11 +5125,14 @@ unsigned long extra_flags;
 	enum action_tile_types action_before = is_you ? u.action : mon->action;
 	show_extra_info(x, y, flags, damage_shown);
 	update_m_action(mon, ACTION_TILE_RECEIVE_DAMAGE);
-	m_wait_until_action();
+	if(mon == &youmonst)
+		u_wait_until_action();
+	else
+		m_wait_until_action();
 	//newsym_with_extra_info_and_flags(x, y, flags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
-	flush_screen(is_you);
+	//flush_screen(is_you);
 	adjusted_delay_output();
-	update_m_action(mon, action_before);
+	update_m_action_core(mon, action_before, 0);
 	newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH);
 	flush_screen(is_you);
 }

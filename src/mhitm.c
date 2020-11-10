@@ -2225,7 +2225,7 @@ int mdead;
     }
     if (mdead || is_cancelled(mdef))
     {
-        update_m_action(mdef, action_before);
+        update_m_action_core(mdef, action_before, 1);
         return (mdead | mhit);
     }
 
@@ -2250,7 +2250,7 @@ int mdead;
 
                     if (mon_reflects(magr, canseemon(magr) ? buf : (char*)0))
                     {
-                        update_m_action(mdef, action_before);
+                        update_m_action_core(mdef, action_before, 1);
                         return (mdead | mhit);
                     }
                     Strcpy(buf, Monnam(magr));
@@ -2262,7 +2262,7 @@ int mdead;
 								  s_suffix(mon_nam(mdef)));
 						paralyze_monst(magr, basedmg, FALSE);
 					}
-                    update_m_action(mdef, action_before);
+                    update_m_action_core(mdef, action_before, 1);
                     return (mdead | mhit);
                 }
             }
@@ -2272,7 +2272,7 @@ int mdead;
                 if (canseemon(magr))
                     pline("%s is frozen by %s.", buf, mon_nam(mdef));
                 paralyze_monst(magr, basedmg, FALSE);
-                update_m_action(mdef, action_before);
+                update_m_action_core(mdef, action_before, 1);
                 return (mdead | mhit);
             }
             return 1;
@@ -2369,11 +2369,11 @@ assess_dmg:
 		if (magr->mhp <= 0)
 		{
             monkilled(magr, "", (int) mddat->mattk[i].adtyp);
-            update_m_action(mdef, action_before);
+            update_m_action_core(mdef, action_before, 1);
             return (mdead | mhit | MM_AGR_DIED);
 		}
 	}
-    update_m_action(mdef, action_before);
+    update_m_action_core(mdef, action_before, 1);
     return (mdead | mhit);
 }
 

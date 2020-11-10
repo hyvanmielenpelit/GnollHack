@@ -1225,7 +1225,7 @@ int how;
         killer.name[0] = '\0';
         killer.format = KILLED_BY_AN; /* reset to 0 */
         if (how < PANICKED)
-            update_u_action(ACTION_TILE_NO_ACTION);
+            update_u_action_revert(ACTION_TILE_NO_ACTION);
         return;
     }
     u.action = ACTION_TILE_NO_ACTION; /* Just in case revert to normal without updating screen */
