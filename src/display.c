@@ -4153,8 +4153,7 @@ m_shieldeff(mon)
 struct monst* mon;
 {
     enum action_tile_types action_before = mon->action;
-    update_m_action(mon, ACTION_TILE_DEFEND);
-    m_wait_until_action();
+    update_m_action_and_wait(mon, ACTION_TILE_DEFEND);
     shieldeff(mon->mx, mon->my);
     update_m_action_revert(mon, action_before);
 }

@@ -588,7 +588,7 @@ register struct monst *magr, *mdef;
 				if(endforloop || DEADMONSTER(mdef) || DEADMONSTER(magr) || m_at(mdef_x, mdef_y) != mdef)
 					break;
 			}
-            update_m_action(magr, ACTION_TILE_NO_ACTION);
+            update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
 
             break;
 
@@ -599,7 +599,7 @@ register struct monst *magr, *mdef;
             strike = (i >= 2 && res[i - 1] == MM_HIT && res[i - 2] == MM_HIT);
             if (strike)
                 res[i] = hitmm(magr, mdef, mattk, (struct obj*)0);
-            update_m_action(magr, ACTION_TILE_NO_ACTION);
+            update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
 
             break;
 
@@ -609,7 +609,7 @@ register struct monst *magr, *mdef;
             play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
             m_wait_until_action();
             res[i] = gazemm(magr, mdef, mattk);
-            update_m_action(magr, ACTION_TILE_NO_ACTION);
+            update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
             break;
 
         case AT_EXPL:
@@ -648,7 +648,7 @@ register struct monst *magr, *mdef;
                 res[i] = gulpmm(magr, mdef, mattk);
             else
                 missmm(magr, mdef, mattk);
-            update_m_action(magr, ACTION_TILE_NO_ACTION);
+            update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
             break;
 
         case AT_BREA:
@@ -658,7 +658,7 @@ register struct monst *magr, *mdef;
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 strike = breamm(magr, mattk, mdef);
-                update_m_action(magr, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
 
                 /* We don't really know if we hit or not; pretend we did. */
                 if (strike)
@@ -680,7 +680,7 @@ register struct monst *magr, *mdef;
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 strike = eyesmm(magr, mattk, mdef);
-                update_m_action(magr, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
             }
 
 			/* We don't really know if we hit or not; pretend we did. */
@@ -699,7 +699,7 @@ register struct monst *magr, *mdef;
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 strike = buzzmm(magr, mattk, mdef);
-                update_m_action(magr, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
 
                 /* We don't really know if we hit or not; pretend we did. */
                 if (strike)
@@ -719,7 +719,7 @@ register struct monst *magr, *mdef;
                 play_monster_simple_weapon_sound(magr, i, (struct obj*)0, OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 strike = spitmm(magr, mattk, mdef);
-                update_m_action(magr, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(magr, ACTION_TILE_NO_ACTION);
 
                 /* We don't really know if we hit or not; pretend we did. */
                 if (strike)

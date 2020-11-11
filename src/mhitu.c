@@ -746,7 +746,7 @@ register struct monst *mtmp;
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
@@ -759,7 +759,7 @@ register struct monst *mtmp;
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = hitmu(mtmp, mattk, (struct obj*)0);
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
@@ -772,7 +772,7 @@ register struct monst *mtmp;
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = gazemu(mtmp, mattk);
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
@@ -783,7 +783,7 @@ register struct monst *mtmp;
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = explmu(mtmp, mattk, foundyou);
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
 
@@ -803,7 +803,7 @@ register struct monst *mtmp;
                     } else {
                         missmu(mtmp, (tmp == j), mattk);
                     }
-                    update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                    update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
                 } else if (is_animal(mtmp->data)) {
                     pline("%s gulps some air!", Monnam(mtmp));
                 } else {
@@ -823,7 +823,7 @@ register struct monst *mtmp;
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = breamu(mtmp, mattk);
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             /* Note: breamu takes care of displacement */
             break;
@@ -834,7 +834,7 @@ register struct monst *mtmp;
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = eyesmu(mtmp, mattk);
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
 			break;
 		case AT_SPIT:
@@ -844,7 +844,7 @@ register struct monst *mtmp;
                 play_monster_simple_weapon_sound(mtmp, i, MON_WEP(mtmp), OBJECT_SOUND_TYPE_SWING_MELEE);
                 m_wait_until_action();
                 sum[i] = spitmu(mtmp, mattk);
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             /* Note: spitmu takes care of displacement */
             break;
@@ -936,7 +936,7 @@ register struct monst *mtmp;
                     /* skip any remaining non-spell attacks */
                     skipnonmagc = TRUE;
                 }
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
             break;
         case AT_MAGC:
@@ -947,7 +947,7 @@ register struct monst *mtmp;
                     update_m_action(mtmp, ACTION_TILE_CAST_DIR);
                     m_wait_until_action();
                     sum[i] = buzzmu(mtmp, mattk);
-                    update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                    update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
                 }
                 else
                 {
@@ -1203,7 +1203,7 @@ register struct monst *mtmp;
                         }
                     }
                 }
-                update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+                update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
             }
 
 			break;

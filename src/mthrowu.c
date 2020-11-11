@@ -404,7 +404,7 @@ struct obj *otmp, *mwep;
            if mtmp gets killed (shot kills adjacent gas spore and
            triggers explosion, perhaps), inventory will be dropped
            and otmp might go away via merging into another stack */
-        update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+        update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
         if (DEADMONSTER(mtmp) && m_shot.i < m_shot.n)
             /* cancel pending shots (perhaps ought to give a message here
                since we gave one above about throwing/shooting N missiles) */
@@ -1665,7 +1665,7 @@ struct monst *mtmp;
 
         (void) thitu(hitv, dam, &otmp, (char *) 0);
 
-        update_m_action(mtmp, ACTION_TILE_NO_ACTION);
+        update_m_action_revert(mtmp, ACTION_TILE_NO_ACTION);
         stop_occupation();
         return;
     }
