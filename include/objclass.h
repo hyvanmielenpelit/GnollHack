@@ -138,7 +138,7 @@ enum obj_armor_types {
     ARM_CLOAK   = 5,
     ARM_SHIRT   = 6,
 	ARM_ROBE	= 7,
-	ARM_BRACERS = 8, //END MARKER FOR ARMOR TYPES
+	ARM_BRACERS = 8,
 	MAX_ARMOR_TYPES
 };
 extern const char* armor_type_names[MAX_ARMOR_TYPES]; /* in objnam.c */

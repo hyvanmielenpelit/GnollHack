@@ -561,6 +561,9 @@ E void FDECL(create_doodad_floor_location, (xchar, xchar, int, unsigned short, i
 E void FDECL(transform_location_type, (xchar, xchar, int, int));
 E void FDECL(transform_location_type_and_flags, (xchar, xchar, int, int, unsigned short));
 E void FDECL(transform_location_type_and_flags_and_set_broken, (xchar, xchar, int, int, unsigned short, int));
+E const char* FDECL(get_obj_subtype_name, (struct obj*));
+E const char* FDECL(get_otyp_subtype_name, (int));
+
 
 /* ### do_name.c ### */
 

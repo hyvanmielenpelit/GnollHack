@@ -441,8 +441,10 @@ struct obj {
 
 
 /* Light sources */
+#define is_otyp_candle(otyp) \
+	((objects[(otyp)].oc_flags2 & O2_CANDLE) != 0)
 #define is_candle(otmp) \
-	((objects[(otmp)->otyp].oc_flags2 & O2_CANDLE) != 0)
+	is_otyp_candle((otmp)->otyp)
 #define otyp_shines_magical_light(otyp)                                             \
     ((objects[(otyp)].oc_flags2 & O2_SHINES_MAGICAL_LIGHT) != 0)
 #define obj_shines_magical_light(otmp)     \
@@ -479,19 +481,19 @@ struct obj {
     ((objects[(otmp)->otyp].oc_flags3 & O3_READABLE) || ((otmp)->oartifact && artilist[(otmp)->oartifact].aflags & AF_READABLE))
 
 /* special stones */
-#define is_rock_otyp(otyp)                                 \
+#define is_otyp_rock(otyp)                                 \
     ((objects[otyp].oc_flags2 & O2_ROCK) != 0)
-#define is_ore_otyp(otyp)                                 \
+#define is_otyp_ore(otyp)                                 \
     ((objects[otyp].oc_flags2 & O2_ORE) != 0)
 
-#define is_graystone_otyp(otyp)                                 \
+#define is_otyp_graystone(otyp)                                 \
     ((objects[otyp].oc_flags2 & O2_GRAYSTONE) != 0)
 #define is_graystone(obj)                                 \
-    (is_graystone_otyp((obj)->otyp))
+    (is_otyp_graystone((obj)->otyp))
 #define is_rock(obj)                                 \
-    (is_rock_otyp((obj)->otyp))
+    (is_otyp_rock((obj)->otyp))
 #define is_ore(obj)                                 \
-    (is_ore_otyp((obj)->otyp))
+    (is_otyp_ore((obj)->otyp))
 
 /* other */
 #define is_otyp_key(otyp)                                 \

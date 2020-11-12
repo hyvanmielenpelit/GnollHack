@@ -5974,4 +5974,78 @@ unsigned short location_flags;
 	transform_location_type(x, y, type, subtype); /* Does not clear flags nor floor_doodad */
 }
 
+const char*
+get_obj_subtype_name(obj)
+struct obj* obj;
+{
+	if (!obj)
+		return empty_string;
+
+	int otyp = obj->otyp;
+	return get_otyp_subtype_name(otyp);
+
+}
+
+const char*
+get_otyp_subtype_name(otyp)
+int otyp;
+{
+	if (otyp < 0 || otyp >= NUM_OBJECTS)
+		return empty_string;
+
+	if (objects[otyp].oc_class == WEAPON_CLASS)
+	{
+
+		return weapon_type_names[objects[otyp].oc_subtyp];
+	}
+	else if (objects[otyp].oc_class == ARMOR_CLASS)
+	{
+		return armor_type_names[objects[otyp].oc_subtyp];
+	}
+	else if (objects[otyp].oc_class == MISCELLANEOUS_CLASS && objects[otyp].oc_subtyp > MISC_MULTIPLE_PERMITTED)
+	{
+		return misc_type_names[objects[otyp].oc_subtyp];
+	}
+	else if (objects[otyp].oc_class == FOOD_CLASS && objects[otyp].oc_subtyp > FOODTYPE_GENERAL)
+	{
+		return food_type_names[objects[otyp].oc_subtyp];
+	}
+	else if (objects[otyp].oc_class == TOOL_CLASS && objects[otyp].oc_subtyp > TOOLTYPE_GENERAL)
+	{
+		return tool_type_names[objects[otyp].oc_subtyp];
+	}
+	else if (objects[otyp].oc_class == TOOL_CLASS)
+	{
+		if (is_otyp_candle(otyp))
+		{
+			return "candle";
+		}
+		if (is_otyp_key(otyp))
+		{
+			return "key";
+		}
+	}
+	else if (objects[otyp].oc_class == AMULET_CLASS || objects[otyp].oc_class == RING_CLASS || objects[otyp].oc_class == POTION_CLASS)
+	{
+		//Nothing
+	}
+	else if (objects[otyp].oc_class == GEM_CLASS)
+	{
+		//Nothing
+		if (is_otyp_graystone(otyp))
+		{
+			return "gray stone";
+		}
+		if (is_otyp_rock(otyp))
+		{
+			return "rock";
+		}
+		if (is_otyp_ore(otyp))
+		{
+			return "ore";
+		}
+	}
+	return empty_string;
+}
+
 /*do.c*/
