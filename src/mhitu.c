@@ -906,9 +906,9 @@ register struct monst *mtmp;
 
                     for (int strikeindex = 0; strikeindex < multistrike; strikeindex++)
 					{
-						if (mon_currwep)
+                        play_monster_simple_weapon_sound(mtmp, i, mon_currwep, OBJECT_SOUND_TYPE_SWING_MELEE);
+                        if (mon_currwep)
 						{
-                            play_monster_simple_weapon_sound(mtmp, i, mon_currwep, OBJECT_SOUND_TYPE_SWING_MELEE);
                             if (strikeindex == 0)
 								mswings(mtmp, mon_currwep);
 							else
