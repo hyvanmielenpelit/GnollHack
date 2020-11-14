@@ -706,13 +706,13 @@ uchar* tilemapflags;
                 {
                     for (int n = 0; n < missile_tile_num; n++)
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s\n", tile_section_name, set_name,
+                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%s\n", tile_section_name, set_name,
                             artilist[i].name,
                             no_description ? "no artifact description" : artilist[i].desc,
                             no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
                             no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr,
                             missile_tile_num == 1 ? "generic " : missile_direction_name_array[n], 
-                            artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp)
+                            artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name
                         );
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
@@ -736,7 +736,7 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[artilist[i].enlargement].width_in_tiles, enlargements[artilist[i].enlargement].height_in_tiles, enlargements[artilist[i].enlargement].main_tile_x_coordinate);
                     else
                         Sprintf(eos(buf), ",1,1,0");
-                    Sprintf(eos(buf), ",%d,%d,%s", artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp));
+                    Sprintf(eos(buf), ",%d,%d,%s,%s", artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name);
                     Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                     tile_count++;
