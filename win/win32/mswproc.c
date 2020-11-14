@@ -1995,10 +1995,14 @@ void
 mswin_preference_update(const char *pref)
 {
     if (stricmp(pref, "font_menu") == 0
-        || stricmp(pref, "font_size_menu") == 0) {
-        if (iflags.wc_fontsiz_menu < NHFONT_SIZE_MIN
-            || iflags.wc_fontsiz_menu > NHFONT_SIZE_MAX)
+        || stricmp(pref, "font_size_menu") == 0) 
+    {
+        if (iflags.wc_fontsiz_menu == 0)
             iflags.wc_fontsiz_menu = NHFONT_DEFAULT_SIZE;
+        else if (iflags.wc_fontsiz_menu < NHFONT_SIZE_MIN)
+            iflags.wc_fontsiz_menu = NHFONT_SIZE_MIN;
+        else if (iflags.wc_fontsiz_menu > NHFONT_SIZE_MAX)
+            iflags.wc_fontsiz_menu = NHFONT_SIZE_MAX;
 
         HDC hdc = GetDC(GetNHApp()->hMainWnd);
         mswin_get_font(NHW_MENU, ATR_NONE, hdc, TRUE);
@@ -2014,10 +2018,14 @@ mswin_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "font_status") == 0
-        || stricmp(pref, "font_size_status") == 0) {
-        if (iflags.wc_fontsiz_status < NHFONT_SIZE_MIN
-            || iflags.wc_fontsiz_status > NHFONT_SIZE_MAX)
+        || stricmp(pref, "font_size_status") == 0) 
+    {
+        if (iflags.wc_fontsiz_status == 0)
             iflags.wc_fontsiz_status = NHFONT_DEFAULT_SIZE;
+        else if (iflags.wc_fontsiz_status < NHFONT_SIZE_MIN)
+            iflags.wc_fontsiz_status = NHFONT_SIZE_MIN;
+        else if (iflags.wc_fontsiz_menu > NHFONT_SIZE_MAX)
+            iflags.wc_fontsiz_status = NHFONT_SIZE_MAX;
 
         HDC hdc = GetDC(GetNHApp()->hMainWnd);
         mswin_get_font(NHW_STATUS, ATR_NONE, hdc, TRUE);
@@ -2039,10 +2047,14 @@ mswin_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "font_message") == 0
-        || stricmp(pref, "font_size_message") == 0) {
-        if (iflags.wc_fontsiz_message < NHFONT_SIZE_MIN
-            || iflags.wc_fontsiz_message > NHFONT_SIZE_MAX)
+        || stricmp(pref, "font_size_message") == 0)
+    {
+        if (iflags.wc_fontsiz_message == 0)
             iflags.wc_fontsiz_message = NHFONT_DEFAULT_SIZE;
+        else if (iflags.wc_fontsiz_message < NHFONT_SIZE_MIN)
+            iflags.wc_fontsiz_message = NHFONT_SIZE_MIN;
+        else if (iflags.wc_fontsiz_message > NHFONT_SIZE_MAX)
+            iflags.wc_fontsiz_message = NHFONT_SIZE_MAX;
 
         HDC hdc = GetDC(GetNHApp()->hMainWnd);
         mswin_get_font(NHW_MESSAGE, ATR_NONE, hdc, TRUE);
@@ -2059,10 +2071,14 @@ mswin_preference_update(const char *pref)
     }
 
     if (stricmp(pref, "font_text") == 0
-        || stricmp(pref, "font_size_text") == 0) {
-        if (iflags.wc_fontsiz_text < NHFONT_SIZE_MIN
-            || iflags.wc_fontsiz_text > NHFONT_SIZE_MAX)
+        || stricmp(pref, "font_size_text") == 0) 
+    {
+        if (iflags.wc_fontsiz_text == 0)
             iflags.wc_fontsiz_text = NHFONT_DEFAULT_SIZE;
+        else if (iflags.wc_fontsiz_text < NHFONT_SIZE_MIN)
+            iflags.wc_fontsiz_text = NHFONT_SIZE_MIN;
+        else if (iflags.wc_fontsiz_text > NHFONT_SIZE_MAX)
+            iflags.wc_fontsiz_text = NHFONT_SIZE_MAX;
 
         HDC hdc = GetDC(GetNHApp()->hMainWnd);
         mswin_get_font(NHW_TEXT, ATR_NONE, hdc, TRUE);

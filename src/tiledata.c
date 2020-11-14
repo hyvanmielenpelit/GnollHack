@@ -504,6 +504,16 @@ uchar* tilemapflags;
             }
 
             /* Normal item case starts here */
+            int orig_idx = i;
+            for (int idx = STRANGE_OBJECT; idx < NUM_OBJECTS; idx++)
+            {
+                if (objects[idx].oc_descr_idx == i)
+                {
+                    orig_idx = idx;
+                    break;
+                }
+            }
+
             boolean nameless = !OBJ_NAME(objects[i]);
             boolean no_description = !obj_descr[objects[i].oc_name_idx].oc_descr;
             char nameless_name[BUFSZ];
@@ -527,7 +537,7 @@ uchar* tilemapflags;
                             nameless ? nameless_name : OBJ_NAME(objects[i]),
                             no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr,
                             missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], 
-                            objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                            objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
                     }
@@ -548,7 +558,7 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].enlargement].width_in_tiles, enlargements[obj_descr[i].enlargement].height_in_tiles, enlargements[obj_descr[i].enlargement].main_tile_x_coordinate);
                     else
                         Sprintf(eos(buf), ",1,1,0");
-                    Sprintf(eos(buf), ",%d,%d,%s", objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                    Sprintf(eos(buf), ",%d,%d,%s", objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
                     Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                     tile_count++;
