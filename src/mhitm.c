@@ -1921,6 +1921,7 @@ register struct obj* omonwep;
 		}
 	}
 
+
 	//Reduce HP
 	int hp_before = mdef->mhp;
 	deduct_monster_hp(mdef, damage);
@@ -1932,6 +1933,11 @@ register struct obj* omonwep;
 	//Adjust further if mhpmax is smaller
 	if (mdef->mhp > mdef->mhpmax)
 		mdef->mhp = mdef->mhpmax;
+
+    if (vis && ((is_tame(mdef) && canspotmon(mdef)) || (is_tame(magr) && canspotmon(magr))))
+    {
+        display_m_being_hit(mdef, hit_tile, damagedealt, 0UL);
+    }
 
     if (DEADMONSTER(mdef)) 
 	{
@@ -2012,7 +2018,6 @@ register struct obj* omonwep;
 	else if (vis && damagedealt > 0 && ((is_tame(mdef) && canspotmon(mdef)) || (is_tame(magr) && canspotmon(magr))))
 	{
 		pline("%s sustains %d damage!", Monnam(mdef), damagedealt);
-        display_m_being_hit(mdef, hit_tile, damagedealt, 0UL);
     }
 
     return (res == MM_AGR_DIED) ? MM_AGR_DIED : MM_HIT;
