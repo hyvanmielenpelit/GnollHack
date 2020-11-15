@@ -1765,7 +1765,7 @@ NEARDATA struct permonst mons[] = {
 		M1_FLY | M1_FLOATER | M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NONECK | M1_MINDLESS | M1_UNSOLID | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, 
         M3_INFRAVISIBLE,
-        M4_VEGAN_FOOD, M5_NONE,
+        M4_VEGAN_FOOD, M5_SEMI_TRANSPARENT,
 		2, CLR_YELLOW, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("black light", None, "entity that explodes in hallucinating light", None, None, S_LIGHT, LVL(5, 15, 0, 18, 0, 0),
         (G_NOCORPSE | G_GENO | 2), A(ATTK(AT_EXPL, AD_HALU, 10, 12, 0, 0), NO_ATTK,
@@ -1776,7 +1776,7 @@ NEARDATA struct permonst mons[] = {
         M1_FLY | M1_FLOATER | M1_BREATHLESS | M1_AMORPHOUS | M1_NOEYES | M1_NOLIMBS | M1_NONECK | M1_MINDLESS | M1_UNSOLID | M1_NOTAKE,
         M2_HOSTILE | M2_NEUTER, 
         M3_NONE, 
-        M4_VEGAN_FOOD, M5_NONE,
+        M4_VEGAN_FOOD, M5_SEMI_TRANSPARENT,
 		4, CLR_BLACK, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 
 			
@@ -3728,7 +3728,7 @@ struct permonst _mons2[] = {
         M1_BREATHLESS | M1_FLY | M1_HUMANOID | M1_UNSOLID,
         M2_UNDEAD | M2_HOSTILE, 
 		M3_NONCORPOREAL | M3_RANDOM_CORPSE | M3_SPEAKING, 
-		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, M5_NONE,
+		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, M5_SEMI_TRANSPARENT,
 		6, CLR_BLACK, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 	/* wights are corporeal*/
     MON("barrow wight", None, "spell-casting undead with life draining attack", None, None, S_WRAITH, LVL(3, 12, 5, 3, 5, -3),
@@ -3752,7 +3752,7 @@ struct permonst _mons2[] = {
         M1_BREATHLESS | M1_FLY | M1_HUMANOID | M1_UNSOLID,
         M2_UNDEAD | M2_HOSTILE, 
 		M3_NONCORPOREAL | M3_RANDOM_CORPSE | M3_SPEAKING, 
-		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, M5_NONE,
+		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, M5_SEMI_TRANSPARENT,
 		17, CLR_WHITE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("king wraith", None, "very fast incorporeal undead with life draining attack", "queen wraith", "royal wraith", S_WRAITH, LVL(18, 20, -4, 12, 40, -12), (G_GENO | 1),
         A(ATTK(AT_TUCH, AD_DRLI, 6, 6, 0, -4), NO_ATTK, NO_ATTK, NO_ATTK, NO_ATTK,
@@ -3763,7 +3763,7 @@ struct permonst _mons2[] = {
         M1_BREATHLESS | M1_FLY | M1_HUMANOID | M1_UNSOLID,
         M2_UNDEAD | M2_HOSTILE, 
 		M3_NONCORPOREAL | M3_RANDOM_CORPSE | M3_SPEAKING, 
-		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, M5_FEMALE_TILE,
+		M4_BLOODLUST | M4_BRAVE | M4_FEARLESS, M5_FEMALE_TILE | M5_SEMI_TRANSPARENT,
 		29, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 	/* Nazguls are something between corporeal and non-corporeal */
     MON("Nazgul", None, "powerful ringwraith with life draining attacks and breath weapon causing sleep", None, None, S_WRAITH, LVL(24, 12, 0, 15, 60, -17),
@@ -4627,7 +4627,7 @@ struct permonst _mons2[] = {
         M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_HUMANOID | M1_UNSOLID,
         M2_NOPOLY | M2_UNDEAD | M2_STALK | M2_HOSTILE,
         M3_INFRAVISION | M3_NONCORPOREAL | M3_SPEAKING, 
-        M4_NONE, M5_NONE,
+        M4_NONE, M5_SEMI_TRANSPARENT,
         3, CLR_GRAY, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("shade", None, "incorporeal undead with a slowing attack that takes little damage from physical weapons", None, None, S_GHOST, LVL(12, 10, 10, 18, 0, 0), (G_NOCORPSE | G_NOGEN),
         A(ATTK(AT_TUCH, AD_PLYS, 2, 6, 0, 0), ATTK(AT_TUCH, AD_SLOW, 1, 6, 0, 0), NO_ATTK,
@@ -4638,7 +4638,7 @@ struct permonst _mons2[] = {
         M1_FLY | M1_BREATHLESS | M1_WALLWALK | M1_HUMANOID | M1_UNSOLID,
         M2_NOPOLY | M2_UNDEAD | M2_WANDER | M2_STALK | M2_HOSTILE | M2_NASTY,
         M3_INFRAVISION | M3_NONCORPOREAL | M3_SPEAKING, 
-        M4_NONE, M5_SHADE | M5_HATES_SILVER,
+        M4_NONE, M5_SHADE | M5_HATES_SILVER | M5_SEMI_TRANSPARENT,
 		10, CLR_BLACK, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     /*
      * (major) demons

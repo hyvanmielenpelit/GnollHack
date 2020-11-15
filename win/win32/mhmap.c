@@ -1092,11 +1092,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     continue;
             }
 
+            boolean is_enl_you = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_YOU);
             genericptr_t m_stored = data->map[enl_i][enl_j].monster_comp_ptr;
             struct monst* m_here = m_at(enl_i, enl_j);
-            struct monst* mtmp = isyou ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
+            struct monst* mtmp = is_enl_you ? &youmonst : (m_here == m_stored) ? m_here : (struct monst*)0;
             struct trap* trap_here = 0;
-            boolean is_enl_you = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_YOU);
             boolean is_worm_tail = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_M_WORM_TAIL);
             struct obj* obj_pile[MAX_SHOWN_OBJECTS] = { 0 };
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
@@ -1214,6 +1214,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 if (showing_detection || u.uswallow || (base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored)))
                     skip_darkening = TRUE;
+
+                boolean make_semi_transparent = FALSE;
+                if (base_layer == LAYER_MONSTER && ((mtmp && (is_semi_transparent(mtmp->data) || (!is_enl_you && is_invisible(mtmp) && canspotmon(mtmp)))) || (is_enl_you && Invis)))
+                    make_semi_transparent = TRUE;
+                else if (base_layer == LAYER_MONSTER && enlarg_idx >= 0)
+                    make_semi_transparent = make_semi_transparent;
 
                 /*
                  * Draw glyph
@@ -1375,8 +1381,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         int dest_width_deducted = 0;
                         int source_top_added = 0;
                         int source_height_deducted = 0;
-                        t_x = TILEBMP_X(ntile) + (flip_glyph ? tileWidth - 1 : 0);
-                        t_y = TILEBMP_Y(ntile);
+                        int base_t_x = TILEBMP_X(ntile);
+                        int base_t_y = TILEBMP_Y(ntile);
+                        t_x = base_t_x + (flip_glyph ? tileWidth - 1 : 0);
+                        t_y = base_t_y;
                         if (layer_round > 0)
                             layer_round = layer_round;
 
@@ -1501,67 +1509,208 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             dest_width_deducted += (int)(applicable_scaling_factor_x * ((double)GetNHApp()->mapTile_X - scaled_width));
                         }
 
-                        if (opaque_background_drawn)
+
+                        if (make_semi_transparent && opaque_background_drawn)
                         {
+                            /* Create copy of background */
+                            HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                            unsigned char* lpBitmapBits;
+                            LONG width = rect->right - rect->left;
+                            LONG height = rect->bottom - rect->top;
+
+                            BITMAPINFO bi;
+                            ZeroMemory(&bi, sizeof(BITMAPINFO));
+                            bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                            bi.bmiHeader.biWidth = width;
+                            bi.bmiHeader.biHeight = height;
+                            bi.bmiHeader.biPlanes = 1;
+                            bi.bmiHeader.biBitCount = 32;
+
+                            HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                            HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
                             if (print_first_directly_to_map)
                             {
-                                (*GetNHApp()->lpfnTransparentBlt)(
-                                    data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
-                                    data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
-                                    t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
-                                    GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                                StretchBlt(hDCMem, 0, 0, width, height,
+                                    data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
                             }
                             else
                             {
-                                (*GetNHApp()->lpfnTransparentBlt)(
-                                    hDCcopy, dest_left_added, dest_top_added,
-                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
-                                    t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
-                                    GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                                StretchBlt(hDCMem, 0, 0, width, height,
+                                    hDCcopy, 0, 0, tileWidth, tileHeight, SRCCOPY);
                             }
-                        }
-                        else
-                        {
-                            if (print_first_directly_to_map)
+
+                            /* Create copy of tile to be drawn */
+                            HDC hDCsemitransparent = CreateCompatibleDC(data->backBufferDC);
+
+                            unsigned char* lpBitmapBitsSemitransparent;
+
+                            BITMAPINFO binfo_st;
+                            ZeroMemory(&binfo_st, sizeof(BITMAPINFO));
+                            binfo_st.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                            binfo_st.bmiHeader.biWidth = width;
+                            binfo_st.bmiHeader.biHeight = height;
+                            binfo_st.bmiHeader.biPlanes = 1;
+                            binfo_st.bmiHeader.biBitCount = 32;
+
+                            HBITMAP newhBmp_st = CreateDIBSection(hDCsemitransparent, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsSemitransparent, NULL, 0);
+                            HGDIOBJ oldbmp_st = SelectObject(hDCsemitransparent, newhBmp_st);
+                            StretchBlt(hDCsemitransparent, 0, 0, width, height,
+                                data->tileDC, base_t_x, base_t_y, tileWidth, tileHeight, SRCCOPY);
+
+                            /* Draw semitransparency */
+                            int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                            int idx, x, y;
+                            double semi_transparency = 0.5;
+
+                            for (x = 0; x < width; x++)
                             {
-                                StretchBlt(
-                                    data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
-                                    data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
-                                    t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
-                                    GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
-                            }
-                            else
-                            {
-                                if (dest_left_added != 0 || dest_top_added != 0 || dest_width_deducted != 0 || dest_height_deducted != 0)
+                                for (y = 0; y < height; y++)
                                 {
-                                    LONG width = GetNHApp()->mapTile_X;
-                                    LONG height = GetNHApp()->mapTile_Y;
+                                    idx = y * pitch;
+                                    idx += x * 4;
 
-                                    int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
-                                    int idx, x, y;
-                                    for (x = 0; x < width; x++)
+                                    if (lpBitmapBitsSemitransparent[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsSemitransparent[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsSemitransparent[idx + 2] == TILE_BK_COLOR_RED)
+                                        continue;
+
+                                    lpBitmapBitsSemitransparent[idx + 0] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 0]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 0]) * (semi_transparency));  // blue
+                                    lpBitmapBitsSemitransparent[idx + 1] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 1]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 1]) * (semi_transparency));  // green
+                                    lpBitmapBitsSemitransparent[idx + 2] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 2]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 2]) * (semi_transparency));  // red 
+                                }
+                            }
+
+                            if (opaque_background_drawn)
+                            {
+                                if (print_first_directly_to_map)
+                                {
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
+                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, hDCsemitransparent, (flip_glyph ? tileWidth - 1 : 0),
+                                        source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                        GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                                }
+                                else
+                                {
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        hDCcopy, dest_left_added, dest_top_added,
+                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, hDCsemitransparent,
+                                        (flip_glyph ? tileWidth - 1 : 0), source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                        GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                                }
+                            }
+                            else
+                            {
+                                if (print_first_directly_to_map)
+                                {
+                                    StretchBlt(
+                                        data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
+                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, hDCsemitransparent, 0,
+                                        (flip_glyph ? width - 1 : 0) + source_top_added, multiplier * width,
+                                        height - source_height_deducted, SRCCOPY);
+                                }
+                                else
+                                {
+                                    if (dest_left_added != 0 || dest_top_added != 0 || dest_width_deducted != 0 || dest_height_deducted != 0)
                                     {
-                                        for (y = 0; y < height; y++)
-                                        {
-                                            idx = y * pitch;
-                                            idx += x * 4;
+                                        LONG width = GetNHApp()->mapTile_X;
+                                        LONG height = GetNHApp()->mapTile_Y;
 
-                                            lpBitmapBitsCopy[idx + 0] = TILE_BK_COLOR_BLUE;  // blue
-                                            lpBitmapBitsCopy[idx + 1] = TILE_BK_COLOR_GREEN; // green
-                                            lpBitmapBitsCopy[idx + 2] = TILE_BK_COLOR_RED;  // red 
+                                        int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                        int idx, x, y;
+                                        for (x = 0; x < width; x++)
+                                        {
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
+
+                                                lpBitmapBitsCopy[idx + 0] = TILE_BK_COLOR_BLUE;  // blue
+                                                lpBitmapBitsCopy[idx + 1] = TILE_BK_COLOR_GREEN; // green
+                                                lpBitmapBitsCopy[idx + 2] = TILE_BK_COLOR_RED;  // red 
+                                            }
                                         }
                                     }
 
+                                    StretchBlt(hDCcopy, dest_left_added, dest_top_added,
+                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, hDCsemitransparent,
+                                        0, (flip_glyph ? width - 1 : 0) + source_top_added, multiplier * width,
+                                        height - source_height_deducted, SRCCOPY);
                                 }
-
-                                StretchBlt(hDCcopy, dest_left_added, dest_top_added,
-                                    GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
-                                    t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
-                                    GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
+                                opaque_background_drawn = TRUE;
                             }
-                            opaque_background_drawn = TRUE;
-                        }
 
+                            SelectObject(hDCsemitransparent, oldbmp_st);
+                            DeleteDC(hDCsemitransparent);
+                            DeleteObject(newhBmp_st);
+
+                            SelectObject(hDCMem, oldbmp);
+                            DeleteDC(hDCMem);
+                            DeleteObject(bitmap);
+
+                        }
+                        else
+                        {
+                            if (opaque_background_drawn)
+                            {
+                                if (print_first_directly_to_map)
+                                {
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
+                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                        t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                        GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                                }
+                                else
+                                {
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        hDCcopy, dest_left_added, dest_top_added,
+                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                        t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                        GetNHApp()->mapTile_Y - source_height_deducted, TILE_BK_COLOR);
+                                }
+                            }
+                            else
+                            {
+                                if (print_first_directly_to_map)
+                                {
+                                    StretchBlt(
+                                        data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
+                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, data->tileDC, t_x,
+                                        t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                        GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
+                                }
+                                else
+                                {
+                                    if (dest_left_added != 0 || dest_top_added != 0 || dest_width_deducted != 0 || dest_height_deducted != 0)
+                                    {
+                                        LONG width = GetNHApp()->mapTile_X;
+                                        LONG height = GetNHApp()->mapTile_Y;
+
+                                        int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                        int idx, x, y;
+                                        for (x = 0; x < width; x++)
+                                        {
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
+
+                                                lpBitmapBitsCopy[idx + 0] = TILE_BK_COLOR_BLUE;  // blue
+                                                lpBitmapBitsCopy[idx + 1] = TILE_BK_COLOR_GREEN; // green
+                                                lpBitmapBitsCopy[idx + 2] = TILE_BK_COLOR_RED;  // red 
+                                            }
+                                        }
+
+                                    }
+
+                                    StretchBlt(hDCcopy, dest_left_added, dest_top_added,
+                                        GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, data->tileDC,
+                                        t_x, t_y + source_top_added, multiplier * GetNHApp()->mapTile_X,
+                                        GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
+                                }
+                                opaque_background_drawn = TRUE;
+                            }
+                        }
                         /* 
                          * AUTODRAW START
                          */

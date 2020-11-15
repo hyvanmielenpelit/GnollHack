@@ -174,6 +174,7 @@
 #define is_special_silver_hater(ptr) (((ptr)->mflags5 & M5_HATES_SILVER) != 0)
 #define is_teleport_heal_caster(ptr) (((ptr)->mflags5 & M5_TELEPORT_HEAL_TACTICS) != 0)
 #define makes_sound_randomly(ptr) (((ptr)->mflags5 & M5_MAKES_SOUND_RANDOMLY) != 0)
+#define is_semi_transparent(ptr) (((ptr)->mflags5 & M5_SEMI_TRANSPARENT) != 0)
 
 /* combinations */
 #define is_not_living(ptr) \
