@@ -1510,7 +1510,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
 
 
-                        if (make_semi_transparent && opaque_background_drawn)
+                        if (make_semi_transparent)
                         {
                             /* Create copy of background */
                             HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
@@ -1529,7 +1529,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                             HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
                             HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
-                            if (print_first_directly_to_map)
+                            if (!opaque_background_drawn || print_first_directly_to_map)
                             {
                                 StretchBlt(hDCMem, 0, 0, width, height,
                                     data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
@@ -1604,8 +1604,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 {
                                     StretchBlt(
                                         data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
-                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, hDCsemitransparent, 0,
-                                        (flip_glyph ? width - 1 : 0) + source_top_added, multiplier * width,
+                                        data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, hDCsemitransparent, (flip_glyph ? width - 1 : 0),
+                                        source_top_added, multiplier * width,
                                         height - source_height_deducted, SRCCOPY);
                                 }
                                 else
@@ -1633,7 +1633,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     StretchBlt(hDCcopy, dest_left_added, dest_top_added,
                                         GetNHApp()->mapTile_X - dest_width_deducted, GetNHApp()->mapTile_Y - dest_height_deducted, hDCsemitransparent,
-                                        0, (flip_glyph ? width - 1 : 0) + source_top_added, multiplier * width,
+                                        (flip_glyph ? tileWidth - 1 : 0), source_top_added, multiplier * width,
                                         height - source_height_deducted, SRCCOPY);
                                 }
                                 opaque_background_drawn = TRUE;
