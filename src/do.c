@@ -528,108 +528,6 @@ register struct obj* obj;
 		putstr(datawin, 0, txt);
 	}
 
-	if (is_obj_normally_edible(obj))
-	{
-		switch (objects[obj->otyp].oc_edible_subtype)
-		{
-		case EDIBLETYPE_ROTTEN:
-			strcpy(buf2, "Rotten");
-			break;
-		case EDIBLETYPE_SICKENING:
-			strcpy(buf2, "Sickening");
-			break;
-		case EDIBLETYPE_ACIDIC:
-			strcpy(buf2, "Acidic");
-			break;
-		case EDIBLETYPE_POISONOUS:
-			strcpy(buf2, "Poisonous");
-			break;
-		case EDIBLETYPE_TAINTED:
-			strcpy(buf2, "Tainted");
-			break;
-		case EDIBLETYPE_HALLUCINATING:
-			strcpy(buf2, "Hallucinating");
-			break;
-		case EDIBLETYPE_DEADLY_POISONOUS:
-			strcpy(buf2, "Highly poisonous");
-			break;
-		default:
-			strcpy(buf2, "Normal");
-			break;
-		}
-		Sprintf(buf, "Comestible type:         %s", buf2);
-		txt = buf;
-		putstr(datawin, 0, txt);
-
-		if (objects[obj->otyp].oc_edible_effect != EDIBLEFX_NO_EFFECT
-			&& objects[obj->otyp].oc_edible_effect != EDIBLEFX_APPLE
-			&& objects[obj->otyp].oc_edible_effect != EDIBLEFX_EGG
-			)
-		{
-			strcpy(buf2, "No effect");
-
-			if (objects[obj->otyp].oc_edible_effect > 0)
-			{
-				strcpy(buf2, get_property_name(objects[obj->otyp].oc_edible_effect));
-				*buf2 = highc(*buf2);
-			}
-			else if (objects[obj->otyp].oc_edible_effect < 0)
-			{
-				switch (objects[obj->otyp].oc_edible_effect)
-				{
-				case EDIBLEFX_GAIN_STRENGTH:
-					strcpy(buf2, "Confers strength");
-					break;
-				case EDIBLEFX_GAIN_DEXTERITY:
-					strcpy(buf2, "Confers dexterity");
-					break;
-				case EDIBLEFX_GAIN_CONSTITUTION:
-					strcpy(buf2, "Confers constitution");
-					break;
-				case EDIBLEFX_GAIN_INTELLIGENCE:
-					strcpy(buf2, "Confers intelligence");
-					break;
-				case EDIBLEFX_GAIN_WISDOM:
-					strcpy(buf2, "Confers wisdom");
-					break;
-				case EDIBLEFX_GAIN_CHARISMA:
-					strcpy(buf2, "Confers charisma");
-					break;
-				case EDIBLEFX_CURE_LYCANTHROPY:
-					strcpy(buf2, "Cures lycanthropy");
-					break;
-				case EDIBLEFX_CURE_BLINDNESS:
-					strcpy(buf2, "Cures blindness");
-					break;
-				case EDIBLEFX_READ_FORTUNE:
-					strcpy(buf2, "Contains a fortune");
-					break;
-				case EDIBLEFX_CURE_SICKNESS:
-					strcpy(buf2, "Cures sickness");
-					break;
-				case EDIBLEFX_ROYAL_JELLY:
-					strcpy(buf2, "Confers strength and other jelly effects");
-					break;
-				case EDIBLEFX_RESTORE_ABILITY:
-					strcpy(buf2, "Restores abilities");
-					break;
-				case EDIBLEFX_GAIN_LEVEL:
-					strcpy(buf2, "Confers one level");
-					break;
-				case EDIBLEFX_CURE_PETRIFICATION:
-					strcpy(buf2, "Cures petrification");
-					break;
-				default:
-					break;
-				}
-			}
-			Sprintf(buf, "Comestible effect:       %s", buf2);
-			txt = buf;
-			putstr(datawin, 0, txt);
-		}
-	}
-
-
 	int mnum = obj->corpsenm;
 	long rotted = 0L;
 
@@ -648,25 +546,136 @@ register struct obj* obj;
 
 	if (rotted > 5L)
 	{
-		Sprintf(buf, "Tainted:                 Yes");
-		txt = buf;
-		putstr(datawin, 0, txt);
+		strcpy(buf2, "Tainted");
 	}
 	else if (obj->orotten || rotted > 3L)
 	{
-		Sprintf(buf, "Rotten:                  Yes");
-		txt = buf;
-		putstr(datawin, 0, txt);
+		strcpy(buf2, "Rotten");
+	}
+	else
+	{
+		strcpy(buf2, "Normal");
 	}
 
+	Sprintf(buf, "Quality:                 %s", buf2);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
 	struct permonst* ptr = &mons[mnum];
-	if ((ptr)->mconveys != 0UL || flesh_petrifies(ptr) || mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME)
+	if ((ptr)->mconveys != 0UL || flesh_petrifies(ptr) || mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME || is_mimic(ptr) || is_were(ptr) || is_bat(ptr) || nonrotting_corpse(mnum) || is_rider(ptr)
+		|| mnum == PM_STALKER || mnum == PM_LIZARD || mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER || mnum == PM_NURSE || mnum == PM_QUANTUM_MECHANIC || mnum == PM_DISENCHANTER
+		|| is_reviver(ptr)
+		) 
 	{
 		Sprintf(buf, "Properties:");
 		txt = buf;
 		putstr(datawin, 0, txt);
 
 		int cnt = 1;
+
+		if (nonrotting_corpse(mnum))
+		{
+			Sprintf(buf, "  %d - Non-rotting corpse", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (is_reviver(ptr))
+		{
+			Sprintf(buf, "  %d - Reviving corpse", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_LIZARD)
+		{
+			Sprintf(buf, "  %d - Cures petrification", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_QUANTUM_MECHANIC)
+		{
+			Sprintf(buf, "  %d - Causes uncertain velocity", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_DISENCHANTER)
+		{
+			Sprintf(buf, "  %d - Removes random intrinsic", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_NURSE)
+		{
+			Sprintf(buf, "  %d - Cures blindness", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_CHAMELEON || mnum == PM_DOPPELGANGER)
+		{
+			Sprintf(buf, "  %d - Causes polymorph", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (is_rider(ptr))
+		{
+			Sprintf(buf, "  %d - Instantly fatal", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (is_mimic(ptr))
+		{
+			Sprintf(buf, "  %d - Causes mimicking", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (is_were(ptr))
+		{
+			Sprintf(buf, "  %d - Infected with lycanthropy", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (is_bat(ptr))
+		{
+			Sprintf(buf, "  %d - Causes stun", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_STALKER)
+		{
+			Sprintf(buf, "  %d - Confers invisibility", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_STALKER)
+		{
+			Sprintf(buf, "  %d - Confers invisibility", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
 
 		if (flesh_petrifies(ptr))
 		{
