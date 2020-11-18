@@ -1782,6 +1782,9 @@ int charge_init_index;
     case CHARGED_1D4_4:
         charge = rnd(4) + 3;
         break;
+    case CHARGED_1D20_20:
+        charge = rnd(20) + 20;
+        break;
     case CHARGED_HOLY_GRAIL:
         charge = 0;
         break;
@@ -1888,6 +1891,9 @@ int charge_init_index;
 		break;
     case CHARGED_1D4_4:
         charge = 8;
+        break;
+    case CHARGED_1D20_20:
+        charge = 40;
         break;
     case CHARGED_HOLY_GRAIL:
         charge = 2;

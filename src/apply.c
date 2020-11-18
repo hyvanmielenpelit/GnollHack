@@ -3323,6 +3323,10 @@ struct obj* obj;
 					pline("Nothing much happens.");
 
 				break;
+            case WAN_PROBING:
+                if (!probe_object(otmp))
+                    pline("Nothing much happens.");
+                break;
             case WAN_TELEPORTATION:
                 if(otmp->owornmask)
                     remove_worn_item(otmp, TRUE);

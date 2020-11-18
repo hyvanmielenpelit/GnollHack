@@ -485,6 +485,453 @@ boolean unit_fixed_width;
 }
 
 int
+corpsedescription(obj)
+register struct obj* obj;
+{
+	if (!obj || obj == &zeroobj || obj->otyp != CORPSE)
+		return 0;
+
+
+	winid datawin = WIN_ERR;
+
+	datawin = create_nhwindow(NHW_MENU);
+
+	int otyp = obj->otyp;
+	if (obj->oartifact && artilist[obj->oartifact].maskotyp != STRANGE_OBJECT)
+	{
+		if (!obj->known) //!objects[obj->otyp].oc_name_known)
+			otyp = artilist[obj->oartifact].maskotyp;
+	}
+
+	char buf[BUFSZ];
+	char buf2[BUFSZ];
+	const char* txt;
+	strcpy(buf2, "");
+
+	/* Name */
+	strcpy(buf, cxname(obj));
+	*buf = highc(*buf);
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	Sprintf(buf, "");
+	txt = buf;
+	putstr(datawin, 0, txt);
+
+	/* Nutritinal value */
+	if (is_edible(obj))
+	{
+		Sprintf(buf2, "%d rounds", obj->oeaten ? obj->oeaten : obj_nutrition(obj));
+
+		Sprintf(buf, "Nutritional value:       %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	if (is_obj_normally_edible(obj))
+	{
+		switch (objects[obj->otyp].oc_edible_subtype)
+		{
+		case EDIBLETYPE_ROTTEN:
+			strcpy(buf2, "Rotten");
+			break;
+		case EDIBLETYPE_SICKENING:
+			strcpy(buf2, "Sickening");
+			break;
+		case EDIBLETYPE_ACIDIC:
+			strcpy(buf2, "Acidic");
+			break;
+		case EDIBLETYPE_POISONOUS:
+			strcpy(buf2, "Poisonous");
+			break;
+		case EDIBLETYPE_TAINTED:
+			strcpy(buf2, "Tainted");
+			break;
+		case EDIBLETYPE_HALLUCINATING:
+			strcpy(buf2, "Hallucinating");
+			break;
+		case EDIBLETYPE_DEADLY_POISONOUS:
+			strcpy(buf2, "Highly poisonous");
+			break;
+		default:
+			strcpy(buf2, "Normal");
+			break;
+		}
+		Sprintf(buf, "Comestible type:         %s", buf2);
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		if (objects[obj->otyp].oc_edible_effect != EDIBLEFX_NO_EFFECT
+			&& objects[obj->otyp].oc_edible_effect != EDIBLEFX_APPLE
+			&& objects[obj->otyp].oc_edible_effect != EDIBLEFX_EGG
+			)
+		{
+			strcpy(buf2, "No effect");
+
+			if (objects[obj->otyp].oc_edible_effect > 0)
+			{
+				strcpy(buf2, get_property_name(objects[obj->otyp].oc_edible_effect));
+				*buf2 = highc(*buf2);
+			}
+			else if (objects[obj->otyp].oc_edible_effect < 0)
+			{
+				switch (objects[obj->otyp].oc_edible_effect)
+				{
+				case EDIBLEFX_GAIN_STRENGTH:
+					strcpy(buf2, "Confers strength");
+					break;
+				case EDIBLEFX_GAIN_DEXTERITY:
+					strcpy(buf2, "Confers dexterity");
+					break;
+				case EDIBLEFX_GAIN_CONSTITUTION:
+					strcpy(buf2, "Confers constitution");
+					break;
+				case EDIBLEFX_GAIN_INTELLIGENCE:
+					strcpy(buf2, "Confers intelligence");
+					break;
+				case EDIBLEFX_GAIN_WISDOM:
+					strcpy(buf2, "Confers wisdom");
+					break;
+				case EDIBLEFX_GAIN_CHARISMA:
+					strcpy(buf2, "Confers charisma");
+					break;
+				case EDIBLEFX_CURE_LYCANTHROPY:
+					strcpy(buf2, "Cures lycanthropy");
+					break;
+				case EDIBLEFX_CURE_BLINDNESS:
+					strcpy(buf2, "Cures blindness");
+					break;
+				case EDIBLEFX_READ_FORTUNE:
+					strcpy(buf2, "Contains a fortune");
+					break;
+				case EDIBLEFX_CURE_SICKNESS:
+					strcpy(buf2, "Cures sickness");
+					break;
+				case EDIBLEFX_ROYAL_JELLY:
+					strcpy(buf2, "Confers strength and other jelly effects");
+					break;
+				case EDIBLEFX_RESTORE_ABILITY:
+					strcpy(buf2, "Restores abilities");
+					break;
+				case EDIBLEFX_GAIN_LEVEL:
+					strcpy(buf2, "Confers one level");
+					break;
+				case EDIBLEFX_CURE_PETRIFICATION:
+					strcpy(buf2, "Cures petrification");
+					break;
+				default:
+					break;
+				}
+			}
+			Sprintf(buf, "Comestible effect:       %s", buf2);
+			txt = buf;
+			putstr(datawin, 0, txt);
+		}
+	}
+
+
+	int mnum = obj->corpsenm;
+	long rotted = 0L;
+
+	if (!nonrotting_corpse(mnum))
+	{
+		long age = peek_at_iced_corpse_age(obj);
+
+		/* worst case rather than random
+			in this calculation to force prompt */
+		rotted = (monstermoves - age) / (CORPSE_ROTTING_SPEED + 0 /* was rn2(CORPSE_ROTTING_SPEED_VARIATION) */);
+		if (obj->cursed)
+			rotted += 2L;
+		else if (obj->blessed)
+			rotted -= 2L;
+	}
+
+	if (rotted > 5L)
+	{
+		Sprintf(buf, "Tainted:                 Yes");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+	else if (obj->orotten || rotted > 3L)
+	{
+		Sprintf(buf, "Rotten:                  Yes");
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+	struct permonst* ptr = &mons[mnum];
+	if ((ptr)->mconveys != 0UL || flesh_petrifies(ptr) || mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME)
+	{
+		Sprintf(buf, "Properties:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		int cnt = 1;
+
+		if (flesh_petrifies(ptr))
+		{
+			Sprintf(buf, "  %d - Touching petrifies", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (mnum == PM_GREEN_SLIME || obj->otyp == GLOB_OF_GREEN_SLIME)
+		{
+			Sprintf(buf, "  %d - Touching turns into green slime", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (has_sickening_corpse(ptr))
+		{
+			Sprintf(buf, "  %d - Infected with terminal illness", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (has_mummy_rotted_corpse(ptr))
+		{
+			Sprintf(buf, "  %d - Infected with mummy rot", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+		if (has_poisonous_corpse(ptr))
+		{
+			Sprintf(buf, "  %d - Poisonous", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (has_acidic_corpse(ptr))
+		{
+			Sprintf(buf, "  %d - Acidic", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (has_hallucinating_corpse(ptr))
+		{
+			Sprintf(buf, "  %d - Hallucinating", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+
+
+		if (((ptr)->mconveys & MC_FIRE) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer fire resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_COLD) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer cold resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_SLEEP) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer sleep resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_DISINT) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer disintegration resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_ELEC) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer shock resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_POISON) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer poison resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_ACID) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer acid resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_STONE) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer petrification resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_DEATH) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer death resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_DRAIN) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer drain resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_CHARM) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer charm resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_FEAR) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer fear resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_SICK) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer sickness resistance", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_FREE_ACTION) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer free action", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_STRENGTH) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer strength", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_DEXTERITY) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer dexterity", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_CONSTITUTION) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer constitution", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_INTELLIGENCE) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer intelligence", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_WISDOM) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer wisdom", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_CHARISMA) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer charisma", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_LEVEL_GAIN) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer an experiance level", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_TELEPORT) != 0L)
+		{
+			Sprintf(buf, "  %d - Confers teleportitiis", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_TELEPORT) != 0L)
+		{
+			Sprintf(buf, "  %d - Confers teleportitis", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_TELEPORT_CONTROL) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer teleport control", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_BLIND_TELEPATHY) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer blind telepathy", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+		if (((ptr)->mconveys & MC_TELEPATHY) != 0L)
+		{
+			Sprintf(buf, "  %d - May confer telepathy", cnt);
+			txt = buf;
+			putstr(datawin, 0, txt);
+			cnt++;
+		}
+
+	}
+
+
+	/* Description */
+	if (OBJ_ITEM_DESC(otyp))
+	{
+		strcpy(buf, "Description:");
+		txt = buf;
+		putstr(datawin, 0, txt);
+
+		Sprintf(buf, "  %s", OBJ_ITEM_DESC(otyp));
+		txt = buf;
+		putstr(datawin, 0, txt);
+	}
+
+
+	display_nhwindow(datawin, FALSE);
+	destroy_nhwindow(datawin), datawin = WIN_ERR;
+
+	return 1;
+
+
+}
+
+int
 itemdescription(obj)
 register struct obj* obj;
 {

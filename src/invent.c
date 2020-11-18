@@ -3285,7 +3285,7 @@ ddoinv()
 	for (struct obj* invobj = invent; invobj; invobj = invobj->nobj)
 		if (invobj->invlet == invlet) 
 		{
-			itemdescription(invobj);
+			(void)itemdescription(invobj);
 			break;
 		}
 

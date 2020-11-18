@@ -1261,6 +1261,47 @@ struct monst *mtmp;
     }
 }
 
+int probe_object(obj)
+struct obj* obj;
+{
+    int res = !obj->dknown;
+    /* target object has now been "seen (up close)" */
+    obj->dknown = 1;
+    if (Is_container(obj) || obj->otyp == STATUE)
+    {
+        obj->cknown = obj->lknown = 1;
+        if (!obj->cobj)
+        {
+            pline("%s empty.", Tobjnam(obj, "are"));
+        }
+        else if (SchroedingersBox(obj))
+        {
+            /* we don't want to force alive vs dead
+               determination for Schroedinger's Cat here,
+               so just make probing be inconclusive for it */
+            You("aren't sure whether %s has %s or its corpse inside.",
+                the(xname(obj)),
+                /* unfortunately, we can't tell whether rndmonnam()
+                   picks a form which can't leave a corpse */
+                an(Hallucination ? rndmonnam((char*)0) : "cat"));
+            obj->cknown = 0;
+        }
+        else
+        {
+            struct obj* o;
+            /* view contents (not recursively) */
+            for (o = obj->cobj; o; o = o->nobj)
+                o->dknown = 1; /* "seen", even if blind */
+            (void)display_cinventory(obj);
+        }
+        res = 1;
+    }
+    else if (obj->otyp == CORPSE)
+    {
+        res = corpsedescription(obj);
+    }
+    return res;
+}
 
 void display_monster_information(mtmp)
 struct monst* mtmp;
@@ -3393,38 +3434,7 @@ struct monst* origmonst;
             newsym(obj->ox, obj->oy);
             break;
         case WAN_PROBING:
-            res = !obj->dknown;
-            /* target object has now been "seen (up close)" */
-            obj->dknown = 1;
-            if (Is_container(obj) || obj->otyp == STATUE)
-			{
-                obj->cknown = obj->lknown = 1;
-                if (!obj->cobj) 
-				{
-                    pline("%s empty.", Tobjnam(obj, "are"));
-                } 
-				else if (SchroedingersBox(obj))
-				{
-                    /* we don't want to force alive vs dead
-                       determination for Schroedinger's Cat here,
-                       so just make probing be inconclusive for it */
-                    You("aren't sure whether %s has %s or its corpse inside.",
-                        the(xname(obj)),
-                        /* unfortunately, we can't tell whether rndmonnam()
-                           picks a form which can't leave a corpse */
-                        an(Hallucination ? rndmonnam((char *) 0) : "cat"));
-                    obj->cknown = 0;
-                }
-				else
-				{
-                    struct obj *o;
-                    /* view contents (not recursively) */
-                    for (o = obj->cobj; o; o = o->nobj)
-                        o->dknown = 1; /* "seen", even if blind */
-                    (void) display_cinventory(obj);
-                }
-                res = 1;
-            }
+            res = probe_object(obj);
             if (res)
                 learn_it = TRUE;
             break;
