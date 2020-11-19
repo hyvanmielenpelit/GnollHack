@@ -1623,7 +1623,7 @@ NEARDATA struct permonst mons[] = {
         M1_FLY | M1_BREATHLESS | M1_NOEYES | M1_NOLIMBS | M1_NONECK | M1_MINDLESS | M1_AMORPHOUS | M1_UNSOLID,
         M2_HOSTILE | M2_NEUTER,
         M3_NONLIVING, 
-        M4_VEGAN_FOOD | M4_WHIRLY, M5_NONE,
+        M4_VEGAN_FOOD | M4_WHIRLY, M5_SEMI_TRANSPARENT,
 		2, CLR_GRAY, MONSTER_SOUNDSET_FOG_CLOUD, MONSTER_SOUNDSET_FOG_CLOUD,
         ACTION_INFO(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, FOG_CLOUD_SWALLOW_ANIMATION), NO_ACTION_INFO),
     ANIMATED_MON("ice vortex", None, "entity with a cold attack capable of engulfing opponents", None, None, S_VORTEX, LVL(5, 20, 2, 15, 30, 0),
