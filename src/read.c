@@ -4119,7 +4119,17 @@ struct _create_particular_data *d;
         else if (d->randmonst)
             whichpm = rndmonst();
 
-        mtmp = makemon(whichpm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END);
+        /* 'is_FOO()' ought to be called 'always_FOO()' */
+        unsigned long genderflag = 0UL;
+        if (d->fem != -1 && !is_male(whichpm) && !is_female(whichpm) && !is_neuter(whichpm))
+        {
+            if(d->fem == 0)
+                genderflag = MM_MALE;
+            else if (d->fem == 1)
+                genderflag = MM_FEMALE;
+        }
+
+        mtmp = makemon(whichpm, u.ux, u.uy, MM_PLAY_SUMMON_ANIMATION | MM_SUMMON_MONSTER_ANIMATION | MM_PLAY_SUMMON_SOUND | MM_ANIMATION_WAIT_UNTIL_END | genderflag);
 
         if (!mtmp)
         {
@@ -4130,10 +4140,6 @@ struct _create_particular_data *d;
             continue;
         }
         context.makemon_spef_idx++;
-
-        /* 'is_FOO()' ought to be called 'always_FOO()' */
-        if (d->fem != -1 && !is_male(mtmp->data) && !is_female(mtmp->data))
-            mtmp->female = d->fem; /* ignored for is_neuter() */
 
         if (d->maketame) 
         {
