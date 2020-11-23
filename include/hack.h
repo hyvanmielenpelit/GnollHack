@@ -693,6 +693,8 @@ static const char empty_string[] = "";
 #define SPECIAL_HEIGHT_IN_PIT -32
 #define SPECIAL_HEIGHT_LEVITATION 32
 #define PIT_BOTTOM_BORDER 2
+#define OBJECT_PILE_START_HEIGHT 2
+#define OBJECT_PILE_HEIGHT_DIFFERENCE 2
 
 #define ANIMATION_FRAME_INTERVAL 25 /* in milliseconds */
 #define DELAY_OUTPUT_INTERVAL_IN_FRAMES 2 /* 2 animation frames, or 50 milliseconds */

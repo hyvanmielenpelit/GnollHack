@@ -1427,19 +1427,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (!full_sized_item)
                             {
                                 /* For all normal items, we use only lower part of the tile */
-                                source_top_added = tileHeight / 2;
-                                source_height_deducted = tileHeight / 2;
+                                source_top_added =  (int)tileHeight / 2;
+                                source_height_deducted = (int)tileHeight / 2;
                                 dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
                                 dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
 
                                 /* Leave a little room for monster feet if not cover object */
                                 if (base_layer == LAYER_OBJECT)
-                                    dest_top_added += (int)(applicable_scaling_factor_y * (objects_in_pit ? -PIT_BOTTOM_BORDER : -8.0));
+                                    dest_top_added += (int)(applicable_scaling_factor_y * (double)(objects_in_pit ? -PIT_BOTTOM_BORDER : -OBJECT_PILE_START_HEIGHT));
 
                                 /* Pile the objects in order with two pixels in between */
                                 if (layer_rounds > 1)
                                 {
-                                    dest_top_added += (int)(applicable_scaling_factor_y * (-2.0 * (double)(layer_rounds - 1 - layer_round)));
+                                    dest_top_added += (int)(applicable_scaling_factor_y * ((double)-OBJECT_PILE_HEIGHT_DIFFERENCE * (double)(layer_rounds - 1 - layer_round)));
                                 }
 
                                 if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && !showing_detection)
