@@ -4479,7 +4479,10 @@ const char *word;
 {
 	if (obj->owornmask & ((W_ARMOR & ~W_ARMS) | W_ACCESSORY)) {
 		if (*word)
+		{
+			play_sfx_sound(SFX_GENERAL_CANNOT);
 			Norep("You cannot %s %s you are wearing.", word, something);
+		}
 		return FALSE;
 	}
 	if (objects[obj->otyp].oc_flags & O1_CANNOT_BE_DROPPED_IF_CURSED && obj->cursed) {
