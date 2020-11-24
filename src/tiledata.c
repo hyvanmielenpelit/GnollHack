@@ -2018,7 +2018,7 @@ uchar* tilemapflags;
                             int player_glyph_index = player_to_glyph_index(roleidx, raceidx, gender, alignment + 1, level);
                             for (enum action_tile_types action = ACTION_TILE_NO_ACTION; action < MAX_ACTION_TILES; action++)
                             {
-                                int anim_idx = get_player_animation(action, roleidx, raceidx, gender, alignment, level);
+                                int anim_idx = get_player_animation(action, roleidx, raceidx, gender, alignment + 1, level);
                                 if (anim_idx)
                                 {
                                     int player_glyph = player_glyph_index + get_player_action_glyph_offset(action);
