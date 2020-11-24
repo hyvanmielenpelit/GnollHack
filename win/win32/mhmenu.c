@@ -1357,8 +1357,71 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 {
                     /* using custom tiles - simple blt */
                     StretchBlt(lpdis->hDC, x, y, tileXScaled, tileYScaled,
-                        tileDC, t_x, t_y, GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, SRCCOPY);
+                        tileDC, t_x, t_y, multiplier* GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
                 }
+
+                /* Autodraw for candelabrum */
+                if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && item->object_data.otyp > STRANGE_OBJECT)
+                {
+                    double scale_factor = (double)applied_tileXScaled / (double)tileWidth;
+                    int y_start = 0;
+                    int x_start = (int)(13.0 * scale_factor);
+                    int item_width = 6;
+                    int item_height = 13;
+                    int src_unlit_x = 0;
+                    int src_unlit_y = 0;
+                    int src_lit_x = 6 * (1 + (int)autodraws[autodraw].flags);
+                    int src_lit_y = 0;
+                    int cnt = 0;
+
+                    for (int cidx = 0; cidx < min(7, item->object_data.special_quality); cidx++)
+                    {
+                        int src_x = 0, src_y = 0;
+                        int dest_x = 0, dest_y = 0;
+                        if (item->object_data.lamplit)
+                        {
+                            src_x = src_lit_x;
+                            src_y = src_lit_y;
+                        }
+                        else
+                        {
+                            src_x = src_unlit_x;
+                            src_y = src_unlit_y;
+                        }
+
+                        int item_xpos = cnt;
+
+                        dest_y = y_start;
+                        dest_x = x_start + item_xpos * (int)((double)item_width * scale_factor);
+
+                        int source_glyph = autodraws[autodraw].source_glyph;
+                        int atile = glyph2tile[source_glyph];
+                        int at_x = TILEBMP_X(atile);
+                        int at_y = TILEBMP_Y(atile);
+
+                        RECT source_rt = { 0 };
+                        source_rt.left = at_x + src_x;
+                        source_rt.right = source_rt.left + item_width;
+                        source_rt.top = at_y + src_y;
+                        source_rt.bottom = source_rt.top + item_height;
+
+                        RECT target_rt = { 0 };
+
+                        target_rt.left = x + x_added + dest_x;
+                        target_rt.right = target_rt.left + (int)(scale_factor * (double)(source_rt.right - source_rt.left));
+                        target_rt.top = y + dest_y;
+                        target_rt.bottom = target_rt.top + (int)(scale_factor * (double)(source_rt.bottom - source_rt.top));
+
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            lpdis->hDC, target_rt.left, target_rt.top,
+                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC, source_rt.left,
+                            source_rt.top, source_rt.right - source_rt.left,
+                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                        cnt++;
+                    }
+                }
+
                 SelectObject(tileDC, saveBmp);
                 x += tileXScaled;
             }

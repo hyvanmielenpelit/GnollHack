@@ -2129,7 +2129,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int item_height = 13;
                                 int src_unlit_x = 0;
                                 int src_unlit_y = 0;
-                                int src_lit_x = 6;
+                                int src_lit_x = 6 * (1 + (int)autodraws[autodraw].flags);
                                 int src_lit_y = 0;
                                 int cnt = 0;
 

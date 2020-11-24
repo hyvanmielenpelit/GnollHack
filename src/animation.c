@@ -2422,8 +2422,8 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
     {
         "candelabrum-animation-1-autodraw",
         AUTODRAW_DRAW_CANDELABRUM_CANDLES,
-        0,
-        CANDELABRUM_ANIMATION_1_GRAPHICS + GLYPH_UI_TILE_OFF,
+        1,
+        CANDELABRUM_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
         0
     },
