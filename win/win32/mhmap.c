@@ -2120,7 +2120,82 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     cnt++;
                                 }
-                            }                        }
+                            }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round)
+                            {
+                                int y_start = dest_top_added;
+                                int x_start = 13;
+                                int item_width = 6;
+                                int item_height = 13;
+                                int src_unlit_x = 0;
+                                int src_unlit_y = 0;
+                                int src_lit_x = 6;
+                                int src_lit_y = 0;
+                                int cnt = 0;
+
+                                for (int cidx = 0; cidx < min(7, otmp_round->special_quality); cidx++)
+                                {
+                                    int src_x = 0, src_y = 0;
+                                    int dest_x = 0, dest_y = 0;
+                                    if (otmp_round->lamplit)
+                                    {
+                                        src_x = src_lit_x;
+                                        src_y = src_lit_y;
+                                    }
+                                    else
+                                    {
+                                        src_x = src_unlit_x;
+                                        src_y = src_unlit_y;
+                                    }
+
+                                    int item_xpos = cnt;
+
+                                    dest_y = y_start;
+                                    dest_x = x_start + item_xpos * item_width;
+
+                                    int source_glyph = autodraws[autodraw].source_glyph;
+                                    int atile = glyph2tile[source_glyph];
+                                    int at_x = TILEBMP_X(atile);
+                                    int at_y = TILEBMP_Y(atile);
+
+                                    RECT source_rt = { 0 };
+                                    source_rt.left = at_x + src_x;
+                                    source_rt.right = source_rt.left + item_width;
+                                    source_rt.top = at_y + src_y;
+                                    source_rt.bottom = source_rt.top + item_height;
+
+                                    RECT target_rt = { 0 };
+
+                                    if (print_first_directly_to_map)
+                                    {
+                                        target_rt.left = rect->left + dest_x;
+                                        target_rt.right = rect->left + dest_x + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - source_rt.left));
+                                        target_rt.top = rect->top + dest_y;
+                                        target_rt.bottom = rect->top + dest_y + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - source_rt.top));
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            data->backBufferDC, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+                                    else
+                                    {
+                                        target_rt.left = dest_x;
+                                        target_rt.right = dest_x + source_rt.right - source_rt.left;
+                                        target_rt.top = dest_y;
+                                        target_rt.bottom = dest_y + source_rt.bottom - source_rt.top;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCcopy, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+                                    cnt++;
+                                }
+                            }
+                        }
                         /*
                          * AUTODRAW END
                          */

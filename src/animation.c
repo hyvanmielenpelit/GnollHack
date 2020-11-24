@@ -785,6 +785,17 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         NO_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "candelabrum-lit-animation", CANDELABRUM_LIT_ANIMATION_TILES,
+      CANDELABRUM_LIT_ANIMATION_FRAMES, CANDELABRUM_LIT_ANIMATION_OFF,
+      1,
+      3,
+      ANIMATION_PLAY_TYPE_ALWAYS, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_CANDELABRUM,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      -1, -1,
+      NO_ENLARGEMENT,
+      { AUTODRAW_CANDELABRUM_ANIMATION_TILE_1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
@@ -2101,6 +2112,17 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "candelabrum-replacement",
+      CANDELABRUM_LIT_REPLACEMENT_TILES, CANDELABRUM_LIT_REPLACEMENT_OFF,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT,
+      AUTODRAW_CANDELABRUM,
+      { "lit", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { CANDELABRUM_LIT_ANIMATION, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { AUTODRAW_CANDELABRUM, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 
@@ -2389,7 +2411,22 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0
     },
-
+    {
+        "candelabrum-autodraw",
+        AUTODRAW_DRAW_CANDELABRUM_CANDLES,
+        0,
+        CANDELABRUM_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
+    {
+        "candelabrum-animation-1-autodraw",
+        AUTODRAW_DRAW_CANDELABRUM_CANDLES,
+        0,
+        CANDELABRUM_ANIMATION_1_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
 
 };
 
@@ -2945,6 +2982,26 @@ enum autodraw_types* autodraw_ptr;
         {
             if (autodraw_ptr)
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_LIT:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (is_obj_activated(otmp))
+            {
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
+                /* Return the first tile with index 0 */
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
             break;
         }
         default:

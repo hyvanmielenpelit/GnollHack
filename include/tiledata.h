@@ -50,6 +50,8 @@ enum game_ui_tile_types
     CONDITION_MARKS,            /* One tile for each specified status (the same as on status line) */
     MAIN_TILE_MARK,
     BOOKSHELF_GRAPHICS,
+    CANDELABRUM_GRAPHICS,
+    CANDELABRUM_ANIMATION_1_GRAPHICS,
     MAX_UI_TILES
 };
 
