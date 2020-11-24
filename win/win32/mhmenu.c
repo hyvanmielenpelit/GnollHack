@@ -1365,7 +1365,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                 {
                     double scale_factor = (double)applied_tileXScaled / (double)tileWidth;
                     int y_start = 0;
-                    int x_start = (int)(13.0 * scale_factor);
+                    int x_start = 13;
                     int item_width = 6;
                     int item_height = 13;
                     int src_unlit_x = 0;
@@ -1392,7 +1392,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         int item_xpos = cnt;
 
                         dest_y = y_start;
-                        dest_x = x_start + item_xpos * (int)((double)item_width * scale_factor);
+                        dest_x = (int)((double)(x_start + item_xpos * item_width) * scale_factor);
 
                         int source_glyph = autodraws[autodraw].source_glyph;
                         int atile = glyph2tile[source_glyph];
