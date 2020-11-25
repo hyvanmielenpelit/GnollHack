@@ -2766,6 +2766,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
             return TRUE;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return TRUE;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return TRUE;
         break;
     case ACTION_TILE_THROW:
         break;
@@ -2807,6 +2811,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
         if (roleidx == ROLE_HEALER && raceidx == RACE_GNOLL && genderidx == GENDER_MALE)
             return TRUE;
         if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
+            return TRUE;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return TRUE;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return TRUE;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:

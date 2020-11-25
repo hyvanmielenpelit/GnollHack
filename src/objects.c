@@ -2560,7 +2560,7 @@ FOOD("tin", None, None, FOODTYPE_TIN, 1,
 		   0, breathe_n,breathe_d,breathe_p, normal_n,normal_d,normal_p, 0, nut_n, nut_d, nut_p, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, breathe_pbuc, normal_pbuc, nut_pbuc, extra1, breathe_dicebuc, normal_dicebuc, 0, 0, \
 		   10, color, 32, soundset, \
-           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 | O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE)
+           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 /*| O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE */)
 POTION("gain ability",           "ruby", 
 	"Increases a random ability score by 1. Blessed potions have twice the normal effect.",
 	1, NO_POWER, NO_POWER, NO_POWER, 20, 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),

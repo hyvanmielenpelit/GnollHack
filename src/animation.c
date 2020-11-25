@@ -297,7 +297,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
         AUTODRAW_NONE,
         { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
-        -1, -1,
+        3, 7,
         ELF_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -508,6 +508,50 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
       4, 7,
       HUMAN_SAMURAI_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-wizard-male-attack-animation", HUMAN_WIZARD_MALE_ATTACK_ANIMATION_TILES,
+      HUMAN_WIZARD_MALE_ATTACK_ANIMATION_FRAMES, HUMAN_WIZARD_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      HUMAN_WIZARD_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "human-wizard-male-kick-animation", HUMAN_WIZARD_MALE_KICK_ANIMATION_TILES,
+      HUMAN_WIZARD_MALE_KICK_ANIMATION_FRAMES, HUMAN_WIZARD_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      HUMAN_WIZARD_MALE_KICK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dwarf-caveman-male-attack-animation", DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_TILES,
+      DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_FRAMES, DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      DWARF_CAVEMAN_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dwarf-caveman-male-kick-animation", DWARF_CAVEMAN_MALE_KICK_ANIMATION_TILES,
+      DWARF_CAVEMAN_MALE_KICK_ANIMATION_FRAMES, DWARF_CAVEMAN_MALE_KICK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      4, 7,
+      DWARF_CAVEMAN_MALE_KICK_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "ochre-jelly-swallow-animation", OCHRE_JELLY_SWALLOW_ANIMATION_TILES,
@@ -942,8 +986,8 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
     { "elf-priest-male-chaotic-attack-enlargement",
       ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_TILES, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION_FRAMES,
       ELF_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT_TILES, ELF_PRIEST_MALE_CHAOTIC_ATTACK_ENLARGEMENT_OFF,
-      3, 1, 0,
-      { -1, -1, -1, 0, 1 },
+      3, 2, 0,
+      { 0, 1, 2, 3, 4 },
       { 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0 }
     },
@@ -1099,7 +1143,39 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
         { 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0 }
       },
-      { "pony-enlargement", 0, 0,
+      { "human-wizard-male-attack-enlargement",
+        HUMAN_WIZARD_MALE_ATTACK_ANIMATION_TILES, HUMAN_WIZARD_MALE_ATTACK_ANIMATION_FRAMES,
+        HUMAN_WIZARD_MALE_ATTACK_ENLARGEMENT_TILES, HUMAN_WIZARD_MALE_ATTACK_ENLARGEMENT_OFF,
+        3, 2, 0,
+        { 0, 1, 2, 3, 4 },
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+      { "human-wizard-male-kick-enlargement",
+        HUMAN_WIZARD_MALE_KICK_ANIMATION_TILES, HUMAN_WIZARD_MALE_KICK_ANIMATION_FRAMES,
+        HUMAN_WIZARD_MALE_KICK_ENLARGEMENT_TILES, HUMAN_WIZARD_MALE_KICK_ENLARGEMENT_OFF,
+        3, 1, 0,
+        { -1, -1, -1, 0, 1},
+        { 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0 }
+      },
+        { "dwarf-caveman-male-attack-enlargement",
+            DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_TILES, DWARF_CAVEMAN_MALE_ATTACK_ANIMATION_FRAMES,
+            DWARF_CAVEMAN_MALE_ATTACK_ENLARGEMENT_TILES, DWARF_CAVEMAN_MALE_ATTACK_ENLARGEMENT_OFF,
+            3, 1, 0,
+            { -1, -1, -1, 0, 1},
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+        },
+        { "dwarf-caveman-male-kick-enlargement",
+            DWARF_CAVEMAN_MALE_KICK_ANIMATION_TILES, DWARF_CAVEMAN_MALE_KICK_ANIMATION_FRAMES,
+            DWARF_CAVEMAN_MALE_KICK_ENLARGEMENT_TILES, DWARF_CAVEMAN_MALE_KICK_ENLARGEMENT_OFF,
+            3, 1, 0,
+            { -1, -1, -1, 0, 1},
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+        },
+    { "pony-enlargement", 0, 0,
       PONY_ENLARGEMENT_TILES, PONY_ENLARGEMENT_OFF,
       2, 1, 0,
       { -1, -1, -1, -1, 0 },
@@ -2598,6 +2674,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_HEALER_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_PRIEST && raceidx == RACE_ELF && genderidx == GENDER_MALE && alignmentidx == A_CHAOTIC + 1)
             return ELF_PRIEST_MALE_CHAOTIC_ATTACK_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_WIZARD_MALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return DWARF_CAVEMAN_MALE_ATTACK_ANIMATION;
         break;
     case ACTION_TILE_THROW:
         break;
@@ -2644,6 +2724,10 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return GNOLL_HEALER_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_RANGER && raceidx == RACE_ELF && genderidx == GENDER_MALE)
             return ELF_RANGER_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_WIZARD && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_WIZARD_MALE_KICK_ANIMATION;
+        if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return DWARF_CAVEMAN_MALE_KICK_ANIMATION;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
