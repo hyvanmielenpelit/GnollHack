@@ -2816,6 +2816,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         if (roleidx == ROLE_CAVEMAN && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
             return TRUE;
+        if (roleidx == ROLE_ARCHEOLOGIST && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return TRUE;
         break;
     case ACTION_TILE_PASSIVE_DEFENSE:
         break;
