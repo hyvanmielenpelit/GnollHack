@@ -1216,10 +1216,21 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     skip_darkening = TRUE;
 
                 boolean make_semi_transparent = FALSE;
-                if (base_layer == LAYER_MONSTER && ((mtmp && (is_semi_transparent(mtmp->data) || (!is_enl_you && is_invisible(mtmp) && canspotmon(mtmp)))) || (is_enl_you && Invis)))
-                    make_semi_transparent = TRUE;
-                else if (base_layer == LAYER_MONSTER && enlarg_idx >= 0)
-                    make_semi_transparent = make_semi_transparent;
+                boolean make_invis_transparent = FALSE;
+                boolean use_radial_transparency = FALSE;
+                if (base_layer == LAYER_MONSTER)
+                {
+                    if (mtmp && (is_semi_transparent(mtmp->data)))
+                    {
+                        make_semi_transparent = TRUE;
+                        if (is_radially_transparent(mtmp->data))
+                            use_radial_transparency = TRUE;
+                    }
+
+                    if ((mtmp && ((!is_enl_you && is_invisible(mtmp) && canspotmon(mtmp)))) || (is_enl_you && Invis))
+                        make_invis_transparent = TRUE;
+
+                }
 
                 /*
                  * Draw glyph
@@ -1510,7 +1521,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
 
 
-                        if (make_semi_transparent)
+                        if (make_semi_transparent || make_invis_transparent)
                         {
                             /* Create copy of background */
                             HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
@@ -1532,12 +1543,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (!opaque_background_drawn || print_first_directly_to_map)
                             {
                                 StretchBlt(hDCMem, 0, 0, width, height,
-                                    data->backBufferDC, rect->left, rect->top, width, height, SRCCOPY);
+                                    data->backBufferDC, rect->left + (int)(x_scaling_factor * (double)(flip_glyph ? tileWidth - 1 : 0)), rect->top, multiplier * width, height, SRCCOPY);
                             }
                             else
                             {
                                 StretchBlt(hDCMem, 0, 0, width, height,
-                                    hDCcopy, 0, 0, tileWidth, tileHeight, SRCCOPY);
+                                    hDCcopy, (flip_glyph ? tileWidth - 1 : 0), 0, multiplier * tileWidth, tileHeight, SRCCOPY);
                             }
 
                             /* Create copy of tile to be drawn */
@@ -1561,21 +1572,55 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             /* Draw semitransparency */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
                             int idx, x, y;
-                            double semi_transparency = 0.5;
+                            double semi_transparency = make_semi_transparent && make_invis_transparent ? 0.5 * 0.85 : 0.5;
 
-                            for (x = 0; x < width; x++)
+                            if (use_radial_transparency)
                             {
-                                for (y = 0; y < height; y++)
+                                double mid_x = (double)width / 2.0 - 0.5;
+                                double mid_y = (double)height / 2.0 - 0.5;
+                                double r = 0;
+                                for (x = 0; x < width; x++)
                                 {
-                                    idx = y * pitch;
-                                    idx += x * 4;
+                                    if (x == 30)
+                                        x = x;
 
-                                    if (lpBitmapBitsSemitransparent[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsSemitransparent[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsSemitransparent[idx + 2] == TILE_BK_COLOR_RED)
-                                        continue;
+                                    for (y = 0; y < height; y++)
+                                    {
+                                        idx = y * pitch;
+                                        idx += x * 4;
+                                        r = sqrt(pow((double)x - mid_x, 2.0) + pow((double)y - mid_y, 2.0));
+                                        semi_transparency = r * 0.0375;
+                                        if(semi_transparency > 0.98)
+                                            semi_transparency = 0.98;
 
-                                    lpBitmapBitsSemitransparent[idx + 0] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 0]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 0]) * (semi_transparency));  // blue
-                                    lpBitmapBitsSemitransparent[idx + 1] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 1]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 1]) * (semi_transparency));  // green
-                                    lpBitmapBitsSemitransparent[idx + 2] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 2]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 2]) * (semi_transparency));  // red 
+                                        if(make_invis_transparent)
+                                            semi_transparency = 1.0 - (1.0 - semi_transparency) * 0.85;
+
+                                        if (lpBitmapBitsSemitransparent[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsSemitransparent[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsSemitransparent[idx + 2] == TILE_BK_COLOR_RED)
+                                            continue;
+
+                                        lpBitmapBitsSemitransparent[idx + 0] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 0]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 0]) * (semi_transparency));  // blue
+                                        lpBitmapBitsSemitransparent[idx + 1] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 1]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 1]) * (semi_transparency));  // green
+                                        lpBitmapBitsSemitransparent[idx + 2] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 2]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 2]) * (semi_transparency));  // red 
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                for (x = 0; x < width; x++)
+                                {
+                                    for (y = 0; y < height; y++)
+                                    {
+                                        idx = y * pitch;
+                                        idx += x * 4;
+
+                                        if (lpBitmapBitsSemitransparent[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsSemitransparent[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsSemitransparent[idx + 2] == TILE_BK_COLOR_RED)
+                                            continue;
+
+                                        lpBitmapBitsSemitransparent[idx + 0] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 0]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 0]) * (semi_transparency));  // blue
+                                        lpBitmapBitsSemitransparent[idx + 1] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 1]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 1]) * (semi_transparency));  // green
+                                        lpBitmapBitsSemitransparent[idx + 2] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 2]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 2]) * (semi_transparency));  // red 
+                                    }
                                 }
                             }
 

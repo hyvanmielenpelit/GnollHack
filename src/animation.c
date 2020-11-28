@@ -2541,6 +2541,46 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0
     },
+    {
+        "jar-yellow-autodraw",
+        AUTODRAW_DRAW_JAR_CONTENTS,
+        0,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
+    {
+        "jar-purple-autodraw",
+        AUTODRAW_DRAW_JAR_CONTENTS,
+        1,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
+    {
+        "jar-white-autodraw",
+        AUTODRAW_DRAW_JAR_CONTENTS,
+        2,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
+    {
+        "jar-violet-autodraw",
+        AUTODRAW_DRAW_JAR_CONTENTS,
+        3,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
+    {
+        "jar-crimson-autodraw",
+        AUTODRAW_DRAW_JAR_CONTENTS,
+        4,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        0,
+        0
+    },
 
 };
 

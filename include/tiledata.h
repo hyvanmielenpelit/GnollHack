@@ -47,7 +47,7 @@ enum game_ui_tile_types
     DEATH_TILE = 0,
     GENERAL_UI_ELEMENTS,        /* Check box etc. */
     STATUS_MARKS,               /* Pet mark, detection mark, ridden mark, pile mark, etc. */
-    CONDITION_MARKS,            /* One tile for each specified status (the same as on status line) */
+    CONDITION_MARKS,            /* One tile for each specified condition (the same as on status line) */
     MAIN_TILE_MARK,
     ITEM_AUTODRAW_GRAPHICS,
     ITEM_PROPERTY_MARKS,
