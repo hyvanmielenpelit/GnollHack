@@ -2513,7 +2513,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         "bookshelf-autodraw",
         AUTODRAW_DRAW_BOOKSHELF_CONTENTS,
         0,
-        BOOKSHELF_GRAPHICS + GLYPH_UI_TILE_OFF,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
         0
     },
@@ -2529,7 +2529,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         "candelabrum-autodraw",
         AUTODRAW_DRAW_CANDELABRUM_CANDLES,
         0,
-        CANDELABRUM_GRAPHICS + GLYPH_UI_TILE_OFF,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
         0
     },
@@ -2537,7 +2537,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         "candelabrum-animation-1-autodraw",
         AUTODRAW_DRAW_CANDELABRUM_CANDLES,
         1,
-        CANDELABRUM_GRAPHICS + GLYPH_UI_TILE_OFF,
+        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
         0
     },

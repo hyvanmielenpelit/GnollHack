@@ -711,7 +711,8 @@ static const char empty_string[] = "";
           NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,NO_GLYPH,\
           NO_GLYPH,NO_GLYPH, NO_GLYPH, NO_GLYPH \
         }, \
-        0UL, (genericptr_t)0, (struct obj*)0, 0, 0 \
+        0UL, (genericptr_t)0, (struct obj*)0, 0, 0, \
+        0, 0, 0, 0, 0, 0UL \
     }
 
 #define nul_layerinfo empty_layerinfo(S_unexplored)

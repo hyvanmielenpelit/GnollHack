@@ -7072,6 +7072,12 @@ boolean stop_at_first_hit_object;
                 newsym(x, y);
             }
             tmp_at(bhitpos.x, bhitpos.y);
+            if (obj && ((is_poisonable(obj) && obj->opoisoned) || obj->elemental_enchantment || obj->exceptionality || obj->oeroded || obj->oeroded2))
+            {                
+                show_missile_info(bhitpos.x, bhitpos.y, obj->opoisoned, obj->elemental_enchantment, obj->exceptionality, obj->oeroded, obj->oeroded2, get_missile_flags(obj));
+                flush_screen(0);
+            }
+
             adjusted_delay_output();
             /* kicked objects fall in pools */
             if ((weapon == KICKED_WEAPON || weapon == GOLF_SWING)

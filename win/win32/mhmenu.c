@@ -1360,18 +1360,18 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         tileDC, t_x, t_y, multiplier* GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y - source_height_deducted, SRCCOPY);
                 }
 
+                double scale_factor = (double)applied_tileXScaled / (double)tileWidth;
                 /* Autodraw for candelabrum */
                 if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && item->object_data.otyp > STRANGE_OBJECT)
                 {
-                    double scale_factor = (double)applied_tileXScaled / (double)tileWidth;
                     int y_start = 0;
                     int x_start = 13;
                     int item_width = 6;
                     int item_height = 13;
                     int src_unlit_x = 0;
-                    int src_unlit_y = 0;
+                    int src_unlit_y = 10;
                     int src_lit_x = 6 * (1 + (int)autodraws[autodraw].flags);
-                    int src_lit_y = 0;
+                    int src_lit_y = 10;
                     int cnt = 0;
 
                     for (int cidx = 0; cidx < min(7, item->object_data.special_quality); cidx++)
@@ -1422,6 +1422,160 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     }
                 }
 
+                /* Item property marks */
+                if (item->object_data.opoisoned || item->object_data.elemental_enchantment > 0 || item->object_data.oeroded || item->object_data.oeroded2 || item->object_data.exceptionality > 0)
+                {
+                    int y_start = 0;
+                    int x_start = 0;
+                    int mark_width = 8;
+                    int marks_per_row = TILE_X / mark_width;
+                    int mark_height = 16;
+                    int src_x = 0;
+                    int src_y = 0;
+                    int cnt = 0;
+                    int poisoned = (item->object_data.opoisoned);
+                    int elemental_enchantment = (item->object_data.elemental_enchantment);
+                    int exceptionality = (item->object_data.exceptionality);
+                    int eroded = (item->object_data.oeroded);
+                    int eroded2 = (item->object_data.oeroded2);
+
+                    for (enum item_property_mark_types ipm_idx = 0; ipm_idx < MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
+                    {
+                        if (cnt >= 8)
+                            break;
+
+                        int src_x = (ipm_idx % marks_per_row) * mark_width, src_y = (ipm_idx / marks_per_row) * mark_height;
+                        int dest_x = 0, dest_y = 0;
+
+                        switch (ipm_idx)
+                        {
+                        case ITEM_PROPERTY_MARK_POISONED:
+                            if (!(poisoned && is_poisonable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_DEATH_MAGICAL:
+                            if (elemental_enchantment != DEATH_ENCHANTMENT)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_FLAMING:
+                            if (elemental_enchantment != FIRE_ENCHANTMENT)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_FREEZING:
+                            if (elemental_enchantment != COLD_ENCHANTMENT)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_ELECTRIFIED:
+                            if (elemental_enchantment != LIGHTNING_ENCHANTMENT)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_EXCEPTIONAL:
+                            if (exceptionality != EXCEPTIONALITY_EXCEPTIONAL)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_ELITE:
+                            if (exceptionality != EXCEPTIONALITY_ELITE)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_CELESTIAL:
+                            if (exceptionality != EXCEPTIONALITY_CELESTIAL)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_PRIMORDIAL:
+                            if (exceptionality != EXCEPTIONALITY_PRIMORDIAL)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_INFERNAL:
+                            if (exceptionality != EXCEPTIONALITY_INFERNAL)
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_CORRODED:
+                            if (!(eroded2 == 1 && is_corrodeable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_ROTTED:
+                            if (!(eroded2 == 1 && is_rottable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_BURNT:
+                            if (!(eroded == 1 && is_flammable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_RUSTY:
+                            if (!(eroded == 1 && is_rustprone(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_VERY_CORRODED:
+                            if (!(eroded2 == 2 && is_corrodeable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_VERY_ROTTED:
+                            if (!(eroded2 == 2 && is_rottable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_VERY_BURNT:
+                            if (!(eroded == 2 && is_flammable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_VERY_RUSTY:
+                            if (!(eroded == 2 && is_rustprone(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED:
+                            if (!(eroded2 == 3 && is_corrodeable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED:
+                            if (!(eroded2 == 3 && is_rottable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_THOROUGHLY_BURNT:
+                            if (!(eroded == 3 && is_flammable(&item->object_data)))
+                                continue;
+                            break;
+                        case ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY:
+                            if (!(eroded == 3 && is_rustprone(&item->object_data)))
+                                continue;
+                            break;
+                        case MAX_ITEM_PROPERTY_MARKS:
+                        default:
+                            continue;
+                            break;
+                        }
+
+                        int item_xpos = ((int)tileWidth) / 2 - mark_width + (cnt % 2 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
+
+                        dest_y = y_start + (int)((double)(tileHeight / 4 + mark_height / 4 - mark_height) * scale_factor);
+                        dest_x = x_start + (int)((double)item_xpos * scale_factor);
+
+                        int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
+                        int atile = glyph2tile[source_glyph];
+                        int at_x = TILEBMP_X(atile);
+                        int at_y = TILEBMP_Y(atile);
+
+                        RECT source_rt = { 0 };
+                        source_rt.left = at_x + src_x;
+                        source_rt.right = source_rt.left + mark_width;
+                        source_rt.top = at_y + src_y;
+                        source_rt.bottom = source_rt.top + mark_height;
+
+                        RECT target_rt = { 0 };
+
+                        target_rt.left = x + x_added + dest_x;
+                        target_rt.right = target_rt.left + (int)(scale_factor * (double)(source_rt.right - source_rt.left));
+                        target_rt.top = y + dest_y;
+                        target_rt.bottom = target_rt.top + (int)(scale_factor * (double)(source_rt.bottom - source_rt.top));
+
+
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            lpdis->hDC, target_rt.left, target_rt.top,
+                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, tileDC, source_rt.left,
+                            source_rt.top, source_rt.right - source_rt.left,
+                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                        cnt++;
+                    }
+                }
                 SelectObject(tileDC, saveBmp);
                 x += tileXScaled;
             }

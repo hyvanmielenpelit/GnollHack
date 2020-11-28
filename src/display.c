@@ -1150,6 +1150,12 @@ int damage_shown;
     int missile_glyph = NO_GLYPH;
     if (layers.layer_glyphs[LAYER_MISSILE] != 0 && layers.layer_glyphs[LAYER_MISSILE] != NO_GLYPH /* && (glyph_is_zap(layers.layer_glyphs[LAYER_MISSILE]) || glyph_is_missile(layers.layer_glyphs[LAYER_MISSILE]))*/)
         missile_glyph = layers.layer_glyphs[LAYER_MISSILE];
+    int missile_poisoned = layers.missile_poisoned;
+    int missile_elemental_enchantment = layers.missile_elemental_enchantment;
+    int missile_exceptionality = layers.missile_exceptionality;
+    int missile_eroded = layers.missile_eroded;
+    int missile_eroded2 = layers.missile_eroded2;
+    unsigned long missile_flags = layers.missile_flags;
 
     int background_effect_glyph = NO_GLYPH;
     if (layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != 0 && layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != NO_GLYPH)
@@ -1340,6 +1346,7 @@ new_sym_end_here:
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH)
     {
         show_glyph_on_layer(x, y, missile_glyph, LAYER_MISSILE);
+        show_missile_info(x, y, missile_poisoned, missile_elemental_enchantment, missile_exceptionality, missile_eroded, missile_eroded2, missile_flags);
     }
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_GENERAL_EFFECT_GLYPH)
     {
@@ -2248,6 +2255,51 @@ int damage_displayed;
     }
 }
 
+void
+show_missile_info(x, y, poisoned, elemental_enchantment, exceptionality, eroded, eroded2, missile_flags)
+int x, y;
+uchar poisoned, elemental_enchantment, exceptionality, eroded, eroded2, missile_flags;
+{
+    if (isok(x, y))
+    {
+        gbuf[y][x].layers.missile_poisoned = poisoned;
+        gbuf[y][x].layers.missile_elemental_enchantment = elemental_enchantment;
+        gbuf[y][x].layers.missile_exceptionality = exceptionality;
+        gbuf[y][x].layers.missile_eroded = eroded;
+        gbuf[y][x].layers.missile_eroded2 = eroded2;
+        gbuf[y][x].layers.missile_flags = missile_flags;
+
+        gbuf[y][x].new = 1;
+        if (gbuf_start[y] > x)
+            gbuf_start[y] = x;
+        if (gbuf_stop[y] < x)
+            gbuf_stop[y] = x;
+    }
+}
+
+unsigned long
+get_missile_flags(obj)
+struct obj* obj;
+{
+    if (!obj)
+        return 0UL;
+
+    unsigned long res = 0UL;
+    if (is_corrodeable(obj))
+        res |= MISSILE_FLAGS_CORRODEABLE;
+    if (is_rottable(obj))
+        res |= MISSILE_FLAGS_ROTTABLE;
+    if (is_flammable(obj))
+        res |= MISSILE_FLAGS_FLAMMABLE;
+    if (is_rustprone(obj))
+        res |= MISSILE_FLAGS_RUSTPRONE;
+    if (is_poisonable(obj))
+        res |= MISSILE_FLAGS_POISONABLE;
+    if (obj->oerodeproof)
+        res |= MISSILE_FLAGS_ERODEPROOF;
+
+    return res;
+}
 
 void
 change_layer_damage_displayed(x, y, damage_displayed)

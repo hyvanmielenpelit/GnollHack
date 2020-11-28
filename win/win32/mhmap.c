@@ -2128,9 +2128,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int item_width = 6;
                                 int item_height = 13;
                                 int src_unlit_x = 0;
-                                int src_unlit_y = 0;
+                                int src_unlit_y = 10;
                                 int src_lit_x = 6 * (1 + (int)autodraws[autodraw].flags);
-                                int src_lit_y = 0;
+                                int src_lit_y = 10;
                                 int cnt = 0;
 
                                 for (int cidx = 0; cidx < min(7, otmp_round->special_quality); cidx++)
@@ -2199,6 +2199,185 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /*
                          * AUTODRAW END
                          */
+
+                        /* Item property marks */
+                        if (((base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT) && otmp_round &&
+                            (otmp_round->opoisoned || otmp_round->elemental_enchantment > 0 || otmp_round->oeroded || otmp_round->oeroded2 || otmp_round->exceptionality > 0))
+                            ||
+                            ((base_layer == LAYER_MISSILE) &&
+                                (data->map[enl_i][enl_j].missile_poisoned || data->map[enl_i][enl_j].missile_elemental_enchantment > 0 || data->map[enl_i][enl_j].missile_eroded || data->map[enl_i][enl_j].missile_eroded2 || data->map[enl_i][enl_j].missile_exceptionality > 0))
+                            )
+                        {
+                            int y_start = (base_layer == LAYER_MISSILE && !move_obj_to_middle ? tileHeight / 4 : dest_top_added);
+                            int x_start = dest_left_added;
+                            int mark_width = 8;
+                            int marks_per_row = TILE_X / mark_width;
+                            int mark_height = 16;
+                            int src_x = 0;
+                            int src_y = 0;
+                            int cnt = 0;
+                            int poisoned = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_poisoned : otmp_round->opoisoned);
+                            int elemental_enchantment = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_elemental_enchantment : otmp_round->elemental_enchantment);
+                            int exceptionality = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_exceptionality : otmp_round->exceptionality);
+                            int eroded = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded : otmp_round->oeroded);
+                            int eroded2 = (base_layer == LAYER_MISSILE ? data->map[enl_i][enl_j].missile_eroded2 : otmp_round->oeroded2);
+                            boolean corrodeable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_CORRODEABLE) : is_corrodeable(otmp_round));
+                            boolean rottable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_ROTTABLE) : is_rottable(otmp_round));
+                            boolean flammable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_FLAMMABLE) : is_flammable(otmp_round));
+                            boolean rustprone = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_RUSTPRONE) : is_rustprone(otmp_round));
+                            boolean poisonable = (base_layer == LAYER_MISSILE ? !!(data->map[enl_i][enl_j].missile_flags & MISSILE_FLAGS_POISONABLE) : is_poisonable(otmp_round));
+
+                            for (enum item_property_mark_types ipm_idx = 0; ipm_idx < MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
+                            {
+                                if (cnt >= 8)
+                                    break;
+
+                                int src_x = (ipm_idx % marks_per_row) * mark_width, src_y = (ipm_idx / marks_per_row) * mark_height;
+                                int dest_x = 0, dest_y = 0;
+
+                                switch (ipm_idx)
+                                {
+                                case ITEM_PROPERTY_MARK_POISONED:
+                                    if (!(poisoned && poisonable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_DEATH_MAGICAL:
+                                    if (elemental_enchantment != DEATH_ENCHANTMENT)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_FLAMING:
+                                    if (elemental_enchantment != FIRE_ENCHANTMENT)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_FREEZING:
+                                    if (elemental_enchantment != COLD_ENCHANTMENT)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_ELECTRIFIED:
+                                    if (elemental_enchantment != LIGHTNING_ENCHANTMENT)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_EXCEPTIONAL:
+                                    if (exceptionality != EXCEPTIONALITY_EXCEPTIONAL)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_ELITE:
+                                    if (exceptionality != EXCEPTIONALITY_ELITE)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_CELESTIAL:
+                                    if (exceptionality != EXCEPTIONALITY_CELESTIAL)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_PRIMORDIAL:
+                                    if (exceptionality != EXCEPTIONALITY_PRIMORDIAL)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_INFERNAL:
+                                    if (exceptionality != EXCEPTIONALITY_INFERNAL)
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_CORRODED:
+                                    if (!(eroded2 == 1 && corrodeable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_ROTTED:
+                                    if (!(eroded2 == 1 && rottable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_BURNT:
+                                    if (!(eroded == 1  && flammable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_RUSTY:
+                                    if (!(eroded == 1 && rustprone))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_VERY_CORRODED:
+                                    if (!(eroded2 == 2 && corrodeable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_VERY_ROTTED:
+                                    if (!(eroded2 == 2 && rottable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_VERY_BURNT:
+                                    if (!(eroded == 2 && flammable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_VERY_RUSTY:
+                                    if (!(eroded == 2 && rustprone))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_THOROUGHLY_CORRODED:
+                                    if (!(eroded2 == 3 && corrodeable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_THOROUGHLY_ROTTED:
+                                    if (!(eroded2 == 3 && rottable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_THOROUGHLY_BURNT:
+                                    if (!(eroded == 3 && flammable))
+                                        continue;
+                                    break;
+                                case ITEM_PROPERTY_MARK_THOROUGHLY_RUSTY:
+                                    if (!(eroded == 3 && rustprone))
+                                        continue;
+                                    break;
+                                case MAX_ITEM_PROPERTY_MARKS:
+                                default:
+                                    continue;
+                                    break;
+                                }
+
+                                int item_xpos = ((int)tileWidth) / 2 - mark_width + (cnt % 2 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
+
+                                dest_y = y_start + (int)(obj_scaling_factor * (double)(tileHeight / 4 + mark_height / 4 - mark_height));
+                                dest_x = x_start + (int)(obj_scaling_factor * (double)item_xpos);
+
+                                int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
+                                int atile = glyph2tile[source_glyph];
+                                int at_x = TILEBMP_X(atile);
+                                int at_y = TILEBMP_Y(atile);
+
+                                RECT source_rt = { 0 };
+                                source_rt.left = at_x + src_x;
+                                source_rt.right = source_rt.left + mark_width;
+                                source_rt.top = at_y + src_y;
+                                source_rt.bottom = source_rt.top + mark_height;
+
+                                RECT target_rt = { 0 };
+
+                                if (print_first_directly_to_map)
+                                {
+                                    target_rt.left = rect->left + dest_x;
+                                    target_rt.right = rect->left + dest_x + (int)(((double)data->xBackTile / (double)tileWidth) * obj_scaling_factor * (double)(source_rt.right - source_rt.left));
+                                    target_rt.top = rect->top + dest_y;
+                                    target_rt.bottom = rect->top + dest_y + (int)(((double)data->yBackTile / (double)tileHeight) * obj_scaling_factor * (double)(source_rt.bottom - source_rt.top));
+
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        data->backBufferDC, target_rt.left, target_rt.top,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        source_rt.top, source_rt.right - source_rt.left,
+                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                }
+                                else
+                                {
+                                    target_rt.left = dest_x;
+                                    target_rt.right = dest_x + source_rt.right - source_rt.left;
+                                    target_rt.top = dest_y;
+                                    target_rt.bottom = dest_y + source_rt.bottom - source_rt.top;
+
+                                    (*GetNHApp()->lpfnTransparentBlt)(
+                                        hDCcopy, target_rt.left, target_rt.top,
+                                        target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                        source_rt.top, source_rt.right - source_rt.left,
+                                        source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                }
+                                cnt++;
+                            }                        
+                        }
                     }
                 }
 

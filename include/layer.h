@@ -43,6 +43,13 @@ struct layer_info {
     int damage_displayed;
     int special_monster_layer_height;
 
+    uchar missile_poisoned;
+    uchar missile_elemental_enchantment;
+    uchar missile_exceptionality;
+    uchar missile_eroded;
+    uchar missile_eroded2;
+    unsigned long missile_flags;
+
 };
 
 /* These are standard flags replacing earlier glyph system -- To be used mostly in map_glyph for tty */
@@ -88,5 +95,11 @@ struct layer_info {
 
 /* free bits */
 
+#define MISSILE_FLAGS_CORRODEABLE   0x00000001UL
+#define MISSILE_FLAGS_ROTTABLE      0x00000002UL
+#define MISSILE_FLAGS_FLAMMABLE     0x00000004UL
+#define MISSILE_FLAGS_RUSTPRONE     0x00000008UL
+#define MISSILE_FLAGS_ERODEPROOF    0x00000010UL
+#define MISSILE_FLAGS_POISONABLE    0x00000020UL
 
 #endif /* LAYER_H */
