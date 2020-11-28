@@ -1429,7 +1429,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     int x_start = 0;
                     int mark_width = 8;
                     int marks_per_row = TILE_X / mark_width;
-                    int mark_height = 16;
+                    int mark_height = 24;
                     int src_x = 0;
                     int src_y = 0;
                     int cnt = 0;
@@ -1545,7 +1545,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         int item_xpos = ((int)tileWidth) / 2 - mark_width + (cnt % 2 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
 
-                        dest_y = y_start + (int)((double)(tileHeight / 4 + mark_height / 4 - mark_height) * scale_factor);
+                        dest_y = y_start + (int)((double)(tileHeight / 4 + mark_height / 2 - mark_height) * scale_factor);
                         dest_x = x_start + (int)((double)item_xpos * scale_factor);
 
                         int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;

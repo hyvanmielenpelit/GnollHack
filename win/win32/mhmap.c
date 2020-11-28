@@ -2212,7 +2212,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int x_start = dest_left_added;
                             int mark_width = 8;
                             int marks_per_row = TILE_X / mark_width;
-                            int mark_height = 16;
+                            int mark_height = 24;
                             int src_x = 0;
                             int src_y = 0;
                             int cnt = 0;
@@ -2333,7 +2333,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 int item_xpos = ((int)tileWidth) / 2 - mark_width + (cnt % 2 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
 
-                                dest_y = y_start + (int)(obj_scaling_factor * (double)(tileHeight / 4 + mark_height / 4 - mark_height));
+                                dest_y = y_start + (int)(obj_scaling_factor * (double)(tileHeight / 4 + mark_height / 2 - mark_height));
                                 dest_x = x_start + (int)(obj_scaling_factor * (double)item_xpos);
 
                                 int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
