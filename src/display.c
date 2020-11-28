@@ -2258,7 +2258,8 @@ int damage_displayed;
 void
 show_missile_info(x, y, poisoned, elemental_enchantment, exceptionality, eroded, eroded2, missile_flags)
 int x, y;
-uchar poisoned, elemental_enchantment, exceptionality, eroded, eroded2, missile_flags;
+uchar poisoned, elemental_enchantment, exceptionality, eroded, eroded2;
+unsigned long missile_flags;
 {
     if (isok(x, y))
     {
