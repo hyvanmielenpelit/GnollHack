@@ -1539,7 +1539,6 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             /* Draw */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
                             int idx, x, y;
-                            double semi_transparency = 0.5;
 
                             for (x = 0; x < width; x++)
                             {
@@ -1558,9 +1557,10 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                                     }
                                     else
                                     {
-                                        lpBitmapBitsTemplate[idx + 0] = (unsigned char)(((double)lpBitmapBitsTemplate[idx + 0]) * (1.0 - semi_transparency) + ((double)blue) * (semi_transparency));  // blue
-                                        lpBitmapBitsTemplate[idx + 1] = (unsigned char)(((double)lpBitmapBitsTemplate[idx + 1]) * (1.0 - semi_transparency) + ((double)green) * (semi_transparency));  // green
-                                        lpBitmapBitsTemplate[idx + 2] = (unsigned char)(((double)lpBitmapBitsTemplate[idx + 2]) * (1.0 - semi_transparency) + ((double)red) * (semi_transparency));  // red 
+                                        double color_mult = (lpBitmapBitsTemplate[idx + 0] + lpBitmapBitsTemplate[idx + 1] + lpBitmapBitsTemplate[idx + 2]) / (3.0 * 255.0);
+                                        lpBitmapBitsTemplate[idx + 0] = (unsigned char)(((double)blue) * (color_mult));  // blue
+                                        lpBitmapBitsTemplate[idx + 1] = (unsigned char)(((double)green) * (color_mult));  // green
+                                        lpBitmapBitsTemplate[idx + 2] = (unsigned char)(((double)red) * (color_mult));  // red 
                                     }
                                 }
                             }
@@ -1704,7 +1704,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             /* Draw */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
                             int idx, x, y;
-                            double semi_transparency = 0.35;
+                            double semi_transparency = 0.70;
 
                             for (x = 0; x < width; x++)
                             {
