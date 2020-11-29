@@ -2298,9 +2298,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     RECT source_rt = { 0 };
                                     RECT target_rt = { 0 };
 
+                                    /* First, background */
                                     if (1)
                                     {
-                                        /* First, background */
                                         source_rt.left = at_x;
                                         source_rt.right = source_rt.left + jar_width;
                                         source_rt.top = at_y;
@@ -2554,9 +2554,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
 
 
+                                    /* Fourth, opaque foreground */
                                     if (1)
                                     {
-                                        /* Fourth, opaque foreground */
                                         source_rt.left = a2t_x;
                                         source_rt.right = source_rt.left + tileWidth;
                                         source_rt.top = a2t_y + tileHeight / 2;
@@ -2575,7 +2575,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     }
 
 
-                                    /* Finally print jar to the map */
+                                    /* Finally, print jar to the map */
                                     target_rt.left = (LONG)dest_x;
                                     target_rt.right = (LONG)dest_x + (LONG)((double)(jar_width) * obj_scaling_factor);
                                     target_rt.top = (LONG)dest_y;
