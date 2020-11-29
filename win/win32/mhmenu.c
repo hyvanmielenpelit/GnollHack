@@ -1532,9 +1532,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                             /* Color */
                             unsigned long draw_color = autodraws[autodraw].parameter1;
-                            unsigned char blue = (&((unsigned char)draw_color))[1];
-                            unsigned char green = (&((unsigned char)draw_color))[2];
-                            unsigned char red = (&((unsigned char)draw_color))[3];
+                            unsigned char blue = (&((unsigned char)draw_color))[0];
+                            unsigned char green = (&((unsigned char)draw_color))[1];
+                            unsigned char red = (&((unsigned char)draw_color))[2];
 
                             /* Draw */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
@@ -1704,7 +1704,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                             /* Draw */
                             int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
                             int idx, x, y;
-                            double semi_transparency = 0.5;
+                            double semi_transparency = 0.35;
 
                             for (x = 0; x < width; x++)
                             {

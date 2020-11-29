@@ -2678,7 +2678,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xFFFF0000UL
+        0xFFFFFF00UL
     },
     {
         "jar-purple-autodraw",
@@ -2688,7 +2688,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0x80008000UL
+        0xFF800080UL
     },
     {
         "jar-white-autodraw",
@@ -2698,7 +2698,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xFFFFFF00UL
+        0xFFFFFFFFUL
     },
     {
         "jar-violet-autodraw",
@@ -2708,7 +2708,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xEE82EE00UL
+        0xFFEE82EEUL
     },
     {
         "jar-crimson-autodraw",
@@ -2718,7 +2718,7 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
         0,
-        0xDC143C00UL
+        0xFFDC143CUL
     },
 
 };
