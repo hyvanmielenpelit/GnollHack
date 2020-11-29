@@ -51,6 +51,8 @@ enum game_ui_tile_types
     MAIN_TILE_MARK,
     ITEM_AUTODRAW_GRAPHICS,
     ITEM_PROPERTY_MARKS,
+    JAR_GRAPHICS,
+    JAR_FOREGROUND,
     MAX_UI_TILES
 };
 

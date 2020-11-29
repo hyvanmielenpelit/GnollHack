@@ -2082,13 +2082,23 @@ MISCELLANEOUSITEM("belt of storm giant strength", "rudimentary belt", MISC_BELT,
 #define TOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
    GENERAL_TOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,spetype,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,splcastpen,power1,power2,power3,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 
-#define SPELLTOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4) \
-    OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, 0, 0, 0),                                           \
+#define GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, stand_anim, enl, repl, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4) \
+    OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, stand_anim, enl, repl),                                           \
            BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, P_NONE, mat), \
            0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
 		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
 		   wt, color, height,soundset, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4)
+#define SPELLTOOL(name,desc,contentname,contentdesc,itemdesc,subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4) \
+	GENERAL_SPELLTOOL(name,desc,contentname,contentdesc,itemdesc, 0, 0, 0, subtype,kn,mrg,mgc,charged,recharging,prob,wt,cost,dir,dirsubtype, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus,cooldown,mat,color,height,soundset,flags,flags2,flags3, flags4)
+/*
+OBJECT(OBJ(name, desc, contentname, contentdesc, itemdesc, 0, 0, 0),                                           \
+           BITS(kn, mrg, charged ? 1 : 0, 0, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, dir, subtype, P_NONE, mat), \
+           0, 0, 0, P1_NONE,  TOOL_CLASS, prob, MULTIGEN_SINGLE, 0, wt, cost, \
+		   AD_PHYS, sdice, sdam, sdmgplus, ldice, ldam, ldmgplus, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
+		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, \
+		   wt, color, height,soundset, dirsubtype, 0, cooldown, 0, PERMITTED_ALL, ALL_TARGETS, O1_WAND_LIKE_TOOL | flags, flags2, flags3, flags4)
+*/
 #define CONTAINER(name,desc,itemdesc,subtype,stand_anim, enl, repl,kn,mgc,charged,recharging,prob,wt,cost,cooldown,manabon,hpbon,bonusattr,attrbonus,pflags,mat,color,height,soundset,flags,flags2,flags3,flags4,powconfermask) \
     OBJECT(OBJ(name, desc, None, None, itemdesc, stand_anim, enl, repl),                                           \
            BITS(kn, 0, charged ? 1 : 0, 1, mgc, ENCHTYPE_NO_ENCHANTMENT, charged, recharging, 0, 0, 0, 0, 0, subtype, P_NONE, mat),   \
@@ -2272,27 +2282,27 @@ TOOL("leather drum",      "old drum", None, None, None, TOOLTYPE_DRUM, 0, 0, 0, 
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
 TOOL("drum of earthquake","antiquated drum", None, None, None, TOOLTYPE_DRUM, 0, 0, 1, ENCHTYPE_NO_ENCHANTMENT, CHARGED_HORN_NORMAL, RECHARGING_MUSICAL_INSTRUMENT, 3, 25, 25, 0, 0, 0, 0, 0, 0, //ENDMARKER
 	NO_POWER, NO_POWER, NO_POWER, P1_NONE, MAT_LEATHER, HI_LEATHER, 0, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),
-SPELLTOOL("jar of extra healing salve", "glass jar", "healing salve", "yellow ointment", "Heals a target for 12d6 hit points", 
+GENERAL_SPELLTOOL("jar of extra healing salve", "glass jar", "healing salve", "yellow ointment", "Heals a target for 12d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_YELLOW_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL, //STARTMARKER for jars and salves and shuffled jars
 	20, 15, 150, TOUCH, 0, 12, 6, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE),
-SPELLTOOL("jar of greater healing salve", "crystal jar", "healing salve", "purple ointment", "Heals a target for 24d6 hit points",
+GENERAL_SPELLTOOL("jar of greater healing salve", "crystal jar", "healing salve", "purple ointment", "Heals a target for 24d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_PURPLE_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,
 	10, 15, 300, TOUCH, 0, 24, 6, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE),
-SPELLTOOL("jar of medicinal salve", "crystalline jar", "medicinal salve", "white ointment", "Cures a target from sickness",
+GENERAL_SPELLTOOL("jar of medicinal salve", "crystalline jar", "medicinal salve", "white ointment", "Cures a target from sickness", NO_ANIMATION, NO_ENLARGEMENT, JAR_WHITE_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D6_6, RECHARGING_TOOL_GENERAL,
 	20, 15, 150, TOUCH, 0, 0, 0, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE),
-SPELLTOOL("jar of prodigious healing salve", "transparent jar", "healing salve", "violet ointment", "Heals a target for 48d6 hit points",
+GENERAL_SPELLTOOL("jar of prodigious healing salve", "transparent jar", "healing salve", "violet ointment", "Heals a target for 48d6 hit points", NO_ANIMATION, NO_ENLARGEMENT, JAR_VIOLET_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D15_15, RECHARGING_TOOL_GENERAL,  //ENDMARKER for salves and shuffled jars
 	5, 15, 500, TOUCH, 0, 48, 6, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 
 	O1_NONE, O2_NONE, O3_READABLE | O3_CONTENT_DESCRIPTION_SHUFFLED, O4_NONE), // Endmarker for jars
-SPELLTOOL("jar of basilisk blood", "ornamental jar", "basilisk blood", "crimson liquid", "Cures a target from petrification",
+GENERAL_SPELLTOOL("jar of basilisk blood", "ornamental jar", "basilisk blood", "crimson liquid", "Cures a target from petrification", NO_ANIMATION, NO_ENLARGEMENT, JAR_CRIMSON_REPLACEMENT,
 	TOOLTYPE_JAR, 0, 0, 1, CHARGED_1D4_4, RECHARGING_TOOL_GENERAL,
 	15, 15, 150, TOUCH, 0, 0, 0, 0, 0, 0, 0, 0, 
 	MAT_GLASS, HI_GLASS, 32, OBJECT_SOUNDSET_GENERIC, 

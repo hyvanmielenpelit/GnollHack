@@ -78,6 +78,8 @@ struct autodraw_definition {
     int source_glyph;
     int source_glyph2;
     int source_glyph3;
+    int source_glyph4;
+    unsigned long parameter1;
     /* and other useful stuff if need be */
 };
 
@@ -893,6 +895,11 @@ enum replacement_types
     BRASS_LANTERN_LIT_REPLACEMENT,
     BOOKSHELF_REPLACEMENT,
     CANDELABRUM_REPLACEMENT,
+    JAR_YELLOW_REPLACEMENT,
+    JAR_PURPLE_REPLACEMENT,
+    JAR_WHITE_REPLACEMENT,
+    JAR_VIOLET_REPLACEMENT,
+    JAR_CRIMSON_REPLACEMENT,
     MAX_REPLACEMENTS
 };
 
@@ -998,6 +1005,11 @@ enum replacement_types
 //BOOKSHELF NO TILES
 #define CANDELABRUM_LIT_REPLACEMENT_OFF (BRASS_LANTERN_LIT_REPLACEMENT_TILES + BRASS_LANTERN_LIT_REPLACEMENT_OFF)
 #define CANDELABRUM_LIT_REPLACEMENT_TILES 1
+//JAR NO TILES
+//JAR NO TILES
+//JAR NO TILES
+//JAR NO TILES
+//JAR NO TILES
 #define TOTAL_REPLACEMENT_TILES (CANDELABRUM_LIT_REPLACEMENT_TILES + CANDELABRUM_LIT_REPLACEMENT_OFF)
 
 extern NEARDATA struct replacement_definition replacements[];

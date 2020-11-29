@@ -2237,19 +2237,76 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { AUTODRAW_CANDELABRUM, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "jar-yellow-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_JAR_YELLOW,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "jar-purple-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_JAR_PURPLE,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "jar-white-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_JAR_WHITE,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "jar-violet-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_JAR_VIOLET,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "jar-crimson-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_AUTODRAW,
+      AUTODRAW_JAR_CRIMSON,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 
 NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
 {
-    {"", 0, 0, 0, 0, 0},
+    {"", 0, 0, 0, 0, 0, 0, 0UL},
     {
         "dungeon-normal-wall-autodraw-all",
         AUTODRAW_DRAW_REPLACE_WALL_ENDS,
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-left-right",
@@ -2257,7 +2314,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-down",
@@ -2265,7 +2324,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-down-left",
@@ -2273,7 +2334,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-down-right",
@@ -2281,7 +2344,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-up-left-right",
@@ -2289,7 +2354,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-left-right",
@@ -2297,7 +2364,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-down-right",
@@ -2305,7 +2374,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-down-left",
@@ -2313,7 +2384,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-up-right",
@@ -2321,7 +2394,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-normal-wall-autodraw-down-up-left",
@@ -2329,7 +2404,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + GLYPH_CMAP_OFF,
-        S_hwall + GLYPH_CMAP_OFF
+        S_hwall + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
 
     {
@@ -2338,7 +2415,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-left-right",
@@ -2346,7 +2425,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-down",
@@ -2354,7 +2435,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-down-left",
@@ -2362,7 +2445,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-down-right",
@@ -2370,7 +2455,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-up-left-right",
@@ -2378,7 +2465,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-left-right",
@@ -2386,7 +2475,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-down-right",
@@ -2394,7 +2485,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-down-left",
@@ -2402,7 +2495,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-up-right",
@@ -2410,7 +2505,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "gnomish-mines-wall-autodraw-down-up-left",
@@ -2418,7 +2515,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_GNOMISH_MINES * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_GNOMISH_MINES * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     }, 
 
     {
@@ -2427,7 +2526,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-left-right",
@@ -2435,7 +2536,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-down",
@@ -2443,7 +2546,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-down-left",
@@ -2451,7 +2556,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-down-right",
@@ -2459,7 +2566,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-up-left-right",
@@ -2467,7 +2576,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-left-right",
@@ -2475,7 +2586,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-down-right",
@@ -2483,7 +2596,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_DOWN,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-down-left",
@@ -2491,7 +2606,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_DOWN | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-up-right",
@@ -2499,7 +2616,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_RIGHT | AUTODRAW_DIR_UP,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "dungeon-undead-wall-autodraw-down-up-left",
@@ -2507,7 +2626,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         AUTODRAW_DIR_UP | AUTODRAW_DIR_LEFT,
         0 + CRWALL_VARIATION_OFFSET + CMAP_UNDEAD_STYLE * MAX_VARIATIONS + GLYPH_CMAP_VARIATION_OFF,
         S_vwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
-        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF
+        S_hwall + CMAP_UNDEAD_STYLE * NUM_CMAP_TYPE_CHARS + GLYPH_CMAP_OFF,
+        0,
+        0UL
     },
     {
         "bookshelf-autodraw",
@@ -2515,7 +2636,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
-        0
+        0,
+        0,
+        0UL
     },
     {
         "weapon-rack-autodraw",
@@ -2523,7 +2646,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         0,
         0,
-        0
+        0,
+        0,
+        0UL
     },
     {
         "candelabrum-autodraw",
@@ -2531,7 +2656,9 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         0,
         ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
-        0
+        0,
+        0,
+        0UL
     },
     {
         "candelabrum-animation-1-autodraw",
@@ -2539,47 +2666,59 @@ NEARDATA struct autodraw_definition autodraws[MAX_AUTODRAWS] =
         1,
         ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
-        0
+        0,
+        0,
+        0UL
     },
     {
         "jar-yellow-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
         0,
-        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
         0,
-        0
+        0,
+        0xFFFF0000UL
     },
     {
         "jar-purple-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
-        1,
-        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
-        0
+        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0x80008000UL
     },
     {
         "jar-white-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
-        2,
-        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
-        0
+        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0xFFFFFF00UL
     },
     {
         "jar-violet-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
-        3,
-        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
-        0
+        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0xEE82EE00UL
     },
     {
         "jar-crimson-autodraw",
         AUTODRAW_DRAW_JAR_CONTENTS,
-        4,
-        ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF,
         0,
-        0
+        JAR_GRAPHICS + GLYPH_UI_TILE_OFF,
+        JAR_FOREGROUND + GLYPH_UI_TILE_OFF,
+        0,
+        0,
+        0xDC143C00UL
     },
 
 };

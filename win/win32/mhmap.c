@@ -1581,9 +1581,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 double r = 0;
                                 for (x = 0; x < width; x++)
                                 {
-                                    if (x == 30)
-                                        x = x;
-
                                     for (y = 0; y < height; y++)
                                     {
                                         idx = y * pitch;
@@ -2061,7 +2058,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     if (item_xpos >= rack_width / 2)
                                         break;
 
-                                    dest_y = y_to_rack_top + vertical_padding;;
+                                    dest_y = y_to_rack_top + vertical_padding;
                                     dest_x = cnt % 2 == 0 ? rack_start + item_xpos + padding : TILE_X - item_width - rack_start - item_xpos - padding;
 
                                     int source_glyph = obj_to_glyph(contained_obj, rn2);
@@ -2169,7 +2166,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CANDELABRUM_CANDLES && otmp_round)
                             {
                                 int y_start = dest_top_added;
-                                int x_start = 13;
+                                int x_start = dest_left_added;
+                                int x_padding = 13;
                                 int item_width = 6;
                                 int item_height = 13;
                                 int src_unlit_x = 0;
@@ -2196,7 +2194,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     int item_xpos = cnt;
 
                                     dest_y = y_start;
-                                    dest_x = x_start + item_xpos * item_width;
+                                    dest_x = x_start + (int)((double)(x_padding + item_xpos * item_width) * obj_scaling_factor);
 
                                     int source_glyph = autodraws[autodraw].source_glyph;
                                     int atile = glyph2tile[source_glyph];
@@ -2213,10 +2211,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                     if (print_first_directly_to_map)
                                     {
-                                        target_rt.left = rect->left + dest_x;
-                                        target_rt.right = rect->left + dest_x + (int)(((double)data->xBackTile / (double)tileWidth) * (double)(source_rt.right - source_rt.left));
-                                        target_rt.top = rect->top + dest_y;
-                                        target_rt.bottom = rect->top + dest_y + (int)(((double)data->yBackTile / (double)tileHeight) * (double)(source_rt.bottom - source_rt.top));
+                                        target_rt.left = rect->left + (LONG)dest_x;
+                                        target_rt.right = rect->left + (LONG)dest_x + (LONG)(((double)data->xBackTile / (double)tileWidth) * obj_scaling_factor * (double)(source_rt.right - source_rt.left));
+                                        target_rt.top = rect->top + (LONG)dest_y;
+                                        target_rt.bottom = rect->top + (LONG)dest_y + (LONG)(((double)data->yBackTile / (double)tileHeight) * obj_scaling_factor * (double)(source_rt.bottom - source_rt.top));
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             data->backBufferDC, target_rt.left, target_rt.top,
@@ -2227,9 +2225,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     else
                                     {
                                         target_rt.left = dest_x;
-                                        target_rt.right = dest_x + source_rt.right - source_rt.left;
+                                        target_rt.right = (LONG)dest_x + (LONG)((double)(source_rt.right - source_rt.left) * obj_scaling_factor);
                                         target_rt.top = dest_y;
-                                        target_rt.bottom = dest_y + source_rt.bottom - source_rt.top;
+                                        target_rt.bottom = (LONG)dest_y + (LONG)((double)(source_rt.bottom - source_rt.top) * obj_scaling_factor);
 
                                         (*GetNHApp()->lpfnTransparentBlt)(
                                             hDCcopy, target_rt.left, target_rt.top,
@@ -2238,6 +2236,375 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                             source_rt.bottom - source_rt.top, TILE_BK_COLOR);
                                     }
                                     cnt++;
+                                }
+                            }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_JAR_CONTENTS && otmp_round)
+                            {
+                                int max_charge = get_obj_max_charge(otmp_round);
+                                double fill_percentage = (max_charge > 0 ? (double)otmp_round->charges / (double)max_charge : 0.0);
+
+                                if (fill_percentage > 0.0)
+                                {
+                                    HDC hDCjar = CreateCompatibleDC(data->tileDC);
+
+                                    unsigned char* lpBitmapBitsJar;
+                                    int jar_width = tileWidth;
+                                    int jar_height = tileHeight / 2;
+
+                                    BITMAPINFO binfo_jar;
+                                    ZeroMemory(&binfo_jar, sizeof(BITMAPINFO));
+                                    binfo_jar.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                    binfo_jar.bmiHeader.biWidth = jar_width;
+                                    binfo_jar.bmiHeader.biHeight = jar_height;
+                                    binfo_jar.bmiHeader.biPlanes = 1;
+                                    binfo_jar.bmiHeader.biBitCount = 32;
+
+                                    HBITMAP newhBmp_jar = CreateDIBSection(hDCjar, &binfo_jar, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsJar, NULL, 0);
+                                    HGDIOBJ oldbmp_jar = SelectObject(hDCjar, newhBmp_jar);
+
+                                    LONG width = GetNHApp()->mapTile_X;
+                                    LONG height = GetNHApp()->mapTile_Y;
+
+                                    /* Draw transparency color background */
+                                    int jar_pitch = 4 * jar_width;
+                                    int jar_idx;
+                                    for (int x = 0; x < jar_width; x++)
+                                    {
+                                        for (int y = 0; y < jar_height; y++)
+                                        {
+                                            jar_idx = y * jar_pitch;
+                                            jar_idx += x * 4;
+
+                                            lpBitmapBitsJar[jar_idx + 0] = TILE_BK_COLOR_BLUE;  // blue
+                                            lpBitmapBitsJar[jar_idx + 1] = TILE_BK_COLOR_GREEN; // green
+                                            lpBitmapBitsJar[jar_idx + 2] = TILE_BK_COLOR_RED;  // red 
+                                        }
+                                    }
+
+                                    int dest_x = 0, dest_y = 0;
+                                    dest_y = dest_top_added;
+                                    dest_x = dest_left_added;
+
+                                    int source_glyph = autodraws[autodraw].source_glyph;
+                                    int atile = glyph2tile[source_glyph];
+                                    int at_x = TILEBMP_X(atile);
+                                    int at_y = TILEBMP_Y(atile);
+
+                                    int source_glyph2 = autodraws[autodraw].source_glyph2;
+                                    int atile2 = glyph2tile[source_glyph2];
+                                    int a2t_x = TILEBMP_X(atile2);
+                                    int a2t_y = TILEBMP_Y(atile2);
+
+                                    RECT source_rt = { 0 };
+                                    RECT target_rt = { 0 };
+
+                                    if (1)
+                                    {
+                                        /* First, background */
+                                        source_rt.left = at_x;
+                                        source_rt.right = source_rt.left + jar_width;
+                                        source_rt.top = at_y;
+                                        source_rt.bottom = source_rt.top + jar_height;
+
+                                        target_rt.left = 0;
+                                        target_rt.right = jar_width;
+                                        target_rt.top = 0;
+                                        target_rt.bottom = jar_height;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCjar, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+                                
+
+                                    /* Second, contents */
+                                    if (1)
+                                    {
+                                        /* Create copy of the contents tile */
+                                        source_rt.left = at_x;
+                                        source_rt.right = source_rt.left + tileWidth;
+                                        source_rt.top = at_y + tileHeight / 2;
+                                        source_rt.bottom = source_rt.top + tileHeight / 2;
+                                        int width = source_rt.right - source_rt.left;
+                                        int height = source_rt.bottom - source_rt.top;
+
+                                        HDC hDCtemplate = CreateCompatibleDC(data->tileDC);
+
+                                        unsigned char* lpBitmapBitsTemplate;
+
+                                        BITMAPINFO binfo_st;
+                                        ZeroMemory(&binfo_st, sizeof(BITMAPINFO));
+                                        binfo_st.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                        binfo_st.bmiHeader.biWidth = width;
+                                        binfo_st.bmiHeader.biHeight = height;
+                                        binfo_st.bmiHeader.biPlanes = 1;
+                                        binfo_st.bmiHeader.biBitCount = 32;
+
+                                        HBITMAP newhBmp_st = CreateDIBSection(hDCtemplate, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsTemplate, NULL, 0);
+                                        HGDIOBJ oldbmp_st = SelectObject(hDCtemplate, newhBmp_st);
+                                        StretchBlt(hDCtemplate, 0, 0, width, height,
+                                            data->tileDC, source_rt.left, source_rt.top, width, height, SRCCOPY);
+
+                                        /* Color */
+                                        unsigned long draw_color = autodraws[autodraw].parameter1;
+                                        unsigned char blue = (&((unsigned char)draw_color))[1];
+                                        unsigned char green = (&((unsigned char)draw_color))[2];
+                                        unsigned char red = (&((unsigned char)draw_color))[3];
+
+                                        /* Draw */
+                                        int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                        int idx, x, y;
+                                        double semi_transparency = 0.5;
+
+                                        for (x = 0; x < width; x++)
+                                        {
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
+
+                                                if (lpBitmapBitsTemplate[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsTemplate[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsTemplate[idx + 2] == TILE_BK_COLOR_RED)
+                                                    continue;
+                                                else if (lpBitmapBitsTemplate[idx + 0] == 255 && lpBitmapBitsTemplate[idx + 1] == 255 && lpBitmapBitsTemplate[idx + 2] == 255)
+                                                {
+                                                    lpBitmapBitsTemplate[idx + 0] = blue;  // blue
+                                                    lpBitmapBitsTemplate[idx + 1] = green;  // green
+                                                    lpBitmapBitsTemplate[idx + 2] = red;  // red 
+                                                }
+                                                else
+                                                {
+                                                    lpBitmapBitsTemplate[idx + 0] = (unsigned char)(((double)lpBitmapBitsTemplate[idx + 0]) * (1.0 - semi_transparency) + ((double)blue) * (semi_transparency));  // blue
+                                                    lpBitmapBitsTemplate[idx + 1] = (unsigned char)(((double)lpBitmapBitsTemplate[idx + 1]) * (1.0 - semi_transparency) + ((double)green) * (semi_transparency));  // green
+                                                    lpBitmapBitsTemplate[idx + 2] = (unsigned char)(((double)lpBitmapBitsTemplate[idx + 2]) * (1.0 - semi_transparency) + ((double)red) * (semi_transparency));  // red 
+                                                }
+                                            }
+                                        }
+
+                                        /* Bottom contents */
+                                        int bottom_x = 21;
+                                        int bottom_y = 38;
+                                        int bottom_width = 21;
+                                        int bottom_height = 10;
+
+                                        int bottom_tx = 21;
+                                        int bottom_ty = 35;
+
+                                        source_rt.left = bottom_x;
+                                        source_rt.right = source_rt.left + bottom_width;
+                                        source_rt.top = bottom_y;
+                                        source_rt.bottom = source_rt.top + bottom_height;
+
+                                        target_rt.left = bottom_tx;
+                                        target_rt.right = bottom_tx + bottom_width;
+                                        target_rt.top = bottom_ty;
+                                        target_rt.bottom = bottom_ty + bottom_height;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCjar, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, hDCtemplate, source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                                        int full_y = 11;
+                                        int empty_y = 35;
+                                        int fill_pixel_top = (int)((double)(empty_y - full_y) * (1.0 - fill_percentage)) + full_y;
+                                        int fill_pixels = empty_y - fill_pixel_top;
+                                        if (fill_pixels > 0)
+                                        {
+                                            /* Middle contents */
+                                            int middle_x = 21;
+                                            int middle_y = 15;
+                                            int middle_width = 21;
+                                            int middle_height = 17;
+
+                                            int middle_tx = 21;
+                                            int middle_ty = fill_pixel_top + 4;
+                                            int middle_twidth = middle_width;
+                                            int middle_theight = fill_pixels + 1;
+
+                                            source_rt.left = middle_x;
+                                            source_rt.right = source_rt.left + middle_width;
+                                            source_rt.top = middle_y;
+                                            source_rt.bottom = source_rt.top + middle_height;
+
+                                            target_rt.left = middle_tx;
+                                            target_rt.right = middle_tx + middle_twidth;
+                                            target_rt.top = middle_ty;
+                                            target_rt.bottom = middle_ty + middle_theight;
+
+                                            (*GetNHApp()->lpfnTransparentBlt)(
+                                                hDCjar, target_rt.left, target_rt.top,
+                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, hDCtemplate, source_rt.left,
+                                                source_rt.top, source_rt.right - source_rt.left,
+                                                source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+
+                                            /* Top contents */
+                                            int top_x = 21;
+                                            int top_y = 0;
+                                            int top_width = 21;
+                                            int top_height = 8;
+
+                                            int top_tx = 21;
+                                            int top_ty = fill_pixel_top;
+
+                                            source_rt.left = top_x;
+                                            source_rt.right = source_rt.left + top_width;
+                                            source_rt.top = top_y;
+                                            source_rt.bottom = source_rt.top + top_height;
+
+                                            target_rt.left = top_tx;
+                                            target_rt.right = top_tx + top_width;
+                                            target_rt.top = top_ty;
+                                            target_rt.bottom = top_ty + top_height;
+
+                                            (*GetNHApp()->lpfnTransparentBlt)(
+                                                hDCjar, target_rt.left, target_rt.top,
+                                                target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, hDCtemplate, source_rt.left,
+                                                source_rt.top, source_rt.right - source_rt.left,
+                                                source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                        }
+
+                                        SelectObject(hDCtemplate, oldbmp_st);
+                                        DeleteDC(hDCtemplate);
+                                        DeleteObject(newhBmp_st);
+                                    }
+
+                                    /* Third, transparent foreground */
+                                    if (1)
+                                    {
+                                        source_rt.left = a2t_x;
+                                        source_rt.right = source_rt.left + tileWidth;
+                                        source_rt.top = a2t_y;
+                                        source_rt.bottom = source_rt.top + tileHeight / 2;
+
+                                        /* Create copy of background */
+                                        HDC hDCMem = CreateCompatibleDC(data->backBufferDC);
+
+                                        unsigned char* lpBitmapBits;
+                                        LONG width = jar_width;
+                                        LONG height = jar_height;
+
+                                        BITMAPINFO bi;
+                                        ZeroMemory(&bi, sizeof(BITMAPINFO));
+                                        bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                        bi.bmiHeader.biWidth = width;
+                                        bi.bmiHeader.biHeight = height;
+                                        bi.bmiHeader.biPlanes = 1;
+                                        bi.bmiHeader.biBitCount = 32;
+
+                                        HBITMAP bitmap = CreateDIBSection(hDCMem, &bi, DIB_RGB_COLORS, (VOID**)&lpBitmapBits, NULL, 0);
+                                        HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
+
+                                        StretchBlt(hDCMem, 0, 0, width, height,
+                                            hDCjar, (flip_glyph ? jar_width - 1 : 0), 0, multiplier* jar_width, jar_height, SRCCOPY);
+
+                                        /* Create copy of tile to be drawn */
+                                        HDC hDCsemitransparent = CreateCompatibleDC(data->backBufferDC);
+
+                                        unsigned char* lpBitmapBitsSemitransparent;
+
+                                        BITMAPINFO binfo_st;
+                                        ZeroMemory(&binfo_st, sizeof(BITMAPINFO));
+                                        binfo_st.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                                        binfo_st.bmiHeader.biWidth = width;
+                                        binfo_st.bmiHeader.biHeight = height;
+                                        binfo_st.bmiHeader.biPlanes = 1;
+                                        binfo_st.bmiHeader.biBitCount = 32;
+
+                                        HBITMAP newhBmp_st = CreateDIBSection(hDCsemitransparent, &binfo_st, DIB_RGB_COLORS, (VOID**)&lpBitmapBitsSemitransparent, NULL, 0);
+                                        HGDIOBJ oldbmp_st = SelectObject(hDCsemitransparent, newhBmp_st);
+                                        StretchBlt(hDCsemitransparent, 0, 0, width, height,
+                                            data->tileDC, source_rt.left, source_rt.top, source_rt.right - source_rt.left, source_rt.bottom - source_rt.top, SRCCOPY);
+
+                                        /* Draw */
+                                        int pitch = 4 * width; // 4 bytes per pixel but if not 32 bit, round pitch up to multiple of 4
+                                        int idx, x, y;
+                                        double semi_transparency = 0.5;
+
+                                        for (x = 0; x < width; x++)
+                                        {
+                                            for (y = 0; y < height; y++)
+                                            {
+                                                idx = y * pitch;
+                                                idx += x * 4;
+
+                                                if (lpBitmapBitsSemitransparent[idx + 0] == TILE_BK_COLOR_BLUE && lpBitmapBitsSemitransparent[idx + 1] == TILE_BK_COLOR_GREEN && lpBitmapBitsSemitransparent[idx + 2] == TILE_BK_COLOR_RED)
+                                                    continue;
+
+                                                lpBitmapBitsSemitransparent[idx + 0] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 0]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 0]) * (semi_transparency));  // blue
+                                                lpBitmapBitsSemitransparent[idx + 1] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 1]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 1]) * (semi_transparency));  // green
+                                                lpBitmapBitsSemitransparent[idx + 2] = (unsigned char)(((double)lpBitmapBitsSemitransparent[idx + 2]) * (1.0 - semi_transparency) + ((double)lpBitmapBits[idx + 2]) * (semi_transparency));  // red 
+                                            }
+                                        }
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCjar, 0, 0, jar_width, jar_height, hDCsemitransparent,
+                                            (flip_glyph ? tileWidth - 1 : 0), 0, multiplier * width,
+                                            height, TILE_BK_COLOR);
+
+                                        SelectObject(hDCsemitransparent, oldbmp_st);
+                                        DeleteDC(hDCsemitransparent);
+                                        DeleteObject(newhBmp_st);
+
+                                        SelectObject(hDCMem, oldbmp);
+                                        DeleteDC(hDCMem);
+                                        DeleteObject(bitmap);
+                                    }
+
+
+                                    if (1)
+                                    {
+                                        /* Fourth, opaque foreground */
+                                        source_rt.left = a2t_x;
+                                        source_rt.right = source_rt.left + tileWidth;
+                                        source_rt.top = a2t_y + tileHeight / 2;
+                                        source_rt.bottom = source_rt.top + tileHeight / 2;
+
+                                        target_rt.left = 0;
+                                        target_rt.right = jar_width;
+                                        target_rt.top = 0;
+                                        target_rt.bottom = jar_height;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCjar, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, data->tileDC, source_rt.left,
+                                            source_rt.top, source_rt.right - source_rt.left,
+                                            source_rt.bottom - source_rt.top, TILE_BK_COLOR);
+                                    }
+
+
+                                    /* Finally print jar to the map */
+                                    target_rt.left = (LONG)dest_x;
+                                    target_rt.right = (LONG)dest_x + (LONG)((double)(jar_width) * obj_scaling_factor);
+                                    target_rt.top = (LONG)dest_y;
+                                    target_rt.bottom = (LONG)dest_y + (LONG)((double)(jar_height) * obj_scaling_factor);
+
+                                    if (print_first_directly_to_map)
+                                    {
+                                        target_rt.left += rect->left;
+                                        target_rt.right += rect->left;
+                                        target_rt.top += rect->top;
+                                        target_rt.bottom += rect->top;
+
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            data->backBufferDC, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, 
+                                            hDCjar, 0, 0, jar_width, jar_height, TILE_BK_COLOR);
+                                    }
+                                    else
+                                    {
+                                        (*GetNHApp()->lpfnTransparentBlt)(
+                                            hDCcopy, target_rt.left, target_rt.top,
+                                            target_rt.right - target_rt.left, target_rt.bottom - target_rt.top, 
+                                            hDCjar, 0, 0, jar_width, jar_height, TILE_BK_COLOR);
+                                    }
+
+                                    SelectObject(hDCjar, oldbmp_jar);
+                                    DeleteDC(hDCjar);
+                                    DeleteObject(newhBmp_jar);
+
                                 }
                             }
                         }

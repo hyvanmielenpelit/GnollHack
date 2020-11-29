@@ -1430,6 +1430,11 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                     int mark_width = 8;
                     int marks_per_row = TILE_X / mark_width;
                     int mark_height = 24;
+                    int y_padding = max(0, (tileYScaled - mark_height) / 2);
+                    int mark_scaled_height = min(tileYScaled, mark_height);
+                    double mark_scale_factor = (double)mark_scaled_height / (double)mark_height;
+                    int mark_scaled_width = min(1, (int)((double)mark_width * mark_scale_factor));
+                    int max_marks = (int)((double)applied_tileXScaled / (double)mark_scaled_width);
                     int src_x = 0;
                     int src_y = 0;
                     int cnt = 0;
@@ -1441,7 +1446,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                     for (enum item_property_mark_types ipm_idx = 0; ipm_idx < MAX_ITEM_PROPERTY_MARKS; ipm_idx++)
                     {
-                        if (cnt >= 8)
+                        if (cnt >= max_marks)
                             break;
 
                         int src_x = (ipm_idx % marks_per_row) * mark_width, src_y = (ipm_idx / marks_per_row) * mark_height;
@@ -1545,7 +1550,7 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
                         int item_xpos = ((int)tileWidth) / 2 - mark_width + (cnt % 2 ? 1 : -1) * ((cnt + 1) / 2) * mark_width;
 
-                        dest_y = y_start + (int)((double)(tileHeight / 4 + mark_height / 2 - mark_height) * scale_factor);
+                        dest_y = y_start + (int)((double)(y_padding) * mark_scale_factor);
                         dest_x = x_start + (int)((double)item_xpos * scale_factor);
 
                         int source_glyph = ITEM_PROPERTY_MARKS + GLYPH_UI_TILE_OFF;
@@ -1562,9 +1567,9 @@ onDrawItem(HWND hWnd, WPARAM wParam, LPARAM lParam)
                         RECT target_rt = { 0 };
 
                         target_rt.left = x + x_added + dest_x;
-                        target_rt.right = target_rt.left + (int)(scale_factor * (double)(source_rt.right - source_rt.left));
+                        target_rt.right = target_rt.left + (int)(mark_scale_factor * (double)(source_rt.right - source_rt.left));
                         target_rt.top = y + dest_y;
-                        target_rt.bottom = target_rt.top + (int)(scale_factor * (double)(source_rt.bottom - source_rt.top));
+                        target_rt.bottom = target_rt.top + (int)(mark_scale_factor * (double)(source_rt.bottom - source_rt.top));
 
 
                         (*GetNHApp()->lpfnTransparentBlt)(
