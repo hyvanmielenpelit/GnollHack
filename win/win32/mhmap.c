@@ -2052,9 +2052,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                                 for (struct obj* contained_obj = otmp_round->cobj; contained_obj; contained_obj = contained_obj->nobj)
                                 {
-                                    int src_x = 0, src_y = (objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP ? 0 : TILE_Y / 2);
+                                    int src_x = 0, src_y = ((objects[contained_obj->otyp].oc_flags4 & O4_FULL_SIZED_BITMAP) || has_obj_floor_tile(contained_obj) ? 0 : TILE_Y / 2);
                                     int dest_x = 0, dest_y = 0;
-                                    int item_width = objects[contained_obj->otyp].oc_tile_floor_height ? objects[contained_obj->otyp].oc_tile_floor_height : TILE_Y / 2;
+                                    int item_width = has_obj_floor_tile(contained_obj) ? TILE_Y / 2 : objects[contained_obj->otyp].oc_tile_floor_height ? objects[contained_obj->otyp].oc_tile_floor_height : TILE_Y / 2;
                                     int item_height = (item_width * TILE_Y) / TILE_X;
                                     int padding = (TILE_Y / 2 - item_width) / 2;
                                     int vertical_padding = (TILE_X - item_height) / 2;
