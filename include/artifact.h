@@ -51,7 +51,13 @@
 #define AF2_NONE							0x00000000UL  
 #define AF2_MISSILE_TILE					0x00000001UL  
 #define AF2_SINGLE_MISSILE_TILE				0x00000002UL  
+#define AF2_FLOOR_TILE						0x00000004UL  
+/* free bit */
 #define AF2_APPLICABLE_AS_AXE				0x00000010UL  
+
+
+#define has_artifact_floor_tile(artifact_idx) \
+	((artilist[(artifact_idx)].aflags2 & AF2_FLOOR_TILE) != 0)
 
 
 /* wielded or carried special effects */

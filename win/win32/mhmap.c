@@ -1411,13 +1411,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (glyph_is_object_missile(glyph))
                             {
                                 int otyp = (glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
-                                if (objects[otyp].oc_tile_floor_height > 0)
+                                if (!has_otyp_floor_tile(otyp) && objects[otyp].oc_tile_floor_height > 0)
                                     obj_scaling_factor = ((double)objects[otyp].oc_tile_floor_height) / 48.0;
                             }
                             else if (glyph_is_artifact_missile(glyph))
                             {
                                 int artidx = ((glyph - GLYPH_ARTIFACT_MISSILE_OFF) / NUM_MISSILE_DIRS) + 1;
-                                if (artilist[artidx].tile_floor_height > 0)
+                                if (!has_artifact_floor_tile(artidx) && artilist[artidx].tile_floor_height > 0)
                                     obj_scaling_factor = ((double)artilist[artidx].tile_floor_height) / 48.0;
                             }
 
@@ -1438,7 +1438,19 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (!full_sized_item)
                             {
                                 /* For all normal items, we use only lower part of the tile */
-                                source_top_added =  (int)tileHeight / 2;
+                                if (otmp_round && has_obj_floor_tile(otmp_round) && !showing_detection)
+                                {
+                                    source_top_added = 0;
+                                }
+                                else
+                                {
+                                    source_top_added = (int)tileHeight / 2;
+                                    if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && !showing_detection)
+                                    {
+                                        obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
+                                    }
+                                }
+
                                 source_height_deducted = (int)tileHeight / 2;
                                 dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
                                 dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));
@@ -1451,11 +1463,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (layer_rounds > 1)
                                 {
                                     dest_top_added += (int)(applicable_scaling_factor_y * ((double)-OBJECT_PILE_HEIGHT_DIFFERENCE * (double)(layer_rounds - 1 - layer_round)));
-                                }
-
-                                if (otmp_round && objects[otmp_round->otyp].oc_tile_floor_height > 0 && !showing_detection)
-                                {
-                                    obj_scaling_factor = ((double)objects[otmp_round->otyp].oc_tile_floor_height) / 48.0;
                                 }
 
                                 if (otmp_round && !showing_detection && objects_in_pit)

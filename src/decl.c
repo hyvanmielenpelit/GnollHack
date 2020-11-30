@@ -177,7 +177,7 @@ NEARDATA struct obj
     *kickedobj = 0;     /* object in flight due to kicking */
 
 struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
-    {"magic", HI_ZAP, NO_ANIMATION},
+    {"magic", HI_ZAP, MAGIC_MISSILE_RAY_ANIMATION},
     {"fire", CLR_ORANGE, FIRE_RAY_ANIMATION},
     {"frost", CLR_WHITE, NO_ANIMATION},
     {"sleep", HI_ZAP, NO_ANIMATION},

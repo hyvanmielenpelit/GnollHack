@@ -334,10 +334,10 @@ uchar* tilemapflags;
                     {
                         for (int n = 0; n < missile_tile_num; n++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s\n", tile_section_name, set_name, oclass_name, 
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, 
                                 "generic", "scroll", 
                                 missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], 
-                                objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                                objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
                             (void)write(fd, buf, strlen(buf));
                             tile_count++;
                         }
@@ -355,7 +355,7 @@ uchar* tilemapflags;
                             Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].enlargement].width_in_tiles, enlargements[obj_descr[i].enlargement].height_in_tiles, enlargements[obj_descr[i].enlargement].main_tile_x_coordinate);
                         else
                             Sprintf(eos(buf), ",1,1,0");
-                        Sprintf(eos(buf), ",%d,%d,%s", objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                        Sprintf(eos(buf), ",%d,%d,%s,%d", objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
                         Sprintf(eos(buf), "\n");
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
@@ -434,9 +434,9 @@ uchar* tilemapflags;
                     {
                         for (int n = 0; n < missile_tile_num; n++)
                         {
-                            Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s\n", tile_section_name, set_name, oclass_name, 
+                            Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, 
                                 "mail", "envelope", 
-                                missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                                missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
                             (void)write(fd, buf, strlen(buf));
                             if(missile_tile_num != 1)
                                 tile_count++;
@@ -446,7 +446,7 @@ uchar* tilemapflags;
                     }
                     else
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s,0,1,1,0,%d,%d,%s\n", tile_section_name, set_name, oclass_name, "mail", "envelope", objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                        Sprintf(buf, "%s,%s,%s,%s,%s,0,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, "mail", "envelope", objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
                     }
@@ -536,11 +536,11 @@ uchar* tilemapflags;
                 {
                     for (int n = 0; n < missile_tile_num; n++)
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s\n", tile_section_name, set_name, oclass_name,
+                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name,
                             nameless ? nameless_name : OBJ_NAME(objects[i]),
                             no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr,
                             missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], 
-                            objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                            objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(orig_idx));
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
                     }
@@ -561,7 +561,7 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",%d,%d,%d", enlargements[obj_descr[i].enlargement].width_in_tiles, enlargements[obj_descr[i].enlargement].height_in_tiles, enlargements[obj_descr[i].enlargement].main_tile_x_coordinate);
                     else
                         Sprintf(eos(buf), ",1,1,0");
-                    Sprintf(eos(buf), ",%d,%d,%s", objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i));
+                    Sprintf(eos(buf), ",%d,%d,%s,%d", objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(orig_idx));
                     Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                     tile_count++;
@@ -719,13 +719,14 @@ uchar* tilemapflags;
                 {
                     for (int n = 0; n < missile_tile_num; n++)
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%s\n", tile_section_name, set_name,
+                        Sprintf(buf, "%s,%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%s,%d\n", tile_section_name, set_name,
                             artilist[i].name,
                             no_description ? "no artifact description" : artilist[i].desc,
                             no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
                             no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr,
                             missile_tile_num == 1 ? "generic " : missile_direction_name_array[n], 
-                            artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name
+                            artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name, 
+                            has_artifact_floor_tile(i)
                         );
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
@@ -750,6 +751,12 @@ uchar* tilemapflags;
                     else
                         Sprintf(eos(buf), ",1,1,0");
                     Sprintf(eos(buf), ",%d,%d,%s,%s", artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name);
+                    
+                    if (has_artifact_floor_tile(i))
+                        Sprintf(eos(buf), ",1");
+                    else
+                        Sprintf(eos(buf), ",0");
+
                     Sprintf(eos(buf), "\n");
                     (void)write(fd, buf, strlen(buf));
                     tile_count++;
