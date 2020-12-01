@@ -8081,10 +8081,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
             {
                 if (playing_anim)
                 {
-                    int used_count = zap_tile_count % MAX_PLAYED_ZAP_ANIMATIONS;
+                    int used_count = min(zap_tile_count, MAX_PLAYED_ZAP_ANIMATIONS);
                     int idx = 0;
                     boolean use_old = FALSE;
-                    for (idx = 0; idx <= used_count; idx++)
+                    for (idx = 0; idx < used_count; idx++)
                     {
                         if (context.zap_animation_counter_on[idx] == TRUE && context.zap_animation_x[idx] == sx && context.zap_animation_y[idx] == sy)
                         {
