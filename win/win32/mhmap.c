@@ -1408,15 +1408,17 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         if (base_layer == LAYER_MISSILE && glyph_is_missile(glyph))
                         {
                             is_obj_missile = TRUE;
+                            int otyp = 0;
                             if (glyph_is_object_missile(glyph))
                             {
-                                int otyp = (glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
+                                otyp = (glyph - GLYPH_OBJ_MISSILE_OFF) / NUM_MISSILE_DIRS;
                                 if (!has_otyp_floor_tile(otyp) && objects[otyp].oc_tile_floor_height > 0)
                                     obj_scaling_factor = ((double)objects[otyp].oc_tile_floor_height) / 48.0;
                             }
                             else if (glyph_is_artifact_missile(glyph))
                             {
                                 int artidx = ((glyph - GLYPH_ARTIFACT_MISSILE_OFF) / NUM_MISSILE_DIRS) + 1;
+                                otyp = artilist[artidx].otyp;
                                 if (!has_artifact_floor_tile(artidx) && artilist[artidx].tile_floor_height > 0)
                                     obj_scaling_factor = ((double)artilist[artidx].tile_floor_height) / 48.0;
                             }
@@ -1425,7 +1427,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (move_obj_to_middle)
                             {
                                 /* Take lower part only */
-                                source_top_added = tileHeight / 2;
+                                source_top_added = (otyp > 0 && has_otyp_floor_tile(otyp)? 0 : tileHeight / 2);
                                 source_height_deducted = tileHeight / 2;
                                 dest_top_added = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 4.0));
                                 dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0));

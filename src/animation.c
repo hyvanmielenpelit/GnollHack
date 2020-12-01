@@ -334,6 +334,28 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
         DWARF_KNIGHT_FEMALE_KICK_ENLARGEMENT,
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "dwarf-knight-male-attack-animation", DWARF_KNIGHT_MALE_ATTACK_ANIMATION_TILES,
+      DWARF_KNIGHT_MALE_ATTACK_ANIMATION_FRAMES, DWARF_KNIGHT_MALE_ATTACK_ANIMATION_OFF,
+      1,
+      1,
+      ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+      AUTODRAW_NONE,
+      { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+      6, 9,
+      DWARF_KNIGHT_MALE_ATTACK_ENLARGEMENT,
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
+    { "dwarf-knight-male-kick-animation", DWARF_KNIGHT_MALE_KICK_ANIMATION_TILES,
+        DWARF_KNIGHT_MALE_KICK_ANIMATION_FRAMES, DWARF_KNIGHT_MALE_KICK_ANIMATION_OFF,
+        1,
+        1,
+        ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_FIRST,
+        AUTODRAW_NONE,
+        { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 },
+        3, 6,
+        DWARF_KNIGHT_MALE_KICK_ENLARGEMENT,
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
     { "orc-barbarian-male-attack-animation", ORC_BARBARIAN_MALE_ATTACK_ANIMATION_TILES,
       ORC_BARBARIAN_MALE_ATTACK_ANIMATION_FRAMES, ORC_BARBARIAN_MALE_ATTACK_ANIMATION_OFF,
       1,
@@ -1043,6 +1065,22 @@ NEARDATA struct enlargement_definition enlargements[MAX_ENLARGEMENTS] =
     { "dwarf-knight-female-kick-enlargement",
       DWARF_KNIGHT_FEMALE_KICK_ANIMATION_TILES, DWARF_KNIGHT_FEMALE_KICK_ANIMATION_FRAMES,
       DWARF_KNIGHT_FEMALE_KICK_ENLARGEMENT_TILES, DWARF_KNIGHT_FEMALE_KICK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "dwarf-knight-male-attack-enlargement",
+      DWARF_KNIGHT_MALE_ATTACK_ANIMATION_TILES, DWARF_KNIGHT_MALE_ATTACK_ANIMATION_FRAMES,
+      DWARF_KNIGHT_MALE_ATTACK_ENLARGEMENT_TILES, DWARF_KNIGHT_MALE_ATTACK_ENLARGEMENT_OFF,
+      3, 1, 0,
+      { -1, -1, -1, 0, 1 },
+      { 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0 }
+    },
+    { "dwarf-knight-male-kick-enlargement",
+      DWARF_KNIGHT_MALE_KICK_ANIMATION_TILES, DWARF_KNIGHT_MALE_KICK_ANIMATION_FRAMES,
+      DWARF_KNIGHT_MALE_KICK_ENLARGEMENT_TILES, DWARF_KNIGHT_MALE_KICK_ENLARGEMENT_OFF,
       3, 1, 0,
       { -1, -1, -1, 0, 1 },
       { 0, 0, 0, 0, 0 },
@@ -2886,6 +2924,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_KNIGHT_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_KNIGHT_FEMALE_ATTACK_ANIMATION;
+        if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+            return DWARF_KNIGHT_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_MONK_MALE_ATTACK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
@@ -2936,6 +2976,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_KNIGHT_FEMALE_KICK_ANIMATION;
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_FEMALE)
             return DWARF_KNIGHT_FEMALE_KICK_ANIMATION;
+        //if (roleidx == ROLE_KNIGHT && raceidx == RACE_DWARF && genderidx == GENDER_MALE)
+        //    return DWARF_KNIGHT_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_MONK && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
             return HUMAN_MONK_MALE_KICK_ANIMATION;
         if (roleidx == ROLE_SAMURAI && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
