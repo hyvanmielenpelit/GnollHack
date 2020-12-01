@@ -1154,6 +1154,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 }
             }
                 
+            int objcnt = 0;
             if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
             {
                 struct obj* otmp = show_memory_objects ? level.locations[enl_i][enl_j].hero_memory_layers.memory_objchn : level.objects[enl_i][enl_j];
@@ -1165,7 +1166,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     otmp = &mimic_obj;
                 }
 
-                int objcnt = 0;
                 for (struct obj* otmp2 = otmp; otmp2; otmp2 = otmp2->nexthere)
                 {
                     if(showing_detection && !(otmp2->speflags & SPEFLAGS_DETECTED))
@@ -1462,7 +1462,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 /* Pile the objects in order with two pixels in between */
                                 if (layer_rounds > 1)
                                 {
-                                    dest_top_added += (int)(applicable_scaling_factor_y * ((double)-OBJECT_PILE_HEIGHT_DIFFERENCE * (double)(layer_rounds - 1 - layer_round)));
+                                    dest_top_added += (int)(applicable_scaling_factor_y * ((double)-OBJECT_PILE_HEIGHT_DIFFERENCE * (double)(max(0,layer_round - (layer_rounds - objcnt)) /*layer_rounds - 1 - layer_round*/)));
                                 }
 
                                 if (otmp_round && !showing_detection && objects_in_pit)
@@ -1517,9 +1517,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             double scaled_height = (obj_scaling_factor * (double)GetNHApp()->mapTile_Y / 2.0);
                             double scaled_width = (obj_scaling_factor * (double)GetNHApp()->mapTile_X);
 
-                            if(is_object)
-                                dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
-                            else
+                            //if(is_object)
+                            //    dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
+                            //else
                                 dest_top_added += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height) / 2.0);
 
                             dest_height_deducted += (int)(applicable_scaling_factor_y * ((double)GetNHApp()->mapTile_Y / 2.0 - scaled_height));
