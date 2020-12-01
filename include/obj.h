@@ -554,7 +554,7 @@ struct obj {
     (is_otyp_drawn_in_front((obj)->otyp, (obj)->ox, (obj)->oy))
 
 #define has_otyp_floor_tile(otyp)                                 \
-    ((objects[otyp].oc_flags4 & O4_FLOOR_TILE) != 0 && 0)
+    ((objects[otyp].oc_flags4 & O4_FLOOR_TILE) != 0)
 
 #define has_obj_floor_tile(o) has_otyp_floor_tile((o)->otyp)     
 

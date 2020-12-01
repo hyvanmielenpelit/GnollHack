@@ -8036,7 +8036,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
     /* Start the zap */
     int framenum = 1;
     int anim_ms = 0;
-    context.zap_milliseconds_to_wait_until_end = 0;
+    context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
+    context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
     for (int i = 0; i < MAX_PLAYED_ZAP_ANIMATIONS; i++)
     {
         context.zap_animation_counter_on[i] = FALSE;
@@ -8083,7 +8084,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     int used_count = zap_tile_count % MAX_PLAYED_ZAP_ANIMATIONS;
                     int idx = 0;
                     boolean use_old = FALSE;
-                    for (idx = 0; idx < used_count; idx++)
+                    for (idx = 0; idx <= used_count; idx++)
                     {
                         if (context.zap_animation_counter_on[idx] == TRUE && context.zap_animation_x[idx] == sx && context.zap_animation_y[idx] == sy)
                         {
@@ -8093,16 +8094,26 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
                     context.zap_animation_x[idx] = sx;
                     context.zap_animation_y[idx] = sy;
-                    context.zap_animation_counter[idx] = 0;
+                    context.zap_animation_counter[idx] = 0UL;
                     context.zap_animation_counter_on[idx] = TRUE;
-                    context.zap_milliseconds_to_wait_until_end = anim_ms;
-
+                    context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+                    context.zap_aggregate_milliseconds_to_wait_until_end = anim_ms;
+                    if (animations[anim].action_execution_frame > 0)
+                    {
+                        context.zap_aggregate_milliseconds_to_wait_until_action = animations[anim].action_execution_frame * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
+                    }
                     if(!use_old)
                         zap_tile_count++;
                 }
                 tmp_at(sx, sy);
                 force_redraw_at(sx, sy);
+                if (animations[anim].sound_play_frame > 0)
+                {
+                    delay_output_milliseconds(animations[anim].sound_play_frame* (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
+                }
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
+                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
+                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
             }
         }
 
@@ -8390,10 +8401,10 @@ boolean say; /* Announce out of sight hit/miss events if true */
         if(cansee(sx, sy))
             adjusted_delay_output(); /* wait a little */
     }
-    if (context.zap_milliseconds_to_wait_until_end > 0)
+    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
     {
-        delay_output_milliseconds(context.zap_milliseconds_to_wait_until_end);
-        context.zap_milliseconds_to_wait_until_end = 0UL;
+        delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
+        context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
     }
     tmp_at(DISP_END, 0);
     stop_ambient_ray_sound(soundset_id);

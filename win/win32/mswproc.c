@@ -2311,12 +2311,12 @@ mswin_wait_loop(int milliseconds)
         }
     }
 
-    if (context.zap_milliseconds_to_wait_until_end > 0UL)
+    if (context.zap_aggregate_milliseconds_to_wait_until_end > 0UL)
     {
-        if (context.zap_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
-            context.zap_milliseconds_to_wait_until_end = 0UL;
+        if (context.zap_aggregate_milliseconds_to_wait_until_end <= (unsigned long)milliseconds)
+            context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
         else
-            context.zap_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
+            context.zap_aggregate_milliseconds_to_wait_until_end -= (unsigned long)milliseconds;
     }
 }
 

@@ -1194,7 +1194,7 @@ BOW("Galadhrim bow", "ornamental long bow",
               cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,sub,skill,metal,c,height,soundset,flags,flags2,flags3,flags4,powconfermask)
 #define HELM(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
-          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, 32, soundset, flags, flags2, flags3,flags4,powconfermask)
+          cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_HELM, P_NONE, metal, c, 32, soundset, flags, flags2, flags3,flags4 | O4_FLOOR_TILE,powconfermask)
 #define CLOAK(name,desc,kn,mgc,power,power2,power3,pflags,enchtype,prob,delay,wt,cost,ac,mgccancel,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,c,soundset,flags,flags2,flags3,flags4,powconfermask)  \
     ARMOR(name, desc, kn, mgc, 0, power, power2, power3, pflags, enchtype, prob, delay, wt,  \
           cost, ac, mgccancel, manabon, hpbon, bonusattrs, attrbonus, splcastpen, ARM_CLOAK, P_NONE, metal, c, 0, soundset, flags, flags2, flags3,flags4,powconfermask)
@@ -1740,7 +1740,7 @@ WEAPONBOOTS("spiked silver boots", None,
 		   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, 0, 0, manabon, hpbon, bonusattrs,attrbonus, splcastpen, 0, \
 		   15, color, 16, soundset, \
-	       0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4)
+	       0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 | O4_FLOOR_TILE)
 
 #define RING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,soundset,flags,flags2,flags3,flags4,powconfermask) \
      CHARGEDRING(name,desc,prob,power,power2,power3,pflags,cost,mgc,ench,CHARGED_NOT_CHARGED,RECHARGING_NOT_RECHARGEABLE,mohs,manabon,hpbon,bonusattrs,attrbonus,splcastpen,metal,color,soundset,flags,flags2,flags3,flags4,powconfermask)
@@ -2570,7 +2570,7 @@ FOOD("tin", None, None, FOODTYPE_TIN, 1,
 		   0, breathe_n,breathe_d,breathe_p, normal_n,normal_d,normal_p, 0, nut_n, nut_d, nut_p, A1_NONE, A2_NONE, 0, \
 		   0, 0, 0, 0, breathe_pbuc, normal_pbuc, nut_pbuc, extra1, breathe_dicebuc, normal_dicebuc, 0, 0, \
 		   10, color, 32, soundset, \
-           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 /*| O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE */)
+           0, 0, 0, 0, powconfermask, ALL_TARGETS, flags, flags2, flags3, flags4 | O4_FLOOR_TILE /*| O4_MISSILE_TILE | O4_SINGLE_MISSILE_TILE */)
 POTION("gain ability",           "ruby", 
 	"Increases a random ability score by 1. Blessed potions have twice the normal effect.",
 	1, NO_POWER, NO_POWER, NO_POWER, 20, 400, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, CLR_RED, OBJECT_SOUNDSET_GENERIC, O1_NONE, O2_NONE, O3_NONE, O4_NONE, PERMITTED_ALL),

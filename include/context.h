@@ -214,7 +214,8 @@ struct context_info
     unsigned long m_milliseconds_to_wait_until_end;
     uchar zap_animation_x[MAX_PLAYED_ZAP_ANIMATIONS];
     uchar zap_animation_y[MAX_PLAYED_ZAP_ANIMATIONS];
-    unsigned long zap_milliseconds_to_wait_until_end;
+    unsigned long zap_aggregate_milliseconds_to_wait_until_action;
+    unsigned long zap_aggregate_milliseconds_to_wait_until_end;
     enum layer_types spef_action_animation_layer[MAX_PLAYED_SPECIAL_EFFECTS];
     uchar spef_action_animation_x[MAX_PLAYED_SPECIAL_EFFECTS];
     uchar spef_action_animation_y[MAX_PLAYED_SPECIAL_EFFECTS];
