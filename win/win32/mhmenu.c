@@ -927,14 +927,14 @@ SetMenuListType(HWND hWnd, int how)
     SetWindowLongPtr(control, GWLP_WNDPROC, (LONG_PTR) NHMenuListWndProc);
 
     /* set control colors */
-    ListView_SetBkColor(control, 1 ? RGB(15, 10, 5) : menu_bg_brush ? menu_bg_color
+    ListView_SetBkColor(control, menu_bg_brush ? menu_bg_color
                                                : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU)
     );
     ListView_SetTextBkColor(
-        control, 1 ? RGB(15,10,5) : menu_bg_brush ? menu_bg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU)
+        control, menu_bg_brush ? menu_bg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_BG_MENU)
     );
     ListView_SetTextColor(
-        control, 1 ? RGB(255, 215, 0) : menu_fg_brush ? menu_fg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_FG_MENU)
+        control, menu_fg_brush ? menu_fg_color : (COLORREF) GetSysColor(DEFAULT_COLOR_FG_MENU)
     );
 
     /* set control font */
