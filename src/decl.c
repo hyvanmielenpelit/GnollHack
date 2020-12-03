@@ -190,7 +190,7 @@ struct zap_type_definition zap_type_definitions[MAX_ZAP_TYPES] = {
 
     {"magic-breath", HI_ZAP, NO_ANIMATION},
     {"fire-breath", CLR_ORANGE, NO_ANIMATION},
-    {"frost-breath", CLR_WHITE, NO_ANIMATION},
+    {"frost-breath", CLR_WHITE, FROST_BREATH_ANIMATION},
     {"sleep-breath", HI_ZAP, NO_ANIMATION},
     {"disintegration-breath", CLR_BLACK, NO_ANIMATION},
     {"lightning-breath", CLR_WHITE, NO_ANIMATION},
