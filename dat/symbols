@@ -367,14 +367,8 @@ start: NHAccess
 	S_hbeam: \095
 	S_lslant: \092
 	S_rslant: \047
-	S_vdigbeam: \042
-	S_hdigbeam: \042
-	S_rsdigbeam: \042
-	S_lsdigbeam: \042
-	S_vflashbeam: \033
-	S_hflashbeam: \033
-	S_rsflashbeam: \033
-	S_lsflashbeam: \033
+	S_digbeam: \042
+	S_flashbeam: \033
 	S_boom_tl: \041
 	S_boom_tc: \041
 	S_boom_tr: \040
@@ -445,10 +439,7 @@ start: Blank
         S_darkroom: \032
         S_dart_trap: \032
         S_demon: \032
-        S_vdigbeam: \032
-        S_hdigbeam: \032
-        S_rsdigbeam: \032
-        S_lsdigbeam: \032
+        S_digbeam: \032
         S_dnladder: \032
         S_dnstair: \032
         S_dog: \032
@@ -468,10 +459,7 @@ start: Blank
         S_falling_rock_trap: \032
         S_feline: \032
         S_fire_trap: \032
-        S_vflashbeam: \032
-        S_hflashbeam: \032
-        S_rsflashbeam: \032
-        S_lsflashbeam: \032
+        S_flashbeam: \032
         S_food: \032
         S_fountain: \032
         S_fungus: \032

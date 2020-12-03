@@ -605,7 +605,6 @@ uchar* tilemapflags;
                     tilemaparray[i + glyph_offset] = tile_count;
                     tilemapflags[i + glyph_offset] |= fullsizedflag;
 
-                    /* Write to the tile to the inventory, lit, and inventory lit glyphs if they do not have their own */
                     if (j == 0)
                     {
                         if (tsd->missile_tile_style != 1)
@@ -769,6 +768,8 @@ uchar* tilemapflags;
                     for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                     {
                         tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                        tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+
                         if(missile_tile_num != 1)
                             tile_count++;
                     }
@@ -788,6 +789,7 @@ uchar* tilemapflags;
                             for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
                                 tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] = tile_count;
+                                tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset4] |= GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
                             }
                         }
                     }
