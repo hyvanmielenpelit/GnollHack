@@ -8359,6 +8359,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
             {
                 dx = -dx;
                 dy = -dy;
+                tmp_at(DISP_CHANGE, zapbounce_to_glyph(-dx, -dy, dx, dy, zaptype));
+                tmp_at(sx, sy);
                 tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));
             } 
             else 
@@ -8389,7 +8391,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     break;
                 }
 
-                if (bounce)
+                if (bounce >= 0)
                 {
                     tmp_at(DISP_CHANGE, zapbounce_to_glyph(orig_dx, orig_dy, dx, dy, zaptype));
                     tmp_at(sx, sy);

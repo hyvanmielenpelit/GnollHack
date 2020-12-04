@@ -1238,12 +1238,7 @@ uchar* tilemapflags;
                             break;
                         }
                     }
-                    /*
-                "back-bounce-up", "back-bounce-left", "back-bounce-up-left", "back-bounce-up-right",
-                "back-bounce-down", "back-bounce-right", "back-bounce-down-right", "back-bounce-down-left",
-                "up-left-extra-up", "up-left-extra-left", "up-right-extra-up", "up-right-extra-right",
-                "down-right-extra-down", "down-right-extra-right", "down-left-extra-down", "down-left-extra-left",
-                    */
+
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0,%d,%d,%d\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord, template_width, template_height, flip_horizontal, flip_vertical, zap_color);

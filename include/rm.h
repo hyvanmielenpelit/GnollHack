@@ -159,6 +159,7 @@ enum screen_symbols {
 #define MAX_EXPLOSION_CHARS 9 /* number of explosion characters */
 #define MAX_SWALLOW_CHARS 9 /* number of swallow characters */
 #define MAX_ZAP_CHARS 32 /* number of zap characters */
+#define ZAP_CHAR_BITS 5 /* log2(MAX_ZAP_CHARS) */
 #define NUM_ASCII_ZAP_CHARS 4 /* number of zap symbols in ascii */
 
 #define DARKROOMSYM (Is_rogue_level(&u.uz) ? S_unexplored : S_darkroom)
