@@ -2456,7 +2456,7 @@ boolean exclude_ascii;
                     gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
                 }
             }
-            else if (Levitation && !is_radially_transparent(youmonst.data))
+            else if ((ELevitation || (HLevitation & TIMEOUT)) && !Blocks_Levitation && !is_radially_transparent(youmonst.data))
             {
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
             }
@@ -2466,7 +2466,7 @@ boolean exclude_ascii;
             struct trap* t = 0;
             if (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
-            else if (mtmp->mprops[LEVITATION] != 0 && !is_radially_transparent(mtmp->data))
+            else if ((mtmp->mprops[LEVITATION] & (M_TIMEOUT | M_EXTRINSIC)) != 0 && mtmp->mprops[BLOCKS_LEVITATION] == 0 && !is_radially_transparent(mtmp->data))
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
         }
 

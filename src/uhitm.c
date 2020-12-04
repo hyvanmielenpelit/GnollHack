@@ -3162,7 +3162,7 @@ int specialdmg; /* blessed and/or silver bonus against various things */
 	int hp_before = mdef->mhp;
 	deduct_monster_hp(mdef, damage);
 	int hp_after = mdef->mhp;
-	int damagedealt = hp_after - hp_before;
+	int damagedealt = hp_before - hp_after;
 	play_monster_weapon_hit_sound(&youmonst, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mdef), get_pm_attack_index(youmonst.data, mattk), mweapon, damage, HMON_MELEE);
 
     if (DEADMONSTER(mdef)) 
