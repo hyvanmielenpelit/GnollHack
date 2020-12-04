@@ -898,6 +898,10 @@ xchar x, y;
          *      + Everything else (hallways!)
          */
 
+        // For simplicity, map always background
+        map_background(x, y, 1);
+
+#if 0
         if (IS_ROOM(lev->typ) || IS_POOL(lev->typ))
         {
             boolean do_room_glyph;
@@ -974,18 +978,21 @@ xchar x, y;
         {
             map_background(x, y, 1);
         }
+#endif
 
         if ((boulder = sobj_at(BOULDER, x, y)) != 0)
         {
             map_object(boulder, 1);
         }
         
+#if 0
         if (IS_ROCK(lev->typ)
             || (IS_DOOR(lev->typ)
                 && (lev->doormask & (D_LOCKED | D_CLOSED))))
         {
             map_background(x, y, 1);
         }
+#endif
 
     } 
     else
@@ -2449,7 +2456,7 @@ boolean exclude_ascii;
                     gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
                 }
             }
-            else if (Levitation)
+            else if (Levitation && !is_radially_transparent(youmonst.data))
             {
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
             }
@@ -2459,7 +2466,7 @@ boolean exclude_ascii;
             struct trap* t = 0;
             if (mtmp->mtrapped && (t = t_at(mtmp->mx, mtmp->my)) != 0 && (t->ttyp == PIT || t->ttyp == SPIKED_PIT))
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_IN_PIT;
-            else if (mtmp->mprops[LEVITATION] != 0)
+            else if (mtmp->mprops[LEVITATION] != 0 && !is_radially_transparent(mtmp->data))
                 gbuf[y][x].layers.special_monster_layer_height = SPECIAL_HEIGHT_LEVITATION;
         }
 
