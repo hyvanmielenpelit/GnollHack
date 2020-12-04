@@ -3254,6 +3254,69 @@ int beam_type;
     return ((int)((beam_type << ZAP_CHAR_BITS) | zapbounce_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
+int
+zap_glyph_to_corner_glyph(orig_glyph, tile_index)
+int orig_glyph;
+int tile_index; /* orig_glyph is a zap main tile from: 1 = from above, 2 = from right, 3 = from below, 4 = from left */
+{
+    if (!glyph_is_zap(orig_glyph))
+        return NO_GLYPH;
+
+    int zap_index = (orig_glyph - GLYPH_ZAP_OFF) / MAX_ZAP_CHARS;
+    int dir_index = (orig_glyph - GLYPH_ZAP_OFF) % MAX_ZAP_CHARS;
+
+    if(dir_index >= 24)
+        return NO_GLYPH;
+
+    int res = -1;
+
+    switch (dir_index)
+    {
+    case 2:
+    case 10:
+    case 13:
+    case 22:
+        if (tile_index == 2)
+            res = 25;
+        else if (tile_index == 3)
+            res = 24;
+        break;
+    case 3:
+    case 11:
+    case 14:
+    case 23:
+        if (tile_index == 4)
+            res = 27;
+        else if (tile_index == 3)
+            res = 26;
+        break;
+    case 6:
+    case 9:
+    case 15:
+    case 18:
+        if (tile_index == 4)
+            res = 29;
+        else if (tile_index == 1)
+            res = 28;
+        break;
+    case 7:
+    case 8:
+    case 12:
+    case 19:
+        if (tile_index == 2)
+            res = 31;
+        else if (tile_index == 1)
+            res = 30;
+        break;
+    default:
+        break;
+    }
+
+    if(res == -1)
+        return NO_GLYPH;
+    else
+        return res + zap_index * MAX_ZAP_CHARS + GLYPH_ZAP_OFF;
+}
 
 /*
  * Utility routine for dowhatis() used to find out the glyph displayed at

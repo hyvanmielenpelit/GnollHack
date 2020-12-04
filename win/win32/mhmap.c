@@ -26,7 +26,7 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1)
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1 + 4)
 
 
 /* draw order definition */
@@ -1201,7 +1201,46 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 //int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 //int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
-                if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
+                if (base_layer == LAYER_MISSILE && tile_move_idx > 0)
+                {
+                    int adjacent_missile_glyph = NO_GLYPH;
+                    int adj_x = i; /* should be the same as enl_i */
+                    int adj_y = j; /* should be the same as enl_j */
+                    switch (tile_move_idx)
+                    {
+                    case 1:
+                        adj_x = i;
+                        adj_y = j - 1;
+                        break;
+                    case 2:
+                        adj_x = i + 1;
+                        adj_y = j;
+                        break;
+                    case 3:
+                        adj_x = i;
+                        adj_y = j + 1;
+                        break;
+                    case 4:
+                        adj_x = i - 1;
+                        adj_y = j;
+                        break;
+                    default:
+                        break;
+
+                    }
+                    if (!isok(adj_x, adj_y))
+                        signed_glyph = NO_GLYPH;
+                    else
+                    {
+                        adjacent_missile_glyph = data->map[adj_x][adj_y].layer_glyphs[LAYER_MISSILE];
+
+                        if (adjacent_missile_glyph == NO_GLYPH || !glyph_is_zap(adjacent_missile_glyph))
+                            signed_glyph = NO_GLYPH;
+                        else
+                            signed_glyph = zap_glyph_to_corner_glyph(adjacent_missile_glyph, tile_move_idx);
+                    }
+                }
+                else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
                     signed_glyph = otmp_round->glyph == NO_GLYPH || otmp_round->glyph == 0 ? NO_GLYPH : otmp_round->glyph;
                 else
                     signed_glyph = data->map[enl_i][enl_j].layer_glyphs[base_layer];
@@ -3608,6 +3647,17 @@ static void setDrawOrder(PNHMapWindow data)
                 data->draw_order[draw_count].tile_movement_index = -1;
                 draw_count++;
             }
+            else if (layer_idx == LAYER_MISSILE && same_level_z_order_array[enl_idx] == -1)
+            {
+                for (int i = 1; i <= 4; i++)
+                {
+                    /* These are drawn at the same time as lower positioned tiles */
+                    data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+                    data->draw_order[draw_count].layer = layer_idx;
+                    data->draw_order[draw_count].tile_movement_index = i;
+                    draw_count++;
+                }
+            }
         }
     }
     /* Mark to be drawn to back buffer and darkened if needed */
@@ -3716,6 +3766,45 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                         nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
                         InvalidateRect(data->hWnd, &rt2, FALSE);
                     }
+                }
+            }
+        }
+    }
+
+    if (glyph_is_zap(data->map[x][y].layer_glyphs[LAYER_MISSILE]))
+    {
+        int rx = x, ry = y;
+        for (int tile_move_index = 1; tile_move_index <= 4; tile_move_index++)
+        {
+            if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_MISSILE], tile_move_index) != NO_GLYPH)
+            {
+                switch (tile_move_index)
+                {
+                case 1:
+                    rx = x;
+                    ry = y + 1;
+                    break;
+                case 2:
+                    rx = x - 1;
+                    ry = y;
+                    break;
+                case 3:
+                    rx = x;
+                    ry = y - 1;
+                    break;
+                case 4:
+                    rx = x + 1;
+                    ry = y;
+                    break;
+                default:
+                    break;
+                }
+                if (isok(rx, ry))
+                {
+                    data->mapDirty[rx][ry] = TRUE;
+                    RECT rt2;
+                    nhcoord2display(data, rx, ry, &rt2); //data->xCur, data->yCur
+                    InvalidateRect(data->hWnd, &rt2, FALSE);
                 }
             }
         }
