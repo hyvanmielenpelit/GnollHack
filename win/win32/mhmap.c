@@ -1201,11 +1201,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 //int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 //int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
+                int adj_x = enl_i; /* should be the same as enl_i */
+                int adj_y = enl_j; /* should be the same as enl_j */
                 if (base_layer == LAYER_MISSILE && tile_move_idx > 0)
                 {
                     int adjacent_missile_glyph = NO_GLYPH;
-                    int adj_x = i; /* should be the same as enl_i */
-                    int adj_y = j; /* should be the same as enl_j */
                     switch (tile_move_idx)
                     {
                     case 1:
@@ -1329,8 +1329,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         for (int zap_anim_idx = 0; zap_anim_idx < MAX_PLAYED_ZAP_ANIMATIONS; zap_anim_idx++)
                         {
                             if (context.zap_animation_counter_on[zap_anim_idx]
-                                && enl_i == context.zap_animation_x[zap_anim_idx]
-                                && enl_j == context.zap_animation_y[zap_anim_idx])
+                                && adj_x == context.zap_animation_x[zap_anim_idx]
+                                && adj_y == context.zap_animation_y[zap_anim_idx])
                             {
                                 ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.zap_animation_counter[zap_anim_idx], &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                                 zap_found = TRUE;
