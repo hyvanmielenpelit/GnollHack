@@ -1664,6 +1664,7 @@ unsigned trflags;
                                : locomotion(youmonst.data, "step"));
         You("%s a polymorph trap!", verbbuf);
         if (Antimagic_or_resistance || Unchanging) {
+            play_sfx_sound(SFX_POLYMORPH_FAIL);
             u_shieldeff();
             You_feel("momentarily different.");
             /* Trap did nothing; don't remove it --KAA */
@@ -2988,11 +2989,16 @@ register struct monst *mtmp;
         case POLY_TRAP:
             play_sfx_sound_at_location(SFX_POLYMORPH_ACTIVATE, mtmp->mx, mtmp->my);
             if (resists_magic(mtmp)) {
+                play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
                 m_shieldeff(mtmp);
             } else if (!check_magic_resistance_and_inflict_damage(mtmp, (struct obj*) 0, FALSE, 0, 0, NOTELL)) {
-                if (newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
+                if (newcham(mtmp, (struct permonst*)0, FALSE, FALSE))
+                {
+                    play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my); // Since msg is FALSE in newcham
                     /* we're done with mptr but keep it up to date */
                     mptr = mtmp->data;
+                }
+
                 if (in_sight)
                     seetrap(trap);
             }

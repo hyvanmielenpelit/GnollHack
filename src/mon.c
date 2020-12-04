@@ -3904,8 +3904,8 @@ boolean has_effects;
     if (has_effects && isok(mtmp->mx, mtmp->my) && canspotmon(mtmp))
     {
         spef1ok = TRUE;
-        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         play_special_effect_at(SPECIAL_EFFECT_TELEPORT_OUT, 0, mtmp->mx, mtmp->my, FALSE);
+        play_sfx_sound_at_location(SFX_TELEPORT, mtmp->mx, mtmp->my);
         special_effect_wait_until_action(0);
         show_glyph_on_layer(mtmp->mx, mtmp->my, NO_GLYPH, LAYER_MONSTER);
         force_redraw_at(mtmp->mx, mtmp->my);
@@ -5051,6 +5051,7 @@ boolean msg;      /* "The oldmon turns into a newmon!" */
     newsym(mtmp->mx, mtmp->my);
 
     if (msg) {
+        play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
         Strcpy(newname, noname_monnam(mtmp, ARTICLE_A));
         /* oldname was capitalized above; newname will be lower case */
         if (!strcmpi(newname, "it")) { /* can't see or sense it now */

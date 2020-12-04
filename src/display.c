@@ -3291,16 +3291,16 @@ int tile_index; /* orig_glyph is a zap main tile from: 1 = from above, 2 = from 
             res = 26;
         break;
     case 6:
-    case 9:
     case 15:
     case 18:
+    case 8:
         if (tile_index == 4)
             res = 29;
         else if (tile_index == 1)
             res = 28;
         break;
     case 7:
-    case 8:
+    case 9:
     case 12:
     case 19:
         if (tile_index == 2)

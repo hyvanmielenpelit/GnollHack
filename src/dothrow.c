@@ -13,7 +13,7 @@ STATIC_DCL void NDECL(autoquiver);
 STATIC_DCL int FDECL(gem_accept, (struct monst *, struct obj *));
 STATIC_DCL void FDECL(tmiss, (struct obj *, struct monst *, BOOLEAN_P));
 STATIC_DCL int FDECL(throw_gold, (struct obj *));
-STATIC_DCL void FDECL(breakmsg, (struct obj *, BOOLEAN_P));
+STATIC_DCL void FDECL(breakmsg, (struct obj *, int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(toss_up, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(sho_obj_return_to_u, (struct obj * obj));
 STATIC_DCL boolean FDECL(mhurtle_step, (genericptr_t, int, int));
@@ -1463,8 +1463,7 @@ boolean hitsroof;
         if (breaktest(obj))
         {
             pline("%s hits the %s.", Doname2(obj), ceiling(u.ux, u.uy));
-            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
-            breakmsg(obj, !Blind);
+            breakmsg(obj, u.ux, u.uy, !Blind);
             breakobj(obj, u.ux, u.uy, TRUE, TRUE);
             return FALSE;
         }
@@ -1495,8 +1494,7 @@ boolean hitsroof;
                     && can_blnd(&youmonst, &youmonst, AT_WEAP, obj))
                        ? rnd(25)
                        : 0;
-        play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
-        breakmsg(obj, !Blind);
+        breakmsg(obj, u.ux, u.uy, !Blind);
         breakobj(obj, u.ux, u.uy, TRUE, TRUE);
         obj = 0; /* it's now gone */
         switch (otyp) {
@@ -1971,8 +1969,7 @@ long wep_mask; /* used to re-equip returning boomerang / aklys / Mjollnir / Jave
             tmp_at(bhitpos.x, bhitpos.y);
             adjusted_delay_output();
             tmp_at(DISP_END, 0);
-            play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
-            breakmsg(obj, cansee(bhitpos.x, bhitpos.y));
+            breakmsg(obj, bhitpos.x, bhitpos.y, cansee(bhitpos.x, bhitpos.y));
             breakobj(obj, bhitpos.x, bhitpos.y, TRUE, TRUE);
             thrownobj = (struct obj *) 0;
             return;
@@ -2613,8 +2610,7 @@ boolean from_invent; /* thrown or dropped by player; maybe on shop bill */
 
     if (!breaktest(obj))
         return 0;
-    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
-    breakmsg(obj, in_view);
+    breakmsg(obj, x, y, in_view);
     breakobj(obj, x, y, TRUE, from_invent);
     return 1;
 }
@@ -2633,8 +2629,7 @@ xchar x, y; /* object location (ox, oy may not be right) */
 
     if (!breaktest(obj))
         return 0;
-    play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
-    breakmsg(obj, in_view);
+    breakmsg(obj, x, y, in_view);
     breakobj(obj, x, y, FALSE, FALSE);
     return 1;
 }
@@ -2775,11 +2770,17 @@ struct obj *obj;
 }
 
 STATIC_OVL void
-breakmsg(obj, in_view)
+breakmsg(obj, x, y, in_view)
 struct obj *obj;
+int x, y;
 boolean in_view;
 {
+    if (!obj)
+        return;
+
     const char *to_pieces;
+
+    play_simple_object_sound_at_location(obj, x, y, OBJECT_SOUND_TYPE_BREAK);
 
     to_pieces = "";
     switch (obj->oclass == POTION_CLASS ? POT_WATER : obj->otyp) {

@@ -623,6 +623,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Sex Change", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/General/Unknown Odd Effect", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Celestial Summon Start", 1.0f },
+
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Infernal Summon Start", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Neutral Summon Start", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/General Summon Start", 1.0f },
@@ -630,6 +631,16 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Summon Undead Start", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Animate Dead Start", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Spell/Miscellaneous/Smoke Summon Start", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Polymorph Fail", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Polymorph Success", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Polymorph Scales Merge", 1.0f },
+
+    { SOUND_BANK_MASTER, "event:/SFX/General/Polymorph Scales Revert", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Polymorph New Man", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Wish Fulfilled", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Player/Generic/Male/Generic Male Shudder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Player/Generic/Female/Generic Female Shudder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Object/Potion/Generic/Potion Break", 1.0f },
 
 };
 

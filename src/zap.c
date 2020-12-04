@@ -706,6 +706,7 @@ struct monst* origmonst;
 		{
             /* magic missile resistance protects from polymorph traps, so make
                it guard against involuntary polymorph attacks too... */
+            play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
             m_shieldeff(mtmp);
         }
 		else if (!check_magic_resistance_and_inflict_damage(mtmp, otmp, FALSE, 0, 0, NOTELL))
@@ -729,6 +730,7 @@ struct monst* origmonst;
 			{
                 if (canseemon(mtmp)) 
 				{
+                    play_simple_monster_sound(mtmp, MONSTER_SOUND_TYPE_SHUDDER);
                     pline("%s shudders!", Monnam(mtmp));
                     learn_it = TRUE;
                 }
@@ -743,8 +745,16 @@ struct monst* origmonst;
                        || (mtmp->cham >= LOW_PM && newcham(mtmp, &mons[mtmp->cham], polyspot, give_msg) != 0)) 
 			{
                 if (give_msg && (canspotmon(mtmp)
-                                 || (u.uswallow && mtmp == u.ustuck)))
+                    || (u.uswallow && mtmp == u.ustuck)))
+                {
                     learn_it = TRUE;
+                    if (!(u.uswallow && mtmp == u.ustuck))
+                    {
+                        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+                        special_effect_wait_until_action(0);
+                        special_effect_wait_until_end(0);
+                    }
+                }
             }
 
             /* do this even if polymorphed failed (otherwise using
@@ -761,10 +771,11 @@ struct monst* origmonst;
                    bypass cleanup also clears mon->mextra->mcorpsenm
                    for all long worms on the level */
                 context.bypasses = TRUE;
-                play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
-                special_effect_wait_until_action(0);
-                special_effect_wait_until_end(0);
             }
+        }
+        else
+        {
+            play_sfx_sound_at_location(SFX_POLYMORPH_FAIL, mtmp->mx, mtmp->my);
         }
         break;
     case WAN_CANCELLATION:
@@ -7761,11 +7772,11 @@ boolean u_caused;
                 }
                 /* useupf(), which charges, only if hero caused damage */
                 if (u_caused)
-                    useupf(obj, delquan);
+                    useupf_with_flags(obj, delquan, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
                 else if (delquan < scrquan)
                     obj->quan -= delquan;
                 else
-                    delobj(obj);
+                    delobj_with_flags(obj, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
                 cnt += delquan;
                 if (give_feedback) {
                     if (delquan > 1L)
@@ -8002,7 +8013,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 
         if (type < 0)
             return;
-		damage = zhitm(u.ustuck, type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, &otmp);
+		damage = zhitm(u.ustuck, type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, &otmp);
         if (damage == -1)
         {
             damage = 0;
@@ -8142,7 +8153,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             
 			notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
             
-			if (zap_hit(find_mac(mon), type, &origobj_copy, origmonst))
+			if (zap_hit(find_mac(mon), type, origobj ? &origobj_copy : 0, origmonst))
 			{
                 if (mon_reflects(mon, (char *) 0)) 
 				{
@@ -8166,7 +8177,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 					
 					/* Ray does damage and actually reduces mon's hit points */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, mon->mx, mon->my);
-                    double damage = zhitm(mon, type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, &otmp);
+                    double damage = zhitm(mon, type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, &otmp);
                     boolean show_hit_tile = TRUE;
                     if (damage == -1)
                     {
@@ -8289,7 +8300,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 } 
                 else 
                 {
-                    zhitu(type, &origobj_copy, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
+                    zhitu(type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
             } 
 			else if (!Blind) 
@@ -8607,7 +8618,7 @@ short exploding_wand_typ;
                 Norep("A web bursts into flames!");
             (void) delfloortrap(t);
             if (see_it)
-                newsym(x, y);
+                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
         }
         if (is_ice(x, y)) {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
@@ -8631,7 +8642,7 @@ short exploding_wand_typ;
             }
             Norep("%s", msgtxt);
             if (lev->typ == ROOM)
-                newsym(x, y);
+                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
         } else if (IS_FOUNTAIN(lev->typ)) {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
             if (see_it)
@@ -8676,7 +8687,7 @@ short exploding_wand_typ;
                         Norep("The %s is bridged with ice!", buf);
                     else
                         Norep("The %s freezes.", hliquid("water"));
-                    newsym(x, y);
+                    newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
                 } else if (!lava)
                     You_hear("a crackling sound.");
 
@@ -8703,7 +8714,7 @@ short exploding_wand_typ;
                        at a minimum, eels are forced out of hiding */
                     if (is_swimmer(mon->data) && mon->mundetected) {
                         mon->mundetected = 0;
-                        newsym(x, y);
+                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
                     }
                 }
                 if (!lava) {
@@ -8744,7 +8755,7 @@ short exploding_wand_typ;
                     /* in case we ever have a shop bounded by bars */
                     create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
                     if (see_it)
-                        newsym(x, y);
+                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
                     add_damage(x, y, (type >= 0) ? SHOP_BARS_COST : 0L);
                     if (type >= 0)
                         *shopdamage = TRUE;
@@ -8754,7 +8765,7 @@ short exploding_wand_typ;
                     transform_location_type_and_flags(x, y, DOOR, 0, D_NODOOR);
                     //lev->typ = DOOR, lev->doormask = D_NODOOR;
                     if (see_it)
-                        newsym(x, y);
+                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
                 }
             }
         }
@@ -8780,7 +8791,7 @@ short exploding_wand_typ;
         cvt_sdoor_to_door(x, y); /* .typ = DOOR */
         /* target spot will now pass closed_door() test below
            (except on rogue level) */
-        newsym(x, y);
+        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
         if (see_it)
             pline("%s %s reveals a secret door.",
                   yourzap ? "Your" : "The", zapverb);
@@ -8926,7 +8937,7 @@ short exploding_wand_typ;
             if (see_it)
             {
                 pline1(see_txt);
-                newsym(x, y);
+                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
             }
             else if (sense_txt) 
             {
@@ -8969,9 +8980,15 @@ short exploding_wand_typ;
             play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
             create_simple_location(x, y, ltype, lsubtype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
-            newsym(x, y);
+            newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
             if (cansee(x, y))
+            {
+                play_special_effect_at(SPECIAL_EFFECT_DISINTEGRATED, 0, x, y, FALSE);
+                play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
                 pline_The("tree disintegrates!");
+                special_effect_wait_until_action(0);
+                special_effect_wait_until_end(0);
+            }
         }
         else if (find_drawbridge(&x2, &y2) && levl[x2][y2].typ == DRAWBRIDGE_UP)
         {
@@ -8982,8 +8999,12 @@ short exploding_wand_typ;
 
     if (OBJ_AT(x, y) && abstype == ZT_FIRE)
         if (burn_floor_objects(x, y, FALSE, type > 0) && couldsee(x, y)) {
-            newsym(x, y);
+            newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+            play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, x, y, FALSE);
+            play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);
             You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");
+            special_effect_wait_until_action(0);
+            special_effect_wait_until_end(0);
         }
     if ((mon = m_at(x, y)) != 0) {
         wakeup(mon, FALSE);
@@ -9797,6 +9818,8 @@ retry:
            to retain wishless conduct */
         return;
     }
+
+    play_sfx_sound(SFX_WISH_FULFILLED);
 
     /* KMH, conduct */
     u.uconduct.wishes++;

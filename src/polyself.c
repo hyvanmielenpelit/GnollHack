@@ -417,6 +417,7 @@ newman()
         }
     }
     update_hunger_status(FALSE);
+    play_sfx_sound(SFX_POLYMORPH_NEW_MAN);
     polyman("feel like a new %s!",
             /* use saved gender we're about to revert to, not current */
             ((Upolyd ? u.mfemale : flags.female) && urace.individual.f)
@@ -462,6 +463,7 @@ int psflags;
     {
         if (!wizard || (wizard && yn_query("You are unchanging. Force polymorph anyway?") != 'y'))
         {
+            play_sfx_sound(SFX_POLYMORPH_FAIL);
             pline("You fail to transform!");
             return;
         }
@@ -474,6 +476,7 @@ int psflags;
         {
             if (!wizard || (wizard && yn_query("You are about to shudder. Force polymorph instead?") != 'y'))
             {
+                play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
                 You1(shudder_for_moment);
                 losehp(adjust_damage(rnd(30), (struct monst*)0, &youmonst, AD_SHOC, ADFLAGS_NONE), "system shock", KILLED_BY_AN);
                 exercise(A_CON, FALSE);
@@ -523,6 +526,7 @@ int psflags;
 
             if (mntmp < LOW_PM)
 			{
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 if (!class)
                     pline("I've never heard of such monsters.");
                 else
@@ -558,6 +562,7 @@ int psflags;
                     pm_name = the(pm_name);
                 else if (!is_mname_proper_name(&mons[mntmp]))
                     pm_name = an(pm_name);
+                play_sfx_sound(SFX_GENERAL_CANNOT);
                 You_cant("polymorph into %s.", pm_name);
 			}
 			else
@@ -592,7 +597,7 @@ int psflags;
 		if (!forcecontrol && mntmp >= LOW_PM && (mons[mntmp].difficulty > max(5, u.ulevel * 3) || (!rn2(2) && mons[mntmp].difficulty > max(5, u.ulevel * 2))))
 		{
 			/* Control fails -- Randomize instead */
-			pline("Oops! That form was too difficult for your polymorph control!");
+            pline("Oops! That form was too difficult for your polymorph control!");
 			mntmp = NON_PM;
 		}
     } 
@@ -609,6 +614,7 @@ int psflags;
                 if (is_dragon_scales(uarm))
                 {
                     /* dragon scales remain intact as uskin */
+                    play_sfx_sound(SFX_POLYMORPH_SCALES_MERGE);
                     You("merge with your scaly armor.");
                 } else { /* dragon scale mail */
                     /* d.scale mail first reverts to scales */
@@ -622,6 +628,7 @@ int psflags;
                             ++p;
                     /* tricky phrasing; dragon scale mail
                        is singular, dragon scales are plural */
+                    play_sfx_sound(SFX_POLYMORPH_SCALES_REVERT);
                     Your("%s reverts to scales as you merge with them.",
                          dsmail);
                     /* uarm->enchantment enchantment remains unchanged;
@@ -740,6 +747,7 @@ int mntmp;
     int mlvl;
 
     if (mvitals[mntmp].mvflags & G_GENOD) { /* allow G_EXTINCT */
+        play_sfx_sound(SFX_POLYMORPH_FAIL);
         You_feel("rather %s-ish.", pm_monster_name(&mons[mntmp], flags.female));
         exercise(A_WIS, TRUE);
         return 0;
@@ -795,6 +803,7 @@ int mntmp;
         Strcat(buf, (is_male(&mons[mntmp]) || is_female(&mons[mntmp]))
                        ? "" : flags.female ? "female " : "male ");
     }
+    play_sfx_sound(SFX_POLYMORPH_SUCCESS);
     Strcat(buf, pm_monster_name(&mons[mntmp], flags.female));
     You("%s %s!", (u.umonnum != mntmp) ? "turn into" : "feel like", an(buf));
 

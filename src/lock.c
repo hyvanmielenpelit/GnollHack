@@ -22,7 +22,7 @@ STATIC_PTR int NDECL(forcelock);
 
 STATIC_DCL const char *NDECL(lock_action);
 STATIC_DCL boolean FDECL(obstructed, (int, int, BOOLEAN_P));
-STATIC_DCL void FDECL(chest_shatter_msg, (struct obj *));
+STATIC_DCL void FDECL(chest_shatter_msg, (struct obj *, int, int));
 
 boolean
 picking_lock(x, y)
@@ -267,6 +267,7 @@ breakchestlock(box, destroyit)
 struct obj *box;
 boolean destroyit;
 {
+    int x = box->ox, y = box->oy;
     if (!destroyit) { /* bill for the box but not for its contents */
         struct obj *hide_contents = box->cobj;
 
@@ -291,7 +292,7 @@ boolean destroyit;
         while ((otmp = box->cobj) != 0) {
             obj_extract_self(otmp);
             if (!rn2(3) || otmp->oclass == POTION_CLASS) {
-                chest_shatter_msg(otmp);
+                chest_shatter_msg(otmp, x, y);
                 if (costly)
                     loss += stolen_value(otmp, u.ux, u.uy, peaceful_shk, TRUE);
                 if (otmp->quan == 1L) {
@@ -1467,13 +1468,18 @@ int x, y;
 }
 
 STATIC_OVL void
-chest_shatter_msg(otmp)
+chest_shatter_msg(otmp, x, y)
 struct obj *otmp;
+int x, y;
 {
+    if (!otmp || !isok(x, y))
+        return;
+
     const char *disposition;
     const char *thing;
     long save_Blinded;
 
+    play_simple_object_sound_at_location(otmp, x, y, OBJECT_SOUND_TYPE_BREAK);
     if (otmp->oclass == POTION_CLASS) {
         You("%s %s shatter!", Blind ? "hear" : "see", an(bottlename()));
         if (!has_innate_breathless(youmonst.data) || haseyes(youmonst.data))

@@ -2149,7 +2149,9 @@ struct monst *mtmp;
 			return 2;
 		mzapmsg(mtmp, otmp, TRUE);
         otmp->charges--;
-        (void) newcham(mtmp, muse_newcham_mon(mtmp), TRUE, FALSE);
+        if(newcham(mtmp, muse_newcham_mon(mtmp), TRUE, FALSE))
+            play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
+
         if (oseen)
             makeknown(WAN_POLYMORPH);
         return 2;
@@ -2159,7 +2161,10 @@ struct monst *mtmp;
 		mquaffmsg(mtmp, otmp);
         if (vismon)
             pline("%s suddenly mutates!", Monnam(mtmp));
-        (void) newcham(mtmp, muse_newcham_mon(mtmp), FALSE, FALSE);
+        if (newcham(mtmp, muse_newcham_mon(mtmp), FALSE, FALSE))
+        {
+            play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
+        }
         if (oseen)
             makeknown(POT_POLYMORPH);
         m_useup(mtmp, otmp);
@@ -2182,7 +2187,9 @@ struct monst *mtmp;
             worm_move(mtmp);
         newsym(trapx, trapy);
 
-        (void) newcham(mtmp, (struct permonst *) 0, FALSE, FALSE);
+        if(newcham(mtmp, (struct permonst *) 0, FALSE, FALSE))
+            play_sfx_sound_at_location(SFX_POLYMORPH_SUCCESS, mtmp->mx, mtmp->my);
+
         return 2;
     case MUSE_BULLWHIP:
         /* attempt to disarm hero */

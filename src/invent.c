@@ -1735,9 +1735,18 @@ int x, y;
 }
 
 /* destroy object in fobj chain (if unpaid, it remains on the bill) */
+/* destroy object in fobj chain (if unpaid, it remains on the bill) */
 void
 delobj(obj)
+register struct obj* obj;
+{
+    delobj_with_flags(obj, 0UL);
+}
+
+void
+delobj_with_flags(obj, newsym_flags)
 register struct obj *obj;
+unsigned long newsym_flags;
 {
     boolean update_map;
 
@@ -1755,7 +1764,7 @@ register struct obj *obj;
     update_map = (obj->where == OBJ_FLOOR);
     obj_extract_self(obj);
     if (update_map)
-        newsym(obj->ox, obj->oy);
+        newsym_with_flags(obj->ox, obj->oy, newsym_flags);
     obfree(obj, (struct obj *) 0); /* frees contents also */
 }
 
@@ -5058,8 +5067,17 @@ doprinuse()
  */
 void
 useupf(obj, numused)
+register struct obj* obj;
+long numused;
+{
+    useupf_with_flags(obj, numused, 0UL);
+}
+
+void
+useupf_with_flags(obj, numused, newsym_flags)
 register struct obj *obj;
 long numused;
+unsigned long newsym_flags;
 {
     register struct obj *otmp;
     boolean at_u = (obj->ox == u.ux && obj->oy == u.uy);
@@ -5076,7 +5094,7 @@ long numused;
         else
             (void) stolen_value(otmp, otmp->ox, otmp->oy, FALSE, FALSE);
     }
-    delobj(otmp);
+    delobj_with_flags(otmp, newsym_flags);
     if (at_u && u.uundetected && hides_under(youmonst.data))
         (void) hideunder(&youmonst);
 }

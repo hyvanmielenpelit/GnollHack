@@ -1591,8 +1591,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
                             if (!opaque_background_drawn || print_first_directly_to_map)
                             {
-                                StretchBlt(hDCMem, 0, 0, width, height,
-                                    data->backBufferDC, rect->left + (int)(x_scaling_factor * (double)(flip_glyph ? tileWidth - 1 : 0)), rect->top, multiplier * width, height, SRCCOPY);
+                                if(!opaque_background_drawn)
+                                    StretchBlt(hDCMem, 0, 0, width, height,
+                                        data->backBufferDC, rect->left + (int)(x_scaling_factor * (double)(flip_glyph ? tileWidth - 1 : 0)), rect->top, multiplier * width, height, SRCCOPY);
+                                else
+                                    (*GetNHApp()->lpfnTransparentBlt)(hDCMem, 0, 0, width, height,
+                                        data->backBufferDC, rect->left + (int)(x_scaling_factor * (double)(flip_glyph ? tileWidth - 1 : 0)), rect->top, multiplier * width, height, TILE_BK_COLOR);
                             }
                             else
                             {
@@ -1693,11 +1697,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             {
                                 if (print_first_directly_to_map)
                                 {
-                                    StretchBlt(
+                                    (*GetNHApp()->lpfnTransparentBlt)(
                                         data->backBufferDC, rect->left + dest_left_added, rect->top + dest_top_added,
                                         data->xBackTile - dest_width_deducted, data->yBackTile - dest_height_deducted, hDCsemitransparent, (flip_glyph ? width - 1 : 0),
                                         source_top_added, multiplier * width,
-                                        height - source_height_deducted, SRCCOPY);
+                                        height - source_height_deducted, TILE_BK_COLOR);
                                 }
                                 else
                                 {

@@ -1221,6 +1221,7 @@ boolean* obj_destroyed;
 					 */
 					setmnotwielded(mon, monwep);
 					mon->weapon_strategy = NEED_WEAPON;
+					play_simple_object_sound(monwep, OBJECT_SOUND_TYPE_BREAK);
 					pline("%s from the force of your blow!",
 						Yobjnam2(monwep, "shatter"));
 					m_useupall(mon, monwep);
@@ -2164,6 +2165,7 @@ boolean* obj_destroyed;
 	{
 		/* Shattering is done below, here just the message*/
 		objectshatters = TRUE;
+		play_simple_object_sound(obj, OBJECT_SOUND_TYPE_BREAK);
 		if(obj->quan == 1)
 			pline("%s from the blow!", Yobjnam2(obj, "shatter"));
 		else

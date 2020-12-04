@@ -1046,7 +1046,7 @@ boolean break_the_rules; /* True: wizard mode ^T */
     }
     else 
     {
-        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
+        play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
         You("%s", shudder_for_moment);
         return 0;
     }
@@ -1177,7 +1177,7 @@ boolean iscontrolled;
          * we let negative values requests fall into the "heaven" loop.
          */
         if (Is_knox(&u.uz) && newlev > 0 && !force_dest) {
-            play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
+            play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
             You1(shudder_for_moment);
             return;
         }
@@ -1205,7 +1205,7 @@ random_levtport:
 
         if (newlev == depth(&u.uz))
 		{
-            play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
+            play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
             You1(shudder_for_moment);
             return;
         }
@@ -1215,7 +1215,7 @@ random_levtport:
         buried_ball_to_punishment();
 
     if (!next_to_u() && !force_dest) {
-        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
+        play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
         You1(shudder_for_moment);
         return;
     }
@@ -1347,7 +1347,7 @@ register struct trap *ttmp;
         buried_ball_to_punishment();
 
     if (!next_to_u()) {
-        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
+        play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
         You1(shudder_for_moment);
         return;
     }
@@ -1409,7 +1409,7 @@ struct trap *trap;
             u_shieldeff();
         You_feel("a wrenching sensation.");
     } else if (!next_to_u()) {
-        play_sfx_sound(SFX_SHUDDER_FOR_MOMENT);
+        play_simple_player_sound(MONSTER_SOUND_TYPE_SHUDDER);
         You1(shudder_for_moment);
     } else if (trap->once) {
         deltrap(trap);

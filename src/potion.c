@@ -1978,6 +1978,7 @@ int how;
 	{
         tx = u.ux, ty = u.uy;
         distance = 0;
+        play_simple_object_sound_at_location(obj, tx, ty, OBJECT_SOUND_TYPE_BREAK);
         pline_The("%s crashes on your %s and breaks into shards.", botlnam,
                   body_part(HEAD));
         losehp(adjust_damage(rnd(2), (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE),
@@ -1999,6 +2000,7 @@ int how;
         distance = distu(tx, ty);
         if (!cansee(tx, ty)) 
 		{
+            play_simple_object_sound_at_location(obj, tx, ty, OBJECT_SOUND_TYPE_BREAK);
             pline("Crash!");
         }
 		else
@@ -2022,6 +2024,7 @@ int how;
 			{
                 Strcpy(buf, mnam);
             }
+            play_simple_object_sound_at_location(obj, tx, ty, OBJECT_SOUND_TYPE_BREAK);
             pline_The("%s crashes on %s and breaks into shards.", botlnam,
                       buf);
         }
