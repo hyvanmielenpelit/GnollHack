@@ -3273,40 +3273,40 @@ int tile_index; /* orig_glyph is a zap main tile from: 1 = from above, 2 = from 
     switch (dir_index)
     {
     case 2:
-    case 10:
-    case 13:
-    case 22:
-        if (tile_index == 2)
-            res = 25;
-        else if (tile_index == 3)
+    case 11:
+    case 12:
+    case 18:
+        if (tile_index == 4)
             res = 24;
+        else if (tile_index == 1)
+            res = 25;
         break;
     case 3:
-    case 11:
-    case 14:
-    case 23:
-        if (tile_index == 4)
-            res = 27;
-        else if (tile_index == 3)
-            res = 26;
-        break;
-    case 6:
-    case 15:
-    case 18:
     case 8:
-        if (tile_index == 4)
-            res = 29;
-        else if (tile_index == 1)
-            res = 28;
-        break;
-    case 7:
-    case 9:
-    case 12:
+    case 13:
     case 19:
         if (tile_index == 2)
-            res = 31;
+            res = 26;
         else if (tile_index == 1)
+            res = 27;
+        break;
+    case 6:
+    case 9:
+    case 14:
+    case 22:
+        if (tile_index == 2)
+            res = 28;
+        else if (tile_index == 3)
+            res = 29;
+        break;
+    case 7:
+    case 10:
+    case 15:
+    case 23:
+        if (tile_index == 4)
             res = 30;
+        else if (tile_index == 3)
+            res = 31;
         break;
     default:
         break;

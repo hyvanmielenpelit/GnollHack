@@ -1163,12 +1163,13 @@ break_armor()
 			if (otmp->oartifact || is_obj_indestructible(otmp))
 			{
 				/* Luckily, you do not die, just the armor pops off, so having an indestructible armor is not life-threatening --JG */
-				pline("%s falls off!", Yname2(otmp));
+                pline("%s falls off!", Yname2(otmp));
 				(void)Armor_off();
 				dropx(otmp);
 			}
 			else
 			{
+                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
 				You("break out of %s!", yname(otmp));
 				exercise(A_STR, FALSE);
 				(void)Armor_gone();
@@ -1188,6 +1189,7 @@ break_armor()
             } 
 			else 
 			{
+                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
                 Your("%s tears apart!", cloak_simple_name(otmp));
                 (void) Cloak_off();
                 useup(otmp);
@@ -1207,7 +1209,8 @@ break_armor()
 			}
 			else
 			{
-				Your("%s in torn to pieces!", robe_simple_name(otmp));
+                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
+                Your("%s in torn to pieces!", robe_simple_name(otmp));
 				(void)Robe_off();
 				useup(otmp);
 			}
@@ -1226,7 +1229,8 @@ break_armor()
 			}
 			else
 			{
-				Your("shirt rips to shreds!");
+                play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_BREAK);
+                Your("shirt rips to shreds!");
 				(void)Shirt_off();
 				useup(otmp);
 			}
