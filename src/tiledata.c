@@ -1024,20 +1024,229 @@ uchar* tilemapflags;
                 "down", "right", "down-right", "down-left",
                 "bounce-top-clockwise", "bounce-right-clockwise", "bounce-bottom-clockwise", "bounce-left-clockwise",
                 "bounce-top-counterclockwise", "bounce-right-counterclockwise", "bounce-bottom-counterclockwise", "bounce-left-counterclockwise",
+                "back-bounce-up", "back-bounce-left", "back-bounce-up-left", "back-bounce-up-right",
+                "back-bounce-down", "back-bounce-right", "back-bounce-down-right", "back-bounce-down-left",
+                "up-left-extra-up", "up-left-extra-left", "up-right-extra-up", "up-right-extra-right",
+                "down-right-extra-down", "down-right-extra-right", "down-left-extra-down", "down-left-extra-left",
             };
 
             for (int j = 0; j < MAX_ZAP_TYPES; j++)
             {
                 const char* zap_name = zap_type_definitions[j].name;
+                const int zap_color = zap_type_definitions[j].color;
 
                 for (int i = 0; i < MAX_ZAP_CHARS; i++)
                 {
                     const char* zap_direction_name = zap_direction_name_array[i];
-                    int x_coord = i % 4;
-                    int y_coord = (i / 4);
+                    int x_coord = (i % 4);
+                    int y_coord = ((i / 4) % 4);
+                    int template_width = 4;
+                    int template_height = 4;
+                    boolean flip_horizontal = FALSE;
+                    boolean flip_vertical = FALSE;
+                    if (MAX_ZAP_CHARS == 32)
+                    {
+                        template_width = 5;
+                        template_height = 2;
+                        switch (i)
+                        {
+                        case 0:
+                            x_coord = 0;
+                            y_coord = 0;
+                            break;
+                        case 1:
+                            x_coord = 1;
+                            y_coord = 0;
+                            break;
+                        case 2:
+                            x_coord = 3;
+                            y_coord = 1;
+                            break;
+                        case 3:
+                            x_coord = 3;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            break;
+                        case 4:
+                            x_coord = 0;
+                            y_coord = 0;
+                            flip_vertical = TRUE;
+                            break;
+                        case 5:
+                            x_coord = 0;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            break;
+                        case 6:
+                            x_coord = 3;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 7:
+                            x_coord = 3;
+                            y_coord = 1;
+                            flip_vertical = TRUE;
+                            break;
+                        case 8:
+                            x_coord = 0;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 9:
+                            x_coord = 1;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 10:
+                            x_coord = 0;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 11:
+                            x_coord = 1;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 12:
+                            x_coord = 0;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 13:
+                            x_coord = 1;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 14:
+                            x_coord = 0;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 15:
+                            x_coord = 1;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 16:
+                            x_coord = 4;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 17:
+                            x_coord = 4;
+                            y_coord = 0;
+                            flip_horizontal = FALSE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 18:
+                            x_coord = 2;
+                            y_coord = 0;
+                            flip_horizontal = FALSE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 19:
+                            x_coord = 2;
+                            y_coord = 0;
+                            flip_horizontal = TRUE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 20:
+                            x_coord = 4;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 21:
+                            x_coord = 4;
+                            y_coord = 0;
+                            flip_horizontal = TRUE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 22:
+                            x_coord = 2;
+                            y_coord = 0;
+                            flip_horizontal = TRUE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 23:
+                            x_coord = 2;
+                            y_coord = 0;
+                            flip_horizontal = FALSE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 24:
+                            x_coord = 3;
+                            y_coord = 0;
+                            flip_horizontal = FALSE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 25:
+                            x_coord = 2;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 26:
+                            x_coord = 3;
+                            y_coord = 0;
+                            flip_horizontal = TRUE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 27:
+                            x_coord = 2;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            flip_vertical = FALSE;
+                            break;
+                        case 28:
+                            x_coord = 3;
+                            y_coord = 0;
+                            flip_horizontal = TRUE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 29:
+                            x_coord = 2;
+                            y_coord = 1;
+                            flip_horizontal = TRUE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 30:
+                            x_coord = 3;
+                            y_coord = 0;
+                            flip_horizontal = FALSE;
+                            flip_vertical = TRUE;
+                            break;
+                        case 31:
+                            x_coord = 2;
+                            y_coord = 1;
+                            flip_horizontal = FALSE;
+                            flip_vertical = TRUE;
+                            break;
+                        default:
+                            x_coord = 0;
+                            y_coord = 0;
+                            break;
+                        }
+                    }
+                    /*
+                "back-bounce-up", "back-bounce-left", "back-bounce-up-left", "back-bounce-up-right",
+                "back-bounce-down", "back-bounce-right", "back-bounce-down-right", "back-bounce-down-left",
+                "up-left-extra-up", "up-left-extra-left", "up-right-extra-up", "up-right-extra-right",
+                "down-right-extra-down", "down-right-extra-right", "down-left-extra-down", "down-left-extra-left",
+                    */
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,4,4,1,1,0\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord);
+                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0,%d,%d,%d\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord, template_width, template_height, flip_horizontal, flip_vertical, zap_color);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
