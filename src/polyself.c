@@ -1450,6 +1450,7 @@ rehumanize()
     if (mon_ambient_sound(youmonst.data))
         del_sound_source(SOUNDSOURCE_MONSTER, monst_to_any(&youmonst));
 
+    play_sfx_sound(SFX_POLYMORPH_SUCCESS);
     polyman("return to %s form!", urace.adj);
 
     if (u.uhp < 1) {
