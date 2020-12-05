@@ -8427,6 +8427,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_end);
         context.zap_aggregate_milliseconds_to_wait_until_end = 0UL;
     }
+
     tmp_at(DISP_END, 0);
     stop_ambient_ray_sound(soundset_id);
     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_DESTROY, lsx, lsy);

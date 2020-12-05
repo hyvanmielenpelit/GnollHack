@@ -2981,6 +2981,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return HUMAN_KNIGHT_FEMALE_CAST_ANIMATION;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return HUMAN_TOURIST_MALE_ATTACK_ANIMATION;
         break;
     case ACTION_TILE_KICK:
         if (roleidx == ROLE_WIZARD && raceidx == RACE_ELF && genderidx == GENDER_FEMALE)

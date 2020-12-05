@@ -255,7 +255,10 @@ struct obj *obj;
     }
     consume_obj_charge(obj, TRUE);
 
-    update_u_action(ACTION_TILE_ITEM_USE);
+    if(urole.rolenum == ROLE_TOURIST)
+        update_u_action(ACTION_TILE_SPECIAL_ATTACK);
+    else
+        update_u_action(ACTION_TILE_ITEM_USE);
     play_sfx_sound(SFX_CAMERA_CLICK);
     u_wait_until_action();
 

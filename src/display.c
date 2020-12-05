@@ -1132,13 +1132,16 @@ int damage_shown;
 }
 
 void
-newsym_with_extra_info_and_flags(x, y, disp_flags, damage_shown, newsym_flags)
+newsym_with_extra_info_and_flags(x, y, disp_flags, damage_shown, specific_newsym_flags)
 register int x, y;
-unsigned long disp_flags, newsym_flags;
+unsigned long disp_flags, specific_newsym_flags;
 int damage_shown;
 {
     if (!isok(x, y))
         return;
+
+    /* Add global flags */
+    unsigned long newsym_flags = (specific_newsym_flags | context.global_newsym_flags);
 
     register struct monst *mon;
     register struct rm *lev = &(levl[x][y]);

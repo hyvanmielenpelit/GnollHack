@@ -2790,6 +2790,8 @@ int roleidx, raceidx, genderidx, alignmentidx, levelidx;
             return TRUE;
         break;
     case ACTION_TILE_SPECIAL_ATTACK:
+        if (roleidx == ROLE_TOURIST && raceidx == RACE_HUMAN && genderidx == GENDER_MALE)
+            return TRUE;
         break;
     case ACTION_TILE_KICK:
         if (roleidx == ROLE_KNIGHT && raceidx == RACE_HUMAN && genderidx == GENDER_FEMALE)

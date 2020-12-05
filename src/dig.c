@@ -1231,6 +1231,9 @@ struct obj *obj;
         char buf[BUFSZ];
         int dam;
 
+        if (urole.rolenum == ROLE_ARCHEOLOGIST)
+            update_u_action(ACTION_TILE_ATTACK);
+
         dam = rnd(2) + u_str_dmg_bonus() + obj->enchantment;
         if (dam <= 0)
             dam = 1;
@@ -1238,6 +1241,8 @@ struct obj *obj;
         You("hit yourself with %s.", yname(obj));
         Sprintf(buf, "%s own %s", uhis(), OBJ_NAME(objects[obj->otyp]));
         losehp(adjust_damage(dam, &youmonst, &youmonst, AD_PHYS, ADFLAGS_NONE), buf, KILLED_BY);
+        if (urole.rolenum == ROLE_ARCHEOLOGIST)
+            update_u_action_revert(ACTION_TILE_NO_ACTION);
         context.botl = 1;
         return 1;
     }
@@ -1249,8 +1254,14 @@ struct obj *obj;
         ry = u.uy + u.dy;
         if (!isok(rx, ry))
 		{
+            if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                update_u_action(ACTION_TILE_ATTACK);
+
             play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
             pline("Clash!");
+
+            if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                update_u_action_revert(ACTION_TILE_NO_ACTION);
             return 1;
         }
         lev = &levl[rx][ry];
@@ -1294,6 +1305,8 @@ struct obj *obj;
 			{
                 if (isaxe)
 				{
+                    update_u_action(ACTION_TILE_ATTACK);
+
                     boolean vibrate = !rn2(3);
                     play_object_hit_sound(obj, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(sobj_at(STATUE, rx, ry)), vibrate ? 2 : 0, HMON_MELEE);
                     pline("Sparks fly as you whack the %s.%s",
@@ -1303,7 +1316,9 @@ struct obj *obj;
                     if (vibrate)
 						losehp(adjust_damage(2, (struct monst*)0, &youmonst, AD_PHYS, ADFLAGS_NONE), "axing a hard object",
 							KILLED_BY);
-				}
+
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
+                }
 				else if(issaw)
 				{
                     play_object_hit_sound(obj, HIT_SURFACE_SOURCE_OBJECT, obj_to_any(sobj_at(STATUE, rx, ry)), 0, HMON_MELEE);
@@ -1318,6 +1333,8 @@ struct obj *obj;
                        && !conjoined_pits(trap, trap_with_u, FALSE)) 
 			{
                 int idx;
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action(ACTION_TILE_ATTACK);
                 play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
 
                 for (idx = 0; idx < 8; idx++) 
@@ -1334,19 +1351,29 @@ struct obj *obj;
                     pline("You clear some debris from between the pits.");
                     play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_FINISH);
                 }
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
             } 
 			else if (u.utrap && u.utraptype == TT_PIT
                        && (trap_with_u = t_at(u.ux, u.uy)) != 0)
 			{
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action(ACTION_TILE_ATTACK);
                 play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
                 You("swing %s, but the rubble has no place to go.",
                     yobjnam(obj, (char *) 0));
                 play_occupation_immediate_sound(objects[obj->otyp].oc_soundset, issaw ? OCCUPATION_CUTTING_TREE : OCCUPATION_DIGGING_ROCK, OCCUPATION_SOUND_TYPE_START);
-            } 
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
+            }
 			else 
 			{
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action(ACTION_TILE_ATTACK);
                 play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
                 You("swing %s through thin air.", yobjnam(obj, (char *) 0));
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
             }
         }
 		else 
@@ -1394,13 +1421,23 @@ struct obj *obj;
                 assign_level(&context.digging.level, &u.uz);
                 context.digging.effort = 0;
                 if (!context.digging.quiet)
+                {
+                    if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                        update_u_action(ACTION_TILE_ATTACK);
                     You("start %s.", issaw ? d_action_saw[dig_target] : d_action[dig_target]);
+                    if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                        update_u_action_revert(ACTION_TILE_NO_ACTION);
+                }
             }
 			else 
 			{
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action(ACTION_TILE_ATTACK);
                 You("%s %s.", context.digging.chew ? "begin" : "continue",
 					issaw ? d_action_saw[dig_target] : d_action[dig_target]);
                 context.digging.chew = FALSE;
+                if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                    update_u_action_revert(ACTION_TILE_NO_ACTION);
             }
             set_occupation(dig, verbing, objects[obj->otyp].oc_soundset, 
                 d_action_soundset[dig_target],
@@ -1411,7 +1448,11 @@ struct obj *obj;
 	{
         /* it must be air -- water checked above */
         You("swing %s through thin air.", yobjnam(obj, (char *) 0));
+        if (urole.rolenum == ROLE_ARCHEOLOGIST)
+            update_u_action(ACTION_TILE_ATTACK);
         play_simple_object_sound(obj, OBJECT_SOUND_TYPE_SWING_MELEE);
+        if (urole.rolenum == ROLE_ARCHEOLOGIST)
+            update_u_action_revert(ACTION_TILE_NO_ACTION);
     }
     else if (!can_reach_floor(FALSE)) 
     {
@@ -1437,6 +1478,7 @@ struct obj *obj;
                && (!trap || (trap->ttyp != LANDMINE
                              && trap->ttyp != BEAR_TRAP))) 
     {
+        update_u_action(ACTION_TILE_ATTACK);
         pline("%s merely scratches the %s.", Yobjnam2(obj, (char *) 0),
               surface(u.ux, u.uy));
         u_wipe_engr(3);
@@ -1445,6 +1487,8 @@ struct obj *obj;
             play_object_hit_sound(obj, HIT_SURFACE_SOURCE_TRAP, trap_to_any(trap), 0, HMON_MELEE);
         else
             play_object_hit_sound(obj, HIT_SURFACE_SOURCE_LOCATION, xy_to_any(u.ux, u.uy), 0, HMON_MELEE);
+
+        update_u_action_revert(ACTION_TILE_NO_ACTION);
 
     } 
     else 
@@ -1460,13 +1504,21 @@ struct obj *obj;
             context.digging.pos.y = u.uy;
             assign_level(&context.digging.level, &u.uz);
             context.digging.effort = 0;
+            if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                update_u_action(ACTION_TILE_ATTACK);
             You("start %s downward.", verbing);
             if (*u.ushops)
                 shopdig(0);
+            if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                update_u_action_revert(ACTION_TILE_NO_ACTION);
         }
         else
         {
+            if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                update_u_action(ACTION_TILE_ATTACK);
             You("continue %s downward.", verbing);
+            if (urole.rolenum == ROLE_ARCHEOLOGIST)
+                update_u_action_revert(ACTION_TILE_NO_ACTION);
             resume = TRUE;
         }
         did_dig_msg = FALSE;
