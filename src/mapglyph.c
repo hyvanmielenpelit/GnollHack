@@ -91,6 +91,9 @@ unsigned long *ospecial;
         (offset = (glyph - GLYPH_PLAYER_DEATH_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_DOOR_USE_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_ITEM_USE_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_RECEIVE_DAMAGE_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_DEFEND_OFF)) >= 0
+        || (offset = (glyph - GLYPH_PLAYER_PASSIVE_DEFENSE_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_KICK_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_SPECIAL_ATTACK_OFF)) >= 0
         || (offset = (glyph - GLYPH_PLAYER_CAST_NODIR_OFF)) >= 0
@@ -235,12 +238,16 @@ unsigned long *ospecial;
             idx = S_digbeam + SYM_OFF_P;
         else if (zapnum == ZAP_SPECIAL_FLASHED_LIGHT)
             idx = S_flashbeam + SYM_OFF_P;
-        else if(zidx < 2 * NUM_ASCII_ZAP_CHARS)
+        else if (zidx < 2 * NUM_ASCII_ZAP_CHARS)
             idx = (S_vbeam + (zidx % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
         else if (zidx < 3 * NUM_ASCII_ZAP_CHARS)
             idx = ((zidx % 2) == 0 ? S_rslant : S_lslant) + SYM_OFF_P;
-        else
+        else  if (zidx < 4 * NUM_ASCII_ZAP_CHARS)
             idx = ((zidx % 2) == 1 ? S_rslant : S_lslant) + SYM_OFF_P;
+        else if (zidx < 6 * NUM_ASCII_ZAP_CHARS)
+            idx = (S_vbeam + (zidx % NUM_ASCII_ZAP_CHARS)) + SYM_OFF_P;
+        else
+            idx = S_unexplored; /* Illegal */
 
         if (has_rogue_color && iflags.use_color)
             color = NO_COLOR;
@@ -400,6 +407,9 @@ unsigned long *ospecial;
     (offset = (glyph - GLYPH_FEMALE_DEATH_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_DOOR_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_ITEM_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_RECEIVE_DAMAGE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_DEFEND_OFF)) >= 0
+    || (offset = (glyph - GLYPH_FEMALE_PASSIVE_DEFENSE_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_SPECIAL_ATTACK_OFF)) >= 0
     || (offset = (glyph - GLYPH_FEMALE_CAST_NODIR_OFF)) >= 0
@@ -417,6 +427,9 @@ unsigned long *ospecial;
     (offset = (glyph - GLYPH_DEATH_OFF)) >= 0
     || (offset = (glyph - GLYPH_DOOR_USE_OFF)) >= 0
     || (offset = (glyph - GLYPH_ITEM_USE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_RECEIVE_DAMAGE_OFF)) >= 0
+    || (offset = (glyph - GLYPH_DEFEND_OFF)) >= 0
+    || (offset = (glyph - GLYPH_PASSIVE_DEFENSE_OFF)) >= 0
     || (offset = (glyph - GLYPH_KICK_OFF)) >= 0
     || (offset = (glyph - GLYPH_SPECIAL_ATTACK_OFF)) >= 0
     || (offset = (glyph - GLYPH_CAST_NODIR_OFF)) >= 0

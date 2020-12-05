@@ -1398,7 +1398,7 @@ xchar x, y;
             flush_screen(1); /* make sure the glyph shows up */
             adjusted_delay_output();
         }
-        newsym(x, y); /* restore the old information */
+        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH); /* restore the old information */
     }
 }
 

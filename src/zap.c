@@ -8155,10 +8155,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
             
 			if (zap_hit(find_mac(mon), type, origobj ? &origobj_copy : 0, origmonst))
 			{
-                if (mon_reflects(mon, (char *) 0)) 
+                if (mon_reflects(mon, (char *) 0))
 				{
 					/* Ray is reflected */
                     play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_BOUNCE, mon->mx, mon->my);
+                    tmp_at(DISP_CHANGE, zapbounce_to_glyph(dx, dy, -dx, -dy, zaptype));
+                    tmp_at(sx, sy);
                     if (cansee(mon->mx, mon->my))
 					{
                         hit(fltxt, mon, exclam(0), -1, "");
@@ -8168,6 +8170,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     }
                     dx = -dx;
                     dy = -dy;
+                    tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));
                 }
 				else 
 				{
@@ -8284,10 +8287,12 @@ boolean say; /* Announce out of sight hit/miss events if true */
 			else if (zap_hit((int) u.uac, -1, (struct obj*)0, origmonst)) /* No accuracy or skill bonus for hitting yourself */
 			{
                 range -= 2;
-                play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, sx, sy);
                 pline("%s hits you!", The(fltxt));
                 if (Reflecting) 
                 {
+                    play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_BOUNCE, sx, sy);
+                    tmp_at(DISP_CHANGE, zapbounce_to_glyph(dx, dy, -dx, -dy, zaptype));
+                    tmp_at(sx, sy);
                     if (!Blind)
                     {
                         (void) ureflects("But %s reflects from your %s!",
@@ -8297,9 +8302,11 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     dx = -dx;
                     dy = -dy;
                     u_shieldeff(); // shieldeff(sx, sy);
-                } 
+                    tmp_at(DISP_CHANGE, zapdir_to_glyph(dx, dy, zaptype));
+                }
                 else 
                 {
+                    play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_HIT_MONSTER, sx, sy);
                     zhitu(type, origobj ? &origobj_copy : 0, origmonst, dmgdice, dicesize, dmgplus, fltxt, sx, sy);
                 }
             } 
@@ -8310,6 +8317,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             }
 			else if (abstype == ZT_LIGHTNING)
 			{
+                play_immediate_ray_sound_at_location(soundset_id, RAY_SOUND_TYPE_WHIZZES_BY_YOU, sx, sy);
                 Your("%s tingles.", body_part(ARM));
             }
 			if (abstype == ZT_LIGHTNING)

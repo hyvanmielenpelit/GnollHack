@@ -1591,12 +1591,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             HGDIOBJ oldbmp = SelectObject(hDCMem, bitmap);
                             if (!opaque_background_drawn || print_first_directly_to_map)
                             {
-                                if(!opaque_background_drawn)
-                                    StretchBlt(hDCMem, 0, 0, width, height,
-                                        data->backBufferDC, rect->left + (int)(x_scaling_factor * (double)(flip_glyph ? tileWidth - 1 : 0)), rect->top, multiplier * width, height, SRCCOPY);
-                                else
-                                    (*GetNHApp()->lpfnTransparentBlt)(hDCMem, 0, 0, width, height,
-                                        data->backBufferDC, rect->left + (int)(x_scaling_factor * (double)(flip_glyph ? tileWidth - 1 : 0)), rect->top, multiplier * width, height, TILE_BK_COLOR);
+                                StretchBlt(hDCMem, 0, 0, width, height,
+                                    data->backBufferDC, rect->left + (int)(x_scaling_factor * (double)(flip_glyph ? tileWidth - 1 : 0)), rect->top, multiplier * width, height, SRCCOPY);
                             }
                             else
                             {
@@ -1630,7 +1626,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             if (use_radial_transparency)
                             {
                                 double mid_x = (double)width / 2.0 - 0.5;
-                                double mid_y = (double)height / 2.0 - 0.5;
+                                double mid_y = (double)height / 2.0 - 0.5 - (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT ? height * tile_move_idx + monster_layer_height : 0);
                                 double r = 0;
                                 for (x = 0; x < width; x++)
                                 {
