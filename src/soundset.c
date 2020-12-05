@@ -3636,6 +3636,11 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
         {GHSOUND_WISH_FULFILLED, 1.0f},
         FALSE
     },
+    {
+        "GHSOUND_WISH_FOR_OBJECT",
+        {GHSOUND_WISH_FOR_OBJECT, 1.0f},
+        FALSE
+    },
 };
 
 struct ray_soundset_definition ray_soundsets[MAX_RAY_SOUNDSETS] =

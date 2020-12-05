@@ -641,6 +641,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Player/Generic/Male/Generic Male Shudder", 1.0f },
     { SOUND_BANK_MASTER, "event:/Player/Generic/Female/Generic Female Shudder", 1.0f },
     { SOUND_BANK_MASTER, "event:/Object/Potion/Generic/Potion Break", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Wish for Object", 1.0f },
 
 };
 

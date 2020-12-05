@@ -9792,7 +9792,10 @@ makewish()
     promptbuf[0] = '\0';
     nothing = zeroobj; /* lint suppression; only its address matters */
     if (flags.verbose)
+    {
+        play_sfx_sound(SFX_WISH_FOR_OBJECT);
         You("may wish for an object.");
+    }
 retry:
     Strcpy(promptbuf, "For what do you wish");
     if (iflags.cmdassist && tries > 0)
