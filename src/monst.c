@@ -737,7 +737,7 @@ NEARDATA struct permonst mons[] = {
         M1_HUMANOID | M1_OMNIVORE,
 		M2_MAGIC | M2_COLLECT | M2_GNOME,
 		M3_INFRAVISIBLE | M3_INFRAVISION | M3_SPEAKING | M3_CHAT_CAN_JOIN_PARTY, 
-        M4_PRINCE, M5_FEMALE_TILE | M5_CORPSE_TILE,
+        M4_PRINCE, M5_FEMALE_TILE,
 		5, HI_LORD, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 	MON("gremlin", None, "small monstrous humanoid that can steal abilities and multiplies in water", None, None, S_GNOME, LVL(5, 12, 2, 0, 25, -9), (G_GENO | G_NOMINES | 2),
         A(ATTK(AT_CLAW, AD_PHYS, 1, 6, 0, 0), ATTK(AT_CLAW, AD_PHYS, 1, 6, 0, 0),
