@@ -204,16 +204,25 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
         data->yBackTile = (int)(data->tileHeight * data->backScale);
     }
 
-    if (bText) {
+    if (1) {
         LOGFONT lgfnt;
 
         ZeroMemory(&lgfnt, sizeof(lgfnt));
-        if (data->bFitToScreenMode) {
-            lgfnt.lfHeight = -data->yBackTile;     // height of font
-            lgfnt.lfWidth = 0;                     // average character width
-        } else {
-            lgfnt.lfHeight = -data->yBackTile;     // height of font
-            lgfnt.lfWidth = -data->xBackTile;      // average character width
+        if (bText)
+        {
+            if (data->bFitToScreenMode) {
+                lgfnt.lfHeight = -data->yBackTile;     // height of font
+                lgfnt.lfWidth = 0;                     // average character width
+            }
+            else {
+                lgfnt.lfHeight = -data->yBackTile;     // height of font
+                lgfnt.lfWidth = -data->xBackTile;      // average character width
+            }
+        }
+        else
+        {
+            lgfnt.lfHeight = -(data->yBackTile / 6);     // height of font
+            lgfnt.lfWidth = -(data->xBackTile / 6);      // average character width
         }
         lgfnt.lfEscapement = 0;                    // angle of escapement
         lgfnt.lfOrientation = 0;                   // base-line orientation angle
@@ -277,9 +286,11 @@ mswin_map_stretch(HWND hWnd, LPSIZE map_size, BOOL redraw)
         data->bUnicodeFont = winos_font_support_cp437(data->hMapFont);
 
         // set tile size to match font metrics
-
-        data->xBackTile = textMetrics.tmAveCharWidth;
-        data->yBackTile = textMetrics.tmHeight;
+        if (bText)
+        {
+            data->xBackTile = textMetrics.tmAveCharWidth;
+            data->yBackTile = textMetrics.tmHeight;
+        }
 
     }
 
@@ -1041,6 +1052,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         int enlarg_idx = draw_order[draw_index].enlargement_index;
         int tile_move_idx = draw_order[draw_index].tile_movement_index;
         int zap_source_idx = draw_order[draw_index].zap_source_index;
+
+        if (i == u.ux + 1 && j == u.uy && draw_index == 36)
+            j = j;
 
             /* Set coordinates */
             if (enlarg_idx == -1)
@@ -2854,6 +2868,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     /* First, darkening of dark areas and areas drawn from memory */
                     if (!skip_darkening)
                     {
+                        if (i == u.ux + 1 && j == u.uy)
+                            j = j;
+
                         if (!cansee(darkening_i, darkening_j) || (data->map[darkening_i][darkening_j].layer_flags & LFLAGS_SHOWING_MEMORY))
                         {
                             if (1)
@@ -2974,44 +2991,88 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
                 }
 
-                /* Draw main tile marker  */
-                if (glyph != NO_GLYPH && base_layer == LAYER_MONSTER && enlarg_idx == -1 && tile_move_idx == 0 && !is_worm_tail)
-                {
-                    /* Draw main tile marker for enlarged creatures */
-                    int enlargement_idx = tile2enlargement[ntile];
-                    if (flags.show_tile_big_monster_target && enlargement_idx > 0 && enlargements[enlargement_idx].number_of_enlargement_tiles >= 1)
-                    {
-                        int mglyph = MAIN_TILE_MARK + GLYPH_UI_TILE_OFF;
-                        int mtile = glyph2tile[mglyph];
-                        t_x = TILEBMP_X(mtile);
-                        t_y = TILEBMP_Y(mtile);
-
-                        if (print_first_directly_to_map)
-                        {
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
-                                t_y, GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-                        }
-                        else
-                        {
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                hDCcopy, 0, 0,
-                                GetNHApp()->mapTile_X, GetNHApp()->mapTile_Y, data->tileDC, t_x,
-                                t_y, GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-                        }
-                    }
-
-
-                }
-                
                 int monster_glyph = data->map[enl_i][enl_j].layer_glyphs[LAYER_MONSTER];
 
                 /* All UI related symbols and cursors */
                 if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
+                    boolean draw_character = FALSE;
+
+                    /* Draw main tile marker  */
+                    if (glyph_is_monster(monster_glyph) && mtmp && !is_worm_tail)
+                    {
+                        if (flags.show_tile_monster_target && !isyou)
+                        {
+                            draw_character = TRUE;
+
+                            int mglyph = MAIN_TILE_MARK + GLYPH_UI_TILE_OFF;
+                            int mtile = glyph2tile[mglyph];
+                            t_x = TILEBMP_X(mtile);
+                            t_y = TILEBMP_Y(mtile);
+
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                data->backBufferDC, rect->left, rect->top,
+                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+
+
+                        }
+                    }
+
+                    if (flags.show_tile_u_mark && isyou)
+                    {
+                        draw_character = TRUE;
+
+                        int mglyph = U_TILE_MARK + GLYPH_UI_TILE_OFF;
+                        int mtile = glyph2tile[mglyph];
+                        t_x = TILEBMP_X(mtile);
+                        t_y = TILEBMP_Y(mtile);
+
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            data->backBufferDC, rect->left, rect->top,
+                            data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                            t_y, GetNHApp()->mapTile_X,
+                            GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+                    }
+
+                    if (draw_character)
+                    {
+
+                        char ch;
+                        WCHAR wch;
+                        int color;
+                        unsigned long special;
+                        int mgch;
+                        COLORREF OldFg;
+                        COLORREF OldBg;
+
+                        SetBkMode(data->backBufferDC, TRANSPARENT);
+
+                        /* rely on GnollHack core helper routine */
+                        (void)mapglyph(data->map[i][j], &mgch, &color,
+                            &special, i, j);
+                        ch = (char)mgch;
+                        OldFg = SetTextColor(data->backBufferDC, nhcolor_to_RGB(color));
+                        OldBg = SetBkColor(data->backBufferDC, RGB(0,0,0));
+
+                        if (data->bUnicodeFont) {
+                            wch = winos_ascii_to_wide(ch);
+                            DrawTextW(data->backBufferDC, &wch, 1, rect,
+                                DT_CENTER | DT_VCENTER | DT_NOPREFIX
+                                | DT_SINGLELINE);
+                        }
+                        else 
+                        {
+                            DrawTextA(data->backBufferDC, &ch, 1, rect,
+                                DT_CENTER | DT_VCENTER | DT_NOPREFIX
+                                | DT_SINGLELINE);
+                        }
+
+                        SetTextColor(data->backBufferDC, OldFg);
+                        SetBkColor(data->backBufferDC, OldBg);
+                    }
+
                     /* Add cursor first, as it can be the largest, and we do not want it to cover other UI elements */
                     if (i == data->xCur && j == data->yCur)
                     {
@@ -3630,7 +3691,7 @@ static void setDrawOrder(PNHMapWindow data)
 
     for (int layer_partition = 0; layer_partition < NUM_LAYER_PARTITIONS; layer_partition++)
     {
-        int layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_ZAP, LAYER_ENVIRONMENT, MAX_LAYERS };
+        enum layer_types layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_ZAP, LAYER_ENVIRONMENT, MAX_LAYERS };
 
         /* Second, draw other layers on the same y */
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
@@ -3678,7 +3739,7 @@ static void setDrawOrder(PNHMapWindow data)
         /* Mark to be drawn to back buffer and darkened if needed */
         /* Note these all use the darkness of the target tile, so they will be shaded similarly */
         /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
-        data->draw_order[draw_count - 1].draw_to_buffer = 1;
+        data->draw_order[draw_count - 2].draw_to_buffer = 1;
 
         /* Fourth, the three positions at y + 1, in reverse enl_pos / layer_idx order */
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
@@ -3722,6 +3783,7 @@ static void setDrawOrder(PNHMapWindow data)
         }
         /* Mark to be drawn to back buffer and darkened if needed */
         /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
+        data->draw_order[draw_count - 2].draw_to_buffer = 1;
         data->draw_order[draw_count - 1].draw_to_buffer = 1;
 
     }

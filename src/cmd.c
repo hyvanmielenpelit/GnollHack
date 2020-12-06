@@ -4977,8 +4977,10 @@ struct ext_func_tab extcmdlist[] = {
 	{ 'T', "takeoff", "take off one piece of armor", dotakeoff },
     { M('t')/*'A'*/, "takeoffall", "remove all armor", doddoremarm },
 #ifdef USE_TILES
-    { M('*'), "targeting", "toggle tile targeting graphics on/off",
-            dotogglebigmonstertargeting, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+    { M(';'), "targeting", "toggle tile targeting graphics on/off",
+            dotogglemonstertargeting, IFBURIED | AUTOCOMPLETE | INCMDMENU },
+    { M(':'), "umark", "toggle tile targeting graphics on/off",
+            dotoggleumark, IFBURIED | AUTOCOMPLETE | INCMDMENU },
 #endif
     { C('t'), "teleport", "teleport around the level", dotelecmd, IFBURIED },
     { '\0', "terrain", "show map without obstructions",
@@ -5153,11 +5155,13 @@ commands_init()
     (void) bind_key(M('N'), "name");
     (void) bind_key('u',    "untrap"); /* if number_pad is on */
 
+#ifdef USE_TILES
     (void) bind_key(C('0'), "zoommini");
     (void) bind_key(C('1'), "zoomnormal");
     (void) bind_key(C('.'), "zoomnormal");
     (void) bind_key(C('+'), "zoomin");
     (void) bind_key(C('-'), "zoomout");
+#endif
 
     /* alt keys: */
     (void) bind_key(M('O'), "overview");
@@ -5166,7 +5170,7 @@ commands_init()
 #ifdef USE_TILES
     (void) bind_key(M('3'), "bars");
     (void) bind_key(M('4'), "targeting");
-    (void) bind_key(M(':'), "targeting");
+    (void) bind_key(M('*'), "targeting");
 #endif
 
     /* wait_on_space */

@@ -49,6 +49,7 @@ enum game_ui_tile_types
     STATUS_MARKS,               /* Pet mark, detection mark, ridden mark, pile mark, etc. */
     CONDITION_MARKS,            /* One tile for each specified condition (the same as on status line) */
     MAIN_TILE_MARK,
+    U_TILE_MARK,
     ITEM_AUTODRAW_GRAPHICS,
     ITEM_PROPERTY_MARKS,
     JAR_GRAPHICS,

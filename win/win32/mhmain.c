@@ -189,7 +189,7 @@ static const unsigned char
 #define KEYTABLE(x) \
     (STATEON(VK_SHIFT) ? KEYTABLE_SHIFT(x) : KEYTABLE_REGULAR(x))
 
-static const char *extendedlist = "abcdefghijlkmnopqrstuvwxyz?-+.,012345*:";
+static const char *extendedlist = "abcdefghijlkmnopqrstuvwxyz?-+.,012345*:;";
 
 #define SCANLO 0x02
 static const char scanmap[] = {
@@ -433,6 +433,16 @@ MainWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state[VK_OEM_PERIOD] >= 128)
             {
                 NHEVENT_KBD(C('.'));
+                return 0;
+            }
+            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state[VK_MULTIPLY] >= 128)
+            {
+                NHEVENT_KBD(C('*'));
+                return 0;
+            }
+            else if (kbd_state[VK_CONTROL] >= 128 && kbd_state[VK_MENU] < 128 && kbd_state[VK_MULTIPLY] >= 128)
+            {
+                NHEVENT_KBD(C('*'));
                 return 0;
             }
             else if (ToAscii((UINT)wParam, (lParam >> 16) & 0xFF, kbd_state, &c, 0))
