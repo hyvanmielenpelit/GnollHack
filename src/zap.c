@@ -7772,11 +7772,11 @@ boolean u_caused;
                 }
                 /* useupf(), which charges, only if hero caused damage */
                 if (u_caused)
-                    useupf_with_flags(obj, delquan, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                    useupf_with_flags(obj, delquan, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                 else if (delquan < scrquan)
                     obj->quan -= delquan;
                 else
-                    delobj_with_flags(obj, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                    delobj_with_flags(obj, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                 cnt += delquan;
                 if (give_feedback) {
                     if (delquan > 1L)
@@ -8627,7 +8627,7 @@ short exploding_wand_typ;
                 Norep("A web bursts into flames!");
             (void) delfloortrap(t);
             if (see_it)
-                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
         }
         if (is_ice(x, y)) {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
@@ -8651,7 +8651,7 @@ short exploding_wand_typ;
             }
             Norep("%s", msgtxt);
             if (lev->typ == ROOM)
-                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
         } else if (IS_FOUNTAIN(lev->typ)) {
             play_simple_location_sound(x, y, LOCATION_SOUND_TYPE_BURNT);
             if (see_it)
@@ -8696,7 +8696,7 @@ short exploding_wand_typ;
                         Norep("The %s is bridged with ice!", buf);
                     else
                         Norep("The %s freezes.", hliquid("water"));
-                    newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                    newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                 } else if (!lava)
                     You_hear("a crackling sound.");
 
@@ -8723,7 +8723,7 @@ short exploding_wand_typ;
                        at a minimum, eels are forced out of hiding */
                     if (is_swimmer(mon->data) && mon->mundetected) {
                         mon->mundetected = 0;
-                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                     }
                 }
                 if (!lava) {
@@ -8764,7 +8764,7 @@ short exploding_wand_typ;
                     /* in case we ever have a shop bounded by bars */
                     create_basic_floor_location(x, y, lev->floortyp ? lev->floortyp : ROOM, lev->floorsubtyp ? lev->floorsubtyp : 0, 0, FALSE);
                     if (see_it)
-                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                     add_damage(x, y, (type >= 0) ? SHOP_BARS_COST : 0L);
                     if (type >= 0)
                         *shopdamage = TRUE;
@@ -8774,7 +8774,7 @@ short exploding_wand_typ;
                     transform_location_type_and_flags(x, y, DOOR, 0, D_NODOOR);
                     //lev->typ = DOOR, lev->doormask = D_NODOOR;
                     if (see_it)
-                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
                 }
             }
         }
@@ -8800,7 +8800,7 @@ short exploding_wand_typ;
         cvt_sdoor_to_door(x, y); /* .typ = DOOR */
         /* target spot will now pass closed_door() test below
            (except on rogue level) */
-        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
         if (see_it)
             pline("%s %s reveals a secret door.",
                   yourzap ? "Your" : "The", zapverb);
@@ -8946,7 +8946,7 @@ short exploding_wand_typ;
             if (see_it)
             {
                 pline1(see_txt);
-                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+                newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
             }
             else if (sense_txt) 
             {
@@ -8989,7 +8989,7 @@ short exploding_wand_typ;
             play_sfx_sound_at_location(SFX_DISINTEGRATE, x, y);
             create_simple_location(x, y, ltype, lsubtype, 0, 0, 0, 0, FALSE); /* The tree is not broken, since it is disintegrated */
             unblock_vision_and_hearing_at_point(x, y); /* vision */
-            newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+            newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
             if (cansee(x, y))
             {
                 play_special_effect_at(SPECIAL_EFFECT_DISINTEGRATED, 0, x, y, FALSE);
@@ -9008,7 +9008,7 @@ short exploding_wand_typ;
 
     if (OBJ_AT(x, y) && abstype == ZT_FIRE)
         if (burn_floor_objects(x, y, FALSE, type > 0) && couldsee(x, y)) {
-            newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS);
+            newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
             play_special_effect_at(SPECIAL_EFFECT_PUFF_OF_SMOKE, 0, x, y, FALSE);
             play_sfx_sound_at_location(SFX_VANISHES_IN_PUFF_OF_SMOKE, x, y);
             You("%s of smoke.", !Blind ? "see a puff" : "smell a whiff");

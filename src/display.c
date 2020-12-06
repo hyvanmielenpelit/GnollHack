@@ -1167,6 +1167,10 @@ int damage_shown;
     int missile_eroded2 = layers.missile_eroded2;
     unsigned long missile_flags = layers.missile_flags;
 
+    int zap_glyph = NO_GLYPH;
+    if (layers.layer_glyphs[LAYER_ZAP] != 0 && layers.layer_glyphs[LAYER_ZAP] != NO_GLYPH)
+        zap_glyph = layers.layer_glyphs[LAYER_ZAP];
+
     int background_effect_glyph = NO_GLYPH;
     if (layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != 0 && layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != NO_GLYPH)
         background_effect_glyph = layers.layer_glyphs[LAYER_BACKGROUND_EFFECT];
@@ -1358,6 +1362,10 @@ new_sym_end_here:
         show_glyph_on_layer(x, y, missile_glyph, LAYER_MISSILE);
         show_missile_info(x, y, missile_poisoned, missile_elemental_enchantment, missile_exceptionality, missile_eroded, missile_eroded2, missile_flags);
     }
+    if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH)
+    {
+        show_glyph_on_layer(x, y, zap_glyph, LAYER_ZAP);
+    }
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_GENERAL_EFFECT_GLYPH)
     {
         show_glyph_on_layer(x, y, general_effect_glyph, LAYER_GENERAL_EFFECT);
@@ -1401,7 +1409,7 @@ xchar x, y;
             flush_screen(1); /* make sure the glyph shows up */
             adjusted_delay_output();
         }
-        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH); /* restore the old information */
+        newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS); /* restore the old information */
     }
 }
 
@@ -1604,7 +1612,8 @@ int x, y;
             tglyph->sidx = 1;
         }
 
-        show_glyph_on_layer_and_ascii(x, y, tglyph->glyph, LAYER_MISSILE); /* show it */
+        show_glyph_on_layer_and_ascii(x, y, tglyph->glyph, 
+            tglyph->style == DISP_BEAM || tglyph->style == DISP_BEAM_DIG || tglyph->style == DISP_ALL ? LAYER_ZAP : LAYER_MISSILE); /* show it */
         flush_screen(0);                 /* make sure it shows up */
         break;
     } /* end case */
@@ -2542,9 +2551,13 @@ boolean remove;
 
             gbuf[y][x].layers.layer_flags &= ~LFLAGS_O_MASK;
         }
-        else if (glyph_is_missile(glyph) || glyph_is_zap(glyph))
+        else if (glyph_is_missile(glyph))
         {
             gbuf[y][x].layers.layer_glyphs[LAYER_MISSILE] = remove ? NO_GLYPH : glyph;
+        }
+        else if (glyph_is_zap(glyph))
+        {
+            gbuf[y][x].layers.layer_glyphs[LAYER_ZAP] = remove ? NO_GLYPH : glyph;
         }
         else if (glyph_is_swallow(glyph) || glyph_is_explosion(glyph))
         {
@@ -3265,9 +3278,9 @@ int beam_type;
 }
 
 int
-zap_glyph_to_corner_glyph(orig_glyph, tile_index)
+zap_glyph_to_corner_glyph(orig_glyph, zap_source_idx)
 int orig_glyph;
-int tile_index; /* orig_glyph is a zap main tile from: 1 = from above, 2 = from right, 3 = from below, 4 = from left */
+int zap_source_idx; /* orig_glyph is a zap main tile from: 1 = from above, 2 = from right, 3 = from below, 4 = from left */
 {
     if (!glyph_is_zap(orig_glyph))
         return NO_GLYPH;
@@ -3286,36 +3299,36 @@ int tile_index; /* orig_glyph is a zap main tile from: 1 = from above, 2 = from 
     case 11:
     case 12:
     case 18:
-        if (tile_index == 4)
+        if (zap_source_idx == 4)
             res = 24;
-        else if (tile_index == 1)
+        else if (zap_source_idx == 1)
             res = 25;
         break;
     case 3:
     case 8:
     case 13:
     case 19:
-        if (tile_index == 2)
+        if (zap_source_idx == 2)
             res = 26;
-        else if (tile_index == 1)
+        else if (zap_source_idx == 1)
             res = 27;
         break;
     case 6:
     case 9:
     case 14:
     case 22:
-        if (tile_index == 2)
+        if (zap_source_idx == 2)
             res = 28;
-        else if (tile_index == 3)
+        else if (zap_source_idx == 3)
             res = 29;
         break;
     case 7:
     case 10:
     case 15:
     case 23:
-        if (tile_index == 4)
+        if (zap_source_idx == 4)
             res = 30;
-        else if (tile_index == 3)
+        else if (zap_source_idx == 3)
             res = 31;
         break;
     default:

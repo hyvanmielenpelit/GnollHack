@@ -4772,7 +4772,7 @@ double hp_d;
 
 
 	if (iflags.using_gui_tiles && flags.show_tile_u_hp_bar)
-		newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+		newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 
 	return *target_integer_part_ptr;
 }
@@ -4909,7 +4909,7 @@ unsigned long simple_wait_multiplier;
 		{
 			context.u_action_animation_counter = 0;
 			context.u_action_animation_counter_on = TRUE;
-			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(u.ux, u.uy);
 			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -4945,7 +4945,7 @@ unsigned long simple_wait_multiplier;
 		}
 		else
 		{
-			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(u.ux, u.uy, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			flush_screen(1);
 			context.u_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
@@ -5038,7 +5038,7 @@ unsigned long simple_wait_multiplier;
 			context.m_action_animation_y = mtmp->my;
 			context.m_action_animation_counter = 0;
 			context.m_action_animation_counter_on = TRUE;
-			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			force_redraw_at(mtmp->mx, mtmp->my);
 			flush_screen(0);
 			int framenum = animations[anim].number_of_frames + (animations[anim].main_tile_use_style != ANIMATION_MAIN_TILE_IGNORE ? 1 : 0);
@@ -5074,7 +5074,7 @@ unsigned long simple_wait_multiplier;
 		}
 		else
 		{
-			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+			newsym_with_flags(mtmp->mx, mtmp->my, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 			flush_screen(0);
 			context.m_milliseconds_to_wait_until_action = (flags.animation_frame_interval_in_milliseconds > 0 ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL) * DELAY_OUTPUT_INTERVAL_IN_FRAMES;
 			//adjusted_delay_output();
@@ -5131,11 +5131,11 @@ unsigned long extra_flags;
 		u_wait_until_action();
 	else
 		m_wait_until_action();
-	//newsym_with_extra_info_and_flags(x, y, flags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
+	//newsym_with_extra_info_and_flags(x, y, flags, damage_shown, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS | NEWSYM_FLAGS_KEEP_OLD_FLAGS);
 	//flush_screen(is_you);
 	adjusted_delay_output();
 	update_m_action_core(mon, action_before, 0);
-	newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_MISSILE_GLYPH);
+	newsym_with_flags(x, y, NEWSYM_FLAGS_KEEP_OLD_EFFECT_MISSILE_ZAP_GLYPHS);
 	flush_screen(is_you);
 }
 

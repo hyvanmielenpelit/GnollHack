@@ -34,6 +34,7 @@ struct draw_order_definition {
     enum layer_types layer;
     int enlargement_index;
     int tile_movement_index;
+    int zap_source_index;
     uchar draw_to_buffer;
 };
 
@@ -1039,6 +1040,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         /* Drawing order from back to front */
         int enlarg_idx = draw_order[draw_index].enlargement_index;
         int tile_move_idx = draw_order[draw_index].tile_movement_index;
+        int zap_source_idx = draw_order[draw_index].zap_source_index;
 
             /* Set coordinates */
             if (enlarg_idx == -1)
@@ -1082,13 +1084,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             int monster_layer_height = data->map[enl_i][enl_j].special_monster_layer_height;
             if (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT)
             {
-                if (monster_layer_height == 0 && draw_order[draw_index].tile_movement_index != 0)
+                if (monster_layer_height == 0 && tile_move_idx != 0)
                     continue;
-                if (monster_layer_height < 0 && draw_order[draw_index].tile_movement_index == 1)
+                if (monster_layer_height < 0 && tile_move_idx == 1)
                     continue;
-                if (monster_layer_height < 0 && draw_order[draw_index].tile_movement_index == -1 && enlarg_idx <= 1)
+                if (monster_layer_height < 0 && tile_move_idx == -1 && enlarg_idx <= 1)
                     continue;
-                if (monster_layer_height > 0 && draw_order[draw_index].tile_movement_index == -1)
+                if (monster_layer_height > 0 && tile_move_idx == -1)
                     continue;
             }
 
@@ -1203,10 +1205,10 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                 int adj_x = enl_i; /* should be the same as enl_i */
                 int adj_y = enl_j; /* should be the same as enl_j */
-                if (base_layer == LAYER_MISSILE && tile_move_idx > 0)
+                if (base_layer == LAYER_ZAP && zap_source_idx > 0)
                 {
-                    int adjacent_missile_glyph = NO_GLYPH;
-                    switch (tile_move_idx)
+                    int adjacent_zap_glyph = NO_GLYPH;
+                    switch (zap_source_idx)
                     {
                     case 1:
                         adj_x = i;
@@ -1232,12 +1234,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         signed_glyph = NO_GLYPH;
                     else
                     {
-                        adjacent_missile_glyph = data->map[adj_x][adj_y].layer_glyphs[LAYER_MISSILE];
+                        adjacent_zap_glyph = data->map[adj_x][adj_y].layer_glyphs[LAYER_ZAP];
 
-                        if (adjacent_missile_glyph == NO_GLYPH || !glyph_is_zap(adjacent_missile_glyph))
+                        if (adjacent_zap_glyph == NO_GLYPH || !glyph_is_zap(adjacent_zap_glyph))
                             signed_glyph = NO_GLYPH;
                         else
-                            signed_glyph = zap_glyph_to_corner_glyph(adjacent_missile_glyph, tile_move_idx);
+                            signed_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, zap_source_idx);
                     }
                 }
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)
@@ -1513,7 +1515,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                         else if (base_layer == LAYER_MONSTER || base_layer == LAYER_MONSTER_EFFECT)
                         {
-                            if (draw_order[draw_index].tile_movement_index == 0)
+                            if (tile_move_idx == 0)
                             {
                                 if (monster_layer_height > 0)
                                 {
@@ -1530,7 +1532,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     dest_height_deducted = (int)(applicable_scaling_factor_y * ((double)(abs(monster_layer_height) - PIT_BOTTOM_BORDER)));
                                 }
                             }
-                            else if (draw_order[draw_index].tile_movement_index == -1)
+                            else if (tile_move_idx == -1)
                             {
                                 if (monster_layer_height < 0)
                                 {
@@ -1541,7 +1543,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 }
 
                             }
-                            else if (draw_order[draw_index].tile_movement_index == 1)
+                            else if (tile_move_idx == 1)
                             {
                                 if (monster_layer_height > 0)
                                 {
@@ -3618,98 +3620,111 @@ static void setDrawOrder(PNHMapWindow data)
     data->draw_order[draw_count].enlargement_index = -1;
     data->draw_order[draw_count].layer = LAYER_FLOOR;
     data->draw_order[draw_count].tile_movement_index = 0;
+    data->draw_order[draw_count].zap_source_index = 0;
     draw_count++;
 
-    /* Second, draw layers from above */
-    data->draw_order[draw_count].enlargement_index = -1;
-    data->draw_order[draw_count].layer = LAYER_MISSILE;
-    data->draw_order[draw_count].tile_movement_index = 1;
-    draw_count++;
+    int same_level_z_order_array[3] = { 0, -1, 1 };
+    int different_level_z_order_array[3] = { 2, 3, 4 };
 
-    /* Third, draw other layers on the same y */
-    int same_level_z_order_array[3] = { 0, 1, -1 };
-    int different_level_z_order_array[3] = { 2, 4, 3 };
+#define NUM_LAYER_PARTITIONS 3
 
-    for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
+    for (int layer_partition = 0; layer_partition < NUM_LAYER_PARTITIONS; layer_partition++)
     {
-        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
-        {
-            data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
-            data->draw_order[draw_count].layer = layer_idx;
-            data->draw_order[draw_count].tile_movement_index = 0;
-            draw_count++;
+        int layer_partition_start[NUM_LAYER_PARTITIONS + 1] = { LAYER_FLOOR + 1, LAYER_ZAP, LAYER_ENVIRONMENT, MAX_LAYERS };
 
-            if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
+        /* Second, draw other layers on the same y */
+        for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
+        {
+            for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
             {
-                /* These are in fact not drawn */
                 data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
-                data->draw_order[draw_count].tile_movement_index = -1;
+                data->draw_order[draw_count].tile_movement_index = 0;
+                data->draw_order[draw_count].zap_source_index = 0;
                 draw_count++;
 
-                /* These are drawn at the same time as lower positioned tiles */
-                data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
-                data->draw_order[draw_count].layer = layer_idx;
-                data->draw_order[draw_count].tile_movement_index = -1;
-                draw_count++;
-            }
-            else if (layer_idx == LAYER_MISSILE && same_level_z_order_array[enl_idx] == -1)
-            {
-                /* From above (i == 1) has been drawn earlier; from below (i == 3) is drawn below */
-                for (int i = 2; i <= 4; i = i + 2)
+                if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
                 {
+                    /* These are in fact not drawn */
                     data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                     data->draw_order[draw_count].layer = layer_idx;
-                    data->draw_order[draw_count].tile_movement_index = i;
+                    data->draw_order[draw_count].tile_movement_index = -1;
+                    data->draw_order[draw_count].zap_source_index = 0;
                     draw_count++;
+
+                    /* These are drawn at the same time as lower positioned tiles */
+                    data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
+                    data->draw_order[draw_count].layer = layer_idx;
+                    data->draw_order[draw_count].tile_movement_index = -1;
+                    data->draw_order[draw_count].zap_source_index = 0;
+                    draw_count++;
+                }
+                else if (layer_idx == LAYER_ZAP && same_level_z_order_array[enl_idx] == -1)
+                {
+                    /* From below (i == 3) is drawn below */
+                    for (int i = 1; i <= 4; i++)
+                    {
+                        if (i == 3)
+                            continue;
+                        data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
+                        data->draw_order[draw_count].layer = layer_idx;
+                        data->draw_order[draw_count].tile_movement_index = 0;
+                        data->draw_order[draw_count].zap_source_index = i;
+                        draw_count++;
+                    }
                 }
             }
         }
-    }
-    /* Mark to be drawn to back buffer and darkened if needed */
-    /* Note these all use the darkness of the target tile, so they will be shaded similarly */
-    /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
-    data->draw_order[draw_count - 1].draw_to_buffer = 1;
+        /* Mark to be drawn to back buffer and darkened if needed */
+        /* Note these all use the darkness of the target tile, so they will be shaded similarly */
+        /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
+        data->draw_order[draw_count - 1].draw_to_buffer = 1;
 
-    /* Fourth, the three positions at y + 1, in reverse enl_pos / layer_idx order */
-    for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
-    {
-        for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
+        /* Fourth, the three positions at y + 1, in reverse enl_pos / layer_idx order */
+        for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
         {
-            data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
-            data->draw_order[draw_count].layer = layer_idx;
-            data->draw_order[draw_count].tile_movement_index = 0;
-            draw_count++;
-
-            if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
+            for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
             {
-                /* These two are drawn at the same time as the higher positioned tiles */
-                data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
-                data->draw_order[draw_count].layer = layer_idx;
-                data->draw_order[draw_count].tile_movement_index = 1;
-                draw_count++;
-
                 data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
                 data->draw_order[draw_count].layer = layer_idx;
-                data->draw_order[draw_count].tile_movement_index = 1;
+                data->draw_order[draw_count].tile_movement_index = 0;
+                data->draw_order[draw_count].zap_source_index = 0;
                 draw_count++;
-            }
-            else if (layer_idx == LAYER_MISSILE && different_level_z_order_array[enl_idx] == 3)
-            {
-                /* Others (i == 1,2,4) have been drawn earlier; from below (i == 3) is drawn here */
-                for (int i = 3; i <= 3; i++)
+
+                if (layer_idx == LAYER_MONSTER || layer_idx == LAYER_MONSTER_EFFECT)
                 {
-                    data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
+                    /* These two are drawn at the same time as the higher positioned tiles */
+                    data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                     data->draw_order[draw_count].layer = layer_idx;
-                    data->draw_order[draw_count].tile_movement_index = i;
+                    data->draw_order[draw_count].tile_movement_index = 1;
+                    data->draw_order[draw_count].zap_source_index = 0;
                     draw_count++;
+
+                    data->draw_order[draw_count].enlargement_index = different_level_z_order_array[enl_idx];
+                    data->draw_order[draw_count].layer = layer_idx;
+                    data->draw_order[draw_count].tile_movement_index = 1;
+                    data->draw_order[draw_count].zap_source_index = 0;
+                    draw_count++;
+                }
+                else if (layer_idx == LAYER_ZAP && different_level_z_order_array[enl_idx] == 3)
+                {
+                    /* Others (i == 1,2,4) have been drawn earlier; from below (i == 3) is drawn here */
+                    for (int i = 3; i <= 3; i++)
+                    {
+                        data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
+                        data->draw_order[draw_count].layer = layer_idx;
+                        data->draw_order[draw_count].tile_movement_index = 0;
+                        data->draw_order[draw_count].zap_source_index = i;
+                        draw_count++;
+                    }
                 }
             }
         }
+        /* Mark to be drawn to back buffer and darkened if needed */
+        /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
+        data->draw_order[draw_count - 1].draw_to_buffer = 1;
+
     }
-    /* Mark to be drawn to back buffer and darkened if needed */
-    /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
-    data->draw_order[draw_count - 1].draw_to_buffer = 1;
 
 }
 
@@ -3788,14 +3803,14 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
         }
     }
 
-    if (glyph_is_zap(data->map[x][y].layer_glyphs[LAYER_MISSILE]))
+    if (glyph_is_zap(data->map[x][y].layer_glyphs[LAYER_ZAP]))
     {
         int rx = x, ry = y;
-        for (int tile_move_index = 1; tile_move_index <= 4; tile_move_index++)
+        for (int zap_source_idx = 1; zap_source_idx <= 4; zap_source_idx++)
         {
-            if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_MISSILE], tile_move_index) != NO_GLYPH)
+            if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_ZAP], zap_source_idx) != NO_GLYPH)
             {
-                switch (tile_move_index)
+                switch (zap_source_idx)
                 {
                 case 1:
                     rx = x;
