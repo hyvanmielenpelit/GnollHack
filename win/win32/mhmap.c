@@ -3620,10 +3620,16 @@ static void setDrawOrder(PNHMapWindow data)
     data->draw_order[draw_count].tile_movement_index = 0;
     draw_count++;
 
+    /* Second, draw layers from above */
+    data->draw_order[draw_count].enlargement_index = -1;
+    data->draw_order[draw_count].layer = LAYER_MISSILE;
+    data->draw_order[draw_count].tile_movement_index = 1;
+    draw_count++;
+
+    /* Third, draw other layers on the same y */
     int same_level_z_order_array[3] = { 0, 1, -1 };
     int different_level_z_order_array[3] = { 2, 4, 3 };
 
-    /* Second, draw other layers on the same y */
     for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
     {
         for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
@@ -3649,9 +3655,9 @@ static void setDrawOrder(PNHMapWindow data)
             }
             else if (layer_idx == LAYER_MISSILE && same_level_z_order_array[enl_idx] == -1)
             {
-                for (int i = 1; i <= 4; i++)
+                /* From above (i == 1) has been drawn earlier; from below (i == 3) is drawn below */
+                for (int i = 2; i <= 4; i = i + 2)
                 {
-                    /* These are drawn at the same time as lower positioned tiles */
                     data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                     data->draw_order[draw_count].layer = layer_idx;
                     data->draw_order[draw_count].tile_movement_index = i;
@@ -3665,7 +3671,7 @@ static void setDrawOrder(PNHMapWindow data)
     /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
     data->draw_order[draw_count - 1].draw_to_buffer = 1;
 
-    /* Third, the three positions at y + 1, in reverse enl_pos / layer_idx order */
+    /* Fourth, the three positions at y + 1, in reverse enl_pos / layer_idx order */
     for (enum layer_types layer_idx = LAYER_FLOOR + 1; layer_idx < MAX_LAYERS; layer_idx++)
     {
         for (int enl_idx = 0; enl_idx <= 2; enl_idx++)
@@ -3687,6 +3693,17 @@ static void setDrawOrder(PNHMapWindow data)
                 data->draw_order[draw_count].layer = layer_idx;
                 data->draw_order[draw_count].tile_movement_index = 1;
                 draw_count++;
+            }
+            else if (layer_idx == LAYER_MISSILE && different_level_z_order_array[enl_idx] == 3)
+            {
+                /* Others (i == 1,2,4) have been drawn earlier; from below (i == 3) is drawn here */
+                for (int i = 3; i <= 3; i++)
+                {
+                    data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
+                    data->draw_order[draw_count].layer = layer_idx;
+                    data->draw_order[draw_count].tile_movement_index = i;
+                    draw_count++;
+                }
             }
         }
     }
