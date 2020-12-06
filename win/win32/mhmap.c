@@ -1053,9 +1053,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
         int tile_move_idx = draw_order[draw_index].tile_movement_index;
         int zap_source_idx = draw_order[draw_index].zap_source_index;
 
-        if (i == u.ux + 1 && j == u.uy && draw_index == 36)
-            j = j;
-
             /* Set coordinates */
             if (enlarg_idx == -1)
             {
@@ -1064,13 +1061,17 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             }
             else if (enlarg_idx == 0)
             {
-                enl_i = darkening_i = i - 1;
-                enl_j = darkening_j = j + tile_move_idx;
+                enl_i = i - 1;
+                enl_j = j + tile_move_idx;
+                darkening_i = i;
+                darkening_j = j + tile_move_idx;
             }
             else if (enlarg_idx == 1)
             {
-                enl_i = darkening_i = i + 1;
-                enl_j = darkening_j = j + tile_move_idx;
+                enl_i = i + 1;
+                enl_j = j + tile_move_idx;
+                darkening_i = i;
+                darkening_j = j + tile_move_idx;
             }
             else if (enlarg_idx == 2)
             {
@@ -2998,7 +2999,38 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 {
                     boolean draw_character = FALSE;
 
-                    /* Draw main tile marker  */
+                    /* Cursor */
+                    if (i == data->xCur && j == data->yCur)
+                    {
+                        boolean cannotseeself = (i == u.ux && j == u.uy) && !canspotself();
+                        if (!cannotseeself &&
+                            ((!data->cursorOn && flags.blinking_cursor_on_tiles)
+                                || (/*i == u.ux && j == u.uy &&*/ !flags.show_cursor_on_u)
+                                ))
+                        {
+                            // Nothing, cursor is invisible
+                        }
+                        else
+                        {
+                            int anim_frame_idx = -1, main_tile_idx = -1;
+                            int cglyph = (cannotseeself && flags.active_cursor_style == CURSOR_STYLE_GENERIC_CURSOR ? CURSOR_STYLE_INVISIBLE : flags.active_cursor_style) + GLYPH_CURSOR_OFF;
+                            int ctile = glyph2tile[cglyph];
+                            int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
+                            ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
+                            ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
+                            t_x = TILEBMP_X(ctile);
+                            t_y = TILEBMP_Y(ctile);
+
+                            (*GetNHApp()->lpfnTransparentBlt)(
+                                data->backBufferDC, rect->left, rect->top,
+                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
+                                t_y, GetNHApp()->mapTile_X,
+                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
+
+                        }
+                    }
+
+                    /* Monster target marker */
                     if (glyph_is_monster(monster_glyph) && mtmp && !is_worm_tail)
                     {
                         if (flags.show_tile_monster_target && !isyou)
@@ -3020,9 +3052,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         }
                     }
 
-                    if (flags.show_tile_u_mark && isyou)
+                    /* Player marker */
+                    if (flags.show_tile_u_mark && i == u.ux && j == u.uy)
                     {
-                        draw_character = TRUE;
+                        if(isyou)
+                            draw_character = TRUE;
 
                         int mglyph = U_TILE_MARK + GLYPH_UI_TILE_OFF;
                         int mtile = glyph2tile[mglyph];
@@ -3071,37 +3105,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                         SetTextColor(data->backBufferDC, OldFg);
                         SetBkColor(data->backBufferDC, OldBg);
-                    }
-
-                    /* Add cursor first, as it can be the largest, and we do not want it to cover other UI elements */
-                    if (i == data->xCur && j == data->yCur)
-                    {
-                        boolean cannotseeself = (i == u.ux && j == u.uy) && !canspotself();
-                        if (!cannotseeself &&
-                            ((!data->cursorOn && flags.blinking_cursor_on_tiles)
-                            || (/*i == u.ux && j == u.uy &&*/ !flags.show_cursor_on_u)
-                            ))
-                        {
-                            // Nothing, cursor is invisible
-                        }
-                        else
-                        {
-                            int anim_frame_idx = -1, main_tile_idx  = -1;
-                            int cglyph = (cannotseeself && flags.active_cursor_style == CURSOR_STYLE_GENERIC_CURSOR ? CURSOR_STYLE_INVISIBLE : flags.active_cursor_style) + GLYPH_CURSOR_OFF;
-                            int ctile = glyph2tile[cglyph];
-                            int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
-                            ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
-                            ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
-                            t_x = TILEBMP_X(ctile);
-                            t_y = TILEBMP_Y(ctile);
-
-                            (*GetNHApp()->lpfnTransparentBlt)(
-                                data->backBufferDC, rect->left, rect->top,
-                                data->xBackTile, data->yBackTile, data->tileDC, t_x,
-                                t_y, GetNHApp()->mapTile_X,
-                                GetNHApp()->mapTile_Y, TILE_BK_COLOR);
-
-                        }
                     }
 
                     /* Conditions, status marks, and buffs */
@@ -3739,7 +3742,7 @@ static void setDrawOrder(PNHMapWindow data)
         /* Mark to be drawn to back buffer and darkened if needed */
         /* Note these all use the darkness of the target tile, so they will be shaded similarly */
         /* Monster tile mark will be potentially darkened, other UI symbols come on the top undarkened */
-        data->draw_order[draw_count - 2].draw_to_buffer = 1;
+        data->draw_order[draw_count - 1].draw_to_buffer = 1;
 
         /* Fourth, the three positions at y + 1, in reverse enl_pos / layer_idx order */
         for (enum layer_types layer_idx = layer_partition_start[layer_partition]; layer_idx < layer_partition_start[layer_partition + 1]; layer_idx++)
@@ -3783,9 +3786,7 @@ static void setDrawOrder(PNHMapWindow data)
         }
         /* Mark to be drawn to back buffer and darkened if needed */
         /* Note these all use the darkness of the tile below the target, so they will be shaded similarly */
-        data->draw_order[draw_count - 2].draw_to_buffer = 1;
         data->draw_order[draw_count - 1].draw_to_buffer = 1;
-
     }
 
 }
