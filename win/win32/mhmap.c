@@ -1218,6 +1218,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 //int signed_bk_glyph = data->map[enl_i][enl_j].bkglyph;
                 //int signed_main_glyph = data->map[enl_i][enl_j].glyph;
 
+                boolean is_corner_tile = FALSE;
                 int adj_x = enl_i; /* should be the same as enl_i */
                 int adj_y = enl_j; /* should be the same as enl_j */
                 if (base_layer == LAYER_ZAP && zap_source_idx > 0)
@@ -1255,6 +1256,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             signed_glyph = NO_GLYPH;
                         else
                             signed_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, zap_source_idx);
+
+                        if(signed_glyph != NO_GLYPH)
+                            is_corner_tile = TRUE;
                     }
                 }
                 else if (base_layer == LAYER_OBJECT || base_layer == LAYER_COVER_OBJECT)

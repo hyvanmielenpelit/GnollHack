@@ -3293,6 +3293,8 @@ int zap_source_idx; /* orig_glyph is a zap main tile from: 1 = from above, 2 = f
 
     int res = -1;
 
+#if 0
+    /* Trailing version */
     switch (dir_index)
     {
     case 2:
@@ -3330,6 +3332,48 @@ int zap_source_idx; /* orig_glyph is a zap main tile from: 1 = from above, 2 = f
             res = 30;
         else if (zap_source_idx == 3)
             res = 31;
+        break;
+    default:
+        break;
+    }
+#endif
+    switch (dir_index)
+    {
+    case 2:
+    case 10:
+    case 13:
+    case 22:
+        if (zap_source_idx == 2)
+            res = 25;
+        else if (zap_source_idx == 3)
+            res = 24;
+        break;
+    case 3:
+    case 11:
+    case 14:
+    case 23:
+        if (zap_source_idx == 4)
+            res = 27;
+        else if (zap_source_idx == 3)
+            res = 26;
+        break;
+    case 6:
+    case 15:
+    case 18:
+    case 8:
+        if (zap_source_idx == 4)
+            res = 29;
+        else if (zap_source_idx == 1)
+            res = 28;
+        break;
+    case 7:
+    case 9:
+    case 12:
+    case 19:
+        if (zap_source_idx == 2)
+            res = 31;
+        else if (zap_source_idx == 1)
+            res = 30;
         break;
     default:
         break;
