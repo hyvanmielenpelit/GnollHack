@@ -4407,6 +4407,7 @@ struct monst *mtmp;
 
     if (what)
 	{ 
+		update_m_facing(mtmp, u.ux - mtmp->mx, TRUE);
 		play_sfx_sound(SFX_STUMBLE_ON_MIMIC);
 		pline(fmt, what);
 	}
