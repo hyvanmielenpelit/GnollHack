@@ -4480,7 +4480,7 @@ struct permonst _mons2[] = {
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_HUMAN | M2_PEACEFUL | M2_COLLECT,
         M3_INFRAVISIBLE | M3_PRIEST | M3_SPEAKING, 
-        M4_LORD, M5_FEMALE_TILE | M5_DEFEND_TILE | M5_RECEIVE_DAMAGE_TILE,
+        M4_LORD, M5_FEMALE_TILE,
 		17, CLR_WHITE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
     MON("werebear", None, "lycanthrope capable of transforming into a bear and of summoning grizzly bears", None, None, S_HUMAN, LVL(8, 12, 10, 0, 30, -7), (1),
         A(ATTK(AT_WEAP, AD_PHYS, 2, 8, 0, 0), ATTK(AT_SMMN, AD_LYCA, 0, 0, 0, 0), NO_ATTK, NO_ATTK, NO_ATTK,
@@ -4504,7 +4504,7 @@ struct permonst _mons2[] = {
         MC_NONE,
         M1_HUMANOID | M1_OMNIVORE,
         M2_NOPOLY | M2_HUMAN | M2_MINION | M2_NASTY | M2_COLLECT | M2_MAGIC,
-        M3_INFRAVISIBLE | M3_PRIEST | M3_SPEAKING, M4_PRINCE, M5_FEMALE_TILE | M5_DEFEND_TILE | M5_RECEIVE_DAMAGE_TILE,
+        M3_INFRAVISIBLE | M3_PRIEST | M3_SPEAKING, M4_PRINCE, M5_FEMALE_TILE,
 		31, CLR_WHITE, MONSTER_SOUNDSET_GENERIC, MONSTER_SOUNDSET_GENERIC),
 
 	MON("soldier", None, "low-ranking human in military service", None, None, S_HUMAN, LVL(6, 10, 10, 0, 0, -2), (G_SGROUP | G_GENO | 1 | G_GENDER_ONE_16),
