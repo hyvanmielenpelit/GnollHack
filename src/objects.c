@@ -3464,20 +3464,20 @@ OBJECT(OBJ("iron chain", None, None, None, None, 0, 0, 0),
 /* Venom is normally a transitory missile (spit by various creatures)
  * but can be wished for in wizard mode so could occur in bones data.
  */
-OBJECT(OBJ("blinding venom", "splash of venom", None, None, None, 0, 0, 0),
+OBJECT(OBJ("blinding venom", "splash of blinding venom", None, None, None, 0, 0, 0),
        BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 1, 0, 0, 0, 0, P_NONE, MAT_LIQUID),
 	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   0, HI_ORGANIC, 0, OBJECT_SOUNDSET_GENERIC,
-	   0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
-OBJECT(OBJ("acid venom", "splash of venom", None, None, None, 0, 0, 0),
+	   0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_MISSILE_TILE),
+OBJECT(OBJ("acid venom", "splash of acid venom", None, None, None, 0, 0, 0),
        BITS(0, 1, 0, 0, 0, ENCHTYPE_NO_ENCHANTMENT, CHARGED_NOT_CHARGED, RECHARGING_NOT_RECHARGEABLE, 0, 1, 0, 0, 0, 0, P_NONE, MAT_LIQUID),
 	   0, 0, 0, P1_NONE, VENOM_CLASS, 500, MULTIGEN_SINGLE, 0, 1, 0,
 	   AD_PHYS, 2, 6, 0, 2, 6, 0, 0, 0, 0, 0, A1_NONE, A2_NONE, 0,
 	   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	   0, HI_ORGANIC, 0, OBJECT_SOUNDSET_GENERIC,
-	   0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_NONE),
+	   0, 0, 0, 0, PERMITTED_ALL, ALL_TARGETS, O1_NONE, O2_NONE, O3_NONE, O4_MISSILE_TILE),
         /* +d6 small or large */
 
 /* Reagents here, which do not belong to any class, includes also all other odd non-food objects with no other apparent purpose*/
