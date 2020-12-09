@@ -8417,7 +8417,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             }
         }
 
-        if (cansee(sx, sy))
+        if (1) //cansee(sx, sy))
         {
             adjusted_delay_output(); /* wait a little */
             if (playing_anim)
