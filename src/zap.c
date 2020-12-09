@@ -8123,8 +8123,6 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     delay_output_milliseconds(animations[anim].sound_play_frame* (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL));
                 }
                 update_ambient_ray_sound_to_location(soundset_id, sx, sy);
-                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
-                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
             }
         }
 
@@ -8419,8 +8417,15 @@ boolean say; /* Announce out of sight hit/miss events if true */
             }
         }
 
-        if(cansee(sx, sy))
+        if (cansee(sx, sy))
+        {
             adjusted_delay_output(); /* wait a little */
+            if (playing_anim)
+            {
+                delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
+                context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
+            }
+        }
     }
     if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
     {
