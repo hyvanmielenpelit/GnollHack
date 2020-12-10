@@ -3225,7 +3225,7 @@ int beam_type;
         beam_type = 0;
     }
     int zapdir_glyph_index = dir_to_beam_index(dx, dy);
-    return ((int) ((beam_type << ZAP_CHAR_BITS) | zapdir_glyph_index)) + GLYPH_ZAP_OFF;
+    return ((int) ((beam_type * MAX_ZAP_CHARS) + zapdir_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
 int
@@ -3274,7 +3274,7 @@ int beam_type;
         else if (orig_dx < 0 && orig_dy > 0 && new_dx > 0)
             zapbounce_glyph_index += 7;
     }
-    return ((int)((beam_type << ZAP_CHAR_BITS) | zapbounce_glyph_index)) + GLYPH_ZAP_OFF;
+    return ((int)((beam_type * MAX_ZAP_CHARS) + zapbounce_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
 int

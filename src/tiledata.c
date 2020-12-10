@@ -1029,6 +1029,9 @@ uchar* tilemapflags;
                 "back-bounce-down", "back-bounce-right", "back-bounce-down-right", "back-bounce-down-left",
                 "up-left-extra-up", "up-left-extra-left", "up-right-extra-up", "up-right-extra-right",
                 "down-right-extra-down", "down-right-extra-right", "down-left-extra-down", "down-left-extra-left",
+                "leading-edge-up-left", "leading-edge-up-right", "leading-edge-down-right", "leading-edge-down-left",
+                "up-left-trailing-edge-down", "up-left-extra-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
+                "down-right-trailing-edge-up", "down-right-trailing-edge-left", "down-left-trailing-edge-up", "down-left-trailing-edge-right",
             };
 
             for (int j = 0; j < MAX_ZAP_TYPES; j++)
@@ -1234,6 +1237,8 @@ uchar* tilemapflags;
                     default:
                         x_coord = 0;
                         y_coord = 0;
+                        flip_horizontal = FALSE;
+                        flip_vertical = FALSE;
                         break;
                     }
 
