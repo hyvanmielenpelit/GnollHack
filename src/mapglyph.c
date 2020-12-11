@@ -232,8 +232,8 @@ unsigned long *ospecial;
     else if ((offset = (glyph - GLYPH_ZAP_OFF)) >= 0)
     { /* zap beam */
         /* see zapdir_to_glyph() in display.c */
-        int zapnum = offset / MAX_ZAP_CHARS;
-        int zidx = (offset % MAX_ZAP_CHARS);
+        int zapnum = offset / NUM_ZAP_CHARS;
+        int zidx = (offset % NUM_ZAP_CHARS);
         if (zapnum == ZAP_SPECIAL_DIGGING || zapnum == ZAP_SPECIAL_EVAPORATION)
             idx = S_digbeam + SYM_OFF_P;
         else if (zapnum == ZAP_SPECIAL_FLASHED_LIGHT)
@@ -252,7 +252,7 @@ unsigned long *ospecial;
         if (has_rogue_color && iflags.use_color)
             color = NO_COLOR;
         else
-            zap_color(offset / MAX_ZAP_CHARS);
+            zap_color(offset / NUM_ZAP_CHARS);
     } 
     else if ((offset = (glyph - GLYPH_EXPLODE_OFF)) >= 0)
     { /* explosion */

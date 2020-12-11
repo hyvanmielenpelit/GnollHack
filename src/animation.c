@@ -754,7 +754,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
     },
     { "fire-ray-animation", FIRE_RAY_ANIMATION_TILES,
       FIRE_RAY_ANIMATION_FRAMES, FIRE_RAY_ANIMATION_OFF,
-      MAX_ZAP_CHARS,
+      NUM_ZAP_CHARS,
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
       AUTODRAW_NONE,
@@ -765,7 +765,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
     },
     { "magic-missile-ray-animation", MAGIC_MISSILE_RAY_ANIMATION_TILES,
       MAGIC_MISSILE_RAY_ANIMATION_FRAMES, MAGIC_MISSILE_RAY_ANIMATION_OFF,
-      MAX_ZAP_CHARS,
+      NUM_ZAP_CHARS,
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_IGNORE,
       AUTODRAW_NONE,
@@ -776,7 +776,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
     },
     { "frost-breath-animation", FROST_BREATH_ANIMATION_TILES,
       FROST_BREATH_ANIMATION_FRAMES, FROST_BREATH_ANIMATION_OFF,
-      MAX_ZAP_CHARS,
+      NUM_ZAP_CHARS,
       1,
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
       AUTODRAW_NONE,
@@ -3700,7 +3700,7 @@ int glyph;
     else if (glyph_is_zap(absglyph))
     {
         int glyph_idx = absglyph - GLYPH_ZAP_OFF;
-        int char_idx = glyph_idx % MAX_ZAP_CHARS;
+        int char_idx = glyph_idx % NUM_ZAP_CHARS;
         return char_idx;
     }
     else
@@ -3838,7 +3838,7 @@ short animidx;
     for (int i = 0; i < MAX_ZAP_TYPES; i++)
     {
         if (zap_type_definitions[i].animation == animidx)
-            return glyph2tile[i * MAX_ZAP_CHARS + GLYPH_ZAP_OFF];
+            return glyph2tile[i * NUM_ZAP_CHARS + GLYPH_ZAP_OFF];
     }
 
     /* Swallow */

@@ -1150,7 +1150,7 @@ uchar* tilemapflags;
         }
         else if (misc_idx == 2)
         {
-            const char* zap_direction_name_array[MAX_ZAP_CHARS] = {
+            const char* zap_direction_name_array[NUM_ZAP_CHARS] = {
                 "up", "left", "up-left", "up-right",
                 "down", "right", "down-right", "down-left",
                 "bounce-top-clockwise", "bounce-right-clockwise", "bounce-bottom-clockwise", "bounce-left-clockwise",
@@ -1164,224 +1164,50 @@ uchar* tilemapflags;
                 "down-right-trailing-edge-up", "down-right-trailing-edge-left", "down-left-trailing-edge-up", "down-left-trailing-edge-right",
             };
 
+            const char* base_zap_direction_name_array[NUM_ZAP_BASE_TILES] = {
+                "up", "left", "back-bounce-up-left", "up-left-extra-up" "back-bounce-left",
+                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "back-bounce-up"
+            };
+
+            int template_width = 5;
+            int template_height = 2;
+
             for (int j = 0; j < MAX_ZAP_TYPES; j++)
             {
                 const char* zap_name = zap_type_definitions[j].name;
                 const int zap_color = zap_type_definitions[j].color;
 
-                for (int i = 0; i < MAX_ZAP_CHARS; i++)
+                for(int bi = 0; bi < NUM_ZAP_BASE_TILES; bi++)
                 {
-                    const char* zap_direction_name = zap_direction_name_array[i];
-                    int x_coord = 0;
-                    int y_coord = 0;
-                    int template_width = 5;
-                    int template_height = 2;
-                    boolean flip_horizontal = FALSE;
-                    boolean flip_vertical = FALSE;
-                    template_width = 5;
-                    template_height = 2;
-                    switch (i)
-                    {
-                    case 0:
-                        x_coord = 0;
-                        y_coord = 0;
-                        break;
-                    case 1:
-                        x_coord = 1;
-                        y_coord = 0;
-                        break;
-                    case 2:
-                        x_coord = 3;
-                        y_coord = 1;
-                        break;
-                    case 3:
-                        x_coord = 3;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        break;
-                    case 4:
-                        x_coord = 0;
-                        y_coord = 0;
-                        flip_vertical = TRUE;
-                        break;
-                    case 5:
-                        x_coord = 1;
-                        y_coord = 0;
-                        flip_horizontal = TRUE;
-                        break;
-                    case 6:
-                        x_coord = 3;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 7:
-                        x_coord = 3;
-                        y_coord = 1;
-                        flip_vertical = TRUE;
-                        break;
-                    case 8:
-                        x_coord = 0;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 9:
-                        x_coord = 1;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 10:
-                        x_coord = 0;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 11:
-                        x_coord = 1;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 12:
-                        x_coord = 0;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 13:
-                        x_coord = 1;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 14:
-                        x_coord = 0;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 15:
-                        x_coord = 1;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 16:
-                        x_coord = 4;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 17:
-                        x_coord = 4;
-                        y_coord = 0;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 18:
-                        x_coord = 2;
-                        y_coord = 0;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 19:
-                        x_coord = 2;
-                        y_coord = 0;
-                        flip_horizontal = TRUE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 20:
-                        x_coord = 4;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 21:
-                        x_coord = 4;
-                        y_coord = 0;
-                        flip_horizontal = TRUE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 22:
-                        x_coord = 2;
-                        y_coord = 0;
-                        flip_horizontal = TRUE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 23:
-                        x_coord = 2;
-                        y_coord = 0;
-                        flip_horizontal = FALSE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 24:
-                        x_coord = 3;
-                        y_coord = 0;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 25:
-                        x_coord = 2;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 26:
-                        x_coord = 3;
-                        y_coord = 0;
-                        flip_horizontal = TRUE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 27:
-                        x_coord = 2;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        flip_vertical = FALSE;
-                        break;
-                    case 28:
-                        x_coord = 3;
-                        y_coord = 0;
-                        flip_horizontal = TRUE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 29:
-                        x_coord = 2;
-                        y_coord = 1;
-                        flip_horizontal = TRUE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 30:
-                        x_coord = 3;
-                        y_coord = 0;
-                        flip_horizontal = FALSE;
-                        flip_vertical = TRUE;
-                        break;
-                    case 31:
-                        x_coord = 2;
-                        y_coord = 1;
-                        flip_horizontal = FALSE;
-                        flip_vertical = TRUE;
-                        break;
-                    default:
-                        x_coord = 0;
-                        y_coord = 0;
-                        flip_horizontal = FALSE;
-                        flip_vertical = FALSE;
-                        break;
-                    }
-
+                    const char* base_zap_direction_name = base_zap_direction_name_array[bi];
+                    int bx_coord = bi % template_width;
+                    int by_coord = bi / template_width;
                     if (process_style == 0)
                     {
-                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0,%d,%d,%d\n", tile_section_name, set_name, zap_name, zap_direction_name, x_coord, y_coord, template_width, template_height, flip_horizontal, flip_vertical, zap_color);
+                        Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0,%d,%d,%d\n", tile_section_name, set_name, zap_name, base_zap_direction_name, bx_coord, by_coord, template_width, template_height, 0, 0, zap_color);
                         (void)write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
-                        glyph_offset = GLYPH_ZAP_OFF + MAX_ZAP_CHARS * j;
-                        tilemaparray[i + glyph_offset] = tile_count;
+                        for (int i = 0; i < NUM_ZAP_CHARS; i++)
+                        {
+                            boolean flip_horizontal = FALSE;
+                            boolean flip_vertical = FALSE;
+                            boolean isfrombasezapchar = is_zap_char_from_base_zap_char(i, bi, &flip_horizontal, &flip_vertical);
+                            if (isfrombasezapchar)
+                            {
+                                glyph_offset = GLYPH_ZAP_OFF + NUM_ZAP_CHARS * j;
+                                tilemaparray[i + glyph_offset] = tile_count;
+                                if(flip_horizontal)
+                                    tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                if (flip_vertical)
+                                    tilemapflags[i + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                            }
+
+                        }
+
                     }
+
                     tile_count++;
                 }
             }
@@ -2400,9 +2226,9 @@ uchar* tilemapflags;
         {
             if (zap_type_definitions[i].animation)
             {
-                for (int j = 0; j < MAX_ZAP_CHARS; j++)
+                for (int j = 0; j < NUM_ZAP_CHARS; j++)
                 {
-                    int glyph = j + i * MAX_ZAP_CHARS + GLYPH_ZAP_OFF;
+                    int glyph = j + i * NUM_ZAP_CHARS + GLYPH_ZAP_OFF;
                     short tile = glyph2tile[glyph];
                     tile2animation[tile] = zap_type_definitions[i].animation;
                 }
@@ -2768,7 +2594,7 @@ boolean *hflip_ptr, *vflip_ptr;
     if (!hflip_ptr || !vflip_ptr)
         return FALSE;
 
-    if (base_dir_index < 0 || base_dir_index >= 3 || dir_index < 0 || dir_index >= 8)
+    if (base_dir_index < 0 || base_dir_index >= NUM_BASE_TILE_DIRS || dir_index < 0 || dir_index >= NUM_MISSILE_DIRS)
         return FALSE;
 
     switch (base_dir_index)
@@ -2830,6 +2656,457 @@ boolean *hflip_ptr, *vflip_ptr;
     default:
         break;
     }
+    return FALSE;
+}
+
+boolean
+is_zap_char_from_base_zap_char(zap_char_index, base_zap_char_index, hflip_ptr, vflip_ptr)
+int zap_char_index, base_zap_char_index;
+boolean* hflip_ptr, * vflip_ptr;
+{
+    if (!hflip_ptr || !vflip_ptr)
+        return FALSE;
+
+    if (base_zap_char_index < 0 || base_zap_char_index >= NUM_ZAP_BASE_TILES || zap_char_index < 0 || zap_char_index >= NUM_ZAP_CHARS)
+        return FALSE;
+
+
+    /*
+            const char* zap_direction_name_array[NUM_ZAP_CHARS] = {
+                "up", "left", "up-left", "up-right",
+                "down", "right", "down-right", "down-left",
+                "bounce-top-clockwise", "bounce-right-clockwise", "bounce-bottom-clockwise", "bounce-left-clockwise",
+                "bounce-top-counterclockwise", "bounce-right-counterclockwise", "bounce-bottom-counterclockwise", "bounce-left-counterclockwise",
+                "back-bounce-up", "back-bounce-left", "back-bounce-up-left", "back-bounce-up-right",
+                "back-bounce-down", "back-bounce-right", "back-bounce-down-right", "back-bounce-down-left",
+                "up-left-extra-up", "up-left-extra-left", "up-right-extra-up", "up-right-extra-right",
+                "down-right-extra-down", "down-right-extra-right", "down-left-extra-down", "down-left-extra-left",
+                "leading-edge-up-left", "leading-edge-up-right", "leading-edge-down-right", "leading-edge-down-left",
+                "up-left-trailing-edge-down", "up-left-extra-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
+                "down-right-trailing-edge-up", "down-right-trailing-edge-left", "down-left-trailing-edge-up", "down-left-trailing-edge-right",
+            };
+
+            const char* base_zap_direction_name_array[NUM_ZAP_BASE_TILES] = {
+                "up", "left", "back-bounce-up-left", "up-left-extra-up" "back-bounce-left",
+                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "back-bounce-up"
+            };
+    */
+
+    switch (base_zap_char_index)
+    {
+    case 0:
+        if (zap_char_index == 0)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 4)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 1:
+        if (zap_char_index == 1)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 5)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        break;
+    case 2:
+        if (zap_char_index == 18)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 19)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 22)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 23)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 3:
+        if (zap_char_index == 24)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 26)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 28)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 30)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 4:
+        if (zap_char_index == 17)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 21)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        break;
+    case 5:
+        if (zap_char_index == 8)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 10)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 12)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 14)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 6:
+        if (zap_char_index == 9)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 11)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 13)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 15)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        break;    
+    case 7:
+        if (zap_char_index == 25)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 27)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 29)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 31)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 8:
+        if (zap_char_index == 2)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 3)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 6)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 7)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 9:
+        if (zap_char_index == 16)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 20)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    default:
+        break;
+    }
+
+#if 0
+    int x_coord = 0;
+    int y_coord = 0;
+
+    switch (i)
+    {
+    case 0:
+        x_coord = 0;
+        y_coord = 0;
+        break;
+    case 1:
+        x_coord = 1;
+        y_coord = 0;
+        break;
+    case 2:
+        x_coord = 3;
+        y_coord = 1;
+        break;
+    case 3:
+        x_coord = 3;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        break;
+    case 4:
+        x_coord = 0;
+        y_coord = 0;
+        flip_vertical = TRUE;
+        break;
+    case 5:
+        x_coord = 1;
+        y_coord = 0;
+        flip_horizontal = TRUE;
+        break;
+    case 6:
+        x_coord = 3;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        flip_vertical = TRUE;
+        break;
+    case 7:
+        x_coord = 3;
+        y_coord = 1;
+        flip_vertical = TRUE;
+        break;
+    case 8:
+        x_coord = 0;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    case 9:
+        x_coord = 1;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    case 10:
+        x_coord = 0;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        flip_vertical = TRUE;
+        break;
+    case 11:
+        x_coord = 1;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        flip_vertical = TRUE;
+        break;
+    case 12:
+        x_coord = 0;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        flip_vertical = FALSE;
+        break;
+    case 13:
+        x_coord = 1;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = TRUE;
+        break;
+    case 14:
+        x_coord = 0;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = TRUE;
+        break;
+    case 15:
+        x_coord = 1;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        flip_vertical = FALSE;
+        break;
+    case 16:
+        x_coord = 4;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    case 17:
+        x_coord = 4;
+        y_coord = 0;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    case 18:
+        x_coord = 2;
+        y_coord = 0;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    case 19:
+        x_coord = 2;
+        y_coord = 0;
+        flip_horizontal = TRUE;
+        flip_vertical = FALSE;
+        break;
+    case 20:
+        x_coord = 4;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = TRUE;
+        break;
+    case 21:
+        x_coord = 4;
+        y_coord = 0;
+        flip_horizontal = TRUE;
+        flip_vertical = FALSE;
+        break;
+    case 22:
+        x_coord = 2;
+        y_coord = 0;
+        flip_horizontal = TRUE;
+        flip_vertical = TRUE;
+        break;
+    case 23:
+        x_coord = 2;
+        y_coord = 0;
+        flip_horizontal = FALSE;
+        flip_vertical = TRUE;
+        break;
+    case 24:
+        x_coord = 3;
+        y_coord = 0;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    case 25:
+        x_coord = 2;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    case 26:
+        x_coord = 3;
+        y_coord = 0;
+        flip_horizontal = TRUE;
+        flip_vertical = FALSE;
+        break;
+    case 27:
+        x_coord = 2;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        flip_vertical = FALSE;
+        break;
+    case 28:
+        x_coord = 3;
+        y_coord = 0;
+        flip_horizontal = TRUE;
+        flip_vertical = TRUE;
+        break;
+    case 29:
+        x_coord = 2;
+        y_coord = 1;
+        flip_horizontal = TRUE;
+        flip_vertical = TRUE;
+        break;
+    case 30:
+        x_coord = 3;
+        y_coord = 0;
+        flip_horizontal = FALSE;
+        flip_vertical = TRUE;
+        break;
+    case 31:
+        x_coord = 2;
+        y_coord = 1;
+        flip_horizontal = FALSE;
+        flip_vertical = TRUE;
+        break;
+    default:
+        x_coord = 0;
+        y_coord = 0;
+        flip_horizontal = FALSE;
+        flip_vertical = FALSE;
+        break;
+    }
+#endif
+
     return FALSE;
 }
 

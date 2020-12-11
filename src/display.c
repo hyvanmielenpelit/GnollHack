@@ -3225,7 +3225,7 @@ int beam_type;
         beam_type = 0;
     }
     int zapdir_glyph_index = dir_to_beam_index(dx, dy);
-    return ((int) ((beam_type * MAX_ZAP_CHARS) + zapdir_glyph_index)) + GLYPH_ZAP_OFF;
+    return ((int) ((beam_type * NUM_ZAP_CHARS) + zapdir_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
 int
@@ -3274,7 +3274,7 @@ int beam_type;
         else if (orig_dx < 0 && orig_dy > 0 && new_dx > 0)
             zapbounce_glyph_index += 7;
     }
-    return ((int)((beam_type * MAX_ZAP_CHARS) + zapbounce_glyph_index)) + GLYPH_ZAP_OFF;
+    return ((int)((beam_type * NUM_ZAP_CHARS) + zapbounce_glyph_index)) + GLYPH_ZAP_OFF;
 }
 
 int
@@ -3285,8 +3285,8 @@ int zap_source_idx; /* orig_glyph is a zap main tile from: 1 = from above, 2 = f
     if (!glyph_is_zap(orig_glyph))
         return NO_GLYPH;
 
-    int zap_index = (orig_glyph - GLYPH_ZAP_OFF) / MAX_ZAP_CHARS;
-    int dir_index = (orig_glyph - GLYPH_ZAP_OFF) % MAX_ZAP_CHARS;
+    int zap_index = (orig_glyph - GLYPH_ZAP_OFF) / NUM_ZAP_CHARS;
+    int dir_index = (orig_glyph - GLYPH_ZAP_OFF) % NUM_ZAP_CHARS;
 
     if(dir_index >= 24)
         return NO_GLYPH;
@@ -3382,7 +3382,7 @@ int zap_source_idx; /* orig_glyph is a zap main tile from: 1 = from above, 2 = f
     if(res == -1)
         return NO_GLYPH;
     else
-        return res + zap_index * MAX_ZAP_CHARS + GLYPH_ZAP_OFF;
+        return res + zap_index * NUM_ZAP_CHARS + GLYPH_ZAP_OFF;
 }
 
 /*

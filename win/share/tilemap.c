@@ -194,13 +194,13 @@ int set, entry;
     tilenum += (MAX_EXPLOSION_CHARS * MAX_EXPLOSIONS);
 
     i = entry - tilenum;
-    if (i < (MAX_ZAP_CHARS* NUM_ZAP)) {
+    if (i < (NUM_ZAP_CHARS* NUM_ZAP)) {
         if (set == OTH_GLYPH) {
             Sprintf(buf, "zap %d %d", i / 4, i % 4);
             return buf;
         }
     }
-    tilenum += (MAX_ZAP_CHARS * NUM_ZAP);
+    tilenum += (NUM_ZAP_CHARS * NUM_ZAP);
 
     i = entry - tilenum;
     if (i < WARNCOUNT) {
@@ -353,7 +353,7 @@ init_tilemap()
         }
     }
 
-    for (i = 0; i < MAX_ZAP_CHARS * NUM_ZAP; i++) {
+    for (i = 0; i < NUM_ZAP_CHARS * NUM_ZAP; i++) {
         tilemap[GLYPH_ZAP_OFF + i] = tilenum;
         tilenum++;
         while (conditionals[condnum].sequence == OTH_GLYPH

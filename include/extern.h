@@ -3059,6 +3059,7 @@ E void NDECL(init_tiledata);
 E boolean FDECL(has_generic_player_action_tile, (enum action_tile_types action));
 E int FDECL(process_tiledata, (int, const char*, short*, uchar*));
 E boolean FDECL(is_dir_from_base_dir, (int, int, boolean*, boolean*));
+E boolean FDECL(is_zap_char_from_base_zap_char, (int, int, boolean*, boolean*));
 
 
 /* ### timeout.c ### */
