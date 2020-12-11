@@ -112,8 +112,9 @@ enum item_property_mark_types
 extern NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TILES]; /* from tiledata.c */
 
 #define GLYPH_TILE_FLAG_FLIP_HORIZONTALLY       0x01
-#define GLYPH_TILE_FLAG_FULL_SIZED_ITEM         0x02
-#define GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE  0x04
+#define GLYPH_TILE_FLAG_FLIP_VERTICALLY         0x02
+#define GLYPH_TILE_FLAG_FULL_SIZED_ITEM         0x04
+#define GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE  0x08
 
 
 #endif /* TILEDATA_H */
