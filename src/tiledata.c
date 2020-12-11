@@ -1754,38 +1754,93 @@ uchar* tilemapflags;
     {
         short base_tile = get_animation_base_tile(i);
         int contained_anims = max(1, animations[i].number_of_tile_animations);
-        for (int m = 0; m < contained_anims; m++)
+        if (animations[i].animation_type == ANIMATION_TYPE_NORMAL)
         {
-            for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
+            for (int m = 0; m < contained_anims; m++)
             {
-                if (process_style == 0)
+                for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
                 {
-                    Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name,
-                        animations[i].animation_name ? animations[i].animation_name : "unknown animation",
-                        j,
-                        base_tile + m
-                    );
-                    int enl = animations[i].tile_enlargement;
-                    if (enl > 0)
-                        Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
-                    else
-                        Sprintf(eos(buf), ",1,1,0");
-                    Sprintf(eos(buf), "\n");
-                    (void)write(fd, buf, strlen(buf));
-                }
-                else if (process_style == 1)
-                {
-                    glyph_offset = GLYPH_ANIMATION_OFF;
-                    int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
-                    for (int k = 0; k < n_frames; k++)  /* frame number */
+                    if (process_style == 0)
                     {
-                        if (animations[i].frame2tile[k] == j)
-                            tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = tile_count;
-                        else if (animations[i].frame2tile[k] == -1)
-                            tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = base_tile;
+                        Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name,
+                            animations[i].animation_name ? animations[i].animation_name : "unknown animation",
+                            j,
+                            base_tile + m
+                        );
+                        int enl = animations[i].tile_enlargement;
+                        if (enl > 0)
+                            Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
+                        else
+                            Sprintf(eos(buf), ",1,1,0");
+                        Sprintf(eos(buf), "\n");
+                        (void)write(fd, buf, strlen(buf));
                     }
+                    else if (process_style == 1)
+                    {
+                        glyph_offset = GLYPH_ANIMATION_OFF;
+                        int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
+                        for (int k = 0; k < n_frames; k++)  /* frame number */
+                        {
+                            if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
+                            {
+                                int used_tile = animations[i].frame2tile[k] == j ? tile_count : base_tile;
+                                tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = used_tile;
+                            }
+                        }
+                    }
+                    tile_count++;
                 }
-                tile_count++;
+            }
+        }
+        else if (animations[i].animation_type == ANIMATION_TYPE_ZAP)
+        {
+            for (int bm = 0; bm < NUM_ZAP_BASE_TILES; bm++)
+            {
+                for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
+                {
+                    if (process_style == 0)
+                    {
+                        Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name,
+                            animations[i].animation_name ? animations[i].animation_name : "unknown animation",
+                            j,
+                            base_tile + bm
+                        );
+                        int enl = animations[i].tile_enlargement;
+                        if (enl > 0)
+                            Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
+                        else
+                            Sprintf(eos(buf), ",1,1,0");
+                        Sprintf(eos(buf), "\n");
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                    else if (process_style == 1)
+                    {
+                        for (int m = 0; m < contained_anims; m++)
+                        {
+                            boolean hflip = FALSE;
+                            boolean vflip = FALSE;
+
+                            if (is_zap_char_from_base_zap_char(m, bm, &hflip, &vflip))
+                            {
+                                glyph_offset = GLYPH_ANIMATION_OFF;
+                                int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
+                                for (int k = 0; k < n_frames; k++)  /* frame number */
+                                {
+                                    if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
+                                    {
+                                        int used_tile = animations[i].frame2tile[k] == j ? tile_count : base_tile;
+                                        tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = used_tile;
+                                        if(hflip)
+                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                        if (vflip)
+                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    tile_count++;
+                }
             }
         }
     }

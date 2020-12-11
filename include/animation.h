@@ -109,8 +109,17 @@ enum main_tile_use_types
     ANIMATION_MAIN_TILE_IGNORE
 };
 
+enum animation_main_types
+{
+    ANIMATION_TYPE_NORMAL = 0,
+    ANIMATION_TYPE_MISSILE,
+    ANIMATION_TYPE_ZAP,
+    MAX_ANIMATION_TYPES
+};
+
 struct animation_definition {
     char* animation_name;
+    enum animation_main_types animation_type;
     char number_of_tiles;
     char number_of_frames;
     int glyph_offset;
