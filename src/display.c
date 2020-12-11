@@ -1170,6 +1170,7 @@ int damage_shown;
     int zap_glyph = NO_GLYPH;
     if (layers.layer_glyphs[LAYER_ZAP] != 0 && layers.layer_glyphs[LAYER_ZAP] != NO_GLYPH)
         zap_glyph = layers.layer_glyphs[LAYER_ZAP];
+    int zap_flags = (layers.layer_flags & LFLAGS_ZAP_MASK);
 
     int background_effect_glyph = NO_GLYPH;
     if (layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != 0 && layers.layer_glyphs[LAYER_BACKGROUND_EFFECT] != NO_GLYPH)
@@ -1365,6 +1366,7 @@ new_sym_end_here:
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH)
     {
         show_glyph_on_layer(x, y, zap_glyph, LAYER_ZAP);
+        add_glyph_buffer_layer_flags(x, y, zap_flags);
     }
     if (newsym_flags & NEWSYM_FLAGS_KEEP_OLD_GENERAL_EFFECT_GLYPH)
     {

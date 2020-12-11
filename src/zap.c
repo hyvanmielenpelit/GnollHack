@@ -8425,7 +8425,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
             }
         }
 
-        if (1) //cansee(sx, sy))
+        if (iflags.using_gui_tiles || cansee(sx, sy))
         {
             adjusted_delay_output(); /* wait a little */
             if (playing_anim)

@@ -96,6 +96,7 @@ struct layer_info {
 
 #define LFLAGS_ZAP_LEADING_EDGE     0x04000000UL /* First (leading) tile in a zap */
 #define LFLAGS_ZAP_TRAILING_EDGE    0x08000000UL /* Last (trailing) tile in a zap */
+#define LFLAGS_ZAP_MASK             (LFLAGS_ZAP_LEADING_EDGE | LFLAGS_ZAP_TRAILING_EDGE)
 
 /* free bits */
 
