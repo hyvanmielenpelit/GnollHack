@@ -118,7 +118,7 @@ extern NEARDATA struct ui_component_definition ui_tile_component_array[MAX_UI_TI
 
 
 #define NUM_BASE_TILE_DIRS 3 /* Up, left, up-left */
-#define NUM_ZAP_BASE_TILES 10 /* As per zap template */
+#define NUM_ZAP_BASE_TILES 13 /* As per zap template */
 
 #endif /* TILEDATA_H */
 

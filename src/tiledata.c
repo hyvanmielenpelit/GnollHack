@@ -1160,28 +1160,38 @@ uchar* tilemapflags;
                 "up-left-extra-up", "up-left-extra-left", "up-right-extra-up", "up-right-extra-right",
                 "down-right-extra-down", "down-right-extra-right", "down-left-extra-down", "down-left-extra-left",
                 "leading-edge-up-left", "leading-edge-up-right", "leading-edge-down-right", "leading-edge-down-left",
-                "up-left-trailing-edge-down", "up-left-extra-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
+                "up-left-trailing-edge-down", "up-left-trailing-edge-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
                 "down-right-trailing-edge-up", "down-right-trailing-edge-left", "down-left-trailing-edge-up", "down-left-trailing-edge-right",
             };
 
-            const char* base_zap_direction_name_array[NUM_ZAP_BASE_TILES] = {
-                "up", "left", "back-bounce-up-left", "up-left-extra-up" "back-bounce-left",
-                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "back-bounce-up"
+#define ZAP_TEMPLATE_WIDTH 5
+#define ZAP_TEMPLATE_HEIGHT 3
+
+            const char* zap_template_tile_name_array[ZAP_TEMPLATE_WIDTH * ZAP_TEMPLATE_HEIGHT] = {
+                "up", "left", "leading-edge-up-left", "up-left-extra-up", "back-bounce-left",
+                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "up-left-trailing-edge-right",
+                "back-bounce-up-left", "back-bounce-up", "", "up-left-trailing-edge-down", "",
             };
 
-            int template_width = 5;
-            int template_height = 2;
+            int template_width = ZAP_TEMPLATE_WIDTH;
+            int template_height = ZAP_TEMPLATE_HEIGHT;
+            int zap_template_tiles = template_width * template_height;
 
             for (int j = 0; j < MAX_ZAP_TYPES; j++)
             {
                 const char* zap_name = zap_type_definitions[j].name;
                 const int zap_color = zap_type_definitions[j].color;
-
-                for(int bi = 0; bi < NUM_ZAP_BASE_TILES; bi++)
+                int bi = -1;
+                for(int ti = 0; ti < zap_template_tiles; ti++)
                 {
-                    const char* base_zap_direction_name = base_zap_direction_name_array[bi];
-                    int bx_coord = bi % template_width;
-                    int by_coord = bi / template_width;
+                    if(!strcmp(zap_template_tile_name_array[ti], ""))
+                        continue;
+
+                    bi++;
+
+                    const char* base_zap_direction_name = zap_template_tile_name_array[ti];
+                    int bx_coord = ti % template_width;
+                    int by_coord = ti / template_width;
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0,%d,%d,%d\n", tile_section_name, set_name, zap_name, base_zap_direction_name, bx_coord, by_coord, template_width, template_height, 0, 0, zap_color);
@@ -2788,14 +2798,16 @@ boolean* hflip_ptr, * vflip_ptr;
                 "up-left-extra-up", "up-left-extra-left", "up-right-extra-up", "up-right-extra-right",
                 "down-right-extra-down", "down-right-extra-right", "down-left-extra-down", "down-left-extra-left",
                 "leading-edge-up-left", "leading-edge-up-right", "leading-edge-down-right", "leading-edge-down-left",
-                "up-left-trailing-edge-down", "up-left-extra-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
+                "up-left-trailing-edge-down", "up-left-trailing-edge-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
                 "down-right-trailing-edge-up", "down-right-trailing-edge-left", "down-left-trailing-edge-up", "down-left-trailing-edge-right",
             };
 
-            const char* base_zap_direction_name_array[NUM_ZAP_BASE_TILES] = {
-                "up", "left", "back-bounce-up-left", "up-left-extra-up" "back-bounce-left",
-                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "back-bounce-up"
+            const char* zap_template_tile_name_array[ZAP_TEMPLATE_WIDTH * ZAP_TEMPLATE_HEIGHT] = {
+                "up", "left", "leading-edge-up-left", "up-left-extra-up", "back-bounce-left",
+                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "up-left-trailing-edge-right",
+                "back-bounce-up-left", "back-bounce-up", "", "up-left-trailing-edge-down", "",
             };
+
     */
 
     switch (base_zap_char_index)
@@ -2829,25 +2841,25 @@ boolean* hflip_ptr, * vflip_ptr;
         }
         break;
     case 2:
-        if (zap_char_index == 18)
+        if (zap_char_index == 32)
         {
             *hflip_ptr = FALSE;
             *vflip_ptr = FALSE;
             return TRUE;
         }
-        else if (zap_char_index == 19)
+        else if (zap_char_index == 33)
         {
             *hflip_ptr = TRUE;
             *vflip_ptr = FALSE;
             return TRUE;
         }
-        else if (zap_char_index == 22)
+        else if (zap_char_index == 34)
         {
             *hflip_ptr = TRUE;
             *vflip_ptr = TRUE;
             return TRUE;
         }
-        else if (zap_char_index == 23)
+        else if (zap_char_index == 35)
         {
             *hflip_ptr = FALSE;
             *vflip_ptr = TRUE;
@@ -2999,6 +3011,59 @@ boolean* hflip_ptr, * vflip_ptr;
         }
         break;
     case 9:
+        if (zap_char_index == 37)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 39)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 41)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 43)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+
+    case 10:
+        if (zap_char_index == 18)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 19)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 22)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 23)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;    
+    case 11:
         if (zap_char_index == 16)
         {
             *hflip_ptr = FALSE;
@@ -3012,6 +3077,33 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
+    case 12:
+        if (zap_char_index == 36)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 38)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 40)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 42)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+
     default:
         break;
     }
