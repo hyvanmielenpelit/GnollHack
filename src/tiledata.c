@@ -1792,6 +1792,57 @@ uchar* tilemapflags;
                 }
             }
         }
+        else if (animations[i].animation_type == ANIMATION_TYPE_MISSILE)
+        {
+            for (int bm = 0; bm < NUM_BASE_TILE_DIRS; bm++)
+            {
+                for (int j = 0; j < max(0, min(animations[i].number_of_tiles, MAX_TILES_PER_ANIMATION)); j++) /* tile number */
+                {
+                    if (process_style == 0)
+                    {
+                        Sprintf(buf, "%s,%s,tile-%d,%d", tile_section_name,
+                            animations[i].animation_name ? animations[i].animation_name : "unknown animation",
+                            j,
+                            base_tile + bm
+                        );
+                        int enl = animations[i].tile_enlargement;
+                        if (enl > 0)
+                            Sprintf(eos(buf), ",%d,%d,%d", enlargements[enl].width_in_tiles, enlargements[enl].height_in_tiles, enlargements[enl].main_tile_x_coordinate);
+                        else
+                            Sprintf(eos(buf), ",1,1,0");
+                        Sprintf(eos(buf), "\n");
+                        (void)write(fd, buf, strlen(buf));
+                    }
+                    else if (process_style == 1)
+                    {
+                        for (int m = 0; m < contained_anims; m++)
+                        {
+                            boolean hflip = FALSE;
+                            boolean vflip = FALSE;
+
+                            if (is_dir_from_base_dir(m, bm, &hflip, &vflip))
+                            {
+                                glyph_offset = GLYPH_ANIMATION_OFF;
+                                int n_frames = min(animations[i].number_of_frames, MAX_FRAMES_PER_ANIMATION);
+                                for (int k = 0; k < n_frames; k++)  /* frame number */
+                                {
+                                    if (animations[i].frame2tile[k] == j || animations[i].frame2tile[k] == -1)
+                                    {
+                                        int used_tile = animations[i].frame2tile[k] == j ? tile_count : base_tile;
+                                        tilemaparray[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] = used_tile;
+                                        if (hflip)
+                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                        if (vflip)
+                                            tilemapflags[k + n_frames * m + animations[i].glyph_offset + GLYPH_ANIMATION_OFF] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    tile_count++;
+                }
+            }
+        }
         else if (animations[i].animation_type == ANIMATION_TYPE_ZAP)
         {
             for (int bm = 0; bm < NUM_ZAP_BASE_TILES; bm++)
