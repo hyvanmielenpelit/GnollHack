@@ -494,7 +494,7 @@ E int FDECL(back_to_glyph, (XCHAR_P, XCHAR_P));
 E int FDECL(back_to_broken_glyph, (XCHAR_P, XCHAR_P));
 E int FDECL(zapdir_to_glyph, (int, int, int));
 E int FDECL(zapbounce_to_glyph, (int, int, int, int, int));
-E int FDECL(zap_glyph_to_corner_glyph, (int, int));
+E int FDECL(zap_glyph_to_corner_glyph, (int, unsigned long, int));
 E int FDECL(dir_to_beam_index, (int, int));
 E int FDECL(glyph_at, (XCHAR_P, XCHAR_P));
 E struct layer_info FDECL(layers_at, (XCHAR_P, XCHAR_P));

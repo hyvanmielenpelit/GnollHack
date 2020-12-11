@@ -94,6 +94,9 @@ struct layer_info {
 #define LFLAGS_SHOWING_MEMORY       0x01000000UL /* also implies that you cannot see the location (and hence showing memory) */
 #define LFLAGS_SHOWING_DETECTION    0x02000000UL /* Do not darken */
 
+#define LFLAGS_ZAP_LEADING_EDGE     0x04000000UL /* First (leading) tile in a zap */
+#define LFLAGS_ZAP_TRAILING_EDGE    0x08000000UL /* Last (trailing) tile in a zap */
+
 /* free bits */
 
 #define MISSILE_FLAGS_CORRODEABLE   0x00000001UL

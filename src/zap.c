@@ -8064,6 +8064,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         anim_ms = framenum * (flags.animation_frame_interval_in_milliseconds ? flags.animation_frame_interval_in_milliseconds : ANIMATION_FRAME_INTERVAL);
     }
     int zap_tile_count = 0;
+    boolean first_tile_found = FALSE;
 
     start_ambient_ray_sound_at_location(soundset_id, sx, sy);
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
@@ -8116,6 +8117,13 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     if(!use_old)
                         zap_tile_count++;
                 }
+                if (!first_tile_found)
+                {
+                    add_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_TRAILING_EDGE);
+                    first_tile_found = TRUE;
+                }
+                remove_glyph_buffer_layer_flags(lsx, lsy, LFLAGS_ZAP_LEADING_EDGE);
+                add_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_LEADING_EDGE);
                 tmp_at(sx, sy);
                 force_redraw_at(sx, sy);
                 if (animations[anim].sound_play_frame > 0)

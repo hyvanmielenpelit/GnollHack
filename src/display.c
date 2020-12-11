@@ -3278,9 +3278,14 @@ int beam_type;
 }
 
 int
-zap_glyph_to_corner_glyph(orig_glyph, zap_source_idx)
+zap_glyph_to_corner_glyph(orig_glyph, layer_flags, zap_source_idx)
 int orig_glyph;
-int zap_source_idx; /* orig_glyph is a zap main tile from: 1 = from above, 2 = from right, 3 = from below, 4 = from left */
+unsigned long layer_flags;
+int zap_source_idx;
+/* Orig_glyph is from a location relative to X:
+   1 2 3 
+   8 X 4
+   7 6 5 */
 {
     if (!glyph_is_zap(orig_glyph))
         return NO_GLYPH;
@@ -3343,37 +3348,61 @@ int zap_source_idx; /* orig_glyph is a zap main tile from: 1 = from above, 2 = f
     case 10:
     case 13:
     case 22:
-        if (zap_source_idx == 2)
+        if (zap_source_idx == 4)
             res = 25;
-        else if (zap_source_idx == 3)
+        else if (zap_source_idx == 6)
             res = 24;
+        else if (zap_source_idx == 5 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+            res = 32;
+        else if (zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 36;
+        else if (zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 37;
         break;
     case 3:
     case 11:
     case 14:
     case 23:
-        if (zap_source_idx == 4)
+        if (zap_source_idx == 8)
             res = 27;
-        else if (zap_source_idx == 3)
+        else if (zap_source_idx == 6)
             res = 26;
+        else if (zap_source_idx == 7 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+            res = 33;
+        else if (zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 38;
+        else if (zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 39;
         break;
     case 6:
     case 15:
     case 18:
     case 8:
-        if (zap_source_idx == 4)
+        if (zap_source_idx == 8)
             res = 29;
-        else if (zap_source_idx == 1)
+        else if (zap_source_idx == 2)
             res = 28;
+        else if (zap_source_idx == 1 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+            res = 34;
+        else if (zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 40;
+        else if (zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 41;
         break;
     case 7:
     case 9:
     case 12:
     case 19:
-        if (zap_source_idx == 2)
+        if (zap_source_idx == 4)
             res = 31;
-        else if (zap_source_idx == 1)
+        else if (zap_source_idx == 2)
             res = 30;
+        else if (zap_source_idx == 3 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+            res = 35;
+        else if (zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 42;
+        else if (zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+            res = 43;
         break;
     default:
         break;

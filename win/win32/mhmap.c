@@ -26,7 +26,8 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1 + 4)
+#define NUM_ZAP_SOURCE_DIRS 8
+#define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1 + NUM_ZAP_SOURCE_DIRS)
 
 
 /* draw order definition */
@@ -1120,6 +1121,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
             boolean show_memory_objects = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_MEMORY);
             boolean showing_detection = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_SHOWING_DETECTION);
             boolean objects_in_pit = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_O_IN_PIT);
+            boolean zap_leading_edge = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_ZAP_LEADING_EDGE);
+            boolean zap_trailing_edge = !!(data->map[enl_i][enl_j].layer_flags & LFLAGS_ZAP_TRAILING_EDGE);
 
             if (enlarg_idx >= 0 && enlarg_idx != 3)
             {
@@ -1225,21 +1228,38 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (base_layer == LAYER_ZAP && zap_source_idx > 0)
                 {
                     int adjacent_zap_glyph = NO_GLYPH;
+                    unsigned long adjacent_layer_flags = 0UL;
                     switch (zap_source_idx)
                     {
                     case 1:
-                        adj_x = i;
+                        adj_x = i - 1;
                         adj_y = j - 1;
                         break;
                     case 2:
+                        adj_x = i;
+                        adj_y = j - 1;
+                        break;
+                    case 3:
+                        adj_x = i + 1;
+                        adj_y = j - 1;
+                        break;
+                    case 4:
                         adj_x = i + 1;
                         adj_y = j;
                         break;
-                    case 3:
+                    case 5:
+                        adj_x = i + 1;
+                        adj_y = j + 1;
+                        break;
+                    case 6:
                         adj_x = i;
                         adj_y = j + 1;
                         break;
-                    case 4:
+                    case 7:
+                        adj_x = i - 1;
+                        adj_y = j + 1;
+                        break;
+                    case 8:
                         adj_x = i - 1;
                         adj_y = j;
                         break;
@@ -1252,11 +1272,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     else
                     {
                         adjacent_zap_glyph = data->map[adj_x][adj_y].layer_glyphs[LAYER_ZAP];
+                        adjacent_layer_flags = data->map[adj_x][adj_y].layer_flags;
 
                         if (adjacent_zap_glyph == NO_GLYPH || !glyph_is_zap(adjacent_zap_glyph))
                             signed_glyph = NO_GLYPH;
                         else
-                            signed_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, zap_source_idx);
+                            signed_glyph = zap_glyph_to_corner_glyph(adjacent_zap_glyph, adjacent_layer_flags, zap_source_idx);
 
                         if(signed_glyph != NO_GLYPH)
                             is_corner_tile = TRUE;
@@ -3752,9 +3773,9 @@ static void setDrawOrder(PNHMapWindow data)
                 else if (layer_idx == LAYER_ZAP && same_level_z_order_array[enl_idx] == -1)
                 {
                     /* From below (i == 3) is drawn below */
-                    for (int i = 1; i <= 4; i++)
+                    for (int i = 1; i <= NUM_ZAP_SOURCE_DIRS; i++)
                     {
-                        if (i == 3)
+                        if (i >= 5 && i <= 7)
                             continue;
                         data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                         data->draw_order[draw_count].layer = layer_idx;
@@ -3798,8 +3819,8 @@ static void setDrawOrder(PNHMapWindow data)
                 }
                 else if (layer_idx == LAYER_ZAP && different_level_z_order_array[enl_idx] == 3)
                 {
-                    /* Others (i == 1,2,4) have been drawn earlier; from below (i == 3) is drawn here */
-                    for (int i = 3; i <= 3; i++)
+                    /* Others (i == 1-4,8) have been drawn earlier; from below (i == 5,6,7) is drawn here */
+                    for (int i = 5; i <= 7; i++)
                     {
                         data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
                         data->draw_order[draw_count].layer = layer_idx;
@@ -3895,25 +3916,41 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
     if (glyph_is_zap(data->map[x][y].layer_glyphs[LAYER_ZAP]))
     {
         int rx = x, ry = y;
-        for (int zap_source_idx = 1; zap_source_idx <= 4; zap_source_idx++)
+        for (int zap_source_idx = 1; zap_source_idx <= NUM_ZAP_SOURCE_DIRS; zap_source_idx++)
         {
-            if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_ZAP], zap_source_idx) != NO_GLYPH)
+            if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_ZAP], data->map[x][y].layer_flags, zap_source_idx) != NO_GLYPH)
             {
                 switch (zap_source_idx)
                 {
                 case 1:
-                    rx = x;
+                    rx = x + 1;
                     ry = y + 1;
                     break;
                 case 2:
+                    rx = x;
+                    ry = y + 1;
+                    break;
+                case 3:
+                    rx = x - 1;
+                    ry = y + 1;
+                    break;
+                case 4:
                     rx = x - 1;
                     ry = y;
                     break;
-                case 3:
+                case 5:
+                    rx = x - 1;
+                    ry = y - 1;
+                    break;
+                case 6:
                     rx = x;
                     ry = y - 1;
                     break;
-                case 4:
+                case 7:
+                    rx = x + 1;
+                    ry = y - 1;
+                    break;
+                case 8:
                     rx = x + 1;
                     ry = y;
                     break;
