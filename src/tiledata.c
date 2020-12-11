@@ -11,7 +11,7 @@ STATIC_DCL void FDECL(set_base_tileset_cmap_variation, (int*, int, int));
 
 #ifdef USE_TILES
 short glyph2tile[MAX_GLYPH] = { 0 }; /* moved here from tile.c */
-uchar glyphtileflags[MAX_GLYPH] = { 0 }; /* specifies how to use the tile and operations applied to the tile before use */
+uchar glyphtileflags[MAX_GLYPH] = { 0 }; /* specifies how to use the tile and operations applied to the tile before use (e.g., flip or move to middle) */
 short tile2replacement[MAX_TILES] = { 0 };
 short tile2animation[MAX_TILES] = { 0 };
 short tile2enlargement[MAX_TILES] = { 0 };
@@ -284,6 +284,9 @@ uchar* tilemapflags;
             "middle-left",  "middle-right",
             "bottom-left", "bottom-center", "bottom-right" };
 
+    const char* base_missile_direction_name_array[NUM_BASE_TILE_DIRS] = {
+            "top-center", "middle-left",  "top-left" };
+
     /* Object tiles */
     tile_section_name = "objects";
     for (int j = 0; j <= 1; j++)
@@ -303,7 +306,7 @@ uchar* tilemapflags;
 
         for (int i = STRANGE_OBJECT; i < NUM_OBJECTS; i++)
         {
-            int missile_tile_num = (objects[i].oc_flags4 & O4_SINGLE_MISSILE_TILE) ? 1 : NUM_MISSILE_DIRS;
+            int missile_tile_num = (objects[i].oc_flags4 & O4_SINGLE_MISSILE_TILE) ? 1 : NUM_BASE_TILE_DIRS;
 
             if (j == 1)
             {
@@ -337,7 +340,7 @@ uchar* tilemapflags;
                         {
                             Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, 
                                 "generic", "scroll", 
-                                missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], 
+                                missile_tile_num == 1 ? "generic" : base_missile_direction_name_array[n], 
                                 objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
                             (void)write(fd, buf, strlen(buf));
                             tile_count++;
@@ -366,26 +369,63 @@ uchar* tilemapflags;
                 {
                     if (j == 1)
                     {
-                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                        if(missile_tile_num == 1)
                         {
-                            /* Found scroll */
-                            tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                            tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
-
-                            /* Add the tile to all scrolls */
-                            for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                            for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                             {
-                                if (objects[m].oc_class == SCROLL_CLASS)
+                                /* Found scroll */
+                                tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+
+                                /* Add the tile to all scrolls */
+                                for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
                                 {
-                                    tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    if (objects[m].oc_class == SCROLL_CLASS)
+                                    {
+                                        tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                        tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    }
                                 }
                             }
-                            if(missile_tile_num != 1)
-                                tile_count++;
-                        }
-                        if (missile_tile_num == 1)
                             tile_count++;
+                        }
+                        else
+                        {
+                            for (int bn = 0; bn < NUM_BASE_TILE_DIRS; bn++)
+                            {
+                                for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                                {
+                                    boolean hflip = FALSE;
+                                    boolean vflip = FALSE;
+                                    boolean isfrombasedir = is_dir_from_base_dir(n, bn, &hflip, &vflip);
+                                    if (isfrombasedir)
+                                    {
+                                        /* Found scroll */
+                                        tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                        tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                        if(hflip)
+                                            tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                        if (vflip)
+                                            tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+
+                                        /* Add the tile to all scrolls */
+                                        for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                                        {
+                                            if (objects[m].oc_class == SCROLL_CLASS)
+                                            {
+                                                tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                                tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                                if (hflip)
+                                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                                if (vflip)
+                                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                            }
+                                        }
+                                    }
+                                }
+                                tile_count++;
+                            }
+                        }
                     }
                     else
                     {
@@ -437,7 +477,7 @@ uchar* tilemapflags;
                         {
                             Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, 
                                 "mail", "envelope", 
-                                missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
+                                missile_tile_num == 1 ? "generic" : base_missile_direction_name_array[n], objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
                             (void)write(fd, buf, strlen(buf));
                             if(missile_tile_num != 1)
                                 tile_count++;
@@ -457,17 +497,41 @@ uchar* tilemapflags;
                     /* Add the tile the scroll "mail" */
                     if (j == 1)
                     {
-                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
-                        {
-#ifdef MAIL
-                            tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                            tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
-#endif
-                            if(missile_tile_num != 1)
-                                tile_count++;
-                        }
                         if (missile_tile_num == 1)
+                        {
+                            for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                            {
+#ifdef MAIL
+                                tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+#endif
+                            }
                             tile_count++;
+                        }
+                        else
+                        {
+                            for (int bn = 0; bn < NUM_BASE_TILE_DIRS; bn++)
+                            {
+                                for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                                {
+                                    boolean hflip = FALSE;
+                                    boolean vflip = FALSE;
+                                    boolean isfrombasedir = is_dir_from_base_dir(n, bn, &hflip, &vflip);
+                                    if (isfrombasedir)
+                                    {
+#ifdef MAIL
+                                        tilemaparray[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                        tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                        if (hflip)
+                                            tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                        if (vflip)
+                                            tilemapflags[SCR_MAIL * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+#endif
+                                    }
+                                }
+                                tile_count++;
+                            }
+                        }
                     }
                     else
                     {
@@ -540,7 +604,7 @@ uchar* tilemapflags;
                         Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name,
                             nameless ? nameless_name : OBJ_NAME(objects[i]),
                             no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr,
-                            missile_tile_num == 1 ? "generic" : missile_direction_name_array[n], 
+                            missile_tile_num == 1 ? "generic" : base_missile_direction_name_array[n], 
                             objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(orig_idx));
                         (void)write(fd, buf, strlen(buf));
                         tile_count++;
@@ -572,33 +636,78 @@ uchar* tilemapflags;
             {
                 if (j == 1)
                 {
-                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                    if (missile_tile_num == 1)
                     {
-                        /* Write to the tile to the main glyph */
-                        tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                        tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
-
-                        /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
-                        if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
+                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
                         {
-                            for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                            /* Write to the tile to the main glyph */
+                            tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                            tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+
+                            /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
+                            if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
                             {
-                                if (objects[m].oc_class == GEM_CLASS
-                                    && (m <= LAST_GEM || (m > LUCKSTONE && m <= FLINT))
-                                    && objects[m].oc_color == objects[i].oc_color
-                                    )
+                                for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
                                 {
-                                    /* Write to the tile to the main glyph */
-                                    tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    if (objects[m].oc_class == GEM_CLASS
+                                        && (m <= LAST_GEM || (m > LUCKSTONE && m <= FLINT))
+                                        && objects[m].oc_color == objects[i].oc_color
+                                        )
+                                    {
+                                        /* Write to the tile to the main glyph */
+                                        tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                        tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    }
                                 }
                             }
                         }
-                        if(missile_tile_num != 1)
-                            tile_count++;
-                    }
-                    if (missile_tile_num == 1)
                         tile_count++;
+                    }
+                    else
+                    {
+                        for (int bn = 0; bn < NUM_BASE_TILE_DIRS; bn++)
+                        {
+                            for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                            {
+                                boolean hflip = FALSE;
+                                boolean vflip = FALSE;
+                                boolean isfrombasedir = is_dir_from_base_dir(n, bn, &hflip, &vflip);
+                                if (isfrombasedir)
+                                {
+
+                                    /* Write to the tile to the main glyph */
+                                    tilemaparray[i * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                    tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    if (hflip)
+                                        tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                    if(vflip)
+                                        tilemapflags[i * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+
+                                    /* If this is a piece of glass or luckstone, add the tile to all other gems with the same color; others have been skipped */
+                                    if (objects[i].oc_class == GEM_CLASS && (i > LAST_GEM && i <= LUCKSTONE))
+                                    {
+                                        for (int m = STRANGE_OBJECT; m < NUM_OBJECTS; m++)
+                                        {
+                                            if (objects[m].oc_class == GEM_CLASS
+                                                && (m <= LAST_GEM || (m > LUCKSTONE && m <= FLINT))
+                                                && objects[m].oc_color == objects[i].oc_color
+                                                )
+                                            {
+                                                /* Write to the tile to the main glyph */
+                                                tilemaparray[m * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                                tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                                if (hflip)
+                                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                                if (vflip)
+                                                    tilemapflags[m * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            tile_count++;
+                        }
+                    }
                 }
                 else
                 {
@@ -697,7 +806,7 @@ uchar* tilemapflags;
 
         for (int i = 1; i <= NUM_ARTIFACTS; i++)
         {
-            int missile_tile_num = (artilist[i].aflags2 & AF2_SINGLE_MISSILE_TILE) ? 1 : NUM_MISSILE_DIRS;
+            int missile_tile_num = (artilist[i].aflags2 & AF2_SINGLE_MISSILE_TILE) ? 1 : NUM_BASE_TILE_DIRS;
 
             if (j == 1)
             {
@@ -724,7 +833,7 @@ uchar* tilemapflags;
                             no_description ? "no artifact description" : artilist[i].desc,
                             no_base_item_name ? "nameless base item" : OBJ_NAME(objects[base_item]),
                             no_base_item_description ? "no base item description" : obj_descr[objects[base_item].oc_name_idx].oc_descr,
-                            missile_tile_num == 1 ? "generic " : missile_direction_name_array[n], 
+                            missile_tile_num == 1 ? "generic " : base_missile_direction_name_array[n], 
                             artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[objects[artilist[i].otyp].oc_class].name, 
                             has_artifact_floor_tile(i)
                         );
@@ -766,16 +875,37 @@ uchar* tilemapflags;
             {
                 if (j == 1)
                 {
-                    for (int n = 0; n < NUM_MISSILE_DIRS; n++)
-                    {
-                        tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
-                        tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
-
-                        if(missile_tile_num != 1)
-                            tile_count++;
-                    }
                     if (missile_tile_num == 1)
+                    {
+                        for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                        {
+                            tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                            tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                        }
                         tile_count++;
+                    }
+                    else
+                    {
+                        for (int bn = 0; bn < NUM_BASE_TILE_DIRS; bn++)
+                        {
+                            for (int n = 0; n < NUM_MISSILE_DIRS; n++)
+                            {
+                                boolean hflip = FALSE;
+                                boolean vflip = FALSE;
+                                boolean isfrombasedir = is_dir_from_base_dir(n, bn, &hflip, &vflip);
+                                if (isfrombasedir)
+                                {
+                                    tilemaparray[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] = tile_count;
+                                    tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] &= ~GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE;
+                                    if(hflip)
+                                        tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_HORIZONTALLY;
+                                    if (vflip)
+                                        tilemapflags[(i - 1) * NUM_MISSILE_DIRS + n + glyph_offset] |= GLYPH_TILE_FLAG_FLIP_VERTICALLY;
+                                }
+                            }
+                            tile_count++;
+                        }
+                    }
                 }
                 else
                 {
@@ -2628,6 +2758,79 @@ int sym_idx, cmap_idx;
         else
             *dest_var_ptr = defsym_variations[sym_idx].base_cmap[0];
     }
+}
+
+boolean
+is_dir_from_base_dir(dir_index, base_dir_index, hflip_ptr, vflip_ptr)
+int dir_index, base_dir_index;
+boolean *hflip_ptr, *vflip_ptr;
+{
+    if (!hflip_ptr || !vflip_ptr)
+        return FALSE;
+
+    if (base_dir_index < 0 || base_dir_index >= 3 || dir_index < 0 || dir_index >= 8)
+        return FALSE;
+
+    switch (base_dir_index)
+    {
+    case 0:
+        if (dir_index == 1)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (dir_index == 6)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 1:
+        if (dir_index == 3)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (dir_index == 4)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        break;
+    case 2:
+        if (dir_index == 0)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (dir_index == 2)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (dir_index == 5)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (dir_index == 7)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    default:
+        break;
+    }
+    return FALSE;
 }
 
 /*tiledata.c*/

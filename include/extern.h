@@ -3047,6 +3047,7 @@ E boolean FDECL(rloco, (struct obj *));
 E int NDECL(random_teleport_level);
 E boolean FDECL(u_teleport_mon, (struct monst *, BOOLEAN_P));
 
+
 /* ### tile.c ### */
 #ifdef USE_TILES
 E void FDECL(substitute_tiles, (d_level *));
@@ -3057,6 +3058,8 @@ E void FDECL(substitute_tiles, (d_level *));
 E void NDECL(init_tiledata);
 E boolean FDECL(has_generic_player_action_tile, (enum action_tile_types action));
 E int FDECL(process_tiledata, (int, const char*, short*, uchar*));
+E boolean FDECL(is_dir_from_base_dir, (int, int, boolean*, boolean*));
+
 
 /* ### timeout.c ### */
 
