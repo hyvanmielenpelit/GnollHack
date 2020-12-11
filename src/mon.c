@@ -1437,7 +1437,7 @@ update_monster_timouts()
 			{
 				if (duration > 1) 
 				{
-					mtmp->mprops[i] = (duration - 1) | otherflags; /* make it a bit faster than with mon_set_property, since the state does not change*/
+					mtmp->mprops[i] = ((duration - 1) | otherflags); /* make it a bit faster than with mon_set_property, since the state does not change*/
 
 					/* Messaging before the timer expiry */
 					switch (i)

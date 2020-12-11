@@ -1360,12 +1360,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     int anim_frame_idx = -1, main_tile_idx = -1;
                     int tile_animation_idx = get_tile_animation_index_from_glyph(glyph);
+                    double repl_scale_factor = 1.0;
                     boolean skip_drawing = FALSE;
                     boolean full_sized_item = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FULL_SIZED_ITEM) || glyph_is_monster(glyph); /* hallucinated statue */
                     boolean move_obj_to_middle = ((glyphtileflags[glyph] & GLYPH_TILE_FLAG_NORMAL_ITEM_AS_MISSILE) && !full_sized_item);
                     enum autodraw_types autodraw = AUTODRAW_NONE;
                     ntile = glyph2tile[glyph];
-                    ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round), &autodraw);
+                    ntile = maybe_get_replaced_tile(ntile, i, j, data_to_replacement_info(signed_glyph, base_layer, otmp_round), &autodraw, &repl_scale_factor);
                     if(context.u_action_animation_counter_on && base_layer == LAYER_MONSTER && enl_i == u.ux && enl_j == u.uy)
                         ntile = maybe_get_animated_tile(ntile, tile_animation_idx, ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, context.u_action_animation_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], &autodraw);
                     else if (context.m_action_animation_counter_on && base_layer == LAYER_MONSTER && context.m_action_animation_x == enl_i && context.m_action_animation_y == enl_j)
@@ -3049,7 +3050,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             int cglyph = (cannotseeself && flags.active_cursor_style == CURSOR_STYLE_GENERIC_CURSOR ? CURSOR_STYLE_INVISIBLE : flags.active_cursor_style) + GLYPH_CURSOR_OFF;
                             int ctile = glyph2tile[cglyph];
                             int tile_animation_idx = get_tile_animation_index_from_glyph(cglyph);
-                            ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0);
+                            ctile = maybe_get_replaced_tile(ctile, i, j, zeroreplacementinfo, (enum autodraw_types*)0, (double*)0);
                             ctile = maybe_get_animated_tile(ctile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum autodraw_types*)0);
                             t_x = TILEBMP_X(ctile);
                             t_y = TILEBMP_Y(ctile);
@@ -3426,7 +3427,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 mglyph = abs(signed_mglyph);
                                 mtile = glyph2tile[mglyph];
                                 int tile_animation_idx = get_tile_animation_index_from_glyph(mglyph);
-                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round), (enum auto_drawtypes*)0);
+                                mtile = maybe_get_replaced_tile(mtile, i, j, data_to_replacement_info(signed_mglyph, base_layer, otmp_round), (enum auto_drawtypes*)0, (double*)0);
                                 mtile = maybe_get_animated_tile(mtile, tile_animation_idx, ANIMATION_PLAY_TYPE_ALWAYS, data->interval_counter, &anim_frame_idx, &main_tile_idx, &data->mapAnimated[i][j], (enum auto_drawtypes*)0);
                                 int c_x = TILEBMP_X(mtile);
                                 int c_y = TILEBMP_Y(mtile);

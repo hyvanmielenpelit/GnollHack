@@ -759,7 +759,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, },
-      0, 5,
+      0, 7,
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -2352,6 +2352,17 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
+    { "figurine-replacement",
+      0, 0,
+      REPLACEMENT_EVENT_NO_EVENT,
+      REPLACEMENT_ACTION_FIGURINE,
+      AUTODRAW_NONE,
+      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    },
 };
 
 
@@ -3054,11 +3065,12 @@ struct obj* otmp;
 }
 
 short
-maybe_get_replaced_tile(ntile, x, y, info, autodraw_ptr)
+maybe_get_replaced_tile(ntile, x, y, info, autodraw_ptr, obj_scale_ptr)
 int x, y;
 short ntile;
 struct replacement_info info;
 enum autodraw_types* autodraw_ptr;
+double* obj_scale_ptr;
 {
 #ifdef USE_TILES
     struct obj* otmp = info.object;
@@ -3375,6 +3387,25 @@ enum autodraw_types* autodraw_ptr;
                     *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
                 return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
             }
+            break;
+        }
+        case REPLACEMENT_ACTION_FIGURINE:
+        {
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (obj_scale_ptr)
+                *obj_scale_ptr = 0.5;
+
+            if (!otmp || otmp->corpsenm < 0 || otmp->corpsenm >= NUM_MONSTERS)
+                return ntile;
+
+            int nglyph = otmp->corpsenm + (is_female_corpse_or_statue(otmp) ? GLYPH_FEMALE_STATUE_OFF : GLYPH_STATUE_OFF);
+            if (nglyph != NO_GLYPH)
+                return ntile;
+            else
+                return glyph2tile[nglyph];
+
             break;
         }
         default:
