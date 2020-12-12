@@ -3299,14 +3299,14 @@ int zap_source_idx;
         return NO_GLYPH;
 
     int res = -1;
-    int used_zap_source_idx = (zap_source_idx <= NUM_ZAP_SOURCE_BASE_DIRS ? zap_source_idx : (zap_source_idx - NUM_ZAP_SOURCE_BASE_DIRS) * 2);
+    int used_zap_source_idx = (zap_source_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1;
     boolean check_leading = TRUE;
     boolean check_trailing = TRUE;
 
     if (zap_source_idx > NUM_ZAP_SOURCE_BASE_DIRS)
-        check_leading = FALSE;
-    else if (zap_source_idx % 2 == 0)
         check_trailing = FALSE;
+    else
+        check_leading = FALSE;
 
     /* Leading cases */
     if (check_leading)
@@ -3314,10 +3314,12 @@ int zap_source_idx;
         switch (dir_index)
         {
         case 0:
+        case 20:
             if (used_zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
                 res = 48;
             break;
         case 1:
+        case 21:
             if (used_zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
                 res = 51;
             break;
@@ -3344,10 +3346,12 @@ int zap_source_idx;
                 res = 33;
             break;
         case 4:
+        case 16:
             if (used_zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
                 res = 50;
             break;
         case 5:
+        case 17:
             if (used_zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
                 res = 49;
             break;
@@ -3384,10 +3388,12 @@ int zap_source_idx;
         switch (dir_index)
         {
         case 0:
+        case 16:
             if (used_zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
                 res = 52;
             break;
         case 1:
+        case 17:
             if (used_zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
                 res = 55;
             break;
@@ -3414,10 +3420,12 @@ int zap_source_idx;
                 res = 45;
             break;
         case 4:
+        case 20:
             if (used_zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
                 res = 54;
             break;
         case 5:
+        case 21:
             if (used_zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
                 res = 53;
             break;

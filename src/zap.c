@@ -8117,6 +8117,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
                     if(!use_old)
                         zap_tile_count++;
                 }
+                remove_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_TRAILING_EDGE);
                 if (!first_tile_found)
                 {
                     add_glyph_buffer_layer_flags(sx, sy, LFLAGS_ZAP_TRAILING_EDGE);

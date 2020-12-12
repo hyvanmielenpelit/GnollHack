@@ -1228,14 +1228,13 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 {
                     int adjacent_zap_glyph = NO_GLYPH;
                     unsigned long adjacent_layer_flags = 0UL;
-                    switch (zap_source_idx)
+                    switch ((zap_source_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1)
                     {
                     case 1:
                         adj_x = i - 1;
                         adj_y = j - 1;
                         break;
                     case 2:
-                    case 9:
                         adj_x = i;
                         adj_y = j - 1;
                         break;
@@ -1244,7 +1243,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         adj_y = j - 1;
                         break;
                     case 4:
-                    case 10:
                         adj_x = i + 1;
                         adj_y = j;
                         break;
@@ -1253,7 +1251,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         adj_y = j + 1;
                         break;
                     case 6:
-                    case 11:
                         adj_x = i;
                         adj_y = j + 1;
                         break;
@@ -1262,7 +1259,6 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         adj_y = j + 1;
                         break;
                     case 8:
-                    case 12:
                         adj_x = i - 1;
                         adj_y = j;
                         break;
@@ -3782,7 +3778,7 @@ static void setDrawOrder(PNHMapWindow data)
                     /* From below (i == 3) is drawn below */
                     for (int i = 1; i <= NUM_ZAP_SOURCE_DIRS; i++)
                     {
-                        if ((i >= 5 && i <= 7) || i == 11)
+                        if (((i - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1) >= 5 && ((i - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1) <= 7)
                             continue;
                         data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                         data->draw_order[draw_count].layer = layer_idx;
@@ -3827,21 +3823,16 @@ static void setDrawOrder(PNHMapWindow data)
                 else if (layer_idx == LAYER_ZAP && different_level_z_order_array[enl_idx] == 3)
                 {
                     /* Others (i == 1-4,8) have been drawn earlier; from below (i == 5,6,7) is drawn here */
-                    for (int i = 5; i <= 7; i++)
+                    for (int j = 0; j <= 1; j++)
                     {
-                        data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
-                        data->draw_order[draw_count].layer = layer_idx;
-                        data->draw_order[draw_count].tile_movement_index = 0;
-                        data->draw_order[draw_count].zap_source_index = i;
-                        draw_count++;
-                    }
-                    for (int i = 11; i <= 11; i++)
-                    {
-                        data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
-                        data->draw_order[draw_count].layer = layer_idx;
-                        data->draw_order[draw_count].tile_movement_index = 0;
-                        data->draw_order[draw_count].zap_source_index = i;
-                        draw_count++;
+                        for (int i = 5 + j * + NUM_ZAP_SOURCE_BASE_DIRS; i <= 7 + j * + NUM_ZAP_SOURCE_BASE_DIRS; i++)
+                        {
+                            data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
+                            data->draw_order[draw_count].layer = layer_idx;
+                            data->draw_order[draw_count].tile_movement_index = 0;
+                            data->draw_order[draw_count].zap_source_index = i;
+                            draw_count++;
+                        }
                     }
                 }
             }
@@ -3935,14 +3926,13 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
         {
             if (zap_glyph_to_corner_glyph(data->map[x][y].layer_glyphs[LAYER_ZAP], data->map[x][y].layer_flags, zap_source_idx) != NO_GLYPH)
             {
-                switch (zap_source_idx)
+                switch ((zap_source_idx - 1) % NUM_ZAP_SOURCE_BASE_DIRS + 1)
                 {
                 case 1:
                     rx = x + 1;
                     ry = y + 1;
                     break;
                 case 2:
-                case 9:
                     rx = x;
                     ry = y + 1;
                     break;
@@ -3951,7 +3941,6 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ry = y + 1;
                     break;
                 case 4:
-                case 10:
                     rx = x - 1;
                     ry = y;
                     break;
@@ -3960,7 +3949,6 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ry = y - 1;
                     break;
                 case 6:
-                case 11:
                     rx = x;
                     ry = y - 1;
                     break;
@@ -3969,7 +3957,6 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ry = y - 1;
                     break;
                 case 8:
-                case 12:
                     rx = x + 1;
                     ry = y;
                     break;
