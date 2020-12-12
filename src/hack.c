@@ -1394,9 +1394,11 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
      * Note: caller should call reset_utrap() when we set u.utrap to 0.
      */
 
-    switch (u.utraptype) {
+    switch (u.utraptype) 
+    {
     case TT_BEARTRAP:
-        if (flags.verbose) {
+        if (flags.verbose) 
+        {
             predicament = "caught in a bear trap";
             if (u.usteed)
                 Norep("%s is %s.", upstart(steedname), predicament);
@@ -1408,6 +1410,8 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
             u.utrap--;
         if (!u.utrap)
             goto wriggle_free;
+        else if(flags.verbose)
+            play_sfx_sound(SFX_STUCK_IN_TRAP);
         break;
     case TT_PIT:
         if (desttrap && desttrap->tseen
@@ -1417,21 +1421,27 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
         climb_pit();
         break;
     case TT_WEB:
-        if ((uwep && uwep->oartifact == ART_STING) || (uarms && uarms->oartifact == ART_STING)) {
+        if ((uwep && uwep->oartifact == ART_STING) || (uarms && uarms->oartifact == ART_STING)) 
+        {
             /* escape trap but don't move and don't destroy it */
             u.utrap = 0; /* caller will call reset_utrap() */
             pline("Sting cuts through the web!");
             break;
         }
-        if (--u.utrap) {
-            if (flags.verbose) {
+        if (--u.utrap) 
+        {
+            if (flags.verbose)
+            {
+                play_sfx_sound(SFX_STUCK_IN_TRAP);
                 predicament = "stuck to the web";
                 if (u.usteed)
                     Norep("%s is %s.", upstart(steedname), predicament);
                 else
                     Norep("You are %s.", predicament);
             }
-        } else {
+        } 
+        else
+        {
             if (u.usteed)
                 pline("%s breaks out of the web.", upstart(steedname));
             else
@@ -1439,16 +1449,19 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
         }
         break;
     case TT_LAVA:
-        if (flags.verbose) {
+        if (flags.verbose)
+        {
             predicament = "stuck in the lava";
             if (u.usteed)
                 Norep("%s is %s.", upstart(steedname), predicament);
             else
                 Norep("You are %s.", predicament);
         }
-        if (!is_lava(x, y)) {
+        if (!is_lava(x, y))
+        {
             u.utrap--;
-            if ((u.utrap & 0xff) == 0) {
+            if ((u.utrap & 0xff) == 0) 
+            {
                 u.utrap = 0;
                 if (u.usteed)
                     You("lead %s to the edge of the %s.", steedname,
@@ -1457,18 +1470,24 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
                     You("pull yourself to the edge of the %s.",
                         hliquid("lava"));
             }
+            else if (flags.verbose)
+            {
+                play_sfx_sound(SFX_STUCK_IN_TRAP);
+            }
         }
         u.umoved = TRUE;
         break;
     case TT_INFLOOR:
     case TT_BURIEDBALL:
         anchored = (u.utraptype == TT_BURIEDBALL);
-        if (anchored) {
+        if (anchored)
+        {
             coord cc;
 
             cc.x = u.ux, cc.y = u.uy;
             /* can move normally within radius 1 of buried ball */
-            if (buried_ball(&cc) && dist2(x, y, cc.x, cc.y) <= 2) {
+            if (buried_ball(&cc) && dist2(x, y, cc.x, cc.y) <= 2)
+            {
                 /* ugly hack: we need to issue some message here
                    in case "you are chained to the buried ball"
                    was the most recent message given, otherwise
@@ -1480,27 +1499,39 @@ struct trap *desttrap; /* nonnull if another trap at <x,y> */
                 return TRUE;
             }
         }
-        if (--u.utrap) {
-            if (flags.verbose) {
-                if (anchored) {
+
+        if (--u.utrap)
+        {
+            if (flags.verbose)
+            {
+                play_sfx_sound(SFX_STUCK_IN_TRAP);
+                if (anchored)
+                {
                     predicament = "chained to the";
                     culprit = "buried ball";
-                } else {
+                } 
+                else
+                {
                     predicament = "stuck in the";
                     culprit = surface(u.ux, u.uy);
                 }
-                if (u.usteed) {
+                if (u.usteed)
+                {
                     if (anchored)
                         Norep("You and %s are %s %s.", steedname, predicament,
                               culprit);
                     else
                         Norep("%s is %s %s.", upstart(steedname), predicament,
                               culprit);
-                } else
+                }
+                else
                     Norep("You are %s %s.", predicament, culprit);
             }
-        } else {
+        } 
+        else 
+        {
  wriggle_free:
+            play_sfx_sound(SFX_WRIGGLE_FREE);
             if (u.usteed)
                 pline("%s finally %s free.", upstart(steedname),
                       !anchored ? "lurches" : "wrenches the ball");

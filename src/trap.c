@@ -3462,6 +3462,7 @@ climb_pit()
         vision_full_recalc = 1; /* vision limits change */
     } else if (!(--u.utrap)) {
         reset_utrap(FALSE);
+        play_movement_sound(&youmonst, CLIMBING_TYPE_STAIRS_UP);
         You("%s to the edge of the pit.",
             (Sokoban && Levitation)
                 ? "struggle against the air currents and float"
@@ -3469,6 +3470,7 @@ climb_pit()
         fill_pit(u.ux, u.uy);
         vision_full_recalc = 1; /* vision limits change */
     } else if (u.dz || flags.verbose) {
+        play_sfx_sound(SFX_STUCK_IN_TRAP);
         if (u.usteed)
             Norep("%s is still in a pit.", upstart(y_monnam(u.usteed)));
         else
