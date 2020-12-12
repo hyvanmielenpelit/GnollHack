@@ -3299,6 +3299,154 @@ int zap_source_idx;
         return NO_GLYPH;
 
     int res = -1;
+    int used_zap_source_idx = (zap_source_idx <= NUM_ZAP_SOURCE_BASE_DIRS ? zap_source_idx : (zap_source_idx - NUM_ZAP_SOURCE_BASE_DIRS) * 2);
+    boolean check_leading = TRUE;
+    boolean check_trailing = TRUE;
+
+    if (zap_source_idx > NUM_ZAP_SOURCE_BASE_DIRS)
+        check_leading = FALSE;
+    else if (zap_source_idx % 2 == 0)
+        check_trailing = FALSE;
+
+    /* Leading cases */
+    if (check_leading)
+    {
+        switch (dir_index)
+        {
+        case 0:
+            if (used_zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 48;
+            break;
+        case 1:
+            if (used_zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 51;
+            break;
+        case 2:
+        case 10:
+        case 13:
+        case 22:
+            if (used_zap_source_idx == 4)
+                res = 25;
+            else if (used_zap_source_idx == 6)
+                res = 24;
+            else if (used_zap_source_idx == 5 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 32;
+            break;
+        case 3:
+        case 11:
+        case 14:
+        case 23:
+            if (used_zap_source_idx == 8)
+                res = 27;
+            else if (used_zap_source_idx == 6)
+                res = 26;
+            else if (used_zap_source_idx == 7 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 33;
+            break;
+        case 4:
+            if (used_zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 50;
+            break;
+        case 5:
+            if (used_zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 49;
+            break;
+        case 6:
+        case 15:
+        case 18:
+        case 8:
+            if (used_zap_source_idx == 8)
+                res = 29;
+            else if (used_zap_source_idx == 2)
+                res = 28;
+            else if (used_zap_source_idx == 1 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 34;
+            break;
+        case 7:
+        case 9:
+        case 12:
+        case 19:
+            if (used_zap_source_idx == 4)
+                res = 31;
+            else if (used_zap_source_idx == 2)
+                res = 30;
+            else if (used_zap_source_idx == 3 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
+                res = 35;
+            break;
+        default:
+            break;
+        }
+    }
+
+    if (check_trailing)
+    {
+        /* Trailing cases */
+        switch (dir_index)
+        {
+        case 0:
+            if (used_zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 52;
+            break;
+        case 1:
+            if (used_zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 55;
+            break;
+        case 2:
+        case 11:
+        case 12:
+        case 18:
+            if (used_zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 36;
+            else if (used_zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 37;
+            else if (used_zap_source_idx == 1 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 44;
+            break;
+        case 3:
+        case 8:
+        case 13:
+        case 19:
+            if (used_zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 38;
+            else if (used_zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 39;
+            else if (used_zap_source_idx == 3 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 45;
+            break;
+        case 4:
+            if (used_zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 54;
+            break;
+        case 5:
+            if (used_zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 53;
+            break;
+        case 6:
+        case 9:
+        case 14:
+        case 22:
+            if (used_zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 40;
+            else if (used_zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 41;
+            else if (used_zap_source_idx == 5 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 46;
+            break;
+        case 7:
+        case 10:
+        case 15:
+        case 23:
+            if (used_zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 42;
+            else if (used_zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 43;
+            else if (used_zap_source_idx == 7 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
+                res = 47;
+            break;
+        default:
+            break;
+        }
+    }
 
 #if 0
     /* Trailing version */
@@ -3344,117 +3492,6 @@ int zap_source_idx;
         break;
     }
 #endif
-    switch (dir_index)
-    {
-    case 0:
-        if (zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 48;
-        else if (zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 52;
-        break;
-    case 1:
-        if (zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 51;
-        else if (zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 55;
-        break;
-    case 2:
-    case 10:
-    case 13:
-    case 22:
-        if (zap_source_idx == 4)
-            res = 25;
-        else if (zap_source_idx == 6)
-            res = 24;
-        else if (zap_source_idx == 5 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 32;
-        else if (zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 36;
-        else if (zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 37;
-        else if (zap_source_idx == 1 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 44;
-        break;
-    case 3:
-    case 11:
-    case 23:
-        if (zap_source_idx == 8)
-            res = 27;
-        else if (zap_source_idx == 6)
-            res = 26;
-        else if (zap_source_idx == 7 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 33;
-        else if (zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 38;
-        else if (zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 39;
-        else if (zap_source_idx == 3 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 45;
-        break;
-    case 14:
-        if (zap_source_idx == 8)
-            res = 27;
-        else if (zap_source_idx == 6)
-            res = 26;
-        else if (zap_source_idx == 7 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 33;
-        else if (zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 42;
-        else if (zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 43;
-        else if (zap_source_idx == 5 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 49;
-        break;
-    case 4:
-        if (zap_source_idx == 2 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 50;
-        else if (zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 54;
-        break;
-    case 5:
-        if (zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 49;
-        else if (zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 53;
-        break;
-    case 6:
-    case 15:
-    case 18:
-    case 8:
-        if (zap_source_idx == 8)
-            res = 29;
-        else if (zap_source_idx == 2)
-            res = 28;
-        else if (zap_source_idx == 1 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 34;
-        else if (zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 40;
-        else if (zap_source_idx == 4 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 41;
-        else if (zap_source_idx == 5 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 46;
-        break;
-    case 7:
-    case 9:
-    case 12:
-    case 19:
-        if (zap_source_idx == 4)
-            res = 31;
-        else if (zap_source_idx == 2)
-            res = 30;
-        else if (zap_source_idx == 3 && (layer_flags & LFLAGS_ZAP_LEADING_EDGE))
-            res = 35;
-        else if (zap_source_idx == 6 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 42;
-        else if (zap_source_idx == 8 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 43;
-        else if (zap_source_idx == 7 && (layer_flags & LFLAGS_ZAP_TRAILING_EDGE))
-            res = 47;
-        break;
-    default:
-        break;
-    }
-
     if(res == -1)
         return NO_GLYPH;
     else

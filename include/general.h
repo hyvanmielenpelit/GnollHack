@@ -251,5 +251,8 @@ enum game_cursor_types
 #define PICKLOCK_DID_NOTHING 0          /* no time passes */
 #define PICKLOCK_DID_SOMETHING 1
 
+#define NUM_ZAP_SOURCE_DIRS 12
+#define NUM_ZAP_SOURCE_BASE_DIRS 8
+
 #endif /* GENERAL_H */
 

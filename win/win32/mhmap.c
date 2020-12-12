@@ -26,7 +26,6 @@
 #define CURSOR_BLINK_IN_INTERVALS 25
 #define CURSOR_HEIGHT 2 // pixels
 
-#define NUM_ZAP_SOURCE_DIRS 8
 #define DRAW_ORDER_SIZE ((NUM_POSITIONS_IN_ENLARGEMENT + 1) * (MAX_LAYERS - 1 + 2 * 2) + 1 + NUM_ZAP_SOURCE_DIRS)
 
 
@@ -1236,6 +1235,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         adj_y = j - 1;
                         break;
                     case 2:
+                    case 9:
                         adj_x = i;
                         adj_y = j - 1;
                         break;
@@ -1244,6 +1244,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         adj_y = j - 1;
                         break;
                     case 4:
+                    case 10:
                         adj_x = i + 1;
                         adj_y = j;
                         break;
@@ -1252,6 +1253,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         adj_y = j + 1;
                         break;
                     case 6:
+                    case 11:
                         adj_x = i;
                         adj_y = j + 1;
                         break;
@@ -1260,6 +1262,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         adj_y = j + 1;
                         break;
                     case 8:
+                    case 12:
                         adj_x = i - 1;
                         adj_y = j;
                         break;
@@ -3779,7 +3782,7 @@ static void setDrawOrder(PNHMapWindow data)
                     /* From below (i == 3) is drawn below */
                     for (int i = 1; i <= NUM_ZAP_SOURCE_DIRS; i++)
                     {
-                        if (i >= 5 && i <= 7)
+                        if ((i >= 5 && i <= 7) || i == 11)
                             continue;
                         data->draw_order[draw_count].enlargement_index = same_level_z_order_array[enl_idx];
                         data->draw_order[draw_count].layer = layer_idx;
@@ -3825,6 +3828,14 @@ static void setDrawOrder(PNHMapWindow data)
                 {
                     /* Others (i == 1-4,8) have been drawn earlier; from below (i == 5,6,7) is drawn here */
                     for (int i = 5; i <= 7; i++)
+                    {
+                        data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
+                        data->draw_order[draw_count].layer = layer_idx;
+                        data->draw_order[draw_count].tile_movement_index = 0;
+                        data->draw_order[draw_count].zap_source_index = i;
+                        draw_count++;
+                    }
+                    for (int i = 11; i <= 11; i++)
                     {
                         data->draw_order[draw_count].enlargement_index = -1; // different_level_z_order_array[enl_idx];
                         data->draw_order[draw_count].layer = layer_idx;
@@ -3931,6 +3942,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ry = y + 1;
                     break;
                 case 2:
+                case 9:
                     rx = x;
                     ry = y + 1;
                     break;
@@ -3939,6 +3951,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ry = y + 1;
                     break;
                 case 4:
+                case 10:
                     rx = x - 1;
                     ry = y;
                     break;
@@ -3947,6 +3960,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ry = y - 1;
                     break;
                 case 6:
+                case 11:
                     rx = x;
                     ry = y - 1;
                     break;
@@ -3955,6 +3969,7 @@ static void dirty(PNHMapWindow data, int x, int y, boolean usePrinted)
                     ry = y - 1;
                     break;
                 case 8:
+                case 12:
                     rx = x + 1;
                     ry = y;
                     break;
