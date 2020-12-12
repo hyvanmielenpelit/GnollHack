@@ -8139,7 +8139,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
         /* Fireballs only damage when they explode */
         if (!isexplosioneffect) //type != ZT_SPELL(ZT_FIRE)) {
 		{
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH;
             range += zap_over_floor(sx, sy, type, &shopdamage, 0);
+            context.global_newsym_flags = 0UL;
             /* zap with fire -> melt ice -> drown monster, so monster
                found and cached above might not be here any more */
             mon = m_at(sx, sy);
@@ -8158,7 +8160,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
         buzzmonst:
             
 			notonhead = (mon->mx != bhitpos.x || mon->my != bhitpos.y);
-            
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH;
 			if (zap_hit(find_mac(mon), type, origobj ? &origobj_copy : 0, origmonst))
 			{
                 if (mon_reflects(mon, (char *) 0))
@@ -8280,14 +8282,17 @@ boolean say; /* Announce out of sight hit/miss events if true */
                 if (say || canseemon(mon))
                     miss(fltxt, mon);
             }
+            context.global_newsym_flags = 0UL;
         } 
 		else if (sx == u.ux && sy == u.uy && range >= 0) 
 		{
 			/* Ray hits you or your steed */
             nomul(0);
-            if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0)) 
+            context.global_newsym_flags = NEWSYM_FLAGS_KEEP_OLD_ZAP_GLYPH;
+            if (u.usteed && !rn2(3) && !mon_reflects(u.usteed, (char *) 0))
 			{
                 mon = u.usteed;
+                context.global_newsym_flags = 0UL;
                 goto buzzmonst;
             } 
 			else if (zap_hit((int) u.uac, -1, (struct obj*)0, origmonst)) /* No accuracy or skill bonus for hitting yourself */
@@ -8338,6 +8343,7 @@ boolean say; /* Announce out of sight hit/miss events if true */
 	                (void) flashburn((long) d(dmgdice, dicesize) + dmgplus);
             stop_occupation();
             nomul(0);
+            context.global_newsym_flags = 0UL;
         }
 
         if (!ZAP_POS(levl[sx][sy].typ)

@@ -759,7 +759,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       ANIMATION_PLAY_TYPE_PLAYED_SEPARATELY, ANIMATION_MAIN_TILE_USE_LAST,
       AUTODRAW_NONE,
       { 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, },
-      0, 7,
+      0, 6,
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
@@ -3849,7 +3849,7 @@ short animidx;
     for (int i = 0; i < MAX_ZAP_TYPES; i++)
     {
         if (zap_type_definitions[i].animation == animidx)
-            return glyph2tile[i * NUM_ZAP_CHARS + GLYPH_ZAP_OFF];
+            return glyph2tile[ZAP_INDEX_WITH_FIRST_TILE +  i * NUM_ZAP_CHARS + GLYPH_ZAP_OFF];
     }
 
     /* Swallow */

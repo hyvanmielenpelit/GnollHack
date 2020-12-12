@@ -279,6 +279,8 @@ uchar* tilemapflags;
         }
     }
 
+#define NUM_BASE_TILE_DIRS 3 /* Up, left, up-left */
+
     const char* missile_direction_name_array[NUM_MISSILE_DIRS] = {
             "top-left", "top-center", "top-right",
             "middle-left",  "middle-right",
@@ -1150,6 +1152,11 @@ uchar* tilemapflags;
         }
         else if (misc_idx == 2)
         {
+#define ZAP_TEMPLATE_WIDTH 5
+#define ZAP_TEMPLATE_HEIGHT 4
+#define NUM_ZAP_BASE_TILES 18
+/* If updating, also update ZAP_INDEX_WITH_FIRST_TILE from tiledata.h */
+
             const char* zap_direction_name_array[NUM_ZAP_CHARS] = {
                 "up", "left", "up-left", "up-right",
                 "down", "right", "down-right", "down-left",
@@ -1162,15 +1169,16 @@ uchar* tilemapflags;
                 "leading-edge-up-left", "leading-edge-up-right", "leading-edge-down-right", "leading-edge-down-left",
                 "up-left-trailing-edge-down", "up-left-trailing-edge-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
                 "down-right-trailing-edge-up", "down-right-trailing-edge-left", "down-left-trailing-edge-up", "down-left-trailing-edge-right",
+                "trailing-edge-up-left", "trailing-edge-up-right", "trailing-edge-down-right", "trailing-edge-down-left",
+                "leading-edge-up", "leading-edge-right", "leading-edge-down", "leading-edge-left",
+                "trailing-edge-up", "trailing-edge-right", "trailing-edge-down", "trailing-edge-left",
             };
 
-#define ZAP_TEMPLATE_WIDTH 5
-#define ZAP_TEMPLATE_HEIGHT 3
-
             const char* zap_template_tile_name_array[ZAP_TEMPLATE_WIDTH * ZAP_TEMPLATE_HEIGHT] = {
-                "up", "left", "leading-edge-up-left", "up-left-extra-up", "back-bounce-left",
-                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "up-left-trailing-edge-right",
-                "back-bounce-up-left", "back-bounce-up", "", "up-left-trailing-edge-down", "",
+                "leading-edge-up", "leading-edge-left", "left", "trailing-edge-left", "back-bounce-left",
+                "up", "bounce-top-clockwise", "leading-edge-up-left", "up-left-extra-up", "back-bounce-up-left",
+                "trailing-edge-up", "bounce-right-clockwise", "up-left-extra-left", "up-left", "up-left-trailing-edge-right",
+                "back-bounce-up", "", "", "up-left-trailing-edge-down", "trailing-edge-up-left",
             };
 
             int template_width = ZAP_TEMPLATE_WIDTH;
@@ -2800,26 +2808,32 @@ boolean* hflip_ptr, * vflip_ptr;
                 "leading-edge-up-left", "leading-edge-up-right", "leading-edge-down-right", "leading-edge-down-left",
                 "up-left-trailing-edge-down", "up-left-trailing-edge-right", "up-right-trailing-edge-down", "up-right-trailing-edge-left",
                 "down-right-trailing-edge-up", "down-right-trailing-edge-left", "down-left-trailing-edge-up", "down-left-trailing-edge-right",
+                "trailing-edge-up-left", "trailing-edge-up-right", "trailing-edge-down-right", "trailing-edge-down-left",
+                "leading-edge-up", "leading-edge-right", "leading-edge-down", "leading-edge-left",
+                "trailing-edge-up", "trailing-edge-right", "trailing-edge-down", "trailing-edge-left",
             };
 
             const char* zap_template_tile_name_array[ZAP_TEMPLATE_WIDTH * ZAP_TEMPLATE_HEIGHT] = {
-                "up", "left", "leading-edge-up-left", "up-left-extra-up", "back-bounce-left",
-                "bounce-top-clockwise", "bounce-right-clockwise", "up-left-extra-left", "up-left", "up-left-trailing-edge-right",
-                "back-bounce-up-left", "back-bounce-up", "", "up-left-trailing-edge-down", "",
+                "leading-edge-up", "leading-edge-left", "left", "trailing-edge-left", "back-bounce-left",
+                "up", "bounce-top-clockwise", "leading-edge-up-left", "up-left-extra-up", "back-bounce-up-left",
+                "trailing-edge-up", "bounce-right-clockwise", "up-left-extra-left", "up-left", "up-left-trailing-edge-right",
+                "back-bounce-up", "", "", "up-left-trailing-edge-down", "trailing-edge-up-left",
             };
+
+
 
     */
 
     switch (base_zap_char_index)
     {
     case 0:
-        if (zap_char_index == 0)
+        if (zap_char_index == 48)
         {
             *hflip_ptr = FALSE;
             *vflip_ptr = FALSE;
             return TRUE;
         }
-        else if (zap_char_index == 4)
+        else if (zap_char_index == 50)
         {
             *hflip_ptr = FALSE;
             *vflip_ptr = TRUE;
@@ -2827,6 +2841,20 @@ boolean* hflip_ptr, * vflip_ptr;
         }
         break;
     case 1:
+        if (zap_char_index == 51)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 49)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        break;
+    case 2:
         if (zap_char_index == 1)
         {
             *hflip_ptr = FALSE;
@@ -2840,7 +2868,76 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
-    case 2:
+    case 3:
+        if (zap_char_index == 55)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 53)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        break;
+    case 4:
+        if (zap_char_index == 17)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 21)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        break;
+
+    case 5:
+        if (zap_char_index == 0)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 4)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 6:
+        if (zap_char_index == 8)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 10)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 12)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 14)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;    
+    case 7:
         if (zap_char_index == 32)
         {
             *hflip_ptr = FALSE;
@@ -2866,7 +2963,7 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
-    case 3:
+    case 8:
         if (zap_char_index == 24)
         {
             *hflip_ptr = FALSE;
@@ -2892,47 +2989,47 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
-    case 4:
-        if (zap_char_index == 17)
+    case 9:
+        if (zap_char_index == 18)
         {
             *hflip_ptr = FALSE;
             *vflip_ptr = FALSE;
             return TRUE;
         }
-        else if (zap_char_index == 21)
+        else if (zap_char_index == 19)
         {
             *hflip_ptr = TRUE;
             *vflip_ptr = FALSE;
             return TRUE;
         }
-        break;
-    case 5:
-        if (zap_char_index == 8)
-        {
-            *hflip_ptr = FALSE;
-            *vflip_ptr = FALSE;
-            return TRUE;
-        }
-        else if (zap_char_index == 10)
+        else if (zap_char_index == 22)
         {
             *hflip_ptr = TRUE;
             *vflip_ptr = TRUE;
             return TRUE;
         }
-        else if (zap_char_index == 12)
-        {
-            *hflip_ptr = TRUE;
-            *vflip_ptr = FALSE;
-            return TRUE;
-        }
-        else if (zap_char_index == 14)
+        else if (zap_char_index == 23)
         {
             *hflip_ptr = FALSE;
             *vflip_ptr = TRUE;
             return TRUE;
         }
         break;
-    case 6:
+    case 10:
+        if (zap_char_index == 52)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 54)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 11:
         if (zap_char_index == 9)
         {
             *hflip_ptr = FALSE;
@@ -2958,7 +3055,7 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;    
-    case 7:
+    case 12:
         if (zap_char_index == 25)
         {
             *hflip_ptr = FALSE;
@@ -2984,7 +3081,7 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
-    case 8:
+    case 13:
         if (zap_char_index == 2)
         {
             *hflip_ptr = FALSE;
@@ -3010,7 +3107,7 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
-    case 9:
+    case 14:
         if (zap_char_index == 37)
         {
             *hflip_ptr = FALSE;
@@ -3036,34 +3133,7 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
-
-    case 10:
-        if (zap_char_index == 18)
-        {
-            *hflip_ptr = FALSE;
-            *vflip_ptr = FALSE;
-            return TRUE;
-        }
-        else if (zap_char_index == 19)
-        {
-            *hflip_ptr = TRUE;
-            *vflip_ptr = FALSE;
-            return TRUE;
-        }
-        else if (zap_char_index == 22)
-        {
-            *hflip_ptr = TRUE;
-            *vflip_ptr = TRUE;
-            return TRUE;
-        }
-        else if (zap_char_index == 23)
-        {
-            *hflip_ptr = FALSE;
-            *vflip_ptr = TRUE;
-            return TRUE;
-        }
-        break;    
-    case 11:
+    case 15:
         if (zap_char_index == 16)
         {
             *hflip_ptr = FALSE;
@@ -3077,7 +3147,7 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         break;
-    case 12:
+    case 16:
         if (zap_char_index == 36)
         {
             *hflip_ptr = FALSE;
@@ -3097,6 +3167,32 @@ boolean* hflip_ptr, * vflip_ptr;
             return TRUE;
         }
         else if (zap_char_index == 42)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        break;
+    case 17:
+        if (zap_char_index == 44)
+        {
+            *hflip_ptr = FALSE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 45)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = FALSE;
+            return TRUE;
+        }
+        else if (zap_char_index == 46)
+        {
+            *hflip_ptr = TRUE;
+            *vflip_ptr = TRUE;
+            return TRUE;
+        }
+        else if (zap_char_index == 47)
         {
             *hflip_ptr = FALSE;
             *vflip_ptr = TRUE;
