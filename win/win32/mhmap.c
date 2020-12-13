@@ -2733,6 +2733,14 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 //int nglyph = otmp->corpsenm + (is_female_corpse_or_statue(otmp) ? GLYPH_FEMALE_STATUE_OFF : GLYPH_STATUE_OFF);
 
                             }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN && otmp_round)
+                            {
+
+                            }
+                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL && otmp_round)
+                            {
+
+                            }
                         }
                         /*
                          * AUTODRAW END
@@ -3056,12 +3064,37 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 /* All UI related symbols and cursors */
                 if (base_layer == LAYER_GENERAL_UI && enlarg_idx == -1)
                 {
+                    boolean loc_is_you = (i == u.ux && j == u.uy);
+
+                    /* Chain lock mark */
+                    if (loc_is_you && uball && uchain)
+                    {
+                        double scale = (double)(rect->bottom - rect->top) / (double)tileHeight;
+                        int mglyph = ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF;
+                        int mtile = glyph2tile[mglyph];
+                        int source_x = TILEBMP_X(mtile) + 0;
+                        int source_y = TILEBMP_Y(mtile) + 64;
+                        int source_width = 32;
+                        int source_height = 32;
+                        int target_x = rect->left + (int)(2.0 * scale); // (int)((double)(tileWidth - source_width) * scale / 2.0);
+                        int target_y = rect->bottom - (int)((double)(source_height + 2) * scale);
+                        int target_width = (int)((double)source_width * scale);
+                        int target_height = (int)((double)source_height * scale);
+
+                        (*GetNHApp()->lpfnTransparentBlt)(
+                            data->backBufferDC, target_x, target_y,
+                            target_width, target_height, data->tileDC, source_x,
+                            source_y, source_width,
+                            source_height, TILE_BK_COLOR);
+                    }
+
+
                     boolean draw_character = FALSE;
 
                     /* Cursor */
                     if (i == data->xCur && j == data->yCur)
                     {
-                        boolean cannotseeself = (i == u.ux && j == u.uy) && !canspotself();
+                        boolean cannotseeself = (loc_is_you) && !canspotself();
                         if (!cannotseeself &&
                             ((!data->cursorOn && flags.blinking_cursor_on_tiles)
                                 || (/*i == u.ux && j == u.uy &&*/ !flags.show_cursor_on_u)
@@ -3092,7 +3125,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     /* Monster target marker */
                     if (glyph_is_monster(monster_glyph) && mtmp && !is_worm_tail)
                     {
-                        if (flags.show_tile_monster_target && !isyou)
+                        if (flags.show_tile_monster_target && !loc_is_you)
                         {
                             draw_character = TRUE;
 
@@ -3112,9 +3145,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     }
 
                     /* Player marker */
-                    if (flags.show_tile_u_mark && i == u.ux && j == u.uy)
+                    if (flags.show_tile_u_mark && loc_is_you)
                     {
-                        if(isyou)
+                        if(loc_is_you)
                             draw_character = TRUE;
 
                         int mglyph = U_TILE_MARK + GLYPH_UI_TILE_OFF;
@@ -3168,8 +3201,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     /* Conditions, status marks, and buffs */
                     int condition_count = 0;
-                    if (glyph_is_monster(monster_glyph) && mtmp && !is_worm_tail)
+                    if (loc_is_you || (glyph_is_monster(monster_glyph) && mtmp && !is_worm_tail))
                     {
+                        if (!mtmp)
+                            mtmp = &youmonst;
+
                         if (1)
                         {
                             /* Petmark and other status marks */
@@ -3187,75 +3223,75 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 switch (status_mark)
                                 {
                                 case STATUS_MARK_PET:
-                                    if (!isyou && ispet)
+                                    if (!loc_is_you && ispet)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_PEACEFUL:
-                                    if (!isyou && ispeaceful)
+                                    if (!loc_is_you && ispeaceful)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_DETECTED:
-                                    if (!isyou && data->map[i][j].layer_flags & LFLAGS_M_DETECTED)
+                                    if (!loc_is_you && data->map[i][j].layer_flags & LFLAGS_M_DETECTED)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_PILE:
-                                    //if (!isyou && data->map[i][j].layer_flags & LFLAGS_O_PILE)
+                                    //if (!loc_is_you && data->map[i][j].layer_flags & LFLAGS_O_PILE)
                                     //    display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_HUNGRY:
-                                    if ((isyou && u.uhs == HUNGRY)
-                                        || (!isyou && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
+                                    if ((loc_is_you && u.uhs == HUNGRY)
+                                        || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty == 0)
                                         )
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_WEAK:
-                                    if (isyou && u.uhs == WEAK
-                                        || (!isyou && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
+                                    if (loc_is_you && u.uhs == WEAK
+                                        || (!loc_is_you && ispet && mtmp->mextra && EDOG(mtmp) && monstermoves >= EDOG(mtmp)->hungrytime && EDOG(mtmp)->mhpmax_penalty > 0)
                                         )
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_FAINTING:
-                                    if (isyou && u.uhs >= FAINTING)
+                                    if (loc_is_you && u.uhs >= FAINTING)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_BURDENED:
-                                    if (isyou && u.carrying_capacity_level == SLT_ENCUMBER)
+                                    if (loc_is_you && u.carrying_capacity_level == SLT_ENCUMBER)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_STRESSED:
-                                    if (isyou && u.carrying_capacity_level == MOD_ENCUMBER)
+                                    if (loc_is_you && u.carrying_capacity_level == MOD_ENCUMBER)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_STRAINED:
-                                    if (isyou && u.carrying_capacity_level == HVY_ENCUMBER)
+                                    if (loc_is_you && u.carrying_capacity_level == HVY_ENCUMBER)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_OVERTAXED:
-                                    if (isyou && u.carrying_capacity_level == EXT_ENCUMBER)
+                                    if (loc_is_you && u.carrying_capacity_level == EXT_ENCUMBER)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_OVERLOADED:
-                                    if (isyou && u.carrying_capacity_level == OVERLOADED)
+                                    if (loc_is_you && u.carrying_capacity_level == OVERLOADED)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_2WEP:
-                                    if (isyou && u.twoweap)
+                                    if (loc_is_you && u.twoweap)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_SKILL:
-                                    if (isyou && u.canadvanceskill)
+                                    if (loc_is_you && u.canadvanceskill)
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_SADDLED:
-                                    if (!isyou && (data->map[i][j].layer_flags & LFLAGS_M_SADDLED))
+                                    if (!loc_is_you && (data->map[i][j].layer_flags & LFLAGS_M_SADDLED))
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_LOW_HP:
                                 case STATUS_MARK_CRITICAL_HP:
                                 {
-                                    if ((isyou && !flags.show_tile_u_hp_bar) || (ispet && !flags.show_tile_pet_hp_bar))
+                                    if ((loc_is_you && !flags.show_tile_u_hp_bar) || (ispet && !flags.show_tile_pet_hp_bar))
                                     {
-                                        int relevant_hp_max = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
+                                        int relevant_hp_max = loc_is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
                                         int low_threshold = min(relevant_hp_max / 2, max(4, relevant_hp_max / 3));
                                         if (relevant_hp_max < 4)
                                             low_threshold = 0;
@@ -3263,7 +3299,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                         if (relevant_hp_max < 2)
                                             critical_threshold = 0;
 
-                                        int relevant_hp = isyou ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
+                                        int relevant_hp = loc_is_you ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
                                         if (status_mark == STATUS_MARK_CRITICAL_HP && relevant_hp <= critical_threshold)
                                             display_this_status_mark = TRUE;
                                         if (status_mark == STATUS_MARK_LOW_HP && relevant_hp <= low_threshold && relevant_hp > critical_threshold)
@@ -3272,11 +3308,11 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                     break;
                                 }
                                 case STATUS_MARK_SPEC_USED:
-                                    if (!isyou && ispet && any_spec_used(mtmp))
+                                    if (!loc_is_you && ispet && any_spec_used(mtmp))
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_TRAPPED:
-                                    if ((isyou && u.utrap) || (!isyou && mtmp->mtrapped))
+                                    if ((loc_is_you && u.utrap) || (!loc_is_you && mtmp->mtrapped))
                                         display_this_status_mark = TRUE;
                                     break;
                                 case STATUS_MARK_USTUCK:
@@ -3343,7 +3379,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 int condition_bit = 1 << cond;
 
 #if 0
-                                if (!ispet && !isyou)
+                                if (!ispet && !loc_is_you)
                                     m_conditions &= ~(BL_MASK_CONF | BL_MASK_STUN | BL_MASK_HALLU | BL_MASK_FEARFUL | BL_MASK_SLEEPING
                                         | BL_MASK_PARALYZED | BL_MASK_SLIME | BL_MASK_STONE | BL_MASK_STRNGL | BL_MASK_SUFFOC);
 #endif
@@ -3397,7 +3433,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 if (!context.properties[propidx].show_buff)
                                     continue;
 
-                                if (isyou ? (u.uprops[propidx].intrinsic & TIMEOUT) == 0 : (mtmp->mprops[propidx] & M_TIMEOUT) == 0)
+                                if (loc_is_you ? (u.uprops[propidx].intrinsic & TIMEOUT) == 0 : (mtmp->mprops[propidx] & M_TIMEOUT) == 0)
                                     continue;
 
                                 mglyph = (propidx - 1) / BUFFS_PER_TILE + GLYPH_BUFF_OFF;
@@ -3444,7 +3480,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
 
                             /* Steed mark (you as small) */
-                            if (isyou && issteed)
+                            if (loc_is_you && issteed)
                             {
                                 int anim_frame_idx = -1, main_tile_idx = -1;
                                 int signed_mglyph = u_to_glyph();
@@ -3503,12 +3539,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                     /* Draw hit point bars */
                     if (mtmp && !is_worm_tail && (
                         (ispet && flags.show_tile_pet_hp_bar)
-                        || (isyou && flags.show_tile_u_hp_bar)
-                        || (!ispet && !isyou && flags.show_tile_mon_hp_bar && canspotmon(mtmp))
+                        || (loc_is_you && flags.show_tile_u_hp_bar)
+                        || (!ispet && !loc_is_you && flags.show_tile_mon_hp_bar && canspotmon(mtmp))
                         ))
                     {
-                        int hp = isyou ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
-                        int hpmax = isyou ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
+                        int hp = loc_is_you ? (Upolyd ? u.mh : u.uhp) : mtmp->mhp;
+                        int hpmax = loc_is_you ? (Upolyd ? u.mhmax : u.uhpmax) : mtmp->mhpmax;
                         double fraction = (hpmax == 0 ? 0 : max(0, min(1, (double)hp / (double)hpmax)));
                         double r_mult = fraction <= 0.25 ? fraction * 2.0 + 0.5 : fraction <= 0.5 ? 1.0 : (1.0 - fraction) * 2.0;
                         double g_mult = fraction <= 0.25 ? 0 : fraction <= 0.5 ? (fraction - 0.25) * 4.0 : 1.0;

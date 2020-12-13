@@ -8069,6 +8069,8 @@ boolean say; /* Announce out of sight hit/miss events if true */
     start_ambient_ray_sound_at_location(soundset_id, sx, sy);
     tmp_at(DISP_BEAM, zapdir_to_glyph(dx, dy, zaptype)); //abstype => zaptype
 
+    int prev_anim_counter_idx = -1;
+
     while (range-- > 0)
 	{
         lsx = sx;
@@ -8104,6 +8106,9 @@ boolean say; /* Announce out of sight hit/miss events if true */
                             break;
                         }
                     }
+
+                    prev_anim_counter_idx = idx;
+
                     context.zap_animation_x[idx] = sx;
                     context.zap_animation_y[idx] = sy;
                     context.zap_animation_counter[idx] = 0UL;
