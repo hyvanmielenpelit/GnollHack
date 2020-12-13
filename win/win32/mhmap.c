@@ -1877,7 +1877,7 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /* 
                          * AUTODRAW START
                          */
-                         boolean autodraw_u_punished = (base_layer == LAYER_MONSTER && enlarg_idx == -1 && i == u.ux && j == u.uy && uball && uchain);
+                         boolean autodraw_u_punished = (base_layer == LAYER_MONSTER && enlarg_idx == -1 && tile_move_idx == 0 && i == u.ux && j == u.uy && uball && uchain);
 
                         if (autodraw > AUTODRAW_NONE || autodraw_u_punished)
                         {
