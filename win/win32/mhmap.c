@@ -2793,8 +2793,8 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                                 int within_tile_source_y = 23 + ((m % 2) == 1 ? source_height : 0);
                                                 int target_x = rect->left + (rect->right - rect->left) / 2 - (int)((double)source_width * scale / 2.0) + (int)((double)(relevant_dx * link_diff_x * m) * scale);
                                                 int target_y = rect->top + (rect->bottom - rect->top) / 2 - (int)((double)source_height * scale / 2.0) + (int)((double)(relevant_dy * link_diff_y * m) * scale);
-                                                int target_width = 16;
-                                                int target_height = 16;
+                                                int target_width = (int)((double)source_width * scale);
+                                                int target_height = (int)((double)source_height * scale);
                                                 int source_x = at_x + within_tile_source_x;
                                                 int source_y = at_y + within_tile_source_y;
 
