@@ -2167,8 +2167,11 @@ boolean *effect_happened_ptr;
 			}
             special_effect_wait_until_end(0);
         }
-		if (Punished && !confused)
-			unpunish();
+        if (Punished && !confused)
+        {
+            play_sfx_sound(SFX_UNCURSE_ITEM_SUCCESS);
+            unpunish();
+        }
 		if (u.utrap && u.utraptype == TT_BURIEDBALL) 
         {
 			buried_ball_to_freedom();
@@ -3113,10 +3116,12 @@ boolean *effect_happened_ptr;
     case SCR_PUNISHMENT:
         known = TRUE;
         if (confused || sblessed) {
+            play_sfx_sound(SFX_MALIGNANT_AURA_RESISTED);
             You_feel("guilty.");
             break;
         }
         play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, u.ux, u.uy, FALSE);
+        play_sfx_sound(SFX_MALIGNANT_AURA_SURROUNDS);
         special_effect_wait_until_action(0);
         punish(sobj);
         special_effect_wait_until_end(0);

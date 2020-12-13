@@ -1877,7 +1877,9 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                         /* 
                          * AUTODRAW START
                          */
-                        if (autodraw > AUTODRAW_NONE)
+                         boolean autodraw_u_punished = (base_layer == LAYER_MONSTER && enlarg_idx == -1 && i == u.ux && j == u.uy && uball && uchain);
+
+                        if (autodraw > AUTODRAW_NONE || autodraw_u_punished)
                         {
                             if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_REPLACE_WALL_ENDS)
                             {
@@ -2735,11 +2737,76 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                                 //int nglyph = otmp->corpsenm + (is_female_corpse_or_statue(otmp) ? GLYPH_FEMALE_STATUE_OFF : GLYPH_STATUE_OFF);
 
                             }
-                            else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN && otmp_round)
+                            else if (autodraw_u_punished || (otmp_round && ((autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN && otmp_round == uchain) || (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL && otmp_round == uball))))
                             {
-                                if (otmp_round == uchain)
+                                if (uchain && uball)
                                 {
+                                    boolean is_chain = (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN);
+                                    xchar chain_x = 0;
+                                    xchar chain_y = 0;
+                                    boolean res_chain = get_obj_location(uchain, &chain_x, &chain_y, BURIED_TOO);
+                                    xchar ball_x = 0;
+                                    xchar ball_y = 0;
+                                    boolean res_ball = get_obj_location(uball, &ball_x, &ball_y, BURIED_TOO);
+                                    xchar u_x = u.ux;
+                                    xchar u_y = u.uy;
 
+                                    int chain_u_dx = (int)(u_x - chain_x);
+                                    int chain_u_dy = (int)(u_y - chain_y);
+                                    int chain_ball_dx = (int)(ball_x - chain_x);
+                                    int chain_ball_dy = (int)(ball_y - chain_y);
+                                    int u_ball_dx = (int)(u_x - chain_x);
+                                    int u_ball_dy = (int)(u_y - chain_y);
+
+                                    int source_glyph = ITEM_AUTODRAW_GRAPHICS + GLYPH_UI_TILE_OFF;
+                                    int atile = glyph2tile[source_glyph];
+                                    int at_x = TILEBMP_X(atile);
+                                    int at_y = TILEBMP_Y(atile);
+                                    double scale = (double)(rect->bottom - rect->top) / (double)tileHeight;
+
+                                    for (int n = 0; n < 2; n++)
+                                    {
+                                        int relevant_dx = autodraw_u_punished ? sgn(n == 0 ? -chain_u_dx : 0) : is_chain ? sgn(n == 0 ? chain_u_dx : chain_ball_dx) : sgn(n == 0 ?  0 : -chain_ball_dx);
+                                        int relevant_dy = autodraw_u_punished ? sgn(n == 0 ? -chain_u_dy : 0) : is_chain ? sgn(n == 0 ? chain_u_dy : chain_ball_dy) : sgn(n == 0 ?  1 : -chain_ball_dy);
+                                        if (relevant_dx || relevant_dy)
+                                        {
+                                            boolean hflip_link = !((relevant_dx > 0) != (relevant_dy > 0));
+                                            boolean vflip_link = FALSE;
+                                            int within_tile_source_x = relevant_dx && relevant_dy ? 32 : relevant_dy ? 16 : 0;
+                                            int source_width = 16;
+                                            int source_height = 16;
+                                            int link_diff_x = 6;
+                                            int link_diff_y = 9;
+                                            int mid_x = tileWidth / 2;
+                                            int mid_y = tileHeight / 2;
+                                            int dist_x = relevant_dx > 0 ? tileWidth - mid_x : mid_x;
+                                            int dist_y = relevant_dy > 0 ? tileHeight - mid_y : mid_y;
+                                            int links = 1 + min((dist_y - source_height / 2) / link_diff_y, (dist_x - source_width / 2) / link_diff_x);
+
+                                            if (!is_chain && !autodraw_u_punished && n == 0 && links > 1)
+                                                links = 1;
+                                            else if (autodraw_u_punished && n == 1 && links > 1)
+                                                links = 1;
+
+                                            for (int m = 0; m < links; m++)
+                                            {
+                                                int within_tile_source_y = 23 + ((m % 2) == 1 ? source_height : 0);
+                                                int target_x = rect->left + (rect->right - rect->left) / 2 - (int)((double)source_width * scale / 2.0) + (int)((double)(relevant_dx * link_diff_x * m) * scale);
+                                                int target_y = rect->top + (rect->bottom - rect->top) / 2 - (int)((double)source_height * scale / 2.0) + (int)((double)(relevant_dy * link_diff_y * m) * scale);
+                                                int target_width = 16;
+                                                int target_height = 16;
+                                                int source_x = at_x + within_tile_source_x;
+                                                int source_y = at_y + within_tile_source_y;
+
+                                                (*GetNHApp()->lpfnTransparentBlt)(
+                                                    data->backBufferDC, target_x, target_y,
+                                                    target_width, target_height, data->tileDC, source_x + (hflip_link ? source_width - 1 : 0),
+                                                    source_y + (vflip_link ? source_height - 1 : 0), (hflip_link ? -1 : 1) * source_width,
+                                                    (vflip_link ? -1 : 1)* source_height, TILE_BK_COLOR);
+                                            }
+                                        }
+
+                                    }
                                 }
                             }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL && otmp_round)
