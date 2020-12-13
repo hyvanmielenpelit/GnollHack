@@ -1920,7 +1920,7 @@ struct obj* origobj;
                 else if (cansee(zx, zy))
                     pline_The("%s is razed!", get_door_name_at_ptr(room));
                 watch_dig((struct monst*)0, zx, zy, TRUE);
-                room->doormask |= (D_NODOOR | otherflags);
+                room->doormask = (D_NODOOR | otherflags);
                 unblock_vision_and_hearing_at_point(zx, zy); /* vision */
             }
             else
