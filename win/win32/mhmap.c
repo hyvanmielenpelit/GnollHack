@@ -1296,28 +1296,12 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                 if (showing_detection || u.uswallow || (base_layer == LAYER_FLOOR && glyph == cmap_to_glyph(S_unexplored)))
                     skip_darkening = TRUE;
 
-                boolean make_semi_transparent = FALSE;
-                boolean make_invis_transparent = FALSE;
-                boolean use_radial_transparency = FALSE;
-                if (base_layer == LAYER_MONSTER)
-                {
-                    if (mtmp && (is_semi_transparent(mtmp->data)))
-                    {
-                        make_semi_transparent = TRUE;
-                        if (is_radially_transparent(mtmp->data))
-                            use_radial_transparency = TRUE;
-                    }
-
-                    if ((mtmp && ((!is_enl_you && is_invisible(mtmp) && canspotmon(mtmp)))) || (is_enl_you && Invis))
-                        make_invis_transparent = TRUE;
-
-                }
-
                 /*
                  * Draw glyph
                  */
                 if (glyph != NO_GLYPH)
                 {
+                    /* Tile flips */
                     boolean tileflag_hflip = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FLIP_HORIZONTALLY);
                     boolean tileflag_vflip = !!(glyphtileflags[glyph] & GLYPH_TILE_FLAG_FLIP_VERTICALLY);
 
@@ -1333,6 +1317,24 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
 
                     int hmultiplier = hflip_glyph ? -1 : 1;
                     int vmultiplier = vflip_glyph ? -1 : 1;
+
+                    /* Transparency */
+                    boolean make_semi_transparent = FALSE;
+                    boolean make_invis_transparent = FALSE;
+                    boolean use_radial_transparency = FALSE;
+                    if (base_layer == LAYER_MONSTER)
+                    {
+                        if (mtmp && (is_semi_transparent(mtmp->data)))
+                        {
+                            make_semi_transparent = TRUE;
+                            if (is_radially_transparent(mtmp->data))
+                                use_radial_transparency = TRUE;
+                        }
+
+                        if ((mtmp && ((!is_enl_you && is_invisible(mtmp) && canspotmon(mtmp)))) || (is_enl_you && Invis))
+                            make_invis_transparent = TRUE;
+
+                    }
 
                     /* Set position_index */
                     if (enlarg_idx == -1)
