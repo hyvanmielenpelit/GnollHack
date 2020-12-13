@@ -2364,14 +2364,14 @@ NEARDATA struct replacement_definition replacements[MAX_REPLACEMENTS] =
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "chain-replacement",
-      0, 0,
+      CHAIN_PUNISHED_REPLACEMENT_TILES, CHAIN_PUNISHED_REPLACEMENT_OFF,
       REPLACEMENT_EVENT_NO_EVENT,
-      REPLACEMENT_ACTION_AUTODRAW,
-      AUTODRAW_CHAIN,
-      { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
+      REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_UCHAIN,
+      AUTODRAW_NONE,
+      { "punished", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+      { AUTODRAW_CHAIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
     { "ball-replacement",
@@ -3429,6 +3429,26 @@ enum autodraw_types* autodraw_ptr;
                 *autodraw_ptr = replacements[replacement_idx].general_autodraw;
 
             if (is_obj_activated(otmp))
+            {
+                if (replacements[replacement_idx].number_of_tiles < 1)
+                    return ntile;
+
+                /* Return the first tile with index 0 */
+                if (autodraw_ptr)
+                    *autodraw_ptr = replacements[replacement_idx].tile_autodraw[0];
+                return glyph2tile[0 + replacements[replacement_idx].glyph_offset + GLYPH_REPLACEMENT_OFF];
+            }
+            break;
+        }
+        case REPLACEMENT_ACTION_AUTODRAW_AND_OBJECT_UCHAIN:
+        {
+            if (!otmp)
+                return ntile;
+
+            if (autodraw_ptr)
+                *autodraw_ptr = replacements[replacement_idx].general_autodraw;
+
+            if (otmp == uchain)
             {
                 if (replacements[replacement_idx].number_of_tiles < 1)
                     return ntile;

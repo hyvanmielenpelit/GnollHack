@@ -2737,11 +2737,17 @@ paintTile(PNHMapWindow data, int i, int j, RECT * rect)
                             }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_CHAIN && otmp_round)
                             {
+                                if (otmp_round == uchain)
+                                {
 
+                                }
                             }
                             else if (autodraws[autodraw].draw_type == AUTODRAW_DRAW_BALL && otmp_round)
                             {
+                                if (otmp_round == uball)
+                                {
 
+                                }
                             }
                         }
                         /*
