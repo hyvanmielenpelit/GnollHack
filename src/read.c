@@ -3084,6 +3084,7 @@ boolean *effect_happened_ptr;
             int nboulders = 0;
 
             /* Identify the scroll */
+            play_sfx_sound(SFX_RUMBLING_EARTH);
             if (u.uswallow)
                 You_hear("rumbling.");
             else
@@ -3091,6 +3092,12 @@ boolean *effect_happened_ptr;
                           sblessed ? "around" : "above");
             known = 1;
             sokoban_guilt();
+
+            if (iflags.using_gui_sounds && !Deaf)
+            {
+                /* Shake effect here would be nice */
+                delay_output_milliseconds(1000);
+            }
 
             /* Loop through the surrounding squares */
             if (!scursed)
@@ -3204,8 +3211,9 @@ boolean confused, helmet_protects, byu, skip_uswallow;
     otmp2->owt = weight(otmp2);
     if (!amorphous(youmonst.data) && !Passes_walls
         && !noncorporeal(youmonst.data) && !unsolid(youmonst.data)) {
-        You("are hit by %s!", doname(otmp2));
         dmg = weapon_total_dmg_value(otmp2, &youmonst, (struct monst*)0, 1) * otmp2->quan;
+        play_object_hit_sound(otmp2, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(&youmonst), dmg, HMON_THROWN);
+        You("are hit by %s!", doname(otmp2));
         if (uarmh && helmet_protects) {
             if (is_metallic(uarmh)) {
                 pline("Fortunately, you are wearing a hard helmet.");
@@ -3250,7 +3258,10 @@ boolean confused, byu;
         struct obj *helmet = which_armor(mtmp, W_ARMH);
         int mdmg;
 
-        if (cansee(mtmp->mx, mtmp->my)) {
+        mdmg = weapon_total_dmg_value(otmp2, mtmp, (struct monst*)0, 1) * otmp2->quan;
+        play_object_hit_sound(otmp2, HIT_SURFACE_SOURCE_MONSTER, monst_to_any(mtmp), mdmg, HMON_THROWN);
+
+            if (cansee(mtmp->mx, mtmp->my)) {
             pline("%s is hit by %s!", Monnam(mtmp), doname(otmp2));
             if (is_invisible(mtmp) && !canspotmon(mtmp))
                 map_invisible(mtmp->mx, mtmp->my);
@@ -3259,7 +3270,6 @@ boolean confused, byu;
                      s_suffix(mon_nam(mtmp)), mbodypart(mtmp, STOMACH),
                      body_part(HEAD));
 
-        mdmg = weapon_total_dmg_value(otmp2, mtmp, (struct monst*)0, 1) * otmp2->quan;
         if (helmet) {
             if (is_metallic(helmet)) {
                 if (canspotmon(mtmp))

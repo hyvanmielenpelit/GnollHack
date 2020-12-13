@@ -644,6 +644,7 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/General/Wish for Object", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Stuck in Trap", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Wriggle Free", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/Scroll/Rumbling Earth", 1.0f },
 
 };
 
