@@ -8437,15 +8437,22 @@ boolean say; /* Announce out of sight hit/miss events if true */
             }
         }
 
-        if (iflags.using_gui_tiles || cansee(sx, sy))
+        if (iflags.using_gui_tiles)
         {
-            adjusted_delay_output(); /* wait a little */
             if (playing_anim)
             {
                 delay_output_milliseconds(context.zap_aggregate_milliseconds_to_wait_until_action);
                 context.zap_aggregate_milliseconds_to_wait_until_action = 0UL;
             }
+            else
+                adjusted_delay_output();
         }
+        else
+        {
+            if(cansee(sx, sy))
+                adjusted_delay_output(); /* wait a little */
+        }
+
     }
     if (context.zap_aggregate_milliseconds_to_wait_until_end > 0)
     {
