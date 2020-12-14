@@ -27,7 +27,7 @@ NEARDATA struct animation_definition animations[MAX_ANIMATIONS] =
       NO_ENLARGEMENT,
       { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     },
-    { "elf_wizard_female_cast-animation", ANIMATION_TYPE_NORMAL, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_TILES,
+    { "elf-wizard-female-cast-animation", ANIMATION_TYPE_NORMAL, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_TILES,
       PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_FRAMES, PLAYER_ELF_FEMALE_WIZARD_CAST_ANIMATION_OFF, 
       1,
       3,
