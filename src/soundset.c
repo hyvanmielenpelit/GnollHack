@@ -3654,7 +3654,17 @@ NEARDATA struct effect_sound_definition sfx_sounds[MAX_SFX_SOUND_TYPES] =
     {
         "GHSOUND_RUMBLING_EARTH",
         {GHSOUND_RUMBLING_EARTH, 1.0f},
-        FALSE
+        TRUE
+    },
+    {
+        "GHSOUND_RUMBLE_OF_DISTANT_THUNDER",
+        {GHSOUND_RUMBLE_OF_DISTANT_THUNDER, 1.0f},
+        TRUE
+    },
+    {
+        "GHSOUND_STUDIO_AUDIENCE_APPLAUDS",
+        {GHSOUND_STUDIO_AUDIENCE_APPLAUDS, 1.0f},
+        TRUE
     },
 };
 

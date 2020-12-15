@@ -3783,9 +3783,15 @@ cleanup:
         adjalign(-15); /* bad!! */
         /* your god is mighty displeased... */
         if (!Hallucination)
+        {
+            play_sfx_sound(SFX_RUMBLE_OF_DISTANT_THUNDER);
             You_hear("the rumble of distant thunder...");
+        }
         else
+        {
+            play_sfx_sound(SFX_STUDIO_AUDIENCE_APPLAUDS);
             You_hear("the studio audience applaud!");
+        }
     } else if (is_peaceful(mtmp))
         adjalign(-5);
 

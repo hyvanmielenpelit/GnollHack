@@ -646,6 +646,9 @@ const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Trap/Wriggle Free", 1.0f },
     { SOUND_BANK_MASTER, "event:/SFX/Scroll/Rumbling Earth", 1.0f },
 
+    { SOUND_BANK_MASTER, "event:/SFX/General/Rumble of Distant Thunder", 1.0f },
+    { SOUND_BANK_MASTER, "event:/SFX/General/Studio Audience Applauds", 1.0f },
+
 };
 
 extern "C" 
